@@ -15,19 +15,24 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Crop
+import androidx.compose.material.icons.filled.DeleteOutline
+import androidx.compose.material.icons.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.OpenInFull
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -36,10 +41,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import `in`.c1ph3rj.scanly.core.ui.ChromeIconButton
+import `in`.c1ph3rj.scanly.core.ui.MetricChip
+import `in`.c1ph3rj.scanly.core.ui.ZoomableImageDialog
 import `in`.c1ph3rj.scanly.domain.model.PageProcessingState
 import `in`.c1ph3rj.scanly.domain.model.ScanPage
 import `in`.c1ph3rj.scanly.feature.home.DocumentThumbnail
@@ -102,25 +111,16 @@ fun DocumentDetailScreen(
     onDeleteSelectedPage: () -> Unit,
 ) {
     var deleteDialogVisible by rememberSaveable(uiState.selectedPageId) { mutableStateOf(false) }
+    var previewPageId by rememberSaveable { mutableStateOf<String?>(null) }
     val selectedPage = uiState.selectedPage
+    val document = uiState.document
+    val previewPage = previewPageId?.let { pageId ->
+        uiState.pages.firstOrNull { page -> page.id == pageId }
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        topBar = {
-            TopAppBar(
-                title = { Text(text = uiState.document?.title ?: "Document") },
-                navigationIcon = {
-                    TextButton(onClick = onNavigateUp) {
-                        Text(text = "Back")
-                    }
-                },
-                actions = {
-                    TextButton(onClick = onOpenCamera) {
-                        Text(text = "Add page")
-                    }
-                },
-            )
-        },
+        containerColor = MaterialTheme.colorScheme.background,
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
     ) { innerPadding ->
         LazyColumn(
@@ -128,142 +128,90 @@ fun DocumentDetailScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
                 .background(MaterialTheme.colorScheme.background),
-            contentPadding = PaddingValues(20.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+            contentPadding = PaddingValues(start = 20.dp, top = 16.dp, end = 20.dp, bottom = 28.dp),
+            verticalArrangement = Arrangement.spacedBy(18.dp),
         ) {
-            val document = uiState.document
+            item {
+                ReviewTopBar(
+                    title = document?.title ?: "Document",
+                    pageCount = uiState.pages.size,
+                    onNavigateUp = onNavigateUp,
+                    onAddPage = onOpenCamera,
+                )
+            }
+
             if (document == null) {
                 item {
-                    InfoCard(
-                        title = "Document not found",
-                        body = "This document may have been deleted. Return to the library to create or open another one.",
-                    )
+                    MissingDocumentCard(onNavigateUp = onNavigateUp)
+                }
+                return@LazyColumn
+            }
+
+            item {
+                Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    MetricChip(label = "${uiState.pages.size} pages")
+                    MetricChip(label = document.updatedAtMillis.toShortDate())
+                }
+            }
+
+            if (selectedPage == null) {
+                item {
+                    EmptyDocumentCard(onOpenCamera = onOpenCamera)
                 }
             } else {
                 item {
-                    Surface(
-                        modifier = Modifier.fillMaxWidth(),
-                        color = MaterialTheme.colorScheme.surfaceContainerHigh,
-                        shape = MaterialTheme.shapes.extraLarge,
-                    ) {
-                        Column(
-                            modifier = Modifier.padding(20.dp),
-                            verticalArrangement = Arrangement.spacedBy(10.dp),
+                    SelectedPageCard(
+                        page = selectedPage,
+                        pageCount = uiState.pages.size,
+                        onPreview = { previewPageId = selectedPage.id },
+                    )
+                }
+                item {
+                    ReviewActionDock(
+                        page = selectedPage,
+                        pageCount = uiState.pages.size,
+                        enabled = !uiState.isMutatingPage,
+                        onEdit = { onOpenPageEditor(selectedPage.id) },
+                        onReplace = { onReplacePage(selectedPage.id) },
+                        onDelete = { deleteDialogVisible = true },
+                        onMoveLeft = onMoveSelectedPageLeft,
+                        onMoveRight = onMoveSelectedPageRight,
+                    )
+                }
+                item {
+                    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically,
                         ) {
                             Text(
-                                text = document.title,
-                                style = MaterialTheme.typography.headlineMedium,
+                                text = "Pages",
+                                style = MaterialTheme.typography.titleLarge,
+                                fontWeight = FontWeight.SemiBold,
                             )
                             Text(
-                                text = if (uiState.pages.isEmpty()) {
-                                    "No pages yet. Add a page to start building this document."
-                                } else {
-                                    "${uiState.pages.size} pages ready. Review the selected page below, then reorder, replace, edit, or keep adding more."
-                                },
-                                style = MaterialTheme.typography.bodyLarge,
+                                text = "Tap to switch",
+                                style = MaterialTheme.typography.labelLarge,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(10.dp),
-                            ) {
-                                Button(
-                                    modifier = Modifier.weight(1f),
-                                    onClick = onOpenCamera,
-                                ) {
-                                    Text(
-                                        text = if (uiState.pages.isEmpty()) {
-                                            "Add first page"
-                                        } else {
-                                            "Add another page"
-                                        },
-                                    )
-                                }
+                        }
+                        LazyRow(
+                            horizontalArrangement = Arrangement.spacedBy(12.dp),
+                            contentPadding = PaddingValues(horizontal = 2.dp),
+                        ) {
+                            items(
+                                items = uiState.pages,
+                                key = { page -> page.id },
+                            ) { page ->
+                                PageReviewTile(
+                                    page = page,
+                                    selected = page.id == selectedPage.id,
+                                    onClick = { onSelectPage(page.id) },
+                                )
                             }
                         }
                     }
-                }
-
-                if (uiState.pages.isEmpty()) {
-                    item {
-                        InfoCard(
-                            title = "No pages captured yet",
-                            body = "Tap Add page to open the scanner. Once pages exist, this screen becomes the full review and assembly flow.",
-                        )
-                    }
-                } else if (selectedPage != null) {
-                    item {
-                        SelectedPageCard(
-                            page = selectedPage,
-                            pageCount = uiState.pages.size,
-                            modifier = Modifier.fillMaxWidth(),
-                        )
-                    }
-                    item {
-                        ReviewActionRow(
-                            primaryLabel = "Edit",
-                            secondaryLabel = "Replace",
-                            tertiaryLabel = "Delete",
-                            enabled = !uiState.isMutatingPage,
-                            onPrimary = { onOpenPageEditor(selectedPage.id) },
-                            onSecondary = { onReplacePage(selectedPage.id) },
-                            onTertiary = { deleteDialogVisible = true },
-                        )
-                    }
-                    item {
-                        PageOrderCard(
-                            page = selectedPage,
-                            pageCount = uiState.pages.size,
-                            enabled = !uiState.isMutatingPage,
-                            onMoveLeft = onMoveSelectedPageLeft,
-                            onMoveRight = onMoveSelectedPageRight,
-                        )
-                    }
-                    item {
-                        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                            Text(
-                                text = "Document pages",
-                                style = MaterialTheme.typography.titleLarge,
-                            )
-                            LazyRow(
-                                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                                contentPadding = PaddingValues(horizontal = 2.dp),
-                            ) {
-                                items(
-                                    items = uiState.pages,
-                                    key = { page -> page.id },
-                                ) { page ->
-                                    PageReviewTile(
-                                        page = page,
-                                        selected = page.id == selectedPage.id,
-                                        onClick = { onSelectPage(page.id) },
-                                    )
-                                }
-                            }
-                        }
-                    }
-                }
-
-                item {
-                    DetailCard(
-                        title = "Document metadata",
-                        lines = listOf(
-                            "${document.pageCount} ${if (document.pageCount == 1) "page" else "pages"}",
-                            "Created ${document.createdAtMillis.toReadableDateTime()}",
-                            "Updated ${document.updatedAtMillis.toReadableDateTime()}",
-                        ),
-                    )
-                }
-                item {
-                    DetailCard(
-                        title = "Storage",
-                        lines = listOf(
-                            "Root directory",
-                            document.rootDirectoryPath,
-                            "Cover thumbnail",
-                            document.coverThumbnailPath ?: "Not available",
-                        ),
-                    )
                 }
             }
         }
@@ -274,9 +222,7 @@ fun DocumentDetailScreen(
             onDismissRequest = { deleteDialogVisible = false },
             title = { Text(text = "Delete page") },
             text = {
-                Text(
-                    text = "Delete Page ${selectedPage.pageIndex + 1} from this document? The raw, processed, and thumbnail files for that page will be removed.",
-                )
+                Text(text = "Page ${selectedPage.pageIndex + 1} will be removed from this document.")
             },
             confirmButton = {
                 TextButton(
@@ -295,144 +241,282 @@ fun DocumentDetailScreen(
             },
         )
     }
+
+    if (previewPage != null) {
+        ZoomableImageDialog(
+            imagePath = previewPage.processedImagePath ?: previewPage.rawImagePath ?: previewPage.thumbnailPath,
+            title = "Page ${previewPage.pageIndex + 1}",
+            onDismiss = { previewPageId = null },
+        )
+    }
+}
+
+@Composable
+private fun ReviewTopBar(
+    title: String,
+    pageCount: Int,
+    onNavigateUp: () -> Unit,
+    onAddPage: () -> Unit,
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            ChromeIconButton(
+                icon = Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = "Back",
+                onClick = onNavigateUp,
+            )
+            Column {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.SemiBold,
+                    maxLines = 1,
+                )
+                Text(
+                    text = if (pageCount == 1) "1 page" else "$pageCount pages",
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
+        ChromeIconButton(
+            icon = Icons.Filled.Add,
+            contentDescription = "Add page",
+            onClick = onAddPage,
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary,
+        )
+    }
+}
+
+@Composable
+private fun MissingDocumentCard(
+    onNavigateUp: () -> Unit,
+) {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        color = MaterialTheme.colorScheme.surfaceContainer,
+        shape = MaterialTheme.shapes.extraLarge,
+    ) {
+        Column(
+            modifier = Modifier.padding(24.dp),
+            verticalArrangement = Arrangement.spacedBy(14.dp),
+        ) {
+            Text(
+                text = "Document not found",
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.SemiBold,
+            )
+            Text(
+                text = "Return to the library and open another one.",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            TextButton(onClick = onNavigateUp) {
+                Text(text = "Back")
+            }
+        }
+    }
+}
+
+@Composable
+private fun EmptyDocumentCard(
+    onOpenCamera: () -> Unit,
+) {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        color = MaterialTheme.colorScheme.surfaceContainerHigh,
+        shape = MaterialTheme.shapes.extraLarge,
+    ) {
+        Column(
+            modifier = Modifier.padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(14.dp),
+        ) {
+            Text(
+                text = "No pages yet",
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.SemiBold,
+            )
+            Text(
+                text = "Add the first page to start the review flow.",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            TextButton(onClick = onOpenCamera) {
+                Text(text = "Open camera")
+            }
+        }
+    }
 }
 
 @Composable
 private fun SelectedPageCard(
     page: ScanPage,
     pageCount: Int,
-    modifier: Modifier = Modifier,
+    onPreview: () -> Unit,
 ) {
     Surface(
-        modifier = modifier,
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onPreview),
         color = MaterialTheme.colorScheme.surfaceContainerHigh,
         shape = MaterialTheme.shapes.extraLarge,
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(14.dp),
         ) {
+            Box {
+                DocumentThumbnail(
+                    thumbnailPath = page.thumbnailPath ?: page.processedImagePath,
+                    title = "Page ${page.pageIndex + 1}",
+                    modifier = Modifier.fillMaxWidth(),
+                )
+                MetricChip(
+                    label = "P${page.pageIndex + 1}/$pageCount",
+                    modifier = Modifier
+                        .align(Alignment.TopStart)
+                        .padding(12.dp),
+                    containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.82f),
+                )
+                MetricChip(
+                    label = page.processingState.toDisplayLabel(),
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(12.dp),
+                    containerColor = page.processingState.toContainerColor(),
+                    contentColor = page.processingState.toContentColor(),
+                )
+                ChromeIconButton(
+                    icon = Icons.Filled.OpenInFull,
+                    contentDescription = "Open zoom view",
+                    onClick = onPreview,
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(12.dp),
+                    containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.84f),
+                    contentColor = MaterialTheme.colorScheme.onSurface,
+                )
+            }
             Text(
-                text = "Selected page",
+                text = "Captured ${page.createdAtMillis.toReadableDateTime()}",
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
-            DocumentThumbnail(
-                thumbnailPath = page.thumbnailPath ?: page.processedImagePath,
-                title = "Page ${page.pageIndex + 1}",
-                modifier = Modifier.fillMaxWidth(),
-            )
-            Text(
-                text = "Page ${page.pageIndex + 1} of $pageCount",
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.SemiBold,
-            )
-            Text(
-                text = page.processingState.toDisplayLabel(),
-                style = MaterialTheme.typography.bodyMedium,
-                color = if (page.processingState == PageProcessingState.NEEDS_REVIEW) {
-                    MaterialTheme.colorScheme.tertiary
-                } else {
-                    MaterialTheme.colorScheme.onSurfaceVariant
-                },
-            )
-            Text(
-                text = "Captured ${page.createdAtMillis.toReadableDateTime()}",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
         }
     }
 }
 
 @Composable
-private fun ReviewActionRow(
-    primaryLabel: String,
-    secondaryLabel: String,
-    tertiaryLabel: String,
-    enabled: Boolean,
-    onPrimary: () -> Unit,
-    onSecondary: () -> Unit,
-    onTertiary: () -> Unit,
-) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(10.dp),
-    ) {
-        Button(
-            modifier = Modifier.weight(1f),
-            onClick = onPrimary,
-            enabled = enabled,
-        ) {
-            Text(text = primaryLabel)
-        }
-        OutlinedButton(
-            modifier = Modifier.weight(1f),
-            onClick = onSecondary,
-            enabled = enabled,
-        ) {
-            Text(text = secondaryLabel)
-        }
-        OutlinedButton(
-            modifier = Modifier.weight(1f),
-            onClick = onTertiary,
-            enabled = enabled,
-        ) {
-            Text(text = tertiaryLabel)
-        }
-    }
-}
-
-@Composable
-private fun PageOrderCard(
+private fun ReviewActionDock(
     page: ScanPage,
     pageCount: Int,
     enabled: Boolean,
+    onEdit: () -> Unit,
+    onReplace: () -> Unit,
+    onDelete: () -> Unit,
     onMoveLeft: () -> Unit,
     onMoveRight: () -> Unit,
 ) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
-        color = MaterialTheme.colorScheme.surfaceContainerLow,
+        color = MaterialTheme.colorScheme.surfaceContainer,
         shape = MaterialTheme.shapes.extraLarge,
     ) {
         Column(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(14.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            Text(
-                text = "Page order",
-                style = MaterialTheme.typography.titleMedium,
-            )
-            Text(
-                text = "Move the selected page earlier or later in the final document order.",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-            Text(
-                text = "Currently ${page.pageIndex + 1} of $pageCount",
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
             ) {
-                OutlinedButton(
+                ReviewToolButton(
+                    icon = Icons.Filled.Crop,
+                    label = "Edit",
+                    enabled = enabled,
+                    onClick = onEdit,
                     modifier = Modifier.weight(1f),
-                    onClick = onMoveLeft,
-                    enabled = enabled && page.pageIndex > 0,
-                ) {
-                    Text(text = "Move left")
-                }
-                OutlinedButton(
+                )
+                ReviewToolButton(
+                    icon = Icons.Filled.Refresh,
+                    label = "Retake",
+                    enabled = enabled,
+                    onClick = onReplace,
                     modifier = Modifier.weight(1f),
-                    onClick = onMoveRight,
-                    enabled = enabled && page.pageIndex < pageCount - 1,
-                ) {
-                    Text(text = "Move right")
-                }
+                )
+                ReviewToolButton(
+                    icon = Icons.Filled.DeleteOutline,
+                    label = "Delete",
+                    enabled = enabled,
+                    onClick = onDelete,
+                    modifier = Modifier.weight(1f),
+                    containerColor = MaterialTheme.colorScheme.error.copy(alpha = 0.1f),
+                    contentColor = MaterialTheme.colorScheme.error,
+                )
             }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+            ) {
+                ReviewToolButton(
+                    icon = Icons.Filled.KeyboardArrowLeft,
+                    label = "Earlier",
+                    enabled = enabled && page.pageIndex > 0,
+                    onClick = onMoveLeft,
+                    modifier = Modifier.weight(1f),
+                )
+                ReviewToolButton(
+                    icon = Icons.Filled.KeyboardArrowRight,
+                    label = "Later",
+                    enabled = enabled && page.pageIndex < pageCount - 1,
+                    onClick = onMoveRight,
+                    modifier = Modifier.weight(1f),
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun ReviewToolButton(
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    label: String,
+    enabled: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    containerColor: androidx.compose.ui.graphics.Color = MaterialTheme.colorScheme.surfaceContainerHighest,
+    contentColor: androidx.compose.ui.graphics.Color = MaterialTheme.colorScheme.onSurface,
+) {
+    Surface(
+        modifier = modifier.clickable(enabled = enabled, onClick = onClick),
+        color = if (enabled) containerColor else containerColor.copy(alpha = 0.45f),
+        shape = MaterialTheme.shapes.large,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+    ) {
+        Column(
+            modifier = Modifier.padding(vertical = 12.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            androidx.compose.material3.Icon(
+                imageVector = icon,
+                contentDescription = label,
+                tint = contentColor,
+            )
+            Text(
+                text = label,
+                style = MaterialTheme.typography.labelLarge,
+                color = contentColor,
+            )
         }
     }
 }
@@ -445,33 +529,37 @@ private fun PageReviewTile(
 ) {
     Surface(
         modifier = Modifier
-            .size(width = 148.dp, height = 204.dp)
+            .size(width = 122.dp, height = 176.dp)
             .clickable(onClick = onClick),
         color = if (selected) {
             MaterialTheme.colorScheme.primaryContainer
         } else {
             MaterialTheme.colorScheme.surfaceContainer
         },
-        border = if (selected) {
-            BorderStroke(2.dp, MaterialTheme.colorScheme.primary)
-        } else {
-            null
-        },
+        border = BorderStroke(
+            width = if (selected) 2.dp else 1.dp,
+            color = if (selected) {
+                MaterialTheme.colorScheme.primary
+            } else {
+                MaterialTheme.colorScheme.outlineVariant
+            },
+        ),
         shape = MaterialTheme.shapes.large,
     ) {
         Column(
-            modifier = Modifier.padding(12.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
+            modifier = Modifier.padding(10.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             DocumentThumbnail(
                 thumbnailPath = page.thumbnailPath,
                 title = "Page ${page.pageIndex + 1}",
                 modifier = Modifier.fillMaxWidth(),
-                minHeight = 92.dp,
+                minHeight = 90.dp,
             )
             Text(
-                text = "Page ${page.pageIndex + 1}",
-                style = MaterialTheme.typography.labelLarge,
+                text = "P${page.pageIndex + 1}",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold,
                 color = if (selected) {
                     MaterialTheme.colorScheme.onPrimaryContainer
                 } else {
@@ -479,62 +567,13 @@ private fun PageReviewTile(
                 },
             )
             Text(
-                text = if (selected) {
-                    "Selected · ${page.processingState.toDisplayLabel()}"
-                } else {
-                    page.processingState.toDisplayLabel()
-                },
-                style = MaterialTheme.typography.bodySmall,
+                text = page.processingState.toShortLabel(),
+                style = MaterialTheme.typography.labelLarge,
                 color = if (selected) {
-                    MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)
+                    MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.84f)
                 } else {
                     MaterialTheme.colorScheme.onSurfaceVariant
                 },
-            )
-        }
-    }
-}
-
-@Composable
-private fun DetailCard(
-    title: String,
-    lines: List<String>,
-) {
-    Card(modifier = Modifier.fillMaxWidth()) {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
-        ) {
-            Text(text = title, style = MaterialTheme.typography.titleMedium)
-            lines.forEach { line ->
-                Text(
-                    text = line,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun InfoCard(
-    title: String,
-    body: String,
-) {
-    Card(modifier = Modifier.fillMaxWidth()) {
-        Column(
-            modifier = Modifier.padding(20.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
-        ) {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleLarge,
-            )
-            Text(
-                text = body,
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
     }
@@ -545,8 +584,30 @@ private fun Long.toReadableDateTime(): String = DateFormat.getDateTimeInstance(
     DateFormat.SHORT,
 ).format(Date(this))
 
+private fun Long.toShortDate(): String = DateFormat.getDateInstance(DateFormat.MEDIUM).format(Date(this))
+
 private fun PageProcessingState.toDisplayLabel(): String = when (this) {
     PageProcessingState.CAPTURED -> "Captured"
-    PageProcessingState.PROCESSED -> "Processed scan"
-    PageProcessingState.NEEDS_REVIEW -> "Processed, review crop later"
+    PageProcessingState.PROCESSED -> "Ready"
+    PageProcessingState.NEEDS_REVIEW -> "Review"
+}
+
+private fun PageProcessingState.toShortLabel(): String = when (this) {
+    PageProcessingState.CAPTURED -> "New"
+    PageProcessingState.PROCESSED -> "Ready"
+    PageProcessingState.NEEDS_REVIEW -> "Review"
+}
+
+@Composable
+private fun PageProcessingState.toContainerColor() = when (this) {
+    PageProcessingState.CAPTURED -> MaterialTheme.colorScheme.secondaryContainer
+    PageProcessingState.PROCESSED -> MaterialTheme.colorScheme.primaryContainer
+    PageProcessingState.NEEDS_REVIEW -> MaterialTheme.colorScheme.tertiaryContainer
+}
+
+@Composable
+private fun PageProcessingState.toContentColor() = when (this) {
+    PageProcessingState.CAPTURED -> MaterialTheme.colorScheme.onSecondaryContainer
+    PageProcessingState.PROCESSED -> MaterialTheme.colorScheme.onPrimaryContainer
+    PageProcessingState.NEEDS_REVIEW -> MaterialTheme.colorScheme.onTertiaryContainer
 }

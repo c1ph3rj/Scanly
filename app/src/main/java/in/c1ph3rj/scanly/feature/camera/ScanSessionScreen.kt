@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.pm.PackageManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageCapture
@@ -12,33 +13,44 @@ import androidx.camera.core.ImageProxy
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.CameraAlt
+import androidx.compose.material.icons.filled.FlashOff
+import androidx.compose.material.icons.filled.FlashOn
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Timer
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -46,6 +58,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -60,6 +73,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import `in`.c1ph3rj.scanly.core.ui.ChromeIconButton
+import `in`.c1ph3rj.scanly.core.ui.MetricChip
 import `in`.c1ph3rj.scanly.core.ml.DetectionFrame
 import `in`.c1ph3rj.scanly.core.ml.DocumentCornerQuad
 import `in`.c1ph3rj.scanly.core.ml.NormalizedPoint
@@ -106,8 +121,12 @@ fun ScanSessionRoute(
             ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED,
         )
     }
+    var previewFeedRatio by rememberSaveable { mutableStateOf(PreviewFeedRatio.THREE_FOUR) }
+    var torchEnabled by rememberSaveable { mutableStateOf(false) }
+    var torchAvailable by remember { mutableStateOf(false) }
     var imageCapture by remember { mutableStateOf<ImageCapture?>(null) }
     var previewView by remember { mutableStateOf<PreviewView?>(null) }
+    var camera by remember { mutableStateOf<Camera?>(null) }
 
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),
@@ -158,9 +177,27 @@ fun ScanSessionRoute(
         onCapture = viewModel::requestCapture,
         onAutoCaptureEnabledChange = viewModel::onAutoCaptureEnabledChanged,
         onPreviewFrame = viewModel::onPreviewFrame,
-        onCameraReady = { captureUseCase, cameraPreview ->
+        previewFeedRatio = previewFeedRatio,
+        torchEnabled = torchEnabled,
+        torchAvailable = torchAvailable,
+        onPreviewFeedRatioToggle = {
+            previewFeedRatio = previewFeedRatio.next()
+        },
+        onTorchToggle = {
+            val updatedState = !torchEnabled
+            torchEnabled = updatedState
+            camera?.cameraControl?.enableTorch(updatedState)
+        },
+        onCameraReady = { captureUseCase, cameraPreview, boundCamera ->
             imageCapture = captureUseCase
             previewView = cameraPreview
+            camera = boundCamera
+            torchAvailable = boundCamera.cameraInfo.hasFlashUnit()
+            if (torchAvailable) {
+                boundCamera.cameraControl.enableTorch(torchEnabled)
+            } else {
+                torchEnabled = false
+            }
         },
     )
 }
@@ -176,198 +213,375 @@ fun ScanSessionScreen(
     onCapture: () -> Unit,
     onAutoCaptureEnabledChange: (Boolean) -> Unit,
     onPreviewFrame: (DetectionFrame) -> Unit,
-    onCameraReady: (ImageCapture, PreviewView) -> Unit,
+    previewFeedRatio: PreviewFeedRatio,
+    torchEnabled: Boolean,
+    torchAvailable: Boolean,
+    onPreviewFeedRatioToggle: () -> Unit,
+    onTorchToggle: () -> Unit,
+    onCameraReady: (ImageCapture, PreviewView, Camera) -> Unit,
 ) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = if (uiState.isReplacementMode) {
-                            uiState.replacementPage?.let { page -> "Replace Page ${page.pageIndex + 1}" } ?: "Replace page"
-                        } else {
-                            uiState.document?.title ?: "Scan session"
-                        },
-                    )
-                },
-                navigationIcon = {
-                    TextButton(onClick = onNavigateUp) {
-                        Text(text = "Back")
-                    }
-                },
-                actions = {
-                    if (uiState.isReplacementMode) {
-                        Text(
-                            text = "Retake mode",
-                            style = MaterialTheme.typography.labelLarge,
-                        )
-                    } else {
-                        Text(
-                            text = "${uiState.pages.size} pages",
-                            style = MaterialTheme.typography.labelLarge,
-                        )
-                    }
-                },
-            )
-        },
+        containerColor = Color.Black,
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState)
         },
     ) { innerPadding ->
         if (uiState.missingDocument) {
-            Column(
+            CameraStateCard(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding)
                     .padding(20.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-            ) {
-                InfoCard(
-                    title = "Document not found",
-                    body = "Return to the library and reopen a valid document before capturing pages.",
-                )
-            }
+                title = "Document missing",
+                body = "Open a valid document first.",
+                actionLabel = "Back",
+                onAction = onNavigateUp,
+            )
         } else if (!hasCameraPermission) {
-            Column(
+            CameraStateCard(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding)
                     .padding(20.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-            ) {
-                InfoCard(
-                    title = "Camera permission needed",
-                    body = "Scanly needs camera access to capture document pages into the current document.",
-                )
-                Button(onClick = onRequestPermission) {
-                    Text(text = "Grant camera access")
-                }
-            }
+                title = "Camera access needed",
+                body = "Allow camera to keep scanning.",
+                actionLabel = "Grant",
+                onAction = onRequestPermission,
+            )
         } else {
-            Column(
+            Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding),
             ) {
                 CameraPreview(
                     modifier = Modifier
+                        .align(Alignment.Center)
                         .fillMaxWidth()
-                        .weight(1f),
+                        .aspectRatio(previewFeedRatio.aspectRatio),
                     liveDetection = uiState.liveDetection,
                     onCameraReady = onCameraReady,
                     onPreviewFrame = onPreviewFrame,
                 )
-                Surface(
-                    modifier = Modifier.fillMaxWidth(),
-                    color = MaterialTheme.colorScheme.surfaceContainer,
-                ) {
-                    Column(
-                        modifier = Modifier.padding(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                CameraTopBar(
+                    uiState = uiState,
+                    onNavigateUp = onNavigateUp,
+                    onAutoCaptureEnabledChange = onAutoCaptureEnabledChange,
+                    previewFeedRatio = previewFeedRatio,
+                    torchEnabled = torchEnabled,
+                    torchAvailable = torchAvailable,
+                    onPreviewFeedRatioToggle = onPreviewFeedRatioToggle,
+                    onTorchToggle = onTorchToggle,
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .statusBarsPadding()
+                        .padding(horizontal = 16.dp, vertical = 12.dp),
+                )
+                CameraBottomDock(
+                    uiState = uiState,
+                    onCapture = onCapture,
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .fillMaxWidth()
+                        .navigationBarsPadding()
+                        .padding(horizontal = 16.dp, vertical = 14.dp),
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun CameraTopBar(
+    uiState: ScanSessionUiState,
+    onNavigateUp: () -> Unit,
+    onAutoCaptureEnabledChange: (Boolean) -> Unit,
+    previewFeedRatio: PreviewFeedRatio,
+    torchEnabled: Boolean,
+    torchAvailable: Boolean,
+    onPreviewFeedRatioToggle: () -> Unit,
+    onTorchToggle: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            ChromeIconButton(
+                icon = Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = "Back",
+                onClick = onNavigateUp,
+                containerColor = Color.Black.copy(alpha = 0.48f),
+                contentColor = Color.White,
+            )
+            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                MetricChip(
+                    label = if (uiState.isReplacementMode) {
+                        uiState.replacementPage?.let { "Retake P${it.pageIndex + 1}" } ?: "Retake"
+                    } else {
+                        "${uiState.pages.size} pages"
+                    },
+                    icon = if (uiState.isReplacementMode) Icons.Filled.Refresh else null,
+                    containerColor = Color.Black.copy(alpha = 0.48f),
+                    contentColor = Color.White,
+                )
+                AutoCaptureChip(
+                    enabled = uiState.liveDetection.autoCaptureEnabled,
+                    onClick = {
+                        onAutoCaptureEnabledChange(!uiState.liveDetection.autoCaptureEnabled)
+                    },
+                )
+            }
+        }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            MetricChip(
+                label = uiState.document?.title ?: "Scan session",
+                containerColor = Color.Black.copy(alpha = 0.38f),
+                contentColor = Color.White,
+            )
+            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                FeedRatioChip(
+                    previewFeedRatio = previewFeedRatio,
+                    onClick = onPreviewFeedRatioToggle,
+                )
+                FlashChip(
+                    enabled = torchEnabled,
+                    available = torchAvailable,
+                    onClick = onTorchToggle,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun AutoCaptureChip(
+    enabled: Boolean,
+    onClick: () -> Unit,
+) {
+    Surface(
+        color = if (enabled) OverlayBlue.copy(alpha = 0.88f) else Color.Black.copy(alpha = 0.48f),
+        shape = MaterialTheme.shapes.large,
+        border = BorderStroke(
+            width = 1.dp,
+            color = if (enabled) OverlayBlue else Color.White.copy(alpha = 0.12f),
+        ),
+    ) {
+        TextButton(onClick = onClick) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                androidx.compose.material3.Icon(
+                    imageVector = Icons.Filled.Timer,
+                    contentDescription = null,
+                    tint = if (enabled) Color.Black else Color.White,
+                )
+                Text(
+                    text = "Auto",
+                    color = if (enabled) Color.Black else Color.White,
+                    style = MaterialTheme.typography.labelLarge,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun FeedRatioChip(
+    previewFeedRatio: PreviewFeedRatio,
+    onClick: () -> Unit,
+) {
+    Surface(
+        modifier = Modifier.clickable(onClick = onClick),
+        color = Color.Black.copy(alpha = 0.48f),
+        shape = MaterialTheme.shapes.large,
+        border = BorderStroke(1.dp, Color.White.copy(alpha = 0.12f)),
+    ) {
+        Text(
+            text = previewFeedRatio.label,
+            modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
+            color = Color.White,
+            style = MaterialTheme.typography.labelLarge,
+        )
+    }
+}
+
+@Composable
+private fun FlashChip(
+    enabled: Boolean,
+    available: Boolean,
+    onClick: () -> Unit,
+) {
+    Surface(
+        modifier = Modifier.clickable(
+            enabled = available,
+            onClick = onClick,
+        ),
+        color = if (enabled) OverlayBlue.copy(alpha = 0.88f) else Color.Black.copy(alpha = 0.48f),
+        shape = MaterialTheme.shapes.large,
+        border = BorderStroke(
+            width = 1.dp,
+            color = if (enabled) OverlayBlue else Color.White.copy(alpha = 0.12f),
+        ),
+    ) {
+        Box(
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
+            contentAlignment = Alignment.Center,
+        ) {
+            androidx.compose.material3.Icon(
+                imageVector = if (enabled) Icons.Filled.FlashOn else Icons.Filled.FlashOff,
+                contentDescription = if (enabled) "Flashlight on" else "Flashlight off",
+                tint = if (enabled) Color.Black else if (available) Color.White else Color.White.copy(alpha = 0.45f),
+            )
+        }
+    }
+}
+
+@Composable
+private fun CameraBottomDock(
+    uiState: ScanSessionUiState,
+    onCapture: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        Box(modifier = Modifier.fillMaxWidth()) {
+            DetectionMeta(
+                liveDetection = uiState.liveDetection,
+                modifier = Modifier.align(Alignment.CenterStart),
+            )
+        }
+        if (uiState.pages.isNotEmpty()) {
+            LazyRow(
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                contentPadding = PaddingValues(horizontal = 2.dp),
+            ) {
+                items(
+                    items = uiState.pages,
+                    key = { page -> page.id },
+                ) { page ->
+                    Surface(
+                        modifier = Modifier.size(width = 76.dp, height = 102.dp),
+                        color = Color.Black.copy(alpha = 0.46f),
+                        shape = MaterialTheme.shapes.large,
+                        border = BorderStroke(
+                            width = if (uiState.replacementPageId == page.id) 2.dp else 1.dp,
+                            color = if (uiState.replacementPageId == page.id) {
+                                OverlayBlue
+                            } else {
+                                Color.White.copy(alpha = 0.12f)
+                            },
+                        ),
                     ) {
-                        if (uiState.isReplacementMode) {
-                            Surface(
-                                color = MaterialTheme.colorScheme.tertiaryContainer,
-                                shape = MaterialTheme.shapes.large,
-                            ) {
-                                Column(
-                                    modifier = Modifier.padding(14.dp),
-                                    verticalArrangement = Arrangement.spacedBy(4.dp),
-                                ) {
-                                    Text(
-                                        text = uiState.replacementPage?.let { page ->
-                                            "Replacing Page ${page.pageIndex + 1}"
-                                        } ?: "Replacing selected page",
-                                        style = MaterialTheme.typography.titleSmall,
-                                    )
-                                    Text(
-                                        text = "This capture will overwrite the selected page and keep it in the same place in the document.",
-                                        style = MaterialTheme.typography.bodySmall,
-                                        color = MaterialTheme.colorScheme.onTertiaryContainer,
-                                    )
-                                }
-                            }
-                        }
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween,
+                        Column(
+                            modifier = Modifier.padding(8.dp),
+                            verticalArrangement = Arrangement.spacedBy(6.dp),
                         ) {
-                            Column(
-                                modifier = Modifier.weight(1f),
-                                verticalArrangement = Arrangement.spacedBy(4.dp),
-                            ) {
-                                Text(
-                                    text = "Auto-capture",
-                                    style = MaterialTheme.typography.titleMedium,
-                                )
-                                Text(
-                                    text = uiState.liveDetection.statusMessage,
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                )
-                            }
-                            Switch(
-                                checked = uiState.liveDetection.autoCaptureEnabled,
-                                onCheckedChange = onAutoCaptureEnabledChange,
+                            DocumentThumbnail(
+                                thumbnailPath = page.thumbnailPath,
+                                title = "Page ${page.pageIndex + 1}",
+                                modifier = Modifier.fillMaxWidth(),
+                                minHeight = 56.dp,
                             )
-                        }
-                        DetectionMeta(uiState.liveDetection)
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.Center,
-                        ) {
-                            Button(
-                                onClick = onCapture,
-                                enabled = !uiState.captureInProgress,
-                            ) {
-                                Text(
-                                    text = when {
-                                        uiState.captureInProgress -> "Saving..."
-                                        uiState.isReplacementMode -> "Replace page"
-                                        else -> "Capture page"
-                                    },
-                                )
-                            }
-                        }
-                        if (uiState.pages.isEmpty()) {
                             Text(
-                                text = "Captured pages will appear here as a quick review strip.",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                text = "P${page.pageIndex + 1}",
+                                style = MaterialTheme.typography.labelLarge,
+                                color = Color.White,
                             )
-                        } else {
-                            LazyRow(
-                                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                                contentPadding = PaddingValues(horizontal = 4.dp),
-                            ) {
-                                items(
-                                    items = uiState.pages,
-                                    key = { page -> page.id },
-                                ) { page ->
-                                    Column(
-                                        modifier = Modifier.size(width = 120.dp, height = 150.dp),
-                                        verticalArrangement = Arrangement.spacedBy(8.dp),
-                                    ) {
-                                        DocumentThumbnail(
-                                            thumbnailPath = page.thumbnailPath,
-                                            title = "Page ${page.pageIndex + 1}",
-                                            modifier = Modifier.fillMaxWidth(),
-                                        )
-                                        Text(
-                                            text = "Page ${page.pageIndex + 1}",
-                                            style = MaterialTheme.typography.labelLarge,
-                                            color = if (uiState.replacementPageId == page.id) {
-                                                MaterialTheme.colorScheme.primary
-                                            } else {
-                                                MaterialTheme.colorScheme.onSurface
-                                            },
-                                        )
-                                    }
-                                }
-                            }
                         }
+                    }
+                }
+            }
+        }
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 6.dp),
+        ) {
+            Surface(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 22.dp),
+                color = Color.Black.copy(alpha = 0.58f),
+                shape = RoundedCornerShape(28.dp),
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    DockPill(
+                        label = if (uiState.captureInProgress) "Saving" else if (uiState.isReplacementMode) "Retake" else "Scan",
+                        icon = Icons.Filled.CameraAlt,
+                    )
+                    SpacerDock()
+                    DockPill(
+                        label = uiState.liveDetection.compactStatusLabel(),
+                    )
+                }
+            }
+            CaptureButton(
+                busy = uiState.captureInProgress,
+                replacement = uiState.isReplacementMode,
+                onClick = onCapture,
+                modifier = Modifier.align(Alignment.TopCenter),
+            )
+        }
+    }
+}
+
+@Composable
+private fun CaptureButton(
+    busy: Boolean,
+    replacement: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Surface(
+        modifier = modifier.size(86.dp),
+        shape = CircleShape,
+        color = Color.Transparent,
+        border = BorderStroke(3.dp, Color.White),
+    ) {
+        Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(8.dp),
+            contentAlignment = Alignment.Center,
+        ) {
+            Surface(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clickable(enabled = !busy, onClick = onClick),
+                shape = CircleShape,
+                color = when {
+                    busy -> OverlayBlue
+                    replacement -> Color(0xFF1BC091)
+                    else -> Color.White
+                },
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    if (replacement) {
+                        androidx.compose.material3.Icon(
+                            imageVector = Icons.Filled.Refresh,
+                            contentDescription = "Replace page",
+                            tint = Color.Black,
+                        )
                     }
                 }
             }
@@ -378,21 +592,96 @@ fun ScanSessionScreen(
 @Composable
 private fun DetectionMeta(
     liveDetection: LiveDetectionUiState,
+    modifier: Modifier = Modifier,
 ) {
     if (liveDetection.confidence == null || liveDetection.inferenceTimeMillis == null) {
         return
     }
 
     Surface(
-        color = MaterialTheme.colorScheme.surfaceContainerHigh,
-        shape = MaterialTheme.shapes.medium,
+        modifier = modifier,
+        color = Color.Black.copy(alpha = 0.42f),
+        shape = MaterialTheme.shapes.large,
     ) {
         Text(
-            text = "Detection ${(liveDetection.confidence * 100f).roundToInt()}% • ${liveDetection.inferenceTimeMillis} ms",
+            text = "${(liveDetection.confidence * 100f).roundToInt()}% • ${liveDetection.inferenceTimeMillis} ms",
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
             style = MaterialTheme.typography.labelLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            color = Color.White,
         )
+    }
+}
+
+@Composable
+private fun DockPill(
+    label: String,
+    icon: androidx.compose.ui.graphics.vector.ImageVector? = null,
+) {
+    Surface(
+        color = Color.White.copy(alpha = 0.08f),
+        shape = MaterialTheme.shapes.large,
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            if (icon != null) {
+                androidx.compose.material3.Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    tint = Color.White,
+                )
+            }
+            Text(
+                text = label,
+                style = MaterialTheme.typography.labelLarge,
+                color = Color.White,
+            )
+        }
+    }
+}
+
+@Composable
+private fun SpacerDock() {
+    Box(modifier = Modifier.width(92.dp))
+}
+
+@Composable
+private fun CameraStateCard(
+    modifier: Modifier = Modifier,
+    title: String,
+    body: String,
+    actionLabel: String,
+    onAction: () -> Unit,
+) {
+    Box(
+        modifier = modifier,
+        contentAlignment = Alignment.Center,
+    ) {
+        Surface(
+            color = MaterialTheme.colorScheme.surfaceContainerHigh,
+            shape = MaterialTheme.shapes.extraLarge,
+        ) {
+            Column(
+                modifier = Modifier.padding(24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.headlineSmall,
+                )
+                Text(
+                    text = body,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                TextButton(onClick = onAction) {
+                    Text(text = actionLabel)
+                }
+            }
+        }
     }
 }
 
@@ -401,7 +690,7 @@ private fun DetectionMeta(
 private fun CameraPreview(
     modifier: Modifier = Modifier,
     liveDetection: LiveDetectionUiState,
-    onCameraReady: (ImageCapture, PreviewView) -> Unit,
+    onCameraReady: (ImageCapture, PreviewView, Camera) -> Unit,
     onPreviewFrame: (DetectionFrame) -> Unit,
 ) {
     val context = LocalContext.current
@@ -451,14 +740,14 @@ private fun CameraPreview(
                     }
 
                 cameraProvider.unbindAll()
-                cameraProvider.bindToLifecycle(
+                val boundCamera = cameraProvider.bindToLifecycle(
                     lifecycleOwner,
                     CameraSelector.DEFAULT_BACK_CAMERA,
                     preview,
                     imageCapture,
                     imageAnalysis,
                 )
-                onCameraReady(imageCapture, currentPreviewView)
+                onCameraReady(imageCapture, currentPreviewView, boundCamera)
             }
 
             cameraProviderFuture.addListener(listener, mainExecutor)
@@ -601,7 +890,8 @@ private fun DocumentDetectionOverlay(
             liveDetection = liveDetection,
             modifier = Modifier
                 .align(Alignment.TopCenter)
-                .padding(top = 20.dp),
+                .statusBarsPadding()
+                .padding(top = 74.dp),
         )
 
         if (liveDetection.autoCaptureEnabled && liveDetection.countdownValue != null) {
@@ -659,32 +949,9 @@ private fun PreviewStatusHud(
                 )
             }
             Text(
-                text = liveDetection.statusMessage,
+                text = liveDetection.compactStatusLabel(),
                 style = MaterialTheme.typography.labelLarge,
                 color = Color.White,
-            )
-        }
-    }
-}
-
-@Composable
-private fun InfoCard(
-    title: String,
-    body: String,
-) {
-    Card(modifier = Modifier.fillMaxWidth()) {
-        Column(
-            modifier = Modifier.padding(20.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
-        ) {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleLarge,
-            )
-            Text(
-                text = body,
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
     }
@@ -794,3 +1061,25 @@ private val OverlayFill = Color(0x2EFFFFFF)
 private val OverlayGrid = Color(0x22FFFFFF)
 private val OverlayGuide = Color(0xC2FFFFFF)
 private const val RgbaPixelStride = 4
+
+enum class PreviewFeedRatio(
+    val aspectRatio: Float,
+    val label: String,
+) {
+    THREE_FOUR(aspectRatio = 3f / 4f, label = "3:4"),
+    ONE_ONE(aspectRatio = 1f, label = "1:1");
+
+    fun next(): PreviewFeedRatio = when (this) {
+        THREE_FOUR -> ONE_ONE
+        ONE_ONE -> THREE_FOUR
+    }
+}
+
+private fun LiveDetectionUiState.compactStatusLabel(): String = when (phase) {
+    AutoCapturePhase.OFF -> "Manual"
+    AutoCapturePhase.SEARCHING -> "Find document"
+    AutoCapturePhase.HOLD_STEADY -> "Hold steady"
+    AutoCapturePhase.COUNTDOWN -> countdownValue?.let { "Hold $it" } ?: "Hold"
+    AutoCapturePhase.CAPTURING -> "Capturing"
+    AutoCapturePhase.COOLDOWN -> "Next page"
+}

@@ -3,6 +3,7 @@ package `in`.c1ph3rj.scanly.feature.editor
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -24,14 +25,20 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.CropFree
+import androidx.compose.material.icons.filled.RotateLeft
+import androidx.compose.material.icons.filled.RotateRight
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -55,6 +62,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.clipPath
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
@@ -64,6 +72,8 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.exifinterface.media.ExifInterface
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import `in`.c1ph3rj.scanly.core.ui.ChromeIconButton
+import `in`.c1ph3rj.scanly.core.ui.MetricChip
 import `in`.c1ph3rj.scanly.core.editing.CropHandle
 import `in`.c1ph3rj.scanly.core.ml.DocumentCornerQuad
 import `in`.c1ph3rj.scanly.core.ml.NormalizedPoint
@@ -192,26 +202,26 @@ private fun EditorTopBar(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        TextButton(onClick = onNavigateUp) {
-            Text(
-                text = "Back",
-                color = Color.White,
-            )
-        }
-        Surface(
-            color = AccentGreen,
-            shape = RoundedCornerShape(10.dp),
-        ) {
-            TextButton(
-                onClick = onSave,
-                enabled = !isSaving,
-            ) {
-                Text(
-                    text = if (isSaving) "Saving..." else "Done",
-                    color = Color.White,
-                )
-            }
-        }
+        ChromeIconButton(
+            icon = Icons.AutoMirrored.Filled.ArrowBack,
+            contentDescription = "Back",
+            onClick = onNavigateUp,
+            containerColor = Color.White.copy(alpha = 0.08f),
+            contentColor = Color.White,
+        )
+        MetricChip(
+            label = if (isSaving) "Saving" else "Editor",
+            containerColor = Color.White.copy(alpha = 0.08f),
+            contentColor = Color.White,
+        )
+        ChromeIconButton(
+            icon = Icons.Filled.Check,
+            contentDescription = "Done",
+            onClick = onSave,
+            enabled = !isSaving,
+            containerColor = AccentGreen,
+            contentColor = Color.White,
+        )
     }
 }
 
@@ -562,15 +572,16 @@ private fun EditorActionRow(
             .padding(bottom = 18.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        EditorActionButton(label = "Left", onClick = onRotateLeft)
-        EditorActionButton(label = "Right", onClick = onRotateRight)
-        EditorActionButton(label = "Reset", onClick = onResetCrop)
+        EditorActionButton(label = "Left", icon = Icons.Filled.RotateLeft, onClick = onRotateLeft)
+        EditorActionButton(label = "Right", icon = Icons.Filled.RotateRight, onClick = onRotateRight)
+        EditorActionButton(label = "Reset", icon = Icons.Filled.CropFree, onClick = onResetCrop)
     }
 }
 
 @Composable
 private fun EditorActionButton(
     label: String,
+    icon: ImageVector,
     onClick: () -> Unit,
 ) {
     Surface(
@@ -579,12 +590,18 @@ private fun EditorActionButton(
             .clickable(onClick = onClick),
         color = Color(0xFF181818),
         shape = RoundedCornerShape(18.dp),
+        border = BorderStroke(1.dp, Color.White.copy(alpha = 0.08f)),
     ) {
-        Box(
-            modifier = Modifier
-                .padding(vertical = 14.dp),
-            contentAlignment = Alignment.Center,
+        Column(
+            modifier = Modifier.padding(vertical = 12.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(6.dp),
         ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = AccentGreen,
+            )
             Text(
                 text = label,
                 color = Color.White,
