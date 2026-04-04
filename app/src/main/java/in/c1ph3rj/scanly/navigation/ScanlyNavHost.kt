@@ -1,7 +1,11 @@
 package `in`.c1ph3rj.scanly.navigation
 
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavType
 import androidx.navigation.NavHostController
 import androidx.navigation.navArgument
@@ -15,7 +19,7 @@ import `in`.c1ph3rj.scanly.feature.editor.PageEditorDestination
 import `in`.c1ph3rj.scanly.feature.editor.PageEditorRoute
 import `in`.c1ph3rj.scanly.feature.home.HomeRoute
 import `in`.c1ph3rj.scanly.feature.placeholder.FeaturePlaceholderRoute
-import `in`.c1ph3rj.scanly.feature.readiness.ReadinessRoute
+import `in`.c1ph3rj.scanly.feature.settings.SettingsRoute
 
 @Composable
 fun ScanlyNavHost(
@@ -32,7 +36,7 @@ fun ScanlyNavHost(
                 onOpenDocument = { documentId ->
                     navController.navigate(DocumentDestination.route(documentId))
                 },
-                onOpenReadiness = { navController.navigate(ScanlyDestination.Readiness.route) },
+                onOpenSettings = { navController.navigate(ScanlyDestination.Settings.route) },
                 onOpenScanSession = { documentId ->
                     navController.navigate(ScanSessionDestination.route(documentId))
                 },
@@ -43,7 +47,7 @@ fun ScanlyNavHost(
                 onOpenDocument = { documentId ->
                     navController.navigate(DocumentDestination.route(documentId))
                 },
-                onOpenReadiness = { navController.navigate(ScanlyDestination.Readiness.route) },
+                onOpenSettings = { navController.navigate(ScanlyDestination.Settings.route) },
                 onOpenScanSession = { documentId ->
                     navController.navigate(ScanSessionDestination.route(documentId))
                 },
@@ -68,12 +72,24 @@ fun ScanlyNavHost(
                 onNavigateUp = navController::navigateUp,
             )
         }
-        composable(ScanlyDestination.Readiness.route) {
-            ReadinessRoute(
+        composable(
+            route = ScanlyDestination.Settings.route,
+            enterTransition = { fadeThroughIn() },
+            exitTransition = { fadeThroughOut() },
+            popEnterTransition = { fadeThroughIn() },
+            popExitTransition = { fadeThroughOut() },
+        ) {
+            SettingsRoute(
                 onNavigateUp = navController::navigateUp,
             )
         }
-        composable(DocumentDestination.routePattern) {
+        composable(
+            route = DocumentDestination.routePattern,
+            enterTransition = { fadeThroughIn() },
+            exitTransition = { fadeThroughOut() },
+            popEnterTransition = { fadeThroughIn() },
+            popExitTransition = { fadeThroughOut() },
+        ) {
             val documentId = it.arguments?.getString(DocumentDestination.documentIdArgument).orEmpty()
             DocumentDetailRoute(
                 onNavigateUp = navController::navigateUp,
@@ -103,15 +119,31 @@ fun ScanlyNavHost(
                     defaultValue = null
                 },
             ),
+            enterTransition = { fadeThroughIn() },
+            exitTransition = { fadeThroughOut() },
+            popEnterTransition = { fadeThroughIn() },
+            popExitTransition = { fadeThroughOut() },
         ) {
             ScanSessionRoute(
                 onNavigateUp = navController::navigateUp,
             )
         }
-        composable(PageEditorDestination.routePattern) {
+        composable(
+            route = PageEditorDestination.routePattern,
+            enterTransition = { fadeThroughIn() },
+            exitTransition = { fadeThroughOut() },
+            popEnterTransition = { fadeThroughIn() },
+            popExitTransition = { fadeThroughOut() },
+        ) {
             PageEditorRoute(
                 onNavigateUp = navController::navigateUp,
             )
         }
     }
 }
+
+private fun AnimatedContentTransitionScope<NavBackStackEntry>.fadeThroughIn(): EnterTransition =
+    EnterTransition.None
+
+private fun AnimatedContentTransitionScope<NavBackStackEntry>.fadeThroughOut(): ExitTransition =
+    ExitTransition.None

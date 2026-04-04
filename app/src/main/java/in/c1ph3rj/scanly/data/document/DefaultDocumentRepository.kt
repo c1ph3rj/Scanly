@@ -52,6 +52,7 @@ class DefaultDocumentRepository @Inject constructor(
                     title = normalizedTitle,
                     pageCount = 0,
                     coverThumbnailPath = fileLayout.coverThumbnailPath,
+                    preferredFilterPreset = null,
                     rootDirectoryPath = fileLayout.rootDirectoryPath,
                     createdAtMillis = timestamp,
                     updatedAtMillis = timestamp,

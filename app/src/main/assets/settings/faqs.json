@@ -1,0 +1,22 @@
+[
+  {
+    "id": "capture_quality",
+    "question": "How do I get the cleanest scans?",
+    "answer": "Keep the full page visible, avoid harsh shadows, and use the editor if the crop needs adjustment."
+  },
+  {
+    "id": "auto_capture",
+    "question": "When should I use auto-capture?",
+    "answer": "Use auto-capture when the page is fully visible and stable. If the scene is busy or moving, switch to manual capture."
+  },
+  {
+    "id": "processed_vs_raw",
+    "question": "Why do some pages look different after processing?",
+    "answer": "Scanly preserves the original raw image, then creates a processed scan for readability. You can reopen any page and adjust crop, filter, or rotation."
+  },
+  {
+    "id": "export_files",
+    "question": "What can I export right now?",
+    "answer": "You can save a PDF, save a ZIP of page images, share a PDF, or share the processed page images directly."
+  }
+]

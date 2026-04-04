@@ -41,10 +41,10 @@ sealed class ScanlyDestination(
         sprintLabel = "Sprint 6",
     )
 
-    data object Readiness : ScanlyDestination(
-        route = "readiness",
-        title = "Readiness",
-        summary = "On-device ML diagnostics, tensor contracts, and validation benchmarks stay accessible as a permanent tool.",
-        sprintLabel = "Sprint 0",
+    data object Settings : ScanlyDestination(
+        route = "settings",
+        title = "Settings",
+        summary = "Appearance, FAQs, licensing, and developer links live here.",
+        sprintLabel = "Sprint 8",
     )
 }

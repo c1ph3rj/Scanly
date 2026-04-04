@@ -5,12 +5,19 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import `in`.c1ph3rj.scanly.core.common.ScanlyResult
+import `in`.c1ph3rj.scanly.domain.model.ExportArtifact
+import `in`.c1ph3rj.scanly.domain.model.PdfExportOptions
+import `in`.c1ph3rj.scanly.domain.model.ShareArtifact
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
 import `in`.c1ph3rj.scanly.domain.model.ScanPage
 import `in`.c1ph3rj.scanly.domain.usecase.DeletePageUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.ExportDocumentImageArchiveUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.ExportDocumentPdfUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.MovePageUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveDocumentPagesUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveDocumentUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.PrepareDocumentPdfShareUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.PrepareDocumentImageShareUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -28,6 +35,8 @@ data class DocumentDetailUiState(
     val selectedPageId: String? = null,
     val missingDocument: Boolean = false,
     val isMutatingPage: Boolean = false,
+    val isExporting: Boolean = false,
+    val exportMessage: String? = null,
 ) {
     val selectedPage: ScanPage?
         get() = pages.firstOrNull { page -> page.id == selectedPageId } ?: pages.firstOrNull()
@@ -35,6 +44,8 @@ data class DocumentDetailUiState(
 
 sealed interface DocumentDetailEvent {
     data class ShowMessage(val message: String) : DocumentDetailEvent
+    data class SaveExportedFile(val artifact: ExportArtifact) : DocumentDetailEvent
+    data class ShareFiles(val artifact: ShareArtifact) : DocumentDetailEvent
 }
 
 @HiltViewModel
@@ -44,6 +55,10 @@ class DocumentDetailViewModel @Inject constructor(
     private val observeDocumentPagesUseCase: ObserveDocumentPagesUseCase,
     private val movePageUseCase: MovePageUseCase,
     private val deletePageUseCase: DeletePageUseCase,
+    private val exportDocumentPdfUseCase: ExportDocumentPdfUseCase,
+    private val exportDocumentImageArchiveUseCase: ExportDocumentImageArchiveUseCase,
+    private val prepareDocumentPdfShareUseCase: PrepareDocumentPdfShareUseCase,
+    private val prepareDocumentImageShareUseCase: PrepareDocumentImageShareUseCase,
 ) : ViewModel() {
     private val documentId: String = checkNotNull(savedStateHandle[DocumentDestination.documentIdArgument])
 
@@ -122,6 +137,38 @@ class DocumentDetailViewModel @Inject constructor(
         }
     }
 
+    fun exportPdf(options: PdfExportOptions) {
+        runExportAction(
+            progressMessage = "Generating PDF",
+            action = { exportDocumentPdfUseCase(documentId, options) },
+            onSuccess = DocumentDetailEvent::SaveExportedFile,
+        )
+    }
+
+    fun sharePdf(options: PdfExportOptions) {
+        runExportAction(
+            progressMessage = "Preparing PDF",
+            action = { prepareDocumentPdfShareUseCase(documentId, options) },
+            onSuccess = DocumentDetailEvent::ShareFiles,
+        )
+    }
+
+    fun exportImageArchive() {
+        runExportAction(
+            progressMessage = "Preparing ZIP",
+            action = { exportDocumentImageArchiveUseCase(documentId) },
+            onSuccess = DocumentDetailEvent::SaveExportedFile,
+        )
+    }
+
+    fun shareImages() {
+        runExportAction(
+            progressMessage = "Preparing pages",
+            action = { prepareDocumentImageShareUseCase(documentId) },
+            onSuccess = DocumentDetailEvent::ShareFiles,
+        )
+    }
+
     private fun mutateSelectedPage(
         successMessage: String? = null,
         action: suspend () -> ScanlyResult<Unit>,
@@ -150,6 +197,45 @@ class DocumentDetailViewModel @Inject constructor(
         }
     }
 
+    private fun <T> runExportAction(
+        progressMessage: String,
+        action: suspend () -> ScanlyResult<T>,
+        onSuccess: (T) -> DocumentDetailEvent,
+    ) {
+        if (_uiState.value.isExporting) {
+            return
+        }
+
+        viewModelScope.launch {
+            _uiState.update { current ->
+                current.copy(
+                    isExporting = true,
+                    exportMessage = progressMessage,
+                )
+            }
+            when (val result = action()) {
+                is ScanlyResult.Success -> {
+                    _uiState.update { current ->
+                        current.copy(
+                            isExporting = false,
+                            exportMessage = null,
+                        )
+                    }
+                    _events.emit(onSuccess(result.value))
+                }
+
+                is ScanlyResult.Failure -> {
+                    _uiState.update { current ->
+                        current.copy(
+                            isExporting = false,
+                            exportMessage = null,
+                        )
+                    }
+                    _events.emit(DocumentDetailEvent.ShowMessage(result.error.message))
+                }
+            }
+        }
+    }
 }
 
 internal fun resolveSelectedPageId(

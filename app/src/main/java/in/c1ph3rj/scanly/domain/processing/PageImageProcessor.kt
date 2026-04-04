@@ -9,6 +9,7 @@ interface PageImageProcessor {
         rawImagePath: String,
         processedImagePath: String,
         thumbnailPath: String,
+        filterPreset: PageFilterPreset = PageFilterPreset.ENHANCED_COLOR,
     ): ProcessedPageArtifacts
 
     suspend fun reprocessPage(
@@ -18,6 +19,7 @@ interface PageImageProcessor {
         cropQuad: DocumentCornerQuad?,
         rotationDegrees: Int,
         filterPreset: PageFilterPreset,
+        detectDocumentWhenCropQuadMissing: Boolean = true,
     ): ProcessedPageArtifacts
 }
 

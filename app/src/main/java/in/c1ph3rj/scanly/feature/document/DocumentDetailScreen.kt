@@ -1,5 +1,8 @@
 package `in`.c1ph3rj.scanly.feature.document
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -15,18 +18,27 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Crop
 import androidx.compose.material.icons.filled.DeleteOutline
+import androidx.compose.material.icons.filled.FileDownload
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.OpenInFull
+import androidx.compose.material.icons.filled.PhotoLibrary
+import androidx.compose.material.icons.filled.PictureAsPdf
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -39,20 +51,33 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.core.content.FileProvider
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import `in`.c1ph3rj.scanly.core.ui.ChromeIconButton
 import `in`.c1ph3rj.scanly.core.ui.MetricChip
 import `in`.c1ph3rj.scanly.core.ui.ZoomableImageDialog
+import `in`.c1ph3rj.scanly.domain.model.ExportArtifact
 import `in`.c1ph3rj.scanly.domain.model.PageProcessingState
+import `in`.c1ph3rj.scanly.domain.model.PdfExportOptions
+import `in`.c1ph3rj.scanly.domain.model.PdfPageMargin
+import `in`.c1ph3rj.scanly.domain.model.PdfPageOrientation
+import `in`.c1ph3rj.scanly.domain.model.PdfPageSize
 import `in`.c1ph3rj.scanly.domain.model.ScanPage
+import `in`.c1ph3rj.scanly.domain.model.ShareArtifact
 import `in`.c1ph3rj.scanly.feature.home.DocumentThumbnail
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.withContext
+import java.io.File
 import java.text.DateFormat
 import java.util.Date
 
@@ -61,6 +86,11 @@ object DocumentDestination {
     const val routePattern = "document/{$documentIdArgument}"
 
     fun route(documentId: String): String = "document/$documentId"
+}
+
+private enum class PdfActionMode {
+    SAVE,
+    SHARE,
 }
 
 @Composable
@@ -73,11 +103,73 @@ fun DocumentDetailRoute(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    var pendingPdfExport by remember { mutableStateOf<ExportArtifact?>(null) }
+    var pendingArchiveExport by remember { mutableStateOf<ExportArtifact?>(null) }
+
+    val savePdfLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.CreateDocument(PdfMimeType),
+    ) { uri ->
+        val artifact = pendingPdfExport
+        pendingPdfExport = null
+        if (uri == null || artifact == null) {
+            return@rememberLauncherForActivityResult
+        }
+        scope.launch {
+            saveExportedFile(
+                context = context,
+                artifact = artifact,
+                destinationUri = uri,
+                snackbarHostState = snackbarHostState,
+            )
+        }
+    }
+
+    val saveArchiveLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.CreateDocument(ZipMimeType),
+    ) { uri ->
+        val artifact = pendingArchiveExport
+        pendingArchiveExport = null
+        if (uri == null || artifact == null) {
+            return@rememberLauncherForActivityResult
+        }
+        scope.launch {
+            saveExportedFile(
+                context = context,
+                artifact = artifact,
+                destinationUri = uri,
+                snackbarHostState = snackbarHostState,
+            )
+        }
+    }
 
     LaunchedEffect(viewModel) {
         viewModel.events.collectLatest { event ->
             when (event) {
                 is DocumentDetailEvent.ShowMessage -> snackbarHostState.showSnackbar(event.message)
+                is DocumentDetailEvent.SaveExportedFile -> {
+                    when (event.artifact.mimeType) {
+                        PdfMimeType -> {
+                            pendingPdfExport = event.artifact
+                            savePdfLauncher.launch(event.artifact.fileName)
+                        }
+
+                        ZipMimeType -> {
+                            pendingArchiveExport = event.artifact
+                            saveArchiveLauncher.launch(event.artifact.fileName)
+                        }
+
+                        else -> snackbarHostState.showSnackbar("Unsupported export format.")
+                    }
+                }
+
+                is DocumentDetailEvent.ShareFiles -> {
+                    sharePreparedFiles(
+                        context = context,
+                        artifact = event.artifact,
+                    )
+                }
             }
         }
     }
@@ -93,6 +185,10 @@ fun DocumentDetailRoute(
         onMoveSelectedPageLeft = viewModel::moveSelectedPageLeft,
         onMoveSelectedPageRight = viewModel::moveSelectedPageRight,
         onDeleteSelectedPage = viewModel::deleteSelectedPage,
+        onExportPdf = viewModel::exportPdf,
+        onSharePdf = viewModel::sharePdf,
+        onExportImageArchive = viewModel::exportImageArchive,
+        onShareImages = viewModel::shareImages,
     )
 }
 
@@ -109,9 +205,16 @@ fun DocumentDetailScreen(
     onMoveSelectedPageLeft: () -> Unit,
     onMoveSelectedPageRight: () -> Unit,
     onDeleteSelectedPage: () -> Unit,
+    onExportPdf: (PdfExportOptions) -> Unit,
+    onSharePdf: (PdfExportOptions) -> Unit,
+    onExportImageArchive: () -> Unit,
+    onShareImages: () -> Unit,
 ) {
     var deleteDialogVisible by rememberSaveable(uiState.selectedPageId) { mutableStateOf(false) }
     var previewPageId by rememberSaveable { mutableStateOf<String?>(null) }
+    var exportSheetVisible by rememberSaveable { mutableStateOf(false) }
+    var pdfActionMode by rememberSaveable { mutableStateOf<PdfActionMode?>(null) }
+    var pdfOptions by remember { mutableStateOf(PdfExportOptions()) }
     val selectedPage = uiState.selectedPage
     val document = uiState.document
     val previewPage = previewPageId?.let { pageId ->
@@ -136,7 +239,9 @@ fun DocumentDetailScreen(
                     title = document?.title ?: "Document",
                     pageCount = uiState.pages.size,
                     onNavigateUp = onNavigateUp,
+                    onOpenExportSheet = { exportSheetVisible = true },
                     onAddPage = onOpenCamera,
+                    exportEnabled = !uiState.isExporting && uiState.pages.isNotEmpty(),
                 )
             }
 
@@ -249,6 +354,53 @@ fun DocumentDetailScreen(
             onDismiss = { previewPageId = null },
         )
     }
+
+    if (exportSheetVisible && document != null) {
+        ExportShareSheet(
+            exportInProgress = uiState.isExporting,
+            onDismiss = { exportSheetVisible = false },
+            onSavePdf = {
+                exportSheetVisible = false
+                pdfActionMode = PdfActionMode.SAVE
+            },
+            onSharePdf = {
+                exportSheetVisible = false
+                pdfActionMode = PdfActionMode.SHARE
+            },
+            onSaveImageArchive = {
+                exportSheetVisible = false
+                onExportImageArchive()
+            },
+            onShareImages = {
+                exportSheetVisible = false
+                onShareImages()
+            },
+        )
+    }
+
+    if (pdfActionMode != null) {
+        PdfOptionsSheet(
+            options = pdfOptions,
+            onDismiss = { pdfActionMode = null },
+            onOptionsChanged = { updatedOptions -> pdfOptions = updatedOptions },
+            onConfirm = {
+                val selectedOptions = pdfOptions
+                val selectedMode = pdfActionMode
+                pdfActionMode = null
+                when (selectedMode) {
+                    PdfActionMode.SAVE -> onExportPdf(selectedOptions)
+                    PdfActionMode.SHARE -> onSharePdf(selectedOptions)
+                    null -> Unit
+                }
+            },
+        )
+    }
+
+    if (uiState.isExporting) {
+        ExportProgressOverlay(
+            message = uiState.exportMessage ?: "Preparing export",
+        )
+    }
 }
 
 @Composable
@@ -256,7 +408,9 @@ private fun ReviewTopBar(
     title: String,
     pageCount: Int,
     onNavigateUp: () -> Unit,
+    onOpenExportSheet: () -> Unit,
     onAddPage: () -> Unit,
+    exportEnabled: Boolean,
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -286,13 +440,310 @@ private fun ReviewTopBar(
                 )
             }
         }
-        ChromeIconButton(
-            icon = Icons.Filled.Add,
-            contentDescription = "Add page",
-            onClick = onAddPage,
-            containerColor = MaterialTheme.colorScheme.primary,
-            contentColor = MaterialTheme.colorScheme.onPrimary,
+        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            ChromeIconButton(
+                icon = Icons.Filled.Share,
+                contentDescription = "Export and share",
+                onClick = onOpenExportSheet,
+                enabled = exportEnabled,
+            )
+            ChromeIconButton(
+                icon = Icons.Filled.Add,
+                contentDescription = "Add page",
+                onClick = onAddPage,
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
+            )
+        }
+    }
+}
+
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+private fun ExportShareSheet(
+    exportInProgress: Boolean,
+    onDismiss: () -> Unit,
+    onSavePdf: () -> Unit,
+    onSharePdf: () -> Unit,
+    onSaveImageArchive: () -> Unit,
+    onShareImages: () -> Unit,
+) {
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        containerColor = MaterialTheme.colorScheme.surface,
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp)
+                .padding(bottom = 28.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Text(
+                text = "Export & share",
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.SemiBold,
+            )
+            ExportActionRow(
+                icon = Icons.Filled.PictureAsPdf,
+                title = "Save PDF",
+                enabled = !exportInProgress,
+                onClick = onSavePdf,
+            )
+            ExportActionRow(
+                icon = Icons.Filled.Share,
+                title = "Share PDF",
+                enabled = !exportInProgress,
+                onClick = onSharePdf,
+            )
+            ExportActionRow(
+                icon = Icons.Filled.FileDownload,
+                title = "Save images ZIP",
+                enabled = !exportInProgress,
+                onClick = onSaveImageArchive,
+            )
+            ExportActionRow(
+                icon = Icons.Filled.PhotoLibrary,
+                title = "Share pages",
+                enabled = !exportInProgress,
+                onClick = onShareImages,
+            )
+        }
+    }
+}
+
+@Composable
+private fun ExportActionRow(
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    title: String,
+    enabled: Boolean,
+    onClick: () -> Unit,
+) {
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(enabled = enabled, onClick = onClick),
+        color = if (enabled) {
+            MaterialTheme.colorScheme.surfaceContainer
+        } else {
+            MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.55f)
+        },
+        shape = MaterialTheme.shapes.large,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(14.dp),
+        ) {
+            androidx.compose.material3.Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+            )
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+        }
+    }
+}
+
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+private fun PdfOptionsSheet(
+    options: PdfExportOptions,
+    onDismiss: () -> Unit,
+    onOptionsChanged: (PdfExportOptions) -> Unit,
+    onConfirm: () -> Unit,
+) {
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        containerColor = MaterialTheme.colorScheme.surface,
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp)
+                .padding(bottom = 28.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            Text(
+                text = "PDF options",
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.SemiBold,
+            )
+
+            PdfOptionSection(title = "Orientation") {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                ) {
+                    PdfChoiceTile(
+                        label = PdfPageOrientation.PORTRAIT.label,
+                        selected = options.orientation == PdfPageOrientation.PORTRAIT,
+                        modifier = Modifier.weight(1f),
+                        onClick = {
+                            onOptionsChanged(options.copy(orientation = PdfPageOrientation.PORTRAIT))
+                        },
+                    )
+                    PdfChoiceTile(
+                        label = PdfPageOrientation.LANDSCAPE.label,
+                        selected = options.orientation == PdfPageOrientation.LANDSCAPE,
+                        modifier = Modifier.weight(1f),
+                        onClick = {
+                            onOptionsChanged(options.copy(orientation = PdfPageOrientation.LANDSCAPE))
+                        },
+                    )
+                }
+            }
+
+            PdfOptionSection(title = "Page size") {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                ) {
+                    PdfPageSize.entries.forEach { pageSize ->
+                        PdfChoiceTile(
+                            label = pageSize.label,
+                            selected = options.pageSize == pageSize,
+                            modifier = Modifier.weight(1f),
+                            onClick = {
+                                onOptionsChanged(options.copy(pageSize = pageSize))
+                            },
+                        )
+                    }
+                }
+            }
+
+            PdfOptionSection(title = "Margin") {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                ) {
+                    PdfPageMargin.entries.forEach { margin ->
+                        PdfChoiceTile(
+                            label = margin.label,
+                            selected = options.margin == margin,
+                            modifier = Modifier.weight(1f),
+                            onClick = {
+                                onOptionsChanged(options.copy(margin = margin))
+                            },
+                        )
+                    }
+                }
+            }
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                TextButton(
+                    modifier = Modifier.weight(1f),
+                    onClick = onDismiss,
+                ) {
+                    Text(text = "Cancel")
+                }
+                Button(
+                    modifier = Modifier.weight(1f),
+                    onClick = onConfirm,
+                ) {
+                    Text(text = "Generate")
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun PdfOptionSection(
+    title: String,
+    content: @Composable () -> Unit,
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        Text(
+            text = title,
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.SemiBold,
         )
+        content()
+    }
+}
+
+@Composable
+private fun PdfChoiceTile(
+    label: String,
+    selected: Boolean,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+) {
+    Surface(
+        modifier = modifier.clickable(onClick = onClick),
+        color = if (selected) {
+            MaterialTheme.colorScheme.primaryContainer
+        } else {
+            MaterialTheme.colorScheme.surfaceContainer
+        },
+        shape = MaterialTheme.shapes.large,
+        border = BorderStroke(
+            width = 1.dp,
+            color = if (selected) {
+                MaterialTheme.colorScheme.primary
+            } else {
+                MaterialTheme.colorScheme.outlineVariant
+            },
+        ),
+    ) {
+        Box(
+            modifier = Modifier.padding(vertical = 14.dp, horizontal = 10.dp),
+            contentAlignment = Alignment.Center,
+        ) {
+            Text(
+                text = label,
+                style = MaterialTheme.typography.labelLarge,
+                color = if (selected) {
+                    MaterialTheme.colorScheme.onPrimaryContainer
+                } else {
+                    MaterialTheme.colorScheme.onSurface
+                },
+            )
+        }
+    }
+}
+
+@Composable
+private fun ExportProgressOverlay(
+    message: String,
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.scrim.copy(alpha = 0.44f)),
+        contentAlignment = Alignment.Center,
+    ) {
+        Surface(
+            color = MaterialTheme.colorScheme.surfaceContainerHigh,
+            shape = MaterialTheme.shapes.extraLarge,
+        ) {
+            Column(
+                modifier = Modifier.padding(horizontal = 24.dp, vertical = 20.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(14.dp),
+            ) {
+                CircularProgressIndicator()
+                Text(
+                    text = message,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Medium,
+                )
+                Text(
+                    text = "Please wait while the file is prepared.",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
     }
 }
 
@@ -611,3 +1062,58 @@ private fun PageProcessingState.toContentColor() = when (this) {
     PageProcessingState.PROCESSED -> MaterialTheme.colorScheme.onPrimaryContainer
     PageProcessingState.NEEDS_REVIEW -> MaterialTheme.colorScheme.onTertiaryContainer
 }
+
+private suspend fun saveExportedFile(
+    context: Context,
+    artifact: ExportArtifact,
+    destinationUri: Uri,
+    snackbarHostState: SnackbarHostState,
+) {
+    val result = runCatching {
+        withContext(Dispatchers.IO) {
+            val sourceFile = File(artifact.filePath)
+            context.contentResolver.openOutputStream(destinationUri)?.use { outputStream ->
+                sourceFile.inputStream().use { inputStream ->
+                    inputStream.copyTo(outputStream)
+                }
+            } ?: error("Could not open the selected destination.")
+        }
+    }
+    if (result.isSuccess) {
+        snackbarHostState.showSnackbar("Saved ${artifact.fileName}")
+    } else {
+        snackbarHostState.showSnackbar(result.exceptionOrNull()?.message ?: "Could not save export.")
+    }
+}
+
+private fun sharePreparedFiles(
+    context: Context,
+    artifact: ShareArtifact,
+) {
+    val uris = artifact.filePaths.map(context::exportUriFor)
+    val shareIntent = if (uris.size == 1) {
+        Intent(Intent.ACTION_SEND).apply {
+            type = artifact.mimeType
+            putExtra(Intent.EXTRA_STREAM, uris.first())
+            putExtra(Intent.EXTRA_TITLE, artifact.title)
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+    } else {
+        Intent(Intent.ACTION_SEND_MULTIPLE).apply {
+            type = artifact.mimeType
+            putParcelableArrayListExtra(Intent.EXTRA_STREAM, ArrayList(uris))
+            putExtra(Intent.EXTRA_TITLE, artifact.title)
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+    }
+    context.startActivity(Intent.createChooser(shareIntent, "Share pages"))
+}
+
+private fun Context.exportUriFor(path: String): Uri = FileProvider.getUriForFile(
+    this,
+    "$packageName.fileprovider",
+    File(path),
+)
+
+private const val PdfMimeType = "application/pdf"
+private const val ZipMimeType = "application/zip"

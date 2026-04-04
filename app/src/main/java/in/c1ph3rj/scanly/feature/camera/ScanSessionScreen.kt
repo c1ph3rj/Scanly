@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.Camera
+import androidx.camera.core.CameraControl
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageCapture
@@ -25,9 +26,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -121,12 +120,11 @@ fun ScanSessionRoute(
             ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED,
         )
     }
-    var previewFeedRatio by rememberSaveable { mutableStateOf(PreviewFeedRatio.THREE_FOUR) }
     var torchEnabled by rememberSaveable { mutableStateOf(false) }
     var torchAvailable by remember { mutableStateOf(false) }
     var imageCapture by remember { mutableStateOf<ImageCapture?>(null) }
     var previewView by remember { mutableStateOf<PreviewView?>(null) }
-    var camera by remember { mutableStateOf<Camera?>(null) }
+    var cameraControl by remember { mutableStateOf<CameraControl?>(null) }
 
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),
@@ -175,26 +173,24 @@ fun ScanSessionRoute(
         },
         onNavigateUp = onNavigateUp,
         onCapture = viewModel::requestCapture,
+        onRetakePageSelection = viewModel::onReplacementPageSelected,
+        onClearRetakeSelection = viewModel::clearReplacementSelection,
         onAutoCaptureEnabledChange = viewModel::onAutoCaptureEnabledChanged,
         onPreviewFrame = viewModel::onPreviewFrame,
-        previewFeedRatio = previewFeedRatio,
         torchEnabled = torchEnabled,
         torchAvailable = torchAvailable,
-        onPreviewFeedRatioToggle = {
-            previewFeedRatio = previewFeedRatio.next()
-        },
         onTorchToggle = {
             val updatedState = !torchEnabled
             torchEnabled = updatedState
-            camera?.cameraControl?.enableTorch(updatedState)
+            cameraControl?.enableTorch(updatedState)
         },
         onCameraReady = { captureUseCase, cameraPreview, boundCamera ->
             imageCapture = captureUseCase
             previewView = cameraPreview
-            camera = boundCamera
+            cameraControl = boundCamera.cameraControl
             torchAvailable = boundCamera.cameraInfo.hasFlashUnit()
             if (torchAvailable) {
-                boundCamera.cameraControl.enableTorch(torchEnabled)
+                cameraControl?.enableTorch(torchEnabled)
             } else {
                 torchEnabled = false
             }
@@ -211,12 +207,12 @@ fun ScanSessionScreen(
     onRequestPermission: () -> Unit,
     onNavigateUp: () -> Unit,
     onCapture: () -> Unit,
+    onRetakePageSelection: (String?) -> Unit,
+    onClearRetakeSelection: () -> Unit,
     onAutoCaptureEnabledChange: (Boolean) -> Unit,
     onPreviewFrame: (DetectionFrame) -> Unit,
-    previewFeedRatio: PreviewFeedRatio,
     torchEnabled: Boolean,
     torchAvailable: Boolean,
-    onPreviewFeedRatioToggle: () -> Unit,
     onTorchToggle: () -> Unit,
     onCameraReady: (ImageCapture, PreviewView, Camera) -> Unit,
 ) {
@@ -259,7 +255,7 @@ fun ScanSessionScreen(
                     modifier = Modifier
                         .align(Alignment.Center)
                         .fillMaxWidth()
-                        .aspectRatio(previewFeedRatio.aspectRatio),
+                        .aspectRatio(1f),
                     liveDetection = uiState.liveDetection,
                     onCameraReady = onCameraReady,
                     onPreviewFrame = onPreviewFrame,
@@ -267,11 +263,10 @@ fun ScanSessionScreen(
                 CameraTopBar(
                     uiState = uiState,
                     onNavigateUp = onNavigateUp,
+                    onClearRetakeSelection = onClearRetakeSelection,
                     onAutoCaptureEnabledChange = onAutoCaptureEnabledChange,
-                    previewFeedRatio = previewFeedRatio,
                     torchEnabled = torchEnabled,
                     torchAvailable = torchAvailable,
-                    onPreviewFeedRatioToggle = onPreviewFeedRatioToggle,
                     onTorchToggle = onTorchToggle,
                     modifier = Modifier
                         .align(Alignment.TopCenter)
@@ -281,11 +276,12 @@ fun ScanSessionScreen(
                 CameraBottomDock(
                     uiState = uiState,
                     onCapture = onCapture,
+                    onRetakePageSelection = onRetakePageSelection,
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
                         .fillMaxWidth()
                         .navigationBarsPadding()
-                        .padding(horizontal = 16.dp, vertical = 14.dp),
+                        .padding(vertical = 14.dp),
                 )
             }
         }
@@ -296,23 +292,19 @@ fun ScanSessionScreen(
 private fun CameraTopBar(
     uiState: ScanSessionUiState,
     onNavigateUp: () -> Unit,
+    onClearRetakeSelection: () -> Unit,
     onAutoCaptureEnabledChange: (Boolean) -> Unit,
-    previewFeedRatio: PreviewFeedRatio,
     torchEnabled: Boolean,
     torchAvailable: Boolean,
-    onPreviewFeedRatioToggle: () -> Unit,
     onTorchToggle: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(
+    Row(
         modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(10.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.Top,
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
+        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
             ChromeIconButton(
                 icon = Icons.AutoMirrored.Filled.ArrowBack,
                 contentDescription = "Back",
@@ -320,7 +312,21 @@ private fun CameraTopBar(
                 containerColor = Color.Black.copy(alpha = 0.48f),
                 contentColor = Color.White,
             )
-            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            MetricChip(
+                label = uiState.document?.title ?: "Scan session",
+                containerColor = Color.Black.copy(alpha = 0.38f),
+                contentColor = Color.White,
+            )
+        }
+
+        Column(
+            horizontalAlignment = Alignment.End,
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
                 MetricChip(
                     label = if (uiState.isReplacementMode) {
                         uiState.replacementPage?.let { "Retake P${it.pageIndex + 1}" } ?: "Retake"
@@ -338,22 +344,13 @@ private fun CameraTopBar(
                     },
                 )
             }
-        }
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            MetricChip(
-                label = uiState.document?.title ?: "Scan session",
-                containerColor = Color.Black.copy(alpha = 0.38f),
-                contentColor = Color.White,
-            )
-            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                FeedRatioChip(
-                    previewFeedRatio = previewFeedRatio,
-                    onClick = onPreviewFeedRatioToggle,
-                )
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                if (uiState.isReplacementMode) {
+                    CancelRetakeChip(onClick = onClearRetakeSelection)
+                }
                 FlashChip(
                     enabled = torchEnabled,
                     available = torchAvailable,
@@ -361,6 +358,25 @@ private fun CameraTopBar(
                 )
             }
         }
+    }
+}
+
+@Composable
+private fun CancelRetakeChip(
+    onClick: () -> Unit,
+) {
+    Surface(
+        modifier = Modifier.clickable(onClick = onClick),
+        color = Color.Black.copy(alpha = 0.48f),
+        shape = MaterialTheme.shapes.large,
+        border = BorderStroke(1.dp, Color.White.copy(alpha = 0.12f)),
+    ) {
+        Text(
+            text = "Cancel retake",
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
+            color = Color.White,
+            style = MaterialTheme.typography.labelLarge,
+        )
     }
 }
 
@@ -394,26 +410,6 @@ private fun AutoCaptureChip(
                 )
             }
         }
-    }
-}
-
-@Composable
-private fun FeedRatioChip(
-    previewFeedRatio: PreviewFeedRatio,
-    onClick: () -> Unit,
-) {
-    Surface(
-        modifier = Modifier.clickable(onClick = onClick),
-        color = Color.Black.copy(alpha = 0.48f),
-        shape = MaterialTheme.shapes.large,
-        border = BorderStroke(1.dp, Color.White.copy(alpha = 0.12f)),
-    ) {
-        Text(
-            text = previewFeedRatio.label,
-            modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
-            color = Color.White,
-            style = MaterialTheme.typography.labelLarge,
-        )
     }
 }
 
@@ -452,6 +448,7 @@ private fun FlashChip(
 private fun CameraBottomDock(
     uiState: ScanSessionUiState,
     onCapture: () -> Unit,
+    onRetakePageSelection: (String?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -461,25 +458,34 @@ private fun CameraBottomDock(
         Box(modifier = Modifier.fillMaxWidth()) {
             DetectionMeta(
                 liveDetection = uiState.liveDetection,
-                modifier = Modifier.align(Alignment.CenterStart),
+                modifier = Modifier
+                    .align(Alignment.CenterStart)
+                    .padding(horizontal = 16.dp),
             )
         }
         if (uiState.pages.isNotEmpty()) {
             LazyRow(
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
-                contentPadding = PaddingValues(horizontal = 2.dp),
+                contentPadding = PaddingValues(horizontal = 16.dp),
             ) {
                 items(
                     items = uiState.pages,
                     key = { page -> page.id },
                 ) { page ->
+                    val selectedForReplacement = uiState.replacementPageId == page.id
                     Surface(
-                        modifier = Modifier.size(width = 76.dp, height = 102.dp),
+                        modifier = Modifier
+                            .size(width = 76.dp, height = 102.dp)
+                            .clickable {
+                                onRetakePageSelection(
+                                    if (selectedForReplacement) null else page.id,
+                                )
+                            },
                         color = Color.Black.copy(alpha = 0.46f),
                         shape = MaterialTheme.shapes.large,
                         border = BorderStroke(
-                            width = if (uiState.replacementPageId == page.id) 2.dp else 1.dp,
-                            color = if (uiState.replacementPageId == page.id) {
+                            width = if (selectedForReplacement) 2.dp else 1.dp,
+                            color = if (selectedForReplacement) {
                                 OverlayBlue
                             } else {
                                 Color.White.copy(alpha = 0.12f)
@@ -509,6 +515,7 @@ private fun CameraBottomDock(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(horizontal = 16.dp)
                 .padding(top = 6.dp),
         ) {
             Surface(
@@ -738,7 +745,6 @@ private fun CameraPreview(
                             }
                         }
                     }
-
                 cameraProvider.unbindAll()
                 val boundCamera = cameraProvider.bindToLifecycle(
                     lifecycleOwner,
@@ -1062,18 +1068,6 @@ private val OverlayGrid = Color(0x22FFFFFF)
 private val OverlayGuide = Color(0xC2FFFFFF)
 private const val RgbaPixelStride = 4
 
-enum class PreviewFeedRatio(
-    val aspectRatio: Float,
-    val label: String,
-) {
-    THREE_FOUR(aspectRatio = 3f / 4f, label = "3:4"),
-    ONE_ONE(aspectRatio = 1f, label = "1:1");
-
-    fun next(): PreviewFeedRatio = when (this) {
-        THREE_FOUR -> ONE_ONE
-        ONE_ONE -> THREE_FOUR
-    }
-}
 
 private fun LiveDetectionUiState.compactStatusLabel(): String = when (phase) {
     AutoCapturePhase.OFF -> "Manual"

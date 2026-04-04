@@ -4,6 +4,7 @@ import java.util.Locale
 
 object DocumentPresentationFormatter {
     private const val untitledDocument = "Untitled document"
+    private const val untitledFileStem = "scanly_document"
 
     fun normalizeTitle(rawTitle: String): String {
         val normalized = rawTitle.trim().replace("\\s+".toRegex(), " ")
@@ -22,5 +23,14 @@ object DocumentPresentationFormatter {
         }
 
         return letters.uppercase(Locale.US)
+    }
+
+    fun safeFileStem(title: String): String {
+        val cleaned = normalizeTitle(title)
+            .lowercase(Locale.US)
+            .replace("[^a-z0-9]+".toRegex(), "_")
+            .trim('_')
+
+        return cleaned.ifBlank { untitledFileStem }
     }
 }

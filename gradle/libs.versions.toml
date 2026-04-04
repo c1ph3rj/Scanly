@@ -16,6 +16,8 @@ ksp = "2.2.10-2.0.2"
 room = "2.8.4"
 cameraX = "1.5.3"
 exifInterface = "1.4.2"
+dataStore = "1.1.7"
+openCv = "4.12.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -42,6 +44,8 @@ androidx-camera-camera2 = { group = "androidx.camera", name = "camera-camera2", 
 androidx-camera-lifecycle = { group = "androidx.camera", name = "camera-lifecycle", version.ref = "cameraX" }
 androidx-camera-view = { group = "androidx.camera", name = "camera-view", version.ref = "cameraX" }
 androidx-exifinterface = { group = "androidx.exifinterface", name = "exifinterface", version.ref = "exifInterface" }
+androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "dataStore" }
+opencv = { group = "org.opencv", name = "opencv", version.ref = "openCv" }
 google-ai-edge-litert = { group = "com.google.ai.edge.litert", name = "litert", version.ref = "liteRtInterpreter" }
 google-dagger-hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 google-dagger-hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }

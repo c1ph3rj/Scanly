@@ -23,6 +23,8 @@ object DatabaseModule {
         context,
         ScanlyDatabase::class.java,
         DATABASE_NAME,
+    ).addMigrations(
+        ScanlyDatabase.MIGRATION_1_2,
     ).build()
 
     @Provides

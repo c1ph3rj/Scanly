@@ -14,10 +14,12 @@ class UpdatePageEditsUseCase @Inject constructor(
         cropQuad: DocumentCornerQuad,
         rotationDegrees: Int,
         filterPreset: PageFilterPreset,
+        applyFilterToAllPages: Boolean,
     ): ScanlyResult<Unit> = pageRepository.updatePageEdits(
         pageId = pageId,
         cropQuad = cropQuad,
         rotationDegrees = rotationDegrees,
         filterPreset = filterPreset,
+        applyFilterToAllPages = applyFilterToAllPages,
     )
 }

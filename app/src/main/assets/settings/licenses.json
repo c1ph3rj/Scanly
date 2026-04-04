@@ -1,0 +1,30 @@
+[
+  {
+    "id": "scanly_app",
+    "name": "Scanly",
+    "summary": "The application source for Scanly is intended to be published as an open-source scanner project by the developer.",
+    "license": "Open-source project",
+    "websiteUrl": "https://c1ph3rj.in"
+  },
+  {
+    "id": "ultralytics_model",
+    "name": "Ultralytics YOLO document-corner model",
+    "summary": "The corner detector is based on a YOLO11n pose model trained for document corner detection. Review the upstream model licensing terms before distributing derivatives.",
+    "license": "Ultralytics / AGPL-aligned workflow",
+    "websiteUrl": "https://www.ultralytics.com/license"
+  },
+  {
+    "id": "androidx_stack",
+    "name": "AndroidX, Jetpack Compose, CameraX, Room, Hilt",
+    "summary": "These libraries provide the Android UI, storage, dependency injection, and camera foundations used by the app.",
+    "license": "Apache-2.0",
+    "websiteUrl": "https://developer.android.com/jetpack/androidx/licenses"
+  },
+  {
+    "id": "litert",
+    "name": "LiteRT runtime",
+    "summary": "LiteRT powers the on-device document corner inference path used during live detection and validation.",
+    "license": "Google AI Edge runtime",
+    "websiteUrl": "https://ai.google.dev/edge/litert"
+  }
+]

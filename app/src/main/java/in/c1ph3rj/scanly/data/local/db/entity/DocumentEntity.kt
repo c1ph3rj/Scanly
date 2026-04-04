@@ -15,6 +15,7 @@ data class DocumentEntity(
     val title: String,
     val pageCount: Int,
     val coverThumbnailPath: String?,
+    val preferredFilterPreset: String?,
     val rootDirectoryPath: String,
     val createdAtMillis: Long,
     val updatedAtMillis: Long,

@@ -30,5 +30,6 @@ interface PageRepository {
         cropQuad: DocumentCornerQuad,
         rotationDegrees: Int,
         filterPreset: PageFilterPreset,
+        applyFilterToAllPages: Boolean,
     ): ScanlyResult<Unit>
 }

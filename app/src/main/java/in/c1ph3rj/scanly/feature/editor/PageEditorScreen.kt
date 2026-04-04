@@ -8,8 +8,10 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -31,13 +33,14 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.CropFree
 import androidx.compose.material.icons.filled.RotateLeft
 import androidx.compose.material.icons.filled.RotateRight
-import androidx.compose.material3.FilterChip
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -53,8 +56,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathFillType
@@ -77,6 +78,7 @@ import `in`.c1ph3rj.scanly.core.ui.MetricChip
 import `in`.c1ph3rj.scanly.core.editing.CropHandle
 import `in`.c1ph3rj.scanly.core.ml.DocumentCornerQuad
 import `in`.c1ph3rj.scanly.core.ml.NormalizedPoint
+import `in`.c1ph3rj.scanly.core.processing.OpenCvPageFilterProcessor
 import `in`.c1ph3rj.scanly.domain.model.PageFilterPreset
 import `in`.c1ph3rj.scanly.domain.model.ScanPage
 import kotlinx.coroutines.Dispatchers
@@ -111,6 +113,7 @@ fun PageEditorRoute(
         onRotateRight = viewModel::rotateRight,
         onResetCrop = viewModel::resetCrop,
         onSelectFilter = viewModel::selectFilter,
+        onApplyFilterToAllPagesChange = viewModel::setApplyFilterToAllPages,
         onSave = viewModel::saveEdits,
     )
 }
@@ -125,73 +128,96 @@ fun PageEditorScreen(
     onRotateRight: () -> Unit,
     onResetCrop: () -> Unit,
     onSelectFilter: (PageFilterPreset) -> Unit,
+    onApplyFilterToAllPagesChange: (Boolean) -> Unit,
     onSave: () -> Unit,
 ) {
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        containerColor = EditorBackground,
-        snackbarHost = { SnackbarHost(snackbarHostState) },
-        topBar = {
-            EditorTopBar(
-                isSaving = uiState.isSaving,
-                onNavigateUp = onNavigateUp,
-                onSave = onSave,
-            )
-        },
-    ) { innerPadding ->
-        if (uiState.missingPage || uiState.page == null || uiState.cropQuad == null) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding),
-                contentAlignment = Alignment.Center,
-            ) {
-                Text(
-                    text = "Page not found.",
-                    color = Color.White,
-                    style = MaterialTheme.typography.titleLarge,
+    val showBulkApplyLoader = uiState.isSaving && uiState.applyFilterToAllPages
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            containerColor = EditorBackground,
+            snackbarHost = { SnackbarHost(snackbarHostState) },
+            topBar = {
+                EditorTopBar(
+                    statusLabel = when {
+                        showBulkApplyLoader -> "Applying"
+                        uiState.isSaving -> "Saving"
+                        else -> "Editor"
+                    },
+                    onNavigateUp = onNavigateUp,
+                    onSave = onSave,
+                    isSaving = uiState.isSaving,
                 )
-            }
-        } else {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-                    .padding(horizontal = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-            ) {
-                PageCropEditor(
-                    page = uiState.page,
-                    cropQuad = uiState.cropQuad,
-                    rotationDegrees = uiState.rotationDegrees,
-                    selectedFilter = uiState.selectedFilter,
-                    onHandleMoved = onHandleMoved,
+            },
+        ) { innerPadding ->
+            if (uiState.missingPage || uiState.page == null || uiState.cropQuad == null) {
+                Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f),
-                )
-                EditorPageBadge(
-                    pageIndex = uiState.page.pageIndex,
-                )
-                FilterSelector(
-                    selectedFilter = uiState.selectedFilter,
-                    onSelectFilter = onSelectFilter,
-                )
-                EditorActionRow(
-                    onRotateLeft = onRotateLeft,
-                    onRotateRight = onRotateRight,
-                    onResetCrop = onResetCrop,
-                )
+                        .fillMaxSize()
+                        .padding(innerPadding),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(
+                        text = "Page not found.",
+                        color = Color.White,
+                        style = MaterialTheme.typography.titleLarge,
+                    )
+                }
+            } else {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding)
+                        .padding(horizontal = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                ) {
+                    PageCropEditor(
+                        page = uiState.page,
+                        cropQuad = uiState.cropQuad,
+                        rotationDegrees = uiState.rotationDegrees,
+                        selectedFilter = uiState.selectedFilter,
+                        onHandleMoved = onHandleMoved,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f),
+                    )
+                    EditorPageBadge(
+                        pageIndex = uiState.page.pageIndex,
+                    )
+                    FilterSelector(
+                        selectedFilter = uiState.selectedFilter,
+                        rawImagePath = uiState.page.rawImagePath,
+                        fallbackImagePath = uiState.page.processedImagePath,
+                        rotationDegrees = uiState.rotationDegrees,
+                        onSelectFilter = onSelectFilter,
+                    )
+                    FilterScopeOption(
+                        applyToAllPages = uiState.applyFilterToAllPages,
+                        enabled = !uiState.isSaving,
+                        onApplyToAllPagesChange = onApplyFilterToAllPagesChange,
+                    )
+                    EditorActionRow(
+                        onRotateLeft = onRotateLeft,
+                        onRotateRight = onRotateRight,
+                        onResetCrop = onResetCrop,
+                    )
+                }
             }
+        }
+
+        if (showBulkApplyLoader) {
+            BulkFilterApplyOverlay()
         }
     }
 }
 
 @Composable
 private fun EditorTopBar(
-    isSaving: Boolean,
+    statusLabel: String,
     onNavigateUp: () -> Unit,
     onSave: () -> Unit,
+    isSaving: Boolean,
 ) {
     Row(
         modifier = Modifier
@@ -210,7 +236,7 @@ private fun EditorTopBar(
             contentColor = Color.White,
         )
         MetricChip(
-            label = if (isSaving) "Saving" else "Editor",
+            label = statusLabel,
             containerColor = Color.White.copy(alpha = 0.08f),
             contentColor = Color.White,
         )
@@ -222,6 +248,95 @@ private fun EditorTopBar(
             containerColor = AccentGreen,
             contentColor = Color.White,
         )
+    }
+}
+
+@Composable
+private fun FilterScopeOption(
+    applyToAllPages: Boolean,
+    enabled: Boolean,
+    onApplyToAllPagesChange: (Boolean) -> Unit,
+) {
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(enabled = enabled) {
+                onApplyToAllPagesChange(!applyToAllPages)
+            },
+        color = Color(0xFF121416),
+        shape = RoundedCornerShape(18.dp),
+        border = BorderStroke(
+            width = 1.dp,
+            color = if (applyToAllPages) AccentGreen.copy(alpha = 0.9f) else Color.White.copy(alpha = 0.08f),
+        ),
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                Text(
+                    text = "Apply Filter To All Pages",
+                    color = Color.White,
+                    style = MaterialTheme.typography.labelLarge,
+                )
+                Text(
+                    text = "Filter only. Crop and rotation stay per page.",
+                    color = Color.White.copy(alpha = 0.62f),
+                    style = MaterialTheme.typography.bodySmall,
+                )
+            }
+            Switch(
+                checked = applyToAllPages,
+                onCheckedChange = onApplyToAllPagesChange,
+                enabled = enabled,
+            )
+        }
+    }
+}
+
+@Composable
+private fun BulkFilterApplyOverlay() {
+    val interactionSource = remember { MutableInteractionSource() }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black.copy(alpha = 0.68f))
+            .clickable(
+                interactionSource = interactionSource,
+                indication = null,
+                onClick = {},
+            ),
+        contentAlignment = Alignment.Center,
+    ) {
+        Surface(
+            color = Color(0xFF111315),
+            shape = RoundedCornerShape(24.dp),
+            border = BorderStroke(1.dp, Color.White.copy(alpha = 0.08f)),
+        ) {
+            Column(
+                modifier = Modifier.padding(horizontal = 24.dp, vertical = 20.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(14.dp),
+            ) {
+                CircularProgressIndicator(
+                    color = AccentGreen,
+                    trackColor = Color.White.copy(alpha = 0.14f),
+                )
+                Text(
+                    text = "Applying filter to all pages",
+                    color = Color.White,
+                    style = MaterialTheme.typography.titleMedium,
+                )
+                Text(
+                    text = "Please wait while Scanly updates the whole document.",
+                    color = Color.White.copy(alpha = 0.68f),
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+            }
+        }
     }
 }
 
@@ -238,8 +353,8 @@ private fun PageCropEditor(
         rawImagePath = page.rawImagePath,
         fallbackImagePath = page.processedImagePath,
         rotationDegrees = rotationDegrees,
+        selectedFilter = selectedFilter,
     )
-    val colorFilter = remember(selectedFilter) { selectedFilter.toPreviewColorFilter() }
     val handleSelectionRadiusPx = with(LocalDensity.current) { 24.dp.toPx() }
     val magnifierSizePx = with(LocalDensity.current) { 96.dp.toPx() }
     val magnifierPaddingPx = with(LocalDensity.current) { 12.dp.toPx() }
@@ -302,7 +417,6 @@ private fun PageCropEditor(
             contentDescription = "Page editor preview",
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Fit,
-            colorFilter = colorFilter,
         )
 
         Box(
@@ -410,7 +524,6 @@ private fun PageCropEditor(
                     imageBitmap = imageBitmap,
                     previewRect = previewRect,
                     focusOffset = dragOffset!!,
-                    colorFilter = colorFilter,
                     activeHandle = activeHandle!!,
                     lensSizeDp = 96.dp,
                     modifier = Modifier
@@ -431,7 +544,6 @@ private fun CropMagnifier(
     imageBitmap: ImageBitmap,
     previewRect: PreviewRect,
     focusOffset: Offset,
-    colorFilter: ColorFilter?,
     activeHandle: CropHandle,
     lensSizeDp: androidx.compose.ui.unit.Dp = 96.dp,
     modifier: Modifier = Modifier,
@@ -471,7 +583,6 @@ private fun CropMagnifier(
                 srcSize = IntSize(sourceWidth, sourceHeight),
                 dstOffset = IntOffset.Zero,
                 dstSize = IntSize(size.width.roundToInt(), size.height.roundToInt()),
-                colorFilter = colorFilter,
             )
         }
 
@@ -542,20 +653,73 @@ private fun EditorPageBadge(
 @Composable
 private fun FilterSelector(
     selectedFilter: PageFilterPreset,
+    rawImagePath: String?,
+    fallbackImagePath: String?,
+    rotationDegrees: Int,
     onSelectFilter: (PageFilterPreset) -> Unit,
 ) {
+    val filterPreviews by rememberFilterPreviewBitmaps(
+        rawImagePath = rawImagePath,
+        fallbackImagePath = fallbackImagePath,
+        rotationDegrees = rotationDegrees,
+    )
+
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(10.dp),
         contentPadding = PaddingValues(horizontal = 2.dp),
     ) {
         items(PageFilterPreset.entries) { filter ->
-            FilterChip(
-                selected = selectedFilter == filter,
-                onClick = { onSelectFilter(filter) },
-                label = {
-                    Text(text = filter.toDisplayLabel())
-                },
-            )
+            val isSelected = selectedFilter == filter
+            Surface(
+                modifier = Modifier
+                    .width(112.dp)
+                    .clickable { onSelectFilter(filter) },
+                color = if (isSelected) Color(0xFF112922) else Color(0xFF111315),
+                shape = RoundedCornerShape(20.dp),
+                border = BorderStroke(
+                    width = 1.dp,
+                    color = if (isSelected) AccentGreen else Color.White.copy(alpha = 0.08f),
+                ),
+            ) {
+                Column(
+                    modifier = Modifier.padding(10.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                ) {
+                    Surface(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(112.dp),
+                        color = Color(0xFF1C2023),
+                        shape = RoundedCornerShape(16.dp),
+                    ) {
+                        val preview = filterPreviews[filter]
+                        if (preview == null) {
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                Text(
+                                    text = filter.shortLabel(),
+                                    color = Color.White.copy(alpha = 0.72f),
+                                    style = MaterialTheme.typography.labelLarge,
+                                )
+                            }
+                        } else {
+                            Image(
+                                bitmap = preview,
+                                contentDescription = "${filter.toDisplayLabel()} filter preview",
+                                modifier = Modifier.fillMaxSize(),
+                                contentScale = ContentScale.Crop,
+                            )
+                        }
+                    }
+                    Text(
+                        text = filter.toDisplayLabel(),
+                        color = if (isSelected) Color.White else Color.White.copy(alpha = 0.78f),
+                        style = MaterialTheme.typography.labelLarge,
+                    )
+                }
+            }
         }
     }
 }
@@ -616,28 +780,40 @@ private fun rememberEditorPreviewBitmap(
     rawImagePath: String?,
     fallbackImagePath: String?,
     rotationDegrees: Int,
+    selectedFilter: PageFilterPreset,
 ): androidx.compose.runtime.State<ImageBitmap?> = produceState<ImageBitmap?>(
     initialValue = null,
-    key1 = rawImagePath,
-    key2 = fallbackImagePath,
-    key3 = rotationDegrees,
+    rawImagePath,
+    fallbackImagePath,
+    rotationDegrees,
+    selectedFilter,
 ) {
     value = withContext(Dispatchers.IO) {
         val sourcePath = rawImagePath ?: fallbackImagePath ?: return@withContext null
-        decodeEditorBitmap(
+        val rotatedBitmap = decodeEditorBitmap(
             path = sourcePath,
             userRotationDegrees = rotationDegrees,
-        )?.asImageBitmap()
+        ) ?: return@withContext null
+        val filteredBitmap = runCatching {
+            OpenCvPageFilterProcessor.apply(rotatedBitmap, selectedFilter)
+        }.getOrElse {
+            rotatedBitmap.copy(Bitmap.Config.ARGB_8888, false)
+        }
+        if (filteredBitmap !== rotatedBitmap) {
+            rotatedBitmap.recycle()
+        }
+        filteredBitmap.asImageBitmap()
     }
 }
 
 private fun decodeEditorBitmap(
     path: String,
     userRotationDegrees: Int,
+    maxDimension: Int = 1_600,
 ): Bitmap? {
     val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
     BitmapFactory.decodeFile(path, bounds)
-    val sampleSize = calculatePreviewSampleSize(bounds.outWidth, bounds.outHeight, 1_600)
+    val sampleSize = calculatePreviewSampleSize(bounds.outWidth, bounds.outHeight, maxDimension)
     val options = BitmapFactory.Options().apply {
         inSampleSize = sampleSize
         inPreferredConfig = Bitmap.Config.ARGB_8888
@@ -649,6 +825,43 @@ private fun decodeEditorBitmap(
         decoded.recycle()
     }
     return rotateBitmap(oriented, normalizeRotation(userRotationDegrees))
+}
+
+@Composable
+private fun rememberFilterPreviewBitmaps(
+    rawImagePath: String?,
+    fallbackImagePath: String?,
+    rotationDegrees: Int,
+): androidx.compose.runtime.State<Map<PageFilterPreset, ImageBitmap>> = produceState(
+    initialValue = emptyMap(),
+    rawImagePath,
+    fallbackImagePath,
+    rotationDegrees,
+) {
+    value = withContext(Dispatchers.IO) {
+        val sourcePath = rawImagePath ?: fallbackImagePath ?: return@withContext emptyMap()
+        val baseBitmap = decodeEditorBitmap(
+            path = sourcePath,
+            userRotationDegrees = rotationDegrees,
+            maxDimension = 360,
+        ) ?: return@withContext emptyMap()
+        val previewBitmap = createFilterPreviewSource(baseBitmap)
+        if (previewBitmap !== baseBitmap) {
+            baseBitmap.recycle()
+        }
+
+        try {
+            PageFilterPreset.entries.associateWith { filter ->
+                runCatching {
+                    OpenCvPageFilterProcessor.apply(previewBitmap, filter).asImageBitmap()
+                }.getOrElse {
+                    previewBitmap.copy(Bitmap.Config.ARGB_8888, false).asImageBitmap()
+                }
+            }
+        } finally {
+            previewBitmap.recycle()
+        }
+    }
 }
 
 private fun calculatePreviewSampleSize(
@@ -665,6 +878,17 @@ private fun calculatePreviewSampleSize(
         sampleSize *= 2
     }
     return sampleSize.coerceAtLeast(1)
+}
+
+private fun createFilterPreviewSource(bitmap: Bitmap): Bitmap {
+    val longestEdge = maxOf(bitmap.width, bitmap.height)
+    if (longestEdge <= 320) {
+        return bitmap.copy(Bitmap.Config.ARGB_8888, false)
+    }
+    val scale = 320f / longestEdge.toFloat()
+    val targetWidth = (bitmap.width * scale).roundToInt().coerceAtLeast(1)
+    val targetHeight = (bitmap.height * scale).roundToInt().coerceAtLeast(1)
+    return Bitmap.createScaledBitmap(bitmap, targetWidth, targetHeight, true)
 }
 
 private fun rotateBitmap(
@@ -737,44 +961,26 @@ private fun distance(first: Offset, second: Offset): Float {
     return kotlin.math.sqrt((deltaX * deltaX) + (deltaY * deltaY))
 }
 
-private fun PageFilterPreset.toPreviewColorFilter(): ColorFilter? = when (this) {
-    PageFilterPreset.ORIGINAL -> null
-    PageFilterPreset.ENHANCED_COLOR -> ColorFilter.colorMatrix(
-        ColorMatrix(
-            floatArrayOf(
-                1.1f, 0f, 0f, 0f, 8f,
-                0f, 1.1f, 0f, 0f, 8f,
-                0f, 0f, 1.1f, 0f, 8f,
-                0f, 0f, 0f, 1f, 0f,
-            ),
-        ),
-    )
-
-    PageFilterPreset.GRAYSCALE -> {
-        val matrix = ColorMatrix()
-        matrix.setToSaturation(0f)
-        ColorFilter.colorMatrix(matrix)
-    }
-
-    PageFilterPreset.BLACK_AND_WHITE -> {
-        val matrix = ColorMatrix().apply {
-            setToSaturation(0f)
-            values[0] = 1.7f
-            values[6] = 1.7f
-            values[12] = 1.7f
-            values[4] = -120f
-            values[9] = -120f
-            values[14] = -120f
-        }
-        ColorFilter.colorMatrix(matrix)
-    }
-}
-
 private fun PageFilterPreset.toDisplayLabel(): String = when (this) {
     PageFilterPreset.ORIGINAL -> "Original"
     PageFilterPreset.ENHANCED_COLOR -> "Enhanced"
     PageFilterPreset.GRAYSCALE -> "Grayscale"
     PageFilterPreset.BLACK_AND_WHITE -> "B&W"
+    PageFilterPreset.CLEAN -> "Clean"
+    PageFilterPreset.MAGIC_COLOR -> "Magic"
+    PageFilterPreset.RECEIPT -> "Receipt"
+    PageFilterPreset.SOFT_BLACK_AND_WHITE -> "Soft B&W"
+}
+
+private fun PageFilterPreset.shortLabel(): String = when (this) {
+    PageFilterPreset.ORIGINAL -> "O"
+    PageFilterPreset.ENHANCED_COLOR -> "E"
+    PageFilterPreset.GRAYSCALE -> "G"
+    PageFilterPreset.BLACK_AND_WHITE -> "B&W"
+    PageFilterPreset.CLEAN -> "CL"
+    PageFilterPreset.MAGIC_COLOR -> "M"
+    PageFilterPreset.RECEIPT -> "R"
+    PageFilterPreset.SOFT_BLACK_AND_WHITE -> "SBW"
 }
 
 private fun normalizeRotation(rotationDegrees: Int): Int {

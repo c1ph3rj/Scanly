@@ -30,6 +30,7 @@ data class PageEditorUiState(
     val cropQuad: DocumentCornerQuad? = null,
     val referenceCropQuad: DocumentCornerQuad? = null,
     val selectedFilter: PageFilterPreset = PageFilterPreset.ENHANCED_COLOR,
+    val applyFilterToAllPages: Boolean = false,
     val rotationDegrees: Int = 0,
     val isSaving: Boolean = false,
     val hasUnsavedChanges: Boolean = false,
@@ -78,6 +79,7 @@ class PageEditorViewModel @Inject constructor(
                             cropQuad = baseQuad,
                             referenceCropQuad = baseQuad,
                             selectedFilter = page.filterPreset,
+                            applyFilterToAllPages = false,
                             rotationDegrees = resolveInitialRotation(page),
                             missingPage = false,
                             hasUnsavedChanges = false,
@@ -113,6 +115,14 @@ class PageEditorViewModel @Inject constructor(
         }
     }
 
+    fun setApplyFilterToAllPages(enabled: Boolean) {
+        _uiState.update { current ->
+            current.copy(
+                applyFilterToAllPages = enabled,
+            )
+        }
+    }
+
     fun rotateLeft() {
         rotate { CropQuadEditor.rotateCounterClockwise(it) to -90 }
     }
@@ -144,11 +154,26 @@ class PageEditorViewModel @Inject constructor(
                     cropQuad = cropQuad,
                     rotationDegrees = snapshot.rotationDegrees,
                     filterPreset = snapshot.selectedFilter,
+                    applyFilterToAllPages = snapshot.applyFilterToAllPages,
                 )
             ) {
                 is ScanlyResult.Success -> {
-                    _uiState.update { it.copy(isSaving = false, hasUnsavedChanges = false) }
-                    _events.emit(PageEditorEvent.ShowMessage("Page updated."))
+                    _uiState.update {
+                        it.copy(
+                            isSaving = false,
+                            hasUnsavedChanges = false,
+                            applyFilterToAllPages = false,
+                        )
+                    }
+                    _events.emit(
+                        PageEditorEvent.ShowMessage(
+                            if (snapshot.applyFilterToAllPages) {
+                                "Filter applied to all pages."
+                            } else {
+                                "Page updated."
+                            },
+                        ),
+                    )
                     _events.emit(PageEditorEvent.Saved)
                 }
 

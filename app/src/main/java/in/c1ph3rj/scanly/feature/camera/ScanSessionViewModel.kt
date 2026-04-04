@@ -16,6 +16,7 @@ import `in`.c1ph3rj.scanly.domain.usecase.ObserveDocumentPagesUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveDocumentUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.PreparePageCaptureUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.PrepareReplacementCaptureUseCase
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -25,6 +26,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 
@@ -65,16 +67,17 @@ class ScanSessionViewModel @Inject constructor(
     private val finalizeCapturedPageUseCase: FinalizeCapturedPageUseCase,
 ) : ViewModel() {
     private val documentId: String = checkNotNull(savedStateHandle[ScanSessionDestination.documentIdArgument])
-    private val replacementPageId: String? = savedStateHandle[ScanSessionDestination.replacePageIdArgument]
+    private val initialReplacementPageId: String? = savedStateHandle[ScanSessionDestination.replacePageIdArgument]
     private val analysisInFlight = AtomicBoolean(false)
     private val stabilityTracker = CaptureStabilityTracker()
     private var pendingCaptureQuad: DocumentCornerQuad? = null
     private var pendingCaptureTrigger: CaptureTrigger = CaptureTrigger.MANUAL
     private var replacementCaptureCompleted = false
+    private val launchedInReplacementMode: Boolean = initialReplacementPageId != null
 
     private val _uiState = MutableStateFlow(
         ScanSessionUiState(
-            replacementPageId = replacementPageId,
+            replacementPageId = initialReplacementPageId,
         ),
     )
     val uiState: StateFlow<ScanSessionUiState> = _uiState.asStateFlow()
@@ -98,12 +101,16 @@ class ScanSessionViewModel @Inject constructor(
                 _uiState.update { current ->
                     current.copy(pages = pages)
                 }
-                if (replacementPageId != null &&
-                    pages.none { page -> page.id == replacementPageId } &&
+                val selectedReplacementId = _uiState.value.replacementPageId
+                if (selectedReplacementId != null &&
+                    pages.none { page -> page.id == selectedReplacementId } &&
                     !replacementCaptureCompleted
                 ) {
-                    emitMessage("The page you tried to replace is no longer available.")
-                    _events.emit(ScanSessionEvent.NavigateUp)
+                    _uiState.update { current -> current.copy(replacementPageId = null) }
+                    emitMessage("The selected page is no longer available for retake.")
+                    if (launchedInReplacementMode && selectedReplacementId == initialReplacementPageId) {
+                        _events.emit(ScanSessionEvent.NavigateUp)
+                    }
                 }
             }
         }
@@ -132,6 +139,16 @@ class ScanSessionViewModel @Inject constructor(
         }
     }
 
+    fun onReplacementPageSelected(pageId: String?) {
+        _uiState.update { current ->
+            current.copy(replacementPageId = pageId)
+        }
+    }
+
+    fun clearReplacementSelection() {
+        onReplacementPageSelected(pageId = null)
+    }
+
     fun onPreviewFrame(frame: DetectionFrame) {
         if (_uiState.value.missingDocument || _uiState.value.captureInProgress) {
             return
@@ -143,7 +160,9 @@ class ScanSessionViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val detectionResult = runCatching {
-                    documentCornerDetector.detect(frame)
+                    withContext(Dispatchers.Default) {
+                        documentCornerDetector.detect(frame)
+                    }
                 }.getOrElse {
                     _uiState.update { current ->
                         current.copy(
@@ -210,7 +229,7 @@ class ScanSessionViewModel @Inject constructor(
                             ),
                         ),
                     )
-                    if (draft.isReplacement) {
+                    if (draft.isReplacement && launchedInReplacementMode) {
                         _events.emit(ScanSessionEvent.NavigateUp)
                     }
                 }
@@ -221,6 +240,10 @@ class ScanSessionViewModel @Inject constructor(
             _uiState.update { current ->
                 current.copy(
                     captureInProgress = false,
+                    replacementPageId = when {
+                        draft.isReplacement && !launchedInReplacementMode -> null
+                        else -> current.replacementPageId
+                    },
                     liveDetection = current.liveDetection.copy(
                         phase = if (current.liveDetection.autoCaptureEnabled) AutoCapturePhase.COOLDOWN else AutoCapturePhase.OFF,
                         statusMessage = if (current.liveDetection.autoCaptureEnabled) {
@@ -276,7 +299,8 @@ class ScanSessionViewModel @Inject constructor(
             )
         }
 
-        val capturePreparationResult = replacementPageId?.let { pageId ->
+        val replacementTargetPageId = _uiState.value.replacementPageId
+        val capturePreparationResult = replacementTargetPageId?.let { pageId ->
             prepareReplacementCaptureUseCase(pageId)
         } ?: preparePageCaptureUseCase(documentId)
 

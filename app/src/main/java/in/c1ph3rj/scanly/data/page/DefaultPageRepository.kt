@@ -117,11 +117,15 @@ class DefaultPageRepository @Inject constructor(
                 }
 
                 val timestamp = System.currentTimeMillis()
+                val captureFilterPreset = document.preferredFilterPreset
+                    ?.let(PageFilterPreset::fromStorage)
+                    ?: PageFilterPreset.ENHANCED_COLOR
                 val processedArtifacts = runCatching {
                     pageImageProcessor.processCapture(
                         rawImagePath = draft.rawImagePath,
                         processedImagePath = draft.processedImagePath,
                         thumbnailPath = draft.thumbnailPath,
+                        filterPreset = captureFilterPreset,
                     ).toPersistedArtifacts()
                 }.getOrElse {
                     val fallbackThumbnail = storageManager.generatePageThumbnail(
@@ -294,58 +298,54 @@ class DefaultPageRepository @Inject constructor(
         cropQuad: `in`.c1ph3rj.scanly.core.ml.DocumentCornerQuad,
         rotationDegrees: Int,
         filterPreset: PageFilterPreset,
+        applyFilterToAllPages: Boolean,
     ): ScanlyResult<Unit> = withContext(dispatchers.io) {
         runCatching {
             val page = scanPageDao.getPage(pageId)
                 ?: error("Page not found.")
             val document = documentDao.getDocument(page.documentId)
                 ?: error("Document not found.")
-
-            val rawImagePath = page.rawImagePath ?: error("Raw image missing for page $pageId.")
-            val processedImagePath = page.processedImagePath
-                ?: deriveSiblingAssetPath(
-                    rawImagePath = rawImagePath,
-                    targetDirectoryName = PROCESSED_DIRECTORY,
-                )
-            val thumbnailPath = page.thumbnailPath
-                ?: deriveSiblingAssetPath(
-                    rawImagePath = rawImagePath,
-                    targetDirectoryName = THUMBNAILS_DIRECTORY,
-                )
-
-            val processedArtifacts = pageImageProcessor.reprocessPage(
-                rawImagePath = rawImagePath,
-                processedImagePath = processedImagePath,
-                thumbnailPath = thumbnailPath,
-                cropQuad = cropQuad,
-                rotationDegrees = rotationDegrees,
-                filterPreset = filterPreset,
-            ).toPersistedArtifacts()
             val timestamp = System.currentTimeMillis()
+            val updatedDocument = if (applyFilterToAllPages) {
+                document.copy(preferredFilterPreset = filterPreset.storageValue)
+            } else {
+                document
+            }
+            val pagesToUpdate = if (applyFilterToAllPages) {
+                scanPageDao.getPages(page.documentId)
+            } else {
+                listOf(page)
+            }
+            val updatedPages = pagesToUpdate.map { existingPage ->
+                val targetCropQuad = if (existingPage.id == page.id) {
+                    cropQuad
+                } else {
+                    existingPage.toDomain().cropQuad
+                }
+                val targetRotation = if (existingPage.id == page.id) {
+                    rotationDegrees
+                } else {
+                    existingPage.rotationDegrees
+                }
+                val needsReprocess = existingPage.id == page.id || existingPage.filterPreset != filterPreset.storageValue
+                if (!needsReprocess) {
+                    existingPage.copy(updatedAtMillis = timestamp)
+                } else {
+                    existingPage.reprocessWith(
+                        cropQuad = targetCropQuad,
+                        rotationDegrees = targetRotation,
+                        filterPreset = filterPreset,
+                        updatedAtMillis = timestamp,
+                        detectDocumentWhenCropQuadMissing = existingPage.id == page.id || !applyFilterToAllPages,
+                    )
+                }
+            }
 
             database.withTransaction {
-                scanPageDao.update(
-                    page.copy(
-                        processedImagePath = processedArtifacts.processedImagePath,
-                        thumbnailPath = processedArtifacts.thumbnailPath,
-                        rotationDegrees = processedArtifacts.rotationDegrees,
-                        cropTopLeftX = processedArtifacts.cropTopLeftX,
-                        cropTopLeftY = processedArtifacts.cropTopLeftY,
-                        cropTopRightX = processedArtifacts.cropTopRightX,
-                        cropTopRightY = processedArtifacts.cropTopRightY,
-                        cropBottomRightX = processedArtifacts.cropBottomRightX,
-                        cropBottomRightY = processedArtifacts.cropBottomRightY,
-                        cropBottomLeftX = processedArtifacts.cropBottomLeftX,
-                        cropBottomLeftY = processedArtifacts.cropBottomLeftY,
-                        filterPreset = processedArtifacts.filterPreset,
-                        processingState = processedArtifacts.processingState,
-                        updatedAtMillis = timestamp,
-                    ),
-                )
-                documentDao.update(
-                    document.copy(
-                        updatedAtMillis = timestamp,
-                    ),
+                scanPageDao.updateAll(updatedPages)
+                updateDocumentSnapshot(
+                    document = updatedDocument,
+                    updatedAtMillis = timestamp,
                 )
             }
         }.fold(
@@ -395,6 +395,53 @@ class DefaultPageRepository @Inject constructor(
         processingState = PageProcessingState.fromStorage(processingState),
         createdAtMillis = createdAtMillis,
     )
+
+    private suspend fun ScanPageEntity.reprocessWith(
+        cropQuad: `in`.c1ph3rj.scanly.core.ml.DocumentCornerQuad?,
+        rotationDegrees: Int,
+        filterPreset: PageFilterPreset,
+        updatedAtMillis: Long,
+        detectDocumentWhenCropQuadMissing: Boolean,
+    ): ScanPageEntity {
+        val rawImagePath = rawImagePath ?: error("Raw image missing for page $id.")
+        val resolvedProcessedImagePath = processedImagePath
+            ?: deriveSiblingAssetPath(
+                rawImagePath = rawImagePath,
+                targetDirectoryName = PROCESSED_DIRECTORY,
+            )
+        val resolvedThumbnailPath = thumbnailPath
+            ?: deriveSiblingAssetPath(
+                rawImagePath = rawImagePath,
+                targetDirectoryName = THUMBNAILS_DIRECTORY,
+            )
+
+        val processedArtifacts = pageImageProcessor.reprocessPage(
+            rawImagePath = rawImagePath,
+            processedImagePath = resolvedProcessedImagePath,
+            thumbnailPath = resolvedThumbnailPath,
+            cropQuad = cropQuad,
+            rotationDegrees = rotationDegrees,
+            filterPreset = filterPreset,
+            detectDocumentWhenCropQuadMissing = detectDocumentWhenCropQuadMissing,
+        ).toPersistedArtifacts()
+
+        return copy(
+            processedImagePath = processedArtifacts.processedImagePath,
+            thumbnailPath = processedArtifacts.thumbnailPath,
+            rotationDegrees = processedArtifacts.rotationDegrees,
+            cropTopLeftX = processedArtifacts.cropTopLeftX,
+            cropTopLeftY = processedArtifacts.cropTopLeftY,
+            cropTopRightX = processedArtifacts.cropTopRightX,
+            cropTopRightY = processedArtifacts.cropTopRightY,
+            cropBottomRightX = processedArtifacts.cropBottomRightX,
+            cropBottomRightY = processedArtifacts.cropBottomRightY,
+            cropBottomLeftX = processedArtifacts.cropBottomLeftX,
+            cropBottomLeftY = processedArtifacts.cropBottomLeftY,
+            filterPreset = processedArtifacts.filterPreset,
+            processingState = processedArtifacts.processingState,
+            updatedAtMillis = updatedAtMillis,
+        )
+    }
 
     private data class PersistedProcessedArtifacts(
         val processedImagePath: String?,

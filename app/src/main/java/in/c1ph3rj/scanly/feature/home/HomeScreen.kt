@@ -1,6 +1,7 @@
 package `in`.c1ph3rj.scanly.feature.home
 
 import android.graphics.BitmapFactory
+import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -54,6 +55,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -71,7 +73,7 @@ import java.util.Date
 @Composable
 fun HomeRoute(
     onOpenDocument: (String) -> Unit,
-    onOpenReadiness: () -> Unit,
+    onOpenSettings: () -> Unit,
     onOpenScanSession: (String) -> Unit,
     onNavigateUp: (() -> Unit)? = null,
     viewModel: HomeViewModel = hiltViewModel(),
@@ -95,7 +97,7 @@ fun HomeRoute(
         onRenameDocument = viewModel::renameDocument,
         onDeleteDocument = viewModel::deleteDocument,
         onOpenDocument = onOpenDocument,
-        onOpenReadiness = onOpenReadiness,
+        onOpenSettings = onOpenSettings,
         onOpenScanSession = onOpenScanSession,
         onNavigateUp = onNavigateUp,
     )
@@ -110,15 +112,21 @@ fun HomeScreen(
     onRenameDocument: (String, String) -> Unit,
     onDeleteDocument: (String) -> Unit,
     onOpenDocument: (String) -> Unit,
-    onOpenReadiness: () -> Unit,
+    onOpenSettings: () -> Unit,
     onOpenScanSession: (String) -> Unit,
     onNavigateUp: (() -> Unit)? = null,
 ) {
+    val context = LocalContext.current
     var createDialogVisible by rememberSaveable { mutableStateOf(false) }
     var renameTarget by remember { mutableStateOf<ScanDocument?>(null) }
     var deleteTarget by remember { mutableStateOf<ScanDocument?>(null) }
     val latestDocument = uiState.documents.firstOrNull()
     val totalPages = remember(uiState.documents) { uiState.documents.sumOf { it.pageCount } }
+
+    // Warm up CameraX while the user is on home to reduce scan-session cold start latency.
+    remember(context) {
+        ProcessCameraProvider.getInstance(context.applicationContext)
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -150,7 +158,7 @@ fun HomeScreen(
             item {
                 LibraryTopBar(
                     onNavigateUp = onNavigateUp,
-                    onOpenReadiness = onOpenReadiness,
+                    onOpenSettings = onOpenSettings,
                     onCreateDocument = { createDialogVisible = true },
                 )
             }
@@ -275,7 +283,7 @@ fun HomeScreen(
 @Composable
 private fun LibraryTopBar(
     onNavigateUp: (() -> Unit)?,
-    onOpenReadiness: () -> Unit,
+    onOpenSettings: () -> Unit,
     onCreateDocument: () -> Unit,
 ) {
     Row(
@@ -310,8 +318,8 @@ private fun LibraryTopBar(
         Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             ChromeIconButton(
                 icon = Icons.Filled.Tune,
-                contentDescription = "Readiness",
-                onClick = onOpenReadiness,
+                contentDescription = "Settings",
+                onClick = onOpenSettings,
             )
             ChromeIconButton(
                 icon = Icons.Filled.Add,
