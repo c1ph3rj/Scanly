@@ -4,44 +4,48 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.material3.SnackbarHostState
+import androidx.navigation.compose.rememberNavController
+import dagger.hilt.android.AndroidEntryPoint
+import `in`.c1ph3rj.scanly.feature.home.HomeScreen
+import `in`.c1ph3rj.scanly.feature.home.HomeUiState
+import `in`.c1ph3rj.scanly.navigation.ScanlyNavHost
 import `in`.c1ph3rj.scanly.ui.theme.ScanlyTheme
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             ScanlyTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+                ScanlyApp()
             }
         }
     }
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
+private fun ScanlyApp() {
+    val navController = rememberNavController()
+    ScanlyNavHost(navController = navController)
 }
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
+private fun ScanlyAppPreview() {
     ScanlyTheme {
-        Greeting("Android")
+        HomeScreen(
+            uiState = HomeUiState.initial(),
+            snackbarHostState = SnackbarHostState(),
+            onCreateDocument = {},
+            onRenameDocument = { _, _ -> },
+            onDeleteDocument = {},
+            onOpenDocument = {},
+            onOpenReadiness = {},
+            onOpenScanSession = {},
+        )
     }
 }

@@ -13,3 +13,10 @@
 .externalNativeBuild
 .cxx
 local.properties
+/app/src/main/assets/models/*.tflite
+/app/src/main/assets/validation/images/*.jpg
+/app/src/main/assets/validation/images/*.jpeg
+/app/src/main/assets/validation/images/*.png
+/app/src/main/assets/validation/images/*.bmp
+/app/src/main/assets/validation/images/*.webp
+/app/src/main/assets/validation/expected/*.corners.json
