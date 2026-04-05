@@ -7,6 +7,7 @@ import org.opencv.android.Utils
 import org.opencv.core.Core
 import org.opencv.core.CvType
 import org.opencv.core.Mat
+import org.opencv.core.MatOfDouble
 import org.opencv.core.Scalar
 import org.opencv.core.Size
 import org.opencv.imgproc.Imgproc
@@ -21,16 +22,122 @@ object OpenCvPageFilterProcessor {
         filterPreset: PageFilterPreset,
     ): Bitmap {
         ensureInitialized()
-        return when (filterPreset) {
-            PageFilterPreset.ORIGINAL -> original(sourceBitmap)
-            PageFilterPreset.ENHANCED_COLOR -> enhancedColor(sourceBitmap)
-            PageFilterPreset.GRAYSCALE -> grayscale(sourceBitmap)
-            PageFilterPreset.BLACK_AND_WHITE -> blackAndWhite(sourceBitmap)
-            PageFilterPreset.CLEAN -> clean(sourceBitmap)
-            PageFilterPreset.MAGIC_COLOR -> magicColor(sourceBitmap)
-            PageFilterPreset.RECEIPT -> receipt(sourceBitmap)
-            PageFilterPreset.SOFT_BLACK_AND_WHITE -> softBlackAndWhite(sourceBitmap)
+        val profile = runCatching { analyze(sourceBitmap) }.getOrNull()
+        return renderWithFallback(
+            sourceBitmap = sourceBitmap,
+            filterPreset = filterPreset,
+            profile = profile,
+        )
+    }
+
+    internal fun apply(
+        sourceBitmap: Bitmap,
+        filterPreset: PageFilterPreset,
+        profile: PageImageProfile,
+    ): Bitmap {
+        ensureInitialized()
+        return renderWithFallback(
+            sourceBitmap = sourceBitmap,
+            filterPreset = filterPreset,
+            profile = profile,
+        )
+    }
+
+    internal fun analyze(sourceBitmap: Bitmap): PageImageProfile {
+        ensureInitialized()
+        val analysisBitmap = sourceBitmap.toMatForAnalysis()
+        val bgr = Mat()
+        val gray = Mat()
+        val hsv = Mat()
+        val edges = Mat()
+        val laplacian = Mat()
+        val shadowMask = Mat()
+        val highlightMask = Mat()
+        val hsvChannels = mutableListOf<Mat>()
+
+        try {
+            Imgproc.cvtColor(analysisBitmap, bgr, Imgproc.COLOR_RGBA2BGR)
+            Imgproc.cvtColor(bgr, gray, Imgproc.COLOR_BGR2GRAY)
+            Imgproc.cvtColor(bgr, hsv, Imgproc.COLOR_BGR2HSV)
+            Core.split(hsv, hsvChannels)
+
+            val luminanceMean = MatOfDouble()
+            val luminanceStdDev = MatOfDouble()
+            Core.meanStdDev(gray, luminanceMean, luminanceStdDev)
+
+            val saturation = hsvChannels.getOrNull(1) ?: error("Could not analyze image saturation.")
+            val saturationMean = Core.mean(saturation).`val`[0]
+
+            val pixelCount = (gray.rows().toLong() * gray.cols().toLong()).toDouble()
+            if (pixelCount <= 0.0) {
+                error("Could not analyze empty image.")
+            }
+
+            Core.compare(gray, Scalar.all(SHADOW_THRESHOLD), shadowMask, Core.CMP_LT)
+            Core.compare(gray, Scalar.all(HIGHLIGHT_THRESHOLD), highlightMask, Core.CMP_GT)
+            Imgproc.Canny(gray, edges, CANNY_LOW_THRESHOLD, CANNY_HIGH_THRESHOLD)
+            Imgproc.Laplacian(gray, laplacian, CvType.CV_64F)
+
+            val laplacianStdDev = MatOfDouble()
+            Core.meanStdDev(laplacian, MatOfDouble(), laplacianStdDev)
+
+            return PageImageProfile(
+                brightness = luminanceMean.toArray().firstOrNull() ?: 0.0,
+                contrast = luminanceStdDev.toArray().firstOrNull() ?: 0.0,
+                shadowRatio = Core.countNonZero(shadowMask).toDouble() / pixelCount,
+                highlightRatio = Core.countNonZero(highlightMask).toDouble() / pixelCount,
+                saturation = saturationMean,
+                edgeDensity = Core.countNonZero(edges).toDouble() / pixelCount,
+                sharpness = laplacianStdDev.toArray().firstOrNull() ?: 0.0,
+                longestEdge = maxOf(sourceBitmap.width, sourceBitmap.height),
+            )
+        } finally {
+            analysisBitmap.release()
+            bgr.release()
+            gray.release()
+            hsv.release()
+            edges.release()
+            laplacian.release()
+            shadowMask.release()
+            highlightMask.release()
+            hsvChannels.forEach(Mat::release)
         }
+    }
+
+    private fun render(
+        sourceBitmap: Bitmap,
+        filterPreset: PageFilterPreset,
+        profile: PageImageProfile?,
+    ): Bitmap = when (filterPreset) {
+        PageFilterPreset.ORIGINAL -> original(sourceBitmap, profile)
+        PageFilterPreset.ENHANCED_COLOR -> enhancedColor(sourceBitmap, profile)
+        PageFilterPreset.GRAYSCALE -> grayscale(sourceBitmap, profile)
+        PageFilterPreset.BLACK_AND_WHITE -> blackAndWhite(sourceBitmap, profile)
+        PageFilterPreset.CLEAN -> clean(sourceBitmap, profile)
+        PageFilterPreset.MAGIC_COLOR -> magicColor(sourceBitmap, profile)
+        PageFilterPreset.RECEIPT -> receipt(sourceBitmap, profile)
+        PageFilterPreset.SOFT_BLACK_AND_WHITE -> softBlackAndWhite(sourceBitmap, profile)
+    }
+
+    private fun renderWithFallback(
+        sourceBitmap: Bitmap,
+        filterPreset: PageFilterPreset,
+        profile: PageImageProfile?,
+    ): Bitmap {
+        val adaptiveAttempt = runCatching {
+            render(sourceBitmap, filterPreset, profile)
+        }
+        if (adaptiveAttempt.isSuccess) {
+            return adaptiveAttempt.getOrThrow()
+        }
+
+        if (profile != null) {
+            return runCatching {
+                render(sourceBitmap, filterPreset, null)
+            }.getOrElse { adaptiveAttempt.getOrThrow() }
+        }
+
+        return adaptiveAttempt.getOrThrow()
     }
 
     private fun ensureInitialized() {
@@ -42,7 +149,11 @@ object OpenCvPageFilterProcessor {
         }
     }
 
-    private fun original(sourceBitmap: Bitmap): Bitmap {
+    private fun original(
+        sourceBitmap: Bitmap,
+        profile: PageImageProfile?,
+    ): Bitmap {
+        val tuning = AdaptivePageFilterTuning.original(profile)
         val rgba = sourceBitmap.toMat()
         val bgr = Mat()
         val sharpened = Mat()
@@ -53,8 +164,8 @@ object OpenCvPageFilterProcessor {
             sharpenColor(
                 sourceBgr = bgr,
                 outputBgr = sharpened,
-                amount = 1.14,
-                sigma = 1.0,
+                amount = tuning.sharpenAmount,
+                sigma = tuning.sharpenSigma,
             )
             Imgproc.cvtColor(sharpened, resultRgba, Imgproc.COLOR_BGR2RGBA)
             return resultRgba.toBitmap()
@@ -66,7 +177,11 @@ object OpenCvPageFilterProcessor {
         }
     }
 
-    private fun enhancedColor(sourceBitmap: Bitmap): Bitmap {
+    private fun enhancedColor(
+        sourceBitmap: Bitmap,
+        profile: PageImageProfile?,
+    ): Bitmap {
+        val tuning = AdaptivePageFilterTuning.enhancedColor(profile)
         val rgba = sourceBitmap.toMat()
         val bgr = Mat()
         val denoised = Mat()
@@ -76,18 +191,24 @@ object OpenCvPageFilterProcessor {
 
         try {
             Imgproc.cvtColor(rgba, bgr, Imgproc.COLOR_RGBA2BGR)
-            Imgproc.bilateralFilter(bgr, denoised, 7, 40.0, 40.0)
+            Imgproc.bilateralFilter(
+                bgr,
+                denoised,
+                tuning.bilateralDiameter,
+                tuning.bilateralSigmaColor,
+                tuning.bilateralSigmaSpace,
+            )
             enhanceLabLightness(
                 sourceBgr = denoised,
                 outputBgr = enhancedBgr,
-                clipLimit = 2.4,
+                clipLimit = tuning.clipLimit,
             )
             sharpenColor(
                 sourceBgr = enhancedBgr,
                 outputBgr = sharpened,
-                amount = 1.16,
-                sigma = 1.1,
-                bias = 2.0,
+                amount = tuning.sharpenAmount,
+                sigma = tuning.sharpenSigma,
+                bias = tuning.sharpenBias,
             )
             Imgproc.cvtColor(sharpened, resultRgba, Imgproc.COLOR_BGR2RGBA)
             return resultRgba.toBitmap()
@@ -101,7 +222,11 @@ object OpenCvPageFilterProcessor {
         }
     }
 
-    private fun grayscale(sourceBitmap: Bitmap): Bitmap {
+    private fun grayscale(
+        sourceBitmap: Bitmap,
+        profile: PageImageProfile?,
+    ): Bitmap {
+        val tuning = AdaptivePageFilterTuning.grayscale(profile)
         val rgba = sourceBitmap.toMat()
         val gray = Mat()
         val claheGray = Mat()
@@ -114,14 +239,20 @@ object OpenCvPageFilterProcessor {
             applyClahe(
                 sourceGray = gray,
                 outputGray = claheGray,
-                clipLimit = 2.4,
+                clipLimit = tuning.clipLimit,
             )
-            Imgproc.bilateralFilter(claheGray, denoisedGray, 7, 35.0, 35.0)
+            Imgproc.bilateralFilter(
+                claheGray,
+                denoisedGray,
+                tuning.bilateralDiameter,
+                tuning.bilateralSigmaColor,
+                tuning.bilateralSigmaSpace,
+            )
             sharpenGray(
                 sourceGray = denoisedGray,
                 outputGray = sharpenedGray,
-                amount = 1.18,
-                sigma = 0.9,
+                amount = tuning.sharpenAmount,
+                sigma = tuning.sharpenSigma,
             )
             Imgproc.cvtColor(sharpenedGray, resultRgba, Imgproc.COLOR_GRAY2RGBA)
             return resultRgba.toBitmap()
@@ -135,7 +266,11 @@ object OpenCvPageFilterProcessor {
         }
     }
 
-    private fun blackAndWhite(sourceBitmap: Bitmap): Bitmap {
+    private fun blackAndWhite(
+        sourceBitmap: Bitmap,
+        profile: PageImageProfile?,
+    ): Bitmap {
+        val tuning = AdaptivePageFilterTuning.blackAndWhite(profile)
         val rgba = sourceBitmap.toMat()
         val gray = Mat()
         val flattenedGray = Mat()
@@ -152,19 +287,25 @@ object OpenCvPageFilterProcessor {
             flattenIllumination(
                 sourceGray = gray,
                 outputGray = flattenedGray,
-                backgroundKernelSize = 31,
+                backgroundKernelSize = tuning.backgroundKernelSize,
             )
             applyClahe(
                 sourceGray = flattenedGray,
                 outputGray = claheGray,
-                clipLimit = 2.1,
+                clipLimit = tuning.clipLimit,
             )
-            Imgproc.bilateralFilter(claheGray, denoisedGray, 5, 30.0, 30.0)
+            Imgproc.bilateralFilter(
+                claheGray,
+                denoisedGray,
+                tuning.denoiseDiameter,
+                tuning.denoiseSigmaColor,
+                tuning.denoiseSigmaSpace,
+            )
             sauvolaThreshold(
                 sourceGray = denoisedGray,
                 outputBinary = sauvolaBinary,
-                windowSize = 35,
-                k = 0.2,
+                windowSize = tuning.windowSize,
+                k = tuning.k,
             )
             Imgproc.morphologyEx(
                 sauvolaBinary,
@@ -196,7 +337,11 @@ object OpenCvPageFilterProcessor {
         }
     }
 
-    private fun clean(sourceBitmap: Bitmap): Bitmap {
+    private fun clean(
+        sourceBitmap: Bitmap,
+        profile: PageImageProfile?,
+    ): Bitmap {
+        val tuning = AdaptivePageFilterTuning.clean(profile)
         val rgba = sourceBitmap.toMat()
         val gray = Mat()
         val background = Mat()
@@ -209,20 +354,20 @@ object OpenCvPageFilterProcessor {
 
         try {
             Imgproc.cvtColor(rgba, gray, Imgproc.COLOR_RGBA2GRAY)
-            Imgproc.medianBlur(gray, background, 21)
+            Imgproc.medianBlur(gray, background, tuning.backgroundKernelSize)
             Core.add(background, Scalar.all(1.0), safeBackground)
             Core.divide(gray, safeBackground, flattened, 255.0, gray.type())
             Core.normalize(flattened, normalizedGray, 0.0, 255.0, Core.NORM_MINMAX)
             applyClahe(
                 sourceGray = normalizedGray,
                 outputGray = claheGray,
-                clipLimit = 2.2,
+                clipLimit = tuning.clipLimit,
             )
             sharpenGray(
                 sourceGray = claheGray,
                 outputGray = sharpenedGray,
-                amount = 1.16,
-                sigma = 0.8,
+                amount = tuning.sharpenAmount,
+                sigma = tuning.sharpenSigma,
             )
             Imgproc.cvtColor(sharpenedGray, resultRgba, Imgproc.COLOR_GRAY2RGBA)
             return resultRgba.toBitmap()
@@ -239,7 +384,11 @@ object OpenCvPageFilterProcessor {
         }
     }
 
-    private fun magicColor(sourceBitmap: Bitmap): Bitmap {
+    private fun magicColor(
+        sourceBitmap: Bitmap,
+        profile: PageImageProfile?,
+    ): Bitmap {
+        val tuning = AdaptivePageFilterTuning.magicColor(profile)
         val rgba = sourceBitmap.toMat()
         val bgr = Mat()
         val enhancedBgr = Mat()
@@ -252,20 +401,20 @@ object OpenCvPageFilterProcessor {
             enhanceLabLightness(
                 sourceBgr = bgr,
                 outputBgr = enhancedBgr,
-                clipLimit = 2.8,
+                clipLimit = tuning.clipLimit,
             )
             boostSaturation(
                 sourceBgr = enhancedBgr,
                 outputBgr = saturatedBgr,
-                scale = 1.18,
-                shift = 10.0,
+                scale = tuning.saturationScale,
+                shift = tuning.saturationShift,
             )
             sharpenColor(
                 sourceBgr = saturatedBgr,
                 outputBgr = sharpened,
-                amount = 1.18,
-                sigma = 1.0,
-                bias = 4.0,
+                amount = tuning.sharpenAmount,
+                sigma = tuning.sharpenSigma,
+                bias = tuning.sharpenBias,
             )
             Imgproc.cvtColor(sharpened, resultRgba, Imgproc.COLOR_BGR2RGBA)
             return resultRgba.toBitmap()
@@ -279,7 +428,11 @@ object OpenCvPageFilterProcessor {
         }
     }
 
-    private fun receipt(sourceBitmap: Bitmap): Bitmap {
+    private fun receipt(
+        sourceBitmap: Bitmap,
+        profile: PageImageProfile?,
+    ): Bitmap {
+        val tuning = AdaptivePageFilterTuning.receipt(profile)
         val rgba = sourceBitmap.toMat()
         val gray = Mat()
         val claheGray = Mat()
@@ -293,23 +446,29 @@ object OpenCvPageFilterProcessor {
             applyClahe(
                 sourceGray = gray,
                 outputGray = claheGray,
-                clipLimit = 3.2,
+                clipLimit = tuning.clipLimit,
             )
-            Imgproc.bilateralFilter(claheGray, denoisedGray, 9, 55.0, 55.0)
+            Imgproc.bilateralFilter(
+                claheGray,
+                denoisedGray,
+                tuning.bilateralDiameter,
+                tuning.bilateralSigmaColor,
+                tuning.bilateralSigmaSpace,
+            )
             Imgproc.adaptiveThreshold(
                 denoisedGray,
                 thresholded,
                 255.0,
                 Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C,
                 Imgproc.THRESH_BINARY,
-                21,
-                7.0,
+                tuning.blockSize,
+                tuning.c,
             )
             sharpenGray(
                 sourceGray = thresholded,
                 outputGray = sharpenedGray,
-                amount = 1.12,
-                sigma = 0.7,
+                amount = tuning.sharpenAmount,
+                sigma = tuning.sharpenSigma,
             )
             Imgproc.threshold(
                 sharpenedGray,
@@ -331,7 +490,11 @@ object OpenCvPageFilterProcessor {
         }
     }
 
-    private fun softBlackAndWhite(sourceBitmap: Bitmap): Bitmap {
+    private fun softBlackAndWhite(
+        sourceBitmap: Bitmap,
+        profile: PageImageProfile?,
+    ): Bitmap {
+        val tuning = AdaptivePageFilterTuning.softBlackAndWhite(profile)
         val rgba = sourceBitmap.toMat()
         val gray = Mat()
         val flattenedGray = Mat()
@@ -348,27 +511,33 @@ object OpenCvPageFilterProcessor {
             flattenIllumination(
                 sourceGray = gray,
                 outputGray = flattenedGray,
-                backgroundKernelSize = 27,
+                backgroundKernelSize = tuning.backgroundKernelSize,
             )
             applyClahe(
                 sourceGray = flattenedGray,
                 outputGray = claheGray,
-                clipLimit = 1.7,
+                clipLimit = tuning.clipLimit,
             )
-            Imgproc.bilateralFilter(claheGray, denoisedGray, 5, 24.0, 24.0)
+            Imgproc.bilateralFilter(
+                claheGray,
+                denoisedGray,
+                tuning.denoiseDiameter,
+                tuning.denoiseSigmaColor,
+                tuning.denoiseSigmaSpace,
+            )
             sauvolaThreshold(
                 sourceGray = denoisedGray,
                 outputBinary = binaryMask,
-                windowSize = 33,
-                k = 0.16,
+                windowSize = tuning.windowSize,
+                k = tuning.k,
             )
-            Imgproc.GaussianBlur(binaryMask, softenedMask, Size(0.0, 0.0), 1.15)
+            Imgproc.GaussianBlur(binaryMask, softenedMask, Size(0.0, 0.0), tuning.blurSigma)
             Core.max(denoisedGray, softenedMask, liftedWhites)
             sharpenGray(
                 sourceGray = liftedWhites,
                 outputGray = softenedGray,
-                amount = 1.04,
-                sigma = 0.8,
+                amount = tuning.sharpenAmount,
+                sigma = tuning.sharpenSigma,
             )
             Imgproc.cvtColor(softenedGray, resultRgba, Imgproc.COLOR_GRAY2RGBA)
             return resultRgba.toBitmap()
@@ -564,9 +733,29 @@ object OpenCvPageFilterProcessor {
         return mat
     }
 
+    private fun Bitmap.toMatForAnalysis(): Mat {
+        val rgba = toMat()
+        val longestEdge = maxOf(width, height)
+        if (longestEdge <= ANALYSIS_MAX_DIMENSION) {
+            return rgba
+        }
+
+        val scale = ANALYSIS_MAX_DIMENSION / longestEdge.toDouble()
+        val resized = Mat()
+        Imgproc.resize(rgba, resized, Size(), scale, scale, Imgproc.INTER_AREA)
+        rgba.release()
+        return resized
+    }
+
     private fun Mat.toBitmap(): Bitmap {
         val bitmap = Bitmap.createBitmap(cols(), rows(), Bitmap.Config.ARGB_8888)
         Utils.matToBitmap(this, bitmap)
         return bitmap
     }
+
+    private const val ANALYSIS_MAX_DIMENSION = 720
+    private const val SHADOW_THRESHOLD = 76.0
+    private const val HIGHLIGHT_THRESHOLD = 220.0
+    private const val CANNY_LOW_THRESHOLD = 40.0
+    private const val CANNY_HIGH_THRESHOLD = 120.0
 }

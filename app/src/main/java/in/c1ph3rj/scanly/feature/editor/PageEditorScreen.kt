@@ -132,6 +132,11 @@ fun PageEditorScreen(
     onSave: () -> Unit,
 ) {
     val showBulkApplyLoader = uiState.isSaving && uiState.applyFilterToAllPages
+    val statusLabel = when {
+        showBulkApplyLoader -> "Processing"
+        uiState.isSaving -> "Processing"
+        else -> "Editor"
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         Scaffold(
@@ -140,11 +145,7 @@ fun PageEditorScreen(
             snackbarHost = { SnackbarHost(snackbarHostState) },
             topBar = {
                 EditorTopBar(
-                    statusLabel = when {
-                        showBulkApplyLoader -> "Applying"
-                        uiState.isSaving -> "Saving"
-                        else -> "Editor"
-                    },
+                    statusLabel = statusLabel,
                     onNavigateUp = onNavigateUp,
                     onSave = onSave,
                     isSaving = uiState.isSaving,
@@ -326,12 +327,12 @@ private fun BulkFilterApplyOverlay() {
                     trackColor = Color.White.copy(alpha = 0.14f),
                 )
                 Text(
-                    text = "Applying filter to all pages",
+                    text = "Processing image data for all pages",
                     color = Color.White,
                     style = MaterialTheme.typography.titleMedium,
                 )
                 Text(
-                    text = "Please wait while Scanly updates the whole document.",
+                    text = "Please wait while Scanly adapts the filter and updates the whole document.",
                     color = Color.White.copy(alpha = 0.68f),
                     style = MaterialTheme.typography.bodyMedium,
                 )
@@ -658,66 +659,95 @@ private fun FilterSelector(
     rotationDegrees: Int,
     onSelectFilter: (PageFilterPreset) -> Unit,
 ) {
-    val filterPreviews by rememberFilterPreviewBitmaps(
+    val previewState by rememberFilterPreviewBitmaps(
         rawImagePath = rawImagePath,
         fallbackImagePath = fallbackImagePath,
         rotationDegrees = rotationDegrees,
     )
 
-    LazyRow(
-        horizontalArrangement = Arrangement.spacedBy(10.dp),
-        contentPadding = PaddingValues(horizontal = 2.dp),
-    ) {
-        items(PageFilterPreset.entries) { filter ->
-            val isSelected = selectedFilter == filter
+    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        if (previewState.isLoading) {
             Surface(
-                modifier = Modifier
-                    .width(112.dp)
-                    .clickable { onSelectFilter(filter) },
-                color = if (isSelected) Color(0xFF112922) else Color(0xFF111315),
-                shape = RoundedCornerShape(20.dp),
-                border = BorderStroke(
-                    width = 1.dp,
-                    color = if (isSelected) AccentGreen else Color.White.copy(alpha = 0.08f),
-                ),
+                modifier = Modifier.fillMaxWidth(),
+                color = Color(0xFF111315),
+                shape = RoundedCornerShape(18.dp),
+                border = BorderStroke(1.dp, Color.White.copy(alpha = 0.08f)),
             ) {
-                Column(
-                    modifier = Modifier.padding(10.dp),
-                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                Row(
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
-                    Surface(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(112.dp),
-                        color = Color(0xFF1C2023),
-                        shape = RoundedCornerShape(16.dp),
-                    ) {
-                        val preview = filterPreviews[filter]
-                        if (preview == null) {
-                            Box(
-                                modifier = Modifier.fillMaxSize(),
-                                contentAlignment = Alignment.Center,
-                            ) {
-                                Text(
-                                    text = filter.shortLabel(),
-                                    color = Color.White.copy(alpha = 0.72f),
-                                    style = MaterialTheme.typography.labelLarge,
-                                )
-                            }
-                        } else {
-                            Image(
-                                bitmap = preview,
-                                contentDescription = "${filter.toDisplayLabel()} filter preview",
-                                modifier = Modifier.fillMaxSize(),
-                                contentScale = ContentScale.Crop,
-                            )
-                        }
-                    }
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(18.dp),
+                        color = AccentGreen,
+                        trackColor = Color.White.copy(alpha = 0.14f),
+                        strokeWidth = 2.dp,
+                    )
                     Text(
-                        text = filter.toDisplayLabel(),
-                        color = if (isSelected) Color.White else Color.White.copy(alpha = 0.78f),
+                        text = "Analyzing the page to tune each filter.",
+                        color = Color.White.copy(alpha = 0.82f),
                         style = MaterialTheme.typography.labelLarge,
                     )
+                }
+            }
+        }
+
+        LazyRow(
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            contentPadding = PaddingValues(horizontal = 2.dp),
+        ) {
+            items(PageFilterPreset.entries) { filter ->
+                val isSelected = selectedFilter == filter
+                Surface(
+                    modifier = Modifier
+                        .width(112.dp)
+                        .clickable { onSelectFilter(filter) },
+                    color = if (isSelected) Color(0xFF112922) else Color(0xFF111315),
+                    shape = RoundedCornerShape(20.dp),
+                    border = BorderStroke(
+                        width = 1.dp,
+                        color = if (isSelected) AccentGreen else Color.White.copy(alpha = 0.08f),
+                    ),
+                ) {
+                    Column(
+                        modifier = Modifier.padding(10.dp),
+                        verticalArrangement = Arrangement.spacedBy(10.dp),
+                    ) {
+                        Surface(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(112.dp),
+                            color = Color(0xFF1C2023),
+                            shape = RoundedCornerShape(16.dp),
+                        ) {
+                            val preview = previewState.previews[filter]
+                            if (preview == null) {
+                                Box(
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentAlignment = Alignment.Center,
+                                ) {
+                                    Text(
+                                        text = filter.shortLabel(),
+                                        color = Color.White.copy(alpha = 0.72f),
+                                        style = MaterialTheme.typography.labelLarge,
+                                    )
+                                }
+                            } else {
+                                Image(
+                                    bitmap = preview,
+                                    contentDescription = "${filter.toDisplayLabel()} filter preview",
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentScale = ContentScale.Crop,
+                                )
+                            }
+                        }
+                        Text(
+                            text = filter.toDisplayLabel(),
+                            color = if (isSelected) Color.White else Color.White.copy(alpha = 0.78f),
+                            style = MaterialTheme.typography.labelLarge,
+                        )
+                    }
                 }
             }
         }
@@ -824,40 +854,65 @@ private fun decodeEditorBitmap(
     if (oriented !== decoded) {
         decoded.recycle()
     }
-    return rotateBitmap(oriented, normalizeRotation(userRotationDegrees))
+return rotateBitmap(oriented, normalizeRotation(userRotationDegrees))
 }
+
+private data class FilterPreviewState(
+    val isLoading: Boolean,
+    val previews: Map<PageFilterPreset, ImageBitmap>,
+)
 
 @Composable
 private fun rememberFilterPreviewBitmaps(
     rawImagePath: String?,
     fallbackImagePath: String?,
     rotationDegrees: Int,
-): androidx.compose.runtime.State<Map<PageFilterPreset, ImageBitmap>> = produceState(
-    initialValue = emptyMap(),
+): androidx.compose.runtime.State<FilterPreviewState> = produceState(
+    initialValue = FilterPreviewState(
+        isLoading = true,
+        previews = emptyMap(),
+    ),
     rawImagePath,
     fallbackImagePath,
     rotationDegrees,
 ) {
     value = withContext(Dispatchers.IO) {
-        val sourcePath = rawImagePath ?: fallbackImagePath ?: return@withContext emptyMap()
+        val sourcePath = rawImagePath ?: fallbackImagePath ?: return@withContext FilterPreviewState(
+            isLoading = false,
+            previews = emptyMap(),
+        )
         val baseBitmap = decodeEditorBitmap(
             path = sourcePath,
             userRotationDegrees = rotationDegrees,
             maxDimension = 360,
-        ) ?: return@withContext emptyMap()
+        ) ?: return@withContext FilterPreviewState(
+            isLoading = false,
+            previews = emptyMap(),
+        )
         val previewBitmap = createFilterPreviewSource(baseBitmap)
         if (previewBitmap !== baseBitmap) {
             baseBitmap.recycle()
         }
 
         try {
-            PageFilterPreset.entries.associateWith { filter ->
+            val analysis = runCatching {
+                OpenCvPageFilterProcessor.analyze(previewBitmap)
+            }.getOrNull()
+            val previews = PageFilterPreset.entries.associateWith { filter ->
                 runCatching {
-                    OpenCvPageFilterProcessor.apply(previewBitmap, filter).asImageBitmap()
+                    if (analysis != null) {
+                        OpenCvPageFilterProcessor.apply(previewBitmap, filter, analysis).asImageBitmap()
+                    } else {
+                        OpenCvPageFilterProcessor.apply(previewBitmap, filter).asImageBitmap()
+                    }
                 }.getOrElse {
                     previewBitmap.copy(Bitmap.Config.ARGB_8888, false).asImageBitmap()
                 }
             }
+            FilterPreviewState(
+                isLoading = false,
+                previews = previews,
+            )
         } finally {
             previewBitmap.recycle()
         }

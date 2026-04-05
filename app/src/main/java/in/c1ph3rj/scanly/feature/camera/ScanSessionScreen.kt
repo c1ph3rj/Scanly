@@ -43,6 +43,7 @@ import androidx.compose.material.icons.filled.Timer
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -533,7 +534,7 @@ private fun CameraBottomDock(
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     DockPill(
-                        label = if (uiState.captureInProgress) "Saving" else if (uiState.isReplacementMode) "Retake" else "Scan",
+                        label = if (uiState.captureInProgress) "Processing" else if (uiState.isReplacementMode) "Retake" else "Scan",
                         icon = Icons.Filled.CameraAlt,
                     )
                     SpacerDock()
@@ -583,7 +584,14 @@ private fun CaptureButton(
                 },
             ) {
                 Box(contentAlignment = Alignment.Center) {
-                    if (replacement) {
+                    if (busy) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(28.dp),
+                            color = Color.Black,
+                            trackColor = Color.Black.copy(alpha = 0.2f),
+                            strokeWidth = 3.dp,
+                        )
+                    } else if (replacement) {
                         androidx.compose.material3.Icon(
                             imageVector = Icons.Filled.Refresh,
                             contentDescription = "Replace page",

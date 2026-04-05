@@ -2,8 +2,8 @@ package `in`.c1ph3rj.scanly.core.ui
 
 import android.graphics.BitmapFactory
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectTransformGestures
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Refresh
@@ -25,6 +26,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,6 +35,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.TransformOrigin
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
@@ -53,7 +57,7 @@ fun ZoomableImageDialog(
 ) {
     var scale by remember(imagePath) { mutableStateOf(1f) }
     var offset by remember(imagePath) { mutableStateOf(Offset.Zero) }
-    val zoomActive = scale > 1.02f || offset != Offset.Zero
+    val zoomActive = scale > 1.02f
 
     Dialog(
         onDismissRequest = onDismiss,
@@ -172,65 +176,53 @@ private fun ZoomableImageCanvas(
         )
     }
 
+    val currentScale by rememberUpdatedState(scale)
+    val currentOffset by rememberUpdatedState(offset)
+    val currentOnScaleChange by rememberUpdatedState(onScaleChange)
+    val currentOnOffsetChange by rememberUpdatedState(onOffsetChange)
+    val currentFittedImageSize by rememberUpdatedState(fittedImageSize)
+    val currentContainerSize by rememberUpdatedState(containerSize)
+
     Box(
         modifier = modifier
-            .background(Color.Black)
             .onSizeChanged { containerSize = it }
-            .pointerInput(imageBitmap, containerSize, fittedImageSize) {
-                detectTransformGestures { centroid, pan, gestureZoom, _ ->
-                    val currentScale = scale
-                    val newScale = (currentScale * gestureZoom).coerceIn(1f, 6f)
-                    val unclampedOffset = if (newScale <= 1f) {
-                        Offset.Zero
+            .background(Color.Black)
+            .clipToBounds()
+            .combinedClickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+                onClick = {},
+                onDoubleClick = {
+                    if (currentScale > MIN_SCALE) {
+                        currentOnScaleChange(MIN_SCALE)
+                        currentOnOffsetChange(Offset.Zero)
                     } else {
-                        val containerCenter = Offset(
-                            x = containerSize.width / 2f,
-                            y = containerSize.height / 2f,
-                        )
-                        val centroidRelativeToCenter = centroid - containerCenter
-                        val scaleFactor = newScale / currentScale
-                        centroidRelativeToCenter + pan - ((centroidRelativeToCenter - offset) * scaleFactor)
+                        currentOnScaleChange(3f)
+                        currentOnOffsetChange(Offset.Zero)
                     }
-                    onScaleChange(newScale)
-                    onOffsetChange(
+                },
+            )
+            .pointerInput(Unit) {
+                detectTransformGestures(panZoomLock = true) { centroid, pan, zoom, _ ->
+                    val oldScale = currentScale
+                    val newScale = (oldScale * zoom).coerceIn(MIN_SCALE, MAX_SCALE)
+                    val factor = newScale / oldScale
+
+                    val focus = centroid - Offset(size.width / 2f, size.height / 2f)
+                    val targetOffset = currentOffset * factor + focus * (1f - factor) + pan
+
+                    currentOnScaleChange(newScale)
+                    currentOnOffsetChange(
                         clampPanOffset(
-                        offset = unclampedOffset,
-                        scale = newScale,
-                        fittedImageSize = fittedImageSize,
-                        containerSize = containerSize,
+                            offset = targetOffset,
+                            scale = newScale,
+                            fittedImageSize = currentFittedImageSize,
+                            containerSize = currentContainerSize,
                         ),
                     )
                 }
-            }
-            .pointerInput(imageBitmap, containerSize, fittedImageSize) {
-                detectTapGestures(
-                    onDoubleTap = { tapOffset ->
-                        if (scale > 1f) {
-                            onScaleChange(1f)
-                            onOffsetChange(Offset.Zero)
-                        } else {
-                            val targetScale = 2.4f
-                            val containerCenter = Offset(
-                                x = containerSize.width / 2f,
-                                y = containerSize.height / 2f,
-                            )
-                            val tapRelativeToCenter = tapOffset - containerCenter
-                            onScaleChange(targetScale)
-                            onOffsetChange(
-                                clampPanOffset(
-                                offset = Offset(
-                                    x = -(tapRelativeToCenter.x * 1.4f),
-                                    y = -(tapRelativeToCenter.y * 1.4f),
-                                ),
-                                scale = targetScale,
-                                fittedImageSize = fittedImageSize,
-                                containerSize = containerSize,
-                                ),
-                            )
-                        }
-                    },
-                )
             },
+        contentAlignment = Alignment.Center,
     ) {
         if (containerSize != IntSize.Zero) {
             androidx.compose.foundation.Image(
@@ -238,7 +230,6 @@ private fun ZoomableImageCanvas(
                 contentDescription = null,
                 contentScale = ContentScale.Fit,
                 modifier = Modifier
-                    .align(Alignment.Center)
                     .size(
                         width = with(density) { fittedImageSize.width.toDp() },
                         height = with(density) { fittedImageSize.height.toDp() },
@@ -248,6 +239,7 @@ private fun ZoomableImageCanvas(
                         scaleY = scale
                         translationX = offset.x
                         translationY = offset.y
+                        transformOrigin = TransformOrigin.Center
                     },
             )
         }
@@ -263,6 +255,9 @@ private fun ZoomableImageCanvas(
         )
     }
 }
+
+private const val MIN_SCALE = 1f
+private const val MAX_SCALE = 6f
 
 private fun computeFittedImageSize(
     containerSize: IntSize,
@@ -288,16 +283,20 @@ private fun clampPanOffset(
     fittedImageSize: FittedImageSize,
     containerSize: IntSize,
 ): Offset {
-    if (scale <= 1f || containerSize == IntSize.Zero) {
+    if (scale <= MIN_SCALE || containerSize == IntSize.Zero) {
         return Offset.Zero
     }
     val scaledWidth = fittedImageSize.width * scale
     val scaledHeight = fittedImageSize.height * scale
-    val maxX = ((scaledWidth - containerSize.width) / 2f).coerceAtLeast(0f)
-    val maxY = ((scaledHeight - containerSize.height) / 2f).coerceAtLeast(0f)
     return Offset(
-        x = offset.x.coerceIn(-maxX, maxX),
-        y = offset.y.coerceIn(-maxY, maxY),
+        x = offset.x.coerceIn(
+            minimumValue = -((scaledWidth - containerSize.width) / 2f).coerceAtLeast(0f),
+            maximumValue = ((scaledWidth - containerSize.width) / 2f).coerceAtLeast(0f),
+        ),
+        y = offset.y.coerceIn(
+            minimumValue = -((scaledHeight - containerSize.height) / 2f).coerceAtLeast(0f),
+            maximumValue = ((scaledHeight - containerSize.height) / 2f).coerceAtLeast(0f),
+        ),
     )
 }
 
