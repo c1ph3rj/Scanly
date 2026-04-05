@@ -14,6 +14,7 @@ import `in`.c1ph3rj.scanly.domain.model.ScanPage
 import `in`.c1ph3rj.scanly.domain.usecase.FinalizeCapturedPageUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveDocumentPagesUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveDocumentUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.ObserveShowDetectionStatsUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.PreparePageCaptureUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.PrepareReplacementCaptureUseCase
 import kotlinx.coroutines.Dispatchers
@@ -37,6 +38,7 @@ data class ScanSessionUiState(
     val missingDocument: Boolean = false,
     val replacementPageId: String? = null,
     val liveDetection: LiveDetectionUiState = LiveDetectionUiState(),
+    val showDetectionStats: Boolean = true,
 ) {
     val replacementPage: ScanPage?
         get() = pages.firstOrNull { page -> page.id == replacementPageId }
@@ -61,6 +63,7 @@ class ScanSessionViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     observeDocumentUseCase: ObserveDocumentUseCase,
     observeDocumentPagesUseCase: ObserveDocumentPagesUseCase,
+    observeShowDetectionStatsUseCase: ObserveShowDetectionStatsUseCase,
     private val documentCornerDetector: DocumentCornerDetector,
     private val preparePageCaptureUseCase: PreparePageCaptureUseCase,
     private val prepareReplacementCaptureUseCase: PrepareReplacementCaptureUseCase,
@@ -111,6 +114,13 @@ class ScanSessionViewModel @Inject constructor(
                     if (launchedInReplacementMode && selectedReplacementId == initialReplacementPageId) {
                         _events.emit(ScanSessionEvent.NavigateUp)
                     }
+                }
+            }
+        }
+        viewModelScope.launch {
+            observeShowDetectionStatsUseCase().collectLatest { showDetectionStats ->
+                _uiState.update { current ->
+                    current.copy(showDetectionStats = showDetectionStats)
                 }
             }
         }

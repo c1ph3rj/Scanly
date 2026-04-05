@@ -126,6 +126,9 @@ fun ScanlyNavHost(
         ) {
             ScanSessionRoute(
                 onNavigateUp = navController::navigateUp,
+                onOpenDocument = { documentId ->
+                    navController.navigate(DocumentDestination.route(documentId))
+                },
             )
         }
         composable(

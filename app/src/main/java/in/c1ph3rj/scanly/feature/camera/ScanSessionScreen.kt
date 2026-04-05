@@ -14,6 +14,13 @@ import androidx.camera.core.ImageProxy
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -23,23 +30,28 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.CameraAlt
+import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.FlashOff
 import androidx.compose.material.icons.filled.FlashOn
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material.icons.filled.Timer
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -68,6 +80,7 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -110,6 +123,7 @@ object ScanSessionDestination {
 @Composable
 fun ScanSessionRoute(
     onNavigateUp: () -> Unit,
+    onOpenDocument: (String) -> Unit,
     viewModel: ScanSessionViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -173,6 +187,9 @@ fun ScanSessionRoute(
             permissionLauncher.launch(Manifest.permission.CAMERA)
         },
         onNavigateUp = onNavigateUp,
+        onOpenDocument = {
+            uiState.document?.id?.let(onOpenDocument)
+        },
         onCapture = viewModel::requestCapture,
         onRetakePageSelection = viewModel::onReplacementPageSelected,
         onClearRetakeSelection = viewModel::clearReplacementSelection,
@@ -207,6 +224,7 @@ fun ScanSessionScreen(
     hasCameraPermission: Boolean,
     onRequestPermission: () -> Unit,
     onNavigateUp: () -> Unit,
+    onOpenDocument: () -> Unit,
     onCapture: () -> Unit,
     onRetakePageSelection: (String?) -> Unit,
     onClearRetakeSelection: () -> Unit,
@@ -217,9 +235,13 @@ fun ScanSessionScreen(
     onTorchToggle: () -> Unit,
     onCameraReady: (ImageCapture, PreviewView, Camera) -> Unit,
 ) {
+    var pagesVisible by rememberSaveable { mutableStateOf(false) }
+    var quickControlsVisible by rememberSaveable { mutableStateOf(false) }
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         containerColor = Color.Black,
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState)
         },
@@ -264,6 +286,8 @@ fun ScanSessionScreen(
                 CameraTopBar(
                     uiState = uiState,
                     onNavigateUp = onNavigateUp,
+                    quickControlsVisible = quickControlsVisible,
+                    onQuickControlsToggle = { quickControlsVisible = !quickControlsVisible },
                     onClearRetakeSelection = onClearRetakeSelection,
                     onAutoCaptureEnabledChange = onAutoCaptureEnabledChange,
                     torchEnabled = torchEnabled,
@@ -272,12 +296,15 @@ fun ScanSessionScreen(
                     modifier = Modifier
                         .align(Alignment.TopCenter)
                         .statusBarsPadding()
-                        .padding(horizontal = 16.dp, vertical = 12.dp),
+                        .padding(horizontal = 16.dp, vertical = 6.dp),
                 )
                 CameraBottomDock(
                     uiState = uiState,
                     onCapture = onCapture,
                     onRetakePageSelection = onRetakePageSelection,
+                    pagesVisible = pagesVisible,
+                    onPagesVisibilityToggle = { pagesVisible = !pagesVisible },
+                    onOpenDocument = onOpenDocument,
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
                         .fillMaxWidth()
@@ -293,6 +320,8 @@ fun ScanSessionScreen(
 private fun CameraTopBar(
     uiState: ScanSessionUiState,
     onNavigateUp: () -> Unit,
+    quickControlsVisible: Boolean,
+    onQuickControlsToggle: () -> Unit,
     onClearRetakeSelection: () -> Unit,
     onAutoCaptureEnabledChange: (Boolean) -> Unit,
     torchEnabled: Boolean,
@@ -300,63 +329,98 @@ private fun CameraTopBar(
     onTorchToggle: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Row(
+    Column(
         modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.Top,
+        verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
-        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-            ChromeIconButton(
-                icon = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = "Back",
-                onClick = onNavigateUp,
-                containerColor = Color.Black.copy(alpha = 0.48f),
-                contentColor = Color.White,
-            )
-            MetricChip(
-                label = uiState.document?.title ?: "Scan session",
-                containerColor = Color.Black.copy(alpha = 0.38f),
-                contentColor = Color.White,
-            )
-        }
-
-        Column(
-            horizontalAlignment = Alignment.End,
-            verticalArrangement = Arrangement.spacedBy(10.dp),
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Row(
-                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                modifier = Modifier.weight(1f),
                 verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                MetricChip(
-                    label = if (uiState.isReplacementMode) {
-                        uiState.replacementPage?.let { "Retake P${it.pageIndex + 1}" } ?: "Retake"
-                    } else {
-                        "${uiState.pages.size} pages"
-                    },
-                    icon = if (uiState.isReplacementMode) Icons.Filled.Refresh else null,
+                ChromeIconButton(
+                    icon = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "Back",
+                    onClick = onNavigateUp,
                     containerColor = Color.Black.copy(alpha = 0.48f),
                     contentColor = Color.White,
                 )
-                AutoCaptureChip(
-                    enabled = uiState.liveDetection.autoCaptureEnabled,
-                    onClick = {
-                        onAutoCaptureEnabledChange(!uiState.liveDetection.autoCaptureEnabled)
-                    },
+                Text(
+                    text = uiState.document?.title ?: "Scan session",
+                    modifier = Modifier.weight(1f),
+                    style = MaterialTheme.typography.titleLarge,
+                    color = Color.White,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                 )
             }
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(10.dp),
-                verticalAlignment = Alignment.CenterVertically,
+            ChromeIconButton(
+                icon = Icons.Filled.Tune,
+                contentDescription = if (quickControlsVisible) "Hide quick controls" else "Show quick controls",
+                onClick = onQuickControlsToggle,
+                containerColor = if (quickControlsVisible) OverlayBlue.copy(alpha = 0.88f) else Color.Black.copy(alpha = 0.48f),
+                contentColor = if (quickControlsVisible) Color.Black else Color.White,
+            )
+        }
+
+        AnimatedVisibility(
+            visible = quickControlsVisible,
+            enter = slideInVertically(initialOffsetY = { fullHeight -> -fullHeight }) + fadeIn(),
+            exit = slideOutVertically(targetOffsetY = { fullHeight -> -fullHeight }) + fadeOut(),
+        ) {
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                color = Color.Black.copy(alpha = 0.58f),
+                shape = MaterialTheme.shapes.extraLarge,
+                border = BorderStroke(1.dp, Color.White.copy(alpha = 0.08f)),
             ) {
-                if (uiState.isReplacementMode) {
-                    CancelRetakeChip(onClick = onClearRetakeSelection)
+                Column(
+                    modifier = Modifier.padding(14.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(10.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        MetricChip(
+                            label = if (uiState.isReplacementMode) {
+                                uiState.replacementPage?.let { "Retake P${it.pageIndex + 1}" } ?: "Retake"
+                            } else {
+                                "${uiState.pages.size} pages"
+                            },
+                            icon = if (uiState.isReplacementMode) Icons.Filled.Refresh else Icons.Filled.Description,
+                            containerColor = Color.Black.copy(alpha = 0.44f),
+                            contentColor = Color.White,
+                        )
+                        AutoCaptureChip(
+                            enabled = uiState.liveDetection.autoCaptureEnabled,
+                            onClick = {
+                                onAutoCaptureEnabledChange(!uiState.liveDetection.autoCaptureEnabled)
+                            },
+                        )
+                    }
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(10.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        if (uiState.isReplacementMode) {
+                            CancelRetakeChip(onClick = onClearRetakeSelection)
+                        }
+                        FlashChip(
+                            enabled = torchEnabled,
+                            available = torchAvailable,
+                            onClick = onTorchToggle,
+                        )
+                    }
                 }
-                FlashChip(
-                    enabled = torchEnabled,
-                    available = torchAvailable,
-                    onClick = onTorchToggle,
-                )
             }
         }
     }
@@ -450,22 +514,26 @@ private fun CameraBottomDock(
     uiState: ScanSessionUiState,
     onCapture: () -> Unit,
     onRetakePageSelection: (String?) -> Unit,
+    pagesVisible: Boolean,
+    onPagesVisibilityToggle: () -> Unit,
+    onOpenDocument: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
-        Box(modifier = Modifier.fillMaxWidth()) {
-            DetectionMeta(
-                liveDetection = uiState.liveDetection,
-                modifier = Modifier
-                    .align(Alignment.CenterStart)
-                    .padding(horizontal = 16.dp),
-            )
-        }
-        if (uiState.pages.isNotEmpty()) {
+    Box(modifier = modifier) {
+        val trayVisible = uiState.pages.isNotEmpty() && pagesVisible
+        val detectionBottomPadding = if (trayVisible) 246.dp else 132.dp
+
+        AnimatedVisibility(
+            visible = trayVisible,
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .fillMaxWidth()
+                .padding(bottom = 132.dp),
+            enter = fadeIn() + expandVertically(expandFrom = Alignment.Bottom),
+            exit = fadeOut() + shrinkVertically(shrinkTowards = Alignment.Bottom),
+        ) {
             LazyRow(
+                modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
                 contentPadding = PaddingValues(horizontal = 16.dp),
             ) {
@@ -513,42 +581,113 @@ private fun CameraBottomDock(
                 }
             }
         }
+        DetectionMeta(
+            liveDetection = uiState.liveDetection,
+            showStats = uiState.showDetectionStats,
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .padding(start = 16.dp, bottom = detectionBottomPadding),
+        )
+        Surface(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            color = Color.Black.copy(alpha = 0.58f),
+            shape = RoundedCornerShape(28.dp),
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp, vertical = 12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                DockActionButton(
+                    icon = if (pagesVisible) Icons.Filled.VisibilityOff else Icons.Filled.Visibility,
+                    label = "Pages",
+                    onClick = onPagesVisibilityToggle,
+                    modifier = Modifier.weight(1f),
+                    enabled = uiState.pages.isNotEmpty(),
+                    active = pagesVisible && uiState.pages.isNotEmpty(),
+                )
+                CaptureButton(
+                    busy = uiState.captureInProgress,
+                    replacement = uiState.isReplacementMode,
+                    onClick = onCapture,
+                )
+                DockActionButton(
+                    icon = Icons.Filled.Description,
+                    label = "Preview",
+                    onClick = onOpenDocument,
+                    modifier = Modifier.weight(1f),
+                    enabled = uiState.document != null && !uiState.captureInProgress,
+                    emphasized = true,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun DockActionButton(
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    label: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    active: Boolean = false,
+    emphasized: Boolean = false,
+) {
+    val containerColor = when {
+        emphasized -> if (enabled) OverlayBlue.copy(alpha = 0.92f) else OverlayBlue.copy(alpha = 0.26f)
+        active -> OverlayBlue.copy(alpha = 0.18f)
+        else -> Color.Black.copy(alpha = 0.48f)
+    }
+    val borderColor = when {
+        emphasized -> OverlayBlue.copy(alpha = 0.95f)
+        active -> OverlayBlue.copy(alpha = 0.95f)
+        enabled -> Color.White.copy(alpha = 0.12f)
+        else -> Color.White.copy(alpha = 0.06f)
+    }
+    val contentColor = when {
+        emphasized -> if (enabled) Color.Black else Color.Black.copy(alpha = 0.45f)
+        active -> OverlayBlue
+        enabled -> Color.White
+        else -> Color.White.copy(alpha = 0.45f)
+    }
+
+    Surface(
+        modifier = modifier
+            .heightIn(min = 58.dp)
+            .clickable(enabled = enabled, onClick = onClick),
+        color = containerColor,
+        shape = MaterialTheme.shapes.large,
+        border = BorderStroke(1.dp, borderColor),
+    ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-                .padding(top = 6.dp),
+                .padding(horizontal = 14.dp, vertical = 11.dp),
+            contentAlignment = Alignment.Center,
         ) {
-            Surface(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 22.dp),
-                color = Color.Black.copy(alpha = 0.58f),
-                shape = RoundedCornerShape(28.dp),
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 16.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                ) {
-                    DockPill(
-                        label = if (uiState.captureInProgress) "Processing" else if (uiState.isReplacementMode) "Retake" else "Scan",
-                        icon = Icons.Filled.CameraAlt,
-                    )
-                    SpacerDock()
-                    DockPill(
-                        label = uiState.liveDetection.compactStatusLabel(),
-                    )
-                }
+                androidx.compose.material3.Icon(
+                    imageVector = icon,
+                    contentDescription = label,
+                    tint = contentColor,
+                )
+                Text(
+                    text = label,
+                    style = MaterialTheme.typography.labelLarge,
+                    color = contentColor,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
             }
-            CaptureButton(
-                busy = uiState.captureInProgress,
-                replacement = uiState.isReplacementMode,
-                onClick = onCapture,
-                modifier = Modifier.align(Alignment.TopCenter),
-            )
         }
     }
 }
@@ -607,8 +746,12 @@ private fun CaptureButton(
 @Composable
 private fun DetectionMeta(
     liveDetection: LiveDetectionUiState,
+    showStats: Boolean,
     modifier: Modifier = Modifier,
 ) {
+    if (!showStats) {
+        return
+    }
     if (liveDetection.confidence == null || liveDetection.inferenceTimeMillis == null) {
         return
     }
@@ -625,41 +768,6 @@ private fun DetectionMeta(
             color = Color.White,
         )
     }
-}
-
-@Composable
-private fun DockPill(
-    label: String,
-    icon: androidx.compose.ui.graphics.vector.ImageVector? = null,
-) {
-    Surface(
-        color = Color.White.copy(alpha = 0.08f),
-        shape = MaterialTheme.shapes.large,
-    ) {
-        Row(
-            modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            if (icon != null) {
-                androidx.compose.material3.Icon(
-                    imageVector = icon,
-                    contentDescription = null,
-                    tint = Color.White,
-                )
-            }
-            Text(
-                text = label,
-                style = MaterialTheme.typography.labelLarge,
-                color = Color.White,
-            )
-        }
-    }
-}
-
-@Composable
-private fun SpacerDock() {
-    Box(modifier = Modifier.width(92.dp))
 }
 
 @Composable

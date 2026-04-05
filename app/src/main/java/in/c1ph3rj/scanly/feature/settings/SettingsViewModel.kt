@@ -5,8 +5,10 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import `in`.c1ph3rj.scanly.domain.model.SettingsContent
 import `in`.c1ph3rj.scanly.domain.model.ThemeMode
+import `in`.c1ph3rj.scanly.domain.usecase.ObserveShowDetectionStatsUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.LoadSettingsContentUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveThemeModeUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.SetShowDetectionStatsUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.SetThemeModeUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,6 +22,7 @@ import javax.inject.Inject
 
 data class SettingsUiState(
     val themeMode: ThemeMode = ThemeMode.SYSTEM,
+    val showDetectionStats: Boolean = true,
     val content: SettingsContent? = null,
     val isLoading: Boolean = true,
 )
@@ -31,7 +34,9 @@ sealed interface SettingsEvent {
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     observeThemeModeUseCase: ObserveThemeModeUseCase,
+    observeShowDetectionStatsUseCase: ObserveShowDetectionStatsUseCase,
     private val setThemeModeUseCase: SetThemeModeUseCase,
+    private val setShowDetectionStatsUseCase: SetShowDetectionStatsUseCase,
     private val loadSettingsContentUseCase: LoadSettingsContentUseCase,
 ) : ViewModel() {
 
@@ -45,6 +50,13 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch {
             observeThemeModeUseCase().collectLatest { themeMode ->
                 _uiState.update { current -> current.copy(themeMode = themeMode) }
+            }
+        }
+        viewModelScope.launch {
+            observeShowDetectionStatsUseCase().collectLatest { showDetectionStats ->
+                _uiState.update { current ->
+                    current.copy(showDetectionStats = showDetectionStats)
+                }
             }
         }
         refresh()
@@ -74,6 +86,17 @@ class SettingsViewModel @Inject constructor(
     fun setThemeMode(themeMode: ThemeMode) {
         viewModelScope.launch {
             when (val result = setThemeModeUseCase(themeMode)) {
+                is `in`.c1ph3rj.scanly.core.common.ScanlyResult.Success -> Unit
+                is `in`.c1ph3rj.scanly.core.common.ScanlyResult.Failure -> {
+                    _events.emit(SettingsEvent.ShowMessage(result.error.message))
+                }
+            }
+        }
+    }
+
+    fun setShowDetectionStats(enabled: Boolean) {
+        viewModelScope.launch {
+            when (val result = setShowDetectionStatsUseCase(enabled)) {
                 is `in`.c1ph3rj.scanly.core.common.ScanlyResult.Success -> Unit
                 is `in`.c1ph3rj.scanly.core.common.ScanlyResult.Failure -> {
                     _events.emit(SettingsEvent.ShowMessage(result.error.message))
