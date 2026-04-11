@@ -1,14 +1,10 @@
 *.iml
-.gradle
+.gradle/
 /local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
+.idea/
+.kotlin/
 .DS_Store
-/build
+**/build/
 /captures
 .externalNativeBuild
 .cxx
@@ -20,3 +16,6 @@ local.properties
 /app/src/main/assets/validation/images/*.bmp
 /app/src/main/assets/validation/images/*.webp
 /app/src/main/assets/validation/expected/*.corners.json
+*.jks
+*.keystore
+*.log

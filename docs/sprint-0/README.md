@@ -1,18 +1,14 @@
 # Sprint 0
 
-Sprint 0 is about proving the model and runtime path before we commit the rest of the app to it.
+Sprint 0 is retained as a historical validation archive.
 
-Artifacts in this folder:
+This folder captures the initial model and runtime investigation that informed the mobile scanner design.
 
-- `adrs/`: architecture decisions accepted for the first implementation phase
-- `benchmark-results.md`: observed on-device runtime and validation findings
-- `model-contract.md`: expected model output and validation file format
-- `performance-budget.md`: latency, accuracy, and memory targets
-- `user-inputs-required.md`: the exact items still needed from you
+Contents:
 
-Code artifacts added with this sprint:
+- `benchmark-results.md` – archived device and inference observations
+- `model-contract.md` – archived corner-order and tensor contract notes
+- `performance-budget.md` – archived latency and memory targets
+- `user-inputs-required.md` – archived checklist of inputs that were needed during validation
 
-- lightweight ML contract types in `app/src/main/java/in/c1ph3rj/scanly/core/ml/`
-- a readiness screen in `app/src/main/java/in/c1ph3rj/scanly/feature/readiness/`
-- placeholder asset locations under `app/src/main/assets/`
-- geometry validation tests for ordered document corners
+Use these files as background context only; current product documentation lives in `README.md` and `implementation.md`.

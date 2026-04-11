@@ -1,6 +1,6 @@
 # Performance Budget
 
-These are the baseline targets for Scanly v1.
+Archived note: these were the baseline targets used during Sprint 0 planning and validation.
 
 ## Preview inference
 

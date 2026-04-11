@@ -2,8 +2,8 @@
   {
     "id": "scanly_app",
     "name": "Scanly",
-    "summary": "The application source for Scanly is intended to be published as an open-source scanner project by the developer.",
-    "license": "Open-source project",
+    "summary": "The application source code for Scanly is distributed under AGPL-3.0-only.",
+    "license": "AGPL-3.0-only",
     "websiteUrl": "https://c1ph3rj.in"
   },
   {

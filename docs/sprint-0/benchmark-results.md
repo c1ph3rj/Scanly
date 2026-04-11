@@ -1,13 +1,13 @@
 # Benchmark Results
 
-This file records real device findings from the Sprint 0 runtime probe.
+Archived note: this file records the original Sprint 0 runtime probe and should be treated as historical context.
 
 ## Current conclusion
 
-- the exported model loads successfully on Android with LiteRT
-- the deployed input size is `320 x 320`
-- the deployed output tensor is `FLOAT32 [1, 17, 2100]`
-- the TensorFlow/LiteRT export uses normalized decoded keypoints
+- the exported model loaded successfully on Android with LiteRT during the Sprint 0 investigation
+- the deployed input size was `320 x 320`
+- the deployed output tensor was `FLOAT32 [1, 17, 2100]`
+- the TensorFlow/LiteRT export used normalized decoded keypoints
 - after fixing the Android-side remap logic, validation quality became reasonable enough to continue
 
 ## Device results

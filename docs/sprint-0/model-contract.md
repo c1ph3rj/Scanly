@@ -1,5 +1,7 @@
 # Model Contract
 
+Archived note: this file preserves the original corner-detection contract used during early model validation.
+
 ## Current known facts
 
 - Training task: pose estimation
@@ -48,4 +50,4 @@ Suggested JSON shape:
 
 ## Export notes
 
-The repo now includes `tools/export_yolo_pose_to_tflite.py` as a starting point for producing the mobile artifact. If Windows export is unstable, run the export in WSL, Linux, or Colab and copy the resulting `.tflite` file into the assets location above.
+If you regenerate a mobile artifact, keep the export process documented alongside the model version, tensor shape, and corner-order contract.

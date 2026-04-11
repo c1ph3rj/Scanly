@@ -1,6 +1,6 @@
 # Your Inputs Required
 
-These are the remaining items that only you can provide for Sprint 0.
+Archived note: this file lists the inputs that were needed during the original Sprint 0 validation pass.
 
 ## 1. Exported model artifact
 
