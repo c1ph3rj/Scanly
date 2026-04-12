@@ -7,6 +7,7 @@ Thanks for your interest in contributing.
 - Read `README.md` to understand the project scope.
 - Read `implementation.md` for the current architecture snapshot.
 - Review `OPEN_SOURCE_NEXT_STEPS.md` for public-release tasks and repo hygiene.
+- Review `SECURITY.md` if you are working on anything that affects vulnerability handling or disclosure.
 
 ## Development workflow
 

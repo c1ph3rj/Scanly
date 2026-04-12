@@ -16,6 +16,7 @@ local.properties
 /app/src/main/assets/validation/images/*.bmp
 /app/src/main/assets/validation/images/*.webp
 /app/src/main/assets/validation/expected/*.corners.json
+/app/src/main/assets/adi-registration.properties
 *.jks
 *.keystore
 *.log

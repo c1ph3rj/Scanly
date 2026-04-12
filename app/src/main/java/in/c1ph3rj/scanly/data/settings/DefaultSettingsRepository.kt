@@ -161,6 +161,6 @@ class DefaultSettingsRepository @Inject constructor(
         val showDetectionStatsKey = booleanPreferencesKey("show_detection_stats")
         const val faqsAssetPath = "settings/faqs.json"
         const val licensesAssetPath = "settings/licenses.json"
-        const val developerWebsite = "https://c1ph3rj.in"
+        const val developerWebsite = ""
     }
 }

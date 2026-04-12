@@ -191,11 +191,11 @@ fun SettingsScreen(
                         icon = Icons.Filled.Article,
                     ) {
                         Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                            content?.developerWebsite?.let { website ->
+                            content?.developerWebsite?.takeIf { it.isNotBlank() }?.let { website ->
                                 SettingsLinkRow(
                                     icon = Icons.Filled.Public,
-                                    title = "Developer",
-                                    subtitle = "c1ph3rj.in",
+                                    title = "Project website",
+                                    subtitle = "Open-source project",
                                     onClick = { onOpenWebsite(website) },
                                 )
                             }

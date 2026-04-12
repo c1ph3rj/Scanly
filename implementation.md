@@ -50,12 +50,12 @@ The app currently centers on a local document workflow:
 
 ## Public Release Notes
 
-The codebase is being cleaned for open-source publication:
+The codebase is being prepared for open-source publication and public collaboration:
 
-- README content has been normalized for public readers
-- sprint documents are being reduced to archive summaries
-- repository hygiene rules are being tightened for build and IDE artifacts
-- additional onboarding docs are kept in root-level markdown files
+- README content is normalized for public readers
+- sprint documents are kept as archive summaries
+- repository hygiene rules are tightened for build and IDE artifacts
+- onboarding and support docs are kept in root-level markdown files
 
 ## Recommended Next Technical Focus
 

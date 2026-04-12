@@ -3,8 +3,7 @@
     "id": "scanly_app",
     "name": "Scanly",
     "summary": "The application source code for Scanly is distributed under AGPL-3.0-only.",
-    "license": "AGPL-3.0-only",
-    "websiteUrl": "https://c1ph3rj.in"
+    "license": "AGPL-3.0-only"
   },
   {
     "id": "ultralytics_model",

@@ -1,9 +1,49 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.ksp)
 }
+
+val localProperties = Properties().apply {
+    val localPropertiesFile = rootProject.file("local.properties")
+    if (localPropertiesFile.exists()) {
+        localPropertiesFile.inputStream().use(::load)
+    }
+}
+
+val releaseStoreFile = providers.gradleProperty("SCANLY_RELEASE_STORE_FILE")
+    .orElse(providers.environmentVariable("SCANLY_RELEASE_STORE_FILE"))
+    .orElse(localProperties.getProperty("SCANLY_RELEASE_STORE_FILE") ?: "")
+    .get()
+    .trim()
+
+val releaseStorePassword = providers.gradleProperty("SCANLY_RELEASE_STORE_PASSWORD")
+    .orElse(providers.environmentVariable("SCANLY_RELEASE_STORE_PASSWORD"))
+    .orElse(localProperties.getProperty("SCANLY_RELEASE_STORE_PASSWORD") ?: "")
+    .get()
+    .trim()
+
+val releaseKeyAlias = providers.gradleProperty("SCANLY_RELEASE_KEY_ALIAS")
+    .orElse(providers.environmentVariable("SCANLY_RELEASE_KEY_ALIAS"))
+    .orElse(localProperties.getProperty("SCANLY_RELEASE_KEY_ALIAS") ?: "")
+    .get()
+    .trim()
+
+val releaseKeyPassword = providers.gradleProperty("SCANLY_RELEASE_KEY_PASSWORD")
+    .orElse(providers.environmentVariable("SCANLY_RELEASE_KEY_PASSWORD"))
+    .orElse(localProperties.getProperty("SCANLY_RELEASE_KEY_PASSWORD") ?: "")
+    .get()
+    .trim()
+
+val hasReleaseSigning = listOf(
+    releaseStoreFile,
+    releaseStorePassword,
+    releaseKeyAlias,
+    releaseKeyPassword,
+).all(String::isNotBlank)
 
 android {
     namespace = "in.c1ph3rj.scanly"
@@ -21,15 +61,44 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        ndk {
+            abiFilters += listOf("arm64-v8a", "armeabi-v7a")
+        }
+    }
+
+    signingConfigs {
+        if (hasReleaseSigning) {
+            create("release") {
+                storeFile = rootProject.file(releaseStoreFile)
+                storePassword = releaseStorePassword
+                keyAlias = releaseKeyAlias
+                keyPassword = releaseKeyPassword
+            }
+        }
     }
 
     buildTypes {
-        release {
+        debug {
             isMinifyEnabled = false
+        }
+
+        release {
+            isMinifyEnabled = true
+            isShrinkResources = true
+            if (hasReleaseSigning) {
+                signingConfig = signingConfigs.getByName("release")
+            }
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+        }
+
+        create("verification") {
+            initWith(getByName("release"))
+            signingConfig = signingConfigs.getByName("debug")
+            matchingFallbacks += listOf("release")
         }
     }
     compileOptions {

@@ -2,6 +2,8 @@
 
 Scanly is an offline-first Android document scanner built with Kotlin, Jetpack Compose, and Material 3.
 
+The repository is being prepared as a public open-source project, with the app code, docs, and release notes kept in the open for review and contribution.
+
 The app focuses on a practical scanning workflow:
 
 1. capture a document with the camera
@@ -12,7 +14,7 @@ The app focuses on a practical scanning workflow:
 
 ## Current State
 
-The codebase is already split into a production-style single module app:
+The codebase is organized as a production-style single-module app:
 
 - `:app` is the only Android module
 - entry point: `app/src/main/java/in/c1ph3rj/scanly/MainActivity.kt`
@@ -20,6 +22,13 @@ The codebase is already split into a production-style single module app:
 - UI: Compose + Material 3
 - local data: Room, DataStore, and app-private file storage
 - camera and processing stack: CameraX, LiteRT, and OpenCV-based page processing
+
+## Open Source Notes
+
+- historical sprint notes live under `docs/sprint-*` and should be treated as archive material
+- public collaboration guidance lives in `CONTRIBUTING.md`
+- security reporting guidance lives in `SECURITY.md`
+- release follow-up tasks are tracked in `OPEN_SOURCE_NEXT_STEPS.md`
 
 ## What Scanly Does Today
 
@@ -57,6 +66,7 @@ If you want a release-style verification pass:
 - `LICENSE` – GNU AGPL-3.0-only license for this repository
 - `implementation.md` – current architecture snapshot and technical direction
 - `OPEN_SOURCE_NEXT_STEPS.md` – checklist for publishing and maintaining the repo
+- `SECURITY.md` – vulnerability reporting and disclosure guidance
 - `docs/sprint-0/` through `docs/sprint-8/` – historical sprint notes kept as archive material
 
 ## License
@@ -76,3 +86,6 @@ Third-party dependencies and model assets can have their own license terms. Revi
 ## Contributing
 
 Before sending changes, run the Gradle checks above and keep new code aligned with the existing package structure under `in.c1ph3rj.scanly`.
+
+If you are planning a change that affects public behavior, update the relevant docs in the root of the repository before or alongside the code change.
+

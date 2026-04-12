@@ -1,6 +1,6 @@
 # Open Source Next Steps for Scanly
 
-Use this checklist after the repository is published publicly.
+Use this checklist while finalizing and maintaining the public repository.
 
 ## Release and legal
 
@@ -8,7 +8,7 @@ Use this checklist after the repository is published publicly.
 - [ ] Confirm you are allowed to publish every bundled asset, icon, font, and model file.
 - [ ] Keep third-party license disclosures in `app/src/main/assets/settings/licenses.json` up to date.
 - [ ] Review package names, app name, and any personal or internal identifiers that should stay private.
-- [ ] Decide whether the existing `in.c1ph3rj.scanly` namespace should remain public or be renamed for release.
+- [ ] Keep the `in.c1ph3rj.scanly` namespace stable unless you plan a coordinated public rename.
 
 ## Repository hygiene
 
@@ -34,8 +34,8 @@ Use this checklist after the repository is published publicly.
 
 ## Community setup
 
-- [ ] Add a `CONTRIBUTING.md` if you expect outside contributions.
-- [ ] Add a `SECURITY.md` if you want a responsible disclosure path.
+- [ ] Keep `CONTRIBUTING.md` current if you expect outside contributions.
+- [ ] Keep `SECURITY.md` current if you want a responsible disclosure path.
 - [ ] Decide whether to add issue templates and pull request templates.
 - [ ] Write down your support expectations and release cadence.
 
