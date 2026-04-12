@@ -1,10 +1,12 @@
 # Scanly
 
+<p align="center">
+  <img src="screenshots/scanly-intro.png" alt="Scanly intro screenshot" width="900" />
+</p>
+
 Scanly is an offline-first Android document scanner built with Kotlin, Jetpack Compose, and Material 3.
 
-The repository is being prepared as a public open-source project, with the app code, docs, and release notes kept in the open for review and contribution.
-
-The app focuses on a practical scanning workflow:
+It is designed for a practical, local-only scanning workflow:
 
 1. capture a document with the camera
 2. detect and correct page geometry
@@ -12,39 +14,59 @@ The app focuses on a practical scanning workflow:
 4. store multi-page documents locally
 5. export as PDF or image sets
 
-## Current State
+## Highlights
 
-The codebase is organized as a production-style single-module app:
+- offline-first by default
+- document library and per-document page review
+- manual camera capture with live document guidance
+- page crop, rotate, and filter editing
+- PDF export and image archive export/share flows
+- local preferences, FAQs, and license info
 
-- `:app` is the only Android module
-- entry point: `app/src/main/java/in/c1ph3rj/scanly/MainActivity.kt`
-- app wiring: `ScanlyApplication`, navigation, Hilt modules, feature screens, and domain/data layers live under `app/src/main/java/in/c1ph3rj/scanly/`
-- UI: Compose + Material 3
-- local data: Room, DataStore, and app-private file storage
-- camera and processing stack: CameraX, LiteRT, and OpenCV-based page processing
+## Screenshots
 
-## Open Source Notes
+<table>
+  <tr>
+	<td><img src="screenshots/1.png" alt="Scanly screenshot 1" width="100%" /></td>
+	<td><img src="screenshots/2.png" alt="Scanly screenshot 2" width="100%" /></td>
+	<td><img src="screenshots/3.png" alt="Scanly screenshot 3" width="100%" /></td>
+  </tr>
+  <tr>
+	<td><img src="screenshots/4.png" alt="Scanly screenshot 4" width="100%" /></td>
+	<td><img src="screenshots/5.png" alt="Scanly screenshot 5" width="100%" /></td>
+	<td></td>
+  </tr>
+</table>
 
-- historical sprint notes live under `docs/sprint-*` and should be treated as archive material
-- public collaboration guidance lives in `CONTRIBUTING.md`
-- security reporting guidance lives in `SECURITY.md`
-- release follow-up tasks are tracked in `OPEN_SOURCE_NEXT_STEPS.md`
+## Tech Stack
 
-## What Scanly Does Today
+- Kotlin
+- Jetpack Compose + Material 3
+- Hilt
+- Navigation Compose
+- CameraX
+- Room
+- DataStore
+- LiteRT
+- OpenCV
+- Coroutines and Flow
 
-- document library and document detail flows
-- manual camera capture
-- page persistence and thumbnail generation
-- page editing with crop, rotate, and filter controls
-- PDF and image export/share flows
-- settings screens for app preferences and support content
-
-## Repository Layout
+## Project Structure
 
 - `app/` – Android application source and module build files
 - `docs/` – architecture notes, sprint archives, and release-readiness documentation
 - `gradle/` – wrapper and version catalog configuration
 - `implementation.md` – architecture snapshot and current implementation notes
+
+## Current Architecture
+
+The repository is organized as a production-style single-module app:
+
+- `:app` is the only Android module
+- entry point: `app/src/main/java/in/c1ph3rj/scanly/MainActivity.kt`
+- app wiring: `ScanlyApplication`, navigation, Hilt modules, feature screens, and domain/data layers live under `app/src/main/java/in/c1ph3rj/scanly/`
+- local data: Room, DataStore, and app-private file storage
+- camera and processing stack: CameraX, LiteRT, and OpenCV-based page processing
 
 ## Build and Run
 
@@ -55,11 +77,18 @@ From the repository root on Windows:
 ./gradlew.bat testDebugUnitTest
 ```
 
-If you want a release-style verification pass:
+For an additional verification pass:
 
 ```powershell
 ./gradlew.bat lintDebug
 ```
+
+## Open Source Notes
+
+- historical sprint notes live under `docs/sprint-*` and should be treated as archive material
+- public collaboration guidance lives in `CONTRIBUTING.md`
+- security reporting guidance lives in `SECURITY.md`
+- release follow-up tasks are tracked in `OPEN_SOURCE_NEXT_STEPS.md`
 
 ## Documentation
 
@@ -67,7 +96,7 @@ If you want a release-style verification pass:
 - `implementation.md` – current architecture snapshot and technical direction
 - `OPEN_SOURCE_NEXT_STEPS.md` – checklist for publishing and maintaining the repo
 - `SECURITY.md` – vulnerability reporting and disclosure guidance
-- `docs/sprint-0/` through `docs/sprint-8/` – historical sprint notes kept as archive material
+- `CONTRIBUTING.md` – contribution workflow and expectations
 
 ## License
 
