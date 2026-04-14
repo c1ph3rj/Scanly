@@ -19,3 +19,7 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# LiteRT resolves parts of its runtime through reflection and JNI.
+# Keep the runtime package intact so release builds can still create interpreters.
+-keep class org.tensorflow.lite.** { *; }

@@ -86,6 +86,9 @@ android {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
+            installation {
+                enableBaselineProfile = false
+            }
             if (hasReleaseSigning) {
                 signingConfig = signingConfigs.getByName("release")
             }
@@ -97,6 +100,9 @@ android {
 
         create("verification") {
             initWith(getByName("release"))
+            installation {
+                enableBaselineProfile = false
+            }
             signingConfig = signingConfigs.getByName("debug")
             matchingFallbacks += listOf("release")
         }

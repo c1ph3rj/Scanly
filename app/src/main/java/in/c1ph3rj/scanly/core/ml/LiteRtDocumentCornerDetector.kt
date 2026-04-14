@@ -3,6 +3,7 @@ package `in`.c1ph3rj.scanly.core.ml
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Matrix
+import android.util.Log
 import dagger.hilt.android.qualifiers.ApplicationContext
 import `in`.c1ph3rj.scanly.core.common.ScanlyDispatchers
 import kotlinx.coroutines.withContext
@@ -10,7 +11,7 @@ import org.tensorflow.lite.InterpreterApi
 import org.tensorflow.lite.TensorFlowLite
 import java.io.FileInputStream
 import java.nio.ByteBuffer
-import java.nio.MappedByteBuffer
+import java.nio.ByteOrder
 import java.nio.channels.FileChannel
 import kotlin.system.measureTimeMillis
 import javax.inject.Inject
@@ -59,7 +60,7 @@ class LiteRtDocumentCornerDetector @Inject constructor(
 
     private fun createRuntime(): LiteRtDetectionRuntime {
         TensorFlowLite.init()
-        val modelBuffer = loadModelFile(ScanlyModelAssets.modelAssetPath)
+        val modelBuffer = loadModelBuffer(ScanlyModelAssets.modelAssetPath)
         val options = InterpreterApi.Options().apply {
             setNumThreads(LiteRtPoseConstants.DEFAULT_THREAD_COUNT)
         }
@@ -83,17 +84,35 @@ class LiteRtDocumentCornerDetector @Inject constructor(
         )
     }
 
-    private fun loadModelFile(assetPath: String): MappedByteBuffer {
-        val fileDescriptor = context.assets.openFd(assetPath)
-        return fileDescriptor.use { descriptor ->
-            FileInputStream(descriptor.fileDescriptor).channel.use { fileChannel ->
-                fileChannel.map(
-                    FileChannel.MapMode.READ_ONLY,
-                    descriptor.startOffset,
-                    descriptor.declaredLength,
-                )
+    private fun loadModelBuffer(assetPath: String): ByteBuffer =
+        loadMappedModelBuffer(assetPath) ?: loadStreamedModelBuffer(assetPath)
+
+    private fun loadMappedModelBuffer(assetPath: String): ByteBuffer? =
+        runCatching {
+            context.assets.openFd(assetPath).use { descriptor ->
+                FileInputStream(descriptor.fileDescriptor).channel.use { fileChannel ->
+                    fileChannel.map(
+                        FileChannel.MapMode.READ_ONLY,
+                        descriptor.startOffset,
+                        descriptor.declaredLength,
+                    )
+                }
             }
+        }.getOrElse { error ->
+            Log.w(TAG, "Falling back to streamed LiteRT model loading for $assetPath.", error)
+            null
         }
+
+    private fun loadStreamedModelBuffer(assetPath: String): ByteBuffer {
+        val modelBytes = context.assets.open(assetPath).use { inputStream ->
+            inputStream.readBytes()
+        }
+        return ByteBuffer.allocateDirect(modelBytes.size)
+            .order(ByteOrder.nativeOrder())
+            .apply {
+                put(modelBytes)
+                rewind()
+            }
     }
 
     private fun DetectionFrame.toBitmap(): Bitmap {
@@ -166,6 +185,7 @@ class LiteRtDocumentCornerDetector @Inject constructor(
     }
 
     private companion object {
+        const val TAG = "LiteRtCornerDetector"
         const val RGBA_PIXEL_STRIDE = 4
     }
 }
