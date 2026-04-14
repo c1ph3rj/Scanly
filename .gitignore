@@ -5,6 +5,9 @@
 .kotlin/
 .DS_Store
 **/build/
+/app/release/
+/app/release/*.apk
+/app/release/*.aab
 /captures
 .externalNativeBuild
 .cxx
