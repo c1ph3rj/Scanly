@@ -20,6 +20,13 @@ sealed class ScanlyDestination(
         sprintLabel = "Sprint 2",
     )
 
+    data object Groups : ScanlyDestination(
+        route = "groups",
+        title = "Groups",
+        summary = "Named document collections for invoices, receipts, records, and other local sets.",
+        sprintLabel = "Sprint 9",
+    )
+
     data object Camera : ScanlyDestination(
         route = "camera",
         title = "Camera",

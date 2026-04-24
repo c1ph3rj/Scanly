@@ -9,6 +9,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import `in`.c1ph3rj.scanly.data.local.db.ScanlyDatabase
 import `in`.c1ph3rj.scanly.data.local.db.dao.DocumentDao
+import `in`.c1ph3rj.scanly.data.local.db.dao.DocumentGroupDao
 import `in`.c1ph3rj.scanly.data.local.db.dao.ScanPageDao
 import javax.inject.Singleton
 
@@ -25,10 +26,14 @@ object DatabaseModule {
         DATABASE_NAME,
     ).addMigrations(
         ScanlyDatabase.MIGRATION_1_2,
+        ScanlyDatabase.MIGRATION_2_3,
     ).build()
 
     @Provides
     fun provideDocumentDao(database: ScanlyDatabase): DocumentDao = database.documentDao()
+
+    @Provides
+    fun provideDocumentGroupDao(database: ScanlyDatabase): DocumentGroupDao = database.documentGroupDao()
 
     @Provides
     fun provideScanPageDao(database: ScanlyDatabase): ScanPageDao = database.scanPageDao()

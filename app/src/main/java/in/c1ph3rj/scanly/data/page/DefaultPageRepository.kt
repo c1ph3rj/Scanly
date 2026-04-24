@@ -1,5 +1,7 @@
 package `in`.c1ph3rj.scanly.data.page
 
+import android.content.Context
+import android.net.Uri
 import androidx.room.withTransaction
 import `in`.c1ph3rj.scanly.core.common.ScanlyDispatchers
 import `in`.c1ph3rj.scanly.core.common.ScanlyError
@@ -9,12 +11,14 @@ import `in`.c1ph3rj.scanly.data.local.db.dao.DocumentDao
 import `in`.c1ph3rj.scanly.data.local.db.dao.ScanPageDao
 import `in`.c1ph3rj.scanly.data.local.db.entity.ScanPageEntity
 import `in`.c1ph3rj.scanly.data.storage.DocumentStorageManager
+import `in`.c1ph3rj.scanly.domain.model.ImportImagesResult
 import `in`.c1ph3rj.scanly.domain.model.PageFilterPreset
 import `in`.c1ph3rj.scanly.domain.model.PageCaptureDraft
 import `in`.c1ph3rj.scanly.domain.model.PageProcessingState
 import `in`.c1ph3rj.scanly.domain.model.ScanPage
 import `in`.c1ph3rj.scanly.domain.processing.PageImageProcessor
 import `in`.c1ph3rj.scanly.domain.repository.PageRepository
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
@@ -25,6 +29,7 @@ import javax.inject.Singleton
 
 @Singleton
 class DefaultPageRepository @Inject constructor(
+    @param:ApplicationContext private val context: Context,
     private val database: ScanlyDatabase,
     private val documentDao: DocumentDao,
     private val scanPageDao: ScanPageDao,
@@ -185,6 +190,78 @@ class DefaultPageRepository @Inject constructor(
                 },
             )
         }
+
+    override suspend fun importImages(
+        documentId: String,
+        imageUris: List<Uri>,
+    ): ScanlyResult<ImportImagesResult> = withContext(dispatchers.io) {
+        runCatching {
+            if (imageUris.isEmpty()) {
+                return@runCatching ImportImagesResult(
+                    requestedCount = 0,
+                    importedCount = 0,
+                    failedCount = 0,
+                )
+            }
+
+            val document = documentDao.getDocument(documentId)
+                ?: error("Document not found.")
+            var importedCount = 0
+            var failedCount = 0
+
+            imageUris.forEach { uri ->
+                val imported = runCatching {
+                    val nextPageIndex = scanPageDao.countPages(document.id)
+                    val storageDraft = storageManager.createPageCaptureDraft(
+                        documentId = document.id,
+                        pageIndex = nextPageIndex,
+                    )
+                    val draft = PageCaptureDraft(
+                        pageId = UUID.randomUUID().toString(),
+                        documentId = document.id,
+                        pageIndex = nextPageIndex,
+                        rawImagePath = storageDraft.rawImagePath,
+                        processedImagePath = storageDraft.processedImagePath,
+                        thumbnailPath = storageDraft.thumbnailPath,
+                        replacementPageId = null,
+                    )
+
+                    context.contentResolver.openInputStream(uri)?.use { inputStream ->
+                        File(draft.rawImagePath).outputStream().use { outputStream ->
+                            inputStream.copyTo(outputStream)
+                        }
+                    } ?: error("Could not open selected image.")
+
+                    when (val result = finalizeCapture(draft)) {
+                        is ScanlyResult.Success -> true
+                        is ScanlyResult.Failure -> error(result.error.message)
+                    }
+                }.getOrDefault(false)
+
+                if (imported) {
+                    importedCount += 1
+                } else {
+                    failedCount += 1
+                }
+            }
+
+            ImportImagesResult(
+                requestedCount = imageUris.size,
+                importedCount = importedCount,
+                failedCount = failedCount,
+            )
+        }.fold(
+            onSuccess = { result -> ScanlyResult.Success(result) },
+            onFailure = { throwable ->
+                ScanlyResult.Failure(
+                    ScanlyError(
+                        message = throwable.message ?: "Could not import selected images.",
+                        cause = throwable,
+                    ),
+                )
+            },
+        )
+    }
 
     override suspend fun movePage(
         pageId: String,

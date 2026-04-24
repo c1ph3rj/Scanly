@@ -1,7 +1,9 @@
 package `in`.c1ph3rj.scanly.domain.repository
 
+import android.net.Uri
 import `in`.c1ph3rj.scanly.core.common.ScanlyResult
 import `in`.c1ph3rj.scanly.core.ml.DocumentCornerQuad
+import `in`.c1ph3rj.scanly.domain.model.ImportImagesResult
 import `in`.c1ph3rj.scanly.domain.model.PageFilterPreset
 import `in`.c1ph3rj.scanly.domain.model.PageCaptureDraft
 import `in`.c1ph3rj.scanly.domain.model.ScanPage
@@ -17,6 +19,11 @@ interface PageRepository {
     suspend fun prepareReplacementCapture(pageId: String): ScanlyResult<PageCaptureDraft>
 
     suspend fun finalizeCapture(draft: PageCaptureDraft): ScanlyResult<String>
+
+    suspend fun importImages(
+        documentId: String,
+        imageUris: List<Uri>,
+    ): ScanlyResult<ImportImagesResult>
 
     suspend fun movePage(
         pageId: String,

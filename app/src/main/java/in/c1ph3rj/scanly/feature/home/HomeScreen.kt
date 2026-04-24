@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
@@ -20,20 +18,18 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.CameraAlt
+import androidx.compose.material.icons.automirrored.filled.Sort
 import androidx.compose.material.icons.filled.DeleteOutline
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material.icons.filled.FolderOpen
-import androidx.compose.material.icons.filled.Tune
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -63,7 +59,9 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import `in`.c1ph3rj.scanly.core.common.DocumentPresentationFormatter
 import `in`.c1ph3rj.scanly.core.ui.ChromeIconButton
 import `in`.c1ph3rj.scanly.core.ui.MetricChip
+import `in`.c1ph3rj.scanly.domain.model.DocumentGroup
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
+import `in`.c1ph3rj.scanly.feature.groups.DocumentGroupPickerSheet
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.withContext
@@ -73,8 +71,8 @@ import java.util.Date
 @Composable
 fun HomeRoute(
     onOpenDocument: (String) -> Unit,
-    onOpenSettings: () -> Unit,
-    onOpenScanSession: (String) -> Unit,
+    onOpenGroups: () -> Unit,
+    onOpenSearch: () -> Unit,
     onNavigateUp: (() -> Unit)? = null,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
@@ -93,12 +91,14 @@ fun HomeRoute(
     HomeScreen(
         uiState = uiState,
         snackbarHostState = snackbarHostState,
-        onCreateDocument = viewModel::createDocument,
         onRenameDocument = viewModel::renameDocument,
         onDeleteDocument = viewModel::deleteDocument,
+        onChangeDocumentGroup = viewModel::changeDocumentGroup,
+        onCreateGroupForDocument = viewModel::createGroupForDocument,
         onOpenDocument = onOpenDocument,
-        onOpenSettings = onOpenSettings,
-        onOpenScanSession = onOpenScanSession,
+        onOpenGroups = onOpenGroups,
+        onOpenSearch = onOpenSearch,
+        onSortModeChanged = viewModel::updateSortMode,
         onNavigateUp = onNavigateUp,
     )
 }
@@ -108,19 +108,21 @@ fun HomeRoute(
 fun HomeScreen(
     uiState: HomeUiState,
     snackbarHostState: SnackbarHostState,
-    onCreateDocument: (String) -> Unit,
     onRenameDocument: (String, String) -> Unit,
     onDeleteDocument: (String) -> Unit,
+    onChangeDocumentGroup: (String, String?) -> Unit,
+    onCreateGroupForDocument: (String, String) -> Unit,
     onOpenDocument: (String) -> Unit,
-    onOpenSettings: () -> Unit,
-    onOpenScanSession: (String) -> Unit,
+    onOpenGroups: () -> Unit,
+    onOpenSearch: () -> Unit,
+    onSortModeChanged: (DocumentSortMode) -> Unit,
     onNavigateUp: (() -> Unit)? = null,
 ) {
     val context = LocalContext.current
-    var createDialogVisible by rememberSaveable { mutableStateOf(false) }
     var renameTarget by remember { mutableStateOf<ScanDocument?>(null) }
     var deleteTarget by remember { mutableStateOf<ScanDocument?>(null) }
-    val latestDocument = uiState.documents.firstOrNull()
+    var groupTarget by remember { mutableStateOf<ScanDocument?>(null) }
+    var sortSheetVisible by rememberSaveable { mutableStateOf(false) }
     val totalPages = remember(uiState.documents) { uiState.documents.sumOf { it.pageCount } }
 
     // Warm up CameraX while the user is on home to reduce scan-session cold start latency.
@@ -132,50 +134,30 @@ fun HomeScreen(
         modifier = Modifier.fillMaxSize(),
         containerColor = MaterialTheme.colorScheme.background,
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = {
-                    if (latestDocument == null) {
-                        createDialogVisible = true
-                    } else {
-                        onOpenScanSession(latestDocument.id)
-                    }
-                },
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary,
-            ) {
-                ImageActionIcon()
-            }
-        },
     ) { innerPadding ->
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding),
-            contentPadding = PaddingValues(start = 20.dp, top = 16.dp, end = 20.dp, bottom = 96.dp),
-            verticalArrangement = Arrangement.spacedBy(18.dp),
+            contentPadding = PaddingValues(start = 20.dp, top = 16.dp, end = 20.dp, bottom = 112.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             item {
-                LibraryTopBar(
+                HomeTopBar(
                     onNavigateUp = onNavigateUp,
-                    onOpenSettings = onOpenSettings,
-                    onCreateDocument = { createDialogVisible = true },
                 )
             }
-
             item {
-                LibraryHero(
-                    documentCount = uiState.documents.size,
-                    totalPages = totalPages,
-                    hasDocuments = latestDocument != null,
-                    onPrimaryAction = {
-                        if (latestDocument == null) {
-                            createDialogVisible = true
-                        } else {
-                            onOpenScanSession(latestDocument.id)
-                        }
-                    },
-                    onSecondaryAction = { createDialogVisible = true },
+                SearchField(
+                    onClick = onOpenSearch,
+                )
+            }
+            item {
+                GroupsPreviewSection(
+                    groups = uiState.groups,
+                    ungroupedDocumentCount = uiState.documents.count { it.groupId == null },
+                    totalPageCount = totalPages,
+                    onOpenGroups = onOpenGroups,
                 )
             }
 
@@ -188,29 +170,17 @@ fun HomeScreen(
 
                 uiState.documents.isEmpty() -> {
                     item {
-                        EmptyLibraryCard(
-                            onCreateDocument = { createDialogVisible = true },
-                        )
+                        EmptyLibraryCard()
                     }
                 }
 
                 else -> {
                     item {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            Text(
-                                text = "Documents",
-                                style = MaterialTheme.typography.titleLarge,
-                                fontWeight = FontWeight.SemiBold,
-                            )
-                            MetricChip(
-                                label = "${uiState.documents.size}",
-                                icon = Icons.Filled.Description,
-                            )
-                        }
+                        AllDocumentsHeader(
+                            count = uiState.documents.size,
+                            sortMode = uiState.sortMode,
+                            onOpenSort = { sortSheetVisible = true },
+                        )
                     }
                     items(
                         items = uiState.documents,
@@ -219,6 +189,7 @@ fun HomeScreen(
                         DocumentCard(
                             document = document,
                             onOpen = { onOpenDocument(document.id) },
+                            onChangeGroup = { groupTarget = document },
                             onRename = { renameTarget = document },
                             onDelete = { deleteTarget = document },
                         )
@@ -226,19 +197,6 @@ fun HomeScreen(
                 }
             }
         }
-    }
-
-    if (createDialogVisible) {
-        DocumentTitleDialog(
-            title = "New document",
-            initialValue = "",
-            confirmLabel = "Create",
-            onDismiss = { createDialogVisible = false },
-            onConfirm = { value ->
-                createDialogVisible = false
-                onCreateDocument(value)
-            },
-        )
     }
 
     renameTarget?.let { document ->
@@ -278,13 +236,38 @@ fun HomeScreen(
             },
         )
     }
+
+    if (sortSheetVisible) {
+        SortModeSheet(
+            selectedSortMode = uiState.sortMode,
+            onDismiss = { sortSheetVisible = false },
+            onSelect = { sortMode ->
+                sortSheetVisible = false
+                onSortModeChanged(sortMode)
+            },
+        )
+    }
+
+    groupTarget?.let { document ->
+        DocumentGroupPickerSheet(
+            document = document,
+            groups = uiState.groups,
+            onDismiss = { groupTarget = null },
+            onSelectGroup = { groupId ->
+                groupTarget = null
+                onChangeDocumentGroup(document.id, groupId)
+            },
+            onCreateGroup = { name ->
+                groupTarget = null
+                onCreateGroupForDocument(document.id, name)
+            },
+        )
+    }
 }
 
 @Composable
-private fun LibraryTopBar(
+private fun HomeTopBar(
     onNavigateUp: (() -> Unit)?,
-    onOpenSettings: () -> Unit,
-    onCreateDocument: () -> Unit,
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -309,99 +292,184 @@ private fun LibraryTopBar(
                     fontWeight = FontWeight.SemiBold,
                 )
                 Text(
-                    text = "Library",
+                    text = "Documents",
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
         }
-        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            ChromeIconButton(
-                icon = Icons.Filled.Tune,
-                contentDescription = "Settings",
-                onClick = onOpenSettings,
+    }
+}
+
+@Composable
+private fun SearchField(
+    onClick: () -> Unit,
+) {
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
+        color = MaterialTheme.colorScheme.surfaceContainer,
+        shape = MaterialTheme.shapes.large,
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            androidx.compose.material3.Icon(
+                imageVector = Icons.Filled.Search,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
             )
-            ChromeIconButton(
-                icon = Icons.Filled.Add,
-                contentDescription = "New document",
-                onClick = onCreateDocument,
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary,
+            Text(
+                text = "Search documents or groups",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
     }
 }
 
 @Composable
-private fun LibraryHero(
+private fun GroupsPreviewSection(
+    groups: List<DocumentGroup>,
+    ungroupedDocumentCount: Int,
+    totalPageCount: Int,
+    onOpenGroups: () -> Unit,
+) {
+    val previewGroups = groups.take(2)
+    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = "Groups",
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.SemiBold,
+            )
+            Text(
+                text = "Manage",
+                modifier = Modifier.clickable(onClick = onOpenGroups),
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.primary,
+            )
+        }
+        if (previewGroups.isEmpty()) {
+            GroupSummaryRow(
+                name = "Ungrouped",
+                documentCount = ungroupedDocumentCount,
+                pageCount = totalPageCount,
+                onClick = onOpenGroups,
+            )
+        } else {
+            previewGroups.forEach { group ->
+                GroupSummaryRow(
+                    name = group.name,
+                    documentCount = group.documentCount,
+                    pageCount = group.pageCount,
+                    onClick = onOpenGroups,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun GroupSummaryRow(
+    name: String,
     documentCount: Int,
-    totalPages: Int,
-    hasDocuments: Boolean,
-    onPrimaryAction: () -> Unit,
-    onSecondaryAction: () -> Unit,
+    pageCount: Int,
+    onClick: () -> Unit,
 ) {
     Surface(
-        modifier = Modifier.fillMaxWidth(),
-        color = MaterialTheme.colorScheme.surfaceContainerHigh,
-        shape = MaterialTheme.shapes.extraLarge,
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
+        color = MaterialTheme.colorScheme.surfaceContainer,
+        shape = MaterialTheme.shapes.large,
     ) {
-        Column(
-            modifier = Modifier.padding(20.dp),
-            verticalArrangement = Arrangement.spacedBy(18.dp),
+        Row(
+            modifier = Modifier.padding(14.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-            Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            Surface(
+                modifier = Modifier.size(44.dp),
+                color = MaterialTheme.colorScheme.secondaryContainer,
+                shape = MaterialTheme.shapes.large,
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    androidx.compose.material3.Icon(
+                        imageVector = Icons.Filled.Folder,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                    )
+                }
+            }
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(2.dp),
+            ) {
                 Text(
-                    text = if (hasDocuments) "Ready for the next scan" else "Start a new document",
-                    style = MaterialTheme.typography.headlineMedium,
+                    text = name,
+                    style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold,
                 )
                 Text(
-                    text = if (hasDocuments) "Capture, review, and assemble pages fast." else "Create one document and the camera flow is ready.",
-                    style = MaterialTheme.typography.bodyMedium,
+                    text = "$documentCount documents · $pageCount pages",
+                    style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
-            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                MetricChip(
-                    label = "$documentCount docs",
-                    icon = Icons.Filled.Description,
-                )
-                MetricChip(
-                    label = "$totalPages pages",
-                    icon = Icons.Filled.FolderOpen,
-                )
-            }
+        }
+    }
+}
+
+@Composable
+private fun AllDocumentsHeader(
+    count: Int,
+    sortMode: DocumentSortMode,
+    onOpenSort: () -> Unit,
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+            Text(
+                text = "All Documents",
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.SemiBold,
+            )
+            Text(
+                text = if (count == 1) "1 document" else "$count documents",
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        Surface(
+            modifier = Modifier.clickable(onClick = onOpenSort),
+            color = MaterialTheme.colorScheme.surfaceContainer,
+            shape = MaterialTheme.shapes.large,
+        ) {
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                Button(
-                    modifier = Modifier.weight(1f),
-                    onClick = onPrimaryAction,
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    ) {
-                        ImageActionIcon()
-                        Text(text = if (hasDocuments) "Scan" else "Create")
-                    }
-                }
-                OutlinedButton(
-                    modifier = Modifier.weight(1f),
-                    onClick = onSecondaryAction,
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    ) {
-                        androidx.compose.material3.Icon(
-                            imageVector = Icons.Filled.Add,
-                            contentDescription = null,
-                        )
-                        Text(text = "New doc")
-                    }
-                }
+                androidx.compose.material3.Icon(
+                    imageVector = Icons.AutoMirrored.Filled.Sort,
+                    contentDescription = null,
+                    modifier = Modifier.size(18.dp),
+                )
+                Text(
+                    text = sortMode.label,
+                    style = MaterialTheme.typography.labelLarge,
+                )
             }
         }
     }
@@ -412,7 +480,7 @@ private fun LoadingCard() {
     Surface(
         modifier = Modifier.fillMaxWidth(),
         color = MaterialTheme.colorScheme.surfaceContainerHigh,
-        shape = MaterialTheme.shapes.extraLarge,
+        shape = MaterialTheme.shapes.large,
     ) {
         Row(
             modifier = Modifier.padding(20.dp),
@@ -433,44 +501,27 @@ private fun LoadingCard() {
 
 @Composable
 private fun EmptyLibraryCard(
-    onCreateDocument: () -> Unit,
 ) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
         color = MaterialTheme.colorScheme.surfaceContainer,
-        shape = MaterialTheme.shapes.extraLarge,
+        shape = MaterialTheme.shapes.large,
     ) {
         Column(
-            modifier = Modifier.padding(24.dp),
+            modifier = Modifier.padding(22.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(14.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            Surface(
-                modifier = Modifier.size(68.dp),
-                color = MaterialTheme.colorScheme.primaryContainer,
-                shape = MaterialTheme.shapes.extraLarge,
-            ) {
-                Box(contentAlignment = Alignment.Center) {
-                    androidx.compose.material3.Icon(
-                        imageVector = Icons.Filled.Description,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                    )
-                }
-            }
             Text(
                 text = "No documents yet",
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.SemiBold,
             )
             Text(
-                text = "Create one and start scanning.",
+                text = "Use the scan action below to create the first document.",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
-            Button(onClick = onCreateDocument) {
-                Text(text = "New document")
-            }
         }
     }
 }
@@ -479,6 +530,7 @@ private fun EmptyLibraryCard(
 private fun DocumentCard(
     document: ScanDocument,
     onOpen: () -> Unit,
+    onChangeGroup: () -> Unit,
     onRename: () -> Unit,
     onDelete: () -> Unit,
 ) {
@@ -487,7 +539,7 @@ private fun DocumentCard(
             .fillMaxWidth()
             .clickable(onClick = onOpen),
         color = MaterialTheme.colorScheme.surfaceContainer,
-        shape = MaterialTheme.shapes.extraLarge,
+        shape = MaterialTheme.shapes.large,
     ) {
         Row(
             modifier = Modifier.padding(14.dp),
@@ -497,11 +549,11 @@ private fun DocumentCard(
             DocumentThumbnail(
                 thumbnailPath = document.coverThumbnailPath,
                 title = document.title,
-                modifier = Modifier.weight(0.34f),
-                minHeight = 116.dp,
+                modifier = Modifier.weight(0.32f),
+                minHeight = 106.dp,
             )
             Column(
-                modifier = Modifier.weight(0.66f),
+                modifier = Modifier.weight(0.68f),
                 verticalArrangement = Arrangement.spacedBy(10.dp),
             ) {
                 Text(
@@ -512,16 +564,22 @@ private fun DocumentCard(
                 )
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     MetricChip(
+                        label = document.groupName ?: "Ungrouped",
+                        icon = Icons.Filled.Folder,
+                        modifier = Modifier.clickable(onClick = onChangeGroup),
+                        containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                    )
+                    MetricChip(
                         label = "${document.pageCount}",
                         icon = Icons.Filled.Description,
                         containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
                     )
-                    MetricChip(
-                        label = document.updatedAtMillis.toShortDate(),
-                        icon = Icons.Filled.FolderOpen,
-                        containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
-                    )
                 }
+                Text(
+                    text = "Modified ${document.updatedAtMillis.toShortDate()}",
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
                 Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                     ChromeIconButton(
                         icon = Icons.Filled.FolderOpen,
@@ -566,8 +624,7 @@ fun DocumentThumbnail(
 
     Surface(
         modifier = modifier
-            .heightIn(min = minHeight)
-            .aspectRatio(4f / 3f),
+            .heightIn(min = minHeight),
         color = if (imageBitmap != null) {
             MaterialTheme.colorScheme.surfaceContainerHighest
         } else {
@@ -586,7 +643,7 @@ fun DocumentThumbnail(
             Box(contentAlignment = Alignment.Center) {
                 Text(
                     text = DocumentPresentationFormatter.initials(title),
-                    style = MaterialTheme.typography.displaySmall,
+                    style = MaterialTheme.typography.headlineMedium,
                     color = MaterialTheme.colorScheme.onPrimaryContainer,
                 )
             }
@@ -630,11 +687,54 @@ private fun DocumentTitleDialog(
 }
 
 @Composable
-private fun ImageActionIcon() {
-    androidx.compose.material3.Icon(
-        imageVector = Icons.Filled.CameraAlt,
-        contentDescription = null,
-    )
+@OptIn(ExperimentalMaterial3Api::class)
+private fun SortModeSheet(
+    selectedSortMode: DocumentSortMode,
+    onDismiss: () -> Unit,
+    onSelect: (DocumentSortMode) -> Unit,
+) {
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        containerColor = MaterialTheme.colorScheme.surface,
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp)
+                .padding(bottom = 28.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
+            Text(
+                text = "Sort documents",
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.SemiBold,
+            )
+            DocumentSortMode.entries.forEach { sortMode ->
+                Surface(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { onSelect(sortMode) },
+                    color = if (sortMode == selectedSortMode) {
+                        MaterialTheme.colorScheme.primaryContainer
+                    } else {
+                        MaterialTheme.colorScheme.surfaceContainer
+                    },
+                    shape = MaterialTheme.shapes.large,
+                ) {
+                    Text(
+                        text = sortMode.label,
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
+                        style = MaterialTheme.typography.titleMedium,
+                        color = if (sortMode == selectedSortMode) {
+                            MaterialTheme.colorScheme.onPrimaryContainer
+                        } else {
+                            MaterialTheme.colorScheme.onSurface
+                        },
+                    )
+                }
+            }
+        }
+    }
 }
 
 private fun Long.toShortDate(): String = DateFormat.getDateInstance(DateFormat.MEDIUM).format(Date(this))

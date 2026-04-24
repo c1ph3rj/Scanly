@@ -8,6 +8,7 @@ import `in`.c1ph3rj.scanly.core.common.ScanlyResult
 import `in`.c1ph3rj.scanly.data.local.db.ScanlyDatabase
 import `in`.c1ph3rj.scanly.data.local.db.dao.DocumentDao
 import `in`.c1ph3rj.scanly.data.local.db.entity.DocumentEntity
+import `in`.c1ph3rj.scanly.data.local.db.entity.DocumentWithGroup
 import `in`.c1ph3rj.scanly.data.storage.DocumentStorageManager
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
 import `in`.c1ph3rj.scanly.domain.repository.DocumentRepository
@@ -27,12 +28,12 @@ class DefaultDocumentRepository @Inject constructor(
 ) : DocumentRepository {
 
     override fun observeDocuments(): Flow<List<ScanDocument>> =
-        documentDao.observeDocuments().map { documents ->
+        documentDao.observeDocumentsWithGroup().map { documents ->
             documents.map { document -> document.toDomain() }
         }
 
     override fun observeDocument(documentId: String): Flow<ScanDocument?> =
-        documentDao.observeDocument(documentId).map { document ->
+        documentDao.observeDocumentWithGroup(documentId).map { document ->
             document?.toDomain()
         }
 
@@ -53,6 +54,7 @@ class DefaultDocumentRepository @Inject constructor(
                     pageCount = 0,
                     coverThumbnailPath = fileLayout.coverThumbnailPath,
                     preferredFilterPreset = null,
+                    groupId = null,
                     rootDirectoryPath = fileLayout.rootDirectoryPath,
                     createdAtMillis = timestamp,
                     updatedAtMillis = timestamp,
@@ -130,11 +132,13 @@ class DefaultDocumentRepository @Inject constructor(
             )
         }
 
-    private fun DocumentEntity.toDomain(): ScanDocument = ScanDocument(
+    private fun DocumentWithGroup.toDomain(): ScanDocument = ScanDocument(
         id = id,
         title = title,
         pageCount = pageCount,
         coverThumbnailPath = coverThumbnailPath,
+        groupId = groupId,
+        groupName = groupName,
         rootDirectoryPath = rootDirectoryPath,
         createdAtMillis = createdAtMillis,
         updatedAtMillis = updatedAtMillis,

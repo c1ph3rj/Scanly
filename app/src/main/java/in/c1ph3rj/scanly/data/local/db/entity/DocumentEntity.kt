@@ -8,6 +8,7 @@ import androidx.room.PrimaryKey
     tableName = "documents",
     indices = [
         Index(value = ["updatedAtMillis"]),
+        Index(value = ["groupId"]),
     ],
 )
 data class DocumentEntity(
@@ -16,6 +17,7 @@ data class DocumentEntity(
     val pageCount: Int,
     val coverThumbnailPath: String?,
     val preferredFilterPreset: String?,
+    val groupId: String?,
     val rootDirectoryPath: String,
     val createdAtMillis: Long,
     val updatedAtMillis: Long,

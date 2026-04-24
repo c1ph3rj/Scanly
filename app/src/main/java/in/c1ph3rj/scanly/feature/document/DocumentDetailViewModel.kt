@@ -3,17 +3,23 @@ package `in`.c1ph3rj.scanly.feature.document
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import android.net.Uri
 import dagger.hilt.android.lifecycle.HiltViewModel
 import `in`.c1ph3rj.scanly.core.common.ScanlyResult
+import `in`.c1ph3rj.scanly.domain.model.DocumentGroup
 import `in`.c1ph3rj.scanly.domain.model.ExportArtifact
 import `in`.c1ph3rj.scanly.domain.model.PdfExportOptions
 import `in`.c1ph3rj.scanly.domain.model.ShareArtifact
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
 import `in`.c1ph3rj.scanly.domain.model.ScanPage
 import `in`.c1ph3rj.scanly.domain.usecase.DeletePageUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.AssignDocumentToGroupUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.CreateDocumentGroupUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ExportDocumentImageArchiveUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ExportDocumentPdfUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.ImportImagesToDocumentUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.MovePageUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.ObserveDocumentGroupsUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveDocumentPagesUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveDocumentUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.PrepareDocumentPdfShareUseCase
@@ -31,10 +37,12 @@ import javax.inject.Inject
 
 data class DocumentDetailUiState(
     val document: ScanDocument? = null,
+    val groups: List<DocumentGroup> = emptyList(),
     val pages: List<ScanPage> = emptyList(),
     val selectedPageId: String? = null,
     val missingDocument: Boolean = false,
     val isMutatingPage: Boolean = false,
+    val isImporting: Boolean = false,
     val isExporting: Boolean = false,
     val exportMessage: String? = null,
 ) {
@@ -52,7 +60,11 @@ sealed interface DocumentDetailEvent {
 class DocumentDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val observeDocumentUseCase: ObserveDocumentUseCase,
+    private val observeDocumentGroupsUseCase: ObserveDocumentGroupsUseCase,
     private val observeDocumentPagesUseCase: ObserveDocumentPagesUseCase,
+    private val assignDocumentToGroupUseCase: AssignDocumentToGroupUseCase,
+    private val createDocumentGroupUseCase: CreateDocumentGroupUseCase,
+    private val importImagesToDocumentUseCase: ImportImagesToDocumentUseCase,
     private val movePageUseCase: MovePageUseCase,
     private val deletePageUseCase: DeletePageUseCase,
     private val exportDocumentPdfUseCase: ExportDocumentPdfUseCase,
@@ -76,6 +88,14 @@ class DocumentDetailViewModel @Inject constructor(
                         document = document,
                         missingDocument = document == null,
                     )
+                }
+            }
+        }
+
+        viewModelScope.launch {
+            observeDocumentGroupsUseCase().collectLatest { groups ->
+                _uiState.update { current ->
+                    current.copy(groups = groups)
                 }
             }
         }
@@ -167,6 +187,57 @@ class DocumentDetailViewModel @Inject constructor(
             action = { prepareDocumentImageShareUseCase(documentId) },
             onSuccess = DocumentDetailEvent::ShareFiles,
         )
+    }
+
+    fun importImages(imageUris: List<Uri>) {
+        if (imageUris.isEmpty() || _uiState.value.isImporting) {
+            return
+        }
+
+        viewModelScope.launch {
+            _uiState.update { current -> current.copy(isImporting = true) }
+            when (val result = importImagesToDocumentUseCase(documentId, imageUris)) {
+                is ScanlyResult.Success -> {
+                    _uiState.update { current -> current.copy(isImporting = false) }
+                    val importResult = result.value
+                    val message = if (importResult.hasFailures) {
+                        "Imported ${importResult.importedCount} of ${importResult.requestedCount} images."
+                    } else {
+                        "Imported ${importResult.importedCount} images."
+                    }
+                    _events.emit(DocumentDetailEvent.ShowMessage(message))
+                }
+
+                is ScanlyResult.Failure -> {
+                    _uiState.update { current -> current.copy(isImporting = false) }
+                    _events.emit(DocumentDetailEvent.ShowMessage(result.error.message))
+                }
+            }
+        }
+    }
+
+    fun changeDocumentGroup(groupId: String?) {
+        viewModelScope.launch {
+            when (val result = assignDocumentToGroupUseCase(documentId, groupId)) {
+                is ScanlyResult.Success -> _events.emit(DocumentDetailEvent.ShowMessage("Document group updated."))
+                is ScanlyResult.Failure -> _events.emit(DocumentDetailEvent.ShowMessage(result.error.message))
+            }
+        }
+    }
+
+    fun createGroupForDocument(name: String) {
+        viewModelScope.launch {
+            when (val createResult = createDocumentGroupUseCase(name)) {
+                is ScanlyResult.Success -> {
+                    when (val assignResult = assignDocumentToGroupUseCase(documentId, createResult.value)) {
+                        is ScanlyResult.Success -> _events.emit(DocumentDetailEvent.ShowMessage("Group created and document moved."))
+                        is ScanlyResult.Failure -> _events.emit(DocumentDetailEvent.ShowMessage(assignResult.error.message))
+                    }
+                }
+
+                is ScanlyResult.Failure -> _events.emit(DocumentDetailEvent.ShowMessage(createResult.error.message))
+            }
+        }
     }
 
     private fun mutateSelectedPage(

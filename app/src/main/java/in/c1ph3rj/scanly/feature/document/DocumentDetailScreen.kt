@@ -3,6 +3,9 @@ package `in`.c1ph3rj.scanly.feature.document
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -18,14 +21,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Crop
 import androidx.compose.material.icons.filled.DeleteOutline
 import androidx.compose.material.icons.filled.FileDownload
+import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.OpenInFull
@@ -72,6 +75,7 @@ import `in`.c1ph3rj.scanly.domain.model.PdfPageOrientation
 import `in`.c1ph3rj.scanly.domain.model.PdfPageSize
 import `in`.c1ph3rj.scanly.domain.model.ScanPage
 import `in`.c1ph3rj.scanly.domain.model.ShareArtifact
+import `in`.c1ph3rj.scanly.feature.groups.DocumentGroupPickerSheet
 import `in`.c1ph3rj.scanly.feature.home.DocumentThumbnail
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -107,6 +111,14 @@ fun DocumentDetailRoute(
     val scope = rememberCoroutineScope()
     var pendingPdfExport by remember { mutableStateOf<ExportArtifact?>(null) }
     var pendingArchiveExport by remember { mutableStateOf<ExportArtifact?>(null) }
+
+    val importImagesLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickMultipleVisualMedia(),
+    ) { uris ->
+        if (uris.isNotEmpty()) {
+            viewModel.importImages(uris)
+        }
+    }
 
     val savePdfLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.CreateDocument(PdfMimeType),
@@ -179,6 +191,11 @@ fun DocumentDetailRoute(
         snackbarHostState = snackbarHostState,
         onNavigateUp = onNavigateUp,
         onOpenCamera = onOpenCamera,
+        onImportImages = {
+            importImagesLauncher.launch(
+                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly),
+            )
+        },
         onOpenPageEditor = onOpenPageEditor,
         onReplacePage = onReplacePage,
         onSelectPage = viewModel::selectPage,
@@ -189,6 +206,8 @@ fun DocumentDetailRoute(
         onSharePdf = viewModel::sharePdf,
         onExportImageArchive = viewModel::exportImageArchive,
         onShareImages = viewModel::shareImages,
+        onChangeDocumentGroup = viewModel::changeDocumentGroup,
+        onCreateGroupForDocument = viewModel::createGroupForDocument,
     )
 }
 
@@ -199,6 +218,7 @@ fun DocumentDetailScreen(
     snackbarHostState: SnackbarHostState,
     onNavigateUp: () -> Unit,
     onOpenCamera: () -> Unit,
+    onImportImages: () -> Unit,
     onOpenPageEditor: (String) -> Unit,
     onReplacePage: (String) -> Unit,
     onSelectPage: (String) -> Unit,
@@ -209,10 +229,14 @@ fun DocumentDetailScreen(
     onSharePdf: (PdfExportOptions) -> Unit,
     onExportImageArchive: () -> Unit,
     onShareImages: () -> Unit,
+    onChangeDocumentGroup: (String?) -> Unit,
+    onCreateGroupForDocument: (String) -> Unit,
 ) {
     var deleteDialogVisible by rememberSaveable(uiState.selectedPageId) { mutableStateOf(false) }
     var previewPageId by rememberSaveable { mutableStateOf<String?>(null) }
+    var addPageSheetVisible by rememberSaveable { mutableStateOf(false) }
     var exportSheetVisible by rememberSaveable { mutableStateOf(false) }
+    var groupSheetVisible by rememberSaveable { mutableStateOf(false) }
     var pdfActionMode by rememberSaveable { mutableStateOf<PdfActionMode?>(null) }
     var pdfOptions by remember { mutableStateOf(PdfExportOptions()) }
     val selectedPage = uiState.selectedPage
@@ -240,7 +264,7 @@ fun DocumentDetailScreen(
                     pageCount = uiState.pages.size,
                     onNavigateUp = onNavigateUp,
                     onOpenExportSheet = { exportSheetVisible = true },
-                    onAddPage = onOpenCamera,
+                    onAddPage = { addPageSheetVisible = true },
                     exportEnabled = !uiState.isExporting && uiState.pages.isNotEmpty(),
                 )
             }
@@ -256,12 +280,20 @@ fun DocumentDetailScreen(
                 Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                     MetricChip(label = "${uiState.pages.size} pages")
                     MetricChip(label = document.updatedAtMillis.toShortDate())
+                    GroupChip(
+                        label = document.groupName ?: "Ungrouped",
+                        onClick = { groupSheetVisible = true },
+                    )
                 }
             }
 
             if (selectedPage == null) {
                 item {
-                    EmptyDocumentCard(onOpenCamera = onOpenCamera)
+                    EmptyDocumentCard(
+                        onOpenCamera = onOpenCamera,
+                        onImportImages = onImportImages,
+                        importEnabled = !uiState.isImporting,
+                    )
                 }
             } else {
                 item {
@@ -378,6 +410,21 @@ fun DocumentDetailScreen(
         )
     }
 
+    if (addPageSheetVisible && document != null) {
+        AddPageSheet(
+            importEnabled = !uiState.isImporting,
+            onDismiss = { addPageSheetVisible = false },
+            onOpenCamera = {
+                addPageSheetVisible = false
+                onOpenCamera()
+            },
+            onImportImages = {
+                addPageSheetVisible = false
+                onImportImages()
+            },
+        )
+    }
+
     if (pdfActionMode != null) {
         PdfOptionsSheet(
             options = pdfOptions,
@@ -396,10 +443,56 @@ fun DocumentDetailScreen(
         )
     }
 
-    if (uiState.isExporting) {
-        ExportProgressOverlay(
-            message = uiState.exportMessage ?: "Preparing export",
+    if (groupSheetVisible && document != null) {
+        DocumentGroupPickerSheet(
+            document = document,
+            groups = uiState.groups,
+            onDismiss = { groupSheetVisible = false },
+            onSelectGroup = { groupId ->
+                groupSheetVisible = false
+                onChangeDocumentGroup(groupId)
+            },
+            onCreateGroup = { name ->
+                groupSheetVisible = false
+                onCreateGroupForDocument(name)
+            },
         )
+    }
+
+    if (uiState.isExporting || uiState.isImporting) {
+        ExportProgressOverlay(
+            message = uiState.exportMessage ?: "Importing images",
+        )
+    }
+}
+
+@Composable
+private fun GroupChip(
+    label: String,
+    onClick: () -> Unit,
+) {
+    Surface(
+        modifier = Modifier.clickable(onClick = onClick),
+        color = MaterialTheme.colorScheme.surfaceContainer,
+        shape = MaterialTheme.shapes.large,
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 9.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            androidx.compose.material3.Icon(
+                imageVector = Icons.Filled.Folder,
+                contentDescription = null,
+                modifier = Modifier.size(18.dp),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Text(
+                text = label,
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
     }
 }
 
@@ -545,6 +638,97 @@ private fun ExportActionRow(
                 text = title,
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onSurface,
+            )
+        }
+    }
+}
+
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+private fun AddPageSheet(
+    importEnabled: Boolean,
+    onDismiss: () -> Unit,
+    onOpenCamera: () -> Unit,
+    onImportImages: () -> Unit,
+) {
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        containerColor = MaterialTheme.colorScheme.surface,
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp)
+                .padding(bottom = 28.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Text(
+                text = "Add pages",
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.SemiBold,
+            )
+            Text(
+                text = "Capture new pages or upload images into this document.",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            AddPageActionRow(
+                icon = Icons.Filled.CameraAlt,
+                title = "Capture with camera",
+                enabled = true,
+                onClick = onOpenCamera,
+            )
+            AddPageActionRow(
+                icon = Icons.Filled.PhotoLibrary,
+                title = "Upload from gallery",
+                enabled = importEnabled,
+                onClick = onImportImages,
+            )
+        }
+    }
+}
+
+@Composable
+private fun AddPageActionRow(
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    title: String,
+    enabled: Boolean,
+    onClick: () -> Unit,
+) {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        color = if (enabled) {
+            MaterialTheme.colorScheme.surfaceContainer
+        } else {
+            MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.5f)
+        },
+        shape = MaterialTheme.shapes.large,
+        onClick = onClick,
+        enabled = enabled,
+    ) {
+        Row(
+            modifier = Modifier.padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(14.dp),
+        ) {
+            androidx.compose.material3.Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = if (enabled) {
+                    MaterialTheme.colorScheme.onSurface
+                } else {
+                    MaterialTheme.colorScheme.onSurfaceVariant
+                },
+            )
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Medium,
+                color = if (enabled) {
+                    MaterialTheme.colorScheme.onSurface
+                } else {
+                    MaterialTheme.colorScheme.onSurfaceVariant
+                },
             )
         }
     }
@@ -780,6 +964,8 @@ private fun MissingDocumentCard(
 @Composable
 private fun EmptyDocumentCard(
     onOpenCamera: () -> Unit,
+    onImportImages: () -> Unit,
+    importEnabled: Boolean,
 ) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
@@ -801,9 +987,73 @@ private fun EmptyDocumentCard(
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
-            TextButton(onClick = onOpenCamera) {
-                Text(text = "Open camera")
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+            ) {
+                AddPageCompactButton(
+                    icon = Icons.Filled.CameraAlt,
+                    label = "Capture",
+                    enabled = true,
+                    onClick = onOpenCamera,
+                    modifier = Modifier.weight(1f),
+                )
+                AddPageCompactButton(
+                    icon = Icons.Filled.PhotoLibrary,
+                    label = "Upload",
+                    enabled = importEnabled,
+                    onClick = onImportImages,
+                    modifier = Modifier.weight(1f),
+                )
             }
+        }
+    }
+}
+
+@Composable
+private fun AddPageCompactButton(
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    label: String,
+    enabled: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Surface(
+        modifier = modifier.clickable(enabled = enabled, onClick = onClick),
+        color = if (enabled) {
+            MaterialTheme.colorScheme.surfaceContainerHighest
+        } else {
+            MaterialTheme.colorScheme.surfaceContainerHighest.copy(alpha = 0.5f)
+        },
+        shape = MaterialTheme.shapes.large,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 13.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            androidx.compose.material3.Icon(
+                imageVector = icon,
+                contentDescription = null,
+                modifier = Modifier.size(18.dp),
+                tint = if (enabled) {
+                    MaterialTheme.colorScheme.onSurface
+                } else {
+                    MaterialTheme.colorScheme.onSurfaceVariant
+                },
+            )
+            Text(
+                text = label,
+                modifier = Modifier.padding(start = 8.dp),
+                style = MaterialTheme.typography.labelLarge,
+                fontWeight = FontWeight.SemiBold,
+                color = if (enabled) {
+                    MaterialTheme.colorScheme.onSurface
+                } else {
+                    MaterialTheme.colorScheme.onSurfaceVariant
+                },
+            )
         }
     }
 }

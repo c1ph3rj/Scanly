@@ -5,6 +5,8 @@ data class ScanDocument(
     val title: String,
     val pageCount: Int,
     val coverThumbnailPath: String?,
+    val groupId: String?,
+    val groupName: String?,
     val rootDirectoryPath: String,
     val createdAtMillis: Long,
     val updatedAtMillis: Long,

@@ -5,10 +5,12 @@ import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import `in`.c1ph3rj.scanly.data.document.DefaultDocumentRepository
+import `in`.c1ph3rj.scanly.data.document.DefaultDocumentGroupRepository
 import `in`.c1ph3rj.scanly.data.page.DefaultPageRepository
 import `in`.c1ph3rj.scanly.data.storage.AppPrivateDocumentStorageManager
 import `in`.c1ph3rj.scanly.data.storage.DocumentStorageManager
 import `in`.c1ph3rj.scanly.domain.repository.DocumentRepository
+import `in`.c1ph3rj.scanly.domain.repository.DocumentGroupRepository
 import `in`.c1ph3rj.scanly.domain.repository.PageRepository
 import javax.inject.Singleton
 
@@ -20,6 +22,12 @@ abstract class DocumentDataModule {
     abstract fun bindDocumentRepository(
         repository: DefaultDocumentRepository,
     ): DocumentRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindDocumentGroupRepository(
+        repository: DefaultDocumentGroupRepository,
+    ): DocumentGroupRepository
 
     @Binds
     @Singleton

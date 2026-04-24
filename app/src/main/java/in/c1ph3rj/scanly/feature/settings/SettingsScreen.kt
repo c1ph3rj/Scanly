@@ -22,6 +22,7 @@ import androidx.compose.material.icons.filled.Brightness4
 import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.HelpOutline
 import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Public
 import androidx.compose.animation.AnimatedVisibility
@@ -61,7 +62,8 @@ import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun SettingsRoute(
-    onNavigateUp: () -> Unit,
+    onNavigateUp: (() -> Unit)? = null,
+    onOpenPrivacyPolicy: () -> Unit = {},
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -83,6 +85,7 @@ fun SettingsRoute(
         onThemeModeSelected = viewModel::setThemeMode,
         onShowDetectionStatsChanged = viewModel::setShowDetectionStats,
         onOpenWebsite = { url -> uriHandler.openUri(url) },
+        onOpenPrivacyPolicy = onOpenPrivacyPolicy,
     )
 }
 
@@ -90,10 +93,11 @@ fun SettingsRoute(
 fun SettingsScreen(
     uiState: SettingsUiState,
     snackbarHostState: SnackbarHostState,
-    onNavigateUp: () -> Unit,
+    onNavigateUp: (() -> Unit)?,
     onThemeModeSelected: (ThemeMode) -> Unit,
     onShowDetectionStatsChanged: (Boolean) -> Unit,
     onOpenWebsite: (String) -> Unit,
+    onOpenPrivacyPolicy: () -> Unit,
 ) {
     val content = uiState.content
     val expandedFaqIds = remember { mutableStateListOf<String>() }
@@ -132,11 +136,13 @@ fun SettingsScreen(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(12.dp),
                         ) {
-                            ChromeIconButton(
-                                icon = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = "Back",
-                                onClick = onNavigateUp,
-                            )
+                            if (onNavigateUp != null) {
+                                ChromeIconButton(
+                                    icon = Icons.AutoMirrored.Filled.ArrowBack,
+                                    contentDescription = "Back",
+                                    onClick = onNavigateUp,
+                                )
+                            }
                             Column {
                                 Text(
                                     text = "Settings",
@@ -199,6 +205,12 @@ fun SettingsScreen(
                                     onClick = { onOpenWebsite(website) },
                                 )
                             }
+                            SettingsNavigationRow(
+                                icon = Icons.Filled.Article,
+                                title = "Privacy policy",
+                                subtitle = "How Scanly handles your data",
+                                onClick = onOpenPrivacyPolicy,
+                            )
                             MetricChip(
                                 label = content?.appVersionLabel ?: "Version unavailable",
                             )
@@ -482,6 +494,50 @@ private fun SettingsLinkRow(
             }
             androidx.compose.material3.Icon(
                 imageVector = Icons.AutoMirrored.Filled.OpenInNew,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+    }
+}
+
+@Composable
+private fun SettingsNavigationRow(
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    title: String,
+    subtitle: String,
+    onClick: () -> Unit,
+) {
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
+        color = MaterialTheme.colorScheme.surfaceContainerHighest,
+        shape = MaterialTheme.shapes.large,
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 14.dp, vertical = 14.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            androidx.compose.material3.Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+            )
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleMedium,
+                )
+                Text(
+                    text = subtitle,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            androidx.compose.material3.Icon(
+                imageVector = Icons.Filled.KeyboardArrowRight,
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
             )
