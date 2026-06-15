@@ -3,8 +3,8 @@ import java.util.Properties
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
-    alias(libs.plugins.hilt.android)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt.android)
 }
 
 val localProperties = Properties().apply {
@@ -116,6 +116,17 @@ android {
     }
     androidResources {
         noCompress += "tflite"
+    }
+}
+
+androidComponents {
+    onVariants { variant ->
+        val variantName = variant.name.replaceFirstChar { it.uppercase() }
+        tasks.matching { it.name == "ksp${variantName}Kotlin" }.configureEach {
+            doFirst {
+                mkdir(layout.buildDirectory.dir("generated/ksp/${variant.name}"))
+            }
+        }
     }
 }
 

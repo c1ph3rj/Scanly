@@ -204,8 +204,7 @@ class ScanSessionViewModel @Inject constructor(
                         current.copy(
                             liveDetection = current.liveDetection.copy(
                                 quad = null,
-                                frameWidth = orientedWidth(frame),
-                                frameHeight = orientedHeight(frame),
+                                overlayFrame = frame.toDetectionOverlayFrame(),
                                 confidence = null,
                                 inferenceTimeMillis = null,
                                 phase = if (current.liveDetection.autoCaptureEnabled) AutoCapturePhase.SEARCHING else AutoCapturePhase.OFF,
@@ -228,8 +227,7 @@ class ScanSessionViewModel @Inject constructor(
                     current.copy(
                         liveDetection = current.liveDetection.copy(
                             quad = detectionResult.quad,
-                            frameWidth = orientedWidth(frame),
-                            frameHeight = orientedHeight(frame),
+                            overlayFrame = frame.toDetectionOverlayFrame(),
                             confidence = detectionResult.confidence.takeIf { it > 0f },
                             inferenceTimeMillis = detectionResult.inferenceTimeMillis,
                             phase = evaluation.phase,
@@ -380,9 +378,4 @@ class ScanSessionViewModel @Inject constructor(
         else -> "Page ${draft.pageIndex + 1} saved."
     }
 
-    private fun orientedWidth(frame: DetectionFrame): Int =
-        if (frame.rotationDegrees % 180 == 0) frame.width else frame.height
-
-    private fun orientedHeight(frame: DetectionFrame): Int =
-        if (frame.rotationDegrees % 180 == 0) frame.height else frame.width
 }

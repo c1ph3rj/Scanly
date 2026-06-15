@@ -14,8 +14,7 @@ enum class AutoCapturePhase {
 
 data class LiveDetectionUiState(
     val quad: DocumentCornerQuad? = null,
-    val frameWidth: Int = 0,
-    val frameHeight: Int = 0,
+    val overlayFrame: DetectionOverlayFrame? = null,
     val autoCaptureEnabled: Boolean = true,
     val isGridEnabled: Boolean = true,
     val phase: AutoCapturePhase = AutoCapturePhase.SEARCHING,
@@ -24,13 +23,8 @@ data class LiveDetectionUiState(
     val confidence: Float? = null,
     val inferenceTimeMillis: Long? = null,
 ) {
-    val hasOverlay: Boolean = quad != null && frameWidth > 0 && frameHeight > 0
+    val hasOverlay: Boolean = quad != null && overlayFrame?.isValid == true
 }
-
-data class DetectionOverlayFrame(
-    val width: Int,
-    val height: Int,
-)
 
 data class StabilityEvaluation(
     val phase: AutoCapturePhase,

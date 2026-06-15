@@ -13,6 +13,7 @@ import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.ImageProxy
 import androidx.camera.core.Preview
+import androidx.camera.core.UseCaseGroup
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.animation.AnimatedVisibility
@@ -85,17 +86,15 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
+import androidx.core.view.doOnLayout
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import `in`.c1ph3rj.scanly.core.ui.ChromeIconButton
 import `in`.c1ph3rj.scanly.core.ui.MetricChip
 import `in`.c1ph3rj.scanly.core.ml.DetectionFrame
-import `in`.c1ph3rj.scanly.core.ml.DocumentCornerQuad
-import `in`.c1ph3rj.scanly.core.ml.NormalizedPoint
 import `in`.c1ph3rj.scanly.domain.model.PageCaptureDraft
 import `in`.c1ph3rj.scanly.feature.components.PagePreview
 import `in`.c1ph3rj.scanly.core.ui.PreviewDisplaySize
@@ -103,7 +102,6 @@ import kotlinx.coroutines.flow.collectLatest
 import java.io.File
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
-import kotlin.math.max
 import kotlin.math.roundToInt
 
 object ScanSessionDestination {
@@ -910,9 +908,14 @@ private fun CameraPreview(
             onDispose { }
         } else {
             val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
+            var disposed = false
             val listener = Runnable {
+                if (disposed) {
+                    return@Runnable
+                }
                 val cameraProvider = cameraProviderFuture.get()
                 val preview = Preview.Builder()
+                    .setTargetRotation(currentPreviewView.display.rotation)
                     .build()
                     .also { useCase ->
                         useCase.surfaceProvider = currentPreviewView.surfaceProvider
@@ -947,19 +950,30 @@ private fun CameraPreview(
                             }
                         }
                     }
+                val viewPort = currentPreviewView.viewPort ?: return@Runnable
+                val useCaseGroup = UseCaseGroup.Builder()
+                    .setViewPort(viewPort)
+                    .addUseCase(preview)
+                    .addUseCase(imageCapture)
+                    .addUseCase(imageAnalysis)
+                    .build()
+
                 cameraProvider.unbindAll()
                 val boundCamera = cameraProvider.bindToLifecycle(
                     lifecycleOwner,
                     CameraSelector.DEFAULT_BACK_CAMERA,
-                    preview,
-                    imageCapture,
-                    imageAnalysis,
+                    useCaseGroup,
                 )
                 onCameraReady(imageCapture, currentPreviewView, boundCamera)
             }
 
-            cameraProviderFuture.addListener(listener, mainExecutor)
+            currentPreviewView.doOnLayout {
+                if (!disposed) {
+                    cameraProviderFuture.addListener(listener, mainExecutor)
+                }
+            }
             onDispose {
+                disposed = true
                 if (cameraProviderFuture.isDone) {
                     cameraProviderFuture.get().unbindAll()
                 }
@@ -1032,14 +1046,14 @@ private fun DocumentDetectionOverlay(
                 return@Canvas
             }
 
-            val mappedPoints = liveDetection.quad
-                ?.mapToOverlay(
-                    overlaySize = IntSize(size.width.roundToInt(), size.height.roundToInt()),
-                    sourceFrame = DetectionOverlayFrame(
-                        width = liveDetection.frameWidth,
-                        height = liveDetection.frameHeight,
-                    ),
-                )
+            val mappedPoints = liveDetection.overlayFrame
+                ?.let { sourceFrame -> liveDetection.quad?.mapToPreview(sourceFrame) }
+                ?.map { point ->
+                    Offset(
+                        x = point.x * size.width,
+                        y = point.y * size.height,
+                    )
+                }
                 .orEmpty()
 
             if (mappedPoints.size < 4) {
@@ -1187,41 +1201,6 @@ private fun capturePage(
     )
 }
 
-private fun DocumentCornerQuad.mapToOverlay(
-    overlaySize: IntSize,
-    sourceFrame: DetectionOverlayFrame,
-): List<Offset> {
-    val scale = max(
-        overlaySize.width / sourceFrame.width.toFloat(),
-        overlaySize.height / sourceFrame.height.toFloat(),
-    )
-    val scaledWidth = sourceFrame.width * scale
-    val scaledHeight = sourceFrame.height * scale
-    val offsetX = (overlaySize.width - scaledWidth) / 2f
-    val offsetY = (overlaySize.height - scaledHeight) / 2f
-
-    return orderedPoints().map { (_, point) ->
-        point.toOverlayOffset(
-            sourceWidth = sourceFrame.width,
-            sourceHeight = sourceFrame.height,
-            scale = scale,
-            offsetX = offsetX,
-            offsetY = offsetY,
-        )
-    }
-}
-
-private fun NormalizedPoint.toOverlayOffset(
-    sourceWidth: Int,
-    sourceHeight: Int,
-    scale: Float,
-    offsetX: Float,
-    offsetY: Float,
-): Offset = Offset(
-    x = offsetX + (x * sourceWidth * scale),
-    y = offsetY + (y * sourceHeight * scale),
-)
-
 private fun ImageProxy.toDetectionFrame(): DetectionFrame? {
     val rgbaPlane = planes.firstOrNull() ?: return null
     if (rgbaPlane.pixelStride < 4) {
@@ -1255,6 +1234,10 @@ private fun ImageProxy.toDetectionFrame(): DetectionFrame? {
         height = height,
         rotationDegrees = imageInfo.rotationDegrees,
         bytes = packedBytes,
+        cropLeft = cropRect.left,
+        cropTop = cropRect.top,
+        cropRight = cropRect.right,
+        cropBottom = cropRect.bottom,
     )
 }
 

@@ -13,6 +13,10 @@ data class DetectionFrame(
     val height: Int,
     val rotationDegrees: Int,
     val bytes: ByteArray,
+    val cropLeft: Int = 0,
+    val cropTop: Int = 0,
+    val cropRight: Int = width,
+    val cropBottom: Int = height,
 )
 
 data class CornerDetectionResult(
