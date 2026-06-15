@@ -2,31 +2,33 @@ package `in`.c1ph3rj.scanly.feature.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import android.net.Uri
 import dagger.hilt.android.lifecycle.HiltViewModel
 import `in`.c1ph3rj.scanly.core.common.ScanlyResult
+import `in`.c1ph3rj.scanly.core.ui.ImageImportSupport
+import `in`.c1ph3rj.scanly.domain.model.DocumentGroup
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
 import `in`.c1ph3rj.scanly.domain.usecase.CreateDocumentUseCase
-import `in`.c1ph3rj.scanly.domain.usecase.DeleteDocumentUseCase
-import `in`.c1ph3rj.scanly.domain.usecase.ObserveDocumentsUseCase
-import `in`.c1ph3rj.scanly.domain.usecase.RenameDocumentUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.ImportImagesUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.ObserveRecentDocumentsUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.ObserveRecentGroupsUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class HomeUiState(
-    val documents: List<ScanDocument> = emptyList(),
-    val isLoading: Boolean = true,
-) {
-    companion object {
-        fun initial(): HomeUiState = HomeUiState()
-    }
-}
+    val recentGroups: List<DocumentGroup> = emptyList(),
+    val recentDocuments: List<ScanDocument> = emptyList(),
+    val isLoading: Boolean = false,
+    val isImporting: Boolean = false,
+)
 
 sealed interface HomeEvent {
     data class OpenDocument(val documentId: String) : HomeEvent
@@ -35,27 +37,32 @@ sealed interface HomeEvent {
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    observeDocumentsUseCase: ObserveDocumentsUseCase,
+    observeRecentGroupsUseCase: ObserveRecentGroupsUseCase,
+    observeRecentDocumentsUseCase: ObserveRecentDocumentsUseCase,
     private val createDocumentUseCase: CreateDocumentUseCase,
-    private val renameDocumentUseCase: RenameDocumentUseCase,
-    private val deleteDocumentUseCase: DeleteDocumentUseCase,
+    private val importImagesUseCase: ImportImagesUseCase,
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow(HomeUiState.initial())
-    val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
     private val _events = MutableSharedFlow<HomeEvent>()
     val events: SharedFlow<HomeEvent> = _events.asSharedFlow()
+    private val isImporting = MutableStateFlow(false)
 
-    init {
-        viewModelScope.launch {
-            observeDocumentsUseCase().collectLatest { documents ->
-                _uiState.value = HomeUiState(
-                    documents = documents,
-                    isLoading = false,
-                )
-            }
-        }
-    }
+    val uiState: StateFlow<HomeUiState> = combine(
+        observeRecentGroupsUseCase(limit = 6),
+        observeRecentDocumentsUseCase(limit = 8),
+        isImporting,
+    ) { groups, docs, importing ->
+        HomeUiState(
+            recentGroups = groups,
+            recentDocuments = docs,
+            isLoading = false,
+            isImporting = importing,
+        )
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5_000),
+        initialValue = HomeUiState(isLoading = false),
+    )
 
     fun createDocument(title: String) {
         viewModelScope.launch {
@@ -66,24 +73,41 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun renameDocument(
-        documentId: String,
-        title: String,
-    ) {
-        viewModelScope.launch {
-            when (val result = renameDocumentUseCase(documentId, title)) {
-                is ScanlyResult.Success -> _events.emit(HomeEvent.ShowMessage("Document renamed."))
-                is ScanlyResult.Failure -> _events.emit(HomeEvent.ShowMessage(result.error.message))
-            }
+    fun importImagesAsDocument(imageUris: List<Uri>) {
+        if (imageUris.isEmpty() || isImporting.value) {
+            return
         }
-    }
 
-    fun deleteDocument(documentId: String) {
+        val cappedSelection = ImageImportSupport.capSelection(imageUris)
+
         viewModelScope.launch {
-            when (val result = deleteDocumentUseCase(documentId)) {
-                is ScanlyResult.Success -> _events.emit(HomeEvent.ShowMessage("Document deleted."))
-                is ScanlyResult.Failure -> _events.emit(HomeEvent.ShowMessage(result.error.message))
+            isImporting.value = true
+            when (val createResult = createDocumentUseCase.createImported()) {
+                is ScanlyResult.Success -> {
+                    when (val importResult = importImagesUseCase(createResult.value, cappedSelection.items)) {
+                        is ScanlyResult.Success -> {
+                            _events.emit(HomeEvent.OpenDocument(createResult.value))
+                            _events.emit(
+                                HomeEvent.ShowMessage(
+                                    ImageImportSupport.importResultMessage(
+                                        importedCount = cappedSelection.items.size,
+                                        truncated = cappedSelection.truncated,
+                                    ),
+                                ),
+                            )
+                        }
+
+                        is ScanlyResult.Failure -> {
+                            _events.emit(HomeEvent.ShowMessage(importResult.error.message))
+                        }
+                    }
+                }
+
+                is ScanlyResult.Failure -> {
+                    _events.emit(HomeEvent.ShowMessage(createResult.error.message))
+                }
             }
+            isImporting.value = false
         }
     }
 }

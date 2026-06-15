@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -41,10 +42,10 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
@@ -68,11 +69,13 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.exifinterface.media.ExifInterface
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import `in`.c1ph3rj.scanly.core.ui.ChromeIconButton
 import `in`.c1ph3rj.scanly.core.ui.MetricChip
 import `in`.c1ph3rj.scanly.core.editing.CropHandle
@@ -92,7 +95,7 @@ fun PageEditorRoute(
     onNavigateUp: () -> Unit,
     viewModel: PageEditorViewModel = hiltViewModel(),
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(viewModel) {
@@ -292,6 +295,20 @@ private fun FilterScopeOption(
                 checked = applyToAllPages,
                 onCheckedChange = onApplyToAllPagesChange,
                 enabled = enabled,
+                colors = SwitchDefaults.colors(
+                    checkedThumbColor = Color.White,
+                    checkedTrackColor = AccentGreen,
+                    checkedBorderColor = AccentGreen,
+                    uncheckedThumbColor = Color.White.copy(alpha = 0.92f),
+                    uncheckedTrackColor = Color.White.copy(alpha = 0.16f),
+                    uncheckedBorderColor = Color.White.copy(alpha = 0.22f),
+                    disabledCheckedThumbColor = Color.White.copy(alpha = 0.72f),
+                    disabledCheckedTrackColor = AccentGreen.copy(alpha = 0.42f),
+                    disabledCheckedBorderColor = AccentGreen.copy(alpha = 0.42f),
+                    disabledUncheckedThumbColor = Color.White.copy(alpha = 0.56f),
+                    disabledUncheckedTrackColor = Color.White.copy(alpha = 0.12f),
+                    disabledUncheckedBorderColor = Color.White.copy(alpha = 0.18f),
+                ),
             )
         }
     }
@@ -664,6 +681,14 @@ private fun FilterSelector(
         fallbackImagePath = fallbackImagePath,
         rotationDegrees = rotationDegrees,
     )
+    val listState = rememberLazyListState()
+
+    LaunchedEffect(selectedFilter) {
+        val targetIndex = PageFilterPreset.entries.indexOf(selectedFilter)
+        if (targetIndex >= 0) {
+            listState.animateScrollToItem(targetIndex)
+        }
+    }
 
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         if (previewState.isLoading) {
@@ -694,10 +719,11 @@ private fun FilterSelector(
         }
 
         LazyRow(
+            state = listState,
             horizontalArrangement = Arrangement.spacedBy(10.dp),
             contentPadding = PaddingValues(horizontal = 2.dp),
         ) {
-            items(PageFilterPreset.entries) { filter ->
+            items(PageFilterPreset.entries, key = { it.storageValue }) { filter ->
                 val isSelected = selectedFilter == filter
                 Surface(
                     modifier = Modifier
@@ -706,7 +732,7 @@ private fun FilterSelector(
                     color = if (isSelected) Color(0xFF112922) else Color(0xFF111315),
                     shape = RoundedCornerShape(20.dp),
                     border = BorderStroke(
-                        width = 1.dp,
+                        width = if (isSelected) 2.dp else 1.dp,
                         color = if (isSelected) AccentGreen else Color.White.copy(alpha = 0.08f),
                     ),
                 ) {
@@ -714,38 +740,60 @@ private fun FilterSelector(
                         modifier = Modifier.padding(10.dp),
                         verticalArrangement = Arrangement.spacedBy(10.dp),
                     ) {
-                        Surface(
+                        Box(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(112.dp),
-                            color = Color(0xFF1C2023),
-                            shape = RoundedCornerShape(16.dp),
                         ) {
-                            val preview = previewState.previews[filter]
-                            if (preview == null) {
-                                Box(
-                                    modifier = Modifier.fillMaxSize(),
-                                    contentAlignment = Alignment.Center,
-                                ) {
-                                    Text(
-                                        text = filter.shortLabel(),
-                                        color = Color.White.copy(alpha = 0.72f),
-                                        style = MaterialTheme.typography.labelLarge,
+                            Surface(
+                                modifier = Modifier.fillMaxSize(),
+                                color = Color(0xFF1C2023),
+                                shape = RoundedCornerShape(16.dp),
+                            ) {
+                                val preview = previewState.previews[filter]
+                                if (preview == null) {
+                                    Box(
+                                        modifier = Modifier.fillMaxSize(),
+                                        contentAlignment = Alignment.Center,
+                                    ) {
+                                        Text(
+                                            text = filter.shortLabel(),
+                                            color = Color.White.copy(alpha = 0.72f),
+                                            style = MaterialTheme.typography.labelLarge,
+                                        )
+                                    }
+                                } else {
+                                    Image(
+                                        bitmap = preview,
+                                        contentDescription = "${filter.toDisplayLabel()} filter preview",
+                                        modifier = Modifier.fillMaxSize(),
+                                        contentScale = ContentScale.Crop,
                                     )
                                 }
-                            } else {
-                                Image(
-                                    bitmap = preview,
-                                    contentDescription = "${filter.toDisplayLabel()} filter preview",
-                                    modifier = Modifier.fillMaxSize(),
-                                    contentScale = ContentScale.Crop,
-                                )
+                            }
+                            if (isSelected) {
+                                Box(
+                                    modifier = Modifier
+                                        .align(Alignment.TopEnd)
+                                        .padding(6.dp)
+                                        .size(24.dp)
+                                        .background(AccentGreen, CircleShape),
+                                    contentAlignment = Alignment.Center,
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Filled.Check,
+                                        contentDescription = "Selected filter",
+                                        tint = Color.White,
+                                        modifier = Modifier.size(16.dp),
+                                    )
+                                }
                             }
                         }
                         Text(
                             text = filter.toDisplayLabel(),
                             color = if (isSelected) Color.White else Color.White.copy(alpha = 0.78f),
                             style = MaterialTheme.typography.labelLarge,
+                            fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
                         )
                     }
                 }
@@ -818,7 +866,7 @@ private fun rememberEditorPreviewBitmap(
     rotationDegrees,
     selectedFilter,
 ) {
-    value = withContext(Dispatchers.IO) {
+    value = withContext(Dispatchers.Default) {
         val sourcePath = rawImagePath ?: fallbackImagePath ?: return@withContext null
         val rotatedBitmap = decodeEditorBitmap(
             path = sourcePath,
@@ -876,7 +924,7 @@ private fun rememberFilterPreviewBitmaps(
     fallbackImagePath,
     rotationDegrees,
 ) {
-    value = withContext(Dispatchers.IO) {
+    value = withContext(Dispatchers.Default) {
         val sourcePath = rawImagePath ?: fallbackImagePath ?: return@withContext FilterPreviewState(
             isLoading = false,
             previews = emptyMap(),

@@ -13,11 +13,26 @@ interface DocumentDao {
     @Query("SELECT * FROM documents ORDER BY updatedAtMillis DESC")
     fun observeDocuments(): Flow<List<DocumentEntity>>
 
+    @Query("SELECT * FROM documents ORDER BY updatedAtMillis DESC LIMIT :limit")
+    fun observeRecentDocuments(limit: Int): Flow<List<DocumentEntity>>
+
+    @Query("SELECT * FROM documents WHERE groupId IS NULL ORDER BY updatedAtMillis DESC")
+    fun observeUngroupedDocuments(): Flow<List<DocumentEntity>>
+
+    @Query("SELECT * FROM documents WHERE groupId = :groupId ORDER BY title ASC")
+    fun observeDocumentsByGroup(groupId: String): Flow<List<DocumentEntity>>
+
+    @Query("SELECT * FROM documents WHERE groupId = :groupId ORDER BY title ASC")
+    suspend fun getDocumentsByGroup(groupId: String): List<DocumentEntity>
+
     @Query("SELECT * FROM documents WHERE id = :documentId")
     fun observeDocument(documentId: String): Flow<DocumentEntity?>
 
     @Query("SELECT * FROM documents WHERE id = :documentId")
     suspend fun getDocument(documentId: String): DocumentEntity?
+
+    @Query("SELECT title FROM documents")
+    suspend fun getAllTitles(): List<String>
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insert(document: DocumentEntity)

@@ -7,6 +7,12 @@ import javax.inject.Inject
 class CreateDocumentUseCase @Inject constructor(
     private val documentRepository: DocumentRepository,
 ) {
-    suspend operator fun invoke(title: String): ScanlyResult<String> =
-        documentRepository.createDocument(title)
+    suspend operator fun invoke(
+        title: String,
+        groupId: String? = null,
+    ): ScanlyResult<String> =
+        documentRepository.createDocument(title, groupId)
+
+    suspend fun createImported(groupId: String? = null): ScanlyResult<String> =
+        documentRepository.createImportedDocument(groupId)
 }

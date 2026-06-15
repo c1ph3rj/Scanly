@@ -33,12 +33,16 @@ Primary areas:
 
 The app currently centers on a local document workflow:
 
-- document library and document detail screens
+- home dashboard with recent documents and groups
+- searchable library with document groups (collections)
 - manual camera capture and scan sessions
-- page persistence in Room
+- gallery import for new or existing documents
+- page persistence in Room (schema version 3)
 - non-destructive page editing
-- export/share flows for PDF and images
-- settings and support content
+- export/share flows for PDF and images, including group export
+- settings with storage usage, clear-all-data, and support content
+
+**Current version:** `1.0.4` (version code `4`). See `VERSION.md` and `CHANGELOG.md`.
 
 ## Engineering Principles
 
@@ -56,6 +60,7 @@ The codebase is being prepared for open-source publication and public collaborat
 - sprint documents are kept as archive summaries
 - repository hygiene rules are tightened for build and IDE artifacts
 - onboarding and support docs are kept in root-level markdown files
+- `VERSION.md` and `CHANGELOG.md` track release metadata and user-facing changes
 
 ## Recommended Next Technical Focus
 

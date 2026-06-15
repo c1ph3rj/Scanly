@@ -19,4 +19,28 @@ interface DocumentExportRepository {
     suspend fun exportImageArchive(documentId: String): ScanlyResult<ExportArtifact>
 
     suspend fun prepareImageShare(documentId: String): ScanlyResult<ShareArtifact>
+
+    suspend fun exportGroupAsSinglePdf(
+        groupId: String,
+        options: PdfExportOptions,
+        onProgress: (current: Int, total: Int) -> Unit,
+    ): ScanlyResult<ExportArtifact>
+
+    suspend fun exportGroupAsZippedPdfs(
+        groupId: String,
+        options: PdfExportOptions,
+        onProgress: (currentDoc: Int, totalDocs: Int) -> Unit,
+    ): ScanlyResult<ExportArtifact>
+
+    suspend fun prepareGroupSinglePdfShare(
+        groupId: String,
+        options: PdfExportOptions,
+        onProgress: (current: Int, total: Int) -> Unit,
+    ): ScanlyResult<ShareArtifact>
+
+    suspend fun prepareGroupZippedPdfsShare(
+        groupId: String,
+        options: PdfExportOptions,
+        onProgress: (currentDoc: Int, totalDocs: Int) -> Unit,
+    ): ScanlyResult<ShareArtifact>
 }

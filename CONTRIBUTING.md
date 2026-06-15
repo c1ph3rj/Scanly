@@ -20,7 +20,7 @@ Thanks for your interest in contributing.
 ./gradlew.bat testDebugUnitTest
 ```
 
-4. Update documentation when you change public behavior.
+4. Update documentation when you change public behavior (`README.md`, `CHANGELOG.md`, and `VERSION.md` when releasing).
 5. Keep commits descriptive and avoid mixing unrelated work.
 
 ## Code style

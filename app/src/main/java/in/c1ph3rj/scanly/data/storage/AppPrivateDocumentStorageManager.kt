@@ -103,6 +103,12 @@ class AppPrivateDocumentStorageManager @Inject constructor(
         }
     }
 
+    override suspend fun clearAllDocumentStorage() {
+        withContext(dispatchers.io) {
+            File(context.filesDir, DOCUMENTS_DIRECTORY).deleteRecursively()
+        }
+    }
+
     private fun documentRoot(documentId: String): File =
         File(context.filesDir, "$DOCUMENTS_DIRECTORY/$documentId")
 
@@ -190,7 +196,7 @@ class AppPrivateDocumentStorageManager @Inject constructor(
         const val THUMBNAILS_DIRECTORY = "thumbs"
         const val COVER_FILE_NAME = "cover.jpg"
         const val JPEG_QUALITY = 92
-        const val THUMBNAIL_JPEG_QUALITY = 88
-        const val THUMBNAIL_MAX_DIMENSION = 720
+        const val THUMBNAIL_JPEG_QUALITY = 90
+        const val THUMBNAIL_MAX_DIMENSION = 1_024
     }
 }

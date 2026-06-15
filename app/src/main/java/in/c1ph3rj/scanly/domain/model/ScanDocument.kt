@@ -8,4 +8,5 @@ data class ScanDocument(
     val rootDirectoryPath: String,
     val createdAtMillis: Long,
     val updatedAtMillis: Long,
+    val groupId: String? = null,
 )

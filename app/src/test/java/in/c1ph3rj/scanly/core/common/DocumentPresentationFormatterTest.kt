@@ -22,4 +22,28 @@ class DocumentPresentationFormatterTest {
         assertEquals("RE", DocumentPresentationFormatter.initials("Receipt"))
         assertEquals("UD", DocumentPresentationFormatter.initials("   "))
     }
+
+    @Test
+    fun resolveUniqueTitle_appendsSuffixWhenTitleAlreadyExists() {
+        val existing = listOf("Invoice", "Invoice (2)")
+
+        assertEquals(
+            "Invoice (3)",
+            DocumentPresentationFormatter.resolveUniqueTitle(
+                baseTitle = "Invoice",
+                existingTitles = existing,
+            ),
+        )
+    }
+
+    @Test
+    fun resolveUniqueTitle_returnsBaseWhenUnused() {
+        assertEquals(
+            "Invoice",
+            DocumentPresentationFormatter.resolveUniqueTitle(
+                baseTitle = "Invoice",
+                existingTitles = listOf("Receipt"),
+            ),
+        )
+    }
 }

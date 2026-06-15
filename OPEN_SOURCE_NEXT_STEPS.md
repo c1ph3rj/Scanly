@@ -19,8 +19,8 @@ Use this checklist while finalizing and maintaining the public repository.
 
 ## Documentation
 
-- [ ] Add screenshots or a short demo GIF to the README.
-- [ ] Add a short changelog or release notes file if you start tagging releases.
+- [x] Add screenshots or a short demo GIF to the README.
+- [x] Add a short changelog or release notes file if you start tagging releases.
 - [ ] Keep `implementation.md` and the sprint archives in sync with the codebase.
 - [ ] Update architecture notes whenever navigation, storage, or feature boundaries change.
 - [ ] Add any missing API, data, or model-contract documentation.

@@ -1,5 +1,7 @@
 package `in`.c1ph3rj.scanly.core.common
 
+import java.text.DateFormat
+import java.util.Date
 import java.util.Locale
 
 object DocumentPresentationFormatter {
@@ -24,6 +26,40 @@ object DocumentPresentationFormatter {
 
         return letters.uppercase(Locale.US)
     }
+
+    fun defaultImportedDocumentTitle(atMillis: Long = System.currentTimeMillis()): String {
+        val dateTime = DateFormat.getDateTimeInstance(
+            DateFormat.MEDIUM,
+            DateFormat.SHORT,
+            Locale.getDefault(),
+        ).format(Date(atMillis))
+        return "Imported $dateTime"
+    }
+
+    fun resolveUniqueTitle(baseTitle: String, existingTitles: Iterable<String>): String {
+        val takenTitles = existingTitles.map(::normalizeTitle).toSet()
+        val normalizedBase = normalizeTitle(baseTitle)
+        if (normalizedBase !in takenTitles) {
+            return normalizedBase
+        }
+
+        var suffix = 2
+        while (true) {
+            val candidate = normalizeTitle("$baseTitle ($suffix)")
+            if (candidate !in takenTitles) {
+                return candidate
+            }
+            suffix++
+        }
+    }
+
+    fun uniqueImportedDocumentTitle(
+        existingTitles: Iterable<String>,
+        atMillis: Long = System.currentTimeMillis(),
+    ): String = resolveUniqueTitle(
+        baseTitle = defaultImportedDocumentTitle(atMillis),
+        existingTitles = existingTitles,
+    )
 
     fun safeFileStem(title: String): String {
         val cleaned = normalizeTitle(title)

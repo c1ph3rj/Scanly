@@ -62,5 +62,6 @@ class DocumentDetailSelectionResolverTest {
         filterPreset = PageFilterPreset.ORIGINAL,
         processingState = PageProcessingState.PROCESSED,
         createdAtMillis = 0L,
+        updatedAtMillis = 0L,
     )
 }

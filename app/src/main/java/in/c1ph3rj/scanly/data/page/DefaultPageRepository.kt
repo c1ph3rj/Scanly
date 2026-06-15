@@ -4,6 +4,7 @@ import androidx.room.withTransaction
 import `in`.c1ph3rj.scanly.core.common.ScanlyDispatchers
 import `in`.c1ph3rj.scanly.core.common.ScanlyError
 import `in`.c1ph3rj.scanly.core.common.ScanlyResult
+import `in`.c1ph3rj.scanly.core.ui.ThumbnailCache
 import `in`.c1ph3rj.scanly.data.local.db.ScanlyDatabase
 import `in`.c1ph3rj.scanly.data.local.db.dao.DocumentDao
 import `in`.c1ph3rj.scanly.data.local.db.dao.ScanPageDao
@@ -30,6 +31,7 @@ class DefaultPageRepository @Inject constructor(
     private val scanPageDao: ScanPageDao,
     private val storageManager: DocumentStorageManager,
     private val pageImageProcessor: PageImageProcessor,
+    private val thumbnailCache: ThumbnailCache,
     private val dispatchers: ScanlyDispatchers,
 ) : PageRepository {
 
@@ -138,6 +140,10 @@ class DefaultPageRepository @Inject constructor(
                         rotationDegrees = fallbackThumbnail.rotationDegrees,
                     ).toPersistedArtifacts()
                 }
+                invalidateImageCache(
+                    processedArtifacts.thumbnailPath,
+                    processedArtifacts.processedImagePath,
+                )
                 val page = ScanPageEntity(
                     id = draft.pageId,
                     documentId = draft.documentId,
@@ -394,6 +400,7 @@ class DefaultPageRepository @Inject constructor(
         filterPreset = PageFilterPreset.fromStorage(filterPreset),
         processingState = PageProcessingState.fromStorage(processingState),
         createdAtMillis = createdAtMillis,
+        updatedAtMillis = updatedAtMillis,
     )
 
     private suspend fun ScanPageEntity.reprocessWith(
@@ -424,6 +431,11 @@ class DefaultPageRepository @Inject constructor(
             filterPreset = filterPreset,
             detectDocumentWhenCropQuadMissing = detectDocumentWhenCropQuadMissing,
         ).toPersistedArtifacts()
+
+        invalidateImageCache(
+            processedArtifacts.thumbnailPath,
+            processedArtifacts.processedImagePath,
+        )
 
         return copy(
             processedImagePath = processedArtifacts.processedImagePath,
@@ -498,6 +510,10 @@ class DefaultPageRepository @Inject constructor(
             filterPreset = PageFilterPreset.ORIGINAL.storageValue,
             processingState = PageProcessingState.CAPTURED.storageValue,
         )
+
+    private fun invalidateImageCache(vararg paths: String?) {
+        paths.filterNotNull().forEach(thumbnailCache::invalidate)
+    }
 
     private fun deriveSiblingAssetPath(
         rawImagePath: String,

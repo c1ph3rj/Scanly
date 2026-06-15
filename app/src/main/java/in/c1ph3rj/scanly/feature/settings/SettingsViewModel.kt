@@ -3,8 +3,11 @@ package `in`.c1ph3rj.scanly.feature.settings
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import `in`.c1ph3rj.scanly.domain.model.AppStorageUsage
 import `in`.c1ph3rj.scanly.domain.model.SettingsContent
 import `in`.c1ph3rj.scanly.domain.model.ThemeMode
+import `in`.c1ph3rj.scanly.domain.usecase.ClearAllAppDataUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.GetAppStorageUsageUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveShowDetectionStatsUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.LoadSettingsContentUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveThemeModeUseCase
@@ -25,6 +28,9 @@ data class SettingsUiState(
     val showDetectionStats: Boolean = true,
     val content: SettingsContent? = null,
     val isLoading: Boolean = true,
+    val storageUsage: AppStorageUsage? = null,
+    val isLoadingStorage: Boolean = true,
+    val isClearingData: Boolean = false,
 )
 
 sealed interface SettingsEvent {
@@ -38,6 +44,8 @@ class SettingsViewModel @Inject constructor(
     private val setThemeModeUseCase: SetThemeModeUseCase,
     private val setShowDetectionStatsUseCase: SetShowDetectionStatsUseCase,
     private val loadSettingsContentUseCase: LoadSettingsContentUseCase,
+    private val getAppStorageUsageUseCase: GetAppStorageUsageUseCase,
+    private val clearAllAppDataUseCase: ClearAllAppDataUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SettingsUiState())
@@ -60,6 +68,50 @@ class SettingsViewModel @Inject constructor(
             }
         }
         refresh()
+        loadStorageUsage()
+    }
+
+    fun loadStorageUsage() {
+        viewModelScope.launch {
+            _uiState.update { current -> current.copy(isLoadingStorage = true) }
+            when (val result = getAppStorageUsageUseCase()) {
+                is `in`.c1ph3rj.scanly.core.common.ScanlyResult.Success -> {
+                    _uiState.update { current ->
+                        current.copy(
+                            storageUsage = result.value,
+                            isLoadingStorage = false,
+                        )
+                    }
+                }
+
+                is `in`.c1ph3rj.scanly.core.common.ScanlyResult.Failure -> {
+                    _uiState.update { current -> current.copy(isLoadingStorage = false) }
+                    _events.emit(SettingsEvent.ShowMessage(result.error.message))
+                }
+            }
+        }
+    }
+
+    fun clearAllData() {
+        if (_uiState.value.isClearingData) {
+            return
+        }
+
+        viewModelScope.launch {
+            _uiState.update { current -> current.copy(isClearingData = true) }
+            when (val result = clearAllAppDataUseCase()) {
+                is `in`.c1ph3rj.scanly.core.common.ScanlyResult.Success -> {
+                    _uiState.update { current -> current.copy(isClearingData = false) }
+                    _events.emit(SettingsEvent.ShowMessage("All data cleared."))
+                    loadStorageUsage()
+                }
+
+                is `in`.c1ph3rj.scanly.core.common.ScanlyResult.Failure -> {
+                    _uiState.update { current -> current.copy(isClearingData = false) }
+                    _events.emit(SettingsEvent.ShowMessage(result.error.message))
+                }
+            }
+        }
     }
 
     fun refresh() {

@@ -6,15 +6,11 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.material3.SnackbarHostState
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
-import `in`.c1ph3rj.scanly.feature.home.HomeScreen
-import `in`.c1ph3rj.scanly.feature.home.HomeUiState
 import `in`.c1ph3rj.scanly.navigation.ScanlyNavHost
 import `in`.c1ph3rj.scanly.domain.model.ThemeMode
 import `in`.c1ph3rj.scanly.ui.theme.ScanlyTheme
@@ -33,32 +29,33 @@ class MainActivity : ComponentActivity() {
 @Composable
 private fun ScanlyApp() {
     val appSettingsViewModel: AppSettingsViewModel = hiltViewModel()
-    val themeMode by appSettingsViewModel.themeMode.collectAsState()
+    val themeMode by appSettingsViewModel.themeMode.collectAsStateWithLifecycle()
     val systemDark = isSystemInDarkTheme()
+    val isDarkTheme = themeMode.resolveDarkTheme(systemDark)
     val navController = rememberNavController()
+    
+    val activity = androidx.compose.ui.platform.LocalContext.current as ComponentActivity
+    androidx.compose.runtime.DisposableEffect(isDarkTheme) {
+        activity.enableEdgeToEdge(
+            statusBarStyle = androidx.activity.SystemBarStyle.auto(
+                android.graphics.Color.TRANSPARENT,
+                android.graphics.Color.TRANSPARENT,
+            ) { isDarkTheme },
+            navigationBarStyle = androidx.activity.SystemBarStyle.auto(
+                android.graphics.Color.TRANSPARENT,
+                android.graphics.Color.TRANSPARENT,
+            ) { isDarkTheme }
+        )
+        onDispose {}
+    }
+
     ScanlyTheme(
-        darkTheme = themeMode.resolveDarkTheme(systemDark),
+        darkTheme = isDarkTheme,
     ) {
         ScanlyNavHost(navController = navController)
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-private fun ScanlyAppPreview() {
-    ScanlyTheme {
-        HomeScreen(
-            uiState = HomeUiState.initial(),
-            snackbarHostState = SnackbarHostState(),
-            onCreateDocument = {},
-            onRenameDocument = { _, _ -> },
-            onDeleteDocument = {},
-            onOpenDocument = {},
-            onOpenSettings = {},
-            onOpenScanSession = {},
-        )
-    }
-}
 
 private fun ThemeMode.resolveDarkTheme(systemDark: Boolean): Boolean = when (this) {
     ThemeMode.SYSTEM -> systemDark

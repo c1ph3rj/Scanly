@@ -32,10 +32,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.TransformOrigin
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
@@ -45,8 +47,13 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.window.DialogWindowProvider
+import androidx.core.view.WindowCompat
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.io.File
 import kotlin.math.min
 
 @Composable
@@ -65,14 +72,30 @@ fun ZoomableImageDialog(
             usePlatformDefaultWidth = false,
         ),
     ) {
+        val view = LocalView.current
+        val isLightBackground = MaterialTheme.colorScheme.background.luminance() > 0.5f
+        DisposableEffect(view, isLightBackground) {
+            val window = (view.parent as? DialogWindowProvider)?.window
+            if (window != null) {
+                WindowCompat.setDecorFitsSystemWindows(window, false)
+                window.statusBarColor = android.graphics.Color.TRANSPARENT
+                window.navigationBarColor = android.graphics.Color.TRANSPARENT
+                
+                val controller = WindowCompat.getInsetsController(window, view)
+                controller.isAppearanceLightStatusBars = isLightBackground
+                controller.isAppearanceLightNavigationBars = isLightBackground
+            }
+            onDispose {}
+        }
+
         Surface(
             modifier = Modifier.fillMaxSize(),
-            color = Color.Black,
+            color = MaterialTheme.colorScheme.background,
         ) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.Black),
+                    .background(MaterialTheme.colorScheme.background),
             ) {
                 val imageBitmap by rememberZoomableImageBitmap(imagePath)
                 when {
@@ -83,7 +106,7 @@ fun ZoomableImageDialog(
                         ) {
                             CircularProgressIndicator(
                                 modifier = Modifier.size(28.dp),
-                                color = Color.White,
+                                color = MaterialTheme.colorScheme.primary,
                                 strokeWidth = 2.5.dp,
                             )
                         }
@@ -97,7 +120,7 @@ fun ZoomableImageDialog(
                             Text(
                                 text = "Image unavailable",
                                 style = MaterialTheme.typography.titleMedium,
-                                color = Color.White,
+                                color = MaterialTheme.colorScheme.onBackground,
                             )
                         }
                     }
@@ -126,14 +149,14 @@ fun ZoomableImageDialog(
                         icon = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "Close",
                         onClick = onDismiss,
-                        containerColor = Color.White.copy(alpha = 0.12f),
-                        contentColor = Color.White,
+                        containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                        contentColor = MaterialTheme.colorScheme.onSurface,
                     )
                     Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
                         MetricChip(
                             label = title,
-                            containerColor = Color.White.copy(alpha = 0.1f),
-                            contentColor = Color.White,
+                            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                            contentColor = MaterialTheme.colorScheme.onSurface,
                         )
                     }
                     if (zoomActive) {
@@ -144,11 +167,11 @@ fun ZoomableImageDialog(
                                 scale = 1f
                                 offset = Offset.Zero
                             },
-                            containerColor = Color.White.copy(alpha = 0.12f),
-                            contentColor = Color.White,
+                            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                            contentColor = MaterialTheme.colorScheme.onSurface,
                         )
                     } else {
-                        Box(modifier = Modifier.width(44.dp))
+                        Box(modifier = Modifier.size(44.dp))
                     }
                 }
             }
@@ -229,6 +252,7 @@ private fun ZoomableImageCanvas(
                 bitmap = imageBitmap,
                 contentDescription = null,
                 contentScale = ContentScale.Fit,
+                filterQuality = FilterQuality.High,
                 modifier = Modifier
                     .size(
                         width = with(density) { fittedImageSize.width.toDp() },
@@ -304,6 +328,7 @@ private fun clampPanOffset(
 private fun rememberZoomableImageBitmap(imagePath: String?) = produceState<ImageBitmap?>(
     initialValue = null,
     key1 = imagePath,
+    key2 = imagePath?.let { path -> File(path).takeIf { it.exists() }?.lastModified() },
 ) {
     value = withContext(Dispatchers.IO) {
         imagePath?.let(::decodeZoomableBitmap)?.asImageBitmap()

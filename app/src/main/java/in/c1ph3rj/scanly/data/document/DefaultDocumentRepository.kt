@@ -28,15 +28,26 @@ class DefaultDocumentRepository @Inject constructor(
 
     override fun observeDocuments(): Flow<List<ScanDocument>> =
         documentDao.observeDocuments().map { documents ->
-            documents.map { document -> document.toDomain() }
+            documents.map { it.toDomain() }
+        }
+
+    override fun observeRecentDocuments(limit: Int): Flow<List<ScanDocument>> =
+        documentDao.observeRecentDocuments(limit).map { documents ->
+            documents.map { it.toDomain() }
+        }
+
+    override fun observeUngroupedDocuments(): Flow<List<ScanDocument>> =
+        documentDao.observeUngroupedDocuments().map { documents ->
+            documents.map { it.toDomain() }
         }
 
     override fun observeDocument(documentId: String): Flow<ScanDocument?> =
-        documentDao.observeDocument(documentId).map { document ->
-            document?.toDomain()
-        }
+        documentDao.observeDocument(documentId).map { it?.toDomain() }
 
-    override suspend fun createDocument(title: String): ScanlyResult<String> =
+    override suspend fun createDocument(
+        title: String,
+        groupId: String?,
+    ): ScanlyResult<String> =
         withContext(dispatchers.io) {
             val normalizedTitle = DocumentPresentationFormatter.normalizeTitle(title)
             val documentId = UUID.randomUUID().toString()
@@ -56,6 +67,7 @@ class DefaultDocumentRepository @Inject constructor(
                     rootDirectoryPath = fileLayout.rootDirectoryPath,
                     createdAtMillis = timestamp,
                     updatedAtMillis = timestamp,
+                    groupId = groupId,
                 )
                 database.withTransaction {
                     documentDao.insert(document)
@@ -74,6 +86,15 @@ class DefaultDocumentRepository @Inject constructor(
                 },
             )
         }
+
+    override suspend fun createImportedDocument(
+        groupId: String?,
+    ): ScanlyResult<String> = withContext(dispatchers.io) {
+        val title = DocumentPresentationFormatter.uniqueImportedDocumentTitle(
+            existingTitles = documentDao.getAllTitles(),
+        )
+        createDocument(title = title, groupId = groupId)
+    }
 
     override suspend fun renameDocument(
         documentId: String,
@@ -138,5 +159,6 @@ class DefaultDocumentRepository @Inject constructor(
         rootDirectoryPath = rootDirectoryPath,
         createdAtMillis = createdAtMillis,
         updatedAtMillis = updatedAtMillis,
+        groupId = groupId,
     )
 }
