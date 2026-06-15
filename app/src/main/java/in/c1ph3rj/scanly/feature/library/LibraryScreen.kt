@@ -2,7 +2,6 @@ package `in`.c1ph3rj.scanly.feature.library
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
@@ -29,8 +28,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -112,42 +109,6 @@ fun LibraryScreen(
         modifier = Modifier.fillMaxSize(),
         containerColor = MaterialTheme.colorScheme.background,
         snackbarHost = { SnackbarHost(snackbarHostState) },
-        floatingActionButton = {
-            Column(horizontalAlignment = Alignment.End, verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                if (showFabMenu) {
-                    ExtendedFloatingActionButton(
-                        onClick = {
-                            showFabMenu = false
-                            createGroupDialogVisible = true
-                        },
-                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
-                        icon = { Icon(Icons.Filled.CreateNewFolder, contentDescription = null) },
-                        text = { Text("New Folder") }
-                    )
-                    ExtendedFloatingActionButton(
-                        onClick = {
-                            showFabMenu = false
-                            createDocDialogVisible = true
-                        },
-                        containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
-                        icon = { Icon(Icons.Filled.Description, contentDescription = null) },
-                        text = { Text("New Document") }
-                    )
-                }
-                FloatingActionButton(
-                    onClick = { showFabMenu = !showFabMenu },
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary,
-                ) {
-                    Icon(
-                        imageVector = if (showFabMenu) Icons.Filled.Clear else Icons.Filled.Add,
-                        contentDescription = "Toggle Add Menu"
-                    )
-                }
-            }
-        },
     ) { innerPadding ->
         Box(modifier = Modifier.fillMaxSize()) {
             if (uiState.isLoading) {
@@ -276,22 +237,27 @@ fun LibraryScreen(
                     }
                 }
             }
-        }
-        }
+            }
+            }
 
-        if (showFabMenu) {
-            Box(
+            FabMenuScrim(
+                visible = showFabMenu,
+                onDismiss = { showFabMenu = false },
+            )
+
+            ScanlyExpandableFabMenu(
+                expanded = showFabMenu,
+                onExpandedChange = { showFabMenu = it },
+                onNewFolder = { createGroupDialogVisible = true },
+                onNewDocument = { createDocDialogVisible = true },
                 modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.32f))
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null,
-                        onClick = { showFabMenu = false }
-                    )
+                    .align(Alignment.BottomEnd)
+                    .padding(
+                        end = 16.dp,
+                        bottom = innerPadding.calculateBottomPadding() + 16.dp,
+                    ),
             )
         }
-    }
     }
 
     if (createDocDialogVisible) {

@@ -3,6 +3,11 @@ package `in`.c1ph3rj.scanly.navigation
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material.icons.Icons
@@ -129,8 +134,18 @@ fun ScanlyNavHost(
             // Each screen is responsible for its own top / status-bar inset so
             // that its background colour flows seamlessly behind the transparent bar.
             modifier = Modifier.padding(bottom = innerPadding.calculateBottomPadding()),
+            enterTransition = { topLevelEnter() },
+            exitTransition = { topLevelExit() },
+            popEnterTransition = { topLevelEnter() },
+            popExitTransition = { topLevelExit() },
         ) {
-            composable(ScanlyDestination.Home.route) {
+            composable(
+                route = ScanlyDestination.Home.route,
+                enterTransition = { topLevelEnter() },
+                exitTransition = { topLevelExit() },
+                popEnterTransition = { topLevelEnter() },
+                popExitTransition = { topLevelExit() },
+            ) {
                 HomeRoute(
                     navController = navController,
                     onOpenDocument = { documentId ->
@@ -155,10 +170,10 @@ fun ScanlyNavHost(
             }
             composable(
                 route = ScanlyDestination.Library.route,
-                enterTransition = { fadeThroughIn() },
-                exitTransition = { fadeThroughOut() },
-                popEnterTransition = { fadeThroughIn() },
-                popExitTransition = { fadeThroughOut() },
+                enterTransition = { topLevelEnter() },
+                exitTransition = { topLevelExit() },
+                popEnterTransition = { topLevelEnter() },
+                popExitTransition = { topLevelExit() },
             ) {
                 LibraryRoute(
                     onOpenDocument = { documentId ->
@@ -192,10 +207,10 @@ fun ScanlyNavHost(
             }
             composable(
                 route = ScanlyDestination.Settings.route,
-                enterTransition = { fadeThroughIn() },
-                exitTransition = { fadeThroughOut() },
-                popEnterTransition = { fadeThroughIn() },
-                popExitTransition = { fadeThroughOut() },
+                enterTransition = { topLevelEnter() },
+                exitTransition = { topLevelExit() },
+                popEnterTransition = { topLevelEnter() },
+                popExitTransition = { topLevelExit() },
             ) {
                 SettingsRoute(
                     onNavigateUp = navController::navigateUp,
@@ -203,10 +218,10 @@ fun ScanlyNavHost(
             }
             composable(
                 route = DocumentDestination.routePattern,
-                enterTransition = { fadeThroughIn() },
-                exitTransition = { fadeThroughOut() },
-                popEnterTransition = { fadeThroughIn() },
-                popExitTransition = { fadeThroughOut() },
+                enterTransition = { detailPushEnter() },
+                exitTransition = { detailPushExit() },
+                popEnterTransition = { detailPopEnter() },
+                popExitTransition = { detailPopExit() },
             ) {
                 val documentId =
                     it.arguments?.getString(DocumentDestination.documentIdArgument).orEmpty()
@@ -240,10 +255,10 @@ fun ScanlyNavHost(
                         defaultValue = null
                     },
                 ),
-                enterTransition = { fadeThroughIn() },
-                exitTransition = { fadeThroughOut() },
-                popEnterTransition = { fadeThroughIn() },
-                popExitTransition = { fadeThroughOut() },
+                enterTransition = { detailPushEnter() },
+                exitTransition = { detailPushExit() },
+                popEnterTransition = { detailPopEnter() },
+                popExitTransition = { detailPopExit() },
             ) {
                 ScanSessionRoute(
                     onNavigateUp = navController::navigateUp,
@@ -254,10 +269,10 @@ fun ScanlyNavHost(
             }
             composable(
                 route = PageEditorDestination.routePattern,
-                enterTransition = { fadeThroughIn() },
-                exitTransition = { fadeThroughOut() },
-                popEnterTransition = { fadeThroughIn() },
-                popExitTransition = { fadeThroughOut() },
+                enterTransition = { detailPushEnter() },
+                exitTransition = { detailPushExit() },
+                popEnterTransition = { detailPopEnter() },
+                popExitTransition = { detailPopExit() },
             ) {
                 PageEditorRoute(
                     onNavigateUp = navController::navigateUp,
@@ -270,10 +285,10 @@ fun ScanlyNavHost(
                         type = NavType.StringType
                     },
                 ),
-                enterTransition = { fadeThroughIn() },
-                exitTransition = { fadeThroughOut() },
-                popEnterTransition = { fadeThroughIn() },
-                popExitTransition = { fadeThroughOut() },
+                enterTransition = { detailPushEnter() },
+                exitTransition = { detailPushExit() },
+                popEnterTransition = { detailPopEnter() },
+                popExitTransition = { detailPopExit() },
             ) {
                 GroupDetailRoute(
                     onNavigateUp = navController::navigateUp,
@@ -286,8 +301,24 @@ fun ScanlyNavHost(
     }
 }
 
-private fun AnimatedContentTransitionScope<NavBackStackEntry>.fadeThroughIn(): EnterTransition =
+private fun AnimatedContentTransitionScope<NavBackStackEntry>.topLevelEnter(): EnterTransition =
     EnterTransition.None
 
-private fun AnimatedContentTransitionScope<NavBackStackEntry>.fadeThroughOut(): ExitTransition =
+private fun AnimatedContentTransitionScope<NavBackStackEntry>.topLevelExit(): ExitTransition =
     ExitTransition.None
+
+private fun AnimatedContentTransitionScope<NavBackStackEntry>.detailPushEnter(): EnterTransition =
+    fadeIn(animationSpec = tween(220)) +
+        slideInHorizontally(animationSpec = tween(220)) { fullWidth -> fullWidth }
+
+private fun AnimatedContentTransitionScope<NavBackStackEntry>.detailPushExit(): ExitTransition =
+    fadeOut(animationSpec = tween(180)) +
+        slideOutHorizontally(animationSpec = tween(220)) { fullWidth -> -fullWidth / 3 }
+
+private fun AnimatedContentTransitionScope<NavBackStackEntry>.detailPopEnter(): EnterTransition =
+    fadeIn(animationSpec = tween(220)) +
+        slideInHorizontally(animationSpec = tween(220)) { fullWidth -> -fullWidth / 3 }
+
+private fun AnimatedContentTransitionScope<NavBackStackEntry>.detailPopExit(): ExitTransition =
+    fadeOut(animationSpec = tween(180)) +
+        slideOutHorizontally(animationSpec = tween(220)) { fullWidth -> fullWidth }

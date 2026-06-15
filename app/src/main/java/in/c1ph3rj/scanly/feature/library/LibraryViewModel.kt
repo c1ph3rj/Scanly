@@ -32,7 +32,7 @@ data class LibraryUiState(
     val ungroupedDocuments: List<ScanDocument> = emptyList(),
     val allDocuments: List<ScanDocument> = emptyList(),
     val searchQuery: String = "",
-    val isLoading: Boolean = true,
+    val isLoading: Boolean = false,
 ) {
     private val normalizedQuery: String get() = searchQuery.trim()
 

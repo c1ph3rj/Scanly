@@ -82,6 +82,7 @@ import `in`.c1ph3rj.scanly.core.ui.PreviewDisplaySize
 import `in`.c1ph3rj.scanly.feature.components.ExportActionRow
 import `in`.c1ph3rj.scanly.feature.components.FullScreenLoader
 import `in`.c1ph3rj.scanly.feature.components.PdfOptionsSheet
+import `in`.c1ph3rj.scanly.feature.components.ScanlyExtendedFab
 import kotlinx.coroutines.flow.collectLatest
 import java.text.DateFormat
 import java.util.Date
@@ -243,15 +244,6 @@ private fun GroupDetailScreen(
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
-        floatingActionButton = {
-            ExtendedFloatingActionButton(
-                onClick = { showAddSheet = true },
-                icon = { Icon(Icons.Filled.Add, contentDescription = null) },
-                text = { Text("Add document") },
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-            )
-        },
     ) { innerPadding ->
         Box(modifier = Modifier.fillMaxSize()) {
             if (uiState.isLoading) {
@@ -312,6 +304,17 @@ private fun GroupDetailScreen(
                     )
                 }
             }
+
+            ScanlyExtendedFab(
+                text = "Add document",
+                onClick = { showAddSheet = true },
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(
+                        end = 16.dp,
+                        bottom = innerPadding.calculateBottomPadding() + 16.dp,
+                    ),
+            )
         }
     }
 
@@ -612,7 +615,7 @@ private fun GroupDocumentCard(
                 )
             }
             ChromeIconButton(
-                icon = Icons.Filled.Close,
+                icon = Icons.Filled.DeleteOutline,
                 contentDescription = "Remove from group",
                 onClick = onRemove,
                 containerColor = MaterialTheme.colorScheme.errorContainer,

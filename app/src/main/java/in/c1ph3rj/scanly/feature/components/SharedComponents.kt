@@ -541,8 +541,8 @@ fun GroupCard(
                     icon = Icons.Filled.DeleteOutline,
                     contentDescription = "Delete folder",
                     onClick = onDelete,
-                    containerColor = MaterialTheme.colorScheme.error.copy(alpha = 0.12f),
-                    contentColor = MaterialTheme.colorScheme.error,
+                    containerColor = MaterialTheme.colorScheme.errorContainer,
+                    contentColor = MaterialTheme.colorScheme.onErrorContainer,
                 )
             }
         }
@@ -615,8 +615,8 @@ fun DocumentCard(
                         icon = Icons.Filled.DeleteOutline,
                         contentDescription = "Delete",
                         onClick = onDelete,
-                        containerColor = MaterialTheme.colorScheme.error.copy(alpha = 0.12f),
-                        contentColor = MaterialTheme.colorScheme.error,
+                        containerColor = MaterialTheme.colorScheme.errorContainer,
+                        contentColor = MaterialTheme.colorScheme.onErrorContainer,
                     )
                 }
             }

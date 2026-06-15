@@ -89,15 +89,12 @@ fun HomeScreen(
         containerColor = MaterialTheme.colorScheme.background,
         snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { innerPadding ->
-        if (uiState.isLoading) {
-            FullScreenLoader(modifier = Modifier.padding(innerPadding))
-        } else {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(bottom = innerPadding.calculateBottomPadding()),
-                contentPadding = PaddingValues(bottom = 120.dp),
-            ) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = innerPadding.calculateBottomPadding()),
+            contentPadding = PaddingValues(bottom = 120.dp),
+        ) {
             item(key = "home_header") {
                 HomeHeader(
                     groupCount = uiState.recentGroups.size,
@@ -108,6 +105,18 @@ fun HomeScreen(
                 )
             }
 
+            if (uiState.isLoading) {
+                item(key = "home_loading") {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 48.dp),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                }
+            } else {
             item(key = "quick_actions") {
                 QuickActionsRow(
                     onScan = { createDialogVisible = true },
@@ -172,7 +181,7 @@ fun HomeScreen(
                     )
                 }
             }
-        }
+            }
         }
     }
 
@@ -196,29 +205,8 @@ fun HomeHeader(
     documentCount: Int,
     modifier: Modifier = Modifier,
 ) {
-    val scanlyGreetings = remember {
-        listOf(
-            "Ready to digitize?", "Let's capture some documents.", "Time to go paperless!",
-            "Got something to scan?", "Your portable scanner is ready.", "Scan, save, and secure.",
-            "Turn paper into pixels.", "What are we scanning today?", "Let's organize your docs.",
-            "Clear the paper clutter.", "Capture it all.", "Scanning made simple.",
-            "Snap a quick scan.", "Digitize your world.", "A fresh page to scan.",
-            "Scanly at your service.", "Let's save that document.", "Ready for your next scan.",
-            "Say goodbye to paper.", "Quick scan, neat file.", "Your digital filing cabinet.",
-            "Time for a clean scan.", "Focus and capture.", "Make it digital.",
-            "Scan receipts, notes, and more.", "Keep your documents handy.", "Let's build your library.",
-            "Smart scanning starts here.", "One tap to scan.", "Document captured, neatly stored."
-        )
-    }
-    val timeGreeting = remember {
-        val hour = java.util.Calendar.getInstance().get(java.util.Calendar.HOUR_OF_DAY)
-        when (hour) {
-            in 0..11 -> "Good morning,"
-            in 12..16 -> "Good afternoon,"
-            else -> "Good evening,"
-        }
-    }
-    val randomPrompt = remember { scanlyGreetings.random() }
+    val hour = java.util.Calendar.getInstance().get(java.util.Calendar.HOUR_OF_DAY)
+    val greeting = greetingForHour(hour)
 
     Column(
         modifier = modifier
@@ -228,17 +216,41 @@ fun HomeHeader(
         verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
         Text(
-            text = timeGreeting,
+            text = greeting.salutation,
             style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
         Text(
-            text = randomPrompt,
+            text = greeting.headline,
             style = MaterialTheme.typography.displayMedium,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onBackground,
         )
     }
+}
+
+private data class HomeGreeting(
+    val salutation: String,
+    val headline: String,
+)
+
+private fun greetingForHour(hour: Int): HomeGreeting = when (hour) {
+    in 5..11 -> HomeGreeting(
+        salutation = "Good morning,",
+        headline = "What are we scanning today?",
+    )
+    in 12..16 -> HomeGreeting(
+        salutation = "Good afternoon,",
+        headline = "Let's capture some documents.",
+    )
+    in 17..20 -> HomeGreeting(
+        salutation = "Good evening,",
+        headline = "Wrap up and digitize your day.",
+    )
+    else -> HomeGreeting(
+        salutation = "Still scanning?",
+        headline = "Save it now, find it tomorrow.",
+    )
 }
 
 @Composable

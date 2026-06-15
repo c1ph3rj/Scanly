@@ -5,6 +5,7 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,11 +21,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.OpenInNew
 import androidx.compose.material.icons.filled.Brightness4
-import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Public
@@ -46,14 +47,22 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import `in`.c1ph3rj.scanly.R
 import `in`.c1ph3rj.scanly.domain.model.LicenseInfo
 import `in`.c1ph3rj.scanly.domain.model.ThemeMode
 import kotlinx.coroutines.flow.collectLatest
+
+private const val DEVELOPER_PORTFOLIO_URL = "https://c1ph3rj.in"
+private const val PROJECT_WEBSITE_URL = "https://scanly.c1ph3rj.in"
+private const val SUPPORT_EMAIL = "info@c1ph3rj.in"
 
 @Composable
 fun SettingsRoute(
@@ -158,23 +167,31 @@ fun SettingsScreen(
                             icon = Icons.Filled.Person,
                             title = "Developer",
                             subtitle = "jeevaprakash g",
-                            onClick = { },
+                            showExternalLink = false,
                         )
-                        
+
                         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
                         SettingsLinkRow(
                             icon = Icons.Filled.Email,
                             title = "Contact Support",
-                            subtitle = "info@c1ph3rj.in",
-                            onClick = { onOpenWebsite("mailto:info@c1ph3rj.in") },
+                            subtitle = SUPPORT_EMAIL,
+                            onClick = { onOpenWebsite("mailto:$SUPPORT_EMAIL") },
                         )
-                        
+
+                        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                        SettingsLinkRow(
+                            icon = Icons.Filled.Language,
+                            title = "Portfolio",
+                            subtitle = DEVELOPER_PORTFOLIO_URL,
+                            onClick = { onOpenWebsite(DEVELOPER_PORTFOLIO_URL) },
+                        )
+
                         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
                         SettingsLinkRow(
                             icon = Icons.Filled.Public,
                             title = "Project website",
-                            subtitle = "https://c1ph3rj.in",
-                            onClick = { onOpenWebsite("https://c1ph3rj.in") },
+                            subtitle = PROJECT_WEBSITE_URL,
+                            onClick = { onOpenWebsite(PROJECT_WEBSITE_URL) },
                         )
                     }
                 }
@@ -307,17 +324,18 @@ private fun AboutHero(
     ) {
         Surface(
             modifier = Modifier.size(48.dp),
-            color = MaterialTheme.colorScheme.primaryContainer,
+            color = MaterialTheme.colorScheme.primary,
             shape = MaterialTheme.shapes.extraLarge,
         ) {
-            Box(contentAlignment = Alignment.Center) {
-                Icon(
-                    imageVector = Icons.Filled.CameraAlt,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                    modifier = Modifier.size(24.dp),
-                )
-            }
+            Image(
+                painter = painterResource(R.drawable.ic_launcher_monochrome),
+                contentDescription = "Scanly logo",
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 8.dp, vertical = 16.dp),
+                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
+                contentScale = ContentScale.Fit,
+            )
         }
         Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
             Text(
@@ -454,13 +472,20 @@ private fun SettingsLinkRow(
     icon: ImageVector,
     title: String,
     subtitle: String,
-    onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    showExternalLink: Boolean = true,
+    onClick: (() -> Unit)? = null,
 ) {
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .clickable(onClick = onClick)
+            .then(
+                if (onClick != null) {
+                    Modifier.clickable(onClick = onClick)
+                } else {
+                    Modifier
+                },
+            )
             .padding(vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -486,12 +511,14 @@ private fun SettingsLinkRow(
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
-        Icon(
-            imageVector = Icons.AutoMirrored.Filled.OpenInNew,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.size(18.dp),
-        )
+        if (showExternalLink && onClick != null) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.OpenInNew,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.size(18.dp),
+            )
+        }
     }
 }
 

@@ -22,7 +22,7 @@ import javax.inject.Inject
 data class HomeUiState(
     val recentGroups: List<DocumentGroup> = emptyList(),
     val recentDocuments: List<ScanDocument> = emptyList(),
-    val isLoading: Boolean = true,
+    val isLoading: Boolean = false,
 )
 
 sealed interface HomeEvent {
@@ -47,8 +47,8 @@ class HomeViewModel @Inject constructor(
         HomeUiState(recentGroups = groups, recentDocuments = docs, isLoading = false)
     }.stateIn(
         scope = viewModelScope,
-        started = SharingStarted.Lazily,
-        initialValue = HomeUiState(isLoading = true),
+        started = SharingStarted.WhileSubscribed(5_000),
+        initialValue = HomeUiState(isLoading = false),
     )
 
     fun createDocument(title: String) {

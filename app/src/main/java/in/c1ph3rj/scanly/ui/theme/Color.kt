@@ -6,6 +6,8 @@ import androidx.compose.ui.graphics.Color
 val BrandPrimary = Color(0xFF00796B)     // Deep Teal
 val BrandPrimaryDark = Color(0xFF4DB6AC) // Lighter Teal for Dark Mode
 val BrandSecondary = Color(0xFF00BFA5)   // Vibrant Teal/Cyan
+val BrandTertiary = Color(0xFF00574B)    // Deep accent for light surfaces
+val BrandTertiaryDark = Color(0xFF80CBC4) // Soft accent for dark surfaces
 val BrandError = Color(0xFFFA4D56)       // Premium Red
 
 // Dark Mode Tints
