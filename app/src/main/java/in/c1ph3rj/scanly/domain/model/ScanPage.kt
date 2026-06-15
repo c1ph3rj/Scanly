@@ -14,4 +14,5 @@ data class ScanPage(
     val filterPreset: PageFilterPreset,
     val processingState: PageProcessingState,
     val createdAtMillis: Long,
+    val updatedAtMillis: Long,
 )

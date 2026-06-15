@@ -96,7 +96,8 @@ import `in`.c1ph3rj.scanly.core.ml.DetectionFrame
 import `in`.c1ph3rj.scanly.core.ml.DocumentCornerQuad
 import `in`.c1ph3rj.scanly.core.ml.NormalizedPoint
 import `in`.c1ph3rj.scanly.domain.model.PageCaptureDraft
-import `in`.c1ph3rj.scanly.feature.components.DocumentThumbnail
+import `in`.c1ph3rj.scanly.feature.components.PagePreview
+import `in`.c1ph3rj.scanly.core.ui.PreviewDisplaySize
 import kotlinx.coroutines.flow.collectLatest
 import java.io.File
 import java.util.concurrent.Executor
@@ -612,9 +613,9 @@ private fun CameraBottomDock(
                             modifier = Modifier.padding(8.dp),
                             verticalArrangement = Arrangement.spacedBy(6.dp),
                         ) {
-                            DocumentThumbnail(
-                                thumbnailPath = page.thumbnailPath,
-                                title = "Page ${page.pageIndex + 1}",
+                            PagePreview(
+                                page = page,
+                                displaySize = PreviewDisplaySize.COMPACT,
                                 modifier = Modifier.fillMaxWidth(),
                                 minHeight = 56.dp,
                             )
@@ -679,13 +680,12 @@ private fun CameraBottomDock(
                             border = BorderStroke(2.dp, Color.White),
                             shadowElevation = 4.dp
                         ) {
-                            DocumentThumbnail(
-                                thumbnailPath = latestPage.thumbnailPath
-                                    ?: latestPage.processedImagePath
-                                    ?: latestPage.rawImagePath,
-                                title = "Preview",
+                            PagePreview(
+                                page = latestPage,
+                                displaySize = PreviewDisplaySize.DETAIL,
                                 modifier = Modifier.fillMaxSize(),
-                                aspectRatio = null
+                                minHeight = 120.dp,
+                                aspectRatio = null,
                             )
                         }
                     }

@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FolderOpen
 import androidx.compose.material.icons.filled.Home
@@ -124,7 +125,10 @@ fun ScanlyNavHost(
         NavHost(
             navController = navController,
             startDestination = ScanlyDestination.Home.route,
-            modifier = Modifier.padding(innerPadding),
+            // Only consume the bottom padding globally (navigation bar inset).
+            // Each screen is responsible for its own top / status-bar inset so
+            // that its background colour flows seamlessly behind the transparent bar.
+            modifier = Modifier.padding(bottom = innerPadding.calculateBottomPadding()),
         ) {
             composable(ScanlyDestination.Home.route) {
                 HomeRoute(

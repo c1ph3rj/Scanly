@@ -15,15 +15,18 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.OpenInNew
 import androidx.compose.material.icons.filled.Brightness4
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.DarkMode
+import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.LightMode
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Public
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
@@ -108,8 +111,8 @@ fun SettingsScreen(
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(innerPadding),
-                contentPadding = PaddingValues(start = 20.dp, top = 20.dp, end = 20.dp, bottom = 28.dp),
+                    .padding(bottom = innerPadding.calculateBottomPadding()),
+                contentPadding = PaddingValues(start = 20.dp, top = 0.dp, end = 20.dp, bottom = 28.dp),
                 verticalArrangement = Arrangement.spacedBy(20.dp),
             ) {
                 item(key = "header") {
@@ -149,15 +152,30 @@ fun SettingsScreen(
                         AboutHero(
                             versionLabel = content?.appVersionLabel,
                         )
-                        content?.developerWebsite?.takeIf { it.isNotBlank() }?.let { website ->
-                            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-                            SettingsLinkRow(
-                                icon = Icons.Filled.Public,
-                                title = "Project website",
-                                subtitle = "View source and documentation",
-                                onClick = { onOpenWebsite(website) },
-                            )
-                        }
+                        
+                        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                        SettingsLinkRow(
+                            icon = Icons.Filled.Person,
+                            title = "Developer",
+                            subtitle = "jeevaprakash g",
+                            onClick = { },
+                        )
+                        
+                        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                        SettingsLinkRow(
+                            icon = Icons.Filled.Email,
+                            title = "Contact Support",
+                            subtitle = "info@c1ph3rj.in",
+                            onClick = { onOpenWebsite("mailto:info@c1ph3rj.in") },
+                        )
+                        
+                        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                        SettingsLinkRow(
+                            icon = Icons.Filled.Public,
+                            title = "Project website",
+                            subtitle = "https://c1ph3rj.in",
+                            onClick = { onOpenWebsite("https://c1ph3rj.in") },
+                        )
                     }
                 }
 
@@ -225,7 +243,10 @@ private fun SettingsPageHeader(
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .statusBarsPadding()
+            .padding(top = 24.dp),
         verticalArrangement = Arrangement.spacedBy(4.dp),
     ) {
         Text(

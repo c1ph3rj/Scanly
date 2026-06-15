@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
@@ -83,7 +84,8 @@ import `in`.c1ph3rj.scanly.domain.model.PageProcessingState
 import `in`.c1ph3rj.scanly.domain.model.PdfExportOptions
 import `in`.c1ph3rj.scanly.domain.model.ScanPage
 import `in`.c1ph3rj.scanly.domain.model.ShareArtifact
-import `in`.c1ph3rj.scanly.feature.components.DocumentThumbnail
+import `in`.c1ph3rj.scanly.feature.components.PagePreview
+import `in`.c1ph3rj.scanly.core.ui.PreviewDisplaySize
 import `in`.c1ph3rj.scanly.feature.components.ExportActionRow
 import `in`.c1ph3rj.scanly.feature.components.FullScreenLoader
 import `in`.c1ph3rj.scanly.feature.components.MoveToFolderSheet
@@ -309,7 +311,7 @@ fun DocumentDetailScreen(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(innerPadding)
+                    .padding(bottom = innerPadding.calculateBottomPadding())
                     .background(MaterialTheme.colorScheme.background)
                     .onGloballyPositioned { coordinates ->
                         listBounds = coordinates.boundsInRoot()
@@ -382,7 +384,14 @@ fun DocumentDetailScreen(
                 LazyColumn(
                     state = listState,
                     modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(start = 20.dp, top = 16.dp, end = 20.dp, bottom = 28.dp),
+                    contentPadding = PaddingValues(
+                        start = 20.dp,
+                        // Reserve only the bottom inset; status-bar inset is handled
+                        // by statusBarsPadding() inside ReviewTopBar.
+                        top = 0.dp,
+                        end = 20.dp,
+                        bottom = innerPadding.calculateBottomPadding() + 28.dp,
+                    ),
                     verticalArrangement = Arrangement.spacedBy(18.dp),
                 ) {
             item {
@@ -650,7 +659,10 @@ private fun ReviewTopBar(
     exportEnabled: Boolean,
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .statusBarsPadding()
+            .padding(top = 20.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -871,10 +883,11 @@ private fun SelectedPageCard(
             verticalArrangement = Arrangement.spacedBy(14.dp),
         ) {
             Box {
-                DocumentThumbnail(
-                    thumbnailPath = page.thumbnailPath ?: page.processedImagePath,
-                    title = "Page ${page.pageIndex + 1}",
+                PagePreview(
+                    page = page,
+                    displaySize = PreviewDisplaySize.DETAIL,
                     modifier = Modifier.fillMaxWidth(),
+                    minHeight = 120.dp,
                 )
                 MetricChip(
                     label = "P${page.pageIndex + 1}/$pageCount",
@@ -1025,9 +1038,9 @@ private fun PageOverviewTile(
             verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
             Box {
-                DocumentThumbnail(
-                    thumbnailPath = page.thumbnailPath ?: page.processedImagePath,
-                    title = "Page ${page.pageIndex + 1}",
+                PagePreview(
+                    page = page,
+                    displaySize = PreviewDisplaySize.CARD,
                     modifier = Modifier.fillMaxWidth(),
                     minHeight = 118.dp,
                 )

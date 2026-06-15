@@ -6,6 +6,7 @@ import android.util.LruCache
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -35,23 +36,32 @@ class ThumbnailCache @Inject constructor() {
     }
 
     /** Returns a bitmap already in the LRU cache without touching disk. */
-    fun getIfCached(path: String): Bitmap? = cache.get(path)
+    fun getIfCached(path: String, targetPx: Int): Bitmap? = cache.get(cacheKey(path, targetPx))
 
     /**
      * Returns a cached or freshly decoded bitmap scaled so that neither dimension exceeds
-     * [targetPx]. Uses [Bitmap.Config.RGB_565] to halve memory vs ARGB_8888 for thumbnails.
+     * [targetPx]. Uses [Bitmap.Config.ARGB_8888] for larger decodes to avoid banding.
      */
     fun decode(path: String, targetPx: Int): Bitmap? {
-        cache.get(path)?.let { return it }
+        val key = cacheKey(path, targetPx)
+        cache.get(key)?.let { return it }
         val sampled = decodeSampled(path, targetPx) ?: return null
-        cache.put(path, sampled)
+        cache.put(key, sampled)
         return sampled
     }
 
-    /** Removes a single entry, e.g. after the underlying file is replaced. */
+    /** Removes all cached decode sizes for the current on-disk revision of [path]. */
     fun invalidate(path: String) {
-        cache.remove(path)
+        val prefix = "${path}#${fileRevision(path)}@"
+        cache.snapshot().keys.filter { it.startsWith(prefix) }.forEach(cache::remove)
     }
+
+    private fun cacheKey(path: String, targetPx: Int): String {
+        return "${path}#${fileRevision(path)}@$targetPx"
+    }
+
+    private fun fileRevision(path: String): Long =
+        File(path).takeIf { it.exists() }?.lastModified() ?: 0L
 
     private fun decodeSampled(path: String, targetPx: Int): Bitmap? {
         val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
@@ -61,7 +71,11 @@ class ThumbnailCache @Inject constructor() {
             path,
             BitmapFactory.Options().apply {
                 inSampleSize = calculateSampleSize(bounds.outWidth, bounds.outHeight, targetPx)
-                inPreferredConfig = Bitmap.Config.RGB_565
+                inPreferredConfig = if (PreviewImageSizer.useHighColorDepth(targetPx)) {
+                    Bitmap.Config.ARGB_8888
+                } else {
+                    Bitmap.Config.RGB_565
+                }
             },
         )
     }

@@ -21,7 +21,12 @@ interface DocumentGroupDao {
                 FROM documents d2
                 WHERE d2.groupId = dg.id
                 ORDER BY d2.updatedAtMillis DESC
-                LIMIT 1)                      AS coverThumbnailPath
+                LIMIT 1)                      AS coverThumbnailPath,
+               (SELECT d2.updatedAtMillis
+                FROM documents d2
+                WHERE d2.groupId = dg.id
+                ORDER BY d2.updatedAtMillis DESC
+                LIMIT 1)                      AS coverUpdatedAtMillis
         FROM document_groups dg
         LEFT JOIN documents d ON d.groupId = dg.id
         GROUP BY dg.id
@@ -39,7 +44,12 @@ interface DocumentGroupDao {
                 FROM documents d2
                 WHERE d2.groupId = dg.id
                 ORDER BY d2.updatedAtMillis DESC
-                LIMIT 1)                      AS coverThumbnailPath
+                LIMIT 1)                      AS coverThumbnailPath,
+               (SELECT d2.updatedAtMillis
+                FROM documents d2
+                WHERE d2.groupId = dg.id
+                ORDER BY d2.updatedAtMillis DESC
+                LIMIT 1)                      AS coverUpdatedAtMillis
         FROM document_groups dg
         LEFT JOIN documents d ON d.groupId = dg.id
         GROUP BY dg.id
@@ -58,7 +68,12 @@ interface DocumentGroupDao {
                 FROM documents d2
                 WHERE d2.groupId = dg.id
                 ORDER BY d2.updatedAtMillis DESC
-                LIMIT 1)                      AS coverThumbnailPath
+                LIMIT 1)                      AS coverThumbnailPath,
+               (SELECT d2.updatedAtMillis
+                FROM documents d2
+                WHERE d2.groupId = dg.id
+                ORDER BY d2.updatedAtMillis DESC
+                LIMIT 1)                      AS coverUpdatedAtMillis
         FROM document_groups dg
         LEFT JOIN documents d ON d.groupId = dg.id
         WHERE dg.id = :groupId

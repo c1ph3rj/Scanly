@@ -12,4 +12,5 @@ data class DocumentGroupStats(
     val documentCount: Int,
     val totalPageCount: Int,
     val coverThumbnailPath: String?,
+    val coverUpdatedAtMillis: Long?,
 )

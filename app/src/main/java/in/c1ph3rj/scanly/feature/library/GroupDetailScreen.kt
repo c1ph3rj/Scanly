@@ -67,6 +67,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -76,6 +78,7 @@ import `in`.c1ph3rj.scanly.core.ui.MetricChip
 import `in`.c1ph3rj.scanly.domain.model.PdfExportOptions
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
 import `in`.c1ph3rj.scanly.feature.components.DocumentThumbnail
+import `in`.c1ph3rj.scanly.core.ui.PreviewDisplaySize
 import `in`.c1ph3rj.scanly.feature.components.ExportActionRow
 import `in`.c1ph3rj.scanly.feature.components.FullScreenLoader
 import `in`.c1ph3rj.scanly.feature.components.PdfOptionsSheet
@@ -235,7 +238,7 @@ private fun GroupDetailScreen(
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
+                    containerColor = MaterialTheme.colorScheme.background,
                 ),
             )
         },
@@ -581,6 +584,8 @@ private fun GroupDocumentCard(
             DocumentThumbnail(
                 thumbnailPath = document.coverThumbnailPath,
                 title = document.title,
+                contentRevision = document.updatedAtMillis,
+                displaySize = PreviewDisplaySize.CARD,
                 modifier = Modifier.width(64.dp),
                 minHeight = 72.dp,
             )

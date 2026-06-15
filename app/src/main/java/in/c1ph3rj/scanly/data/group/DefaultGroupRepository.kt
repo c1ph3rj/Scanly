@@ -143,6 +143,7 @@ class DefaultGroupRepository @Inject constructor(
         coverThumbnailPath = coverThumbnailPath,
         createdAtMillis = createdAtMillis,
         updatedAtMillis = updatedAtMillis,
+        coverUpdatedAtMillis = coverUpdatedAtMillis ?: updatedAtMillis,
     )
 
     private fun `in`.c1ph3rj.scanly.data.local.db.entity.DocumentEntity.toDomain(): ScanDocument =

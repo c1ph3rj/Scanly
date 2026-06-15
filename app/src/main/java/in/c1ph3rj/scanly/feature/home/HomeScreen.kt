@@ -25,6 +25,7 @@ import androidx.navigation.NavHostController
 import `in`.c1ph3rj.scanly.domain.model.DocumentGroup
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
 import `in`.c1ph3rj.scanly.feature.components.*
+import `in`.c1ph3rj.scanly.core.ui.PreviewDisplaySize
 import `in`.c1ph3rj.scanly.navigation.ScanlyDestination
 import kotlinx.coroutines.flow.collectLatest
 
@@ -94,7 +95,7 @@ fun HomeScreen(
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(innerPadding),
+                    .padding(bottom = innerPadding.calculateBottomPadding()),
                 contentPadding = PaddingValues(bottom = 120.dp),
             ) {
             item(key = "home_header") {
@@ -103,7 +104,7 @@ fun HomeScreen(
                     documentCount = uiState.recentDocuments.size,
                     modifier = Modifier
                         .padding(horizontal = 20.dp)
-                        .padding(top = 24.dp, bottom = 24.dp),
+                        .padding(bottom = 24.dp),
                 )
             }
 
@@ -195,14 +196,44 @@ fun HomeHeader(
     documentCount: Int,
     modifier: Modifier = Modifier,
 ) {
-    Column(modifier = modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+    val scanlyGreetings = remember {
+        listOf(
+            "Ready to digitize?", "Let's capture some documents.", "Time to go paperless!",
+            "Got something to scan?", "Your portable scanner is ready.", "Scan, save, and secure.",
+            "Turn paper into pixels.", "What are we scanning today?", "Let's organize your docs.",
+            "Clear the paper clutter.", "Capture it all.", "Scanning made simple.",
+            "Snap a quick scan.", "Digitize your world.", "A fresh page to scan.",
+            "Scanly at your service.", "Let's save that document.", "Ready for your next scan.",
+            "Say goodbye to paper.", "Quick scan, neat file.", "Your digital filing cabinet.",
+            "Time for a clean scan.", "Focus and capture.", "Make it digital.",
+            "Scan receipts, notes, and more.", "Keep your documents handy.", "Let's build your library.",
+            "Smart scanning starts here.", "One tap to scan.", "Document captured, neatly stored."
+        )
+    }
+    val timeGreeting = remember {
+        val hour = java.util.Calendar.getInstance().get(java.util.Calendar.HOUR_OF_DAY)
+        when (hour) {
+            in 0..11 -> "Good morning,"
+            in 12..16 -> "Good afternoon,"
+            else -> "Good evening,"
+        }
+    }
+    val randomPrompt = remember { scanlyGreetings.random() }
+
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .statusBarsPadding()
+            .padding(top = 24.dp),
+        verticalArrangement = Arrangement.spacedBy(6.dp),
+    ) {
         Text(
-            text = "Good morning,",
+            text = timeGreeting,
             style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
         Text(
-            text = "Ready to scan?",
+            text = randomPrompt,
             style = MaterialTheme.typography.displayMedium,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onBackground,
@@ -305,7 +336,8 @@ private fun RecentGroupChip(
             CachedThumbnail(
                 thumbnailPath = group.coverThumbnailPath,
                 title = group.title,
-                targetPx = 128,
+                displaySize = PreviewDisplaySize.CARD,
+                contentRevision = group.coverUpdatedAtMillis,
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(4f / 3f),
@@ -356,7 +388,8 @@ private fun CompactDocumentCard(
             CachedThumbnail(
                 thumbnailPath = document.coverThumbnailPath,
                 title = document.title,
-                targetPx = 128,
+                displaySize = PreviewDisplaySize.CARD,
+                contentRevision = document.updatedAtMillis,
                 modifier = Modifier.size(64.dp),
                 shape = MaterialTheme.shapes.large,
                 placeholderIcon = null,

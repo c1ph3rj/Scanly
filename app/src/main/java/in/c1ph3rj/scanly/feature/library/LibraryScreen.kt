@@ -2,6 +2,7 @@ package `in`.c1ph3rj.scanly.feature.library
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
@@ -28,6 +29,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -146,18 +149,19 @@ fun LibraryScreen(
             }
         },
     ) { innerPadding ->
-        if (uiState.isLoading) {
-            FullScreenLoader(modifier = Modifier.padding(innerPadding))
-        } else {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding),
-                contentPadding = PaddingValues(
-                    start = 20.dp, end = 20.dp, top = 24.dp, bottom = 120.dp,
-                ),
-                verticalArrangement = Arrangement.spacedBy(0.dp),
-            ) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            if (uiState.isLoading) {
+                FullScreenLoader(modifier = Modifier.padding(innerPadding))
+            } else {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(bottom = innerPadding.calculateBottomPadding()),
+                    contentPadding = PaddingValues(
+                        start = 20.dp, end = 20.dp, top = 0.dp, bottom = 120.dp,
+                    ),
+                    verticalArrangement = Arrangement.spacedBy(0.dp),
+                ) {
             item(key = "header") {
                 LibraryHeader(
                     groupCount = uiState.groups.size,
@@ -274,6 +278,20 @@ fun LibraryScreen(
             }
         }
         }
+
+        if (showFabMenu) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.32f))
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null,
+                        onClick = { showFabMenu = false }
+                    )
+            )
+        }
+    }
     }
 
     if (createDocDialogVisible) {
@@ -383,7 +401,13 @@ fun LibraryScreen(
 
 @Composable
 fun LibraryHeader(groupCount: Int, documentCount: Int, modifier: Modifier = Modifier) {
-    Column(modifier = modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .statusBarsPadding()
+            .padding(top = 24.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
         Text(
             text = "Library",
             style = MaterialTheme.typography.displaySmall,

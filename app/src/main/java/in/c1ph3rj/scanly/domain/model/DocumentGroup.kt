@@ -8,4 +8,5 @@ data class DocumentGroup(
     val coverThumbnailPath: String?,
     val createdAtMillis: Long,
     val updatedAtMillis: Long,
+    val coverUpdatedAtMillis: Long = updatedAtMillis,
 )
