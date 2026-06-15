@@ -33,6 +33,7 @@ fun HomeRoute(
     navController: NavHostController,
     onOpenDocument: (String) -> Unit,
     onOpenScanSession: (String) -> Unit,
+    onOpenGroup: (String) -> Unit,
     onNavigateToLibrary: () -> Unit,
 ) {
     val homeBackStackEntry = remember(navController) {
@@ -65,6 +66,7 @@ fun HomeRoute(
         },
         onOpenDocument = onOpenDocument,
         onOpenScanSession = onOpenScanSession,
+        onOpenGroup = onOpenGroup,
         onNavigateToLibrary = onNavigateToLibrary,
     )
 }
@@ -76,6 +78,7 @@ fun HomeScreen(
     onCreateDocument: (String) -> Unit,
     onOpenDocument: (String) -> Unit,
     onOpenScanSession: (String) -> Unit,
+    onOpenGroup: (String) -> Unit,
     onNavigateToLibrary: () -> Unit,
 ) {
     var createDialogVisible by rememberSaveable { mutableStateOf(false) }
@@ -129,7 +132,10 @@ fun HomeScreen(
                         modifier = Modifier.padding(bottom = 32.dp)
                     ) {
                         items(uiState.recentGroups, key = { it.id }) { group ->
-                            RecentGroupChip(group = group)
+                            RecentGroupChip(
+                                group = group,
+                                onClick = { onOpenGroup(group.id) },
+                            )
                         }
                     }
                 }
@@ -285,10 +291,13 @@ fun QuickActionCard(
 @Composable
 private fun RecentGroupChip(
     group: DocumentGroup,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Surface(
-        modifier = modifier.width(160.dp),
+        modifier = modifier
+            .width(160.dp)
+            .clickable(onClick = onClick),
         color = MaterialTheme.colorScheme.surfaceContainer,
         shape = MaterialTheme.shapes.extraLarge,
     ) {

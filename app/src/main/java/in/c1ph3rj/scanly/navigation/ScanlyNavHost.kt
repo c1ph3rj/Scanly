@@ -135,6 +135,9 @@ fun ScanlyNavHost(
                     onOpenScanSession = { documentId ->
                         navController.navigate(ScanSessionDestination.route(documentId))
                     },
+                    onOpenGroup = { groupId ->
+                        navController.navigate(GroupDetailDestination.route(groupId))
+                    },
                     onNavigateToLibrary = {
                         navController.navigate(ScanlyDestination.Library.route) {
                             popUpTo(navController.graph.findStartDestination().id) {
