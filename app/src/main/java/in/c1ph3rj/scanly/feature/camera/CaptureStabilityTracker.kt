@@ -17,6 +17,7 @@ data class LiveDetectionUiState(
     val frameWidth: Int = 0,
     val frameHeight: Int = 0,
     val autoCaptureEnabled: Boolean = true,
+    val isGridEnabled: Boolean = true,
     val phase: AutoCapturePhase = AutoCapturePhase.SEARCHING,
     val statusMessage: String = "Point your camera at a document.",
     val countdownValue: Int? = null,

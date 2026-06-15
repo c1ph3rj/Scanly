@@ -6,6 +6,8 @@ import android.net.Uri
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
+import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,12 +15,15 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.layout.width
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -26,15 +31,13 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Crop
 import androidx.compose.material.icons.filled.DeleteOutline
 import androidx.compose.material.icons.filled.FileDownload
-import androidx.compose.material.icons.filled.KeyboardArrowLeft
-import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material.icons.filled.OpenInFull
 import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material.icons.filled.PictureAsPdf
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -46,9 +49,11 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -56,9 +61,18 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.boundsInRoot
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.core.content.FileProvider
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import `in`.c1ph3rj.scanly.core.ui.ChromeIconButton
@@ -67,19 +81,23 @@ import `in`.c1ph3rj.scanly.core.ui.ZoomableImageDialog
 import `in`.c1ph3rj.scanly.domain.model.ExportArtifact
 import `in`.c1ph3rj.scanly.domain.model.PageProcessingState
 import `in`.c1ph3rj.scanly.domain.model.PdfExportOptions
-import `in`.c1ph3rj.scanly.domain.model.PdfPageMargin
-import `in`.c1ph3rj.scanly.domain.model.PdfPageOrientation
-import `in`.c1ph3rj.scanly.domain.model.PdfPageSize
 import `in`.c1ph3rj.scanly.domain.model.ScanPage
 import `in`.c1ph3rj.scanly.domain.model.ShareArtifact
-import `in`.c1ph3rj.scanly.feature.home.DocumentThumbnail
+import `in`.c1ph3rj.scanly.feature.components.DocumentThumbnail
+import `in`.c1ph3rj.scanly.feature.components.ExportActionRow
+import `in`.c1ph3rj.scanly.feature.components.FullScreenLoader
+import `in`.c1ph3rj.scanly.feature.components.MoveToFolderSheet
+import `in`.c1ph3rj.scanly.feature.components.PdfOptionsSheet
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.text.DateFormat
 import java.util.Date
+import kotlin.math.hypot
+import kotlin.math.roundToInt
 
 object DocumentDestination {
     const val documentIdArgument = "documentId"
@@ -144,6 +162,14 @@ fun DocumentDetailRoute(
         }
     }
 
+    val importImagesLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickMultipleVisualMedia(),
+    ) { uris ->
+        if (uris.isNotEmpty()) {
+            viewModel.importImages(uris)
+        }
+    }
+
     LaunchedEffect(viewModel) {
         viewModel.events.collectLatest { event ->
             when (event) {
@@ -182,13 +208,19 @@ fun DocumentDetailRoute(
         onOpenPageEditor = onOpenPageEditor,
         onReplacePage = onReplacePage,
         onSelectPage = viewModel::selectPage,
-        onMoveSelectedPageLeft = viewModel::moveSelectedPageLeft,
-        onMoveSelectedPageRight = viewModel::moveSelectedPageRight,
+        onMovePage = viewModel::movePage,
         onDeleteSelectedPage = viewModel::deleteSelectedPage,
         onExportPdf = viewModel::exportPdf,
         onSharePdf = viewModel::sharePdf,
         onExportImageArchive = viewModel::exportImageArchive,
         onShareImages = viewModel::shareImages,
+        onMoveToGroup = viewModel::moveToGroup,
+        onCreateFolderAndMove = viewModel::createFolderAndMove,
+        onImportImage = {
+            importImagesLauncher.launch(
+                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+            )
+        }
     )
 }
 
@@ -202,23 +234,68 @@ fun DocumentDetailScreen(
     onOpenPageEditor: (String) -> Unit,
     onReplacePage: (String) -> Unit,
     onSelectPage: (String) -> Unit,
-    onMoveSelectedPageLeft: () -> Unit,
-    onMoveSelectedPageRight: () -> Unit,
+    onMovePage: (String, Int) -> Unit,
     onDeleteSelectedPage: () -> Unit,
     onExportPdf: (PdfExportOptions) -> Unit,
     onSharePdf: (PdfExportOptions) -> Unit,
     onExportImageArchive: () -> Unit,
     onShareImages: () -> Unit,
+    onMoveToGroup: (String?) -> Unit,
+    onCreateFolderAndMove: (String) -> Unit,
+    onImportImage: () -> Unit,
 ) {
     var deleteDialogVisible by rememberSaveable(uiState.selectedPageId) { mutableStateOf(false) }
     var previewPageId by rememberSaveable { mutableStateOf<String?>(null) }
     var exportSheetVisible by rememberSaveable { mutableStateOf(false) }
+    var moveSheetVisible by rememberSaveable { mutableStateOf(false) }
     var pdfActionMode by rememberSaveable { mutableStateOf<PdfActionMode?>(null) }
     var pdfOptions by remember { mutableStateOf(PdfExportOptions()) }
-    val selectedPage = uiState.selectedPage
     val document = uiState.document
+    var isReviewingPage by rememberSaveable(document?.id) { mutableStateOf(false) }
+    val selectedPage = uiState.selectedPage
+    val listState = rememberLazyListState()
+    val pageTileBounds = remember { mutableStateMapOf<String, Rect>() }
+    var listBounds by remember { mutableStateOf<Rect?>(null) }
+    var draggedPageId by remember { mutableStateOf<String?>(null) }
+    var dragStartBounds by remember { mutableStateOf<Rect?>(null) }
+    var dragOffset by remember { mutableStateOf(Offset.Zero) }
+    var dragCenterInRoot by remember { mutableStateOf<Offset?>(null) }
+    var dragTargetPageId by remember { mutableStateOf<String?>(null) }
+    var autoScrollDelta by remember { mutableStateOf(0f) }
+    val density = LocalDensity.current
+    val autoScrollThresholdPx = with(density) { 96.dp.toPx() }
+    val maxAutoScrollDeltaPx = with(density) { 22.dp.toPx() }
     val previewPage = previewPageId?.let { pageId ->
         uiState.pages.firstOrNull { page -> page.id == pageId }
+    }
+    LaunchedEffect(selectedPage) {
+        if (selectedPage == null) {
+            isReviewingPage = false
+        }
+    }
+    LaunchedEffect(uiState.pages) {
+        val pageIds = uiState.pages.map { page -> page.id }.toSet()
+        pageTileBounds.keys.removeAll { pageId -> pageId !in pageIds }
+    }
+    LaunchedEffect(draggedPageId, autoScrollDelta) {
+        while (draggedPageId != null && autoScrollDelta != 0f) {
+            listState.scrollBy(autoScrollDelta)
+            val activePageId = draggedPageId
+            val activeCenter = dragCenterInRoot
+            if (activePageId != null && activeCenter != null) {
+                dragTargetPageId = pageTileBounds.nearestPageId(
+                    center = activeCenter,
+                    ignoredPageId = activePageId,
+                    visibleBounds = listBounds,
+                )
+                autoScrollDelta = listBounds?.edgeScrollDelta(
+                    pointerY = activeCenter.y,
+                    thresholdPx = autoScrollThresholdPx,
+                    maxScrollDeltaPx = maxAutoScrollDeltaPx,
+                ) ?: 0f
+            }
+            delay(16L)
+        }
     }
 
     Scaffold(
@@ -226,19 +303,99 @@ fun DocumentDetailScreen(
         containerColor = MaterialTheme.colorScheme.background,
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
     ) { innerPadding ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .background(MaterialTheme.colorScheme.background),
-            contentPadding = PaddingValues(start = 20.dp, top = 16.dp, end = 20.dp, bottom = 28.dp),
-            verticalArrangement = Arrangement.spacedBy(18.dp),
-        ) {
+        if (uiState.isLoading) {
+            FullScreenLoader(modifier = Modifier.padding(innerPadding))
+        } else {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .background(MaterialTheme.colorScheme.background)
+                    .onGloballyPositioned { coordinates ->
+                        listBounds = coordinates.boundsInRoot()
+                    }
+                    .pointerInput(uiState.pages, uiState.isMutatingPage, isReviewingPage) {
+                        if (uiState.isMutatingPage || isReviewingPage || uiState.pages.isEmpty()) {
+                            return@pointerInput
+                        }
+                        detectDragGesturesAfterLongPress(
+                            onDragStart = { localOffset ->
+                                val containerBounds = listBounds ?: return@detectDragGesturesAfterLongPress
+                                val rootOffset = Offset(
+                                    x = containerBounds.left + localOffset.x,
+                                    y = containerBounds.top + localOffset.y,
+                                )
+                                val pageId = pageTileBounds.hitTestPageId(rootOffset) ?: return@detectDragGesturesAfterLongPress
+                                val startBounds = pageTileBounds[pageId] ?: return@detectDragGesturesAfterLongPress
+                                draggedPageId = pageId
+                                dragStartBounds = startBounds
+                                dragOffset = Offset.Zero
+                                dragCenterInRoot = startBounds.center
+                                dragTargetPageId = null
+                                autoScrollDelta = 0f
+                            },
+                            onDrag = { change, dragAmount ->
+                                val activePageId = draggedPageId ?: return@detectDragGesturesAfterLongPress
+                                change.consume()
+                                val updatedOffset = dragOffset + dragAmount
+                                val startBounds = dragStartBounds ?: return@detectDragGesturesAfterLongPress
+                                val updatedDragCenter = startBounds.center + updatedOffset
+                                dragOffset = updatedOffset
+                                dragCenterInRoot = updatedDragCenter
+                                dragTargetPageId = pageTileBounds.nearestPageId(
+                                    center = updatedDragCenter,
+                                    ignoredPageId = activePageId,
+                                    visibleBounds = listBounds,
+                                )
+                                autoScrollDelta = listBounds?.edgeScrollDelta(
+                                    pointerY = updatedDragCenter.y,
+                                    thresholdPx = autoScrollThresholdPx,
+                                    maxScrollDeltaPx = maxAutoScrollDeltaPx,
+                                ) ?: 0f
+                            },
+                            onDragEnd = {
+                                val activePageId = draggedPageId
+                                val targetIndex = uiState.pages.indexOfFirst { candidate ->
+                                    candidate.id == dragTargetPageId
+                                }
+                                if (activePageId != null && targetIndex >= 0) {
+                                    onMovePage(activePageId, targetIndex)
+                                }
+                                draggedPageId = null
+                                dragStartBounds = null
+                                dragOffset = Offset.Zero
+                                dragCenterInRoot = null
+                                dragTargetPageId = null
+                                autoScrollDelta = 0f
+                            },
+                            onDragCancel = {
+                                draggedPageId = null
+                                dragStartBounds = null
+                                dragOffset = Offset.Zero
+                                dragCenterInRoot = null
+                                dragTargetPageId = null
+                                autoScrollDelta = 0f
+                            },
+                        )
+                    },
+            ) {
+                LazyColumn(
+                    state = listState,
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(start = 20.dp, top = 16.dp, end = 20.dp, bottom = 28.dp),
+                    verticalArrangement = Arrangement.spacedBy(18.dp),
+                ) {
             item {
                 ReviewTopBar(
                     title = document?.title ?: "Document",
                     pageCount = uiState.pages.size,
-                    onNavigateUp = onNavigateUp,
+                    onNavigateUp = {
+                        if (isReviewingPage) {
+                            isReviewingPage = false
+                        } else {
+                            onNavigateUp()
+                        }
+                    },
                     onOpenExportSheet = { exportSheetVisible = true },
                     onAddPage = onOpenCamera,
                     exportEnabled = !uiState.isExporting && uiState.pages.isNotEmpty(),
@@ -253,17 +410,33 @@ fun DocumentDetailScreen(
             }
 
             item {
-                Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    MetricChip(label = "${uiState.pages.size} pages")
-                    MetricChip(label = document.updatedAtMillis.toShortDate())
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    MetricChip(
+                        label = uiState.currentGroup?.title ?: "No folder",
+                        icon = Icons.Filled.Folder,
+                        modifier = Modifier.clickable { moveSheetVisible = true },
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                    )
+                    if (uiState.pages.isNotEmpty()) {
+                        MetricChip(label = "${uiState.pages.size} pages")
+                        MetricChip(label = document.updatedAtMillis.toShortDate())
+                    }
                 }
             }
 
-            if (selectedPage == null) {
+            if (uiState.pages.isEmpty()) {
                 item {
-                    EmptyDocumentCard(onOpenCamera = onOpenCamera)
+                    EmptyDocumentCard(
+                        onOpenCamera = onOpenCamera,
+                        onImportImage = onImportImage
+                    )
                 }
-            } else {
+            } else if (isReviewingPage && selectedPage != null) {
                 item {
                     SelectedPageCard(
                         page = selectedPage,
@@ -273,53 +446,99 @@ fun DocumentDetailScreen(
                 }
                 item {
                     ReviewActionDock(
-                        page = selectedPage,
-                        pageCount = uiState.pages.size,
                         enabled = !uiState.isMutatingPage,
                         onEdit = { onOpenPageEditor(selectedPage.id) },
                         onReplace = { onReplacePage(selectedPage.id) },
                         onDelete = { deleteDialogVisible = true },
-                        onMoveLeft = onMoveSelectedPageLeft,
-                        onMoveRight = onMoveSelectedPageRight,
                     )
                 }
+            } else {
                 item {
-                    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            Text(
-                                text = "Pages",
-                                style = MaterialTheme.typography.titleLarge,
-                                fontWeight = FontWeight.SemiBold,
-                            )
-                            Text(
-                                text = "Tap to switch",
-                                style = MaterialTheme.typography.labelLarge,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                        Text(
+                            text = "Pages",
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                        Text(
+                            text = "Tap to review. Long-press and drag to reorder.",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
+                items(
+                    items = uiState.pages.chunked(2),
+                    key = { rowPages -> rowPages.joinToString(separator = "-") { page -> page.id } },
+                ) { rowPages ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    ) {
+                        rowPages.forEach { page ->
+                            DisposableEffect(page.id) {
+                                onDispose {
+                                    pageTileBounds.remove(page.id)
+                                }
+                            }
+                            val isDragging = draggedPageId == page.id
+                            PageOverviewTile(
+                                page = page,
+                                pageCount = uiState.pages.size,
+                                isDragging = isDragging,
+                                isDropTarget = dragTargetPageId == page.id,
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .graphicsLayer {
+                                        alpha = if (isDragging) 0.28f else 1f
+                                    }
+                                    .onGloballyPositioned { coordinates ->
+                                        pageTileBounds[page.id] = coordinates.boundsInRoot()
+                                    },
+                                onClick = {
+                                    onSelectPage(page.id)
+                                    isReviewingPage = true
+                                },
                             )
                         }
-                        LazyRow(
-                            horizontalArrangement = Arrangement.spacedBy(12.dp),
-                            contentPadding = PaddingValues(horizontal = 2.dp),
-                        ) {
-                            items(
-                                items = uiState.pages,
-                                key = { page -> page.id },
-                            ) { page ->
-                                PageReviewTile(
-                                    page = page,
-                                    selected = page.id == selectedPage.id,
-                                    onClick = { onSelectPage(page.id) },
-                                )
-                            }
+                        if (rowPages.size == 1) {
+                            Box(modifier = Modifier.weight(1f))
                         }
                     }
                 }
             }
         }
+                val draggedPage = draggedPageId?.let { pageId ->
+                    uiState.pages.firstOrNull { page -> page.id == pageId }
+                }
+                val startBounds = dragStartBounds
+                val containerBounds = listBounds
+                if (draggedPage != null && startBounds != null && containerBounds != null) {
+                    PageOverviewTile(
+                        page = draggedPage,
+                        pageCount = uiState.pages.size,
+                        isDragging = true,
+                        isDropTarget = false,
+                        modifier = Modifier
+                            .width(with(density) { startBounds.width.toDp() })
+                            .height(with(density) { startBounds.height.toDp() })
+                            .offset {
+                                IntOffset(
+                                    x = (startBounds.left - containerBounds.left + dragOffset.x).roundToInt(),
+                                    y = (startBounds.top - containerBounds.top + dragOffset.y).roundToInt(),
+                                )
+                            }
+                            .zIndex(10f)
+                            .graphicsLayer {
+                                scaleX = 1.04f
+                                scaleY = 1.04f
+                                shadowElevation = 18f
+                            },
+                        onClick = {},
+                    )
+                }
+        }
+    }
     }
 
     if (deleteDialogVisible && selectedPage != null) {
@@ -333,6 +552,7 @@ fun DocumentDetailScreen(
                 TextButton(
                     onClick = {
                         deleteDialogVisible = false
+                        isReviewingPage = false
                         onDeleteSelectedPage()
                     },
                 ) {
@@ -378,9 +598,26 @@ fun DocumentDetailScreen(
         )
     }
 
+    if (moveSheetVisible && document != null) {
+        MoveToFolderSheet(
+            currentGroupId = document.groupId,
+            groups = uiState.availableGroups,
+            onDismiss = { moveSheetVisible = false },
+            onSelectFolder = { groupId ->
+                moveSheetVisible = false
+                onMoveToGroup(groupId)
+            },
+            onCreateFolderAndMove = { name ->
+                moveSheetVisible = false
+                onCreateFolderAndMove(name)
+            },
+        )
+    }
+
     if (pdfActionMode != null) {
         PdfOptionsSheet(
             options = pdfOptions,
+            confirmLabel = "Generate",
             onDismiss = { pdfActionMode = null },
             onOptionsChanged = { updatedOptions -> pdfOptions = updatedOptions },
             onConfirm = {
@@ -513,206 +750,6 @@ private fun ExportShareSheet(
 }
 
 @Composable
-private fun ExportActionRow(
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
-    title: String,
-    enabled: Boolean,
-    onClick: () -> Unit,
-) {
-    Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(enabled = enabled, onClick = onClick),
-        color = if (enabled) {
-            MaterialTheme.colorScheme.surfaceContainer
-        } else {
-            MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.55f)
-        },
-        shape = MaterialTheme.shapes.large,
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
-    ) {
-        Row(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(14.dp),
-        ) {
-            androidx.compose.material3.Icon(
-                imageVector = icon,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary,
-            )
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurface,
-            )
-        }
-    }
-}
-
-@Composable
-@OptIn(ExperimentalMaterial3Api::class)
-private fun PdfOptionsSheet(
-    options: PdfExportOptions,
-    onDismiss: () -> Unit,
-    onOptionsChanged: (PdfExportOptions) -> Unit,
-    onConfirm: () -> Unit,
-) {
-    ModalBottomSheet(
-        onDismissRequest = onDismiss,
-        containerColor = MaterialTheme.colorScheme.surface,
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp)
-                .padding(bottom = 28.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-        ) {
-            Text(
-                text = "PDF options",
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.SemiBold,
-            )
-
-            PdfOptionSection(title = "Orientation") {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
-                ) {
-                    PdfChoiceTile(
-                        label = PdfPageOrientation.PORTRAIT.label,
-                        selected = options.orientation == PdfPageOrientation.PORTRAIT,
-                        modifier = Modifier.weight(1f),
-                        onClick = {
-                            onOptionsChanged(options.copy(orientation = PdfPageOrientation.PORTRAIT))
-                        },
-                    )
-                    PdfChoiceTile(
-                        label = PdfPageOrientation.LANDSCAPE.label,
-                        selected = options.orientation == PdfPageOrientation.LANDSCAPE,
-                        modifier = Modifier.weight(1f),
-                        onClick = {
-                            onOptionsChanged(options.copy(orientation = PdfPageOrientation.LANDSCAPE))
-                        },
-                    )
-                }
-            }
-
-            PdfOptionSection(title = "Page size") {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
-                ) {
-                    PdfPageSize.entries.forEach { pageSize ->
-                        PdfChoiceTile(
-                            label = pageSize.label,
-                            selected = options.pageSize == pageSize,
-                            modifier = Modifier.weight(1f),
-                            onClick = {
-                                onOptionsChanged(options.copy(pageSize = pageSize))
-                            },
-                        )
-                    }
-                }
-            }
-
-            PdfOptionSection(title = "Margin") {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
-                ) {
-                    PdfPageMargin.entries.forEach { margin ->
-                        PdfChoiceTile(
-                            label = margin.label,
-                            selected = options.margin == margin,
-                            modifier = Modifier.weight(1f),
-                            onClick = {
-                                onOptionsChanged(options.copy(margin = margin))
-                            },
-                        )
-                    }
-                }
-            }
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
-                TextButton(
-                    modifier = Modifier.weight(1f),
-                    onClick = onDismiss,
-                ) {
-                    Text(text = "Cancel")
-                }
-                Button(
-                    modifier = Modifier.weight(1f),
-                    onClick = onConfirm,
-                ) {
-                    Text(text = "Generate")
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun PdfOptionSection(
-    title: String,
-    content: @Composable () -> Unit,
-) {
-    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        Text(
-            text = title,
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.SemiBold,
-        )
-        content()
-    }
-}
-
-@Composable
-private fun PdfChoiceTile(
-    label: String,
-    selected: Boolean,
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit,
-) {
-    Surface(
-        modifier = modifier.clickable(onClick = onClick),
-        color = if (selected) {
-            MaterialTheme.colorScheme.primaryContainer
-        } else {
-            MaterialTheme.colorScheme.surfaceContainer
-        },
-        shape = MaterialTheme.shapes.large,
-        border = BorderStroke(
-            width = 1.dp,
-            color = if (selected) {
-                MaterialTheme.colorScheme.primary
-            } else {
-                MaterialTheme.colorScheme.outlineVariant
-            },
-        ),
-    ) {
-        Box(
-            modifier = Modifier.padding(vertical = 14.dp, horizontal = 10.dp),
-            contentAlignment = Alignment.Center,
-        ) {
-            Text(
-                text = label,
-                style = MaterialTheme.typography.labelLarge,
-                color = if (selected) {
-                    MaterialTheme.colorScheme.onPrimaryContainer
-                } else {
-                    MaterialTheme.colorScheme.onSurface
-                },
-            )
-        }
-    }
-}
-
-@Composable
 private fun ExportProgressOverlay(
     message: String,
 ) {
@@ -780,6 +817,7 @@ private fun MissingDocumentCard(
 @Composable
 private fun EmptyDocumentCard(
     onOpenCamera: () -> Unit,
+    onImportImage: () -> Unit,
 ) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
@@ -801,8 +839,15 @@ private fun EmptyDocumentCard(
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
-            TextButton(onClick = onOpenCamera) {
-                Text(text = "Open camera")
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                TextButton(onClick = onImportImage) {
+                    Text(text = "Import image")
+                }
+                TextButton(onClick = onOpenCamera) {
+                    Text(text = "Open camera")
+                }
             }
         }
     }
@@ -868,14 +913,10 @@ private fun SelectedPageCard(
 
 @Composable
 private fun ReviewActionDock(
-    page: ScanPage,
-    pageCount: Int,
     enabled: Boolean,
     onEdit: () -> Unit,
     onReplace: () -> Unit,
     onDelete: () -> Unit,
-    onMoveLeft: () -> Unit,
-    onMoveRight: () -> Unit,
 ) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
@@ -912,25 +953,6 @@ private fun ReviewActionDock(
                     modifier = Modifier.weight(1f),
                     containerColor = MaterialTheme.colorScheme.error.copy(alpha = 0.1f),
                     contentColor = MaterialTheme.colorScheme.error,
-                )
-            }
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(10.dp),
-            ) {
-                ReviewToolButton(
-                    icon = Icons.Filled.KeyboardArrowLeft,
-                    label = "Earlier",
-                    enabled = enabled && page.pageIndex > 0,
-                    onClick = onMoveLeft,
-                    modifier = Modifier.weight(1f),
-                )
-                ReviewToolButton(
-                    icon = Icons.Filled.KeyboardArrowRight,
-                    label = "Later",
-                    enabled = enabled && page.pageIndex < pageCount - 1,
-                    onClick = onMoveRight,
-                    modifier = Modifier.weight(1f),
                 )
             }
         }
@@ -973,62 +995,109 @@ private fun ReviewToolButton(
 }
 
 @Composable
-private fun PageReviewTile(
+private fun PageOverviewTile(
     page: ScanPage,
-    selected: Boolean,
+    pageCount: Int,
+    isDragging: Boolean,
+    isDropTarget: Boolean,
+    modifier: Modifier = Modifier,
     onClick: () -> Unit,
 ) {
     Surface(
-        modifier = Modifier
-            .size(width = 122.dp, height = 176.dp)
+        modifier = modifier
             .clickable(onClick = onClick),
-        color = if (selected) {
-            MaterialTheme.colorScheme.primaryContainer
-        } else {
-            MaterialTheme.colorScheme.surfaceContainer
+        color = when {
+            isDropTarget -> MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.48f)
+            isDragging -> MaterialTheme.colorScheme.surfaceContainerHigh
+            else -> MaterialTheme.colorScheme.surfaceContainer
         },
         border = BorderStroke(
-            width = if (selected) 2.dp else 1.dp,
-            color = if (selected) {
-                MaterialTheme.colorScheme.primary
-            } else {
-                MaterialTheme.colorScheme.outlineVariant
+            width = if (isDropTarget || isDragging) 2.dp else 1.dp,
+            color = when {
+                isDropTarget || isDragging -> MaterialTheme.colorScheme.primary
+                else -> MaterialTheme.colorScheme.outlineVariant
             },
         ),
-        shape = MaterialTheme.shapes.large,
+        shape = MaterialTheme.shapes.extraLarge,
     ) {
         Column(
-            modifier = Modifier.padding(10.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier.padding(12.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
-            DocumentThumbnail(
-                thumbnailPath = page.thumbnailPath,
-                title = "Page ${page.pageIndex + 1}",
-                modifier = Modifier.fillMaxWidth(),
-                minHeight = 90.dp,
-            )
+            Box {
+                DocumentThumbnail(
+                    thumbnailPath = page.thumbnailPath ?: page.processedImagePath,
+                    title = "Page ${page.pageIndex + 1}",
+                    modifier = Modifier.fillMaxWidth(),
+                    minHeight = 118.dp,
+                )
+                MetricChip(
+                    label = "P${page.pageIndex + 1}/$pageCount",
+                    modifier = Modifier
+                        .align(Alignment.TopStart)
+                        .padding(8.dp),
+                    containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.84f),
+                )
+            }
             Text(
-                text = "P${page.pageIndex + 1}",
+                text = "Page ${page.pageIndex + 1}",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold,
-                color = if (selected) {
-                    MaterialTheme.colorScheme.onPrimaryContainer
-                } else {
-                    MaterialTheme.colorScheme.onSurface
-                },
+                color = MaterialTheme.colorScheme.onSurface,
             )
             Text(
                 text = page.processingState.toShortLabel(),
                 style = MaterialTheme.typography.labelLarge,
-                color = if (selected) {
-                    MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.84f)
-                } else {
-                    MaterialTheme.colorScheme.onSurfaceVariant
-                },
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
     }
 }
+
+private fun Map<String, Rect>.nearestPageId(
+    center: Offset,
+    ignoredPageId: String,
+    visibleBounds: Rect?,
+): String? = entries
+    .asSequence()
+    .filter { (pageId, _) -> pageId != ignoredPageId }
+    .filter { (_, bounds) -> visibleBounds == null || bounds.intersects(visibleBounds) }
+    .minByOrNull { (_, bounds) ->
+        val boundsCenter = bounds.center
+        hypot(
+            (boundsCenter.x - center.x).toDouble(),
+            (boundsCenter.y - center.y).toDouble(),
+        )
+    }
+    ?.key
+
+private fun Map<String, Rect>.hitTestPageId(offset: Offset): String? = entries
+    .lastOrNull { (_, bounds) -> bounds.contains(offset) }
+    ?.key
+
+private fun Rect.edgeScrollDelta(
+    pointerY: Float,
+    thresholdPx: Float,
+    maxScrollDeltaPx: Float,
+): Float {
+    val topRatio = ((top + thresholdPx - pointerY) / thresholdPx).coerceIn(0f, 1f)
+    if (topRatio > 0f) {
+        return -maxScrollDeltaPx * topRatio
+    }
+
+    val bottomRatio = ((pointerY - (bottom - thresholdPx)) / thresholdPx).coerceIn(0f, 1f)
+    if (bottomRatio > 0f) {
+        return maxScrollDeltaPx * bottomRatio
+    }
+
+    return 0f
+}
+
+private fun Rect.intersects(other: Rect): Boolean =
+    left < other.right &&
+        right > other.left &&
+        top < other.bottom &&
+        bottom > other.top
 
 private fun Long.toReadableDateTime(): String = DateFormat.getDateTimeInstance(
     DateFormat.MEDIUM,

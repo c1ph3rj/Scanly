@@ -48,3 +48,12 @@ sealed class ScanlyDestination(
         sprintLabel = "Sprint 8",
     )
 }
+
+/** Route helpers for screens that accept typed arguments. */
+object GroupDetailDestination {
+    private const val base = "group"
+    const val groupIdArgument = "groupId"
+    const val routePattern = "$base/{$groupIdArgument}"
+
+    fun route(groupId: String): String = "$base/$groupId"
+}

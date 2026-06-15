@@ -1,12 +1,11 @@
 package `in`.c1ph3rj.scanly.domain.model
 
-data class ScanDocument(
+data class DocumentGroup(
     val id: String,
     val title: String,
-    val pageCount: Int,
+    val documentCount: Int,
+    val totalPageCount: Int,
     val coverThumbnailPath: String?,
-    val rootDirectoryPath: String,
     val createdAtMillis: Long,
     val updatedAtMillis: Long,
-    val groupId: String? = null,
 )

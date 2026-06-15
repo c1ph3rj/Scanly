@@ -7,9 +7,16 @@ import kotlinx.coroutines.flow.Flow
 interface DocumentRepository {
     fun observeDocuments(): Flow<List<ScanDocument>>
 
+    fun observeRecentDocuments(limit: Int): Flow<List<ScanDocument>>
+
+    fun observeUngroupedDocuments(): Flow<List<ScanDocument>>
+
     fun observeDocument(documentId: String): Flow<ScanDocument?>
 
-    suspend fun createDocument(title: String): ScanlyResult<String>
+    suspend fun createDocument(
+        title: String,
+        groupId: String? = null,
+    ): ScanlyResult<String>
 
     suspend fun renameDocument(
         documentId: String,

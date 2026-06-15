@@ -13,6 +13,7 @@ import `in`.c1ph3rj.scanly.core.common.ScanlyDispatchers
 import `in`.c1ph3rj.scanly.core.common.ScanlyError
 import `in`.c1ph3rj.scanly.core.common.ScanlyResult
 import `in`.c1ph3rj.scanly.data.local.db.dao.DocumentDao
+import `in`.c1ph3rj.scanly.data.local.db.dao.DocumentGroupDao
 import `in`.c1ph3rj.scanly.data.local.db.dao.ScanPageDao
 import `in`.c1ph3rj.scanly.domain.model.ExportArtifact
 import `in`.c1ph3rj.scanly.domain.model.PdfExportOptions
@@ -35,9 +36,12 @@ import kotlin.math.roundToInt
 class DefaultDocumentExportRepository @Inject constructor(
     @ApplicationContext private val context: Context,
     private val documentDao: DocumentDao,
+    private val documentGroupDao: DocumentGroupDao,
     private val scanPageDao: ScanPageDao,
     private val dispatchers: ScanlyDispatchers,
 ) : DocumentExportRepository {
+
+    // ─── Single-document exports ────────────────────────────────────────────────
 
     override suspend fun exportPdf(
         documentId: String,
@@ -55,17 +59,7 @@ class DefaultDocumentExportRepository @Inject constructor(
                     fileName = fileName,
                     mimeType = pdfMimeType,
                 )
-            }.fold(
-                onSuccess = { artifact -> ScanlyResult.Success(artifact) },
-                onFailure = { throwable ->
-                    ScanlyResult.Failure(
-                        ScanlyError(
-                            message = throwable.message ?: "Could not export PDF.",
-                            cause = throwable,
-                        ),
-                    )
-                },
-            )
+            }.toScanlyResult("Could not export PDF.")
         }
 
     override suspend fun preparePdfShare(
@@ -82,17 +76,7 @@ class DefaultDocumentExportRepository @Inject constructor(
                 title = exportInput.documentTitle,
                 filePaths = listOf(outputFile.absolutePath),
             )
-        }.fold(
-            onSuccess = { artifact -> ScanlyResult.Success(artifact) },
-            onFailure = { throwable ->
-                ScanlyResult.Failure(
-                    ScanlyError(
-                        message = throwable.message ?: "Could not prepare PDF share.",
-                        cause = throwable,
-                    ),
-                )
-            },
-        )
+        }.toScanlyResult("Could not prepare PDF share.")
     }
 
     override suspend fun exportImageArchive(documentId: String): ScanlyResult<ExportArtifact> =
@@ -112,17 +96,7 @@ class DefaultDocumentExportRepository @Inject constructor(
                     fileName = fileName,
                     mimeType = zipMimeType,
                 )
-            }.fold(
-                onSuccess = { artifact -> ScanlyResult.Success(artifact) },
-                onFailure = { throwable ->
-                    ScanlyResult.Failure(
-                        ScanlyError(
-                            message = throwable.message ?: "Could not export images.",
-                            cause = throwable,
-                        ),
-                    )
-                },
-            )
+            }.toScanlyResult("Could not export images.")
         }
 
     override suspend fun prepareImageShare(documentId: String): ScanlyResult<ShareArtifact> =
@@ -134,29 +108,153 @@ class DefaultDocumentExportRepository @Inject constructor(
                     title = exportInput.documentTitle,
                     filePaths = exportInput.pageImagePaths,
                 )
-            }.fold(
-                onSuccess = { artifact -> ScanlyResult.Success(artifact) },
-                onFailure = { throwable ->
-                    ScanlyResult.Failure(
-                        ScanlyError(
-                            message = throwable.message ?: "Could not prepare images for sharing.",
-                            cause = throwable,
-                        ),
-                    )
-                },
-            )
+            }.toScanlyResult("Could not prepare images for sharing.")
         }
 
+    // ─── Group exports ──────────────────────────────────────────────────────────
+
+    override suspend fun exportGroupAsSinglePdf(
+        groupId: String,
+        options: PdfExportOptions,
+        onProgress: (current: Int, total: Int) -> Unit,
+    ): ScanlyResult<ExportArtifact> = withContext(dispatchers.io) {
+        runCatching {
+            val output = buildGroupSinglePdf(groupId, options, onProgress)
+            ExportArtifact(
+                filePath = output.file.absolutePath,
+                fileName = output.file.name,
+                mimeType = pdfMimeType,
+            )
+        }.toScanlyResult("Could not export group as PDF.")
+    }
+
+    override suspend fun exportGroupAsZippedPdfs(
+        groupId: String,
+        options: PdfExportOptions,
+        onProgress: (currentDoc: Int, totalDocs: Int) -> Unit,
+    ): ScanlyResult<ExportArtifact> = withContext(dispatchers.io) {
+        runCatching {
+            val output = buildGroupZippedPdfs(groupId, options, onProgress)
+            ExportArtifact(
+                filePath = output.file.absolutePath,
+                fileName = output.file.name,
+                mimeType = zipMimeType,
+            )
+        }.toScanlyResult("Could not export group as ZIP.")
+    }
+
+    override suspend fun prepareGroupSinglePdfShare(
+        groupId: String,
+        options: PdfExportOptions,
+        onProgress: (current: Int, total: Int) -> Unit,
+    ): ScanlyResult<ShareArtifact> = withContext(dispatchers.io) {
+        runCatching {
+            val output = buildGroupSinglePdf(groupId, options, onProgress)
+            ShareArtifact(
+                mimeType = pdfMimeType,
+                title = output.title,
+                filePaths = listOf(output.file.absolutePath),
+            )
+        }.toScanlyResult("Could not prepare group PDF share.")
+    }
+
+    override suspend fun prepareGroupZippedPdfsShare(
+        groupId: String,
+        options: PdfExportOptions,
+        onProgress: (currentDoc: Int, totalDocs: Int) -> Unit,
+    ): ScanlyResult<ShareArtifact> = withContext(dispatchers.io) {
+        runCatching {
+            val output = buildGroupZippedPdfs(groupId, options, onProgress)
+            ShareArtifact(
+                mimeType = zipMimeType,
+                title = output.title,
+                filePaths = listOf(output.file.absolutePath),
+            )
+        }.toScanlyResult("Could not prepare group ZIP share.")
+    }
+
+    private suspend fun buildGroupSinglePdf(
+        groupId: String,
+        options: PdfExportOptions,
+        onProgress: (current: Int, total: Int) -> Unit,
+    ): GroupExportOutput {
+        val group = documentGroupDao.getGroup(groupId) ?: error("Group not found.")
+        val documents = documentDao.getDocumentsByGroup(groupId)
+        if (documents.isEmpty()) error("No documents in group.")
+
+        // Collect all page image paths across all documents in title order
+        val allPagePaths = documents.flatMap { doc ->
+            scanPageDao.getPages(doc.id).map { page ->
+                page.processedImagePath ?: page.rawImagePath
+                    ?: error("Missing image for a page in \"${doc.title}\".")
+            }
+        }
+        if (allPagePaths.isEmpty()) error("No pages available to export.")
+
+        val exportDir = ensureFreshGroupExportDirectory(groupId)
+        val fileStem = DocumentPresentationFormatter.safeFileStem(group.title)
+        val outputFile = File(exportDir, "$fileStem.pdf")
+
+        writePdfWithProgress(outputFile, allPagePaths, options, onProgress)
+
+        return GroupExportOutput(file = outputFile, title = group.title)
+    }
+
+    private suspend fun buildGroupZippedPdfs(
+        groupId: String,
+        options: PdfExportOptions,
+        onProgress: (currentDoc: Int, totalDocs: Int) -> Unit,
+    ): GroupExportOutput {
+        val group = documentGroupDao.getGroup(groupId) ?: error("Group not found.")
+        val documents = documentDao.getDocumentsByGroup(groupId)
+        if (documents.isEmpty()) error("No documents in group.")
+
+        val exportDir = ensureFreshGroupExportDirectory(groupId)
+        val groupFileStem = DocumentPresentationFormatter.safeFileStem(group.title)
+        val zipFile = File(exportDir, "${groupFileStem}_documents.zip")
+        val tempPdfFiles = mutableListOf<File>()
+        var bundledDocuments = 0
+
+        try {
+            ZipOutputStream(FileOutputStream(zipFile)).use { zipOut ->
+                documents.forEachIndexed { index, doc ->
+                    onProgress(index + 1, documents.size)
+                    val pages = scanPageDao.getPages(doc.id)
+                    val pageImagePaths = pages.mapNotNull { page ->
+                        page.processedImagePath ?: page.rawImagePath
+                    }
+                    if (pageImagePaths.isEmpty()) return@forEachIndexed
+
+                    val docFileStem = DocumentPresentationFormatter.safeFileStem(doc.title)
+                    val tempPdf = File(exportDir, "$docFileStem.pdf")
+                    tempPdfFiles.add(tempPdf)
+                    writePdf(tempPdf, pageImagePaths, options)
+
+                    zipOut.putNextEntry(ZipEntry("$docFileStem.pdf"))
+                    tempPdf.inputStream().use { it.copyTo(zipOut) }
+                    zipOut.closeEntry()
+                    bundledDocuments++
+                }
+            }
+        } finally {
+            tempPdfFiles.forEach { it.delete() }
+        }
+
+        if (bundledDocuments == 0) error("No pages available to export.")
+
+        return GroupExportOutput(file = zipFile, title = group.title)
+    }
+
+    // ─── Private helpers ────────────────────────────────────────────────────────
+
     private suspend fun loadExportInput(documentId: String): ExportInput {
-        val document = documentDao.getDocument(documentId)
-            ?: error("Document not found.")
+        val document = documentDao.getDocument(documentId) ?: error("Document not found.")
         val pages = scanPageDao.getPages(documentId)
         val pageImagePaths = pages.map { page ->
-            page.processedImagePath ?: page.rawImagePath ?: error("Missing image for page ${page.pageIndex + 1}.")
+            page.processedImagePath ?: page.rawImagePath
+                ?: error("Missing image for page ${page.pageIndex + 1}.")
         }
-        if (pageImagePaths.isEmpty()) {
-            error("No pages available to export.")
-        }
+        if (pageImagePaths.isEmpty()) error("No pages available to export.")
         return ExportInput(
             documentTitle = document.title,
             fileStem = DocumentPresentationFormatter.safeFileStem(document.title),
@@ -164,14 +262,16 @@ class DefaultDocumentExportRepository @Inject constructor(
         )
     }
 
-    private fun ensureFreshExportDirectory(documentId: String): File {
-        val directory = File(context.cacheDir, "exports/$documentId")
-        if (directory.exists()) {
-            directory.deleteRecursively()
-        }
-        if (!directory.exists() && !directory.mkdirs()) {
-            error("Could not create export directory.")
-        }
+    private fun ensureFreshExportDirectory(documentId: String): File =
+        ensureDirectory("exports/$documentId")
+
+    private fun ensureFreshGroupExportDirectory(groupId: String): File =
+        ensureDirectory("exports/group_$groupId")
+
+    private fun ensureDirectory(relativePath: String): File {
+        val directory = File(context.cacheDir, relativePath)
+        if (directory.exists()) directory.deleteRecursively()
+        if (!directory.mkdirs()) error("Could not create export directory.")
         return directory
     }
 
@@ -179,6 +279,13 @@ class DefaultDocumentExportRepository @Inject constructor(
         outputFile: File,
         pageImagePaths: List<String>,
         options: PdfExportOptions,
+    ) = writePdfWithProgress(outputFile, pageImagePaths, options, onProgress = null)
+
+    private fun writePdfWithProgress(
+        outputFile: File,
+        pageImagePaths: List<String>,
+        options: PdfExportOptions,
+        onProgress: ((current: Int, total: Int) -> Unit)?,
     ) {
         val pdfDocument = PdfDocument()
         val backgroundPaint = Paint().apply { color = Color.WHITE }
@@ -186,11 +293,7 @@ class DefaultDocumentExportRepository @Inject constructor(
         pageImagePaths.forEachIndexed { index, imagePath ->
             val bitmap = decodeBitmapForExport(imagePath)
                 ?: error("Could not decode $imagePath for export.")
-            val pageLayout = resolvePageLayout(
-                imageWidth = bitmap.width,
-                imageHeight = bitmap.height,
-                options = options,
-            )
+            val pageLayout = resolvePageLayout(bitmap.width, bitmap.height, options)
             val pageInfo = PdfDocument.PageInfo.Builder(
                 pageLayout.pageWidthPx,
                 pageLayout.pageHeightPx,
@@ -200,13 +303,12 @@ class DefaultDocumentExportRepository @Inject constructor(
             try {
                 val canvas = page.canvas
                 canvas.drawRect(
-                    0f,
-                    0f,
+                    0f, 0f,
                     pageLayout.pageWidthPx.toFloat(),
                     pageLayout.pageHeightPx.toFloat(),
                     backgroundPaint,
                 )
-                val destinationRect = fitRect(
+                val destRect = fitRect(
                     sourceWidth = bitmap.width.toFloat(),
                     sourceHeight = bitmap.height.toFloat(),
                     targetWidth = pageLayout.contentWidthPx.toFloat(),
@@ -214,16 +316,15 @@ class DefaultDocumentExportRepository @Inject constructor(
                 ).apply {
                     offset(pageLayout.marginPx.toFloat(), pageLayout.marginPx.toFloat())
                 }
-                canvas.drawBitmap(bitmap, null, destinationRect, null)
+                canvas.drawBitmap(bitmap, null, destRect, null)
             } finally {
                 pdfDocument.finishPage(page)
                 bitmap.recycle()
             }
+            onProgress?.invoke(index + 1, pageImagePaths.size)
         }
 
-        outputFile.outputStream().use { stream ->
-            pdfDocument.writeTo(stream)
-        }
+        outputFile.outputStream().use { pdfDocument.writeTo(it) }
         pdfDocument.close()
     }
 
@@ -232,48 +333,35 @@ class DefaultDocumentExportRepository @Inject constructor(
         fileStem: String,
         pageImagePaths: List<String>,
     ) {
-        ZipOutputStream(FileOutputStream(outputFile)).use { zipOutputStream ->
+        ZipOutputStream(FileOutputStream(outputFile)).use { zipOut ->
             pageImagePaths.forEachIndexed { index, imagePath ->
                 val sourceFile = File(imagePath)
                 if (!sourceFile.exists()) return@forEachIndexed
-                val zipEntry = ZipEntry("${fileStem}_p${index + 1}.jpg")
-                zipOutputStream.putNextEntry(zipEntry)
-                sourceFile.inputStream().use { input ->
-                    input.copyTo(zipOutputStream)
-                }
-                zipOutputStream.closeEntry()
+                zipOut.putNextEntry(ZipEntry("${fileStem}_p${index + 1}.jpg"))
+                sourceFile.inputStream().use { it.copyTo(zipOut) }
+                zipOut.closeEntry()
             }
         }
     }
 
     private fun decodeBitmapForExport(path: String): Bitmap? {
-        val bounds = BitmapFactory.Options().apply {
-            inJustDecodeBounds = true
-        }
+        val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
         BitmapFactory.decodeFile(path, bounds)
-        val options = BitmapFactory.Options().apply {
-            inSampleSize = calculateSampleSize(
-                width = bounds.outWidth,
-                height = bounds.outHeight,
-                maxDimension = maxExportBitmapDimension,
-            )
-            inPreferredConfig = Bitmap.Config.ARGB_8888
-        }
-        return BitmapFactory.decodeFile(path, options)
+        return BitmapFactory.decodeFile(
+            path,
+            BitmapFactory.Options().apply {
+                inSampleSize = calculateSampleSize(bounds.outWidth, bounds.outHeight, maxExportBitmapDimension)
+                inPreferredConfig = Bitmap.Config.ARGB_8888
+            },
+        )
     }
 
-    private fun calculateSampleSize(
-        width: Int,
-        height: Int,
-        maxDimension: Int,
-    ): Int {
+    private fun calculateSampleSize(width: Int, height: Int, maxDimension: Int): Int {
         var sampleSize = 1
-        var currentWidth = width
-        var currentHeight = height
-        while (currentWidth > maxDimension || currentHeight > maxDimension) {
-            currentWidth /= 2
-            currentHeight /= 2
-            sampleSize *= 2
+        var w = width
+        var h = height
+        while (w > maxDimension || h > maxDimension) {
+            w /= 2; h /= 2; sampleSize *= 2
         }
         return sampleSize.coerceAtLeast(1)
     }
@@ -289,12 +377,7 @@ class DefaultDocumentExportRepository @Inject constructor(
         val scaledHeight = sourceHeight * scale
         val left = (targetWidth - scaledWidth) / 2f
         val top = (targetHeight - scaledHeight) / 2f
-        return RectF(
-            left,
-            top,
-            left + scaledWidth,
-            top + scaledHeight,
-        )
+        return RectF(left, top, left + scaledWidth, top + scaledHeight)
     }
 
     private fun resolvePageLayout(
@@ -303,48 +386,40 @@ class DefaultDocumentExportRepository @Inject constructor(
         options: PdfExportOptions,
     ): PageLayout {
         val (pageWidthPx, pageHeightPx) = when (options.pageSize) {
-            PdfPageSize.FIT -> orientedFitDimensions(
-                width = imageWidth,
-                height = imageHeight,
-                orientation = options.orientation,
-            )
-
+            PdfPageSize.FIT -> orientedFitDimensions(imageWidth, imageHeight, options.orientation)
             PdfPageSize.A4 -> when (options.orientation) {
                 PdfPageOrientation.PORTRAIT -> a4PortraitWidthPx to a4PortraitHeightPx
                 PdfPageOrientation.LANDSCAPE -> a4PortraitHeightPx to a4PortraitWidthPx
             }
-
             PdfPageSize.US_LETTER -> when (options.orientation) {
                 PdfPageOrientation.PORTRAIT -> letterPortraitWidthPx to letterPortraitHeightPx
                 PdfPageOrientation.LANDSCAPE -> letterPortraitHeightPx to letterPortraitWidthPx
             }
         }
-
         val marginPx = when (options.margin) {
             PdfPageMargin.NONE -> 0
             PdfPageMargin.SMALL -> (min(pageWidthPx, pageHeightPx) * SmallMarginFraction).roundToInt().coerceAtLeast(20)
             PdfPageMargin.LARGE -> (min(pageWidthPx, pageHeightPx) * LargeMarginFraction).roundToInt().coerceAtLeast(40)
         }
-
-        return PageLayout(
-            pageWidthPx = pageWidthPx,
-            pageHeightPx = pageHeightPx,
-            marginPx = marginPx,
-        )
+        return PageLayout(pageWidthPx, pageHeightPx, marginPx)
     }
 
-    private fun orientedFitDimensions(
-        width: Int,
-        height: Int,
-        orientation: PdfPageOrientation,
-    ): Pair<Int, Int> {
-        val shortEdge = min(width, height)
-        val longEdge = maxOf(width, height)
+    private fun orientedFitDimensions(width: Int, height: Int, orientation: PdfPageOrientation): Pair<Int, Int> {
+        val short = min(width, height)
+        val long = maxOf(width, height)
         return when (orientation) {
-            PdfPageOrientation.PORTRAIT -> shortEdge to longEdge
-            PdfPageOrientation.LANDSCAPE -> longEdge to shortEdge
+            PdfPageOrientation.PORTRAIT -> short to long
+            PdfPageOrientation.LANDSCAPE -> long to short
         }
     }
+
+    private fun <T> Result<T>.toScanlyResult(fallbackMessage: String): ScanlyResult<T> =
+        fold(
+            onSuccess = { ScanlyResult.Success(it) },
+            onFailure = {
+                ScanlyResult.Failure(ScanlyError(message = it.message ?: fallbackMessage, cause = it))
+            },
+        )
 
     private data class ExportInput(
         val documentTitle: String,
@@ -352,16 +427,18 @@ class DefaultDocumentExportRepository @Inject constructor(
         val pageImagePaths: List<String>,
     )
 
+    private data class GroupExportOutput(
+        val file: File,
+        val title: String,
+    )
+
     private data class PageLayout(
         val pageWidthPx: Int,
         val pageHeightPx: Int,
         val marginPx: Int,
     ) {
-        val contentWidthPx: Int
-            get() = (pageWidthPx - (marginPx * 2)).coerceAtLeast(1)
-
-        val contentHeightPx: Int
-            get() = (pageHeightPx - (marginPx * 2)).coerceAtLeast(1)
+        val contentWidthPx: Int get() = (pageWidthPx - marginPx * 2).coerceAtLeast(1)
+        val contentHeightPx: Int get() = (pageHeightPx - marginPx * 2).coerceAtLeast(1)
     }
 
     private companion object {

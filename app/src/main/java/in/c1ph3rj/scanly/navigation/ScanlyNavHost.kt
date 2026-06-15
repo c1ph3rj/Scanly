@@ -12,12 +12,16 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -31,7 +35,8 @@ import `in`.c1ph3rj.scanly.feature.document.DocumentDetailRoute
 import `in`.c1ph3rj.scanly.feature.editor.PageEditorDestination
 import `in`.c1ph3rj.scanly.feature.editor.PageEditorRoute
 import `in`.c1ph3rj.scanly.feature.home.HomeRoute
-import `in`.c1ph3rj.scanly.feature.home.LibraryRoute
+import `in`.c1ph3rj.scanly.feature.library.LibraryRoute
+import `in`.c1ph3rj.scanly.feature.library.GroupDetailRoute
 import `in`.c1ph3rj.scanly.feature.placeholder.FeaturePlaceholderRoute
 import `in`.c1ph3rj.scanly.feature.settings.SettingsRoute
 
@@ -78,14 +83,20 @@ fun ScanlyNavHost(
         modifier = modifier,
         bottomBar = {
             if (showBottomNav) {
-                NavigationBar {
+                NavigationBar(
+                    modifier = Modifier.fillMaxWidth(),
+                    containerColor = androidx.compose.material3.MaterialTheme.colorScheme.surfaceContainer,
+                    contentColor = androidx.compose.material3.MaterialTheme.colorScheme.onSurface,
+                    tonalElevation = 3.dp
+                ) {
                     bottomNavItems.forEach { item ->
                         val selected = currentRoute == item.route
                         NavigationBarItem(
                             selected = selected,
                             onClick = {
+                                if (selected) return@NavigationBarItem
                                 navController.navigate(item.route) {
-                                    popUpTo(ScanlyDestination.Home.route) {
+                                    popUpTo(navController.graph.findStartDestination().id) {
                                         saveState = true
                                     }
                                     launchSingleTop = true
@@ -98,7 +109,12 @@ fun ScanlyNavHost(
                                     contentDescription = item.label,
                                 )
                             },
-                            label = { Text(text = item.label) },
+                            label = { Text(text = item.label, style = androidx.compose.material3.MaterialTheme.typography.labelSmall) },
+                            colors = androidx.compose.material3.NavigationBarItemDefaults.colors(
+                                indicatorColor = androidx.compose.material3.MaterialTheme.colorScheme.primaryContainer,
+                                selectedIconColor = androidx.compose.material3.MaterialTheme.colorScheme.primary,
+                                selectedTextColor = androidx.compose.material3.MaterialTheme.colorScheme.primary
+                            )
                         )
                     }
                 }
@@ -112,6 +128,7 @@ fun ScanlyNavHost(
         ) {
             composable(ScanlyDestination.Home.route) {
                 HomeRoute(
+                    navController = navController,
                     onOpenDocument = { documentId ->
                         navController.navigate(DocumentDestination.route(documentId))
                     },
@@ -120,7 +137,9 @@ fun ScanlyNavHost(
                     },
                     onNavigateToLibrary = {
                         navController.navigate(ScanlyDestination.Library.route) {
-                            popUpTo(ScanlyDestination.Home.route) { saveState = true }
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
                             launchSingleTop = true
                             restoreState = true
                         }
@@ -140,6 +159,9 @@ fun ScanlyNavHost(
                     },
                     onOpenScanSession = { documentId ->
                         navController.navigate(ScanSessionDestination.route(documentId))
+                    },
+                    onOpenGroup = { groupId ->
+                        navController.navigate(GroupDetailDestination.route(groupId))
                     },
                 )
             }
@@ -232,6 +254,25 @@ fun ScanlyNavHost(
             ) {
                 PageEditorRoute(
                     onNavigateUp = navController::navigateUp,
+                )
+            }
+            composable(
+                route = GroupDetailDestination.routePattern,
+                arguments = listOf(
+                    navArgument(GroupDetailDestination.groupIdArgument) {
+                        type = NavType.StringType
+                    },
+                ),
+                enterTransition = { fadeThroughIn() },
+                exitTransition = { fadeThroughOut() },
+                popEnterTransition = { fadeThroughIn() },
+                popExitTransition = { fadeThroughOut() },
+            ) {
+                GroupDetailRoute(
+                    onNavigateUp = navController::navigateUp,
+                    onOpenDocument = { documentId ->
+                        navController.navigate(DocumentDestination.route(documentId))
+                    },
                 )
             }
         }

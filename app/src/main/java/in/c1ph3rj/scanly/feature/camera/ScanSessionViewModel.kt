@@ -37,11 +37,17 @@ data class ScanSessionUiState(
     val captureInProgress: Boolean = false,
     val missingDocument: Boolean = false,
     val replacementPageId: String? = null,
+    val latestCapturedPageId: String? = null,
     val liveDetection: LiveDetectionUiState = LiveDetectionUiState(),
     val showDetectionStats: Boolean = true,
 ) {
     val replacementPage: ScanPage?
         get() = pages.firstOrNull { page -> page.id == replacementPageId }
+
+    val latestCapturedPage: ScanPage?
+        get() = latestCapturedPageId?.let { pageId ->
+            pages.firstOrNull { page -> page.id == pageId }
+        } ?: pages.maxWithOrNull(compareBy<ScanPage> { page -> page.createdAtMillis }.thenBy { page -> page.pageIndex })
 
     val isReplacementMode: Boolean
         get() = replacementPageId != null
@@ -102,7 +108,12 @@ class ScanSessionViewModel @Inject constructor(
         viewModelScope.launch {
             observeDocumentPagesUseCase(documentId).collectLatest { pages ->
                 _uiState.update { current ->
-                    current.copy(pages = pages)
+                    current.copy(
+                        pages = pages,
+                        latestCapturedPageId = current.latestCapturedPageId?.takeIf { pageId ->
+                            pages.any { page -> page.id == pageId }
+                        },
+                    )
                 }
                 val selectedReplacementId = _uiState.value.replacementPageId
                 if (selectedReplacementId != null &&
@@ -123,6 +134,16 @@ class ScanSessionViewModel @Inject constructor(
                     current.copy(showDetectionStats = showDetectionStats)
                 }
             }
+        }
+    }
+
+    fun onGridEnabledChanged(enabled: Boolean) {
+        _uiState.update { current ->
+            current.copy(
+                liveDetection = current.liveDetection.copy(
+                    isGridEnabled = enabled,
+                ),
+            )
         }
     }
 
@@ -224,8 +245,10 @@ class ScanSessionViewModel @Inject constructor(
 
     fun onCaptureSaved(draft: PageCaptureDraft) {
         viewModelScope.launch {
+            var capturedPageId: String? = null
             when (val result = finalizeCapturedPageUseCase(draft)) {
                 is ScanlyResult.Success -> {
+                    capturedPageId = result.value
                     stabilityTracker.onCaptureCommitted(
                         quad = pendingCaptureQuad,
                         nowMillis = System.currentTimeMillis(),
@@ -250,6 +273,7 @@ class ScanSessionViewModel @Inject constructor(
             _uiState.update { current ->
                 current.copy(
                     captureInProgress = false,
+                    latestCapturedPageId = capturedPageId ?: current.latestCapturedPageId,
                     replacementPageId = when {
                         draft.isReplacement && !launchedInReplacementMode -> null
                         else -> current.replacementPageId

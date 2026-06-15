@@ -2,6 +2,8 @@ package `in`.c1ph3rj.scanly.di
 
 import android.content.Context
 import androidx.room.Room
+import androidx.room.RoomDatabase
+import androidx.sqlite.db.SupportSQLiteDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -9,6 +11,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import `in`.c1ph3rj.scanly.data.local.db.ScanlyDatabase
 import `in`.c1ph3rj.scanly.data.local.db.dao.DocumentDao
+import `in`.c1ph3rj.scanly.data.local.db.dao.DocumentGroupDao
 import `in`.c1ph3rj.scanly.data.local.db.dao.ScanPageDao
 import javax.inject.Singleton
 
@@ -25,13 +28,22 @@ object DatabaseModule {
         DATABASE_NAME,
     ).addMigrations(
         ScanlyDatabase.MIGRATION_1_2,
-    ).build()
+        ScanlyDatabase.MIGRATION_2_3,
+    ).addCallback(object : RoomDatabase.Callback() {
+        override fun onOpen(db: SupportSQLiteDatabase) {
+            db.execSQL("PRAGMA foreign_keys=ON")
+        }
+    }).build()
 
     @Provides
     fun provideDocumentDao(database: ScanlyDatabase): DocumentDao = database.documentDao()
 
     @Provides
     fun provideScanPageDao(database: ScanlyDatabase): ScanPageDao = database.scanPageDao()
+
+    @Provides
+    fun provideDocumentGroupDao(database: ScanlyDatabase): DocumentGroupDao =
+        database.documentGroupDao()
 
     private const val DATABASE_NAME = "scanly.db"
 }

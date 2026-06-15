@@ -31,9 +31,26 @@ private fun ScanlyApp() {
     val appSettingsViewModel: AppSettingsViewModel = hiltViewModel()
     val themeMode by appSettingsViewModel.themeMode.collectAsState()
     val systemDark = isSystemInDarkTheme()
+    val isDarkTheme = themeMode.resolveDarkTheme(systemDark)
     val navController = rememberNavController()
+    
+    val activity = androidx.compose.ui.platform.LocalContext.current as ComponentActivity
+    androidx.compose.runtime.DisposableEffect(isDarkTheme) {
+        activity.enableEdgeToEdge(
+            statusBarStyle = androidx.activity.SystemBarStyle.auto(
+                android.graphics.Color.TRANSPARENT,
+                android.graphics.Color.TRANSPARENT,
+            ) { isDarkTheme },
+            navigationBarStyle = androidx.activity.SystemBarStyle.auto(
+                android.graphics.Color.TRANSPARENT,
+                android.graphics.Color.TRANSPARENT,
+            ) { isDarkTheme }
+        )
+        onDispose {}
+    }
+
     ScanlyTheme(
-        darkTheme = themeMode.resolveDarkTheme(systemDark),
+        darkTheme = isDarkTheme,
     ) {
         ScanlyNavHost(navController = navController)
     }
