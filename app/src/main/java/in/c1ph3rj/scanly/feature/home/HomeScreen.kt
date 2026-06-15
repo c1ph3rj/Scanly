@@ -1,5 +1,6 @@
 package `in`.c1ph3rj.scanly.feature.home
 
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -21,29 +22,33 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.navigation.NavHostController
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import `in`.c1ph3rj.scanly.core.ui.ImageImportSupport
 import `in`.c1ph3rj.scanly.domain.model.DocumentGroup
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
 import `in`.c1ph3rj.scanly.feature.components.*
 import `in`.c1ph3rj.scanly.core.ui.PreviewDisplaySize
-import `in`.c1ph3rj.scanly.navigation.ScanlyDestination
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun HomeRoute(
-    navController: NavHostController,
     onOpenDocument: (String) -> Unit,
     onOpenScanSession: (String) -> Unit,
     onOpenGroup: (String) -> Unit,
     onNavigateToLibrary: () -> Unit,
 ) {
-    val homeBackStackEntry = remember(navController) {
-        navController.getBackStackEntry(ScanlyDestination.Home.route)
-    }
-    val viewModel: HomeViewModel = hiltViewModel(homeBackStackEntry)
-    val uiState by viewModel.uiState.collectAsState()
+    val viewModel: HomeViewModel = hiltViewModel()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     var createForScan by rememberSaveable { mutableStateOf(false) }
+
+    val importImagesLauncher = rememberLauncherForActivityResult(
+        contract = ImageImportSupport.pickMultipleVisualMediaContract(),
+    ) { uris ->
+        if (uris.isNotEmpty()) {
+            viewModel.importImagesAsDocument(uris)
+        }
+    }
 
     LaunchedEffect(viewModel) {
         viewModel.events.collectLatest { event ->
@@ -65,6 +70,9 @@ fun HomeRoute(
             createForScan = true
             viewModel.createDocument(title)
         },
+        onImportImages = {
+            importImagesLauncher.launch(ImageImportSupport.createPickRequest())
+        },
         onOpenDocument = onOpenDocument,
         onOpenScanSession = onOpenScanSession,
         onOpenGroup = onOpenGroup,
@@ -77,6 +85,7 @@ fun HomeScreen(
     uiState: HomeUiState,
     snackbarHostState: SnackbarHostState,
     onCreateDocument: (String) -> Unit,
+    onImportImages: () -> Unit,
     onOpenDocument: (String) -> Unit,
     onOpenScanSession: (String) -> Unit,
     onOpenGroup: (String) -> Unit,
@@ -95,7 +104,7 @@ fun HomeScreen(
                 .padding(bottom = innerPadding.calculateBottomPadding()),
             contentPadding = PaddingValues(bottom = 120.dp),
         ) {
-            item(key = "home_header") {
+            item(key = "home_header", contentType = "header") {
                 HomeHeader(
                     groupCount = uiState.recentGroups.size,
                     documentCount = uiState.recentDocuments.size,
@@ -106,7 +115,7 @@ fun HomeScreen(
             }
 
             if (uiState.isLoading) {
-                item(key = "home_loading") {
+                item(key = "home_loading", contentType = "loading") {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -117,17 +126,18 @@ fun HomeScreen(
                     }
                 }
             } else {
-            item(key = "quick_actions") {
+            item(key = "quick_actions", contentType = "quick_actions") {
                 QuickActionsRow(
                     onScan = { createDialogVisible = true },
-                    onImport = { createDialogVisible = true },
-                    onNewFolder = onNavigateToLibrary, // Route to library for folder creation for now
+                    onImport = onImportImages,
+                    onNewFolder = onNavigateToLibrary,
+                    importEnabled = !uiState.isImporting,
                     modifier = Modifier.padding(bottom = 32.dp)
                 )
             }
 
             if (uiState.recentGroups.isNotEmpty()) {
-                item(key = "groups_header") {
+                item(key = "groups_header", contentType = "section_header") {
                     SectionHeader(
                         title = "Recent Folders",
                         modifier = Modifier
@@ -135,13 +145,17 @@ fun HomeScreen(
                             .padding(bottom = 16.dp),
                     )
                 }
-                item(key = "groups_row") {
+                item(key = "groups_row", contentType = "groups_row") {
                     LazyRow(
                         contentPadding = PaddingValues(horizontal = 20.dp),
                         horizontalArrangement = Arrangement.spacedBy(16.dp),
                         modifier = Modifier.padding(bottom = 32.dp)
                     ) {
-                        items(uiState.recentGroups, key = { it.id }) { group ->
+                        items(
+                            items = uiState.recentGroups,
+                            key = { it.id },
+                            contentType = { "recent_group" },
+                        ) { group ->
                             RecentGroupChip(
                                 group = group,
                                 onClick = { onOpenGroup(group.id) },
@@ -152,7 +166,7 @@ fun HomeScreen(
             }
 
             if (uiState.recentDocuments.isNotEmpty()) {
-                item(key = "files_header") {
+                item(key = "files_header", contentType = "section_header") {
                     SectionHeader(
                         title = "Recent Files",
                         actionLabel = "See all in Library",
@@ -162,17 +176,22 @@ fun HomeScreen(
                             .padding(bottom = 16.dp),
                     )
                 }
-                items(uiState.recentDocuments, key = { it.id }) { doc ->
+                items(
+                    items = uiState.recentDocuments,
+                    key = { it.id },
+                    contentType = { "recent_document" },
+                ) { doc ->
                     CompactDocumentCard(
                         document = doc,
                         onOpen = { onOpenDocument(doc.id) },
                         modifier = Modifier
                             .padding(horizontal = 20.dp)
-                            .padding(bottom = 12.dp),
+                            .padding(bottom = 12.dp)
+                            .animateItem(),
                     )
                 }
             } else if (uiState.recentGroups.isEmpty()) {
-                item(key = "empty_state") {
+                item(key = "empty_state", contentType = "empty") {
                     EmptyHomeCard(
                         onCreateDocument = { createDialogVisible = true },
                         modifier = Modifier
@@ -258,6 +277,7 @@ fun QuickActionsRow(
     onScan: () -> Unit,
     onImport: () -> Unit,
     onNewFolder: () -> Unit,
+    importEnabled: Boolean = true,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -278,6 +298,7 @@ fun QuickActionsRow(
             title = "Import",
             icon = Icons.Filled.PhotoLibrary,
             onClick = onImport,
+            enabled = importEnabled,
             containerColor = MaterialTheme.colorScheme.secondaryContainer,
             contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
             modifier = Modifier.weight(1f)
@@ -300,12 +321,13 @@ fun QuickActionCard(
     onClick: () -> Unit,
     containerColor: androidx.compose.ui.graphics.Color,
     contentColor: androidx.compose.ui.graphics.Color,
+    enabled: Boolean = true,
     modifier: Modifier = Modifier
 ) {
     Surface(
         modifier = modifier
             .aspectRatio(1f)
-            .clickable(onClick = onClick),
+            .clickable(enabled = enabled, onClick = onClick),
         color = containerColor,
         shape = MaterialTheme.shapes.extraLarge,
     ) {
@@ -385,6 +407,9 @@ private fun CompactDocumentCard(
     onOpen: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val updatedDate = remember(document.updatedAtMillis) {
+        document.updatedAtMillis.toRelativeDate()
+    }
     Surface(
         modifier = modifier
             .fillMaxWidth()
@@ -422,7 +447,7 @@ private fun CompactDocumentCard(
                         append(document.pageCount)
                         append(if (document.pageCount == 1) " page" else " pages")
                         append("  ·  ")
-                        append(document.updatedAtMillis.toRelativeDate())
+                        append(updatedDate)
                     },
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,

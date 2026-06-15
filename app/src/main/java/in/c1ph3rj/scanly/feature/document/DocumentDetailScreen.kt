@@ -18,10 +18,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.PickVisualMediaRequest
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -29,10 +28,14 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Crop
 import androidx.compose.material.icons.filled.DeleteOutline
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.FileDownload
 import androidx.compose.material.icons.filled.Folder
+import androidx.compose.material.icons.filled.IosShare
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.OpenInFull
 import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material.icons.filled.PictureAsPdf
@@ -41,6 +44,10 @@ import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
@@ -49,10 +56,11 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
@@ -62,6 +70,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.graphicsLayer
@@ -71,12 +80,15 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.core.content.FileProvider
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import `in`.c1ph3rj.scanly.core.ui.ChromeIconButton
+import `in`.c1ph3rj.scanly.core.ui.ImageImportSupport
 import `in`.c1ph3rj.scanly.core.ui.MetricChip
 import `in`.c1ph3rj.scanly.core.ui.ZoomableImageDialog
 import `in`.c1ph3rj.scanly.domain.model.ExportArtifact
@@ -87,6 +99,7 @@ import `in`.c1ph3rj.scanly.domain.model.ShareArtifact
 import `in`.c1ph3rj.scanly.feature.components.PagePreview
 import `in`.c1ph3rj.scanly.core.ui.PreviewDisplaySize
 import `in`.c1ph3rj.scanly.feature.components.ExportActionRow
+import `in`.c1ph3rj.scanly.feature.components.DocumentTitleDialog
 import `in`.c1ph3rj.scanly.feature.components.FullScreenLoader
 import `in`.c1ph3rj.scanly.feature.components.MoveToFolderSheet
 import `in`.c1ph3rj.scanly.feature.components.PdfOptionsSheet
@@ -121,7 +134,7 @@ fun DocumentDetailRoute(
     onReplacePage: (String) -> Unit,
     viewModel: DocumentDetailViewModel = hiltViewModel(),
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -165,7 +178,7 @@ fun DocumentDetailRoute(
     }
 
     val importImagesLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.PickMultipleVisualMedia(),
+        contract = ImageImportSupport.pickMultipleVisualMediaContract(),
     ) { uris ->
         if (uris.isNotEmpty()) {
             viewModel.importImages(uris)
@@ -198,6 +211,8 @@ fun DocumentDetailRoute(
                         artifact = event.artifact,
                     )
                 }
+
+                DocumentDetailEvent.DocumentDeleted -> onNavigateUp()
             }
         }
     }
@@ -219,10 +234,10 @@ fun DocumentDetailRoute(
         onMoveToGroup = viewModel::moveToGroup,
         onCreateFolderAndMove = viewModel::createFolderAndMove,
         onImportImage = {
-            importImagesLauncher.launch(
-                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-            )
-        }
+            importImagesLauncher.launch(ImageImportSupport.createPickRequest())
+        },
+        onRenameDocument = viewModel::renameDocument,
+        onDeleteDocument = viewModel::deleteDocument,
     )
 }
 
@@ -245,14 +260,22 @@ fun DocumentDetailScreen(
     onMoveToGroup: (String?) -> Unit,
     onCreateFolderAndMove: (String) -> Unit,
     onImportImage: () -> Unit,
+    onRenameDocument: (String) -> Unit,
+    onDeleteDocument: () -> Unit,
 ) {
     var deleteDialogVisible by rememberSaveable(uiState.selectedPageId) { mutableStateOf(false) }
     var previewPageId by rememberSaveable { mutableStateOf<String?>(null) }
     var exportSheetVisible by rememberSaveable { mutableStateOf(false) }
     var moveSheetVisible by rememberSaveable { mutableStateOf(false) }
+    var renameDialogVisible by rememberSaveable { mutableStateOf(false) }
+    var deleteDocumentDialogVisible by rememberSaveable { mutableStateOf(false) }
     var pdfActionMode by rememberSaveable { mutableStateOf<PdfActionMode?>(null) }
     var pdfOptions by remember { mutableStateOf(PdfExportOptions()) }
+    var addPageSheetVisible by rememberSaveable { mutableStateOf(false) }
     val document = uiState.document
+    val documentUpdatedDate = remember(document?.updatedAtMillis) {
+        document?.updatedAtMillis?.toShortDate()
+    }
     var isReviewingPage by rememberSaveable(document?.id) { mutableStateOf(false) }
     val selectedPage = uiState.selectedPage
     val listState = rememberLazyListState()
@@ -304,6 +327,24 @@ fun DocumentDetailScreen(
         modifier = Modifier.fillMaxSize(),
         containerColor = MaterialTheme.colorScheme.background,
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
+        topBar = {
+            ReviewTopBar(
+                title = document?.title ?: "Document",
+                pageCount = uiState.pages.size,
+                onNavigateUp = {
+                    if (isReviewingPage) {
+                        isReviewingPage = false
+                    } else {
+                        onNavigateUp()
+                    }
+                },
+                onOpenExportSheet = { exportSheetVisible = true },
+                onRename = { renameDialogVisible = true },
+                onDelete = { deleteDocumentDialogVisible = true },
+                exportEnabled = !uiState.isExporting && uiState.pages.isNotEmpty(),
+                menuEnabled = document != null,
+            )
+        },
     ) { innerPadding ->
         if (uiState.isLoading) {
             FullScreenLoader(modifier = Modifier.padding(innerPadding))
@@ -311,7 +352,7 @@ fun DocumentDetailScreen(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(bottom = innerPadding.calculateBottomPadding())
+                    .padding(innerPadding)
                     .background(MaterialTheme.colorScheme.background)
                     .onGloballyPositioned { coordinates ->
                         listBounds = coordinates.boundsInRoot()
@@ -386,39 +427,20 @@ fun DocumentDetailScreen(
                     modifier = Modifier.fillMaxSize(),
                     contentPadding = PaddingValues(
                         start = 20.dp,
-                        // Reserve only the bottom inset; status-bar inset is handled
-                        // by statusBarsPadding() inside ReviewTopBar.
-                        top = 0.dp,
+                        top = 16.dp,
                         end = 20.dp,
-                        bottom = innerPadding.calculateBottomPadding() + 28.dp,
+                        bottom = 28.dp,
                     ),
                     verticalArrangement = Arrangement.spacedBy(18.dp),
                 ) {
-            item {
-                ReviewTopBar(
-                    title = document?.title ?: "Document",
-                    pageCount = uiState.pages.size,
-                    onNavigateUp = {
-                        if (isReviewingPage) {
-                            isReviewingPage = false
-                        } else {
-                            onNavigateUp()
-                        }
-                    },
-                    onOpenExportSheet = { exportSheetVisible = true },
-                    onAddPage = onOpenCamera,
-                    exportEnabled = !uiState.isExporting && uiState.pages.isNotEmpty(),
-                )
-            }
-
             if (document == null) {
-                item {
+                item(key = "missing_document", contentType = "state_card") {
                     MissingDocumentCard(onNavigateUp = onNavigateUp)
                 }
                 return@LazyColumn
             }
 
-            item {
+            item(key = "document_metrics", contentType = "metrics") {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(10.dp),
@@ -433,27 +455,28 @@ fun DocumentDetailScreen(
                     )
                     if (uiState.pages.isNotEmpty()) {
                         MetricChip(label = "${uiState.pages.size} pages")
-                        MetricChip(label = document.updatedAtMillis.toShortDate())
+                        documentUpdatedDate?.let { updatedDate ->
+                            MetricChip(label = updatedDate)
+                        }
                     }
                 }
             }
 
             if (uiState.pages.isEmpty()) {
-                item {
+                item(key = "empty_document", contentType = "state_card") {
                     EmptyDocumentCard(
-                        onOpenCamera = onOpenCamera,
-                        onImportImage = onImportImage
+                        onAddPage = { addPageSheetVisible = true },
                     )
                 }
             } else if (isReviewingPage && selectedPage != null) {
-                item {
+                item(key = "selected_page", contentType = "selected_page") {
                     SelectedPageCard(
                         page = selectedPage,
                         pageCount = uiState.pages.size,
                         onPreview = { previewPageId = selectedPage.id },
                     )
                 }
-                item {
+                item(key = "review_actions", contentType = "review_actions") {
                     ReviewActionDock(
                         enabled = !uiState.isMutatingPage,
                         onEdit = { onOpenPageEditor(selectedPage.id) },
@@ -462,23 +485,41 @@ fun DocumentDetailScreen(
                     )
                 }
             } else {
-                item {
-                    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                        Text(
-                            text = "Pages",
-                            style = MaterialTheme.typography.titleLarge,
-                            fontWeight = FontWeight.SemiBold,
-                        )
-                        Text(
-                            text = "Tap to review. Long-press and drag to reorder.",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                item(key = "pages_header", contentType = "section_header") {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.Top,
+                    ) {
+                        Column(
+                            modifier = Modifier.weight(1f),
+                            verticalArrangement = Arrangement.spacedBy(6.dp),
+                        ) {
+                            Text(
+                                text = "Pages",
+                                style = MaterialTheme.typography.titleLarge,
+                                fontWeight = FontWeight.SemiBold,
+                            )
+                            Text(
+                                text = "Tap to review. Long-press and drag to reorder.",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                        ChromeIconButton(
+                            icon = Icons.Filled.Add,
+                            contentDescription = "Add page",
+                            onClick = { addPageSheetVisible = true },
+                            enabled = !uiState.isMutatingPage,
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = MaterialTheme.colorScheme.onPrimary,
                         )
                     }
                 }
                 items(
                     items = uiState.pages.chunked(2),
                     key = { rowPages -> rowPages.joinToString(separator = "-") { page -> page.id } },
+                    contentType = { "page_row" },
                 ) { rowPages ->
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -623,6 +664,60 @@ fun DocumentDetailScreen(
         )
     }
 
+    if (addPageSheetVisible) {
+        AddPageSheet(
+            onDismiss = { addPageSheetVisible = false },
+            onCapture = {
+                addPageSheetVisible = false
+                onOpenCamera()
+            },
+            onUploadImage = {
+                addPageSheetVisible = false
+                onImportImage()
+            },
+        )
+    }
+
+    if (renameDialogVisible && document != null) {
+        DocumentTitleDialog(
+            title = "Rename document",
+            initialValue = document.title,
+            confirmLabel = "Save",
+            onDismiss = { renameDialogVisible = false },
+            onConfirm = { value ->
+                renameDialogVisible = false
+                onRenameDocument(value)
+            },
+        )
+    }
+
+    if (deleteDocumentDialogVisible && document != null) {
+        AlertDialog(
+            onDismissRequest = { deleteDocumentDialogVisible = false },
+            title = { Text(text = "Delete document?") },
+            text = {
+                Text(
+                    text = "\"${document.title}\" and all of its pages will be removed permanently.",
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        deleteDocumentDialogVisible = false
+                        onDeleteDocument()
+                    },
+                ) {
+                    Text(text = "Delete", color = MaterialTheme.colorScheme.error)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { deleteDocumentDialogVisible = false }) {
+                    Text(text = "Cancel")
+                }
+            },
+        )
+    }
+
     if (pdfActionMode != null) {
         PdfOptionsSheet(
             options = pdfOptions,
@@ -649,59 +744,155 @@ fun DocumentDetailScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ReviewTopBar(
     title: String,
     pageCount: Int,
     onNavigateUp: () -> Unit,
     onOpenExportSheet: () -> Unit,
-    onAddPage: () -> Unit,
+    onRename: () -> Unit,
+    onDelete: () -> Unit,
     exportEnabled: Boolean,
+    menuEnabled: Boolean,
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .statusBarsPadding()
-            .padding(top = 20.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            ChromeIconButton(
-                icon = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = "Back",
-                onClick = onNavigateUp,
-            )
+    var showMenu by remember { mutableStateOf(false) }
+    val topBarColor = MaterialTheme.colorScheme.surface
+
+    Surface(color = topBarColor) {
+        TopAppBar(
+            title = {
             Column {
                 Text(
                     text = title,
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.SemiBold,
                     maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                 )
                 Text(
                     text = if (pageCount == 1) "1 page" else "$pageCount pages",
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                 )
             }
-        }
-        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+        },
+        navigationIcon = {
             ChromeIconButton(
-                icon = Icons.Filled.Share,
-                contentDescription = "Export and share",
-                onClick = onOpenExportSheet,
-                enabled = exportEnabled,
+                icon = Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = "Back",
+                onClick = onNavigateUp,
             )
-            ChromeIconButton(
-                icon = Icons.Filled.Add,
-                contentDescription = "Add page",
-                onClick = onAddPage,
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary,
+        },
+        actions = {
+            Box {
+                IconButton(
+                    onClick = { showMenu = true },
+                    enabled = menuEnabled,
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.MoreVert,
+                        contentDescription = "Document options",
+                    )
+                }
+                DropdownMenu(
+                    expanded = showMenu,
+                    onDismissRequest = { showMenu = false },
+                ) {
+                    DropdownMenuItem(
+                        text = { Text("Export & share") },
+                        leadingIcon = {
+                            Icon(Icons.Filled.IosShare, contentDescription = null)
+                        },
+                        enabled = exportEnabled,
+                        onClick = {
+                            showMenu = false
+                            onOpenExportSheet()
+                        },
+                    )
+                    DropdownMenuItem(
+                        text = { Text("Rename document") },
+                        leadingIcon = {
+                            Icon(Icons.Filled.Edit, contentDescription = null)
+                        },
+                        onClick = {
+                            showMenu = false
+                            onRename()
+                        },
+                    )
+                    DropdownMenuItem(
+                        text = {
+                            Text(
+                                text = "Delete document",
+                                color = MaterialTheme.colorScheme.error,
+                            )
+                        },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Filled.DeleteOutline,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.error,
+                            )
+                        },
+                        onClick = {
+                            showMenu = false
+                            onDelete()
+                        },
+                    )
+                }
+            }
+        },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = Color.Transparent,
+            scrolledContainerColor = Color.Transparent,
+        ),
+        )
+    }
+}
+
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+private fun AddPageSheet(
+    onDismiss: () -> Unit,
+    onCapture: () -> Unit,
+    onUploadImage: () -> Unit,
+) {
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        containerColor = MaterialTheme.colorScheme.surface,
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp)
+                .padding(bottom = 28.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Text(
+                text = "Add page",
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.SemiBold,
+            )
+            Text(
+                text = "Capture a new scan or choose up to ${ImageImportSupport.MAX_IMAGES_PER_IMPORT} images from your gallery.",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            ExportActionRow(
+                icon = Icons.Filled.CameraAlt,
+                title = "Capture",
+                description = "Open the camera to scan a new page",
+                enabled = true,
+                onClick = onCapture,
+            )
+            ExportActionRow(
+                icon = Icons.Filled.PhotoLibrary,
+                title = "Choose images",
+                description = "Pick up to ${ImageImportSupport.MAX_IMAGES_PER_IMPORT} photos from your device",
+                enabled = true,
+                onClick = onUploadImage,
             )
         }
     }
@@ -828,8 +1019,7 @@ private fun MissingDocumentCard(
 
 @Composable
 private fun EmptyDocumentCard(
-    onOpenCamera: () -> Unit,
-    onImportImage: () -> Unit,
+    onAddPage: () -> Unit,
 ) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
@@ -847,19 +1037,12 @@ private fun EmptyDocumentCard(
                 fontWeight = FontWeight.SemiBold,
             )
             Text(
-                text = "Add the first page to start the review flow.",
+                text = "Capture a scan or choose up to ${ImageImportSupport.MAX_IMAGES_PER_IMPORT} images to start this document.",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                TextButton(onClick = onImportImage) {
-                    Text(text = "Import image")
-                }
-                TextButton(onClick = onOpenCamera) {
-                    Text(text = "Open camera")
-                }
+            TextButton(onClick = onAddPage) {
+                Text(text = "Add page")
             }
         }
     }
@@ -871,6 +1054,9 @@ private fun SelectedPageCard(
     pageCount: Int,
     onPreview: () -> Unit,
 ) {
+    val capturedDate = remember(page.createdAtMillis) {
+        page.createdAtMillis.toReadableDateTime()
+    }
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -916,7 +1102,7 @@ private fun SelectedPageCard(
                 )
             }
             Text(
-                text = "Captured ${page.createdAtMillis.toReadableDateTime()}",
+                text = "Captured $capturedDate",
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )

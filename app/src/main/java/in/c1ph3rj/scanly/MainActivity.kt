@@ -6,9 +6,9 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import `in`.c1ph3rj.scanly.navigation.ScanlyNavHost
@@ -29,7 +29,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 private fun ScanlyApp() {
     val appSettingsViewModel: AppSettingsViewModel = hiltViewModel()
-    val themeMode by appSettingsViewModel.themeMode.collectAsState()
+    val themeMode by appSettingsViewModel.themeMode.collectAsStateWithLifecycle()
     val systemDark = isSystemInDarkTheme()
     val isDarkTheme = themeMode.resolveDarkTheme(systemDark)
     val navController = rememberNavController()

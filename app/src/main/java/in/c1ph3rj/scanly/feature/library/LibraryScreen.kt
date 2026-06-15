@@ -34,6 +34,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import `in`.c1ph3rj.scanly.domain.model.DocumentGroup
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
 import `in`.c1ph3rj.scanly.feature.components.*
@@ -46,7 +47,7 @@ fun LibraryRoute(
     onOpenGroup: (String) -> Unit,
     viewModel: LibraryViewModel = hiltViewModel(),
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(viewModel) {
@@ -104,6 +105,7 @@ fun LibraryScreen(
     var deleteGroupTarget by remember { mutableStateOf<DocumentGroup?>(null) }
     var moveDocTarget by remember { mutableStateOf<ScanDocument?>(null) }
     var showFabMenu by rememberSaveable { mutableStateOf(false) }
+    val groupRows = remember(uiState.groups) { uiState.groups.chunked(2) }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -153,13 +155,19 @@ fun LibraryScreen(
                         item(key = "search_groups_label") {
                             SearchResultLabel("Folders", modifier = Modifier.padding(bottom = 12.dp))
                         }
-                        items(filteredGroups, key = { "sg_${it.id}" }) { group ->
+                        items(
+                            items = filteredGroups,
+                            key = { "sg_${it.id}" },
+                            contentType = { "search_group" },
+                        ) { group ->
                             GroupCard(
                                 group = group,
                                 onOpen = { onOpenGroup(group.id) },
                                 onRename = { renameGroupTarget = group },
                                 onDelete = { deleteGroupTarget = group },
-                                modifier = Modifier.padding(bottom = 12.dp),
+                                modifier = Modifier
+                                    .padding(bottom = 12.dp)
+                                    .animateItem(),
                             )
                         }
                     }
@@ -167,14 +175,20 @@ fun LibraryScreen(
                         item(key = "search_docs_label") {
                             SearchResultLabel("Documents", modifier = Modifier.padding(top = 12.dp, bottom = 12.dp))
                         }
-                        items(filteredDocs, key = { "sd_${it.id}" }) { doc ->
+                        items(
+                            items = filteredDocs,
+                            key = { "sd_${it.id}" },
+                            contentType = { "search_document" },
+                        ) { doc ->
                             DocumentCard(
                                 document = doc,
                                 onOpen = { onOpenDocument(doc.id) },
                                 onRename = { renameDocTarget = doc },
                                 onDelete = { deleteDocTarget = doc },
                                 onMove = { moveDocTarget = doc },
-                                modifier = Modifier.padding(bottom = 12.dp),
+                                modifier = Modifier
+                                    .padding(bottom = 12.dp)
+                                    .animateItem(),
                             )
                         }
                     }
@@ -184,25 +198,28 @@ fun LibraryScreen(
                     item(key = "groups_label") {
                         SectionLabel("Folders  ·  ${uiState.groups.size}", modifier = Modifier.padding(bottom = 12.dp))
                     }
-                    item(key = "groups_grid") {
-                        val rows = uiState.groups.chunked(2)
-                        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                            rows.forEach { rowItems ->
-                                Row(
-                                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                                    modifier = Modifier.fillMaxWidth(),
-                                ) {
-                                    rowItems.forEach { group ->
-                                        GroupCard(
-                                            group = group,
-                                            onOpen = { onOpenGroup(group.id) },
-                                            onRename = { renameGroupTarget = group },
-                                            onDelete = { deleteGroupTarget = group },
-                                            modifier = Modifier.weight(1f),
-                                        )
-                                    }
-                                    if (rowItems.size == 1) Spacer(modifier = Modifier.weight(1f))
-                                }
+                    items(
+                        items = groupRows,
+                        key = { rowItems -> "group_row_${rowItems.first().id}" },
+                        contentType = { "group_row" },
+                    ) { rowItems ->
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(12.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .animateItem(),
+                        ) {
+                            rowItems.forEach { group ->
+                                GroupCard(
+                                    group = group,
+                                    onOpen = { onOpenGroup(group.id) },
+                                    onRename = { renameGroupTarget = group },
+                                    onDelete = { deleteGroupTarget = group },
+                                    modifier = Modifier.weight(1f),
+                                )
+                            }
+                            if (rowItems.size == 1) {
+                                Spacer(modifier = Modifier.weight(1f))
                             }
                         }
                     }
@@ -216,14 +233,20 @@ fun LibraryScreen(
                             modifier = Modifier.padding(bottom = 12.dp, top = 8.dp),
                         )
                     }
-                    items(uiState.ungroupedDocuments, key = { it.id }) { doc ->
+                    items(
+                        items = uiState.ungroupedDocuments,
+                        key = { it.id },
+                        contentType = { "document" },
+                    ) { doc ->
                         DocumentCard(
                             document = doc,
                             onOpen = { onOpenDocument(doc.id) },
                             onRename = { renameDocTarget = doc },
                             onDelete = { deleteDocTarget = doc },
                             onMove = { moveDocTarget = doc },
-                            modifier = Modifier.padding(bottom = 12.dp),
+                            modifier = Modifier
+                                .padding(bottom = 12.dp)
+                                .animateItem(),
                         )
                     }
                 }

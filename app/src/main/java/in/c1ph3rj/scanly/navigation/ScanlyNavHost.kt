@@ -1,13 +1,16 @@
 package `in`.c1ph3rj.scanly.navigation
 
 import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material.icons.Icons
@@ -88,7 +91,13 @@ fun ScanlyNavHost(
     Scaffold(
         modifier = modifier,
         bottomBar = {
-            if (showBottomNav) {
+            AnimatedVisibility(
+                visible = showBottomNav,
+                enter = fadeIn(animationSpec = tween(180)) +
+                    slideInVertically(animationSpec = tween(220)) { height -> height / 3 },
+                exit = fadeOut(animationSpec = tween(120)) +
+                    slideOutVertically(animationSpec = tween(180)) { height -> height / 3 },
+            ) {
                 NavigationBar(
                     modifier = Modifier.fillMaxWidth(),
                     containerColor = androidx.compose.material3.MaterialTheme.colorScheme.surfaceContainer,
@@ -136,18 +145,17 @@ fun ScanlyNavHost(
             modifier = Modifier.padding(bottom = innerPadding.calculateBottomPadding()),
             enterTransition = { topLevelEnter() },
             exitTransition = { topLevelExit() },
-            popEnterTransition = { topLevelEnter() },
-            popExitTransition = { topLevelExit() },
+            popEnterTransition = { topLevelPopEnter() },
+            popExitTransition = { topLevelPopExit() },
         ) {
             composable(
                 route = ScanlyDestination.Home.route,
                 enterTransition = { topLevelEnter() },
                 exitTransition = { topLevelExit() },
-                popEnterTransition = { topLevelEnter() },
-                popExitTransition = { topLevelExit() },
+                popEnterTransition = { topLevelPopEnter() },
+                popExitTransition = { topLevelPopExit() },
             ) {
                 HomeRoute(
-                    navController = navController,
                     onOpenDocument = { documentId ->
                         navController.navigate(DocumentDestination.route(documentId))
                     },
@@ -172,8 +180,8 @@ fun ScanlyNavHost(
                 route = ScanlyDestination.Library.route,
                 enterTransition = { topLevelEnter() },
                 exitTransition = { topLevelExit() },
-                popEnterTransition = { topLevelEnter() },
-                popExitTransition = { topLevelExit() },
+                popEnterTransition = { topLevelPopEnter() },
+                popExitTransition = { topLevelPopExit() },
             ) {
                 LibraryRoute(
                     onOpenDocument = { documentId ->
@@ -209,8 +217,8 @@ fun ScanlyNavHost(
                 route = ScanlyDestination.Settings.route,
                 enterTransition = { topLevelEnter() },
                 exitTransition = { topLevelExit() },
-                popEnterTransition = { topLevelEnter() },
-                popExitTransition = { topLevelExit() },
+                popEnterTransition = { topLevelPopEnter() },
+                popExitTransition = { topLevelPopExit() },
             ) {
                 SettingsRoute(
                     onNavigateUp = navController::navigateUp,
@@ -302,23 +310,33 @@ fun ScanlyNavHost(
 }
 
 private fun AnimatedContentTransitionScope<NavBackStackEntry>.topLevelEnter(): EnterTransition =
-    EnterTransition.None
+    fadeIn(animationSpec = tween(180)) +
+        slideInHorizontally(animationSpec = tween(220)) { fullWidth -> fullWidth / 12 }
 
 private fun AnimatedContentTransitionScope<NavBackStackEntry>.topLevelExit(): ExitTransition =
-    ExitTransition.None
+    fadeOut(animationSpec = tween(140)) +
+        slideOutHorizontally(animationSpec = tween(180)) { fullWidth -> -fullWidth / 16 }
+
+private fun AnimatedContentTransitionScope<NavBackStackEntry>.topLevelPopEnter(): EnterTransition =
+    fadeIn(animationSpec = tween(180)) +
+        slideInHorizontally(animationSpec = tween(220)) { fullWidth -> -fullWidth / 12 }
+
+private fun AnimatedContentTransitionScope<NavBackStackEntry>.topLevelPopExit(): ExitTransition =
+    fadeOut(animationSpec = tween(140)) +
+        slideOutHorizontally(animationSpec = tween(180)) { fullWidth -> fullWidth / 16 }
 
 private fun AnimatedContentTransitionScope<NavBackStackEntry>.detailPushEnter(): EnterTransition =
-    fadeIn(animationSpec = tween(220)) +
-        slideInHorizontally(animationSpec = tween(220)) { fullWidth -> fullWidth }
+    fadeIn(animationSpec = tween(180)) +
+        slideInHorizontally(animationSpec = tween(240)) { fullWidth -> fullWidth / 5 }
 
 private fun AnimatedContentTransitionScope<NavBackStackEntry>.detailPushExit(): ExitTransition =
-    fadeOut(animationSpec = tween(180)) +
-        slideOutHorizontally(animationSpec = tween(220)) { fullWidth -> -fullWidth / 3 }
+    fadeOut(animationSpec = tween(140)) +
+        slideOutHorizontally(animationSpec = tween(220)) { fullWidth -> -fullWidth / 12 }
 
 private fun AnimatedContentTransitionScope<NavBackStackEntry>.detailPopEnter(): EnterTransition =
-    fadeIn(animationSpec = tween(220)) +
-        slideInHorizontally(animationSpec = tween(220)) { fullWidth -> -fullWidth / 3 }
+    fadeIn(animationSpec = tween(180)) +
+        slideInHorizontally(animationSpec = tween(240)) { fullWidth -> -fullWidth / 12 }
 
 private fun AnimatedContentTransitionScope<NavBackStackEntry>.detailPopExit(): ExitTransition =
-    fadeOut(animationSpec = tween(180)) +
-        slideOutHorizontally(animationSpec = tween(220)) { fullWidth -> fullWidth }
+    fadeOut(animationSpec = tween(140)) +
+        slideOutHorizontally(animationSpec = tween(220)) { fullWidth -> fullWidth / 5 }

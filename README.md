@@ -8,20 +8,23 @@ Scanly is an offline-first Android document scanner built with Kotlin, Jetpack C
 
 It is designed for a practical, local-only scanning workflow:
 
-1. capture a document with the camera
+1. capture a document with the camera or import images from the gallery
 2. detect and correct page geometry
 3. refine pages with editing tools
-4. store multi-page documents locally
+4. store and organize multi-page documents locally, including collections
 5. export as PDF or image sets
 
 ## Highlights
 
 - offline-first by default
-- document library and per-document page review
+- document library with searchable collections (groups) and recent-item home dashboard
 - manual camera capture with live document guidance
+- import images from the gallery to create or extend documents
 - page crop, rotate, and filter editing
-- PDF export and image archive export/share flows
-- local preferences, FAQs, and license info
+- PDF export and image archive export/share flows, including group-level export
+- settings with theme mode, storage usage, clear-all-data, FAQs, and license info
+
+**Current version:** `1.0.4` (version code `4`) — see [VERSION.md](VERSION.md) and [CHANGELOG.md](CHANGELOG.md).
 
 ## Screenshots
 
@@ -93,6 +96,8 @@ For an additional verification pass:
 ## Documentation
 
 - `LICENSE` – GNU AGPL-3.0-only license for this repository
+- `VERSION.md` – current release version, version-code policy, and upgrade notes
+- `CHANGELOG.md` – release notes for each published version
 - `implementation.md` – current architecture snapshot and technical direction
 - `OPEN_SOURCE_NEXT_STEPS.md` – checklist for publishing and maintaining the repo
 - `SECURITY.md` – vulnerability reporting and disclosure guidance

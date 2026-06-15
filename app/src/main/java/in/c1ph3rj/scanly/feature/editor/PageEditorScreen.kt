@@ -46,7 +46,6 @@ import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
@@ -76,6 +75,7 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.exifinterface.media.ExifInterface
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import `in`.c1ph3rj.scanly.core.ui.ChromeIconButton
 import `in`.c1ph3rj.scanly.core.ui.MetricChip
 import `in`.c1ph3rj.scanly.core.editing.CropHandle
@@ -95,7 +95,7 @@ fun PageEditorRoute(
     onNavigateUp: () -> Unit,
     viewModel: PageEditorViewModel = hiltViewModel(),
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(viewModel) {
@@ -866,7 +866,7 @@ private fun rememberEditorPreviewBitmap(
     rotationDegrees,
     selectedFilter,
 ) {
-    value = withContext(Dispatchers.IO) {
+    value = withContext(Dispatchers.Default) {
         val sourcePath = rawImagePath ?: fallbackImagePath ?: return@withContext null
         val rotatedBitmap = decodeEditorBitmap(
             path = sourcePath,
@@ -924,7 +924,7 @@ private fun rememberFilterPreviewBitmaps(
     fallbackImagePath,
     rotationDegrees,
 ) {
-    value = withContext(Dispatchers.IO) {
+    value = withContext(Dispatchers.Default) {
         val sourcePath = rawImagePath ?: fallbackImagePath ?: return@withContext FilterPreviewState(
             isLoading = false,
             previews = emptyMap(),

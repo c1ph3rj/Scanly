@@ -22,4 +22,6 @@ interface DocumentStorageManager {
     ): PageThumbnailResult
 
     suspend fun deleteDocumentStorage(documentId: String)
+
+    suspend fun clearAllDocumentStorage()
 }

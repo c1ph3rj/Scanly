@@ -58,10 +58,10 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -72,7 +72,8 @@ import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import `in`.c1ph3rj.scanly.core.ui.ChromeIconButton
 import `in`.c1ph3rj.scanly.core.ui.MetricChip
 import `in`.c1ph3rj.scanly.domain.model.PdfExportOptions
@@ -84,8 +85,9 @@ import `in`.c1ph3rj.scanly.feature.components.FullScreenLoader
 import `in`.c1ph3rj.scanly.feature.components.PdfOptionsSheet
 import `in`.c1ph3rj.scanly.feature.components.ScanlyExtendedFab
 import kotlinx.coroutines.flow.collectLatest
-import java.text.DateFormat
-import java.util.Date
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 // Route argument key — must match ScanlyNavHost composable declaration
 const val GROUP_ID_ARG = "groupId"
@@ -96,8 +98,9 @@ fun GroupDetailRoute(
     onOpenDocument: (String) -> Unit,
     viewModel: GroupDetailViewModel = hiltViewModel(),
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
     val context = LocalContext.current
 
     var pendingExport by remember { mutableStateOf<GroupDetailEvent.ExportReady?>(null) }
@@ -108,8 +111,22 @@ fun GroupDetailRoute(
         uri ?: return@rememberLauncherForActivityResult
         val artifact = pendingExport ?: return@rememberLauncherForActivityResult
         pendingExport = null
-        context.contentResolver.openOutputStream(uri)?.use { out ->
-            java.io.File(artifact.filePath).inputStream().use { it.copyTo(out) }
+        scope.launch {
+            runCatching {
+                withContext(Dispatchers.IO) {
+                    val outputStream = context.contentResolver.openOutputStream(uri)
+                        ?: error("Could not open the selected destination.")
+                    outputStream.use { out ->
+                        java.io.File(artifact.filePath).inputStream().use { input ->
+                            input.copyTo(out)
+                        }
+                    }
+                }
+            }.onFailure { error ->
+                snackbarHostState.showSnackbar(
+                    error.message ?: "Could not save the exported file.",
+                )
+            }
         }
     }
 
@@ -572,6 +589,10 @@ private fun GroupDocumentCard(
     onRemove: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val updatedDate = remember(document.updatedAtMillis) {
+        java.text.DateFormat.getDateInstance(java.text.DateFormat.MEDIUM)
+            .format(java.util.Date(document.updatedAtMillis))
+    }
     Surface(
         modifier = modifier
             .fillMaxWidth()
@@ -608,7 +629,7 @@ private fun GroupDocumentCard(
                         append(document.pageCount)
                         append(if (document.pageCount == 1) " page" else " pages")
                         append("  ·  ")
-                        append(DateFormat.getDateInstance(DateFormat.MEDIUM).format(Date(document.updatedAtMillis)))
+                        append(updatedDate)
                     },
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,

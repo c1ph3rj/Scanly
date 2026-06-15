@@ -103,6 +103,12 @@ class AppPrivateDocumentStorageManager @Inject constructor(
         }
     }
 
+    override suspend fun clearAllDocumentStorage() {
+        withContext(dispatchers.io) {
+            File(context.filesDir, DOCUMENTS_DIRECTORY).deleteRecursively()
+        }
+    }
+
     private fun documentRoot(documentId: String): File =
         File(context.filesDir, "$DOCUMENTS_DIRECTORY/$documentId")
 

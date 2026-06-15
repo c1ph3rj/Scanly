@@ -164,16 +164,29 @@ fun CachedThumbnail(
             density = density,
         )
     }
+    val cachedImage = remember(thumbnailPath, targetPx, contentRevision) {
+        thumbnailPath?.let { path ->
+            cache.getIfCached(path, targetPx, contentRevision)?.asImageBitmap()
+        }
+    }
 
     val imageBitmap by produceState<ImageBitmap?>(
-        initialValue = null,
+        initialValue = cachedImage,
         key1 = thumbnailPath,
         key2 = targetPx,
         key3 = contentRevision,
     ) {
-        val path = thumbnailPath ?: return@produceState
+        val path = thumbnailPath
+        if (path == null) {
+            value = null
+            return@produceState
+        }
+        cache.getIfCached(path, targetPx, contentRevision)?.let { bitmap ->
+            value = bitmap.asImageBitmap()
+            return@produceState
+        }
         value = withContext(Dispatchers.IO) {
-            cache.decode(path, targetPx)?.asImageBitmap()
+            cache.decode(path, targetPx, contentRevision)?.asImageBitmap()
         }
     }
 
@@ -637,6 +650,9 @@ fun DocumentCard(
     onMove: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val updatedDate = remember(document.updatedAtMillis) {
+        document.updatedAtMillis.toShortDate()
+    }
     Surface(
         modifier = modifier
             .fillMaxWidth()
@@ -675,7 +691,7 @@ fun DocumentCard(
                         containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
                     )
                     MetricChip(
-                        label = document.updatedAtMillis.toShortDate(),
+                        label = updatedDate,
                         containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
                     )
                 }

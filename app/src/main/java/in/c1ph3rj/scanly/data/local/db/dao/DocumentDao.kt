@@ -31,6 +31,9 @@ interface DocumentDao {
     @Query("SELECT * FROM documents WHERE id = :documentId")
     suspend fun getDocument(documentId: String): DocumentEntity?
 
+    @Query("SELECT title FROM documents")
+    suspend fun getAllTitles(): List<String>
+
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insert(document: DocumentEntity)
 

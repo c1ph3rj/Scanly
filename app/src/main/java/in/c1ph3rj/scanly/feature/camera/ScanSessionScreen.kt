@@ -2,6 +2,7 @@ package `in`.c1ph3rj.scanly.feature.camera
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.util.Size
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.Camera
@@ -70,7 +71,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -90,6 +90,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import `in`.c1ph3rj.scanly.core.ui.ChromeIconButton
 import `in`.c1ph3rj.scanly.core.ui.MetricChip
 import `in`.c1ph3rj.scanly.core.ml.DetectionFrame
@@ -131,7 +132,7 @@ fun ScanSessionRoute(
     onOpenDocument: (String) -> Unit,
     viewModel: ScanSessionViewModel = hiltViewModel(),
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
     val mainExecutor = remember(context) { ContextCompat.getMainExecutor(context) }
@@ -236,7 +237,7 @@ fun ScanSessionScreen(
     onClearRetakeSelection: () -> Unit,
     onAutoCaptureEnabledChange: (Boolean) -> Unit,
     onGridEnabledChange: (Boolean) -> Unit,
-    onPreviewFrame: (DetectionFrame) -> Unit,
+    onPreviewFrame: (() -> DetectionFrame?) -> Boolean,
     torchEnabled: Boolean,
     torchAvailable: Boolean,
     onTorchToggle: () -> Unit,
@@ -889,7 +890,7 @@ private fun CameraPreview(
     modifier: Modifier = Modifier,
     liveDetection: LiveDetectionUiState,
     onCameraReady: (ImageCapture, PreviewView, Camera) -> Unit,
-    onPreviewFrame: (DetectionFrame) -> Unit,
+    onPreviewFrame: (() -> DetectionFrame?) -> Boolean,
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -925,12 +926,22 @@ private fun CameraPreview(
                 val imageAnalysis = ImageAnalysis.Builder()
                     .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                     .setOutputImageFormat(ImageAnalysis.OUTPUT_IMAGE_FORMAT_RGBA_8888)
+                    .setTargetResolution(AnalysisResolution)
                     .build()
                     .apply {
                         targetRotation = currentPreviewView.display.rotation
+                        var lastAcceptedFrameNanos = 0L
                         setAnalyzer(analysisExecutor) { imageProxy ->
                             try {
-                                imageProxy.toDetectionFrame()?.let(onPreviewFrame)
+                                val nowNanos = System.nanoTime()
+                                if (nowNanos - lastAcceptedFrameNanos >= AnalysisIntervalNanos) {
+                                    val accepted = onPreviewFrame {
+                                        imageProxy.toDetectionFrame()
+                                    }
+                                    if (accepted) {
+                                        lastAcceptedFrameNanos = nowNanos
+                                    }
+                                }
                             } finally {
                                 imageProxy.close()
                             }
@@ -1044,8 +1055,8 @@ private fun DocumentDetectionOverlay(
                 y = (mappedPoints[2].y + mappedPoints[3].y) / 2f,
             )
             val center = Offset(
-                x = mappedPoints.map { it.x }.average().toFloat(),
-                y = mappedPoints.map { it.y }.average().toFloat(),
+                x = (mappedPoints[0].x + mappedPoints[1].x + mappedPoints[2].x + mappedPoints[3].x) / 4f,
+                y = (mappedPoints[0].y + mappedPoints[1].y + mappedPoints[2].y + mappedPoints[3].y) / 4f,
             )
 
             val polygonPath = Path().apply {
@@ -1252,6 +1263,9 @@ private val OverlayFill = Color(0x2EFFFFFF)
 private val OverlayGrid = Color(0x22FFFFFF)
 private val OverlayGuide = Color(0xC2FFFFFF)
 private const val RgbaPixelStride = 4
+private const val AnalysisFramesPerSecond = 8L
+private const val AnalysisIntervalNanos = 1_000_000_000L / AnalysisFramesPerSecond
+private val AnalysisResolution = Size(640, 480)
 
 
 private fun LiveDetectionUiState.compactStatusLabel(): String = when (phase) {

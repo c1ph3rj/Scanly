@@ -87,6 +87,15 @@ class DefaultDocumentRepository @Inject constructor(
             )
         }
 
+    override suspend fun createImportedDocument(
+        groupId: String?,
+    ): ScanlyResult<String> = withContext(dispatchers.io) {
+        val title = DocumentPresentationFormatter.uniqueImportedDocumentTitle(
+            existingTitles = documentDao.getAllTitles(),
+        )
+        createDocument(title = title, groupId = groupId)
+    }
+
     override suspend fun renameDocument(
         documentId: String,
         title: String,

@@ -36,14 +36,22 @@ class ThumbnailCache @Inject constructor() {
     }
 
     /** Returns a bitmap already in the LRU cache without touching disk. */
-    fun getIfCached(path: String, targetPx: Int): Bitmap? = cache.get(cacheKey(path, targetPx))
+    fun getIfCached(
+        path: String,
+        targetPx: Int,
+        contentRevision: Long = 0L,
+    ): Bitmap? = cache.get(cacheKey(path, targetPx, contentRevision))
 
     /**
      * Returns a cached or freshly decoded bitmap scaled so that neither dimension exceeds
      * [targetPx]. Uses [Bitmap.Config.ARGB_8888] for larger decodes to avoid banding.
      */
-    fun decode(path: String, targetPx: Int): Bitmap? {
-        val key = cacheKey(path, targetPx)
+    fun decode(
+        path: String,
+        targetPx: Int,
+        contentRevision: Long = 0L,
+    ): Bitmap? {
+        val key = cacheKey(path, targetPx, contentRevision)
         cache.get(key)?.let { return it }
         val sampled = decodeSampled(path, targetPx) ?: return null
         cache.put(key, sampled)
@@ -52,12 +60,17 @@ class ThumbnailCache @Inject constructor() {
 
     /** Removes all cached decode sizes for the current on-disk revision of [path]. */
     fun invalidate(path: String) {
-        val prefix = "${path}#${fileRevision(path)}@"
+        val prefix = "$path#"
         cache.snapshot().keys.filter { it.startsWith(prefix) }.forEach(cache::remove)
     }
 
-    private fun cacheKey(path: String, targetPx: Int): String {
-        return "${path}#${fileRevision(path)}@$targetPx"
+    fun clearAll() {
+        cache.evictAll()
+    }
+
+    private fun cacheKey(path: String, targetPx: Int, contentRevision: Long): String {
+        val revision = contentRevision.takeIf { it > 0L } ?: fileRevision(path)
+        return "$path#$revision@$targetPx"
     }
 
     private fun fileRevision(path: String): Long =

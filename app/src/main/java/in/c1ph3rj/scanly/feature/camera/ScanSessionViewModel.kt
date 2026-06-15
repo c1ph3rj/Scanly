@@ -180,12 +180,17 @@ class ScanSessionViewModel @Inject constructor(
         onReplacementPageSelected(pageId = null)
     }
 
-    fun onPreviewFrame(frame: DetectionFrame) {
+    fun onPreviewFrame(frameProvider: () -> DetectionFrame?): Boolean {
         if (_uiState.value.missingDocument || _uiState.value.captureInProgress) {
-            return
+            return false
         }
         if (!analysisInFlight.compareAndSet(false, true)) {
-            return
+            return false
+        }
+        val frame = runCatching(frameProvider).getOrNull()
+        if (frame == null) {
+            analysisInFlight.set(false)
+            return false
         }
 
         viewModelScope.launch {
@@ -241,6 +246,7 @@ class ScanSessionViewModel @Inject constructor(
                 analysisInFlight.set(false)
             }
         }
+        return true
     }
 
     fun onCaptureSaved(draft: PageCaptureDraft) {

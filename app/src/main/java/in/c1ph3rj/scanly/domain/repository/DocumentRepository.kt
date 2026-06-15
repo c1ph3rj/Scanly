@@ -18,6 +18,10 @@ interface DocumentRepository {
         groupId: String? = null,
     ): ScanlyResult<String>
 
+    suspend fun createImportedDocument(
+        groupId: String? = null,
+    ): ScanlyResult<String>
+
     suspend fun renameDocument(
         documentId: String,
         title: String,

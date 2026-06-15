@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import `in`.c1ph3rj.scanly.core.common.ScanlyResult
+import `in`.c1ph3rj.scanly.core.ui.ImageImportSupport
 import `in`.c1ph3rj.scanly.domain.model.DocumentGroup
 import `in`.c1ph3rj.scanly.domain.model.ExportArtifact
 import `in`.c1ph3rj.scanly.domain.model.PdfExportOptions
@@ -12,6 +13,7 @@ import `in`.c1ph3rj.scanly.domain.model.ShareArtifact
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
 import `in`.c1ph3rj.scanly.domain.model.ScanPage
 import `in`.c1ph3rj.scanly.domain.usecase.CreateGroupUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.DeleteDocumentUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.DeletePageUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ExportDocumentImageArchiveUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ExportDocumentPdfUseCase
@@ -22,6 +24,7 @@ import `in`.c1ph3rj.scanly.domain.usecase.ObserveGroupsUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.PrepareDocumentPdfShareUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.PrepareDocumentImageShareUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ImportImagesUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.RenameDocumentUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.SetDocumentGroupUseCase
 import android.net.Uri
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -57,6 +60,7 @@ sealed interface DocumentDetailEvent {
     data class ShowMessage(val message: String) : DocumentDetailEvent
     data class SaveExportedFile(val artifact: ExportArtifact) : DocumentDetailEvent
     data class ShareFiles(val artifact: ShareArtifact) : DocumentDetailEvent
+    data object DocumentDeleted : DocumentDetailEvent
 }
 
 @HiltViewModel
@@ -71,6 +75,8 @@ class DocumentDetailViewModel @Inject constructor(
     private val prepareDocumentPdfShareUseCase: PrepareDocumentPdfShareUseCase,
     private val prepareDocumentImageShareUseCase: PrepareDocumentImageShareUseCase,
     private val importImagesUseCase: ImportImagesUseCase,
+    private val renameDocumentUseCase: RenameDocumentUseCase,
+    private val deleteDocumentUseCase: DeleteDocumentUseCase,
     private val observeGroupsUseCase: ObserveGroupsUseCase,
     private val setDocumentGroupUseCase: SetDocumentGroupUseCase,
     private val createGroupUseCase: CreateGroupUseCase,
@@ -225,17 +231,51 @@ class DocumentDetailViewModel @Inject constructor(
     }
 
     fun importImages(uris: List<Uri>) {
-        if (_uiState.value.isMutatingPage) return
-        
+        if (_uiState.value.isMutatingPage || uris.isEmpty()) return
+
+        val cappedSelection = ImageImportSupport.capSelection(uris)
+
         viewModelScope.launch {
             _uiState.update { current -> current.copy(isMutatingPage = true) }
-            when (val result = importImagesUseCase(documentId, uris)) {
+            when (val result = importImagesUseCase(documentId, cappedSelection.items)) {
                 is ScanlyResult.Success -> {
                     _uiState.update { current -> current.copy(isMutatingPage = false) }
-                    _events.emit(DocumentDetailEvent.ShowMessage("Imported ${uris.size} image(s)."))
+                    _events.emit(
+                        DocumentDetailEvent.ShowMessage(
+                            ImageImportSupport.importResultMessage(
+                                importedCount = cappedSelection.items.size,
+                                truncated = cappedSelection.truncated,
+                            ),
+                        ),
+                    )
                 }
                 is ScanlyResult.Failure -> {
                     _uiState.update { current -> current.copy(isMutatingPage = false) }
+                    _events.emit(DocumentDetailEvent.ShowMessage(result.error.message))
+                }
+            }
+        }
+    }
+
+    fun renameDocument(title: String) {
+        viewModelScope.launch {
+            when (val result = renameDocumentUseCase(documentId, title)) {
+                is ScanlyResult.Success -> {
+                    _events.emit(DocumentDetailEvent.ShowMessage("Document renamed."))
+                }
+
+                is ScanlyResult.Failure -> {
+                    _events.emit(DocumentDetailEvent.ShowMessage(result.error.message))
+                }
+            }
+        }
+    }
+
+    fun deleteDocument() {
+        viewModelScope.launch {
+            when (val result = deleteDocumentUseCase(documentId)) {
+                is ScanlyResult.Success -> _events.emit(DocumentDetailEvent.DocumentDeleted)
+                is ScanlyResult.Failure -> {
                     _events.emit(DocumentDetailEvent.ShowMessage(result.error.message))
                 }
             }

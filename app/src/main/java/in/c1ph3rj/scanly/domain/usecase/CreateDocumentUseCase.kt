@@ -12,4 +12,7 @@ class CreateDocumentUseCase @Inject constructor(
         groupId: String? = null,
     ): ScanlyResult<String> =
         documentRepository.createDocument(title, groupId)
+
+    suspend fun createImported(groupId: String? = null): ScanlyResult<String> =
+        documentRepository.createImportedDocument(groupId)
 }

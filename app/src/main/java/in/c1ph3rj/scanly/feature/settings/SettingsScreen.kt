@@ -25,6 +25,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.OpenInNew
 import androidx.compose.material.icons.filled.Brightness4
 import androidx.compose.material.icons.filled.DarkMode
+import androidx.compose.material.icons.filled.DeleteOutline
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
@@ -32,6 +33,9 @@ import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Public
+import androidx.compose.material.icons.filled.Public
+import androidx.compose.material.icons.filled.Storage
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -42,12 +46,14 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -55,6 +61,9 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import `in`.c1ph3rj.scanly.core.common.StorageFormatter
+import `in`.c1ph3rj.scanly.domain.model.AppStorageUsage
 import `in`.c1ph3rj.scanly.domain.model.LicenseInfo
 import `in`.c1ph3rj.scanly.domain.model.ThemeMode
 import `in`.c1ph3rj.scanly.feature.components.ScanlyAppLogo
@@ -76,7 +85,7 @@ fun SettingsRoute(
     onNavigateUp: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val uriHandler = LocalUriHandler.current
 
@@ -94,6 +103,7 @@ fun SettingsRoute(
         onThemeModeSelected = viewModel::setThemeMode,
         onShowDetectionStatsChanged = viewModel::setShowDetectionStats,
         onOpenWebsite = { url -> uriHandler.openUri(url) },
+        onClearAllData = viewModel::clearAllData,
     )
 }
 
@@ -104,10 +114,12 @@ fun SettingsScreen(
     onThemeModeSelected: (ThemeMode) -> Unit,
     onShowDetectionStatsChanged: (Boolean) -> Unit,
     onOpenWebsite: (String) -> Unit,
+    onClearAllData: () -> Unit,
 ) {
     val content = uiState.content
     val expandedFaqIds = remember { mutableStateListOf<String>() }
     val expandedLicenseIds = remember { mutableStateListOf<String>() }
+    var clearDataDialogVisible by remember { mutableStateOf(false) }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -157,6 +169,25 @@ fun SettingsScreen(
                             subtitle = "Display detection confidence and scan time in the camera preview.",
                             checked = uiState.showDetectionStats,
                             onCheckedChange = onShowDetectionStatsChanged,
+                        )
+                    }
+                }
+
+                item(key = "storage") {
+                    SettingsGroup(
+                        title = "Storage",
+                    ) {
+                        StorageUsageRow(
+                            storageUsage = uiState.storageUsage,
+                            isLoading = uiState.isLoadingStorage,
+                        )
+                        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                        SettingsDestructiveRow(
+                            icon = Icons.Filled.DeleteOutline,
+                            title = "Clear all data",
+                            subtitle = "Delete all documents, folders, and pages",
+                            enabled = !uiState.isClearingData,
+                            onClick = { clearDataDialogVisible = true },
                         )
                     }
                 }
@@ -259,6 +290,42 @@ fun SettingsScreen(
             }
         }
     }
+
+    if (clearDataDialogVisible) {
+        AlertDialog(
+            onDismissRequest = {
+                if (!uiState.isClearingData) {
+                    clearDataDialogVisible = false
+                }
+            },
+            title = { Text(text = "Clear all data?") },
+            text = {
+                Text(
+                    text = "This permanently deletes all documents, folders, and pages from Scanly. " +
+                        "This cannot be undone. Your theme and camera settings will be kept.",
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        clearDataDialogVisible = false
+                        onClearAllData()
+                    },
+                    enabled = !uiState.isClearingData,
+                ) {
+                    Text(text = "Delete", color = MaterialTheme.colorScheme.error)
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { clearDataDialogVisible = false },
+                    enabled = !uiState.isClearingData,
+                ) {
+                    Text(text = "Cancel")
+                }
+            },
+        )
+    }
 }
 
 @Composable
@@ -340,6 +407,110 @@ private fun AboutHero(
             )
             Text(
                 text = versionLabel ?: "Version unavailable",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+    }
+}
+
+@Composable
+private fun StorageUsageRow(
+    storageUsage: AppStorageUsage?,
+    isLoading: Boolean,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier.settingsRowSurface(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        Icon(
+            imageVector = Icons.Filled.Storage,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.size(22.dp),
+        )
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(2.dp),
+        ) {
+            Text(
+                text = "App storage",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Medium,
+            )
+            when {
+                isLoading -> {
+                    Text(
+                        text = "Calculating…",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+
+                storageUsage != null -> {
+                    Text(
+                        text = StorageFormatter.formatBytes(storageUsage.totalBytes),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    Text(
+                        text = buildString {
+                            append("Documents ")
+                            append(StorageFormatter.formatBytes(storageUsage.documentsBytes))
+                            append(" · Cache ")
+                            append(StorageFormatter.formatBytes(storageUsage.exportCacheBytes))
+                            append(" · Database ")
+                            append(StorageFormatter.formatBytes(storageUsage.databaseBytes))
+                        },
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            }
+        }
+        if (isLoading) {
+            CircularProgressIndicator(
+                modifier = Modifier.size(20.dp),
+                strokeWidth = 2.dp,
+            )
+        }
+    }
+}
+
+@Composable
+private fun SettingsDestructiveRow(
+    icon: ImageVector,
+    title: String,
+    subtitle: String,
+    enabled: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier.settingsRowSurface(onClick = if (enabled) onClick else null),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.error,
+            modifier = Modifier.size(22.dp),
+        )
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(2.dp),
+        ) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colorScheme.error,
+            )
+            Text(
+                text = subtitle,
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )

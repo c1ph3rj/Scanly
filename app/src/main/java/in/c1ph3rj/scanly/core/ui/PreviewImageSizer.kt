@@ -30,7 +30,10 @@ object PreviewImageSizer {
             PreviewDisplaySize.DETAIL -> 320f
         }
         val maxPx = maxPxFor(size)
-        return (dp * density * OVERSAMPLE).roundToInt().coerceIn(MIN_PX, maxPx)
+        return bucketTargetPx(
+            requestedPx = (dp * density * OVERSAMPLE).roundToInt(),
+            maxPx = maxPx,
+        )
     }
 
     fun targetPxForContainer(
@@ -42,7 +45,11 @@ object PreviewImageSizer {
         if (widthPx <= 0 || heightPx <= 0) {
             return estimateTargetPx(size, density)
         }
-        return (max(widthPx, heightPx) * OVERSAMPLE).roundToInt().coerceIn(MIN_PX, maxPxFor(size))
+        val maxPx = maxPxFor(size)
+        return bucketTargetPx(
+            requestedPx = (max(widthPx, heightPx) * OVERSAMPLE).roundToInt(),
+            maxPx = maxPx,
+        )
     }
 
     fun useHighColorDepth(targetPx: Int): Boolean = targetPx >= 384
@@ -51,4 +58,11 @@ object PreviewImageSizer {
         PreviewDisplaySize.DETAIL -> MAX_DETAIL_PX
         else -> MAX_CARD_PX
     }
+
+    private fun bucketTargetPx(requestedPx: Int, maxPx: Int): Int {
+        val clamped = requestedPx.coerceIn(MIN_PX, maxPx)
+        return DecodeBuckets.firstOrNull { bucket -> bucket >= clamped && bucket <= maxPx } ?: maxPx
+    }
+
+    private val DecodeBuckets = intArrayOf(192, 256, 384, 512, 768, 1_024, 1_536)
 }
