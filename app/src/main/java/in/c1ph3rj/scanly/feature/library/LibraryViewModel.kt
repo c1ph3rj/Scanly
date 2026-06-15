@@ -89,7 +89,7 @@ class LibraryViewModel @Inject constructor(
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000),
-        initialValue = LibraryUiState(),
+        initialValue = LibraryUiState(isLoading = true),
     )
 
     fun setSearchQuery(query: String) {

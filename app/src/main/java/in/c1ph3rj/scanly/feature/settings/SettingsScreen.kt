@@ -5,7 +5,7 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,6 +18,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.OpenInNew
 import androidx.compose.material.icons.filled.Brightness4
@@ -47,22 +50,26 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import `in`.c1ph3rj.scanly.R
 import `in`.c1ph3rj.scanly.domain.model.LicenseInfo
 import `in`.c1ph3rj.scanly.domain.model.ThemeMode
+import `in`.c1ph3rj.scanly.feature.components.ScanlyAppLogo
 import kotlinx.coroutines.flow.collectLatest
 
 private const val DEVELOPER_PORTFOLIO_URL = "https://c1ph3rj.in"
 private const val PROJECT_WEBSITE_URL = "https://scanly.c1ph3rj.in"
 private const val SUPPORT_EMAIL = "info@c1ph3rj.in"
+
+private val SettingsRowPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp)
+
+private fun Modifier.settingsRowSurface(onClick: (() -> Unit)? = null): Modifier =
+    fillMaxWidth()
+        .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier)
+        .padding(SettingsRowPadding)
 
 @Composable
 fun SettingsRoute(
@@ -297,13 +304,15 @@ private fun SettingsGroup(
             modifier = Modifier.padding(start = 4.dp),
         )
         Surface(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(MaterialTheme.shapes.extraLarge),
             color = MaterialTheme.colorScheme.surfaceContainer,
             shape = MaterialTheme.shapes.extraLarge,
+            tonalElevation = 0.dp,
+            shadowElevation = 0.dp,
         ) {
-            Column(
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
-            ) {
+            Column(modifier = Modifier.padding(vertical = 4.dp)) {
                 content()
             }
         }
@@ -318,25 +327,11 @@ private fun AboutHero(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = 12.dp),
+            .padding(SettingsRowPadding),
         horizontalArrangement = Arrangement.spacedBy(14.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Surface(
-            modifier = Modifier.size(48.dp),
-            color = MaterialTheme.colorScheme.primary,
-            shape = MaterialTheme.shapes.extraLarge,
-        ) {
-            Image(
-                painter = painterResource(R.drawable.ic_launcher_monochrome),
-                contentDescription = "Scanly logo",
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 8.dp, vertical = 16.dp),
-                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
-                contentScale = ContentScale.Fit,
-            )
-        }
+        ScanlyAppLogo(size = 48.dp)
         Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
             Text(
                 text = "Scanly",
@@ -361,10 +356,7 @@ private fun SettingsToggleRow(
     modifier: Modifier = Modifier,
 ) {
     Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable { onCheckedChange(!checked) }
-            .padding(vertical = 12.dp),
+        modifier = modifier.settingsRowSurface { onCheckedChange(!checked) },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
@@ -396,11 +388,15 @@ private fun ThemeModeSelector(
     onThemeModeSelected: (ThemeMode) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val trackShape = RoundedCornerShape(12.dp)
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = 12.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+            .padding(SettingsRowPadding)
+            .clip(trackShape)
+            .background(MaterialTheme.colorScheme.surfaceContainerHighest)
+            .padding(4.dp),
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
     ) {
         ThemeMode.entries.forEach { themeMode ->
             ThemeModeOption(
@@ -425,23 +421,24 @@ private fun ThemeModeOption(
     val containerColor = if (selected) {
         MaterialTheme.colorScheme.primaryContainer
     } else {
-        MaterialTheme.colorScheme.surfaceContainerHighest
+        Color.Transparent
     }
     val contentColor = if (selected) {
         MaterialTheme.colorScheme.onPrimaryContainer
     } else {
         MaterialTheme.colorScheme.onSurfaceVariant
     }
+    val optionShape = RoundedCornerShape(8.dp)
 
-    Surface(
-        modifier = modifier.clickable(onClick = onClick),
-        color = containerColor,
-        shape = MaterialTheme.shapes.large,
+    Box(
+        modifier = modifier
+            .clip(optionShape)
+            .background(containerColor)
+            .clickable(onClick = onClick)
+            .padding(vertical = 12.dp, horizontal = 4.dp),
+        contentAlignment = Alignment.Center,
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 12.dp, horizontal = 4.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(6.dp),
         ) {
@@ -454,7 +451,7 @@ private fun ThemeModeOption(
             Text(
                 text = label,
                 style = MaterialTheme.typography.labelLarge,
-                color = if (selected) MaterialTheme.colorScheme.onPrimaryContainer else contentColor,
+                color = contentColor,
                 fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Medium,
             )
         }
@@ -477,16 +474,7 @@ private fun SettingsLinkRow(
     onClick: (() -> Unit)? = null,
 ) {
     Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .then(
-                if (onClick != null) {
-                    Modifier.clickable(onClick = onClick)
-                } else {
-                    Modifier
-                },
-            )
-            .padding(vertical = 12.dp),
+        modifier = modifier.settingsRowSurface(onClick),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
@@ -534,7 +522,7 @@ private fun ExpandableRow(
         modifier = modifier
             .fillMaxWidth()
             .clickable(onClick = onToggle)
-            .padding(vertical = 12.dp),
+            .padding(SettingsRowPadding),
         verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
         Row(
@@ -584,7 +572,7 @@ private fun LicenseRow(
         modifier = modifier
             .fillMaxWidth()
             .clickable(onClick = onToggle)
-            .padding(vertical = 12.dp),
+            .padding(SettingsRowPadding),
         verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
         Row(

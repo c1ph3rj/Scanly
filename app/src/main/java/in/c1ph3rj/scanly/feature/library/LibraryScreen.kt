@@ -245,18 +245,20 @@ fun LibraryScreen(
                 onDismiss = { showFabMenu = false },
             )
 
-            ScanlyExpandableFabMenu(
-                expanded = showFabMenu,
-                onExpandedChange = { showFabMenu = it },
-                onNewFolder = { createGroupDialogVisible = true },
-                onNewDocument = { createDocDialogVisible = true },
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(
-                        end = 16.dp,
-                        bottom = innerPadding.calculateBottomPadding() + 16.dp,
-                    ),
-            )
+            if (!uiState.isLoading) {
+                ScanlyExpandableFabMenu(
+                    expanded = showFabMenu,
+                    onExpandedChange = { showFabMenu = it },
+                    onNewFolder = { createGroupDialogVisible = true },
+                    onNewDocument = { createDocDialogVisible = true },
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(
+                            end = 16.dp,
+                            bottom = innerPadding.calculateBottomPadding() + 16.dp,
+                        ),
+                )
+            }
         }
     }
 
@@ -527,59 +529,64 @@ fun NewDocumentDialog(
     var title by rememberSaveable { mutableStateOf("") }
     var selectedGroupId by rememberSaveable { mutableStateOf<String?>(null) }
 
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text("New document") },
-        text = {
-            Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                OutlinedTextField(
-                    value = title,
-                    onValueChange = { title = it },
-                    label = { Text("Title") },
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth(),
-                )
+    ScanlyFormDialogShell(onDismiss = onDismiss) {
+        Text(
+            text = "New document",
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.SemiBold,
+        )
+        OutlinedTextField(
+            value = title,
+            onValueChange = { title = it },
+            label = { Text("Title") },
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth(),
+        )
 
-                if (groups.isNotEmpty()) {
-                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                        Text(
-                            text = "Save to",
-                            style = MaterialTheme.typography.labelLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
+        if (groups.isNotEmpty()) {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text(
+                    text = "Save to",
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                DestinationRow(
+                    label = "No folder",
+                    icon = Icons.Filled.FolderOff,
+                    selected = selectedGroupId == null,
+                    onClick = { selectedGroupId = null },
+                )
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(max = 220.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    items(groups, key = { it.id }) { group ->
                         DestinationRow(
-                            label = "No folder",
-                            icon = Icons.Filled.FolderOff,
-                            selected = selectedGroupId == null,
-                            onClick = { selectedGroupId = null },
+                            label = group.title,
+                            icon = Icons.Filled.Folder,
+                            selected = selectedGroupId == group.id,
+                            onClick = { selectedGroupId = group.id },
                         )
-                        LazyColumn(
-                            modifier = Modifier.heightIn(max = 220.dp),
-                            verticalArrangement = Arrangement.spacedBy(8.dp),
-                        ) {
-                            items(groups, key = { it.id }) { group ->
-                                DestinationRow(
-                                    label = group.title,
-                                    icon = Icons.Filled.Folder,
-                                    selected = selectedGroupId == group.id,
-                                    onClick = { selectedGroupId = group.id },
-                                )
-                            }
-                        }
                     }
                 }
             }
-        },
-        confirmButton = {
+        }
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.End,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            TextButton(onClick = onDismiss) { Text("Cancel") }
+            Spacer(Modifier.width(8.dp))
             TextButton(
                 onClick = { if (title.isNotBlank()) onConfirm(title, selectedGroupId) },
                 enabled = title.isNotBlank(),
             ) { Text("Create") }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) { Text("Cancel") }
-        },
-    )
+        }
+    }
 }
 
 @Composable
@@ -601,7 +608,9 @@ private fun DestinationRow(
         shape = MaterialTheme.shapes.large,
     ) {
         Row(
-            modifier = Modifier.padding(horizontal = 14.dp, vertical = 12.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 14.dp, vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
