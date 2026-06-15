@@ -8,13 +8,9 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.material3.SnackbarHostState
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
-import `in`.c1ph3rj.scanly.feature.home.HomeScreen
-import `in`.c1ph3rj.scanly.feature.home.HomeUiState
 import `in`.c1ph3rj.scanly.navigation.ScanlyNavHost
 import `in`.c1ph3rj.scanly.domain.model.ThemeMode
 import `in`.c1ph3rj.scanly.ui.theme.ScanlyTheme
@@ -43,22 +39,6 @@ private fun ScanlyApp() {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-private fun ScanlyAppPreview() {
-    ScanlyTheme {
-        HomeScreen(
-            uiState = HomeUiState.initial(),
-            snackbarHostState = SnackbarHostState(),
-            onCreateDocument = {},
-            onRenameDocument = { _, _ -> },
-            onDeleteDocument = {},
-            onOpenDocument = {},
-            onOpenSettings = {},
-            onOpenScanSession = {},
-        )
-    }
-}
 
 private fun ThemeMode.resolveDarkTheme(systemDark: Boolean): Boolean = when (this) {
     ThemeMode.SYSTEM -> systemDark
