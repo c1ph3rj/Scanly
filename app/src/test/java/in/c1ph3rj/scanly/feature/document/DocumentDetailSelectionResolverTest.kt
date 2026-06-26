@@ -92,6 +92,42 @@ class DocumentDetailSelectionResolverTest {
     }
 
     @Test
+    fun reorderTargetAppendsToEndWhenLeadingPagesScrolledOffScreen() {
+        val allBounds = verticalBounds("page-1", "page-2", "page-3", "page-4", "page-5", "page-6")
+        // Simulate auto-scroll: only the last three pages are within the viewport.
+        val viewport = Rect(left = 0f, top = 360f, right = 100f, bottom = 720f)
+
+        assertEquals(
+            5,
+            resolvePageReorderTargetIndex(
+                pageIds = listOf("page-1", "page-2", "page-3", "page-4", "page-5", "page-6"),
+                pageBounds = allBounds,
+                draggedPageId = "page-1",
+                dragCenter = Offset(50f, 700f),
+                visibleBounds = viewport,
+            ),
+        )
+    }
+
+    @Test
+    fun reorderTargetInsertsAfterLeadingPageStillAboveViewport() {
+        val allBounds = verticalBounds("page-1", "page-2", "page-3", "page-4", "page-5", "page-6")
+        // The dragged last page is released near the top, but page-1 is still above the viewport.
+        val viewport = Rect(left = 0f, top = 120f, right = 100f, bottom = 480f)
+
+        assertEquals(
+            1,
+            resolvePageReorderTargetIndex(
+                pageIds = listOf("page-1", "page-2", "page-3", "page-4", "page-5", "page-6"),
+                pageBounds = allBounds,
+                draggedPageId = "page-6",
+                dragCenter = Offset(50f, 130f),
+                visibleBounds = viewport,
+            ),
+        )
+    }
+
+    @Test
     fun reorderTargetUsesHorizontalPositionInsideSameRow() {
         val bounds = mapOf(
             "page-2" to Rect(left = 100f, top = 0f, right = 180f, bottom = 100f),

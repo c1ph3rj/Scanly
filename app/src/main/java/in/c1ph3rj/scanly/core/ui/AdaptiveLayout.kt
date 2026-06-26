@@ -36,9 +36,9 @@ data class WindowSizeInfo(
     /** Number of columns for page thumbnail grids. */
     val pageColumns: Int
         get() = when (widthClass) {
-            WindowWidthClass.Compact  -> 2
-            WindowWidthClass.Medium   -> 3
-            WindowWidthClass.Expanded -> 4
+            WindowWidthClass.Compact  -> 1
+            WindowWidthClass.Medium   -> 2
+            WindowWidthClass.Expanded -> 3
         }
 
     /**

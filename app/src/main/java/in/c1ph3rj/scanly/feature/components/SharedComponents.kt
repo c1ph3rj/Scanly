@@ -1020,37 +1020,43 @@ private fun DocumentCardListContent(
                 )
                 DocumentMetaPill(label = updatedDate)
             }
-        }
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            if (showRename) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    if (showRename) {
+                        LibraryCardIconButton(
+                            icon = Icons.Filled.Edit,
+                            contentDescription = "Rename",
+                            onClick = onRename,
+                            size = 38.dp,
+                            containerColor = MaterialTheme.colorScheme.surfaceContainerHighest.copy(alpha = 0.8f),
+                        )
+                    }
+                    if (onMove != null) {
+                        LibraryCardIconButton(
+                            icon = Icons.Filled.Folder,
+                            contentDescription = "Move to folder",
+                            onClick = onMove,
+                            size = 38.dp,
+                            containerColor = MaterialTheme.colorScheme.surfaceContainerHighest.copy(alpha = 0.8f),
+                        )
+                    }
+                }
                 LibraryCardIconButton(
-                    icon = Icons.Filled.Edit,
-                    contentDescription = "Rename",
-                    onClick = onRename,
+                    icon = Icons.Filled.DeleteOutline,
+                    contentDescription = deleteContentDescription,
+                    onClick = onDelete,
                     size = 38.dp,
-                    containerColor = MaterialTheme.colorScheme.surfaceContainerHighest.copy(alpha = 0.8f),
+                    containerColor = MaterialTheme.colorScheme.error.copy(alpha = 0.12f),
+                    contentColor = MaterialTheme.colorScheme.error,
                 )
             }
-            if (onMove != null) {
-                LibraryCardIconButton(
-                    icon = Icons.Filled.Folder,
-                    contentDescription = "Move to folder",
-                    onClick = onMove,
-                    size = 38.dp,
-                    containerColor = MaterialTheme.colorScheme.surfaceContainerHighest.copy(alpha = 0.8f),
-                )
-            }
-            LibraryCardIconButton(
-                icon = Icons.Filled.DeleteOutline,
-                contentDescription = deleteContentDescription,
-                onClick = onDelete,
-                size = 38.dp,
-                containerColor = MaterialTheme.colorScheme.error.copy(alpha = 0.12f),
-                contentColor = MaterialTheme.colorScheme.error,
-            )
         }
     }
 }
