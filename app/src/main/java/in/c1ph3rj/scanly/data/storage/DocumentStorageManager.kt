@@ -23,19 +23,5 @@ interface DocumentStorageManager {
 
     suspend fun deleteDocumentStorage(documentId: String)
 
-    suspend fun deletePageAssets(
-        rawImagePath: String?,
-        processedImagePath: String?,
-        thumbnailPath: String?,
-    )
-
     suspend fun clearAllDocumentStorage()
-
-    suspend fun documentStorageUsageBytes(): Long
-
-    suspend fun discoverStoredDocuments(): List<StoredDocumentSnapshot>
-
-    fun isLegacyPrivateDocumentPath(path: String?): Boolean
-
-    suspend fun deleteLegacyPrivateDocumentStorage(documentId: String)
 }

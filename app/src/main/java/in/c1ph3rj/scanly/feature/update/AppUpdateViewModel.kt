@@ -102,20 +102,26 @@ class AppUpdateViewModel @Inject constructor(
             _uiState.update { current -> current.copy(isDownloadingApk = true) }
 
             when (
-                val result = apkInstaller.downloadAndPromptInstall(
+                val result = apkInstaller.enqueueBackgroundDownload(
                     downloadUrl = apkAsset.downloadUrl,
                     fileName = apkAsset.name,
+                    releaseTag = release.tagName,
                 )
             ) {
                 is ScanlyResult.Success -> {
                     dismissUpdateDialog()
+                    _events.emit(
+                        AppUpdateEvent.ShowMessage(
+                            "Downloading ${apkAsset.name} in the background.",
+                        ),
+                    )
                 }
 
                 is ScanlyResult.Failure -> {
                     _events.emit(
                         AppUpdateEvent.ShowMessage(
                             result.error.message.ifBlank {
-                                "Could not download the update."
+                                "Could not start the update download."
                             },
                         ),
                     )

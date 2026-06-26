@@ -28,9 +28,6 @@ interface ScanPageDao {
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insert(page: ScanPageEntity)
 
-    @Insert(onConflict = OnConflictStrategy.ABORT)
-    suspend fun insertAll(pages: List<ScanPageEntity>)
-
     @Update
     suspend fun update(page: ScanPageEntity)
 

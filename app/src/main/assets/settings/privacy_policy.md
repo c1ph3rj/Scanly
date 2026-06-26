@@ -37,7 +37,7 @@ If you tap external links in Settings (for example, the project website, portfol
 
 ## Data deletion
 
-You can delete Scanly's library and persistent document files at any time from **Settings → Clear all data**. Uninstalling the app removes app-private storage. Files saved outside the app through export or share actions are not removed automatically.
+You can delete Scanly's library data at any time from **Settings → Clear all data**. Uninstalling the app removes app-private storage. Files saved outside the app through export or share actions are not removed automatically.
 
 ## Children's privacy
 

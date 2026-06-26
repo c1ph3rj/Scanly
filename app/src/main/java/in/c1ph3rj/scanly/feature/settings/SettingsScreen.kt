@@ -12,11 +12,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -38,7 +40,6 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Public
 import androidx.compose.material.icons.filled.Storage
 import androidx.compose.material.icons.filled.SystemUpdate
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -67,10 +68,12 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import `in`.c1ph3rj.scanly.core.common.StorageFormatter
+import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import `in`.c1ph3rj.scanly.domain.model.AppStorageUsage
 import `in`.c1ph3rj.scanly.domain.model.LicenseInfo
 import `in`.c1ph3rj.scanly.domain.model.ThemeMode
 import `in`.c1ph3rj.scanly.feature.components.ScanlyAppLogo
+import `in`.c1ph3rj.scanly.feature.components.ScanlyConfirmDialog
 import `in`.c1ph3rj.scanly.feature.update.AppUpdateUiState
 import kotlinx.coroutines.flow.collectLatest
 
@@ -134,6 +137,7 @@ fun SettingsScreen(
     val expandedFaqIds = remember { mutableStateListOf<String>() }
     val expandedLicenseIds = remember { mutableStateListOf<String>() }
     var clearDataDialogVisible by remember { mutableStateOf(false) }
+    val windowSizeInfo = rememberWindowSizeInfo()
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -150,11 +154,24 @@ fun SettingsScreen(
                 CircularProgressIndicator()
             }
         } else {
-            LazyColumn(
+            Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(bottom = innerPadding.calculateBottomPadding()),
-                contentPadding = PaddingValues(start = 20.dp, top = 0.dp, end = 20.dp, bottom = 28.dp),
+                contentAlignment = Alignment.TopCenter,
+            ) {
+            LazyColumn(
+                modifier = if (windowSizeInfo.isTablet) {
+                    Modifier.widthIn(max = windowSizeInfo.contentMaxWidth).fillMaxHeight()
+                } else {
+                    Modifier.fillMaxSize()
+                },
+                contentPadding = PaddingValues(
+                    start = windowSizeInfo.horizontalPadding,
+                    top = 0.dp,
+                    end = windowSizeInfo.horizontalPadding,
+                    bottom = 28.dp,
+                ),
                 verticalArrangement = Arrangement.spacedBy(20.dp),
             ) {
                 item(key = "header") {
@@ -199,7 +216,7 @@ fun SettingsScreen(
                         SettingsDestructiveRow(
                             icon = Icons.Filled.DeleteOutline,
                             title = "Clear all data",
-                            subtitle = "Delete the library and persistent document files",
+                            subtitle = "Delete all documents, folders, and pages",
                             enabled = !uiState.isClearingData,
                             onClick = { clearDataDialogVisible = true },
                         )
@@ -230,24 +247,6 @@ fun SettingsScreen(
 
                         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
                         SettingsLinkRow(
-                            icon = Icons.Filled.Policy,
-                            title = "Privacy Policy",
-                            subtitle = "How Scanly handles your data",
-                            showExternalLink = false,
-                            onClick = { onOpenLegalDocument(LegalDocumentType.Privacy) },
-                        )
-
-                        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-                        SettingsLinkRow(
-                            icon = Icons.Filled.Gavel,
-                            title = "Terms & Conditions",
-                            subtitle = "Rules for using Scanly",
-                            showExternalLink = false,
-                            onClick = { onOpenLegalDocument(LegalDocumentType.Terms) },
-                        )
-
-                        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-                        SettingsLinkRow(
                             icon = Icons.Filled.Email,
                             title = "Contact Support",
                             subtitle = SUPPORT_EMAIL,
@@ -268,6 +267,29 @@ fun SettingsScreen(
                             title = "Project website",
                             subtitle = PROJECT_WEBSITE_URL,
                             onClick = { onOpenWebsite(PROJECT_WEBSITE_URL) },
+                        )
+                    }
+                }
+
+                item(key = "legal") {
+                    SettingsGroup(
+                        title = "Legal",
+                    ) {
+                        SettingsLinkRow(
+                            icon = Icons.Filled.Policy,
+                            title = "Privacy Policy",
+                            subtitle = "How Scanly handles your data",
+                            showExternalLink = false,
+                            onClick = { onOpenLegalDocument(LegalDocumentType.Privacy) },
+                        )
+
+                        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                        SettingsLinkRow(
+                            icon = Icons.Filled.Gavel,
+                            title = "Terms & Conditions",
+                            subtitle = "Rules for using Scanly",
+                            showExternalLink = false,
+                            onClick = { onOpenLegalDocument(LegalDocumentType.Terms) },
                         )
                     }
                 }
@@ -326,42 +348,28 @@ fun SettingsScreen(
                     }
                 }
             }
+            } // end adaptive Box
         }
     }
 
     if (clearDataDialogVisible) {
-        AlertDialog(
-            onDismissRequest = {
+        ScanlyConfirmDialog(
+            title = "Clear all data?",
+            text = "This permanently deletes all documents, folders, and pages from Scanly. " +
+                "This cannot be undone. Your theme and camera settings will be kept.",
+            confirmLabel = "Delete",
+            onDismiss = {
                 if (!uiState.isClearingData) {
                     clearDataDialogVisible = false
                 }
             },
-            title = { Text(text = "Clear all data?") },
-            text = {
-                Text(
-                    text = "This permanently deletes all documents, folders, pages, and Scanly's persistent document files. " +
-                        "This cannot be undone. Your theme and camera settings will be kept.",
-                )
+            onConfirm = {
+                clearDataDialogVisible = false
+                onClearAllData()
             },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        clearDataDialogVisible = false
-                        onClearAllData()
-                    },
-                    enabled = !uiState.isClearingData,
-                ) {
-                    Text(text = "Delete", color = MaterialTheme.colorScheme.error)
-                }
-            },
-            dismissButton = {
-                TextButton(
-                    onClick = { clearDataDialogVisible = false },
-                    enabled = !uiState.isClearingData,
-                ) {
-                    Text(text = "Cancel")
-                }
-            },
+            confirmDestructive = true,
+            dismissEnabled = !uiState.isClearingData,
+            confirmEnabled = !uiState.isClearingData,
         )
     }
 }

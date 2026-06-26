@@ -16,6 +16,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
@@ -26,6 +28,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -78,6 +82,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import `in`.c1ph3rj.scanly.core.ui.ChromeIconButton
 import `in`.c1ph3rj.scanly.core.ui.MetricChip
+import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import `in`.c1ph3rj.scanly.core.editing.CropHandle
 import `in`.c1ph3rj.scanly.core.ml.DocumentCornerQuad
 import `in`.c1ph3rj.scanly.core.ml.NormalizedPoint
@@ -155,6 +160,8 @@ fun PageEditorScreen(
                 )
             },
         ) { innerPadding ->
+            val windowSizeInfo = rememberWindowSizeInfo()
+
             if (uiState.missingPage || uiState.page == null || uiState.cropQuad == null) {
                 Box(
                     modifier = Modifier
@@ -168,7 +175,56 @@ fun PageEditorScreen(
                         style = MaterialTheme.typography.titleLarge,
                     )
                 }
+            } else if (windowSizeInfo.useTabletLandscapeLayout) {
+                // Tablet landscape: side-by-side Row — crop canvas left, controls right
+                Row(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding)
+                        .padding(horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                ) {
+                    PageCropEditor(
+                        page = uiState.page,
+                        cropQuad = uiState.cropQuad,
+                        rotationDegrees = uiState.rotationDegrees,
+                        selectedFilter = uiState.selectedFilter,
+                        onHandleMoved = onHandleMoved,
+                        modifier = Modifier
+                            .weight(0.6f)
+                            .fillMaxHeight(),
+                    )
+                    Column(
+                        modifier = Modifier
+                            .weight(0.4f)
+                            .fillMaxHeight()
+                            .verticalScroll(rememberScrollState()),
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                    ) {
+                        EditorPageBadge(pageIndex = uiState.page.pageIndex)
+                        FilterSelector(
+                            selectedFilter = uiState.selectedFilter,
+                            rawImagePath = uiState.page.rawImagePath,
+                            fallbackImagePath = uiState.page.processedImagePath,
+                            rotationDegrees = uiState.rotationDegrees,
+                            onSelectFilter = onSelectFilter,
+                            vertical = true,
+                        )
+                        FilterScopeOption(
+                            applyToAllPages = uiState.applyFilterToAllPages,
+                            enabled = !uiState.isSaving,
+                            onApplyToAllPagesChange = onApplyFilterToAllPagesChange,
+                        )
+                        EditorActionRow(
+                            onRotateLeft = onRotateLeft,
+                            onRotateRight = onRotateRight,
+                            onResetCrop = onResetCrop,
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                    }
+                }
             } else {
+                // Phone / portrait: vertical Column layout
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -675,6 +731,7 @@ private fun FilterSelector(
     fallbackImagePath: String?,
     rotationDegrees: Int,
     onSelectFilter: (PageFilterPreset) -> Unit,
+    vertical: Boolean = false,
 ) {
     val previewState by rememberFilterPreviewBitmaps(
         rawImagePath = rawImagePath,
@@ -684,9 +741,11 @@ private fun FilterSelector(
     val listState = rememberLazyListState()
 
     LaunchedEffect(selectedFilter) {
-        val targetIndex = PageFilterPreset.entries.indexOf(selectedFilter)
-        if (targetIndex >= 0) {
-            listState.animateScrollToItem(targetIndex)
+        if (!vertical) {
+            val targetIndex = PageFilterPreset.entries.indexOf(selectedFilter)
+            if (targetIndex >= 0) {
+                listState.animateScrollToItem(targetIndex)
+            }
         }
     }
 
@@ -718,86 +777,126 @@ private fun FilterSelector(
             }
         }
 
-        LazyRow(
-            state = listState,
-            horizontalArrangement = Arrangement.spacedBy(10.dp),
-            contentPadding = PaddingValues(horizontal = 2.dp),
-        ) {
-            items(PageFilterPreset.entries, key = { it.storageValue }) { filter ->
-                val isSelected = selectedFilter == filter
-                Surface(
-                    modifier = Modifier
-                        .width(112.dp)
-                        .clickable { onSelectFilter(filter) },
-                    color = if (isSelected) Color(0xFF112922) else Color(0xFF111315),
-                    shape = RoundedCornerShape(20.dp),
-                    border = BorderStroke(
-                        width = if (isSelected) 2.dp else 1.dp,
-                        color = if (isSelected) AccentGreen else Color.White.copy(alpha = 0.08f),
-                    ),
-                ) {
-                    Column(
-                        modifier = Modifier.padding(10.dp),
-                        verticalArrangement = Arrangement.spacedBy(10.dp),
+        if (vertical) {
+            // Tablet sidebar: two-column grid using regular Column rows (parent is scrollable)
+            val filterRows = PageFilterPreset.entries.chunked(2)
+            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                filterRows.forEach { rowFilters ->
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(10.dp),
+                        modifier = Modifier.fillMaxWidth(),
                     ) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(112.dp),
-                        ) {
-                            Surface(
-                                modifier = Modifier.fillMaxSize(),
-                                color = Color(0xFF1C2023),
-                                shape = RoundedCornerShape(16.dp),
-                            ) {
-                                val preview = previewState.previews[filter]
-                                if (preview == null) {
-                                    Box(
-                                        modifier = Modifier.fillMaxSize(),
-                                        contentAlignment = Alignment.Center,
-                                    ) {
-                                        Text(
-                                            text = filter.shortLabel(),
-                                            color = Color.White.copy(alpha = 0.72f),
-                                            style = MaterialTheme.typography.labelLarge,
-                                        )
-                                    }
-                                } else {
-                                    Image(
-                                        bitmap = preview,
-                                        contentDescription = "${filter.toDisplayLabel()} filter preview",
-                                        modifier = Modifier.fillMaxSize(),
-                                        contentScale = ContentScale.Crop,
-                                    )
-                                }
-                            }
-                            if (isSelected) {
-                                Box(
-                                    modifier = Modifier
-                                        .align(Alignment.TopEnd)
-                                        .padding(6.dp)
-                                        .size(24.dp)
-                                        .background(AccentGreen, CircleShape),
-                                    contentAlignment = Alignment.Center,
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Filled.Check,
-                                        contentDescription = "Selected filter",
-                                        tint = Color.White,
-                                        modifier = Modifier.size(16.dp),
-                                    )
-                                }
-                            }
+                        rowFilters.forEach { filter ->
+                            FilterItem(
+                                filter = filter,
+                                isSelected = selectedFilter == filter,
+                                preview = previewState.previews[filter],
+                                onSelect = { onSelectFilter(filter) },
+                                modifier = Modifier.weight(1f),
+                            )
                         }
-                        Text(
-                            text = filter.toDisplayLabel(),
-                            color = if (isSelected) Color.White else Color.White.copy(alpha = 0.78f),
-                            style = MaterialTheme.typography.labelLarge,
-                            fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
+                        if (rowFilters.size < 2) {
+                            Spacer(modifier = Modifier.weight(1f))
+                        }
+                    }
+                }
+            }
+        } else {
+            // Phone / portrait: horizontal scrolling LazyRow
+            LazyRow(
+                state = listState,
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                contentPadding = PaddingValues(horizontal = 2.dp),
+            ) {
+                items(PageFilterPreset.entries, key = { it.storageValue }) { filter ->
+                    FilterItem(
+                        filter = filter,
+                        isSelected = selectedFilter == filter,
+                        preview = previewState.previews[filter],
+                        onSelect = { onSelectFilter(filter) },
+                        modifier = Modifier.width(112.dp),
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun FilterItem(
+    filter: PageFilterPreset,
+    isSelected: Boolean,
+    preview: ImageBitmap?,
+    onSelect: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Surface(
+        modifier = modifier.clickable { onSelect() },
+        color = if (isSelected) Color(0xFF112922) else Color(0xFF111315),
+        shape = RoundedCornerShape(20.dp),
+        border = BorderStroke(
+            width = if (isSelected) 2.dp else 1.dp,
+            color = if (isSelected) AccentGreen else Color.White.copy(alpha = 0.08f),
+        ),
+    ) {
+        Column(
+            modifier = Modifier.padding(10.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(112.dp),
+            ) {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = Color(0xFF1C2023),
+                    shape = RoundedCornerShape(16.dp),
+                ) {
+                    if (preview == null) {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Text(
+                                text = filter.shortLabel(),
+                                color = Color.White.copy(alpha = 0.72f),
+                                style = MaterialTheme.typography.labelLarge,
+                            )
+                        }
+                    } else {
+                        Image(
+                            bitmap = preview,
+                            contentDescription = "${filter.toDisplayLabel()} filter preview",
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop,
+                        )
+                    }
+                }
+                if (isSelected) {
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.TopEnd)
+                            .padding(6.dp)
+                            .size(24.dp)
+                            .background(AccentGreen, CircleShape),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Check,
+                            contentDescription = "Selected filter",
+                            tint = Color.White,
+                            modifier = Modifier.size(16.dp),
                         )
                     }
                 }
             }
+            Text(
+                text = filter.toDisplayLabel(),
+                color = if (isSelected) Color.White else Color.White.copy(alpha = 0.78f),
+                style = MaterialTheme.typography.labelLarge,
+                fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
+            )
         }
     }
 }

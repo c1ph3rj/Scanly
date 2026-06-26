@@ -4,7 +4,12 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.Modifier
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -94,21 +99,27 @@ private fun ScanlyApp() {
     ScanlyTheme(
         darkTheme = isDarkTheme,
     ) {
-        ScanlyNavHost(
-            navController = navController,
-            appUpdateUiState = updateUiState,
-            onCheckForUpdates = {
-                appUpdateViewModel.checkForUpdates(AppUpdateCheckTrigger.Manual)
-            },
-        )
-
-        updateUiState.dialogCheckResult?.let { checkResult ->
-            AppUpdateDialog(
-                checkResult = checkResult,
-                isDownloading = updateUiState.isDownloadingApk,
-                onDismiss = appUpdateViewModel::dismissUpdateDialog,
-                onDownload = appUpdateViewModel::downloadRelease,
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background),
+        ) {
+            ScanlyNavHost(
+                navController = navController,
+                appUpdateUiState = updateUiState,
+                onCheckForUpdates = {
+                    appUpdateViewModel.checkForUpdates(AppUpdateCheckTrigger.Manual)
+                },
             )
+
+            updateUiState.dialogCheckResult?.let { checkResult ->
+                AppUpdateDialog(
+                    checkResult = checkResult,
+                    isDownloading = updateUiState.isDownloadingApk,
+                    onDismiss = appUpdateViewModel::dismissUpdateDialog,
+                    onDownload = appUpdateViewModel::downloadRelease,
+                )
+            }
         }
     }
 }

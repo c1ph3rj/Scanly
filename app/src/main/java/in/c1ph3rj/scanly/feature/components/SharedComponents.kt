@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
@@ -34,6 +35,7 @@ import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
@@ -48,6 +50,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.FilterQuality
@@ -72,6 +75,7 @@ import `in`.c1ph3rj.scanly.core.common.DocumentPresentationFormatter
 import `in`.c1ph3rj.scanly.core.ui.ChromeIconButton
 import `in`.c1ph3rj.scanly.core.ui.MetricChip
 import `in`.c1ph3rj.scanly.core.ui.PreviewDisplaySize
+import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import `in`.c1ph3rj.scanly.core.ui.PreviewImageSizer
 import `in`.c1ph3rj.scanly.domain.model.DocumentGroup
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
@@ -321,28 +325,116 @@ fun ScanlyFormDialogShell(
     maxWidth: Dp = 560.dp,
     content: @Composable ColumnScope.() -> Unit,
 ) {
+    val windowSizeInfo = rememberWindowSizeInfo()
+    val adaptiveMaxWidth = if (windowSizeInfo.isTablet) windowSizeInfo.dialogMaxWidth else maxWidth
+    val horizontalPadding = if (windowSizeInfo.isTablet) 32.dp else horizontalMargin
+
     BasicAlertDialog(
         onDismissRequest = onDismiss,
         modifier = modifier.fillMaxWidth(),
         properties = DialogProperties(usePlatformDefaultWidth = false),
     ) {
-        Surface(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = horizontalMargin)
-                .widthIn(max = maxWidth),
-            shape = MaterialTheme.shapes.extraLarge,
-            color = MaterialTheme.colorScheme.surfaceContainerHigh,
-            tonalElevation = 6.dp,
+        Box(
+            modifier = Modifier.fillMaxWidth(),
+            contentAlignment = Alignment.Center,
         ) {
-            Column(
+            Surface(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(24.dp),
-                verticalArrangement = Arrangement.spacedBy(20.dp),
-                content = content,
-            )
+                    .padding(horizontal = horizontalPadding)
+                    .widthIn(max = adaptiveMaxWidth)
+                    .fillMaxWidth(),
+                shape = MaterialTheme.shapes.extraLarge,
+                color = MaterialTheme.colorScheme.surfaceContainerHigh,
+                tonalElevation = 6.dp,
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(24.dp),
+                    verticalArrangement = Arrangement.spacedBy(20.dp),
+                    content = content,
+                )
+            }
         }
+    }
+}
+
+@Composable
+fun ScanlyConfirmDialog(
+    title: String,
+    text: String,
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit,
+    confirmLabel: String = "Confirm",
+    dismissLabel: String = "Cancel",
+    confirmDestructive: Boolean = false,
+    dismissEnabled: Boolean = true,
+    confirmEnabled: Boolean = true,
+) {
+    ScanlyFormDialogShell(onDismiss = onDismiss) {
+        Text(
+            text = title,
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.SemiBold,
+        )
+        Text(
+            text = text,
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.End,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            TextButton(
+                onClick = onDismiss,
+                enabled = dismissEnabled,
+            ) {
+                Text(dismissLabel)
+            }
+            Spacer(Modifier.width(8.dp))
+            TextButton(
+                onClick = onConfirm,
+                enabled = confirmEnabled,
+            ) {
+                Text(
+                    text = confirmLabel,
+                    color = if (confirmDestructive) {
+                        MaterialTheme.colorScheme.error
+                    } else {
+                        MaterialTheme.colorScheme.primary
+                    },
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun ScanlySheetContent(
+    modifier: Modifier = Modifier,
+    content: @Composable ColumnScope.() -> Unit,
+) {
+    val windowSizeInfo = rememberWindowSizeInfo()
+    Box(
+        modifier = Modifier.fillMaxWidth(),
+        contentAlignment = Alignment.TopCenter,
+    ) {
+        Column(
+            modifier = modifier
+                .then(
+                    if (windowSizeInfo.isTablet) {
+                        Modifier.widthIn(max = windowSizeInfo.sheetMaxWidth)
+                    } else {
+                        Modifier.fillMaxWidth()
+                    },
+                )
+                .padding(horizontal = if (windowSizeInfo.isTablet) 24.dp else 20.dp)
+                .padding(bottom = 28.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            content = content,
+        )
     }
 }
 
@@ -404,6 +496,7 @@ fun GroupNameDialog(
     initialValue: String,
     onDismiss: () -> Unit,
     onConfirm: (String) -> Unit,
+    confirmLabel: String = "Create",
 ) {
     var value by rememberSaveable(initialValue) { mutableStateOf(initialValue) }
     ScanlyFormDialogShell(onDismiss = onDismiss) {
@@ -421,7 +514,7 @@ fun GroupNameDialog(
         )
         ScanlyDialogActions(
             onDismiss = onDismiss,
-            confirmLabel = "Create",
+            confirmLabel = confirmLabel,
             confirmEnabled = value.isNotBlank(),
             onConfirm = { if (value.isNotBlank()) onConfirm(value) },
         )
@@ -450,13 +543,7 @@ fun MoveToFolderSheet(
         onDismissRequest = onDismiss,
         containerColor = MaterialTheme.colorScheme.surface,
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp)
-                .padding(bottom = 28.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
+        ScanlySheetContent {
             Text(
                 text = "Move to folder",
                 style = MaterialTheme.typography.titleLarge,
@@ -578,6 +665,18 @@ fun FolderPickerRow(
 
 // ─── Cards ─────────────────────────────────────────────────────────────────────
 
+/** Controls list vs. grid presentation for library cards. */
+enum class LibraryCardStyle {
+    /** Pick grid when the card is narrower than [GridCardMaxWidth]. */
+    Auto,
+    /** Full-width horizontal list row. */
+    List,
+    /** Vertical tile for multi-column grids. */
+    Grid,
+}
+
+private val GridCardMaxWidth = 280.dp
+
 @Composable
 fun GroupCard(
     group: DocumentGroup,
@@ -585,6 +684,7 @@ fun GroupCard(
     onRename: () -> Unit,
     onDelete: () -> Unit,
     modifier: Modifier = Modifier,
+    style: LibraryCardStyle = LibraryCardStyle.Auto,
 ) {
     Surface(
         modifier = modifier
@@ -593,56 +693,82 @@ fun GroupCard(
         color = MaterialTheme.colorScheme.surfaceContainer,
         shape = MaterialTheme.shapes.extraLarge,
     ) {
-        Column(modifier = Modifier.padding(14.dp)) {
-            CachedThumbnail(
-                thumbnailPath = group.coverThumbnailPath,
-                title = group.title,
-                displaySize = PreviewDisplaySize.CARD,
-                contentRevision = group.coverUpdatedAtMillis,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(4f / 3f),
-                placeholderIcon = {
-                    Icon(
-                        imageVector = Icons.Filled.Folder,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                        modifier = Modifier.size(36.dp),
-                    )
-                },
-            )
-            Spacer(modifier = Modifier.height(10.dp))
-            Text(
-                text = group.title,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
-            Text(
-                text = buildString {
-                    append("${group.documentCount} docs")
-                    if (group.totalPageCount > 0) append("  ·  ${group.totalPageCount} pages")
-                },
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                ChromeIconButton(
-                    icon = Icons.Filled.Edit,
-                    contentDescription = "Rename folder",
-                    onClick = onRename,
-                )
-                ChromeIconButton(
-                    icon = Icons.Filled.DeleteOutline,
-                    contentDescription = "Delete folder",
-                    onClick = onDelete,
-                    containerColor = MaterialTheme.colorScheme.errorContainer,
-                    contentColor = MaterialTheme.colorScheme.onErrorContainer,
-                )
+        BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
+            val useGrid = when (style) {
+                LibraryCardStyle.Grid -> true
+                LibraryCardStyle.List -> false
+                LibraryCardStyle.Auto -> maxWidth < GridCardMaxWidth
             }
+            GroupCardContent(
+                group = group,
+                onRename = onRename,
+                onDelete = onDelete,
+                compact = useGrid,
+            )
         }
+    }
+}
+
+@Composable
+private fun GroupCardContent(
+    group: DocumentGroup,
+    onRename: () -> Unit,
+    onDelete: () -> Unit,
+    compact: Boolean,
+) {
+    val padding = if (compact) 10.dp else 14.dp
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(padding),
+    ) {
+        CachedThumbnail(
+            thumbnailPath = group.coverThumbnailPath,
+            title = group.title,
+            displaySize = PreviewDisplaySize.CARD,
+            contentRevision = group.coverUpdatedAtMillis,
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(4f / 3f),
+            placeholderIcon = {
+                Icon(
+                    imageVector = Icons.Filled.Folder,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                    modifier = Modifier.size(if (compact) 28.dp else 36.dp),
+                )
+            },
+        )
+        Spacer(modifier = Modifier.height(if (compact) 8.dp else 10.dp))
+        Text(
+            text = group.title,
+            style = if (compact) {
+                MaterialTheme.typography.titleSmall
+            } else {
+                MaterialTheme.typography.titleMedium
+            },
+            fontWeight = FontWeight.SemiBold,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
+            minLines = 1,
+        )
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(
+            text = buildString {
+                append("${group.documentCount} docs")
+                if (group.totalPageCount > 0) append("  ·  ${group.totalPageCount} pg")
+            },
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        LibraryCardActions(
+            onRename = onRename,
+            onDelete = onDelete,
+            compact = compact,
+        )
     }
 }
 
@@ -650,10 +776,13 @@ fun GroupCard(
 fun DocumentCard(
     document: ScanDocument,
     onOpen: () -> Unit,
-    onRename: () -> Unit,
+    onRename: () -> Unit = {},
     onDelete: () -> Unit,
-    onMove: () -> Unit,
+    onMove: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
+    style: LibraryCardStyle = LibraryCardStyle.Auto,
+    showRename: Boolean = true,
+    deleteContentDescription: String = "Delete",
 ) {
     val updatedDate = remember(document.updatedAtMillis) {
         document.updatedAtMillis.toShortDate()
@@ -665,22 +794,140 @@ fun DocumentCard(
         color = MaterialTheme.colorScheme.surfaceContainer,
         shape = MaterialTheme.shapes.extraLarge,
     ) {
+        BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
+            val useGrid = when (style) {
+                LibraryCardStyle.Grid -> true
+                LibraryCardStyle.List -> false
+                LibraryCardStyle.Auto -> maxWidth < GridCardMaxWidth
+            }
+            if (useGrid) {
+                DocumentCardGridContent(
+                    document = document,
+                    updatedDate = updatedDate,
+                    onRename = onRename,
+                    onDelete = onDelete,
+                    onMove = onMove,
+                    showRename = showRename,
+                    deleteContentDescription = deleteContentDescription,
+                )
+            } else {
+                DocumentCardListContent(
+                    document = document,
+                    updatedDate = updatedDate,
+                    onRename = onRename,
+                    onDelete = onDelete,
+                    onMove = onMove,
+                    showRename = showRename,
+                    deleteContentDescription = deleteContentDescription,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun DocumentCardGridContent(
+    document: ScanDocument,
+    updatedDate: String,
+    onRename: () -> Unit,
+    onDelete: () -> Unit,
+    onMove: (() -> Unit)?,
+    showRename: Boolean,
+    deleteContentDescription: String,
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(10.dp),
+    ) {
+        CachedThumbnail(
+            thumbnailPath = document.coverThumbnailPath,
+            title = document.title,
+            displaySize = PreviewDisplaySize.CARD,
+            contentRevision = document.updatedAtMillis,
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(3f / 4f),
+            placeholderIcon = {
+                Text(
+                    text = DocumentPresentationFormatter.initials(document.title),
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    fontWeight = FontWeight.SemiBold,
+                )
+            },
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = document.title,
+            style = MaterialTheme.typography.titleSmall,
+            fontWeight = FontWeight.SemiBold,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
+            minLines = 1,
+        )
+        Spacer(modifier = Modifier.height(6.dp))
+        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            MetricChip(
+                label = "${document.pageCount} pg",
+                icon = Icons.Filled.Description,
+                containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+            )
+        }
+        Text(
+            text = updatedDate,
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            maxLines = 1,
+            modifier = Modifier.padding(top = 4.dp),
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        LibraryCardActions(
+            onRename = onRename,
+            onMove = onMove,
+            onDelete = onDelete,
+            showRename = showRename,
+            deleteContentDescription = deleteContentDescription,
+            compact = true,
+        )
+    }
+}
+
+@Composable
+private fun DocumentCardListContent(
+    document: ScanDocument,
+    updatedDate: String,
+    onRename: () -> Unit,
+    onDelete: () -> Unit,
+    onMove: (() -> Unit)?,
+    showRename: Boolean,
+    deleteContentDescription: String,
+) {
+    Column(modifier = Modifier.padding(14.dp)) {
         Row(
-            modifier = Modifier.padding(14.dp),
             horizontalArrangement = Arrangement.spacedBy(14.dp),
-            verticalAlignment = Alignment.CenterVertically,
+            verticalAlignment = Alignment.Top,
         ) {
-            DocumentThumbnail(
+            CachedThumbnail(
                 thumbnailPath = document.coverThumbnailPath,
                 title = document.title,
-                contentRevision = document.updatedAtMillis,
                 displaySize = PreviewDisplaySize.CARD,
-                modifier = Modifier.width(80.dp),
-                minHeight = 90.dp,
+                contentRevision = document.updatedAtMillis,
+                modifier = Modifier
+                    .width(72.dp)
+                    .aspectRatio(3f / 4f),
+                placeholderIcon = {
+                    Text(
+                        text = DocumentPresentationFormatter.initials(document.title),
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        fontWeight = FontWeight.SemiBold,
+                    )
+                },
             )
             Column(
                 modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(6.dp),
             ) {
                 Text(
                     text = document.title,
@@ -691,35 +938,97 @@ fun DocumentCard(
                 )
                 Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                     MetricChip(
-                        label = "${document.pageCount}",
+                        label = "${document.pageCount} ${if (document.pageCount == 1) "page" else "pages"}",
                         icon = Icons.Filled.Description,
                         containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
                     )
-                    MetricChip(
-                        label = updatedDate,
-                        containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
-                    )
                 }
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    ChromeIconButton(
-                        icon = Icons.Filled.Edit,
-                        contentDescription = "Rename",
-                        onClick = onRename,
-                    )
-                    ChromeIconButton(
-                        icon = Icons.Filled.Folder,
-                        contentDescription = "Move to folder",
-                        onClick = onMove,
-                    )
-                    ChromeIconButton(
-                        icon = Icons.Filled.DeleteOutline,
-                        contentDescription = "Delete",
-                        onClick = onDelete,
-                        containerColor = MaterialTheme.colorScheme.errorContainer,
-                        contentColor = MaterialTheme.colorScheme.onErrorContainer,
-                    )
-                }
+                Text(
+                    text = updatedDate,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             }
+        }
+        Spacer(modifier = Modifier.height(10.dp))
+        LibraryCardActions(
+            onRename = onRename,
+            onMove = onMove,
+            onDelete = onDelete,
+            showRename = showRename,
+            deleteContentDescription = deleteContentDescription,
+            compact = false,
+        )
+    }
+}
+
+@Composable
+private fun LibraryCardActions(
+    onRename: () -> Unit,
+    onDelete: () -> Unit,
+    onMove: (() -> Unit)? = null,
+    showRename: Boolean = true,
+    deleteContentDescription: String = "Delete",
+    compact: Boolean,
+) {
+    val buttonSize = if (compact) 34.dp else 40.dp
+    val spacing = if (compact) 6.dp else 8.dp
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(spacing, Alignment.End),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        if (showRename) {
+            LibraryCardIconButton(
+                icon = Icons.Filled.Edit,
+                contentDescription = "Rename",
+                onClick = onRename,
+                size = buttonSize,
+            )
+        }
+        if (onMove != null) {
+            LibraryCardIconButton(
+                icon = Icons.Filled.Folder,
+                contentDescription = "Move to folder",
+                onClick = onMove,
+                size = buttonSize,
+            )
+        }
+        LibraryCardIconButton(
+            icon = Icons.Filled.DeleteOutline,
+            contentDescription = deleteContentDescription,
+            onClick = onDelete,
+            size = buttonSize,
+            containerColor = MaterialTheme.colorScheme.errorContainer,
+            contentColor = MaterialTheme.colorScheme.onErrorContainer,
+        )
+    }
+}
+
+@Composable
+private fun LibraryCardIconButton(
+    icon: ImageVector,
+    contentDescription: String,
+    onClick: () -> Unit,
+    size: Dp,
+    containerColor: Color = MaterialTheme.colorScheme.surfaceContainerHigh,
+    contentColor: Color = MaterialTheme.colorScheme.onSurface,
+) {
+    Surface(
+        modifier = Modifier.size(size),
+        color = containerColor,
+        shape = MaterialTheme.shapes.medium,
+    ) {
+        IconButton(
+            onClick = onClick,
+            modifier = Modifier.fillMaxSize(),
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = contentDescription,
+                tint = contentColor,
+                modifier = Modifier.size(size * 0.45f),
+            )
         }
     }
 }

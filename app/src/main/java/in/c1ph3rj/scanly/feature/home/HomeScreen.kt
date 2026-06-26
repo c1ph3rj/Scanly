@@ -24,10 +24,12 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import `in`.c1ph3rj.scanly.core.ui.ImageImportSupport
+import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import `in`.c1ph3rj.scanly.domain.model.DocumentGroup
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
 import `in`.c1ph3rj.scanly.feature.components.*
 import `in`.c1ph3rj.scanly.core.ui.PreviewDisplaySize
+import androidx.compose.ui.unit.Dp
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -96,16 +98,25 @@ fun HomeScreen(
 ) {
     var createDialogVisible by rememberSaveable { mutableStateOf(false) }
     var createFolderDialogVisible by rememberSaveable { mutableStateOf(false) }
+    val windowSizeInfo = rememberWindowSizeInfo()
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         containerColor = MaterialTheme.colorScheme.background,
         snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { innerPadding ->
-        LazyColumn(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(bottom = innerPadding.calculateBottomPadding()),
+            contentAlignment = Alignment.TopCenter,
+        ) {
+        LazyColumn(
+            modifier = if (windowSizeInfo.isTablet) {
+                Modifier.widthIn(max = windowSizeInfo.contentMaxWidth).fillMaxHeight()
+            } else {
+                Modifier.fillMaxSize()
+            },
             contentPadding = PaddingValues(bottom = 120.dp),
         ) {
             item(key = "home_header", contentType = "header") {
@@ -113,7 +124,7 @@ fun HomeScreen(
                     groupCount = uiState.recentGroups.size,
                     documentCount = uiState.recentDocuments.size,
                     modifier = Modifier
-                        .padding(horizontal = 20.dp)
+                        .padding(horizontal = windowSizeInfo.horizontalPadding)
                         .padding(bottom = 24.dp),
                 )
             }
@@ -136,6 +147,8 @@ fun HomeScreen(
                     onImport = onImportImages,
                     onNewFolder = { createFolderDialogVisible = true },
                     importEnabled = !uiState.isImporting,
+                    isTablet = windowSizeInfo.isTablet,
+                    horizontalPadding = windowSizeInfo.horizontalPadding,
                     modifier = Modifier.padding(bottom = 32.dp)
                 )
             }
@@ -145,13 +158,13 @@ fun HomeScreen(
                     SectionHeader(
                         title = "Recent Folders",
                         modifier = Modifier
-                            .padding(horizontal = 20.dp)
+                            .padding(horizontal = windowSizeInfo.horizontalPadding)
                             .padding(bottom = 16.dp),
                     )
                 }
                 item(key = "groups_row", contentType = "groups_row") {
                     LazyRow(
-                        contentPadding = PaddingValues(horizontal = 20.dp),
+                        contentPadding = PaddingValues(horizontal = windowSizeInfo.horizontalPadding),
                         horizontalArrangement = Arrangement.spacedBy(16.dp),
                         modifier = Modifier.padding(bottom = 32.dp)
                     ) {
@@ -163,6 +176,7 @@ fun HomeScreen(
                             RecentGroupChip(
                                 group = group,
                                 onClick = { onOpenGroup(group.id) },
+                                chipWidth = if (windowSizeInfo.isTablet) 200.dp else 160.dp,
                             )
                         }
                     }
@@ -176,7 +190,7 @@ fun HomeScreen(
                         actionLabel = "See all in Library",
                         onAction = onNavigateToLibrary,
                         modifier = Modifier
-                            .padding(horizontal = 20.dp)
+                            .padding(horizontal = windowSizeInfo.horizontalPadding)
                             .padding(bottom = 16.dp),
                     )
                 }
@@ -189,7 +203,7 @@ fun HomeScreen(
                         document = doc,
                         onOpen = { onOpenDocument(doc.id) },
                         modifier = Modifier
-                            .padding(horizontal = 20.dp)
+                            .padding(horizontal = windowSizeInfo.horizontalPadding)
                             .padding(bottom = 12.dp)
                             .animateItem(),
                     )
@@ -199,13 +213,14 @@ fun HomeScreen(
                     EmptyHomeCard(
                         onCreateDocument = { createDialogVisible = true },
                         modifier = Modifier
-                            .padding(horizontal = 20.dp)
+                            .padding(horizontal = windowSizeInfo.horizontalPadding)
                             .padding(top = 16.dp),
                     )
                 }
             }
             }
         }
+        } // end outer Box
     }
 
     if (createDialogVisible) {
@@ -294,12 +309,21 @@ fun QuickActionsRow(
     onImport: () -> Unit,
     onNewFolder: () -> Unit,
     importEnabled: Boolean = true,
+    isTablet: Boolean = false,
+    horizontalPadding: Dp = 20.dp,
     modifier: Modifier = Modifier
 ) {
-    Row(
-        modifier = modifier
+    val rowModifier = if (isTablet) {
+        modifier
+            .widthIn(max = 480.dp)
+            .padding(horizontal = horizontalPadding)
+    } else {
+        modifier
             .fillMaxWidth()
-            .padding(horizontal = 20.dp),
+            .padding(horizontal = horizontalPadding)
+    }
+    Row(
+        modifier = rowModifier,
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         QuickActionCard(
@@ -374,10 +398,11 @@ private fun RecentGroupChip(
     group: DocumentGroup,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    chipWidth: Dp = 160.dp,
 ) {
     Surface(
         modifier = modifier
-            .width(160.dp)
+            .width(chipWidth)
             .clickable(onClick = onClick),
         color = MaterialTheme.colorScheme.surfaceContainer,
         shape = MaterialTheme.shapes.extraLarge,

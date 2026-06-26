@@ -103,66 +103,14 @@ class AppPrivateDocumentStorageManager @Inject constructor(
         }
     }
 
-    override suspend fun deletePageAssets(
-        rawImagePath: String?,
-        processedImagePath: String?,
-        thumbnailPath: String?,
-    ) {
-        withContext(dispatchers.io) {
-            listOf(rawImagePath, processedImagePath, thumbnailPath)
-                .filterNotNull()
-                .map(::File)
-                .distinctBy { file -> file.absolutePath }
-                .forEach { file ->
-                    if (file.exists()) {
-                        file.delete()
-                    }
-                }
-        }
-    }
-
     override suspend fun clearAllDocumentStorage() {
         withContext(dispatchers.io) {
             File(context.filesDir, DOCUMENTS_DIRECTORY).deleteRecursively()
         }
     }
 
-    override suspend fun documentStorageUsageBytes(): Long = withContext(dispatchers.io) {
-        directorySize(File(context.filesDir, DOCUMENTS_DIRECTORY))
-    }
-
-    override suspend fun discoverStoredDocuments(): List<StoredDocumentSnapshot> =
-        withContext(dispatchers.io) {
-            emptyList()
-        }
-
-    override fun isLegacyPrivateDocumentPath(path: String?): Boolean {
-        if (path.isNullOrBlank()) {
-            return false
-        }
-        val legacyRoot = File(context.filesDir, DOCUMENTS_DIRECTORY).absoluteFile
-        return runCatching {
-            File(path).absoluteFile.toPath().startsWith(legacyRoot.toPath())
-        }.getOrDefault(false)
-    }
-
-    override suspend fun deleteLegacyPrivateDocumentStorage(documentId: String) {
-        withContext(dispatchers.io) {
-            documentRoot(documentId).deleteRecursively()
-        }
-    }
-
     private fun documentRoot(documentId: String): File =
         File(context.filesDir, "$DOCUMENTS_DIRECTORY/$documentId")
-
-    private fun directorySize(directory: File): Long {
-        if (!directory.exists()) {
-            return 0L
-        }
-        return directory.walkTopDown()
-            .filter { file -> file.isFile }
-            .sumOf { file -> file.length() }
-    }
 
     private fun ensureDirectory(directory: File): File {
         if (!directory.exists() && !directory.mkdirs()) {

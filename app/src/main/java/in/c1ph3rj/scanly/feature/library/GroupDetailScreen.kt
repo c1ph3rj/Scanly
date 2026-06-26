@@ -34,7 +34,6 @@ import androidx.compose.material.icons.filled.IosShare
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.PictureAsPdf
 import androidx.compose.material.icons.filled.Share
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
@@ -46,7 +45,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -74,13 +72,16 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import `in`.c1ph3rj.scanly.core.ui.ChromeIconButton
 import `in`.c1ph3rj.scanly.core.ui.MetricChip
+import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import `in`.c1ph3rj.scanly.domain.model.PdfExportOptions
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
-import `in`.c1ph3rj.scanly.feature.components.DocumentThumbnail
-import `in`.c1ph3rj.scanly.core.ui.PreviewDisplaySize
+import `in`.c1ph3rj.scanly.feature.components.DocumentCard
+import `in`.c1ph3rj.scanly.feature.components.DocumentTitleDialog
 import `in`.c1ph3rj.scanly.feature.components.ExportActionRow
+import `in`.c1ph3rj.scanly.feature.components.GroupNameDialog
+import `in`.c1ph3rj.scanly.feature.components.ScanlyConfirmDialog
+import `in`.c1ph3rj.scanly.feature.components.ScanlySheetContent
 import `in`.c1ph3rj.scanly.feature.components.FullScreenLoader
 import `in`.c1ph3rj.scanly.feature.components.PdfOptionsSheet
 import `in`.c1ph3rj.scanly.feature.components.ScanlyExtendedFab
@@ -191,8 +192,13 @@ private fun GroupDetailScreen(
     var showCreateDialog by remember { mutableStateOf(false) }
     var removeTarget by remember { mutableStateOf<ScanDocument?>(null) }
 
+    val windowSizeInfo = rememberWindowSizeInfo()
     val group = uiState.group
     val hasDocuments = uiState.documents.isNotEmpty()
+    val documentRows = remember(uiState.documents, windowSizeInfo.groupColumns) {
+        if (windowSizeInfo.isTablet) uiState.documents.chunked(windowSizeInfo.groupColumns)
+        else null
+    }
 
     Scaffold(
         topBar = {
@@ -271,7 +277,10 @@ private fun GroupDetailScreen(
                         .fillMaxSize()
                         .padding(innerPadding),
                     contentPadding = PaddingValues(
-                        start = 16.dp, end = 16.dp, top = 12.dp, bottom = 100.dp,
+                        start = windowSizeInfo.horizontalPadding,
+                        end = windowSizeInfo.horizontalPadding,
+                        top = 12.dp,
+                        bottom = 100.dp,
                     ),
                     verticalArrangement = Arrangement.spacedBy(10.dp),
                 ) {
@@ -289,16 +298,50 @@ private fun GroupDetailScreen(
                         item(key = "empty") {
                             EmptyGroupCard(onAddDocument = { showAddSheet = true })
                         }
+                    } else if (documentRows != null) {
+                        // Tablet: multi-column grid rows
+                        items(
+                            items = documentRows,
+                            key = { rowItems -> "doc_row_${rowItems.first().id}" },
+                            contentType = { "document_row" },
+                        ) { rowItems ->
+                            Row(
+                                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .animateItem(),
+                            ) {
+                                rowItems.forEach { document ->
+                                    DocumentCard(
+                                        document = document,
+                                        onOpen = { onOpenDocument(document.id) },
+                                        onDelete = { removeTarget = document },
+                                        onMove = null,
+                                        showRename = false,
+                                        deleteContentDescription = "Remove from group",
+                                        modifier = Modifier.weight(1f),
+                                    )
+                                }
+                                val emptyCells = windowSizeInfo.groupColumns - rowItems.size
+                                repeat(emptyCells) {
+                                    Spacer(modifier = Modifier.weight(1f))
+                                }
+                            }
+                        }
                     } else {
+                        // Phone: single-column list
                         items(
                             items = uiState.documents,
                             key = { it.id },
                             contentType = { "document_card" },
                         ) { document ->
-                            GroupDocumentCard(
+                            DocumentCard(
                                 document = document,
                                 onOpen = { onOpenDocument(document.id) },
-                                onRemove = { removeTarget = document },
+                                onDelete = { removeTarget = document },
+                                onMove = null,
+                                showRename = false,
+                                deleteContentDescription = "Remove from group",
                                 modifier = Modifier.animateItem(),
                             )
                         }
@@ -337,9 +380,10 @@ private fun GroupDetailScreen(
 
     // Dialogs
     if (showRenameDialog) {
-        GroupTitleDialog(
+        GroupNameDialog(
             title = "Rename group",
             initialValue = group?.title.orEmpty(),
+            confirmLabel = "Save",
             onDismiss = { showRenameDialog = false },
             onConfirm = { newTitle ->
                 showRenameDialog = false
@@ -349,45 +393,30 @@ private fun GroupDetailScreen(
     }
 
     if (showDeleteDialog) {
-        AlertDialog(
-            onDismissRequest = { showDeleteDialog = false },
-            title = { Text("Delete group?") },
-            text = {
-                Text(
-                    "\"${group?.title.orEmpty()}\" will be deleted. " +
-                        "Documents inside will be moved to ungrouped.",
-                )
+        ScanlyConfirmDialog(
+            title = "Delete group?",
+            text = "\"${group?.title.orEmpty()}\" will be deleted. " +
+                "Documents inside will be moved to ungrouped.",
+            onDismiss = { showDeleteDialog = false },
+            onConfirm = {
+                showDeleteDialog = false
+                onDeleteGroup()
             },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        showDeleteDialog = false
-                        onDeleteGroup()
-                    },
-                ) { Text("Delete", color = MaterialTheme.colorScheme.error) }
-            },
-            dismissButton = {
-                TextButton(onClick = { showDeleteDialog = false }) { Text("Cancel") }
-            },
+            confirmLabel = "Delete",
+            confirmDestructive = true,
         )
     }
 
     removeTarget?.let { doc ->
-        AlertDialog(
-            onDismissRequest = { removeTarget = null },
-            title = { Text("Remove from group?") },
-            text = { Text("\"${doc.title}\" will be moved to ungrouped documents.") },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        removeTarget = null
-                        onRemoveDocument(doc.id)
-                    },
-                ) { Text("Remove") }
+        ScanlyConfirmDialog(
+            title = "Remove from group?",
+            text = "\"${doc.title}\" will be moved to ungrouped documents.",
+            onDismiss = { removeTarget = null },
+            onConfirm = {
+                removeTarget = null
+                onRemoveDocument(doc.id)
             },
-            dismissButton = {
-                TextButton(onClick = { removeTarget = null }) { Text("Cancel") }
-            },
+            confirmLabel = "Remove",
         )
     }
 
@@ -408,10 +437,9 @@ private fun GroupDetailScreen(
     }
 
     if (showCreateDialog) {
-        GroupTitleDialog(
+        DocumentTitleDialog(
             title = "New document",
             initialValue = "",
-            label = "Title",
             confirmLabel = "Create",
             onDismiss = { showCreateDialog = false },
             onConfirm = { newTitle ->
@@ -478,13 +506,7 @@ private fun GroupExportShareSheet(
         sheetState = sheetState,
         containerColor = MaterialTheme.colorScheme.surface,
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp)
-                .padding(bottom = 28.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
+        ScanlySheetContent {
             Text(
                 text = "Export & share",
                 style = MaterialTheme.typography.titleLarge,
@@ -583,70 +605,6 @@ private fun GroupStatsHeader(documentCount: Int, totalPageCount: Int) {
 }
 
 @Composable
-private fun GroupDocumentCard(
-    document: ScanDocument,
-    onOpen: () -> Unit,
-    onRemove: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    val updatedDate = remember(document.updatedAtMillis) {
-        java.text.DateFormat.getDateInstance(java.text.DateFormat.MEDIUM)
-            .format(java.util.Date(document.updatedAtMillis))
-    }
-    Surface(
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable(onClick = onOpen),
-        color = MaterialTheme.colorScheme.surfaceContainer,
-        shape = MaterialTheme.shapes.extraLarge,
-    ) {
-        Row(
-            modifier = Modifier.padding(12.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            DocumentThumbnail(
-                thumbnailPath = document.coverThumbnailPath,
-                title = document.title,
-                contentRevision = document.updatedAtMillis,
-                displaySize = PreviewDisplaySize.CARD,
-                modifier = Modifier.width(64.dp),
-                minHeight = 72.dp,
-            )
-            Column(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(4.dp),
-            ) {
-                Text(
-                    text = document.title,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                )
-                Text(
-                    text = buildString {
-                        append(document.pageCount)
-                        append(if (document.pageCount == 1) " page" else " pages")
-                        append("  ·  ")
-                        append(updatedDate)
-                    },
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-            ChromeIconButton(
-                icon = Icons.Filled.DeleteOutline,
-                contentDescription = "Remove from group",
-                onClick = onRemove,
-                containerColor = MaterialTheme.colorScheme.errorContainer,
-                contentColor = MaterialTheme.colorScheme.onErrorContainer,
-            )
-        }
-    }
-}
-
-@Composable
 private fun EmptyGroupCard(onAddDocument: () -> Unit) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
@@ -726,11 +684,7 @@ private fun AddDocumentSheet(
         sheetState = sheetState,
         dragHandle = { BottomSheetDefaults.DragHandle() },
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-        ) {
+        ScanlySheetContent {
             Text(
                 text = "Add document to group",
                 style = MaterialTheme.typography.titleLarge,
@@ -836,38 +790,4 @@ private fun AddDocumentSheet(
             }
         }
     }
-}
-
-@Composable
-private fun GroupTitleDialog(
-    title: String,
-    initialValue: String,
-    onDismiss: () -> Unit,
-    onConfirm: (String) -> Unit,
-    label: String = "Group name",
-    confirmLabel: String = "Save",
-) {
-    var value by rememberSaveable(initialValue) { mutableStateOf(initialValue) }
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(title) },
-        text = {
-            OutlinedTextField(
-                value = value,
-                onValueChange = { value = it },
-                label = { Text(label) },
-                singleLine = true,
-                modifier = Modifier.fillMaxWidth(),
-            )
-        },
-        confirmButton = {
-            TextButton(
-                onClick = { if (value.isNotBlank()) onConfirm(value) },
-                enabled = value.isNotBlank(),
-            ) { Text(confirmLabel) }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) { Text("Cancel") }
-        },
-    )
 }

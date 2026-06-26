@@ -36,12 +36,13 @@ import androidx.compose.ui.window.DialogProperties
 import `in`.c1ph3rj.scanly.core.common.StorageFormatter
 import `in`.c1ph3rj.scanly.domain.model.AppRelease
 import `in`.c1ph3rj.scanly.domain.model.AppUpdateCheckResult
+import `in`.c1ph3rj.scanly.feature.components.ScanlyFormDialogShell
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-private val DialogHorizontalMargin = 12.dp
-private val DialogMaxWidth = 640.dp
+private val releaseDateFormatter: DateTimeFormatter =
+    DateTimeFormatter.ofPattern("MMM d, yyyy", Locale.US)
 
 @Composable
 fun AppUpdateDialog(
@@ -53,9 +54,10 @@ fun AppUpdateDialog(
 ) {
     val release = checkResult.latestRelease
 
-    AppUpdateDialogShell(
+    ScanlyFormDialogShell(
         onDismiss = onDismiss,
         modifier = modifier,
+        maxWidth = 520.dp,
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -118,7 +120,7 @@ fun AppUpdateDialog(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .heightIn(max = 240.dp)
+                        .heightIn(max = 280.dp)
                         .verticalScroll(rememberScrollState())
                         .padding(horizontal = 16.dp, vertical = 12.dp),
                 ) {
@@ -133,11 +135,12 @@ fun AppUpdateDialog(
         Column(
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(4.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Button(
                 onClick = { onDownload(release) },
                 enabled = !isDownloading,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.widthIn(max = 360.dp).fillMaxWidth(),
             ) {
                 if (isDownloading) {
                     CircularProgressIndicator(
@@ -146,7 +149,7 @@ fun AppUpdateDialog(
                         color = MaterialTheme.colorScheme.onPrimary,
                     )
                     Text(
-                        text = "Downloading…",
+                        text = "Starting…",
                         modifier = Modifier.padding(start = 8.dp),
                     )
                 } else {
@@ -156,7 +159,7 @@ fun AppUpdateDialog(
                     )
                     Text(
                         text = if (release.apkAsset != null) {
-                            "Download APK"
+                            "Download in background"
                         } else {
                             "Open release"
                         },
@@ -167,46 +170,9 @@ fun AppUpdateDialog(
             TextButton(
                 onClick = onDismiss,
                 enabled = !isDownloading,
-                modifier = Modifier.fillMaxWidth(),
             ) {
-                Text(
-                    text = "Not now",
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center,
-                )
+                Text(text = "Not now")
             }
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun AppUpdateDialogShell(
-    onDismiss: () -> Unit,
-    modifier: Modifier = Modifier,
-    content: @Composable ColumnScope.() -> Unit,
-) {
-    BasicAlertDialog(
-        onDismissRequest = onDismiss,
-        modifier = modifier.fillMaxWidth(),
-        properties = DialogProperties(usePlatformDefaultWidth = false),
-    ) {
-        Surface(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = DialogHorizontalMargin)
-                .widthIn(min = 300.dp, max = DialogMaxWidth),
-            shape = MaterialTheme.shapes.extraLarge,
-            color = MaterialTheme.colorScheme.surfaceContainerHigh,
-            tonalElevation = 6.dp,
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 20.dp, vertical = 22.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                content = content,
-            )
         }
     }
 }
@@ -346,6 +312,3 @@ private fun versionLabel(versionName: String): String =
     }
 
 private val headingLineRegex = Regex("^(#{1,6})\\s+(.+)$")
-
-private val releaseDateFormatter: DateTimeFormatter =
-    DateTimeFormatter.ofPattern("MMM d, yyyy", Locale.US)
