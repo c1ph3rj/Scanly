@@ -330,8 +330,8 @@ fun QuickActionsRow(
             title = "Scan",
             icon = Icons.Filled.CameraAlt,
             onClick = onScan,
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+            accentContainerColor = MaterialTheme.colorScheme.primaryContainer,
+            accentContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
             modifier = Modifier.weight(1f)
         )
         QuickActionCard(
@@ -339,16 +339,16 @@ fun QuickActionsRow(
             icon = Icons.Filled.PhotoLibrary,
             onClick = onImport,
             enabled = importEnabled,
-            containerColor = MaterialTheme.colorScheme.secondaryContainer,
-            contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+            accentContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+            accentContentColor = MaterialTheme.colorScheme.onSecondaryContainer,
             modifier = Modifier.weight(1f)
         )
         QuickActionCard(
             title = "Folder",
             icon = Icons.Filled.CreateNewFolder,
             onClick = onNewFolder,
-            containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-            contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
+            accentContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
+            accentContentColor = MaterialTheme.colorScheme.onTertiaryContainer,
             modifier = Modifier.weight(1f)
         )
     }
@@ -359,38 +359,55 @@ fun QuickActionCard(
     title: String,
     icon: ImageVector,
     onClick: () -> Unit,
-    containerColor: androidx.compose.ui.graphics.Color,
-    contentColor: androidx.compose.ui.graphics.Color,
+    accentContainerColor: androidx.compose.ui.graphics.Color,
+    accentContentColor: androidx.compose.ui.graphics.Color,
     enabled: Boolean = true,
     modifier: Modifier = Modifier
 ) {
+    val resolvedContentColor = if (enabled) {
+        MaterialTheme.colorScheme.onSurface
+    } else {
+        MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.58f)
+    }
     Surface(
-        modifier = modifier
-            .aspectRatio(1f)
-            .clickable(enabled = enabled, onClick = onClick),
-        color = containerColor,
+        onClick = onClick,
+        enabled = enabled,
+        modifier = modifier.aspectRatio(1f),
+        color = if (enabled) {
+            MaterialTheme.colorScheme.surfaceContainer
+        } else {
+            MaterialTheme.colorScheme.surfaceContainerHigh
+        },
         shape = MaterialTheme.shapes.extraLarge,
-        border = androidx.compose.foundation.BorderStroke(1.dp, contentColor.copy(alpha = 0.12f)),
-        shadowElevation = 2.dp,
-        tonalElevation = 2.dp,
+        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+        shadowElevation = 0.dp,
+        tonalElevation = 0.dp,
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = title,
-                tint = contentColor,
-                modifier = Modifier.size(36.dp)
-            )
+            Surface(
+                modifier = Modifier.size(52.dp),
+                color = if (enabled) accentContainerColor else MaterialTheme.colorScheme.surfaceContainerHighest,
+                shape = MaterialTheme.shapes.large,
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = title,
+                        tint = if (enabled) accentContentColor else resolvedContentColor,
+                        modifier = Modifier.size(30.dp)
+                    )
+                }
+            }
             Spacer(modifier = Modifier.height(12.dp))
             Text(
                 text = title,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold,
-                color = contentColor
+                color = resolvedContentColor
             )
         }
     }
@@ -404,14 +421,13 @@ private fun RecentGroupChip(
     chipWidth: Dp = 160.dp,
 ) {
     Surface(
-        modifier = modifier
-            .width(chipWidth)
-            .clickable(onClick = onClick),
+        onClick = onClick,
+        modifier = modifier.width(chipWidth),
         color = MaterialTheme.colorScheme.surfaceContainer,
         shape = MaterialTheme.shapes.extraLarge,
-        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f)),
-        shadowElevation = 1.dp,
-        tonalElevation = 1.dp,
+        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+        shadowElevation = 0.dp,
+        tonalElevation = 0.dp,
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             CachedThumbnail(
@@ -458,14 +474,13 @@ private fun CompactDocumentCard(
         document.updatedAtMillis.toRelativeDate()
     }
     Surface(
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable(onClick = onOpen),
+        onClick = onOpen,
+        modifier = modifier.fillMaxWidth(),
         color = MaterialTheme.colorScheme.surfaceContainer,
         shape = MaterialTheme.shapes.extraLarge,
-        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f)),
-        shadowElevation = 1.dp,
-        tonalElevation = 1.dp,
+        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+        shadowElevation = 0.dp,
+        tonalElevation = 0.dp,
     ) {
         Row(
             modifier = Modifier.padding(16.dp),

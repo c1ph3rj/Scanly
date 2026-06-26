@@ -66,7 +66,7 @@ fun AppUpdateDialog(
         ) {
             Surface(
                 shape = MaterialTheme.shapes.extraLarge,
-                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.14f),
+                color = MaterialTheme.colorScheme.primaryContainer,
             ) {
                 Box(
                     modifier = Modifier

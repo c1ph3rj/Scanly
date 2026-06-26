@@ -27,9 +27,19 @@ fun ChromeIconButton(
     containerColor: Color = MaterialTheme.colorScheme.surfaceContainerHigh,
     contentColor: Color = MaterialTheme.colorScheme.onSurface,
 ) {
+    val resolvedContainerColor = if (enabled) {
+        containerColor
+    } else {
+        MaterialTheme.colorScheme.surfaceContainer
+    }
+    val resolvedContentColor = if (enabled) {
+        contentColor
+    } else {
+        MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.58f)
+    }
     Surface(
         modifier = modifier.size(44.dp),
-        color = if (enabled) containerColor else containerColor.copy(alpha = 0.45f),
+        color = resolvedContainerColor,
         shape = MaterialTheme.shapes.large,
     ) {
         IconButton(
@@ -39,7 +49,7 @@ fun ChromeIconButton(
             Icon(
                 imageVector = icon,
                 contentDescription = contentDescription,
-                tint = contentColor,
+                tint = resolvedContentColor,
             )
         }
     }

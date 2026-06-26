@@ -6,10 +6,9 @@ import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -40,8 +39,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavBackStackEntry
@@ -252,25 +250,30 @@ private fun RailNavIcon(
     onClick: () -> Unit,
 ) {
     val scheme = MaterialTheme.colorScheme
-    val isDark = isSystemInDarkTheme()
+    val isDark = scheme.background.luminance() < 0.5f
+    val shape = RoundedCornerShape(14.dp)
     val containerColor = when {
-        selected -> scheme.primary.copy(alpha = if (isDark) 0.16f else 0.12f)
-        isDark -> scheme.surfaceContainerHighest.copy(alpha = 0.45f)
+        selected && isDark -> scheme.surfaceContainerHigh
+        selected -> scheme.surfaceContainerLow
+        isDark -> scheme.surfaceContainer
         else -> scheme.surfaceContainerHigh
     }
     val contentColor = when {
         selected -> scheme.primary
-        isDark -> scheme.onSurface.copy(alpha = 0.72f)
         else -> scheme.onSurfaceVariant
     }
 
     Surface(
+        onClick = onClick,
         modifier = Modifier
-            .size(48.dp)
-            .clip(RoundedCornerShape(14.dp))
-            .clickable(onClick = onClick),
+            .size(48.dp),
         color = containerColor,
-        shape = RoundedCornerShape(14.dp),
+        shape = shape,
+        border = if (selected) {
+            BorderStroke(1.dp, scheme.primary.copy(alpha = if (isDark) 0.72f else 0.64f))
+        } else {
+            null
+        },
     ) {
         Box(contentAlignment = Alignment.Center) {
             Icon(
