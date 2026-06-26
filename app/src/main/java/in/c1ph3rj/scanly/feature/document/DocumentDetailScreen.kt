@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
@@ -79,6 +80,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
@@ -102,6 +104,7 @@ import `in`.c1ph3rj.scanly.core.ui.ChromeIconButton
 import `in`.c1ph3rj.scanly.core.ui.ImageImportSupport
 import `in`.c1ph3rj.scanly.core.ui.MetricChip
 import `in`.c1ph3rj.scanly.core.ui.ZoomableImageDialog
+import `in`.c1ph3rj.scanly.core.ui.ZoomableImageViewer
 import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import `in`.c1ph3rj.scanly.domain.model.ExportArtifact
 import `in`.c1ph3rj.scanly.domain.model.PageProcessingState
@@ -1302,24 +1305,50 @@ private fun DocumentMasterDetailLayout(
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .weight(1f),
-                        contentAlignment = Alignment.TopCenter,
+                            .weight(1f)
+                            .clip(MaterialTheme.shapes.extraLarge)
+                            .border(1.dp, MaterialTheme.colorScheme.outlineVariant, MaterialTheme.shapes.extraLarge),
                     ) {
-                        SelectedPageCard(
-                            page = selectedPage,
-                            pageCount = uiState.pages.size,
-                            expanded = true,
-                            modifier = Modifier.fillMaxWidth(),
-                            onPreview = { onPreviewPage(selectedPage.id) },
+                        ZoomableImageViewer(
+                            imagePath = selectedPage.processedImagePath ?: selectedPage.rawImagePath ?: selectedPage.thumbnailPath,
+                            title = "Page ${selectedPage.pageIndex + 1} of ${uiState.pages.size}",
+                            onNavigateUp = null,
+                            trailingAction = { zoomActive, onResetZoom ->
+                                Row(
+                                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                ) {
+                                    if (zoomActive) {
+                                        PreviewActionButton(
+                                            icon = Icons.Filled.Refresh,
+                                            contentDescription = "Reset zoom",
+                                            onClick = onResetZoom,
+                                        )
+                                    }
+                                    PreviewActionButton(
+                                        icon = Icons.Filled.Crop,
+                                        contentDescription = "Edit page",
+                                        onClick = { onOpenPageEditor(selectedPage.id) },
+                                    )
+                                    PreviewActionButton(
+                                        icon = Icons.Filled.CameraAlt,
+                                        contentDescription = "Retake page",
+                                        onClick = { onReplacePage(selectedPage.id) },
+                                    )
+                                    PreviewActionButton(
+                                        icon = Icons.Filled.IosShare,
+                                        contentDescription = "Share page",
+                                        onClick = onShareSelectedPage,
+                                    )
+                                    PreviewActionButton(
+                                        icon = Icons.Filled.DeleteOutline,
+                                        contentDescription = "Delete page",
+                                        onClick = onDeleteSelectedPage,
+                                    )
+                                }
+                            },
                         )
                     }
-                    ReviewActionDock(
-                        enabled = !uiState.isMutatingPage,
-                        onEdit = { onOpenPageEditor(selectedPage.id) },
-                        onReplace = { onReplacePage(selectedPage.id) },
-                        onShare = onShareSelectedPage,
-                        onDelete = onDeleteSelectedPage,
-                    )
                 }
                 else -> {
                     DocumentDetailPlaceholder(
@@ -1568,6 +1597,7 @@ private fun SelectedPageCard(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .then(if (expanded) Modifier.fillMaxHeight() else Modifier)
                 .padding(if (expanded) 14.dp else 14.dp),
             verticalArrangement = Arrangement.spacedBy(if (expanded) 12.dp else 12.dp),
         ) {
@@ -1606,7 +1636,7 @@ private fun SelectedPageCard(
                     .fillMaxWidth()
                     .then(
                         if (expanded) {
-                            Modifier.heightIn(max = previewMaxHeight)
+                            Modifier.weight(1f)
                         } else {
                             Modifier
                         },
@@ -1620,7 +1650,7 @@ private fun SelectedPageCard(
                         .fillMaxWidth()
                         .then(
                             if (expanded) {
-                                Modifier.heightIn(max = previewMaxHeight)
+                                Modifier.fillMaxHeight()
                             } else {
                                 Modifier
                             },
@@ -2061,3 +2091,28 @@ private fun Context.exportUriFor(path: String): Uri = FileProvider.getUriForFile
 
 private const val PdfMimeType = "application/pdf"
 private const val ZipMimeType = "application/zip"
+
+@Composable
+private fun PreviewActionButton(
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    contentDescription: String,
+    onClick: () -> Unit,
+) {
+    Surface(
+        modifier = Modifier
+            .size(44.dp)
+            .clickable(onClick = onClick),
+        color = Color.Black.copy(alpha = 0.42f),
+        contentColor = Color.White,
+        shape = MaterialTheme.shapes.large,
+        border = BorderStroke(1.dp, Color.White.copy(alpha = 0.12f)),
+    ) {
+        Box(contentAlignment = Alignment.Center) {
+            Icon(
+                imageVector = icon,
+                contentDescription = contentDescription,
+                tint = Color.White,
+            )
+        }
+    }
+}

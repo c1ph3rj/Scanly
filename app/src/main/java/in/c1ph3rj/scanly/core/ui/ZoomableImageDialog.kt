@@ -2,15 +2,18 @@ package `in`.c1ph3rj.scanly.core.ui
 
 import android.graphics.BitmapFactory
 import androidx.compose.foundation.background
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -97,7 +100,7 @@ fun ZoomableImageDialog(
 fun ZoomableImageViewer(
     imagePath: String?,
     title: String,
-    onNavigateUp: () -> Unit,
+    onNavigateUp: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
     closeContentDescription: String = "Back",
     trailingAction: @Composable (
@@ -174,24 +177,29 @@ fun ZoomableImageViewer(
 
             Row(
                 modifier = Modifier
+                    .fillMaxWidth()
                     .align(Alignment.TopCenter)
                     .statusBarsPadding()
                     .padding(horizontal = 16.dp, vertical = 12.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                ChromeIconButton(
-                    icon = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = closeContentDescription,
-                    onClick = onNavigateUp,
-                    containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-                    contentColor = MaterialTheme.colorScheme.onSurface,
-                )
-                Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    if (onNavigateUp != null) {
+                        ChromeIconButton(
+                            icon = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = closeContentDescription,
+                            onClick = onNavigateUp,
+                            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                            contentColor = MaterialTheme.colorScheme.onSurface,
+                        )
+                        Spacer(modifier = Modifier.width(12.dp))
+                    }
                     MetricChip(
                         label = title,
-                        containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-                        contentColor = MaterialTheme.colorScheme.onSurface,
+                        containerColor = Color.Black.copy(alpha = 0.42f),
+                        contentColor = Color.White,
+                        border = BorderStroke(1.dp, Color.White.copy(alpha = 0.12f)),
                     )
                 }
                 trailingAction(zoomActive, resetZoom)
@@ -295,8 +303,9 @@ private fun ZoomableImageCanvas(
                 .align(Alignment.BottomCenter)
                 .navigationBarsPadding()
                 .padding(bottom = 18.dp),
-            containerColor = Color.White.copy(alpha = 0.1f),
+            containerColor = Color.Black.copy(alpha = 0.42f),
             contentColor = Color.White,
+            border = BorderStroke(1.dp, Color.White.copy(alpha = 0.12f)),
         )
     }
 }

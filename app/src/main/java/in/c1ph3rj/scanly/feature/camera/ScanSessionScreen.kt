@@ -543,7 +543,7 @@ private fun CameraCaptureDock(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = if (compact) 0.dp else 18.dp, vertical = if (compact) 12.dp else 16.dp),
+                .padding(horizontal = if (compact) 0.dp else 18.dp, vertical = 16.dp),
         ) {
             CaptureButton(
                 busy = uiState.captureInProgress,
@@ -556,7 +556,7 @@ private fun CameraCaptureDock(
                 active = false,
                 enabled = uiState.document != null && !uiState.captureInProgress,
                 onClick = onOpenDocument,
-                modifier = Modifier.align(Alignment.CenterEnd),
+                modifier = Modifier.align(if (compact) Alignment.TopCenter else Alignment.CenterEnd),
             )
         }
     }
