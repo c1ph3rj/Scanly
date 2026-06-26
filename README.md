@@ -37,7 +37,7 @@ It is designed for a practical, local-only scanning workflow:
   <tr>
 	<td><img src="screenshots/4.png" alt="Scanly screenshot 4" width="100%" /></td>
 	<td><img src="screenshots/6.png" alt="Scanly screenshot 6" width="100%" /></td>
-	<td><img alt="Scanly screenshot 5" width="100%" /></td>
+	<td></td>
   </tr>
 </table>
 
