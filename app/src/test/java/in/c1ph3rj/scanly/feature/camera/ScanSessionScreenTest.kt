@@ -5,8 +5,13 @@ import org.junit.Test
 
 class ScanSessionScreenTest {
     @Test
-    fun cameraPreviewAspectRatio_usesSquarePreview() {
-        assertEquals(1f, cameraPreviewAspectRatio(), 0.0001f)
+    fun cameraPreviewAspectRatio_usesPortraitPreviewInPortrait() {
+        assertEquals(3f / 4f, cameraPreviewAspectRatio(isLandscape = false), 0.0001f)
+    }
+
+    @Test
+    fun cameraPreviewAspectRatio_usesLandscapePreviewInLandscape() {
+        assertEquals(4f / 3f, cameraPreviewAspectRatio(isLandscape = true), 0.0001f)
     }
 
     @Test

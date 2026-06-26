@@ -852,9 +852,10 @@ private fun TopControlButton(
         else -> Color.White.copy(alpha = 0.38f)
     }
     Surface(
+        onClick = onClick,
+        enabled = enabled,
         modifier = modifier
-            .size(48.dp)
-            .clickable(enabled = enabled, onClick = onClick),
+            .size(48.dp),
         color = containerColor,
         shape = CircleShape,
         border = BorderStroke(1.dp, Color.White.copy(alpha = if (active) 0f else 0.1f)),
@@ -945,10 +946,9 @@ private fun FlashChip(
     onClick: () -> Unit,
 ) {
     Surface(
-        modifier = Modifier.clickable(
-            enabled = available,
-            onClick = onClick,
-        ),
+        onClick = onClick,
+        enabled = available,
+        modifier = Modifier,
         color = if (enabled) OverlayBlue.copy(alpha = 0.88f) else Color.White.copy(alpha = 0.15f),
         shape = MaterialTheme.shapes.large,
         border = BorderStroke(
@@ -1003,13 +1003,13 @@ private fun CameraBottomDock(
                 ) { page ->
                     val selectedForReplacement = uiState.replacementPageId == page.id
                     Surface(
+                        onClick = {
+                            onRetakePageSelection(
+                                if (selectedForReplacement) null else page.id,
+                            )
+                        },
                         modifier = Modifier
-                            .size(width = 76.dp, height = 102.dp)
-                            .clickable {
-                                onRetakePageSelection(
-                                    if (selectedForReplacement) null else page.id,
-                                )
-                            },
+                            .size(width = 76.dp, height = 102.dp),
                         color = Color.Black.copy(alpha = 0.46f),
                         shape = MaterialTheme.shapes.large,
                         border = BorderStroke(
@@ -1072,13 +1072,11 @@ private fun CameraBottomDock(
                 if (latestPage != null) {
                     Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
                         Surface(
+                            onClick = onOpenDocument,
+                            enabled = !uiState.captureInProgress,
                             modifier = Modifier
                                 .width(48.dp)
-                                .height(64.dp)
-                                .clickable(
-                                    enabled = !uiState.captureInProgress,
-                                    onClick = onOpenDocument
-                                ),
+                                .height(64.dp),
                             shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp),
                             color = Color.Black.copy(alpha = 0.48f),
                             border = BorderStroke(2.dp, Color.White),
@@ -1248,10 +1246,10 @@ private fun PageRailCard(
         else -> Color.White.copy(alpha = 0.1f)
     }
     Surface(
+        onClick = onClick,
         modifier = Modifier
             .fillMaxWidth()
-            .height(82.dp)
-            .clickable(onClick = onClick),
+            .height(82.dp),
         color = if (selectedForReplacement) {
             OverlayBlue.copy(alpha = 0.16f)
         } else {
@@ -1433,12 +1431,10 @@ private fun CaptureTargetCard(
 ) {
     val targetPage = uiState.replacementPage ?: uiState.latestCapturedPage
     Surface(
+        onClick = onOpenDocument,
+        enabled = targetPage != null && !uiState.captureInProgress,
         modifier = Modifier
-            .fillMaxWidth()
-            .clickable(
-                enabled = targetPage != null && !uiState.captureInProgress,
-                onClick = onOpenDocument,
-            ),
+            .fillMaxWidth(),
         color = Color.Black.copy(alpha = 0.42f),
         shape = RoundedCornerShape(18.dp),
         border = BorderStroke(
@@ -1541,9 +1537,10 @@ private fun SideDockIconButton(
         verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
         Surface(
+            onClick = onClick,
+            enabled = enabled,
             modifier = Modifier
-                .size(52.dp)
-                .clickable(enabled = enabled, onClick = onClick),
+                .size(52.dp),
             color = containerColor,
             shape = MaterialTheme.shapes.large,
             border = BorderStroke(1.dp, Color.White.copy(alpha = 0.12f)),
@@ -1593,9 +1590,10 @@ private fun DockActionButton(
     }
 
     Surface(
+        onClick = onClick,
+        enabled = enabled,
         modifier = modifier
-            .heightIn(min = 58.dp)
-            .clickable(enabled = enabled, onClick = onClick),
+            .heightIn(min = 58.dp),
         color = containerColor,
         shape = MaterialTheme.shapes.large,
         border = BorderStroke(1.dp, borderColor),
@@ -1647,9 +1645,10 @@ private fun CaptureButton(
             contentAlignment = Alignment.Center,
         ) {
             Surface(
+                onClick = onClick,
+                enabled = !busy,
                 modifier = Modifier
-                    .fillMaxSize()
-                    .clickable(enabled = !busy, onClick = onClick),
+                    .fillMaxSize(),
                 shape = CircleShape,
                 color = when {
                     busy -> OverlayBlue

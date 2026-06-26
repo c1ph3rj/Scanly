@@ -39,15 +39,14 @@ fun ExportActionRow(
     onClick: () -> Unit,
     description: String? = null,
 ) {
+    val enabledTitleColor = MaterialTheme.colorScheme.onSurface
+    val enabledDescriptionColor = MaterialTheme.colorScheme.onSurfaceVariant
+    val disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.58f)
     Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(enabled = enabled, onClick = onClick),
-        color = if (enabled) {
-            MaterialTheme.colorScheme.surfaceContainer
-        } else {
-            MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.55f)
-        },
+        onClick = onClick,
+        enabled = enabled,
+        modifier = Modifier.fillMaxWidth(),
+        color = MaterialTheme.colorScheme.surfaceContainer,
         shape = MaterialTheme.shapes.large,
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
     ) {
@@ -59,19 +58,19 @@ fun ExportActionRow(
             Icon(
                 imageVector = icon,
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary,
+                tint = if (enabled) MaterialTheme.colorScheme.primary else disabledContentColor,
             )
             Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                 Text(
                     text = title,
                     style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurface,
+                    color = if (enabled) enabledTitleColor else disabledContentColor,
                 )
                 if (description != null) {
                     Text(
                         text = description,
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        color = if (enabled) enabledDescriptionColor else disabledContentColor,
                     )
                 }
             }
@@ -203,10 +202,12 @@ private fun PdfChoiceTile(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
 ) {
+    val selectedAccentColor = MaterialTheme.colorScheme.primary
     Surface(
-        modifier = modifier.clickable(onClick = onClick),
+        onClick = onClick,
+        modifier = modifier,
         color = if (selected) {
-            MaterialTheme.colorScheme.primaryContainer
+            MaterialTheme.colorScheme.surfaceContainerHigh
         } else {
             MaterialTheme.colorScheme.surfaceContainer
         },
@@ -214,7 +215,7 @@ private fun PdfChoiceTile(
         border = BorderStroke(
             width = 1.dp,
             color = if (selected) {
-                MaterialTheme.colorScheme.primary
+                selectedAccentColor.copy(alpha = 0.72f)
             } else {
                 MaterialTheme.colorScheme.outlineVariant
             },
@@ -228,10 +229,11 @@ private fun PdfChoiceTile(
                 text = label,
                 style = MaterialTheme.typography.labelLarge,
                 color = if (selected) {
-                    MaterialTheme.colorScheme.onPrimaryContainer
+                    selectedAccentColor
                 } else {
                     MaterialTheme.colorScheme.onSurface
                 },
+                fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Medium,
             )
         }
     }

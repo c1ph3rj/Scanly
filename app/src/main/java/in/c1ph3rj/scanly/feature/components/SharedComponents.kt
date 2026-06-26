@@ -1,6 +1,7 @@
 package `in`.c1ph3rj.scanly.feature.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
@@ -60,7 +62,6 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
@@ -347,7 +348,8 @@ fun ScanlyFormDialogShell(
                     .fillMaxWidth(),
                 shape = MaterialTheme.shapes.extraLarge,
                 color = MaterialTheme.colorScheme.surfaceContainerHigh,
-                tonalElevation = 6.dp,
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+                tonalElevation = 0.dp,
             ) {
                 Column(
                     modifier = Modifier
@@ -621,45 +623,70 @@ fun FolderPickerRow(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val selectedAccentColor = MaterialTheme.colorScheme.primary
+    val rowShape = MaterialTheme.shapes.large
     Surface(
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick),
-        color = if (selected) {
-            MaterialTheme.colorScheme.secondaryContainer
-        } else {
-            MaterialTheme.colorScheme.surfaceContainerHigh
-        },
-        shape = MaterialTheme.shapes.large,
+        onClick = onClick,
+        modifier = modifier.fillMaxWidth(),
+        color = MaterialTheme.colorScheme.surfaceContainerHigh,
+        shape = rowShape,
+        border = BorderStroke(
+            width = if (selected) 1.5.dp else 1.dp,
+            color = if (selected) {
+                selectedAccentColor.copy(alpha = 0.64f)
+            } else {
+                MaterialTheme.colorScheme.outlineVariant
+            },
+        ),
     ) {
-        Row(
-            modifier = Modifier.padding(horizontal = 14.dp, vertical = 12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                tint = if (selected) {
-                    MaterialTheme.colorScheme.onSecondaryContainer
-                } else {
-                    MaterialTheme.colorScheme.onSurfaceVariant
-                },
-            )
-            Text(
-                text = label,
-                style = MaterialTheme.typography.bodyLarge,
-                fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.weight(1f),
-            )
+        Box(modifier = Modifier.fillMaxWidth()) {
             if (selected) {
+                Box(modifier = Modifier.matchParentSize()) {
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.CenterStart)
+                            .fillMaxHeight()
+                            .width(4.dp)
+                            .clip(RoundedCornerShape(topStart = 16.dp, bottomStart = 16.dp))
+                            .background(selectedAccentColor),
+                    )
+                }
+            }
+            Row(
+                modifier = Modifier.padding(
+                    start = if (selected) 18.dp else 14.dp,
+                    top = 12.dp,
+                    end = 14.dp,
+                    bottom = 12.dp,
+                ),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
                 Icon(
-                    imageVector = Icons.Filled.Check,
-                    contentDescription = "Selected",
-                    tint = MaterialTheme.colorScheme.primary,
+                    imageVector = icon,
+                    contentDescription = null,
+                    tint = if (selected) {
+                        selectedAccentColor
+                    } else {
+                        MaterialTheme.colorScheme.onSurfaceVariant
+                    },
                 )
+                Text(
+                    text = label,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f),
+                )
+                if (selected) {
+                    Icon(
+                        imageVector = Icons.Filled.Check,
+                        contentDescription = "Selected",
+                        tint = selectedAccentColor,
+                    )
+                }
             }
         }
     }
@@ -689,17 +716,17 @@ fun GroupCard(
     style: LibraryCardStyle = LibraryCardStyle.Auto,
 ) {
     Surface(
+        onClick = onOpen,
         modifier = modifier
-            .fillMaxWidth()
-            .clickable(onClick = onOpen),
-        color = MaterialTheme.colorScheme.surfaceContainerLow,
+            .fillMaxWidth(),
+        color = MaterialTheme.colorScheme.surfaceContainer,
         shape = MaterialTheme.shapes.extraLarge,
-        border = androidx.compose.foundation.BorderStroke(
+        border = BorderStroke(
             1.dp,
-            MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.28f),
+            MaterialTheme.colorScheme.outlineVariant,
         ),
-        shadowElevation = 4.dp,
-        tonalElevation = 2.dp,
+        shadowElevation = 0.dp,
+        tonalElevation = 0.dp,
     ) {
         BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
             val useGrid = when (style) {
@@ -796,14 +823,14 @@ fun DocumentCard(
         document.updatedAtMillis.toShortDate()
     }
     Surface(
+        onClick = onOpen,
         modifier = modifier
-            .fillMaxWidth()
-            .clickable(onClick = onOpen),
+            .fillMaxWidth(),
         color = MaterialTheme.colorScheme.surfaceContainer,
         shape = MaterialTheme.shapes.extraLarge,
-        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f)),
-        shadowElevation = 1.dp,
-        tonalElevation = 1.dp,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+        shadowElevation = 0.dp,
+        tonalElevation = 0.dp,
     ) {
         BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
             val useGrid = when (style) {
@@ -976,11 +1003,11 @@ private fun DocumentCardListContent(
                 .aspectRatio(3f / 4f),
             shape = RoundedCornerShape(18.dp),
             color = MaterialTheme.colorScheme.surfaceContainerHighest,
-            border = androidx.compose.foundation.BorderStroke(
+            border = BorderStroke(
                 1.dp,
-                MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.24f),
+                MaterialTheme.colorScheme.outlineVariant,
             ),
-            shadowElevation = 2.dp,
+            shadowElevation = 0.dp,
         ) {
             CachedThumbnail(
                 thumbnailPath = document.coverThumbnailPath,
@@ -1035,7 +1062,7 @@ private fun DocumentCardListContent(
                             contentDescription = "Rename",
                             onClick = onRename,
                             size = 38.dp,
-                            containerColor = MaterialTheme.colorScheme.surfaceContainerHighest.copy(alpha = 0.8f),
+                            containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
                         )
                     }
                     if (onMove != null) {
@@ -1044,7 +1071,7 @@ private fun DocumentCardListContent(
                             contentDescription = "Move to folder",
                             onClick = onMove,
                             size = 38.dp,
-                            containerColor = MaterialTheme.colorScheme.surfaceContainerHighest.copy(alpha = 0.8f),
+                            containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
                         )
                     }
                 }
@@ -1053,8 +1080,8 @@ private fun DocumentCardListContent(
                     contentDescription = deleteContentDescription,
                     onClick = onDelete,
                     size = 38.dp,
-                    containerColor = MaterialTheme.colorScheme.error.copy(alpha = 0.12f),
-                    contentColor = MaterialTheme.colorScheme.error,
+                    containerColor = MaterialTheme.colorScheme.errorContainer,
+                    contentColor = MaterialTheme.colorScheme.onErrorContainer,
                 )
             }
         }
@@ -1067,7 +1094,7 @@ private fun DocumentMetaPill(
     icon: ImageVector? = null,
 ) {
     Surface(
-        color = MaterialTheme.colorScheme.surfaceContainerHighest.copy(alpha = 0.76f),
+        color = MaterialTheme.colorScheme.surfaceContainerHighest,
         contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
         shape = MaterialTheme.shapes.large,
     ) {

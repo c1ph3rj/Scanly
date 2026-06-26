@@ -30,6 +30,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -85,6 +86,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInRoot
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -633,7 +635,7 @@ fun DocumentDetailScreen(
                                 pageCount = uiState.pages.size,
                                 isDragging = isDragging,
                                 isDropTarget = dragTargetPageId == page.id,
-                                isSelected = page.id == selectedPage?.id,
+                                isSelected = draggedPageId == null && page.id == selectedPage?.id,
                                 compact = windowSizeInfo.pageColumns == 1,
                                 reorderEnabled = reorderEnabled && !isReviewingPage,
                                 modifier = Modifier
@@ -688,9 +690,8 @@ fun DocumentDetailScreen(
                             }
                             .zIndex(10f)
                             .graphicsLayer {
-                                scaleX = 1.04f
-                                scaleY = 1.04f
-                                shadowElevation = 18f
+                                scaleX = 1.02f
+                                scaleY = 1.02f
                             },
                         onClick = {},
                     )
@@ -1212,7 +1213,7 @@ private fun DocumentMasterDetailLayout(
                             pageCount = uiState.pages.size,
                             isDragging = isDragging,
                             isDropTarget = dragTargetPageId == page.id,
-                            isSelected = page.id == selectedPage?.id,
+                            isSelected = draggedPageId == null && page.id == selectedPage?.id,
                             compact = true,
                             reorderEnabled = reorderEnabled,
                             modifier = Modifier
@@ -1260,9 +1261,8 @@ private fun DocumentMasterDetailLayout(
                         }
                         .zIndex(10f)
                         .graphicsLayer {
-                            scaleX = 1.04f
-                            scaleY = 1.04f
-                            shadowElevation = 18f
+                            scaleX = 1.02f
+                            scaleY = 1.02f
                         },
                     onClick = {},
                 )
@@ -1378,8 +1378,9 @@ private fun DocumentMetricsRow(
             label = groupLabel,
             icon = Icons.Filled.Folder,
             modifier = Modifier.clickable(onClick = onMoveToFolder),
-            containerColor = MaterialTheme.colorScheme.secondaryContainer,
-            contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+            contentColor = MaterialTheme.colorScheme.primary,
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.42f)),
         )
         MetricChip(label = pageCountLabel)
         updatedDate?.let { date ->
@@ -1712,8 +1713,8 @@ private fun ReviewActionDock(
                 enabled = enabled,
                 onClick = onShare,
                 modifier = Modifier.weight(1f),
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                contentColor = MaterialTheme.colorScheme.primary,
             )
             ReviewToolButton(
                 icon = Icons.Filled.DeleteOutline,
@@ -1721,8 +1722,8 @@ private fun ReviewActionDock(
                 enabled = enabled,
                 onClick = onDelete,
                 modifier = Modifier.weight(1f),
-                containerColor = MaterialTheme.colorScheme.error.copy(alpha = 0.1f),
-                contentColor = MaterialTheme.colorScheme.error,
+                containerColor = MaterialTheme.colorScheme.errorContainer,
+                contentColor = MaterialTheme.colorScheme.onErrorContainer,
             )
         }
     }
@@ -1738,9 +1739,19 @@ private fun ReviewToolButton(
     containerColor: androidx.compose.ui.graphics.Color = MaterialTheme.colorScheme.surfaceContainerHighest,
     contentColor: androidx.compose.ui.graphics.Color = MaterialTheme.colorScheme.onSurface,
 ) {
+    val resolvedContainerColor = if (enabled) {
+        containerColor
+    } else {
+        MaterialTheme.colorScheme.surfaceContainer
+    }
+    val resolvedContentColor = if (enabled) {
+        contentColor
+    } else {
+        MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.58f)
+    }
     Surface(
         modifier = modifier.clickable(enabled = enabled, onClick = onClick),
-        color = if (enabled) containerColor else containerColor.copy(alpha = 0.45f),
+        color = resolvedContainerColor,
         shape = MaterialTheme.shapes.medium,
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
     ) {
@@ -1752,12 +1763,12 @@ private fun ReviewToolButton(
             androidx.compose.material3.Icon(
                 imageVector = icon,
                 contentDescription = label,
-                tint = contentColor,
+                tint = resolvedContentColor,
             )
             Text(
                 text = label,
                 style = MaterialTheme.typography.labelLarge,
-                color = contentColor,
+                color = resolvedContentColor,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
@@ -1777,138 +1788,182 @@ private fun PageOverviewTile(
     reorderEnabled: Boolean = false,
     onClick: () -> Unit,
 ) {
+    val isDarkTheme = MaterialTheme.colorScheme.background.luminance() < 0.5f
+    val tileShape = MaterialTheme.shapes.extraLarge
+    val tileColor = when {
+        isDropTarget -> MaterialTheme.colorScheme.surfaceContainer
+        isDragging -> MaterialTheme.colorScheme.surfaceContainerHigh
+        else -> MaterialTheme.colorScheme.surfaceContainer
+    }
+    val tileBorderWidth = if (isSelected || isDragging || isDropTarget) 1.5.dp else 1.dp
+    val tileBorderColor = when {
+        isDragging -> MaterialTheme.colorScheme.primary.copy(alpha = if (isDarkTheme) 0.42f else 0.34f)
+        isDropTarget -> MaterialTheme.colorScheme.primary.copy(alpha = if (isDarkTheme) 0.72f else 0.64f)
+        isSelected -> MaterialTheme.colorScheme.primary.copy(alpha = if (isDarkTheme) 0.72f else 0.64f)
+        else -> MaterialTheme.colorScheme.outlineVariant
+    }
+    val accentColor = MaterialTheme.colorScheme.primary.copy(alpha = if (isDarkTheme) 0.86f else 0.78f)
+    val showLeadingAccent = compact && (isSelected || isDragging)
+    val showDropIndicator = isDropTarget
+
     Surface(
-        modifier = modifier.clickable(onClick = onClick),
-        color = when {
-            isDropTarget -> MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.48f)
-            isSelected -> MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.24f)
-            isDragging -> MaterialTheme.colorScheme.surfaceContainerHigh
-            else -> MaterialTheme.colorScheme.surfaceContainer
-        },
+        onClick = onClick,
+        modifier = modifier.clip(tileShape),
+        color = tileColor,
         border = BorderStroke(
-            width = if (isDropTarget || isDragging || isSelected) 2.dp else 1.dp,
-            color = when {
-                isDropTarget || isDragging || isSelected -> MaterialTheme.colorScheme.primary
-                else -> MaterialTheme.colorScheme.outlineVariant
-            },
+            width = tileBorderWidth,
+            color = tileBorderColor,
         ),
-        shape = MaterialTheme.shapes.extraLarge,
-        shadowElevation = if (isDragging) 8.dp else 2.dp,
-        tonalElevation = if (isDragging) 4.dp else 0.dp,
+        shape = tileShape,
+        shadowElevation = when {
+            isDragging -> 4.dp
+            else -> 0.dp
+        },
+        tonalElevation = 0.dp,
     ) {
-        if (compact) {
-            Row(
-                modifier = Modifier.padding(12.dp),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                PagePreview(
-                    page = page,
-                    displaySize = PreviewDisplaySize.COMPACT,
-                    modifier = Modifier.size(72.dp),
-                    minHeight = 72.dp,
-                    aspectRatio = 1f,
-                )
-                Column(
+        Box(modifier = Modifier.fillMaxWidth()) {
+            if (compact) {
+                Row(
                     modifier = Modifier
-                        .weight(1f)
-                        .height(72.dp),
-                    verticalArrangement = Arrangement.SpaceBetween,
+                        .fillMaxWidth()
+                        .padding(
+                            start = if (showLeadingAccent) 16.dp else 12.dp,
+                            top = 12.dp,
+                            end = 12.dp,
+                            bottom = 12.dp,
+                        ),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                    PagePreview(
+                        page = page,
+                        displaySize = PreviewDisplaySize.COMPACT,
+                        modifier = Modifier.size(72.dp),
+                        minHeight = 72.dp,
+                        aspectRatio = 1f,
+                    )
+                    Column(
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(72.dp),
+                        verticalArrangement = Arrangement.SpaceBetween,
+                    ) {
+                        Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                            Text(
+                                text = "Page ${page.pageIndex + 1}",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.SemiBold,
+                                color = MaterialTheme.colorScheme.onSurface,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                            )
+                            Text(
+                                text = page.processingState.toShortLabel(),
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                            )
+                        }
                         Text(
-                            text = "Page ${page.pageIndex + 1}",
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.SemiBold,
-                            color = MaterialTheme.colorScheme.onSurface,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                        )
-                        Text(
-                            text = page.processingState.toShortLabel(),
-                            style = MaterialTheme.typography.labelMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            text = page.updatedAtMillis.toReadableDateTime(),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                         )
                     }
-                    Text(
-                        text = page.updatedAtMillis.toReadableDateTime(),
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
+                    if (reorderEnabled) {
+                        Icon(
+                            imageVector = Icons.Filled.DragHandle,
+                            contentDescription = "Drag to reorder",
+                            tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.72f),
+                            modifier = Modifier.size(24.dp),
+                        )
+                    }
                 }
-                if (reorderEnabled) {
-                    Icon(
-                        imageVector = Icons.Filled.DragHandle,
-                        contentDescription = "Drag to reorder",
-                        tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.72f),
-                        modifier = Modifier.size(24.dp),
+            } else {
+                Box(modifier = Modifier.fillMaxWidth()) {
+                    PagePreview(
+                        page = page,
+                        displaySize = PreviewDisplaySize.CARD,
+                        modifier = Modifier.fillMaxWidth(),
+                        minHeight = 88.dp,
+                    )
+                    Box(
+                        modifier = Modifier
+                            .matchParentSize()
+                            .background(
+                                androidx.compose.ui.graphics.Brush.verticalGradient(
+                                    colors = listOf(
+                                        Color.Transparent,
+                                        Color.Transparent,
+                                        Color.Black.copy(alpha = 0.6f),
+                                        Color.Black.copy(alpha = 0.9f)
+                                    )
+                                )
+                            )
+                    )
+                    MetricChip(
+                        label = "P${page.pageIndex + 1}/$pageCount",
+                        modifier = Modifier
+                            .align(Alignment.TopStart)
+                            .padding(8.dp),
+                        containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.84f),
+                    )
+                    if (reorderEnabled) {
+                        Icon(
+                            imageVector = Icons.Filled.DragHandle,
+                            contentDescription = "Drag to reorder",
+                            tint = Color.White.copy(alpha = 0.8f),
+                            modifier = Modifier
+                                .align(Alignment.TopEnd)
+                                .padding(8.dp)
+                                .size(24.dp),
+                        )
+                    }
+                    Column(
+                        modifier = Modifier
+                            .align(Alignment.BottomStart)
+                            .padding(12.dp),
+                        verticalArrangement = Arrangement.spacedBy(2.dp),
+                    ) {
+                        Text(
+                            text = "Page ${page.pageIndex + 1}",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.SemiBold,
+                            color = Color.White,
+                        )
+                        Text(
+                            text = page.updatedAtMillis.toReadableDateTime(),
+                            style = MaterialTheme.typography.labelMedium,
+                            color = Color.White.copy(alpha = 0.8f),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                    }
+                }
+            }
+            if (showLeadingAccent) {
+                Box(modifier = Modifier.matchParentSize()) {
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.CenterStart)
+                            .fillMaxHeight()
+                            .width(4.dp)
+                            .clip(RoundedCornerShape(topStart = 24.dp, bottomStart = 24.dp))
+                            .background(accentColor),
                     )
                 }
             }
-        } else {
-            Box(modifier = Modifier.fillMaxWidth()) {
-                PagePreview(
-                    page = page,
-                    displaySize = PreviewDisplaySize.CARD,
-                    modifier = Modifier.fillMaxWidth(),
-                    minHeight = 88.dp,
-                )
+            if (showDropIndicator) {
                 Box(
                     modifier = Modifier
-                        .matchParentSize()
-                        .background(
-                            androidx.compose.ui.graphics.Brush.verticalGradient(
-                                colors = listOf(
-                                    Color.Transparent,
-                                    Color.Transparent,
-                                    Color.Black.copy(alpha = 0.6f),
-                                    Color.Black.copy(alpha = 0.9f)
-                                )
-                            )
-                        )
-                )
-                MetricChip(
-                    label = "P${page.pageIndex + 1}/$pageCount",
-                    modifier = Modifier
                         .align(Alignment.TopStart)
-                        .padding(8.dp),
-                    containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.84f),
+                        .fillMaxWidth()
+                        .height(3.dp)
+                        .background(accentColor),
                 )
-                if (reorderEnabled) {
-                    Icon(
-                        imageVector = Icons.Filled.DragHandle,
-                        contentDescription = "Drag to reorder",
-                        tint = Color.White.copy(alpha = 0.8f),
-                        modifier = Modifier
-                            .align(Alignment.TopEnd)
-                            .padding(8.dp)
-                            .size(24.dp),
-                    )
-                }
-                Column(
-                    modifier = Modifier
-                        .align(Alignment.BottomStart)
-                        .padding(12.dp),
-                    verticalArrangement = Arrangement.spacedBy(2.dp),
-                ) {
-                    Text(
-                        text = "Page ${page.pageIndex + 1}",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.SemiBold,
-                        color = Color.White,
-                    )
-                    Text(
-                        text = page.updatedAtMillis.toReadableDateTime(),
-                        style = MaterialTheme.typography.labelMedium,
-                        color = Color.White.copy(alpha = 0.8f),
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                }
             }
         }
     }

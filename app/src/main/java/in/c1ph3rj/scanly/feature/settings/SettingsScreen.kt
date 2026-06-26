@@ -5,7 +5,9 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -551,36 +553,31 @@ private fun SettingsUpdateRow(
         else -> "Compare this install with the latest GitHub release."
     }
     val rowModifier = if (updateAvailable) {
-        modifier
-            .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.primaryContainer)
-            .clickable(
-                enabled = !appUpdateUiState.isChecking,
-                onClick = onCheckForUpdates,
-            )
-            .padding(horizontal = 16.dp, vertical = 14.dp)
+        modifier.settingsRowSurface(
+            onClick = if (appUpdateUiState.isChecking) null else onCheckForUpdates,
+        )
     } else {
         modifier.settingsRowSurface(
             onClick = if (appUpdateUiState.isChecking) null else onCheckForUpdates,
         )
     }
     val titleColor = if (updateAvailable) {
-        MaterialTheme.colorScheme.onPrimaryContainer
+        MaterialTheme.colorScheme.primary
     } else {
         MaterialTheme.colorScheme.onSurface
     }
     val subtitleColor = if (updateAvailable) {
-        MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.82f)
+        MaterialTheme.colorScheme.onSurfaceVariant
     } else {
         MaterialTheme.colorScheme.onSurfaceVariant
     }
     val iconContainerColor = if (updateAvailable) {
-        MaterialTheme.colorScheme.primary
+        MaterialTheme.colorScheme.primaryContainer
     } else {
         Color.Transparent
     }
     val iconTint = if (updateAvailable) {
-        MaterialTheme.colorScheme.onPrimary
+        MaterialTheme.colorScheme.primary
     } else {
         MaterialTheme.colorScheme.primary
     }
@@ -755,14 +752,19 @@ private fun ThemeModeOption(
     modifier: Modifier = Modifier,
 ) {
     val containerColor = if (selected) {
-        MaterialTheme.colorScheme.primaryContainer
+        MaterialTheme.colorScheme.surfaceContainerLow
     } else {
         Color.Transparent
     }
     val contentColor = if (selected) {
-        MaterialTheme.colorScheme.onPrimaryContainer
+        MaterialTheme.colorScheme.primary
     } else {
         MaterialTheme.colorScheme.onSurfaceVariant
+    }
+    val borderColor = if (selected) {
+        MaterialTheme.colorScheme.primary.copy(alpha = 0.64f)
+    } else {
+        Color.Transparent
     }
     val optionShape = RoundedCornerShape(8.dp)
 
@@ -770,6 +772,7 @@ private fun ThemeModeOption(
         modifier = modifier
             .clip(optionShape)
             .background(containerColor)
+            .border(BorderStroke(1.dp, borderColor), optionShape)
             .clickable(onClick = onClick)
             .padding(vertical = 12.dp, horizontal = 4.dp),
         contentAlignment = Alignment.Center,

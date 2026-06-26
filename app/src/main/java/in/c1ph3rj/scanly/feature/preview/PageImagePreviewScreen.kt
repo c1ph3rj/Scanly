@@ -127,9 +127,8 @@ private fun PreviewActionButton(
     onClick: () -> Unit,
 ) {
     Surface(
-        modifier = Modifier
-            .size(48.dp)
-            .clickable(onClick = onClick),
+        onClick = onClick,
+        modifier = Modifier.size(48.dp),
         color = Color.Black.copy(alpha = 0.42f),
         contentColor = Color.White,
         shape = MaterialTheme.shapes.large,

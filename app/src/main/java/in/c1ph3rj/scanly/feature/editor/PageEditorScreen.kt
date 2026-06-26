@@ -920,7 +920,8 @@ private fun FilterItem(
     modifier: Modifier = Modifier,
 ) {
     Surface(
-        modifier = modifier.clickable { onSelect() },
+        onClick = onSelect,
+        modifier = modifier,
         color = if (isSelected) Color(0xFF112922) else Color(0xFF111315),
         shape = RoundedCornerShape(20.dp),
         border = BorderStroke(
@@ -1043,9 +1044,10 @@ private fun EditorActionButton(
     contentColor: Color = AccentGreen,
 ) {
     Surface(
+        onClick = onClick,
+        enabled = enabled,
         modifier = Modifier
-            .width(104.dp)
-            .clickable(enabled = enabled, onClick = onClick),
+            .width(104.dp),
         color = Color(0xFF181818),
         shape = RoundedCornerShape(18.dp),
         border = BorderStroke(1.dp, Color.White.copy(alpha = 0.08f)),
