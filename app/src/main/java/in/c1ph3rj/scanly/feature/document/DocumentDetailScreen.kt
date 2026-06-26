@@ -1820,49 +1820,65 @@ private fun PageOverviewTile(
                 }
             }
         } else {
-            Column(
-                modifier = Modifier.padding(10.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-                Box {
-                    PagePreview(
-                        page = page,
-                        displaySize = PreviewDisplaySize.CARD,
-                        modifier = Modifier.fillMaxWidth(),
-                        minHeight = 88.dp,
-                    )
-                    MetricChip(
-                        label = "P${page.pageIndex + 1}/$pageCount",
-                        modifier = Modifier
-                            .align(Alignment.TopStart)
-                            .padding(8.dp),
-                        containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.84f),
-                    )
-                    if (reorderEnabled) {
-                        Icon(
-                            imageVector = Icons.Filled.DragHandle,
-                            contentDescription = "Drag to reorder",
-                            tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.72f),
-                            modifier = Modifier
-                                .align(Alignment.TopEnd)
-                                .padding(8.dp)
-                                .size(20.dp),
+            Box(modifier = Modifier.fillMaxWidth()) {
+                PagePreview(
+                    page = page,
+                    displaySize = PreviewDisplaySize.CARD,
+                    modifier = Modifier.fillMaxWidth(),
+                    minHeight = 88.dp,
+                )
+                Box(
+                    modifier = Modifier
+                        .matchParentSize()
+                        .background(
+                            androidx.compose.ui.graphics.Brush.verticalGradient(
+                                colors = listOf(
+                                    Color.Transparent,
+                                    Color.Transparent,
+                                    Color.Black.copy(alpha = 0.6f),
+                                    Color.Black.copy(alpha = 0.9f)
+                                )
+                            )
                         )
-                    }
+                )
+                MetricChip(
+                    label = "P${page.pageIndex + 1}/$pageCount",
+                    modifier = Modifier
+                        .align(Alignment.TopStart)
+                        .padding(8.dp),
+                    containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.84f),
+                )
+                if (reorderEnabled) {
+                    Icon(
+                        imageVector = Icons.Filled.DragHandle,
+                        contentDescription = "Drag to reorder",
+                        tint = Color.White.copy(alpha = 0.8f),
+                        modifier = Modifier
+                            .align(Alignment.TopEnd)
+                            .padding(8.dp)
+                            .size(24.dp),
+                    )
                 }
-                Text(
-                    text = "Page ${page.pageIndex + 1}",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.onSurface,
-                )
-                Text(
-                    text = page.processingState.toShortLabel(),
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
+                Column(
+                    modifier = Modifier
+                        .align(Alignment.BottomStart)
+                        .padding(12.dp),
+                    verticalArrangement = Arrangement.spacedBy(2.dp),
+                ) {
+                    Text(
+                        text = "Page ${page.pageIndex + 1}",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color.White,
+                    )
+                    Text(
+                        text = page.updatedAtMillis.toReadableDateTime(),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = Color.White.copy(alpha = 0.8f),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
             }
         }
     }
