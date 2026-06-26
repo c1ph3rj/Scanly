@@ -149,7 +149,7 @@ fun AppUpdateDialog(
                         color = MaterialTheme.colorScheme.onPrimary,
                     )
                     Text(
-                        text = "Starting…",
+                        text = "Downloading…",
                         modifier = Modifier.padding(start = 8.dp),
                     )
                 } else {
@@ -159,7 +159,7 @@ fun AppUpdateDialog(
                     )
                     Text(
                         text = if (release.apkAsset != null) {
-                            "Download in background"
+                            "Download & install"
                         } else {
                             "Open release"
                         },

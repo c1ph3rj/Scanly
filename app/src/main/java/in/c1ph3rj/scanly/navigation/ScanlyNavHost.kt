@@ -3,10 +3,9 @@ package `in`.c1ph3rj.scanly.navigation
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -212,16 +211,16 @@ private fun ScanlyNavigationRail(
     Row(modifier = Modifier.fillMaxHeight()) {
         Column(
             modifier = Modifier
-                .width(72.dp)
+                .width(92.dp)
                 .fillMaxHeight()
                 .background(MaterialTheme.colorScheme.surfaceContainerLowest)
                 .statusBarsPadding()
-                .padding(horizontal = 10.dp)
-                .padding(top = 12.dp, bottom = 16.dp),
+                .padding(horizontal = 12.dp)
+                .padding(top = 16.dp, bottom = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            ScanlyAppLogo(size = 38.dp)
-            Spacer(modifier = Modifier.height(18.dp))
+            ScanlyAppLogo(size = 56.dp)
+            Spacer(modifier = Modifier.height(20.dp))
             bottomNavItems.forEach { item ->
                 val selected = currentRoute == item.route
                 RailNavIcon(
@@ -459,17 +458,8 @@ private fun ScanlyNavHostContent(
                 onNavigateUp = navController::navigateUp,
                 onOpenDocument = { documentId ->
                     val documentRoute = DocumentDestination.route(documentId)
-                    val returnedToExistingDocument = navController.popBackStack(
-                        route = documentRoute,
-                        inclusive = false,
-                    )
-                    if (!returnedToExistingDocument) {
-                        val currentDestinationId =
-                            navController.currentBackStackEntry?.destination?.id
+                    if (!navController.popBackStack(route = documentRoute, inclusive = false)) {
                         navController.navigate(documentRoute) {
-                            if (currentDestinationId != null) {
-                                popUpTo(currentDestinationId) { inclusive = true }
-                            }
                             launchSingleTop = true
                         }
                     }
@@ -510,7 +500,7 @@ private fun ScanlyNavHostContent(
     }
 }
 
-private const val NavAnimDuration = 280
+private const val NavAnimDuration = 160
 
 private fun AnimatedContentTransitionScope<NavBackStackEntry>.topLevelEnter(): EnterTransition =
     EnterTransition.None
@@ -525,21 +515,13 @@ private fun AnimatedContentTransitionScope<NavBackStackEntry>.topLevelPopExit():
     ExitTransition.None
 
 private fun AnimatedContentTransitionScope<NavBackStackEntry>.detailPushEnter(): EnterTransition =
-    slideInHorizontally(
-        animationSpec = tween(NavAnimDuration, easing = FastOutSlowInEasing),
-    ) { fullWidth -> fullWidth / 5 }
+    fadeIn(animationSpec = tween(NavAnimDuration))
 
 private fun AnimatedContentTransitionScope<NavBackStackEntry>.detailPushExit(): ExitTransition =
-    slideOutHorizontally(
-        animationSpec = tween(NavAnimDuration, easing = FastOutSlowInEasing),
-    ) { fullWidth -> -fullWidth / 8 }
+    fadeOut(animationSpec = tween(NavAnimDuration))
 
 private fun AnimatedContentTransitionScope<NavBackStackEntry>.detailPopEnter(): EnterTransition =
-    slideInHorizontally(
-        animationSpec = tween(NavAnimDuration, easing = FastOutSlowInEasing),
-    ) { fullWidth -> -fullWidth / 8 }
+    fadeIn(animationSpec = tween(NavAnimDuration))
 
 private fun AnimatedContentTransitionScope<NavBackStackEntry>.detailPopExit(): ExitTransition =
-    slideOutHorizontally(
-        animationSpec = tween(NavAnimDuration, easing = FastOutSlowInEasing),
-    ) { fullWidth -> fullWidth / 5 }
+    fadeOut(animationSpec = tween(NavAnimDuration))

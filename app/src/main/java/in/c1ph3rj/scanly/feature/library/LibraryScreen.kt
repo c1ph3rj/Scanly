@@ -273,6 +273,7 @@ fun LibraryScreen(
                                             onRename = { renameDocTarget = doc },
                                             onDelete = { deleteDocTarget = doc },
                                             onMove = { moveDocTarget = doc },
+                                            style = LibraryCardStyle.Grid,
                                             modifier = Modifier.weight(1f),
                                         )
                                     }
@@ -365,6 +366,7 @@ fun LibraryScreen(
                                         onRename = { renameDocTarget = doc },
                                         onDelete = { deleteDocTarget = doc },
                                         onMove = { moveDocTarget = doc },
+                                        style = LibraryCardStyle.Grid,
                                         modifier = Modifier.weight(1f),
                                     )
                                 }

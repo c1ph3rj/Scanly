@@ -7,6 +7,7 @@ import `in`.c1ph3rj.scanly.core.common.ScanlyResult
 import `in`.c1ph3rj.scanly.data.update.AppReleaseApkInstaller
 import `in`.c1ph3rj.scanly.domain.model.AppRelease
 import `in`.c1ph3rj.scanly.domain.model.AppUpdateCheckResult
+import `in`.c1ph3rj.scanly.domain.repository.AppUpdatePromptRepository
 import `in`.c1ph3rj.scanly.domain.usecase.CheckForAppUpdateUseCase
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -32,11 +33,14 @@ enum class AppUpdateCheckTrigger {
 sealed interface AppUpdateEvent {
     data class ShowMessage(val message: String) : AppUpdateEvent
     data class OpenUri(val uri: String) : AppUpdateEvent
+    data class InstallApk(val intent: android.content.Intent) : AppUpdateEvent
+    data object RequestInstallPermission : AppUpdateEvent
 }
 
 @HiltViewModel
 class AppUpdateViewModel @Inject constructor(
     private val checkForAppUpdateUseCase: CheckForAppUpdateUseCase,
+    private val updatePromptRepository: AppUpdatePromptRepository,
     private val apkInstaller: AppReleaseApkInstaller,
 ) : ViewModel() {
 
@@ -46,7 +50,7 @@ class AppUpdateViewModel @Inject constructor(
     private val _events = MutableSharedFlow<AppUpdateEvent>()
     val events: SharedFlow<AppUpdateEvent> = _events.asSharedFlow()
 
-    private var dismissedReleaseTag: String? = null
+    private var pendingInstallApkPath: String? = null
 
     fun checkForUpdates(trigger: AppUpdateCheckTrigger) {
         val currentState = _uiState.value
@@ -80,11 +84,37 @@ class AppUpdateViewModel @Inject constructor(
     }
 
     fun dismissUpdateDialog() {
-        val releaseTag = _uiState.value.dialogCheckResult?.latestRelease?.tagName
-        if (releaseTag != null) {
-            dismissedReleaseTag = releaseTag
-        }
         _uiState.update { current -> current.copy(dialogCheckResult = null) }
+    }
+
+    fun retryPendingInstall() {
+        val apkPath = pendingInstallApkPath ?: return
+        if (!apkInstaller.canRequestPackageInstalls()) return
+
+        viewModelScope.launch {
+            val apkFile = java.io.File(apkPath)
+            if (!apkFile.exists()) {
+                pendingInstallApkPath = null
+                return@launch
+            }
+
+            when (val installIntent = apkInstaller.createInstallIntent(apkFile)) {
+                is ScanlyResult.Success -> {
+                    pendingInstallApkPath = null
+                    _events.emit(AppUpdateEvent.InstallApk(installIntent.value))
+                }
+
+                is ScanlyResult.Failure -> {
+                    _events.emit(
+                        AppUpdateEvent.ShowMessage(
+                            installIntent.error.message.ifBlank {
+                                "Could not open the update installer."
+                            },
+                        ),
+                    )
+                }
+            }
+        }
     }
 
     fun downloadRelease(release: AppRelease) {
@@ -112,9 +142,49 @@ class AppUpdateViewModel @Inject constructor(
                     dismissUpdateDialog()
                     _events.emit(
                         AppUpdateEvent.ShowMessage(
-                            "Downloading ${apkAsset.name} in the background.",
+                            "Downloading ${apkAsset.name}…",
                         ),
                     )
+
+                    when (
+                        val downloadResult = apkInstaller.waitForDownloadComplete(
+                            downloadId = result.value,
+                            fileName = apkAsset.name,
+                        )
+                    ) {
+                        is ScanlyResult.Success -> {
+                            if (!apkInstaller.canRequestPackageInstalls()) {
+                                pendingInstallApkPath = downloadResult.value.absolutePath
+                                _events.emit(AppUpdateEvent.RequestInstallPermission)
+                                return@launch
+                            }
+                            when (val installIntent = apkInstaller.createInstallIntent(downloadResult.value)) {
+                                is ScanlyResult.Success -> {
+                                    _events.emit(AppUpdateEvent.InstallApk(installIntent.value))
+                                }
+
+                                is ScanlyResult.Failure -> {
+                                    _events.emit(
+                                        AppUpdateEvent.ShowMessage(
+                                            installIntent.error.message.ifBlank {
+                                                "Could not open the update installer."
+                                            },
+                                        ),
+                                    )
+                                }
+                            }
+                        }
+
+                        is ScanlyResult.Failure -> {
+                            _events.emit(
+                                AppUpdateEvent.ShowMessage(
+                                    downloadResult.error.message.ifBlank {
+                                        "The update download did not finish."
+                                    },
+                                ),
+                            )
+                        }
+                    }
                 }
 
                 is ScanlyResult.Failure -> {
@@ -136,9 +206,17 @@ class AppUpdateViewModel @Inject constructor(
         checkResult: AppUpdateCheckResult,
         trigger: AppUpdateCheckTrigger,
     ) {
-        val releaseTag = checkResult.latestRelease.tagName
+        val nowMillis = System.currentTimeMillis()
+        val lastShownAtMillis = updatePromptRepository.getLastUpdateDialogShownAtMillis()
         val shouldShowDialog = checkResult.updateAvailable &&
-            (trigger == AppUpdateCheckTrigger.Manual || dismissedReleaseTag != releaseTag)
+            (
+                trigger == AppUpdateCheckTrigger.Manual ||
+                    AppUpdateDialogCooldown.canShowAgain(lastShownAtMillis, nowMillis)
+                )
+
+        if (shouldShowDialog) {
+            updatePromptRepository.setLastUpdateDialogShownAtMillis(nowMillis)
+        }
 
         _uiState.update { current ->
             current.copy(

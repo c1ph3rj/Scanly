@@ -17,12 +17,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -35,6 +37,7 @@ import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Crop
 import androidx.compose.material.icons.filled.DeleteOutline
 import androidx.compose.material.icons.filled.Description
+import androidx.compose.material.icons.filled.DragHandle
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.FileDownload
 import androidx.compose.material.icons.filled.Folder
@@ -123,7 +126,6 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.text.DateFormat
 import java.util.Date
-import kotlin.math.hypot
 import kotlin.math.roundToInt
 
 object DocumentDestination {
@@ -304,6 +306,7 @@ fun DocumentDetailScreen(
     var dragOffset by remember { mutableStateOf(Offset.Zero) }
     var dragCenterInRoot by remember { mutableStateOf<Offset?>(null) }
     var dragTargetPageId by remember { mutableStateOf<String?>(null) }
+    var dragTargetIndex by remember { mutableStateOf<Int?>(null) }
     var autoScrollDelta by remember { mutableStateOf(0f) }
     val density = LocalDensity.current
     val autoScrollThresholdPx = with(density) { 96.dp.toPx() }
@@ -329,16 +332,34 @@ fun DocumentDetailScreen(
         val pageIds = uiState.pages.map { page -> page.id }.toSet()
         pageTileBounds.keys.removeAll { pageId -> pageId !in pageIds }
     }
+    val handleNavigateUp = {
+        if (!useMasterDetailLayout && isReviewingPage) {
+            isReviewingPage = false
+        } else {
+            onNavigateUp()
+        }
+    }
+    BackHandler(enabled = !useMasterDetailLayout && isReviewingPage) {
+        isReviewingPage = false
+    }
     LaunchedEffect(draggedPageId, autoScrollDelta) {
         while (draggedPageId != null && autoScrollDelta != 0f) {
             listState.scrollBy(autoScrollDelta)
             val activePageId = draggedPageId
             val activeCenter = dragCenterInRoot
             if (activePageId != null && activeCenter != null) {
-                dragTargetPageId = pageTileBounds.nearestPageId(
-                    center = activeCenter,
-                    ignoredPageId = activePageId,
+                val targetIndex = resolvePageReorderTargetIndex(
+                    pageIds = uiState.pages.map { page -> page.id },
+                    pageBounds = pageTileBounds,
+                    draggedPageId = activePageId,
+                    dragCenter = activeCenter,
                     visibleBounds = listBounds,
+                )
+                dragTargetIndex = targetIndex
+                dragTargetPageId = resolvePageReorderTargetPageId(
+                    pageIds = uiState.pages.map { page -> page.id },
+                    draggedPageId = activePageId,
+                    targetIndex = targetIndex,
                 )
                 autoScrollDelta = listBounds?.edgeScrollDelta(
                     pointerY = activeCenter.y,
@@ -350,6 +371,71 @@ fun DocumentDetailScreen(
         }
     }
 
+    val reorderEnabled = !uiState.isMutatingPage && uiState.pages.size > 1
+
+    fun startPageDrag(pageId: String) {
+        val startBounds = pageTileBounds[pageId] ?: return
+        draggedPageId = pageId
+        dragStartBounds = startBounds
+        dragOffset = Offset.Zero
+        dragCenterInRoot = startBounds.center
+        dragTargetPageId = null
+        dragTargetIndex = null
+        autoScrollDelta = 0f
+    }
+
+    fun updatePageDrag(dragAmount: Offset) {
+        val activePageId = draggedPageId ?: return
+        val startBounds = dragStartBounds ?: return
+        val updatedOffset = dragOffset + dragAmount
+        val updatedCenter = startBounds.center + updatedOffset
+        dragOffset = updatedOffset
+        dragCenterInRoot = updatedCenter
+        val targetIndex = resolvePageReorderTargetIndex(
+            pageIds = uiState.pages.map { page -> page.id },
+            pageBounds = pageTileBounds,
+            draggedPageId = activePageId,
+            dragCenter = updatedCenter,
+            visibleBounds = listBounds,
+        )
+        dragTargetIndex = targetIndex
+        dragTargetPageId = resolvePageReorderTargetPageId(
+            pageIds = uiState.pages.map { page -> page.id },
+            draggedPageId = activePageId,
+            targetIndex = targetIndex,
+        )
+        autoScrollDelta = listBounds?.edgeScrollDelta(
+            pointerY = updatedCenter.y,
+            thresholdPx = autoScrollThresholdPx,
+            maxScrollDeltaPx = maxAutoScrollDeltaPx,
+        ) ?: 0f
+    }
+
+    fun endPageDrag() {
+        val activePageId = draggedPageId
+        val targetIndex = dragTargetIndex
+        if (activePageId != null && targetIndex != null) {
+            onMovePage(activePageId, targetIndex)
+        }
+        draggedPageId = null
+        dragStartBounds = null
+        dragOffset = Offset.Zero
+        dragCenterInRoot = null
+        dragTargetPageId = null
+        dragTargetIndex = null
+        autoScrollDelta = 0f
+    }
+
+    fun cancelPageDrag() {
+        draggedPageId = null
+        dragStartBounds = null
+        dragOffset = Offset.Zero
+        dragCenterInRoot = null
+        dragTargetPageId = null
+        dragTargetIndex = null
+        autoScrollDelta = 0f
+    }
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         containerColor = MaterialTheme.colorScheme.background,
@@ -358,13 +444,7 @@ fun DocumentDetailScreen(
             ReviewTopBar(
                 title = document?.title ?: "Document",
                 pageCount = uiState.pages.size,
-                onNavigateUp = {
-                    if (!useMasterDetailLayout && isReviewingPage) {
-                        isReviewingPage = false
-                    } else {
-                        onNavigateUp()
-                    }
-                },
+                onNavigateUp = handleNavigateUp,
                 onOpenExportSheet = { exportSheetVisible = true },
                 onRename = { renameDialogVisible = true },
                 onDelete = { deleteDocumentDialogVisible = true },
@@ -392,51 +472,11 @@ fun DocumentDetailScreen(
                 dragStartBounds = dragStartBounds,
                 dragOffset = dragOffset,
                 dragTargetPageId = dragTargetPageId,
-                onDragStart = { pageId, startBounds ->
-                    draggedPageId = pageId
-                    dragStartBounds = startBounds
-                    dragOffset = Offset.Zero
-                    dragCenterInRoot = startBounds.center
-                    dragTargetPageId = null
-                    autoScrollDelta = 0f
-                },
-                onDrag = { updatedOffset, updatedCenter ->
-                    dragOffset = updatedOffset
-                    dragCenterInRoot = updatedCenter
-                    dragTargetPageId = pageTileBounds.nearestPageId(
-                        center = updatedCenter,
-                        ignoredPageId = draggedPageId.orEmpty(),
-                        visibleBounds = listBounds,
-                    )
-                    autoScrollDelta = listBounds?.edgeScrollDelta(
-                        pointerY = updatedCenter.y,
-                        thresholdPx = autoScrollThresholdPx,
-                        maxScrollDeltaPx = maxAutoScrollDeltaPx,
-                    ) ?: 0f
-                },
-                onDragEnd = {
-                    val activePageId = draggedPageId
-                    val targetIndex = uiState.pages.indexOfFirst { candidate ->
-                        candidate.id == dragTargetPageId
-                    }
-                    if (activePageId != null && targetIndex >= 0) {
-                        onMovePage(activePageId, targetIndex)
-                    }
-                    draggedPageId = null
-                    dragStartBounds = null
-                    dragOffset = Offset.Zero
-                    dragCenterInRoot = null
-                    dragTargetPageId = null
-                    autoScrollDelta = 0f
-                },
-                onDragCancel = {
-                    draggedPageId = null
-                    dragStartBounds = null
-                    dragOffset = Offset.Zero
-                    dragCenterInRoot = null
-                    dragTargetPageId = null
-                    autoScrollDelta = 0f
-                },
+                reorderEnabled = reorderEnabled,
+                onStartPageDrag = ::startPageDrag,
+                onUpdatePageDrag = ::updatePageDrag,
+                onEndPageDrag = ::endPageDrag,
+                onCancelPageDrag = ::cancelPageDrag,
                 onNavigateUp = onNavigateUp,
                 onOpenCamera = onOpenCamera,
                 onImportImage = onImportImage,
@@ -476,70 +516,6 @@ fun DocumentDetailScreen(
                         .background(MaterialTheme.colorScheme.background)
                         .onGloballyPositioned { coordinates ->
                             listBounds = coordinates.boundsInRoot()
-                        }
-                        .pointerInput(uiState.pages, uiState.isMutatingPage, isReviewingPage) {
-                            if (uiState.isMutatingPage || isReviewingPage || uiState.pages.isEmpty()) {
-                                return@pointerInput
-                            }
-                            detectDragGesturesAfterLongPress(
-                                onDragStart = { localOffset ->
-                                    val containerBounds = listBounds ?: return@detectDragGesturesAfterLongPress
-                                    val rootOffset = Offset(
-                                        x = containerBounds.left + localOffset.x,
-                                        y = containerBounds.top + localOffset.y,
-                                    )
-                                    val pageId = pageTileBounds.hitTestPageId(rootOffset) ?: return@detectDragGesturesAfterLongPress
-                                    val startBounds = pageTileBounds[pageId] ?: return@detectDragGesturesAfterLongPress
-                                    draggedPageId = pageId
-                                    dragStartBounds = startBounds
-                                    dragOffset = Offset.Zero
-                                    dragCenterInRoot = startBounds.center
-                                    dragTargetPageId = null
-                                    autoScrollDelta = 0f
-                                },
-                                onDrag = { change, dragAmount ->
-                                    val activePageId = draggedPageId ?: return@detectDragGesturesAfterLongPress
-                                    change.consume()
-                                    val updatedOffset = dragOffset + dragAmount
-                                    val startBounds = dragStartBounds ?: return@detectDragGesturesAfterLongPress
-                                    val updatedDragCenter = startBounds.center + updatedOffset
-                                    dragOffset = updatedOffset
-                                    dragCenterInRoot = updatedDragCenter
-                                    dragTargetPageId = pageTileBounds.nearestPageId(
-                                        center = updatedDragCenter,
-                                        ignoredPageId = activePageId,
-                                        visibleBounds = listBounds,
-                                    )
-                                    autoScrollDelta = listBounds?.edgeScrollDelta(
-                                        pointerY = updatedDragCenter.y,
-                                        thresholdPx = autoScrollThresholdPx,
-                                        maxScrollDeltaPx = maxAutoScrollDeltaPx,
-                                    ) ?: 0f
-                                },
-                                onDragEnd = {
-                                    val activePageId = draggedPageId
-                                    val targetIndex = uiState.pages.indexOfFirst { candidate ->
-                                        candidate.id == dragTargetPageId
-                                    }
-                                    if (activePageId != null && targetIndex >= 0) {
-                                        onMovePage(activePageId, targetIndex)
-                                    }
-                                    draggedPageId = null
-                                    dragStartBounds = null
-                                    dragOffset = Offset.Zero
-                                    dragCenterInRoot = null
-                                    dragTargetPageId = null
-                                    autoScrollDelta = 0f
-                                },
-                                onDragCancel = {
-                                    draggedPageId = null
-                                    dragStartBounds = null
-                                    dragOffset = Offset.Zero
-                                    dragCenterInRoot = null
-                                    dragTargetPageId = null
-                                    autoScrollDelta = 0f
-                                },
-                            )
                         },
                 ) {
                 LazyColumn(
@@ -598,6 +574,7 @@ fun DocumentDetailScreen(
                 item(key = "pages_header", contentType = "section_header") {
                     DocumentPagesHeader(
                         compact = false,
+                        showReorderHint = reorderEnabled,
                         actionsEnabled = !uiState.isMutatingPage,
                         onAddPage = { addPageSheetVisible = true },
                     )
@@ -624,6 +601,11 @@ fun DocumentDetailScreen(
                                 isDragging = isDragging,
                                 isDropTarget = dragTargetPageId == page.id,
                                 isSelected = page.id == selectedPage?.id,
+                                reorderEnabled = reorderEnabled && !isReviewingPage,
+                                onReorderDragStart = { startPageDrag(page.id) },
+                                onReorderDrag = ::updatePageDrag,
+                                onReorderDragEnd = ::endPageDrag,
+                                onReorderDragCancel = ::cancelPageDrag,
                                 modifier = Modifier
                                     .weight(1f)
                                     .graphicsLayer {
@@ -633,8 +615,10 @@ fun DocumentDetailScreen(
                                         pageTileBounds[page.id] = coordinates.boundsInRoot()
                                     },
                                 onClick = {
-                                    onSelectPage(page.id)
-                                    isReviewingPage = true
+                                    if (draggedPageId == null) {
+                                        onSelectPage(page.id)
+                                        isReviewingPage = true
+                                    }
                                 },
                             )
                         }
@@ -1070,10 +1054,11 @@ private fun DocumentMasterDetailLayout(
     dragStartBounds: Rect?,
     dragOffset: Offset,
     dragTargetPageId: String?,
-    onDragStart: (String, Rect) -> Unit,
-    onDrag: (Offset, Offset) -> Unit,
-    onDragEnd: () -> Unit,
-    onDragCancel: () -> Unit,
+    reorderEnabled: Boolean,
+    onStartPageDrag: (String) -> Unit,
+    onUpdatePageDrag: (Offset) -> Unit,
+    onEndPageDrag: () -> Unit,
+    onCancelPageDrag: () -> Unit,
     onNavigateUp: () -> Unit,
     onOpenCamera: () -> Unit,
     onImportImage: () -> Unit,
@@ -1100,33 +1085,6 @@ private fun DocumentMasterDetailLayout(
                 .background(MaterialTheme.colorScheme.background)
                 .onGloballyPositioned { coordinates ->
                     onListBoundsChanged(coordinates.boundsInRoot())
-                }
-                .pointerInput(uiState.pages, uiState.isMutatingPage) {
-                    if (uiState.isMutatingPage || uiState.pages.isEmpty()) {
-                        return@pointerInput
-                    }
-                    detectDragGesturesAfterLongPress(
-                        onDragStart = { localOffset ->
-                            val containerBounds = listBounds ?: return@detectDragGesturesAfterLongPress
-                            val rootOffset = Offset(
-                                x = containerBounds.left + localOffset.x,
-                                y = containerBounds.top + localOffset.y,
-                            )
-                            val pageId = pageTileBounds.hitTestPageId(rootOffset) ?: return@detectDragGesturesAfterLongPress
-                            val startBounds = pageTileBounds[pageId] ?: return@detectDragGesturesAfterLongPress
-                            onDragStart(pageId, startBounds)
-                        },
-                        onDrag = { change, dragAmount ->
-                            val activePageId = draggedPageId ?: return@detectDragGesturesAfterLongPress
-                            change.consume()
-                            val updatedOffset = dragOffset + dragAmount
-                            val startBounds = dragStartBounds ?: return@detectDragGesturesAfterLongPress
-                            val updatedCenter = startBounds.center + updatedOffset
-                            onDrag(updatedOffset, updatedCenter)
-                        },
-                        onDragEnd = { onDragEnd() },
-                        onDragCancel = { onDragCancel() },
-                    )
                 },
         ) {
             LazyColumn(
@@ -1159,17 +1117,19 @@ private fun DocumentMasterDetailLayout(
                 item(key = "pages_header") {
                     DocumentPagesHeader(
                         compact = true,
+                        showReorderHint = reorderEnabled,
                         actionsEnabled = !uiState.isMutatingPage,
                         onAddPage = onAddPage,
                     )
                 }
 
                 if (uiState.pages.isEmpty()) {
-                    item(key = "empty_document") {
-                        EmptyDocumentCard(
-                            actionsEnabled = !uiState.isMutatingPage,
-                            onCapture = onOpenCamera,
-                            onUploadImage = onImportImage,
+                    item(key = "empty_document_hint") {
+                        Text(
+                            text = "Use Scan or Import to add your first page.",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.padding(top = 4.dp),
                         )
                     }
                 } else {
@@ -1189,13 +1149,22 @@ private fun DocumentMasterDetailLayout(
                             isDropTarget = dragTargetPageId == page.id,
                             isSelected = page.id == selectedPage?.id,
                             compact = true,
+                            reorderEnabled = reorderEnabled,
+                            onReorderDragStart = { onStartPageDrag(page.id) },
+                            onReorderDrag = onUpdatePageDrag,
+                            onReorderDragEnd = onEndPageDrag,
+                            onReorderDragCancel = onCancelPageDrag,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .graphicsLayer { alpha = if (isDragging) 0.28f else 1f }
                                 .onGloballyPositioned { coordinates ->
                                     pageTileBounds[page.id] = coordinates.boundsInRoot()
                                 },
-                            onClick = { onSelectPage(page.id) },
+                            onClick = {
+                                if (draggedPageId == null) {
+                                    onSelectPage(page.id)
+                                }
+                            },
                         )
                     }
                 }
@@ -1251,23 +1220,35 @@ private fun DocumentMasterDetailLayout(
                     MissingDocumentCard(onNavigateUp = onNavigateUp)
                 }
                 uiState.pages.isEmpty() -> {
-                    EmptyDocumentCard(
-                        actionsEnabled = !uiState.isMutatingPage,
-                        onCapture = onOpenCamera,
-                        onUploadImage = onImportImage,
-                        modifier = Modifier.fillMaxWidth(),
-                    )
-                }
-                selectedPage != null -> {
-                    SelectedPageCard(
-                        page = selectedPage,
-                        pageCount = uiState.pages.size,
-                        expanded = true,
+                    Box(
                         modifier = Modifier
                             .fillMaxWidth()
                             .weight(1f),
-                        onPreview = { onPreviewPage(selectedPage.id) },
-                    )
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        EmptyDocumentCard(
+                            actionsEnabled = !uiState.isMutatingPage,
+                            onCapture = onOpenCamera,
+                            onUploadImage = onImportImage,
+                            modifier = Modifier.widthIn(max = 420.dp),
+                        )
+                    }
+                }
+                selectedPage != null -> {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f),
+                        contentAlignment = Alignment.TopCenter,
+                    ) {
+                        SelectedPageCard(
+                            page = selectedPage,
+                            pageCount = uiState.pages.size,
+                            expanded = true,
+                            modifier = Modifier.fillMaxWidth(),
+                            onPreview = { onPreviewPage(selectedPage.id) },
+                        )
+                    }
                     ReviewActionDock(
                         enabled = !uiState.isMutatingPage,
                         onEdit = { onOpenPageEditor(selectedPage.id) },
@@ -1317,6 +1298,7 @@ private fun DocumentMetricsRow(
 @Composable
 private fun DocumentPagesHeader(
     compact: Boolean,
+    showReorderHint: Boolean,
     actionsEnabled: Boolean,
     onAddPage: () -> Unit,
 ) {
@@ -1338,10 +1320,14 @@ private fun DocumentPagesHeader(
                 },
                 fontWeight = FontWeight.SemiBold,
             )
-            if (!compact) {
+            if (showReorderHint) {
                 Text(
-                    text = "Tap to review. Long-press and drag to reorder.",
-                    style = MaterialTheme.typography.bodyMedium,
+                    text = if (compact) {
+                        "Long-press and drag to reorder"
+                    } else {
+                        "Tap to review. Long-press and drag to reorder."
+                    },
+                    style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
@@ -1449,7 +1435,9 @@ private fun EmptyDocumentCard(
                 textAlign = TextAlign.Center,
             )
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .widthIn(max = 360.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 Button(
@@ -1504,6 +1492,7 @@ private fun SelectedPageCard(
     val capturedDate = remember(page.createdAtMillis) {
         page.createdAtMillis.toReadableDateTime()
     }
+    val previewMaxHeight = 280.dp
     Surface(
         modifier = modifier
             .fillMaxWidth()
@@ -1514,9 +1503,9 @@ private fun SelectedPageCard(
     ) {
         Column(
             modifier = Modifier
-                .then(if (expanded) Modifier.fillMaxHeight() else Modifier)
-                .padding(if (expanded) 18.dp else 14.dp),
-            verticalArrangement = Arrangement.spacedBy(if (expanded) 16.dp else 12.dp),
+                .fillMaxWidth()
+                .padding(if (expanded) 14.dp else 14.dp),
+            verticalArrangement = Arrangement.spacedBy(if (expanded) 12.dp else 12.dp),
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -1548,12 +1537,31 @@ private fun SelectedPageCard(
                     contentColor = page.processingState.toContentColor(),
                 )
             }
-            Box(modifier = if (expanded) Modifier.weight(1f) else Modifier) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .then(
+                        if (expanded) {
+                            Modifier.heightIn(max = previewMaxHeight)
+                        } else {
+                            Modifier
+                        },
+                    ),
+                contentAlignment = Alignment.Center,
+            ) {
                 PagePreview(
                     page = page,
                     displaySize = PreviewDisplaySize.DETAIL,
-                    modifier = Modifier.fillMaxWidth(),
-                    minHeight = if (expanded) 280.dp else 120.dp,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .then(
+                            if (expanded) {
+                                Modifier.heightIn(max = previewMaxHeight)
+                            } else {
+                                Modifier
+                            },
+                        ),
+                    minHeight = if (expanded) 140.dp else 100.dp,
                 )
                 ChromeIconButton(
                     icon = Icons.Filled.OpenInFull,
@@ -1561,7 +1569,7 @@ private fun SelectedPageCard(
                     onClick = onPreview,
                     modifier = Modifier
                         .align(Alignment.BottomEnd)
-                        .padding(12.dp),
+                        .padding(8.dp),
                     containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.84f),
                     contentColor = MaterialTheme.colorScheme.onSurface,
                 )
@@ -1672,11 +1680,33 @@ private fun PageOverviewTile(
     modifier: Modifier = Modifier,
     isSelected: Boolean = false,
     compact: Boolean = false,
+    reorderEnabled: Boolean = false,
+    onReorderDragStart: () -> Unit = {},
+    onReorderDrag: (Offset) -> Unit = {},
+    onReorderDragEnd: () -> Unit = {},
+    onReorderDragCancel: () -> Unit = {},
     onClick: () -> Unit,
 ) {
     Surface(
         modifier = modifier
-            .clickable(onClick = onClick),
+            .clickable(enabled = !isDragging, onClick = onClick)
+            .then(
+                if (reorderEnabled) {
+                    Modifier.pointerInput(page.id) {
+                        detectDragGesturesAfterLongPress(
+                            onDragStart = { onReorderDragStart() },
+                            onDrag = { change, dragAmount ->
+                                change.consume()
+                                onReorderDrag(dragAmount)
+                            },
+                            onDragEnd = { onReorderDragEnd() },
+                            onDragCancel = { onReorderDragCancel() },
+                        )
+                    }
+                } else {
+                    Modifier
+                },
+            ),
         color = when {
             isDropTarget -> MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.48f)
             isSelected -> MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.24f)
@@ -1692,72 +1722,161 @@ private fun PageOverviewTile(
         ),
         shape = MaterialTheme.shapes.extraLarge,
     ) {
-        Column(
-            modifier = Modifier.padding(if (compact) 8.dp else 12.dp),
-            verticalArrangement = Arrangement.spacedBy(if (compact) 6.dp else 10.dp),
-        ) {
-            Box {
-                PagePreview(
-                    page = page,
-                    displaySize = PreviewDisplaySize.CARD,
-                    modifier = Modifier.fillMaxWidth(),
-                    minHeight = if (compact) 88.dp else 118.dp,
-                )
-                MetricChip(
-                    label = "P${page.pageIndex + 1}/$pageCount",
-                    modifier = Modifier
-                        .align(Alignment.TopStart)
-                        .padding(8.dp),
-                    containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.84f),
-                )
+        if (compact) {
+            Row(
+                modifier = Modifier.padding(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Box(modifier = Modifier.width(72.dp)) {
+                    PagePreview(
+                        page = page,
+                        displaySize = PreviewDisplaySize.COMPACT,
+                        modifier = Modifier.fillMaxWidth(),
+                        minHeight = 54.dp,
+                    )
+                    MetricChip(
+                        label = "P${page.pageIndex + 1}",
+                        modifier = Modifier
+                            .align(Alignment.TopStart)
+                            .padding(6.dp),
+                        containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.86f),
+                    )
+                }
+                Column(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                ) {
+                    Text(
+                        text = "Page ${page.pageIndex + 1}",
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                    Text(
+                        text = page.processingState.toShortLabel(),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
+                if (reorderEnabled) {
+                    Icon(
+                        imageVector = Icons.Filled.DragHandle,
+                        contentDescription = "Drag to reorder",
+                        tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.72f),
+                        modifier = Modifier.size(20.dp),
+                    )
+                }
             }
-            if (!compact) {
+        } else {
+            Column(
+                modifier = Modifier.padding(10.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                Box {
+                    PagePreview(
+                        page = page,
+                        displaySize = PreviewDisplaySize.CARD,
+                        modifier = Modifier.fillMaxWidth(),
+                        minHeight = 88.dp,
+                    )
+                    MetricChip(
+                        label = "P${page.pageIndex + 1}/$pageCount",
+                        modifier = Modifier
+                            .align(Alignment.TopStart)
+                            .padding(8.dp),
+                        containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.84f),
+                    )
+                    if (reorderEnabled) {
+                        Icon(
+                            imageVector = Icons.Filled.DragHandle,
+                            contentDescription = "Drag to reorder",
+                            tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.72f),
+                            modifier = Modifier
+                                .align(Alignment.TopEnd)
+                                .padding(8.dp)
+                                .size(20.dp),
+                        )
+                    }
+                }
                 Text(
                     text = "Page ${page.pageIndex + 1}",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onSurface,
                 )
+                Text(
+                    text = page.processingState.toShortLabel(),
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
             }
-            Text(
-                text = if (compact) {
-                    "Page ${page.pageIndex + 1} · ${page.processingState.toShortLabel()}"
-                } else {
-                    page.processingState.toShortLabel()
-                },
-                style = if (compact) {
-                    MaterialTheme.typography.labelMedium
-                } else {
-                    MaterialTheme.typography.labelLarge
-                },
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
         }
     }
 }
 
-private fun Map<String, Rect>.nearestPageId(
-    center: Offset,
-    ignoredPageId: String,
+internal fun resolvePageReorderTargetIndex(
+    pageIds: List<String>,
+    pageBounds: Map<String, Rect>,
+    draggedPageId: String,
+    dragCenter: Offset,
     visibleBounds: Rect?,
-): String? = entries
-    .asSequence()
-    .filter { (pageId, _) -> pageId != ignoredPageId }
-    .filter { (_, bounds) -> visibleBounds == null || bounds.intersects(visibleBounds) }
-    .minByOrNull { (_, bounds) ->
-        val boundsCenter = bounds.center
-        hypot(
-            (boundsCenter.x - center.x).toDouble(),
-            (boundsCenter.y - center.y).toDouble(),
-        )
+): Int? {
+    if (draggedPageId !in pageIds || pageIds.size < 2) {
+        return null
     }
-    ?.key
 
-private fun Map<String, Rect>.hitTestPageId(offset: Offset): String? = entries
-    .lastOrNull { (_, bounds) -> bounds.contains(offset) }
-    ?.key
+    val orderedTargets = pageIds
+        .filter { pageId -> pageId != draggedPageId }
+        .mapNotNull { pageId ->
+            val bounds = pageBounds[pageId] ?: return@mapNotNull null
+            if (visibleBounds != null && !bounds.intersects(visibleBounds)) {
+                return@mapNotNull null
+            }
+            pageId to bounds
+        }
+
+    if (orderedTargets.isEmpty()) {
+        return null
+    }
+
+    val targetInRemaining = orderedTargets.indexOfFirst { (_, bounds) ->
+        dragCenter.isBeforePageCenter(bounds)
+    }.let { index ->
+        if (index == -1) orderedTargets.size else index
+    }
+
+    return targetInRemaining.coerceIn(0, pageIds.lastIndex)
+}
+
+private fun resolvePageReorderTargetPageId(
+    pageIds: List<String>,
+    draggedPageId: String,
+    targetIndex: Int?,
+): String? {
+    if (targetIndex == null) {
+        return null
+    }
+    val remainingPageIds = pageIds.filter { pageId -> pageId != draggedPageId }
+    return remainingPageIds.getOrNull(targetIndex) ?: remainingPageIds.lastOrNull()
+}
+
+private fun Offset.isBeforePageCenter(bounds: Rect): Boolean {
+    val center = bounds.center
+    if (y < center.y) {
+        return true
+    }
+    if (y > center.y) {
+        return false
+    }
+    return x < center.x
+}
 
 private fun Rect.edgeScrollDelta(
     pointerY: Float,

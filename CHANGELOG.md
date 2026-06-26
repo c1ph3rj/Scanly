@@ -4,6 +4,12 @@ All notable user-facing changes to Scanly are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project uses semantic-style version names.
 
+## [Unreleased]
+
+### Changed
+
+- The update dialog is now rate-limited to once every 6 hours after it is shown, instead of appearing on every app launch.
+
 ## [1.0.4] - 2026-06-15
 
 ### Added

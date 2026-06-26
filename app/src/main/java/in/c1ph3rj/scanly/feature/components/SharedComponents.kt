@@ -1,5 +1,6 @@
 package `in`.c1ph3rj.scanly.feature.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -50,6 +51,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -299,7 +301,7 @@ fun ScanlyAppLogo(
 ) {
     val context = LocalContext.current
     val density = LocalDensity.current
-    val sizePx = with(density) { size.roundToPx().coerceAtLeast(1) }
+    val sizePx = with(density) { (size * 1.35f).roundToPx().coerceAtLeast(1) }
     val painter = remember(context.packageName, sizePx) {
         val drawable = context.packageManager.getApplicationIcon(context.packageName)
         BitmapPainter(drawable.toBitmap(sizePx, sizePx).asImageBitmap())
@@ -309,7 +311,7 @@ fun ScanlyAppLogo(
         contentDescription = "Scanly",
         modifier = modifier
             .size(size)
-            .clip(RoundedCornerShape(size * 0.22f)),
+            .clip(RoundedCornerShape(size * 0.24f)),
         contentScale = ContentScale.Crop,
     )
 }
@@ -835,61 +837,105 @@ private fun DocumentCardGridContent(
     showRename: Boolean,
     deleteContentDescription: String,
 ) {
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(10.dp),
+            .aspectRatio(0.78f),
     ) {
         CachedThumbnail(
             thumbnailPath = document.coverThumbnailPath,
             title = document.title,
             displaySize = PreviewDisplaySize.CARD,
             contentRevision = document.updatedAtMillis,
-            modifier = Modifier
-                .fillMaxWidth()
-                .aspectRatio(3f / 4f),
+            modifier = Modifier.fillMaxSize(),
             placeholderIcon = {
                 Text(
                     text = DocumentPresentationFormatter.initials(document.title),
-                    style = MaterialTheme.typography.titleLarge,
+                    style = MaterialTheme.typography.headlineMedium,
                     color = MaterialTheme.colorScheme.onPrimaryContainer,
                     fontWeight = FontWeight.SemiBold,
                 )
             },
         )
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = document.title,
-            style = MaterialTheme.typography.titleSmall,
-            fontWeight = FontWeight.SemiBold,
-            maxLines = 2,
-            overflow = TextOverflow.Ellipsis,
-            minLines = 1,
+        Box(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+                .height(96.dp)
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            Color.Transparent,
+                            MaterialTheme.colorScheme.surface.copy(alpha = 0.92f),
+                        ),
+                    ),
+                ),
         )
-        Spacer(modifier = Modifier.height(6.dp))
-        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            MetricChip(
-                label = "${document.pageCount} pg",
-                icon = Icons.Filled.Description,
-                containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+        Column(
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp, vertical = 10.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+            Text(
+                text = document.title,
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.SemiBold,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                MetricChip(
+                    label = "${document.pageCount} pg",
+                    icon = Icons.Filled.Description,
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerHighest.copy(alpha = 0.9f),
+                )
+                Text(
+                    text = updatedDate,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                )
+            }
+        }
+        Row(
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+        ) {
+            if (showRename) {
+                LibraryCardIconButton(
+                    icon = Icons.Filled.Edit,
+                    contentDescription = "Rename",
+                    onClick = onRename,
+                    size = 32.dp,
+                    containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.88f),
+                )
+            }
+            if (onMove != null) {
+                LibraryCardIconButton(
+                    icon = Icons.Filled.Folder,
+                    contentDescription = "Move to folder",
+                    onClick = onMove,
+                    size = 32.dp,
+                    containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.88f),
+                )
+            }
+            LibraryCardIconButton(
+                icon = Icons.Filled.DeleteOutline,
+                contentDescription = deleteContentDescription,
+                onClick = onDelete,
+                size = 32.dp,
+                containerColor = MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.92f),
+                contentColor = MaterialTheme.colorScheme.onErrorContainer,
             )
         }
-        Text(
-            text = updatedDate,
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            maxLines = 1,
-            modifier = Modifier.padding(top = 4.dp),
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        LibraryCardActions(
-            onRename = onRename,
-            onMove = onMove,
-            onDelete = onDelete,
-            showRename = showRename,
-            deleteContentDescription = deleteContentDescription,
-            compact = true,
-        )
     }
 }
 
@@ -903,62 +949,82 @@ private fun DocumentCardListContent(
     showRename: Boolean,
     deleteContentDescription: String,
 ) {
-    Column(modifier = Modifier.padding(14.dp)) {
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(14.dp),
-            verticalAlignment = Alignment.Top,
-        ) {
-            CachedThumbnail(
-                thumbnailPath = document.coverThumbnailPath,
-                title = document.title,
-                displaySize = PreviewDisplaySize.CARD,
-                contentRevision = document.updatedAtMillis,
-                modifier = Modifier
-                    .width(72.dp)
-                    .aspectRatio(3f / 4f),
-                placeholderIcon = {
-                    Text(
-                        text = DocumentPresentationFormatter.initials(document.title),
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                        fontWeight = FontWeight.SemiBold,
-                    )
-                },
-            )
-            Column(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(6.dp),
-            ) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(12.dp),
+        horizontalArrangement = Arrangement.spacedBy(14.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        CachedThumbnail(
+            thumbnailPath = document.coverThumbnailPath,
+            title = document.title,
+            displaySize = PreviewDisplaySize.CARD,
+            contentRevision = document.updatedAtMillis,
+            modifier = Modifier
+                .width(80.dp)
+                .aspectRatio(3f / 4f),
+            placeholderIcon = {
                 Text(
-                    text = document.title,
+                    text = DocumentPresentationFormatter.initials(document.title),
                     style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
                     fontWeight = FontWeight.SemiBold,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
                 )
-                Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                    MetricChip(
-                        label = "${document.pageCount} ${if (document.pageCount == 1) "page" else "pages"}",
-                        icon = Icons.Filled.Description,
-                        containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
-                    )
-                }
-                Text(
-                    text = updatedDate,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+            },
+        )
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(6.dp),
+        ) {
+            Text(
+                text = document.title,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+            )
+            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                MetricChip(
+                    label = "${document.pageCount} ${if (document.pageCount == 1) "page" else "pages"}",
+                    icon = Icons.Filled.Description,
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                )
+                MetricChip(
+                    label = updatedDate,
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
                 )
             }
         }
-        Spacer(modifier = Modifier.height(10.dp))
-        LibraryCardActions(
-            onRename = onRename,
-            onMove = onMove,
-            onDelete = onDelete,
-            showRename = showRename,
-            deleteContentDescription = deleteContentDescription,
-            compact = false,
-        )
+        Column(
+            verticalArrangement = Arrangement.spacedBy(6.dp),
+            horizontalAlignment = Alignment.End,
+        ) {
+            if (showRename) {
+                LibraryCardIconButton(
+                    icon = Icons.Filled.Edit,
+                    contentDescription = "Rename",
+                    onClick = onRename,
+                    size = 36.dp,
+                )
+            }
+            if (onMove != null) {
+                LibraryCardIconButton(
+                    icon = Icons.Filled.Folder,
+                    contentDescription = "Move to folder",
+                    onClick = onMove,
+                    size = 36.dp,
+                )
+            }
+            LibraryCardIconButton(
+                icon = Icons.Filled.DeleteOutline,
+                contentDescription = deleteContentDescription,
+                onClick = onDelete,
+                size = 36.dp,
+                containerColor = MaterialTheme.colorScheme.errorContainer,
+                contentColor = MaterialTheme.colorScheme.onErrorContainer,
+            )
+        }
     }
 }
 

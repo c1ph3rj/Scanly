@@ -282,6 +282,7 @@ fun ScanSessionScreen(
     var pagesVisible by rememberSaveable { mutableStateOf(false) }
     var quickControlsVisible by rememberSaveable { mutableStateOf(false) }
     val windowSizeInfo = rememberWindowSizeInfo()
+    val previewAspectRatio = cameraPreviewAspectRatio(windowSizeInfo.isLandscape)
 
     LaunchedEffect(uiState.pages.isNotEmpty()) {
         if (uiState.pages.isNotEmpty()) {
@@ -319,6 +320,64 @@ fun ScanSessionScreen(
                 actionLabel = "Grant",
                 onAction = onRequestPermission,
             )
+        } else if (windowSizeInfo.useCompactLandscapeLayout) {
+            Row(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight(),
+                ) {
+                    CameraPreviewViewport(
+                        modifier = Modifier.align(Alignment.Center),
+                        aspectRatio = previewAspectRatio,
+                        liveDetection = uiState.liveDetection,
+                        onCameraReady = onCameraReady,
+                        onPreviewFrame = onPreviewFrame,
+                        onTapToFocus = onTapToFocus,
+                    )
+                    CameraTopBar(
+                        uiState = uiState,
+                        onNavigateUp = onNavigateUp,
+                        quickControlsVisible = quickControlsVisible,
+                        onQuickControlsToggle = { quickControlsVisible = !quickControlsVisible },
+                        onClearRetakeSelection = onClearRetakeSelection,
+                        onAutoCaptureEnabledChange = onAutoCaptureEnabledChange,
+                        onGridEnabledChange = onGridEnabledChange,
+                        torchEnabled = torchEnabled,
+                        torchAvailable = torchAvailable,
+                        onTorchToggle = onTorchToggle,
+                        compact = true,
+                        modifier = Modifier
+                            .align(Alignment.TopCenter)
+                            .statusBarsPadding()
+                            .padding(horizontal = 10.dp, vertical = 6.dp),
+                    )
+                    DetectionMeta(
+                        liveDetection = uiState.liveDetection,
+                        showStats = uiState.showDetectionStats,
+                        modifier = Modifier
+                            .align(Alignment.BottomStart)
+                            .padding(start = 16.dp, bottom = 14.dp),
+                    )
+                }
+                CameraCompactLandscapeDock(
+                    uiState = uiState,
+                    pagesVisible = pagesVisible,
+                    onPagesVisibilityToggle = { pagesVisible = !pagesVisible },
+                    onCapture = onCapture,
+                    onOpenDocument = onOpenDocument,
+                    modifier = Modifier
+                        .width(244.dp)
+                        .fillMaxHeight()
+                        .navigationBarsPadding()
+                        .padding(vertical = 8.dp, horizontal = 8.dp),
+                )
+            }
         } else if (windowSizeInfo.useTabletLandscapeLayout) {
             Row(
                 modifier = Modifier
@@ -330,14 +389,14 @@ fun ScanSessionScreen(
                         .weight(1f)
                         .fillMaxHeight(),
                 ) {
-                    CameraPreview(
-                        modifier = Modifier.fillMaxSize(),
+                    CameraPreviewViewport(
+                        modifier = Modifier.align(Alignment.Center),
+                        aspectRatio = previewAspectRatio,
                         liveDetection = uiState.liveDetection,
                         onCameraReady = onCameraReady,
                         onPreviewFrame = onPreviewFrame,
                         onTapToFocus = onTapToFocus,
                     )
-                    CameraPreviewScrims(modifier = Modifier.fillMaxSize())
                     CameraTopBar(
                         uiState = uiState,
                         onNavigateUp = onNavigateUp,
@@ -370,35 +429,26 @@ fun ScanSessionScreen(
                     onPagesVisibilityToggle = { pagesVisible = !pagesVisible },
                     onOpenDocument = onOpenDocument,
                     modifier = Modifier
-                        .width(284.dp)
+                        .width(300.dp)
                         .fillMaxHeight()
                         .navigationBarsPadding()
                         .padding(vertical = 12.dp, horizontal = 12.dp),
                 )
             }
         } else {
-            // Phone / portrait: camera preview centred with 3:4 aspect ratio
             Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding),
             ) {
-                Box(
-                    modifier = Modifier
-                        .align(Alignment.Center)
-                        .fillMaxWidth()
-                        .aspectRatio(3f / 4f)
-                ) {
-                    // Instruction: The camera preview must always use the 3:4 default sensor size aspect ratio to prevent cropping.
-                    CameraPreview(
-                        modifier = Modifier.fillMaxSize(),
-                        liveDetection = uiState.liveDetection,
-                        onCameraReady = onCameraReady,
-                        onPreviewFrame = onPreviewFrame,
-                        onTapToFocus = onTapToFocus,
-                    )
-                    CameraPreviewScrims(modifier = Modifier.fillMaxSize())
-                }
+                CameraPreviewViewport(
+                    modifier = Modifier.align(Alignment.Center),
+                    aspectRatio = previewAspectRatio,
+                    liveDetection = uiState.liveDetection,
+                    onCameraReady = onCameraReady,
+                    onPreviewFrame = onPreviewFrame,
+                    onTapToFocus = onTapToFocus,
+                )
                 CameraTopBar(
                     uiState = uiState,
                     onNavigateUp = onNavigateUp,
@@ -410,10 +460,19 @@ fun ScanSessionScreen(
                     torchEnabled = torchEnabled,
                     torchAvailable = torchAvailable,
                     onTorchToggle = onTorchToggle,
+                    compact = true,
                     modifier = Modifier
                         .align(Alignment.TopCenter)
                         .statusBarsPadding()
-                        .padding(horizontal = 16.dp, vertical = 6.dp),
+                        .padding(horizontal = 12.dp, vertical = 8.dp),
+                )
+                DetectionMeta(
+                    liveDetection = uiState.liveDetection,
+                    showStats = uiState.showDetectionStats,
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .statusBarsPadding()
+                        .padding(top = 72.dp, end = 12.dp),
                 )
                 CameraBottomDock(
                     uiState = uiState,
@@ -426,10 +485,65 @@ fun ScanSessionScreen(
                         .align(Alignment.BottomCenter)
                         .fillMaxWidth()
                         .navigationBarsPadding()
-                        .padding(vertical = 14.dp),
+                        .padding(bottom = 12.dp),
                 )
             }
         }
+    }
+}
+
+@Composable
+private fun CameraCompactLandscapeDock(
+    uiState: ScanSessionUiState,
+    pagesVisible: Boolean,
+    onPagesVisibilityToggle: () -> Unit,
+    onCapture: () -> Unit,
+    onOpenDocument: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Surface(
+        modifier = modifier,
+        color = Color.Black.copy(alpha = 0.9f),
+        shape = RoundedCornerShape(24.dp),
+        border = BorderStroke(1.dp, Color.White.copy(alpha = 0.08f)),
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(10.dp),
+            contentAlignment = Alignment.Center,
+        ) {
+            CaptureRailActions(
+                uiState = uiState,
+                pagesVisible = pagesVisible,
+                onPagesVisibilityToggle = onPagesVisibilityToggle,
+                onCapture = onCapture,
+                onOpenDocument = onOpenDocument,
+            )
+        }
+    }
+}
+
+@Composable
+private fun CameraPreviewViewport(
+    modifier: Modifier = Modifier,
+    aspectRatio: Float,
+    liveDetection: LiveDetectionUiState,
+    onCameraReady: (ImageCapture, PreviewView, Camera) -> Unit,
+    onPreviewFrame: (() -> DetectionFrame?) -> Boolean,
+    onTapToFocus: (Offset) -> Boolean,
+) {
+    Box(
+        modifier = modifier.aspectRatio(aspectRatio),
+    ) {
+        CameraPreview(
+            modifier = Modifier.fillMaxSize(),
+            liveDetection = liveDetection,
+            onCameraReady = onCameraReady,
+            onPreviewFrame = onPreviewFrame,
+            onTapToFocus = onTapToFocus,
+        )
+        CameraPreviewScrims(modifier = Modifier.fillMaxSize())
     }
 }
 
@@ -480,6 +594,7 @@ private fun CameraTopBar(
     torchAvailable: Boolean,
     onTorchToggle: () -> Unit,
     modifier: Modifier = Modifier,
+    compact: Boolean = false,
 ) {
     Column(
         modifier = modifier.fillMaxWidth(),
@@ -490,46 +605,44 @@ private fun CameraTopBar(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Box(
-                modifier = Modifier.weight(1f),
-                contentAlignment = Alignment.CenterStart,
-            ) {
-                CameraSessionTitlePill(
-                    title = uiState.document?.title ?: "Scan session",
-                    pageCount = uiState.pages.size,
-                    onNavigateUp = onNavigateUp,
-                    modifier = Modifier.widthIn(max = 440.dp),
-                )
+            CameraSessionTitlePill(
+                title = uiState.document?.title ?: "Scan session",
+                pageCount = uiState.pages.size,
+                onNavigateUp = onNavigateUp,
+                modifier = Modifier.weight(1f, fill = false),
+            )
+            if (!compact) {
+                PreviewStatusHud(liveDetection = uiState.liveDetection)
             }
-            PreviewStatusHud(liveDetection = uiState.liveDetection)
             Row(
-                modifier = Modifier.weight(1f),
                 horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                TopControlButton(
-                    icon = Icons.Filled.AutoAwesome,
-                    label = "Auto capture",
-                    active = uiState.liveDetection.autoCaptureEnabled,
-                    onClick = {
-                        onAutoCaptureEnabledChange(!uiState.liveDetection.autoCaptureEnabled)
-                    },
-                )
-                TopControlButton(
-                    icon = Icons.Filled.Grid3x3,
-                    label = "Grid",
-                    active = uiState.liveDetection.isGridEnabled,
-                    onClick = {
-                        onGridEnabledChange(!uiState.liveDetection.isGridEnabled)
-                    },
-                )
-                TopControlButton(
-                    icon = if (torchEnabled) Icons.Filled.FlashOn else Icons.Filled.FlashOff,
-                    label = if (torchEnabled) "Flashlight on" else "Flashlight off",
-                    active = torchEnabled,
-                    enabled = torchAvailable,
-                    onClick = onTorchToggle,
-                )
+                if (!compact) {
+                    TopControlButton(
+                        icon = Icons.Filled.AutoAwesome,
+                        label = "Auto capture",
+                        active = uiState.liveDetection.autoCaptureEnabled,
+                        onClick = {
+                            onAutoCaptureEnabledChange(!uiState.liveDetection.autoCaptureEnabled)
+                        },
+                    )
+                    TopControlButton(
+                        icon = Icons.Filled.Grid3x3,
+                        label = "Grid",
+                        active = uiState.liveDetection.isGridEnabled,
+                        onClick = {
+                            onGridEnabledChange(!uiState.liveDetection.isGridEnabled)
+                        },
+                    )
+                    TopControlButton(
+                        icon = if (torchEnabled) Icons.Filled.FlashOn else Icons.Filled.FlashOff,
+                        label = if (torchEnabled) "Flashlight on" else "Flashlight off",
+                        active = torchEnabled,
+                        enabled = torchAvailable,
+                        onClick = onTorchToggle,
+                    )
+                }
                 TopControlButton(
                     icon = Icons.Filled.Tune,
                     label = if (quickControlsVisible) "Hide scan details" else "Show scan details",
@@ -1958,6 +2071,13 @@ private fun capturePage(
         },
     )
 }
+
+internal fun cameraPreviewAspectRatio(isLandscape: Boolean): Float =
+    if (isLandscape) {
+        4f / 3f
+    } else {
+        3f / 4f
+    }
 
 private fun ImageProxy.toDetectionFrame(): DetectionFrame? {
     val rgbaPlane = planes.firstOrNull() ?: return null

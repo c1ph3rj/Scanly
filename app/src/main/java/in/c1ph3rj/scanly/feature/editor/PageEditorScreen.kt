@@ -12,6 +12,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -224,44 +225,56 @@ fun PageEditorScreen(
                     }
                 }
             } else {
-                // Phone / portrait: vertical Column layout
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(innerPadding)
-                        .padding(horizontal = 16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                        .navigationBarsPadding(),
                 ) {
-                    PageCropEditor(
-                        page = uiState.page,
-                        cropQuad = uiState.cropQuad,
-                        rotationDegrees = uiState.rotationDegrees,
-                        selectedFilter = uiState.selectedFilter,
-                        onHandleMoved = onHandleMoved,
+                    Surface(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .weight(1f),
-                    )
-                    EditorPageBadge(
-                        pageIndex = uiState.page.pageIndex,
-                    )
-                    FilterSelector(
-                        selectedFilter = uiState.selectedFilter,
-                        rawImagePath = uiState.page.rawImagePath,
-                        fallbackImagePath = uiState.page.processedImagePath,
-                        rotationDegrees = uiState.rotationDegrees,
-                        onSelectFilter = onSelectFilter,
-                    )
-                    FilterScopeOption(
-                        applyToAllPages = uiState.applyFilterToAllPages,
-                        enabled = !uiState.isSaving,
-                        onApplyToAllPagesChange = onApplyFilterToAllPagesChange,
-                    )
-                    EditorActionRow(
-                        onRotateLeft = onRotateLeft,
-                        onRotateRight = onRotateRight,
-                        onResetCrop = onResetCrop,
-                    )
+                            .weight(1f)
+                            .padding(horizontal = 16.dp, vertical = 12.dp),
+                        color = EditorSurface,
+                        shape = MaterialTheme.shapes.extraLarge,
+                    ) {
+                        PageCropEditor(
+                            page = uiState.page,
+                            cropQuad = uiState.cropQuad,
+                            rotationDegrees = uiState.rotationDegrees,
+                            selectedFilter = uiState.selectedFilter,
+                            onHandleMoved = onHandleMoved,
+                            modifier = Modifier.fillMaxSize(),
+                        )
+                    }
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .verticalScroll(rememberScrollState())
+                            .padding(horizontal = 16.dp)
+                            .padding(bottom = 16.dp),
+                        verticalArrangement = Arrangement.spacedBy(14.dp),
+                    ) {
+                        EditorPageBadge(pageIndex = uiState.page.pageIndex)
+                        FilterSelector(
+                            selectedFilter = uiState.selectedFilter,
+                            rawImagePath = uiState.page.rawImagePath,
+                            fallbackImagePath = uiState.page.processedImagePath,
+                            rotationDegrees = uiState.rotationDegrees,
+                            onSelectFilter = onSelectFilter,
+                        )
+                        FilterScopeOption(
+                            applyToAllPages = uiState.applyFilterToAllPages,
+                            enabled = !uiState.isSaving,
+                            onApplyToAllPagesChange = onApplyFilterToAllPagesChange,
+                        )
+                        EditorActionRow(
+                            onRotateLeft = onRotateLeft,
+                            onRotateRight = onRotateRight,
+                            onResetCrop = onResetCrop,
+                        )
+                    }
                 }
             }
         }
@@ -1273,6 +1286,7 @@ private data class MagnifierPlacement(
 }
 
 private val EditorBackground = Color(0xFF050505)
+private val EditorSurface = Color(0xFF121212)
 private val AccentGreen = Color(0xFF0AAE78)
 private val LensBackdrop = Color(0xF0121212)
 private val LensBorder = Color.White.copy(alpha = 0.88f)

@@ -16,14 +16,15 @@ enum class WindowWidthClass { Compact, Medium, Expanded }
  *  - Compact  : < 600 dp  — phone portrait
  *  - Medium   : 600–839 dp — tablet portrait / large phone landscape
  *  - Expanded : ≥ 840 dp  — tablet landscape / foldable / desktop
+ *
+ * [isTablet] is based on smallest screen width so phones rotated into landscape
+ * keep compact navigation and one-pane flows.
  */
 data class WindowSizeInfo(
     val widthClass: WindowWidthClass,
     val isLandscape: Boolean,
+    val isTablet: Boolean,
 ) {
-    val isTablet: Boolean
-        get() = widthClass != WindowWidthClass.Compact
-
     /** Number of columns for folder/group grids. */
     val groupColumns: Int
         get() = when (widthClass) {
@@ -81,6 +82,10 @@ data class WindowSizeInfo(
      */
     val useTabletLandscapeLayout: Boolean
         get() = isTablet && isLandscape
+
+    /** True for phones in landscape: wide, but still height-constrained. */
+    val useCompactLandscapeLayout: Boolean
+        get() = !isTablet && isLandscape
 }
 
 /** Reads current window metrics from [LocalConfiguration] without any extra dependency. */
@@ -88,13 +93,27 @@ data class WindowSizeInfo(
 fun rememberWindowSizeInfo(): WindowSizeInfo {
     val configuration = LocalConfiguration.current
     return remember(configuration) {
-        val widthDp = configuration.screenWidthDp
-        val widthClass = when {
-            widthDp < 600  -> WindowWidthClass.Compact
-            widthDp < 840  -> WindowWidthClass.Medium
-            else           -> WindowWidthClass.Expanded
-        }
-        val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
-        WindowSizeInfo(widthClass = widthClass, isLandscape = isLandscape)
+        resolveWindowSizeInfo(
+            screenWidthDp = configuration.screenWidthDp,
+            smallestScreenWidthDp = configuration.smallestScreenWidthDp,
+            isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE,
+        )
     }
+}
+
+internal fun resolveWindowSizeInfo(
+    screenWidthDp: Int,
+    smallestScreenWidthDp: Int,
+    isLandscape: Boolean,
+): WindowSizeInfo {
+    val widthClass = when {
+        screenWidthDp < 600 -> WindowWidthClass.Compact
+        screenWidthDp < 840 -> WindowWidthClass.Medium
+        else -> WindowWidthClass.Expanded
+    }
+    return WindowSizeInfo(
+        widthClass = widthClass,
+        isLandscape = isLandscape,
+        isTablet = smallestScreenWidthDp >= 600,
+    )
 }
