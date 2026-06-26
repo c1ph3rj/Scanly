@@ -12,10 +12,13 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
@@ -26,17 +29,24 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.RotateLeft
+import androidx.compose.material.icons.automirrored.filled.RotateRight
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.CropFree
-import androidx.compose.material.icons.filled.RotateLeft
-import androidx.compose.material.icons.filled.RotateRight
+import androidx.compose.material.icons.filled.DeleteOutline
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -78,12 +88,14 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import `in`.c1ph3rj.scanly.core.ui.ChromeIconButton
 import `in`.c1ph3rj.scanly.core.ui.MetricChip
+import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import `in`.c1ph3rj.scanly.core.editing.CropHandle
 import `in`.c1ph3rj.scanly.core.ml.DocumentCornerQuad
 import `in`.c1ph3rj.scanly.core.ml.NormalizedPoint
 import `in`.c1ph3rj.scanly.core.processing.OpenCvPageFilterProcessor
 import `in`.c1ph3rj.scanly.domain.model.PageFilterPreset
 import `in`.c1ph3rj.scanly.domain.model.ScanPage
+import `in`.c1ph3rj.scanly.feature.components.ScanlyConfirmDialog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.withContext
@@ -93,6 +105,7 @@ import kotlin.math.roundToInt
 @Composable
 fun PageEditorRoute(
     onNavigateUp: () -> Unit,
+    onRetakePage: (documentId: String, pageId: String) -> Unit,
     viewModel: PageEditorViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -103,6 +116,7 @@ fun PageEditorRoute(
             when (event) {
                 is PageEditorEvent.ShowMessage -> snackbarHostState.showSnackbar(event.message)
                 PageEditorEvent.Saved -> onNavigateUp()
+                PageEditorEvent.PageDeleted -> onNavigateUp()
             }
         }
     }
@@ -118,9 +132,16 @@ fun PageEditorRoute(
         onSelectFilter = viewModel::selectFilter,
         onApplyFilterToAllPagesChange = viewModel::setApplyFilterToAllPages,
         onSave = viewModel::saveEdits,
+        onRetakePage = {
+            uiState.page?.let { page ->
+                onRetakePage(page.documentId, page.id)
+            }
+        },
+        onDeletePage = viewModel::deletePage,
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PageEditorScreen(
     uiState: PageEditorUiState,
@@ -133,7 +154,11 @@ fun PageEditorScreen(
     onSelectFilter: (PageFilterPreset) -> Unit,
     onApplyFilterToAllPagesChange: (Boolean) -> Unit,
     onSave: () -> Unit,
+    onRetakePage: () -> Unit,
+    onDeletePage: () -> Unit,
 ) {
+    var filterSheetVisible by remember { mutableStateOf(false) }
+    var deleteDialogVisible by remember { mutableStateOf(false) }
     val showBulkApplyLoader = uiState.isSaving && uiState.applyFilterToAllPages
     val statusLabel = when {
         showBulkApplyLoader -> "Processing"
@@ -155,6 +180,8 @@ fun PageEditorScreen(
                 )
             },
         ) { innerPadding ->
+            val windowSizeInfo = rememberWindowSizeInfo()
+
             if (uiState.missingPage || uiState.page == null || uiState.cropQuad == null) {
                 Box(
                     modifier = Modifier
@@ -168,13 +195,14 @@ fun PageEditorScreen(
                         style = MaterialTheme.typography.titleLarge,
                     )
                 }
-            } else {
-                Column(
+            } else if (windowSizeInfo.useTabletLandscapeLayout) {
+                // Tablet landscape: side-by-side Row — crop canvas left, controls right
+                Row(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(innerPadding)
                         .padding(horizontal = 16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
                     PageCropEditor(
                         page = uiState.page,
@@ -183,29 +211,71 @@ fun PageEditorScreen(
                         selectedFilter = uiState.selectedFilter,
                         onHandleMoved = onHandleMoved,
                         modifier = Modifier
+                            .weight(0.6f)
+                            .fillMaxHeight(),
+                    )
+                    Column(
+                        modifier = Modifier
+                            .weight(0.4f)
+                            .fillMaxHeight()
+                            .verticalScroll(rememberScrollState()),
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                    ) {
+                        EditorPageBadge(pageIndex = uiState.page.pageIndex)
+                        EditorActionRow(
+                            onRotateLeft = onRotateLeft,
+                            onRotateRight = onRotateRight,
+                            onResetCrop = onResetCrop,
+                            onOpenFilters = { filterSheetVisible = true },
+                            onRetake = onRetakePage,
+                            onDelete = { deleteDialogVisible = true },
+                            enabled = !uiState.isSaving,
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                    }
+                }
+            } else {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding)
+                        .navigationBarsPadding(),
+                ) {
+                    Surface(
+                        modifier = Modifier
                             .fillMaxWidth()
-                            .weight(1f),
-                    )
-                    EditorPageBadge(
-                        pageIndex = uiState.page.pageIndex,
-                    )
-                    FilterSelector(
-                        selectedFilter = uiState.selectedFilter,
-                        rawImagePath = uiState.page.rawImagePath,
-                        fallbackImagePath = uiState.page.processedImagePath,
-                        rotationDegrees = uiState.rotationDegrees,
-                        onSelectFilter = onSelectFilter,
-                    )
-                    FilterScopeOption(
-                        applyToAllPages = uiState.applyFilterToAllPages,
-                        enabled = !uiState.isSaving,
-                        onApplyToAllPagesChange = onApplyFilterToAllPagesChange,
-                    )
-                    EditorActionRow(
-                        onRotateLeft = onRotateLeft,
-                        onRotateRight = onRotateRight,
-                        onResetCrop = onResetCrop,
-                    )
+                            .weight(1f)
+                            .padding(horizontal = 16.dp, vertical = 12.dp),
+                        color = EditorSurface,
+                        shape = MaterialTheme.shapes.extraLarge,
+                    ) {
+                        PageCropEditor(
+                            page = uiState.page,
+                            cropQuad = uiState.cropQuad,
+                            rotationDegrees = uiState.rotationDegrees,
+                            selectedFilter = uiState.selectedFilter,
+                            onHandleMoved = onHandleMoved,
+                            modifier = Modifier.fillMaxSize(),
+                        )
+                    }
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                            .padding(bottom = 16.dp),
+                        verticalArrangement = Arrangement.spacedBy(14.dp),
+                    ) {
+                        EditorPageBadge(pageIndex = uiState.page.pageIndex)
+                        EditorActionRow(
+                            onRotateLeft = onRotateLeft,
+                            onRotateRight = onRotateRight,
+                            onResetCrop = onResetCrop,
+                            onOpenFilters = { filterSheetVisible = true },
+                            onRetake = onRetakePage,
+                            onDelete = { deleteDialogVisible = true },
+                            enabled = !uiState.isSaving,
+                        )
+                    }
                 }
             }
         }
@@ -213,6 +283,29 @@ fun PageEditorScreen(
         if (showBulkApplyLoader) {
             BulkFilterApplyOverlay()
         }
+    }
+
+    if (filterSheetVisible && uiState.page != null) {
+        FilterOptionsSheet(
+            uiState = uiState,
+            onDismiss = { filterSheetVisible = false },
+            onSelectFilter = onSelectFilter,
+            onApplyFilterToAllPagesChange = onApplyFilterToAllPagesChange,
+        )
+    }
+
+    if (deleteDialogVisible && uiState.page != null) {
+        ScanlyConfirmDialog(
+            title = "Delete page",
+            text = "Page ${uiState.page.pageIndex + 1} will be removed from this document.",
+            confirmLabel = "Delete",
+            onDismiss = { deleteDialogVisible = false },
+            onConfirm = {
+                deleteDialogVisible = false
+                onDeletePage()
+            },
+            confirmDestructive = true,
+        )
     }
 }
 
@@ -268,7 +361,7 @@ private fun FilterScopeOption(
                 onApplyToAllPagesChange(!applyToAllPages)
             },
         color = Color(0xFF121416),
-        shape = RoundedCornerShape(18.dp),
+        shape = MaterialTheme.shapes.extraLarge,
         border = BorderStroke(
             width = 1.dp,
             color = if (applyToAllPages) AccentGreen.copy(alpha = 0.9f) else Color.White.copy(alpha = 0.08f),
@@ -315,6 +408,58 @@ private fun FilterScopeOption(
 }
 
 @Composable
+@OptIn(ExperimentalMaterial3Api::class)
+private fun FilterOptionsSheet(
+    uiState: PageEditorUiState,
+    onDismiss: () -> Unit,
+    onSelectFilter: (PageFilterPreset) -> Unit,
+    onApplyFilterToAllPagesChange: (Boolean) -> Unit,
+) {
+    val page = uiState.page ?: return
+
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        containerColor = EditorBackground,
+        contentColor = Color.White,
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .navigationBarsPadding()
+                .padding(horizontal = 16.dp)
+                .padding(bottom = 24.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                Text(
+                    text = "Filters",
+                    color = Color.White,
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.SemiBold,
+                )
+                Text(
+                    text = "Choose the document enhancement without shrinking the crop canvas.",
+                    color = Color.White.copy(alpha = 0.64f),
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+            }
+            FilterScopeOption(
+                applyToAllPages = uiState.applyFilterToAllPages,
+                enabled = !uiState.isSaving,
+                onApplyToAllPagesChange = onApplyFilterToAllPagesChange,
+            )
+            FilterSelector(
+                selectedFilter = uiState.selectedFilter,
+                rawImagePath = page.rawImagePath,
+                fallbackImagePath = page.processedImagePath,
+                rotationDegrees = uiState.rotationDegrees,
+                onSelectFilter = onSelectFilter,
+            )
+        }
+    }
+}
+
+@Composable
 private fun BulkFilterApplyOverlay() {
     val interactionSource = remember { MutableInteractionSource() }
 
@@ -331,7 +476,7 @@ private fun BulkFilterApplyOverlay() {
     ) {
         Surface(
             color = Color(0xFF111315),
-            shape = RoundedCornerShape(24.dp),
+            shape = MaterialTheme.shapes.extraLarge,
             border = BorderStroke(1.dp, Color.White.copy(alpha = 0.08f)),
         ) {
             Column(
@@ -675,6 +820,7 @@ private fun FilterSelector(
     fallbackImagePath: String?,
     rotationDegrees: Int,
     onSelectFilter: (PageFilterPreset) -> Unit,
+    vertical: Boolean = false,
 ) {
     val previewState by rememberFilterPreviewBitmaps(
         rawImagePath = rawImagePath,
@@ -684,9 +830,11 @@ private fun FilterSelector(
     val listState = rememberLazyListState()
 
     LaunchedEffect(selectedFilter) {
-        val targetIndex = PageFilterPreset.entries.indexOf(selectedFilter)
-        if (targetIndex >= 0) {
-            listState.animateScrollToItem(targetIndex)
+        if (!vertical) {
+            val targetIndex = PageFilterPreset.entries.indexOf(selectedFilter)
+            if (targetIndex >= 0) {
+                listState.animateScrollToItem(targetIndex)
+            }
         }
     }
 
@@ -718,86 +866,126 @@ private fun FilterSelector(
             }
         }
 
-        LazyRow(
-            state = listState,
-            horizontalArrangement = Arrangement.spacedBy(10.dp),
-            contentPadding = PaddingValues(horizontal = 2.dp),
-        ) {
-            items(PageFilterPreset.entries, key = { it.storageValue }) { filter ->
-                val isSelected = selectedFilter == filter
-                Surface(
-                    modifier = Modifier
-                        .width(112.dp)
-                        .clickable { onSelectFilter(filter) },
-                    color = if (isSelected) Color(0xFF112922) else Color(0xFF111315),
-                    shape = RoundedCornerShape(20.dp),
-                    border = BorderStroke(
-                        width = if (isSelected) 2.dp else 1.dp,
-                        color = if (isSelected) AccentGreen else Color.White.copy(alpha = 0.08f),
-                    ),
-                ) {
-                    Column(
-                        modifier = Modifier.padding(10.dp),
-                        verticalArrangement = Arrangement.spacedBy(10.dp),
+        if (vertical) {
+            // Tablet sidebar: two-column grid using regular Column rows (parent is scrollable)
+            val filterRows = PageFilterPreset.entries.chunked(2)
+            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                filterRows.forEach { rowFilters ->
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(10.dp),
+                        modifier = Modifier.fillMaxWidth(),
                     ) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(112.dp),
-                        ) {
-                            Surface(
-                                modifier = Modifier.fillMaxSize(),
-                                color = Color(0xFF1C2023),
-                                shape = RoundedCornerShape(16.dp),
-                            ) {
-                                val preview = previewState.previews[filter]
-                                if (preview == null) {
-                                    Box(
-                                        modifier = Modifier.fillMaxSize(),
-                                        contentAlignment = Alignment.Center,
-                                    ) {
-                                        Text(
-                                            text = filter.shortLabel(),
-                                            color = Color.White.copy(alpha = 0.72f),
-                                            style = MaterialTheme.typography.labelLarge,
-                                        )
-                                    }
-                                } else {
-                                    Image(
-                                        bitmap = preview,
-                                        contentDescription = "${filter.toDisplayLabel()} filter preview",
-                                        modifier = Modifier.fillMaxSize(),
-                                        contentScale = ContentScale.Crop,
-                                    )
-                                }
-                            }
-                            if (isSelected) {
-                                Box(
-                                    modifier = Modifier
-                                        .align(Alignment.TopEnd)
-                                        .padding(6.dp)
-                                        .size(24.dp)
-                                        .background(AccentGreen, CircleShape),
-                                    contentAlignment = Alignment.Center,
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Filled.Check,
-                                        contentDescription = "Selected filter",
-                                        tint = Color.White,
-                                        modifier = Modifier.size(16.dp),
-                                    )
-                                }
-                            }
+                        rowFilters.forEach { filter ->
+                            FilterItem(
+                                filter = filter,
+                                isSelected = selectedFilter == filter,
+                                preview = previewState.previews[filter],
+                                onSelect = { onSelectFilter(filter) },
+                                modifier = Modifier.weight(1f),
+                            )
                         }
-                        Text(
-                            text = filter.toDisplayLabel(),
-                            color = if (isSelected) Color.White else Color.White.copy(alpha = 0.78f),
-                            style = MaterialTheme.typography.labelLarge,
-                            fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
+                        if (rowFilters.size < 2) {
+                            Spacer(modifier = Modifier.weight(1f))
+                        }
+                    }
+                }
+            }
+        } else {
+            // Phone / portrait: horizontal scrolling LazyRow
+            LazyRow(
+                state = listState,
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                contentPadding = PaddingValues(horizontal = 2.dp),
+            ) {
+                items(PageFilterPreset.entries, key = { it.storageValue }) { filter ->
+                    FilterItem(
+                        filter = filter,
+                        isSelected = selectedFilter == filter,
+                        preview = previewState.previews[filter],
+                        onSelect = { onSelectFilter(filter) },
+                        modifier = Modifier.width(112.dp),
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun FilterItem(
+    filter: PageFilterPreset,
+    isSelected: Boolean,
+    preview: ImageBitmap?,
+    onSelect: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Surface(
+        modifier = modifier.clickable { onSelect() },
+        color = if (isSelected) Color(0xFF112922) else Color(0xFF111315),
+        shape = RoundedCornerShape(20.dp),
+        border = BorderStroke(
+            width = if (isSelected) 2.dp else 1.dp,
+            color = if (isSelected) AccentGreen else Color.White.copy(alpha = 0.08f),
+        ),
+    ) {
+        Column(
+            modifier = Modifier.padding(10.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(112.dp),
+            ) {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = Color(0xFF1C2023),
+                    shape = RoundedCornerShape(16.dp),
+                ) {
+                    if (preview == null) {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Text(
+                                text = filter.shortLabel(),
+                                color = Color.White.copy(alpha = 0.72f),
+                                style = MaterialTheme.typography.labelLarge,
+                            )
+                        }
+                    } else {
+                        Image(
+                            bitmap = preview,
+                            contentDescription = "${filter.toDisplayLabel()} filter preview",
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop,
+                        )
+                    }
+                }
+                if (isSelected) {
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.TopEnd)
+                            .padding(6.dp)
+                            .size(24.dp)
+                            .background(AccentGreen, CircleShape),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Check,
+                            contentDescription = "Selected filter",
+                            tint = Color.White,
+                            modifier = Modifier.size(16.dp),
                         )
                     }
                 }
             }
+            Text(
+                text = filter.toDisplayLabel(),
+                color = if (isSelected) Color.White else Color.White.copy(alpha = 0.78f),
+                style = MaterialTheme.typography.labelLarge,
+                fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
+            )
         }
     }
 }
@@ -807,16 +995,42 @@ private fun EditorActionRow(
     onRotateLeft: () -> Unit,
     onRotateRight: () -> Unit,
     onResetCrop: () -> Unit,
+    onOpenFilters: () -> Unit,
+    onRetake: () -> Unit,
+    onDelete: () -> Unit,
+    enabled: Boolean,
 ) {
-    Row(
+    LazyRow(
         modifier = Modifier
             .fillMaxWidth()
             .padding(bottom = 18.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        contentPadding = PaddingValues(horizontal = 2.dp),
     ) {
-        EditorActionButton(label = "Left", icon = Icons.Filled.RotateLeft, onClick = onRotateLeft)
-        EditorActionButton(label = "Right", icon = Icons.Filled.RotateRight, onClick = onRotateRight)
-        EditorActionButton(label = "Reset", icon = Icons.Filled.CropFree, onClick = onResetCrop)
+        item {
+            EditorActionButton(label = "Left", icon = Icons.AutoMirrored.Filled.RotateLeft, onClick = onRotateLeft, enabled = enabled)
+        }
+        item {
+            EditorActionButton(label = "Right", icon = Icons.AutoMirrored.Filled.RotateRight, onClick = onRotateRight, enabled = enabled)
+        }
+        item {
+            EditorActionButton(label = "Reset", icon = Icons.Filled.CropFree, onClick = onResetCrop, enabled = enabled)
+        }
+        item {
+            EditorActionButton(label = "Filters", icon = Icons.Filled.Tune, onClick = onOpenFilters, enabled = enabled)
+        }
+        item {
+            EditorActionButton(label = "Retake", icon = Icons.Filled.Refresh, onClick = onRetake, enabled = enabled)
+        }
+        item {
+            EditorActionButton(
+                label = "Delete",
+                icon = Icons.Filled.DeleteOutline,
+                onClick = onDelete,
+                enabled = enabled,
+                contentColor = Color(0xFFFF6B6B),
+            )
+        }
     }
 }
 
@@ -825,11 +1039,13 @@ private fun EditorActionButton(
     label: String,
     icon: ImageVector,
     onClick: () -> Unit,
+    enabled: Boolean = true,
+    contentColor: Color = AccentGreen,
 ) {
     Surface(
         modifier = Modifier
             .width(104.dp)
-            .clickable(onClick = onClick),
+            .clickable(enabled = enabled, onClick = onClick),
         color = Color(0xFF181818),
         shape = RoundedCornerShape(18.dp),
         border = BorderStroke(1.dp, Color.White.copy(alpha = 0.08f)),
@@ -842,11 +1058,11 @@ private fun EditorActionButton(
             Icon(
                 imageVector = icon,
                 contentDescription = null,
-                tint = AccentGreen,
+                tint = if (enabled) contentColor else Color.White.copy(alpha = 0.28f),
             )
             Text(
                 text = label,
-                color = Color.White,
+                color = if (enabled) Color.White else Color.White.copy(alpha = 0.38f),
                 style = MaterialTheme.typography.labelLarge,
             )
         }
@@ -1174,6 +1390,7 @@ private data class MagnifierPlacement(
 }
 
 private val EditorBackground = Color(0xFF050505)
+private val EditorSurface = Color(0xFF121212)
 private val AccentGreen = Color(0xFF0AAE78)
 private val LensBackdrop = Color(0xF0121212)
 private val LensBorder = Color.White.copy(alpha = 0.88f)

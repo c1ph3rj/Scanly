@@ -12,12 +12,15 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -27,15 +30,16 @@ import androidx.compose.material.icons.filled.Brightness4
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.DeleteOutline
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Gavel
+import androidx.compose.material.icons.filled.Policy
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Public
-import androidx.compose.material.icons.filled.Public
 import androidx.compose.material.icons.filled.Storage
-import androidx.compose.material3.AlertDialog
+import androidx.compose.material.icons.filled.SystemUpdate
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -45,6 +49,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -63,10 +68,13 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import `in`.c1ph3rj.scanly.core.common.StorageFormatter
+import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import `in`.c1ph3rj.scanly.domain.model.AppStorageUsage
 import `in`.c1ph3rj.scanly.domain.model.LicenseInfo
 import `in`.c1ph3rj.scanly.domain.model.ThemeMode
 import `in`.c1ph3rj.scanly.feature.components.ScanlyAppLogo
+import `in`.c1ph3rj.scanly.feature.components.ScanlyConfirmDialog
+import `in`.c1ph3rj.scanly.feature.update.AppUpdateUiState
 import kotlinx.coroutines.flow.collectLatest
 
 private const val DEVELOPER_PORTFOLIO_URL = "https://c1ph3rj.in"
@@ -83,6 +91,9 @@ private fun Modifier.settingsRowSurface(onClick: (() -> Unit)? = null): Modifier
 @Composable
 fun SettingsRoute(
     onNavigateUp: () -> Unit,
+    appUpdateUiState: AppUpdateUiState,
+    onCheckForUpdates: () -> Unit,
+    onOpenLegalDocument: (LegalDocumentType) -> Unit,
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -99,10 +110,13 @@ fun SettingsRoute(
 
     SettingsScreen(
         uiState = uiState,
+        appUpdateUiState = appUpdateUiState,
         snackbarHostState = snackbarHostState,
         onThemeModeSelected = viewModel::setThemeMode,
         onShowDetectionStatsChanged = viewModel::setShowDetectionStats,
         onOpenWebsite = { url -> uriHandler.openUri(url) },
+        onOpenLegalDocument = onOpenLegalDocument,
+        onCheckForUpdates = onCheckForUpdates,
         onClearAllData = viewModel::clearAllData,
     )
 }
@@ -110,16 +124,20 @@ fun SettingsRoute(
 @Composable
 fun SettingsScreen(
     uiState: SettingsUiState,
+    appUpdateUiState: AppUpdateUiState,
     snackbarHostState: SnackbarHostState,
     onThemeModeSelected: (ThemeMode) -> Unit,
     onShowDetectionStatsChanged: (Boolean) -> Unit,
     onOpenWebsite: (String) -> Unit,
+    onOpenLegalDocument: (LegalDocumentType) -> Unit,
+    onCheckForUpdates: () -> Unit,
     onClearAllData: () -> Unit,
 ) {
     val content = uiState.content
     val expandedFaqIds = remember { mutableStateListOf<String>() }
     val expandedLicenseIds = remember { mutableStateListOf<String>() }
     var clearDataDialogVisible by remember { mutableStateOf(false) }
+    val windowSizeInfo = rememberWindowSizeInfo()
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -136,11 +154,24 @@ fun SettingsScreen(
                 CircularProgressIndicator()
             }
         } else {
-            LazyColumn(
+            Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(bottom = innerPadding.calculateBottomPadding()),
-                contentPadding = PaddingValues(start = 20.dp, top = 0.dp, end = 20.dp, bottom = 28.dp),
+                contentAlignment = Alignment.TopCenter,
+            ) {
+            LazyColumn(
+                modifier = if (windowSizeInfo.isTablet) {
+                    Modifier.widthIn(max = windowSizeInfo.contentMaxWidth).fillMaxHeight()
+                } else {
+                    Modifier.fillMaxSize()
+                },
+                contentPadding = PaddingValues(
+                    start = windowSizeInfo.horizontalPadding,
+                    top = 0.dp,
+                    end = windowSizeInfo.horizontalPadding,
+                    bottom = 28.dp,
+                ),
                 verticalArrangement = Arrangement.spacedBy(20.dp),
             ) {
                 item(key = "header") {
@@ -199,6 +230,12 @@ fun SettingsScreen(
                         AboutHero(
                             versionLabel = content?.appVersionLabel,
                         )
+
+                        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                        SettingsUpdateRow(
+                            appUpdateUiState = appUpdateUiState,
+                            onCheckForUpdates = onCheckForUpdates,
+                        )
                         
                         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
                         SettingsLinkRow(
@@ -230,6 +267,29 @@ fun SettingsScreen(
                             title = "Project website",
                             subtitle = PROJECT_WEBSITE_URL,
                             onClick = { onOpenWebsite(PROJECT_WEBSITE_URL) },
+                        )
+                    }
+                }
+
+                item(key = "legal") {
+                    SettingsGroup(
+                        title = "Legal",
+                    ) {
+                        SettingsLinkRow(
+                            icon = Icons.Filled.Policy,
+                            title = "Privacy Policy",
+                            subtitle = "How Scanly handles your data",
+                            showExternalLink = false,
+                            onClick = { onOpenLegalDocument(LegalDocumentType.Privacy) },
+                        )
+
+                        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                        SettingsLinkRow(
+                            icon = Icons.Filled.Gavel,
+                            title = "Terms & Conditions",
+                            subtitle = "Rules for using Scanly",
+                            showExternalLink = false,
+                            onClick = { onOpenLegalDocument(LegalDocumentType.Terms) },
                         )
                     }
                 }
@@ -288,42 +348,28 @@ fun SettingsScreen(
                     }
                 }
             }
+            } // end adaptive Box
         }
     }
 
     if (clearDataDialogVisible) {
-        AlertDialog(
-            onDismissRequest = {
+        ScanlyConfirmDialog(
+            title = "Clear all data?",
+            text = "This permanently deletes all documents, folders, and pages from Scanly. " +
+                "This cannot be undone. Your theme and camera settings will be kept.",
+            confirmLabel = "Delete",
+            onDismiss = {
                 if (!uiState.isClearingData) {
                     clearDataDialogVisible = false
                 }
             },
-            title = { Text(text = "Clear all data?") },
-            text = {
-                Text(
-                    text = "This permanently deletes all documents, folders, and pages from Scanly. " +
-                        "This cannot be undone. Your theme and camera settings will be kept.",
-                )
+            onConfirm = {
+                clearDataDialogVisible = false
+                onClearAllData()
             },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        clearDataDialogVisible = false
-                        onClearAllData()
-                    },
-                    enabled = !uiState.isClearingData,
-                ) {
-                    Text(text = "Delete", color = MaterialTheme.colorScheme.error)
-                }
-            },
-            dismissButton = {
-                TextButton(
-                    onClick = { clearDataDialogVisible = false },
-                    enabled = !uiState.isClearingData,
-                ) {
-                    Text(text = "Cancel")
-                }
-            },
+            confirmDestructive = true,
+            dismissEnabled = !uiState.isClearingData,
+            confirmEnabled = !uiState.isClearingData,
         )
     }
 }
@@ -480,6 +526,110 @@ private fun StorageUsageRow(
 }
 
 @Composable
+private fun SettingsUpdateRow(
+    appUpdateUiState: AppUpdateUiState,
+    onCheckForUpdates: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val checkResult = appUpdateUiState.lastCheckResult
+    val updateAvailable = checkResult?.updateAvailable == true
+    val title = if (updateAvailable) {
+        "Update available"
+    } else {
+        "Check for updates"
+    }
+    val subtitle = when {
+        appUpdateUiState.isChecking -> "Checking GitHub releases..."
+        updateAvailable -> {
+            "Scanly ${checkResult!!.latestRelease.tagName} is ready to download. Tap to view release notes."
+        }
+
+        checkResult != null -> {
+            "You are on ${versionLabel(checkResult.installedVersionName)}. Latest is ${checkResult.latestRelease.tagName}."
+        }
+
+        else -> "Compare this install with the latest GitHub release."
+    }
+    val rowModifier = if (updateAvailable) {
+        modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.primaryContainer)
+            .clickable(
+                enabled = !appUpdateUiState.isChecking,
+                onClick = onCheckForUpdates,
+            )
+            .padding(horizontal = 16.dp, vertical = 14.dp)
+    } else {
+        modifier.settingsRowSurface(
+            onClick = if (appUpdateUiState.isChecking) null else onCheckForUpdates,
+        )
+    }
+    val titleColor = if (updateAvailable) {
+        MaterialTheme.colorScheme.onPrimaryContainer
+    } else {
+        MaterialTheme.colorScheme.onSurface
+    }
+    val subtitleColor = if (updateAvailable) {
+        MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.82f)
+    } else {
+        MaterialTheme.colorScheme.onSurfaceVariant
+    }
+    val iconContainerColor = if (updateAvailable) {
+        MaterialTheme.colorScheme.primary
+    } else {
+        Color.Transparent
+    }
+    val iconTint = if (updateAvailable) {
+        MaterialTheme.colorScheme.onPrimary
+    } else {
+        MaterialTheme.colorScheme.primary
+    }
+
+    Row(
+        modifier = rowModifier,
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        Box(
+            modifier = Modifier
+                .size(if (updateAvailable) 34.dp else 22.dp)
+                .clip(CircleShape)
+                .background(iconContainerColor),
+            contentAlignment = Alignment.Center,
+        ) {
+            Icon(
+                imageVector = Icons.Filled.SystemUpdate,
+                contentDescription = null,
+                tint = iconTint,
+                modifier = Modifier.size(if (updateAvailable) 20.dp else 22.dp),
+            )
+        }
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(2.dp),
+        ) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = if (updateAvailable) FontWeight.SemiBold else FontWeight.Medium,
+                color = titleColor,
+            )
+            Text(
+                text = subtitle,
+                style = MaterialTheme.typography.bodyMedium,
+                color = subtitleColor,
+            )
+        }
+        if (appUpdateUiState.isChecking) {
+            CircularProgressIndicator(
+                modifier = Modifier.size(20.dp),
+                strokeWidth = 2.dp,
+            )
+        }
+    }
+}
+
+@Composable
 private fun SettingsDestructiveRow(
     icon: ImageVector,
     title: String,
@@ -518,6 +668,13 @@ private fun SettingsDestructiveRow(
     }
 }
 
+private fun versionLabel(versionName: String): String =
+    if (versionName.startsWith("v", ignoreCase = true)) {
+        versionName
+    } else {
+        "v$versionName"
+    }
+
 @Composable
 private fun SettingsToggleRow(
     title: String,
@@ -549,6 +706,14 @@ private fun SettingsToggleRow(
         Switch(
             checked = checked,
             onCheckedChange = onCheckedChange,
+            colors = SwitchDefaults.colors(
+                checkedThumbColor = MaterialTheme.colorScheme.onPrimary,
+                checkedTrackColor = MaterialTheme.colorScheme.primary,
+                checkedBorderColor = MaterialTheme.colorScheme.primary,
+                uncheckedThumbColor = MaterialTheme.colorScheme.onSurface,
+                uncheckedTrackColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                uncheckedBorderColor = MaterialTheme.colorScheme.outline,
+            ),
         )
     }
 }

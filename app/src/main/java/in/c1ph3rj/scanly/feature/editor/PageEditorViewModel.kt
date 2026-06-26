@@ -12,6 +12,7 @@ import `in`.c1ph3rj.scanly.core.ml.NormalizedPoint
 import `in`.c1ph3rj.scanly.domain.model.PageFilterPreset
 import `in`.c1ph3rj.scanly.domain.model.PageProcessingState
 import `in`.c1ph3rj.scanly.domain.model.ScanPage
+import `in`.c1ph3rj.scanly.domain.usecase.DeletePageUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObservePageUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.UpdatePageEditsUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -40,6 +41,7 @@ data class PageEditorUiState(
 sealed interface PageEditorEvent {
     data class ShowMessage(val message: String) : PageEditorEvent
     data object Saved : PageEditorEvent
+    data object PageDeleted : PageEditorEvent
 }
 
 object PageEditorDestination {
@@ -54,6 +56,7 @@ class PageEditorViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val observePageUseCase: ObservePageUseCase,
     private val updatePageEditsUseCase: UpdatePageEditsUseCase,
+    private val deletePageUseCase: DeletePageUseCase,
 ) : ViewModel() {
     private val pageId: String = checkNotNull(savedStateHandle[PageEditorDestination.pageIdArgument])
 
@@ -175,6 +178,27 @@ class PageEditorViewModel @Inject constructor(
                         ),
                     )
                     _events.emit(PageEditorEvent.Saved)
+                }
+
+                is ScanlyResult.Failure -> {
+                    _uiState.update { it.copy(isSaving = false) }
+                    _events.emit(PageEditorEvent.ShowMessage(result.error.message))
+                }
+            }
+        }
+    }
+
+    fun deletePage() {
+        val page = _uiState.value.page ?: return
+        if (_uiState.value.isSaving) return
+
+        viewModelScope.launch {
+            _uiState.update { it.copy(isSaving = true) }
+            when (val result = deletePageUseCase(page.id)) {
+                is ScanlyResult.Success -> {
+                    _uiState.update { it.copy(isSaving = false) }
+                    _events.emit(PageEditorEvent.ShowMessage("Deleted page ${page.pageIndex + 1}."))
+                    _events.emit(PageEditorEvent.PageDeleted)
                 }
 
                 is ScanlyResult.Failure -> {

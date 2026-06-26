@@ -24,10 +24,12 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import `in`.c1ph3rj.scanly.core.ui.ImageImportSupport
+import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import `in`.c1ph3rj.scanly.domain.model.DocumentGroup
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
 import `in`.c1ph3rj.scanly.feature.components.*
 import `in`.c1ph3rj.scanly.core.ui.PreviewDisplaySize
+import androidx.compose.ui.unit.Dp
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -58,6 +60,7 @@ fun HomeRoute(
                     else onOpenDocument(event.documentId)
                     createForScan = false
                 }
+                is HomeEvent.OpenGroup -> onOpenGroup(event.groupId)
                 is HomeEvent.ShowMessage -> snackbarHostState.showSnackbar(event.message)
             }
         }
@@ -77,6 +80,7 @@ fun HomeRoute(
         onOpenScanSession = onOpenScanSession,
         onOpenGroup = onOpenGroup,
         onNavigateToLibrary = onNavigateToLibrary,
+        onCreateGroup = viewModel::createGroup,
     )
 }
 
@@ -90,18 +94,29 @@ fun HomeScreen(
     onOpenScanSession: (String) -> Unit,
     onOpenGroup: (String) -> Unit,
     onNavigateToLibrary: () -> Unit,
+    onCreateGroup: (String) -> Unit,
 ) {
     var createDialogVisible by rememberSaveable { mutableStateOf(false) }
+    var createFolderDialogVisible by rememberSaveable { mutableStateOf(false) }
+    val windowSizeInfo = rememberWindowSizeInfo()
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         containerColor = MaterialTheme.colorScheme.background,
         snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { innerPadding ->
-        LazyColumn(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(bottom = innerPadding.calculateBottomPadding()),
+            contentAlignment = Alignment.TopCenter,
+        ) {
+        LazyColumn(
+            modifier = if (windowSizeInfo.isTablet) {
+                Modifier.widthIn(max = windowSizeInfo.contentMaxWidth).fillMaxHeight()
+            } else {
+                Modifier.fillMaxSize()
+            },
             contentPadding = PaddingValues(bottom = 120.dp),
         ) {
             item(key = "home_header", contentType = "header") {
@@ -109,7 +124,7 @@ fun HomeScreen(
                     groupCount = uiState.recentGroups.size,
                     documentCount = uiState.recentDocuments.size,
                     modifier = Modifier
-                        .padding(horizontal = 20.dp)
+                        .padding(horizontal = windowSizeInfo.horizontalPadding)
                         .padding(bottom = 24.dp),
                 )
             }
@@ -130,8 +145,10 @@ fun HomeScreen(
                 QuickActionsRow(
                     onScan = { createDialogVisible = true },
                     onImport = onImportImages,
-                    onNewFolder = onNavigateToLibrary,
+                    onNewFolder = { createFolderDialogVisible = true },
                     importEnabled = !uiState.isImporting,
+                    isTablet = windowSizeInfo.isTablet,
+                    horizontalPadding = windowSizeInfo.horizontalPadding,
                     modifier = Modifier.padding(bottom = 32.dp)
                 )
             }
@@ -141,13 +158,13 @@ fun HomeScreen(
                     SectionHeader(
                         title = "Recent Folders",
                         modifier = Modifier
-                            .padding(horizontal = 20.dp)
+                            .padding(horizontal = windowSizeInfo.horizontalPadding)
                             .padding(bottom = 16.dp),
                     )
                 }
                 item(key = "groups_row", contentType = "groups_row") {
                     LazyRow(
-                        contentPadding = PaddingValues(horizontal = 20.dp),
+                        contentPadding = PaddingValues(horizontal = windowSizeInfo.horizontalPadding),
                         horizontalArrangement = Arrangement.spacedBy(16.dp),
                         modifier = Modifier.padding(bottom = 32.dp)
                     ) {
@@ -159,6 +176,7 @@ fun HomeScreen(
                             RecentGroupChip(
                                 group = group,
                                 onClick = { onOpenGroup(group.id) },
+                                chipWidth = if (windowSizeInfo.isTablet) 200.dp else 160.dp,
                             )
                         }
                     }
@@ -172,7 +190,7 @@ fun HomeScreen(
                         actionLabel = "See all in Library",
                         onAction = onNavigateToLibrary,
                         modifier = Modifier
-                            .padding(horizontal = 20.dp)
+                            .padding(horizontal = windowSizeInfo.horizontalPadding)
                             .padding(bottom = 16.dp),
                     )
                 }
@@ -185,7 +203,7 @@ fun HomeScreen(
                         document = doc,
                         onOpen = { onOpenDocument(doc.id) },
                         modifier = Modifier
-                            .padding(horizontal = 20.dp)
+                            .padding(horizontal = windowSizeInfo.horizontalPadding)
                             .padding(bottom = 12.dp)
                             .animateItem(),
                     )
@@ -195,13 +213,14 @@ fun HomeScreen(
                     EmptyHomeCard(
                         onCreateDocument = { createDialogVisible = true },
                         modifier = Modifier
-                            .padding(horizontal = 20.dp)
+                            .padding(horizontal = windowSizeInfo.horizontalPadding)
                             .padding(top = 16.dp),
                     )
                 }
             }
             }
         }
+        } // end outer Box
     }
 
     if (createDialogVisible) {
@@ -213,6 +232,18 @@ fun HomeScreen(
             onConfirm = { value ->
                 createDialogVisible = false
                 onCreateDocument(value)
+            },
+        )
+    }
+
+    if (createFolderDialogVisible) {
+        GroupNameDialog(
+            title = "New folder",
+            initialValue = "",
+            onDismiss = { createFolderDialogVisible = false },
+            onConfirm = { title ->
+                createFolderDialogVisible = false
+                onCreateGroup(title)
             },
         )
     }
@@ -278,12 +309,21 @@ fun QuickActionsRow(
     onImport: () -> Unit,
     onNewFolder: () -> Unit,
     importEnabled: Boolean = true,
+    isTablet: Boolean = false,
+    horizontalPadding: Dp = 20.dp,
     modifier: Modifier = Modifier
 ) {
-    Row(
-        modifier = modifier
+    val rowModifier = if (isTablet) {
+        modifier
+            .widthIn(max = 480.dp)
+            .padding(horizontal = horizontalPadding)
+    } else {
+        modifier
             .fillMaxWidth()
-            .padding(horizontal = 20.dp),
+            .padding(horizontal = horizontalPadding)
+    }
+    Row(
+        modifier = rowModifier,
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         QuickActionCard(
@@ -330,6 +370,9 @@ fun QuickActionCard(
             .clickable(enabled = enabled, onClick = onClick),
         color = containerColor,
         shape = MaterialTheme.shapes.extraLarge,
+        border = androidx.compose.foundation.BorderStroke(1.dp, contentColor.copy(alpha = 0.12f)),
+        shadowElevation = 2.dp,
+        tonalElevation = 2.dp,
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -358,13 +401,17 @@ private fun RecentGroupChip(
     group: DocumentGroup,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    chipWidth: Dp = 160.dp,
 ) {
     Surface(
         modifier = modifier
-            .width(160.dp)
+            .width(chipWidth)
             .clickable(onClick = onClick),
         color = MaterialTheme.colorScheme.surfaceContainer,
         shape = MaterialTheme.shapes.extraLarge,
+        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f)),
+        shadowElevation = 1.dp,
+        tonalElevation = 1.dp,
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             CachedThumbnail(
@@ -416,6 +463,9 @@ private fun CompactDocumentCard(
             .clickable(onClick = onOpen),
         color = MaterialTheme.colorScheme.surfaceContainer,
         shape = MaterialTheme.shapes.extraLarge,
+        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f)),
+        shadowElevation = 1.dp,
+        tonalElevation = 1.dp,
     ) {
         Row(
             modifier = Modifier.padding(16.dp),

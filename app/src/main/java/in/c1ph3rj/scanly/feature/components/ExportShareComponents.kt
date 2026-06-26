@@ -97,12 +97,8 @@ fun PdfOptionsSheet(
         onDismissRequest = onDismiss,
         containerColor = MaterialTheme.colorScheme.surface,
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp)
-                .padding(bottom = 28.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ScanlySheetContent(
+            modifier = Modifier.fillMaxWidth(),
         ) {
             Text(
                 text = titleText,

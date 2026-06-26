@@ -2,15 +2,18 @@ package `in`.c1ph3rj.scanly.core.ui
 
 import android.graphics.BitmapFactory
 import androidx.compose.foundation.background
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -62,10 +65,6 @@ fun ZoomableImageDialog(
     title: String,
     onDismiss: () -> Unit,
 ) {
-    var scale by remember(imagePath) { mutableStateOf(1f) }
-    var offset by remember(imagePath) { mutableStateOf(Offset.Zero) }
-    val zoomActive = scale > 1.02f
-
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(
@@ -88,92 +87,122 @@ fun ZoomableImageDialog(
             onDispose {}
         }
 
-        Surface(
+        ZoomableImageViewer(
+            imagePath = imagePath,
+            title = title,
+            onNavigateUp = onDismiss,
+            closeContentDescription = "Close",
+        )
+    }
+}
+
+@Composable
+fun ZoomableImageViewer(
+    imagePath: String?,
+    title: String,
+    onNavigateUp: (() -> Unit)? = null,
+    modifier: Modifier = Modifier,
+    closeContentDescription: String = "Back",
+    trailingAction: @Composable (
+        zoomActive: Boolean,
+        onResetZoom: () -> Unit,
+    ) -> Unit = { zoomActive, onResetZoom ->
+        if (zoomActive) {
+            ChromeIconButton(
+                icon = Icons.Filled.Refresh,
+                contentDescription = "Reset zoom",
+                onClick = onResetZoom,
+                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                contentColor = MaterialTheme.colorScheme.onSurface,
+            )
+        } else {
+            Box(modifier = Modifier.size(44.dp))
+        }
+    },
+) {
+    var scale by remember(imagePath) { mutableStateOf(1f) }
+    var offset by remember(imagePath) { mutableStateOf(Offset.Zero) }
+    val zoomActive = scale > 1.02f
+    val resetZoom = {
+        scale = 1f
+        offset = Offset.Zero
+    }
+
+    Surface(
+        modifier = modifier.fillMaxSize(),
+        color = MaterialTheme.colorScheme.background,
+    ) {
+        Box(
             modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background,
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.background),
-            ) {
-                val imageBitmap by rememberZoomableImageBitmap(imagePath)
-                when {
-                    imageBitmap == null && imagePath != null -> {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(28.dp),
-                                color = MaterialTheme.colorScheme.primary,
-                                strokeWidth = 2.5.dp,
-                            )
-                        }
-                    }
-
-                    imageBitmap == null -> {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            Text(
-                                text = "Image unavailable",
-                                style = MaterialTheme.typography.titleMedium,
-                                color = MaterialTheme.colorScheme.onBackground,
-                            )
-                        }
-                    }
-
-                    else -> {
-                        ZoomableImageCanvas(
-                            imageBitmap = imageBitmap!!,
-                            scale = scale,
-                            offset = offset,
-                            onScaleChange = { scale = it },
-                            onOffsetChange = { offset = it },
-                            modifier = Modifier.fillMaxSize(),
+            val imageBitmap by rememberZoomableImageBitmap(imagePath)
+            when {
+                imageBitmap == null && imagePath != null -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(28.dp),
+                            color = MaterialTheme.colorScheme.primary,
+                            strokeWidth = 2.5.dp,
                         )
                     }
                 }
 
-                Row(
-                    modifier = Modifier
-                        .align(Alignment.TopCenter)
-                        .statusBarsPadding()
-                        .padding(horizontal = 16.dp, vertical = 12.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    ChromeIconButton(
-                        icon = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Close",
-                        onClick = onDismiss,
-                        containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-                        contentColor = MaterialTheme.colorScheme.onSurface,
+                imageBitmap == null -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Text(
+                            text = "Image unavailable",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.onBackground,
+                        )
+                    }
+                }
+
+                else -> {
+                    ZoomableImageCanvas(
+                        imageBitmap = imageBitmap!!,
+                        scale = scale,
+                        offset = offset,
+                        onScaleChange = { scale = it },
+                        onOffsetChange = { offset = it },
+                        modifier = Modifier.fillMaxSize(),
                     )
-                    Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
-                        MetricChip(
-                            label = title,
-                            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-                            contentColor = MaterialTheme.colorScheme.onSurface,
-                        )
-                    }
-                    if (zoomActive) {
-                        ChromeIconButton(
-                            icon = Icons.Filled.Refresh,
-                            contentDescription = "Reset zoom",
-                            onClick = {
-                                scale = 1f
-                                offset = Offset.Zero
-                            },
-                            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-                            contentColor = MaterialTheme.colorScheme.onSurface,
-                        )
-                    } else {
-                        Box(modifier = Modifier.size(44.dp))
-                    }
                 }
+            }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.TopCenter)
+                    .statusBarsPadding()
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    if (onNavigateUp != null) {
+                        ChromeIconButton(
+                            icon = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = closeContentDescription,
+                            onClick = onNavigateUp,
+                            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                            contentColor = MaterialTheme.colorScheme.onSurface,
+                        )
+                        Spacer(modifier = Modifier.width(12.dp))
+                    }
+                    MetricChip(
+                        label = title,
+                        containerColor = Color.Black.copy(alpha = 0.42f),
+                        contentColor = Color.White,
+                        border = BorderStroke(1.dp, Color.White.copy(alpha = 0.12f)),
+                    )
+                }
+                trailingAction(zoomActive, resetZoom)
             }
         }
     }
@@ -274,8 +303,9 @@ private fun ZoomableImageCanvas(
                 .align(Alignment.BottomCenter)
                 .navigationBarsPadding()
                 .padding(bottom = 18.dp),
-            containerColor = Color.White.copy(alpha = 0.1f),
+            containerColor = Color.Black.copy(alpha = 0.42f),
             contentColor = Color.White,
+            border = BorderStroke(1.dp, Color.White.copy(alpha = 0.12f)),
         )
     }
 }

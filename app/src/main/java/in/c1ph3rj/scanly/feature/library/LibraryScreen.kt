@@ -35,6 +35,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import `in`.c1ph3rj.scanly.domain.model.DocumentGroup
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
 import `in`.c1ph3rj.scanly.feature.components.*
@@ -105,23 +106,63 @@ fun LibraryScreen(
     var deleteGroupTarget by remember { mutableStateOf<DocumentGroup?>(null) }
     var moveDocTarget by remember { mutableStateOf<ScanDocument?>(null) }
     var showFabMenu by rememberSaveable { mutableStateOf(false) }
-    val groupRows = remember(uiState.groups) { uiState.groups.chunked(2) }
+    val windowSizeInfo = rememberWindowSizeInfo()
+    val groupRows = remember(uiState.groups, windowSizeInfo.groupColumns) {
+        uiState.groups.chunked(windowSizeInfo.groupColumns)
+    }
+    val documentRows = remember(uiState.ungroupedDocuments, windowSizeInfo.groupColumns) {
+        uiState.ungroupedDocuments.chunked(windowSizeInfo.groupColumns)
+    }
+    val filteredGroupRows = remember(
+        uiState.filteredGroups,
+        windowSizeInfo.groupColumns,
+        uiState.isSearchActive,
+        windowSizeInfo.isTablet,
+    ) {
+        if (uiState.isSearchActive && windowSizeInfo.isTablet) {
+            uiState.filteredGroups.chunked(windowSizeInfo.groupColumns)
+        } else {
+            emptyList()
+        }
+    }
+    val filteredDocumentRows = remember(
+        uiState.filteredDocuments,
+        windowSizeInfo.groupColumns,
+        uiState.isSearchActive,
+        windowSizeInfo.isTablet,
+    ) {
+        if (uiState.isSearchActive && windowSizeInfo.isTablet) {
+            uiState.filteredDocuments.chunked(windowSizeInfo.groupColumns)
+        } else {
+            emptyList()
+        }
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         containerColor = MaterialTheme.colorScheme.background,
         snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { innerPadding ->
-        Box(modifier = Modifier.fillMaxSize()) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = innerPadding.calculateBottomPadding()),
+            contentAlignment = Alignment.TopCenter,
+        ) {
             if (uiState.isLoading) {
-                FullScreenLoader(modifier = Modifier.padding(innerPadding))
+                FullScreenLoader(modifier = Modifier.fillMaxSize())
             } else {
                 LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(bottom = innerPadding.calculateBottomPadding()),
+                    modifier = if (windowSizeInfo.isTablet) {
+                        Modifier.widthIn(max = windowSizeInfo.contentMaxWidth).fillMaxHeight()
+                    } else {
+                        Modifier.fillMaxSize()
+                    },
                     contentPadding = PaddingValues(
-                        start = 20.dp, end = 20.dp, top = 0.dp, bottom = 120.dp,
+                        start = windowSizeInfo.horizontalPadding,
+                        end = windowSizeInfo.horizontalPadding,
+                        top = 0.dp,
+                        bottom = 120.dp,
                     ),
                     verticalArrangement = Arrangement.spacedBy(0.dp),
                 ) {
@@ -134,12 +175,19 @@ fun LibraryScreen(
             }
 
             item(key = "search") {
-                LibrarySearchBar(
-                    query = uiState.searchQuery,
-                    onQueryChange = onSearchQueryChange,
-                    onClear = onClearSearch,
-                    modifier = Modifier.padding(bottom = 24.dp),
-                )
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 24.dp),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    LibrarySearchBar(
+                        query = uiState.searchQuery,
+                        onQueryChange = onSearchQueryChange,
+                        onClear = onClearSearch,
+                        isTablet = windowSizeInfo.isTablet,
+                    )
+                }
             }
 
             if (uiState.isSearchActive) {
@@ -155,41 +203,103 @@ fun LibraryScreen(
                         item(key = "search_groups_label") {
                             SearchResultLabel("Folders", modifier = Modifier.padding(bottom = 12.dp))
                         }
-                        items(
-                            items = filteredGroups,
-                            key = { "sg_${it.id}" },
-                            contentType = { "search_group" },
-                        ) { group ->
-                            GroupCard(
-                                group = group,
-                                onOpen = { onOpenGroup(group.id) },
-                                onRename = { renameGroupTarget = group },
-                                onDelete = { deleteGroupTarget = group },
-                                modifier = Modifier
-                                    .padding(bottom = 12.dp)
-                                    .animateItem(),
-                            )
+                        if (windowSizeInfo.isTablet) {
+                            items(
+                                items = filteredGroupRows,
+                                key = { rowItems -> "search_group_row_${rowItems.first().id}" },
+                                contentType = { "search_group_row" },
+                            ) { rowItems ->
+                                Row(
+                                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(bottom = 12.dp)
+                                        .animateItem(),
+                                ) {
+                                    rowItems.forEach { group ->
+                                        GroupCard(
+                                            group = group,
+                                            onOpen = { onOpenGroup(group.id) },
+                                            onRename = { renameGroupTarget = group },
+                                            onDelete = { deleteGroupTarget = group },
+                                            modifier = Modifier.weight(1f),
+                                        )
+                                    }
+                                    val emptyCells = windowSizeInfo.groupColumns - rowItems.size
+                                    repeat(emptyCells) {
+                                        Spacer(modifier = Modifier.weight(1f))
+                                    }
+                                }
+                            }
+                        } else {
+                            items(
+                                items = filteredGroups,
+                                key = { "sg_${it.id}" },
+                                contentType = { "search_group" },
+                            ) { group ->
+                                GroupCard(
+                                    group = group,
+                                    onOpen = { onOpenGroup(group.id) },
+                                    onRename = { renameGroupTarget = group },
+                                    onDelete = { deleteGroupTarget = group },
+                                    modifier = Modifier
+                                        .padding(bottom = 12.dp)
+                                        .animateItem(),
+                                )
+                            }
                         }
                     }
                     if (filteredDocs.isNotEmpty()) {
                         item(key = "search_docs_label") {
                             SearchResultLabel("Documents", modifier = Modifier.padding(top = 12.dp, bottom = 12.dp))
                         }
-                        items(
-                            items = filteredDocs,
-                            key = { "sd_${it.id}" },
-                            contentType = { "search_document" },
-                        ) { doc ->
-                            DocumentCard(
-                                document = doc,
-                                onOpen = { onOpenDocument(doc.id) },
-                                onRename = { renameDocTarget = doc },
-                                onDelete = { deleteDocTarget = doc },
-                                onMove = { moveDocTarget = doc },
-                                modifier = Modifier
-                                    .padding(bottom = 12.dp)
-                                    .animateItem(),
-                            )
+                        if (windowSizeInfo.isTablet) {
+                            items(
+                                items = filteredDocumentRows,
+                                key = { rowItems -> "search_doc_row_${rowItems.first().id}" },
+                                contentType = { "search_document_row" },
+                            ) { rowItems ->
+                                Row(
+                                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(bottom = 12.dp)
+                                        .animateItem(),
+                                ) {
+                                    rowItems.forEach { doc ->
+                                        DocumentCard(
+                                            document = doc,
+                                            onOpen = { onOpenDocument(doc.id) },
+                                            onRename = { renameDocTarget = doc },
+                                            onDelete = { deleteDocTarget = doc },
+                                            onMove = { moveDocTarget = doc },
+                                            style = LibraryCardStyle.Grid,
+                                            modifier = Modifier.weight(1f),
+                                        )
+                                    }
+                                    val emptyCells = windowSizeInfo.groupColumns - rowItems.size
+                                    repeat(emptyCells) {
+                                        Spacer(modifier = Modifier.weight(1f))
+                                    }
+                                }
+                            }
+                        } else {
+                            items(
+                                items = filteredDocs,
+                                key = { "sd_${it.id}" },
+                                contentType = { "search_document" },
+                            ) { doc ->
+                                DocumentCard(
+                                    document = doc,
+                                    onOpen = { onOpenDocument(doc.id) },
+                                    onRename = { renameDocTarget = doc },
+                                    onDelete = { deleteDocTarget = doc },
+                                    onMove = { moveDocTarget = doc },
+                                    modifier = Modifier
+                                        .padding(bottom = 12.dp)
+                                        .animateItem(),
+                                )
+                            }
                         }
                     }
                 }
@@ -207,6 +317,7 @@ fun LibraryScreen(
                             horizontalArrangement = Arrangement.spacedBy(12.dp),
                             modifier = Modifier
                                 .fillMaxWidth()
+                                .padding(bottom = 12.dp)
                                 .animateItem(),
                         ) {
                             rowItems.forEach { group ->
@@ -218,7 +329,9 @@ fun LibraryScreen(
                                     modifier = Modifier.weight(1f),
                                 )
                             }
-                            if (rowItems.size == 1) {
+                            // Fill remaining slots in the last row so cards keep equal widths
+                            val emptyCells = windowSizeInfo.groupColumns - rowItems.size
+                            repeat(emptyCells) {
                                 Spacer(modifier = Modifier.weight(1f))
                             }
                         }
@@ -233,21 +346,53 @@ fun LibraryScreen(
                             modifier = Modifier.padding(bottom = 12.dp, top = 8.dp),
                         )
                     }
-                    items(
-                        items = uiState.ungroupedDocuments,
-                        key = { it.id },
-                        contentType = { "document" },
-                    ) { doc ->
-                        DocumentCard(
-                            document = doc,
-                            onOpen = { onOpenDocument(doc.id) },
-                            onRename = { renameDocTarget = doc },
-                            onDelete = { deleteDocTarget = doc },
-                            onMove = { moveDocTarget = doc },
-                            modifier = Modifier
-                                .padding(bottom = 12.dp)
-                                .animateItem(),
-                        )
+                    if (windowSizeInfo.isTablet) {
+                        items(
+                            items = documentRows,
+                            key = { rowItems -> "doc_row_${rowItems.first().id}" },
+                            contentType = { "document_row" },
+                        ) { rowItems ->
+                            Row(
+                                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(bottom = 12.dp)
+                                    .animateItem(),
+                            ) {
+                                rowItems.forEach { doc ->
+                                    DocumentCard(
+                                        document = doc,
+                                        onOpen = { onOpenDocument(doc.id) },
+                                        onRename = { renameDocTarget = doc },
+                                        onDelete = { deleteDocTarget = doc },
+                                        onMove = { moveDocTarget = doc },
+                                        style = LibraryCardStyle.Grid,
+                                        modifier = Modifier.weight(1f),
+                                    )
+                                }
+                                val emptyCells = windowSizeInfo.groupColumns - rowItems.size
+                                repeat(emptyCells) {
+                                    Spacer(modifier = Modifier.weight(1f))
+                                }
+                            }
+                        }
+                    } else {
+                        items(
+                            items = uiState.ungroupedDocuments,
+                            key = { it.id },
+                            contentType = { "document" },
+                        ) { doc ->
+                            DocumentCard(
+                                document = doc,
+                                onOpen = { onOpenDocument(doc.id) },
+                                onRename = { renameDocTarget = doc },
+                                onDelete = { deleteDocTarget = doc },
+                                onMove = { moveDocTarget = doc },
+                                modifier = Modifier
+                                    .padding(bottom = 12.dp)
+                                    .animateItem(),
+                            )
+                        }
                     }
                 }
 
@@ -322,21 +467,16 @@ fun LibraryScreen(
     }
 
     deleteDocTarget?.let { doc ->
-        AlertDialog(
-            onDismissRequest = { deleteDocTarget = null },
-            title = { Text("Delete document?") },
-            text = { Text("\"${doc.title}\" and its pages will be removed permanently.") },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        deleteDocTarget = null
-                        onDeleteDocument(doc.id)
-                    },
-                ) { Text("Delete", color = MaterialTheme.colorScheme.error) }
+        ScanlyConfirmDialog(
+            title = "Delete document?",
+            text = "\"${doc.title}\" and its pages will be removed permanently.",
+            confirmLabel = "Delete",
+            onDismiss = { deleteDocTarget = null },
+            onConfirm = {
+                deleteDocTarget = null
+                onDeleteDocument(doc.id)
             },
-            dismissButton = {
-                TextButton(onClick = { deleteDocTarget = null }) { Text("Cancel") }
-            },
+            confirmDestructive = true,
         )
     }
 
@@ -353,23 +493,16 @@ fun LibraryScreen(
     }
 
     deleteGroupTarget?.let { group ->
-        AlertDialog(
-            onDismissRequest = { deleteGroupTarget = null },
-            title = { Text("Delete folder?") },
-            text = {
-                Text("\"${group.title}\" will be deleted. Documents inside will become ungrouped.")
+        ScanlyConfirmDialog(
+            title = "Delete folder?",
+            text = "\"${group.title}\" will be deleted. Documents inside will become ungrouped.",
+            confirmLabel = "Delete",
+            onDismiss = { deleteGroupTarget = null },
+            onConfirm = {
+                deleteGroupTarget = null
+                onDeleteGroup(group.id)
             },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        deleteGroupTarget = null
-                        onDeleteGroup(group.id)
-                    },
-                ) { Text("Delete", color = MaterialTheme.colorScheme.error) }
-            },
-            dismissButton = {
-                TextButton(onClick = { deleteGroupTarget = null }) { Text("Cancel") }
-            },
+            confirmDestructive = true,
         )
     }
 
@@ -427,6 +560,7 @@ fun LibrarySearchBar(
     onQueryChange: (String) -> Unit,
     onClear: () -> Unit,
     modifier: Modifier = Modifier,
+    isTablet: Boolean = false,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
@@ -437,7 +571,11 @@ fun LibrarySearchBar(
     }
 
     Surface(
-        modifier = modifier.fillMaxWidth(),
+        modifier = if (isTablet) {
+            modifier.fillMaxWidth(fraction = 0.85f)
+        } else {
+            modifier.fillMaxWidth()
+        },
         shape = MaterialTheme.shapes.extraLarge,
         color = MaterialTheme.colorScheme.surfaceContainerHigh,
         border = BorderStroke(1.dp, borderColor),

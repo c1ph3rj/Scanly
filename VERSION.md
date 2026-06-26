@@ -4,14 +4,14 @@
 
 | Field | Value |
 | --- | --- |
-| Version name | `1.0.4` |
-| Version code | `4` |
+| Version name | `1.0.5` |
+| Version code | `5` |
 | Application ID | `in.c1ph3rj.scanly` |
 | Min SDK | 29 (Android 10) |
 | Target / compile SDK | 36 |
 | Room schema version | `3` |
-| Release date | 2026-06-15 |
-| Branch | `v1.0.4` |
+| Release date | 2026-06-26 |
+| Branch | `v1.0.5` |
 
 The version shown in **Settings** is read from `versionName` in `app/build.gradle.kts`.
 
@@ -24,11 +24,11 @@ The version shown in **Settings** is read from `versionName` in `app/build.gradl
 
 ## Release History
 
-### 1.0.4 (version code 4)
+### 1.0.5 (version code 5)
 
-Library organization, UI refresh, gallery import, and app-data management.
+Current app release metadata.
 
-See [CHANGELOG.md](CHANGELOG.md#104---2026-06-15) for the full release note.
+See [CHANGELOG.md](CHANGELOG.md#104---2026-06-15) for the previous release note.
 
 ### 1.0.0 (version code 1)
 
@@ -50,7 +50,7 @@ Initial open-source baseline on `master`:
 
 ## Upgrade Notes
 
-### From 1.0.0 to 1.0.4
+### From 1.0.0 to 1.0.5
 
 - Room migrates automatically from schema version 1 or 2 to 3 to add document groups.
 - Existing documents remain available; they appear as ungrouped until moved into a collection.
