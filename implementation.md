@@ -38,6 +38,7 @@ The app currently centers on a local document workflow:
 - manual camera capture and scan sessions
 - gallery import for new or existing documents
 - page persistence in Room (schema version 3)
+- durable scan-file storage under `Pictures/Scanly`, with startup recovery for missing Room index rows
 - non-destructive page editing
 - export/share flows for PDF and images, including group export
 - settings with storage usage, clear-all-data, and support content
@@ -49,6 +50,7 @@ The app currently centers on a local document workflow:
 - Keep raw captures intact.
 - Treat processing results as derived data.
 - Prefer offline-first behavior.
+- Keep scan binaries outside app-private storage so uninstall does not remove the user's documents.
 - Keep manual controls available even when automation is imperfect.
 - Separate UI, domain logic, and storage responsibilities.
 

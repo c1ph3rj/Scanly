@@ -285,7 +285,11 @@ class DefaultPageRepository @Inject constructor(
                     )
                 }
 
-                deletePageAssets(page)
+                storageManager.deletePageAssets(
+                    rawImagePath = page.rawImagePath,
+                    processedImagePath = page.processedImagePath,
+                    thumbnailPath = page.thumbnailPath,
+                )
             }.fold(
                 onSuccess = { ScanlyResult.Success(Unit) },
                 onFailure = { throwable ->
@@ -546,18 +550,6 @@ class DefaultPageRepository @Inject constructor(
                 updatedAtMillis = updatedAtMillis,
             ),
         )
-    }
-
-    private fun deletePageAssets(page: ScanPageEntity) {
-        listOf(page.rawImagePath, page.processedImagePath, page.thumbnailPath)
-            .filterNotNull()
-            .map(::File)
-            .distinctBy { file -> file.absolutePath }
-            .forEach { file ->
-                if (file.exists()) {
-                    file.delete()
-                }
-            }
     }
 
     private companion object {

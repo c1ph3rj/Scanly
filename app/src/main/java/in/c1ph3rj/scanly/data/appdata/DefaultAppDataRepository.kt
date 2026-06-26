@@ -29,7 +29,7 @@ class DefaultAppDataRepository @Inject constructor(
         withContext(dispatchers.io) {
             runCatching {
                 AppStorageUsage(
-                    documentsBytes = directorySize(documentsDirectory()),
+                    documentsBytes = documentStorageManager.documentStorageUsageBytes(),
                     exportCacheBytes = directorySize(exportCacheDirectory()),
                     databaseBytes = databaseFileSize(),
                 )
@@ -68,9 +68,6 @@ class DefaultAppDataRepository @Inject constructor(
             )
         }
 
-    private fun documentsDirectory(): File =
-        File(context.filesDir, DOCUMENTS_DIRECTORY)
-
     private fun exportCacheDirectory(): File =
         File(context.cacheDir, EXPORT_CACHE_DIRECTORY)
 
@@ -92,7 +89,6 @@ class DefaultAppDataRepository @Inject constructor(
     }
 
     private companion object {
-        const val DOCUMENTS_DIRECTORY = "documents"
         const val EXPORT_CACHE_DIRECTORY = "exports"
         const val DATABASE_NAME = "scanly.db"
         val DATABASE_FILE_SUFFIXES = listOf("", "-wal", "-shm")

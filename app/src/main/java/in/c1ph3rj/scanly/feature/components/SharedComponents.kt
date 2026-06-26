@@ -66,6 +66,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.DialogProperties
 import dagger.hilt.android.EntryPointAccessors
 import `in`.c1ph3rj.scanly.core.common.DocumentPresentationFormatter
 import `in`.c1ph3rj.scanly.core.ui.ChromeIconButton
@@ -315,17 +316,21 @@ fun ScanlyAppLogo(
 @Composable
 fun ScanlyFormDialogShell(
     onDismiss: () -> Unit,
+    modifier: Modifier = Modifier,
+    horizontalMargin: Dp = 24.dp,
+    maxWidth: Dp = 560.dp,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     BasicAlertDialog(
         onDismissRequest = onDismiss,
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
+        properties = DialogProperties(usePlatformDefaultWidth = false),
     ) {
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 24.dp)
-                .widthIn(max = 560.dp),
+                .padding(horizontal = horizontalMargin)
+                .widthIn(max = maxWidth),
             shape = MaterialTheme.shapes.extraLarge,
             color = MaterialTheme.colorScheme.surfaceContainerHigh,
             tonalElevation = 6.dp,

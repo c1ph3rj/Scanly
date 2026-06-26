@@ -1,5 +1,7 @@
 package `in`.c1ph3rj.scanly.navigation
 
+import `in`.c1ph3rj.scanly.feature.settings.LegalDocumentType
+
 sealed class ScanlyDestination(
     val route: String,
     val title: String,
@@ -50,6 +52,15 @@ sealed class ScanlyDestination(
 }
 
 /** Route helpers for screens that accept typed arguments. */
+object LegalDocumentDestination {
+    private const val base = "legal"
+    const val typeArgument = "documentType"
+    const val routePattern = "$base/{$typeArgument}"
+
+    fun route(documentType: LegalDocumentType): String =
+        "$base/${documentType.name}"
+}
+
 object GroupDetailDestination {
     private const val base = "group"
     const val groupIdArgument = "groupId"

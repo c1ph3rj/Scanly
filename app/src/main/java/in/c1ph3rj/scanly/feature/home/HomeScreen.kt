@@ -58,6 +58,7 @@ fun HomeRoute(
                     else onOpenDocument(event.documentId)
                     createForScan = false
                 }
+                is HomeEvent.OpenGroup -> onOpenGroup(event.groupId)
                 is HomeEvent.ShowMessage -> snackbarHostState.showSnackbar(event.message)
             }
         }
@@ -77,6 +78,7 @@ fun HomeRoute(
         onOpenScanSession = onOpenScanSession,
         onOpenGroup = onOpenGroup,
         onNavigateToLibrary = onNavigateToLibrary,
+        onCreateGroup = viewModel::createGroup,
     )
 }
 
@@ -90,8 +92,10 @@ fun HomeScreen(
     onOpenScanSession: (String) -> Unit,
     onOpenGroup: (String) -> Unit,
     onNavigateToLibrary: () -> Unit,
+    onCreateGroup: (String) -> Unit,
 ) {
     var createDialogVisible by rememberSaveable { mutableStateOf(false) }
+    var createFolderDialogVisible by rememberSaveable { mutableStateOf(false) }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -130,7 +134,7 @@ fun HomeScreen(
                 QuickActionsRow(
                     onScan = { createDialogVisible = true },
                     onImport = onImportImages,
-                    onNewFolder = onNavigateToLibrary,
+                    onNewFolder = { createFolderDialogVisible = true },
                     importEnabled = !uiState.isImporting,
                     modifier = Modifier.padding(bottom = 32.dp)
                 )
@@ -213,6 +217,18 @@ fun HomeScreen(
             onConfirm = { value ->
                 createDialogVisible = false
                 onCreateDocument(value)
+            },
+        )
+    }
+
+    if (createFolderDialogVisible) {
+        GroupNameDialog(
+            title = "New folder",
+            initialValue = "",
+            onDismiss = { createFolderDialogVisible = false },
+            onConfirm = { title ->
+                createFolderDialogVisible = false
+                onCreateGroup(title)
             },
         )
     }

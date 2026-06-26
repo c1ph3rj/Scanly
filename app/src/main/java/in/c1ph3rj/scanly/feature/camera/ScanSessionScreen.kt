@@ -8,6 +8,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.Camera
 import androidx.camera.core.CameraControl
 import androidx.camera.core.CameraSelector
+import androidx.camera.core.FocusMeteringAction
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
@@ -27,6 +28,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.Box
@@ -83,6 +85,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.style.TextOverflow
@@ -98,10 +101,12 @@ import `in`.c1ph3rj.scanly.core.ml.DetectionFrame
 import `in`.c1ph3rj.scanly.domain.model.PageCaptureDraft
 import `in`.c1ph3rj.scanly.feature.components.PagePreview
 import `in`.c1ph3rj.scanly.core.ui.PreviewDisplaySize
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import java.io.File
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
 
 object ScanSessionDestination {
@@ -207,6 +212,27 @@ fun ScanSessionRoute(
             torchEnabled = updatedState
             cameraControl?.enableTorch(updatedState)
         },
+        onTapToFocus = { tapOffset ->
+            val currentPreviewView = previewView
+            val currentCameraControl = cameraControl
+            if (currentPreviewView == null || currentCameraControl == null) {
+                false
+            } else {
+                runCatching {
+                    val meteringPoint = currentPreviewView.meteringPointFactory.createPoint(
+                        tapOffset.x,
+                        tapOffset.y,
+                    )
+                    val focusAction = FocusMeteringAction.Builder(
+                        meteringPoint,
+                        FocusMeteringAction.FLAG_AF or FocusMeteringAction.FLAG_AE,
+                    )
+                        .setAutoCancelDuration(TapFocusAutoCancelSeconds, TimeUnit.SECONDS)
+                        .build()
+                    currentCameraControl.startFocusAndMetering(focusAction)
+                }.isSuccess
+            }
+        },
         onCameraReady = { captureUseCase, cameraPreview, boundCamera ->
             imageCapture = captureUseCase
             previewView = cameraPreview
@@ -239,6 +265,7 @@ fun ScanSessionScreen(
     torchEnabled: Boolean,
     torchAvailable: Boolean,
     onTorchToggle: () -> Unit,
+    onTapToFocus: (Offset) -> Boolean,
     onCameraReady: (ImageCapture, PreviewView, Camera) -> Unit,
 ) {
     var pagesVisible by rememberSaveable { mutableStateOf(false) }
@@ -292,6 +319,7 @@ fun ScanSessionScreen(
                         liveDetection = uiState.liveDetection,
                         onCameraReady = onCameraReady,
                         onPreviewFrame = onPreviewFrame,
+                        onTapToFocus = onTapToFocus,
                     )
                 }
                 CameraTopBar(
@@ -889,12 +917,21 @@ private fun CameraPreview(
     liveDetection: LiveDetectionUiState,
     onCameraReady: (ImageCapture, PreviewView, Camera) -> Unit,
     onPreviewFrame: (() -> DetectionFrame?) -> Boolean,
+    onTapToFocus: (Offset) -> Boolean,
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val mainExecutor = remember(context) { ContextCompat.getMainExecutor(context) }
     val analysisExecutor = remember { Executors.newSingleThreadExecutor() }
     var previewView by remember { mutableStateOf<PreviewView?>(null) }
+    var focusIndicatorOffset by remember { mutableStateOf<Offset?>(null) }
+
+    LaunchedEffect(focusIndicatorOffset) {
+        if (focusIndicatorOffset != null) {
+            delay(TapFocusIndicatorDurationMillis)
+            focusIndicatorOffset = null
+        }
+    }
 
     DisposableEffect(analysisExecutor) {
         onDispose {
@@ -981,7 +1018,17 @@ private fun CameraPreview(
         }
     }
 
-    Box(modifier = modifier.background(MaterialTheme.colorScheme.surfaceContainerHighest)) {
+    Box(
+        modifier = modifier
+            .background(MaterialTheme.colorScheme.surfaceContainerHighest)
+            .pointerInput(onTapToFocus) {
+                detectTapGestures { offset: Offset ->
+                    if (onTapToFocus(offset)) {
+                        focusIndicatorOffset = offset
+                    }
+                }
+            },
+    ) {
         AndroidView(
             modifier = Modifier.fillMaxSize(),
             factory = { androidContext ->
@@ -998,6 +1045,39 @@ private fun CameraPreview(
         DocumentDetectionOverlay(
             liveDetection = liveDetection,
             modifier = Modifier.fillMaxSize(),
+        )
+        TapFocusIndicator(
+            focusOffset = focusIndicatorOffset,
+            modifier = Modifier.fillMaxSize(),
+        )
+    }
+}
+
+@Composable
+private fun TapFocusIndicator(
+    focusOffset: Offset?,
+    modifier: Modifier = Modifier,
+) {
+    if (focusOffset == null) {
+        return
+    }
+
+    Canvas(modifier = modifier) {
+        drawCircle(
+            color = OverlayBlue.copy(alpha = 0.16f),
+            radius = 34.dp.toPx(),
+            center = focusOffset,
+        )
+        drawCircle(
+            color = OverlayBlue,
+            radius = 26.dp.toPx(),
+            center = focusOffset,
+            style = Stroke(width = 2.dp.toPx()),
+        )
+        drawCircle(
+            color = Color.White.copy(alpha = 0.92f),
+            radius = 4.dp.toPx(),
+            center = focusOffset,
         )
     }
 }
@@ -1248,6 +1328,8 @@ private val OverlayGuide = Color(0xC2FFFFFF)
 private const val RgbaPixelStride = 4
 private const val AnalysisFramesPerSecond = 8L
 private const val AnalysisIntervalNanos = 1_000_000_000L / AnalysisFramesPerSecond
+private const val TapFocusAutoCancelSeconds = 3L
+private const val TapFocusIndicatorDurationMillis = 850L
 private val AnalysisResolution = Size(640, 480)
 
 

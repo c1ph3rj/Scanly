@@ -230,6 +230,31 @@ class DocumentDetailViewModel @Inject constructor(
         )
     }
 
+    fun shareSelectedPage() {
+        val snapshot = _uiState.value
+        val selectedPage = snapshot.selectedPage ?: return
+        val imagePath = selectedPage.processedImagePath
+            ?: selectedPage.rawImagePath
+            ?: selectedPage.thumbnailPath
+
+        viewModelScope.launch {
+            if (imagePath == null) {
+                _events.emit(DocumentDetailEvent.ShowMessage("Page image is not available yet."))
+                return@launch
+            }
+
+            _events.emit(
+                DocumentDetailEvent.ShareFiles(
+                    ShareArtifact(
+                        mimeType = PageImageMimeType,
+                        title = "${snapshot.document?.title ?: "Scanly"} page ${selectedPage.pageIndex + 1}",
+                        filePaths = listOf(imagePath),
+                    ),
+                ),
+            )
+        }
+    }
+
     fun importImages(uris: List<Uri>) {
         if (_uiState.value.isMutatingPage || uris.isEmpty()) return
 
@@ -361,3 +386,5 @@ internal fun resolveSelectedPageId(
     return pages.firstOrNull { page -> page.id == currentSelectedPageId }?.id
         ?: pages.first().id
 }
+
+private const val PageImageMimeType = "image/jpeg"

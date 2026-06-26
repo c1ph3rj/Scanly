@@ -231,6 +231,7 @@ fun DocumentDetailRoute(
         onSharePdf = viewModel::sharePdf,
         onExportImageArchive = viewModel::exportImageArchive,
         onShareImages = viewModel::shareImages,
+        onShareSelectedPage = viewModel::shareSelectedPage,
         onMoveToGroup = viewModel::moveToGroup,
         onCreateFolderAndMove = viewModel::createFolderAndMove,
         onImportImage = {
@@ -257,6 +258,7 @@ fun DocumentDetailScreen(
     onSharePdf: (PdfExportOptions) -> Unit,
     onExportImageArchive: () -> Unit,
     onShareImages: () -> Unit,
+    onShareSelectedPage: () -> Unit,
     onMoveToGroup: (String?) -> Unit,
     onCreateFolderAndMove: (String) -> Unit,
     onImportImage: () -> Unit,
@@ -342,6 +344,8 @@ fun DocumentDetailScreen(
                 onRename = { renameDialogVisible = true },
                 onDelete = { deleteDocumentDialogVisible = true },
                 exportEnabled = !uiState.isExporting && uiState.pages.isNotEmpty(),
+                pageReviewActive = isReviewingPage && selectedPage != null,
+                onSharePage = onShareSelectedPage,
                 menuEnabled = document != null,
             )
         },
@@ -481,6 +485,7 @@ fun DocumentDetailScreen(
                         enabled = !uiState.isMutatingPage,
                         onEdit = { onOpenPageEditor(selectedPage.id) },
                         onReplace = { onReplacePage(selectedPage.id) },
+                        onShare = onShareSelectedPage,
                         onDelete = { deleteDialogVisible = true },
                     )
                 }
@@ -754,6 +759,8 @@ private fun ReviewTopBar(
     onRename: () -> Unit,
     onDelete: () -> Unit,
     exportEnabled: Boolean,
+    pageReviewActive: Boolean,
+    onSharePage: () -> Unit,
     menuEnabled: Boolean,
 ) {
     var showMenu by remember { mutableStateOf(false) }
@@ -762,92 +769,105 @@ private fun ReviewTopBar(
     Surface(color = topBarColor) {
         TopAppBar(
             title = {
-            Column {
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.SemiBold,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
-                Text(
-                    text = if (pageCount == 1) "1 page" else "$pageCount pages",
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
-            }
-        },
-        navigationIcon = {
-            ChromeIconButton(
-                icon = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = "Back",
-                onClick = onNavigateUp,
-            )
-        },
-        actions = {
-            Box {
-                IconButton(
-                    onClick = { showMenu = true },
-                    enabled = menuEnabled,
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.MoreVert,
-                        contentDescription = "Document options",
+                Column(modifier = Modifier.padding(start = 10.dp)) {
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.SemiBold,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                    Text(
+                        text = if (pageCount == 1) "1 page" else "$pageCount pages",
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
                     )
                 }
-                DropdownMenu(
-                    expanded = showMenu,
-                    onDismissRequest = { showMenu = false },
-                ) {
-                    DropdownMenuItem(
-                        text = { Text("Export & share") },
-                        leadingIcon = {
-                            Icon(Icons.Filled.IosShare, contentDescription = null)
-                        },
-                        enabled = exportEnabled,
-                        onClick = {
-                            showMenu = false
-                            onOpenExportSheet()
-                        },
-                    )
-                    DropdownMenuItem(
-                        text = { Text("Rename document") },
-                        leadingIcon = {
-                            Icon(Icons.Filled.Edit, contentDescription = null)
-                        },
-                        onClick = {
-                            showMenu = false
-                            onRename()
-                        },
-                    )
-                    DropdownMenuItem(
-                        text = {
-                            Text(
-                                text = "Delete document",
-                                color = MaterialTheme.colorScheme.error,
+            },
+            navigationIcon = {
+                ChromeIconButton(
+                    icon = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "Back",
+                    onClick = onNavigateUp,
+                )
+            },
+            actions = {
+                Box {
+                    IconButton(
+                        onClick = { showMenu = true },
+                        enabled = menuEnabled,
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.MoreVert,
+                            contentDescription = "Document options",
+                        )
+                    }
+                    DropdownMenu(
+                        expanded = showMenu,
+                        onDismissRequest = { showMenu = false },
+                    ) {
+                        if (pageReviewActive) {
+                            DropdownMenuItem(
+                                text = { Text("Share page") },
+                                leadingIcon = {
+                                    Icon(Icons.Filled.IosShare, contentDescription = null)
+                                },
+                                enabled = exportEnabled,
+                                onClick = {
+                                    showMenu = false
+                                    onSharePage()
+                                },
                             )
-                        },
-                        leadingIcon = {
-                            Icon(
-                                imageVector = Icons.Filled.DeleteOutline,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.error,
-                            )
-                        },
-                        onClick = {
-                            showMenu = false
-                            onDelete()
-                        },
-                    )
+                        }
+                        DropdownMenuItem(
+                            text = { Text("Export & share") },
+                            leadingIcon = {
+                                Icon(Icons.Filled.IosShare, contentDescription = null)
+                            },
+                            enabled = exportEnabled,
+                            onClick = {
+                                showMenu = false
+                                onOpenExportSheet()
+                            },
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Rename document") },
+                            leadingIcon = {
+                                Icon(Icons.Filled.Edit, contentDescription = null)
+                            },
+                            onClick = {
+                                showMenu = false
+                                onRename()
+                            },
+                        )
+                        DropdownMenuItem(
+                            text = {
+                                Text(
+                                    text = "Delete document",
+                                    color = MaterialTheme.colorScheme.error,
+                                )
+                            },
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = Icons.Filled.DeleteOutline,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.error,
+                                )
+                            },
+                            onClick = {
+                                showMenu = false
+                                onDelete()
+                            },
+                        )
+                    }
                 }
-            }
-        },
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = Color.Transparent,
-            scrolledContainerColor = Color.Transparent,
-        ),
+            },
+            colors = TopAppBarDefaults.topAppBarColors(
+                containerColor = Color.Transparent,
+                scrolledContainerColor = Color.Transparent,
+            ),
         )
     }
 }
@@ -1061,34 +1081,50 @@ private fun SelectedPageCard(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onPreview),
-        color = MaterialTheme.colorScheme.surfaceContainerHigh,
-        shape = MaterialTheme.shapes.extraLarge,
+        color = MaterialTheme.colorScheme.surfaceContainer,
+        shape = MaterialTheme.shapes.large,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
     ) {
         Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(14.dp),
+            modifier = Modifier.padding(14.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Column(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                ) {
+                    Text(
+                        text = "Page ${page.pageIndex + 1} of $pageCount",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                    Text(
+                        text = capturedDate,
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
+                MetricChip(
+                    label = page.processingState.toDisplayLabel(),
+                    containerColor = page.processingState.toContainerColor(),
+                    contentColor = page.processingState.toContentColor(),
+                )
+            }
             Box {
                 PagePreview(
                     page = page,
                     displaySize = PreviewDisplaySize.DETAIL,
                     modifier = Modifier.fillMaxWidth(),
                     minHeight = 120.dp,
-                )
-                MetricChip(
-                    label = "P${page.pageIndex + 1}/$pageCount",
-                    modifier = Modifier
-                        .align(Alignment.TopStart)
-                        .padding(12.dp),
-                    containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.82f),
-                )
-                MetricChip(
-                    label = page.processingState.toDisplayLabel(),
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .padding(12.dp),
-                    containerColor = page.processingState.toContainerColor(),
-                    contentColor = page.processingState.toContentColor(),
                 )
                 ChromeIconButton(
                     icon = Icons.Filled.OpenInFull,
@@ -1101,11 +1137,6 @@ private fun SelectedPageCard(
                     contentColor = MaterialTheme.colorScheme.onSurface,
                 )
             }
-            Text(
-                text = "Captured $capturedDate",
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
         }
     }
 }
@@ -1115,45 +1146,53 @@ private fun ReviewActionDock(
     enabled: Boolean,
     onEdit: () -> Unit,
     onReplace: () -> Unit,
+    onShare: () -> Unit,
     onDelete: () -> Unit,
 ) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
-        color = MaterialTheme.colorScheme.surfaceContainer,
-        shape = MaterialTheme.shapes.extraLarge,
+        color = MaterialTheme.colorScheme.surfaceContainerLow,
+        shape = MaterialTheme.shapes.large,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
     ) {
-        Column(
-            modifier = Modifier.padding(14.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(10.dp),
-            ) {
-                ReviewToolButton(
-                    icon = Icons.Filled.Crop,
-                    label = "Edit",
-                    enabled = enabled,
-                    onClick = onEdit,
-                    modifier = Modifier.weight(1f),
-                )
-                ReviewToolButton(
-                    icon = Icons.Filled.Refresh,
-                    label = "Retake",
-                    enabled = enabled,
-                    onClick = onReplace,
-                    modifier = Modifier.weight(1f),
-                )
-                ReviewToolButton(
-                    icon = Icons.Filled.DeleteOutline,
-                    label = "Delete",
-                    enabled = enabled,
-                    onClick = onDelete,
-                    modifier = Modifier.weight(1f),
-                    containerColor = MaterialTheme.colorScheme.error.copy(alpha = 0.1f),
-                    contentColor = MaterialTheme.colorScheme.error,
-                )
-            }
+            ReviewToolButton(
+                icon = Icons.Filled.Crop,
+                label = "Edit",
+                enabled = enabled,
+                onClick = onEdit,
+                modifier = Modifier.weight(1f),
+            )
+            ReviewToolButton(
+                icon = Icons.Filled.Refresh,
+                label = "Retake",
+                enabled = enabled,
+                onClick = onReplace,
+                modifier = Modifier.weight(1f),
+            )
+            ReviewToolButton(
+                icon = Icons.Filled.IosShare,
+                label = "Share",
+                enabled = enabled,
+                onClick = onShare,
+                modifier = Modifier.weight(1f),
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+            )
+            ReviewToolButton(
+                icon = Icons.Filled.DeleteOutline,
+                label = "Delete",
+                enabled = enabled,
+                onClick = onDelete,
+                modifier = Modifier.weight(1f),
+                containerColor = MaterialTheme.colorScheme.error.copy(alpha = 0.1f),
+                contentColor = MaterialTheme.colorScheme.error,
+            )
         }
     }
 }
@@ -1171,13 +1210,13 @@ private fun ReviewToolButton(
     Surface(
         modifier = modifier.clickable(enabled = enabled, onClick = onClick),
         color = if (enabled) containerColor else containerColor.copy(alpha = 0.45f),
-        shape = MaterialTheme.shapes.large,
+        shape = MaterialTheme.shapes.medium,
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
     ) {
         Column(
-            modifier = Modifier.padding(vertical = 12.dp),
+            modifier = Modifier.padding(vertical = 10.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(7.dp),
         ) {
             androidx.compose.material3.Icon(
                 imageVector = icon,
@@ -1188,6 +1227,8 @@ private fun ReviewToolButton(
                 text = label,
                 style = MaterialTheme.typography.labelLarge,
                 color = contentColor,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
             )
         }
     }
@@ -1374,7 +1415,7 @@ private fun sharePreparedFiles(
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
     }
-    context.startActivity(Intent.createChooser(shareIntent, "Share pages"))
+    context.startActivity(Intent.createChooser(shareIntent, "Share ${artifact.title}"))
 }
 
 private fun Context.exportUriFor(path: String): Uri = FileProvider.getUriForFile(

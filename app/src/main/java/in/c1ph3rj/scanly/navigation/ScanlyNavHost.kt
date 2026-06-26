@@ -37,6 +37,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
+import `in`.c1ph3rj.scanly.feature.update.AppUpdateUiState
 import `in`.c1ph3rj.scanly.feature.camera.ScanSessionDestination
 import `in`.c1ph3rj.scanly.feature.camera.ScanSessionRoute
 import `in`.c1ph3rj.scanly.feature.document.DocumentDestination
@@ -47,6 +48,8 @@ import `in`.c1ph3rj.scanly.feature.home.HomeRoute
 import `in`.c1ph3rj.scanly.feature.library.LibraryRoute
 import `in`.c1ph3rj.scanly.feature.library.GroupDetailRoute
 import `in`.c1ph3rj.scanly.feature.placeholder.FeaturePlaceholderRoute
+import `in`.c1ph3rj.scanly.feature.settings.LegalDocumentRoute
+import `in`.c1ph3rj.scanly.feature.settings.LegalDocumentType
 import `in`.c1ph3rj.scanly.feature.settings.SettingsRoute
 
 private data class BottomNavItem(
@@ -82,6 +85,8 @@ private val topLevelRoutes = setOf(
 @Composable
 fun ScanlyNavHost(
     navController: NavHostController,
+    appUpdateUiState: AppUpdateUiState,
+    onCheckForUpdates: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -222,6 +227,34 @@ fun ScanlyNavHost(
             ) {
                 SettingsRoute(
                     onNavigateUp = navController::navigateUp,
+                    appUpdateUiState = appUpdateUiState,
+                    onCheckForUpdates = onCheckForUpdates,
+                    onOpenLegalDocument = { documentType ->
+                        navController.navigate(LegalDocumentDestination.route(documentType))
+                    },
+                )
+            }
+            composable(
+                route = LegalDocumentDestination.routePattern,
+                arguments = listOf(
+                    navArgument(LegalDocumentDestination.typeArgument) {
+                        type = NavType.StringType
+                    },
+                ),
+                enterTransition = { detailPushEnter() },
+                exitTransition = { detailPushExit() },
+                popEnterTransition = { detailPopEnter() },
+                popExitTransition = { detailPopExit() },
+            ) {
+                val documentTypeName =
+                    it.arguments?.getString(LegalDocumentDestination.typeArgument).orEmpty()
+                val documentType = LegalDocumentType.entries.firstOrNull { type ->
+                    type.name == documentTypeName
+                } ?: LegalDocumentType.Privacy
+
+                LegalDocumentRoute(
+                    documentType = documentType,
+                    onNavigateUp = navController::navigateUp,
                 )
             }
             composable(
@@ -271,7 +304,22 @@ fun ScanlyNavHost(
                 ScanSessionRoute(
                     onNavigateUp = navController::navigateUp,
                     onOpenDocument = { documentId ->
-                        navController.navigate(DocumentDestination.route(documentId))
+                        val documentRoute = DocumentDestination.route(documentId)
+                        val returnedToExistingDocument = navController.popBackStack(
+                            route = documentRoute,
+                            inclusive = false,
+                        )
+                        if (!returnedToExistingDocument) {
+                            val currentDestinationId = navController.currentBackStackEntry?.destination?.id
+                            navController.navigate(documentRoute) {
+                                if (currentDestinationId != null) {
+                                    popUpTo(currentDestinationId) {
+                                        inclusive = true
+                                    }
+                                }
+                                launchSingleTop = true
+                            }
+                        }
                     },
                 )
             }

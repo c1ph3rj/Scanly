@@ -9,6 +9,7 @@ import `in`.c1ph3rj.scanly.core.ui.ImageImportSupport
 import `in`.c1ph3rj.scanly.domain.model.DocumentGroup
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
 import `in`.c1ph3rj.scanly.domain.usecase.CreateDocumentUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.CreateGroupUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ImportImagesUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveRecentDocumentsUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveRecentGroupsUseCase
@@ -32,6 +33,7 @@ data class HomeUiState(
 
 sealed interface HomeEvent {
     data class OpenDocument(val documentId: String) : HomeEvent
+    data class OpenGroup(val groupId: String) : HomeEvent
     data class ShowMessage(val message: String) : HomeEvent
 }
 
@@ -40,6 +42,7 @@ class HomeViewModel @Inject constructor(
     observeRecentGroupsUseCase: ObserveRecentGroupsUseCase,
     observeRecentDocumentsUseCase: ObserveRecentDocumentsUseCase,
     private val createDocumentUseCase: CreateDocumentUseCase,
+    private val createGroupUseCase: CreateGroupUseCase,
     private val importImagesUseCase: ImportImagesUseCase,
 ) : ViewModel() {
 
@@ -68,6 +71,15 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             when (val result = createDocumentUseCase(title)) {
                 is ScanlyResult.Success -> _events.emit(HomeEvent.OpenDocument(result.value))
+                is ScanlyResult.Failure -> _events.emit(HomeEvent.ShowMessage(result.error.message))
+            }
+        }
+    }
+
+    fun createGroup(title: String) {
+        viewModelScope.launch {
+            when (val result = createGroupUseCase(title)) {
+                is ScanlyResult.Success -> _events.emit(HomeEvent.OpenGroup(result.value))
                 is ScanlyResult.Failure -> _events.emit(HomeEvent.ShowMessage(result.error.message))
             }
         }

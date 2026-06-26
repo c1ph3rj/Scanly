@@ -6,4 +6,7 @@
     <files-path
         name="files"
         path="." />
+    <external-path
+        name="scanly_external"
+        path="." />
 </paths>

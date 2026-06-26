@@ -25,6 +25,9 @@ interface DocumentDao {
     @Query("SELECT * FROM documents WHERE groupId = :groupId ORDER BY title ASC")
     suspend fun getDocumentsByGroup(groupId: String): List<DocumentEntity>
 
+    @Query("SELECT * FROM documents ORDER BY updatedAtMillis DESC")
+    suspend fun getDocuments(): List<DocumentEntity>
+
     @Query("SELECT * FROM documents WHERE id = :documentId")
     fun observeDocument(documentId: String): Flow<DocumentEntity?>
 
