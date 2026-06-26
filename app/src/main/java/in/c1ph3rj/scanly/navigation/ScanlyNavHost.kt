@@ -65,6 +65,8 @@ import `in`.c1ph3rj.scanly.feature.home.HomeRoute
 import `in`.c1ph3rj.scanly.feature.library.LibraryRoute
 import `in`.c1ph3rj.scanly.feature.library.GroupDetailRoute
 import `in`.c1ph3rj.scanly.feature.placeholder.FeaturePlaceholderRoute
+import `in`.c1ph3rj.scanly.feature.preview.PageImagePreviewDestination
+import `in`.c1ph3rj.scanly.feature.preview.PageImagePreviewRoute
 import `in`.c1ph3rj.scanly.feature.settings.LegalDocumentRoute
 import `in`.c1ph3rj.scanly.feature.settings.LegalDocumentType
 import `in`.c1ph3rj.scanly.feature.settings.SettingsRoute
@@ -425,15 +427,10 @@ private fun ScanlyNavHostContent(
                     navController.navigate(ScanSessionDestination.route(documentId))
                 },
                 onOpenPageEditor = { pageId ->
-                    navController.navigate(PageEditorDestination.route(pageId))
+                    navController.navigate(PageImagePreviewDestination.route(pageId))
                 },
                 onReplacePage = { pageId ->
-                    navController.navigate(
-                        ScanSessionDestination.route(
-                            documentId = documentId,
-                            replacePageId = pageId,
-                        ),
-                    )
+                    navController.navigate(ScanSessionDestination.route(documentId, replacePageId = pageId))
                 },
             )
         }
@@ -467,6 +464,25 @@ private fun ScanlyNavHostContent(
             )
         }
         composable(
+            route = PageImagePreviewDestination.routePattern,
+            arguments = listOf(
+                navArgument(PageImagePreviewDestination.pageIdArgument) {
+                    type = NavType.StringType
+                },
+            ),
+            enterTransition = { detailPushEnter() },
+            exitTransition = { detailPushExit() },
+            popEnterTransition = { detailPopEnter() },
+            popExitTransition = { detailPopExit() },
+        ) {
+            PageImagePreviewRoute(
+                onNavigateUp = navController::navigateUp,
+                onEditPage = { pageId ->
+                    navController.navigate(PageEditorDestination.route(pageId))
+                },
+            )
+        }
+        composable(
             route = PageEditorDestination.routePattern,
             enterTransition = { detailPushEnter() },
             exitTransition = { detailPushExit() },
@@ -475,6 +491,9 @@ private fun ScanlyNavHostContent(
         ) {
             PageEditorRoute(
                 onNavigateUp = navController::navigateUp,
+                onRetakePage = { documentId, pageId ->
+                    navController.navigate(ScanSessionDestination.route(documentId, replacePageId = pageId))
+                },
             )
         }
         composable(

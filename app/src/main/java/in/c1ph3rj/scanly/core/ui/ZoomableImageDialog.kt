@@ -62,10 +62,6 @@ fun ZoomableImageDialog(
     title: String,
     onDismiss: () -> Unit,
 ) {
-    var scale by remember(imagePath) { mutableStateOf(1f) }
-    var offset by remember(imagePath) { mutableStateOf(Offset.Zero) }
-    val zoomActive = scale > 1.02f
-
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(
@@ -88,92 +84,117 @@ fun ZoomableImageDialog(
             onDispose {}
         }
 
-        Surface(
+        ZoomableImageViewer(
+            imagePath = imagePath,
+            title = title,
+            onNavigateUp = onDismiss,
+            closeContentDescription = "Close",
+        )
+    }
+}
+
+@Composable
+fun ZoomableImageViewer(
+    imagePath: String?,
+    title: String,
+    onNavigateUp: () -> Unit,
+    modifier: Modifier = Modifier,
+    closeContentDescription: String = "Back",
+    trailingAction: @Composable (
+        zoomActive: Boolean,
+        onResetZoom: () -> Unit,
+    ) -> Unit = { zoomActive, onResetZoom ->
+        if (zoomActive) {
+            ChromeIconButton(
+                icon = Icons.Filled.Refresh,
+                contentDescription = "Reset zoom",
+                onClick = onResetZoom,
+                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                contentColor = MaterialTheme.colorScheme.onSurface,
+            )
+        } else {
+            Box(modifier = Modifier.size(44.dp))
+        }
+    },
+) {
+    var scale by remember(imagePath) { mutableStateOf(1f) }
+    var offset by remember(imagePath) { mutableStateOf(Offset.Zero) }
+    val zoomActive = scale > 1.02f
+    val resetZoom = {
+        scale = 1f
+        offset = Offset.Zero
+    }
+
+    Surface(
+        modifier = modifier.fillMaxSize(),
+        color = MaterialTheme.colorScheme.background,
+    ) {
+        Box(
             modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background,
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.background),
-            ) {
-                val imageBitmap by rememberZoomableImageBitmap(imagePath)
-                when {
-                    imageBitmap == null && imagePath != null -> {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(28.dp),
-                                color = MaterialTheme.colorScheme.primary,
-                                strokeWidth = 2.5.dp,
-                            )
-                        }
-                    }
-
-                    imageBitmap == null -> {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            Text(
-                                text = "Image unavailable",
-                                style = MaterialTheme.typography.titleMedium,
-                                color = MaterialTheme.colorScheme.onBackground,
-                            )
-                        }
-                    }
-
-                    else -> {
-                        ZoomableImageCanvas(
-                            imageBitmap = imageBitmap!!,
-                            scale = scale,
-                            offset = offset,
-                            onScaleChange = { scale = it },
-                            onOffsetChange = { offset = it },
-                            modifier = Modifier.fillMaxSize(),
+            val imageBitmap by rememberZoomableImageBitmap(imagePath)
+            when {
+                imageBitmap == null && imagePath != null -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(28.dp),
+                            color = MaterialTheme.colorScheme.primary,
+                            strokeWidth = 2.5.dp,
                         )
                     }
                 }
 
-                Row(
-                    modifier = Modifier
-                        .align(Alignment.TopCenter)
-                        .statusBarsPadding()
-                        .padding(horizontal = 16.dp, vertical = 12.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    ChromeIconButton(
-                        icon = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Close",
-                        onClick = onDismiss,
+                imageBitmap == null -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Text(
+                            text = "Image unavailable",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.onBackground,
+                        )
+                    }
+                }
+
+                else -> {
+                    ZoomableImageCanvas(
+                        imageBitmap = imageBitmap!!,
+                        scale = scale,
+                        offset = offset,
+                        onScaleChange = { scale = it },
+                        onOffsetChange = { offset = it },
+                        modifier = Modifier.fillMaxSize(),
+                    )
+                }
+            }
+
+            Row(
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .statusBarsPadding()
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                ChromeIconButton(
+                    icon = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = closeContentDescription,
+                    onClick = onNavigateUp,
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                    contentColor = MaterialTheme.colorScheme.onSurface,
+                )
+                Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
+                    MetricChip(
+                        label = title,
                         containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
                         contentColor = MaterialTheme.colorScheme.onSurface,
                     )
-                    Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
-                        MetricChip(
-                            label = title,
-                            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-                            contentColor = MaterialTheme.colorScheme.onSurface,
-                        )
-                    }
-                    if (zoomActive) {
-                        ChromeIconButton(
-                            icon = Icons.Filled.Refresh,
-                            contentDescription = "Reset zoom",
-                            onClick = {
-                                scale = 1f
-                                offset = Offset.Zero
-                            },
-                            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-                            contentColor = MaterialTheme.colorScheme.onSurface,
-                        )
-                    } else {
-                        Box(modifier = Modifier.size(44.dp))
-                    }
                 }
+                trailingAction(zoomActive, resetZoom)
             }
         }
     }

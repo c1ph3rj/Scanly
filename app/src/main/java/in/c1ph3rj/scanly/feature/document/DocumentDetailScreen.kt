@@ -453,7 +453,7 @@ fun DocumentDetailScreen(
                 onSharePage = onShareSelectedPage,
                 menuEnabled = document != null,
             )
-        },
+        }
     ) { innerPadding ->
         if (uiState.isLoading) {
             FullScreenLoader(modifier = Modifier.padding(innerPadding))
@@ -616,8 +616,7 @@ fun DocumentDetailScreen(
                                     },
                                 onClick = {
                                     if (draggedPageId == null) {
-                                        onSelectPage(page.id)
-                                        isReviewingPage = true
+                                        onOpenPageEditor(page.id)
                                     }
                                 },
                             )
@@ -856,9 +855,8 @@ private fun ReviewTopBar(
                             DropdownMenuItem(
                                 text = { Text("Share page") },
                                 leadingIcon = {
-                                    Icon(Icons.Filled.IosShare, contentDescription = null)
+                                    Icon(Icons.Filled.Share, contentDescription = null)
                                 },
-                                enabled = exportEnabled,
                                 onClick = {
                                     showMenu = false
                                     onSharePage()
@@ -1721,6 +1719,8 @@ private fun PageOverviewTile(
             },
         ),
         shape = MaterialTheme.shapes.extraLarge,
+        shadowElevation = if (isDragging) 8.dp else 2.dp,
+        tonalElevation = if (isDragging) 4.dp else 0.dp,
     ) {
         if (compact) {
             Row(

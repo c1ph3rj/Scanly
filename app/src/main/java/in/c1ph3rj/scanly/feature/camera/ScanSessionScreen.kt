@@ -45,6 +45,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -72,6 +73,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -211,8 +213,6 @@ fun ScanSessionRoute(
             uiState.document?.id?.let(onOpenDocument)
         },
         onCapture = viewModel::requestCapture,
-        onRetakePageSelection = viewModel::onReplacementPageSelected,
-        onClearRetakeSelection = viewModel::clearReplacementSelection,
         onAutoCaptureEnabledChange = viewModel::onAutoCaptureEnabledChanged,
         onGridEnabledChange = viewModel::onGridEnabledChanged,
         onPreviewFrame = viewModel::onPreviewFrame,
@@ -268,8 +268,6 @@ fun ScanSessionScreen(
     onNavigateUp: () -> Unit,
     onOpenDocument: () -> Unit,
     onCapture: () -> Unit,
-    onRetakePageSelection: (String?) -> Unit,
-    onClearRetakeSelection: () -> Unit,
     onAutoCaptureEnabledChange: (Boolean) -> Unit,
     onGridEnabledChange: (Boolean) -> Unit,
     onPreviewFrame: (() -> DetectionFrame?) -> Boolean,
@@ -279,16 +277,9 @@ fun ScanSessionScreen(
     onTapToFocus: (Offset) -> Boolean,
     onCameraReady: (ImageCapture, PreviewView, Camera) -> Unit,
 ) {
-    var pagesVisible by rememberSaveable { mutableStateOf(false) }
-    var quickControlsVisible by rememberSaveable { mutableStateOf(false) }
+    var settingsSheetVisible by rememberSaveable { mutableStateOf(false) }
     val windowSizeInfo = rememberWindowSizeInfo()
-    val previewAspectRatio = cameraPreviewAspectRatio(windowSizeInfo.isLandscape)
-
-    LaunchedEffect(uiState.pages.isNotEmpty()) {
-        if (uiState.pages.isNotEmpty()) {
-            pagesVisible = true
-        }
-    }
+    val previewAspectRatio = cameraPreviewAspectRatio()
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -320,205 +311,200 @@ fun ScanSessionScreen(
                 actionLabel = "Grant",
                 onAction = onRequestPermission,
             )
-        } else if (windowSizeInfo.useCompactLandscapeLayout) {
-            Row(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Box(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight(),
-                ) {
-                    CameraPreviewViewport(
-                        modifier = Modifier.align(Alignment.Center),
-                        aspectRatio = previewAspectRatio,
-                        liveDetection = uiState.liveDetection,
-                        onCameraReady = onCameraReady,
-                        onPreviewFrame = onPreviewFrame,
-                        onTapToFocus = onTapToFocus,
-                    )
-                    CameraTopBar(
-                        uiState = uiState,
-                        onNavigateUp = onNavigateUp,
-                        quickControlsVisible = quickControlsVisible,
-                        onQuickControlsToggle = { quickControlsVisible = !quickControlsVisible },
-                        onClearRetakeSelection = onClearRetakeSelection,
-                        onAutoCaptureEnabledChange = onAutoCaptureEnabledChange,
-                        onGridEnabledChange = onGridEnabledChange,
-                        torchEnabled = torchEnabled,
-                        torchAvailable = torchAvailable,
-                        onTorchToggle = onTorchToggle,
-                        compact = true,
-                        modifier = Modifier
-                            .align(Alignment.TopCenter)
-                            .statusBarsPadding()
-                            .padding(horizontal = 10.dp, vertical = 6.dp),
-                    )
-                    DetectionMeta(
-                        liveDetection = uiState.liveDetection,
-                        showStats = uiState.showDetectionStats,
-                        modifier = Modifier
-                            .align(Alignment.BottomStart)
-                            .padding(start = 16.dp, bottom = 14.dp),
-                    )
-                }
-                CameraCompactLandscapeDock(
-                    uiState = uiState,
-                    pagesVisible = pagesVisible,
-                    onPagesVisibilityToggle = { pagesVisible = !pagesVisible },
-                    onCapture = onCapture,
-                    onOpenDocument = onOpenDocument,
-                    modifier = Modifier
-                        .width(244.dp)
-                        .fillMaxHeight()
-                        .navigationBarsPadding()
-                        .padding(vertical = 8.dp, horizontal = 8.dp),
-                )
-            }
-        } else if (windowSizeInfo.useTabletLandscapeLayout) {
-            Row(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding),
-            ) {
-                Box(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight(),
-                ) {
-                    CameraPreviewViewport(
-                        modifier = Modifier.align(Alignment.Center),
-                        aspectRatio = previewAspectRatio,
-                        liveDetection = uiState.liveDetection,
-                        onCameraReady = onCameraReady,
-                        onPreviewFrame = onPreviewFrame,
-                        onTapToFocus = onTapToFocus,
-                    )
-                    CameraTopBar(
-                        uiState = uiState,
-                        onNavigateUp = onNavigateUp,
-                        quickControlsVisible = quickControlsVisible,
-                        onQuickControlsToggle = { quickControlsVisible = !quickControlsVisible },
-                        onClearRetakeSelection = onClearRetakeSelection,
-                        onAutoCaptureEnabledChange = onAutoCaptureEnabledChange,
-                        onGridEnabledChange = onGridEnabledChange,
-                        torchEnabled = torchEnabled,
-                        torchAvailable = torchAvailable,
-                        onTorchToggle = onTorchToggle,
-                        modifier = Modifier
-                            .align(Alignment.TopCenter)
-                            .statusBarsPadding()
-                            .padding(horizontal = 16.dp, vertical = 6.dp),
-                    )
-                    DetectionMeta(
-                        liveDetection = uiState.liveDetection,
-                        showStats = uiState.showDetectionStats,
-                        modifier = Modifier
-                            .align(Alignment.BottomStart)
-                            .padding(start = 16.dp, bottom = 16.dp),
-                    )
-                }
-                CameraSideDock(
-                    uiState = uiState,
-                    onCapture = onCapture,
-                    onRetakePageSelection = onRetakePageSelection,
-                    pagesVisible = pagesVisible,
-                    onPagesVisibilityToggle = { pagesVisible = !pagesVisible },
-                    onOpenDocument = onOpenDocument,
-                    modifier = Modifier
-                        .width(300.dp)
-                        .fillMaxHeight()
-                        .navigationBarsPadding()
-                        .padding(vertical = 12.dp, horizontal = 12.dp),
-                )
-            }
         } else {
-            Box(
+            CameraCaptureLayout(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding),
-            ) {
-                CameraPreviewViewport(
-                    modifier = Modifier.align(Alignment.Center),
-                    aspectRatio = previewAspectRatio,
-                    liveDetection = uiState.liveDetection,
-                    onCameraReady = onCameraReady,
-                    onPreviewFrame = onPreviewFrame,
-                    onTapToFocus = onTapToFocus,
-                )
-                CameraTopBar(
-                    uiState = uiState,
-                    onNavigateUp = onNavigateUp,
-                    quickControlsVisible = quickControlsVisible,
-                    onQuickControlsToggle = { quickControlsVisible = !quickControlsVisible },
-                    onClearRetakeSelection = onClearRetakeSelection,
-                    onAutoCaptureEnabledChange = onAutoCaptureEnabledChange,
-                    onGridEnabledChange = onGridEnabledChange,
-                    torchEnabled = torchEnabled,
-                    torchAvailable = torchAvailable,
-                    onTorchToggle = onTorchToggle,
-                    compact = true,
-                    modifier = Modifier
-                        .align(Alignment.TopCenter)
-                        .statusBarsPadding()
-                        .padding(horizontal = 12.dp, vertical = 8.dp),
-                )
-                DetectionMeta(
-                    liveDetection = uiState.liveDetection,
-                    showStats = uiState.showDetectionStats,
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .statusBarsPadding()
-                        .padding(top = 72.dp, end = 12.dp),
-                )
-                CameraBottomDock(
-                    uiState = uiState,
-                    onCapture = onCapture,
-                    onRetakePageSelection = onRetakePageSelection,
-                    pagesVisible = pagesVisible,
-                    onPagesVisibilityToggle = { pagesVisible = !pagesVisible },
-                    onOpenDocument = onOpenDocument,
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .fillMaxWidth()
-                        .navigationBarsPadding()
-                        .padding(bottom = 12.dp),
-                )
-            }
+                uiState = uiState,
+                previewAspectRatio = previewAspectRatio,
+                isLandscape = windowSizeInfo.isLandscape,
+                onNavigateUp = onNavigateUp,
+                settingsSheetVisible = settingsSheetVisible,
+                onSettingsClick = { settingsSheetVisible = true },
+                onCapture = onCapture,
+                onOpenDocument = onOpenDocument,
+                onCameraReady = onCameraReady,
+                onPreviewFrame = onPreviewFrame,
+                onTapToFocus = onTapToFocus,
+            )
         }
+    }
+
+    if (settingsSheetVisible) {
+        CameraSettingsSheet(
+            uiState = uiState,
+            torchEnabled = torchEnabled,
+            torchAvailable = torchAvailable,
+            onDismiss = { settingsSheetVisible = false },
+            onAutoCaptureEnabledChange = onAutoCaptureEnabledChange,
+            onGridEnabledChange = onGridEnabledChange,
+            onTorchToggle = onTorchToggle,
+        )
     }
 }
 
 @Composable
-private fun CameraCompactLandscapeDock(
+private fun CameraCaptureLayout(
     uiState: ScanSessionUiState,
-    pagesVisible: Boolean,
-    onPagesVisibilityToggle: () -> Unit,
+    previewAspectRatio: Float,
+    isLandscape: Boolean,
+    onNavigateUp: () -> Unit,
+    settingsSheetVisible: Boolean,
+    onSettingsClick: () -> Unit,
+    onCapture: () -> Unit,
+    onOpenDocument: () -> Unit,
+    onCameraReady: (ImageCapture, PreviewView, Camera) -> Unit,
+    onPreviewFrame: (() -> DetectionFrame?) -> Boolean,
+    onTapToFocus: (Offset) -> Boolean,
+    modifier: Modifier = Modifier,
+) {
+    Box(
+        modifier = modifier.background(Color.Black),
+        contentAlignment = Alignment.Center,
+    ) {
+        CameraPreviewViewport(
+            modifier = if (isLandscape) {
+                Modifier.fillMaxHeight()
+            } else {
+                Modifier.fillMaxWidth()
+            },
+            aspectRatio = previewAspectRatio,
+            liveDetection = uiState.liveDetection,
+            showStats = uiState.showDetectionStats,
+            onCameraReady = onCameraReady,
+            onPreviewFrame = onPreviewFrame,
+            onTapToFocus = onTapToFocus,
+        )
+        ScanGridOverlay(
+            visible = uiState.liveDetection.isGridEnabled,
+            modifier = Modifier.fillMaxSize(),
+        )
+
+        Surface(
+            color = Color.Black.copy(alpha = 0.78f),
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .fillMaxWidth(if (isLandscape) 0.62f else 1f),
+            shape = if (isLandscape) {
+                RoundedCornerShape(bottomStart = 28.dp, bottomEnd = 28.dp)
+            } else {
+                RoundedCornerShape(0.dp)
+            },
+        ) {
+            CameraTopBar(
+                uiState = uiState,
+                onNavigateUp = onNavigateUp,
+                settingsSheetVisible = settingsSheetVisible,
+                onSettingsClick = onSettingsClick,
+                compact = false,
+                modifier = Modifier
+                    .statusBarsPadding()
+                    .padding(horizontal = 12.dp, vertical = 8.dp),
+            )
+        }
+
+        CameraCaptureDock(
+            uiState = uiState,
+            onCapture = onCapture,
+            onOpenDocument = onOpenDocument,
+            compact = isLandscape,
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .then(
+                    if (isLandscape) {
+                        Modifier
+                            .widthIn(max = 420.dp)
+                            .padding(horizontal = 18.dp, vertical = 12.dp)
+                    } else {
+                        Modifier
+                            .fillMaxWidth()
+                            .background(Color.Black.copy(alpha = 0.9f))
+                    },
+                )
+                .navigationBarsPadding(),
+        )
+    }
+}
+
+@Composable
+private fun CameraLandscapeControlPanel(
+    uiState: ScanSessionUiState,
+    onNavigateUp: () -> Unit,
+    settingsSheetVisible: Boolean,
+    onSettingsClick: () -> Unit,
+    onAutoCaptureEnabledChange: (Boolean) -> Unit,
+    onGridEnabledChange: (Boolean) -> Unit,
+    torchEnabled: Boolean,
+    torchAvailable: Boolean,
+    onTorchToggle: () -> Unit,
     onCapture: () -> Unit,
     onOpenDocument: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Surface(
         modifier = modifier,
-        color = Color.Black.copy(alpha = 0.9f),
+        color = Color.Black.copy(alpha = 0.94f),
         shape = RoundedCornerShape(24.dp),
         border = BorderStroke(1.dp, Color.White.copy(alpha = 0.08f)),
     ) {
-        Box(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(10.dp),
-            contentAlignment = Alignment.Center,
+                .padding(12.dp),
+            verticalArrangement = Arrangement.SpaceBetween,
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            CaptureRailActions(
+            CameraTopBar(
                 uiState = uiState,
-                pagesVisible = pagesVisible,
-                onPagesVisibilityToggle = onPagesVisibilityToggle,
+                onNavigateUp = onNavigateUp,
+                settingsSheetVisible = settingsSheetVisible,
+                onSettingsClick = onSettingsClick,
+                compact = true,
+            )
+            CameraCaptureDock(
+                uiState = uiState,
                 onCapture = onCapture,
                 onOpenDocument = onOpenDocument,
+                compact = true,
+                modifier = Modifier.fillMaxWidth(),
+            )
+        }
+    }
+}
+
+@Composable
+private fun CameraCaptureDock(
+    uiState: ScanSessionUiState,
+    onCapture: () -> Unit,
+    onOpenDocument: () -> Unit,
+    modifier: Modifier = Modifier,
+    compact: Boolean = false,
+) {
+    Surface(
+        modifier = modifier,
+        color = Color.Black.copy(alpha = if (compact) 0f else 0.9f),
+        shape = if (compact) RoundedCornerShape(0.dp) else RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = if (compact) 0.dp else 18.dp, vertical = if (compact) 12.dp else 16.dp),
+        ) {
+            CaptureButton(
+                busy = uiState.captureInProgress,
+                onClick = onCapture,
+                modifier = Modifier.align(Alignment.Center),
+            )
+            TopControlButton(
+                icon = Icons.Filled.Description,
+                label = "Review document",
+                active = false,
+                enabled = uiState.document != null && !uiState.captureInProgress,
+                onClick = onOpenDocument,
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .offset(x = 92.dp),
             )
         }
     }
@@ -529,6 +515,7 @@ private fun CameraPreviewViewport(
     modifier: Modifier = Modifier,
     aspectRatio: Float,
     liveDetection: LiveDetectionUiState,
+    showStats: Boolean,
     onCameraReady: (ImageCapture, PreviewView, Camera) -> Unit,
     onPreviewFrame: (() -> DetectionFrame?) -> Boolean,
     onTapToFocus: (Offset) -> Boolean,
@@ -543,7 +530,13 @@ private fun CameraPreviewViewport(
             onPreviewFrame = onPreviewFrame,
             onTapToFocus = onTapToFocus,
         )
-        CameraPreviewScrims(modifier = Modifier.fillMaxSize())
+        CameraPreviewFeedback(
+            liveDetection = liveDetection,
+            showStats = showStats,
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .padding(horizontal = 12.dp, vertical = 12.dp),
+        )
     }
 }
 
@@ -582,98 +575,116 @@ private fun CameraPreviewScrims(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun CameraTopBar(
-    uiState: ScanSessionUiState,
-    onNavigateUp: () -> Unit,
-    quickControlsVisible: Boolean,
-    onQuickControlsToggle: () -> Unit,
-    onClearRetakeSelection: () -> Unit,
-    onAutoCaptureEnabledChange: (Boolean) -> Unit,
-    onGridEnabledChange: (Boolean) -> Unit,
-    torchEnabled: Boolean,
-    torchAvailable: Boolean,
-    onTorchToggle: () -> Unit,
+private fun ScanGridOverlay(
+    visible: Boolean,
     modifier: Modifier = Modifier,
-    compact: Boolean = false,
+) {
+    if (!visible) {
+        return
+    }
+
+    Canvas(modifier = modifier) {
+        val gridStrokeWidth = 1.dp.toPx()
+        val thirdWidth = size.width / 3f
+        val thirdHeight = size.height / 3f
+
+        for (index in 1..2) {
+            val x = thirdWidth * index
+            drawLine(
+                color = OverlayGrid,
+                start = Offset(x, 0f),
+                end = Offset(x, size.height),
+                strokeWidth = gridStrokeWidth,
+            )
+        }
+
+        for (index in 1..2) {
+            val y = thirdHeight * index
+            drawLine(
+                color = OverlayGrid,
+                start = Offset(0f, y),
+                end = Offset(size.width, y),
+                strokeWidth = gridStrokeWidth,
+            )
+        }
+
+        drawLine(
+            color = OverlayGuide,
+            start = Offset(0f, size.height / 2f),
+            end = Offset(size.width, size.height / 2f),
+            strokeWidth = 1.5.dp.toPx(),
+        )
+    }
+}
+
+@Composable
+private fun CameraPreviewFeedback(
+    liveDetection: LiveDetectionUiState,
+    showStats: Boolean,
+    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(10.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-            verticalAlignment = Alignment.CenterVertically,
+        PreviewStatusHud(liveDetection = liveDetection)
+        DetectionMeta(
+            liveDetection = liveDetection,
+            showStats = showStats,
+        )
+    }
+}
+
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+private fun CameraSettingsSheet(
+    uiState: ScanSessionUiState,
+    torchEnabled: Boolean,
+    torchAvailable: Boolean,
+    onDismiss: () -> Unit,
+    onAutoCaptureEnabledChange: (Boolean) -> Unit,
+    onGridEnabledChange: (Boolean) -> Unit,
+    onTorchToggle: () -> Unit,
+) {
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        containerColor = Color.Black,
+        contentColor = Color.White,
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .navigationBarsPadding()
+                .padding(start = 20.dp, end = 20.dp, bottom = 24.dp),
+            verticalArrangement = Arrangement.spacedBy(18.dp),
         ) {
-            CameraSessionTitlePill(
-                title = uiState.document?.title ?: "Scan session",
-                pageCount = uiState.pages.size,
-                onNavigateUp = onNavigateUp,
-                modifier = Modifier.weight(1f, fill = false),
-            )
-            if (!compact) {
-                PreviewStatusHud(liveDetection = uiState.liveDetection)
-            }
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                if (!compact) {
-                    TopControlButton(
-                        icon = Icons.Filled.AutoAwesome,
-                        label = "Auto capture",
-                        active = uiState.liveDetection.autoCaptureEnabled,
-                        onClick = {
-                            onAutoCaptureEnabledChange(!uiState.liveDetection.autoCaptureEnabled)
-                        },
-                    )
-                    TopControlButton(
-                        icon = Icons.Filled.Grid3x3,
-                        label = "Grid",
-                        active = uiState.liveDetection.isGridEnabled,
-                        onClick = {
-                            onGridEnabledChange(!uiState.liveDetection.isGridEnabled)
-                        },
-                    )
-                    TopControlButton(
-                        icon = if (torchEnabled) Icons.Filled.FlashOn else Icons.Filled.FlashOff,
-                        label = if (torchEnabled) "Flashlight on" else "Flashlight off",
-                        active = torchEnabled,
-                        enabled = torchAvailable,
-                        onClick = onTorchToggle,
-                    )
-                }
-                TopControlButton(
-                    icon = Icons.Filled.Tune,
-                    label = if (quickControlsVisible) "Hide scan details" else "Show scan details",
-                    active = quickControlsVisible,
-                    onClick = onQuickControlsToggle,
+            Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                Text(
+                    text = "Scan settings",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = Color.White,
+                )
+                Text(
+                    text = uiState.liveDetection.statusMessage,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color.White.copy(alpha = 0.68f),
                 )
             }
-        }
 
-        AnimatedVisibility(
-            visible = quickControlsVisible,
-            enter = slideInVertically(initialOffsetY = { fullHeight -> -fullHeight }) + fadeIn(),
-            exit = slideOutVertically(targetOffsetY = { fullHeight -> -fullHeight }) + fadeOut(),
-        ) {
             Surface(
-                modifier = Modifier.align(Alignment.End),
-                color = Color.Black.copy(alpha = 0.85f),
+                color = Color.White.copy(alpha = 0.08f),
                 shape = MaterialTheme.shapes.extraLarge,
-                border = BorderStroke(1.dp, Color.White.copy(alpha = 0.12f)),
+                border = BorderStroke(1.dp, Color.White.copy(alpha = 0.1f)),
             ) {
                 Column(
-                    modifier = Modifier
-                        .widthIn(max = 360.dp)
-                        .fillMaxWidth()
-                        .padding(14.dp),
+                    modifier = Modifier.padding(14.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
                     Text(
-                        text = uiState.liveDetection.statusMessage,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = Color.White.copy(alpha = 0.86f),
+                        text = "Capture controls",
+                        style = MaterialTheme.typography.labelLarge,
+                        color = Color.White.copy(alpha = 0.7f),
                     )
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -692,16 +703,6 @@ private fun CameraTopBar(
                                 onGridEnabledChange(!uiState.liveDetection.isGridEnabled)
                             },
                         )
-                    }
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(10.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        if (uiState.isReplacementMode) {
-                            CancelRetakeChip(onClick = onClearRetakeSelection)
-                        }
                         FlashChip(
                             enabled = torchEnabled,
                             available = torchAvailable,
@@ -715,9 +716,41 @@ private fun CameraTopBar(
 }
 
 @Composable
+private fun CameraTopBar(
+    uiState: ScanSessionUiState,
+    onNavigateUp: () -> Unit,
+    settingsSheetVisible: Boolean,
+    onSettingsClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    compact: Boolean = false,
+) {
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            CameraSessionTitlePill(
+                title = uiState.document?.title ?: "Scan session",
+                onNavigateUp = onNavigateUp,
+                modifier = Modifier.weight(1f, fill = false),
+            )
+            TopControlButton(
+                icon = Icons.Filled.Tune,
+                label = "Scan settings",
+                active = settingsSheetVisible,
+                onClick = onSettingsClick,
+            )
+        }
+    }
+}
+
+@Composable
 private fun CameraSessionTitlePill(
     title: String,
-    pageCount: Int,
     onNavigateUp: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -749,13 +782,6 @@ private fun CameraSessionTitlePill(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
-                Text(
-                    text = if (pageCount == 1) "1 page captured" else "$pageCount pages captured",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = Color.White.copy(alpha = 0.68f),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
             }
         }
     }
@@ -768,6 +794,7 @@ private fun TopControlButton(
     active: Boolean,
     onClick: () -> Unit,
     enabled: Boolean = true,
+    modifier: Modifier = Modifier,
 ) {
     val containerColor = when {
         active -> OverlayBlue.copy(alpha = 0.92f)
@@ -780,7 +807,7 @@ private fun TopControlButton(
         else -> Color.White.copy(alpha = 0.38f)
     }
     Surface(
-        modifier = Modifier
+        modifier = modifier
             .size(48.dp)
             .clickable(enabled = enabled, onClick = onClick),
         color = containerColor,
@@ -797,25 +824,6 @@ private fun TopControlButton(
                 modifier = Modifier.size(22.dp),
             )
         }
-    }
-}
-
-@Composable
-private fun CancelRetakeChip(
-    onClick: () -> Unit,
-) {
-    Surface(
-        modifier = Modifier.clickable(onClick = onClick),
-        color = Color.White.copy(alpha = 0.15f),
-        shape = MaterialTheme.shapes.large,
-        border = BorderStroke(1.dp, Color.White.copy(alpha = 0.12f)),
-    ) {
-        Text(
-            text = "Cancel retake",
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
-            color = Color.White,
-            style = MaterialTheme.typography.labelLarge,
-        )
     }
 }
 
@@ -988,20 +996,12 @@ private fun CameraBottomDock(
                 }
             }
         }
-        DetectionMeta(
-            liveDetection = uiState.liveDetection,
-            showStats = uiState.showDetectionStats,
-            modifier = Modifier
-                .align(Alignment.BottomStart)
-                .padding(start = 16.dp, bottom = detectionBottomPadding),
-        )
         Surface(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            color = Color.Black.copy(alpha = 0.58f),
-            shape = RoundedCornerShape(28.dp),
+                .fillMaxWidth(),
+            color = Color.Transparent,
+            shape = androidx.compose.ui.graphics.RectangleShape,
         ) {
             Row(
                 modifier = Modifier
@@ -1075,11 +1075,8 @@ private fun CameraSideDock(
 ) {
     Surface(
         modifier = modifier,
-        color = Color.Black.copy(alpha = 0.92f),
-        shape = RoundedCornerShape(28.dp),
-        border = BorderStroke(1.dp, Color.White.copy(alpha = 0.08f)),
-        tonalElevation = 0.dp,
-        shadowElevation = 0.dp,
+        color = Color.Transparent,
+        shape = androidx.compose.ui.graphics.RectangleShape,
     ) {
         Column(
             modifier = Modifier
@@ -1588,7 +1585,7 @@ private fun DockActionButton(
 @Composable
 private fun CaptureButton(
     busy: Boolean,
-    replacement: Boolean,
+    replacement: Boolean = false,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -1611,7 +1608,6 @@ private fun CaptureButton(
                 shape = CircleShape,
                 color = when {
                     busy -> OverlayBlue
-                    replacement -> Color(0xFF1BC091)
                     else -> Color.White
                 },
             ) {
@@ -1622,12 +1618,6 @@ private fun CaptureButton(
                             color = Color.Black,
                             trackColor = Color.Black.copy(alpha = 0.2f),
                             strokeWidth = 3.dp,
-                        )
-                    } else if (replacement) {
-                        androidx.compose.material3.Icon(
-                            imageVector = Icons.Filled.Refresh,
-                            contentDescription = "Replace page",
-                            tint = Color.Black,
                         )
                     }
                 }
@@ -1880,39 +1870,6 @@ private fun DocumentDetectionOverlay(
 ) {
     Box(modifier = modifier) {
         Canvas(modifier = Modifier.fillMaxSize()) {
-            if (liveDetection.isGridEnabled) {
-                val gridStrokeWidth = 1.dp.toPx()
-                val thirdWidth = size.width / 3f
-                val thirdHeight = size.height / 3f
-
-                for (index in 1..2) {
-                    val x = thirdWidth * index
-                    drawLine(
-                        color = OverlayGrid,
-                        start = Offset(x, 0f),
-                        end = Offset(x, size.height),
-                        strokeWidth = gridStrokeWidth,
-                    )
-                }
-
-                for (index in 1..2) {
-                    val y = thirdHeight * index
-                    drawLine(
-                        color = OverlayGrid,
-                        start = Offset(0f, y),
-                        end = Offset(size.width, y),
-                        strokeWidth = gridStrokeWidth,
-                    )
-                }
-
-                drawLine(
-                    color = OverlayGuide,
-                    start = Offset(0f, size.height / 2f),
-                    end = Offset(size.width, size.height / 2f),
-                    strokeWidth = 1.5.dp.toPx(),
-                )
-            }
-
             if (!liveDetection.hasOverlay) {
                 return@Canvas
             }
@@ -2072,12 +2029,7 @@ private fun capturePage(
     )
 }
 
-internal fun cameraPreviewAspectRatio(isLandscape: Boolean): Float =
-    if (isLandscape) {
-        4f / 3f
-    } else {
-        3f / 4f
-    }
+internal fun cameraPreviewAspectRatio(): Float = 1f
 
 private fun ImageProxy.toDetectionFrame(): DetectionFrame? {
     val rgbaPlane = planes.firstOrNull() ?: return null

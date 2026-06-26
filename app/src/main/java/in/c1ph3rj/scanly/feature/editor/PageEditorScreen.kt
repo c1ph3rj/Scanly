@@ -35,13 +35,18 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.RotateLeft
+import androidx.compose.material.icons.automirrored.filled.RotateRight
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.CropFree
-import androidx.compose.material.icons.filled.RotateLeft
-import androidx.compose.material.icons.filled.RotateRight
+import androidx.compose.material.icons.filled.DeleteOutline
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -90,6 +95,7 @@ import `in`.c1ph3rj.scanly.core.ml.NormalizedPoint
 import `in`.c1ph3rj.scanly.core.processing.OpenCvPageFilterProcessor
 import `in`.c1ph3rj.scanly.domain.model.PageFilterPreset
 import `in`.c1ph3rj.scanly.domain.model.ScanPage
+import `in`.c1ph3rj.scanly.feature.components.ScanlyConfirmDialog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.withContext
@@ -99,6 +105,7 @@ import kotlin.math.roundToInt
 @Composable
 fun PageEditorRoute(
     onNavigateUp: () -> Unit,
+    onRetakePage: (documentId: String, pageId: String) -> Unit,
     viewModel: PageEditorViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -109,6 +116,7 @@ fun PageEditorRoute(
             when (event) {
                 is PageEditorEvent.ShowMessage -> snackbarHostState.showSnackbar(event.message)
                 PageEditorEvent.Saved -> onNavigateUp()
+                PageEditorEvent.PageDeleted -> onNavigateUp()
             }
         }
     }
@@ -124,9 +132,16 @@ fun PageEditorRoute(
         onSelectFilter = viewModel::selectFilter,
         onApplyFilterToAllPagesChange = viewModel::setApplyFilterToAllPages,
         onSave = viewModel::saveEdits,
+        onRetakePage = {
+            uiState.page?.let { page ->
+                onRetakePage(page.documentId, page.id)
+            }
+        },
+        onDeletePage = viewModel::deletePage,
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PageEditorScreen(
     uiState: PageEditorUiState,
@@ -139,7 +154,11 @@ fun PageEditorScreen(
     onSelectFilter: (PageFilterPreset) -> Unit,
     onApplyFilterToAllPagesChange: (Boolean) -> Unit,
     onSave: () -> Unit,
+    onRetakePage: () -> Unit,
+    onDeletePage: () -> Unit,
 ) {
+    var filterSheetVisible by remember { mutableStateOf(false) }
+    var deleteDialogVisible by remember { mutableStateOf(false) }
     val showBulkApplyLoader = uiState.isSaving && uiState.applyFilterToAllPages
     val statusLabel = when {
         showBulkApplyLoader -> "Processing"
@@ -203,23 +222,14 @@ fun PageEditorScreen(
                         verticalArrangement = Arrangement.spacedBy(16.dp),
                     ) {
                         EditorPageBadge(pageIndex = uiState.page.pageIndex)
-                        FilterSelector(
-                            selectedFilter = uiState.selectedFilter,
-                            rawImagePath = uiState.page.rawImagePath,
-                            fallbackImagePath = uiState.page.processedImagePath,
-                            rotationDegrees = uiState.rotationDegrees,
-                            onSelectFilter = onSelectFilter,
-                            vertical = true,
-                        )
-                        FilterScopeOption(
-                            applyToAllPages = uiState.applyFilterToAllPages,
-                            enabled = !uiState.isSaving,
-                            onApplyToAllPagesChange = onApplyFilterToAllPagesChange,
-                        )
                         EditorActionRow(
                             onRotateLeft = onRotateLeft,
                             onRotateRight = onRotateRight,
                             onResetCrop = onResetCrop,
+                            onOpenFilters = { filterSheetVisible = true },
+                            onRetake = onRetakePage,
+                            onDelete = { deleteDialogVisible = true },
+                            enabled = !uiState.isSaving,
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                     }
@@ -251,28 +261,19 @@ fun PageEditorScreen(
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .verticalScroll(rememberScrollState())
                             .padding(horizontal = 16.dp)
                             .padding(bottom = 16.dp),
                         verticalArrangement = Arrangement.spacedBy(14.dp),
                     ) {
                         EditorPageBadge(pageIndex = uiState.page.pageIndex)
-                        FilterSelector(
-                            selectedFilter = uiState.selectedFilter,
-                            rawImagePath = uiState.page.rawImagePath,
-                            fallbackImagePath = uiState.page.processedImagePath,
-                            rotationDegrees = uiState.rotationDegrees,
-                            onSelectFilter = onSelectFilter,
-                        )
-                        FilterScopeOption(
-                            applyToAllPages = uiState.applyFilterToAllPages,
-                            enabled = !uiState.isSaving,
-                            onApplyToAllPagesChange = onApplyFilterToAllPagesChange,
-                        )
                         EditorActionRow(
                             onRotateLeft = onRotateLeft,
                             onRotateRight = onRotateRight,
                             onResetCrop = onResetCrop,
+                            onOpenFilters = { filterSheetVisible = true },
+                            onRetake = onRetakePage,
+                            onDelete = { deleteDialogVisible = true },
+                            enabled = !uiState.isSaving,
                         )
                     }
                 }
@@ -282,6 +283,29 @@ fun PageEditorScreen(
         if (showBulkApplyLoader) {
             BulkFilterApplyOverlay()
         }
+    }
+
+    if (filterSheetVisible && uiState.page != null) {
+        FilterOptionsSheet(
+            uiState = uiState,
+            onDismiss = { filterSheetVisible = false },
+            onSelectFilter = onSelectFilter,
+            onApplyFilterToAllPagesChange = onApplyFilterToAllPagesChange,
+        )
+    }
+
+    if (deleteDialogVisible && uiState.page != null) {
+        ScanlyConfirmDialog(
+            title = "Delete page",
+            text = "Page ${uiState.page.pageIndex + 1} will be removed from this document.",
+            confirmLabel = "Delete",
+            onDismiss = { deleteDialogVisible = false },
+            onConfirm = {
+                deleteDialogVisible = false
+                onDeletePage()
+            },
+            confirmDestructive = true,
+        )
     }
 }
 
@@ -337,7 +361,7 @@ private fun FilterScopeOption(
                 onApplyToAllPagesChange(!applyToAllPages)
             },
         color = Color(0xFF121416),
-        shape = RoundedCornerShape(18.dp),
+        shape = MaterialTheme.shapes.extraLarge,
         border = BorderStroke(
             width = 1.dp,
             color = if (applyToAllPages) AccentGreen.copy(alpha = 0.9f) else Color.White.copy(alpha = 0.08f),
@@ -384,6 +408,58 @@ private fun FilterScopeOption(
 }
 
 @Composable
+@OptIn(ExperimentalMaterial3Api::class)
+private fun FilterOptionsSheet(
+    uiState: PageEditorUiState,
+    onDismiss: () -> Unit,
+    onSelectFilter: (PageFilterPreset) -> Unit,
+    onApplyFilterToAllPagesChange: (Boolean) -> Unit,
+) {
+    val page = uiState.page ?: return
+
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        containerColor = EditorBackground,
+        contentColor = Color.White,
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .navigationBarsPadding()
+                .padding(horizontal = 16.dp)
+                .padding(bottom = 24.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                Text(
+                    text = "Filters",
+                    color = Color.White,
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.SemiBold,
+                )
+                Text(
+                    text = "Choose the document enhancement without shrinking the crop canvas.",
+                    color = Color.White.copy(alpha = 0.64f),
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+            }
+            FilterScopeOption(
+                applyToAllPages = uiState.applyFilterToAllPages,
+                enabled = !uiState.isSaving,
+                onApplyToAllPagesChange = onApplyFilterToAllPagesChange,
+            )
+            FilterSelector(
+                selectedFilter = uiState.selectedFilter,
+                rawImagePath = page.rawImagePath,
+                fallbackImagePath = page.processedImagePath,
+                rotationDegrees = uiState.rotationDegrees,
+                onSelectFilter = onSelectFilter,
+            )
+        }
+    }
+}
+
+@Composable
 private fun BulkFilterApplyOverlay() {
     val interactionSource = remember { MutableInteractionSource() }
 
@@ -400,7 +476,7 @@ private fun BulkFilterApplyOverlay() {
     ) {
         Surface(
             color = Color(0xFF111315),
-            shape = RoundedCornerShape(24.dp),
+            shape = MaterialTheme.shapes.extraLarge,
             border = BorderStroke(1.dp, Color.White.copy(alpha = 0.08f)),
         ) {
             Column(
@@ -919,16 +995,42 @@ private fun EditorActionRow(
     onRotateLeft: () -> Unit,
     onRotateRight: () -> Unit,
     onResetCrop: () -> Unit,
+    onOpenFilters: () -> Unit,
+    onRetake: () -> Unit,
+    onDelete: () -> Unit,
+    enabled: Boolean,
 ) {
-    Row(
+    LazyRow(
         modifier = Modifier
             .fillMaxWidth()
             .padding(bottom = 18.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        contentPadding = PaddingValues(horizontal = 2.dp),
     ) {
-        EditorActionButton(label = "Left", icon = Icons.Filled.RotateLeft, onClick = onRotateLeft)
-        EditorActionButton(label = "Right", icon = Icons.Filled.RotateRight, onClick = onRotateRight)
-        EditorActionButton(label = "Reset", icon = Icons.Filled.CropFree, onClick = onResetCrop)
+        item {
+            EditorActionButton(label = "Left", icon = Icons.AutoMirrored.Filled.RotateLeft, onClick = onRotateLeft, enabled = enabled)
+        }
+        item {
+            EditorActionButton(label = "Right", icon = Icons.AutoMirrored.Filled.RotateRight, onClick = onRotateRight, enabled = enabled)
+        }
+        item {
+            EditorActionButton(label = "Reset", icon = Icons.Filled.CropFree, onClick = onResetCrop, enabled = enabled)
+        }
+        item {
+            EditorActionButton(label = "Filters", icon = Icons.Filled.Tune, onClick = onOpenFilters, enabled = enabled)
+        }
+        item {
+            EditorActionButton(label = "Retake", icon = Icons.Filled.Refresh, onClick = onRetake, enabled = enabled)
+        }
+        item {
+            EditorActionButton(
+                label = "Delete",
+                icon = Icons.Filled.DeleteOutline,
+                onClick = onDelete,
+                enabled = enabled,
+                contentColor = Color(0xFFFF6B6B),
+            )
+        }
     }
 }
 
@@ -937,11 +1039,13 @@ private fun EditorActionButton(
     label: String,
     icon: ImageVector,
     onClick: () -> Unit,
+    enabled: Boolean = true,
+    contentColor: Color = AccentGreen,
 ) {
     Surface(
         modifier = Modifier
             .width(104.dp)
-            .clickable(onClick = onClick),
+            .clickable(enabled = enabled, onClick = onClick),
         color = Color(0xFF181818),
         shape = RoundedCornerShape(18.dp),
         border = BorderStroke(1.dp, Color.White.copy(alpha = 0.08f)),
@@ -954,11 +1058,11 @@ private fun EditorActionButton(
             Icon(
                 imageVector = icon,
                 contentDescription = null,
-                tint = AccentGreen,
+                tint = if (enabled) contentColor else Color.White.copy(alpha = 0.28f),
             )
             Text(
                 text = label,
-                color = Color.White,
+                color = if (enabled) Color.White else Color.White.copy(alpha = 0.38f),
                 style = MaterialTheme.typography.labelLarge,
             )
         }

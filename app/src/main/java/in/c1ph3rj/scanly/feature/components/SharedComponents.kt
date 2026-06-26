@@ -692,8 +692,14 @@ fun GroupCard(
         modifier = modifier
             .fillMaxWidth()
             .clickable(onClick = onOpen),
-        color = MaterialTheme.colorScheme.surfaceContainer,
+        color = MaterialTheme.colorScheme.surfaceContainerLow,
         shape = MaterialTheme.shapes.extraLarge,
+        border = androidx.compose.foundation.BorderStroke(
+            1.dp,
+            MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.28f),
+        ),
+        shadowElevation = 4.dp,
+        tonalElevation = 2.dp,
     ) {
         BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
             val useGrid = when (style) {
@@ -795,6 +801,9 @@ fun DocumentCard(
             .clickable(onClick = onOpen),
         color = MaterialTheme.colorScheme.surfaceContainer,
         shape = MaterialTheme.shapes.extraLarge,
+        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f)),
+        shadowElevation = 1.dp,
+        tonalElevation = 1.dp,
     ) {
         BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
             val useGrid = when (style) {
@@ -840,33 +849,41 @@ private fun DocumentCardGridContent(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .aspectRatio(0.78f),
+            .aspectRatio(0.82f)
+            .padding(10.dp),
     ) {
-        CachedThumbnail(
-            thumbnailPath = document.coverThumbnailPath,
-            title = document.title,
-            displaySize = PreviewDisplaySize.CARD,
-            contentRevision = document.updatedAtMillis,
+        Surface(
             modifier = Modifier.fillMaxSize(),
-            placeholderIcon = {
-                Text(
-                    text = DocumentPresentationFormatter.initials(document.title),
-                    style = MaterialTheme.typography.headlineMedium,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer,
-                    fontWeight = FontWeight.SemiBold,
-                )
-            },
-        )
+            shape = RoundedCornerShape(22.dp),
+            color = MaterialTheme.colorScheme.surfaceContainerHighest,
+        ) {
+            CachedThumbnail(
+                thumbnailPath = document.coverThumbnailPath,
+                title = document.title,
+                displaySize = PreviewDisplaySize.CARD,
+                contentRevision = document.updatedAtMillis,
+                modifier = Modifier.fillMaxSize(),
+                placeholderIcon = {
+                    Text(
+                        text = DocumentPresentationFormatter.initials(document.title),
+                        style = MaterialTheme.typography.headlineMedium,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        fontWeight = FontWeight.SemiBold,
+                    )
+                },
+            )
+        }
         Box(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .fillMaxWidth()
-                .height(96.dp)
+                .height(112.dp)
+                .clip(RoundedCornerShape(bottomStart = 22.dp, bottomEnd = 22.dp))
                 .background(
                     Brush.verticalGradient(
                         colors = listOf(
                             Color.Transparent,
-                            MaterialTheme.colorScheme.surface.copy(alpha = 0.92f),
+                            Color.Black.copy(alpha = 0.78f),
                         ),
                     ),
                 ),
@@ -882,25 +899,20 @@ private fun DocumentCardGridContent(
                 text = document.title,
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.SemiBold,
+                color = Color.White,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
             )
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                MetricChip(
+                DocumentMetaPill(
                     label = "${document.pageCount} pg",
                     icon = Icons.Filled.Description,
-                    containerColor = MaterialTheme.colorScheme.surfaceContainerHighest.copy(alpha = 0.9f),
                 )
-                Text(
-                    text = updatedDate,
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 1,
-                )
+                DocumentMetaPill(label = updatedDate)
             }
         }
         Row(
@@ -915,7 +927,8 @@ private fun DocumentCardGridContent(
                     contentDescription = "Rename",
                     onClick = onRename,
                     size = 32.dp,
-                    containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.88f),
+                    containerColor = Color.Black.copy(alpha = 0.42f),
+                    contentColor = Color.White,
                 )
             }
             if (onMove != null) {
@@ -924,7 +937,8 @@ private fun DocumentCardGridContent(
                     contentDescription = "Move to folder",
                     onClick = onMove,
                     size = 32.dp,
-                    containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.88f),
+                    containerColor = Color.Black.copy(alpha = 0.42f),
+                    contentColor = Color.White,
                 )
             }
             LibraryCardIconButton(
@@ -932,8 +946,8 @@ private fun DocumentCardGridContent(
                 contentDescription = deleteContentDescription,
                 onClick = onDelete,
                 size = 32.dp,
-                containerColor = MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.92f),
-                contentColor = MaterialTheme.colorScheme.onErrorContainer,
+                containerColor = Color.Black.copy(alpha = 0.42f),
+                contentColor = MaterialTheme.colorScheme.error,
             )
         }
     }
@@ -952,60 +966,72 @@ private fun DocumentCardListContent(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(12.dp),
-        horizontalArrangement = Arrangement.spacedBy(14.dp),
+            .padding(14.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        CachedThumbnail(
-            thumbnailPath = document.coverThumbnailPath,
-            title = document.title,
-            displaySize = PreviewDisplaySize.CARD,
-            contentRevision = document.updatedAtMillis,
+        Surface(
             modifier = Modifier
-                .width(80.dp)
+                .width(82.dp)
                 .aspectRatio(3f / 4f),
-            placeholderIcon = {
-                Text(
-                    text = DocumentPresentationFormatter.initials(document.title),
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer,
-                    fontWeight = FontWeight.SemiBold,
-                )
-            },
-        )
+            shape = RoundedCornerShape(18.dp),
+            color = MaterialTheme.colorScheme.surfaceContainerHighest,
+            border = androidx.compose.foundation.BorderStroke(
+                1.dp,
+                MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.24f),
+            ),
+            shadowElevation = 2.dp,
+        ) {
+            CachedThumbnail(
+                thumbnailPath = document.coverThumbnailPath,
+                title = document.title,
+                displaySize = PreviewDisplaySize.CARD,
+                contentRevision = document.updatedAtMillis,
+                modifier = Modifier.fillMaxSize(),
+                placeholderIcon = {
+                    Text(
+                        text = DocumentPresentationFormatter.initials(document.title),
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        fontWeight = FontWeight.SemiBold,
+                    )
+                },
+            )
+        }
         Column(
             modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(6.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Text(
                 text = document.title,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold,
-                maxLines = 2,
+                color = MaterialTheme.colorScheme.onSurface,
+                maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
-            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                MetricChip(
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                DocumentMetaPill(
                     label = "${document.pageCount} ${if (document.pageCount == 1) "page" else "pages"}",
                     icon = Icons.Filled.Description,
-                    containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
                 )
-                MetricChip(
-                    label = updatedDate,
-                    containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
-                )
+                DocumentMetaPill(label = updatedDate)
             }
         }
-        Column(
-            verticalArrangement = Arrangement.spacedBy(6.dp),
-            horizontalAlignment = Alignment.End,
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             if (showRename) {
                 LibraryCardIconButton(
                     icon = Icons.Filled.Edit,
                     contentDescription = "Rename",
                     onClick = onRename,
-                    size = 36.dp,
+                    size = 38.dp,
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerHighest.copy(alpha = 0.8f),
                 )
             }
             if (onMove != null) {
@@ -1013,16 +1039,50 @@ private fun DocumentCardListContent(
                     icon = Icons.Filled.Folder,
                     contentDescription = "Move to folder",
                     onClick = onMove,
-                    size = 36.dp,
+                    size = 38.dp,
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerHighest.copy(alpha = 0.8f),
                 )
             }
             LibraryCardIconButton(
                 icon = Icons.Filled.DeleteOutline,
                 contentDescription = deleteContentDescription,
                 onClick = onDelete,
-                size = 36.dp,
-                containerColor = MaterialTheme.colorScheme.errorContainer,
-                contentColor = MaterialTheme.colorScheme.onErrorContainer,
+                size = 38.dp,
+                containerColor = MaterialTheme.colorScheme.error.copy(alpha = 0.12f),
+                contentColor = MaterialTheme.colorScheme.error,
+            )
+        }
+    }
+}
+
+@Composable
+private fun DocumentMetaPill(
+    label: String,
+    icon: ImageVector? = null,
+) {
+    Surface(
+        color = MaterialTheme.colorScheme.surfaceContainerHighest.copy(alpha = 0.76f),
+        contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        shape = MaterialTheme.shapes.large,
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            if (icon != null) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    modifier = Modifier.size(15.dp),
+                )
+            }
+            Text(
+                text = label,
+                style = MaterialTheme.typography.labelMedium,
+                fontWeight = FontWeight.Medium,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
             )
         }
     }

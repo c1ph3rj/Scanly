@@ -370,6 +370,9 @@ fun QuickActionCard(
             .clickable(enabled = enabled, onClick = onClick),
         color = containerColor,
         shape = MaterialTheme.shapes.extraLarge,
+        border = androidx.compose.foundation.BorderStroke(1.dp, contentColor.copy(alpha = 0.12f)),
+        shadowElevation = 2.dp,
+        tonalElevation = 2.dp,
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -406,6 +409,9 @@ private fun RecentGroupChip(
             .clickable(onClick = onClick),
         color = MaterialTheme.colorScheme.surfaceContainer,
         shape = MaterialTheme.shapes.extraLarge,
+        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f)),
+        shadowElevation = 1.dp,
+        tonalElevation = 1.dp,
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             CachedThumbnail(
@@ -457,6 +463,9 @@ private fun CompactDocumentCard(
             .clickable(onClick = onOpen),
         color = MaterialTheme.colorScheme.surfaceContainer,
         shape = MaterialTheme.shapes.extraLarge,
+        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f)),
+        shadowElevation = 1.dp,
+        tonalElevation = 1.dp,
     ) {
         Row(
             modifier = Modifier.padding(16.dp),
