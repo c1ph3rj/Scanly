@@ -543,7 +543,7 @@ private fun SettingsUpdateRow(
     val subtitle = when {
         appUpdateUiState.isChecking -> "Checking GitHub releases..."
         updateAvailable -> {
-            "Scanly ${checkResult!!.latestRelease.tagName} is ready to download. Tap to view release notes."
+            "Scanly ${checkResult!!.latestRelease.tagName} is available. Tap to view the release."
         }
 
         checkResult != null -> {

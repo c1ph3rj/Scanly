@@ -18,7 +18,6 @@ import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.NewReleases
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -47,7 +46,6 @@ private val releaseDateFormatter: DateTimeFormatter =
 @Composable
 fun AppUpdateDialog(
     checkResult: AppUpdateCheckResult,
-    isDownloading: Boolean,
     onDismiss: () -> Unit,
     onDownload: (AppRelease) -> Unit,
     modifier: Modifier = Modifier,
@@ -139,37 +137,19 @@ fun AppUpdateDialog(
         ) {
             Button(
                 onClick = { onDownload(release) },
-                enabled = !isDownloading,
                 modifier = Modifier.widthIn(max = 360.dp).fillMaxWidth(),
             ) {
-                if (isDownloading) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(18.dp),
-                        strokeWidth = 2.dp,
-                        color = MaterialTheme.colorScheme.onPrimary,
-                    )
-                    Text(
-                        text = "Downloading…",
-                        modifier = Modifier.padding(start = 8.dp),
-                    )
-                } else {
-                    Icon(
-                        imageVector = Icons.Filled.Download,
-                        contentDescription = null,
-                    )
-                    Text(
-                        text = if (release.apkAsset != null) {
-                            "Download & install"
-                        } else {
-                            "Open release"
-                        },
-                        modifier = Modifier.padding(start = 8.dp),
-                    )
-                }
+                Icon(
+                    imageVector = Icons.Filled.Download,
+                    contentDescription = null,
+                )
+                Text(
+                    text = "Download",
+                    modifier = Modifier.padding(start = 8.dp),
+                )
             }
             TextButton(
                 onClick = onDismiss,
-                enabled = !isDownloading,
             ) {
                 Text(text = "Not now")
             }

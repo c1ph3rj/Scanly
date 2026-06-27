@@ -4,7 +4,13 @@ All notable user-facing changes to Scanly are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project uses semantic-style version names.
 
-## [Unreleased]
+## [1.0.8.betaq] - 2026-06-27
+
+### Changed
+
+- Removed `REQUEST_INSTALL_PACKAGES` permission. The in-app update flow now redirects to the GitHub release page instead of downloading and installing the APK.
+
+## [1.0.7] - 2026-06-27
 
 ### Changed
 
@@ -60,5 +66,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - PDF export and image archive export/share.
 - Settings with theme mode, FAQs, licenses, and support links.
 
+[1.0.8.betaq]: https://github.com/c1ph3rj/Scanly/compare/v1.0.7...v1.0.8.betaq
+[1.0.7]: https://github.com/c1ph3rj/Scanly/compare/v1.0.4...v1.0.7
 [1.0.4]: https://github.com/c1ph3rj/Scanly/compare/v1.0.0...v1.0.4
 [1.0.0]: https://github.com/c1ph3rj/Scanly/releases/tag/v1.0.0

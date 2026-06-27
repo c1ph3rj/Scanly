@@ -30,11 +30,11 @@ enum class LegalDocumentType(
     val title: String,
 ) {
     Privacy(
-        assetPath = "settings/privacy_policy.md",
+        assetPath = "privacy_policy.md",
         title = "Privacy Policy",
     ),
     Terms(
-        assetPath = "settings/terms_of_service.md",
+        assetPath = "terms_and_conditions.md",
         title = "Terms & Conditions",
     ),
 }

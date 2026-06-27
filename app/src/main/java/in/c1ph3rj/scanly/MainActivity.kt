@@ -1,13 +1,9 @@
 package `in`.c1ph3rj.scanly
 
-import android.content.Intent
 import android.os.Bundle
-import android.provider.Settings
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
@@ -57,12 +53,6 @@ private fun ScanlyApp() {
     val context = androidx.compose.ui.platform.LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
 
-    val installPermissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.StartActivityForResult(),
-    ) {
-        appUpdateViewModel.retryPendingInstall()
-    }
-
     LaunchedEffect(appUpdateViewModel) {
         appUpdateViewModel.events.collect { event ->
             when (event) {
@@ -75,18 +65,6 @@ private fun ScanlyApp() {
                 }
 
                 is AppUpdateEvent.OpenUri -> uriHandler.openUri(event.uri)
-
-                is AppUpdateEvent.InstallApk -> {
-                    context.startActivity(event.intent)
-                }
-
-                AppUpdateEvent.RequestInstallPermission -> {
-                    installPermissionLauncher.launch(
-                        Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES).apply {
-                            data = android.net.Uri.parse("package:${context.packageName}")
-                        },
-                    )
-                }
             }
         }
     }
@@ -96,10 +74,6 @@ private fun ScanlyApp() {
             when (event) {
                 Lifecycle.Event.ON_START -> {
                     appUpdateViewModel.checkForUpdates(AppUpdateCheckTrigger.Automatic)
-                }
-
-                Lifecycle.Event.ON_RESUME -> {
-                    appUpdateViewModel.retryPendingInstall()
                 }
 
                 else -> Unit
@@ -145,7 +119,6 @@ private fun ScanlyApp() {
             updateUiState.dialogCheckResult?.let { checkResult ->
                 AppUpdateDialog(
                     checkResult = checkResult,
-                    isDownloading = updateUiState.isDownloadingApk,
                     onDismiss = appUpdateViewModel::dismissUpdateDialog,
                     onDownload = appUpdateViewModel::downloadRelease,
                 )

@@ -24,7 +24,7 @@ It is designed for a practical, local-only scanning workflow:
 - PDF export and image archive export/share flows, including group-level export
 - settings with theme mode, storage usage, clear-all-data, FAQs, and license info
 
-**Current version:** `1.0.4` (version code `4`) — see [VERSION.md](VERSION.md) and [CHANGELOG.md](CHANGELOG.md).
+**Current version:** `1.0.8.betaq` (version code `8`) — see [VERSION.md](VERSION.md) and [CHANGELOG.md](CHANGELOG.md).
 
 ## Screenshots
 
