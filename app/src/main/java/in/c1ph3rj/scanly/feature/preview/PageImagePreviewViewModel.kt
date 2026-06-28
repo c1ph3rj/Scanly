@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import `in`.c1ph3rj.scanly.domain.model.ScanPage
 import `in`.c1ph3rj.scanly.domain.model.ShareArtifact
+import `in`.c1ph3rj.scanly.domain.usecase.ObserveDocumentPagesUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObservePageUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,14 +15,20 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class PageImagePreviewUiState(
-    val page: ScanPage? = null,
+    val pages: List<ScanPage> = emptyList(),
+    val selectedPageId: String? = null,
+    val isLoading: Boolean = true,
     val missingPage: Boolean = false,
-)
+) {
+    val page: ScanPage?
+        get() = pages.firstOrNull { it.id == selectedPageId }
+}
 
 sealed interface PageImagePreviewEvent {
     data class ShowMessage(val message: String) : PageImagePreviewEvent
@@ -39,6 +46,7 @@ object PageImagePreviewDestination {
 class PageImagePreviewViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     observePageUseCase: ObservePageUseCase,
+    observeDocumentPagesUseCase: ObserveDocumentPagesUseCase,
 ) : ViewModel() {
     private val pageId: String = checkNotNull(savedStateHandle[PageImagePreviewDestination.pageIdArgument])
 
@@ -50,19 +58,48 @@ class PageImagePreviewViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            observePageUseCase(pageId).collectLatest { page ->
+            val openedPage = observePageUseCase(pageId).first()
+            if (openedPage == null) {
                 _uiState.update {
                     PageImagePreviewUiState(
-                        page = page,
-                        missingPage = page == null,
+                        isLoading = false,
+                        missingPage = true,
+                    )
+                }
+                return@launch
+            }
+
+            observeDocumentPagesUseCase(openedPage.documentId).collectLatest { documentPages ->
+                val orderedPages = documentPages.sortedBy(ScanPage::pageIndex)
+                _uiState.update { currentState ->
+                    val selectedPageId = resolvePreviewPageId(
+                        currentSelectedPageId = currentState.selectedPageId,
+                        openedPageId = pageId,
+                        pages = orderedPages,
+                    )
+                    PageImagePreviewUiState(
+                        pages = orderedPages,
+                        selectedPageId = selectedPageId,
+                        isLoading = false,
+                        missingPage = selectedPageId == null,
                     )
                 }
             }
         }
     }
 
-    fun sharePage() {
-        val page = _uiState.value.page ?: return
+    fun selectPage(pageId: String) {
+        _uiState.update { currentState ->
+            if (currentState.pages.none { it.id == pageId }) {
+                currentState
+            } else {
+                currentState.copy(selectedPageId = pageId)
+            }
+        }
+    }
+
+    fun sharePage(pageId: String) {
+        val page = _uiState.value.pages.firstOrNull { it.id == pageId } ?: return
         val imagePath = page.processedImagePath ?: page.rawImagePath ?: page.thumbnailPath
 
         viewModelScope.launch {
@@ -85,3 +122,13 @@ class PageImagePreviewViewModel @Inject constructor(
 }
 
 private const val PageImageMimeType = "image/*"
+
+internal fun resolvePreviewPageId(
+    currentSelectedPageId: String?,
+    openedPageId: String,
+    pages: List<ScanPage>,
+): String? = when {
+    pages.any { it.id == currentSelectedPageId } -> currentSelectedPageId
+    pages.any { it.id == openedPageId } -> openedPageId
+    else -> pages.firstOrNull()?.id
+}

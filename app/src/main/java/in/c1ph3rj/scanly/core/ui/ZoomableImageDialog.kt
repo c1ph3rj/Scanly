@@ -4,6 +4,11 @@ import android.graphics.BitmapFactory
 import androidx.compose.foundation.background
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.gestures.detectTransformGestures
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.calculateCentroid
+import androidx.compose.foundation.gestures.calculatePan
+import androidx.compose.foundation.gestures.calculateZoom
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -25,6 +30,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
@@ -103,6 +109,8 @@ fun ZoomableImageViewer(
     onNavigateUp: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
     closeContentDescription: String = "Back",
+    allowParentHorizontalGestures: Boolean = false,
+    onZoomActiveChange: (Boolean) -> Unit = {},
     trailingAction: @Composable (
         zoomActive: Boolean,
         onResetZoom: () -> Unit,
@@ -126,6 +134,11 @@ fun ZoomableImageViewer(
     val resetZoom = {
         scale = 1f
         offset = Offset.Zero
+    }
+    val currentOnZoomActiveChange by rememberUpdatedState(onZoomActiveChange)
+
+    LaunchedEffect(zoomActive) {
+        currentOnZoomActiveChange(zoomActive)
     }
 
     Surface(
@@ -170,6 +183,7 @@ fun ZoomableImageViewer(
                         offset = offset,
                         onScaleChange = { scale = it },
                         onOffsetChange = { offset = it },
+                        allowParentHorizontalGestures = allowParentHorizontalGestures,
                         modifier = Modifier.fillMaxSize(),
                     )
                 }
@@ -215,6 +229,7 @@ private fun ZoomableImageCanvas(
     offset: Offset,
     onScaleChange: (Float) -> Unit,
     onOffsetChange: (Offset) -> Unit,
+    allowParentHorizontalGestures: Boolean,
     modifier: Modifier = Modifier,
 ) {
     val density = LocalDensity.current
@@ -254,8 +269,8 @@ private fun ZoomableImageCanvas(
                     }
                 },
             )
-            .pointerInput(Unit) {
-                detectTransformGestures(panZoomLock = true) { centroid, pan, zoom, _ ->
+            .pointerInput(allowParentHorizontalGestures) {
+                val updateTransform: (Offset, Offset, Float) -> Unit = { centroid, pan, zoom ->
                     val oldScale = currentScale
                     val newScale = (oldScale * zoom).coerceIn(MIN_SCALE, MAX_SCALE)
                     val factor = newScale / oldScale
@@ -272,6 +287,35 @@ private fun ZoomableImageCanvas(
                             containerSize = currentContainerSize,
                         ),
                     )
+
+                }
+
+                if (!allowParentHorizontalGestures) {
+                    detectTransformGestures(panZoomLock = true) { centroid, pan, zoom, _ ->
+                        updateTransform(centroid, pan, zoom)
+                    }
+                } else {
+                    awaitEachGesture {
+                        awaitFirstDown(requireUnconsumed = false)
+                        var ownsGesture = currentScale > MIN_SCALE
+                        do {
+                            val event = awaitPointerEvent()
+                            val pressedPointers = event.changes.count { it.pressed }
+                            if (pressedPointers >= 2) {
+                                ownsGesture = true
+                            }
+                            if (ownsGesture && pressedPointers > 0) {
+                                updateTransform(
+                                    event.calculateCentroid(useCurrent = true),
+                                    event.calculatePan(),
+                                    event.calculateZoom(),
+                                )
+                            }
+                            if (ownsGesture) {
+                                event.changes.forEach { it.consume() }
+                            }
+                        } while (event.changes.any { it.pressed })
+                    }
                 }
             },
         contentAlignment = Alignment.Center,
