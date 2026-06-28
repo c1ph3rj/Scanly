@@ -7,13 +7,16 @@ import `in`.c1ph3rj.scanly.core.common.ScanlyError
 import `in`.c1ph3rj.scanly.core.common.ScanlyResult
 import `in`.c1ph3rj.scanly.data.local.db.ScanlyDatabase
 import `in`.c1ph3rj.scanly.data.local.db.dao.DocumentDao
+import `in`.c1ph3rj.scanly.data.local.db.dao.ScanPageDao
 import `in`.c1ph3rj.scanly.data.local.db.entity.DocumentEntity
+import `in`.c1ph3rj.scanly.data.local.db.entity.ScanPageEntity
 import `in`.c1ph3rj.scanly.data.storage.DocumentStorageManager
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
 import `in`.c1ph3rj.scanly.domain.repository.DocumentRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
+import java.io.File
 import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -22,6 +25,7 @@ import javax.inject.Singleton
 class DefaultDocumentRepository @Inject constructor(
     private val database: ScanlyDatabase,
     private val documentDao: DocumentDao,
+    private val scanPageDao: ScanPageDao,
     private val documentStorageManager: DocumentStorageManager,
     private val dispatchers: ScanlyDispatchers,
 ) : DocumentRepository {
@@ -105,7 +109,9 @@ class DefaultDocumentRepository @Inject constructor(
         runCatching {
             val existingDocument = documentDao.getDocument(documentId)
                 ?: error("Document not found.")
-            val updatedCoverThumbnail = documentStorageManager.refreshDocumentCover(
+            val updatedCoverThumbnail = resolveDocumentPreviewPath(
+                firstPage = scanPageDao.getPages(documentId).firstOrNull(),
+            ) ?: documentStorageManager.refreshDocumentCover(
                 documentId = documentId,
                 title = normalizedTitle,
             )
@@ -162,3 +168,12 @@ class DefaultDocumentRepository @Inject constructor(
         groupId = groupId,
     )
 }
+
+internal fun resolveDocumentPreviewPath(
+    firstPage: ScanPageEntity?,
+    fileExists: (String) -> Boolean = { path -> File(path).isFile },
+): String? = listOfNotNull(
+    firstPage?.thumbnailPath,
+    firstPage?.processedImagePath,
+    firstPage?.rawImagePath,
+).firstOrNull(fileExists)

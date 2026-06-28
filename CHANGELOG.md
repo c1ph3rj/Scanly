@@ -4,6 +4,18 @@ All notable user-facing changes to Scanly are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project uses semantic-style version names.
 
+## [1.0.9] - 2026-06-28
+
+### Changed
+
+- Refined portrait and landscape document capture layouts and aligned camera/editor controls with the app theme.
+- Improved capture feedback for lighting, blur, lens obstruction, and document framing.
+
+### Fixed
+
+- Retaking a page now returns directly to its editor after capture completes.
+- Renaming a document no longer replaces its first-page preview thumbnail.
+
 ## [1.0.8.betaq] - 2026-06-27
 
 ### Changed
@@ -66,6 +78,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - PDF export and image archive export/share.
 - Settings with theme mode, FAQs, licenses, and support links.
 
+[1.0.9]: https://github.com/c1ph3rj/Scanly/compare/v1.0.8.betaq...v1.0.9
 [1.0.8.betaq]: https://github.com/c1ph3rj/Scanly/compare/v1.0.7...v1.0.8.betaq
 [1.0.7]: https://github.com/c1ph3rj/Scanly/compare/v1.0.4...v1.0.7
 [1.0.4]: https://github.com/c1ph3rj/Scanly/compare/v1.0.0...v1.0.4

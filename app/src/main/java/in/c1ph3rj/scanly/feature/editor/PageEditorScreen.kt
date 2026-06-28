@@ -169,7 +169,7 @@ fun PageEditorScreen(
     Box(modifier = Modifier.fillMaxSize()) {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
-            containerColor = EditorBackground,
+            containerColor = MaterialTheme.colorScheme.background,
             snackbarHost = { SnackbarHost(snackbarHostState) },
             topBar = {
                 EditorTopBar(
@@ -191,7 +191,7 @@ fun PageEditorScreen(
                 ) {
                     Text(
                         text = "Page not found.",
-                        color = Color.White,
+                        color = MaterialTheme.colorScheme.onBackground,
                         style = MaterialTheme.typography.titleLarge,
                     )
                 }
@@ -246,7 +246,7 @@ fun PageEditorScreen(
                             .fillMaxWidth()
                             .weight(1f)
                             .padding(horizontal = 16.dp, vertical = 12.dp),
-                        color = EditorSurface,
+                        color = MaterialTheme.colorScheme.surfaceContainerLow,
                         shape = MaterialTheme.shapes.extraLarge,
                     ) {
                         PageCropEditor(
@@ -316,10 +316,11 @@ private fun EditorTopBar(
     onSave: () -> Unit,
     isSaving: Boolean,
 ) {
+    val colorScheme = MaterialTheme.colorScheme
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(EditorBackground)
+            .background(colorScheme.background)
             .statusBarsPadding()
             .padding(horizontal = 12.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -329,21 +330,21 @@ private fun EditorTopBar(
             icon = Icons.AutoMirrored.Filled.ArrowBack,
             contentDescription = "Back",
             onClick = onNavigateUp,
-            containerColor = Color.White.copy(alpha = 0.08f),
-            contentColor = Color.White,
+            containerColor = colorScheme.surfaceContainerHighest,
+            contentColor = colorScheme.onSurface,
         )
         MetricChip(
             label = statusLabel,
-            containerColor = Color.White.copy(alpha = 0.08f),
-            contentColor = Color.White,
+            containerColor = colorScheme.surfaceContainerHighest,
+            contentColor = colorScheme.onSurface,
         )
         ChromeIconButton(
             icon = Icons.Filled.Check,
             contentDescription = "Done",
             onClick = onSave,
             enabled = !isSaving,
-            containerColor = AccentGreen,
-            contentColor = Color.White,
+            containerColor = colorScheme.primary,
+            contentColor = colorScheme.onPrimary,
         )
     }
 }
@@ -354,17 +355,18 @@ private fun FilterScopeOption(
     enabled: Boolean,
     onApplyToAllPagesChange: (Boolean) -> Unit,
 ) {
+    val colorScheme = MaterialTheme.colorScheme
     Surface(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(enabled = enabled) {
                 onApplyToAllPagesChange(!applyToAllPages)
             },
-        color = Color(0xFF121416),
+        color = colorScheme.surfaceContainer,
         shape = MaterialTheme.shapes.extraLarge,
         border = BorderStroke(
             width = 1.dp,
-            color = if (applyToAllPages) AccentGreen.copy(alpha = 0.9f) else Color.White.copy(alpha = 0.08f),
+            color = if (applyToAllPages) colorScheme.primary else colorScheme.outlineVariant,
         ),
     ) {
         Row(
@@ -375,12 +377,12 @@ private fun FilterScopeOption(
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 Text(
                     text = "Apply Filter To All Pages",
-                    color = Color.White,
+                    color = colorScheme.onSurface,
                     style = MaterialTheme.typography.labelLarge,
                 )
                 Text(
                     text = "Filter only. Crop and rotation stay per page.",
-                    color = Color.White.copy(alpha = 0.62f),
+                    color = colorScheme.onSurfaceVariant,
                     style = MaterialTheme.typography.bodySmall,
                 )
             }
@@ -389,18 +391,18 @@ private fun FilterScopeOption(
                 onCheckedChange = onApplyToAllPagesChange,
                 enabled = enabled,
                 colors = SwitchDefaults.colors(
-                    checkedThumbColor = Color.White,
-                    checkedTrackColor = AccentGreen,
-                    checkedBorderColor = AccentGreen,
-                    uncheckedThumbColor = Color.White.copy(alpha = 0.92f),
-                    uncheckedTrackColor = Color.White.copy(alpha = 0.16f),
-                    uncheckedBorderColor = Color.White.copy(alpha = 0.22f),
-                    disabledCheckedThumbColor = Color.White.copy(alpha = 0.72f),
-                    disabledCheckedTrackColor = AccentGreen.copy(alpha = 0.42f),
-                    disabledCheckedBorderColor = AccentGreen.copy(alpha = 0.42f),
-                    disabledUncheckedThumbColor = Color.White.copy(alpha = 0.56f),
-                    disabledUncheckedTrackColor = Color.White.copy(alpha = 0.12f),
-                    disabledUncheckedBorderColor = Color.White.copy(alpha = 0.18f),
+                    checkedThumbColor = colorScheme.onPrimary,
+                    checkedTrackColor = colorScheme.primary,
+                    checkedBorderColor = colorScheme.primary,
+                    uncheckedThumbColor = colorScheme.outline,
+                    uncheckedTrackColor = colorScheme.surfaceContainerHighest,
+                    uncheckedBorderColor = colorScheme.outline,
+                    disabledCheckedThumbColor = colorScheme.onPrimary.copy(alpha = 0.72f),
+                    disabledCheckedTrackColor = colorScheme.primary.copy(alpha = 0.42f),
+                    disabledCheckedBorderColor = colorScheme.primary.copy(alpha = 0.42f),
+                    disabledUncheckedThumbColor = colorScheme.onSurface.copy(alpha = 0.38f),
+                    disabledUncheckedTrackColor = colorScheme.surfaceContainerHighest.copy(alpha = 0.7f),
+                    disabledUncheckedBorderColor = colorScheme.outline.copy(alpha = 0.5f),
                 ),
             )
         }
@@ -419,8 +421,8 @@ private fun FilterOptionsSheet(
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
-        containerColor = EditorBackground,
-        contentColor = Color.White,
+        containerColor = MaterialTheme.colorScheme.surface,
+        contentColor = MaterialTheme.colorScheme.onSurface,
     ) {
         Column(
             modifier = Modifier
@@ -433,13 +435,13 @@ private fun FilterOptionsSheet(
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 Text(
                     text = "Filters",
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.onSurface,
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.SemiBold,
                 )
                 Text(
                     text = "Choose the document enhancement without shrinking the crop canvas.",
-                    color = Color.White.copy(alpha = 0.64f),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     style = MaterialTheme.typography.bodyMedium,
                 )
             }
@@ -462,6 +464,7 @@ private fun FilterOptionsSheet(
 @Composable
 private fun BulkFilterApplyOverlay() {
     val interactionSource = remember { MutableInteractionSource() }
+    val colorScheme = MaterialTheme.colorScheme
 
     Box(
         modifier = Modifier
@@ -475,9 +478,9 @@ private fun BulkFilterApplyOverlay() {
         contentAlignment = Alignment.Center,
     ) {
         Surface(
-            color = Color(0xFF111315),
+            color = colorScheme.surfaceContainerHigh,
             shape = MaterialTheme.shapes.extraLarge,
-            border = BorderStroke(1.dp, Color.White.copy(alpha = 0.08f)),
+            border = BorderStroke(1.dp, colorScheme.outlineVariant),
         ) {
             Column(
                 modifier = Modifier.padding(horizontal = 24.dp, vertical = 20.dp),
@@ -485,17 +488,17 @@ private fun BulkFilterApplyOverlay() {
                 verticalArrangement = Arrangement.spacedBy(14.dp),
             ) {
                 CircularProgressIndicator(
-                    color = AccentGreen,
-                    trackColor = Color.White.copy(alpha = 0.14f),
+                    color = colorScheme.primary,
+                    trackColor = colorScheme.surfaceContainerHighest,
                 )
                 Text(
                     text = "Processing image data for all pages",
-                    color = Color.White,
+                    color = colorScheme.onSurface,
                     style = MaterialTheme.typography.titleMedium,
                 )
                 Text(
                     text = "Please wait while Scanly adapts the filter and updates the whole document.",
-                    color = Color.White.copy(alpha = 0.68f),
+                    color = colorScheme.onSurfaceVariant,
                     style = MaterialTheme.typography.bodyMedium,
                 )
             }
@@ -512,6 +515,7 @@ private fun PageCropEditor(
     onHandleMoved: (CropHandle, NormalizedPoint) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val accentColor = MaterialTheme.colorScheme.primary
     val previewBitmap by rememberEditorPreviewBitmap(
         rawImagePath = page.rawImagePath,
         fallbackImagePath = page.processedImagePath,
@@ -650,7 +654,7 @@ private fun PageCropEditor(
                 )
                 drawPath(
                     path = polygonPath,
-                    color = AccentGreen,
+                    color = accentColor,
                     style = Stroke(width = 2.5.dp.toPx()),
                 )
 
@@ -662,7 +666,7 @@ private fun PageCropEditor(
                         center = point,
                     )
                     drawCircle(
-                        color = AccentGreen,
+                        color = accentColor,
                         radius = if (isActiveHandle) 12.dp.toPx() else 10.dp.toPx(),
                         center = point,
                         style = Stroke(width = if (isActiveHandle) 2.5.dp.toPx() else 2.dp.toPx()),
@@ -677,7 +681,7 @@ private fun PageCropEditor(
                         y = magnifierPlacement.top + (magnifierSizePx / 2f),
                     )
                     drawLine(
-                        color = AccentGreen.copy(alpha = 0.28f),
+                        color = accentColor.copy(alpha = 0.28f),
                         start = lensCenter,
                         end = dragOffset!!,
                         strokeWidth = 1.4.dp.toPx(),
@@ -711,6 +715,7 @@ private fun CropMagnifier(
     lensSizeDp: androidx.compose.ui.unit.Dp = 96.dp,
     modifier: Modifier = Modifier,
 ) {
+    val accentColor = MaterialTheme.colorScheme.primary
     Canvas(
         modifier = modifier.size(lensSizeDp),
     ) {
@@ -756,19 +761,19 @@ private fun CropMagnifier(
         )
         val crosshairArm = 10.dp.toPx()
         drawLine(
-            color = AccentGreen,
+            color = accentColor,
             start = Offset(focusIndicator.x - crosshairArm, focusIndicator.y),
             end = Offset(focusIndicator.x + crosshairArm, focusIndicator.y),
             strokeWidth = 1.8.dp.toPx(),
         )
         drawLine(
-            color = AccentGreen,
+            color = accentColor,
             start = Offset(focusIndicator.x, focusIndicator.y - crosshairArm),
             end = Offset(focusIndicator.x, focusIndicator.y + crosshairArm),
             strokeWidth = 1.8.dp.toPx(),
         )
         drawCircle(
-            color = AccentGreen.copy(alpha = 0.2f),
+            color = accentColor.copy(alpha = 0.2f),
             radius = 14.dp.toPx(),
             center = focusIndicator,
             style = Stroke(width = 1.dp.toPx()),
@@ -779,17 +784,17 @@ private fun CropMagnifier(
             center = focusIndicator,
         )
         drawCircle(
-            color = AccentGreen,
+            color = accentColor,
             radius = 7.5.dp.toPx(),
             center = focusIndicator,
             style = Stroke(width = 2.dp.toPx()),
         )
         val guideLength = 16.dp.toPx()
         when (activeHandle) {
-            CropHandle.TOP_LEFT -> drawCornerGuide(focusIndicator, guideLength, 1f, 1f)
-            CropHandle.TOP_RIGHT -> drawCornerGuide(focusIndicator, guideLength, -1f, 1f)
-            CropHandle.BOTTOM_RIGHT -> drawCornerGuide(focusIndicator, guideLength, -1f, -1f)
-            CropHandle.BOTTOM_LEFT -> drawCornerGuide(focusIndicator, guideLength, 1f, -1f)
+            CropHandle.TOP_LEFT -> drawCornerGuide(focusIndicator, guideLength, 1f, 1f, accentColor)
+            CropHandle.TOP_RIGHT -> drawCornerGuide(focusIndicator, guideLength, -1f, 1f, accentColor)
+            CropHandle.BOTTOM_RIGHT -> drawCornerGuide(focusIndicator, guideLength, -1f, -1f, accentColor)
+            CropHandle.BOTTOM_LEFT -> drawCornerGuide(focusIndicator, guideLength, 1f, -1f, accentColor)
         }
     }
 }
@@ -800,13 +805,13 @@ private fun EditorPageBadge(
 ) {
     Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
         Surface(
-            color = Color(0xFF1E1E1E),
+            color = MaterialTheme.colorScheme.surfaceContainerHigh,
             shape = CircleShape,
         ) {
             Text(
                 text = "Page ${pageIndex + 1}",
                 modifier = Modifier.padding(horizontal = 18.dp, vertical = 8.dp),
-                color = Color.White,
+                color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.labelLarge,
             )
         }
@@ -842,9 +847,9 @@ private fun FilterSelector(
         if (previewState.isLoading) {
             Surface(
                 modifier = Modifier.fillMaxWidth(),
-                color = Color(0xFF111315),
+                color = MaterialTheme.colorScheme.surfaceContainer,
                 shape = RoundedCornerShape(18.dp),
-                border = BorderStroke(1.dp, Color.White.copy(alpha = 0.08f)),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
             ) {
                 Row(
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
@@ -853,13 +858,13 @@ private fun FilterSelector(
                 ) {
                     CircularProgressIndicator(
                         modifier = Modifier.size(18.dp),
-                        color = AccentGreen,
-                        trackColor = Color.White.copy(alpha = 0.14f),
+                        color = MaterialTheme.colorScheme.primary,
+                        trackColor = MaterialTheme.colorScheme.surfaceContainerHighest,
                         strokeWidth = 2.dp,
                     )
                     Text(
                         text = "Analyzing the page to tune each filter.",
-                        color = Color.White.copy(alpha = 0.82f),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         style = MaterialTheme.typography.labelLarge,
                     )
                 }
@@ -919,14 +924,15 @@ private fun FilterItem(
     onSelect: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val colorScheme = MaterialTheme.colorScheme
     Surface(
         onClick = onSelect,
         modifier = modifier,
-        color = if (isSelected) Color(0xFF112922) else Color(0xFF111315),
+        color = if (isSelected) colorScheme.primaryContainer else colorScheme.surfaceContainer,
         shape = RoundedCornerShape(20.dp),
         border = BorderStroke(
             width = if (isSelected) 2.dp else 1.dp,
-            color = if (isSelected) AccentGreen else Color.White.copy(alpha = 0.08f),
+            color = if (isSelected) colorScheme.primary else colorScheme.outlineVariant,
         ),
     ) {
         Column(
@@ -940,7 +946,7 @@ private fun FilterItem(
             ) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = Color(0xFF1C2023),
+                    color = colorScheme.surfaceContainerHighest,
                     shape = RoundedCornerShape(16.dp),
                 ) {
                     if (preview == null) {
@@ -950,7 +956,7 @@ private fun FilterItem(
                         ) {
                             Text(
                                 text = filter.shortLabel(),
-                                color = Color.White.copy(alpha = 0.72f),
+                                color = colorScheme.onSurfaceVariant,
                                 style = MaterialTheme.typography.labelLarge,
                             )
                         }
@@ -969,13 +975,13 @@ private fun FilterItem(
                             .align(Alignment.TopEnd)
                             .padding(6.dp)
                             .size(24.dp)
-                            .background(AccentGreen, CircleShape),
+                            .background(colorScheme.primary, CircleShape),
                         contentAlignment = Alignment.Center,
                     ) {
                         Icon(
                             imageVector = Icons.Filled.Check,
                             contentDescription = "Selected filter",
-                            tint = Color.White,
+                            tint = colorScheme.onPrimary,
                             modifier = Modifier.size(16.dp),
                         )
                     }
@@ -983,7 +989,7 @@ private fun FilterItem(
             }
             Text(
                 text = filter.toDisplayLabel(),
-                color = if (isSelected) Color.White else Color.White.copy(alpha = 0.78f),
+                color = if (isSelected) colorScheme.onPrimaryContainer else colorScheme.onSurfaceVariant,
                 style = MaterialTheme.typography.labelLarge,
                 fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
             )
@@ -1029,7 +1035,7 @@ private fun EditorActionRow(
                 icon = Icons.Filled.DeleteOutline,
                 onClick = onDelete,
                 enabled = enabled,
-                contentColor = Color(0xFFFF6B6B),
+                contentColor = MaterialTheme.colorScheme.error,
             )
         }
     }
@@ -1041,16 +1047,18 @@ private fun EditorActionButton(
     icon: ImageVector,
     onClick: () -> Unit,
     enabled: Boolean = true,
-    contentColor: Color = AccentGreen,
+    contentColor: Color? = null,
 ) {
+    val colorScheme = MaterialTheme.colorScheme
+    val resolvedContentColor = contentColor ?: colorScheme.primary
     Surface(
         onClick = onClick,
         enabled = enabled,
         modifier = Modifier
             .width(104.dp),
-        color = Color(0xFF181818),
+        color = colorScheme.surfaceContainerHigh,
         shape = RoundedCornerShape(18.dp),
-        border = BorderStroke(1.dp, Color.White.copy(alpha = 0.08f)),
+        border = BorderStroke(1.dp, colorScheme.outlineVariant),
     ) {
         Column(
             modifier = Modifier.padding(vertical = 12.dp),
@@ -1060,11 +1068,11 @@ private fun EditorActionButton(
             Icon(
                 imageVector = icon,
                 contentDescription = null,
-                tint = if (enabled) contentColor else Color.White.copy(alpha = 0.28f),
+                tint = if (enabled) resolvedContentColor else colorScheme.onSurface.copy(alpha = 0.28f),
             )
             Text(
                 text = label,
-                color = if (enabled) Color.White else Color.White.copy(alpha = 0.38f),
+                color = if (enabled) colorScheme.onSurface else colorScheme.onSurface.copy(alpha = 0.38f),
                 style = MaterialTheme.typography.labelLarge,
             )
         }
@@ -1314,9 +1322,10 @@ private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawCornerGuide(
     guideLength: Float,
     horizontalDirection: Float,
     verticalDirection: Float,
+    accentColor: Color,
 ) {
     drawLine(
-        color = AccentGreen.copy(alpha = 0.75f),
+        color = accentColor.copy(alpha = 0.75f),
         start = center,
         end = Offset(
             x = center.x + (guideLength * horizontalDirection),
@@ -1325,7 +1334,7 @@ private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawCornerGuide(
         strokeWidth = 1.6.dp.toPx(),
     )
     drawLine(
-        color = AccentGreen.copy(alpha = 0.75f),
+        color = accentColor.copy(alpha = 0.75f),
         start = center,
         end = Offset(
             x = center.x,
@@ -1391,8 +1400,5 @@ private data class MagnifierPlacement(
     )
 }
 
-private val EditorBackground = Color(0xFF050505)
-private val EditorSurface = Color(0xFF121212)
-private val AccentGreen = Color(0xFF0AAE78)
 private val LensBackdrop = Color(0xF0121212)
 private val LensBorder = Color.White.copy(alpha = 0.88f)

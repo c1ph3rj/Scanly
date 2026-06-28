@@ -14,7 +14,6 @@ import `in`.c1ph3rj.scanly.domain.model.ScanPage
 import `in`.c1ph3rj.scanly.domain.usecase.FinalizeCapturedPageUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveDocumentPagesUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveDocumentUseCase
-import `in`.c1ph3rj.scanly.domain.usecase.ObserveShowDetectionStatsUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.PreparePageCaptureUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.PrepareReplacementCaptureUseCase
 import kotlinx.coroutines.Dispatchers
@@ -39,7 +38,6 @@ data class ScanSessionUiState(
     val replacementPageId: String? = null,
     val latestCapturedPageId: String? = null,
     val liveDetection: LiveDetectionUiState = LiveDetectionUiState(),
-    val showDetectionStats: Boolean = true,
 ) {
     val replacementPage: ScanPage?
         get() = pages.firstOrNull { page -> page.id == replacementPageId }
@@ -56,6 +54,7 @@ data class ScanSessionUiState(
 sealed interface ScanSessionEvent {
     data class PerformCapture(val draft: PageCaptureDraft) : ScanSessionEvent
     data class ShowMessage(val message: String) : ScanSessionEvent
+    data class ReplacementCompleted(val pageId: String) : ScanSessionEvent
     data object NavigateUp : ScanSessionEvent
 }
 
@@ -69,7 +68,6 @@ class ScanSessionViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     observeDocumentUseCase: ObserveDocumentUseCase,
     observeDocumentPagesUseCase: ObserveDocumentPagesUseCase,
-    observeShowDetectionStatsUseCase: ObserveShowDetectionStatsUseCase,
     private val documentCornerDetector: DocumentCornerDetector,
     private val preparePageCaptureUseCase: PreparePageCaptureUseCase,
     private val prepareReplacementCaptureUseCase: PrepareReplacementCaptureUseCase,
@@ -112,13 +110,6 @@ class ScanSessionViewModel @Inject constructor(
                             pages.any { page -> page.id == pageId }
                         },
                     )
-                }
-            }
-        }
-        viewModelScope.launch {
-            observeShowDetectionStatsUseCase().collectLatest { showDetectionStats ->
-                _uiState.update { current ->
-                    current.copy(showDetectionStats = showDetectionStats)
                 }
             }
         }
@@ -182,9 +173,13 @@ class ScanSessionViewModel @Inject constructor(
 
         viewModelScope.launch {
             try {
-                val detectionResult = runCatching {
+                val analysis = runCatching {
                     withContext(Dispatchers.Default) {
-                        documentCornerDetector.detect(frame)
+                        val detection = documentCornerDetector.detect(frame)
+                        val quality = CaptureFrameQualityAnalyzer.analyze(frame)
+                        detection to quality.sceneIssue(
+                            hasDocumentCandidate = detection.quad != null,
+                        )
                     }
                 }.getOrElse {
                     _uiState.update { current ->
@@ -192,8 +187,7 @@ class ScanSessionViewModel @Inject constructor(
                             liveDetection = current.liveDetection.copy(
                                 quad = null,
                                 overlayFrame = frame.toDetectionOverlayFrame(),
-                                confidence = null,
-                                inferenceTimeMillis = null,
+                                sceneIssue = null,
                                 phase = if (current.liveDetection.autoCaptureEnabled) AutoCapturePhase.SEARCHING else AutoCapturePhase.OFF,
                                 statusMessage = "Live detection is unavailable. Manual capture still works.",
                                 countdownValue = null,
@@ -202,12 +196,14 @@ class ScanSessionViewModel @Inject constructor(
                     }
                     return@launch
                 }
+                val (detectionResult, sceneIssue) = analysis
 
                 val autoCaptureEnabled = _uiState.value.liveDetection.autoCaptureEnabled
                 val evaluation = stabilityTracker.evaluate(
                     result = detectionResult,
                     autoCaptureEnabled = autoCaptureEnabled,
                     nowMillis = System.currentTimeMillis(),
+                    sceneIssue = sceneIssue,
                 )
 
                 _uiState.update { current ->
@@ -215,8 +211,7 @@ class ScanSessionViewModel @Inject constructor(
                         liveDetection = current.liveDetection.copy(
                             quad = detectionResult.quad,
                             overlayFrame = frame.toDetectionOverlayFrame(),
-                            confidence = detectionResult.confidence.takeIf { it > 0f },
-                            inferenceTimeMillis = detectionResult.inferenceTimeMillis,
+                            sceneIssue = sceneIssue,
                             phase = evaluation.phase,
                             statusMessage = evaluation.statusMessage,
                             countdownValue = evaluation.countdownValue,
@@ -237,6 +232,7 @@ class ScanSessionViewModel @Inject constructor(
     fun onCaptureSaved(draft: PageCaptureDraft) {
         viewModelScope.launch {
             var capturedPageId: String? = null
+            var completionEvent: ScanSessionEvent? = null
             when (val result = finalizeCapturedPageUseCase(draft)) {
                 is ScanlyResult.Success -> {
                     capturedPageId = result.value
@@ -244,14 +240,17 @@ class ScanSessionViewModel @Inject constructor(
                         quad = pendingCaptureQuad,
                         nowMillis = System.currentTimeMillis(),
                     )
-                    _events.emit(
+                    completionEvent = replacementCompletionEvent(
+                        draft = draft,
+                        capturedPageId = result.value,
+                    ) ?: run {
                         ScanSessionEvent.ShowMessage(
                             captureSuccessMessage(
                                 draft = draft,
                                 trigger = pendingCaptureTrigger,
                             ),
-                        ),
-                    )
+                        )
+                    }
                 }
                 is ScanlyResult.Failure -> _events.emit(ScanSessionEvent.ShowMessage(result.error.message))
             }
@@ -269,9 +268,11 @@ class ScanSessionViewModel @Inject constructor(
                             "Auto-capture is off. Use the shutter when ready."
                         },
                         countdownValue = null,
+                        sceneIssue = null,
                     ),
                 )
             }
+            completionEvent?.let { event -> _events.emit(event) }
         }
     }
 
@@ -286,6 +287,7 @@ class ScanSessionViewModel @Inject constructor(
                         phase = if (current.liveDetection.autoCaptureEnabled) AutoCapturePhase.SEARCHING else AutoCapturePhase.OFF,
                         statusMessage = "Capture failed. Reposition the document and try again.",
                         countdownValue = null,
+                        sceneIssue = null,
                     ),
                 )
             }
@@ -353,9 +355,17 @@ class ScanSessionViewModel @Inject constructor(
         draft: PageCaptureDraft,
         trigger: CaptureTrigger,
     ): String = when {
-        draft.isReplacement -> "Page ${draft.pageIndex + 1} retaken."
         trigger == CaptureTrigger.AUTO -> "Auto-captured page ${draft.pageIndex + 1}."
         else -> "Page ${draft.pageIndex + 1} saved."
     }
 
+}
+
+internal fun replacementCompletionEvent(
+    draft: PageCaptureDraft,
+    capturedPageId: String,
+): ScanSessionEvent.ReplacementCompleted? = if (draft.isReplacement) {
+    ScanSessionEvent.ReplacementCompleted(capturedPageId)
+} else {
+    null
 }

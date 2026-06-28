@@ -17,28 +17,18 @@ import androidx.camera.core.Preview
 import androidx.camera.core.UseCaseGroup
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -49,31 +39,18 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.CameraAlt
-import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.FlashOff
 import androidx.compose.material.icons.filled.FlashOn
 import androidx.compose.material.icons.filled.Grid3x3
-import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material.icons.filled.Tune
-import androidx.compose.material.icons.filled.Timer
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -91,7 +68,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -99,7 +76,6 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -108,7 +84,6 @@ import androidx.core.view.doOnLayout
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import `in`.c1ph3rj.scanly.core.ui.ChromeIconButton
-import `in`.c1ph3rj.scanly.core.ui.MetricChip
 import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import `in`.c1ph3rj.scanly.core.ml.DetectionFrame
 import `in`.c1ph3rj.scanly.domain.model.PageCaptureDraft
@@ -121,7 +96,6 @@ import java.io.File
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
-import kotlin.math.roundToInt
 
 object ScanSessionDestination {
     const val documentIdArgument = "documentId"
@@ -147,6 +121,7 @@ object ScanSessionDestination {
 fun ScanSessionRoute(
     onNavigateUp: () -> Unit,
     onOpenDocument: (String) -> Unit,
+    onReplacementCompleted: (String) -> Unit,
     viewModel: ScanSessionViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -197,6 +172,7 @@ fun ScanSessionRoute(
                 }
 
                 is ScanSessionEvent.ShowMessage -> snackbarHostState.showSnackbar(event.message)
+                is ScanSessionEvent.ReplacementCompleted -> onReplacementCompleted(event.pageId)
                 ScanSessionEvent.NavigateUp -> onNavigateUp()
             }
         }
@@ -260,7 +236,6 @@ fun ScanSessionRoute(
 }
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
 fun ScanSessionScreen(
     uiState: ScanSessionUiState,
     snackbarHostState: SnackbarHostState,
@@ -278,7 +253,6 @@ fun ScanSessionScreen(
     onTapToFocus: (Offset) -> Boolean,
     onCameraReady: (ImageCapture, PreviewView, Camera) -> Unit,
 ) {
-    var settingsSheetVisible by rememberSaveable { mutableStateOf(false) }
     val windowSizeInfo = rememberWindowSizeInfo()
     val previewAspectRatio = cameraPreviewAspectRatio(windowSizeInfo.isLandscape)
 
@@ -321,27 +295,24 @@ fun ScanSessionScreen(
                 previewAspectRatio = previewAspectRatio,
                 isLandscape = windowSizeInfo.isLandscape,
                 onNavigateUp = onNavigateUp,
-                settingsSheetVisible = settingsSheetVisible,
-                onSettingsClick = { settingsSheetVisible = true },
                 onCapture = onCapture,
                 onOpenDocument = onOpenDocument,
+                autoCaptureEnabled = uiState.liveDetection.autoCaptureEnabled,
+                onAutoCaptureToggle = {
+                    onAutoCaptureEnabledChange(!uiState.liveDetection.autoCaptureEnabled)
+                },
+                gridEnabled = uiState.liveDetection.isGridEnabled,
+                onGridToggle = {
+                    onGridEnabledChange(!uiState.liveDetection.isGridEnabled)
+                },
+                torchEnabled = torchEnabled,
+                torchAvailable = torchAvailable,
+                onTorchToggle = onTorchToggle,
                 onCameraReady = onCameraReady,
                 onPreviewFrame = onPreviewFrame,
                 onTapToFocus = onTapToFocus,
             )
         }
-    }
-
-    if (settingsSheetVisible) {
-        CameraSettingsSheet(
-            uiState = uiState,
-            torchEnabled = torchEnabled,
-            torchAvailable = torchAvailable,
-            onDismiss = { settingsSheetVisible = false },
-            onAutoCaptureEnabledChange = onAutoCaptureEnabledChange,
-            onGridEnabledChange = onGridEnabledChange,
-            onTorchToggle = onTorchToggle,
-        )
     }
 }
 
@@ -351,10 +322,15 @@ private fun CameraCaptureLayout(
     previewAspectRatio: Float,
     isLandscape: Boolean,
     onNavigateUp: () -> Unit,
-    settingsSheetVisible: Boolean,
-    onSettingsClick: () -> Unit,
     onCapture: () -> Unit,
     onOpenDocument: () -> Unit,
+    autoCaptureEnabled: Boolean,
+    onAutoCaptureToggle: () -> Unit,
+    gridEnabled: Boolean,
+    onGridToggle: () -> Unit,
+    torchEnabled: Boolean,
+    torchAvailable: Boolean,
+    onTorchToggle: () -> Unit,
     onCameraReady: (ImageCapture, PreviewView, Camera) -> Unit,
     onPreviewFrame: (() -> DetectionFrame?) -> Boolean,
     onTapToFocus: (Offset) -> Boolean,
@@ -366,12 +342,16 @@ private fun CameraCaptureLayout(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             CameraLeftRail(
-                uiState = uiState,
                 onNavigateUp = onNavigateUp,
-                settingsSheetVisible = settingsSheetVisible,
-                onSettingsClick = onSettingsClick,
+                autoCaptureEnabled = autoCaptureEnabled,
+                onAutoCaptureToggle = onAutoCaptureToggle,
+                gridEnabled = gridEnabled,
+                onGridToggle = onGridToggle,
+                torchEnabled = torchEnabled,
+                torchAvailable = torchAvailable,
+                onTorchToggle = onTorchToggle,
                 modifier = Modifier
-                    .weight(0.18f)
+                    .width(96.dp)
                     .fillMaxHeight()
                     .statusBarsPadding()
                     .navigationBarsPadding(),
@@ -379,27 +359,17 @@ private fun CameraCaptureLayout(
             
             Box(
                 modifier = Modifier
-                    .weight(0.64f)
+                    .weight(1f)
                     .fillMaxHeight(),
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.Center,
             ) {
                 CameraPreviewViewport(
-                    modifier = Modifier.fillMaxHeight(),
+                    modifier = Modifier.fillMaxSize(),
                     aspectRatio = previewAspectRatio,
                     liveDetection = uiState.liveDetection,
-                    showStats = uiState.showDetectionStats,
                     onCameraReady = onCameraReady,
                     onPreviewFrame = onPreviewFrame,
                     onTapToFocus = onTapToFocus,
-                )
-                CameraPreviewFeedback(
-                    liveDetection = uiState.liveDetection,
-                    showStats = uiState.showDetectionStats,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .statusBarsPadding()
-                        .navigationBarsPadding()
-                        .padding(bottom = 32.dp),
                 )
             }
             
@@ -409,55 +379,47 @@ private fun CameraCaptureLayout(
                 onOpenDocument = onOpenDocument,
                 compact = true,
                 modifier = Modifier
-                    .weight(0.18f)
+                    .width(104.dp)
                     .fillMaxHeight()
-                    .background(Color.Black.copy(alpha = 0.9f))
                     .statusBarsPadding()
                     .navigationBarsPadding(),
             )
         }
     } else {
-        Box(
+        Column(
             modifier = modifier.background(Color.Black),
-            contentAlignment = Alignment.Center,
         ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.Black.copy(alpha = 0.78f)),
+            ) {
+                CameraTopBar(
+                    onNavigateUp = onNavigateUp,
+                    autoCaptureEnabled = autoCaptureEnabled,
+                    onAutoCaptureToggle = onAutoCaptureToggle,
+                    gridEnabled = gridEnabled,
+                    onGridToggle = onGridToggle,
+                    torchEnabled = torchEnabled,
+                    torchAvailable = torchAvailable,
+                    onTorchToggle = onTorchToggle,
+                    modifier = Modifier
+                        .statusBarsPadding()
+                        .height(64.dp)
+                        .padding(horizontal = 12.dp, vertical = 8.dp),
+                )
+            }
+
             CameraPreviewViewport(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth(),
                 aspectRatio = previewAspectRatio,
                 liveDetection = uiState.liveDetection,
-                showStats = uiState.showDetectionStats,
                 onCameraReady = onCameraReady,
                 onPreviewFrame = onPreviewFrame,
                 onTapToFocus = onTapToFocus,
             )
-            CameraPreviewFeedback(
-                liveDetection = uiState.liveDetection,
-                showStats = uiState.showDetectionStats,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .statusBarsPadding()
-                    .navigationBarsPadding()
-                    .padding(top = 64.dp, bottom = 180.dp),
-            )
-
-            Surface(
-                color = Color.Black.copy(alpha = 0.78f),
-                modifier = Modifier
-                    .align(Alignment.TopCenter)
-                    .fillMaxWidth(),
-                shape = RoundedCornerShape(0.dp),
-            ) {
-                CameraTopBar(
-                    uiState = uiState,
-                    onNavigateUp = onNavigateUp,
-                    settingsSheetVisible = settingsSheetVisible,
-                    onSettingsClick = onSettingsClick,
-                    compact = false,
-                    modifier = Modifier
-                        .statusBarsPadding()
-                        .padding(horizontal = 12.dp, vertical = 8.dp),
-                )
-            }
 
             CameraCaptureDock(
                 uiState = uiState,
@@ -465,10 +427,9 @@ private fun CameraCaptureLayout(
                 onOpenDocument = onOpenDocument,
                 compact = false,
                 modifier = Modifier
-                    .align(Alignment.BottomCenter)
                     .fillMaxWidth()
-                    .background(Color.Black.copy(alpha = 0.9f))
-                    .navigationBarsPadding(),
+                    .height(144.dp)
+                    .navigationBarsPadding()
             )
         }
     }
@@ -476,10 +437,14 @@ private fun CameraCaptureLayout(
 
 @Composable
 private fun CameraLeftRail(
-    uiState: ScanSessionUiState,
     onNavigateUp: () -> Unit,
-    settingsSheetVisible: Boolean,
-    onSettingsClick: () -> Unit,
+    autoCaptureEnabled: Boolean,
+    onAutoCaptureToggle: () -> Unit,
+    gridEnabled: Boolean,
+    onGridToggle: () -> Unit,
+    torchEnabled: Boolean,
+    torchAvailable: Boolean,
+    onTorchToggle: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Surface(
@@ -489,39 +454,26 @@ private fun CameraLeftRail(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp),
+                .padding(8.dp),
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
+            CaptureControlStrip(
+                horizontal = false,
+                autoCaptureEnabled = autoCaptureEnabled,
+                onAutoCaptureToggle = onAutoCaptureToggle,
+                gridEnabled = gridEnabled,
+                onGridToggle = onGridToggle,
+                torchEnabled = torchEnabled,
+                torchAvailable = torchAvailable,
+                onTorchToggle = onTorchToggle,
+            )
             ChromeIconButton(
                 icon = Icons.AutoMirrored.Filled.ArrowBack,
                 contentDescription = "Back",
                 onClick = onNavigateUp,
                 containerColor = Color.Transparent,
                 contentColor = Color.White,
-            )
-            
-            Box(
-                modifier = Modifier.weight(1f),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = uiState.document?.title ?: "Document",
-                    style = MaterialTheme.typography.titleLarge,
-                    color = Color.White,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.graphicsLayer {
-                        rotationZ = -90f
-                    }
-                )
-            }
-            
-            TopControlButton(
-                icon = Icons.Filled.Tune,
-                label = "Scan settings",
-                active = settingsSheetVisible,
-                onClick = onSettingsClick,
             )
         }
     }
@@ -540,23 +492,17 @@ private fun CameraCaptureDock(
         color = Color.Black.copy(alpha = if (compact) 0f else 0.9f),
         shape = if (compact) RoundedCornerShape(0.dp) else RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = if (compact) 0.dp else 18.dp, vertical = 16.dp),
-        ) {
-            CaptureButton(
-                busy = uiState.captureInProgress,
-                onClick = onCapture,
-                modifier = Modifier.align(Alignment.Center),
+        if (compact) {
+            LandscapeCaptureDockContent(
+                uiState = uiState,
+                onCapture = onCapture,
+                onOpenDocument = onOpenDocument,
             )
-            TopControlButton(
-                icon = Icons.Filled.Description,
-                label = "Review document",
-                active = false,
-                enabled = uiState.document != null && !uiState.captureInProgress,
-                onClick = onOpenDocument,
-                modifier = Modifier.align(if (compact) Alignment.TopCenter else Alignment.CenterEnd),
+        } else {
+            PortraitCaptureDockContent(
+                uiState = uiState,
+                onCapture = onCapture,
+                onOpenDocument = onOpenDocument,
             )
         }
     }
@@ -567,59 +513,42 @@ private fun CameraPreviewViewport(
     modifier: Modifier = Modifier,
     aspectRatio: Float,
     liveDetection: LiveDetectionUiState,
-    showStats: Boolean,
     onCameraReady: (ImageCapture, PreviewView, Camera) -> Unit,
     onPreviewFrame: (() -> DetectionFrame?) -> Boolean,
     onTapToFocus: (Offset) -> Boolean,
 ) {
-    Box(
-        modifier = modifier.aspectRatio(aspectRatio),
+    BoxWithConstraints(
+        modifier = modifier,
+        contentAlignment = Alignment.Center,
     ) {
-        CameraPreview(
-            modifier = Modifier.fillMaxSize(),
-            liveDetection = liveDetection,
-            onCameraReady = onCameraReady,
-            onPreviewFrame = onPreviewFrame,
-            onTapToFocus = onTapToFocus,
+        val previewSize = constrainedCameraPreviewSize(
+            maxWidth = maxWidth.value,
+            maxHeight = maxHeight.value,
+            aspectRatio = aspectRatio,
         )
-        ScanGridOverlay(
-            visible = liveDetection.isGridEnabled,
-            modifier = Modifier.fillMaxSize(),
-        )
-    }
-}
 
-@Composable
-private fun CameraPreviewScrims(modifier: Modifier = Modifier) {
-    Box(modifier = modifier) {
         Box(
             modifier = Modifier
-                .align(Alignment.TopCenter)
-                .fillMaxWidth()
-                .height(170.dp)
-                .background(
-                    Brush.verticalGradient(
-                        colors = listOf(
-                            Color.Black.copy(alpha = 0.62f),
-                            Color.Black.copy(alpha = 0f),
-                        ),
-                    ),
-                ),
-        )
-        Box(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .fillMaxWidth()
-                .height(190.dp)
-                .background(
-                    Brush.verticalGradient(
-                        colors = listOf(
-                            Color.Black.copy(alpha = 0f),
-                            Color.Black.copy(alpha = 0.58f),
-                        ),
-                    ),
-                ),
-        )
+                .width(previewSize.width.dp)
+                .height(previewSize.height.dp)
+                .clipToBounds(),
+        ) {
+            CameraPreview(
+                modifier = Modifier.fillMaxSize(),
+                liveDetection = liveDetection,
+                onCameraReady = onCameraReady,
+                onPreviewFrame = onPreviewFrame,
+                onTapToFocus = onTapToFocus,
+            )
+            ScanGridOverlay(
+                visible = liveDetection.isGridEnabled,
+                modifier = Modifier.fillMaxSize(),
+            )
+            CameraPreviewFeedback(
+                liveDetection = liveDetection,
+                modifier = Modifier.fillMaxSize(),
+            )
+        }
     }
 }
 
@@ -669,7 +598,6 @@ private fun ScanGridOverlay(
 @Composable
 private fun CameraPreviewFeedback(
     liveDetection: LiveDetectionUiState,
-    showStats: Boolean,
     modifier: Modifier = Modifier,
 ) {
     Box(
@@ -681,89 +609,139 @@ private fun CameraPreviewFeedback(
                 .align(Alignment.TopCenter)
                 .padding(top = 16.dp),
         )
-        DetectionMeta(
-            liveDetection = liveDetection,
-            showStats = showStats,
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(bottom = 16.dp),
+    }
+}
+
+@Composable
+private fun PortraitCaptureDockContent(
+    uiState: ScanSessionUiState,
+    onCapture: () -> Unit,
+    onOpenDocument: () -> Unit,
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 18.dp, vertical = 8.dp),
+    ) {
+        CaptureButton(
+            busy = uiState.captureInProgress,
+            replacement = uiState.isReplacementMode,
+            onClick = onCapture,
+            modifier = Modifier.align(Alignment.Center),
+        )
+        RecentCaptureStack(
+            pages = uiState.pages,
+            enabled = !uiState.captureInProgress,
+            onOpenDocument = onOpenDocument,
+            modifier = Modifier.align(Alignment.CenterEnd),
         )
     }
 }
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
-private fun CameraSettingsSheet(
+private fun LandscapeCaptureDockContent(
     uiState: ScanSessionUiState,
-    torchEnabled: Boolean,
-    torchAvailable: Boolean,
-    onDismiss: () -> Unit,
-    onAutoCaptureEnabledChange: (Boolean) -> Unit,
-    onGridEnabledChange: (Boolean) -> Unit,
-    onTorchToggle: () -> Unit,
+    onCapture: () -> Unit,
+    onOpenDocument: () -> Unit,
 ) {
-    ModalBottomSheet(
-        onDismissRequest = onDismiss,
-        containerColor = Color.Black,
-        contentColor = Color.White,
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 8.dp, vertical = 12.dp),
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .navigationBarsPadding()
-                .padding(start = 20.dp, end = 20.dp, bottom = 24.dp),
-            verticalArrangement = Arrangement.spacedBy(18.dp),
-        ) {
-            Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                Text(
-                    text = "Scan settings",
-                    style = MaterialTheme.typography.titleLarge,
-                    color = Color.White,
+        RecentCaptureStack(
+            pages = uiState.pages,
+            enabled = !uiState.captureInProgress,
+            onOpenDocument = onOpenDocument,
+            modifier = Modifier.align(Alignment.TopCenter),
+        )
+        CaptureButton(
+            busy = uiState.captureInProgress,
+            replacement = uiState.isReplacementMode,
+            onClick = onCapture,
+            modifier = Modifier.align(Alignment.Center),
+        )
+    }
+}
+
+@Composable
+private fun RecentCaptureStack(
+    pages: List<ScanPage>,
+    enabled: Boolean,
+    onOpenDocument: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val recentPages = remember(pages) {
+        pages.sortedWith(
+            compareByDescending<ScanPage> { page -> page.updatedAtMillis }
+                .thenByDescending { page -> page.pageIndex },
+        ).take(2)
+    }
+    Surface(
+        onClick = onOpenDocument,
+        enabled = enabled && recentPages.isNotEmpty(),
+        modifier = modifier.size(width = 78.dp, height = 82.dp),
+        color = Color.Transparent,
+        shape = RoundedCornerShape(2.dp),
+    ) {
+        if (recentPages.isEmpty()) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(6.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Description,
+                    contentDescription = null,
+                    tint = Color.White.copy(alpha = 0.48f),
+                    modifier = Modifier.size(22.dp),
                 )
                 Text(
-                    text = uiState.liveDetection.statusMessage,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = Color.White.copy(alpha = 0.68f),
+                    text = "No captures",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = Color.White.copy(alpha = 0.58f),
+                    maxLines = 1,
                 )
             }
-
-            Surface(
-                color = Color.White.copy(alpha = 0.08f),
-                shape = MaterialTheme.shapes.extraLarge,
-                border = BorderStroke(1.dp, Color.White.copy(alpha = 0.1f)),
-            ) {
-                Column(
-                    modifier = Modifier.padding(14.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
-                ) {
-                    Text(
-                        text = "Capture controls",
-                        style = MaterialTheme.typography.labelLarge,
-                        color = Color.White.copy(alpha = 0.7f),
-                    )
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(10.dp),
-                        verticalAlignment = Alignment.CenterVertically,
+        } else {
+            Box(modifier = Modifier.fillMaxSize()) {
+                recentPages.asReversed().forEachIndexed { index, page ->
+                    val isLatest = page.id == recentPages.first().id
+                    Surface(
+                        modifier = Modifier
+                            .align(if (isLatest) Alignment.TopEnd else Alignment.BottomStart)
+                            .width(54.dp)
+                            .height(72.dp),
+                        color = Color.Black,
+                        shape = RoundedCornerShape(2.dp),
+                        border = BorderStroke(
+                            width = if (isLatest) 2.dp else 1.dp,
+                            color = if (isLatest) Color.White else Color.White.copy(alpha = 0.45f),
+                        ),
+                        shadowElevation = if (index == recentPages.lastIndex) 4.dp else 0.dp,
                     ) {
-                        AutoCaptureChip(
-                            enabled = uiState.liveDetection.autoCaptureEnabled,
-                            onClick = {
-                                onAutoCaptureEnabledChange(!uiState.liveDetection.autoCaptureEnabled)
-                            },
-                        )
-                        GridChip(
-                            enabled = uiState.liveDetection.isGridEnabled,
-                            onClick = {
-                                onGridEnabledChange(!uiState.liveDetection.isGridEnabled)
-                            },
-                        )
-                        FlashChip(
-                            enabled = torchEnabled,
-                            available = torchAvailable,
-                            onClick = onTorchToggle,
+                        PagePreview(
+                            page = page,
+                            displaySize = PreviewDisplaySize.COMPACT,
+                            modifier = Modifier.fillMaxSize(),
+                            minHeight = 72.dp,
+                            aspectRatio = null,
                         )
                     }
+                }
+                Surface(
+                    modifier = Modifier.align(Alignment.BottomEnd),
+                    color = MaterialTheme.colorScheme.primary,
+                    shape = CircleShape,
+                ) {
+                    Text(
+                        text = pages.size.toString(),
+                        modifier = Modifier.padding(horizontal = 7.dp, vertical = 3.dp),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onPrimary,
+                    )
                 }
             }
         }
@@ -772,47 +750,20 @@ private fun CameraSettingsSheet(
 
 @Composable
 private fun CameraTopBar(
-    uiState: ScanSessionUiState,
     onNavigateUp: () -> Unit,
-    settingsSheetVisible: Boolean,
-    onSettingsClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    compact: Boolean = false,
-) {
-    Column(
-        modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(10.dp),
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            CameraSessionTitlePill(
-                title = uiState.document?.title ?: "Scan session",
-                onNavigateUp = onNavigateUp,
-                modifier = Modifier.weight(1f, fill = false),
-            )
-            TopControlButton(
-                icon = Icons.Filled.Tune,
-                label = "Scan settings",
-                active = settingsSheetVisible,
-                onClick = onSettingsClick,
-            )
-        }
-    }
-}
-
-@Composable
-private fun CameraSessionTitlePill(
-    title: String,
-    onNavigateUp: () -> Unit,
+    autoCaptureEnabled: Boolean,
+    onAutoCaptureToggle: () -> Unit,
+    gridEnabled: Boolean,
+    onGridToggle: () -> Unit,
+    torchEnabled: Boolean,
+    torchAvailable: Boolean,
+    onTorchToggle: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Row(
-        modifier = modifier.padding(vertical = 6.dp),
+        modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         ChromeIconButton(
             icon = Icons.AutoMirrored.Filled.ArrowBack,
@@ -821,14 +772,66 @@ private fun CameraSessionTitlePill(
             containerColor = Color.Transparent,
             contentColor = Color.White,
         )
-        Text(
-            text = title,
-            style = MaterialTheme.typography.titleLarge,
-            color = Color.White,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.weight(1f),
+        CaptureControlStrip(
+            horizontal = true,
+            autoCaptureEnabled = autoCaptureEnabled,
+            onAutoCaptureToggle = onAutoCaptureToggle,
+            gridEnabled = gridEnabled,
+            onGridToggle = onGridToggle,
+            torchEnabled = torchEnabled,
+            torchAvailable = torchAvailable,
+            onTorchToggle = onTorchToggle,
         )
+    }
+}
+
+@Composable
+private fun CaptureControlStrip(
+    horizontal: Boolean,
+    autoCaptureEnabled: Boolean,
+    onAutoCaptureToggle: () -> Unit,
+    gridEnabled: Boolean,
+    onGridToggle: () -> Unit,
+    torchEnabled: Boolean,
+    torchAvailable: Boolean,
+    onTorchToggle: () -> Unit,
+) {
+    val controls: @Composable () -> Unit = {
+        TopControlButton(
+            icon = if (torchEnabled) Icons.Filled.FlashOn else Icons.Filled.FlashOff,
+            label = if (torchEnabled) "Turn flash off" else "Turn flash on",
+            active = torchEnabled,
+            enabled = torchAvailable,
+            onClick = onTorchToggle,
+        )
+        TopControlButton(
+            icon = Icons.Filled.AutoAwesome,
+            label = if (autoCaptureEnabled) "Turn auto-capture off" else "Turn auto-capture on",
+            active = autoCaptureEnabled,
+            onClick = onAutoCaptureToggle,
+        )
+        TopControlButton(
+            icon = Icons.Filled.Grid3x3,
+            label = if (gridEnabled) "Hide grid" else "Show grid",
+            active = gridEnabled,
+            onClick = onGridToggle,
+        )
+    }
+
+    if (horizontal) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            controls()
+        }
+    } else {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            controls()
+        }
     }
 }
 
@@ -838,18 +841,19 @@ private fun TopControlButton(
     label: String,
     active: Boolean,
     onClick: () -> Unit,
-    enabled: Boolean = true,
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
 ) {
+    val colorScheme = MaterialTheme.colorScheme
     val containerColor = when {
-        active -> OverlayBlue.copy(alpha = 0.92f)
-        enabled -> Color.Black.copy(alpha = 0.36f)
-        else -> Color.Black.copy(alpha = 0.22f)
+        active -> colorScheme.primary
+        enabled -> colorScheme.surfaceContainerHighest
+        else -> colorScheme.surfaceContainer
     }
     val contentColor = when {
-        active -> Color.Black
-        enabled -> Color.White
-        else -> Color.White.copy(alpha = 0.38f)
+        active -> colorScheme.onPrimary
+        enabled -> colorScheme.onSurface
+        else -> colorScheme.onSurface.copy(alpha = 0.38f)
     }
     Surface(
         onClick = onClick,
@@ -858,7 +862,10 @@ private fun TopControlButton(
             .size(48.dp),
         color = containerColor,
         shape = CircleShape,
-        border = BorderStroke(1.dp, Color.White.copy(alpha = if (active) 0f else 0.1f)),
+        border = BorderStroke(
+            1.dp,
+            if (active) Color.Transparent else colorScheme.outline.copy(alpha = 0.52f),
+        ),
         tonalElevation = 0.dp,
         shadowElevation = 0.dp,
     ) {
@@ -874,769 +881,18 @@ private fun TopControlButton(
 }
 
 @Composable
-private fun AutoCaptureChip(
-    enabled: Boolean,
-    onClick: () -> Unit,
-) {
-    Surface(
-        color = if (enabled) OverlayBlue.copy(alpha = 0.88f) else Color.White.copy(alpha = 0.15f),
-        shape = MaterialTheme.shapes.large,
-        border = BorderStroke(
-            width = 1.dp,
-            color = if (enabled) OverlayBlue else Color.White.copy(alpha = 0.12f),
-        ),
-    ) {
-        TextButton(onClick = onClick) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-                androidx.compose.material3.Icon(
-                    imageVector = Icons.Filled.AutoAwesome,
-                    contentDescription = null,
-                    tint = if (enabled) Color.Black else Color.White,
-                )
-                Text(
-                    text = "Auto",
-                    color = if (enabled) Color.Black else Color.White,
-                    style = MaterialTheme.typography.labelLarge,
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun GridChip(
-    enabled: Boolean,
-    onClick: () -> Unit,
-) {
-    Surface(
-        color = if (enabled) OverlayBlue.copy(alpha = 0.88f) else Color.White.copy(alpha = 0.15f),
-        shape = MaterialTheme.shapes.large,
-        border = BorderStroke(
-            width = 1.dp,
-            color = if (enabled) OverlayBlue else Color.White.copy(alpha = 0.12f),
-        ),
-    ) {
-        TextButton(onClick = onClick) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-                androidx.compose.material3.Icon(
-                    imageVector = Icons.Filled.Grid3x3,
-                    contentDescription = null,
-                    tint = if (enabled) Color.Black else Color.White,
-                )
-                Text(
-                    text = "Grid",
-                    color = if (enabled) Color.Black else Color.White,
-                    style = MaterialTheme.typography.labelLarge,
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun FlashChip(
-    enabled: Boolean,
-    available: Boolean,
-    onClick: () -> Unit,
-) {
-    Surface(
-        onClick = onClick,
-        enabled = available,
-        modifier = Modifier,
-        color = if (enabled) OverlayBlue.copy(alpha = 0.88f) else Color.White.copy(alpha = 0.15f),
-        shape = MaterialTheme.shapes.large,
-        border = BorderStroke(
-            width = 1.dp,
-            color = if (enabled) OverlayBlue else Color.White.copy(alpha = 0.12f),
-        ),
-    ) {
-        Box(
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
-            contentAlignment = Alignment.Center,
-        ) {
-            androidx.compose.material3.Icon(
-                imageVector = if (enabled) Icons.Filled.FlashOn else Icons.Filled.FlashOff,
-                contentDescription = if (enabled) "Flashlight on" else "Flashlight off",
-                tint = if (enabled) Color.Black else if (available) Color.White else Color.White.copy(alpha = 0.45f),
-            )
-        }
-    }
-}
-
-@Composable
-private fun CameraBottomDock(
-    uiState: ScanSessionUiState,
-    onCapture: () -> Unit,
-    onRetakePageSelection: (String?) -> Unit,
-    pagesVisible: Boolean,
-    onPagesVisibilityToggle: () -> Unit,
-    onOpenDocument: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Box(modifier = modifier) {
-        val trayVisible = uiState.pages.isNotEmpty() && pagesVisible
-        val detectionBottomPadding = if (trayVisible) 246.dp else 132.dp
-
-        AnimatedVisibility(
-            visible = trayVisible,
-            modifier = Modifier
-                .align(Alignment.BottomStart)
-                .fillMaxWidth()
-                .padding(bottom = 132.dp),
-            enter = fadeIn() + expandVertically(expandFrom = Alignment.Bottom),
-            exit = fadeOut() + shrinkVertically(shrinkTowards = Alignment.Bottom),
-        ) {
-            LazyRow(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(10.dp),
-                contentPadding = PaddingValues(horizontal = 16.dp),
-            ) {
-                items(
-                    items = uiState.pages,
-                    key = { page -> page.id },
-                ) { page ->
-                    val selectedForReplacement = uiState.replacementPageId == page.id
-                    Surface(
-                        onClick = {
-                            onRetakePageSelection(
-                                if (selectedForReplacement) null else page.id,
-                            )
-                        },
-                        modifier = Modifier
-                            .size(width = 76.dp, height = 102.dp),
-                        color = Color.Black.copy(alpha = 0.46f),
-                        shape = MaterialTheme.shapes.large,
-                        border = BorderStroke(
-                            width = if (selectedForReplacement) 2.dp else 1.dp,
-                            color = if (selectedForReplacement) {
-                                OverlayBlue
-                            } else {
-                                Color.White.copy(alpha = 0.12f)
-                            },
-                        ),
-                    ) {
-                        Column(
-                            modifier = Modifier.padding(8.dp),
-                            verticalArrangement = Arrangement.spacedBy(6.dp),
-                        ) {
-                            PagePreview(
-                                page = page,
-                                displaySize = PreviewDisplaySize.COMPACT,
-                                modifier = Modifier.fillMaxWidth(),
-                                minHeight = 56.dp,
-                            )
-                            Text(
-                                text = "P${page.pageIndex + 1}",
-                                style = MaterialTheme.typography.labelLarge,
-                                color = Color.White,
-                            )
-                        }
-                    }
-                }
-            }
-        }
-        Surface(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .fillMaxWidth(),
-            color = Color.Transparent,
-            shape = androidx.compose.ui.graphics.RectangleShape,
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 12.dp, vertical = 12.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
-                DockActionButton(
-                    icon = if (pagesVisible) Icons.Filled.VisibilityOff else Icons.Filled.Visibility,
-                    label = "Pages",
-                    onClick = onPagesVisibilityToggle,
-                    modifier = Modifier.weight(1f),
-                    enabled = uiState.pages.isNotEmpty(),
-                    active = pagesVisible && uiState.pages.isNotEmpty(),
-                )
-                CaptureButton(
-                    busy = uiState.captureInProgress,
-                    replacement = uiState.isReplacementMode,
-                    onClick = onCapture,
-                )
-                val latestPage = uiState.latestCapturedPage
-                if (latestPage != null) {
-                    Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
-                        Surface(
-                            onClick = onOpenDocument,
-                            enabled = !uiState.captureInProgress,
-                            modifier = Modifier
-                                .width(48.dp)
-                                .height(64.dp),
-                            shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp),
-                            color = Color.Black.copy(alpha = 0.48f),
-                            border = BorderStroke(2.dp, Color.White),
-                            shadowElevation = 4.dp
-                        ) {
-                            PagePreview(
-                                page = latestPage,
-                                displaySize = PreviewDisplaySize.DETAIL,
-                                modifier = Modifier.fillMaxSize(),
-                                minHeight = 120.dp,
-                                aspectRatio = null,
-                            )
-                        }
-                    }
-                } else {
-                    DockActionButton(
-                        icon = Icons.Filled.Description,
-                        label = "Preview",
-                        onClick = onOpenDocument,
-                        modifier = Modifier.weight(1f),
-                        enabled = uiState.document != null && !uiState.captureInProgress,
-                        emphasized = true,
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun CameraSideDock(
-    uiState: ScanSessionUiState,
-    onCapture: () -> Unit,
-    onRetakePageSelection: (String?) -> Unit,
-    pagesVisible: Boolean,
-    onPagesVisibilityToggle: () -> Unit,
-    onOpenDocument: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Surface(
-        modifier = modifier,
-        color = Color.Transparent,
-        shape = androidx.compose.ui.graphics.RectangleShape,
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(12.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            CaptureRailHeader(
-                pageCount = uiState.pages.size,
-                autoCaptureEnabled = uiState.liveDetection.autoCaptureEnabled,
-            )
-
-            Surface(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f),
-                color = Color.White.copy(alpha = 0.05f),
-                shape = RoundedCornerShape(22.dp),
-                border = BorderStroke(1.dp, Color.White.copy(alpha = 0.08f)),
-            ) {
-                if (pagesVisible && uiState.pages.isNotEmpty()) {
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(8.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
-                    items(
-                        items = uiState.pages,
-                        key = { page -> page.id },
-                    ) { page ->
-                        val selectedForReplacement = uiState.replacementPageId == page.id
-                        PageRailCard(
-                            page = page,
-                            selectedForReplacement = selectedForReplacement,
-                            latest = uiState.latestCapturedPage?.id == page.id,
-                            onClick = {
-                                onRetakePageSelection(
-                                    if (selectedForReplacement) null else page.id,
-                                )
-                            },
-                        )
-                    }
-                }
-                } else {
-                    EmptyPageRail(
-                        hasPages = uiState.pages.isNotEmpty(),
-                        pagesVisible = pagesVisible,
-                        onPagesVisibilityToggle = onPagesVisibilityToggle,
-                        modifier = Modifier.fillMaxSize(),
-                    )
-                }
-            }
-
-            CaptureRailActions(
-                uiState = uiState,
-                pagesVisible = pagesVisible,
-                onPagesVisibilityToggle = onPagesVisibilityToggle,
-                onCapture = onCapture,
-                onOpenDocument = onOpenDocument,
-            )
-        }
-    }
-}
-
-@Composable
-private fun CaptureRailHeader(
-    pageCount: Int,
-    autoCaptureEnabled: Boolean,
-) {
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
-        ) {
-            Column {
-                Text(
-                    text = "Captured pages",
-                    style = MaterialTheme.typography.titleSmall,
-                    color = Color.White,
-                    maxLines = 1,
-                )
-                Text(
-                    text = if (pageCount == 1) "1 page in this document" else "$pageCount pages in this document",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = Color.White.copy(alpha = 0.62f),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
-            }
-            Surface(
-                color = if (autoCaptureEnabled) OverlayBlue.copy(alpha = 0.9f) else Color.White.copy(alpha = 0.1f),
-                shape = CircleShape,
-            ) {
-                Icon(
-                    imageVector = if (autoCaptureEnabled) Icons.Filled.AutoAwesome else Icons.Filled.CameraAlt,
-                    contentDescription = null,
-                    tint = if (autoCaptureEnabled) Color.Black else Color.White,
-                    modifier = Modifier
-                        .padding(9.dp)
-                        .size(18.dp),
-                )
-            }
-        }
-        HorizontalDivider(color = Color.White.copy(alpha = 0.08f))
-    }
-}
-
-@Composable
-private fun PageRailCard(
-    page: ScanPage,
-    selectedForReplacement: Boolean,
-    latest: Boolean,
-    onClick: () -> Unit,
-) {
-    val borderColor = when {
-        selectedForReplacement -> OverlayBlue
-        latest -> Color.White.copy(alpha = 0.42f)
-        else -> Color.White.copy(alpha = 0.1f)
-    }
-    Surface(
-        onClick = onClick,
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(82.dp),
-        color = if (selectedForReplacement) {
-            OverlayBlue.copy(alpha = 0.16f)
-        } else {
-            Color.Black.copy(alpha = 0.42f)
-        },
-        shape = RoundedCornerShape(18.dp),
-        border = BorderStroke(
-            width = if (selectedForReplacement) 2.dp else 1.dp,
-            color = borderColor,
-        ),
-    ) {
-        Row(
-            modifier = Modifier.padding(8.dp),
-            horizontalArrangement = Arrangement.spacedBy(10.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Surface(
-                modifier = Modifier
-                    .width(48.dp)
-                    .height(62.dp),
-                shape = RoundedCornerShape(12.dp),
-                color = Color.Black.copy(alpha = 0.42f),
-                border = BorderStroke(1.dp, Color.White.copy(alpha = 0.1f)),
-            ) {
-                PagePreview(
-                    page = page,
-                    displaySize = PreviewDisplaySize.COMPACT,
-                    modifier = Modifier.fillMaxSize(),
-                    minHeight = 56.dp,
-                    aspectRatio = null,
-                )
-            }
-            Column(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(2.dp),
-            ) {
-                Text(
-                    text = "Page ${page.pageIndex + 1}",
-                    style = MaterialTheme.typography.labelLarge,
-                    color = Color.White,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
-                Text(
-                    text = when {
-                        selectedForReplacement -> "Retake target"
-                        latest -> "Latest capture"
-                        else -> "Tap to retake"
-                    },
-                    style = MaterialTheme.typography.labelSmall,
-                    color = if (selectedForReplacement) OverlayBlue else Color.White.copy(alpha = 0.58f),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
-            }
-            if (selectedForReplacement) {
-                Icon(
-                    imageVector = Icons.Filled.Refresh,
-                    contentDescription = null,
-                    tint = OverlayBlue,
-                    modifier = Modifier.size(18.dp),
-                )
-            } else if (latest) {
-                Icon(
-                    imageVector = Icons.Filled.CheckCircle,
-                    contentDescription = null,
-                    tint = Color.White.copy(alpha = 0.72f),
-                    modifier = Modifier.size(18.dp),
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun EmptyPageRail(
-    hasPages: Boolean,
-    pagesVisible: Boolean,
-    onPagesVisibilityToggle: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Box(
-        modifier = modifier.padding(18.dp),
-        contentAlignment = Alignment.Center,
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(10.dp),
-        ) {
-            Icon(
-                imageVector = if (hasPages && !pagesVisible) Icons.Filled.VisibilityOff else Icons.Filled.Description,
-                contentDescription = null,
-                tint = Color.White.copy(alpha = 0.48f),
-                modifier = Modifier.size(28.dp),
-            )
-            Text(
-                text = if (hasPages && !pagesVisible) "Pages hidden" else "No pages yet",
-                style = MaterialTheme.typography.titleSmall,
-                color = Color.White,
-            )
-            Text(
-                text = if (hasPages && !pagesVisible) {
-                    "Show pages to choose one for retake."
-                } else {
-                    "Capture your first page to build the stack."
-                },
-                style = MaterialTheme.typography.bodySmall,
-                color = Color.White.copy(alpha = 0.58f),
-                maxLines = 2,
-            )
-            if (hasPages && !pagesVisible) {
-                DockActionButton(
-                    icon = Icons.Filled.Visibility,
-                    label = "Show pages",
-                    onClick = onPagesVisibilityToggle,
-                    active = true,
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun CaptureRailActions(
-    uiState: ScanSessionUiState,
-    pagesVisible: Boolean,
-    onPagesVisibilityToggle: () -> Unit,
-    onCapture: () -> Unit,
-    onOpenDocument: () -> Unit,
-) {
-    Surface(
-        modifier = Modifier.fillMaxWidth(),
-        color = Color.White.copy(alpha = 0.06f),
-        shape = RoundedCornerShape(24.dp),
-        border = BorderStroke(1.dp, Color.White.copy(alpha = 0.09f)),
-    ) {
-        Column(
-            modifier = Modifier.padding(12.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            CaptureTargetCard(
-                uiState = uiState,
-                onOpenDocument = onOpenDocument,
-            )
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                SideDockIconButton(
-                    icon = if (pagesVisible) Icons.Filled.VisibilityOff else Icons.Filled.Visibility,
-                    label = if (pagesVisible) "Hide" else "Pages",
-                    onClick = onPagesVisibilityToggle,
-                    enabled = uiState.pages.isNotEmpty(),
-                    active = pagesVisible && uiState.pages.isNotEmpty(),
-                )
-                CaptureButton(
-                    busy = uiState.captureInProgress,
-                    replacement = uiState.isReplacementMode,
-                    onClick = onCapture,
-                )
-                SideDockIconButton(
-                    icon = Icons.Filled.Description,
-                    label = "Review",
-                    onClick = onOpenDocument,
-                    enabled = uiState.document != null && !uiState.captureInProgress,
-                    emphasized = uiState.pages.isNotEmpty(),
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun CaptureTargetCard(
-    uiState: ScanSessionUiState,
-    onOpenDocument: () -> Unit,
-) {
-    val targetPage = uiState.replacementPage ?: uiState.latestCapturedPage
-    Surface(
-        onClick = onOpenDocument,
-        enabled = targetPage != null && !uiState.captureInProgress,
-        modifier = Modifier
-            .fillMaxWidth(),
-        color = Color.Black.copy(alpha = 0.42f),
-        shape = RoundedCornerShape(18.dp),
-        border = BorderStroke(
-            width = 1.dp,
-            color = if (uiState.isReplacementMode) OverlayBlue else Color.White.copy(alpha = 0.1f),
-        ),
-    ) {
-        Row(
-            modifier = Modifier.padding(10.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(10.dp),
-        ) {
-            if (targetPage != null) {
-                Surface(
-                    modifier = Modifier
-                        .width(52.dp)
-                        .height(70.dp),
-                    shape = RoundedCornerShape(12.dp),
-                    color = Color.Black.copy(alpha = 0.5f),
-                    border = BorderStroke(1.dp, Color.White.copy(alpha = 0.12f)),
-                ) {
-                    PagePreview(
-                        page = targetPage,
-                        displaySize = PreviewDisplaySize.COMPACT,
-                        modifier = Modifier.fillMaxSize(),
-                        minHeight = 70.dp,
-                        aspectRatio = null,
-                    )
-                }
-            } else {
-                Surface(
-                    modifier = Modifier
-                        .width(52.dp)
-                        .height(70.dp),
-                    shape = RoundedCornerShape(12.dp),
-                    color = Color.White.copy(alpha = 0.08f),
-                    border = BorderStroke(1.dp, Color.White.copy(alpha = 0.1f)),
-                ) {
-                    Box(contentAlignment = Alignment.Center) {
-                        Icon(
-                            imageVector = Icons.Filled.CameraAlt,
-                            contentDescription = null,
-                            tint = Color.White.copy(alpha = 0.62f),
-                        )
-                    }
-                }
-            }
-            Column(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(3.dp),
-            ) {
-                Text(
-                    text = if (uiState.isReplacementMode) "Retake target" else "Next capture",
-                    style = MaterialTheme.typography.labelMedium,
-                    color = if (uiState.isReplacementMode) OverlayBlue else Color.White.copy(alpha = 0.62f),
-                    maxLines = 1,
-                )
-                Text(
-                    text = targetPage?.let { "Page ${it.pageIndex + 1}" } ?: "Ready for page ${uiState.pages.size + 1}",
-                    style = MaterialTheme.typography.titleSmall,
-                    color = Color.White,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
-                Text(
-                    text = if (uiState.isReplacementMode) "Shutter will replace this page" else "Tap Review after capture",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = Color.White.copy(alpha = 0.52f),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun SideDockIconButton(
-    icon: ImageVector,
-    label: String,
-    onClick: () -> Unit,
-    enabled: Boolean = true,
-    active: Boolean = false,
-    emphasized: Boolean = false,
-) {
-    val containerColor = when {
-        emphasized -> if (enabled) OverlayBlue.copy(alpha = 0.92f) else OverlayBlue.copy(alpha = 0.26f)
-        active -> OverlayBlue.copy(alpha = 0.18f)
-        else -> Color.Black.copy(alpha = 0.48f)
-    }
-    val contentColor = when {
-        emphasized -> if (enabled) Color.Black else Color.Black.copy(alpha = 0.45f)
-        active -> OverlayBlue
-        enabled -> Color.White
-        else -> Color.White.copy(alpha = 0.45f)
-    }
-
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(6.dp),
-    ) {
-        Surface(
-            onClick = onClick,
-            enabled = enabled,
-            modifier = Modifier
-                .size(52.dp),
-            color = containerColor,
-            shape = MaterialTheme.shapes.large,
-            border = BorderStroke(1.dp, Color.White.copy(alpha = 0.12f)),
-        ) {
-            Box(contentAlignment = Alignment.Center) {
-                Icon(
-                    imageVector = icon,
-                    contentDescription = label,
-                    tint = contentColor,
-                )
-            }
-        }
-        Text(
-            text = label,
-            style = MaterialTheme.typography.labelMedium,
-            color = Color.White.copy(alpha = if (enabled) 0.85f else 0.45f),
-        )
-    }
-}
-
-@Composable
-private fun DockActionButton(
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
-    label: String,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    enabled: Boolean = true,
-    active: Boolean = false,
-    emphasized: Boolean = false,
-) {
-    val containerColor = when {
-        emphasized -> if (enabled) OverlayBlue.copy(alpha = 0.92f) else OverlayBlue.copy(alpha = 0.26f)
-        active -> OverlayBlue.copy(alpha = 0.18f)
-        else -> Color.Black.copy(alpha = 0.48f)
-    }
-    val borderColor = when {
-        emphasized -> OverlayBlue.copy(alpha = 0.95f)
-        active -> OverlayBlue.copy(alpha = 0.95f)
-        enabled -> Color.White.copy(alpha = 0.12f)
-        else -> Color.White.copy(alpha = 0.06f)
-    }
-    val contentColor = when {
-        emphasized -> if (enabled) Color.Black else Color.Black.copy(alpha = 0.45f)
-        active -> OverlayBlue
-        enabled -> Color.White
-        else -> Color.White.copy(alpha = 0.45f)
-    }
-
-    Surface(
-        onClick = onClick,
-        enabled = enabled,
-        modifier = modifier
-            .heightIn(min = 58.dp),
-        color = containerColor,
-        shape = MaterialTheme.shapes.large,
-        border = BorderStroke(1.dp, borderColor),
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 14.dp, vertical = 11.dp),
-            contentAlignment = Alignment.Center,
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-                androidx.compose.material3.Icon(
-                    imageVector = icon,
-                    contentDescription = label,
-                    tint = contentColor,
-                )
-                Text(
-                    text = label,
-                    style = MaterialTheme.typography.labelLarge,
-                    color = contentColor,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
-            }
-        }
-    }
-}
-
-@Composable
 private fun CaptureButton(
     busy: Boolean,
-    replacement: Boolean = false,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    replacement: Boolean = false,
 ) {
+    val colorScheme = MaterialTheme.colorScheme
     Surface(
         modifier = modifier.size(86.dp),
         shape = CircleShape,
         color = Color.Transparent,
-        border = BorderStroke(3.dp, Color.White),
+        border = BorderStroke(3.dp, colorScheme.primary),
     ) {
         Box(
                 modifier = Modifier
@@ -1651,7 +907,8 @@ private fun CaptureButton(
                     .fillMaxSize(),
                 shape = CircleShape,
                 color = when {
-                    busy -> OverlayBlue
+                    busy -> colorScheme.primary
+                    replacement -> colorScheme.tertiary
                     else -> Color.White
                 },
             ) {
@@ -1659,41 +916,14 @@ private fun CaptureButton(
                     if (busy) {
                         CircularProgressIndicator(
                             modifier = Modifier.size(28.dp),
-                            color = Color.Black,
-                            trackColor = Color.Black.copy(alpha = 0.2f),
+                            color = if (replacement) colorScheme.onTertiary else colorScheme.onPrimary,
+                            trackColor = Color.Black.copy(alpha = 0.16f),
                             strokeWidth = 3.dp,
                         )
                     }
                 }
             }
         }
-    }
-}
-
-@Composable
-private fun DetectionMeta(
-    liveDetection: LiveDetectionUiState,
-    showStats: Boolean,
-    modifier: Modifier = Modifier,
-) {
-    if (!showStats) {
-        return
-    }
-    if (liveDetection.confidence == null || liveDetection.inferenceTimeMillis == null) {
-        return
-    }
-
-    Surface(
-        modifier = modifier,
-        color = Color.Black.copy(alpha = 0.42f),
-        shape = MaterialTheme.shapes.large,
-    ) {
-        Text(
-            text = "${(liveDetection.confidence * 100f).roundToInt()}% • ${liveDetection.inferenceTimeMillis} ms",
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
-            style = MaterialTheme.typography.labelLarge,
-            color = Color.White,
-        )
     }
 }
 
@@ -1783,7 +1013,8 @@ private fun CameraPreview(
                         useCase.surfaceProvider = currentPreviewView.surfaceProvider
                     }
                 val imageCapture = ImageCapture.Builder()
-                    .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
+                    .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
+                    .setJpegQuality(CaptureJpegQuality)
                     .build()
                     .apply {
                         targetRotation = currentPreviewView.display.rotation
@@ -1886,15 +1117,16 @@ private fun TapFocusIndicator(
     if (focusOffset == null) {
         return
     }
+    val accentColor = MaterialTheme.colorScheme.primary
 
     Canvas(modifier = modifier) {
         drawCircle(
-            color = OverlayBlue.copy(alpha = 0.16f),
+            color = accentColor.copy(alpha = 0.16f),
             radius = 34.dp.toPx(),
             center = focusOffset,
         )
         drawCircle(
-            color = OverlayBlue,
+            color = accentColor,
             radius = 26.dp.toPx(),
             center = focusOffset,
             style = Stroke(width = 2.dp.toPx()),
@@ -1912,6 +1144,7 @@ private fun DocumentDetectionOverlay(
     liveDetection: LiveDetectionUiState,
     modifier: Modifier = Modifier,
 ) {
+    val accentColor = MaterialTheme.colorScheme.primary
     Box(modifier = modifier) {
         Canvas(modifier = Modifier.fillMaxSize()) {
             if (!liveDetection.hasOverlay) {
@@ -1959,13 +1192,13 @@ private fun DocumentDetectionOverlay(
             )
             drawPath(
                 path = polygonPath,
-                color = OverlayBlue,
+                color = accentColor,
                 style = Stroke(
                     width = 2.dp.toPx(),
                 ),
             )
             drawLine(
-                color = OverlayBlue.copy(alpha = 0.7f),
+                color = accentColor.copy(alpha = 0.7f),
                 start = topMidpoint,
                 end = bottomMidpoint,
                 strokeWidth = 1.dp.toPx(),
@@ -2000,7 +1233,7 @@ private fun DocumentDetectionOverlay(
                     Text(
                         text = liveDetection.countdownValue.toString(),
                         style = MaterialTheme.typography.headlineSmall,
-                        color = OverlayBlue,
+                        color = accentColor,
                     )
                 }
             }
@@ -2013,23 +1246,36 @@ private fun PreviewStatusHud(
     liveDetection: LiveDetectionUiState,
     modifier: Modifier = Modifier,
 ) {
+    val accentColor = MaterialTheme.colorScheme.primary
     Surface(
         modifier = modifier,
-        color = Color.Black.copy(alpha = 0.42f),
-        shape = CircleShape,
+        color = Color.Black.copy(alpha = 0.68f),
+        shape = RoundedCornerShape(18.dp),
+        border = BorderStroke(
+            width = 1.dp,
+            color = if (liveDetection.sceneIssue != null) {
+                OverlayWarning.copy(alpha = 0.8f)
+            } else {
+                Color.White.copy(alpha = 0.12f)
+            },
+        ),
         tonalElevation = 0.dp,
         shadowElevation = 0.dp,
     ) {
         Row(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp),
+            modifier = Modifier
+                .widthIn(max = 420.dp)
+                .padding(horizontal = 16.dp, vertical = 11.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(10.dp),
         ) {
             Canvas(modifier = Modifier.size(10.dp)) {
                 drawCircle(
-                    color = when (liveDetection.phase) {
+                    color = if (liveDetection.sceneIssue != null) {
+                        OverlayWarning
+                    } else when (liveDetection.phase) {
                         AutoCapturePhase.COUNTDOWN,
-                        AutoCapturePhase.CAPTURING -> OverlayBlue
+                        AutoCapturePhase.CAPTURING -> accentColor
                         AutoCapturePhase.HOLD_STEADY -> OverlayGuide
                         AutoCapturePhase.OFF -> Color.White.copy(alpha = 0.7f)
                         else -> Color.White.copy(alpha = 0.45f)
@@ -2037,9 +1283,11 @@ private fun PreviewStatusHud(
                 )
             }
             Text(
-                text = liveDetection.compactStatusLabel(),
+                text = liveDetection.statusMessage,
                 style = MaterialTheme.typography.labelLarge,
                 color = Color.White,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
             )
         }
     }
@@ -2074,6 +1322,32 @@ private fun capturePage(
 }
 
 internal fun cameraPreviewAspectRatio(isLandscape: Boolean): Float = if (isLandscape) 4f / 3f else 3f / 4f
+
+internal data class CameraPreviewSize(
+    val width: Float,
+    val height: Float,
+)
+
+internal fun constrainedCameraPreviewSize(
+    maxWidth: Float,
+    maxHeight: Float,
+    aspectRatio: Float,
+): CameraPreviewSize {
+    if (maxWidth <= 0f || maxHeight <= 0f || aspectRatio <= 0f) {
+        return CameraPreviewSize(width = 0f, height = 0f)
+    }
+    return if ((maxWidth / maxHeight) > aspectRatio) {
+        CameraPreviewSize(
+            width = maxHeight * aspectRatio,
+            height = maxHeight,
+        )
+    } else {
+        CameraPreviewSize(
+            width = maxWidth,
+            height = maxWidth / aspectRatio,
+        )
+    }
+}
 
 private fun ImageProxy.toDetectionFrame(): DetectionFrame? {
     val rgbaPlane = planes.firstOrNull() ?: return null
@@ -2115,23 +1389,14 @@ private fun ImageProxy.toDetectionFrame(): DetectionFrame? {
     )
 }
 
-private val OverlayBlue = androidx.compose.ui.graphics.Color(0xFF00BFA5)
 private val OverlayFill = Color(0x2EFFFFFF)
 private val OverlayGrid = Color(0x22FFFFFF)
 private val OverlayGuide = Color(0xC2FFFFFF)
+private val OverlayWarning = Color(0xFFFFC857)
 private const val RgbaPixelStride = 4
 private const val AnalysisFramesPerSecond = 8L
 private const val AnalysisIntervalNanos = 1_000_000_000L / AnalysisFramesPerSecond
 private const val TapFocusAutoCancelSeconds = 3L
 private const val TapFocusIndicatorDurationMillis = 850L
 private val AnalysisResolution = Size(640, 480)
-
-
-private fun LiveDetectionUiState.compactStatusLabel(): String = when (phase) {
-    AutoCapturePhase.OFF -> "Manual"
-    AutoCapturePhase.SEARCHING -> "Find document"
-    AutoCapturePhase.HOLD_STEADY -> "Hold steady"
-    AutoCapturePhase.COUNTDOWN -> countdownValue?.let { "Hold $it" } ?: "Hold"
-    AutoCapturePhase.CAPTURING -> "Capturing"
-    AutoCapturePhase.COOLDOWN -> "Next page"
-}
+private const val CaptureJpegQuality = 95

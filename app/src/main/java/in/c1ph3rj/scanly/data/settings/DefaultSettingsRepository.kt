@@ -2,7 +2,6 @@ package `in`.c1ph3rj.scanly.data.settings
 
 import android.content.Context
 import android.os.Build
-import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
@@ -35,11 +34,6 @@ class DefaultSettingsRepository @Inject constructor(
             ThemeMode.fromStorage(preferences[themeModeKey] ?: ThemeMode.SYSTEM.storageValue)
         }
 
-    override fun observeShowDetectionStats(): Flow<Boolean> =
-        context.settingsDataStore.data.map { preferences ->
-            preferences[showDetectionStatsKey] ?: true
-        }
-
     override suspend fun setThemeMode(themeMode: ThemeMode): ScanlyResult<Unit> =
         withContext(dispatchers.io) {
             runCatching {
@@ -52,25 +46,6 @@ class DefaultSettingsRepository @Inject constructor(
                     ScanlyResult.Failure(
                         ScanlyError(
                             message = throwable.message ?: "Could not update theme mode.",
-                            cause = throwable,
-                        ),
-                    )
-                },
-            )
-        }
-
-    override suspend fun setShowDetectionStats(enabled: Boolean): ScanlyResult<Unit> =
-        withContext(dispatchers.io) {
-            runCatching {
-                context.settingsDataStore.edit { preferences ->
-                    preferences[showDetectionStatsKey] = enabled
-                }
-            }.fold(
-                onSuccess = { ScanlyResult.Success(Unit) },
-                onFailure = { throwable ->
-                    ScanlyResult.Failure(
-                        ScanlyError(
-                            message = throwable.message ?: "Could not update camera overlay settings.",
                             cause = throwable,
                         ),
                     )
@@ -152,7 +127,6 @@ class DefaultSettingsRepository @Inject constructor(
 
     private companion object {
         val themeModeKey = stringPreferencesKey("theme_mode")
-        val showDetectionStatsKey = booleanPreferencesKey("show_detection_stats")
         const val faqsAssetPath = "settings/faqs.json"
         const val licensesAssetPath = "settings/licenses.json"
         const val developerWebsite = ""

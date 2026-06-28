@@ -20,8 +20,7 @@ data class LiveDetectionUiState(
     val phase: AutoCapturePhase = AutoCapturePhase.SEARCHING,
     val statusMessage: String = "Point your camera at a document.",
     val countdownValue: Int? = null,
-    val confidence: Float? = null,
-    val inferenceTimeMillis: Long? = null,
+    val sceneIssue: CaptureSceneIssue? = null,
 ) {
     val hasOverlay: Boolean = quad != null && overlayFrame?.isValid == true
 }
@@ -54,9 +53,20 @@ class CaptureStabilityTracker(
         result: CornerDetectionResult,
         autoCaptureEnabled: Boolean,
         nowMillis: Long,
+        sceneIssue: CaptureSceneIssue? = null,
     ): StabilityEvaluation {
         val candidateQuad = result.quad?.takeIf { quad ->
             result.confidence >= stableConfidenceThreshold && quad.isValid() && isShapePlausible(quad)
+        }
+
+        if (sceneIssue != null) {
+            resetStableWindow()
+            return StabilityEvaluation(
+                phase = if (autoCaptureEnabled) AutoCapturePhase.SEARCHING else AutoCapturePhase.OFF,
+                statusMessage = sceneIssue.guidance,
+                countdownValue = null,
+                shouldAutoCapture = false,
+            )
         }
 
         if (!autoCaptureEnabled) {

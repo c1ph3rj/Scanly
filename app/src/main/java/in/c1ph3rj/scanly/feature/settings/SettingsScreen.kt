@@ -115,7 +115,6 @@ fun SettingsRoute(
         appUpdateUiState = appUpdateUiState,
         snackbarHostState = snackbarHostState,
         onThemeModeSelected = viewModel::setThemeMode,
-        onShowDetectionStatsChanged = viewModel::setShowDetectionStats,
         onOpenWebsite = { url -> uriHandler.openUri(url) },
         onOpenLegalDocument = onOpenLegalDocument,
         onCheckForUpdates = onCheckForUpdates,
@@ -129,7 +128,6 @@ fun SettingsScreen(
     appUpdateUiState: AppUpdateUiState,
     snackbarHostState: SnackbarHostState,
     onThemeModeSelected: (ThemeMode) -> Unit,
-    onShowDetectionStatsChanged: (Boolean) -> Unit,
     onOpenWebsite: (String) -> Unit,
     onOpenLegalDocument: (LegalDocumentType) -> Unit,
     onCheckForUpdates: () -> Unit,
@@ -189,19 +187,6 @@ fun SettingsScreen(
                         ThemeModeSelector(
                             selectedMode = uiState.themeMode,
                             onThemeModeSelected = onThemeModeSelected,
-                        )
-                    }
-                }
-
-                item(key = "camera") {
-                    SettingsGroup(
-                        title = "Camera",
-                    ) {
-                        SettingsToggleRow(
-                            title = "Show confidence %",
-                            subtitle = "Display detection confidence and scan time in the camera preview.",
-                            checked = uiState.showDetectionStats,
-                            onCheckedChange = onShowDetectionStatsChanged,
                         )
                     }
                 }

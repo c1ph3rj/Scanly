@@ -464,6 +464,15 @@ private fun ScanlyNavHostContent(
                         }
                     }
                 },
+                onReplacementCompleted = { pageId ->
+                    val editorRoute = PageEditorDestination.route(pageId)
+                    if (!navController.popBackStack(route = editorRoute, inclusive = false)) {
+                        navController.popBackStack()
+                        navController.navigate(editorRoute) {
+                            launchSingleTop = true
+                        }
+                    }
+                },
             )
         }
         composable(
