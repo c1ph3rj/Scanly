@@ -2,6 +2,7 @@ package `in`.c1ph3rj.scanly.data.settings
 
 import android.content.Context
 import android.os.Build
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
@@ -46,6 +47,30 @@ class DefaultSettingsRepository @Inject constructor(
                     ScanlyResult.Failure(
                         ScanlyError(
                             message = throwable.message ?: "Could not update theme mode.",
+                            cause = throwable,
+                        ),
+                    )
+                },
+            )
+        }
+
+    override fun observeOnboardingCompleted(): Flow<Boolean> =
+        context.settingsDataStore.data.map { preferences ->
+            preferences[onboardingCompletedKey] ?: false
+        }
+
+    override suspend fun completeOnboarding(): ScanlyResult<Unit> =
+        withContext(dispatchers.io) {
+            runCatching {
+                context.settingsDataStore.edit { preferences ->
+                    preferences[onboardingCompletedKey] = true
+                }
+            }.fold(
+                onSuccess = { ScanlyResult.Success(Unit) },
+                onFailure = { throwable ->
+                    ScanlyResult.Failure(
+                        ScanlyError(
+                            message = throwable.message ?: "Could not finish onboarding.",
                             cause = throwable,
                         ),
                     )
@@ -127,6 +152,7 @@ class DefaultSettingsRepository @Inject constructor(
 
     private companion object {
         val themeModeKey = stringPreferencesKey("theme_mode")
+        val onboardingCompletedKey = booleanPreferencesKey("onboarding_completed")
         const val faqsAssetPath = "settings/faqs.json"
         const val licensesAssetPath = "settings/licenses.json"
         const val developerWebsite = ""

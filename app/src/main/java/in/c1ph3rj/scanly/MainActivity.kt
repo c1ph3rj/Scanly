@@ -4,6 +4,11 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
@@ -22,6 +27,9 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import `in`.c1ph3rj.scanly.domain.model.ThemeMode
+import `in`.c1ph3rj.scanly.feature.onboarding.OnboardingScreen
+import `in`.c1ph3rj.scanly.feature.onboarding.OnboardingStatus
+import `in`.c1ph3rj.scanly.feature.onboarding.OnboardingViewModel
 import `in`.c1ph3rj.scanly.feature.update.AppUpdateCheckTrigger
 import `in`.c1ph3rj.scanly.feature.update.AppUpdateDialog
 import `in`.c1ph3rj.scanly.feature.update.AppUpdateEvent
@@ -44,8 +52,10 @@ class MainActivity : ComponentActivity() {
 private fun ScanlyApp() {
     val appSettingsViewModel: AppSettingsViewModel = hiltViewModel()
     val appUpdateViewModel: AppUpdateViewModel = hiltViewModel()
+    val onboardingViewModel: OnboardingViewModel = hiltViewModel()
     val themeMode by appSettingsViewModel.themeMode.collectAsStateWithLifecycle()
     val updateUiState by appUpdateViewModel.uiState.collectAsStateWithLifecycle()
+    val onboardingUiState by onboardingViewModel.uiState.collectAsStateWithLifecycle()
     val systemDark = isSystemInDarkTheme()
     val isDarkTheme = themeMode.resolveDarkTheme(systemDark)
     val navController = rememberNavController()
@@ -69,7 +79,7 @@ private fun ScanlyApp() {
         }
     }
 
-    DisposableEffect(lifecycleOwner, appUpdateViewModel) {
+    DisposableEffect(lifecycleOwner, appUpdateViewModel, onboardingUiState.status) {
         val observer = LifecycleEventObserver { _, event ->
             when (event) {
                 Lifecycle.Event.ON_START -> {
@@ -79,7 +89,9 @@ private fun ScanlyApp() {
                 else -> Unit
             }
         }
-        lifecycleOwner.lifecycle.addObserver(observer)
+        if (onboardingUiState.status == OnboardingStatus.COMPLETE) {
+            lifecycleOwner.lifecycle.addObserver(observer)
+        }
         onDispose {
             lifecycleOwner.lifecycle.removeObserver(observer)
         }
@@ -108,20 +120,45 @@ private fun ScanlyApp() {
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background),
         ) {
-            ScanlyNavHost(
-                navController = navController,
-                appUpdateUiState = updateUiState,
-                onCheckForUpdates = {
-                    appUpdateViewModel.checkForUpdates(AppUpdateCheckTrigger.Manual)
+            AnimatedContent(
+                targetState = onboardingUiState.status,
+                transitionSpec = {
+                    fadeIn(tween(durationMillis = 320)) togetherWith
+                        fadeOut(tween(durationMillis = 220))
                 },
-            )
+                label = "first_run_content",
+            ) { onboardingStatus ->
+                when (onboardingStatus) {
+                    OnboardingStatus.LOADING -> Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(MaterialTheme.colorScheme.background),
+                    )
 
-            updateUiState.dialogCheckResult?.let { checkResult ->
-                AppUpdateDialog(
-                    checkResult = checkResult,
-                    onDismiss = appUpdateViewModel::dismissUpdateDialog,
-                    onDownload = appUpdateViewModel::downloadRelease,
-                )
+                    OnboardingStatus.REQUIRED -> OnboardingScreen(
+                        uiState = onboardingUiState,
+                        onComplete = onboardingViewModel::completeOnboarding,
+                        onDismissError = onboardingViewModel::dismissError,
+                    )
+
+                    OnboardingStatus.COMPLETE -> ScanlyNavHost(
+                        navController = navController,
+                        appUpdateUiState = updateUiState,
+                        onCheckForUpdates = {
+                            appUpdateViewModel.checkForUpdates(AppUpdateCheckTrigger.Manual)
+                        },
+                    )
+                }
+            }
+
+            if (onboardingUiState.status == OnboardingStatus.COMPLETE) {
+                updateUiState.dialogCheckResult?.let { checkResult ->
+                    AppUpdateDialog(
+                        checkResult = checkResult,
+                        onDismiss = appUpdateViewModel::dismissUpdateDialog,
+                        onDownload = appUpdateViewModel::downloadRelease,
+                    )
+                }
             }
         }
     }

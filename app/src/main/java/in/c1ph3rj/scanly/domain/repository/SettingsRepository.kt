@@ -10,5 +10,9 @@ interface SettingsRepository {
 
     suspend fun setThemeMode(themeMode: ThemeMode): ScanlyResult<Unit>
 
+    fun observeOnboardingCompleted(): Flow<Boolean>
+
+    suspend fun completeOnboarding(): ScanlyResult<Unit>
+
     suspend fun loadSettingsContent(): ScanlyResult<SettingsContent>
 }
