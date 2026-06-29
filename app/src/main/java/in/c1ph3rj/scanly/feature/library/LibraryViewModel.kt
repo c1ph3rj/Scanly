@@ -27,27 +27,106 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+enum class LibraryTab {
+    All,
+    Folders,
+    Documents,
+}
+
+enum class LibrarySortOption(
+    val title: String,
+    val description: String,
+) {
+    RecentlyUpdated("Recently updated", "Latest changes first"),
+    OldestUpdated("Oldest updated", "Earliest changes first"),
+    NameAscending("Name A–Z", "Alphabetical order"),
+    NameDescending("Name Z–A", "Reverse alphabetical order"),
+    NewestCreated("Newest created", "Recently added first"),
+    OldestCreated("Oldest created", "Earliest added first"),
+}
+
 data class LibraryUiState(
     val groups: List<DocumentGroup> = emptyList(),
     val ungroupedDocuments: List<ScanDocument> = emptyList(),
     val allDocuments: List<ScanDocument> = emptyList(),
     val searchQuery: String = "",
+    val selectedTab: LibraryTab = LibraryTab.All,
+    val sortOption: LibrarySortOption = LibrarySortOption.RecentlyUpdated,
     val isLoading: Boolean = false,
 ) {
     private val normalizedQuery: String get() = searchQuery.trim()
 
-    val filteredGroups: List<DocumentGroup>
-        get() = if (normalizedQuery.isEmpty()) groups
-        else groups.filter { it.title.contains(normalizedQuery, ignoreCase = true) }
+    val visibleGroups: List<DocumentGroup>
+        get() {
+            if (selectedTab == LibraryTab.Documents) return emptyList()
+            return groups
+                .filter { normalizedQuery.isEmpty() || it.title.contains(normalizedQuery, ignoreCase = true) }
+                .sortedWith(groupComparator(sortOption))
+        }
 
-    // Search spans every document, including those nested inside folders, so results
-    // are never hidden just because a document lives in a group.
-    val filteredDocuments: List<ScanDocument>
-        get() = if (normalizedQuery.isEmpty()) ungroupedDocuments
-        else allDocuments.filter { it.title.contains(normalizedQuery, ignoreCase = true) }
+    val visibleDocuments: List<ScanDocument>
+        get() {
+            if (selectedTab == LibraryTab.Folders) return emptyList()
+            // All avoids duplicating foldered documents in its normal overview. Search and the
+            // Documents tab deliberately span every document, including documents in folders.
+            val source = if (selectedTab == LibraryTab.Documents || isSearchActive) {
+                allDocuments
+            } else {
+                ungroupedDocuments
+            }
+            return source
+                .filter { normalizedQuery.isEmpty() || it.title.contains(normalizedQuery, ignoreCase = true) }
+                .sortedWith(documentComparator(sortOption))
+        }
 
     val isSearchActive: Boolean get() = normalizedQuery.isNotEmpty()
+    val hasAnyItems: Boolean get() = groups.isNotEmpty() || allDocuments.isNotEmpty()
 }
+
+private data class LibraryControls(
+    val query: String,
+    val tab: LibraryTab,
+    val sortOption: LibrarySortOption,
+)
+
+private fun groupComparator(option: LibrarySortOption): Comparator<DocumentGroup> = when (option) {
+    LibrarySortOption.RecentlyUpdated ->
+        compareByDescending<DocumentGroup> { it.updatedAtMillis }.thenByGroupTitle().thenBy { it.id }
+    LibrarySortOption.OldestUpdated ->
+        compareBy<DocumentGroup> { it.updatedAtMillis }.thenByGroupTitle().thenBy { it.id }
+    LibrarySortOption.NameAscending ->
+        titleComparator<DocumentGroup> { it.title }.thenBy { it.id }
+    LibrarySortOption.NameDescending ->
+        titleComparator<DocumentGroup> { it.title }.reversed().thenBy { it.id }
+    LibrarySortOption.NewestCreated ->
+        compareByDescending<DocumentGroup> { it.createdAtMillis }.thenByGroupTitle().thenBy { it.id }
+    LibrarySortOption.OldestCreated ->
+        compareBy<DocumentGroup> { it.createdAtMillis }.thenByGroupTitle().thenBy { it.id }
+}
+
+private fun documentComparator(option: LibrarySortOption): Comparator<ScanDocument> = when (option) {
+    LibrarySortOption.RecentlyUpdated ->
+        compareByDescending<ScanDocument> { it.updatedAtMillis }.thenByDocumentTitle().thenBy { it.id }
+    LibrarySortOption.OldestUpdated ->
+        compareBy<ScanDocument> { it.updatedAtMillis }.thenByDocumentTitle().thenBy { it.id }
+    LibrarySortOption.NameAscending ->
+        titleComparator<ScanDocument> { it.title }.thenBy { it.id }
+    LibrarySortOption.NameDescending ->
+        titleComparator<ScanDocument> { it.title }.reversed().thenBy { it.id }
+    LibrarySortOption.NewestCreated ->
+        compareByDescending<ScanDocument> { it.createdAtMillis }.thenByDocumentTitle().thenBy { it.id }
+    LibrarySortOption.OldestCreated ->
+        compareBy<ScanDocument> { it.createdAtMillis }.thenByDocumentTitle().thenBy { it.id }
+}
+
+private fun <T> titleComparator(selector: (T) -> String): Comparator<T> =
+    Comparator { left, right -> selector(left).compareTo(selector(right), ignoreCase = true) }
+
+private fun Comparator<DocumentGroup>.thenByGroupTitle(): Comparator<DocumentGroup> =
+    then(titleComparator { it.title })
+
+private fun Comparator<ScanDocument>.thenByDocumentTitle(): Comparator<ScanDocument> =
+    then(titleComparator { it.title })
 
 sealed interface LibraryEvent {
     data class OpenDocument(val documentId: String) : LibraryEvent
@@ -70,20 +149,32 @@ class LibraryViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _searchQuery = MutableStateFlow("")
+    private val _selectedTab = MutableStateFlow(LibraryTab.All)
+    private val _sortOption = MutableStateFlow(LibrarySortOption.RecentlyUpdated)
     private val _events = MutableSharedFlow<LibraryEvent>()
     val events: SharedFlow<LibraryEvent> = _events.asSharedFlow()
+
+    private val controls = combine(
+        _searchQuery,
+        _selectedTab,
+        _sortOption,
+    ) { query, tab, sortOption ->
+        LibraryControls(query, tab, sortOption)
+    }
 
     val uiState: StateFlow<LibraryUiState> = combine(
         observeGroupsUseCase(),
         observeUngroupedDocumentsUseCase(),
         observeDocumentsUseCase(),
-        _searchQuery,
-    ) { groups, ungrouped, allDocs, query ->
+        controls,
+    ) { groups, ungrouped, allDocs, controls ->
         LibraryUiState(
             groups = groups,
             ungroupedDocuments = ungrouped,
             allDocuments = allDocs,
-            searchQuery = query,
+            searchQuery = controls.query,
+            selectedTab = controls.tab,
+            sortOption = controls.sortOption,
             isLoading = false,
         )
     }.stateIn(
@@ -98,6 +189,14 @@ class LibraryViewModel @Inject constructor(
 
     fun clearSearch() {
         _searchQuery.value = ""
+    }
+
+    fun selectTab(tab: LibraryTab) {
+        _selectedTab.value = tab
+    }
+
+    fun selectSortOption(option: LibrarySortOption) {
+        _sortOption.value = option
     }
 
     fun createDocument(title: String, groupId: String? = null) {
