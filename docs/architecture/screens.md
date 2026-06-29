@@ -16,7 +16,7 @@ Every feature screen in Scanly **v1.0.9** and its responsibilities.
 | Page editor | `PageEditorScreen` | `PageEditorViewModel` | `editor/page/{pageId}` | Crop, rotate, filters, retake |
 | Settings | `SettingsScreen` | `SettingsViewModel` | `settings` | Theme, storage, clear data, FAQs |
 | Legal | `LegalDocumentScreen` | — | `legal/{documentType}` | Privacy / licenses content |
-| App update | `AppUpdateDialog` | `AppUpdateViewModel` | (overlay) | GitHub release check, cooldown |
+| App update | `AppUpdateDialog` | `AppUpdateViewModel` | (overlay) | Google Play in-app update check, cooldown |
 | Placeholder | `FeaturePlaceholderScreen` | — | `camera`, `review`, `editor` | Legacy stubs — do not extend |
 
 ## App-level ViewModels

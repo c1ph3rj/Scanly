@@ -5,7 +5,7 @@ import `in`.c1ph3rj.scanly.core.common.ScanlyError
 import `in`.c1ph3rj.scanly.core.common.ScanlyResult
 import `in`.c1ph3rj.scanly.domain.model.AppRelease
 import `in`.c1ph3rj.scanly.domain.model.AppReleaseAsset
-import `in`.c1ph3rj.scanly.domain.repository.AppUpdateRepository
+import `in`.c1ph3rj.scanly.domain.repository.AppReleaseNotesRepository
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
@@ -17,9 +17,9 @@ import org.json.JSONObject
 @Singleton
 class GitHubReleaseUpdateRepository @Inject constructor(
     private val dispatchers: ScanlyDispatchers,
-) : AppUpdateRepository {
+) : AppReleaseNotesRepository {
 
-    override suspend fun fetchLatestRelease(): ScanlyResult<AppRelease> =
+    override suspend fun fetchLatestReleaseNotes(): ScanlyResult<AppRelease> =
         withContext(dispatchers.io) {
             runCatching {
                 parseRelease(fetchLatestReleaseJson())

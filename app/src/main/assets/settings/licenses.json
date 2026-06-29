@@ -25,5 +25,12 @@
     "summary": "LiteRT powers the on-device document corner inference path used during live detection and validation.",
     "license": "Google AI Edge runtime",
     "websiteUrl": "https://ai.google.dev/edge/litert"
+  },
+  {
+    "id": "play_app_update",
+    "name": "Google Play In-App Update Library",
+    "summary": "Provides Google Play in-app update checks and install flows for production releases.",
+    "license": "Play Core Software Development Kit Terms of Service",
+    "websiteUrl": "https://developer.android.com/guide/playcore/in-app-updates"
   }
 ]

@@ -526,16 +526,16 @@ private fun SettingsUpdateRow(
         "Check for updates"
     }
     val subtitle = when {
-        appUpdateUiState.isChecking -> "Checking GitHub releases..."
+        appUpdateUiState.isChecking -> "Checking Google Play..."
         updateAvailable -> {
-            "Scanly ${checkResult!!.latestRelease.tagName} is available. Tap to view the release."
+            "Scanly ${checkResult!!.latestRelease.tagName} is available on Google Play."
         }
 
         checkResult != null -> {
             "You are on ${versionLabel(checkResult.installedVersionName)}. Latest is ${checkResult.latestRelease.tagName}."
         }
 
-        else -> "Compare this install with the latest GitHub release."
+        else -> "Check Google Play for the latest version."
     }
     val rowModifier = if (updateAvailable) {
         modifier.settingsRowSurface(

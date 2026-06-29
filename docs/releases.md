@@ -37,7 +37,7 @@ The version shown in Settings reads `versionName` via `DefaultSettingsRepository
 
 ### 1.0.8.betaq (code 8) — 2026-06-27
 
-- Removed `REQUEST_INSTALL_PACKAGES`; update opens GitHub release page
+- Removed `REQUEST_INSTALL_PACKAGES`; update opens GitHub release page (superseded by Google Play in-app updates)
 
 ### 1.0.7 (code 7) — 2026-06-27
 

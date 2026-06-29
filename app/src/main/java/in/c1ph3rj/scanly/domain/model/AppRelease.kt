@@ -19,4 +19,6 @@ data class AppUpdateCheckResult(
     val installedVersionName: String,
     val latestRelease: AppRelease,
     val updateAvailable: Boolean,
+    val playUpdateType: PlayInAppUpdateType? = null,
+    val availableVersionCode: Int? = null,
 )

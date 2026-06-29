@@ -18,6 +18,7 @@ cameraX = "1.5.3"
 exifInterface = "1.4.2"
 dataStore = "1.1.7"
 openCv = "4.12.0"
+playAppUpdate = "2.1.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -50,6 +51,8 @@ opencv = { group = "org.opencv", name = "opencv", version.ref = "openCv" }
 google-ai-edge-litert = { group = "com.google.ai.edge.litert", name = "litert", version.ref = "liteRtInterpreter" }
 google-dagger-hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 google-dagger-hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }
+google-play-app-update = { group = "com.google.android.play", name = "app-update", version.ref = "playAppUpdate" }
+google-play-app-update-ktx = { group = "com.google.android.play", name = "app-update-ktx", version.ref = "playAppUpdate" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

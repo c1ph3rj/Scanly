@@ -1,8 +1,8 @@
 package `in`.c1ph3rj.scanly.domain.repository
 
 import `in`.c1ph3rj.scanly.core.common.ScanlyResult
-import `in`.c1ph3rj.scanly.domain.model.AppRelease
+import `in`.c1ph3rj.scanly.domain.model.AppUpdateCheckResult
 
 interface AppUpdateRepository {
-    suspend fun fetchLatestRelease(): ScanlyResult<AppRelease>
+    suspend fun checkForUpdate(): ScanlyResult<AppUpdateCheckResult>
 }

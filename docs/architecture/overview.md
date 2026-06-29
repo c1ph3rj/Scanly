@@ -58,7 +58,7 @@ All code under `app/src/main/java/in/c1ph3rj/scanly/`:
 | `data/export/` | PDF/ZIP export |
 | `data/storage/` | App-private file manager |
 | `data/settings/` | DataStore and bundled assets |
-| `data/update/` | GitHub release API |
+| `data/update/` | Google Play in-app updates, GitHub release notes |
 | `data/processing/` | `PageImageProcessor` implementation |
 | `core/ml/` | LiteRT corner detection |
 | `core/processing/` | Perspective math, OpenCV filters |
@@ -143,7 +143,7 @@ SettingsViewModel
 | Permission | Purpose |
 | --- | --- |
 | `CAMERA` | Document capture |
-| `INTERNET` | GitHub release update check |
+| `INTERNET` | Google Play update check, GitHub release notes |
 
 Camera hardware is optional (`android:required="false"`). No `REQUEST_INSTALL_PACKAGES`.
 

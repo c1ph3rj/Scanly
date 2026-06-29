@@ -137,7 +137,7 @@ Tap to view bundled support content. Licenses list third-party dependencies.
 
 ### Check for updates
 
-Manually triggers a GitHub release check. If a newer version exists, an update dialog appears (subject to the 6-hour cooldown for automatic checks).
+Manually checks Google Play for updates. If a newer version exists, an update dialog appears and installs through the Play Store in-app update flow.
 
 ## Permissions
 

@@ -27,7 +27,7 @@ Test coverage and how to run tests in Scanly **v1.0.9**.
 | UI / layout | `AdaptiveLayoutTest`, `PreviewImageSizerTest`, `OnboardingLayoutModeTest` |
 | Formatting | `StorageFormatterTest`, `DocumentPresentationFormatterTest`, `DocumentPreviewPathResolverTest` |
 | Feature logic | `LibraryUiStateTest`, `DocumentDetailSelectionResolverTest`, `PageImagePreviewSelectionResolverTest` |
-| Updates | `AppUpdateDialogCooldownTest`, `ReleaseMarkdownParserTest`, `AppVersionComparatorTest` |
+| Updates | `AppUpdateDialogCooldownTest`, `ReleaseMarkdownParserTest`, `AppVersionComparatorTest`, `PlayInAppUpdatePolicyTest` |
 | Scaffold | `ExampleUnitTest` |
 
 ### Placement convention

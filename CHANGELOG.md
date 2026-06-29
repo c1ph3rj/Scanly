@@ -4,6 +4,16 @@ All notable user-facing changes to Scanly are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project uses semantic-style version names.
 
+## [Unreleased]
+
+### Added
+
+- **Google Play in-app updates** — production installs now check Google Play for updates and can download and install them in-app. Flexible updates show a restart prompt after download; high-priority updates can launch the immediate Play Store flow automatically.
+
+### Changed
+
+- The update dialog and Settings update row now use Google Play as the update source. GitHub release notes are still shown when available.
+
 ## [1.0.9] - 2026-06-28
 
 ### Changed
