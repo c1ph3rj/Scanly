@@ -121,7 +121,7 @@ class DefaultPageRepository @Inject constructor(
                 val timestamp = System.currentTimeMillis()
                 val captureFilterPreset = document.preferredFilterPreset
                     ?.let(PageFilterPreset::fromStorage)
-                    ?: PageFilterPreset.ENHANCED_COLOR
+                    ?: PageFilterPreset.AUTO
                 val processedArtifacts = runCatching {
                     pageImageProcessor.processCapture(
                         rawImagePath = draft.rawImagePath,
