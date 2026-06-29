@@ -9,7 +9,7 @@ interface PageImageProcessor {
         rawImagePath: String,
         processedImagePath: String,
         thumbnailPath: String,
-        filterPreset: PageFilterPreset = PageFilterPreset.ENHANCED_COLOR,
+        filterPreset: PageFilterPreset = PageFilterPreset.AUTO,
     ): ProcessedPageArtifacts
 
     suspend fun reprocessPage(

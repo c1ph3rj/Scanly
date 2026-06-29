@@ -1169,20 +1169,9 @@ private fun rememberFilterPreviewBitmaps(
         }
 
         try {
-            val analysis = runCatching {
-                OpenCvPageFilterProcessor.analyze(previewBitmap)
-            }.getOrNull()
-            val previews = PageFilterPreset.entries.associateWith { filter ->
-                runCatching {
-                    if (analysis != null) {
-                        OpenCvPageFilterProcessor.apply(previewBitmap, filter, analysis).asImageBitmap()
-                    } else {
-                        OpenCvPageFilterProcessor.apply(previewBitmap, filter).asImageBitmap()
-                    }
-                }.getOrElse {
-                    previewBitmap.copy(Bitmap.Config.ARGB_8888, false).asImageBitmap()
-                }
-            }
+            val previews = OpenCvPageFilterProcessor
+                .applyAll(previewBitmap)
+                .mapValues { (_, bitmap) -> bitmap.asImageBitmap() }
             FilterPreviewState(
                 isLoading = false,
                 previews = previews,
@@ -1292,24 +1281,28 @@ private fun distance(first: Offset, second: Offset): Float {
 
 private fun PageFilterPreset.toDisplayLabel(): String = when (this) {
     PageFilterPreset.ORIGINAL -> "Original"
-    PageFilterPreset.ENHANCED_COLOR -> "Enhanced"
+    PageFilterPreset.AUTO -> "Auto"
+    PageFilterPreset.ENHANCED_COLOR -> "Color"
     PageFilterPreset.GRAYSCALE -> "Grayscale"
     PageFilterPreset.BLACK_AND_WHITE -> "B&W"
-    PageFilterPreset.CLEAN -> "Clean"
+    PageFilterPreset.CLEAN -> "Clean Paper"
+    PageFilterPreset.SHADOW_REDUCTION -> "Shadow Reduce"
     PageFilterPreset.MAGIC_COLOR -> "Magic"
     PageFilterPreset.RECEIPT -> "Receipt"
-    PageFilterPreset.SOFT_BLACK_AND_WHITE -> "Soft B&W"
+    PageFilterPreset.SOFT_BLACK_AND_WHITE -> "Text Enhance"
 }
 
 private fun PageFilterPreset.shortLabel(): String = when (this) {
     PageFilterPreset.ORIGINAL -> "O"
-    PageFilterPreset.ENHANCED_COLOR -> "E"
+    PageFilterPreset.AUTO -> "A"
+    PageFilterPreset.ENHANCED_COLOR -> "C"
     PageFilterPreset.GRAYSCALE -> "G"
     PageFilterPreset.BLACK_AND_WHITE -> "B&W"
-    PageFilterPreset.CLEAN -> "CL"
+    PageFilterPreset.CLEAN -> "CP"
+    PageFilterPreset.SHADOW_REDUCTION -> "SH"
     PageFilterPreset.MAGIC_COLOR -> "M"
     PageFilterPreset.RECEIPT -> "R"
-    PageFilterPreset.SOFT_BLACK_AND_WHITE -> "SBW"
+    PageFilterPreset.SOFT_BLACK_AND_WHITE -> "TXT"
 }
 
 private fun normalizeRotation(rotationDegrees: Int): Int {

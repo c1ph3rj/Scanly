@@ -1,207 +1,304 @@
 package `in`.c1ph3rj.scanly.core.processing
 
+import `in`.c1ph3rj.scanly.domain.model.PageFilterPreset
 import kotlin.math.roundToInt
 
 internal object AdaptivePageFilterTuning {
-    internal data class OriginalTuning(
-        val sharpenAmount: Double,
-        val sharpenSigma: Double,
-    )
-
     internal data class EnhancedColorTuning(
         val bilateralDiameter: Int,
         val bilateralSigmaColor: Double,
         val bilateralSigmaSpace: Double,
+        val backgroundBlurSigma: Double,
+        val shadowStrength: Double,
+        val backgroundTarget: Double,
+        val textMaskSensitivity: Double,
         val clipLimit: Double,
+        val tileGridSize: Int,
+        val contrastScale: Double,
+        val brightnessShift: Double,
+        val saturationScale: Double,
         val sharpenAmount: Double,
         val sharpenSigma: Double,
-        val sharpenBias: Double,
     )
 
     internal data class GrayscaleTuning(
+        val backgroundBlurSigma: Double,
+        val shadowStrength: Double,
+        val backgroundTarget: Double,
+        val textMaskSensitivity: Double,
         val clipLimit: Double,
+        val tileGridSize: Int,
         val bilateralDiameter: Int,
         val bilateralSigmaColor: Double,
         val bilateralSigmaSpace: Double,
+        val contrastScale: Double,
+        val brightnessShift: Double,
         val sharpenAmount: Double,
         val sharpenSigma: Double,
     )
 
     internal data class BlackAndWhiteTuning(
-        val backgroundKernelSize: Int,
+        val backgroundBlurSigma: Double,
+        val shadowStrength: Double,
+        val backgroundTarget: Double,
+        val textMaskSensitivity: Double,
         val clipLimit: Double,
+        val tileGridSize: Int,
         val denoiseDiameter: Int,
         val denoiseSigmaColor: Double,
         val denoiseSigmaSpace: Double,
-        val windowSize: Int,
-        val k: Double,
+        val blockSize: Int,
+        val c: Double,
     )
 
     internal data class CleanTuning(
-        val backgroundKernelSize: Int,
+        val backgroundBlurSigma: Double,
+        val shadowStrength: Double,
+        val backgroundTarget: Double,
+        val textMaskSensitivity: Double,
         val clipLimit: Double,
+        val tileGridSize: Int,
+        val contrastScale: Double,
+        val brightnessShift: Double,
         val sharpenAmount: Double,
         val sharpenSigma: Double,
     )
 
     internal data class MagicColorTuning(
         val clipLimit: Double,
+        val tileGridSize: Int,
+        val contrastScale: Double,
+        val brightnessShift: Double,
         val saturationScale: Double,
-        val saturationShift: Double,
         val sharpenAmount: Double,
         val sharpenSigma: Double,
-        val sharpenBias: Double,
     )
 
     internal data class ReceiptTuning(
+        val backgroundBlurSigma: Double,
+        val shadowStrength: Double,
+        val backgroundTarget: Double,
+        val textMaskSensitivity: Double,
         val clipLimit: Double,
+        val tileGridSize: Int,
         val bilateralDiameter: Int,
         val bilateralSigmaColor: Double,
         val bilateralSigmaSpace: Double,
         val blockSize: Int,
         val c: Double,
+        val binaryBlend: Double,
         val sharpenAmount: Double,
         val sharpenSigma: Double,
     )
 
     internal data class SoftBlackAndWhiteTuning(
-        val backgroundKernelSize: Int,
+        val backgroundBlurSigma: Double,
+        val shadowStrength: Double,
+        val backgroundTarget: Double,
+        val textMaskSensitivity: Double,
         val clipLimit: Double,
+        val tileGridSize: Int,
         val denoiseDiameter: Int,
         val denoiseSigmaColor: Double,
         val denoiseSigmaSpace: Double,
-        val windowSize: Int,
-        val k: Double,
-        val blurSigma: Double,
+        val blockSize: Int,
+        val c: Double,
+        val binaryBlend: Double,
         val sharpenAmount: Double,
         val sharpenSigma: Double,
     )
 
-    internal fun original(profile: PageImageProfile?): OriginalTuning =
-        profile?.let {
-            val detailBoost = detailBoost(it)
-            val clarityBoost = clarityBoost(it)
-            OriginalTuning(
-                sharpenAmount = lerp(1.08, 1.22, detailBoost),
-                sharpenSigma = lerp(0.8, 1.15, clarityBoost),
-            )
-        } ?: OriginalTuning(
-            sharpenAmount = 1.14,
-            sharpenSigma = 1.0,
-        )
+    internal fun automatic(profile: PageImageProfile?): PageFilterPreset {
+        profile ?: return PageFilterPreset.GRAYSCALE
+
+        val receiptLike = profile.aspectRatio >= 1.7 &&
+            profile.textDensity >= 0.015 &&
+            profile.colorRatio < 0.12
+        val carriesUsefulColor = profile.colorRatio >= 0.02 || profile.saturation >= 24.0
+        val unevenBackground = profile.backgroundUnevenness >= 12.0 || profile.shadowRatio >= 0.12
+        val textHeavy = profile.textDensity >= 0.025 || profile.edgeDensity >= 0.055
+        val difficultLighting = profile.brightness < 125.0 || profile.contrast < 22.0
+
+        return when {
+            receiptLike -> PageFilterPreset.RECEIPT
+            carriesUsefulColor && unevenBackground -> PageFilterPreset.SHADOW_REDUCTION
+            carriesUsefulColor -> PageFilterPreset.ENHANCED_COLOR
+            textHeavy && (unevenBackground || difficultLighting) -> PageFilterPreset.CLEAN
+            else -> PageFilterPreset.GRAYSCALE
+        }
+    }
 
     internal fun enhancedColor(profile: PageImageProfile?): EnhancedColorTuning =
         profile?.let {
             val cleanup = cleanupBoost(it)
             val detail = detailBoost(it)
+            val shadows = shadowBoost(it)
             EnhancedColorTuning(
-                bilateralDiameter = scaledOddKernel(
-                    longestEdge = it.longestEdge,
-                    divisor = 230.0,
-                    min = 5,
-                    max = 11,
-                ),
-                bilateralSigmaColor = lerp(32.0, 60.0, cleanup),
-                bilateralSigmaSpace = lerp(32.0, 60.0, cleanup),
-                clipLimit = lerp(2.0, 3.5, cleanup),
-                sharpenAmount = lerp(1.10, 1.24, detail),
-                sharpenSigma = lerp(0.85, 1.25, detail),
-                sharpenBias = lerp(0.5, 3.5, cleanup),
+                bilateralDiameter = scaledOddKernel(it.longestEdge, 520.0, 5, 7),
+                bilateralSigmaColor = lerp(18.0, 30.0, cleanup),
+                bilateralSigmaSpace = lerp(22.0, 34.0, cleanup),
+                backgroundBlurSigma = scaledSigma(it.longestEdge, 86.0, 12.0, 32.0),
+                shadowStrength = lerp(0.10, 0.30, shadows),
+                backgroundTarget = 232.0,
+                textMaskSensitivity = lerp(14.0, 10.0, lowContrastNeed(it)),
+                clipLimit = lerp(1.35, 1.85, cleanup),
+                tileGridSize = tileGridSize(it),
+                contrastScale = lerp(1.0, 1.025, lowContrastNeed(it)),
+                brightnessShift = lerp(0.0, 4.0, lowLightNeed(it)),
+                saturationScale = naturalSaturationScale(it),
+                sharpenAmount = lerp(1.06, 1.14, detail),
+                sharpenSigma = lerp(0.75, 0.95, detail),
             )
         } ?: EnhancedColorTuning(
-            bilateralDiameter = 7,
-            bilateralSigmaColor = 40.0,
-            bilateralSigmaSpace = 40.0,
-            clipLimit = 2.4,
-            sharpenAmount = 1.16,
-            sharpenSigma = 1.1,
-            sharpenBias = 2.0,
+            bilateralDiameter = 5,
+            bilateralSigmaColor = 22.0,
+            bilateralSigmaSpace = 28.0,
+            backgroundBlurSigma = 22.0,
+            shadowStrength = 0.18,
+            backgroundTarget = 232.0,
+            textMaskSensitivity = 12.0,
+            clipLimit = 1.55,
+            tileGridSize = 8,
+            contrastScale = 1.01,
+            brightnessShift = 2.0,
+            saturationScale = 1.0,
+            sharpenAmount = 1.10,
+            sharpenSigma = 0.85,
+        )
+
+    internal fun shadowReduction(profile: PageImageProfile?): EnhancedColorTuning =
+        profile?.let {
+            val shadows = shadowBoost(it)
+            val detail = detailBoost(it)
+            EnhancedColorTuning(
+                bilateralDiameter = 5,
+                bilateralSigmaColor = lerp(14.0, 22.0, shadows),
+                bilateralSigmaSpace = lerp(18.0, 26.0, shadows),
+                backgroundBlurSigma = scaledSigma(it.longestEdge, 76.0, 14.0, 36.0),
+                shadowStrength = lerp(0.34, 0.62, shadows),
+                backgroundTarget = 232.0,
+                textMaskSensitivity = lerp(14.0, 9.0, lowContrastNeed(it)),
+                clipLimit = lerp(1.15, 1.45, shadows),
+                tileGridSize = tileGridSize(it),
+                contrastScale = lerp(1.0, 1.015, lowContrastNeed(it)),
+                brightnessShift = lerp(0.0, 2.0, lowLightNeed(it)),
+                saturationScale = naturalSaturationScale(it),
+                sharpenAmount = lerp(1.03, 1.08, detail),
+                sharpenSigma = lerp(0.75, 0.90, detail),
+            )
+        } ?: EnhancedColorTuning(
+            bilateralDiameter = 5,
+            bilateralSigmaColor = 18.0,
+            bilateralSigmaSpace = 22.0,
+            backgroundBlurSigma = 26.0,
+            shadowStrength = 0.48,
+            backgroundTarget = 232.0,
+            textMaskSensitivity = 11.0,
+            clipLimit = 1.30,
+            tileGridSize = 8,
+            contrastScale = 1.005,
+            brightnessShift = 1.0,
+            saturationScale = 1.0,
+            sharpenAmount = 1.05,
+            sharpenSigma = 0.82,
         )
 
     internal fun grayscale(profile: PageImageProfile?): GrayscaleTuning =
         profile?.let {
             val cleanup = cleanupBoost(it)
             val detail = detailBoost(it)
+            val shadows = shadowBoost(it)
             GrayscaleTuning(
-                clipLimit = lerp(2.0, 3.1, cleanup),
-                bilateralDiameter = scaledOddKernel(
-                    longestEdge = it.longestEdge,
-                    divisor = 260.0,
-                    min = 5,
-                    max = 9,
-                ),
-                bilateralSigmaColor = lerp(28.0, 48.0, cleanup),
-                bilateralSigmaSpace = lerp(28.0, 48.0, cleanup),
-                sharpenAmount = lerp(1.08, 1.25, detail),
-                sharpenSigma = lerp(0.75, 1.1, detail),
+                backgroundBlurSigma = scaledSigma(it.longestEdge, 82.0, 12.0, 34.0),
+                shadowStrength = lerp(0.18, 0.44, shadows),
+                backgroundTarget = 236.0,
+                textMaskSensitivity = lerp(14.0, 9.0, lowContrastNeed(it)),
+                clipLimit = lerp(1.45, 2.05, cleanup),
+                tileGridSize = tileGridSize(it),
+                bilateralDiameter = scaledOddKernel(it.longestEdge, 520.0, 5, 7),
+                bilateralSigmaColor = lerp(16.0, 27.0, cleanup),
+                bilateralSigmaSpace = lerp(20.0, 31.0, cleanup),
+                contrastScale = lerp(1.0, 1.035, lowContrastNeed(it)),
+                brightnessShift = lerp(1.0, 5.0, lowLightNeed(it)),
+                sharpenAmount = lerp(1.05, 1.13, detail),
+                sharpenSigma = lerp(0.70, 0.90, detail),
             )
         } ?: GrayscaleTuning(
-            clipLimit = 2.4,
-            bilateralDiameter = 7,
-            bilateralSigmaColor = 35.0,
-            bilateralSigmaSpace = 35.0,
-            sharpenAmount = 1.18,
-            sharpenSigma = 0.9,
+            backgroundBlurSigma = 24.0,
+            shadowStrength = 0.30,
+            backgroundTarget = 236.0,
+            textMaskSensitivity = 11.0,
+            clipLimit = 1.70,
+            tileGridSize = 8,
+            bilateralDiameter = 5,
+            bilateralSigmaColor = 21.0,
+            bilateralSigmaSpace = 25.0,
+            contrastScale = 1.015,
+            brightnessShift = 2.5,
+            sharpenAmount = 1.09,
+            sharpenSigma = 0.80,
         )
 
     internal fun blackAndWhite(profile: PageImageProfile?): BlackAndWhiteTuning =
         profile?.let {
             val cleanup = cleanupBoost(it)
-            val binarization = binarizationBoost(it)
+            val shadows = shadowBoost(it)
+            val faintText = lowContrastNeed(it)
             BlackAndWhiteTuning(
-                backgroundKernelSize = scaledOddKernel(
-                    longestEdge = it.longestEdge,
-                    divisor = 72.0,
-                    min = 23,
-                    max = 61,
-                ),
-                clipLimit = lerp(1.8, 3.1, cleanup),
-                denoiseDiameter = scaledOddKernel(
-                    longestEdge = it.longestEdge,
-                    divisor = 320.0,
-                    min = 5,
-                    max = 9,
-                ),
-                denoiseSigmaColor = lerp(26.0, 48.0, cleanup),
-                denoiseSigmaSpace = lerp(26.0, 48.0, cleanup),
-                windowSize = scaledOddKernel(
-                    longestEdge = it.longestEdge,
-                    divisor = 62.0,
-                    min = 31,
-                    max = 55,
-                ),
-                k = lerp(0.14, 0.26, binarization),
+                backgroundBlurSigma = scaledSigma(it.longestEdge, 72.0, 16.0, 38.0),
+                shadowStrength = lerp(0.68, 0.88, shadows),
+                backgroundTarget = 240.0,
+                textMaskSensitivity = lerp(13.0, 8.0, faintText),
+                clipLimit = lerp(1.30, 1.75, cleanup),
+                tileGridSize = tileGridSize(it),
+                denoiseDiameter = 5,
+                denoiseSigmaColor = lerp(16.0, 24.0, cleanup),
+                denoiseSigmaSpace = lerp(20.0, 28.0, cleanup),
+                blockSize = scaledOddKernel(it.longestEdge, 38.0, 31, 71),
+                c = (13.0 + (shadows * 1.5) - (faintText * 1.5)).coerceIn(11.0, 14.5),
             )
         } ?: BlackAndWhiteTuning(
-            backgroundKernelSize = 31,
-            clipLimit = 2.1,
+            backgroundBlurSigma = 24.0,
+            shadowStrength = 0.76,
+            backgroundTarget = 240.0,
+            textMaskSensitivity = 10.0,
+            clipLimit = 1.50,
+            tileGridSize = 8,
             denoiseDiameter = 5,
-            denoiseSigmaColor = 30.0,
-            denoiseSigmaSpace = 30.0,
-            windowSize = 35,
-            k = 0.2,
+            denoiseSigmaColor = 20.0,
+            denoiseSigmaSpace = 24.0,
+            blockSize = 41,
+            c = 13.0,
         )
 
     internal fun clean(profile: PageImageProfile?): CleanTuning =
         profile?.let {
             val cleanup = cleanupBoost(it)
             val detail = detailBoost(it)
+            val shadows = shadowBoost(it)
             CleanTuning(
-                backgroundKernelSize = scaledOddKernel(
-                    longestEdge = it.longestEdge,
-                    divisor = 88.0,
-                    min = 19,
-                    max = 45,
-                ),
-                clipLimit = lerp(1.8, 2.8, cleanup),
-                sharpenAmount = lerp(1.08, 1.22, detail),
-                sharpenSigma = lerp(0.7, 1.0, detail),
+                backgroundBlurSigma = scaledSigma(it.longestEdge, 66.0, 18.0, 42.0),
+                shadowStrength = lerp(0.46, 0.74, shadows),
+                backgroundTarget = 240.0,
+                textMaskSensitivity = lerp(12.0, 7.5, lowContrastNeed(it)),
+                clipLimit = lerp(1.30, 1.78, cleanup),
+                tileGridSize = tileGridSize(it),
+                contrastScale = lerp(1.0, 1.025, lowContrastNeed(it)),
+                brightnessShift = lerp(2.0, 6.0, cleanup),
+                sharpenAmount = lerp(1.04, 1.10, detail),
+                sharpenSigma = lerp(0.65, 0.85, detail),
             )
         } ?: CleanTuning(
-            backgroundKernelSize = 21,
-            clipLimit = 2.2,
-            sharpenAmount = 1.16,
-            sharpenSigma = 0.8,
+            backgroundBlurSigma = 28.0,
+            shadowStrength = 0.60,
+            backgroundTarget = 240.0,
+            textMaskSensitivity = 9.0,
+            clipLimit = 1.55,
+            tileGridSize = 8,
+            contrastScale = 1.01,
+            brightnessShift = 4.0,
+            sharpenAmount = 1.07,
+            sharpenSigma = 0.75,
         )
 
     internal fun magicColor(profile: PageImageProfile?): MagicColorTuning =
@@ -209,169 +306,156 @@ internal object AdaptivePageFilterTuning {
             val cleanup = cleanupBoost(it)
             val detail = detailBoost(it)
             MagicColorTuning(
-                clipLimit = lerp(2.2, 3.4, cleanup),
-                saturationScale = lerp(1.10, 1.32, colorRecoveryBoost(it)),
-                saturationShift = lerp(6.0, 18.0, cleanup),
-                sharpenAmount = lerp(1.10, 1.26, detail),
-                sharpenSigma = lerp(0.85, 1.2, detail),
-                sharpenBias = lerp(1.5, 5.0, cleanup),
+                clipLimit = lerp(1.65, 2.25, cleanup),
+                tileGridSize = tileGridSize(it),
+                contrastScale = lerp(1.005, 1.035, lowContrastNeed(it)),
+                brightnessShift = lerp(0.0, 3.0, lowLightNeed(it)),
+                saturationScale = lerp(1.04, 1.12, colorRecoveryBoost(it)),
+                sharpenAmount = lerp(1.08, 1.16, detail),
+                sharpenSigma = lerp(0.75, 0.95, detail),
             )
         } ?: MagicColorTuning(
-            clipLimit = 2.8,
-            saturationScale = 1.18,
-            saturationShift = 10.0,
-            sharpenAmount = 1.18,
-            sharpenSigma = 1.0,
-            sharpenBias = 4.0,
+            clipLimit = 1.90,
+            tileGridSize = 8,
+            contrastScale = 1.02,
+            brightnessShift = 1.5,
+            saturationScale = 1.08,
+            sharpenAmount = 1.12,
+            sharpenSigma = 0.85,
         )
 
     internal fun receipt(profile: PageImageProfile?): ReceiptTuning =
         profile?.let {
             val cleanup = cleanupBoost(it)
             val detail = detailBoost(it)
+            val shadows = shadowBoost(it)
+            val faintText = lowContrastNeed(it)
             ReceiptTuning(
-                clipLimit = lerp(2.6, 3.8, cleanup),
-                bilateralDiameter = scaledOddKernel(
-                    longestEdge = it.longestEdge,
-                    divisor = 210.0,
-                    min = 7,
-                    max = 11,
-                ),
-                bilateralSigmaColor = lerp(45.0, 70.0, cleanup),
-                bilateralSigmaSpace = lerp(45.0, 70.0, cleanup),
-                blockSize = scaledOddKernel(
-                    longestEdge = it.longestEdge,
-                    divisor = 84.0,
-                    min = 19,
-                    max = 35,
-                ),
-                c = lerp(3.0, 10.0, cleanup),
-                sharpenAmount = lerp(1.06, 1.2, detail),
-                sharpenSigma = lerp(0.65, 0.9, detail),
+                backgroundBlurSigma = scaledSigma(it.longestEdge, 78.0, 16.0, 34.0),
+                shadowStrength = lerp(0.62, 0.82, shadows),
+                backgroundTarget = 242.0,
+                textMaskSensitivity = lerp(11.0, 7.0, faintText),
+                clipLimit = lerp(1.80, 2.55, cleanup),
+                tileGridSize = tileGridSize(it),
+                bilateralDiameter = 5,
+                bilateralSigmaColor = lerp(14.0, 22.0, cleanup),
+                bilateralSigmaSpace = lerp(18.0, 26.0, cleanup),
+                blockSize = scaledOddKernel(it.longestEdge, 32.0, 41, 81),
+                c = (11.5 + (shadows * 1.5) - (faintText * 1.2)).coerceIn(10.0, 13.0),
+                binaryBlend = lerp(0.58, 0.68, cleanup),
+                sharpenAmount = lerp(1.03, 1.09, detail),
+                sharpenSigma = lerp(0.60, 0.78, detail),
             )
         } ?: ReceiptTuning(
-            clipLimit = 3.2,
-            bilateralDiameter = 9,
-            bilateralSigmaColor = 55.0,
-            bilateralSigmaSpace = 55.0,
-            blockSize = 21,
-            c = 7.0,
-            sharpenAmount = 1.12,
-            sharpenSigma = 0.7,
+            backgroundBlurSigma = 24.0,
+            shadowStrength = 0.72,
+            backgroundTarget = 242.0,
+            textMaskSensitivity = 9.0,
+            clipLimit = 2.10,
+            tileGridSize = 8,
+            bilateralDiameter = 5,
+            bilateralSigmaColor = 18.0,
+            bilateralSigmaSpace = 22.0,
+            blockSize = 61,
+            c = 11.5,
+            binaryBlend = 0.63,
+            sharpenAmount = 1.06,
+            sharpenSigma = 0.68,
         )
 
     internal fun softBlackAndWhite(profile: PageImageProfile?): SoftBlackAndWhiteTuning =
         profile?.let {
             val cleanup = cleanupBoost(it)
             val detail = detailBoost(it)
-            val binarization = binarizationBoost(it)
+            val shadows = shadowBoost(it)
+            val faintText = lowContrastNeed(it)
             SoftBlackAndWhiteTuning(
-                backgroundKernelSize = scaledOddKernel(
-                    longestEdge = it.longestEdge,
-                    divisor = 84.0,
-                    min = 19,
-                    max = 51,
-                ),
-                clipLimit = lerp(1.4, 2.2, cleanup),
-                denoiseDiameter = scaledOddKernel(
-                    longestEdge = it.longestEdge,
-                    divisor = 320.0,
-                    min = 5,
-                    max = 7,
-                ),
-                denoiseSigmaColor = lerp(20.0, 34.0, cleanup),
-                denoiseSigmaSpace = lerp(20.0, 34.0, cleanup),
-                windowSize = scaledOddKernel(
-                    longestEdge = it.longestEdge,
-                    divisor = 66.0,
-                    min = 29,
-                    max = 49,
-                ),
-                k = lerp(0.12, 0.22, binarization),
-                blurSigma = lerp(0.9, 1.35, cleanup),
-                sharpenAmount = lerp(1.02, 1.12, detail),
-                sharpenSigma = lerp(0.7, 0.95, detail),
+                backgroundBlurSigma = scaledSigma(it.longestEdge, 82.0, 14.0, 32.0),
+                shadowStrength = lerp(0.42, 0.64, shadows),
+                backgroundTarget = 238.0,
+                textMaskSensitivity = lerp(12.0, 8.0, faintText),
+                clipLimit = lerp(1.35, 1.85, cleanup),
+                tileGridSize = tileGridSize(it),
+                denoiseDiameter = 5,
+                denoiseSigmaColor = lerp(14.0, 22.0, cleanup),
+                denoiseSigmaSpace = lerp(18.0, 26.0, cleanup),
+                blockSize = scaledOddKernel(it.longestEdge, 38.0, 31, 71),
+                c = (11.0 + shadows - faintText).coerceIn(9.5, 12.5),
+                binaryBlend = lerp(0.36, 0.48, cleanup),
+                sharpenAmount = lerp(1.03, 1.09, detail),
+                sharpenSigma = lerp(0.65, 0.82, detail),
             )
         } ?: SoftBlackAndWhiteTuning(
-            backgroundKernelSize = 27,
-            clipLimit = 1.7,
+            backgroundBlurSigma = 22.0,
+            shadowStrength = 0.52,
+            backgroundTarget = 238.0,
+            textMaskSensitivity = 10.0,
+            clipLimit = 1.55,
+            tileGridSize = 8,
             denoiseDiameter = 5,
-            denoiseSigmaColor = 24.0,
-            denoiseSigmaSpace = 24.0,
-            windowSize = 33,
-            k = 0.16,
-            blurSigma = 1.15,
-            sharpenAmount = 1.04,
-            sharpenSigma = 0.8,
+            denoiseSigmaColor = 18.0,
+            denoiseSigmaSpace = 22.0,
+            blockSize = 41,
+            c = 10.5,
+            binaryBlend = 0.42,
+            sharpenAmount = 1.06,
+            sharpenSigma = 0.72,
         )
 
-    private fun detailBoost(profile: PageImageProfile): Double =
-        normalized(
-            value = (profile.edgeDensity * 0.6) + ((1.0 - normalized(profile.sharpness, 10.0, 85.0)) * 1.4),
-            min = 0.0,
-            max = 2.0,
-        )
-
-    private fun cleanupBoost(profile: PageImageProfile): Double {
-        val brightnessNeed = 1.0 - normalized(profile.brightness, 92.0, 188.0)
-        val contrastNeed = 1.0 - normalized(profile.contrast, 16.0, 52.0)
-        val shadowNeed = profile.shadowRatio.coerceIn(0.0, 1.0)
-        val highlightNeed = profile.highlightRatio.coerceIn(0.0, 1.0)
-        val saturationNeed = 1.0 - normalized(profile.saturation, 20.0, 120.0)
-        return normalized(
-            value = (brightnessNeed * 0.22) + (contrastNeed * 0.26) + (shadowNeed * 0.22) + (highlightNeed * 0.10) + (saturationNeed * 0.20),
-            min = 0.0,
-            max = 1.0,
-        )
+    private fun detailBoost(profile: PageImageProfile): Double {
+        val blurNeed = 1.0 - normalized(profile.sharpness, 14.0, 70.0)
+        val edgeSignal = normalized(profile.edgeDensity, 0.025, 0.14)
+        return ((blurNeed * 0.72) + (edgeSignal * 0.28)).coerceIn(0.0, 1.0)
     }
 
-    private fun clarityBoost(profile: PageImageProfile): Double =
-        normalized(profile.sharpness, 12.0, 75.0)
+    private fun cleanupBoost(profile: PageImageProfile): Double =
+        ((lowLightNeed(profile) * 0.18) +
+            (lowContrastNeed(profile) * 0.25) +
+            (shadowBoost(profile) * 0.35) +
+            ((1.0 - normalized(profile.sharpness, 12.0, 70.0)) * 0.12) +
+            (normalized(profile.highlightRatio, 0.35, 0.90) * 0.10))
+            .coerceIn(0.0, 1.0)
 
-    private fun binarizationBoost(profile: PageImageProfile): Double {
-        val brightnessNeed = 1.0 - normalized(profile.brightness, 96.0, 192.0)
-        val shadowNeed = profile.shadowRatio.coerceIn(0.0, 1.0)
-        val contrastNeed = 1.0 - normalized(profile.contrast, 18.0, 58.0)
-        val highlightNeed = profile.highlightRatio.coerceIn(0.0, 1.0)
-        val sharpnessNeed = 1.0 - normalized(profile.sharpness, 12.0, 65.0)
-        return normalized(
-            value = (brightnessNeed * 0.12) + (shadowNeed * 0.32) + (contrastNeed * 0.26) + (highlightNeed * 0.10) + (sharpnessNeed * 0.20),
-            min = 0.0,
-            max = 1.0,
-        )
+    private fun shadowBoost(profile: PageImageProfile): Double =
+        ((normalized(profile.backgroundUnevenness, 4.0, 24.0) * 0.58) +
+            (normalized(profile.shadowRatio, 0.02, 0.28) * 0.42))
+            .coerceIn(0.0, 1.0)
+
+    private fun lowLightNeed(profile: PageImageProfile): Double =
+        1.0 - normalized(profile.brightness, 120.0, 205.0)
+
+    private fun lowContrastNeed(profile: PageImageProfile): Double =
+        1.0 - normalized(profile.contrast, 20.0, 52.0)
+
+    private fun colorRecoveryBoost(profile: PageImageProfile): Double =
+        ((1.0 - normalized(profile.saturation, 20.0, 95.0)) * 0.55 +
+            lowContrastNeed(profile) * 0.25 +
+            lowLightNeed(profile) * 0.20)
+            .coerceIn(0.0, 1.0)
+
+    private fun naturalSaturationScale(profile: PageImageProfile): Double = when {
+        profile.saturation >= 100.0 -> 0.96
+        profile.saturation >= 70.0 -> 0.98
+        profile.saturation < 20.0 -> 1.04
+        profile.saturation < 40.0 -> 1.02
+        else -> 1.0
     }
 
-    private fun colorRecoveryBoost(profile: PageImageProfile): Double {
-        val brightnessNeed = 1.0 - normalized(profile.brightness, 92.0, 188.0)
-        val saturationNeed = 1.0 - normalized(profile.saturation, 18.0, 120.0)
-        val contrastNeed = 1.0 - normalized(profile.contrast, 18.0, 52.0)
-        val shadowNeed = profile.shadowRatio.coerceIn(0.0, 1.0)
-        return normalized(
-            value = (brightnessNeed * 0.18) + (saturationNeed * 0.40) + (contrastNeed * 0.24) + (shadowNeed * 0.18),
-            min = 0.0,
-            max = 1.0,
-        )
-    }
+    private fun tileGridSize(profile: PageImageProfile): Int =
+        if (profile.longestEdge >= 1_800) 10 else 8
 
-    private fun normalized(
-        value: Double,
-        min: Double,
-        max: Double,
-    ): Double {
-        if (max <= min) {
-            return 0.0
-        }
+    private fun normalized(value: Double, min: Double, max: Double): Double {
+        if (max <= min) return 0.0
         return ((value - min) / (max - min)).coerceIn(0.0, 1.0)
     }
 
-    private fun lerp(
-        start: Double,
-        end: Double,
-        fraction: Double,
-    ): Double {
+    private fun lerp(start: Double, end: Double, fraction: Double): Double {
         val normalizedFraction = fraction.coerceIn(0.0, 1.0)
         return start + ((end - start) * normalizedFraction)
     }
+
+    private fun scaledSigma(longestEdge: Int, divisor: Double, min: Double, max: Double): Double =
+        (longestEdge / divisor).coerceIn(min, max)
 
     private fun scaledOddKernel(
         longestEdge: Int,
@@ -383,17 +467,10 @@ internal object AdaptivePageFilterTuning {
         return toOddWithin(raw, min, max)
     }
 
-    private fun toOddWithin(
-        value: Int,
-        min: Int,
-        max: Int,
-    ): Int {
+    private fun toOddWithin(value: Int, min: Int, max: Int): Int {
         var candidate = value.coerceIn(min, max)
         if (candidate % 2 == 0) {
-            candidate = when {
-                candidate >= max -> candidate - 1
-                else -> candidate + 1
-            }
+            candidate = if (candidate >= max) candidate - 1 else candidate + 1
         }
         return candidate.coerceIn(min, max)
     }

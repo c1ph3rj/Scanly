@@ -9,4 +9,8 @@ internal data class PageImageProfile(
     val edgeDensity: Double,
     val sharpness: Double,
     val longestEdge: Int,
+    val backgroundUnevenness: Double = 0.0,
+    val textDensity: Double = 0.0,
+    val colorRatio: Double = 0.0,
+    val aspectRatio: Double = 1.0,
 )
