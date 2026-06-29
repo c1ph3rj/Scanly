@@ -67,12 +67,6 @@ android {
         }
     }
 
-    sourceSets {
-        getByName("main") {
-            assets.srcDir("legal")
-        }
-    }
-
     signingConfigs {
         if (hasReleaseSigning) {
             create("release") {
