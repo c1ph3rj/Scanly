@@ -1,5 +1,7 @@
 # Scanly Version Details
 
+See also [docs/releases.md](docs/releases.md) for release policy and history within the full documentation set.
+
 ## Current Release
 
 | Field | Value |

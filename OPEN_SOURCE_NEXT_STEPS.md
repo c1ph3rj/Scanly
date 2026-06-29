@@ -21,9 +21,10 @@ Use this checklist while finalizing and maintaining the public repository.
 
 - [x] Add screenshots or a short demo GIF to the README.
 - [x] Add a short changelog or release notes file if you start tagging releases.
-- [ ] Keep `implementation.md` and the sprint archives in sync with the codebase.
-- [ ] Update architecture notes whenever navigation, storage, or feature boundaries change.
-- [ ] Add any missing API, data, or model-contract documentation.
+- [x] Organize complete project documentation under `docs/` (see [docs/README.md](docs/README.md)).
+- [x] Document architecture, data, processing, and development workflows in `docs/`.
+- [ ] Keep `docs/` in sync when navigation, storage, or feature boundaries change.
+- [ ] Add more tests for geometry, persistence, export, and capture flows (see [docs/development/testing.md](docs/development/testing.md)).
 
 ## Testing and quality
 
@@ -43,7 +44,4 @@ Use this checklist while finalizing and maintaining the public repository.
 
 - [ ] Replace any temporary or placeholder copy with public-facing wording.
 - [ ] Add app store style screenshots or feature bullets.
-- [ ] Consider adding a short design document for the scanner pipeline.
-- [ ] Keep historical sprint notes archived, not front-and-center in the main README.
-
-
+- [x] Document the scanner pipeline in [docs/processing/](docs/processing/).
