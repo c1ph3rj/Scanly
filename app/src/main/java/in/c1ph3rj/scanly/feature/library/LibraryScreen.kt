@@ -52,6 +52,8 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import `in`.c1ph3rj.scanly.domain.model.DocumentGroup
+import `in`.c1ph3rj.scanly.domain.model.DocumentTitleFormat
+import `in`.c1ph3rj.scanly.domain.model.GroupTitleFormat
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
 import `in`.c1ph3rj.scanly.feature.components.*
 import kotlinx.coroutines.flow.collectLatest
@@ -94,6 +96,8 @@ fun LibraryRoute(
         onClearSearch = viewModel::clearSearch,
         onTabSelected = viewModel::selectTab,
         onSortSelected = viewModel::selectSortOption,
+        onSuggestTitle = viewModel::suggestDocumentTitle,
+        onSuggestGroupTitle = viewModel::suggestGroupTitle,
     )
 }
 
@@ -117,6 +121,8 @@ fun LibraryScreen(
     onClearSearch: () -> Unit,
     onTabSelected: (LibraryTab) -> Unit,
     onSortSelected: (LibrarySortOption) -> Unit,
+    onSuggestTitle: suspend (DocumentTitleFormat) -> String,
+    onSuggestGroupTitle: suspend (GroupTitleFormat) -> String,
 ) {
     var createDocDialogVisible by rememberSaveable { mutableStateOf(false) }
     var createGroupDialogVisible by rememberSaveable { mutableStateOf(false) }
@@ -364,6 +370,7 @@ fun LibraryScreen(
                 createDocDialogVisible = false
                 onCreateDocument(title, groupId)
             },
+            onSuggestTitle = onSuggestTitle,
         )
     }
 
@@ -376,6 +383,7 @@ fun LibraryScreen(
                 createGroupDialogVisible = false
                 onCreateGroup(title)
             },
+            onSuggestTitle = onSuggestGroupTitle,
         )
     }
 
@@ -445,6 +453,7 @@ fun LibraryScreen(
                 moveDocTarget = null
                 onMoveDocumentToNewGroup(doc.id, name)
             },
+            onSuggestFolderName = onSuggestGroupTitle,
         )
     }
 
@@ -905,6 +914,7 @@ fun NewDocumentDialog(
     groups: List<DocumentGroup>,
     onDismiss: () -> Unit,
     onConfirm: (title: String, groupId: String?) -> Unit,
+    onSuggestTitle: (suspend (DocumentTitleFormat) -> String)? = null,
 ) {
     var title by rememberSaveable { mutableStateOf("") }
     var selectedGroupId by rememberSaveable { mutableStateOf<String?>(null) }
@@ -922,6 +932,12 @@ fun NewDocumentDialog(
             singleLine = true,
             modifier = Modifier.fillMaxWidth(),
         )
+        if (onSuggestTitle != null) {
+            DocumentTitleSuggestRow(
+                onSuggestTitle = onSuggestTitle,
+                onSuggested = { title = it },
+            )
+        }
 
         if (groups.isNotEmpty()) {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {

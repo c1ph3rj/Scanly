@@ -8,8 +8,12 @@ import `in`.c1ph3rj.scanly.core.common.ScanlyResult
 import `in`.c1ph3rj.scanly.core.ui.ImageImportSupport
 import `in`.c1ph3rj.scanly.domain.model.DocumentGroup
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
+import `in`.c1ph3rj.scanly.domain.model.DocumentTitleFormat
 import `in`.c1ph3rj.scanly.domain.usecase.CreateDocumentUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.CreateGroupUseCase
+import `in`.c1ph3rj.scanly.domain.model.GroupTitleFormat
+import `in`.c1ph3rj.scanly.domain.usecase.SuggestDocumentTitleUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.SuggestGroupTitleUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ImportImagesUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveRecentDocumentsUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveRecentGroupsUseCase
@@ -44,6 +48,8 @@ class HomeViewModel @Inject constructor(
     private val createDocumentUseCase: CreateDocumentUseCase,
     private val createGroupUseCase: CreateGroupUseCase,
     private val importImagesUseCase: ImportImagesUseCase,
+    private val suggestDocumentTitleUseCase: SuggestDocumentTitleUseCase,
+    private val suggestGroupTitleUseCase: SuggestGroupTitleUseCase,
 ) : ViewModel() {
 
     private val _events = MutableSharedFlow<HomeEvent>()
@@ -75,6 +81,12 @@ class HomeViewModel @Inject constructor(
             }
         }
     }
+
+    suspend fun suggestDocumentTitle(format: DocumentTitleFormat): String =
+        suggestDocumentTitleUseCase(format)
+
+    suspend fun suggestGroupTitle(format: GroupTitleFormat): String =
+        suggestGroupTitleUseCase(format)
 
     fun createGroup(title: String) {
         viewModelScope.launch {

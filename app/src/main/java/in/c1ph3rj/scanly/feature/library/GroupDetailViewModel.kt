@@ -9,7 +9,9 @@ import `in`.c1ph3rj.scanly.domain.model.DocumentGroup
 import `in`.c1ph3rj.scanly.domain.model.PdfExportOptions
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
 import `in`.c1ph3rj.scanly.domain.model.ShareArtifact
+import `in`.c1ph3rj.scanly.domain.model.DocumentTitleFormat
 import `in`.c1ph3rj.scanly.domain.usecase.CreateDocumentUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.SuggestDocumentTitleUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.DeleteGroupUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ExportGroupPdfUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ExportGroupZippedPdfsUseCase
@@ -69,6 +71,7 @@ class GroupDetailViewModel @Inject constructor(
     private val exportGroupZippedPdfsUseCase: ExportGroupZippedPdfsUseCase,
     private val prepareGroupPdfShareUseCase: PrepareGroupPdfShareUseCase,
     private val prepareGroupZippedPdfsShareUseCase: PrepareGroupZippedPdfsShareUseCase,
+    private val suggestDocumentTitleUseCase: SuggestDocumentTitleUseCase,
 ) : ViewModel() {
 
     val groupId: String = checkNotNull(savedStateHandle["groupId"])
@@ -124,6 +127,9 @@ class GroupDetailViewModel @Inject constructor(
             }
         }
     }
+
+    suspend fun suggestDocumentTitle(format: DocumentTitleFormat): String =
+        suggestDocumentTitleUseCase(format)
 
     fun addDocumentToGroup(documentId: String) {
         viewModelScope.launch {

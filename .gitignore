@@ -25,3 +25,4 @@ local.properties
 *.log
 /output/
 /tmp/
+/terminals/

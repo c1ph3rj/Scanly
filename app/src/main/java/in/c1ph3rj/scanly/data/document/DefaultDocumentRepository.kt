@@ -11,6 +11,7 @@ import `in`.c1ph3rj.scanly.data.local.db.dao.ScanPageDao
 import `in`.c1ph3rj.scanly.data.local.db.entity.DocumentEntity
 import `in`.c1ph3rj.scanly.data.local.db.entity.ScanPageEntity
 import `in`.c1ph3rj.scanly.data.storage.DocumentStorageManager
+import `in`.c1ph3rj.scanly.domain.model.DocumentTitleFormat
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
 import `in`.c1ph3rj.scanly.domain.repository.DocumentRepository
 import kotlinx.coroutines.flow.Flow
@@ -48,12 +49,28 @@ class DefaultDocumentRepository @Inject constructor(
     override fun observeDocument(documentId: String): Flow<ScanDocument?> =
         documentDao.observeDocument(documentId).map { it?.toDomain() }
 
+    override suspend fun getAllDocumentTitles(): List<String> =
+        withContext(dispatchers.io) {
+            documentDao.getAllTitles()
+        }
+
+    override suspend fun suggestDocumentTitle(format: DocumentTitleFormat): String =
+        withContext(dispatchers.io) {
+            DocumentPresentationFormatter.uniqueDocumentTitle(
+                format = format,
+                existingTitles = documentDao.getAllTitles(),
+            )
+        }
+
     override suspend fun createDocument(
         title: String,
         groupId: String?,
     ): ScanlyResult<String> =
         withContext(dispatchers.io) {
-            val normalizedTitle = DocumentPresentationFormatter.normalizeTitle(title)
+            val normalizedTitle = DocumentPresentationFormatter.resolveUniqueTitle(
+                baseTitle = DocumentPresentationFormatter.normalizeTitle(title),
+                existingTitles = documentDao.getAllTitles(),
+            )
             val documentId = UUID.randomUUID().toString()
             val timestamp = System.currentTimeMillis()
 

@@ -85,6 +85,9 @@ interface DocumentGroupDao {
     @Query("SELECT * FROM document_groups WHERE id = :groupId")
     suspend fun getGroup(groupId: String): DocumentGroupEntity?
 
+    @Query("SELECT title FROM document_groups")
+    suspend fun getAllTitles(): List<String>
+
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insert(group: DocumentGroupEntity)
 

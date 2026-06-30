@@ -1,6 +1,7 @@
 package `in`.c1ph3rj.scanly.feature.camera
 
 import android.Manifest
+import android.app.Activity
 import android.content.pm.PackageManager
 import android.util.Size
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -41,6 +42,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.FlashOff
@@ -48,6 +50,7 @@ import androidx.compose.material.icons.filled.FlashOn
 import androidx.compose.material.icons.filled.Grid3x3
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -75,6 +78,8 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
@@ -82,6 +87,8 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.core.view.doOnLayout
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import `in`.c1ph3rj.scanly.core.ui.ChromeIconButton
 import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
@@ -128,27 +135,55 @@ fun ScanSessionRoute(
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
     val mainExecutor = remember(context) { ContextCompat.getMainExecutor(context) }
-    var hasCameraPermission by remember(context) {
-        mutableStateOf(
-            ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED,
-        )
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val activity = context as? Activity
+    var cameraPermissionStatus by remember(context) {
+        mutableStateOf(CameraPermissionSupport.resolveStatus(activity, context))
     }
+    var hasAutoOpenedSettings by rememberSaveable { mutableStateOf(false) }
+    val hasCameraPermission = cameraPermissionStatus == CameraPermissionStatus.Granted
+    val isCameraPermissionPermanentlyDenied =
+        cameraPermissionStatus == CameraPermissionStatus.PermanentlyDenied
     var torchEnabled by rememberSaveable { mutableStateOf(false) }
     var torchAvailable by remember { mutableStateOf(false) }
     var imageCapture by remember { mutableStateOf<ImageCapture?>(null) }
     var previewView by remember { mutableStateOf<PreviewView?>(null) }
     var cameraControl by remember { mutableStateOf<CameraControl?>(null) }
 
+    fun refreshCameraPermissionStatus() {
+        cameraPermissionStatus = CameraPermissionSupport.resolveStatus(activity, context)
+    }
+
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),
     ) { granted ->
-        hasCameraPermission = granted
+        CameraPermissionSupport.markRequested(context)
+        val updatedStatus = CameraPermissionSupport.resolveStatus(activity, context)
+        cameraPermissionStatus = updatedStatus
+        if (!granted && CameraPermissionSupport.shouldOpenSettings(updatedStatus)) {
+            CameraPermissionSupport.openAppSettings(context)
+            hasAutoOpenedSettings = true
+        }
     }
 
-    LaunchedEffect(hasCameraPermission) {
-        if (!hasCameraPermission) {
-            permissionLauncher.launch(Manifest.permission.CAMERA)
+    LaunchedEffect(cameraPermissionStatus) {
+        if (
+            cameraPermissionStatus == CameraPermissionStatus.PermanentlyDenied &&
+            !hasAutoOpenedSettings
+        ) {
+            hasAutoOpenedSettings = true
+            CameraPermissionSupport.openAppSettings(context)
         }
+    }
+
+    DisposableEffect(lifecycleOwner, context, activity) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                refreshCameraPermissionStatus()
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
     }
 
     LaunchedEffect(viewModel, imageCapture, previewView, hasCameraPermission) {
@@ -182,8 +217,13 @@ fun ScanSessionRoute(
         uiState = uiState,
         snackbarHostState = snackbarHostState,
         hasCameraPermission = hasCameraPermission,
-        onRequestPermission = {
-            permissionLauncher.launch(Manifest.permission.CAMERA)
+        isCameraPermissionPermanentlyDenied = isCameraPermissionPermanentlyDenied,
+        onRequestCameraPermission = {
+            if (CameraPermissionSupport.shouldOpenSettings(cameraPermissionStatus)) {
+                CameraPermissionSupport.openAppSettings(context)
+            } else {
+                permissionLauncher.launch(Manifest.permission.CAMERA)
+            }
         },
         onNavigateUp = onNavigateUp,
         onOpenDocument = {
@@ -240,7 +280,8 @@ fun ScanSessionScreen(
     uiState: ScanSessionUiState,
     snackbarHostState: SnackbarHostState,
     hasCameraPermission: Boolean,
-    onRequestPermission: () -> Unit,
+    isCameraPermissionPermanentlyDenied: Boolean,
+    onRequestCameraPermission: () -> Unit,
     onNavigateUp: () -> Unit,
     onOpenDocument: () -> Unit,
     onCapture: () -> Unit,
@@ -276,15 +317,13 @@ fun ScanSessionScreen(
                 onAction = onNavigateUp,
             )
         } else if (!hasCameraPermission) {
-            CameraStateCard(
+            CameraPermissionPrompt(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(innerPadding)
-                    .padding(20.dp),
-                title = "Camera access needed",
-                body = "Allow camera to keep scanning.",
-                actionLabel = "Grant",
-                onAction = onRequestPermission,
+                    .padding(innerPadding),
+                isPermanentlyDenied = isCameraPermissionPermanentlyDenied,
+                onAllowCamera = onRequestCameraPermission,
+                onNavigateUp = onNavigateUp,
             )
         } else {
             CameraCaptureLayout(
@@ -924,6 +963,151 @@ private fun CaptureButton(
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun CameraPermissionPrompt(
+    isPermanentlyDenied: Boolean,
+    onAllowCamera: () -> Unit,
+    onNavigateUp: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val windowSizeInfo = rememberWindowSizeInfo()
+    val cardMaxWidth = if (windowSizeInfo.isTablet) 440.dp else 360.dp
+
+    Column(
+        modifier = modifier
+            .background(Color.Black)
+            .statusBarsPadding()
+            .navigationBarsPadding(),
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp, vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            ChromeIconButton(
+                icon = Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = "Back",
+                onClick = onNavigateUp,
+                containerColor = Color.Transparent,
+                contentColor = Color.White,
+            )
+        }
+
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp),
+            contentAlignment = Alignment.Center,
+        ) {
+            Surface(
+                modifier = Modifier.widthIn(max = cardMaxWidth),
+                color = MaterialTheme.colorScheme.surfaceContainerHigh,
+                shape = MaterialTheme.shapes.extraLarge,
+            ) {
+                Column(
+                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 28.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                ) {
+                    Surface(
+                        modifier = Modifier.size(56.dp),
+                        shape = MaterialTheme.shapes.large,
+                        color = MaterialTheme.colorScheme.primaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    ) {
+                        Box(contentAlignment = Alignment.Center) {
+                            Icon(
+                                imageVector = Icons.Filled.CameraAlt,
+                                contentDescription = null,
+                                modifier = Modifier.size(28.dp),
+                            )
+                        }
+                    }
+
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        Text(
+                            text = "Camera access needed",
+                            style = MaterialTheme.typography.headlineSmall,
+                            fontWeight = FontWeight.SemiBold,
+                            textAlign = TextAlign.Center,
+                        )
+                        Text(
+                            text = if (isPermanentlyDenied) {
+                                "Camera access is turned off for Scanly in system settings. " +
+                                    "Enable it there to capture document pages."
+                            } else {
+                                "Scanly needs your camera to capture and straighten document pages. " +
+                                    "Photos stay on your device until you export or share them."
+                            },
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            textAlign = TextAlign.Center,
+                        )
+                    }
+
+                    if (!isPermanentlyDenied) {
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalArrangement = Arrangement.spacedBy(10.dp),
+                        ) {
+                            CameraPermissionBullet("Live preview with edge detection")
+                            CameraPermissionBullet("Camera active only while scanning")
+                            CameraPermissionBullet("Scans saved locally on this device")
+                        }
+                    }
+
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(4.dp),
+                    ) {
+                        Button(
+                            onClick = onAllowCamera,
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Text(
+                                text = if (isPermanentlyDenied) {
+                                    "Open Settings"
+                                } else {
+                                    "Allow camera access"
+                                },
+                            )
+                        }
+                        TextButton(onClick = onNavigateUp) {
+                            Text("Not now")
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun CameraPermissionBullet(text: String) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalAlignment = Alignment.Top,
+    ) {
+        Text(
+            text = "•",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.primary,
+        )
+        Text(
+            text = text,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
     }
 }
 

@@ -11,8 +11,10 @@ import `in`.c1ph3rj.scanly.domain.model.ExportArtifact
 import `in`.c1ph3rj.scanly.domain.model.PdfExportOptions
 import `in`.c1ph3rj.scanly.domain.model.ShareArtifact
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
+import `in`.c1ph3rj.scanly.domain.model.GroupTitleFormat
 import `in`.c1ph3rj.scanly.domain.model.ScanPage
 import `in`.c1ph3rj.scanly.domain.usecase.CreateGroupUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.SuggestGroupTitleUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.DeleteDocumentUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.DeletePageUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ExportDocumentImageArchiveUseCase
@@ -80,6 +82,7 @@ class DocumentDetailViewModel @Inject constructor(
     private val observeGroupsUseCase: ObserveGroupsUseCase,
     private val setDocumentGroupUseCase: SetDocumentGroupUseCase,
     private val createGroupUseCase: CreateGroupUseCase,
+    private val suggestGroupTitleUseCase: SuggestGroupTitleUseCase,
 ) : ViewModel() {
     private val documentId: String = checkNotNull(savedStateHandle[DocumentDestination.documentIdArgument])
 
@@ -136,6 +139,9 @@ class DocumentDetailViewModel @Inject constructor(
             }
         }
     }
+
+    suspend fun suggestGroupTitle(format: GroupTitleFormat): String =
+        suggestGroupTitleUseCase(format)
 
     fun createFolderAndMove(name: String) {
         viewModelScope.launch {

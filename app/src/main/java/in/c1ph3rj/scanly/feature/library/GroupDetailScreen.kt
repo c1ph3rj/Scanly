@@ -73,6 +73,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import `in`.c1ph3rj.scanly.core.ui.MetricChip
 import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
+import `in`.c1ph3rj.scanly.domain.model.DocumentTitleFormat
 import `in`.c1ph3rj.scanly.domain.model.PdfExportOptions
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
 import `in`.c1ph3rj.scanly.feature.components.DocumentCard
@@ -155,6 +156,7 @@ fun GroupDetailRoute(
         onDeleteGroup = viewModel::deleteGroup,
         onAddDocument = viewModel::addDocumentToGroup,
         onCreateDocument = viewModel::createDocumentInGroup,
+        onSuggestTitle = viewModel::suggestDocumentTitle,
         onRemoveDocument = viewModel::removeDocumentFromGroup,
         onSaveMergedPdf = viewModel::saveMergedPdf,
         onShareMergedPdf = viewModel::shareMergedPdf,
@@ -175,6 +177,7 @@ private fun GroupDetailScreen(
     onDeleteGroup: () -> Unit,
     onAddDocument: (String) -> Unit,
     onCreateDocument: (String) -> Unit,
+    onSuggestTitle: suspend (DocumentTitleFormat) -> String,
     onRemoveDocument: (String) -> Unit,
     onSaveMergedPdf: (PdfExportOptions) -> Unit,
     onShareMergedPdf: (PdfExportOptions) -> Unit,
@@ -433,6 +436,7 @@ private fun GroupDetailScreen(
                 showCreateDialog = false
                 onCreateDocument(newTitle)
             },
+            onSuggestTitle = onSuggestTitle,
         )
     }
 

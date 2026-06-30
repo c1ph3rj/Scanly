@@ -6,7 +6,11 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import `in`.c1ph3rj.scanly.core.common.ScanlyResult
 import `in`.c1ph3rj.scanly.domain.model.DocumentGroup
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
+import `in`.c1ph3rj.scanly.domain.model.DocumentTitleFormat
 import `in`.c1ph3rj.scanly.domain.usecase.CreateDocumentUseCase
+import `in`.c1ph3rj.scanly.domain.model.GroupTitleFormat
+import `in`.c1ph3rj.scanly.domain.usecase.SuggestDocumentTitleUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.SuggestGroupTitleUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.CreateGroupUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.DeleteDocumentUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.DeleteGroupUseCase
@@ -146,6 +150,8 @@ class LibraryViewModel @Inject constructor(
     private val renameGroupUseCase: RenameGroupUseCase,
     private val deleteGroupUseCase: DeleteGroupUseCase,
     private val setDocumentGroupUseCase: SetDocumentGroupUseCase,
+    private val suggestDocumentTitleUseCase: SuggestDocumentTitleUseCase,
+    private val suggestGroupTitleUseCase: SuggestGroupTitleUseCase,
 ) : ViewModel() {
 
     private val _searchQuery = MutableStateFlow("")
@@ -207,6 +213,12 @@ class LibraryViewModel @Inject constructor(
             }
         }
     }
+
+    suspend fun suggestDocumentTitle(format: DocumentTitleFormat): String =
+        suggestDocumentTitleUseCase(format)
+
+    suspend fun suggestGroupTitle(format: GroupTitleFormat): String =
+        suggestGroupTitleUseCase(format)
 
     fun renameDocument(documentId: String, title: String) {
         viewModelScope.launch {

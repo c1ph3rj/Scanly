@@ -8,6 +8,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- **Suggested document names** — new scan and new document dialogs now include a **Suggest name** button with date-based formats. Suggestions avoid duplicate titles; manual creates also auto-suffix when a title is already taken.
+- **Suggested folder names** — new folder dialogs and inline folder creation when moving documents use the same **Suggest name** flow, with folder-specific formats and duplicate-safe naming.
 - **Dual release channels** — signed builds now expose `githubRelease` and `playStoreRelease` variants. The GitHub build checks GitHub Releases and opens the release page, while the Play Store build uses Google Play in-app updates.
 - **Google Play in-app updates** — production installs now check Google Play for updates and can download and install them in-app. Flexible updates show a restart prompt after download; high-priority updates can launch the immediate Play Store flow automatically.
 - **Advanced PDF export controls** — PDF save and share flows now support optional open-password protection, page numbers at the lower left/center/right, per-page auto orientation, and A3/A4/A5/B4/B5/Letter/Tabloid/Legal/Executive/Postcard/Foolscap paper sizes.

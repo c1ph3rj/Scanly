@@ -110,6 +110,7 @@ import `in`.c1ph3rj.scanly.core.ui.ZoomableImageDialog
 import `in`.c1ph3rj.scanly.core.ui.ZoomableImageViewer
 import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import `in`.c1ph3rj.scanly.domain.model.ExportArtifact
+import `in`.c1ph3rj.scanly.domain.model.GroupTitleFormat
 import `in`.c1ph3rj.scanly.domain.model.PageProcessingState
 import `in`.c1ph3rj.scanly.domain.model.PdfExportOptions
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
@@ -256,6 +257,7 @@ fun DocumentDetailRoute(
         onShareSelectedPage = viewModel::shareSelectedPage,
         onMoveToGroup = viewModel::moveToGroup,
         onCreateFolderAndMove = viewModel::createFolderAndMove,
+        onSuggestGroupTitle = viewModel::suggestGroupTitle,
         onImportImage = {
             importImagesLauncher.launch(ImageImportSupport.createPickRequest())
         },
@@ -283,6 +285,7 @@ fun DocumentDetailScreen(
     onShareSelectedPage: () -> Unit,
     onMoveToGroup: (String?) -> Unit,
     onCreateFolderAndMove: (String) -> Unit,
+    onSuggestGroupTitle: suspend (GroupTitleFormat) -> String,
     onImportImage: () -> Unit,
     onRenameDocument: (String) -> Unit,
     onDeleteDocument: () -> Unit,
@@ -762,6 +765,7 @@ fun DocumentDetailScreen(
                 moveSheetVisible = false
                 onCreateFolderAndMove(name)
             },
+            onSuggestFolderName = onSuggestGroupTitle,
         )
     }
 
