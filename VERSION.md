@@ -20,7 +20,7 @@ The version shown in **Settings** is read from `versionName` in `app/build.gradl
 ## Versioning Policy
 
 - **Version name** follows semantic-style `MAJOR.MINOR.PATCH` strings for user-facing releases.
-- **Version code** is a monotonically increasing integer required by Google Play and used for upgrade checks.
+- **Version code** is a monotonically increasing integer required by Google Play; GitHub builds compare `versionName` with the latest release tag.
 - Bump both values together whenever you ship a public release.
 - Record user-visible changes in `CHANGELOG.md` and keep this file aligned with the Gradle values.
 
@@ -64,6 +64,7 @@ Initial open-source baseline on `master`:
 | Location | Purpose |
 | --- | --- |
 | `app/build.gradle.kts` | Canonical `versionCode` and `versionName` |
+| `githubRelease` / `playStoreRelease` | Distribution variants sharing the same version and application ID |
 | `DefaultSettingsRepository` | Reads package version for the Settings screen |
 | `VERSION.md` | Human-readable release metadata (this file) |
 | `CHANGELOG.md` | Per-release notes and upgrade guidance |

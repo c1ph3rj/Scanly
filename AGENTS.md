@@ -76,7 +76,7 @@ Legacy placeholder routes (`camera`, `review`, `editor` top-level) use `FeatureP
 
 ## Testing Reality
 
-- Unit tests: `app/src/test/java/in/c1ph3rj/scanly/` (22 files).
+- Unit tests: `app/src/test/java/in/c1ph3rj/scanly/` (23 files).
 - Instrumented: `app/src/androidTest/` (onboarding UI test + smoke test).
 - See [docs/development/testing.md](docs/development/testing.md) for gaps.
 

@@ -25,7 +25,7 @@ MainActivity → onboarding gate → ScanlyNavHost
 
 ## Features (summary)
 
-Home · Library · Camera scan · Gallery import · Document detail · Page preview · Page editor · Groups · advanced PDF/ZIP export · Settings · Onboarding · Google Play updates
+Home · Library · Camera scan · Gallery import · Document detail · Page preview · Page editor · Groups · advanced PDF/ZIP export · Settings · Onboarding · GitHub/Google Play update variants
 
 ## Data
 

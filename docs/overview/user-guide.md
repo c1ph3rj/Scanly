@@ -147,7 +147,7 @@ Tap to view bundled support content. Licenses list third-party dependencies.
 
 ### Check for updates
 
-Manually checks Google Play for updates. If a newer version exists, an update dialog appears and installs through the Play Store in-app update flow.
+Manually checks the update channel built into the installed app. GitHub builds compare against the latest GitHub release and open its release page. Play Store builds use the Google Play in-app update flow.
 
 ## Permissions
 

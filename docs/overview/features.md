@@ -81,7 +81,7 @@ Complete inventory of Scanly features as of **v1.0.9**.
 - **Support** — FAQs and third-party license disclosures (bundled JSON assets)
 - **Storage usage** — shows on-device bytes for documents, export cache, and database
 - **Clear all data** — destructive wipe of library, files, export cache, and thumbnail cache (with confirmation)
-- **Check for updates** — manual Google Play update check
+- **Check for updates** — manual check against the build's GitHub or Google Play channel
 
 ## Onboarding
 
@@ -91,10 +91,11 @@ Complete inventory of Scanly features as of **v1.0.9**.
 
 ## App updates
 
-- Checks Google Play for updates on app start (after onboarding)
+- Checks the build's fixed update channel on app start (after onboarding)
 - **6-hour cooldown** between automatic update dialog appearances
-- Downloads and installs updates in-app via the Play Store flexible or immediate flows
-- Enriches the update dialog with GitHub release notes when available
+- GitHub builds open the latest GitHub release page
+- Play Store builds download and install via flexible or immediate Play flows
+- Shows GitHub release notes when available
 
 ## Shared UI components
 

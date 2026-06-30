@@ -34,16 +34,10 @@ From repository root (Windows PowerShell):
 # Lint
 ./gradlew.bat lintDebug
 
-# Release APK (requires signing — see below)
-./gradlew.bat assembleRelease
+# Release APKs (require signing — see below)
+./gradlew.bat assembleGithubRelease assemblePlayStoreRelease
 
-# Release-like build with debug signing (verification)
-./gradlew.bat assembleVerification
-```
-
-Instrumented tests (requires device/emulator):
-
-```powershell
+# Instrumented tests (requires device/emulator)
 ./gradlew.bat connectedDebugAndroidTest
 ```
 
@@ -69,8 +63,19 @@ All four must be non-blank for signed release builds. **Never commit** keystores
 | Type | Minify | Signing | Purpose |
 | --- | --- | --- | --- |
 | `debug` | No | Debug | Local development |
-| `release` | Yes (R8 + shrink resources) | Release (if configured) | Production |
-| `verification` | Yes | Debug | Release-like verification without release key |
+| `githubRelease` | Yes (R8 + shrink resources) | Release (if configured or supplied by wizard) | GitHub production APK |
+| `playStoreRelease` | Yes (R8 + shrink resources) | Release (if configured or supplied by wizard) | Google Play production AAB |
+
+The generic `release` variant is disabled so Android Studio exposes only the two named production channels.
+
+## Distribution build types
+
+| Build type | Update behavior | Release artifact |
+| --- | --- | --- |
+| `githubRelease` | Compares the installed `versionName` with the latest GitHub release tag and opens that release page | APK attached to GitHub Releases |
+| `playStoreRelease` | Uses Google Play In-App Updates; GitHub can enrich release notes | AAB uploaded to Google Play |
+
+Both build types keep the same application ID, version name, version code, and signing key. In Android Studio, **Build → Generate Signed Bundle / APK** shows `githubRelease` and `playStoreRelease` directly. Select `githubRelease` for the GitHub APK and `playStoreRelease` for the Play Store bundle.
 
 ## SDK and NDK
 

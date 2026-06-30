@@ -21,7 +21,8 @@ The version shown in Settings reads `versionName` via `DefaultSettingsRepository
 ## Versioning policy
 
 - **Version name** — semantic-style `MAJOR.MINOR.PATCH` for user-facing releases.
-- **Version code** — monotonically increasing integer required by Play Store and used for in-app update comparison.
+- **Version code** — monotonically increasing integer required by Play Store.
+- **Distribution build types** — `githubRelease` and `playStoreRelease` share the same version and application ID; only their update provider differs.
 - Bump both together on every public release.
 - Record user-visible changes in [CHANGELOG.md](../CHANGELOG.md).
 - Keep [VERSION.md](../VERSION.md) aligned with Gradle values.

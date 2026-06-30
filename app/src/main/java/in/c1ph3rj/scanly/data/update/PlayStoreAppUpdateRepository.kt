@@ -6,6 +6,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import `in`.c1ph3rj.scanly.core.common.AppVersionComparator
 import `in`.c1ph3rj.scanly.core.common.ScanlyResult
 import `in`.c1ph3rj.scanly.domain.model.AppRelease
+import `in`.c1ph3rj.scanly.domain.model.AppUpdateChannel
 import `in`.c1ph3rj.scanly.domain.model.AppUpdateCheckResult
 import `in`.c1ph3rj.scanly.domain.repository.AppReleaseNotesRepository
 import `in`.c1ph3rj.scanly.domain.repository.AppUpdateRepository
@@ -36,6 +37,7 @@ class PlayStoreAppUpdateRepository @Inject constructor(
                         latestRelease = releaseNotes,
                         updateAvailable = availability.updateAvailable &&
                             availability.recommendedUpdateType != null,
+                        channel = AppUpdateChannel.PLAY_STORE,
                         playUpdateType = availability.recommendedUpdateType,
                         availableVersionCode = availability.availableVersionCode,
                     ),

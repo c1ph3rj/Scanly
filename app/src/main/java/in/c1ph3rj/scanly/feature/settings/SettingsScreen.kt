@@ -421,6 +421,7 @@ private fun SettingsUpdateRow(
     modifier: Modifier = Modifier,
 ) {
     val checkResult = appUpdateUiState.lastCheckResult
+    val sourceLabel = appUpdateUiState.channel.sourceLabel
     val updateAvailable = checkResult?.updateAvailable == true
     val title = if (updateAvailable) {
         "Update available"
@@ -428,16 +429,16 @@ private fun SettingsUpdateRow(
         "Check for updates"
     }
     val subtitle = when {
-        appUpdateUiState.isChecking -> "Checking Google Play..."
+        appUpdateUiState.isChecking -> "Checking $sourceLabel..."
         updateAvailable -> {
-            "Scanly ${checkResult!!.latestRelease.tagName} is available on Google Play."
+            "Scanly ${checkResult!!.latestRelease.tagName} is available on $sourceLabel."
         }
 
         checkResult != null -> {
             "You are on ${versionLabel(checkResult.installedVersionName)}. Latest is ${checkResult.latestRelease.tagName}."
         }
 
-        else -> "Tap to check Google Play"
+        else -> "Tap to check $sourceLabel"
     }
     val rowModifier = if (updateAvailable) {
         modifier.settingsRowSurface(

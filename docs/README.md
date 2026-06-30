@@ -71,7 +71,7 @@ Choose a path based on your goal:
 | --- | --- |
 | [database.md](data/database.md) | Room schema v3, entities, migrations, DAOs |
 | [file-storage.md](data/file-storage.md) | On-disk layout, raw/processed/thumbs, export cache |
-| [settings-and-updates.md](data/settings-and-updates.md) | DataStore prefs, FAQs/licenses, GitHub update flow |
+| [settings-and-updates.md](data/settings-and-updates.md) | DataStore prefs, FAQs/licenses, GitHub/Google Play update variants |
 
 ### Processing — capture, ML, filters, export
 

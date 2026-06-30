@@ -58,7 +58,7 @@ All code under `app/src/main/java/in/c1ph3rj/scanly/`:
 | `data/export/` | PDF/ZIP export |
 | `data/storage/` | App-private file manager |
 | `data/settings/` | DataStore and bundled assets |
-| `data/update/` | Google Play in-app updates, GitHub release notes |
+| `data/update/` | Build-selected GitHub or Google Play update checks |
 | `data/processing/` | `PageImageProcessor` implementation |
 | `core/ml/` | LiteRT corner detection |
 | `core/processing/` | Perspective math, OpenCV filters |
@@ -97,7 +97,8 @@ Hilt modules in `di/` install into `SingletonComponent`:
 | `AppDataModule` | `AppDataRepository` |
 | `ProcessingModule` | `PageImageProcessor` |
 | `MlModule` | `DocumentCornerDetector` → `LiteRtDocumentCornerDetector` |
-| `AppUpdateModule` | `AppUpdateRepository`, `AppUpdatePromptRepository` |
+| `AppUpdateModule` | Shared update notes, Play coordinator, and prompt storage |
+| `DistributionAppUpdateModule` | Build-type-specific `AppUpdateRepository` binding |
 | `CoroutineModule` | `ScanlyDispatchers` |
 
 ## Connection maps

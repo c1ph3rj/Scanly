@@ -36,7 +36,10 @@ app/
     │   ├── java/in/c1ph3rj/scanly/   # All Kotlin source
     │   ├── assets/                    # ML model, FAQs, licenses
     │   └── res/                       # Compose theme, icons, FileProvider paths
-    ├── test/                          # Unit tests (22 files)
+    ├── debug/                         # Local debug update binding
+    ├── githubRelease/                 # GitHub release update binding
+    ├── playStoreRelease/              # Google Play release update binding
+    ├── test/                          # Unit tests (23 files)
     └── androidTest/                   # Instrumented tests (2 files)
 ```
 

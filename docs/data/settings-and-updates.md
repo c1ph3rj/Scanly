@@ -52,9 +52,11 @@ AppSettingsViewModel (MainActivity)
 
 | Class | Role |
 | --- | --- |
+| `GitHubAppUpdateRepository` | Compares the installed version with the latest GitHub release |
 | `PlayStoreAppUpdateRepository` | Checks Google Play for update availability |
 | `DefaultPlayInAppUpdateCoordinator` | Starts, resumes, and completes Play in-app updates |
-| `GitHubReleaseUpdateRepository` | Fetches release notes for the update dialog |
+| `GitHubReleaseUpdateRepository` | Fetches the latest GitHub release and notes |
+| `DistributionAppUpdateModule` | Build-type-specific binding that selects the authoritative update repository |
 | `DefaultAppUpdatePromptRepository` | Stores dialog cooldown timestamp |
 | `CheckForAppUpdateUseCase` | Delegates to `AppUpdateRepository` |
 | `AppUpdateViewModel` | Orchestrates automatic and manual checks |
@@ -68,8 +70,8 @@ AppSettingsViewModel (MainActivity)
 
 | Source | Purpose |
 | --- | --- |
-| Google Play In-App Update API (`app-update` 2.1.0) | Availability, download, and install |
-| GitHub Releases API | Optional release notes enrichment |
+| `githubRelease` build type | GitHub Releases API is authoritative for availability and release notes |
+| `playStoreRelease` build type | Google Play is authoritative for availability/download/install; GitHub optionally enriches notes |
 
 ### Cooldown DataStore: `scanly_update_prompt`
 
@@ -86,7 +88,16 @@ Dialog shown at most once every **6 hours** for automatic checks (since v1.0.7).
 | Automatic | `MainActivity` `ON_START`, only after onboarding complete |
 | Manual | Settings "Check for updates" button |
 
-### Update types
+### Distribution channels
+
+| Variant | Availability check | Update action |
+| --- | --- | --- |
+| `githubRelease` | Compare installed `versionName` with the latest GitHub release tag | Open the GitHub release page |
+| `playStoreRelease` | Google Play In-App Update API | Flexible or immediate Play update flow |
+
+Both variants use the same application ID and release version. `BuildConfig.UPDATE_CHANNEL` and build-type-specific Hilt modules keep the updater fixed to the artifact that was built.
+
+### Play Store update types
 
 | Type | When used |
 | --- | --- |
@@ -97,27 +108,32 @@ High-priority immediate updates launched automatically on `ON_START` skip the cu
 
 ### Download action
 
-User taps **Update** in the dialog or Settings row. Scanly launches the Google Play in-app update flow. Flexible updates show a restart snackbar after download completes.
+User taps **Update** in the dialog. The GitHub build opens the corresponding GitHub release page. The Play Store build launches the Google Play in-app update flow; flexible updates show a restart snackbar after download completes.
 
 ### Flow diagram
 
 ```
 ON_START / Settings button
   → CheckForAppUpdateUseCase
-    → PlayStoreAppUpdateRepository.checkForUpdate()
-      → DefaultPlayInAppUpdateCoordinator.refreshAvailability()
-      → GitHubReleaseUpdateRepository.fetchLatestReleaseNotes() (optional)
+    → Build-type-specific AppUpdateRepository
+      → github: GitHubAppUpdateRepository
+        → GitHubReleaseUpdateRepository.fetchLatestReleaseNotes()
+        → compare installed version with release tag
+      → playStore: PlayStoreAppUpdateRepository
+        → DefaultPlayInAppUpdateCoordinator.refreshAvailability()
+        → GitHubReleaseUpdateRepository.fetchLatestReleaseNotes() (optional)
   → If update available AND cooldown OK
     → AppUpdateDialog
   → User taps Update
-    → Play in-app update flow
-  → ON_RESUME
-    → Resume stalled immediate updates or show flexible restart snackbar
+    → github: open GitHub release page
+    → playStore: Play in-app update flow
+  → playStore ON_RESUME
+    → resume stalled immediate update or show flexible restart snackbar
 ```
 
 ### Testing notes
 
-In-app updates only work for builds installed from Google Play (internal, closed, open, or production tracks). Debug sideloads and emulator installs without Play Store distribution will report no update available.
+Play in-app updates only work for `playStore` builds installed from Google Play (internal, closed, open, or production tracks). Sideloaded `github` builds use GitHub Releases and do not call Play update lifecycle operations.
 
 ## Related docs
 

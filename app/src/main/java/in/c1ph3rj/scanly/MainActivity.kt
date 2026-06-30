@@ -72,6 +72,7 @@ private fun ScanlyApp() {
     val isDarkTheme = themeMode.resolveDarkTheme(systemDark)
     val navController = rememberNavController()
     val context = androidx.compose.ui.platform.LocalContext.current
+    val uriHandler = androidx.compose.ui.platform.LocalUriHandler.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val activity = context as ComponentActivity
     val flexibleUpdateSnackbarHostState = remember { SnackbarHostState() }
@@ -91,6 +92,8 @@ private fun ScanlyApp() {
                         android.widget.Toast.LENGTH_LONG,
                     ).show()
                 }
+
+                is AppUpdateEvent.OpenUri -> uriHandler.openUri(event.uri)
 
                 is AppUpdateEvent.LaunchPlayUpdate -> {
                     appUpdateViewModel.launchPlayUpdate(
@@ -210,7 +213,7 @@ private fun ScanlyApp() {
                         AppUpdateDialog(
                             checkResult = checkResult,
                             onDismiss = appUpdateViewModel::dismissUpdateDialog,
-                            onUpdate = appUpdateViewModel::startPlayStoreUpdate,
+                            onUpdate = appUpdateViewModel::startUpdate,
                         )
                     }
                 }

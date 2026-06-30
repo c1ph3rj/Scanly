@@ -72,7 +72,7 @@ ViewModels call use cases. Use cases call repository interfaces.
 
 | Use case | Purpose |
 | --- | --- |
-| `CheckForAppUpdateUseCase` | Compare installed vs GitHub latest |
+| `CheckForAppUpdateUseCase` | Delegate to the GitHub or Google Play repository selected by the build type |
 
 ## Related docs
 

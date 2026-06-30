@@ -6,9 +6,11 @@ import androidx.activity.result.IntentSenderRequest
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import `in`.c1ph3rj.scanly.BuildConfig
 import `in`.c1ph3rj.scanly.core.common.ScanlyResult
 import `in`.c1ph3rj.scanly.core.update.PlayInAppUpdatePolicy
 import `in`.c1ph3rj.scanly.domain.model.AppRelease
+import `in`.c1ph3rj.scanly.domain.model.AppUpdateChannel
 import `in`.c1ph3rj.scanly.domain.model.AppUpdateCheckResult
 import `in`.c1ph3rj.scanly.domain.model.PlayInAppUpdateType
 import `in`.c1ph3rj.scanly.domain.model.PlayInstallStatus
@@ -25,6 +27,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class AppUpdateUiState(
+    val channel: AppUpdateChannel,
     val isChecking: Boolean = false,
     val lastCheckResult: AppUpdateCheckResult? = null,
     val dialogCheckResult: AppUpdateCheckResult? = null,
@@ -40,6 +43,7 @@ enum class AppUpdateCheckTrigger {
 
 sealed interface AppUpdateEvent {
     data class ShowMessage(val message: String) : AppUpdateEvent
+    data class OpenUri(val uri: String) : AppUpdateEvent
     data class LaunchPlayUpdate(val updateType: PlayInAppUpdateType) : AppUpdateEvent
     data object ResumePlayUpdate : AppUpdateEvent
 }
@@ -51,26 +55,31 @@ class AppUpdateViewModel @Inject constructor(
     private val playInAppUpdateCoordinator: PlayInAppUpdateCoordinator,
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(AppUpdateUiState())
+    private val updateChannel = AppUpdateChannel.fromBuildConfig(BuildConfig.UPDATE_CHANNEL)
+    private val _uiState = MutableStateFlow(AppUpdateUiState(channel = updateChannel))
     val uiState = _uiState.asStateFlow()
 
     private val _events = MutableSharedFlow<AppUpdateEvent>()
     val events: SharedFlow<AppUpdateEvent> = _events.asSharedFlow()
 
     init {
-        viewModelScope.launch {
-            playInAppUpdateCoordinator.installState.collect { installState ->
-                _uiState.update { current ->
-                    val downloaded = installState?.status == PlayInstallStatus.DOWNLOADED
-                    current.copy(
-                        flexibleUpdateDownloaded = downloaded,
-                        flexibleUpdateProgress = installState?.downloadProgress,
-                        flexibleUpdatePromptToken = if (downloaded && !current.flexibleUpdateDownloaded) {
-                            current.flexibleUpdatePromptToken + 1L
-                        } else {
-                            current.flexibleUpdatePromptToken
-                        },
-                    )
+        if (updateChannel == AppUpdateChannel.PLAY_STORE) {
+            viewModelScope.launch {
+                playInAppUpdateCoordinator.installState.collect { installState ->
+                    _uiState.update { current ->
+                        val downloaded = installState?.status == PlayInstallStatus.DOWNLOADED
+                        current.copy(
+                            flexibleUpdateDownloaded = downloaded,
+                            flexibleUpdateProgress = installState?.downloadProgress,
+                            flexibleUpdatePromptToken = if (
+                                downloaded && !current.flexibleUpdateDownloaded
+                            ) {
+                                current.flexibleUpdatePromptToken + 1L
+                            } else {
+                                current.flexibleUpdatePromptToken
+                            },
+                        )
+                    }
                 }
             }
         }
@@ -97,7 +106,7 @@ class AppUpdateViewModel @Inject constructor(
                         _events.emit(
                             AppUpdateEvent.ShowMessage(
                                 result.error.message.ifBlank {
-                                    "Could not check Google Play for updates."
+                                    "Could not check ${updateChannel.sourceLabel} for updates."
                                 },
                             ),
                         )
@@ -108,6 +117,8 @@ class AppUpdateViewModel @Inject constructor(
     }
 
     fun resumePlayUpdateIfNeeded() {
+        if (updateChannel != AppUpdateChannel.PLAY_STORE) return
+
         viewModelScope.launch {
             _events.emit(AppUpdateEvent.ResumePlayUpdate)
         }
@@ -117,14 +128,19 @@ class AppUpdateViewModel @Inject constructor(
         _uiState.update { current -> current.copy(dialogCheckResult = null) }
     }
 
-    fun startPlayStoreUpdate(release: AppRelease) {
-        val updateType = _uiState.value.dialogCheckResult?.playUpdateType
-            ?: _uiState.value.lastCheckResult?.playUpdateType
+    fun startUpdate(release: AppRelease) {
+        val checkResult = _uiState.value.dialogCheckResult
+            ?: _uiState.value.lastCheckResult
             ?: return
 
         viewModelScope.launch {
             dismissUpdateDialog()
-            _events.emit(AppUpdateEvent.LaunchPlayUpdate(updateType))
+            when (checkResult.channel) {
+                AppUpdateChannel.GITHUB -> _events.emit(AppUpdateEvent.OpenUri(release.htmlUrl))
+                AppUpdateChannel.PLAY_STORE -> checkResult.playUpdateType?.let { updateType ->
+                    _events.emit(AppUpdateEvent.LaunchPlayUpdate(updateType))
+                }
+            }
         }
     }
 
