@@ -6,7 +6,12 @@ import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
+import android.graphics.Typeface
 import android.graphics.pdf.PdfDocument
+import com.tom_roush.pdfbox.pdmodel.PDDocument
+import com.tom_roush.pdfbox.pdmodel.encryption.AccessPermission
+import com.tom_roush.pdfbox.pdmodel.encryption.StandardProtectionPolicy
+import com.tom_roush.pdfbox.android.PDFBoxResourceLoader
 import dagger.hilt.android.qualifiers.ApplicationContext
 import `in`.c1ph3rj.scanly.core.common.DocumentPresentationFormatter
 import `in`.c1ph3rj.scanly.core.common.ScanlyDispatchers
@@ -17,20 +22,19 @@ import `in`.c1ph3rj.scanly.data.local.db.dao.DocumentGroupDao
 import `in`.c1ph3rj.scanly.data.local.db.dao.ScanPageDao
 import `in`.c1ph3rj.scanly.domain.model.ExportArtifact
 import `in`.c1ph3rj.scanly.domain.model.PdfExportOptions
-import `in`.c1ph3rj.scanly.domain.model.PdfPageMargin
-import `in`.c1ph3rj.scanly.domain.model.PdfPageOrientation
-import `in`.c1ph3rj.scanly.domain.model.PdfPageSize
+import `in`.c1ph3rj.scanly.domain.model.PdfPageNumber
 import `in`.c1ph3rj.scanly.domain.model.ShareArtifact
+import `in`.c1ph3rj.scanly.domain.model.validationError
 import `in`.c1ph3rj.scanly.domain.repository.DocumentExportRepository
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
+import java.util.UUID
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.math.min
-import kotlin.math.roundToInt
 
 @Singleton
 class DefaultDocumentExportRepository @Inject constructor(
@@ -287,45 +291,137 @@ class DefaultDocumentExportRepository @Inject constructor(
         options: PdfExportOptions,
         onProgress: ((current: Int, total: Int) -> Unit)?,
     ) {
+        options.validationError()?.let(::error)
+        val password = options.password
+        if (password == null) {
+            writeUnprotectedPdf(outputFile, pageImagePaths, options, onProgress)
+            return
+        }
+
+        val plainPdf = File(
+            checkNotNull(outputFile.parentFile),
+            ".${outputFile.nameWithoutExtension}-${UUID.randomUUID()}.tmp.pdf",
+        )
+        try {
+            writeUnprotectedPdf(plainPdf, pageImagePaths, options, onProgress)
+            protectPdf(plainPdf, outputFile, password)
+        } finally {
+            plainPdf.delete()
+        }
+    }
+
+    private fun writeUnprotectedPdf(
+        outputFile: File,
+        pageImagePaths: List<String>,
+        options: PdfExportOptions,
+        onProgress: ((current: Int, total: Int) -> Unit)?,
+    ) {
         val pdfDocument = PdfDocument()
         val backgroundPaint = Paint().apply { color = Color.WHITE }
 
-        pageImagePaths.forEachIndexed { index, imagePath ->
-            val bitmap = decodeBitmapForExport(imagePath)
-                ?: error("Could not decode $imagePath for export.")
-            val pageLayout = resolvePageLayout(bitmap.width, bitmap.height, options)
-            val pageInfo = PdfDocument.PageInfo.Builder(
-                pageLayout.pageWidthPx,
-                pageLayout.pageHeightPx,
-                index + 1,
-            ).create()
-            val page = pdfDocument.startPage(pageInfo)
-            try {
-                val canvas = page.canvas
-                canvas.drawRect(
-                    0f, 0f,
-                    pageLayout.pageWidthPx.toFloat(),
-                    pageLayout.pageHeightPx.toFloat(),
-                    backgroundPaint,
-                )
-                val destRect = fitRect(
-                    sourceWidth = bitmap.width.toFloat(),
-                    sourceHeight = bitmap.height.toFloat(),
-                    targetWidth = pageLayout.contentWidthPx.toFloat(),
-                    targetHeight = pageLayout.contentHeightPx.toFloat(),
-                ).apply {
-                    offset(pageLayout.marginPx.toFloat(), pageLayout.marginPx.toFloat())
+        try {
+            pageImagePaths.forEachIndexed { index, imagePath ->
+                val bitmap = decodeBitmapForExport(imagePath)
+                    ?: error("Could not decode $imagePath for export.")
+                val pageLayout = PdfPageLayoutResolver.resolve(bitmap.width, bitmap.height, options)
+                val pageInfo = PdfDocument.PageInfo.Builder(
+                    pageLayout.pageWidthPoints,
+                    pageLayout.pageHeightPoints,
+                    index + 1,
+                ).create()
+                val page = pdfDocument.startPage(pageInfo)
+                try {
+                    val canvas = page.canvas
+                    canvas.drawRect(
+                        0f,
+                        0f,
+                        pageLayout.pageWidthPoints.toFloat(),
+                        pageLayout.pageHeightPoints.toFloat(),
+                        backgroundPaint,
+                    )
+                    val destRect = fitRect(
+                        sourceWidth = bitmap.width.toFloat(),
+                        sourceHeight = bitmap.height.toFloat(),
+                        targetWidth = pageLayout.contentWidthPoints.toFloat(),
+                        targetHeight = pageLayout.contentHeightPoints.toFloat(),
+                    ).apply {
+                        offset(
+                            pageLayout.marginPoints.toFloat(),
+                            pageLayout.marginPoints.toFloat(),
+                        )
+                    }
+                    canvas.drawBitmap(bitmap, null, destRect, null)
+                    drawPageNumber(
+                        canvas = canvas,
+                        pageNumber = index + 1,
+                        placement = options.pageNumber,
+                        pageLayout = pageLayout,
+                    )
+                } finally {
+                    pdfDocument.finishPage(page)
+                    bitmap.recycle()
                 }
-                canvas.drawBitmap(bitmap, null, destRect, null)
-            } finally {
-                pdfDocument.finishPage(page)
-                bitmap.recycle()
+                onProgress?.invoke(index + 1, pageImagePaths.size)
             }
-            onProgress?.invoke(index + 1, pageImagePaths.size)
-        }
 
-        outputFile.outputStream().use { pdfDocument.writeTo(it) }
-        pdfDocument.close()
+            outputFile.outputStream().use { pdfDocument.writeTo(it) }
+        } finally {
+            pdfDocument.close()
+        }
+    }
+
+    private fun drawPageNumber(
+        canvas: android.graphics.Canvas,
+        pageNumber: Int,
+        placement: PdfPageNumber,
+        pageLayout: PdfPageLayout,
+    ) {
+        if (placement == PdfPageNumber.NONE) return
+
+        val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = Color.DKGRAY
+            textSize = PageNumberTextSizePoints
+            typeface = Typeface.create(Typeface.SANS_SERIF, Typeface.NORMAL)
+            textAlign = when (placement) {
+                PdfPageNumber.BOTTOM_LEFT -> Paint.Align.LEFT
+                PdfPageNumber.BOTTOM_CENTER -> Paint.Align.CENTER
+                PdfPageNumber.BOTTOM_RIGHT -> Paint.Align.RIGHT
+                PdfPageNumber.NONE -> Paint.Align.LEFT
+            }
+        }
+        val horizontalInset = maxOf(pageLayout.marginPoints, PageNumberHorizontalInsetPoints).toFloat()
+        val x = when (placement) {
+            PdfPageNumber.BOTTOM_LEFT -> horizontalInset
+            PdfPageNumber.BOTTOM_CENTER -> pageLayout.pageWidthPoints / 2f
+            PdfPageNumber.BOTTOM_RIGHT -> pageLayout.pageWidthPoints - horizontalInset
+            PdfPageNumber.NONE -> return
+        }
+        val baseline = pageLayout.pageHeightPoints - pageLayout.marginPoints - PageNumberBaselineInsetPoints
+        canvas.drawText(pageNumber.toString(), x, baseline, paint)
+    }
+
+    private fun protectPdf(
+        plainPdf: File,
+        outputFile: File,
+        password: String,
+    ) {
+        PDFBoxResourceLoader.init(context.applicationContext)
+        if (outputFile.exists() && !outputFile.delete()) {
+            error("Could not replace existing PDF.")
+        }
+        PDDocument.load(plainPdf).use { document ->
+            val permissions = AccessPermission()
+            val policy = StandardProtectionPolicy(
+                UUID.randomUUID().toString(),
+                password,
+                permissions,
+            ).apply {
+                encryptionKeyLength = PdfEncryptionKeyLengthBits
+                setPreferAES(true)
+            }
+            document.protect(policy)
+            document.save(outputFile)
+        }
     }
 
     private fun writeImageArchive(
@@ -380,39 +476,6 @@ class DefaultDocumentExportRepository @Inject constructor(
         return RectF(left, top, left + scaledWidth, top + scaledHeight)
     }
 
-    private fun resolvePageLayout(
-        imageWidth: Int,
-        imageHeight: Int,
-        options: PdfExportOptions,
-    ): PageLayout {
-        val (pageWidthPx, pageHeightPx) = when (options.pageSize) {
-            PdfPageSize.FIT -> orientedFitDimensions(imageWidth, imageHeight, options.orientation)
-            PdfPageSize.A4 -> when (options.orientation) {
-                PdfPageOrientation.PORTRAIT -> a4PortraitWidthPx to a4PortraitHeightPx
-                PdfPageOrientation.LANDSCAPE -> a4PortraitHeightPx to a4PortraitWidthPx
-            }
-            PdfPageSize.US_LETTER -> when (options.orientation) {
-                PdfPageOrientation.PORTRAIT -> letterPortraitWidthPx to letterPortraitHeightPx
-                PdfPageOrientation.LANDSCAPE -> letterPortraitHeightPx to letterPortraitWidthPx
-            }
-        }
-        val marginPx = when (options.margin) {
-            PdfPageMargin.NONE -> 0
-            PdfPageMargin.SMALL -> (min(pageWidthPx, pageHeightPx) * SmallMarginFraction).roundToInt().coerceAtLeast(20)
-            PdfPageMargin.LARGE -> (min(pageWidthPx, pageHeightPx) * LargeMarginFraction).roundToInt().coerceAtLeast(40)
-        }
-        return PageLayout(pageWidthPx, pageHeightPx, marginPx)
-    }
-
-    private fun orientedFitDimensions(width: Int, height: Int, orientation: PdfPageOrientation): Pair<Int, Int> {
-        val short = min(width, height)
-        val long = maxOf(width, height)
-        return when (orientation) {
-            PdfPageOrientation.PORTRAIT -> short to long
-            PdfPageOrientation.LANDSCAPE -> long to short
-        }
-    }
-
     private fun <T> Result<T>.toScanlyResult(fallbackMessage: String): ScanlyResult<T> =
         fold(
             onSuccess = { ScanlyResult.Success(it) },
@@ -432,25 +495,14 @@ class DefaultDocumentExportRepository @Inject constructor(
         val title: String,
     )
 
-    private data class PageLayout(
-        val pageWidthPx: Int,
-        val pageHeightPx: Int,
-        val marginPx: Int,
-    ) {
-        val contentWidthPx: Int get() = (pageWidthPx - marginPx * 2).coerceAtLeast(1)
-        val contentHeightPx: Int get() = (pageHeightPx - marginPx * 2).coerceAtLeast(1)
-    }
-
     private companion object {
         const val maxExportBitmapDimension = 2400
         const val pdfMimeType = "application/pdf"
         const val zipMimeType = "application/zip"
         const val imageMimeType = "image/jpeg"
-        const val a4PortraitWidthPx = 1240
-        const val a4PortraitHeightPx = 1754
-        const val letterPortraitWidthPx = 1275
-        const val letterPortraitHeightPx = 1650
-        const val SmallMarginFraction = 0.04f
-        const val LargeMarginFraction = 0.08f
+        const val PageNumberTextSizePoints = 11f
+        const val PageNumberHorizontalInsetPoints = 18
+        const val PageNumberBaselineInsetPoints = 8f
+        const val PdfEncryptionKeyLengthBits = 256
     }
 }

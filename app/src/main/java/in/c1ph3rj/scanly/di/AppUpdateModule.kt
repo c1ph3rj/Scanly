@@ -6,7 +6,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import `in`.c1ph3rj.scanly.data.update.DefaultAppUpdatePromptRepository
 import `in`.c1ph3rj.scanly.data.update.GitHubReleaseUpdateRepository
-import `in`.c1ph3rj.scanly.domain.repository.AppUpdateRepository
+import `in`.c1ph3rj.scanly.domain.repository.AppReleaseNotesRepository
 import `in`.c1ph3rj.scanly.domain.repository.AppUpdatePromptRepository
 import javax.inject.Singleton
 
@@ -15,9 +15,9 @@ import javax.inject.Singleton
 abstract class AppUpdateModule {
     @Binds
     @Singleton
-    abstract fun bindAppUpdateRepository(
+    abstract fun bindAppReleaseNotesRepository(
         repository: GitHubReleaseUpdateRepository,
-    ): AppUpdateRepository
+    ): AppReleaseNotesRepository
 
     @Binds
     @Singleton

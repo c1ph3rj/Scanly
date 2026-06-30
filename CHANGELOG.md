@@ -4,6 +4,21 @@ All notable user-facing changes to Scanly are documented here.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project uses semantic-style version names.
 
+## [Unreleased]
+
+### Added
+
+- **Dual release channels** — signed builds now expose `githubRelease` and `playStoreRelease` variants. The GitHub build checks GitHub Releases and opens the release page, while the Play Store build uses Google Play in-app updates.
+- **Google Play in-app updates** — production installs now check Google Play for updates and can download and install them in-app. Flexible updates show a restart prompt after download; high-priority updates can launch the immediate Play Store flow automatically.
+- **Advanced PDF export controls** — PDF save and share flows now support optional open-password protection, page numbers at the lower left/center/right, per-page auto orientation, and A3/A4/A5/B4/B5/Letter/Tabloid/Legal/Executive/Postcard/Foolscap paper sizes.
+
+### Changed
+
+- **Top spacing** — fixed double status-bar inset across the app; the activity shell no longer pads the top, so each screen applies it once.
+- **Settings layout** — the main settings screen is leaner: FAQs and open-source licenses moved to dedicated sub-screens, redundant version and URL subtitles removed, and storage shows a single total. Settings title now matches Library (`displaySmall`).
+- Update messaging now reflects the selected distribution channel instead of always naming Google Play.
+- Fixed-size PDF exports now use real print dimensions, while auto-fit keeps each scan's aspect ratio. Numbered exports reserve a footer so the page number does not cover document content.
+
 ## [1.0.9] - 2026-06-28
 
 ### Changed

@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -444,6 +445,7 @@ fun DocumentDetailScreen(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         containerColor = MaterialTheme.colorScheme.background,
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         topBar = {
             ReviewTopBar(
@@ -812,6 +814,7 @@ fun DocumentDetailScreen(
             onOptionsChanged = { updatedOptions -> pdfOptions = updatedOptions },
             onConfirm = {
                 val selectedOptions = pdfOptions
+                pdfOptions = pdfOptions.copy(password = null)
                 val selectedMode = pdfActionMode
                 pdfActionMode = null
                 when (selectedMode) {
@@ -845,35 +848,33 @@ private fun ReviewTopBar(
     menuEnabled: Boolean,
 ) {
     var showMenu by remember { mutableStateOf(false) }
-    val topBarColor = MaterialTheme.colorScheme.surface
 
-    Surface(color = topBarColor) {
-        TopAppBar(
-            title = {
-                Column(modifier = Modifier.padding(start = 10.dp)) {
-                    Text(
-                        text = title,
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.SemiBold,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                    Text(
-                        text = pageCount.toPageCountLabel(),
-                        style = MaterialTheme.typography.labelLarge,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                }
-            },
-            navigationIcon = {
-                ChromeIconButton(
-                    icon = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Back",
-                    onClick = onNavigateUp,
+    TopAppBar(
+        title = {
+            Column(modifier = Modifier.padding(start = 10.dp)) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.SemiBold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                 )
-            },
+                Text(
+                    text = pageCount.toPageCountLabel(),
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
+        },
+        navigationIcon = {
+            ChromeIconButton(
+                icon = Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = "Back",
+                onClick = onNavigateUp,
+            )
+        },
             actions = {
                 Box {
                     IconButton(
@@ -945,11 +946,9 @@ private fun ReviewTopBar(
                 }
             },
             colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = Color.Transparent,
-                scrolledContainerColor = Color.Transparent,
+                containerColor = MaterialTheme.colorScheme.background,
             ),
         )
-    }
 }
 
 @Composable

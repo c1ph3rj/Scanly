@@ -23,3 +23,5 @@ local.properties
 *.jks
 *.keystore
 *.log
+/output/
+/tmp/

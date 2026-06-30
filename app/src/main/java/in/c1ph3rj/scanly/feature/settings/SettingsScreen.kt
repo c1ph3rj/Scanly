@@ -1,10 +1,5 @@
 package `in`.c1ph3rj.scanly.feature.settings
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -19,7 +14,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
@@ -27,18 +21,17 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.HelpOutline
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.automirrored.filled.OpenInNew
 import androidx.compose.material.icons.filled.Brightness4
+import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.DeleteOutline
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Gavel
-import androidx.compose.material.icons.filled.Policy
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.LightMode
-import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Policy
 import androidx.compose.material.icons.filled.Public
 import androidx.compose.material.icons.filled.Storage
 import androidx.compose.material.icons.filled.SystemUpdate
@@ -50,14 +43,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -72,10 +61,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import `in`.c1ph3rj.scanly.core.common.StorageFormatter
 import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import `in`.c1ph3rj.scanly.domain.model.AppStorageUsage
-import `in`.c1ph3rj.scanly.domain.model.LicenseInfo
 import `in`.c1ph3rj.scanly.domain.model.ThemeMode
 import `in`.c1ph3rj.scanly.feature.components.ScanlyAppLogo
 import `in`.c1ph3rj.scanly.feature.components.ScanlyConfirmDialog
+import `in`.c1ph3rj.scanly.feature.components.ScanlyTabScreenHeader
 import `in`.c1ph3rj.scanly.feature.update.AppUpdateUiState
 import kotlinx.coroutines.flow.collectLatest
 
@@ -96,6 +85,8 @@ fun SettingsRoute(
     appUpdateUiState: AppUpdateUiState,
     onCheckForUpdates: () -> Unit,
     onOpenLegalDocument: (LegalDocumentType) -> Unit,
+    onOpenFaqs: () -> Unit,
+    onOpenLicenses: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -117,6 +108,8 @@ fun SettingsRoute(
         onThemeModeSelected = viewModel::setThemeMode,
         onOpenWebsite = { url -> uriHandler.openUri(url) },
         onOpenLegalDocument = onOpenLegalDocument,
+        onOpenFaqs = onOpenFaqs,
+        onOpenLicenses = onOpenLicenses,
         onCheckForUpdates = onCheckForUpdates,
         onClearAllData = viewModel::clearAllData,
     )
@@ -130,12 +123,12 @@ fun SettingsScreen(
     onThemeModeSelected: (ThemeMode) -> Unit,
     onOpenWebsite: (String) -> Unit,
     onOpenLegalDocument: (LegalDocumentType) -> Unit,
+    onOpenFaqs: () -> Unit,
+    onOpenLicenses: () -> Unit,
     onCheckForUpdates: () -> Unit,
     onClearAllData: () -> Unit,
 ) {
     val content = uiState.content
-    val expandedFaqIds = remember { mutableStateListOf<String>() }
-    val expandedLicenseIds = remember { mutableStateListOf<String>() }
     var clearDataDialogVisible by remember { mutableStateOf(false) }
     val windowSizeInfo = rememberWindowSizeInfo()
 
@@ -172,18 +165,18 @@ fun SettingsScreen(
                     end = windowSizeInfo.horizontalPadding,
                     bottom = 28.dp,
                 ),
-                verticalArrangement = Arrangement.spacedBy(20.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 item(key = "header") {
-                    SettingsPageHeader(
-                        versionLabel = content?.appVersionLabel,
+                    ScanlyTabScreenHeader(
+                        title = "Settings",
+                        subtitle = content?.appVersionLabel?.let { "Scanly $it" }
+                            ?: "Preferences and app info",
                     )
                 }
 
                 item(key = "appearance") {
-                    SettingsGroup(
-                        title = "Appearance",
-                    ) {
+                    SettingsGroup(title = "Appearance") {
                         ThemeModeSelector(
                             selectedMode = uiState.themeMode,
                             onThemeModeSelected = onThemeModeSelected,
@@ -192,9 +185,7 @@ fun SettingsScreen(
                 }
 
                 item(key = "storage") {
-                    SettingsGroup(
-                        title = "Storage",
-                    ) {
+                    SettingsGroup(title = "Storage") {
                         StorageUsageRow(
                             storageUsage = uiState.storageUsage,
                             isLoading = uiState.isLoadingStorage,
@@ -211,126 +202,67 @@ fun SettingsScreen(
                 }
 
                 item(key = "about") {
-                    SettingsGroup(
-                        title = "About",
-                    ) {
+                    SettingsGroup(title = "About") {
                         AboutHero(
                             versionLabel = content?.appVersionLabel,
+                            onOpenPortfolio = { onOpenWebsite(DEVELOPER_PORTFOLIO_URL) },
                         )
-
                         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
                         SettingsUpdateRow(
                             appUpdateUiState = appUpdateUiState,
                             onCheckForUpdates = onCheckForUpdates,
                         )
-                        
-                        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-                        SettingsLinkRow(
-                            icon = Icons.Filled.Person,
-                            title = "Developer",
-                            subtitle = "jeevaprakash g",
-                            showExternalLink = false,
-                        )
+                    }
+                }
 
-                        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                item(key = "support") {
+                    SettingsGroup(title = "Support") {
+                        if (!content?.faqs.isNullOrEmpty()) {
+                            SettingsNavigationRow(
+                                icon = Icons.AutoMirrored.Filled.HelpOutline,
+                                title = "Help & FAQ",
+                                subtitle = "${content!!.faqs.size} topics",
+                                onClick = onOpenFaqs,
+                            )
+                            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                        }
                         SettingsLinkRow(
                             icon = Icons.Filled.Email,
-                            title = "Contact Support",
-                            subtitle = SUPPORT_EMAIL,
+                            title = "Contact support",
+                            subtitle = null,
                             onClick = { onOpenWebsite("mailto:$SUPPORT_EMAIL") },
                         )
-
-                        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-                        SettingsLinkRow(
-                            icon = Icons.Filled.Language,
-                            title = "Portfolio",
-                            subtitle = DEVELOPER_PORTFOLIO_URL,
-                            onClick = { onOpenWebsite(DEVELOPER_PORTFOLIO_URL) },
-                        )
-
                         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
                         SettingsLinkRow(
                             icon = Icons.Filled.Public,
                             title = "Project website",
-                            subtitle = PROJECT_WEBSITE_URL,
+                            subtitle = null,
                             onClick = { onOpenWebsite(PROJECT_WEBSITE_URL) },
                         )
                     }
                 }
 
                 item(key = "legal") {
-                    SettingsGroup(
-                        title = "Legal",
-                    ) {
-                        SettingsLinkRow(
+                    SettingsGroup(title = "Legal") {
+                        SettingsNavigationRow(
                             icon = Icons.Filled.Policy,
                             title = "Privacy Policy",
-                            subtitle = "How Scanly handles your data",
-                            showExternalLink = false,
                             onClick = { onOpenLegalDocument(LegalDocumentType.Privacy) },
                         )
-
                         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-                        SettingsLinkRow(
+                        SettingsNavigationRow(
                             icon = Icons.Filled.Gavel,
                             title = "Terms & Conditions",
-                            subtitle = "Rules for using Scanly",
-                            showExternalLink = false,
                             onClick = { onOpenLegalDocument(LegalDocumentType.Terms) },
                         )
-                    }
-                }
-
-                if (!content?.faqs.isNullOrEmpty()) {
-                    item(key = "faq") {
-                        SettingsGroup(
-                            title = "Help",
-                        ) {
-                            content!!.faqs.forEachIndexed { index, faq ->
-                                val expanded = faq.id in expandedFaqIds
-                                ExpandableRow(
-                                    title = faq.question,
-                                    body = faq.answer,
-                                    expanded = expanded,
-                                    onToggle = {
-                                        if (expanded) {
-                                            expandedFaqIds.remove(faq.id)
-                                        } else {
-                                            expandedFaqIds.add(faq.id)
-                                        }
-                                    },
-                                )
-                                if (index < content.faqs.lastIndex) {
-                                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-                                }
-                            }
-                        }
-                    }
-                }
-
-                if (!content?.licenses.isNullOrEmpty()) {
-                    item(key = "licenses") {
-                        SettingsGroup(
-                            title = "Open source",
-                        ) {
-                            content!!.licenses.forEachIndexed { index, license ->
-                                val expanded = license.id in expandedLicenseIds
-                                LicenseRow(
-                                    licenseInfo = license,
-                                    expanded = expanded,
-                                    onToggle = {
-                                        if (expanded) {
-                                            expandedLicenseIds.remove(license.id)
-                                        } else {
-                                            expandedLicenseIds.add(license.id)
-                                        }
-                                    },
-                                    onOpenWebsite = onOpenWebsite,
-                                )
-                                if (index < content.licenses.lastIndex) {
-                                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-                                }
-                            }
+                        if (!content?.licenses.isNullOrEmpty()) {
+                            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                            SettingsNavigationRow(
+                                icon = Icons.Filled.Code,
+                                title = "Open source",
+                                subtitle = "${content!!.licenses.size} libraries",
+                                onClick = onOpenLicenses,
+                            )
                         }
                     }
                 }
@@ -357,31 +289,6 @@ fun SettingsScreen(
             confirmDestructive = true,
             dismissEnabled = !uiState.isClearingData,
             confirmEnabled = !uiState.isClearingData,
-        )
-    }
-}
-
-@Composable
-private fun SettingsPageHeader(
-    versionLabel: String?,
-    modifier: Modifier = Modifier,
-) {
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .statusBarsPadding()
-            .padding(top = 24.dp),
-        verticalArrangement = Arrangement.spacedBy(4.dp),
-    ) {
-        Text(
-            text = "Settings",
-            style = MaterialTheme.typography.headlineSmall,
-            fontWeight = FontWeight.Bold,
-        )
-        Text(
-            text = versionLabel?.let { "Scanly $it" } ?: "Preferences and app info",
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
 }
@@ -422,6 +329,7 @@ private fun SettingsGroup(
 @Composable
 private fun AboutHero(
     versionLabel: String?,
+    onOpenPortfolio: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -442,6 +350,12 @@ private fun AboutHero(
                 text = versionLabel ?: "Version unavailable",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Text(
+                text = "by jeevaprakash g",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.clickable(onClick = onOpenPortfolio),
             )
         }
     }
@@ -488,18 +402,6 @@ private fun StorageUsageRow(
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
-                    Text(
-                        text = buildString {
-                            append("Documents ")
-                            append(StorageFormatter.formatBytes(storageUsage.documentsBytes))
-                            append(" · Cache ")
-                            append(StorageFormatter.formatBytes(storageUsage.exportCacheBytes))
-                            append(" · Database ")
-                            append(StorageFormatter.formatBytes(storageUsage.databaseBytes))
-                        },
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
                 }
             }
         }
@@ -519,6 +421,7 @@ private fun SettingsUpdateRow(
     modifier: Modifier = Modifier,
 ) {
     val checkResult = appUpdateUiState.lastCheckResult
+    val sourceLabel = appUpdateUiState.channel.sourceLabel
     val updateAvailable = checkResult?.updateAvailable == true
     val title = if (updateAvailable) {
         "Update available"
@@ -526,16 +429,16 @@ private fun SettingsUpdateRow(
         "Check for updates"
     }
     val subtitle = when {
-        appUpdateUiState.isChecking -> "Checking GitHub releases..."
+        appUpdateUiState.isChecking -> "Checking $sourceLabel..."
         updateAvailable -> {
-            "Scanly ${checkResult!!.latestRelease.tagName} is available. Tap to view the release."
+            "Scanly ${checkResult!!.latestRelease.tagName} is available on $sourceLabel."
         }
 
         checkResult != null -> {
             "You are on ${versionLabel(checkResult.installedVersionName)}. Latest is ${checkResult.latestRelease.tagName}."
         }
 
-        else -> "Compare this install with the latest GitHub release."
+        else -> "Tap to check $sourceLabel"
     }
     val rowModifier = if (updateAvailable) {
         modifier.settingsRowSurface(
@@ -658,18 +561,24 @@ private fun versionLabel(versionName: String): String =
     }
 
 @Composable
-private fun SettingsToggleRow(
+private fun SettingsNavigationRow(
+    icon: ImageVector,
     title: String,
-    subtitle: String,
-    checked: Boolean,
-    onCheckedChange: (Boolean) -> Unit,
+    subtitle: String? = null,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Row(
-        modifier = modifier.settingsRowSurface { onCheckedChange(!checked) },
+        modifier = modifier.settingsRowSurface(onClick = onClick),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.size(22.dp),
+        )
         Column(
             modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.spacedBy(2.dp),
@@ -679,23 +588,19 @@ private fun SettingsToggleRow(
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Medium,
             )
-            Text(
-                text = subtitle,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
+            if (subtitle != null) {
+                Text(
+                    text = subtitle,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
         }
-        Switch(
-            checked = checked,
-            onCheckedChange = onCheckedChange,
-            colors = SwitchDefaults.colors(
-                checkedThumbColor = MaterialTheme.colorScheme.onPrimary,
-                checkedTrackColor = MaterialTheme.colorScheme.primary,
-                checkedBorderColor = MaterialTheme.colorScheme.primary,
-                uncheckedThumbColor = MaterialTheme.colorScheme.onSurface,
-                uncheckedTrackColor = MaterialTheme.colorScheme.surfaceContainerHighest,
-                uncheckedBorderColor = MaterialTheme.colorScheme.outline,
-            ),
+        Icon(
+            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.size(20.dp),
         )
     }
 }
@@ -792,7 +697,7 @@ private fun ThemeMode.icon(): ImageVector = when (this) {
 private fun SettingsLinkRow(
     icon: ImageVector,
     title: String,
-    subtitle: String,
+    subtitle: String? = null,
     modifier: Modifier = Modifier,
     showExternalLink: Boolean = true,
     onClick: (() -> Unit)? = null,
@@ -817,11 +722,13 @@ private fun SettingsLinkRow(
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Medium,
             )
-            Text(
-                text = subtitle,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
+            if (subtitle != null) {
+                Text(
+                    text = subtitle,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
         }
         if (showExternalLink && onClick != null) {
             Icon(
@@ -830,125 +737,6 @@ private fun SettingsLinkRow(
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.size(18.dp),
             )
-        }
-    }
-}
-
-@Composable
-private fun ExpandableRow(
-    title: String,
-    body: String,
-    expanded: Boolean,
-    onToggle: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable(onClick = onToggle)
-            .padding(SettingsRowPadding),
-        verticalArrangement = Arrangement.spacedBy(6.dp),
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Medium,
-                modifier = Modifier.weight(1f),
-            )
-            Icon(
-                imageVector = if (expanded) {
-                    Icons.Filled.KeyboardArrowUp
-                } else {
-                    Icons.Filled.KeyboardArrowDown
-                },
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.size(20.dp),
-            )
-        }
-        AnimatedVisibility(
-            visible = expanded,
-            enter = expandVertically(expandFrom = Alignment.Top) + fadeIn(),
-            exit = shrinkVertically(shrinkTowards = Alignment.Top) + fadeOut(),
-        ) {
-            Text(
-                text = body,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-        }
-    }
-}
-
-@Composable
-private fun LicenseRow(
-    licenseInfo: LicenseInfo,
-    expanded: Boolean,
-    onToggle: () -> Unit,
-    onOpenWebsite: (String) -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable(onClick = onToggle)
-            .padding(SettingsRowPadding),
-        verticalArrangement = Arrangement.spacedBy(6.dp),
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            Column(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(2.dp),
-            ) {
-                Text(
-                    text = licenseInfo.name,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Medium,
-                )
-                Text(
-                    text = licenseInfo.license,
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.primary,
-                )
-            }
-            Icon(
-                imageVector = if (expanded) {
-                    Icons.Filled.KeyboardArrowUp
-                } else {
-                    Icons.Filled.KeyboardArrowDown
-                },
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.size(20.dp),
-            )
-        }
-        AnimatedVisibility(
-            visible = expanded,
-            enter = expandVertically(expandFrom = Alignment.Top) + fadeIn(),
-            exit = shrinkVertically(shrinkTowards = Alignment.Top) + fadeOut(),
-        ) {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text(
-                    text = licenseInfo.summary,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-                licenseInfo.websiteUrl?.let { website ->
-                    Text(
-                        text = website,
-                        style = MaterialTheme.typography.labelLarge,
-                        color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.clickable { onOpenWebsite(website) },
-                    )
-                }
-            }
         }
     }
 }

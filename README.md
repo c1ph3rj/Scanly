@@ -21,7 +21,7 @@ It is designed for a practical, local-only scanning workflow:
 - manual camera capture with live document guidance
 - import images from the gallery to create or extend documents
 - page crop, rotate, and filter editing
-- PDF export and image archive export/share flows, including group-level export
+- Advanced PDF export/share with password protection, page numbering, auto orientation, print sizes, margins, and group-level export
 - settings with theme mode, storage usage, clear-all-data, FAQs, and license info
 
 **Current version:** `1.0.9` (version code `9`) — see [VERSION.md](VERSION.md) and [CHANGELOG.md](CHANGELOG.md).
@@ -57,9 +57,8 @@ It is designed for a practical, local-only scanning workflow:
 ## Project Structure
 
 - `app/` – Android application source and module build files
-- `docs/` – architecture notes, sprint archives, and release-readiness documentation
+- `docs/` – complete project documentation (start at [docs/README.md](docs/README.md))
 - `gradle/` – wrapper and version catalog configuration
-- `implementation.md` – architecture snapshot and current implementation notes
 
 ## Current Architecture
 
@@ -86,22 +85,25 @@ For an additional verification pass:
 ./gradlew.bat lintDebug
 ```
 
-## Open Source Notes
-
-- historical sprint notes live under `docs/sprint-*` and should be treated as archive material
-- public collaboration guidance lives in `CONTRIBUTING.md`
-- security reporting guidance lives in `SECURITY.md`
-- release follow-up tasks are tracked in `OPEN_SOURCE_NEXT_STEPS.md`
-
 ## Documentation
 
-- `LICENSE` – GNU AGPL-3.0-only license for this repository
-- `VERSION.md` – current release version, version-code policy, and upgrade notes
-- `CHANGELOG.md` – release notes for each published version
-- `implementation.md` – current architecture snapshot and technical direction
-- `OPEN_SOURCE_NEXT_STEPS.md` – checklist for publishing and maintaining the repo
-- `SECURITY.md` – vulnerability reporting and disclosure guidance
-- `CONTRIBUTING.md` – contribution workflow and expectations
+**Full documentation lives in [`docs/`](docs/).** Start at [docs/README.md](docs/README.md) for complete project context.
+
+| Document | Purpose |
+| --- | --- |
+| [docs/README.md](docs/README.md) | Documentation index and reading paths |
+| [docs/overview/](docs/overview/) | What Scanly is, features, user guide |
+| [docs/architecture/](docs/architecture/) | Layers, navigation, screens |
+| [docs/data/](docs/data/) | Room database, file storage, settings |
+| [docs/processing/](docs/processing/) | Capture, ML, filters, export |
+| [docs/development/](docs/development/) | Setup, conventions, testing, releasing |
+| [docs/reference/](docs/reference/) | Models, use cases, tech stack |
+| [VERSION.md](VERSION.md) | Release metadata and upgrade notes |
+| [CHANGELOG.md](CHANGELOG.md) | User-facing release history |
+| [CONTRIBUTING.md](CONTRIBUTING.md) | Contribution workflow |
+| [SECURITY.md](SECURITY.md) | Vulnerability reporting |
+| [Agents.md](Agents.md) | AI coding agent guidance |
+| [LICENSE](LICENSE) | GNU AGPL-3.0-only |
 
 ## License
 
@@ -121,5 +123,5 @@ Third-party dependencies and model assets can have their own license terms. Revi
 
 Before sending changes, run the Gradle checks above and keep new code aligned with the existing package structure under `in.c1ph3rj.scanly`.
 
-If you are planning a change that affects public behavior, update the relevant docs in the root of the repository before or alongside the code change.
+If you are planning a change that affects public behavior, update the relevant docs in `docs/` and [CHANGELOG.md](CHANGELOG.md) before or alongside the code change.
 

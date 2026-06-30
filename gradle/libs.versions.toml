@@ -1,5 +1,5 @@
 [versions]
-agp = "9.1.0"
+agp = "9.2.1"
 coreKtx = "1.10.1"
 junit = "4.13.2"
 junitVersion = "1.1.5"
@@ -12,12 +12,14 @@ liteRtInterpreter = "1.4.1"
 hilt = "2.59.2"
 navigationCompose = "2.9.7"
 hiltNavigationCompose = "1.3.0"
-ksp = "2.2.10-2.0.2"
+ksp = "2.3.2"
 room = "2.8.4"
 cameraX = "1.5.3"
 exifInterface = "1.4.2"
 dataStore = "1.1.7"
 openCv = "4.12.0"
+playAppUpdate = "2.1.0"
+pdfBoxAndroid = "2.0.27.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -50,6 +52,9 @@ opencv = { group = "org.opencv", name = "opencv", version.ref = "openCv" }
 google-ai-edge-litert = { group = "com.google.ai.edge.litert", name = "litert", version.ref = "liteRtInterpreter" }
 google-dagger-hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 google-dagger-hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }
+google-play-app-update = { group = "com.google.android.play", name = "app-update", version.ref = "playAppUpdate" }
+google-play-app-update-ktx = { group = "com.google.android.play", name = "app-update-ktx", version.ref = "playAppUpdate" }
+pdfbox-android = { group = "com.tom-roush", name = "pdfbox-android", version.ref = "pdfBoxAndroid" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
