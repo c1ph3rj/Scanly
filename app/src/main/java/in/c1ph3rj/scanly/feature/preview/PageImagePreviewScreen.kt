@@ -12,13 +12,22 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.IosShare
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Icon
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -37,6 +46,8 @@ import androidx.core.content.FileProvider
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import `in`.c1ph3rj.scanly.core.ui.ChromeIconButton
+import `in`.c1ph3rj.scanly.core.ui.MetricChip
+import `in`.c1ph3rj.scanly.core.ui.ZoomableImageState
 import `in`.c1ph3rj.scanly.core.ui.ZoomableImageViewer
 import `in`.c1ph3rj.scanly.domain.model.ShareArtifact
 import kotlinx.coroutines.flow.collectLatest
@@ -119,10 +130,16 @@ fun PageImagePreviewScreen(
         initialPage = initialPage,
         pageCount = { pages.size },
     )
-    var zoomedPageId by remember { mutableStateOf<String?>(null) }
+    val pageIds = pages.map { it.id }
+    val zoomStates = remember(pageIds) {
+        pageIds.associateWith { ZoomableImageState() }
+    }
+    val visiblePage = pages.getOrNull(pagerState.settledPage) ?: page
+    val visibleZoomState = zoomStates[visiblePage.id]
+    var showPageMenu by remember { mutableStateOf(false) }
 
     LaunchedEffect(pagerState, pages) {
-        snapshotFlow { pagerState.currentPage }
+        snapshotFlow { pagerState.settledPage }
             .map(pages::getOrNull)
             .distinctUntilChanged()
             .collectLatest { selectedPage ->
@@ -137,54 +154,105 @@ fun PageImagePreviewScreen(
         }
     }
 
-    HorizontalPager(
-        state = pagerState,
+    LaunchedEffect(visiblePage.id) {
+        showPageMenu = false
+    }
+
+    Surface(
         modifier = Modifier.fillMaxSize(),
-        key = { index -> pages[index].id },
-        userScrollEnabled = zoomedPageId == null,
-    ) { pageIndex ->
-        val previewPage = pages[pageIndex]
-        ZoomableImageViewer(
-            imagePath = previewPage.processedImagePath
-                ?: previewPage.rawImagePath
-                ?: previewPage.thumbnailPath,
-            title = "Page ${previewPage.pageIndex + 1} of ${pages.size}",
-            onNavigateUp = onNavigateUp,
-            allowParentHorizontalGestures = true,
-            onZoomActiveChange = { zoomActive ->
-                zoomedPageId = when {
-                    zoomActive -> previewPage.id
-                    zoomedPageId == previewPage.id -> null
-                    else -> zoomedPageId
+        color = MaterialTheme.colorScheme.background,
+    ) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            HorizontalPager(
+                state = pagerState,
+                modifier = Modifier.fillMaxSize(),
+                key = { index -> pages[index].id },
+                userScrollEnabled = visibleZoomState?.isZoomActive != true,
+            ) { pageIndex ->
+                val previewPage = pages[pageIndex]
+                ZoomableImageViewer(
+                    imagePath = previewPage.processedImagePath
+                        ?: previewPage.rawImagePath
+                        ?: previewPage.thumbnailPath,
+                    title = "",
+                    state = checkNotNull(zoomStates[previewPage.id]),
+                    allowParentHorizontalGestures = true,
+                    showTopBar = false,
+                )
+            }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.TopCenter)
+                    .statusBarsPadding()
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    ChromeIconButton(
+                        icon = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "Back",
+                        onClick = onNavigateUp,
+                        containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                        contentColor = MaterialTheme.colorScheme.onSurface,
+                    )
+                    Spacer(modifier = Modifier.width(12.dp))
+                    MetricChip(
+                        label = "Page ${visiblePage.pageIndex + 1} of ${pages.size}",
+                        containerColor = Color.Black.copy(alpha = 0.42f),
+                        contentColor = Color.White,
+                        border = BorderStroke(1.dp, Color.White.copy(alpha = 0.12f)),
+                    )
                 }
-            },
-            trailingAction = { zoomActive, onResetZoom ->
+
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(14.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    if (zoomActive) {
-                        ChromeIconButton(
+                    if (visibleZoomState?.isZoomActive == true) {
+                        PreviewActionButton(
                             icon = Icons.Filled.Refresh,
                             contentDescription = "Reset zoom",
-                            onClick = onResetZoom,
-                            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-                            contentColor = MaterialTheme.colorScheme.onSurface,
+                            onClick = visibleZoomState::reset,
                         )
                     }
-                    PreviewActionButton(
-                        icon = Icons.Filled.IosShare,
-                        contentDescription = "Share page",
-                        onClick = { onSharePage(previewPage.id) },
-                    )
-                    PreviewActionButton(
-                        icon = Icons.Filled.Edit,
-                        contentDescription = "Edit page",
-                        onClick = { onEditPage(previewPage.id) },
-                    )
+                    Box {
+                        PreviewActionButton(
+                            icon = Icons.Filled.MoreVert,
+                            contentDescription = "Page options",
+                            onClick = { showPageMenu = true },
+                        )
+                        DropdownMenu(
+                            expanded = showPageMenu,
+                            onDismissRequest = { showPageMenu = false },
+                        ) {
+                            DropdownMenuItem(
+                                text = { Text("Share page") },
+                                leadingIcon = {
+                                    Icon(Icons.Filled.IosShare, contentDescription = null)
+                                },
+                                onClick = {
+                                    showPageMenu = false
+                                    onSharePage(visiblePage.id)
+                                },
+                            )
+                            DropdownMenuItem(
+                                text = { Text("Edit page") },
+                                leadingIcon = {
+                                    Icon(Icons.Filled.Edit, contentDescription = null)
+                                },
+                                onClick = {
+                                    showPageMenu = false
+                                    onEditPage(visiblePage.id)
+                                },
+                            )
+                        }
+                    }
                 }
-            },
-        )
+            }
+        }
     }
 }
 

@@ -31,7 +31,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
@@ -108,8 +110,10 @@ fun ZoomableImageViewer(
     title: String,
     onNavigateUp: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
+    state: ZoomableImageState = rememberZoomableImageState(imagePath),
     closeContentDescription: String = "Back",
     allowParentHorizontalGestures: Boolean = false,
+    showTopBar: Boolean = true,
     onZoomActiveChange: (Boolean) -> Unit = {},
     trailingAction: @Composable (
         zoomActive: Boolean,
@@ -128,14 +132,13 @@ fun ZoomableImageViewer(
         }
     },
 ) {
-    var scale by remember(imagePath) { mutableStateOf(1f) }
-    var offset by remember(imagePath) { mutableStateOf(Offset.Zero) }
-    val zoomActive = scale > 1.02f
-    val resetZoom = {
-        scale = 1f
-        offset = Offset.Zero
-    }
+    val zoomActive = state.isZoomActive
+    val resetZoom = state::reset
     val currentOnZoomActiveChange by rememberUpdatedState(onZoomActiveChange)
+
+    LaunchedEffect(imagePath) {
+        state.reset()
+    }
 
     LaunchedEffect(zoomActive) {
         currentOnZoomActiveChange(zoomActive)
@@ -179,48 +182,68 @@ fun ZoomableImageViewer(
                 else -> {
                     ZoomableImageCanvas(
                         imageBitmap = imageBitmap!!,
-                        scale = scale,
-                        offset = offset,
-                        onScaleChange = { scale = it },
-                        onOffsetChange = { offset = it },
+                        scale = state.scale,
+                        offset = state.offset,
+                        onScaleChange = { state.scale = it },
+                        onOffsetChange = { state.offset = it },
                         allowParentHorizontalGestures = allowParentHorizontalGestures,
                         modifier = Modifier.fillMaxSize(),
                     )
                 }
             }
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.TopCenter)
-                    .statusBarsPadding()
-                    .padding(horizontal = 16.dp, vertical = 12.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    if (onNavigateUp != null) {
-                        ChromeIconButton(
-                            icon = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = closeContentDescription,
-                            onClick = onNavigateUp,
-                            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-                            contentColor = MaterialTheme.colorScheme.onSurface,
+            if (showTopBar) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.TopCenter)
+                        .statusBarsPadding()
+                        .padding(horizontal = 16.dp, vertical = 12.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        if (onNavigateUp != null) {
+                            ChromeIconButton(
+                                icon = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = closeContentDescription,
+                                onClick = onNavigateUp,
+                                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                                contentColor = MaterialTheme.colorScheme.onSurface,
+                            )
+                            Spacer(modifier = Modifier.width(12.dp))
+                        }
+                        MetricChip(
+                            label = title,
+                            containerColor = Color.Black.copy(alpha = 0.42f),
+                            contentColor = Color.White,
+                            border = BorderStroke(1.dp, Color.White.copy(alpha = 0.12f)),
                         )
-                        Spacer(modifier = Modifier.width(12.dp))
                     }
-                    MetricChip(
-                        label = title,
-                        containerColor = Color.Black.copy(alpha = 0.42f),
-                        contentColor = Color.White,
-                        border = BorderStroke(1.dp, Color.White.copy(alpha = 0.12f)),
-                    )
+                    trailingAction(zoomActive, resetZoom)
                 }
-                trailingAction(zoomActive, resetZoom)
             }
         }
     }
 }
+
+@Stable
+class ZoomableImageState internal constructor() {
+    internal var scale by mutableFloatStateOf(MIN_SCALE)
+    internal var offset by mutableStateOf(Offset.Zero)
+
+    val isZoomActive: Boolean
+        get() = scale > 1.02f
+
+    fun reset() {
+        scale = MIN_SCALE
+        offset = Offset.Zero
+    }
+}
+
+@Composable
+fun rememberZoomableImageState(imageKey: Any?): ZoomableImageState =
+    remember(imageKey) { ZoomableImageState() }
 
 @Composable
 private fun ZoomableImageCanvas(
