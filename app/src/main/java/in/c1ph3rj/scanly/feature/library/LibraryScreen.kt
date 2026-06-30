@@ -463,33 +463,20 @@ fun LibraryScreen(
 
 @Composable
 fun LibraryHeader(groupCount: Int, documentCount: Int, modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .statusBarsPadding()
-            .padding(top = 24.dp),
-        verticalArrangement = Arrangement.spacedBy(4.dp),
-    ) {
-        Text(
-            text = "Library",
-            style = MaterialTheme.typography.displaySmall,
-            fontWeight = FontWeight.Bold,
-        )
-        Text(
-            text = buildString {
-                if (groupCount > 0) {
-                    append("$groupCount ${if (groupCount == 1) "folder" else "folders"}")
-                    if (documentCount > 0) append("  ·  ")
-                }
-                if (documentCount > 0) {
-                    append("$documentCount ${if (documentCount == 1) "document" else "documents"}")
-                }
-                if (groupCount == 0 && documentCount == 0) append("Empty")
-            },
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-    }
+    ScanlyTabScreenHeader(
+        title = "Library",
+        subtitle = buildString {
+            if (groupCount > 0) {
+                append("$groupCount ${if (groupCount == 1) "folder" else "folders"}")
+                if (documentCount > 0) append("  ·  ")
+            }
+            if (documentCount > 0) {
+                append("$documentCount ${if (documentCount == 1) "document" else "documents"}")
+            }
+            if (groupCount == 0 && documentCount == 0) append("Empty")
+        },
+        modifier = modifier,
+    )
 }
 
 @Composable

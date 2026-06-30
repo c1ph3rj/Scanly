@@ -13,6 +13,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 
+- **Top spacing** — fixed double status-bar inset across the app; the activity shell no longer pads the top, so each screen applies it once.
+- **Settings layout** — the main settings screen is leaner: FAQs and open-source licenses moved to dedicated sub-screens, redundant version and URL subtitles removed, and storage shows a single total. Settings title now matches Library (`displaySmall`).
 - The update dialog and Settings update row now use Google Play as the update source. GitHub release notes are still shown when available.
 - Fixed-size PDF exports now use real print dimensions, while auto-fit keeps each scan's aspect ratio. Numbered exports reserve a footer so the page number does not cover document content.
 

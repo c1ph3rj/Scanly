@@ -37,6 +37,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.luminance
@@ -67,6 +68,8 @@ import `in`.c1ph3rj.scanly.feature.preview.PageImagePreviewDestination
 import `in`.c1ph3rj.scanly.feature.preview.PageImagePreviewRoute
 import `in`.c1ph3rj.scanly.feature.settings.LegalDocumentRoute
 import `in`.c1ph3rj.scanly.feature.settings.LegalDocumentType
+import `in`.c1ph3rj.scanly.feature.settings.SettingsFaqRoute
+import `in`.c1ph3rj.scanly.feature.settings.SettingsLicensesRoute
 import `in`.c1ph3rj.scanly.feature.settings.SettingsRoute
 
 private data class BottomNavItem(
@@ -390,6 +393,38 @@ private fun ScanlyNavHostContent(
                 onOpenLegalDocument = { documentType ->
                     navController.navigate(LegalDocumentDestination.route(documentType))
                 },
+                onOpenFaqs = { navController.navigate(SettingsFaqDestination.route) },
+                onOpenLicenses = { navController.navigate(SettingsLicensesDestination.route) },
+            )
+        }
+        composable(
+            route = SettingsFaqDestination.route,
+            enterTransition = { detailPushEnter() },
+            exitTransition = { detailPushExit() },
+            popEnterTransition = { detailPopEnter() },
+            popExitTransition = { detailPopExit() },
+        ) {
+            val parentEntry = remember(it) {
+                navController.getBackStackEntry(ScanlyDestination.Settings.route)
+            }
+            SettingsFaqRoute(
+                onNavigateUp = navController::navigateUp,
+                parentEntry = parentEntry,
+            )
+        }
+        composable(
+            route = SettingsLicensesDestination.route,
+            enterTransition = { detailPushEnter() },
+            exitTransition = { detailPushExit() },
+            popEnterTransition = { detailPopEnter() },
+            popExitTransition = { detailPopExit() },
+        ) {
+            val parentEntry = remember(it) {
+                navController.getBackStackEntry(ScanlyDestination.Settings.route)
+            }
+            SettingsLicensesRoute(
+                onNavigateUp = navController::navigateUp,
+                parentEntry = parentEntry,
             )
         }
         composable(
