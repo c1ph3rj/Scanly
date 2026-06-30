@@ -32,5 +32,12 @@
     "summary": "Provides Google Play in-app update checks and install flows for production releases.",
     "license": "Play Core Software Development Kit Terms of Service",
     "websiteUrl": "https://developer.android.com/guide/playcore/in-app-updates"
+  },
+  {
+    "id": "pdfbox_android",
+    "name": "PdfBox-Android",
+    "summary": "Android port of Apache PDFBox used to apply password protection to generated PDF exports.",
+    "license": "Apache-2.0",
+    "websiteUrl": "https://github.com/TomRoush/PdfBox-Android"
   }
 ]

@@ -127,7 +127,7 @@ PageEditorViewModel
 ```
 DocumentDetailViewModel / GroupDetailViewModel
   → Export*UseCase → DocumentExportRepository
-    → Room (page paths) + PdfDocument → cache/exports
+    → Room (page paths) + PdfDocument (+ PdfBox-Android encryption when requested) → cache/exports
 ```
 
 ### Clear all data

@@ -28,15 +28,19 @@ How Scanly generates PDFs and image archives for documents and groups.
 
 ## PDF generation
 
-Uses Android `PdfDocument` API.
+Uses Android `PdfDocument` for page rendering. Password-protected output is then encrypted with PdfBox-Android using AES and a 256-bit encryption key. The temporary unprotected file is deleted immediately after encryption.
 
 ### Options (`PdfExportOptions`)
 
 | Option | Values |
 | --- | --- |
-| Page size | A4, Letter, fit-to-content |
-| Orientation | Portrait, landscape |
-| Margins | Configurable |
+| Password | Off, or a validated 4–64 character open password |
+| Page number | None, lower left, bottom center, lower right |
+| Page size | Auto fit, A3, A4, A5, B4, B5, Letter, Tabloid, Legal, Executive, Postcard, American foolscap, European foolscap |
+| Orientation | Auto per page, portrait, landscape |
+| Margins | None, small, large |
+
+Fixed paper sizes are encoded in PostScript points (72 points per inch), so exported PDFs retain real print dimensions. Auto fit uses each source image's aspect ratio with an A4-length long edge. When numbering is enabled, the renderer reserves a footer instead of drawing over the scan.
 
 ### Page source
 
@@ -49,11 +53,13 @@ Uses Android `PdfDocument` API.
 1. Load all documents in group (sorted by title).
 2. For each document, load pages in index order.
 3. Append all pages sequentially into one PDF.
+4. Page numbers, when enabled, continue across document boundaries.
 
 ### Group zipped PDFs
 
 1. Generate one PDF per document in the group.
 2. Package all PDFs into a single ZIP.
+3. Page numbers, when enabled, restart at 1 for each PDF.
 
 ## Image archive
 

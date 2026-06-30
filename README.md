@@ -21,7 +21,7 @@ It is designed for a practical, local-only scanning workflow:
 - manual camera capture with live document guidance
 - import images from the gallery to create or extend documents
 - page crop, rotate, and filter editing
-- PDF export and image archive export/share flows, including group-level export
+- Advanced PDF export/share with password protection, page numbering, auto orientation, print sizes, margins, and group-level export
 - settings with theme mode, storage usage, clear-all-data, FAQs, and license info
 
 **Current version:** `1.0.9` (version code `9`) — see [VERSION.md](VERSION.md) and [CHANGELOG.md](CHANGELOG.md).

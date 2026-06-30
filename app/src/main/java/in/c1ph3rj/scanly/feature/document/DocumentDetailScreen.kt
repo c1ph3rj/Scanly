@@ -812,6 +812,7 @@ fun DocumentDetailScreen(
             onOptionsChanged = { updatedOptions -> pdfOptions = updatedOptions },
             onConfirm = {
                 val selectedOptions = pdfOptions
+                pdfOptions = pdfOptions.copy(password = null)
                 val selectedMode = pdfActionMode
                 pdfActionMode = null
                 when (selectedMode) {

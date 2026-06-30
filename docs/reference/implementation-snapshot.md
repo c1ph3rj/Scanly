@@ -25,7 +25,7 @@ MainActivity → onboarding gate → ScanlyNavHost
 
 ## Features (summary)
 
-Home · Library · Camera scan · Gallery import · Document detail · Page preview · Page editor · Groups · PDF/ZIP export · Settings · Onboarding · GitHub updates
+Home · Library · Camera scan · Gallery import · Document detail · Page preview · Page editor · Groups · advanced PDF/ZIP export · Settings · Onboarding · Google Play updates
 
 ## Data
 
@@ -44,7 +44,7 @@ Kotlin · Compose · Material 3 · Hilt · Navigation Compose · CameraX · Room
 
 ## Tests
 
-22 unit tests · 2 instrumented tests · gaps in persistence integration and export E2E
+24 unit-test files · 2 instrumented-test files · gaps in persistence integration and export E2E
 
 ## Principles
 

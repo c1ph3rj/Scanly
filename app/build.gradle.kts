@@ -155,6 +155,7 @@ dependencies {
     implementation(libs.google.dagger.hilt.android)
     implementation(libs.google.play.app.update)
     implementation(libs.google.play.app.update.ktx)
+    implementation(libs.pdfbox.android)
     ksp(libs.androidx.room.compiler)
     ksp(libs.google.dagger.hilt.compiler)
     testImplementation(libs.junit)

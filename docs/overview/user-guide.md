@@ -96,7 +96,15 @@ From **document detail**:
 | Export images | ZIP archive of processed JPEGs |
 | Share PDF / images | Opens Android share sheet with FileProvider URI |
 
-PDF options include page size (A4, Letter, fit-to-content), orientation, and margins.
+Before saving or sharing a PDF, choose:
+
+- optional password protection (enter and confirm a 4–64 character open password)
+- no page number, or a number at the lower left, bottom center, or lower right
+- auto orientation per scanned page, portrait, or landscape
+- auto fit, A3, A4, A5, B4, B5, Letter, Tabloid, Legal, Executive, Postcard, American foolscap, or European foolscap
+- no, small, or large margins
+
+When password protection is enabled, send the password to the recipient separately from the PDF.
 
 ### Group export
 
@@ -106,6 +114,8 @@ From **group detail**:
 | --- | --- |
 | Merged PDF | One PDF containing all pages from all documents in the group |
 | Zipped PDFs | ZIP containing one PDF per document |
+
+Merged and zipped group PDFs use the same advanced PDF options. In a merged PDF, page numbering runs continuously across the group. In a ZIP, numbering restarts at 1 in each document.
 
 ## Library search and sort
 

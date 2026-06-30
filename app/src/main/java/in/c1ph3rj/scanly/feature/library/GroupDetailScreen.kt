@@ -470,6 +470,7 @@ private fun GroupDetailScreen(
             onOptionsChanged = { updated -> pdfOptions = updated },
             onConfirm = {
                 val selectedOptions = pdfOptions
+                pdfOptions = pdfOptions.copy(password = null)
                 pendingExportAction = null
                 when (action) {
                     GroupExportAction.SAVE_MERGED -> onSaveMergedPdf(selectedOptions)

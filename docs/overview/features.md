@@ -45,7 +45,7 @@ Complete inventory of Scanly features as of **v1.0.9**.
 - Add more pages via scan session or gallery import
 - Open page preview for full-screen review
 - **Export and share:**
-  - PDF (configurable page size, orientation, margins)
+  - PDF with optional open password, footer page numbers, auto/portrait/landscape orientation, print-size or auto-fit pages, and margins
   - Image archive (ZIP of JPEGs)
 
 ## Page preview
@@ -72,6 +72,7 @@ Complete inventory of Scanly features as of **v1.0.9**.
 - **Group export:**
   - Single merged PDF (all pages across all group documents)
   - Zipped PDF set (one PDF per document)
+  - Uses the same password, page number, orientation, page size, and margin controls as a single-document PDF
 
 ## Settings
 
