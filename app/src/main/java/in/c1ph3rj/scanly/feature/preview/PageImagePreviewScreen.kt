@@ -1,22 +1,28 @@
 package `in`.c1ph3rj.scanly.feature.preview
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.Icons
@@ -24,13 +30,19 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.IosShare
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.TextFields
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -64,6 +76,7 @@ fun PageImagePreviewRoute(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
+    val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(viewModel) {
         viewModel.events.collectLatest { event ->
@@ -72,6 +85,10 @@ fun PageImagePreviewRoute(
                     Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
                 }
                 is PageImagePreviewEvent.ShareFiles -> sharePreparedFiles(context, event.artifact)
+                is PageImagePreviewEvent.CopyText -> {
+                    context.copyRecognizedText(event.text)
+                    snackbarHostState.showSnackbar("Text copied")
+                }
             }
         }
     }
@@ -82,6 +99,15 @@ fun PageImagePreviewRoute(
         onEditPage = onEditPage,
         onSharePage = viewModel::sharePage,
         onSelectPage = viewModel::selectPage,
+        onToggleTextMode = viewModel::toggleTextMode,
+        onExitTextMode = viewModel::exitTextMode,
+        onRetryTextRecognition = viewModel::retryTextRecognition,
+        onSelectTextToken = viewModel::selectTextToken,
+        onSelectTextRange = viewModel::selectTextRange,
+        onClearTextSelection = viewModel::clearTextSelection,
+        onSelectAllText = viewModel::selectAllText,
+        onCopySelectedText = viewModel::copySelectedText,
+        snackbarHostState = snackbarHostState,
     )
 }
 
@@ -93,6 +119,15 @@ fun PageImagePreviewScreen(
     onEditPage: (String) -> Unit,
     onSharePage: (String) -> Unit,
     onSelectPage: (String) -> Unit,
+    onToggleTextMode: (String) -> Unit,
+    onExitTextMode: () -> Unit,
+    onRetryTextRecognition: () -> Unit,
+    onSelectTextToken: (Int) -> Unit,
+    onSelectTextRange: (Int, Int) -> Unit,
+    onClearTextSelection: () -> Unit,
+    onSelectAllText: () -> Unit,
+    onCopySelectedText: () -> Unit,
+    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
 ) {
     if (uiState.isLoading) {
         Box(
@@ -136,7 +171,12 @@ fun PageImagePreviewScreen(
     }
     val visiblePage = pages.getOrNull(pagerState.settledPage) ?: page
     val visibleZoomState = zoomStates[visiblePage.id]
+    val textModeActive = uiState.textMode !is PageTextModeState.Inactive
     var showPageMenu by remember { mutableStateOf(false) }
+
+    BackHandler(enabled = textModeActive) {
+        onExitTextMode()
+    }
 
     LaunchedEffect(pagerState, pages) {
         snapshotFlow { pagerState.settledPage }
@@ -167,9 +207,10 @@ fun PageImagePreviewScreen(
                 state = pagerState,
                 modifier = Modifier.fillMaxSize(),
                 key = { index -> pages[index].id },
-                userScrollEnabled = visibleZoomState?.isZoomActive != true,
+                userScrollEnabled = !textModeActive && visibleZoomState?.isZoomActive != true,
             ) { pageIndex ->
                 val previewPage = pages[pageIndex]
+                val readyTextMode = uiState.textMode as? PageTextModeState.Ready
                 ZoomableImageViewer(
                     imagePath = previewPage.processedImagePath
                         ?: previewPage.rawImagePath
@@ -178,6 +219,21 @@ fun PageImagePreviewScreen(
                     state = checkNotNull(zoomStates[previewPage.id]),
                     allowParentHorizontalGestures = true,
                     showTopBar = false,
+                    showZoomIndicator = !textModeActive,
+                    imageOverlay = { overlayInfo ->
+                        if (previewPage.id == uiState.selectedPageId && readyTextMode != null) {
+                            PageTextOverlay(
+                                recognizedText = readyTextMode.recognizedText,
+                                selection = readyTextMode.selection,
+                                zoomScale = overlayInfo.scale,
+                                selectedColor = MaterialTheme.colorScheme.primary,
+                                onSelectToken = onSelectTextToken,
+                                onSelectRange = onSelectTextRange,
+                                onClearSelection = onClearTextSelection,
+                                modifier = Modifier.fillMaxSize(),
+                            )
+                        }
+                    },
                 )
             }
 
@@ -194,7 +250,9 @@ fun PageImagePreviewScreen(
                     ChromeIconButton(
                         icon = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "Back",
-                        onClick = onNavigateUp,
+                        onClick = {
+                            if (textModeActive) onExitTextMode() else onNavigateUp()
+                        },
                         containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
                         contentColor = MaterialTheme.colorScheme.onSurface,
                     )
@@ -218,6 +276,13 @@ fun PageImagePreviewScreen(
                             onClick = visibleZoomState::reset,
                         )
                     }
+                    PreviewActionButton(
+                        icon = Icons.Filled.TextFields,
+                        contentDescription = if (textModeActive) "Close text selection" else "Select text",
+                        onClick = { onToggleTextMode(visiblePage.id) },
+                        selected = textModeActive,
+                        loading = uiState.textMode is PageTextModeState.Loading,
+                    )
                     Box {
                         PreviewActionButton(
                             icon = Icons.Filled.MoreVert,
@@ -252,6 +317,135 @@ fun PageImagePreviewScreen(
                     }
                 }
             }
+
+            if (textModeActive) {
+                TextModeActionBar(
+                    textMode = uiState.textMode,
+                    onRetry = onRetryTextRecognition,
+                    onSelectAll = onSelectAllText,
+                    onCopy = onCopySelectedText,
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .navigationBarsPadding()
+                        .padding(horizontal = 16.dp, vertical = 18.dp),
+                )
+            }
+
+            SnackbarHost(
+                hostState = snackbarHostState,
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .navigationBarsPadding()
+                    .padding(bottom = if (textModeActive) 96.dp else 16.dp),
+            )
+        }
+    }
+}
+
+@Composable
+private fun TextModeActionBar(
+    textMode: PageTextModeState,
+    onRetry: () -> Unit,
+    onSelectAll: () -> Unit,
+    onCopy: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Surface(
+        modifier = modifier.fillMaxWidth(),
+        color = Color.Black.copy(alpha = 0.78f),
+        contentColor = Color.White,
+        shape = MaterialTheme.shapes.extraLarge,
+        border = BorderStroke(1.dp, Color.White.copy(alpha = 0.14f)),
+    ) {
+        when (textMode) {
+            PageTextModeState.Inactive -> Unit
+            is PageTextModeState.Loading -> {
+                Row(
+                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(20.dp),
+                        color = Color.White,
+                        strokeWidth = 2.dp,
+                    )
+                    Text("Finding text…", style = MaterialTheme.typography.bodyLarge)
+                }
+            }
+            is PageTextModeState.Ready -> {
+                Row(
+                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = "${textMode.recognizedText.tokens.size} words found",
+                            style = MaterialTheme.typography.labelLarge,
+                        )
+                        Text(
+                            text = if (textMode.selection == null) "Tap or drag over text"
+                            else "${textMode.selection.count()} selected",
+                            color = Color.White.copy(alpha = 0.72f),
+                            style = MaterialTheme.typography.bodySmall,
+                        )
+                    }
+                    TextButton(onClick = onSelectAll) {
+                        Text("Select all", color = Color.White)
+                    }
+                    Button(
+                        onClick = onCopy,
+                        enabled = textMode.selection != null,
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = MaterialTheme.colorScheme.onPrimary,
+                        ),
+                    ) {
+                        Text("Copy")
+                    }
+                }
+            }
+            is PageTextModeState.Empty -> {
+                TextModeMessage(
+                    title = "No supported text found",
+                    supportingText = "Text recognition currently supports Latin script.",
+                    onRetry = onRetry,
+                )
+            }
+            is PageTextModeState.Error -> {
+                TextModeMessage(
+                    title = "Couldn’t detect text",
+                    supportingText = "Try again with a clearer page image.",
+                    onRetry = onRetry,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun TextModeMessage(
+    title: String,
+    supportingText: String,
+    onRetry: () -> Unit,
+) {
+    Row(
+        modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
+            Text(title, style = MaterialTheme.typography.labelLarge)
+            Spacer(modifier = Modifier.height(2.dp))
+            Text(
+                text = supportingText,
+                color = Color.White.copy(alpha = 0.72f),
+                style = MaterialTheme.typography.bodySmall,
+            )
+        }
+        TextButton(onClick = onRetry) {
+            Text("Retry", color = Color.White)
         }
     }
 }
@@ -261,23 +455,37 @@ private fun PreviewActionButton(
     icon: androidx.compose.ui.graphics.vector.ImageVector,
     contentDescription: String,
     onClick: () -> Unit,
+    selected: Boolean = false,
+    loading: Boolean = false,
 ) {
     Surface(
         onClick = onClick,
         modifier = Modifier.size(48.dp),
-        color = Color.Black.copy(alpha = 0.42f),
-        contentColor = Color.White,
+        color = if (selected) MaterialTheme.colorScheme.primary else Color.Black.copy(alpha = 0.42f),
+        contentColor = if (selected) MaterialTheme.colorScheme.onPrimary else Color.White,
         shape = MaterialTheme.shapes.large,
         border = BorderStroke(1.dp, Color.White.copy(alpha = 0.12f)),
     ) {
         Box(contentAlignment = Alignment.Center) {
-            Icon(
-                imageVector = icon,
-                contentDescription = contentDescription,
-                tint = Color.White,
-            )
+            if (loading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(21.dp),
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    strokeWidth = 2.dp,
+                )
+            } else {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = contentDescription,
+                )
+            }
         }
     }
+}
+
+private fun Context.copyRecognizedText(text: String) {
+    val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+    clipboard.setPrimaryClip(ClipData.newPlainText("Scanly recognized text", text))
 }
 
 private fun sharePreparedFiles(

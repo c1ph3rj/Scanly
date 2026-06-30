@@ -12,6 +12,7 @@ import androidx.compose.foundation.gestures.calculateZoom
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -114,6 +115,8 @@ fun ZoomableImageViewer(
     closeContentDescription: String = "Back",
     allowParentHorizontalGestures: Boolean = false,
     showTopBar: Boolean = true,
+    showZoomIndicator: Boolean = true,
+    imageOverlay: @Composable BoxScope.(ZoomableImageOverlayInfo) -> Unit = {},
     onZoomActiveChange: (Boolean) -> Unit = {},
     trailingAction: @Composable (
         zoomActive: Boolean,
@@ -187,6 +190,8 @@ fun ZoomableImageViewer(
                         onScaleChange = { state.scale = it },
                         onOffsetChange = { state.offset = it },
                         allowParentHorizontalGestures = allowParentHorizontalGestures,
+                        showZoomIndicator = showZoomIndicator,
+                        imageOverlay = imageOverlay,
                         modifier = Modifier.fillMaxSize(),
                     )
                 }
@@ -229,7 +234,8 @@ fun ZoomableImageViewer(
 
 @Stable
 class ZoomableImageState internal constructor() {
-    internal var scale by mutableFloatStateOf(MIN_SCALE)
+    var scale by mutableFloatStateOf(MIN_SCALE)
+        internal set
     internal var offset by mutableStateOf(Offset.Zero)
 
     val isZoomActive: Boolean
@@ -245,6 +251,12 @@ class ZoomableImageState internal constructor() {
 fun rememberZoomableImageState(imageKey: Any?): ZoomableImageState =
     remember(imageKey) { ZoomableImageState() }
 
+data class ZoomableImageOverlayInfo(
+    val fittedWidthPx: Float,
+    val fittedHeightPx: Float,
+    val scale: Float,
+)
+
 @Composable
 private fun ZoomableImageCanvas(
     imageBitmap: ImageBitmap,
@@ -253,6 +265,8 @@ private fun ZoomableImageCanvas(
     onScaleChange: (Float) -> Unit,
     onOffsetChange: (Offset) -> Unit,
     allowParentHorizontalGestures: Boolean,
+    showZoomIndicator: Boolean,
+    imageOverlay: @Composable BoxScope.(ZoomableImageOverlayInfo) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val density = LocalDensity.current
@@ -326,6 +340,8 @@ private fun ZoomableImageCanvas(
                             val pressedPointers = event.changes.count { it.pressed }
                             if (pressedPointers >= 2) {
                                 ownsGesture = true
+                            } else if (event.changes.any { it.isConsumed }) {
+                                ownsGesture = false
                             }
                             if (ownsGesture && pressedPointers > 0) {
                                 updateTransform(
@@ -344,11 +360,7 @@ private fun ZoomableImageCanvas(
         contentAlignment = Alignment.Center,
     ) {
         if (containerSize != IntSize.Zero) {
-            androidx.compose.foundation.Image(
-                bitmap = imageBitmap,
-                contentDescription = null,
-                contentScale = ContentScale.Fit,
-                filterQuality = FilterQuality.High,
+            Box(
                 modifier = Modifier
                     .size(
                         width = with(density) { fittedImageSize.width.toDp() },
@@ -361,19 +373,36 @@ private fun ZoomableImageCanvas(
                         translationY = offset.y
                         transformOrigin = TransformOrigin.Center
                     },
-            )
+            ) {
+                androidx.compose.foundation.Image(
+                    bitmap = imageBitmap,
+                    contentDescription = null,
+                    contentScale = ContentScale.Fit,
+                    filterQuality = FilterQuality.High,
+                    modifier = Modifier.fillMaxSize(),
+                )
+                imageOverlay(
+                    ZoomableImageOverlayInfo(
+                        fittedWidthPx = fittedImageSize.width,
+                        fittedHeightPx = fittedImageSize.height,
+                        scale = scale,
+                    ),
+                )
+            }
         }
 
-        MetricChip(
-            label = "${"%.1f".format(scale)}x",
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .navigationBarsPadding()
-                .padding(bottom = 18.dp),
-            containerColor = Color.Black.copy(alpha = 0.42f),
-            contentColor = Color.White,
-            border = BorderStroke(1.dp, Color.White.copy(alpha = 0.12f)),
-        )
+        if (showZoomIndicator) {
+            MetricChip(
+                label = "${"%.1f".format(scale)}x",
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .navigationBarsPadding()
+                    .padding(bottom = 18.dp),
+                containerColor = Color.Black.copy(alpha = 0.42f),
+                contentColor = Color.White,
+                border = BorderStroke(1.dp, Color.White.copy(alpha = 0.12f)),
+            )
+        }
     }
 }
 

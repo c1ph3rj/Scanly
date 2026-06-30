@@ -12,7 +12,7 @@ Every feature screen in Scanly **v1.0.9** and its responsibilities.
 | Group detail | `GroupDetailScreen` | `GroupDetailViewModel` | `group/{groupId}` | Membership, rename, delete, group export |
 | Document detail | `DocumentDetailScreen` | `DocumentDetailViewModel` | `document/{documentId}` | Pages, reorder, rename, import, export |
 | Scan session | `ScanSessionScreen` | `ScanSessionViewModel` | `camera/session/{docId}` | CameraX, live guidance, finalize |
-| Page preview | `PageImagePreviewScreen` | `PageImagePreviewViewModel` | `preview/page/{pageId}` | Image-only paging with fixed chrome, zoom, share, and edit actions |
+| Page preview | `PageImagePreviewScreen` | `PageImagePreviewViewModel` | `preview/page/{pageId}` | Image-only paging, zoom, share/edit actions, and on-device OCR selection/copy |
 | Page editor | `PageEditorScreen` | `PageEditorViewModel` | `editor/page/{pageId}` | Crop, rotate, filters, retake |
 | Settings | `SettingsScreen` | `SettingsViewModel` | `settings` | Theme, storage, clear data, FAQs |
 | Legal | `LegalDocumentScreen` | — | `legal/{documentType}` | Privacy / licenses content |

@@ -60,6 +60,7 @@ All code under `app/src/main/java/in/c1ph3rj/scanly/`:
 | `data/settings/` | DataStore and bundled assets |
 | `data/update/` | Build-selected GitHub or Google Play update checks |
 | `data/processing/` | `PageImageProcessor` implementation |
+| `data/recognition/` | Bundled ML Kit page-text recognizer |
 | `core/ml/` | LiteRT corner detection |
 | `core/processing/` | Perspective math, OpenCV filters |
 | `core/editing/` | Crop quad editor logic |
@@ -96,7 +97,7 @@ Hilt modules in `di/` install into `SingletonComponent`:
 | `SettingsModule` | `SettingsRepository` |
 | `AppDataModule` | `AppDataRepository` |
 | `ProcessingModule` | `PageImageProcessor` |
-| `MlModule` | `DocumentCornerDetector` → `LiteRtDocumentCornerDetector` |
+| `MlModule` | Corner detector and on-device `PageTextRecognizer` bindings |
 | `AppUpdateModule` | Shared update notes, Play coordinator, and prompt storage |
 | `DistributionAppUpdateModule` | Build-type-specific `AppUpdateRepository` binding |
 | `CoroutineModule` | `ScanlyDispatchers` |
@@ -122,6 +123,17 @@ PageEditorViewModel
     → PageImageProcessor.reprocessPage
     → Room update + thumbnail invalidation
 ```
+
+### Page text recognition
+
+```
+PageImagePreviewViewModel
+  → RecognizePageTextUseCase → PageTextRecognizer
+    → bundled ML Kit Latin recognizer
+    → normalized word polygons → zoom-synchronized selection overlay
+```
+
+Recognition runs only when the user enters Text mode. Results remain in the preview ViewModel's session cache and document images are not uploaded or persisted as OCR data.
 
 ### Export
 

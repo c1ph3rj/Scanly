@@ -51,6 +51,8 @@ Complete inventory of Scanly features as of **v1.0.9**.
 ## Page preview
 
 - Swipeable full-page review within a document
+- **On-device text recognition** — enter Text mode to detect Latin-script words without uploading the page
+- Tap or drag across detected words, adjust the selection handles, select all, and copy while zooming or panning
 - Navigate to page editor from any page
 
 ## Page editor
@@ -109,7 +111,7 @@ Reusable building blocks in `feature/components/`:
 ## What Scanly does not do
 
 - Cloud sync or backup
-- OCR / text recognition
+- Cloud OCR or recognition of scripts outside ML Kit's bundled Latin model
 - Batch cloud upload
 - In-app APK installation
 - Account or authentication system

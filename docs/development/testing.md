@@ -17,16 +17,16 @@ Test coverage and how to run tests in Scanly **v1.0.9**.
 
 ## Unit tests (`app/src/test/`)
 
-**23 test files** covering core logic:
+**26 test files** covering core logic:
 
 | Area | Test files |
 | --- | --- |
 | ML / geometry | `DocumentCornerQuadTest`, `PerspectiveQuadMathTest`, `CropQuadEditorTest` |
 | Processing | `AdaptivePageFilterTuningTest`, `PageFilterPresetTest` |
 | Camera | `CaptureStabilityTrackerTest`, `CaptureFrameQualityAnalyzerTest`, `CameraOverlayMapperTest`, `ScanSessionScreenTest` |
-| UI / layout | `AdaptiveLayoutTest`, `PreviewImageSizerTest`, `OnboardingLayoutModeTest` |
-| Formatting | `StorageFormatterTest`, `DocumentPresentationFormatterTest`, `DocumentPreviewPathResolverTest` |
-| Feature logic | `LibraryUiStateTest`, `DocumentDetailSelectionResolverTest`, `PageImagePreviewSelectionResolverTest` |
+| UI / layout | `AdaptiveLayoutTest`, `PreviewImageSizerTest`, `OnboardingLayoutModeTest`, `PageTextOverlayTest` |
+| Formatting | `StorageFormatterTest`, `DocumentPresentationFormatterTest`, `DocumentPreviewPathResolverTest`, `RecognizedPageTextTest` |
+| Feature logic | `LibraryUiStateTest`, `DocumentDetailSelectionResolverTest`, `PageImagePreviewSelectionResolverTest`, `PageImagePreviewViewModelTest` |
 | Updates | `AppUpdateDialogCooldownTest`, `ReleaseMarkdownParserTest`, `AppVersionComparatorTest`, `GitHubAppUpdateRepositoryTest`, `PlayInAppUpdatePolicyTest` |
 | Scaffold | `ExampleUnitTest` |
 
@@ -43,6 +43,7 @@ app/src/test/java/in/c1ph3rj/scanly/{matching/package}/YourTest.kt
 | File | Coverage |
 | --- | --- |
 | `OnboardingScreenTest.kt` | Compose UI test for onboarding screen |
+| `PageImagePreviewScreenTest.kt` | OCR Text-mode selection and copy actions |
 | `ExampleInstrumentedTest.kt` | Package name smoke test |
 
 ## Coverage gaps

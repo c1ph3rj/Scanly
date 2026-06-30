@@ -43,8 +43,9 @@ Same flow — create a new document via scan from the Library FAB menu.
 ### Page preview
 
 1. From **document detail**, tap a page thumbnail.
-2. **Page preview** opens — swipe between pages.
-3. Tap edit to open the **page editor**.
+2. **Page preview** opens — swipe between pages, pinch to zoom, or use the page menu to share and edit.
+3. Tap **Text** to detect Latin-script words on-device. Tap or drag over words, use **Select all** if needed, then tap **Copy**.
+4. Tap **Text** again or press Back to return to normal page swiping.
 
 ### Page editor
 

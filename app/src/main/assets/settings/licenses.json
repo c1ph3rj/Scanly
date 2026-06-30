@@ -27,6 +27,13 @@
     "websiteUrl": "https://ai.google.dev/edge/litert"
   },
   {
+    "id": "mlkit_text_recognition",
+    "name": "Google ML Kit Text Recognition",
+    "summary": "Provides bundled, on-device Latin-script text recognition for selecting and copying text from scanned pages.",
+    "license": "Google ML Kit Terms",
+    "websiteUrl": "https://developers.google.com/ml-kit/terms"
+  },
+  {
     "id": "play_app_update",
     "name": "Google Play In-App Update Library",
     "summary": "Provides Google Play in-app update checks and install flows for production releases.",
