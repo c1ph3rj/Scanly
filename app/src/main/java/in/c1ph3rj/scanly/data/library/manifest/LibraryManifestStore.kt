@@ -23,7 +23,6 @@ class LibraryManifestStore @Inject constructor(
         encodeDefaults = true
         ignoreUnknownKeys = true
         explicitNulls = false
-        prettyPrint = true
     }
 
     suspend fun createLibrary(treeUri: Uri): LibraryMarker {
@@ -74,7 +73,7 @@ class LibraryManifestStore @Inject constructor(
         fileSystem.writeBytes(treeUri, path, bytes, JSON_MIME_TYPE)
         val persisted = fileSystem.readBytes(treeUri, path)
         require(persisted.contentEquals(bytes)) { "Catalog verification failed." }
-        pruneOldRevisions(treeUri, CATALOG_DIRECTORY, CATALOG_PATTERN)
+        pruneSequentialRevision(treeUri, CATALOG_DIRECTORY, "catalog", catalog.generation)
         return StoredManifest(catalog, sha256(bytes), path)
     }
 
@@ -93,7 +92,7 @@ class LibraryManifestStore @Inject constructor(
         val directory = "documents/${manifest.id}/manifests"
         val path = "$directory/document-r${manifest.revision.toString().padStart(12, '0')}.json"
         val stored = writeVerified(treeUri, path, manifest, ::validateDocument)
-        pruneOldRevisions(treeUri, directory, DOCUMENT_PATTERN)
+        pruneSequentialRevision(treeUri, directory, "document", manifest.revision)
         return stored
     }
 
@@ -112,7 +111,7 @@ class LibraryManifestStore @Inject constructor(
         val directory = "groups/${manifest.id}"
         val path = "$directory/group-r${manifest.revision.toString().padStart(12, '0')}.json"
         val stored = writeVerified(treeUri, path, manifest, ::validateGroup)
-        pruneOldRevisions(treeUri, directory, GROUP_PATTERN)
+        pruneSequentialRevision(treeUri, directory, "group", manifest.revision)
         return stored
     }
 
@@ -207,12 +206,17 @@ class LibraryManifestStore @Inject constructor(
         return null
     }
 
-    private suspend fun pruneOldRevisions(treeUri: Uri, directory: String, pattern: Regex) {
-        fileSystem.list(treeUri, directory)
-            .mapNotNull { entry -> pattern.matchEntire(entry.name)?.groupValues?.get(1)?.toLongOrNull()?.let { it to entry.name } }
-            .sortedByDescending { it.first }
-            .drop(2)
-            .forEach { (_, name) -> runCatching { fileSystem.delete(treeUri, "$directory/$name") } }
+    private suspend fun pruneSequentialRevision(
+        treeUri: Uri,
+        directory: String,
+        filePrefix: String,
+        currentRevision: Long,
+    ) {
+        val obsoleteRevision = currentRevision - 2L
+        val minimumRevision = if (filePrefix == "catalog") 0L else 1L
+        if (obsoleteRevision < minimumRevision) return
+        val obsoletePath = "$directory/$filePrefix-r${obsoleteRevision.toString().padStart(12, '0')}.json"
+        runCatching { fileSystem.delete(treeUri, obsoletePath) }
     }
 
     private fun validateMarker(marker: LibraryMarker) {

@@ -26,45 +26,53 @@ internal data class LiteRtModelContract(
     val modelName: String,
 )
 
-internal fun prepareInput(
-    bitmap: Bitmap,
-    inputWidth: Int,
-    inputHeight: Int,
-): PreparedImage {
-    val scale = minOf(inputWidth / bitmap.width.toFloat(), inputHeight / bitmap.height.toFloat())
-    val scaledWidth = (bitmap.width * scale).roundToInt().coerceAtLeast(1)
-    val scaledHeight = (bitmap.height * scale).roundToInt().coerceAtLeast(1)
-    val padX = (inputWidth - scaledWidth) / 2f
-    val padY = (inputHeight - scaledHeight) / 2f
-    val scaledBitmap = Bitmap.createScaledBitmap(bitmap, scaledWidth, scaledHeight, true)
-    val canvasBitmap = Bitmap.createBitmap(inputWidth, inputHeight, Bitmap.Config.ARGB_8888)
-    val canvas = Canvas(canvasBitmap)
-    canvas.drawColor(Color.rgb(LiteRtPoseConstants.LETTERBOX_COLOR, LiteRtPoseConstants.LETTERBOX_COLOR, LiteRtPoseConstants.LETTERBOX_COLOR))
-    canvas.drawBitmap(scaledBitmap, padX, padY, null)
+internal class LiteRtImagePreprocessor(
+    private val inputWidth: Int,
+    private val inputHeight: Int,
+) {
+    private val canvasBitmap = Bitmap.createBitmap(inputWidth, inputHeight, Bitmap.Config.ARGB_8888)
+    private val canvas = Canvas(canvasBitmap)
+    private val pixels = IntArray(inputWidth * inputHeight)
+    private val inputBuffer = ByteBuffer.allocateDirect(
+        inputWidth * inputHeight * LiteRtPoseConstants.INPUT_CHANNELS * LiteRtPoseConstants.FLOAT_BYTES,
+    ).order(ByteOrder.nativeOrder())
 
-    val pixels = IntArray(inputWidth * inputHeight)
-    canvasBitmap.getPixels(pixels, 0, inputWidth, 0, 0, inputWidth, inputHeight)
-    val inputBuffer = ByteBuffer.allocateDirect(inputWidth * inputHeight * LiteRtPoseConstants.INPUT_CHANNELS * LiteRtPoseConstants.FLOAT_BYTES)
-        .order(ByteOrder.nativeOrder())
+    fun prepare(bitmap: Bitmap): PreparedImage {
+        val scale = minOf(inputWidth / bitmap.width.toFloat(), inputHeight / bitmap.height.toFloat())
+        val scaledWidth = (bitmap.width * scale).roundToInt().coerceAtLeast(1)
+        val scaledHeight = (bitmap.height * scale).roundToInt().coerceAtLeast(1)
+        val padX = (inputWidth - scaledWidth) / 2f
+        val padY = (inputHeight - scaledHeight) / 2f
+        val scaledBitmap = Bitmap.createScaledBitmap(bitmap, scaledWidth, scaledHeight, true)
+        canvas.drawColor(
+            Color.rgb(
+                LiteRtPoseConstants.LETTERBOX_COLOR,
+                LiteRtPoseConstants.LETTERBOX_COLOR,
+                LiteRtPoseConstants.LETTERBOX_COLOR,
+            ),
+        )
+        canvas.drawBitmap(scaledBitmap, padX, padY, null)
 
-    pixels.forEach { pixel ->
-        inputBuffer.putFloat(Color.red(pixel) / 255f)
-        inputBuffer.putFloat(Color.green(pixel) / 255f)
-        inputBuffer.putFloat(Color.blue(pixel) / 255f)
+        canvasBitmap.getPixels(pixels, 0, inputWidth, 0, 0, inputWidth, inputHeight)
+        inputBuffer.clear()
+        for (pixel in pixels) {
+            inputBuffer.putFloat(Color.red(pixel) / 255f)
+            inputBuffer.putFloat(Color.green(pixel) / 255f)
+            inputBuffer.putFloat(Color.blue(pixel) / 255f)
+        }
+        inputBuffer.rewind()
+
+        if (scaledBitmap !== bitmap) {
+            scaledBitmap.recycle()
+        }
+
+        return PreparedImage(
+            inputBuffer = inputBuffer,
+            scale = scale,
+            padX = padX,
+            padY = padY,
+        )
     }
-    inputBuffer.rewind()
-
-    if (scaledBitmap !== bitmap) {
-        scaledBitmap.recycle()
-    }
-    canvasBitmap.recycle()
-
-    return PreparedImage(
-        inputBuffer = inputBuffer,
-        scale = scale,
-        padX = padX,
-        padY = padY,
-    )
 }
 
 internal fun decodeBestPrediction(
@@ -76,16 +84,18 @@ internal fun decodeBestPrediction(
     originalWidth: Int,
     originalHeight: Int,
     minConfidenceThreshold: Float = LiteRtPoseConstants.DETECTION_CONFIDENCE_THRESHOLD,
+    values: FloatArray? = null,
 ): DecodedPosePrediction {
     outputBuffer.rewind()
     val floatBuffer = outputBuffer.asFloatBuffer()
-    val values = FloatArray(floatBuffer.remaining())
-    floatBuffer.get(values)
+    val decodedValues = values?.takeIf { it.size == floatBuffer.remaining() }
+        ?: FloatArray(floatBuffer.remaining())
+    floatBuffer.get(decodedValues)
 
     var bestIndex = 0
     var bestConfidence = Float.NEGATIVE_INFINITY
     for (anchorIndex in 0 until predictionCount) {
-        val confidence = values[(LiteRtPoseConstants.CLASS_CHANNEL * predictionCount) + anchorIndex]
+        val confidence = decodedValues[(LiteRtPoseConstants.CLASS_CHANNEL * predictionCount) + anchorIndex]
         if (confidence > bestConfidence) {
             bestConfidence = confidence
             bestIndex = anchorIndex
@@ -100,10 +110,10 @@ internal fun decodeBestPrediction(
     }
 
     val quad = DocumentCornerQuad(
-        topLeft = decodeKeypoint(values, bestIndex, LiteRtPoseConstants.KEYPOINT_START_CHANNEL + 0, predictionCount, preparedImage, inputWidth, inputHeight, originalWidth, originalHeight),
-        topRight = decodeKeypoint(values, bestIndex, LiteRtPoseConstants.KEYPOINT_START_CHANNEL + 3, predictionCount, preparedImage, inputWidth, inputHeight, originalWidth, originalHeight),
-        bottomRight = decodeKeypoint(values, bestIndex, LiteRtPoseConstants.KEYPOINT_START_CHANNEL + 6, predictionCount, preparedImage, inputWidth, inputHeight, originalWidth, originalHeight),
-        bottomLeft = decodeKeypoint(values, bestIndex, LiteRtPoseConstants.KEYPOINT_START_CHANNEL + 9, predictionCount, preparedImage, inputWidth, inputHeight, originalWidth, originalHeight),
+        topLeft = decodeKeypoint(decodedValues, bestIndex, LiteRtPoseConstants.KEYPOINT_START_CHANNEL + 0, predictionCount, preparedImage, inputWidth, inputHeight, originalWidth, originalHeight),
+        topRight = decodeKeypoint(decodedValues, bestIndex, LiteRtPoseConstants.KEYPOINT_START_CHANNEL + 3, predictionCount, preparedImage, inputWidth, inputHeight, originalWidth, originalHeight),
+        bottomRight = decodeKeypoint(decodedValues, bestIndex, LiteRtPoseConstants.KEYPOINT_START_CHANNEL + 6, predictionCount, preparedImage, inputWidth, inputHeight, originalWidth, originalHeight),
+        bottomLeft = decodeKeypoint(decodedValues, bestIndex, LiteRtPoseConstants.KEYPOINT_START_CHANNEL + 9, predictionCount, preparedImage, inputWidth, inputHeight, originalWidth, originalHeight),
     )
 
     return DecodedPosePrediction(

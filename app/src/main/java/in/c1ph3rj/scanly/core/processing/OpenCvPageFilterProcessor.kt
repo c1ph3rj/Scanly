@@ -17,6 +17,10 @@ object OpenCvPageFilterProcessor {
     @Volatile
     private var initialized = false
 
+    fun warmUp() {
+        ensureInitialized()
+    }
+
     fun apply(
         sourceBitmap: Bitmap,
         filterPreset: PageFilterPreset,

@@ -2,8 +2,10 @@ package `in`.c1ph3rj.scanly.feature.camera
 
 import `in`.c1ph3rj.scanly.domain.model.PageCaptureDraft
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertNull
 import org.junit.Test
+import java.nio.ByteBuffer
 
 class ScanSessionScreenTest {
     @Test
@@ -73,6 +75,21 @@ class ScanSessionScreenTest {
                 draft = captureDraft(replacementPageId = null),
                 capturedPageId = "page-8",
             ),
+        )
+    }
+
+    @Test
+    fun copyRgbaPlane_removesRowPaddingWithBulkCopies() {
+        val source = ByteBuffer.wrap(
+            byteArrayOf(
+                1, 2, 3, 4, 5, 6, 7, 8, 99, 99, 99, 99,
+                9, 10, 11, 12, 13, 14, 15, 16, 88, 88, 88, 88,
+            ),
+        )
+
+        assertArrayEquals(
+            byteArrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16),
+            copyRgbaPlane(source, width = 2, height = 2, rowStride = 12, pixelStride = 4),
         )
     }
 

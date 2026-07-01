@@ -31,6 +31,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - **Settings layout** — the main settings screen is leaner: FAQs and open-source licenses moved to dedicated sub-screens, redundant version and URL subtitles removed, and storage shows a single total. Settings title now matches Library (`displaySmall`).
 - Update messaging now reflects the selected distribution channel instead of always naming Google Play.
 - Fixed-size PDF exports now use real print dimensions, while auto-fit keeps each scan's aspect ratio. Numbered exports reserve a footer so the page number does not cover document content.
+- **Faster shared-library and capture pipeline** — resolved SAF directories and immutable asset entries are cached, catalog state stays in memory between write-through mutations, raw backup overlaps image processing, processed/thumbnail writes run together, recovery manifests are compact, and thumbnails are generated without re-decoding the processed JPEG. Live camera analysis also reuses ML buffers and passes its detected crop into capture processing instead of running duplicate detection.
 
 ## [1.0.9] - 2026-06-28
 

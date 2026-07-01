@@ -29,7 +29,7 @@ class LibraryMutationCoordinator @Inject constructor(
         roomCommit: suspend (checksum: String, generation: Long) -> T,
     ): T = mutex.withLock {
         val tree = session.requireTreeUri()
-        val catalog = manifestStore.readLatestCatalog(tree).value
+        val catalog = session.requireCatalog()
         val generation = catalog.generation + 1L
         val operationId = UUID.randomUUID().toString()
         manifestStore.writeOperation(tree, OperationJournal(operationId, operationType, manifest.id, manifest.revision, generation, System.currentTimeMillis()))
@@ -39,8 +39,8 @@ class LibraryMutationCoordinator @Inject constructor(
             documents = catalog.documents.filterNot { it.id == manifest.id } + CatalogRecord(manifest.id, manifest.revision, stored.checksum),
         )
         manifestStore.writeCatalog(tree, updated)
-        val result = roomCommit(stored.checksum, generation)
         session.updateCatalog(updated)
+        val result = roomCommit(stored.checksum, generation)
         manifestStore.removeOperation(tree, operationId)
         result
     }
@@ -51,7 +51,7 @@ class LibraryMutationCoordinator @Inject constructor(
         roomCommit: suspend (checksum: String, generation: Long) -> T,
     ): T = mutex.withLock {
         val tree = session.requireTreeUri()
-        val catalog = manifestStore.readLatestCatalog(tree).value
+        val catalog = session.requireCatalog()
         val generation = catalog.generation + 1L
         val operationId = UUID.randomUUID().toString()
         manifestStore.writeOperation(tree, OperationJournal(operationId, operationType, manifest.id, manifest.revision, generation, System.currentTimeMillis()))
@@ -61,8 +61,8 @@ class LibraryMutationCoordinator @Inject constructor(
             groups = catalog.groups.filterNot { it.id == manifest.id } + CatalogRecord(manifest.id, manifest.revision, stored.checksum),
         )
         manifestStore.writeCatalog(tree, updated)
-        val result = roomCommit(stored.checksum, generation)
         session.updateCatalog(updated)
+        val result = roomCommit(stored.checksum, generation)
         manifestStore.removeOperation(tree, operationId)
         result
     }
@@ -73,7 +73,7 @@ class LibraryMutationCoordinator @Inject constructor(
         roomCommit: suspend (generation: Long) -> T,
     ): T = mutex.withLock {
         val tree = session.requireTreeUri()
-        val catalog = manifestStore.readLatestCatalog(tree).value
+        val catalog = session.requireCatalog()
         val generation = catalog.generation + 1L
         val operationId = UUID.randomUUID().toString()
         manifestStore.writeOperation(tree, OperationJournal(operationId, "delete_$type", id, 1L, generation, System.currentTimeMillis()))
@@ -86,8 +86,8 @@ class LibraryMutationCoordinator @Inject constructor(
             tombstones = catalog.tombstones.filterNot { it.type == type && it.id == id } + tombstone,
         )
         manifestStore.writeCatalog(tree, updated)
-        val result = roomCommit(generation)
         session.updateCatalog(updated)
+        val result = roomCommit(generation)
         manifestStore.removeOperation(tree, operationId)
         runCatching { fileSystem.delete(tree, if (type == "document") "documents/$id" else "groups/$id") }
         result
@@ -95,8 +95,8 @@ class LibraryMutationCoordinator @Inject constructor(
 
     suspend fun storeAsset(relativePath: String, source: File, revision: Long): LibraryAssetRef {
         val tree = session.requireTreeUri()
-        val entry = fileSystem.copyFromFile(tree, relativePath, source, "image/jpeg")
-        return LibraryAssetRef(relativePath, revision, entry.size, fileSystem.sha256(tree, relativePath), "image/jpeg")
+        val stored = fileSystem.copyFromFile(tree, relativePath, source, "image/jpeg")
+        return LibraryAssetRef(relativePath, revision, stored.size, stored.sha256, "image/jpeg")
     }
 
     suspend fun deleteAsset(asset: LibraryAssetRef?) {

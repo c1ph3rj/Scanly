@@ -10,7 +10,10 @@ interface PageImageProcessor {
         processedImagePath: String,
         thumbnailPath: String,
         filterPreset: PageFilterPreset = PageFilterPreset.AUTO,
+        detectedCropQuad: DocumentCornerQuad? = null,
     ): ProcessedPageArtifacts
+
+    suspend fun warmUp()
 
     suspend fun reprocessPage(
         rawImagePath: String,

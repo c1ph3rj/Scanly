@@ -100,6 +100,7 @@ import `in`.c1ph3rj.scanly.core.ui.PreviewDisplaySize
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import java.io.File
+import java.nio.ByteBuffer
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
@@ -1539,27 +1540,13 @@ private fun ImageProxy.toDetectionFrame(): DetectionFrame? {
         return null
     }
 
-    val packedBytes = ByteArray(width * height * RgbaPixelStride)
-    val buffer = rgbaPlane.buffer
-    buffer.rewind()
-    val rowBuffer = ByteArray(rgbaPlane.rowStride)
-
-    for (rowIndex in 0 until height) {
-        val readableBytes = minOf(rgbaPlane.rowStride, buffer.remaining())
-        buffer.get(rowBuffer, 0, readableBytes)
-        for (columnIndex in 0 until width) {
-            val sourceIndex = columnIndex * rgbaPlane.pixelStride
-            if (sourceIndex + 3 >= readableBytes) {
-                break
-            }
-
-            val destinationIndex = ((rowIndex * width) + columnIndex) * RgbaPixelStride
-            packedBytes[destinationIndex] = rowBuffer[sourceIndex]
-            packedBytes[destinationIndex + 1] = rowBuffer[sourceIndex + 1]
-            packedBytes[destinationIndex + 2] = rowBuffer[sourceIndex + 2]
-            packedBytes[destinationIndex + 3] = rowBuffer[sourceIndex + 3]
-        }
-    }
+    val packedBytes = copyRgbaPlane(
+        buffer = rgbaPlane.buffer,
+        width = width,
+        height = height,
+        rowStride = rgbaPlane.rowStride,
+        pixelStride = rgbaPlane.pixelStride,
+    )
 
     return DetectionFrame(
         width = width,
@@ -1573,12 +1560,47 @@ private fun ImageProxy.toDetectionFrame(): DetectionFrame? {
     )
 }
 
+/** Packs CameraX's potentially padded RGBA plane without a per-pixel loop on normal devices. */
+internal fun copyRgbaPlane(
+    buffer: ByteBuffer,
+    width: Int,
+    height: Int,
+    rowStride: Int,
+    pixelStride: Int,
+): ByteArray {
+    require(width >= 0 && height >= 0 && rowStride >= 0 && pixelStride >= RgbaPixelStride)
+    val output = ByteArray(width * height * RgbaPixelStride)
+    val source = buffer.duplicate().apply { rewind() }
+    val packedRowBytes = width * RgbaPixelStride
+
+    for (rowIndex in 0 until height) {
+        val rowStart = rowIndex * rowStride
+        if (rowStart >= source.limit()) break
+        val destinationStart = rowIndex * packedRowBytes
+        if (pixelStride == RgbaPixelStride) {
+            val count = minOf(packedRowBytes, rowStride, source.limit() - rowStart)
+            source.position(rowStart)
+            source.get(output, destinationStart, count)
+        } else {
+            for (columnIndex in 0 until width) {
+                val sourceIndex = rowStart + (columnIndex * pixelStride)
+                if (sourceIndex + RgbaPixelStride > source.limit()) break
+                val destinationIndex = destinationStart + (columnIndex * RgbaPixelStride)
+                for (channel in 0 until RgbaPixelStride) {
+                    output[destinationIndex + channel] = source.get(sourceIndex + channel)
+                }
+            }
+        }
+    }
+    return output
+}
+
 private val OverlayFill = Color(0x2EFFFFFF)
 private val OverlayGrid = Color(0x22FFFFFF)
 private val OverlayGuide = Color(0xC2FFFFFF)
 private val OverlayWarning = Color(0xFFFFC857)
 private const val RgbaPixelStride = 4
-private const val AnalysisFramesPerSecond = 8L
+private const val AnalysisFramesPerSecond = 6L
 private const val AnalysisIntervalNanos = 1_000_000_000L / AnalysisFramesPerSecond
 private const val TapFocusAutoCancelSeconds = 3L
 private const val TapFocusIndicatorDurationMillis = 850L

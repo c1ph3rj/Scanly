@@ -31,6 +31,9 @@ interface ScanPageDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertAll(pages: List<ScanPageEntity>)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsert(page: ScanPageEntity)
+
     @Update
     suspend fun update(page: ScanPageEntity)
 

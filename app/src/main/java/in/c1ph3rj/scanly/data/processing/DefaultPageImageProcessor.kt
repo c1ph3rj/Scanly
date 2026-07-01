@@ -33,15 +33,20 @@ class DefaultPageImageProcessor @Inject constructor(
         processedImagePath: String,
         thumbnailPath: String,
         filterPreset: PageFilterPreset,
+        detectedCropQuad: DocumentCornerQuad?,
     ): ProcessedPageArtifacts = reprocessPage(
         rawImagePath = rawImagePath,
         processedImagePath = processedImagePath,
         thumbnailPath = thumbnailPath,
-        cropQuad = null,
+        cropQuad = detectedCropQuad,
         rotationDegrees = 0,
         filterPreset = filterPreset,
-        detectDocumentWhenCropQuadMissing = true,
+        detectDocumentWhenCropQuadMissing = detectedCropQuad == null,
     )
+
+    override suspend fun warmUp() = withContext(dispatchers.default) {
+        OpenCvPageFilterProcessor.warmUp()
+    }
 
     override suspend fun reprocessPage(
         rawImagePath: String,
@@ -95,11 +100,10 @@ class DefaultPageImageProcessor @Inject constructor(
                     bitmap = enhancedBitmap,
                     outputPath = processedImagePath,
                 )
+                writeThumbnailFromBitmap(enhancedBitmap, thumbnailPath)
             } finally {
                 enhancedBitmap.recycle()
             }
-
-            writeThumbnail(processedImagePath, thumbnailPath)
 
             ProcessedPageArtifacts(
                 processedImagePath = processedImagePath,
@@ -221,23 +225,34 @@ class DefaultPageImageProcessor @Inject constructor(
         }
     }
 
-    private fun writeThumbnail(sourcePath: String, outputPath: String) {
-        val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
-        BitmapFactory.decodeFile(sourcePath, bounds)
-        val sample = calculateInSampleSize(bounds.outWidth, bounds.outHeight, THUMBNAIL_MAX_DIMENSION)
-        val bitmap = BitmapFactory.decodeFile(
-            sourcePath,
-            BitmapFactory.Options().apply { inSampleSize = sample },
-        ) ?: error("Could not create page thumbnail.")
+    private fun writeThumbnailFromBitmap(source: Bitmap, outputPath: String) {
+        val largestDimension = maxOf(source.width, source.height)
+        val scale = if (largestDimension > THUMBNAIL_MAX_DIMENSION) {
+            THUMBNAIL_MAX_DIMENSION.toFloat() / largestDimension
+        } else {
+            1f
+        }
+        val thumbnail = if (scale < 1f) {
+            Bitmap.createScaledBitmap(
+                source,
+                (source.width * scale).toInt().coerceAtLeast(1),
+                (source.height * scale).toInt().coerceAtLeast(1),
+                true,
+            )
+        } else {
+            source
+        }
         try {
             val outputFile = File(outputPath)
             outputFile.parentFile?.mkdirs()
             FileOutputStream(outputFile).use { output ->
-                bitmap.compress(Bitmap.CompressFormat.JPEG, THUMBNAIL_JPEG_QUALITY, output)
+                thumbnail.compress(Bitmap.CompressFormat.JPEG, THUMBNAIL_JPEG_QUALITY, output)
                 output.flush()
             }
         } finally {
-            bitmap.recycle()
+            if (thumbnail !== source) {
+                thumbnail.recycle()
+            }
         }
     }
 

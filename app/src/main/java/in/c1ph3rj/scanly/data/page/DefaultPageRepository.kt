@@ -26,6 +26,8 @@ import `in`.c1ph3rj.scanly.domain.processing.PageImageProcessor
 import `in`.c1ph3rj.scanly.domain.repository.PageRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.util.UUID
@@ -74,34 +76,51 @@ class DefaultPageRepository @Inject constructor(
             val now = System.currentTimeMillis()
             val revision = document.revision + 1L
             val filter = document.preferredFilterPreset?.let(PageFilterPreset::fromStorage) ?: PageFilterPreset.AUTO
-            val processed = runCatching {
-                pageImageProcessor.processCapture(
-                    rawImagePath = draft.captureFilePath,
-                    processedImagePath = draft.processedWorkingPath,
-                    thumbnailPath = draft.thumbnailWorkingPath,
-                    filterPreset = filter,
-                )
-            }.getOrNull()
-
-            val rawAsset = mutations.storeAsset(
-                "documents/${document.id}/raw/${draft.pageId}-${draft.operationId}.jpg",
-                capture,
-                revision,
-            )
-            val processedAsset = processed?.let {
-                mutations.storeAsset(
-                    "documents/${document.id}/processed/${draft.pageId}-r$revision.jpg",
-                    File(it.processedImagePath),
-                    revision,
-                )
+            val (rawAsset, processed, processedAsset, thumbnailAsset) = coroutineScope {
+                // The immutable raw backup is independent from CPU-heavy enhancement. Running
+                // them together hides most of the shared-storage copy behind image processing.
+                val rawAssetDeferred = async {
+                    mutations.storeAsset(
+                        "documents/${document.id}/raw/${draft.pageId}-${draft.operationId}.jpg",
+                        capture,
+                        revision,
+                    )
+                }
+                val processedArtifacts = runCatching {
+                    pageImageProcessor.processCapture(
+                        rawImagePath = draft.captureFilePath,
+                        processedImagePath = draft.processedWorkingPath,
+                        thumbnailPath = draft.thumbnailWorkingPath,
+                        filterPreset = filter,
+                        detectedCropQuad = draft.detectedCropQuad,
+                    )
+                }.getOrNull()
+                val storedRaw = rawAssetDeferred.await()
+                if (processedArtifacts == null) {
+                    CaptureAssets(storedRaw, null, null, storedRaw)
+                } else {
+                    val processedDeferred = async {
+                        mutations.storeAsset(
+                            "documents/${document.id}/processed/${draft.pageId}-r$revision.jpg",
+                            File(processedArtifacts.processedImagePath),
+                            revision,
+                        )
+                    }
+                    val thumbnailDeferred = async {
+                        mutations.storeAsset(
+                            "documents/${document.id}/thumbs/${draft.pageId}-r$revision.jpg",
+                            File(processedArtifacts.thumbnailPath),
+                            revision,
+                        )
+                    }
+                    CaptureAssets(
+                        raw = storedRaw,
+                        processed = processedArtifacts,
+                        processedAsset = processedDeferred.await(),
+                        thumbnailAsset = thumbnailDeferred.await(),
+                    )
+                }
             }
-            val thumbnailAsset = processed?.let {
-                mutations.storeAsset(
-                    "documents/${document.id}/thumbs/${draft.pageId}-r$revision.jpg",
-                    File(it.thumbnailPath),
-                    revision,
-                )
-            } ?: rawAsset
 
             val page = ScanPageEntity(
                 id = draft.pageId,
@@ -131,8 +150,7 @@ class DefaultPageRepository @Inject constructor(
             val manifest = document.toManifest(pages, nextRevision = revision, updatedAtMillis = now)
             mutations.commitDocument(manifest, if (existing == null) "capture_page" else "retake_page") { checksum, generation ->
                 database.withTransaction {
-                    pageDao.deleteByDocumentId(document.id)
-                    pageDao.upsertAll(pages)
+                    pageDao.upsert(pages.first { it.id == page.id })
                     documentDao.update(document.snapshot(pages, revision, checksum, now))
                     roomStateUpdater.record("document", document.id, revision, checksum, generation)
                 }
@@ -303,4 +321,11 @@ class DefaultPageRepository @Inject constructor(
             onSuccess = { ScanlyResult.Success(it) },
             onFailure = { ScanlyResult.Failure(ScanlyError(it.message ?: fallback, it)) },
         )
+
+    private data class CaptureAssets(
+        val raw: LibraryAssetRef,
+        val processed: `in`.c1ph3rj.scanly.domain.processing.ProcessedPageArtifacts?,
+        val processedAsset: LibraryAssetRef?,
+        val thumbnailAsset: LibraryAssetRef,
+    )
 }

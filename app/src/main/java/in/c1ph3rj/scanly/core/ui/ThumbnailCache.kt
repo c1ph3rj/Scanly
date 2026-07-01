@@ -10,7 +10,6 @@ import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
 import `in`.c1ph3rj.scanly.data.library.DocumentAssetReader
-import kotlinx.coroutines.runBlocking
 
 @EntryPoint
 @InstallIn(SingletonComponent::class)
@@ -50,16 +49,15 @@ class ThumbnailCache @Inject constructor(
      * Returns a cached or freshly decoded bitmap scaled so that neither dimension exceeds
      * [targetPx]. Uses [Bitmap.Config.ARGB_8888] for larger decodes to avoid banding.
      */
-    fun decode(
+    suspend fun decode(
         path: String,
         targetPx: Int,
         contentRevision: Long = 0L,
     ): Bitmap? {
         val key = cacheKey(path, targetPx, contentRevision)
         cache.get(key)?.let { return it }
-        val localPath = File(path).takeIf(File::isFile)?.absolutePath ?: runBlocking {
-            assetReader.materialize(path).absolutePath
-        }
+        val localPath = File(path).takeIf(File::isFile)?.absolutePath
+            ?: assetReader.materialize(path).absolutePath
         val sampled = decodeSampled(localPath, targetPx) ?: return null
         cache.put(key, sampled)
         return sampled

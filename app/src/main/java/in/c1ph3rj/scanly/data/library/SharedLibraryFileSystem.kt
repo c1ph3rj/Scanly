@@ -10,6 +10,7 @@ import `in`.c1ph3rj.scanly.core.common.ScanlyDispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.security.MessageDigest
+import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -20,12 +21,27 @@ data class SharedEntry(
     val size: Long,
 )
 
+/** Verified size and content hash of a freshly written shared asset. */
+data class StoredAsset(
+    val size: Long,
+    val sha256: String,
+)
+
 @Singleton
 class SharedLibraryFileSystem @Inject constructor(
     @param:ApplicationContext private val context: Context,
     private val dispatchers: ScanlyDispatchers,
 ) {
     private val resolver: ContentResolver get() = context.contentResolver
+
+    /**
+     * Caches resolved document URIs for directory paths so repeated capture/edit/browse
+     * operations skip walking (and listing) every path segment through SAF. Directory URIs and
+     * immutable/versioned file entries are cached in memory and invalidated when their owning
+     * paths are deleted. Caches are namespaced by tree URI so switching libraries never collides.
+     */
+    private val directoryUriCache = ConcurrentHashMap<String, Uri>()
+    private val entryCache = ConcurrentHashMap<String, SharedEntry>()
 
     suspend fun hasPersistedReadWriteGrant(treeUri: Uri): Boolean = withContext(dispatchers.io) {
         resolver.persistedUriPermissions.any { permission ->
@@ -46,18 +62,8 @@ class SharedLibraryFileSystem @Inject constructor(
 
     suspend fun ensureDirectory(treeUri: Uri, relativePath: String): Uri = withContext(dispatchers.io) {
         validateRelativePath(relativePath)
-        relativePath.split('/').filter(String::isNotBlank).fold(rootUri(treeUri)) { parent, name ->
-            findChild(treeUri, parent, name)?.also { entry ->
-                require(entry.mimeType == DocumentsContract.Document.MIME_TYPE_DIR) {
-                    "$relativePath contains a non-directory entry."
-                }
-            }?.uri ?: DocumentsContract.createDocument(
-                resolver,
-                parent,
-                DocumentsContract.Document.MIME_TYPE_DIR,
-                name,
-            ) ?: error("Could not create library directory $relativePath.")
-        }
+        resolveDirectory(treeUri, relativePath, create = true)
+            ?: error("Could not create library directory $relativePath.")
     }
 
     suspend fun writeBytes(
@@ -83,6 +89,12 @@ class SharedLibraryFileSystem @Inject constructor(
             output.write(bytes)
             output.flush()
         } ?: error("Could not open $relativePath for writing.")
+        entryCache[entryCacheKey(treeUri, relativePath)] = SharedEntry(
+            name = name,
+            uri = uri,
+            mimeType = mimeType,
+            size = bytes.size.toLong(),
+        )
         uri
     }
 
@@ -91,7 +103,7 @@ class SharedLibraryFileSystem @Inject constructor(
         relativePath: String,
         source: File,
         mimeType: String,
-    ): SharedEntry = withContext(dispatchers.io) {
+    ): StoredAsset = withContext(dispatchers.io) {
         require(source.isFile && source.length() > 0L) { "Working file is missing." }
         validateRelativePath(relativePath)
         val segments = relativePath.split('/').filter(String::isNotBlank)
@@ -101,13 +113,31 @@ class SharedLibraryFileSystem @Inject constructor(
         val existing = findChild(treeUri, parent, name)
         val uri = existing?.uri ?: DocumentsContract.createDocument(resolver, parent, mimeType, name)
             ?: error("Could not create $relativePath.")
+        val digest = MessageDigest.getInstance("SHA-256")
         resolver.openOutputStream(uri, "wt")?.use { output ->
-            source.inputStream().use { input -> input.copyTo(output) }
+            source.inputStream().use { input ->
+                val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
+                while (true) {
+                    val count = input.read(buffer)
+                    if (count < 0) break
+                    digest.update(buffer, 0, count)
+                    output.write(buffer, 0, count)
+                }
+            }
             output.flush()
         } ?: error("Could not write $relativePath.")
-        val entry = stat(treeUri, relativePath) ?: error("Could not verify $relativePath.")
-        require(entry.size == source.length()) { "Shared asset verification failed for $relativePath." }
-        entry
+        val persistedSize = documentSize(uri)
+        require(persistedSize == source.length()) { "Shared asset verification failed for $relativePath." }
+        val sourceChecksum = digest.digest().joinToString("") { byte -> "%02x".format(byte) }
+        val persistedChecksum = sha256(uri)
+        require(persistedChecksum == sourceChecksum) { "Shared asset checksum verification failed for $relativePath." }
+        entryCache[entryCacheKey(treeUri, relativePath)] = SharedEntry(
+            name = name,
+            uri = uri,
+            mimeType = mimeType,
+            size = persistedSize,
+        )
+        StoredAsset(persistedSize, persistedChecksum)
     }
 
     suspend fun readBytes(treeUri: Uri, relativePath: String, maxBytes: Int = MAX_MANIFEST_BYTES): ByteArray =
@@ -133,24 +163,39 @@ class SharedLibraryFileSystem @Inject constructor(
 
     suspend fun stat(treeUri: Uri, relativePath: String): SharedEntry? = withContext(dispatchers.io) {
         validateRelativePath(relativePath)
-        var current = rootUri(treeUri)
-        var result: SharedEntry? = null
-        for (segment in relativePath.split('/').filter(String::isNotBlank)) {
-            result = findChild(treeUri, current, segment) ?: return@withContext null
-            current = result.uri
+        entryCache[entryCacheKey(treeUri, relativePath)]?.let { return@withContext it }
+        val segments = relativePath.split('/').filter(String::isNotBlank)
+        if (segments.isEmpty()) return@withContext null
+        val parentPath = segments.dropLast(1).joinToString("/")
+        val parent = resolveDirectory(treeUri, parentPath, create = false) ?: return@withContext null
+        findChild(treeUri, parent, segments.last())?.also { entry ->
+            entryCache[entryCacheKey(treeUri, relativePath)] = entry
         }
-        result
     }
 
     suspend fun list(treeUri: Uri, relativePath: String): List<SharedEntry> = withContext(dispatchers.io) {
-        val directory = if (relativePath.isBlank()) rootUri(treeUri) else stat(treeUri, relativePath)?.uri
-            ?: return@withContext emptyList()
-        listChildren(treeUri, directory)
+        val directory = if (relativePath.isBlank()) {
+            rootUri(treeUri)
+        } else {
+            resolveDirectory(treeUri, relativePath, create = false) ?: return@withContext emptyList()
+        }
+        listChildren(treeUri, directory).also { entries ->
+            val prefix = relativePath.split('/').filter(String::isNotBlank).joinToString("/")
+            entries.forEach { entry ->
+                val childPath = listOf(prefix, entry.name).filter(String::isNotBlank).joinToString("/")
+                entryCache[entryCacheKey(treeUri, childPath)] = entry
+            }
+        }
     }
 
     suspend fun delete(treeUri: Uri, relativePath: String): Boolean = withContext(dispatchers.io) {
         val entry = stat(treeUri, relativePath) ?: return@withContext true
-        DocumentsContract.deleteDocument(resolver, entry.uri)
+        val deleted = DocumentsContract.deleteDocument(resolver, entry.uri)
+        invalidateEntryCache(treeUri, relativePath, includeChildren = entry.mimeType == DocumentsContract.Document.MIME_TYPE_DIR)
+        if (entry.mimeType == DocumentsContract.Document.MIME_TYPE_DIR) {
+            invalidateDirectoryCache(treeUri, relativePath)
+        }
+        deleted
     }
 
     suspend fun sha256(treeUri: Uri, relativePath: String): String = withContext(dispatchers.io) {
@@ -185,6 +230,97 @@ class SharedLibraryFileSystem @Inject constructor(
         treeUri,
         DocumentsContract.getTreeDocumentId(treeUri),
     )
+
+    /**
+     * Resolves the document URI for a directory path, consulting (and populating) the directory
+     * cache segment by segment. When [create] is false a missing segment yields null instead of
+     * creating it. Must be called on an IO context (it performs blocking SAF queries).
+     */
+    private fun resolveDirectory(treeUri: Uri, relativePath: String, create: Boolean): Uri? {
+        val segments = relativePath.split('/').filter(String::isNotBlank)
+        if (segments.isEmpty()) return rootUri(treeUri)
+        directoryUriCache[directoryCacheKey(treeUri, segments.joinToString("/"))]?.let { return it }
+
+        var current = rootUri(treeUri)
+        val builder = StringBuilder()
+        for (name in segments) {
+            if (builder.isNotEmpty()) builder.append('/')
+            builder.append(name)
+            val key = directoryCacheKey(treeUri, builder.toString())
+            val cached = directoryUriCache[key]
+            if (cached != null) {
+                current = cached
+                continue
+            }
+            val child = findChild(treeUri, current, name)
+            val childUri = when {
+                child != null -> {
+                    require(child.mimeType == DocumentsContract.Document.MIME_TYPE_DIR) {
+                        "$relativePath contains a non-directory entry."
+                    }
+                    child.uri
+                }
+                create -> DocumentsContract.createDocument(
+                    resolver,
+                    current,
+                    DocumentsContract.Document.MIME_TYPE_DIR,
+                    name,
+                ) ?: error("Could not create library directory $relativePath.")
+                else -> return null
+            }
+            directoryUriCache[key] = childUri
+            current = childUri
+        }
+        return current
+    }
+
+    private fun directoryCacheKey(treeUri: Uri, normalizedPath: String): String =
+        "$treeUri\u0000$normalizedPath"
+
+    private fun entryCacheKey(treeUri: Uri, relativePath: String): String =
+        "$treeUri\u0000${relativePath.split('/').filter(String::isNotBlank).joinToString("/")}"
+
+    private fun invalidateDirectoryCache(treeUri: Uri, relativePath: String) {
+        val normalized = relativePath.split('/').filter(String::isNotBlank).joinToString("/")
+        if (normalized.isEmpty()) {
+            val prefix = "$treeUri\u0000"
+            directoryUriCache.keys.removeIf { it.startsWith(prefix) }
+            entryCache.keys.removeIf { it.startsWith(prefix) }
+            return
+        }
+        val exact = directoryCacheKey(treeUri, normalized)
+        directoryUriCache.keys.removeIf { it == exact || it.startsWith("$exact/") }
+        invalidateEntryCache(treeUri, normalized, includeChildren = true)
+    }
+
+    private fun invalidateEntryCache(treeUri: Uri, relativePath: String, includeChildren: Boolean) {
+        val exact = entryCacheKey(treeUri, relativePath)
+        entryCache.keys.removeIf { key -> key == exact || (includeChildren && key.startsWith("$exact/")) }
+    }
+
+    private fun documentSize(uri: Uri): Long {
+        val projection = arrayOf(DocumentsContract.Document.COLUMN_SIZE)
+        val queried = resolver.query(uri, projection, null, null, null)?.use { cursor ->
+            if (cursor.moveToFirst() && !cursor.isNull(0)) cursor.getLong(0) else -1L
+        } ?: -1L
+        if (queried >= 0L) return queried
+        return resolver.openFileDescriptor(uri, "r")?.use { descriptor -> descriptor.statSize }
+            ?.takeIf { it >= 0L }
+            ?: error("Could not verify shared file size.")
+    }
+
+    private fun sha256(uri: Uri): String {
+        val digest = MessageDigest.getInstance("SHA-256")
+        resolver.openInputStream(uri)?.use { input ->
+            val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
+            while (true) {
+                val count = input.read(buffer)
+                if (count < 0) break
+                digest.update(buffer, 0, count)
+            }
+        } ?: error("Could not verify shared file checksum.")
+        return digest.digest().joinToString("") { byte -> "%02x".format(byte) }
+    }
 
     private fun findChild(treeUri: Uri, parent: Uri, name: String): SharedEntry? =
         listChildren(treeUri, parent).firstOrNull { it.name == name }

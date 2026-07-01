@@ -11,6 +11,7 @@ import `in`.c1ph3rj.scanly.core.ml.DocumentCornerQuad
 import `in`.c1ph3rj.scanly.domain.model.PageCaptureDraft
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
 import `in`.c1ph3rj.scanly.domain.model.ScanPage
+import `in`.c1ph3rj.scanly.domain.processing.PageImageProcessor
 import `in`.c1ph3rj.scanly.domain.usecase.FinalizeCapturedPageUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveDocumentPagesUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveDocumentUseCase
@@ -69,6 +70,7 @@ class ScanSessionViewModel @Inject constructor(
     observeDocumentUseCase: ObserveDocumentUseCase,
     observeDocumentPagesUseCase: ObserveDocumentPagesUseCase,
     private val documentCornerDetector: DocumentCornerDetector,
+    private val pageImageProcessor: PageImageProcessor,
     private val preparePageCaptureUseCase: PreparePageCaptureUseCase,
     private val prepareReplacementCaptureUseCase: PrepareReplacementCaptureUseCase,
     private val finalizeCapturedPageUseCase: FinalizeCapturedPageUseCase,
@@ -77,6 +79,7 @@ class ScanSessionViewModel @Inject constructor(
     private val initialReplacementPageId: String? = savedStateHandle[ScanSessionDestination.replacePageIdArgument]
     private val analysisInFlight = AtomicBoolean(false)
     private val stabilityTracker = CaptureStabilityTracker()
+    private var latestReliableCaptureQuad: DocumentCornerQuad? = null
     private var pendingCaptureQuad: DocumentCornerQuad? = null
     private var pendingCaptureTrigger: CaptureTrigger = CaptureTrigger.MANUAL
     private val _uiState = MutableStateFlow(
@@ -88,6 +91,9 @@ class ScanSessionViewModel @Inject constructor(
     val events: SharedFlow<ScanSessionEvent> = _events.asSharedFlow()
 
     init {
+        viewModelScope.launch(Dispatchers.Default) {
+            runCatching { pageImageProcessor.warmUp() }
+        }
         viewModelScope.launch {
             observeDocumentUseCase(documentId).collectLatest { document ->
                 _uiState.update { current ->
@@ -182,6 +188,7 @@ class ScanSessionViewModel @Inject constructor(
                         )
                     }
                 }.getOrElse {
+                    latestReliableCaptureQuad = null
                     _uiState.update { current ->
                         current.copy(
                             liveDetection = current.liveDetection.copy(
@@ -197,6 +204,9 @@ class ScanSessionViewModel @Inject constructor(
                     return@launch
                 }
                 val (detectionResult, sceneIssue) = analysis
+                latestReliableCaptureQuad = detectionResult.quad?.takeIf {
+                    detectionResult.confidence >= ReliableCaptureConfidence && sceneIssue == null
+                }
 
                 val autoCaptureEnabled = _uiState.value.liveDetection.autoCaptureEnabled
                 val evaluation = stabilityTracker.evaluate(
@@ -304,7 +314,7 @@ class ScanSessionViewModel @Inject constructor(
         }
 
         pendingCaptureTrigger = trigger
-        pendingCaptureQuad = _uiState.value.liveDetection.quad
+        pendingCaptureQuad = latestReliableCaptureQuad
         val autoCaptureEnabled = _uiState.value.liveDetection.autoCaptureEnabled
         val captureState = stabilityTracker.capturingState(autoCaptureEnabled)
         _uiState.update { current ->
@@ -326,7 +336,11 @@ class ScanSessionViewModel @Inject constructor(
         }
 
         when (val result = capturePreparationResult) {
-            is ScanlyResult.Success -> _events.emit(ScanSessionEvent.PerformCapture(result.value))
+            is ScanlyResult.Success -> _events.emit(
+                ScanSessionEvent.PerformCapture(
+                    result.value.copy(detectedCropQuad = pendingCaptureQuad),
+                ),
+            )
             is ScanlyResult.Failure -> {
                 pendingCaptureQuad = null
                 pendingCaptureTrigger = CaptureTrigger.MANUAL
@@ -357,6 +371,10 @@ class ScanSessionViewModel @Inject constructor(
     ): String = when {
         trigger == CaptureTrigger.AUTO -> "Auto-captured page ${draft.pageIndex + 1}."
         else -> "Page ${draft.pageIndex + 1} saved."
+    }
+
+    private companion object {
+        const val ReliableCaptureConfidence = 0.72f
     }
 
 }

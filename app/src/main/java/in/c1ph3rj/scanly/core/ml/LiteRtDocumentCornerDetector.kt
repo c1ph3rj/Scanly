@@ -81,6 +81,9 @@ class LiteRtDocumentCornerDetector @Inject constructor(
         return LiteRtDetectionRuntime(
             interpreter = interpreter,
             contract = contract,
+            preprocessor = LiteRtImagePreprocessor(contract.inputWidth, contract.inputHeight),
+            outputBuffer = ByteBuffer.allocateDirect(outputTensor.numBytes()).order(ByteOrder.nativeOrder()),
+            outputValues = FloatArray(outputTensor.numBytes() / LiteRtPoseConstants.FLOAT_BYTES),
         )
     }
 
@@ -145,44 +148,40 @@ class LiteRtDocumentCornerDetector @Inject constructor(
         bitmap: Bitmap,
         runtime: LiteRtDetectionRuntime,
     ): CornerDetectionResult {
-        val preparedImage = prepareInput(
-            bitmap = bitmap,
-            inputWidth = runtime.contract.inputWidth,
-            inputHeight = runtime.contract.inputHeight,
-        )
-        val outputBuffer = runtime.allocateOutputBuffer()
-        val inferenceTimeMillis = measureTimeMillis {
-            synchronized(runtime.lock) {
-                runtime.interpreter.run(preparedImage.inputBuffer, outputBuffer)
+        return synchronized(runtime.lock) {
+            val preparedImage = runtime.preprocessor.prepare(bitmap)
+            runtime.outputBuffer.clear()
+            val inferenceTimeMillis = measureTimeMillis {
+                runtime.interpreter.run(preparedImage.inputBuffer, runtime.outputBuffer)
             }
-        }
-        val decoded = decodeBestPrediction(
-            outputBuffer = outputBuffer,
-            predictionCount = runtime.contract.predictionCount,
-            preparedImage = preparedImage,
-            inputWidth = runtime.contract.inputWidth,
-            inputHeight = runtime.contract.inputHeight,
-            originalWidth = bitmap.width,
-            originalHeight = bitmap.height,
-        )
+            val decoded = decodeBestPrediction(
+                outputBuffer = runtime.outputBuffer,
+                predictionCount = runtime.contract.predictionCount,
+                preparedImage = preparedImage,
+                inputWidth = runtime.contract.inputWidth,
+                inputHeight = runtime.contract.inputHeight,
+                originalWidth = bitmap.width,
+                originalHeight = bitmap.height,
+                values = runtime.outputValues,
+            )
 
-        return CornerDetectionResult(
-            quad = decoded.quad,
-            confidence = decoded.confidence,
-            inferenceTimeMillis = inferenceTimeMillis,
-            modelName = runtime.contract.modelName,
-        )
+            CornerDetectionResult(
+                quad = decoded.quad,
+                confidence = decoded.confidence,
+                inferenceTimeMillis = inferenceTimeMillis,
+                modelName = runtime.contract.modelName,
+            )
+        }
     }
 
     private data class LiteRtDetectionRuntime(
         val interpreter: InterpreterApi,
         val contract: LiteRtModelContract,
+        val preprocessor: LiteRtImagePreprocessor,
+        val outputBuffer: ByteBuffer,
+        val outputValues: FloatArray,
         val lock: Any = Any(),
-    ) {
-        fun allocateOutputBuffer(): ByteBuffer =
-            ByteBuffer.allocateDirect(interpreter.getOutputTensor(0).numBytes())
-                .order(java.nio.ByteOrder.nativeOrder())
-    }
+    )
 
     private companion object {
         const val TAG = "LiteRtCornerDetector"
