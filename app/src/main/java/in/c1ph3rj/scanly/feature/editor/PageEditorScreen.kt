@@ -1085,15 +1085,25 @@ private fun rememberEditorPreviewBitmap(
     fallbackImagePath: String?,
     rotationDegrees: Int,
     selectedFilter: PageFilterPreset,
-): androidx.compose.runtime.State<ImageBitmap?> = produceState<ImageBitmap?>(
-    initialValue = null,
-    rawImagePath,
-    fallbackImagePath,
-    rotationDegrees,
-    selectedFilter,
-) {
-    value = withContext(Dispatchers.Default) {
-        val sourcePath = rawImagePath ?: fallbackImagePath ?: return@withContext null
+): androidx.compose.runtime.State<ImageBitmap?> {
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val reader = remember(context) {
+        dagger.hilt.android.EntryPointAccessors.fromApplication(
+            context.applicationContext,
+            `in`.c1ph3rj.scanly.data.library.DocumentAssetReaderEntryPoint::class.java,
+        ).documentAssetReader()
+    }
+    return produceState<ImageBitmap?>(
+        initialValue = null,
+        rawImagePath,
+        fallbackImagePath,
+        rotationDegrees,
+        selectedFilter,
+    ) {
+        value = withContext(Dispatchers.Default) {
+        val assetPath = rawImagePath ?: fallbackImagePath ?: return@withContext null
+        val sourcePath = if (java.io.File(assetPath).isFile) assetPath else
+            withContext(Dispatchers.IO) { reader.materialize(assetPath).absolutePath }
         val rotatedBitmap = decodeEditorBitmap(
             path = sourcePath,
             userRotationDegrees = rotationDegrees,
@@ -1107,6 +1117,7 @@ private fun rememberEditorPreviewBitmap(
             rotatedBitmap.recycle()
         }
         filteredBitmap.asImageBitmap()
+        }
     }
 }
 
@@ -1141,20 +1152,27 @@ private fun rememberFilterPreviewBitmaps(
     rawImagePath: String?,
     fallbackImagePath: String?,
     rotationDegrees: Int,
-): androidx.compose.runtime.State<FilterPreviewState> = produceState(
-    initialValue = FilterPreviewState(
-        isLoading = true,
-        previews = emptyMap(),
-    ),
-    rawImagePath,
-    fallbackImagePath,
-    rotationDegrees,
-) {
-    value = withContext(Dispatchers.Default) {
-        val sourcePath = rawImagePath ?: fallbackImagePath ?: return@withContext FilterPreviewState(
+): androidx.compose.runtime.State<FilterPreviewState> {
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val reader = remember(context) {
+        dagger.hilt.android.EntryPointAccessors.fromApplication(
+            context.applicationContext,
+            `in`.c1ph3rj.scanly.data.library.DocumentAssetReaderEntryPoint::class.java,
+        ).documentAssetReader()
+    }
+    return produceState(
+        initialValue = FilterPreviewState(isLoading = true, previews = emptyMap()),
+        rawImagePath,
+        fallbackImagePath,
+        rotationDegrees,
+    ) {
+        value = withContext(Dispatchers.Default) {
+        val assetPath = rawImagePath ?: fallbackImagePath ?: return@withContext FilterPreviewState(
             isLoading = false,
             previews = emptyMap(),
         )
+        val sourcePath = if (java.io.File(assetPath).isFile) assetPath else
+            withContext(Dispatchers.IO) { reader.materialize(assetPath).absolutePath }
         val baseBitmap = decodeEditorBitmap(
             path = sourcePath,
             userRotationDegrees = rotationDegrees,
@@ -1178,6 +1196,7 @@ private fun rememberFilterPreviewBitmaps(
             )
         } finally {
             previewBitmap.recycle()
+        }
         }
     }
 }

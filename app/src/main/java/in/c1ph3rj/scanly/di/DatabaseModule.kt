@@ -13,6 +13,7 @@ import `in`.c1ph3rj.scanly.data.local.db.ScanlyDatabase
 import `in`.c1ph3rj.scanly.data.local.db.dao.DocumentDao
 import `in`.c1ph3rj.scanly.data.local.db.dao.DocumentGroupDao
 import `in`.c1ph3rj.scanly.data.local.db.dao.ScanPageDao
+import `in`.c1ph3rj.scanly.data.local.db.dao.LibraryStateDao
 import javax.inject.Singleton
 
 @Module
@@ -26,9 +27,6 @@ object DatabaseModule {
         context,
         ScanlyDatabase::class.java,
         DATABASE_NAME,
-    ).addMigrations(
-        ScanlyDatabase.MIGRATION_1_2,
-        ScanlyDatabase.MIGRATION_2_3,
     ).addCallback(object : RoomDatabase.Callback() {
         override fun onOpen(db: SupportSQLiteDatabase) {
             db.execSQL("PRAGMA foreign_keys=ON")
@@ -45,5 +43,8 @@ object DatabaseModule {
     fun provideDocumentGroupDao(database: ScanlyDatabase): DocumentGroupDao =
         database.documentGroupDao()
 
-    private const val DATABASE_NAME = "scanly.db"
+    @Provides
+    fun provideLibraryStateDao(database: ScanlyDatabase): LibraryStateDao = database.libraryStateDao()
+
+    private const val DATABASE_NAME = "scanly-index.db"
 }

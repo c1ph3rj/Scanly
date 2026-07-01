@@ -6,8 +6,8 @@
    See https://developer.android.com/about/versions/12/backup-restore
 -->
 <full-backup-content>
-    <!--
-   <include domain="sharedpref" path="."/>
-   <exclude domain="sharedpref" path="device.xml"/>
--->
+    <exclude domain="database" path="scanly-index.db" />
+    <exclude domain="database" path="scanly-index.db-wal" />
+    <exclude domain="database" path="scanly-index.db-shm" />
+    <exclude domain="file" path="datastore/scanly_library_access.preferences_pb" />
 </full-backup-content>

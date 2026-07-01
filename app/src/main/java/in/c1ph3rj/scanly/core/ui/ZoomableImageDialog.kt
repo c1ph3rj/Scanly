@@ -65,6 +65,8 @@ import androidx.core.view.WindowCompat
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
+import dagger.hilt.android.EntryPointAccessors
+import `in`.c1ph3rj.scanly.data.library.DocumentAssetReaderEntryPoint
 import kotlin.math.min
 
 @Composable
@@ -438,13 +440,22 @@ private fun clampPanOffset(
 }
 
 @Composable
-private fun rememberZoomableImageBitmap(imagePath: String?) = produceState<ImageBitmap?>(
-    initialValue = null,
-    key1 = imagePath,
-    key2 = imagePath?.let { path -> File(path).takeIf { it.exists() }?.lastModified() },
-) {
-    value = withContext(Dispatchers.IO) {
-        imagePath?.let(::decodeZoomableBitmap)?.asImageBitmap()
+private fun rememberZoomableImageBitmap(imagePath: String?): androidx.compose.runtime.State<ImageBitmap?> {
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val reader = remember(context) {
+        EntryPointAccessors.fromApplication(
+            context.applicationContext,
+            DocumentAssetReaderEntryPoint::class.java,
+        ).documentAssetReader()
+    }
+    return produceState<ImageBitmap?>(initialValue = null, key1 = imagePath) {
+        value = withContext(Dispatchers.IO) {
+            imagePath?.let { path ->
+                val localPath = File(path).takeIf(File::isFile)?.absolutePath
+                    ?: reader.materialize(path).absolutePath
+                decodeZoomableBitmap(localPath)?.asImageBitmap()
+            }
+        }
     }
 }
 

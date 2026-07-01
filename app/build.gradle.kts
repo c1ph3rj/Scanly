@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt.android)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 val localProperties = Properties().apply {
@@ -167,6 +168,7 @@ dependencies {
     implementation(libs.google.play.app.update)
     implementation(libs.google.play.app.update.ktx)
     implementation(libs.pdfbox.android)
+    implementation(libs.kotlinx.serialization.json)
     ksp(libs.androidx.room.compiler)
     ksp(libs.google.dagger.hilt.compiler)
     testImplementation(libs.junit)

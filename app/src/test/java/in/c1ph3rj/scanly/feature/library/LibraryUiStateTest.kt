@@ -119,7 +119,7 @@ class LibraryUiStateTest {
         title = title,
         documentCount = 0,
         totalPageCount = 0,
-        coverThumbnailPath = null,
+        coverThumbnail = null,
         createdAtMillis = createdAt,
         updatedAtMillis = updatedAt,
     )
@@ -134,8 +134,7 @@ class LibraryUiStateTest {
         id = id,
         title = title,
         pageCount = 0,
-        coverThumbnailPath = null,
-        rootDirectoryPath = "/$id",
+        coverThumbnail = null,
         createdAtMillis = createdAt,
         updatedAtMillis = updatedAt,
         groupId = groupId,

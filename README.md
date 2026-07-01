@@ -67,7 +67,7 @@ The repository is organized as a production-style single-module app:
 - `:app` is the only Android module
 - entry point: `app/src/main/java/in/c1ph3rj/scanly/MainActivity.kt`
 - app wiring: `ScanlyApplication`, navigation, Hilt modules, feature screens, and domain/data layers live under `app/src/main/java/in/c1ph3rj/scanly/`
-- local data: Room, DataStore, and app-private file storage
+- local data: a Room operational index, DataStore preferences, and a recoverable user-selected shared library
 - camera and processing stack: CameraX, LiteRT, and OpenCV-based page processing
 
 ## Build and Run

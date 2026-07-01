@@ -4,9 +4,12 @@ data class ScanDocument(
     val id: String,
     val title: String,
     val pageCount: Int,
-    val coverThumbnailPath: String?,
-    val rootDirectoryPath: String,
+    val coverThumbnail: LibraryAssetRef?,
     val createdAtMillis: Long,
     val updatedAtMillis: Long,
     val groupId: String? = null,
-)
+) {
+    @Deprecated("Use coverThumbnail")
+    val coverThumbnailPath: String?
+        get() = coverThumbnail?.relativePath
+}

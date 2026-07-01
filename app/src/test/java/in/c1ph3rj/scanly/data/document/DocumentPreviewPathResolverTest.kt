@@ -4,6 +4,7 @@ import `in`.c1ph3rj.scanly.data.local.db.entity.ScanPageEntity
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Test
+import `in`.c1ph3rj.scanly.domain.model.LibraryAssetRef
 
 class DocumentPreviewPathResolverTest {
     @Test
@@ -14,9 +15,9 @@ class DocumentPreviewPathResolverTest {
             rawImagePath = "raw.jpg",
         )
 
-        val result = resolveDocumentPreviewPath(page) { path -> path != "missing.jpg" }
+        val result = resolveDocumentPreviewAsset(page)
 
-        assertEquals("thumb.jpg", result)
+        assertEquals("thumb.jpg", result?.relativePath)
     }
 
     @Test
@@ -27,14 +28,14 @@ class DocumentPreviewPathResolverTest {
             rawImagePath = "raw.jpg",
         )
 
-        val result = resolveDocumentPreviewPath(page) { path -> path != "missing.jpg" }
+        val result = resolveDocumentPreviewAsset(page.copy(thumbnailAsset = null))
 
-        assertEquals("processed.jpg", result)
+        assertEquals("processed.jpg", result?.relativePath)
     }
 
     @Test
     fun emptyDocumentHasNoPagePreviewAndUsesGeneratedCoverFallback() {
-        assertNull(resolveDocumentPreviewPath(firstPage = null) { true })
+        assertNull(resolveDocumentPreviewAsset(firstPage = null))
     }
 
     private fun page(
@@ -45,9 +46,9 @@ class DocumentPreviewPathResolverTest {
         id = "page-1",
         documentId = "document-1",
         pageIndex = 0,
-        rawImagePath = rawImagePath,
-        processedImagePath = processedImagePath,
-        thumbnailPath = thumbnailPath,
+        rawAsset = rawImagePath?.let(::asset),
+        processedAsset = processedImagePath?.let(::asset),
+        thumbnailAsset = thumbnailPath?.let(::asset),
         rotationDegrees = 0,
         cropTopLeftX = null,
         cropTopLeftY = null,
@@ -62,4 +63,6 @@ class DocumentPreviewPathResolverTest {
         createdAtMillis = 1L,
         updatedAtMillis = 1L,
     )
+
+    private fun asset(path: String) = LibraryAssetRef(path, 1L, 1L, "0".repeat(64))
 }

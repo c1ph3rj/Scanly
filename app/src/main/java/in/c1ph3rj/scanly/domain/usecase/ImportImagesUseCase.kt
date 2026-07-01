@@ -27,7 +27,7 @@ class ImportImagesUseCase @Inject constructor(
                     }
                     val draft = draftResult.value
 
-                    val rawFile = File(draft.rawImagePath)
+                    val rawFile = File(draft.captureFilePath)
                     
                     context.contentResolver.openInputStream(uri)?.use { inputStream ->
                         FileOutputStream(rawFile).use { outputStream ->

@@ -5,9 +5,15 @@ import `in`.c1ph3rj.scanly.core.common.DocumentPresentationFormatter
 import `in`.c1ph3rj.scanly.core.common.ScanlyDispatchers
 import `in`.c1ph3rj.scanly.core.common.ScanlyError
 import `in`.c1ph3rj.scanly.core.common.ScanlyResult
+import `in`.c1ph3rj.scanly.data.library.LibraryMutationCoordinator
+import `in`.c1ph3rj.scanly.data.library.LibraryRoomStateUpdater
+import `in`.c1ph3rj.scanly.data.library.manifest.GroupManifest
+import `in`.c1ph3rj.scanly.data.library.toDomain
+import `in`.c1ph3rj.scanly.data.library.toManifest
 import `in`.c1ph3rj.scanly.data.local.db.ScanlyDatabase
 import `in`.c1ph3rj.scanly.data.local.db.dao.DocumentDao
 import `in`.c1ph3rj.scanly.data.local.db.dao.DocumentGroupDao
+import `in`.c1ph3rj.scanly.data.local.db.dao.ScanPageDao
 import `in`.c1ph3rj.scanly.data.local.db.entity.DocumentGroupEntity
 import `in`.c1ph3rj.scanly.data.local.db.entity.DocumentGroupStats
 import `in`.c1ph3rj.scanly.domain.model.DocumentGroup
@@ -24,157 +30,112 @@ import javax.inject.Singleton
 @Singleton
 class DefaultGroupRepository @Inject constructor(
     private val database: ScanlyDatabase,
-    private val documentGroupDao: DocumentGroupDao,
+    private val groupDao: DocumentGroupDao,
     private val documentDao: DocumentDao,
+    private val pageDao: ScanPageDao,
+    private val mutations: LibraryMutationCoordinator,
+    private val roomStateUpdater: LibraryRoomStateUpdater,
     private val dispatchers: ScanlyDispatchers,
 ) : GroupRepository {
-
     override fun observeGroupsWithStats(): Flow<List<DocumentGroup>> =
-        documentGroupDao.observeGroupsWithStats().map { list ->
-            list.map { it.toDomain() }
-        }
+        groupDao.observeGroupsWithStats().map { list -> list.map { it.toDomainModel() } }
 
     override fun observeRecentGroups(limit: Int): Flow<List<DocumentGroup>> =
-        documentGroupDao.observeRecentGroupsWithStats(limit).map { list ->
-            list.map { it.toDomain() }
-        }
+        groupDao.observeRecentGroupsWithStats(limit).map { list -> list.map { it.toDomainModel() } }
 
     override fun observeGroupWithStats(groupId: String): Flow<DocumentGroup?> =
-        documentGroupDao.observeGroupWithStats(groupId).map { it?.toDomain() }
+        groupDao.observeGroupWithStats(groupId).map { it?.toDomainModel() }
 
     override fun observeGroupDocuments(groupId: String): Flow<List<ScanDocument>> =
-        documentDao.observeDocumentsByGroup(groupId).map { list ->
-            list.map { it.toDomain() }
-        }
+        documentDao.observeDocumentsByGroup(groupId).map { list -> list.map { it.toDomain() } }
 
-    override suspend fun getAllGroupTitles(): List<String> =
-        withContext(dispatchers.io) {
-            documentGroupDao.getAllTitles()
-        }
+    override suspend fun getAllGroupTitles(): List<String> = withContext(dispatchers.io) { groupDao.getAllTitles() }
 
-    override suspend fun suggestGroupTitle(format: GroupTitleFormat): String =
-        withContext(dispatchers.io) {
-            DocumentPresentationFormatter.uniqueGroupTitle(
-                format = format,
-                existingTitles = documentGroupDao.getAllTitles(),
-            )
-        }
+    override suspend fun suggestGroupTitle(format: GroupTitleFormat): String = withContext(dispatchers.io) {
+        DocumentPresentationFormatter.uniqueGroupTitle(format, groupDao.getAllTitles())
+    }
 
-    override suspend fun createGroup(title: String): ScanlyResult<String> =
-        withContext(dispatchers.io) {
-            val normalizedTitle = DocumentPresentationFormatter.resolveUniqueGroupTitle(
-                baseTitle = DocumentPresentationFormatter.normalizeGroupTitle(title),
-                existingTitles = documentGroupDao.getAllTitles(),
-            )
-            val groupId = UUID.randomUUID().toString()
-            val timestamp = System.currentTimeMillis()
-            runCatching {
+    override suspend fun createGroup(title: String): ScanlyResult<String> = withContext(dispatchers.io) {
+        val normalized = DocumentPresentationFormatter.resolveUniqueGroupTitle(
+            DocumentPresentationFormatter.normalizeGroupTitle(title),
+            groupDao.getAllTitles(),
+        )
+        val id = UUID.randomUUID().toString()
+        val now = System.currentTimeMillis()
+        val manifest = GroupManifest(id = id, revision = 1L, title = normalized, createdAtMillis = now, updatedAtMillis = now)
+        resultOf("Could not create the group.") {
+            mutations.commitGroup(manifest, "create_group") { checksum, generation ->
                 database.withTransaction {
-                    documentGroupDao.insert(
-                        DocumentGroupEntity(
-                            id = groupId,
-                            title = normalizedTitle,
-                            createdAtMillis = timestamp,
-                            updatedAtMillis = timestamp,
-                        ),
-                    )
+                    groupDao.insert(DocumentGroupEntity(id, normalized, now, now, 1L, checksum))
+                    roomStateUpdater.record("group", id, 1L, checksum, generation)
                 }
-                groupId
-            }.fold(
-                onSuccess = { ScanlyResult.Success(it) },
-                onFailure = {
-                    ScanlyResult.Failure(
-                        ScanlyError(message = it.message ?: "Could not create the group.", cause = it),
-                    )
-                },
-            )
+                id
+            }
         }
+    }
 
-    override suspend fun renameGroup(groupId: String, title: String): ScanlyResult<Unit> =
-        withContext(dispatchers.io) {
-            val normalizedTitle = DocumentPresentationFormatter.normalizeGroupTitle(title)
-            runCatching {
-                val existing = documentGroupDao.getGroup(groupId) ?: error("Group not found.")
+    override suspend fun renameGroup(groupId: String, title: String): ScanlyResult<Unit> = withContext(dispatchers.io) {
+        resultOf("Could not rename the group.") {
+            val existing = groupDao.getGroup(groupId) ?: error("Group not found.")
+            val normalized = DocumentPresentationFormatter.normalizeGroupTitle(title)
+            val now = System.currentTimeMillis()
+            val manifest = GroupManifest(
+                id = groupId,
+                revision = existing.revision + 1L,
+                title = normalized,
+                createdAtMillis = existing.createdAtMillis,
+                updatedAtMillis = now,
+            )
+            mutations.commitGroup(manifest, "rename_group") { checksum, generation ->
                 database.withTransaction {
-                    documentGroupDao.update(
-                        existing.copy(
-                            title = normalizedTitle,
-                            updatedAtMillis = System.currentTimeMillis(),
-                        ),
-                    )
+                    groupDao.update(existing.copy(title = normalized, updatedAtMillis = now, revision = manifest.revision, manifestChecksum = checksum))
+                    roomStateUpdater.record("group", groupId, manifest.revision, checksum, generation)
                 }
-            }.fold(
-                onSuccess = { ScanlyResult.Success(Unit) },
-                onFailure = {
-                    ScanlyResult.Failure(
-                        ScanlyError(message = it.message ?: "Could not rename the group.", cause = it),
-                    )
-                },
-            )
+            }
         }
+    }
 
-    override suspend fun deleteGroup(groupId: String): ScanlyResult<Unit> =
-        withContext(dispatchers.io) {
-            runCatching {
-                // FK ON DELETE SET NULL will null out groupId on all documents automatically
+    override suspend fun deleteGroup(groupId: String): ScanlyResult<Unit> = withContext(dispatchers.io) {
+        resultOf("Could not delete the group.") {
+            requireNotNull(groupDao.getGroup(groupId)) { "Group not found." }
+            mutations.deleteRecord("group", groupId) { generation ->
                 database.withTransaction {
-                    documentGroupDao.deleteById(groupId)
+                    groupDao.deleteById(groupId)
+                    roomStateUpdater.remove("group", groupId, generation)
                 }
-            }.fold(
-                onSuccess = { ScanlyResult.Success(Unit) },
-                onFailure = {
-                    ScanlyResult.Failure(
-                        ScanlyError(message = it.message ?: "Could not delete the group.", cause = it),
-                    )
-                },
-            )
+            }
         }
+    }
 
-    override suspend fun setDocumentGroup(documentId: String, groupId: String?): ScanlyResult<Unit> =
-        withContext(dispatchers.io) {
-            runCatching {
-                val doc = documentDao.getDocument(documentId) ?: error("Document not found.")
+    override suspend fun setDocumentGroup(documentId: String, groupId: String?): ScanlyResult<Unit> = withContext(dispatchers.io) {
+        resultOf("Could not update document group.") {
+            if (groupId != null) requireNotNull(groupDao.getGroup(groupId)) { "Group not found." }
+            val document = documentDao.getDocument(documentId) ?: error("Document not found.")
+            val now = System.currentTimeMillis()
+            val manifest = document.toManifest(pageDao.getPages(documentId), groupId = groupId, updatedAtMillis = now)
+            mutations.commitDocument(manifest, "set_document_group") { checksum, generation ->
                 database.withTransaction {
-                    documentDao.update(
-                        doc.copy(
-                            groupId = groupId,
-                            updatedAtMillis = System.currentTimeMillis(),
-                        ),
-                    )
+                    documentDao.update(document.copy(groupId = groupId, updatedAtMillis = now, revision = manifest.revision, manifestChecksum = checksum))
+                    roomStateUpdater.record("document", documentId, manifest.revision, checksum, generation)
                 }
-            }.fold(
-                onSuccess = { ScanlyResult.Success(Unit) },
-                onFailure = {
-                    ScanlyResult.Failure(
-                        ScanlyError(
-                            message = it.message ?: "Could not update document group.",
-                            cause = it,
-                        ),
-                    )
-                },
-            )
+            }
         }
+    }
 
-    private fun DocumentGroupStats.toDomain(): DocumentGroup = DocumentGroup(
+    private fun DocumentGroupStats.toDomainModel() = DocumentGroup(
         id = id,
         title = title,
         documentCount = documentCount,
         totalPageCount = totalPageCount,
-        coverThumbnailPath = coverThumbnailPath,
+        coverThumbnail = coverThumbnail,
         createdAtMillis = createdAtMillis,
         updatedAtMillis = updatedAtMillis,
         coverUpdatedAtMillis = coverUpdatedAtMillis ?: updatedAtMillis,
     )
 
-    private fun `in`.c1ph3rj.scanly.data.local.db.entity.DocumentEntity.toDomain(): ScanDocument =
-        ScanDocument(
-            id = id,
-            title = title,
-            pageCount = pageCount,
-            coverThumbnailPath = coverThumbnailPath,
-            rootDirectoryPath = rootDirectoryPath,
-            createdAtMillis = createdAtMillis,
-            updatedAtMillis = updatedAtMillis,
-            groupId = groupId,
+    private suspend fun <T> resultOf(fallback: String, block: suspend () -> T): ScanlyResult<T> =
+        runCatching { block() }.fold(
+            onSuccess = { ScanlyResult.Success(it) },
+            onFailure = { ScanlyResult.Failure(ScanlyError(it.message ?: fallback, it)) },
         )
 }

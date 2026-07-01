@@ -5,15 +5,15 @@
 -->
 <data-extraction-rules>
     <cloud-backup>
-        <!-- TODO: Use <include> and <exclude> to control what is backed up.
-        <include .../>
-        <exclude .../>
-        -->
+        <exclude domain="database" path="scanly-index.db" />
+        <exclude domain="database" path="scanly-index.db-wal" />
+        <exclude domain="database" path="scanly-index.db-shm" />
+        <exclude domain="file" path="datastore/scanly_library_access.preferences_pb" />
     </cloud-backup>
-    <!--
     <device-transfer>
-        <include .../>
-        <exclude .../>
+        <exclude domain="database" path="scanly-index.db" />
+        <exclude domain="database" path="scanly-index.db-wal" />
+        <exclude domain="database" path="scanly-index.db-shm" />
+        <exclude domain="file" path="datastore/scanly_library_access.preferences_pb" />
     </device-transfer>
-    -->
 </data-extraction-rules>

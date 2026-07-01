@@ -20,6 +20,8 @@ import `in`.c1ph3rj.scanly.core.common.ScanlyResult
 import `in`.c1ph3rj.scanly.data.local.db.dao.DocumentDao
 import `in`.c1ph3rj.scanly.data.local.db.dao.DocumentGroupDao
 import `in`.c1ph3rj.scanly.data.local.db.dao.ScanPageDao
+import `in`.c1ph3rj.scanly.data.library.DocumentAssetReader
+import `in`.c1ph3rj.scanly.data.local.db.entity.ScanPageEntity
 import `in`.c1ph3rj.scanly.domain.model.ExportArtifact
 import `in`.c1ph3rj.scanly.domain.model.PdfExportOptions
 import `in`.c1ph3rj.scanly.domain.model.PdfPageNumber
@@ -42,6 +44,7 @@ class DefaultDocumentExportRepository @Inject constructor(
     private val documentDao: DocumentDao,
     private val documentGroupDao: DocumentGroupDao,
     private val scanPageDao: ScanPageDao,
+    private val assetReader: DocumentAssetReader,
     private val dispatchers: ScanlyDispatchers,
 ) : DocumentExportRepository {
 
@@ -188,10 +191,7 @@ class DefaultDocumentExportRepository @Inject constructor(
 
         // Collect all page image paths across all documents in title order
         val allPagePaths = documents.flatMap { doc ->
-            scanPageDao.getPages(doc.id).map { page ->
-                page.processedImagePath ?: page.rawImagePath
-                    ?: error("Missing image for a page in \"${doc.title}\".")
-            }
+            scanPageDao.getPages(doc.id).map { page -> page.exportPath() }
         }
         if (allPagePaths.isEmpty()) error("No pages available to export.")
 
@@ -224,9 +224,7 @@ class DefaultDocumentExportRepository @Inject constructor(
                 documents.forEachIndexed { index, doc ->
                     onProgress(index + 1, documents.size)
                     val pages = scanPageDao.getPages(doc.id)
-                    val pageImagePaths = pages.mapNotNull { page ->
-                        page.processedImagePath ?: page.rawImagePath
-                    }
+                    val pageImagePaths = pages.map { page -> page.exportPath() }
                     if (pageImagePaths.isEmpty()) return@forEachIndexed
 
                     val docFileStem = DocumentPresentationFormatter.safeFileStem(doc.title)
@@ -254,10 +252,7 @@ class DefaultDocumentExportRepository @Inject constructor(
     private suspend fun loadExportInput(documentId: String): ExportInput {
         val document = documentDao.getDocument(documentId) ?: error("Document not found.")
         val pages = scanPageDao.getPages(documentId)
-        val pageImagePaths = pages.map { page ->
-            page.processedImagePath ?: page.rawImagePath
-                ?: error("Missing image for page ${page.pageIndex + 1}.")
-        }
+        val pageImagePaths = pages.map { page -> page.exportPath() }
         if (pageImagePaths.isEmpty()) error("No pages available to export.")
         return ExportInput(
             documentTitle = document.title,
@@ -494,6 +489,12 @@ class DefaultDocumentExportRepository @Inject constructor(
         val file: File,
         val title: String,
     )
+
+    private suspend fun ScanPageEntity.exportPath(): String {
+        val asset = processedAsset ?: rawAsset ?: thumbnailAsset
+            ?: error("Missing image for page ${pageIndex + 1}.")
+        return assetReader.materialize(asset).absolutePath
+    }
 
     private companion object {
         const val maxExportBitmapDimension = 2400

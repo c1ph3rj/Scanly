@@ -44,8 +44,9 @@ Fixed paper sizes are encoded in PostScript points (72 points per inch), so expo
 
 ### Page source
 
-- Uses **processed** image paths from Room
-- Falls back to **raw** if processed is unavailable
+- Uses **processed** shared asset references from Room
+- Falls back to **raw** and then thumbnail assets
+- Materializes shared assets into a bounded app cache for Android PDF/ZIP APIs
 - Pages rendered in `pageIndex` order
 
 ### Group merged PDF

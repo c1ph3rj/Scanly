@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import `in`.c1ph3rj.scanly.domain.model.LibraryAssetRef
 
 @Entity(
     tableName = "scan_pages",
@@ -24,9 +25,9 @@ data class ScanPageEntity(
     @PrimaryKey val id: String,
     val documentId: String,
     val pageIndex: Int,
-    val rawImagePath: String?,
-    val processedImagePath: String?,
-    val thumbnailPath: String?,
+    val rawAsset: LibraryAssetRef?,
+    val processedAsset: LibraryAssetRef?,
+    val thumbnailAsset: LibraryAssetRef?,
     val rotationDegrees: Int,
     val cropTopLeftX: Float?,
     val cropTopLeftY: Float?,

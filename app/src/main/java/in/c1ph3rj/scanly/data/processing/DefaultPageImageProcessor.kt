@@ -16,7 +16,6 @@ import `in`.c1ph3rj.scanly.domain.model.PageFilterPreset
 import `in`.c1ph3rj.scanly.domain.model.PageProcessingState
 import `in`.c1ph3rj.scanly.domain.processing.PageImageProcessor
 import `in`.c1ph3rj.scanly.domain.processing.ProcessedPageArtifacts
-import `in`.c1ph3rj.scanly.data.storage.DocumentStorageManager
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
@@ -26,7 +25,6 @@ import javax.inject.Singleton
 @Singleton
 class DefaultPageImageProcessor @Inject constructor(
     private val documentCornerDetector: DocumentCornerDetector,
-    private val storageManager: DocumentStorageManager,
     private val dispatchers: ScanlyDispatchers,
 ) : PageImageProcessor {
 
@@ -101,14 +99,11 @@ class DefaultPageImageProcessor @Inject constructor(
                 enhancedBitmap.recycle()
             }
 
-            val thumbnailResult = storageManager.generatePageThumbnail(
-                rawImagePath = processedImagePath,
-                thumbnailPath = thumbnailPath,
-            )
+            writeThumbnail(processedImagePath, thumbnailPath)
 
             ProcessedPageArtifacts(
                 processedImagePath = processedImagePath,
-                thumbnailPath = thumbnailResult.thumbnailPath,
+                thumbnailPath = thumbnailPath,
                 cropQuad = effectiveCropQuad,
                 rotationDegrees = userRotationDegrees,
                 filterPreset = filterPreset,
@@ -226,9 +221,31 @@ class DefaultPageImageProcessor @Inject constructor(
         }
     }
 
+    private fun writeThumbnail(sourcePath: String, outputPath: String) {
+        val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+        BitmapFactory.decodeFile(sourcePath, bounds)
+        val sample = calculateInSampleSize(bounds.outWidth, bounds.outHeight, THUMBNAIL_MAX_DIMENSION)
+        val bitmap = BitmapFactory.decodeFile(
+            sourcePath,
+            BitmapFactory.Options().apply { inSampleSize = sample },
+        ) ?: error("Could not create page thumbnail.")
+        try {
+            val outputFile = File(outputPath)
+            outputFile.parentFile?.mkdirs()
+            FileOutputStream(outputFile).use { output ->
+                bitmap.compress(Bitmap.CompressFormat.JPEG, THUMBNAIL_JPEG_QUALITY, output)
+                output.flush()
+            }
+        } finally {
+            bitmap.recycle()
+        }
+    }
+
     private companion object {
         const val MAX_PROCESSING_DIMENSION = 2_400
         const val OUTPUT_JPEG_QUALITY = 94
+        const val THUMBNAIL_MAX_DIMENSION = 1_024
+        const val THUMBNAIL_JPEG_QUALITY = 90
     }
 
     private fun normalizeRotationDegrees(rotationDegrees: Int): Int {

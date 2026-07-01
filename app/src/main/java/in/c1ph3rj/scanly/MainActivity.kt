@@ -44,6 +44,9 @@ import `in`.c1ph3rj.scanly.feature.update.AppUpdateDialog
 import `in`.c1ph3rj.scanly.feature.update.AppUpdateEvent
 import `in`.c1ph3rj.scanly.feature.update.AppUpdateViewModel
 import `in`.c1ph3rj.scanly.feature.update.FlexibleUpdateSnackbarHost
+import `in`.c1ph3rj.scanly.feature.startup.LibraryStartupScreen
+import `in`.c1ph3rj.scanly.feature.startup.LibraryStartupViewModel
+import `in`.c1ph3rj.scanly.domain.model.LibraryStartupStatus
 import `in`.c1ph3rj.scanly.navigation.ScanlyNavHost
 import `in`.c1ph3rj.scanly.ui.theme.ScanlyTheme
 import androidx.compose.material3.SnackbarHostState
@@ -65,9 +68,11 @@ private fun ScanlyApp() {
     val appSettingsViewModel: AppSettingsViewModel = hiltViewModel()
     val appUpdateViewModel: AppUpdateViewModel = hiltViewModel()
     val onboardingViewModel: OnboardingViewModel = hiltViewModel()
+    val libraryStartupViewModel: LibraryStartupViewModel = hiltViewModel()
     val themeMode by appSettingsViewModel.themeMode.collectAsStateWithLifecycle()
     val updateUiState by appUpdateViewModel.uiState.collectAsStateWithLifecycle()
     val onboardingUiState by onboardingViewModel.uiState.collectAsStateWithLifecycle()
+    val libraryState by libraryStartupViewModel.state.collectAsStateWithLifecycle()
     val systemDark = isSystemInDarkTheme()
     val isDarkTheme = themeMode.resolveDarkTheme(systemDark)
     val navController = rememberNavController()
@@ -80,6 +85,11 @@ private fun ScanlyApp() {
         contract = ActivityResultContracts.StartIntentSenderForResult(),
     ) { result ->
         appUpdateViewModel.onPlayUpdateFlowResult(result.resultCode)
+    }
+    val libraryFolderLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenDocumentTree(),
+    ) { uri ->
+        uri?.let { libraryStartupViewModel.connect(it.toString()) }
     }
 
     LaunchedEffect(appUpdateViewModel) {
@@ -198,17 +208,31 @@ private fun ScanlyApp() {
                             onDismissError = onboardingViewModel::dismissError,
                         )
 
-                        OnboardingStatus.COMPLETE -> ScanlyNavHost(
-                            navController = navController,
-                            appUpdateUiState = updateUiState,
-                            onCheckForUpdates = {
-                                appUpdateViewModel.checkForUpdates(AppUpdateCheckTrigger.Manual)
-                            },
-                        )
+                        OnboardingStatus.COMPLETE -> {
+                            if (libraryState.status == LibraryStartupStatus.READY ||
+                                libraryState.status == LibraryStartupStatus.READ_ONLY
+                            ) {
+                                ScanlyNavHost(
+                                    navController = navController,
+                                    appUpdateUiState = updateUiState,
+                                    onCheckForUpdates = {
+                                        appUpdateViewModel.checkForUpdates(AppUpdateCheckTrigger.Manual)
+                                    },
+                                )
+                            } else {
+                                LibraryStartupScreen(
+                                    state = libraryState,
+                                    onChooseFolder = { libraryFolderLauncher.launch(null) },
+                                    onRetry = libraryStartupViewModel::rebuildIndex,
+                                )
+                            }
+                        }
                     }
                 }
 
-                if (onboardingUiState.status == OnboardingStatus.COMPLETE) {
+                if (onboardingUiState.status == OnboardingStatus.COMPLETE &&
+                    libraryState.status == LibraryStartupStatus.READY
+                ) {
                     updateUiState.dialogCheckResult?.let { checkResult ->
                         AppUpdateDialog(
                             checkResult = checkResult,

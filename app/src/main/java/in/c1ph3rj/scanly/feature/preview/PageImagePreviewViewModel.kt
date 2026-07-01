@@ -47,6 +47,7 @@ class PageImagePreviewViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     observePageUseCase: ObservePageUseCase,
     observeDocumentPagesUseCase: ObserveDocumentPagesUseCase,
+    private val assetReader: `in`.c1ph3rj.scanly.data.library.DocumentAssetReader,
 ) : ViewModel() {
     private val pageId: String = checkNotNull(savedStateHandle[PageImagePreviewDestination.pageIdArgument])
 
@@ -100,10 +101,10 @@ class PageImagePreviewViewModel @Inject constructor(
 
     fun sharePage(pageId: String) {
         val page = _uiState.value.pages.firstOrNull { it.id == pageId } ?: return
-        val imagePath = page.processedImagePath ?: page.rawImagePath ?: page.thumbnailPath
+        val imageAsset = page.processedAsset ?: page.rawAsset ?: page.thumbnailAsset
 
         viewModelScope.launch {
-            if (imagePath == null) {
+            if (imageAsset == null) {
                 _events.emit(PageImagePreviewEvent.ShowMessage("Page image is not available yet."))
                 return@launch
             }
@@ -113,7 +114,7 @@ class PageImagePreviewViewModel @Inject constructor(
                     ShareArtifact(
                         mimeType = PageImageMimeType,
                         title = "Scanly page ${page.pageIndex + 1}",
-                        filePaths = listOf(imagePath),
+                        filePaths = listOf(assetReader.materialize(imageAsset).absolutePath),
                     ),
                 ),
             )

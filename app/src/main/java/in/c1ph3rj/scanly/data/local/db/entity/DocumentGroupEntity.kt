@@ -15,4 +15,6 @@ data class DocumentGroupEntity(
     val title: String,
     val createdAtMillis: Long,
     val updatedAtMillis: Long,
+    val revision: Long,
+    val manifestChecksum: String,
 )

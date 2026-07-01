@@ -35,6 +35,11 @@ import androidx.compose.material.icons.filled.Policy
 import androidx.compose.material.icons.filled.Public
 import androidx.compose.material.icons.filled.Storage
 import androidx.compose.material.icons.filled.SystemUpdate
+import androidx.compose.material.icons.filled.CleaningServices
+import androidx.compose.material.icons.filled.FolderOpen
+import androidx.compose.material.icons.filled.Refresh
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -92,11 +97,15 @@ fun SettingsRoute(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val uriHandler = LocalUriHandler.current
+    val libraryFolderLauncher = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri ->
+        uri?.let { viewModel.connectLibrary(it.toString()) }
+    }
 
     LaunchedEffect(viewModel) {
         viewModel.events.collectLatest { event ->
             when (event) {
                 is SettingsEvent.ShowMessage -> snackbarHostState.showSnackbar(event.message)
+                SettingsEvent.RequestLibraryFolder -> libraryFolderLauncher.launch(null)
             }
         }
     }
@@ -112,6 +121,9 @@ fun SettingsRoute(
         onOpenLicenses = onOpenLicenses,
         onCheckForUpdates = onCheckForUpdates,
         onClearAllData = viewModel::clearAllData,
+        onClearTemporaryCache = viewModel::clearTemporaryCache,
+        onRebuildLibraryIndex = viewModel::rebuildLibraryIndex,
+        onReconnectLibrary = viewModel::requestLibraryFolder,
     )
 }
 
@@ -127,6 +139,9 @@ fun SettingsScreen(
     onOpenLicenses: () -> Unit,
     onCheckForUpdates: () -> Unit,
     onClearAllData: () -> Unit,
+    onClearTemporaryCache: () -> Unit,
+    onRebuildLibraryIndex: () -> Unit,
+    onReconnectLibrary: () -> Unit,
 ) {
     val content = uiState.content
     var clearDataDialogVisible by remember { mutableStateOf(false) }
@@ -191,10 +206,31 @@ fun SettingsScreen(
                             isLoading = uiState.isLoadingStorage,
                         )
                         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                        SettingsNavigationRow(
+                            icon = Icons.Filled.CleaningServices,
+                            title = "Clear temporary cache",
+                            subtitle = "Remove previews, work files, and generated exports",
+                            onClick = onClearTemporaryCache,
+                        )
+                        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                        SettingsNavigationRow(
+                            icon = Icons.Filled.FolderOpen,
+                            title = "Library folder",
+                            subtitle = uiState.libraryDisplayName ?: "Shared Scanly storage",
+                            onClick = onReconnectLibrary,
+                        )
+                        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                        SettingsNavigationRow(
+                            icon = Icons.Filled.Refresh,
+                            title = "Rebuild library index",
+                            subtitle = "Reload the Room database from shared storage",
+                            onClick = onRebuildLibraryIndex,
+                        )
+                        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
                         SettingsDestructiveRow(
                             icon = Icons.Filled.DeleteOutline,
-                            title = "Clear all data",
-                            subtitle = "Delete all documents, folders, and pages",
+                            title = "Permanently delete library",
+                            subtitle = "Delete shared documents, folders, pages, and recovery data",
                             enabled = !uiState.isClearingData,
                             onClick = { clearDataDialogVisible = true },
                         )
@@ -273,8 +309,8 @@ fun SettingsScreen(
 
     if (clearDataDialogVisible) {
         ScanlyConfirmDialog(
-            title = "Clear all data?",
-            text = "This permanently deletes all documents, folders, and pages from Scanly. " +
+            title = "Permanently delete library?",
+            text = "This permanently deletes all documents, folders, pages, and recovery data from the selected shared Scanly folder. " +
                 "This cannot be undone. Your theme and camera settings will be kept.",
             confirmLabel = "Delete",
             onDismiss = {

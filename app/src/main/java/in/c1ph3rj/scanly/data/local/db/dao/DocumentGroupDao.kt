@@ -17,11 +17,11 @@ interface DocumentGroupDao {
         SELECT dg.id, dg.title, dg.createdAtMillis, dg.updatedAtMillis,
                COUNT(d.id)                    AS documentCount,
                COALESCE(SUM(d.pageCount), 0)  AS totalPageCount,
-               (SELECT d2.coverThumbnailPath
+               (SELECT d2.coverThumbnail
                 FROM documents d2
                 WHERE d2.groupId = dg.id
                 ORDER BY d2.updatedAtMillis DESC
-                LIMIT 1)                      AS coverThumbnailPath,
+                LIMIT 1)                      AS coverThumbnail,
                (SELECT d2.updatedAtMillis
                 FROM documents d2
                 WHERE d2.groupId = dg.id
@@ -40,11 +40,11 @@ interface DocumentGroupDao {
         SELECT dg.id, dg.title, dg.createdAtMillis, dg.updatedAtMillis,
                COUNT(d.id)                    AS documentCount,
                COALESCE(SUM(d.pageCount), 0)  AS totalPageCount,
-               (SELECT d2.coverThumbnailPath
+               (SELECT d2.coverThumbnail
                 FROM documents d2
                 WHERE d2.groupId = dg.id
                 ORDER BY d2.updatedAtMillis DESC
-                LIMIT 1)                      AS coverThumbnailPath,
+                LIMIT 1)                      AS coverThumbnail,
                (SELECT d2.updatedAtMillis
                 FROM documents d2
                 WHERE d2.groupId = dg.id
@@ -64,11 +64,11 @@ interface DocumentGroupDao {
         SELECT dg.id, dg.title, dg.createdAtMillis, dg.updatedAtMillis,
                COUNT(d.id)                    AS documentCount,
                COALESCE(SUM(d.pageCount), 0)  AS totalPageCount,
-               (SELECT d2.coverThumbnailPath
+               (SELECT d2.coverThumbnail
                 FROM documents d2
                 WHERE d2.groupId = dg.id
                 ORDER BY d2.updatedAtMillis DESC
-                LIMIT 1)                      AS coverThumbnailPath,
+                LIMIT 1)                      AS coverThumbnail,
                (SELECT d2.updatedAtMillis
                 FROM documents d2
                 WHERE d2.groupId = dg.id
@@ -91,9 +91,15 @@ interface DocumentGroupDao {
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insert(group: DocumentGroupEntity)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsert(group: DocumentGroupEntity)
+
     @Update
     suspend fun update(group: DocumentGroupEntity)
 
     @Query("DELETE FROM document_groups WHERE id = :groupId")
     suspend fun deleteById(groupId: String)
+
+    @Query("SELECT id FROM document_groups")
+    suspend fun getAllIds(): List<String>
 }

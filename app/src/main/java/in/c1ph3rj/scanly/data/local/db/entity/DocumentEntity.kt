@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import `in`.c1ph3rj.scanly.domain.model.LibraryAssetRef
 
 @Entity(
     tableName = "documents",
@@ -24,10 +25,11 @@ data class DocumentEntity(
     @PrimaryKey val id: String,
     val title: String,
     val pageCount: Int,
-    val coverThumbnailPath: String?,
+    val coverThumbnail: LibraryAssetRef?,
     val preferredFilterPreset: String?,
-    val rootDirectoryPath: String,
     val createdAtMillis: Long,
     val updatedAtMillis: Long,
     val groupId: String? = null,
+    val revision: Long,
+    val manifestChecksum: String,
 )

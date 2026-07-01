@@ -13,7 +13,7 @@ Scanly is a local-only document scanner for Android. Users capture pages with th
 | Platform | Android 10+ (API 29), targets API 36 |
 | UI | Jetpack Compose + Material 3 |
 | Architecture | Single module (`:app`), clean-architecture-style layers |
-| Data | Room database, app-private files, DataStore preferences |
+| Data | Rebuildable Room index, SAF shared-library manifests/assets, DataStore preferences |
 | Processing | LiteRT corner detection + OpenCV filters + CameraX capture |
 | License | AGPL-3.0-only ([LICENSE](../LICENSE)) |
 | Current version | `1.0.9` (version code `9`) |

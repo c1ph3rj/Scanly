@@ -1486,7 +1486,7 @@ private fun capturePage(
     onFailure: (String) -> Unit,
 ) {
     imageCapture.targetRotation = previewView.display.rotation
-    val outputFile = File(draft.rawImagePath)
+    val outputFile = File(draft.captureFilePath)
     outputFile.parentFile?.mkdirs()
     val outputOptions = ImageCapture.OutputFileOptions.Builder(outputFile).build()
 

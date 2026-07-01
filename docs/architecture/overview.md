@@ -51,12 +51,13 @@ All code under `app/src/main/java/in/c1ph3rj/scanly/`:
 | `domain/repository/` | Repository contracts |
 | `domain/usecase/` | Business operations (39 classes) |
 | `domain/processing/` | `PageImageProcessor` interface |
-| `data/local/db/` | Room database, entities, DAOs |
+| `data/local/db/` | Rebuildable Room operational index, entities, DAOs |
+| `data/library/` | SAF access, versioned manifests, shared assets, mutation coordination, startup sync |
 | `data/document/` | Document repository |
 | `data/page/` | Page repository and capture finalize |
 | `data/group/` | Group repository |
 | `data/export/` | PDF/ZIP export |
-| `data/storage/` | App-private file manager |
+| `data/storage/` | Cover-art utility retained for non-library presentation only |
 | `data/settings/` | DataStore and bundled assets |
 | `data/update/` | Build-selected GitHub or Google Play update checks |
 | `data/processing/` | `PageImageProcessor` implementation |
@@ -69,11 +70,13 @@ All code under `app/src/main/java/in/c1ph3rj/scanly/`:
 
 ## Design principles
 
-1. **Offline-first** — core flows need no network.
+1. **Offline-first** — core flows use a local SAF folder and need no network.
 2. **Non-destructive captures** — `raw/` files are immutable.
 3. **Derived processing** — processed images and thumbnails regenerate on edit.
 4. **Manual fallback** — crop, rotate, filter always available; `NEEDS_REVIEW` state for failures.
-5. **Testable boundaries** — use cases encapsulate business rules; repositories encapsulate I/O.
+5. **Database-first runtime** — screens observe Room only after splash synchronization.
+6. **Recoverable persistence** — versioned shared manifests and assets reconstruct Room after reinstall.
+7. **Testable boundaries** — use cases encapsulate business rules; repositories encapsulate I/O.
 
 ## Layer rules
 

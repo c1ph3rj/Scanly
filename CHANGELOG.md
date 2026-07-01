@@ -8,6 +8,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- **Recoverable shared library** — documents, groups, page manifests, raw captures, processed images, and thumbnails now live in a user-selected shared Scanly folder that remains after uninstall.
+- **Database-first startup sync** — splash performs generation-based reconciliation and rebuilds the Room index from shared manifests after reinstall or database loss.
+- **Library maintenance controls** — Settings can clear temporary files, rebuild the database index, reconnect or switch folders, and permanently delete the selected shared library.
+
 - **Suggested document names** — new scan and new document dialogs now include a **Suggest name** button with date-based formats. Suggestions avoid duplicate titles; manual creates also auto-suffix when a title is already taken.
 - **Suggested folder names** — new folder dialogs and inline folder creation when moving documents use the same **Suggest name** flow, with folder-specific formats and duplicate-safe naming.
 - **Dual release channels** — signed builds now expose `githubRelease` and `playStoreRelease` variants. The GitHub build checks GitHub Releases and opens the release page, while the Play Store build uses Google Play in-app updates.
@@ -15,6 +19,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - **Advanced PDF export controls** — PDF save and share flows now support optional open-password protection, page numbers at the lower left/center/right, per-page auto orientation, and A3/A4/A5/B4/B5/Letter/Tabloid/Legal/Executive/Postcard/Foolscap paper sizes.
 
 ### Changed
+
+- **Write-through persistence** — successful document, page, edit, retake, reorder, group, and delete operations commit versioned shared recovery data before updating the operational Room index.
+- **Immutable retakes** — page retakes create a new raw capture instead of overwriting the existing original.
+- The previous app-private document directory and `scanly.db` schema are intentionally not migrated into the new shared library.
 
 - **Library filters** — replaced the underline-style Library tabs with three rounded filter pills whose selected and unselected states match Scanly's Material 3 surfaces.
 - **Page preview zoom** — double-tapping a zoomed page now reliably returns it to the fitted scale without the pan gesture consuming the taps, the zoom level stays hidden at 1.0x, and the reset action uses a fit-to-screen icon.

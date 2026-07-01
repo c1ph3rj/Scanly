@@ -83,6 +83,7 @@ class DocumentDetailViewModel @Inject constructor(
     private val setDocumentGroupUseCase: SetDocumentGroupUseCase,
     private val createGroupUseCase: CreateGroupUseCase,
     private val suggestGroupTitleUseCase: SuggestGroupTitleUseCase,
+    private val assetReader: `in`.c1ph3rj.scanly.data.library.DocumentAssetReader,
 ) : ViewModel() {
     private val documentId: String = checkNotNull(savedStateHandle[DocumentDestination.documentIdArgument])
 
@@ -239,12 +240,12 @@ class DocumentDetailViewModel @Inject constructor(
     fun shareSelectedPage() {
         val snapshot = _uiState.value
         val selectedPage = snapshot.selectedPage ?: return
-        val imagePath = selectedPage.processedImagePath
-            ?: selectedPage.rawImagePath
-            ?: selectedPage.thumbnailPath
+        val imageAsset = selectedPage.processedAsset
+            ?: selectedPage.rawAsset
+            ?: selectedPage.thumbnailAsset
 
         viewModelScope.launch {
-            if (imagePath == null) {
+            if (imageAsset == null) {
                 _events.emit(DocumentDetailEvent.ShowMessage("Page image is not available yet."))
                 return@launch
             }
@@ -254,7 +255,7 @@ class DocumentDetailViewModel @Inject constructor(
                     ShareArtifact(
                         mimeType = PageImageMimeType,
                         title = "${snapshot.document?.title ?: "Scanly"} page ${selectedPage.pageIndex + 1}",
-                        filePaths = listOf(imagePath),
+                        filePaths = listOf(assetReader.materialize(imageAsset).absolutePath),
                     ),
                 ),
             )

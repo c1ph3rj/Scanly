@@ -4,9 +4,10 @@ data class PageCaptureDraft(
     val pageId: String,
     val documentId: String,
     val pageIndex: Int,
-    val rawImagePath: String,
-    val processedImagePath: String,
-    val thumbnailPath: String,
+    val operationId: String,
+    val captureFilePath: String,
+    val processedWorkingPath: String,
+    val thumbnailWorkingPath: String,
     val replacementPageId: String? = null,
 ) {
     val isReplacement: Boolean

@@ -39,5 +39,12 @@
     "summary": "Android port of Apache PDFBox used to apply password protection to generated PDF exports.",
     "license": "Apache-2.0",
     "websiteUrl": "https://github.com/TomRoush/PdfBox-Android"
+  },
+  {
+    "id": "kotlinx_serialization",
+    "name": "Kotlinx Serialization",
+    "summary": "Provides the versioned JSON format used by the recoverable shared Scanly library.",
+    "license": "Apache-2.0",
+    "websiteUrl": "https://github.com/Kotlin/kotlinx.serialization"
   }
 ]

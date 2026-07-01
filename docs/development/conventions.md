@@ -49,11 +49,12 @@ Existing migrations: `1→2` (filter preset), `2→3` (document groups).
 
 ## Storage layout
 
-Do not change on-disk paths without a migration plan:
+Shared-library paths are a versioned public format. Do not change them without incrementing the manifest format and adding a format migration:
 
 ```
-files/documents/{documentId}/raw|processed|thumbs/
-cache/exports/
+{selected Scanly tree}/documents/{documentId}/manifests|raw|processed|thumbs/
+{selected Scanly tree}/catalog|groups|operations|tombstones/
+cache/library-work|asset-cache|exports/
 ```
 
 ## Dependency management

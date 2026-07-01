@@ -9,7 +9,7 @@ Guidance for AI coding agents working in the Scanly repository.
 - Single-module Android app (`:app`) using Kotlin + Jetpack Compose + Material 3.
 - Package: `in.c1ph3rj.scanly` — escape `in` as ``package `in`.c1ph3rj.scanly``.
 - Current version: `1.0.9` (version code `9`) — see `app/build.gradle.kts`, [VERSION.md](VERSION.md).
-- Entry point: `MainActivity.kt` → onboarding gate → `ScanlyNavHost`.
+- Entry point: `MainActivity.kt` → onboarding gate → shared-library splash/reconnect gate → `ScanlyNavHost`.
 - Offline-first document scanner: camera capture, page editing, local persistence, PDF/image export.
 
 ## Architecture and Code Layout
@@ -55,7 +55,7 @@ Release builds use ProGuard/R8 (`isMinifyEnabled = true`). Debug builds do not m
 - Keep dependency versions in `gradle/libs.versions.toml`; reference via `libs.*` in Gradle scripts.
 - Compose deps use BOM (`implementation(platform(libs.androidx.compose.bom))`).
 - Preserve raw captures — never overwrite files under `raw/`; regenerate `processed/` and `thumbs/`.
-- Room schema is version `3`. Any schema change requires a `Migration_X_Y` in `ScanlyDatabase.kt` and version bump.
+- Room uses the disposable `scanly-index.db` schema version `1`; shared manifests are authoritative for recovery. Room changes may rebuild the index, while shared format changes require an explicit format migration.
 - ML model asset: `app/src/main/assets/models/document_corners_float16.tflite` (keep `noCompress += "tflite"`).
 - Gallery import limit: 10 images (`ImageImportSupport`).
 
@@ -88,7 +88,7 @@ Legacy placeholder routes (`camera`, `review`, `editor` top-level) use `FeatureP
 - Update `licenses.json` when adding third-party libraries.
 - On user-facing behavior changes, update [CHANGELOG.md](CHANGELOG.md) and relevant `docs/` pages; on releases, also [VERSION.md](VERSION.md) and [README.md](README.md).
 - Do not commit `local.properties`, keystore files, or build outputs.
-- Do not change on-disk storage layout without a migration plan.
+- Do not change the shared manifest/storage layout without a format version and migration plan.
 
 ## Key Files
 
@@ -96,7 +96,8 @@ Legacy placeholder routes (`camera`, `review`, `editor` top-level) use `FeatureP
 | --- | --- |
 | `MainActivity.kt` | App shell, onboarding gate, theme, update dialog |
 | `ScanlyNavHost.kt` | Navigation registration and chrome |
-| `ScanlyDatabase.kt` | Room schema, entities, migrations |
+| `ScanlyDatabase.kt` | Rebuildable Room operational index |
+| `data/library/` | SAF access, manifests, write-through coordination, recovery sync |
 | `DefaultPageRepository.kt` | Capture finalize and page edit persistence |
 | `PageImageProcessor` (interface) / implementation | Image processing pipeline |
 | `DefaultDocumentExportRepository.kt` | PDF/ZIP export and share |

@@ -80,9 +80,10 @@ class ScanSessionScreenTest {
         pageId = replacementPageId ?: "page-8",
         documentId = "document-1",
         pageIndex = 0,
-        rawImagePath = "raw.jpg",
-        processedImagePath = "processed.jpg",
-        thumbnailPath = "thumbnail.jpg",
+        operationId = "operation-1",
+        captureFilePath = "raw.jpg",
+        processedWorkingPath = "processed.jpg",
+        thumbnailWorkingPath = "thumbnail.jpg",
         replacementPageId = replacementPageId,
     )
 }

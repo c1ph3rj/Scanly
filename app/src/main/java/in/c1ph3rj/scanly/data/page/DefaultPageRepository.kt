@@ -4,14 +4,22 @@ import androidx.room.withTransaction
 import `in`.c1ph3rj.scanly.core.common.ScanlyDispatchers
 import `in`.c1ph3rj.scanly.core.common.ScanlyError
 import `in`.c1ph3rj.scanly.core.common.ScanlyResult
+import `in`.c1ph3rj.scanly.core.ml.DocumentCornerQuad
 import `in`.c1ph3rj.scanly.core.ui.ThumbnailCache
+import `in`.c1ph3rj.scanly.data.library.DocumentAssetReader
+import `in`.c1ph3rj.scanly.data.library.LibraryMutationCoordinator
+import `in`.c1ph3rj.scanly.data.library.LibraryRoomStateUpdater
+import `in`.c1ph3rj.scanly.data.library.WorkingFileStore
+import `in`.c1ph3rj.scanly.data.library.toDomain
+import `in`.c1ph3rj.scanly.data.library.toManifest
 import `in`.c1ph3rj.scanly.data.local.db.ScanlyDatabase
 import `in`.c1ph3rj.scanly.data.local.db.dao.DocumentDao
 import `in`.c1ph3rj.scanly.data.local.db.dao.ScanPageDao
+import `in`.c1ph3rj.scanly.data.local.db.entity.DocumentEntity
 import `in`.c1ph3rj.scanly.data.local.db.entity.ScanPageEntity
-import `in`.c1ph3rj.scanly.data.storage.DocumentStorageManager
-import `in`.c1ph3rj.scanly.domain.model.PageFilterPreset
+import `in`.c1ph3rj.scanly.domain.model.LibraryAssetRef
 import `in`.c1ph3rj.scanly.domain.model.PageCaptureDraft
+import `in`.c1ph3rj.scanly.domain.model.PageFilterPreset
 import `in`.c1ph3rj.scanly.domain.model.PageProcessingState
 import `in`.c1ph3rj.scanly.domain.model.ScanPage
 import `in`.c1ph3rj.scanly.domain.processing.PageImageProcessor
@@ -28,541 +36,271 @@ import javax.inject.Singleton
 class DefaultPageRepository @Inject constructor(
     private val database: ScanlyDatabase,
     private val documentDao: DocumentDao,
-    private val scanPageDao: ScanPageDao,
-    private val storageManager: DocumentStorageManager,
+    private val pageDao: ScanPageDao,
+    private val workingFiles: WorkingFileStore,
+    private val assetReader: DocumentAssetReader,
+    private val mutations: LibraryMutationCoordinator,
+    private val roomStateUpdater: LibraryRoomStateUpdater,
     private val pageImageProcessor: PageImageProcessor,
     private val thumbnailCache: ThumbnailCache,
     private val dispatchers: ScanlyDispatchers,
 ) : PageRepository {
-
     override fun observePages(documentId: String): Flow<List<ScanPage>> =
-        scanPageDao.observePages(documentId).map { pages ->
-            pages.map { page -> page.toDomain() }
-        }
+        pageDao.observePages(documentId).map { list -> list.map(ScanPageEntity::toDomain) }
 
     override fun observePage(pageId: String): Flow<ScanPage?> =
-        scanPageDao.observePage(pageId).map { page ->
-            page?.toDomain()
+        pageDao.observePage(pageId).map { it?.toDomain() }
+
+    override suspend fun prepareCapture(documentId: String): ScanlyResult<PageCaptureDraft> = withContext(dispatchers.io) {
+        resultOf("Could not prepare page capture.") {
+            val document = documentDao.getDocument(documentId) ?: error("Document not found.")
+            createDraft(document.id, UUID.randomUUID().toString(), pageDao.countPages(document.id), null)
         }
-
-    override suspend fun prepareCapture(documentId: String): ScanlyResult<PageCaptureDraft> =
-        withContext(dispatchers.io) {
-            runCatching {
-                val document = documentDao.getDocument(documentId)
-                    ?: error("Document not found.")
-                val nextPageIndex = scanPageDao.countPages(documentId)
-                val storageDraft = storageManager.createPageCaptureDraft(
-                    documentId = document.id,
-                    pageIndex = nextPageIndex,
-                )
-
-                PageCaptureDraft(
-                    pageId = UUID.randomUUID().toString(),
-                    documentId = document.id,
-                    pageIndex = nextPageIndex,
-                    rawImagePath = storageDraft.rawImagePath,
-                    processedImagePath = storageDraft.processedImagePath,
-                    thumbnailPath = storageDraft.thumbnailPath,
-                    replacementPageId = null,
-                )
-            }.fold(
-                onSuccess = { draft -> ScanlyResult.Success(draft) },
-                onFailure = { throwable ->
-                    ScanlyResult.Failure(
-                        ScanlyError(
-                            message = throwable.message ?: "Could not prepare page capture.",
-                            cause = throwable,
-                        ),
-                    )
-                },
-            )
-        }
-
-    override suspend fun prepareReplacementCapture(pageId: String): ScanlyResult<PageCaptureDraft> =
-        withContext(dispatchers.io) {
-            runCatching {
-                val page = scanPageDao.getPage(pageId)
-                    ?: error("Page not found.")
-                val anchorPath = page.rawImagePath ?: page.processedImagePath ?: page.thumbnailPath
-                    ?: error("No existing file path found for page $pageId.")
-                PageCaptureDraft(
-                    pageId = page.id,
-                    documentId = page.documentId,
-                    pageIndex = page.pageIndex,
-                    rawImagePath = page.rawImagePath ?: deriveSiblingAssetPath(anchorPath, RAW_DIRECTORY),
-                    processedImagePath = page.processedImagePath ?: deriveSiblingAssetPath(anchorPath, PROCESSED_DIRECTORY),
-                    thumbnailPath = page.thumbnailPath ?: deriveSiblingAssetPath(anchorPath, THUMBNAILS_DIRECTORY),
-                    replacementPageId = page.id,
-                )
-            }.fold(
-                onSuccess = { draft -> ScanlyResult.Success(draft) },
-                onFailure = { throwable ->
-                    ScanlyResult.Failure(
-                        ScanlyError(
-                            message = throwable.message ?: "Could not prepare page replacement.",
-                            cause = throwable,
-                        ),
-                    )
-                },
-            )
-        }
-
-    override suspend fun finalizeCapture(draft: PageCaptureDraft): ScanlyResult<String> =
-        withContext(dispatchers.io) {
-            runCatching {
-                val document = documentDao.getDocument(draft.documentId)
-                    ?: error("Document not found.")
-                val existingPage = scanPageDao.getPage(draft.pageId)
-                val rawFile = File(draft.rawImagePath)
-                if (!rawFile.exists() || rawFile.length() <= 0L) {
-                    error("Capture file missing at ${draft.rawImagePath}.")
-                }
-
-                val timestamp = System.currentTimeMillis()
-                val captureFilterPreset = document.preferredFilterPreset
-                    ?.let(PageFilterPreset::fromStorage)
-                    ?: PageFilterPreset.AUTO
-                val processedArtifacts = runCatching {
-                    pageImageProcessor.processCapture(
-                        rawImagePath = draft.rawImagePath,
-                        processedImagePath = draft.processedImagePath,
-                        thumbnailPath = draft.thumbnailPath,
-                        filterPreset = captureFilterPreset,
-                    ).toPersistedArtifacts()
-                }.getOrElse {
-                    val fallbackThumbnail = storageManager.generatePageThumbnail(
-                        rawImagePath = draft.rawImagePath,
-                        thumbnailPath = draft.thumbnailPath,
-                    )
-                    FallbackProcessedArtifacts(
-                        processedImagePath = null,
-                        thumbnailPath = fallbackThumbnail.thumbnailPath,
-                        rotationDegrees = fallbackThumbnail.rotationDegrees,
-                    ).toPersistedArtifacts()
-                }
-                invalidateImageCache(
-                    processedArtifacts.thumbnailPath,
-                    processedArtifacts.processedImagePath,
-                )
-                val page = ScanPageEntity(
-                    id = draft.pageId,
-                    documentId = draft.documentId,
-                    pageIndex = draft.pageIndex,
-                    rawImagePath = draft.rawImagePath,
-                    processedImagePath = processedArtifacts.processedImagePath,
-                    thumbnailPath = processedArtifacts.thumbnailPath,
-                    rotationDegrees = processedArtifacts.rotationDegrees,
-                    cropTopLeftX = processedArtifacts.cropTopLeftX,
-                    cropTopLeftY = processedArtifacts.cropTopLeftY,
-                    cropTopRightX = processedArtifacts.cropTopRightX,
-                    cropTopRightY = processedArtifacts.cropTopRightY,
-                    cropBottomRightX = processedArtifacts.cropBottomRightX,
-                    cropBottomRightY = processedArtifacts.cropBottomRightY,
-                    cropBottomLeftX = processedArtifacts.cropBottomLeftX,
-                    cropBottomLeftY = processedArtifacts.cropBottomLeftY,
-                    filterPreset = processedArtifacts.filterPreset,
-                    processingState = processedArtifacts.processingState,
-                    createdAtMillis = existingPage?.createdAtMillis ?: timestamp,
-                    updatedAtMillis = timestamp,
-                )
-
-                database.withTransaction {
-                    if (existingPage == null) {
-                        scanPageDao.insert(page)
-                    } else {
-                        scanPageDao.update(page)
-                    }
-                    updateDocumentSnapshot(
-                        document = document,
-                        updatedAtMillis = timestamp,
-                    )
-                }
-
-                draft.pageId
-            }.fold(
-                onSuccess = { pageId -> ScanlyResult.Success(pageId) },
-                onFailure = { throwable ->
-                    ScanlyResult.Failure(
-                        ScanlyError(
-                            message = throwable.message ?: "Could not save the captured page.",
-                            cause = throwable,
-                        ),
-                    )
-                },
-            )
-        }
-
-    override suspend fun movePage(
-        pageId: String,
-        targetIndex: Int,
-    ): ScanlyResult<Unit> = withContext(dispatchers.io) {
-        runCatching {
-            val page = scanPageDao.getPage(pageId)
-                ?: error("Page not found.")
-            val document = documentDao.getDocument(page.documentId)
-                ?: error("Document not found.")
-            val pages = scanPageDao.getPages(page.documentId)
-            if (pages.isEmpty()) {
-                return@runCatching
-            }
-
-            val currentIndex = pages.indexOfFirst { it.id == pageId }
-            if (currentIndex == -1) {
-                error("Page not found in document order.")
-            }
-            val clampedTargetIndex = targetIndex.coerceIn(0, pages.lastIndex)
-            if (clampedTargetIndex == currentIndex) {
-                return@runCatching
-            }
-
-            val reorderedPages = pages.toMutableList().apply {
-                val movedPage = removeAt(currentIndex)
-                add(clampedTargetIndex, movedPage)
-            }
-            val timestamp = System.currentTimeMillis()
-
-            database.withTransaction {
-                val temporaryOffset = reorderedPages.size + 1
-                scanPageDao.updateAll(
-                    reorderedPages.mapIndexed { index, existingPage ->
-                        existingPage.copy(
-                            pageIndex = index + temporaryOffset,
-                            updatedAtMillis = timestamp,
-                        )
-                    },
-                )
-                scanPageDao.updateAll(
-                    reorderedPages.mapIndexed { index, existingPage ->
-                        existingPage.copy(
-                            pageIndex = index,
-                            updatedAtMillis = timestamp,
-                        )
-                    },
-                )
-                updateDocumentSnapshot(
-                    document = document,
-                    updatedAtMillis = timestamp,
-                )
-            }
-        }.fold(
-            onSuccess = { ScanlyResult.Success(Unit) },
-            onFailure = { throwable ->
-                ScanlyResult.Failure(
-                    ScanlyError(
-                        message = throwable.message ?: "Could not reorder the page.",
-                        cause = throwable,
-                    ),
-                )
-            },
-        )
     }
 
-    override suspend fun deletePage(pageId: String): ScanlyResult<Unit> =
-        withContext(dispatchers.io) {
-            runCatching {
-                val page = scanPageDao.getPage(pageId)
-                    ?: error("Page not found.")
-                val document = documentDao.getDocument(page.documentId)
-                    ?: error("Document not found.")
-                val timestamp = System.currentTimeMillis()
-
-                database.withTransaction {
-                    scanPageDao.deleteById(pageId)
-                    val remainingPages = scanPageDao.getPages(document.id)
-                    if (remainingPages.isNotEmpty()) {
-                        scanPageDao.updateAll(
-                            remainingPages.mapIndexed { index, remainingPage ->
-                                remainingPage.copy(
-                                    pageIndex = index,
-                                    updatedAtMillis = timestamp,
-                                )
-                            },
-                        )
-                    }
-                    updateDocumentSnapshot(
-                        document = document,
-                        updatedAtMillis = timestamp,
-                    )
-                }
-
-                deletePageAssets(page)
-            }.fold(
-                onSuccess = { ScanlyResult.Success(Unit) },
-                onFailure = { throwable ->
-                    ScanlyResult.Failure(
-                        ScanlyError(
-                            message = throwable.message ?: "Could not delete the page.",
-                            cause = throwable,
-                        ),
-                    )
-                },
-            )
+    override suspend fun prepareReplacementCapture(pageId: String): ScanlyResult<PageCaptureDraft> = withContext(dispatchers.io) {
+        resultOf("Could not prepare page replacement.") {
+            val page = pageDao.getPage(pageId) ?: error("Page not found.")
+            createDraft(page.documentId, page.id, page.pageIndex, page.id)
         }
+    }
+
+    override suspend fun finalizeCapture(draft: PageCaptureDraft): ScanlyResult<String> = withContext(dispatchers.io) {
+        resultOf("Could not save the captured page.") {
+            val document = documentDao.getDocument(draft.documentId) ?: error("Document not found.")
+            val capture = File(draft.captureFilePath)
+            require(capture.isFile && capture.length() > 0L) { "Captured image is missing." }
+            val existing = pageDao.getPage(draft.pageId)
+            val now = System.currentTimeMillis()
+            val revision = document.revision + 1L
+            val filter = document.preferredFilterPreset?.let(PageFilterPreset::fromStorage) ?: PageFilterPreset.AUTO
+            val processed = runCatching {
+                pageImageProcessor.processCapture(
+                    rawImagePath = draft.captureFilePath,
+                    processedImagePath = draft.processedWorkingPath,
+                    thumbnailPath = draft.thumbnailWorkingPath,
+                    filterPreset = filter,
+                )
+            }.getOrNull()
+
+            val rawAsset = mutations.storeAsset(
+                "documents/${document.id}/raw/${draft.pageId}-${draft.operationId}.jpg",
+                capture,
+                revision,
+            )
+            val processedAsset = processed?.let {
+                mutations.storeAsset(
+                    "documents/${document.id}/processed/${draft.pageId}-r$revision.jpg",
+                    File(it.processedImagePath),
+                    revision,
+                )
+            }
+            val thumbnailAsset = processed?.let {
+                mutations.storeAsset(
+                    "documents/${document.id}/thumbs/${draft.pageId}-r$revision.jpg",
+                    File(it.thumbnailPath),
+                    revision,
+                )
+            } ?: rawAsset
+
+            val page = ScanPageEntity(
+                id = draft.pageId,
+                documentId = draft.documentId,
+                pageIndex = draft.pageIndex,
+                rawAsset = rawAsset,
+                processedAsset = processedAsset,
+                thumbnailAsset = thumbnailAsset,
+                rotationDegrees = processed?.rotationDegrees ?: 0,
+                cropTopLeftX = processed?.cropQuad?.topLeft?.x,
+                cropTopLeftY = processed?.cropQuad?.topLeft?.y,
+                cropTopRightX = processed?.cropQuad?.topRight?.x,
+                cropTopRightY = processed?.cropQuad?.topRight?.y,
+                cropBottomRightX = processed?.cropQuad?.bottomRight?.x,
+                cropBottomRightY = processed?.cropQuad?.bottomRight?.y,
+                cropBottomLeftX = processed?.cropQuad?.bottomLeft?.x,
+                cropBottomLeftY = processed?.cropQuad?.bottomLeft?.y,
+                filterPreset = processed?.filterPreset?.storageValue ?: PageFilterPreset.ORIGINAL.storageValue,
+                processingState = processed?.processingState?.storageValue ?: PageProcessingState.CAPTURED.storageValue,
+                createdAtMillis = existing?.createdAtMillis ?: now,
+                updatedAtMillis = now,
+            )
+            val pages = pageDao.getPages(document.id).toMutableList().apply {
+                removeAll { it.id == page.id }
+                add(page)
+            }.sortedBy(ScanPageEntity::pageIndex).mapIndexed { index, value -> value.copy(pageIndex = index) }
+            val manifest = document.toManifest(pages, nextRevision = revision, updatedAtMillis = now)
+            mutations.commitDocument(manifest, if (existing == null) "capture_page" else "retake_page") { checksum, generation ->
+                database.withTransaction {
+                    pageDao.deleteByDocumentId(document.id)
+                    pageDao.upsertAll(pages)
+                    documentDao.update(document.snapshot(pages, revision, checksum, now))
+                    roomStateUpdater.record("document", document.id, revision, checksum, generation)
+                }
+            }
+            invalidate(thumbnailAsset, processedAsset)
+            if (existing != null) cleanupReplacedAssets(existing, page)
+            workingFiles.clear(draft.operationId)
+            page.id
+        }
+    }
+
+    override suspend fun movePage(pageId: String, targetIndex: Int): ScanlyResult<Unit> = withContext(dispatchers.io) {
+        resultOf("Could not reorder the page.") {
+            val page = pageDao.getPage(pageId) ?: error("Page not found.")
+            val document = documentDao.getDocument(page.documentId) ?: error("Document not found.")
+            val current = pageDao.getPages(document.id)
+            val from = current.indexOfFirst { it.id == pageId }
+            require(from >= 0) { "Page not found in document order." }
+            val to = targetIndex.coerceIn(0, current.lastIndex)
+            if (from == to) return@resultOf Unit
+            val now = System.currentTimeMillis()
+            val reordered = current.toMutableList().apply { add(to, removeAt(from)) }
+                .mapIndexed { index, item -> item.copy(pageIndex = index, updatedAtMillis = now) }
+            commitPages(document, reordered, "reorder_page", now)
+        }
+    }
+
+    override suspend fun deletePage(pageId: String): ScanlyResult<Unit> = withContext(dispatchers.io) {
+        resultOf("Could not delete the page.") {
+            val page = pageDao.getPage(pageId) ?: error("Page not found.")
+            val document = documentDao.getDocument(page.documentId) ?: error("Document not found.")
+            val now = System.currentTimeMillis()
+            val remaining = pageDao.getPages(document.id).filterNot { it.id == pageId }
+                .mapIndexed { index, item -> item.copy(pageIndex = index, updatedAtMillis = now) }
+            commitPages(document, remaining, "delete_page", now)
+            cleanupAssets(page)
+        }
+    }
 
     override suspend fun updatePageEdits(
         pageId: String,
-        cropQuad: `in`.c1ph3rj.scanly.core.ml.DocumentCornerQuad,
+        cropQuad: DocumentCornerQuad,
         rotationDegrees: Int,
         filterPreset: PageFilterPreset,
         applyFilterToAllPages: Boolean,
     ): ScanlyResult<Unit> = withContext(dispatchers.io) {
-        runCatching {
-            val page = scanPageDao.getPage(pageId)
-                ?: error("Page not found.")
-            val document = documentDao.getDocument(page.documentId)
-                ?: error("Document not found.")
-            val timestamp = System.currentTimeMillis()
-            val updatedDocument = if (applyFilterToAllPages) {
-                document.copy(preferredFilterPreset = filterPreset.storageValue)
-            } else {
-                document
-            }
-            val pagesToUpdate = if (applyFilterToAllPages) {
-                scanPageDao.getPages(page.documentId)
-            } else {
-                listOf(page)
-            }
-            val updatedPages = pagesToUpdate.map { existingPage ->
-                val targetCropQuad = if (existingPage.id == page.id) {
-                    cropQuad
-                } else {
-                    existingPage.toDomain().cropQuad
-                }
-                val targetRotation = if (existingPage.id == page.id) {
-                    rotationDegrees
-                } else {
-                    existingPage.rotationDegrees
-                }
-                val needsReprocess = existingPage.id == page.id || existingPage.filterPreset != filterPreset.storageValue
-                if (!needsReprocess) {
-                    existingPage.copy(updatedAtMillis = timestamp)
-                } else {
-                    existingPage.reprocessWith(
-                        cropQuad = targetCropQuad,
+        resultOf("Could not save page edits.") {
+            val selected = pageDao.getPage(pageId) ?: error("Page not found.")
+            val document = documentDao.getDocument(selected.documentId) ?: error("Document not found.")
+            val pages = pageDao.getPages(document.id)
+            val now = System.currentTimeMillis()
+            val revision = document.revision + 1L
+            val operationId = UUID.randomUUID().toString()
+            val directory = workingFiles.createOperationDirectory(operationId)
+            val changed = mutableListOf<Pair<ScanPageEntity, ScanPageEntity>>()
+            try {
+                val updated = pages.map { page ->
+                    val mustProcess = page.id == pageId || (applyFilterToAllPages && page.filterPreset != filterPreset.storageValue)
+                    if (!mustProcess) return@map page
+                    val raw = page.rawAsset ?: error("Raw image missing for page ${page.id}.")
+                    val localRaw = assetReader.materialize(raw)
+                    val processedFile = File(directory, "${page.id}-processed.jpg")
+                    val thumbFile = File(directory, "${page.id}-thumb.jpg")
+                    val targetCrop = if (page.id == pageId) cropQuad else page.toDomain().cropQuad
+                    val targetRotation = if (page.id == pageId) rotationDegrees else page.rotationDegrees
+                    val artifacts = pageImageProcessor.reprocessPage(
+                        rawImagePath = localRaw.absolutePath,
+                        processedImagePath = processedFile.absolutePath,
+                        thumbnailPath = thumbFile.absolutePath,
+                        cropQuad = targetCrop,
                         rotationDegrees = targetRotation,
                         filterPreset = filterPreset,
-                        updatedAtMillis = timestamp,
-                        detectDocumentWhenCropQuadMissing = existingPage.id == page.id || !applyFilterToAllPages,
+                        detectDocumentWhenCropQuadMissing = page.id == pageId,
                     )
+                    val next = page.copy(
+                        processedAsset = mutations.storeAsset("documents/${document.id}/processed/${page.id}-r$revision.jpg", processedFile, revision),
+                        thumbnailAsset = mutations.storeAsset("documents/${document.id}/thumbs/${page.id}-r$revision.jpg", thumbFile, revision),
+                        rotationDegrees = artifacts.rotationDegrees,
+                        cropTopLeftX = artifacts.cropQuad?.topLeft?.x,
+                        cropTopLeftY = artifacts.cropQuad?.topLeft?.y,
+                        cropTopRightX = artifacts.cropQuad?.topRight?.x,
+                        cropTopRightY = artifacts.cropQuad?.topRight?.y,
+                        cropBottomRightX = artifacts.cropQuad?.bottomRight?.x,
+                        cropBottomRightY = artifacts.cropQuad?.bottomRight?.y,
+                        cropBottomLeftX = artifacts.cropQuad?.bottomLeft?.x,
+                        cropBottomLeftY = artifacts.cropQuad?.bottomLeft?.y,
+                        filterPreset = artifacts.filterPreset.storageValue,
+                        processingState = artifacts.processingState.storageValue,
+                        updatedAtMillis = now,
+                    )
+                    changed += page to next
+                    next
                 }
-            }
-
-            database.withTransaction {
-                scanPageDao.updateAll(updatedPages)
-                updateDocumentSnapshot(
-                    document = updatedDocument,
-                    updatedAtMillis = timestamp,
-                )
-            }
-        }.fold(
-            onSuccess = { ScanlyResult.Success(Unit) },
-            onFailure = { throwable ->
-                ScanlyResult.Failure(
-                    ScanlyError(
-                        message = throwable.message ?: "Could not save page edits.",
-                        cause = throwable,
-                    ),
-                )
-            },
-        )
-    }
-
-    private fun ScanPageEntity.toDomain(): ScanPage = ScanPage(
-        id = id,
-        documentId = documentId,
-        pageIndex = pageIndex,
-        rawImagePath = rawImagePath,
-        processedImagePath = processedImagePath,
-        thumbnailPath = thumbnailPath,
-        rotationDegrees = rotationDegrees,
-        cropQuad = cropTopLeftX?.let { topLeftX ->
-            cropTopLeftY?.let { topLeftY ->
-                cropTopRightX?.let { topRightX ->
-                    cropTopRightY?.let { topRightY ->
-                        cropBottomRightX?.let { bottomRightX ->
-                            cropBottomRightY?.let { bottomRightY ->
-                                cropBottomLeftX?.let { bottomLeftX ->
-                                    cropBottomLeftY?.let { bottomLeftY ->
-                                        `in`.c1ph3rj.scanly.core.ml.DocumentCornerQuad(
-                                            topLeft = `in`.c1ph3rj.scanly.core.ml.NormalizedPoint(topLeftX, topLeftY),
-                                            topRight = `in`.c1ph3rj.scanly.core.ml.NormalizedPoint(topRightX, topRightY),
-                                            bottomRight = `in`.c1ph3rj.scanly.core.ml.NormalizedPoint(bottomRightX, bottomRightY),
-                                            bottomLeft = `in`.c1ph3rj.scanly.core.ml.NormalizedPoint(bottomLeftX, bottomLeftY),
-                                        )
-                                    }
-                                }
-                            }
-                        }
+                val preferred = if (applyFilterToAllPages) filterPreset.storageValue else document.preferredFilterPreset
+                val manifest = document.toManifest(updated, nextRevision = revision, preferredFilterPreset = preferred, updatedAtMillis = now)
+                mutations.commitDocument(manifest, "edit_page") { checksum, generation ->
+                    database.withTransaction {
+                        pageDao.updateAll(updated)
+                        documentDao.update(document.snapshot(updated, revision, checksum, now).copy(preferredFilterPreset = preferred))
+                        roomStateUpdater.record("document", document.id, revision, checksum, generation)
                     }
                 }
-            }
-        },
-        filterPreset = PageFilterPreset.fromStorage(filterPreset),
-        processingState = PageProcessingState.fromStorage(processingState),
-        createdAtMillis = createdAtMillis,
-        updatedAtMillis = updatedAtMillis,
-    )
-
-    private suspend fun ScanPageEntity.reprocessWith(
-        cropQuad: `in`.c1ph3rj.scanly.core.ml.DocumentCornerQuad?,
-        rotationDegrees: Int,
-        filterPreset: PageFilterPreset,
-        updatedAtMillis: Long,
-        detectDocumentWhenCropQuadMissing: Boolean,
-    ): ScanPageEntity {
-        val rawImagePath = rawImagePath ?: error("Raw image missing for page $id.")
-        val resolvedProcessedImagePath = processedImagePath
-            ?: deriveSiblingAssetPath(
-                rawImagePath = rawImagePath,
-                targetDirectoryName = PROCESSED_DIRECTORY,
-            )
-        val resolvedThumbnailPath = thumbnailPath
-            ?: deriveSiblingAssetPath(
-                rawImagePath = rawImagePath,
-                targetDirectoryName = THUMBNAILS_DIRECTORY,
-            )
-
-        val processedArtifacts = pageImageProcessor.reprocessPage(
-            rawImagePath = rawImagePath,
-            processedImagePath = resolvedProcessedImagePath,
-            thumbnailPath = resolvedThumbnailPath,
-            cropQuad = cropQuad,
-            rotationDegrees = rotationDegrees,
-            filterPreset = filterPreset,
-            detectDocumentWhenCropQuadMissing = detectDocumentWhenCropQuadMissing,
-        ).toPersistedArtifacts()
-
-        invalidateImageCache(
-            processedArtifacts.thumbnailPath,
-            processedArtifacts.processedImagePath,
-        )
-
-        return copy(
-            processedImagePath = processedArtifacts.processedImagePath,
-            thumbnailPath = processedArtifacts.thumbnailPath,
-            rotationDegrees = processedArtifacts.rotationDegrees,
-            cropTopLeftX = processedArtifacts.cropTopLeftX,
-            cropTopLeftY = processedArtifacts.cropTopLeftY,
-            cropTopRightX = processedArtifacts.cropTopRightX,
-            cropTopRightY = processedArtifacts.cropTopRightY,
-            cropBottomRightX = processedArtifacts.cropBottomRightX,
-            cropBottomRightY = processedArtifacts.cropBottomRightY,
-            cropBottomLeftX = processedArtifacts.cropBottomLeftX,
-            cropBottomLeftY = processedArtifacts.cropBottomLeftY,
-            filterPreset = processedArtifacts.filterPreset,
-            processingState = processedArtifacts.processingState,
-            updatedAtMillis = updatedAtMillis,
-        )
-    }
-
-    private data class PersistedProcessedArtifacts(
-        val processedImagePath: String?,
-        val thumbnailPath: String,
-        val rotationDegrees: Int,
-        val cropTopLeftX: Float?,
-        val cropTopLeftY: Float?,
-        val cropTopRightX: Float?,
-        val cropTopRightY: Float?,
-        val cropBottomRightX: Float?,
-        val cropBottomRightY: Float?,
-        val cropBottomLeftX: Float?,
-        val cropBottomLeftY: Float?,
-        val filterPreset: String,
-        val processingState: String,
-    )
-
-    private data class FallbackProcessedArtifacts(
-        val processedImagePath: String?,
-        val thumbnailPath: String,
-        val rotationDegrees: Int,
-    )
-
-    private fun `in`.c1ph3rj.scanly.domain.processing.ProcessedPageArtifacts.toPersistedArtifacts(): PersistedProcessedArtifacts =
-        PersistedProcessedArtifacts(
-            processedImagePath = processedImagePath,
-            thumbnailPath = thumbnailPath,
-            rotationDegrees = rotationDegrees,
-            cropTopLeftX = cropQuad?.topLeft?.x,
-            cropTopLeftY = cropQuad?.topLeft?.y,
-            cropTopRightX = cropQuad?.topRight?.x,
-            cropTopRightY = cropQuad?.topRight?.y,
-            cropBottomRightX = cropQuad?.bottomRight?.x,
-            cropBottomRightY = cropQuad?.bottomRight?.y,
-            cropBottomLeftX = cropQuad?.bottomLeft?.x,
-            cropBottomLeftY = cropQuad?.bottomLeft?.y,
-            filterPreset = filterPreset.storageValue,
-            processingState = processingState.storageValue,
-        )
-
-    private fun FallbackProcessedArtifacts.toPersistedArtifacts(): PersistedProcessedArtifacts =
-        PersistedProcessedArtifacts(
-            processedImagePath = processedImagePath,
-            thumbnailPath = thumbnailPath,
-            rotationDegrees = 0,
-            cropTopLeftX = null,
-            cropTopLeftY = null,
-            cropTopRightX = null,
-            cropTopRightY = null,
-            cropBottomRightX = null,
-            cropBottomRightY = null,
-            cropBottomLeftX = null,
-            cropBottomLeftY = null,
-            filterPreset = PageFilterPreset.ORIGINAL.storageValue,
-            processingState = PageProcessingState.CAPTURED.storageValue,
-        )
-
-    private fun invalidateImageCache(vararg paths: String?) {
-        paths.filterNotNull().forEach(thumbnailCache::invalidate)
-    }
-
-    private fun deriveSiblingAssetPath(
-        rawImagePath: String,
-        targetDirectoryName: String,
-    ): String {
-        val rawFile = File(rawImagePath)
-        val rawDirectory = rawFile.parentFile ?: error("Invalid raw image path: $rawImagePath")
-        val documentRoot = rawDirectory.parentFile ?: error("Could not resolve document root for $rawImagePath")
-        val targetDirectory = File(documentRoot, targetDirectoryName)
-        if (!targetDirectory.exists() && !targetDirectory.mkdirs()) {
-            error("Could not create ${targetDirectory.absolutePath}.")
-        }
-        return File(targetDirectory, rawFile.name).absolutePath
-    }
-
-    private suspend fun updateDocumentSnapshot(
-        document: `in`.c1ph3rj.scanly.data.local.db.entity.DocumentEntity,
-        updatedAtMillis: Long,
-    ) {
-        val pages = scanPageDao.getPages(document.id)
-        val coverThumbnailPath = pages.firstOrNull()?.thumbnailPath
-            ?: storageManager.refreshDocumentCover(
-                documentId = document.id,
-                title = document.title,
-            )
-        documentDao.update(
-            document.copy(
-                pageCount = pages.size,
-                coverThumbnailPath = coverThumbnailPath,
-                updatedAtMillis = updatedAtMillis,
-            ),
-        )
-    }
-
-    private fun deletePageAssets(page: ScanPageEntity) {
-        listOf(page.rawImagePath, page.processedImagePath, page.thumbnailPath)
-            .filterNotNull()
-            .map(::File)
-            .distinctBy { file -> file.absolutePath }
-            .forEach { file ->
-                if (file.exists()) {
-                    file.delete()
+                changed.forEach { (before, after) ->
+                    invalidate(after.thumbnailAsset, after.processedAsset)
+                    if (before.processedAsset != after.processedAsset) mutations.deleteAsset(before.processedAsset)
+                    if (before.thumbnailAsset != after.thumbnailAsset) mutations.deleteAsset(before.thumbnailAsset)
                 }
+            } finally {
+                workingFiles.clear(operationId)
             }
+        }
     }
 
-    private companion object {
-        const val RAW_DIRECTORY = "raw"
-        const val PROCESSED_DIRECTORY = "processed"
-        const val THUMBNAILS_DIRECTORY = "thumbs"
+    private fun createDraft(documentId: String, pageId: String, pageIndex: Int, replacementId: String?): PageCaptureDraft {
+        val operationId = UUID.randomUUID().toString()
+        val directory = workingFiles.createOperationDirectory(operationId)
+        return PageCaptureDraft(
+            pageId = pageId,
+            documentId = documentId,
+            pageIndex = pageIndex,
+            operationId = operationId,
+            captureFilePath = File(directory, "capture.jpg").absolutePath,
+            processedWorkingPath = File(directory, "processed.jpg").absolutePath,
+            thumbnailWorkingPath = File(directory, "thumb.jpg").absolutePath,
+            replacementPageId = replacementId,
+        )
     }
+
+    private suspend fun commitPages(document: DocumentEntity, pages: List<ScanPageEntity>, type: String, now: Long) {
+        val revision = document.revision + 1L
+        val manifest = document.toManifest(pages, nextRevision = revision, updatedAtMillis = now)
+        mutations.commitDocument(manifest, type) { checksum, generation ->
+            database.withTransaction {
+                pageDao.deleteByDocumentId(document.id)
+                pageDao.upsertAll(pages)
+                documentDao.update(document.snapshot(pages, revision, checksum, now))
+                roomStateUpdater.record("document", document.id, revision, checksum, generation)
+            }
+        }
+    }
+
+    private fun DocumentEntity.snapshot(pages: List<ScanPageEntity>, revision: Long, checksum: String, now: Long) = copy(
+        pageCount = pages.size,
+        coverThumbnail = pages.firstOrNull()?.thumbnailAsset ?: pages.firstOrNull()?.rawAsset,
+        updatedAtMillis = now,
+        revision = revision,
+        manifestChecksum = checksum,
+    )
+
+    private fun invalidate(vararg assets: LibraryAssetRef?) {
+        assets.filterNotNull().forEach { thumbnailCache.invalidate(it.relativePath) }
+    }
+
+    private suspend fun cleanupAssets(page: ScanPageEntity) {
+        mutations.deleteAsset(page.rawAsset)
+        mutations.deleteAsset(page.processedAsset)
+        if (page.thumbnailAsset != page.rawAsset) mutations.deleteAsset(page.thumbnailAsset)
+    }
+
+    private suspend fun cleanupReplacedAssets(old: ScanPageEntity, new: ScanPageEntity) {
+        if (old.rawAsset != new.rawAsset) mutations.deleteAsset(old.rawAsset)
+        if (old.processedAsset != new.processedAsset) mutations.deleteAsset(old.processedAsset)
+        if (old.thumbnailAsset != new.thumbnailAsset && old.thumbnailAsset != old.rawAsset) mutations.deleteAsset(old.thumbnailAsset)
+    }
+
+    private suspend fun <T> resultOf(fallback: String, block: suspend () -> T): ScanlyResult<T> =
+        runCatching { block() }.fold(
+            onSuccess = { ScanlyResult.Success(it) },
+            onFailure = { ScanlyResult.Failure(ScanlyError(it.message ?: fallback, it)) },
+        )
 }

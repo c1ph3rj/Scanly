@@ -11,6 +11,10 @@ import `in`.c1ph3rj.scanly.domain.usecase.GetAppStorageUsageUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.LoadSettingsContentUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveThemeModeUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.SetThemeModeUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.ClearTemporaryCacheUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.RebuildLibraryIndexUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.ConnectLibraryUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.ObserveLibraryAccessUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -28,10 +32,13 @@ data class SettingsUiState(
     val storageUsage: AppStorageUsage? = null,
     val isLoadingStorage: Boolean = true,
     val isClearingData: Boolean = false,
+    val isMaintainingLibrary: Boolean = false,
+    val libraryDisplayName: String? = null,
 )
 
 sealed interface SettingsEvent {
     data class ShowMessage(val message: String) : SettingsEvent
+    data object RequestLibraryFolder : SettingsEvent
 }
 
 @HiltViewModel
@@ -41,6 +48,10 @@ class SettingsViewModel @Inject constructor(
     private val loadSettingsContentUseCase: LoadSettingsContentUseCase,
     private val getAppStorageUsageUseCase: GetAppStorageUsageUseCase,
     private val clearAllAppDataUseCase: ClearAllAppDataUseCase,
+    private val clearTemporaryCacheUseCase: ClearTemporaryCacheUseCase,
+    private val rebuildLibraryIndexUseCase: RebuildLibraryIndexUseCase,
+    private val connectLibraryUseCase: ConnectLibraryUseCase,
+    observeLibraryAccessUseCase: ObserveLibraryAccessUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SettingsUiState())
@@ -53,6 +64,11 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch {
             observeThemeModeUseCase().collectLatest { themeMode ->
                 _uiState.update { current -> current.copy(themeMode = themeMode) }
+            }
+        }
+        viewModelScope.launch {
+            observeLibraryAccessUseCase().collectLatest { access ->
+                _uiState.update { current -> current.copy(libraryDisplayName = access.displayName) }
             }
         }
         refresh()
@@ -99,6 +115,44 @@ class SettingsViewModel @Inject constructor(
                     _events.emit(SettingsEvent.ShowMessage(result.error.message))
                 }
             }
+        }
+    }
+
+    fun clearTemporaryCache() = runMaintenance(
+        successMessage = "Temporary files cleared.",
+        action = { clearTemporaryCacheUseCase() },
+    )
+
+    fun rebuildLibraryIndex() = runMaintenance(
+        successMessage = "Library index rebuilt.",
+        action = { rebuildLibraryIndexUseCase() },
+    )
+
+    fun requestLibraryFolder() {
+        viewModelScope.launch { _events.emit(SettingsEvent.RequestLibraryFolder) }
+    }
+
+    fun connectLibrary(treeUri: String) = runMaintenance(
+        successMessage = "Scanly library connected.",
+        action = { connectLibraryUseCase(treeUri) },
+    )
+
+    private fun runMaintenance(
+        successMessage: String,
+        action: suspend () -> `in`.c1ph3rj.scanly.core.common.ScanlyResult<Unit>,
+    ) {
+        if (_uiState.value.isMaintainingLibrary) return
+        viewModelScope.launch {
+            _uiState.update { it.copy(isMaintainingLibrary = true) }
+            when (val result = action()) {
+                is `in`.c1ph3rj.scanly.core.common.ScanlyResult.Success -> {
+                    _events.emit(SettingsEvent.ShowMessage(successMessage))
+                    loadStorageUsage()
+                }
+                is `in`.c1ph3rj.scanly.core.common.ScanlyResult.Failure ->
+                    _events.emit(SettingsEvent.ShowMessage(result.error.message))
+            }
+            _uiState.update { it.copy(isMaintainingLibrary = false) }
         }
     }
 

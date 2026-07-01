@@ -5,8 +5,11 @@ data class DocumentGroup(
     val title: String,
     val documentCount: Int,
     val totalPageCount: Int,
-    val coverThumbnailPath: String?,
+    val coverThumbnail: LibraryAssetRef?,
     val createdAtMillis: Long,
     val updatedAtMillis: Long,
     val coverUpdatedAtMillis: Long = updatedAtMillis,
-)
+) {
+    @Deprecated("Use coverThumbnail")
+    val coverThumbnailPath: String? get() = coverThumbnail?.relativePath
+}

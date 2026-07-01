@@ -22,17 +22,17 @@ Camera permission (`CAMERA`) is required. Hardware camera is optional at manifes
 
 Route: `camera/session/{documentId}`
 
-1. `PreparePageCaptureUseCase` allocates next raw file path and draft record.
-2. User captures one or more pages.
-3. Each capture: CameraX writes JPEG → `FinalizeCapturedPageUseCase`.
+1. `PreparePageCaptureUseCase` allocates an app-cache working draft and stable page ID.
+2. User captures one or more pages into `cache/library-work/`.
+3. Each capture is processed locally, copied to immutable shared assets, committed to a versioned manifest/catalog, and then inserted into Room.
 4. On session complete → navigate to `document/{documentId}`.
 
 ### Replace page (retake)
 
 Route: `camera/session/{documentId}?replacePageId={pageId}`
 
-1. `PrepareReplacementCaptureUseCase` allocates raw path for the existing page slot.
-2. Single capture replaces the page content.
+1. `PrepareReplacementCaptureUseCase` allocates a new cache capture for the existing page ID.
+2. A new immutable raw asset is committed before the manifest switches references; old assets are cleaned afterward.
 3. On complete → navigate to `editor/page/{pageId}` (v1.0.9 behavior).
 
 Triggered from page editor **Retake** button.
@@ -69,8 +69,9 @@ FinalizeCapturedPageUseCase
   → DefaultPageRepository.finalizeCapture()
     → PageImageProcessor.processCapture()
       → (see image-processing.md)
-    → ScanPageDao.insert/update
-    → DocumentDao.update snapshot (pageCount, coverThumbnailPath)
+    → shared raw/processed/thumb assets
+    → versioned document manifest and catalog
+    → Room page/document snapshot and applied generation
 ```
 
 On processing failure:

@@ -1,107 +1,28 @@
-# Database (Room)
+# Operational Database Index
 
-Scanly persists document metadata in a **Room** database at schema version **3**.
+Scanly uses `scanly-index.db` as a fast, rebuildable Room index. It is the only data source observed by screens and ViewModels after startup reaches `READY`, but it is not the durable owner of the library.
 
-## Database file
+## Tables
 
-| Property | Value |
+| Table | Purpose |
 | --- | --- |
-| Class | `ScanlyDatabase` |
-| Path | `app_database/scanly.db` (app-internal) |
-| Schema version | `3` |
-| `exportSchema` | `false` |
+| `documents` | Document metadata, group link, denormalized page count/cover, manifest revision/checksum |
+| `scan_pages` | Page order, edit metadata, and shared `LibraryAssetRef` values |
+| `document_groups` | Group metadata plus manifest revision/checksum |
+| `library_state` | Connected library ID and applied shared catalog generation |
+| `manifest_fingerprints` | Revision/checksum last applied for every document and group |
 
-Location: `app/src/main/java/in/c1ph3rj/scanly/data/local/db/ScanlyDatabase.kt`
+The database schema starts at version 1 under the new filename. The former `scanly.db` database is not migrated.
 
-## Entities
+## Startup synchronization
 
-### `documents` (`DocumentEntity`)
+`LibraryIndexSynchronizer` compares `library_state.appliedGeneration` with the newest shared catalog:
 
-| Column | Type | Notes |
-| --- | --- | --- |
-| `id` | TEXT PK | UUID |
-| `title` | TEXT | User-visible name |
-| `pageCount` | INTEGER | Denormalized count |
-| `coverThumbnailPath` | TEXT? | Path to cover thumb |
-| `preferredFilterPreset` | TEXT? | Default filter for new pages |
-| `rootDirectoryPath` | TEXT | App-private document directory |
-| `createdAtMillis` | INTEGER | Creation timestamp |
-| `updatedAtMillis` | INTEGER | Last modification |
-| `groupId` | TEXT? FK | → `document_groups.id`, `ON DELETE SET NULL` |
+- Matching generations open immediately without scanning manifests.
+- Changed records are imported as one Room transaction.
+- Missing, corrupt, or foreign indexes are rebuilt completely from shared manifests.
+- Same-revision checksum conflicts stop startup in a repair state.
 
-Indexes: `updatedAtMillis`, `groupId`
+Every successful mutation commits shared storage first and Room second. A crash between those steps is repaired from the newer shared generation on the next splash.
 
-### `scan_pages` (`ScanPageEntity`)
-
-| Column | Type | Notes |
-| --- | --- | --- |
-| `id` | TEXT PK | UUID |
-| `documentId` | TEXT FK | → `documents.id`, `CASCADE` |
-| `pageIndex` | INTEGER | Order within document (0-based) |
-| `rawImagePath` | TEXT | Immutable capture |
-| `processedImagePath` | TEXT? | Derived corrected image |
-| `thumbnailPath` | TEXT? | List thumbnail |
-| `cropTopLeftX/Y` … `cropBottomRightX/Y` | REAL | Normalized crop quad (8 values) |
-| `rotationDegrees` | INTEGER | User rotation |
-| `filterPreset` | TEXT | `PageFilterPreset.storageValue` |
-| `processingState` | TEXT | `PROCESSED` or `NEEDS_REVIEW` |
-| `createdAtMillis` | INTEGER | Creation timestamp |
-
-Unique constraint: `(documentId, pageIndex)`
-
-### `document_groups` (`DocumentGroupEntity`)
-
-| Column | Type | Notes |
-| --- | --- | --- |
-| `id` | TEXT PK | UUID |
-| `title` | TEXT | Group name |
-| `createdAtMillis` | INTEGER | Creation timestamp |
-| `updatedAtMillis` | INTEGER | Last modification |
-
-Index: `updatedAtMillis`
-
-## DAOs
-
-| DAO | Key operations |
-| --- | --- |
-| `DocumentDao` | Observe all/recent/ungrouped/by-group; CRUD; update snapshots |
-| `ScanPageDao` | Observe by document; CRUD; reorder (update indices) |
-| `DocumentGroupDao` | Observe all/recent; CRUD; join stats (doc count, page count, cover) |
-
-## Migrations
-
-### `MIGRATION_1_2`
-
-Adds `preferredFilterPreset TEXT` column to `documents`.
-
-### `MIGRATION_2_3`
-
-1. Creates `document_groups` table.
-2. Rebuilds `documents` with `groupId` FK (SQLite table-recreation pattern).
-3. Copies existing rows with `groupId = NULL` (all pre-1.0.4 documents stay ungrouped).
-4. Recreates indexes.
-
-Registered in `DatabaseModule` alongside `ScanlyDatabase` construction.
-
-## Repository mapping
-
-| Repository | DAOs used |
-| --- | --- |
-| `DefaultDocumentRepository` | `DocumentDao` |
-| `DefaultPageRepository` | `ScanPageDao`, `DocumentDao` |
-| `DefaultGroupRepository` | `DocumentGroupDao`, `DocumentDao` |
-| `DefaultDocumentExportRepository` | `DocumentDao`, `ScanPageDao`, `DocumentGroupDao` |
-| `DefaultAppDataRepository` | `ScanlyDatabase.clearAllTables()` |
-
-## Upgrade notes
-
-- Upgrading from v1.0.0: Room migrates automatically from schema 1 or 2 to 3.
-- Existing documents remain; they appear ungrouped until moved into a collection.
-- No manual migration steps required.
-
-See [../releases.md](../releases.md) and [../../VERSION.md](../../VERSION.md).
-
-## Related docs
-
-- [file-storage.md](file-storage.md) — image files referenced by entity paths
-- [../development/conventions.md](../development/conventions.md) — how to add migrations
+See [file-storage.md](file-storage.md).

@@ -7,4 +7,6 @@ interface AppDataRepository {
     suspend fun getStorageUsage(): ScanlyResult<AppStorageUsage>
 
     suspend fun clearAllLibraryData(): ScanlyResult<Unit>
+
+    suspend fun clearTemporaryCache(): ScanlyResult<Unit>
 }

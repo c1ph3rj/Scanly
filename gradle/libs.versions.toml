@@ -20,6 +20,7 @@ dataStore = "1.1.7"
 openCv = "4.12.0"
 playAppUpdate = "2.1.0"
 pdfBoxAndroid = "2.0.27.0"
+kotlinxSerialization = "1.9.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -55,9 +56,11 @@ google-dagger-hilt-compiler = { group = "com.google.dagger", name = "hilt-compil
 google-play-app-update = { group = "com.google.android.play", name = "app-update", version.ref = "playAppUpdate" }
 google-play-app-update-ktx = { group = "com.google.android.play", name = "app-update-ktx", version.ref = "playAppUpdate" }
 pdfbox-android = { group = "com.tom-roush", name = "pdfbox-android", version.ref = "pdfBoxAndroid" }
+kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }

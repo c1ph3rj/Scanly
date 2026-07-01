@@ -17,7 +17,7 @@ Test coverage and how to run tests in Scanly **v1.0.9**.
 
 ## Unit tests (`app/src/test/`)
 
-**23 test files** covering core logic:
+Unit tests cover core logic plus the shared-library manifest format and path validation.
 
 | Area | Test files |
 | --- | --- |
@@ -25,7 +25,7 @@ Test coverage and how to run tests in Scanly **v1.0.9**.
 | Processing | `AdaptivePageFilterTuningTest`, `PageFilterPresetTest` |
 | Camera | `CaptureStabilityTrackerTest`, `CaptureFrameQualityAnalyzerTest`, `CameraOverlayMapperTest`, `ScanSessionScreenTest` |
 | UI / layout | `AdaptiveLayoutTest`, `PreviewImageSizerTest`, `OnboardingLayoutModeTest` |
-| Formatting | `StorageFormatterTest`, `DocumentPresentationFormatterTest`, `DocumentPreviewPathResolverTest` |
+| Formatting / storage | `StorageFormatterTest`, `DocumentPresentationFormatterTest`, `DocumentPreviewPathResolverTest`, `LibraryManifestFormatTest` |
 | Feature logic | `LibraryUiStateTest`, `DocumentDetailSelectionResolverTest`, `PageImagePreviewSelectionResolverTest` |
 | Updates | `AppUpdateDialogCooldownTest`, `ReleaseMarkdownParserTest`, `AppVersionComparatorTest`, `GitHubAppUpdateRepositoryTest`, `PlayInAppUpdatePolicyTest` |
 | Scaffold | `ExampleUnitTest` |
@@ -49,7 +49,7 @@ app/src/test/java/in/c1ph3rj/scanly/{matching/package}/YourTest.kt
 
 Areas that need more tests (prioritized):
 
-1. **Persistence integration** — Room migrations, repository round-trips
+1. **Persistence integration** — fake DocumentsProvider write-through, delta sync, and interrupted-operation recovery
 2. **Export end-to-end** — PDF/ZIP generation with real page data
 3. **Capture instrumented** — Camera session flow on device
 4. **Group export** — Merged PDF and zipped PDF set
@@ -63,7 +63,7 @@ Areas that need more tests (prioritized):
 | ViewModel state logic | Unit test for resolvers/state |
 | New use case | Unit test if non-trivial |
 | UI layout | Screenshot or instrumented test for critical flows |
-| Room migration | Manual test on device with old schema data |
+| Shared persistence | Reconnect, database rebuild, permission-loss, and uninstall/reinstall tests |
 | User-facing feature | Update docs + manual device verification |
 
 ## Related docs

@@ -37,9 +37,15 @@ interface DocumentDao {
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insert(document: DocumentEntity)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsert(document: DocumentEntity)
+
     @Update
     suspend fun update(document: DocumentEntity)
 
     @Query("DELETE FROM documents WHERE id = :documentId")
     suspend fun deleteById(documentId: String)
+
+    @Query("SELECT id FROM documents")
+    suspend fun getAllIds(): List<String>
 }

@@ -9,6 +9,8 @@ import dagger.hilt.components.SingletonComponent
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
+import `in`.c1ph3rj.scanly.data.library.DocumentAssetReader
+import kotlinx.coroutines.runBlocking
 
 @EntryPoint
 @InstallIn(SingletonComponent::class)
@@ -26,7 +28,9 @@ interface ThumbnailCacheEntryPoint {
  * cache hit the IO round-trip is completely skipped, making list scroll buttery smooth.
  */
 @Singleton
-class ThumbnailCache @Inject constructor() {
+class ThumbnailCache @Inject constructor(
+    private val assetReader: DocumentAssetReader,
+) {
 
     private val maxSizeKb: Int =
         (Runtime.getRuntime().maxMemory() / 1024L / 8L).toInt().coerceAtLeast(4 * 1024)
@@ -53,7 +57,10 @@ class ThumbnailCache @Inject constructor() {
     ): Bitmap? {
         val key = cacheKey(path, targetPx, contentRevision)
         cache.get(key)?.let { return it }
-        val sampled = decodeSampled(path, targetPx) ?: return null
+        val localPath = File(path).takeIf(File::isFile)?.absolutePath ?: runBlocking {
+            assetReader.materialize(path).absolutePath
+        }
+        val sampled = decodeSampled(localPath, targetPx) ?: return null
         cache.put(key, sampled)
         return sampled
     }
@@ -74,7 +81,7 @@ class ThumbnailCache @Inject constructor() {
     }
 
     private fun fileRevision(path: String): Long =
-        File(path).takeIf { it.exists() }?.lastModified() ?: 0L
+        File(path).takeIf { it.exists() }?.lastModified() ?: path.hashCode().toLong()
 
     private fun decodeSampled(path: String, targetPx: Int): Bitmap? {
         val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }

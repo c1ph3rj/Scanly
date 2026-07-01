@@ -28,6 +28,9 @@ interface ScanPageDao {
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insert(page: ScanPageEntity)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsertAll(pages: List<ScanPageEntity>)
+
     @Update
     suspend fun update(page: ScanPageEntity)
 
@@ -36,4 +39,7 @@ interface ScanPageDao {
 
     @Query("DELETE FROM scan_pages WHERE id = :pageId")
     suspend fun deleteById(pageId: String)
+
+    @Query("DELETE FROM scan_pages WHERE documentId = :documentId")
+    suspend fun deleteByDocumentId(documentId: String)
 }
