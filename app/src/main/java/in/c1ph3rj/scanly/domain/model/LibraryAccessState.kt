@@ -17,6 +17,7 @@ data class LibraryAccessState(
     val status: LibraryStartupStatus = LibraryStartupStatus.CHECKING,
     val libraryId: String? = null,
     val displayName: String? = null,
+    val displayPath: String? = null,
     val message: String? = null,
 )
 

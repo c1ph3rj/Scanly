@@ -67,6 +67,11 @@ import `in`.c1ph3rj.scanly.core.common.StorageFormatter
 import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import `in`.c1ph3rj.scanly.domain.model.AppStorageUsage
 import `in`.c1ph3rj.scanly.domain.model.ThemeMode
+import `in`.c1ph3rj.scanly.domain.model.LibraryStartupStatus
+import `in`.c1ph3rj.scanly.feature.components.LibraryMaintenanceProgressPanel
+import `in`.c1ph3rj.scanly.feature.components.LibraryProgressStep
+import `in`.c1ph3rj.scanly.feature.components.LibraryProgressStepState
+import `in`.c1ph3rj.scanly.feature.components.startupProgressSteps
 import `in`.c1ph3rj.scanly.feature.components.ScanlyAppLogo
 import `in`.c1ph3rj.scanly.feature.components.ScanlyConfirmDialog
 import `in`.c1ph3rj.scanly.feature.components.ScanlyTabScreenHeader
@@ -201,6 +206,22 @@ fun SettingsScreen(
 
                 item(key = "storage") {
                     SettingsGroup(title = "Storage") {
+                        uiState.libraryMaintenanceAction?.let { action ->
+                            LibraryMaintenanceProgressPanel(
+                                title = maintenanceProgressTitle(action),
+                                subtitle = maintenanceProgressSubtitle(
+                                    action = action,
+                                    displayPath = uiState.libraryDisplayPath,
+                                ),
+                                steps = maintenanceProgressSteps(
+                                    action = action,
+                                    status = uiState.libraryAccessStatus,
+                                ),
+                                footnote = maintenanceProgressFootnote(action),
+                                modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                            )
+                            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                        }
                         StorageUsageRow(
                             storageUsage = uiState.storageUsage,
                             isLoading = uiState.isLoadingStorage,
@@ -209,28 +230,41 @@ fun SettingsScreen(
                         SettingsNavigationRow(
                             icon = Icons.Filled.CleaningServices,
                             title = "Clear temporary cache",
-                            subtitle = "Remove previews, work files, and generated exports",
+                            subtitle = "Free space by removing preview images and export files. Your scans are kept.",
                             onClick = onClearTemporaryCache,
+                            enabled = uiState.libraryMaintenanceAction == null,
+                            isLoading = uiState.libraryMaintenanceAction == LibraryMaintenanceAction.CLEAR_CACHE,
                         )
                         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
                         SettingsNavigationRow(
                             icon = Icons.Filled.FolderOpen,
                             title = "Library folder",
-                            subtitle = uiState.libraryDisplayName ?: "Shared Scanly storage",
+                            subtitle = libraryFolderSubtitle(
+                                path = uiState.libraryDisplayPath,
+                                name = uiState.libraryDisplayName,
+                            ),
                             onClick = onReconnectLibrary,
+                            enabled = uiState.libraryMaintenanceAction == null,
+                            isLoading = uiState.libraryMaintenanceAction == LibraryMaintenanceAction.CONNECT,
                         )
                         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
                         SettingsNavigationRow(
                             icon = Icons.Filled.Refresh,
-                            title = "Rebuild library index",
-                            subtitle = "Reload the Room database from shared storage",
+                            title = "Refresh library",
+                            subtitle = if (uiState.libraryMaintenanceAction == LibraryMaintenanceAction.REFRESH) {
+                                "Rescanning your folder…"
+                            } else {
+                                "Rescan your folder if documents are missing or thumbnails look wrong"
+                            },
                             onClick = onRebuildLibraryIndex,
+                            enabled = uiState.libraryMaintenanceAction == null,
+                            isLoading = uiState.libraryMaintenanceAction == LibraryMaintenanceAction.REFRESH,
                         )
                         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
                         SettingsDestructiveRow(
                             icon = Icons.Filled.DeleteOutline,
-                            title = "Permanently delete library",
-                            subtitle = "Delete shared documents, folders, pages, and recovery data",
+                            title = "Delete all scans",
+                            subtitle = "Permanently remove every document and folder from your library storage",
                             enabled = !uiState.isClearingData,
                             onClick = { clearDataDialogVisible = true },
                         )
@@ -309,8 +343,8 @@ fun SettingsScreen(
 
     if (clearDataDialogVisible) {
         ScanlyConfirmDialog(
-            title = "Permanently delete library?",
-            text = "This permanently deletes all documents, folders, pages, and recovery data from the selected shared Scanly folder. " +
+            title = "Delete all scans?",
+            text = "This permanently deletes every document, folder, and page in your Scanly library folder. " +
                 "This cannot be undone. Your theme and camera settings will be kept.",
             confirmLabel = "Delete",
             onDismiss = {
@@ -596,6 +630,71 @@ private fun versionLabel(versionName: String): String =
         "v$versionName"
     }
 
+private fun libraryFolderSubtitle(path: String?, name: String?): String = when {
+    path != null && name != null -> "$path\nFolder name: $name"
+    path != null -> path
+    name != null -> name
+    else -> "Choose where your scans are saved"
+}
+
+private fun maintenanceProgressTitle(action: LibraryMaintenanceAction): String = when (action) {
+    LibraryMaintenanceAction.REFRESH -> "Refreshing library"
+    LibraryMaintenanceAction.CONNECT -> "Connecting library folder"
+    LibraryMaintenanceAction.CLEAR_CACHE -> "Clearing temporary files"
+}
+
+private fun maintenanceProgressSubtitle(
+    action: LibraryMaintenanceAction,
+    displayPath: String?,
+): String {
+    val message = when (action) {
+        LibraryMaintenanceAction.REFRESH ->
+            "Scanly is rescanning your folder so documents and thumbnails stay in sync."
+        LibraryMaintenanceAction.CONNECT ->
+            "Scanly is linking to the folder you selected."
+        LibraryMaintenanceAction.CLEAR_CACHE ->
+            "Removing preview images and export files from app cache."
+    }
+    return displayPath?.let { "$message\nLocation: $it" } ?: message
+}
+
+private fun maintenanceProgressFootnote(action: LibraryMaintenanceAction): String = when (action) {
+    LibraryMaintenanceAction.CLEAR_CACHE -> "Your saved scans in the library folder are not removed."
+    else -> "This may take a moment on large libraries."
+}
+
+private fun maintenanceProgressSteps(
+    action: LibraryMaintenanceAction,
+    status: LibraryStartupStatus,
+): List<LibraryProgressStep> = when (action) {
+    LibraryMaintenanceAction.CLEAR_CACHE -> listOf(
+        LibraryProgressStep("Remove preview images", LibraryProgressStepState.ACTIVE),
+        LibraryProgressStep("Clean export and work files", LibraryProgressStepState.PENDING),
+    )
+    else -> startupProgressSteps(resolveMaintenanceStatus(action, status))
+}
+
+private fun resolveMaintenanceStatus(
+    action: LibraryMaintenanceAction,
+    status: LibraryStartupStatus,
+): LibraryStartupStatus {
+    if (status.isLibraryProgressStatus()) return status
+    return when (action) {
+        LibraryMaintenanceAction.REFRESH -> LibraryStartupStatus.REBUILDING_DATABASE
+        LibraryMaintenanceAction.CONNECT -> LibraryStartupStatus.APPLYING_DELTA
+        LibraryMaintenanceAction.CLEAR_CACHE -> LibraryStartupStatus.APPLYING_DELTA
+    }
+}
+
+private fun LibraryStartupStatus.isLibraryProgressStatus(): Boolean = when (this) {
+    LibraryStartupStatus.CHECKING,
+    LibraryStartupStatus.APPLYING_DELTA,
+    LibraryStartupStatus.RECOVERING_OPERATIONS,
+    LibraryStartupStatus.REBUILDING_DATABASE,
+    -> true
+    else -> false
+}
+
 @Composable
 private fun SettingsNavigationRow(
     icon: ImageVector,
@@ -603,16 +702,18 @@ private fun SettingsNavigationRow(
     subtitle: String? = null,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    isLoading: Boolean = false,
 ) {
     Row(
-        modifier = modifier.settingsRowSurface(onClick = onClick),
+        modifier = modifier.settingsRowSurface(onClick = if (enabled && !isLoading) onClick else null),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         Icon(
             imageVector = icon,
             contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary,
+            tint = if (enabled) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.size(22.dp),
         )
         Column(
@@ -623,6 +724,7 @@ private fun SettingsNavigationRow(
                 text = title,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Medium,
+                color = if (enabled) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant,
             )
             if (subtitle != null) {
                 Text(
@@ -632,12 +734,19 @@ private fun SettingsNavigationRow(
                 )
             }
         }
-        Icon(
-            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.size(20.dp),
-        )
+        if (isLoading) {
+            CircularProgressIndicator(
+                modifier = Modifier.size(20.dp),
+                strokeWidth = 2.dp,
+            )
+        } else {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.size(20.dp),
+            )
+        }
     }
 }
 

@@ -5,6 +5,7 @@ import android.content.Context
 import android.net.Uri
 import android.provider.DocumentsContract
 import dagger.hilt.android.qualifiers.ApplicationContext
+import `in`.c1ph3rj.scanly.core.common.LibraryPathFormatter
 import `in`.c1ph3rj.scanly.core.common.ScanlyDispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -37,6 +38,10 @@ class SharedLibraryFileSystem @Inject constructor(
         resolver.query(rootUri(treeUri), projection, null, null, null)?.use { cursor ->
             if (cursor.moveToFirst()) cursor.getString(0) else null
         } ?: "Scanly library"
+    }
+
+    suspend fun displayPath(treeUri: Uri): String = withContext(dispatchers.io) {
+        LibraryPathFormatter.formatTreeDocumentId(DocumentsContract.getTreeDocumentId(treeUri))
     }
 
     suspend fun ensureDirectory(treeUri: Uri, relativePath: String): Uri = withContext(dispatchers.io) {

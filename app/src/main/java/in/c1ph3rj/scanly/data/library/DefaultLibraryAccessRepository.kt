@@ -45,7 +45,7 @@ class DefaultLibraryAccessRepository @Inject constructor(
             session.disconnect()
             _state.value = LibraryAccessState(
                 LibraryStartupStatus.RECONNECT_REQUIRED,
-                message = "Select your existing Scanly folder to reconnect it.",
+                message = "Scanly needs permission to open your library folder again.",
             )
             return
         }
@@ -103,10 +103,10 @@ class DefaultLibraryAccessRepository @Inject constructor(
         _state.value = LibraryAccessState(LibraryStartupStatus.REBUILDING_DATABASE, marker.libraryId)
         val catalog = synchronizer.synchronize(treeUri, marker, forceRebuild = true)
         session.updateCatalog(catalog)
-        _state.value = readyState(marker.libraryId, fileSystem.displayName(treeUri))
+        _state.value = readyState(marker.libraryId, treeUri)
     }.fold(
         onSuccess = { ScanlyResult.Success(Unit) },
-        onFailure = { ScanlyResult.Failure(ScanlyError(it.message ?: "Could not rebuild the library index.", it)) },
+        onFailure = { ScanlyResult.Failure(ScanlyError(it.message ?: "Could not refresh the library.", it)) },
     )
 
     private suspend fun connectInternal(uri: Uri, persist: Boolean) {
@@ -121,13 +121,14 @@ class DefaultLibraryAccessRepository @Inject constructor(
         session.connect(uri, marker, catalog)
         if (persist) context.libraryAccessDataStore.edit { it[treeUriKey] = uri.toString() }
         discardLegacyPrivateStorage()
-        _state.value = readyState(marker.libraryId, fileSystem.displayName(uri))
+        _state.value = readyState(marker.libraryId, uri)
     }
 
-    private fun readyState(libraryId: String, displayName: String = "Scanly library") = LibraryAccessState(
+    private suspend fun readyState(libraryId: String, treeUri: Uri) = LibraryAccessState(
         status = LibraryStartupStatus.READY,
         libraryId = libraryId,
-        displayName = displayName,
+        displayName = fileSystem.displayName(treeUri),
+        displayPath = fileSystem.displayPath(treeUri),
     )
 
     private fun failureStatus(throwable: Throwable): LibraryStartupStatus =

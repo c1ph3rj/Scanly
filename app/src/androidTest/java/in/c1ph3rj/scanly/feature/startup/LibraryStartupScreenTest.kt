@@ -29,7 +29,7 @@ class LibraryStartupScreenTest {
         }
 
         composeRule.onNodeWithText("Reconnect your Scanly library").assertIsDisplayed()
-        composeRule.onNodeWithText("Select folder").assertIsDisplayed()
+        composeRule.onNodeWithText("Select library folder").assertIsDisplayed()
     }
 }
 

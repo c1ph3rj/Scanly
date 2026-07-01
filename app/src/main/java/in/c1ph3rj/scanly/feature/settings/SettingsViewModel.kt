@@ -6,6 +6,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import `in`.c1ph3rj.scanly.domain.model.AppStorageUsage
 import `in`.c1ph3rj.scanly.domain.model.SettingsContent
 import `in`.c1ph3rj.scanly.domain.model.ThemeMode
+import `in`.c1ph3rj.scanly.domain.model.LibraryStartupStatus
 import `in`.c1ph3rj.scanly.domain.usecase.ClearAllAppDataUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.GetAppStorageUsageUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.LoadSettingsContentUseCase
@@ -25,6 +26,12 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+enum class LibraryMaintenanceAction {
+    REFRESH,
+    CLEAR_CACHE,
+    CONNECT,
+}
+
 data class SettingsUiState(
     val themeMode: ThemeMode = ThemeMode.SYSTEM,
     val content: SettingsContent? = null,
@@ -32,8 +39,10 @@ data class SettingsUiState(
     val storageUsage: AppStorageUsage? = null,
     val isLoadingStorage: Boolean = true,
     val isClearingData: Boolean = false,
-    val isMaintainingLibrary: Boolean = false,
+    val libraryMaintenanceAction: LibraryMaintenanceAction? = null,
+    val libraryAccessStatus: LibraryStartupStatus = LibraryStartupStatus.READY,
     val libraryDisplayName: String? = null,
+    val libraryDisplayPath: String? = null,
 )
 
 sealed interface SettingsEvent {
@@ -68,7 +77,13 @@ class SettingsViewModel @Inject constructor(
         }
         viewModelScope.launch {
             observeLibraryAccessUseCase().collectLatest { access ->
-                _uiState.update { current -> current.copy(libraryDisplayName = access.displayName) }
+                _uiState.update { current ->
+                    current.copy(
+                        libraryDisplayName = access.displayName,
+                        libraryDisplayPath = access.displayPath,
+                        libraryAccessStatus = access.status,
+                    )
+                }
             }
         }
         refresh()
@@ -119,13 +134,15 @@ class SettingsViewModel @Inject constructor(
     }
 
     fun clearTemporaryCache() = runMaintenance(
+        action = LibraryMaintenanceAction.CLEAR_CACHE,
         successMessage = "Temporary files cleared.",
-        action = { clearTemporaryCacheUseCase() },
+        maintenanceAction = { clearTemporaryCacheUseCase() },
     )
 
     fun rebuildLibraryIndex() = runMaintenance(
-        successMessage = "Library index rebuilt.",
-        action = { rebuildLibraryIndexUseCase() },
+        action = LibraryMaintenanceAction.REFRESH,
+        successMessage = "Library refreshed.",
+        maintenanceAction = { rebuildLibraryIndexUseCase() },
     )
 
     fun requestLibraryFolder() {
@@ -133,18 +150,20 @@ class SettingsViewModel @Inject constructor(
     }
 
     fun connectLibrary(treeUri: String) = runMaintenance(
+        action = LibraryMaintenanceAction.CONNECT,
         successMessage = "Scanly library connected.",
-        action = { connectLibraryUseCase(treeUri) },
+        maintenanceAction = { connectLibraryUseCase(treeUri) },
     )
 
     private fun runMaintenance(
+        action: LibraryMaintenanceAction,
         successMessage: String,
-        action: suspend () -> `in`.c1ph3rj.scanly.core.common.ScanlyResult<Unit>,
+        maintenanceAction: suspend () -> `in`.c1ph3rj.scanly.core.common.ScanlyResult<Unit>,
     ) {
-        if (_uiState.value.isMaintainingLibrary) return
+        if (_uiState.value.libraryMaintenanceAction != null) return
         viewModelScope.launch {
-            _uiState.update { it.copy(isMaintainingLibrary = true) }
-            when (val result = action()) {
+            _uiState.update { it.copy(libraryMaintenanceAction = action) }
+            when (val result = maintenanceAction()) {
                 is `in`.c1ph3rj.scanly.core.common.ScanlyResult.Success -> {
                     _events.emit(SettingsEvent.ShowMessage(successMessage))
                     loadStorageUsage()
@@ -152,7 +171,7 @@ class SettingsViewModel @Inject constructor(
                 is `in`.c1ph3rj.scanly.core.common.ScanlyResult.Failure ->
                     _events.emit(SettingsEvent.ShowMessage(result.error.message))
             }
-            _uiState.update { it.copy(isMaintainingLibrary = false) }
+            _uiState.update { it.copy(libraryMaintenanceAction = null) }
         }
     }
 
