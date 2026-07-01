@@ -16,6 +16,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 
+- **Library filters** — replaced the underline-style Library tabs with three rounded filter pills whose selected and unselected states match Scanly's Material 3 surfaces.
 - **Page preview zoom** — double-tapping a zoomed page now reliably returns it to the fitted scale without the pan gesture consuming the taps, the zoom level stays hidden at 1.0x, and the reset action uses a fit-to-screen icon.
 - **Page preview navigation** — swiping between pages now moves only the page image while the preview controls stay fixed. The page title follows the selected page, and Share page/Edit page actions now live in a three-dot menu while Reset zoom remains directly accessible.
 - **Top spacing** — fixed double status-bar inset across the app; the activity shell no longer pads the top, so each screen applies it once.

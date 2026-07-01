@@ -581,52 +581,54 @@ fun LibraryTabs(
     onTabSelected: (LibraryTab) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(modifier = modifier.fillMaxWidth()) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(48.dp),
-        ) {
-            LibraryTab.entries.forEach { tab ->
-                val selected = tab == selectedTab
-                Box(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight()
-                        .selectable(
-                            selected = selected,
-                            onClick = { onTabSelected(tab) },
-                            role = Role.Tab,
-                        ),
-                    contentAlignment = Alignment.Center,
-                ) {
+    val pillShape = MaterialTheme.shapes.extraLarge
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(48.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        LibraryTab.entries.forEach { tab ->
+            val selected = tab == selectedTab
+            Surface(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight()
+                    .clip(pillShape)
+                    .selectable(
+                        selected = selected,
+                        onClick = { onTabSelected(tab) },
+                        role = Role.Tab,
+                    ),
+                shape = pillShape,
+                color = if (selected) {
+                    MaterialTheme.colorScheme.primaryContainer
+                } else {
+                    MaterialTheme.colorScheme.surfaceContainerHigh
+                },
+                border = BorderStroke(
+                    width = 1.dp,
+                    color = if (selected) {
+                        MaterialTheme.colorScheme.primary
+                    } else {
+                        MaterialTheme.colorScheme.outlineVariant
+                    },
+                ),
+            ) {
+                Box(contentAlignment = Alignment.Center) {
                     Text(
                         text = tab.name,
                         style = MaterialTheme.typography.labelLarge,
                         color = if (selected) {
-                            MaterialTheme.colorScheme.primary
+                            MaterialTheme.colorScheme.onPrimaryContainer
                         } else {
                             MaterialTheme.colorScheme.onSurfaceVariant
                         },
                         fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium,
                     )
-                    if (selected) {
-                        Box(
-                            modifier = Modifier
-                                .align(Alignment.BottomCenter)
-                                .width(36.dp)
-                                .height(3.dp)
-                                .clip(MaterialTheme.shapes.small)
-                                .background(MaterialTheme.colorScheme.primary),
-                        )
-                    }
                 }
             }
         }
-        HorizontalDivider(
-            color = MaterialTheme.colorScheme.outlineVariant,
-            thickness = 1.dp,
-        )
     }
 }
 
