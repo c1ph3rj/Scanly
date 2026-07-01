@@ -44,7 +44,9 @@ Same flow — create a new document via scan from the Library FAB menu.
 
 1. From **document detail**, tap a page thumbnail.
 2. **Page preview** opens — swipe between pages.
-3. Tap edit to open the **page editor**.
+3. Pinch or double-tap to zoom. Double-tap again, or use the fit-to-screen action, to reset the image.
+4. The zoom level appears only while the page is enlarged.
+5. Tap edit to open the **page editor**.
 
 ### Page editor
 
