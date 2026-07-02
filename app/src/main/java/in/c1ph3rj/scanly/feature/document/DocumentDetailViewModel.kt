@@ -7,7 +7,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import `in`.c1ph3rj.scanly.core.common.ScanlyResult
 import `in`.c1ph3rj.scanly.core.ui.ImageImportSupport
 import `in`.c1ph3rj.scanly.domain.model.DocumentGroup
-import `in`.c1ph3rj.scanly.domain.model.ExportArtifact
 import `in`.c1ph3rj.scanly.domain.model.PdfExportOptions
 import `in`.c1ph3rj.scanly.domain.model.ShareArtifact
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
@@ -28,6 +27,7 @@ import `in`.c1ph3rj.scanly.domain.usecase.PrepareDocumentImageShareUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ImportImagesUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.RenameDocumentUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.SetDocumentGroupUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.SaveExportArtifactUseCase
 import android.net.Uri
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -60,7 +60,6 @@ data class DocumentDetailUiState(
 
 sealed interface DocumentDetailEvent {
     data class ShowMessage(val message: String) : DocumentDetailEvent
-    data class SaveExportedFile(val artifact: ExportArtifact) : DocumentDetailEvent
     data class ShareFiles(val artifact: ShareArtifact) : DocumentDetailEvent
     data object DocumentDeleted : DocumentDetailEvent
 }
@@ -74,6 +73,7 @@ class DocumentDetailViewModel @Inject constructor(
     private val deletePageUseCase: DeletePageUseCase,
     private val exportDocumentPdfUseCase: ExportDocumentPdfUseCase,
     private val exportDocumentImageArchiveUseCase: ExportDocumentImageArchiveUseCase,
+    private val saveExportArtifactUseCase: SaveExportArtifactUseCase,
     private val prepareDocumentPdfShareUseCase: PrepareDocumentPdfShareUseCase,
     private val prepareDocumentImageShareUseCase: PrepareDocumentImageShareUseCase,
     private val importImagesUseCase: ImportImagesUseCase,
@@ -206,9 +206,18 @@ class DocumentDetailViewModel @Inject constructor(
 
     fun exportPdf(options: PdfExportOptions) {
         runExportAction(
-            progressMessage = "Generating PDF",
-            action = { exportDocumentPdfUseCase(documentId, options) },
-            onSuccess = DocumentDetailEvent::SaveExportedFile,
+            progressMessage = "Generating and saving PDF",
+            action = {
+                when (val generated = exportDocumentPdfUseCase(documentId, options)) {
+                    is ScanlyResult.Success -> saveExportArtifactUseCase(generated.value)
+                    is ScanlyResult.Failure -> generated
+                }
+            },
+            onSuccess = { saved ->
+                DocumentDetailEvent.ShowMessage(
+                    "Saved ${saved.fileName} to ${saved.destinationLabel}",
+                )
+            },
         )
     }
 
@@ -222,9 +231,18 @@ class DocumentDetailViewModel @Inject constructor(
 
     fun exportImageArchive() {
         runExportAction(
-            progressMessage = "Preparing ZIP",
-            action = { exportDocumentImageArchiveUseCase(documentId) },
-            onSuccess = DocumentDetailEvent::SaveExportedFile,
+            progressMessage = "Preparing and saving ZIP",
+            action = {
+                when (val generated = exportDocumentImageArchiveUseCase(documentId)) {
+                    is ScanlyResult.Success -> saveExportArtifactUseCase(generated.value)
+                    is ScanlyResult.Failure -> generated
+                }
+            },
+            onSuccess = { saved ->
+                DocumentDetailEvent.ShowMessage(
+                    "Saved ${saved.fileName} to ${saved.destinationLabel}",
+                )
+            },
         )
     }
 

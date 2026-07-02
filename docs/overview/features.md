@@ -80,6 +80,9 @@ Complete inventory of Scanly features as of **v1.0.9**.
 - **About** — app version from package manager
 - **Support** — FAQs and third-party license disclosures (bundled JSON assets)
 - **Storage usage** — shows on-device bytes for documents, export cache, and database
+- **Save location** — exports default to `Downloads/Scanly`; a custom base folder can be persisted through Android's folder picker
+- **Library backup** — exact compressed `.scanly` archives are written under the base folder's `backup/` child after a free-space preflight
+- **Library restore** — validate and stage a `.scanly` archive, then Replace the current library or Merge restored copies
 - **Clear all data** — destructive wipe of library, files, export cache, and thumbnail cache (with confirmation)
 - **Check for updates** — manual check against the build's GitHub or Google Play channel
 
@@ -108,7 +111,7 @@ Reusable building blocks in `feature/components/`:
 
 ## What Scanly does not do
 
-- Cloud sync or backup
+- Cloud synchronization or automatic scheduled backup
 - OCR / text recognition
 - Batch cloud upload
 - In-app APK installation

@@ -74,6 +74,10 @@ cache/exports/group_{groupId}/       # Group exports
 
 Cache is ephemeral — safe to delete without losing library data. Included in storage usage and cleared by clear-all-data.
 
+## Save destination
+
+Save actions copy generated artifacts directly to the configured base folder. The default uses `MediaStore.Downloads` with `Download/Scanly`; a custom folder uses its persisted Storage Access Framework tree. Filename collisions receive ` (n)` suffixes. The dedicated lowercase `backup/` child is reserved for `.scanly` library archives and is never used for normal PDF/image exports.
+
 ## Share flow
 
 1. Export repository writes file to cache.

@@ -88,8 +88,14 @@ interface DocumentGroupDao {
     @Query("SELECT title FROM document_groups")
     suspend fun getAllTitles(): List<String>
 
+    @Query("SELECT * FROM document_groups ORDER BY updatedAtMillis DESC")
+    suspend fun getAll(): List<DocumentGroupEntity>
+
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insert(group: DocumentGroupEntity)
+
+    @Insert(onConflict = OnConflictStrategy.ABORT)
+    suspend fun insertAll(groups: List<DocumentGroupEntity>)
 
     @Update
     suspend fun update(group: DocumentGroupEntity)

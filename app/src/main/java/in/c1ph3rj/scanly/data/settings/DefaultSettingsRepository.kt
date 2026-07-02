@@ -2,6 +2,8 @@ package `in`.c1ph3rj.scanly.data.settings
 
 import android.content.Context
 import android.os.Build
+import android.content.Intent
+import android.net.Uri
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -14,9 +16,11 @@ import `in`.c1ph3rj.scanly.domain.model.LicenseInfo
 import `in`.c1ph3rj.scanly.domain.model.SettingsContent
 import `in`.c1ph3rj.scanly.domain.model.SettingsFaq
 import `in`.c1ph3rj.scanly.domain.model.ThemeMode
+import `in`.c1ph3rj.scanly.domain.model.ExportDestination
 import `in`.c1ph3rj.scanly.domain.repository.SettingsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import javax.inject.Inject
@@ -26,9 +30,27 @@ private val Context.settingsDataStore by preferencesDataStore(name = "scanly_set
 
 @Singleton
 class DefaultSettingsRepository @Inject constructor(
-    @ApplicationContext private val context: Context,
+    @param:ApplicationContext private val context: Context,
     private val dispatchers: ScanlyDispatchers,
 ) : SettingsRepository {
+
+    override fun observeExportDestination(): Flow<ExportDestination> =
+        context.settingsDataStore.data.map { preferences ->
+            val uri = preferences[exportTreeUriKey]
+            val label = preferences[exportTreeLabelKey]
+            if (uri.isNullOrBlank() || label.isNullOrBlank()) {
+                ExportDestination.DefaultDownloadsScanly
+            } else {
+                ExportDestination.CustomTree(uriString = uri, displayName = label)
+            }
+        }
+
+    override suspend fun setExportDestination(
+        destination: ExportDestination.CustomTree,
+    ): ScanlyResult<Unit> = updateExportDestination(destination)
+
+    override suspend fun resetExportDestination(): ScanlyResult<Unit> =
+        updateExportDestination(null)
 
     override fun observeThemeMode(): Flow<ThemeMode> =
         context.settingsDataStore.data.map { preferences ->
@@ -150,9 +172,46 @@ class DefaultSettingsRepository @Inject constructor(
         return "v${packageInfo.versionName ?: "1.0"}"
     }
 
+    private suspend fun updateExportDestination(
+        destination: ExportDestination.CustomTree?,
+    ): ScanlyResult<Unit> = withContext(dispatchers.io) {
+        runCatching {
+            val previousUri = context.settingsDataStore.data.first()[exportTreeUriKey]
+            context.settingsDataStore.edit { preferences ->
+                if (destination == null) {
+                    preferences.remove(exportTreeUriKey)
+                    preferences.remove(exportTreeLabelKey)
+                } else {
+                    preferences[exportTreeUriKey] = destination.uriString
+                    preferences[exportTreeLabelKey] = destination.displayName
+                }
+            }
+            if (!previousUri.isNullOrBlank() && previousUri != destination?.uriString) {
+                runCatching {
+                    context.contentResolver.releasePersistableUriPermission(
+                        Uri.parse(previousUri),
+                        Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION,
+                    )
+                }
+            }
+        }.fold(
+            onSuccess = { ScanlyResult.Success(Unit) },
+            onFailure = { throwable ->
+                ScanlyResult.Failure(
+                    ScanlyError(
+                        message = throwable.message ?: "Could not update the save location.",
+                        cause = throwable,
+                    ),
+                )
+            },
+        )
+    }
+
     private companion object {
         val themeModeKey = stringPreferencesKey("theme_mode")
         val onboardingCompletedKey = booleanPreferencesKey("onboarding_completed")
+        val exportTreeUriKey = stringPreferencesKey("export_tree_uri")
+        val exportTreeLabelKey = stringPreferencesKey("export_tree_label")
         const val faqsAssetPath = "settings/faqs.json"
         const val licensesAssetPath = "settings/licenses.json"
         const val developerWebsite = ""

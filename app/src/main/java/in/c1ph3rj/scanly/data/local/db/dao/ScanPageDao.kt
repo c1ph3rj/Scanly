@@ -25,8 +25,14 @@ interface ScanPageDao {
     @Query("SELECT COUNT(*) FROM scan_pages WHERE documentId = :documentId")
     suspend fun countPages(documentId: String): Int
 
+    @Query("SELECT * FROM scan_pages ORDER BY documentId, pageIndex")
+    suspend fun getAll(): List<ScanPageEntity>
+
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insert(page: ScanPageEntity)
+
+    @Insert(onConflict = OnConflictStrategy.ABORT)
+    suspend fun insertAll(pages: List<ScanPageEntity>)
 
     @Update
     suspend fun update(page: ScanPageEntity)

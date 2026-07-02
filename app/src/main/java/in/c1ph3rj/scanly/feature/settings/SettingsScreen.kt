@@ -87,6 +87,7 @@ fun SettingsRoute(
     onOpenLegalDocument: (LegalDocumentType) -> Unit,
     onOpenFaqs: () -> Unit,
     onOpenLicenses: () -> Unit,
+    onOpenStorage: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -110,8 +111,8 @@ fun SettingsRoute(
         onOpenLegalDocument = onOpenLegalDocument,
         onOpenFaqs = onOpenFaqs,
         onOpenLicenses = onOpenLicenses,
+        onOpenStorage = onOpenStorage,
         onCheckForUpdates = onCheckForUpdates,
-        onClearAllData = viewModel::clearAllData,
     )
 }
 
@@ -125,11 +126,10 @@ fun SettingsScreen(
     onOpenLegalDocument: (LegalDocumentType) -> Unit,
     onOpenFaqs: () -> Unit,
     onOpenLicenses: () -> Unit,
+    onOpenStorage: () -> Unit,
     onCheckForUpdates: () -> Unit,
-    onClearAllData: () -> Unit,
 ) {
     val content = uiState.content
-    var clearDataDialogVisible by remember { mutableStateOf(false) }
     val windowSizeInfo = rememberWindowSizeInfo()
 
     Scaffold(
@@ -186,17 +186,17 @@ fun SettingsScreen(
 
                 item(key = "storage") {
                     SettingsGroup(title = "Storage") {
-                        StorageUsageRow(
-                            storageUsage = uiState.storageUsage,
-                            isLoading = uiState.isLoadingStorage,
-                        )
-                        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-                        SettingsDestructiveRow(
-                            icon = Icons.Filled.DeleteOutline,
-                            title = "Clear all data",
-                            subtitle = "Delete all documents, folders, and pages",
-                            enabled = !uiState.isClearingData,
-                            onClick = { clearDataDialogVisible = true },
+                        SettingsNavigationRow(
+                            icon = Icons.Filled.Storage,
+                            title = "Storage & backup",
+                            subtitle = buildString {
+                                uiState.storageUsage?.let {
+                                    append(StorageFormatter.formatBytes(it.totalBytes))
+                                    append(" • ")
+                                }
+                                append(uiState.exportDestination.exportLabel)
+                            },
+                            onClick = onOpenStorage,
                         )
                     }
                 }
@@ -271,26 +271,6 @@ fun SettingsScreen(
         }
     }
 
-    if (clearDataDialogVisible) {
-        ScanlyConfirmDialog(
-            title = "Clear all data?",
-            text = "This permanently deletes all documents, folders, and pages from Scanly. " +
-                "This cannot be undone. Your theme and camera settings will be kept.",
-            confirmLabel = "Delete",
-            onDismiss = {
-                if (!uiState.isClearingData) {
-                    clearDataDialogVisible = false
-                }
-            },
-            onConfirm = {
-                clearDataDialogVisible = false
-                onClearAllData()
-            },
-            confirmDestructive = true,
-            dismissEnabled = !uiState.isClearingData,
-            confirmEnabled = !uiState.isClearingData,
-        )
-    }
 }
 
 @Composable

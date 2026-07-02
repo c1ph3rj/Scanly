@@ -22,6 +22,7 @@ import `in`.c1ph3rj.scanly.domain.usecase.PrepareGroupPdfShareUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.PrepareGroupZippedPdfsShareUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.RenameGroupUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.SetDocumentGroupUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.SaveExportArtifactUseCase
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -49,8 +50,6 @@ data class ExportProgress(
 )
 
 sealed interface GroupDetailEvent {
-    data class ExportReady(val filePath: String, val fileName: String, val mimeType: String) :
-        GroupDetailEvent
     data class ShareFiles(val artifact: ShareArtifact) : GroupDetailEvent
     data class ShowMessage(val message: String) : GroupDetailEvent
     data class OpenDocument(val documentId: String) : GroupDetailEvent
@@ -69,6 +68,7 @@ class GroupDetailViewModel @Inject constructor(
     private val createDocumentUseCase: CreateDocumentUseCase,
     private val exportGroupPdfUseCase: ExportGroupPdfUseCase,
     private val exportGroupZippedPdfsUseCase: ExportGroupZippedPdfsUseCase,
+    private val saveExportArtifactUseCase: SaveExportArtifactUseCase,
     private val prepareGroupPdfShareUseCase: PrepareGroupPdfShareUseCase,
     private val prepareGroupZippedPdfsShareUseCase: PrepareGroupZippedPdfsShareUseCase,
     private val suggestDocumentTitleUseCase: SuggestDocumentTitleUseCase,
@@ -153,13 +153,16 @@ class GroupDetailViewModel @Inject constructor(
     fun saveMergedPdf(options: PdfExportOptions = PdfExportOptions()) {
         runGroupExport(
             progressLabel = { current, total -> "Generating page $current of $total…" },
-            action = { onProgress -> exportGroupPdfUseCase(groupId, options, onProgress) },
-            onSuccess = { artifact ->
+            action = { onProgress ->
+                when (val generated = exportGroupPdfUseCase(groupId, options, onProgress)) {
+                    is ScanlyResult.Success -> saveExportArtifactUseCase(generated.value)
+                    is ScanlyResult.Failure -> generated
+                }
+            },
+            onSuccess = { saved ->
                 _events.emit(
-                    GroupDetailEvent.ExportReady(
-                        filePath = artifact.filePath,
-                        fileName = artifact.fileName,
-                        mimeType = artifact.mimeType,
+                    GroupDetailEvent.ShowMessage(
+                        "Saved ${saved.fileName} to ${saved.destinationLabel}",
                     ),
                 )
             },
@@ -179,13 +182,16 @@ class GroupDetailViewModel @Inject constructor(
     fun saveZippedPdfs(options: PdfExportOptions = PdfExportOptions()) {
         runGroupExport(
             progressLabel = { current, total -> "Generating PDF $current of $total…" },
-            action = { onProgress -> exportGroupZippedPdfsUseCase(groupId, options, onProgress) },
-            onSuccess = { artifact ->
+            action = { onProgress ->
+                when (val generated = exportGroupZippedPdfsUseCase(groupId, options, onProgress)) {
+                    is ScanlyResult.Success -> saveExportArtifactUseCase(generated.value)
+                    is ScanlyResult.Failure -> generated
+                }
+            },
+            onSuccess = { saved ->
                 _events.emit(
-                    GroupDetailEvent.ExportReady(
-                        filePath = artifact.filePath,
-                        fileName = artifact.fileName,
-                        mimeType = artifact.mimeType,
+                    GroupDetailEvent.ShowMessage(
+                        "Saved ${saved.fileName} to ${saved.destinationLabel}",
                     ),
                 )
             },

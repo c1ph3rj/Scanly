@@ -69,6 +69,10 @@ object SettingsLicensesDestination {
     const val route = "settings/licenses"
 }
 
+object SettingsStorageDestination {
+    const val route = "settings/storage"
+}
+
 object GroupDetailDestination {
     private const val base = "group"
     const val groupIdArgument = "groupId"

@@ -160,45 +160,6 @@ fun DocumentDetailRoute(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
-    val scope = rememberCoroutineScope()
-    var pendingPdfExport by remember { mutableStateOf<ExportArtifact?>(null) }
-    var pendingArchiveExport by remember { mutableStateOf<ExportArtifact?>(null) }
-
-    val savePdfLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.CreateDocument(PdfMimeType),
-    ) { uri ->
-        val artifact = pendingPdfExport
-        pendingPdfExport = null
-        if (uri == null || artifact == null) {
-            return@rememberLauncherForActivityResult
-        }
-        scope.launch {
-            saveExportedFile(
-                context = context,
-                artifact = artifact,
-                destinationUri = uri,
-                snackbarHostState = snackbarHostState,
-            )
-        }
-    }
-
-    val saveArchiveLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.CreateDocument(ZipMimeType),
-    ) { uri ->
-        val artifact = pendingArchiveExport
-        pendingArchiveExport = null
-        if (uri == null || artifact == null) {
-            return@rememberLauncherForActivityResult
-        }
-        scope.launch {
-            saveExportedFile(
-                context = context,
-                artifact = artifact,
-                destinationUri = uri,
-                snackbarHostState = snackbarHostState,
-            )
-        }
-    }
 
     val importImagesLauncher = rememberLauncherForActivityResult(
         contract = ImageImportSupport.pickMultipleVisualMediaContract(),
@@ -212,22 +173,6 @@ fun DocumentDetailRoute(
         viewModel.events.collectLatest { event ->
             when (event) {
                 is DocumentDetailEvent.ShowMessage -> snackbarHostState.showSnackbar(event.message)
-                is DocumentDetailEvent.SaveExportedFile -> {
-                    when (event.artifact.mimeType) {
-                        PdfMimeType -> {
-                            pendingPdfExport = event.artifact
-                            savePdfLauncher.launch(event.artifact.fileName)
-                        }
-
-                        ZipMimeType -> {
-                            pendingArchiveExport = event.artifact
-                            saveArchiveLauncher.launch(event.artifact.fileName)
-                        }
-
-                        else -> snackbarHostState.showSnackbar("Unsupported export format.")
-                    }
-                }
-
                 is DocumentDetailEvent.ShareFiles -> {
                     sharePreparedFiles(
                         context = context,
@@ -2095,29 +2040,6 @@ private fun PageProcessingState.toContentColor() = when (this) {
     PageProcessingState.NEEDS_REVIEW -> MaterialTheme.colorScheme.onTertiaryContainer
 }
 
-private suspend fun saveExportedFile(
-    context: Context,
-    artifact: ExportArtifact,
-    destinationUri: Uri,
-    snackbarHostState: SnackbarHostState,
-) {
-    val result = runCatching {
-        withContext(Dispatchers.IO) {
-            val sourceFile = File(artifact.filePath)
-            context.contentResolver.openOutputStream(destinationUri)?.use { outputStream ->
-                sourceFile.inputStream().use { inputStream ->
-                    inputStream.copyTo(outputStream)
-                }
-            } ?: error("Could not open the selected destination.")
-        }
-    }
-    if (result.isSuccess) {
-        snackbarHostState.showSnackbar("Saved ${artifact.fileName}")
-    } else {
-        snackbarHostState.showSnackbar(result.exceptionOrNull()?.message ?: "Could not save export.")
-    }
-}
-
 private fun sharePreparedFiles(
     context: Context,
     artifact: ShareArtifact,
@@ -2146,9 +2068,6 @@ private fun Context.exportUriFor(path: String): Uri = FileProvider.getUriForFile
     "$packageName.fileprovider",
     File(path),
 )
-
-private const val PdfMimeType = "application/pdf"
-private const val ZipMimeType = "application/zip"
 
 @Composable
 private fun PreviewActionButton(

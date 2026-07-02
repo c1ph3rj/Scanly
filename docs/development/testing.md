@@ -17,7 +17,7 @@ Test coverage and how to run tests in Scanly **v1.0.9**.
 
 ## Unit tests (`app/src/test/`)
 
-**23 test files** covering core logic:
+**31 test files** covering core logic:
 
 | Area | Test files |
 | --- | --- |
@@ -28,6 +28,7 @@ Test coverage and how to run tests in Scanly **v1.0.9**.
 | Formatting | `StorageFormatterTest`, `DocumentPresentationFormatterTest`, `DocumentPreviewPathResolverTest` |
 | Feature logic | `LibraryUiStateTest`, `DocumentDetailSelectionResolverTest`, `PageImagePreviewSelectionResolverTest` |
 | Updates | `AppUpdateDialogCooldownTest`, `ReleaseMarkdownParserTest`, `AppVersionComparatorTest`, `GitHubAppUpdateRepositoryTest`, `PlayInAppUpdatePolicyTest` |
+| Backup/storage | `LibraryArchivePolicyTest`, `ExportDestinationTest`, `StorageFormatterTest` |
 | Scaffold | `ExampleUnitTest` |
 
 ### Placement convention

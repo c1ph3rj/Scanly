@@ -40,6 +40,19 @@ cache/exports/group_{groupId}/  # Group merged PDF or zipped PDFs
 
 Export cache can be cleared without losing library data. It is included in storage usage reporting and wiped by clear-all-data.
 
+## User-visible exports and backups
+
+Generated cache artifacts are copied to shared storage when the user chooses Save:
+
+```text
+Downloads/Scanly/                 # Default direct-save destination
+└── backup/                       # Reserved for .scanly backups
+```
+
+A Storage Access Framework tree selected in Settings replaces `Downloads/Scanly` as the base. Normal exports use the base; Scanly creates and manages its lowercase `backup` child. Persisted access is required, existing names receive numeric suffixes, and partial writes are removed after failure or cancellation.
+
+`.scanly` is a ZIP container with a versioned manifest, entity metadata, exact raw/processed/thumbnail assets, sizes, and SHA-256 checksums. Settings, export cache, SQLite files, and previous backups are excluded.
+
 ## Thumbnail cache
 
 `ThumbnailCache` (`core/ui/`) maintains an in-memory cache of decoded thumbnails for fast list scrolling. Invalidated when:
@@ -72,6 +85,7 @@ Processed JPEG output (from `PageImageProcessor`):
 | Documents | All files under `files/documents/` |
 | Export cache | All files under `cache/exports/` |
 | Database | `scanly.db` file size |
+| Archive workspace | Restore staging and recovery journals |
 
 Displayed in Settings via `StorageFormatter`.
 
@@ -83,6 +97,7 @@ Displayed in Settings via `StorageFormatter`.
 2. Delete every directory under `files/documents/`
 3. Delete `cache/exports/`
 4. `thumbnailCache.clearAll()`
+5. Delete backup/restore workspace files; completed external `.scanly` backups are kept
 
 **Destructive and irreversible.** Requires user confirmation in Settings.
 

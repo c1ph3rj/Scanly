@@ -44,7 +44,7 @@ Kotlin · Compose · Material 3 · Hilt · Navigation Compose · CameraX · Room
 
 ## Tests
 
-24 unit-test files · 2 instrumented-test files · gaps in persistence integration and export E2E
+31 unit-test files · 2 instrumented-test files · gaps in persistence integration and archive/export E2E
 
 ## Principles
 

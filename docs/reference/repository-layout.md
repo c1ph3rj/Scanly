@@ -39,7 +39,7 @@ app/
     ├── debug/                         # Local debug update binding
     ├── githubRelease/                 # GitHub release update binding
     ├── playStoreRelease/              # Google Play release update binding
-    ├── test/                          # Unit tests (23 files)
+    ├── test/                          # Unit tests (31 files)
     └── androidTest/                   # Instrumented tests (2 files)
 ```
 
@@ -54,6 +54,7 @@ app/
 | `data/page/DefaultPageRepository.kt` | Capture finalize |
 | `data/export/DefaultDocumentExportRepository.kt` | Export |
 | `data/storage/DocumentStorageManager.kt` | File I/O |
+| `data/archive/LibraryArchiveEngine.kt` | `.scanly` backup, validation, and restore |
 | `core/ml/LiteRtDocumentCornerDetector.kt` | ML inference |
 
 ## `docs/` documentation map

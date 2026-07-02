@@ -10,6 +10,7 @@ import `in`.c1ph3rj.scanly.data.local.db.dao.DocumentDao
 import `in`.c1ph3rj.scanly.data.local.db.dao.DocumentGroupDao
 import `in`.c1ph3rj.scanly.data.local.db.entity.DocumentGroupEntity
 import `in`.c1ph3rj.scanly.data.local.db.entity.DocumentGroupStats
+import `in`.c1ph3rj.scanly.data.archive.LibraryOperationCoordinator
 import `in`.c1ph3rj.scanly.domain.model.DocumentGroup
 import `in`.c1ph3rj.scanly.domain.model.GroupTitleFormat
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
@@ -27,6 +28,7 @@ class DefaultGroupRepository @Inject constructor(
     private val documentGroupDao: DocumentGroupDao,
     private val documentDao: DocumentDao,
     private val dispatchers: ScanlyDispatchers,
+    private val operationCoordinator: LibraryOperationCoordinator,
 ) : GroupRepository {
 
     override fun observeGroupsWithStats(): Flow<List<DocumentGroup>> =
@@ -62,6 +64,7 @@ class DefaultGroupRepository @Inject constructor(
 
     override suspend fun createGroup(title: String): ScanlyResult<String> =
         withContext(dispatchers.io) {
+            operationCoordinator.withMutation {
             val normalizedTitle = DocumentPresentationFormatter.resolveUniqueGroupTitle(
                 baseTitle = DocumentPresentationFormatter.normalizeGroupTitle(title),
                 existingTitles = documentGroupDao.getAllTitles(),
@@ -88,10 +91,12 @@ class DefaultGroupRepository @Inject constructor(
                     )
                 },
             )
+            }
         }
 
     override suspend fun renameGroup(groupId: String, title: String): ScanlyResult<Unit> =
         withContext(dispatchers.io) {
+            operationCoordinator.withMutation {
             val normalizedTitle = DocumentPresentationFormatter.normalizeGroupTitle(title)
             runCatching {
                 val existing = documentGroupDao.getGroup(groupId) ?: error("Group not found.")
@@ -111,10 +116,12 @@ class DefaultGroupRepository @Inject constructor(
                     )
                 },
             )
+            }
         }
 
     override suspend fun deleteGroup(groupId: String): ScanlyResult<Unit> =
         withContext(dispatchers.io) {
+            operationCoordinator.withMutation {
             runCatching {
                 // FK ON DELETE SET NULL will null out groupId on all documents automatically
                 database.withTransaction {
@@ -128,10 +135,12 @@ class DefaultGroupRepository @Inject constructor(
                     )
                 },
             )
+            }
         }
 
     override suspend fun setDocumentGroup(documentId: String, groupId: String?): ScanlyResult<Unit> =
         withContext(dispatchers.io) {
+            operationCoordinator.withMutation {
             runCatching {
                 val doc = documentDao.getDocument(documentId) ?: error("Document not found.")
                 database.withTransaction {
@@ -153,6 +162,7 @@ class DefaultGroupRepository @Inject constructor(
                     )
                 },
             )
+            }
         }
 
     private fun DocumentGroupStats.toDomain(): DocumentGroup = DocumentGroup(

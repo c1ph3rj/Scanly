@@ -22,6 +22,8 @@ It is designed for a practical, local-only scanning workflow:
 - import images from the gallery to create or extend documents
 - page crop, rotate, and filter editing
 - Advanced PDF export/share with password protection, page numbering, auto orientation, print sizes, margins, and group-level export
+- direct export saving to `Downloads/Scanly` or a user-selected folder
+- compressed `.scanly` library backup and Replace/Merge restore under the dedicated `backup/` folder
 - settings with theme mode, storage usage, clear-all-data, FAQs, and license info
 
 **Current version:** `1.0.9` (version code `9`) — see [VERSION.md](VERSION.md) and [CHANGELOG.md](CHANGELOG.md).
@@ -67,7 +69,7 @@ The repository is organized as a production-style single-module app:
 - `:app` is the only Android module
 - entry point: `app/src/main/java/in/c1ph3rj/scanly/MainActivity.kt`
 - app wiring: `ScanlyApplication`, navigation, Hilt modules, feature screens, and domain/data layers live under `app/src/main/java/in/c1ph3rj/scanly/`
-- local data: Room, DataStore, and app-private file storage
+- local data: Room, DataStore, app-private file storage, and portable `.scanly` archives
 - camera and processing stack: CameraX, LiteRT, and OpenCV-based page processing
 
 ## Build and Run

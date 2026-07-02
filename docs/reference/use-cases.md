@@ -1,6 +1,6 @@
 # Use Cases
 
-All 39 use case classes in `domain/usecase/`, grouped by area.
+All 51 use case classes in `domain/usecase/`, grouped by area.
 
 ViewModels call use cases. Use cases call repository interfaces.
 
@@ -15,6 +15,7 @@ ViewModels call use cases. Use cases call repository interfaces.
 | `ObserveDocumentsUseCase` | Flow of all documents |
 | `ObserveRecentDocumentsUseCase` | Recent documents (limit 8) |
 | `ObserveUngroupedDocumentsUseCase` | Documents without a group |
+| `SuggestDocumentTitleUseCase` | Generate a duplicate-safe date-based document title |
 
 ## Page lifecycle
 
@@ -42,6 +43,7 @@ ViewModels call use cases. Use cases call repository interfaces.
 | `ObserveGroupUseCase` | Flow of single group |
 | `ObserveRecentGroupsUseCase` | Recent groups (limit 6) |
 | `ObserveGroupDocumentsUseCase` | Documents in a group |
+| `SuggestGroupTitleUseCase` | Generate a duplicate-safe date-based group title |
 
 ## Export
 
@@ -55,6 +57,17 @@ ViewModels call use cases. Use cases call repository interfaces.
 | `ExportGroupZippedPdfsUseCase` | Generate zipped PDF set for group |
 | `PrepareGroupPdfShareUseCase` | Prepare merged PDF share |
 | `PrepareGroupZippedPdfsShareUseCase` | Prepare zipped PDFs share |
+| `SaveExportArtifactUseCase` | Copy an export into the configured shared-storage base folder |
+
+## Library backup and restore
+
+| Use case | Purpose |
+| --- | --- |
+| `EstimateLibraryBackupUseCase` | Calculate source, required, and available destination bytes |
+| `StartLibraryBackupUseCase` | Enqueue a unique background `.scanly` backup |
+| `StartLibraryRestoreUseCase` | Enqueue validated Replace or Merge restore |
+| `ObserveLibraryArchiveWorkUseCase` | Observe WorkManager phase and progress |
+| `CancelLibraryArchiveWorkUseCase` | Cancel the active backup or restore |
 
 ## Settings and app data
 
@@ -62,6 +75,9 @@ ViewModels call use cases. Use cases call repository interfaces.
 | --- | --- |
 | `ObserveThemeModeUseCase` | Flow of current theme mode |
 | `SetThemeModeUseCase` | Persist theme mode |
+| `ObserveExportDestinationUseCase` | Flow of the configured export base folder |
+| `SetExportDestinationUseCase` | Persist a custom SAF base folder |
+| `ResetExportDestinationUseCase` | Return to `Downloads/Scanly` |
 | `LoadSettingsContentUseCase` | Load FAQs and licenses |
 | `ObserveOnboardingCompletedUseCase` | Flow of onboarding flag |
 | `CompleteOnboardingUseCase` | Mark onboarding done |

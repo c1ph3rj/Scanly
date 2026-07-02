@@ -8,6 +8,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- **Configurable export storage** — Save actions now write directly to `Downloads/Scanly` by default, with a persisted custom base-folder option in Settings. Existing files are never overwritten.
+- **Library backup and restore** — exact, compressed `.scanly` snapshots are stored under the destination's lowercase `backup` child. Backups are gated by a conservative free-space check and run through foreground WorkManager jobs. Restore validates and stages archives before offering Replace or Merge-as-copies behavior.
+- **Storage & backup screen** — Settings now shows storage breakdowns, export and backup paths, required and available backup space, live operation progress, cancellation, and destructive data controls.
 - **Suggested document names** — new scan and new document dialogs now include a **Suggest name** button with date-based formats. Suggestions avoid duplicate titles; manual creates also auto-suffix when a title is already taken.
 - **Suggested folder names** — new folder dialogs and inline folder creation when moving documents use the same **Suggest name** flow, with folder-specific formats and duplicate-safe naming.
 - **Dual release channels** — signed builds now expose `githubRelease` and `playStoreRelease` variants. The GitHub build checks GitHub Releases and opens the release page, while the Play Store build uses Google Play in-app updates.
@@ -16,6 +19,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 
+- **Export save flow** — document and group saves no longer open a file creator for every export; sharing remains unchanged.
 - **Library filters** — replaced the underline-style Library tabs with three rounded filter pills whose selected and unselected states match Scanly's Material 3 surfaces.
 - **Page preview zoom** — double-tapping a zoomed page now reliably returns it to the fitted scale without the pan gesture consuming the taps, the zoom level stays hidden at 1.0x, and the reset action uses a fit-to-screen icon.
 - **Page preview navigation** — swiping between pages now moves only the page image while the preview controls stay fixed. The page title follows the selected page, and Share page/Edit page actions now live in a three-dot menu while Reset zoom remains directly accessible.

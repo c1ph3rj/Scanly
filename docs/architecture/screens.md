@@ -15,6 +15,7 @@ Every feature screen in Scanly **v1.0.9** and its responsibilities.
 | Page preview | `PageImagePreviewScreen` | `PageImagePreviewViewModel` | `preview/page/{pageId}` | Image-only paging with fixed chrome, zoom, share, and edit actions |
 | Page editor | `PageEditorScreen` | `PageEditorViewModel` | `editor/page/{pageId}` | Crop, rotate, filters, retake |
 | Settings | `SettingsScreen` | `SettingsViewModel` | `settings` | Theme, storage, clear data, FAQs |
+| Storage & backup | `StorageBackupScreen` | `SettingsViewModel` | `settings/storage` | Destination, usage, backup/restore progress, clear data |
 | Legal | `LegalDocumentScreen` | — | `legal/{documentType}` | Privacy / licenses content |
 | App update | `AppUpdateDialog` | `AppUpdateViewModel` | (overlay) | Build-selected GitHub or Google Play update check, cooldown |
 | Placeholder | `FeaturePlaceholderScreen` | — | `camera`, `review`, `editor` | Legacy stubs — do not extend |
@@ -49,6 +50,7 @@ Hosted in `MainActivity`, not tied to a single screen:
 - `RenameDocumentUseCase`, `DeletePageUseCase`, `MovePageUseCase`
 - `SetDocumentGroupUseCase`, `ImportImagesUseCase`
 - `ExportDocumentPdfUseCase`, `ExportDocumentImageArchiveUseCase`
+- `SaveExportArtifactUseCase`
 - `PrepareDocumentPdfShareUseCase`, `PrepareDocumentImageShareUseCase`
 
 ### ScanSessionViewModel
@@ -73,6 +75,8 @@ Hosted in `MainActivity`, not tied to a single screen:
 
 - `ObserveThemeModeUseCase`, `SetThemeModeUseCase`
 - `LoadSettingsContentUseCase`, `GetAppStorageUsageUseCase`
+- Export destination observe/set/reset use cases
+- Library backup estimate/start/restore/observe/cancel use cases
 - `ClearAllAppDataUseCase`
 - Triggers `AppUpdateViewModel.checkForUpdates(Manual)`
 

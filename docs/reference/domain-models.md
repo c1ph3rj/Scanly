@@ -1,6 +1,6 @@
 # Domain Models
 
-All model classes in `domain/model/` (16 files).
+All model classes in `domain/model/` (22 files).
 
 ## Document and pages
 
@@ -25,6 +25,9 @@ All model classes in `domain/model/` (16 files).
 | `PdfExportOptions` | `PdfExportOptions.kt` | Page size, orientation, margins for PDF export |
 | `ExportArtifact` | `ExportArtifact.kt` | Export result with file path and metadata |
 | `ShareArtifact` | `ShareArtifact.kt` | Share-ready artifact with URI info |
+| `SavedExport` | `SavedExport.kt` | Final shared-storage name, destination label, and URI |
+| `ExportDestination` | `ExportDestination.kt` | Default Downloads base or persisted custom SAF tree |
+| `BackupEstimate`, `ArchiveWorkState`, `RestoreMode` | `LibraryArchive.kt` | Backup gating and background archive state |
 
 ## Settings and app data
 
@@ -34,7 +37,7 @@ All model classes in `domain/model/` (16 files).
 | `SettingsContent` | `SettingsContent.kt` | Aggregated FAQs and licenses for Settings |
 | `SettingsFaq` | `SettingsFaq.kt` | Single FAQ entry |
 | `LicenseInfo` | `LicenseInfo.kt` | Third-party license entry |
-| `AppStorageUsage` | `AppStorageUsage.kt` | Byte counts: documents, export cache, database |
+| `AppStorageUsage` | `AppStorageUsage.kt` | Byte counts: documents, export cache, database, archive workspace |
 
 ## App updates
 

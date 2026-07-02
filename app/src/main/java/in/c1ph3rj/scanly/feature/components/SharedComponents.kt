@@ -403,6 +403,7 @@ fun ScanlyDetailScaffold(
     onNavigateUp: () -> Unit,
     modifier: Modifier = Modifier,
     actions: @Composable RowScope.() -> Unit = {},
+    snackbarHost: @Composable () -> Unit = {},
     content: @Composable (PaddingValues) -> Unit,
 ) {
     Scaffold(
@@ -416,6 +417,7 @@ fun ScanlyDetailScaffold(
                 actions = actions,
             )
         },
+        snackbarHost = snackbarHost,
         content = content,
     )
 }

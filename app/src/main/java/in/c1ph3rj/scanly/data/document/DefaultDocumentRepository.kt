@@ -10,6 +10,7 @@ import `in`.c1ph3rj.scanly.data.local.db.dao.DocumentDao
 import `in`.c1ph3rj.scanly.data.local.db.dao.ScanPageDao
 import `in`.c1ph3rj.scanly.data.local.db.entity.DocumentEntity
 import `in`.c1ph3rj.scanly.data.local.db.entity.ScanPageEntity
+import `in`.c1ph3rj.scanly.data.archive.LibraryOperationCoordinator
 import `in`.c1ph3rj.scanly.data.storage.DocumentStorageManager
 import `in`.c1ph3rj.scanly.domain.model.DocumentTitleFormat
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
@@ -29,6 +30,7 @@ class DefaultDocumentRepository @Inject constructor(
     private val scanPageDao: ScanPageDao,
     private val documentStorageManager: DocumentStorageManager,
     private val dispatchers: ScanlyDispatchers,
+    private val operationCoordinator: LibraryOperationCoordinator,
 ) : DocumentRepository {
 
     override fun observeDocuments(): Flow<List<ScanDocument>> =
@@ -67,6 +69,7 @@ class DefaultDocumentRepository @Inject constructor(
         groupId: String?,
     ): ScanlyResult<String> =
         withContext(dispatchers.io) {
+            operationCoordinator.withMutation {
             val normalizedTitle = DocumentPresentationFormatter.resolveUniqueTitle(
                 baseTitle = DocumentPresentationFormatter.normalizeTitle(title),
                 existingTitles = documentDao.getAllTitles(),
@@ -106,6 +109,7 @@ class DefaultDocumentRepository @Inject constructor(
                     )
                 },
             )
+            }
         }
 
     override suspend fun createImportedDocument(
@@ -121,6 +125,7 @@ class DefaultDocumentRepository @Inject constructor(
         documentId: String,
         title: String,
     ): ScanlyResult<Unit> = withContext(dispatchers.io) {
+        operationCoordinator.withMutation {
         val normalizedTitle = DocumentPresentationFormatter.normalizeTitle(title)
 
         runCatching {
@@ -152,10 +157,12 @@ class DefaultDocumentRepository @Inject constructor(
                 )
             },
         )
+        }
     }
 
     override suspend fun deleteDocument(documentId: String): ScanlyResult<Unit> =
         withContext(dispatchers.io) {
+            operationCoordinator.withMutation {
             runCatching {
                 database.withTransaction {
                     documentDao.deleteById(documentId)
@@ -172,6 +179,7 @@ class DefaultDocumentRepository @Inject constructor(
                     )
                 },
             )
+            }
         }
 
     private fun DocumentEntity.toDomain(): ScanDocument = ScanDocument(

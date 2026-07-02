@@ -70,6 +70,7 @@ import `in`.c1ph3rj.scanly.feature.settings.LegalDocumentRoute
 import `in`.c1ph3rj.scanly.feature.settings.LegalDocumentType
 import `in`.c1ph3rj.scanly.feature.settings.SettingsFaqRoute
 import `in`.c1ph3rj.scanly.feature.settings.SettingsLicensesRoute
+import `in`.c1ph3rj.scanly.feature.settings.SettingsStorageRoute
 import `in`.c1ph3rj.scanly.feature.settings.SettingsRoute
 
 private data class BottomNavItem(
@@ -395,6 +396,7 @@ private fun ScanlyNavHostContent(
                 },
                 onOpenFaqs = { navController.navigate(SettingsFaqDestination.route) },
                 onOpenLicenses = { navController.navigate(SettingsLicensesDestination.route) },
+                onOpenStorage = { navController.navigate(SettingsStorageDestination.route) },
             )
         }
         composable(
@@ -423,6 +425,21 @@ private fun ScanlyNavHostContent(
                 navController.getBackStackEntry(ScanlyDestination.Settings.route)
             }
             SettingsLicensesRoute(
+                onNavigateUp = navController::navigateUp,
+                parentEntry = parentEntry,
+            )
+        }
+        composable(
+            route = SettingsStorageDestination.route,
+            enterTransition = { detailPushEnter() },
+            exitTransition = { detailPushExit() },
+            popEnterTransition = { detailPopEnter() },
+            popExitTransition = { detailPopExit() },
+        ) {
+            val parentEntry = remember(it) {
+                navController.getBackStackEntry(ScanlyDestination.Settings.route)
+            }
+            SettingsStorageRoute(
                 onNavigateUp = navController::navigateUp,
                 parentEntry = parentEntry,
             )

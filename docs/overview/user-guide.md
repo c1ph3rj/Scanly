@@ -94,7 +94,7 @@ From **document detail**:
 
 | Action | Result |
 | --- | --- |
-| Export PDF | Generates a PDF in export cache; user can save or share |
+| Export PDF | Generates a PDF and saves it to the configured export folder |
 | Export images | ZIP archive of processed JPEGs |
 | Share PDF / images | Opens Android share sheet with FileProvider URI |
 
@@ -119,6 +119,8 @@ From **group detail**:
 
 Merged and zipped group PDFs use the same advanced PDF options. In a merged PDF, page numbering runs continuously across the group. In a ZIP, numbering restarts at 1 in each document.
 
+Saved exports go to `Downloads/Scanly` by default. Change the base folder from **Settings → Storage & backup**. Scanly creates unique filenames rather than replacing an existing export.
+
 ## Library search and sort
 
 1. Open **Library**.
@@ -134,7 +136,27 @@ Choose **System**, **Light**, or **Dark**. Applied immediately and persisted.
 
 ### Storage usage
 
-View how much space documents, export cache, and the database consume on device.
+Open **Storage & backup** to view library, export-cache, database, and archive-workspace usage.
+
+### Save location
+
+1. Open **Settings → Storage & backup**.
+2. Tap **Change folder** and grant Scanly persistent access to a base folder.
+3. Normal exports are saved in that folder; backups are kept in its lowercase `backup` child.
+4. Tap **Reset default** to return to `Downloads/Scanly` and `Downloads/Scanly/backup`.
+
+### Back up the library
+
+1. Open **Settings → Storage & backup** and wait for the size/free-space check.
+2. **Back up library** is enabled only when the destination is writable and has enough reported space.
+3. Confirm the privacy and duration warning. Scanly continues in the background and shows progress.
+4. The result is an exact `Scanly-library-*.scanly` snapshot in the `backup` folder. Compression is not encryption.
+
+### Restore a backup
+
+1. Tap **Choose backup** and select a `.scanly` file.
+2. Choose **Merge as copies** to preserve current items, or **Replace current library**.
+3. Scanly validates checksums, paths, relationships, format version, and staging space before committing changes.
 
 ### Clear all data
 
@@ -157,6 +179,7 @@ Manually checks the update channel built into the installed app. GitHub builds c
 | --- | --- |
 | Camera | Scanning documents |
 | Internet | Optional update check only |
+| Notifications | Background backup/restore progress on Android 13+; declining does not block the operation |
 
 Camera is optional at the hardware level — the app installs on devices without a camera but scanning requires one.
 

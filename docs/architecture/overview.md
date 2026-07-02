@@ -49,13 +49,14 @@ All code under `app/src/main/java/in/c1ph3rj/scanly/`:
 | `feature/` | Screen UI and ViewModels |
 | `domain/model/` | Business models |
 | `domain/repository/` | Repository contracts |
-| `domain/usecase/` | Business operations (39 classes) |
+| `domain/usecase/` | Business operations (51 classes) |
 | `domain/processing/` | `PageImageProcessor` interface |
 | `data/local/db/` | Room database, entities, DAOs |
 | `data/document/` | Document repository |
 | `data/page/` | Page repository and capture finalize |
 | `data/group/` | Group repository |
 | `data/export/` | PDF/ZIP export |
+| `data/archive/` | Versioned library backup/restore, workers, operation coordination |
 | `data/storage/` | App-private file manager |
 | `data/settings/` | DataStore and bundled assets |
 | `data/update/` | Build-selected GitHub or Google Play update checks |
@@ -93,6 +94,7 @@ Hilt modules in `di/` install into `SingletonComponent`:
 | `DatabaseModule` | `ScanlyDatabase`, DAOs, migrations |
 | `DocumentDataModule` | Document, page, group repos; storage manager |
 | `ExportModule` | `DocumentExportRepository` |
+| `ArchiveModule` | `LibraryArchiveRepository` |
 | `SettingsModule` | `SettingsRepository` |
 | `AppDataModule` | `AppDataRepository` |
 | `ProcessingModule` | `PageImageProcessor` |
@@ -129,6 +131,18 @@ PageEditorViewModel
 DocumentDetailViewModel / GroupDetailViewModel
   → Export*UseCase → DocumentExportRepository
     → Room (page paths) + PdfDocument (+ PdfBox-Android encryption when requested) → cache/exports
+  → SaveExportArtifactUseCase → configured Downloads/SAF destination
+```
+
+### Library backup and restore
+
+```text
+SettingsViewModel
+  → LibraryArchiveRepository → unique foreground WorkManager job
+    → LibraryArchiveEngine
+      → free-space preflight + mutation coordinator
+      → versioned manifest + exact files + SHA-256 → destination/backup/*.scanly
+      → validate + stage → transactional Replace or Merge with rewritten app-private paths
 ```
 
 ### Clear all data
@@ -145,6 +159,8 @@ SettingsViewModel
 | --- | --- |
 | `CAMERA` | Document capture |
 | `INTERNET` | Google Play update check, GitHub release notes |
+| `POST_NOTIFICATIONS` | Background archive progress on Android 13+ |
+| `FOREGROUND_SERVICE`, `FOREGROUND_SERVICE_DATA_SYNC` | Long-running backup and restore |
 
 Camera hardware is optional (`android:required="false"`). No `REQUEST_INSTALL_PACKAGES`.
 
