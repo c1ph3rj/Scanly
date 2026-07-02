@@ -452,6 +452,11 @@ private fun ScanlyNavHostContent(
         }
         composable(
             route = DocumentDestination.routePattern,
+            arguments = listOf(
+                navArgument(DocumentDestination.documentIdArgument) {
+                    type = NavType.StringType
+                },
+            ),
             enterTransition = { detailPushEnter() },
             exitTransition = { detailPushExit() },
             popEnterTransition = { detailPopEnter() },

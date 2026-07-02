@@ -26,3 +26,7 @@ local.properties
 /output/
 /tmp/
 /terminals/
+
+# Performance seed tooling (generated locally, not committed)
+scripts/performance-seed/.cache/
+scripts/performance-seed/.staging/

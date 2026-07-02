@@ -27,7 +27,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -48,6 +52,8 @@ import `in`.c1ph3rj.scanly.feature.startup.LibraryStartupScreen
 import `in`.c1ph3rj.scanly.feature.startup.LibraryStartupViewModel
 import `in`.c1ph3rj.scanly.domain.model.LibraryStartupStatus
 import `in`.c1ph3rj.scanly.navigation.ScanlyNavHost
+import `in`.c1ph3rj.scanly.navigation.toPersistableRoute
+import `in`.c1ph3rj.scanly.navigation.topLevelNavigationRoutes
 import `in`.c1ph3rj.scanly.ui.theme.ScanlyTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.ui.unit.dp
@@ -76,6 +82,10 @@ private fun ScanlyApp() {
     val systemDark = isSystemInDarkTheme()
     val isDarkTheme = themeMode.resolveDarkTheme(systemDark)
     val navController = rememberNavController()
+    var libraryShellReady by rememberSaveable { mutableStateOf(false) }
+    var savedDetailRoute by rememberSaveable { mutableStateOf<String?>(null) }
+    var hasRestoredNavigation by remember { mutableStateOf(false) }
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
     val context = androidx.compose.ui.platform.LocalContext.current
     val uriHandler = androidx.compose.ui.platform.LocalUriHandler.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -90,6 +100,37 @@ private fun ScanlyApp() {
         contract = ActivityResultContracts.OpenDocumentTree(),
     ) { uri ->
         uri?.let { libraryStartupViewModel.connect(it.toString()) }
+    }
+
+    LaunchedEffect(libraryState.status) {
+        if (libraryState.status == LibraryStartupStatus.READY ||
+            libraryState.status == LibraryStartupStatus.READ_ONLY
+        ) {
+            libraryShellReady = true
+        }
+    }
+
+    LaunchedEffect(navBackStackEntry) {
+        val entry = navBackStackEntry ?: return@LaunchedEffect
+        val route = entry.destination.route
+        if (route in topLevelNavigationRoutes && navController.previousBackStackEntry == null) {
+            savedDetailRoute = null
+            return@LaunchedEffect
+        }
+        entry.toPersistableRoute()?.let { savedDetailRoute = it }
+    }
+
+    LaunchedEffect(libraryState.status, savedDetailRoute) {
+        if (hasRestoredNavigation ||
+            libraryState.status != LibraryStartupStatus.READY ||
+            savedDetailRoute.isNullOrBlank()
+        ) {
+            return@LaunchedEffect
+        }
+        navController.navigate(savedDetailRoute!!) {
+            launchSingleTop = true
+        }
+        hasRestoredNavigation = true
     }
 
     LaunchedEffect(appUpdateViewModel) {
@@ -209,16 +250,37 @@ private fun ScanlyApp() {
                         )
 
                         OnboardingStatus.COMPLETE -> {
-                            if (libraryState.status == LibraryStartupStatus.READY ||
-                                libraryState.status == LibraryStartupStatus.READ_ONLY
-                            ) {
-                                ScanlyNavHost(
-                                    navController = navController,
-                                    appUpdateUiState = updateUiState,
-                                    onCheckForUpdates = {
-                                        appUpdateViewModel.checkForUpdates(AppUpdateCheckTrigger.Manual)
-                                    },
+                            val hardStartupGate = libraryState.status in setOf(
+                                LibraryStartupStatus.STORAGE_SETUP_REQUIRED,
+                                LibraryStartupStatus.RECONNECT_REQUIRED,
+                                LibraryStartupStatus.UNSUPPORTED_LIBRARY_VERSION,
+                                LibraryStartupStatus.REPAIR_REQUIRED,
+                            )
+                            val showNavShell = !hardStartupGate && (
+                                libraryShellReady ||
+                                    libraryState.status == LibraryStartupStatus.READY ||
+                                    libraryState.status == LibraryStartupStatus.READ_ONLY
                                 )
+
+                            if (showNavShell) {
+                                Box(modifier = Modifier.fillMaxSize()) {
+                                    ScanlyNavHost(
+                                        navController = navController,
+                                        appUpdateUiState = updateUiState,
+                                        onCheckForUpdates = {
+                                            appUpdateViewModel.checkForUpdates(AppUpdateCheckTrigger.Manual)
+                                        },
+                                    )
+                                    if (libraryState.status != LibraryStartupStatus.READY &&
+                                        libraryState.status != LibraryStartupStatus.READ_ONLY
+                                    ) {
+                                        LibraryStartupScreen(
+                                            state = libraryState,
+                                            onChooseFolder = { libraryFolderLauncher.launch(null) },
+                                            onRetry = libraryStartupViewModel::rebuildIndex,
+                                        )
+                                    }
+                                }
                             } else {
                                 LibraryStartupScreen(
                                     state = libraryState,

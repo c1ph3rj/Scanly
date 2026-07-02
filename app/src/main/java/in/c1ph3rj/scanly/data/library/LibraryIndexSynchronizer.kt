@@ -2,6 +2,7 @@ package `in`.c1ph3rj.scanly.data.library
 
 import android.net.Uri
 import androidx.room.withTransaction
+import `in`.c1ph3rj.scanly.core.common.ScanlyDispatchers
 import `in`.c1ph3rj.scanly.data.library.manifest.CatalogRecord
 import `in`.c1ph3rj.scanly.data.library.manifest.DocumentManifest
 import `in`.c1ph3rj.scanly.data.library.manifest.GroupManifest
@@ -19,8 +20,14 @@ import `in`.c1ph3rj.scanly.data.local.db.entity.DocumentGroupEntity
 import `in`.c1ph3rj.scanly.data.local.db.entity.LibraryStateEntity
 import `in`.c1ph3rj.scanly.data.local.db.entity.ManifestFingerprintEntity
 import `in`.c1ph3rj.scanly.data.local.db.entity.ScanPageEntity
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.sync.withPermit
 import javax.inject.Inject
 import javax.inject.Singleton
+
+private const val LIBRARY_SYNC_PARALLELISM = 12
 
 @Singleton
 class LibraryIndexSynchronizer @Inject constructor(
@@ -31,6 +38,7 @@ class LibraryIndexSynchronizer @Inject constructor(
     private val stateDao: LibraryStateDao,
     private val manifestStore: LibraryManifestStore,
     private val fileSystem: SharedLibraryFileSystem,
+    private val dispatchers: ScanlyDispatchers,
 ) {
     suspend fun synchronize(treeUri: Uri, marker: LibraryMarker, forceRebuild: Boolean = false): LibraryCatalog {
         var catalog = runCatching { manifestStore.readLatestCatalog(treeUri).value }.getOrNull()
@@ -46,26 +54,24 @@ class LibraryIndexSynchronizer @Inject constructor(
 
         val fingerprints = stateDao.getFingerprints().associateBy { "${it.recordType}:${it.recordId}" }
         val activeGroups = catalog.groups.associateBy(CatalogRecord::id)
-        val changedGroups = catalog.groups.mapNotNull { record ->
+
+        val groupRecordsToSync = catalog.groups.filter { record ->
             val cached = fingerprints["group:${record.id}"]
             if (cached?.revision == record.revision && cached.checksum != record.checksum) {
                 error("Conflicting group manifest detected for ${record.id}.")
             }
-            if (rebuild || cached?.revision != record.revision || cached.checksum != record.checksum) {
-                manifestStore.readLatestGroup(treeUri, record.id)
-                    ?: error("Missing group manifest for ${record.id}.")
-            } else null
+            rebuild || cached?.revision != record.revision || cached.checksum != record.checksum
         }
-        val changedDocuments = catalog.documents.mapNotNull { record ->
+        val changedGroups = readGroupsInParallel(treeUri, groupRecordsToSync)
+
+        val documentRecordsToSync = catalog.documents.filter { record ->
             val cached = fingerprints["document:${record.id}"]
             if (cached?.revision == record.revision && cached.checksum != record.checksum) {
                 error("Conflicting document manifest detected for ${record.id}.")
             }
-            if (rebuild || cached?.revision != record.revision || cached.checksum != record.checksum) {
-                manifestStore.readLatestDocument(treeUri, record.id)
-                    ?: error("Missing document manifest for ${record.id}.")
-            } else null
-        }.map { stored -> stored.copy(value = normalizeMissingAssets(treeUri, stored.value)) }
+            rebuild || cached?.revision != record.revision || cached.checksum != record.checksum
+        }
+        val changedDocuments = readDocumentsInParallel(treeUri, documentRecordsToSync)
 
         database.withTransaction {
             if (rebuild) database.clearAllTables()
@@ -179,18 +185,53 @@ class LibraryIndexSynchronizer @Inject constructor(
         checksum = checksum,
     )
 
+    private suspend fun readGroupsInParallel(
+        treeUri: Uri,
+        records: List<CatalogRecord>,
+    ): List<StoredManifest<GroupManifest>> = coroutineScope {
+        val semaphore = kotlinx.coroutines.sync.Semaphore(LIBRARY_SYNC_PARALLELISM)
+        records.map { record ->
+            async(dispatchers.io) {
+                semaphore.withPermit {
+                    manifestStore.readLatestGroup(treeUri, record.id)
+                        ?: error("Missing group manifest for ${record.id}.")
+                }
+            }
+        }.awaitAll()
+    }
+
+    private suspend fun readDocumentsInParallel(
+        treeUri: Uri,
+        records: List<CatalogRecord>,
+    ): List<StoredManifest<DocumentManifest>> = coroutineScope {
+        val semaphore = kotlinx.coroutines.sync.Semaphore(LIBRARY_SYNC_PARALLELISM)
+        records.map { record ->
+            async(dispatchers.io) {
+                semaphore.withPermit {
+                    val stored = manifestStore.readLatestDocument(treeUri, record.id)
+                        ?: error("Missing document manifest for ${record.id}.")
+                    stored.copy(value = normalizeMissingAssets(treeUri, stored.value))
+                }
+            }
+        }.awaitAll()
+    }
+
     private suspend fun normalizeMissingAssets(treeUri: Uri, manifest: DocumentManifest): DocumentManifest =
-        manifest.copy(
-            pages = manifest.pages.map { page ->
-                val raw = page.rawAsset?.takeIf { fileSystem.stat(treeUri, it.relativePath) != null }
-                val processed = page.processedAsset?.takeIf { fileSystem.stat(treeUri, it.relativePath) != null }
-                val thumbnail = page.thumbnailAsset?.takeIf { fileSystem.stat(treeUri, it.relativePath) != null }
-                page.copy(
-                    rawAsset = raw,
-                    processedAsset = processed,
-                    thumbnailAsset = thumbnail ?: processed ?: raw,
-                    processingState = if (raw == null && processed != null) "needs_review" else page.processingState,
-                )
-            },
-        )
+        coroutineScope {
+            manifest.copy(
+                pages = manifest.pages.map { page ->
+                    async(dispatchers.io) {
+                        val raw = page.rawAsset?.takeIf { fileSystem.stat(treeUri, it.relativePath) != null }
+                        val processed = page.processedAsset?.takeIf { fileSystem.stat(treeUri, it.relativePath) != null }
+                        val thumbnail = page.thumbnailAsset?.takeIf { fileSystem.stat(treeUri, it.relativePath) != null }
+                        page.copy(
+                            rawAsset = raw,
+                            processedAsset = processed,
+                            thumbnailAsset = thumbnail ?: processed ?: raw,
+                            processingState = if (raw == null && processed != null) "needs_review" else page.processingState,
+                        )
+                    }
+                }.awaitAll(),
+            )
+        }
 }

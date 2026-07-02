@@ -1,7 +1,13 @@
 package `in`.c1ph3rj.scanly.data.library.manifest
 
 import android.net.Uri
+import `in`.c1ph3rj.scanly.core.common.ScanlyDispatchers
+import `in`.c1ph3rj.scanly.data.library.SharedEntry
 import `in`.c1ph3rj.scanly.data.library.SharedLibraryFileSystem
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.sync.withPermit
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.security.MessageDigest
@@ -18,6 +24,7 @@ data class StoredManifest<T>(
 @Singleton
 class LibraryManifestStore @Inject constructor(
     private val fileSystem: SharedLibraryFileSystem,
+    private val dispatchers: ScanlyDispatchers,
 ) {
     private val json = Json {
         encodeDefaults = true
@@ -150,17 +157,35 @@ class LibraryManifestStore @Inject constructor(
         )
     }
 
-    suspend fun scanDocuments(treeUri: Uri): List<StoredManifest<DocumentManifest>> =
-        fileSystem.list(treeUri, DOCUMENTS_DIRECTORY)
+    suspend fun scanDocuments(treeUri: Uri): List<StoredManifest<DocumentManifest>> {
+        val entries = fileSystem.list(treeUri, DOCUMENTS_DIRECTORY)
             .filter { it.mimeType == android.provider.DocumentsContract.Document.MIME_TYPE_DIR }
             .filter { entry -> runCatching { UUID.fromString(entry.name) }.isSuccess }
-            .map { entry -> readLatestDocument(treeUri, entry.name) ?: error("Document ${entry.name} has no valid manifest.") }
+        return readEntriesInParallel(entries) { entry ->
+            readLatestDocument(treeUri, entry.name) ?: error("Document ${entry.name} has no valid manifest.")
+        }
+    }
 
-    suspend fun scanGroups(treeUri: Uri): List<StoredManifest<GroupManifest>> =
-        fileSystem.list(treeUri, GROUPS_DIRECTORY)
+    suspend fun scanGroups(treeUri: Uri): List<StoredManifest<GroupManifest>> {
+        val entries = fileSystem.list(treeUri, GROUPS_DIRECTORY)
             .filter { it.mimeType == android.provider.DocumentsContract.Document.MIME_TYPE_DIR }
             .filter { entry -> runCatching { UUID.fromString(entry.name) }.isSuccess }
-            .map { entry -> readLatestGroup(treeUri, entry.name) ?: error("Group ${entry.name} has no valid manifest.") }
+        return readEntriesInParallel(entries) { entry ->
+            readLatestGroup(treeUri, entry.name) ?: error("Group ${entry.name} has no valid manifest.")
+        }
+    }
+
+    private suspend fun <T> readEntriesInParallel(
+        entries: List<SharedEntry>,
+        reader: suspend (SharedEntry) -> T,
+    ): List<T> = coroutineScope {
+        val semaphore = kotlinx.coroutines.sync.Semaphore(MANIFEST_SCAN_PARALLELISM)
+        entries.map { entry ->
+            async(dispatchers.io) {
+                semaphore.withPermit { reader(entry) }
+            }
+        }.awaitAll()
+    }
 
     suspend fun scanTombstones(treeUri: Uri): List<TombstoneManifest> =
         fileSystem.list(treeUri, TOMBSTONES_DIRECTORY)
@@ -286,6 +311,7 @@ class LibraryManifestStore @Inject constructor(
         .joinToString("") { byte -> "%02x".format(byte) }
 
     companion object {
+        private const val MANIFEST_SCAN_PARALLELISM = 12
         const val MARKER_PATH = "library.json"
         const val CATALOG_DIRECTORY = "catalog"
         const val DOCUMENTS_DIRECTORY = "documents"

@@ -24,6 +24,10 @@ class LibrarySession @Inject constructor() {
         catalog = null
     }
 
+    fun isConnected(): Boolean = treeUri != null && marker != null && catalog != null
+
+    fun connectedTreeUri(): Uri? = treeUri
+
     fun requireTreeUri(): Uri = treeUri ?: error("Scanly library is not connected.")
     fun requireMarker(): LibraryMarker = marker ?: error("Scanly library is not connected.")
     fun requireCatalog(): LibraryCatalog = catalog ?: error("Scanly library is not connected.")
