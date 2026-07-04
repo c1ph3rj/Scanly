@@ -57,8 +57,8 @@ class LibraryArchiveEngine @Inject constructor(
         val reason = when {
             !hasLibrary -> "There is no library data to back up."
             !capacity.backupDirectoryReady -> capacity.errorMessage ?: "The backup folder is unavailable."
-            capacity.availableBytes == null -> "Scanly cannot verify free space in this location."
-            capacity.availableBytes < requiredBytes -> "Not enough free space in ${capacity.destination.backupLabel}."
+            !LibraryArchivePolicy.hasSufficientBackupCapacity(requiredBytes, capacity.availableBytes) ->
+                "Not enough free space in ${capacity.destination.backupLabel}."
             else -> null
         }
         return BackupEstimate(
@@ -82,7 +82,10 @@ class LibraryArchiveEngine @Inject constructor(
                 progress(ArchiveWorkPhase.VALIDATING, current, total, "Checking library files")
             }
             val capacity = destinationManager.inspectBackupCapacity()
-            check(capacity.availableBytes != null && capacity.availableBytes >= estimate.requiredBytes) {
+            check(capacity.backupDirectoryReady) {
+                capacity.errorMessage ?: "The backup folder is no longer available."
+            }
+            check(LibraryArchivePolicy.hasSufficientBackupCapacity(estimate.requiredBytes, capacity.availableBytes)) {
                 "Available storage changed. Free up space and try again."
             }
 
@@ -216,7 +219,7 @@ class LibraryArchiveEngine @Inject constructor(
         val resolver = context.contentResolver
         val input = resolver.openInputStream(sourceUri) ?: error("Could not open the selected backup.")
         ZipInputStream(BufferedInputStream(input)).use { zip ->
-            val firstEntry = zip.nextEntry ?: error("The backup is empty.")
+            val firstEntry = zip.nextEntry ?: error("This file is not a valid Scanly backup.")
             check(firstEntry.name == MANIFEST_ENTRY) { "This is not a Scanly backup." }
             val manifestBytes = readCurrentEntry(zip, MAX_MANIFEST_BYTES)
             val manifest = ArchiveManifest.fromJson(JSONObject(String(manifestBytes, Charsets.UTF_8)))

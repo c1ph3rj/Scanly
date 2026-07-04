@@ -30,6 +30,16 @@ class LibraryArchivePolicyTest {
     }
 
     @Test
+    fun `backup capacity allows unreported providers and rejects known shortfall`() {
+        assertTrue(LibraryArchivePolicy.hasSufficientBackupCapacity(100L, null))
+        assertTrue(LibraryArchivePolicy.hasSufficientBackupCapacity(100L, 100L))
+        assertFalse(LibraryArchivePolicy.hasSufficientBackupCapacity(100L, 99L))
+        assertThrows(IllegalArgumentException::class.java) {
+            LibraryArchivePolicy.hasSufficientBackupCapacity(-1L, null)
+        }
+    }
+
+    @Test
     fun `archive paths reject traversal absolute and windows separators`() {
         assertTrue(LibraryArchivePolicy.isSafeArchivePath("documents/id/raw/page_001.jpg"))
         assertFalse(LibraryArchivePolicy.isSafeArchivePath("../outside"))

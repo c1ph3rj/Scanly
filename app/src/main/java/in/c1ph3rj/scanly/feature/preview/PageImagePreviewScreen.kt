@@ -21,9 +21,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.DeleteOutline
 import androidx.compose.material.icons.filled.FitScreen
 import androidx.compose.material.icons.filled.IosShare
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Icon
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
@@ -50,6 +52,8 @@ import `in`.c1ph3rj.scanly.core.ui.MetricChip
 import `in`.c1ph3rj.scanly.core.ui.ZoomableImageState
 import `in`.c1ph3rj.scanly.core.ui.ZoomableImageViewer
 import `in`.c1ph3rj.scanly.domain.model.ShareArtifact
+import `in`.c1ph3rj.scanly.domain.model.ScanPage
+import `in`.c1ph3rj.scanly.feature.components.ScanlyConfirmDialog
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
@@ -60,6 +64,7 @@ import java.io.File
 fun PageImagePreviewRoute(
     onNavigateUp: () -> Unit,
     onEditPage: (String) -> Unit,
+    onRetakePage: (documentId: String, pageId: String) -> Unit,
     viewModel: PageImagePreviewViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -72,6 +77,9 @@ fun PageImagePreviewRoute(
                     Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
                 }
                 is PageImagePreviewEvent.ShareFiles -> sharePreparedFiles(context, event.artifact)
+                is PageImagePreviewEvent.PageDeleted -> {
+                    if (event.wasLastPage) onNavigateUp()
+                }
             }
         }
     }
@@ -80,7 +88,9 @@ fun PageImagePreviewRoute(
         uiState = uiState,
         onNavigateUp = onNavigateUp,
         onEditPage = onEditPage,
+        onRetakePage = onRetakePage,
         onSharePage = viewModel::sharePage,
+        onDeletePage = viewModel::deletePage,
         onSelectPage = viewModel::selectPage,
     )
 }
@@ -91,7 +101,9 @@ fun PageImagePreviewScreen(
     uiState: PageImagePreviewUiState,
     onNavigateUp: () -> Unit,
     onEditPage: (String) -> Unit,
+    onRetakePage: (documentId: String, pageId: String) -> Unit,
     onSharePage: (String) -> Unit,
+    onDeletePage: (String) -> Unit,
     onSelectPage: (String) -> Unit,
 ) {
     if (uiState.isLoading) {
@@ -137,6 +149,7 @@ fun PageImagePreviewScreen(
     val visiblePage = pages.getOrNull(pagerState.settledPage) ?: page
     val visibleZoomState = zoomStates[visiblePage.id]
     var showPageMenu by remember { mutableStateOf(false) }
+    var deleteTarget by remember { mutableStateOf<ScanPage?>(null) }
 
     LaunchedEffect(pagerState, pages) {
         snapshotFlow { pagerState.settledPage }
@@ -248,11 +261,58 @@ fun PageImagePreviewScreen(
                                     onEditPage(visiblePage.id)
                                 },
                             )
+                            DropdownMenuItem(
+                                text = { Text("Retake page") },
+                                leadingIcon = {
+                                    Icon(Icons.Filled.Refresh, contentDescription = null)
+                                },
+                                enabled = !uiState.isDeleting,
+                                onClick = {
+                                    showPageMenu = false
+                                    onRetakePage(visiblePage.documentId, visiblePage.id)
+                                },
+                            )
+                            DropdownMenuItem(
+                                text = {
+                                    Text(
+                                        "Delete page",
+                                        color = MaterialTheme.colorScheme.error,
+                                    )
+                                },
+                                leadingIcon = {
+                                    Icon(
+                                        Icons.Filled.DeleteOutline,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.error,
+                                    )
+                                },
+                                enabled = !uiState.isDeleting,
+                                onClick = {
+                                    showPageMenu = false
+                                    deleteTarget = visiblePage
+                                },
+                            )
                         }
                     }
                 }
             }
         }
+    }
+
+    deleteTarget?.let { target ->
+        ScanlyConfirmDialog(
+            title = "Delete page?",
+            text = "Page ${target.pageIndex + 1} will be permanently deleted from this document.",
+            confirmLabel = "Delete",
+            confirmDestructive = true,
+            onDismiss = { deleteTarget = null },
+            onConfirm = {
+                deleteTarget = null
+                onDeletePage(target.id)
+            },
+            confirmEnabled = !uiState.isDeleting,
+            dismissEnabled = !uiState.isDeleting,
+        )
     }
 }
 

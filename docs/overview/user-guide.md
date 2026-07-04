@@ -154,7 +154,7 @@ Open **Storage & backup** to view library, export-cache, database, and archive-w
 
 ### Restore a backup
 
-1. Tap **Choose backup** and select a `.scanly` file.
+1. Tap **Restore**. Scanly opens the configured `backup` folder; select a `.scanly` file.
 2. Choose **Merge as copies** to preserve current items, or **Replace current library**.
 3. Scanly validates checksums, paths, relationships, format version, and staging space before committing changes.
 

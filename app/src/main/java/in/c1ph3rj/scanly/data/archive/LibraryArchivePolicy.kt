@@ -9,6 +9,11 @@ internal object LibraryArchivePolicy {
         return Math.addExact(sourceBytes, maxOf(MIN_BACKUP_HEADROOM, sourceBytes / 20L))
     }
 
+    fun hasSufficientBackupCapacity(requiredBytes: Long, availableBytes: Long?): Boolean {
+        require(requiredBytes >= 0L)
+        return availableBytes == null || availableBytes >= requiredBytes
+    }
+
     fun restoreRequiredBytes(sourceBytes: Long): Long {
         require(sourceBytes >= 0L)
         return Math.addExact(

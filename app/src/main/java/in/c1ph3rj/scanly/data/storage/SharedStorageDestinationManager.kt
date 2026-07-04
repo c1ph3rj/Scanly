@@ -1,12 +1,12 @@
 package `in`.c1ph3rj.scanly.data.storage
 
-import android.content.ContentResolver
-import android.content.ContentUris
 import android.content.ContentValues
 import android.content.Context
 import android.net.Uri
+import android.os.Build
 import android.os.Environment
 import android.os.StatFs
+import android.os.storage.StorageManager
 import android.provider.DocumentsContract
 import android.provider.MediaStore
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -77,7 +77,8 @@ class SharedStorageDestinationManager @Inject constructor(
                     ensureChildDirectory(treeUri, BACKUP_DIRECTORY_NAME)
                     DestinationCapacity(
                         destination = destination,
-                        availableBytes = queryProviderAvailableBytes(treeUri),
+                        availableBytes = queryProviderAvailableBytes(treeUri)
+                            ?: queryExternalStorageAvailableBytes(treeUri),
                         backupDirectoryReady = true,
                     )
                 }
@@ -297,27 +298,60 @@ class SharedStorageDestinationManager @Inject constructor(
     private fun queryProviderAvailableBytes(treeUri: Uri): Long? {
         val authority = treeUri.authority ?: return null
         val treeDocumentId = DocumentsContract.getTreeDocumentId(treeUri)
-        return context.contentResolver.query(
-            DocumentsContract.buildRootsUri(authority),
-            arrayOf(
-                DocumentsContract.Root.COLUMN_ROOT_ID,
-                DocumentsContract.Root.COLUMN_AVAILABLE_BYTES,
-            ),
-            null,
-            null,
-            null,
-        )?.use { cursor ->
-            val rootColumn = cursor.getColumnIndexOrThrow(DocumentsContract.Root.COLUMN_ROOT_ID)
-            val bytesColumn = cursor.getColumnIndex(DocumentsContract.Root.COLUMN_AVAILABLE_BYTES)
-            if (bytesColumn < 0) return@use null
-            while (cursor.moveToNext()) {
-                val rootId = cursor.getString(rootColumn)
-                if (treeDocumentId == rootId || treeDocumentId.startsWith("$rootId:")) {
-                    return@use if (cursor.isNull(bytesColumn)) null else cursor.getLong(bytesColumn)
+        return try {
+            context.contentResolver.query(
+                DocumentsContract.buildRootsUri(authority),
+                arrayOf(
+                    DocumentsContract.Root.COLUMN_ROOT_ID,
+                    DocumentsContract.Root.COLUMN_AVAILABLE_BYTES,
+                ),
+                null,
+                null,
+                null,
+            )?.use { cursor ->
+                val rootColumn = cursor.getColumnIndexOrThrow(DocumentsContract.Root.COLUMN_ROOT_ID)
+                val bytesColumn = cursor.getColumnIndex(DocumentsContract.Root.COLUMN_AVAILABLE_BYTES)
+                if (bytesColumn < 0) return@use null
+                while (cursor.moveToNext()) {
+                    val rootId = cursor.getString(rootColumn)
+                    if (treeDocumentId == rootId || treeDocumentId.startsWith("$rootId:")) {
+                        return@use if (cursor.isNull(bytesColumn)) {
+                            null
+                        } else {
+                            cursor.getLong(bytesColumn).takeIf { it >= 0L }
+                        }
+                    }
                 }
+                null
             }
+        } catch (e: Exception) {
             null
         }
+    }
+
+    /**
+     * Some device document providers omit COLUMN_AVAILABLE_BYTES even for local storage. Resolve
+     * those external-storage trees back to their mounted volume so a valid local folder does not
+     * leave backup permanently unavailable.
+     */
+    private fun queryExternalStorageAvailableBytes(treeUri: Uri): Long? {
+        if (treeUri.authority != EXTERNAL_STORAGE_DOCUMENTS_AUTHORITY) return null
+        val rootId = runCatching { DocumentsContract.getTreeDocumentId(treeUri).substringBefore(':') }
+            .getOrNull()
+            ?: return null
+        val directory = if (rootId.equals(PRIMARY_STORAGE_ROOT_ID, ignoreCase = true)) {
+            Environment.getExternalStorageDirectory()
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            context.getSystemService(StorageManager::class.java)
+                .storageVolumes
+                .firstOrNull { it.uuid.equals(rootId, ignoreCase = true) }
+                ?.directory
+        } else {
+            File("/storage/$rootId")
+        }
+        return directory
+            ?.takeIf(File::exists)
+            ?.let { runCatching { StatFs(it.absolutePath).availableBytes }.getOrNull() }
     }
 
     private fun String.withTrailingSlash(): String = if (endsWith('/')) this else "$this/"
@@ -327,5 +361,8 @@ class SharedStorageDestinationManager @Inject constructor(
         const val BACKUP_MIME_TYPE = "application/zip"
         const val DEFAULT_EXPORT_RELATIVE_PATH = "Download/Scanly"
         const val DEFAULT_BACKUP_RELATIVE_PATH = "Download/Scanly/backup"
+        private const val EXTERNAL_STORAGE_DOCUMENTS_AUTHORITY =
+            "com.android.externalstorage.documents"
+        private const val PRIMARY_STORAGE_ROOT_ID = "primary"
     }
 }

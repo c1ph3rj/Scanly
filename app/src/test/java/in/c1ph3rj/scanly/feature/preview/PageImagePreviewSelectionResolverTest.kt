@@ -56,6 +56,17 @@ class PageImagePreviewSelectionResolverTest {
         )
     }
 
+    @Test
+    fun deletingAPageKeepsTheNearestRemainingPageVisible() {
+        assertEquals("page-3", resolvePageIdAfterDeletion("page-2", pages()))
+        assertEquals("page-2", resolvePageIdAfterDeletion("page-3", pages()))
+    }
+
+    @Test
+    fun deletingTheOnlyPageLeavesNoPreviewSelection() {
+        assertNull(resolvePageIdAfterDeletion("page-1", listOf(page("page-1", 0))))
+    }
+
     private fun pages() = listOf(
         page(id = "page-1", pageIndex = 0),
         page(id = "page-2", pageIndex = 1),

@@ -519,9 +519,12 @@ private fun ScanlyNavHostContent(
                 onReplacementCompleted = { pageId ->
                     val editorRoute = PageEditorDestination.route(pageId)
                     if (!navController.popBackStack(route = editorRoute, inclusive = false)) {
-                        navController.popBackStack()
-                        navController.navigate(editorRoute) {
-                            launchSingleTop = true
+                        val previewRoute = PageImagePreviewDestination.route(pageId)
+                        if (!navController.popBackStack(route = previewRoute, inclusive = false)) {
+                            navController.popBackStack()
+                            navController.navigate(editorRoute) {
+                                launchSingleTop = true
+                            }
                         }
                     }
                 },
@@ -543,6 +546,11 @@ private fun ScanlyNavHostContent(
                 onNavigateUp = navController::navigateUp,
                 onEditPage = { pageId ->
                     navController.navigate(PageEditorDestination.route(pageId))
+                },
+                onRetakePage = { documentId, pageId ->
+                    navController.navigate(
+                        ScanSessionDestination.route(documentId, replacePageId = pageId),
+                    )
                 },
             )
         }

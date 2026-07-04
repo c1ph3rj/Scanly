@@ -19,6 +19,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 
+- **Page preview actions** — the overflow menu now exposes Retake and Delete directly alongside Share and Edit. Delete keeps the existing confirmation and asset cleanup behavior, while retakes return to preview when launched there; both actions remain available in the page editor.
+- **Storage & backup reliability** — local Storage Access Framework folders now fall back to mounted-volume capacity when their document provider omits free-space metadata. Providers that cannot report capacity remain usable and fail safely if a backup exhausts storage; the screen now explains that state, hides the transient backup workspace while it is empty, integrates the space refresh control, opens Restore in the backup folder, and rejects non-`.scanly` files before restore begins.
 - **Export save flow** — document and group saves no longer open a file creator for every export; sharing remains unchanged.
 - **Library filters** — replaced the underline-style Library tabs with three rounded filter pills whose selected and unselected states match Scanly's Material 3 surfaces.
 - **Page preview zoom** — double-tapping a zoomed page now reliably returns it to the fitted scale without the pan gesture consuming the taps, the zoom level stays hidden at 1.0x, and the reset action uses a fit-to-screen icon.
