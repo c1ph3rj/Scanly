@@ -1,30 +1,36 @@
 # Features
 
-Complete inventory of Scanly features as of **v1.0.9**.
+Complete inventory of Scanly features as of **v1.0.9** (including unreleased work on the current branch).
 
 ## Home dashboard
 
 - Shows up to **8 recent documents** and **6 recent groups**
 - Quick actions: start a new scan, create an empty document, create a group
 - **Gallery import** — pick up to 10 images to start a new document
+- **Suggested names** — create dialogs offer a **Suggest name** button with rotatable date-based title formats; duplicate titles receive numeric suffixes
 - Shortcut into the full Library
 - Adaptive layout: bottom navigation on phone, navigation rail on tablet
 
 ## Library
 
 - Primary place to search, browse, and manage all content
-- **Three tabs:** All, Folders (groups), Documents
+- **Three filter pills:** All, Folders (groups), Documents — rounded Material 3 surfaces (not underline tabs)
 - **Search** across document and group titles
 - **Six sort options** (name, date created, date updated — ascending and descending)
-- Create, rename, and delete documents and groups
+- Create, rename, and delete documents and groups with **Suggest name** for new items
+- Move documents between groups or create a new group inline when moving
 - Open document detail or group detail from any list item
+- **All tab semantics:** foldered documents appear under their group, not in the main All list (unless searching)
 
 ## Document scanning (camera session)
 
 - **CameraX**-based manual capture with live preview
 - **ML corner overlay** — LiteRT model detects document edges in real time
 - **Quality feedback** — lighting, blur, lens obstruction, framing guidance
-- **Stability tracking** — gates auto-capture when the frame is stable
+- **Auto-capture** — stability tracker phases (`SEARCHING` → `HOLD_STEADY` → `COUNTDOWN` → `CAPTURING` → `COOLDOWN`) gate automatic shutter when the frame is steady
+- **Manual capture** — tap shutter at any time
+- **Torch/flash** toggle and **alignment grid** toggle
+- **Tap-to-focus** on preview
 - **Multi-page sessions** — capture multiple pages into one document in a single session
 - **Page replacement (retake)** — replace an existing page; returns to editor after capture (v1.0.9)
 - Portrait and landscape layouts with theme-aligned controls (v1.0.9)
@@ -41,16 +47,21 @@ Complete inventory of Scanly features as of **v1.0.9**.
 - **Reorder** pages (move up/down)
 - **Delete** individual pages
 - **Rename** document (does not affect first-page thumbnail — v1.0.9 fix)
-- **Assign to group** or remove from group
+- **Assign to group** or remove from group (with inline new-folder creation)
 - Add more pages via scan session or gallery import
 - Open page preview for full-screen review
+- **NEEDS_REVIEW** indicator when corner detection fails
 - **Export and share:**
   - PDF with optional open password, footer page numbers, auto/portrait/landscape orientation, print-size or auto-fit pages, and margins
   - Image archive (ZIP of JPEGs)
+  - **Save** writes directly to the configured export folder (no per-export file creator)
 
 ## Page preview
 
-- Swipeable full-page review within a document
+- Swipeable full-page review within a document — only the image moves; chrome stays fixed
+- Page title follows the selected page
+- Pinch/double-tap zoom; double-tap or fit-to-screen icon resets to fitted scale; zoom level hidden at 1.0×
+- **Overflow menu:** Share page, Edit page, Retake, Delete (with confirmation)
 - Navigate to page editor from any page
 
 ## Page editor
@@ -61,14 +72,15 @@ Complete inventory of Scanly features as of **v1.0.9**.
   - Original, Auto, Enhanced Color, Grayscale, Black & White
   - Clean, Shadow Reduction, Magic Color, Receipt, Soft Black & White
 - **Retake** — opens camera session in replacement mode
+- **Re-detect corners**, reset, delete page
 - Non-destructive: edits reprocess from the raw capture
 
 ## Document groups (collections)
 
 - Optional folders for organizing related documents
-- Create, rename, delete groups
+- Create, rename, delete groups with **Suggest name** formats
 - Move documents between groups or leave ungrouped
-- **Group detail screen** — view all documents in a group, manage membership
+- **Group detail screen** — view all documents in a group, manage membership, create documents in group
 - **Group export:**
   - Single merged PDF (all pages across all group documents)
   - Zipped PDF set (one PDF per document)
@@ -76,15 +88,26 @@ Complete inventory of Scanly features as of **v1.0.9**.
 
 ## Settings
 
+Main screen (`settings`) — lean layout with links to sub-screens:
+
 - **Appearance** — theme mode: System, Light, or Dark (persisted in DataStore)
-- **About** — app version from package manager
-- **Support** — FAQs and third-party license disclosures (bundled JSON assets)
-- **Storage usage** — shows on-device bytes for documents, export cache, and database
-- **Save location** — exports default to `Downloads/Scanly`; a custom base folder can be persisted through Android's folder picker
-- **Library backup** — exact compressed `.scanly` archives are written under the base folder's `backup/` child after a free-space preflight
-- **Library restore** — validate and stage a `.scanly` archive, then Replace the current library or Merge restored copies
+- **Storage & backup** — link to dedicated sub-screen (usage, export path, backup/restore, clear data)
+- **About** — app version, developer portfolio, manual update check
+- **Support** — email and project website links
+- **Legal** — privacy policy, terms, open-source licenses (dedicated sub-screens)
+
+### Storage & backup (`settings/storage`)
+
+- **Storage usage** — documents, export cache, database, and archive workspace bytes
+- **Save location** — exports default to `Downloads/Scanly`; custom base folder via SAF folder picker
+- **Library backup** — exact compressed `.scanly` archives under `{destination}/backup/` after free-space preflight
+- **Library restore** — validate and stage a `.scanly` archive; **Replace** or **Merge as copies**
+- **Live progress** — foreground WorkManager job with phase/progress, cancellation
 - **Clear all data** — destructive wipe of library, files, export cache, and thumbnail cache (with confirmation)
-- **Check for updates** — manual check against the build's GitHub or Google Play channel
+
+### FAQs and licenses (`settings/faq`, `settings/licenses`)
+
+- Bundled JSON assets (`faqs.json`, `licenses.json`) rendered in dedicated sub-screens
 
 ## Onboarding
 
@@ -94,10 +117,12 @@ Complete inventory of Scanly features as of **v1.0.9**.
 
 ## App updates
 
+- Dual distribution channels via build type (`githubRelease` / `playStoreRelease`)
 - Checks the build's fixed update channel on app start (after onboarding)
 - **6-hour cooldown** between automatic update dialog appearances
-- GitHub builds open the latest GitHub release page
-- Play Store builds download and install via flexible or immediate Play flows
+- **GitHub builds** — compare `versionName` with latest GitHub release; open release page
+- **Play Store builds** — Google Play in-app updates (flexible or immediate); restart snackbar after flexible download
+- Update messaging reflects the installed channel (not always "Google Play")
 - Shows GitHub release notes when available
 
 ## Shared UI components
@@ -114,7 +139,7 @@ Reusable building blocks in `feature/components/`:
 - Cloud synchronization or automatic scheduled backup
 - OCR / text recognition
 - Batch cloud upload
-- In-app APK installation
+- In-app APK installation (GitHub builds open the release page)
 - Account or authentication system
 
 ## Related docs

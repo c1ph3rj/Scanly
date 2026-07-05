@@ -6,13 +6,14 @@ Scanly is an offline-first Android document scanner. It gives users a practical,
 
 Paper documents need to become shareable digital files. Scanly handles the full on-device loop:
 
-1. **Capture** — photograph a document with guided camera feedback
+1. **Capture** — photograph a document with guided camera feedback and optional auto-capture
 2. **Correct** — detect page edges and fix perspective distortion
 3. **Enhance** — apply readability filters (grayscale, shadow reduction, etc.)
 4. **Organize** — store multi-page documents and optional collections (groups)
-5. **Export** — produce PDFs or image archives for sharing
+5. **Export** — produce PDFs or image archives; save directly to Downloads or a custom folder
+6. **Back up** — create portable `.scanly` library snapshots for local restore
 
-Everything stays on the device unless the user explicitly shares an export.
+Everything stays on the device unless the user explicitly shares an export or copies a backup file.
 
 ## Who it is for
 
@@ -24,7 +25,7 @@ Everything stays on the device unless the user explicitly shares an export.
 
 | Principle | What it means in practice |
 | --- | --- |
-| Offline-first | Scanning, editing, storage, and export work without network. Only the optional update check uses `INTERNET`. |
+| Offline-first | Scanning, editing, storage, export, and backup work without network. Only the optional update check uses `INTERNET`. |
 | Non-destructive captures | Raw JPEG captures under `raw/` are never overwritten. Edits regenerate `processed/` and `thumbs/`. |
 | Derived processing | Corner detection, warping, and filters produce derived output. The original capture is always recoverable. |
 | Manual fallback | Users can adjust crop corners, rotation, and filters when automation is imperfect. Pages can be marked `NEEDS_REVIEW`. |
@@ -41,8 +42,10 @@ Everything stays on the device unless the user explicitly shares an export.
 | Camera | CameraX |
 | Database | Room (schema v3) |
 | Preferences | DataStore |
+| Background work | WorkManager + Hilt Worker (library backup/restore) |
 | ML | LiteRT (TFLite document corner model) |
 | Image processing | OpenCV, Android ExifInterface |
+| PDF export | Android PdfDocument + PdfBox-Android encryption |
 | Async | Kotlin Coroutines and Flow |
 
 ## Repository layout
@@ -53,6 +56,7 @@ Scanly/
 ├── gradle/               # Wrapper and version catalog
 ├── docs/                 # This documentation (complete project context)
 ├── screenshots/          # UI screenshots for README
+├── scripts/              # Dev utilities (e.g. performance-seed load testing)
 ├── README.md             # Public landing page
 ├── CHANGELOG.md          # Release notes
 ├── VERSION.md            # Version metadata
@@ -77,12 +81,12 @@ package `in`.c1ph3rj.scanly
 ## Application entry flow
 
 ```
-ScanlyApplication (@HiltAndroidApp)
+ScanlyApplication (@HiltAndroidApp, custom WorkManager + HiltWorkerFactory)
   └─ MainActivity (single activity, edge-to-edge)
        ├─ Onboarding gate (first run only)
        ├─ ScanlyTheme (system / light / dark)
        ├─ ScanlyNavHost (Home / Library / Settings + detail routes)
-       └─ AppUpdateDialog overlay (optional, after onboarding)
+       └─ AppUpdateDialog + FlexibleUpdateSnackbar (after onboarding)
 ```
 
 ## Current release
@@ -93,8 +97,9 @@ ScanlyApplication (@HiltAndroidApp)
 | Room schema | `3` |
 | Min SDK | 29 (Android 10) |
 | Target SDK | 36 |
+| Distribution | `githubRelease` (APK) and `playStoreRelease` (AAB) |
 
-See [releases.md](../releases.md) for version policy and history.
+See [releases.md](../releases.md) for version policy and history. See [CHANGELOG.md](../../CHANGELOG.md) for unreleased work on the current branch.
 
 ## Next steps
 

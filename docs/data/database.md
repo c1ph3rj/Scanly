@@ -7,7 +7,7 @@ Scanly persists document metadata in a **Room** database at schema version **3**
 | Property | Value |
 | --- | --- |
 | Class | `ScanlyDatabase` |
-| Path | `app_database/scanly.db` (app-internal) |
+| Path | `databases/scanly.db` (+ `-wal`, `-shm`) under app internal storage |
 | Schema version | `3` |
 | `exportSchema` | `false` |
 
@@ -44,7 +44,7 @@ Indexes: `updatedAtMillis`, `groupId`
 | `cropTopLeftX/Y` … `cropBottomRightX/Y` | REAL | Normalized crop quad (8 values) |
 | `rotationDegrees` | INTEGER | User rotation |
 | `filterPreset` | TEXT | `PageFilterPreset.storageValue` |
-| `processingState` | TEXT | `PROCESSED` or `NEEDS_REVIEW` |
+| `processingState` | TEXT | `CAPTURED`, `PROCESSED`, or `NEEDS_REVIEW` |
 | `createdAtMillis` | INTEGER | Creation timestamp |
 
 Unique constraint: `(documentId, pageIndex)`

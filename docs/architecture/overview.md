@@ -27,7 +27,7 @@ How Scanly is structured at **v1.0.9**. For navigation detail see [navigation.md
 
 | Component | File | Role |
 | --- | --- | --- |
-| Application | `ScanlyApplication.kt` | `@HiltAndroidApp` entry |
+| Application | `ScanlyApplication.kt` | `@HiltAndroidApp`; custom WorkManager + `HiltWorkerFactory` |
 | Activity | `MainActivity.kt` | Onboarding gate, theme, NavHost, update dialog |
 | Theme | `ui/theme/` | `ScanlyTheme`, colors, typography |
 | Navigation | `navigation/ScanlyNavHost.kt` | Route registration, bottom nav / rail |
@@ -93,7 +93,7 @@ Hilt modules in `di/` install into `SingletonComponent`:
 | --- | --- |
 | `DatabaseModule` | `ScanlyDatabase`, DAOs, migrations |
 | `DocumentDataModule` | Document, page, group repos; storage manager |
-| `ExportModule` | `DocumentExportRepository` |
+| `ExportModule` | `DocumentExportRepository`, `ExportStorageRepository` |
 | `ArchiveModule` | `LibraryArchiveRepository` |
 | `SettingsModule` | `SettingsRepository` |
 | `AppDataModule` | `AppDataRepository` |

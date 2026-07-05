@@ -91,7 +91,8 @@ Paths written to `processed/` and `thumbs/` under the document directory.
 
 | Condition | Behavior |
 | --- | --- |
-| No quad detected | Mark `NEEDS_REVIEW`; user must set manual crop |
+| No quad detected | Mark `NEEDS_REVIEW`; user must set manual crop in editor |
+| Capture in progress | `CAPTURED` state before processing completes |
 | Processing exception | Fallback thumbnail from raw; page still saved |
 | Editor reprocess failure | Raw preserved; previous processed path may remain |
 

@@ -6,16 +6,16 @@ Dependencies and versions from `gradle/libs.versions.toml` as of **v1.0.9**.
 
 | Tool | Version |
 | --- | --- |
-| Android Gradle Plugin | 9.1.0 |
+| Android Gradle Plugin | 9.2.1 |
 | Kotlin | 2.2.10 |
 | Gradle wrapper | 9.5.0 |
-| KSP | 2.2.10-2.0.2 |
+| KSP | 2.3.2 |
 
 ## Android SDK
 
 | Setting | Value |
 | --- | --- |
-| compileSdk | 36 |
+| compileSdk | 36 (minor API 1) |
 | targetSdk | 36 |
 | minSdk | 29 |
 | Java compatibility | 11 |
@@ -39,6 +39,7 @@ Dependencies and versions from `gradle/libs.versions.toml` as of **v1.0.9**.
 | --- | --- |
 | Hilt | 2.59.2 |
 | Hilt Navigation Compose | 1.3.0 |
+| Hilt Work | 1.3.0 |
 
 ## Camera
 
@@ -53,13 +54,26 @@ Dependencies and versions from `gradle/libs.versions.toml` as of **v1.0.9**.
 | Room (runtime, ktx, compiler) | 2.8.4 |
 | DataStore Preferences | 1.1.7 |
 
-## Image processing and ML
+## Background work
+
+| Library | Version |
+| --- | --- |
+| WorkManager (runtime, testing) | 2.11.2 |
+
+## Image processing, ML, and export
 
 | Library | Version |
 | --- | --- |
 | LiteRT (TFLite interpreter) | 1.4.1 |
 | OpenCV | 4.12.0 |
 | ExifInterface | 1.4.2 |
+| PDFBox Android | 2.0.27.0 |
+
+## Distribution updates
+
+| Library | Version |
+| --- | --- |
+| Play App Update (+ KTX) | 2.1.0 |
 
 ## Testing
 
@@ -69,6 +83,7 @@ Dependencies and versions from `gradle/libs.versions.toml` as of **v1.0.9**.
 | AndroidX JUnit | 1.1.5 |
 | Espresso Core | 3.5.1 |
 | Compose UI Test JUnit4 | (BOM-managed) |
+| WorkManager Testing | 2.11.2 |
 
 ## Native
 

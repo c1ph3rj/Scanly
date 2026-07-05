@@ -10,6 +10,7 @@ Scanly/
 ├── gradle/                 # Wrapper + libs.versions.toml
 ├── docs/                   # Complete project documentation (start at docs/README.md)
 ├── screenshots/            # UI screenshots for README
+├── scripts/                # Dev utilities (performance-seed load testing)
 ├── keystore/               # Release keystore (gitignored in practice)
 ├── README.md               # Public landing page
 ├── CHANGELOG.md            # Release notes
@@ -55,6 +56,8 @@ app/
 | `data/export/DefaultDocumentExportRepository.kt` | Export |
 | `data/storage/DocumentStorageManager.kt` | File I/O |
 | `data/archive/LibraryArchiveEngine.kt` | `.scanly` backup, validation, and restore |
+| `data/archive/LibraryArchiveWorker.kt` | Foreground WorkManager backup/restore |
+| `data/export/DefaultExportStorageRepository.kt` | Save exports to configured destination |
 | `core/ml/LiteRtDocumentCornerDetector.kt` | ML inference |
 
 ## `docs/` documentation map

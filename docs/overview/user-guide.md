@@ -13,7 +13,7 @@ How end users interact with Scanly. This describes app behavior, not implementat
 ### From Home
 
 1. Tap the scan/create action (FAB menu).
-2. Choose **Scan** → camera session opens for a new document.
+2. Choose **Scan** → name the document (optional **Suggest name**) → camera session opens.
 3. Point the camera at a document. Live overlay shows detected edges and quality hints.
 4. Tap capture (or use auto-capture when stable).
 5. Capture additional pages or finish the session.
@@ -68,8 +68,8 @@ From **document detail**:
 
 ### Create a group
 
-1. Open **Library** → Folders tab, or use create action on Home/Library.
-2. Create a new group with a title.
+1. Open **Library** → Folders filter, or use create action on Home/Library.
+2. Create a new group with a title. Tap **Suggest name** to cycle date-based formats; duplicates are avoided automatically.
 
 ### Add documents to a group
 
@@ -125,7 +125,7 @@ Saved exports go to `Downloads/Scanly` by default. Change the base folder from *
 
 1. Open **Library**.
 2. Type in the search field to filter documents and groups by title.
-3. Switch tabs: **All**, **Folders**, **Documents**.
+3. Switch filter pills: **All**, **Folders**, **Documents**.
 4. Change sort order (name or date, ascending or descending).
 
 ## Settings
@@ -167,7 +167,7 @@ Open **Storage & backup** to view library, export-cache, database, and archive-w
 
 ### FAQs and licenses
 
-Tap to view bundled support content. Licenses list third-party dependencies.
+Open **Settings → FAQs** or **Settings → Open-source licenses** for bundled support content.
 
 ### Check for updates
 

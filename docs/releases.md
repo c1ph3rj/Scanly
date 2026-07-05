@@ -18,6 +18,20 @@ Canonical source: `versionCode` and `versionName` in `app/build.gradle.kts`.
 
 The version shown in Settings reads `versionName` via `DefaultSettingsRepository`.
 
+### Work in progress on current branch
+
+The codebase on `feature/v1.0.9` includes additional features documented in [CHANGELOG.md](../CHANGELOG.md) under **[Unreleased]**, including:
+
+- Configurable export storage (`Downloads/Scanly` or custom SAF folder)
+- Library backup and restore (`.scanly` archives)
+- Storage & backup settings sub-screen
+- Suggested document and folder names
+- Dual release channels (`githubRelease` / `playStoreRelease`) with Play in-app updates
+- Advanced PDF export (password, page numbers, print sizes, auto orientation)
+- Page preview and Library UI refinements
+
+These are implemented in source but not yet tagged as a new public release.
+
 ## Versioning policy
 
 - **Version name** — semantic-style `MAJOR.MINOR.PATCH` for user-facing releases.
@@ -38,7 +52,7 @@ The version shown in Settings reads `versionName` via `DefaultSettingsRepository
 
 ### 1.0.8.betaq (code 8) — 2026-06-27
 
-- Removed `REQUEST_INSTALL_PACKAGES`; update opens GitHub release page (superseded by Google Play in-app updates)
+- Removed `REQUEST_INSTALL_PACKAGES`; update opens GitHub release page (superseded by Google Play in-app updates on `playStoreRelease` builds)
 
 ### 1.0.7 (code 7) — 2026-06-27
 
@@ -68,6 +82,7 @@ Full details: [CHANGELOG.md](../CHANGELOG.md)
 - Room migrates automatically from schema 1 or 2 to 3 (adds document groups).
 - Existing documents remain; they appear ungrouped until moved into a collection.
 - **Clear all data** (added in 1.0.4) is destructive and cannot be undone.
+- Completed external `.scanly` backups survive clear-all-data.
 - No manual migration steps required.
 
 See [VERSION.md](../VERSION.md) for extended upgrade guidance.

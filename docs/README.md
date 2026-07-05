@@ -15,6 +15,9 @@ Scanly is a local-only document scanner for Android. Users capture pages with th
 | Architecture | Single module (`:app`), clean-architecture-style layers |
 | Data | Room database, app-private files, DataStore preferences |
 | Processing | LiteRT corner detection + OpenCV filters + CameraX capture |
+| Background work | WorkManager foreground backup/restore (`LibraryArchiveWorker`) |
+| Export / backup | PDFBox-encrypted PDFs; `.scanly` library archives to `Downloads/Scanly/backup/` |
+| Distribution | `githubRelease` (GitHub updates) and `playStoreRelease` (Play in-app updates) |
 | License | AGPL-3.0-only ([LICENSE](../LICENSE)) |
 | Current version | `1.0.9` (version code `9`) |
 
@@ -26,7 +29,8 @@ Capture or import image
   → Perspective correction + filter
   → Save as page in a local document
   → Organize in library / groups
-  → Export PDF or share images
+  → Export PDF or share images (save to Downloads/Scanly or custom folder)
+  → Back up entire library as compressed .scanly archive (optional restore)
 ```
 
 **Design principles:** offline-first, preserve raw captures, treat processed output as derived, keep manual controls when automation fails.
@@ -98,7 +102,7 @@ Choose a path based on your goal:
 | [implementation-snapshot.md](reference/implementation-snapshot.md) | One-page technical snapshot |
 | [tech-stack.md](reference/tech-stack.md) | Dependencies and versions from `libs.versions.toml` |
 | [domain-models.md](reference/domain-models.md) | All domain model classes |
-| [use-cases.md](reference/use-cases.md) | All 39 use cases grouped by area |
+| [use-cases.md](reference/use-cases.md) | All 51 use cases grouped by area |
 | [repository-layout.md](reference/repository-layout.md) | Root repo file and folder guide |
 
 ### Releases
@@ -131,6 +135,8 @@ These files live at the repository root for GitHub conventions and quick access:
 | Domain logic | `app/src/main/java/in/c1ph3rj/scanly/domain/` |
 | Data layer | `app/src/main/java/in/c1ph3rj/scanly/data/` |
 | ML / processing | `app/src/main/java/in/c1ph3rj/scanly/core/` |
+| Library backup | `app/src/main/java/in/c1ph3rj/scanly/data/archive/` |
+| Export storage | `app/src/main/java/in/c1ph3rj/scanly/data/export/DefaultExportStorageRepository.kt` |
 | Build config | `app/build.gradle.kts`, `gradle/libs.versions.toml` |
 | ML model | `app/src/main/assets/models/document_corners_float16.tflite` |
 

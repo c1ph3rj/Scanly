@@ -10,24 +10,43 @@ All model classes in `domain/model/` (22 files).
 | `ScanPage` | `ScanPage.kt` | Page: paths, crop quad, rotation, filter, processing state, pageIndex |
 | `DocumentGroup` | `DocumentGroup.kt` | Collection: id, title, doc/page counts, cover path, timestamps |
 | `PageCaptureDraft` | `PageCaptureDraft.kt` | Transient state during active capture session |
-| `PagePreviewPaths` | `PagePreviewPaths.kt` | Resolved paths for preview display |
-| `PageProcessingState` | `PageProcessingState.kt` | `PROCESSED` or `NEEDS_REVIEW` |
+| `PagePreviewPaths` | `PagePreviewPaths.kt` | Extension resolving display paths for preview |
+| `PageProcessingState` | `PageProcessingState.kt` | `CAPTURED`, `PROCESSED`, or `NEEDS_REVIEW` |
 | `PageFilterPreset` | `PageFilterPreset.kt` | Ten filter modes with `storageValue` strings |
+| `DocumentTitleFormat` | `DocumentTitleFormat.kt` | Four rotatable auto-title formats for new documents |
+| `GroupTitleFormat` | `GroupTitleFormat.kt` | Four rotatable auto-title formats for new folders |
 
 ### PageFilterPreset values
 
 `ORIGINAL`, `AUTO`, `ENHANCED_COLOR`, `GRAYSCALE`, `BLACK_AND_WHITE`, `CLEAN`, `SHADOW_REDUCTION`, `MAGIC_COLOR`, `RECEIPT`, `SOFT_BLACK_AND_WHITE`
 
+### DocumentTitleFormat values
+
+`ScanDateTime` (default), `DocumentDateTime`, `ScanDate`, `ScanIsoDate`
+
+### GroupTitleFormat values
+
+`FolderDateTime` (default), `NewFolderDateTime`, `FolderDate`, `FolderIsoDate`
+
 ## Export
 
 | Model | File | Purpose |
 | --- | --- | --- |
-| `PdfExportOptions` | `PdfExportOptions.kt` | Page size, orientation, margins for PDF export |
+| `PdfExportOptions` | `PdfExportOptions.kt` | Password, page numbers, page size, orientation, margins |
 | `ExportArtifact` | `ExportArtifact.kt` | Export result with file path and metadata |
 | `ShareArtifact` | `ShareArtifact.kt` | Share-ready artifact with URI info |
 | `SavedExport` | `SavedExport.kt` | Final shared-storage name, destination label, and URI |
-| `ExportDestination` | `ExportDestination.kt` | Default Downloads base or persisted custom SAF tree |
-| `BackupEstimate`, `ArchiveWorkState`, `RestoreMode` | `LibraryArchive.kt` | Backup gating and background archive state |
+| `ExportDestination` | `ExportDestination.kt` | `DefaultDownloadsScanly` or `CustomTree(uri, displayName)` |
+
+## Library backup and restore
+
+| Model | File | Purpose |
+| --- | --- | --- |
+| `RestoreMode` | `LibraryArchive.kt` | `REPLACE` or `MERGE` |
+| `BackupEstimate` | `LibraryArchive.kt` | Source/required/available bytes and backup eligibility |
+| `ArchiveOperation` | `LibraryArchive.kt` | `BACKUP` or `RESTORE` |
+| `ArchiveWorkPhase` | `LibraryArchive.kt` | WorkManager phase enum |
+| `ArchiveWorkState` | `LibraryArchive.kt` | Progress, message, cancel state |
 
 ## Settings and app data
 
@@ -43,8 +62,14 @@ All model classes in `domain/model/` (22 files).
 
 | Model | File | Purpose |
 | --- | --- | --- |
-| `AppRelease` | `AppRelease.kt` | Remote release: tag, body, URL |
-| `AppUpdateCheckResult` | `AppUpdateCheckResult.kt` | Result of update comparison |
+| `AppRelease` | `AppRelease.kt` | Remote release: tag, body, URL, optional APK asset |
+| `AppReleaseAsset` | `AppRelease.kt` | GitHub release asset metadata |
+| `AppUpdateChannel` | `AppRelease.kt` | `GITHUB` or `PLAY_STORE` (from `BuildConfig.UPDATE_CHANNEL`) |
+| `AppUpdateCheckResult` | `AppRelease.kt` | Result of update comparison with channel and Play update type |
+| `PlayInAppUpdateType` | `PlayInAppUpdate.kt` | `FLEXIBLE` or `IMMEDIATE` |
+| `PlayInstallStatus` | `PlayInAppUpdate.kt` | Play download/install lifecycle status |
+| `PlayInAppUpdateInstallState` | `PlayInAppUpdate.kt` | Download progress for flexible updates |
+| `PlayInAppUpdateAvailability` | `PlayInAppUpdate.kt` | Play Store update availability metadata |
 
 ## Related docs
 

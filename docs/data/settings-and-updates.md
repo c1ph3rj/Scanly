@@ -1,6 +1,6 @@
 # Settings and Updates
 
-User preferences, bundled support content, and the optional app update flow.
+User preferences, bundled support content, export destination, and the optional app update flow.
 
 ## DataStore: `scanly_settings`
 
@@ -8,8 +8,12 @@ Managed by `DefaultSettingsRepository` (`data/settings/`).
 
 | Key | Type | Default | Purpose |
 | --- | --- | --- | --- |
-| `theme_mode` | String | `SYSTEM` | `SYSTEM`, `LIGHT`, or `DARK` |
+| `theme_mode` | String | `"system"` | `SYSTEM`, `LIGHT`, or `DARK` (`ThemeMode.storageValue`) |
 | `onboarding_completed` | Boolean | `false` | First-run gate flag |
+| `export_tree_uri` | String? | null | Persisted SAF tree URI for custom export/backup base |
+| `export_tree_label` | String? | null | Display name for custom export folder |
+
+When `export_tree_uri` and `export_tree_label` are both set, `ExportDestination.CustomTree` is used; otherwise `ExportDestination.DefaultDownloadsScanly` (`Downloads/Scanly`).
 
 ### Theme flow
 
@@ -27,7 +31,7 @@ AppSettingsViewModel (MainActivity)
 
 | Asset | Purpose |
 | --- | --- |
-| `assets/settings/faqs.json` | FAQ entries for Settings screen |
+| `assets/settings/faqs.json` | FAQ entries for Settings FAQ sub-screen |
 | `assets/settings/licenses.json` | Third-party license disclosures |
 | `assets/models/document_corners_float16.tflite` | ML corner detection model |
 | `assets/models/README.txt` | Model placement instructions |
@@ -37,14 +41,18 @@ AppSettingsViewModel (MainActivity)
 
 ## Settings screen sections
 
-| Section | Data source |
-| --- | --- |
-| Appearance | DataStore `theme_mode` |
-| About | `PackageManager.versionName` from `DefaultSettingsRepository` |
-| Support | `faqs.json`, `licenses.json` |
-| Storage | `GetAppStorageUsageUseCase` |
-| Data management | `ClearAllAppDataUseCase` |
-| Updates | Manual trigger → `AppUpdateViewModel` |
+| Section | Route / action | Data source |
+| --- | --- | --- |
+| Appearance | `settings` | DataStore `theme_mode` |
+| Storage & backup | `settings/storage` | Storage usage, export destination, archive work |
+| About | `settings` | `PackageManager.versionName` |
+| Support | `settings` | Email, project website links |
+| FAQs | `settings/faq` | `faqs.json` |
+| Legal | `legal/{documentType}` | Bundled WebView content |
+| Licenses | `settings/licenses` | `licenses.json` |
+| Updates | `settings` | Manual trigger → `AppUpdateViewModel` |
+
+Clear-all-data and backup/restore live on the **Storage & backup** sub-screen, not the main settings list.
 
 ## App update flow
 
@@ -55,6 +63,7 @@ AppSettingsViewModel (MainActivity)
 | `GitHubAppUpdateRepository` | Compares the installed version with the latest GitHub release |
 | `PlayStoreAppUpdateRepository` | Checks Google Play for update availability |
 | `DefaultPlayInAppUpdateCoordinator` | Starts, resumes, and completes Play in-app updates |
+| `NoOpPlayInAppUpdateCoordinator` | No-op coordinator for debug/githubRelease builds |
 | `GitHubReleaseUpdateRepository` | Fetches the latest GitHub release and notes |
 | `DistributionAppUpdateModule` | Build-type-specific binding that selects the authoritative update repository |
 | `DefaultAppUpdatePromptRepository` | Stores dialog cooldown timestamp |
@@ -65,6 +74,14 @@ AppSettingsViewModel (MainActivity)
 | `AppUpdateDialogCooldown` | 6-hour rate limit |
 | `PlayInAppUpdatePolicy` | Chooses flexible vs immediate update type |
 | `ReleaseMarkdown` | Parses release body for dialog display |
+
+### Flavor-specific source sets
+
+| Source set | Update binding |
+| --- | --- |
+| `app/src/debug/` | GitHub updates + no-op Play coordinator |
+| `app/src/githubRelease/` | GitHub updates + no-op Play coordinator |
+| `app/src/playStoreRelease/` | Play Store updates + real Play coordinator |
 
 ### Update sources
 
@@ -133,10 +150,11 @@ ON_START / Settings button
 
 ### Testing notes
 
-Play in-app updates only work for `playStore` builds installed from Google Play (internal, closed, open, or production tracks). Sideloaded `github` builds use GitHub Releases and do not call Play update lifecycle operations.
+Play in-app updates only work for `playStoreRelease` builds installed from Google Play (internal, closed, open, or production tracks). Sideloaded `githubRelease` builds use GitHub Releases and do not call Play update lifecycle operations.
 
 ## Related docs
 
 - [../architecture/screens.md](../architecture/screens.md) — SettingsViewModel mapping
+- [library-backup.md](library-backup.md) — backup destination and format
 - [../releases.md](../releases.md) — version policy
 - [../overview/features.md](../overview/features.md) — user-facing settings features

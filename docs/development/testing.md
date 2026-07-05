@@ -51,10 +51,11 @@ app/src/test/java/in/c1ph3rj/scanly/{matching/package}/YourTest.kt
 Areas that need more tests (prioritized):
 
 1. **Persistence integration** — Room migrations, repository round-trips
-2. **Export end-to-end** — PDF/ZIP generation with real page data
-3. **Capture instrumented** — Camera session flow on device
-4. **Group export** — Merged PDF and zipped PDF set
-5. **Clear-all-data** — Full wipe verification
+2. **Export end-to-end** — PDF/ZIP generation with real page data; save-to-destination flow
+3. **Archive end-to-end** — Backup/restore round-trip with `.scanly` validation
+4. **Capture instrumented** — Camera session flow on device
+5. **Group export** — Merged PDF and zipped PDF set
+6. **Clear-all-data** — Full wipe verification
 
 ## What to test when contributing
 

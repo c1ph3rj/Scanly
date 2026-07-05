@@ -14,6 +14,7 @@ Navigation is implemented with **Navigation Compose** in `ScanlyNavHost.kt`. Rou
 - **Start destination:** `home`
 - **Tab switches:** no transition animation
 - **Detail pushes:** 160 ms fade transition
+- **Top inset:** each screen applies status-bar padding once (not doubled by the activity shell)
 
 ## Top-level tabs
 
@@ -42,12 +43,19 @@ These top-level routes still exist but show `FeaturePlaceholderScreen` — they 
 | `preview/page/{pageId}` | `PageImagePreviewDestination` | Page preview |
 | `editor/page/{pageId}` | `PageEditorDestination` | Page editor |
 | `group/{groupId}` | `GroupDetailDestination` | Group detail |
-| `legal/{documentType}` | `LegalDocumentDestination` | Privacy or licenses viewer |
+| `legal/{documentType}` | `LegalDocumentDestination` | Privacy or terms viewer |
+| `settings/faq` | `SettingsFaqDestination` | FAQ sub-screen |
+| `settings/licenses` | `SettingsLicensesDestination` | Open-source licenses |
+| `settings/storage` | `SettingsStorageDestination` | Storage & backup |
 
 ### Scan session arguments
 
 - `documentId` (required) — target document
 - `replacePageId` (optional) — when set, capture replaces this page instead of adding a new one. On complete, navigates to `editor/page/{replacePageId}`.
+
+### Settings sub-screen ViewModel sharing
+
+`settings/faq`, `settings/licenses`, and `settings/storage` share `SettingsViewModel` via the parent `settings` back stack entry.
 
 ## User flow diagrams
 
@@ -65,7 +73,7 @@ Launch
 
 ```
 Home / Library
-  └─► Create + Scan
+  └─► Create + Scan (optional Suggest name)
         └─► camera/session/{newDocId}
               └─► capture page(s)
                     └─► document/{docId}
@@ -76,6 +84,7 @@ Home / Library
 ```
 document/{docId}
   └─► preview/page/{pageId}
+        ├─► overflow: Share / Edit / Retake / Delete
         └─► editor/page/{pageId}
               ├─► save edits → back to preview or detail
               └─► retake → camera/session/{docId}?replacePageId={pageId}
@@ -94,7 +103,7 @@ Home (new doc) or document/{docId} (add pages)
 ### Group workflow
 
 ```
-Library (Folders tab) or Home (recent groups)
+Library (Folders filter) or Home (recent groups)
   └─► group/{groupId}
         ├─► document/{docId}  (open member)
         ├─► rename / delete group
@@ -105,15 +114,18 @@ Library (Folders tab) or Home (recent groups)
 ### Export
 
 ```
-document/{docId}
-  └─► export sheet
-        ├─► PDF → cache/exports → share or save
-        └─► image ZIP → cache/exports → share
+document/{docId} or group/{groupId}
+  └─► export sheet (PDF options: password, page numbers, orientation, size, margins)
+        ├─► Save → configured Downloads/SAF destination (unique filenames)
+        └─► Share → cache/exports → FileProvider share sheet
+```
 
-group/{groupId}
-  └─► export sheet
-        ├─► merged PDF
-        └─► zipped PDF set
+### Library backup and restore
+
+```
+settings → settings/storage
+  ├─► Back up library → WorkManager foreground job → {destination}/backup/*.scanly
+  └─► Restore → pick .scanly in backup folder → Replace or Merge as copies
 ```
 
 ### Settings
@@ -121,9 +133,11 @@ group/{groupId}
 ```
 settings
   ├─► theme change (immediate, persisted)
-  ├─► legal/{PRIVACY} or legal/{LICENSES}
-  ├─► check for updates → AppUpdateDialog
-  └─► clear all data → confirmation → wipe → Home
+  ├─► settings/storage (usage, destination, backup/restore, clear data)
+  ├─► settings/faq
+  ├─► legal/{PRIVACY} or legal/{TERMS}
+  ├─► settings/licenses
+  └─► check for updates → AppUpdateDialog (channel-specific)
 ```
 
 ## Onboarding gate

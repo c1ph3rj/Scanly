@@ -54,6 +54,15 @@ Do not change on-disk paths without a migration plan:
 ```
 files/documents/{documentId}/raw|processed|thumbs/
 cache/exports/
+cache/library-archive/
+files/library-archive-journal/
+```
+
+User-visible paths (via MediaStore or SAF):
+
+```
+Downloads/Scanly/           # Default export base
+Downloads/Scanly/backup/    # Reserved for .scanly library archives
 ```
 
 ## Dependency management

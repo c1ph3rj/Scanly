@@ -29,6 +29,14 @@ files/documents/{documentId}/
 2. **Paths in Room are authoritative.** Repositories update entity path columns after every write.
 3. **Document root is stored** in `DocumentEntity.rootDirectoryPath` for cleanup and migration.
 
+## App-private working directories
+
+| Path | Purpose |
+| --- | --- |
+| `cache/library-archive/` | Restore staging workspace |
+| `files/library-archive-journal/` | Durable restore recovery journal |
+| `databases/scanly.db` (+ `-wal`, `-shm`) | Room database |
+
 ## Export cache
 
 Ephemeral export artifacts live outside document directories:

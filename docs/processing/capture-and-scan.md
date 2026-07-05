@@ -58,7 +58,25 @@ Analyzes preview frames and surfaces hints for:
 
 ### Stability tracking (`CaptureStabilityTracker`)
 
-Monitors frame stability to gate **auto-capture** — capture fires when the document is steady and quality thresholds pass.
+Monitors frame stability to gate **auto-capture**. Phases (`AutoCapturePhase`):
+
+| Phase | Meaning |
+| --- | --- |
+| `OFF` | Auto-capture disabled |
+| `SEARCHING` | Looking for a stable document in frame |
+| `HOLD_STEADY` | Document detected; waiting for stillness |
+| `COUNTDOWN` | Countdown before shutter |
+| `CAPTURING` | Shutter firing |
+| `COOLDOWN` | Brief pause before next auto-capture attempt |
+
+Capture fires when the document is steady and quality thresholds pass.
+
+### Camera controls
+
+- **Torch/flash** toggle
+- **Alignment grid** overlay toggle
+- **Tap-to-focus** on preview
+- **Auto-capture** enable/disable
 
 ## Capture finalize
 
