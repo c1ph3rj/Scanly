@@ -9,6 +9,7 @@ Scanly/
 ├── app/                    # Android application module
 ├── gradle/                 # Wrapper + libs.versions.toml
 ├── docs/                   # Complete project documentation (start at docs/README.md)
+├── scanly-web/             # Separate React website repository checkout
 ├── screenshots/            # UI screenshots for README
 ├── scripts/                # Dev utilities (performance-seed load testing)
 ├── keystore/               # Release keystore (gitignored in practice)
@@ -72,6 +73,17 @@ app/
 | `docs/reference/` | Models, use cases, tech stack, snapshot |
 
 **Start here:** [docs/README.md](../README.md)
+
+## `scanly-web/` website
+
+`scanly-web/` is a separately versioned checkout of `github.com/c1ph3rj/scanly-web`, not an Android Gradle module. Its deployed React application:
+
+- fetches validated landing-page content from `scanly-web/content/site-content.json` on GitHub
+- reads the latest stable release from the Scanly GitHub Releases API
+- discovers and renders this repository's `docs/**/*.md` files under `/docs`
+- keeps a bundled content snapshot and browser cache as fallbacks
+
+The website defaults to both repositories' `master` branches. Preview builds can override the Scanly docs ref with `VITE_SCANLY_GITHUB_REF` and the website content ref with `VITE_SCANLY_WEB_CONTENT_REF`.
 
 ## Related docs
 

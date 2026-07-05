@@ -60,6 +60,7 @@ It is designed for a practical, local-only scanning workflow:
 
 - `app/` – Android application source and module build files
 - `docs/` – complete project documentation (start at [docs/README.md](docs/README.md))
+- `scanly-web/` – separately versioned React website checkout that renders GitHub-backed marketing content and these docs
 - `gradle/` – wrapper and version catalog configuration
 
 ## Current Architecture
