@@ -12,8 +12,8 @@ See also [docs/releases.md](docs/releases.md) for release policy and history wit
 | Min SDK | 29 (Android 10) |
 | Target / compile SDK | 36 |
 | Room schema version | `3` |
-| Release date | 2026-06-28 |
-| Branch | `v1.0.9` |
+| Release date | 2026-07-05 |
+| Branch | `master` (tag `v1.0.9`) |
 
 The version shown in **Settings** is read from `versionName` in `app/build.gradle.kts`.
 

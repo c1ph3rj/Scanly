@@ -46,10 +46,12 @@ Use the same version name, version code, application ID, and release signing key
 ## GitHub release
 
 1. Tag: `v{versionName}` (e.g. `v1.0.9`)
-2. Publish release notes from CHANGELOG entry
+2. Publish the concise Markdown release notes from `docs/release-notes/v{versionName}.md`; keep the detailed history in the CHANGELOG
 3. Attach signed APK if distributing via GitHub releases
 
 The `githubRelease` app reads `https://api.github.com/repos/c1ph3rj/Scanly/releases/latest`, compares the release tag with its installed version, and opens the release page when the user updates.
+
+The GitHub release body is also rendered inside the app's update dialog. Keep it concise, use simple headings and flat bullet lists, and omit a duplicate top-level release-title heading.
 
 ## Google Play release
 

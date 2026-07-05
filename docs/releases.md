@@ -12,15 +12,15 @@ Version policy and release history for Scanly.
 | Room schema | `3` |
 | Min SDK | 29 (Android 10) |
 | Target / compile SDK | 36 |
-| Release date | 2026-06-28 |
+| Release date | 2026-07-05 |
 
 Canonical source: `versionCode` and `versionName` in `app/build.gradle.kts`.
 
 The version shown in Settings reads `versionName` via `DefaultSettingsRepository`.
 
-### Work in progress on current branch
+### Release highlights
 
-The codebase on `feature/v1.0.9` includes additional features documented in [CHANGELOG.md](../CHANGELOG.md) under **[Unreleased]**, including:
+Version 1.0.9 includes the following changes now merged into `master`:
 
 - Configurable export storage (`Downloads/Scanly` or custom SAF folder)
 - Library backup and restore (`.scanly` archives)
@@ -30,7 +30,7 @@ The codebase on `feature/v1.0.9` includes additional features documented in [CHA
 - Advanced PDF export (password, page numbers, print sizes, auto orientation)
 - Page preview and Library UI refinements
 
-These are implemented in source but not yet tagged as a new public release.
+The compact GitHub release description used by the in-app update dialog is available in [release-notes/v1.0.9.md](release-notes/v1.0.9.md).
 
 ## Versioning policy
 
@@ -43,8 +43,13 @@ These are implemented in source but not yet tagged as a new public release.
 
 ## Recent releases
 
-### 1.0.9 (code 9) — 2026-06-28
+### 1.0.9 (code 9) — 2026-07-05
 
+- Configurable export destinations and `.scanly` library backup/restore
+- Advanced PDF export controls and ten enhancement filters
+- Suggested duplicate-safe document and folder names
+- Improved page preview, onboarding, capture layouts, and library filters
+- Separate GitHub and Google Play update channels
 - Refined portrait/landscape capture layouts
 - Improved capture feedback (lighting, blur, obstruction, framing)
 - Retake returns directly to editor after capture
