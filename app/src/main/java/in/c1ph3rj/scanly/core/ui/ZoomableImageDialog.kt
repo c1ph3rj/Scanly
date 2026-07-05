@@ -4,6 +4,11 @@ import android.graphics.BitmapFactory
 import androidx.compose.foundation.background
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.gestures.detectTransformGestures
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.calculateCentroid
+import androidx.compose.foundation.gestures.calculatePan
+import androidx.compose.foundation.gestures.calculateZoom
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,13 +24,16 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.FitScreen
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
@@ -102,14 +110,18 @@ fun ZoomableImageViewer(
     title: String,
     onNavigateUp: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
+    state: ZoomableImageState = rememberZoomableImageState(imagePath),
     closeContentDescription: String = "Back",
+    allowParentHorizontalGestures: Boolean = false,
+    showTopBar: Boolean = true,
+    onZoomActiveChange: (Boolean) -> Unit = {},
     trailingAction: @Composable (
         zoomActive: Boolean,
         onResetZoom: () -> Unit,
     ) -> Unit = { zoomActive, onResetZoom ->
         if (zoomActive) {
             ChromeIconButton(
-                icon = Icons.Filled.Refresh,
+                icon = Icons.Filled.FitScreen,
                 contentDescription = "Reset zoom",
                 onClick = onResetZoom,
                 containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
@@ -120,12 +132,16 @@ fun ZoomableImageViewer(
         }
     },
 ) {
-    var scale by remember(imagePath) { mutableStateOf(1f) }
-    var offset by remember(imagePath) { mutableStateOf(Offset.Zero) }
-    val zoomActive = scale > 1.02f
-    val resetZoom = {
-        scale = 1f
-        offset = Offset.Zero
+    val zoomActive = state.isZoomActive
+    val resetZoom = state::reset
+    val currentOnZoomActiveChange by rememberUpdatedState(onZoomActiveChange)
+
+    LaunchedEffect(imagePath) {
+        state.reset()
+    }
+
+    LaunchedEffect(zoomActive) {
+        currentOnZoomActiveChange(zoomActive)
     }
 
     Surface(
@@ -166,47 +182,78 @@ fun ZoomableImageViewer(
                 else -> {
                     ZoomableImageCanvas(
                         imageBitmap = imageBitmap!!,
-                        scale = scale,
-                        offset = offset,
-                        onScaleChange = { scale = it },
-                        onOffsetChange = { offset = it },
+                        scale = state.scale,
+                        offset = state.offset,
+                        onScaleChange = { state.scale = it },
+                        onOffsetChange = { state.offset = it },
+                        onDoubleTap = state::toggleDoubleTapZoom,
+                        allowParentHorizontalGestures = allowParentHorizontalGestures,
                         modifier = Modifier.fillMaxSize(),
                     )
                 }
             }
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.TopCenter)
-                    .statusBarsPadding()
-                    .padding(horizontal = 16.dp, vertical = 12.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    if (onNavigateUp != null) {
-                        ChromeIconButton(
-                            icon = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = closeContentDescription,
-                            onClick = onNavigateUp,
-                            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-                            contentColor = MaterialTheme.colorScheme.onSurface,
+            if (showTopBar) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.TopCenter)
+                        .statusBarsPadding()
+                        .padding(horizontal = 16.dp, vertical = 12.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        if (onNavigateUp != null) {
+                            ChromeIconButton(
+                                icon = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = closeContentDescription,
+                                onClick = onNavigateUp,
+                                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                                contentColor = MaterialTheme.colorScheme.onSurface,
+                            )
+                            Spacer(modifier = Modifier.width(12.dp))
+                        }
+                        MetricChip(
+                            label = title,
+                            containerColor = Color.Black.copy(alpha = 0.42f),
+                            contentColor = Color.White,
+                            border = BorderStroke(1.dp, Color.White.copy(alpha = 0.12f)),
                         )
-                        Spacer(modifier = Modifier.width(12.dp))
                     }
-                    MetricChip(
-                        label = title,
-                        containerColor = Color.Black.copy(alpha = 0.42f),
-                        contentColor = Color.White,
-                        border = BorderStroke(1.dp, Color.White.copy(alpha = 0.12f)),
-                    )
+                    trailingAction(zoomActive, resetZoom)
                 }
-                trailingAction(zoomActive, resetZoom)
             }
         }
     }
 }
+
+@Stable
+class ZoomableImageState internal constructor() {
+    internal var scale by mutableFloatStateOf(MIN_SCALE)
+    internal var offset by mutableStateOf(Offset.Zero)
+
+    val isZoomActive: Boolean
+        get() = scale > ZOOM_ACTIVE_THRESHOLD
+
+    fun reset() {
+        scale = MIN_SCALE
+        offset = Offset.Zero
+    }
+
+    internal fun toggleDoubleTapZoom() {
+        if (isZoomActive) {
+            reset()
+        } else {
+            scale = DOUBLE_TAP_SCALE
+            offset = Offset.Zero
+        }
+    }
+}
+
+@Composable
+fun rememberZoomableImageState(imageKey: Any?): ZoomableImageState =
+    remember(imageKey) { ZoomableImageState() }
 
 @Composable
 private fun ZoomableImageCanvas(
@@ -215,6 +262,8 @@ private fun ZoomableImageCanvas(
     offset: Offset,
     onScaleChange: (Float) -> Unit,
     onOffsetChange: (Offset) -> Unit,
+    onDoubleTap: () -> Unit,
+    allowParentHorizontalGestures: Boolean,
     modifier: Modifier = Modifier,
 ) {
     val density = LocalDensity.current
@@ -244,18 +293,10 @@ private fun ZoomableImageCanvas(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null,
                 onClick = {},
-                onDoubleClick = {
-                    if (currentScale > MIN_SCALE) {
-                        currentOnScaleChange(MIN_SCALE)
-                        currentOnOffsetChange(Offset.Zero)
-                    } else {
-                        currentOnScaleChange(3f)
-                        currentOnOffsetChange(Offset.Zero)
-                    }
-                },
+                onDoubleClick = onDoubleTap,
             )
-            .pointerInput(Unit) {
-                detectTransformGestures(panZoomLock = true) { centroid, pan, zoom, _ ->
+            .pointerInput(allowParentHorizontalGestures) {
+                val updateTransform: (Offset, Offset, Float) -> Unit = { centroid, pan, zoom ->
                     val oldScale = currentScale
                     val newScale = (oldScale * zoom).coerceIn(MIN_SCALE, MAX_SCALE)
                     val factor = newScale / oldScale
@@ -272,6 +313,44 @@ private fun ZoomableImageCanvas(
                             containerSize = currentContainerSize,
                         ),
                     )
+
+                }
+
+                if (!allowParentHorizontalGestures) {
+                    detectTransformGestures(panZoomLock = true) { centroid, pan, zoom, _ ->
+                        updateTransform(centroid, pan, zoom)
+                    }
+                } else {
+                    awaitEachGesture {
+                        awaitFirstDown(requireUnconsumed = false)
+                        var ownsGesture = false
+                        var accumulatedPanDistance = 0f
+                        do {
+                            val event = awaitPointerEvent()
+                            val pressedPointers = event.changes.count { it.pressed }
+                            val eventPan = event.calculatePan()
+                            if (pressedPointers >= 2) {
+                                ownsGesture = true
+                            } else if (
+                                !ownsGesture &&
+                                pressedPointers == 1 &&
+                                currentScale > ZOOM_ACTIVE_THRESHOLD
+                            ) {
+                                accumulatedPanDistance += eventPan.getDistance()
+                                ownsGesture = accumulatedPanDistance > viewConfiguration.touchSlop
+                            }
+                            if (ownsGesture && pressedPointers > 0) {
+                                updateTransform(
+                                    event.calculateCentroid(useCurrent = true),
+                                    eventPan,
+                                    event.calculateZoom(),
+                                )
+                            }
+                            if (ownsGesture) {
+                                event.changes.forEach { it.consume() }
+                            }
+                        } while (event.changes.any { it.pressed })
+                    }
                 }
             },
         contentAlignment = Alignment.Center,
@@ -297,20 +376,24 @@ private fun ZoomableImageCanvas(
             )
         }
 
-        MetricChip(
-            label = "${"%.1f".format(scale)}x",
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .navigationBarsPadding()
-                .padding(bottom = 18.dp),
-            containerColor = Color.Black.copy(alpha = 0.42f),
-            contentColor = Color.White,
-            border = BorderStroke(1.dp, Color.White.copy(alpha = 0.12f)),
-        )
+        if (scale > ZOOM_ACTIVE_THRESHOLD) {
+            MetricChip(
+                label = "${"%.1f".format(scale)}x",
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .navigationBarsPadding()
+                    .padding(bottom = 18.dp),
+                containerColor = Color.Black.copy(alpha = 0.42f),
+                contentColor = Color.White,
+                border = BorderStroke(1.dp, Color.White.copy(alpha = 0.12f)),
+            )
+        }
     }
 }
 
 private const val MIN_SCALE = 1f
+private const val ZOOM_ACTIVE_THRESHOLD = 1.02f
+private const val DOUBLE_TAP_SCALE = 3f
 private const val MAX_SCALE = 6f
 
 private fun computeFittedImageSize(

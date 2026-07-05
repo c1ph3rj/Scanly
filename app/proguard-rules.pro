@@ -23,3 +23,9 @@
 # LiteRT resolves parts of its runtime through reflection and JNI.
 # Keep the runtime package intact so release builds can still create interpreters.
 -keep class org.tensorflow.lite.** { *; }
+
+# PdfBox-Android exposes optional JPEG 2000 support through JP2Android. Scanly only
+# encrypts PDFs that it renders from Android bitmaps, so those optional codecs are
+# intentionally not bundled.
+-dontwarn com.gemalto.jp2.JP2Decoder
+-dontwarn com.gemalto.jp2.JP2Encoder

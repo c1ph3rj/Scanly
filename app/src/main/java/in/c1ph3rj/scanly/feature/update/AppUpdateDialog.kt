@@ -16,10 +16,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.NewReleases
-import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -30,10 +27,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.DialogProperties
-import `in`.c1ph3rj.scanly.core.common.StorageFormatter
+
 import `in`.c1ph3rj.scanly.domain.model.AppRelease
 import `in`.c1ph3rj.scanly.domain.model.AppUpdateCheckResult
 import `in`.c1ph3rj.scanly.feature.components.ScanlyFormDialogShell
@@ -47,9 +42,8 @@ private val releaseDateFormatter: DateTimeFormatter =
 @Composable
 fun AppUpdateDialog(
     checkResult: AppUpdateCheckResult,
-    isDownloading: Boolean,
     onDismiss: () -> Unit,
-    onDownload: (AppRelease) -> Unit,
+    onUpdate: (AppRelease) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val release = checkResult.latestRelease
@@ -138,38 +132,20 @@ fun AppUpdateDialog(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Button(
-                onClick = { onDownload(release) },
-                enabled = !isDownloading,
+                onClick = { onUpdate(release) },
                 modifier = Modifier.widthIn(max = 360.dp).fillMaxWidth(),
             ) {
-                if (isDownloading) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(18.dp),
-                        strokeWidth = 2.dp,
-                        color = MaterialTheme.colorScheme.onPrimary,
-                    )
-                    Text(
-                        text = "Downloading…",
-                        modifier = Modifier.padding(start = 8.dp),
-                    )
-                } else {
-                    Icon(
-                        imageVector = Icons.Filled.Download,
-                        contentDescription = null,
-                    )
-                    Text(
-                        text = if (release.apkAsset != null) {
-                            "Download & install"
-                        } else {
-                            "Open release"
-                        },
-                        modifier = Modifier.padding(start = 8.dp),
-                    )
-                }
+                Icon(
+                    imageVector = Icons.Filled.Download,
+                    contentDescription = null,
+                )
+                Text(
+                    text = "Update",
+                    modifier = Modifier.padding(start = 8.dp),
+                )
             }
             TextButton(
                 onClick = onDismiss,
-                enabled = !isDownloading,
             ) {
                 Text(text = "Not now")
             }
@@ -218,36 +194,13 @@ private fun ReleaseSummary(
             }
 
             val publishedLabel = release.publishedDateLabel()?.let { "Published $it" }
-            val apkSizeLabel = release.apkAsset?.sizeBytes?.let { sizeBytes ->
-                "APK ${StorageFormatter.formatBytes(sizeBytes)}"
-            } ?: if (release.apkAsset == null) {
-                "APK asset unavailable"
-            } else {
-                null
-            }
-
-            if (publishedLabel != null || apkSizeLabel != null) {
+            if (publishedLabel != null) {
                 HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Text(
-                        text = publishedLabel.orEmpty(),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.weight(1f, fill = false),
-                    )
-                    if (apkSizeLabel != null) {
-                        Text(
-                            text = apkSizeLabel,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            textAlign = TextAlign.End,
-                        )
-                    }
-                }
+                Text(
+                    text = publishedLabel,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             }
         }
     }

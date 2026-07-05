@@ -9,6 +9,7 @@ import `in`.c1ph3rj.scanly.data.local.db.ScanlyDatabase
 import `in`.c1ph3rj.scanly.data.local.db.dao.DocumentDao
 import `in`.c1ph3rj.scanly.data.local.db.dao.ScanPageDao
 import `in`.c1ph3rj.scanly.data.local.db.entity.ScanPageEntity
+import `in`.c1ph3rj.scanly.data.archive.LibraryOperationCoordinator
 import `in`.c1ph3rj.scanly.data.storage.DocumentStorageManager
 import `in`.c1ph3rj.scanly.domain.model.PageFilterPreset
 import `in`.c1ph3rj.scanly.domain.model.PageCaptureDraft
@@ -33,6 +34,7 @@ class DefaultPageRepository @Inject constructor(
     private val pageImageProcessor: PageImageProcessor,
     private val thumbnailCache: ThumbnailCache,
     private val dispatchers: ScanlyDispatchers,
+    private val operationCoordinator: LibraryOperationCoordinator,
 ) : PageRepository {
 
     override fun observePages(documentId: String): Flow<List<ScanPage>> =
@@ -47,6 +49,7 @@ class DefaultPageRepository @Inject constructor(
 
     override suspend fun prepareCapture(documentId: String): ScanlyResult<PageCaptureDraft> =
         withContext(dispatchers.io) {
+            operationCoordinator.withMutation {
             runCatching {
                 val document = documentDao.getDocument(documentId)
                     ?: error("Document not found.")
@@ -76,10 +79,12 @@ class DefaultPageRepository @Inject constructor(
                     )
                 },
             )
+            }
         }
 
     override suspend fun prepareReplacementCapture(pageId: String): ScanlyResult<PageCaptureDraft> =
         withContext(dispatchers.io) {
+            operationCoordinator.withMutation {
             runCatching {
                 val page = scanPageDao.getPage(pageId)
                     ?: error("Page not found.")
@@ -105,10 +110,12 @@ class DefaultPageRepository @Inject constructor(
                     )
                 },
             )
+            }
         }
 
     override suspend fun finalizeCapture(draft: PageCaptureDraft): ScanlyResult<String> =
         withContext(dispatchers.io) {
+            operationCoordinator.withMutation {
             runCatching {
                 val document = documentDao.getDocument(draft.documentId)
                     ?: error("Document not found.")
@@ -121,7 +128,7 @@ class DefaultPageRepository @Inject constructor(
                 val timestamp = System.currentTimeMillis()
                 val captureFilterPreset = document.preferredFilterPreset
                     ?.let(PageFilterPreset::fromStorage)
-                    ?: PageFilterPreset.ENHANCED_COLOR
+                    ?: PageFilterPreset.AUTO
                 val processedArtifacts = runCatching {
                     pageImageProcessor.processCapture(
                         rawImagePath = draft.rawImagePath,
@@ -190,12 +197,14 @@ class DefaultPageRepository @Inject constructor(
                     )
                 },
             )
+            }
         }
 
     override suspend fun movePage(
         pageId: String,
         targetIndex: Int,
     ): ScanlyResult<Unit> = withContext(dispatchers.io) {
+        operationCoordinator.withMutation {
         runCatching {
             val page = scanPageDao.getPage(pageId)
                 ?: error("Page not found.")
@@ -255,10 +264,12 @@ class DefaultPageRepository @Inject constructor(
                 )
             },
         )
+        }
     }
 
     override suspend fun deletePage(pageId: String): ScanlyResult<Unit> =
         withContext(dispatchers.io) {
+            operationCoordinator.withMutation {
             runCatching {
                 val page = scanPageDao.getPage(pageId)
                     ?: error("Page not found.")
@@ -297,6 +308,7 @@ class DefaultPageRepository @Inject constructor(
                     )
                 },
             )
+            }
         }
 
     override suspend fun updatePageEdits(
@@ -306,6 +318,7 @@ class DefaultPageRepository @Inject constructor(
         filterPreset: PageFilterPreset,
         applyFilterToAllPages: Boolean,
     ): ScanlyResult<Unit> = withContext(dispatchers.io) {
+        operationCoordinator.withMutation {
         runCatching {
             val page = scanPageDao.getPage(pageId)
                 ?: error("Page not found.")
@@ -365,6 +378,7 @@ class DefaultPageRepository @Inject constructor(
                 )
             },
         )
+        }
     }
 
     private fun ScanPageEntity.toDomain(): ScanPage = ScanPage(

@@ -61,6 +61,18 @@ object LegalDocumentDestination {
         "$base/${documentType.name}"
 }
 
+object SettingsFaqDestination {
+    const val route = "settings/faq"
+}
+
+object SettingsLicensesDestination {
+    const val route = "settings/licenses"
+}
+
+object SettingsStorageDestination {
+    const val route = "settings/storage"
+}
+
 object GroupDetailDestination {
     private const val base = "group"
     const val groupIdArgument = "groupId"

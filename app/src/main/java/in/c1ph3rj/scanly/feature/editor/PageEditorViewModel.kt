@@ -30,7 +30,7 @@ data class PageEditorUiState(
     val page: ScanPage? = null,
     val cropQuad: DocumentCornerQuad? = null,
     val referenceCropQuad: DocumentCornerQuad? = null,
-    val selectedFilter: PageFilterPreset = PageFilterPreset.ENHANCED_COLOR,
+    val selectedFilter: PageFilterPreset = PageFilterPreset.AUTO,
     val applyFilterToAllPages: Boolean = false,
     val rotationDegrees: Int = 0,
     val isSaving: Boolean = false,

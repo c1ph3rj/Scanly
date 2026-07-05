@@ -34,8 +34,14 @@ interface DocumentDao {
     @Query("SELECT title FROM documents")
     suspend fun getAllTitles(): List<String>
 
+    @Query("SELECT * FROM documents ORDER BY updatedAtMillis DESC")
+    suspend fun getAll(): List<DocumentEntity>
+
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insert(document: DocumentEntity)
+
+    @Insert(onConflict = OnConflictStrategy.ABORT)
+    suspend fun insertAll(documents: List<DocumentEntity>)
 
     @Update
     suspend fun update(document: DocumentEntity)

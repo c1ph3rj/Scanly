@@ -9,6 +9,7 @@ import `in`.c1ph3rj.scanly.core.common.ScanlyResult
 import `in`.c1ph3rj.scanly.core.ui.ThumbnailCache
 import `in`.c1ph3rj.scanly.data.local.db.ScanlyDatabase
 import `in`.c1ph3rj.scanly.data.storage.DocumentStorageManager
+import `in`.c1ph3rj.scanly.data.archive.LibraryOperationCoordinator
 import `in`.c1ph3rj.scanly.domain.model.AppStorageUsage
 import `in`.c1ph3rj.scanly.domain.repository.AppDataRepository
 import kotlinx.coroutines.withContext
@@ -18,11 +19,12 @@ import javax.inject.Singleton
 
 @Singleton
 class DefaultAppDataRepository @Inject constructor(
-    @ApplicationContext private val context: Context,
+    @param:ApplicationContext private val context: Context,
     private val database: ScanlyDatabase,
     private val documentStorageManager: DocumentStorageManager,
     private val thumbnailCache: ThumbnailCache,
     private val dispatchers: ScanlyDispatchers,
+    private val operationCoordinator: LibraryOperationCoordinator,
 ) : AppDataRepository {
 
     override suspend fun getStorageUsage(): ScanlyResult<AppStorageUsage> =
@@ -32,6 +34,8 @@ class DefaultAppDataRepository @Inject constructor(
                     documentsBytes = directorySize(documentsDirectory()),
                     exportCacheBytes = directorySize(exportCacheDirectory()),
                     databaseBytes = databaseFileSize(),
+                    archiveWorkingBytes = directorySize(archiveWorkingDirectory()) +
+                        directorySize(archiveJournalDirectory()),
                 )
             }.fold(
                 onSuccess = { ScanlyResult.Success(it) },
@@ -48,12 +52,15 @@ class DefaultAppDataRepository @Inject constructor(
 
     override suspend fun clearAllLibraryData(): ScanlyResult<Unit> =
         withContext(dispatchers.io) {
+            operationCoordinator.withMutation {
             runCatching {
                 database.withTransaction {
                     database.clearAllTables()
                 }
                 documentStorageManager.clearAllDocumentStorage()
                 exportCacheDirectory().deleteRecursively()
+                archiveWorkingDirectory().deleteRecursively()
+                archiveJournalDirectory().deleteRecursively()
                 thumbnailCache.clearAll()
             }.fold(
                 onSuccess = { ScanlyResult.Success(Unit) },
@@ -66,6 +73,7 @@ class DefaultAppDataRepository @Inject constructor(
                     )
                 },
             )
+            }
         }
 
     private fun documentsDirectory(): File =
@@ -73,6 +81,12 @@ class DefaultAppDataRepository @Inject constructor(
 
     private fun exportCacheDirectory(): File =
         File(context.cacheDir, EXPORT_CACHE_DIRECTORY)
+
+    private fun archiveWorkingDirectory(): File =
+        File(context.cacheDir, ARCHIVE_WORK_DIRECTORY)
+
+    private fun archiveJournalDirectory(): File =
+        File(context.filesDir, ARCHIVE_JOURNAL_DIRECTORY)
 
     private fun databaseFileSize(): Long {
         val databaseDirectory = context.getDatabasePath(DATABASE_NAME).parentFile ?: return 0L
@@ -94,6 +108,8 @@ class DefaultAppDataRepository @Inject constructor(
     private companion object {
         const val DOCUMENTS_DIRECTORY = "documents"
         const val EXPORT_CACHE_DIRECTORY = "exports"
+        const val ARCHIVE_WORK_DIRECTORY = "library-archive"
+        const val ARCHIVE_JOURNAL_DIRECTORY = "library-archive-journal"
         const val DATABASE_NAME = "scanly.db"
         val DATABASE_FILE_SUFFIXES = listOf("", "-wal", "-shm")
     }

@@ -70,6 +70,22 @@ class CaptureStabilityTrackerTest {
         assertTrue(evaluation.statusMessage.contains("Tap capture"))
     }
 
+    @Test
+    fun sceneIssueStopsAutoCaptureAndReturnsPlainLanguageGuidance() {
+        val tracker = CaptureStabilityTracker()
+
+        val evaluation = tracker.evaluate(
+            result = detection(standardQuad()),
+            autoCaptureEnabled = true,
+            nowMillis = 2_000L,
+            sceneIssue = CaptureSceneIssue.TOO_DARK,
+        )
+
+        assertEquals(AutoCapturePhase.SEARCHING, evaluation.phase)
+        assertFalse(evaluation.shouldAutoCapture)
+        assertEquals("Too dark. Add light or turn on the flash.", evaluation.statusMessage)
+    }
+
     private fun detection(quad: DocumentCornerQuad) = CornerDetectionResult(
         quad = quad,
         confidence = 0.92f,

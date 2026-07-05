@@ -6,6 +6,8 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import `in`.c1ph3rj.scanly.data.export.DefaultDocumentExportRepository
 import `in`.c1ph3rj.scanly.domain.repository.DocumentExportRepository
+import `in`.c1ph3rj.scanly.domain.repository.ExportStorageRepository
+import `in`.c1ph3rj.scanly.data.storage.DefaultExportStorageRepository
 import javax.inject.Singleton
 
 @Module
@@ -16,4 +18,10 @@ abstract class ExportModule {
     abstract fun bindDocumentExportRepository(
         repository: DefaultDocumentExportRepository,
     ): DocumentExportRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindExportStorageRepository(
+        repository: DefaultExportStorageRepository,
+    ): ExportStorageRepository
 }

@@ -1,7 +1,5 @@
 package `in`.c1ph3rj.scanly.feature.library
 
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -13,6 +11,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -23,7 +22,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DeleteOutline
@@ -52,15 +50,12 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -75,9 +70,11 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import `in`.c1ph3rj.scanly.core.ui.MetricChip
 import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
+import `in`.c1ph3rj.scanly.domain.model.DocumentTitleFormat
 import `in`.c1ph3rj.scanly.domain.model.PdfExportOptions
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
 import `in`.c1ph3rj.scanly.feature.components.DocumentCard
+import `in`.c1ph3rj.scanly.feature.components.ScanlyDetailTopBar
 import `in`.c1ph3rj.scanly.feature.components.DocumentTitleDialog
 import `in`.c1ph3rj.scanly.feature.components.ExportActionRow
 import `in`.c1ph3rj.scanly.feature.components.GroupNameDialog
@@ -87,9 +84,6 @@ import `in`.c1ph3rj.scanly.feature.components.FullScreenLoader
 import `in`.c1ph3rj.scanly.feature.components.PdfOptionsSheet
 import `in`.c1ph3rj.scanly.feature.components.ScanlyExtendedFab
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 // Route argument key — must match ScanlyNavHost composable declaration
 const val GROUP_ID_ARG = "groupId"
@@ -102,43 +96,11 @@ fun GroupDetailRoute(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
-    val scope = rememberCoroutineScope()
     val context = LocalContext.current
-
-    var pendingExport by remember { mutableStateOf<GroupDetailEvent.ExportReady?>(null) }
-
-    val writeLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.CreateDocument("*/*"),
-    ) { uri ->
-        uri ?: return@rememberLauncherForActivityResult
-        val artifact = pendingExport ?: return@rememberLauncherForActivityResult
-        pendingExport = null
-        scope.launch {
-            runCatching {
-                withContext(Dispatchers.IO) {
-                    val outputStream = context.contentResolver.openOutputStream(uri)
-                        ?: error("Could not open the selected destination.")
-                    outputStream.use { out ->
-                        java.io.File(artifact.filePath).inputStream().use { input ->
-                            input.copyTo(out)
-                        }
-                    }
-                }
-            }.onFailure { error ->
-                snackbarHostState.showSnackbar(
-                    error.message ?: "Could not save the exported file.",
-                )
-            }
-        }
-    }
 
     LaunchedEffect(viewModel) {
         viewModel.events.collectLatest { event ->
             when (event) {
-                is GroupDetailEvent.ExportReady -> {
-                    pendingExport = event
-                    writeLauncher.launch(event.fileName)
-                }
                 is GroupDetailEvent.ShareFiles -> shareGroupArtifact(context, event.artifact)
                 is GroupDetailEvent.ShowMessage -> snackbarHostState.showSnackbar(event.message)
                 is GroupDetailEvent.OpenDocument -> onOpenDocument(event.documentId)
@@ -156,6 +118,7 @@ fun GroupDetailRoute(
         onDeleteGroup = viewModel::deleteGroup,
         onAddDocument = viewModel::addDocumentToGroup,
         onCreateDocument = viewModel::createDocumentInGroup,
+        onSuggestTitle = viewModel::suggestDocumentTitle,
         onRemoveDocument = viewModel::removeDocumentFromGroup,
         onSaveMergedPdf = viewModel::saveMergedPdf,
         onShareMergedPdf = viewModel::shareMergedPdf,
@@ -176,6 +139,7 @@ private fun GroupDetailScreen(
     onDeleteGroup: () -> Unit,
     onAddDocument: (String) -> Unit,
     onCreateDocument: (String) -> Unit,
+    onSuggestTitle: suspend (DocumentTitleFormat) -> String,
     onRemoveDocument: (String) -> Unit,
     onSaveMergedPdf: (PdfExportOptions) -> Unit,
     onShareMergedPdf: (PdfExportOptions) -> Unit,
@@ -202,21 +166,11 @@ private fun GroupDetailScreen(
     }
 
     Scaffold(
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = group?.title ?: "Group",
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        fontWeight = FontWeight.SemiBold,
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateUp) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
-                    }
-                },
+            ScanlyDetailTopBar(
+                title = group?.title ?: "Group",
+                onNavigateUp = onNavigateUp,
                 actions = {
                     IconButton(
                         onClick = { showExportSheet = true },
@@ -262,9 +216,6 @@ private fun GroupDetailScreen(
                         }
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background,
-                ),
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -447,6 +398,7 @@ private fun GroupDetailScreen(
                 showCreateDialog = false
                 onCreateDocument(newTitle)
             },
+            onSuggestTitle = onSuggestTitle,
         )
     }
 
@@ -470,6 +422,7 @@ private fun GroupDetailScreen(
             onOptionsChanged = { updated -> pdfOptions = updated },
             onConfirm = {
                 val selectedOptions = pdfOptions
+                pdfOptions = pdfOptions.copy(password = null)
                 pendingExportAction = null
                 when (action) {
                     GroupExportAction.SAVE_MERGED -> onSaveMergedPdf(selectedOptions)

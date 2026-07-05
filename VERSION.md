@@ -1,32 +1,48 @@
 # Scanly Version Details
 
+See also [docs/releases.md](docs/releases.md) for release policy and history within the full documentation set.
+
 ## Current Release
 
 | Field | Value |
 | --- | --- |
-| Version name | `1.0.6` |
-| Version code | `6` |
+| Version name | `1.0.9` |
+| Version code | `9` |
 | Application ID | `in.c1ph3rj.scanly` |
 | Min SDK | 29 (Android 10) |
 | Target / compile SDK | 36 |
 | Room schema version | `3` |
-| Release date | 2026-06-27 |
-| Branch | `v1.0.6` |
+| Release date | 2026-06-28 |
+| Branch | `v1.0.9` |
 
 The version shown in **Settings** is read from `versionName` in `app/build.gradle.kts`.
 
 ## Versioning Policy
 
 - **Version name** follows semantic-style `MAJOR.MINOR.PATCH` strings for user-facing releases.
-- **Version code** is a monotonically increasing integer required by Google Play and used for upgrade checks.
+- **Version code** is a monotonically increasing integer required by Google Play; GitHub builds compare `versionName` with the latest release tag.
 - Bump both values together whenever you ship a public release.
 - Record user-visible changes in `CHANGELOG.md` and keep this file aligned with the Gradle values.
 
 ## Release History
 
-### 1.0.6 (version code 6)
+### 1.0.9 (version code 9)
 
 Current app release metadata.
+
+See [CHANGELOG.md](CHANGELOG.md) for release notes.
+
+### 1.0.8.betaq (version code 8)
+
+Current app release metadata.
+
+See [CHANGELOG.md](CHANGELOG.md) for release notes.
+
+### 1.0.7 (version code 7)
+
+See [CHANGELOG.md](CHANGELOG.md) for release notes.
+
+### 1.0.6 (version code 6)
 
 See [CHANGELOG.md](CHANGELOG.md) for release notes.
 
@@ -48,13 +64,14 @@ Initial open-source baseline on `master`:
 | Location | Purpose |
 | --- | --- |
 | `app/build.gradle.kts` | Canonical `versionCode` and `versionName` |
+| `githubRelease` / `playStoreRelease` | Distribution variants sharing the same version and application ID |
 | `DefaultSettingsRepository` | Reads package version for the Settings screen |
 | `VERSION.md` | Human-readable release metadata (this file) |
 | `CHANGELOG.md` | Per-release notes and upgrade guidance |
 
 ## Upgrade Notes
 
-### From 1.0.0 to 1.0.6
+### From 1.0.0 to 1.0.9
 
 - Room migrates automatically from schema version 1 or 2 to 3 to add document groups.
 - Existing documents remain available; they appear as ungrouped until moved into a collection.

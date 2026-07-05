@@ -2,6 +2,7 @@ package `in`.c1ph3rj.scanly.domain.repository
 
 import `in`.c1ph3rj.scanly.core.common.ScanlyResult
 import `in`.c1ph3rj.scanly.domain.model.DocumentGroup
+import `in`.c1ph3rj.scanly.domain.model.GroupTitleFormat
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
 import kotlinx.coroutines.flow.Flow
 
@@ -13,6 +14,10 @@ interface GroupRepository {
     fun observeGroupWithStats(groupId: String): Flow<DocumentGroup?>
 
     fun observeGroupDocuments(groupId: String): Flow<List<ScanDocument>>
+
+    suspend fun getAllGroupTitles(): List<String>
+
+    suspend fun suggestGroupTitle(format: GroupTitleFormat): String
 
     suspend fun createGroup(title: String): ScanlyResult<String>
 

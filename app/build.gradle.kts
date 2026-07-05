@@ -57,8 +57,8 @@ android {
         applicationId = "in.c1ph3rj.scanly"
         minSdk = 29
         targetSdk = 36
-        versionCode = 6
-        versionName = "1.0.6"
+        versionCode = 9
+        versionName = "1.0.9"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -81,6 +81,7 @@ android {
     buildTypes {
         debug {
             isMinifyEnabled = false
+            buildConfigField("String", "UPDATE_CHANNEL", "\"github\"")
         }
 
         release {
@@ -98,12 +99,15 @@ android {
             )
         }
 
-        create("verification") {
+        create("githubRelease") {
             initWith(getByName("release"))
-            installation {
-                enableBaselineProfile = false
-            }
-            signingConfig = signingConfigs.getByName("debug")
+            buildConfigField("String", "UPDATE_CHANNEL", "\"github\"")
+            matchingFallbacks += listOf("release")
+        }
+
+        create("playStoreRelease") {
+            initWith(getByName("release"))
+            buildConfigField("String", "UPDATE_CHANNEL", "\"playStore\"")
             matchingFallbacks += listOf("release")
         }
     }
@@ -112,6 +116,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
     buildFeatures {
+        buildConfig = true
         compose = true
     }
     androidResources {
@@ -120,6 +125,12 @@ android {
 }
 
 androidComponents {
+    beforeVariants { variant ->
+        if (variant.buildType == "release") {
+            variant.enable = false
+        }
+    }
+
     onVariants { variant ->
         val variantName = variant.name.replaceFirstChar { it.uppercase() }
         tasks.matching { it.name == "ksp${variantName}Kotlin" }.configureEach {
@@ -153,13 +164,20 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     implementation(libs.google.ai.edge.litert)
     implementation(libs.google.dagger.hilt.android)
+    implementation(libs.google.play.app.update)
+    implementation(libs.google.play.app.update.ktx)
+    implementation(libs.pdfbox.android)
+    implementation(libs.androidx.work.runtime)
+    implementation(libs.androidx.hilt.work)
     ksp(libs.androidx.room.compiler)
     ksp(libs.google.dagger.hilt.compiler)
+    ksp(libs.androidx.hilt.compiler)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+    androidTestImplementation(libs.androidx.work.testing)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 }

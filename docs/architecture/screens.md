@@ -1,0 +1,133 @@
+# Screens and ViewModels
+
+Every feature screen in Scanly **v1.0.9** and its responsibilities.
+
+## Screen inventory
+
+| Feature | Screen | ViewModel | Route | Primary responsibilities |
+| --- | --- | --- | --- | --- |
+| Onboarding | `OnboardingScreen` | `OnboardingViewModel` | (gate in MainActivity) | First-run intro; persist completion |
+| Home | `HomeScreen` | `HomeViewModel` | `home` | Recent docs/groups, scan, import, suggest names, library shortcut |
+| Library | `LibraryScreen` | `LibraryViewModel` | `library` | Search, filter pills, sort, document/group CRUD, suggest names |
+| Group detail | `GroupDetailScreen` | `GroupDetailViewModel` | `group/{groupId}` | Membership, rename, delete, group export, create doc in group |
+| Document detail | `DocumentDetailScreen` | `DocumentDetailViewModel` | `document/{documentId}` | Pages, reorder, rename, import, export/save, move to group |
+| Scan session | `ScanSessionScreen` | `ScanSessionViewModel` | `camera/session/{docId}` | CameraX, live ML overlay, auto-capture, finalize |
+| Page preview | `PageImagePreviewScreen` | `PageImagePreviewViewModel` | `preview/page/{pageId}` | Image-only paging, zoom, share/edit/retake/delete overflow |
+| Page editor | `PageEditorScreen` | `PageEditorViewModel` | `editor/page/{pageId}` | Crop, rotate, filters, retake |
+| Settings | `SettingsScreen` | `SettingsViewModel` | `settings` | Theme, links to sub-screens, manual update check |
+| Storage & backup | `StorageBackupScreen` | `SettingsViewModel` | `settings/storage` | Destination, usage, backup/restore progress, clear data |
+| FAQs | `SettingsFaqScreen` | `SettingsViewModel` | `settings/faq` | Bundled FAQ content |
+| Licenses | `SettingsLicensesScreen` | `SettingsViewModel` | `settings/licenses` | Third-party license list |
+| Legal | `LegalDocumentScreen` | — | `legal/{documentType}` | Privacy / terms WebView content |
+| App update | `AppUpdateDialog` | `AppUpdateViewModel` | (overlay) | Channel-specific update check, cooldown |
+| Flexible update | `FlexibleUpdateSnackbar` | `AppUpdateViewModel` | (overlay) | Restart prompt after Play flexible download |
+| Placeholder | `FeaturePlaceholderScreen` | — | `camera`, `review`, `editor` | Legacy stubs — do not extend |
+
+## App-level ViewModels
+
+Hosted in `MainActivity`, not tied to a single screen:
+
+| ViewModel | Role |
+| --- | --- |
+| `AppSettingsViewModel` | Observes and applies theme mode globally |
+| `OnboardingViewModel` | Tracks onboarding completion state |
+| `AppUpdateViewModel` | Automatic and manual update checks; dialog and snackbar state |
+
+## ViewModel → use case mapping (key screens)
+
+### HomeViewModel
+
+- `ObserveRecentDocumentsUseCase`, `ObserveRecentGroupsUseCase`
+- `CreateDocumentUseCase`, `CreateGroupUseCase`
+- `SuggestDocumentTitleUseCase`, `SuggestGroupTitleUseCase`
+- `ImportImagesUseCase`
+
+### LibraryViewModel
+
+- `ObserveDocumentsUseCase`, `ObserveGroupsUseCase`, `ObserveUngroupedDocumentsUseCase`
+- `CreateDocumentUseCase`, `DeleteDocumentUseCase`, `RenameDocumentUseCase`
+- `CreateGroupUseCase`, `DeleteGroupUseCase`, `RenameGroupUseCase`
+- `SuggestDocumentTitleUseCase`, `SuggestGroupTitleUseCase`
+
+### DocumentDetailViewModel
+
+- `ObserveDocumentUseCase`, `ObserveDocumentPagesUseCase`
+- `RenameDocumentUseCase`, `DeletePageUseCase`, `MovePageUseCase`
+- `SetDocumentGroupUseCase`, `ImportImagesUseCase`, `SuggestGroupTitleUseCase`
+- `ExportDocumentPdfUseCase`, `ExportDocumentImageArchiveUseCase`
+- `SaveExportArtifactUseCase`
+- `PrepareDocumentPdfShareUseCase`, `PrepareDocumentImageShareUseCase`
+
+### ScanSessionViewModel
+
+- `PreparePageCaptureUseCase`, `PrepareReplacementCaptureUseCase`
+- `FinalizeCapturedPageUseCase`
+- Uses `DocumentCornerDetector` for live overlay (injected via processing stack)
+
+### PageEditorViewModel
+
+- `ObservePageUseCase`, `UpdatePageEditsUseCase`
+- Uses `CropQuadEditor` for interactive crop handles
+
+### PageImagePreviewViewModel
+
+- `ObservePageUseCase`, `ObserveDocumentPagesUseCase`
+- `DeletePageUseCase`
+- Share uses processed image path via FileProvider
+
+### GroupDetailViewModel
+
+- `ObserveGroupUseCase`, `ObserveGroupDocumentsUseCase`
+- `RenameGroupUseCase`, `DeleteGroupUseCase`, `SetDocumentGroupUseCase`
+- `SuggestDocumentTitleUseCase`, `CreateDocumentUseCase`
+- `ExportGroupPdfUseCase`, `ExportGroupZippedPdfsUseCase`
+- `PrepareGroupPdfShareUseCase`, `PrepareGroupZippedPdfsShareUseCase`
+- `SaveExportArtifactUseCase`
+
+### SettingsViewModel
+
+- `ObserveThemeModeUseCase`, `SetThemeModeUseCase`
+- `LoadSettingsContentUseCase`, `GetAppStorageUsageUseCase`
+- `ObserveExportDestinationUseCase`, `SetExportDestinationUseCase`, `ResetExportDestinationUseCase`
+- `EstimateLibraryBackupUseCase`, `StartLibraryBackupUseCase`, `StartLibraryRestoreUseCase`
+- `ObserveLibraryArchiveWorkUseCase`, `CancelLibraryArchiveWorkUseCase`
+- `ClearAllAppDataUseCase`
+- Triggers `AppUpdateViewModel.checkForUpdates(Manual)`
+
+## Shared UI components
+
+`feature/components/`:
+
+| File | Purpose |
+| --- | --- |
+| `SharedComponents.kt` | Document/group cards, list items, thumbnails |
+| `FabComponents.kt` | FAB menus for create/scan/import |
+| `ExportShareComponents.kt` | Export and share bottom sheets |
+
+`core/ui/`:
+
+| File | Purpose |
+| --- | --- |
+| `ScanlyChrome.kt` | Top bars, shared chrome |
+| `ThumbnailCache.kt` | In-memory thumbnail cache |
+| `PreviewImageSizer.kt` | Consistent preview dimensions |
+| `ImageImportSupport.kt` | Gallery picker (10 image limit) |
+| `AdaptiveLayout.kt` | Phone vs tablet detection |
+| `ZoomableImageDialog.kt` | Pinch-zoom preview (document detail) |
+| `ZoomableImageViewer.kt` | Pinch-zoom viewer (page preview) |
+
+## Scan session internals
+
+Classes supporting `ScanSessionScreen` (not separate screens):
+
+| Class | Role |
+| --- | --- |
+| `CaptureFrameQualityAnalyzer` | Lighting, blur, obstruction feedback |
+| `CaptureStabilityTracker` | Auto-capture phase machine (`AutoCapturePhase`) |
+| `CameraOverlayMapper` | Maps ML quad to overlay coordinates |
+
+## Related docs
+
+- [navigation.md](navigation.md) — routes and flow diagrams
+- [../reference/use-cases.md](../reference/use-cases.md) — full use case list
+- [../overview/features.md](../overview/features.md) — user-facing feature descriptions

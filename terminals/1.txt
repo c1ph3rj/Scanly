@@ -1,0 +1,7 @@
+---
+pid: 19896
+cwd: "C:\Users\jeeva\AndroidStudioProjects\Scanly"
+command: "cd \"C:\\Users\\jeeva\\AndroidStudioProjects\\Scanly\" && .\\gradlew.bat assembleDebug testDebugUnitTest --quiet 2>&1"
+started_at: 2026-06-29T17:05:40.096Z
+running_for_ms: 3605005  
+---

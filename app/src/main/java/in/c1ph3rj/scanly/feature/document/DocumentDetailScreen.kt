@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -109,6 +110,7 @@ import `in`.c1ph3rj.scanly.core.ui.ZoomableImageDialog
 import `in`.c1ph3rj.scanly.core.ui.ZoomableImageViewer
 import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import `in`.c1ph3rj.scanly.domain.model.ExportArtifact
+import `in`.c1ph3rj.scanly.domain.model.GroupTitleFormat
 import `in`.c1ph3rj.scanly.domain.model.PageProcessingState
 import `in`.c1ph3rj.scanly.domain.model.PdfExportOptions
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
@@ -158,45 +160,6 @@ fun DocumentDetailRoute(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
-    val scope = rememberCoroutineScope()
-    var pendingPdfExport by remember { mutableStateOf<ExportArtifact?>(null) }
-    var pendingArchiveExport by remember { mutableStateOf<ExportArtifact?>(null) }
-
-    val savePdfLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.CreateDocument(PdfMimeType),
-    ) { uri ->
-        val artifact = pendingPdfExport
-        pendingPdfExport = null
-        if (uri == null || artifact == null) {
-            return@rememberLauncherForActivityResult
-        }
-        scope.launch {
-            saveExportedFile(
-                context = context,
-                artifact = artifact,
-                destinationUri = uri,
-                snackbarHostState = snackbarHostState,
-            )
-        }
-    }
-
-    val saveArchiveLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.CreateDocument(ZipMimeType),
-    ) { uri ->
-        val artifact = pendingArchiveExport
-        pendingArchiveExport = null
-        if (uri == null || artifact == null) {
-            return@rememberLauncherForActivityResult
-        }
-        scope.launch {
-            saveExportedFile(
-                context = context,
-                artifact = artifact,
-                destinationUri = uri,
-                snackbarHostState = snackbarHostState,
-            )
-        }
-    }
 
     val importImagesLauncher = rememberLauncherForActivityResult(
         contract = ImageImportSupport.pickMultipleVisualMediaContract(),
@@ -210,22 +173,6 @@ fun DocumentDetailRoute(
         viewModel.events.collectLatest { event ->
             when (event) {
                 is DocumentDetailEvent.ShowMessage -> snackbarHostState.showSnackbar(event.message)
-                is DocumentDetailEvent.SaveExportedFile -> {
-                    when (event.artifact.mimeType) {
-                        PdfMimeType -> {
-                            pendingPdfExport = event.artifact
-                            savePdfLauncher.launch(event.artifact.fileName)
-                        }
-
-                        ZipMimeType -> {
-                            pendingArchiveExport = event.artifact
-                            saveArchiveLauncher.launch(event.artifact.fileName)
-                        }
-
-                        else -> snackbarHostState.showSnackbar("Unsupported export format.")
-                    }
-                }
-
                 is DocumentDetailEvent.ShareFiles -> {
                     sharePreparedFiles(
                         context = context,
@@ -255,6 +202,7 @@ fun DocumentDetailRoute(
         onShareSelectedPage = viewModel::shareSelectedPage,
         onMoveToGroup = viewModel::moveToGroup,
         onCreateFolderAndMove = viewModel::createFolderAndMove,
+        onSuggestGroupTitle = viewModel::suggestGroupTitle,
         onImportImage = {
             importImagesLauncher.launch(ImageImportSupport.createPickRequest())
         },
@@ -282,6 +230,7 @@ fun DocumentDetailScreen(
     onShareSelectedPage: () -> Unit,
     onMoveToGroup: (String?) -> Unit,
     onCreateFolderAndMove: (String) -> Unit,
+    onSuggestGroupTitle: suspend (GroupTitleFormat) -> String,
     onImportImage: () -> Unit,
     onRenameDocument: (String) -> Unit,
     onDeleteDocument: () -> Unit,
@@ -444,6 +393,7 @@ fun DocumentDetailScreen(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         containerColor = MaterialTheme.colorScheme.background,
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         topBar = {
             ReviewTopBar(
@@ -760,6 +710,7 @@ fun DocumentDetailScreen(
                 moveSheetVisible = false
                 onCreateFolderAndMove(name)
             },
+            onSuggestFolderName = onSuggestGroupTitle,
         )
     }
 
@@ -812,6 +763,7 @@ fun DocumentDetailScreen(
             onOptionsChanged = { updatedOptions -> pdfOptions = updatedOptions },
             onConfirm = {
                 val selectedOptions = pdfOptions
+                pdfOptions = pdfOptions.copy(password = null)
                 val selectedMode = pdfActionMode
                 pdfActionMode = null
                 when (selectedMode) {
@@ -845,35 +797,33 @@ private fun ReviewTopBar(
     menuEnabled: Boolean,
 ) {
     var showMenu by remember { mutableStateOf(false) }
-    val topBarColor = MaterialTheme.colorScheme.surface
 
-    Surface(color = topBarColor) {
-        TopAppBar(
-            title = {
-                Column(modifier = Modifier.padding(start = 10.dp)) {
-                    Text(
-                        text = title,
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.SemiBold,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                    Text(
-                        text = pageCount.toPageCountLabel(),
-                        style = MaterialTheme.typography.labelLarge,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                }
-            },
-            navigationIcon = {
-                ChromeIconButton(
-                    icon = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Back",
-                    onClick = onNavigateUp,
+    TopAppBar(
+        title = {
+            Column(modifier = Modifier.padding(start = 10.dp)) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.SemiBold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                 )
-            },
+                Text(
+                    text = pageCount.toPageCountLabel(),
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
+        },
+        navigationIcon = {
+            ChromeIconButton(
+                icon = Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = "Back",
+                onClick = onNavigateUp,
+            )
+        },
             actions = {
                 Box {
                     IconButton(
@@ -945,11 +895,9 @@ private fun ReviewTopBar(
                 }
             },
             colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = Color.Transparent,
-                scrolledContainerColor = Color.Transparent,
+                containerColor = MaterialTheme.colorScheme.background,
             ),
         )
-    }
 }
 
 @Composable
@@ -2092,29 +2040,6 @@ private fun PageProcessingState.toContentColor() = when (this) {
     PageProcessingState.NEEDS_REVIEW -> MaterialTheme.colorScheme.onTertiaryContainer
 }
 
-private suspend fun saveExportedFile(
-    context: Context,
-    artifact: ExportArtifact,
-    destinationUri: Uri,
-    snackbarHostState: SnackbarHostState,
-) {
-    val result = runCatching {
-        withContext(Dispatchers.IO) {
-            val sourceFile = File(artifact.filePath)
-            context.contentResolver.openOutputStream(destinationUri)?.use { outputStream ->
-                sourceFile.inputStream().use { inputStream ->
-                    inputStream.copyTo(outputStream)
-                }
-            } ?: error("Could not open the selected destination.")
-        }
-    }
-    if (result.isSuccess) {
-        snackbarHostState.showSnackbar("Saved ${artifact.fileName}")
-    } else {
-        snackbarHostState.showSnackbar(result.exceptionOrNull()?.message ?: "Could not save export.")
-    }
-}
-
 private fun sharePreparedFiles(
     context: Context,
     artifact: ShareArtifact,
@@ -2143,9 +2068,6 @@ private fun Context.exportUriFor(path: String): Uri = FileProvider.getUriForFile
     "$packageName.fileprovider",
     File(path),
 )
-
-private const val PdfMimeType = "application/pdf"
-private const val ZipMimeType = "application/zip"
 
 @Composable
 private fun PreviewActionButton(

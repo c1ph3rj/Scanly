@@ -18,14 +18,20 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.CreateNewFolder
 import androidx.compose.material.icons.filled.DeleteOutline
@@ -36,22 +42,30 @@ import androidx.compose.material.icons.filled.FolderOff
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import kotlinx.coroutines.launch
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -81,6 +95,8 @@ import `in`.c1ph3rj.scanly.core.ui.PreviewDisplaySize
 import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import `in`.c1ph3rj.scanly.core.ui.PreviewImageSizer
 import `in`.c1ph3rj.scanly.domain.model.DocumentGroup
+import `in`.c1ph3rj.scanly.domain.model.DocumentTitleFormat
+import `in`.c1ph3rj.scanly.domain.model.GroupTitleFormat
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
 import `in`.c1ph3rj.scanly.domain.model.ScanPage
 import `in`.c1ph3rj.scanly.domain.model.previewImagePath
@@ -317,6 +333,95 @@ fun ScanlyAppLogo(
     )
 }
 
+// ─── Screen chrome ─────────────────────────────────────────────────────────────
+
+/** Matches Home/Library tab headers. */
+@Composable
+fun ScanlyTabScreenHeader(
+    title: String,
+    subtitle: String,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .statusBarsPadding()
+            .padding(top = 24.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        Text(
+            text = title,
+            style = MaterialTheme.typography.displaySmall,
+            fontWeight = FontWeight.Bold,
+        )
+        Text(
+            text = subtitle,
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ScanlyDetailTopBar(
+    title: String,
+    onNavigateUp: () -> Unit,
+    modifier: Modifier = Modifier,
+    actions: @Composable RowScope.() -> Unit = {},
+) {
+    TopAppBar(
+        modifier = modifier,
+        title = {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.SemiBold,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+        },
+        navigationIcon = {
+            IconButton(onClick = onNavigateUp) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "Back",
+                )
+            }
+        },
+        actions = actions,
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.background,
+        ),
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ScanlyDetailScaffold(
+    title: String,
+    onNavigateUp: () -> Unit,
+    modifier: Modifier = Modifier,
+    actions: @Composable RowScope.() -> Unit = {},
+    snackbarHost: @Composable () -> Unit = {},
+    content: @Composable (PaddingValues) -> Unit,
+) {
+    Scaffold(
+        modifier = modifier.fillMaxSize(),
+        containerColor = MaterialTheme.colorScheme.background,
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
+        topBar = {
+            ScanlyDetailTopBar(
+                title = title,
+                onNavigateUp = onNavigateUp,
+                actions = actions,
+            )
+        },
+        snackbarHost = snackbarHost,
+        content = content,
+    )
+}
+
 // ─── Dialogs ───────────────────────────────────────────────────────────────────
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -464,12 +569,78 @@ private fun ScanlyDialogActions(
 }
 
 @Composable
+fun DocumentTitleSuggestRow(
+    onSuggestTitle: suspend (DocumentTitleFormat) -> String,
+    onSuggested: (String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val scope = rememberCoroutineScope()
+    var isSuggesting by remember { mutableStateOf(false) }
+    var formatIndex by rememberSaveable { mutableIntStateOf(0) }
+    val activeFormat = DocumentTitleFormat.entries[formatIndex]
+
+    fun suggestWithActiveFormat() {
+        if (isSuggesting) return
+        val format = activeFormat
+        scope.launch {
+            isSuggesting = true
+            try {
+                onSuggested(onSuggestTitle(format))
+                formatIndex = (formatIndex + 1) % DocumentTitleFormat.entries.size
+            } finally {
+                isSuggesting = false
+            }
+        }
+    }
+
+    OutlinedButton(
+        onClick = ::suggestWithActiveFormat,
+        enabled = !isSuggesting,
+        modifier = modifier.fillMaxWidth(),
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            if (isSuggesting) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(20.dp),
+                    strokeWidth = 2.dp,
+                )
+            } else {
+                Icon(
+                    imageVector = Icons.Filled.AutoAwesome,
+                    contentDescription = null,
+                    modifier = Modifier.size(20.dp),
+                )
+            }
+            Spacer(Modifier.width(12.dp))
+            Column(
+                verticalArrangement = Arrangement.spacedBy(2.dp),
+            ) {
+                Text(
+                    text = "Suggest name",
+                    style = MaterialTheme.typography.labelLarge,
+                )
+                Text(
+                    text = activeFormat.shortLabel,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
+    }
+}
+
+@Composable
 fun DocumentTitleDialog(
     title: String,
     initialValue: String,
     confirmLabel: String,
     onDismiss: () -> Unit,
     onConfirm: (String) -> Unit,
+    onSuggestTitle: (suspend (DocumentTitleFormat) -> String)? = null,
 ) {
     var value by rememberSaveable(initialValue) { mutableStateOf(initialValue) }
     ScanlyFormDialogShell(onDismiss = onDismiss) {
@@ -485,6 +656,12 @@ fun DocumentTitleDialog(
             singleLine = true,
             modifier = Modifier.fillMaxWidth(),
         )
+        if (onSuggestTitle != null) {
+            DocumentTitleSuggestRow(
+                onSuggestTitle = onSuggestTitle,
+                onSuggested = { value = it },
+            )
+        }
         ScanlyDialogActions(
             onDismiss = onDismiss,
             confirmLabel = confirmLabel,
@@ -495,12 +672,78 @@ fun DocumentTitleDialog(
 }
 
 @Composable
+fun GroupTitleSuggestRow(
+    onSuggestTitle: suspend (GroupTitleFormat) -> String,
+    onSuggested: (String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val scope = rememberCoroutineScope()
+    var isSuggesting by remember { mutableStateOf(false) }
+    var formatIndex by rememberSaveable { mutableIntStateOf(0) }
+    val activeFormat = GroupTitleFormat.entries[formatIndex]
+
+    fun suggestWithActiveFormat() {
+        if (isSuggesting) return
+        val format = activeFormat
+        scope.launch {
+            isSuggesting = true
+            try {
+                onSuggested(onSuggestTitle(format))
+                formatIndex = (formatIndex + 1) % GroupTitleFormat.entries.size
+            } finally {
+                isSuggesting = false
+            }
+        }
+    }
+
+    OutlinedButton(
+        onClick = ::suggestWithActiveFormat,
+        enabled = !isSuggesting,
+        modifier = modifier.fillMaxWidth(),
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            if (isSuggesting) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(20.dp),
+                    strokeWidth = 2.dp,
+                )
+            } else {
+                Icon(
+                    imageVector = Icons.Filled.AutoAwesome,
+                    contentDescription = null,
+                    modifier = Modifier.size(20.dp),
+                )
+            }
+            Spacer(Modifier.width(12.dp))
+            Column(
+                verticalArrangement = Arrangement.spacedBy(2.dp),
+            ) {
+                Text(
+                    text = "Suggest name",
+                    style = MaterialTheme.typography.labelLarge,
+                )
+                Text(
+                    text = activeFormat.shortLabel,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
+    }
+}
+
+@Composable
 fun GroupNameDialog(
     title: String,
     initialValue: String,
     onDismiss: () -> Unit,
     onConfirm: (String) -> Unit,
     confirmLabel: String = "Create",
+    onSuggestTitle: (suspend (GroupTitleFormat) -> String)? = null,
 ) {
     var value by rememberSaveable(initialValue) { mutableStateOf(initialValue) }
     ScanlyFormDialogShell(onDismiss = onDismiss) {
@@ -516,6 +759,12 @@ fun GroupNameDialog(
             singleLine = true,
             modifier = Modifier.fillMaxWidth(),
         )
+        if (onSuggestTitle != null) {
+            GroupTitleSuggestRow(
+                onSuggestTitle = onSuggestTitle,
+                onSuggested = { value = it },
+            )
+        }
         ScanlyDialogActions(
             onDismiss = onDismiss,
             confirmLabel = confirmLabel,
@@ -539,6 +788,7 @@ fun MoveToFolderSheet(
     onDismiss: () -> Unit,
     onSelectFolder: (String?) -> Unit,
     onCreateFolderAndMove: (String) -> Unit,
+    onSuggestFolderName: (suspend (GroupTitleFormat) -> String)? = null,
 ) {
     var creatingFolder by rememberSaveable { mutableStateOf(false) }
     var newFolderName by rememberSaveable { mutableStateOf("") }
@@ -585,6 +835,12 @@ fun MoveToFolderSheet(
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                 )
+                if (onSuggestFolderName != null) {
+                    GroupTitleSuggestRow(
+                        onSuggestTitle = onSuggestFolderName,
+                        onSuggested = { newFolderName = it },
+                    )
+                }
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp),

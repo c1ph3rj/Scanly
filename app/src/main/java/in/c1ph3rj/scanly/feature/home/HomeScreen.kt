@@ -26,6 +26,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import `in`.c1ph3rj.scanly.core.ui.ImageImportSupport
 import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import `in`.c1ph3rj.scanly.domain.model.DocumentGroup
+import `in`.c1ph3rj.scanly.domain.model.DocumentTitleFormat
+import `in`.c1ph3rj.scanly.domain.model.GroupTitleFormat
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
 import `in`.c1ph3rj.scanly.feature.components.*
 import `in`.c1ph3rj.scanly.core.ui.PreviewDisplaySize
@@ -81,6 +83,8 @@ fun HomeRoute(
         onOpenGroup = onOpenGroup,
         onNavigateToLibrary = onNavigateToLibrary,
         onCreateGroup = viewModel::createGroup,
+        onSuggestTitle = viewModel::suggestDocumentTitle,
+        onSuggestGroupTitle = viewModel::suggestGroupTitle,
     )
 }
 
@@ -95,6 +99,8 @@ fun HomeScreen(
     onOpenGroup: (String) -> Unit,
     onNavigateToLibrary: () -> Unit,
     onCreateGroup: (String) -> Unit,
+    onSuggestTitle: suspend (DocumentTitleFormat) -> String,
+    onSuggestGroupTitle: suspend (GroupTitleFormat) -> String,
 ) {
     var createDialogVisible by rememberSaveable { mutableStateOf(false) }
     var createFolderDialogVisible by rememberSaveable { mutableStateOf(false) }
@@ -233,6 +239,7 @@ fun HomeScreen(
                 createDialogVisible = false
                 onCreateDocument(value)
             },
+            onSuggestTitle = onSuggestTitle,
         )
     }
 
@@ -245,6 +252,7 @@ fun HomeScreen(
                 createFolderDialogVisible = false
                 onCreateGroup(title)
             },
+            onSuggestTitle = onSuggestGroupTitle,
         )
     }
 }

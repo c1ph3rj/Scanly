@@ -9,11 +9,17 @@ import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Sort
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.History
+import androidx.compose.material.icons.filled.Inventory2
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.CreateNewFolder
@@ -21,7 +27,10 @@ import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material.icons.filled.FolderOff
 import androidx.compose.material.icons.filled.FolderOpen
+import androidx.compose.material.icons.filled.PostAdd
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.SortByAlpha
+import androidx.compose.material.icons.filled.Update
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -31,6 +40,10 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
@@ -39,6 +52,8 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import `in`.c1ph3rj.scanly.domain.model.DocumentGroup
+import `in`.c1ph3rj.scanly.domain.model.DocumentTitleFormat
+import `in`.c1ph3rj.scanly.domain.model.GroupTitleFormat
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
 import `in`.c1ph3rj.scanly.feature.components.*
 import kotlinx.coroutines.flow.collectLatest
@@ -79,9 +94,14 @@ fun LibraryRoute(
         onOpenGroup = onOpenGroup,
         onSearchQueryChange = viewModel::setSearchQuery,
         onClearSearch = viewModel::clearSearch,
+        onTabSelected = viewModel::selectTab,
+        onSortSelected = viewModel::selectSortOption,
+        onSuggestTitle = viewModel::suggestDocumentTitle,
+        onSuggestGroupTitle = viewModel::suggestGroupTitle,
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LibraryScreen(
     uiState: LibraryUiState,
@@ -99,6 +119,10 @@ fun LibraryScreen(
     onOpenGroup: (String) -> Unit,
     onSearchQueryChange: (String) -> Unit,
     onClearSearch: () -> Unit,
+    onTabSelected: (LibraryTab) -> Unit,
+    onSortSelected: (LibrarySortOption) -> Unit,
+    onSuggestTitle: suspend (DocumentTitleFormat) -> String,
+    onSuggestGroupTitle: suspend (GroupTitleFormat) -> String,
 ) {
     var createDocDialogVisible by rememberSaveable { mutableStateOf(false) }
     var createGroupDialogVisible by rememberSaveable { mutableStateOf(false) }
@@ -108,36 +132,15 @@ fun LibraryScreen(
     var deleteGroupTarget by remember { mutableStateOf<DocumentGroup?>(null) }
     var moveDocTarget by remember { mutableStateOf<ScanDocument?>(null) }
     var showFabMenu by rememberSaveable { mutableStateOf(false) }
+    var showSortSheet by rememberSaveable { mutableStateOf(false) }
     val windowSizeInfo = rememberWindowSizeInfo()
-    val groupRows = remember(uiState.groups, windowSizeInfo.groupColumns) {
-        uiState.groups.chunked(windowSizeInfo.groupColumns)
+    val visibleGroups = remember(uiState) { uiState.visibleGroups }
+    val visibleDocuments = remember(uiState) { uiState.visibleDocuments }
+    val groupRows = remember(visibleGroups, windowSizeInfo.groupColumns) {
+        visibleGroups.chunked(windowSizeInfo.groupColumns)
     }
-    val documentRows = remember(uiState.ungroupedDocuments, windowSizeInfo.groupColumns) {
-        uiState.ungroupedDocuments.chunked(windowSizeInfo.groupColumns)
-    }
-    val filteredGroupRows = remember(
-        uiState.filteredGroups,
-        windowSizeInfo.groupColumns,
-        uiState.isSearchActive,
-        windowSizeInfo.isTablet,
-    ) {
-        if (uiState.isSearchActive && windowSizeInfo.isTablet) {
-            uiState.filteredGroups.chunked(windowSizeInfo.groupColumns)
-        } else {
-            emptyList()
-        }
-    }
-    val filteredDocumentRows = remember(
-        uiState.filteredDocuments,
-        windowSizeInfo.groupColumns,
-        uiState.isSearchActive,
-        windowSizeInfo.isTablet,
-    ) {
-        if (uiState.isSearchActive && windowSizeInfo.isTablet) {
-            uiState.filteredDocuments.chunked(windowSizeInfo.groupColumns)
-        } else {
-            emptyList()
-        }
+    val documentRows = remember(visibleDocuments, windowSizeInfo.groupColumns) {
+        visibleDocuments.chunked(windowSizeInfo.groupColumns)
     }
 
     Scaffold(
@@ -168,48 +171,85 @@ fun LibraryScreen(
                     ),
                     verticalArrangement = Arrangement.spacedBy(0.dp),
                 ) {
-            item(key = "header") {
-                LibraryHeader(
-                    groupCount = uiState.groups.size,
-                    documentCount = uiState.ungroupedDocuments.size,
-                    modifier = Modifier.padding(bottom = 20.dp),
-                )
-            }
-
-            item(key = "search") {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 24.dp),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    LibrarySearchBar(
-                        query = uiState.searchQuery,
-                        onQueryChange = onSearchQueryChange,
-                        onClear = onClearSearch,
-                        isTablet = windowSizeInfo.isTablet,
-                    )
-                }
-            }
-
-            if (uiState.isSearchActive) {
-                val filteredGroups = uiState.filteredGroups
-                val filteredDocs = uiState.filteredDocuments
-
-                if (filteredGroups.isEmpty() && filteredDocs.isEmpty()) {
-                    item(key = "no_results") {
-                        NoResultsCard(query = uiState.searchQuery)
+                    item(key = "header") {
+                        LibraryHeader(
+                            groupCount = uiState.groups.size,
+                            documentCount = uiState.allDocuments.size,
+                            modifier = Modifier.padding(bottom = 18.dp),
+                        )
                     }
-                } else {
-                    if (filteredGroups.isNotEmpty()) {
-                        item(key = "search_groups_label") {
-                            SearchResultLabel("Folders", modifier = Modifier.padding(bottom = 12.dp))
+
+                    item(key = "search_and_sort") {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 16.dp),
+                            horizontalArrangement = Arrangement.spacedBy(10.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            LibrarySearchBar(
+                                query = uiState.searchQuery,
+                                onQueryChange = onSearchQueryChange,
+                                onClear = onClearSearch,
+                                selectedTab = uiState.selectedTab,
+                                modifier = Modifier.weight(1f),
+                            )
+                            LibrarySortButton(
+                                selectedOption = uiState.sortOption,
+                                onClick = { showSortSheet = true },
+                            )
                         }
-                        if (windowSizeInfo.isTablet) {
+                    }
+
+                    item(key = "tabs") {
+                        LibraryTabs(
+                            selectedTab = uiState.selectedTab,
+                            onTabSelected = onTabSelected,
+                            modifier = Modifier.padding(bottom = 18.dp),
+                        )
+                    }
+
+                    if (visibleGroups.isEmpty() && visibleDocuments.isEmpty()) {
+                        item(key = "empty_${uiState.selectedTab}") {
+                            when {
+                                uiState.isSearchActive -> NoResultsCard(
+                                    query = uiState.searchQuery,
+                                    selectedTab = uiState.selectedTab,
+                                )
+                                !uiState.hasAnyItems || uiState.selectedTab == LibraryTab.All -> EmptyLibraryCard(
+                                    onCreateDocument = { createDocDialogVisible = true },
+                                    onCreateGroup = { createGroupDialogVisible = true },
+                                )
+                                else -> EmptyLibraryTabCard(
+                                    selectedTab = uiState.selectedTab,
+                                    onCreateDocument = { createDocDialogVisible = true },
+                                    onCreateGroup = { createGroupDialogVisible = true },
+                                )
+                            }
+                        }
+                    } else {
+                        item(key = "result_summary") {
+                            LibraryResultSummary(
+                                itemCount = visibleGroups.size + visibleDocuments.size,
+                                sortOption = uiState.sortOption,
+                                modifier = Modifier.padding(bottom = 12.dp),
+                            )
+                        }
+
+                        if (visibleGroups.isNotEmpty()) {
+                            if (uiState.selectedTab == LibraryTab.All) {
+                                item(key = "groups_label") {
+                                    LibrarySectionHeader(
+                                        title = "Folders",
+                                        count = visibleGroups.size,
+                                        modifier = Modifier.padding(bottom = 12.dp),
+                                    )
+                                }
+                            }
                             items(
-                                items = filteredGroupRows,
-                                key = { rowItems -> "search_group_row_${rowItems.first().id}" },
-                                contentType = { "search_group_row" },
+                                items = groupRows,
+                                key = { rowItems -> "group_row_${rowItems.first().id}" },
+                                contentType = { "group_row" },
                             ) { rowItems ->
                                 Row(
                                     horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -227,186 +267,76 @@ fun LibraryScreen(
                                             modifier = Modifier.weight(1f),
                                         )
                                     }
-                                    val emptyCells = windowSizeInfo.groupColumns - rowItems.size
-                                    repeat(emptyCells) {
+                                    repeat(windowSizeInfo.groupColumns - rowItems.size) {
                                         Spacer(modifier = Modifier.weight(1f))
                                     }
                                 }
                             }
-                        } else {
-                            items(
-                                items = filteredGroups,
-                                key = { "sg_${it.id}" },
-                                contentType = { "search_group" },
-                            ) { group ->
-                                GroupCard(
-                                    group = group,
-                                    onOpen = { onOpenGroup(group.id) },
-                                    onRename = { renameGroupTarget = group },
-                                    onDelete = { deleteGroupTarget = group },
-                                    modifier = Modifier
-                                        .padding(bottom = 12.dp)
-                                        .animateItem(),
-                                )
-                            }
                         }
-                    }
-                    if (filteredDocs.isNotEmpty()) {
-                        item(key = "search_docs_label") {
-                            SearchResultLabel("Documents", modifier = Modifier.padding(top = 12.dp, bottom = 12.dp))
-                        }
-                        if (windowSizeInfo.isTablet) {
-                            items(
-                                items = filteredDocumentRows,
-                                key = { rowItems -> "search_doc_row_${rowItems.first().id}" },
-                                contentType = { "search_document_row" },
-                            ) { rowItems ->
-                                Row(
-                                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(bottom = 12.dp)
-                                        .animateItem(),
-                                ) {
-                                    rowItems.forEach { doc ->
-                                        DocumentCard(
-                                            document = doc,
-                                            onOpen = { onOpenDocument(doc.id) },
-                                            onRename = { renameDocTarget = doc },
-                                            onDelete = { deleteDocTarget = doc },
-                                            onMove = { moveDocTarget = doc },
-                                            style = LibraryCardStyle.Grid,
-                                            modifier = Modifier.weight(1f),
-                                        )
-                                    }
-                                    val emptyCells = windowSizeInfo.groupColumns - rowItems.size
-                                    repeat(emptyCells) {
-                                        Spacer(modifier = Modifier.weight(1f))
-                                    }
-                                }
-                            }
-                        } else {
-                            items(
-                                items = filteredDocs,
-                                key = { "sd_${it.id}" },
-                                contentType = { "search_document" },
-                            ) { doc ->
-                                DocumentCard(
-                                    document = doc,
-                                    onOpen = { onOpenDocument(doc.id) },
-                                    onRename = { renameDocTarget = doc },
-                                    onDelete = { deleteDocTarget = doc },
-                                    onMove = { moveDocTarget = doc },
-                                    modifier = Modifier
-                                        .padding(bottom = 12.dp)
-                                        .animateItem(),
-                                )
-                            }
-                        }
-                    }
-                }
-            } else {
-                if (uiState.groups.isNotEmpty()) {
-                    item(key = "groups_label") {
-                        SectionLabel("Folders  ·  ${uiState.groups.size}", modifier = Modifier.padding(bottom = 12.dp))
-                    }
-                    items(
-                        items = groupRows,
-                        key = { rowItems -> "group_row_${rowItems.first().id}" },
-                        contentType = { "group_row" },
-                    ) { rowItems ->
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(12.dp),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(bottom = 12.dp)
-                                .animateItem(),
-                        ) {
-                            rowItems.forEach { group ->
-                                GroupCard(
-                                    group = group,
-                                    onOpen = { onOpenGroup(group.id) },
-                                    onRename = { renameGroupTarget = group },
-                                    onDelete = { deleteGroupTarget = group },
-                                    modifier = Modifier.weight(1f),
-                                )
-                            }
-                            // Fill remaining slots in the last row so cards keep equal widths
-                            val emptyCells = windowSizeInfo.groupColumns - rowItems.size
-                            repeat(emptyCells) {
-                                Spacer(modifier = Modifier.weight(1f))
-                            }
-                        }
-                    }
-                    item(key = "groups_spacer") { Spacer(modifier = Modifier.height(16.dp)) }
-                }
 
-                if (uiState.ungroupedDocuments.isNotEmpty()) {
-                    item(key = "docs_label") {
-                        SectionLabel(
-                            text = "Documents  ·  ${uiState.ungroupedDocuments.size}",
-                            modifier = Modifier.padding(bottom = 12.dp, top = 8.dp),
-                        )
-                    }
-                    if (windowSizeInfo.isTablet) {
-                        items(
-                            items = documentRows,
-                            key = { rowItems -> "doc_row_${rowItems.first().id}" },
-                            contentType = { "document_row" },
-                        ) { rowItems ->
-                            Row(
-                                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(bottom = 12.dp)
-                                    .animateItem(),
-                            ) {
-                                rowItems.forEach { doc ->
-                                    DocumentCard(
-                                        document = doc,
-                                        onOpen = { onOpenDocument(doc.id) },
-                                        onRename = { renameDocTarget = doc },
-                                        onDelete = { deleteDocTarget = doc },
-                                        onMove = { moveDocTarget = doc },
-                                        style = LibraryCardStyle.Grid,
-                                        modifier = Modifier.weight(1f),
+                        if (visibleGroups.isNotEmpty() && visibleDocuments.isNotEmpty()) {
+                            item(key = "section_spacer") { Spacer(modifier = Modifier.height(12.dp)) }
+                        }
+
+                        if (visibleDocuments.isNotEmpty()) {
+                            if (uiState.selectedTab == LibraryTab.All) {
+                                item(key = "documents_label") {
+                                    LibrarySectionHeader(
+                                        title = "Documents",
+                                        count = visibleDocuments.size,
+                                        modifier = Modifier.padding(bottom = 12.dp),
                                     )
                                 }
-                                val emptyCells = windowSizeInfo.groupColumns - rowItems.size
-                                repeat(emptyCells) {
-                                    Spacer(modifier = Modifier.weight(1f))
+                            }
+                            if (windowSizeInfo.isTablet) {
+                                items(
+                                    items = documentRows,
+                                    key = { rowItems -> "document_row_${rowItems.first().id}" },
+                                    contentType = { "document_row" },
+                                ) { rowItems ->
+                                    Row(
+                                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(bottom = 12.dp)
+                                            .animateItem(),
+                                    ) {
+                                        rowItems.forEach { document ->
+                                            DocumentCard(
+                                                document = document,
+                                                onOpen = { onOpenDocument(document.id) },
+                                                onRename = { renameDocTarget = document },
+                                                onDelete = { deleteDocTarget = document },
+                                                onMove = { moveDocTarget = document },
+                                                style = LibraryCardStyle.Grid,
+                                                modifier = Modifier.weight(1f),
+                                            )
+                                        }
+                                        repeat(windowSizeInfo.groupColumns - rowItems.size) {
+                                            Spacer(modifier = Modifier.weight(1f))
+                                        }
+                                    }
+                                }
+                            } else {
+                                items(
+                                    items = visibleDocuments,
+                                    key = { "document_${it.id}" },
+                                    contentType = { "document" },
+                                ) { document ->
+                                    DocumentCard(
+                                        document = document,
+                                        onOpen = { onOpenDocument(document.id) },
+                                        onRename = { renameDocTarget = document },
+                                        onDelete = { deleteDocTarget = document },
+                                        onMove = { moveDocTarget = document },
+                                        modifier = Modifier
+                                            .padding(bottom = 12.dp)
+                                            .animateItem(),
+                                    )
                                 }
                             }
                         }
-                    } else {
-                        items(
-                            items = uiState.ungroupedDocuments,
-                            key = { it.id },
-                            contentType = { "document" },
-                        ) { doc ->
-                            DocumentCard(
-                                document = doc,
-                                onOpen = { onOpenDocument(doc.id) },
-                                onRename = { renameDocTarget = doc },
-                                onDelete = { deleteDocTarget = doc },
-                                onMove = { moveDocTarget = doc },
-                                modifier = Modifier
-                                    .padding(bottom = 12.dp)
-                                    .animateItem(),
-                            )
-                        }
                     }
-                }
-
-                if (uiState.groups.isEmpty() && uiState.ungroupedDocuments.isEmpty() && !uiState.isLoading) {
-                    item(key = "empty") {
-                        EmptyLibraryCard(
-                            onCreateDocument = { createDocDialogVisible = true },
-                            onCreateGroup = { createGroupDialogVisible = true },
-                        )
-                    }
-                }
-            }
             }
             }
 
@@ -440,6 +370,7 @@ fun LibraryScreen(
                 createDocDialogVisible = false
                 onCreateDocument(title, groupId)
             },
+            onSuggestTitle = onSuggestTitle,
         )
     }
 
@@ -452,6 +383,7 @@ fun LibraryScreen(
                 createGroupDialogVisible = false
                 onCreateGroup(title)
             },
+            onSuggestTitle = onSuggestGroupTitle,
         )
     }
 
@@ -521,39 +453,39 @@ fun LibraryScreen(
                 moveDocTarget = null
                 onMoveDocumentToNewGroup(doc.id, name)
             },
+            onSuggestFolderName = onSuggestGroupTitle,
+        )
+    }
+
+    if (showSortSheet) {
+        LibrarySortSheet(
+            selectedTab = uiState.selectedTab,
+            selectedOption = uiState.sortOption,
+            onSelect = { option ->
+                onSortSelected(option)
+                showSortSheet = false
+            },
+            onDismiss = { showSortSheet = false },
         )
     }
 }
 
 @Composable
 fun LibraryHeader(groupCount: Int, documentCount: Int, modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .statusBarsPadding()
-            .padding(top = 24.dp),
-        verticalArrangement = Arrangement.spacedBy(4.dp),
-    ) {
-        Text(
-            text = "Library",
-            style = MaterialTheme.typography.displaySmall,
-            fontWeight = FontWeight.Bold,
-        )
-        Text(
-            text = buildString {
-                if (groupCount > 0) {
-                    append("$groupCount ${if (groupCount == 1) "folder" else "folders"}")
-                    if (documentCount > 0) append("  ·  ")
-                }
-                if (documentCount > 0) {
-                    append("$documentCount ungrouped")
-                }
-                if (groupCount == 0 && documentCount == 0) append("Empty")
-            },
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-    }
+    ScanlyTabScreenHeader(
+        title = "Library",
+        subtitle = buildString {
+            if (groupCount > 0) {
+                append("$groupCount ${if (groupCount == 1) "folder" else "folders"}")
+                if (documentCount > 0) append("  ·  ")
+            }
+            if (documentCount > 0) {
+                append("$documentCount ${if (documentCount == 1) "document" else "documents"}")
+            }
+            if (groupCount == 0 && documentCount == 0) append("Empty")
+        },
+        modifier = modifier,
+    )
 }
 
 @Composable
@@ -561,11 +493,16 @@ fun LibrarySearchBar(
     query: String,
     onQueryChange: (String) -> Unit,
     onClear: () -> Unit,
+    selectedTab: LibraryTab,
     modifier: Modifier = Modifier,
-    isTablet: Boolean = false,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
+    val searchPlaceholder = when (selectedTab) {
+        LibraryTab.All -> "Search folders and documents…"
+        LibraryTab.Folders -> "Search folders…"
+        LibraryTab.Documents -> "Search documents…"
+    }
     val borderColor = if (isFocused) {
         MaterialTheme.colorScheme.primary
     } else {
@@ -573,11 +510,7 @@ fun LibrarySearchBar(
     }
 
     Surface(
-        modifier = if (isTablet) {
-            modifier.fillMaxWidth(fraction = 0.85f)
-        } else {
-            modifier.fillMaxWidth()
-        },
+        modifier = modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.extraLarge,
         color = MaterialTheme.colorScheme.surfaceContainerHigh,
         border = BorderStroke(1.dp, borderColor),
@@ -602,7 +535,7 @@ fun LibrarySearchBar(
             ) {
                 if (query.isEmpty()) {
                     Text(
-                        text = "Search folders and documents…",
+                        text = searchPlaceholder,
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
                         maxLines = 1,
@@ -612,7 +545,9 @@ fun LibrarySearchBar(
                 BasicTextField(
                     value = query,
                     onValueChange = onQueryChange,
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .semantics { contentDescription = searchPlaceholder },
                     textStyle = MaterialTheme.typography.bodyLarge.copy(
                         color = MaterialTheme.colorScheme.onSurface,
                     ),
@@ -641,18 +576,133 @@ fun LibrarySearchBar(
 }
 
 @Composable
-fun SearchResultLabel(text: String, modifier: Modifier = Modifier) {
+fun LibraryTabs(
+    selectedTab: LibraryTab,
+    onTabSelected: (LibraryTab) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val pillShape = MaterialTheme.shapes.extraLarge
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(48.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        LibraryTab.entries.forEach { tab ->
+            val selected = tab == selectedTab
+            Surface(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight()
+                    .clip(pillShape)
+                    .selectable(
+                        selected = selected,
+                        onClick = { onTabSelected(tab) },
+                        role = Role.Tab,
+                    ),
+                shape = pillShape,
+                color = if (selected) {
+                    MaterialTheme.colorScheme.primaryContainer
+                } else {
+                    MaterialTheme.colorScheme.surfaceContainerHigh
+                },
+                border = BorderStroke(
+                    width = 1.dp,
+                    color = if (selected) {
+                        MaterialTheme.colorScheme.primary
+                    } else {
+                        MaterialTheme.colorScheme.outlineVariant
+                    },
+                ),
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    Text(
+                        text = tab.name,
+                        style = MaterialTheme.typography.labelLarge,
+                        color = if (selected) {
+                            MaterialTheme.colorScheme.onPrimaryContainer
+                        } else {
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        },
+                        fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium,
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun LibrarySortButton(
+    selectedOption: LibrarySortOption,
+    onClick: () -> Unit,
+) {
+    Surface(
+        onClick = onClick,
+        modifier = Modifier.size(52.dp),
+        color = MaterialTheme.colorScheme.surfaceContainerHigh,
+        shape = MaterialTheme.shapes.extraLarge,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+    ) {
+        Box(contentAlignment = Alignment.Center) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.Sort,
+                contentDescription = "Sort: ${selectedOption.title}",
+                tint = MaterialTheme.colorScheme.onSurface,
+            )
+            if (selectedOption != LibrarySortOption.RecentlyUpdated) {
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(9.dp)
+                        .size(7.dp)
+                        .clip(MaterialTheme.shapes.small)
+                        .background(MaterialTheme.colorScheme.primary),
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun LibraryResultSummary(
+    itemCount: Int,
+    sortOption: LibrarySortOption,
+    modifier: Modifier = Modifier,
+) {
     Text(
-        text = text,
-        style = MaterialTheme.typography.titleMedium,
-        fontWeight = FontWeight.SemiBold,
-        color = MaterialTheme.colorScheme.primary,
+        text = "$itemCount ${if (itemCount == 1) "item" else "items"}  ·  ${sortOption.title}",
+        style = MaterialTheme.typography.bodySmall,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
         modifier = modifier,
     )
 }
 
 @Composable
-fun NoResultsCard(query: String) {
+private fun LibrarySectionHeader(
+    title: String,
+    count: Int,
+    modifier: Modifier = Modifier,
+) {
+    Text(
+        text = "$title  ·  $count",
+        style = MaterialTheme.typography.titleMedium,
+        fontWeight = FontWeight.SemiBold,
+        color = MaterialTheme.colorScheme.onSurface,
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun NoResultsCard(
+    query: String,
+    selectedTab: LibraryTab,
+) {
+    val resultType = when (selectedTab) {
+        LibraryTab.All -> "folders or documents"
+        LibraryTab.Folders -> "folders"
+        LibraryTab.Documents -> "documents"
+    }
     Surface(
         modifier = Modifier.fillMaxWidth(),
         color = MaterialTheme.colorScheme.surfaceContainerHigh,
@@ -670,17 +720,195 @@ fun NoResultsCard(query: String) {
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             Text(
-                text = "No results for \"$query\"",
+                text = "No $resultType found",
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.SemiBold,
             )
             Text(
-                text = "Try a different name.",
+                text = "Nothing matches \"${query.trim()}\". Try a different name.",
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
             )
         }
     }
+}
+
+@Composable
+private fun EmptyLibraryTabCard(
+    selectedTab: LibraryTab,
+    onCreateDocument: () -> Unit,
+    onCreateGroup: () -> Unit,
+) {
+    val isFolders = selectedTab == LibraryTab.Folders
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        color = MaterialTheme.colorScheme.surfaceContainer,
+        shape = MaterialTheme.shapes.extraLarge,
+    ) {
+        Column(
+            modifier = Modifier.padding(32.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Icon(
+                imageVector = if (isFolders) Icons.Filled.FolderOff else Icons.Filled.Description,
+                contentDescription = null,
+                modifier = Modifier.size(56.dp),
+                tint = MaterialTheme.colorScheme.primary,
+            )
+            Text(
+                text = if (isFolders) "No folders yet" else "No documents yet",
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.SemiBold,
+            )
+            Text(
+                text = if (isFolders) {
+                    "Create a folder to keep related documents together."
+                } else {
+                    "Create a document to start scanning or importing pages."
+                },
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+            )
+            Button(onClick = if (isFolders) onCreateGroup else onCreateDocument) {
+                Icon(
+                    imageVector = if (isFolders) Icons.Filled.CreateNewFolder else Icons.Filled.Add,
+                    contentDescription = null,
+                )
+                Spacer(Modifier.width(8.dp))
+                Text(if (isFolders) "New folder" else "New document")
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun LibrarySortSheet(
+    selectedTab: LibraryTab,
+    selectedOption: LibrarySortOption,
+    onSelect: (LibrarySortOption) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    val scope = when (selectedTab) {
+        LibraryTab.All -> "folders and documents"
+        LibraryTab.Folders -> "folders"
+        LibraryTab.Documents -> "documents"
+    }
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .navigationBarsPadding()
+                .verticalScroll(rememberScrollState())
+                .padding(start = 20.dp, end = 20.dp, bottom = 24.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Text(
+                text = "Sort library",
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.SemiBold,
+            )
+            Text(
+                text = "Choose how $scope are ordered.",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(bottom = 8.dp),
+            )
+            LibrarySortOption.entries.forEach { option ->
+                val selected = option == selectedOption
+                Surface(
+                    onClick = { onSelect(option) },
+                    modifier = Modifier.fillMaxWidth(),
+                    color = if (selected) {
+                        MaterialTheme.colorScheme.primaryContainer
+                    } else {
+                        MaterialTheme.colorScheme.surfaceContainer
+                    },
+                    contentColor = if (selected) {
+                        MaterialTheme.colorScheme.onPrimaryContainer
+                    } else {
+                        MaterialTheme.colorScheme.onSurface
+                    },
+                    shape = MaterialTheme.shapes.large,
+                    border = BorderStroke(
+                        1.dp,
+                        if (selected) {
+                            MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
+                        } else {
+                            MaterialTheme.colorScheme.outlineVariant
+                        },
+                    ),
+                ) {
+                    Row(
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    ) {
+                        Surface(
+                            modifier = Modifier.size(42.dp),
+                            color = if (selected) {
+                                MaterialTheme.colorScheme.primary.copy(alpha = 0.14f)
+                            } else {
+                                MaterialTheme.colorScheme.surfaceContainerHigh
+                            },
+                            contentColor = if (selected) {
+                                MaterialTheme.colorScheme.primary
+                            } else {
+                                MaterialTheme.colorScheme.onSurfaceVariant
+                            },
+                            shape = MaterialTheme.shapes.large,
+                        ) {
+                            Box(contentAlignment = Alignment.Center) {
+                                Icon(
+                                    imageVector = option.sortIcon(),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(22.dp),
+                                )
+                            }
+                        }
+                        Column(
+                            modifier = Modifier.weight(1f),
+                            verticalArrangement = Arrangement.spacedBy(2.dp),
+                        ) {
+                            Text(
+                                text = option.title,
+                                style = MaterialTheme.typography.bodyLarge,
+                                fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Medium,
+                            )
+                            Text(
+                                text = option.description,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = if (selected) {
+                                    MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.72f)
+                                } else {
+                                    MaterialTheme.colorScheme.onSurfaceVariant
+                                },
+                            )
+                        }
+                        RadioButton(
+                            selected = selected,
+                            onClick = null,
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+private fun LibrarySortOption.sortIcon(): ImageVector = when (this) {
+    LibrarySortOption.RecentlyUpdated -> Icons.Filled.Update
+    LibrarySortOption.OldestUpdated -> Icons.Filled.History
+    LibrarySortOption.NameAscending,
+    LibrarySortOption.NameDescending -> Icons.Filled.SortByAlpha
+    LibrarySortOption.NewestCreated -> Icons.Filled.PostAdd
+    LibrarySortOption.OldestCreated -> Icons.Filled.Inventory2
 }
 
 @Composable
@@ -688,6 +916,7 @@ fun NewDocumentDialog(
     groups: List<DocumentGroup>,
     onDismiss: () -> Unit,
     onConfirm: (title: String, groupId: String?) -> Unit,
+    onSuggestTitle: (suspend (DocumentTitleFormat) -> String)? = null,
 ) {
     var title by rememberSaveable { mutableStateOf("") }
     var selectedGroupId by rememberSaveable { mutableStateOf<String?>(null) }
@@ -705,6 +934,12 @@ fun NewDocumentDialog(
             singleLine = true,
             modifier = Modifier.fillMaxWidth(),
         )
+        if (onSuggestTitle != null) {
+            DocumentTitleSuggestRow(
+                onSuggestTitle = onSuggestTitle,
+                onSuggested = { title = it },
+            )
+        }
 
         if (groups.isNotEmpty()) {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {

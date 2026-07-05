@@ -7,13 +7,18 @@ import `in`.c1ph3rj.scanly.core.common.ScanlyError
 import `in`.c1ph3rj.scanly.core.common.ScanlyResult
 import `in`.c1ph3rj.scanly.data.local.db.ScanlyDatabase
 import `in`.c1ph3rj.scanly.data.local.db.dao.DocumentDao
+import `in`.c1ph3rj.scanly.data.local.db.dao.ScanPageDao
 import `in`.c1ph3rj.scanly.data.local.db.entity.DocumentEntity
+import `in`.c1ph3rj.scanly.data.local.db.entity.ScanPageEntity
+import `in`.c1ph3rj.scanly.data.archive.LibraryOperationCoordinator
 import `in`.c1ph3rj.scanly.data.storage.DocumentStorageManager
+import `in`.c1ph3rj.scanly.domain.model.DocumentTitleFormat
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
 import `in`.c1ph3rj.scanly.domain.repository.DocumentRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
+import java.io.File
 import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -22,8 +27,10 @@ import javax.inject.Singleton
 class DefaultDocumentRepository @Inject constructor(
     private val database: ScanlyDatabase,
     private val documentDao: DocumentDao,
+    private val scanPageDao: ScanPageDao,
     private val documentStorageManager: DocumentStorageManager,
     private val dispatchers: ScanlyDispatchers,
+    private val operationCoordinator: LibraryOperationCoordinator,
 ) : DocumentRepository {
 
     override fun observeDocuments(): Flow<List<ScanDocument>> =
@@ -44,12 +51,29 @@ class DefaultDocumentRepository @Inject constructor(
     override fun observeDocument(documentId: String): Flow<ScanDocument?> =
         documentDao.observeDocument(documentId).map { it?.toDomain() }
 
+    override suspend fun getAllDocumentTitles(): List<String> =
+        withContext(dispatchers.io) {
+            documentDao.getAllTitles()
+        }
+
+    override suspend fun suggestDocumentTitle(format: DocumentTitleFormat): String =
+        withContext(dispatchers.io) {
+            DocumentPresentationFormatter.uniqueDocumentTitle(
+                format = format,
+                existingTitles = documentDao.getAllTitles(),
+            )
+        }
+
     override suspend fun createDocument(
         title: String,
         groupId: String?,
     ): ScanlyResult<String> =
         withContext(dispatchers.io) {
-            val normalizedTitle = DocumentPresentationFormatter.normalizeTitle(title)
+            operationCoordinator.withMutation {
+            val normalizedTitle = DocumentPresentationFormatter.resolveUniqueTitle(
+                baseTitle = DocumentPresentationFormatter.normalizeTitle(title),
+                existingTitles = documentDao.getAllTitles(),
+            )
             val documentId = UUID.randomUUID().toString()
             val timestamp = System.currentTimeMillis()
 
@@ -85,6 +109,7 @@ class DefaultDocumentRepository @Inject constructor(
                     )
                 },
             )
+            }
         }
 
     override suspend fun createImportedDocument(
@@ -100,12 +125,15 @@ class DefaultDocumentRepository @Inject constructor(
         documentId: String,
         title: String,
     ): ScanlyResult<Unit> = withContext(dispatchers.io) {
+        operationCoordinator.withMutation {
         val normalizedTitle = DocumentPresentationFormatter.normalizeTitle(title)
 
         runCatching {
             val existingDocument = documentDao.getDocument(documentId)
                 ?: error("Document not found.")
-            val updatedCoverThumbnail = documentStorageManager.refreshDocumentCover(
+            val updatedCoverThumbnail = resolveDocumentPreviewPath(
+                firstPage = scanPageDao.getPages(documentId).firstOrNull(),
+            ) ?: documentStorageManager.refreshDocumentCover(
                 documentId = documentId,
                 title = normalizedTitle,
             )
@@ -129,10 +157,12 @@ class DefaultDocumentRepository @Inject constructor(
                 )
             },
         )
+        }
     }
 
     override suspend fun deleteDocument(documentId: String): ScanlyResult<Unit> =
         withContext(dispatchers.io) {
+            operationCoordinator.withMutation {
             runCatching {
                 database.withTransaction {
                     documentDao.deleteById(documentId)
@@ -149,6 +179,7 @@ class DefaultDocumentRepository @Inject constructor(
                     )
                 },
             )
+            }
         }
 
     private fun DocumentEntity.toDomain(): ScanDocument = ScanDocument(
@@ -162,3 +193,12 @@ class DefaultDocumentRepository @Inject constructor(
         groupId = groupId,
     )
 }
+
+internal fun resolveDocumentPreviewPath(
+    firstPage: ScanPageEntity?,
+    fileExists: (String) -> Boolean = { path -> File(path).isFile },
+): String? = listOfNotNull(
+    firstPage?.thumbnailPath,
+    firstPage?.processedImagePath,
+    firstPage?.rawImagePath,
+).firstOrNull(fileExists)
