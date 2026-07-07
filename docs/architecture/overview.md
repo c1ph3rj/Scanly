@@ -7,7 +7,7 @@ How Scanly is structured at **v1.0.9**. For navigation detail see [navigation.md
 ```
 ┌─────────────────────────────────────────────────────────┐
 │  feature/          Compose screens + ViewModels         │
-├──────────────────────────────────────────────────────────────────────┤
+├─────────────────────────────────────────────────────────┤
 │  domain/           Use cases + repository interfaces    │
 │                    + domain models                      │
 ├─────────────────────────────────────────────────────────┤
