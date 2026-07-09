@@ -17,7 +17,7 @@ import `in`.c1ph3rj.scanly.data.local.db.entity.ScanPageEntity
         ScanPageEntity::class,
         DocumentGroupEntity::class,
     ],
-    version = 3,
+    version = 4,
     exportSchema = false,
 )
 abstract class ScanlyDatabase : RoomDatabase() {
@@ -105,6 +105,30 @@ abstract class ScanlyDatabase : RoomDatabase() {
                 )
 
                 db.execSQL("PRAGMA foreign_keys=ON")
+            }
+        }
+
+        val MIGRATION_3_4: Migration = object : Migration(3, 4) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                // Per-page continuous filter controls (intensity / tone / shadows / detail / threshold).
+                db.execSQL(
+                    "ALTER TABLE scan_pages ADD COLUMN filterIntensity REAL NOT NULL DEFAULT 1.0",
+                )
+                db.execSQL(
+                    "ALTER TABLE scan_pages ADD COLUMN filterBrightness REAL NOT NULL DEFAULT 0.0",
+                )
+                db.execSQL(
+                    "ALTER TABLE scan_pages ADD COLUMN filterContrast REAL NOT NULL DEFAULT 0.0",
+                )
+                db.execSQL(
+                    "ALTER TABLE scan_pages ADD COLUMN filterShadows REAL NOT NULL DEFAULT 0.5",
+                )
+                db.execSQL(
+                    "ALTER TABLE scan_pages ADD COLUMN filterDetails REAL NOT NULL DEFAULT 0.5",
+                )
+                db.execSQL(
+                    "ALTER TABLE scan_pages ADD COLUMN filterThreshold REAL NOT NULL DEFAULT 0.5",
+                )
             }
         }
     }

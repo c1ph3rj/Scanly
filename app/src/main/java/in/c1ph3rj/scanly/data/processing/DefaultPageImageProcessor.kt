@@ -12,6 +12,7 @@ import `in`.c1ph3rj.scanly.core.ml.DocumentCornerDetector
 import `in`.c1ph3rj.scanly.core.ml.DocumentCornerQuad
 import `in`.c1ph3rj.scanly.core.processing.OpenCvPageFilterProcessor
 import `in`.c1ph3rj.scanly.core.processing.PerspectiveQuadMath
+import `in`.c1ph3rj.scanly.domain.model.PageFilterAdjustments
 import `in`.c1ph3rj.scanly.domain.model.PageFilterPreset
 import `in`.c1ph3rj.scanly.domain.model.PageProcessingState
 import `in`.c1ph3rj.scanly.domain.processing.PageImageProcessor
@@ -35,6 +36,7 @@ class DefaultPageImageProcessor @Inject constructor(
         processedImagePath: String,
         thumbnailPath: String,
         filterPreset: PageFilterPreset,
+        filterAdjustments: PageFilterAdjustments,
     ): ProcessedPageArtifacts = reprocessPage(
         rawImagePath = rawImagePath,
         processedImagePath = processedImagePath,
@@ -42,6 +44,7 @@ class DefaultPageImageProcessor @Inject constructor(
         cropQuad = null,
         rotationDegrees = 0,
         filterPreset = filterPreset,
+        filterAdjustments = filterAdjustments,
         detectDocumentWhenCropQuadMissing = true,
     )
 
@@ -52,6 +55,7 @@ class DefaultPageImageProcessor @Inject constructor(
         cropQuad: DocumentCornerQuad?,
         rotationDegrees: Int,
         filterPreset: PageFilterPreset,
+        filterAdjustments: PageFilterAdjustments,
         detectDocumentWhenCropQuadMissing: Boolean,
     ): ProcessedPageArtifacts = withContext(dispatchers.default) {
         val exifRotationDegrees = ExifInterface(rawImagePath).rotationDegrees
@@ -84,9 +88,11 @@ class DefaultPageImageProcessor @Inject constructor(
                     quad = quad,
                 )
             } ?: editorOrientedBitmap.copy(Bitmap.Config.ARGB_8888, false)
+            val safeAdjustments = filterAdjustments.sanitized()
             val enhancedBitmap = applyFilter(
                 sourceBitmap = correctedBitmap,
                 filterPreset = filterPreset,
+                filterAdjustments = safeAdjustments,
             )
             if (correctedBitmap !== enhancedBitmap) {
                 correctedBitmap.recycle()
@@ -112,6 +118,7 @@ class DefaultPageImageProcessor @Inject constructor(
                 cropQuad = effectiveCropQuad,
                 rotationDegrees = userRotationDegrees,
                 filterPreset = filterPreset,
+                filterAdjustments = safeAdjustments,
                 processingState = if (effectiveCropQuad != null) {
                     PageProcessingState.PROCESSED
                 } else {
@@ -209,9 +216,11 @@ class DefaultPageImageProcessor @Inject constructor(
     private fun applyFilter(
         sourceBitmap: Bitmap,
         filterPreset: PageFilterPreset,
+        filterAdjustments: PageFilterAdjustments,
     ): Bitmap = OpenCvPageFilterProcessor.apply(
         sourceBitmap = sourceBitmap,
         filterPreset = filterPreset,
+        adjustments = filterAdjustments,
     )
 
     private fun writeBitmap(

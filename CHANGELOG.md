@@ -6,7 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
-No user-facing changes recorded yet.
+### Added
+
+- **Filter customization** — page editor Filters dock includes Strength, Brightness, Contrast, Shadows, Details, and Ink (threshold) sliders on top of each preset, with Reset and live preview.
+- **Photo** and **High Contrast** filter presets for gentle color pages/IDs and faded monochrome text.
+
+### Changed
+
+- **Filter pipeline rearchitecture** — modular OpenCV recipe stages (denoise, mild white balance, improved illumination flatten with partial text protect, CLAHE, tone, binary mix, sharpen, intensity blend) with more conservative defaults and better Auto routing.
+- **Filter editing UX** — Filters no longer open as a full-screen bottom sheet that hides the page. Controls dock under (or beside) a always-visible live preview, with Looks / Adjust tabs so sliders leave the image room to stay readable. Scrollable Adjust/Looks areas show a right-edge scrollbar and a “more below” cue. Tablets and large screens use a side panel with a two-column Adjust layout and grid Looks.
+- Library backup/restore and Room schema now persist per-page filter adjustments (schema version 4).
 
 ## [1.0.9] - 2026-07-05
 

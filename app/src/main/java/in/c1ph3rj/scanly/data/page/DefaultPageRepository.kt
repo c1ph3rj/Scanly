@@ -11,6 +11,7 @@ import `in`.c1ph3rj.scanly.data.local.db.dao.ScanPageDao
 import `in`.c1ph3rj.scanly.data.local.db.entity.ScanPageEntity
 import `in`.c1ph3rj.scanly.data.archive.LibraryOperationCoordinator
 import `in`.c1ph3rj.scanly.data.storage.DocumentStorageManager
+import `in`.c1ph3rj.scanly.domain.model.PageFilterAdjustments
 import `in`.c1ph3rj.scanly.domain.model.PageFilterPreset
 import `in`.c1ph3rj.scanly.domain.model.PageCaptureDraft
 import `in`.c1ph3rj.scanly.domain.model.PageProcessingState
@@ -168,6 +169,12 @@ class DefaultPageRepository @Inject constructor(
                     cropBottomLeftX = processedArtifacts.cropBottomLeftX,
                     cropBottomLeftY = processedArtifacts.cropBottomLeftY,
                     filterPreset = processedArtifacts.filterPreset,
+                    filterIntensity = processedArtifacts.filterIntensity,
+                    filterBrightness = processedArtifacts.filterBrightness,
+                    filterContrast = processedArtifacts.filterContrast,
+                    filterShadows = processedArtifacts.filterShadows,
+                    filterDetails = processedArtifacts.filterDetails,
+                    filterThreshold = processedArtifacts.filterThreshold,
                     processingState = processedArtifacts.processingState,
                     createdAtMillis = existingPage?.createdAtMillis ?: timestamp,
                     updatedAtMillis = timestamp,
@@ -316,6 +323,7 @@ class DefaultPageRepository @Inject constructor(
         cropQuad: `in`.c1ph3rj.scanly.core.ml.DocumentCornerQuad,
         rotationDegrees: Int,
         filterPreset: PageFilterPreset,
+        filterAdjustments: PageFilterAdjustments,
         applyFilterToAllPages: Boolean,
     ): ScanlyResult<Unit> = withContext(dispatchers.io) {
         operationCoordinator.withMutation {
@@ -325,6 +333,7 @@ class DefaultPageRepository @Inject constructor(
             val document = documentDao.getDocument(page.documentId)
                 ?: error("Document not found.")
             val timestamp = System.currentTimeMillis()
+            val safeAdjustments = filterAdjustments.sanitized()
             val updatedDocument = if (applyFilterToAllPages) {
                 document.copy(preferredFilterPreset = filterPreset.storageValue)
             } else {
@@ -346,7 +355,10 @@ class DefaultPageRepository @Inject constructor(
                 } else {
                     existingPage.rotationDegrees
                 }
-                val needsReprocess = existingPage.id == page.id || existingPage.filterPreset != filterPreset.storageValue
+                val existingAdjustments = existingPage.toFilterAdjustments()
+                val needsReprocess = existingPage.id == page.id ||
+                    existingPage.filterPreset != filterPreset.storageValue ||
+                    existingAdjustments != safeAdjustments
                 if (!needsReprocess) {
                     existingPage.copy(updatedAtMillis = timestamp)
                 } else {
@@ -354,6 +366,7 @@ class DefaultPageRepository @Inject constructor(
                         cropQuad = targetCropQuad,
                         rotationDegrees = targetRotation,
                         filterPreset = filterPreset,
+                        filterAdjustments = safeAdjustments,
                         updatedAtMillis = timestamp,
                         detectDocumentWhenCropQuadMissing = existingPage.id == page.id || !applyFilterToAllPages,
                     )
@@ -412,15 +425,27 @@ class DefaultPageRepository @Inject constructor(
             }
         },
         filterPreset = PageFilterPreset.fromStorage(filterPreset),
+        filterAdjustments = toFilterAdjustments(),
         processingState = PageProcessingState.fromStorage(processingState),
         createdAtMillis = createdAtMillis,
         updatedAtMillis = updatedAtMillis,
     )
 
+    private fun ScanPageEntity.toFilterAdjustments(): PageFilterAdjustments =
+        PageFilterAdjustments.of(
+            intensity = filterIntensity,
+            brightness = filterBrightness,
+            contrast = filterContrast,
+            shadows = filterShadows,
+            details = filterDetails,
+            threshold = filterThreshold,
+        )
+
     private suspend fun ScanPageEntity.reprocessWith(
         cropQuad: `in`.c1ph3rj.scanly.core.ml.DocumentCornerQuad?,
         rotationDegrees: Int,
         filterPreset: PageFilterPreset,
+        filterAdjustments: PageFilterAdjustments,
         updatedAtMillis: Long,
         detectDocumentWhenCropQuadMissing: Boolean,
     ): ScanPageEntity {
@@ -443,6 +468,7 @@ class DefaultPageRepository @Inject constructor(
             cropQuad = cropQuad,
             rotationDegrees = rotationDegrees,
             filterPreset = filterPreset,
+            filterAdjustments = filterAdjustments,
             detectDocumentWhenCropQuadMissing = detectDocumentWhenCropQuadMissing,
         ).toPersistedArtifacts()
 
@@ -464,6 +490,12 @@ class DefaultPageRepository @Inject constructor(
             cropBottomLeftX = processedArtifacts.cropBottomLeftX,
             cropBottomLeftY = processedArtifacts.cropBottomLeftY,
             filterPreset = processedArtifacts.filterPreset,
+            filterIntensity = processedArtifacts.filterIntensity,
+            filterBrightness = processedArtifacts.filterBrightness,
+            filterContrast = processedArtifacts.filterContrast,
+            filterShadows = processedArtifacts.filterShadows,
+            filterDetails = processedArtifacts.filterDetails,
+            filterThreshold = processedArtifacts.filterThreshold,
             processingState = processedArtifacts.processingState,
             updatedAtMillis = updatedAtMillis,
         )
@@ -482,6 +514,12 @@ class DefaultPageRepository @Inject constructor(
         val cropBottomLeftX: Float?,
         val cropBottomLeftY: Float?,
         val filterPreset: String,
+        val filterIntensity: Float,
+        val filterBrightness: Float,
+        val filterContrast: Float,
+        val filterShadows: Float,
+        val filterDetails: Float,
+        val filterThreshold: Float,
         val processingState: String,
     )
 
@@ -491,8 +529,9 @@ class DefaultPageRepository @Inject constructor(
         val rotationDegrees: Int,
     )
 
-    private fun `in`.c1ph3rj.scanly.domain.processing.ProcessedPageArtifacts.toPersistedArtifacts(): PersistedProcessedArtifacts =
-        PersistedProcessedArtifacts(
+    private fun `in`.c1ph3rj.scanly.domain.processing.ProcessedPageArtifacts.toPersistedArtifacts(): PersistedProcessedArtifacts {
+        val safeAdjustments = filterAdjustments.sanitized()
+        return PersistedProcessedArtifacts(
             processedImagePath = processedImagePath,
             thumbnailPath = thumbnailPath,
             rotationDegrees = rotationDegrees,
@@ -505,8 +544,15 @@ class DefaultPageRepository @Inject constructor(
             cropBottomLeftX = cropQuad?.bottomLeft?.x,
             cropBottomLeftY = cropQuad?.bottomLeft?.y,
             filterPreset = filterPreset.storageValue,
+            filterIntensity = safeAdjustments.intensity,
+            filterBrightness = safeAdjustments.brightness,
+            filterContrast = safeAdjustments.contrast,
+            filterShadows = safeAdjustments.shadows,
+            filterDetails = safeAdjustments.details,
+            filterThreshold = safeAdjustments.threshold,
             processingState = processingState.storageValue,
         )
+    }
 
     private fun FallbackProcessedArtifacts.toPersistedArtifacts(): PersistedProcessedArtifacts =
         PersistedProcessedArtifacts(
@@ -522,6 +568,12 @@ class DefaultPageRepository @Inject constructor(
             cropBottomLeftX = null,
             cropBottomLeftY = null,
             filterPreset = PageFilterPreset.ORIGINAL.storageValue,
+            filterIntensity = PageFilterAdjustments.DEFAULT_INTENSITY,
+            filterBrightness = PageFilterAdjustments.DEFAULT_BRIGHTNESS,
+            filterContrast = PageFilterAdjustments.DEFAULT_CONTRAST,
+            filterShadows = PageFilterAdjustments.DEFAULT_SHADOWS,
+            filterDetails = PageFilterAdjustments.DEFAULT_DETAILS,
+            filterThreshold = PageFilterAdjustments.DEFAULT_THRESHOLD,
             processingState = PageProcessingState.CAPTURED.storageValue,
         )
 

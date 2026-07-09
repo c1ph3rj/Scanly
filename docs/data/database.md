@@ -1,6 +1,6 @@
 # Database (Room)
 
-Scanly persists document metadata in a **Room** database at schema version **3**.
+Scanly persists document metadata in a **Room** database at schema version **4**.
 
 ## Database file
 
@@ -8,7 +8,7 @@ Scanly persists document metadata in a **Room** database at schema version **3**
 | --- | --- |
 | Class | `ScanlyDatabase` |
 | Path | `databases/scanly.db` (+ `-wal`, `-shm`) under app internal storage |
-| Schema version | `3` |
+| Schema version | `4` |
 | `exportSchema` | `false` |
 
 Location: `app/src/main/java/in/c1ph3rj/scanly/data/local/db/ScanlyDatabase.kt`
@@ -44,6 +44,12 @@ Indexes: `updatedAtMillis`, `groupId`
 | `cropTopLeftX/Y` … `cropBottomRightX/Y` | REAL | Normalized crop quad (8 values) |
 | `rotationDegrees` | INTEGER | User rotation |
 | `filterPreset` | TEXT | `PageFilterPreset.storageValue` |
+| `filterIntensity` | REAL | 0..1 filter blend strength (default `1.0`) |
+| `filterBrightness` | REAL | -1..1 (default `0.0`) |
+| `filterContrast` | REAL | -1..1 (default `0.0`) |
+| `filterShadows` | REAL | 0..1 shadow reduction amount (default `0.5`) |
+| `filterDetails` | REAL | 0..1 detail/sharpen amount (default `0.5`) |
+| `filterThreshold` | REAL | 0..1 binary ink aggressiveness (default `0.5`) |
 | `processingState` | TEXT | `CAPTURED`, `PROCESSED`, or `NEEDS_REVIEW` |
 | `createdAtMillis` | INTEGER | Creation timestamp |
 
@@ -81,6 +87,17 @@ Adds `preferredFilterPreset TEXT` column to `documents`.
 3. Copies existing rows with `groupId = NULL` (all pre-1.0.4 documents stay ungrouped).
 4. Recreates indexes.
 
+### `MIGRATION_3_4`
+
+Adds continuous filter adjustment columns on `scan_pages`:
+
+- `filterIntensity` (default `1.0`)
+- `filterBrightness` (default `0.0`)
+- `filterContrast` (default `0.0`)
+- `filterShadows` (default `0.5`)
+- `filterDetails` (default `0.5`)
+- `filterThreshold` (default `0.5`)
+
 Registered in `DatabaseModule` alongside `ScanlyDatabase` construction.
 
 ## Repository mapping
@@ -95,8 +112,9 @@ Registered in `DatabaseModule` alongside `ScanlyDatabase` construction.
 
 ## Upgrade notes
 
-- Upgrading from v1.0.0: Room migrates automatically from schema 1 or 2 to 3.
+- Upgrading from v1.0.0: Room migrates automatically from schema 1/2/3 to 4.
 - Existing documents remain; they appear ungrouped until moved into a collection.
+- Existing pages receive default filter adjustments (balanced midpoints / full intensity).
 - No manual migration steps required.
 
 See [../releases.md](../releases.md) and [../../VERSION.md](../../VERSION.md).

@@ -59,24 +59,43 @@ When user sets manual corners in editor, the stored quad is used instead of ML d
 
 Maps the detected (or manual) quad to a flat rectangular output image.
 
-## Step 4: Filter presets
+## Step 4: Filter presets and adjustments
 
-`OpenCvPageFilterProcessor` applies the selected `PageFilterPreset`:
+`OpenCvPageFilterProcessor` builds a modular recipe from:
+
+1. Selected `PageFilterPreset`
+2. `PageImageProfile` analysis (brightness, shadows, text density, …)
+3. User `PageFilterAdjustments` (strength, brightness, contrast, shadows, details, ink)
+
+Pipeline stages (mode-dependent): denoise → white balance → illumination flatten (partial text protect) → CLAHE → tone → optional adaptive binary mix → sharpen → **intensity blend with source**.
 
 | Preset | Storage value | Typical use |
 | --- | --- | --- |
-| Original | `original` | No filter |
-| Auto | `auto` | Adaptive tuning |
-| Enhanced Color | `enhanced_color` | Vivid documents |
+| Original | `original` | No enhancement (tone/detail still adjustable) |
+| Auto | `auto` | Adaptive preset routing |
+| Enhanced Color | `enhanced_color` | Color documents |
+| Photo | `photo` | Photo-like pages / IDs (gentle) |
 | Grayscale | `grayscale` | Text documents |
-| Black & White | `black_and_white` | High contrast |
-| Clean | `clean` | Noise reduction |
-| Shadow Reduction | `shadow_reduction` | Uneven lighting |
-| Magic Color | `magic_color` | Faded print |
+| Black & White | `black_and_white` | Hard binary / max ink contrast |
+| Clean | `clean` | Uneven paper / strong cleanup |
+| Shadow Reduction | `shadow_reduction` | Uneven lighting (color-preserving) |
+| Magic Color | `magic_color` | Faded color print |
 | Receipt | `receipt` | Thermal receipts |
-| Soft Black & White | `soft_black_and_white` | Gentler B&W |
+| Soft Black & White | `soft_black_and_white` | Gentler text enhance |
+| High Contrast | `high_contrast` | Faded monochrome text |
 
-`AdaptivePageFilterTuning` and `PageImageProfile` analyze image characteristics for auto-tuning.
+### User adjustments (`PageFilterAdjustments`)
+
+| Control | Range | Role |
+| --- | --- | --- |
+| Intensity | 0..1 | Blend filtered result with source (escape hatch when a preset is too strong) |
+| Brightness | -1..1 | Global tone shift |
+| Contrast | -1..1 | Global contrast scale |
+| Shadows | 0..1 | Scales illumination flatten strength |
+| Details | 0..1 | Sharpen / denoise trade-off |
+| Threshold (Ink) | 0..1 | Binary/soft-binary aggressiveness (B&W, Soft B&W, Receipt, High Contrast) |
+
+`AdaptivePageFilterTuning` resolves a single `FilterRecipe` from profile + preset + adjustments.
 
 ## Step 5: Output
 

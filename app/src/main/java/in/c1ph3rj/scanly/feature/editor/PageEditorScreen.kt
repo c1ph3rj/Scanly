@@ -10,11 +10,15 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -26,6 +30,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -38,22 +43,26 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.RotateLeft
 import androidx.compose.material.icons.automirrored.filled.RotateRight
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.CropFree
 import androidx.compose.material.icons.filled.DeleteOutline
+import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -78,8 +87,11 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
@@ -88,19 +100,28 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import `in`.c1ph3rj.scanly.core.ui.ChromeIconButton
 import `in`.c1ph3rj.scanly.core.ui.MetricChip
+import `in`.c1ph3rj.scanly.core.ui.WindowSizeInfo
+import `in`.c1ph3rj.scanly.core.ui.WindowWidthClass
 import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import `in`.c1ph3rj.scanly.core.editing.CropHandle
 import `in`.c1ph3rj.scanly.core.ml.DocumentCornerQuad
 import `in`.c1ph3rj.scanly.core.ml.NormalizedPoint
 import `in`.c1ph3rj.scanly.core.processing.OpenCvPageFilterProcessor
+import `in`.c1ph3rj.scanly.domain.model.PageFilterAdjustments
 import `in`.c1ph3rj.scanly.domain.model.PageFilterPreset
 import `in`.c1ph3rj.scanly.domain.model.ScanPage
 import `in`.c1ph3rj.scanly.feature.components.ScanlyConfirmDialog
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.withContext
 import kotlin.math.min
 import kotlin.math.roundToInt
+
+private enum class FilterPanelTab {
+    LOOKS,
+    ADJUST,
+}
 
 @Composable
 fun PageEditorRoute(
@@ -130,6 +151,8 @@ fun PageEditorRoute(
         onRotateRight = viewModel::rotateRight,
         onResetCrop = viewModel::resetCrop,
         onSelectFilter = viewModel::selectFilter,
+        onFilterAdjustmentsChange = viewModel::updateFilterAdjustments,
+        onResetFilterAdjustments = viewModel::resetFilterAdjustments,
         onApplyFilterToAllPagesChange = viewModel::setApplyFilterToAllPages,
         onSave = viewModel::saveEdits,
         onRetakePage = {
@@ -152,17 +175,21 @@ fun PageEditorScreen(
     onRotateRight: () -> Unit,
     onResetCrop: () -> Unit,
     onSelectFilter: (PageFilterPreset) -> Unit,
+    onFilterAdjustmentsChange: (PageFilterAdjustments) -> Unit,
+    onResetFilterAdjustments: () -> Unit,
     onApplyFilterToAllPagesChange: (Boolean) -> Unit,
     onSave: () -> Unit,
     onRetakePage: () -> Unit,
     onDeletePage: () -> Unit,
 ) {
-    var filterSheetVisible by remember { mutableStateOf(false) }
+    var filterPanelVisible by remember { mutableStateOf(false) }
+    var filterPanelTab by remember { mutableStateOf(FilterPanelTab.LOOKS) }
     var deleteDialogVisible by remember { mutableStateOf(false) }
     val showBulkApplyLoader = uiState.isSaving && uiState.applyFilterToAllPages
     val statusLabel = when {
         showBulkApplyLoader -> "Processing"
         uiState.isSaving -> "Processing"
+        filterPanelVisible -> "Filters"
         else -> "Editor"
     }
 
@@ -174,13 +201,22 @@ fun PageEditorScreen(
             topBar = {
                 EditorTopBar(
                     statusLabel = statusLabel,
-                    onNavigateUp = onNavigateUp,
+                    onNavigateUp = {
+                        if (filterPanelVisible) {
+                            filterPanelVisible = false
+                        } else {
+                            onNavigateUp()
+                        }
+                    },
                     onSave = onSave,
                     isSaving = uiState.isSaving,
                 )
             },
         ) { innerPadding ->
             val windowSizeInfo = rememberWindowSizeInfo()
+            // Side-by-side: tablets (any orientation) and wide landscape windows.
+            val useSideBySideEditor = windowSizeInfo.isTablet ||
+                (windowSizeInfo.isLandscape && windowSizeInfo.widthClass != WindowWidthClass.Compact)
 
             if (uiState.missingPage || uiState.page == null || uiState.cropQuad == null) {
                 Box(
@@ -195,46 +231,99 @@ fun PageEditorScreen(
                         style = MaterialTheme.typography.titleLarge,
                     )
                 }
-            } else if (windowSizeInfo.useTabletLandscapeLayout) {
-                // Tablet landscape: side-by-side Row — crop canvas left, controls right
+            } else if (useSideBySideEditor) {
+                val horizontalPad = when (windowSizeInfo.widthClass) {
+                    WindowWidthClass.Compact -> 12.dp
+                    WindowWidthClass.Medium -> 20.dp
+                    WindowWidthClass.Expanded -> 28.dp
+                }
+                val previewWeight = when {
+                    !filterPanelVisible -> 0.64f
+                    windowSizeInfo.widthClass == WindowWidthClass.Expanded -> 0.62f
+                    windowSizeInfo.widthClass == WindowWidthClass.Medium -> 0.56f
+                    else -> 0.54f
+                }
+                val sideWeight = 1f - previewWeight
+
                 Row(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(innerPadding)
-                        .padding(horizontal = 16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        .padding(horizontal = horizontalPad),
+                    horizontalArrangement = Arrangement.spacedBy(
+                        if (windowSizeInfo.widthClass == WindowWidthClass.Expanded) 20.dp else 14.dp,
+                    ),
                 ) {
-                    PageCropEditor(
-                        page = uiState.page,
-                        cropQuad = uiState.cropQuad,
-                        rotationDegrees = uiState.rotationDegrees,
-                        selectedFilter = uiState.selectedFilter,
-                        onHandleMoved = onHandleMoved,
+                    Surface(
                         modifier = Modifier
-                            .weight(0.6f)
-                            .fillMaxHeight(),
-                    )
+                            .weight(previewWeight)
+                            .fillMaxHeight()
+                            .padding(vertical = 12.dp),
+                        color = MaterialTheme.colorScheme.surfaceContainerLow,
+                        shape = MaterialTheme.shapes.extraLarge,
+                    ) {
+                        PageCropEditor(
+                            page = uiState.page,
+                            cropQuad = uiState.cropQuad,
+                            rotationDegrees = uiState.rotationDegrees,
+                            selectedFilter = uiState.selectedFilter,
+                            filterAdjustments = uiState.filterAdjustments,
+                            showCropHandles = !filterPanelVisible,
+                            onHandleMoved = onHandleMoved,
+                            modifier = Modifier.fillMaxSize(),
+                        )
+                    }
                     Column(
                         modifier = Modifier
-                            .weight(0.4f)
+                            .weight(sideWeight)
                             .fillMaxHeight()
-                            .verticalScroll(rememberScrollState()),
-                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                            .navigationBarsPadding()
+                            .padding(vertical = 12.dp)
+                            .widthIn(
+                                max = when (windowSizeInfo.widthClass) {
+                                    WindowWidthClass.Expanded -> 440.dp
+                                    WindowWidthClass.Medium -> 400.dp
+                                    WindowWidthClass.Compact -> Dp.Unspecified
+                                },
+                            ),
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
                     ) {
                         EditorPageBadge(pageIndex = uiState.page.pageIndex)
-                        EditorActionRow(
-                            onRotateLeft = onRotateLeft,
-                            onRotateRight = onRotateRight,
-                            onResetCrop = onResetCrop,
-                            onOpenFilters = { filterSheetVisible = true },
-                            onRetake = onRetakePage,
-                            onDelete = { deleteDialogVisible = true },
-                            enabled = !uiState.isSaving,
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
+                        if (filterPanelVisible) {
+                            FilterEditorDock(
+                                uiState = uiState,
+                                windowSizeInfo = windowSizeInfo,
+                                selectedTab = filterPanelTab,
+                                onTabChange = { filterPanelTab = it },
+                                onClose = { filterPanelVisible = false },
+                                onSelectFilter = onSelectFilter,
+                                onFilterAdjustmentsChange = onFilterAdjustmentsChange,
+                                onResetFilterAdjustments = onResetFilterAdjustments,
+                                onApplyFilterToAllPagesChange = onApplyFilterToAllPagesChange,
+                                layoutMode = FilterDockLayoutMode.SIDE_PANEL,
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .fillMaxWidth(),
+                            )
+                        } else {
+                            EditorActionRow(
+                                onRotateLeft = onRotateLeft,
+                                onRotateRight = onRotateRight,
+                                onResetCrop = onResetCrop,
+                                onOpenFilters = {
+                                    filterPanelTab = FilterPanelTab.LOOKS
+                                    filterPanelVisible = true
+                                },
+                                onRetake = onRetakePage,
+                                onDelete = { deleteDialogVisible = true },
+                                enabled = !uiState.isSaving,
+                            )
+                            Spacer(modifier = Modifier.weight(1f))
+                        }
                     }
                 }
             } else {
+                // Phone portrait: live page keeps the top weight; filters dock below it.
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -245,7 +334,8 @@ fun PageEditorScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .weight(1f)
-                            .padding(horizontal = 16.dp, vertical = 12.dp),
+                            .padding(horizontal = 16.dp)
+                            .padding(top = 12.dp, bottom = if (filterPanelVisible) 8.dp else 12.dp),
                         color = MaterialTheme.colorScheme.surfaceContainerLow,
                         shape = MaterialTheme.shapes.extraLarge,
                     ) {
@@ -254,27 +344,51 @@ fun PageEditorScreen(
                             cropQuad = uiState.cropQuad,
                             rotationDegrees = uiState.rotationDegrees,
                             selectedFilter = uiState.selectedFilter,
+                            filterAdjustments = uiState.filterAdjustments,
+                            showCropHandles = !filterPanelVisible,
                             onHandleMoved = onHandleMoved,
                             modifier = Modifier.fillMaxSize(),
                         )
                     }
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
-                            .padding(bottom = 16.dp),
-                        verticalArrangement = Arrangement.spacedBy(14.dp),
-                    ) {
-                        EditorPageBadge(pageIndex = uiState.page.pageIndex)
-                        EditorActionRow(
-                            onRotateLeft = onRotateLeft,
-                            onRotateRight = onRotateRight,
-                            onResetCrop = onResetCrop,
-                            onOpenFilters = { filterSheetVisible = true },
-                            onRetake = onRetakePage,
-                            onDelete = { deleteDialogVisible = true },
-                            enabled = !uiState.isSaving,
+                    if (filterPanelVisible) {
+                        FilterEditorDock(
+                            uiState = uiState,
+                            windowSizeInfo = windowSizeInfo,
+                            selectedTab = filterPanelTab,
+                            onTabChange = { filterPanelTab = it },
+                            onClose = { filterPanelVisible = false },
+                            onSelectFilter = onSelectFilter,
+                            onFilterAdjustmentsChange = onFilterAdjustmentsChange,
+                            onResetFilterAdjustments = onResetFilterAdjustments,
+                            onApplyFilterToAllPagesChange = onApplyFilterToAllPagesChange,
+                            layoutMode = FilterDockLayoutMode.BOTTOM_DOCK,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 12.dp)
+                                .padding(bottom = 12.dp),
                         )
+                    } else {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp)
+                                .padding(bottom = 16.dp),
+                            verticalArrangement = Arrangement.spacedBy(14.dp),
+                        ) {
+                            EditorPageBadge(pageIndex = uiState.page.pageIndex)
+                            EditorActionRow(
+                                onRotateLeft = onRotateLeft,
+                                onRotateRight = onRotateRight,
+                                onResetCrop = onResetCrop,
+                                onOpenFilters = {
+                                    filterPanelTab = FilterPanelTab.LOOKS
+                                    filterPanelVisible = true
+                                },
+                                onRetake = onRetakePage,
+                                onDelete = { deleteDialogVisible = true },
+                                enabled = !uiState.isSaving,
+                            )
+                        }
                     }
                 }
             }
@@ -283,15 +397,6 @@ fun PageEditorScreen(
         if (showBulkApplyLoader) {
             BulkFilterApplyOverlay()
         }
-    }
-
-    if (filterSheetVisible && uiState.page != null) {
-        FilterOptionsSheet(
-            uiState = uiState,
-            onDismiss = { filterSheetVisible = false },
-            onSelectFilter = onSelectFilter,
-            onApplyFilterToAllPagesChange = onApplyFilterToAllPagesChange,
-        )
     }
 
     if (deleteDialogVisible && uiState.page != null) {
@@ -354,6 +459,7 @@ private fun FilterScopeOption(
     applyToAllPages: Boolean,
     enabled: Boolean,
     onApplyToAllPagesChange: (Boolean) -> Unit,
+    compact: Boolean = false,
 ) {
     val colorScheme = MaterialTheme.colorScheme
     Surface(
@@ -363,28 +469,36 @@ private fun FilterScopeOption(
                 onApplyToAllPagesChange(!applyToAllPages)
             },
         color = colorScheme.surfaceContainer,
-        shape = MaterialTheme.shapes.extraLarge,
+        shape = if (compact) RoundedCornerShape(16.dp) else MaterialTheme.shapes.extraLarge,
         border = BorderStroke(
             width = 1.dp,
             color = if (applyToAllPages) colorScheme.primary else colorScheme.outlineVariant,
         ),
     ) {
         Row(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+            modifier = Modifier.padding(
+                horizontal = if (compact) 12.dp else 16.dp,
+                vertical = if (compact) 8.dp else 12.dp,
+            ),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(if (compact) 2.dp else 4.dp),
+            ) {
                 Text(
-                    text = "Apply Filter To All Pages",
+                    text = if (compact) "Apply to all pages" else "Apply Filter To All Pages",
                     color = colorScheme.onSurface,
                     style = MaterialTheme.typography.labelLarge,
                 )
-                Text(
-                    text = "Filter only. Crop and rotation stay per page.",
-                    color = colorScheme.onSurfaceVariant,
-                    style = MaterialTheme.typography.bodySmall,
-                )
+                if (!compact) {
+                    Text(
+                        text = "Filter only. Crop and rotation stay per page.",
+                        color = colorScheme.onSurfaceVariant,
+                        style = MaterialTheme.typography.bodySmall,
+                    )
+                }
             }
             Switch(
                 checked = applyToAllPages,
@@ -409,56 +523,535 @@ private fun FilterScopeOption(
     }
 }
 
+private enum class FilterDockLayoutMode {
+    /** Phone portrait: capped height under the live preview. */
+    BOTTOM_DOCK,
+
+    /** Tablet / wide: full-height side panel next to the live preview. */
+    SIDE_PANEL,
+}
+
+/**
+ * Bottom/side filter dock that never covers the live page preview.
+ * Looks and Adjust are split into tabs so slider mode keeps the image large.
+ */
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
-private fun FilterOptionsSheet(
+private fun FilterEditorDock(
     uiState: PageEditorUiState,
-    onDismiss: () -> Unit,
+    windowSizeInfo: WindowSizeInfo,
+    selectedTab: FilterPanelTab,
+    onTabChange: (FilterPanelTab) -> Unit,
+    onClose: () -> Unit,
     onSelectFilter: (PageFilterPreset) -> Unit,
+    onFilterAdjustmentsChange: (PageFilterAdjustments) -> Unit,
+    onResetFilterAdjustments: () -> Unit,
     onApplyFilterToAllPagesChange: (Boolean) -> Unit,
+    layoutMode: FilterDockLayoutMode,
+    modifier: Modifier = Modifier,
 ) {
     val page = uiState.page ?: return
+    val colorScheme = MaterialTheme.colorScheme
+    val configuration = LocalConfiguration.current
+    val isSidePanel = layoutMode == FilterDockLayoutMode.SIDE_PANEL
+    val useTwoColumnAdjust = isSidePanel &&
+        windowSizeInfo.widthClass != WindowWidthClass.Compact
+    val useVerticalLooks = isSidePanel
+    // Cap dock height on phones so the live preview always keeps most of the screen.
+    val maxDockHeight = when (windowSizeInfo.widthClass) {
+        WindowWidthClass.Compact -> (configuration.screenHeightDp * 0.46f).dp.coerceIn(240.dp, 400.dp)
+        WindowWidthClass.Medium -> (configuration.screenHeightDp * 0.42f).dp.coerceIn(260.dp, 440.dp)
+        WindowWidthClass.Expanded -> (configuration.screenHeightDp * 0.40f).dp.coerceIn(280.dp, 480.dp)
+    }
+    val looksScroll = rememberScrollState()
+    val adjustScroll = rememberScrollState()
+    val contentPadding = when {
+        isSidePanel && windowSizeInfo.widthClass == WindowWidthClass.Expanded -> 16.dp
+        isSidePanel -> 14.dp
+        else -> 12.dp
+    }
+    val previewHint = if (isSidePanel) {
+        "Live preview is on the left — scroll Adjust for more controls."
+    } else {
+        "Preview stays above — scroll Adjust for more controls."
+    }
 
-    ModalBottomSheet(
-        onDismissRequest = onDismiss,
-        containerColor = MaterialTheme.colorScheme.surface,
-        contentColor = MaterialTheme.colorScheme.onSurface,
+    Surface(
+        modifier = modifier.then(
+            if (isSidePanel) {
+                Modifier.fillMaxHeight()
+            } else {
+                Modifier.heightIn(max = maxDockHeight)
+            },
+        ),
+        color = colorScheme.surfaceContainerHigh,
+        shape = MaterialTheme.shapes.extraLarge,
+        border = BorderStroke(1.dp, colorScheme.outlineVariant),
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .navigationBarsPadding()
-                .padding(horizontal = 16.dp)
-                .padding(bottom = 24.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+                .then(if (isSidePanel) Modifier.fillMaxHeight() else Modifier)
+                .padding(horizontal = contentPadding, vertical = contentPadding - 2.dp),
+            verticalArrangement = Arrangement.spacedBy(if (isSidePanel) 12.dp else 10.dp),
         ) {
-            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                Text(
-                    text = "Filters",
-                    color = MaterialTheme.colorScheme.onSurface,
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.SemiBold,
-                )
-                Text(
-                    text = "Choose the document enhancement without shrinking the crop canvas.",
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    style = MaterialTheme.typography.bodyMedium,
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Column(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(2.dp),
+                ) {
+                    Text(
+                        text = "Filters",
+                        color = colorScheme.onSurface,
+                        style = if (isSidePanel) {
+                            MaterialTheme.typography.titleLarge
+                        } else {
+                            MaterialTheme.typography.titleMedium
+                        },
+                        fontWeight = FontWeight.SemiBold,
+                    )
+                    Text(
+                        text = previewHint,
+                        color = colorScheme.onSurfaceVariant,
+                        style = MaterialTheme.typography.bodySmall,
+                    )
+                }
+                ChromeIconButton(
+                    icon = Icons.Filled.Close,
+                    contentDescription = "Close filters",
+                    onClick = onClose,
+                    containerColor = colorScheme.surfaceContainerHighest,
+                    contentColor = colorScheme.onSurface,
                 )
             }
+
+            FilterPanelTabRow(
+                selectedTab = selectedTab,
+                onTabChange = onTabChange,
+                adjustmentsActive = !uiState.filterAdjustments.isDefault,
+            )
+
             FilterScopeOption(
                 applyToAllPages = uiState.applyFilterToAllPages,
                 enabled = !uiState.isSaving,
                 onApplyToAllPagesChange = onApplyFilterToAllPagesChange,
+                compact = true,
             )
-            FilterSelector(
-                selectedFilter = uiState.selectedFilter,
-                rawImagePath = page.rawImagePath,
-                fallbackImagePath = page.processedImagePath,
-                rotationDegrees = uiState.rotationDegrees,
-                onSelectFilter = onSelectFilter,
+
+            // Side panel fills remaining height; bottom dock gets a bounded scroll viewport
+            // so the right-edge scroller is always meaningful when sliders overflow.
+            val scrollAreaModifier = if (isSidePanel) {
+                Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+            } else {
+                Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = 148.dp, max = 248.dp)
+            }
+
+            when (selectedTab) {
+                FilterPanelTab.LOOKS -> {
+                    ScrollableColumnWithScrollbar(
+                        scrollState = looksScroll,
+                        modifier = scrollAreaModifier,
+                        contentSpacing = 10.dp,
+                    ) {
+                        FilterSelector(
+                            selectedFilter = uiState.selectedFilter,
+                            rawImagePath = page.rawImagePath,
+                            fallbackImagePath = page.processedImagePath,
+                            rotationDegrees = uiState.rotationDegrees,
+                            onSelectFilter = onSelectFilter,
+                            vertical = useVerticalLooks,
+                            compact = !isSidePanel,
+                        )
+                    }
+                }
+
+                FilterPanelTab.ADJUST -> {
+                    ScrollableColumnWithScrollbar(
+                        scrollState = adjustScroll,
+                        modifier = scrollAreaModifier,
+                        contentSpacing = if (useTwoColumnAdjust) 8.dp else 4.dp,
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Text(
+                                text = uiState.selectedFilter.toDisplayLabel(),
+                                color = colorScheme.onSurface,
+                                style = MaterialTheme.typography.labelLarge,
+                                fontWeight = FontWeight.SemiBold,
+                            )
+                            TextButton(
+                                onClick = onResetFilterAdjustments,
+                                enabled = !uiState.isSaving && !uiState.filterAdjustments.isDefault,
+                            ) {
+                                Text("Reset")
+                            }
+                        }
+                        FilterAdjustmentsPanel(
+                            selectedFilter = uiState.selectedFilter,
+                            adjustments = uiState.filterAdjustments,
+                            enabled = !uiState.isSaving,
+                            onAdjustmentsChange = onFilterAdjustmentsChange,
+                            twoColumn = useTwoColumnAdjust,
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+/**
+ * Scrollable column with a thin always-visible track/thumb on the right when content overflows,
+ * plus a small down-arrow cue while more content remains below.
+ *
+ * The scrollbar sits in a dedicated gutter away from slider thumbs so it is not mistaken
+ * for another vertical control.
+ */
+@Composable
+private fun ScrollableColumnWithScrollbar(
+    scrollState: ScrollState,
+    modifier: Modifier = Modifier,
+    contentSpacing: Dp = 8.dp,
+    content: @Composable ColumnScope.() -> Unit,
+) {
+    val colorScheme = MaterialTheme.colorScheme
+    val canScroll = scrollState.maxValue > 0
+    val scrolledToEnd = !canScroll || scrollState.value >= scrollState.maxValue - 2
+    // Keep content clear of the scroller: gap + track column (not flush against slider ends).
+    val contentEndPadding = 8.dp
+    val scrollbarColumnWidth = 14.dp
+    val scrollbarGutter = contentEndPadding + scrollbarColumnWidth
+
+    Box(modifier = modifier) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState)
+                // Always reserve gutter so layout does not jump when scroll becomes available.
+                .padding(end = scrollbarGutter),
+            verticalArrangement = Arrangement.spacedBy(contentSpacing),
+            content = content,
+        )
+
+        if (canScroll) {
+            BoxWithConstraints(
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .fillMaxHeight()
+                    .width(scrollbarColumnWidth)
+                    .padding(vertical = 6.dp),
+            ) {
+                val trackWidth = 2.5.dp
+                val thumbWidth = 3.dp
+                val minThumbHeight = 32.dp
+                val viewportPx = constraints.maxHeight.toFloat().coerceAtLeast(1f)
+                val maxScroll = scrollState.maxValue.toFloat().coerceAtLeast(1f)
+                val contentHeightPx = viewportPx + maxScroll
+                val thumbFraction = (viewportPx / contentHeightPx).coerceIn(0.18f, 0.72f)
+                val thumbHeight = (maxHeight * thumbFraction).coerceAtLeast(minThumbHeight)
+                val travel = (maxHeight - thumbHeight).coerceAtLeast(0.dp)
+                val scrollFraction = (scrollState.value.toFloat() / maxScroll).coerceIn(0f, 1f)
+                val thumbOffset = travel * scrollFraction
+
+                // Muted track — distinct from primary-colored slider tracks.
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .fillMaxHeight()
+                        .width(trackWidth)
+                        .background(
+                            color = colorScheme.onSurface.copy(alpha = 0.12f),
+                            shape = RoundedCornerShape(50),
+                        ),
+                )
+                // Subtle thumb (outline tone, not primary) so it does not look like a slider.
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .offset(y = thumbOffset)
+                        .width(thumbWidth)
+                        .height(thumbHeight)
+                        .background(
+                            color = colorScheme.onSurfaceVariant.copy(alpha = 0.72f),
+                            shape = RoundedCornerShape(50),
+                        ),
+                )
+            }
+
+            if (!scrolledToEnd) {
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .width(scrollbarColumnWidth)
+                        .padding(bottom = 2.dp),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Surface(
+                        color = colorScheme.surfaceContainerHighest.copy(alpha = 0.92f),
+                        shape = CircleShape,
+                        border = BorderStroke(1.dp, colorScheme.outlineVariant),
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.KeyboardArrowDown,
+                            contentDescription = "More controls below",
+                            tint = colorScheme.onSurfaceVariant,
+                            modifier = Modifier
+                                .padding(vertical = 2.dp)
+                                .size(14.dp),
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun FilterPanelTabRow(
+    selectedTab: FilterPanelTab,
+    onTabChange: (FilterPanelTab) -> Unit,
+    adjustmentsActive: Boolean,
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        FilterPanelTabChip(
+            label = "Looks",
+            selected = selectedTab == FilterPanelTab.LOOKS,
+            onClick = { onTabChange(FilterPanelTab.LOOKS) },
+            modifier = Modifier.weight(1f),
+        )
+        FilterPanelTabChip(
+            label = if (adjustmentsActive) "Adjust · custom" else "Adjust",
+            selected = selectedTab == FilterPanelTab.ADJUST,
+            onClick = { onTabChange(FilterPanelTab.ADJUST) },
+            modifier = Modifier.weight(1f),
+        )
+    }
+}
+
+@Composable
+private fun FilterPanelTabChip(
+    label: String,
+    selected: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val colorScheme = MaterialTheme.colorScheme
+    Surface(
+        onClick = onClick,
+        modifier = modifier,
+        color = if (selected) colorScheme.primaryContainer else colorScheme.surfaceContainer,
+        shape = RoundedCornerShape(14.dp),
+        border = BorderStroke(
+            width = if (selected) 2.dp else 1.dp,
+            color = if (selected) colorScheme.primary else colorScheme.outlineVariant,
+        ),
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 10.dp),
+            contentAlignment = Alignment.Center,
+        ) {
+            Text(
+                text = label,
+                color = if (selected) colorScheme.onPrimaryContainer else colorScheme.onSurfaceVariant,
+                style = MaterialTheme.typography.labelLarge,
+                fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal,
             )
         }
     }
+}
+
+private data class FilterSliderSpec(
+    val label: String,
+    val valueLabel: String,
+    val value: Float,
+    val valueRange: ClosedFloatingPointRange<Float>,
+    val enabled: Boolean,
+    val onValueChange: (Float) -> Unit,
+)
+
+@Composable
+private fun FilterAdjustmentsPanel(
+    selectedFilter: PageFilterPreset,
+    adjustments: PageFilterAdjustments,
+    enabled: Boolean,
+    onAdjustmentsChange: (PageFilterAdjustments) -> Unit,
+    twoColumn: Boolean = false,
+) {
+    val showThreshold = adjustments.supportsThresholdControl(selectedFilter)
+    val sliders = buildList {
+        add(
+            FilterSliderSpec(
+                label = "Strength",
+                valueLabel = percentLabel(adjustments.intensity),
+                value = adjustments.intensity,
+                valueRange = PageFilterAdjustments.INTENSITY_MIN..PageFilterAdjustments.INTENSITY_MAX,
+                enabled = enabled && selectedFilter != PageFilterPreset.ORIGINAL,
+                onValueChange = { onAdjustmentsChange(adjustments.copy(intensity = it)) },
+            ),
+        )
+        add(
+            FilterSliderSpec(
+                label = "Brightness",
+                valueLabel = signedPercentLabel(adjustments.brightness),
+                value = adjustments.brightness,
+                valueRange = PageFilterAdjustments.BRIGHTNESS_MIN..PageFilterAdjustments.BRIGHTNESS_MAX,
+                enabled = enabled,
+                onValueChange = { onAdjustmentsChange(adjustments.copy(brightness = it)) },
+            ),
+        )
+        add(
+            FilterSliderSpec(
+                label = "Contrast",
+                valueLabel = signedPercentLabel(adjustments.contrast),
+                value = adjustments.contrast,
+                valueRange = PageFilterAdjustments.CONTRAST_MIN..PageFilterAdjustments.CONTRAST_MAX,
+                enabled = enabled,
+                onValueChange = { onAdjustmentsChange(adjustments.copy(contrast = it)) },
+            ),
+        )
+        add(
+            FilterSliderSpec(
+                label = "Shadows",
+                valueLabel = percentLabel(adjustments.shadows),
+                value = adjustments.shadows,
+                valueRange = PageFilterAdjustments.SHADOWS_MIN..PageFilterAdjustments.SHADOWS_MAX,
+                enabled = enabled && selectedFilter != PageFilterPreset.ORIGINAL,
+                onValueChange = { onAdjustmentsChange(adjustments.copy(shadows = it)) },
+            ),
+        )
+        add(
+            FilterSliderSpec(
+                label = "Details",
+                valueLabel = percentLabel(adjustments.details),
+                value = adjustments.details,
+                valueRange = PageFilterAdjustments.DETAILS_MIN..PageFilterAdjustments.DETAILS_MAX,
+                enabled = enabled,
+                onValueChange = { onAdjustmentsChange(adjustments.copy(details = it)) },
+            ),
+        )
+        if (showThreshold) {
+            add(
+                FilterSliderSpec(
+                    label = "Ink",
+                    valueLabel = percentLabel(adjustments.threshold),
+                    value = adjustments.threshold,
+                    valueRange = PageFilterAdjustments.THRESHOLD_MIN..PageFilterAdjustments.THRESHOLD_MAX,
+                    enabled = enabled,
+                    onValueChange = { onAdjustmentsChange(adjustments.copy(threshold = it)) },
+                ),
+            )
+        }
+    }
+
+    if (twoColumn) {
+        Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            sliders.chunked(2).forEach { rowSliders ->
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    rowSliders.forEach { spec ->
+                        FilterAdjustmentSlider(
+                            label = spec.label,
+                            valueLabel = spec.valueLabel,
+                            value = spec.value,
+                            valueRange = spec.valueRange,
+                            enabled = spec.enabled,
+                            onValueChange = spec.onValueChange,
+                            modifier = Modifier.weight(1f),
+                        )
+                    }
+                    if (rowSliders.size < 2) {
+                        Spacer(modifier = Modifier.weight(1f))
+                    }
+                }
+            }
+        }
+    } else {
+        Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+            sliders.forEach { spec ->
+                FilterAdjustmentSlider(
+                    label = spec.label,
+                    valueLabel = spec.valueLabel,
+                    value = spec.value,
+                    valueRange = spec.valueRange,
+                    enabled = spec.enabled,
+                    onValueChange = spec.onValueChange,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun FilterAdjustmentSlider(
+    label: String,
+    valueLabel: String,
+    value: Float,
+    valueRange: ClosedFloatingPointRange<Float>,
+    enabled: Boolean,
+    onValueChange: (Float) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val colorScheme = MaterialTheme.colorScheme
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(0.dp),
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = label,
+                color = if (enabled) colorScheme.onSurface else colorScheme.onSurface.copy(alpha = 0.38f),
+                style = MaterialTheme.typography.labelMedium,
+            )
+            Text(
+                text = valueLabel,
+                color = if (enabled) colorScheme.onSurfaceVariant else colorScheme.onSurface.copy(alpha = 0.38f),
+                style = MaterialTheme.typography.labelSmall,
+            )
+        }
+        Slider(
+            value = value,
+            onValueChange = onValueChange,
+            valueRange = valueRange,
+            enabled = enabled,
+            colors = SliderDefaults.colors(
+                thumbColor = colorScheme.primary,
+                activeTrackColor = colorScheme.primary,
+                inactiveTrackColor = colorScheme.surfaceContainerHighest,
+                disabledThumbColor = colorScheme.onSurface.copy(alpha = 0.28f),
+                disabledActiveTrackColor = colorScheme.onSurface.copy(alpha = 0.18f),
+                disabledInactiveTrackColor = colorScheme.surfaceContainerHighest.copy(alpha = 0.7f),
+            ),
+        )
+    }
+}
+
+private fun percentLabel(value: Float): String =
+    "${(value * 100f).roundToInt()}%"
+
+private fun signedPercentLabel(value: Float): String {
+    val percent = (value * 100f).roundToInt()
+    return if (percent > 0) "+$percent%" else "$percent%"
 }
 
 @Composable
@@ -512,6 +1105,8 @@ private fun PageCropEditor(
     cropQuad: DocumentCornerQuad,
     rotationDegrees: Int,
     selectedFilter: PageFilterPreset,
+    filterAdjustments: PageFilterAdjustments,
+    showCropHandles: Boolean = true,
     onHandleMoved: (CropHandle, NormalizedPoint) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -521,6 +1116,7 @@ private fun PageCropEditor(
         fallbackImagePath = page.processedImagePath,
         rotationDegrees = rotationDegrees,
         selectedFilter = selectedFilter,
+        filterAdjustments = filterAdjustments,
     )
     val handleSelectionRadiusPx = with(LocalDensity.current) { 24.dp.toPx() }
     val magnifierSizePx = with(LocalDensity.current) { 96.dp.toPx() }
@@ -529,6 +1125,13 @@ private fun PageCropEditor(
     var editorSize by remember { mutableStateOf(IntSize.Zero) }
     var activeHandle by remember { mutableStateOf<CropHandle?>(null) }
     var dragOffset by remember { mutableStateOf<Offset?>(null) }
+
+    LaunchedEffect(showCropHandles) {
+        if (!showCropHandles) {
+            activeHandle = null
+            dragOffset = null
+        }
+    }
 
     Box(
         modifier = modifier
@@ -589,43 +1192,53 @@ private fun PageCropEditor(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .pointerInput(Unit) {
-                    var draggingHandle: CropHandle? = null
-                    detectDragGestures(
-                        onDragStart = { startOffset ->
-                            draggingHandle = nearestHandle(
-                                startOffset = startOffset,
-                                handles = latestHandlePositions.value,
-                                maxDistance = latestHandleSelectionRadius.value,
+                .then(
+                    if (showCropHandles) {
+                        Modifier.pointerInput(Unit) {
+                            var draggingHandle: CropHandle? = null
+                            detectDragGestures(
+                                onDragStart = { startOffset ->
+                                    draggingHandle = nearestHandle(
+                                        startOffset = startOffset,
+                                        handles = latestHandlePositions.value,
+                                        maxDistance = latestHandleSelectionRadius.value,
+                                    )
+                                    activeHandle = draggingHandle
+                                    dragOffset = draggingHandle?.let { handle ->
+                                        latestHandlePositions.value[handle]
+                                    } ?: latestPreviewRect.value.clampOffset(startOffset)
+                                },
+                                onDragEnd = {
+                                    draggingHandle = null
+                                    activeHandle = null
+                                    dragOffset = null
+                                },
+                                onDragCancel = {
+                                    draggingHandle = null
+                                    activeHandle = null
+                                    dragOffset = null
+                                },
+                                onDrag = { change, _ ->
+                                    val handle = draggingHandle ?: return@detectDragGestures
+                                    change.consume()
+                                    val clampedOffset = latestPreviewRect.value.clampOffset(change.position)
+                                    dragOffset = clampedOffset
+                                    onHandleMoved(
+                                        handle,
+                                        latestPreviewRect.value.toNormalizedPointClamped(clampedOffset),
+                                    )
+                                },
                             )
-                            activeHandle = draggingHandle
-                            dragOffset = draggingHandle?.let { handle ->
-                                latestHandlePositions.value[handle]
-                            } ?: latestPreviewRect.value.clampOffset(startOffset)
-                        },
-                        onDragEnd = {
-                            draggingHandle = null
-                            activeHandle = null
-                            dragOffset = null
-                        },
-                        onDragCancel = {
-                            draggingHandle = null
-                            activeHandle = null
-                            dragOffset = null
-                        },
-                        onDrag = { change, _ ->
-                            val handle = draggingHandle ?: return@detectDragGestures
-                            change.consume()
-                            val clampedOffset = latestPreviewRect.value.clampOffset(change.position)
-                            dragOffset = clampedOffset
-                            onHandleMoved(
-                                handle,
-                                latestPreviewRect.value.toNormalizedPointClamped(clampedOffset),
-                            )
-                        },
-                    )
-                },
+                        }
+                    } else {
+                        Modifier
+                    },
+                ),
         ) {
+            if (!showCropHandles) {
+                return@Box
+            }
+
             Canvas(modifier = Modifier.fillMaxSize()) {
                 val polygonPath = Path().apply {
                     moveTo(handlePositions[CropHandle.TOP_LEFT]!!.x, handlePositions[CropHandle.TOP_LEFT]!!.y)
@@ -826,6 +1439,7 @@ private fun FilterSelector(
     rotationDegrees: Int,
     onSelectFilter: (PageFilterPreset) -> Unit,
     vertical: Boolean = false,
+    compact: Boolean = false,
 ) {
     val previewState by rememberFilterPreviewBitmaps(
         rawImagePath = rawImagePath,
@@ -833,6 +1447,16 @@ private fun FilterSelector(
         rotationDegrees = rotationDegrees,
     )
     val listState = rememberLazyListState()
+    // Fixed tile sizes so every look card is identical (no growing on select / wrap).
+    val previewHeight = when {
+        compact -> 80.dp
+        vertical -> 92.dp
+        else -> 100.dp
+    }
+    val itemWidth = if (compact) 100.dp else 108.dp
+    // preview + padding(10*2) + gap(6) + 2-line label(32) + border room
+    val itemHeight = previewHeight + 10.dp + 10.dp + 6.dp + 32.dp
+    val gridColumns = if (vertical) 2 else 1
 
     LaunchedEffect(selectedFilter) {
         if (!vertical) {
@@ -843,7 +1467,7 @@ private fun FilterSelector(
         }
     }
 
-    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+    Column(verticalArrangement = Arrangement.spacedBy(if (compact) 8.dp else 12.dp)) {
         if (previewState.isLoading) {
             Surface(
                 modifier = Modifier.fillMaxWidth(),
@@ -852,9 +1476,9 @@ private fun FilterSelector(
                 border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
             ) {
                 Row(
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+                    modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
                 ) {
                     CircularProgressIndicator(
                         modifier = Modifier.size(18.dp),
@@ -863,7 +1487,7 @@ private fun FilterSelector(
                         strokeWidth = 2.dp,
                     )
                     Text(
-                        text = "Analyzing the page to tune each filter.",
+                        text = "Tuning filter previews…",
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         style = MaterialTheme.typography.labelLarge,
                     )
@@ -872,43 +1496,52 @@ private fun FilterSelector(
         }
 
         if (vertical) {
-            // Tablet sidebar: two-column grid using regular Column rows (parent is scrollable)
-            val filterRows = PageFilterPreset.entries.chunked(2)
+            // Side panel / tablet: multi-column grid (parent provides the scrollbar).
+            val filterRows = PageFilterPreset.entries.chunked(gridColumns)
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 filterRows.forEach { rowFilters ->
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(10.dp),
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(itemHeight),
                     ) {
                         rowFilters.forEach { filter ->
                             FilterItem(
                                 filter = filter,
                                 isSelected = selectedFilter == filter,
                                 preview = previewState.previews[filter],
+                                previewHeight = previewHeight,
                                 onSelect = { onSelectFilter(filter) },
-                                modifier = Modifier.weight(1f),
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .fillMaxHeight(),
                             )
                         }
-                        if (rowFilters.size < 2) {
+                        if (rowFilters.size < gridColumns) {
                             Spacer(modifier = Modifier.weight(1f))
                         }
                     }
                 }
             }
         } else {
-            // Phone / portrait: horizontal scrolling LazyRow
+            // Phone portrait: fixed-size tiles in a horizontal row.
             LazyRow(
                 state = listState,
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
                 contentPadding = PaddingValues(horizontal = 2.dp),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 items(PageFilterPreset.entries, key = { it.storageValue }) { filter ->
                     FilterItem(
                         filter = filter,
                         isSelected = selectedFilter == filter,
                         preview = previewState.previews[filter],
+                        previewHeight = previewHeight,
                         onSelect = { onSelectFilter(filter) },
-                        modifier = Modifier.width(112.dp),
+                        modifier = Modifier
+                            .width(itemWidth)
+                            .height(itemHeight),
                     )
                 }
             }
@@ -921,33 +1554,37 @@ private fun FilterItem(
     filter: PageFilterPreset,
     isSelected: Boolean,
     preview: ImageBitmap?,
+    previewHeight: Dp = 100.dp,
     onSelect: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val colorScheme = MaterialTheme.colorScheme
+    // Same border width always so selected cards do not grow larger than neighbors.
     Surface(
         onClick = onSelect,
         modifier = modifier,
         color = if (isSelected) colorScheme.primaryContainer else colorScheme.surfaceContainer,
-        shape = RoundedCornerShape(20.dp),
+        shape = RoundedCornerShape(18.dp),
         border = BorderStroke(
-            width = if (isSelected) 2.dp else 1.dp,
+            width = 1.5.dp,
             color = if (isSelected) colorScheme.primary else colorScheme.outlineVariant,
         ),
     ) {
         Column(
-            modifier = Modifier.padding(10.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 8.dp, vertical = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp),
         ) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(112.dp),
+                    .height(previewHeight),
             ) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = colorScheme.surfaceContainerHighest,
-                    shape = RoundedCornerShape(16.dp),
+                    shape = RoundedCornerShape(14.dp),
                 ) {
                     if (preview == null) {
                         Box(
@@ -973,8 +1610,8 @@ private fun FilterItem(
                     Box(
                         modifier = Modifier
                             .align(Alignment.TopEnd)
-                            .padding(6.dp)
-                            .size(24.dp)
+                            .padding(4.dp)
+                            .size(22.dp)
                             .background(colorScheme.primary, CircleShape),
                         contentAlignment = Alignment.Center,
                     ) {
@@ -982,17 +1619,28 @@ private fun FilterItem(
                             imageVector = Icons.Filled.Check,
                             contentDescription = "Selected filter",
                             tint = colorScheme.onPrimary,
-                            modifier = Modifier.size(16.dp),
+                            modifier = Modifier.size(14.dp),
                         )
                     }
                 }
             }
-            Text(
-                text = filter.toDisplayLabel(),
-                color = if (isSelected) colorScheme.onPrimaryContainer else colorScheme.onSurfaceVariant,
-                style = MaterialTheme.typography.labelLarge,
-                fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
-            )
+            // Fixed two-line label band so long names never resize the tile.
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(32.dp),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    text = filter.toDisplayLabel(),
+                    color = if (isSelected) colorScheme.onPrimaryContainer else colorScheme.onSurfaceVariant,
+                    style = MaterialTheme.typography.labelMedium,
+                    fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
+                    maxLines = 2,
+                    minLines = 2,
+                    textAlign = TextAlign.Center,
+                )
+            }
         }
     }
 }
@@ -1085,13 +1733,17 @@ private fun rememberEditorPreviewBitmap(
     fallbackImagePath: String?,
     rotationDegrees: Int,
     selectedFilter: PageFilterPreset,
+    filterAdjustments: PageFilterAdjustments,
 ): androidx.compose.runtime.State<ImageBitmap?> = produceState<ImageBitmap?>(
     initialValue = null,
     rawImagePath,
     fallbackImagePath,
     rotationDegrees,
     selectedFilter,
+    filterAdjustments,
 ) {
+    // Short debounce keeps live preview responsive while dragging sliders.
+    delay(45)
     value = withContext(Dispatchers.Default) {
         val sourcePath = rawImagePath ?: fallbackImagePath ?: return@withContext null
         val rotatedBitmap = decodeEditorBitmap(
@@ -1099,7 +1751,11 @@ private fun rememberEditorPreviewBitmap(
             userRotationDegrees = rotationDegrees,
         ) ?: return@withContext null
         val filteredBitmap = runCatching {
-            OpenCvPageFilterProcessor.apply(rotatedBitmap, selectedFilter)
+            OpenCvPageFilterProcessor.apply(
+                sourceBitmap = rotatedBitmap,
+                filterPreset = selectedFilter,
+                adjustments = filterAdjustments,
+            )
         }.getOrElse {
             rotatedBitmap.copy(Bitmap.Config.ARGB_8888, false)
         }
@@ -1283,6 +1939,7 @@ private fun PageFilterPreset.toDisplayLabel(): String = when (this) {
     PageFilterPreset.ORIGINAL -> "Original"
     PageFilterPreset.AUTO -> "Auto"
     PageFilterPreset.ENHANCED_COLOR -> "Color"
+    PageFilterPreset.PHOTO -> "Photo"
     PageFilterPreset.GRAYSCALE -> "Grayscale"
     PageFilterPreset.BLACK_AND_WHITE -> "B&W"
     PageFilterPreset.CLEAN -> "Clean Paper"
@@ -1290,12 +1947,14 @@ private fun PageFilterPreset.toDisplayLabel(): String = when (this) {
     PageFilterPreset.MAGIC_COLOR -> "Magic"
     PageFilterPreset.RECEIPT -> "Receipt"
     PageFilterPreset.SOFT_BLACK_AND_WHITE -> "Text Enhance"
+    PageFilterPreset.HIGH_CONTRAST -> "High Contrast"
 }
 
 private fun PageFilterPreset.shortLabel(): String = when (this) {
     PageFilterPreset.ORIGINAL -> "O"
     PageFilterPreset.AUTO -> "A"
     PageFilterPreset.ENHANCED_COLOR -> "C"
+    PageFilterPreset.PHOTO -> "P"
     PageFilterPreset.GRAYSCALE -> "G"
     PageFilterPreset.BLACK_AND_WHITE -> "B&W"
     PageFilterPreset.CLEAN -> "CP"
@@ -1303,6 +1962,7 @@ private fun PageFilterPreset.shortLabel(): String = when (this) {
     PageFilterPreset.MAGIC_COLOR -> "M"
     PageFilterPreset.RECEIPT -> "R"
     PageFilterPreset.SOFT_BLACK_AND_WHITE -> "TXT"
+    PageFilterPreset.HIGH_CONTRAST -> "HC"
 }
 
 private fun normalizeRotation(rotationDegrees: Int): Int {

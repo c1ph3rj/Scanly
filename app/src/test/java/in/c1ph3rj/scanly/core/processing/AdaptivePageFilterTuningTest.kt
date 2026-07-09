@@ -1,5 +1,6 @@
 package `in`.c1ph3rj.scanly.core.processing
 
+import `in`.c1ph3rj.scanly.domain.model.PageFilterAdjustments
 import `in`.c1ph3rj.scanly.domain.model.PageFilterPreset
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -29,24 +30,25 @@ class AdaptivePageFilterTuningTest {
             longestEdge = 2400,
         )
 
-        val crisp = AdaptivePageFilterTuning.enhancedColor(crispProfile)
-        val dim = AdaptivePageFilterTuning.enhancedColor(dimProfile)
+        val crisp = AdaptivePageFilterTuning.recipe(PageFilterPreset.ENHANCED_COLOR, crispProfile)
+        val dim = AdaptivePageFilterTuning.recipe(PageFilterPreset.ENHANCED_COLOR, dimProfile)
 
         assertTrue(dim.clipLimit > crisp.clipLimit)
         assertTrue(dim.sharpenAmount > crisp.sharpenAmount)
-        assertTrue(dim.bilateralSigmaColor > crisp.bilateralSigmaColor)
+        assertTrue(dim.denoiseStrength > crisp.denoiseStrength)
     }
 
     @Test
     fun blackAndWhiteFallbackUsesTheConservativeThresholdRecipe() {
-        val fallback = AdaptivePageFilterTuning.blackAndWhite(null)
+        val fallback = AdaptivePageFilterTuning.recipe(PageFilterPreset.BLACK_AND_WHITE, null)
 
-        assertEquals(24.0, fallback.backgroundBlurSigma, 0.0001)
-        assertEquals(0.76, fallback.shadowStrength, 0.0001)
-        assertEquals(1.5, fallback.clipLimit, 0.0001)
-        assertEquals(5, fallback.denoiseDiameter)
-        assertEquals(41, fallback.blockSize)
-        assertEquals(13.0, fallback.c, 0.0001)
+        assertTrue(fallback.backgroundBlurSigma in 16.0..36.0)
+        assertTrue(fallback.shadowStrength in 0.5..0.85)
+        assertTrue(fallback.clipLimit in 1.1..1.7)
+        assertTrue(fallback.blockSize in 35..75)
+        assertEquals(1, fallback.blockSize % 2)
+        assertTrue(fallback.thresholdC in 10.0..14.0)
+        assertEquals(AdaptivePageFilterTuning.RenderMode.BINARY, fallback.mode)
     }
 
     @Test
@@ -59,16 +61,19 @@ class AdaptivePageFilterTuningTest {
             longestEdge = 2_400,
         )
 
-        val blackAndWhite = AdaptivePageFilterTuning.blackAndWhite(difficultProfile)
-        val receipt = AdaptivePageFilterTuning.receipt(difficultProfile)
+        val blackAndWhite = AdaptivePageFilterTuning.recipe(
+            PageFilterPreset.BLACK_AND_WHITE,
+            difficultProfile,
+        )
+        val receipt = AdaptivePageFilterTuning.recipe(PageFilterPreset.RECEIPT, difficultProfile)
 
-        assertTrue(blackAndWhite.blockSize in 31..71)
+        assertTrue(blackAndWhite.blockSize in 35..75)
         assertEquals(1, blackAndWhite.blockSize % 2)
-        assertTrue(blackAndWhite.c in 11.0..14.5)
-        assertTrue(receipt.blockSize in 41..81)
+        assertTrue(blackAndWhite.thresholdC in 10.0..14.0)
+        assertTrue(receipt.blockSize in 41..85)
         assertEquals(1, receipt.blockSize % 2)
-        assertTrue(receipt.c in 10.0..13.0)
-        assertTrue(receipt.binaryBlend in 0.58..0.68)
+        assertTrue(receipt.thresholdC in 9.5..13.0)
+        assertTrue(receipt.binaryBlend in 0.45..0.70)
     }
 
     @Test
@@ -136,6 +141,78 @@ class AdaptivePageFilterTuningTest {
         assertEquals(PageFilterPreset.CLEAN, AdaptivePageFilterTuning.automatic(shadowedDocument))
     }
 
+    @Test
+    fun automaticRoutesPhotoLikePagesToPhotoPreset() {
+        val photoLike = profile(
+            saturation = 55.0,
+            colorRatio = 0.12,
+            textDensity = 0.01,
+            edgeDensity = 0.05,
+        )
+
+        assertEquals(PageFilterPreset.PHOTO, AdaptivePageFilterTuning.automatic(photoLike))
+    }
+
+    @Test
+    fun automaticRoutesFadedTextPagesToHighContrast() {
+        val fadedText = profile(
+            brightness = 170.0,
+            contrast = 15.0,
+            saturation = 8.0,
+            colorRatio = 0.004,
+            textDensity = 0.06,
+            backgroundUnevenness = 5.0,
+            shadowRatio = 0.03,
+        )
+
+        assertEquals(PageFilterPreset.HIGH_CONTRAST, AdaptivePageFilterTuning.automatic(fadedText))
+    }
+
+    @Test
+    fun userShadowAdjustmentScalesRecipeShadowStrength() {
+        val profile = profile(shadowRatio = 0.15, backgroundUnevenness = 14.0)
+        val low = AdaptivePageFilterTuning.recipe(
+            preset = PageFilterPreset.SHADOW_REDUCTION,
+            profile = profile,
+            adjustments = PageFilterAdjustments.Default.copy(shadows = 0.1f),
+        )
+        val high = AdaptivePageFilterTuning.recipe(
+            preset = PageFilterPreset.SHADOW_REDUCTION,
+            profile = profile,
+            adjustments = PageFilterAdjustments.Default.copy(shadows = 0.9f),
+        )
+
+        assertTrue(high.shadowStrength > low.shadowStrength)
+    }
+
+    @Test
+    fun intensityAdjustmentIsPropagatedToRecipe() {
+        val recipe = AdaptivePageFilterTuning.recipe(
+            preset = PageFilterPreset.GRAYSCALE,
+            profile = profile(),
+            adjustments = PageFilterAdjustments.Default.copy(intensity = 0.42f),
+        )
+        assertEquals(0.42, recipe.intensity, 0.0001)
+    }
+
+    @Test
+    fun thresholdAdjustmentMovesBinaryInkAggressiveness() {
+        val profile = profile()
+        val moreWhite = AdaptivePageFilterTuning.recipe(
+            preset = PageFilterPreset.BLACK_AND_WHITE,
+            profile = profile,
+            adjustments = PageFilterAdjustments.Default.copy(threshold = 0.85f),
+        )
+        val moreInk = AdaptivePageFilterTuning.recipe(
+            preset = PageFilterPreset.BLACK_AND_WHITE,
+            profile = profile,
+            adjustments = PageFilterAdjustments.Default.copy(threshold = 0.15f),
+        )
+
+        // Higher Ink control keeps more white paper → larger adaptive C.
+        assertTrue(moreWhite.thresholdC > moreInk.thresholdC)
+    }
+
     private fun profile(
         brightness: Double = 176.0,
         contrast: Double = 38.0,
@@ -144,6 +221,7 @@ class AdaptivePageFilterTuningTest {
         saturation: Double = 14.0,
         colorRatio: Double = 0.008,
         textDensity: Double = 0.04,
+        edgeDensity: Double = 0.07,
         aspectRatio: Double = 1.4,
         longestEdge: Int = 1_800,
     ): PageImageProfile = PageImageProfile(
@@ -152,7 +230,7 @@ class AdaptivePageFilterTuningTest {
         shadowRatio = shadowRatio,
         highlightRatio = 0.18,
         saturation = saturation,
-        edgeDensity = 0.07,
+        edgeDensity = edgeDensity,
         sharpness = 48.0,
         longestEdge = longestEdge,
         backgroundUnevenness = backgroundUnevenness,

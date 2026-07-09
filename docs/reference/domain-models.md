@@ -7,18 +7,23 @@ All model classes in `domain/model/` (22 files).
 | Model | File | Purpose |
 | --- | --- | --- |
 | `ScanDocument` | `ScanDocument.kt` | Document metadata: id, title, pageCount, cover path, groupId, timestamps |
-| `ScanPage` | `ScanPage.kt` | Page: paths, crop quad, rotation, filter, processing state, pageIndex |
+| `ScanPage` | `ScanPage.kt` | Page: paths, crop quad, rotation, filter + adjustments, processing state, pageIndex |
 | `DocumentGroup` | `DocumentGroup.kt` | Collection: id, title, doc/page counts, cover path, timestamps |
 | `PageCaptureDraft` | `PageCaptureDraft.kt` | Transient state during active capture session |
 | `PagePreviewPaths` | `PagePreviewPaths.kt` | Extension resolving display paths for preview |
 | `PageProcessingState` | `PageProcessingState.kt` | `CAPTURED`, `PROCESSED`, or `NEEDS_REVIEW` |
-| `PageFilterPreset` | `PageFilterPreset.kt` | Ten filter modes with `storageValue` strings |
+| `PageFilterPreset` | `PageFilterPreset.kt` | Twelve filter modes with `storageValue` strings |
+| `PageFilterAdjustments` | `PageFilterAdjustments.kt` | Continuous filter controls (intensity, tone, shadows, details, ink) |
 | `DocumentTitleFormat` | `DocumentTitleFormat.kt` | Four rotatable auto-title formats for new documents |
 | `GroupTitleFormat` | `GroupTitleFormat.kt` | Four rotatable auto-title formats for new folders |
 
 ### PageFilterPreset values
 
-`ORIGINAL`, `AUTO`, `ENHANCED_COLOR`, `GRAYSCALE`, `BLACK_AND_WHITE`, `CLEAN`, `SHADOW_REDUCTION`, `MAGIC_COLOR`, `RECEIPT`, `SOFT_BLACK_AND_WHITE`
+`ORIGINAL`, `AUTO`, `ENHANCED_COLOR`, `PHOTO`, `GRAYSCALE`, `BLACK_AND_WHITE`, `CLEAN`, `SHADOW_REDUCTION`, `MAGIC_COLOR`, `RECEIPT`, `SOFT_BLACK_AND_WHITE`, `HIGH_CONTRAST`
+
+### PageFilterAdjustments defaults
+
+`intensity=1`, `brightness=0`, `contrast=0`, `shadows=0.5`, `details=0.5`, `threshold=0.5`
 
 ### DocumentTitleFormat values
 

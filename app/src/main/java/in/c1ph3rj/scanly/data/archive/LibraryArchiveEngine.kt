@@ -189,6 +189,12 @@ class LibraryArchiveEngine @Inject constructor(
                 cropBottomLeftX = page.cropBottomLeftX,
                 cropBottomLeftY = page.cropBottomLeftY,
                 filterPreset = page.filterPreset,
+                filterIntensity = page.filterIntensity,
+                filterBrightness = page.filterBrightness,
+                filterContrast = page.filterContrast,
+                filterShadows = page.filterShadows,
+                filterDetails = page.filterDetails,
+                filterThreshold = page.filterThreshold,
                 processingState = page.processingState,
                 createdAtMillis = page.createdAtMillis,
                 updatedAtMillis = page.updatedAtMillis,
@@ -372,6 +378,12 @@ class LibraryArchiveEngine @Inject constructor(
                     cropBottomLeftX = page.cropBottomLeftX,
                     cropBottomLeftY = page.cropBottomLeftY,
                     filterPreset = page.filterPreset,
+                    filterIntensity = page.filterIntensity,
+                    filterBrightness = page.filterBrightness,
+                    filterContrast = page.filterContrast,
+                    filterShadows = page.filterShadows,
+                    filterDetails = page.filterDetails,
+                    filterThreshold = page.filterThreshold,
                     processingState = page.processingState,
                     createdAtMillis = page.createdAtMillis,
                     updatedAtMillis = page.updatedAtMillis,
@@ -659,6 +671,12 @@ class LibraryArchiveEngine @Inject constructor(
         val cropBottomRightX: Float?, val cropBottomRightY: Float?,
         val cropBottomLeftX: Float?, val cropBottomLeftY: Float?,
         val filterPreset: String,
+        val filterIntensity: Float = 1.0f,
+        val filterBrightness: Float = 0.0f,
+        val filterContrast: Float = 0.0f,
+        val filterShadows: Float = 0.5f,
+        val filterDetails: Float = 0.5f,
+        val filterThreshold: Float = 0.5f,
         val processingState: String,
         val createdAtMillis: Long,
         val updatedAtMillis: Long,
@@ -671,7 +689,14 @@ class LibraryArchiveEngine @Inject constructor(
             putNullable("cropTopRightX", cropTopRightX); putNullable("cropTopRightY", cropTopRightY)
             putNullable("cropBottomRightX", cropBottomRightX); putNullable("cropBottomRightY", cropBottomRightY)
             putNullable("cropBottomLeftX", cropBottomLeftX); putNullable("cropBottomLeftY", cropBottomLeftY)
-            put("filterPreset", filterPreset); put("processingState", processingState)
+            put("filterPreset", filterPreset)
+            put("filterIntensity", filterIntensity.toDouble())
+            put("filterBrightness", filterBrightness.toDouble())
+            put("filterContrast", filterContrast.toDouble())
+            put("filterShadows", filterShadows.toDouble())
+            put("filterDetails", filterDetails.toDouble())
+            put("filterThreshold", filterThreshold.toDouble())
+            put("processingState", processingState)
             put("createdAtMillis", createdAtMillis); put("updatedAtMillis", updatedAtMillis)
         }
 
@@ -691,6 +716,12 @@ class LibraryArchiveEngine @Inject constructor(
                 cropBottomLeftX = json.nullableFloat("cropBottomLeftX"),
                 cropBottomLeftY = json.nullableFloat("cropBottomLeftY"),
                 filterPreset = json.getString("filterPreset"),
+                filterIntensity = json.optionalFloat("filterIntensity", 1.0f),
+                filterBrightness = json.optionalFloat("filterBrightness", 0.0f),
+                filterContrast = json.optionalFloat("filterContrast", 0.0f),
+                filterShadows = json.optionalFloat("filterShadows", 0.5f),
+                filterDetails = json.optionalFloat("filterDetails", 0.5f),
+                filterThreshold = json.optionalFloat("filterThreshold", 0.5f),
                 processingState = json.getString("processingState"),
                 createdAtMillis = json.getLong("createdAtMillis"),
                 updatedAtMillis = json.getLong("updatedAtMillis"),
@@ -784,6 +815,9 @@ private fun JSONObject.nullableString(key: String): String? =
 
 private fun JSONObject.nullableFloat(key: String): Float? =
     if (isNull(key)) null else getDouble(key).toFloat()
+
+private fun JSONObject.optionalFloat(key: String, default: Float): Float =
+    if (!has(key) || isNull(key)) default else getDouble(key).toFloat()
 
 private fun <T> JSONArray.mapObjects(transform: (JSONObject) -> T): List<T> =
     List(length()) { index -> transform(getJSONObject(index)) }
