@@ -285,9 +285,10 @@ object OpenCvPageFilterProcessor {
                 backgroundBlurSigma = tuning.backgroundBlurSigma,
                 shadowStrength = tuning.shadowStrength,
                 backgroundTarget = tuning.backgroundTarget,
-                textMaskSensitivity = tuning.textMaskSensitivity,
                 contrastScale = tuning.contrastScale,
                 brightnessShift = tuning.brightnessShift,
+                localContrastStrength = tuning.localContrastStrength,
+                whiteBalanceStrength = tuning.whiteBalanceStrength,
             )
             boostSaturation(
                 sourceBgr = enhancedBgr,
@@ -333,13 +334,13 @@ object OpenCvPageFilterProcessor {
                 backgroundBlurSigma = tuning.backgroundBlurSigma,
                 strength = tuning.shadowStrength,
                 targetBackground = tuning.backgroundTarget,
-                textMaskSensitivity = tuning.textMaskSensitivity,
             )
             applyClahe(
                 sourceGray = flattenedGray,
                 outputGray = claheGray,
                 clipLimit = tuning.clipLimit,
                 tileGridSize = tuning.tileGridSize,
+                strength = tuning.localContrastStrength,
             )
             Imgproc.bilateralFilter(
                 claheGray,
@@ -393,13 +394,13 @@ object OpenCvPageFilterProcessor {
                 backgroundBlurSigma = tuning.backgroundBlurSigma,
                 strength = tuning.shadowStrength,
                 targetBackground = tuning.backgroundTarget,
-                textMaskSensitivity = tuning.textMaskSensitivity,
             )
             applyClahe(
                 sourceGray = flattenedGray,
                 outputGray = claheGray,
                 clipLimit = tuning.clipLimit,
                 tileGridSize = tuning.tileGridSize,
+                strength = tuning.localContrastStrength,
             )
             Imgproc.bilateralFilter(
                 claheGray,
@@ -450,13 +451,13 @@ object OpenCvPageFilterProcessor {
                 backgroundBlurSigma = tuning.backgroundBlurSigma,
                 strength = tuning.shadowStrength,
                 targetBackground = tuning.backgroundTarget,
-                textMaskSensitivity = tuning.textMaskSensitivity,
             )
             applyClahe(
                 sourceGray = flattenedGray,
                 outputGray = claheGray,
                 clipLimit = tuning.clipLimit,
                 tileGridSize = tuning.tileGridSize,
+                strength = tuning.localContrastStrength,
             )
             adjustTone(
                 source = claheGray,
@@ -468,7 +469,7 @@ object OpenCvPageFilterProcessor {
                 referenceGray = claheGray,
                 cleanedGray = tonedGray,
                 outputGray = textProtectedGray,
-                sensitivity = tuning.textMaskSensitivity,
+                sensitivity = CLEAN_TEXT_DETAIL_SENSITIVITY,
             )
             sharpenGray(
                 sourceGray = textProtectedGray,
@@ -510,9 +511,10 @@ object OpenCvPageFilterProcessor {
                 backgroundBlurSigma = 0.0,
                 shadowStrength = 0.0,
                 backgroundTarget = 232.0,
-                textMaskSensitivity = 12.0,
                 contrastScale = tuning.contrastScale,
                 brightnessShift = tuning.brightnessShift,
+                localContrastStrength = tuning.localContrastStrength,
+                whiteBalanceStrength = tuning.whiteBalanceStrength,
             )
             boostSaturation(
                 sourceBgr = enhancedBgr,
@@ -558,13 +560,13 @@ object OpenCvPageFilterProcessor {
                 backgroundBlurSigma = tuning.backgroundBlurSigma,
                 strength = tuning.shadowStrength,
                 targetBackground = tuning.backgroundTarget,
-                textMaskSensitivity = tuning.textMaskSensitivity,
             )
             applyClahe(
                 sourceGray = flattenedGray,
                 outputGray = claheGray,
                 clipLimit = tuning.clipLimit,
                 tileGridSize = tuning.tileGridSize,
+                strength = tuning.localContrastStrength,
             )
             Imgproc.bilateralFilter(
                 claheGray,
@@ -632,13 +634,13 @@ object OpenCvPageFilterProcessor {
                 backgroundBlurSigma = tuning.backgroundBlurSigma,
                 strength = tuning.shadowStrength,
                 targetBackground = tuning.backgroundTarget,
-                textMaskSensitivity = tuning.textMaskSensitivity,
             )
             applyClahe(
                 sourceGray = flattenedGray,
                 outputGray = claheGray,
                 clipLimit = tuning.clipLimit,
                 tileGridSize = tuning.tileGridSize,
+                strength = tuning.localContrastStrength,
             )
             Imgproc.bilateralFilter(
                 claheGray,
@@ -690,7 +692,6 @@ object OpenCvPageFilterProcessor {
         backgroundBlurSigma: Double,
         strength: Double,
         targetBackground: Double,
-        textMaskSensitivity: Double,
     ) {
         val textSuppressed = Mat()
         val background = Mat()
@@ -699,8 +700,6 @@ object OpenCvPageFilterProcessor {
         val safeBackgroundFloat = Mat()
         val flattenedFloat = Mat()
         val flattenedGray = Mat()
-        val textResponse = Mat()
-        val textMask = Mat()
         val textKernelSize = oddKernel(
             value = maxOf(sourceGray.rows(), sourceGray.cols()) / 220,
             min = 5,
@@ -710,7 +709,6 @@ object OpenCvPageFilterProcessor {
             Imgproc.MORPH_RECT,
             Size(textKernelSize.toDouble(), textKernelSize.toDouble()),
         )
-        val maskDilationKernel = Imgproc.getStructuringElement(Imgproc.MORPH_ELLIPSE, Size(3.0, 3.0))
 
         try {
             Imgproc.morphologyEx(sourceGray, textSuppressed, Imgproc.MORPH_CLOSE, textRemovalKernel)
@@ -733,17 +731,6 @@ object OpenCvPageFilterProcessor {
                 0.0,
                 outputGray,
             )
-
-            Core.subtract(textSuppressed, sourceGray, textResponse)
-            Imgproc.threshold(
-                textResponse,
-                textMask,
-                textMaskSensitivity,
-                255.0,
-                Imgproc.THRESH_BINARY,
-            )
-            Imgproc.dilate(textMask, textMask, maskDilationKernel)
-            sourceGray.copyTo(outputGray, textMask)
         } finally {
             textSuppressed.release()
             background.release()
@@ -752,10 +739,7 @@ object OpenCvPageFilterProcessor {
             safeBackgroundFloat.release()
             flattenedFloat.release()
             flattenedGray.release()
-            textResponse.release()
-            textMask.release()
             textRemovalKernel.release()
-            maskDilationKernel.release()
         }
     }
 
@@ -764,12 +748,23 @@ object OpenCvPageFilterProcessor {
         outputGray: Mat,
         clipLimit: Double,
         tileGridSize: Int,
+        strength: Double,
     ) {
         val resolvedTileGridSize = tileGridSize.coerceIn(4, 12).toDouble()
         val clahe = Imgproc.createCLAHE(clipLimit, Size(resolvedTileGridSize, resolvedTileGridSize))
+        val enhancedGray = Mat()
         try {
-            clahe.apply(sourceGray, outputGray)
+            clahe.apply(sourceGray, enhancedGray)
+            Core.addWeighted(
+                sourceGray,
+                1.0 - strength.coerceIn(0.0, 1.0),
+                enhancedGray,
+                strength.coerceIn(0.0, 1.0),
+                0.0,
+                outputGray,
+            )
         } finally {
+            enhancedGray.release()
             clahe.collectGarbage()
         }
     }
@@ -782,9 +777,10 @@ object OpenCvPageFilterProcessor {
         backgroundBlurSigma: Double,
         shadowStrength: Double,
         backgroundTarget: Double,
-        textMaskSensitivity: Double,
         contrastScale: Double,
         brightnessShift: Double,
+        localContrastStrength: Double,
+        whiteBalanceStrength: Double,
     ) {
         val lab = Mat()
         val mergedLab = Mat()
@@ -804,7 +800,6 @@ object OpenCvPageFilterProcessor {
                         backgroundBlurSigma = backgroundBlurSigma,
                         strength = shadowStrength,
                         targetBackground = backgroundTarget,
-                        textMaskSensitivity = textMaskSensitivity,
                     )
                 } else {
                     labChannels[0].copyTo(correctedLightness)
@@ -814,12 +809,19 @@ object OpenCvPageFilterProcessor {
                     outputGray = claheLightness,
                     clipLimit = clipLimit,
                     tileGridSize = tileGridSize,
+                    strength = localContrastStrength,
                 )
                 adjustTone(
                     source = claheLightness,
                     output = tonedLightness,
                     contrastScale = contrastScale,
                     brightnessShift = brightnessShift,
+                )
+                neutralizePaperCast(
+                    lightness = labChannels[0],
+                    channelA = labChannels[1],
+                    channelB = labChannels[2],
+                    strength = whiteBalanceStrength,
                 )
                 tonedLightness.copyTo(labChannels[0])
                 Core.merge(labChannels, mergedLab)
@@ -833,6 +835,62 @@ object OpenCvPageFilterProcessor {
             correctedLightness.release()
             claheLightness.release()
             tonedLightness.release()
+        }
+    }
+
+    private fun neutralizePaperCast(
+        lightness: Mat,
+        channelA: Mat,
+        channelB: Mat,
+        strength: Double,
+    ) {
+        if (strength <= 0.0) return
+
+        val aDistance = Mat()
+        val bDistance = Mat()
+        val chromaDistance = Mat()
+        val lightMask = Mat()
+        val neutralMask = Mat()
+        val paperMask = Mat()
+        val adjustedA = Mat()
+        val adjustedB = Mat()
+        try {
+            Core.absdiff(channelA, Scalar.all(LAB_NEUTRAL_CHANNEL_VALUE), aDistance)
+            Core.absdiff(channelB, Scalar.all(LAB_NEUTRAL_CHANNEL_VALUE), bDistance)
+            Core.add(aDistance, bDistance, chromaDistance)
+            Core.compare(lightness, Scalar.all(PAPER_LIGHTNESS_THRESHOLD), lightMask, Core.CMP_GT)
+            Core.compare(
+                chromaDistance,
+                Scalar.all(PAPER_CHROMA_DISTANCE_THRESHOLD),
+                neutralMask,
+                Core.CMP_LT,
+            )
+            Core.bitwise_and(lightMask, neutralMask, paperMask)
+
+            val pixelCount = lightness.rows().toLong() * lightness.cols().toLong()
+            val paperPixelCount = Core.countNonZero(paperMask).toLong()
+            if (pixelCount <= 0L || paperPixelCount < (pixelCount * MIN_PAPER_MASK_RATIO).toLong()) return
+
+            val paperA = Core.mean(channelA, paperMask).`val`[0]
+            val paperB = Core.mean(channelB, paperMask).`val`[0]
+            val resolvedStrength = strength.coerceIn(0.0, 1.0)
+            val aShift = ((LAB_NEUTRAL_CHANNEL_VALUE - paperA) * resolvedStrength)
+                .coerceIn(-MAX_WHITE_BALANCE_SHIFT, MAX_WHITE_BALANCE_SHIFT)
+            val bShift = ((LAB_NEUTRAL_CHANNEL_VALUE - paperB) * resolvedStrength)
+                .coerceIn(-MAX_WHITE_BALANCE_SHIFT, MAX_WHITE_BALANCE_SHIFT)
+            channelA.convertTo(adjustedA, -1, 1.0, aShift)
+            channelB.convertTo(adjustedB, -1, 1.0, bShift)
+            adjustedA.copyTo(channelA)
+            adjustedB.copyTo(channelB)
+        } finally {
+            aDistance.release()
+            bDistance.release()
+            chromaDistance.release()
+            lightMask.release()
+            neutralMask.release()
+            paperMask.release()
+            adjustedA.release()
+            adjustedB.release()
         }
     }
 
@@ -991,4 +1049,10 @@ object OpenCvPageFilterProcessor {
     private const val TEXT_ANALYSIS_C = 10.0
     private const val CANNY_LOW_THRESHOLD = 40.0
     private const val CANNY_HIGH_THRESHOLD = 120.0
+    private const val CLEAN_TEXT_DETAIL_SENSITIVITY = 10.0
+    private const val LAB_NEUTRAL_CHANNEL_VALUE = 128.0
+    private const val PAPER_LIGHTNESS_THRESHOLD = 150.0
+    private const val PAPER_CHROMA_DISTANCE_THRESHOLD = 42.0
+    private const val MIN_PAPER_MASK_RATIO = 0.08
+    private const val MAX_WHITE_BALANCE_SHIFT = 18.0
 }

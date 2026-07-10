@@ -11,12 +11,13 @@ internal object AdaptivePageFilterTuning {
         val backgroundBlurSigma: Double,
         val shadowStrength: Double,
         val backgroundTarget: Double,
-        val textMaskSensitivity: Double,
         val clipLimit: Double,
+        val localContrastStrength: Double,
         val tileGridSize: Int,
         val contrastScale: Double,
         val brightnessShift: Double,
         val saturationScale: Double,
+        val whiteBalanceStrength: Double,
         val sharpenAmount: Double,
         val sharpenSigma: Double,
     )
@@ -25,8 +26,8 @@ internal object AdaptivePageFilterTuning {
         val backgroundBlurSigma: Double,
         val shadowStrength: Double,
         val backgroundTarget: Double,
-        val textMaskSensitivity: Double,
         val clipLimit: Double,
+        val localContrastStrength: Double,
         val tileGridSize: Int,
         val bilateralDiameter: Int,
         val bilateralSigmaColor: Double,
@@ -41,8 +42,8 @@ internal object AdaptivePageFilterTuning {
         val backgroundBlurSigma: Double,
         val shadowStrength: Double,
         val backgroundTarget: Double,
-        val textMaskSensitivity: Double,
         val clipLimit: Double,
+        val localContrastStrength: Double,
         val tileGridSize: Int,
         val denoiseDiameter: Int,
         val denoiseSigmaColor: Double,
@@ -55,8 +56,8 @@ internal object AdaptivePageFilterTuning {
         val backgroundBlurSigma: Double,
         val shadowStrength: Double,
         val backgroundTarget: Double,
-        val textMaskSensitivity: Double,
         val clipLimit: Double,
+        val localContrastStrength: Double,
         val tileGridSize: Int,
         val contrastScale: Double,
         val brightnessShift: Double,
@@ -66,10 +67,12 @@ internal object AdaptivePageFilterTuning {
 
     internal data class MagicColorTuning(
         val clipLimit: Double,
+        val localContrastStrength: Double,
         val tileGridSize: Int,
         val contrastScale: Double,
         val brightnessShift: Double,
         val saturationScale: Double,
+        val whiteBalanceStrength: Double,
         val sharpenAmount: Double,
         val sharpenSigma: Double,
     )
@@ -78,8 +81,8 @@ internal object AdaptivePageFilterTuning {
         val backgroundBlurSigma: Double,
         val shadowStrength: Double,
         val backgroundTarget: Double,
-        val textMaskSensitivity: Double,
         val clipLimit: Double,
+        val localContrastStrength: Double,
         val tileGridSize: Int,
         val bilateralDiameter: Int,
         val bilateralSigmaColor: Double,
@@ -95,8 +98,8 @@ internal object AdaptivePageFilterTuning {
         val backgroundBlurSigma: Double,
         val shadowStrength: Double,
         val backgroundTarget: Double,
-        val textMaskSensitivity: Double,
         val clipLimit: Double,
+        val localContrastStrength: Double,
         val tileGridSize: Int,
         val denoiseDiameter: Int,
         val denoiseSigmaColor: Double,
@@ -111,15 +114,22 @@ internal object AdaptivePageFilterTuning {
     internal fun automatic(profile: PageImageProfile?): PageFilterPreset {
         profile ?: return PageFilterPreset.GRAYSCALE
 
+        val lowContent = profile.textDensity < 0.008 &&
+            profile.edgeDensity < 0.02 &&
+            profile.colorRatio < 0.01
         val receiptLike = profile.aspectRatio >= 1.7 &&
             profile.textDensity >= 0.015 &&
-            profile.colorRatio < 0.12
-        val carriesUsefulColor = profile.colorRatio >= 0.02 || profile.saturation >= 24.0
+            profile.colorRatio < 0.025 &&
+            profile.saturation < 30.0
+        val carriesUsefulColor = profile.colorRatio >= 0.018 ||
+            (profile.colorRatio >= 0.008 && profile.saturation >= 28.0)
         val unevenBackground = profile.backgroundUnevenness >= 12.0 || profile.shadowRatio >= 0.12
         val textHeavy = profile.textDensity >= 0.025 || profile.edgeDensity >= 0.055
         val difficultLighting = profile.brightness < 125.0 || profile.contrast < 22.0
 
         return when {
+            lowContent && !unevenBackground -> PageFilterPreset.ORIGINAL
+            lowContent -> PageFilterPreset.SHADOW_REDUCTION
             receiptLike -> PageFilterPreset.RECEIPT
             carriesUsefulColor && unevenBackground -> PageFilterPreset.SHADOW_REDUCTION
             carriesUsefulColor -> PageFilterPreset.ENHANCED_COLOR
@@ -140,13 +150,14 @@ internal object AdaptivePageFilterTuning {
                 backgroundBlurSigma = scaledSigma(it.longestEdge, 86.0, 12.0, 32.0),
                 shadowStrength = lerp(0.10, 0.30, shadows),
                 backgroundTarget = 232.0,
-                textMaskSensitivity = lerp(14.0, 10.0, lowContrastNeed(it)),
-                clipLimit = lerp(1.35, 1.85, cleanup),
+                clipLimit = lerp(1.25, 1.65, cleanup),
+                localContrastStrength = lerp(0.28, 0.46, cleanup),
                 tileGridSize = tileGridSize(it),
                 contrastScale = lerp(1.0, 1.025, lowContrastNeed(it)),
                 brightnessShift = lerp(0.0, 4.0, lowLightNeed(it)),
                 saturationScale = naturalSaturationScale(it),
-                sharpenAmount = lerp(1.06, 1.14, detail),
+                whiteBalanceStrength = lerp(0.50, 0.68, shadows),
+                sharpenAmount = lerp(1.04, 1.10, detail),
                 sharpenSigma = lerp(0.75, 0.95, detail),
             )
         } ?: EnhancedColorTuning(
@@ -156,13 +167,14 @@ internal object AdaptivePageFilterTuning {
             backgroundBlurSigma = 22.0,
             shadowStrength = 0.18,
             backgroundTarget = 232.0,
-            textMaskSensitivity = 12.0,
-            clipLimit = 1.55,
+            clipLimit = 1.45,
+            localContrastStrength = 0.36,
             tileGridSize = 8,
             contrastScale = 1.01,
             brightnessShift = 2.0,
             saturationScale = 1.0,
-            sharpenAmount = 1.10,
+            whiteBalanceStrength = 0.58,
+            sharpenAmount = 1.07,
             sharpenSigma = 0.85,
         )
 
@@ -177,12 +189,13 @@ internal object AdaptivePageFilterTuning {
                 backgroundBlurSigma = scaledSigma(it.longestEdge, 76.0, 14.0, 36.0),
                 shadowStrength = lerp(0.34, 0.62, shadows),
                 backgroundTarget = 232.0,
-                textMaskSensitivity = lerp(14.0, 9.0, lowContrastNeed(it)),
-                clipLimit = lerp(1.15, 1.45, shadows),
+                clipLimit = lerp(1.10, 1.35, shadows),
+                localContrastStrength = lerp(0.12, 0.24, shadows),
                 tileGridSize = tileGridSize(it),
                 contrastScale = lerp(1.0, 1.015, lowContrastNeed(it)),
                 brightnessShift = lerp(0.0, 2.0, lowLightNeed(it)),
                 saturationScale = naturalSaturationScale(it),
+                whiteBalanceStrength = lerp(0.62, 0.82, shadows),
                 sharpenAmount = lerp(1.03, 1.08, detail),
                 sharpenSigma = lerp(0.75, 0.90, detail),
             )
@@ -193,12 +206,13 @@ internal object AdaptivePageFilterTuning {
             backgroundBlurSigma = 26.0,
             shadowStrength = 0.48,
             backgroundTarget = 232.0,
-            textMaskSensitivity = 11.0,
-            clipLimit = 1.30,
+            clipLimit = 1.25,
+            localContrastStrength = 0.18,
             tileGridSize = 8,
             contrastScale = 1.005,
             brightnessShift = 1.0,
             saturationScale = 1.0,
+            whiteBalanceStrength = 0.72,
             sharpenAmount = 1.05,
             sharpenSigma = 0.82,
         )
@@ -212,30 +226,30 @@ internal object AdaptivePageFilterTuning {
                 backgroundBlurSigma = scaledSigma(it.longestEdge, 82.0, 12.0, 34.0),
                 shadowStrength = lerp(0.18, 0.44, shadows),
                 backgroundTarget = 236.0,
-                textMaskSensitivity = lerp(14.0, 9.0, lowContrastNeed(it)),
-                clipLimit = lerp(1.45, 2.05, cleanup),
+                clipLimit = lerp(1.30, 1.75, cleanup),
+                localContrastStrength = lerp(0.32, 0.55, cleanup),
                 tileGridSize = tileGridSize(it),
                 bilateralDiameter = scaledOddKernel(it.longestEdge, 520.0, 5, 7),
                 bilateralSigmaColor = lerp(16.0, 27.0, cleanup),
                 bilateralSigmaSpace = lerp(20.0, 31.0, cleanup),
                 contrastScale = lerp(1.0, 1.035, lowContrastNeed(it)),
                 brightnessShift = lerp(1.0, 5.0, lowLightNeed(it)),
-                sharpenAmount = lerp(1.05, 1.13, detail),
+                sharpenAmount = lerp(1.04, 1.10, detail),
                 sharpenSigma = lerp(0.70, 0.90, detail),
             )
         } ?: GrayscaleTuning(
             backgroundBlurSigma = 24.0,
             shadowStrength = 0.30,
             backgroundTarget = 236.0,
-            textMaskSensitivity = 11.0,
-            clipLimit = 1.70,
+            clipLimit = 1.52,
+            localContrastStrength = 0.42,
             tileGridSize = 8,
             bilateralDiameter = 5,
             bilateralSigmaColor = 21.0,
             bilateralSigmaSpace = 25.0,
             contrastScale = 1.015,
             brightnessShift = 2.5,
-            sharpenAmount = 1.09,
+            sharpenAmount = 1.07,
             sharpenSigma = 0.80,
         )
 
@@ -248,8 +262,8 @@ internal object AdaptivePageFilterTuning {
                 backgroundBlurSigma = scaledSigma(it.longestEdge, 72.0, 16.0, 38.0),
                 shadowStrength = lerp(0.68, 0.88, shadows),
                 backgroundTarget = 240.0,
-                textMaskSensitivity = lerp(13.0, 8.0, faintText),
-                clipLimit = lerp(1.30, 1.75, cleanup),
+                clipLimit = lerp(1.20, 1.55, cleanup),
+                localContrastStrength = lerp(0.24, 0.42, cleanup),
                 tileGridSize = tileGridSize(it),
                 denoiseDiameter = 5,
                 denoiseSigmaColor = lerp(16.0, 24.0, cleanup),
@@ -261,8 +275,8 @@ internal object AdaptivePageFilterTuning {
             backgroundBlurSigma = 24.0,
             shadowStrength = 0.76,
             backgroundTarget = 240.0,
-            textMaskSensitivity = 10.0,
-            clipLimit = 1.50,
+            clipLimit = 1.38,
+            localContrastStrength = 0.32,
             tileGridSize = 8,
             denoiseDiameter = 5,
             denoiseSigmaColor = 20.0,
@@ -280,24 +294,24 @@ internal object AdaptivePageFilterTuning {
                 backgroundBlurSigma = scaledSigma(it.longestEdge, 66.0, 18.0, 42.0),
                 shadowStrength = lerp(0.46, 0.74, shadows),
                 backgroundTarget = 240.0,
-                textMaskSensitivity = lerp(12.0, 7.5, lowContrastNeed(it)),
-                clipLimit = lerp(1.30, 1.78, cleanup),
+                clipLimit = lerp(1.18, 1.48, cleanup),
+                localContrastStrength = lerp(0.18, 0.34, cleanup),
                 tileGridSize = tileGridSize(it),
                 contrastScale = lerp(1.0, 1.025, lowContrastNeed(it)),
                 brightnessShift = lerp(2.0, 6.0, cleanup),
-                sharpenAmount = lerp(1.04, 1.10, detail),
+                sharpenAmount = lerp(1.03, 1.08, detail),
                 sharpenSigma = lerp(0.65, 0.85, detail),
             )
         } ?: CleanTuning(
             backgroundBlurSigma = 28.0,
             shadowStrength = 0.60,
             backgroundTarget = 240.0,
-            textMaskSensitivity = 9.0,
-            clipLimit = 1.55,
+            clipLimit = 1.36,
+            localContrastStrength = 0.26,
             tileGridSize = 8,
             contrastScale = 1.01,
             brightnessShift = 4.0,
-            sharpenAmount = 1.07,
+            sharpenAmount = 1.05,
             sharpenSigma = 0.75,
         )
 
@@ -306,21 +320,25 @@ internal object AdaptivePageFilterTuning {
             val cleanup = cleanupBoost(it)
             val detail = detailBoost(it)
             MagicColorTuning(
-                clipLimit = lerp(1.65, 2.25, cleanup),
+                clipLimit = lerp(1.45, 1.90, cleanup),
+                localContrastStrength = lerp(0.48, 0.68, cleanup),
                 tileGridSize = tileGridSize(it),
                 contrastScale = lerp(1.005, 1.035, lowContrastNeed(it)),
                 brightnessShift = lerp(0.0, 3.0, lowLightNeed(it)),
                 saturationScale = lerp(1.04, 1.12, colorRecoveryBoost(it)),
-                sharpenAmount = lerp(1.08, 1.16, detail),
+                whiteBalanceStrength = 0.24,
+                sharpenAmount = lerp(1.06, 1.12, detail),
                 sharpenSigma = lerp(0.75, 0.95, detail),
             )
         } ?: MagicColorTuning(
-            clipLimit = 1.90,
+            clipLimit = 1.68,
+            localContrastStrength = 0.56,
             tileGridSize = 8,
             contrastScale = 1.02,
             brightnessShift = 1.5,
             saturationScale = 1.08,
-            sharpenAmount = 1.12,
+            whiteBalanceStrength = 0.24,
+            sharpenAmount = 1.09,
             sharpenSigma = 0.85,
         )
 
@@ -334,8 +352,8 @@ internal object AdaptivePageFilterTuning {
                 backgroundBlurSigma = scaledSigma(it.longestEdge, 78.0, 16.0, 34.0),
                 shadowStrength = lerp(0.62, 0.82, shadows),
                 backgroundTarget = 242.0,
-                textMaskSensitivity = lerp(11.0, 7.0, faintText),
-                clipLimit = lerp(1.80, 2.55, cleanup),
+                clipLimit = lerp(1.45, 2.05, cleanup),
+                localContrastStrength = lerp(0.38, 0.58, cleanup),
                 tileGridSize = tileGridSize(it),
                 bilateralDiameter = 5,
                 bilateralSigmaColor = lerp(14.0, 22.0, cleanup),
@@ -350,8 +368,8 @@ internal object AdaptivePageFilterTuning {
             backgroundBlurSigma = 24.0,
             shadowStrength = 0.72,
             backgroundTarget = 242.0,
-            textMaskSensitivity = 9.0,
-            clipLimit = 2.10,
+            clipLimit = 1.72,
+            localContrastStrength = 0.48,
             tileGridSize = 8,
             bilateralDiameter = 5,
             bilateralSigmaColor = 18.0,
@@ -373,8 +391,8 @@ internal object AdaptivePageFilterTuning {
                 backgroundBlurSigma = scaledSigma(it.longestEdge, 82.0, 14.0, 32.0),
                 shadowStrength = lerp(0.42, 0.64, shadows),
                 backgroundTarget = 238.0,
-                textMaskSensitivity = lerp(12.0, 8.0, faintText),
-                clipLimit = lerp(1.35, 1.85, cleanup),
+                clipLimit = lerp(1.22, 1.62, cleanup),
+                localContrastStrength = lerp(0.28, 0.46, cleanup),
                 tileGridSize = tileGridSize(it),
                 denoiseDiameter = 5,
                 denoiseSigmaColor = lerp(14.0, 22.0, cleanup),
@@ -389,8 +407,8 @@ internal object AdaptivePageFilterTuning {
             backgroundBlurSigma = 22.0,
             shadowStrength = 0.52,
             backgroundTarget = 238.0,
-            textMaskSensitivity = 10.0,
-            clipLimit = 1.55,
+            clipLimit = 1.42,
+            localContrastStrength = 0.36,
             tileGridSize = 8,
             denoiseDiameter = 5,
             denoiseSigmaColor = 18.0,

@@ -67,16 +67,18 @@ Maps the detected (or manual) quad to a flat rectangular output image.
 | --- | --- | --- |
 | Original | `original` | No filter |
 | Auto | `auto` | Adaptive tuning |
-| Enhanced Color | `enhanced_color` | Vivid documents |
-| Grayscale | `grayscale` | Text documents |
-| Black & White | `black_and_white` | High contrast |
-| Clean | `clean` | Noise reduction |
-| Shadow Reduction | `shadow_reduction` | Uneven lighting |
-| Magic Color | `magic_color` | Faded print |
-| Receipt | `receipt` | Thermal receipts |
-| Soft Black & White | `soft_black_and_white` | Gentler B&W |
+| Enhanced Color | `enhanced_color` | Cleans paper while retaining logos, highlights, and other useful color |
+| Grayscale | `grayscale` | General text documents with gentle contrast correction |
+| Black & White | `black_and_white` | Strong, discrete text and invoice output |
+| Clean | `clean` | Uneven monochrome pages that need a cleaner paper background |
+| Shadow Reduction | `shadow_reduction` | Color documents captured under uneven or warm lighting |
+| Magic Color | `magic_color` | Faded print, illustrations, and photo-like documents |
+| Receipt | `receipt` | Thermal receipts and high-contrast slips |
+| Soft Black & White | `soft_black_and_white` | Faint handwriting, carbon copies, and gentler text enhancement |
 
-`AdaptivePageFilterTuning` and `PageImageProfile` analyze image characteristics for auto-tuning.
+`AdaptivePageFilterTuning` and `PageImageProfile` analyze image characteristics for Auto. Auto follows the same practical split used by leading scanner apps: preserve meaningful color, use a gentle grayscale fallback for ordinary black-and-white documents, route monochrome long slips to Receipt, and avoid text-focused processing when a page has very little detail.
+
+The OpenCV pipeline corrects broad illumination before applying restrained local contrast. It does not paste the original dark pixels back over the corrected page, which prevents shadow halos and mottled paper. Color modes additionally estimate likely paper pixels in Lab space to reduce warm/cool casts without desaturating colored content.
 
 ## Step 5: Output
 

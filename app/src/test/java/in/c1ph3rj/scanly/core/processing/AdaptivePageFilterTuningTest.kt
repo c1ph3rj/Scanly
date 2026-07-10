@@ -43,7 +43,8 @@ class AdaptivePageFilterTuningTest {
 
         assertEquals(24.0, fallback.backgroundBlurSigma, 0.0001)
         assertEquals(0.76, fallback.shadowStrength, 0.0001)
-        assertEquals(1.5, fallback.clipLimit, 0.0001)
+        assertEquals(1.38, fallback.clipLimit, 0.0001)
+        assertEquals(0.32, fallback.localContrastStrength, 0.0001)
         assertEquals(5, fallback.denoiseDiameter)
         assertEquals(41, fallback.blockSize)
         assertEquals(13.0, fallback.c, 0.0001)
@@ -134,6 +135,62 @@ class AdaptivePageFilterTuningTest {
         )
 
         assertEquals(PageFilterPreset.CLEAN, AdaptivePageFilterTuning.automatic(shadowedDocument))
+    }
+
+    @Test
+    fun automaticDoesNotMistakeWarmLightingForUsefulDocumentColor() {
+        val warmMonochromePage = profile(
+            saturation = 36.0,
+            colorRatio = 0.004,
+            textDensity = 0.05,
+        )
+
+        assertEquals(PageFilterPreset.GRAYSCALE, AdaptivePageFilterTuning.automatic(warmMonochromePage))
+    }
+
+    @Test
+    fun automaticKeepsLongColorDocumentsOutOfReceiptMode() {
+        val longColorDocument = profile(
+            saturation = 42.0,
+            colorRatio = 0.04,
+            textDensity = 0.08,
+            aspectRatio = 2.4,
+        )
+
+        assertEquals(PageFilterPreset.ENHANCED_COLOR, AdaptivePageFilterTuning.automatic(longColorDocument))
+    }
+
+    @Test
+    fun lowDetailPagesAvoidAggressiveTextEnhancement() {
+        val evenlyLitBlankPage = profile(
+            shadowRatio = 0.01,
+            backgroundUnevenness = 3.0,
+            colorRatio = 0.002,
+            textDensity = 0.002,
+        ).copy(edgeDensity = 0.008)
+        val shadowedBlankPage = evenlyLitBlankPage.copy(
+            shadowRatio = 0.18,
+            backgroundUnevenness = 16.0,
+        )
+
+        assertEquals(PageFilterPreset.ORIGINAL, AdaptivePageFilterTuning.automatic(evenlyLitBlankPage))
+        assertEquals(PageFilterPreset.SHADOW_REDUCTION, AdaptivePageFilterTuning.automatic(shadowedBlankPage))
+    }
+
+    @Test
+    fun shadowReductionUsesConservativeLocalContrastAndStrongerWhiteBalance() {
+        val difficultPage = profile(
+            shadowRatio = 0.22,
+            backgroundUnevenness = 20.0,
+            saturation = 38.0,
+            colorRatio = 0.05,
+        )
+
+        val color = AdaptivePageFilterTuning.enhancedColor(difficultPage)
+        val shadowReduction = AdaptivePageFilterTuning.shadowReduction(difficultPage)
+
+        assertTrue(shadowReduction.localContrastStrength < color.localContrastStrength)
+        assertTrue(shadowReduction.whiteBalanceStrength > color.whiteBalanceStrength)
     }
 
     private fun profile(

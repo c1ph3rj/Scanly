@@ -6,7 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
-No user-facing changes recorded yet.
+### Changed
+
+- **Document filters** — rebuilt the enhancement pipeline to flatten uneven paper lighting without creating mottled backgrounds or halos. Color filters now neutralize paper casts while retaining logos and marks; Auto avoids aggressive text enhancement for low-detail pages and keeps long color documents out of Receipt mode.
 
 ## [1.0.9] - 2026-07-05
 
