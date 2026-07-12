@@ -17,6 +17,7 @@ import `in`.c1ph3rj.scanly.domain.model.SettingsContent
 import `in`.c1ph3rj.scanly.domain.model.SettingsFaq
 import `in`.c1ph3rj.scanly.domain.model.ThemeMode
 import `in`.c1ph3rj.scanly.domain.model.ExportDestination
+import `in`.c1ph3rj.scanly.domain.model.DocumentCornerModel
 import `in`.c1ph3rj.scanly.domain.repository.SettingsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -33,6 +34,21 @@ class DefaultSettingsRepository @Inject constructor(
     @param:ApplicationContext private val context: Context,
     private val dispatchers: ScanlyDispatchers,
 ) : SettingsRepository {
+
+    override fun observeLiveDetectionModel(): Flow<DocumentCornerModel> =
+        context.settingsDataStore.data.map { DocumentCornerModel.fromStorage(it[liveDetectionModelKey]) }
+
+    override suspend fun setLiveDetectionModel(model: DocumentCornerModel): ScanlyResult<Unit> =
+        updateModelPreference(liveDetectionModelKey, model)
+
+    override fun observePostProcessingModel(): Flow<DocumentCornerModel> =
+        context.settingsDataStore.data.map { DocumentCornerModel.fromStorage(it[postProcessingModelKey]) }
+
+    override suspend fun setPostProcessingModel(model: DocumentCornerModel): ScanlyResult<Unit> =
+        updateModelPreference(postProcessingModelKey, model)
+
+    override suspend fun getPostProcessingModel(): DocumentCornerModel =
+        DocumentCornerModel.fromStorage(context.settingsDataStore.data.first()[postProcessingModelKey])
 
     override fun observeExportDestination(): Flow<ExportDestination> =
         context.settingsDataStore.data.map { preferences ->
@@ -207,11 +223,27 @@ class DefaultSettingsRepository @Inject constructor(
         )
     }
 
+    private suspend fun updateModelPreference(
+        key: androidx.datastore.preferences.core.Preferences.Key<String>,
+        model: DocumentCornerModel,
+    ): ScanlyResult<Unit> = withContext(dispatchers.io) {
+        runCatching {
+            context.settingsDataStore.edit { it[key] = model.storageValue }
+        }.fold(
+            onSuccess = { ScanlyResult.Success(Unit) },
+            onFailure = { throwable ->
+                ScanlyResult.Failure(ScanlyError(throwable.message ?: "Could not update model selection.", throwable))
+            },
+        )
+    }
+
     private companion object {
         val themeModeKey = stringPreferencesKey("theme_mode")
         val onboardingCompletedKey = booleanPreferencesKey("onboarding_completed")
         val exportTreeUriKey = stringPreferencesKey("export_tree_uri")
         val exportTreeLabelKey = stringPreferencesKey("export_tree_label")
+        val liveDetectionModelKey = stringPreferencesKey("live_detection_model")
+        val postProcessingModelKey = stringPreferencesKey("post_processing_model")
         const val faqsAssetPath = "settings/faqs.json"
         const val licensesAssetPath = "settings/licenses.json"
         const val developerWebsite = ""

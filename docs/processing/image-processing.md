@@ -40,13 +40,17 @@ When no manual crop quad is set:
 | --- | --- |
 | `LiteRtDocumentCornerDetector` | Runs TFLite model inference |
 | `DocumentCornerQuad` | Four normalized corner points |
-| Model asset | `assets/models/document_corners_float16.tflite` |
+| Model assets | Legacy, Lite (224), Standard (288), Accurate (384) TFLite variants |
 
 Model config:
 
-- Float16 TFLite interpreter via LiteRT
+- Legacy uses its existing YOLO-pose output; the new models use TL/TR/BR/BL regression plus a presence output
+- Live-preview and post-processing model choices are independent, persisted settings; both default to Legacy for safe upgrades
+- The new models use RGB `[-1, 1]` input and RGB-114 letterboxing
 - Gradle `noCompress += "tflite"` prevents APK compression
 - NDK ABI filters: `arm64-v8a`, `armeabi-v7a`
+
+The camera overlay shows the active model, inference latency, and confidence. Settings also exposes a temporary benchmark screen that warms each runtime once, processes selected images sequentially with all four models, and reports preprocessing, inference, postprocessing, total latency, detection status, confidence, averages, P50, and P95.
 
 When user sets manual corners in editor, the stored quad is used instead of ML detection.
 

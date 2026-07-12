@@ -47,6 +47,7 @@ These top-level routes still exist but show `FeaturePlaceholderScreen` — they 
 | `settings/faq` | `SettingsFaqDestination` | FAQ sub-screen |
 | `settings/licenses` | `SettingsLicensesDestination` | Open-source licenses |
 | `settings/storage` | `SettingsStorageDestination` | Storage & backup |
+| `settings/model-benchmark` | `SettingsModelBenchmarkDestination` | Temporary local model comparison |
 
 ### Scan session arguments
 
@@ -55,7 +56,7 @@ These top-level routes still exist but show `FeaturePlaceholderScreen` — they 
 
 ### Settings sub-screen ViewModel sharing
 
-`settings/faq`, `settings/licenses`, and `settings/storage` share `SettingsViewModel` via the parent `settings` back stack entry.
+`settings/faq`, `settings/licenses`, and `settings/storage` share `SettingsViewModel` via the parent `settings` back stack entry. The model benchmark owns a separate ViewModel because its runs and results are temporary.
 
 ## User flow diagrams
 
@@ -134,6 +135,8 @@ settings → settings/storage
 settings
   ├─► theme change (immediate, persisted)
   ├─► settings/storage (usage, destination, backup/restore, clear data)
+  ├─► choose independent live-preview and post-processing corner models
+  ├─► settings/model-benchmark (compare all four models on selected images)
   ├─► settings/faq
   ├─► legal/{PRIVACY} or legal/{TERMS}
   ├─► settings/licenses

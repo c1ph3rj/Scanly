@@ -4,6 +4,7 @@ import `in`.c1ph3rj.scanly.core.common.ScanlyResult
 import `in`.c1ph3rj.scanly.domain.model.SettingsContent
 import `in`.c1ph3rj.scanly.domain.model.ThemeMode
 import `in`.c1ph3rj.scanly.domain.model.ExportDestination
+import `in`.c1ph3rj.scanly.domain.model.DocumentCornerModel
 import kotlinx.coroutines.flow.Flow
 
 interface SettingsRepository {
@@ -22,4 +23,14 @@ interface SettingsRepository {
     suspend fun setExportDestination(destination: ExportDestination.CustomTree): ScanlyResult<Unit>
 
     suspend fun resetExportDestination(): ScanlyResult<Unit>
+
+    fun observeLiveDetectionModel(): Flow<DocumentCornerModel>
+
+    suspend fun setLiveDetectionModel(model: DocumentCornerModel): ScanlyResult<Unit>
+
+    fun observePostProcessingModel(): Flow<DocumentCornerModel>
+
+    suspend fun setPostProcessingModel(model: DocumentCornerModel): ScanlyResult<Unit>
+
+    suspend fun getPostProcessingModel(): DocumentCornerModel
 }

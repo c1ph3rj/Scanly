@@ -11,6 +11,8 @@ import `in`.c1ph3rj.scanly.core.ml.DocumentCornerQuad
 import `in`.c1ph3rj.scanly.domain.model.PageCaptureDraft
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
 import `in`.c1ph3rj.scanly.domain.model.ScanPage
+import `in`.c1ph3rj.scanly.domain.model.DocumentCornerModel
+import `in`.c1ph3rj.scanly.domain.usecase.ObserveLiveDetectionModelUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.FinalizeCapturedPageUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveDocumentPagesUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveDocumentUseCase
@@ -72,11 +74,13 @@ class ScanSessionViewModel @Inject constructor(
     private val preparePageCaptureUseCase: PreparePageCaptureUseCase,
     private val prepareReplacementCaptureUseCase: PrepareReplacementCaptureUseCase,
     private val finalizeCapturedPageUseCase: FinalizeCapturedPageUseCase,
+    observeLiveDetectionModelUseCase: ObserveLiveDetectionModelUseCase,
 ) : ViewModel() {
     private val documentId: String = checkNotNull(savedStateHandle[ScanSessionDestination.documentIdArgument])
     private val initialReplacementPageId: String? = savedStateHandle[ScanSessionDestination.replacePageIdArgument]
     private val analysisInFlight = AtomicBoolean(false)
     private val stabilityTracker = CaptureStabilityTracker()
+    private var liveModel: DocumentCornerModel = DocumentCornerModel.LEGACY
     private var pendingCaptureQuad: DocumentCornerQuad? = null
     private var pendingCaptureTrigger: CaptureTrigger = CaptureTrigger.MANUAL
     private val _uiState = MutableStateFlow(
@@ -88,6 +92,15 @@ class ScanSessionViewModel @Inject constructor(
     val events: SharedFlow<ScanSessionEvent> = _events.asSharedFlow()
 
     init {
+        viewModelScope.launch {
+            observeLiveDetectionModelUseCase().collectLatest { model ->
+                liveModel = model
+                stabilityTracker.reset()
+                _uiState.update { current ->
+                    current.copy(liveDetection = current.liveDetection.copy(model = model))
+                }
+            }
+        }
         viewModelScope.launch {
             observeDocumentUseCase(documentId).collectLatest { document ->
                 _uiState.update { current ->
@@ -175,7 +188,13 @@ class ScanSessionViewModel @Inject constructor(
             try {
                 val analysis = runCatching {
                     withContext(Dispatchers.Default) {
-                        val detection = documentCornerDetector.detect(frame)
+                        val selectedModel = liveModel
+                        val detection = runCatching { documentCornerDetector.detect(frame, selectedModel) }
+                            .recoverCatching { error ->
+                                if (selectedModel == DocumentCornerModel.LEGACY) throw error
+                                documentCornerDetector.detect(frame, DocumentCornerModel.LEGACY)
+                            }
+                            .getOrThrow()
                         val quality = CaptureFrameQualityAnalyzer.analyze(frame)
                         detection to quality.sceneIssue(
                             hasDocumentCandidate = detection.quad != null,
@@ -215,6 +234,10 @@ class ScanSessionViewModel @Inject constructor(
                             phase = evaluation.phase,
                             statusMessage = evaluation.statusMessage,
                             countdownValue = evaluation.countdownValue,
+                            model = detectionResult.model,
+                            confidence = detectionResult.confidence,
+                            inferenceMillis = detectionResult.timing.inferenceMillis,
+                            totalMillis = detectionResult.timing.totalMillis,
                         ),
                     )
                 }

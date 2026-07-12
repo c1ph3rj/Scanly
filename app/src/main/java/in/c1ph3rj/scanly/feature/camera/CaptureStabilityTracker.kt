@@ -2,6 +2,7 @@ package `in`.c1ph3rj.scanly.feature.camera
 
 import `in`.c1ph3rj.scanly.core.ml.CornerDetectionResult
 import `in`.c1ph3rj.scanly.core.ml.DocumentCornerQuad
+import `in`.c1ph3rj.scanly.domain.model.DocumentCornerModel
 
 enum class AutoCapturePhase {
     OFF,
@@ -21,6 +22,10 @@ data class LiveDetectionUiState(
     val statusMessage: String = "Point your camera at a document.",
     val countdownValue: Int? = null,
     val sceneIssue: CaptureSceneIssue? = null,
+    val model: DocumentCornerModel = DocumentCornerModel.LEGACY,
+    val confidence: Float? = null,
+    val inferenceMillis: Double? = null,
+    val totalMillis: Double? = null,
 ) {
     val hasOverlay: Boolean = quad != null && overlayFrame?.isValid == true
 }
@@ -48,6 +53,14 @@ class CaptureStabilityTracker(
     private var cooldownUntilMillis: Long = 0L
     private var lastCapturedQuad: DocumentCornerQuad? = null
     private var waitingForSceneChange: Boolean = false
+
+    fun reset() {
+        stableReferenceQuad = null
+        stableSinceMillis = null
+        cooldownUntilMillis = 0L
+        lastCapturedQuad = null
+        waitingForSceneChange = false
+    }
 
     fun evaluate(
         result: CornerDetectionResult,

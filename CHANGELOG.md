@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Added
+
+- **Selectable document-corner models** — Settings now independently configures Legacy, Lite, Standard, or Accurate models for live camera detection and post-processing. Live preview displays model, latency, and confidence diagnostics.
+- **Model benchmark screen** — selected local images can be run sequentially through all four models, with per-image timing/detection data and aggregate average, P50, P95, detection, and failure statistics.
+
 ### Changed
 
 - **Document filters** — rebuilt the enhancement pipeline to flatten uneven paper lighting without creating mottled backgrounds or halos. Color filters now neutralize paper casts while retaining logos and marks; Auto avoids aggressive text enhancement for low-detail pages and keeps long color documents out of Receipt mode.

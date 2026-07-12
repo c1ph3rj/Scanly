@@ -72,6 +72,7 @@ import `in`.c1ph3rj.scanly.feature.settings.SettingsFaqRoute
 import `in`.c1ph3rj.scanly.feature.settings.SettingsLicensesRoute
 import `in`.c1ph3rj.scanly.feature.settings.SettingsStorageRoute
 import `in`.c1ph3rj.scanly.feature.settings.SettingsRoute
+import `in`.c1ph3rj.scanly.feature.settings.ModelBenchmarkRoute
 
 private data class BottomNavItem(
     val route: String,
@@ -397,7 +398,17 @@ private fun ScanlyNavHostContent(
                 onOpenFaqs = { navController.navigate(SettingsFaqDestination.route) },
                 onOpenLicenses = { navController.navigate(SettingsLicensesDestination.route) },
                 onOpenStorage = { navController.navigate(SettingsStorageDestination.route) },
+                onOpenModelBenchmark = { navController.navigate(SettingsModelBenchmarkDestination.route) },
             )
+        }
+        composable(
+            route = SettingsModelBenchmarkDestination.route,
+            enterTransition = { detailPushEnter() },
+            exitTransition = { detailPushExit() },
+            popEnterTransition = { detailPopEnter() },
+            popExitTransition = { detailPopExit() },
+        ) {
+            ModelBenchmarkRoute(onNavigateUp = navController::navigateUp)
         }
         composable(
             route = SettingsFaqDestination.route,

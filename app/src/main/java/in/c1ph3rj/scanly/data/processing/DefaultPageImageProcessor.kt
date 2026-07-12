@@ -17,6 +17,7 @@ import `in`.c1ph3rj.scanly.domain.model.PageProcessingState
 import `in`.c1ph3rj.scanly.domain.processing.PageImageProcessor
 import `in`.c1ph3rj.scanly.domain.processing.ProcessedPageArtifacts
 import `in`.c1ph3rj.scanly.data.storage.DocumentStorageManager
+import `in`.c1ph3rj.scanly.domain.repository.SettingsRepository
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
@@ -27,6 +28,7 @@ import javax.inject.Singleton
 class DefaultPageImageProcessor @Inject constructor(
     private val documentCornerDetector: DocumentCornerDetector,
     private val storageManager: DocumentStorageManager,
+    private val settingsRepository: SettingsRepository,
     private val dispatchers: ScanlyDispatchers,
 ) : PageImageProcessor {
 
@@ -71,9 +73,16 @@ class DefaultPageImageProcessor @Inject constructor(
             }
 
             val detectionResult = if (cropQuad == null && detectDocumentWhenCropQuadMissing) {
-                runCatching {
-                    documentCornerDetector.detect(editorOrientedBitmap)
-                }.getOrElse { null }
+                val selectedModel = settingsRepository.getPostProcessingModel()
+                runCatching { documentCornerDetector.detect(editorOrientedBitmap, selectedModel) }
+                    .recoverCatching { error ->
+                        if (selectedModel == `in`.c1ph3rj.scanly.domain.model.DocumentCornerModel.LEGACY) throw error
+                        documentCornerDetector.detect(
+                            editorOrientedBitmap,
+                            `in`.c1ph3rj.scanly.domain.model.DocumentCornerModel.LEGACY,
+                        )
+                    }
+                    .getOrNull()
             } else {
                 null
             }

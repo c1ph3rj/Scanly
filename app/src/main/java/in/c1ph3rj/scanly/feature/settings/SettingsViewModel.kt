@@ -11,6 +11,11 @@ import `in`.c1ph3rj.scanly.domain.model.BackupEstimate
 import `in`.c1ph3rj.scanly.domain.model.ArchiveWorkState
 import `in`.c1ph3rj.scanly.domain.model.ArchiveWorkPhase
 import `in`.c1ph3rj.scanly.domain.model.RestoreMode
+import `in`.c1ph3rj.scanly.domain.model.DocumentCornerModel
+import `in`.c1ph3rj.scanly.domain.usecase.ObserveLiveDetectionModelUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.SetLiveDetectionModelUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.ObservePostProcessingModelUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.SetPostProcessingModelUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ClearAllAppDataUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.GetAppStorageUsageUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.LoadSettingsContentUseCase
@@ -45,6 +50,8 @@ data class SettingsUiState(
     val backupEstimate: BackupEstimate? = null,
     val isLoadingBackupEstimate: Boolean = true,
     val archiveWork: ArchiveWorkState = ArchiveWorkState(),
+    val liveDetectionModel: DocumentCornerModel = DocumentCornerModel.LEGACY,
+    val postProcessingModel: DocumentCornerModel = DocumentCornerModel.LEGACY,
 )
 
 sealed interface SettingsEvent {
@@ -66,6 +73,10 @@ class SettingsViewModel @Inject constructor(
     private val startLibraryRestoreUseCase: StartLibraryRestoreUseCase,
     observeLibraryArchiveWorkUseCase: ObserveLibraryArchiveWorkUseCase,
     private val cancelLibraryArchiveWorkUseCase: CancelLibraryArchiveWorkUseCase,
+    observeLiveDetectionModelUseCase: ObserveLiveDetectionModelUseCase,
+    private val setLiveDetectionModelUseCase: SetLiveDetectionModelUseCase,
+    observePostProcessingModelUseCase: ObservePostProcessingModelUseCase,
+    private val setPostProcessingModelUseCase: SetPostProcessingModelUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SettingsUiState())
@@ -75,6 +86,16 @@ class SettingsViewModel @Inject constructor(
     val events: SharedFlow<SettingsEvent> = _events.asSharedFlow()
 
     init {
+        viewModelScope.launch {
+            observeLiveDetectionModelUseCase().collectLatest { model ->
+                _uiState.update { it.copy(liveDetectionModel = model) }
+            }
+        }
+        viewModelScope.launch {
+            observePostProcessingModelUseCase().collectLatest { model ->
+                _uiState.update { it.copy(postProcessingModel = model) }
+            }
+        }
         viewModelScope.launch {
             observeThemeModeUseCase().collectLatest { themeMode ->
                 _uiState.update { current -> current.copy(themeMode = themeMode) }
@@ -180,6 +201,22 @@ class SettingsViewModel @Inject constructor(
                 is `in`.c1ph3rj.scanly.core.common.ScanlyResult.Failure -> {
                     _events.emit(SettingsEvent.ShowMessage(result.error.message))
                 }
+            }
+        }
+    }
+
+    fun setLiveDetectionModel(model: DocumentCornerModel) {
+        viewModelScope.launch {
+            if (setLiveDetectionModelUseCase(model) is `in`.c1ph3rj.scanly.core.common.ScanlyResult.Failure) {
+                _events.emit(SettingsEvent.ShowMessage("Could not update the live preview model."))
+            }
+        }
+    }
+
+    fun setPostProcessingModel(model: DocumentCornerModel) {
+        viewModelScope.launch {
+            if (setPostProcessingModelUseCase(model) is `in`.c1ph3rj.scanly.core.common.ScanlyResult.Failure) {
+                _events.emit(SettingsEvent.ShowMessage("Could not update the post-processing model."))
             }
         }
     }

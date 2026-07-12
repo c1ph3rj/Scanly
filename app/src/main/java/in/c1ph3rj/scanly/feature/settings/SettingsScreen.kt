@@ -35,6 +35,8 @@ import androidx.compose.material.icons.filled.Policy
 import androidx.compose.material.icons.filled.Public
 import androidx.compose.material.icons.filled.Storage
 import androidx.compose.material.icons.filled.SystemUpdate
+import androidx.compose.material.icons.filled.Speed
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -44,6 +46,8 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -62,6 +66,7 @@ import `in`.c1ph3rj.scanly.core.common.StorageFormatter
 import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import `in`.c1ph3rj.scanly.domain.model.AppStorageUsage
 import `in`.c1ph3rj.scanly.domain.model.ThemeMode
+import `in`.c1ph3rj.scanly.domain.model.DocumentCornerModel
 import `in`.c1ph3rj.scanly.feature.components.ScanlyAppLogo
 import `in`.c1ph3rj.scanly.feature.components.ScanlyConfirmDialog
 import `in`.c1ph3rj.scanly.feature.components.ScanlyTabScreenHeader
@@ -80,6 +85,40 @@ private fun Modifier.settingsRowSurface(onClick: (() -> Unit)? = null): Modifier
         .padding(SettingsRowPadding)
 
 @Composable
+private fun ModelSelector(
+    title: String,
+    subtitle: String,
+    selected: DocumentCornerModel,
+    onSelected: (DocumentCornerModel) -> Unit,
+) {
+    var expanded by remember { mutableStateOf(false) }
+    Box {
+        Row(
+            modifier = Modifier.settingsRowSurface { expanded = true },
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(title, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium)
+                Text(subtitle, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+            Text(selected.displayName, style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
+            Icon(Icons.Filled.ArrowDropDown, contentDescription = "Choose $title")
+        }
+        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            DocumentCornerModel.entries.forEach { model ->
+                DropdownMenuItem(
+                    text = { Text(model.displayName) },
+                    onClick = {
+                        expanded = false
+                        onSelected(model)
+                    },
+                )
+            }
+        }
+    }
+}
+
+@Composable
 fun SettingsRoute(
     onNavigateUp: () -> Unit,
     appUpdateUiState: AppUpdateUiState,
@@ -88,6 +127,7 @@ fun SettingsRoute(
     onOpenFaqs: () -> Unit,
     onOpenLicenses: () -> Unit,
     onOpenStorage: () -> Unit,
+    onOpenModelBenchmark: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -112,6 +152,9 @@ fun SettingsRoute(
         onOpenFaqs = onOpenFaqs,
         onOpenLicenses = onOpenLicenses,
         onOpenStorage = onOpenStorage,
+        onOpenModelBenchmark = onOpenModelBenchmark,
+        onLiveDetectionModelSelected = viewModel::setLiveDetectionModel,
+        onPostProcessingModelSelected = viewModel::setPostProcessingModel,
         onCheckForUpdates = onCheckForUpdates,
     )
 }
@@ -127,6 +170,9 @@ fun SettingsScreen(
     onOpenFaqs: () -> Unit,
     onOpenLicenses: () -> Unit,
     onOpenStorage: () -> Unit,
+    onOpenModelBenchmark: () -> Unit,
+    onLiveDetectionModelSelected: (DocumentCornerModel) -> Unit,
+    onPostProcessingModelSelected: (DocumentCornerModel) -> Unit,
     onCheckForUpdates: () -> Unit,
 ) {
     val content = uiState.content
@@ -197,6 +243,31 @@ fun SettingsScreen(
                                 append(uiState.exportDestination.exportLabel)
                             },
                             onClick = onOpenStorage,
+                        )
+                    }
+                }
+
+                item(key = "model_testing") {
+                    SettingsGroup(title = "Document detection") {
+                        ModelSelector(
+                            title = "Live preview model",
+                            subtitle = "Used while the camera preview is running",
+                            selected = uiState.liveDetectionModel,
+                            onSelected = onLiveDetectionModelSelected,
+                        )
+                        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                        ModelSelector(
+                            title = "Post-processing model",
+                            subtitle = "Used after camera or gallery capture",
+                            selected = uiState.postProcessingModel,
+                            onSelected = onPostProcessingModelSelected,
+                        )
+                        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                        SettingsNavigationRow(
+                            icon = Icons.Filled.Speed,
+                            title = "Model benchmark",
+                            subtitle = "Compare all models on local images",
+                            onClick = onOpenModelBenchmark,
                         )
                     }
                 }

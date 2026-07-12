@@ -73,6 +73,10 @@ object SettingsStorageDestination {
     const val route = "settings/storage"
 }
 
+object SettingsModelBenchmarkDestination {
+    const val route = "settings/model-benchmark"
+}
+
 object GroupDetailDestination {
     private const val base = "group"
     const val groupIdArgument = "groupId"
