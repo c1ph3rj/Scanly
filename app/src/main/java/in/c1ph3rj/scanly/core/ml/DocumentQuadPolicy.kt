@@ -10,15 +10,48 @@ object DocumentQuadPolicy {
     private const val MIN_FRAME_MARGIN = 0.0125f
     private const val MIN_GEOMETRY_QUALITY = 0.58f
 
+    // Still-image / import processing: accept near-full-frame gallery scans, ID cards,
+    // and other wide documents that live capture would reject.
+    private const val STILL_MIN_AREA = 0.03f
+    private const val STILL_MAX_AREA = 0.999f
+    private const val STILL_MIN_FRAME_MARGIN = 0.0005f
+    private const val STILL_MIN_GEOMETRY_QUALITY = 0.28f
+    // Credit/RC cards ~1.6; under perspective can measure higher than live max 1.9.
+    private const val STILL_MIN_ASPECT_RATIO = 0.22f
+    private const val STILL_MAX_ASPECT_RATIO = 3.2f
+
     fun isCaptureReady(quad: DocumentCornerQuad): Boolean {
         val area = quad.area()
+        // Live capture keeps the historical width/height range (portrait A4 ~0.7, etc.).
         val aspectRatio = quad.estimatedAspectRatio()
         return quad.isValid() &&
             quad.isConvex() &&
-            quad.hasFrameMargin() &&
+            hasFrameMargin(quad, MIN_FRAME_MARGIN) &&
             area in MIN_AREA..MAX_AREA &&
             aspectRatio in MIN_ASPECT_RATIO..MAX_ASPECT_RATIO &&
             qualityScore(quad) >= MIN_GEOMETRY_QUALITY
+    }
+
+    /**
+     * Offline still-image readiness used for capture finalize and gallery import.
+     * Mirrors what Model Benchmark shows (raw model quads) more closely than live
+     * capture rules — wide ID/RC cards and tight-margin photos stay usable.
+     */
+    fun isStillProcessReady(quad: DocumentCornerQuad): Boolean {
+        val area = quad.area()
+        // Normalize so landscape cards (~1.6) and tall pages (~0.6) share one band.
+        val aspectRatio = normalizedAspectRatio(quad.estimatedAspectRatio())
+        return quad.isValid() &&
+            quad.isConvex() &&
+            hasFrameMargin(quad, STILL_MIN_FRAME_MARGIN) &&
+            area in STILL_MIN_AREA..STILL_MAX_AREA &&
+            aspectRatio in STILL_MIN_ASPECT_RATIO..STILL_MAX_ASPECT_RATIO &&
+            qualityScore(quad) >= STILL_MIN_GEOMETRY_QUALITY
+    }
+
+    fun isReady(quad: DocumentCornerQuad, readiness: QuadReadiness): Boolean = when (readiness) {
+        QuadReadiness.LIVE_CAPTURE -> isCaptureReady(quad)
+        QuadReadiness.STILL_PROCESS -> isStillProcessReady(quad)
     }
 
     /**
@@ -49,10 +82,11 @@ object DocumentQuadPolicy {
             .coerceIn(0f, 1f)
     }
 
-    private fun DocumentCornerQuad.hasFrameMargin(): Boolean = orderedPoints().all { (_, point) ->
-        point.x in MIN_FRAME_MARGIN..(1f - MIN_FRAME_MARGIN) &&
-            point.y in MIN_FRAME_MARGIN..(1f - MIN_FRAME_MARGIN)
-    }
+    private fun hasFrameMargin(quad: DocumentCornerQuad, margin: Float): Boolean =
+        quad.orderedPoints().all { (_, point) ->
+            point.x in margin..(1f - margin) &&
+                point.y in margin..(1f - margin)
+        }
 
     private fun minimumCornerSine(quad: DocumentCornerQuad): Float {
         val points = listOf(quad.topLeft, quad.topRight, quad.bottomRight, quad.bottomLeft)
@@ -76,4 +110,18 @@ object DocumentQuadPolicy {
 
     private fun distance(first: NormalizedPoint, second: NormalizedPoint): Float =
         hypot(first.x - second.x, first.y - second.y)
+
+    /** Treat portrait/landscape the same (width/height or height/width). */
+    private fun normalizedAspectRatio(ratio: Float): Float {
+        if (ratio <= 0f) return 0f
+        return if (ratio >= 1f) ratio else 1f / ratio
+    }
+}
+
+/** How strict document-quad acceptance is for a given detection path. */
+enum class QuadReadiness {
+    /** Live camera overlay / auto-capture — tighter geometry and frame margins. */
+    LIVE_CAPTURE,
+    /** Capture finalize + gallery import — keep usable near-full-frame warps. */
+    STILL_PROCESS,
 }

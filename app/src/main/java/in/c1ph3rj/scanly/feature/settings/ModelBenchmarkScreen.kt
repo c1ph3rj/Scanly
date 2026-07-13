@@ -182,8 +182,10 @@ class ModelBenchmarkViewModel @Inject constructor(
                                     gatePhysicalProbability = gate?.physicalDocumentProbability ?: 0f,
                                     gateTotalMs = gate?.timing?.totalMillis ?: 0.0,
                                     gateAccepted = gateAccepted,
+                                    // Show whether the still/import path would accept this quad
+                                    // (capture-ready is stricter and was misleading for cards).
                                     pipelineDetected = gateAccepted &&
-                                        result.quad?.let(DocumentQuadPolicy::isCaptureReady) == true,
+                                        result.quad?.let(DocumentQuadPolicy::isStillProcessReady) == true,
                                     pipelineTotalMs = (gate?.timing?.totalMillis ?: 0.0) +
                                         if (gateAccepted) result.timing.totalMillis else 0.0,
                                     preview = preview,

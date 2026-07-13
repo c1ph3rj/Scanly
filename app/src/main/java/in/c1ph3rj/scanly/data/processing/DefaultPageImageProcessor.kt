@@ -8,11 +8,14 @@ import android.graphics.Matrix
 import android.graphics.Paint
 import androidx.exifinterface.media.ExifInterface
 import `in`.c1ph3rj.scanly.core.common.ScanlyDispatchers
-import `in`.c1ph3rj.scanly.core.ml.BookAwareCornerResolver
 import `in`.c1ph3rj.scanly.core.ml.AutomaticDocumentModelSelector
+import `in`.c1ph3rj.scanly.core.ml.BookAwareCornerResolver
+import `in`.c1ph3rj.scanly.core.ml.DocumentCornerDetector
 import `in`.c1ph3rj.scanly.core.ml.DocumentCornerQuad
 import `in`.c1ph3rj.scanly.core.ml.DocumentGateDetector
 import `in`.c1ph3rj.scanly.core.ml.DocumentGatePolicy
+import `in`.c1ph3rj.scanly.core.ml.DocumentQuadPolicy
+import `in`.c1ph3rj.scanly.core.ml.QuadReadiness
 import `in`.c1ph3rj.scanly.core.processing.OpenCvPageFilterProcessor
 import `in`.c1ph3rj.scanly.core.processing.PerspectiveQuadMath
 import `in`.c1ph3rj.scanly.domain.model.PageFilterPreset
@@ -30,6 +33,7 @@ import javax.inject.Singleton
 @Singleton
 class DefaultPageImageProcessor @Inject constructor(
     private val bookAwareCornerResolver: BookAwareCornerResolver,
+    private val documentCornerDetector: DocumentCornerDetector,
     private val documentGateDetector: DocumentGateDetector,
     private val automaticDocumentModelSelector: AutomaticDocumentModelSelector,
     private val storageManager: DocumentStorageManager,
@@ -77,42 +81,44 @@ class DefaultPageImageProcessor @Inject constructor(
                 orientedBitmap.recycle()
             }
 
-            val detectionResult = if (cropQuad == null && detectDocumentWhenCropQuadMissing) {
-                val gateAccepted = if (settingsRepository.getDocumentGateEnabled()) {
-                    runCatching {
-                        documentGateDetector.classify(editorOrientedBitmap)
-                            .acceptsPhysicalDocument(DocumentGatePolicy.POST_PROCESSING_THRESHOLD)
-                    }.getOrDefault(false)
-                } else {
-                    true
-                }
-                if (gateAccepted) {
-                    val selectedModel = if (settingsRepository.getAutomaticModelSelection()) {
-                        runCatching { automaticDocumentModelSelector.selection().postProcessingModel }
-                            .getOrDefault(settingsRepository.getPostProcessingModel())
-                    } else {
-                        settingsRepository.getPostProcessingModel()
-                    }
-                    runCatching { bookAwareCornerResolver.detect(editorOrientedBitmap, selectedModel).result }
-                        .getOrNull()
-                } else null
+            // Still-image finalize (camera capture + gallery import) always runs corner
+            // detection. The semantic gate no longer skips detection — that blocked
+            // imports of already-cropped scans and borderline physical pages.
+            // Gate only influences review state when no usable quad is found.
+            val gateAccepted = if (
+                cropQuad == null &&
+                detectDocumentWhenCropQuadMissing &&
+                settingsRepository.getDocumentGateEnabled()
+            ) {
+                runCatching {
+                    documentGateDetector.classify(editorOrientedBitmap)
+                        .acceptsPhysicalDocument(DocumentGatePolicy.POST_PROCESSING_THRESHOLD)
+                }.getOrDefault(true)
+            } else {
+                true
+            }
+            val effectiveCropQuad = if (cropQuad != null) {
+                cropQuad
+            } else if (detectDocumentWhenCropQuadMissing) {
+                detectStillImageQuad(editorOrientedBitmap)
             } else {
                 null
             }
-            val effectiveCropQuad = cropQuad ?: detectionResult?.quad
             val correctedBitmap = effectiveCropQuad?.let { quad ->
                 perspectiveCorrect(
                     sourceBitmap = editorOrientedBitmap,
                     quad = quad,
                 )
             } ?: editorOrientedBitmap.copy(Bitmap.Config.ARGB_8888, false)
-            val enhancedBitmap = applyFilter(
+            val filtered = OpenCvPageFilterProcessor.applyWithResolvedPreset(
                 sourceBitmap = correctedBitmap,
                 filterPreset = filterPreset,
             )
-            if (correctedBitmap !== enhancedBitmap) {
+            if (correctedBitmap !== filtered.bitmap) {
                 correctedBitmap.recycle()
             }
+            val enhancedBitmap = filtered.bitmap
+            val appliedFilterPreset = filtered.appliedPreset
 
             try {
                 writeBitmap(
@@ -128,17 +134,21 @@ class DefaultPageImageProcessor @Inject constructor(
                 thumbnailPath = thumbnailPath,
             )
 
+            val processingState = when {
+                effectiveCropQuad != null -> PageProcessingState.PROCESSED
+                // No quad and gate rejected: likely not a document page — review.
+                !gateAccepted -> PageProcessingState.NEEDS_REVIEW
+                else -> PageProcessingState.NEEDS_REVIEW
+            }
+
             ProcessedPageArtifacts(
                 processedImagePath = processedImagePath,
                 thumbnailPath = thumbnailResult.thumbnailPath,
                 cropQuad = effectiveCropQuad,
                 rotationDegrees = userRotationDegrees,
-                filterPreset = filterPreset,
-                processingState = if (effectiveCropQuad != null) {
-                    PageProcessingState.PROCESSED
-                } else {
-                    PageProcessingState.NEEDS_REVIEW
-                },
+                // Persist the concrete filter Auto chose so the editor and reprocess match.
+                filterPreset = appliedFilterPreset,
+                processingState = processingState,
             )
         } finally {
             editorOrientedBitmap?.takeIf { !it.isRecycled }?.recycle()
@@ -146,6 +156,36 @@ class DefaultPageImageProcessor @Inject constructor(
                 orientedBitmap.recycle()
             }
         }
+    }
+
+    /**
+     * Still-image corner detection aligned with Model Benchmark behaviour:
+     * 1) Book-aware resolver in STILL_PROCESS mode (no book-gutter damage, card-friendly aspect)
+     * 2) Raw detector fallback if the resolver still drops a usable model quad
+     */
+    private suspend fun detectStillImageQuad(bitmap: Bitmap): DocumentCornerQuad? {
+        val selectedModel = if (settingsRepository.getAutomaticModelSelection()) {
+            runCatching { automaticDocumentModelSelector.selection().postProcessingModel }
+                .getOrDefault(settingsRepository.getPostProcessingModel())
+        } else {
+            settingsRepository.getPostProcessingModel()
+        }
+
+        val resolved = runCatching {
+            bookAwareCornerResolver.detect(
+                bitmap = bitmap,
+                selectedModel = selectedModel,
+                readiness = QuadReadiness.STILL_PROCESS,
+            ).result.quad
+        }.getOrNull()
+        if (resolved != null) return resolved
+
+        // Same path the benchmark visualizes: raw model corners.
+        val raw = runCatching {
+            documentCornerDetector.detect(bitmap, selectedModel).quad
+        }.getOrNull()
+        return raw?.takeIf(DocumentQuadPolicy::isStillProcessReady)
+            ?: raw?.takeIf { it.isValid() && it.isConvex() }
     }
 
     private fun decodeForProcessing(path: String): Bitmap? {
@@ -227,14 +267,6 @@ class DefaultPageImageProcessor @Inject constructor(
         )
         return destinationBitmap
     }
-
-    private fun applyFilter(
-        sourceBitmap: Bitmap,
-        filterPreset: PageFilterPreset,
-    ): Bitmap = OpenCvPageFilterProcessor.apply(
-        sourceBitmap = sourceBitmap,
-        filterPreset = filterPreset,
-    )
 
     private fun writeBitmap(
         bitmap: Bitmap,

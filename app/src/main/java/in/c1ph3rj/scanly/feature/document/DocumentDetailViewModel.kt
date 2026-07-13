@@ -46,6 +46,10 @@ data class DocumentDetailUiState(
     val selectedPageId: String? = null,
     val missingDocument: Boolean = false,
     val isMutatingPage: Boolean = false,
+    val isImporting: Boolean = false,
+    val importCurrent: Int = 0,
+    val importTotal: Int = 0,
+    val importStageLabel: String = "",
     val isExporting: Boolean = false,
     val exportMessage: String? = null,
     val isLoading: Boolean = true,
@@ -280,27 +284,59 @@ class DocumentDetailViewModel @Inject constructor(
     }
 
     fun importImages(uris: List<Uri>) {
-        if (_uiState.value.isMutatingPage || uris.isEmpty()) return
+        if (_uiState.value.isMutatingPage || _uiState.value.isImporting || uris.isEmpty()) return
 
         val cappedSelection = ImageImportSupport.capSelection(uris)
 
         viewModelScope.launch {
-            _uiState.update { current -> current.copy(isMutatingPage = true) }
-            when (val result = importImagesUseCase(documentId, cappedSelection.items)) {
-                is ScanlyResult.Success -> {
-                    _uiState.update { current -> current.copy(isMutatingPage = false) }
-                    _events.emit(
-                        DocumentDetailEvent.ShowMessage(
-                            ImageImportSupport.importResultMessage(
-                                importedCount = cappedSelection.items.size,
-                                truncated = cappedSelection.truncated,
-                            ),
-                        ),
+            _uiState.update { current ->
+                current.copy(
+                    isMutatingPage = true,
+                    isImporting = true,
+                    importCurrent = 0,
+                    importTotal = cappedSelection.items.size,
+                    importStageLabel = "Starting import",
+                )
+            }
+            try {
+                when (
+                    val result = importImagesUseCase(
+                        documentId = documentId,
+                        imageUris = cappedSelection.items,
+                        onProgress = { progress ->
+                            _uiState.update { current ->
+                                current.copy(
+                                    importCurrent = progress.currentIndex,
+                                    importTotal = progress.totalCount,
+                                    importStageLabel = progress.stageLabel,
+                                )
+                            }
+                        },
                     )
+                ) {
+                    is ScanlyResult.Success -> {
+                        _events.emit(
+                            DocumentDetailEvent.ShowMessage(
+                                ImageImportSupport.importResultMessage(
+                                    importedCount = cappedSelection.items.size,
+                                    truncated = cappedSelection.truncated,
+                                ),
+                            ),
+                        )
+                    }
+                    is ScanlyResult.Failure -> {
+                        _events.emit(DocumentDetailEvent.ShowMessage(result.error.message))
+                    }
                 }
-                is ScanlyResult.Failure -> {
-                    _uiState.update { current -> current.copy(isMutatingPage = false) }
-                    _events.emit(DocumentDetailEvent.ShowMessage(result.error.message))
+            } finally {
+                _uiState.update { current ->
+                    current.copy(
+                        isMutatingPage = false,
+                        isImporting = false,
+                        importCurrent = 0,
+                        importTotal = 0,
+                        importStageLabel = "",
+                    )
                 }
             }
         }

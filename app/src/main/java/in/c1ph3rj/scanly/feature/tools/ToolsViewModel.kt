@@ -22,6 +22,9 @@ import javax.inject.Inject
 
 data class ToolsUiState(
     val isImporting: Boolean = false,
+    val importCurrent: Int = 0,
+    val importTotal: Int = 0,
+    val importStageLabel: String = "",
 )
 
 sealed interface ToolsEvent {
@@ -63,32 +66,60 @@ class ToolsViewModel @Inject constructor(
         val cappedSelection = ImageImportSupport.capSelection(imageUris)
 
         viewModelScope.launch {
-            _uiState.update { it.copy(isImporting = true) }
-            when (val createResult = createDocumentUseCase.createImported()) {
-                is ScanlyResult.Success -> {
-                    when (
-                        val importResult =
-                            importImagesUseCase(createResult.value, cappedSelection.items)
-                    ) {
-                        is ScanlyResult.Success -> {
-                            _events.emit(ToolsEvent.OpenDocument(createResult.value))
-                            _events.emit(
-                                ToolsEvent.ShowMessage(
-                                    ImageImportSupport.importResultMessage(
-                                        importedCount = cappedSelection.items.size,
-                                        truncated = cappedSelection.truncated,
-                                    ),
-                                ),
-                            )
-                        }
-                        is ScanlyResult.Failure ->
-                            _events.emit(ToolsEvent.ShowMessage(importResult.error.message))
-                    }
-                }
-                is ScanlyResult.Failure ->
-                    _events.emit(ToolsEvent.ShowMessage(createResult.error.message))
+            _uiState.update {
+                it.copy(
+                    isImporting = true,
+                    importCurrent = 0,
+                    importTotal = cappedSelection.items.size,
+                    importStageLabel = "Starting import",
+                )
             }
-            _uiState.update { it.copy(isImporting = false) }
+            try {
+                when (val createResult = createDocumentUseCase.createImported()) {
+                    is ScanlyResult.Success -> {
+                        when (
+                            val importResult = importImagesUseCase(
+                                documentId = createResult.value,
+                                imageUris = cappedSelection.items,
+                                onProgress = { progress ->
+                                    _uiState.update {
+                                        it.copy(
+                                            importCurrent = progress.currentIndex,
+                                            importTotal = progress.totalCount,
+                                            importStageLabel = progress.stageLabel,
+                                        )
+                                    }
+                                },
+                            )
+                        ) {
+                            is ScanlyResult.Success -> {
+                                _events.emit(ToolsEvent.OpenDocument(createResult.value))
+                                _events.emit(
+                                    ToolsEvent.ShowMessage(
+                                        ImageImportSupport.importResultMessage(
+                                            importedCount = cappedSelection.items.size,
+                                            truncated = cappedSelection.truncated,
+                                        ),
+                                    ),
+                                )
+                            }
+                            is ScanlyResult.Failure ->
+                                _events.emit(ToolsEvent.ShowMessage(importResult.error.message))
+                        }
+                    }
+                    is ScanlyResult.Failure ->
+                        _events.emit(ToolsEvent.ShowMessage(createResult.error.message))
+                }
+            } finally {
+                _uiState.update {
+                    it.copy(
+                        isImporting = false,
+                        importCurrent = 0,
+                        importTotal = 0,
+                        importStageLabel = "",
+                    )
+                }
+            }
         }
     }
 }

@@ -35,6 +35,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 
+- **Gallery import processing** — imported images are normalized to JPEG and always run the post-processing corner pipeline with still-image quad readiness (near-full-frame scans, ID/RC cards, etc.); book-page gutter analysis and model-disagreement nulling no longer drop good offline detections that Model Benchmark already shows; raw detector fallback if the resolver still returns no quad.
+- **Import progress UI** — Home, Tools, and Document detail show a blocking loader with live “Image X of Y · detecting document” status while gallery imports run.
+- **Auto filter** — smarter preset selection (Clean paper / Soft B&W / Enhanced color / Shadow reduce) and the concrete filter Auto chose is persisted instead of the Auto label alone.
 - **Model benchmark** — results are grouped by image with a 2×2 preview grid per model; each preview draws the detected document polygon (or dims when none) alongside confidence, timing, and pipeline stats.
 - **PDF compress success** — uses the same focused completion screen as Merge (check mark, file card, Preview / Save / Share, Back to tools). Source picker, quality options, and the before/after card no longer linger after success; size savings stay as a single result line under the file name.
 - **PDF compress setup** — shows a first-page preview of the selected PDF at the top of the quality screen so the document is visible before compressing.

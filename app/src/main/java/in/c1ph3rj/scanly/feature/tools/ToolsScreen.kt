@@ -50,8 +50,10 @@ import `in`.c1ph3rj.scanly.core.ui.ImageImportSupport
 import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import `in`.c1ph3rj.scanly.domain.model.DocumentTitleFormat
 import `in`.c1ph3rj.scanly.feature.components.DocumentTitleDialog
+import `in`.c1ph3rj.scanly.feature.components.ScanlyImportProgressOverlay
 import `in`.c1ph3rj.scanly.feature.components.ScanlyTabScreenHeader
 import `in`.c1ph3rj.scanly.navigation.ToolsQrDestination
+import androidx.activity.compose.BackHandler
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -106,6 +108,8 @@ fun ToolsScreen(
     var createDialogVisible by rememberSaveable { mutableStateOf(false) }
     var showQrModeSheet by rememberSaveable { mutableStateOf(false) }
     val windowSizeInfo = rememberWindowSizeInfo()
+
+    BackHandler(enabled = uiState.isImporting) { /* block back while processing */ }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -180,10 +184,18 @@ fun ToolsScreen(
                     )
                 }
             }
+
+            if (uiState.isImporting) {
+                ScanlyImportProgressOverlay(
+                    current = uiState.importCurrent,
+                    total = uiState.importTotal,
+                    stageLabel = uiState.importStageLabel.ifBlank { "Working on your photos" },
+                )
+            }
         }
     }
 
-    if (createDialogVisible) {
+    if (createDialogVisible && !uiState.isImporting) {
         DocumentTitleDialog(
             title = "New scan",
             initialValue = "",
@@ -197,7 +209,7 @@ fun ToolsScreen(
         )
     }
 
-    if (showQrModeSheet) {
+    if (showQrModeSheet && !uiState.isImporting) {
         QrModePickerSheet(
             onDismiss = { showQrModeSheet = false },
             onChooseScan = {

@@ -14,16 +14,30 @@ import org.opencv.imgproc.Imgproc
 
 object OpenCvPageFilterProcessor {
 
+    data class AppliedFilter(
+        val bitmap: Bitmap,
+        /** Concrete preset that was rendered (Auto resolves to grayscale/clean/etc.). */
+        val appliedPreset: PageFilterPreset,
+    )
+
     @Volatile
     private var initialized = false
 
     fun apply(
         sourceBitmap: Bitmap,
         filterPreset: PageFilterPreset,
-    ): Bitmap {
+    ): Bitmap = applyWithResolvedPreset(sourceBitmap, filterPreset).bitmap
+
+    fun applyWithResolvedPreset(
+        sourceBitmap: Bitmap,
+        filterPreset: PageFilterPreset,
+    ): AppliedFilter {
         ensureInitialized()
         if (filterPreset == PageFilterPreset.ORIGINAL) {
-            return sourceBitmap.copy(Bitmap.Config.ARGB_8888, false)
+            return AppliedFilter(
+                bitmap = sourceBitmap.copy(Bitmap.Config.ARGB_8888, false),
+                appliedPreset = PageFilterPreset.ORIGINAL,
+            )
         }
 
         val sourceRgba = sourceBitmap.toMat()
@@ -35,15 +49,28 @@ object OpenCvPageFilterProcessor {
                     sourceAspectRatio = aspectRatio(sourceBitmap.width, sourceBitmap.height),
                 )
             }.getOrNull()
-            renderWithFallback(
+            val resolvedPreset = resolvePreset(filterPreset, profile)
+            val bitmap = renderWithFallback(
                 sourceRgba = sourceRgba,
-                filterPreset = filterPreset,
+                filterPreset = resolvedPreset,
                 profile = profile,
             )
+            AppliedFilter(bitmap = bitmap, appliedPreset = resolvedPreset)
         } finally {
             sourceRgba.release()
         }
     }
+
+    /** Resolves Auto to a concrete preset using the same analysis as rendering. */
+    private fun resolvePreset(
+        filterPreset: PageFilterPreset,
+        profile: PageImageProfile?,
+    ): PageFilterPreset =
+        if (filterPreset == PageFilterPreset.AUTO) {
+            AdaptivePageFilterTuning.automatic(profile)
+        } else {
+            filterPreset
+        }
 
     internal fun applyAll(
         sourceBitmap: Bitmap,
@@ -192,14 +219,11 @@ object OpenCvPageFilterProcessor {
         filterPreset: PageFilterPreset,
         profile: PageImageProfile?,
     ): Bitmap {
-        val resolvedPreset = if (filterPreset == PageFilterPreset.AUTO) {
-            AdaptivePageFilterTuning.automatic(profile)
-        } else {
-            filterPreset
-        }
-        return when (resolvedPreset) {
+        // Callers resolve Auto before render so we never hit the AUTO branch.
+        val concrete = resolvePreset(filterPreset, profile)
+        return when (concrete) {
             PageFilterPreset.ORIGINAL -> sourceRgba.toBitmap()
-            PageFilterPreset.AUTO -> grayscale(sourceRgba, profile)
+            PageFilterPreset.AUTO -> grayscale(sourceRgba, profile) // safety net
             PageFilterPreset.ENHANCED_COLOR -> enhancedColor(sourceRgba, profile)
             PageFilterPreset.GRAYSCALE -> grayscale(sourceRgba, profile)
             PageFilterPreset.BLACK_AND_WHITE -> blackAndWhite(sourceRgba, profile)

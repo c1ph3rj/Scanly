@@ -13,12 +13,37 @@ class DocumentQuadPolicyTest {
     }
 
     @Test
-    fun edgeClippedDocumentIsRejected() {
+    fun edgeClippedDocumentIsRejectedForLiveCapture() {
         assertFalse(
             DocumentQuadPolicy.isCaptureReady(
                 quad(topLeft = NormalizedPoint(0f, 0.10f)),
             ),
         )
+    }
+
+    @Test
+    fun nearFullFrameScanIsStillProcessReadyButNotCaptureReady() {
+        val fullBleed = DocumentCornerQuad(
+            topLeft = NormalizedPoint(0.005f, 0.005f),
+            topRight = NormalizedPoint(0.995f, 0.008f),
+            bottomRight = NormalizedPoint(0.992f, 0.995f),
+            bottomLeft = NormalizedPoint(0.008f, 0.990f),
+        )
+        assertFalse(DocumentQuadPolicy.isCaptureReady(fullBleed))
+        assertTrue(DocumentQuadPolicy.isStillProcessReady(fullBleed))
+        assertTrue(DocumentQuadPolicy.isReady(fullBleed, QuadReadiness.STILL_PROCESS))
+    }
+
+    @Test
+    fun wideIdCardIsStillProcessReady() {
+        // ~credit-card / RC proportions in the center of a photo (like model benchmark).
+        val idCard = DocumentCornerQuad(
+            topLeft = NormalizedPoint(0.12f, 0.32f),
+            topRight = NormalizedPoint(0.88f, 0.30f),
+            bottomRight = NormalizedPoint(0.90f, 0.68f),
+            bottomLeft = NormalizedPoint(0.10f, 0.70f),
+        )
+        assertTrue(DocumentQuadPolicy.isStillProcessReady(idCard))
     }
 
     @Test
