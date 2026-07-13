@@ -13,9 +13,9 @@ Managed by `DefaultSettingsRepository` (`data/settings/`).
 | `onboarding_completed` | Boolean | `false` | First-run gate flag |
 | `export_tree_uri` | String? | null | Persisted SAF tree URI for custom export/backup base |
 | `export_tree_label` | String? | null | Display name for custom export folder |
-| `live_detection_model` | String | `"legacy"` | Manual live-preview corner model (`legacy` / `lite` / `standard` / `accurate`) |
-| `post_processing_model` | String | `"legacy"` | Manual captured-image corner model |
-| `automatic_document_model_selection` | Boolean | `false` | Calibrate Lite/Standard/Accurate on device; lock manual selectors |
+| `live_detection_model` | String | `"legacy"` | Manual live-preview corner model (`lite` / `standard` / `accurate`=High / `legacy`=Accurate) |
+| `post_processing_model` | String | `"legacy"` | Manual captured-image corner model (same storage values) |
+| `automatic_document_model_selection` | Boolean | `false` | Calibrate Lite/Standard/High on device; lock manual selectors |
 | `document_gate_enabled` | Boolean | `true` | Run or bypass the physical-document semantic gate in both pipelines |
 
 When `export_tree_uri` and `export_tree_label` are both set, `ExportDestination.CustomTree` is used; otherwise `ExportDestination.DefaultDownloadsScanly` (`Downloads/Scanly`).
@@ -38,7 +38,7 @@ Pure black only changes surface colors when dark theme is active (Dark mode, or 
 
 | Control | Behavior |
 | --- | --- |
-| Automatic model selection | Benchmarks Lite/Standard/Accurate once per process; assigns live and post models under latency budgets |
+| Automatic model selection | Benchmarks Lite/Standard/High once per process; assigns live and post models under latency budgets |
 | Live preview model | Manual pick when automatic is off; chip + bottom-sheet picker in Settings |
 | Post-processing model | Independent manual pick for capture/import finalize |
 | Physical-document gate | Enable/bypass gate inference for live + post pipelines |
@@ -50,10 +50,10 @@ Pure black only changes surface colors when dark theme is active (Dark mode, or 
 | --- | --- |
 | `assets/settings/faqs.json` | FAQ entries for Settings FAQ sub-screen |
 | `assets/settings/licenses.json` | Third-party license disclosures |
-| `assets/models/document_corners_float16.tflite` | Legacy corner model |
 | `assets/models/document_corners_lite.tflite` | Lite corner model (224) |
 | `assets/models/document_corners_standard.tflite` | Standard corner model (288) |
-| `assets/models/document_corners_accurate.tflite` | Accurate corner model (384) |
+| `assets/models/document_corners_accurate.tflite` | High corner model (384 regression) |
+| `assets/models/document_corners_float16.tflite` | Accurate corner model (YOLO-pose; formerly Legacy) |
 | `assets/models/scanly_document_gate_float16.tflite` | Physical-document semantic gate |
 | `assets/models/README.txt` | Model placement and contract notes |
 | `assets/adi-registration.properties` | Model registration metadata |

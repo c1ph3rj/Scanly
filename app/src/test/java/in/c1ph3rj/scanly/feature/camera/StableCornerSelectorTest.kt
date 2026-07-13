@@ -15,10 +15,10 @@ class StableCornerSelectorTest {
         val selector = StableCornerSelector()
         val paper = paperQuad()
 
-        assertNull(selector.select(result(paper, DocumentCornerModel.ACCURATE)).quad)
-        assertNotNull(selector.select(result(paper.shifted(0.005f), DocumentCornerModel.ACCURATE)).quad)
+        assertNull(selector.select(result(paper, DocumentCornerModel.HIGH)).quad)
+        assertNotNull(selector.select(result(paper.shifted(0.005f), DocumentCornerModel.HIGH)).quad)
         assertNull(selector.select(result(mixedEdgeQuad(), DocumentCornerModel.STANDARD)).quad)
-        assertNotNull(selector.select(result(paper.shifted(0.008f), DocumentCornerModel.ACCURATE)).quad)
+        assertNotNull(selector.select(result(paper.shifted(0.008f), DocumentCornerModel.HIGH)).quad)
     }
 
     @Test
@@ -29,11 +29,11 @@ class StableCornerSelectorTest {
 
         selector.select(result(mixed, DocumentCornerModel.STANDARD))
         assertNotNull(selector.select(result(mixed.shifted(0.003f), DocumentCornerModel.STANDARD)).quad)
-        assertNull(selector.select(result(paper, DocumentCornerModel.ACCURATE)).quad)
-        val replacement = selector.select(result(paper.shifted(0.003f), DocumentCornerModel.ACCURATE))
+        assertNull(selector.select(result(paper, DocumentCornerModel.HIGH)).quad)
+        val replacement = selector.select(result(paper.shifted(0.003f), DocumentCornerModel.HIGH))
 
         assertNotNull(replacement.quad)
-        assertEquals(DocumentCornerModel.ACCURATE, replacement.model)
+        assertEquals(DocumentCornerModel.HIGH, replacement.model)
     }
 
     private fun result(quad: DocumentCornerQuad, model: DocumentCornerModel) = CornerDetectionResult(

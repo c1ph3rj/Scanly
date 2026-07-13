@@ -139,7 +139,7 @@ These files live at the repository root for GitHub conventions and quick access:
 | Library backup | `app/src/main/java/in/c1ph3rj/scanly/data/archive/` |
 | Export storage | `app/src/main/java/in/c1ph3rj/scanly/data/export/DefaultExportStorageRepository.kt` |
 | Build config | `app/build.gradle.kts`, `gradle/libs.versions.toml` |
-| ML models | `app/src/main/assets/models/` (Legacy/Lite/Standard/Accurate corners + document gate) |
+| ML models | `app/src/main/assets/models/` (Lite/Standard/High/Accurate corners + document gate) |
 
 ## Screenshots
 

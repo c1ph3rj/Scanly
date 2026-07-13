@@ -11,21 +11,21 @@ class AutomaticDocumentModelSelectionPolicyTest {
             medianLatencyMillis = mapOf(
                 DocumentCornerModel.LITE to 8.0,
                 DocumentCornerModel.STANDARD to 17.0,
-                DocumentCornerModel.ACCURATE to 31.0,
+                DocumentCornerModel.HIGH to 31.0,
             ),
             latencyBudgetMillis = 35.0,
         )
 
-        assertEquals(DocumentCornerModel.ACCURATE, selected)
+        assertEquals(DocumentCornerModel.HIGH, selected)
     }
 
     @Test
-    fun `drops to standard when accurate exceeds the latency budget`() {
+    fun `drops to standard when high exceeds the latency budget`() {
         val selected = AutomaticDocumentModelSelectionPolicy.choose(
             medianLatencyMillis = mapOf(
                 DocumentCornerModel.LITE to 8.0,
                 DocumentCornerModel.STANDARD to 19.0,
-                DocumentCornerModel.ACCURATE to 48.0,
+                DocumentCornerModel.HIGH to 48.0,
             ),
             latencyBudgetMillis = 35.0,
         )
@@ -39,7 +39,7 @@ class AutomaticDocumentModelSelectionPolicyTest {
             medianLatencyMillis = mapOf(
                 DocumentCornerModel.LITE to 44.0,
                 DocumentCornerModel.STANDARD to 57.0,
-                DocumentCornerModel.ACCURATE to 81.0,
+                DocumentCornerModel.HIGH to 81.0,
             ),
             latencyBudgetMillis = 35.0,
         )
@@ -48,10 +48,10 @@ class AutomaticDocumentModelSelectionPolicyTest {
     }
 
     @Test
-    fun `never selects legacy automatically`() {
+    fun `never selects accurate automatically`() {
         val selected = AutomaticDocumentModelSelectionPolicy.choose(
             medianLatencyMillis = mapOf(
-                DocumentCornerModel.LEGACY to 1.0,
+                DocumentCornerModel.ACCURATE to 1.0,
                 DocumentCornerModel.STANDARD to 18.0,
             ),
             latencyBudgetMillis = 35.0,

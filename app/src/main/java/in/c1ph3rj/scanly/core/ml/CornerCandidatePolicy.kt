@@ -12,10 +12,11 @@ object CornerCandidatePolicy {
         result: CornerDetectionResult,
         readiness: QuadReadiness = QuadReadiness.LIVE_CAPTURE,
     ): Boolean {
-        if (result.model == DocumentCornerModel.ACCURATE) return false
+        // High is the verification model itself — no second pass needed.
+        if (result.model == DocumentCornerModel.HIGH) return false
         val quad = result.quad ?: return true
         // Still-process path: if the quad is already usable for import/warp, skip the
-        // expensive Accurate pass that used to null-out good ID/RC-card detections.
+        // expensive High pass that used to null-out good ID/RC-card detections.
         if (readiness == QuadReadiness.STILL_PROCESS &&
             DocumentQuadPolicy.isReady(quad, readiness)
         ) {

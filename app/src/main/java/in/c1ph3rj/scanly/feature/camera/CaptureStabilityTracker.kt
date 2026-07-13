@@ -23,7 +23,7 @@ data class LiveDetectionUiState(
     val statusMessage: String = "Point your camera at a document.",
     val countdownValue: Int? = null,
     val sceneIssue: CaptureSceneIssue? = null,
-    val model: DocumentCornerModel = DocumentCornerModel.LEGACY,
+    val model: DocumentCornerModel = DocumentCornerModel.ACCURATE,
     val confidence: Float? = null,
     val inferenceMillis: Double? = null,
     val totalMillis: Double? = null,

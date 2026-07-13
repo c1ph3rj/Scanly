@@ -90,7 +90,7 @@ Dependencies and versions from `gradle/libs.versions.toml` as of **v1.0.9**.
 | Setting | Value |
 | --- | --- |
 | NDK ABI filters | `arm64-v8a`, `armeabi-v7a` |
-| TFLite assets (noCompress) | Corner: Legacy / Lite / Standard / Accurate; gate: `scanly_document_gate_float16.tflite` |
+| TFLite assets (noCompress) | Corner: Lite / Standard / High / Accurate; gate: `scanly_document_gate_float16.tflite` |
 
 ## License disclosures
 

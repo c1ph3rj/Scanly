@@ -48,7 +48,7 @@ Camera frame
   → optional DocumentGateDetector (physical vs screen/neither)
   → if accepted (or gate disabled): DocumentCornerDetector(live model)
   → DocumentQuadPolicy (convex, area/aspect, edge margin)
-  → optional Accurate verification for ambiguous quads
+  → optional High verification for ambiguous quads
   → BookAwareCornerResolver / BookPageQuadAnalyzer (gutter trim or reject)
   → StableCornerSelector (rank, confirm, smooth outline)
   → CaptureStabilityTracker (auto-capture phases)
@@ -73,12 +73,12 @@ Settings → **Physical-document gate** enables or bypasses gate inference for b
 
 | Model | Asset | Notes |
 | --- | --- | --- |
-| Legacy | `document_corners_float16.tflite` | Original YOLO-pose output; manual compatibility default |
 | Lite | `document_corners_lite.tflite` | 224 px regression + presence |
 | Standard | `document_corners_standard.tflite` | 288 px regression + presence |
-| Accurate | `document_corners_accurate.tflite` | 384 px regression + presence |
+| High | `document_corners_accurate.tflite` | 384 px regression + presence |
+| Accurate | `document_corners_float16.tflite` | YOLO-pose output; manual compatibility default (formerly Legacy) |
 
-Model choice is independent for live preview vs post-processing (DataStore). **Automatic model selection** calibrates Lite/Standard/Accurate on-device and picks the highest-accuracy model under separate latency budgets (live ≈ 35 ms corner budget, post ≈ 120 ms). Legacy is manual-only for compatibility. Manual selectors lock while automatic selection is enabled.
+Model choice is independent for live preview vs post-processing (DataStore). **Automatic model selection** calibrates Lite/Standard/High on-device and picks the highest-accuracy model under separate latency budgets (live ≈ 35 ms corner budget, post ≈ 120 ms). Accurate is manual-only for compatibility. Manual selectors lock while automatic selection is enabled.
 
 - `CameraOverlayMapper` maps normalized quads to overlay coordinates
 - Temporary model/latency/confidence HUD is **not** shown on the live camera; use **Settings → Model benchmark** for measurements
@@ -92,7 +92,7 @@ Model choice is independent for live preview vs post-processing (DataStore). **A
 | `StableCornerSelector` | Temporally confirms and smooths the visible outline; resists jumping to nearby monitors/keyboard edges (worst-corner motion as well as average) |
 | `CaptureStabilityTracker` | Auto-capture phase machine; also tracks worst-moving corner stability |
 
-Ambiguous live (and post-processing) results may be **conditionally verified with the Accurate model** before acceptance.
+Ambiguous live (and post-processing) results may be **conditionally verified with the High model** before acceptance.
 
 ### Book-page isolation
 

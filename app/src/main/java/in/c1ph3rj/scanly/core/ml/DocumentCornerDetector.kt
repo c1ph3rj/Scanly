@@ -6,12 +6,12 @@ import `in`.c1ph3rj.scanly.domain.model.DocumentCornerModel
 interface DocumentCornerDetector {
     suspend fun detect(
         frame: DetectionFrame,
-        model: DocumentCornerModel = DocumentCornerModel.LEGACY,
+        model: DocumentCornerModel = DocumentCornerModel.ACCURATE,
     ): CornerDetectionResult
 
     suspend fun detect(
         bitmap: Bitmap,
-        model: DocumentCornerModel = DocumentCornerModel.LEGACY,
+        model: DocumentCornerModel = DocumentCornerModel.ACCURATE,
     ): CornerDetectionResult
 }
 
@@ -31,7 +31,7 @@ data class CornerDetectionResult(
     val confidence: Float,
     val inferenceTimeMillis: Long,
     val modelName: String,
-    val model: DocumentCornerModel = DocumentCornerModel.LEGACY,
+    val model: DocumentCornerModel = DocumentCornerModel.ACCURATE,
     val timing: CornerDetectionTiming = CornerDetectionTiming(
         inferenceNanos = inferenceTimeMillis * 1_000_000,
         totalNanos = inferenceTimeMillis * 1_000_000,

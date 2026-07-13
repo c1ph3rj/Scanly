@@ -10,7 +10,7 @@ Raw JPEG (camera or import)
   → Optional user rotation
   → Optional physical-document semantic gate
   → Corner detection (LiteRT, selected post-processing model) OR manual crop quad
-  → Quad policy + optional Accurate verification + book-page resolve
+  → Quad policy + optional High verification + book-page resolve
   → Perspective warp
   → Filter preset (OpenCV)
   → Processed JPEG + thumbnail
@@ -51,22 +51,22 @@ When no manual crop quad is set:
 
 | Asset | Role |
 | --- | --- |
-| `document_corners_float16.tflite` | Legacy YOLO-pose corner model |
-| `document_corners_lite.tflite` | 224 px corner regression + presence |
-| `document_corners_standard.tflite` | 288 px corner regression + presence |
-| `document_corners_accurate.tflite` | 384 px corner regression + presence |
+| `document_corners_lite.tflite` | Lite — 224 px corner regression + presence |
+| `document_corners_standard.tflite` | Standard — 288 px corner regression + presence |
+| `document_corners_accurate.tflite` | High — 384 px corner regression + presence |
+| `document_corners_float16.tflite` | Accurate — YOLO-pose corner model (formerly Legacy) |
 | `scanly_document_gate_float16.tflite` | 160 px physical-document / screen / neither gate |
 
 Keep `noCompress += "tflite"` in Gradle. NDK ABI filters: `arm64-v8a`, `armeabi-v7a`.
 
 ### Model config
 
-- Legacy uses YOLO-pose output; Lite/Standard/Accurate use TL/TR/BR/BL regression plus a presence score, RGB `[-1, 1]` input, and RGB-114 letterboxing
-- Live-preview and post-processing model choices are independent DataStore settings; both default to **Legacy** for safe upgrades
-- **Automatic selection** benchmarks Lite, Standard, and Accurate on the current device, then chooses the highest-accuracy model under a **35 ms** corner budget for live preview and a **120 ms** corner budget for post-processing. Results are process-cached; Legacy stays manual-only for compatibility
+- Accurate uses YOLO-pose output; Lite/Standard/High use TL/TR/BR/BL regression plus a presence score, RGB `[-1, 1]` input, and RGB-114 letterboxing
+- Live-preview and post-processing model choices are independent DataStore settings; both default to **Accurate** for safe upgrades (same weights as the former Legacy default)
+- **Automatic selection** benchmarks Lite, Standard, and High on the current device, then chooses the highest-accuracy model under a **35 ms** corner budget for live preview and a **120 ms** corner budget for post-processing. Results are process-cached; Accurate stays manual-only for compatibility
 - Semantic gate: live accepts `physical_document` at **0.90** for two consecutive frames; post-processing uses **0.95**. Rejected frames skip corner inference. Settings gate toggle applies to both pipelines
 - Overlay and automatic perspective correction require a convex quad with plausible area/aspect and edge margin (`DocumentQuadPolicy`)
-- Ambiguous quads may be verified with Accurate; live candidates are ranked, temporally confirmed, and smoothed (`StableCornerSelector`)
+- Ambiguous quads may be verified with High; live candidates are ranked, temporally confirmed, and smoothed (`StableCornerSelector`)
 - Book captures use a sparse gutter sampler: off-centre gutter trims the adjacent page; centred two-page spreads are rejected as ambiguous
 
 ### Model benchmark (`settings/model-benchmark`)

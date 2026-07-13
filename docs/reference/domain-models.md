@@ -53,7 +53,7 @@ All model classes in `domain/model/` (23 files).
 | Model | File | Purpose |
 | --- | --- | --- |
 | `ThemeMode` | `ThemeMode.kt` | `SYSTEM`, `LIGHT`, `DARK` |
-| `DocumentCornerModel` | `DocumentCornerModel.kt` | `LEGACY`, `LITE`, `STANDARD`, `ACCURATE` with storage values and display names |
+| `DocumentCornerModel` | `DocumentCornerModel.kt` | `LITE`, `STANDARD`, `HIGH`, `ACCURATE` with storage values and display names |
 | `SettingsContent` | `SettingsContent.kt` | Aggregated FAQs and licenses for Settings |
 | `SettingsFaq` | `SettingsFaq.kt` | Single FAQ entry |
 | `LicenseInfo` | `LicenseInfo.kt` | Third-party license entry |

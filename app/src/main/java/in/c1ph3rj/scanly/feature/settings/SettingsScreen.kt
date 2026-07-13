@@ -96,10 +96,10 @@ private fun Modifier.settingsRowSurface(onClick: (() -> Unit)? = null): Modifier
 
 private val DocumentCornerModel.description: String
     get() = when (this) {
-        DocumentCornerModel.LEGACY -> "Original detector · maximum compatibility"
         DocumentCornerModel.LITE -> "Fastest · ideal for live camera preview"
         DocumentCornerModel.STANDARD -> "Balanced speed and accuracy"
-        DocumentCornerModel.ACCURATE -> "Highest accuracy · best after capture"
+        DocumentCornerModel.HIGH -> "Higher accuracy · best after capture"
+        DocumentCornerModel.ACCURATE -> "Highest accuracy · maximum compatibility"
     }
 
 @OptIn(ExperimentalMaterial3Api::class)

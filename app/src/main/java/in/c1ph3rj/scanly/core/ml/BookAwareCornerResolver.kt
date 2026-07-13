@@ -47,23 +47,25 @@ class BookAwareCornerResolver @Inject constructor(
     ): CornerResolution {
         val primaryRaw = runCatching { detector.detect(bitmap, selectedModel) }
             .recoverCatching { error ->
-                if (selectedModel == DocumentCornerModel.LEGACY) throw error
-                detector.detect(bitmap, DocumentCornerModel.LEGACY)
+                // Fall back to Accurate (YOLO-pose) for maximum compatibility.
+                if (selectedModel == DocumentCornerModel.ACCURATE) throw error
+                detector.detect(bitmap, DocumentCornerModel.ACCURATE)
             }
             .getOrThrow()
         val primary = prepareCandidate(bitmap, primaryRaw, readiness)
         val needsVerification = primary.refinement?.kind?.let { it != BookPageRefinementKind.NONE } == true ||
             primary.refinement?.evidence?.hasPossibleGutter() == true ||
             CornerCandidatePolicy.needsAccurateVerification(primary.result, readiness)
-        if (!needsVerification || primaryRaw.model == DocumentCornerModel.ACCURATE) {
+        // High (384 px regression) is the verification model for ambiguous quads.
+        if (!needsVerification || primaryRaw.model == DocumentCornerModel.HIGH) {
             return primary.toResolution()
         }
 
-        val accurateRaw = runCatching { detector.detect(bitmap, DocumentCornerModel.ACCURATE) }
+        val highRaw = runCatching { detector.detect(bitmap, DocumentCornerModel.HIGH) }
             .getOrNull() ?: return primary.toResolution()
-        val accurate = prepareCandidate(bitmap, accurateRaw, readiness)
-        val combinedTiming = primaryRaw.timing + accurateRaw.timing
-        val chosen = choose(primary, accurate, readiness)
+        val high = prepareCandidate(bitmap, highRaw, readiness)
+        val combinedTiming = primaryRaw.timing + highRaw.timing
+        val chosen = choose(primary, high, readiness)
         return chosen.copy(
             result = chosen.result.copy(
                 inferenceTimeMillis = combinedTiming.inferenceMillis.toLong(),

@@ -73,9 +73,9 @@ class DocumentQuadPolicyTest {
         assertTrue(DocumentQuadPolicy.qualityScore(paperQuad) > DocumentQuadPolicy.qualityScore(mixedEdgeQuad))
         val chosen = CornerCandidatePolicy.choosePreferred(
             result(mixedEdgeQuad, DocumentCornerModel.STANDARD),
-            result(paperQuad, DocumentCornerModel.ACCURATE),
+            result(paperQuad, DocumentCornerModel.HIGH),
         )
-        assertEquals(DocumentCornerModel.ACCURATE, chosen.model)
+        assertEquals(DocumentCornerModel.HIGH, chosen.model)
     }
 
     private fun quad(

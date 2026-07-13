@@ -50,7 +50,7 @@ Raw JPEG
   → processed JPEG (q94, max 2400px) + thumbnail
 ```
 
-Corner models: Legacy · Lite (224) · Standard (288) · Accurate (384). Gate: MobileNetV3-Small 160 px float16.
+Corner models: Lite (224) · Standard (288) · High (384) · Accurate (YOLO-pose). Gate: MobileNetV3-Small 160 px float16.
 
 ## Background work
 

@@ -97,7 +97,7 @@ class ScanSessionViewModel @Inject constructor(
     private val gateStabilityTracker = DocumentGateStabilityTracker()
     private val stableCornerSelector = StableCornerSelector()
     @Volatile
-    private var liveModel: DocumentCornerModel = DocumentCornerModel.LEGACY
+    private var liveModel: DocumentCornerModel = DocumentCornerModel.ACCURATE
     @Volatile
     private var documentGateEnabled: Boolean = true
     private var pendingCaptureQuad: DocumentCornerQuad? = null

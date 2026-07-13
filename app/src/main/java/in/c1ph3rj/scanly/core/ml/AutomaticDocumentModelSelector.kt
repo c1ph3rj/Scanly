@@ -99,17 +99,19 @@ class AutomaticDocumentModelSelector @Inject constructor(
         const val MEASURED_RUNS = 3
         const val LIVE_CORNER_BUDGET_MILLIS = 35.0
         const val POST_PROCESSING_CORNER_BUDGET_MILLIS = 120.0
+        // Accurate (YOLO-pose) stays manual-only for compatibility; calibrate the
+        // corner-regression ladder only.
         val candidateModels = listOf(
             DocumentCornerModel.LITE,
             DocumentCornerModel.STANDARD,
-            DocumentCornerModel.ACCURATE,
+            DocumentCornerModel.HIGH,
         )
     }
 }
 
 internal object AutomaticDocumentModelSelectionPolicy {
     private val accuracyOrder = listOf(
-        DocumentCornerModel.ACCURATE,
+        DocumentCornerModel.HIGH,
         DocumentCornerModel.STANDARD,
         DocumentCornerModel.LITE,
     )
