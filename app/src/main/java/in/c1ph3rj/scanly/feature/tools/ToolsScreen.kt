@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
@@ -47,6 +48,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import `in`.c1ph3rj.scanly.core.ui.ImageImportSupport
+import `in`.c1ph3rj.scanly.core.ui.WindowWidthClass
 import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import `in`.c1ph3rj.scanly.domain.model.DocumentTitleFormat
 import `in`.c1ph3rj.scanly.feature.components.DocumentTitleDialog
@@ -148,6 +150,7 @@ fun ToolsScreen(
                         onScan = { createDialogVisible = true },
                         onImport = onImport,
                         importEnabled = !uiState.isImporting,
+                        sideBySide = windowSizeInfo.widthClass != WindowWidthClass.Compact,
                         modifier = Modifier.padding(bottom = 32.dp),
                     )
                 }
@@ -157,12 +160,36 @@ fun ToolsScreen(
                         subtitle = "Scan a code or make one to share.",
                         modifier = Modifier.padding(bottom = 12.dp),
                     )
-                    ToolFeaturedCard(
-                        tool = utilityTools.single(),
-                        eyebrow = "QR CODE",
-                        onClick = { showQrModeSheet = true },
-                        modifier = Modifier.padding(bottom = 32.dp),
-                    )
+                    if (windowSizeInfo.useToolTwoPaneLayout) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 32.dp),
+                            horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        ) {
+                            ToolFeaturedCard(
+                                tool = utilityTools.single(),
+                                eyebrow = "QR CODE",
+                                onClick = { showQrModeSheet = true },
+                                modifier = Modifier.weight(1f),
+                            )
+                            ToolFeaturedCard(
+                                tool = pdfTools.first { it.id == ToolActionId.PdfReader },
+                                eyebrow = "START HERE",
+                                onClick = {
+                                    pdfTools.first { it.id == ToolActionId.PdfReader }.route?.let(onOpenTool)
+                                },
+                                modifier = Modifier.weight(1f),
+                            )
+                        }
+                    } else {
+                        ToolFeaturedCard(
+                            tool = utilityTools.single(),
+                            eyebrow = "QR CODE",
+                            onClick = { showQrModeSheet = true },
+                            modifier = Modifier.padding(bottom = 32.dp),
+                        )
+                    }
                 }
                 item(key = "pdf") {
                     ToolSectionHeader(
@@ -170,16 +197,19 @@ fun ToolsScreen(
                         subtitle = "Open, combine, reduce, protect, or stamp PDFs.",
                         modifier = Modifier.padding(bottom = 12.dp),
                     )
-                    ToolFeaturedCard(
-                        tool = pdfTools.first { it.id == ToolActionId.PdfReader },
-                        eyebrow = "START HERE",
-                        onClick = {
-                            pdfTools.first { it.id == ToolActionId.PdfReader }.route?.let(onOpenTool)
-                        },
-                        modifier = Modifier.padding(bottom = 12.dp),
-                    )
+                    if (!windowSizeInfo.useToolTwoPaneLayout) {
+                        ToolFeaturedCard(
+                            tool = pdfTools.first { it.id == ToolActionId.PdfReader },
+                            eyebrow = "START HERE",
+                            onClick = {
+                                pdfTools.first { it.id == ToolActionId.PdfReader }.route?.let(onOpenTool)
+                            },
+                            modifier = Modifier.padding(bottom = 12.dp),
+                        )
+                    }
                     ToolGrid(
                         tools = pdfTools.filter { it.id != ToolActionId.PdfReader },
+                        columns = windowSizeInfo.toolGridColumns,
                         onToolClick = { tool -> tool.route?.let(onOpenTool) },
                     )
                 }
@@ -335,6 +365,7 @@ private fun CaptureWorkspace(
     onScan: () -> Unit,
     onImport: () -> Unit,
     importEnabled: Boolean,
+    sideBySide: Boolean,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -345,67 +376,103 @@ private fun CaptureWorkspace(
             fontWeight = FontWeight.SemiBold,
             modifier = Modifier.padding(start = 4.dp),
         )
-        Surface(
-            onClick = onScan,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(144.dp),
-            color = MaterialTheme.colorScheme.primaryContainer,
-            shape = MaterialTheme.shapes.extraLarge,
-            border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.26f)),
-            tonalElevation = 0.dp,
-            shadowElevation = 0.dp,
-        ) {
+        if (sideBySide) {
             Row(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(20.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                Surface(
-                    modifier = Modifier.size(56.dp),
-                    color = MaterialTheme.colorScheme.primary,
-                    shape = MaterialTheme.shapes.large,
-                ) {
-                    Box(contentAlignment = Alignment.Center) {
-                        Icon(
-                            imageVector = Icons.Filled.CameraAlt,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onPrimary,
-                            modifier = Modifier.size(28.dp),
-                        )
-                    }
-                }
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = "New scan",
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                    )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = "Use the camera to capture a document.",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.78f),
-                    )
-                }
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowForward,
-                    contentDescription = "Start scan",
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                CaptureScanCard(
+                    onScan = onScan,
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(148.dp),
+                )
+                CompactActionCard(
+                    title = "Import photos",
+                    subtitle = "Choose up to 10 images from your gallery.",
+                    icon = Icons.Filled.PhotoLibrary,
+                    accent = ToolAccent.Secondary,
+                    onClick = onImport,
+                    enabled = importEnabled,
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(148.dp),
                 )
             }
+        } else {
+            CaptureScanCard(
+                onScan = onScan,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(144.dp),
+            )
+            CompactActionCard(
+                title = "Import photos",
+                subtitle = "Choose up to 10 images from your gallery.",
+                icon = Icons.Filled.PhotoLibrary,
+                accent = ToolAccent.Secondary,
+                onClick = onImport,
+                enabled = importEnabled,
+            )
         }
-        CompactActionCard(
-            title = "Import photos",
-            subtitle = "Choose up to 10 images from your gallery.",
-            icon = Icons.Filled.PhotoLibrary,
-            accent = ToolAccent.Secondary,
-            onClick = onImport,
-            enabled = importEnabled,
-        )
+    }
+}
+
+@Composable
+private fun CaptureScanCard(
+    onScan: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Surface(
+        onClick = onScan,
+        modifier = modifier,
+        color = MaterialTheme.colorScheme.primaryContainer,
+        shape = MaterialTheme.shapes.extraLarge,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.26f)),
+        tonalElevation = 0.dp,
+        shadowElevation = 0.dp,
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(20.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            Surface(
+                modifier = Modifier.size(56.dp),
+                color = MaterialTheme.colorScheme.primary,
+                shape = MaterialTheme.shapes.large,
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    Icon(
+                        imageVector = Icons.Filled.CameraAlt,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier.size(28.dp),
+                    )
+                }
+            }
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = "New scan",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = "Use the camera to capture a document.",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.78f),
+                )
+            }
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                contentDescription = "Start scan",
+                tint = MaterialTheme.colorScheme.onPrimaryContainer,
+            )
+        }
     }
 }
 
@@ -423,9 +490,7 @@ private fun CompactActionCard(
     Surface(
         onClick = onClick,
         enabled = enabled,
-        modifier = modifier
-            .fillMaxWidth()
-            .height(92.dp),
+        modifier = modifier.fillMaxWidth(),
         color = if (enabled) {
             MaterialTheme.colorScheme.surfaceContainer
         } else {
@@ -439,6 +504,7 @@ private fun CompactActionCard(
         Row(
             modifier = Modifier
                 .fillMaxSize()
+                .heightIn(min = 92.dp)
                 .padding(horizontal = 16.dp, vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(14.dp),
@@ -584,9 +650,11 @@ private fun ToolGrid(
     tools: List<ToolItem>,
     onToolClick: (ToolItem) -> Unit,
     modifier: Modifier = Modifier,
+    columns: Int = 2,
 ) {
+    val columnCount = columns.coerceAtLeast(1)
     Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        tools.chunked(2).forEach { rowTools ->
+        tools.chunked(columnCount).forEach { rowTools ->
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -598,7 +666,7 @@ private fun ToolGrid(
                         modifier = Modifier.weight(1f),
                     )
                 }
-                if (rowTools.size == 1) {
+                repeat(columnCount - rowTools.size) {
                     Spacer(modifier = Modifier.weight(1f))
                 }
             }

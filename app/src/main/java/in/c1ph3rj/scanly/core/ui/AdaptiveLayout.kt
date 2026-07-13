@@ -41,6 +41,22 @@ data class WindowSizeInfo(
             WindowWidthClass.Expanded -> 3
         }
 
+    /** Columns for Tools hub action grids (merge / compress / etc.). */
+    val toolGridColumns: Int
+        get() = when (widthClass) {
+            WindowWidthClass.Compact  -> 2
+            WindowWidthClass.Medium   -> 3
+            WindowWidthClass.Expanded -> 4
+        }
+
+    /** Columns for PDF library picker grids inside tool sheets. */
+    val pdfLibraryGridColumns: Int
+        get() = when (widthClass) {
+            WindowWidthClass.Compact  -> 2
+            WindowWidthClass.Medium   -> 3
+            WindowWidthClass.Expanded -> 4
+        }
+
     /**
      * Maximum width for centred content columns (Settings, Legal, Home).
      * Returns [Dp.Unspecified] on compact so no cap is applied.
@@ -51,6 +67,54 @@ data class WindowSizeInfo(
             WindowWidthClass.Medium   -> 720.dp
             WindowWidthClass.Expanded -> 900.dp
         }
+
+    /**
+     * Wider content column for Tools detail workspaces (forms + previews).
+     * Returns [Dp.Unspecified] on compact so no cap is applied.
+     */
+    val toolContentMaxWidth: Dp
+        get() = when (widthClass) {
+            WindowWidthClass.Compact  -> Dp.Unspecified
+            WindowWidthClass.Medium   -> 840.dp
+            WindowWidthClass.Expanded -> 1000.dp
+        }
+
+    /**
+     * Max width for primary bottom CTAs (Merge / Compress / etc.).
+     * Prevents edge-to-edge “sausage” buttons on tablets.
+     */
+    val toolPrimaryActionMaxWidth: Dp
+        get() = when (widthClass) {
+            WindowWidthClass.Compact  -> Dp.Unspecified
+            WindowWidthClass.Medium   -> 420.dp
+            WindowWidthClass.Expanded -> 400.dp
+        }
+
+    /** Comfortable max width for single-column lists (merge file list, forms). */
+    val toolFormMaxWidth: Dp
+        get() = when (widthClass) {
+            WindowWidthClass.Compact  -> Dp.Unspecified
+            WindowWidthClass.Medium   -> 560.dp
+            WindowWidthClass.Expanded -> 520.dp
+        }
+
+    /** Height for PDF first-page previews inside tool Ready states. */
+    val toolPreviewHeight: Dp
+        get() = when {
+            // Landscape: keep preview compact so controls fit above the bottom CTA.
+            isLandscape && widthClass != WindowWidthClass.Compact -> 220.dp
+            widthClass == WindowWidthClass.Compact -> 240.dp
+            widthClass == WindowWidthClass.Medium -> 280.dp
+            else -> 320.dp
+        }
+
+    /**
+     * Side-by-side tool layouts (preview | controls, camera | result).
+     * Used on tablets and on medium/expanded widths with enough horizontal room.
+     */
+    val useToolTwoPaneLayout: Boolean
+        get() = widthClass != WindowWidthClass.Compact &&
+            (isTablet || widthClass == WindowWidthClass.Expanded)
 
     /** Maximum width for modal dialogs on large screens. */
     val dialogMaxWidth: Dp

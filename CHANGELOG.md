@@ -35,6 +35,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 
+- **Automatic model selection on by default** — new installs and unset preferences enable on-device Lite/Standard/High calibration for live and post-processing models.
+- **Tools large-screen layout** — Tools hub, QR, and PDF toolkit screens adapt to tablets and wide windows: multi-column grids, side-by-side capture/preview/controls, taller document previews, centred content columns, and a denser library picker.
 - **Document model labels** — the corner-model ladder is now **Lite · Standard · High · Accurate**. Accurate is the former Legacy YOLO-pose model; High is the former Accurate 384 px regression model. Existing preferences keep the same underlying weights.
 - **Gallery import processing** — imported images are normalized to JPEG and always run the post-processing corner pipeline with still-image quad readiness (near-full-frame scans, ID/RC cards, etc.); book-page gutter analysis and model-disagreement nulling no longer drop good offline detections that Model Benchmark already shows; raw detector fallback if the resolver still returns no quad.
 - **Import progress UI** — Home, Tools, and Document detail show a blocking loader with live “Image X of Y · detecting document” status while gallery imports run.

@@ -52,14 +52,14 @@ class DefaultSettingsRepository @Inject constructor(
 
     override fun observeAutomaticModelSelection(): Flow<Boolean> =
         context.settingsDataStore.data.map { preferences ->
-            preferences[automaticModelSelectionKey] ?: false
+            preferences[automaticModelSelectionKey] ?: true
         }
 
     override suspend fun setAutomaticModelSelection(enabled: Boolean): ScanlyResult<Unit> =
         updateBooleanPreference(automaticModelSelectionKey, enabled)
 
     override suspend fun getAutomaticModelSelection(): Boolean =
-        context.settingsDataStore.data.first()[automaticModelSelectionKey] ?: false
+        context.settingsDataStore.data.first()[automaticModelSelectionKey] ?: true
 
     override fun observeDocumentGateEnabled(): Flow<Boolean> =
         context.settingsDataStore.data.map { preferences ->

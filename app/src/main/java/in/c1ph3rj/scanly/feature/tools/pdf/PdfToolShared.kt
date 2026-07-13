@@ -20,9 +20,11 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -71,6 +73,7 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -80,9 +83,10 @@ import `in`.c1ph3rj.scanly.domain.model.PdfToolSource
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
 import `in`.c1ph3rj.scanly.domain.model.ShareArtifact
 import `in`.c1ph3rj.scanly.core.ui.PreviewDisplaySize
+import `in`.c1ph3rj.scanly.core.ui.WindowWidthClass
+import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import `in`.c1ph3rj.scanly.feature.components.CachedThumbnail
 import `in`.c1ph3rj.scanly.feature.components.ScanlyDetailScaffold
-import `in`.c1ph3rj.scanly.feature.components.ScanlySheetContent
 import java.io.File
 
 enum class ToolPhase { Empty, Ready, Done }
@@ -117,6 +121,7 @@ fun ToolDetailScaffold(
     primaryAction: (@Composable () -> Unit)? = null,
     content: @Composable ColumnScope.() -> Unit,
 ) {
+    val windowSizeInfo = rememberWindowSizeInfo()
     ScanlyDetailScaffold(
         title = title,
         onNavigateUp = onNavigateUp,
@@ -126,14 +131,29 @@ fun ToolDetailScaffold(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding),
+            contentAlignment = Alignment.TopCenter,
         ) {
-            Column(modifier = Modifier.fillMaxSize()) {
+            Column(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .then(
+                        if (windowSizeInfo.widthClass != WindowWidthClass.Compact) {
+                            Modifier.widthIn(max = windowSizeInfo.toolContentMaxWidth)
+                        } else {
+                            Modifier
+                        },
+                    )
+                    .fillMaxWidth(),
+            ) {
                 Column(
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxWidth()
                         .verticalScroll(rememberScrollState())
-                        .padding(horizontal = 20.dp, vertical = 12.dp),
+                        .padding(
+                            horizontal = windowSizeInfo.horizontalPadding,
+                            vertical = 12.dp,
+                        ),
                 ) {
                     content()
                 }
@@ -147,9 +167,21 @@ fun ToolDetailScaffold(
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(16.dp),
+                                .padding(
+                                    horizontal = windowSizeInfo.horizontalPadding,
+                                    vertical = 12.dp,
+                                ),
+                            contentAlignment = Alignment.Center,
                         ) {
-                            primaryAction()
+                            // Cap CTA width on large screens so buttons don't span the full tablet.
+                            val actionModifier = if (windowSizeInfo.widthClass != WindowWidthClass.Compact) {
+                                Modifier.widthIn(max = windowSizeInfo.toolPrimaryActionMaxWidth)
+                            } else {
+                                Modifier.fillMaxWidth()
+                            }
+                            Box(modifier = actionModifier.fillMaxWidth()) {
+                                primaryAction()
+                            }
                         }
                     }
                 }
@@ -173,7 +205,7 @@ fun ToolEmptyState(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp),
+            .padding(vertical = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
@@ -200,9 +232,17 @@ fun ToolEmptyState(
             text = subtitle,
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(horizontal = 12.dp),
+            textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+            modifier = Modifier
+                .widthIn(max = 420.dp)
+                .padding(horizontal = 12.dp),
         )
-        Button(onClick = onChooseSource, modifier = Modifier.fillMaxWidth()) {
+        Button(
+            onClick = onChooseSource,
+            modifier = Modifier
+                .widthIn(max = 420.dp)
+                .fillMaxWidth(),
+        ) {
             Icon(Icons.Filled.FolderOpen, contentDescription = null, modifier = Modifier.size(18.dp))
             Spacer(modifier = Modifier.size(8.dp))
             Text(actionLabel)
@@ -269,53 +309,70 @@ fun ToolSourceList(
     onRemove: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
+    val windowSizeInfo = rememberWindowSizeInfo()
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Column(
+            modifier = Modifier
+                .then(
+                    if (windowSizeInfo.widthClass != WindowWidthClass.Compact) {
+                        Modifier.widthIn(max = windowSizeInfo.toolFormMaxWidth)
+                    } else {
+                        Modifier
+                    },
+                )
+                .fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            Text(
-                text = "FILES TO MERGE · ${sources.size}",
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.primary,
-                fontWeight = FontWeight.SemiBold,
-            )
-            TextButton(onClick = onAdd) { Text("Add files") }
-        }
-        sources.forEachIndexed { index, source ->
-            Surface(
+            Row(
                 modifier = Modifier.fillMaxWidth(),
-                shape = MaterialTheme.shapes.large,
-                color = MaterialTheme.colorScheme.surfaceContainerHigh,
-                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
-                tonalElevation = 0.dp,
-                shadowElevation = 0.dp,
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                Row(
-                    modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
-                    verticalAlignment = Alignment.CenterVertically,
+                Text(
+                    text = "FILES TO MERGE · ${sources.size}",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.SemiBold,
+                )
+                TextButton(onClick = onAdd) { Text("Add files") }
+            }
+            sources.forEachIndexed { index, source ->
+                Surface(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = MaterialTheme.shapes.large,
+                    color = MaterialTheme.colorScheme.surfaceContainerHigh,
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+                    tonalElevation = 0.dp,
+                    shadowElevation = 0.dp,
                 ) {
-                    Icon(
-                        Icons.AutoMirrored.Filled.InsertDriveFile,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(20.dp),
-                    )
-                    Text(
-                        text = source.label(),
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(horizontal = 12.dp),
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        style = MaterialTheme.typography.bodyMedium,
-                    )
-                    IconButton(onClick = { onRemove(index) }) {
+                    Row(
+                        modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
                         Icon(
-                            Icons.Filled.Close,
-                            contentDescription = "Remove ${source.label()}",
+                            Icons.AutoMirrored.Filled.InsertDriveFile,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(20.dp),
                         )
+                        Text(
+                            text = source.label(),
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(horizontal = 12.dp),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
+                        IconButton(onClick = { onRemove(index) }) {
+                            Icon(
+                                Icons.Filled.Close,
+                                contentDescription = "Remove ${source.label()}",
+                            )
+                        }
                     }
                 }
             }
@@ -448,112 +505,120 @@ fun PdfToolCompleteScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(20.dp),
     ) {
-        Surface(
-            modifier = Modifier.size(56.dp),
-            shape = MaterialTheme.shapes.extraLarge,
-            color = MaterialTheme.colorScheme.primaryContainer,
-            tonalElevation = 0.dp,
-        ) {
-            Box(contentAlignment = Alignment.Center) {
-                Icon(
-                    imageVector = Icons.Filled.CheckCircle,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(30.dp),
-                )
-            }
-        }
         Column(
+            modifier = Modifier
+                .widthIn(max = 480.dp)
+                .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(4.dp),
-        ) {
-            Text(
-                text = statusTitle,
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.SemiBold,
-            )
-            Text(
-                text = statusSubtitle,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-        }
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(20.dp),
         ) {
             Surface(
-                modifier = Modifier.size(width = 108.dp, height = 138.dp),
-                shape = MaterialTheme.shapes.large,
-                color = MaterialTheme.colorScheme.surfaceContainerHigh,
-                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+                modifier = Modifier.size(56.dp),
+                shape = MaterialTheme.shapes.extraLarge,
+                color = MaterialTheme.colorScheme.primaryContainer,
                 tonalElevation = 0.dp,
             ) {
-                Column(
-                    modifier = Modifier.padding(12.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
-                ) {
+                Box(contentAlignment = Alignment.Center) {
                     Icon(
-                        imageVector = Icons.Filled.PictureAsPdf,
+                        imageVector = Icons.Filled.CheckCircle,
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(40.dp),
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = "PDF",
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.primary,
-                        fontWeight = FontWeight.SemiBold,
+                        modifier = Modifier.size(30.dp),
                     )
                 }
             }
-            Text(
-                text = fileName,
-                style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.SemiBold,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
-            if (resultDetail != null) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(4.dp),
+            ) {
                 Text(
-                    text = resultDetail,
+                    text = statusTitle,
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.SemiBold,
+                )
+                Text(
+                    text = statusSubtitle,
                     style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Medium,
-                    color = MaterialTheme.colorScheme.primary,
-                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
-            Text(
-                text = previewHint,
-                style = MaterialTheme.typography.bodySmall,
-                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-        }
-        OutlinedButton(onClick = onPreview, modifier = Modifier.fillMaxWidth()) {
-            Icon(Icons.Filled.Visibility, contentDescription = null, modifier = Modifier.size(18.dp))
-            Spacer(modifier = Modifier.width(8.dp))
-            Text("Preview PDF")
-        }
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            Button(onClick = onSave, modifier = Modifier.weight(1f)) {
-                Icon(Icons.Filled.Save, contentDescription = null, modifier = Modifier.size(18.dp))
-                Spacer(modifier = Modifier.width(8.dp))
-                Text("Save")
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                Surface(
+                    modifier = Modifier.size(width = 108.dp, height = 138.dp),
+                    shape = MaterialTheme.shapes.large,
+                    color = MaterialTheme.colorScheme.surfaceContainerHigh,
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+                    tonalElevation = 0.dp,
+                ) {
+                    Column(
+                        modifier = Modifier.padding(12.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.PictureAsPdf,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(40.dp),
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = "PDF",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.primary,
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                    }
+                }
+                Text(
+                    text = fileName,
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.SemiBold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+                if (resultDetail != null) {
+                    Text(
+                        text = resultDetail,
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.Medium,
+                        color = MaterialTheme.colorScheme.primary,
+                        textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                    )
+                }
+                Text(
+                    text = previewHint,
+                    style = MaterialTheme.typography.bodySmall,
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             }
-            OutlinedButton(onClick = onShare, modifier = Modifier.weight(1f)) {
-                Icon(Icons.Filled.Share, contentDescription = null, modifier = Modifier.size(18.dp))
+            OutlinedButton(onClick = onPreview, modifier = Modifier.fillMaxWidth()) {
+                Icon(Icons.Filled.Visibility, contentDescription = null, modifier = Modifier.size(18.dp))
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Share")
+                Text("Preview PDF")
             }
-        }
-        TextButton(onClick = onBack) {
-            Text("Back to tools")
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                Button(onClick = onSave, modifier = Modifier.weight(1f)) {
+                    Icon(Icons.Filled.Save, contentDescription = null, modifier = Modifier.size(18.dp))
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("Save")
+                }
+                OutlinedButton(onClick = onShare, modifier = Modifier.weight(1f)) {
+                    Icon(Icons.Filled.Share, contentDescription = null, modifier = Modifier.size(18.dp))
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("Share")
+                }
+            }
+            TextButton(onClick = onBack) {
+                Text("Back to tools")
+            }
         }
     }
 }
@@ -571,6 +636,17 @@ fun PdfSourcePickerSheet(
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var selectedIds by remember { mutableStateOf(setOf<String>()) }
     var libraryLayout by remember { mutableStateOf(PdfLibraryLayout.Grid) }
+    val windowSizeInfo = rememberWindowSizeInfo()
+    val configuration = LocalConfiguration.current
+    // Landscape / short windows: keep the library short so Confirm stays on-screen.
+    val libraryHeight = when {
+        configuration.screenHeightDp < 480 -> 140.dp
+        configuration.screenHeightDp < 600 -> 180.dp
+        configuration.screenHeightDp < 720 -> 240.dp
+        windowSizeInfo.widthClass == WindowWidthClass.Expanded -> 320.dp
+        windowSizeInfo.widthClass == WindowWidthClass.Medium -> 280.dp
+        else -> 260.dp
+    }
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -578,123 +654,146 @@ fun PdfSourcePickerSheet(
         containerColor = MaterialTheme.colorScheme.surfaceContainer,
         tonalElevation = 0.dp,
     ) {
-        ScanlySheetContent {
-            Text(
-                text = if (multiSelect) "Add PDFs" else "Choose a PDF",
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.SemiBold,
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            if (showDeviceOption) {
-                Surface(
-                    onClick = onPickDevice,
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .navigationBarsPadding()
+                .padding(bottom = 12.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Column(
+                modifier = Modifier
+                    .then(
+                        if (windowSizeInfo.isTablet || windowSizeInfo.widthClass != WindowWidthClass.Compact) {
+                            Modifier.widthIn(max = windowSizeInfo.sheetMaxWidth)
+                        } else {
+                            Modifier
+                        },
+                    )
+                    .fillMaxWidth()
+                    .padding(horizontal = if (windowSizeInfo.isTablet) 24.dp else 20.dp),
+            ) {
+                Text(
+                    text = if (multiSelect) "Add PDFs" else "Choose a PDF",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.SemiBold,
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+                if (showDeviceOption) {
+                    Surface(
+                        onClick = onPickDevice,
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = MaterialTheme.shapes.large,
+                        color = MaterialTheme.colorScheme.surfaceContainerHigh,
+                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+                        tonalElevation = 0.dp,
+                        shadowElevation = 0.dp,
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        ) {
+                            Icon(
+                                Icons.Filled.FolderOpen,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary,
+                            )
+                            Column {
+                                Text("Files on this device", fontWeight = FontWeight.SemiBold)
+                                Text(
+                                    "Pick a PDF from storage",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            }
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(14.dp))
+                }
+                Row(
                     modifier = Modifier.fillMaxWidth(),
-                    shape = MaterialTheme.shapes.large,
-                    color = MaterialTheme.colorScheme.surfaceContainerHigh,
-                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
-                    tonalElevation = 0.dp,
-                    shadowElevation = 0.dp,
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Row(
-                        modifier = Modifier.padding(16.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = "Library",
+                            style = MaterialTheme.typography.labelLarge,
+                            color = MaterialTheme.colorScheme.primary,
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                        Text(
+                            text = "Choose by first-page preview",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                    IconButton(
+                        onClick = {
+                            libraryLayout = if (libraryLayout == PdfLibraryLayout.Grid) {
+                                PdfLibraryLayout.List
+                            } else {
+                                PdfLibraryLayout.Grid
+                            }
+                        },
                     ) {
                         Icon(
-                            Icons.Filled.FolderOpen,
-                            contentDescription = null,
+                            imageVector = if (libraryLayout == PdfLibraryLayout.Grid) {
+                                Icons.AutoMirrored.Filled.ViewList
+                            } else {
+                                Icons.Filled.GridView
+                            },
+                            contentDescription = if (libraryLayout == PdfLibraryLayout.Grid) {
+                                "Show library as a list"
+                            } else {
+                                "Show library as a grid"
+                            },
                             tint = MaterialTheme.colorScheme.primary,
                         )
-                        Column {
-                            Text("Files on this device", fontWeight = FontWeight.SemiBold)
-                            Text(
-                                "Pick a PDF from storage",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
-                        }
                     }
                 }
-                Spacer(modifier = Modifier.height(20.dp))
-            }
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = "Library",
-                        style = MaterialTheme.typography.labelLarge,
-                        color = MaterialTheme.colorScheme.primary,
-                        fontWeight = FontWeight.SemiBold,
-                    )
-                    Text(
-                        text = "Choose by first-page preview",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
-                IconButton(
-                    onClick = {
-                        libraryLayout = if (libraryLayout == PdfLibraryLayout.Grid) {
-                            PdfLibraryLayout.List
+                Spacer(modifier = Modifier.height(8.dp))
+                if (documents.isEmpty()) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(libraryHeight),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Text(
+                            text = "No documents in your library yet.",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                } else {
+                    val onDocumentClick: (ScanDocument) -> Unit = { doc ->
+                        val selected = doc.id in selectedIds
+                        if (multiSelect) {
+                            selectedIds = if (selected) selectedIds - doc.id else selectedIds + doc.id
                         } else {
-                            PdfLibraryLayout.Grid
+                            onConfirmLibrary(listOf(PdfToolSource.LibraryDocument(doc.id, doc.title)))
                         }
-                    },
-                ) {
-                    Icon(
-                        imageVector = if (libraryLayout == PdfLibraryLayout.Grid) {
-                            Icons.AutoMirrored.Filled.ViewList
-                        } else {
-                            Icons.Filled.GridView
-                        },
-                        contentDescription = if (libraryLayout == PdfLibraryLayout.Grid) {
-                            "Show library as a list"
-                        } else {
-                            "Show library as a grid"
-                        },
-                        tint = MaterialTheme.colorScheme.primary,
-                    )
-                }
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-            if (documents.isEmpty()) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(312.dp),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text(
-                        text = "No documents in your library yet.",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
-            } else {
-                val onDocumentClick: (ScanDocument) -> Unit = { doc ->
-                    val selected = doc.id in selectedIds
-                    if (multiSelect) {
-                        selectedIds = if (selected) selectedIds - doc.id else selectedIds + doc.id
-                    } else {
-                        onConfirmLibrary(listOf(PdfToolSource.LibraryDocument(doc.id, doc.title)))
+                    }
+                    when (libraryLayout) {
+                        PdfLibraryLayout.List -> PdfLibraryList(
+                            documents = documents,
+                            selectedIds = selectedIds,
+                            onDocumentClick = onDocumentClick,
+                            height = libraryHeight,
+                        )
+                        PdfLibraryLayout.Grid -> PdfLibraryGrid(
+                            documents = documents,
+                            selectedIds = selectedIds,
+                            onDocumentClick = onDocumentClick,
+                            height = libraryHeight,
+                        )
                     }
                 }
-                when (libraryLayout) {
-                    PdfLibraryLayout.List -> PdfLibraryList(
-                        documents = documents,
-                        selectedIds = selectedIds,
-                        onDocumentClick = onDocumentClick,
-                    )
-                    PdfLibraryLayout.Grid -> PdfLibraryGrid(
-                        documents = documents,
-                        selectedIds = selectedIds,
-                        onDocumentClick = onDocumentClick,
-                    )
-                }
-                if (multiSelect) {
-                    Spacer(modifier = Modifier.height(12.dp))
+
+                // Sticky actions — always visible under the library (critical in landscape).
+                Spacer(modifier = Modifier.height(12.dp))
+                if (multiSelect && documents.isNotEmpty()) {
                     Button(
                         onClick = {
                             val chosen = documents
@@ -703,15 +802,21 @@ fun PdfSourcePickerSheet(
                             if (chosen.isNotEmpty()) onConfirmLibrary(chosen)
                         },
                         enabled = selectedIds.isNotEmpty(),
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .widthIn(max = 420.dp)
+                            .fillMaxWidth()
+                            .align(Alignment.CenterHorizontally),
                     ) {
                         Text("Add selected (${selectedIds.size})")
                     }
+                    Spacer(modifier = Modifier.height(4.dp))
                 }
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-            TextButton(onClick = onDismiss, modifier = Modifier.align(Alignment.End)) {
-                Text("Cancel")
+                TextButton(
+                    onClick = onDismiss,
+                    modifier = Modifier.align(Alignment.End),
+                ) {
+                    Text("Cancel")
+                }
             }
         }
     }
@@ -722,12 +827,13 @@ private fun PdfLibraryList(
     documents: List<ScanDocument>,
     selectedIds: Set<String>,
     onDocumentClick: (ScanDocument) -> Unit,
+    height: androidx.compose.ui.unit.Dp,
 ) {
     val listState = androidx.compose.foundation.lazy.rememberLazyListState()
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(312.dp),
+            .height(height),
     ) {
         LazyColumn(
             state = listState,
@@ -849,15 +955,24 @@ private fun PdfLibraryGrid(
     documents: List<ScanDocument>,
     selectedIds: Set<String>,
     onDocumentClick: (ScanDocument) -> Unit,
+    height: androidx.compose.ui.unit.Dp,
 ) {
+    val windowSizeInfo = rememberWindowSizeInfo()
+    val columns = windowSizeInfo.pdfLibraryGridColumns
+    val previewHeight = when {
+        height < 160.dp -> 72.dp
+        height < 220.dp -> 88.dp
+        windowSizeInfo.widthClass == WindowWidthClass.Expanded -> 112.dp
+        else -> 98.dp
+    }
     val gridState = rememberLazyGridState()
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(312.dp),
+            .height(height),
     ) {
         LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
+            columns = GridCells.Fixed(columns),
             state = gridState,
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(end = 12.dp),
@@ -880,7 +995,7 @@ private fun PdfLibraryGrid(
                                 document = document,
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .height(98.dp),
+                                    .height(previewHeight),
                             )
                             if (selected) {
                                 Icon(
@@ -912,6 +1027,7 @@ private fun PdfLibraryGrid(
         }
         PdfLibraryGridScrollIndicator(
             gridState = gridState,
+            columns = columns,
             modifier = Modifier.align(Alignment.CenterEnd),
         )
     }
@@ -920,12 +1036,13 @@ private fun PdfLibraryGrid(
 @Composable
 private fun PdfLibraryGridScrollIndicator(
     gridState: LazyGridState,
+    columns: Int,
     modifier: Modifier = Modifier,
 ) {
     val layoutInfo = gridState.layoutInfo
     val visibleItems = layoutInfo.visibleItemsInfo
     val visibleRows = visibleItems.map { it.row }.distinct()
-    val totalRows = (layoutInfo.totalItemsCount + 1) / 2
+    val totalRows = (layoutInfo.totalItemsCount + columns - 1) / columns
     if (visibleRows.isEmpty() || visibleRows.size >= totalRows) return
 
     val averageItemHeight = visibleItems.sumOf { it.size.height }.toFloat() / visibleItems.size

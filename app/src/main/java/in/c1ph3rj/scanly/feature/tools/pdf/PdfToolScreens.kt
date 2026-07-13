@@ -78,14 +78,17 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import `in`.c1ph3rj.scanly.core.common.StorageFormatter
 import `in`.c1ph3rj.scanly.core.ui.ChromeIconButton
 import `in`.c1ph3rj.scanly.core.ui.MetricChip
+import `in`.c1ph3rj.scanly.core.ui.WindowWidthClass
 import `in`.c1ph3rj.scanly.core.ui.ZoomableBitmapViewer
 import `in`.c1ph3rj.scanly.core.ui.ZoomableImageState
+import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import `in`.c1ph3rj.scanly.core.ui.rememberZoomableImageState
 import `in`.c1ph3rj.scanly.domain.model.ExportArtifact
 import `in`.c1ph3rj.scanly.domain.model.PdfCompressQuality
@@ -277,58 +280,101 @@ fun PdfCompressRoute(
                 }
             }
             ToolPhase.Ready -> {
-                PdfSelectedDocumentPreview(
-                    title = uiState.sources.first().label(),
-                    supporting = buildString {
-                        val info = uiState.info
-                        if (info != null) {
-                            append("${info.pageCount} pages")
-                            (before ?: info.fileSizeBytes)?.let { bytes ->
-                                append(" · ${StorageFormatter.formatBytes(bytes)}")
-                            }
-                        } else {
-                            before?.let { bytes -> append(StorageFormatter.formatBytes(bytes)) }
-                        }
-                    }.ifBlank { null },
-                    preview = uiState.sourcePagePreview,
-                    isLoading = uiState.isSourcePagePreviewLoading,
-                    caption = "First page of the selected PDF",
-                    onChange = { showPicker = true },
-                )
-                if (uiState.needsPassword || uiState.info?.isEncrypted == true) {
-                    Spacer(modifier = Modifier.height(16.dp))
-                    OutlinedTextField(
-                        value = uiState.currentPassword,
-                        onValueChange = viewModel::setCurrentPassword,
-                        label = { Text("PDF password") },
-                        singleLine = true,
-                        modifier = Modifier.fillMaxWidth(),
-                    )
-                    TextButton(onClick = viewModel::unlockOrRefresh) {
-                        Text("Unlock / refresh preview")
-                    }
-                }
-                Spacer(modifier = Modifier.height(20.dp))
-                Text(
-                    text = "Compression level",
-                    style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.SemiBold,
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                PdfCompressQuality.entries.forEach { quality ->
-                    QualityOptionCard(
-                        quality = quality,
-                        selected = uiState.compressQuality == quality,
-                        recommended = quality == PdfCompressQuality.MEDIUM,
-                        onClick = { viewModel.setQuality(quality) },
+                val windowSizeInfo = rememberWindowSizeInfo()
+                val qualityOptions: @Composable () -> Unit = {
+                    Text(
+                        text = "Compression level",
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.SemiBold,
                     )
                     Spacer(modifier = Modifier.height(8.dp))
+                    // Always vertical — side-by-side cards crush on tablet two-pane panes.
+                    PdfCompressQuality.entries.forEachIndexed { index, quality ->
+                        if (index > 0) Spacer(modifier = Modifier.height(8.dp))
+                        QualityOptionCard(
+                            quality = quality,
+                            selected = uiState.compressQuality == quality,
+                            recommended = quality == PdfCompressQuality.MEDIUM,
+                            onClick = { viewModel.setQuality(quality) },
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "Pages are re-encoded as images. Text may look slightly softer.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
                 }
-                Text(
-                    text = "Pages are re-encoded as images. Text may look slightly softer.",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
+                val passwordFields: @Composable () -> Unit = {
+                    if (uiState.needsPassword || uiState.info?.isEncrypted == true) {
+                        Spacer(modifier = Modifier.height(16.dp))
+                        OutlinedTextField(
+                            value = uiState.currentPassword,
+                            onValueChange = viewModel::setCurrentPassword,
+                            label = { Text("PDF password") },
+                            singleLine = true,
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+                        TextButton(onClick = viewModel::unlockOrRefresh) {
+                            Text("Unlock / refresh preview")
+                        }
+                    }
+                }
+                if (windowSizeInfo.useToolTwoPaneLayout) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(20.dp),
+                    ) {
+                        PdfSelectedDocumentPreview(
+                            title = uiState.sources.first().label(),
+                            supporting = buildString {
+                                val info = uiState.info
+                                if (info != null) {
+                                    append("${info.pageCount} pages")
+                                    (before ?: info.fileSizeBytes)?.let { bytes ->
+                                        append(" · ${StorageFormatter.formatBytes(bytes)}")
+                                    }
+                                } else {
+                                    before?.let { bytes -> append(StorageFormatter.formatBytes(bytes)) }
+                                }
+                            }.ifBlank { null },
+                            preview = uiState.sourcePagePreview,
+                            isLoading = uiState.isSourcePagePreviewLoading,
+                            caption = "First page of the selected PDF",
+                            onChange = { showPicker = true },
+                            modifier = Modifier.weight(0.46f),
+                        )
+                        Column(modifier = Modifier.weight(0.54f)) {
+                            passwordFields()
+                            if (uiState.needsPassword || uiState.info?.isEncrypted == true) {
+                                Spacer(modifier = Modifier.height(12.dp))
+                            }
+                            qualityOptions()
+                        }
+                    }
+                } else {
+                    PdfSelectedDocumentPreview(
+                        title = uiState.sources.first().label(),
+                        supporting = buildString {
+                            val info = uiState.info
+                            if (info != null) {
+                                append("${info.pageCount} pages")
+                                (before ?: info.fileSizeBytes)?.let { bytes ->
+                                    append(" · ${StorageFormatter.formatBytes(bytes)}")
+                                }
+                            } else {
+                                before?.let { bytes -> append(StorageFormatter.formatBytes(bytes)) }
+                            }
+                        }.ifBlank { null },
+                        preview = uiState.sourcePagePreview,
+                        isLoading = uiState.isSourcePagePreviewLoading,
+                        caption = "First page of the selected PDF",
+                        onChange = { showPicker = true },
+                    )
+                    passwordFields()
+                    Spacer(modifier = Modifier.height(20.dp))
+                    qualityOptions()
+                }
             }
         }
     }
@@ -355,8 +401,13 @@ private fun PdfSelectedDocumentPreview(
     isLoading: Boolean,
     onChange: () -> Unit,
     caption: String = "First page of the selected PDF",
+    modifier: Modifier = Modifier,
 ) {
-    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+    val windowSizeInfo = rememberWindowSizeInfo()
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -390,7 +441,7 @@ private fun PdfSelectedDocumentPreview(
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(240.dp),
+                .height(windowSizeInfo.toolPreviewHeight),
             shape = MaterialTheme.shapes.extraLarge,
             color = MaterialTheme.colorScheme.surfaceContainerHigh,
             border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
@@ -452,10 +503,11 @@ private fun QualityOptionCard(
     selected: Boolean,
     recommended: Boolean,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Surface(
         onClick = onClick,
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.large,
         color = if (selected) {
             MaterialTheme.colorScheme.primaryContainer
@@ -474,18 +526,25 @@ private fun QualityOptionCard(
         shadowElevation = 0.dp,
     ) {
         Row(
-            modifier = Modifier.padding(14.dp),
+            modifier = Modifier.padding(horizontal = 14.dp, vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Column(modifier = Modifier.weight(1f)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(quality.label, fontWeight = FontWeight.SemiBold)
+                    Text(
+                        text = quality.label,
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.SemiBold,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
                     if (recommended) {
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
                             text = "Recommended",
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.primary,
+                            fontWeight = FontWeight.SemiBold,
                         )
                     }
                 }
@@ -605,82 +664,109 @@ fun PdfPasswordRoute(
                 }
             }
             ToolPhase.Ready -> {
-                PdfSelectedDocumentPreview(
-                    title = uiState.sources.first().label(),
-                    supporting = buildString {
-                        val info = uiState.info
-                        if (info != null) {
-                            append("${info.pageCount} pages")
-                            info.fileSizeBytes?.let { bytes ->
-                                append(" · ${StorageFormatter.formatBytes(bytes)}")
-                            }
-                            append(if (info.isEncrypted) " · Protected" else " · Unlocked")
-                        } else if (uiState.needsPassword) {
-                            append("Password required · Protected")
-                        }
-                    }.ifBlank { null },
-                    preview = uiState.sourcePagePreview,
-                    isLoading = uiState.isSourcePagePreviewLoading,
-                    caption = "First page of the selected PDF",
-                    onChange = { showPicker = true },
-                )
-
-                Spacer(modifier = Modifier.height(20.dp))
-                Text(
-                    text = "ACTION",
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.primary,
-                    fontWeight = FontWeight.SemiBold,
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                PasswordModeOptionCard(
-                    title = "Protect",
-                    description = if (alreadyProtected) {
-                        "Replace the open password on this locked PDF"
-                    } else {
-                        "Lock the PDF with an open password"
-                    },
-                    selected = isProtect,
-                    onClick = { viewModel.setMode(PdfPasswordMode.Protect) },
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                PasswordModeOptionCard(
-                    title = "Remove",
-                    description = if (alreadyProtected) {
-                        "Create an unlocked copy of this protected file"
-                    } else {
-                        "Only available when the PDF is already protected"
-                    },
-                    selected = !isProtect,
-                    onClick = { viewModel.setMode(PdfPasswordMode.Remove) },
-                )
-
-                Spacer(modifier = Modifier.height(20.dp))
-                Text(
-                    text = when {
-                        isProtect && alreadyProtected -> "PASSWORDS"
-                        isProtect -> "NEW PASSWORD"
-                        else -> "CURRENT PASSWORD"
-                    },
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.primary,
-                    fontWeight = FontWeight.SemiBold,
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Surface(
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = MaterialTheme.shapes.extraLarge,
-                    color = MaterialTheme.colorScheme.surfaceContainer,
-                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
-                    tonalElevation = 0.dp,
-                    shadowElevation = 0.dp,
-                ) {
-                    Column(
-                        modifier = Modifier.padding(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                val windowSizeInfo = rememberWindowSizeInfo()
+                val modeOptions: @Composable () -> Unit = {
+                    Text(
+                        text = "ACTION",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.SemiBold,
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    // Vertical stack keeps copy readable on tablet two-pane panes.
+                    PasswordModeOptionCard(
+                        title = "Protect",
+                        description = if (alreadyProtected) {
+                            "Replace the open password on this locked PDF"
+                        } else {
+                            "Lock the PDF with an open password"
+                        },
+                        selected = isProtect,
+                        onClick = { viewModel.setMode(PdfPasswordMode.Protect) },
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    PasswordModeOptionCard(
+                        title = "Remove",
+                        description = if (alreadyProtected) {
+                            "Create an unlocked copy of this protected file"
+                        } else {
+                            "Only available when the PDF is already protected"
+                        },
+                        selected = !isProtect,
+                        onClick = { viewModel.setMode(PdfPasswordMode.Remove) },
+                    )
+                }
+                val passwordForm: @Composable () -> Unit = {
+                    Text(
+                        text = when {
+                            isProtect && alreadyProtected -> "PASSWORDS"
+                            isProtect -> "NEW PASSWORD"
+                            else -> "CURRENT PASSWORD"
+                        },
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.SemiBold,
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Surface(
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = MaterialTheme.shapes.extraLarge,
+                        color = MaterialTheme.colorScheme.surfaceContainer,
+                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+                        tonalElevation = 0.dp,
+                        shadowElevation = 0.dp,
                     ) {
-                        if (isProtect) {
-                            if (alreadyProtected) {
+                        Column(
+                            modifier = Modifier.padding(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(12.dp),
+                        ) {
+                            if (isProtect) {
+                                if (alreadyProtected) {
+                                    PasswordVisibilityField(
+                                        value = uiState.currentPassword,
+                                        onValueChange = viewModel::setCurrentPassword,
+                                        label = "Current password",
+                                        visible = showCurrentPassword,
+                                        onToggleVisible = {
+                                            showCurrentPassword = !showCurrentPassword
+                                        },
+                                        supportingText = "Required — this PDF is already protected.",
+                                    )
+                                    if (uiState.sourcePagePreview == null) {
+                                        TextButton(
+                                            onClick = viewModel::unlockPreview,
+                                            enabled = uiState.currentPassword.isNotBlank() &&
+                                                !uiState.isSourcePagePreviewLoading,
+                                        ) {
+                                            Text("Unlock preview")
+                                        }
+                                    }
+                                }
+                                PasswordVisibilityField(
+                                    value = uiState.password,
+                                    onValueChange = viewModel::setPassword,
+                                    label = "New password",
+                                    visible = showPassword,
+                                    onToggleVisible = { showPassword = !showPassword },
+                                )
+                                PasswordVisibilityField(
+                                    value = uiState.confirmPassword,
+                                    onValueChange = viewModel::setConfirmPassword,
+                                    label = "Confirm password",
+                                    visible = showConfirm,
+                                    onToggleVisible = { showConfirm = !showConfirm },
+                                    isError = uiState.confirmPassword.isNotEmpty() &&
+                                        uiState.password != uiState.confirmPassword,
+                                    supportingText = if (
+                                        uiState.confirmPassword.isNotEmpty() &&
+                                        uiState.password != uiState.confirmPassword
+                                    ) {
+                                        "Passwords do not match"
+                                    } else {
+                                        null
+                                    },
+                                )
+                            } else if (alreadyProtected) {
                                 PasswordVisibilityField(
                                     value = uiState.currentPassword,
                                     onValueChange = viewModel::setCurrentPassword,
@@ -689,7 +775,7 @@ fun PdfPasswordRoute(
                                     onToggleVisible = {
                                         showCurrentPassword = !showCurrentPassword
                                     },
-                                    supportingText = "Required — this PDF is already protected.",
+                                    supportingText = "Required to create an unlocked copy.",
                                 )
                                 if (uiState.sourcePagePreview == null) {
                                     TextButton(
@@ -700,75 +786,87 @@ fun PdfPasswordRoute(
                                         Text("Unlock preview")
                                     }
                                 }
+                            } else {
+                                Text(
+                                    text = "This PDF is not password protected. Choose Protect to add a password, or pick a different file.",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
                             }
-                            PasswordVisibilityField(
-                                value = uiState.password,
-                                onValueChange = viewModel::setPassword,
-                                label = "New password",
-                                visible = showPassword,
-                                onToggleVisible = { showPassword = !showPassword },
-                            )
-                            PasswordVisibilityField(
-                                value = uiState.confirmPassword,
-                                onValueChange = viewModel::setConfirmPassword,
-                                label = "Confirm password",
-                                visible = showConfirm,
-                                onToggleVisible = { showConfirm = !showConfirm },
-                                isError = uiState.confirmPassword.isNotEmpty() &&
-                                    uiState.password != uiState.confirmPassword,
-                                supportingText = if (
-                                    uiState.confirmPassword.isNotEmpty() &&
-                                    uiState.password != uiState.confirmPassword
-                                ) {
-                                    "Passwords do not match"
-                                } else {
-                                    null
-                                },
-                            )
-                        } else if (alreadyProtected) {
-                            PasswordVisibilityField(
-                                value = uiState.currentPassword,
-                                onValueChange = viewModel::setCurrentPassword,
-                                label = "Current password",
-                                visible = showCurrentPassword,
-                                onToggleVisible = {
-                                    showCurrentPassword = !showCurrentPassword
-                                },
-                                supportingText = "Required to create an unlocked copy.",
-                            )
-                            if (uiState.sourcePagePreview == null) {
-                                TextButton(
-                                    onClick = viewModel::unlockPreview,
-                                    enabled = uiState.currentPassword.isNotBlank() &&
-                                        !uiState.isSourcePagePreviewLoading,
-                                ) {
-                                    Text("Unlock preview")
-                                }
-                            }
-                        } else {
-                            Text(
-                                text = "This PDF is not password protected. Choose Protect to add a password, or pick a different file.",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
                         }
                     }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = when {
+                            isProtect && alreadyProtected ->
+                                "Creates a re-protected copy using the new password. Your original is unchanged."
+                            isProtect ->
+                                "Creates a password-protected copy. Your original file is unchanged."
+                            alreadyProtected ->
+                                "Creates an unlocked copy. Your original file is unchanged."
+                            else ->
+                                "Remove is only available for password-protected PDFs."
+                        },
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
                 }
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = when {
-                        isProtect && alreadyProtected ->
-                            "Creates a re-protected copy using the new password. Your original is unchanged."
-                        isProtect ->
-                            "Creates a password-protected copy. Your original file is unchanged."
-                        alreadyProtected ->
-                            "Creates an unlocked copy. Your original file is unchanged."
-                        else ->
-                            "Remove is only available for password-protected PDFs."
-                    },
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
+                if (windowSizeInfo.useToolTwoPaneLayout) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(20.dp),
+                    ) {
+                        PdfSelectedDocumentPreview(
+                            title = uiState.sources.first().label(),
+                            supporting = buildString {
+                                val info = uiState.info
+                                if (info != null) {
+                                    append("${info.pageCount} pages")
+                                    info.fileSizeBytes?.let { bytes ->
+                                        append(" · ${StorageFormatter.formatBytes(bytes)}")
+                                    }
+                                    append(if (info.isEncrypted) " · Protected" else " · Unlocked")
+                                } else if (uiState.needsPassword) {
+                                    append("Password required · Protected")
+                                }
+                            }.ifBlank { null },
+                            preview = uiState.sourcePagePreview,
+                            isLoading = uiState.isSourcePagePreviewLoading,
+                            caption = "First page of the selected PDF",
+                            onChange = { showPicker = true },
+                            modifier = Modifier.weight(0.42f),
+                        )
+                        Column(modifier = Modifier.weight(0.58f)) {
+                            modeOptions()
+                            Spacer(modifier = Modifier.height(20.dp))
+                            passwordForm()
+                        }
+                    }
+                } else {
+                    PdfSelectedDocumentPreview(
+                        title = uiState.sources.first().label(),
+                        supporting = buildString {
+                            val info = uiState.info
+                            if (info != null) {
+                                append("${info.pageCount} pages")
+                                info.fileSizeBytes?.let { bytes ->
+                                    append(" · ${StorageFormatter.formatBytes(bytes)}")
+                                }
+                                append(if (info.isEncrypted) " · Protected" else " · Unlocked")
+                            } else if (uiState.needsPassword) {
+                                append("Password required · Protected")
+                            }
+                        }.ifBlank { null },
+                        preview = uiState.sourcePagePreview,
+                        isLoading = uiState.isSourcePagePreviewLoading,
+                        caption = "First page of the selected PDF",
+                        onChange = { showPicker = true },
+                    )
+                    Spacer(modifier = Modifier.height(20.dp))
+                    modeOptions()
+                    Spacer(modifier = Modifier.height(20.dp))
+                    passwordForm()
+                }
             }
         }
     }
@@ -827,10 +925,11 @@ private fun PasswordModeOptionCard(
     description: String,
     selected: Boolean,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Surface(
         onClick = onClick,
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.large,
         color = if (selected) {
             MaterialTheme.colorScheme.primaryContainer
@@ -940,107 +1039,129 @@ fun PdfWatermarkRoute(
                 }
             }
             ToolPhase.Ready -> {
-                WatermarkDocumentPreview(
-                    title = uiState.sources.first().label(),
-                    preview = uiState.watermarkPreview,
-                    isLoading = uiState.isWatermarkPreviewLoading,
-                    onChange = { showPicker = true },
-                )
-                Spacer(modifier = Modifier.height(24.dp))
-                Text(
-                    text = "WATERMARK",
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.primary,
-                    fontWeight = FontWeight.SemiBold,
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                OutlinedTextField(
-                    value = uiState.watermarkText,
-                    onValueChange = viewModel::setWatermarkText,
-                    label = { Text("Text") },
-                    placeholder = { Text("CONFIDENTIAL") },
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth(),
-                )
-                Spacer(modifier = Modifier.height(20.dp))
-                WatermarkChoiceRow(
-                    title = "Layout",
-                    options = listOf(
-                        WatermarkLayout.REPEATED to "Tiled",
-                        WatermarkLayout.CENTERED to "Single",
-                    ),
-                    selected = uiState.watermarkLayout,
-                    onSelected = viewModel::setLayout,
-                )
-                Text(
-                    text = when (uiState.watermarkLayout) {
-                        WatermarkLayout.REPEATED ->
-                            "Dense field that covers the full page, including edges."
-                        WatermarkLayout.CENTERED ->
-                            "One large stamp sized to dominate the page."
-                    },
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                WatermarkChoiceRow(
-                    title = "Size",
-                    options = listOf(
-                        WatermarkSize.SMALL to "Small",
-                        WatermarkSize.MEDIUM to "Medium",
-                        WatermarkSize.LARGE to "Large",
-                    ),
-                    selected = uiState.watermarkSize,
-                    onSelected = viewModel::setSize,
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                WatermarkChoiceRow(
-                    title = "Apply to",
-                    options = listOf(
-                        WatermarkPageRange.FIRST_PAGE to "First page",
-                        WatermarkPageRange.ALL_PAGES to "All pages",
-                    ),
-                    selected = uiState.watermarkPageRange,
-                    onSelected = viewModel::setPageRange,
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                WatermarkChoiceRow(
-                    title = "Orientation",
-                    options = listOf(
-                        WatermarkOrientation.DIAGONAL to "Diagonal",
-                        WatermarkOrientation.HORIZONTAL to "Horizontal",
-                    ),
-                    selected = uiState.watermarkOrientation,
-                    onSelected = viewModel::setOrientation,
-                )
-                Spacer(modifier = Modifier.height(20.dp))
-                Text(
-                    text = "Opacity ${(uiState.watermarkOpacity * 100).toInt()}%",
-                    style = MaterialTheme.typography.labelMedium,
-                    fontWeight = FontWeight.SemiBold,
-                )
-                Slider(
-                    value = uiState.watermarkOpacity,
-                    onValueChange = viewModel::setOpacity,
-                    valueRange = 0.08f..0.55f,
-                )
-                Text(
-                    text = "Lower opacity keeps the document readable under the stamp.",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-                TextButton(onClick = { showPassword = !showPassword }) {
-                    Text(if (showPassword) "Hide password" else "PDF password (optional)")
-                }
-                if (showPassword) {
+                val windowSizeInfo = rememberWindowSizeInfo()
+                val watermarkControls: @Composable () -> Unit = {
+                    Text(
+                        text = "WATERMARK",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.SemiBold,
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
                     OutlinedTextField(
-                        value = uiState.currentPassword,
-                        onValueChange = viewModel::setCurrentPassword,
-                        label = { Text("Password") },
+                        value = uiState.watermarkText,
+                        onValueChange = viewModel::setWatermarkText,
+                        label = { Text("Text") },
+                        placeholder = { Text("CONFIDENTIAL") },
                         singleLine = true,
-                        visualTransformation = PasswordVisualTransformation(),
                         modifier = Modifier.fillMaxWidth(),
                     )
+                    Spacer(modifier = Modifier.height(20.dp))
+                    WatermarkChoiceRow(
+                        title = "Layout",
+                        options = listOf(
+                            WatermarkLayout.REPEATED to "Tiled",
+                            WatermarkLayout.CENTERED to "Single",
+                        ),
+                        selected = uiState.watermarkLayout,
+                        onSelected = viewModel::setLayout,
+                    )
+                    Text(
+                        text = when (uiState.watermarkLayout) {
+                            WatermarkLayout.REPEATED ->
+                                "Dense field that covers the full page, including edges."
+                            WatermarkLayout.CENTERED ->
+                                "One large stamp sized to dominate the page."
+                        },
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    WatermarkChoiceRow(
+                        title = "Size",
+                        options = listOf(
+                            WatermarkSize.SMALL to "Small",
+                            WatermarkSize.MEDIUM to "Medium",
+                            WatermarkSize.LARGE to "Large",
+                        ),
+                        selected = uiState.watermarkSize,
+                        onSelected = viewModel::setSize,
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    WatermarkChoiceRow(
+                        title = "Apply to",
+                        options = listOf(
+                            WatermarkPageRange.FIRST_PAGE to "First page",
+                            WatermarkPageRange.ALL_PAGES to "All pages",
+                        ),
+                        selected = uiState.watermarkPageRange,
+                        onSelected = viewModel::setPageRange,
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    WatermarkChoiceRow(
+                        title = "Orientation",
+                        options = listOf(
+                            WatermarkOrientation.DIAGONAL to "Diagonal",
+                            WatermarkOrientation.HORIZONTAL to "Horizontal",
+                        ),
+                        selected = uiState.watermarkOrientation,
+                        onSelected = viewModel::setOrientation,
+                    )
+                    Spacer(modifier = Modifier.height(20.dp))
+                    Text(
+                        text = "Opacity ${(uiState.watermarkOpacity * 100).toInt()}%",
+                        style = MaterialTheme.typography.labelMedium,
+                        fontWeight = FontWeight.SemiBold,
+                    )
+                    Slider(
+                        value = uiState.watermarkOpacity,
+                        onValueChange = viewModel::setOpacity,
+                        valueRange = 0.08f..0.55f,
+                    )
+                    Text(
+                        text = "Lower opacity keeps the document readable under the stamp.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    TextButton(onClick = { showPassword = !showPassword }) {
+                        Text(if (showPassword) "Hide password" else "PDF password (optional)")
+                    }
+                    if (showPassword) {
+                        OutlinedTextField(
+                            value = uiState.currentPassword,
+                            onValueChange = viewModel::setCurrentPassword,
+                            label = { Text("Password") },
+                            singleLine = true,
+                            visualTransformation = PasswordVisualTransformation(),
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+                    }
+                }
+                if (windowSizeInfo.useToolTwoPaneLayout) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(20.dp),
+                    ) {
+                        WatermarkDocumentPreview(
+                            title = uiState.sources.first().label(),
+                            preview = uiState.watermarkPreview,
+                            isLoading = uiState.isWatermarkPreviewLoading,
+                            onChange = { showPicker = true },
+                            modifier = Modifier.weight(0.46f),
+                        )
+                        Column(modifier = Modifier.weight(0.54f)) {
+                            watermarkControls()
+                        }
+                    }
+                } else {
+                    WatermarkDocumentPreview(
+                        title = uiState.sources.first().label(),
+                        preview = uiState.watermarkPreview,
+                        isLoading = uiState.isWatermarkPreviewLoading,
+                        onChange = { showPicker = true },
+                    )
+                    Spacer(modifier = Modifier.height(24.dp))
+                    watermarkControls()
                 }
             }
         }
@@ -1066,8 +1187,18 @@ private fun WatermarkDocumentPreview(
     preview: Bitmap?,
     isLoading: Boolean,
     onChange: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
-    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+    val windowSizeInfo = rememberWindowSizeInfo()
+    val previewHeight = if (windowSizeInfo.useToolTwoPaneLayout) {
+        windowSizeInfo.toolPreviewHeight + 80.dp
+    } else {
+        windowSizeInfo.toolPreviewHeight.coerceAtLeast(220.dp)
+    }
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -1092,7 +1223,7 @@ private fun WatermarkDocumentPreview(
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(220.dp),
+                .height(previewHeight),
             shape = MaterialTheme.shapes.extraLarge,
             color = MaterialTheme.colorScheme.surfaceContainerHigh,
             border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
@@ -1635,13 +1766,22 @@ private fun PdfReaderContinuousViewer(
         }
     }
 
+    val windowSizeInfo = rememberWindowSizeInfo()
+    val pageMaxWidth = when (windowSizeInfo.widthClass) {
+        WindowWidthClass.Compact -> Dp.Unspecified
+        WindowWidthClass.Medium -> 720.dp
+        WindowWidthClass.Expanded -> 840.dp
+    }
     LazyColumn(
         state = listState,
         modifier = Modifier.fillMaxSize(),
         contentPadding = androidx.compose.foundation.layout.PaddingValues(
             top = 96.dp,
             bottom = 32.dp,
+            start = windowSizeInfo.horizontalPadding,
+            end = windowSizeInfo.horizontalPadding,
         ),
+        horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         items(
@@ -1649,6 +1789,15 @@ private fun PdfReaderContinuousViewer(
             key = { it },
         ) { pageIndex ->
             val bitmap = uiState.pageBitmaps[pageIndex]
+            val pageModifier = Modifier
+                .then(
+                    if (pageMaxWidth != Dp.Unspecified) {
+                        Modifier.widthIn(max = pageMaxWidth)
+                    } else {
+                        Modifier
+                    },
+                )
+                .fillMaxWidth()
             if (bitmap != null) {
                 val zoomState = rememberZoomableImageState("continuous-$pageIndex")
                 ZoomableBitmapViewer(
@@ -1656,14 +1805,11 @@ private fun PdfReaderContinuousViewer(
                     state = zoomState,
                     allowParentHorizontalGestures = true,
                     onSingleTap = onToggleChrome,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(bitmap.width.toFloat() / bitmap.height),
+                    modifier = pageModifier.aspectRatio(bitmap.width.toFloat() / bitmap.height),
                 )
             } else {
                 Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
+                    modifier = pageModifier
                         .height(280.dp)
                         .background(MaterialTheme.colorScheme.surfaceContainerHigh)
                         .pointerInput(pageIndex) {

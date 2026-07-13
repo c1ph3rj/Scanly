@@ -15,7 +15,7 @@ Managed by `DefaultSettingsRepository` (`data/settings/`).
 | `export_tree_label` | String? | null | Display name for custom export folder |
 | `live_detection_model` | String | `"legacy"` | Manual live-preview corner model (`lite` / `standard` / `accurate`=High / `legacy`=Accurate) |
 | `post_processing_model` | String | `"legacy"` | Manual captured-image corner model (same storage values) |
-| `automatic_document_model_selection` | Boolean | `false` | Calibrate Lite/Standard/High on device; lock manual selectors |
+| `automatic_document_model_selection` | Boolean | `true` | Calibrate Lite/Standard/High on device; lock manual selectors |
 | `document_gate_enabled` | Boolean | `true` | Run or bypass the physical-document semantic gate in both pipelines |
 
 When `export_tree_uri` and `export_tree_label` are both set, `ExportDestination.CustomTree` is used; otherwise `ExportDestination.DefaultDownloadsScanly` (`Downloads/Scanly`).

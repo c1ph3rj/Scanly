@@ -54,7 +54,20 @@ class QrToolViewModel @Inject constructor(
 
     private var previewJob: Job? = null
 
+    /**
+     * Nav route seed (`scan` / `generate`). Applied only once per ViewModel instance so
+     * configuration changes (rotation) do not wipe a mode the user switched to in-session.
+     */
+    private var initialModeApplied = false
+
+    fun applyInitialMode(mode: QrToolMode) {
+        if (initialModeApplied) return
+        initialModeApplied = true
+        _uiState.update { it.copy(mode = mode) }
+    }
+
     fun setMode(mode: QrToolMode) {
+        initialModeApplied = true
         _uiState.update { it.copy(mode = mode) }
     }
 

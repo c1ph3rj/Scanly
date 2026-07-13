@@ -60,7 +60,7 @@ data class SettingsUiState(
     val archiveWork: ArchiveWorkState = ArchiveWorkState(),
     val liveDetectionModel: DocumentCornerModel = DocumentCornerModel.ACCURATE,
     val postProcessingModel: DocumentCornerModel = DocumentCornerModel.ACCURATE,
-    val automaticModelSelectionEnabled: Boolean = false,
+    val automaticModelSelectionEnabled: Boolean = true,
     val documentGateEnabled: Boolean = true,
     val isCalibratingModels: Boolean = false,
     val automaticLiveModel: DocumentCornerModel? = null,

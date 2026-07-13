@@ -139,7 +139,7 @@ Saved exports go to `Downloads/Scanly` by default. Change the base folder from *
 ### Document detection
 
 1. Open **Settings → Document detection**.
-2. Turn on **Automatic model selection** to let Scanly time Lite/Standard/High on this device and pick responsive live + accurate post models — or leave it off and choose **Live preview** and **Post-processing** models manually (Lite, Standard, High, Accurate).
+2. **Automatic model selection** is on by default: Scanly times Lite/Standard/High on this device and picks responsive live + accurate post models. Turn it off to choose **Live preview** and **Post-processing** models manually (Lite, Standard, High, Accurate).
 3. Keep **Physical-document gate** on to reject screens and non-documents before edge detection (recommended). Turn it off only for troubleshooting.
 4. Open **Model benchmark** to run your own photos through the gate and all corner models and review timings (local-only; nothing is uploaded).
 

@@ -27,7 +27,7 @@ Complete inventory of Scanly features as of **v1.0.9** (including unreleased wor
 - **CameraX**-based manual capture with live preview
 - **Physical-document semantic gate** — rejects digital screens and non-documents before corner inference (optional; Settings toggle)
 - **ML corner overlay** — LiteRT multi-model detection (Lite / Standard / High / Accurate) with independent live vs post-processing selection
-- **Automatic model selection** — optional on-device calibration picks the best models within latency budgets
+- **Automatic model selection** — on by default; on-device calibration picks the best models within latency budgets
 - **Stable outlines** — temporal confirmation, High verification for ambiguous quads, and worst-corner stability against nearby false edges
 - **Book-page isolation** — gutter-aware trim for off-centre adjacent pages; ambiguous two-page spreads ask the user to move closer
 - **Quality feedback** — lighting, blur, lens obstruction, framing guidance

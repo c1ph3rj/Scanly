@@ -46,5 +46,36 @@ class AdaptiveLayoutTest {
         assertTrue(info.isTablet)
         assertFalse(info.useCompactLandscapeLayout)
         assertFalse(info.useTabletLandscapeLayout)
+        assertTrue(info.useToolTwoPaneLayout)
+        assertEquals(3, info.toolGridColumns)
+        assertEquals(3, info.pdfLibraryGridColumns)
+    }
+
+    @Test
+    fun resolveWindowSizeInfo_expandedUsesWiderToolColumns() {
+        val info = resolveWindowSizeInfo(
+            screenWidthDp = 1024,
+            smallestScreenWidthDp = 800,
+            isLandscape = true,
+        )
+
+        assertEquals(WindowWidthClass.Expanded, info.widthClass)
+        assertTrue(info.useToolTwoPaneLayout)
+        assertEquals(4, info.toolGridColumns)
+        assertEquals(4, info.pdfLibraryGridColumns)
+    }
+
+    @Test
+    fun resolveWindowSizeInfo_compactPhoneKeepsSinglePaneTools() {
+        val info = resolveWindowSizeInfo(
+            screenWidthDp = 411,
+            smallestScreenWidthDp = 411,
+            isLandscape = false,
+        )
+
+        assertEquals(WindowWidthClass.Compact, info.widthClass)
+        assertFalse(info.useToolTwoPaneLayout)
+        assertEquals(2, info.toolGridColumns)
+        assertEquals(2, info.pdfLibraryGridColumns)
     }
 }

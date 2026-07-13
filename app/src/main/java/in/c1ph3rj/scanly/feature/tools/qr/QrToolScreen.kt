@@ -18,6 +18,24 @@ import androidx.camera.core.resolutionselector.ResolutionSelector
 import androidx.camera.core.resolutionselector.ResolutionStrategy
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.OpenInNew
 import androidx.compose.material.icons.filled.CameraAlt
@@ -26,21 +44,6 @@ import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.QrCode2
 import androidx.compose.material.icons.filled.Share
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.material3.Button
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
@@ -77,6 +80,8 @@ import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.common.InputImage
+import `in`.c1ph3rj.scanly.core.ui.WindowWidthClass
+import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import `in`.c1ph3rj.scanly.feature.camera.CameraPermissionStatus
 import `in`.c1ph3rj.scanly.feature.camera.CameraPermissionSupport
 import `in`.c1ph3rj.scanly.feature.components.ScanlyDetailScaffold
@@ -95,8 +100,9 @@ fun QrToolRoute(
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
 
-    LaunchedEffect(initialMode) {
-        viewModel.setMode(initialMode)
+    // Seed mode from nav only once — do not re-apply on rotation/recomposition.
+    LaunchedEffect(viewModel) {
+        viewModel.applyInitialMode(initialMode)
     }
 
     LaunchedEffect(viewModel) {
@@ -107,6 +113,7 @@ fun QrToolRoute(
         }
     }
 
+    val windowSizeInfo = rememberWindowSizeInfo()
     ScanlyDetailScaffold(
         title = "QR Code",
         onNavigateUp = onNavigateUp,
@@ -134,50 +141,62 @@ fun QrToolRoute(
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { padding ->
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
-                .padding(horizontal = 20.dp),
+                .padding(padding),
+            contentAlignment = Alignment.TopCenter,
         ) {
-            QrFlowHeading(
-                mode = uiState.mode,
-            )
-            Spacer(modifier = Modifier.height(20.dp))
-            when (uiState.mode) {
-                QrToolMode.Scan -> QrScanPanel(
-                    lastResult = uiState.scanResult,
-                    onResult = viewModel::onScanResult,
-                    onCopy = {
-                        val text = uiState.scanResult ?: return@QrScanPanel
-                        val clipboard =
-                            context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                        clipboard.setPrimaryClip(ClipData.newPlainText("QR", text))
-                        viewModel.emitCopied()
-                    },
-                    onOpen = {
-                        val text = uiState.scanResult ?: return@QrScanPanel
-                        val uri = runCatching { Uri.parse(text) }.getOrNull()
-                        if (uri != null && (uri.scheme == "http" || uri.scheme == "https")) {
-                            context.startActivity(Intent(Intent.ACTION_VIEW, uri))
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .then(
+                        if (windowSizeInfo.widthClass != WindowWidthClass.Compact) {
+                            Modifier.widthIn(max = windowSizeInfo.toolContentMaxWidth)
                         } else {
-                            viewModel.emitMessage("Not a web URL")
-                        }
-                    },
-                    onClear = viewModel::clearScanResult,
-                )
-                QrToolMode.Generate -> QrGeneratePanel(
-                    content = uiState.generateContent,
-                    preview = uiState.previewBitmap,
-                    isWorking = uiState.isWorking,
-                    onContentChange = viewModel::setGenerateContent,
-                    onSave = viewModel::saveGenerated,
-                    onShare = {
-                        viewModel.prepareShare { artifact ->
-                            shareExportArtifact(context, artifact, "QR Code")
-                        }
-                    },
-                )
+                            Modifier
+                        },
+                    )
+                    .fillMaxWidth()
+                    .padding(horizontal = windowSizeInfo.horizontalPadding),
+            ) {
+                QrFlowHeading(mode = uiState.mode)
+                Spacer(modifier = Modifier.height(16.dp))
+                when (uiState.mode) {
+                    QrToolMode.Scan -> QrScanPanel(
+                        lastResult = uiState.scanResult,
+                        onResult = viewModel::onScanResult,
+                        onCopy = {
+                            val text = uiState.scanResult ?: return@QrScanPanel
+                            val clipboard =
+                                context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                            clipboard.setPrimaryClip(ClipData.newPlainText("QR", text))
+                            viewModel.emitCopied()
+                        },
+                        onOpen = {
+                            val text = uiState.scanResult ?: return@QrScanPanel
+                            val uri = runCatching { Uri.parse(text) }.getOrNull()
+                            if (uri != null && (uri.scheme == "http" || uri.scheme == "https")) {
+                                context.startActivity(Intent(Intent.ACTION_VIEW, uri))
+                            } else {
+                                viewModel.emitMessage("Not a web URL")
+                            }
+                        },
+                        onClear = viewModel::clearScanResult,
+                    )
+                    QrToolMode.Generate -> QrGeneratePanel(
+                        content = uiState.generateContent,
+                        preview = uiState.previewBitmap,
+                        isWorking = uiState.isWorking,
+                        onContentChange = viewModel::setGenerateContent,
+                        onSave = viewModel::saveGenerated,
+                        onShare = {
+                            viewModel.prepareShare { artifact ->
+                                shareExportArtifact(context, artifact, "QR Code")
+                            }
+                        },
+                    )
+                }
             }
         }
     }
@@ -188,33 +207,32 @@ private fun QrFlowHeading(
     mode: QrToolMode,
 ) {
     val isScanning = mode == QrToolMode.Scan
-    Column(
+    Row(
         modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(4.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Surface(
-                modifier = Modifier.size(44.dp),
-                shape = MaterialTheme.shapes.large,
-                color = MaterialTheme.colorScheme.primaryContainer,
-            ) {
-                Box(contentAlignment = Alignment.Center) {
-                    Icon(
-                        imageVector = if (isScanning) Icons.Filled.CameraAlt else Icons.Filled.QrCode2,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                    )
-                }
+        Surface(
+            modifier = Modifier.size(44.dp),
+            shape = MaterialTheme.shapes.large,
+            color = MaterialTheme.colorScheme.primaryContainer,
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                Icon(
+                    imageVector = if (isScanning) Icons.Filled.CameraAlt else Icons.Filled.QrCode2,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                )
             }
-            Spacer(modifier = Modifier.padding(start = 12.dp))
-            Column {
+        }
+        Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = if (isScanning) "SCAN A CODE" else "CREATE A CODE",
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.SemiBold,
             )
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(2.dp))
             Text(
                 text = if (isScanning) {
                     "Point the camera at a QR code or barcode."
@@ -224,7 +242,6 @@ private fun QrFlowHeading(
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
-            }
         }
     }
 }
@@ -248,15 +265,21 @@ private fun QrScanPanel(
         permissionStatus = CameraPermissionSupport.resolveStatus(null, context)
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
-        if (permissionStatus != CameraPermissionStatus.Granted) {
+    val windowSizeInfo = rememberWindowSizeInfo()
+    // Prefer a roomy camera on any wide surface (tablet or landscape expanded).
+    val useImmersiveScan = windowSizeInfo.widthClass != WindowWidthClass.Compact
+
+    if (permissionStatus != CameraPermissionStatus.Granted) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
             Surface(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .widthIn(max = 520.dp)
+                    .fillMaxWidth(),
                 shape = MaterialTheme.shapes.extraLarge,
                 color = MaterialTheme.colorScheme.primaryContainer,
                 border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.24f)),
@@ -295,33 +318,59 @@ private fun QrScanPanel(
                     }
                 }
             }
-        } else {
-            Surface(
+        }
+        return
+    }
+
+    if (useImmersiveScan) {
+        // Full remaining height: large camera + solid side rail (no sparse square + empty void).
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = 12.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            QrCameraFrame(
+                onResult = onResult,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(1f),
-                shape = MaterialTheme.shapes.extraLarge,
-                color = MaterialTheme.colorScheme.surfaceContainerHigh,
-                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+                    .weight(1f)
+                    .fillMaxHeight(),
+            )
+            Column(
+                modifier = Modifier
+                    .width(320.dp)
+                    .fillMaxHeight()
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                Box(modifier = Modifier.fillMaxSize()) {
-                    QrCameraPreview(
-                        onBarcode = onResult,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .clip(MaterialTheme.shapes.extraLarge),
+                QrScanGuidanceCard()
+                if (lastResult != null) {
+                    QrScanResultCard(
+                        result = lastResult,
+                        onCopy = onCopy,
+                        onOpen = onOpen,
+                        onClear = onClear,
                     )
-                    Text(
-                        text = "ALIGN THE CODE INSIDE THE FRAME",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        fontWeight = FontWeight.SemiBold,
-                        modifier = Modifier
-                            .align(Alignment.BottomCenter)
-                            .padding(16.dp),
-                    )
+                } else {
+                    QrScanWaitingCard()
                 }
             }
+        }
+    } else {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            QrCameraFrame(
+                onResult = onResult,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .widthIn(max = 480.dp)
+                    .aspectRatio(1f),
+            )
             if (lastResult != null) {
                 QrScanResultCard(
                     result = lastResult,
@@ -334,9 +383,114 @@ private fun QrScanPanel(
                     "Supports QR, Aztec, Data Matrix, PDF417, Code 128, and EAN-13.",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(horizontal = 4.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 4.dp),
                 )
             }
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+    }
+}
+
+@Composable
+private fun QrCameraFrame(
+    onResult: (String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Surface(
+        modifier = modifier,
+        shape = MaterialTheme.shapes.extraLarge,
+        color = MaterialTheme.colorScheme.surfaceContainerHigh,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+    ) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            QrCameraPreview(
+                onBarcode = onResult,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clip(MaterialTheme.shapes.extraLarge),
+            )
+            Surface(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(16.dp),
+                shape = MaterialTheme.shapes.large,
+                color = MaterialTheme.colorScheme.scrim.copy(alpha = 0.55f),
+            ) {
+                Text(
+                    text = "Align the code inside the frame",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = Color.White,
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun QrScanGuidanceCard() {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = MaterialTheme.shapes.extraLarge,
+        color = MaterialTheme.colorScheme.surfaceContainer,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+        tonalElevation = 0.dp,
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
+            Text(
+                text = "How to scan",
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.SemiBold,
+            )
+            Text(
+                text = "Hold the code steady in the viewfinder. Scanly reads QR and common barcodes automatically.",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Text(
+                text = "Supported formats",
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.primary,
+                fontWeight = FontWeight.SemiBold,
+            )
+            Text(
+                text = "QR · Aztec · Data Matrix · PDF417 · Code 128 · EAN-13",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+    }
+}
+
+@Composable
+private fun QrScanWaitingCard() {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = MaterialTheme.shapes.extraLarge,
+        color = MaterialTheme.colorScheme.surfaceContainerHigh,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+        tonalElevation = 0.dp,
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp),
+        ) {
+            Text(
+                text = "Waiting for a code",
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.SemiBold,
+            )
+            Text(
+                text = "Results appear here when a code is detected. You can copy the text or open web links.",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
         }
     }
 }
@@ -395,7 +549,7 @@ private fun QrScanResultCard(
                 result,
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurface,
-                maxLines = 3,
+                maxLines = 6,
             )
             if (isWebLink) {
                 Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -449,16 +603,13 @@ private fun QrGeneratePanel(
     onSave: () -> Unit,
     onShare: () -> Unit,
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState()),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-    ) {
+    val windowSizeInfo = rememberWindowSizeInfo()
+    val useTwoPane = windowSizeInfo.widthClass != WindowWidthClass.Compact
+
+    val form: @Composable (Modifier) -> Unit = { formModifier ->
         Column(
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = formModifier,
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Text(
                 "CONTENT",
@@ -479,7 +630,7 @@ private fun QrGeneratePanel(
                 },
                 modifier = Modifier.fillMaxWidth(),
                 minLines = 1,
-                maxLines = 2,
+                maxLines = 3,
                 shape = MaterialTheme.shapes.large,
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
@@ -488,11 +639,42 @@ private fun QrGeneratePanel(
                     unfocusedIndicatorColor = Color.Transparent,
                 ),
             )
+            Text(
+                "PNG · high contrast · ready to share",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                Button(
+                    onClick = onSave,
+                    enabled = content.isNotBlank() && !isWorking,
+                    modifier = Modifier.weight(1f),
+                ) {
+                    Text(if (isWorking) "Preparing…" else "Save PNG")
+                }
+                FilledTonalButton(
+                    onClick = onShare,
+                    enabled = content.isNotBlank() && !isWorking,
+                    modifier = Modifier.weight(1f),
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Share,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp),
+                    )
+                    Spacer(modifier = Modifier.padding(start = 6.dp))
+                    Text("Share")
+                }
+            }
         }
+    }
+
+    val previewSurface: @Composable (Modifier) -> Unit = { previewModifier ->
         Surface(
-            modifier = Modifier
-                .fillMaxWidth(0.68f)
-                .aspectRatio(1f),
+            modifier = previewModifier,
             shape = MaterialTheme.shapes.extraLarge,
             color = Color.White,
             shadowElevation = 2.dp,
@@ -516,35 +698,50 @@ private fun QrGeneratePanel(
                 }
             }
         }
-        Text(
-            "PNG · high contrast · ready to share",
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
+    }
+
+    if (useTwoPane) {
+        // Vertically center the workspace so landscape tablets don’t leave a huge empty void.
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center,
         ) {
-            Button(
-                onClick = onSave,
-                enabled = content.isNotBlank() && !isWorking,
-                modifier = Modifier.weight(1f),
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(28.dp),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                Text(if (isWorking) "Preparing…" else "Save PNG")
-            }
-            FilledTonalButton(
-                onClick = onShare,
-                enabled = content.isNotBlank() && !isWorking,
-                modifier = Modifier.weight(1f),
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Share,
-                    contentDescription = null,
-                    modifier = Modifier.size(18.dp),
+                form(
+                    Modifier
+                        .weight(1f)
+                        .widthIn(max = 440.dp),
                 )
-                Spacer(modifier = Modifier.padding(start = 6.dp))
-                Text("Share")
+                previewSurface(
+                    Modifier
+                        .widthIn(min = 260.dp, max = 360.dp)
+                        .fillMaxWidth(0.42f)
+                        .aspectRatio(1f),
+                )
             }
+        }
+    } else {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            form(Modifier.fillMaxWidth())
+            previewSurface(
+                Modifier
+                    .fillMaxWidth(0.72f)
+                    .widthIn(max = 320.dp)
+                    .aspectRatio(1f),
+            )
+            Spacer(modifier = Modifier.height(8.dp))
         }
     }
 }
@@ -626,7 +823,6 @@ private fun QrCameraPreview(
                                 val value = barcodes.firstOrNull()?.rawValue
                                 if (!value.isNullOrBlank() && handled.compareAndSet(false, true)) {
                                     onBarcode(value)
-                                    // Allow rescans after a short debounce via clear
                                     previewView.postDelayed({ handled.set(false) }, 2_000L)
                                 }
                             }
@@ -641,7 +837,7 @@ private fun QrCameraPreview(
                             analysis,
                         )
                     } catch (_: Exception) {
-                        // Camera bind failures surface as empty preview.
+                        // Camera may be unavailable; leave blank surface.
                     }
                 },
                 ContextCompat.getMainExecutor(ctx),
