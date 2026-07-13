@@ -8,8 +8,11 @@ import android.graphics.Matrix
 import android.graphics.Paint
 import androidx.exifinterface.media.ExifInterface
 import `in`.c1ph3rj.scanly.core.common.ScanlyDispatchers
-import `in`.c1ph3rj.scanly.core.ml.DocumentCornerDetector
+import `in`.c1ph3rj.scanly.core.ml.BookAwareCornerResolver
+import `in`.c1ph3rj.scanly.core.ml.AutomaticDocumentModelSelector
 import `in`.c1ph3rj.scanly.core.ml.DocumentCornerQuad
+import `in`.c1ph3rj.scanly.core.ml.DocumentGateDetector
+import `in`.c1ph3rj.scanly.core.ml.DocumentGatePolicy
 import `in`.c1ph3rj.scanly.core.processing.OpenCvPageFilterProcessor
 import `in`.c1ph3rj.scanly.core.processing.PerspectiveQuadMath
 import `in`.c1ph3rj.scanly.domain.model.PageFilterPreset
@@ -26,7 +29,9 @@ import javax.inject.Singleton
 
 @Singleton
 class DefaultPageImageProcessor @Inject constructor(
-    private val documentCornerDetector: DocumentCornerDetector,
+    private val bookAwareCornerResolver: BookAwareCornerResolver,
+    private val documentGateDetector: DocumentGateDetector,
+    private val automaticDocumentModelSelector: AutomaticDocumentModelSelector,
     private val storageManager: DocumentStorageManager,
     private val settingsRepository: SettingsRepository,
     private val dispatchers: ScanlyDispatchers,
@@ -73,16 +78,24 @@ class DefaultPageImageProcessor @Inject constructor(
             }
 
             val detectionResult = if (cropQuad == null && detectDocumentWhenCropQuadMissing) {
-                val selectedModel = settingsRepository.getPostProcessingModel()
-                runCatching { documentCornerDetector.detect(editorOrientedBitmap, selectedModel) }
-                    .recoverCatching { error ->
-                        if (selectedModel == `in`.c1ph3rj.scanly.domain.model.DocumentCornerModel.LEGACY) throw error
-                        documentCornerDetector.detect(
-                            editorOrientedBitmap,
-                            `in`.c1ph3rj.scanly.domain.model.DocumentCornerModel.LEGACY,
-                        )
+                val gateAccepted = if (settingsRepository.getDocumentGateEnabled()) {
+                    runCatching {
+                        documentGateDetector.classify(editorOrientedBitmap)
+                            .acceptsPhysicalDocument(DocumentGatePolicy.POST_PROCESSING_THRESHOLD)
+                    }.getOrDefault(false)
+                } else {
+                    true
+                }
+                if (gateAccepted) {
+                    val selectedModel = if (settingsRepository.getAutomaticModelSelection()) {
+                        runCatching { automaticDocumentModelSelector.selection().postProcessingModel }
+                            .getOrDefault(settingsRepository.getPostProcessingModel())
+                    } else {
+                        settingsRepository.getPostProcessingModel()
                     }
-                    .getOrNull()
+                    runCatching { bookAwareCornerResolver.detect(editorOrientedBitmap, selectedModel).result }
+                        .getOrNull()
+                } else null
             } else {
                 null
             }
@@ -244,4 +257,5 @@ class DefaultPageImageProcessor @Inject constructor(
         val normalized = rotationDegrees % 360
         return if (normalized < 0) normalized + 360 else normalized
     }
+
 }

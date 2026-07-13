@@ -59,7 +59,7 @@ app/
 | `data/archive/LibraryArchiveEngine.kt` | `.scanly` backup, validation, and restore |
 | `data/archive/LibraryArchiveWorker.kt` | Foreground WorkManager backup/restore |
 | `data/export/DefaultExportStorageRepository.kt` | Save exports to configured destination |
-| `core/ml/LiteRtDocumentCornerDetector.kt` | ML inference |
+| `core/ml/` | Corner detector, document gate, book/quad policies, automatic model selector |
 
 ## `docs/` documentation map
 

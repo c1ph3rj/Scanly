@@ -32,6 +32,18 @@ data class DocumentCornerQuad(
         }
     }
 
+    fun isConvex(): Boolean {
+        val points = orderedPoints().map { it.second }
+        val crossProducts = points.indices.map { index ->
+            val first = points[index]
+            val second = points[(index + 1) % points.size]
+            val third = points[(index + 2) % points.size]
+            ((second.x - first.x) * (third.y - second.y)) -
+                ((second.y - first.y) * (third.x - second.x))
+        }
+        return crossProducts.all { it > 0f } || crossProducts.all { it < 0f }
+    }
+
     fun isValid(
         minArea: Float = MIN_AREA,
         minDistance: Float = MIN_POINT_DISTANCE,
@@ -50,6 +62,13 @@ data class DocumentCornerQuad(
         }
         .average()
         .toFloat()
+
+    fun maxCornerDistance(other: DocumentCornerQuad): Float = orderedPoints()
+        .map { it.second }
+        .zip(other.orderedPoints().map { it.second })
+        .maxOf { (first, second) ->
+            hypot(first.x - second.x, first.y - second.y)
+        }
 
     fun estimatedAspectRatio(): Float {
         val topWidth = distance(topLeft, topRight)

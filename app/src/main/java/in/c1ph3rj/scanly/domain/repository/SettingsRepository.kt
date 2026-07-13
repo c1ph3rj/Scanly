@@ -12,6 +12,10 @@ interface SettingsRepository {
 
     suspend fun setThemeMode(themeMode: ThemeMode): ScanlyResult<Unit>
 
+    fun observePureBlackEnabled(): Flow<Boolean>
+
+    suspend fun setPureBlackEnabled(enabled: Boolean): ScanlyResult<Unit>
+
     fun observeOnboardingCompleted(): Flow<Boolean>
 
     suspend fun completeOnboarding(): ScanlyResult<Unit>
@@ -33,4 +37,16 @@ interface SettingsRepository {
     suspend fun setPostProcessingModel(model: DocumentCornerModel): ScanlyResult<Unit>
 
     suspend fun getPostProcessingModel(): DocumentCornerModel
+
+    fun observeAutomaticModelSelection(): Flow<Boolean>
+
+    suspend fun setAutomaticModelSelection(enabled: Boolean): ScanlyResult<Unit>
+
+    suspend fun getAutomaticModelSelection(): Boolean
+
+    fun observeDocumentGateEnabled(): Flow<Boolean>
+
+    suspend fun setDocumentGateEnabled(enabled: Boolean): ScanlyResult<Unit>
+
+    suspend fun getDocumentGateEnabled(): Boolean
 }

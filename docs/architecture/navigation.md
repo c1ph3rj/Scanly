@@ -133,10 +133,11 @@ settings → settings/storage
 
 ```
 settings
-  ├─► theme change (immediate, persisted)
+  ├─► Look & feel: theme mode + pure black (AMOLED) toggle
   ├─► settings/storage (usage, destination, backup/restore, clear data)
-  ├─► choose independent live-preview and post-processing corner models
-  ├─► settings/model-benchmark (compare all four models on selected images)
+  ├─► Document detection: automatic or manual live/post models
+  ├─► Document detection: physical-document gate on/off
+  ├─► settings/model-benchmark (gate + four corner models on local images)
   ├─► settings/faq
   ├─► legal/{PRIVACY} or legal/{TERMS}
   ├─► settings/licenses

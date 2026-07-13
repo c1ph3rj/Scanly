@@ -648,35 +648,6 @@ private fun CameraPreviewFeedback(
                 .align(Alignment.TopCenter)
                 .padding(top = 16.dp),
         )
-        DetectionDiagnostics(
-            liveDetection = liveDetection,
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .padding(top = 72.dp, end = 12.dp),
-        )
-    }
-}
-
-@Composable
-private fun DetectionDiagnostics(
-    liveDetection: LiveDetectionUiState,
-    modifier: Modifier = Modifier,
-) {
-    Surface(
-        modifier = modifier,
-        color = Color.Black.copy(alpha = 0.58f),
-        contentColor = Color.White,
-        shape = RoundedCornerShape(8.dp),
-    ) {
-        Text(
-            text = buildString {
-                append(liveDetection.model.displayName)
-                liveDetection.inferenceMillis?.let { append("  %.1f ms".format(it)) }
-                liveDetection.confidence?.let { append("  %.0f%%".format(it * 100)) }
-            },
-            modifier = Modifier.padding(horizontal = 9.dp, vertical = 5.dp),
-            style = MaterialTheme.typography.labelSmall,
-        )
     }
 }
 

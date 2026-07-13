@@ -2,6 +2,7 @@ package `in`.c1ph3rj.scanly.core.ml
 
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class DocumentCornerQuadTest {
@@ -40,5 +41,19 @@ class DocumentCornerQuadTest {
         )
 
         assertFalse(quad.isValid())
+    }
+
+    @Test
+    fun maxCornerDistanceExposesSingleCornerJumpHiddenByMean() {
+        val stable = DocumentCornerQuad(
+            NormalizedPoint(0.1f, 0.1f),
+            NormalizedPoint(0.9f, 0.1f),
+            NormalizedPoint(0.9f, 0.9f),
+            NormalizedPoint(0.1f, 0.9f),
+        )
+        val oneCornerJump = stable.copy(topRight = NormalizedPoint(0.9f, 0.3f))
+
+        assertEquals(0.05f, stable.meanCornerDistance(oneCornerJump), 0.001f)
+        assertEquals(0.20f, stable.maxCornerDistance(oneCornerJump), 0.001f)
     }
 }

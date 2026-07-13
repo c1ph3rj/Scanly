@@ -66,6 +66,7 @@ private fun ScanlyApp() {
     val appUpdateViewModel: AppUpdateViewModel = hiltViewModel()
     val onboardingViewModel: OnboardingViewModel = hiltViewModel()
     val themeMode by appSettingsViewModel.themeMode.collectAsStateWithLifecycle()
+    val pureBlackEnabled by appSettingsViewModel.pureBlackEnabled.collectAsStateWithLifecycle()
     val updateUiState by appUpdateViewModel.uiState.collectAsStateWithLifecycle()
     val onboardingUiState by onboardingViewModel.uiState.collectAsStateWithLifecycle()
     val systemDark = isSystemInDarkTheme()
@@ -155,6 +156,7 @@ private fun ScanlyApp() {
 
     ScanlyTheme(
         darkTheme = isDarkTheme,
+        pureBlack = pureBlackEnabled,
     ) {
         Scaffold(
             snackbarHost = {

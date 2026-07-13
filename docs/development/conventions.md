@@ -42,10 +42,11 @@ Existing migrations: `1→2` (filter preset), `2→3` (document groups).
 
 - **Never overwrite** `raw/` files.
 - **Regenerate** `processed/` and `thumbs/` on every edit.
-- **Model asset:** `app/src/main/assets/models/document_corners_float16.tflite`
+- **Model assets:** corner variants (`document_corners_*.tflite`) and `scanly_document_gate_float16.tflite` under `app/src/main/assets/models/` — see `models/README.txt`.
 - **Keep** `noCompress += "tflite"` in `app/build.gradle.kts`.
 - **Mark** `NEEDS_REVIEW` when processing cannot produce a quad.
 - **Filters** defined in `PageFilterPreset`; applied in `OpenCvPageFilterProcessor`.
+- **Live vs post models** and the document gate are Settings preferences; do not hard-code a single model path in UI code.
 
 ## Storage layout
 

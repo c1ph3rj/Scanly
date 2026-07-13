@@ -46,7 +46,7 @@ sealed class ScanlyDestination(
     data object Settings : ScanlyDestination(
         route = "settings",
         title = "Settings",
-        summary = "Appearance, FAQs, licensing, and developer links live here.",
+        summary = "Look & feel, FAQs, licensing, and developer links live here.",
         sprintLabel = "Sprint 8",
     )
 }

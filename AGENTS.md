@@ -19,9 +19,9 @@ app/src/main/java/in/c1ph3rj/scanly/
 ├── ui/theme/          # ScanlyTheme, colors, typography
 ├── navigation/        # ScanlyDestination, ScanlyNavHost
 ├── feature/           # Screens + ViewModels (home, library, camera, editor, …)
-├── domain/            # Models, repository interfaces, use cases (51 classes)
+├── domain/            # Models, repository interfaces, use cases (61 classes)
 ├── data/              # Room, storage, export, archive, settings, update implementations
-├── core/              # ML, OpenCV, editing math, shared UI utilities
+├── core/              # ML (corners + gate), OpenCV, editing math, shared UI utilities
 └── di/                # Hilt modules (+ flavor-specific update bindings)
 ```
 
@@ -58,7 +58,8 @@ app/src/main/java/in/c1ph3rj/scanly/
 - Compose deps use BOM (`implementation(platform(libs.androidx.compose.bom))`).
 - Preserve raw captures — never overwrite files under `raw/`; regenerate `processed/` and `thumbs/`.
 - Room schema is version `3`. Any schema change requires a `Migration_X_Y` in `ScanlyDatabase.kt` and version bump.
-- ML model asset: `app/src/main/assets/models/document_corners_float16.tflite` (keep `noCompress += "tflite"`).
+- ML model assets under `app/src/main/assets/models/`: corner variants (Legacy/Lite/Standard/Accurate) + `scanly_document_gate_float16.tflite` (keep `noCompress += "tflite"`).
+- Document detection prefs in DataStore: live/post models, automatic selection, document gate; pure black theme is separate (`pure_black_enabled`).
 - Gallery import limit: 10 images (`ImageImportSupport`).
 - Export saves go to `Downloads/Scanly` by default; custom SAF trees persist via DataStore (`export_tree_uri`, `export_tree_label`).
 - Library backups write `.scanly` ZIPs under the destination's lowercase `backup/` child via `LibraryArchiveWorker`.
@@ -75,14 +76,14 @@ Typed routes (real flows):
 - `editor/page/{pageId}` — page editor
 - `group/{groupId}` — group detail
 - `legal/{documentType}` — privacy/licenses viewer
-- `settings/faq`, `settings/licenses`, `settings/storage` — settings sub-screens
+- `settings/faq`, `settings/licenses`, `settings/storage`, `settings/model-benchmark` — settings sub-screens
 
 Legacy placeholder routes (`camera`, `review`, `editor` top-level) use `FeaturePlaceholderScreen` — do not wire new features there.
 
 ## Testing Reality
 
-- Unit tests: `app/src/test/java/in/c1ph3rj/scanly/` (31 files).
-- Instrumented: `app/src/androidTest/` (onboarding UI test + smoke test).
+- Unit tests: `app/src/test/java/in/c1ph3rj/scanly/` (39 files).
+- Instrumented: `app/src/androidTest/` (onboarding UI, OpenCV filter processor, smoke).
 - See [docs/development/testing.md](docs/development/testing.md) for gaps.
 
 ## Agent Guardrails
@@ -99,11 +100,12 @@ Legacy placeholder routes (`camera`, `review`, `editor` top-level) use `FeatureP
 
 | File | Purpose |
 | --- | --- |
-| `MainActivity.kt` | App shell, onboarding gate, theme, update dialog |
+| `MainActivity.kt` | App shell, onboarding gate, theme / pure black, update dialog |
 | `ScanlyNavHost.kt` | Navigation registration and chrome |
 | `ScanlyDatabase.kt` | Room schema, entities, migrations |
 | `DefaultPageRepository.kt` | Capture finalize and page edit persistence |
-| `PageImageProcessor` (interface) / implementation | Image processing pipeline |
+| `PageImageProcessor` (interface) / implementation | Image processing pipeline (gate + corners + filters) |
+| `LiteRtDocumentCornerDetector` / `LiteRtDocumentGateDetector` | Multi-model corner + semantic gate inference |
 | `DefaultDocumentExportRepository.kt` | PDF/ZIP export and share |
 | `DefaultLibraryArchiveRepository.kt` | Backup/restore orchestration |
 | `DefaultExportStorageRepository.kt` | Save exports to configured destination |

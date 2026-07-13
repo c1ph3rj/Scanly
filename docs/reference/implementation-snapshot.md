@@ -1,6 +1,6 @@
 # Implementation Snapshot
 
-One-page technical summary of Scanly **v1.0.9**. For detail see the full docs index at [../README.md](../README.md).
+One-page technical summary of Scanly **v1.0.9** (including unreleased work on `feature/scanly-model`). For detail see the full docs index at [../README.md](../README.md).
 
 ## Release
 
@@ -19,7 +19,7 @@ One-page technical summary of Scanly **v1.0.9**. For detail see the full docs in
 ScanlyApplication (WorkManager + Hilt)
   → MainActivity → onboarding gate → ScanlyNavHost
   feature/ (UI + ViewModels)
-    → domain/usecase/ (51 classes)
+    → domain/usecase/ (61 use case classes)
       → domain/repository/ (interfaces)
         → data/ (implementations)
           → core/ (ML, OpenCV, utils)
@@ -27,20 +27,30 @@ ScanlyApplication (WorkManager + Hilt)
 
 ## Features (summary)
 
-Home · Library (filter pills) · Camera scan + auto-capture · Gallery import · Document detail · Page preview · Page editor · Groups · Advanced PDF/ZIP export with direct save · Configurable export destination · Library backup/restore (`.scanly`) · Suggested document/folder names · Settings sub-screens · Onboarding · GitHub/Play update channels
+Home · Library (filter pills) · Camera scan + gate + multi-model overlay + auto-capture · Gallery import · Document detail · Page preview · Page editor · Groups · Advanced PDF/ZIP export with direct save · Configurable export destination · Library backup/restore (`.scanly`) · Suggested document/folder names · Look & feel (theme + pure black) · Document detection settings + model benchmark · Onboarding · GitHub/Play update channels
 
 ## Data
 
 - **Room v3:** `documents`, `scan_pages`, `document_groups`
 - **Files:** `raw/` (immutable), `processed/`, `thumbs/` per document
-- **DataStore:** theme, onboarding, export destination (`export_tree_uri`, `export_tree_label`)
+- **DataStore:** theme, pure black, onboarding, export destination, live/post models, automatic selection, document gate
 - **Export cache:** `cache/exports/`
 - **Backup workspace:** `cache/library-archive/`, `files/library-archive-journal/`
 - **User-visible:** `Downloads/Scanly/` exports + `Downloads/Scanly/backup/` archives (or custom SAF tree)
 
 ## Processing
 
-Raw JPEG → EXIF rotation → LiteRT corners → perspective warp → OpenCV filter → processed JPEG (q94, max 2400px) + thumbnail
+```
+Raw JPEG
+  → EXIF rotation
+  → optional semantic gate
+  → LiteRT corners (selected post model; optional Accurate verify + book resolve)
+  → perspective warp
+  → OpenCV filter
+  → processed JPEG (q94, max 2400px) + thumbnail
+```
+
+Corner models: Legacy · Lite (224) · Standard (288) · Accurate (384). Gate: MobileNetV3-Small 160 px float16.
 
 ## Background work
 
@@ -52,7 +62,7 @@ Kotlin · Compose · Material 3 · Hilt · Navigation Compose · CameraX · Room
 
 ## Tests
 
-31 unit-test files · 2 instrumented-test files · gaps in persistence integration and archive/export E2E
+39 unit-test files · 3 instrumented-test files (onboarding UI, OpenCV filter processor, smoke) · gaps in persistence integration and archive/export E2E
 
 ## Principles
 

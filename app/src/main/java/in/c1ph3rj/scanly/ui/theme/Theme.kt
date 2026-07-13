@@ -39,6 +39,43 @@ private val DarkColorScheme = darkColorScheme(
     outlineVariant = DarkOutlineVariant,
 )
 
+/**
+ * Material 3 dark scheme with pure black planes for OLED/AMOLED panels.
+ * Large surfaces stay #000 so pixels can power off; elevated containers
+ * use minimal lift so cards and sheets remain readable.
+ */
+private val PureBlackColorScheme = darkColorScheme(
+    primary = BrandPrimaryDark,
+    onPrimary = AmoledBlack,
+    primaryContainer = AmoledPrimaryContainer,
+    onPrimaryContainer = DarkOnBackground,
+    secondary = BrandSecondary,
+    onSecondary = AmoledBlack,
+    secondaryContainer = AmoledSecondaryContainer,
+    onSecondaryContainer = Color(0xFFC9FFF7),
+    tertiary = BrandTertiaryDark,
+    onTertiary = AmoledBlack,
+    tertiaryContainer = AmoledTertiaryContainer,
+    onTertiaryContainer = Color(0xFFD5ECE7),
+    error = BrandError,
+    onError = AmoledBlack,
+    errorContainer = AmoledErrorContainer,
+    onErrorContainer = Color(0xFFFFB4AB),
+    background = AmoledBlack,
+    onBackground = DarkOnBackground,
+    surface = AmoledBlack,
+    onSurface = DarkOnBackground,
+    surfaceVariant = AmoledSurfaceVariant,
+    onSurfaceVariant = DarkOnSurfaceVariant,
+    surfaceContainerLowest = AmoledSurfaceContainerLowest,
+    surfaceContainerLow = AmoledSurfaceContainerLow,
+    surfaceContainer = AmoledSurfaceContainer,
+    surfaceContainerHigh = AmoledSurfaceContainerHigh,
+    surfaceContainerHighest = AmoledSurfaceContainerHighest,
+    outline = AmoledOutline,
+    outlineVariant = AmoledOutlineVariant,
+)
+
 private val LightColorScheme = lightColorScheme(
     primary = BrandPrimary,
     onPrimary = Color(0xFFFFFFFF),
@@ -74,10 +111,15 @@ private val LightColorScheme = lightColorScheme(
 @Composable
 fun ScanlyTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
+    pureBlack: Boolean = false,
     dynamicColor: Boolean = false,
     content: @Composable () -> Unit,
 ) {
-    val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
+    val colorScheme = when {
+        darkTheme && pureBlack -> PureBlackColorScheme
+        darkTheme -> DarkColorScheme
+        else -> LightColorScheme
+    }
 
     MaterialTheme(
         colorScheme = colorScheme,

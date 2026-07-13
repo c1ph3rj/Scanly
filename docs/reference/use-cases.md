@@ -1,6 +1,6 @@
 # Use Cases
 
-All 51 use case classes in `domain/usecase/`, grouped by area.
+All **61** use case classes in `domain/usecase/`, grouped by area.
 
 ViewModels call use cases. Use cases call repository interfaces.
 
@@ -75,6 +75,16 @@ ViewModels call use cases. Use cases call repository interfaces.
 | --- | --- |
 | `ObserveThemeModeUseCase` | Flow of current theme mode |
 | `SetThemeModeUseCase` | Persist theme mode |
+| `ObservePureBlackEnabledUseCase` | Flow of pure black (AMOLED) preference |
+| `SetPureBlackEnabledUseCase` | Persist pure black preference |
+| `ObserveLiveDetectionModelUseCase` | Flow of manual live-preview corner model |
+| `SetLiveDetectionModelUseCase` | Persist live-preview corner model |
+| `ObservePostProcessingModelUseCase` | Flow of manual post-processing corner model |
+| `SetPostProcessingModelUseCase` | Persist post-processing corner model |
+| `ObserveAutomaticModelSelectionUseCase` | Flow of automatic model-selection flag |
+| `SetAutomaticModelSelectionUseCase` | Persist automatic model-selection flag |
+| `ObserveDocumentGateEnabledUseCase` | Flow of physical-document gate flag |
+| `SetDocumentGateEnabledUseCase` | Persist physical-document gate flag |
 | `ObserveExportDestinationUseCase` | Flow of the configured export base folder |
 | `SetExportDestinationUseCase` | Persist a custom SAF base folder |
 | `ResetExportDestinationUseCase` | Return to `Downloads/Scanly` |

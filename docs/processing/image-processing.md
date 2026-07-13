@@ -8,7 +8,9 @@ How Scanly transforms raw captures into corrected, filtered document pages.
 Raw JPEG (camera or import)
   → EXIF rotation correction
   → Optional user rotation
-  → Corner detection (LiteRT) OR manual crop quad
+  → Optional physical-document semantic gate
+  → Corner detection (LiteRT, selected post-processing model) OR manual crop quad
+  → Quad policy + optional Accurate verification + book-page resolve
   → Perspective warp
   → Filter preset (OpenCV)
   → Processed JPEG + thumbnail
@@ -32,27 +34,46 @@ Both read from the **raw** file. `reprocessPage` never modifies the raw capture.
 2. Apply EXIF correction.
 3. Apply user `rotationDegrees` from editor (90° increments).
 
-## Step 2: Corner detection
+## Step 2: Semantic gate and corner detection
 
 When no manual crop quad is set:
 
 | Component | Role |
 | --- | --- |
-| `LiteRtDocumentCornerDetector` | Runs TFLite model inference |
+| `LiteRtDocumentGateDetector` | Classifies physical document vs digital screen vs neither |
+| `LiteRtDocumentCornerDetector` | Runs the selected TFLite corner model |
 | `DocumentCornerQuad` | Four normalized corner points |
-| Model assets | Legacy, Lite (224), Standard (288), Accurate (384) TFLite variants |
+| `DocumentQuadPolicy` | Accepts only capture-ready convex quads |
+| `BookAwareCornerResolver` | Book gutter trim / ambiguous-spread reject |
+| `AutomaticDocumentModelSelector` | On-device calibration for automatic model pick |
 
-Model config:
+### Model assets (`assets/models/`)
 
-- Legacy uses its existing YOLO-pose output; the new models use TL/TR/BR/BL regression plus a presence output
-- Live-preview and post-processing model choices are independent, persisted settings; both default to Legacy for safe upgrades
-- The new models use RGB `[-1, 1]` input and RGB-114 letterboxing
-- Gradle `noCompress += "tflite"` prevents APK compression
-- NDK ABI filters: `arm64-v8a`, `armeabi-v7a`
+| Asset | Role |
+| --- | --- |
+| `document_corners_float16.tflite` | Legacy YOLO-pose corner model |
+| `document_corners_lite.tflite` | 224 px corner regression + presence |
+| `document_corners_standard.tflite` | 288 px corner regression + presence |
+| `document_corners_accurate.tflite` | 384 px corner regression + presence |
+| `scanly_document_gate_float16.tflite` | 160 px physical-document / screen / neither gate |
 
-The camera overlay shows the active model, inference latency, and confidence. Settings also exposes a temporary benchmark screen that warms each runtime once, processes selected images sequentially with all four models, and reports preprocessing, inference, postprocessing, total latency, detection status, confidence, averages, P50, and P95.
+Keep `noCompress += "tflite"` in Gradle. NDK ABI filters: `arm64-v8a`, `armeabi-v7a`.
 
-When user sets manual corners in editor, the stored quad is used instead of ML detection.
+### Model config
+
+- Legacy uses YOLO-pose output; Lite/Standard/Accurate use TL/TR/BR/BL regression plus a presence score, RGB `[-1, 1]` input, and RGB-114 letterboxing
+- Live-preview and post-processing model choices are independent DataStore settings; both default to **Legacy** for safe upgrades
+- **Automatic selection** benchmarks Lite, Standard, and Accurate on the current device, then chooses the highest-accuracy model under a **35 ms** corner budget for live preview and a **120 ms** corner budget for post-processing. Results are process-cached; Legacy stays manual-only for compatibility
+- Semantic gate: live accepts `physical_document` at **0.90** for two consecutive frames; post-processing uses **0.95**. Rejected frames skip corner inference. Settings gate toggle applies to both pipelines
+- Overlay and automatic perspective correction require a convex quad with plausible area/aspect and edge margin (`DocumentQuadPolicy`)
+- Ambiguous quads may be verified with Accurate; live candidates are ranked, temporally confirmed, and smoothed (`StableCornerSelector`)
+- Book captures use a sparse gutter sampler: off-centre gutter trims the adjacent page; centred two-page spreads are rejected as ambiguous
+
+### Model benchmark (`settings/model-benchmark`)
+
+Settings exposes a temporary benchmark screen that warms gate + corner runtimes once, processes selected local images sequentially, and reports gate class/latency, per-model corner timings, pipeline accept/reject, averages, P50, and P95. Diagnostics live on this screen rather than the live camera overlay.
+
+When the user sets manual corners in the editor, the stored quad is used instead of ML detection.
 
 ## Step 3: Perspective warp
 
@@ -120,8 +141,12 @@ Paths written to `processed/` and `thumbs/` under the document directory.
 | Implementation | `data/processing/` | Orchestrates full pipeline |
 | `PerspectiveQuadMath` | `core/processing/` | Geometry math |
 | `OpenCvPageFilterProcessor` | `core/processing/` | Filter application |
-| `AdaptivePageFilterTuning` | `core/processing/` | Per-image tuning |
-| `LiteRtDocumentCornerDetector` | `core/ml/` | ML inference |
+| `AdaptivePageFilterTuning` | `core/processing/` | Per-image Auto routing and tuning |
+| `LiteRtDocumentCornerDetector` | `core/ml/` | Multi-model corner inference |
+| `LiteRtDocumentGateDetector` | `core/ml/` | Physical-document gate |
+| `AutomaticDocumentModelSelector` | `core/ml/` | Device latency calibration |
+| `DocumentQuadPolicy` / `CornerCandidatePolicy` | `core/ml/` | Geometry acceptance and ranking |
+| `BookPageQuadAnalyzer` / `BookAwareCornerResolver` | `core/ml/` | Book page isolation |
 | `CropQuadEditor` | `core/editing/` | Interactive crop UI logic |
 
 ## Related docs

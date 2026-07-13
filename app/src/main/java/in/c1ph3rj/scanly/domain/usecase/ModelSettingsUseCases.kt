@@ -19,3 +19,19 @@ class ObservePostProcessingModelUseCase @Inject constructor(private val reposito
 class SetPostProcessingModelUseCase @Inject constructor(private val repository: SettingsRepository) {
     suspend operator fun invoke(model: DocumentCornerModel) = repository.setPostProcessingModel(model)
 }
+
+class ObserveAutomaticModelSelectionUseCase @Inject constructor(private val repository: SettingsRepository) {
+    operator fun invoke() = repository.observeAutomaticModelSelection()
+}
+
+class SetAutomaticModelSelectionUseCase @Inject constructor(private val repository: SettingsRepository) {
+    suspend operator fun invoke(enabled: Boolean) = repository.setAutomaticModelSelection(enabled)
+}
+
+class ObserveDocumentGateEnabledUseCase @Inject constructor(private val repository: SettingsRepository) {
+    operator fun invoke() = repository.observeDocumentGateEnabled()
+}
+
+class SetDocumentGateEnabledUseCase @Inject constructor(private val repository: SettingsRepository) {
+    suspend operator fun invoke(enabled: Boolean) = repository.setDocumentGateEnabled(enabled)
+}

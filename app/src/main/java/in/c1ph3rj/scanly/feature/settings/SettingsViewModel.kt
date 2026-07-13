@@ -12,15 +12,22 @@ import `in`.c1ph3rj.scanly.domain.model.ArchiveWorkState
 import `in`.c1ph3rj.scanly.domain.model.ArchiveWorkPhase
 import `in`.c1ph3rj.scanly.domain.model.RestoreMode
 import `in`.c1ph3rj.scanly.domain.model.DocumentCornerModel
+import `in`.c1ph3rj.scanly.core.ml.AutomaticDocumentModelSelector
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveLiveDetectionModelUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.SetLiveDetectionModelUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObservePostProcessingModelUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.SetPostProcessingModelUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.ObserveAutomaticModelSelectionUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.SetAutomaticModelSelectionUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.ObserveDocumentGateEnabledUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.SetDocumentGateEnabledUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ClearAllAppDataUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.GetAppStorageUsageUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.LoadSettingsContentUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveThemeModeUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.ObservePureBlackEnabledUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.SetThemeModeUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.SetPureBlackEnabledUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveExportDestinationUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.SetExportDestinationUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ResetExportDestinationUseCase
@@ -41,6 +48,7 @@ import javax.inject.Inject
 
 data class SettingsUiState(
     val themeMode: ThemeMode = ThemeMode.SYSTEM,
+    val pureBlackEnabled: Boolean = false,
     val content: SettingsContent? = null,
     val isLoading: Boolean = true,
     val storageUsage: AppStorageUsage? = null,
@@ -52,6 +60,11 @@ data class SettingsUiState(
     val archiveWork: ArchiveWorkState = ArchiveWorkState(),
     val liveDetectionModel: DocumentCornerModel = DocumentCornerModel.LEGACY,
     val postProcessingModel: DocumentCornerModel = DocumentCornerModel.LEGACY,
+    val automaticModelSelectionEnabled: Boolean = false,
+    val documentGateEnabled: Boolean = true,
+    val isCalibratingModels: Boolean = false,
+    val automaticLiveModel: DocumentCornerModel? = null,
+    val automaticPostProcessingModel: DocumentCornerModel? = null,
 )
 
 sealed interface SettingsEvent {
@@ -62,6 +75,8 @@ sealed interface SettingsEvent {
 class SettingsViewModel @Inject constructor(
     observeThemeModeUseCase: ObserveThemeModeUseCase,
     private val setThemeModeUseCase: SetThemeModeUseCase,
+    observePureBlackEnabledUseCase: ObservePureBlackEnabledUseCase,
+    private val setPureBlackEnabledUseCase: SetPureBlackEnabledUseCase,
     private val loadSettingsContentUseCase: LoadSettingsContentUseCase,
     private val getAppStorageUsageUseCase: GetAppStorageUsageUseCase,
     private val clearAllAppDataUseCase: ClearAllAppDataUseCase,
@@ -77,6 +92,11 @@ class SettingsViewModel @Inject constructor(
     private val setLiveDetectionModelUseCase: SetLiveDetectionModelUseCase,
     observePostProcessingModelUseCase: ObservePostProcessingModelUseCase,
     private val setPostProcessingModelUseCase: SetPostProcessingModelUseCase,
+    observeAutomaticModelSelectionUseCase: ObserveAutomaticModelSelectionUseCase,
+    private val setAutomaticModelSelectionUseCase: SetAutomaticModelSelectionUseCase,
+    observeDocumentGateEnabledUseCase: ObserveDocumentGateEnabledUseCase,
+    private val setDocumentGateEnabledUseCase: SetDocumentGateEnabledUseCase,
+    private val automaticDocumentModelSelector: AutomaticDocumentModelSelector,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SettingsUiState())
@@ -97,8 +117,46 @@ class SettingsViewModel @Inject constructor(
             }
         }
         viewModelScope.launch {
+            observeAutomaticModelSelectionUseCase().collectLatest { enabled ->
+                _uiState.update {
+                    it.copy(
+                        automaticModelSelectionEnabled = enabled,
+                        isCalibratingModels = enabled,
+                        automaticLiveModel = if (enabled) it.automaticLiveModel else null,
+                        automaticPostProcessingModel = if (enabled) it.automaticPostProcessingModel else null,
+                    )
+                }
+                if (enabled) {
+                    runCatching { automaticDocumentModelSelector.selection() }
+                        .onSuccess { selection ->
+                            _uiState.update {
+                                it.copy(
+                                    isCalibratingModels = false,
+                                    automaticLiveModel = selection.liveModel,
+                                    automaticPostProcessingModel = selection.postProcessingModel,
+                                )
+                            }
+                        }
+                        .onFailure {
+                            _uiState.update { it.copy(isCalibratingModels = false) }
+                            _events.emit(SettingsEvent.ShowMessage("Could not calibrate document models on this device."))
+                        }
+                }
+            }
+        }
+        viewModelScope.launch {
+            observeDocumentGateEnabledUseCase().collectLatest { enabled ->
+                _uiState.update { it.copy(documentGateEnabled = enabled) }
+            }
+        }
+        viewModelScope.launch {
             observeThemeModeUseCase().collectLatest { themeMode ->
                 _uiState.update { current -> current.copy(themeMode = themeMode) }
+            }
+        }
+        viewModelScope.launch {
+            observePureBlackEnabledUseCase().collectLatest { enabled ->
+                _uiState.update { current -> current.copy(pureBlackEnabled = enabled) }
             }
         }
         viewModelScope.launch {
@@ -205,7 +263,16 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
+    fun setPureBlackEnabled(enabled: Boolean) {
+        viewModelScope.launch {
+            if (setPureBlackEnabledUseCase(enabled) is `in`.c1ph3rj.scanly.core.common.ScanlyResult.Failure) {
+                _events.emit(SettingsEvent.ShowMessage("Could not update pure black theme."))
+            }
+        }
+    }
+
     fun setLiveDetectionModel(model: DocumentCornerModel) {
+        if (_uiState.value.automaticModelSelectionEnabled) return
         viewModelScope.launch {
             if (setLiveDetectionModelUseCase(model) is `in`.c1ph3rj.scanly.core.common.ScanlyResult.Failure) {
                 _events.emit(SettingsEvent.ShowMessage("Could not update the live preview model."))
@@ -214,9 +281,26 @@ class SettingsViewModel @Inject constructor(
     }
 
     fun setPostProcessingModel(model: DocumentCornerModel) {
+        if (_uiState.value.automaticModelSelectionEnabled) return
         viewModelScope.launch {
             if (setPostProcessingModelUseCase(model) is `in`.c1ph3rj.scanly.core.common.ScanlyResult.Failure) {
                 _events.emit(SettingsEvent.ShowMessage("Could not update the post-processing model."))
+            }
+        }
+    }
+
+    fun setAutomaticModelSelection(enabled: Boolean) {
+        viewModelScope.launch {
+            if (setAutomaticModelSelectionUseCase(enabled) is `in`.c1ph3rj.scanly.core.common.ScanlyResult.Failure) {
+                _events.emit(SettingsEvent.ShowMessage("Could not update automatic model selection."))
+            }
+        }
+    }
+
+    fun setDocumentGateEnabled(enabled: Boolean) {
+        viewModelScope.launch {
+            if (setDocumentGateEnabledUseCase(enabled) is `in`.c1ph3rj.scanly.core.common.ScanlyResult.Failure) {
+                _events.emit(SettingsEvent.ShowMessage("Could not update the physical-document gate."))
             }
         }
     }

@@ -16,6 +16,7 @@ local.properties
 !/app/src/main/assets/models/document_corners_lite.tflite
 !/app/src/main/assets/models/document_corners_standard.tflite
 !/app/src/main/assets/models/document_corners_accurate.tflite
+!/app/src/main/assets/models/scanly_document_gate_float16.tflite
 /app/src/main/assets/validation/images/*.jpg
 /app/src/main/assets/validation/images/*.jpeg
 /app/src/main/assets/validation/images/*.png
@@ -2922,3 +2923,4 @@ local.properties
 /notebooks/scanly_doccorner_mobilenetv3_kaggle.ipynb
 /notebooks/scanly_document_gate_kaggle.ipynb
 /notebooks/scanly_document_gate_kaggle.py
+/app/src/main/assets/models/scanly_document_gate_float16.tflite

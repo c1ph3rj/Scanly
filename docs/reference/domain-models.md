@@ -1,6 +1,6 @@
 # Domain Models
 
-All model classes in `domain/model/` (22 files).
+All model classes in `domain/model/` (23 files).
 
 ## Document and pages
 
@@ -53,10 +53,13 @@ All model classes in `domain/model/` (22 files).
 | Model | File | Purpose |
 | --- | --- | --- |
 | `ThemeMode` | `ThemeMode.kt` | `SYSTEM`, `LIGHT`, `DARK` |
+| `DocumentCornerModel` | `DocumentCornerModel.kt` | `LEGACY`, `LITE`, `STANDARD`, `ACCURATE` with storage values and display names |
 | `SettingsContent` | `SettingsContent.kt` | Aggregated FAQs and licenses for Settings |
 | `SettingsFaq` | `SettingsFaq.kt` | Single FAQ entry |
 | `LicenseInfo` | `LicenseInfo.kt` | Third-party license entry |
 | `AppStorageUsage` | `AppStorageUsage.kt` | Byte counts: documents, export cache, database, archive workspace |
+
+Pure black (AMOLED) is a boolean DataStore preference (`pure_black_enabled`), not a `ThemeMode` value.
 
 ## App updates
 

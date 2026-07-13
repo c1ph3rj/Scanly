@@ -25,7 +25,11 @@ Complete inventory of Scanly features as of **v1.0.9** (including unreleased wor
 ## Document scanning (camera session)
 
 - **CameraX**-based manual capture with live preview
-- **ML corner overlay** — LiteRT model detects document edges in real time
+- **Physical-document semantic gate** — rejects digital screens and non-documents before corner inference (optional; Settings toggle)
+- **ML corner overlay** — LiteRT multi-model detection (Legacy / Lite / Standard / Accurate) with independent live vs post-processing selection
+- **Automatic model selection** — optional on-device calibration picks the best models within latency budgets
+- **Stable outlines** — temporal confirmation, Accurate verification for ambiguous quads, and worst-corner stability against nearby false edges
+- **Book-page isolation** — gutter-aware trim for off-centre adjacent pages; ambiguous two-page spreads ask the user to move closer
 - **Quality feedback** — lighting, blur, lens obstruction, framing guidance
 - **Auto-capture** — stability tracker phases (`SEARCHING` → `HOLD_STEADY` → `COUNTDOWN` → `CAPTURING` → `COOLDOWN`) gate automatic shutter when the frame is steady
 - **Manual capture** — tap shutter at any time
@@ -34,6 +38,7 @@ Complete inventory of Scanly features as of **v1.0.9** (including unreleased wor
 - **Multi-page sessions** — capture multiple pages into one document in a single session
 - **Page replacement (retake)** — replace an existing page; returns to editor after capture (v1.0.9)
 - Portrait and landscape layouts with theme-aligned controls (v1.0.9)
+- Live camera keeps a clean overlay (no permanent model/latency HUD); use **Model benchmark** for measurements
 
 ## Gallery import
 
@@ -90,8 +95,12 @@ Complete inventory of Scanly features as of **v1.0.9** (including unreleased wor
 
 Main screen (`settings`) — lean layout with links to sub-screens:
 
-- **Appearance** — theme mode: System, Light, or Dark (persisted in DataStore)
+- **Look & feel** — theme mode (System, Light, Dark) plus optional **pure black** Material 3 surfaces for AMOLED battery savings
 - **Storage & backup** — link to dedicated sub-screen (usage, export path, backup/restore, clear data)
+- **Document detection**
+  - Automatic model selection (device calibration) or independent Live / Post models (Legacy, Lite, Standard, Accurate)
+  - Physical-document gate toggle
+  - **Model benchmark** sub-screen — run selected local images through gate + all corner models
 - **About** — app version, developer portfolio, manual update check
 - **Support** — email and project website links
 - **Legal** — privacy policy, terms, open-source licenses (dedicated sub-screens)

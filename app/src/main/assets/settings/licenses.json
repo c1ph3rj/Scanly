@@ -13,6 +13,12 @@
     "websiteUrl": "https://www.ultralytics.com/license"
   },
   {
+    "id": "scanly_document_gate",
+    "name": "Scanly physical-document gate",
+    "summary": "A custom MobileNetV3-Small classifier screens physical documents from digital screens and other rectangular objects. Its training bundle includes mixed-source research-use data, so this model is enabled for non-commercial evaluation only.",
+    "license": "Mixed research-use dataset terms"
+  },
+  {
     "id": "androidx_stack",
     "name": "AndroidX, Jetpack Compose, CameraX, Room, WorkManager, Hilt",
     "summary": "These libraries provide the Android UI, storage, background work, dependency injection, and camera foundations used by the app.",

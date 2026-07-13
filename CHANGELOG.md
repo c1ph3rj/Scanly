@@ -8,11 +8,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
-- **Selectable document-corner models** — Settings now independently configures Legacy, Lite, Standard, or Accurate models for live camera detection and post-processing. Live preview displays model, latency, and confidence diagnostics.
+- **Pure black (AMOLED) theme** — Settings → Look & feel can enable true black Material 3 surfaces in dark mode to reduce power draw on OLED displays. Preference is stored in DataStore and takes effect whenever dark theme is active.
+- **Physical-document semantic gate** — a 1.14 MB float16 MobileNetV3-Small model now screens physical documents from digital screens and other rectangular objects before corner detection. Live preview requires two consecutive accepted frames; post-processing uses a stricter threshold.
+- **Configurable document-detection models** — Settings can independently configure Legacy, Lite, Standard, or Accurate for live preview and post-processing, or calibrate Lite/Standard/Accurate on the current device and automatically choose the highest-accuracy options within separate latency budgets. Manual selectors are locked while automatic selection is enabled, and the semantic gate can be enabled or bypassed independently.
 - **Model benchmark screen** — selected local images can be run sequentially through all four models, with per-image timing/detection data and aggregate average, P50, P95, detection, and failure statistics.
 
 ### Changed
 
+- **Settings Look & feel** — the Appearance section is now titled Look & feel and groups theme mode with the pure black OLED option.
+- **Safer camera overlay and faster rejection path** — corner inference is skipped when the semantic gate rejects a frame, and only convex, fully in-frame, plausible document quads can be drawn or auto-captured. The benchmark screen now reports gate classification, gate latency, and combined pipeline results.
+- **Stable best-quad selection** — geometrically ambiguous corner results are conditionally verified with the Accurate model, ranked by confidence and shape quality, smoothed across nearby frames, and prevented from replacing the visible outline until the new location is consistently detected. Stability now checks the worst-moving corner as well as the average, preventing one corner from jumping to a nearby monitor or keyboard edge.
+- **Book-page isolation** — live and post-processing detection now samples visual edge support around proposed page boundaries and searches for a continuous book gutter. An off-centre gutter trims away a small adjacent-page sliver and keeps the dominant page; a centred, genuinely ambiguous two-page spread suppresses the outline and asks the user to move closer.
+- **Cleaner scan preview** — removed the temporary model/latency/confidence diagnostics pill from the camera while retaining the dedicated benchmark screen for detailed measurements.
 - **Document filters** — rebuilt the enhancement pipeline to flatten uneven paper lighting without creating mottled backgrounds or halos. Color filters now neutralize paper casts while retaining logos and marks; Auto avoids aggressive text enhancement for low-detail pages and keeps long color documents out of Receipt mode.
 
 ## [1.0.9] - 2026-07-05

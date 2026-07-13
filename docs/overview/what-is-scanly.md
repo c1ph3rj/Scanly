@@ -6,8 +6,8 @@ Scanly is an offline-first Android document scanner. It gives users a practical,
 
 Paper documents need to become shareable digital files. Scanly handles the full on-device loop:
 
-1. **Capture** — photograph a document with guided camera feedback and optional auto-capture
-2. **Correct** — detect page edges and fix perspective distortion
+1. **Capture** — photograph a physical document with guided camera feedback, semantic gate filtering, multi-model edge detection, and optional auto-capture
+2. **Correct** — detect page edges (with book-aware handling) and fix perspective distortion
 3. **Enhance** — apply readability filters (grayscale, shadow reduction, etc.)
 4. **Organize** — store multi-page documents and optional collections (groups)
 5. **Export** — produce PDFs or image archives; save directly to Downloads or a custom folder
@@ -43,7 +43,7 @@ Everything stays on the device unless the user explicitly shares an export or co
 | Database | Room (schema v3) |
 | Preferences | DataStore |
 | Background work | WorkManager + Hilt Worker (library backup/restore) |
-| ML | LiteRT (TFLite document corner model) |
+| ML | LiteRT (multi-model corner detection + physical-document semantic gate) |
 | Image processing | OpenCV, Android ExifInterface |
 | PDF export | Android PdfDocument + PdfBox-Android encryption |
 | Async | Kotlin Coroutines and Flow |

@@ -14,10 +14,11 @@ How end users interact with Scanly. This describes app behavior, not implementat
 
 1. Tap the scan/create action (FAB menu).
 2. Choose **Scan** → name the document (optional **Suggest name**) → camera session opens.
-3. Point the camera at a document. Live overlay shows detected edges and quality hints.
-4. Tap capture (or use auto-capture when stable).
-5. Capture additional pages or finish the session.
-6. App navigates to **document detail** with all captured pages.
+3. Point the camera at a **physical** document. Scanly filters out many phone screens and non-document rectangles before drawing edges.
+4. Live overlay shows detected page edges and quality hints. For open books, frame a single dominant page when possible.
+5. Tap capture (or use auto-capture when stable).
+6. Capture additional pages or finish the session.
+7. App navigates to **document detail** with all captured pages.
 
 ### From Library
 
@@ -130,9 +131,17 @@ Saved exports go to `Downloads/Scanly` by default. Change the base folder from *
 
 ## Settings
 
-### Theme
+### Look & feel
 
-Choose **System**, **Light**, or **Dark**. Applied immediately and persisted.
+1. Choose **System**, **Light**, or **Dark**. Applied immediately and persisted.
+2. Optionally enable **Pure black** for true black surfaces in dark theme (helps battery on AMOLED displays). The preference is remembered even if you are currently on Light and applies the next time dark theme is active.
+
+### Document detection
+
+1. Open **Settings → Document detection**.
+2. Turn on **Automatic model selection** to let Scanly time Lite/Standard/Accurate on this device and pick responsive live + accurate post models — or leave it off and choose **Live preview** and **Post-processing** models manually (Legacy, Lite, Standard, Accurate).
+3. Keep **Physical-document gate** on to reject screens and non-documents before edge detection (recommended). Turn it off only for troubleshooting.
+4. Open **Model benchmark** to run your own photos through the gate and all corner models and review timings (local-only; nothing is uploaded).
 
 ### Storage usage
 

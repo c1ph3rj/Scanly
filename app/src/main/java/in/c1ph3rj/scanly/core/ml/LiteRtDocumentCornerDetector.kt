@@ -2,7 +2,6 @@ package `in`.c1ph3rj.scanly.core.ml
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.Matrix
 import android.util.Log
 import dagger.hilt.android.qualifiers.ApplicationContext
 import `in`.c1ph3rj.scanly.core.common.ScanlyDispatchers
@@ -28,9 +27,7 @@ class LiteRtDocumentCornerDetector @Inject constructor(
         frame: DetectionFrame,
         model: DocumentCornerModel,
     ): CornerDetectionResult = withContext(dispatchers.default) {
-        val source = frame.toBitmap()
-        val oriented = source.rotate(frame.rotationDegrees)
-        if (oriented !== source) source.recycle()
+        val oriented = frame.toOrientedBitmap()
         try {
             detectBitmap(oriented, getOrCreateRuntime(model))
         } finally {
@@ -165,27 +162,6 @@ class LiteRtDocumentCornerDetector @Inject constructor(
         null
     }
 
-    private fun DetectionFrame.toBitmap(): Bitmap {
-        val pixels = IntArray(width * height)
-        var offset = 0
-        for (index in pixels.indices) {
-            pixels[index] = android.graphics.Color.argb(
-                bytes[offset + 3].toInt() and 0xFF,
-                bytes[offset].toInt() and 0xFF,
-                bytes[offset + 1].toInt() and 0xFF,
-                bytes[offset + 2].toInt() and 0xFF,
-            )
-            offset += RGBA_PIXEL_STRIDE
-        }
-        return Bitmap.createBitmap(pixels, width, height, Bitmap.Config.ARGB_8888)
-    }
-
-    private fun Bitmap.rotate(degrees: Int): Bitmap {
-        val normalized = ((degrees % 360) + 360) % 360
-        if (normalized == 0) return this
-        return Bitmap.createBitmap(this, 0, 0, width, height, Matrix().apply { postRotate(normalized.toFloat()) }, true)
-    }
-
     private data class Runtime(
         val interpreter: InterpreterApi,
         val model: DocumentCornerModel,
@@ -203,7 +179,6 @@ class LiteRtDocumentCornerDetector @Inject constructor(
 
     private companion object {
         const val TAG = "LiteRtCornerDetector"
-        const val RGBA_PIXEL_STRIDE = 4
     }
 }
 
