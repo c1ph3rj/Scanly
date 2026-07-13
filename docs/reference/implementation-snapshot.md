@@ -1,12 +1,12 @@
 # Implementation Snapshot
 
-One-page technical summary of Scanly **v1.0.9** (including unreleased work on `feature/scanly-model`). For detail see the full docs index at [../README.md](../README.md).
+One-page technical summary of Scanly **v1.0.10**. For detail see the full docs index at [../README.md](../README.md).
 
 ## Release
 
 | Field | Value |
 | --- | --- |
-| Version | `1.0.9` (code `9`) |
+| Version | `1.0.10` (code `10`) |
 | Room schema | `3` |
 | Min SDK | 29 |
 | Target SDK | 36 |
@@ -27,7 +27,7 @@ ScanlyApplication (WorkManager + Hilt)
 
 ## Features (summary)
 
-Home · Library (filter pills) · Camera scan + gate + multi-model overlay + auto-capture · Gallery import · Document detail · Page preview · Page editor · Groups · Advanced PDF/ZIP export with direct save · Configurable export destination · Library backup/restore (`.scanly`) · Suggested document/folder names · Look & feel (theme + pure black) · Document detection settings + model benchmark · Onboarding · GitHub/Play update channels
+Home · Library (filter pills) · Tools (scan/import, QR, PDF toolkit) · Camera scan + gate + multi-model overlay + auto-capture · Gallery import · Document detail · Page preview · Page editor · Groups · Advanced PDF/ZIP export with direct save · Configurable export destination · Library backup/restore (`.scanly`) · Suggested document/folder names · Look & feel (theme + pure black) · Document detection settings + model benchmark · Onboarding · GitHub/Play update channels
 
 ## Data
 

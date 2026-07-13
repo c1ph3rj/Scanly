@@ -6,14 +6,14 @@ See also [docs/releases.md](docs/releases.md) for release policy and history wit
 
 | Field | Value |
 | --- | --- |
-| Version name | `1.0.9` |
-| Version code | `9` |
+| Version name | `1.0.10` |
+| Version code | `10` |
 | Application ID | `in.c1ph3rj.scanly` |
 | Min SDK | 29 (Android 10) |
 | Target / compile SDK | 36 |
 | Room schema version | `3` |
-| Release date | 2026-07-05 |
-| Branch | `master` (tag `v1.0.9`) |
+| Release date | 2026-07-13 |
+| Branch | `feature/scanly-model` (tag `v1.0.10`) |
 
 The version shown in **Settings** is read from `versionName` in `app/build.gradle.kts`.
 
@@ -26,15 +26,17 @@ The version shown in **Settings** is read from `versionName` in `app/build.gradl
 
 ## Release History
 
-### 1.0.9 (version code 9)
+### 1.0.10 (version code 10)
 
 Current app release metadata.
 
 See [CHANGELOG.md](CHANGELOG.md) for release notes.
 
-### 1.0.8.betaq (version code 8)
+### 1.0.9 (version code 9)
 
-Current app release metadata.
+See [CHANGELOG.md](CHANGELOG.md) for release notes.
+
+### 1.0.8.betaq (version code 8)
 
 See [CHANGELOG.md](CHANGELOG.md) for release notes.
 
@@ -71,7 +73,14 @@ Initial open-source baseline on `master`:
 
 ## Upgrade Notes
 
-### From 1.0.0 to 1.0.9
+### From 1.0.9 to 1.0.10
+
+- No Room schema change (still version 3).
+- Document corner models are labelled **Lite · Standard · High · Accurate** (Accurate is the former Legacy weights; High is the former Accurate 384 px model). Existing DataStore model keys keep the same files.
+- **Automatic model selection** defaults to **on** when the preference is unset. Installs that already toggled it off stay off until changed in Settings.
+- New Tools tab, PDF toolkit, QR tool, multi-model detection assets, and pure-black theme preference are additive; no manual data migration is required.
+
+### From 1.0.0 to 1.0.10
 
 - Room migrates automatically from schema version 1 or 2 to 3 to add document groups.
 - Existing documents remain available; they appear as ungrouped until moved into a collection.

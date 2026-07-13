@@ -1,6 +1,6 @@
 # Testing
 
-Test coverage and how to run tests in Scanly **v1.0.9** (including unreleased branch work).
+Test coverage and how to run tests in Scanly **v1.0.10**.
 
 ## Running tests
 
