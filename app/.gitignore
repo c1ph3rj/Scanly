@@ -1,2 +1,2 @@
+# Module-local build output (also covered by root **/build/)
 /build
-/src/main/assets/models/document_corners_lite.tflite

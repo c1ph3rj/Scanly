@@ -43,8 +43,34 @@ Complete inventory of Scanly features as of **v1.0.9** (including unreleased wor
 ## Gallery import
 
 - Import up to **10 images** per pick from the device photo picker
-- Available on **Home** and **Document detail** (extend existing documents)
+- Available on **Home**, **Tools**, and **Document detail** (extend existing documents)
 - Reuses the same capture finalize pipeline as camera captures
+
+## Tools hub
+
+Fourth bottom-nav tab with categorized utilities:
+
+### Create
+
+- **Scan** — create a document and open the camera session
+- **Import** — gallery import (max 10 images) into a new document
+
+### QR Code
+
+- **Scan** — CameraX + ML Kit barcode scanning; copy or open http(s) results
+- **Generate** — encode text/URL with ZXing; live preview; save PNG to export folder or share
+
+### PDF tools
+
+Operate on **device PDFs** (system document picker) or **Scanly library documents** (exported to a temporary PDF first). Every generated result can be previewed in Scanly's built-in reader before it is saved to the configured export destination or shared; an external PDF app is not required.
+
+| Tool | Behavior |
+| --- | --- |
+| Reader | Page-by-page or continuous-scroll preview for device, library, and generated result PDFs; pinch zoom and password unlock when required |
+| Merge | Combine two or more PDFs into one |
+| Compress | High / Balanced / Smallest quality presets via page re-encode |
+| Password | First-page preview; Protect or Remove with clear password form; export-focused completion with Preview / Save / Share |
+| Watermark | Export-accurate first-page proof from the production stamping engine; page-relative font size; dense tiled security field or one large single stamp; Small/Medium/Large scale; first-page or all-page coverage; diagonal/horizontal orientation; opacity control |
 
 ## Document detail
 

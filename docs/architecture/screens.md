@@ -9,6 +9,13 @@ Every feature screen in Scanly **v1.0.9** and its responsibilities.
 | Onboarding | `OnboardingScreen` | `OnboardingViewModel` | (gate in MainActivity) | First-run intro; persist completion |
 | Home | `HomeScreen` | `HomeViewModel` | `home` | Recent docs/groups, scan, import, suggest names, library shortcut |
 | Library | `LibraryScreen` | `LibraryViewModel` | `library` | Search, filter pills, sort, document/group CRUD, suggest names |
+| Tools hub | `ToolsScreen` | `ToolsViewModel` | `tools` | Workflow-focused tools workspace; scan/import, QR, and PDF utility entry points |
+| QR tool | `QrToolScreen` | `QrToolViewModel` | `tools/qr` | Camera QR/barcode scan; generate QR PNG save/share |
+| PDF reader | `PdfReaderRoute` | `PdfReaderViewModel` | `tools/pdf/reader` | Page-by-page or continuous viewer for device, library, or app-generated result PDFs |
+| PDF merge | `PdfMergeRoute` | `PdfMergeViewModel` | `tools/pdf/merge` | Merge multiple PDFs |
+| PDF compress | `PdfCompressRoute` | `PdfCompressViewModel` | `tools/pdf/compress` | Quality presets while editing; focused `PdfToolCompleteScreen` with size-savings detail when done |
+| PDF password | `PdfPasswordRoute` | `PdfPasswordViewModel` | `tools/pdf/password` | First-page preview, Protect/Remove cards, focused `PdfToolCompleteScreen` when done |
+| PDF watermark | `PdfWatermarkRoute` | `PdfWatermarkViewModel` | `tools/pdf/watermark` | Debounced first-page proof via the production engine; tiled/single layout, size presets, orientation, opacity, and page coverage |
 | Group detail | `GroupDetailScreen` | `GroupDetailViewModel` | `group/{groupId}` | Membership, rename, delete, group export, create doc in group |
 | Document detail | `DocumentDetailScreen` | `DocumentDetailViewModel` | `document/{documentId}` | Pages, reorder, rename, import, export/save, move to group |
 | Scan session | `ScanSessionScreen` | `ScanSessionViewModel` | `camera/session/{docId}` | CameraX, gate + multi-model overlay, stability, auto-capture, finalize |
@@ -16,7 +23,7 @@ Every feature screen in Scanly **v1.0.9** and its responsibilities.
 | Page editor | `PageEditorScreen` | `PageEditorViewModel` | `editor/page/{pageId}` | Crop, rotate, filters, retake |
 | Settings | `SettingsScreen` | `SettingsViewModel` | `settings` | Look & feel, document detection, links, manual update check |
 | Storage & backup | `StorageBackupScreen` | `SettingsViewModel` | `settings/storage` | Destination, usage, backup/restore progress, clear data |
-| Model benchmark | `ModelBenchmarkRoute` | `ModelBenchmarkViewModel` | `settings/model-benchmark` | Temporary local gate + corner model comparison |
+| Model benchmark | `ModelBenchmarkRoute` | `ModelBenchmarkViewModel` | `settings/model-benchmark` | Per-image overview with polygon overlays on scaled previews for each corner model, plus gate/pipeline stats |
 | FAQs | `SettingsFaqScreen` | `SettingsViewModel` | `settings/faq` | Bundled FAQ content |
 | Licenses | `SettingsLicensesScreen` | `SettingsViewModel` | `settings/licenses` | Third-party license list |
 | Legal | `LegalDocumentScreen` | — | `legal/{documentType}` | Privacy / terms WebView content |

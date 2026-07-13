@@ -8,6 +8,26 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- **Tools tab** — new bottom navigation page (Home · Library · Tools · Settings) with a grid of capture and PDF utilities.
+- **Tools → Scan / Import** — start a camera scan or gallery import from the Tools hub (same limits and flows as Home).
+- **QR Code tool** — scan QR/barcodes with the camera (copy/open) or generate a QR image from text/URL and save/share it.
+- **PDF toolkit** — offline utilities that accept device PDFs or Scanly library documents:
+  - **Reader** — page-by-page or continuous-scroll reading, pinch-zoom, and password unlock
+  - **Merge** — combine multiple PDFs into one, then preview, save, share, or return directly to Tools from a focused completion view
+  - **Compress** — re-encode pages at High / Balanced / Smallest with before/after sizes
+  - **Password** — protect with an open password or remove an existing one
+  - **Watermark** — export-accurate previewed stamps with page-relative sizing, dense tiled or large single layouts, Small/Medium/Large scale, first-page/all-page coverage, diagonal/horizontal orientation, and opacity control
+
+### Fixed
+
+- **PDF reader** — Scanly library documents are copied to a stable reader file before rendering, preventing concurrent page loads from deleting the PDF mid-open.
+- **PDF result previews** — Merge, Compress, Password, and Watermark results now open directly in Scanly's built-in reader instead of depending on another installed PDF app; returning from the reader restores the completed Save/Share view.
+- **Watermark editor accuracy** — the first-page editor proof now uses the same PDF stamping engine, font metrics, crop bounds, opacity, angle, and repeat positions as the exported file instead of a separate UI approximation; rapid edits are debounced and render only one page.
+- **Watermark usability** — stamps now scale to the page instead of a fixed 42pt size; tiled mode fills the page with a dense security field (including rotated corners) instead of a few sparse marks; single mode draws one large tracked stamp; defaults prefer tiled Medium diagonal coverage.
+- **Watermark horizontal tiling** — horizontal orientation no longer overlaps; tile spacing and row stagger adapt to angle so flat text keeps full width/height gaps while diagonal still packs tightly.
+- **PDF merge** — source PDF documents now remain open until the merged file is written, preventing closed-stream failures when merging library documents.
+- **PDF compress** — page-by-page streaming avoids OOM; quality presets scale long-edge resolution correctly and preserve original page geometry.
+
 - **Pure black (AMOLED) theme** — Settings → Look & feel can enable true black Material 3 surfaces in dark mode to reduce power draw on OLED displays. Preference is stored in DataStore and takes effect whenever dark theme is active.
 - **Physical-document semantic gate** — a 1.14 MB float16 MobileNetV3-Small model now screens physical documents from digital screens and other rectangular objects before corner detection. Live preview requires two consecutive accepted frames; post-processing uses a stricter threshold.
 - **Configurable document-detection models** — Settings can independently configure Legacy, Lite, Standard, or Accurate for live preview and post-processing, or calibrate Lite/Standard/Accurate on the current device and automatically choose the highest-accuracy options within separate latency budgets. Manual selectors are locked while automatic selection is enabled, and the semantic gate can be enabled or bypassed independently.
@@ -15,6 +35,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 
+- **Model benchmark** — results are grouped by image with a 2×2 preview grid per model; each preview draws the detected document polygon (or dims when none) alongside confidence, timing, and pipeline stats.
+- **PDF compress success** — uses the same focused completion screen as Merge (check mark, file card, Preview / Save / Share, Back to tools). Source picker, quality options, and the before/after card no longer linger after success; size savings stay as a single result line under the file name.
+- **PDF compress setup** — shows a first-page preview of the selected PDF at the top of the quality screen so the document is visible before compressing.
+- **PDF password** — redesigned to match the other toolkit tools: first-page preview, Protect/Remove option cards, clearer password form hierarchy, optional current-password for re-protect, and a focused completion screen (Preview / Save / Share / Back to tools).
+- **Tools workspace** — rebuilt the Tools hub, QR workspace, and PDF toolkit screens into a consistent on-device workflow with visual Scanly-library PDF previews, grid/list source selection, clear working states, and explicit completed-file actions.
 - **Settings Look & feel** — the Appearance section is now titled Look & feel and groups theme mode with the pure black OLED option.
 - **Safer camera overlay and faster rejection path** — corner inference is skipped when the semantic gate rejects a frame, and only convex, fully in-frame, plausible document quads can be drawn or auto-captured. The benchmark screen now reports gate classification, gate latency, and combined pipeline results.
 - **Stable best-quad selection** — geometrically ambiguous corner results are conditionally verified with the Accurate model, ranked by confidence and shape quality, smoothed across nearby frames, and prevented from replacing the visible outline until the new location is consistently detected. Stability now checks the worst-moving corner as well as the average, preventing one corner from jumping to a nearby monitor or keyboard edge.

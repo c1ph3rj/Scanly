@@ -18,7 +18,7 @@ Guidance for AI coding agents working in the Scanly repository.
 app/src/main/java/in/c1ph3rj/scanly/
 ├── ui/theme/          # ScanlyTheme, colors, typography
 ├── navigation/        # ScanlyDestination, ScanlyNavHost
-├── feature/           # Screens + ViewModels (home, library, camera, editor, …)
+├── feature/           # Screens + ViewModels (home, library, tools, camera, editor, …)
 ├── domain/            # Models, repository interfaces, use cases (61 classes)
 ├── data/              # Room, storage, export, archive, settings, update implementations
 ├── core/              # ML (corners + gate), OpenCV, editing math, shared UI utilities
@@ -66,7 +66,7 @@ app/src/main/java/in/c1ph3rj/scanly/
 
 ## Navigation Quick Reference
 
-Top-level tabs: `home`, `library`, `settings`.
+Top-level tabs: `home`, `library`, `tools`, `settings`.
 
 Typed routes (real flows):
 
@@ -77,6 +77,8 @@ Typed routes (real flows):
 - `group/{groupId}` — group detail
 - `legal/{documentType}` — privacy/licenses viewer
 - `settings/faq`, `settings/licenses`, `settings/storage`, `settings/model-benchmark` — settings sub-screens
+- `tools/qr` — QR scan + generate
+- `tools/pdf/reader`, `tools/pdf/merge`, `tools/pdf/compress`, `tools/pdf/password`, `tools/pdf/watermark` — PDF toolkit
 
 Legacy placeholder routes (`camera`, `review`, `editor` top-level) use `FeaturePlaceholderScreen` — do not wire new features there.
 

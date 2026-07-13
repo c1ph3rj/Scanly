@@ -22,6 +22,7 @@ Navigation is implemented with **Navigation Compose** in `ScanlyNavHost.kt`. Rou
 | --- | --- | --- |
 | `home` | Home dashboard | Yes |
 | `library` | Full library | Yes |
+| `tools` | Tools hub (capture, QR, PDF utilities) | Yes |
 | `settings` | Settings | Yes |
 
 ## Legacy placeholder routes
@@ -48,6 +49,12 @@ These top-level routes still exist but show `FeaturePlaceholderScreen` — they 
 | `settings/licenses` | `SettingsLicensesDestination` | Open-source licenses |
 | `settings/storage` | `SettingsStorageDestination` | Storage & backup |
 | `settings/model-benchmark` | `SettingsModelBenchmarkDestination` | Temporary local model comparison |
+| `tools/qr` | `ToolsQrDestination` | QR scan + generate |
+| `tools/pdf/reader?filePath={filePath}&fileName={fileName}` | `ToolsPdfReaderDestination` | PDF reader; optional app-owned result file opens directly |
+| `tools/pdf/merge` | `ToolsPdfMergeDestination` | PDF merge |
+| `tools/pdf/compress` | `ToolsPdfCompressDestination` | PDF compress |
+| `tools/pdf/password` | `ToolsPdfPasswordDestination` | PDF password protect/remove |
+| `tools/pdf/watermark` | `ToolsPdfWatermarkDestination` | PDF text watermark |
 
 ### Scan session arguments
 
