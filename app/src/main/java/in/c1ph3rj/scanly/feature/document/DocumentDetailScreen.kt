@@ -117,6 +117,7 @@ import `in`.c1ph3rj.scanly.domain.model.ScanDocument
 import `in`.c1ph3rj.scanly.domain.model.ScanPage
 import `in`.c1ph3rj.scanly.domain.model.ShareArtifact
 import `in`.c1ph3rj.scanly.feature.components.PagePreview
+import `in`.c1ph3rj.scanly.feature.components.ScanlyImportProgressOverlay
 import `in`.c1ph3rj.scanly.core.ui.PreviewDisplaySize
 import `in`.c1ph3rj.scanly.feature.components.ExportActionRow
 import `in`.c1ph3rj.scanly.feature.components.DocumentTitleDialog
@@ -293,7 +294,10 @@ fun DocumentDetailScreen(
             onNavigateUp()
         }
     }
-    BackHandler(enabled = !useMasterDetailLayout && isReviewingPage) {
+    BackHandler(enabled = uiState.isImporting || uiState.isExporting) {
+        // Block back while import/export is running so the job isn't abandoned mid-pipeline.
+    }
+    BackHandler(enabled = !useMasterDetailLayout && isReviewingPage && !uiState.isImporting) {
         isReviewingPage = false
     }
     LaunchedEffect(draggedPageId, autoScrollDelta) {
@@ -778,6 +782,14 @@ fun DocumentDetailScreen(
     if (uiState.isExporting) {
         ExportProgressOverlay(
             message = uiState.exportMessage ?: "Preparing export",
+        )
+    }
+
+    if (uiState.isImporting) {
+        ScanlyImportProgressOverlay(
+            current = uiState.importCurrent,
+            total = uiState.importTotal,
+            stageLabel = uiState.importStageLabel.ifBlank { "Working on your photos" },
         )
     }
 }

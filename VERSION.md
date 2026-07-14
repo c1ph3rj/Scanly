@@ -6,16 +6,18 @@ See also [docs/releases.md](docs/releases.md) for release policy and history wit
 
 | Field | Value |
 | --- | --- |
-| Version name | `1.0.9` |
-| Version code | `9` |
+| Version name | `1.0.10` |
+| Version code | `10` |
 | Application ID | `in.c1ph3rj.scanly` |
 | Min SDK | 29 (Android 10) |
 | Target / compile SDK | 36 |
-| Room schema version | `3` |
-| Release date | 2026-07-05 |
-| Branch | `master` (tag `v1.0.9`) |
+| Room schema version | `4` |
+| Release date | 2026-07-13 |
+| Branch | `feature/v1.0.10` |
 
 The version shown in **Settings** is read from `versionName` in `app/build.gradle.kts`.
+
+**Note:** Room schema **4** (filter adjustment columns) is on this development branch and is required by the page-editor filter-adjust work under [Unreleased](CHANGELOG.md). Builds on this branch open existing libraries through `MIGRATION_3_4`.
 
 ## Versioning Policy
 
@@ -26,53 +28,14 @@ The version shown in **Settings** is read from `versionName` in `app/build.gradl
 
 ## Release History
 
-### 1.0.9 (version code 9)
+### 1.0.10 (version code 10)
 
-Current app release metadata.
+Current app release metadata (Tools, multi-model detection, large-screen polish). Editor crop/filter-adjust work continues on this branch; see [CHANGELOG.md](CHANGELOG.md) **Unreleased**.
+
+### 1.0.9 (version code 9)
 
 See [CHANGELOG.md](CHANGELOG.md) for release notes.
 
 ### 1.0.8.betaq (version code 8)
 
-Current app release metadata.
-
 See [CHANGELOG.md](CHANGELOG.md) for release notes.
-
-### 1.0.7 (version code 7)
-
-See [CHANGELOG.md](CHANGELOG.md) for release notes.
-
-### 1.0.6 (version code 6)
-
-See [CHANGELOG.md](CHANGELOG.md) for release notes.
-
-### 1.0.5 (version code 5)
-
-See [CHANGELOG.md](CHANGELOG.md#104---2026-06-15) for the previous release note.
-
-### 1.0.0 (version code 1)
-
-Initial open-source baseline on `master`:
-
-- offline document scanning workflow
-- camera capture, page editing, and local persistence
-- PDF and image export/share
-- settings, theme persistence, and support content
-
-## Where Version Is Defined
-
-| Location | Purpose |
-| --- | --- |
-| `app/build.gradle.kts` | Canonical `versionCode` and `versionName` |
-| `githubRelease` / `playStoreRelease` | Distribution variants sharing the same version and application ID |
-| `DefaultSettingsRepository` | Reads package version for the Settings screen |
-| `VERSION.md` | Human-readable release metadata (this file) |
-| `CHANGELOG.md` | Per-release notes and upgrade guidance |
-
-## Upgrade Notes
-
-### From 1.0.0 to 1.0.9
-
-- Room migrates automatically from schema version 1 or 2 to 3 to add document groups.
-- Existing documents remain available; they appear as ungrouped until moved into a collection.
-- No manual migration steps are required for local data.

@@ -6,8 +6,8 @@ Scanly is an offline-first Android document scanner. It gives users a practical,
 
 Paper documents need to become shareable digital files. Scanly handles the full on-device loop:
 
-1. **Capture** — photograph a document with guided camera feedback and optional auto-capture
-2. **Correct** — detect page edges and fix perspective distortion
+1. **Capture** — photograph a physical document with guided camera feedback, semantic gate filtering, multi-model edge detection, and optional auto-capture
+2. **Correct** — detect page edges (with book-aware handling) and fix perspective distortion
 3. **Enhance** — apply readability filters (grayscale, shadow reduction, etc.)
 4. **Organize** — store multi-page documents and optional collections (groups)
 5. **Export** — produce PDFs or image archives; save directly to Downloads or a custom folder
@@ -28,7 +28,7 @@ Everything stays on the device unless the user explicitly shares an export or co
 | Offline-first | Scanning, editing, storage, export, and backup work without network. Only the optional update check uses `INTERNET`. |
 | Non-destructive captures | Raw JPEG captures under `raw/` are never overwritten. Edits regenerate `processed/` and `thumbs/`. |
 | Derived processing | Corner detection, warping, and filters produce derived output. The original capture is always recoverable. |
-| Manual fallback | Users can adjust crop corners, rotation, and filters when automation is imperfect. Pages can be marked `NEEDS_REVIEW`. |
+| Manual fallback | Users can re-run AI Detect, drag crop corners, rotate, pick filters, and fine-tune brightness/contrast when automation is imperfect. Pages can be marked `NEEDS_REVIEW`. |
 | Clean boundaries | UI calls use cases; use cases call repositories. Screens never touch Room or the filesystem directly. |
 
 ## Technology at a glance
@@ -40,10 +40,10 @@ Everything stays on the device unless the user explicitly shares an export or co
 | DI | Hilt |
 | Navigation | Navigation Compose |
 | Camera | CameraX |
-| Database | Room (schema v3) |
+| Database | Room (schema v4) |
 | Preferences | DataStore |
 | Background work | WorkManager + Hilt Worker (library backup/restore) |
-| ML | LiteRT (TFLite document corner model) |
+| ML | LiteRT (multi-model corner detection + physical-document semantic gate) |
 | Image processing | OpenCV, Android ExifInterface |
 | PDF export | Android PdfDocument + PdfBox-Android encryption |
 | Async | Kotlin Coroutines and Flow |
@@ -93,7 +93,7 @@ ScanlyApplication (@HiltAndroidApp, custom WorkManager + HiltWorkerFactory)
 
 | Field | Value |
 | --- | --- |
-| Version | `1.0.9` (code `9`) |
+| Version | `1.0.10` (code `10`) |
 | Room schema | `3` |
 | Min SDK | 29 (Android 10) |
 | Target SDK | 36 |

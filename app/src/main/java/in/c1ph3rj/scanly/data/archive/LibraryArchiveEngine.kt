@@ -189,6 +189,10 @@ class LibraryArchiveEngine @Inject constructor(
                 cropBottomLeftX = page.cropBottomLeftX,
                 cropBottomLeftY = page.cropBottomLeftY,
                 filterPreset = page.filterPreset,
+                filterBrightness = page.filterBrightness,
+                filterContrast = page.filterContrast,
+                filterSaturation = page.filterSaturation,
+                filterSharpness = page.filterSharpness,
                 processingState = page.processingState,
                 createdAtMillis = page.createdAtMillis,
                 updatedAtMillis = page.updatedAtMillis,
@@ -372,6 +376,10 @@ class LibraryArchiveEngine @Inject constructor(
                     cropBottomLeftX = page.cropBottomLeftX,
                     cropBottomLeftY = page.cropBottomLeftY,
                     filterPreset = page.filterPreset,
+                    filterBrightness = page.filterBrightness,
+                    filterContrast = page.filterContrast,
+                    filterSaturation = page.filterSaturation,
+                    filterSharpness = page.filterSharpness,
                     processingState = page.processingState,
                     createdAtMillis = page.createdAtMillis,
                     updatedAtMillis = page.updatedAtMillis,
@@ -659,6 +667,10 @@ class LibraryArchiveEngine @Inject constructor(
         val cropBottomRightX: Float?, val cropBottomRightY: Float?,
         val cropBottomLeftX: Float?, val cropBottomLeftY: Float?,
         val filterPreset: String,
+        val filterBrightness: Float = 0f,
+        val filterContrast: Float = 0f,
+        val filterSaturation: Float = 0f,
+        val filterSharpness: Float = 0f,
         val processingState: String,
         val createdAtMillis: Long,
         val updatedAtMillis: Long,
@@ -672,6 +684,10 @@ class LibraryArchiveEngine @Inject constructor(
             putNullable("cropBottomRightX", cropBottomRightX); putNullable("cropBottomRightY", cropBottomRightY)
             putNullable("cropBottomLeftX", cropBottomLeftX); putNullable("cropBottomLeftY", cropBottomLeftY)
             put("filterPreset", filterPreset); put("processingState", processingState)
+            put("filterBrightness", filterBrightness.toDouble())
+            put("filterContrast", filterContrast.toDouble())
+            put("filterSaturation", filterSaturation.toDouble())
+            put("filterSharpness", filterSharpness.toDouble())
             put("createdAtMillis", createdAtMillis); put("updatedAtMillis", updatedAtMillis)
         }
 
@@ -691,6 +707,10 @@ class LibraryArchiveEngine @Inject constructor(
                 cropBottomLeftX = json.nullableFloat("cropBottomLeftX"),
                 cropBottomLeftY = json.nullableFloat("cropBottomLeftY"),
                 filterPreset = json.getString("filterPreset"),
+                filterBrightness = json.optDouble("filterBrightness", 0.0).toFloat(),
+                filterContrast = json.optDouble("filterContrast", 0.0).toFloat(),
+                filterSaturation = json.optDouble("filterSaturation", 0.0).toFloat(),
+                filterSharpness = json.optDouble("filterSharpness", 0.0).toFloat(),
                 processingState = json.getString("processingState"),
                 createdAtMillis = json.getLong("createdAtMillis"),
                 updatedAtMillis = json.getLong("updatedAtMillis"),

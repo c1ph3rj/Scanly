@@ -2,6 +2,8 @@ package `in`.c1ph3rj.scanly.feature.camera
 
 import `in`.c1ph3rj.scanly.core.ml.CornerDetectionResult
 import `in`.c1ph3rj.scanly.core.ml.DocumentCornerQuad
+import `in`.c1ph3rj.scanly.core.ml.DocumentQuadPolicy
+import `in`.c1ph3rj.scanly.domain.model.DocumentCornerModel
 
 enum class AutoCapturePhase {
     OFF,
@@ -21,6 +23,14 @@ data class LiveDetectionUiState(
     val statusMessage: String = "Point your camera at a document.",
     val countdownValue: Int? = null,
     val sceneIssue: CaptureSceneIssue? = null,
+    val model: DocumentCornerModel = DocumentCornerModel.ACCURATE,
+    val confidence: Float? = null,
+    val inferenceMillis: Double? = null,
+    val totalMillis: Double? = null,
+    val gateClass: `in`.c1ph3rj.scanly.core.ml.DocumentGateClass? = null,
+    val gatePhysicalProbability: Float? = null,
+    val gateMillis: Double? = null,
+    val gateAccepted: Boolean = false,
 ) {
     val hasOverlay: Boolean = quad != null && overlayFrame?.isValid == true
 }
@@ -35,19 +45,24 @@ data class StabilityEvaluation(
 class CaptureStabilityTracker(
     private val stableConfidenceThreshold: Float = 0.72f,
     private val jitterThreshold: Float = 0.028f,
+    private val maxCornerJitterThreshold: Float = 0.065f,
     private val minStableDurationMillis: Long = 1_800L,
     private val cooldownMillis: Long = 2_500L,
     private val rearmDistanceThreshold: Float = 0.08f,
-    private val minArea: Float = 0.12f,
-    private val maxArea: Float = 0.92f,
-    private val minAspectRatio: Float = 0.35f,
-    private val maxAspectRatio: Float = 1.9f,
 ) {
     private var stableReferenceQuad: DocumentCornerQuad? = null
     private var stableSinceMillis: Long? = null
     private var cooldownUntilMillis: Long = 0L
     private var lastCapturedQuad: DocumentCornerQuad? = null
     private var waitingForSceneChange: Boolean = false
+
+    fun reset() {
+        stableReferenceQuad = null
+        stableSinceMillis = null
+        cooldownUntilMillis = 0L
+        lastCapturedQuad = null
+        waitingForSceneChange = false
+    }
 
     fun evaluate(
         result: CornerDetectionResult,
@@ -56,7 +71,7 @@ class CaptureStabilityTracker(
         sceneIssue: CaptureSceneIssue? = null,
     ): StabilityEvaluation {
         val candidateQuad = result.quad?.takeIf { quad ->
-            result.confidence >= stableConfidenceThreshold && quad.isValid() && isShapePlausible(quad)
+            result.confidence >= stableConfidenceThreshold && DocumentQuadPolicy.isCaptureReady(quad)
         }
 
         if (sceneIssue != null) {
@@ -122,7 +137,12 @@ class CaptureStabilityTracker(
 
         val stableSince = stableSinceMillis
         val reference = stableReferenceQuad
-        if (reference == null || stableSince == null || candidateQuad.meanCornerDistance(reference) > jitterThreshold) {
+        if (
+            reference == null ||
+            stableSince == null ||
+            candidateQuad.meanCornerDistance(reference) > jitterThreshold ||
+            candidateQuad.maxCornerDistance(reference) > maxCornerJitterThreshold
+        ) {
             stableReferenceQuad = candidateQuad
             stableSinceMillis = nowMillis
             return StabilityEvaluation(
@@ -175,9 +195,4 @@ class CaptureStabilityTracker(
         stableSinceMillis = null
     }
 
-    private fun isShapePlausible(quad: DocumentCornerQuad): Boolean {
-        val area = quad.area()
-        val aspectRatio = quad.estimatedAspectRatio()
-        return area in minArea..maxArea && aspectRatio in minAspectRatio..maxAspectRatio
-    }
 }

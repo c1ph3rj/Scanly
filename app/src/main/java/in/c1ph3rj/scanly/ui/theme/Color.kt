@@ -28,6 +28,21 @@ val DarkSecondaryContainer = Color(0xFF164E48)
 val DarkTertiaryContainer = Color(0xFF253C37)
 val DarkErrorContainer = Color(0xFF5D1F25)
 
+// Pure black (AMOLED) — keep large planes at #000 for battery savings
+val AmoledBlack = Color(0xFF000000)
+val AmoledSurfaceVariant = Color(0xFF1A1F1D)
+val AmoledSurfaceContainerLowest = Color(0xFF000000)
+val AmoledSurfaceContainerLow = Color(0xFF0A0C0B)
+val AmoledSurfaceContainer = Color(0xFF101413)
+val AmoledSurfaceContainerHigh = Color(0xFF171B19)
+val AmoledSurfaceContainerHighest = Color(0xFF1F2422)
+val AmoledOutline = Color(0xFF4A5652)
+val AmoledOutlineVariant = Color(0xFF242B29)
+val AmoledPrimaryContainer = Color(0xFF003D37)
+val AmoledSecondaryContainer = Color(0xFF0E3A36)
+val AmoledTertiaryContainer = Color(0xFF1A2E2A)
+val AmoledErrorContainer = Color(0xFF4A151A)
+
 // Light Mode Tints
 val LightBackground = Color(0xFFF7FAF9)
 val LightSurface = Color(0xFFFFFFFF)

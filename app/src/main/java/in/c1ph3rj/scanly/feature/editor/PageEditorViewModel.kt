@@ -5,10 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import `in`.c1ph3rj.scanly.core.common.ScanlyResult
-import `in`.c1ph3rj.scanly.core.editing.CropHandle
 import `in`.c1ph3rj.scanly.core.editing.CropQuadEditor
 import `in`.c1ph3rj.scanly.core.ml.DocumentCornerQuad
-import `in`.c1ph3rj.scanly.core.ml.NormalizedPoint
+import `in`.c1ph3rj.scanly.domain.model.PageFilterAdjustments
 import `in`.c1ph3rj.scanly.domain.model.PageFilterPreset
 import `in`.c1ph3rj.scanly.domain.model.PageProcessingState
 import `in`.c1ph3rj.scanly.domain.model.ScanPage
@@ -29,8 +28,8 @@ import javax.inject.Inject
 data class PageEditorUiState(
     val page: ScanPage? = null,
     val cropQuad: DocumentCornerQuad? = null,
-    val referenceCropQuad: DocumentCornerQuad? = null,
     val selectedFilter: PageFilterPreset = PageFilterPreset.AUTO,
+    val filterAdjustments: PageFilterAdjustments = PageFilterAdjustments.Default,
     val applyFilterToAllPages: Boolean = false,
     val rotationDegrees: Int = 0,
     val isSaving: Boolean = false,
@@ -80,8 +79,8 @@ class PageEditorViewModel @Inject constructor(
                         current.copy(
                             page = page,
                             cropQuad = baseQuad,
-                            referenceCropQuad = baseQuad,
                             selectedFilter = page.filterPreset,
+                            filterAdjustments = page.filterAdjustments,
                             applyFilterToAllPages = false,
                             rotationDegrees = resolveInitialRotation(page),
                             missingPage = false,
@@ -89,23 +88,16 @@ class PageEditorViewModel @Inject constructor(
                             isSaving = false,
                         )
                     } else {
-                        current.copy(page = page, missingPage = false)
+                        // Keep local filter/adjustment drafts; adopt crop/rotation from crop screen.
+                        current.copy(
+                            page = page,
+                            cropQuad = page.cropQuad ?: CropQuadEditor.defaultQuad(),
+                            rotationDegrees = resolveInitialRotation(page),
+                            missingPage = false,
+                        )
                     }
                 }
             }
-        }
-    }
-
-    fun moveHandle(
-        handle: CropHandle,
-        point: NormalizedPoint,
-    ) {
-        _uiState.update { current ->
-            val currentQuad = current.cropQuad ?: return@update current
-            current.copy(
-                cropQuad = CropQuadEditor.moveHandle(currentQuad, handle, point),
-                hasUnsavedChanges = true,
-            )
         }
     }
 
@@ -126,18 +118,19 @@ class PageEditorViewModel @Inject constructor(
         }
     }
 
-    fun rotateLeft() {
-        rotate { CropQuadEditor.rotateCounterClockwise(it) to -90 }
-    }
-
-    fun rotateRight() {
-        rotate { CropQuadEditor.rotateClockwise(it) to 90 }
-    }
-
-    fun resetCrop() {
+    fun updateFilterAdjustments(adjustments: PageFilterAdjustments) {
         _uiState.update { current ->
             current.copy(
-                cropQuad = current.referenceCropQuad,
+                filterAdjustments = adjustments.sanitized(),
+                hasUnsavedChanges = true,
+            )
+        }
+    }
+
+    fun resetFilterAdjustments() {
+        _uiState.update { current ->
+            current.copy(
+                filterAdjustments = PageFilterAdjustments.Default,
                 hasUnsavedChanges = true,
             )
         }
@@ -157,6 +150,7 @@ class PageEditorViewModel @Inject constructor(
                     cropQuad = cropQuad,
                     rotationDegrees = snapshot.rotationDegrees,
                     filterPreset = snapshot.selectedFilter,
+                    filterAdjustments = snapshot.filterAdjustments,
                     applyFilterToAllPages = snapshot.applyFilterToAllPages,
                 )
             ) {
@@ -209,28 +203,8 @@ class PageEditorViewModel @Inject constructor(
         }
     }
 
-    private fun rotate(transform: (DocumentCornerQuad) -> Pair<DocumentCornerQuad, Int>) {
-        _uiState.update { current ->
-            val currentQuad = current.cropQuad ?: return@update current
-            val referenceQuad = current.referenceCropQuad ?: currentQuad
-            val (rotatedCurrentQuad, rotationDelta) = transform(currentQuad)
-            val (rotatedReferenceQuad, _) = transform(referenceQuad)
-            current.copy(
-                cropQuad = rotatedCurrentQuad,
-                referenceCropQuad = rotatedReferenceQuad,
-                rotationDegrees = normalizeRotation(current.rotationDegrees + rotationDelta),
-                hasUnsavedChanges = true,
-            )
-        }
-    }
-
-    private fun normalizeRotation(rotationDegrees: Int): Int {
-        val normalized = rotationDegrees % 360
-        return if (normalized < 0) normalized + 360 else normalized
-    }
-
     private fun resolveInitialRotation(page: ScanPage): Int {
-        val normalizedRotation = normalizeRotation(page.rotationDegrees)
+        val normalizedRotation = normalizeEditorRotation(page.rotationDegrees)
         return if (page.processingState == PageProcessingState.CAPTURED && normalizedRotation % 180 != 0) {
             0
         } else {

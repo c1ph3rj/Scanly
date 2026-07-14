@@ -17,6 +17,7 @@ import `in`.c1ph3rj.scanly.domain.model.SettingsContent
 import `in`.c1ph3rj.scanly.domain.model.SettingsFaq
 import `in`.c1ph3rj.scanly.domain.model.ThemeMode
 import `in`.c1ph3rj.scanly.domain.model.ExportDestination
+import `in`.c1ph3rj.scanly.domain.model.DocumentCornerModel
 import `in`.c1ph3rj.scanly.domain.repository.SettingsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -33,6 +34,43 @@ class DefaultSettingsRepository @Inject constructor(
     @param:ApplicationContext private val context: Context,
     private val dispatchers: ScanlyDispatchers,
 ) : SettingsRepository {
+
+    override fun observeLiveDetectionModel(): Flow<DocumentCornerModel> =
+        context.settingsDataStore.data.map { DocumentCornerModel.fromStorage(it[liveDetectionModelKey]) }
+
+    override suspend fun setLiveDetectionModel(model: DocumentCornerModel): ScanlyResult<Unit> =
+        updateModelPreference(liveDetectionModelKey, model)
+
+    override fun observePostProcessingModel(): Flow<DocumentCornerModel> =
+        context.settingsDataStore.data.map { DocumentCornerModel.fromStorage(it[postProcessingModelKey]) }
+
+    override suspend fun setPostProcessingModel(model: DocumentCornerModel): ScanlyResult<Unit> =
+        updateModelPreference(postProcessingModelKey, model)
+
+    override suspend fun getPostProcessingModel(): DocumentCornerModel =
+        DocumentCornerModel.fromStorage(context.settingsDataStore.data.first()[postProcessingModelKey])
+
+    override fun observeAutomaticModelSelection(): Flow<Boolean> =
+        context.settingsDataStore.data.map { preferences ->
+            preferences[automaticModelSelectionKey] ?: true
+        }
+
+    override suspend fun setAutomaticModelSelection(enabled: Boolean): ScanlyResult<Unit> =
+        updateBooleanPreference(automaticModelSelectionKey, enabled)
+
+    override suspend fun getAutomaticModelSelection(): Boolean =
+        context.settingsDataStore.data.first()[automaticModelSelectionKey] ?: true
+
+    override fun observeDocumentGateEnabled(): Flow<Boolean> =
+        context.settingsDataStore.data.map { preferences ->
+            preferences[documentGateEnabledKey] ?: true
+        }
+
+    override suspend fun setDocumentGateEnabled(enabled: Boolean): ScanlyResult<Unit> =
+        updateBooleanPreference(documentGateEnabledKey, enabled)
+
+    override suspend fun getDocumentGateEnabled(): Boolean =
+        context.settingsDataStore.data.first()[documentGateEnabledKey] ?: true
 
     override fun observeExportDestination(): Flow<ExportDestination> =
         context.settingsDataStore.data.map { preferences ->
@@ -75,6 +113,14 @@ class DefaultSettingsRepository @Inject constructor(
                 },
             )
         }
+
+    override fun observePureBlackEnabled(): Flow<Boolean> =
+        context.settingsDataStore.data.map { preferences ->
+            preferences[pureBlackEnabledKey] ?: false
+        }
+
+    override suspend fun setPureBlackEnabled(enabled: Boolean): ScanlyResult<Unit> =
+        updateBooleanPreference(pureBlackEnabledKey, enabled)
 
     override fun observeOnboardingCompleted(): Flow<Boolean> =
         context.settingsDataStore.data.map { preferences ->
@@ -207,11 +253,44 @@ class DefaultSettingsRepository @Inject constructor(
         )
     }
 
+    private suspend fun updateModelPreference(
+        key: androidx.datastore.preferences.core.Preferences.Key<String>,
+        model: DocumentCornerModel,
+    ): ScanlyResult<Unit> = withContext(dispatchers.io) {
+        runCatching {
+            context.settingsDataStore.edit { it[key] = model.storageValue }
+        }.fold(
+            onSuccess = { ScanlyResult.Success(Unit) },
+            onFailure = { throwable ->
+                ScanlyResult.Failure(ScanlyError(throwable.message ?: "Could not update model selection.", throwable))
+            },
+        )
+    }
+
+    private suspend fun updateBooleanPreference(
+        key: androidx.datastore.preferences.core.Preferences.Key<Boolean>,
+        enabled: Boolean,
+    ): ScanlyResult<Unit> = withContext(dispatchers.io) {
+        runCatching {
+            context.settingsDataStore.edit { it[key] = enabled }
+        }.fold(
+            onSuccess = { ScanlyResult.Success(Unit) },
+            onFailure = { throwable ->
+                ScanlyResult.Failure(ScanlyError(throwable.message ?: "Could not update document detection settings.", throwable))
+            },
+        )
+    }
+
     private companion object {
         val themeModeKey = stringPreferencesKey("theme_mode")
+        val pureBlackEnabledKey = booleanPreferencesKey("pure_black_enabled")
         val onboardingCompletedKey = booleanPreferencesKey("onboarding_completed")
         val exportTreeUriKey = stringPreferencesKey("export_tree_uri")
         val exportTreeLabelKey = stringPreferencesKey("export_tree_label")
+        val liveDetectionModelKey = stringPreferencesKey("live_detection_model")
+        val postProcessingModelKey = stringPreferencesKey("post_processing_model")
+        val automaticModelSelectionKey = booleanPreferencesKey("automatic_document_model_selection")
+        val documentGateEnabledKey = booleanPreferencesKey("document_gate_enabled")
         const val faqsAssetPath = "settings/faqs.json"
         const val licensesAssetPath = "settings/licenses.json"
         const val developerWebsite = ""

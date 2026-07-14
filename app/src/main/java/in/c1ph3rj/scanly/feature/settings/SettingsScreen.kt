@@ -12,38 +12,49 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.HelpOutline
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.automirrored.filled.OpenInNew
-import androidx.compose.material.icons.filled.Brightness4
+import androidx.compose.material.icons.filled.BrightnessAuto
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.DarkMode
-import androidx.compose.material.icons.filled.DeleteOutline
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.Gavel
 import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.Policy
 import androidx.compose.material.icons.filled.Public
+import androidx.compose.material.icons.filled.Speed
 import androidx.compose.material.icons.filled.Storage
 import androidx.compose.material.icons.filled.SystemUpdate
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -52,8 +63,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -61,9 +75,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import `in`.c1ph3rj.scanly.core.common.StorageFormatter
 import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import `in`.c1ph3rj.scanly.domain.model.AppStorageUsage
+import `in`.c1ph3rj.scanly.domain.model.DocumentCornerModel
 import `in`.c1ph3rj.scanly.domain.model.ThemeMode
 import `in`.c1ph3rj.scanly.feature.components.ScanlyAppLogo
-import `in`.c1ph3rj.scanly.feature.components.ScanlyConfirmDialog
 import `in`.c1ph3rj.scanly.feature.components.ScanlyTabScreenHeader
 import `in`.c1ph3rj.scanly.feature.update.AppUpdateUiState
 import kotlinx.coroutines.flow.collectLatest
@@ -73,11 +87,263 @@ private const val PROJECT_WEBSITE_URL = "https://scanly.c1ph3rj.in"
 private const val SUPPORT_EMAIL = "info@c1ph3rj.in"
 
 private val SettingsRowPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp)
+private val ModelChipShape = RoundedCornerShape(20.dp)
 
 private fun Modifier.settingsRowSurface(onClick: (() -> Unit)? = null): Modifier =
     fillMaxWidth()
         .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier)
         .padding(SettingsRowPadding)
+
+private val DocumentCornerModel.description: String
+    get() = when (this) {
+        DocumentCornerModel.LITE -> "Fastest · ideal for live camera preview"
+        DocumentCornerModel.STANDARD -> "Balanced speed and accuracy"
+        DocumentCornerModel.HIGH -> "Higher accuracy · best after capture"
+        DocumentCornerModel.ACCURATE -> "Highest accuracy · maximum compatibility"
+    }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ModelSelector(
+    title: String,
+    subtitle: String,
+    selected: DocumentCornerModel,
+    enabled: Boolean,
+    onSelected: (DocumentCornerModel) -> Unit,
+) {
+    var showPicker by remember { mutableStateOf(false) }
+    val titleColor = if (enabled) {
+        MaterialTheme.colorScheme.onSurface
+    } else {
+        MaterialTheme.colorScheme.onSurfaceVariant
+    }
+    // Flat chip (Box + clip) — avoid Material Surface elevation/tonal shadow on nested cards.
+    val chipContainer = if (enabled) {
+        MaterialTheme.colorScheme.primary.copy(alpha = 0.14f)
+    } else {
+        MaterialTheme.colorScheme.surfaceContainerHighest
+    }
+    val chipContent = if (enabled) {
+        MaterialTheme.colorScheme.primary
+    } else {
+        MaterialTheme.colorScheme.onSurfaceVariant
+    }
+    val chipBorder = BorderStroke(
+        width = 1.dp,
+        color = if (enabled) {
+            MaterialTheme.colorScheme.primary.copy(alpha = 0.28f)
+        } else {
+            MaterialTheme.colorScheme.outlineVariant
+        },
+    )
+
+    Row(
+        modifier = Modifier.settingsRowSurface(
+            onClick = if (enabled) ({ showPicker = true }) else null,
+        ),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(2.dp),
+        ) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Medium,
+                color = titleColor,
+            )
+            Text(
+                text = subtitle,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        Row(
+            modifier = Modifier
+                .clip(ModelChipShape)
+                .background(chipContainer)
+                .border(chipBorder, ModelChipShape)
+                .padding(horizontal = 12.dp, vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(2.dp),
+        ) {
+            Text(
+                text = selected.displayName,
+                style = MaterialTheme.typography.labelLarge,
+                fontWeight = FontWeight.SemiBold,
+                color = chipContent,
+            )
+            if (enabled) {
+                Icon(
+                    imageVector = Icons.Filled.ExpandMore,
+                    contentDescription = "Choose $title",
+                    tint = chipContent,
+                    modifier = Modifier.size(18.dp),
+                )
+            }
+        }
+    }
+
+    if (showPicker && enabled) {
+        ModelPickerSheet(
+            title = title,
+            selected = selected,
+            onSelected = { model ->
+                showPicker = false
+                onSelected(model)
+            },
+            onDismiss = { showPicker = false },
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ModelPickerSheet(
+    title: String,
+    selected: DocumentCornerModel,
+    onSelected: (DocumentCornerModel) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = sheetState,
+        containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+        tonalElevation = 0.dp,
+        // Default DragHandle uses an elevated Surface that casts a boxed shadow on pure black.
+        dragHandle = { FlatBottomSheetDragHandle() },
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp)
+                .padding(bottom = 28.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier.padding(bottom = 4.dp),
+            )
+            Text(
+                text = "Pick the detector that fits this device and workflow.",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(bottom = 12.dp),
+            )
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(MaterialTheme.shapes.large)
+                    .background(MaterialTheme.colorScheme.surface)
+                    .selectableGroup(),
+            ) {
+                DocumentCornerModel.entries.forEachIndexed { index, model ->
+                    val isSelected = model == selected
+                    ModelPickerOption(
+                        model = model,
+                        selected = isSelected,
+                        onClick = { onSelected(model) },
+                    )
+                    if (index < DocumentCornerModel.entries.lastIndex) {
+                        HorizontalDivider(
+                            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
+                            modifier = Modifier.padding(horizontal = 16.dp),
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun FlatBottomSheetDragHandle(
+    modifier: Modifier = Modifier,
+) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(top = 10.dp, bottom = 16.dp),
+        contentAlignment = Alignment.Center,
+    ) {
+        Box(
+            modifier = Modifier
+                .width(36.dp)
+                .height(4.dp)
+                .clip(RoundedCornerShape(percent = 50))
+                .background(MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.35f)),
+        )
+    }
+}
+
+@Composable
+private fun ModelPickerOption(
+    model: DocumentCornerModel,
+    selected: Boolean,
+    onClick: () -> Unit,
+) {
+    val titleColor = if (selected) {
+        MaterialTheme.colorScheme.primary
+    } else {
+        MaterialTheme.colorScheme.onSurface
+    }
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .selectable(
+                selected = selected,
+                onClick = onClick,
+                role = Role.RadioButton,
+            )
+            .padding(horizontal = 16.dp, vertical = 14.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(14.dp),
+    ) {
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(2.dp),
+        ) {
+            Text(
+                text = model.displayName,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Medium,
+                color = titleColor,
+            )
+            Text(
+                text = model.description,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        Box(
+            modifier = Modifier
+                .size(28.dp)
+                .clip(CircleShape)
+                .background(
+                    if (selected) {
+                        MaterialTheme.colorScheme.primary
+                    } else {
+                        MaterialTheme.colorScheme.surfaceContainerHighest
+                    },
+                ),
+            contentAlignment = Alignment.Center,
+        ) {
+            if (selected) {
+                Icon(
+                    imageVector = Icons.Filled.Check,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onPrimary,
+                    modifier = Modifier.size(16.dp),
+                )
+            }
+        }
+    }
+}
 
 @Composable
 fun SettingsRoute(
@@ -88,6 +354,7 @@ fun SettingsRoute(
     onOpenFaqs: () -> Unit,
     onOpenLicenses: () -> Unit,
     onOpenStorage: () -> Unit,
+    onOpenModelBenchmark: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -107,11 +374,17 @@ fun SettingsRoute(
         appUpdateUiState = appUpdateUiState,
         snackbarHostState = snackbarHostState,
         onThemeModeSelected = viewModel::setThemeMode,
+        onPureBlackEnabledChanged = viewModel::setPureBlackEnabled,
         onOpenWebsite = { url -> uriHandler.openUri(url) },
         onOpenLegalDocument = onOpenLegalDocument,
         onOpenFaqs = onOpenFaqs,
         onOpenLicenses = onOpenLicenses,
         onOpenStorage = onOpenStorage,
+        onOpenModelBenchmark = onOpenModelBenchmark,
+        onLiveDetectionModelSelected = viewModel::setLiveDetectionModel,
+        onPostProcessingModelSelected = viewModel::setPostProcessingModel,
+        onAutomaticModelSelectionChanged = viewModel::setAutomaticModelSelection,
+        onDocumentGateEnabledChanged = viewModel::setDocumentGateEnabled,
         onCheckForUpdates = onCheckForUpdates,
     )
 }
@@ -122,11 +395,17 @@ fun SettingsScreen(
     appUpdateUiState: AppUpdateUiState,
     snackbarHostState: SnackbarHostState,
     onThemeModeSelected: (ThemeMode) -> Unit,
+    onPureBlackEnabledChanged: (Boolean) -> Unit,
     onOpenWebsite: (String) -> Unit,
     onOpenLegalDocument: (LegalDocumentType) -> Unit,
     onOpenFaqs: () -> Unit,
     onOpenLicenses: () -> Unit,
     onOpenStorage: () -> Unit,
+    onOpenModelBenchmark: () -> Unit,
+    onLiveDetectionModelSelected: (DocumentCornerModel) -> Unit,
+    onPostProcessingModelSelected: (DocumentCornerModel) -> Unit,
+    onAutomaticModelSelectionChanged: (Boolean) -> Unit,
+    onDocumentGateEnabledChanged: (Boolean) -> Unit,
     onCheckForUpdates: () -> Unit,
 ) {
     val content = uiState.content
@@ -175,11 +454,22 @@ fun SettingsScreen(
                     )
                 }
 
-                item(key = "appearance") {
-                    SettingsGroup(title = "Appearance") {
+                item(key = "look_and_feel") {
+                    SettingsGroup(title = "Look & feel") {
                         ThemeModeSelector(
                             selectedMode = uiState.themeMode,
                             onThemeModeSelected = onThemeModeSelected,
+                        )
+                        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                        SettingsToggleRow(
+                            title = "Pure black",
+                            subtitle = if (uiState.themeMode == ThemeMode.LIGHT) {
+                                "Takes effect in dark theme · saves battery on AMOLED screens"
+                            } else {
+                                "True black surfaces · saves battery on AMOLED screens"
+                            },
+                            checked = uiState.pureBlackEnabled,
+                            onCheckedChange = onPureBlackEnabledChanged,
                         )
                     }
                 }
@@ -197,6 +487,60 @@ fun SettingsScreen(
                                 append(uiState.exportDestination.exportLabel)
                             },
                             onClick = onOpenStorage,
+                        )
+                    }
+                }
+
+                item(key = "model_testing") {
+                    SettingsGroup(title = "Document detection") {
+                        SettingsToggleRow(
+                            title = "Automatic model selection",
+                            subtitle = when {
+                                uiState.isCalibratingModels -> "Testing model speed on this device…"
+                                uiState.automaticLiveModel != null && uiState.automaticPostProcessingModel != null ->
+                                    "Live: ${uiState.automaticLiveModel.displayName} • Processing: ${uiState.automaticPostProcessingModel.displayName}"
+                                else -> "Choose the best models for this device"
+                            },
+                            checked = uiState.automaticModelSelectionEnabled,
+                            onCheckedChange = onAutomaticModelSelectionChanged,
+                        )
+                        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                        ModelSelector(
+                            title = "Live preview model",
+                            subtitle = if (uiState.automaticModelSelectionEnabled) {
+                                "Selected automatically for responsive preview"
+                            } else {
+                                "Used while the camera preview is running"
+                            },
+                            selected = uiState.automaticLiveModel ?: uiState.liveDetectionModel,
+                            enabled = !uiState.automaticModelSelectionEnabled,
+                            onSelected = onLiveDetectionModelSelected,
+                        )
+                        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                        ModelSelector(
+                            title = "Post-processing model",
+                            subtitle = if (uiState.automaticModelSelectionEnabled) {
+                                "Selected automatically for higher accuracy"
+                            } else {
+                                "Used after camera or gallery capture"
+                            },
+                            selected = uiState.automaticPostProcessingModel ?: uiState.postProcessingModel,
+                            enabled = !uiState.automaticModelSelectionEnabled,
+                            onSelected = onPostProcessingModelSelected,
+                        )
+                        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                        SettingsToggleRow(
+                            title = "Physical-document gate",
+                            subtitle = "Reject screens and non-documents before edge detection",
+                            checked = uiState.documentGateEnabled,
+                            onCheckedChange = onDocumentGateEnabledChanged,
+                        )
+                        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                        SettingsNavigationRow(
+                            icon = Icons.Filled.Speed,
+                            title = "Model benchmark",
+                            subtitle = "Compare all models on local images",
+                            onClick = onOpenModelBenchmark,
                         )
                     }
                 }
@@ -271,6 +615,41 @@ fun SettingsScreen(
         }
     }
 
+}
+
+@Composable
+private fun SettingsToggleRow(
+    title: String,
+    subtitle: String,
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier.settingsRowSurface(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(2.dp),
+        ) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Medium,
+            )
+            Text(
+                text = subtitle,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        Switch(
+            checked = checked,
+            onCheckedChange = onCheckedChange,
+        )
+    }
 }
 
 @Composable
@@ -585,90 +964,58 @@ private fun SettingsNavigationRow(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ThemeModeSelector(
     selectedMode: ThemeMode,
     onThemeModeSelected: (ThemeMode) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val trackShape = RoundedCornerShape(12.dp)
-    Row(
+    val options = ThemeMode.entries
+    SingleChoiceSegmentedButtonRow(
         modifier = modifier
             .fillMaxWidth()
-            .padding(SettingsRowPadding)
-            .clip(trackShape)
-            .background(MaterialTheme.colorScheme.surfaceContainerHighest)
-            .padding(4.dp),
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
+            .padding(SettingsRowPadding),
     ) {
-        ThemeMode.entries.forEach { themeMode ->
-            ThemeModeOption(
-                label = themeMode.label,
-                icon = themeMode.icon(),
-                selected = themeMode == selectedMode,
+        options.forEachIndexed { index, themeMode ->
+            val selected = themeMode == selectedMode
+            SegmentedButton(
+                selected = selected,
                 onClick = { onThemeModeSelected(themeMode) },
-                modifier = Modifier.weight(1f),
-            )
-        }
-    }
-}
-
-@Composable
-private fun ThemeModeOption(
-    label: String,
-    icon: ImageVector,
-    selected: Boolean,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    val containerColor = if (selected) {
-        MaterialTheme.colorScheme.surfaceContainerLow
-    } else {
-        Color.Transparent
-    }
-    val contentColor = if (selected) {
-        MaterialTheme.colorScheme.primary
-    } else {
-        MaterialTheme.colorScheme.onSurfaceVariant
-    }
-    val borderColor = if (selected) {
-        MaterialTheme.colorScheme.primary.copy(alpha = 0.64f)
-    } else {
-        Color.Transparent
-    }
-    val optionShape = RoundedCornerShape(8.dp)
-
-    Box(
-        modifier = modifier
-            .clip(optionShape)
-            .background(containerColor)
-            .border(BorderStroke(1.dp, borderColor), optionShape)
-            .clickable(onClick = onClick)
-            .padding(vertical = 12.dp, horizontal = 4.dp),
-        contentAlignment = Alignment.Center,
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(6.dp),
-        ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                tint = if (selected) MaterialTheme.colorScheme.primary else contentColor,
-                modifier = Modifier.size(22.dp),
-            )
-            Text(
-                text = label,
-                style = MaterialTheme.typography.labelLarge,
-                color = contentColor,
-                fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Medium,
+                shape = SegmentedButtonDefaults.itemShape(
+                    index = index,
+                    count = options.size,
+                ),
+                colors = SegmentedButtonDefaults.colors(
+                    activeContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                    activeContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    activeBorderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.35f),
+                    inactiveContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                    inactiveContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    inactiveBorderColor = MaterialTheme.colorScheme.outlineVariant,
+                ),
+                icon = {
+                    Icon(
+                        imageVector = themeMode.icon(),
+                        contentDescription = null,
+                        modifier = Modifier.size(SegmentedButtonDefaults.IconSize),
+                    )
+                },
+                label = {
+                    Text(
+                        text = themeMode.label,
+                        style = MaterialTheme.typography.labelLarge,
+                        fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Medium,
+                        maxLines = 1,
+                    )
+                },
             )
         }
     }
 }
 
 private fun ThemeMode.icon(): ImageVector = when (this) {
-    ThemeMode.SYSTEM -> Icons.Filled.Brightness4
+    ThemeMode.SYSTEM -> Icons.Filled.BrightnessAuto
     ThemeMode.LIGHT -> Icons.Filled.LightMode
     ThemeMode.DARK -> Icons.Filled.DarkMode
 }

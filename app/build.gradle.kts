@@ -57,8 +57,8 @@ android {
         applicationId = "in.c1ph3rj.scanly"
         minSdk = 29
         targetSdk = 36
-        versionCode = 9
-        versionName = "1.0.9"
+        versionCode = 10
+        versionName = "1.0.10"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -167,6 +167,8 @@ dependencies {
     implementation(libs.google.play.app.update)
     implementation(libs.google.play.app.update.ktx)
     implementation(libs.pdfbox.android)
+    implementation(libs.mlkit.barcode.scanning)
+    implementation(libs.zxing.core)
     implementation(libs.androidx.work.runtime)
     implementation(libs.androidx.hilt.work)
     ksp(libs.androidx.room.compiler)

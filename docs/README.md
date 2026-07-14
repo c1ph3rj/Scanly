@@ -1,6 +1,6 @@
 # Scanly Documentation
 
-Complete documentation for **Scanly v1.0.9** — an offline-first Android document scanner.
+Complete documentation for **Scanly v1.0.10** — an offline-first Android document scanner.
 
 If you are new to this project, start here. This folder contains everything needed to understand what Scanly is, how users interact with it, and how the codebase is built.
 
@@ -14,19 +14,20 @@ Scanly is a local-only document scanner for Android. Users capture pages with th
 | UI | Jetpack Compose + Material 3 |
 | Architecture | Single module (`:app`), clean-architecture-style layers |
 | Data | Room database, app-private files, DataStore preferences |
-| Processing | LiteRT corner detection + OpenCV filters + CameraX capture |
+| Processing | LiteRT multi-model corners + semantic gate + OpenCV filters + CameraX capture |
 | Background work | WorkManager foreground backup/restore (`LibraryArchiveWorker`) |
 | Export / backup | PDFBox-encrypted PDFs; `.scanly` library archives to `Downloads/Scanly/backup/` |
 | Distribution | `githubRelease` (GitHub updates) and `playStoreRelease` (Play in-app updates) |
 | License | AGPL-3.0-only ([LICENSE](../LICENSE)) |
-| Current version | `1.0.9` (version code `9`) |
+| Current version | `1.0.10` (version code `10`) |
 
 ## Core workflow
 
 ```
 Capture or import image
-  → Detect document corners (ML) or manual crop
-  → Perspective correction + filter
+  → Optional physical-document gate
+  → Detect document corners (selected LiteRT model) or crop-screen AI Detect / manual handles
+  → Perspective correction + filter preset + optional fine adjustments
   → Save as page in a local document
   → Organize in library / groups
   → Export PDF or share images (save to Downloads/Scanly or custom folder)
@@ -73,7 +74,7 @@ Choose a path based on your goal:
 
 | Document | Contents |
 | --- | --- |
-| [database.md](data/database.md) | Room schema v3, entities, migrations, DAOs |
+| [database.md](data/database.md) | Room schema v4, entities, migrations, DAOs |
 | [file-storage.md](data/file-storage.md) | On-disk layout, raw/processed/thumbs, export cache |
 | [library-backup.md](data/library-backup.md) | `.scanly` format, destinations, validation, Replace/Merge restore |
 | [settings-and-updates.md](data/settings-and-updates.md) | DataStore prefs, FAQs/licenses, GitHub/Google Play update variants |
@@ -83,7 +84,7 @@ Choose a path based on your goal:
 | Document | Contents |
 | --- | --- |
 | [capture-and-scan.md](processing/capture-and-scan.md) | CameraX session, quality feedback, finalize flow |
-| [image-processing.md](processing/image-processing.md) | LiteRT corners, perspective warp, filter presets |
+| [image-processing.md](processing/image-processing.md) | LiteRT corners, warp, filters, adjustments, editor AI detect |
 | [export.md](processing/export.md) | PDF, image archive, group export, FileProvider share |
 
 ### Development — build and contribute
@@ -102,7 +103,7 @@ Choose a path based on your goal:
 | [implementation-snapshot.md](reference/implementation-snapshot.md) | One-page technical snapshot |
 | [tech-stack.md](reference/tech-stack.md) | Dependencies and versions from `libs.versions.toml` |
 | [domain-models.md](reference/domain-models.md) | All domain model classes |
-| [use-cases.md](reference/use-cases.md) | All 51 use cases grouped by area |
+| [use-cases.md](reference/use-cases.md) | All 73 use cases grouped by area |
 | [repository-layout.md](reference/repository-layout.md) | Root repo file and folder guide |
 
 ### Releases
@@ -138,7 +139,7 @@ These files live at the repository root for GitHub conventions and quick access:
 | Library backup | `app/src/main/java/in/c1ph3rj/scanly/data/archive/` |
 | Export storage | `app/src/main/java/in/c1ph3rj/scanly/data/export/DefaultExportStorageRepository.kt` |
 | Build config | `app/build.gradle.kts`, `gradle/libs.versions.toml` |
-| ML model | `app/src/main/assets/models/document_corners_float16.tflite` |
+| ML models | `app/src/main/assets/models/` (Lite/Standard/High/Accurate corners + document gate) |
 
 ## Screenshots
 

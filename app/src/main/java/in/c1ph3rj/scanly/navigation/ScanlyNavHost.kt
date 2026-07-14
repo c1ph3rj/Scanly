@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FolderOpen
+import androidx.compose.material.icons.filled.Handyman
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.HorizontalDivider
@@ -58,6 +59,8 @@ import `in`.c1ph3rj.scanly.feature.camera.ScanSessionDestination
 import `in`.c1ph3rj.scanly.feature.camera.ScanSessionRoute
 import `in`.c1ph3rj.scanly.feature.document.DocumentDestination
 import `in`.c1ph3rj.scanly.feature.document.DocumentDetailRoute
+import `in`.c1ph3rj.scanly.feature.editor.PageCropDestination
+import `in`.c1ph3rj.scanly.feature.editor.PageCropRoute
 import `in`.c1ph3rj.scanly.feature.editor.PageEditorDestination
 import `in`.c1ph3rj.scanly.feature.editor.PageEditorRoute
 import `in`.c1ph3rj.scanly.feature.home.HomeRoute
@@ -72,6 +75,16 @@ import `in`.c1ph3rj.scanly.feature.settings.SettingsFaqRoute
 import `in`.c1ph3rj.scanly.feature.settings.SettingsLicensesRoute
 import `in`.c1ph3rj.scanly.feature.settings.SettingsStorageRoute
 import `in`.c1ph3rj.scanly.feature.settings.SettingsRoute
+import `in`.c1ph3rj.scanly.feature.settings.ModelBenchmarkRoute
+import `in`.c1ph3rj.scanly.feature.tools.ToolsRoute
+import `in`.c1ph3rj.scanly.feature.tools.pdf.PdfCompressRoute
+import `in`.c1ph3rj.scanly.feature.tools.pdf.PdfMergeRoute
+import `in`.c1ph3rj.scanly.feature.tools.pdf.PdfPasswordRoute
+import `in`.c1ph3rj.scanly.feature.tools.pdf.PdfReaderRoute
+import `in`.c1ph3rj.scanly.feature.tools.pdf.PdfWatermarkRoute
+import `in`.c1ph3rj.scanly.feature.tools.qr.QrToolRoute
+import `in`.c1ph3rj.scanly.feature.tools.qr.QrToolMode
+import `in`.c1ph3rj.scanly.domain.model.PdfToolSource
 
 private data class BottomNavItem(
     val route: String,
@@ -91,6 +104,11 @@ private val bottomNavItems = listOf(
         icon = Icons.Filled.FolderOpen,
     ),
     BottomNavItem(
+        route = ScanlyDestination.Tools.route,
+        label = "Tools",
+        icon = Icons.Filled.Handyman,
+    ),
+    BottomNavItem(
         route = ScanlyDestination.Settings.route,
         label = "Settings",
         icon = Icons.Filled.Settings,
@@ -100,6 +118,7 @@ private val bottomNavItems = listOf(
 private val topLevelRoutes = setOf(
     ScanlyDestination.Home.route,
     ScanlyDestination.Library.route,
+    ScanlyDestination.Tools.route,
     ScanlyDestination.Settings.route,
 )
 
@@ -362,6 +381,146 @@ private fun ScanlyNavHostContent(
                 },
             )
         }
+        composable(
+            route = ScanlyDestination.Tools.route,
+            enterTransition = { topLevelEnter() },
+            exitTransition = { topLevelExit() },
+            popEnterTransition = { topLevelPopEnter() },
+            popExitTransition = { topLevelPopExit() },
+        ) {
+            ToolsRoute(
+                onOpenDocument = { documentId ->
+                    navController.navigate(DocumentDestination.route(documentId))
+                },
+                onOpenScanSession = { documentId ->
+                    navController.navigate(ScanSessionDestination.route(documentId))
+                },
+                onOpenTool = { route ->
+                    navController.navigate(route)
+                },
+            )
+        }
+        composable(
+            route = ToolsQrDestination.routePattern,
+            arguments = listOf(
+                navArgument(ToolsQrDestination.modeArgument) {
+                    type = NavType.StringType
+                    defaultValue = "scan"
+                },
+            ),
+            enterTransition = { detailPushEnter() },
+            exitTransition = { detailPushExit() },
+            popEnterTransition = { detailPopEnter() },
+            popExitTransition = { detailPopExit() },
+        ) { backStackEntry ->
+            val mode = when (
+                backStackEntry.arguments?.getString(ToolsQrDestination.modeArgument)?.lowercase()
+            ) {
+                "generate" -> QrToolMode.Generate
+                else -> QrToolMode.Scan
+            }
+            QrToolRoute(
+                onNavigateUp = navController::navigateUp,
+                initialMode = mode,
+            )
+        }
+        composable(
+            route = ToolsPdfReaderDestination.routePattern,
+            arguments = listOf(
+                navArgument(ToolsPdfReaderDestination.filePathArgument) {
+                    type = NavType.StringType
+                    defaultValue = ""
+                },
+                navArgument(ToolsPdfReaderDestination.fileNameArgument) {
+                    type = NavType.StringType
+                    defaultValue = ""
+                },
+            ),
+            enterTransition = { detailPushEnter() },
+            exitTransition = { detailPushExit() },
+            popEnterTransition = { detailPopEnter() },
+            popExitTransition = { detailPopExit() },
+        ) { backStackEntry ->
+            val filePath = backStackEntry.arguments
+                ?.getString(ToolsPdfReaderDestination.filePathArgument)
+                .orEmpty()
+            val fileName = backStackEntry.arguments
+                ?.getString(ToolsPdfReaderDestination.fileNameArgument)
+                .orEmpty()
+            PdfReaderRoute(
+                onNavigateUp = navController::navigateUp,
+                initialSource = filePath.takeIf(String::isNotBlank)?.let {
+                    PdfToolSource.AppFile(
+                        filePath = it,
+                        displayName = fileName.ifBlank { "Scanly PDF" },
+                    )
+                },
+            )
+        }
+        composable(
+            route = ToolsPdfMergeDestination.route,
+            enterTransition = { detailPushEnter() },
+            exitTransition = { detailPushExit() },
+            popEnterTransition = { detailPopEnter() },
+            popExitTransition = { detailPopExit() },
+        ) {
+            PdfMergeRoute(
+                onNavigateUp = navController::navigateUp,
+                onPreviewPdf = { artifact ->
+                    navController.navigate(
+                        ToolsPdfReaderDestination.route(artifact.filePath, artifact.fileName),
+                    )
+                },
+            )
+        }
+        composable(
+            route = ToolsPdfCompressDestination.route,
+            enterTransition = { detailPushEnter() },
+            exitTransition = { detailPushExit() },
+            popEnterTransition = { detailPopEnter() },
+            popExitTransition = { detailPopExit() },
+        ) {
+            PdfCompressRoute(
+                onNavigateUp = navController::navigateUp,
+                onPreviewPdf = { artifact ->
+                    navController.navigate(
+                        ToolsPdfReaderDestination.route(artifact.filePath, artifact.fileName),
+                    )
+                },
+            )
+        }
+        composable(
+            route = ToolsPdfPasswordDestination.route,
+            enterTransition = { detailPushEnter() },
+            exitTransition = { detailPushExit() },
+            popEnterTransition = { detailPopEnter() },
+            popExitTransition = { detailPopExit() },
+        ) {
+            PdfPasswordRoute(
+                onNavigateUp = navController::navigateUp,
+                onPreviewPdf = { artifact ->
+                    navController.navigate(
+                        ToolsPdfReaderDestination.route(artifact.filePath, artifact.fileName),
+                    )
+                },
+            )
+        }
+        composable(
+            route = ToolsPdfWatermarkDestination.route,
+            enterTransition = { detailPushEnter() },
+            exitTransition = { detailPushExit() },
+            popEnterTransition = { detailPopEnter() },
+            popExitTransition = { detailPopExit() },
+        ) {
+            PdfWatermarkRoute(
+                onNavigateUp = navController::navigateUp,
+                onPreviewPdf = { artifact ->
+                    navController.navigate(
+                        ToolsPdfReaderDestination.route(artifact.filePath, artifact.fileName),
+                    )
+                },
+            )
+        }
         composable(ScanlyDestination.Camera.route) {
             FeaturePlaceholderRoute(
                 destination = ScanlyDestination.Camera,
@@ -397,7 +556,17 @@ private fun ScanlyNavHostContent(
                 onOpenFaqs = { navController.navigate(SettingsFaqDestination.route) },
                 onOpenLicenses = { navController.navigate(SettingsLicensesDestination.route) },
                 onOpenStorage = { navController.navigate(SettingsStorageDestination.route) },
+                onOpenModelBenchmark = { navController.navigate(SettingsModelBenchmarkDestination.route) },
             )
+        }
+        composable(
+            route = SettingsModelBenchmarkDestination.route,
+            enterTransition = { detailPushEnter() },
+            exitTransition = { detailPushExit() },
+            popEnterTransition = { detailPopEnter() },
+            popExitTransition = { detailPopExit() },
+        ) {
+            ModelBenchmarkRoute(onNavigateUp = navController::navigateUp)
         }
         composable(
             route = SettingsFaqDestination.route,
@@ -556,6 +725,11 @@ private fun ScanlyNavHostContent(
         }
         composable(
             route = PageEditorDestination.routePattern,
+            arguments = listOf(
+                navArgument(PageEditorDestination.pageIdArgument) {
+                    type = NavType.StringType
+                },
+            ),
             enterTransition = { detailPushEnter() },
             exitTransition = { detailPushExit() },
             popEnterTransition = { detailPopEnter() },
@@ -563,9 +737,28 @@ private fun ScanlyNavHostContent(
         ) {
             PageEditorRoute(
                 onNavigateUp = navController::navigateUp,
+                onOpenCrop = { pageId ->
+                    navController.navigate(PageCropDestination.route(pageId))
+                },
                 onRetakePage = { documentId, pageId ->
                     navController.navigate(ScanSessionDestination.route(documentId, replacePageId = pageId))
                 },
+            )
+        }
+        composable(
+            route = PageCropDestination.routePattern,
+            arguments = listOf(
+                navArgument(PageCropDestination.pageIdArgument) {
+                    type = NavType.StringType
+                },
+            ),
+            enterTransition = { detailPushEnter() },
+            exitTransition = { detailPushExit() },
+            popEnterTransition = { detailPopEnter() },
+            popExitTransition = { detailPopExit() },
+        ) {
+            PageCropRoute(
+                onNavigateUp = navController::navigateUp,
             )
         }
         composable(

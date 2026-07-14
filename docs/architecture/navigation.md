@@ -1,6 +1,6 @@
 # Navigation
 
-All routes and user flows in Scanly **v1.0.9**.
+All routes and user flows in Scanly **v1.0.10**.
 
 Navigation is implemented with **Navigation Compose** in `ScanlyNavHost.kt`. Route helpers follow the `*Destination` object pattern with `routePattern` and `route()` factory functions.
 
@@ -22,6 +22,7 @@ Navigation is implemented with **Navigation Compose** in `ScanlyNavHost.kt`. Rou
 | --- | --- | --- |
 | `home` | Home dashboard | Yes |
 | `library` | Full library | Yes |
+| `tools` | Tools hub (capture, QR, PDF utilities) | Yes |
 | `settings` | Settings | Yes |
 
 ## Legacy placeholder routes
@@ -41,12 +42,22 @@ These top-level routes still exist but show `FeaturePlaceholderScreen` — they 
 | `document/{documentId}` | `DocumentDestination` | Document detail |
 | `camera/session/{documentId}?replacePageId={pageId}` | `ScanSessionDestination` | Scan session |
 | `preview/page/{pageId}` | `PageImagePreviewDestination` | Page preview |
-| `editor/page/{pageId}` | `PageEditorDestination` | Page editor |
+| `editor/page/{pageId}` | `PageEditorDestination` | Page editor (preview, filters/adjust overlays, retake, delete) |
+| `crop/page/{pageId}` | `PageCropDestination` | AI detect, rotate, four-point crop, reset, apply |
+
+**Editor overlays (not NavHost routes):** `FilterPickerScreen` and `FilterCustomizeScreen` share `PageEditorViewModel` and replace the editor content in place (same pattern as a full-screen mode, not a bottom sheet).
 | `group/{groupId}` | `GroupDetailDestination` | Group detail |
 | `legal/{documentType}` | `LegalDocumentDestination` | Privacy or terms viewer |
 | `settings/faq` | `SettingsFaqDestination` | FAQ sub-screen |
 | `settings/licenses` | `SettingsLicensesDestination` | Open-source licenses |
 | `settings/storage` | `SettingsStorageDestination` | Storage & backup |
+| `settings/model-benchmark` | `SettingsModelBenchmarkDestination` | Temporary local model comparison |
+| `tools/qr` | `ToolsQrDestination` | QR scan + generate |
+| `tools/pdf/reader?filePath={filePath}&fileName={fileName}` | `ToolsPdfReaderDestination` | PDF reader; optional app-owned result file opens directly |
+| `tools/pdf/merge` | `ToolsPdfMergeDestination` | PDF merge |
+| `tools/pdf/compress` | `ToolsPdfCompressDestination` | PDF compress |
+| `tools/pdf/password` | `ToolsPdfPasswordDestination` | PDF password protect/remove |
+| `tools/pdf/watermark` | `ToolsPdfWatermarkDestination` | PDF text watermark |
 
 ### Scan session arguments
 
@@ -55,7 +66,7 @@ These top-level routes still exist but show `FeaturePlaceholderScreen` — they 
 
 ### Settings sub-screen ViewModel sharing
 
-`settings/faq`, `settings/licenses`, and `settings/storage` share `SettingsViewModel` via the parent `settings` back stack entry.
+`settings/faq`, `settings/licenses`, and `settings/storage` share `SettingsViewModel` via the parent `settings` back stack entry. The model benchmark owns a separate ViewModel because its runs and results are temporary.
 
 ## User flow diagrams
 
@@ -86,7 +97,12 @@ document/{docId}
   └─► preview/page/{pageId}
         ├─► overflow: Share / Edit / Retake / Delete
         └─► editor/page/{pageId}
-              ├─► save edits → back to preview or detail
+              ├─► Filters  → full-screen FilterPickerScreen (live preview + presets; Done → editor)
+              ├─► Adjust   → full-screen FilterCustomizeScreen (sliders + compare; Done → editor)
+              ├─► crop/page/{pageId}
+              │     ├─► AI Detect / rotate / handles / Reset
+              │     └─► Done → reprocess crop+rotation → navigateUp → editor
+              ├─► editor Done → reprocess filter + adjustments → back to preview/detail
               └─► retake → camera/session/{docId}?replacePageId={pageId}
                               └─► editor/page/{pageId}  (replacement complete)
 ```
@@ -132,8 +148,11 @@ settings → settings/storage
 
 ```
 settings
-  ├─► theme change (immediate, persisted)
+  ├─► Look & feel: theme mode + pure black (AMOLED) toggle
   ├─► settings/storage (usage, destination, backup/restore, clear data)
+  ├─► Document detection: automatic or manual live/post models
+  ├─► Document detection: physical-document gate on/off
+  ├─► settings/model-benchmark (gate + four corner models on local images)
   ├─► settings/faq
   ├─► legal/{PRIVACY} or legal/{TERMS}
   ├─► settings/licenses

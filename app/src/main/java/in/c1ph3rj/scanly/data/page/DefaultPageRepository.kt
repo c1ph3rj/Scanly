@@ -11,6 +11,7 @@ import `in`.c1ph3rj.scanly.data.local.db.dao.ScanPageDao
 import `in`.c1ph3rj.scanly.data.local.db.entity.ScanPageEntity
 import `in`.c1ph3rj.scanly.data.archive.LibraryOperationCoordinator
 import `in`.c1ph3rj.scanly.data.storage.DocumentStorageManager
+import `in`.c1ph3rj.scanly.domain.model.PageFilterAdjustments
 import `in`.c1ph3rj.scanly.domain.model.PageFilterPreset
 import `in`.c1ph3rj.scanly.domain.model.PageCaptureDraft
 import `in`.c1ph3rj.scanly.domain.model.PageProcessingState
@@ -316,6 +317,7 @@ class DefaultPageRepository @Inject constructor(
         cropQuad: `in`.c1ph3rj.scanly.core.ml.DocumentCornerQuad,
         rotationDegrees: Int,
         filterPreset: PageFilterPreset,
+        filterAdjustments: PageFilterAdjustments,
         applyFilterToAllPages: Boolean,
     ): ScanlyResult<Unit> = withContext(dispatchers.io) {
         operationCoordinator.withMutation {
@@ -325,6 +327,7 @@ class DefaultPageRepository @Inject constructor(
             val document = documentDao.getDocument(page.documentId)
                 ?: error("Document not found.")
             val timestamp = System.currentTimeMillis()
+            val sanitizedAdjustments = filterAdjustments.sanitized()
             val updatedDocument = if (applyFilterToAllPages) {
                 document.copy(preferredFilterPreset = filterPreset.storageValue)
             } else {
@@ -336,17 +339,25 @@ class DefaultPageRepository @Inject constructor(
                 listOf(page)
             }
             val updatedPages = pagesToUpdate.map { existingPage ->
-                val targetCropQuad = if (existingPage.id == page.id) {
+                val isEditedPage = existingPage.id == page.id
+                val targetCropQuad = if (isEditedPage) {
                     cropQuad
                 } else {
                     existingPage.toDomain().cropQuad
                 }
-                val targetRotation = if (existingPage.id == page.id) {
+                val targetRotation = if (isEditedPage) {
                     rotationDegrees
                 } else {
                     existingPage.rotationDegrees
                 }
-                val needsReprocess = existingPage.id == page.id || existingPage.filterPreset != filterPreset.storageValue
+                // Bulk filter applies preset only; per-page customizations stay on the edited page.
+                val targetAdjustments = if (isEditedPage) {
+                    sanitizedAdjustments
+                } else {
+                    existingPage.toDomain().filterAdjustments
+                }
+                val needsReprocess = isEditedPage ||
+                    existingPage.filterPreset != filterPreset.storageValue
                 if (!needsReprocess) {
                     existingPage.copy(updatedAtMillis = timestamp)
                 } else {
@@ -354,8 +365,9 @@ class DefaultPageRepository @Inject constructor(
                         cropQuad = targetCropQuad,
                         rotationDegrees = targetRotation,
                         filterPreset = filterPreset,
+                        filterAdjustments = targetAdjustments,
                         updatedAtMillis = timestamp,
-                        detectDocumentWhenCropQuadMissing = existingPage.id == page.id || !applyFilterToAllPages,
+                        detectDocumentWhenCropQuadMissing = isEditedPage || !applyFilterToAllPages,
                     )
                 }
             }
@@ -412,6 +424,12 @@ class DefaultPageRepository @Inject constructor(
             }
         },
         filterPreset = PageFilterPreset.fromStorage(filterPreset),
+        filterAdjustments = PageFilterAdjustments(
+            brightness = filterBrightness,
+            contrast = filterContrast,
+            saturation = filterSaturation,
+            sharpness = filterSharpness,
+        ).sanitized(),
         processingState = PageProcessingState.fromStorage(processingState),
         createdAtMillis = createdAtMillis,
         updatedAtMillis = updatedAtMillis,
@@ -421,6 +439,7 @@ class DefaultPageRepository @Inject constructor(
         cropQuad: `in`.c1ph3rj.scanly.core.ml.DocumentCornerQuad?,
         rotationDegrees: Int,
         filterPreset: PageFilterPreset,
+        filterAdjustments: PageFilterAdjustments,
         updatedAtMillis: Long,
         detectDocumentWhenCropQuadMissing: Boolean,
     ): ScanPageEntity {
@@ -435,6 +454,7 @@ class DefaultPageRepository @Inject constructor(
                 rawImagePath = rawImagePath,
                 targetDirectoryName = THUMBNAILS_DIRECTORY,
             )
+        val sanitizedAdjustments = filterAdjustments.sanitized()
 
         val processedArtifacts = pageImageProcessor.reprocessPage(
             rawImagePath = rawImagePath,
@@ -443,6 +463,7 @@ class DefaultPageRepository @Inject constructor(
             cropQuad = cropQuad,
             rotationDegrees = rotationDegrees,
             filterPreset = filterPreset,
+            filterAdjustments = sanitizedAdjustments,
             detectDocumentWhenCropQuadMissing = detectDocumentWhenCropQuadMissing,
         ).toPersistedArtifacts()
 
@@ -464,6 +485,10 @@ class DefaultPageRepository @Inject constructor(
             cropBottomLeftX = processedArtifacts.cropBottomLeftX,
             cropBottomLeftY = processedArtifacts.cropBottomLeftY,
             filterPreset = processedArtifacts.filterPreset,
+            filterBrightness = sanitizedAdjustments.brightness,
+            filterContrast = sanitizedAdjustments.contrast,
+            filterSaturation = sanitizedAdjustments.saturation,
+            filterSharpness = sanitizedAdjustments.sharpness,
             processingState = processedArtifacts.processingState,
             updatedAtMillis = updatedAtMillis,
         )

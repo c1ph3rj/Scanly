@@ -14,10 +14,11 @@ How end users interact with Scanly. This describes app behavior, not implementat
 
 1. Tap the scan/create action (FAB menu).
 2. Choose **Scan** → name the document (optional **Suggest name**) → camera session opens.
-3. Point the camera at a document. Live overlay shows detected edges and quality hints.
-4. Tap capture (or use auto-capture when stable).
-5. Capture additional pages or finish the session.
-6. App navigates to **document detail** with all captured pages.
+3. Point the camera at a **physical** document. Scanly filters out many phone screens and non-document rectangles before drawing edges.
+4. Live overlay shows detected page edges and quality hints. For open books, frame a single dominant page when possible.
+5. Tap capture (or use auto-capture when stable).
+6. Capture additional pages or finish the session.
+7. App navigates to **document detail** with all captured pages.
 
 ### From Library
 
@@ -50,10 +51,10 @@ Same flow — create a new document via scan from the Library FAB menu.
 
 ### Page editor
 
-1. Adjust crop corners by dragging the four handles.
-2. Rotate the page in 90° steps.
-3. Select a filter preset from the list.
-4. Save — processed image and thumbnail regenerate from the raw capture.
+1. Tap **Filters** for a full-screen picker with a large live preview of each preset on the cropped page, then Done. Retake or delete from the editor toolbar as needed.
+2. Tap **Adjust** (next to Filters) to fine-tune brightness, contrast, saturation, and sharpness on a live cropped preview. Use reset in the adjust screen to clear customizations.
+3. Tap **Crop** to open the crop screen. Use **AI Detect** to find the document automatically, rotate with **Left** / **Right**, drag the four corner handles, use **Reset** to restore the starting crop, then **Done** to apply crop and rotation.
+4. Back on the editor, tap the check mark to save filter and adjustment changes — processed image and thumbnail regenerate from the raw capture.
 5. **Retake** — opens camera in replacement mode; after capture, returns directly to the editor.
 
 ### Reorder and delete
@@ -130,9 +131,17 @@ Saved exports go to `Downloads/Scanly` by default. Change the base folder from *
 
 ## Settings
 
-### Theme
+### Look & feel
 
-Choose **System**, **Light**, or **Dark**. Applied immediately and persisted.
+1. Choose **System**, **Light**, or **Dark**. Applied immediately and persisted.
+2. Optionally enable **Pure black** for true black surfaces in dark theme (helps battery on AMOLED displays). The preference is remembered even if you are currently on Light and applies the next time dark theme is active.
+
+### Document detection
+
+1. Open **Settings → Document detection**.
+2. **Automatic model selection** is on by default: Scanly times Lite/Standard/High on this device and picks responsive live + accurate post models. Turn it off to choose **Live preview** and **Post-processing** models manually (Lite, Standard, High, Accurate).
+3. Keep **Physical-document gate** on to reject screens and non-documents before edge detection (recommended). Turn it off only for troubleshooting.
+4. Open **Model benchmark** to run your own photos through the gate and all corner models and review timings (local-only; nothing is uploaded).
 
 ### Storage usage
 
