@@ -452,11 +452,14 @@ private fun FilterControlsPane(
             modifier = Modifier
                 .fillMaxWidth()
                 .then(if (fillHeight) Modifier.fillMaxHeight() else Modifier)
-                .verticalScroll(scrollState)
-                .padding(horizontal = 16.dp, vertical = 14.dp),
-            verticalArrangement = Arrangement.spacedBy(14.dp),
+                .padding(top = 14.dp, bottom = 12.dp),
         ) {
-            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(4.dp),
+            ) {
                 Text(
                     text = "Filters",
                     style = MaterialTheme.typography.titleMedium,
@@ -470,21 +473,50 @@ private fun FilterControlsPane(
                 )
             }
 
-            FilterScopeOption(
-                applyToAllPages = applyFilterToAllPages,
-                enabled = !isSaving,
-                onApplyToAllPagesChange = onApplyFilterToAllPagesChange,
-            )
+            Spacer(modifier = Modifier.height(12.dp))
 
-            FilterSelector(
-                selectedFilter = selectedFilter,
-                rawImagePath = page.rawImagePath,
-                fallbackImagePath = page.processedImagePath,
-                rotationDegrees = rotationDegrees,
-                cropQuad = cropQuad,
-                onSelectFilter = onSelectFilter,
-                vertical = useGridFilters,
-            )
+            // Scrollable options + trailing scrollbar (matches Adjust screen).
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .then(if (fillHeight) Modifier.weight(1f) else Modifier)
+                    .padding(start = 16.dp, end = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
+            ) {
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                        .verticalScroll(scrollState)
+                        .padding(end = 4.dp, bottom = 4.dp),
+                    verticalArrangement = Arrangement.spacedBy(14.dp),
+                ) {
+                    FilterScopeOption(
+                        applyToAllPages = applyFilterToAllPages,
+                        enabled = !isSaving,
+                        onApplyToAllPagesChange = onApplyFilterToAllPagesChange,
+                    )
+
+                    FilterSelector(
+                        selectedFilter = selectedFilter,
+                        rawImagePath = page.rawImagePath,
+                        fallbackImagePath = page.processedImagePath,
+                        rotationDegrees = rotationDegrees,
+                        cropQuad = cropQuad,
+                        onSelectFilter = onSelectFilter,
+                        vertical = useGridFilters,
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                }
+
+                VerticalContentScrollbar(
+                    scrollState = scrollState,
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .padding(vertical = 4.dp, horizontal = 2.dp)
+                        .width(6.dp),
+                )
+            }
         }
     }
 }
