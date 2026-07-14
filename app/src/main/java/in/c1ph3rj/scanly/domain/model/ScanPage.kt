@@ -12,6 +12,7 @@ data class ScanPage(
     val rotationDegrees: Int,
     val cropQuad: DocumentCornerQuad?,
     val filterPreset: PageFilterPreset,
+    val filterAdjustments: PageFilterAdjustments = PageFilterAdjustments.Default,
     val processingState: PageProcessingState,
     val createdAtMillis: Long,
     val updatedAtMillis: Long,

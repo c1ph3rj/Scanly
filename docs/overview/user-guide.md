@@ -51,10 +51,10 @@ Same flow — create a new document via scan from the Library FAB menu.
 
 ### Page editor
 
-1. Adjust crop corners by dragging the four handles.
-2. Rotate the page in 90° steps.
-3. Select a filter preset from the list.
-4. Save — processed image and thumbnail regenerate from the raw capture.
+1. Tap **Filters** for a full-screen picker with a large live preview of each preset on the cropped page, then Done. Retake or delete from the editor toolbar as needed.
+2. Tap **Adjust** (next to Filters) to fine-tune brightness, contrast, saturation, and sharpness on a live cropped preview. Use reset in the adjust screen to clear customizations.
+3. Tap **Crop** to open the crop screen. Use **AI Detect** to find the document automatically, rotate with **Left** / **Right**, drag the four corner handles, use **Reset** to restore the starting crop, then **Done** to apply crop and rotation.
+4. Back on the editor, tap the check mark to save filter and adjustment changes — processed image and thumbnail regenerate from the raw capture.
 5. **Retake** — opens camera in replacement mode; after capture, returns directly to the editor.
 
 ### Reorder and delete

@@ -57,7 +57,7 @@ app/src/main/java/in/c1ph3rj/scanly/
 - Keep dependency versions in `gradle/libs.versions.toml`; reference via `libs.*` in Gradle scripts.
 - Compose deps use BOM (`implementation(platform(libs.androidx.compose.bom))`).
 - Preserve raw captures — never overwrite files under `raw/`; regenerate `processed/` and `thumbs/`.
-- Room schema is version `3`. Any schema change requires a `Migration_X_Y` in `ScanlyDatabase.kt` and version bump.
+- Room schema is version `4`. Any schema change requires a `Migration_X_Y` in `ScanlyDatabase.kt` and version bump.
 - ML model assets under `app/src/main/assets/models/`: corner variants (Lite/Standard/High/Accurate) + `scanly_document_gate_float16.tflite` (keep `noCompress += "tflite"`).
 - Document detection prefs in DataStore: live/post models, automatic selection, document gate; pure black theme is separate (`pure_black_enabled`).
 - Gallery import limit: 10 images (`ImageImportSupport`).
@@ -73,7 +73,8 @@ Typed routes (real flows):
 - `document/{documentId}` — document detail
 - `camera/session/{documentId}?replacePageId={pageId}` — scan session
 - `preview/page/{pageId}` — page preview
-- `editor/page/{pageId}` — page editor
+- `editor/page/{pageId}` — page editor (filters, retake)
+- `crop/page/{pageId}` — rotate + four-point crop with reset
 - `group/{groupId}` — group detail
 - `legal/{documentType}` — privacy/licenses viewer
 - `settings/faq`, `settings/licenses`, `settings/storage`, `settings/model-benchmark` — settings sub-screens

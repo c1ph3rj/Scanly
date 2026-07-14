@@ -97,13 +97,13 @@ Operate on **device PDFs** (system document picker) or **Scanly library document
 
 ## Page editor
 
-- **Four-point crop** — drag corner handles to adjust document boundaries
-- **Rotate** — 90° increments
+- **Crop screen** — dedicated four-point crop with **Left** / **Right** rotation, corner handles, session **Reset**, and apply
 - **Filter presets** (10 modes):
   - Original, Auto, Enhanced Color, Grayscale, Black & White
   - Clean, Shadow Reduction, Magic Color, Receipt, Soft Black & White
+- **Filter adjust** — brightness, contrast, saturation, and sharpness on top of the selected preset (full-screen sliders + live preview)
 - **Retake** — opens camera session in replacement mode
-- **Re-detect corners**, reset, delete page
+- **Delete page** from the editor
 - Non-destructive: edits reprocess from the raw capture
 
 ## Document groups (collections)

@@ -7,7 +7,8 @@ All model classes in `domain/model/` (23 files).
 | Model | File | Purpose |
 | --- | --- | --- |
 | `ScanDocument` | `ScanDocument.kt` | Document metadata: id, title, pageCount, cover path, groupId, timestamps |
-| `ScanPage` | `ScanPage.kt` | Page: paths, crop quad, rotation, filter, processing state, pageIndex |
+| `ScanPage` | `ScanPage.kt` | Page: paths, crop quad, rotation, filter preset + adjustments, processing state, pageIndex |
+| `PageFilterAdjustments` | `PageFilterAdjustments.kt` | Brightness/contrast/saturation/sharpness post-filter tweaks |
 | `DocumentGroup` | `DocumentGroup.kt` | Collection: id, title, doc/page counts, cover path, timestamps |
 | `PageCaptureDraft` | `PageCaptureDraft.kt` | Transient state during active capture session |
 | `PagePreviewPaths` | `PagePreviewPaths.kt` | Extension resolving display paths for preview |

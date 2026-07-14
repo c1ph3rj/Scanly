@@ -42,7 +42,8 @@ These top-level routes still exist but show `FeaturePlaceholderScreen` — they 
 | `document/{documentId}` | `DocumentDestination` | Document detail |
 | `camera/session/{documentId}?replacePageId={pageId}` | `ScanSessionDestination` | Scan session |
 | `preview/page/{pageId}` | `PageImagePreviewDestination` | Page preview |
-| `editor/page/{pageId}` | `PageEditorDestination` | Page editor |
+| `editor/page/{pageId}` | `PageEditorDestination` | Page editor (filters, retake) |
+| `crop/page/{pageId}` | `PageCropDestination` | Rotate + four-point crop with reset |
 | `group/{groupId}` | `GroupDetailDestination` | Group detail |
 | `legal/{documentType}` | `LegalDocumentDestination` | Privacy or terms viewer |
 | `settings/faq` | `SettingsFaqDestination` | FAQ sub-screen |
@@ -94,6 +95,7 @@ document/{docId}
   └─► preview/page/{pageId}
         ├─► overflow: Share / Edit / Retake / Delete
         └─► editor/page/{pageId}
+              ├─► crop/page/{pageId}  (rotate + four-point crop + reset → apply → back to editor)
               ├─► save edits → back to preview or detail
               └─► retake → camera/session/{docId}?replacePageId={pageId}
                               └─► editor/page/{pageId}  (replacement complete)

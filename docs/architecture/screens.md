@@ -20,7 +20,10 @@ Every feature screen in Scanly **v1.0.10** and its responsibilities.
 | Document detail | `DocumentDetailScreen` | `DocumentDetailViewModel` | `document/{documentId}` | Pages, reorder, rename, import, export/save, move to group |
 | Scan session | `ScanSessionScreen` | `ScanSessionViewModel` | `camera/session/{docId}` | CameraX, gate + multi-model overlay, stability, auto-capture, finalize |
 | Page preview | `PageImagePreviewScreen` | `PageImagePreviewViewModel` | `preview/page/{pageId}` | Image-only paging, zoom, share/edit/retake/delete overflow |
-| Page editor | `PageEditorScreen` | `PageEditorViewModel` | `editor/page/{pageId}` | Crop, rotate, filters, retake |
+| Page editor | `PageEditorScreen` | `PageEditorViewModel` | `editor/page/{pageId}` | Opens filter/adjust/crop; retake, delete |
+| Filter picker | `FilterPickerScreen` | (shares `PageEditorViewModel`) | (editor overlay) | Full-screen live preview + preset chips |
+| Filter adjust | `FilterCustomizeScreen` | (shares `PageEditorViewModel`) | (editor overlay) | Brightness/contrast/saturation/sharpness sliders |
+| Page crop | `PageCropScreen` | `PageCropViewModel` | `crop/page/{pageId}` | AI detect, rotate, four-point crop handles, reset, apply |
 | Settings | `SettingsScreen` | `SettingsViewModel` | `settings` | Look & feel, document detection, links, manual update check |
 | Storage & backup | `StorageBackupScreen` | `SettingsViewModel` | `settings/storage` | Destination, usage, backup/restore progress, clear data |
 | Model benchmark | `ModelBenchmarkRoute` | `ModelBenchmarkViewModel` | `settings/model-benchmark` | Per-image overview with polygon overlays on scaled previews for each corner model, plus gate/pipeline stats |
@@ -75,8 +78,14 @@ Hosted in `MainActivity`, not tied to a single screen:
 
 ### PageEditorViewModel
 
-- `ObservePageUseCase`, `UpdatePageEditsUseCase`
-- Uses `CropQuadEditor` for interactive crop handles
+- `ObservePageUseCase`, `UpdatePageEditsUseCase`, `DeletePageUseCase`
+- Filter preset + per-page adjustments (brightness/contrast/saturation/sharpness) and page delete; adopts crop/rotation updates after the crop screen applies
+
+### PageCropViewModel
+
+- `ObservePageUseCase`, `UpdatePageEditsUseCase`, `DetectDocumentCornersUseCase`
+- Uses `CropQuadEditor` for rotation, interactive crop handles, and session reset
+- **AI Detect** runs still-image corner detection (same post-processing path as capture)
 
 ### PageImagePreviewViewModel
 

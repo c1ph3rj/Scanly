@@ -2,6 +2,7 @@ package `in`.c1ph3rj.scanly.domain.repository
 
 import `in`.c1ph3rj.scanly.core.common.ScanlyResult
 import `in`.c1ph3rj.scanly.core.ml.DocumentCornerQuad
+import `in`.c1ph3rj.scanly.domain.model.PageFilterAdjustments
 import `in`.c1ph3rj.scanly.domain.model.PageFilterPreset
 import `in`.c1ph3rj.scanly.domain.model.PageCaptureDraft
 import `in`.c1ph3rj.scanly.domain.model.ScanPage
@@ -30,6 +31,7 @@ interface PageRepository {
         cropQuad: DocumentCornerQuad,
         rotationDegrees: Int,
         filterPreset: PageFilterPreset,
+        filterAdjustments: PageFilterAdjustments = PageFilterAdjustments.Default,
         applyFilterToAllPages: Boolean,
     ): ScanlyResult<Unit>
 }

@@ -59,6 +59,8 @@ import `in`.c1ph3rj.scanly.feature.camera.ScanSessionDestination
 import `in`.c1ph3rj.scanly.feature.camera.ScanSessionRoute
 import `in`.c1ph3rj.scanly.feature.document.DocumentDestination
 import `in`.c1ph3rj.scanly.feature.document.DocumentDetailRoute
+import `in`.c1ph3rj.scanly.feature.editor.PageCropDestination
+import `in`.c1ph3rj.scanly.feature.editor.PageCropRoute
 import `in`.c1ph3rj.scanly.feature.editor.PageEditorDestination
 import `in`.c1ph3rj.scanly.feature.editor.PageEditorRoute
 import `in`.c1ph3rj.scanly.feature.home.HomeRoute
@@ -723,6 +725,11 @@ private fun ScanlyNavHostContent(
         }
         composable(
             route = PageEditorDestination.routePattern,
+            arguments = listOf(
+                navArgument(PageEditorDestination.pageIdArgument) {
+                    type = NavType.StringType
+                },
+            ),
             enterTransition = { detailPushEnter() },
             exitTransition = { detailPushExit() },
             popEnterTransition = { detailPopEnter() },
@@ -730,9 +737,28 @@ private fun ScanlyNavHostContent(
         ) {
             PageEditorRoute(
                 onNavigateUp = navController::navigateUp,
+                onOpenCrop = { pageId ->
+                    navController.navigate(PageCropDestination.route(pageId))
+                },
                 onRetakePage = { documentId, pageId ->
                     navController.navigate(ScanSessionDestination.route(documentId, replacePageId = pageId))
                 },
+            )
+        }
+        composable(
+            route = PageCropDestination.routePattern,
+            arguments = listOf(
+                navArgument(PageCropDestination.pageIdArgument) {
+                    type = NavType.StringType
+                },
+            ),
+            enterTransition = { detailPushEnter() },
+            exitTransition = { detailPushExit() },
+            popEnterTransition = { detailPopEnter() },
+            popExitTransition = { detailPopExit() },
+        ) {
+            PageCropRoute(
+                onNavigateUp = navController::navigateUp,
             )
         }
         composable(

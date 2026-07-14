@@ -1,6 +1,6 @@
 # Database (Room)
 
-Scanly persists document metadata in a **Room** database at schema version **3**.
+Scanly persists document metadata in a **Room** database at schema version **4**.
 
 ## Database file
 
@@ -8,7 +8,7 @@ Scanly persists document metadata in a **Room** database at schema version **3**
 | --- | --- |
 | Class | `ScanlyDatabase` |
 | Path | `databases/scanly.db` (+ `-wal`, `-shm`) under app internal storage |
-| Schema version | `3` |
+| Schema version | `4` |
 | `exportSchema` | `false` |
 
 Location: `app/src/main/java/in/c1ph3rj/scanly/data/local/db/ScanlyDatabase.kt`
@@ -44,6 +44,10 @@ Indexes: `updatedAtMillis`, `groupId`
 | `cropTopLeftX/Y` … `cropBottomRightX/Y` | REAL | Normalized crop quad (8 values) |
 | `rotationDegrees` | INTEGER | User rotation |
 | `filterPreset` | TEXT | `PageFilterPreset.storageValue` |
+| `filterBrightness` | REAL | Post-filter brightness tweak (`-1..1`, default 0) |
+| `filterContrast` | REAL | Post-filter contrast tweak (`-1..1`, default 0) |
+| `filterSaturation` | REAL | Post-filter saturation tweak (`-1..1`, default 0) |
+| `filterSharpness` | REAL | Post-filter sharpness (`0..1`, default 0) |
 | `processingState` | TEXT | `CAPTURED`, `PROCESSED`, or `NEEDS_REVIEW` |
 | `createdAtMillis` | INTEGER | Creation timestamp |
 
@@ -78,6 +82,11 @@ Adds `preferredFilterPreset TEXT` column to `documents`.
 
 1. Creates `document_groups` table.
 2. Rebuilds `documents` with `groupId` FK (SQLite table-recreation pattern).
+
+### `MIGRATION_3_4`
+
+Adds per-page filter customization columns on `scan_pages`:
+`filterBrightness`, `filterContrast`, `filterSaturation`, `filterSharpness` (all REAL NOT NULL DEFAULT 0).
 3. Copies existing rows with `groupId = NULL` (all pre-1.0.4 documents stay ungrouped).
 4. Recreates indexes.
 

@@ -118,18 +118,21 @@ Paths written to `processed/` and `thumbs/` under the document directory.
 
 | Condition | Behavior |
 | --- | --- |
-| No quad detected | Mark `NEEDS_REVIEW`; user must set manual crop in editor |
+| No quad detected | Mark `NEEDS_REVIEW`; user must set manual crop on the crop screen |
 | Capture in progress | `CAPTURED` state before processing completes |
 | Processing exception | Fallback thumbnail from raw; page still saved |
 | Editor reprocess failure | Raw preserved; previous processed path may remain |
 
 ## Editor integration
 
-`PageEditorScreen` uses `CropQuadEditor` (`core/editing/`) for interactive four-point crop:
+`PageCropScreen` (route `crop/page/{pageId}`) uses `CropQuadEditor` (`core/editing/`) for interactive four-point crop and rotation:
 
-- Drag handles at each corner
-- Constrained quad geometry
-- On save: `UpdatePageEditsUseCase` → `reprocessPage`
+- Opened from the page editor via the **Crop** action
+- **Left** / **Right** rotate the page and remaps the crop quad; drag handles at each corner; **Reset** restores the session baseline quad
+- On apply: `UpdatePageEditsUseCase` → `reprocessPage` (saves crop + rotation; keeps current filter)
+- Page editor itself handles filters, filter adjustments, retake, and delete; Done saves filter + adjustments (and the latest crop/rotation from storage)
+- Editor main preview is live: raw → rotation → perspective crop → selected filter → adjustments (same pipeline as reprocess)
+- **Adjust** opens a full-screen customize UI (not a bottom sheet) so sliders scroll without competing with sheet dismiss gestures
 
 `ThumbnailCache` is invalidated after reprocess.
 

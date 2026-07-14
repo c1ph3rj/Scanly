@@ -2,10 +2,7 @@ package `in`.c1ph3rj.scanly.data.processing
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Matrix
-import android.graphics.Paint
 import androidx.exifinterface.media.ExifInterface
 import `in`.c1ph3rj.scanly.core.common.ScanlyDispatchers
 import `in`.c1ph3rj.scanly.core.ml.AutomaticDocumentModelSelector
@@ -17,7 +14,9 @@ import `in`.c1ph3rj.scanly.core.ml.DocumentGatePolicy
 import `in`.c1ph3rj.scanly.core.ml.DocumentQuadPolicy
 import `in`.c1ph3rj.scanly.core.ml.QuadReadiness
 import `in`.c1ph3rj.scanly.core.processing.OpenCvPageFilterProcessor
-import `in`.c1ph3rj.scanly.core.processing.PerspectiveQuadMath
+import `in`.c1ph3rj.scanly.core.processing.PageFilterAdjustmentsApplier
+import `in`.c1ph3rj.scanly.core.processing.PerspectiveBitmapTransform
+import `in`.c1ph3rj.scanly.domain.model.PageFilterAdjustments
 import `in`.c1ph3rj.scanly.domain.model.PageFilterPreset
 import `in`.c1ph3rj.scanly.domain.model.PageProcessingState
 import `in`.c1ph3rj.scanly.domain.processing.PageImageProcessor
@@ -46,6 +45,7 @@ class DefaultPageImageProcessor @Inject constructor(
         processedImagePath: String,
         thumbnailPath: String,
         filterPreset: PageFilterPreset,
+        filterAdjustments: PageFilterAdjustments,
     ): ProcessedPageArtifacts = reprocessPage(
         rawImagePath = rawImagePath,
         processedImagePath = processedImagePath,
@@ -53,6 +53,7 @@ class DefaultPageImageProcessor @Inject constructor(
         cropQuad = null,
         rotationDegrees = 0,
         filterPreset = filterPreset,
+        filterAdjustments = filterAdjustments,
         detectDocumentWhenCropQuadMissing = true,
     )
 
@@ -63,6 +64,7 @@ class DefaultPageImageProcessor @Inject constructor(
         cropQuad: DocumentCornerQuad?,
         rotationDegrees: Int,
         filterPreset: PageFilterPreset,
+        filterAdjustments: PageFilterAdjustments,
         detectDocumentWhenCropQuadMissing: Boolean,
     ): ProcessedPageArtifacts = withContext(dispatchers.default) {
         val exifRotationDegrees = ExifInterface(rawImagePath).rotationDegrees
@@ -105,7 +107,7 @@ class DefaultPageImageProcessor @Inject constructor(
                 null
             }
             val correctedBitmap = effectiveCropQuad?.let { quad ->
-                perspectiveCorrect(
+                PerspectiveBitmapTransform.correct(
                     sourceBitmap = editorOrientedBitmap,
                     quad = quad,
                 )
@@ -117,8 +119,16 @@ class DefaultPageImageProcessor @Inject constructor(
             if (correctedBitmap !== filtered.bitmap) {
                 correctedBitmap.recycle()
             }
-            val enhancedBitmap = filtered.bitmap
+            val filteredBitmap = filtered.bitmap
             val appliedFilterPreset = filtered.appliedPreset
+            val enhancedBitmap = runCatching {
+                PageFilterAdjustmentsApplier.apply(filteredBitmap, filterAdjustments)
+            }.getOrElse {
+                filteredBitmap.copy(Bitmap.Config.ARGB_8888, false)
+            }
+            if (enhancedBitmap !== filteredBitmap) {
+                filteredBitmap.recycle()
+            }
 
             try {
                 writeBitmap(
@@ -150,6 +160,33 @@ class DefaultPageImageProcessor @Inject constructor(
                 filterPreset = appliedFilterPreset,
                 processingState = processingState,
             )
+        } finally {
+            editorOrientedBitmap?.takeIf { !it.isRecycled }?.recycle()
+            if (!orientedBitmap.isRecycled) {
+                orientedBitmap.recycle()
+            }
+        }
+    }
+
+    override suspend fun detectDocumentCorners(
+        rawImagePath: String,
+        rotationDegrees: Int,
+    ): DocumentCornerQuad? = withContext(dispatchers.default) {
+        val exifRotationDegrees = ExifInterface(rawImagePath).rotationDegrees
+        val userRotationDegrees = normalizeRotationDegrees(rotationDegrees)
+        val decodedBitmap = decodeForProcessing(rawImagePath) ?: return@withContext null
+        val orientedBitmap = rotateBitmapIfNeeded(decodedBitmap, exifRotationDegrees)
+        if (orientedBitmap !== decodedBitmap) {
+            decodedBitmap.recycle()
+        }
+
+        var editorOrientedBitmap: Bitmap? = null
+        try {
+            editorOrientedBitmap = rotateBitmapIfNeeded(orientedBitmap, userRotationDegrees)
+            if (editorOrientedBitmap !== orientedBitmap) {
+                orientedBitmap.recycle()
+            }
+            detectStillImageQuad(editorOrientedBitmap)
         } finally {
             editorOrientedBitmap?.takeIf { !it.isRecycled }?.recycle()
             if (!orientedBitmap.isRecycled) {
@@ -233,39 +270,6 @@ class DefaultPageImageProcessor @Inject constructor(
             postRotate(rotationDegrees.toFloat())
         }
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
-    }
-
-    private fun perspectiveCorrect(
-        sourceBitmap: Bitmap,
-        quad: DocumentCornerQuad,
-    ): Bitmap {
-        val outputSize = PerspectiveQuadMath.outputSize(
-            quad = quad,
-            sourceWidth = sourceBitmap.width,
-            sourceHeight = sourceBitmap.height,
-        )
-        val destinationBitmap = Bitmap.createBitmap(
-            outputSize.width,
-            outputSize.height,
-            Bitmap.Config.ARGB_8888,
-        )
-        val matrix = Matrix()
-        matrix.setPolyToPoly(
-            PerspectiveQuadMath.sourcePoints(quad, sourceBitmap.width, sourceBitmap.height),
-            0,
-            PerspectiveQuadMath.destinationPoints(outputSize.width - 1, outputSize.height - 1),
-            0,
-            4,
-        )
-
-        val canvas = Canvas(destinationBitmap)
-        canvas.drawColor(Color.WHITE)
-        canvas.drawBitmap(
-            sourceBitmap,
-            matrix,
-            Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG or Paint.DITHER_FLAG),
-        )
-        return destinationBitmap
     }
 
     private fun writeBitmap(
