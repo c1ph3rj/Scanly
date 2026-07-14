@@ -1,8 +1,8 @@
 # Use Cases
 
-All **61** use case classes in `domain/usecase/`, grouped by area.
+All **73** use case classes under `domain/usecase/` (including `pdftools/` and `qr/`), grouped by area.
 
-ViewModels call use cases. Use cases call repository interfaces.
+ViewModels call use cases. Use cases call repository interfaces (or thin processors).
 
 ## Document lifecycle
 
@@ -26,7 +26,8 @@ ViewModels call use cases. Use cases call repository interfaces.
 | `FinalizeCapturedPageUseCase` | Run processing and persist page |
 | `ObservePageUseCase` | Flow of single page |
 | `ObserveDocumentPagesUseCase` | Flow of pages in a document |
-| `UpdatePageEditsUseCase` | Save crop/rotate/filter and reprocess |
+| `UpdatePageEditsUseCase` | Save crop / rotation / filter / adjustments and reprocess |
+| `DetectDocumentCornersUseCase` | Still-image AI crop detection for the crop screen |
 | `MovePageUseCase` | Reorder page within document |
 | `DeletePageUseCase` | Remove page from document |
 | `ImportImagesUseCase` | Import gallery images as pages |
@@ -93,6 +94,27 @@ ViewModels call use cases. Use cases call repository interfaces.
 | `CompleteOnboardingUseCase` | Mark onboarding done |
 | `GetAppStorageUsageUseCase` | Calculate storage byte counts |
 | `ClearAllAppDataUseCase` | Wipe all local data |
+
+## Tools — QR
+
+| Use case | Purpose |
+| --- | --- |
+| `GenerateQrBitmapUseCase` | Encode text/URL as a QR bitmap |
+| `SaveQrPngUseCase` | Persist QR PNG for save/share |
+
+## Tools — PDF toolkit
+
+| Use case | Purpose |
+| --- | --- |
+| `InspectPdfUseCase` | Probe device or library PDF metadata |
+| `MergePdfsUseCase` | Merge multiple PDFs |
+| `CompressPdfUseCase` | Re-encode with quality presets |
+| `SetPdfPasswordUseCase` | Protect with open password |
+| `RemovePdfPasswordUseCase` | Remove existing password |
+| `WatermarkPdfUseCase` | Apply text watermark |
+| `RenderWatermarkPreviewUseCase` | Debounced first-page watermark proof |
+| `RenderPdfPageUseCase` | Render a page bitmap for reader/preview |
+| `PreparePdfToolShareUseCase` | FileProvider share for tool outputs |
 
 ## Updates
 

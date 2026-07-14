@@ -41,8 +41,8 @@ app/
     ├── debug/                         # Local debug update binding
     ├── githubRelease/                 # GitHub release update binding
     ├── playStoreRelease/              # Google Play release update binding
-    ├── test/                          # Unit tests (31 files)
-    └── androidTest/                   # Instrumented tests (2 files)
+    ├── test/                          # Unit tests (40 files)
+    └── androidTest/                   # Instrumented tests (3 files)
 ```
 
 ## Key source files
@@ -52,14 +52,16 @@ app/
 | `MainActivity.kt` | App shell |
 | `ScanlyApplication.kt` | Hilt application |
 | `navigation/ScanlyNavHost.kt` | Navigation |
-| `data/local/db/ScanlyDatabase.kt` | Room schema |
-| `data/page/DefaultPageRepository.kt` | Capture finalize |
+| `data/local/db/ScanlyDatabase.kt` | Room schema (v4) + migrations |
+| `data/page/DefaultPageRepository.kt` | Capture finalize and page edits |
+| `feature/editor/` | Page editor, Filters/Adjust overlays, crop route |
 | `data/export/DefaultDocumentExportRepository.kt` | Export |
 | `data/storage/DocumentStorageManager.kt` | File I/O |
 | `data/archive/LibraryArchiveEngine.kt` | `.scanly` backup, validation, and restore |
 | `data/archive/LibraryArchiveWorker.kt` | Foreground WorkManager backup/restore |
 | `data/export/DefaultExportStorageRepository.kt` | Save exports to configured destination |
 | `core/ml/` | Corner detector, document gate, book/quad policies, automatic model selector |
+| `core/processing/` | Filters, adjustments, perspective warp |
 
 ## `docs/` documentation map
 

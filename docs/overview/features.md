@@ -97,14 +97,16 @@ Operate on **device PDFs** (system document picker) or **Scanly library document
 
 ## Page editor
 
-- **Crop screen** — dedicated four-point crop with **Left** / **Right** rotation, corner handles, session **Reset**, and apply
+- **Live result preview** — shows the perspective-cropped page with the current filter and adjustments
+- **Crop screen** (`crop/page/{pageId}`) — **AI Detect**, **Left** / **Right** rotation, four-point handles, **Reset**, apply on Done
+- **Filter picker** (full-screen) — large live preview of each preset on the cropped page; optional apply-to-all-pages
 - **Filter presets** (10 modes):
   - Original, Auto, Enhanced Color, Grayscale, Black & White
   - Clean, Shadow Reduction, Magic Color, Receipt, Soft Black & White
-- **Filter adjust** — brightness, contrast, saturation, and sharpness on top of the selected preset (full-screen sliders + live preview)
+- **Filter adjust** (full-screen) — brightness, contrast, saturation, sharpness; hold **Compare** for filter-only; scrollbar beside sliders
 - **Retake** — opens camera session in replacement mode
 - **Delete page** from the editor
-- Non-destructive: edits reprocess from the raw capture
+- Non-destructive: edits reprocess from the raw capture; raw files are never overwritten
 
 ## Document groups (collections)
 

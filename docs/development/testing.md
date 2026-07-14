@@ -17,12 +17,12 @@ Test coverage and how to run tests in Scanly **v1.0.10**.
 
 ## Unit tests (`app/src/test/`)
 
-**39 test files** covering core logic:
+**40 test files** covering core logic:
 
 | Area | Test files |
 | --- | --- |
 | ML / geometry | `DocumentCornerQuadTest`, `DocumentQuadPolicyTest`, `DocumentGatePolicyTest`, `CornerRegressionDecoderTest`, `BookPageQuadAnalyzerTest`, `AutomaticDocumentModelSelectionPolicyTest`, `PerspectiveQuadMathTest`, `CropQuadEditorTest` |
-| Processing | `AdaptivePageFilterTuningTest`, `PageFilterPresetTest` |
+| Processing | `AdaptivePageFilterTuningTest`, `PageFilterPresetTest`, `PageFilterAdjustmentsTest` |
 | Camera | `CaptureStabilityTrackerTest`, `DocumentGateStabilityTrackerTest`, `StableCornerSelectorTest`, `CaptureFrameQualityAnalyzerTest`, `CameraOverlayMapperTest`, `CameraPermissionSupportTest`, `ScanSessionScreenTest` |
 | UI / layout | `AdaptiveLayoutTest`, `PreviewImageSizerTest`, `ZoomableImageStateTest`, `OnboardingLayoutModeTest` |
 | Formatting | `StorageFormatterTest`, `DocumentPresentationFormatterTest`, `DocumentPreviewPathResolverTest` |

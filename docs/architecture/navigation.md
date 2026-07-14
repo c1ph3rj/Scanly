@@ -42,8 +42,10 @@ These top-level routes still exist but show `FeaturePlaceholderScreen` — they 
 | `document/{documentId}` | `DocumentDestination` | Document detail |
 | `camera/session/{documentId}?replacePageId={pageId}` | `ScanSessionDestination` | Scan session |
 | `preview/page/{pageId}` | `PageImagePreviewDestination` | Page preview |
-| `editor/page/{pageId}` | `PageEditorDestination` | Page editor (filters, retake) |
-| `crop/page/{pageId}` | `PageCropDestination` | Rotate + four-point crop with reset |
+| `editor/page/{pageId}` | `PageEditorDestination` | Page editor (preview, filters/adjust overlays, retake, delete) |
+| `crop/page/{pageId}` | `PageCropDestination` | AI detect, rotate, four-point crop, reset, apply |
+
+**Editor overlays (not NavHost routes):** `FilterPickerScreen` and `FilterCustomizeScreen` share `PageEditorViewModel` and replace the editor content in place (same pattern as a full-screen mode, not a bottom sheet).
 | `group/{groupId}` | `GroupDetailDestination` | Group detail |
 | `legal/{documentType}` | `LegalDocumentDestination` | Privacy or terms viewer |
 | `settings/faq` | `SettingsFaqDestination` | FAQ sub-screen |
@@ -95,8 +97,12 @@ document/{docId}
   └─► preview/page/{pageId}
         ├─► overflow: Share / Edit / Retake / Delete
         └─► editor/page/{pageId}
-              ├─► crop/page/{pageId}  (rotate + four-point crop + reset → apply → back to editor)
-              ├─► save edits → back to preview or detail
+              ├─► Filters  → full-screen FilterPickerScreen (live preview + presets; Done → editor)
+              ├─► Adjust   → full-screen FilterCustomizeScreen (sliders + compare; Done → editor)
+              ├─► crop/page/{pageId}
+              │     ├─► AI Detect / rotate / handles / Reset
+              │     └─► Done → reprocess crop+rotation → navigateUp → editor
+              ├─► editor Done → reprocess filter + adjustments → back to preview/detail
               └─► retake → camera/session/{docId}?replacePageId={pageId}
                               └─► editor/page/{pageId}  (replacement complete)
 ```

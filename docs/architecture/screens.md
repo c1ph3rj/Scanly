@@ -1,6 +1,6 @@
 # Screens and ViewModels
 
-Every feature screen in Scanly **v1.0.10** and its responsibilities.
+Every feature screen in Scanly **v1.0.10** (including unreleased editor tools on this branch) and its responsibilities.
 
 ## Screen inventory
 
@@ -138,9 +138,19 @@ Hosted in `MainActivity`, not tied to a single screen:
 | `ThumbnailCache.kt` | In-memory thumbnail cache |
 | `PreviewImageSizer.kt` | Consistent preview dimensions |
 | `ImageImportSupport.kt` | Gallery picker (10 image limit) |
-| `AdaptiveLayout.kt` | Phone vs tablet detection |
+| `AdaptiveLayout.kt` | Phone vs tablet / width-class helpers |
 | `ZoomableImageDialog.kt` | Pinch-zoom preview (document detail) |
 | `ZoomableImageViewer.kt` | Pinch-zoom viewer (page preview) |
+
+Editor package helpers (`feature/editor/`):
+
+| File | Role |
+| --- | --- |
+| `EditorImageSupport.kt` | Live preview: decode, crop, filter, adjustments |
+| `EditorScrollbars.kt` | Shared vertical scrollbar for Filters/Adjust panes |
+| `FilterPickerScreen.kt` | Full-screen filter preset picker |
+| `FilterCustomizeScreen.kt` | Full-screen filter fine-tuning |
+| `PageCropScreen.kt` / `PageCropViewModel.kt` | Dedicated crop route |
 
 ## Scan session internals
 

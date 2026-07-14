@@ -36,7 +36,7 @@ When changing schema:
 5. Test on device with data from previous version.
 6. Update [../releases.md](../releases.md), [../../CHANGELOG.md](../../CHANGELOG.md), [../../VERSION.md](../../VERSION.md).
 
-Existing migrations: `1→2` (filter preset), `2→3` (document groups).
+Existing migrations: `1→2` (preferred filter preset on documents), `2→3` (document groups), `3→4` (page filter adjustments).
 
 ## Image processing rules
 
@@ -45,8 +45,10 @@ Existing migrations: `1→2` (filter preset), `2→3` (document groups).
 - **Model assets:** corner variants (`document_corners_*.tflite`) and `scanly_document_gate_float16.tflite` under `app/src/main/assets/models/` — see `models/README.txt`.
 - **Keep** `noCompress += "tflite"` in `app/build.gradle.kts`.
 - **Mark** `NEEDS_REVIEW` when processing cannot produce a quad.
-- **Filters** defined in `PageFilterPreset`; applied in `OpenCvPageFilterProcessor`.
+- **Filters** defined in `PageFilterPreset`; applied in `OpenCvPageFilterProcessor`; optional `PageFilterAdjustments` via `PageFilterAdjustmentsApplier`.
+- **Crop AI Detect** goes through `DetectDocumentCornersUseCase` / `PageImageProcessor.detectDocumentCorners` (do not call detectors from Compose).
 - **Live vs post models** and the document gate are Settings preferences; do not hard-code a single model path in UI code.
+- **Editor sub-tools:** Filters and Adjust are full-screen overlays sharing `PageEditorViewModel`; Crop is a NavHost sibling route.
 
 ## Storage layout
 

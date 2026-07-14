@@ -1,6 +1,6 @@
 # Domain Models
 
-All model classes in `domain/model/` (23 files).
+All model classes in `domain/model/` (25 files).
 
 ## Document and pages
 

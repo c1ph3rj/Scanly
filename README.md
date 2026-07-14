@@ -20,7 +20,7 @@ It is designed for a practical, local-only scanning workflow:
 - document library with searchable collections (groups) and recent-item home dashboard
 - manual camera capture with live document guidance, multi-model corner detection, and a physical-document semantic gate
 - import images from the gallery to create or extend documents
-- page crop, rotate, and filter editing
+- page editor with live cropped preview, full-screen filters/adjust, and a crop screen (AI Detect, rotate, handles)
 - Advanced PDF export/share with password protection, page numbering, auto orientation, print sizes, margins, and group-level export
 - direct export saving to `Downloads/Scanly` or a user-selected folder
 - compressed `.scanly` library backup and Replace/Merge restore under the dedicated `backup/` folder

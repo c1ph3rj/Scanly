@@ -82,15 +82,19 @@ Adds `preferredFilterPreset TEXT` column to `documents`.
 
 1. Creates `document_groups` table.
 2. Rebuilds `documents` with `groupId` FK (SQLite table-recreation pattern).
-
-### `MIGRATION_3_4`
-
-Adds per-page filter customization columns on `scan_pages`:
-`filterBrightness`, `filterContrast`, `filterSaturation`, `filterSharpness` (all REAL NOT NULL DEFAULT 0).
 3. Copies existing rows with `groupId = NULL` (all pre-1.0.4 documents stay ungrouped).
 4. Recreates indexes.
 
-Registered in `DatabaseModule` alongside `ScanlyDatabase` construction.
+### `MIGRATION_3_4`
+
+Adds per-page filter customization columns on `scan_pages` (all `REAL NOT NULL DEFAULT 0`):
+
+- `filterBrightness`
+- `filterContrast`
+- `filterSaturation`
+- `filterSharpness`
+
+Registered in `DatabaseModule` with `MIGRATION_1_2` and `MIGRATION_2_3`.
 
 ## Repository mapping
 

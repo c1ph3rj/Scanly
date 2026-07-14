@@ -49,7 +49,7 @@ All code under `app/src/main/java/in/c1ph3rj/scanly/`:
 | `feature/` | Screen UI and ViewModels |
 | `domain/model/` | Business models |
 | `domain/repository/` | Repository contracts |
-| `domain/usecase/` | Business operations (61 use case classes) |
+| `domain/usecase/` | Business operations (73 use case classes) |
 | `domain/processing/` | `PageImageProcessor` interface |
 | `data/local/db/` | Room database, entities, DAOs |
 | `data/document/` | Document repository |
@@ -62,9 +62,9 @@ All code under `app/src/main/java/in/c1ph3rj/scanly/`:
 | `data/update/` | Build-selected GitHub or Google Play update checks |
 | `data/processing/` | `PageImageProcessor` implementation |
 | `core/ml/` | LiteRT corner models, document gate, book/quad policies, auto model selection |
-| `core/processing/` | Perspective math, OpenCV filters |
+| `core/processing/` | Perspective warp, OpenCV filters, filter adjustments |
 | `core/editing/` | Crop quad editor logic |
-| `core/ui/` | Thumbnail cache, layout helpers |
+| `core/ui/` | Thumbnail cache, adaptive layout helpers |
 | `core/common/` | Result types, formatters |
 | `di/` | Hilt modules |
 
@@ -73,7 +73,7 @@ All code under `app/src/main/java/in/c1ph3rj/scanly/`:
 1. **Offline-first** — core flows need no network.
 2. **Non-destructive captures** — `raw/` files are immutable.
 3. **Derived processing** — processed images and thumbnails regenerate on edit.
-4. **Manual fallback** — crop, rotate, filter always available; `NEEDS_REVIEW` state for failures.
+4. **Manual fallback** — AI Detect, crop, rotate, filters, and fine adjustments always available; `NEEDS_REVIEW` state for failures.
 5. **Testable boundaries** — use cases encapsulate business rules; repositories encapsulate I/O.
 
 ## Layer rules
@@ -98,6 +98,7 @@ Hilt modules in `di/` install into `SingletonComponent`:
 | `SettingsModule` | `SettingsRepository` |
 | `AppDataModule` | `AppDataRepository` |
 | `ProcessingModule` | `PageImageProcessor` |
+| `PdfToolkitModule` | PDF toolkit repository |
 | `MlModule` | `DocumentCornerDetector` → `LiteRtDocumentCornerDetector`; `DocumentGateDetector` → `LiteRtDocumentGateDetector` |
 | `AppUpdateModule` | Shared update notes, Play coordinator, and prompt storage |
 | `DistributionAppUpdateModule` | Build-type-specific `AppUpdateRepository` binding |
@@ -114,7 +115,7 @@ ScanSessionViewModel
   → PreparePageCaptureUseCase → PageRepository.prepareCapture
   → CameraX writes raw JPEG
   → FinalizeCapturedPageUseCase → PageRepository.finalizeCapture
-    → PageImageProcessor → gate + corner (post model) + warp + OpenCV filter
+    → PageImageProcessor → gate + corner (post model) + warp + OpenCV filter (+ adjustments if any)
     → Room + file storage
 ```
 
@@ -122,9 +123,14 @@ ScanSessionViewModel
 
 ```
 PageEditorViewModel
-  → UpdatePageEditsUseCase → PageRepository.updatePageEdits
-    → PageImageProcessor.reprocessPage
-    → Room update + thumbnail invalidation
+  ├─ Filters / Adjust overlays (same ViewModel drafts)
+  └─ UpdatePageEditsUseCase → PageRepository.updatePageEdits
+        → PageImageProcessor.reprocessPage (crop + rotation + filter + adjustments)
+        → Room update + thumbnail invalidation
+
+PageCropViewModel
+  ├─ DetectDocumentCornersUseCase → PageImageProcessor.detectDocumentCorners
+  └─ UpdatePageEditsUseCase (apply crop + rotation; keep filter/adjustments)
 ```
 
 ### Export

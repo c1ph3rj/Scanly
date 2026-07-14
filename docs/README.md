@@ -26,8 +26,8 @@ Scanly is a local-only document scanner for Android. Users capture pages with th
 ```
 Capture or import image
   → Optional physical-document gate
-  → Detect document corners (selected LiteRT model) or manual crop
-  → Perspective correction + filter
+  → Detect document corners (selected LiteRT model) or crop-screen AI Detect / manual handles
+  → Perspective correction + filter preset + optional fine adjustments
   → Save as page in a local document
   → Organize in library / groups
   → Export PDF or share images (save to Downloads/Scanly or custom folder)
@@ -74,7 +74,7 @@ Choose a path based on your goal:
 
 | Document | Contents |
 | --- | --- |
-| [database.md](data/database.md) | Room schema v3, entities, migrations, DAOs |
+| [database.md](data/database.md) | Room schema v4, entities, migrations, DAOs |
 | [file-storage.md](data/file-storage.md) | On-disk layout, raw/processed/thumbs, export cache |
 | [library-backup.md](data/library-backup.md) | `.scanly` format, destinations, validation, Replace/Merge restore |
 | [settings-and-updates.md](data/settings-and-updates.md) | DataStore prefs, FAQs/licenses, GitHub/Google Play update variants |
@@ -84,7 +84,7 @@ Choose a path based on your goal:
 | Document | Contents |
 | --- | --- |
 | [capture-and-scan.md](processing/capture-and-scan.md) | CameraX session, quality feedback, finalize flow |
-| [image-processing.md](processing/image-processing.md) | LiteRT corners, perspective warp, filter presets |
+| [image-processing.md](processing/image-processing.md) | LiteRT corners, warp, filters, adjustments, editor AI detect |
 | [export.md](processing/export.md) | PDF, image archive, group export, FileProvider share |
 
 ### Development — build and contribute
@@ -103,7 +103,7 @@ Choose a path based on your goal:
 | [implementation-snapshot.md](reference/implementation-snapshot.md) | One-page technical snapshot |
 | [tech-stack.md](reference/tech-stack.md) | Dependencies and versions from `libs.versions.toml` |
 | [domain-models.md](reference/domain-models.md) | All domain model classes |
-| [use-cases.md](reference/use-cases.md) | All 61 use cases grouped by area |
+| [use-cases.md](reference/use-cases.md) | All 73 use cases grouped by area |
 | [repository-layout.md](reference/repository-layout.md) | Root repo file and folder guide |
 
 ### Releases

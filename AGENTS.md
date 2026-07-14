@@ -19,7 +19,7 @@ app/src/main/java/in/c1ph3rj/scanly/
 ├── ui/theme/          # ScanlyTheme, colors, typography
 ├── navigation/        # ScanlyDestination, ScanlyNavHost
 ├── feature/           # Screens + ViewModels (home, library, tools, camera, editor, …)
-├── domain/            # Models, repository interfaces, use cases (61 classes)
+├── domain/            # Models, repository interfaces, use cases (73 classes)
 ├── data/              # Room, storage, export, archive, settings, update implementations
 ├── core/              # ML (corners + gate), OpenCV, editing math, shared UI utilities
 └── di/                # Hilt modules (+ flavor-specific update bindings)
@@ -73,8 +73,8 @@ Typed routes (real flows):
 - `document/{documentId}` — document detail
 - `camera/session/{documentId}?replacePageId={pageId}` — scan session
 - `preview/page/{pageId}` — page preview
-- `editor/page/{pageId}` — page editor (filters, retake)
-- `crop/page/{pageId}` — rotate + four-point crop with reset
+- `editor/page/{pageId}` — page editor (live preview; full-screen Filters + Adjust overlays; retake/delete)
+- `crop/page/{pageId}` — AI Detect, rotate, four-point crop, reset, apply
 - `group/{groupId}` — group detail
 - `legal/{documentType}` — privacy/licenses viewer
 - `settings/faq`, `settings/licenses`, `settings/storage`, `settings/model-benchmark` — settings sub-screens
@@ -85,7 +85,7 @@ Legacy placeholder routes (`camera`, `review`, `editor` top-level) use `FeatureP
 
 ## Testing Reality
 
-- Unit tests: `app/src/test/java/in/c1ph3rj/scanly/` (39 files).
+- Unit tests: `app/src/test/java/in/c1ph3rj/scanly/` (40 files).
 - Instrumented: `app/src/androidTest/` (onboarding UI, OpenCV filter processor, smoke).
 - See [docs/development/testing.md](docs/development/testing.md) for gaps.
 
@@ -107,8 +107,10 @@ Legacy placeholder routes (`camera`, `review`, `editor` top-level) use `FeatureP
 | `ScanlyNavHost.kt` | Navigation registration and chrome |
 | `ScanlyDatabase.kt` | Room schema, entities, migrations |
 | `DefaultPageRepository.kt` | Capture finalize and page edit persistence |
-| `PageImageProcessor` (interface) / implementation | Image processing pipeline (gate + corners + filters) |
+| `PageImageProcessor` (interface) / implementation | Capture/reprocess + `detectDocumentCorners` |
 | `LiteRtDocumentCornerDetector` / `LiteRtDocumentGateDetector` | Multi-model corner + semantic gate inference |
+| `PageCropViewModel` / `PageCropScreen` | Crop route (AI Detect, rotate, handles) |
+| `FilterPickerScreen` / `FilterCustomizeScreen` | Full-screen filter pick + adjust overlays |
 | `DefaultDocumentExportRepository.kt` | PDF/ZIP export and share |
 | `DefaultLibraryArchiveRepository.kt` | Backup/restore orchestration |
 | `DefaultExportStorageRepository.kt` | Save exports to configured destination |

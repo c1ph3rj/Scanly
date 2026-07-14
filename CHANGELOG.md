@@ -6,14 +6,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+Editor and page-edit pipeline work on top of **1.0.10** (Room schema **4**).
+
+### Added
+
+- **Dedicated crop screen** (`crop/page/{pageId}`) — **AI Detect**, **Left** / **Right**, four-point handles, **Reset**, **Done**.
+- **Full-screen Filters** — large live cropped preview of each preset; apply-to-all-pages; replaces the old bottom sheet.
+- **Full-screen Adjust** — brightness, contrast, saturation, sharpness; hold **Compare** for filter-only; scrollbar beside options.
+- **Per-page filter adjustments** — Room columns + reprocess pipeline + `.scanly` archive fields (defaults for older backups).
+
 ### Changed
 
-- **Dedicated crop screen** — the page editor no longer opens with the four-point cropper by default. Use **Crop** on the editor toolbar to open a focused crop screen with **Left** / **Right** rotation, corner handles, **Reset**, and **Done**. Filters, retake, and delete stay on the editor.
-- **Editor result preview** — the page editor shows the perspective-cropped page with the selected filter applied, matching the saved output.
-- **Crop AI Detect** — on the crop screen, **AI Detect** re-runs on-device document detection and updates the four-point crop handles (then apply with Done).
-- **Filter picker screen** — Filters open full-screen (like Adjust) with a large live cropped preview so you can see each preset on the page; preset chips and “apply to all pages” sit below/beside the preview instead of a bottom sheet.
-- **Filter adjust** — next to Filters, open **Adjust** to fine-tune brightness, contrast, saturation, and sharpness on a full-screen preview (controls scroll independently; no bottom-sheet gesture conflicts). Hold **Compare** to preview the selected filter without custom tweaks. A thin scrollbar sits beside the sliders when they overflow. Adjustments save with the page.
-- **Large-screen editor tools** — Adjust and Crop screens adapt for tablets and wide windows: two-pane landscape, capped content width, roomier tablet portrait controls, and a shorter control strip in phone landscape so the preview stays usable.
+- **Editor main preview** — shows the perspective-cropped page with selected filter and adjustments (not the uncropped cropper canvas).
+- **Editor toolbar** — **Crop · Filters · Adjust · Retake · Delete** (rotation lives on the crop screen).
+- **Large-screen editor tools** — Filters, Adjust, and Crop adapt for tablets and wide windows (two-pane landscape, content width caps, phone-landscape control height).
 
 ## [1.0.10] - 2026-07-13
 
