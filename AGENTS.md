@@ -101,6 +101,18 @@ Home-screen widgets / quick actions use `in.c1ph3rj.scanly.action.{SCAN,IMPORT,Q
 - Do not commit `local.properties`, keystore files, or build outputs.
 - Do not change on-disk storage layout without a migration plan.
 
+## Docs updates — ask the user first (required)
+
+Whenever the user asks to **update the docs**, **update documentation**, **update the docs folder**, **refresh docs**, **docs/site config**, or similar, **do not invent content**. Stop and ask the user first:
+
+1. **What's landing next?** — Which features, fixes, or work-in-progress should be documented as upcoming / in development?
+2. **What must go into docs?** — Which topics, screens, APIs, user flows, release notes, architecture notes, or site-config fields need updating?
+3. **What is required for this docs pass?** — Scope (overview vs deep technical), audience, files to touch, version/tag, and anything that must *not* change.
+
+Only after the user answers those questions, edit under `docs/` (including `docs/site/config.json` for marketing product data). Prefer precise updates over rewriting whole trees.
+
+Related product-config authoring notes: [docs/site/README.md](docs/site/README.md).
+
 ## Key Files
 
 | File | Purpose |
