@@ -30,16 +30,43 @@ It is designed for a practical, local-only scanning workflow:
 
 ## Screenshots
 
+### Mobile
+
 <table>
   <tr>
-	<td><img src="screenshots/1.png" alt="Scanly screenshot 1" width="100%" /></td>
-	<td><img src="screenshots/2.png" alt="Scanly screenshot 2" width="100%" /></td>
-	<td><img src="screenshots/3.png" alt="Scanly screenshot 3" width="100%" /></td>
+	<td><img src="screenshots/mobile/image-1.jpeg" alt="Scanly mobile screenshot 1" width="100%" /></td>
+	<td><img src="screenshots/mobile/image-2.jpeg" alt="Scanly mobile screenshot 2" width="100%" /></td>
+	<td><img src="screenshots/mobile/image-3.jpeg" alt="Scanly mobile screenshot 3" width="100%" /></td>
   </tr>
   <tr>
-	<td><img src="screenshots/4.png" alt="Scanly screenshot 4" width="100%" /></td>
-	<td><img src="screenshots/6.png" alt="Scanly screenshot 6" width="100%" /></td>
+	<td><img src="screenshots/mobile/image-4.jpeg" alt="Scanly mobile screenshot 4" width="100%" /></td>
+	<td><img src="screenshots/mobile/image-5.jpeg" alt="Scanly mobile screenshot 5" width="100%" /></td>
+	<td><img src="screenshots/mobile/image-6.jpeg" alt="Scanly mobile screenshot 6" width="100%" /></td>
+  </tr>
+  <tr>
+	<td><img src="screenshots/mobile/image-7.jpeg" alt="Scanly mobile screenshot 7" width="100%" /></td>
 	<td></td>
+	<td></td>
+  </tr>
+</table>
+
+### Tablet
+
+<table>
+  <tr>
+	<td><img src="screenshots/tablet/image-1.jpeg" alt="Scanly tablet screenshot 1" width="100%" /></td>
+	<td><img src="screenshots/tablet/image-2.jpeg" alt="Scanly tablet screenshot 2" width="100%" /></td>
+	<td><img src="screenshots/tablet/image-3.jpeg" alt="Scanly tablet screenshot 3" width="100%" /></td>
+  </tr>
+  <tr>
+	<td><img src="screenshots/tablet/image-4.jpeg" alt="Scanly tablet screenshot 4" width="100%" /></td>
+	<td><img src="screenshots/tablet/image-5.jpeg" alt="Scanly tablet screenshot 5" width="100%" /></td>
+	<td><img src="screenshots/tablet/image-6.jpeg" alt="Scanly tablet screenshot 6" width="100%" /></td>
+  </tr>
+  <tr>
+	<td><img src="screenshots/tablet/image-7.jpeg" alt="Scanly tablet screenshot 7" width="100%" /></td>
+	<td><img src="screenshots/tablet/image-8.jpeg" alt="Scanly tablet screenshot 8" width="100%" /></td>
+	<td><img src="screenshots/tablet/image-9.jpeg" alt="Scanly tablet screenshot 9" width="100%" /></td>
   </tr>
 </table>
 
