@@ -71,11 +71,15 @@ import `in`.c1ph3rj.scanly.feature.preview.PageImagePreviewDestination
 import `in`.c1ph3rj.scanly.feature.preview.PageImagePreviewRoute
 import `in`.c1ph3rj.scanly.feature.settings.LegalDocumentRoute
 import `in`.c1ph3rj.scanly.feature.settings.LegalDocumentType
+import `in`.c1ph3rj.scanly.feature.settings.ModelBenchmarkRoute
+import `in`.c1ph3rj.scanly.feature.settings.SettingsAboutRoute
+import `in`.c1ph3rj.scanly.feature.settings.SettingsAppearanceRoute
+import `in`.c1ph3rj.scanly.feature.settings.SettingsDetectionRoute
 import `in`.c1ph3rj.scanly.feature.settings.SettingsFaqRoute
 import `in`.c1ph3rj.scanly.feature.settings.SettingsLicensesRoute
-import `in`.c1ph3rj.scanly.feature.settings.SettingsStorageRoute
 import `in`.c1ph3rj.scanly.feature.settings.SettingsRoute
-import `in`.c1ph3rj.scanly.feature.settings.ModelBenchmarkRoute
+import `in`.c1ph3rj.scanly.feature.settings.SettingsStorageRoute
+import `in`.c1ph3rj.scanly.feature.settings.SettingsWidgetsRoute
 import `in`.c1ph3rj.scanly.feature.tools.ToolsRoute
 import `in`.c1ph3rj.scanly.feature.tools.pdf.PdfCompressRoute
 import `in`.c1ph3rj.scanly.feature.tools.pdf.PdfMergeRoute
@@ -551,6 +555,73 @@ private fun ScanlyNavHostContent(
             popExitTransition = { topLevelPopExit() },
         ) {
             SettingsRoute(
+                onOpenFaqs = { navController.navigate(SettingsFaqDestination.route) },
+                onOpenStorage = { navController.navigate(SettingsStorageDestination.route) },
+                onOpenAppearance = { navController.navigate(SettingsAppearanceDestination.route) },
+                onOpenDetection = { navController.navigate(SettingsDetectionDestination.route) },
+                onOpenWidgets = { navController.navigate(SettingsWidgetsDestination.route) },
+                onOpenAbout = { navController.navigate(SettingsAboutDestination.route) },
+            )
+        }
+        composable(
+            route = SettingsAppearanceDestination.route,
+            enterTransition = { detailPushEnter() },
+            exitTransition = { detailPushExit() },
+            popEnterTransition = { detailPopEnter() },
+            popExitTransition = { detailPopExit() },
+        ) {
+            val parentEntry = remember(it) {
+                navController.getBackStackEntry(ScanlyDestination.Settings.route)
+            }
+            SettingsAppearanceRoute(
+                onNavigateUp = navController::navigateUp,
+                parentEntry = parentEntry,
+            )
+        }
+        composable(
+            route = SettingsDetectionDestination.route,
+            enterTransition = { detailPushEnter() },
+            exitTransition = { detailPushExit() },
+            popEnterTransition = { detailPopEnter() },
+            popExitTransition = { detailPopExit() },
+        ) {
+            val parentEntry = remember(it) {
+                navController.getBackStackEntry(ScanlyDestination.Settings.route)
+            }
+            SettingsDetectionRoute(
+                onNavigateUp = navController::navigateUp,
+                onOpenModelBenchmark = {
+                    navController.navigate(SettingsModelBenchmarkDestination.route)
+                },
+                parentEntry = parentEntry,
+            )
+        }
+        composable(
+            route = SettingsWidgetsDestination.route,
+            enterTransition = { detailPushEnter() },
+            exitTransition = { detailPushExit() },
+            popEnterTransition = { detailPopEnter() },
+            popExitTransition = { detailPopExit() },
+        ) {
+            val parentEntry = remember(it) {
+                navController.getBackStackEntry(ScanlyDestination.Settings.route)
+            }
+            SettingsWidgetsRoute(
+                onNavigateUp = navController::navigateUp,
+                parentEntry = parentEntry,
+            )
+        }
+        composable(
+            route = SettingsAboutDestination.route,
+            enterTransition = { detailPushEnter() },
+            exitTransition = { detailPushExit() },
+            popEnterTransition = { detailPopEnter() },
+            popExitTransition = { detailPopExit() },
+        ) {
+            val parentEntry = remember(it) {
+                navController.getBackStackEntry(ScanlyDestination.Settings.route)
+            }
+            SettingsAboutRoute(
                 onNavigateUp = navController::navigateUp,
                 appUpdateUiState = appUpdateUiState,
                 onCheckForUpdates = onCheckForUpdates,
@@ -559,8 +630,7 @@ private fun ScanlyNavHostContent(
                 },
                 onOpenFaqs = { navController.navigate(SettingsFaqDestination.route) },
                 onOpenLicenses = { navController.navigate(SettingsLicensesDestination.route) },
-                onOpenStorage = { navController.navigate(SettingsStorageDestination.route) },
-                onOpenModelBenchmark = { navController.navigate(SettingsModelBenchmarkDestination.route) },
+                parentEntry = parentEntry,
             )
         }
         composable(

@@ -131,10 +131,13 @@ Saved exports go to `Downloads/Scanly` by default. Change the base folder from *
 
 ## Settings
 
-### Look & feel
+The main Settings list is a short hub. Open a row for the full controls.
 
-1. Choose **System**, **Light**, or **Dark**. Applied immediately and persisted.
-2. Optionally enable **Pure black** for true black surfaces in dark theme (helps battery on AMOLED displays). The preference is remembered even if you are currently on Light and applies the next time dark theme is active.
+### Appearance
+
+1. Open **Settings → Appearance**.
+2. Choose **System**, **Light**, or **Dark**. Applied immediately and persisted.
+3. Optionally enable **Pure black** for true black surfaces in dark theme (helps battery on AMOLED displays).
 
 ### Document detection
 
@@ -145,7 +148,7 @@ Saved exports go to `Downloads/Scanly` by default. Change the base folder from *
 
 ### Storage usage
 
-Open **Storage & backup** to view library, export-cache, database, and archive-workspace usage.
+Open **Settings → Storage & backup** to view library, export-cache, database, and archive-workspace usage, clean empty items, or clear all data.
 
 ### Save location
 

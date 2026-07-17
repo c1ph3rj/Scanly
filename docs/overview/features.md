@@ -121,17 +121,16 @@ Operate on **device PDFs** (system document picker) or **Scanly library document
 
 ## Settings
 
-Main screen (`settings`) — lean layout with links to sub-screens:
+Main **Settings** hub keeps a short list; details open as sub-screens:
 
-- **Look & feel** — theme mode (System, Light, Dark) plus optional **pure black** Material 3 surfaces for AMOLED battery savings
-- **Storage & backup** — link to dedicated sub-screen (usage, export path, backup/restore, clear data)
-- **Document detection**
-  - Automatic model selection (device calibration) or independent Live / Post models (Lite, Standard, High, Accurate)
-  - Physical-document gate toggle
-  - **Model benchmark** sub-screen — run selected local images through gate + all corner models
-- **About** — app version, developer portfolio, manual update check
-- **Support** — email and project website links
-- **Legal** — privacy policy, terms, open-source licenses (dedicated sub-screens)
+| Hub | Sub-screen | Highlights |
+| --- | --- | --- |
+| Appearance | `settings/appearance` | Theme (System/Light/Dark), pure black AMOLED option |
+| Storage & backup | `settings/storage` | Usage, export path, backup/restore, empty cleanup, clear all |
+| Document detection | `settings/detection` | Automatic or manual models, document gate, model benchmark |
+| Widgets | `settings/widgets` | Pin Actions / Scan / QR |
+| Help & FAQ | `settings/faq` | Bundled FAQ topics |
+| About | `settings/about` | Version, updates, support links, privacy/terms/licenses |
 
 ### Storage & backup (`settings/storage`)
 
@@ -139,12 +138,8 @@ Main screen (`settings`) — lean layout with links to sub-screens:
 - **Save location** — exports default to `Downloads/Scanly`; custom base folder via SAF folder picker
 - **Library backup** — exact compressed `.scanly` archives under `{destination}/backup/` after free-space preflight
 - **Library restore** — validate and stage a `.scanly` archive; **Replace** or **Merge as copies**
-- **Live progress** — foreground WorkManager job with phase/progress, cancellation
-- **Clear all data** — destructive wipe of library, files, export cache, and thumbnail cache (with confirmation)
-
-### FAQs and licenses (`settings/faq`, `settings/licenses`)
-
-- Bundled JSON assets (`faqs.json`, `licenses.json`) rendered in dedicated sub-screens
+- **Library cleanup** — remove empty documents / empty folders
+- **Clear all data** — destructive wipe of library and caches (with confirmation)
 
 ## Onboarding
 
@@ -169,7 +164,7 @@ Main screen (`settings`) — lean layout with links to sub-screens:
 - **QR widget (1×1)** — brand circle only (no card background); opens the QR tool
 - **Device theming** — pill/glyph colors follow system light/dark mode
 - **Reliable first paint** — layouts avoid RemoteViews layer-list icons so content is visible immediately after placement
-- **Add from Settings** — pin Actions / Scan / QR widgets when the launcher supports `requestPinAppWidget`
+- **Add from Settings → Widgets** — pin Actions / Scan / QR when the launcher supports `requestPinAppWidget`
 - **Launcher quick actions** — long-press the app icon for Scan, QR, Import, and Library
 - All entry points use explicit `MainActivity` launch actions (`in.c1ph3rj.scanly.action.*`) and are held until onboarding completes
 

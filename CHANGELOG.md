@@ -21,6 +21,7 @@ Editor and page-edit pipeline work on top of **1.0.10** (Room schema **4**).
 
 ### Changed
 
+- **Settings redesigned as a hub** — main list shows Appearance, Storage & backup, Document detection, Widgets, Help, and About; dense controls live on sub-screens.
 - **Home-screen widgets** — icons render immediately from `initialLayout` (no layer-list delay), follow the device light/dark theme, and rebind on place/restore/app open. 1×1 Scan/QR are icon-only (no card); the actions bar is a system-style capsule with a branded **Scan** chip plus Import / QR / Library icon wells.
 - **Editor main preview** — shows the perspective-cropped page with selected filter and adjustments (not the uncropped cropper canvas).
 - **Editor toolbar** — **Crop · Filters · Adjust · Retake · Delete** (rotation lives on the crop screen).

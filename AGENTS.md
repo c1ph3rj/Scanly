@@ -77,7 +77,7 @@ Typed routes (real flows):
 - `crop/page/{pageId}` — AI Detect, rotate, four-point crop, reset, apply
 - `group/{groupId}` — group detail
 - `legal/{documentType}` — privacy/licenses viewer
-- `settings/faq`, `settings/licenses`, `settings/storage`, `settings/model-benchmark` — settings sub-screens
+- `settings/appearance`, `settings/detection`, `settings/widgets`, `settings/about`, `settings/faq`, `settings/licenses`, `settings/storage`, `settings/model-benchmark` — settings hub sub-screens
 - `tools/qr` — QR scan + generate
 - `tools/pdf/reader`, `tools/pdf/merge`, `tools/pdf/compress`, `tools/pdf/password`, `tools/pdf/watermark` — PDF toolkit
 

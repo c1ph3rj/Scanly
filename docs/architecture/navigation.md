@@ -48,6 +48,10 @@ These top-level routes still exist but show `FeaturePlaceholderScreen` — they 
 **Editor overlays (not NavHost routes):** `FilterPickerScreen` and `FilterCustomizeScreen` share `PageEditorViewModel` and replace the editor content in place (same pattern as a full-screen mode, not a bottom sheet).
 | `group/{groupId}` | `GroupDetailDestination` | Group detail |
 | `legal/{documentType}` | `LegalDocumentDestination` | Privacy or terms viewer |
+| `settings/appearance` | `SettingsAppearanceDestination` | Theme + pure black |
+| `settings/detection` | `SettingsDetectionDestination` | Models, gate, benchmark link |
+| `settings/widgets` | `SettingsWidgetsDestination` | Pin home-screen widgets |
+| `settings/about` | `SettingsAboutDestination` | Version, updates, legal, support |
 | `settings/faq` | `SettingsFaqDestination` | FAQ sub-screen |
 | `settings/licenses` | `SettingsLicensesDestination` | Open-source licenses |
 | `settings/storage` | `SettingsStorageDestination` | Storage & backup |
@@ -66,7 +70,7 @@ These top-level routes still exist but show `FeaturePlaceholderScreen` — they 
 
 ### Settings sub-screen ViewModel sharing
 
-`settings/faq`, `settings/licenses`, and `settings/storage` share `SettingsViewModel` via the parent `settings` back stack entry. The model benchmark owns a separate ViewModel because its runs and results are temporary.
+Settings sub-screens that edit preferences (`appearance`, `detection`, `widgets`, `about`, `faq`, `licenses`, `storage`) share `SettingsViewModel` via the parent `settings` back stack entry. The model benchmark owns a separate ViewModel because its runs and results are temporary.
 
 ## External launch actions (widgets & shortcuts)
 

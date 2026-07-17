@@ -60,24 +60,24 @@ Pure black only changes surface colors when dark theme is active (Dark mode, or 
 
 `LoadSettingsContentUseCase` parses FAQ and license JSON into `SettingsContent` domain model.
 
-## Settings screen sections
+## Settings screen structure
 
-| Section | Route / action | Data source |
+Main **Settings** is a hub with a short list of destinations. Advanced controls live one level down.
+
+| Hub row | Route | Contents |
 | --- | --- | --- |
-| Look & feel | `settings` | DataStore `theme_mode`, `pure_black_enabled` |
-| Storage & backup | `settings/storage` | Storage usage, export destination, archive work |
-| Library cleanup | Settings list | Remove empty documents and empty folders |
-| Widgets | Settings list | Pin Actions / Scan / QR widgets (when launcher supports pin) |
-| Document detection | `settings` | Model preferences, device calibration, and gate toggle |
-| Model benchmark | `settings/model-benchmark` | Temporary per-image and aggregate local measurements |
-| About | `settings` | `PackageManager.versionName` |
-| Support | `settings` | Email, project website links |
-| FAQs | `settings/faq` | `faqs.json` |
-| Legal | `legal/{documentType}` | Bundled WebView content |
-| Licenses | `settings/licenses` | `licenses.json` |
-| Updates | `settings` | Manual trigger → `AppUpdateViewModel` |
+| Appearance | `settings/appearance` | Theme mode, pure black |
+| Storage & backup | `settings/storage` | Usage, backup/restore, destination, empty cleanup, clear all |
+| Document detection | `settings/detection` | Automatic/manual models, gate, benchmark link |
+| Widgets | `settings/widgets` | Pin Actions / Scan / QR |
+| Help & FAQ | `settings/faq` | `faqs.json` |
+| About | `settings/about` | Version, updates, support links, legal, licenses |
 
-Clear-all-data and backup/restore live on the **Storage & backup** sub-screen. Empty-document/folder cleanup and widget pin actions live on the main Settings list (**Library cleanup** and **Widgets**).
+| Nested | Route | Notes |
+| --- | --- | --- |
+| Model benchmark | `settings/model-benchmark` | From Document detection |
+| Legal documents | `legal/{documentType}` | From About |
+| Licenses | `settings/licenses` | From About |
 
 ## App update flow
 
