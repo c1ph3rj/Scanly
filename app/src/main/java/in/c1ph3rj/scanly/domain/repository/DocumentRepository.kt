@@ -33,4 +33,10 @@ interface DocumentRepository {
     ): ScanlyResult<Unit>
 
     suspend fun deleteDocument(documentId: String): ScanlyResult<Unit>
+
+    /**
+     * Deletes documents that have no pages and removes their on-disk storage.
+     * @return number of documents removed
+     */
+    suspend fun deleteEmptyDocuments(): ScanlyResult<Int>
 }

@@ -182,6 +182,34 @@ Open **Settings → FAQs** or **Settings → Open-source licenses** for bundled 
 
 Manually checks the update channel built into the installed app. GitHub builds compare against the latest GitHub release and open its release page. Play Store builds use the Google Play in-app update flow.
 
+## Home-screen widgets and quick actions
+
+### Add a widget
+
+1. Long-press an empty area on the Android home screen → **Widgets**.
+2. Find **Scanly** and choose:
+   - **Scanly actions** — Scan · Import · QR · Library
+   - **Scanly Scan** — one-tap camera scan
+   - **Scanly QR** — open the QR tool
+3. Place the widget on the home screen.
+
+### Launcher quick actions
+
+Long-press the Scanly app icon to open shortcuts for **Scan**, **QR**, **Import**, and **Library**.
+
+### What each action does
+
+| Action | Result |
+| --- | --- |
+| Scan | Creates a document with a suggested title and opens the camera session |
+| Import | Opens the photo picker (up to 10 images) and creates an imported document |
+| QR | Opens Tools → QR in scan mode |
+| Library | Opens the Library tab |
+
+If onboarding has not finished yet, the action waits until onboarding completes, then continues.
+
+## Permissions
+
 ## Permissions
 
 | Permission | When needed |

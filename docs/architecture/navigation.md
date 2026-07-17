@@ -68,6 +68,30 @@ These top-level routes still exist but show `FeaturePlaceholderScreen` — they 
 
 `settings/faq`, `settings/licenses`, and `settings/storage` share `SettingsViewModel` via the parent `settings` back stack entry. The model benchmark owns a separate ViewModel because its runs and results are temporary.
 
+## External launch actions (widgets & shortcuts)
+
+`MainActivity` accepts explicit launch actions from widgets and launcher shortcuts (`singleTop`). `LaunchActionViewModel` queues the action until onboarding is complete, then redirects:
+
+| Action | Intent action | Redirect |
+| --- | --- | --- |
+| Scan | `in.c1ph3rj.scanly.action.SCAN` | Suggest title → create document → `camera/session/{documentId}` |
+| Import | `in.c1ph3rj.scanly.action.IMPORT` | System photo picker → import pipeline → `document/{documentId}` |
+| QR | `in.c1ph3rj.scanly.action.QR` | Tools tab → `tools/qr?mode=scan` |
+| Library | `in.c1ph3rj.scanly.action.LIBRARY` | Top-level `library` |
+
+Config: `AndroidManifest.xml` receivers + `res/xml/shortcuts.xml`; providers live under `feature/widget/`.
+
+### Widget / shortcut → scan
+
+```
+Widget or quick action (Scan)
+  └─► MainActivity (action.SCAN)
+        └─► (after onboarding) suggest title + create document
+              └─► camera/session/{newDocId}
+```
+
+## User flow diagrams
+
 ## User flow diagrams
 
 ### App startup

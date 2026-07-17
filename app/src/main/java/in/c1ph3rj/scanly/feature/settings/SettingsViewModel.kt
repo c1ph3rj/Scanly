@@ -22,6 +22,8 @@ import `in`.c1ph3rj.scanly.domain.usecase.SetAutomaticModelSelectionUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveDocumentGateEnabledUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.SetDocumentGateEnabledUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ClearAllAppDataUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.DeleteEmptyDocumentsUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.DeleteEmptyGroupsUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.GetAppStorageUsageUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.LoadSettingsContentUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveThemeModeUseCase
@@ -54,6 +56,8 @@ data class SettingsUiState(
     val storageUsage: AppStorageUsage? = null,
     val isLoadingStorage: Boolean = true,
     val isClearingData: Boolean = false,
+    val isCleaningEmptyDocuments: Boolean = false,
+    val isCleaningEmptyFolders: Boolean = false,
     val exportDestination: ExportDestination = ExportDestination.DefaultDownloadsScanly,
     val backupEstimate: BackupEstimate? = null,
     val isLoadingBackupEstimate: Boolean = true,
@@ -80,6 +84,8 @@ class SettingsViewModel @Inject constructor(
     private val loadSettingsContentUseCase: LoadSettingsContentUseCase,
     private val getAppStorageUsageUseCase: GetAppStorageUsageUseCase,
     private val clearAllAppDataUseCase: ClearAllAppDataUseCase,
+    private val deleteEmptyDocumentsUseCase: DeleteEmptyDocumentsUseCase,
+    private val deleteEmptyGroupsUseCase: DeleteEmptyGroupsUseCase,
     observeExportDestinationUseCase: ObserveExportDestinationUseCase,
     private val setExportDestinationUseCase: SetExportDestinationUseCase,
     private val resetExportDestinationUseCase: ResetExportDestinationUseCase,
@@ -225,6 +231,64 @@ class SettingsViewModel @Inject constructor(
 
                 is `in`.c1ph3rj.scanly.core.common.ScanlyResult.Failure -> {
                     _uiState.update { current -> current.copy(isClearingData = false) }
+                    _events.emit(SettingsEvent.ShowMessage(result.error.message))
+                }
+            }
+        }
+    }
+
+    fun deleteEmptyDocuments() {
+        if (_uiState.value.isCleaningEmptyDocuments || _uiState.value.archiveWork.isRunning) return
+        viewModelScope.launch {
+            _uiState.update { it.copy(isCleaningEmptyDocuments = true) }
+            when (val result = deleteEmptyDocumentsUseCase()) {
+                is `in`.c1ph3rj.scanly.core.common.ScanlyResult.Success -> {
+                    val count = result.value
+                    _uiState.update { it.copy(isCleaningEmptyDocuments = false) }
+                    _events.emit(
+                        SettingsEvent.ShowMessage(
+                            when (count) {
+                                0 -> "No empty documents found."
+                                1 -> "Removed 1 empty document."
+                                else -> "Removed $count empty documents."
+                            },
+                        ),
+                    )
+                    loadStorageUsage()
+                    loadBackupEstimate()
+                }
+
+                is `in`.c1ph3rj.scanly.core.common.ScanlyResult.Failure -> {
+                    _uiState.update { it.copy(isCleaningEmptyDocuments = false) }
+                    _events.emit(SettingsEvent.ShowMessage(result.error.message))
+                }
+            }
+        }
+    }
+
+    fun deleteEmptyFolders() {
+        if (_uiState.value.isCleaningEmptyFolders || _uiState.value.archiveWork.isRunning) return
+        viewModelScope.launch {
+            _uiState.update { it.copy(isCleaningEmptyFolders = true) }
+            when (val result = deleteEmptyGroupsUseCase()) {
+                is `in`.c1ph3rj.scanly.core.common.ScanlyResult.Success -> {
+                    val count = result.value
+                    _uiState.update { it.copy(isCleaningEmptyFolders = false) }
+                    _events.emit(
+                        SettingsEvent.ShowMessage(
+                            when (count) {
+                                0 -> "No empty folders found."
+                                1 -> "Removed 1 empty folder."
+                                else -> "Removed $count empty folders."
+                            },
+                        ),
+                    )
+                    loadStorageUsage()
+                    loadBackupEstimate()
+                }
+
+                is `in`.c1ph3rj.scanly.core.common.ScanlyResult.Failure -> {
+                    _uiState.update { it.copy(isCleaningEmptyFolders = false) }
                     _events.emit(SettingsEvent.ShowMessage(result.error.message))
                 }
             }

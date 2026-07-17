@@ -18,7 +18,7 @@ Guidance for AI coding agents working in the Scanly repository.
 app/src/main/java/in/c1ph3rj/scanly/
 ├── ui/theme/          # ScanlyTheme, colors, typography
 ├── navigation/        # ScanlyDestination, ScanlyNavHost
-├── feature/           # Screens + ViewModels (home, library, tools, camera, editor, …)
+├── feature/           # Screens + ViewModels (home, library, tools, camera, editor, widgets, …)
 ├── domain/            # Models, repository interfaces, use cases (73 classes)
 ├── data/              # Room, storage, export, archive, settings, update implementations
 ├── core/              # ML (corners + gate), OpenCV, editing math, shared UI utilities
@@ -83,9 +83,11 @@ Typed routes (real flows):
 
 Legacy placeholder routes (`camera`, `review`, `editor` top-level) use `FeaturePlaceholderScreen` — do not wire new features there.
 
+Home-screen widgets / quick actions use `in.c1ph3rj.scanly.action.{SCAN,IMPORT,QR,LIBRARY}` → `LaunchActionViewModel` (see [docs/architecture/navigation.md](docs/architecture/navigation.md)).
+
 ## Testing Reality
 
-- Unit tests: `app/src/test/java/in/c1ph3rj/scanly/` (40 files).
+- Unit tests: `app/src/test/java/in/c1ph3rj/scanly/` (41 files).
 - Instrumented: `app/src/androidTest/` (onboarding UI, OpenCV filter processor, smoke).
 - See [docs/development/testing.md](docs/development/testing.md) for gaps.
 
@@ -103,7 +105,10 @@ Legacy placeholder routes (`camera`, `review`, `editor` top-level) use `FeatureP
 
 | File | Purpose |
 | --- | --- |
-| `MainActivity.kt` | App shell, onboarding gate, theme / pure black, update dialog |
+| `MainActivity.kt` | App shell, onboarding gate, theme / pure black, update dialog, widget/shortcut redirects |
+| `feature/launch/` | `ScanlyLaunchAction`, `LaunchActionViewModel` |
+| `feature/widget/` | Actions / Scan / QR `AppWidgetProvider`s |
+| `res/xml/shortcuts.xml` | Launcher quick actions |
 | `ScanlyNavHost.kt` | Navigation registration and chrome |
 | `ScanlyDatabase.kt` | Room schema, entities, migrations |
 | `DefaultPageRepository.kt` | Capture finalize and page edit persistence |

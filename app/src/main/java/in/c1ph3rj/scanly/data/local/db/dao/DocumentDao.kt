@@ -37,6 +37,17 @@ interface DocumentDao {
     @Query("SELECT * FROM documents ORDER BY updatedAtMillis DESC")
     suspend fun getAll(): List<DocumentEntity>
 
+    /** Documents with no pages (including pageCount drift / abandoned captures). */
+    @Query(
+        """
+        SELECT d.id FROM documents d
+        WHERE NOT EXISTS (
+            SELECT 1 FROM scan_pages p WHERE p.documentId = d.id
+        )
+        """,
+    )
+    suspend fun getEmptyDocumentIds(): List<String>
+
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insert(document: DocumentEntity)
 

@@ -30,15 +30,20 @@ import androidx.compose.material.icons.filled.BrightnessAuto
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.DarkMode
+import androidx.compose.material.icons.filled.Description
+import androidx.compose.material.icons.filled.DocumentScanner
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.material.icons.filled.FolderOff
 import androidx.compose.material.icons.filled.Gavel
 import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.Policy
 import androidx.compose.material.icons.filled.Public
+import androidx.compose.material.icons.filled.QrCode2
 import androidx.compose.material.icons.filled.Speed
 import androidx.compose.material.icons.filled.Storage
 import androidx.compose.material.icons.filled.SystemUpdate
+import androidx.compose.material.icons.filled.Widgets
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -60,12 +65,14 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
@@ -78,9 +85,12 @@ import `in`.c1ph3rj.scanly.domain.model.AppStorageUsage
 import `in`.c1ph3rj.scanly.domain.model.DocumentCornerModel
 import `in`.c1ph3rj.scanly.domain.model.ThemeMode
 import `in`.c1ph3rj.scanly.feature.components.ScanlyAppLogo
+import `in`.c1ph3rj.scanly.feature.components.ScanlyConfirmDialog
 import `in`.c1ph3rj.scanly.feature.components.ScanlyTabScreenHeader
 import `in`.c1ph3rj.scanly.feature.update.AppUpdateUiState
+import `in`.c1ph3rj.scanly.feature.widget.ScanlyWidgetSupport
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 private const val DEVELOPER_PORTFOLIO_URL = "https://c1ph3rj.in"
 private const val PROJECT_WEBSITE_URL = "https://scanly.c1ph3rj.in"
@@ -360,6 +370,9 @@ fun SettingsRoute(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val uriHandler = LocalUriHandler.current
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val pinSupported = remember(context) { ScanlyWidgetSupport.isPinSupported(context) }
 
     LaunchedEffect(viewModel) {
         viewModel.events.collectLatest { event ->
@@ -369,10 +382,26 @@ fun SettingsRoute(
         }
     }
 
+    fun requestPin(kind: ScanlyWidgetSupport.WidgetKind) {
+        when (ScanlyWidgetSupport.requestPin(context, kind)) {
+            ScanlyWidgetSupport.PinResult.Requested -> Unit
+            ScanlyWidgetSupport.PinResult.Unsupported -> scope.launch {
+                snackbarHostState.showSnackbar(
+                    "Your launcher doesn’t support adding widgets from the app. " +
+                        "Long-press the home screen and pick Scanly from Widgets.",
+                )
+            }
+            ScanlyWidgetSupport.PinResult.Failed -> scope.launch {
+                snackbarHostState.showSnackbar("Could not open the add-widget dialog.")
+            }
+        }
+    }
+
     SettingsScreen(
         uiState = uiState,
         appUpdateUiState = appUpdateUiState,
         snackbarHostState = snackbarHostState,
+        pinWidgetsSupported = pinSupported,
         onThemeModeSelected = viewModel::setThemeMode,
         onPureBlackEnabledChanged = viewModel::setPureBlackEnabled,
         onOpenWebsite = { url -> uriHandler.openUri(url) },
@@ -386,6 +415,11 @@ fun SettingsRoute(
         onAutomaticModelSelectionChanged = viewModel::setAutomaticModelSelection,
         onDocumentGateEnabledChanged = viewModel::setDocumentGateEnabled,
         onCheckForUpdates = onCheckForUpdates,
+        onAddActionsWidget = { requestPin(ScanlyWidgetSupport.WidgetKind.Actions) },
+        onAddScanWidget = { requestPin(ScanlyWidgetSupport.WidgetKind.Scan) },
+        onAddQrWidget = { requestPin(ScanlyWidgetSupport.WidgetKind.Qr) },
+        onDeleteEmptyDocuments = viewModel::deleteEmptyDocuments,
+        onDeleteEmptyFolders = viewModel::deleteEmptyFolders,
     )
 }
 
@@ -394,6 +428,7 @@ fun SettingsScreen(
     uiState: SettingsUiState,
     appUpdateUiState: AppUpdateUiState,
     snackbarHostState: SnackbarHostState,
+    pinWidgetsSupported: Boolean,
     onThemeModeSelected: (ThemeMode) -> Unit,
     onPureBlackEnabledChanged: (Boolean) -> Unit,
     onOpenWebsite: (String) -> Unit,
@@ -407,9 +442,19 @@ fun SettingsScreen(
     onAutomaticModelSelectionChanged: (Boolean) -> Unit,
     onDocumentGateEnabledChanged: (Boolean) -> Unit,
     onCheckForUpdates: () -> Unit,
+    onAddActionsWidget: () -> Unit,
+    onAddScanWidget: () -> Unit,
+    onAddQrWidget: () -> Unit,
+    onDeleteEmptyDocuments: () -> Unit,
+    onDeleteEmptyFolders: () -> Unit,
 ) {
     val content = uiState.content
     val windowSizeInfo = rememberWindowSizeInfo()
+    var showEmptyDocumentsWarning by remember { mutableStateOf(false) }
+    var showEmptyFoldersWarning by remember { mutableStateOf(false) }
+    val cleanupBusy = uiState.isCleaningEmptyDocuments ||
+        uiState.isCleaningEmptyFolders ||
+        uiState.archiveWork.isRunning
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -487,6 +532,65 @@ fun SettingsScreen(
                                 append(uiState.exportDestination.exportLabel)
                             },
                             onClick = onOpenStorage,
+                        )
+                    }
+                }
+
+                item(key = "library_cleanup") {
+                    SettingsGroup(title = "Library cleanup") {
+                        SettingsActionRow(
+                            icon = Icons.Filled.Description,
+                            title = "Remove empty documents",
+                            subtitle = if (uiState.isCleaningEmptyDocuments) {
+                                "Removing…"
+                            } else {
+                                "Documents with no pages"
+                            },
+                            enabled = !cleanupBusy,
+                            isBusy = uiState.isCleaningEmptyDocuments,
+                            onClick = { showEmptyDocumentsWarning = true },
+                        )
+                        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                        SettingsActionRow(
+                            icon = Icons.Filled.FolderOff,
+                            title = "Remove empty folders",
+                            subtitle = if (uiState.isCleaningEmptyFolders) {
+                                "Removing…"
+                            } else {
+                                "Folders with no documents"
+                            },
+                            enabled = !cleanupBusy,
+                            isBusy = uiState.isCleaningEmptyFolders,
+                            onClick = { showEmptyFoldersWarning = true },
+                        )
+                    }
+                }
+
+                item(key = "widgets") {
+                    SettingsGroup(title = "Widgets") {
+                        SettingsNavigationRow(
+                            icon = Icons.Filled.Widgets,
+                            title = "Actions bar",
+                            subtitle = if (pinWidgetsSupported) {
+                                "Scan · Import · QR · Library"
+                            } else {
+                                "Long-press home screen → Widgets → Scanly"
+                            },
+                            onClick = onAddActionsWidget,
+                        )
+                        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                        SettingsNavigationRow(
+                            icon = Icons.Filled.DocumentScanner,
+                            title = "Scan widget",
+                            subtitle = "Start a new document scan",
+                            onClick = onAddScanWidget,
+                        )
+                        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                        SettingsNavigationRow(
+                            icon = Icons.Filled.QrCode2,
+                            title = "QR widget",
+                            subtitle = "Open the QR tool",
+                            onClick = onAddQrWidget,
                         )
                     }
                 }
@@ -615,6 +719,84 @@ fun SettingsScreen(
         }
     }
 
+    if (showEmptyDocumentsWarning) {
+        ScanlyConfirmDialog(
+            title = "Remove empty documents?",
+            text = "Deletes every document that has no pages, including abandoned captures, " +
+                "and frees their local storage. Documents that still have pages are kept.",
+            confirmLabel = "Remove",
+            confirmDestructive = true,
+            onDismiss = { showEmptyDocumentsWarning = false },
+            onConfirm = {
+                showEmptyDocumentsWarning = false
+                onDeleteEmptyDocuments()
+            },
+            confirmEnabled = !cleanupBusy,
+            dismissEnabled = !cleanupBusy,
+        )
+    }
+
+    if (showEmptyFoldersWarning) {
+        ScanlyConfirmDialog(
+            title = "Remove empty folders?",
+            text = "Deletes every folder (group) that contains no documents. " +
+                "Folders that still have documents are kept.",
+            confirmLabel = "Remove",
+            confirmDestructive = true,
+            onDismiss = { showEmptyFoldersWarning = false },
+            onConfirm = {
+                showEmptyFoldersWarning = false
+                onDeleteEmptyFolders()
+            },
+            confirmEnabled = !cleanupBusy,
+            dismissEnabled = !cleanupBusy,
+        )
+    }
+}
+
+@Composable
+private fun SettingsActionRow(
+    icon: ImageVector,
+    title: String,
+    subtitle: String,
+    enabled: Boolean,
+    isBusy: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier.settingsRowSurface(onClick = if (enabled) onClick else null),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.size(22.dp),
+        )
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(2.dp),
+        ) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Medium,
+            )
+            Text(
+                text = subtitle,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        if (isBusy) {
+            CircularProgressIndicator(
+                modifier = Modifier.size(20.dp),
+                strokeWidth = 2.dp,
+            )
+        }
+    }
 }
 
 @Composable

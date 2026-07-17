@@ -26,13 +26,60 @@
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
+            android:launchMode="singleTop"
             android:theme="@style/Theme.Scanly">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="in.c1ph3rj.scanly.action.SCAN" />
+                <action android:name="in.c1ph3rj.scanly.action.IMPORT" />
+                <action android:name="in.c1ph3rj.scanly.action.QR" />
+                <action android:name="in.c1ph3rj.scanly.action.LIBRARY" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
         </activity>
+
+        <receiver
+            android:name=".feature.widget.ScanlyActionsWidgetProvider"
+            android:exported="true"
+            android:label="@string/widget_actions_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_actions_info" />
+        </receiver>
+
+        <receiver
+            android:name=".feature.widget.ScanlyScanWidgetProvider"
+            android:exported="true"
+            android:label="@string/widget_scan_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_scan_info" />
+        </receiver>
+
+        <receiver
+            android:name=".feature.widget.ScanlyQrWidgetProvider"
+            android:exported="true"
+            android:label="@string/widget_qr_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_qr_info" />
+        </receiver>
 
         <provider
             android:name="androidx.core.content.FileProvider"

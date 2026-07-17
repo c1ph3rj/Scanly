@@ -162,6 +162,17 @@ Main screen (`settings`) — lean layout with links to sub-screens:
 - Update messaging reflects the installed channel (not always "Google Play")
 - Shows GitHub release notes when available
 
+## Home-screen widgets and quick actions
+
+- **Actions widget (4×1)** — capsule bar with Scan, Import, QR, and Library icon wells
+- **Scan widget (1×1)** — brand circle only (no card background); starts a new camera scan
+- **QR widget (1×1)** — brand circle only (no card background); opens the QR tool
+- **Device theming** — pill/glyph colors follow system light/dark mode
+- **Reliable first paint** — layouts avoid RemoteViews layer-list icons so content is visible immediately after placement
+- **Add from Settings** — pin Actions / Scan / QR widgets when the launcher supports `requestPinAppWidget`
+- **Launcher quick actions** — long-press the app icon for Scan, QR, Import, and Library
+- All entry points use explicit `MainActivity` launch actions (`in.c1ph3rj.scanly.action.*`) and are held until onboarding completes
+
 ## Shared UI components
 
 Reusable building blocks in `feature/components/`:

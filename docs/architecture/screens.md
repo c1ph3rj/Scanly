@@ -8,6 +8,7 @@ Every feature screen in Scanly **v1.0.10** (including unreleased editor tools on
 | --- | --- | --- | --- | --- |
 | Onboarding | `OnboardingScreen` | `OnboardingViewModel` | (gate in MainActivity) | First-run intro; persist completion |
 | Home | `HomeScreen` | `HomeViewModel` | `home` | Recent docs/groups, scan, import, suggest names, library shortcut |
+| Widgets / shortcuts | (system chrome) | `LaunchActionViewModel` | via `MainActivity` intents | Scan, Import, QR, Library redirects |
 | Library | `LibraryScreen` | `LibraryViewModel` | `library` | Search, filter pills, sort, document/group CRUD, suggest names |
 | Tools hub | `ToolsScreen` | `ToolsViewModel` | `tools` | Workflow-focused tools workspace; scan/import, QR, and PDF utility entry points |
 | QR tool | `QrToolScreen` | `QrToolViewModel` | `tools/qr` | Camera QR/barcode scan; generate QR PNG save/share |

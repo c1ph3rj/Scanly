@@ -25,5 +25,11 @@ interface GroupRepository {
 
     suspend fun deleteGroup(groupId: String): ScanlyResult<Unit>
 
+    /**
+     * Deletes folders/groups that contain no documents.
+     * @return number of groups removed
+     */
+    suspend fun deleteEmptyGroups(): ScanlyResult<Int>
+
     suspend fun setDocumentGroup(documentId: String, groupId: String?): ScanlyResult<Unit>
 }

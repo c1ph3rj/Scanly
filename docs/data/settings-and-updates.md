@@ -66,6 +66,8 @@ Pure black only changes surface colors when dark theme is active (Dark mode, or 
 | --- | --- | --- |
 | Look & feel | `settings` | DataStore `theme_mode`, `pure_black_enabled` |
 | Storage & backup | `settings/storage` | Storage usage, export destination, archive work |
+| Library cleanup | Settings list | Remove empty documents and empty folders |
+| Widgets | Settings list | Pin Actions / Scan / QR widgets (when launcher supports pin) |
 | Document detection | `settings` | Model preferences, device calibration, and gate toggle |
 | Model benchmark | `settings/model-benchmark` | Temporary per-image and aggregate local measurements |
 | About | `settings` | `PackageManager.versionName` |
@@ -75,7 +77,7 @@ Pure black only changes surface colors when dark theme is active (Dark mode, or 
 | Licenses | `settings/licenses` | `licenses.json` |
 | Updates | `settings` | Manual trigger → `AppUpdateViewModel` |
 
-Clear-all-data and backup/restore live on the **Storage & backup** sub-screen, not the main settings list.
+Clear-all-data and backup/restore live on the **Storage & backup** sub-screen. Empty-document/folder cleanup and widget pin actions live on the main Settings list (**Library cleanup** and **Widgets**).
 
 ## App update flow
 

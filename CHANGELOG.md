@@ -10,6 +10,10 @@ Editor and page-edit pipeline work on top of **1.0.10** (Room schema **4**).
 
 ### Added
 
+- **Home-screen widgets** — multi-action bar (Scan · Import · QR · Library) plus compact Scan and QR widgets that redirect into the matching in-app flows.
+- **Add widgets from Settings** — Widgets section pins Actions / Scan / QR when the launcher supports it.
+- **Library cleanup** — Settings can remove empty documents (no pages) and empty folders.
+- **Launcher quick actions** — long-press Scanly icon for Scan, QR, Import, and Library shortcuts.
 - **Dedicated crop screen** (`crop/page/{pageId}`) — **AI Detect**, **Left** / **Right**, four-point handles, **Reset**, **Done**.
 - **Full-screen Filters** — large live cropped preview of each preset; apply-to-all-pages; replaces the old bottom sheet.
 - **Full-screen Adjust** — brightness, contrast, saturation, sharpness; hold **Compare** for filter-only; scrollbar beside options.
@@ -17,9 +21,11 @@ Editor and page-edit pipeline work on top of **1.0.10** (Room schema **4**).
 
 ### Changed
 
+- **Home-screen widgets** — icons render immediately from `initialLayout` (no layer-list delay), follow the device light/dark theme, and rebind on place/restore/app open. 1×1 Scan/QR are icon-only (no card); the actions bar is a system-style capsule with a branded **Scan** chip plus Import / QR / Library icon wells.
 - **Editor main preview** — shows the perspective-cropped page with selected filter and adjustments (not the uncropped cropper canvas).
 - **Editor toolbar** — **Crop · Filters · Adjust · Retake · Delete** (rotation lives on the crop screen).
 - **Large-screen editor tools** — Filters, Adjust, and Crop adapt for tablets and wide windows (two-pane landscape, content width caps, phone-landscape control height).
+- **Filter picker controls** — the scope switch and preset strip stay fixed instead of vertically scrolling; presets remain available through the horizontal carousel on every screen size.
 
 ## [1.0.10] - 2026-07-13
 

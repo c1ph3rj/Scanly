@@ -309,7 +309,7 @@ private fun RailNavIcon(
     }
 }
 
-private fun navigateToTopLevel(navController: NavHostController, route: String) {
+fun navigateScanlyTopLevel(navController: NavHostController, route: String) {
     navController.navigate(route) {
         popUpTo(navController.graph.findStartDestination().id) {
             saveState = true
@@ -317,6 +317,10 @@ private fun navigateToTopLevel(navController: NavHostController, route: String) 
         launchSingleTop = true
         restoreState = true
     }
+}
+
+private fun navigateToTopLevel(navController: NavHostController, route: String) {
+    navigateScanlyTopLevel(navController, route)
 }
 
 @Composable

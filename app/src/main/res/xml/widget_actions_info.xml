@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Content pill ≈ primary chip + 3×40dp wells ≈ 220–250dp.
+  Target 4 cells so it sits like a full toolbar row on most launchers.
+-->
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:minWidth="240dp"
+    android:minHeight="52dp"
+    android:minResizeWidth="200dp"
+    android:minResizeHeight="52dp"
+    android:targetCellWidth="4"
+    android:targetCellHeight="1"
+    android:updatePeriodMillis="0"
+    android:initialLayout="@layout/widget_actions"
+    android:previewLayout="@layout/widget_actions"
+    android:resizeMode="horizontal"
+    android:widgetCategory="home_screen"
+    android:description="@string/widget_actions_description" />
