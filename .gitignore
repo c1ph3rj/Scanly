@@ -48,10 +48,15 @@ gen/
 out/
 release/
 **/release/
+# Android Studio "Generate Signed Bundle / APK" drops artifacts here.
+# Do not ignore app/src/githubRelease/ or app/src/playStoreRelease/ (source).
+/app/githubRelease/
+/app/playStoreRelease/
 *.hprof
 *.log
-build_output.txt
 *.mapping
+build_output.txt
+/build_output.txt
 
 # --- IDE personal state (shared project .idea files stay tracked if already in git) ---
 *.iml
@@ -72,17 +77,21 @@ build_output.txt
 *.swo
 *~
 
-# --- Kotlin / compiler caches (logs only; never source) ---
+# --- Kotlin / compiler caches and error dumps (never source) ---
 .kotlin/
+**/.kotlin/
 
 # --- Agent / session / terminal dumps (local only) ---
 .codex/
+**/.codex/
 .agents/
 .claude/
 .cursor/
 .grok/
 terminals/
+/terminals/
 tmp/
+/tmp/
 /output/
 
 # --- Python (training notebooks) ---

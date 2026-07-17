@@ -138,6 +138,30 @@ class DefaultGroupRepository @Inject constructor(
             }
         }
 
+    override suspend fun deleteEmptyGroups(): ScanlyResult<Int> =
+        withContext(dispatchers.io) {
+            operationCoordinator.withMutation {
+                runCatching {
+                    val emptyIds = documentGroupDao.getEmptyGroupIds()
+                    if (emptyIds.isEmpty()) return@runCatching 0
+                    database.withTransaction {
+                        emptyIds.forEach { documentGroupDao.deleteById(it) }
+                    }
+                    emptyIds.size
+                }.fold(
+                    onSuccess = { ScanlyResult.Success(it) },
+                    onFailure = {
+                        ScanlyResult.Failure(
+                            ScanlyError(
+                                message = it.message ?: "Could not remove empty folders.",
+                                cause = it,
+                            ),
+                        )
+                    },
+                )
+            }
+        }
+
     override suspend fun setDocumentGroup(documentId: String, groupId: String?): ScanlyResult<Unit> =
         withContext(dispatchers.io) {
             operationCoordinator.withMutation {

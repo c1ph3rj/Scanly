@@ -116,6 +116,22 @@ object SettingsStorageDestination {
     const val route = "settings/storage"
 }
 
+object SettingsAppearanceDestination {
+    const val route = "settings/appearance"
+}
+
+object SettingsDetectionDestination {
+    const val route = "settings/detection"
+}
+
+object SettingsWidgetsDestination {
+    const val route = "settings/widgets"
+}
+
+object SettingsAboutDestination {
+    const val route = "settings/about"
+}
+
 object SettingsModelBenchmarkDestination {
     const val route = "settings/model-benchmark"
 }

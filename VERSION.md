@@ -6,18 +6,18 @@ See also [docs/releases.md](docs/releases.md) for release policy and history wit
 
 | Field | Value |
 | --- | --- |
-| Version name | `1.0.10` |
-| Version code | `10` |
+| Version name | `1.0.11` |
+| Version code | `11` |
 | Application ID | `in.c1ph3rj.scanly` |
 | Min SDK | 29 (Android 10) |
 | Target / compile SDK | 36 |
 | Room schema version | `4` |
-| Release date | 2026-07-13 |
-| Branch | `feature/v1.0.10` |
+| Release date | 2026-07-17 |
+| Branch | `feature/v1.0.11` |
 
 The version shown in **Settings** is read from `versionName` in `app/build.gradle.kts`.
 
-**Note:** Room schema **4** (filter adjustment columns) is on this development branch and is required by the page-editor filter-adjust work under [Unreleased](CHANGELOG.md). Builds on this branch open existing libraries through `MIGRATION_3_4`.
+**Note:** Room schema **4** adds per-page filter adjustment columns. Existing libraries open through `MIGRATION_3_4`, and older `.scanly` backups restore with identity adjustment defaults.
 
 ## Versioning Policy
 
@@ -28,9 +28,13 @@ The version shown in **Settings** is read from `versionName` in `app/build.gradl
 
 ## Release History
 
+### 1.0.11 (version code 11)
+
+Current app release metadata (editor tools, home-screen actions, document detection improvements, and large-screen polish). See [CHANGELOG.md](CHANGELOG.md) for the complete release notes.
+
 ### 1.0.10 (version code 10)
 
-Current app release metadata (Tools, multi-model detection, large-screen polish). Editor crop/filter-adjust work continues on this branch; see [CHANGELOG.md](CHANGELOG.md) **Unreleased**.
+See [CHANGELOG.md](CHANGELOG.md) for release notes.
 
 ### 1.0.9 (version code 9)
 

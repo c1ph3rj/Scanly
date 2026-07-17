@@ -89,10 +89,16 @@ class BookAwareCornerResolver @Inject constructor(
         }
 
         val refinement = BookPageQuadAnalyzer.analyze(bitmap, readyQuad)
+        val refinedQuad = refinement.quad ?: return Candidate(raw.copy(quad = null), refinement)
+        // Snap oversize model boxes inward onto stronger page edges (keyboard/desk overshoot).
+        val tightened = DocumentQuadTightener.refine(
+            bitmap = bitmap,
+            quad = refinedQuad,
+            boundarySupport = refinement.evidence.boundarySupport,
+        ).takeIf { DocumentQuadPolicy.isReady(it, readiness) }
+            ?: refinedQuad.takeIf { DocumentQuadPolicy.isReady(it, readiness) }
         return Candidate(
-            result = raw.copy(
-                quad = refinement.quad?.takeIf { DocumentQuadPolicy.isReady(it, readiness) },
-            ),
+            result = raw.copy(quad = tightened),
             refinement = refinement,
         )
     }

@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="scanly_window_background">#FFEEF5F4</color>
+
+    <!-- Brand accent (1×1 circles + leading Scan chip) -->
+    <color name="widget_primary">#FF00796B</color>
+    <color name="widget_on_primary">#FFFFFFFF</color>
+
+    <!-- Actions capsule (light) — soft surface like system toolbars -->
+    <color name="widget_pill_background">#FFF0F3F2</color>
+    <color name="widget_pill_button">#FFE0E6E4</color>
+    <color name="widget_glyph">#FF1B2421</color>
+    <color name="widget_pill_label">#FF1B2421</color>
 </resources>

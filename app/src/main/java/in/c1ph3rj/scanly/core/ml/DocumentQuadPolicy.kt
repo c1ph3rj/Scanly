@@ -4,11 +4,15 @@ import kotlin.math.hypot
 
 object DocumentQuadPolicy {
     private const val MIN_AREA = 0.12f
-    private const val MAX_AREA = 0.92f
+    /** Loose near-full-frame boxes usually overshoot the page onto desks/keyboards. */
+    private const val MAX_AREA = 0.82f
     private const val MIN_ASPECT_RATIO = 0.35f
     private const val MAX_ASPECT_RATIO = 1.90f
     private const val MIN_FRAME_MARGIN = 0.0125f
     private const val MIN_GEOMETRY_QUALITY = 0.58f
+    /** Soft preference: mid-size pages score higher than huge loose overlays. */
+    private const val PREFERRED_AREA_SOFT_MAX = 0.58f
+    private const val AREA_PENALTY_START = 0.62f
 
     // Still-image / import processing: accept near-full-frame gallery scans, ID cards,
     // and other wide documents that live capture would reject.
@@ -78,8 +82,30 @@ object DocumentQuadPolicy {
 
     fun selectionScore(result: CornerDetectionResult): Float {
         val quad = result.quad ?: return 0f
-        return ((qualityScore(quad) * 0.78f) + (result.confidence.coerceIn(0f, 1f) * 0.22f))
-            .coerceIn(0f, 1f)
+        val quality = qualityScore(quad)
+        val confidence = result.confidence.coerceIn(0f, 1f)
+        // Prefer quads that still look like a page, not a loose grab of the whole desk.
+        val areaFit = areaFitScore(quad.area())
+        return (
+            (quality * 0.68f) +
+                (confidence * 0.18f) +
+                (areaFit * 0.14f)
+            ).coerceIn(0f, 1f)
+    }
+
+    /**
+     * 1 for typical page sizes; soft falloff as the box fills most of the frame
+     * (common failure mode when the detector includes keyboard/background).
+     */
+    internal fun areaFitScore(area: Float): Float = when {
+        area <= PREFERRED_AREA_SOFT_MAX -> 1f
+        area <= AREA_PENALTY_START -> 1f - ((area - PREFERRED_AREA_SOFT_MAX) /
+            (AREA_PENALTY_START - PREFERRED_AREA_SOFT_MAX)) * 0.08f
+        area <= MAX_AREA -> {
+            val t = ((area - AREA_PENALTY_START) / (MAX_AREA - AREA_PENALTY_START)).coerceIn(0f, 1f)
+            0.92f - t * 0.42f
+        }
+        else -> 0.35f
     }
 
     private fun hasFrameMargin(quad: DocumentCornerQuad, margin: Float): Boolean =

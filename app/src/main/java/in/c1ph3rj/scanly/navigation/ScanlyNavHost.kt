@@ -5,6 +5,7 @@ import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -71,11 +72,15 @@ import `in`.c1ph3rj.scanly.feature.preview.PageImagePreviewDestination
 import `in`.c1ph3rj.scanly.feature.preview.PageImagePreviewRoute
 import `in`.c1ph3rj.scanly.feature.settings.LegalDocumentRoute
 import `in`.c1ph3rj.scanly.feature.settings.LegalDocumentType
+import `in`.c1ph3rj.scanly.feature.settings.ModelBenchmarkRoute
+import `in`.c1ph3rj.scanly.feature.settings.SettingsAboutRoute
+import `in`.c1ph3rj.scanly.feature.settings.SettingsAppearanceRoute
+import `in`.c1ph3rj.scanly.feature.settings.SettingsDetectionRoute
 import `in`.c1ph3rj.scanly.feature.settings.SettingsFaqRoute
 import `in`.c1ph3rj.scanly.feature.settings.SettingsLicensesRoute
-import `in`.c1ph3rj.scanly.feature.settings.SettingsStorageRoute
 import `in`.c1ph3rj.scanly.feature.settings.SettingsRoute
-import `in`.c1ph3rj.scanly.feature.settings.ModelBenchmarkRoute
+import `in`.c1ph3rj.scanly.feature.settings.SettingsStorageRoute
+import `in`.c1ph3rj.scanly.feature.settings.SettingsWidgetsRoute
 import `in`.c1ph3rj.scanly.feature.tools.ToolsRoute
 import `in`.c1ph3rj.scanly.feature.tools.pdf.PdfCompressRoute
 import `in`.c1ph3rj.scanly.feature.tools.pdf.PdfMergeRoute
@@ -132,41 +137,28 @@ fun ScanlyNavHost(
     val windowSizeInfo = rememberWindowSizeInfo()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
-    val showNav = currentRoute in topLevelRoutes
+    val showBottomNav = currentRoute in topLevelRoutes
 
     if (windowSizeInfo.isTablet) {
-        Row(
+        Box(
             modifier = modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background),
         ) {
-            if (showNav) {
-                ScanlyNavigationRail(
-                    currentRoute = currentRoute,
-                    onNavigate = { route -> navigateToTopLevel(navController, route) },
-                )
-            }
-
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight()
-                    .background(MaterialTheme.colorScheme.background),
-            ) {
-                ScanlyNavHostContent(
-                    navController = navController,
-                    appUpdateUiState = appUpdateUiState,
-                    onCheckForUpdates = onCheckForUpdates,
-                    modifier = Modifier.fillMaxSize(),
-                )
-            }
+            ScanlyNavHostContent(
+                navController = navController,
+                appUpdateUiState = appUpdateUiState,
+                onCheckForUpdates = onCheckForUpdates,
+                useTabletNavigationRail = true,
+                modifier = Modifier.fillMaxSize(),
+            )
         }
     } else {
         Scaffold(
             modifier = modifier.background(MaterialTheme.colorScheme.background),
             containerColor = MaterialTheme.colorScheme.background,
             bottomBar = {
-                if (showNav) {
+                if (showBottomNav) {
                     ScanlyNavigationBar(
                         currentRoute = currentRoute,
                         onNavigate = { route -> navigateToTopLevel(navController, route) },
@@ -184,6 +176,7 @@ fun ScanlyNavHost(
                     navController = navController,
                     appUpdateUiState = appUpdateUiState,
                     onCheckForUpdates = onCheckForUpdates,
+                    useTabletNavigationRail = false,
                     modifier = Modifier.fillMaxSize(),
                 )
             }
@@ -309,7 +302,39 @@ private fun RailNavIcon(
     }
 }
 
-private fun navigateToTopLevel(navController: NavHostController, route: String) {
+@Composable
+private fun TopLevelDestinationShell(
+    useTabletNavigationRail: Boolean,
+    currentRoute: String,
+    onNavigate: (String) -> Unit,
+    content: @Composable () -> Unit,
+) {
+    if (!useTabletNavigationRail) {
+        content()
+        return
+    }
+
+    Row(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background),
+    ) {
+        ScanlyNavigationRail(
+            currentRoute = currentRoute,
+            onNavigate = onNavigate,
+        )
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxHeight()
+                .background(MaterialTheme.colorScheme.background),
+        ) {
+            content()
+        }
+    }
+}
+
+fun navigateScanlyTopLevel(navController: NavHostController, route: String) {
     navController.navigate(route) {
         popUpTo(navController.graph.findStartDestination().id) {
             saveState = true
@@ -319,11 +344,16 @@ private fun navigateToTopLevel(navController: NavHostController, route: String) 
     }
 }
 
+private fun navigateToTopLevel(navController: NavHostController, route: String) {
+    navigateScanlyTopLevel(navController, route)
+}
+
 @Composable
 private fun ScanlyNavHostContent(
     navController: NavHostController,
     appUpdateUiState: AppUpdateUiState,
     onCheckForUpdates: () -> Unit,
+    useTabletNavigationRail: Boolean,
     modifier: Modifier = Modifier,
 ) {
     Box(
@@ -347,20 +377,26 @@ private fun ScanlyNavHostContent(
             popEnterTransition = { topLevelPopEnter() },
             popExitTransition = { topLevelPopExit() },
         ) {
-            HomeRoute(
-                onOpenDocument = { documentId ->
-                    navController.navigate(DocumentDestination.route(documentId))
-                },
-                onOpenScanSession = { documentId ->
-                    navController.navigate(ScanSessionDestination.route(documentId))
-                },
-                onOpenGroup = { groupId ->
-                    navController.navigate(GroupDetailDestination.route(groupId))
-                },
-                onNavigateToLibrary = {
-                    navigateToTopLevel(navController, ScanlyDestination.Library.route)
-                },
-            )
+            TopLevelDestinationShell(
+                useTabletNavigationRail = useTabletNavigationRail,
+                currentRoute = ScanlyDestination.Home.route,
+                onNavigate = { route -> navigateToTopLevel(navController, route) },
+            ) {
+                HomeRoute(
+                    onOpenDocument = { documentId ->
+                        navController.navigate(DocumentDestination.route(documentId))
+                    },
+                    onOpenScanSession = { documentId ->
+                        navController.navigate(ScanSessionDestination.route(documentId))
+                    },
+                    onOpenGroup = { groupId ->
+                        navController.navigate(GroupDetailDestination.route(groupId))
+                    },
+                    onNavigateToLibrary = {
+                        navigateToTopLevel(navController, ScanlyDestination.Library.route)
+                    },
+                )
+            }
         }
         composable(
             route = ScanlyDestination.Library.route,
@@ -369,17 +405,23 @@ private fun ScanlyNavHostContent(
             popEnterTransition = { topLevelPopEnter() },
             popExitTransition = { topLevelPopExit() },
         ) {
-            LibraryRoute(
-                onOpenDocument = { documentId ->
-                    navController.navigate(DocumentDestination.route(documentId))
-                },
-                onOpenScanSession = { documentId ->
-                    navController.navigate(ScanSessionDestination.route(documentId))
-                },
-                onOpenGroup = { groupId ->
-                    navController.navigate(GroupDetailDestination.route(groupId))
-                },
-            )
+            TopLevelDestinationShell(
+                useTabletNavigationRail = useTabletNavigationRail,
+                currentRoute = ScanlyDestination.Library.route,
+                onNavigate = { route -> navigateToTopLevel(navController, route) },
+            ) {
+                LibraryRoute(
+                    onOpenDocument = { documentId ->
+                        navController.navigate(DocumentDestination.route(documentId))
+                    },
+                    onOpenScanSession = { documentId ->
+                        navController.navigate(ScanSessionDestination.route(documentId))
+                    },
+                    onOpenGroup = { groupId ->
+                        navController.navigate(GroupDetailDestination.route(groupId))
+                    },
+                )
+            }
         }
         composable(
             route = ScanlyDestination.Tools.route,
@@ -388,17 +430,23 @@ private fun ScanlyNavHostContent(
             popEnterTransition = { topLevelPopEnter() },
             popExitTransition = { topLevelPopExit() },
         ) {
-            ToolsRoute(
-                onOpenDocument = { documentId ->
-                    navController.navigate(DocumentDestination.route(documentId))
-                },
-                onOpenScanSession = { documentId ->
-                    navController.navigate(ScanSessionDestination.route(documentId))
-                },
-                onOpenTool = { route ->
-                    navController.navigate(route)
-                },
-            )
+            TopLevelDestinationShell(
+                useTabletNavigationRail = useTabletNavigationRail,
+                currentRoute = ScanlyDestination.Tools.route,
+                onNavigate = { route -> navigateToTopLevel(navController, route) },
+            ) {
+                ToolsRoute(
+                    onOpenDocument = { documentId ->
+                        navController.navigate(DocumentDestination.route(documentId))
+                    },
+                    onOpenScanSession = { documentId ->
+                        navController.navigate(ScanSessionDestination.route(documentId))
+                    },
+                    onOpenTool = { route ->
+                        navController.navigate(route)
+                    },
+                )
+            }
         }
         composable(
             route = ToolsQrDestination.routePattern,
@@ -546,7 +594,80 @@ private fun ScanlyNavHostContent(
             popEnterTransition = { topLevelPopEnter() },
             popExitTransition = { topLevelPopExit() },
         ) {
-            SettingsRoute(
+            TopLevelDestinationShell(
+                useTabletNavigationRail = useTabletNavigationRail,
+                currentRoute = ScanlyDestination.Settings.route,
+                onNavigate = { route -> navigateToTopLevel(navController, route) },
+            ) {
+                SettingsRoute(
+                    onOpenFaqs = { navController.navigate(SettingsFaqDestination.route) },
+                    onOpenStorage = { navController.navigate(SettingsStorageDestination.route) },
+                    onOpenAppearance = { navController.navigate(SettingsAppearanceDestination.route) },
+                    onOpenDetection = { navController.navigate(SettingsDetectionDestination.route) },
+                    onOpenWidgets = { navController.navigate(SettingsWidgetsDestination.route) },
+                    onOpenAbout = { navController.navigate(SettingsAboutDestination.route) },
+                )
+            }
+        }
+        composable(
+            route = SettingsAppearanceDestination.route,
+            enterTransition = { detailPushEnter() },
+            exitTransition = { detailPushExit() },
+            popEnterTransition = { detailPopEnter() },
+            popExitTransition = { detailPopExit() },
+        ) {
+            val parentEntry = remember(it) {
+                navController.getBackStackEntry(ScanlyDestination.Settings.route)
+            }
+            SettingsAppearanceRoute(
+                onNavigateUp = navController::navigateUp,
+                parentEntry = parentEntry,
+            )
+        }
+        composable(
+            route = SettingsDetectionDestination.route,
+            enterTransition = { detailPushEnter() },
+            exitTransition = { detailPushExit() },
+            popEnterTransition = { detailPopEnter() },
+            popExitTransition = { detailPopExit() },
+        ) {
+            val parentEntry = remember(it) {
+                navController.getBackStackEntry(ScanlyDestination.Settings.route)
+            }
+            SettingsDetectionRoute(
+                onNavigateUp = navController::navigateUp,
+                onOpenModelBenchmark = {
+                    navController.navigate(SettingsModelBenchmarkDestination.route)
+                },
+                parentEntry = parentEntry,
+            )
+        }
+        composable(
+            route = SettingsWidgetsDestination.route,
+            enterTransition = { detailPushEnter() },
+            exitTransition = { detailPushExit() },
+            popEnterTransition = { detailPopEnter() },
+            popExitTransition = { detailPopExit() },
+        ) {
+            val parentEntry = remember(it) {
+                navController.getBackStackEntry(ScanlyDestination.Settings.route)
+            }
+            SettingsWidgetsRoute(
+                onNavigateUp = navController::navigateUp,
+                parentEntry = parentEntry,
+            )
+        }
+        composable(
+            route = SettingsAboutDestination.route,
+            enterTransition = { detailPushEnter() },
+            exitTransition = { detailPushExit() },
+            popEnterTransition = { detailPopEnter() },
+            popExitTransition = { detailPopExit() },
+        ) {
+            val parentEntry = remember(it) {
+                navController.getBackStackEntry(ScanlyDestination.Settings.route)
+            }
+            SettingsAboutRoute(
                 onNavigateUp = navController::navigateUp,
                 appUpdateUiState = appUpdateUiState,
                 onCheckForUpdates = onCheckForUpdates,
@@ -555,8 +676,7 @@ private fun ScanlyNavHostContent(
                 },
                 onOpenFaqs = { navController.navigate(SettingsFaqDestination.route) },
                 onOpenLicenses = { navController.navigate(SettingsLicensesDestination.route) },
-                onOpenStorage = { navController.navigate(SettingsStorageDestination.route) },
-                onOpenModelBenchmark = { navController.navigate(SettingsModelBenchmarkDestination.route) },
+                parentEntry = parentEntry,
             )
         }
         composable(
@@ -784,7 +904,10 @@ private fun ScanlyNavHostContent(
     }
 }
 
-private const val NavAnimDuration = 160
+private const val NavEnterDuration = 220
+private const val NavExitDuration = 110
+private const val NavPopDuration = 180
+private const val NavMotionDistanceDivisor = 24
 
 private fun AnimatedContentTransitionScope<NavBackStackEntry>.topLevelEnter(): EnterTransition =
     EnterTransition.None
@@ -799,13 +922,44 @@ private fun AnimatedContentTransitionScope<NavBackStackEntry>.topLevelPopExit():
     ExitTransition.None
 
 private fun AnimatedContentTransitionScope<NavBackStackEntry>.detailPushEnter(): EnterTransition =
-    fadeIn(animationSpec = tween(NavAnimDuration))
+    fadeIn(
+        animationSpec = tween(
+            durationMillis = NavEnterDuration,
+            delayMillis = 20,
+            easing = FastOutSlowInEasing,
+        ),
+    ) + slideIntoContainer(
+        towards = AnimatedContentTransitionScope.SlideDirection.Left,
+        animationSpec = tween(
+            durationMillis = NavEnterDuration,
+            easing = FastOutSlowInEasing,
+        ),
+        initialOffset = { fullDistance -> fullDistance / NavMotionDistanceDivisor },
+    )
 
 private fun AnimatedContentTransitionScope<NavBackStackEntry>.detailPushExit(): ExitTransition =
-    fadeOut(animationSpec = tween(NavAnimDuration))
+    fadeOut(animationSpec = tween(NavExitDuration))
 
 private fun AnimatedContentTransitionScope<NavBackStackEntry>.detailPopEnter(): EnterTransition =
-    fadeIn(animationSpec = tween(NavAnimDuration))
+    fadeIn(
+        animationSpec = tween(
+            durationMillis = NavPopDuration,
+            delayMillis = 20,
+            easing = FastOutSlowInEasing,
+        ),
+    )
 
 private fun AnimatedContentTransitionScope<NavBackStackEntry>.detailPopExit(): ExitTransition =
-    fadeOut(animationSpec = tween(NavAnimDuration))
+    fadeOut(
+        animationSpec = tween(
+            durationMillis = NavPopDuration,
+            easing = FastOutSlowInEasing,
+        ),
+    ) + slideOutOfContainer(
+        towards = AnimatedContentTransitionScope.SlideDirection.Right,
+        animationSpec = tween(
+            durationMillis = NavPopDuration,
+            easing = FastOutSlowInEasing,
+        ),
+        targetOffset = { fullDistance -> fullDistance / NavMotionDistanceDivisor },
+    )

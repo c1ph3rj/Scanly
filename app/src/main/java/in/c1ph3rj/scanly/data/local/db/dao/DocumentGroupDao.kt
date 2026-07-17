@@ -91,6 +91,17 @@ interface DocumentGroupDao {
     @Query("SELECT * FROM document_groups ORDER BY updatedAtMillis DESC")
     suspend fun getAll(): List<DocumentGroupEntity>
 
+    /** Folders/groups that contain zero documents. */
+    @Query(
+        """
+        SELECT dg.id FROM document_groups dg
+        WHERE NOT EXISTS (
+            SELECT 1 FROM documents d WHERE d.groupId = dg.id
+        )
+        """,
+    )
+    suspend fun getEmptyGroupIds(): List<String>
+
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insert(group: DocumentGroupEntity)
 

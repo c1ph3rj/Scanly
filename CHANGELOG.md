@@ -6,10 +6,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
-Editor and page-edit pipeline work on top of **1.0.10** (Room schema **4**).
+Changes for the next release will be documented here.
+
+## [1.0.11] - 2026-07-17
+
+Editor and page-edit pipeline work on top of **1.0.10**, now released with Room schema **4**.
 
 ### Added
 
+- **Home-screen widgets** — multi-action bar (Scan · Import · QR · Library) plus compact Scan and QR widgets that redirect into the matching in-app flows.
+- **Add widgets from Settings** — Widgets section pins Actions / Scan / QR when the launcher supports it.
+- **Library cleanup** — Settings can remove empty documents (no pages) and empty folders.
+- **Launcher quick actions** — long-press Scanly icon for Scan, QR, Import, and Library shortcuts.
 - **Dedicated crop screen** (`crop/page/{pageId}`) — **AI Detect**, **Left** / **Right**, four-point handles, **Reset**, **Done**.
 - **Full-screen Filters** — large live cropped preview of each preset; apply-to-all-pages; replaces the old bottom sheet.
 - **Full-screen Adjust** — brightness, contrast, saturation, sharpness; hold **Compare** for filter-only; scrollbar beside options.
@@ -17,9 +25,16 @@ Editor and page-edit pipeline work on top of **1.0.10** (Room schema **4**).
 
 ### Changed
 
+- **Document detection tightens oversize overlays** — live quads snap inward onto stronger page edges and prefer mid-size boxes, so pages on desks/keyboards are less often over-selected.
+- **Settings redesigned as a hub** — main list shows Appearance, Storage & backup, Document detection, Widgets, Help, and About; dense controls live on sub-screens.
+- **Home-screen widgets** — icons render immediately from `initialLayout` (no layer-list delay), follow the device light/dark theme, and rebind on place/restore/app open. 1×1 Scan/QR are icon-only (no card); the actions bar is a system-style capsule with a branded **Scan** chip plus Import / QR / Library icon wells.
 - **Editor main preview** — shows the perspective-cropped page with selected filter and adjustments (not the uncropped cropper canvas).
 - **Editor toolbar** — **Crop · Filters · Adjust · Retake · Delete** (rotation lives on the crop screen).
+- **Editor landscape (tablet)** — Editor, Crop, Filters, and Adjust share a two-pane shell: large preview left, vertical tool rail / filter grid right.
+- **QR workspace redesign** — immersive camera-first scanning, a single contextual waiting/result dock, live Create preview, stacked portrait layouts, and dedicated camera|actions / preview|form layouts in phone and tablet landscape.
+- **Large-screen navigation motion** — tablet top-level chrome now transitions with its destination instead of resizing the active detail screen; forward and back navigation use short, subtle directional motion.
 - **Large-screen editor tools** — Filters, Adjust, and Crop adapt for tablets and wide windows (two-pane landscape, content width caps, phone-landscape control height).
+- **Filter picker controls** — the scope switch stays fixed; landscape uses a 2-column preset grid, phone portrait keeps the horizontal carousel.
 
 ## [1.0.10] - 2026-07-13
 
@@ -169,6 +184,7 @@ Compared to **1.0.9** (`master`): Tools workspace, multi-model detection, captur
 - PDF export and image archive export/share.
 - Settings with theme mode, FAQs, licenses, and support links.
 
+[1.0.11]: https://github.com/c1ph3rj/Scanly/compare/v1.0.10...v1.0.11
 [1.0.10]: https://github.com/c1ph3rj/Scanly/compare/v1.0.9...v1.0.10
 [1.0.9]: https://github.com/c1ph3rj/Scanly/compare/v1.0.8.betaq...v1.0.9
 [1.0.8.betaq]: https://github.com/c1ph3rj/Scanly/compare/v1.0.7...v1.0.8.betaq

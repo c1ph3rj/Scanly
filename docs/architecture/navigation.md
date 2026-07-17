@@ -1,6 +1,6 @@
 # Navigation
 
-All routes and user flows in Scanly **v1.0.10**.
+All routes and user flows in Scanly **v1.0.11**.
 
 Navigation is implemented with **Navigation Compose** in `ScanlyNavHost.kt`. Route helpers follow the `*Destination` object pattern with `routePattern` and `route()` factory functions.
 
@@ -9,11 +9,12 @@ Navigation is implemented with **Navigation Compose** in `ScanlyNavHost.kt`. Rou
 | Form factor | Chrome |
 | --- | --- |
 | Phone | `Scaffold` + bottom `NavigationBar` |
-| Tablet | Persistent `NavigationRail` (92 dp) with app logo |
+| Tablet | Destination-owned `NavigationRail` (92 dp) with app logo on top-level screens |
 
 - **Start destination:** `home`
 - **Tab switches:** no transition animation
-- **Detail pushes:** 160 ms fade transition
+- **Detail pushes:** short fade with a small forward offset; back navigation reverses the motion
+- **Large-screen stability:** the tablet rail is composed inside each top-level destination, so entering or leaving a detail route never resizes the `NavHost` mid-transition
 - **Top inset:** each screen applies status-bar padding once (not doubled by the activity shell)
 
 ## Top-level tabs
@@ -48,6 +49,10 @@ These top-level routes still exist but show `FeaturePlaceholderScreen` — they 
 **Editor overlays (not NavHost routes):** `FilterPickerScreen` and `FilterCustomizeScreen` share `PageEditorViewModel` and replace the editor content in place (same pattern as a full-screen mode, not a bottom sheet).
 | `group/{groupId}` | `GroupDetailDestination` | Group detail |
 | `legal/{documentType}` | `LegalDocumentDestination` | Privacy or terms viewer |
+| `settings/appearance` | `SettingsAppearanceDestination` | Theme + pure black |
+| `settings/detection` | `SettingsDetectionDestination` | Models, gate, benchmark link |
+| `settings/widgets` | `SettingsWidgetsDestination` | Pin home-screen widgets |
+| `settings/about` | `SettingsAboutDestination` | Version, updates, legal, support |
 | `settings/faq` | `SettingsFaqDestination` | FAQ sub-screen |
 | `settings/licenses` | `SettingsLicensesDestination` | Open-source licenses |
 | `settings/storage` | `SettingsStorageDestination` | Storage & backup |
@@ -66,7 +71,31 @@ These top-level routes still exist but show `FeaturePlaceholderScreen` — they 
 
 ### Settings sub-screen ViewModel sharing
 
-`settings/faq`, `settings/licenses`, and `settings/storage` share `SettingsViewModel` via the parent `settings` back stack entry. The model benchmark owns a separate ViewModel because its runs and results are temporary.
+Settings sub-screens that edit preferences (`appearance`, `detection`, `widgets`, `about`, `faq`, `licenses`, `storage`) share `SettingsViewModel` via the parent `settings` back stack entry. The model benchmark owns a separate ViewModel because its runs and results are temporary.
+
+## External launch actions (widgets & shortcuts)
+
+`MainActivity` accepts explicit launch actions from widgets and launcher shortcuts (`singleTop`). `LaunchActionViewModel` queues the action until onboarding is complete, then redirects:
+
+| Action | Intent action | Redirect |
+| --- | --- | --- |
+| Scan | `in.c1ph3rj.scanly.action.SCAN` | Suggest title → create document → `camera/session/{documentId}` |
+| Import | `in.c1ph3rj.scanly.action.IMPORT` | System photo picker → import pipeline → `document/{documentId}` |
+| QR | `in.c1ph3rj.scanly.action.QR` | Tools tab → `tools/qr?mode=scan` |
+| Library | `in.c1ph3rj.scanly.action.LIBRARY` | Top-level `library` |
+
+Config: `AndroidManifest.xml` receivers + `res/xml/shortcuts.xml`; providers live under `feature/widget/`.
+
+### Widget / shortcut → scan
+
+```
+Widget or quick action (Scan)
+  └─► MainActivity (action.SCAN)
+        └─► (after onboarding) suggest title + create document
+              └─► camera/session/{newDocId}
+```
+
+## User flow diagrams
 
 ## User flow diagrams
 

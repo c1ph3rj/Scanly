@@ -63,6 +63,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -111,8 +112,9 @@ fun PdfMergeRoute(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
-    var showPicker by remember { mutableStateOf(true) }
-    var appendMode by remember { mutableStateOf(false) }
+    // rememberSaveable: rotation must not reset to true or the source sheet re-opens.
+    var showPicker by rememberSaveable { mutableStateOf(true) }
+    var appendMode by rememberSaveable { mutableStateOf(false) }
     val phase = toolPhase(uiState.sources, uiState.result)
 
     val devicePicker = rememberMultiPdfPicker { uris ->
@@ -217,7 +219,7 @@ fun PdfCompressRoute(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
-    var showPicker by remember { mutableStateOf(true) }
+    var showPicker by rememberSaveable { mutableStateOf(true) }
     val phase = toolPhase(uiState.sources, uiState.result)
 
     val devicePicker = rememberSinglePdfPicker { uri ->
@@ -583,7 +585,7 @@ fun PdfPasswordRoute(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
-    var showPicker by remember { mutableStateOf(true) }
+    var showPicker by rememberSaveable { mutableStateOf(true) }
     var showPassword by remember { mutableStateOf(false) }
     var showConfirm by remember { mutableStateOf(false) }
     var showCurrentPassword by remember { mutableStateOf(false) }
@@ -984,7 +986,7 @@ fun PdfWatermarkRoute(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
-    var showPicker by remember { mutableStateOf(true) }
+    var showPicker by rememberSaveable { mutableStateOf(true) }
     var showPassword by remember { mutableStateOf(false) }
     val phase = toolPhase(uiState.sources, uiState.result)
 
@@ -1313,7 +1315,9 @@ fun PdfReaderRoute(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
-    var showPicker by remember(initialSource) { mutableStateOf(initialSource == null) }
+    // Survives rotation; initial open only when no cold-start source was provided.
+    var showPicker by rememberSaveable { mutableStateOf(initialSource == null) }
+    // Menus should not re-open after rotation.
     var showMenu by remember { mutableStateOf(false) }
 
     val devicePicker = rememberSinglePdfPicker { uri ->
@@ -1374,7 +1378,16 @@ fun PdfReaderRoute(
         )
     }
 
-    if (showPicker) {
+    // Only present the sheet for Empty (first pick) or an explicit re-open while
+    // viewing — never as a surprise overlay after rotation when a PDF is open.
+    val allowPicker =
+        showPicker &&
+            (
+                uiState.phase == PdfReaderPhase.Empty ||
+                    uiState.phase == PdfReaderPhase.Ready ||
+                    uiState.phase == PdfReaderPhase.Locked
+                )
+    if (allowPicker) {
         PdfSourcePickerSheet(
             documents = uiState.libraryDocuments,
             multiSelect = false,

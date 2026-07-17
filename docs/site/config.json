@@ -1,0 +1,158 @@
+{
+  "schemaVersion": 1,
+  "lastUpdated": "2026-07-17",
+  "release": {
+    "stableVersion": "v1.0.11",
+    "developmentLabel": "What's new",
+    "developmentUrl": "https://github.com/c1ph3rj/Scanly/blob/feature/v1.0.11/docs/release-notes/v1.0.11.md",
+    "releasesUrl": "https://github.com/c1ph3rj/Scanly/releases"
+  },
+  "screenshots": {
+    "eyebrow": "A look inside",
+    "title": "What you'll actually use.",
+    "description": "Real screens from the app — from the home screen to a finished PDF.",
+    "items": [
+      {
+        "id": "home",
+        "imageUrl": "screenshots/mobile/image-1.jpeg",
+        "fallbackAsset": "home",
+        "title": "Your home base",
+        "body": "Scan, import photos, or make a folder. Recent work is right there when you come back."
+      },
+      {
+        "id": "scan",
+        "imageUrl": "screenshots/mobile/image-7.jpeg",
+        "fallbackAsset": "scan",
+        "title": "Point and scan",
+        "body": "See the page outline while you aim. Hold steady and Scanly can capture for you — or use the shutter."
+      },
+      {
+        "id": "editor",
+        "imageUrl": "screenshots/mobile/image-5.jpeg",
+        "fallbackAsset": "editor",
+        "title": "Fix the page",
+        "body": "Crop, pick a filter, and tweak brightness or contrast until the page looks right."
+      },
+      {
+        "id": "pages",
+        "imageUrl": "screenshots/mobile/image-4.jpeg",
+        "fallbackAsset": "pages",
+        "title": "Many pages, one document",
+        "body": "Check every page, add more, and long-press to reorder before you export."
+      },
+      {
+        "id": "library",
+        "imageUrl": "screenshots/mobile/image-2.jpeg",
+        "fallbackAsset": "library",
+        "title": "Find it later",
+        "body": "Folders, documents, and search — so last week's receipt isn't lost in a camera roll."
+      },
+      {
+        "id": "tools",
+        "imageUrl": "screenshots/mobile/image-3.jpeg",
+        "fallbackAsset": "tools",
+        "title": "Handy extras",
+        "body": "QR codes and offline PDF tools sit next to scanning when you need them."
+      },
+      {
+        "id": "export",
+        "imageUrl": "screenshots/mobile/image-6.jpeg",
+        "fallbackAsset": "export",
+        "title": "Export your way",
+        "body": "Password, page numbers, paper size — set it, then generate the PDF."
+      }
+    ]
+  },
+  "features": {
+    "eyebrow": "What you get",
+    "title": "The tools you need, nothing you don't.",
+    "description": "Everyday scanning for receipts, forms, notes, and homework — kept simple and private.",
+    "items": [
+      {
+        "icon": "camera",
+        "title": "Live edges and auto-capture",
+        "body": "See the page as you aim. Auto-capture when it's steady, or take the shot yourself."
+      },
+      {
+        "icon": "gallery",
+        "title": "Camera or gallery",
+        "body": "Scan live or import photos you already have. Same editing tools either way."
+      },
+      {
+        "icon": "spark",
+        "title": "Filters that help",
+        "body": "Try Auto, shadow reduction, color, grayscale, and more — per page, not forced on everything."
+      },
+      {
+        "icon": "crop",
+        "title": "Edit without worry",
+        "body": "Your original photo stays safe. Crop and filters can always be redone."
+      },
+      {
+        "icon": "layers",
+        "title": "Documents and folders",
+        "body": "Stack pages into one file, put work in folders, and jump back from Home."
+      },
+      {
+        "icon": "stack",
+        "title": "Export and share",
+        "body": "PDFs, image ZIPs, merged collections — share through the apps you already use."
+      }
+    ]
+  },
+  "development": {
+    "eyebrow": "What's new in v1.0.11",
+    "title": "More control over every page.",
+    "description": "The latest release adds richer editing, faster document handling, and handy actions for everyday scanning.",
+    "items": [
+      {
+        "title": "Richer page editing",
+        "body": "Crop with AI Detect or four-point handles, then fine-tune filters and adjustments per page."
+      },
+      {
+        "title": "Home-screen actions",
+        "body": "Add Scan and QR widgets or use launcher shortcuts for Scan, Import, QR, and Library."
+      },
+      {
+        "title": "Smarter detection",
+        "body": "Tighter page outlines and stronger edge selection help avoid oversized captures on desks and keyboards."
+      },
+      {
+        "title": "Large-screen editor",
+        "body": "Crop, Filters, and Adjust use a clearer two-pane layout on tablets and wide windows."
+      },
+      {
+        "title": "Library cleanup",
+        "body": "Remove empty documents and folders directly from Settings."
+      },
+      {
+        "title": "Safer backups",
+        "body": "Per-page filter adjustments are included in new .scanly archives, while older backups restore with safe defaults."
+      }
+    ]
+  },
+  "openSource": {
+    "stats": [
+      {
+        "value": "On your phone",
+        "label": "where it runs",
+        "note": "Scanning and editing don't need the internet or a cloud account."
+      },
+      {
+        "value": "Local only",
+        "label": "where files live",
+        "note": "Your library stays on the device until you export or share."
+      },
+      {
+        "value": "PDF and more",
+        "label": "how you share",
+        "note": "PDFs, image ZIPs, and normal Android share sheets."
+      },
+      {
+        "value": "AGPL-3.0",
+        "label": "the license",
+        "note": "Full source on GitHub if you want to build or contribute."
+      }
+    ]
+  }
+}

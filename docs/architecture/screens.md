@@ -1,6 +1,6 @@
 # Screens and ViewModels
 
-Every feature screen in Scanly **v1.0.10** (including unreleased editor tools on this branch) and its responsibilities.
+Every feature screen in Scanly **v1.0.11** and its responsibilities.
 
 ## Screen inventory
 
@@ -8,6 +8,7 @@ Every feature screen in Scanly **v1.0.10** (including unreleased editor tools on
 | --- | --- | --- | --- | --- |
 | Onboarding | `OnboardingScreen` | `OnboardingViewModel` | (gate in MainActivity) | First-run intro; persist completion |
 | Home | `HomeScreen` | `HomeViewModel` | `home` | Recent docs/groups, scan, import, suggest names, library shortcut |
+| Widgets / shortcuts | (system chrome) | `LaunchActionViewModel` | via `MainActivity` intents | Scan, Import, QR, Library redirects |
 | Library | `LibraryScreen` | `LibraryViewModel` | `library` | Search, filter pills, sort, document/group CRUD, suggest names |
 | Tools hub | `ToolsScreen` | `ToolsViewModel` | `tools` | Workflow-focused tools workspace; scan/import, QR, and PDF utility entry points |
 | QR tool | `QrToolScreen` | `QrToolViewModel` | `tools/qr` | Camera QR/barcode scan; generate QR PNG save/share |
@@ -141,6 +142,19 @@ Hosted in `MainActivity`, not tied to a single screen:
 | `AdaptiveLayout.kt` | Phone vs tablet / width-class helpers |
 | `ZoomableImageDialog.kt` | Pinch-zoom preview (document detail) |
 | `ZoomableImageViewer.kt` | Pinch-zoom viewer (page preview) |
+
+### Large-screen editor layout
+
+On tablet landscape (and other wide landscape windows that opt into tool two-pane), editor flows share `EditorLandscapeChrome`:
+
+| Screen | Left pane | Right pane |
+| --- | --- | --- |
+| Page editor | Live cropped preview | Vertical tool rail (Crop, Filters, Adjust, Retake, Delete) |
+| Page crop | Interactive crop canvas | Vertical rail (AI Detect, rotate, reset) |
+| Filters | Live filter preview | Scope switch + 2-column preset grid |
+| Adjust | Live adjusted preview | Scrollable sliders |
+
+Phone portrait keeps the stacked preview-above-controls layout.
 
 Editor package helpers (`feature/editor/`):
 

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Home-screen actions capsule (Gemini-bar language):
+  - Leading brand action: accent icon + label (no well)
+  - Secondary actions: equal circular wells, outline icons
+  - Content-width pill, centered — no layout_weight stretch
+-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_actions_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent"
+    android:contentDescription="@string/widget_actions_description">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/bg_widget_pill"
+        android:baselineAligned="false"
+        android:clipToPadding="false"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="12dp"
+        android:paddingTop="9dp"
+        android:paddingEnd="12dp"
+        android:paddingBottom="9dp">
+
+        <!-- Primary: Scan (accent + label) -->
+        <LinearLayout
+            android:id="@+id/widget_action_scan"
+            android:layout_width="wrap_content"
+            android:layout_height="46dp"
+            android:layout_marginEnd="4dp"
+            android:contentDescription="@string/widget_action_scan"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="8dp"
+            android:paddingEnd="12dp">
+
+            <ImageView
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:importantForAccessibility="no"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_bar_scan"
+                android:tint="@color/widget_primary" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:includeFontPadding="false"
+                android:maxLines="1"
+                android:text="@string/widget_action_scan"
+                android:textColor="@color/widget_pill_label"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- Secondary: Import -->
+        <FrameLayout
+            android:id="@+id/widget_action_import"
+            android:layout_width="46dp"
+            android:layout_height="46dp"
+            android:layout_marginHorizontal="3dp"
+            android:background="@drawable/bg_widget_pill_button"
+            android:contentDescription="@string/widget_action_import">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:importantForAccessibility="no"
+                android:padding="11dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_bar_import"
+                android:tint="@color/widget_glyph" />
+        </FrameLayout>
+
+        <!-- Secondary: QR -->
+        <FrameLayout
+            android:id="@+id/widget_action_qr"
+            android:layout_width="46dp"
+            android:layout_height="46dp"
+            android:layout_marginHorizontal="3dp"
+            android:background="@drawable/bg_widget_pill_button"
+            android:contentDescription="@string/widget_action_qr">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:importantForAccessibility="no"
+                android:padding="11dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_bar_qr"
+                android:tint="@color/widget_glyph" />
+        </FrameLayout>
+
+        <!-- Secondary: Library -->
+        <FrameLayout
+            android:id="@+id/widget_action_library"
+            android:layout_width="46dp"
+            android:layout_height="46dp"
+            android:layout_marginStart="3dp"
+            android:background="@drawable/bg_widget_pill_button"
+            android:contentDescription="@string/widget_action_library">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:importantForAccessibility="no"
+                android:padding="11dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_bar_library"
+                android:tint="@color/widget_glyph" />
+        </FrameLayout>
+    </LinearLayout>
+</FrameLayout>

@@ -6,13 +6,13 @@ Version policy and release history for Scanly.
 
 | Field | Value |
 | --- | --- |
-| Version name | `1.0.10` |
-| Version code | `10` |
+| Version name | `1.0.11` |
+| Version code | `11` |
 | Application ID | `in.c1ph3rj.scanly` |
-| Room schema | `4` (this branch; 1.0.10 tag shipped at schema 3) |
+| Room schema | `4` |
 | Min SDK | 29 (Android 10) |
 | Target / compile SDK | 36 |
-| Release date | 2026-07-13 |
+| Release date | 2026-07-17 |
 
 Canonical source: `versionCode` and `versionName` in `app/build.gradle.kts`.
 
@@ -20,20 +20,15 @@ The version shown in Settings reads `versionName` via `DefaultSettingsRepository
 
 ### Release highlights
 
-Version **1.0.10** (relative to `1.0.9` / historical `master` baseline):
+Version **1.0.11** (relative to `1.0.10`):
 
-- Tools tab with scan/import shortcuts, QR tool, and offline PDF toolkit
-- Multi-model corner detection (Lite / Standard / High / Accurate) + semantic document gate
-- Automatic model selection (default on), model benchmark, book-aware capture, stable quads
-- Pure black OLED theme option and rebuilt document filters
-- Large-screen / landscape layout polish for Tools and PDF pickers
+- Home-screen widgets and launcher quick actions for Scan, Import, QR, and Library
+- Dedicated crop screen with AI Detect, four-point handles, rotation, reset, and apply actions
+- Full-screen Filters and Adjust tools with per-page fine-tuning and apply-to-all support
+- Tighter document detection overlays, stronger edge selection, and book/desk handling
+- Tablet and wide-window editor layouts with improved filter and adjustment controls
 
-**Unreleased on `feature/v1.0.10`** (see [CHANGELOG.md](../CHANGELOG.md)):
-
-- Dedicated crop screen with AI Detect, full-screen Filters + Adjust, filter fine-tuning (Room **4**)
-- Live cropped editor preview and large-screen editor tool layouts
-
-The compact GitHub release description used by the in-app update dialog is available in [release-notes/v1.0.10.md](release-notes/v1.0.10.md).
+The compact GitHub release description used by the in-app update dialog is available in [release-notes/v1.0.11.md](release-notes/v1.0.11.md).
 
 ## Versioning policy
 
@@ -46,13 +41,20 @@ The compact GitHub release description used by the in-app update dialog is avail
 
 ## Recent releases
 
+### 1.0.11 (code 11) — 2026-07-17
+
+- Home-screen widgets, launcher quick actions, and library cleanup
+- Dedicated crop screen with AI Detect and four-point handles
+- Full-screen Filters and Adjust with per-page filter adjustments
+- Live cropped editor preview and two-pane large-screen editor layouts
+- Tighter document detection overlays and improved filter picker controls
+
 ### 1.0.10 (code 10) — 2026-07-13
 
 - Tools hub, QR code tool, and offline PDF toolkit (reader / merge / compress / password / watermark)
 - Multi-model detection ladder, semantic gate, automatic selection default on, model benchmark
 - Book-page isolation, stable overlays, rebuilt filters, pure black theme
 - Tablet and landscape layout improvements for Tools and PDF flows
-- Follow-on editor work on this branch: crop/filter full-screen tools, AI Detect, filter adjustments (Room 4) — tracked under **Unreleased**
 
 ### 1.0.9 (code 9) — 2026-07-05
 
@@ -93,18 +95,24 @@ Full details: [CHANGELOG.md](../CHANGELOG.md)
 
 ## Upgrade notes
 
-### Room schema 3 → 4 (unreleased editor work on this branch)
+### Room schema 3 → 4 (v1.0.11)
 
 - Adds per-page filter adjustment columns: `filterBrightness`, `filterContrast`, `filterSaturation`, `filterSharpness` (defaults `0`).
 - Applied by `ScanlyDatabase.MIGRATION_3_4` registered in `DatabaseModule`.
 - No manual steps; existing pages keep default (identity) adjustments.
 - `.scanly` backups written after this change include the four floats; older archives restore with defaults.
 
+### From 1.0.10 to 1.0.11
+
+- Existing libraries migrate automatically through `MIGRATION_3_4`.
+- Per-page filter adjustments default to identity values for existing pages.
+- Older `.scanly` archives restore with default adjustment values; new archives include the four adjustment fields.
+
 ### From 1.0.9 to 1.0.10
 
 - Model labels are Lite / Standard / High / Accurate; storage keys keep the same underlying weights.
 - Automatic model selection defaults to **on** when unset; existing explicit off preference is preserved.
-- The public 1.0.10 tag was still Room schema **3**; this branch advances to schema **4** for filter adjustments.
+- The public 1.0.10 tag used Room schema **3**; v1.0.11 adds schema **4** for filter adjustments.
 
 ### From 1.0.0 to current
 

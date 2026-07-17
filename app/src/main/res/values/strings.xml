@@ -1,3 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Scanly</string>
+
+    <string name="shortcut_scan_short">Scan</string>
+    <string name="shortcut_scan_long">Start a new scan</string>
+    <string name="shortcut_scan_disabled">Scanning unavailable</string>
+
+    <string name="shortcut_import_short">Import</string>
+    <string name="shortcut_import_long">Import photos</string>
+    <string name="shortcut_import_disabled">Import unavailable</string>
+
+    <string name="shortcut_qr_short">QR</string>
+    <string name="shortcut_qr_long">Scan or create a QR code</string>
+    <string name="shortcut_qr_disabled">QR tool unavailable</string>
+
+    <string name="shortcut_library_short">Library</string>
+    <string name="shortcut_library_long">Open your library</string>
+    <string name="shortcut_library_disabled">Library unavailable</string>
+
+    <string name="widget_actions_label">Scanly actions</string>
+    <string name="widget_actions_description">Quick access to Scan, Import, QR, and Library.</string>
+    <string name="widget_scan_label">Scanly Scan</string>
+    <string name="widget_scan_description">Start a new document scan.</string>
+    <string name="widget_qr_label">Scanly QR</string>
+    <string name="widget_qr_description">Open the QR scan and generate tool.</string>
+
+    <string name="widget_action_scan">Scan</string>
+    <string name="widget_action_import">Import</string>
+    <string name="widget_action_qr">QR</string>
+    <string name="widget_action_library">Library</string>
 </resources>

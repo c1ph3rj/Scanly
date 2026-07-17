@@ -56,6 +56,28 @@ class DocumentQuadPolicyTest {
     }
 
     @Test
+    fun tighterPageQuadScoresHigherThanLooseDeskGrab() {
+        val tightPage = DocumentCornerQuad(
+            topLeft = NormalizedPoint(0.28f, 0.32f),
+            topRight = NormalizedPoint(0.72f, 0.30f),
+            bottomRight = NormalizedPoint(0.74f, 0.68f),
+            bottomLeft = NormalizedPoint(0.26f, 0.70f),
+        )
+        val looseDesk = DocumentCornerQuad(
+            topLeft = NormalizedPoint(0.08f, 0.10f),
+            topRight = NormalizedPoint(0.92f, 0.12f),
+            bottomRight = NormalizedPoint(0.90f, 0.90f),
+            bottomLeft = NormalizedPoint(0.10f, 0.88f),
+        )
+        assertTrue(DocumentQuadPolicy.areaFitScore(tightPage.area()) >
+            DocumentQuadPolicy.areaFitScore(looseDesk.area()))
+        assertTrue(
+            DocumentQuadPolicy.selectionScore(result(tightPage, DocumentCornerModel.STANDARD)) >
+                DocumentQuadPolicy.selectionScore(result(looseDesk, DocumentCornerModel.STANDARD)),
+        )
+    }
+
+    @Test
     fun cleanPaperQuadScoresHigherThanMixedMonitorEdgeQuad() {
         val mixedEdgeQuad = quad(
             topLeft = NormalizedPoint(0.17f, 0.54f),

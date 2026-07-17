@@ -72,7 +72,9 @@ class QrToolViewModel @Inject constructor(
     }
 
     fun onScanResult(value: String) {
-        _uiState.update { it.copy(scanResult = value) }
+        _uiState.update { state ->
+            if (state.scanResult == null) state.copy(scanResult = value) else state
+        }
     }
 
     fun clearScanResult() {

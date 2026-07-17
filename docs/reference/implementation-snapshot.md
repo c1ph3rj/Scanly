@@ -1,12 +1,12 @@
 # Implementation Snapshot
 
-One-page technical summary of Scanly **v1.0.10** (+ unreleased editor tools on this branch). For detail see the full docs index at [../README.md](../README.md).
+One-page technical summary of Scanly **v1.0.11**. For detail see the full docs index at [../README.md](../README.md).
 
 ## Release
 
 | Field | Value |
 | --- | --- |
-| Version | `1.0.10` (code `10`) |
+| Version | `1.0.11` (code `11`) |
 | Room schema | `4` |
 | Min SDK | 29 |
 | Target SDK | 36 |
@@ -17,7 +17,7 @@ One-page technical summary of Scanly **v1.0.10** (+ unreleased editor tools on t
 
 ```
 ScanlyApplication (WorkManager + Hilt)
-  → MainActivity → onboarding gate → ScanlyNavHost
+  → MainActivity → onboarding gate → ScanlyNavHost (+ widget/shortcut launch actions)
   feature/ (UI + ViewModels)
     → domain/usecase/ (73 use case classes)
       → domain/repository/ (interfaces)
@@ -27,7 +27,7 @@ ScanlyApplication (WorkManager + Hilt)
 
 ## Features (summary)
 
-Home · Library · Tools (scan/import, QR, PDF toolkit) · Camera scan + gate + multi-model overlay · Gallery import · Document detail · Page preview · **Page editor** (live cropped preview; full-screen Filters + Adjust; dedicated Crop with AI Detect) · Groups · PDF/ZIP export with save destination · Library backup/restore (`.scanly`) · Document detection settings + model benchmark · Pure black theme · Onboarding · GitHub/Play update channels
+Home · Library · Tools (scan/import, QR, PDF toolkit) · Camera scan + gate + multi-model overlay · Gallery import · Document detail · Page preview · **Page editor** (live cropped preview; full-screen Filters + Adjust; dedicated Crop with AI Detect) · Groups · PDF/ZIP export with save destination · Library backup/restore (`.scanly`) · Document detection settings + model benchmark · Pure black theme · Onboarding · **Home widgets + launcher quick actions** · GitHub/Play update channels
 
 ## Data
 
@@ -72,7 +72,7 @@ Kotlin · Compose · Material 3 · Hilt · Navigation Compose · CameraX · Room
 
 ## Tests
 
-40 unit-test files · 3 instrumented-test files (onboarding UI, OpenCV filter processor, smoke) · gaps in persistence integration and archive/export E2E
+41 unit-test files · 3 instrumented-test files (onboarding UI, OpenCV filter processor, smoke) · gaps in persistence integration and archive/export E2E
 
 ## Principles
 

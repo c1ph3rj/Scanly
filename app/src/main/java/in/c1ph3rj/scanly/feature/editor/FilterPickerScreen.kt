@@ -22,12 +22,14 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
@@ -157,7 +159,6 @@ private data class FilterPickerLayoutSpec(
     val chromeMaxWidth: Dp,
     val controlsMaxWidth: Dp,
     val controlsMaxHeight: Dp,
-    val useGridFilters: Boolean,
     val previewWeight: Float,
     val controlsWeight: Float,
     val paneSpacing: Dp,
@@ -165,39 +166,22 @@ private data class FilterPickerLayoutSpec(
 
 @Composable
 private fun rememberFilterPickerLayout(windowSizeInfo: WindowSizeInfo): FilterPickerLayoutSpec {
-    val twoPane = windowSizeInfo.useTabletLandscapeLayout ||
-        (windowSizeInfo.useToolTwoPaneLayout && windowSizeInfo.isLandscape)
-
-    val horizontalPadding = when {
-        twoPane && windowSizeInfo.widthClass == WindowWidthClass.Expanded -> 32.dp
-        twoPane -> 24.dp
-        windowSizeInfo.isTablet -> windowSizeInfo.horizontalPadding
-        windowSizeInfo.useCompactLandscapeLayout -> 16.dp
-        else -> 16.dp
-    }
-
-    val contentMaxWidth = when {
-        twoPane && windowSizeInfo.widthClass == WindowWidthClass.Expanded -> 1200.dp
-        twoPane -> 1040.dp
-        windowSizeInfo.isTablet -> windowSizeInfo.contentMaxWidth
-        else -> Dp.Unspecified
-    }
-
-    val chromeMaxWidth = when {
-        windowSizeInfo.widthClass == WindowWidthClass.Expanded -> 1200.dp
-        windowSizeInfo.isTablet -> 900.dp
-        else -> Dp.Unspecified
-    }
-
-    val controlsMaxWidth = when {
-        twoPane && windowSizeInfo.widthClass == WindowWidthClass.Expanded -> 460.dp
-        twoPane -> 420.dp
-        windowSizeInfo.isTablet -> windowSizeInfo.toolFormMaxWidth
-        else -> Dp.Unspecified
+    val shared = rememberEditorTwoPaneSpec(windowSizeInfo)
+    if (shared != null) {
+        return FilterPickerLayoutSpec(
+            mode = FilterPickerLayoutMode.TwoPane,
+            horizontalPadding = shared.horizontalPadding,
+            contentMaxWidth = shared.contentMaxWidth,
+            chromeMaxWidth = shared.chromeMaxWidth,
+            controlsMaxWidth = shared.controlsMaxWidth,
+            controlsMaxHeight = Dp.Unspecified,
+            previewWeight = shared.previewWeight,
+            controlsWeight = shared.controlsWeight,
+            paneSpacing = shared.paneSpacing,
+        )
     }
 
     val controlsMaxHeight = when {
-        twoPane -> Dp.Unspecified
         windowSizeInfo.useCompactLandscapeLayout -> 210.dp
         windowSizeInfo.isTablet && !windowSizeInfo.isLandscape -> 400.dp
         windowSizeInfo.widthClass == WindowWidthClass.Medium -> 340.dp
@@ -205,17 +189,27 @@ private fun rememberFilterPickerLayout(windowSizeInfo: WindowSizeInfo): FilterPi
     }
 
     return FilterPickerLayoutSpec(
-        mode = if (twoPane) FilterPickerLayoutMode.TwoPane else FilterPickerLayoutMode.Stacked,
-        horizontalPadding = horizontalPadding,
-        contentMaxWidth = contentMaxWidth,
-        chromeMaxWidth = chromeMaxWidth,
-        controlsMaxWidth = controlsMaxWidth,
+        mode = FilterPickerLayoutMode.Stacked,
+        horizontalPadding = if (windowSizeInfo.isTablet) {
+            windowSizeInfo.horizontalPadding
+        } else {
+            16.dp
+        },
+        contentMaxWidth = if (windowSizeInfo.isTablet) {
+            windowSizeInfo.contentMaxWidth
+        } else {
+            Dp.Unspecified
+        },
+        chromeMaxWidth = if (windowSizeInfo.isTablet) 900.dp else Dp.Unspecified,
+        controlsMaxWidth = if (windowSizeInfo.isTablet) {
+            windowSizeInfo.toolFormMaxWidth
+        } else {
+            Dp.Unspecified
+        },
         controlsMaxHeight = controlsMaxHeight,
-        // Side panel / tablet: grid of filter chips; phone: horizontal row.
-        useGridFilters = twoPane || windowSizeInfo.isTablet,
-        previewWeight = if (windowSizeInfo.widthClass == WindowWidthClass.Expanded) 0.58f else 0.55f,
-        controlsWeight = if (windowSizeInfo.widthClass == WindowWidthClass.Expanded) 0.42f else 0.45f,
-        paneSpacing = if (windowSizeInfo.widthClass == WindowWidthClass.Expanded) 24.dp else 16.dp,
+        previewWeight = 0.55f,
+        controlsWeight = 0.45f,
+        paneSpacing = 16.dp,
     )
 }
 
@@ -262,7 +256,6 @@ private fun TwoPaneFilterPickerBody(
                 selectedFilter = selectedFilter,
                 applyFilterToAllPages = applyFilterToAllPages,
                 isSaving = isSaving,
-                useGridFilters = true,
                 fillHeight = true,
                 onSelectFilter = onSelectFilter,
                 onApplyFilterToAllPagesChange = onApplyFilterToAllPagesChange,
@@ -322,7 +315,6 @@ private fun StackedFilterPickerBody(
             selectedFilter = selectedFilter,
             applyFilterToAllPages = applyFilterToAllPages,
             isSaving = isSaving,
-            useGridFilters = layout.useGridFilters,
             fillHeight = false,
             onSelectFilter = onSelectFilter,
             onApplyFilterToAllPagesChange = onApplyFilterToAllPagesChange,
@@ -433,15 +425,12 @@ private fun FilterControlsPane(
     selectedFilter: PageFilterPreset,
     applyFilterToAllPages: Boolean,
     isSaving: Boolean,
-    useGridFilters: Boolean,
     fillHeight: Boolean,
     onSelectFilter: (PageFilterPreset) -> Unit,
     onApplyFilterToAllPagesChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val colorScheme = MaterialTheme.colorScheme
-    val scrollState = rememberScrollState()
-
     Surface(
         modifier = modifier,
         color = colorScheme.surfaceContainer,
@@ -475,47 +464,40 @@ private fun FilterControlsPane(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Scrollable options + trailing scrollbar (matches Adjust screen).
-            Row(
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .then(if (fillHeight) Modifier.weight(1f) else Modifier)
-                    .padding(start = 16.dp, end = 8.dp),
-                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    .padding(horizontal = 16.dp)
+                    .then(if (fillHeight) Modifier.fillMaxHeight() else Modifier),
+                verticalArrangement = Arrangement.spacedBy(14.dp),
             ) {
-                Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight()
-                        .verticalScroll(scrollState)
-                        .padding(end = 4.dp, bottom = 4.dp),
-                    verticalArrangement = Arrangement.spacedBy(14.dp),
-                ) {
-                    FilterScopeOption(
-                        applyToAllPages = applyFilterToAllPages,
-                        enabled = !isSaving,
-                        onApplyToAllPagesChange = onApplyFilterToAllPagesChange,
-                    )
+                FilterScopeOption(
+                    applyToAllPages = applyFilterToAllPages,
+                    enabled = !isSaving,
+                    onApplyToAllPagesChange = onApplyFilterToAllPagesChange,
+                )
 
-                    FilterSelector(
-                        selectedFilter = selectedFilter,
-                        rawImagePath = page.rawImagePath,
-                        fallbackImagePath = page.processedImagePath,
-                        rotationDegrees = rotationDegrees,
-                        cropQuad = cropQuad,
-                        onSelectFilter = onSelectFilter,
-                        vertical = useGridFilters,
-                    )
+                FilterSelector(
+                    selectedFilter = selectedFilter,
+                    rawImagePath = page.rawImagePath,
+                    fallbackImagePath = page.processedImagePath,
+                    rotationDegrees = rotationDegrees,
+                    cropQuad = cropQuad,
+                    onSelectFilter = onSelectFilter,
+                    gridLayout = fillHeight,
+                    modifier = if (fillHeight) {
+                        Modifier
+                            .fillMaxWidth()
+                            .weight(1f)
+                    } else {
+                        Modifier.fillMaxWidth()
+                    },
+                )
+
+                if (!fillHeight) {
                     Spacer(modifier = Modifier.height(4.dp))
                 }
-
-                VerticalContentScrollbar(
-                    scrollState = scrollState,
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .padding(vertical = 4.dp, horizontal = 2.dp)
-                        .width(6.dp),
-                )
             }
         }
     }
@@ -592,7 +574,8 @@ private fun FilterSelector(
     rotationDegrees: Int,
     cropQuad: DocumentCornerQuad?,
     onSelectFilter: (PageFilterPreset) -> Unit,
-    vertical: Boolean,
+    gridLayout: Boolean = false,
+    modifier: Modifier = Modifier,
 ) {
     val previewState by rememberFilterPreviewBitmaps(
         rawImagePath = rawImagePath,
@@ -601,17 +584,22 @@ private fun FilterSelector(
         cropQuad = cropQuad,
     )
     val listState = rememberLazyListState()
+    val gridState = rememberLazyGridState()
 
-    LaunchedEffect(selectedFilter) {
-        if (!vertical) {
-            val targetIndex = PageFilterPreset.entries.indexOf(selectedFilter)
-            if (targetIndex >= 0) {
-                listState.animateScrollToItem(targetIndex)
-            }
+    LaunchedEffect(selectedFilter, gridLayout) {
+        val targetIndex = PageFilterPreset.entries.indexOf(selectedFilter)
+        if (targetIndex < 0) return@LaunchedEffect
+        if (gridLayout) {
+            gridState.animateScrollToItem(targetIndex)
+        } else {
+            listState.animateScrollToItem(targetIndex)
         }
     }
 
-    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
         if (previewState.isLoading) {
             Surface(
                 modifier = Modifier.fillMaxWidth(),
@@ -639,27 +627,28 @@ private fun FilterSelector(
             }
         }
 
-        if (vertical) {
-            val filterRows = PageFilterPreset.entries.chunked(2)
-            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                filterRows.forEach { rowFilters ->
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        if (gridLayout) {
+            // Landscape side panel: 2-column grid uses vertical space instead of
+            // a short horizontal strip with empty chrome around it.
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                state = gridState,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f, fill = true),
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp),
+                contentPadding = PaddingValues(bottom = 8.dp),
+            ) {
+                items(PageFilterPreset.entries, key = { it.storageValue }) { filter ->
+                    FilterItem(
+                        filter = filter,
+                        isSelected = selectedFilter == filter,
+                        preview = previewState.previews[filter],
+                        onSelect = { onSelectFilter(filter) },
                         modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        rowFilters.forEach { filter ->
-                            FilterItem(
-                                filter = filter,
-                                isSelected = selectedFilter == filter,
-                                preview = previewState.previews[filter],
-                                onSelect = { onSelectFilter(filter) },
-                                modifier = Modifier.weight(1f),
-                            )
-                        }
-                        if (rowFilters.size < 2) {
-                            Spacer(modifier = Modifier.weight(1f))
-                        }
-                    }
+                        compact = true,
+                    )
                 }
             }
         } else {
@@ -689,8 +678,10 @@ private fun FilterItem(
     preview: ImageBitmap?,
     onSelect: () -> Unit,
     modifier: Modifier = Modifier,
+    compact: Boolean = false,
 ) {
     val colorScheme = MaterialTheme.colorScheme
+    val thumbHeight = if (compact) 96.dp else 120.dp
     Surface(
         onClick = onSelect,
         modifier = modifier,
@@ -701,64 +692,72 @@ private fun FilterItem(
             color = if (isSelected) colorScheme.primary else colorScheme.outlineVariant,
         ),
     ) {
-        Column(
-            modifier = Modifier.padding(10.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
+        Box(
+            modifier = Modifier
+                .padding(if (compact) 6.dp else 8.dp)
+                .fillMaxWidth()
+                .height(thumbHeight),
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(100.dp),
+            Surface(
+                modifier = Modifier.fillMaxSize(),
+                color = colorScheme.surfaceContainerHighest,
+                shape = RoundedCornerShape(16.dp),
             ) {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = colorScheme.surfaceContainerHighest,
-                    shape = RoundedCornerShape(16.dp),
-                ) {
-                    if (preview == null) {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            Text(
-                                text = filter.shortLabel(),
-                                color = colorScheme.onSurfaceVariant,
-                                style = MaterialTheme.typography.labelLarge,
-                            )
-                        }
-                    } else {
-                        Image(
-                            bitmap = preview,
-                            contentDescription = "${filter.toDisplayLabel()} filter thumbnail",
-                            modifier = Modifier.fillMaxSize(),
-                            contentScale = ContentScale.Crop,
-                        )
-                    }
-                }
-                if (isSelected) {
+                if (preview == null) {
                     Box(
-                        modifier = Modifier
-                            .align(Alignment.TopEnd)
-                            .padding(6.dp)
-                            .size(24.dp)
-                            .background(colorScheme.primary, CircleShape),
+                        modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center,
                     ) {
-                        Icon(
-                            imageVector = Icons.Filled.Check,
-                            contentDescription = "Selected filter",
-                            tint = colorScheme.onPrimary,
-                            modifier = Modifier.size(16.dp),
+                        Text(
+                            text = filter.shortLabel(),
+                            color = colorScheme.onSurfaceVariant,
+                            style = MaterialTheme.typography.labelLarge,
                         )
                     }
+                } else {
+                    Image(
+                        bitmap = preview,
+                        contentDescription = "${filter.toDisplayLabel()} filter thumbnail",
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop,
+                    )
                 }
             }
-            Text(
-                text = filter.toDisplayLabel(),
-                color = if (isSelected) colorScheme.onPrimaryContainer else colorScheme.onSurfaceVariant,
-                style = MaterialTheme.typography.labelLarge,
-                fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
-            )
+
+            Surface(
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .padding(6.dp),
+                color = Color.Black.copy(alpha = 0.68f),
+                shape = RoundedCornerShape(8.dp),
+            ) {
+                Text(
+                    text = filter.toDisplayLabel(),
+                    modifier = Modifier.padding(horizontal = 7.dp, vertical = 4.dp),
+                    color = Color.White,
+                    style = MaterialTheme.typography.labelMedium,
+                    fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Medium,
+                    maxLines = 1,
+                )
+            }
+
+            if (isSelected) {
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(6.dp)
+                        .size(24.dp)
+                        .background(colorScheme.primary, CircleShape),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Check,
+                        contentDescription = "Selected filter",
+                        tint = colorScheme.onPrimary,
+                        modifier = Modifier.size(16.dp),
+                    )
+                }
+            }
         }
     }
 }

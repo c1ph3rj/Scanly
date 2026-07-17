@@ -1,6 +1,6 @@
 # Scanly Documentation
 
-Complete documentation for **Scanly v1.0.10** — an offline-first Android document scanner.
+Complete documentation for **Scanly v1.0.11** — an offline-first Android document scanner.
 
 If you are new to this project, start here. This folder contains everything needed to understand what Scanly is, how users interact with it, and how the codebase is built.
 
@@ -19,7 +19,7 @@ Scanly is a local-only document scanner for Android. Users capture pages with th
 | Export / backup | PDFBox-encrypted PDFs; `.scanly` library archives to `Downloads/Scanly/backup/` |
 | Distribution | `githubRelease` (GitHub updates) and `playStoreRelease` (Play in-app updates) |
 | License | AGPL-3.0-only ([LICENSE](../LICENSE)) |
-| Current version | `1.0.10` (version code `10`) |
+| Current version | `1.0.11` (version code `11`) |
 
 ## Core workflow
 

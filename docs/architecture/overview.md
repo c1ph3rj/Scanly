@@ -1,6 +1,6 @@
 # Architecture Overview
 
-How Scanly is structured at **v1.0.10**. For navigation detail see [navigation.md](navigation.md). For screen inventory see [screens.md](screens.md).
+How Scanly is structured at **v1.0.11**. For navigation detail see [navigation.md](navigation.md). For screen inventory see [screens.md](screens.md).
 
 ## Layer diagram
 
@@ -28,7 +28,7 @@ How Scanly is structured at **v1.0.10**. For navigation detail see [navigation.m
 | Component | File | Role |
 | --- | --- | --- |
 | Application | `ScanlyApplication.kt` | `@HiltAndroidApp`; custom WorkManager + `HiltWorkerFactory` |
-| Activity | `MainActivity.kt` | Onboarding gate, theme, NavHost, update dialog |
+| Activity | `MainActivity.kt` | Onboarding gate, theme, NavHost, update dialog, widget/shortcut launch actions |
 | Theme | `ui/theme/` | `ScanlyTheme`, colors, typography |
 | Navigation | `navigation/ScanlyNavHost.kt` | Route registration, bottom nav / rail |
 
@@ -37,6 +37,7 @@ How Scanly is structured at **v1.0.10**. For navigation detail see [navigation.m
 - `AppSettingsViewModel` — observes theme mode and pure black preference
 - `OnboardingViewModel` — first-run gate
 - `AppUpdateViewModel` — update checks and dialog state
+- `LaunchActionViewModel` — widget/shortcut actions (scan, import, QR, library)
 
 ## Package layout
 
@@ -47,6 +48,8 @@ All code under `app/src/main/java/in/c1ph3rj/scanly/`:
 | `ui/theme/` | Material 3 theming |
 | `navigation/` | Destinations and NavHost |
 | `feature/` | Screen UI and ViewModels |
+| `feature/launch/` | Widget/shortcut launch action parsing and redirects |
+| `feature/widget/` | App widget providers (actions, scan, QR) |
 | `domain/model/` | Business models |
 | `domain/repository/` | Repository contracts |
 | `domain/usecase/` | Business operations (73 use case classes) |
