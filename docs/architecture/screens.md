@@ -1,6 +1,6 @@
 # Screens and ViewModels
 
-Every feature screen in Scanly **v1.0.10** (including unreleased editor tools on this branch) and its responsibilities.
+Every feature screen in Scanly **v1.0.11** and its responsibilities.
 
 ## Screen inventory
 

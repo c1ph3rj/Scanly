@@ -6,7 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
-Editor and page-edit pipeline work on top of **1.0.10** (Room schema **4**).
+Changes for the next release will be documented here.
+
+## [1.0.11] - 2026-07-17
+
+Editor and page-edit pipeline work on top of **1.0.10**, now released with Room schema **4**.
 
 ### Added
 
@@ -180,6 +184,7 @@ Compared to **1.0.9** (`master`): Tools workspace, multi-model detection, captur
 - PDF export and image archive export/share.
 - Settings with theme mode, FAQs, licenses, and support links.
 
+[1.0.11]: https://github.com/c1ph3rj/Scanly/compare/v1.0.10...v1.0.11
 [1.0.10]: https://github.com/c1ph3rj/Scanly/compare/v1.0.9...v1.0.10
 [1.0.9]: https://github.com/c1ph3rj/Scanly/compare/v1.0.8.betaq...v1.0.9
 [1.0.8.betaq]: https://github.com/c1ph3rj/Scanly/compare/v1.0.7...v1.0.8.betaq

@@ -1,6 +1,6 @@
 # Navigation
 
-All routes and user flows in Scanly **v1.0.10**.
+All routes and user flows in Scanly **v1.0.11**.
 
 Navigation is implemented with **Navigation Compose** in `ScanlyNavHost.kt`. Route helpers follow the `*Destination` object pattern with `routePattern` and `route()` factory functions.
 

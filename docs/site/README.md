@@ -8,7 +8,7 @@ Update this file when you ship a new app version. You should **not** need to red
 
 | Field | Purpose |
 | --- | --- |
-| `release.stableVersion` | Version badge on Download CTAs (e.g. `v1.0.10`) |
+| `release.stableVersion` | Version badge on Download CTAs (e.g. `v1.0.11`) |
 | `release.developmentLabel` / `developmentUrl` | Link for “what's new” / changelog |
 | `release.releasesUrl` | Optional override for the releases page URL |
 | `screenshots` | Product-tour titles, bodies, and **image paths or absolute URLs** |

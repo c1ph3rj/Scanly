@@ -1,6 +1,6 @@
 # Architecture Overview
 
-How Scanly is structured at **v1.0.10**. For navigation detail see [navigation.md](navigation.md). For screen inventory see [screens.md](screens.md).
+How Scanly is structured at **v1.0.11**. For navigation detail see [navigation.md](navigation.md). For screen inventory see [screens.md](screens.md).
 
 ## Layer diagram
 

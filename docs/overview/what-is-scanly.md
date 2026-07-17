@@ -93,13 +93,13 @@ ScanlyApplication (@HiltAndroidApp, custom WorkManager + HiltWorkerFactory)
 
 | Field | Value |
 | --- | --- |
-| Version | `1.0.10` (code `10`) |
-| Room schema | `3` |
+| Version | `1.0.11` (code `11`) |
+| Room schema | `4` |
 | Min SDK | 29 (Android 10) |
 | Target SDK | 36 |
 | Distribution | `githubRelease` (APK) and `playStoreRelease` (AAB) |
 
-See [releases.md](../releases.md) for version policy and history. See [CHANGELOG.md](../../CHANGELOG.md) for unreleased work on the current branch.
+See [releases.md](../releases.md) for version policy and history. See [CHANGELOG.md](../../CHANGELOG.md) for the next release's changes.
 
 ## Next steps
 
