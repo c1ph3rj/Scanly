@@ -27,6 +27,8 @@ Editor and page-edit pipeline work on top of **1.0.10** (Room schema **4**).
 - **Editor main preview** — shows the perspective-cropped page with selected filter and adjustments (not the uncropped cropper canvas).
 - **Editor toolbar** — **Crop · Filters · Adjust · Retake · Delete** (rotation lives on the crop screen).
 - **Editor landscape (tablet)** — Editor, Crop, Filters, and Adjust share a two-pane shell: large preview left, vertical tool rail / filter grid right.
+- **QR workspace redesign** — immersive camera-first scanning, a single contextual waiting/result dock, live Create preview, stacked portrait layouts, and dedicated camera|actions / preview|form layouts in phone and tablet landscape.
+- **Large-screen navigation motion** — tablet top-level chrome now transitions with its destination instead of resizing the active detail screen; forward and back navigation use short, subtle directional motion.
 - **Large-screen editor tools** — Filters, Adjust, and Crop adapt for tablets and wide windows (two-pane landscape, content width caps, phone-landscape control height).
 - **Filter picker controls** — the scope switch stays fixed; landscape uses a 2-column preset grid, phone portrait keeps the horizontal carousel.
 

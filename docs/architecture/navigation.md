@@ -9,11 +9,12 @@ Navigation is implemented with **Navigation Compose** in `ScanlyNavHost.kt`. Rou
 | Form factor | Chrome |
 | --- | --- |
 | Phone | `Scaffold` + bottom `NavigationBar` |
-| Tablet | Persistent `NavigationRail` (92 dp) with app logo |
+| Tablet | Destination-owned `NavigationRail` (92 dp) with app logo on top-level screens |
 
 - **Start destination:** `home`
 - **Tab switches:** no transition animation
-- **Detail pushes:** 160 ms fade transition
+- **Detail pushes:** short fade with a small forward offset; back navigation reverses the motion
+- **Large-screen stability:** the tablet rail is composed inside each top-level destination, so entering or leaving a detail route never resizes the `NavHost` mid-transition
 - **Top inset:** each screen applies status-bar padding once (not doubled by the activity shell)
 
 ## Top-level tabs

@@ -107,6 +107,7 @@ fun ToolsScreen(
     onOpenTool: (String) -> Unit,
     onSuggestTitle: suspend (DocumentTitleFormat) -> String,
 ) {
+    // Survive rotation — do not re-open closed sheets/dialogs after config change.
     var createDialogVisible by rememberSaveable { mutableStateOf(false) }
     var showQrModeSheet by rememberSaveable { mutableStateOf(false) }
     val windowSizeInfo = rememberWindowSizeInfo()
