@@ -23,10 +23,8 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.RotateLeft
@@ -76,7 +74,6 @@ import `in`.c1ph3rj.scanly.core.ml.DocumentCornerQuad
 import `in`.c1ph3rj.scanly.core.ml.NormalizedPoint
 import `in`.c1ph3rj.scanly.core.ui.ChromeIconButton
 import `in`.c1ph3rj.scanly.core.ui.MetricChip
-import `in`.c1ph3rj.scanly.core.ui.WindowWidthClass
 import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import `in`.c1ph3rj.scanly.domain.model.PageFilterPreset
 import `in`.c1ph3rj.scanly.domain.model.ScanPage
@@ -133,24 +130,13 @@ fun PageCropScreen(
         else -> "Crop"
     }
     val windowSizeInfo = rememberWindowSizeInfo()
-    val useTwoPane = windowSizeInfo.useTabletLandscapeLayout ||
-        (windowSizeInfo.useToolTwoPaneLayout && windowSizeInfo.isLandscape)
-    val horizontalPadding = when {
-        useTwoPane && windowSizeInfo.widthClass == WindowWidthClass.Expanded -> 32.dp
-        useTwoPane || windowSizeInfo.isTablet -> windowSizeInfo.horizontalPadding.coerceAtLeast(24.dp)
-        else -> 16.dp
-    }
-    val contentMaxWidth = when {
-        useTwoPane && windowSizeInfo.widthClass == WindowWidthClass.Expanded -> 1200.dp
-        useTwoPane -> 1040.dp
-        windowSizeInfo.isTablet -> windowSizeInfo.contentMaxWidth
-        else -> Dp.Unspecified
-    }
-    val chromeMaxWidth = when {
-        windowSizeInfo.widthClass == WindowWidthClass.Expanded -> 1200.dp
-        windowSizeInfo.isTablet -> 900.dp
-        else -> Dp.Unspecified
-    }
+    val twoPane = rememberEditorTwoPaneSpec(windowSizeInfo)
+    val horizontalPadding = twoPane?.horizontalPadding
+        ?: if (windowSizeInfo.isTablet) windowSizeInfo.horizontalPadding else 16.dp
+    val contentMaxWidth = twoPane?.contentMaxWidth
+        ?: if (windowSizeInfo.isTablet) windowSizeInfo.contentMaxWidth else Dp.Unspecified
+    val chromeMaxWidth = twoPane?.chromeMaxWidth
+        ?: if (windowSizeInfo.isTablet) 900.dp else Dp.Unspecified
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -184,20 +170,18 @@ fun PageCropScreen(
                         style = MaterialTheme.typography.titleLarge,
                     )
                 }
-            } else if (useTwoPane) {
+            } else if (twoPane != null) {
                 Row(
                     modifier = Modifier
                         .fillMaxSize()
-                        .widthIn(max = contentMaxWidth)
-                        .padding(horizontal = horizontalPadding)
+                        .widthIn(max = twoPane.contentMaxWidth)
+                        .padding(horizontal = twoPane.horizontalPadding)
                         .padding(bottom = 16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(
-                        if (windowSizeInfo.widthClass == WindowWidthClass.Expanded) 24.dp else 16.dp,
-                    ),
+                    horizontalArrangement = Arrangement.spacedBy(twoPane.paneSpacing),
                 ) {
                     Surface(
                         modifier = Modifier
-                            .weight(0.62f)
+                            .weight(twoPane.previewWeight)
                             .fillMaxHeight(),
                         color = MaterialTheme.colorScheme.surfaceContainerLow,
                         shape = MaterialTheme.shapes.extraLarge,
@@ -216,29 +200,55 @@ fun PageCropScreen(
                             }
                         }
                     }
-                    Column(
+                    EditorToolPanel(
+                        title = "Crop tools",
+                        subtitle = "Detect edges, rotate, then drag handles. Tap Done to apply.",
                         modifier = Modifier
-                            .weight(0.38f)
+                            .weight(twoPane.controlsWeight)
                             .fillMaxHeight()
-                            .widthIn(max = 420.dp)
-                            .verticalScroll(rememberScrollState()),
-                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                            .widthIn(max = twoPane.controlsMaxWidth),
                     ) {
-                        CropPageBadge(pageIndex = uiState.page.pageIndex)
-                        CropActionRow(
-                            onRotateLeft = onRotateLeft,
-                            onRotateRight = onRotateRight,
-                            onDetectDocument = onDetectDocument,
-                            onResetCrop = onResetCrop,
+                        EditorSideBadge(text = "Page ${uiState.page.pageIndex + 1}")
+                        Spacer(modifier = Modifier.height(4.dp))
+                        EditorRailAction(
+                            icon = Icons.Filled.AutoAwesome,
+                            label = if (uiState.isDetecting) "Detecting…" else "AI Detect",
+                            subtitle = "Find the document corners",
+                            onClick = onDetectDocument,
+                            enabled = actionsEnabled || uiState.isDetecting,
+                            emphasized = true,
+                            leadingContent = if (uiState.isDetecting) {
+                                {
+                                    CircularProgressIndicator(
+                                        modifier = Modifier.size(22.dp),
+                                        color = MaterialTheme.colorScheme.primary,
+                                        trackColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                                        strokeWidth = 2.dp,
+                                    )
+                                }
+                            } else {
+                                null
+                            },
+                        )
+                        EditorRailAction(
+                            icon = Icons.AutoMirrored.Filled.RotateLeft,
+                            label = "Rotate left",
+                            onClick = onRotateLeft,
                             enabled = actionsEnabled,
-                            isDetecting = uiState.isDetecting,
                         )
-                        Text(
-                            text = "Use AI Detect to find the page, rotate or drag handles, then tap Done.",
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            style = MaterialTheme.typography.bodyMedium,
+                        EditorRailAction(
+                            icon = Icons.AutoMirrored.Filled.RotateRight,
+                            label = "Rotate right",
+                            onClick = onRotateRight,
+                            enabled = actionsEnabled,
                         )
-                        Spacer(modifier = Modifier.height(16.dp))
+                        EditorRailAction(
+                            icon = Icons.Filled.CropFree,
+                            label = "Reset crop",
+                            subtitle = "Full frame corners",
+                            onClick = onResetCrop,
+                            enabled = actionsEnabled,
+                        )
                     }
                 }
             } else {
@@ -377,9 +387,6 @@ private fun CropTopBar(
         }
     }
 }
-
-private fun Dp.coerceAtLeast(minimumValue: Dp): Dp =
-    if (this == Dp.Unspecified || this < minimumValue) minimumValue else this
 
 @Composable
 private fun CropPageBadge(

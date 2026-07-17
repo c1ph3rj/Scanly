@@ -19,11 +19,10 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
@@ -178,6 +177,7 @@ fun PageEditorScreen(
             },
         ) { innerPadding ->
             val windowSizeInfo = rememberWindowSizeInfo()
+            val twoPane = rememberEditorTwoPaneSpec(windowSizeInfo)
 
             if (uiState.missingPage || uiState.page == null || uiState.cropQuad == null) {
                 Box(
@@ -192,42 +192,89 @@ fun PageEditorScreen(
                         style = MaterialTheme.typography.titleLarge,
                     )
                 }
-            } else if (windowSizeInfo.useTabletLandscapeLayout) {
-                Row(
+            } else if (twoPane != null) {
+                Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(innerPadding)
-                        .padding(horizontal = 16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        .padding(innerPadding),
+                    contentAlignment = Alignment.TopCenter,
                 ) {
-                    PageEditorPreview(
-                        page = uiState.page,
-                        cropQuad = uiState.cropQuad,
-                        rotationDegrees = uiState.rotationDegrees,
-                        selectedFilter = uiState.selectedFilter,
-                        filterAdjustments = uiState.filterAdjustments,
+                    Row(
                         modifier = Modifier
-                            .weight(0.6f)
-                            .fillMaxHeight(),
-                    )
-                    Column(
-                        modifier = Modifier
-                            .weight(0.4f)
-                            .fillMaxHeight()
-                            .verticalScroll(rememberScrollState()),
-                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                            .fillMaxSize()
+                            .widthIn(max = twoPane.contentMaxWidth)
+                            .padding(horizontal = twoPane.horizontalPadding)
+                            .padding(bottom = 16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(twoPane.paneSpacing),
                     ) {
-                        EditorPageBadge(pageIndex = uiState.page.pageIndex)
-                        EditorActionRow(
-                            onOpenCrop = onOpenCrop,
-                            onOpenFilters = { filtersVisible = true },
-                            onOpenCustomize = { customizeVisible = true },
-                            onRetake = onRetakePage,
-                            onDelete = { deleteDialogVisible = true },
-                            enabled = !uiState.isSaving,
-                            customizeActive = !uiState.filterAdjustments.isDefault,
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Surface(
+                            modifier = Modifier
+                                .weight(twoPane.previewWeight)
+                                .fillMaxHeight(),
+                            color = MaterialTheme.colorScheme.surfaceContainerLow,
+                            shape = MaterialTheme.shapes.extraLarge,
+                        ) {
+                            PageEditorPreview(
+                                page = uiState.page,
+                                cropQuad = uiState.cropQuad,
+                                rotationDegrees = uiState.rotationDegrees,
+                                selectedFilter = uiState.selectedFilter,
+                                filterAdjustments = uiState.filterAdjustments,
+                                modifier = Modifier.fillMaxSize(),
+                            )
+                        }
+                        EditorToolPanel(
+                            title = "Edit tools",
+                            subtitle = "Crop, filter, and adjust this page. Save with Done.",
+                            modifier = Modifier
+                                .weight(twoPane.controlsWeight)
+                                .fillMaxHeight()
+                                .widthIn(max = twoPane.controlsMaxWidth),
+                        ) {
+                            EditorSideBadge(text = "Page ${uiState.page.pageIndex + 1}")
+                            Spacer(modifier = Modifier.height(4.dp))
+                            EditorRailAction(
+                                icon = Icons.Filled.Crop,
+                                label = "Crop",
+                                subtitle = "AI detect, rotate, handles",
+                                onClick = onOpenCrop,
+                                enabled = !uiState.isSaving,
+                            )
+                            EditorRailAction(
+                                icon = Icons.Filled.Tune,
+                                label = "Filters",
+                                subtitle = uiState.selectedFilter.toEditorLabel(),
+                                onClick = { filtersVisible = true },
+                                enabled = !uiState.isSaving,
+                            )
+                            EditorRailAction(
+                                icon = Icons.Filled.Tonality,
+                                label = if (uiState.filterAdjustments.isDefault) {
+                                    "Adjust"
+                                } else {
+                                    "Adjusted"
+                                },
+                                subtitle = "Brightness, contrast, more",
+                                onClick = { customizeVisible = true },
+                                enabled = !uiState.isSaving,
+                                emphasized = !uiState.filterAdjustments.isDefault,
+                            )
+                            EditorRailAction(
+                                icon = Icons.Filled.Refresh,
+                                label = "Retake",
+                                subtitle = "Capture this page again",
+                                onClick = onRetakePage,
+                                enabled = !uiState.isSaving,
+                            )
+                            EditorRailAction(
+                                icon = Icons.Filled.DeleteOutline,
+                                label = "Delete page",
+                                subtitle = "Remove from document",
+                                onClick = { deleteDialogVisible = true },
+                                enabled = !uiState.isSaving,
+                                destructive = true,
+                            )
+                        }
                     }
                 }
             } else {
@@ -520,4 +567,17 @@ private fun EditorActionButton(
             )
         }
     }
+}
+
+private fun PageFilterPreset.toEditorLabel(): String = when (this) {
+    PageFilterPreset.ORIGINAL -> "Original"
+    PageFilterPreset.AUTO -> "Auto"
+    PageFilterPreset.ENHANCED_COLOR -> "Color"
+    PageFilterPreset.GRAYSCALE -> "Grayscale"
+    PageFilterPreset.BLACK_AND_WHITE -> "B&W"
+    PageFilterPreset.CLEAN -> "Clean Paper"
+    PageFilterPreset.SHADOW_REDUCTION -> "Shadow Reduce"
+    PageFilterPreset.MAGIC_COLOR -> "Magic"
+    PageFilterPreset.RECEIPT -> "Receipt"
+    PageFilterPreset.SOFT_BLACK_AND_WHITE -> "Text Enhance"
 }

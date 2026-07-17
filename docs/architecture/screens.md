@@ -143,6 +143,19 @@ Hosted in `MainActivity`, not tied to a single screen:
 | `ZoomableImageDialog.kt` | Pinch-zoom preview (document detail) |
 | `ZoomableImageViewer.kt` | Pinch-zoom viewer (page preview) |
 
+### Large-screen editor layout
+
+On tablet landscape (and other wide landscape windows that opt into tool two-pane), editor flows share `EditorLandscapeChrome`:
+
+| Screen | Left pane | Right pane |
+| --- | --- | --- |
+| Page editor | Live cropped preview | Vertical tool rail (Crop, Filters, Adjust, Retake, Delete) |
+| Page crop | Interactive crop canvas | Vertical rail (AI Detect, rotate, reset) |
+| Filters | Live filter preview | Scope switch + 2-column preset grid |
+| Adjust | Live adjusted preview | Scrollable sliders |
+
+Phone portrait keeps the stacked preview-above-controls layout.
+
 Editor package helpers (`feature/editor/`):
 
 | File | Role |

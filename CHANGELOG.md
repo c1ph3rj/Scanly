@@ -21,12 +21,14 @@ Editor and page-edit pipeline work on top of **1.0.10** (Room schema **4**).
 
 ### Changed
 
+- **Document detection tightens oversize overlays** — live quads snap inward onto stronger page edges and prefer mid-size boxes, so pages on desks/keyboards are less often over-selected.
 - **Settings redesigned as a hub** — main list shows Appearance, Storage & backup, Document detection, Widgets, Help, and About; dense controls live on sub-screens.
 - **Home-screen widgets** — icons render immediately from `initialLayout` (no layer-list delay), follow the device light/dark theme, and rebind on place/restore/app open. 1×1 Scan/QR are icon-only (no card); the actions bar is a system-style capsule with a branded **Scan** chip plus Import / QR / Library icon wells.
 - **Editor main preview** — shows the perspective-cropped page with selected filter and adjustments (not the uncropped cropper canvas).
 - **Editor toolbar** — **Crop · Filters · Adjust · Retake · Delete** (rotation lives on the crop screen).
+- **Editor landscape (tablet)** — Editor, Crop, Filters, and Adjust share a two-pane shell: large preview left, vertical tool rail / filter grid right.
 - **Large-screen editor tools** — Filters, Adjust, and Crop adapt for tablets and wide windows (two-pane landscape, content width caps, phone-landscape control height).
-- **Filter picker controls** — the scope switch and preset strip stay fixed instead of vertically scrolling; presets remain available through the horizontal carousel on every screen size.
+- **Filter picker controls** — the scope switch stays fixed; landscape uses a 2-column preset grid, phone portrait keeps the horizontal carousel.
 
 ## [1.0.10] - 2026-07-13
 

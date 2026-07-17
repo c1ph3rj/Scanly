@@ -175,59 +175,53 @@ private data class CustomizeLayoutSpec(
 
 @Composable
 private fun rememberCustomizeLayout(windowSizeInfo: WindowSizeInfo): CustomizeLayoutSpec {
-    val twoPane = windowSizeInfo.useTabletLandscapeLayout ||
-        (windowSizeInfo.useToolTwoPaneLayout && windowSizeInfo.isLandscape)
-
-    val horizontalPadding = when {
-        twoPane && windowSizeInfo.widthClass == WindowWidthClass.Expanded -> 32.dp
-        twoPane -> 24.dp
-        windowSizeInfo.isTablet -> windowSizeInfo.horizontalPadding
-        windowSizeInfo.useCompactLandscapeLayout -> 16.dp
-        else -> 16.dp
-    }
-
-    val contentMaxWidth = when {
-        twoPane && windowSizeInfo.widthClass == WindowWidthClass.Expanded -> 1200.dp
-        twoPane -> 1040.dp
-        windowSizeInfo.isTablet -> windowSizeInfo.contentMaxWidth
-        else -> Dp.Unspecified
-    }
-
-    val chromeMaxWidth = when {
-        windowSizeInfo.widthClass == WindowWidthClass.Expanded -> 1200.dp
-        windowSizeInfo.isTablet -> 900.dp
-        else -> Dp.Unspecified
-    }
-
-    val controlsMaxWidth = when {
-        twoPane && windowSizeInfo.widthClass == WindowWidthClass.Expanded -> 440.dp
-        twoPane -> 400.dp
-        windowSizeInfo.isTablet -> windowSizeInfo.toolFormMaxWidth
-        else -> Dp.Unspecified
+    val shared = rememberEditorTwoPaneSpec(windowSizeInfo)
+    if (shared != null) {
+        return CustomizeLayoutSpec(
+            mode = CustomizeLayoutMode.TwoPane,
+            horizontalPadding = shared.horizontalPadding,
+            contentMaxWidth = shared.contentMaxWidth,
+            chromeMaxWidth = shared.chromeMaxWidth,
+            controlsMaxWidth = shared.controlsMaxWidth,
+            controlsMaxHeight = Dp.Unspecified,
+            // Single-column sliders read cleaner in the narrower tool rail.
+            useTwoColumnSliders = false,
+            previewWeight = shared.previewWeight,
+            controlsWeight = shared.controlsWeight,
+            paneSpacing = shared.paneSpacing,
+        )
     }
 
     val controlsMaxHeight = when {
-        twoPane -> Dp.Unspecified
         windowSizeInfo.useCompactLandscapeLayout -> 200.dp
         windowSizeInfo.isTablet && !windowSizeInfo.isLandscape -> 420.dp
         windowSizeInfo.widthClass == WindowWidthClass.Medium -> 360.dp
         else -> 320.dp
     }
 
-    val useTwoColumnSliders = twoPane &&
-        windowSizeInfo.widthClass == WindowWidthClass.Expanded
-
     return CustomizeLayoutSpec(
-        mode = if (twoPane) CustomizeLayoutMode.TwoPane else CustomizeLayoutMode.Stacked,
-        horizontalPadding = horizontalPadding,
-        contentMaxWidth = contentMaxWidth,
-        chromeMaxWidth = chromeMaxWidth,
-        controlsMaxWidth = controlsMaxWidth,
+        mode = CustomizeLayoutMode.Stacked,
+        horizontalPadding = if (windowSizeInfo.isTablet) {
+            windowSizeInfo.horizontalPadding
+        } else {
+            16.dp
+        },
+        contentMaxWidth = if (windowSizeInfo.isTablet) {
+            windowSizeInfo.contentMaxWidth
+        } else {
+            Dp.Unspecified
+        },
+        chromeMaxWidth = if (windowSizeInfo.isTablet) 900.dp else Dp.Unspecified,
+        controlsMaxWidth = if (windowSizeInfo.isTablet) {
+            windowSizeInfo.toolFormMaxWidth
+        } else {
+            Dp.Unspecified
+        },
         controlsMaxHeight = controlsMaxHeight,
-        useTwoColumnSliders = useTwoColumnSliders,
-        previewWeight = if (windowSizeInfo.widthClass == WindowWidthClass.Expanded) 0.62f else 0.58f,
-        controlsWeight = if (windowSizeInfo.widthClass == WindowWidthClass.Expanded) 0.38f else 0.42f,
-        paneSpacing = if (windowSizeInfo.widthClass == WindowWidthClass.Expanded) 24.dp else 16.dp,
+        useTwoColumnSliders = false,
+        previewWeight = 0.58f,
+        controlsWeight = 0.42f,
+        paneSpacing = 16.dp,
     )
 }
 
