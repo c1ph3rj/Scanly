@@ -109,10 +109,12 @@ fun QrToolRoute(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
+    var initialModeReady by remember(viewModel, initialMode) { mutableStateOf(false) }
 
     // Seed mode from nav only once — do not re-apply on rotation/recomposition.
-    LaunchedEffect(viewModel) {
+    LaunchedEffect(viewModel, initialMode) {
         viewModel.applyInitialMode(initialMode)
+        initialModeReady = true
     }
 
     LaunchedEffect(viewModel) {
@@ -125,6 +127,7 @@ fun QrToolRoute(
 
     val windowSizeInfo = rememberWindowSizeInfo()
     val layout = rememberQrToolLayout(windowSizeInfo)
+    val mode = if (initialModeReady) uiState.mode else initialMode
     ScanlyDetailScaffold(
         title = "QR Code",
         onNavigateUp = onNavigateUp,
@@ -153,7 +156,7 @@ fun QrToolRoute(
             ) {
                 val modeSelector: @Composable () -> Unit = {
                     QrModeSelector(
-                        mode = uiState.mode,
+                        mode = mode,
                         onModeChange = viewModel::setMode,
                         compact = layout.compactModeSelector,
                         maxWidth = layout.modeSelectorMaxWidth,
@@ -167,13 +170,13 @@ fun QrToolRoute(
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(1f),
-                    contentAlignment = if (layout.twoPane && uiState.mode == QrToolMode.Generate) {
+                    contentAlignment = if (layout.twoPane && mode == QrToolMode.Generate) {
                         Alignment.Center
                     } else {
                         Alignment.TopCenter
                     },
                 ) {
-                    when (uiState.mode) {
+                    when (mode) {
                         QrToolMode.Scan -> QrScanPanel(
                             lastResult = uiState.scanResult,
                             layout = layout,
@@ -504,6 +507,10 @@ private fun QrCameraFrame(
                 onTorchAvailabilityChanged = { available ->
                     torchAvailable = available
                     if (!available) torchEnabled = false
+                },
+                onCameraError = {
+                    torchAvailable = false
+                    torchEnabled = false
                 },
                 modifier = Modifier
                     .fillMaxSize()
@@ -899,34 +906,43 @@ private fun QrCameraPreview(
     onBarcode: (String) -> Unit,
     torchEnabled: Boolean,
     onTorchAvailabilityChanged: (Boolean) -> Unit,
+    onCameraError: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val analysisExecutor = remember { Executors.newSingleThreadExecutor() }
     val handled = remember { AtomicBoolean(false) }
+    val disposed = remember { AtomicBoolean(false) }
     var boundCamera by remember { mutableStateOf<Camera?>(null) }
     var cameraProvider by remember { mutableStateOf<ProcessCameraProvider?>(null) }
     val scanner = remember {
-        val options = BarcodeScannerOptions.Builder()
-            .setBarcodeFormats(
-                Barcode.FORMAT_QR_CODE,
-                Barcode.FORMAT_AZTEC,
-                Barcode.FORMAT_DATA_MATRIX,
-                Barcode.FORMAT_PDF417,
-                Barcode.FORMAT_CODE_128,
-                Barcode.FORMAT_EAN_13,
-            )
-            .build()
-        BarcodeScanning.getClient(options)
+        runCatching {
+            val options = BarcodeScannerOptions.Builder()
+                .setBarcodeFormats(
+                    Barcode.FORMAT_QR_CODE,
+                    Barcode.FORMAT_AZTEC,
+                    Barcode.FORMAT_DATA_MATRIX,
+                    Barcode.FORMAT_PDF417,
+                    Barcode.FORMAT_CODE_128,
+                    Barcode.FORMAT_EAN_13,
+                )
+                .build()
+            BarcodeScanning.getClient(options)
+        }.getOrNull()
+    }
+
+    LaunchedEffect(scanner) {
+        if (scanner == null) onCameraError()
     }
 
     DisposableEffect(Unit) {
         onDispose {
+            disposed.set(true)
             boundCamera?.cameraControl?.enableTorch(false)
             cameraProvider?.unbindAll()
             analysisExecutor.shutdown()
-            scanner.close()
+            scanner?.close()
         }
     }
 
@@ -951,7 +967,12 @@ private fun QrCameraPreview(
             val cameraProviderFuture = ProcessCameraProvider.getInstance(ctx)
             cameraProviderFuture.addListener(
                 {
-                    val provider = cameraProviderFuture.get()
+                    if (disposed.get()) return@addListener
+                    val provider = runCatching { cameraProviderFuture.get() }
+                        .getOrElse {
+                            onCameraError()
+                            return@addListener
+                        }
                     cameraProvider = provider
                     val preview = Preview.Builder().build().also {
                         it.surfaceProvider = previewView.surfaceProvider
@@ -970,6 +991,14 @@ private fun QrCameraPreview(
                         )
                         .build()
                     analysis.setAnalyzer(analysisExecutor) { imageProxy ->
+                        if (disposed.get()) {
+                            imageProxy.close()
+                            return@setAnalyzer
+                        }
+                        val barcodeScanner = scanner ?: run {
+                            imageProxy.close()
+                            return@setAnalyzer
+                        }
                         val mediaImage = imageProxy.image
                         if (mediaImage == null) {
                             imageProxy.close()
@@ -979,10 +1008,14 @@ private fun QrCameraPreview(
                             mediaImage,
                             imageProxy.imageInfo.rotationDegrees,
                         )
-                        scanner.process(image)
+                        runCatching { barcodeScanner.process(image) }
+                            .getOrElse {
+                                imageProxy.close()
+                                return@setAnalyzer
+                            }
                             .addOnSuccessListener { barcodes ->
                                 val value = barcodes.firstOrNull()?.rawValue
-                                if (!value.isNullOrBlank() && handled.compareAndSet(false, true)) {
+                                if (!disposed.get() && !value.isNullOrBlank() && handled.compareAndSet(false, true)) {
                                     onBarcode(value)
                                     previewView.postDelayed({ handled.set(false) }, 2_000L)
                                 }
@@ -1002,7 +1035,7 @@ private fun QrCameraPreview(
                     } catch (_: Exception) {
                         boundCamera = null
                         onTorchAvailabilityChanged(false)
-                        // Camera may be unavailable; leave empty preview.
+                        onCameraError()
                     }
                 },
                 ContextCompat.getMainExecutor(ctx),
