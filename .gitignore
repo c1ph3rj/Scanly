@@ -2913,3 +2913,5 @@ local.properties
 /scripts/performance-seed/.staging/sample-doc.json
 /scripts/performance-seed/.staging/sample-doc-with-pages.json
 /scripts/performance-seed/.staging/sample-group.json
+/notebooks/
+/app/githubRelease/apk-v1.0.10.apk
