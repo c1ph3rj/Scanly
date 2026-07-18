@@ -6,8 +6,8 @@ Version policy and release history for Scanly.
 
 | Field | Value |
 | --- | --- |
-| Version name | `1.0.12.1` |
-| Version code | `12` |
+| Version name | `1.0.13` |
+| Version code | `13` |
 | Application ID | `in.c1ph3rj.scanly` |
 | Room schema | `4` |
 | Min SDK | 29 (Android 10) |
@@ -20,14 +20,14 @@ The version shown in Settings reads `versionName` via `DefaultSettingsRepository
 
 ### Release highlights
 
-Version **1.0.12.1** (relative to `1.0.11`):
+Version **1.0.13** (relative to `1.0.11`):
 
 - Fixed the release-build crash when opening QR Scan after granting camera permission
 - Fixed the release-build crash when opening Create QR directly
 - Hardened ML Kit and CameraX initialization and cleanup for minified APKs
 - Prevented Create QR from briefly initializing the Scan camera path
 
-The compact GitHub release description used by the in-app update dialog is available in [release-notes/v1.0.12.1.md](release-notes/v1.0.12.1.md).
+The compact GitHub release description used by the in-app update dialog is available in [release-notes/v1.0.13.md](release-notes/v1.0.13.md).
 
 ## Versioning policy
 
@@ -40,7 +40,7 @@ The compact GitHub release description used by the in-app update dialog is avail
 
 ## Recent releases
 
-### 1.0.12.1 (code 12) — 2026-07-18
+### 1.0.13 (code 13) — 2026-07-18
 
 - QR Scan and Create QR release-build crash fix
 - ML Kit and CameraX startup lifecycle hardening
