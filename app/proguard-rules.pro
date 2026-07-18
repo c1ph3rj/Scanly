@@ -32,7 +32,10 @@
 
 # The QR flow creates ML Kit's barcode client and CameraX's provider from the
 # release APK. Keep their reflective/native entry points available after R8.
--keep class com.google.mlkit.vision.barcode.** { *; }
+-keep class com.google.mlkit.** { *; }
+-keep class com.google.firebase.components.** { *; }
+-keep class com.google.android.datatransport.** { *; }
 -keep class com.google.android.gms.internal.mlkit_vision_barcode.** { *; }
 -keep class com.google.android.gms.internal.mlkit_vision_common.** { *; }
 -keep class androidx.camera.** { *; }
+-keep class org.opencv.** { *; }
