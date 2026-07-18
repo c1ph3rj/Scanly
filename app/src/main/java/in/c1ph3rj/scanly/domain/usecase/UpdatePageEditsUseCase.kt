@@ -2,6 +2,7 @@ package `in`.c1ph3rj.scanly.domain.usecase
 
 import `in`.c1ph3rj.scanly.core.common.ScanlyResult
 import `in`.c1ph3rj.scanly.core.ml.DocumentCornerQuad
+import `in`.c1ph3rj.scanly.domain.model.PageFilterAdjustments
 import `in`.c1ph3rj.scanly.domain.model.PageFilterPreset
 import `in`.c1ph3rj.scanly.domain.repository.PageRepository
 import javax.inject.Inject
@@ -14,12 +15,14 @@ class UpdatePageEditsUseCase @Inject constructor(
         cropQuad: DocumentCornerQuad,
         rotationDegrees: Int,
         filterPreset: PageFilterPreset,
+        filterAdjustments: PageFilterAdjustments = PageFilterAdjustments.Default,
         applyFilterToAllPages: Boolean,
     ): ScanlyResult<Unit> = pageRepository.updatePageEdits(
         pageId = pageId,
         cropQuad = cropQuad,
         rotationDegrees = rotationDegrees,
         filterPreset = filterPreset,
+        filterAdjustments = filterAdjustments,
         applyFilterToAllPages = applyFilterToAllPages,
     )
 }

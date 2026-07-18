@@ -13,6 +13,12 @@
     "websiteUrl": "https://www.ultralytics.com/license"
   },
   {
+    "id": "scanly_document_gate",
+    "name": "Scanly physical-document gate",
+    "summary": "A custom MobileNetV3-Small classifier screens physical documents from digital screens and other rectangular objects. Its training bundle includes mixed-source research-use data, so this model is enabled for non-commercial evaluation only.",
+    "license": "Mixed research-use dataset terms"
+  },
+  {
     "id": "androidx_stack",
     "name": "AndroidX, Jetpack Compose, CameraX, Room, WorkManager, Hilt",
     "summary": "These libraries provide the Android UI, storage, background work, dependency injection, and camera foundations used by the app.",
@@ -36,8 +42,22 @@
   {
     "id": "pdfbox_android",
     "name": "PdfBox-Android",
-    "summary": "Android port of Apache PDFBox used to apply password protection to generated PDF exports.",
+    "summary": "Android port of Apache PDFBox used for PDF export encryption and the Tools PDF utility suite (merge, compress, watermark, password).",
     "license": "Apache-2.0",
     "websiteUrl": "https://github.com/TomRoush/PdfBox-Android"
+  },
+  {
+    "id": "mlkit_barcode",
+    "name": "ML Kit Barcode Scanning",
+    "summary": "On-device barcode and QR code scanning used by the Tools QR scanner.",
+    "license": "ML Kit Terms of Service",
+    "websiteUrl": "https://developers.google.com/ml-kit/vision/barcode-scanning"
+  },
+  {
+    "id": "zxing_core",
+    "name": "ZXing Core",
+    "summary": "QR code generation library used to encode text and URLs into QR images.",
+    "license": "Apache-2.0",
+    "websiteUrl": "https://github.com/zxing/zxing"
   }
 ]

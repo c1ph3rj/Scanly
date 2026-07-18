@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="scan"
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_scan"
+        android:shortcutShortLabel="@string/shortcut_scan_short"
+        android:shortcutLongLabel="@string/shortcut_scan_long"
+        android:shortcutDisabledMessage="@string/shortcut_scan_disabled">
+        <intent
+            android:action="in.c1ph3rj.scanly.action.SCAN"
+            android:targetPackage="in.c1ph3rj.scanly"
+            android:targetClass="in.c1ph3rj.scanly.MainActivity" />
+    </shortcut>
+
+    <shortcut
+        android:shortcutId="qr"
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_qr"
+        android:shortcutShortLabel="@string/shortcut_qr_short"
+        android:shortcutLongLabel="@string/shortcut_qr_long"
+        android:shortcutDisabledMessage="@string/shortcut_qr_disabled">
+        <intent
+            android:action="in.c1ph3rj.scanly.action.QR"
+            android:targetPackage="in.c1ph3rj.scanly"
+            android:targetClass="in.c1ph3rj.scanly.MainActivity" />
+    </shortcut>
+
+    <shortcut
+        android:shortcutId="import"
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_import"
+        android:shortcutShortLabel="@string/shortcut_import_short"
+        android:shortcutLongLabel="@string/shortcut_import_long"
+        android:shortcutDisabledMessage="@string/shortcut_import_disabled">
+        <intent
+            android:action="in.c1ph3rj.scanly.action.IMPORT"
+            android:targetPackage="in.c1ph3rj.scanly"
+            android:targetClass="in.c1ph3rj.scanly.MainActivity" />
+    </shortcut>
+
+    <shortcut
+        android:shortcutId="library"
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_library"
+        android:shortcutShortLabel="@string/shortcut_library_short"
+        android:shortcutLongLabel="@string/shortcut_library_long"
+        android:shortcutDisabledMessage="@string/shortcut_library_disabled">
+        <intent
+            android:action="in.c1ph3rj.scanly.action.LIBRARY"
+            android:targetPackage="in.c1ph3rj.scanly"
+            android:targetClass="in.c1ph3rj.scanly.MainActivity" />
+    </shortcut>
+</shortcuts>

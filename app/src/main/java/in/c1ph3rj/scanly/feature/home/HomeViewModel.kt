@@ -33,6 +33,9 @@ data class HomeUiState(
     val recentDocuments: List<ScanDocument> = emptyList(),
     val isLoading: Boolean = false,
     val isImporting: Boolean = false,
+    val importCurrent: Int = 0,
+    val importTotal: Int = 0,
+    val importStageLabel: String = "",
 )
 
 sealed interface HomeEvent {
@@ -54,18 +57,21 @@ class HomeViewModel @Inject constructor(
 
     private val _events = MutableSharedFlow<HomeEvent>()
     val events: SharedFlow<HomeEvent> = _events.asSharedFlow()
-    private val isImporting = MutableStateFlow(false)
+    private val importProgress = MutableStateFlow(ImportProgressSnapshot())
 
     val uiState: StateFlow<HomeUiState> = combine(
         observeRecentGroupsUseCase(limit = 6),
         observeRecentDocumentsUseCase(limit = 8),
-        isImporting,
-    ) { groups, docs, importing ->
+        importProgress,
+    ) { groups, docs, progress ->
         HomeUiState(
             recentGroups = groups,
             recentDocuments = docs,
             isLoading = false,
-            isImporting = importing,
+            isImporting = progress.active,
+            importCurrent = progress.current,
+            importTotal = progress.total,
+            importStageLabel = progress.stageLabel,
         )
     }.stateIn(
         scope = viewModelScope,
@@ -98,40 +104,69 @@ class HomeViewModel @Inject constructor(
     }
 
     fun importImagesAsDocument(imageUris: List<Uri>) {
-        if (imageUris.isEmpty() || isImporting.value) {
+        if (imageUris.isEmpty() || importProgress.value.active) {
             return
         }
 
         val cappedSelection = ImageImportSupport.capSelection(imageUris)
+        val total = cappedSelection.items.size
 
         viewModelScope.launch {
-            isImporting.value = true
-            when (val createResult = createDocumentUseCase.createImported()) {
-                is ScanlyResult.Success -> {
-                    when (val importResult = importImagesUseCase(createResult.value, cappedSelection.items)) {
-                        is ScanlyResult.Success -> {
-                            _events.emit(HomeEvent.OpenDocument(createResult.value))
-                            _events.emit(
-                                HomeEvent.ShowMessage(
-                                    ImageImportSupport.importResultMessage(
-                                        importedCount = cappedSelection.items.size,
-                                        truncated = cappedSelection.truncated,
-                                    ),
-                                ),
+            importProgress.value = ImportProgressSnapshot(
+                active = true,
+                current = 0,
+                total = total,
+                stageLabel = "Starting import",
+            )
+            try {
+                when (val createResult = createDocumentUseCase.createImported()) {
+                    is ScanlyResult.Success -> {
+                        when (
+                            val importResult = importImagesUseCase(
+                                documentId = createResult.value,
+                                imageUris = cappedSelection.items,
+                                onProgress = { progress ->
+                                    importProgress.value = ImportProgressSnapshot(
+                                        active = true,
+                                        current = progress.currentIndex,
+                                        total = progress.totalCount,
+                                        stageLabel = progress.stageLabel,
+                                    )
+                                },
                             )
-                        }
+                        ) {
+                            is ScanlyResult.Success -> {
+                                _events.emit(HomeEvent.OpenDocument(createResult.value))
+                                _events.emit(
+                                    HomeEvent.ShowMessage(
+                                        ImageImportSupport.importResultMessage(
+                                            importedCount = cappedSelection.items.size,
+                                            truncated = cappedSelection.truncated,
+                                        ),
+                                    ),
+                                )
+                            }
 
-                        is ScanlyResult.Failure -> {
-                            _events.emit(HomeEvent.ShowMessage(importResult.error.message))
+                            is ScanlyResult.Failure -> {
+                                _events.emit(HomeEvent.ShowMessage(importResult.error.message))
+                            }
                         }
                     }
-                }
 
-                is ScanlyResult.Failure -> {
-                    _events.emit(HomeEvent.ShowMessage(createResult.error.message))
+                    is ScanlyResult.Failure -> {
+                        _events.emit(HomeEvent.ShowMessage(createResult.error.message))
+                    }
                 }
+            } finally {
+                importProgress.value = ImportProgressSnapshot()
             }
-            isImporting.value = false
         }
     }
 }
+
+private data class ImportProgressSnapshot(
+    val active: Boolean = false,
+    val current: Int = 0,
+    val total: Int = 0,
+    val stageLabel: String = "",
+)

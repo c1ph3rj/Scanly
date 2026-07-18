@@ -32,6 +32,7 @@ import `in`.c1ph3rj.scanly.domain.model.ScanDocument
 import `in`.c1ph3rj.scanly.feature.components.*
 import `in`.c1ph3rj.scanly.core.ui.PreviewDisplaySize
 import androidx.compose.ui.unit.Dp
+import androidx.activity.compose.BackHandler
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -105,6 +106,8 @@ fun HomeScreen(
     var createDialogVisible by rememberSaveable { mutableStateOf(false) }
     var createFolderDialogVisible by rememberSaveable { mutableStateOf(false) }
     val windowSizeInfo = rememberWindowSizeInfo()
+
+    BackHandler(enabled = uiState.isImporting) { /* block back while processing */ }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -226,10 +229,18 @@ fun HomeScreen(
             }
             }
         }
+
+            if (uiState.isImporting) {
+                ScanlyImportProgressOverlay(
+                    current = uiState.importCurrent,
+                    total = uiState.importTotal,
+                    stageLabel = uiState.importStageLabel.ifBlank { "Working on your photos" },
+                )
+            }
         } // end outer Box
     }
 
-    if (createDialogVisible) {
+    if (createDialogVisible && !uiState.isImporting) {
         DocumentTitleDialog(
             title = "New scan",
             initialValue = "",
@@ -243,7 +254,7 @@ fun HomeScreen(
         )
     }
 
-    if (createFolderDialogVisible) {
+    if (createFolderDialogVisible && !uiState.isImporting) {
         GroupNameDialog(
             title = "New folder",
             initialValue = "",

@@ -182,6 +182,34 @@ class DefaultDocumentRepository @Inject constructor(
             }
         }
 
+    override suspend fun deleteEmptyDocuments(): ScanlyResult<Int> =
+        withContext(dispatchers.io) {
+            operationCoordinator.withMutation {
+                runCatching {
+                    val emptyIds = documentDao.getEmptyDocumentIds()
+                    if (emptyIds.isEmpty()) return@runCatching 0
+                    database.withTransaction {
+                        emptyIds.forEach { documentDao.deleteById(it) }
+                    }
+                    emptyIds.forEach { id ->
+                        runCatching { documentStorageManager.deleteDocumentStorage(id) }
+                    }
+                    emptyIds.size
+                }.fold(
+                    onSuccess = { ScanlyResult.Success(it) },
+                    onFailure = { throwable ->
+                        ScanlyResult.Failure(
+                            ScanlyError(
+                                message = throwable.message
+                                    ?: "Could not remove empty documents.",
+                                cause = throwable,
+                            ),
+                        )
+                    },
+                )
+            }
+        }
+
     private fun DocumentEntity.toDomain(): ScanDocument = ScanDocument(
         id = id,
         title = title,

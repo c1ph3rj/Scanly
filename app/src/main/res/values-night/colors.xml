@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="scanly_window_background">#FF09090B</color>
+
+    <!-- Brand accent — readable on dark wallpapers -->
+    <color name="widget_primary">#FF4DB6AC</color>
+    <color name="widget_on_primary">#FFFFFFFF</color>
+
+    <!-- Actions capsule (dark) — charcoal like system AI/tool bars -->
+    <color name="widget_pill_background">#FF2B2F2E</color>
+    <color name="widget_pill_button">#FF3A3F3E</color>
+    <color name="widget_glyph">#FFE8EEEC</color>
+    <color name="widget_pill_label">#FFF5F7F6</color>
 </resources>

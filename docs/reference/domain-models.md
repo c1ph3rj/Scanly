@@ -1,13 +1,14 @@
 # Domain Models
 
-All model classes in `domain/model/` (22 files).
+All model classes in `domain/model/` (25 files).
 
 ## Document and pages
 
 | Model | File | Purpose |
 | --- | --- | --- |
 | `ScanDocument` | `ScanDocument.kt` | Document metadata: id, title, pageCount, cover path, groupId, timestamps |
-| `ScanPage` | `ScanPage.kt` | Page: paths, crop quad, rotation, filter, processing state, pageIndex |
+| `ScanPage` | `ScanPage.kt` | Page: paths, crop quad, rotation, filter preset + adjustments, processing state, pageIndex |
+| `PageFilterAdjustments` | `PageFilterAdjustments.kt` | Brightness/contrast/saturation/sharpness post-filter tweaks |
 | `DocumentGroup` | `DocumentGroup.kt` | Collection: id, title, doc/page counts, cover path, timestamps |
 | `PageCaptureDraft` | `PageCaptureDraft.kt` | Transient state during active capture session |
 | `PagePreviewPaths` | `PagePreviewPaths.kt` | Extension resolving display paths for preview |
@@ -53,10 +54,13 @@ All model classes in `domain/model/` (22 files).
 | Model | File | Purpose |
 | --- | --- | --- |
 | `ThemeMode` | `ThemeMode.kt` | `SYSTEM`, `LIGHT`, `DARK` |
+| `DocumentCornerModel` | `DocumentCornerModel.kt` | `LITE`, `STANDARD`, `HIGH`, `ACCURATE` with storage values and display names |
 | `SettingsContent` | `SettingsContent.kt` | Aggregated FAQs and licenses for Settings |
 | `SettingsFaq` | `SettingsFaq.kt` | Single FAQ entry |
 | `LicenseInfo` | `LicenseInfo.kt` | Third-party license entry |
 | `AppStorageUsage` | `AppStorageUsage.kt` | Byte counts: documents, export cache, database, archive workspace |
+
+Pure black (AMOLED) is a boolean DataStore preference (`pure_black_enabled`), not a `ThemeMode` value.
 
 ## App updates
 

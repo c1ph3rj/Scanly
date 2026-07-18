@@ -9,23 +9,40 @@ Managed by `DefaultSettingsRepository` (`data/settings/`).
 | Key | Type | Default | Purpose |
 | --- | --- | --- | --- |
 | `theme_mode` | String | `"system"` | `SYSTEM`, `LIGHT`, or `DARK` (`ThemeMode.storageValue`) |
+| `pure_black_enabled` | Boolean | `false` | Pure black Material 3 surfaces when dark theme is active (AMOLED) |
 | `onboarding_completed` | Boolean | `false` | First-run gate flag |
 | `export_tree_uri` | String? | null | Persisted SAF tree URI for custom export/backup base |
 | `export_tree_label` | String? | null | Display name for custom export folder |
+| `live_detection_model` | String | `"legacy"` | Manual live-preview corner model (`lite` / `standard` / `accurate`=High / `legacy`=Accurate) |
+| `post_processing_model` | String | `"legacy"` | Manual captured-image corner model (same storage values) |
+| `automatic_document_model_selection` | Boolean | `true` | Calibrate Lite/Standard/High on device; lock manual selectors |
+| `document_gate_enabled` | Boolean | `true` | Run or bypass the physical-document semantic gate in both pipelines |
 
 When `export_tree_uri` and `export_tree_label` are both set, `ExportDestination.CustomTree` is used; otherwise `ExportDestination.DefaultDownloadsScanly` (`Downloads/Scanly`).
 
-### Theme flow
+### Theme / look & feel flow
 
 ```
-SettingsViewModel.setThemeMode()
-  → SetThemeModeUseCase → SettingsRepository
-  → DataStore write
+SettingsViewModel.setThemeMode() / setPureBlackEnabled()
+  → SetThemeModeUseCase / SetPureBlackEnabledUseCase
+  → SettingsRepository → DataStore write
 
 AppSettingsViewModel (MainActivity)
-  → ObserveThemeModeUseCase → Flow
-  → ScanlyTheme(darkTheme = resolved)
+  → ObserveThemeModeUseCase + ObservePureBlackEnabledUseCase
+  → ScanlyTheme(darkTheme = resolved, pureBlack = preference)
 ```
+
+Pure black only changes surface colors when dark theme is active (Dark mode, or System when the OS is dark). The preference can still be toggled while Light is selected and takes effect later.
+
+### Document detection preferences
+
+| Control | Behavior |
+| --- | --- |
+| Automatic model selection | Benchmarks Lite/Standard/High once per process; assigns live and post models under latency budgets |
+| Live preview model | Manual pick when automatic is off; chip + bottom-sheet picker in Settings |
+| Post-processing model | Independent manual pick for capture/import finalize |
+| Physical-document gate | Enable/bypass gate inference for live + post pipelines |
+| Model benchmark | Temporary local image run; does not persist results |
 
 ## Bundled assets
 
@@ -33,26 +50,34 @@ AppSettingsViewModel (MainActivity)
 | --- | --- |
 | `assets/settings/faqs.json` | FAQ entries for Settings FAQ sub-screen |
 | `assets/settings/licenses.json` | Third-party license disclosures |
-| `assets/models/document_corners_float16.tflite` | ML corner detection model |
-| `assets/models/README.txt` | Model placement instructions |
+| `assets/models/document_corners_lite.tflite` | Lite corner model (224) |
+| `assets/models/document_corners_standard.tflite` | Standard corner model (288) |
+| `assets/models/document_corners_accurate.tflite` | High corner model (384 regression) |
+| `assets/models/document_corners_float16.tflite` | Accurate corner model (YOLO-pose; formerly Legacy) |
+| `assets/models/scanly_document_gate_float16.tflite` | Physical-document semantic gate |
+| `assets/models/README.txt` | Model placement and contract notes |
 | `assets/adi-registration.properties` | Model registration metadata |
 
 `LoadSettingsContentUseCase` parses FAQ and license JSON into `SettingsContent` domain model.
 
-## Settings screen sections
+## Settings screen structure
 
-| Section | Route / action | Data source |
+Main **Settings** is a hub with a short list of destinations. Advanced controls live one level down.
+
+| Hub row | Route | Contents |
 | --- | --- | --- |
-| Appearance | `settings` | DataStore `theme_mode` |
-| Storage & backup | `settings/storage` | Storage usage, export destination, archive work |
-| About | `settings` | `PackageManager.versionName` |
-| Support | `settings` | Email, project website links |
-| FAQs | `settings/faq` | `faqs.json` |
-| Legal | `legal/{documentType}` | Bundled WebView content |
-| Licenses | `settings/licenses` | `licenses.json` |
-| Updates | `settings` | Manual trigger → `AppUpdateViewModel` |
+| Appearance | `settings/appearance` | Theme mode, pure black |
+| Storage & backup | `settings/storage` | Usage, backup/restore, destination, empty cleanup, clear all |
+| Document detection | `settings/detection` | Automatic/manual models, gate, benchmark link |
+| Widgets | `settings/widgets` | Pin Actions / Scan / QR |
+| Help & FAQ | `settings/faq` | `faqs.json` |
+| About | `settings/about` | Version, updates, support links, legal, licenses |
 
-Clear-all-data and backup/restore live on the **Storage & backup** sub-screen, not the main settings list.
+| Nested | Route | Notes |
+| --- | --- | --- |
+| Model benchmark | `settings/model-benchmark` | From Document detection |
+| Legal documents | `legal/{documentType}` | From About |
+| Licenses | `settings/licenses` | From About |
 
 ## App update flow
 

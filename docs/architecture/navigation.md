@@ -1,6 +1,6 @@
 # Navigation
 
-All routes and user flows in Scanly **v1.0.9**.
+All routes and user flows in Scanly **v1.0.11**.
 
 Navigation is implemented with **Navigation Compose** in `ScanlyNavHost.kt`. Route helpers follow the `*Destination` object pattern with `routePattern` and `route()` factory functions.
 
@@ -9,11 +9,12 @@ Navigation is implemented with **Navigation Compose** in `ScanlyNavHost.kt`. Rou
 | Form factor | Chrome |
 | --- | --- |
 | Phone | `Scaffold` + bottom `NavigationBar` |
-| Tablet | Persistent `NavigationRail` (92 dp) with app logo |
+| Tablet | Destination-owned `NavigationRail` (92 dp) with app logo on top-level screens |
 
 - **Start destination:** `home`
 - **Tab switches:** no transition animation
-- **Detail pushes:** 160 ms fade transition
+- **Detail pushes:** short fade with a small forward offset; back navigation reverses the motion
+- **Large-screen stability:** the tablet rail is composed inside each top-level destination, so entering or leaving a detail route never resizes the `NavHost` mid-transition
 - **Top inset:** each screen applies status-bar padding once (not doubled by the activity shell)
 
 ## Top-level tabs
@@ -22,6 +23,7 @@ Navigation is implemented with **Navigation Compose** in `ScanlyNavHost.kt`. Rou
 | --- | --- | --- |
 | `home` | Home dashboard | Yes |
 | `library` | Full library | Yes |
+| `tools` | Tools hub (capture, QR, PDF utilities) | Yes |
 | `settings` | Settings | Yes |
 
 ## Legacy placeholder routes
@@ -41,12 +43,26 @@ These top-level routes still exist but show `FeaturePlaceholderScreen` — they 
 | `document/{documentId}` | `DocumentDestination` | Document detail |
 | `camera/session/{documentId}?replacePageId={pageId}` | `ScanSessionDestination` | Scan session |
 | `preview/page/{pageId}` | `PageImagePreviewDestination` | Page preview |
-| `editor/page/{pageId}` | `PageEditorDestination` | Page editor |
+| `editor/page/{pageId}` | `PageEditorDestination` | Page editor (preview, filters/adjust overlays, retake, delete) |
+| `crop/page/{pageId}` | `PageCropDestination` | AI detect, rotate, four-point crop, reset, apply |
+
+**Editor overlays (not NavHost routes):** `FilterPickerScreen` and `FilterCustomizeScreen` share `PageEditorViewModel` and replace the editor content in place (same pattern as a full-screen mode, not a bottom sheet).
 | `group/{groupId}` | `GroupDetailDestination` | Group detail |
 | `legal/{documentType}` | `LegalDocumentDestination` | Privacy or terms viewer |
+| `settings/appearance` | `SettingsAppearanceDestination` | Theme + pure black |
+| `settings/detection` | `SettingsDetectionDestination` | Models, gate, benchmark link |
+| `settings/widgets` | `SettingsWidgetsDestination` | Pin home-screen widgets |
+| `settings/about` | `SettingsAboutDestination` | Version, updates, legal, support |
 | `settings/faq` | `SettingsFaqDestination` | FAQ sub-screen |
 | `settings/licenses` | `SettingsLicensesDestination` | Open-source licenses |
 | `settings/storage` | `SettingsStorageDestination` | Storage & backup |
+| `settings/model-benchmark` | `SettingsModelBenchmarkDestination` | Temporary local model comparison |
+| `tools/qr` | `ToolsQrDestination` | QR scan + generate |
+| `tools/pdf/reader?filePath={filePath}&fileName={fileName}` | `ToolsPdfReaderDestination` | PDF reader; optional app-owned result file opens directly |
+| `tools/pdf/merge` | `ToolsPdfMergeDestination` | PDF merge |
+| `tools/pdf/compress` | `ToolsPdfCompressDestination` | PDF compress |
+| `tools/pdf/password` | `ToolsPdfPasswordDestination` | PDF password protect/remove |
+| `tools/pdf/watermark` | `ToolsPdfWatermarkDestination` | PDF text watermark |
 
 ### Scan session arguments
 
@@ -55,7 +71,31 @@ These top-level routes still exist but show `FeaturePlaceholderScreen` — they 
 
 ### Settings sub-screen ViewModel sharing
 
-`settings/faq`, `settings/licenses`, and `settings/storage` share `SettingsViewModel` via the parent `settings` back stack entry.
+Settings sub-screens that edit preferences (`appearance`, `detection`, `widgets`, `about`, `faq`, `licenses`, `storage`) share `SettingsViewModel` via the parent `settings` back stack entry. The model benchmark owns a separate ViewModel because its runs and results are temporary.
+
+## External launch actions (widgets & shortcuts)
+
+`MainActivity` accepts explicit launch actions from widgets and launcher shortcuts (`singleTop`). `LaunchActionViewModel` queues the action until onboarding is complete, then redirects:
+
+| Action | Intent action | Redirect |
+| --- | --- | --- |
+| Scan | `in.c1ph3rj.scanly.action.SCAN` | Suggest title → create document → `camera/session/{documentId}` |
+| Import | `in.c1ph3rj.scanly.action.IMPORT` | System photo picker → import pipeline → `document/{documentId}` |
+| QR | `in.c1ph3rj.scanly.action.QR` | Tools tab → `tools/qr?mode=scan` |
+| Library | `in.c1ph3rj.scanly.action.LIBRARY` | Top-level `library` |
+
+Config: `AndroidManifest.xml` receivers + `res/xml/shortcuts.xml`; providers live under `feature/widget/`.
+
+### Widget / shortcut → scan
+
+```
+Widget or quick action (Scan)
+  └─► MainActivity (action.SCAN)
+        └─► (after onboarding) suggest title + create document
+              └─► camera/session/{newDocId}
+```
+
+## User flow diagrams
 
 ## User flow diagrams
 
@@ -86,7 +126,12 @@ document/{docId}
   └─► preview/page/{pageId}
         ├─► overflow: Share / Edit / Retake / Delete
         └─► editor/page/{pageId}
-              ├─► save edits → back to preview or detail
+              ├─► Filters  → full-screen FilterPickerScreen (live preview + presets; Done → editor)
+              ├─► Adjust   → full-screen FilterCustomizeScreen (sliders + compare; Done → editor)
+              ├─► crop/page/{pageId}
+              │     ├─► AI Detect / rotate / handles / Reset
+              │     └─► Done → reprocess crop+rotation → navigateUp → editor
+              ├─► editor Done → reprocess filter + adjustments → back to preview/detail
               └─► retake → camera/session/{docId}?replacePageId={pageId}
                               └─► editor/page/{pageId}  (replacement complete)
 ```
@@ -132,8 +177,11 @@ settings → settings/storage
 
 ```
 settings
-  ├─► theme change (immediate, persisted)
+  ├─► Look & feel: theme mode + pure black (AMOLED) toggle
   ├─► settings/storage (usage, destination, backup/restore, clear data)
+  ├─► Document detection: automatic or manual live/post models
+  ├─► Document detection: physical-document gate on/off
+  ├─► settings/model-benchmark (gate + four corner models on local images)
   ├─► settings/faq
   ├─► legal/{PRIVACY} or legal/{TERMS}
   ├─► settings/licenses

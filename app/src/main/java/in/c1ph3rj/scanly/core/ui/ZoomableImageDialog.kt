@@ -187,6 +187,7 @@ fun ZoomableImageViewer(
                         onScaleChange = { state.scale = it },
                         onOffsetChange = { state.offset = it },
                         onDoubleTap = state::toggleDoubleTapZoom,
+                        onSingleTap = {},
                         allowParentHorizontalGestures = allowParentHorizontalGestures,
                         modifier = Modifier.fillMaxSize(),
                     )
@@ -228,8 +229,54 @@ fun ZoomableImageViewer(
     }
 }
 
+/**
+ * Zoomable viewer for an already-decoded [ImageBitmap] (e.g. PDF page renders).
+ */
+@Composable
+fun ZoomableBitmapViewer(
+    imageBitmap: ImageBitmap?,
+    modifier: Modifier = Modifier,
+    state: ZoomableImageState = rememberZoomableImageState(imageBitmap),
+    allowParentHorizontalGestures: Boolean = false,
+    onSingleTap: () -> Unit = {},
+    onZoomActiveChange: (Boolean) -> Unit = {},
+) {
+    val zoomActive = state.isZoomActive
+    val currentOnZoomActiveChange by rememberUpdatedState(onZoomActiveChange)
+
+    LaunchedEffect(imageBitmap) {
+        state.reset()
+    }
+    LaunchedEffect(zoomActive) {
+        currentOnZoomActiveChange(zoomActive)
+    }
+
+    Box(modifier = modifier.fillMaxSize()) {
+        if (imageBitmap == null) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(28.dp),
+                    strokeWidth = 2.5.dp,
+                )
+            }
+        } else {
+            ZoomableImageCanvas(
+                imageBitmap = imageBitmap,
+                scale = state.scale,
+                offset = state.offset,
+                onScaleChange = { state.scale = it },
+                onOffsetChange = { state.offset = it },
+                onDoubleTap = state::toggleDoubleTapZoom,
+                onSingleTap = onSingleTap,
+                allowParentHorizontalGestures = allowParentHorizontalGestures,
+                modifier = Modifier.fillMaxSize(),
+            )
+        }
+    }
+}
+
 @Stable
-class ZoomableImageState internal constructor() {
+class ZoomableImageState() {
     internal var scale by mutableFloatStateOf(MIN_SCALE)
     internal var offset by mutableStateOf(Offset.Zero)
 
@@ -263,6 +310,7 @@ private fun ZoomableImageCanvas(
     onScaleChange: (Float) -> Unit,
     onOffsetChange: (Offset) -> Unit,
     onDoubleTap: () -> Unit,
+    onSingleTap: () -> Unit,
     allowParentHorizontalGestures: Boolean,
     modifier: Modifier = Modifier,
 ) {
@@ -292,7 +340,7 @@ private fun ZoomableImageCanvas(
             .combinedClickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null,
-                onClick = {},
+                onClick = onSingleTap,
                 onDoubleClick = onDoubleTap,
             )
             .pointerInput(allowParentHorizontalGestures) {

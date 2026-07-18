@@ -1,7 +1,9 @@
 package `in`.c1ph3rj.scanly.di
 
 import `in`.c1ph3rj.scanly.core.ml.DocumentCornerDetector
+import `in`.c1ph3rj.scanly.core.ml.DocumentGateDetector
 import `in`.c1ph3rj.scanly.core.ml.LiteRtDocumentCornerDetector
+import `in`.c1ph3rj.scanly.core.ml.LiteRtDocumentGateDetector
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -16,4 +18,10 @@ abstract class MlModule {
     abstract fun bindDocumentCornerDetector(
         detector: LiteRtDocumentCornerDetector,
     ): DocumentCornerDetector
+
+    @Binds
+    @Singleton
+    abstract fun bindDocumentGateDetector(
+        detector: LiteRtDocumentGateDetector,
+    ): DocumentGateDetector
 }

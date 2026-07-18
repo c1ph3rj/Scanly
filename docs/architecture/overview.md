@@ -1,6 +1,6 @@
 # Architecture Overview
 
-How Scanly is structured at **v1.0.9**. For navigation detail see [navigation.md](navigation.md). For screen inventory see [screens.md](screens.md).
+How Scanly is structured at **v1.0.11**. For navigation detail see [navigation.md](navigation.md). For screen inventory see [screens.md](screens.md).
 
 ## Layer diagram
 
@@ -28,15 +28,16 @@ How Scanly is structured at **v1.0.9**. For navigation detail see [navigation.md
 | Component | File | Role |
 | --- | --- | --- |
 | Application | `ScanlyApplication.kt` | `@HiltAndroidApp`; custom WorkManager + `HiltWorkerFactory` |
-| Activity | `MainActivity.kt` | Onboarding gate, theme, NavHost, update dialog |
+| Activity | `MainActivity.kt` | Onboarding gate, theme, NavHost, update dialog, widget/shortcut launch actions |
 | Theme | `ui/theme/` | `ScanlyTheme`, colors, typography |
 | Navigation | `navigation/ScanlyNavHost.kt` | Route registration, bottom nav / rail |
 
 `MainActivity` hosts three top-level ViewModels:
 
-- `AppSettingsViewModel` — observes theme mode
+- `AppSettingsViewModel` — observes theme mode and pure black preference
 - `OnboardingViewModel` — first-run gate
 - `AppUpdateViewModel` — update checks and dialog state
+- `LaunchActionViewModel` — widget/shortcut actions (scan, import, QR, library)
 
 ## Package layout
 
@@ -47,9 +48,11 @@ All code under `app/src/main/java/in/c1ph3rj/scanly/`:
 | `ui/theme/` | Material 3 theming |
 | `navigation/` | Destinations and NavHost |
 | `feature/` | Screen UI and ViewModels |
+| `feature/launch/` | Widget/shortcut launch action parsing and redirects |
+| `feature/widget/` | App widget providers (actions, scan, QR) |
 | `domain/model/` | Business models |
 | `domain/repository/` | Repository contracts |
-| `domain/usecase/` | Business operations (51 classes) |
+| `domain/usecase/` | Business operations (73 use case classes) |
 | `domain/processing/` | `PageImageProcessor` interface |
 | `data/local/db/` | Room database, entities, DAOs |
 | `data/document/` | Document repository |
@@ -61,10 +64,10 @@ All code under `app/src/main/java/in/c1ph3rj/scanly/`:
 | `data/settings/` | DataStore and bundled assets |
 | `data/update/` | Build-selected GitHub or Google Play update checks |
 | `data/processing/` | `PageImageProcessor` implementation |
-| `core/ml/` | LiteRT corner detection |
-| `core/processing/` | Perspective math, OpenCV filters |
+| `core/ml/` | LiteRT corner models, document gate, book/quad policies, auto model selection |
+| `core/processing/` | Perspective warp, OpenCV filters, filter adjustments |
 | `core/editing/` | Crop quad editor logic |
-| `core/ui/` | Thumbnail cache, layout helpers |
+| `core/ui/` | Thumbnail cache, adaptive layout helpers |
 | `core/common/` | Result types, formatters |
 | `di/` | Hilt modules |
 
@@ -73,7 +76,7 @@ All code under `app/src/main/java/in/c1ph3rj/scanly/`:
 1. **Offline-first** — core flows need no network.
 2. **Non-destructive captures** — `raw/` files are immutable.
 3. **Derived processing** — processed images and thumbnails regenerate on edit.
-4. **Manual fallback** — crop, rotate, filter always available; `NEEDS_REVIEW` state for failures.
+4. **Manual fallback** — AI Detect, crop, rotate, filters, and fine adjustments always available; `NEEDS_REVIEW` state for failures.
 5. **Testable boundaries** — use cases encapsulate business rules; repositories encapsulate I/O.
 
 ## Layer rules
@@ -98,7 +101,8 @@ Hilt modules in `di/` install into `SingletonComponent`:
 | `SettingsModule` | `SettingsRepository` |
 | `AppDataModule` | `AppDataRepository` |
 | `ProcessingModule` | `PageImageProcessor` |
-| `MlModule` | `DocumentCornerDetector` → `LiteRtDocumentCornerDetector` |
+| `PdfToolkitModule` | PDF toolkit repository |
+| `MlModule` | `DocumentCornerDetector` → `LiteRtDocumentCornerDetector`; `DocumentGateDetector` → `LiteRtDocumentGateDetector` |
 | `AppUpdateModule` | Shared update notes, Play coordinator, and prompt storage |
 | `DistributionAppUpdateModule` | Build-type-specific `AppUpdateRepository` binding |
 | `CoroutineModule` | `ScanlyDispatchers` |
@@ -109,10 +113,12 @@ Hilt modules in `di/` install into `SingletonComponent`:
 
 ```
 ScanSessionViewModel
+  → live path: DocumentGateDetector → DocumentCornerDetector(live model)
+    → DocumentQuadPolicy / StableCornerSelector → overlay + auto-capture
   → PreparePageCaptureUseCase → PageRepository.prepareCapture
   → CameraX writes raw JPEG
   → FinalizeCapturedPageUseCase → PageRepository.finalizeCapture
-    → PageImageProcessor → LiteRT detect + OpenCV filter
+    → PageImageProcessor → gate + corner (post model) + warp + OpenCV filter (+ adjustments if any)
     → Room + file storage
 ```
 
@@ -120,9 +126,14 @@ ScanSessionViewModel
 
 ```
 PageEditorViewModel
-  → UpdatePageEditsUseCase → PageRepository.updatePageEdits
-    → PageImageProcessor.reprocessPage
-    → Room update + thumbnail invalidation
+  ├─ Filters / Adjust overlays (same ViewModel drafts)
+  └─ UpdatePageEditsUseCase → PageRepository.updatePageEdits
+        → PageImageProcessor.reprocessPage (crop + rotation + filter + adjustments)
+        → Room update + thumbnail invalidation
+
+PageCropViewModel
+  ├─ DetectDocumentCornersUseCase → PageImageProcessor.detectDocumentCorners
+  └─ UpdatePageEditsUseCase (apply crop + rotation; keep filter/adjustments)
 ```
 
 ### Export

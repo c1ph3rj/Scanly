@@ -28,8 +28,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Backup
+import androidx.compose.material.icons.filled.CleaningServices
 import androidx.compose.material.icons.filled.DeleteForever
+import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.Folder
+import androidx.compose.material.icons.filled.FolderOff
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Restore
 import androidx.compose.material.icons.filled.Storage
@@ -192,6 +195,8 @@ fun SettingsStorageRoute(
             }
         },
         onCancelWork = viewModel::cancelArchiveWork,
+        onDeleteEmptyDocuments = viewModel::deleteEmptyDocuments,
+        onDeleteEmptyFolders = viewModel::deleteEmptyFolders,
         onClearAllData = viewModel::clearAllData,
     )
 
@@ -241,10 +246,18 @@ private fun SettingsStorageScreen(
     onBackup: () -> Unit,
     onRestore: () -> Unit,
     onCancelWork: () -> Unit,
+    onDeleteEmptyDocuments: () -> Unit,
+    onDeleteEmptyFolders: () -> Unit,
     onClearAllData: () -> Unit,
 ) {
     val window = rememberWindowSizeInfo()
     var showClearWarning by remember { mutableStateOf(false) }
+    var showEmptyDocumentsWarning by remember { mutableStateOf(false) }
+    var showEmptyFoldersWarning by remember { mutableStateOf(false) }
+    val cleanupBusy = uiState.isCleaningEmptyDocuments ||
+        uiState.isCleaningEmptyFolders ||
+        uiState.isClearingData ||
+        uiState.archiveWork.isRunning
     ScanlyDetailScaffold(
         title = "Storage & backup",
         onNavigateUp = onNavigateUp,
@@ -444,6 +457,64 @@ private fun SettingsStorageScreen(
                 }
             }
 
+            item("cleanup") {
+                StorageSectionCard(
+                    title = "Library cleanup",
+                    icon = Icons.Filled.CleaningServices,
+                ) {
+                    Text(
+                        "Remove leftover empty documents and folders without touching content.",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                    )
+                    OutlinedButton(
+                        onClick = { showEmptyDocumentsWarning = true },
+                        enabled = !cleanupBusy,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                    ) {
+                        if (uiState.isCleaningEmptyDocuments) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(18.dp),
+                                strokeWidth = 2.dp,
+                            )
+                        } else {
+                            Icon(
+                                Icons.Filled.Description,
+                                contentDescription = null,
+                                modifier = Modifier.size(18.dp),
+                            )
+                        }
+                        Spacer(Modifier.width(8.dp))
+                        Text("Remove empty documents")
+                    }
+                    OutlinedButton(
+                        onClick = { showEmptyFoldersWarning = true },
+                        enabled = !cleanupBusy,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                    ) {
+                        if (uiState.isCleaningEmptyFolders) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(18.dp),
+                                strokeWidth = 2.dp,
+                            )
+                        } else {
+                            Icon(
+                                Icons.Filled.FolderOff,
+                                contentDescription = null,
+                                modifier = Modifier.size(18.dp),
+                            )
+                        }
+                        Spacer(Modifier.width(8.dp))
+                        Text("Remove empty folders")
+                    }
+                }
+            }
+
             item("clear") {
                 StorageSectionCard(
                     title = "Danger zone",
@@ -460,7 +531,7 @@ private fun SettingsStorageScreen(
                     )
                     Button(
                         onClick = { showClearWarning = true },
-                        enabled = !uiState.isClearingData && !uiState.archiveWork.isRunning,
+                        enabled = !cleanupBusy,
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.error,
                             contentColor = MaterialTheme.colorScheme.onError
@@ -474,6 +545,40 @@ private fun SettingsStorageScreen(
                 }
             }
         }
+    }
+
+    if (showEmptyDocumentsWarning) {
+        ScanlyConfirmDialog(
+            title = "Remove empty documents?",
+            text = "Deletes every document that has no pages, including abandoned captures, " +
+                "and frees their local storage. Documents that still have pages are kept.",
+            confirmLabel = "Remove",
+            confirmDestructive = true,
+            onDismiss = { showEmptyDocumentsWarning = false },
+            onConfirm = {
+                showEmptyDocumentsWarning = false
+                onDeleteEmptyDocuments()
+            },
+            confirmEnabled = !cleanupBusy,
+            dismissEnabled = !cleanupBusy,
+        )
+    }
+
+    if (showEmptyFoldersWarning) {
+        ScanlyConfirmDialog(
+            title = "Remove empty folders?",
+            text = "Deletes every folder (group) that contains no documents. " +
+                "Folders that still have documents are kept.",
+            confirmLabel = "Remove",
+            confirmDestructive = true,
+            onDismiss = { showEmptyFoldersWarning = false },
+            onConfirm = {
+                showEmptyFoldersWarning = false
+                onDeleteEmptyFolders()
+            },
+            confirmEnabled = !cleanupBusy,
+            dismissEnabled = !cleanupBusy,
+        )
     }
 
     if (showClearWarning) {

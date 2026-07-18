@@ -1,5 +1,6 @@
 package `in`.c1ph3rj.scanly.navigation
 
+import android.net.Uri
 import `in`.c1ph3rj.scanly.feature.settings.LegalDocumentType
 
 sealed class ScanlyDestination(
@@ -43,12 +44,54 @@ sealed class ScanlyDestination(
         sprintLabel = "Sprint 6",
     )
 
+    data object Tools : ScanlyDestination(
+        route = "tools",
+        title = "Tools",
+        summary = "Capture, QR, and PDF utilities.",
+        sprintLabel = "Tools",
+    )
+
     data object Settings : ScanlyDestination(
         route = "settings",
         title = "Settings",
-        summary = "Appearance, FAQs, licensing, and developer links live here.",
+        summary = "Look & feel, FAQs, licensing, and developer links live here.",
         sprintLabel = "Sprint 8",
     )
+}
+
+object ToolsQrDestination {
+    const val route = "tools/qr"
+    const val modeArgument = "mode"
+    const val routePattern = "$route?$modeArgument={$modeArgument}"
+
+    fun route(mode: String): String = "$route?$modeArgument=$mode"
+}
+
+object ToolsPdfReaderDestination {
+    const val route = "tools/pdf/reader"
+    const val filePathArgument = "filePath"
+    const val fileNameArgument = "fileName"
+    const val routePattern =
+        "$route?$filePathArgument={$filePathArgument}&$fileNameArgument={$fileNameArgument}"
+
+    fun route(filePath: String, fileName: String): String =
+        "$route?$filePathArgument=${Uri.encode(filePath)}&$fileNameArgument=${Uri.encode(fileName)}"
+}
+
+object ToolsPdfMergeDestination {
+    const val route = "tools/pdf/merge"
+}
+
+object ToolsPdfCompressDestination {
+    const val route = "tools/pdf/compress"
+}
+
+object ToolsPdfPasswordDestination {
+    const val route = "tools/pdf/password"
+}
+
+object ToolsPdfWatermarkDestination {
+    const val route = "tools/pdf/watermark"
 }
 
 /** Route helpers for screens that accept typed arguments. */
@@ -71,6 +114,26 @@ object SettingsLicensesDestination {
 
 object SettingsStorageDestination {
     const val route = "settings/storage"
+}
+
+object SettingsAppearanceDestination {
+    const val route = "settings/appearance"
+}
+
+object SettingsDetectionDestination {
+    const val route = "settings/detection"
+}
+
+object SettingsWidgetsDestination {
+    const val route = "settings/widgets"
+}
+
+object SettingsAboutDestination {
+    const val route = "settings/about"
+}
+
+object SettingsModelBenchmarkDestination {
+    const val route = "settings/model-benchmark"
 }
 
 object GroupDetailDestination {

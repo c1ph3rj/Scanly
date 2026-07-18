@@ -18,28 +18,55 @@ It is designed for a practical, local-only scanning workflow:
 
 - offline-first by default
 - document library with searchable collections (groups) and recent-item home dashboard
-- manual camera capture with live document guidance
+- manual camera capture with live document guidance, multi-model corner detection, and a physical-document semantic gate
 - import images from the gallery to create or extend documents
-- page crop, rotate, and filter editing
+- page editor with live cropped preview, full-screen filters/adjust, and a crop screen (AI Detect, rotate, handles)
 - Advanced PDF export/share with password protection, page numbering, auto orientation, print sizes, margins, and group-level export
 - direct export saving to `Downloads/Scanly` or a user-selected folder
 - compressed `.scanly` library backup and Replace/Merge restore under the dedicated `backup/` folder
-- settings with theme mode, storage usage, clear-all-data, FAQs, and license info
+- settings with look & feel (including pure black AMOLED), configurable document detection models, storage usage, clear-all-data, FAQs, and license info
 
-**Current version:** `1.0.9` (version code `9`) — see [VERSION.md](VERSION.md) and [CHANGELOG.md](CHANGELOG.md).
+**Current version:** `1.0.11` (version code `11`) — see [VERSION.md](VERSION.md) and [CHANGELOG.md](CHANGELOG.md).
 
 ## Screenshots
 
+### Mobile
+
 <table>
   <tr>
-	<td><img src="screenshots/1.png" alt="Scanly screenshot 1" width="100%" /></td>
-	<td><img src="screenshots/2.png" alt="Scanly screenshot 2" width="100%" /></td>
-	<td><img src="screenshots/3.png" alt="Scanly screenshot 3" width="100%" /></td>
+	<td><img src="screenshots/mobile/image-1.jpeg" alt="Scanly mobile screenshot 1" width="100%" /></td>
+	<td><img src="screenshots/mobile/image-2.jpeg" alt="Scanly mobile screenshot 2" width="100%" /></td>
+	<td><img src="screenshots/mobile/image-3.jpeg" alt="Scanly mobile screenshot 3" width="100%" /></td>
   </tr>
   <tr>
-	<td><img src="screenshots/4.png" alt="Scanly screenshot 4" width="100%" /></td>
-	<td><img src="screenshots/6.png" alt="Scanly screenshot 6" width="100%" /></td>
+	<td><img src="screenshots/mobile/image-4.jpeg" alt="Scanly mobile screenshot 4" width="100%" /></td>
+	<td><img src="screenshots/mobile/image-5.jpeg" alt="Scanly mobile screenshot 5" width="100%" /></td>
+	<td><img src="screenshots/mobile/image-6.jpeg" alt="Scanly mobile screenshot 6" width="100%" /></td>
+  </tr>
+  <tr>
+	<td><img src="screenshots/mobile/image-7.jpeg" alt="Scanly mobile screenshot 7" width="100%" /></td>
 	<td></td>
+	<td></td>
+  </tr>
+</table>
+
+### Tablet
+
+<table>
+  <tr>
+	<td><img src="screenshots/tablet/image-1.jpeg" alt="Scanly tablet screenshot 1" width="100%" /></td>
+	<td><img src="screenshots/tablet/image-2.jpeg" alt="Scanly tablet screenshot 2" width="100%" /></td>
+	<td><img src="screenshots/tablet/image-3.jpeg" alt="Scanly tablet screenshot 3" width="100%" /></td>
+  </tr>
+  <tr>
+	<td><img src="screenshots/tablet/image-4.jpeg" alt="Scanly tablet screenshot 4" width="100%" /></td>
+	<td><img src="screenshots/tablet/image-5.jpeg" alt="Scanly tablet screenshot 5" width="100%" /></td>
+	<td><img src="screenshots/tablet/image-6.jpeg" alt="Scanly tablet screenshot 6" width="100%" /></td>
+  </tr>
+  <tr>
+	<td><img src="screenshots/tablet/image-7.jpeg" alt="Scanly tablet screenshot 7" width="100%" /></td>
+	<td><img src="screenshots/tablet/image-8.jpeg" alt="Scanly tablet screenshot 8" width="100%" /></td>
+	<td><img src="screenshots/tablet/image-9.jpeg" alt="Scanly tablet screenshot 9" width="100%" /></td>
   </tr>
 </table>
 

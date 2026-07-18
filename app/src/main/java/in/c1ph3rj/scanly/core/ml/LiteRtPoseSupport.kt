@@ -30,6 +30,7 @@ internal fun prepareInput(
     bitmap: Bitmap,
     inputWidth: Int,
     inputHeight: Int,
+    normalizeToSignedRange: Boolean = false,
 ): PreparedImage {
     val scale = minOf(inputWidth / bitmap.width.toFloat(), inputHeight / bitmap.height.toFloat())
     val scaledWidth = (bitmap.width * scale).roundToInt().coerceAtLeast(1)
@@ -47,10 +48,12 @@ internal fun prepareInput(
     val inputBuffer = ByteBuffer.allocateDirect(inputWidth * inputHeight * LiteRtPoseConstants.INPUT_CHANNELS * LiteRtPoseConstants.FLOAT_BYTES)
         .order(ByteOrder.nativeOrder())
 
+    val divisor = if (normalizeToSignedRange) 127.5f else 255f
+    val offset = if (normalizeToSignedRange) 1f else 0f
     pixels.forEach { pixel ->
-        inputBuffer.putFloat(Color.red(pixel) / 255f)
-        inputBuffer.putFloat(Color.green(pixel) / 255f)
-        inputBuffer.putFloat(Color.blue(pixel) / 255f)
+        inputBuffer.putFloat(Color.red(pixel) / divisor - offset)
+        inputBuffer.putFloat(Color.green(pixel) / divisor - offset)
+        inputBuffer.putFloat(Color.blue(pixel) / divisor - offset)
     }
     inputBuffer.rewind()
 

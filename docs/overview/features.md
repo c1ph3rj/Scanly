@@ -1,6 +1,6 @@
 # Features
 
-Complete inventory of Scanly features as of **v1.0.9** (including unreleased work on the current branch).
+Complete inventory of Scanly features as of **v1.0.11**.
 
 ## Home dashboard
 
@@ -25,7 +25,11 @@ Complete inventory of Scanly features as of **v1.0.9** (including unreleased wor
 ## Document scanning (camera session)
 
 - **CameraX**-based manual capture with live preview
-- **ML corner overlay** — LiteRT model detects document edges in real time
+- **Physical-document semantic gate** — rejects digital screens and non-documents before corner inference (optional; Settings toggle)
+- **ML corner overlay** — LiteRT multi-model detection (Lite / Standard / High / Accurate) with independent live vs post-processing selection
+- **Automatic model selection** — on by default; on-device calibration picks the best models within latency budgets
+- **Stable outlines** — temporal confirmation, High verification for ambiguous quads, and worst-corner stability against nearby false edges
+- **Book-page isolation** — gutter-aware trim for off-centre adjacent pages; ambiguous two-page spreads ask the user to move closer
 - **Quality feedback** — lighting, blur, lens obstruction, framing guidance
 - **Auto-capture** — stability tracker phases (`SEARCHING` → `HOLD_STEADY` → `COUNTDOWN` → `CAPTURING` → `COOLDOWN`) gate automatic shutter when the frame is steady
 - **Manual capture** — tap shutter at any time
@@ -34,12 +38,39 @@ Complete inventory of Scanly features as of **v1.0.9** (including unreleased wor
 - **Multi-page sessions** — capture multiple pages into one document in a single session
 - **Page replacement (retake)** — replace an existing page; returns to editor after capture (v1.0.9)
 - Portrait and landscape layouts with theme-aligned controls (v1.0.9)
+- Live camera keeps a clean overlay (no permanent model/latency HUD); use **Model benchmark** for measurements
 
 ## Gallery import
 
 - Import up to **10 images** per pick from the device photo picker
-- Available on **Home** and **Document detail** (extend existing documents)
+- Available on **Home**, **Tools**, and **Document detail** (extend existing documents)
 - Reuses the same capture finalize pipeline as camera captures
+
+## Tools hub
+
+Fourth bottom-nav tab with categorized utilities:
+
+### Create
+
+- **Scan** — create a document and open the camera session
+- **Import** — gallery import (max 10 images) into a new document
+
+### QR Code
+
+- **Scan** — CameraX + ML Kit barcode scanning; copy or open http(s) results
+- **Generate** — encode text/URL with ZXing; live preview; save PNG to export folder or share
+
+### PDF tools
+
+Operate on **device PDFs** (system document picker) or **Scanly library documents** (exported to a temporary PDF first). Every generated result can be previewed in Scanly's built-in reader before it is saved to the configured export destination or shared; an external PDF app is not required.
+
+| Tool | Behavior |
+| --- | --- |
+| Reader | Page-by-page or continuous-scroll preview for device, library, and generated result PDFs; pinch zoom and password unlock when required |
+| Merge | Combine two or more PDFs into one |
+| Compress | High / Balanced / Smallest quality presets via page re-encode |
+| Password | First-page preview; Protect or Remove with clear password form; export-focused completion with Preview / Save / Share |
+| Watermark | Export-accurate first-page proof from the production stamping engine; page-relative font size; dense tiled security field or one large single stamp; Small/Medium/Large scale; first-page or all-page coverage; diagonal/horizontal orientation; opacity control |
 
 ## Document detail
 
@@ -66,14 +97,16 @@ Complete inventory of Scanly features as of **v1.0.9** (including unreleased wor
 
 ## Page editor
 
-- **Four-point crop** — drag corner handles to adjust document boundaries
-- **Rotate** — 90° increments
+- **Live result preview** — shows the perspective-cropped page with the current filter and adjustments
+- **Crop screen** (`crop/page/{pageId}`) — **AI Detect**, **Left** / **Right** rotation, four-point handles, **Reset**, apply on Done
+- **Filter picker** (full-screen) — large live preview of each preset on the cropped page; optional apply-to-all-pages
 - **Filter presets** (10 modes):
   - Original, Auto, Enhanced Color, Grayscale, Black & White
   - Clean, Shadow Reduction, Magic Color, Receipt, Soft Black & White
+- **Filter adjust** (full-screen) — brightness, contrast, saturation, sharpness; hold **Compare** for filter-only; scrollbar beside sliders
 - **Retake** — opens camera session in replacement mode
-- **Re-detect corners**, reset, delete page
-- Non-destructive: edits reprocess from the raw capture
+- **Delete page** from the editor
+- Non-destructive: edits reprocess from the raw capture; raw files are never overwritten
 
 ## Document groups (collections)
 
@@ -88,13 +121,16 @@ Complete inventory of Scanly features as of **v1.0.9** (including unreleased wor
 
 ## Settings
 
-Main screen (`settings`) — lean layout with links to sub-screens:
+Main **Settings** hub keeps a short list; details open as sub-screens:
 
-- **Appearance** — theme mode: System, Light, or Dark (persisted in DataStore)
-- **Storage & backup** — link to dedicated sub-screen (usage, export path, backup/restore, clear data)
-- **About** — app version, developer portfolio, manual update check
-- **Support** — email and project website links
-- **Legal** — privacy policy, terms, open-source licenses (dedicated sub-screens)
+| Hub | Sub-screen | Highlights |
+| --- | --- | --- |
+| Appearance | `settings/appearance` | Theme (System/Light/Dark), pure black AMOLED option |
+| Storage & backup | `settings/storage` | Usage, export path, backup/restore, empty cleanup, clear all |
+| Document detection | `settings/detection` | Automatic or manual models, document gate, model benchmark |
+| Widgets | `settings/widgets` | Pin Actions / Scan / QR |
+| Help & FAQ | `settings/faq` | Bundled FAQ topics |
+| About | `settings/about` | Version, updates, support links, privacy/terms/licenses |
 
 ### Storage & backup (`settings/storage`)
 
@@ -102,12 +138,8 @@ Main screen (`settings`) — lean layout with links to sub-screens:
 - **Save location** — exports default to `Downloads/Scanly`; custom base folder via SAF folder picker
 - **Library backup** — exact compressed `.scanly` archives under `{destination}/backup/` after free-space preflight
 - **Library restore** — validate and stage a `.scanly` archive; **Replace** or **Merge as copies**
-- **Live progress** — foreground WorkManager job with phase/progress, cancellation
-- **Clear all data** — destructive wipe of library, files, export cache, and thumbnail cache (with confirmation)
-
-### FAQs and licenses (`settings/faq`, `settings/licenses`)
-
-- Bundled JSON assets (`faqs.json`, `licenses.json`) rendered in dedicated sub-screens
+- **Library cleanup** — remove empty documents / empty folders
+- **Clear all data** — destructive wipe of library and caches (with confirmation)
 
 ## Onboarding
 
@@ -124,6 +156,17 @@ Main screen (`settings`) — lean layout with links to sub-screens:
 - **Play Store builds** — Google Play in-app updates (flexible or immediate); restart snackbar after flexible download
 - Update messaging reflects the installed channel (not always "Google Play")
 - Shows GitHub release notes when available
+
+## Home-screen widgets and quick actions
+
+- **Actions widget (4×1)** — capsule bar with Scan, Import, QR, and Library icon wells
+- **Scan widget (1×1)** — brand circle only (no card background); starts a new camera scan
+- **QR widget (1×1)** — brand circle only (no card background); opens the QR tool
+- **Device theming** — pill/glyph colors follow system light/dark mode
+- **Reliable first paint** — layouts avoid RemoteViews layer-list icons so content is visible immediately after placement
+- **Add from Settings → Widgets** — pin Actions / Scan / QR when the launcher supports `requestPinAppWidget`
+- **Launcher quick actions** — long-press the app icon for Scan, QR, Import, and Library
+- All entry points use explicit `MainActivity` launch actions (`in.c1ph3rj.scanly.action.*`) and are held until onboarding completes
 
 ## Shared UI components
 

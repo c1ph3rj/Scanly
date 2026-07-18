@@ -6,13 +6,13 @@ Version policy and release history for Scanly.
 
 | Field | Value |
 | --- | --- |
-| Version name | `1.0.9` |
-| Version code | `9` |
+| Version name | `1.0.11` |
+| Version code | `11` |
 | Application ID | `in.c1ph3rj.scanly` |
-| Room schema | `3` |
+| Room schema | `4` |
 | Min SDK | 29 (Android 10) |
 | Target / compile SDK | 36 |
-| Release date | 2026-07-05 |
+| Release date | 2026-07-17 |
 
 Canonical source: `versionCode` and `versionName` in `app/build.gradle.kts`.
 
@@ -20,17 +20,15 @@ The version shown in Settings reads `versionName` via `DefaultSettingsRepository
 
 ### Release highlights
 
-Version 1.0.9 includes the following changes now merged into `master`:
+Version **1.0.11** (relative to `1.0.10`):
 
-- Configurable export storage (`Downloads/Scanly` or custom SAF folder)
-- Library backup and restore (`.scanly` archives)
-- Storage & backup settings sub-screen
-- Suggested document and folder names
-- Dual release channels (`githubRelease` / `playStoreRelease`) with Play in-app updates
-- Advanced PDF export (password, page numbers, print sizes, auto orientation)
-- Page preview and Library UI refinements
+- Home-screen widgets and launcher quick actions for Scan, Import, QR, and Library
+- Dedicated crop screen with AI Detect, four-point handles, rotation, reset, and apply actions
+- Full-screen Filters and Adjust tools with per-page fine-tuning and apply-to-all support
+- Tighter document detection overlays, stronger edge selection, and book/desk handling
+- Tablet and wide-window editor layouts with improved filter and adjustment controls
 
-The compact GitHub release description used by the in-app update dialog is available in [release-notes/v1.0.9.md](release-notes/v1.0.9.md).
+The compact GitHub release description used by the in-app update dialog is available in [release-notes/v1.0.11.md](release-notes/v1.0.11.md).
 
 ## Versioning policy
 
@@ -42,6 +40,21 @@ The compact GitHub release description used by the in-app update dialog is avail
 - Keep [VERSION.md](../VERSION.md) aligned with Gradle values.
 
 ## Recent releases
+
+### 1.0.11 (code 11) — 2026-07-17
+
+- Home-screen widgets, launcher quick actions, and library cleanup
+- Dedicated crop screen with AI Detect and four-point handles
+- Full-screen Filters and Adjust with per-page filter adjustments
+- Live cropped editor preview and two-pane large-screen editor layouts
+- Tighter document detection overlays and improved filter picker controls
+
+### 1.0.10 (code 10) — 2026-07-13
+
+- Tools hub, QR code tool, and offline PDF toolkit (reader / merge / compress / password / watermark)
+- Multi-model detection ladder, semantic gate, automatic selection default on, model benchmark
+- Book-page isolation, stable overlays, rebuilt filters, pure black theme
+- Tablet and landscape layout improvements for Tools and PDF flows
 
 ### 1.0.9 (code 9) — 2026-07-05
 
@@ -82,9 +95,28 @@ Full details: [CHANGELOG.md](../CHANGELOG.md)
 
 ## Upgrade notes
 
-### From 1.0.0 to 1.0.9
+### Room schema 3 → 4 (v1.0.11)
 
-- Room migrates automatically from schema 1 or 2 to 3 (adds document groups).
+- Adds per-page filter adjustment columns: `filterBrightness`, `filterContrast`, `filterSaturation`, `filterSharpness` (defaults `0`).
+- Applied by `ScanlyDatabase.MIGRATION_3_4` registered in `DatabaseModule`.
+- No manual steps; existing pages keep default (identity) adjustments.
+- `.scanly` backups written after this change include the four floats; older archives restore with defaults.
+
+### From 1.0.10 to 1.0.11
+
+- Existing libraries migrate automatically through `MIGRATION_3_4`.
+- Per-page filter adjustments default to identity values for existing pages.
+- Older `.scanly` archives restore with default adjustment values; new archives include the four adjustment fields.
+
+### From 1.0.9 to 1.0.10
+
+- Model labels are Lite / Standard / High / Accurate; storage keys keep the same underlying weights.
+- Automatic model selection defaults to **on** when unset; existing explicit off preference is preserved.
+- The public 1.0.10 tag used Room schema **3**; v1.0.11 adds schema **4** for filter adjustments.
+
+### From 1.0.0 to current
+
+- Room migrates automatically along `1→2→3→4` (filter preset, document groups, then filter adjustments).
 - Existing documents remain; they appear ungrouped until moved into a collection.
 - **Clear all data** (added in 1.0.4) is destructive and cannot be undone.
 - Completed external `.scanly` backups survive clear-all-data.
@@ -98,10 +130,6 @@ See [VERSION.md](../VERSION.md) for extended upgrade guidance.
 | --- | --- |
 | `app/build.gradle.kts` | Canonical `versionCode` and `versionName` |
 | `DefaultSettingsRepository` | Package version for Settings screen |
-| [VERSION.md](../VERSION.md) | Human-readable release metadata |
-| [CHANGELOG.md](../CHANGELOG.md) | Per-release notes |
-
-## Related docs
-
-- [development/releasing.md](development/releasing.md) — release checklist
-- [data/database.md](data/database.md) — schema migrations
+| `VERSION.md` / `docs/releases.md` | Human-readable metadata |
+| `docs/release-notes/vX.Y.Z.md` | Compact notes for GitHub / in-app update dialog |
+| `CHANGELOG.md` | Full user-facing release notes |
