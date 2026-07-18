@@ -1,4 +1,4 @@
-# What is Scanly?
+﻿# What is Scanly?
 
 Scanly is an offline-first Android document scanner. It gives users a practical, local-only workflow for digitizing paper documents without cloud accounts, subscriptions, or network dependencies for core functionality.
 
@@ -93,7 +93,7 @@ ScanlyApplication (@HiltAndroidApp, custom WorkManager + HiltWorkerFactory)
 
 | Field | Value |
 | --- | --- |
-| Version | `1.0.12` (code `12`) |
+| Version | `1.0.13` (code `13`) |
 | Room schema | `4` |
 | Min SDK | 29 (Android 10) |
 | Target SDK | 36 |

@@ -1,4 +1,4 @@
-# Scanly Version Details
+﻿# Scanly Version Details
 
 See also [docs/releases.md](docs/releases.md) for release policy and history within the full documentation set.
 
@@ -6,14 +6,14 @@ See also [docs/releases.md](docs/releases.md) for release policy and history wit
 
 | Field | Value |
 | --- | --- |
-| Version name | `1.0.12.1` |
-| Version code | `12` |
+| Version name | `1.0.13` |
+| Version code | `13` |
 | Application ID | `in.c1ph3rj.scanly` |
 | Min SDK | 29 (Android 10) |
 | Target / compile SDK | 36 |
 | Room schema version | `4` |
 | Release date | 2026-07-18 |
-| Branch | `feature/v1.0.12.1` |
+| Branch | `feature/v1.0.13` |
 
 The version shown in **Settings** is read from `versionName` in `app/build.gradle.kts`.
 
@@ -28,7 +28,7 @@ The version shown in **Settings** is read from `versionName` in `app/build.gradl
 
 ## Release History
 
-### 1.0.12.1 (version code 12)
+### 1.0.13 (version code 13)
 
 QR release stability fix for minified builds. The release also keeps the 1.0.11 editor, widget, document-detection, and large-screen improvements. See [CHANGELOG.md](CHANGELOG.md) for the complete release notes.
 

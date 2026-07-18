@@ -1,12 +1,12 @@
-# Implementation Snapshot
+﻿# Implementation Snapshot
 
-One-page technical summary of Scanly **v1.0.12**. For detail see the full docs index at [../README.md](../README.md).
+One-page technical summary of Scanly **v1.0.13**. For detail see the full docs index at [../README.md](../README.md).
 
 ## Release
 
 | Field | Value |
 | --- | --- |
-| Version | `1.0.12` (code `12`) |
+| Version | `1.0.13` (code `13`) |
 | Room schema | `4` |
 | Min SDK | 29 |
 | Target SDK | 36 |

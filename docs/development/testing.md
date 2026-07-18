@@ -1,6 +1,6 @@
-# Testing
+﻿# Testing
 
-Test coverage and how to run tests in Scanly **v1.0.12**.
+Test coverage and how to run tests in Scanly **v1.0.13**.
 
 ## Running tests
 

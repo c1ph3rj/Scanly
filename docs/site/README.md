@@ -1,4 +1,4 @@
-# Website product config
+﻿# Website product config
 
 `config.json` is the **release-volatile** source of truth for the Scanly marketing site ([scanly-web](https://github.com/c1ph3rj/scanly-web)).
 
@@ -8,7 +8,7 @@ Update this file when you ship a new app version. You should **not** need to red
 
 | Field | Purpose |
 | --- | --- |
-| `release.stableVersion` | Version badge on Download CTAs (e.g. `v1.0.12`) |
+| `release.stableVersion` | Version badge on Download CTAs (e.g. `v1.0.13`) |
 | `release.developmentLabel` / `developmentUrl` | Link for “what's new” / changelog |
 | `release.releasesUrl` | Optional override for the releases page URL |
 | `screenshots` | Product-tour titles, bodies, and **image paths or absolute URLs** |
@@ -32,7 +32,7 @@ Always set `fallbackAsset` to one of `home` | `scan` | `pages` | `export` so the
 
 ## Website ref
 
-The website defaults to branch `feature/v1.0.12` for app docs and this config (override with `VITE_SCANLY_GITHUB_REF`). After merge to `master`, point the site env/default at `master`.
+The website defaults to branch `feature/v1.0.13` for app docs and this config (override with `VITE_SCANLY_GITHUB_REF`). After merge to `master`, point the site env/default at `master`.
 
 ## Schema
 
