@@ -8,6 +8,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 Changes for the next release will be documented here.
 
+### Added
+
+- **Illustrated empty states** — Home, Library, empty folders, empty documents, PDF tools, and the detector benchmark now use a shared emerald-and-silver illustration system with clear next actions.
+
+### Changed
+
+- **Home visual hierarchy** — the greeting uses a compact two-line layout with an emerald keyword and intentional right-side breathing room, while Scan / Import / Folder retain clean outlined icon-and-label treatments.
+- **Tools icon language** — capture, QR, and PDF utility cards use consistent outlined glyphs, while the dark-theme brand accent is brighter and clearer.
+
 ## [1.0.13] - 2026-07-18
 
 Release-build stability update following **1.0.11**.

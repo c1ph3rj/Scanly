@@ -31,6 +31,8 @@ import androidx.compose.material.icons.filled.PostAdd
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.SortByAlpha
 import androidx.compose.material.icons.filled.Update
+import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.CreateNewFolder
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -741,47 +743,18 @@ private fun EmptyLibraryTabCard(
     onCreateGroup: () -> Unit,
 ) {
     val isFolders = selectedTab == LibraryTab.Folders
-    Surface(
-        modifier = Modifier.fillMaxWidth(),
-        color = MaterialTheme.colorScheme.surfaceContainer,
-        shape = MaterialTheme.shapes.extraLarge,
-    ) {
-        Column(
-            modifier = Modifier.padding(32.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            Icon(
-                imageVector = if (isFolders) Icons.Filled.FolderOff else Icons.Filled.Description,
-                contentDescription = null,
-                modifier = Modifier.size(56.dp),
-                tint = MaterialTheme.colorScheme.primary,
-            )
-            Text(
-                text = if (isFolders) "No folders yet" else "No documents yet",
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.SemiBold,
-            )
-            Text(
-                text = if (isFolders) {
-                    "Create a folder to keep related documents together."
-                } else {
-                    "Create a document to start scanning or importing pages."
-                },
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
-            )
-            Button(onClick = if (isFolders) onCreateGroup else onCreateDocument) {
-                Icon(
-                    imageVector = if (isFolders) Icons.Filled.CreateNewFolder else Icons.Filled.Add,
-                    contentDescription = null,
-                )
-                Spacer(Modifier.width(8.dp))
-                Text(if (isFolders) "New folder" else "New document")
-            }
-        }
-    }
+    IllustratedEmptyState(
+        illustrationRes = `in`.c1ph3rj.scanly.R.drawable.empty_library_illustration,
+        title = if (isFolders) "No folders yet" else "No documents yet",
+        description = if (isFolders) {
+            "Create a folder to keep related documents easy to find."
+        } else {
+            "Create a document, then scan pages or import them from your gallery."
+        },
+        actionLabel = if (isFolders) "New folder" else "New document",
+        onAction = if (isFolders) onCreateGroup else onCreateDocument,
+        actionIcon = if (isFolders) Icons.Outlined.CreateNewFolder else Icons.Outlined.Add,
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -1070,44 +1043,14 @@ fun EmptyLibraryCard(
     onCreateDocument: () -> Unit,
     onCreateGroup: () -> Unit,
 ) {
-    Surface(
-        modifier = Modifier.fillMaxWidth(),
-        color = MaterialTheme.colorScheme.surfaceContainer,
-        shape = MaterialTheme.shapes.extraLarge,
-    ) {
-        Column(
-            modifier = Modifier.padding(32.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-        ) {
-            Icon(
-                imageVector = Icons.Filled.FolderOpen,
-                contentDescription = null,
-                modifier = Modifier.size(72.dp),
-                tint = MaterialTheme.colorScheme.primary,
-            )
-            Text(
-                "Nothing here yet",
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.SemiBold,
-            )
-            Text(
-                "Create a folder to organise documents, or add a document directly.",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
-            )
-            Spacer(Modifier.height(8.dp))
-            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                Button(onClick = onCreateGroup, modifier = Modifier.height(48.dp)) {
-                    Icon(Icons.Filled.CreateNewFolder, contentDescription = null)
-                    Spacer(Modifier.width(8.dp))
-                    Text("New Folder")
-                }
-                TextButton(onClick = onCreateDocument, modifier = Modifier.height(48.dp)) {
-                    Text("New Document")
-                }
-            }
-        }
-    }
+    IllustratedEmptyState(
+        illustrationRes = `in`.c1ph3rj.scanly.R.drawable.empty_library_illustration,
+        title = "Your library is ready",
+        description = "Create a folder to stay organised, or add a document and start capturing.",
+        actionLabel = "New folder",
+        onAction = onCreateGroup,
+        actionIcon = Icons.Outlined.CreateNewFolder,
+        secondaryActionLabel = "New document",
+        onSecondaryAction = onCreateDocument,
+    )
 }

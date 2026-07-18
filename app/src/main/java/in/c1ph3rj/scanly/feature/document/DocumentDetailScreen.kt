@@ -1452,87 +1452,19 @@ private fun EmptyDocumentCard(
     onUploadImage: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Surface(
-        modifier = modifier.fillMaxWidth(),
-        color = MaterialTheme.colorScheme.surfaceContainerHigh,
-        shape = MaterialTheme.shapes.extraLarge,
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
-    ) {
-        Column(
-            modifier = Modifier.padding(28.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-        ) {
-            Surface(
-                modifier = Modifier.size(72.dp),
-                color = MaterialTheme.colorScheme.primaryContainer,
-                shape = MaterialTheme.shapes.extraLarge,
-            ) {
-                Box(contentAlignment = Alignment.Center) {
-                    Icon(
-                        imageVector = Icons.Filled.Description,
-                        contentDescription = null,
-                        modifier = Modifier.size(36.dp),
-                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                    )
-                }
-            }
-            Text(
-                text = "No pages yet",
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.SemiBold,
-            )
-            Text(
-                text = "Capture a page or choose up to ${ImageImportSupport.MAX_IMAGES_PER_IMPORT} images to start this document.",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = TextAlign.Center,
-            )
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .widthIn(max = 360.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
-                Button(
-                    onClick = onCapture,
-                    enabled = actionsEnabled,
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(48.dp),
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.CameraAlt,
-                        contentDescription = null,
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = "Scan",
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                }
-                OutlinedButton(
-                    onClick = onUploadImage,
-                    enabled = actionsEnabled,
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(48.dp),
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.PhotoLibrary,
-                        contentDescription = null,
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = "Import",
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                }
-            }
-        }
-    }
+    `in`.c1ph3rj.scanly.feature.components.IllustratedEmptyState(
+        illustrationRes = `in`.c1ph3rj.scanly.R.drawable.empty_pages_illustration,
+        title = "No pages yet",
+        description = "Scan a page or import up to ${ImageImportSupport.MAX_IMAGES_PER_IMPORT} images to begin this document.",
+        actionLabel = "Scan a page",
+        onAction = onCapture,
+        actionIcon = Icons.Filled.CameraAlt,
+        actionEnabled = actionsEnabled,
+        secondaryActionLabel = "Import images",
+        onSecondaryAction = onUploadImage,
+        secondaryActionEnabled = actionsEnabled,
+        modifier = modifier,
+    )
 }
 
 @Composable

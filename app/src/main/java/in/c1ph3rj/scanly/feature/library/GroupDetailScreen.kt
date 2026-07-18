@@ -560,29 +560,15 @@ private fun GroupStatsHeader(documentCount: Int, totalPageCount: Int) {
 
 @Composable
 private fun EmptyGroupCard(onAddDocument: () -> Unit) {
-    Surface(
-        modifier = Modifier.fillMaxWidth(),
-        color = MaterialTheme.colorScheme.surfaceContainer,
-        shape = MaterialTheme.shapes.extraLarge,
-    ) {
-        Column(
-            modifier = Modifier.padding(28.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            Icon(
-                imageVector = Icons.Filled.FolderOpen,
-                contentDescription = null,
-                modifier = Modifier.size(48.dp),
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-            Text(
-                "No documents in this group yet",
-                style = MaterialTheme.typography.titleMedium,
-            )
-            TextButton(onClick = onAddDocument) { Text("Add documents") }
-        }
-    }
+    `in`.c1ph3rj.scanly.feature.components.IllustratedEmptyState(
+        illustrationRes = `in`.c1ph3rj.scanly.R.drawable.empty_library_illustration,
+        title = "This folder is empty",
+        description = "Add a document here to keep related scans together.",
+        actionLabel = "Add documents",
+        onAction = onAddDocument,
+        actionIcon = Icons.Filled.Add,
+        compact = true,
+    )
 }
 
 @Composable

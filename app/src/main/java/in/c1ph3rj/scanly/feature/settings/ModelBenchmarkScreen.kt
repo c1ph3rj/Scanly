@@ -426,68 +426,26 @@ private fun BenchmarkEmptyState(
     onChooseImages: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Surface(
+    Column(
         modifier = modifier.fillMaxWidth(),
-        shape = MaterialTheme.shapes.extraLarge,
-        color = MaterialTheme.colorScheme.surfaceContainer,
-        tonalElevation = 0.dp,
-        shadowElevation = 0.dp,
+        verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 24.dp, vertical = 32.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(72.dp)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.primaryContainer),
-                contentAlignment = Alignment.Center,
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Speed,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                    modifier = Modifier.size(32.dp),
-                )
-            }
-            Text(
-                text = "Compare detectors on your photos",
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.SemiBold,
-                textAlign = TextAlign.Center,
-            )
-            Text(
-                text = "Pick real documents, phone screens, and other rectangular objects. Scanly times the semantic gate and all four corner models, draws each detected polygon on a preview, and reports the combined pipeline result.",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = TextAlign.Center,
-            )
-            Spacer(Modifier.height(4.dp))
-            Button(
-                onClick = onChooseImages,
-                modifier = Modifier.fillMaxWidth(),
-                shape = MaterialTheme.shapes.large,
-                contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.ImageSearch,
-                    contentDescription = null,
-                    modifier = Modifier.size(18.dp),
-                )
-                Spacer(Modifier.size(ButtonDefaults.IconSpacing))
-                Text("Choose images and run")
-            }
-            Text(
-                text = "Images stay on this device. Nothing is uploaded.",
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = TextAlign.Center,
-            )
-        }
+        `in`.c1ph3rj.scanly.feature.components.IllustratedEmptyState(
+            illustrationRes = `in`.c1ph3rj.scanly.R.drawable.empty_tools_illustration,
+            title = "Compare detectors on your photos",
+            description = "Choose real documents or rectangular objects. Scanly will time every detector and show the detected edges.",
+            actionLabel = "Choose images and run",
+            onAction = onChooseImages,
+            actionIcon = Icons.Filled.ImageSearch,
+            compact = true,
+        )
+        Text(
+            text = "Images stay on this device. Nothing is uploaded.",
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth(),
+        )
     }
 }
 

@@ -12,6 +12,9 @@ import androidx.compose.material.icons.filled.CreateNewFolder
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material.icons.filled.PhotoLibrary
+import androidx.compose.material.icons.outlined.CameraAlt
+import androidx.compose.material.icons.outlined.CreateNewFolder
+import androidx.compose.material.icons.outlined.PhotoLibrary
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -19,8 +22,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import `in`.c1ph3rj.scanly.core.ui.ImageImportSupport
@@ -33,6 +41,7 @@ import `in`.c1ph3rj.scanly.feature.components.*
 import `in`.c1ph3rj.scanly.core.ui.PreviewDisplaySize
 import androidx.compose.ui.unit.Dp
 import androidx.activity.compose.BackHandler
+import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -134,7 +143,7 @@ fun HomeScreen(
                     documentCount = uiState.recentDocuments.size,
                     modifier = Modifier
                         .padding(horizontal = windowSizeInfo.horizontalPadding)
-                        .padding(bottom = 24.dp),
+                        .padding(bottom = 12.dp),
                 )
             }
 
@@ -281,8 +290,8 @@ fun HomeHeader(
         modifier = modifier
             .fillMaxWidth()
             .statusBarsPadding()
-            .padding(top = 24.dp),
-        verticalArrangement = Arrangement.spacedBy(6.dp),
+            .padding(top = 14.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Text(
             text = greeting.salutation,
@@ -290,9 +299,20 @@ fun HomeHeader(
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
         Text(
-            text = greeting.headline,
-            style = MaterialTheme.typography.displayMedium,
-            fontWeight = FontWeight.Bold,
+            text = buildAnnotatedString {
+                val start = greeting.headline.indexOf(greeting.highlight)
+                if (start < 0) {
+                    append(greeting.headline)
+                } else {
+                    append(greeting.headline.substring(0, start))
+                    withStyle(SpanStyle(color = MaterialTheme.colorScheme.primary)) {
+                        append(greeting.highlight)
+                    }
+                    append(greeting.headline.substring(start + greeting.highlight.length))
+                }
+            },
+            style = MaterialTheme.typography.displaySmall,
+            fontWeight = FontWeight.SemiBold,
             color = MaterialTheme.colorScheme.onBackground,
         )
     }
@@ -301,24 +321,29 @@ fun HomeHeader(
 private data class HomeGreeting(
     val salutation: String,
     val headline: String,
+    val highlight: String,
 )
 
 private fun greetingForHour(hour: Int): HomeGreeting = when (hour) {
     in 5..11 -> HomeGreeting(
         salutation = "Good morning,",
-        headline = "What are we scanning today?",
+        headline = "What are we\nscanning today?",
+        highlight = "scanning",
     )
     in 12..16 -> HomeGreeting(
         salutation = "Good afternoon,",
-        headline = "Let's capture some documents.",
+        headline = "Let's capture\nsome documents.",
+        highlight = "documents",
     )
     in 17..20 -> HomeGreeting(
         salutation = "Good evening,",
-        headline = "Wrap up and digitize your day.",
+        headline = "Wrap up and\ndigitize your day.",
+        highlight = "digitize",
     )
     else -> HomeGreeting(
         salutation = "Still scanning?",
-        headline = "Save it now, find it tomorrow.",
+        headline = "Save it now,\nfind it tomorrow.",
+        highlight = "Save it now",
     )
 }
 
@@ -343,11 +368,11 @@ fun QuickActionsRow(
     }
     Row(
         modifier = rowModifier,
-        horizontalArrangement = Arrangement.spacedBy(16.dp)
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         QuickActionCard(
             title = "Scan",
-            icon = Icons.Filled.CameraAlt,
+            icon = Icons.Outlined.CameraAlt,
             onClick = onScan,
             accentContainerColor = MaterialTheme.colorScheme.primaryContainer,
             accentContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
@@ -355,7 +380,7 @@ fun QuickActionsRow(
         )
         QuickActionCard(
             title = "Import",
-            icon = Icons.Filled.PhotoLibrary,
+            icon = Icons.Outlined.PhotoLibrary,
             onClick = onImport,
             enabled = importEnabled,
             accentContainerColor = MaterialTheme.colorScheme.secondaryContainer,
@@ -364,7 +389,7 @@ fun QuickActionsRow(
         )
         QuickActionCard(
             title = "Folder",
-            icon = Icons.Filled.CreateNewFolder,
+            icon = Icons.Outlined.CreateNewFolder,
             onClick = onNewFolder,
             accentContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
             accentContentColor = MaterialTheme.colorScheme.onTertiaryContainer,
@@ -403,12 +428,14 @@ fun QuickActionCard(
         tonalElevation = 0.dp,
     ) {
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 6.dp, vertical = 8.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
             Surface(
-                modifier = Modifier.size(52.dp),
+                modifier = Modifier.size(46.dp),
                 color = if (enabled) accentContainerColor else MaterialTheme.colorScheme.surfaceContainerHighest,
                 shape = MaterialTheme.shapes.large,
             ) {
@@ -417,11 +444,11 @@ fun QuickActionCard(
                         imageVector = icon,
                         contentDescription = title,
                         tint = if (enabled) accentContentColor else resolvedContentColor,
-                        modifier = Modifier.size(30.dp)
+                        modifier = Modifier.size(26.dp)
                     )
                 }
             }
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(9.dp))
             Text(
                 text = title,
                 style = MaterialTheme.typography.titleMedium,
@@ -547,47 +574,13 @@ private fun EmptyHomeCard(
     onCreateDocument: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Surface(
-        modifier = modifier.fillMaxWidth(),
-        color = MaterialTheme.colorScheme.surfaceContainer,
-        shape = MaterialTheme.shapes.extraLarge,
-    ) {
-        Column(
-            modifier = Modifier.padding(32.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-        ) {
-            Surface(
-                modifier = Modifier.size(80.dp),
-                color = MaterialTheme.colorScheme.primaryContainer,
-                shape = MaterialTheme.shapes.extraLarge,
-            ) {
-                Box(contentAlignment = Alignment.Center) {
-                    Icon(
-                        imageVector = Icons.Filled.CameraAlt,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                        modifier = Modifier.size(40.dp),
-                    )
-                }
-            }
-            Text(
-                "Start scanning",
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.SemiBold,
-            )
-            Text(
-                "Your recently captured files and folders will appear here.",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
-            )
-            Spacer(Modifier.height(8.dp))
-            Button(onClick = onCreateDocument, modifier = Modifier.height(48.dp)) {
-                Icon(Icons.Filled.CameraAlt, contentDescription = null)
-                Spacer(Modifier.width(8.dp))
-                Text("New scan")
-            }
-        }
-    }
+    IllustratedEmptyState(
+        illustrationRes = `in`.c1ph3rj.scanly.R.drawable.empty_capture_illustration,
+        title = "No documents yet",
+        description = "Scan your first page and it will be ready here whenever you need it.",
+        actionLabel = "Start scanning",
+        onAction = onCreateDocument,
+        actionIcon = Icons.Outlined.CameraAlt,
+        modifier = modifier,
+    )
 }

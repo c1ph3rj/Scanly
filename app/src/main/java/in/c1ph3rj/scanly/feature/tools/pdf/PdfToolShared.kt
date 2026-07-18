@@ -202,52 +202,16 @@ fun ToolEmptyState(
     actionLabel: String = "Choose PDF",
     modifier: Modifier = Modifier,
 ) {
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(vertical = 24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-    ) {
-        Surface(
-            modifier = Modifier.size(72.dp),
-            color = MaterialTheme.colorScheme.primaryContainer,
-            shape = MaterialTheme.shapes.extraLarge,
-        ) {
-            Box(contentAlignment = Alignment.Center) {
-                Icon(
-                    imageVector = icon,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                    modifier = Modifier.size(34.dp),
-                )
-            }
-        }
-        Text(
-            text = title,
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.SemiBold,
-        )
-        Text(
-            text = subtitle,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = androidx.compose.ui.text.style.TextAlign.Center,
-            modifier = Modifier
-                .widthIn(max = 420.dp)
-                .padding(horizontal = 12.dp),
-        )
-        Button(
-            onClick = onChooseSource,
-            modifier = Modifier
-                .widthIn(max = 420.dp)
-                .fillMaxWidth(),
-        ) {
-            Icon(Icons.Filled.FolderOpen, contentDescription = null, modifier = Modifier.size(18.dp))
-            Spacer(modifier = Modifier.size(8.dp))
-            Text(actionLabel)
-        }
-    }
+    `in`.c1ph3rj.scanly.feature.components.IllustratedEmptyState(
+        illustrationRes = `in`.c1ph3rj.scanly.R.drawable.empty_tools_illustration,
+        title = title,
+        description = subtitle,
+        actionLabel = actionLabel,
+        onAction = onChooseSource,
+        actionIcon = icon,
+        modifier = modifier,
+        compact = true,
+    )
 }
 
 @Composable
