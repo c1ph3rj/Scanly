@@ -72,6 +72,11 @@ build_output.txt
 .idea/assetWizardSettings.xml
 .idea/navEditor.xml
 .idea/misc.xml
+.idea/libraries/
+.idea/modules.xml
+.idea/gradle.xml
+.idea/jarRepositories.xml
+.idea/compiler.xml
 .vscode/
 *.swp
 *.swo

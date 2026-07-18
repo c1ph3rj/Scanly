@@ -1,6 +1,6 @@
-# Architecture Overview
+﻿# Architecture Overview
 
-How Scanly is structured at **v1.0.11**. For navigation detail see [navigation.md](navigation.md). For screen inventory see [screens.md](screens.md).
+How Scanly is structured at **v1.0.12.1**. For navigation detail see [navigation.md](navigation.md). For screen inventory see [screens.md](screens.md).
 
 ## Layer diagram
 
@@ -11,10 +11,10 @@ How Scanly is structured at **v1.0.11**. For navigation detail see [navigation.m
 │  domain/           Use cases + repository interfaces    │
 │                    + domain models                      │
 ├─────────────────────────────────────────────────────────┤
-│  data/             Room, files, export, settings,       │
+│  data/             Room, files, export, settings,     │
 │                    update implementations               │
 ├─────────────────────────────────────────────────────────┤
-│  core/             ML, OpenCV, editing math, UI utils   │
+│  core/             ML, OpenCV, editing math, UI utils  │
 └─────────────────────────────────────────────────────────┘
          ▲                              ▲
          │         di/ (Hilt)           │

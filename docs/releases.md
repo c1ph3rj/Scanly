@@ -1,4 +1,4 @@
-# Releases
+﻿# Releases
 
 Version policy and release history for Scanly.
 
@@ -6,8 +6,8 @@ Version policy and release history for Scanly.
 
 | Field | Value |
 | --- | --- |
-| Version name | `1.0.11` |
-| Version code | `11` |
+| Version name | `1.0.12.1` |
+| Version code | `12` |
 | Application ID | `in.c1ph3rj.scanly` |
 | Room schema | `4` |
 | Min SDK | 29 (Android 10) |
@@ -20,15 +20,14 @@ The version shown in Settings reads `versionName` via `DefaultSettingsRepository
 
 ### Release highlights
 
-Version **1.0.11** (relative to `1.0.10`):
+Version **1.0.12.1** (relative to `1.0.11`):
 
-- Home-screen widgets and launcher quick actions for Scan, Import, QR, and Library
-- Dedicated crop screen with AI Detect, four-point handles, rotation, reset, and apply actions
-- Full-screen Filters and Adjust tools with per-page fine-tuning and apply-to-all support
-- Tighter document detection overlays, stronger edge selection, and book/desk handling
-- Tablet and wide-window editor layouts with improved filter and adjustment controls
+- Fixed the release-build crash when opening QR Scan after granting camera permission
+- Fixed the release-build crash when opening Create QR directly
+- Hardened ML Kit and CameraX initialization and cleanup for minified APKs
+- Prevented Create QR from briefly initializing the Scan camera path
 
-The compact GitHub release description used by the in-app update dialog is available in [release-notes/v1.0.11.md](release-notes/v1.0.11.md).
+The compact GitHub release description used by the in-app update dialog is available in [release-notes/v1.0.12.1.md](release-notes/v1.0.12.1.md).
 
 ## Versioning policy
 
@@ -40,6 +39,12 @@ The compact GitHub release description used by the in-app update dialog is avail
 - Keep [VERSION.md](../VERSION.md) aligned with Gradle values.
 
 ## Recent releases
+
+### 1.0.12.1 (code 12) — 2026-07-18
+
+- QR Scan and Create QR release-build crash fix
+- ML Kit and CameraX startup lifecycle hardening
+- Release shrinker configuration for QR barcode dependencies
 
 ### 1.0.11 (code 11) — 2026-07-17
 
