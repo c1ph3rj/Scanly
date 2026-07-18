@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
-  "lastUpdated": "2026-07-17",
+  "lastUpdated": "2026-07-18",
   "release": {
-    "stableVersion": "v1.0.11",
+    "stableVersion": "v1.0.12",
     "developmentLabel": "What's new",
-    "developmentUrl": "https://github.com/c1ph3rj/Scanly/blob/feature/v1.0.11/docs/release-notes/v1.0.11.md",
+    "developmentUrl": "https://github.com/c1ph3rj/Scanly/blob/feature/v1.0.12/docs/release-notes/v1.0.12.md",
     "releasesUrl": "https://github.com/c1ph3rj/Scanly/releases"
   },
   "screenshots": {
@@ -101,9 +101,9 @@
     ]
   },
   "development": {
-    "eyebrow": "What's new in v1.0.11",
-    "title": "More control over every page.",
-    "description": "The latest release adds richer editing, faster document handling, and handy actions for everyday scanning.",
+    "eyebrow": "What's new in v1.0.12",
+    "title": "A smoother QR workflow.",
+    "description": "This stability release fixes QR Scan and Create QR crashes in minified release builds while preserving the latest editing and scanning improvements.",
     "items": [
       {
         "title": "Richer page editing",

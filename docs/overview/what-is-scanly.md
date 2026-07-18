@@ -93,7 +93,7 @@ ScanlyApplication (@HiltAndroidApp, custom WorkManager + HiltWorkerFactory)
 
 | Field | Value |
 | --- | --- |
-| Version | `1.0.11` (code `11`) |
+| Version | `1.0.12` (code `12`) |
 | Room schema | `4` |
 | Min SDK | 29 (Android 10) |
 | Target SDK | 36 |

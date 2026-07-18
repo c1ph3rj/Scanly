@@ -8,6 +8,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 Changes for the next release will be documented here.
 
+## [1.0.12] - 2026-07-18
+
+Release-build stability update following **1.0.11**.
+
+### Fixed
+
+- **QR Scan and Create crash** — fixed a minified-release crash when opening either QR flow after camera permission or direct navigation.
+- **QR startup lifecycle** — guarded ML Kit and CameraX initialization, scanner disposal, and release shrinking so QR startup failures do not terminate the app.
+- **QR mode initialization** — Create QR no longer briefly initializes the Scan camera path before showing the requested mode.
+
 ## [1.0.11] - 2026-07-17
 
 Editor and page-edit pipeline work on top of **1.0.10**, now released with Room schema **4**.
@@ -184,6 +194,7 @@ Compared to **1.0.9** (`master`): Tools workspace, multi-model detection, captur
 - PDF export and image archive export/share.
 - Settings with theme mode, FAQs, licenses, and support links.
 
+[1.0.12]: https://github.com/c1ph3rj/Scanly/compare/v1.0.11...v1.0.12
 [1.0.11]: https://github.com/c1ph3rj/Scanly/compare/v1.0.10...v1.0.11
 [1.0.10]: https://github.com/c1ph3rj/Scanly/compare/v1.0.9...v1.0.10
 [1.0.9]: https://github.com/c1ph3rj/Scanly/compare/v1.0.8.betaq...v1.0.9
