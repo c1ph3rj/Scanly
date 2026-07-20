@@ -1,8 +1,5 @@
 package `in`.c1ph3rj.scanly.feature.preview
 
-import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -44,21 +41,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.core.content.FileProvider
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import `in`.c1ph3rj.scanly.core.ui.ChromeIconButton
 import `in`.c1ph3rj.scanly.core.ui.MetricChip
 import `in`.c1ph3rj.scanly.core.ui.ZoomableImageState
 import `in`.c1ph3rj.scanly.core.ui.ZoomableImageViewer
-import `in`.c1ph3rj.scanly.domain.model.ShareArtifact
 import `in`.c1ph3rj.scanly.domain.model.ScanPage
 import `in`.c1ph3rj.scanly.feature.components.ScanlyConfirmDialog
+import `in`.c1ph3rj.scanly.feature.components.sharePreparedFiles
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import androidx.compose.runtime.snapshotFlow
-import java.io.File
 
 @Composable
 fun PageImagePreviewRoute(
@@ -340,31 +335,3 @@ private fun PreviewActionButton(
     }
 }
 
-private fun sharePreparedFiles(
-    context: Context,
-    artifact: ShareArtifact,
-) {
-    val uris = artifact.filePaths.map(context::exportUriFor)
-    val shareIntent = if (uris.size == 1) {
-        Intent(Intent.ACTION_SEND).apply {
-            type = artifact.mimeType
-            putExtra(Intent.EXTRA_STREAM, uris.first())
-            putExtra(Intent.EXTRA_TITLE, artifact.title)
-            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        }
-    } else {
-        Intent(Intent.ACTION_SEND_MULTIPLE).apply {
-            type = artifact.mimeType
-            putParcelableArrayListExtra(Intent.EXTRA_STREAM, ArrayList(uris))
-            putExtra(Intent.EXTRA_TITLE, artifact.title)
-            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        }
-    }
-    context.startActivity(Intent.createChooser(shareIntent, "Share ${artifact.title}"))
-}
-
-private fun Context.exportUriFor(path: String): Uri = FileProvider.getUriForFile(
-    this,
-    "$packageName.fileprovider",
-    File(path),
-)

@@ -124,7 +124,7 @@ class HomeViewModel @Inject constructor(
                         when (
                             val importResult = importImagesUseCase(
                                 documentId = createResult.value,
-                                imageUris = cappedSelection.items,
+                                imageUriStrings = cappedSelection.items.map { it.toString() },
                                 onProgress = { progress ->
                                     importProgress.value = ImportProgressSnapshot(
                                         active = true,

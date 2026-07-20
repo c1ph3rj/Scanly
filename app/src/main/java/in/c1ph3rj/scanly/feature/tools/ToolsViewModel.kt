@@ -80,7 +80,7 @@ class ToolsViewModel @Inject constructor(
                         when (
                             val importResult = importImagesUseCase(
                                 documentId = createResult.value,
-                                imageUris = cappedSelection.items,
+                                imageUriStrings = cappedSelection.items.map { it.toString() },
                                 onProgress = { progress ->
                                     _uiState.update {
                                         it.copy(

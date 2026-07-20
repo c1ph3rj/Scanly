@@ -75,14 +75,15 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        // Rebind home-screen widgets with the current device UI mode so icons
-        // and labels stay visible after theme changes and process restarts.
-        ScanlyWidgetSupport.refreshAll(this)
         setContent {
             ScanlyApp(
                 coldStartIntent = intent,
                 externalIntents = externalIntents,
             )
+        }
+        // Defer widget rebind until after first frame so cold start is not blocked on binder work.
+        window.decorView.post {
+            ScanlyWidgetSupport.refreshAll(this)
         }
     }
 

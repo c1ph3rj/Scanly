@@ -2,8 +2,6 @@ package `in`.c1ph3rj.scanly.core.processing
 
 import android.graphics.Bitmap
 import `in`.c1ph3rj.scanly.domain.model.PageFilterPreset
-import org.opencv.android.OpenCVLoader
-import org.opencv.android.Utils
 import org.opencv.core.Core
 import org.opencv.core.CvType
 import org.opencv.core.Mat
@@ -20,9 +18,6 @@ object OpenCvPageFilterProcessor {
         val appliedPreset: PageFilterPreset,
     )
 
-    @Volatile
-    private var initialized = false
-
     fun apply(
         sourceBitmap: Bitmap,
         filterPreset: PageFilterPreset,
@@ -32,7 +27,7 @@ object OpenCvPageFilterProcessor {
         sourceBitmap: Bitmap,
         filterPreset: PageFilterPreset,
     ): AppliedFilter {
-        ensureInitialized()
+        OpenCvMatSupport.ensureInitialized()
         if (filterPreset == PageFilterPreset.ORIGINAL) {
             return AppliedFilter(
                 bitmap = sourceBitmap.copy(Bitmap.Config.ARGB_8888, false),
@@ -40,13 +35,16 @@ object OpenCvPageFilterProcessor {
             )
         }
 
-        val sourceRgba = sourceBitmap.toMat()
+        val sourceRgba = sourceBitmap.toOpenCvMat()
         return try {
             val profile = runCatching {
                 analyze(
                     sourceRgba = sourceRgba,
                     sourceLongestEdge = maxOf(sourceBitmap.width, sourceBitmap.height),
-                    sourceAspectRatio = aspectRatio(sourceBitmap.width, sourceBitmap.height),
+                    sourceAspectRatio = OpenCvMatSupport.aspectRatio(
+                        sourceBitmap.width,
+                        sourceBitmap.height,
+                    ),
                 )
             }.getOrNull()
             val resolvedPreset = resolvePreset(filterPreset, profile)
@@ -76,14 +74,17 @@ object OpenCvPageFilterProcessor {
         sourceBitmap: Bitmap,
         filterPresets: List<PageFilterPreset> = PageFilterPreset.entries,
     ): Map<PageFilterPreset, Bitmap> {
-        ensureInitialized()
-        val sourceRgba = sourceBitmap.toMat()
+        OpenCvMatSupport.ensureInitialized()
+        val sourceRgba = sourceBitmap.toOpenCvMat()
         return try {
             val profile = runCatching {
                 analyze(
                     sourceRgba = sourceRgba,
                     sourceLongestEdge = maxOf(sourceBitmap.width, sourceBitmap.height),
-                    sourceAspectRatio = aspectRatio(sourceBitmap.width, sourceBitmap.height),
+                    sourceAspectRatio = OpenCvMatSupport.aspectRatio(
+                        sourceBitmap.width,
+                        sourceBitmap.height,
+                    ),
                 )
             }.getOrNull()
             filterPresets.associateWith { filterPreset ->
@@ -94,7 +95,7 @@ object OpenCvPageFilterProcessor {
                         profile = profile,
                     )
                 }.getOrElse {
-                    sourceRgba.toBitmap()
+                    sourceRgba.toAndroidBitmap()
                 }
             }
         } finally {
@@ -107,7 +108,7 @@ object OpenCvPageFilterProcessor {
         sourceLongestEdge: Int,
         sourceAspectRatio: Double,
     ): PageImageProfile {
-        val analysisRgba = sourceRgba.forAnalysis()
+        val analysisRgba = sourceRgba.forAnalysisDownsample()
         val ownsAnalysisRgba = analysisRgba !== sourceRgba
         val bgr = Mat()
         val gray = Mat()
@@ -155,7 +156,7 @@ object OpenCvPageFilterProcessor {
             val shadowCutoff = resolvedBackgroundMean - maxOf(18.0, resolvedBackgroundStdDev * 0.85)
             Core.compare(background, Scalar.all(shadowCutoff), shadowMask, Core.CMP_LT)
             Core.compare(gray, Scalar.all(HIGHLIGHT_THRESHOLD), highlightMask, Core.CMP_GT)
-            val textBlockSize = oddKernel(
+            val textBlockSize = OpenCvMatSupport.oddKernel(
                 value = maxOf(gray.rows(), gray.cols()) / 18,
                 min = 21,
                 max = 51,
@@ -222,7 +223,7 @@ object OpenCvPageFilterProcessor {
         // Callers resolve Auto before render so we never hit the AUTO branch.
         val concrete = resolvePreset(filterPreset, profile)
         return when (concrete) {
-            PageFilterPreset.ORIGINAL -> sourceRgba.toBitmap()
+            PageFilterPreset.ORIGINAL -> sourceRgba.toAndroidBitmap()
             PageFilterPreset.AUTO -> grayscale(sourceRgba, profile) // safety net
             PageFilterPreset.ENHANCED_COLOR -> enhancedColor(sourceRgba, profile)
             PageFilterPreset.GRAYSCALE -> grayscale(sourceRgba, profile)
@@ -256,14 +257,6 @@ object OpenCvPageFilterProcessor {
         return adaptiveAttempt.getOrThrow()
     }
 
-    private fun ensureInitialized() {
-        if (initialized) return
-        synchronized(this) {
-            if (initialized) return
-            check(OpenCVLoader.initLocal()) { "OpenCV could not be initialized." }
-            initialized = true
-        }
-    }
 
     private fun enhancedColor(
         sourceRgba: Mat,
@@ -326,7 +319,7 @@ object OpenCvPageFilterProcessor {
                 sigma = tuning.sharpenSigma,
             )
             Imgproc.cvtColor(sharpened, resultRgba, Imgproc.COLOR_BGR2RGBA)
-            return resultRgba.toBitmap()
+            return resultRgba.toAndroidBitmap()
         } finally {
             bgr.release()
             denoised.release()
@@ -386,7 +379,7 @@ object OpenCvPageFilterProcessor {
                 sigma = tuning.sharpenSigma,
             )
             Imgproc.cvtColor(sharpenedGray, resultRgba, Imgproc.COLOR_GRAY2RGBA)
-            return resultRgba.toBitmap()
+            return resultRgba.toAndroidBitmap()
         } finally {
             gray.release()
             flattenedGray.release()
@@ -443,7 +436,7 @@ object OpenCvPageFilterProcessor {
                 tuning.c,
             )
             Imgproc.cvtColor(finalBinary, resultRgba, Imgproc.COLOR_GRAY2RGBA)
-            return resultRgba.toBitmap()
+            return resultRgba.toAndroidBitmap()
         } finally {
             gray.release()
             flattenedGray.release()
@@ -502,7 +495,7 @@ object OpenCvPageFilterProcessor {
                 sigma = tuning.sharpenSigma,
             )
             Imgproc.cvtColor(sharpenedGray, resultRgba, Imgproc.COLOR_GRAY2RGBA)
-            return resultRgba.toBitmap()
+            return resultRgba.toAndroidBitmap()
         } finally {
             gray.release()
             flattenedGray.release()
@@ -552,7 +545,7 @@ object OpenCvPageFilterProcessor {
                 sigma = tuning.sharpenSigma,
             )
             Imgproc.cvtColor(sharpened, resultRgba, Imgproc.COLOR_BGR2RGBA)
-            return resultRgba.toBitmap()
+            return resultRgba.toAndroidBitmap()
         } finally {
             bgr.release()
             enhancedBgr.release()
@@ -623,7 +616,7 @@ object OpenCvPageFilterProcessor {
                 sigma = tuning.sharpenSigma,
             )
             Imgproc.cvtColor(sharpenedGray, resultRgba, Imgproc.COLOR_GRAY2RGBA)
-            return resultRgba.toBitmap()
+            return resultRgba.toAndroidBitmap()
         } finally {
             gray.release()
             flattenedGray.release()
@@ -697,7 +690,7 @@ object OpenCvPageFilterProcessor {
                 sigma = tuning.sharpenSigma,
             )
             Imgproc.cvtColor(softenedGray, resultRgba, Imgproc.COLOR_GRAY2RGBA)
-            return resultRgba.toBitmap()
+            return resultRgba.toAndroidBitmap()
         } finally {
             gray.release()
             flattenedGray.release()
@@ -724,7 +717,7 @@ object OpenCvPageFilterProcessor {
         val safeBackgroundFloat = Mat()
         val flattenedFloat = Mat()
         val flattenedGray = Mat()
-        val textKernelSize = oddKernel(
+        val textKernelSize = OpenCvMatSupport.oddKernel(
             value = maxOf(sourceGray.rows(), sourceGray.cols()) / 220,
             min = 5,
             max = 13,
@@ -975,7 +968,7 @@ object OpenCvPageFilterProcessor {
     ) {
         val localBackground = Mat()
         val textResponse = Mat()
-        val kernelSize = oddKernel(
+        val kernelSize = OpenCvMatSupport.oddKernel(
             value = maxOf(sourceGray.rows(), sourceGray.cols()) / 220,
             min = 5,
             max = 13,
@@ -1030,44 +1023,6 @@ object OpenCvPageFilterProcessor {
         }
     }
 
-    private fun Bitmap.toMat(): Mat {
-        val mat = Mat(height, width, CvType.CV_8UC4)
-        Utils.bitmapToMat(this, mat)
-        return mat
-    }
-
-    private fun Mat.forAnalysis(): Mat {
-        val longestEdge = maxOf(cols(), rows())
-        if (longestEdge <= ANALYSIS_MAX_DIMENSION) {
-            return this
-        }
-
-        val scale = ANALYSIS_MAX_DIMENSION / longestEdge.toDouble()
-        val resized = Mat()
-        Imgproc.resize(this, resized, Size(), scale, scale, Imgproc.INTER_AREA)
-        return resized
-    }
-
-    private fun Mat.toBitmap(): Bitmap {
-        val bitmap = Bitmap.createBitmap(cols(), rows(), Bitmap.Config.ARGB_8888)
-        Utils.matToBitmap(this, bitmap)
-        return bitmap
-    }
-
-    private fun aspectRatio(width: Int, height: Int): Double {
-        val shortEdge = minOf(width, height).coerceAtLeast(1)
-        return maxOf(width, height).toDouble() / shortEdge.toDouble()
-    }
-
-    private fun oddKernel(value: Int, min: Int, max: Int): Int {
-        var candidate = value.coerceIn(min, max)
-        if (candidate % 2 == 0) {
-            candidate = if (candidate >= max) candidate - 1 else candidate + 1
-        }
-        return candidate.coerceAtLeast(3)
-    }
-
-    private const val ANALYSIS_MAX_DIMENSION = 720
     private const val HIGHLIGHT_THRESHOLD = 220.0
     private const val COLOR_SATURATION_THRESHOLD = 40.0
     private const val TEXT_ANALYSIS_C = 10.0

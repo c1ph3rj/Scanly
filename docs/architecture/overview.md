@@ -113,14 +113,18 @@ Hilt modules in `di/` install into `SingletonComponent`:
 
 ```
 ScanSessionViewModel
-  → live path: DocumentGateDetector → DocumentCornerDetector(live model)
-    → DocumentQuadPolicy / StableCornerSelector → overlay + auto-capture
+  → LiveDocumentAnalysisSession (domain)
+      → DefaultLiveDocumentAnalysisSession
+          DocumentGateDetector → BookAwareCornerResolver / StableCornerSelector
+          CaptureStabilityTracker → overlay phase + auto-capture
   → PreparePageCaptureUseCase → PageRepository.prepareCapture
   → CameraX writes raw JPEG
   → FinalizeCapturedPageUseCase → PageRepository.finalizeCapture
     → PageImageProcessor → gate + corner (post model) + warp + OpenCV filter (+ adjustments if any)
     → Room + file storage
 ```
+
+ViewModels must not inject raw ML detectors for live analysis; use `LiveDocumentAnalysisSession`.
 
 ### Page edit
 

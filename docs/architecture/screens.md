@@ -33,8 +33,6 @@ Every feature screen in Scanly **v1.0.13** and its responsibilities.
 | Legal | `LegalDocumentScreen` | — | `legal/{documentType}` | Privacy / terms WebView content |
 | App update | `AppUpdateDialog` | `AppUpdateViewModel` | (overlay) | Channel-specific update check, cooldown |
 | Flexible update | `FlexibleUpdateSnackbar` | `AppUpdateViewModel` | (overlay) | Restart prompt after Play flexible download |
-| Placeholder | `FeaturePlaceholderScreen` | — | `camera`, `review`, `editor` | Legacy stubs — do not extend |
-
 ## App-level ViewModels
 
 Hosted in `MainActivity`, not tied to a single screen:

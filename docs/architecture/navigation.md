@@ -26,16 +26,6 @@ Navigation is implemented with **Navigation Compose** in `ScanlyNavHost.kt`. Rou
 | `tools` | Tools hub (capture, QR, PDF utilities) | Yes |
 | `settings` | Settings | Yes |
 
-## Legacy placeholder routes
-
-These top-level routes still exist but show `FeaturePlaceholderScreen` — they are sprint-era stubs, not active flows:
-
-| Route | Note |
-| --- | --- |
-| `camera` | Use `camera/session/{documentId}` instead |
-| `review` | Review happens in document detail and page preview |
-| `editor` | Use `editor/page/{pageId}` instead |
-
 ## Typed routes (active flows)
 
 | Route pattern | Helper object | Screen |

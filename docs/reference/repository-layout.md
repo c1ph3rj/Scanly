@@ -51,7 +51,10 @@ app/
 | --- | --- |
 | `MainActivity.kt` | App shell |
 | `ScanlyApplication.kt` | Hilt application |
-| `navigation/ScanlyNavHost.kt` | Navigation |
+| `navigation/ScanlyNavHost.kt` | Navigation host shell |
+| `navigation/ScanlyNavHostContent.kt` | Route table |
+| `navigation/ScanlyScaffoldChrome.kt` | Bottom bar / rail |
+| `navigation/ScanlyNavTransitions.kt` | Enter/exit transitions |
 | `data/local/db/ScanlyDatabase.kt` | Room schema (v4) + migrations |
 | `data/page/DefaultPageRepository.kt` | Capture finalize and page edits |
 | `feature/editor/` | Page editor, Filters/Adjust overlays, crop route |

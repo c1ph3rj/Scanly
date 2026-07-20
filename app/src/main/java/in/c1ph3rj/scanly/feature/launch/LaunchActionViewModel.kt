@@ -95,7 +95,7 @@ class LaunchActionViewModel @Inject constructor(
                         when (
                             val importResult = importImagesUseCase(
                                 documentId = createResult.value,
-                                imageUris = cappedSelection.items,
+                                imageUriStrings = cappedSelection.items.map { it.toString() },
                                 onProgress = { progress ->
                                     _importProgress.value = LaunchImportProgress(
                                         active = true,

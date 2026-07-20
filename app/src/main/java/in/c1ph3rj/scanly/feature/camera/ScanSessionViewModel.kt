@@ -6,28 +6,22 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import `in`.c1ph3rj.scanly.core.common.ScanlyResult
 import `in`.c1ph3rj.scanly.core.ml.DetectionFrame
-import `in`.c1ph3rj.scanly.core.ml.CornerDetectionResult
-import `in`.c1ph3rj.scanly.core.ml.BookAwareCornerResolver
-import `in`.c1ph3rj.scanly.core.ml.AutomaticDocumentModelSelector
 import `in`.c1ph3rj.scanly.core.ml.DocumentCornerQuad
-import `in`.c1ph3rj.scanly.core.ml.DocumentGateClass
-import `in`.c1ph3rj.scanly.core.ml.DocumentGateDetector
-import `in`.c1ph3rj.scanly.core.ml.DocumentGateResult
-import `in`.c1ph3rj.scanly.core.ml.CornerResolutionIssue
-import `in`.c1ph3rj.scanly.core.ml.toOrientedBitmap
+import `in`.c1ph3rj.scanly.domain.model.DocumentCornerModel
 import `in`.c1ph3rj.scanly.domain.model.PageCaptureDraft
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
 import `in`.c1ph3rj.scanly.domain.model.ScanPage
-import `in`.c1ph3rj.scanly.domain.model.DocumentCornerModel
-import `in`.c1ph3rj.scanly.domain.usecase.ObserveLiveDetectionModelUseCase
+import `in`.c1ph3rj.scanly.domain.processing.LiveCapturePhase
+import `in`.c1ph3rj.scanly.domain.processing.LiveDocumentAnalysisSession
+import `in`.c1ph3rj.scanly.domain.processing.LiveFrameAnalysis
+import `in`.c1ph3rj.scanly.domain.usecase.FinalizeCapturedPageUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveAutomaticModelSelectionUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveDocumentGateEnabledUseCase
-import `in`.c1ph3rj.scanly.domain.usecase.FinalizeCapturedPageUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveDocumentPagesUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveDocumentUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.ObserveLiveDetectionModelUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.PreparePageCaptureUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.PrepareReplacementCaptureUseCase
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -38,7 +32,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 
@@ -57,7 +50,9 @@ data class ScanSessionUiState(
     val latestCapturedPage: ScanPage?
         get() = latestCapturedPageId?.let { pageId ->
             pages.firstOrNull { page -> page.id == pageId }
-        } ?: pages.maxWithOrNull(compareBy<ScanPage> { page -> page.createdAtMillis }.thenBy { page -> page.pageIndex })
+        } ?: pages.maxWithOrNull(
+            compareBy<ScanPage> { page -> page.createdAtMillis }.thenBy { page -> page.pageIndex },
+        )
 
     val isReplacementMode: Boolean
         get() = replacementPageId != null
@@ -80,9 +75,7 @@ class ScanSessionViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     observeDocumentUseCase: ObserveDocumentUseCase,
     observeDocumentPagesUseCase: ObserveDocumentPagesUseCase,
-    private val bookAwareCornerResolver: BookAwareCornerResolver,
-    private val documentGateDetector: DocumentGateDetector,
-    private val automaticDocumentModelSelector: AutomaticDocumentModelSelector,
+    private val liveAnalysisSession: LiveDocumentAnalysisSession,
     private val preparePageCaptureUseCase: PreparePageCaptureUseCase,
     private val prepareReplacementCaptureUseCase: PrepareReplacementCaptureUseCase,
     private val finalizeCapturedPageUseCase: FinalizeCapturedPageUseCase,
@@ -90,16 +83,11 @@ class ScanSessionViewModel @Inject constructor(
     observeAutomaticModelSelectionUseCase: ObserveAutomaticModelSelectionUseCase,
     observeDocumentGateEnabledUseCase: ObserveDocumentGateEnabledUseCase,
 ) : ViewModel() {
-    private val documentId: String = checkNotNull(savedStateHandle[ScanSessionDestination.documentIdArgument])
-    private val initialReplacementPageId: String? = savedStateHandle[ScanSessionDestination.replacePageIdArgument]
+    private val documentId: String =
+        checkNotNull(savedStateHandle[ScanSessionDestination.documentIdArgument])
+    private val initialReplacementPageId: String? =
+        savedStateHandle[ScanSessionDestination.replacePageIdArgument]
     private val analysisInFlight = AtomicBoolean(false)
-    private val stabilityTracker = CaptureStabilityTracker()
-    private val gateStabilityTracker = DocumentGateStabilityTracker()
-    private val stableCornerSelector = StableCornerSelector()
-    @Volatile
-    private var liveModel: DocumentCornerModel = DocumentCornerModel.ACCURATE
-    @Volatile
-    private var documentGateEnabled: Boolean = true
     private var pendingCaptureQuad: DocumentCornerQuad? = null
     private var pendingCaptureTrigger: CaptureTrigger = CaptureTrigger.MANUAL
     private val _uiState = MutableStateFlow(
@@ -118,16 +106,11 @@ class ScanSessionViewModel @Inject constructor(
             ) { manualModel, automaticSelectionEnabled ->
                 manualModel to automaticSelectionEnabled
             }.collectLatest { (manualModel, automaticSelectionEnabled) ->
-                val model = if (automaticSelectionEnabled) {
-                    runCatching { automaticDocumentModelSelector.selection().liveModel }
-                        .getOrDefault(manualModel)
-                } else {
-                    manualModel
-                }
-                liveModel = model
-                stabilityTracker.reset()
-                gateStabilityTracker.reset()
-                stableCornerSelector.reset()
+                val model = liveAnalysisSession.resolveLiveModel(
+                    manualModel = manualModel,
+                    automaticSelectionEnabled = automaticSelectionEnabled,
+                )
+                liveAnalysisSession.setLiveModel(model)
                 _uiState.update { current ->
                     current.copy(liveDetection = current.liveDetection.copy(model = model))
                 }
@@ -135,10 +118,7 @@ class ScanSessionViewModel @Inject constructor(
         }
         viewModelScope.launch {
             observeDocumentGateEnabledUseCase().collectLatest { enabled ->
-                documentGateEnabled = enabled
-                stabilityTracker.reset()
-                gateStabilityTracker.reset()
-                stableCornerSelector.reset()
+                liveAnalysisSession.setDocumentGateEnabled(enabled)
             }
         }
         viewModelScope.launch {
@@ -226,94 +206,13 @@ class ScanSessionViewModel @Inject constructor(
 
         viewModelScope.launch {
             try {
-                val analysis = runCatching {
-                    withContext(Dispatchers.Default) {
-                        val selectedModel = liveModel
-                        val bitmap = frame.toOrientedBitmap()
-                        try {
-                            val gate = if (documentGateEnabled) {
-                                documentGateDetector.classify(bitmap)
-                            } else {
-                                null
-                            }
-                            val gateAccepted = gate?.let(gateStabilityTracker::evaluate) ?: true
-                            if (gate == null) gateStabilityTracker.reset()
-                            val cornerResolution = if (gateAccepted) {
-                                bookAwareCornerResolver.detect(bitmap, selectedModel)
-                            } else {
-                                stableCornerSelector.reset()
-                                `in`.c1ph3rj.scanly.core.ml.CornerResolution(
-                                    result = CornerDetectionResult(
-                                        quad = null,
-                                        confidence = 0f,
-                                        inferenceTimeMillis = 0L,
-                                        modelName = selectedModel.displayName,
-                                        model = selectedModel,
-                                    ),
-                                )
-                            }
-                            val detection = stableCornerSelector.select(cornerResolution.result)
-                            val quality = CaptureFrameQualityAnalyzer.analyze(frame)
-                            FrameAnalysis(
-                                detection = detection,
-                                gate = gate,
-                                gateAccepted = gateAccepted,
-                                sceneIssue = quality.sceneIssue(hasDocumentCandidate = detection.quad != null),
-                                cornerIssue = cornerResolution.issue,
-                            )
-                        } finally {
-                            bitmap.recycle()
-                        }
-                    }
-                }.getOrElse {
-                    stableCornerSelector.reset()
-                    _uiState.update { current ->
-                        current.copy(
-                            liveDetection = current.liveDetection.copy(
-                                quad = null,
-                                overlayFrame = frame.toDetectionOverlayFrame(),
-                                sceneIssue = null,
-                                phase = if (current.liveDetection.autoCaptureEnabled) AutoCapturePhase.SEARCHING else AutoCapturePhase.OFF,
-                                statusMessage = "Live detection is unavailable. Manual capture still works.",
-                                countdownValue = null,
-                            ),
-                        )
-                    }
-                    return@launch
-                }
-                val detectionResult = analysis.detection
-                val sceneIssue = analysis.sceneIssue
-
                 val autoCaptureEnabled = _uiState.value.liveDetection.autoCaptureEnabled
-                val evaluation = stabilityTracker.evaluate(
-                    result = detectionResult,
+                val analysis = liveAnalysisSession.analyzeFrame(
+                    frame = frame,
                     autoCaptureEnabled = autoCaptureEnabled,
-                    nowMillis = System.currentTimeMillis(),
-                    sceneIssue = sceneIssue,
                 )
-
-                _uiState.update { current ->
-                    current.copy(
-                        liveDetection = current.liveDetection.copy(
-                            quad = detectionResult.quad,
-                            overlayFrame = frame.toDetectionOverlayFrame(),
-                            sceneIssue = sceneIssue,
-                            phase = evaluation.phase,
-                            statusMessage = gateGuidance(analysis) ?: evaluation.statusMessage,
-                            countdownValue = evaluation.countdownValue,
-                            model = detectionResult.model,
-                            confidence = detectionResult.confidence,
-                            inferenceMillis = detectionResult.timing.inferenceMillis,
-                            totalMillis = detectionResult.timing.totalMillis,
-                            gateClass = analysis.gate?.predictedClass,
-                            gatePhysicalProbability = analysis.gate?.physicalDocumentProbability,
-                            gateMillis = analysis.gate?.timing?.totalMillis,
-                            gateAccepted = analysis.gateAccepted,
-                        ),
-                    )
-                }
-
-                if (evaluation.shouldAutoCapture && !_uiState.value.captureInProgress) {
+                applyFrameAnalysis(analysis)
+                if (analysis.ok && analysis.shouldAutoCapture && !_uiState.value.captureInProgress) {
                     startCapture(CaptureTrigger.AUTO)
                 }
             } finally {
@@ -330,7 +229,7 @@ class ScanSessionViewModel @Inject constructor(
             when (val result = finalizeCapturedPageUseCase(draft)) {
                 is ScanlyResult.Success -> {
                     capturedPageId = result.value
-                    stabilityTracker.onCaptureCommitted(
+                    liveAnalysisSession.onCaptureCommitted(
                         quad = pendingCaptureQuad,
                         nowMillis = System.currentTimeMillis(),
                     )
@@ -355,7 +254,11 @@ class ScanSessionViewModel @Inject constructor(
                     captureInProgress = false,
                     latestCapturedPageId = capturedPageId ?: current.latestCapturedPageId,
                     liveDetection = current.liveDetection.copy(
-                        phase = if (current.liveDetection.autoCaptureEnabled) AutoCapturePhase.COOLDOWN else AutoCapturePhase.OFF,
+                        phase = if (current.liveDetection.autoCaptureEnabled) {
+                            AutoCapturePhase.COOLDOWN
+                        } else {
+                            AutoCapturePhase.OFF
+                        },
                         statusMessage = if (current.liveDetection.autoCaptureEnabled) {
                             "Move to the next page before auto-capture re-arms."
                         } else {
@@ -378,7 +281,11 @@ class ScanSessionViewModel @Inject constructor(
                 current.copy(
                     captureInProgress = false,
                     liveDetection = current.liveDetection.copy(
-                        phase = if (current.liveDetection.autoCaptureEnabled) AutoCapturePhase.SEARCHING else AutoCapturePhase.OFF,
+                        phase = if (current.liveDetection.autoCaptureEnabled) {
+                            AutoCapturePhase.SEARCHING
+                        } else {
+                            AutoCapturePhase.OFF
+                        },
                         statusMessage = "Capture failed. Reposition the document and try again.",
                         countdownValue = null,
                         sceneIssue = null,
@@ -386,6 +293,39 @@ class ScanSessionViewModel @Inject constructor(
                 )
             }
             _events.emit(ScanSessionEvent.ShowMessage(message))
+        }
+    }
+
+    private fun applyFrameAnalysis(analysis: LiveFrameAnalysis) {
+        val frame = analysis.frame
+        val overlayFrame = frame?.toDetectionOverlayFrame()
+        // Scene issues only affect HUD tint; guidance is already in statusMessage.
+        val sceneIssue = if (analysis.hasSceneIssue) {
+            CaptureSceneIssue.entries.firstOrNull { issue ->
+                analysis.statusMessage == issue.guidance
+            } ?: CaptureSceneIssue.BLURRY
+        } else {
+            null
+        }
+        _uiState.update { current ->
+            current.copy(
+                liveDetection = current.liveDetection.copy(
+                    quad = analysis.quad,
+                    overlayFrame = overlayFrame,
+                    sceneIssue = sceneIssue,
+                    phase = analysis.phase.toUiPhase(),
+                    statusMessage = analysis.statusMessage,
+                    countdownValue = analysis.countdownValue,
+                    model = analysis.model,
+                    confidence = analysis.confidence,
+                    inferenceMillis = analysis.inferenceMillis,
+                    totalMillis = analysis.totalMillis,
+                    gateClass = analysis.gateClass,
+                    gatePhysicalProbability = analysis.gatePhysicalProbability,
+                    gateMillis = analysis.gateMillis,
+                    gateAccepted = analysis.gateAccepted,
+                ),
+            )
         }
     }
 
@@ -399,14 +339,14 @@ class ScanSessionViewModel @Inject constructor(
 
         pendingCaptureTrigger = trigger
         pendingCaptureQuad = _uiState.value.liveDetection.quad
-        stableCornerSelector.reset()
+        liveAnalysisSession.prepareForCapture()
         val autoCaptureEnabled = _uiState.value.liveDetection.autoCaptureEnabled
-        val captureState = stabilityTracker.capturingState(autoCaptureEnabled)
+        val captureState = liveAnalysisSession.capturingEvaluation(autoCaptureEnabled)
         _uiState.update { current ->
             current.copy(
                 captureInProgress = true,
                 liveDetection = current.liveDetection.copy(
-                    phase = captureState.phase,
+                    phase = captureState.phase.toUiPhase(),
                     statusMessage = captureState.statusMessage,
                     countdownValue = captureState.countdownValue,
                 ),
@@ -429,7 +369,11 @@ class ScanSessionViewModel @Inject constructor(
                     current.copy(
                         captureInProgress = false,
                         liveDetection = current.liveDetection.copy(
-                            phase = if (current.liveDetection.autoCaptureEnabled) AutoCapturePhase.SEARCHING else AutoCapturePhase.OFF,
+                            phase = if (current.liveDetection.autoCaptureEnabled) {
+                                AutoCapturePhase.SEARCHING
+                            } else {
+                                AutoCapturePhase.OFF
+                            },
                             statusMessage = result.error.message,
                             countdownValue = null,
                         ),
@@ -453,29 +397,15 @@ class ScanSessionViewModel @Inject constructor(
         trigger == CaptureTrigger.AUTO -> "Auto-captured page ${draft.pageIndex + 1}."
         else -> "Page ${draft.pageIndex + 1} saved."
     }
-
 }
 
-private data class FrameAnalysis(
-    val detection: CornerDetectionResult,
-    val gate: DocumentGateResult?,
-    val gateAccepted: Boolean,
-    val sceneIssue: CaptureSceneIssue?,
-    val cornerIssue: CornerResolutionIssue?,
-)
-
-private fun gateGuidance(analysis: FrameAnalysis): String? = when {
-    analysis.sceneIssue != null -> null
-    analysis.cornerIssue == CornerResolutionIssue.TWO_PAGES_AMBIGUOUS ->
-        "Two pages are visible. Move closer and frame one page."
-    analysis.cornerIssue == CornerResolutionIssue.MODELS_DISAGREE ->
-        "Page edges are ambiguous. Hold steady or move closer."
-    analysis.gateAccepted -> null
-    analysis.gate?.predictedClass == DocumentGateClass.DIGITAL_SCREEN ->
-        "Screen detected. Point at a physical document."
-    analysis.gate?.predictedClass == DocumentGateClass.NEITHER ->
-        "Point your camera at a physical document."
-    else -> "Checking document…"
+internal fun LiveCapturePhase.toUiPhase(): AutoCapturePhase = when (this) {
+    LiveCapturePhase.OFF -> AutoCapturePhase.OFF
+    LiveCapturePhase.SEARCHING -> AutoCapturePhase.SEARCHING
+    LiveCapturePhase.HOLD_STEADY -> AutoCapturePhase.HOLD_STEADY
+    LiveCapturePhase.COUNTDOWN -> AutoCapturePhase.COUNTDOWN
+    LiveCapturePhase.COOLDOWN -> AutoCapturePhase.COOLDOWN
+    LiveCapturePhase.CAPTURING -> AutoCapturePhase.CAPTURING
 }
 
 internal fun replacementCompletionEvent(

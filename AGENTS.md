@@ -25,7 +25,9 @@ app/src/main/java/in/c1ph3rj/scanly/
 └── di/                # Hilt modules (+ flavor-specific update bindings)
 ```
 
-**Layer rules:** ViewModels call use cases; use cases call repository interfaces; repositories handle Room/files/network. Never call DAOs or DataStore from Compose screens or ViewModels directly.
+**Layer rules:** ViewModels call use cases; use cases call repository interfaces; repositories handle Room/files/network. Never call DAOs or DataStore from Compose screens or ViewModels directly. Live capture analysis uses `LiveDocumentAnalysisSession` (not raw `core.ml` detectors in ViewModels) — see [docs/development/conventions.md](docs/development/conventions.md).
+
+**File size:** Prefer feature Kotlin files under ~700 lines. Do not grow any file already ≥900 lines without extracting first. Reuse `feature/components/` (share helpers, chrome, cards) instead of copying share/date/export plumbing.
 
 | Doc | Contents |
 | --- | --- |
@@ -80,8 +82,6 @@ Typed routes (real flows):
 - `settings/appearance`, `settings/detection`, `settings/widgets`, `settings/about`, `settings/faq`, `settings/licenses`, `settings/storage`, `settings/model-benchmark` — settings hub sub-screens
 - `tools/qr` — QR scan + generate
 - `tools/pdf/reader`, `tools/pdf/merge`, `tools/pdf/compress`, `tools/pdf/password`, `tools/pdf/watermark` — PDF toolkit
-
-Legacy placeholder routes (`camera`, `review`, `editor` top-level) use `FeaturePlaceholderScreen` — do not wire new features there.
 
 Home-screen widgets / quick actions use `in.c1ph3rj.scanly.action.{SCAN,IMPORT,QR,LIBRARY}` → `LaunchActionViewModel` (see [docs/architecture/navigation.md](docs/architecture/navigation.md)).
 

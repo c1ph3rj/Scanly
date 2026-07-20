@@ -6,12 +6,30 @@ How to write code that fits Scanly's architecture.
 
 | Layer | May call | Must not call |
 | --- | --- | --- |
-| `feature/` | `domain/usecase/`, `core/ui/` | Room DAOs, DataStore, filesystem |
+| `feature/` | `domain/usecase/`, `core/ui/` | Room DAOs, DataStore, filesystem; raw `core.ml` detectors from ViewModels |
 | `domain/` | Repository interfaces | Android framework, Room, Compose |
 | `data/` | Room, files, network, `core/` | Compose, ViewModels |
 | `core/` | Other `core/` | Feature screens, ViewModels |
 
 **Rule of thumb:** if a ViewModel needs new I/O, add a use case and repository method — do not inject a DAO.
+
+**Live capture:** camera frame analysis (gate + corners + stability) goes through `LiveDocumentAnalysisSession` (`DefaultLiveDocumentAnalysisSession`). Do not inject raw `core.ml` detectors into `ScanSessionViewModel`. Still-image AI Detect uses `DetectDocumentCornersUseCase` / `PageImageProcessor`.
+
+### Use cases that earn keep
+
+| Keep as a use case | Prefer collapse / facade |
+| --- | --- |
+| Multi-step orchestration, multi-repo, progress, policy | Single-line `repository.foo()` with no rules |
+| Export-then-save composition, import, archive start | Pure `observe*` that only forwards a `Flow` |
+
+Prefer aggregate facades over dozens of identity wrappers. Document detail uses `DocumentWorkspace` for observe/mutate/export/import. Gallery import I/O lives in `ImageImportRepository` (data); domain only orchestrates.
+
+## File size and decomposition
+
+- Prefer Kotlin feature files **under ~700 lines** when adding or substantially editing code.
+- **Do not grow any file already ≥900 lines** without extracting cohesive units first (by user task, not random private composables).
+- Target: no production file over **1000 lines** without a documented single-concern exception (e.g. temporary algorithm object pending split).
+- Prefer existing `feature/components/` and `core/ui/` helpers over new local forks (share intents, date formatters, scaffolds).
 
 ## Adding a new screen
 

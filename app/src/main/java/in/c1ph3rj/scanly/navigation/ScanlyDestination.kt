@@ -23,27 +23,6 @@ sealed class ScanlyDestination(
         sprintLabel = "Sprint 2",
     )
 
-    data object Camera : ScanlyDestination(
-        route = "camera",
-        title = "Camera",
-        summary = "Manual capture becomes the first truly useful scanning workflow after the shell.",
-        sprintLabel = "Sprint 3",
-    )
-
-    data object Review : ScanlyDestination(
-        route = "review",
-        title = "Review",
-        summary = "Multi-page review and document assembly are planned after scanning and editing mature.",
-        sprintLabel = "Sprint 7",
-    )
-
-    data object Editor : ScanlyDestination(
-        route = "editor",
-        title = "Editor",
-        summary = "The 4-point cropper and page adjustments live here once the processing pipeline is ready.",
-        sprintLabel = "Sprint 6",
-    )
-
     data object Tools : ScanlyDestination(
         route = "tools",
         title = "Tools",

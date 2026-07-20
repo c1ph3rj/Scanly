@@ -17,17 +17,18 @@ Test coverage and how to run tests in Scanly **v1.0.13**.
 
 ## Unit tests (`app/src/test/`)
 
-**41 test files** covering core logic:
+**~47 test files** covering core logic and product critical paths:
 
 | Area | Test files |
 | --- | --- |
 | ML / geometry | `DocumentCornerQuadTest`, `DocumentQuadPolicyTest`, `DocumentGatePolicyTest`, `CornerRegressionDecoderTest`, `BookPageQuadAnalyzerTest`, `AutomaticDocumentModelSelectionPolicyTest`, `PerspectiveQuadMathTest`, `CropQuadEditorTest` |
-| Processing | `AdaptivePageFilterTuningTest`, `PageFilterPresetTest`, `PageFilterAdjustmentsTest` |
-| Camera | `CaptureStabilityTrackerTest`, `DocumentGateStabilityTrackerTest`, `StableCornerSelectorTest`, `CaptureFrameQualityAnalyzerTest`, `CameraOverlayMapperTest`, `CameraPermissionSupportTest`, `ScanSessionScreenTest` |
+| Processing | `AdaptivePageFilterTuningTest`, `PageFilterPresetTest`, `PageFilterAdjustmentsTest`, `ProcessedPageArtifactsTest` |
+| Camera | `CaptureStabilityTrackerTest`, `DocumentGateStabilityTrackerTest`, `StableCornerSelectorTest`, `CaptureFrameQualityAnalyzerTest`, `CameraOverlayMapperTest`, `CameraPermissionSupportTest`, `ScanSessionScreenTest`, `LiveCaptureSessionMappingTest` |
 | UI / layout | `AdaptiveLayoutTest`, `PreviewImageSizerTest`, `ZoomableImageStateTest`, `OnboardingLayoutModeTest` |
-| Formatting | `StorageFormatterTest`, `DocumentPresentationFormatterTest`, `DocumentPreviewPathResolverTest` |
-| Domain models | `DocumentCornerModelTest`, `ExportDestinationTest`, `PageFilterPresetTest`, `PdfExportOptionsTest` |
+| Formatting | `StorageFormatterTest`, `DocumentPresentationFormatterTest`, `DocumentPreviewPathResolverTest`, `DateFormattersTest` |
+| Domain models | `DocumentCornerModelTest`, `ExportDestinationTest`, `PageFilterPresetTest`, `PdfExportOptionsTest`, `PageCaptureDraftTest` |
 | Feature logic | `LibraryUiStateTest`, `DocumentDetailSelectionResolverTest`, `PageImagePreviewSelectionResolverTest`, `SuggestDocumentTitleUseCaseTest`, `ScanlyLaunchActionTest` |
+| Critical path (export / import) | `DocumentWorkspaceTest`, `ImportImagesUseCaseTest` |
 | Updates | `AppUpdateDialogCooldownTest`, `ReleaseMarkdownParserTest`, `AppVersionComparatorTest`, `GitHubAppUpdateRepositoryTest`, `PlayInAppUpdatePolicyTest` |
 | Backup/export | `LibraryArchivePolicyTest`, `PdfPageLayoutResolverTest` |
 | Scaffold | `ExampleUnitTest` |
@@ -52,9 +53,9 @@ app/src/test/java/in/c1ph3rj/scanly/{matching/package}/YourTest.kt
 
 Areas that need more tests (prioritized):
 
-1. **Persistence integration** — Room migrations, repository round-trips
-2. **Export end-to-end** — PDF/ZIP generation with real page data; save-to-destination flow
-3. **Archive end-to-end** — Backup/restore round-trip with `.scanly` validation
+1. **Persistence integration** — Room migrations, repository round-trips (`DefaultPageRepository` finalize with fakes)
+2. **Export end-to-end** — PDF/ZIP generation with real page files (composition is covered by `DocumentWorkspaceTest`)
+3. **Archive end-to-end** — Backup/restore round-trip with `.scanly` validation (policy unit tests exist)
 4. **Capture instrumented** — Camera session flow on device (gate + multi-model path)
 5. **Group export** — Merged PDF and zipped PDF set
 6. **Clear-all-data** — Full wipe verification
