@@ -10,7 +10,7 @@ Update this file when you ship a new app version. You should **not** need to red
 | --- | --- |
 | `release.stableVersion` | Version badge on Download CTAs (e.g. `v1.0.13`) |
 | `release.developmentLabel` / `developmentUrl` | Link for “what's new” / changelog |
-| `release.releasesUrl` | Optional override for the releases page URL |
+| `release.releasesUrl` | Optional override for the Download CTA URL (Google Play preferred) |
 | `screenshots` | Product-tour titles, bodies, and **image paths or absolute URLs** |
 | `features` | Capability cards shown on the site (optional full replace) |
 | `development` | Highlights for work shipping or in progress |
