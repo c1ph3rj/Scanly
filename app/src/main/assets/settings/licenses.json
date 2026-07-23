@@ -54,6 +54,13 @@
     "websiteUrl": "https://developers.google.com/ml-kit/vision/barcode-scanning"
   },
   {
+    "id": "mlkit_face",
+    "name": "ML Kit Face Detection",
+    "summary": "Bundled on-device face detection optionally protects portrait detail while processing identity cards.",
+    "license": "ML Kit Terms of Service",
+    "websiteUrl": "https://developers.google.com/ml-kit/vision/face-detection"
+  },
+  {
     "id": "zxing_core",
     "name": "ZXing Core",
     "summary": "QR code generation library used to encode text and URLs into QR images.",

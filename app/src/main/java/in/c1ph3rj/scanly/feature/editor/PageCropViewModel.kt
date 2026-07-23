@@ -144,6 +144,7 @@ class PageCropViewModel @Inject constructor(
                 val result = detectDocumentCornersUseCase(
                     rawImagePath = rawImagePath,
                     rotationDegrees = snapshot.rotationDegrees,
+                    scanMode = page.scanMode,
                 )
             ) {
                 is ScanlyResult.Success -> {

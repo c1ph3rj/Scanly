@@ -16,6 +16,8 @@ import `in`.c1ph3rj.scanly.domain.model.PageFilterPreset
 import `in`.c1ph3rj.scanly.domain.model.PageCaptureDraft
 import `in`.c1ph3rj.scanly.domain.model.PageProcessingState
 import `in`.c1ph3rj.scanly.domain.model.ScanPage
+import `in`.c1ph3rj.scanly.domain.model.ScanMode
+import `in`.c1ph3rj.scanly.domain.model.IdCardSide
 import `in`.c1ph3rj.scanly.domain.processing.PageImageProcessor
 import `in`.c1ph3rj.scanly.domain.repository.PageRepository
 import kotlinx.coroutines.flow.Flow
@@ -48,7 +50,12 @@ class DefaultPageRepository @Inject constructor(
             page?.toDomain()
         }
 
-    override suspend fun prepareCapture(documentId: String): ScanlyResult<PageCaptureDraft> =
+    override suspend fun prepareCapture(
+        documentId: String,
+        scanMode: ScanMode,
+        idCardPairId: String?,
+        idCardSide: IdCardSide?,
+    ): ScanlyResult<PageCaptureDraft> =
         withContext(dispatchers.io) {
             operationCoordinator.withMutation {
             runCatching {
@@ -68,6 +75,9 @@ class DefaultPageRepository @Inject constructor(
                     processedImagePath = storageDraft.processedImagePath,
                     thumbnailPath = storageDraft.thumbnailPath,
                     replacementPageId = null,
+                    scanMode = scanMode,
+                    idCardPairId = idCardPairId,
+                    idCardSide = idCardSide,
                 )
             }.fold(
                 onSuccess = { draft -> ScanlyResult.Success(draft) },
@@ -99,6 +109,9 @@ class DefaultPageRepository @Inject constructor(
                     processedImagePath = page.processedImagePath ?: deriveSiblingAssetPath(anchorPath, PROCESSED_DIRECTORY),
                     thumbnailPath = page.thumbnailPath ?: deriveSiblingAssetPath(anchorPath, THUMBNAILS_DIRECTORY),
                     replacementPageId = page.id,
+                    scanMode = ScanMode.fromStorage(page.scanMode),
+                    idCardPairId = page.idCardPairId,
+                    idCardSide = IdCardSide.fromStorage(page.idCardSide),
                 )
             }.fold(
                 onSuccess = { draft -> ScanlyResult.Success(draft) },
@@ -127,15 +140,16 @@ class DefaultPageRepository @Inject constructor(
                 }
 
                 val timestamp = System.currentTimeMillis()
-                val captureFilterPreset = document.preferredFilterPreset
+                val captureFilterPreset = document.preferredFilterFor(draft.scanMode)
                     ?.let(PageFilterPreset::fromStorage)
-                    ?: PageFilterPreset.AUTO
+                    ?: defaultFilterFor(draft.scanMode)
                 val processedArtifacts = runCatching {
                     pageImageProcessor.processCapture(
                         rawImagePath = draft.rawImagePath,
                         processedImagePath = draft.processedImagePath,
                         thumbnailPath = draft.thumbnailPath,
                         filterPreset = captureFilterPreset,
+                        scanMode = draft.scanMode,
                     ).toPersistedArtifacts()
                 }.getOrElse {
                     val fallbackThumbnail = storageManager.generatePageThumbnail(
@@ -172,6 +186,9 @@ class DefaultPageRepository @Inject constructor(
                     processingState = processedArtifacts.processingState,
                     createdAtMillis = existingPage?.createdAtMillis ?: timestamp,
                     updatedAtMillis = timestamp,
+                    scanMode = draft.scanMode.storageValue,
+                    idCardPairId = draft.idCardPairId,
+                    idCardSide = draft.idCardSide?.storageValue,
                 )
 
                 database.withTransaction {
@@ -328,13 +345,23 @@ class DefaultPageRepository @Inject constructor(
                 ?: error("Document not found.")
             val timestamp = System.currentTimeMillis()
             val sanitizedAdjustments = filterAdjustments.sanitized()
+            val pageScanMode = ScanMode.fromStorage(page.scanMode)
             val updatedDocument = if (applyFilterToAllPages) {
-                document.copy(preferredFilterPreset = filterPreset.storageValue)
+                when (pageScanMode) {
+                    ScanMode.DOCUMENT ->
+                        document.copy(preferredFilterPreset = filterPreset.storageValue)
+                    ScanMode.ID_CARD ->
+                        document.copy(preferredIdFilterPreset = filterPreset.storageValue)
+                    ScanMode.BOOK ->
+                        document.copy(preferredBookFilterPreset = filterPreset.storageValue)
+                }
             } else {
                 document
             }
             val pagesToUpdate = if (applyFilterToAllPages) {
-                scanPageDao.getPages(page.documentId)
+                scanPageDao.getPages(page.documentId).filter { candidate ->
+                    ScanMode.fromStorage(candidate.scanMode) == pageScanMode
+                }
             } else {
                 listOf(page)
             }
@@ -429,11 +456,33 @@ class DefaultPageRepository @Inject constructor(
             contrast = filterContrast,
             saturation = filterSaturation,
             sharpness = filterSharpness,
+            highlights = filterHighlights,
+            shadows = filterShadows,
+            warmth = filterWarmth,
+            vignette = filterVignette,
         ).sanitized(),
         processingState = PageProcessingState.fromStorage(processingState),
         createdAtMillis = createdAtMillis,
         updatedAtMillis = updatedAtMillis,
+        scanMode = ScanMode.fromStorage(scanMode),
+        idCardPairId = idCardPairId,
+        idCardSide = IdCardSide.fromStorage(idCardSide),
     )
+
+    private fun `in`.c1ph3rj.scanly.data.local.db.entity.DocumentEntity.preferredFilterFor(
+        scanMode: ScanMode,
+    ): String? = when (scanMode) {
+        ScanMode.DOCUMENT -> preferredFilterPreset
+        ScanMode.ID_CARD -> preferredIdFilterPreset
+        ScanMode.BOOK -> preferredBookFilterPreset
+    }
+
+    private fun defaultFilterFor(scanMode: ScanMode): PageFilterPreset = when (scanMode) {
+        ScanMode.DOCUMENT,
+        ScanMode.ID_CARD,
+        ScanMode.BOOK,
+        -> PageFilterPreset.AUTO
+    }
 
     private suspend fun ScanPageEntity.reprocessWith(
         cropQuad: `in`.c1ph3rj.scanly.core.ml.DocumentCornerQuad?,
@@ -465,6 +514,7 @@ class DefaultPageRepository @Inject constructor(
             filterPreset = filterPreset,
             filterAdjustments = sanitizedAdjustments,
             detectDocumentWhenCropQuadMissing = detectDocumentWhenCropQuadMissing,
+            scanMode = ScanMode.fromStorage(scanMode),
         ).toPersistedArtifacts()
 
         invalidateImageCache(
@@ -489,6 +539,10 @@ class DefaultPageRepository @Inject constructor(
             filterContrast = sanitizedAdjustments.contrast,
             filterSaturation = sanitizedAdjustments.saturation,
             filterSharpness = sanitizedAdjustments.sharpness,
+            filterHighlights = sanitizedAdjustments.highlights,
+            filterShadows = sanitizedAdjustments.shadows,
+            filterWarmth = sanitizedAdjustments.warmth,
+            filterVignette = sanitizedAdjustments.vignette,
             processingState = processedArtifacts.processingState,
             updatedAtMillis = updatedAtMillis,
         )

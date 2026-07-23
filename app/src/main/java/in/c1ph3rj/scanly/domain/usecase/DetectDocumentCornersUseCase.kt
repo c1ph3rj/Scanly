@@ -4,6 +4,7 @@ import `in`.c1ph3rj.scanly.core.common.ScanlyError
 import `in`.c1ph3rj.scanly.core.common.ScanlyResult
 import `in`.c1ph3rj.scanly.core.ml.DocumentCornerQuad
 import `in`.c1ph3rj.scanly.domain.processing.PageImageProcessor
+import `in`.c1ph3rj.scanly.domain.model.ScanMode
 import javax.inject.Inject
 
 /**
@@ -15,11 +16,13 @@ class DetectDocumentCornersUseCase @Inject constructor(
     suspend operator fun invoke(
         rawImagePath: String,
         rotationDegrees: Int,
+        scanMode: ScanMode = ScanMode.DOCUMENT,
     ): ScanlyResult<DocumentCornerQuad> {
         return runCatching {
             pageImageProcessor.detectDocumentCorners(
                 rawImagePath = rawImagePath,
                 rotationDegrees = rotationDegrees,
+                scanMode = scanMode,
             ) ?: throw NoDocumentDetectedException()
         }.fold(
             onSuccess = { ScanlyResult.Success(it) },

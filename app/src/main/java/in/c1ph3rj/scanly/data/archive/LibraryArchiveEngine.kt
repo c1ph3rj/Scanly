@@ -166,6 +166,9 @@ class LibraryArchiveEngine @Inject constructor(
                 pageCount = document.pageCount,
                 coverPath = register(document.id, document.coverThumbnailPath),
                 preferredFilterPreset = document.preferredFilterPreset,
+                preferredScanMode = document.preferredScanMode,
+                preferredIdFilterPreset = document.preferredIdFilterPreset,
+                preferredBookFilterPreset = document.preferredBookFilterPreset,
                 createdAtMillis = document.createdAtMillis,
                 updatedAtMillis = document.updatedAtMillis,
                 groupId = document.groupId,
@@ -193,9 +196,16 @@ class LibraryArchiveEngine @Inject constructor(
                 filterContrast = page.filterContrast,
                 filterSaturation = page.filterSaturation,
                 filterSharpness = page.filterSharpness,
+                filterHighlights = page.filterHighlights,
+                filterShadows = page.filterShadows,
+                filterWarmth = page.filterWarmth,
+                filterVignette = page.filterVignette,
                 processingState = page.processingState,
                 createdAtMillis = page.createdAtMillis,
                 updatedAtMillis = page.updatedAtMillis,
+                scanMode = page.scanMode,
+                idCardPairId = page.idCardPairId,
+                idCardSide = page.idCardSide,
             )
         }
         val assets = assetSources.entries.mapIndexed { index, (archivePath, source) ->
@@ -355,6 +365,9 @@ class LibraryArchiveEngine @Inject constructor(
                     createdAtMillis = document.createdAtMillis,
                     updatedAtMillis = document.updatedAtMillis,
                     groupId = document.groupId?.let(groupIds::getValue),
+                    preferredScanMode = document.preferredScanMode,
+                    preferredIdFilterPreset = document.preferredIdFilterPreset,
+                    preferredBookFilterPreset = document.preferredBookFilterPreset,
                 )
             }
             val restoredPages = manifest.pages.map { page ->
@@ -380,9 +393,16 @@ class LibraryArchiveEngine @Inject constructor(
                     filterContrast = page.filterContrast,
                     filterSaturation = page.filterSaturation,
                     filterSharpness = page.filterSharpness,
+                    filterHighlights = page.filterHighlights,
+                    filterShadows = page.filterShadows,
+                    filterWarmth = page.filterWarmth,
+                    filterVignette = page.filterVignette,
                     processingState = page.processingState,
                     createdAtMillis = page.createdAtMillis,
                     updatedAtMillis = page.updatedAtMillis,
+                    scanMode = page.scanMode,
+                    idCardPairId = page.idCardPairId,
+                    idCardSide = page.idCardSide,
                 )
             }
             progress(ArchiveWorkPhase.FINALIZING, 0, 1, "Updating library")
@@ -625,7 +645,7 @@ class LibraryArchiveEngine @Inject constructor(
         }
     }
 
-    private data class ArchiveDocument(
+    internal data class ArchiveDocument(
         val id: String,
         val title: String,
         val pageCount: Int,
@@ -634,12 +654,18 @@ class LibraryArchiveEngine @Inject constructor(
         val createdAtMillis: Long,
         val updatedAtMillis: Long,
         val groupId: String?,
+        val preferredScanMode: String = "document",
+        val preferredIdFilterPreset: String? = null,
+        val preferredBookFilterPreset: String? = null,
     ) {
         fun toJson() = JSONObject().apply {
             put("id", id); put("title", title); put("pageCount", pageCount)
             putNullable("coverPath", coverPath); putNullable("preferredFilterPreset", preferredFilterPreset)
             put("createdAtMillis", createdAtMillis); put("updatedAtMillis", updatedAtMillis)
             putNullable("groupId", groupId)
+            put("preferredScanMode", preferredScanMode)
+            putNullable("preferredIdFilterPreset", preferredIdFilterPreset)
+            putNullable("preferredBookFilterPreset", preferredBookFilterPreset)
         }
 
         companion object {
@@ -650,11 +676,14 @@ class LibraryArchiveEngine @Inject constructor(
                 createdAtMillis = json.getLong("createdAtMillis"),
                 updatedAtMillis = json.getLong("updatedAtMillis"),
                 groupId = json.nullableString("groupId"),
+                preferredScanMode = json.optString("preferredScanMode", "document"),
+                preferredIdFilterPreset = json.nullableString("preferredIdFilterPreset"),
+                preferredBookFilterPreset = json.nullableString("preferredBookFilterPreset"),
             )
         }
     }
 
-    private data class ArchivePage(
+    internal data class ArchivePage(
         val id: String,
         val documentId: String,
         val pageIndex: Int,
@@ -671,9 +700,16 @@ class LibraryArchiveEngine @Inject constructor(
         val filterContrast: Float = 0f,
         val filterSaturation: Float = 0f,
         val filterSharpness: Float = 0f,
+        val filterHighlights: Float = 0f,
+        val filterShadows: Float = 0f,
+        val filterWarmth: Float = 0f,
+        val filterVignette: Float = 0f,
         val processingState: String,
         val createdAtMillis: Long,
         val updatedAtMillis: Long,
+        val scanMode: String = "document",
+        val idCardPairId: String? = null,
+        val idCardSide: String? = null,
     ) {
         fun toJson() = JSONObject().apply {
             put("id", id); put("documentId", documentId); put("pageIndex", pageIndex)
@@ -688,7 +724,14 @@ class LibraryArchiveEngine @Inject constructor(
             put("filterContrast", filterContrast.toDouble())
             put("filterSaturation", filterSaturation.toDouble())
             put("filterSharpness", filterSharpness.toDouble())
+            put("filterHighlights", filterHighlights.toDouble())
+            put("filterShadows", filterShadows.toDouble())
+            put("filterWarmth", filterWarmth.toDouble())
+            put("filterVignette", filterVignette.toDouble())
             put("createdAtMillis", createdAtMillis); put("updatedAtMillis", updatedAtMillis)
+            put("scanMode", scanMode)
+            putNullable("idCardPairId", idCardPairId)
+            putNullable("idCardSide", idCardSide)
         }
 
         companion object {
@@ -711,9 +754,16 @@ class LibraryArchiveEngine @Inject constructor(
                 filterContrast = json.optDouble("filterContrast", 0.0).toFloat(),
                 filterSaturation = json.optDouble("filterSaturation", 0.0).toFloat(),
                 filterSharpness = json.optDouble("filterSharpness", 0.0).toFloat(),
+                filterHighlights = json.optDouble("filterHighlights", 0.0).toFloat(),
+                filterShadows = json.optDouble("filterShadows", 0.0).toFloat(),
+                filterWarmth = json.optDouble("filterWarmth", 0.0).toFloat(),
+                filterVignette = json.optDouble("filterVignette", 0.0).toFloat(),
                 processingState = json.getString("processingState"),
                 createdAtMillis = json.getLong("createdAtMillis"),
                 updatedAtMillis = json.getLong("updatedAtMillis"),
+                scanMode = json.optString("scanMode", "document"),
+                idCardPairId = json.nullableString("idCardPairId"),
+                idCardSide = json.nullableString("idCardSide"),
             )
         }
     }

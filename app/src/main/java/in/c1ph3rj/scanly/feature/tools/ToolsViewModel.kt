@@ -7,6 +7,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import `in`.c1ph3rj.scanly.core.common.ScanlyResult
 import `in`.c1ph3rj.scanly.core.ui.ImageImportSupport
 import `in`.c1ph3rj.scanly.domain.model.DocumentTitleFormat
+import `in`.c1ph3rj.scanly.domain.model.ScanMode
 import `in`.c1ph3rj.scanly.domain.usecase.CreateDocumentUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ImportImagesUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.SuggestDocumentTitleUseCase
@@ -49,9 +50,12 @@ class ToolsViewModel @Inject constructor(
     suspend fun suggestDocumentTitle(format: DocumentTitleFormat): String =
         suggestDocumentTitleUseCase(format)
 
-    fun createDocumentForScan(title: String) {
+    fun createDocumentForScan(
+        title: String,
+        scanMode: ScanMode,
+    ) {
         viewModelScope.launch {
-            when (val result = createDocumentUseCase(title)) {
+            when (val result = createDocumentUseCase(title, initialScanMode = scanMode)) {
                 is ScanlyResult.Success ->
                     _events.emit(ToolsEvent.OpenScanSession(result.value))
                 is ScanlyResult.Failure ->

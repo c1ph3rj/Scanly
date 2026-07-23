@@ -41,8 +41,17 @@ object PageFilterAdjustmentsApplier {
             if (abs(sanitized.saturation) > 0.001f) {
                 applySaturation(working, sanitized.saturation)
             }
+            if (abs(sanitized.highlights) > 0.001f || abs(sanitized.shadows) > 0.001f) {
+                applyTone(working, sanitized.highlights, sanitized.shadows)
+            }
+            if (abs(sanitized.warmth) > 0.001f) {
+                applyWarmth(working, sanitized.warmth)
+            }
             if (sanitized.sharpness > 0.001f) {
                 applySharpness(working, sanitized.sharpness)
+            }
+            if (sanitized.vignette > 0.001f) {
+                applyVignette(working, sanitized.vignette)
             }
 
             working.copyTo(resultRgba)
@@ -117,6 +126,115 @@ object PageFilterAdjustmentsApplier {
         }
     }
 
+    private fun applyTone(
+        rgba: Mat,
+        highlights: Float,
+        shadows: Float,
+    ) {
+        val rgb = Mat()
+        val adjusted = Mat()
+        val withAlpha = Mat()
+        val lookup = Mat(1, 256, org.opencv.core.CvType.CV_8UC1)
+        try {
+            val values = ByteArray(256) { index ->
+                val normalized = index / 255.0
+                val shadowWeight = (1.0 - normalized) * (1.0 - normalized)
+                val highlightWeight = normalized * normalized
+                val delta = shadows * TONE_RANGE * shadowWeight +
+                    highlights * TONE_RANGE * highlightWeight
+                (index + delta).coerceIn(0.0, 255.0).toInt().toByte()
+            }
+            lookup.put(0, 0, values)
+            Imgproc.cvtColor(rgba, rgb, Imgproc.COLOR_RGBA2RGB)
+            Core.LUT(rgb, lookup, adjusted)
+            Imgproc.cvtColor(adjusted, withAlpha, Imgproc.COLOR_RGB2RGBA)
+            withAlpha.copyTo(rgba)
+        } finally {
+            rgb.release()
+            adjusted.release()
+            withAlpha.release()
+            lookup.release()
+        }
+    }
+
+    private fun applyWarmth(
+        rgba: Mat,
+        warmth: Float,
+    ) {
+        val rgb = Mat()
+        val channels = ArrayList<Mat>(3)
+        val withAlpha = Mat()
+        try {
+            Imgproc.cvtColor(rgba, rgb, Imgproc.COLOR_RGBA2RGB)
+            Core.split(rgb, channels)
+            val shift = warmth.toDouble() * TEMPERATURE_RANGE
+            Core.add(channels[0], Scalar(shift), channels[0])
+            Core.add(channels[2], Scalar(-shift), channels[2])
+            Core.merge(channels, rgb)
+            Imgproc.cvtColor(rgb, withAlpha, Imgproc.COLOR_RGB2RGBA)
+            withAlpha.copyTo(rgba)
+        } finally {
+            channels.forEach(Mat::release)
+            rgb.release()
+            withAlpha.release()
+        }
+    }
+
+    private fun applyVignette(
+        rgba: Mat,
+        vignette: Float,
+    ) {
+        val rgb = Mat()
+        val rgbFloat = Mat()
+        val mask = Mat(
+            rgba.rows(),
+            rgba.cols(),
+            org.opencv.core.CvType.CV_32FC1,
+            Scalar.all(1.0 - vignette * MAX_VIGNETTE_DARKENING),
+        )
+        val maskChannels = ArrayList<Mat>(3)
+        val maskRgb = Mat()
+        val adjustedFloat = Mat()
+        val adjusted = Mat()
+        val withAlpha = Mat()
+        try {
+            Imgproc.ellipse(
+                mask,
+                org.opencv.core.Point(mask.cols() / 2.0, mask.rows() / 2.0),
+                Size(mask.cols() * 0.43, mask.rows() * 0.43),
+                0.0,
+                0.0,
+                360.0,
+                Scalar.all(1.0),
+                Imgproc.FILLED,
+            )
+            Imgproc.GaussianBlur(
+                mask,
+                mask,
+                Size(0.0, 0.0),
+                maxOf(mask.cols(), mask.rows()) * VIGNETTE_FEATHER_FRACTION,
+            )
+            Imgproc.cvtColor(rgba, rgb, Imgproc.COLOR_RGBA2RGB)
+            rgb.convertTo(rgbFloat, org.opencv.core.CvType.CV_32FC3)
+            repeat(3) {
+                maskChannels += mask
+            }
+            Core.merge(maskChannels, maskRgb)
+            Core.multiply(rgbFloat, maskRgb, adjustedFloat)
+            adjustedFloat.convertTo(adjusted, org.opencv.core.CvType.CV_8UC3)
+            Imgproc.cvtColor(adjusted, withAlpha, Imgproc.COLOR_RGB2RGBA)
+            withAlpha.copyTo(rgba)
+        } finally {
+            rgb.release()
+            rgbFloat.release()
+            mask.release()
+            maskRgb.release()
+            adjustedFloat.release()
+            adjusted.release()
+            withAlpha.release()
+        }
+    }
+
     private fun Mat.toBitmap(width: Int, height: Int): Bitmap {
         val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
         Utils.matToBitmap(this, bitmap)
@@ -131,4 +249,9 @@ object PageFilterAdjustmentsApplier {
             initialized = true
         }
     }
+
+    private const val TONE_RANGE = 64.0
+    private const val TEMPERATURE_RANGE = 28.0
+    private const val MAX_VIGNETTE_DARKENING = 0.48
+    private const val VIGNETTE_FEATHER_FRACTION = 0.16
 }

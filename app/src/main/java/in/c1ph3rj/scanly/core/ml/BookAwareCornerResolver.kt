@@ -2,6 +2,7 @@ package `in`.c1ph3rj.scanly.core.ml
 
 import android.graphics.Bitmap
 import `in`.c1ph3rj.scanly.domain.model.DocumentCornerModel
+import `in`.c1ph3rj.scanly.domain.model.ScanMode
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.math.abs
@@ -14,6 +15,7 @@ enum class CornerResolutionIssue {
 data class CornerResolution(
     val result: CornerDetectionResult,
     val issue: CornerResolutionIssue? = null,
+    val bookGutterFraction: Float? = null,
 )
 
 @Singleton
@@ -24,9 +26,10 @@ class BookAwareCornerResolver @Inject constructor(
         bitmap: Bitmap,
         selectedModel: DocumentCornerModel,
         readiness: QuadReadiness = QuadReadiness.LIVE_CAPTURE,
+        scanMode: ScanMode = ScanMode.DOCUMENT,
     ): CornerResolution {
         val startNanos = System.nanoTime()
-        val resolution = resolve(bitmap, selectedModel, readiness)
+        val resolution = resolve(bitmap, selectedModel, readiness, scanMode)
         val totalNanos = System.nanoTime() - startNanos
         val previousTiming = resolution.result.timing
         val resolverOverhead = (totalNanos - previousTiming.totalNanos).coerceAtLeast(0L)
@@ -44,6 +47,7 @@ class BookAwareCornerResolver @Inject constructor(
         bitmap: Bitmap,
         selectedModel: DocumentCornerModel,
         readiness: QuadReadiness,
+        scanMode: ScanMode,
     ): CornerResolution {
         val primaryRaw = runCatching { detector.detect(bitmap, selectedModel) }
             .recoverCatching { error ->
@@ -52,20 +56,20 @@ class BookAwareCornerResolver @Inject constructor(
                 detector.detect(bitmap, DocumentCornerModel.ACCURATE)
             }
             .getOrThrow()
-        val primary = prepareCandidate(bitmap, primaryRaw, readiness)
+        val primary = prepareCandidate(bitmap, primaryRaw, readiness, scanMode)
         val needsVerification = primary.refinement?.kind?.let { it != BookPageRefinementKind.NONE } == true ||
             primary.refinement?.evidence?.hasPossibleGutter() == true ||
             CornerCandidatePolicy.needsAccurateVerification(primary.result, readiness)
         // High (384 px regression) is the verification model for ambiguous quads.
         if (!needsVerification || primaryRaw.model == DocumentCornerModel.HIGH) {
-            return primary.toResolution()
+            return primary.toResolution(scanMode)
         }
 
         val highRaw = runCatching { detector.detect(bitmap, DocumentCornerModel.HIGH) }
-            .getOrNull() ?: return primary.toResolution()
-        val high = prepareCandidate(bitmap, highRaw, readiness)
+            .getOrNull() ?: return primary.toResolution(scanMode)
+        val high = prepareCandidate(bitmap, highRaw, readiness, scanMode)
         val combinedTiming = primaryRaw.timing + highRaw.timing
-        val chosen = choose(primary, high, readiness)
+        val chosen = choose(primary, high, readiness, scanMode)
         return chosen.copy(
             result = chosen.result.copy(
                 inferenceTimeMillis = combinedTiming.inferenceMillis.toLong(),
@@ -78,25 +82,31 @@ class BookAwareCornerResolver @Inject constructor(
         bitmap: Bitmap,
         raw: CornerDetectionResult,
         readiness: QuadReadiness,
+        scanMode: ScanMode,
     ): Candidate {
-        val readyQuad = raw.quad?.takeIf { DocumentQuadPolicy.isReady(it, readiness) }
+        val readyQuad = raw.quad?.takeIf { DocumentQuadPolicy.isReady(it, readiness, scanMode) }
             ?: return Candidate(raw.copy(quad = null), null)
 
         // Offline import/capture finalize should match Model Benchmark: trust model corners.
         // Book-page gutter analysis is for live open-book frames and often wrecks ID/RC cards.
-        if (readiness == QuadReadiness.STILL_PROCESS) {
+        if (readiness == QuadReadiness.STILL_PROCESS || scanMode == ScanMode.ID_CARD) {
             return Candidate(raw.copy(quad = readyQuad), refinement = null)
         }
 
         val refinement = BookPageQuadAnalyzer.analyze(bitmap, readyQuad)
+        if (scanMode == ScanMode.BOOK) {
+            // Book mode intentionally keeps the complete open spread. The gutter
+            // is guidance/validation metadata, never a request to split the image.
+            return Candidate(raw.copy(quad = readyQuad), refinement)
+        }
         val refinedQuad = refinement.quad ?: return Candidate(raw.copy(quad = null), refinement)
         // Snap oversize model boxes inward onto stronger page edges (keyboard/desk overshoot).
         val tightened = DocumentQuadTightener.refine(
             bitmap = bitmap,
             quad = refinedQuad,
             boundarySupport = refinement.evidence.boundarySupport,
-        ).takeIf { DocumentQuadPolicy.isReady(it, readiness) }
-            ?: refinedQuad.takeIf { DocumentQuadPolicy.isReady(it, readiness) }
+        ).takeIf { DocumentQuadPolicy.isReady(it, readiness, scanMode) }
+            ?: refinedQuad.takeIf { DocumentQuadPolicy.isReady(it, readiness, scanMode) }
         return Candidate(
             result = raw.copy(quad = tightened),
             refinement = refinement,
@@ -107,6 +117,7 @@ class BookAwareCornerResolver @Inject constructor(
         primary: Candidate,
         accurate: Candidate,
         readiness: QuadReadiness,
+        scanMode: ScanMode,
     ): CornerResolution {
         val primaryQuad = primary.result.quad
         val accurateQuad = accurate.result.quad
@@ -121,14 +132,18 @@ class BookAwareCornerResolver @Inject constructor(
             }
             return CornerResolution(primary.result.copy(quad = null), issue)
         }
-        if (primaryQuad == null) return CornerResolution(accurate.result)
-        if (accurateQuad == null) return CornerResolution(primary.result)
+        if (primaryQuad == null) return accurate.toResolution(scanMode)
+        if (accurateQuad == null) return primary.toResolution(scanMode)
 
         val primaryScore = candidateScore(primary)
         val accurateScore = candidateScore(accurate)
         val candidatesDisagree =
             primaryQuad.maxCornerDistance(accurateQuad) >= MODEL_DISAGREEMENT_DISTANCE
-        if (candidatesDisagree && abs(primaryScore - accurateScore) < MODEL_DISAGREEMENT_SCORE_MARGIN) {
+        if (
+            scanMode != ScanMode.BOOK &&
+            candidatesDisagree &&
+            abs(primaryScore - accurateScore) < MODEL_DISAGREEMENT_SCORE_MARGIN
+        ) {
             // Live capture: suppress ambiguous overlays. Still process: keep the better warp
             // so imports never lose a good detection (benchmark-equivalent behaviour).
             return if (readiness == QuadReadiness.STILL_PROCESS) {
@@ -142,12 +157,15 @@ class BookAwareCornerResolver @Inject constructor(
                 )
             }
         }
+        val selected = if (accurateScore >= primaryScore + ACCURATE_REPLACEMENT_MARGIN) {
+            accurate.result
+        } else {
+            primary.result
+        }
+        val selectedCandidate = if (selected === accurate.result) accurate else primary
         return CornerResolution(
-            if (accurateScore >= primaryScore + ACCURATE_REPLACEMENT_MARGIN) {
-                accurate.result
-            } else {
-                primary.result
-            },
+            result = selected,
+            bookGutterFraction = selectedCandidate.bookGutterFraction(scanMode),
         )
     }
 
@@ -159,14 +177,27 @@ class BookAwareCornerResolver @Inject constructor(
             ).coerceIn(0f, 1f)
     }
 
-    private fun Candidate.toResolution(): CornerResolution {
+    private fun Candidate.toResolution(scanMode: ScanMode): CornerResolution {
         val issue = if (refinement?.kind == BookPageRefinementKind.AMBIGUOUS_TWO_PAGES) {
             CornerResolutionIssue.TWO_PAGES_AMBIGUOUS
         } else {
             null
         }
-        return CornerResolution(result, issue)
+        return CornerResolution(
+            result = result,
+            issue = if (scanMode == ScanMode.BOOK) null else issue,
+            bookGutterFraction = bookGutterFraction(scanMode),
+        )
     }
+
+    private fun Candidate.bookGutterFraction(scanMode: ScanMode): Float? =
+        refinement
+            ?.takeIf {
+                scanMode == ScanMode.BOOK &&
+                    it.kind == BookPageRefinementKind.AMBIGUOUS_TWO_PAGES
+            }
+            ?.evidence
+            ?.strongestInteriorFraction
 
     private fun BookPageVisualEvidence.hasPossibleGutter(): Boolean =
         strongestInteriorSupport >= POSSIBLE_GUTTER_SUPPORT &&

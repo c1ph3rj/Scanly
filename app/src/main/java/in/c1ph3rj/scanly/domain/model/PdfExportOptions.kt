@@ -46,7 +46,15 @@ enum class PdfPageNumber(
     BOTTOM_RIGHT("Right"),
 }
 
+enum class PdfPageArrangement(
+    val label: String,
+) {
+    STANDARD("Standard"),
+    SMART_SCAN_MODE("Smart scan mode"),
+}
+
 data class PdfExportOptions(
+    val arrangement: PdfPageArrangement = PdfPageArrangement.STANDARD,
     val orientation: PdfPageOrientation = PdfPageOrientation.AUTO,
     val pageSize: PdfPageSize = PdfPageSize.FIT,
     val margin: PdfPageMargin = PdfPageMargin.NONE,

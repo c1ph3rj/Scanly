@@ -10,11 +10,15 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.exifinterface.media.ExifInterface
 import `in`.c1ph3rj.scanly.core.ml.DocumentCornerQuad
+import `in`.c1ph3rj.scanly.core.ml.FaceDetectionAvailability
+import `in`.c1ph3rj.scanly.core.ml.IdCardFaceDetection
+import `in`.c1ph3rj.scanly.core.ml.MlKitIdCardFaceDetector
 import `in`.c1ph3rj.scanly.core.processing.OpenCvPageFilterProcessor
 import `in`.c1ph3rj.scanly.core.processing.PageFilterAdjustmentsApplier
 import `in`.c1ph3rj.scanly.core.processing.PerspectiveBitmapTransform
 import `in`.c1ph3rj.scanly.domain.model.PageFilterAdjustments
 import `in`.c1ph3rj.scanly.domain.model.PageFilterPreset
+import `in`.c1ph3rj.scanly.domain.model.ScanMode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlin.math.roundToInt
@@ -31,6 +35,7 @@ internal fun rememberEditorPreviewBitmap(
     selectedFilter: PageFilterPreset,
     cropQuad: DocumentCornerQuad? = null,
     filterAdjustments: PageFilterAdjustments = PageFilterAdjustments.Default,
+    scanMode: ScanMode = ScanMode.DOCUMENT,
 ): State<ImageBitmap?> = produceState<ImageBitmap?>(
     initialValue = null,
     rawImagePath,
@@ -39,6 +44,7 @@ internal fun rememberEditorPreviewBitmap(
     selectedFilter,
     cropQuad,
     filterAdjustments,
+    scanMode,
 ) {
     value = withContext(Dispatchers.Default) {
         buildCroppedFilteredPreview(
@@ -48,6 +54,7 @@ internal fun rememberEditorPreviewBitmap(
             selectedFilter = selectedFilter,
             cropQuad = cropQuad,
             filterAdjustments = filterAdjustments,
+            scanMode = scanMode,
         )?.asImageBitmap()
     }
 }
@@ -98,6 +105,8 @@ internal fun rememberFilterPreviewBitmaps(
     fallbackImagePath: String?,
     rotationDegrees: Int,
     cropQuad: DocumentCornerQuad? = null,
+    scanMode: ScanMode = ScanMode.DOCUMENT,
+    filterPresets: List<PageFilterPreset> = PageFilterPreset.entries,
 ): State<FilterPreviewState> = produceState(
     initialValue = FilterPreviewState(
         isLoading = true,
@@ -107,6 +116,8 @@ internal fun rememberFilterPreviewBitmaps(
     fallbackImagePath,
     rotationDegrees,
     cropQuad,
+    scanMode,
+    filterPresets,
 ) {
     value = withContext(Dispatchers.Default) {
         val baseBitmap = buildCroppedUnfilteredPreview(
@@ -114,11 +125,12 @@ internal fun rememberFilterPreviewBitmaps(
             fallbackImagePath = fallbackImagePath,
             rotationDegrees = rotationDegrees,
             cropQuad = cropQuad,
-            maxDimension = 360,
+            maxDimension = if (scanMode == ScanMode.ID_CARD) 720 else 360,
         ) ?: return@withContext FilterPreviewState(
             isLoading = false,
             previews = emptyMap(),
         )
+        val faceDetection = detectFacesForIdPreview(baseBitmap, scanMode)
         val previewBitmap = createFilterPreviewSource(baseBitmap)
         if (previewBitmap !== baseBitmap) {
             baseBitmap.recycle()
@@ -126,7 +138,14 @@ internal fun rememberFilterPreviewBitmaps(
 
         try {
             val previews = OpenCvPageFilterProcessor
-                .applyAll(previewBitmap)
+                .applyAll(
+                    sourceBitmap = previewBitmap,
+                    filterPresets = filterPresets,
+                    scanMode = scanMode,
+                    faceRegions = faceDetection.regions,
+                    faceDetectionAvailable =
+                        faceDetection.availability == FaceDetectionAvailability.AVAILABLE,
+                )
                 .mapValues { (_, bitmap) -> bitmap.asImageBitmap() }
             FilterPreviewState(
                 isLoading = false,
@@ -143,7 +162,7 @@ internal fun rememberFilterPreviewBitmaps(
  * Without a raw capture, falls back to the on-disk processed image as-is (already
  * cropped and filtered) to avoid double-filtering.
  */
-internal fun buildCroppedFilteredPreview(
+internal suspend fun buildCroppedFilteredPreview(
     rawImagePath: String?,
     fallbackImagePath: String?,
     rotationDegrees: Int,
@@ -151,6 +170,7 @@ internal fun buildCroppedFilteredPreview(
     cropQuad: DocumentCornerQuad?,
     filterAdjustments: PageFilterAdjustments = PageFilterAdjustments.Default,
     maxDimension: Int = 1_600,
+    scanMode: ScanMode = ScanMode.DOCUMENT,
 ): Bitmap? {
     if (rawImagePath == null) {
         val fallbackPath = fallbackImagePath ?: return null
@@ -168,8 +188,16 @@ internal fun buildCroppedFilteredPreview(
         cropQuad = cropQuad,
         maxDimension = maxDimension,
     ) ?: return null
+    val faceDetection = detectFacesForIdPreview(cropped, scanMode)
     val filteredBitmap = runCatching {
-        OpenCvPageFilterProcessor.apply(cropped, selectedFilter)
+        OpenCvPageFilterProcessor.apply(
+            sourceBitmap = cropped,
+            filterPreset = selectedFilter,
+            scanMode = scanMode,
+            faceRegions = faceDetection.regions,
+            faceDetectionAvailable =
+                faceDetection.availability == FaceDetectionAvailability.AVAILABLE,
+        )
     }.getOrElse {
         cropped.copy(Bitmap.Config.ARGB_8888, false)
     }
@@ -289,3 +317,19 @@ private fun rotateBitmap(
     val matrix = Matrix().apply { postRotate(normalizedRotation.toFloat()) }
     return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
 }
+
+private val editorIdCardFaceDetector by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
+    MlKitIdCardFaceDetector()
+}
+
+private suspend fun detectFacesForIdPreview(
+    bitmap: Bitmap,
+    scanMode: ScanMode,
+): IdCardFaceDetection =
+    if (scanMode == ScanMode.ID_CARD) {
+        runCatching {
+            editorIdCardFaceDetector.detect(bitmap)
+        }.getOrDefault(IdCardFaceDetection.Unavailable)
+    } else {
+        IdCardFaceDetection()
+    }

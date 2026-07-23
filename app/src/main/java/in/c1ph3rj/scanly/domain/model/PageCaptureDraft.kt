@@ -8,6 +8,9 @@ data class PageCaptureDraft(
     val processedImagePath: String,
     val thumbnailPath: String,
     val replacementPageId: String? = null,
+    val scanMode: ScanMode = ScanMode.DOCUMENT,
+    val idCardPairId: String? = null,
+    val idCardSide: IdCardSide? = null,
 ) {
     val isReplacement: Boolean
         get() = replacementPageId != null

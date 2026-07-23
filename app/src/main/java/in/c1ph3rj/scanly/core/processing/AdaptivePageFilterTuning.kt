@@ -1,6 +1,7 @@
 package `in`.c1ph3rj.scanly.core.processing
 
 import `in`.c1ph3rj.scanly.domain.model.PageFilterPreset
+import `in`.c1ph3rj.scanly.domain.model.ScanMode
 import kotlin.math.roundToInt
 
 internal object AdaptivePageFilterTuning {
@@ -116,7 +117,44 @@ internal object AdaptivePageFilterTuning {
      * white paper (Clean), clear text (Soft B&W), real color (Enhanced), and only
      * fall back to flat Grayscale when nothing stronger is justified.
      */
-    internal fun automatic(profile: PageImageProfile?): PageFilterPreset {
+    internal fun automatic(
+        profile: PageImageProfile?,
+        scanMode: ScanMode = ScanMode.DOCUMENT,
+        faceDetected: Boolean = false,
+        faceDetectionAvailable: Boolean = true,
+    ): PageFilterPreset {
+        if (scanMode == ScanMode.ID_CARD) {
+            if (!faceDetectionAvailable) return PageFilterPreset.ID_NATURAL
+            profile ?: return if (faceDetected) {
+                PageFilterPreset.ID_PORTRAIT
+            } else {
+                PageFilterPreset.ID_CLEAR
+            }
+            val difficultLighting = profile.brightness < 118.0 ||
+                profile.contrast < 22.0 ||
+                profile.backgroundUnevenness >= 15.0
+            val textHeavy = profile.textDensity >= 0.018 ||
+                profile.edgeDensity >= 0.052
+            return when {
+                faceDetected && difficultLighting -> PageFilterPreset.ID_CLEAR
+                faceDetected -> PageFilterPreset.ID_PORTRAIT
+                textHeavy -> PageFilterPreset.ID_TEXT
+                difficultLighting -> PageFilterPreset.ID_CLEAR
+                else -> PageFilterPreset.ID_NATURAL
+            }
+        }
+        if (scanMode == ScanMode.BOOK) {
+            profile ?: return PageFilterPreset.SHADOW_REDUCTION
+            val carriesUsefulColor = profile.colorRatio >= 0.022 ||
+                (profile.colorRatio >= 0.012 && profile.saturation >= 34.0)
+            val hasGutterShadows =
+                profile.shadowRatio >= 0.10 || profile.backgroundUnevenness >= 10.0
+            return when {
+                hasGutterShadows -> PageFilterPreset.SHADOW_REDUCTION
+                carriesUsefulColor -> PageFilterPreset.ENHANCED_COLOR
+                else -> PageFilterPreset.CLEAN
+            }
+        }
         profile ?: return PageFilterPreset.CLEAN
 
         val lowContent = profile.textDensity < 0.008 &&

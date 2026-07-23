@@ -17,7 +17,7 @@ import `in`.c1ph3rj.scanly.data.local.db.entity.ScanPageEntity
         ScanPageEntity::class,
         DocumentGroupEntity::class,
     ],
-    version = 4,
+    version = 6,
     exportSchema = false,
 )
 abstract class ScanlyDatabase : RoomDatabase() {
@@ -121,6 +121,46 @@ abstract class ScanlyDatabase : RoomDatabase() {
                 )
                 db.execSQL(
                     "ALTER TABLE scan_pages ADD COLUMN filterSharpness REAL NOT NULL DEFAULT 0",
+                )
+            }
+        }
+
+        val MIGRATION_4_5: Migration = object : Migration(4, 5) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL(
+                    "ALTER TABLE documents ADD COLUMN preferredScanMode TEXT NOT NULL DEFAULT 'document'",
+                )
+                db.execSQL(
+                    "ALTER TABLE documents ADD COLUMN preferredIdFilterPreset TEXT",
+                )
+                db.execSQL(
+                    "ALTER TABLE documents ADD COLUMN preferredBookFilterPreset TEXT",
+                )
+                db.execSQL(
+                    "ALTER TABLE scan_pages ADD COLUMN scanMode TEXT NOT NULL DEFAULT 'document'",
+                )
+                db.execSQL(
+                    "ALTER TABLE scan_pages ADD COLUMN idCardPairId TEXT",
+                )
+                db.execSQL(
+                    "ALTER TABLE scan_pages ADD COLUMN idCardSide TEXT",
+                )
+            }
+        }
+
+        val MIGRATION_5_6: Migration = object : Migration(5, 6) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL(
+                    "ALTER TABLE scan_pages ADD COLUMN filterHighlights REAL NOT NULL DEFAULT 0",
+                )
+                db.execSQL(
+                    "ALTER TABLE scan_pages ADD COLUMN filterShadows REAL NOT NULL DEFAULT 0",
+                )
+                db.execSQL(
+                    "ALTER TABLE scan_pages ADD COLUMN filterWarmth REAL NOT NULL DEFAULT 0",
+                )
+                db.execSQL(
+                    "ALTER TABLE scan_pages ADD COLUMN filterVignette REAL NOT NULL DEFAULT 0",
                 )
             }
         }

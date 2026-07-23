@@ -6,6 +6,8 @@ import `in`.c1ph3rj.scanly.domain.model.PageFilterAdjustments
 import `in`.c1ph3rj.scanly.domain.model.PageFilterPreset
 import `in`.c1ph3rj.scanly.domain.model.PageCaptureDraft
 import `in`.c1ph3rj.scanly.domain.model.ScanPage
+import `in`.c1ph3rj.scanly.domain.model.ScanMode
+import `in`.c1ph3rj.scanly.domain.model.IdCardSide
 import kotlinx.coroutines.flow.Flow
 
 interface PageRepository {
@@ -13,7 +15,12 @@ interface PageRepository {
 
     fun observePage(pageId: String): Flow<ScanPage?>
 
-    suspend fun prepareCapture(documentId: String): ScanlyResult<PageCaptureDraft>
+    suspend fun prepareCapture(
+        documentId: String,
+        scanMode: ScanMode = ScanMode.DOCUMENT,
+        idCardPairId: String? = null,
+        idCardSide: IdCardSide? = null,
+    ): ScanlyResult<PageCaptureDraft>
 
     suspend fun prepareReplacementCapture(pageId: String): ScanlyResult<PageCaptureDraft>
 

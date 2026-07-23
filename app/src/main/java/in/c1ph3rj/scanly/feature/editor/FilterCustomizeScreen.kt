@@ -20,12 +20,9 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
@@ -50,6 +47,7 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import `in`.c1ph3rj.scanly.core.ml.DocumentCornerQuad
@@ -66,8 +64,8 @@ import `in`.c1ph3rj.scanly.domain.model.ScanPage
  * Full-screen filter customization with adaptive large-screen layouts.
  *
  * - Hold **Compare** to preview the selected filter without custom adjustments
- * - Controls scroll with a thin Material scrollbar when content overflows
- * - Preview stays fixed; only the controls region scrolls when needed
+ * - Light, Tone, Color, and Detail keep two controls visible at a time
+ * - Preview and controls stay fixed without a vertical slider page
  */
 @Composable
 fun FilterCustomizeScreen(
@@ -91,6 +89,7 @@ fun FilterCustomizeScreen(
         selectedFilter = selectedFilter,
         cropQuad = cropQuad,
         filterAdjustments = filterAdjustments,
+        scanMode = page.scanMode,
     )
     val baseFilterPreview by rememberEditorPreviewBitmap(
         rawImagePath = page.rawImagePath,
@@ -99,6 +98,7 @@ fun FilterCustomizeScreen(
         selectedFilter = selectedFilter,
         cropQuad = cropQuad,
         filterAdjustments = PageFilterAdjustments.Default,
+        scanMode = page.scanMode,
     )
 
     val showCompare = comparing && !filterAdjustments.isDefault
@@ -167,7 +167,6 @@ private data class CustomizeLayoutSpec(
     val chromeMaxWidth: Dp,
     val controlsMaxWidth: Dp,
     val controlsMaxHeight: Dp,
-    val useTwoColumnSliders: Boolean,
     val previewWeight: Float,
     val controlsWeight: Float,
     val paneSpacing: Dp,
@@ -184,8 +183,6 @@ private fun rememberCustomizeLayout(windowSizeInfo: WindowSizeInfo): CustomizeLa
             chromeMaxWidth = shared.chromeMaxWidth,
             controlsMaxWidth = shared.controlsMaxWidth,
             controlsMaxHeight = Dp.Unspecified,
-            // Single-column sliders read cleaner in the narrower tool rail.
-            useTwoColumnSliders = false,
             previewWeight = shared.previewWeight,
             controlsWeight = shared.controlsWeight,
             paneSpacing = shared.paneSpacing,
@@ -218,7 +215,6 @@ private fun rememberCustomizeLayout(windowSizeInfo: WindowSizeInfo): CustomizeLa
             Dp.Unspecified
         },
         controlsMaxHeight = controlsMaxHeight,
-        useTwoColumnSliders = false,
         previewWeight = 0.58f,
         controlsWeight = 0.42f,
         paneSpacing = 16.dp,
@@ -262,7 +258,6 @@ private fun TwoPaneCustomizeBody(
                 selectedFilter = selectedFilter,
                 filterAdjustments = filterAdjustments,
                 onAdjustmentsChange = onAdjustmentsChange,
-                useTwoColumnSliders = layout.useTwoColumnSliders,
                 fillHeight = true,
                 modifier = Modifier
                     .fillMaxHeight()
@@ -311,7 +306,6 @@ private fun StackedCustomizeBody(
             selectedFilter = selectedFilter,
             filterAdjustments = filterAdjustments,
             onAdjustmentsChange = onAdjustmentsChange,
-            useTwoColumnSliders = false,
             fillHeight = false,
             modifier = controlsModifier,
         )
@@ -511,12 +505,11 @@ private fun CustomizeControlsPane(
     selectedFilter: PageFilterPreset,
     filterAdjustments: PageFilterAdjustments,
     onAdjustmentsChange: (PageFilterAdjustments) -> Unit,
-    useTwoColumnSliders: Boolean,
     fillHeight: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    val scrollState = rememberScrollState()
     val colorScheme = MaterialTheme.colorScheme
+    var selectedGroup by remember { mutableStateOf(AdjustmentGroup.LIGHT) }
 
     Surface(
         modifier = modifier,
@@ -551,80 +544,55 @@ private fun CustomizeControlsPane(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Scrollable sliders + trailing scrollbar in the leftover space.
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .then(if (fillHeight) Modifier.weight(1f) else Modifier)
-                    .padding(start = 18.dp, end = 8.dp),
+                    .padding(horizontal = 12.dp),
                 horizontalArrangement = Arrangement.spacedBy(6.dp),
             ) {
-                Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight()
-                        .verticalScroll(scrollState)
-                        .padding(end = 4.dp, bottom = 4.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                ) {
-                    if (useTwoColumnSliders) {
-                        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                            ) {
-                                AdjustmentSlider(
-                                    label = "Brightness",
-                                    valuePercent = filterAdjustments.brightnessPercent(),
-                                    valueRange = -100f..100f,
-                                    onValueChange = { percent ->
-                                        onAdjustmentsChange(
-                                            filterAdjustments.copy(brightness = percent / 100f).sanitized(),
-                                        )
-                                    },
-                                    modifier = Modifier.weight(1f),
-                                )
-                                AdjustmentSlider(
-                                    label = "Contrast",
-                                    valuePercent = filterAdjustments.contrastPercent(),
-                                    valueRange = -100f..100f,
-                                    onValueChange = { percent ->
-                                        onAdjustmentsChange(
-                                            filterAdjustments.copy(contrast = percent / 100f).sanitized(),
-                                        )
-                                    },
-                                    modifier = Modifier.weight(1f),
-                                )
-                            }
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                            ) {
-                                AdjustmentSlider(
-                                    label = "Saturation",
-                                    valuePercent = filterAdjustments.saturationPercent(),
-                                    valueRange = -100f..100f,
-                                    onValueChange = { percent ->
-                                        onAdjustmentsChange(
-                                            filterAdjustments.copy(saturation = percent / 100f).sanitized(),
-                                        )
-                                    },
-                                    modifier = Modifier.weight(1f),
-                                )
-                                AdjustmentSlider(
-                                    label = "Sharpness",
-                                    valuePercent = filterAdjustments.sharpnessPercent(),
-                                    valueRange = 0f..100f,
-                                    onValueChange = { percent ->
-                                        onAdjustmentsChange(
-                                            filterAdjustments.copy(sharpness = percent / 100f).sanitized(),
-                                        )
-                                    },
-                                    modifier = Modifier.weight(1f),
-                                )
-                            }
-                        }
-                    } else {
+                AdjustmentGroup.entries.forEach { group ->
+                    val selected = selectedGroup == group
+                    Surface(
+                        onClick = { selectedGroup = group },
+                        modifier = Modifier.weight(1f),
+                        color = if (selected) {
+                            colorScheme.primaryContainer
+                        } else {
+                            colorScheme.surfaceContainerHighest
+                        },
+                        contentColor = if (selected) {
+                            colorScheme.onPrimaryContainer
+                        } else {
+                            colorScheme.onSurfaceVariant
+                        },
+                        shape = RoundedCornerShape(10.dp),
+                        border = if (selected) {
+                            BorderStroke(1.dp, colorScheme.primary.copy(alpha = 0.55f))
+                        } else {
+                            null
+                        },
+                    ) {
+                        Text(
+                            text = group.label,
+                            modifier = Modifier.padding(horizontal = 4.dp, vertical = 8.dp),
+                            style = MaterialTheme.typography.labelMedium,
+                            fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Medium,
+                            textAlign = TextAlign.Center,
+                            maxLines = 1,
+                        )
+                    }
+                }
+            }
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .then(if (fillHeight) Modifier.weight(1f) else Modifier)
+                    .padding(horizontal = 18.dp, vertical = 14.dp),
+                verticalArrangement = Arrangement.spacedBy(14.dp),
+            ) {
+                when (selectedGroup) {
+                    AdjustmentGroup.LIGHT -> {
                         AdjustmentSlider(
                             label = "Brightness",
                             valuePercent = filterAdjustments.brightnessPercent(),
@@ -645,6 +613,32 @@ private fun CustomizeControlsPane(
                                 )
                             },
                         )
+                    }
+
+                    AdjustmentGroup.TONE -> {
+                        AdjustmentSlider(
+                            label = "Highlights",
+                            valuePercent = filterAdjustments.highlightsPercent(),
+                            valueRange = -100f..100f,
+                            onValueChange = { percent ->
+                                onAdjustmentsChange(
+                                    filterAdjustments.copy(highlights = percent / 100f).sanitized(),
+                                )
+                            },
+                        )
+                        AdjustmentSlider(
+                            label = "Shadows",
+                            valuePercent = filterAdjustments.shadowsPercent(),
+                            valueRange = -100f..100f,
+                            onValueChange = { percent ->
+                                onAdjustmentsChange(
+                                    filterAdjustments.copy(shadows = percent / 100f).sanitized(),
+                                )
+                            },
+                        )
+                    }
+
+                    AdjustmentGroup.COLOR -> {
                         AdjustmentSlider(
                             label = "Saturation",
                             valuePercent = filterAdjustments.saturationPercent(),
@@ -656,6 +650,19 @@ private fun CustomizeControlsPane(
                             },
                         )
                         AdjustmentSlider(
+                            label = "Warmth",
+                            valuePercent = filterAdjustments.warmthPercent(),
+                            valueRange = -100f..100f,
+                            onValueChange = { percent ->
+                                onAdjustmentsChange(
+                                    filterAdjustments.copy(warmth = percent / 100f).sanitized(),
+                                )
+                            },
+                        )
+                    }
+
+                    AdjustmentGroup.DETAIL -> {
+                        AdjustmentSlider(
                             label = "Sharpness",
                             valuePercent = filterAdjustments.sharpnessPercent(),
                             valueRange = 0f..100f,
@@ -665,20 +672,28 @@ private fun CustomizeControlsPane(
                                 )
                             },
                         )
+                        AdjustmentSlider(
+                            label = "Vignette",
+                            valuePercent = filterAdjustments.vignettePercent(),
+                            valueRange = 0f..100f,
+                            onValueChange = { percent ->
+                                onAdjustmentsChange(
+                                    filterAdjustments.copy(vignette = percent / 100f).sanitized(),
+                                )
+                            },
+                        )
                     }
-                    Spacer(modifier = Modifier.height(4.dp))
                 }
-
-                VerticalContentScrollbar(
-                    scrollState = scrollState,
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .padding(vertical = 4.dp, horizontal = 2.dp)
-                        .width(6.dp),
-                )
             }
         }
     }
+}
+
+private enum class AdjustmentGroup(val label: String) {
+    LIGHT("Light"),
+    TONE("Tone"),
+    COLOR("Color"),
+    DETAIL("Detail"),
 }
 
 @Composable
@@ -740,4 +755,8 @@ private fun PageFilterPreset.toDisplayLabel(): String = when (this) {
     PageFilterPreset.MAGIC_COLOR -> "Magic"
     PageFilterPreset.RECEIPT -> "Receipt"
     PageFilterPreset.SOFT_BLACK_AND_WHITE -> "Text Enhance"
+    PageFilterPreset.ID_NATURAL -> "ID Natural"
+    PageFilterPreset.ID_CLEAR -> "ID Clear"
+    PageFilterPreset.ID_PORTRAIT -> "ID Portrait"
+    PageFilterPreset.ID_TEXT -> "ID Text"
 }

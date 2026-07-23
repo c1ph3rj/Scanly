@@ -74,6 +74,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.PathFillType
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
@@ -95,7 +96,11 @@ import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import `in`.c1ph3rj.scanly.core.ml.DetectionFrame
 import `in`.c1ph3rj.scanly.domain.model.PageCaptureDraft
 import `in`.c1ph3rj.scanly.domain.model.ScanPage
+import `in`.c1ph3rj.scanly.domain.model.ScanMode
+import `in`.c1ph3rj.scanly.domain.model.IdCardSide
 import `in`.c1ph3rj.scanly.feature.components.PagePreview
+import `in`.c1ph3rj.scanly.feature.components.ScanModeSelector
+import `in`.c1ph3rj.scanly.feature.components.ScanModeSelectorLayout
 import `in`.c1ph3rj.scanly.core.ui.PreviewDisplaySize
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -230,6 +235,7 @@ fun ScanSessionRoute(
             uiState.document?.id?.let(onOpenDocument)
         },
         onCapture = viewModel::requestCapture,
+        onScanModeChange = viewModel::onScanModeChanged,
         onAutoCaptureEnabledChange = viewModel::onAutoCaptureEnabledChanged,
         onGridEnabledChange = viewModel::onGridEnabledChanged,
         onPreviewFrame = viewModel::onPreviewFrame,
@@ -285,6 +291,7 @@ fun ScanSessionScreen(
     onNavigateUp: () -> Unit,
     onOpenDocument: () -> Unit,
     onCapture: () -> Unit,
+    onScanModeChange: (ScanMode) -> Unit,
     onAutoCaptureEnabledChange: (Boolean) -> Unit,
     onGridEnabledChange: (Boolean) -> Unit,
     onPreviewFrame: (() -> DetectionFrame?) -> Boolean,
@@ -335,6 +342,7 @@ fun ScanSessionScreen(
                 isLandscape = windowSizeInfo.isLandscape,
                 onNavigateUp = onNavigateUp,
                 onCapture = onCapture,
+                onScanModeChange = onScanModeChange,
                 onOpenDocument = onOpenDocument,
                 autoCaptureEnabled = uiState.liveDetection.autoCaptureEnabled,
                 onAutoCaptureToggle = {
@@ -362,6 +370,7 @@ private fun CameraCaptureLayout(
     isLandscape: Boolean,
     onNavigateUp: () -> Unit,
     onCapture: () -> Unit,
+    onScanModeChange: (ScanMode) -> Unit,
     onOpenDocument: () -> Unit,
     autoCaptureEnabled: Boolean,
     onAutoCaptureToggle: () -> Unit,
@@ -406,6 +415,8 @@ private fun CameraCaptureLayout(
                     modifier = Modifier.fillMaxSize(),
                     aspectRatio = previewAspectRatio,
                     liveDetection = uiState.liveDetection,
+                    scanMode = uiState.scanMode,
+                    idCardSide = uiState.nextIdCardSide,
                     onCameraReady = onCameraReady,
                     onPreviewFrame = onPreviewFrame,
                     onTapToFocus = onTapToFocus,
@@ -415,10 +426,11 @@ private fun CameraCaptureLayout(
             CameraCaptureDock(
                 uiState = uiState,
                 onCapture = onCapture,
+                onScanModeChange = onScanModeChange,
                 onOpenDocument = onOpenDocument,
                 compact = true,
                 modifier = Modifier
-                    .width(104.dp)
+                    .width(184.dp)
                     .fillMaxHeight()
                     .statusBarsPadding()
                     .navigationBarsPadding(),
@@ -455,6 +467,8 @@ private fun CameraCaptureLayout(
                     .fillMaxWidth(),
                 aspectRatio = previewAspectRatio,
                 liveDetection = uiState.liveDetection,
+                scanMode = uiState.scanMode,
+                idCardSide = uiState.nextIdCardSide,
                 onCameraReady = onCameraReady,
                 onPreviewFrame = onPreviewFrame,
                 onTapToFocus = onTapToFocus,
@@ -463,11 +477,12 @@ private fun CameraCaptureLayout(
             CameraCaptureDock(
                 uiState = uiState,
                 onCapture = onCapture,
+                onScanModeChange = onScanModeChange,
                 onOpenDocument = onOpenDocument,
                 compact = false,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(144.dp)
+                    .height(188.dp)
                     .navigationBarsPadding()
             )
         }
@@ -522,6 +537,7 @@ private fun CameraLeftRail(
 private fun CameraCaptureDock(
     uiState: ScanSessionUiState,
     onCapture: () -> Unit,
+    onScanModeChange: (ScanMode) -> Unit,
     onOpenDocument: () -> Unit,
     modifier: Modifier = Modifier,
     compact: Boolean = false,
@@ -535,12 +551,14 @@ private fun CameraCaptureDock(
             LandscapeCaptureDockContent(
                 uiState = uiState,
                 onCapture = onCapture,
+                onScanModeChange = onScanModeChange,
                 onOpenDocument = onOpenDocument,
             )
         } else {
             PortraitCaptureDockContent(
                 uiState = uiState,
                 onCapture = onCapture,
+                onScanModeChange = onScanModeChange,
                 onOpenDocument = onOpenDocument,
             )
         }
@@ -552,6 +570,8 @@ private fun CameraPreviewViewport(
     modifier: Modifier = Modifier,
     aspectRatio: Float,
     liveDetection: LiveDetectionUiState,
+    scanMode: ScanMode,
+    idCardSide: IdCardSide,
     onCameraReady: (ImageCapture, PreviewView, Camera) -> Unit,
     onPreviewFrame: (() -> DetectionFrame?) -> Boolean,
     onTapToFocus: (Offset) -> Boolean,
@@ -585,6 +605,8 @@ private fun CameraPreviewViewport(
             )
             CameraPreviewFeedback(
                 liveDetection = liveDetection,
+                scanMode = scanMode,
+                idCardSide = idCardSide,
                 modifier = Modifier.fillMaxSize(),
             )
         }
@@ -637,11 +659,19 @@ private fun ScanGridOverlay(
 @Composable
 private fun CameraPreviewFeedback(
     liveDetection: LiveDetectionUiState,
+    scanMode: ScanMode,
+    idCardSide: IdCardSide,
     modifier: Modifier = Modifier,
 ) {
     Box(
         modifier = modifier,
     ) {
+        if (scanMode == ScanMode.ID_CARD) {
+            IdCardGuideOverlay(
+                side = idCardSide,
+                modifier = Modifier.fillMaxSize(),
+            )
+        }
         PreviewStatusHud(
             liveDetection = liveDetection,
             modifier = Modifier
@@ -652,28 +682,129 @@ private fun CameraPreviewFeedback(
 }
 
 @Composable
+private fun IdCardGuideOverlay(
+    side: IdCardSide,
+    modifier: Modifier = Modifier,
+) {
+    BoxWithConstraints(modifier = modifier) {
+        val guideWidth = minOf(maxWidth * 0.82f, maxHeight * 0.78f * ID_CARD_ASPECT_RATIO)
+        val guideHeight = guideWidth / ID_CARD_ASPECT_RATIO
+        Canvas(modifier = Modifier.fillMaxSize()) {
+            val guideWidthPx = guideWidth.toPx()
+            val guideHeightPx = guideHeight.toPx()
+            val left = (size.width - guideWidthPx) / 2f
+            val top = (size.height - guideHeightPx) / 2f
+            val guideRect = androidx.compose.ui.geometry.Rect(
+                left = left,
+                top = top,
+                right = left + guideWidthPx,
+                bottom = top + guideHeightPx,
+            )
+            val cornerRadius = 14.dp.toPx()
+            val outsideMask = Path().apply {
+                fillType = PathFillType.EvenOdd
+                addRect(androidx.compose.ui.geometry.Rect(Offset.Zero, size))
+                addRoundRect(
+                    androidx.compose.ui.geometry.RoundRect(
+                        rect = guideRect,
+                        cornerRadius = androidx.compose.ui.geometry.CornerRadius(cornerRadius),
+                    ),
+                )
+            }
+            drawPath(
+                path = outsideMask,
+                color = Color.Black.copy(alpha = 0.58f),
+            )
+            drawRoundRect(
+                color = Color.White.copy(alpha = 0.88f),
+                topLeft = guideRect.topLeft,
+                size = guideRect.size,
+                cornerRadius = androidx.compose.ui.geometry.CornerRadius(cornerRadius),
+                style = Stroke(width = 2.dp.toPx()),
+            )
+
+            val bracketLength = 24.dp.toPx()
+            val bracketInset = 1.dp.toPx()
+            val bracketStroke = 3.dp.toPx()
+            val bracketColor = Color.White
+            listOf(
+                Offset(guideRect.left + bracketInset, guideRect.top + bracketLength) to
+                    Offset(guideRect.left + bracketInset, guideRect.top + bracketInset),
+                Offset(guideRect.left + bracketInset, guideRect.top + bracketInset) to
+                    Offset(guideRect.left + bracketLength, guideRect.top + bracketInset),
+                Offset(guideRect.right - bracketLength, guideRect.top + bracketInset) to
+                    Offset(guideRect.right - bracketInset, guideRect.top + bracketInset),
+                Offset(guideRect.right - bracketInset, guideRect.top + bracketInset) to
+                    Offset(guideRect.right - bracketInset, guideRect.top + bracketLength),
+                Offset(guideRect.left + bracketInset, guideRect.bottom - bracketLength) to
+                    Offset(guideRect.left + bracketInset, guideRect.bottom - bracketInset),
+                Offset(guideRect.left + bracketInset, guideRect.bottom - bracketInset) to
+                    Offset(guideRect.left + bracketLength, guideRect.bottom - bracketInset),
+                Offset(guideRect.right - bracketLength, guideRect.bottom - bracketInset) to
+                    Offset(guideRect.right - bracketInset, guideRect.bottom - bracketInset),
+                Offset(guideRect.right - bracketInset, guideRect.bottom - bracketInset) to
+                    Offset(guideRect.right - bracketInset, guideRect.bottom - bracketLength),
+            ).forEach { (start, end) ->
+                drawLine(
+                    color = bracketColor,
+                    start = start,
+                    end = end,
+                    strokeWidth = bracketStroke,
+                )
+            }
+        }
+        Text(
+            text = if (side == IdCardSide.FRONT) {
+                "ID FRONT • keep portrait and edges clear"
+            } else {
+                "ID BACK • keep barcode and edges clear"
+            },
+            modifier = Modifier
+                .align(Alignment.Center)
+                .offset(y = guideHeight / 2 + 20.dp)
+                .padding(horizontal = 12.dp),
+            color = Color.White.copy(alpha = 0.84f),
+            style = MaterialTheme.typography.labelMedium,
+            fontWeight = FontWeight.SemiBold,
+            textAlign = TextAlign.Center,
+        )
+    }
+}
+
+@Composable
 private fun PortraitCaptureDockContent(
     uiState: ScanSessionUiState,
     onCapture: () -> Unit,
+    onScanModeChange: (ScanMode) -> Unit,
     onOpenDocument: () -> Unit,
 ) {
-    Box(
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 18.dp, vertical = 8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
-        CaptureButton(
-            busy = uiState.captureInProgress,
-            replacement = uiState.isReplacementMode,
-            onClick = onCapture,
-            modifier = Modifier.align(Alignment.Center),
+        ScanModeSelector(
+            selectedMode = uiState.scanMode,
+            onModeSelected = onScanModeChange,
+            enabled = !uiState.scanModeLocked,
+            dark = true,
         )
-        RecentCaptureStack(
-            pages = uiState.pages,
-            enabled = !uiState.captureInProgress,
-            onOpenDocument = onOpenDocument,
-            modifier = Modifier.align(Alignment.CenterEnd),
-        )
+        Box(modifier = Modifier.fillMaxSize()) {
+            CaptureButton(
+                busy = uiState.captureInProgress,
+                replacement = uiState.isReplacementMode,
+                onClick = onCapture,
+                modifier = Modifier.align(Alignment.Center),
+            )
+            RecentCaptureStack(
+                pages = uiState.pages,
+                enabled = !uiState.captureInProgress,
+                onOpenDocument = onOpenDocument,
+                modifier = Modifier.align(Alignment.CenterEnd),
+            )
+        }
     }
 }
 
@@ -681,24 +812,33 @@ private fun PortraitCaptureDockContent(
 private fun LandscapeCaptureDockContent(
     uiState: ScanSessionUiState,
     onCapture: () -> Unit,
+    onScanModeChange: (ScanMode) -> Unit,
     onOpenDocument: () -> Unit,
 ) {
-    Box(
+    Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 8.dp, vertical = 12.dp),
+            .padding(horizontal = 12.dp, vertical = 8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceBetween,
     ) {
-        RecentCaptureStack(
-            pages = uiState.pages,
-            enabled = !uiState.captureInProgress,
-            onOpenDocument = onOpenDocument,
-            modifier = Modifier.align(Alignment.TopCenter),
+        ScanModeSelector(
+            selectedMode = uiState.scanMode,
+            onModeSelected = onScanModeChange,
+            enabled = !uiState.scanModeLocked,
+            dark = true,
+            layout = ScanModeSelectorLayout.VERTICAL,
+            modifier = Modifier.fillMaxWidth(),
         )
         CaptureButton(
             busy = uiState.captureInProgress,
             replacement = uiState.isReplacementMode,
             onClick = onCapture,
-            modifier = Modifier.align(Alignment.Center),
+        )
+        RecentCaptureStack(
+            pages = uiState.pages,
+            enabled = !uiState.captureInProgress,
+            onOpenDocument = onOpenDocument,
         )
     }
 }
@@ -1349,13 +1489,14 @@ private fun DocumentDetectionOverlay(
                 return@Canvas
             }
 
-            val topMidpoint = Offset(
-                x = (mappedPoints[0].x + mappedPoints[1].x) / 2f,
-                y = (mappedPoints[0].y + mappedPoints[1].y) / 2f,
+            val guideFraction = liveDetection.bookGutterFraction ?: 0.5f
+            val topGuide = Offset(
+                x = mappedPoints[0].x + ((mappedPoints[1].x - mappedPoints[0].x) * guideFraction),
+                y = mappedPoints[0].y + ((mappedPoints[1].y - mappedPoints[0].y) * guideFraction),
             )
-            val bottomMidpoint = Offset(
-                x = (mappedPoints[2].x + mappedPoints[3].x) / 2f,
-                y = (mappedPoints[2].y + mappedPoints[3].y) / 2f,
+            val bottomGuide = Offset(
+                x = mappedPoints[3].x + ((mappedPoints[2].x - mappedPoints[3].x) * guideFraction),
+                y = mappedPoints[3].y + ((mappedPoints[2].y - mappedPoints[3].y) * guideFraction),
             )
             val center = Offset(
                 x = (mappedPoints[0].x + mappedPoints[1].x + mappedPoints[2].x + mappedPoints[3].x) / 4f,
@@ -1383,9 +1524,13 @@ private fun DocumentDetectionOverlay(
             )
             drawLine(
                 color = accentColor.copy(alpha = 0.7f),
-                start = topMidpoint,
-                end = bottomMidpoint,
-                strokeWidth = 1.dp.toPx(),
+                start = topGuide,
+                end = bottomGuide,
+                strokeWidth = if (liveDetection.bookGutterFraction != null) {
+                    2.dp.toPx()
+                } else {
+                    1.dp.toPx()
+                },
             )
             drawCircle(
                 color = OverlayGuide.copy(alpha = 0.9f),
@@ -1584,3 +1729,4 @@ private const val TapFocusAutoCancelSeconds = 3L
 private const val TapFocusIndicatorDurationMillis = 850L
 private val AnalysisResolution = Size(640, 480)
 private const val CaptureJpegQuality = 95
+private const val ID_CARD_ASPECT_RATIO = 1.586f

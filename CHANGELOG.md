@@ -10,10 +10,19 @@ Changes for the next release will be documented here.
 
 ### Added
 
+- **Document, ID, and Book scan modes** — camera sessions and the Tools capture workspace now expose the three capture types. ID mode guides front/back capture and includes `ID Natural`, `ID Clear`, `ID Portrait`, and `ID Text` presets; Book mode detects and stores one complete open-book spread as a wide page.
+- **Bundled ID face detection** — optional on-device face detection steers Auto filtering and softly protects portrait detail without blocking capture or processing when no face is found.
+- **Expanded Adjust controls** — Highlights, Shadows, Warmth, and Vignette join Brightness, Contrast, Saturation, and Sharpness in fixed Light / Tone / Color / Detail panels.
+- **Smart PDF arrangement** — optionally place a complete ID front/back pair on one portrait A4 sheet and each Book spread on one landscape A4 sheet. Incomplete ID pairs stay exportable with Standard layout and show an actionable error for Smart layout.
 - **Illustrated empty states** — Home, Library, empty folders, empty documents, PDF tools, and the detector benchmark now use a shared emerald-and-silver illustration system with clear next actions.
 
 ### Changed
 
+- **Mode-safe scanning and editing** — Document remains the default and retains its existing detector/export behavior; changing mode affects future captures only, retakes preserve the page’s original mode, raw images stay untouched, and filter preferences are stored per mode.
+- **Visible, editable document type** — Tools presents Document, ID card, and Book as an icon grid beside Scan and Import, while Document detail shows the current type as a tappable tag. Changing the tag affects new pages only.
+- **Adaptive camera mode control** — the portrait selector uses a stronger Scanly-teal selected pill, while landscape switches to a readable icon-and-label rail with full-height tap targets instead of compressing labels.
+- **ID capture framing** — a black outside-card mask, ISO-card guide, centered-quad checks, and ID-specific stability guidance make front/back capture easier to align.
+- **Portable mode metadata** — Room schema 6 and backward-compatible `.scanly` archive fields preserve scan modes, ID pairs/sides, per-mode filter preferences, and the expanded adjustment values.
 - **Home visual hierarchy** — the greeting uses a compact two-line layout with an emerald keyword and intentional right-side breathing room, while Scan / Import / Folder retain clean outlined icon-and-label treatments.
 - **Tools icon language** — capture, QR, and PDF utility cards use consistent outlined glyphs, while the dark-theme brand accent is brighter and clearer.
 

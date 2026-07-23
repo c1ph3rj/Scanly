@@ -12,9 +12,11 @@ Backup is enabled only when the library is non-empty, the destination is writabl
 
 ## Format version 1
 
-`.scanly` is a DEFLATE ZIP whose first entry is `manifest.json`. The manifest contains the signature and format version, source app version and timestamp, groups/documents/pages with edit metadata (including crop coords, rotation, filter preset, and optional filter adjustment floats), relative asset paths, byte sizes, and SHA-256 checksums. Raw captures, processed files, page thumbnails, and covers are included exactly. Preferences, SQLite/WAL files, export cache, and other backups are excluded.
+`.scanly` is a DEFLATE ZIP whose first entry is `manifest.json`. The manifest contains the signature and format version, source app version and timestamp, groups/documents/pages with edit metadata (including crop coords, rotation, filter preset, optional filter adjustment floats, scan mode, and optional ID pair/side metadata), relative asset paths, byte sizes, and SHA-256 checksums. Document records also carry the preferred scan mode and optional ID/Book filter preferences. Raw captures, processed files, page thumbnails, and covers are included exactly. Preferences, SQLite/WAL files, export cache, and other backups are excluded.
 
 Archives written before filter adjustments omit the four floats; restore fills `filterBrightness` / `filterContrast` / `filterSaturation` / `filterSharpness` with `0` (identity).
+
+Archives written before scan modes omit the new fields; restore defaults both documents and pages to `document` and leaves ID pair/side and per-mode filter preferences unset. Format version remains 1 because all additions are optional and backward compatible.
 
 ## Restore safety
 

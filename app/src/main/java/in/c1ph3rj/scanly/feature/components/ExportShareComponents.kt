@@ -69,6 +69,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import `in`.c1ph3rj.scanly.domain.model.MaximumPdfPasswordLength
 import `in`.c1ph3rj.scanly.domain.model.PdfExportOptions
+import `in`.c1ph3rj.scanly.domain.model.PdfPageArrangement
 import `in`.c1ph3rj.scanly.domain.model.PdfPageMargin
 import `in`.c1ph3rj.scanly.domain.model.PdfPageNumber
 import `in`.c1ph3rj.scanly.domain.model.PdfPageOrientation
@@ -211,6 +212,33 @@ fun PdfOptionsSheet(
                             .padding(horizontal = 20.dp, vertical = 18.dp),
                         verticalArrangement = Arrangement.spacedBy(20.dp),
                     ) {
+                        PdfOptionSection(
+                            title = "Arrangement",
+                            description = "Smart mode combines ID sides and fits book spreads to print-ready A4 sheets.",
+                        ) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            ) {
+                                PdfPageArrangement.entries.forEach { arrangement ->
+                                    PdfChoiceTile(
+                                        label = arrangement.label,
+                                        supportingText = when (arrangement) {
+                                            PdfPageArrangement.STANDARD ->
+                                                "Keep one exported page per scan"
+                                            PdfPageArrangement.SMART_SCAN_MODE ->
+                                                "ID pair on portrait A4; book spread on landscape A4"
+                                        },
+                                        selected = options.arrangement == arrangement,
+                                        modifier = Modifier.weight(1f),
+                                        onClick = {
+                                            onOptionsChanged(options.copy(arrangement = arrangement))
+                                        },
+                                    )
+                                }
+                            }
+                        }
+
                         PdfPasswordSection(
                             password = options.password,
                             passwordConfirmation = passwordConfirmation,

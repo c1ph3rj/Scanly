@@ -16,11 +16,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.automirrored.outlined.MenuBook
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material.icons.filled.QrCode2
+import androidx.compose.material.icons.outlined.Badge
+import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -42,15 +46,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import `in`.c1ph3rj.scanly.core.ui.ImageImportSupport
-import `in`.c1ph3rj.scanly.core.ui.WindowWidthClass
 import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import `in`.c1ph3rj.scanly.domain.model.DocumentTitleFormat
+import `in`.c1ph3rj.scanly.domain.model.ScanMode
 import `in`.c1ph3rj.scanly.feature.components.DocumentTitleDialog
 import `in`.c1ph3rj.scanly.feature.components.ScanlyImportProgressOverlay
 import `in`.c1ph3rj.scanly.feature.components.ScanlyTabScreenHeader
@@ -102,7 +108,7 @@ fun ToolsRoute(
 fun ToolsScreen(
     uiState: ToolsUiState,
     snackbarHostState: SnackbarHostState,
-    onScan: (String) -> Unit,
+    onScan: (String, ScanMode) -> Unit,
     onImport: () -> Unit,
     onOpenTool: (String) -> Unit,
     onSuggestTitle: suspend (DocumentTitleFormat) -> String,
@@ -110,6 +116,7 @@ fun ToolsScreen(
     // Survive rotation — do not re-open closed sheets/dialogs after config change.
     var createDialogVisible by rememberSaveable { mutableStateOf(false) }
     var showQrModeSheet by rememberSaveable { mutableStateOf(false) }
+    var selectedScanMode by rememberSaveable { mutableStateOf(ScanMode.DOCUMENT) }
     val windowSizeInfo = rememberWindowSizeInfo()
 
     BackHandler(enabled = uiState.isImporting) { /* block back while processing */ }
@@ -150,8 +157,9 @@ fun ToolsScreen(
                     CaptureWorkspace(
                         onScan = { createDialogVisible = true },
                         onImport = onImport,
+                        selectedScanMode = selectedScanMode,
+                        onScanModeSelected = { selectedScanMode = it },
                         importEnabled = !uiState.isImporting,
-                        sideBySide = windowSizeInfo.widthClass != WindowWidthClass.Compact,
                         modifier = Modifier.padding(bottom = 32.dp),
                     )
                 }
@@ -228,13 +236,17 @@ fun ToolsScreen(
 
     if (createDialogVisible && !uiState.isImporting) {
         DocumentTitleDialog(
-            title = "New scan",
+            title = when (selectedScanMode) {
+                ScanMode.DOCUMENT -> "New document scan"
+                ScanMode.ID_CARD -> "New ID scan"
+                ScanMode.BOOK -> "New book scan"
+            },
             initialValue = "",
-            confirmLabel = "Scan",
+            confirmLabel = "Start scanning",
             onDismiss = { createDialogVisible = false },
             onConfirm = { value ->
                 createDialogVisible = false
-                onScan(value)
+                onScan(value, selectedScanMode)
             },
             onSuggestTitle = onSuggestTitle,
         )
@@ -365,8 +377,9 @@ private fun QrModeOption(
 private fun CaptureWorkspace(
     onScan: () -> Unit,
     onImport: () -> Unit,
+    selectedScanMode: ScanMode,
+    onScanModeSelected: (ScanMode) -> Unit,
     importEnabled: Boolean,
-    sideBySide: Boolean,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -377,122 +390,173 @@ private fun CaptureWorkspace(
             fontWeight = FontWeight.SemiBold,
             modifier = Modifier.padding(start = 4.dp),
         )
-        if (sideBySide) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
-                CaptureScanCard(
-                    onScan = onScan,
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(148.dp),
-                )
-                CompactActionCard(
-                    title = "Import photos",
-                    subtitle = "Choose up to 10 images from your gallery.",
-                    icon = Icons.Filled.PhotoLibrary,
-                    accent = ToolAccent.Secondary,
-                    onClick = onImport,
-                    enabled = importEnabled,
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(148.dp),
-                )
-            }
-        } else {
-            CaptureScanCard(
-                onScan = onScan,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(144.dp),
+        ScanModeGrid(
+            selectedMode = selectedScanMode,
+            onModeSelected = onScanModeSelected,
+        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
+            CaptureActionGridCard(
+                title = "Scan",
+                subtitle = when (selectedScanMode) {
+                    ScanMode.DOCUMENT -> "Capture any page"
+                    ScanMode.ID_CARD -> "Capture both sides"
+                    ScanMode.BOOK -> "Capture one spread"
+                },
+                icon = Icons.Filled.CameraAlt,
+                highlighted = true,
+                onClick = onScan,
+                modifier = Modifier.weight(1f),
             )
-            CompactActionCard(
-                title = "Import photos",
-                subtitle = "Choose up to 10 images from your gallery.",
+            CaptureActionGridCard(
+                title = "Import",
+                subtitle = "Choose up to 10 photos",
                 icon = Icons.Filled.PhotoLibrary,
-                accent = ToolAccent.Secondary,
+                highlighted = false,
                 onClick = onImport,
                 enabled = importEnabled,
+                modifier = Modifier.weight(1f),
             )
         }
     }
 }
 
 @Composable
-private fun CaptureScanCard(
-    onScan: () -> Unit,
+private fun ScanModeGrid(
+    selectedMode: ScanMode,
+    onModeSelected: (ScanMode) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .selectableGroup(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        ScanMode.entries.forEach { mode ->
+            ScanModeGridCard(
+                mode = mode,
+                selected = mode == selectedMode,
+                onClick = { onModeSelected(mode) },
+                modifier = Modifier.weight(1f),
+            )
+        }
+    }
+}
+
+@Composable
+private fun ScanModeGridCard(
+    mode: ScanMode,
+    selected: Boolean,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Surface(
-        onClick = onScan,
-        modifier = modifier,
-        color = MaterialTheme.colorScheme.primaryContainer,
+        onClick = onClick,
+        modifier = modifier
+            .height(118.dp)
+            .semantics { this.selected = selected },
         shape = MaterialTheme.shapes.extraLarge,
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.26f)),
+        color = if (selected) {
+            MaterialTheme.colorScheme.primaryContainer
+        } else {
+            MaterialTheme.colorScheme.surfaceContainer
+        },
+        border = BorderStroke(
+            1.dp,
+            if (selected) {
+                MaterialTheme.colorScheme.primary.copy(alpha = 0.55f)
+            } else {
+                MaterialTheme.colorScheme.outlineVariant
+            },
+        ),
         tonalElevation = 0.dp,
         shadowElevation = 0.dp,
     ) {
-        Row(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(20.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
+                .padding(horizontal = 10.dp, vertical = 12.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
         ) {
             Surface(
-                modifier = Modifier.size(56.dp),
-                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(42.dp),
                 shape = MaterialTheme.shapes.large,
+                color = if (selected) {
+                    MaterialTheme.colorScheme.primary
+                } else {
+                    MaterialTheme.colorScheme.secondaryContainer
+                },
             ) {
                 Box(contentAlignment = Alignment.Center) {
                     Icon(
-                        imageVector = Icons.Filled.CameraAlt,
+                        imageVector = mode.icon,
                         contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onPrimary,
-                        modifier = Modifier.size(28.dp),
+                        modifier = Modifier.size(23.dp),
+                        tint = if (selected) {
+                            MaterialTheme.colorScheme.onPrimary
+                        } else {
+                            MaterialTheme.colorScheme.onSecondaryContainer
+                        },
                     )
                 }
             }
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = "New scan",
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer,
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = "Use the camera to capture a document.",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.78f),
-                )
-            }
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.ArrowForward,
-                contentDescription = "Start scan",
-                tint = MaterialTheme.colorScheme.onPrimaryContainer,
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = when (mode) {
+                    ScanMode.DOCUMENT -> "Document"
+                    ScanMode.ID_CARD -> "ID card"
+                    ScanMode.BOOK -> "Book"
+                },
+                style = MaterialTheme.typography.labelLarge,
+                fontWeight = FontWeight.SemiBold,
+                color = if (selected) {
+                    MaterialTheme.colorScheme.onPrimaryContainer
+                } else {
+                    MaterialTheme.colorScheme.onSurface
+                },
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+            Text(
+                text = when (mode) {
+                    ScanMode.DOCUMENT -> "Any page"
+                    ScanMode.ID_CARD -> "Front & back"
+                    ScanMode.BOOK -> "Open spread"
+                },
+                style = MaterialTheme.typography.labelSmall,
+                color = if (selected) {
+                    MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.72f)
+                } else {
+                    MaterialTheme.colorScheme.onSurfaceVariant
+                },
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
             )
         }
     }
 }
 
 @Composable
-private fun CompactActionCard(
+private fun CaptureActionGridCard(
     title: String,
     subtitle: String,
     icon: ImageVector,
-    accent: ToolAccent,
+    highlighted: Boolean,
     onClick: () -> Unit,
     enabled: Boolean = true,
     modifier: Modifier = Modifier,
 ) {
-    val (container, onContainer) = accentColors(accent)
     Surface(
         onClick = onClick,
         enabled = enabled,
-        modifier = modifier.fillMaxWidth(),
-        color = if (enabled) {
+        modifier = modifier.height(116.dp),
+        color = if (highlighted && enabled) {
+            MaterialTheme.colorScheme.primaryContainer
+        } else if (enabled) {
             MaterialTheme.colorScheme.surfaceContainer
         } else {
             MaterialTheme.colorScheme.surfaceContainerHigh
@@ -502,29 +566,51 @@ private fun CompactActionCard(
         shadowElevation = 0.dp,
         tonalElevation = 0.dp,
     ) {
-        Row(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
-                .heightIn(min = 92.dp)
-                .padding(horizontal = 16.dp, vertical = 12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(14.dp),
+                .padding(14.dp),
+            verticalArrangement = Arrangement.Center,
         ) {
-            Surface(
-                modifier = Modifier.size(44.dp),
-                color = if (enabled) container else MaterialTheme.colorScheme.surfaceContainerHighest,
-                shape = MaterialTheme.shapes.large,
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
             ) {
-                Box(contentAlignment = Alignment.Center) {
-                    Icon(
-                        imageVector = icon,
-                        contentDescription = title,
-                        tint = if (enabled) onContainer else MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.size(24.dp),
-                    )
+                Surface(
+                    modifier = Modifier.size(40.dp),
+                    color = if (highlighted && enabled) {
+                        MaterialTheme.colorScheme.primary
+                    } else {
+                        MaterialTheme.colorScheme.secondaryContainer
+                    },
+                    shape = MaterialTheme.shapes.large,
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Icon(
+                            imageVector = icon,
+                            contentDescription = null,
+                            tint = if (highlighted && enabled) {
+                                MaterialTheme.colorScheme.onPrimary
+                            } else {
+                                MaterialTheme.colorScheme.onSecondaryContainer
+                            },
+                            modifier = Modifier.size(22.dp),
+                        )
+                    }
                 }
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(20.dp),
+                )
             }
-            Column(modifier = Modifier.weight(1f)) {
+            Spacer(modifier = Modifier.height(8.dp))
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(2.dp),
+            ) {
                 Text(
                     text = title,
                     style = MaterialTheme.typography.titleSmall,
@@ -537,20 +623,26 @@ private fun CompactActionCard(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
-                Spacer(modifier = Modifier.height(2.dp))
                 Text(
                     text = subtitle,
-                    style = MaterialTheme.typography.bodySmall,
+                    style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(
                         alpha = if (enabled) 1f else 0.58f,
                     ),
-                    maxLines = 2,
+                    maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
             }
         }
     }
 }
+
+private val ScanMode.icon: ImageVector
+    get() = when (this) {
+        ScanMode.DOCUMENT -> Icons.Outlined.Description
+        ScanMode.ID_CARD -> Icons.Outlined.Badge
+        ScanMode.BOOK -> Icons.AutoMirrored.Outlined.MenuBook
+    }
 
 @Composable
 private fun ToolSectionHeader(

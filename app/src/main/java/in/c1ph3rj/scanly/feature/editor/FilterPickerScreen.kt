@@ -60,6 +60,7 @@ import `in`.c1ph3rj.scanly.core.ui.WindowWidthClass
 import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import `in`.c1ph3rj.scanly.domain.model.PageFilterAdjustments
 import `in`.c1ph3rj.scanly.domain.model.PageFilterPreset
+import `in`.c1ph3rj.scanly.domain.model.ScanMode
 import `in`.c1ph3rj.scanly.domain.model.ScanPage
 
 /**
@@ -91,6 +92,7 @@ fun FilterPickerScreen(
         selectedFilter = selectedFilter,
         cropQuad = cropQuad,
         filterAdjustments = filterAdjustments,
+        scanMode = page.scanMode,
     )
 
     Scaffold(
@@ -480,6 +482,7 @@ private fun FilterControlsPane(
 
                 FilterSelector(
                     selectedFilter = selectedFilter,
+                    scanMode = page.scanMode,
                     rawImagePath = page.rawImagePath,
                     fallbackImagePath = page.processedImagePath,
                     rotationDegrees = rotationDegrees,
@@ -569,6 +572,7 @@ private fun FilterScopeOption(
 @Composable
 private fun FilterSelector(
     selectedFilter: PageFilterPreset,
+    scanMode: ScanMode,
     rawImagePath: String?,
     fallbackImagePath: String?,
     rotationDegrees: Int,
@@ -577,17 +581,20 @@ private fun FilterSelector(
     gridLayout: Boolean = false,
     modifier: Modifier = Modifier,
 ) {
+    val availableFilters = filtersForMode(scanMode)
     val previewState by rememberFilterPreviewBitmaps(
         rawImagePath = rawImagePath,
         fallbackImagePath = fallbackImagePath,
         rotationDegrees = rotationDegrees,
         cropQuad = cropQuad,
+        scanMode = scanMode,
+        filterPresets = availableFilters,
     )
     val listState = rememberLazyListState()
     val gridState = rememberLazyGridState()
 
     LaunchedEffect(selectedFilter, gridLayout) {
-        val targetIndex = PageFilterPreset.entries.indexOf(selectedFilter)
+        val targetIndex = availableFilters.indexOf(selectedFilter)
         if (targetIndex < 0) return@LaunchedEffect
         if (gridLayout) {
             gridState.animateScrollToItem(targetIndex)
@@ -640,7 +647,7 @@ private fun FilterSelector(
                 verticalArrangement = Arrangement.spacedBy(10.dp),
                 contentPadding = PaddingValues(bottom = 8.dp),
             ) {
-                items(PageFilterPreset.entries, key = { it.storageValue }) { filter ->
+                items(availableFilters, key = { it.storageValue }) { filter ->
                     FilterItem(
                         filter = filter,
                         isSelected = selectedFilter == filter,
@@ -657,7 +664,7 @@ private fun FilterSelector(
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
                 contentPadding = PaddingValues(horizontal = 2.dp),
             ) {
-                items(PageFilterPreset.entries, key = { it.storageValue }) { filter ->
+                items(availableFilters, key = { it.storageValue }) { filter ->
                     FilterItem(
                         filter = filter,
                         isSelected = selectedFilter == filter,
@@ -773,6 +780,10 @@ private fun PageFilterPreset.toDisplayLabel(): String = when (this) {
     PageFilterPreset.MAGIC_COLOR -> "Magic"
     PageFilterPreset.RECEIPT -> "Receipt"
     PageFilterPreset.SOFT_BLACK_AND_WHITE -> "Text Enhance"
+    PageFilterPreset.ID_NATURAL -> "ID Natural"
+    PageFilterPreset.ID_CLEAR -> "ID Clear"
+    PageFilterPreset.ID_PORTRAIT -> "ID Portrait"
+    PageFilterPreset.ID_TEXT -> "ID Text"
 }
 
 private fun PageFilterPreset.shortLabel(): String = when (this) {
@@ -786,4 +797,32 @@ private fun PageFilterPreset.shortLabel(): String = when (this) {
     PageFilterPreset.MAGIC_COLOR -> "M"
     PageFilterPreset.RECEIPT -> "R"
     PageFilterPreset.SOFT_BLACK_AND_WHITE -> "TXT"
+    PageFilterPreset.ID_NATURAL -> "ID"
+    PageFilterPreset.ID_CLEAR -> "IDC"
+    PageFilterPreset.ID_PORTRAIT -> "IDP"
+    PageFilterPreset.ID_TEXT -> "IDT"
 }
+
+private fun filtersForMode(scanMode: ScanMode): List<PageFilterPreset> =
+    if (scanMode == ScanMode.ID_CARD) {
+        listOf(
+            PageFilterPreset.ORIGINAL,
+            PageFilterPreset.AUTO,
+            PageFilterPreset.ID_NATURAL,
+            PageFilterPreset.ID_CLEAR,
+            PageFilterPreset.ID_PORTRAIT,
+            PageFilterPreset.ID_TEXT,
+            PageFilterPreset.ENHANCED_COLOR,
+            PageFilterPreset.GRAYSCALE,
+            PageFilterPreset.CLEAN,
+            PageFilterPreset.SHADOW_REDUCTION,
+            PageFilterPreset.BLACK_AND_WHITE,
+        )
+    } else {
+        PageFilterPreset.entries.filterNot {
+            it == PageFilterPreset.ID_NATURAL ||
+                it == PageFilterPreset.ID_CLEAR ||
+                it == PageFilterPreset.ID_PORTRAIT ||
+                it == PageFilterPreset.ID_TEXT
+        }
+    }

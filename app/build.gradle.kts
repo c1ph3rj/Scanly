@@ -168,6 +168,7 @@ dependencies {
     implementation(libs.google.play.app.update.ktx)
     implementation(libs.pdfbox.android)
     implementation(libs.mlkit.barcode.scanning)
+    implementation(libs.mlkit.face.detection)
     implementation(libs.zxing.core)
     implementation(libs.androidx.work.runtime)
     implementation(libs.androidx.hilt.work)

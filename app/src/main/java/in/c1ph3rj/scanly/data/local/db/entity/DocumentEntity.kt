@@ -30,4 +30,7 @@ data class DocumentEntity(
     val createdAtMillis: Long,
     val updatedAtMillis: Long,
     val groupId: String? = null,
+    val preferredScanMode: String = "document",
+    val preferredIdFilterPreset: String? = null,
+    val preferredBookFilterPreset: String? = null,
 )

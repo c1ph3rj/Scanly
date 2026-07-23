@@ -1,6 +1,6 @@
 # Database (Room)
 
-Scanly persists document metadata in a **Room** database at schema version **4**.
+Scanly persists document metadata in a **Room** database at schema version **5**.
 
 ## Database file
 
@@ -8,7 +8,7 @@ Scanly persists document metadata in a **Room** database at schema version **4**
 | --- | --- |
 | Class | `ScanlyDatabase` |
 | Path | `databases/scanly.db` (+ `-wal`, `-shm`) under app internal storage |
-| Schema version | `4` |
+| Schema version | `5` |
 | `exportSchema` | `false` |
 
 Location: `app/src/main/java/in/c1ph3rj/scanly/data/local/db/ScanlyDatabase.kt`
@@ -24,6 +24,9 @@ Location: `app/src/main/java/in/c1ph3rj/scanly/data/local/db/ScanlyDatabase.kt`
 | `pageCount` | INTEGER | Denormalized count |
 | `coverThumbnailPath` | TEXT? | Path to cover thumb |
 | `preferredFilterPreset` | TEXT? | Default filter for new pages |
+| `preferredScanMode` | TEXT | Mode for future captures (`document` default) |
+| `preferredIdFilterPreset` | TEXT? | ID-mode filter preference |
+| `preferredBookFilterPreset` | TEXT? | Book-mode filter preference |
 | `rootDirectoryPath` | TEXT | App-private document directory |
 | `createdAtMillis` | INTEGER | Creation timestamp |
 | `updatedAtMillis` | INTEGER | Last modification |
@@ -48,6 +51,9 @@ Indexes: `updatedAtMillis`, `groupId`
 | `filterContrast` | REAL | Post-filter contrast tweak (`-1..1`, default 0) |
 | `filterSaturation` | REAL | Post-filter saturation tweak (`-1..1`, default 0) |
 | `filterSharpness` | REAL | Post-filter sharpness (`0..1`, default 0) |
+| `scanMode` | TEXT | Capture mode (`document` default) |
+| `idCardPairId` | TEXT? | Links ID front/back pages |
+| `idCardSide` | TEXT? | `front` or `back` within a pair |
 | `processingState` | TEXT | `CAPTURED`, `PROCESSED`, or `NEEDS_REVIEW` |
 | `createdAtMillis` | INTEGER | Creation timestamp |
 
@@ -94,7 +100,11 @@ Adds per-page filter customization columns on `scan_pages` (all `REAL NOT NULL D
 - `filterSaturation`
 - `filterSharpness`
 
-Registered in `DatabaseModule` with `MIGRATION_1_2` and `MIGRATION_2_3`.
+### `MIGRATION_4_5`
+
+Adds `preferredScanMode` plus per-mode filter preferences to `documents`, and `scanMode`, `idCardPairId`, and `idCardSide` to `scan_pages`. Existing rows receive `document`; nullable ID/filter metadata remains unset.
+
+All migrations are registered in `DatabaseModule`.
 
 ## Repository mapping
 
@@ -108,8 +118,9 @@ Registered in `DatabaseModule` with `MIGRATION_1_2` and `MIGRATION_2_3`.
 
 ## Upgrade notes
 
-- Upgrading from v1.0.0: Room migrates automatically from schema 1 or 2 to 3.
+- Upgrading from older releases: Room applies each registered migration through schema 5.
 - Existing documents remain; they appear ungrouped until moved into a collection.
+- Existing documents/pages use Document mode and retain their prior filter behavior.
 - No manual migration steps required.
 
 See [../releases.md](../releases.md) and [../../VERSION.md](../../VERSION.md).

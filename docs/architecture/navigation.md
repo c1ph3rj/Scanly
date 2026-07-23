@@ -40,7 +40,7 @@ These top-level routes still exist but show `FeaturePlaceholderScreen` — they 
 
 | Route pattern | Helper object | Screen |
 | --- | --- | --- |
-| `document/{documentId}` | `DocumentDestination` | Document detail |
+| `document/{documentId}` | `DocumentDestination` | Document detail, including the editable preferred scan-mode tag |
 | `camera/session/{documentId}?replacePageId={pageId}` | `ScanSessionDestination` | Scan session |
 | `preview/page/{pageId}` | `PageImagePreviewDestination` | Page preview |
 | `editor/page/{pageId}` | `PageEditorDestination` | Page editor (preview, filters/adjust overlays, retake, delete) |
@@ -68,6 +68,7 @@ These top-level routes still exist but show `FeaturePlaceholderScreen` — they 
 
 - `documentId` (required) — target document
 - `replacePageId` (optional) — when set, capture replaces this page instead of adding a new one. On complete, navigates to `editor/page/{replacePageId}`.
+- Content mode is persisted on the document/page, not encoded into the route. Document is the default; a replacement session locks to the target page's original mode.
 
 ### Settings sub-screen ViewModel sharing
 
@@ -115,7 +116,9 @@ Launch
 Home / Library
   └─► Create + Scan (optional Suggest name)
         └─► camera/session/{newDocId}
-              └─► capture page(s)
+              ├─► Document → generic page capture
+              ├─► ID → front → guided back (paired)
+              └─► Book → complete two-page spread (one stored page)
                     └─► document/{docId}
 ```
 
@@ -160,7 +163,9 @@ Library (Folders filter) or Home (recent groups)
 
 ```
 document/{docId} or group/{groupId}
-  └─► export sheet (PDF options: password, page numbers, orientation, size, margins)
+  └─► export sheet (arrangement, password, page numbers, orientation, size, margins)
+        ├─► Standard → one PDF page per stored page
+        ├─► Smart → paired ID on portrait A4; Book spread on landscape A4
         ├─► Save → configured Downloads/SAF destination (unique filenames)
         └─► Share → cache/exports → FileProvider share sheet
 ```

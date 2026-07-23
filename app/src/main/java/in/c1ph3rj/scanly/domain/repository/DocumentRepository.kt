@@ -3,6 +3,7 @@ package `in`.c1ph3rj.scanly.domain.repository
 import `in`.c1ph3rj.scanly.core.common.ScanlyResult
 import `in`.c1ph3rj.scanly.domain.model.DocumentTitleFormat
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
+import `in`.c1ph3rj.scanly.domain.model.ScanMode
 import kotlinx.coroutines.flow.Flow
 
 interface DocumentRepository {
@@ -21,7 +22,13 @@ interface DocumentRepository {
     suspend fun createDocument(
         title: String,
         groupId: String? = null,
+        initialScanMode: ScanMode = ScanMode.DOCUMENT,
     ): ScanlyResult<String>
+
+    suspend fun setPreferredScanMode(
+        documentId: String,
+        scanMode: ScanMode,
+    ): ScanlyResult<Unit>
 
     suspend fun createImportedDocument(
         groupId: String? = null,

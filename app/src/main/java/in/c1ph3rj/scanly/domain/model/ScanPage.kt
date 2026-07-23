@@ -16,4 +16,7 @@ data class ScanPage(
     val processingState: PageProcessingState,
     val createdAtMillis: Long,
     val updatedAtMillis: Long,
+    val scanMode: ScanMode = ScanMode.DOCUMENT,
+    val idCardPairId: String? = null,
+    val idCardSide: IdCardSide? = null,
 )

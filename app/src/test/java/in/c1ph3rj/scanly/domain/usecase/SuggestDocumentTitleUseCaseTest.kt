@@ -1,6 +1,7 @@
 package `in`.c1ph3rj.scanly.domain.usecase
 
 import `in`.c1ph3rj.scanly.domain.model.DocumentTitleFormat
+import `in`.c1ph3rj.scanly.domain.model.ScanMode
 import `in`.c1ph3rj.scanly.domain.repository.DocumentRepository
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
@@ -40,7 +41,11 @@ class SuggestDocumentTitleUseCaseTest {
             return suggestedTitle
         }
 
-        override suspend fun createDocument(title: String, groupId: String?) = error("Not used")
+        override suspend fun createDocument(
+            title: String,
+            groupId: String?,
+            initialScanMode: ScanMode,
+        ) = error("Not used")
 
         override suspend fun createImportedDocument(groupId: String?) = error("Not used")
 
@@ -49,5 +54,8 @@ class SuggestDocumentTitleUseCaseTest {
         override suspend fun deleteDocument(documentId: String) = error("Not used")
 
         override suspend fun deleteEmptyDocuments() = error("Not used")
+
+        override suspend fun setPreferredScanMode(documentId: String, scanMode: ScanMode) =
+            error("Not used")
     }
 }

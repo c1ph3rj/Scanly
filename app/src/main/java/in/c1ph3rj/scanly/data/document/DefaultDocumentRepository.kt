@@ -14,6 +14,7 @@ import `in`.c1ph3rj.scanly.data.archive.LibraryOperationCoordinator
 import `in`.c1ph3rj.scanly.data.storage.DocumentStorageManager
 import `in`.c1ph3rj.scanly.domain.model.DocumentTitleFormat
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
+import `in`.c1ph3rj.scanly.domain.model.ScanMode
 import `in`.c1ph3rj.scanly.domain.repository.DocumentRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -67,6 +68,7 @@ class DefaultDocumentRepository @Inject constructor(
     override suspend fun createDocument(
         title: String,
         groupId: String?,
+        initialScanMode: ScanMode,
     ): ScanlyResult<String> =
         withContext(dispatchers.io) {
             operationCoordinator.withMutation {
@@ -92,6 +94,7 @@ class DefaultDocumentRepository @Inject constructor(
                     createdAtMillis = timestamp,
                     updatedAtMillis = timestamp,
                     groupId = groupId,
+                    preferredScanMode = initialScanMode.storageValue,
                 )
                 database.withTransaction {
                     documentDao.insert(document)
@@ -118,7 +121,39 @@ class DefaultDocumentRepository @Inject constructor(
         val title = DocumentPresentationFormatter.uniqueImportedDocumentTitle(
             existingTitles = documentDao.getAllTitles(),
         )
-        createDocument(title = title, groupId = groupId)
+        createDocument(
+            title = title,
+            groupId = groupId,
+            initialScanMode = ScanMode.DOCUMENT,
+        )
+    }
+
+    override suspend fun setPreferredScanMode(
+        documentId: String,
+        scanMode: ScanMode,
+    ): ScanlyResult<Unit> = withContext(dispatchers.io) {
+        operationCoordinator.withMutation {
+            runCatching {
+                val document = documentDao.getDocument(documentId)
+                    ?: error("Document not found.")
+                documentDao.update(
+                    document.copy(
+                        preferredScanMode = scanMode.storageValue,
+                        updatedAtMillis = System.currentTimeMillis(),
+                    ),
+                )
+            }.fold(
+                onSuccess = { ScanlyResult.Success(Unit) },
+                onFailure = { throwable ->
+                    ScanlyResult.Failure(
+                        ScanlyError(
+                            message = throwable.message ?: "Could not change scan mode.",
+                            cause = throwable,
+                        ),
+                    )
+                },
+            )
+        }
     }
 
     override suspend fun renameDocument(
@@ -219,6 +254,7 @@ class DefaultDocumentRepository @Inject constructor(
         createdAtMillis = createdAtMillis,
         updatedAtMillis = updatedAtMillis,
         groupId = groupId,
+        preferredScanMode = ScanMode.fromStorage(preferredScanMode),
     )
 }
 

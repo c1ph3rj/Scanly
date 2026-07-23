@@ -8,6 +8,25 @@ The scan session (`ScanSessionScreen` + `ScanSessionViewModel`) uses **CameraX**
 
 Live detection is more than a single corner model: a **physical-document semantic gate**, **configurable corner models**, **quad geometry policy**, **temporal stability**, and optional **book-page isolation** all shape what the overlay draws and when auto-capture may fire.
 
+## Capture content modes
+
+The pill above the shutter selects how future captures in the current session are interpreted. Tools presents the same Document, ID card, and Book choices as icon cards before the document is created.
+
+The camera selector adapts to the available space: portrait uses a compact horizontal pill, while landscape uses a vertical icon-and-label rail in the capture dock. Both layouts expose radio-button selected semantics, and the landscape rows use 48 dp targets.
+
+| Mode | Detection and processing | Capture result |
+| --- | --- | --- |
+| **Document** | Existing generic detector, book-sliver handling, and filter behavior are unchanged | One normal page |
+| **ID** | Accepts wide card geometry, skips book-gutter refinement, draws a card guide, and defaults to conservative color processing | Guided front then back, linked by pair ID and side |
+| **Book** | Requires a complete wide spread plus a detected center gutter for auto-capture; keeps the outer quad | One wide page containing both facing pages |
+
+- Document is the default for new and legacy documents.
+- A mode change affects captures prepared after the change; it does not reinterpret existing pages.
+- Document detail displays the current type as a colored tag above its metadata. Tapping the tag opens the type picker and updates the preferred mode for new pages in that document.
+- Retake preserves the replaced page's original mode and ID pairing metadata.
+- ID filters are global, conservative adjustments (`ID Natural`, `ID Clear`) with no face detector or new ML dependency.
+- Raw JPEGs remain immutable for every mode.
+
 ## Camera stack
 
 | Dependency | Role |
@@ -38,6 +57,8 @@ Route: `camera/session/{documentId}?replacePageId={pageId}`
 3. On complete → navigate to `editor/page/{pageId}` (v1.0.9 behavior).
 
 Triggered from page editor **Retake** button (and page preview overflow).
+
+For an ID page, retake replaces only that side and preserves its pair ID/side. For a Book page, retake remains one spread capture.
 
 ## Live guidance pipeline
 
@@ -94,15 +115,16 @@ Model choice is independent for live preview vs post-processing (DataStore). **A
 
 Ambiguous live (and post-processing) results may be **conditionally verified with the High model** before acceptance.
 
-### Book-page isolation
+### Book-aware detection
 
 | Component | Role |
 | --- | --- |
 | `BookPageQuadAnalyzer` | Sparse boundary/gutter sampler (few thousand pixels, keeps live latency low) |
 | `BookAwareCornerResolver` | Applies book-aware trim or rejection on top of corner results |
 
-- Strong **off-centre** gutter → trim the smaller adjacent-page sliver and keep the dominant page
-- **Centred** gutter with two plausible pages → suppress outline / ask user to move closer
+- Document mode keeps the existing behavior: strong **off-centre** gutter trims a smaller adjacent-page sliver; a centered two-page result asks the user to move closer.
+- ID mode bypasses gutter analysis.
+- Book mode uses the center gutter as spread evidence, draws the outer boundary plus gutter guide, and never splits or mesh-dewarps the spread.
 
 ### Quality feedback (`CaptureFrameQualityAnalyzer`)
 

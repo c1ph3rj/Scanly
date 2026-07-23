@@ -5,6 +5,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import `in`.c1ph3rj.scanly.domain.model.DocumentCornerModel
+import `in`.c1ph3rj.scanly.domain.model.ScanMode
 
 class DocumentQuadPolicyTest {
     @Test
@@ -44,6 +45,70 @@ class DocumentQuadPolicyTest {
             bottomLeft = NormalizedPoint(0.10f, 0.70f),
         )
         assertTrue(DocumentQuadPolicy.isStillProcessReady(idCard))
+    }
+
+    @Test
+    fun idModeAcceptsWideCardForLiveCaptureWithoutChangingDocumentPolicy() {
+        val idCard = DocumentCornerQuad(
+            topLeft = NormalizedPoint(0.12f, 0.30f),
+            topRight = NormalizedPoint(0.88f, 0.30f),
+            bottomRight = NormalizedPoint(0.88f, 0.70f),
+            bottomLeft = NormalizedPoint(0.12f, 0.70f),
+        )
+
+        assertFalse(DocumentQuadPolicy.isReady(idCard, QuadReadiness.LIVE_CAPTURE))
+        assertTrue(
+            DocumentQuadPolicy.isReady(
+                idCard,
+                QuadReadiness.LIVE_CAPTURE,
+                ScanMode.ID_CARD,
+            ),
+        )
+    }
+
+    @Test
+    fun idModeWaitsUntilCardIsCenteredInGuide() {
+        val centered = DocumentCornerQuad(
+            topLeft = NormalizedPoint(0.12f, 0.30f),
+            topRight = NormalizedPoint(0.88f, 0.30f),
+            bottomRight = NormalizedPoint(0.88f, 0.70f),
+            bottomLeft = NormalizedPoint(0.12f, 0.70f),
+        )
+        val offCenter = DocumentCornerQuad(
+            topLeft = NormalizedPoint(0.03f, 0.12f),
+            topRight = NormalizedPoint(0.69f, 0.12f),
+            bottomRight = NormalizedPoint(0.69f, 0.46f),
+            bottomLeft = NormalizedPoint(0.03f, 0.46f),
+        )
+
+        assertTrue(
+            DocumentQuadPolicy.isReady(centered, QuadReadiness.LIVE_CAPTURE, ScanMode.ID_CARD),
+        )
+        assertFalse(
+            DocumentQuadPolicy.isReady(offCenter, QuadReadiness.LIVE_CAPTURE, ScanMode.ID_CARD),
+        )
+        assertTrue(
+            DocumentQuadPolicy.idCardGuideFitScore(centered) >
+                DocumentQuadPolicy.idCardGuideFitScore(offCenter),
+        )
+    }
+
+    @Test
+    fun bookModeAcceptsACompleteWideSpread() {
+        val spread = DocumentCornerQuad(
+            topLeft = NormalizedPoint(0.08f, 0.20f),
+            topRight = NormalizedPoint(0.92f, 0.20f),
+            bottomRight = NormalizedPoint(0.92f, 0.80f),
+            bottomLeft = NormalizedPoint(0.08f, 0.80f),
+        )
+
+        assertTrue(
+            DocumentQuadPolicy.isReady(
+                spread,
+                QuadReadiness.LIVE_CAPTURE,
+                ScanMode.BOOK,
+            ),
+        )
     }
 
     @Test

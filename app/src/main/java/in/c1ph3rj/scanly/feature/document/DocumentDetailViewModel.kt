@@ -12,6 +12,7 @@ import `in`.c1ph3rj.scanly.domain.model.ShareArtifact
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
 import `in`.c1ph3rj.scanly.domain.model.GroupTitleFormat
 import `in`.c1ph3rj.scanly.domain.model.ScanPage
+import `in`.c1ph3rj.scanly.domain.model.ScanMode
 import `in`.c1ph3rj.scanly.domain.usecase.CreateGroupUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.SuggestGroupTitleUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.DeleteDocumentUseCase
@@ -27,6 +28,7 @@ import `in`.c1ph3rj.scanly.domain.usecase.PrepareDocumentImageShareUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ImportImagesUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.RenameDocumentUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.SetDocumentGroupUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.SetDocumentScanModeUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.SaveExportArtifactUseCase
 import android.net.Uri
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -85,6 +87,7 @@ class DocumentDetailViewModel @Inject constructor(
     private val deleteDocumentUseCase: DeleteDocumentUseCase,
     private val observeGroupsUseCase: ObserveGroupsUseCase,
     private val setDocumentGroupUseCase: SetDocumentGroupUseCase,
+    private val setDocumentScanModeUseCase: SetDocumentScanModeUseCase,
     private val createGroupUseCase: CreateGroupUseCase,
     private val suggestGroupTitleUseCase: SuggestGroupTitleUseCase,
 ) : ViewModel() {
@@ -142,6 +145,31 @@ class DocumentDetailViewModel @Inject constructor(
                 )
             }
         }
+    }
+
+    fun setScanMode(scanMode: ScanMode) {
+        if (_uiState.value.document?.preferredScanMode == scanMode) {
+            return
+        }
+        viewModelScope.launch {
+            when (val result = setDocumentScanModeUseCase(documentId, scanMode)) {
+                is ScanlyResult.Success -> _events.emit(
+                    DocumentDetailEvent.ShowMessage(
+                        "${scanMode.detailLabel()} mode will be used for new pages.",
+                    ),
+                )
+
+                is ScanlyResult.Failure -> _events.emit(
+                    DocumentDetailEvent.ShowMessage(result.error.message),
+                )
+            }
+        }
+    }
+
+    private fun ScanMode.detailLabel(): String = when (this) {
+        ScanMode.DOCUMENT -> "Document"
+        ScanMode.ID_CARD -> "ID card"
+        ScanMode.BOOK -> "Book"
     }
 
     suspend fun suggestGroupTitle(format: GroupTitleFormat): String =

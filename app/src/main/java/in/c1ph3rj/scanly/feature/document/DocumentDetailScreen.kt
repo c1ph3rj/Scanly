@@ -35,8 +35,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.MenuBook
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Badge
 import androidx.compose.material.icons.filled.CameraAlt
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Crop
 import androidx.compose.material.icons.filled.DeleteOutline
 import androidx.compose.material.icons.filled.Description
@@ -88,6 +91,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.luminance
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInRoot
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -115,6 +119,7 @@ import `in`.c1ph3rj.scanly.domain.model.PageProcessingState
 import `in`.c1ph3rj.scanly.domain.model.PdfExportOptions
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
 import `in`.c1ph3rj.scanly.domain.model.ScanPage
+import `in`.c1ph3rj.scanly.domain.model.ScanMode
 import `in`.c1ph3rj.scanly.domain.model.ShareArtifact
 import `in`.c1ph3rj.scanly.feature.components.PagePreview
 import `in`.c1ph3rj.scanly.feature.components.ScanlyImportProgressOverlay
@@ -209,6 +214,7 @@ fun DocumentDetailRoute(
         },
         onRenameDocument = viewModel::renameDocument,
         onDeleteDocument = viewModel::deleteDocument,
+        onScanModeSelected = viewModel::setScanMode,
     )
 }
 
@@ -235,6 +241,7 @@ fun DocumentDetailScreen(
     onImportImage: () -> Unit,
     onRenameDocument: (String) -> Unit,
     onDeleteDocument: () -> Unit,
+    onScanModeSelected: (ScanMode) -> Unit,
 ) {
     val windowSizeInfo = rememberWindowSizeInfo()
     val useMasterDetailLayout = windowSizeInfo.useTabletLandscapeLayout
@@ -247,6 +254,7 @@ fun DocumentDetailScreen(
     var pdfActionMode by rememberSaveable { mutableStateOf<PdfActionMode?>(null) }
     var pdfOptions by remember { mutableStateOf(PdfExportOptions()) }
     var addPageSheetVisible by rememberSaveable { mutableStateOf(false) }
+    var scanModeSheetVisible by rememberSaveable { mutableStateOf(false) }
     val document = uiState.document
     val documentUpdatedDate = remember(document?.updatedAtMillis) {
         document?.updatedAtMillis?.toShortDate()
@@ -446,6 +454,7 @@ fun DocumentDetailScreen(
                 onDeleteSelectedPage = { deleteDialogVisible = true },
                 onAddPage = { addPageSheetVisible = true },
                 onMoveToFolder = { moveSheetVisible = true },
+                onChangeScanMode = { scanModeSheetVisible = true },
                 onPreviewPage = { pageId -> previewPageId = pageId },
                 density = density,
             )
@@ -531,6 +540,8 @@ fun DocumentDetailScreen(
                     pageCountLabel = uiState.pages.size.toPageCountLabel(),
                     updatedDate = documentUpdatedDate,
                     onMoveToFolder = { moveSheetVisible = true },
+                    scanMode = document.preferredScanMode,
+                    onChangeScanMode = { scanModeSheetVisible = true },
                 )
             }
 
@@ -653,6 +664,17 @@ fun DocumentDetailScreen(
                 }
             }
         }
+    }
+
+    if (scanModeSheetVisible && document != null) {
+        ScanModePickerSheet(
+            selectedMode = document.preferredScanMode,
+            onSelectMode = { mode ->
+                onScanModeSelected(mode)
+                scanModeSheetVisible = false
+            },
+            onDismiss = { scanModeSheetVisible = false },
+        )
     }
 
     if (deleteDialogVisible && selectedPage != null) {
@@ -1065,6 +1087,7 @@ private fun DocumentMasterDetailLayout(
     onDeleteSelectedPage: () -> Unit,
     onAddPage: () -> Unit,
     onMoveToFolder: () -> Unit,
+    onChangeScanMode: () -> Unit,
     onPreviewPage: (String) -> Unit,
     density: Density,
 ) {
@@ -1137,6 +1160,8 @@ private fun DocumentMasterDetailLayout(
                         pageCountLabel = uiState.pages.size.toPageCountLabel(),
                         updatedDate = documentUpdatedDate,
                         onMoveToFolder = onMoveToFolder,
+                        scanMode = document.preferredScanMode,
+                        onChangeScanMode = onChangeScanMode,
                     )
                 }
 
@@ -1328,23 +1353,154 @@ private fun DocumentMetricsRow(
     pageCountLabel: String,
     updatedDate: String?,
     onMoveToFolder: () -> Unit,
+    scanMode: ScanMode,
+    onChangeScanMode: () -> Unit,
 ) {
-    Row(
+    Column(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalAlignment = Alignment.CenterVertically,
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         MetricChip(
-            label = groupLabel,
-            icon = Icons.Filled.Folder,
-            modifier = Modifier.clickable(onClick = onMoveToFolder),
-            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-            contentColor = MaterialTheme.colorScheme.primary,
-            border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.42f)),
+            label = scanMode.detailLabel,
+            icon = scanMode.detailIcon,
+            modifier = Modifier.clickable(
+                onClickLabel = "Change document type",
+                onClick = onChangeScanMode,
+            ),
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.52f)),
         )
-        MetricChip(label = pageCountLabel)
-        updatedDate?.let { date ->
-            MetricChip(label = date)
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            MetricChip(
+                label = groupLabel,
+                icon = Icons.Filled.Folder,
+                modifier = Modifier.clickable(onClick = onMoveToFolder),
+                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                contentColor = MaterialTheme.colorScheme.primary,
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.42f)),
+            )
+            MetricChip(label = pageCountLabel)
+            updatedDate?.let { date ->
+                MetricChip(label = date)
+            }
+        }
+    }
+}
+
+private val ScanMode.detailLabel: String
+    get() = when (this) {
+        ScanMode.DOCUMENT -> "Document"
+        ScanMode.ID_CARD -> "ID card"
+        ScanMode.BOOK -> "Book"
+    }
+
+private val ScanMode.detailIcon: ImageVector
+    get() = when (this) {
+        ScanMode.DOCUMENT -> Icons.Filled.Description
+        ScanMode.ID_CARD -> Icons.Filled.Badge
+        ScanMode.BOOK -> Icons.AutoMirrored.Filled.MenuBook
+    }
+
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+private fun ScanModePickerSheet(
+    selectedMode: ScanMode,
+    onSelectMode: (ScanMode) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    ModalBottomSheet(onDismissRequest = onDismiss) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 20.dp, end = 20.dp, bottom = 28.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Text(
+                text = "Document type",
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.SemiBold,
+            )
+            Text(
+                text = "Sets the mode for new pages. Existing pages keep their capture mode.",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            ScanMode.entries.forEach { mode ->
+                val selected = mode == selectedMode
+                Surface(
+                    onClick = { onSelectMode(mode) },
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = MaterialTheme.shapes.extraLarge,
+                    color = if (selected) {
+                        MaterialTheme.colorScheme.primaryContainer
+                    } else {
+                        MaterialTheme.colorScheme.surfaceContainer
+                    },
+                    border = BorderStroke(
+                        1.dp,
+                        if (selected) {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            MaterialTheme.colorScheme.outlineVariant
+                        },
+                    ),
+                ) {
+                    Row(
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(14.dp),
+                    ) {
+                        Surface(
+                            modifier = Modifier.size(42.dp),
+                            shape = MaterialTheme.shapes.large,
+                            color = if (selected) {
+                                MaterialTheme.colorScheme.primary
+                            } else {
+                                MaterialTheme.colorScheme.secondaryContainer
+                            },
+                        ) {
+                            Box(contentAlignment = Alignment.Center) {
+                                Icon(
+                                    imageVector = mode.detailIcon,
+                                    contentDescription = null,
+                                    tint = if (selected) {
+                                        MaterialTheme.colorScheme.onPrimary
+                                    } else {
+                                        MaterialTheme.colorScheme.onSecondaryContainer
+                                    },
+                                )
+                            }
+                        }
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = mode.detailLabel,
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.SemiBold,
+                            )
+                            Text(
+                                text = when (mode) {
+                                    ScanMode.DOCUMENT -> "General pages and receipts"
+                                    ScanMode.ID_CARD -> "Front and back of an ID"
+                                    ScanMode.BOOK -> "One open-book spread"
+                                },
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                        if (selected) {
+                            Icon(
+                                imageVector = Icons.Filled.Check,
+                                contentDescription = "Selected",
+                                tint = MaterialTheme.colorScheme.primary,
+                            )
+                        }
+                    }
+                }
+            }
         }
     }
 }

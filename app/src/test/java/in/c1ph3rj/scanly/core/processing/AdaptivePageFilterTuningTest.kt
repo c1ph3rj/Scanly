@@ -1,6 +1,7 @@
 package `in`.c1ph3rj.scanly.core.processing
 
 import `in`.c1ph3rj.scanly.domain.model.PageFilterPreset
+import `in`.c1ph3rj.scanly.domain.model.ScanMode
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -226,6 +227,43 @@ class AdaptivePageFilterTuningTest {
 
         assertTrue(shadowReduction.localContrastStrength < color.localContrastStrength)
         assertTrue(shadowReduction.whiteBalanceStrength > color.whiteBalanceStrength)
+    }
+
+    @Test
+    fun automaticUsesModeSpecificConservativeDefaults() {
+        val colorPage = profile(
+            saturation = 42.0,
+            colorRatio = 0.12,
+        )
+        val shadowedBook = profile(
+            shadowRatio = 0.22,
+            backgroundUnevenness = 20.0,
+        )
+
+        assertEquals(
+            PageFilterPreset.ID_TEXT,
+            AdaptivePageFilterTuning.automatic(colorPage, ScanMode.ID_CARD),
+        )
+        assertEquals(
+            PageFilterPreset.ID_PORTRAIT,
+            AdaptivePageFilterTuning.automatic(
+                profile = colorPage,
+                scanMode = ScanMode.ID_CARD,
+                faceDetected = true,
+            ),
+        )
+        assertEquals(
+            PageFilterPreset.ID_NATURAL,
+            AdaptivePageFilterTuning.automatic(
+                profile = colorPage,
+                scanMode = ScanMode.ID_CARD,
+                faceDetectionAvailable = false,
+            ),
+        )
+        assertEquals(
+            PageFilterPreset.SHADOW_REDUCTION,
+            AdaptivePageFilterTuning.automatic(shadowedBook, ScanMode.BOOK),
+        )
     }
 
     private fun profile(

@@ -1,7 +1,9 @@
 package `in`.c1ph3rj.scanly.core.processing
 
 import android.graphics.Bitmap
+import `in`.c1ph3rj.scanly.core.ml.NormalizedFaceRegion
 import `in`.c1ph3rj.scanly.domain.model.PageFilterPreset
+import `in`.c1ph3rj.scanly.domain.model.ScanMode
 import org.opencv.android.OpenCVLoader
 import org.opencv.android.Utils
 import org.opencv.core.Core
@@ -26,11 +28,23 @@ object OpenCvPageFilterProcessor {
     fun apply(
         sourceBitmap: Bitmap,
         filterPreset: PageFilterPreset,
-    ): Bitmap = applyWithResolvedPreset(sourceBitmap, filterPreset).bitmap
+        scanMode: ScanMode = ScanMode.DOCUMENT,
+        faceRegions: List<NormalizedFaceRegion> = emptyList(),
+        faceDetectionAvailable: Boolean = true,
+    ): Bitmap = applyWithResolvedPreset(
+        sourceBitmap,
+        filterPreset,
+        scanMode,
+        faceRegions,
+        faceDetectionAvailable,
+    ).bitmap
 
     fun applyWithResolvedPreset(
         sourceBitmap: Bitmap,
         filterPreset: PageFilterPreset,
+        scanMode: ScanMode = ScanMode.DOCUMENT,
+        faceRegions: List<NormalizedFaceRegion> = emptyList(),
+        faceDetectionAvailable: Boolean = true,
     ): AppliedFilter {
         ensureInitialized()
         if (filterPreset == PageFilterPreset.ORIGINAL) {
@@ -49,12 +63,30 @@ object OpenCvPageFilterProcessor {
                     sourceAspectRatio = aspectRatio(sourceBitmap.width, sourceBitmap.height),
                 )
             }.getOrNull()
-            val resolvedPreset = resolvePreset(filterPreset, profile)
-            val bitmap = renderWithFallback(
+            val resolvedPreset = resolvePreset(
+                filterPreset = filterPreset,
+                profile = profile,
+                scanMode = scanMode,
+                faceDetected = faceRegions.isNotEmpty(),
+                faceDetectionAvailable = faceDetectionAvailable,
+            )
+            val renderedBitmap = renderWithFallback(
                 sourceRgba = sourceRgba,
                 filterPreset = resolvedPreset,
                 profile = profile,
+                scanMode = scanMode,
             )
+            val bitmap = runCatching {
+                IdCardFaceAwareFilter.apply(
+                    sourceBitmap = sourceBitmap,
+                    filteredBitmap = renderedBitmap,
+                    faceRegions = faceRegions,
+                    preset = resolvedPreset,
+                )
+            }.getOrDefault(renderedBitmap)
+            if (bitmap !== renderedBitmap) {
+                renderedBitmap.recycle()
+            }
             AppliedFilter(bitmap = bitmap, appliedPreset = resolvedPreset)
         } finally {
             sourceRgba.release()
@@ -65,9 +97,17 @@ object OpenCvPageFilterProcessor {
     private fun resolvePreset(
         filterPreset: PageFilterPreset,
         profile: PageImageProfile?,
+        scanMode: ScanMode,
+        faceDetected: Boolean = false,
+        faceDetectionAvailable: Boolean = true,
     ): PageFilterPreset =
         if (filterPreset == PageFilterPreset.AUTO) {
-            AdaptivePageFilterTuning.automatic(profile)
+            AdaptivePageFilterTuning.automatic(
+                profile = profile,
+                scanMode = scanMode,
+                faceDetected = faceDetected,
+                faceDetectionAvailable = faceDetectionAvailable,
+            )
         } else {
             filterPreset
         }
@@ -75,6 +115,9 @@ object OpenCvPageFilterProcessor {
     internal fun applyAll(
         sourceBitmap: Bitmap,
         filterPresets: List<PageFilterPreset> = PageFilterPreset.entries,
+        scanMode: ScanMode = ScanMode.DOCUMENT,
+        faceRegions: List<NormalizedFaceRegion> = emptyList(),
+        faceDetectionAvailable: Boolean = true,
     ): Map<PageFilterPreset, Bitmap> {
         ensureInitialized()
         val sourceRgba = sourceBitmap.toMat()
@@ -88,11 +131,29 @@ object OpenCvPageFilterProcessor {
             }.getOrNull()
             filterPresets.associateWith { filterPreset ->
                 runCatching {
-                    renderWithFallback(
-                        sourceRgba = sourceRgba,
+                    val resolvedPreset = resolvePreset(
                         filterPreset = filterPreset,
                         profile = profile,
+                        scanMode = scanMode,
+                        faceDetected = faceRegions.isNotEmpty(),
+                        faceDetectionAvailable = faceDetectionAvailable,
                     )
+                    val renderedBitmap = renderWithFallback(
+                        sourceRgba = sourceRgba,
+                        filterPreset = resolvedPreset,
+                        profile = profile,
+                        scanMode = scanMode,
+                    )
+                    val bitmap = IdCardFaceAwareFilter.apply(
+                        sourceBitmap = sourceBitmap,
+                        filteredBitmap = renderedBitmap,
+                        faceRegions = faceRegions,
+                        preset = resolvedPreset,
+                    )
+                    if (bitmap !== renderedBitmap) {
+                        renderedBitmap.recycle()
+                    }
+                    bitmap
                 }.getOrElse {
                     sourceRgba.toBitmap()
                 }
@@ -218,9 +279,10 @@ object OpenCvPageFilterProcessor {
         sourceRgba: Mat,
         filterPreset: PageFilterPreset,
         profile: PageImageProfile?,
+        scanMode: ScanMode,
     ): Bitmap {
         // Callers resolve Auto before render so we never hit the AUTO branch.
-        val concrete = resolvePreset(filterPreset, profile)
+        val concrete = resolvePreset(filterPreset, profile, scanMode)
         return when (concrete) {
             PageFilterPreset.ORIGINAL -> sourceRgba.toBitmap()
             PageFilterPreset.AUTO -> grayscale(sourceRgba, profile) // safety net
@@ -232,6 +294,10 @@ object OpenCvPageFilterProcessor {
             PageFilterPreset.MAGIC_COLOR -> magicColor(sourceRgba, profile)
             PageFilterPreset.RECEIPT -> receipt(sourceRgba, profile)
             PageFilterPreset.SOFT_BLACK_AND_WHITE -> softBlackAndWhite(sourceRgba, profile)
+            PageFilterPreset.ID_NATURAL -> idColor(sourceRgba, clear = false)
+            PageFilterPreset.ID_CLEAR -> idColor(sourceRgba, clear = true)
+            PageFilterPreset.ID_PORTRAIT -> idPortrait(sourceRgba)
+            PageFilterPreset.ID_TEXT -> idText(sourceRgba)
         }
     }
 
@@ -239,9 +305,10 @@ object OpenCvPageFilterProcessor {
         sourceRgba: Mat,
         filterPreset: PageFilterPreset,
         profile: PageImageProfile?,
+        scanMode: ScanMode,
     ): Bitmap {
         val adaptiveAttempt = runCatching {
-            render(sourceRgba, filterPreset, profile)
+            render(sourceRgba, filterPreset, profile, scanMode)
         }
         if (adaptiveAttempt.isSuccess) {
             return adaptiveAttempt.getOrThrow()
@@ -249,7 +316,7 @@ object OpenCvPageFilterProcessor {
 
         if (profile != null) {
             return runCatching {
-                render(sourceRgba, filterPreset, null)
+                render(sourceRgba, filterPreset, null, scanMode)
             }.getOrElse { adaptiveAttempt.getOrThrow() }
         }
 
@@ -279,6 +346,77 @@ object OpenCvPageFilterProcessor {
     ): Bitmap = naturalColor(
         sourceRgba = sourceRgba,
         tuning = AdaptivePageFilterTuning.shadowReduction(profile),
+    )
+
+    /**
+     * Conservative color processing for identity cards. It deliberately avoids
+     * binary thresholding and aggressive paper whitening so portraits and seals
+     * keep natural highlights and chroma.
+     */
+    private fun idColor(
+        sourceRgba: Mat,
+        clear: Boolean,
+    ): Bitmap = naturalColor(
+        sourceRgba = sourceRgba,
+        tuning = AdaptivePageFilterTuning.EnhancedColorTuning(
+            bilateralDiameter = 5,
+            bilateralSigmaColor = if (clear) 18.0 else 14.0,
+            bilateralSigmaSpace = if (clear) 22.0 else 18.0,
+            backgroundBlurSigma = 18.0,
+            shadowStrength = if (clear) 0.12 else 0.08,
+            backgroundTarget = 224.0,
+            clipLimit = if (clear) 1.22 else 1.10,
+            localContrastStrength = if (clear) 0.24 else 0.12,
+            tileGridSize = 8,
+            contrastScale = if (clear) 1.012 else 1.0,
+            brightnessShift = 0.0,
+            saturationScale = if (clear) 1.0 else 0.99,
+            whiteBalanceStrength = if (clear) 0.34 else 0.24,
+            sharpenAmount = if (clear) 1.065 else 1.025,
+            sharpenSigma = if (clear) 0.78 else 0.72,
+        ),
+    )
+
+    private fun idPortrait(sourceRgba: Mat): Bitmap = naturalColor(
+        sourceRgba = sourceRgba,
+        tuning = AdaptivePageFilterTuning.EnhancedColorTuning(
+            bilateralDiameter = 5,
+            bilateralSigmaColor = 13.0,
+            bilateralSigmaSpace = 17.0,
+            backgroundBlurSigma = 18.0,
+            shadowStrength = 0.08,
+            backgroundTarget = 222.0,
+            clipLimit = 1.08,
+            localContrastStrength = 0.10,
+            tileGridSize = 8,
+            contrastScale = 1.0,
+            brightnessShift = 0.0,
+            saturationScale = 1.01,
+            whiteBalanceStrength = 0.22,
+            sharpenAmount = 1.02,
+            sharpenSigma = 0.72,
+        ),
+    )
+
+    private fun idText(sourceRgba: Mat): Bitmap = naturalColor(
+        sourceRgba = sourceRgba,
+        tuning = AdaptivePageFilterTuning.EnhancedColorTuning(
+            bilateralDiameter = 5,
+            bilateralSigmaColor = 19.0,
+            bilateralSigmaSpace = 23.0,
+            backgroundBlurSigma = 18.0,
+            shadowStrength = 0.14,
+            backgroundTarget = 226.0,
+            clipLimit = 1.30,
+            localContrastStrength = 0.30,
+            tileGridSize = 8,
+            contrastScale = 1.018,
+            brightnessShift = 0.0,
+            saturationScale = 0.96,
+            whiteBalanceStrength = 0.34,
+            sharpenAmount = 1.085,
+            sharpenSigma = 0.80,
+        ),
     )
 
     private fun naturalColor(

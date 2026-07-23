@@ -399,6 +399,7 @@ private fun PageEditorPreview(
         selectedFilter = selectedFilter,
         cropQuad = cropQuad,
         filterAdjustments = filterAdjustments,
+        scanMode = page.scanMode,
     )
 
     Box(
@@ -580,4 +581,8 @@ private fun PageFilterPreset.toEditorLabel(): String = when (this) {
     PageFilterPreset.MAGIC_COLOR -> "Magic"
     PageFilterPreset.RECEIPT -> "Receipt"
     PageFilterPreset.SOFT_BLACK_AND_WHITE -> "Text Enhance"
+    PageFilterPreset.ID_NATURAL -> "ID Natural"
+    PageFilterPreset.ID_CLEAR -> "ID Clear"
+    PageFilterPreset.ID_PORTRAIT -> "ID Portrait"
+    PageFilterPreset.ID_TEXT -> "ID Text"
 }

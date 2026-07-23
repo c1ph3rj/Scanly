@@ -4,6 +4,7 @@ import `in`.c1ph3rj.scanly.core.ml.DocumentCornerQuad
 import `in`.c1ph3rj.scanly.domain.model.PageFilterAdjustments
 import `in`.c1ph3rj.scanly.domain.model.PageFilterPreset
 import `in`.c1ph3rj.scanly.domain.model.PageProcessingState
+import `in`.c1ph3rj.scanly.domain.model.ScanMode
 
 interface PageImageProcessor {
     suspend fun processCapture(
@@ -12,6 +13,7 @@ interface PageImageProcessor {
         thumbnailPath: String,
         filterPreset: PageFilterPreset = PageFilterPreset.AUTO,
         filterAdjustments: PageFilterAdjustments = PageFilterAdjustments.Default,
+        scanMode: ScanMode = ScanMode.DOCUMENT,
     ): ProcessedPageArtifacts
 
     suspend fun reprocessPage(
@@ -23,6 +25,7 @@ interface PageImageProcessor {
         filterPreset: PageFilterPreset,
         filterAdjustments: PageFilterAdjustments = PageFilterAdjustments.Default,
         detectDocumentWhenCropQuadMissing: Boolean = true,
+        scanMode: ScanMode = ScanMode.DOCUMENT,
     ): ProcessedPageArtifacts
 
     /**
@@ -32,6 +35,7 @@ interface PageImageProcessor {
     suspend fun detectDocumentCorners(
         rawImagePath: String,
         rotationDegrees: Int,
+        scanMode: ScanMode = ScanMode.DOCUMENT,
     ): DocumentCornerQuad?
 }
 

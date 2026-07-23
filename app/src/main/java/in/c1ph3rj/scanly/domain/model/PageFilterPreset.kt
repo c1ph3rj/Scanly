@@ -12,7 +12,11 @@ enum class PageFilterPreset(
     SHADOW_REDUCTION("shadow_reduction"),
     MAGIC_COLOR("magic_color"),
     RECEIPT("receipt"),
-    SOFT_BLACK_AND_WHITE("soft_black_and_white");
+    SOFT_BLACK_AND_WHITE("soft_black_and_white"),
+    ID_NATURAL("id_natural"),
+    ID_CLEAR("id_clear"),
+    ID_PORTRAIT("id_portrait"),
+    ID_TEXT("id_text");
 
     companion object {
         fun fromStorage(value: String): PageFilterPreset =

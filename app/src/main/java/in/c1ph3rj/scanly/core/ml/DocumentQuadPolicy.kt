@@ -1,5 +1,6 @@
 package `in`.c1ph3rj.scanly.core.ml
 
+import `in`.c1ph3rj.scanly.domain.model.ScanMode
 import kotlin.math.hypot
 
 object DocumentQuadPolicy {
@@ -53,9 +54,58 @@ object DocumentQuadPolicy {
             qualityScore(quad) >= STILL_MIN_GEOMETRY_QUALITY
     }
 
-    fun isReady(quad: DocumentCornerQuad, readiness: QuadReadiness): Boolean = when (readiness) {
-        QuadReadiness.LIVE_CAPTURE -> isCaptureReady(quad)
+    fun isReady(
+        quad: DocumentCornerQuad,
+        readiness: QuadReadiness,
+        scanMode: ScanMode = ScanMode.DOCUMENT,
+    ): Boolean = when (readiness) {
+        QuadReadiness.LIVE_CAPTURE -> when (scanMode) {
+            ScanMode.DOCUMENT -> isCaptureReady(quad)
+            ScanMode.ID_CARD -> isIdCardCaptureReady(quad)
+            ScanMode.BOOK -> isBookSpreadCaptureReady(quad)
+        }
         QuadReadiness.STILL_PROCESS -> isStillProcessReady(quad)
+    }
+
+    private fun isIdCardCaptureReady(quad: DocumentCornerQuad): Boolean {
+        val area = quad.area()
+        val aspectRatio = normalizedAspectRatio(quad.estimatedAspectRatio())
+        val center = quad.center()
+        return quad.isValid() &&
+            quad.isConvex() &&
+            hasFrameMargin(quad, MIN_FRAME_MARGIN) &&
+            area in 0.07f..MAX_AREA &&
+            aspectRatio in 1.20f..2.25f &&
+            kotlin.math.abs(center.x - 0.5f) <= ID_CARD_CENTER_TOLERANCE &&
+            kotlin.math.abs(center.y - 0.5f) <= ID_CARD_CENTER_TOLERANCE &&
+            qualityScore(quad) >= 0.52f
+    }
+
+    internal fun idCardGuideFitScore(quad: DocumentCornerQuad): Float {
+        if (!quad.isValid() || !quad.isConvex()) return 0f
+        val center = quad.center()
+        val centerDistance = hypot(center.x - 0.5f, center.y - 0.5f)
+        val centerFit = (1f - centerDistance / 0.36f).coerceIn(0f, 1f)
+        val aspectRatio = normalizedAspectRatio(quad.estimatedAspectRatio())
+        val aspectFit = (1f - kotlin.math.abs(aspectRatio - ID_CARD_ASPECT_RATIO) / 0.8f)
+            .coerceIn(0f, 1f)
+        val geometryFit = qualityScore(quad)
+        return (
+            centerFit * 0.42f +
+                aspectFit * 0.34f +
+                geometryFit * 0.24f
+            ).coerceIn(0f, 1f)
+    }
+
+    private fun isBookSpreadCaptureReady(quad: DocumentCornerQuad): Boolean {
+        val area = quad.area()
+        val aspectRatio = normalizedAspectRatio(quad.estimatedAspectRatio())
+        return quad.isValid() &&
+            quad.isConvex() &&
+            hasFrameMargin(quad, MIN_FRAME_MARGIN) &&
+            area in 0.10f..0.90f &&
+            aspectRatio in 1.05f..2.60f &&
+            qualityScore(quad) >= 0.50f
     }
 
     /**
@@ -137,11 +187,19 @@ object DocumentQuadPolicy {
     private fun distance(first: NormalizedPoint, second: NormalizedPoint): Float =
         hypot(first.x - second.x, first.y - second.y)
 
+    private fun DocumentCornerQuad.center(): NormalizedPoint = NormalizedPoint(
+        x = (topLeft.x + topRight.x + bottomRight.x + bottomLeft.x) / 4f,
+        y = (topLeft.y + topRight.y + bottomRight.y + bottomLeft.y) / 4f,
+    )
+
     /** Treat portrait/landscape the same (width/height or height/width). */
     private fun normalizedAspectRatio(ratio: Float): Float {
         if (ratio <= 0f) return 0f
         return if (ratio >= 1f) ratio else 1f / ratio
     }
+
+    private const val ID_CARD_ASPECT_RATIO = 1.586f
+    private const val ID_CARD_CENTER_TOLERANCE = 0.18f
 }
 
 /** How strict document-quad acceptance is for a given detection path. */

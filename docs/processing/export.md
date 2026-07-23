@@ -34,6 +34,7 @@ Uses Android `PdfDocument` for page rendering. Password-protected output is then
 
 | Option | Values |
 | --- | --- |
+| Arrangement | Standard, Smart scan mode |
 | Password | Off, or a validated 4–64 character open password |
 | Page number | None, lower left, bottom center, lower right |
 | Page size | Auto fit, A3, A4, A5, B4, B5, Letter, Tabloid, Legal, Executive, Postcard, American foolscap, European foolscap |
@@ -41,6 +42,17 @@ Uses Android `PdfDocument` for page rendering. Password-protected output is then
 | Margins | None, small, large |
 
 Fixed paper sizes are encoded in PostScript points (72 points per inch), so exported PDFs retain real print dimensions. Auto fit uses each source image's aspect ratio with an A4-length long edge. When numbering is enabled, the renderer reserves a footer instead of drawing over the scan.
+
+### Arrangements
+
+- **Standard** is the compatibility path: every stored page produces one PDF page using the selected size, orientation, margin, and numbering options. Existing Document and image-export behavior is unchanged.
+- **Smart scan mode** reads immutable per-page mode metadata:
+  - Document pages continue through the Standard renderer.
+  - A complete ID pair becomes one portrait A4 sheet with front above back at a conservative card-sized maximum.
+  - Each Book spread becomes one landscape A4 sheet.
+  - A missing, duplicate, or unpaired ID side blocks only Smart PDF generation with instructions to capture both sides or choose Standard.
+
+Smart composition happens only at export. It does not create pages, combine source images, or modify raw/processed captures.
 
 ### Page source
 
@@ -96,6 +108,7 @@ Group export operations support progress callbacks consumed by `GroupDetailViewM
 | Model | Purpose |
 | --- | --- |
 | `PdfExportOptions` | PDF layout configuration |
+| `SmartPdfArrangementPlanner` | Validates ID pairs and maps page modes to export sheets |
 | `ExportArtifact` | Export result with file path |
 | `ShareArtifact` | Share-ready result with URI metadata |
 

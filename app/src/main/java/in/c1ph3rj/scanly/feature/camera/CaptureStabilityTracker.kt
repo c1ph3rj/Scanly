@@ -4,6 +4,7 @@ import `in`.c1ph3rj.scanly.core.ml.CornerDetectionResult
 import `in`.c1ph3rj.scanly.core.ml.DocumentCornerQuad
 import `in`.c1ph3rj.scanly.core.ml.DocumentQuadPolicy
 import `in`.c1ph3rj.scanly.domain.model.DocumentCornerModel
+import `in`.c1ph3rj.scanly.domain.model.ScanMode
 
 enum class AutoCapturePhase {
     OFF,
@@ -31,6 +32,7 @@ data class LiveDetectionUiState(
     val gatePhysicalProbability: Float? = null,
     val gateMillis: Double? = null,
     val gateAccepted: Boolean = false,
+    val bookGutterFraction: Float? = null,
 ) {
     val hasOverlay: Boolean = quad != null && overlayFrame?.isValid == true
 }
@@ -69,9 +71,20 @@ class CaptureStabilityTracker(
         autoCaptureEnabled: Boolean,
         nowMillis: Long,
         sceneIssue: CaptureSceneIssue? = null,
+        scanMode: ScanMode = ScanMode.DOCUMENT,
     ): StabilityEvaluation {
+        val requiredConfidence = when (scanMode) {
+            ScanMode.DOCUMENT -> stableConfidenceThreshold
+            ScanMode.ID_CARD -> 0.66f
+            ScanMode.BOOK -> 0.69f
+        }
         val candidateQuad = result.quad?.takeIf { quad ->
-            result.confidence >= stableConfidenceThreshold && DocumentQuadPolicy.isCaptureReady(quad)
+            result.confidence >= requiredConfidence &&
+                DocumentQuadPolicy.isReady(
+                    quad = quad,
+                    readiness = `in`.c1ph3rj.scanly.core.ml.QuadReadiness.LIVE_CAPTURE,
+                    scanMode = scanMode,
+                )
         }
 
         if (sceneIssue != null) {
@@ -90,6 +103,8 @@ class CaptureStabilityTracker(
                 phase = AutoCapturePhase.OFF,
                 statusMessage = if (candidateQuad == null) {
                     "Auto-capture is off. Use the shutter when ready."
+                } else if (scanMode == ScanMode.ID_CARD) {
+                    "ID aligned. Tap capture whenever you are ready."
                 } else {
                     "Document detected. Tap capture whenever you are ready."
                 },
@@ -105,7 +120,17 @@ class CaptureStabilityTracker(
             }
             return StabilityEvaluation(
                 phase = AutoCapturePhase.SEARCHING,
-                statusMessage = "Point your camera at a full document.",
+                statusMessage = when {
+                    scanMode == ScanMode.ID_CARD && result.quad != null &&
+                        DocumentQuadPolicy.idCardGuideFitScore(result.quad) < 0.72f ->
+                        "Center the ID and align all four edges with the guide."
+                    scanMode == ScanMode.ID_CARD ->
+                        "Place the full ID inside the guide."
+                    scanMode == ScanMode.BOOK ->
+                        "Frame the full open spread."
+                    else ->
+                        "Point your camera at a full document."
+                },
                 countdownValue = null,
                 shouldAutoCapture = false,
             )
@@ -117,7 +142,11 @@ class CaptureStabilityTracker(
                 resetStableWindow()
                 return StabilityEvaluation(
                     phase = AutoCapturePhase.COOLDOWN,
-                    statusMessage = "Move to the next page before auto-capture re-arms.",
+                    statusMessage = if (scanMode == ScanMode.ID_CARD) {
+                        "Flip or replace the card before auto-capture re-arms."
+                    } else {
+                        "Move to the next page before auto-capture re-arms."
+                    },
                     countdownValue = null,
                     shouldAutoCapture = false,
                 )
@@ -147,14 +176,23 @@ class CaptureStabilityTracker(
             stableSinceMillis = nowMillis
             return StabilityEvaluation(
                 phase = AutoCapturePhase.HOLD_STEADY,
-                statusMessage = "Hold steady to auto-capture.",
+                statusMessage = if (scanMode == ScanMode.ID_CARD) {
+                    "Hold the ID steady inside the guide."
+                } else {
+                    "Hold steady to auto-capture."
+                },
                 countdownValue = null,
                 shouldAutoCapture = false,
             )
         }
 
+        val requiredStableDuration = when (scanMode) {
+            ScanMode.ID_CARD -> minOf(minStableDurationMillis, 1_500L)
+            ScanMode.BOOK -> maxOf(minStableDurationMillis, 2_100L)
+            ScanMode.DOCUMENT -> minStableDurationMillis
+        }
         val stableDuration = nowMillis - stableSince
-        if (stableDuration >= minStableDurationMillis) {
+        if (stableDuration >= requiredStableDuration) {
             return StabilityEvaluation(
                 phase = AutoCapturePhase.COUNTDOWN,
                 statusMessage = "Capturing now.",
@@ -164,8 +202,8 @@ class CaptureStabilityTracker(
         }
 
         val countdownValue = when {
-            stableDuration < minStableDurationMillis / 3 -> 3
-            stableDuration < (minStableDurationMillis * 2) / 3 -> 2
+            stableDuration < requiredStableDuration / 3 -> 3
+            stableDuration < (requiredStableDuration * 2) / 3 -> 2
             else -> 1
         }
         return StabilityEvaluation(
@@ -183,9 +221,17 @@ class CaptureStabilityTracker(
         resetStableWindow()
     }
 
-    fun capturingState(autoCaptureEnabled: Boolean): StabilityEvaluation = StabilityEvaluation(
+    fun capturingState(
+        autoCaptureEnabled: Boolean,
+        scanMode: ScanMode = ScanMode.DOCUMENT,
+    ): StabilityEvaluation = StabilityEvaluation(
         phase = AutoCapturePhase.CAPTURING,
-        statusMessage = if (autoCaptureEnabled) "Capturing page…" else "Saving page…",
+        statusMessage = when {
+            scanMode == ScanMode.ID_CARD && autoCaptureEnabled -> "Capturing ID…"
+            scanMode == ScanMode.ID_CARD -> "Saving ID…"
+            autoCaptureEnabled -> "Capturing page…"
+            else -> "Saving page…"
+        },
         countdownValue = null,
         shouldAutoCapture = false,
     )

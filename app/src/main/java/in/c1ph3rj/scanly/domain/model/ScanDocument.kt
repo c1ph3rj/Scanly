@@ -9,4 +9,5 @@ data class ScanDocument(
     val createdAtMillis: Long,
     val updatedAtMillis: Long,
     val groupId: String? = null,
+    val preferredScanMode: ScanMode = ScanMode.DOCUMENT,
 )

@@ -12,6 +12,9 @@ import `in`.c1ph3rj.scanly.core.ml.DocumentCornerQuad
 import `in`.c1ph3rj.scanly.core.ml.DocumentGateDetector
 import `in`.c1ph3rj.scanly.core.ml.DocumentGatePolicy
 import `in`.c1ph3rj.scanly.core.ml.DocumentQuadPolicy
+import `in`.c1ph3rj.scanly.core.ml.IdCardFaceDetection
+import `in`.c1ph3rj.scanly.core.ml.IdCardFaceDetector
+import `in`.c1ph3rj.scanly.core.ml.FaceDetectionAvailability
 import `in`.c1ph3rj.scanly.core.ml.QuadReadiness
 import `in`.c1ph3rj.scanly.core.processing.OpenCvPageFilterProcessor
 import `in`.c1ph3rj.scanly.core.processing.PageFilterAdjustmentsApplier
@@ -19,6 +22,7 @@ import `in`.c1ph3rj.scanly.core.processing.PerspectiveBitmapTransform
 import `in`.c1ph3rj.scanly.domain.model.PageFilterAdjustments
 import `in`.c1ph3rj.scanly.domain.model.PageFilterPreset
 import `in`.c1ph3rj.scanly.domain.model.PageProcessingState
+import `in`.c1ph3rj.scanly.domain.model.ScanMode
 import `in`.c1ph3rj.scanly.domain.processing.PageImageProcessor
 import `in`.c1ph3rj.scanly.domain.processing.ProcessedPageArtifacts
 import `in`.c1ph3rj.scanly.data.storage.DocumentStorageManager
@@ -35,6 +39,7 @@ class DefaultPageImageProcessor @Inject constructor(
     private val documentCornerDetector: DocumentCornerDetector,
     private val documentGateDetector: DocumentGateDetector,
     private val automaticDocumentModelSelector: AutomaticDocumentModelSelector,
+    private val idCardFaceDetector: IdCardFaceDetector,
     private val storageManager: DocumentStorageManager,
     private val settingsRepository: SettingsRepository,
     private val dispatchers: ScanlyDispatchers,
@@ -46,6 +51,7 @@ class DefaultPageImageProcessor @Inject constructor(
         thumbnailPath: String,
         filterPreset: PageFilterPreset,
         filterAdjustments: PageFilterAdjustments,
+        scanMode: ScanMode,
     ): ProcessedPageArtifacts = reprocessPage(
         rawImagePath = rawImagePath,
         processedImagePath = processedImagePath,
@@ -55,6 +61,7 @@ class DefaultPageImageProcessor @Inject constructor(
         filterPreset = filterPreset,
         filterAdjustments = filterAdjustments,
         detectDocumentWhenCropQuadMissing = true,
+        scanMode = scanMode,
     )
 
     override suspend fun reprocessPage(
@@ -66,6 +73,7 @@ class DefaultPageImageProcessor @Inject constructor(
         filterPreset: PageFilterPreset,
         filterAdjustments: PageFilterAdjustments,
         detectDocumentWhenCropQuadMissing: Boolean,
+        scanMode: ScanMode,
     ): ProcessedPageArtifacts = withContext(dispatchers.default) {
         val exifRotationDegrees = ExifInterface(rawImagePath).rotationDegrees
         val userRotationDegrees = normalizeRotationDegrees(rotationDegrees)
@@ -102,7 +110,7 @@ class DefaultPageImageProcessor @Inject constructor(
             val effectiveCropQuad = if (cropQuad != null) {
                 cropQuad
             } else if (detectDocumentWhenCropQuadMissing) {
-                detectStillImageQuad(editorOrientedBitmap)
+                detectStillImageQuad(editorOrientedBitmap, scanMode)
             } else {
                 null
             }
@@ -112,9 +120,20 @@ class DefaultPageImageProcessor @Inject constructor(
                     quad = quad,
                 )
             } ?: editorOrientedBitmap.copy(Bitmap.Config.ARGB_8888, false)
+            val faceDetection = if (scanMode == ScanMode.ID_CARD) {
+                runCatching {
+                    idCardFaceDetector.detect(correctedBitmap)
+                }.getOrDefault(IdCardFaceDetection.Unavailable)
+            } else {
+                IdCardFaceDetection()
+            }
             val filtered = OpenCvPageFilterProcessor.applyWithResolvedPreset(
                 sourceBitmap = correctedBitmap,
                 filterPreset = filterPreset,
+                scanMode = scanMode,
+                faceRegions = faceDetection.regions,
+                faceDetectionAvailable =
+                    faceDetection.availability == FaceDetectionAvailability.AVAILABLE,
             )
             if (correctedBitmap !== filtered.bitmap) {
                 correctedBitmap.recycle()
@@ -171,6 +190,7 @@ class DefaultPageImageProcessor @Inject constructor(
     override suspend fun detectDocumentCorners(
         rawImagePath: String,
         rotationDegrees: Int,
+        scanMode: ScanMode,
     ): DocumentCornerQuad? = withContext(dispatchers.default) {
         val exifRotationDegrees = ExifInterface(rawImagePath).rotationDegrees
         val userRotationDegrees = normalizeRotationDegrees(rotationDegrees)
@@ -186,7 +206,7 @@ class DefaultPageImageProcessor @Inject constructor(
             if (editorOrientedBitmap !== orientedBitmap) {
                 orientedBitmap.recycle()
             }
-            detectStillImageQuad(editorOrientedBitmap)
+            detectStillImageQuad(editorOrientedBitmap, scanMode)
         } finally {
             editorOrientedBitmap?.takeIf { !it.isRecycled }?.recycle()
             if (!orientedBitmap.isRecycled) {
@@ -200,7 +220,10 @@ class DefaultPageImageProcessor @Inject constructor(
      * 1) Book-aware resolver in STILL_PROCESS mode (no book-gutter damage, card-friendly aspect)
      * 2) Raw detector fallback if the resolver still drops a usable model quad
      */
-    private suspend fun detectStillImageQuad(bitmap: Bitmap): DocumentCornerQuad? {
+    private suspend fun detectStillImageQuad(
+        bitmap: Bitmap,
+        scanMode: ScanMode,
+    ): DocumentCornerQuad? {
         val selectedModel = if (settingsRepository.getAutomaticModelSelection()) {
             runCatching { automaticDocumentModelSelector.selection().postProcessingModel }
                 .getOrDefault(settingsRepository.getPostProcessingModel())
@@ -213,6 +236,7 @@ class DefaultPageImageProcessor @Inject constructor(
                 bitmap = bitmap,
                 selectedModel = selectedModel,
                 readiness = QuadReadiness.STILL_PROCESS,
+                scanMode = scanMode,
             ).result.quad
         }.getOrNull()
         if (resolved != null) return resolved
