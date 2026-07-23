@@ -520,7 +520,7 @@ fun DocumentDetailScreen(
                     modifier = Modifier.fillMaxSize(),
                     contentPadding = PaddingValues(
                         start = windowSizeInfo.horizontalPadding,
-                        top = 16.dp,
+                        top = 4.dp,
                         end = windowSizeInfo.horizontalPadding,
                         bottom = 28.dp,
                     ),
@@ -537,7 +537,6 @@ fun DocumentDetailScreen(
             item(key = "document_metrics", contentType = "metrics") {
                 DocumentMetricsRow(
                     groupLabel = uiState.currentGroup?.title ?: "No folder",
-                    pageCountLabel = uiState.pages.size.toPageCountLabel(),
                     updatedDate = documentUpdatedDate,
                     onMoveToFolder = { moveSheetVisible = true },
                     scanMode = document.preferredScanMode,
@@ -1140,7 +1139,7 @@ private fun DocumentMasterDetailLayout(
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(
                     start = 20.dp,
-                    top = 16.dp,
+                    top = 4.dp,
                     end = 12.dp,
                     bottom = 24.dp,
                 ),
@@ -1157,7 +1156,6 @@ private fun DocumentMasterDetailLayout(
                 item(key = "document_metrics") {
                     DocumentMetricsRow(
                         groupLabel = uiState.currentGroup?.title ?: "No folder",
-                        pageCountLabel = uiState.pages.size.toPageCountLabel(),
                         updatedDate = documentUpdatedDate,
                         onMoveToFolder = onMoveToFolder,
                         scanMode = document.preferredScanMode,
@@ -1350,43 +1348,35 @@ private fun DocumentMasterDetailLayout(
 @Composable
 private fun DocumentMetricsRow(
     groupLabel: String,
-    pageCountLabel: String,
     updatedDate: String?,
     onMoveToFolder: () -> Unit,
     scanMode: ScanMode,
     onChangeScanMode: () -> Unit,
 ) {
-    Column(
+    Row(
         modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         MetricChip(
             label = scanMode.detailLabel,
             icon = scanMode.detailIcon,
-            modifier = Modifier.clickable(
-                onClickLabel = "Change document type",
-                onClick = onChangeScanMode,
-            ),
+            onClick = onChangeScanMode,
             containerColor = MaterialTheme.colorScheme.primaryContainer,
             contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
             border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.52f)),
         )
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            MetricChip(
-                label = groupLabel,
-                icon = Icons.Filled.Folder,
-                modifier = Modifier.clickable(onClick = onMoveToFolder),
-                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-                contentColor = MaterialTheme.colorScheme.primary,
-                border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.42f)),
-            )
-            MetricChip(label = pageCountLabel)
-            updatedDate?.let { date ->
-                MetricChip(label = date)
-            }
+        MetricChip(
+            label = groupLabel,
+            icon = Icons.Filled.Folder,
+            onClick = onMoveToFolder,
+            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+            contentColor = MaterialTheme.colorScheme.primary,
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.42f)),
+        )
+        // Page count is already shown under the document title in the top bar.
+        updatedDate?.let { date ->
+            MetricChip(label = date)
         }
     }
 }

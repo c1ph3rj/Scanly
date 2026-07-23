@@ -41,6 +41,8 @@ fun ChromeIconButton(
         modifier = modifier.size(44.dp),
         color = resolvedContainerColor,
         shape = MaterialTheme.shapes.large,
+        shadowElevation = 0.dp,
+        tonalElevation = 0.dp,
     ) {
         IconButton(
             onClick = onClick,
@@ -63,13 +65,10 @@ fun MetricChip(
     containerColor: Color = MaterialTheme.colorScheme.surfaceContainerHigh,
     contentColor: Color = MaterialTheme.colorScheme.onSurface,
     border: BorderStroke? = null,
+    onClick: (() -> Unit)? = null,
 ) {
-    Surface(
-        modifier = modifier,
-        color = containerColor,
-        shape = MaterialTheme.shapes.large,
-        border = border,
-    ) {
+    val shape = MaterialTheme.shapes.large
+    val content: @Composable () -> Unit = {
         Row(
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
@@ -88,6 +87,34 @@ fun MetricChip(
                 style = MaterialTheme.typography.labelLarge,
                 color = contentColor,
             )
+        }
+    }
+    // Use Surface onClick so the ripple/indication is clipped to the pill shape.
+    // Modifier.clickable on a Surface lets the ripple bleed outside rounded bounds.
+    if (onClick != null) {
+        Surface(
+            onClick = onClick,
+            modifier = modifier,
+            color = containerColor,
+            contentColor = contentColor,
+            shape = shape,
+            border = border,
+            shadowElevation = 0.dp,
+            tonalElevation = 0.dp,
+        ) {
+            content()
+        }
+    } else {
+        Surface(
+            modifier = modifier,
+            color = containerColor,
+            contentColor = contentColor,
+            shape = shape,
+            border = border,
+            shadowElevation = 0.dp,
+            tonalElevation = 0.dp,
+        ) {
+            content()
         }
     }
 }

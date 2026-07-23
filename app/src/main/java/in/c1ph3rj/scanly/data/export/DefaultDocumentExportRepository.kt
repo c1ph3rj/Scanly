@@ -533,32 +533,41 @@ class DefaultDocumentExportRepository @Inject constructor(
                 error("Could not decode ${pair.back.imagePath} for export.")
             }
         try {
-            val slotWidth = min(
-                IdCardWidthPoints,
-                layout.contentWidthPoints.toFloat(),
+            // Maximize front/back within the page content box (was a tiny fixed CR80
+            // size, leaving most of A4 empty). Shared width keeps the pair aligned.
+            val placement = IdCardPairPdfLayout.place(
+                contentWidth = layout.contentWidthPoints.toFloat(),
+                contentHeight = layout.contentHeightPoints.toFloat(),
+                contentLeft = layout.marginPoints.toFloat(),
+                contentTop = layout.marginPoints.toFloat(),
+                frontWidth = front.width.toFloat(),
+                frontHeight = front.height.toFloat(),
+                backWidth = back.width.toFloat(),
+                backHeight = back.height.toFloat(),
+                gap = IdCardPairPdfLayout.DefaultGapPoints,
             )
-            val slotHeight = min(
-                IdCardHeightPoints,
-                (layout.contentHeightPoints - IdCardPairGapPoints)
-                    .coerceAtLeast(2f) / 2f,
+            canvas.drawBitmap(
+                front,
+                null,
+                RectF(
+                    placement.frontLeft,
+                    placement.frontTop,
+                    placement.frontLeft + placement.frontWidth,
+                    placement.frontTop + placement.frontHeight,
+                ),
+                null,
             )
-            val blockHeight = slotHeight * 2f + IdCardPairGapPoints
-            val slotLeft = layout.marginPoints +
-                (layout.contentWidthPoints - slotWidth) / 2f
-            val firstSlotTop = layout.marginPoints +
-                (layout.contentHeightPoints - blockHeight) / 2f
-            listOf(front, back).forEachIndexed { index, bitmap ->
-                val slotTop = firstSlotTop + index * (slotHeight + IdCardPairGapPoints)
-                val destRect = fitRect(
-                    sourceWidth = bitmap.width.toFloat(),
-                    sourceHeight = bitmap.height.toFloat(),
-                    targetWidth = slotWidth,
-                    targetHeight = slotHeight,
-                ).apply {
-                    offset(slotLeft, slotTop)
-                }
-                canvas.drawBitmap(bitmap, null, destRect, null)
-            }
+            canvas.drawBitmap(
+                back,
+                null,
+                RectF(
+                    placement.backLeft,
+                    placement.backTop,
+                    placement.backLeft + placement.backWidth,
+                    placement.backTop + placement.backHeight,
+                ),
+                null,
+            )
         } finally {
             front.recycle()
             back.recycle()
@@ -702,8 +711,5 @@ class DefaultDocumentExportRepository @Inject constructor(
         const val PageNumberHorizontalInsetPoints = 18
         const val PageNumberBaselineInsetPoints = 8f
         const val PdfEncryptionKeyLengthBits = 256
-        const val IdCardWidthPoints = 244f
-        const val IdCardHeightPoints = 154f
-        const val IdCardPairGapPoints = 36f
     }
 }
