@@ -1,13 +1,13 @@
 ﻿# Features
 
-Complete inventory of Scanly features as of **v1.0.13**.
+Complete inventory of Scanly features as of **v1.0.16**.
 
 ## Home dashboard
 
-- Shows up to **8 recent documents** and **6 recent groups**
-- Quick actions: start a new scan, create an empty document, create a group
+- Shows up to **8 recent documents** and **6 recent groups** as paper-shaped cards (same language as Library)
+- Quick actions: **Scan**, **Import**, **Folder**
 - **Gallery import** — pick up to 10 images to start a new document
-- **Suggested names** — create dialogs offer a **Suggest name** button with rotatable date-based title formats; duplicate titles receive numeric suffixes
+- **Default names** — new document and folder dialogs open with a duplicate-safe suggested name selected; a clear control empties the field, and **Suggest name** cycles date-based formats
 - Shortcut into the full Library
 - Adaptive layout: bottom navigation on phone, navigation rail on tablet
 
@@ -17,13 +17,16 @@ Complete inventory of Scanly features as of **v1.0.13**.
 - **Three filter pills:** All, Folders (groups), Documents — rounded Material 3 surfaces (not underline tabs)
 - **Search** across document and group titles
 - **Six sort options** (name, date created, date updated — ascending and descending)
-- Create, rename, and delete documents and groups with **Suggest name** for new items
+- Paper-shaped document and folder cards with title and compact metadata; tap opens the item
+- Rename, move, delete, and remove-from-folder from a single overflow or long-press menu (not always-visible icon rows)
+- Create, rename, and delete documents and groups; new items start with a suggested name plus clear / **Suggest name**
 - Move documents between groups or create a new group inline when moving
 - Open document detail or group detail from any list item
 - **All tab semantics:** foldered documents appear under their group, not in the main All list (unless searching)
 
 ## Document scanning (camera session)
 
+- **Camera permission** — system prompt on first Scan/QR; in-app retry if denied; **Open Settings** only after a permanent block
 - **CameraX**-based manual capture with live preview
 - **Physical-document semantic gate** — rejects digital screens and non-documents before corner inference (optional; Settings toggle)
 - **ML corner overlay** — LiteRT multi-model detection (Lite / Standard / High / Accurate) with independent live vs post-processing selection
@@ -66,17 +69,20 @@ Operate on **device PDFs** (system document picker) or **Scanly library document
 
 | Tool | Behavior |
 | --- | --- |
-| Reader | Page-by-page or continuous-scroll preview for device, library, and generated result PDFs; pinch zoom and password unlock when required |
-| Merge | Combine two or more PDFs into one |
+| Reader | Full title, page n of m, page-by-page or continuous scroll, pinch-zoom, tap to hide chrome; password unlock when required |
+| Merge | Numbered file list in merge order; combine two or more PDFs into one |
 | Compress | High / Balanced / Smallest quality presets via page re-encode |
-| Password | First-page preview; Protect or Remove with clear password form; export-focused completion with Preview / Save / Share |
+| Password | First-page preview; compact Protect / Remove control; export-focused completion with Preview / Save / Share |
 | Watermark | Export-accurate first-page proof from the production stamping engine; page-relative font size; dense tiled security field or one large single stamp; Small/Medium/Large scale; first-page or all-page coverage; diagonal/horizontal orientation; opacity control |
+
+Selected PDFs in merge/compress/password/watermark show as paper-shaped identity (cover, title, compact metadata) with sentence-case options.
 
 ## Document detail
 
-- View all pages in a multi-page document
-- **Reorder** pages (move up/down)
-- **Delete** individual pages
+- View all pages as portrait paper tiles with a visible page number
+- **Tap** a tile to review the page; edit / retake / share / delete stay on the review chrome
+- **Reorder** pages by long-press and drag when more than one page exists
+- **Delete** individual pages from review
 - **Rename** document (does not affect first-page thumbnail — v1.0.9 fix)
 - **Assign to group** or remove from group (with inline new-folder creation)
 - Add more pages via scan session or gallery import
@@ -100,6 +106,7 @@ Operate on **device PDFs** (system document picker) or **Scanly library document
 - **Live result preview** — shows the perspective-cropped page with the current filter and adjustments
 - **Crop screen** (`crop/page/{pageId}`) — **AI Detect**, **Left** / **Right** rotation, four-point handles, **Reset**, apply on Done
 - **Filter picker** (full-screen) — large live preview of each preset on the cropped page; optional apply-to-all-pages
+- **Filter engine** — Color, Shadow Reduce, and Magic stay recognizably the capture; Clean / B&W / Receipt stay scan-like; strength follows the page so looks are not overblown or underdone; picker chips match the saved JPEG
 - **Filter presets** (10 modes):
   - Original, Auto, Enhanced Color, Grayscale, Black & White
   - Clean, Shadow Reduction, Magic Color, Receipt, Soft Black & White
@@ -111,7 +118,7 @@ Operate on **device PDFs** (system document picker) or **Scanly library document
 ## Document groups (collections)
 
 - Optional folders for organizing related documents
-- Create, rename, delete groups with **Suggest name** formats
+- Create, rename, delete groups; new folders start with a suggested name, with clear and **Suggest name** formats
 - Move documents between groups or leave ungrouped
 - **Group detail screen** — view all documents in a group, manage membership, create documents in group
 - **Group export:**
@@ -172,7 +179,7 @@ Main **Settings** hub keeps a short list; details open as sub-screens:
 
 Reusable building blocks in `feature/components/`:
 
-- Document and group cards with thumbnails
+- Document and group cards with paper-shaped covers, compact metadata, and overflow / long-press actions
 - FAB menus for create/scan actions
 - Export and share bottom sheets
 - Consistent chrome via `core/ui/ScanlyChrome`

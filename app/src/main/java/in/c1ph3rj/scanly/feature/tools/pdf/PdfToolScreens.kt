@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
@@ -38,6 +39,8 @@ import androidx.compose.material.icons.filled.FitScreen
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.PictureAsPdf
+import androidx.compose.material.icons.filled.ViewAgenda
+import androidx.compose.material.icons.filled.ViewCarousel
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.filled.WaterDrop
@@ -83,9 +86,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import `in`.c1ph3rj.scanly.core.common.StorageFormatter
 import `in`.c1ph3rj.scanly.core.ui.ChromeIconButton
-import `in`.c1ph3rj.scanly.core.ui.MetricChip
 import `in`.c1ph3rj.scanly.core.ui.WindowWidthClass
 import `in`.c1ph3rj.scanly.core.ui.ZoomableBitmapViewer
 import `in`.c1ph3rj.scanly.core.ui.ZoomableImageState
@@ -176,6 +177,9 @@ fun PdfMergeRoute(
                 }
             }
             ToolPhase.Ready -> {
+                ToolWorkspaceIntro(
+                    text = formatMergeReadyHint(uiState.sources.size),
+                )
                 ToolSourceList(
                     sources = uiState.sources,
                     onAdd = {
@@ -184,14 +188,6 @@ fun PdfMergeRoute(
                     },
                     onRemove = viewModel::removeSource,
                 )
-                if (uiState.sources.size < 2) {
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = "Add at least one more PDF to merge.",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
             }
         }
     }
@@ -271,7 +267,7 @@ fun PdfCompressRoute(
                         statusTitle = "Compression complete",
                         statusSubtitle = "Your compressed PDF is ready.",
                         previewHint = "Preview the finished file before saving or sharing it.",
-                        resultDetail = sizeComparisonLabel(before, after, savedPercent),
+                        resultDetail = formatCompressSizeComparison(before, after, savedPercent),
                         onPreview = { onPreviewPdf(result) },
                         onSave = viewModel::saveResult,
                         onShare = {
@@ -285,7 +281,7 @@ fun PdfCompressRoute(
                 val windowSizeInfo = rememberWindowSizeInfo()
                 val qualityOptions: @Composable () -> Unit = {
                     Text(
-                        text = "Compression level",
+                        text = "Quality",
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.SemiBold,
                     )
@@ -329,20 +325,13 @@ fun PdfCompressRoute(
                     ) {
                         PdfSelectedDocumentPreview(
                             title = uiState.sources.first().label(),
-                            supporting = buildString {
-                                val info = uiState.info
-                                if (info != null) {
-                                    append("${info.pageCount} pages")
-                                    (before ?: info.fileSizeBytes)?.let { bytes ->
-                                        append(" · ${StorageFormatter.formatBytes(bytes)}")
-                                    }
-                                } else {
-                                    before?.let { bytes -> append(StorageFormatter.formatBytes(bytes)) }
-                                }
-                            }.ifBlank { null },
+                            supporting = formatPdfDocumentMeta(
+                                pageCount = uiState.info?.pageCount,
+                                sizeBytes = before ?: uiState.info?.fileSizeBytes,
+                            ).ifBlank { null },
                             preview = uiState.sourcePagePreview,
                             isLoading = uiState.isSourcePagePreviewLoading,
-                            caption = "First page of the selected PDF",
+                            caption = "First page",
                             onChange = { showPicker = true },
                             modifier = Modifier.weight(0.46f),
                         )
@@ -357,20 +346,13 @@ fun PdfCompressRoute(
                 } else {
                     PdfSelectedDocumentPreview(
                         title = uiState.sources.first().label(),
-                        supporting = buildString {
-                            val info = uiState.info
-                            if (info != null) {
-                                append("${info.pageCount} pages")
-                                (before ?: info.fileSizeBytes)?.let { bytes ->
-                                    append(" · ${StorageFormatter.formatBytes(bytes)}")
-                                }
-                            } else {
-                                before?.let { bytes -> append(StorageFormatter.formatBytes(bytes)) }
-                            }
-                        }.ifBlank { null },
+                        supporting = formatPdfDocumentMeta(
+                            pageCount = uiState.info?.pageCount,
+                            sizeBytes = before ?: uiState.info?.fileSizeBytes,
+                        ).ifBlank { null },
                         preview = uiState.sourcePagePreview,
                         isLoading = uiState.isSourcePagePreviewLoading,
-                        caption = "First page of the selected PDF",
+                        caption = "First page",
                         onChange = { showPicker = true },
                     )
                     passwordFields()
@@ -412,19 +394,31 @@ private fun PdfSelectedDocumentPreview(
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
+            horizontalArrangement = Arrangement.spacedBy(14.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
+            Surface(
+                modifier = Modifier
+                    .width(48.dp)
+                    .height(64.dp),
+                shape = RoundedCornerShape(8.dp),
+                color = MaterialTheme.colorScheme.surfaceContainerHighest,
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    Icon(
+                        imageVector = Icons.Filled.PictureAsPdf,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(22.dp),
+                    )
+                }
+            }
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = "SELECTED PDF",
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.primary,
-                    fontWeight = FontWeight.SemiBold,
-                )
-                Text(
                     text = title,
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.SemiBold,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
@@ -567,15 +561,6 @@ private fun QualityOptionCard(
     }
 }
 
-private fun sizeComparisonLabel(before: Long?, after: Long?, savedPercent: Float?): String? {
-    if (before == null || after == null) return null
-    return if (after < before && savedPercent != null) {
-        "${StorageFormatter.formatBytes(before)} → ${StorageFormatter.formatBytes(after)} · saved ${savedPercent.toInt()}%"
-    } else {
-        "${StorageFormatter.formatBytes(before)} → ${StorageFormatter.formatBytes(after)}"
-    }
-}
-
 @Composable
 fun PdfPasswordRoute(
     onNavigateUp: () -> Unit,
@@ -628,7 +613,7 @@ fun PdfPasswordRoute(
                     enabled = if (isProtect) protectEnabled else removeEnabled,
                     modifier = Modifier.fillMaxWidth(),
                 ) {
-                    Text(if (isProtect) "Protect PDF" else "Remove password")
+                    Text(formatPasswordModeActionLabel(uiState.passwordMode))
                 }
             }
         } else null,
@@ -669,44 +654,49 @@ fun PdfPasswordRoute(
                 val windowSizeInfo = rememberWindowSizeInfo()
                 val modeOptions: @Composable () -> Unit = {
                     Text(
-                        text = "ACTION",
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.primary,
+                        text = "Action",
+                        style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.SemiBold,
                     )
                     Spacer(modifier = Modifier.height(8.dp))
-                    // Vertical stack keeps copy readable on tablet two-pane panes.
-                    PasswordModeOptionCard(
-                        title = "Protect",
-                        description = if (alreadyProtected) {
-                            "Replace the open password on this locked PDF"
-                        } else {
-                            "Lock the PDF with an open password"
-                        },
-                        selected = isProtect,
-                        onClick = { viewModel.setMode(PdfPasswordMode.Protect) },
-                    )
+                    SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
+                        SegmentedButton(
+                            selected = isProtect,
+                            onClick = { viewModel.setMode(PdfPasswordMode.Protect) },
+                            shape = SegmentedButtonDefaults.itemShape(index = 0, count = 2),
+                            label = { Text("Protect") },
+                        )
+                        SegmentedButton(
+                            selected = !isProtect,
+                            onClick = { viewModel.setMode(PdfPasswordMode.Remove) },
+                            shape = SegmentedButtonDefaults.itemShape(index = 1, count = 2),
+                            label = { Text("Remove") },
+                        )
+                    }
                     Spacer(modifier = Modifier.height(8.dp))
-                    PasswordModeOptionCard(
-                        title = "Remove",
-                        description = if (alreadyProtected) {
-                            "Create an unlocked copy of this protected file"
-                        } else {
-                            "Only available when the PDF is already protected"
+                    Text(
+                        text = when {
+                            isProtect && alreadyProtected ->
+                                "Replace the open password on this locked PDF."
+                            isProtect ->
+                                "Lock the PDF with an open password."
+                            alreadyProtected ->
+                                "Create an unlocked copy of this protected file."
+                            else ->
+                                "Remove is available when the PDF is already protected."
                         },
-                        selected = !isProtect,
-                        onClick = { viewModel.setMode(PdfPasswordMode.Remove) },
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
                 val passwordForm: @Composable () -> Unit = {
                     Text(
                         text = when {
-                            isProtect && alreadyProtected -> "PASSWORDS"
-                            isProtect -> "NEW PASSWORD"
-                            else -> "CURRENT PASSWORD"
+                            isProtect && alreadyProtected -> "Passwords"
+                            isProtect -> "New password"
+                            else -> "Current password"
                         },
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.primary,
+                        style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.SemiBold,
                     )
                     Spacer(modifier = Modifier.height(8.dp))
@@ -820,21 +810,14 @@ fun PdfPasswordRoute(
                     ) {
                         PdfSelectedDocumentPreview(
                             title = uiState.sources.first().label(),
-                            supporting = buildString {
-                                val info = uiState.info
-                                if (info != null) {
-                                    append("${info.pageCount} pages")
-                                    info.fileSizeBytes?.let { bytes ->
-                                        append(" · ${StorageFormatter.formatBytes(bytes)}")
-                                    }
-                                    append(if (info.isEncrypted) " · Protected" else " · Unlocked")
-                                } else if (uiState.needsPassword) {
-                                    append("Password required · Protected")
-                                }
-                            }.ifBlank { null },
+                            supporting = formatPdfDocumentMeta(
+                                pageCount = uiState.info?.pageCount,
+                                sizeBytes = uiState.info?.fileSizeBytes,
+                                isEncrypted = uiState.info?.isEncrypted ?: uiState.needsPassword.takeIf { it },
+                            ).ifBlank { null },
                             preview = uiState.sourcePagePreview,
                             isLoading = uiState.isSourcePagePreviewLoading,
-                            caption = "First page of the selected PDF",
+                            caption = "First page",
                             onChange = { showPicker = true },
                             modifier = Modifier.weight(0.42f),
                         )
@@ -847,21 +830,14 @@ fun PdfPasswordRoute(
                 } else {
                     PdfSelectedDocumentPreview(
                         title = uiState.sources.first().label(),
-                        supporting = buildString {
-                            val info = uiState.info
-                            if (info != null) {
-                                append("${info.pageCount} pages")
-                                info.fileSizeBytes?.let { bytes ->
-                                    append(" · ${StorageFormatter.formatBytes(bytes)}")
-                                }
-                                append(if (info.isEncrypted) " · Protected" else " · Unlocked")
-                            } else if (uiState.needsPassword) {
-                                append("Password required · Protected")
-                            }
-                        }.ifBlank { null },
+                        supporting = formatPdfDocumentMeta(
+                            pageCount = uiState.info?.pageCount,
+                            sizeBytes = uiState.info?.fileSizeBytes,
+                            isEncrypted = uiState.info?.isEncrypted ?: uiState.needsPassword.takeIf { it },
+                        ).ifBlank { null },
                         preview = uiState.sourcePagePreview,
                         isLoading = uiState.isSourcePagePreviewLoading,
-                        caption = "First page of the selected PDF",
+                        caption = "First page",
                         onChange = { showPicker = true },
                     )
                     Spacer(modifier = Modifier.height(20.dp))
@@ -919,62 +895,6 @@ private fun PasswordVisibilityField(
         supportingText = supportingText?.let { { Text(it) } },
         modifier = Modifier.fillMaxWidth(),
     )
-}
-
-@Composable
-private fun PasswordModeOptionCard(
-    title: String,
-    description: String,
-    selected: Boolean,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Surface(
-        onClick = onClick,
-        modifier = modifier.fillMaxWidth(),
-        shape = MaterialTheme.shapes.large,
-        color = if (selected) {
-            MaterialTheme.colorScheme.primaryContainer
-        } else {
-            MaterialTheme.colorScheme.surfaceContainerHigh
-        },
-        border = BorderStroke(
-            width = if (selected) 1.5.dp else 1.dp,
-            color = if (selected) {
-                MaterialTheme.colorScheme.primary.copy(alpha = 0.64f)
-            } else {
-                MaterialTheme.colorScheme.outlineVariant
-            },
-        ),
-        tonalElevation = 0.dp,
-        shadowElevation = 0.dp,
-    ) {
-        Row(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.SemiBold,
-                )
-                Text(
-                    text = description,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-            if (selected) {
-                Icon(
-                    Icons.Filled.Check,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary,
-                )
-            }
-        }
-    }
 }
 
 @Composable
@@ -1044,9 +964,8 @@ fun PdfWatermarkRoute(
                 val windowSizeInfo = rememberWindowSizeInfo()
                 val watermarkControls: @Composable () -> Unit = {
                     Text(
-                        text = "WATERMARK",
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.primary,
+                        text = "Stamp",
+                        style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.SemiBold,
                     )
                     Spacer(modifier = Modifier.height(8.dp))
@@ -1069,12 +988,7 @@ fun PdfWatermarkRoute(
                         onSelected = viewModel::setLayout,
                     )
                     Text(
-                        text = when (uiState.watermarkLayout) {
-                            WatermarkLayout.REPEATED ->
-                                "Dense field that covers the full page, including edges."
-                            WatermarkLayout.CENTERED ->
-                                "One large stamp sized to dominate the page."
-                        },
+                        text = formatWatermarkLayoutHint(uiState.watermarkLayout),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -1111,8 +1025,8 @@ fun PdfWatermarkRoute(
                     )
                     Spacer(modifier = Modifier.height(20.dp))
                     Text(
-                        text = "Opacity ${(uiState.watermarkOpacity * 100).toInt()}%",
-                        style = MaterialTheme.typography.labelMedium,
+                        text = formatWatermarkOpacityPercent(uiState.watermarkOpacity),
+                        style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.SemiBold,
                     )
                     Slider(
@@ -1208,14 +1122,9 @@ private fun WatermarkDocumentPreview(
         ) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = "SELECTED PDF",
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.primary,
-                    fontWeight = FontWeight.SemiBold,
-                )
-                Text(
                     text = title,
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.SemiBold,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
@@ -1288,9 +1197,8 @@ private fun <T> WatermarkChoiceRow(
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Text(
-            text = title.uppercase(),
-            style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.primary,
+            text = title,
+            style = MaterialTheme.typography.titleSmall,
             fontWeight = FontWeight.SemiBold,
         )
         SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
@@ -1589,6 +1497,8 @@ private fun PdfReaderViewer(
     val zoomStates = remember(uiState.pageCount) {
         (0 until uiState.pageCount).associateWith { ZoomableImageState() }
     }
+    val pageLabel = formatPdfReaderPageLabel(uiState.currentPageIndex, uiState.pageCount)
+    val documentTitle = uiState.documentTitle.ifBlank { "PDF" }
 
     LaunchedEffect(pagerState) {
         snapshotFlow { pagerState.settledPage }
@@ -1605,14 +1515,14 @@ private fun PdfReaderViewer(
 
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background,
+        color = MaterialTheme.colorScheme.surfaceContainerLowest,
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             if (uiState.pageCount > 0 && uiState.readerLayout == PdfReaderLayout.Paged) {
                 HorizontalPager(
                     state = pagerState,
                     modifier = Modifier.fillMaxSize(),
-                    userScrollEnabled = !zoomActive,
+                    userScrollEnabled = pdfReaderParentScrollerEnabled(zoomActive),
                     key = { it },
                 ) { pageIndex ->
                     val bitmap = uiState.pageBitmaps[pageIndex]
@@ -1621,12 +1531,10 @@ private fun PdfReaderViewer(
                         ZoomableBitmapViewer(
                             imageBitmap = bitmap.asImageBitmap(),
                             state = zoomState,
-                            allowParentHorizontalGestures = true,
+                            allowParentHorizontalGestures = pdfReaderAllowParentScrollGestures(),
                             onSingleTap = onToggleChrome,
-                            onZoomActiveChange = { active ->
-                                if (pageIndex == pagerState.settledPage) {
-                                    zoomActive = active
-                                }
+                            onZoomActiveChange = {
+                                zoomActive = pdfReaderZoomActive(zoomStates)
                             },
                             modifier = Modifier.fillMaxSize(),
                         )
@@ -1654,8 +1562,11 @@ private fun PdfReaderViewer(
             if (uiState.pageCount > 0 && uiState.readerLayout == PdfReaderLayout.Continuous) {
                 PdfReaderContinuousViewer(
                     uiState = uiState,
+                    zoomStates = zoomStates,
+                    zoomActive = zoomActive,
                     onPageChange = onPageChange,
                     onToggleChrome = onToggleChrome,
+                    onZoomActiveChange = { active -> zoomActive = active },
                 )
             }
 
@@ -1665,17 +1576,19 @@ private fun PdfReaderViewer(
                 exit = fadeOut(),
                 modifier = Modifier.align(Alignment.TopCenter),
             ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .statusBarsPadding()
-                        .padding(horizontal = 16.dp, vertical = 12.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
+                Surface(
+                    modifier = Modifier.fillMaxWidth(),
+                    color = MaterialTheme.colorScheme.surface.copy(alpha = 0.94f),
+                    shadowElevation = 0.dp,
+                    tonalElevation = 0.dp,
                 ) {
                     Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .statusBarsPadding()
+                            .padding(horizontal = 12.dp, vertical = 8.dp),
                         verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.weight(1f),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
                         ChromeIconButton(
                             icon = Icons.AutoMirrored.Filled.ArrowBack,
@@ -1684,35 +1597,20 @@ private fun PdfReaderViewer(
                             containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
                             contentColor = MaterialTheme.colorScheme.onSurface,
                         )
-                        Spacer(modifier = Modifier.width(12.dp))
-                        MetricChip(
-                            label = buildString {
-                                val title = uiState.documentTitle
-                                if (title.isNotBlank()) {
-                                    append(title.take(22))
-                                    if (title.length > 22) append('…')
-                                    append(" · ")
-                                }
-                                append("${uiState.currentPageIndex + 1}/${uiState.pageCount}")
-                            },
-                            containerColor = Color.Black.copy(alpha = 0.42f),
-                            contentColor = Color.White,
-                            border = BorderStroke(1.dp, Color.White.copy(alpha = 0.12f)),
-                        )
-                    }
-                    Row {
-                        if (zoomActive) {
-                            ChromeIconButton(
-                                icon = Icons.Filled.FitScreen,
-                                contentDescription = "Reset zoom",
-                                onClick = {
-                                    zoomStates[pagerState.settledPage]?.reset()
-                                    zoomActive = false
-                                },
-                                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-                                contentColor = MaterialTheme.colorScheme.onSurface,
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = documentTitle,
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.SemiBold,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
                             )
-                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = pageLabel,
+                                style = MaterialTheme.typography.labelLarge,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                maxLines = 1,
+                            )
                         }
                         Box {
                             ChromeIconButton(
@@ -1727,21 +1625,6 @@ private fun PdfReaderViewer(
                                 onDismissRequest = { onShowMenuChange(false) },
                             ) {
                                 DropdownMenuItem(
-                                    text = {
-                                        Text(
-                                            if (uiState.readerLayout == PdfReaderLayout.Paged) {
-                                                "Continuous scroll"
-                                            } else {
-                                                "Page by page"
-                                            },
-                                        )
-                                    },
-                                    onClick = {
-                                        onShowMenuChange(false)
-                                        onToggleReaderLayout()
-                                    },
-                                )
-                                DropdownMenuItem(
                                     text = { Text("Open another PDF") },
                                     onClick = {
                                         onShowMenuChange(false)
@@ -1753,16 +1636,75 @@ private fun PdfReaderViewer(
                     }
                 }
             }
+
+            AnimatedVisibility(
+                visible = uiState.chromeVisible,
+                enter = fadeIn(),
+                exit = fadeOut(),
+                modifier = Modifier.align(Alignment.BottomCenter),
+            ) {
+                Surface(
+                    modifier = Modifier.fillMaxWidth(),
+                    color = MaterialTheme.colorScheme.surface.copy(alpha = 0.94f),
+                    shadowElevation = 0.dp,
+                    tonalElevation = 0.dp,
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .navigationBarsPadding()
+                            .padding(horizontal = 16.dp, vertical = 10.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        Text(
+                            text = pageLabel,
+                            style = MaterialTheme.typography.titleSmall,
+                            fontWeight = FontWeight.SemiBold,
+                            modifier = Modifier.weight(1f),
+                        )
+                        ChromeIconButton(
+                            icon = if (uiState.readerLayout == PdfReaderLayout.Paged) {
+                                Icons.Filled.ViewAgenda
+                            } else {
+                                Icons.Filled.ViewCarousel
+                            },
+                            contentDescription = if (uiState.readerLayout == PdfReaderLayout.Paged) {
+                                "Continuous scroll"
+                            } else {
+                                "Page by page"
+                            },
+                            onClick = onToggleReaderLayout,
+                            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                            contentColor = MaterialTheme.colorScheme.onSurface,
+                        )
+                        if (zoomActive) {
+                            ChromeIconButton(
+                                icon = Icons.Filled.FitScreen,
+                                contentDescription = "Reset zoom",
+                                onClick = {
+                                    resetPdfReaderZoom(zoomStates)
+                                    zoomActive = false
+                                },
+                                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                                contentColor = MaterialTheme.colorScheme.onSurface,
+                            )
+                        }
+                    }
+                }
+            }
         }
     }
-
 }
 
 @Composable
 private fun PdfReaderContinuousViewer(
     uiState: PdfReaderUiState,
+    zoomStates: Map<Int, ZoomableImageState>,
+    zoomActive: Boolean,
     onPageChange: (Int) -> Unit,
     onToggleChrome: () -> Unit,
+    onZoomActiveChange: (Boolean) -> Unit,
 ) {
     val listState = rememberLazyListState()
 
@@ -1788,9 +1730,10 @@ private fun PdfReaderContinuousViewer(
     LazyColumn(
         state = listState,
         modifier = Modifier.fillMaxSize(),
+        userScrollEnabled = pdfReaderParentScrollerEnabled(zoomActive),
         contentPadding = androidx.compose.foundation.layout.PaddingValues(
-            top = 96.dp,
-            bottom = 32.dp,
+            top = 12.dp,
+            bottom = 12.dp,
             start = windowSizeInfo.horizontalPadding,
             end = windowSizeInfo.horizontalPadding,
         ),
@@ -1812,12 +1755,15 @@ private fun PdfReaderContinuousViewer(
                 )
                 .fillMaxWidth()
             if (bitmap != null) {
-                val zoomState = rememberZoomableImageState("continuous-$pageIndex")
+                val zoomState = zoomStates[pageIndex] ?: rememberZoomableImageState("continuous-$pageIndex")
                 ZoomableBitmapViewer(
                     imageBitmap = bitmap.asImageBitmap(),
                     state = zoomState,
-                    allowParentHorizontalGestures = true,
+                    allowParentHorizontalGestures = pdfReaderAllowParentScrollGestures(),
                     onSingleTap = onToggleChrome,
+                    onZoomActiveChange = {
+                        onZoomActiveChange(pdfReaderZoomActive(zoomStates))
+                    },
                     modifier = pageModifier.aspectRatio(bitmap.width.toFloat() / bitmap.height),
                 )
             } else {

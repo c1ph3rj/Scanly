@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -40,7 +41,6 @@ import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Crop
 import androidx.compose.material.icons.filled.DeleteOutline
 import androidx.compose.material.icons.filled.Description
-import androidx.compose.material.icons.filled.DragHandle
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.FileDownload
 import androidx.compose.material.icons.filled.Folder
@@ -511,7 +511,7 @@ fun DocumentDetailScreen(
                     modifier = Modifier.fillMaxSize(),
                     contentPadding = PaddingValues(
                         start = windowSizeInfo.horizontalPadding,
-                        top = 16.dp,
+                        top = 4.dp,
                         end = windowSizeInfo.horizontalPadding,
                         bottom = 28.dp,
                     ),
@@ -528,7 +528,6 @@ fun DocumentDetailScreen(
             item(key = "document_metrics", contentType = "metrics") {
                 DocumentMetricsRow(
                     groupLabel = uiState.currentGroup?.title ?: "No folder",
-                    pageCountLabel = uiState.pages.size.toPageCountLabel(),
                     updatedDate = documentUpdatedDate,
                     onMoveToFolder = { moveSheetVisible = true },
                 )
@@ -1117,7 +1116,7 @@ private fun DocumentMasterDetailLayout(
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(
                     start = 20.dp,
-                    top = 16.dp,
+                    top = 4.dp,
                     end = 12.dp,
                     bottom = 24.dp,
                 ),
@@ -1134,7 +1133,6 @@ private fun DocumentMasterDetailLayout(
                 item(key = "document_metrics") {
                     DocumentMetricsRow(
                         groupLabel = uiState.currentGroup?.title ?: "No folder",
-                        pageCountLabel = uiState.pages.size.toPageCountLabel(),
                         updatedDate = documentUpdatedDate,
                         onMoveToFolder = onMoveToFolder,
                     )
@@ -1325,10 +1323,12 @@ private fun DocumentMasterDetailLayout(
 @Composable
 private fun DocumentMetricsRow(
     groupLabel: String,
-    pageCountLabel: String,
     updatedDate: String?,
     onMoveToFolder: () -> Unit,
 ) {
+    // Date is measured first (no weight) so it never gets crushed. Folder may
+    // use remaining space up to its content width only (weight fill=false) —
+    // never stretch into an empty elongated pill.
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -1337,12 +1337,13 @@ private fun DocumentMetricsRow(
         MetricChip(
             label = groupLabel,
             icon = Icons.Filled.Folder,
-            modifier = Modifier.clickable(onClick = onMoveToFolder),
+            onClick = onMoveToFolder,
+            modifier = Modifier.weight(1f, fill = false),
             containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
             contentColor = MaterialTheme.colorScheme.primary,
             border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.42f)),
         )
-        MetricChip(label = pageCountLabel)
+        // Page count is already under the document title — no duplicate chip.
         updatedDate?.let { date ->
             MetricChip(label = date)
         }
@@ -1681,12 +1682,8 @@ private fun PageOverviewTile(
     onClick: () -> Unit,
 ) {
     val isDarkTheme = MaterialTheme.colorScheme.background.luminance() < 0.5f
-    val tileShape = MaterialTheme.shapes.extraLarge
-    val tileColor = when {
-        isDropTarget -> MaterialTheme.colorScheme.surfaceContainer
-        isDragging -> MaterialTheme.colorScheme.surfaceContainerHigh
-        else -> MaterialTheme.colorScheme.surfaceContainer
-    }
+    val tileShape = MaterialTheme.shapes.large
+    val paperShape = RoundedCornerShape(10.dp)
     val tileBorderWidth = if (isSelected || isDragging || isDropTarget) 1.5.dp else 1.dp
     val tileBorderColor = when {
         isDragging -> MaterialTheme.colorScheme.primary.copy(alpha = if (isDarkTheme) 0.42f else 0.34f)
@@ -1694,167 +1691,119 @@ private fun PageOverviewTile(
         isSelected -> MaterialTheme.colorScheme.primary.copy(alpha = if (isDarkTheme) 0.72f else 0.64f)
         else -> MaterialTheme.colorScheme.outlineVariant
     }
-    val accentColor = MaterialTheme.colorScheme.primary.copy(alpha = if (isDarkTheme) 0.86f else 0.78f)
-    val showLeadingAccent = compact && (isSelected || isDragging)
-    val showDropIndicator = isDropTarget
+    val pageLabel = formatDocumentPageIndexLabel(page.pageIndex, pageCount)
+    val pageNumber = formatDocumentPageNumberLabel(page.pageIndex, pageCount)
 
     Surface(
         onClick = onClick,
         modifier = modifier.clip(tileShape),
-        color = tileColor,
-        border = BorderStroke(
-            width = tileBorderWidth,
-            color = tileBorderColor,
-        ),
+        color = MaterialTheme.colorScheme.surfaceContainer,
+        border = BorderStroke(width = tileBorderWidth, color = tileBorderColor),
         shape = tileShape,
-        shadowElevation = when {
-            isDragging -> 4.dp
-            else -> 0.dp
-        },
+        shadowElevation = if (isDragging) 4.dp else 0.dp,
         tonalElevation = 0.dp,
     ) {
-        Box(modifier = Modifier.fillMaxWidth()) {
-            if (compact) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(
-                            start = if (showLeadingAccent) 16.dp else 12.dp,
-                            top = 12.dp,
-                            end = 12.dp,
-                            bottom = 12.dp,
-                        ),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    verticalAlignment = Alignment.CenterVertically,
+        if (compact) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 10.dp, vertical = 10.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                DocumentPagePaperPreview(
+                    page = page,
+                    pageNumber = pageNumber,
+                    compact = true,
+                    shape = paperShape,
+                    modifier = Modifier.width(56.dp),
+                )
+                Column(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(2.dp),
                 ) {
-                    PagePreview(
-                        page = page,
-                        displaySize = PreviewDisplaySize.COMPACT,
-                        modifier = Modifier.size(72.dp),
-                        minHeight = 72.dp,
-                        aspectRatio = 1f,
+                    Text(
+                        text = pageLabel,
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.SemiBold,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
                     )
-                    Column(
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(72.dp),
-                        verticalArrangement = Arrangement.SpaceBetween,
-                    ) {
-                        Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                            Text(
-                                text = "Page ${page.pageIndex + 1}",
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.SemiBold,
-                                color = MaterialTheme.colorScheme.onSurface,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                            )
-                            Text(
-                                text = page.processingState.toShortLabel(),
-                                style = MaterialTheme.typography.labelMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                            )
-                        }
-                        Text(
-                            text = page.updatedAtMillis.toReadableDateTime(),
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                        )
-                    }
-                    if (reorderEnabled) {
-                        Icon(
-                            imageVector = Icons.Filled.DragHandle,
-                            contentDescription = "Drag to reorder",
-                            tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.72f),
-                            modifier = Modifier.size(24.dp),
-                        )
-                    }
-                }
-            } else {
-                Box(modifier = Modifier.fillMaxWidth()) {
-                    PagePreview(
-                        page = page,
-                        displaySize = PreviewDisplaySize.CARD,
-                        modifier = Modifier.fillMaxWidth(),
-                        minHeight = 88.dp,
-                    )
-                    Box(
-                        modifier = Modifier
-                            .matchParentSize()
-                            .background(
-                                androidx.compose.ui.graphics.Brush.verticalGradient(
-                                    colors = listOf(
-                                        Color.Transparent,
-                                        Color.Transparent,
-                                        Color.Black.copy(alpha = 0.6f),
-                                        Color.Black.copy(alpha = 0.9f)
-                                    )
-                                )
-                            )
-                    )
-                    MetricChip(
-                        label = "P${page.pageIndex + 1}/$pageCount",
-                        modifier = Modifier
-                            .align(Alignment.TopStart)
-                            .padding(8.dp),
-                        containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.84f),
-                    )
-                    if (reorderEnabled) {
-                        Icon(
-                            imageVector = Icons.Filled.DragHandle,
-                            contentDescription = "Drag to reorder",
-                            tint = Color.White.copy(alpha = 0.8f),
-                            modifier = Modifier
-                                .align(Alignment.TopEnd)
-                                .padding(8.dp)
-                                .size(24.dp),
-                        )
-                    }
-                    Column(
-                        modifier = Modifier
-                            .align(Alignment.BottomStart)
-                            .padding(12.dp),
-                        verticalArrangement = Arrangement.spacedBy(2.dp),
-                    ) {
-                        Text(
-                            text = "Page ${page.pageIndex + 1}",
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.SemiBold,
-                            color = Color.White,
-                        )
-                        Text(
-                            text = page.updatedAtMillis.toReadableDateTime(),
-                            style = MaterialTheme.typography.labelMedium,
-                            color = Color.White.copy(alpha = 0.8f),
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                        )
-                    }
-                }
-            }
-            if (showLeadingAccent) {
-                Box(modifier = Modifier.matchParentSize()) {
-                    Box(
-                        modifier = Modifier
-                            .align(Alignment.CenterStart)
-                            .fillMaxHeight()
-                            .width(4.dp)
-                            .clip(RoundedCornerShape(topStart = 24.dp, bottomStart = 24.dp))
-                            .background(accentColor),
+                    Text(
+                        text = page.processingState.toShortLabel(),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
                     )
                 }
             }
-            if (showDropIndicator) {
-                Box(
-                    modifier = Modifier
-                        .align(Alignment.TopStart)
-                        .fillMaxWidth()
-                        .height(3.dp)
-                        .background(accentColor),
+        } else {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                DocumentPagePaperPreview(
+                    page = page,
+                    pageNumber = pageNumber,
+                    compact = false,
+                    shape = paperShape,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+                Text(
+                    text = pageLabel,
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = FontWeight.SemiBold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun DocumentPagePaperPreview(
+    page: ScanPage,
+    pageNumber: String,
+    compact: Boolean,
+    shape: RoundedCornerShape,
+    modifier: Modifier = Modifier,
+) {
+    Surface(
+        modifier = modifier.aspectRatio(documentPageTileAspectRatio()),
+        shape = shape,
+        color = MaterialTheme.colorScheme.surfaceContainerHighest,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+        shadowElevation = 0.dp,
+        tonalElevation = 0.dp,
+    ) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            PagePreview(
+                page = page,
+                displaySize = if (compact) PreviewDisplaySize.COMPACT else PreviewDisplaySize.CARD,
+                modifier = Modifier.fillMaxSize(),
+                minHeight = if (compact) 48.dp else 88.dp,
+                aspectRatio = null,
+            )
+            Surface(
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(if (compact) 4.dp else 6.dp),
+                color = MaterialTheme.colorScheme.surface.copy(alpha = 0.92f),
+                shape = MaterialTheme.shapes.small,
+                shadowElevation = 0.dp,
+                tonalElevation = 0.dp,
+            ) {
+                Text(
+                    text = pageNumber,
+                    style = MaterialTheme.typography.labelMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
                 )
             }
         }

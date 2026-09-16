@@ -104,7 +104,7 @@ class GroupDetailViewModel @Inject constructor(
     fun renameGroup(title: String) {
         viewModelScope.launch {
             when (val result = renameGroupUseCase(groupId, title)) {
-                is ScanlyResult.Success -> _events.emit(GroupDetailEvent.ShowMessage("Group renamed."))
+                is ScanlyResult.Success -> _events.emit(GroupDetailEvent.ShowMessage("Folder renamed."))
                 is ScanlyResult.Failure -> _events.emit(GroupDetailEvent.ShowMessage(result.error.message))
             }
         }
@@ -131,11 +131,31 @@ class GroupDetailViewModel @Inject constructor(
     suspend fun suggestDocumentTitle(format: DocumentTitleFormat): String =
         suggestDocumentTitleUseCase(format)
 
-    fun addDocumentToGroup(documentId: String) {
+    /** Move one or more ungrouped documents into this folder. */
+    fun addDocumentsToGroup(documentIds: Collection<String>) {
+        if (documentIds.isEmpty()) return
         viewModelScope.launch {
-            when (val result = setDocumentGroupUseCase(documentId, groupId)) {
-                is ScanlyResult.Success -> Unit
-                is ScanlyResult.Failure -> _events.emit(GroupDetailEvent.ShowMessage(result.error.message))
+            var successCount = 0
+            var lastError: String? = null
+            for (documentId in documentIds) {
+                when (val result = setDocumentGroupUseCase(documentId, groupId)) {
+                    is ScanlyResult.Success -> successCount++
+                    is ScanlyResult.Failure -> lastError = result.error.message
+                }
+            }
+            when {
+                lastError != null && successCount == 0 ->
+                    _events.emit(GroupDetailEvent.ShowMessage(lastError))
+                lastError != null ->
+                    _events.emit(
+                        GroupDetailEvent.ShowMessage(
+                            "Added $successCount of ${documentIds.size} documents. $lastError",
+                        ),
+                    )
+                successCount == 1 ->
+                    _events.emit(GroupDetailEvent.ShowMessage("Added 1 document to folder."))
+                successCount > 1 ->
+                    _events.emit(GroupDetailEvent.ShowMessage("Added $successCount documents to folder."))
             }
         }
     }
@@ -143,8 +163,10 @@ class GroupDetailViewModel @Inject constructor(
     fun removeDocumentFromGroup(documentId: String) {
         viewModelScope.launch {
             when (val result = setDocumentGroupUseCase(documentId, null)) {
-                is ScanlyResult.Success -> _events.emit(GroupDetailEvent.ShowMessage("Document removed from group."))
-                is ScanlyResult.Failure -> _events.emit(GroupDetailEvent.ShowMessage(result.error.message))
+                is ScanlyResult.Success ->
+                    _events.emit(GroupDetailEvent.ShowMessage("Document removed from folder."))
+                is ScanlyResult.Failure ->
+                    _events.emit(GroupDetailEvent.ShowMessage(result.error.message))
             }
         }
     }

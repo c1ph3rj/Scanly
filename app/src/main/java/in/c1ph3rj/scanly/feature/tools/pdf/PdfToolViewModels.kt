@@ -668,24 +668,18 @@ class PdfReaderViewModel @Inject constructor(
     fun goToPage(index: Int) {
         val count = _uiState.value.pageCount
         if (count <= 0) return
-        val target = index.coerceIn(0, count - 1)
+        val target = clampPdfReaderPageIndex(index, count)
         _uiState.update { it.copy(currentPageIndex = target) }
         ensurePagesAround(target)
     }
 
     fun toggleChrome() {
-        _uiState.update { it.copy(chromeVisible = !it.chromeVisible) }
+        _uiState.update { it.copy(chromeVisible = togglePdfReaderChrome(it.chromeVisible)) }
     }
 
     fun toggleReaderLayout() {
         _uiState.update {
-            it.copy(
-                readerLayout = if (it.readerLayout == PdfReaderLayout.Paged) {
-                    PdfReaderLayout.Continuous
-                } else {
-                    PdfReaderLayout.Paged
-                },
-            )
+            it.copy(readerLayout = togglePdfReaderLayout(it.readerLayout))
         }
     }
 

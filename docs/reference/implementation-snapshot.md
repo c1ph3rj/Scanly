@@ -1,12 +1,12 @@
 ﻿# Implementation Snapshot
 
-One-page technical summary of Scanly **v1.0.13**. For detail see the full docs index at [../README.md](../README.md).
+One-page technical summary of Scanly **v1.0.16**. For detail see the full docs index at [../README.md](../README.md).
 
 ## Release
 
 | Field | Value |
 | --- | --- |
-| Version | `1.0.13` (code `13`) |
+| Version | `1.0.16` (code `16`) |
 | Room schema | `4` |
 | Min SDK | 29 |
 | Target SDK | 36 |
@@ -27,7 +27,7 @@ ScanlyApplication (WorkManager + Hilt)
 
 ## Features (summary)
 
-Home · Library · Tools (scan/import, QR, PDF toolkit) · Camera scan + gate + multi-model overlay · Gallery import · Document detail · Page preview · **Page editor** (live cropped preview; full-screen Filters + Adjust; dedicated Crop with AI Detect) · Groups · PDF/ZIP export with save destination · Library backup/restore (`.scanly`) · Document detection settings + model benchmark · Pure black theme · Onboarding · **Home widgets + launcher quick actions** · GitHub/Play update channels
+Home · Library (paper cards, overflow actions) · Tools (QR, PDF toolkit studio chrome) · Camera scan + permission-ask-first + gate + multi-model overlay · Gallery import · Document detail (portrait page tiles) · Page preview · **Page editor** (live cropped preview; full-screen Filters + Adjust; dedicated Crop with AI Detect) · Groups · PDF reader (title, page n of m, paged/continuous, pinch-zoom) · PDF/ZIP export with save destination · Library backup/restore (`.scanly`) · Document detection settings + model benchmark · Pure black theme · Onboarding · **Home widgets + launcher quick actions** · GitHub/Play update channels
 
 ## Data
 
@@ -46,7 +46,7 @@ Raw JPEG
   → optional semantic gate (capture/import)
   → LiteRT corners (post model; book resolve) OR stored/manual/AI-detect quad
   → perspective warp
-  → OpenCV filter preset
+  → OpenCV filter engine (analyze → recipe → strength → operators → guard)
   → optional brightness/contrast/saturation/sharpness adjustments
   → processed JPEG (q94, max 2400px) + thumbnail
 ```
@@ -72,7 +72,7 @@ Kotlin · Compose · Material 3 · Hilt · Navigation Compose · CameraX · Room
 
 ## Tests
 
-41 unit-test files · 3 instrumented-test files (onboarding UI, OpenCV filter processor, smoke) · gaps in persistence integration and archive/export E2E
+50 unit-test classes plus in-memory fakes · 4 instrumented-test classes (device UI on `MainActivity`, onboarding Compose, OpenCV filter engine, package smoke) · remaining gaps: Room round-trips, real PDF/ZIP/`.scanly` I/O, live camera
 
 ## Principles
 

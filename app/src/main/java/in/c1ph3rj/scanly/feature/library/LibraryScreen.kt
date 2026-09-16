@@ -43,9 +43,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import `in`.c1ph3rj.scanly.core.ui.ScanlyTestTags
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
@@ -146,7 +148,9 @@ fun LibraryScreen(
     }
 
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .testTag(ScanlyTestTags.LIBRARY_SCREEN),
         containerColor = MaterialTheme.colorScheme.background,
         snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { innerPadding ->
@@ -386,6 +390,7 @@ fun LibraryScreen(
                 onCreateGroup(title)
             },
             onSuggestTitle = onSuggestGroupTitle,
+            autoFillSuggestedName = true,
         )
     }
 
@@ -420,6 +425,7 @@ fun LibraryScreen(
         GroupNameDialog(
             title = "Rename folder",
             initialValue = group.title,
+            confirmLabel = "Save",
             onDismiss = { renameGroupTarget = null },
             onConfirm = { value ->
                 renameGroupTarget = null
@@ -893,6 +899,31 @@ fun NewDocumentDialog(
 ) {
     var title by rememberSaveable { mutableStateOf("") }
     var selectedGroupId by rememberSaveable { mutableStateOf<String?>(null) }
+    var isFillingName by remember {
+        mutableStateOf(title.isBlank() && onSuggestTitle != null)
+    }
+    var suggestFormatIndex by rememberSaveable { mutableIntStateOf(0) }
+
+    LaunchedEffect(Unit) {
+        if (onSuggestTitle == null || title.isNotBlank()) {
+            isFillingName = false
+            return@LaunchedEffect
+        }
+        isFillingName = true
+        val suggested = runCatching { onSuggestTitle(DocumentTitleFormat.default) }.getOrNull()
+        if (title.isBlank() && !suggested.isNullOrBlank()) {
+            title = suggested
+            suggestFormatIndex = DocumentTitleFormat.entries.indexOf(
+                DocumentTitleFormat.default.next(),
+            )
+        }
+        isFillingName = false
+    }
+
+    val confirm = {
+        val name = title.trim()
+        if (name.isNotEmpty()) onConfirm(name, selectedGroupId)
+    }
 
     ScanlyFormDialogShell(onDismiss = onDismiss) {
         Text(
@@ -900,17 +931,19 @@ fun NewDocumentDialog(
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.SemiBold,
         )
-        OutlinedTextField(
+        NameTextField(
             value = title,
             onValueChange = { title = it },
-            label = { Text("Title") },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth(),
+            label = "Title",
+            isLoading = isFillingName,
+            onKeyboardDone = confirm,
         )
         if (onSuggestTitle != null) {
             DocumentTitleSuggestRow(
                 onSuggestTitle = onSuggestTitle,
                 onSuggested = { title = it },
+                initialFormatIndex = suggestFormatIndex,
+                enabled = !isFillingName,
             )
         }
 
@@ -953,8 +986,8 @@ fun NewDocumentDialog(
             TextButton(onClick = onDismiss) { Text("Cancel") }
             Spacer(Modifier.width(8.dp))
             TextButton(
-                onClick = { if (title.isNotBlank()) onConfirm(title, selectedGroupId) },
-                enabled = title.isNotBlank(),
+                onClick = confirm,
+                enabled = title.isNotBlank() && !isFillingName,
             ) { Text("Create") }
         }
     }

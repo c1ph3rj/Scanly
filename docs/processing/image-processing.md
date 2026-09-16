@@ -89,14 +89,31 @@ Settings exposes a temporary benchmark screen for gate + all corner models on se
 
 Maps the detected (or manual) quad to a flat rectangular output image.
 
-## Step 4: Filter presets
+## Step 4: Filter engine
 
-`OpenCvPageFilterProcessor` applies the selected `PageFilterPreset`:
+`OpenCvPageFilterProcessor` is the public facade. Internals live in `core/processing/filter/` and follow a reflectance model (`Image ≈ Reflectance × Shading`):
+
+```
+Cropped page
+  → Analyze at canonical 720px (`PageImageAnalyzer` → `PageImageProfile`)
+  → Auto routing (`AdaptivePageFilterTuning.automatic`) when the preset is Auto
+  → Preset recipe (look only: Natural vs Document, paper target, caps)
+  → Strength controller (closed-loop gain, glare reduces flatten/CLAHE)
+  → Shared operators (content-masked flatten, soft tone, paper WB, text-only sharpen)
+  → One-pass output guard (Color only: pull back over-white paper; restore weak text)
+```
+
+Kernels scale from a **1600px** reference edge so 320px picker chips, 1600px live preview, and 2400px saves share one look when they share one profile. Filter picker thumbs analyze the cropped page at ≥720px, then render chips at 320px with that profile.
+
+Two look families:
+
+- **Natural** (Color, Shadow Reduce, Magic) — stay recognizably the capture; flatten evens lighting toward current paper luminance; cream paper is not forced to sterile white.
+- **Document** (Clean, Grayscale, Text Enhance, B&W, Receipt) — explicit scan paper, still closed-loop so they do not blow out.
 
 | Preset | Storage value | Typical use |
 | --- | --- | --- |
 | Original | `original` | No filter |
-| Auto | `auto` | Adaptive tuning (persists the concrete preset Auto chose) |
+| Auto | `auto` | Routes to a concrete preset; that choice is persisted |
 | Enhanced Color | `enhanced_color` | Cleans paper while retaining logos and color marks |
 | Grayscale | `grayscale` | General text documents |
 | Black & White | `black_and_white` | Strong text / invoice output |
@@ -104,9 +121,7 @@ Maps the detected (or manual) quad to a flat rectangular output image.
 | Shadow Reduction | `shadow_reduction` | Color pages under uneven lighting |
 | Magic Color | `magic_color` | Faded print / illustrations |
 | Receipt | `receipt` | Thermal receipts and long slips |
-| Soft Black & White | `soft_black_and_white` | Faint handwriting / gentler text |
-
-`AdaptivePageFilterTuning` and `PageImageProfile` drive Auto routing.
+| Soft Black & White (Text Enhance) | `soft_black_and_white` | Faint handwriting / gentler text |
 
 ## Step 5: Post-filter adjustments
 
@@ -171,9 +186,12 @@ Paths under `processed/` and `thumbs/` per document. `ThumbnailCache` is invalid
 | `DefaultPageImageProcessor` | `data/processing/` | Orchestrates full pipeline |
 | `PerspectiveQuadMath` | `core/processing/` | Geometry math |
 | `PerspectiveBitmapTransform` | `core/processing/` | Bitmap warp |
-| `OpenCvPageFilterProcessor` | `core/processing/` | Filter application |
+| `OpenCvPageFilterProcessor` | `core/processing/` | Filter facade (`apply`, `analyze`, `applyAll`) |
+| `PageImageAnalyzer` | `core/processing/filter/` | Canonical 720px page profile |
+| `PageFilterRecipes` / `PageFilterStrengthController` | `core/processing/filter/` | Look identity and closed-loop gain |
+| `PageFilterOperators` / `PageFilterEngine` | `core/processing/filter/` | Shared ops, render, output guard |
 | `PageFilterAdjustmentsApplier` | `core/processing/` | Brightness/contrast/saturation/sharpness |
-| `AdaptivePageFilterTuning` | `core/processing/` | Per-image Auto routing and tuning |
+| `AdaptivePageFilterTuning` | `core/processing/` | Auto preset routing |
 | `LiteRtDocumentCornerDetector` | `core/ml/` | Multi-model corner inference |
 | `LiteRtDocumentGateDetector` | `core/ml/` | Physical-document gate |
 | `AutomaticDocumentModelSelector` | `core/ml/` | Device latency calibration |

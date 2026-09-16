@@ -29,6 +29,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.Dp
 
 /**
  * Shared visual language for Scanly's zero-content and first-use states.
@@ -48,6 +49,7 @@ fun IllustratedEmptyState(
     onSecondaryAction: (() -> Unit)? = null,
     secondaryActionEnabled: Boolean = true,
     compact: Boolean = false,
+    illustrationSize: Dp? = null,
 ) {
     Surface(
         modifier = modifier.fillMaxWidth(),
@@ -68,14 +70,17 @@ fun IllustratedEmptyState(
                     vertical = if (compact) 24.dp else 30.dp,
                 ),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(if (compact) 10.dp else 12.dp),
+            verticalArrangement = Arrangement.Top,
         ) {
             Image(
                 painter = painterResource(illustrationRes),
                 contentDescription = null,
-                modifier = Modifier.size(if (compact) 132.dp else 176.dp),
+                // Give the illustration enough visual weight to balance the
+                // empty-state card without crowding the supporting content.
+                modifier = Modifier.size(illustrationSize ?: if (compact) 176.dp else 240.dp),
                 contentScale = ContentScale.Fit,
             )
+            Spacer(Modifier.height(if (compact) 12.dp else 16.dp))
             Text(
                 text = title,
                 style = if (compact) {
@@ -86,6 +91,7 @@ fun IllustratedEmptyState(
                 fontWeight = FontWeight.SemiBold,
                 textAlign = TextAlign.Center,
             )
+            Spacer(Modifier.height(if (compact) 10.dp else 12.dp))
             Text(
                 text = description,
                 style = MaterialTheme.typography.bodyLarge,
@@ -94,7 +100,7 @@ fun IllustratedEmptyState(
             )
 
             if (actionLabel != null && onAction != null) {
-                Spacer(Modifier.height(4.dp))
+                Spacer(Modifier.height(if (compact) 14.dp else 16.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center,

@@ -70,10 +70,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.testTag
+import `in`.c1ph3rj.scanly.core.ui.ScanlyTestTags
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
@@ -83,6 +86,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
@@ -191,8 +196,9 @@ fun QrToolRoute(
                             },
                             onOpen = {
                                 val text = uiState.scanResult ?: return@QrScanPanel
-                                val uri = runCatching { Uri.parse(text) }.getOrNull()
-                                if (uri != null && (uri.scheme == "http" || uri.scheme == "https")) {
+                                val url = qrWebLinkToOpen(text)
+                                val uri = url?.let { Uri.parse(it) }
+                                if (uri != null && qrUriIsOpenableWebLink(uri.scheme)) {
                                     context.startActivity(Intent(Intent.ACTION_VIEW, uri))
                                 } else {
                                     viewModel.emitMessage("Not a web URL")
@@ -336,28 +342,74 @@ private fun QrScanPanel(
     onClear: () -> Unit,
 ) {
     val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val activity = CameraPermissionSupport.findActivity(context)
     var permissionStatus by remember {
-        mutableStateOf(CameraPermissionSupport.resolveStatus(null, context))
+        mutableStateOf(CameraPermissionSupport.resolveStatus(activity, context))
     }
+    var hasAutoRequestedPermission by rememberSaveable { mutableStateOf(false) }
+
+    fun refreshCameraPermissionStatus() {
+        permissionStatus = CameraPermissionSupport.resolveStatus(activity, context)
+    }
+
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),
     ) {
         CameraPermissionSupport.markRequested(context)
-        permissionStatus = CameraPermissionSupport.resolveStatus(null, context)
+        permissionStatus = CameraPermissionSupport.resolveStatus(activity, context)
+    }
+
+    LaunchedEffect(permissionStatus) {
+        if (
+            CameraPermissionSupport.shouldAutoRequestSystemPermission(permissionStatus) &&
+            !hasAutoRequestedPermission
+        ) {
+            hasAutoRequestedPermission = true
+            permissionLauncher.launch(Manifest.permission.CAMERA)
+        }
+    }
+
+    DisposableEffect(lifecycleOwner, context, activity) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                refreshCameraPermissionStatus()
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
     }
 
     if (permissionStatus != CameraPermissionStatus.Granted) {
-        QrPermissionCard(
-            permissionStatus = permissionStatus,
-            onAllow = {
-                if (CameraPermissionSupport.shouldOpenSettings(permissionStatus)) {
-                    CameraPermissionSupport.openAppSettings(context)
-                } else {
-                    permissionLauncher.launch(Manifest.permission.CAMERA)
+        val onAllow = {
+            if (CameraPermissionSupport.shouldOpenSettings(permissionStatus)) {
+                CameraPermissionSupport.openAppSettings(context)
+            } else if (CameraPermissionSupport.shouldRequestSystemPermission(permissionStatus)) {
+                permissionLauncher.launch(Manifest.permission.CAMERA)
+            }
+        }
+        val permissionCard: @Composable () -> Unit = {
+            QrPermissionCard(
+                permissionStatus = permissionStatus,
+                onAllow = onAllow,
+                maxWidth = if (layout.twoPane) 560.dp else Dp.Unspecified,
+            )
+        }
+        if (qrPermissionGateShowsModeSelector(layout.twoPane) && modeSelector != null) {
+            Column(modifier = Modifier.fillMaxSize()) {
+                modeSelector()
+                Spacer(modifier = Modifier.height(12.dp))
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f),
+                ) {
+                    permissionCard()
                 }
-            },
-            maxWidth = if (layout.twoPane) 560.dp else Dp.Unspecified,
-        )
+            }
+        } else {
+            permissionCard()
+        }
         return
     }
 
@@ -454,23 +506,30 @@ private fun QrPermissionCard(
                 .then(if (maxWidth != Dp.Unspecified) Modifier.widthIn(max = maxWidth) else Modifier)
                 .fillMaxWidth(),
             shape = MaterialTheme.shapes.extraLarge,
-            color = MaterialTheme.colorScheme.primaryContainer,
-            border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.24f)),
+            color = MaterialTheme.colorScheme.surfaceContainer,
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
         ) {
             Column(
                 modifier = Modifier.padding(20.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp),
             ) {
                 Text(
-                    "Allow camera to scan",
+                    if (CameraPermissionSupport.shouldOpenSettings(permissionStatus)) {
+                        "Camera permission is blocked"
+                    } else {
+                        "Allow camera to scan"
+                    },
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer,
                 )
                 Text(
-                    "Scanly uses the camera only while this screen is open.",
+                    if (CameraPermissionSupport.shouldOpenSettings(permissionStatus)) {
+                        "Open Settings, tap Permissions, and turn Camera on for Scanly."
+                    } else {
+                        "The camera is used only while this screen is open."
+                    },
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.76f),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 Button(onClick = onAllow) {
                     Text(
@@ -619,8 +678,7 @@ private fun QrScanResultCard(
     onOpen: () -> Unit,
     onClear: () -> Unit,
 ) {
-    val isWebLink = result.startsWith("https://", ignoreCase = true) ||
-        result.startsWith("http://", ignoreCase = true)
+    val isWebLink = isQrWebLink(result)
 
     Surface(
         modifier = Modifier.fillMaxWidth(),
@@ -652,12 +710,12 @@ private fun QrScanResultCard(
                 }
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        if (isWebLink) "Link detected" else "Text detected",
+                        formatQrScanResultTitle(result),
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.SemiBold,
                     )
                     Text(
-                        if (isWebLink) "Ready to open or copy" else "Ready to copy",
+                        formatQrScanResultSubtitle(result),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -743,7 +801,9 @@ private fun QrGeneratePanel(
                         contentDescription = null,
                     )
                 },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag(ScanlyTestTags.QR_GENERATE_INPUT),
                 minLines = 3,
                 maxLines = 5,
                 shape = MaterialTheme.shapes.large,
@@ -821,11 +881,7 @@ private fun QrGeneratePanel(
                             modifier = Modifier.size(44.dp),
                         )
                         Text(
-                            if (content.isBlank()) {
-                                "Preview appears as you type"
-                            } else {
-                                "Generating preview…"
-                            },
+                            formatQrGeneratePlaceholderHint(content.isBlank()),
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             style = MaterialTheme.typography.bodyMedium,
                         )

@@ -9,6 +9,7 @@ import androidx.compose.runtime.produceState
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.exifinterface.media.ExifInterface
+import `in`.c1ph3rj.scanly.core.common.runCatchingCancellable
 import `in`.c1ph3rj.scanly.core.ml.DocumentCornerQuad
 import `in`.c1ph3rj.scanly.core.processing.OpenCvPageFilterProcessor
 import `in`.c1ph3rj.scanly.core.processing.PageFilterAdjustmentsApplier
@@ -75,7 +76,7 @@ internal fun rememberCropCanvasPreviewBitmap(
             path = sourcePath,
             userRotationDegrees = if (rawImagePath != null) rotationDegrees else 0,
         ) ?: return@withContext null
-        val filteredBitmap = runCatching {
+        val filteredBitmap = runCatchingCancellable {
             OpenCvPageFilterProcessor.apply(rotatedBitmap, selectedFilter)
         }.getOrElse {
             rotatedBitmap.copy(Bitmap.Config.ARGB_8888, false)
@@ -109,24 +110,27 @@ internal fun rememberFilterPreviewBitmaps(
     cropQuad,
 ) {
     value = withContext(Dispatchers.Default) {
-        val baseBitmap = buildCroppedUnfilteredPreview(
+        val analysisBitmap = buildCroppedUnfilteredPreview(
             rawImagePath = rawImagePath,
             fallbackImagePath = fallbackImagePath,
             rotationDegrees = rotationDegrees,
             cropQuad = cropQuad,
-            maxDimension = 360,
+            maxDimension = 1_600,
         ) ?: return@withContext FilterPreviewState(
             isLoading = false,
             previews = emptyMap(),
         )
-        val previewBitmap = createFilterPreviewSource(baseBitmap)
-        if (previewBitmap !== baseBitmap) {
-            baseBitmap.recycle()
+        val profile = runCatchingCancellable {
+            OpenCvPageFilterProcessor.analyze(analysisBitmap)
+        }.getOrNull()
+        val previewBitmap = createFilterPreviewSource(analysisBitmap)
+        if (previewBitmap !== analysisBitmap) {
+            analysisBitmap.recycle()
         }
 
         try {
             val previews = OpenCvPageFilterProcessor
-                .applyAll(previewBitmap)
+                .applyAll(previewBitmap, profile = profile)
                 .mapValues { (_, bitmap) -> bitmap.asImageBitmap() }
             FilterPreviewState(
                 isLoading = false,
@@ -168,15 +172,18 @@ internal fun buildCroppedFilteredPreview(
         cropQuad = cropQuad,
         maxDimension = maxDimension,
     ) ?: return null
-    val filteredBitmap = runCatching {
-        OpenCvPageFilterProcessor.apply(cropped, selectedFilter)
+    val profile = runCatchingCancellable {
+        OpenCvPageFilterProcessor.analyze(cropped)
+    }.getOrNull()
+    val filteredBitmap = runCatchingCancellable {
+        OpenCvPageFilterProcessor.apply(cropped, selectedFilter, profile)
     }.getOrElse {
         cropped.copy(Bitmap.Config.ARGB_8888, false)
     }
     if (filteredBitmap !== cropped) {
         cropped.recycle()
     }
-    val adjustedBitmap = runCatching {
+    val adjustedBitmap = runCatchingCancellable {
         PageFilterAdjustmentsApplier.apply(filteredBitmap, filterAdjustments)
     }.getOrElse {
         filteredBitmap.copy(Bitmap.Config.ARGB_8888, false)

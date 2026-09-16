@@ -4,32 +4,36 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.DeleteOutline
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.FitScreen
 import androidx.compose.material.icons.filled.IosShare
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material3.Icon
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -38,11 +42,15 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -51,13 +59,12 @@ import `in`.c1ph3rj.scanly.core.ui.ChromeIconButton
 import `in`.c1ph3rj.scanly.core.ui.MetricChip
 import `in`.c1ph3rj.scanly.core.ui.ZoomableImageState
 import `in`.c1ph3rj.scanly.core.ui.ZoomableImageViewer
-import `in`.c1ph3rj.scanly.domain.model.ShareArtifact
 import `in`.c1ph3rj.scanly.domain.model.ScanPage
+import `in`.c1ph3rj.scanly.domain.model.ShareArtifact
 import `in`.c1ph3rj.scanly.feature.components.ScanlyConfirmDialog
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
-import androidx.compose.runtime.snapshotFlow
 import java.io.File
 
 @Composable
@@ -148,7 +155,7 @@ fun PageImagePreviewScreen(
     }
     val visiblePage = pages.getOrNull(pagerState.settledPage) ?: page
     val visibleZoomState = zoomStates[visiblePage.id]
-    var showPageMenu by remember { mutableStateOf(false) }
+    var chromeVisible by rememberSaveable { mutableStateOf(true) }
     var deleteTarget by remember { mutableStateOf<ScanPage?>(null) }
 
     LaunchedEffect(pagerState, pages) {
@@ -165,10 +172,6 @@ fun PageImagePreviewScreen(
         if (selectedIndex >= 0 && selectedIndex != pagerState.currentPage) {
             pagerState.scrollToPage(selectedIndex)
         }
-    }
-
-    LaunchedEffect(visiblePage.id) {
-        showPageMenu = false
     }
 
     Surface(
@@ -191,39 +194,42 @@ fun PageImagePreviewScreen(
                     state = checkNotNull(zoomStates[previewPage.id]),
                     allowParentHorizontalGestures = true,
                     showTopBar = false,
+                    showZoomBadge = false,
+                    onSingleTap = { chromeVisible = !chromeVisible },
                 )
             }
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.TopCenter)
-                    .statusBarsPadding()
-                    .padding(horizontal = 16.dp, vertical = 12.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
+            AnimatedVisibility(
+                visible = chromeVisible,
+                modifier = Modifier.align(Alignment.TopCenter),
+                enter = fadeIn() + slideInVertically { -it / 3 },
+                exit = fadeOut() + slideOutVertically { -it / 3 },
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    ChromeIconButton(
-                        icon = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Back",
-                        onClick = onNavigateUp,
-                        containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-                        contentColor = MaterialTheme.colorScheme.onSurface,
-                    )
-                    Spacer(modifier = Modifier.width(12.dp))
-                    MetricChip(
-                        label = "Page ${visiblePage.pageIndex + 1} of ${pages.size}",
-                        containerColor = Color.Black.copy(alpha = 0.42f),
-                        contentColor = Color.White,
-                        border = BorderStroke(1.dp, Color.White.copy(alpha = 0.12f)),
-                    )
-                }
-
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(14.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .statusBarsPadding()
+                        .padding(horizontal = 16.dp, vertical = 12.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        ChromeIconButton(
+                            icon = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back",
+                            onClick = onNavigateUp,
+                            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                            contentColor = MaterialTheme.colorScheme.onSurface,
+                        )
+                        Spacer(modifier = Modifier.width(12.dp))
+                        MetricChip(
+                            label = "Page ${visiblePage.pageIndex + 1} of ${pages.size}",
+                            containerColor = Color.Black.copy(alpha = 0.42f),
+                            contentColor = Color.White,
+                            border = BorderStroke(1.dp, Color.White.copy(alpha = 0.12f)),
+                        )
+                    }
+
                     if (visibleZoomState?.isZoomActive == true) {
                         PreviewActionButton(
                             icon = Icons.Filled.FitScreen,
@@ -231,70 +237,22 @@ fun PageImagePreviewScreen(
                             onClick = visibleZoomState::reset,
                         )
                     }
-                    Box {
-                        PreviewActionButton(
-                            icon = Icons.Filled.MoreVert,
-                            contentDescription = "Page options",
-                            onClick = { showPageMenu = true },
-                        )
-                        DropdownMenu(
-                            expanded = showPageMenu,
-                            onDismissRequest = { showPageMenu = false },
-                        ) {
-                            DropdownMenuItem(
-                                text = { Text("Share page") },
-                                leadingIcon = {
-                                    Icon(Icons.Filled.IosShare, contentDescription = null)
-                                },
-                                onClick = {
-                                    showPageMenu = false
-                                    onSharePage(visiblePage.id)
-                                },
-                            )
-                            DropdownMenuItem(
-                                text = { Text("Edit page") },
-                                leadingIcon = {
-                                    Icon(Icons.Filled.Edit, contentDescription = null)
-                                },
-                                onClick = {
-                                    showPageMenu = false
-                                    onEditPage(visiblePage.id)
-                                },
-                            )
-                            DropdownMenuItem(
-                                text = { Text("Retake page") },
-                                leadingIcon = {
-                                    Icon(Icons.Filled.Refresh, contentDescription = null)
-                                },
-                                enabled = !uiState.isDeleting,
-                                onClick = {
-                                    showPageMenu = false
-                                    onRetakePage(visiblePage.documentId, visiblePage.id)
-                                },
-                            )
-                            DropdownMenuItem(
-                                text = {
-                                    Text(
-                                        "Delete page",
-                                        color = MaterialTheme.colorScheme.error,
-                                    )
-                                },
-                                leadingIcon = {
-                                    Icon(
-                                        Icons.Filled.DeleteOutline,
-                                        contentDescription = null,
-                                        tint = MaterialTheme.colorScheme.error,
-                                    )
-                                },
-                                enabled = !uiState.isDeleting,
-                                onClick = {
-                                    showPageMenu = false
-                                    deleteTarget = visiblePage
-                                },
-                            )
-                        }
-                    }
                 }
+            }
+
+            AnimatedVisibility(
+                visible = chromeVisible,
+                modifier = Modifier.align(Alignment.BottomCenter),
+                enter = fadeIn() + slideInVertically { it / 3 },
+                exit = fadeOut() + slideOutVertically { it / 3 },
+            ) {
+                PreviewBottomActionBar(
+                    enabled = !uiState.isDeleting,
+                    onShare = { onSharePage(visiblePage.id) },
+                    onEdit = { onEditPage(visiblePage.id) },
+                    onRetake = { onRetakePage(visiblePage.documentId, visiblePage.id) },
+                    onDelete = { deleteTarget = visiblePage },
+                )
             }
         }
     }
@@ -317,8 +275,112 @@ fun PageImagePreviewScreen(
 }
 
 @Composable
+private fun PreviewBottomActionBar(
+    enabled: Boolean,
+    onShare: () -> Unit,
+    onEdit: () -> Unit,
+    onRetake: () -> Unit,
+    onDelete: () -> Unit,
+) {
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .navigationBarsPadding()
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+        color = Color.Black.copy(alpha = 0.72f),
+        shape = MaterialTheme.shapes.extraLarge,
+        border = BorderStroke(1.dp, Color.White.copy(alpha = 0.10f)),
+        shadowElevation = 0.dp,
+        tonalElevation = 0.dp,
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp, vertical = 10.dp),
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+            PreviewBottomAction(
+                icon = Icons.Filled.IosShare,
+                label = "Share",
+                enabled = enabled,
+                onClick = onShare,
+                modifier = Modifier.weight(1f),
+            )
+            PreviewBottomAction(
+                icon = Icons.Filled.Edit,
+                label = "Edit",
+                enabled = enabled,
+                onClick = onEdit,
+                modifier = Modifier.weight(1f),
+            )
+            PreviewBottomAction(
+                icon = Icons.Filled.Refresh,
+                label = "Retake",
+                enabled = enabled,
+                onClick = onRetake,
+                modifier = Modifier.weight(1f),
+            )
+            PreviewBottomAction(
+                icon = Icons.Filled.DeleteOutline,
+                label = "Delete",
+                enabled = enabled,
+                onClick = onDelete,
+                modifier = Modifier.weight(1f),
+                contentColor = MaterialTheme.colorScheme.error,
+            )
+        }
+    }
+}
+
+@Composable
+private fun PreviewBottomAction(
+    icon: ImageVector,
+    label: String,
+    enabled: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    contentColor: Color = Color.White,
+) {
+    val resolvedColor = if (enabled) {
+        contentColor
+    } else {
+        contentColor.copy(alpha = 0.42f)
+    }
+    Surface(
+        onClick = onClick,
+        enabled = enabled,
+        modifier = modifier,
+        color = Color.Transparent,
+        contentColor = resolvedColor,
+        shape = MaterialTheme.shapes.large,
+        shadowElevation = 0.dp,
+        tonalElevation = 0.dp,
+    ) {
+        Column(
+            modifier = Modifier.padding(vertical = 8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(6.dp),
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = label,
+                tint = resolvedColor,
+                modifier = Modifier.size(22.dp),
+            )
+            Text(
+                text = label,
+                style = MaterialTheme.typography.labelMedium,
+                color = resolvedColor,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+        }
+    }
+}
+
+@Composable
 private fun PreviewActionButton(
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    icon: ImageVector,
     contentDescription: String,
     onClick: () -> Unit,
 ) {
@@ -329,6 +391,8 @@ private fun PreviewActionButton(
         contentColor = Color.White,
         shape = MaterialTheme.shapes.large,
         border = BorderStroke(1.dp, Color.White.copy(alpha = 0.12f)),
+        shadowElevation = 0.dp,
+        tonalElevation = 0.dp,
     ) {
         Box(contentAlignment = Alignment.Center) {
             Icon(

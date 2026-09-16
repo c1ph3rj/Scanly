@@ -64,13 +64,144 @@ class OpenCvPageFilterProcessorTest {
         }
     }
 
-    private fun shadedPaperBitmap(includeColorMarks: Boolean): Bitmap {
-        val width = 480
-        val height = 640
+    @Test
+    fun enhancedColorKeepsEvenPaperAndColorMarks() {
+        val source = evenPaperBitmap()
+        val filtered = OpenCvPageFilterProcessor.apply(source, PageFilterPreset.ENHANCED_COLOR)
+
+        try {
+            val sourcePaper = meanLuminance(source, left = 28, top = 36, right = 92, bottom = 92)
+            val filteredPaper = meanLuminance(filtered, left = 28, top = 36, right = 92, bottom = 92)
+            val sourceMarkSaturation = saturationAt(source, x = 132, y = 322)
+            val filteredMarkSaturation = saturationAt(filtered, x = 132, y = 322)
+            val hueDelta = hueDistance(
+                hueAt(source, x = 132, y = 322),
+                hueAt(filtered, x = 132, y = 322),
+            )
+
+            assertTrue(
+                "Well-lit even paper should stay close to the capture.",
+                kotlin.math.abs(filteredPaper - sourcePaper) < 12.0,
+            )
+            assertTrue(
+                "Color marks should keep their hue.",
+                hueDelta < 18.0,
+            )
+            assertTrue(
+                "Colored stamps and logos should retain useful saturation.",
+                filteredMarkSaturation > sourceMarkSaturation * 0.70,
+            )
+        } finally {
+            source.recycle()
+            filtered.recycle()
+        }
+    }
+
+    @Test
+    fun grayscaleDoesNotReintroduceCaptureColor() {
+        val source = shadedPaperBitmap(includeColorMarks = true)
+        val filtered = OpenCvPageFilterProcessor.apply(source, PageFilterPreset.GRAYSCALE)
+
+        try {
+            assertTrue(
+                "Grayscale output must not pull capture chroma back in.",
+                saturationAt(filtered, x = 132, y = 322) < 8.0,
+            )
+        } finally {
+            source.recycle()
+            filtered.recycle()
+        }
+    }
+
+    @Test
+    fun receiptDoesNotReintroduceCaptureColor() {
+        val source = shadedPaperBitmap(includeColorMarks = true)
+        val filtered = OpenCvPageFilterProcessor.apply(source, PageFilterPreset.RECEIPT)
+
+        try {
+            assertTrue(
+                "Receipt output must not pull capture chroma back in.",
+                saturationAt(filtered, x = 132, y = 322) < 8.0,
+            )
+        } finally {
+            source.recycle()
+            filtered.recycle()
+        }
+    }
+
+    @Test
+    fun sharedProfileKeepsPaperLookAcrossRenderSizes() {
+        val master = shadedPaperBitmap(
+            includeColorMarks = true,
+            width = 1_800,
+            height = 2_400,
+        )
+        val profile = OpenCvPageFilterProcessor.analyze(master)
+        val preview = scaleToLongestEdge(master, 1_600)
+        val thumb = scaleToLongestEdge(master, 320)
+        val filteredSave = OpenCvPageFilterProcessor.apply(
+            master,
+            PageFilterPreset.SHADOW_REDUCTION,
+            profile,
+        )
+        val filteredPreview = OpenCvPageFilterProcessor.apply(
+            preview,
+            PageFilterPreset.SHADOW_REDUCTION,
+            profile,
+        )
+        val filteredThumb = OpenCvPageFilterProcessor.apply(
+            thumb,
+            PageFilterPreset.SHADOW_REDUCTION,
+            profile,
+        )
+
+        try {
+            val savePaper = fractionalPaperMean(filteredSave)
+            val previewPaper = fractionalPaperMean(filteredPreview)
+            val thumbPaper = fractionalPaperMean(filteredThumb)
+            val saveContrast = fractionalPaperContrast(filteredSave)
+            val previewContrast = fractionalPaperContrast(filteredPreview)
+            val thumbContrast = fractionalPaperContrast(filteredThumb)
+
+            assertTrue(
+                "Preview and save paper means should stay aligned.",
+                kotlin.math.abs(previewPaper - savePaper) < 8.0,
+            )
+            assertTrue(
+                "Thumb and save paper means should stay aligned.",
+                kotlin.math.abs(thumbPaper - savePaper) < 10.0,
+            )
+            assertTrue(
+                "Preview and save paper contrast should stay aligned.",
+                kotlin.math.abs(previewContrast - saveContrast) < 4.0,
+            )
+            assertTrue(
+                "Thumb and save paper contrast should stay aligned.",
+                kotlin.math.abs(thumbContrast - saveContrast) < 5.0,
+            )
+        } finally {
+            master.recycle()
+            if (preview !== master) preview.recycle()
+            if (thumb !== master) thumb.recycle()
+            filteredSave.recycle()
+            filteredPreview.recycle()
+            filteredThumb.recycle()
+        }
+    }
+
+    private fun evenPaperBitmap(): Bitmap =
+        shadedPaperBitmap(includeColorMarks = true, width = 480, height = 640, shadowAmount = 0.0)
+
+    private fun shadedPaperBitmap(
+        includeColorMarks: Boolean,
+        width: Int = 480,
+        height: Int = 640,
+        shadowAmount: Double = 38.0,
+    ): Bitmap {
         val pixels = IntArray(width * height)
         for (y in 0 until height) {
             for (x in 0 until width) {
-                val shadow = 38.0 * (x / (width - 1.0))
+                val shadow = shadowAmount * (x / (width - 1.0))
                 val noise = (((x * 17) + (y * 31)) % 5) - 2
                 val base = (230.0 - shadow + noise).toInt()
                 pixels[(y * width) + x] = Color.rgb(
@@ -89,11 +220,32 @@ class OpenCvPageFilterProcessorTest {
                 textSize = 30f
                 strokeWidth = 3f
             }
-            canvas.drawText("SCANLY DOCUMENT", 54f, 128f, ink)
-            canvas.drawText("Faint text stays readable", 54f, 190f, ink.apply { alpha = 180 })
+            val xScale = width / 480f
+            val yScale = height / 640f
+            canvas.drawText("SCANLY DOCUMENT", 54f * xScale, 128f * yScale, ink.apply {
+                textSize = 30f * minOf(xScale, yScale)
+            })
+            canvas.drawText(
+                "Faint text stays readable",
+                54f * xScale,
+                190f * yScale,
+                ink.apply { alpha = 180 },
+            )
             if (includeColorMarks) {
-                canvas.drawRect(90f, 286f, 176f, 356f, Paint().apply { color = Color.rgb(190, 45, 48) })
-                canvas.drawRect(204f, 286f, 290f, 356f, Paint().apply { color = Color.rgb(34, 98, 184) })
+                canvas.drawRect(
+                    90f * xScale,
+                    286f * yScale,
+                    176f * xScale,
+                    356f * yScale,
+                    Paint().apply { color = Color.rgb(190, 45, 48) },
+                )
+                canvas.drawRect(
+                    204f * xScale,
+                    286f * yScale,
+                    290f * xScale,
+                    356f * yScale,
+                    Paint().apply { color = Color.rgb(34, 98, 184) },
+                )
             }
         }
     }
@@ -116,6 +268,47 @@ class OpenCvPageFilterProcessorTest {
         val hsv = FloatArray(3)
         Color.colorToHSV(bitmap.getPixel(x, y), hsv)
         return hsv[1].toDouble()
+    }
+
+    private fun hueAt(bitmap: Bitmap, x: Int, y: Int): Double {
+        val hsv = FloatArray(3)
+        Color.colorToHSV(bitmap.getPixel(x, y), hsv)
+        return hsv[0].toDouble()
+    }
+
+    private fun hueDistance(first: Double, second: Double): Double {
+        val delta = kotlin.math.abs(first - second)
+        return minOf(delta, 360.0 - delta)
+    }
+
+    private fun scaleToLongestEdge(bitmap: Bitmap, longestEdge: Int): Bitmap {
+        val current = maxOf(bitmap.width, bitmap.height)
+        if (current == longestEdge) {
+            return bitmap
+        }
+        val scale = longestEdge / current.toFloat()
+        return Bitmap.createScaledBitmap(
+            bitmap,
+            (bitmap.width * scale).toInt().coerceAtLeast(1),
+            (bitmap.height * scale).toInt().coerceAtLeast(1),
+            true,
+        )
+    }
+
+    private fun fractionalPaperMean(bitmap: Bitmap): Double {
+        val left = (bitmap.width * 0.06).toInt()
+        val top = (bitmap.height * 0.06).toInt()
+        val right = (bitmap.width * 0.19).toInt()
+        val bottom = (bitmap.height * 0.14).toInt()
+        return meanLuminance(bitmap, left, top, right, bottom)
+    }
+
+    private fun fractionalPaperContrast(bitmap: Bitmap): Double {
+        val left = (bitmap.width * 0.40).toInt()
+        val top = (bitmap.height * 0.34).toInt()
+        val right = (bitmap.width * 0.60).toInt()
+        val bottom = (bitmap.height * 0.66).toInt()
+        return luminanceStandardDeviation(bitmap, left, top, right, bottom)
     }
 
     private fun meanLuminance(bitmap: Bitmap, left: Int, top: Int, right: Int, bottom: Int): Double {

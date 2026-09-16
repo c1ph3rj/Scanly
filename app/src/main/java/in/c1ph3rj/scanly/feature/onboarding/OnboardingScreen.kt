@@ -68,6 +68,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
+import `in`.c1ph3rj.scanly.core.ui.ScanlyTestTags
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.text.font.FontWeight
@@ -582,7 +583,7 @@ private fun OnboardingAction(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp)
-                    .testTag("onboarding_get_started"),
+                    .testTag(ScanlyTestTags.ONBOARDING_GET_STARTED),
                 shape = MaterialTheme.shapes.large,
                 contentPadding = PaddingValues(horizontal = 22.dp),
                 colors = ButtonDefaults.buttonColors(

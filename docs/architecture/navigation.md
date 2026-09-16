@@ -1,6 +1,6 @@
 ﻿# Navigation
 
-All routes and user flows in Scanly **v1.0.13**.
+All routes and user flows in Scanly **v1.0.16**.
 
 Navigation is implemented with **Navigation Compose** in `ScanlyNavHost.kt`. Route helpers follow the `*Destination` object pattern with `routePattern` and `route()` factory functions.
 
@@ -113,7 +113,7 @@ Launch
 
 ```
 Home / Library
-  └─► Create + Scan (optional Suggest name)
+  └─► Create + Scan (default name prefilled; clear or Suggest name)
         └─► camera/session/{newDocId}
               └─► capture page(s)
                     └─► document/{docId}

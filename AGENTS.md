@@ -8,7 +8,7 @@ Guidance for AI coding agents working in the Scanly repository.
 
 - Single-module Android app (`:app`) using Kotlin + Jetpack Compose + Material 3.
 - Package: `in.c1ph3rj.scanly` — escape `in` as ``package `in`.c1ph3rj.scanly``.
-- Current version: `1.0.13` (version code `13`) — see `app/build.gradle.kts`, [VERSION.md](VERSION.md).
+- Current version: `1.0.16` (version code `16`) — see `app/build.gradle.kts`, [VERSION.md](VERSION.md).
 - Entry point: `MainActivity.kt` → onboarding gate → `ScanlyNavHost`.
 - Offline-first document scanner: camera capture, page editing, local persistence, PDF/image export, library backup/restore.
 
@@ -21,7 +21,7 @@ app/src/main/java/in/c1ph3rj/scanly/
 ├── feature/           # Screens + ViewModels (home, library, tools, camera, editor, widgets, …)
 ├── domain/            # Models, repository interfaces, use cases (73 classes)
 ├── data/              # Room, storage, export, archive, settings, update implementations
-├── core/              # ML (corners + gate), OpenCV, editing math, shared UI utilities
+├── core/              # ML (corners + gate), OpenCV filter engine, editing math, shared UI utilities
 └── di/                # Hilt modules (+ flavor-specific update bindings)
 ```
 
@@ -32,18 +32,20 @@ app/src/main/java/in/c1ph3rj/scanly/
 | [docs/architecture/overview.md](docs/architecture/overview.md) | Layers, DI, connection maps |
 | [docs/architecture/navigation.md](docs/architecture/navigation.md) | Routes and user flows |
 | [docs/development/setup.md](docs/development/setup.md) | Build commands |
+| [docs/development/running-and-testing.md](docs/development/running-and-testing.md) | Install/run debug app, JVM flow tests, device UI automation |
 | [docs/development/conventions.md](docs/development/conventions.md) | Adding screens, migrations |
 
 ## Build and Test (Windows/PowerShell)
 
-- Gradle wrapper: 9.5.0 (`gradle/wrapper/gradle-wrapper.properties`).
+- Gradle wrapper: 9.6.0 (`gradle/wrapper/gradle-wrapper.properties`).
 - Daemon JVM: Java 21 (`gradle/gradle-daemon-jvm.properties`).
-- Compile target: Java 11; SDK 36 compile/target, min SDK 29.
+- Compile target: Java 11; SDK 37 compile / 36 target, min SDK 29.
 
 ```powershell
 ./gradlew.bat assembleDebug
 ./gradlew.bat testDebugUnitTest
 ./gradlew.bat lintDebug
+./gradlew.bat connectedDebugAndroidTest   # needs adb device
 ```
 
 - **Debug** — no minify; `UPDATE_CHANNEL = "github"`.

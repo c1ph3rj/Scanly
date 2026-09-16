@@ -1,108 +1,102 @@
-﻿# What is Scanly?
+# Scanly: a private document scanner built for real life
 
-Scanly is an offline-first Android document scanner. It gives users a practical, local-only workflow for digitizing paper documents without cloud accounts, subscriptions, or network dependencies for core functionality.
+Scanly is an Android document scanner that I built around a simple idea: scanning a document should feel quick, reliable, and private.
 
-## Problem it solves
+When I scan something, I do not want to create an account, start a subscription, or send a personal document to a remote service just to turn it into a PDF. I wanted a tool that could handle the whole process on the phone, from capturing a page to exporting the finished document.
 
-Paper documents need to become shareable digital files. Scanly handles the full on-device loop:
+That is what Scanly is. It helps you capture paper documents, improve their readability, keep pages together in a local library, and export them when you are ready to share them.
 
-1. **Capture** — photograph a physical document with guided camera feedback, semantic gate filtering, multi-model edge detection, and optional auto-capture
-2. **Correct** — detect page edges (with book-aware handling) and fix perspective distortion
-3. **Enhance** — apply readability filters (grayscale, shadow reduction, etc.)
-4. **Organize** — store multi-page documents and optional collections (groups)
-5. **Export** — produce PDFs or image archives; save directly to Downloads or a custom folder
-6. **Back up** — create portable `.scanly` library snapshots for local restore
+## The experience I wanted to create
 
-Everything stays on the device unless the user explicitly shares an export or copies a backup file.
+I designed Scanly around the way people actually scan documents. You open the app because you need to digitise something, not because you want to manage a complicated document system.
 
-## Who it is for
+The main flow is deliberately straightforward:
 
-- Users who want a simple scanner without cloud lock-in
-- Developers learning a production-style Compose app with ML and image processing
-- Contributors interested in offline Android document workflows
+1. Start a document from the Home screen, Library, Tools, a widget, or a launcher shortcut.
+2. Capture pages with the camera or import images from the gallery.
+3. Review the pages and retake only the ones that need another attempt.
+4. Crop, rotate, enhance, and adjust the pages in the editor.
+5. Arrange the document in the local library and place it in a folder if needed.
+6. Export the result as a PDF or image archive, or share it directly.
 
-## Design principles
+The app keeps the original captures available, so editing a page does not mean losing the source image. That makes it easier to try a different crop or filter later without starting the scan again.
 
-| Principle | What it means in practice |
-| --- | --- |
-| Offline-first | Scanning, editing, storage, export, and backup work without network. Only the optional update check uses `INTERNET`. |
-| Non-destructive captures | Raw JPEG captures under `raw/` are never overwritten. Edits regenerate `processed/` and `thumbs/`. |
-| Derived processing | Corner detection, warping, and filters produce derived output. The original capture is always recoverable. |
-| Manual fallback | Users can re-run AI Detect, drag crop corners, rotate, pick filters, and fine-tune brightness/contrast when automation is imperfect. Pages can be marked `NEEDS_REVIEW`. |
-| Clean boundaries | UI calls use cases; use cases call repositories. Screens never touch Room or the filesystem directly. |
+## Capture that helps without getting in the way
 
-## Technology at a glance
+The camera screen gives you guidance while you are lining up a page. Scanly looks at the document edges and provides feedback about framing, lighting, blur, and other conditions that can affect the result.
 
-| Layer | Technology |
-| --- | --- |
-| Language | Kotlin |
-| UI | Jetpack Compose, Material 3 |
-| DI | Hilt |
-| Navigation | Navigation Compose |
-| Camera | CameraX |
-| Database | Room (schema v4) |
-| Preferences | DataStore |
-| Background work | WorkManager + Hilt Worker (library backup/restore) |
-| ML | LiteRT (multi-model corner detection + physical-document semantic gate) |
-| Image processing | OpenCV, Android ExifInterface |
-| PDF export | Android PdfDocument + PdfBox-Android encryption |
-| Async | Kotlin Coroutines and Flow |
+You can use automatic capture when the page is stable, or use the shutter yourself whenever you want more control. If the camera does not recognise the page correctly, you still have manual options. You can capture the image, run detection again, adjust the crop points, or rotate the page yourself.
 
-## Repository layout
+For detection, Scanly uses on-device machine learning models to identify document corners. It also has a physical-document check that helps distinguish a real page from a screen or another rectangular object. Book pages and nearby page edges need special handling too, so the capture flow includes logic for those situations rather than treating every rectangle as a document.
 
-```
-Scanly/
-├── app/                  # Android application module (all Kotlin source)
-├── gradle/               # Wrapper and version catalog
-├── docs/                 # This documentation (complete project context)
-├── screenshots/          # UI screenshots for README
-├── scripts/              # Dev utilities (e.g. performance-seed load testing)
-├── README.md             # Public landing page
-├── CHANGELOG.md          # Release notes
-├── VERSION.md            # Version metadata
-├── CONTRIBUTING.md       # How to contribute
-├── SECURITY.md           # Security reporting
-├── Agents.md             # AI agent guidance
-└── LICENSE               # AGPL-3.0-only
-```
+## Editing that stays reversible
 
-The app is a **single Android module** (`:app`). All application code lives under:
+The editor is where a captured image becomes a useful document page. Scanly corrects perspective, applies document-focused filters that stay connected to the photo you captured, and lets you adjust the result when the automatic processing is not quite right.
 
-```
-app/src/main/java/in/c1ph3rj/scanly/
-```
+You can choose from several looks, including colour, grayscale, clean paper, shadow reduction, receipt, and black-and-white styles. You can also fine-tune brightness, contrast, saturation, and sharpness.
 
-Package name `in.c1ph3rj.scanly` requires escaped declarations in Kotlin:
+The important part is that these edits are derived from the original capture. Scanly keeps raw images separate from processed images and thumbnails. This gives you a non-destructive workflow and makes it possible to revisit a page later without degrading it each time you edit it.
 
-```kotlin
-package `in`.c1ph3rj.scanly
-```
+## A local workspace, not just a camera screen
 
-## Application entry flow
+As the project grew, Scanly became more than a camera screen. I added the surrounding tools that make scanned documents easier to work with:
 
-```
-ScanlyApplication (@HiltAndroidApp, custom WorkManager + HiltWorkerFactory)
-  └─ MainActivity (single activity, edge-to-edge)
-       ├─ Onboarding gate (first run only)
-       ├─ ScanlyTheme (system / light / dark)
-       ├─ ScanlyNavHost (Home / Library / Settings + detail routes)
-       └─ AppUpdateDialog + FlexibleUpdateSnackbar (after onboarding)
-```
+- Home gives quick access to recent documents, folders, scanning, importing, and creating new items.
+- Library lets you search, sort, rename, delete, and organise documents.
+- Tools brings scanning, gallery import, QR scanning and generation, and PDF utilities into one place.
+- PDF utilities support reading, merging, compressing, password protection, and watermarking.
+- Widgets and launcher shortcuts let you start common actions without opening the app first.
+- Backup and restore let you create a portable local library archive when you want an extra copy of your work.
 
-## Current release
+I wanted these features to feel like part of the same workflow. A person should be able to scan a document, organise it, prepare a PDF, and share it without having to move between several unrelated apps.
 
-| Field | Value |
-| --- | --- |
-| Version | `1.0.13` (code `13`) |
-| Room schema | `4` |
-| Min SDK | 29 (Android 10) |
-| Target SDK | 36 |
-| Distribution | `githubRelease` (APK) and `playStoreRelease` (AAB) |
+## Privacy as a product decision
 
-See [releases.md](../releases.md) for version policy and history. See [CHANGELOG.md](../../CHANGELOG.md) for the next release's changes.
+Scanly is offline-first by design. The core scanning, editing, storage, and export workflows run locally on the device. There is no account system, cloud document library, or automatic upload of scanned pages.
 
-## Next steps
+This approach also makes the product easier to understand. Your documents live in your local library. You decide when to export, share, or copy a backup. The app does not quietly turn a private scan into data that needs to be stored somewhere else.
 
-- [features.md](features.md) — complete feature list
-- [user-guide.md](user-guide.md) — how users interact with each screen
-- [../architecture/overview.md](../architecture/overview.md) — technical architecture
+## How I built it
+
+Scanly is a single-module Android application built with Kotlin and Jetpack Compose. I kept the project divided into clear layers so the UI can stay focused on the user experience while the processing and storage logic remain testable.
+
+- `feature/` contains screens and ViewModels.
+- `navigation/` defines the app destinations and user flows.
+- `domain/` contains models, repository contracts, and use cases.
+- `data/` handles Room, DataStore, local files, exports, updates, and backups.
+- `core/` contains shared UI, machine learning, OpenCV processing, and utilities.
+- `di/` contains the Hilt dependency wiring.
+
+The main technologies are Kotlin, Jetpack Compose, Material 3, CameraX, LiteRT, OpenCV, Room, DataStore, WorkManager, Hilt, and Coroutines with Flow.
+
+The processing path is intentionally local and layered. A captured image is normalised, checked, analysed for document corners, perspective-corrected, enhanced, and then saved as a processed page with a thumbnail. The raw capture remains available underneath that result.
+
+## What I learned from building Scanly
+
+The hardest part of a scanner is not taking a picture. It is handling all the imperfect situations around that picture. Pages are bent, lighting changes, desks contain other rectangular shapes, books show two pages at once, and automatic detection will sometimes be uncertain.
+
+That is why I have treated manual controls as an important part of the product rather than a fallback to hide. Good automation should make the common case faster, but the user should still be able to understand and correct the result when the real world does not cooperate.
+
+I have also tried to keep the app calm and focused. The interface should make the next useful action obvious, whether that is scanning a page, reviewing a document, fixing an edit, or exporting the final file.
+
+## What Scanly is not
+
+Scanly is not intended to be a cloud document platform or a replacement for a full enterprise records system. It does not currently focus on OCR, cloud collaboration, scheduled cloud backups, or account-based document synchronisation.
+
+The focus is narrower and more practical: capture, improve, organise, and export documents privately on Android.
+
+## Why this project matters to me
+
+Scanly is a project where product decisions, computer vision, image processing, Android architecture, and interaction design all meet in one place. Every feature has to work as part of a real flow, not just exist as an isolated screen.
+
+That combination is what makes the project interesting to me. I am not only building a camera feature. I am building a dependable tool around the moments before capture, the corrections after capture, and the decisions a person makes when they need a document to be clear and ready to use.
+
+Scanly is open source under the AGPL-3.0-only license. The project documentation explains the architecture, processing pipeline, storage model, and development setup in more detail.
+
+## Explore the project
+
+- [Features](features.md) explains what the app can do.
+- [User guide](user-guide.md) walks through the main user workflows.
+- [Architecture overview](../architecture/overview.md) explains how the application is organised.
+- [Capture and scan](../processing/capture-and-scan.md) describes the camera and finalisation flow.
+- [Image processing](../processing/image-processing.md) covers detection, perspective correction, filters, and adjustments.

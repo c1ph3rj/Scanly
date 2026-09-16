@@ -6,16 +6,43 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
-Changes for the next release will be documented here.
+## [1.0.16] - 2026-09-16
+
+### Added
+
+- **Default names** — new document and folder dialogs open with a duplicate-safe suggested name already filled in and selected, so you can keep it and continue immediately.
+- **Clear name** — a trailing clear control empties the field so you can type a custom title; **Suggest name** still cycles other date formats from there.
+
+### Changed
+
+- **Library and Home cards** — documents and folders use a page-shaped cover, title, and compact metadata (pages and date, or document/page counts). Rename, move, delete, and remove-from-folder live in one overflow or long-press menu instead of icon rows on every card.
+- **Document pages** — page tiles look like paper: portrait previews with a visible page number. Tap still opens review; long-press and drag still reorder when there is more than one page. Edit, retake, share, and delete stay on the review chrome.
+- **PDF reader** — reading chrome shows the full title, page n of m, page-by-page and continuous layouts, pinch-zoom in both, and tap to hide or show the bars.
+- **Tools workspace** — QR, merge, compress, password, and watermark use a quieter document-studio layout: paper file identity, sentence-case options, numbered merge order, and a Protect/Remove control.
+- **Document filters** — rebuilt as a professional reflectance engine so Color, Shadow Reduce, and Magic stay recognizably the captured page instead of looking over-processed or washed out.
+- **Filter strength** — cleanup follows the page: already-good photos stay gentle; dim, faded, blurry, or shadowed pages get more lift; glare no longer pushes the look harder.
+- **Filter previews** — picker chips, the live editor preview, and the saved JPEG share one analysis profile so the selected look matches the export.
+- **Dependencies** — Gradle, Kotlin, Compose, AndroidX, Hilt, CameraX, Room, LiteRT, and OpenCV updated to current stable releases. AGP stays on 9.2.1.
+
+### Fixed
+
+- **Camera permission** — opening Scan or QR asks for camera access first. Settings is offered only after the permission is permanently blocked, with an in-app explanation. Returning from Settings refreshes QR permission, and Generate stays reachable in landscape while camera is blocked.
+- **16 KB page size** — OpenCV 5.0.0.1 replaces the 4 KB-aligned `libc++_shared.so` from 5.0.0 so arm64 native libraries meet Google Play’s Android 15+ 16 KB page-size requirement.
+- **Scan filters** — grayscale, receipt, and other document looks no longer pull original color back in after cleanup. Faded or blurry even-lit pages still receive cleanup instead of being treated as already good.
+- **QR links** — Open link accepts the same trimmed, case-insensitive HTTP(S) values as the result card.
+
+## [1.0.14] - 2026-07-24
 
 ### Added
 
 - **Illustrated empty states** — Home, Library, empty folders, empty documents, PDF tools, and the detector benchmark now use a shared emerald-and-silver illustration system with clear next actions.
+- **Multi-select add to folder** — from a folder, choose one or many existing documents at once (or still create a new document).
 
 ### Changed
 
 - **Home visual hierarchy** — the greeting uses a compact two-line layout with an emerald keyword and intentional right-side breathing room, while Scan / Import / Folder retain clean outlined icon-and-label treatments.
 - **Tools icon language** — capture, QR, and PDF utility cards use consistent outlined glyphs, while the dark-theme brand accent is brighter and clearer.
+- **Folder detail wording** — folder menus, dialogs, and the add-document sheet use “folder” instead of “group”.
 
 ## [1.0.13] - 2026-07-18
 
@@ -203,6 +230,8 @@ Compared to **1.0.9** (`master`): Tools workspace, multi-model detection, captur
 - PDF export and image archive export/share.
 - Settings with theme mode, FAQs, licenses, and support links.
 
+[1.0.16]: https://github.com/c1ph3rj/Scanly/compare/v1.0.14...v1.0.16
+[1.0.14]: https://github.com/c1ph3rj/Scanly/compare/v1.0.13...v1.0.14
 [1.0.13]: https://github.com/c1ph3rj/Scanly/compare/v1.0.11...v1.0.13
 [1.0.11]: https://github.com/c1ph3rj/Scanly/compare/v1.0.10...v1.0.11
 [1.0.10]: https://github.com/c1ph3rj/Scanly/compare/v1.0.9...v1.0.10

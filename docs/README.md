@@ -1,6 +1,6 @@
 ﻿# Scanly Documentation
 
-Complete documentation for **Scanly v1.0.13** — an offline-first Android document scanner.
+Complete documentation for **Scanly v1.0.16** — an offline-first Android document scanner.
 
 If you are new to this project, start here. This folder contains everything needed to understand what Scanly is, how users interact with it, and how the codebase is built.
 
@@ -19,7 +19,7 @@ Scanly is a local-only document scanner for Android. Users capture pages with th
 | Export / backup | PDFBox-encrypted PDFs; `.scanly` library archives to `Downloads/Scanly/backup/` |
 | Distribution | `githubRelease` (GitHub updates) and `playStoreRelease` (Play in-app updates) |
 | License | AGPL-3.0-only ([LICENSE](../LICENSE)) |
-| Current version | `1.0.13` (version code `13`) |
+| Current version | `1.0.16` (version code `16`) |
 
 ## Core workflow
 
@@ -48,7 +48,7 @@ Choose a path based on your goal:
 | Trace navigation and screen flows | [architecture/navigation.md](architecture/navigation.md) |
 | Understand persistence and storage | [data/database.md](data/database.md) → [data/file-storage.md](data/file-storage.md) |
 | Understand the scan/processing pipeline | [processing/capture-and-scan.md](processing/capture-and-scan.md) → [processing/image-processing.md](processing/image-processing.md) |
-| Build, test, or contribute code | [development/setup.md](development/setup.md) → [development/conventions.md](development/conventions.md) |
+| Build, test, or contribute code | [development/setup.md](development/setup.md) → [development/running-and-testing.md](development/running-and-testing.md) → [development/conventions.md](development/conventions.md) |
 | Look up models, use cases, or dependencies | [reference/](reference/) |
 | See release history | [releases.md](releases.md) |
 
@@ -92,6 +92,7 @@ Choose a path based on your goal:
 | Document | Contents |
 | --- | --- |
 | [setup.md](development/setup.md) | Prerequisites, build commands, release signing |
+| [running-and-testing.md](development/running-and-testing.md) | Install/run the debug app, emulator/adb, JVM flow tests, device UI automation |
 | [conventions.md](development/conventions.md) | Layer rules, adding screens, Room migrations |
 | [testing.md](development/testing.md) | Test inventory, gaps, how to run tests |
 | [releasing.md](development/releasing.md) | Version bump checklist, docs to update |

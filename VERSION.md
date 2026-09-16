@@ -6,14 +6,14 @@ See also [docs/releases.md](docs/releases.md) for release policy and history wit
 
 | Field | Value |
 | --- | --- |
-| Version name | `1.0.13` |
-| Version code | `13` |
+| Version name | `1.0.16` |
+| Version code | `16` |
 | Application ID | `in.c1ph3rj.scanly` |
 | Min SDK | 29 (Android 10) |
-| Target / compile SDK | 36 |
+| Target / compile SDK | compile 37 / target 36 |
 | Room schema version | `4` |
-| Release date | 2026-07-18 |
-| Branch | `feature/v1.0.13` |
+| Release date | 2026-09-16 |
+| Branch | `master` |
 
 The version shown in **Settings** is read from `versionName` in `app/build.gradle.kts`.
 
@@ -27,6 +27,14 @@ The version shown in **Settings** is read from `versionName` in `app/build.gradl
 - Record user-visible changes in `CHANGELOG.md` and keep this file aligned with the Gradle values.
 
 ## Release History
+
+### 1.0.16 (version code 16)
+
+Library and Home paper cards with overflow actions, portrait document page tiles, a document-style PDF reader, a quieter Tools workspace (QR, merge, compress, password, watermark), camera permission that asks before Settings, 16 KB-aligned OpenCV, and the professional page filter engine. See [CHANGELOG.md](CHANGELOG.md) for the complete release notes.
+
+### 1.0.14 (version code 14)
+
+Illustrated empty states and multi-select folder organization. See [CHANGELOG.md](CHANGELOG.md) for the complete release notes.
 
 ### 1.0.13 (version code 13)
 

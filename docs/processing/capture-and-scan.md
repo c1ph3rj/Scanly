@@ -16,7 +16,7 @@ Live detection is more than a single corner model: a **physical-document semanti
 | `camera-lifecycle` | Lifecycle-aware binding |
 | `camera-view` | `PreviewView` for Compose integration |
 
-Camera permission (`CAMERA`) is required. Hardware camera is optional at manifest level but needed for scanning.
+Camera permission (`CAMERA`) is required. Hardware camera is optional at manifest level but needed for scanning. `CameraPermissionSupport` asks the system prompt on first open (`NotRequested`), retries in-app after a deniable refusal (`DeniedCanRetry`), and offers **Open Settings** only when the permission is permanently blocked. Scan and QR share that helper.
 
 ## Scan session modes
 

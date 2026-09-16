@@ -114,6 +114,8 @@ fun ZoomableImageViewer(
     closeContentDescription: String = "Back",
     allowParentHorizontalGestures: Boolean = false,
     showTopBar: Boolean = true,
+    showZoomBadge: Boolean = true,
+    onSingleTap: () -> Unit = {},
     onZoomActiveChange: (Boolean) -> Unit = {},
     trailingAction: @Composable (
         zoomActive: Boolean,
@@ -135,6 +137,7 @@ fun ZoomableImageViewer(
     val zoomActive = state.isZoomActive
     val resetZoom = state::reset
     val currentOnZoomActiveChange by rememberUpdatedState(onZoomActiveChange)
+    val currentOnSingleTap by rememberUpdatedState(onSingleTap)
 
     LaunchedEffect(imagePath) {
         state.reset()
@@ -187,8 +190,9 @@ fun ZoomableImageViewer(
                         onScaleChange = { state.scale = it },
                         onOffsetChange = { state.offset = it },
                         onDoubleTap = state::toggleDoubleTapZoom,
-                        onSingleTap = {},
+                        onSingleTap = currentOnSingleTap,
                         allowParentHorizontalGestures = allowParentHorizontalGestures,
+                        showZoomBadge = showZoomBadge,
                         modifier = Modifier.fillMaxSize(),
                     )
                 }
@@ -269,6 +273,7 @@ fun ZoomableBitmapViewer(
                 onDoubleTap = state::toggleDoubleTapZoom,
                 onSingleTap = onSingleTap,
                 allowParentHorizontalGestures = allowParentHorizontalGestures,
+                showZoomBadge = true,
                 modifier = Modifier.fillMaxSize(),
             )
         }
@@ -288,7 +293,7 @@ class ZoomableImageState() {
         offset = Offset.Zero
     }
 
-    internal fun toggleDoubleTapZoom() {
+    fun toggleDoubleTapZoom() {
         if (isZoomActive) {
             reset()
         } else {
@@ -312,6 +317,7 @@ private fun ZoomableImageCanvas(
     onDoubleTap: () -> Unit,
     onSingleTap: () -> Unit,
     allowParentHorizontalGestures: Boolean,
+    showZoomBadge: Boolean,
     modifier: Modifier = Modifier,
 ) {
     val density = LocalDensity.current
@@ -424,7 +430,7 @@ private fun ZoomableImageCanvas(
             )
         }
 
-        if (scale > ZOOM_ACTIVE_THRESHOLD) {
+        if (showZoomBadge && scale > ZOOM_ACTIVE_THRESHOLD) {
             MetricChip(
                 label = "${"%.1f".format(scale)}x",
                 modifier = Modifier

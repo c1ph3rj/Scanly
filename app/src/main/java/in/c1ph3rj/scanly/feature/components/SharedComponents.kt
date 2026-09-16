@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -28,21 +29,26 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.CreateNewFolder
 import androidx.compose.material.icons.filled.DeleteOutline
-import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material.icons.filled.FolderOff
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -57,6 +63,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -67,7 +74,11 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import kotlinx.coroutines.launch
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -90,6 +101,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import dagger.hilt.android.EntryPointAccessors
 import `in`.c1ph3rj.scanly.core.common.DocumentPresentationFormatter
+import `in`.c1ph3rj.scanly.core.common.runCatchingCancellable
 import `in`.c1ph3rj.scanly.core.ui.ChromeIconButton
 import `in`.c1ph3rj.scanly.core.ui.MetricChip
 import `in`.c1ph3rj.scanly.core.ui.PreviewDisplaySize
@@ -570,14 +582,97 @@ private fun ScanlyDialogActions(
 }
 
 @Composable
+fun NameTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    label: String,
+    modifier: Modifier = Modifier,
+    isLoading: Boolean = false,
+    onKeyboardDone: (() -> Unit)? = null,
+) {
+    val focusRequester = remember { FocusRequester() }
+    var field by remember {
+        mutableStateOf(TextFieldValue(value, TextRange(0, value.length)))
+    }
+
+    LaunchedEffect(isLoading) {
+        if (!isLoading) {
+            focusRequester.requestFocus()
+        }
+    }
+
+    LaunchedEffect(value) {
+        if (field.text != value) {
+            field = TextFieldValue(
+                text = value,
+                selection = if (value.isEmpty()) {
+                    TextRange.Zero
+                } else {
+                    TextRange(0, value.length)
+                },
+            )
+        }
+    }
+
+    OutlinedTextField(
+        value = field,
+        onValueChange = { updated ->
+            field = updated
+            onValueChange(updated.text)
+        },
+        label = { Text(label) },
+        singleLine = true,
+        enabled = !isLoading,
+        modifier = modifier
+            .fillMaxWidth()
+            .focusRequester(focusRequester),
+        trailingIcon = {
+            when {
+                isLoading -> CircularProgressIndicator(
+                    modifier = Modifier.size(20.dp),
+                    strokeWidth = 2.dp,
+                )
+                value.isNotEmpty() -> IconButton(
+                    onClick = {
+                        onValueChange("")
+                        field = TextFieldValue()
+                        focusRequester.requestFocus()
+                    },
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Clear,
+                        contentDescription = "Clear name",
+                    )
+                }
+            }
+        },
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+        keyboardActions = KeyboardActions(
+            onDone = {
+                if (value.isNotBlank()) {
+                    onKeyboardDone?.invoke()
+                }
+            },
+        ),
+    )
+}
+
+@Composable
 fun DocumentTitleSuggestRow(
     onSuggestTitle: suspend (DocumentTitleFormat) -> String,
     onSuggested: (String) -> Unit,
     modifier: Modifier = Modifier,
+    initialFormatIndex: Int = 0,
+    enabled: Boolean = true,
 ) {
     val scope = rememberCoroutineScope()
     var isSuggesting by remember { mutableStateOf(false) }
-    var formatIndex by rememberSaveable { mutableIntStateOf(0) }
+    var formatIndex by rememberSaveable { mutableIntStateOf(initialFormatIndex) }
+    LaunchedEffect(initialFormatIndex) {
+        if (initialFormatIndex > formatIndex) {
+            formatIndex = initialFormatIndex
+        }
+    }
     val activeFormat = DocumentTitleFormat.entries[formatIndex]
 
     fun suggestWithActiveFormat() {
@@ -596,7 +691,7 @@ fun DocumentTitleSuggestRow(
 
     OutlinedButton(
         onClick = ::suggestWithActiveFormat,
-        enabled = !isSuggesting,
+        enabled = enabled && !isSuggesting,
         modifier = modifier.fillMaxWidth(),
     ) {
         Row(
@@ -642,32 +737,63 @@ fun DocumentTitleDialog(
     onDismiss: () -> Unit,
     onConfirm: (String) -> Unit,
     onSuggestTitle: (suspend (DocumentTitleFormat) -> String)? = null,
+    autoFillSuggestedName: Boolean = false,
 ) {
     var value by rememberSaveable(initialValue) { mutableStateOf(initialValue) }
+    var isFillingName by remember {
+        mutableStateOf(
+            autoFillSuggestedName && initialValue.isBlank() && onSuggestTitle != null,
+        )
+    }
+    var suggestFormatIndex by rememberSaveable { mutableIntStateOf(0) }
+
+    LaunchedEffect(autoFillSuggestedName) {
+        if (!autoFillSuggestedName || onSuggestTitle == null || value.isNotBlank()) {
+            isFillingName = false
+            return@LaunchedEffect
+        }
+        isFillingName = true
+        val suggested = runCatchingCancellable { onSuggestTitle(DocumentTitleFormat.default) }.getOrNull()
+        if (value.isBlank() && !suggested.isNullOrBlank()) {
+            value = suggested
+            suggestFormatIndex = DocumentTitleFormat.entries.indexOf(
+                DocumentTitleFormat.default.next(),
+            )
+        }
+        isFillingName = false
+    }
+
+    val confirm = {
+        val name = value.trim()
+        if (name.isNotEmpty()) onConfirm(name)
+    }
+
     ScanlyFormDialogShell(onDismiss = onDismiss) {
         Text(
             text = title,
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.SemiBold,
         )
-        OutlinedTextField(
+        NameTextField(
             value = value,
             onValueChange = { value = it },
-            label = { Text("Title") },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth(),
+            label = "Title",
+            isLoading = isFillingName,
+            onKeyboardDone = confirm,
         )
         if (onSuggestTitle != null) {
             DocumentTitleSuggestRow(
                 onSuggestTitle = onSuggestTitle,
                 onSuggested = { value = it },
+                initialFormatIndex = suggestFormatIndex,
+                enabled = !isFillingName,
             )
         }
         ScanlyDialogActions(
             onDismiss = onDismiss,
             confirmLabel = confirmLabel,
-            confirmEnabled = value.isNotBlank(),
-            onConfirm = { if (value.isNotBlank()) onConfirm(value) },
+            confirmEnabled = value.isNotBlank() && !isFillingName,
+            onConfirm = confirm,
         )
     }
 }
@@ -677,10 +803,17 @@ fun GroupTitleSuggestRow(
     onSuggestTitle: suspend (GroupTitleFormat) -> String,
     onSuggested: (String) -> Unit,
     modifier: Modifier = Modifier,
+    initialFormatIndex: Int = 0,
+    enabled: Boolean = true,
 ) {
     val scope = rememberCoroutineScope()
     var isSuggesting by remember { mutableStateOf(false) }
-    var formatIndex by rememberSaveable { mutableIntStateOf(0) }
+    var formatIndex by rememberSaveable { mutableIntStateOf(initialFormatIndex) }
+    LaunchedEffect(initialFormatIndex) {
+        if (initialFormatIndex > formatIndex) {
+            formatIndex = initialFormatIndex
+        }
+    }
     val activeFormat = GroupTitleFormat.entries[formatIndex]
 
     fun suggestWithActiveFormat() {
@@ -699,7 +832,7 @@ fun GroupTitleSuggestRow(
 
     OutlinedButton(
         onClick = ::suggestWithActiveFormat,
-        enabled = !isSuggesting,
+        enabled = enabled && !isSuggesting,
         modifier = modifier.fillMaxWidth(),
     ) {
         Row(
@@ -745,32 +878,61 @@ fun GroupNameDialog(
     onConfirm: (String) -> Unit,
     confirmLabel: String = "Create",
     onSuggestTitle: (suspend (GroupTitleFormat) -> String)? = null,
+    autoFillSuggestedName: Boolean = false,
 ) {
     var value by rememberSaveable(initialValue) { mutableStateOf(initialValue) }
+    var isFillingName by remember {
+        mutableStateOf(
+            autoFillSuggestedName && initialValue.isBlank() && onSuggestTitle != null,
+        )
+    }
+    var suggestFormatIndex by rememberSaveable { mutableIntStateOf(0) }
+
+    LaunchedEffect(autoFillSuggestedName) {
+        if (!autoFillSuggestedName || onSuggestTitle == null || value.isNotBlank()) {
+            isFillingName = false
+            return@LaunchedEffect
+        }
+        isFillingName = true
+        val suggested = runCatchingCancellable { onSuggestTitle(GroupTitleFormat.default) }.getOrNull()
+        if (value.isBlank() && !suggested.isNullOrBlank()) {
+            value = suggested
+            suggestFormatIndex = GroupTitleFormat.entries.indexOf(GroupTitleFormat.default.next())
+        }
+        isFillingName = false
+    }
+
+    val confirm = {
+        val name = value.trim()
+        if (name.isNotEmpty()) onConfirm(name)
+    }
+
     ScanlyFormDialogShell(onDismiss = onDismiss) {
         Text(
             text = title,
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.SemiBold,
         )
-        OutlinedTextField(
+        NameTextField(
             value = value,
             onValueChange = { value = it },
-            label = { Text("Folder name") },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth(),
+            label = "Folder name",
+            isLoading = isFillingName,
+            onKeyboardDone = confirm,
         )
         if (onSuggestTitle != null) {
             GroupTitleSuggestRow(
                 onSuggestTitle = onSuggestTitle,
                 onSuggested = { value = it },
+                initialFormatIndex = suggestFormatIndex,
+                enabled = !isFillingName,
             )
         }
         ScanlyDialogActions(
             onDismiss = onDismiss,
             confirmLabel = confirmLabel,
-            confirmEnabled = value.isNotBlank(),
-            onConfirm = { if (value.isNotBlank()) onConfirm(value) },
+            confirmEnabled = value.isNotBlank() && !isFillingName,
+            onConfirm = confirm,
         )
     }
 }
@@ -793,6 +955,22 @@ fun MoveToFolderSheet(
 ) {
     var creatingFolder by rememberSaveable { mutableStateOf(false) }
     var newFolderName by rememberSaveable { mutableStateOf("") }
+    var isFillingName by remember { mutableStateOf(false) }
+    var suggestFormatIndex by rememberSaveable { mutableIntStateOf(0) }
+
+    LaunchedEffect(creatingFolder) {
+        if (!creatingFolder || onSuggestFolderName == null || newFolderName.isNotBlank()) {
+            isFillingName = false
+            return@LaunchedEffect
+        }
+        isFillingName = true
+        val suggested = runCatchingCancellable { onSuggestFolderName(GroupTitleFormat.default) }.getOrNull()
+        if (creatingFolder && newFolderName.isBlank() && !suggested.isNullOrBlank()) {
+            newFolderName = suggested
+            suggestFormatIndex = GroupTitleFormat.entries.indexOf(GroupTitleFormat.default.next())
+        }
+        isFillingName = false
+    }
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -829,17 +1007,22 @@ fun MoveToFolderSheet(
             }
 
             if (creatingFolder) {
-                OutlinedTextField(
+                NameTextField(
                     value = newFolderName,
                     onValueChange = { newFolderName = it },
-                    label = { Text("New folder name") },
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth(),
+                    label = "New folder name",
+                    isLoading = isFillingName,
+                    onKeyboardDone = {
+                        val name = newFolderName.trim()
+                        if (name.isNotEmpty()) onCreateFolderAndMove(name)
+                    },
                 )
                 if (onSuggestFolderName != null) {
                     GroupTitleSuggestRow(
                         onSuggestTitle = onSuggestFolderName,
                         onSuggested = { newFolderName = it },
+                        initialFormatIndex = suggestFormatIndex,
+                        enabled = !isFillingName,
                     )
                 }
                 Row(
@@ -850,6 +1033,7 @@ fun MoveToFolderSheet(
                         onClick = {
                             creatingFolder = false
                             newFolderName = ""
+                            suggestFormatIndex = 0
                         },
                     ) { Text("Cancel") }
                     Button(
@@ -857,7 +1041,7 @@ fun MoveToFolderSheet(
                             val name = newFolderName.trim()
                             if (name.isNotEmpty()) onCreateFolderAndMove(name)
                         },
-                        enabled = newFolderName.isNotBlank(),
+                        enabled = newFolderName.isNotBlank() && !isFillingName,
                     ) { Text("Create & move") }
                 }
             } else {
@@ -967,100 +1151,108 @@ private val GridCardMaxWidth = 280.dp
 fun GroupCard(
     group: DocumentGroup,
     onOpen: () -> Unit,
-    onRename: () -> Unit,
-    onDelete: () -> Unit,
+    onRename: (() -> Unit)? = null,
+    onDelete: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
     style: LibraryCardStyle = LibraryCardStyle.Auto,
 ) {
+    val actions = libraryCardSecondaryActions(
+        showRename = onRename != null,
+        showDelete = onDelete != null,
+    )
+    var menuExpanded by remember { mutableStateOf(false) }
     Surface(
-        onClick = onOpen,
-        modifier = modifier
-            .fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         color = MaterialTheme.colorScheme.surfaceContainer,
         shape = MaterialTheme.shapes.extraLarge,
-        border = BorderStroke(
-            1.dp,
-            MaterialTheme.colorScheme.outlineVariant,
-        ),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
         shadowElevation = 0.dp,
         tonalElevation = 0.dp,
     ) {
-        BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
+        BoxWithConstraints(
+            modifier = Modifier
+                .fillMaxWidth()
+                .libraryCardGestures(
+                    onOpen = onOpen,
+                    hasOverflowActions = actions.isNotEmpty(),
+                    onOpenOverflow = { menuExpanded = true },
+                ),
+        ) {
             val useGrid = when (style) {
                 LibraryCardStyle.Grid -> true
                 LibraryCardStyle.List -> false
                 LibraryCardStyle.Auto -> maxWidth < GridCardMaxWidth
             }
-            GroupCardContent(
-                group = group,
-                onRename = onRename,
-                onDelete = onDelete,
-                compact = useGrid,
-            )
-        }
-    }
-}
-
-@Composable
-private fun GroupCardContent(
-    group: DocumentGroup,
-    onRename: () -> Unit,
-    onDelete: () -> Unit,
-    compact: Boolean,
-) {
-    val padding = if (compact) 10.dp else 14.dp
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(padding),
-    ) {
-        CachedThumbnail(
-            thumbnailPath = group.coverThumbnailPath,
-            title = group.title,
-            displaySize = PreviewDisplaySize.CARD,
-            contentRevision = group.coverUpdatedAtMillis,
-            modifier = Modifier
-                .fillMaxWidth()
-                .aspectRatio(4f / 3f),
-            placeholderIcon = {
-                Icon(
-                    imageVector = Icons.Filled.Folder,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                    modifier = Modifier.size(if (compact) 28.dp else 36.dp),
+            if (useGrid) {
+                LibraryCoverCardFace(
+                    title = group.title,
+                    meta = formatGroupCardMeta(group.documentCount, group.totalPageCount),
+                    thumbnailPath = group.coverThumbnailPath,
+                    contentRevision = group.coverUpdatedAtMillis,
+                    overflowVisible = actions.isNotEmpty(),
+                    menuExpanded = menuExpanded,
+                    onOverflowClick = { menuExpanded = true },
+                    onDismissOverflow = { menuExpanded = false },
+                    overflowMenu = {
+                        LibraryCardOverflowMenu(
+                            actions = actions,
+                            expanded = menuExpanded,
+                            onDismiss = { menuExpanded = false },
+                            onAction = { action ->
+                                menuExpanded = false
+                                when (action) {
+                                    LibraryCardSecondaryAction.Rename -> onRename?.invoke()
+                                    LibraryCardSecondaryAction.Delete -> onDelete?.invoke()
+                                    else -> Unit
+                                }
+                            },
+                        )
+                    },
+                    placeholderIcon = {
+                        Icon(
+                            imageVector = Icons.Filled.Folder,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                            modifier = Modifier.size(32.dp),
+                        )
+                    },
                 )
-            },
-        )
-        Spacer(modifier = Modifier.height(if (compact) 8.dp else 10.dp))
-        Text(
-            text = group.title,
-            style = if (compact) {
-                MaterialTheme.typography.titleSmall
             } else {
-                MaterialTheme.typography.titleMedium
-            },
-            fontWeight = FontWeight.SemiBold,
-            maxLines = 2,
-            overflow = TextOverflow.Ellipsis,
-            minLines = 1,
-        )
-        Spacer(modifier = Modifier.height(4.dp))
-        Text(
-            text = buildString {
-                append("${group.documentCount} docs")
-                if (group.totalPageCount > 0) append("  ·  ${group.totalPageCount} pg")
-            },
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        LibraryCardActions(
-            onRename = onRename,
-            onDelete = onDelete,
-            compact = compact,
-        )
+                LibraryCoverListFace(
+                    title = group.title,
+                    meta = formatGroupCardMeta(group.documentCount, group.totalPageCount),
+                    thumbnailPath = group.coverThumbnailPath,
+                    contentRevision = group.coverUpdatedAtMillis,
+                    overflowVisible = actions.isNotEmpty(),
+                    menuExpanded = menuExpanded,
+                    onOverflowClick = { menuExpanded = true },
+                    onDismissOverflow = { menuExpanded = false },
+                    overflowMenu = {
+                        LibraryCardOverflowMenu(
+                            actions = actions,
+                            expanded = menuExpanded,
+                            onDismiss = { menuExpanded = false },
+                            onAction = { action ->
+                                menuExpanded = false
+                                when (action) {
+                                    LibraryCardSecondaryAction.Rename -> onRename?.invoke()
+                                    LibraryCardSecondaryAction.Delete -> onDelete?.invoke()
+                                    else -> Unit
+                                }
+                            },
+                        )
+                    },
+                    placeholderIcon = {
+                        Icon(
+                            imageVector = Icons.Filled.Folder,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                            modifier = Modifier.size(28.dp),
+                        )
+                    },
+                )
+            }
+        }
     }
 }
 
@@ -1068,382 +1260,347 @@ private fun GroupCardContent(
 fun DocumentCard(
     document: ScanDocument,
     onOpen: () -> Unit,
-    onRename: () -> Unit = {},
-    onDelete: () -> Unit,
+    onRename: (() -> Unit)? = null,
+    onDelete: (() -> Unit)? = null,
     onMove: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
     style: LibraryCardStyle = LibraryCardStyle.Auto,
-    showRename: Boolean = true,
+    showRename: Boolean = onRename != null,
     deleteContentDescription: String = "Delete",
+    deleteIsRemoveFromFolder: Boolean = false,
 ) {
     val updatedDate = remember(document.updatedAtMillis) {
         document.updatedAtMillis.toShortDate()
     }
+    val actions = libraryCardSecondaryActions(
+        showRename = showRename && onRename != null,
+        canMove = onMove != null,
+        showDelete = onDelete != null,
+        deleteIsRemoveFromFolder = deleteIsRemoveFromFolder,
+    )
+    var menuExpanded by remember { mutableStateOf(false) }
+    val overflowMenu: @Composable () -> Unit = {
+        LibraryCardOverflowMenu(
+            actions = actions,
+            expanded = menuExpanded,
+            onDismiss = { menuExpanded = false },
+            deleteContentDescription = deleteContentDescription,
+            onAction = { action ->
+                menuExpanded = false
+                when (action) {
+                    LibraryCardSecondaryAction.Rename -> onRename?.invoke()
+                    LibraryCardSecondaryAction.Move -> onMove?.invoke()
+                    LibraryCardSecondaryAction.Delete,
+                    LibraryCardSecondaryAction.RemoveFromFolder,
+                    -> onDelete?.invoke()
+                }
+            },
+        )
+    }
     Surface(
-        onClick = onOpen,
-        modifier = modifier
-            .fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         color = MaterialTheme.colorScheme.surfaceContainer,
         shape = MaterialTheme.shapes.extraLarge,
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
         shadowElevation = 0.dp,
         tonalElevation = 0.dp,
     ) {
-        BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
+        BoxWithConstraints(
+            modifier = Modifier
+                .fillMaxWidth()
+                .libraryCardGestures(
+                    onOpen = onOpen,
+                    hasOverflowActions = actions.isNotEmpty(),
+                    onOpenOverflow = { menuExpanded = true },
+                ),
+        ) {
             val useGrid = when (style) {
                 LibraryCardStyle.Grid -> true
                 LibraryCardStyle.List -> false
                 LibraryCardStyle.Auto -> maxWidth < GridCardMaxWidth
             }
+            val initials: @Composable () -> Unit = {
+                Text(
+                    text = DocumentPresentationFormatter.initials(document.title),
+                    style = if (useGrid) {
+                        MaterialTheme.typography.headlineSmall
+                    } else {
+                        MaterialTheme.typography.titleMedium
+                    },
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    fontWeight = FontWeight.SemiBold,
+                )
+            }
             if (useGrid) {
-                DocumentCardGridContent(
-                    document = document,
-                    updatedDate = updatedDate,
-                    onRename = onRename,
-                    onDelete = onDelete,
-                    onMove = onMove,
-                    showRename = showRename,
-                    deleteContentDescription = deleteContentDescription,
+                LibraryCoverCardFace(
+                    title = document.title,
+                    meta = formatDocumentCardMeta(document.pageCount, updatedDate),
+                    thumbnailPath = document.coverThumbnailPath,
+                    contentRevision = document.updatedAtMillis,
+                    overflowVisible = actions.isNotEmpty(),
+                    menuExpanded = menuExpanded,
+                    onOverflowClick = { menuExpanded = true },
+                    onDismissOverflow = { menuExpanded = false },
+                    overflowMenu = overflowMenu,
+                    placeholderIcon = initials,
                 )
             } else {
-                DocumentCardListContent(
-                    document = document,
-                    updatedDate = updatedDate,
-                    onRename = onRename,
-                    onDelete = onDelete,
-                    onMove = onMove,
-                    showRename = showRename,
-                    deleteContentDescription = deleteContentDescription,
+                LibraryCoverListFace(
+                    title = document.title,
+                    meta = formatDocumentCardMeta(document.pageCount, updatedDate),
+                    thumbnailPath = document.coverThumbnailPath,
+                    contentRevision = document.updatedAtMillis,
+                    overflowVisible = actions.isNotEmpty(),
+                    menuExpanded = menuExpanded,
+                    onOverflowClick = { menuExpanded = true },
+                    onDismissOverflow = { menuExpanded = false },
+                    overflowMenu = overflowMenu,
+                    placeholderIcon = initials,
                 )
             }
         }
     }
 }
 
+private fun Modifier.libraryCardGestures(
+    onOpen: () -> Unit,
+    hasOverflowActions: Boolean,
+    onOpenOverflow: () -> Unit,
+): Modifier = combinedClickable(
+    onClick = onOpen,
+    onLongClick = if (hasOverflowActions) onOpenOverflow else null,
+)
+
 @Composable
-private fun DocumentCardGridContent(
-    document: ScanDocument,
-    updatedDate: String,
-    onRename: () -> Unit,
-    onDelete: () -> Unit,
-    onMove: (() -> Unit)?,
-    showRename: Boolean,
-    deleteContentDescription: String,
+private fun LibraryCoverCardFace(
+    title: String,
+    meta: String,
+    thumbnailPath: String?,
+    contentRevision: Long,
+    overflowVisible: Boolean,
+    menuExpanded: Boolean,
+    onOverflowClick: () -> Unit,
+    onDismissOverflow: () -> Unit,
+    overflowMenu: @Composable () -> Unit,
+    placeholderIcon: @Composable () -> Unit,
 ) {
-    Box(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .aspectRatio(0.82f)
             .padding(10.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            shape = RoundedCornerShape(22.dp),
-            color = MaterialTheme.colorScheme.surfaceContainerHighest,
-        ) {
-            CachedThumbnail(
-                thumbnailPath = document.coverThumbnailPath,
-                title = document.title,
-                displaySize = PreviewDisplaySize.CARD,
-                contentRevision = document.updatedAtMillis,
-                modifier = Modifier.fillMaxSize(),
-                placeholderIcon = {
-                    Text(
-                        text = DocumentPresentationFormatter.initials(document.title),
-                        style = MaterialTheme.typography.headlineMedium,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                        fontWeight = FontWeight.SemiBold,
-                    )
-                },
+        Box {
+            LibraryPageCover(
+                thumbnailPath = thumbnailPath,
+                title = title,
+                contentRevision = contentRevision,
+                modifier = Modifier.fillMaxWidth(),
+                placeholderIcon = placeholderIcon,
             )
+            if (overflowVisible) {
+                LibraryCardOverflowButton(
+                    expanded = menuExpanded,
+                    onClick = onOverflowClick,
+                    onDismiss = onDismissOverflow,
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(4.dp),
+                    overlayOnCover = true,
+                    menu = overflowMenu,
+                )
+            }
         }
-        Box(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .fillMaxWidth()
-                .height(112.dp)
-                .clip(RoundedCornerShape(bottomStart = 22.dp, bottomEnd = 22.dp))
-                .background(
-                    Brush.verticalGradient(
-                        colors = listOf(
-                            Color.Transparent,
-                            Color.Black.copy(alpha = 0.78f),
-                        ),
-                    ),
-                ),
+        Text(
+            text = title,
+            style = MaterialTheme.typography.titleSmall,
+            fontWeight = FontWeight.SemiBold,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
+            minLines = 1,
+        )
+        Text(
+            text = meta,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
+    }
+}
+
+@Composable
+private fun LibraryCoverListFace(
+    title: String,
+    meta: String,
+    thumbnailPath: String?,
+    contentRevision: Long,
+    overflowVisible: Boolean,
+    menuExpanded: Boolean,
+    onOverflowClick: () -> Unit,
+    onDismissOverflow: () -> Unit,
+    overflowMenu: @Composable () -> Unit,
+    placeholderIcon: @Composable () -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(12.dp),
+        horizontalArrangement = Arrangement.spacedBy(14.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        LibraryPageCover(
+            thumbnailPath = thumbnailPath,
+            title = title,
+            contentRevision = contentRevision,
+            modifier = Modifier.width(72.dp),
+            placeholderIcon = placeholderIcon,
         )
         Column(
-            modifier = Modifier
-                .align(Alignment.BottomStart)
-                .fillMaxWidth()
-                .padding(horizontal = 12.dp, vertical = 10.dp),
+            modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
             Text(
-                text = document.title,
-                style = MaterialTheme.typography.titleSmall,
+                text = title,
+                style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold,
-                color = Color.White,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
             )
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(6.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                DocumentMetaPill(
-                    label = "${document.pageCount} pg",
-                    icon = Icons.Filled.Description,
-                )
-                DocumentMetaPill(label = updatedDate)
-            }
-        }
-        Row(
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .padding(8.dp),
-            horizontalArrangement = Arrangement.spacedBy(6.dp),
-        ) {
-            if (showRename) {
-                LibraryCardIconButton(
-                    icon = Icons.Filled.Edit,
-                    contentDescription = "Rename",
-                    onClick = onRename,
-                    size = 32.dp,
-                    containerColor = Color.Black.copy(alpha = 0.42f),
-                    contentColor = Color.White,
-                )
-            }
-            if (onMove != null) {
-                LibraryCardIconButton(
-                    icon = Icons.Filled.Folder,
-                    contentDescription = "Move to folder",
-                    onClick = onMove,
-                    size = 32.dp,
-                    containerColor = Color.Black.copy(alpha = 0.42f),
-                    contentColor = Color.White,
-                )
-            }
-            LibraryCardIconButton(
-                icon = Icons.Filled.DeleteOutline,
-                contentDescription = deleteContentDescription,
-                onClick = onDelete,
-                size = 32.dp,
-                containerColor = Color.Black.copy(alpha = 0.42f),
-                contentColor = MaterialTheme.colorScheme.error,
-            )
-        }
-    }
-}
-
-@Composable
-private fun DocumentCardListContent(
-    document: ScanDocument,
-    updatedDate: String,
-    onRename: () -> Unit,
-    onDelete: () -> Unit,
-    onMove: (() -> Unit)?,
-    showRename: Boolean,
-    deleteContentDescription: String,
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(14.dp),
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Surface(
-            modifier = Modifier
-                .width(82.dp)
-                .aspectRatio(3f / 4f),
-            shape = RoundedCornerShape(18.dp),
-            color = MaterialTheme.colorScheme.surfaceContainerHighest,
-            border = BorderStroke(
-                1.dp,
-                MaterialTheme.colorScheme.outlineVariant,
-            ),
-            shadowElevation = 0.dp,
-        ) {
-            CachedThumbnail(
-                thumbnailPath = document.coverThumbnailPath,
-                title = document.title,
-                displaySize = PreviewDisplaySize.CARD,
-                contentRevision = document.updatedAtMillis,
-                modifier = Modifier.fillMaxSize(),
-                placeholderIcon = {
-                    Text(
-                        text = DocumentPresentationFormatter.initials(document.title),
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                        fontWeight = FontWeight.SemiBold,
-                    )
-                },
-            )
-        }
-        Column(
-            modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
             Text(
-                text = document.title,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onSurface,
+                text = meta,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                DocumentMetaPill(
-                    label = "${document.pageCount} ${if (document.pageCount == 1) "page" else "pages"}",
-                    icon = Icons.Filled.Description,
-                )
-                DocumentMetaPill(label = updatedDate)
-            }
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    if (showRename) {
-                        LibraryCardIconButton(
-                            icon = Icons.Filled.Edit,
-                            contentDescription = "Rename",
-                            onClick = onRename,
-                            size = 38.dp,
-                            containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
-                        )
-                    }
-                    if (onMove != null) {
-                        LibraryCardIconButton(
-                            icon = Icons.Filled.Folder,
-                            contentDescription = "Move to folder",
-                            onClick = onMove,
-                            size = 38.dp,
-                            containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
-                        )
-                    }
-                }
-                LibraryCardIconButton(
-                    icon = Icons.Filled.DeleteOutline,
-                    contentDescription = deleteContentDescription,
-                    onClick = onDelete,
-                    size = 38.dp,
-                    containerColor = MaterialTheme.colorScheme.errorContainer,
-                    contentColor = MaterialTheme.colorScheme.onErrorContainer,
-                )
-            }
+        }
+        if (overflowVisible) {
+            LibraryCardOverflowButton(
+                expanded = menuExpanded,
+                onClick = onOverflowClick,
+                onDismiss = onDismissOverflow,
+                menu = overflowMenu,
+            )
         }
     }
 }
 
 @Composable
-private fun DocumentMetaPill(
-    label: String,
-    icon: ImageVector? = null,
+private fun LibraryPageCover(
+    thumbnailPath: String?,
+    title: String,
+    contentRevision: Long,
+    modifier: Modifier = Modifier,
+    placeholderIcon: @Composable () -> Unit,
 ) {
+    val coverShape = RoundedCornerShape(12.dp)
     Surface(
+        modifier = modifier.aspectRatio(libraryCardCoverAspectRatio()),
+        shape = coverShape,
         color = MaterialTheme.colorScheme.surfaceContainerHighest,
-        contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-        shape = MaterialTheme.shapes.large,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+        shadowElevation = 0.dp,
+        tonalElevation = 0.dp,
     ) {
-        Row(
-            modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
-            horizontalArrangement = Arrangement.spacedBy(6.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            if (icon != null) {
-                Icon(
-                    imageVector = icon,
-                    contentDescription = null,
-                    modifier = Modifier.size(15.dp),
-                )
-            }
-            Text(
-                text = label,
-                style = MaterialTheme.typography.labelMedium,
-                fontWeight = FontWeight.Medium,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
-        }
-    }
-}
-
-@Composable
-private fun LibraryCardActions(
-    onRename: () -> Unit,
-    onDelete: () -> Unit,
-    onMove: (() -> Unit)? = null,
-    showRename: Boolean = true,
-    deleteContentDescription: String = "Delete",
-    compact: Boolean,
-) {
-    val buttonSize = if (compact) 34.dp else 40.dp
-    val spacing = if (compact) 6.dp else 8.dp
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(spacing, Alignment.End),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        if (showRename) {
-            LibraryCardIconButton(
-                icon = Icons.Filled.Edit,
-                contentDescription = "Rename",
-                onClick = onRename,
-                size = buttonSize,
-            )
-        }
-        if (onMove != null) {
-            LibraryCardIconButton(
-                icon = Icons.Filled.Folder,
-                contentDescription = "Move to folder",
-                onClick = onMove,
-                size = buttonSize,
-            )
-        }
-        LibraryCardIconButton(
-            icon = Icons.Filled.DeleteOutline,
-            contentDescription = deleteContentDescription,
-            onClick = onDelete,
-            size = buttonSize,
-            containerColor = MaterialTheme.colorScheme.errorContainer,
-            contentColor = MaterialTheme.colorScheme.onErrorContainer,
+        CachedThumbnail(
+            thumbnailPath = thumbnailPath,
+            title = title,
+            displaySize = PreviewDisplaySize.CARD,
+            contentRevision = contentRevision,
+            modifier = Modifier.fillMaxSize(),
+            shape = coverShape,
+            placeholderIcon = placeholderIcon,
         )
     }
 }
 
 @Composable
-private fun LibraryCardIconButton(
-    icon: ImageVector,
-    contentDescription: String,
+private fun LibraryCardOverflowButton(
+    expanded: Boolean,
     onClick: () -> Unit,
-    size: Dp,
-    containerColor: Color = MaterialTheme.colorScheme.surfaceContainerHigh,
-    contentColor: Color = MaterialTheme.colorScheme.onSurface,
+    onDismiss: () -> Unit,
+    modifier: Modifier = Modifier,
+    overlayOnCover: Boolean = false,
+    menu: @Composable () -> Unit,
 ) {
-    Surface(
-        modifier = Modifier.size(size),
-        color = containerColor,
-        shape = MaterialTheme.shapes.medium,
-    ) {
+    Box(modifier = modifier) {
         IconButton(
             onClick = onClick,
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.size(if (overlayOnCover) 36.dp else 40.dp),
         ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = contentDescription,
-                tint = contentColor,
-                modifier = Modifier.size(size * 0.45f),
+            Surface(
+                modifier = Modifier.fillMaxSize(),
+                shape = MaterialTheme.shapes.medium,
+                color = if (overlayOnCover) {
+                    Color.Black.copy(alpha = 0.42f)
+                } else {
+                    Color.Transparent
+                },
+                shadowElevation = 0.dp,
+                tonalElevation = 0.dp,
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    Icon(
+                        imageVector = Icons.Filled.MoreVert,
+                        contentDescription = "More options",
+                        tint = if (overlayOnCover) {
+                            Color.White
+                        } else {
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        },
+                    )
+                }
+            }
+        }
+        menu()
+    }
+}
+
+@Composable
+private fun LibraryCardOverflowMenu(
+    actions: List<LibraryCardSecondaryAction>,
+    expanded: Boolean,
+    onDismiss: () -> Unit,
+    onAction: (LibraryCardSecondaryAction) -> Unit,
+    deleteContentDescription: String = "Delete",
+) {
+    DropdownMenu(
+        expanded = expanded,
+        onDismissRequest = onDismiss,
+    ) {
+        actions.forEach { action ->
+            val destructive = action == LibraryCardSecondaryAction.Delete ||
+                action == LibraryCardSecondaryAction.RemoveFromFolder
+            DropdownMenuItem(
+                text = {
+                    Text(
+                        text = libraryCardSecondaryActionLabel(action, deleteContentDescription),
+                        color = if (destructive) {
+                            MaterialTheme.colorScheme.error
+                        } else {
+                            Color.Unspecified
+                        },
+                    )
+                },
+                leadingIcon = {
+                    Icon(
+                        imageVector = when (action) {
+                            LibraryCardSecondaryAction.Rename -> Icons.Filled.Edit
+                            LibraryCardSecondaryAction.Move -> Icons.Filled.Folder
+                            LibraryCardSecondaryAction.Delete,
+                            LibraryCardSecondaryAction.RemoveFromFolder,
+                            -> Icons.Filled.DeleteOutline
+                        },
+                        contentDescription = null,
+                        tint = if (destructive) {
+                            MaterialTheme.colorScheme.error
+                        } else {
+                            MaterialTheme.colorScheme.onSurface
+                        },
+                    )
+                },
+                onClick = { onAction(action) },
             )
         }
     }
