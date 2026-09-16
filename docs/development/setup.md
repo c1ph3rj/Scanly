@@ -8,7 +8,7 @@ Get Scanly building locally. For conventions see [conventions.md](conventions.md
 | --- | --- |
 | Android Studio | Recent stable with Compose support |
 | JDK | 11 compile target; daemon JVM 21 (`gradle/gradle-daemon-jvm.properties`) |
-| Android SDK | API 36 compile/target; min SDK 29 |
+| Android SDK | API 37 compile / API 36 target; min SDK 29 |
 | Device / emulator | ARM (`arm64-v8a` or `armeabi-v7a`); camera needed for capture testing |
 
 ## Clone and open
@@ -18,7 +18,7 @@ git clone https://github.com/c1ph3rj/Scanly.git
 cd Scanly
 ```
 
-Open the project root in Android Studio. Gradle wrapper version: **9.5.0**.
+Open the project root in Android Studio. Gradle wrapper version: **9.6.0**.
 
 ## Build commands
 
@@ -81,7 +81,7 @@ Both build types keep the same application ID, version name, version code, and s
 
 From `app/build.gradle.kts`:
 
-- `minSdk = 29`, `targetSdk = 36`, `compileSdk = 36`
+- `minSdk = 29`, `targetSdk = 36`, `compileSdk = 37`
 - NDK ABI filters: `arm64-v8a`, `armeabi-v7a`
 - `noCompress += "tflite"` for ML model asset
 

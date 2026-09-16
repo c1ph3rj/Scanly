@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "swiggy-food": {
+      "command": "npx",
+      "args": ["mcp-remote", "https://mcp.swiggy.com/food"]
+    },
+    "swiggy-instamart": {
+      "command": "npx",
+      "args": ["mcp-remote", "https://mcp.swiggy.com/im"]
+    },
+    "swiggy-dineout": {
+      "command": "npx",
+      "args": ["mcp-remote", "https://mcp.swiggy.com/dineout"]
+    }
+  }
+}

@@ -70,6 +70,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -336,14 +337,26 @@ private fun QrScanPanel(
     onClear: () -> Unit,
 ) {
     val context = LocalContext.current
+    val activity = CameraPermissionSupport.findActivity(context)
     var permissionStatus by remember {
-        mutableStateOf(CameraPermissionSupport.resolveStatus(null, context))
+        mutableStateOf(CameraPermissionSupport.resolveStatus(activity, context))
     }
+    var hasAutoRequestedPermission by rememberSaveable { mutableStateOf(false) }
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),
     ) {
         CameraPermissionSupport.markRequested(context)
-        permissionStatus = CameraPermissionSupport.resolveStatus(null, context)
+        permissionStatus = CameraPermissionSupport.resolveStatus(activity, context)
+    }
+
+    LaunchedEffect(permissionStatus) {
+        if (
+            CameraPermissionSupport.shouldAutoRequestSystemPermission(permissionStatus) &&
+            !hasAutoRequestedPermission
+        ) {
+            hasAutoRequestedPermission = true
+            permissionLauncher.launch(Manifest.permission.CAMERA)
+        }
     }
 
     if (permissionStatus != CameraPermissionStatus.Granted) {
@@ -352,7 +365,7 @@ private fun QrScanPanel(
             onAllow = {
                 if (CameraPermissionSupport.shouldOpenSettings(permissionStatus)) {
                     CameraPermissionSupport.openAppSettings(context)
-                } else {
+                } else if (CameraPermissionSupport.shouldRequestSystemPermission(permissionStatus)) {
                     permissionLauncher.launch(Manifest.permission.CAMERA)
                 }
             },
@@ -462,13 +475,21 @@ private fun QrPermissionCard(
                 verticalArrangement = Arrangement.spacedBy(10.dp),
             ) {
                 Text(
-                    "Allow camera to scan",
+                    if (CameraPermissionSupport.shouldOpenSettings(permissionStatus)) {
+                        "Camera permission is blocked"
+                    } else {
+                        "Allow camera to scan"
+                    },
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onPrimaryContainer,
                 )
                 Text(
-                    "Scanly uses the camera only while this screen is open.",
+                    if (CameraPermissionSupport.shouldOpenSettings(permissionStatus)) {
+                        "Open Settings, tap Permissions, and turn Camera on for Scanly."
+                    } else {
+                        "Scanly uses the camera only while this screen is open."
+                    },
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.76f),
                 )

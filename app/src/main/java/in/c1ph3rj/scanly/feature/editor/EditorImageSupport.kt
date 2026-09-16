@@ -109,24 +109,27 @@ internal fun rememberFilterPreviewBitmaps(
     cropQuad,
 ) {
     value = withContext(Dispatchers.Default) {
-        val baseBitmap = buildCroppedUnfilteredPreview(
+        val analysisBitmap = buildCroppedUnfilteredPreview(
             rawImagePath = rawImagePath,
             fallbackImagePath = fallbackImagePath,
             rotationDegrees = rotationDegrees,
             cropQuad = cropQuad,
-            maxDimension = 360,
+            maxDimension = 720,
         ) ?: return@withContext FilterPreviewState(
             isLoading = false,
             previews = emptyMap(),
         )
-        val previewBitmap = createFilterPreviewSource(baseBitmap)
-        if (previewBitmap !== baseBitmap) {
-            baseBitmap.recycle()
+        val profile = runCatching {
+            OpenCvPageFilterProcessor.analyze(analysisBitmap)
+        }.getOrNull()
+        val previewBitmap = createFilterPreviewSource(analysisBitmap)
+        if (previewBitmap !== analysisBitmap) {
+            analysisBitmap.recycle()
         }
 
         try {
             val previews = OpenCvPageFilterProcessor
-                .applyAll(previewBitmap)
+                .applyAll(previewBitmap, profile = profile)
                 .mapValues { (_, bitmap) -> bitmap.asImageBitmap() }
             FilterPreviewState(
                 isLoading = false,

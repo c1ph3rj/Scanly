@@ -1,17 +1,11 @@
 package `in`.c1ph3rj.scanly.feature.home
 
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CameraAlt
-import androidx.compose.material.icons.filled.CreateNewFolder
-import androidx.compose.material.icons.filled.Description
-import androidx.compose.material.icons.filled.Folder
-import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material.icons.outlined.CameraAlt
 import androidx.compose.material.icons.outlined.CreateNewFolder
 import androidx.compose.material.icons.outlined.PhotoLibrary
@@ -25,23 +19,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import `in`.c1ph3rj.scanly.core.ui.ImageImportSupport
 import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
-import `in`.c1ph3rj.scanly.domain.model.DocumentGroup
 import `in`.c1ph3rj.scanly.domain.model.DocumentTitleFormat
 import `in`.c1ph3rj.scanly.domain.model.GroupTitleFormat
-import `in`.c1ph3rj.scanly.domain.model.ScanDocument
 import `in`.c1ph3rj.scanly.feature.components.*
-import `in`.c1ph3rj.scanly.core.ui.PreviewDisplaySize
 import androidx.compose.ui.unit.Dp
 import androidx.activity.compose.BackHandler
-import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -183,7 +171,7 @@ fun HomeScreen(
                 item(key = "groups_row", contentType = "groups_row") {
                     LazyRow(
                         contentPadding = PaddingValues(horizontal = windowSizeInfo.horizontalPadding),
-                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
                         modifier = Modifier.padding(bottom = 32.dp)
                     ) {
                         items(
@@ -191,10 +179,11 @@ fun HomeScreen(
                             key = { it.id },
                             contentType = { "recent_group" },
                         ) { group ->
-                            RecentGroupChip(
+                            GroupCard(
                                 group = group,
-                                onClick = { onOpenGroup(group.id) },
-                                chipWidth = if (windowSizeInfo.isTablet) 200.dp else 160.dp,
+                                onOpen = { onOpenGroup(group.id) },
+                                style = LibraryCardStyle.Grid,
+                                modifier = Modifier.width(if (windowSizeInfo.isTablet) 168.dp else 140.dp),
                             )
                         }
                     }
@@ -217,9 +206,10 @@ fun HomeScreen(
                     key = { it.id },
                     contentType = { "recent_document" },
                 ) { doc ->
-                    CompactDocumentCard(
+                    DocumentCard(
                         document = doc,
                         onOpen = { onOpenDocument(doc.id) },
+                        style = LibraryCardStyle.List,
                         modifier = Modifier
                             .padding(horizontal = windowSizeInfo.horizontalPadding)
                             .padding(bottom = 12.dp)
@@ -260,6 +250,7 @@ fun HomeScreen(
                 onCreateDocument(value)
             },
             onSuggestTitle = onSuggestTitle,
+            autoFillSuggestedName = true,
         )
     }
 
@@ -273,6 +264,7 @@ fun HomeScreen(
                 onCreateGroup(title)
             },
             onSuggestTitle = onSuggestGroupTitle,
+            autoFillSuggestedName = true,
         )
     }
 }
@@ -455,116 +447,6 @@ fun QuickActionCard(
                 fontWeight = FontWeight.SemiBold,
                 color = resolvedContentColor
             )
-        }
-    }
-}
-
-@Composable
-private fun RecentGroupChip(
-    group: DocumentGroup,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    chipWidth: Dp = 160.dp,
-) {
-    Surface(
-        onClick = onClick,
-        modifier = modifier.width(chipWidth),
-        color = MaterialTheme.colorScheme.surfaceContainer,
-        shape = MaterialTheme.shapes.extraLarge,
-        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
-        shadowElevation = 0.dp,
-        tonalElevation = 0.dp,
-    ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            CachedThumbnail(
-                thumbnailPath = group.coverThumbnailPath,
-                title = group.title,
-                displaySize = PreviewDisplaySize.CARD,
-                contentRevision = group.coverUpdatedAtMillis,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(4f / 3f),
-                placeholderIcon = {
-                    Icon(
-                        imageVector = Icons.Filled.Folder,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                        modifier = Modifier.size(32.dp),
-                    )
-                },
-            )
-            Spacer(modifier = Modifier.height(12.dp))
-            Text(
-                text = group.title,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
-            Text(
-                text = "${group.documentCount} docs",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-        }
-    }
-}
-
-@Composable
-private fun CompactDocumentCard(
-    document: ScanDocument,
-    onOpen: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    val updatedDate = remember(document.updatedAtMillis) {
-        document.updatedAtMillis.toRelativeDate()
-    }
-    Surface(
-        onClick = onOpen,
-        modifier = modifier.fillMaxWidth(),
-        color = MaterialTheme.colorScheme.surfaceContainer,
-        shape = MaterialTheme.shapes.extraLarge,
-        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
-        shadowElevation = 0.dp,
-        tonalElevation = 0.dp,
-    ) {
-        Row(
-            modifier = Modifier.padding(16.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            CachedThumbnail(
-                thumbnailPath = document.coverThumbnailPath,
-                title = document.title,
-                displaySize = PreviewDisplaySize.CARD,
-                contentRevision = document.updatedAtMillis,
-                modifier = Modifier.size(64.dp),
-                shape = MaterialTheme.shapes.large,
-                placeholderIcon = null,
-            )
-            Column(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(4.dp),
-            ) {
-                Text(
-                    text = document.title,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
-                Text(
-                    text = buildString {
-                        append(document.pageCount)
-                        append(if (document.pageCount == 1) " page" else " pages")
-                        append("  ·  ")
-                        append(updatedDate)
-                    },
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 1,
-                )
-            }
         }
     }
 }

@@ -799,8 +799,14 @@ private fun ScanlyNavHostContent(
                 onNavigateUp = navController::navigateUp,
                 onOpenDocument = { documentId ->
                     val documentRoute = DocumentDestination.route(documentId)
+                    // Prefer returning to an existing document detail under this session.
                     if (!navController.popBackStack(route = documentRoute, inclusive = false)) {
+                        // No document detail under us (e.g. Home → Scan). Leave the scan
+                        // session so deleting the document cannot resume a dead camera screen.
                         navController.navigate(documentRoute) {
+                            popUpTo(ScanSessionDestination.routePattern) {
+                                inclusive = true
+                            }
                             launchSingleTop = true
                         }
                     }

@@ -48,7 +48,7 @@ val hasReleaseSigning = listOf(
 android {
     namespace = "in.c1ph3rj.scanly"
     compileSdk {
-        version = release(36) {
+        version = release(37) {
             minorApiLevel = 1
         }
     }
@@ -57,8 +57,8 @@ android {
         applicationId = "in.c1ph3rj.scanly"
         minSdk = 29
         targetSdk = 36
-        versionCode = 13
-        versionName = "1.0.13"
+        versionCode = 16
+        versionName = "1.0.16"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 

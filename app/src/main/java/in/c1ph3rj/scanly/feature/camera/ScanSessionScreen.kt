@@ -1,8 +1,6 @@
 package `in`.c1ph3rj.scanly.feature.camera
 
 import android.Manifest
-import android.app.Activity
-import android.content.pm.PackageManager
 import android.util.Size
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -77,7 +75,7 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -136,11 +134,11 @@ fun ScanSessionRoute(
     val context = LocalContext.current
     val mainExecutor = remember(context) { ContextCompat.getMainExecutor(context) }
     val lifecycleOwner = LocalLifecycleOwner.current
-    val activity = context as? Activity
+    val activity = CameraPermissionSupport.findActivity(context)
     var cameraPermissionStatus by remember(context) {
         mutableStateOf(CameraPermissionSupport.resolveStatus(activity, context))
     }
-    var hasAutoOpenedSettings by rememberSaveable { mutableStateOf(false) }
+    var hasAutoRequestedPermission by rememberSaveable { mutableStateOf(false) }
     val hasCameraPermission = cameraPermissionStatus == CameraPermissionStatus.Granted
     val isCameraPermissionPermanentlyDenied =
         cameraPermissionStatus == CameraPermissionStatus.PermanentlyDenied
@@ -156,23 +154,18 @@ fun ScanSessionRoute(
 
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),
-    ) { granted ->
+    ) {
         CameraPermissionSupport.markRequested(context)
-        val updatedStatus = CameraPermissionSupport.resolveStatus(activity, context)
-        cameraPermissionStatus = updatedStatus
-        if (!granted && CameraPermissionSupport.shouldOpenSettings(updatedStatus)) {
-            CameraPermissionSupport.openAppSettings(context)
-            hasAutoOpenedSettings = true
-        }
+        cameraPermissionStatus = CameraPermissionSupport.resolveStatus(activity, context)
     }
 
     LaunchedEffect(cameraPermissionStatus) {
         if (
-            cameraPermissionStatus == CameraPermissionStatus.PermanentlyDenied &&
-            !hasAutoOpenedSettings
+            CameraPermissionSupport.shouldAutoRequestSystemPermission(cameraPermissionStatus) &&
+            !hasAutoRequestedPermission
         ) {
-            hasAutoOpenedSettings = true
-            CameraPermissionSupport.openAppSettings(context)
+            hasAutoRequestedPermission = true
+            permissionLauncher.launch(Manifest.permission.CAMERA)
         }
     }
 
@@ -221,7 +214,7 @@ fun ScanSessionRoute(
         onRequestCameraPermission = {
             if (CameraPermissionSupport.shouldOpenSettings(cameraPermissionStatus)) {
                 CameraPermissionSupport.openAppSettings(context)
-            } else {
+            } else if (CameraPermissionSupport.shouldRequestSystemPermission(cameraPermissionStatus)) {
                 permissionLauncher.launch(Manifest.permission.CAMERA)
             }
         },
@@ -1041,8 +1034,8 @@ private fun CameraPermissionPrompt(
                         )
                         Text(
                             text = if (isPermanentlyDenied) {
-                                "Camera access is turned off for Scanly in system settings. " +
-                                    "Enable it there to capture document pages."
+                                "Camera permission is blocked for Scanly. Open Settings, " +
+                                    "tap Permissions, and turn Camera on to scan documents."
                             } else {
                                 "Scanly needs your camera to capture and straighten document pages. " +
                                     "Photos stay on your device until you export or share them."

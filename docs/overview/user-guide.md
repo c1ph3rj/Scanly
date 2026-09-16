@@ -13,7 +13,7 @@ How end users interact with Scanly. This describes app behavior, not implementat
 ### From Home
 
 1. Tap the scan/create action (FAB menu).
-2. Choose **Scan** → name the document (optional **Suggest name**) → camera session opens.
+2. Choose **Scan** → a suggested name is already filled in. Keep it, tap the clear icon to type your own, or tap **Suggest name** to cycle formats → camera session opens.
 3. Point the camera at a **physical** document. Scanly filters out many phone screens and non-document rectangles before drawing edges.
 4. Live overlay shows detected page edges and quality hints. For open books, frame a single dominant page when possible.
 5. Tap capture (or use auto-capture when stable).
@@ -51,7 +51,7 @@ Same flow — create a new document via scan from the Library FAB menu.
 
 ### Page editor
 
-1. Tap **Filters** for a full-screen picker with a large live preview of each preset on the cropped page, then Done. Retake or delete from the editor toolbar as needed.
+1. Tap **Filters** for a full-screen picker with a large live preview of each preset on the cropped page, then Done. Color looks stay close to the photo you captured; scan looks (Clean, B&W, Receipt) still whiten paper. Retake or delete from the editor toolbar as needed.
 2. Tap **Adjust** (next to Filters) to fine-tune brightness, contrast, saturation, and sharpness on a live cropped preview. Use reset in the adjust screen to clear customizations.
 3. Tap **Crop** to open the crop screen. Use **AI Detect** to find the document automatically, rotate with **Left** / **Right**, drag the four corner handles, use **Reset** to restore the starting crop, then **Done** to apply crop and rotation.
 4. Back on the editor, tap the check mark to save filter and adjustment changes — processed image and thumbnail regenerate from the raw capture.
@@ -63,14 +63,14 @@ From **document detail**:
 
 - Use move controls to reorder pages.
 - Delete unwanted pages.
-- Rename the document from the header.
+- Rename the document from the header. The current name is filled in; tap clear to type a new one.
 
 ## Organizing with groups
 
-### Create a group
+### Create a folder
 
 1. Open **Library** → Folders filter, or use create action on Home/Library.
-2. Create a new group with a title. Tap **Suggest name** to cycle date-based formats; duplicates are avoided automatically.
+2. Create a new folder. A suggested name is filled in by default. Keep it, tap clear to type your own, or tap **Suggest name** to cycle date-based formats. Duplicates are avoided automatically.
 
 ### Add documents to a group
 

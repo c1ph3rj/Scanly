@@ -1,12 +1,12 @@
 ﻿# Implementation Snapshot
 
-One-page technical summary of Scanly **v1.0.13**. For detail see the full docs index at [../README.md](../README.md).
+One-page technical summary of Scanly **v1.0.16**. For detail see the full docs index at [../README.md](../README.md).
 
 ## Release
 
 | Field | Value |
 | --- | --- |
-| Version | `1.0.13` (code `13`) |
+| Version | `1.0.16` (code `16`) |
 | Room schema | `4` |
 | Min SDK | 29 |
 | Target SDK | 36 |
@@ -46,7 +46,7 @@ Raw JPEG
   → optional semantic gate (capture/import)
   → LiteRT corners (post model; book resolve) OR stored/manual/AI-detect quad
   → perspective warp
-  → OpenCV filter preset
+  → OpenCV filter engine (analyze → recipe → strength → operators → guard)
   → optional brightness/contrast/saturation/sharpness adjustments
   → processed JPEG (q94, max 2400px) + thumbnail
 ```
@@ -72,7 +72,7 @@ Kotlin · Compose · Material 3 · Hilt · Navigation Compose · CameraX · Room
 
 ## Tests
 
-41 unit-test files · 3 instrumented-test files (onboarding UI, OpenCV filter processor, smoke) · gaps in persistence integration and archive/export E2E
+42 unit-test files · 3 instrumented-test files (onboarding UI, OpenCV filter engine, smoke) · gaps in persistence integration and archive/export E2E
 
 ## Principles
 

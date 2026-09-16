@@ -8,7 +8,7 @@ Guidance for AI coding agents working in the Scanly repository.
 
 - Single-module Android app (`:app`) using Kotlin + Jetpack Compose + Material 3.
 - Package: `in.c1ph3rj.scanly` — escape `in` as ``package `in`.c1ph3rj.scanly``.
-- Current version: `1.0.13` (version code `13`) — see `app/build.gradle.kts`, [VERSION.md](VERSION.md).
+- Current version: `1.0.16` (version code `16`) — see `app/build.gradle.kts`, [VERSION.md](VERSION.md).
 - Entry point: `MainActivity.kt` → onboarding gate → `ScanlyNavHost`.
 - Offline-first document scanner: camera capture, page editing, local persistence, PDF/image export, library backup/restore.
 
@@ -21,7 +21,7 @@ app/src/main/java/in/c1ph3rj/scanly/
 ├── feature/           # Screens + ViewModels (home, library, tools, camera, editor, widgets, …)
 ├── domain/            # Models, repository interfaces, use cases (73 classes)
 ├── data/              # Room, storage, export, archive, settings, update implementations
-├── core/              # ML (corners + gate), OpenCV, editing math, shared UI utilities
+├── core/              # ML (corners + gate), OpenCV filter engine, editing math, shared UI utilities
 └── di/                # Hilt modules (+ flavor-specific update bindings)
 ```
 
@@ -36,9 +36,9 @@ app/src/main/java/in/c1ph3rj/scanly/
 
 ## Build and Test (Windows/PowerShell)
 
-- Gradle wrapper: 9.5.0 (`gradle/wrapper/gradle-wrapper.properties`).
+- Gradle wrapper: 9.6.0 (`gradle/wrapper/gradle-wrapper.properties`).
 - Daemon JVM: Java 21 (`gradle/gradle-daemon-jvm.properties`).
-- Compile target: Java 11; SDK 36 compile/target, min SDK 29.
+- Compile target: Java 11; SDK 37 compile / 36 target, min SDK 29.
 
 ```powershell
 ./gradlew.bat assembleDebug
@@ -100,6 +100,32 @@ Home-screen widgets / quick actions use `in.c1ph3rj.scanly.action.{SCAN,IMPORT,Q
 - On user-facing behavior changes, update [CHANGELOG.md](CHANGELOG.md) and relevant `docs/` pages; on releases, also [VERSION.md](VERSION.md) and [README.md](README.md).
 - Do not commit `local.properties`, keystore files, or build outputs.
 - Do not change on-disk storage layout without a migration plan.
+
+## Swiggy Builders Club and MCP
+
+The repository does not currently ship a Swiggy integration. These rules apply
+only when a task explicitly adds or changes one.
+
+- Swiggy Builders Club uses three independent streamable-HTTP MCP servers:
+  Food (`https://mcp.swiggy.com/food`), Instamart
+  (`https://mcp.swiggy.com/im`), and Dineout
+  (`https://mcp.swiggy.com/dineout`).
+- Before suggesting or implementing a Swiggy tool, parameter, error handling,
+  rate limit, or OAuth flow, consult the authoritative docs:
+  - index: `https://mcp.swiggy.com/builders/llms.txt`
+  - full reference: `https://mcp.swiggy.com/builders/llms-full.txt`
+  - focused reference: append `.md` to a Builders Club documentation URL.
+- Never invent tool names or parameters. Verify the relevant Food, Instamart,
+  or Dineout schema under `/builders/docs/reference/` first.
+- Authentication is OAuth 2.1 with PKCE, not an API key. Do not commit,
+  log, or persist access tokens in plaintext. Treat a 401 as a re-authorization
+  requirement; current access tokens last five days and refresh-token issuance
+  is not available in v1.0.
+- Keep live MCP connections opt-in. The example configuration in
+  `.mcp.json.example` is deliberately inactive: connecting it targets the
+  user's live Swiggy account, and write tools can place real orders or
+  reservations. Require an explicit user confirmation before invoking a
+  side-effecting tool.
 
 ## Docs updates — ask the user first (required)
 

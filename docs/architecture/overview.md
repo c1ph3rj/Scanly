@@ -1,6 +1,6 @@
 ﻿# Architecture Overview
 
-How Scanly is structured at **v1.0.13**. For navigation detail see [navigation.md](navigation.md). For screen inventory see [screens.md](screens.md).
+How Scanly is structured at **v1.0.16**. For navigation detail see [navigation.md](navigation.md). For screen inventory see [screens.md](screens.md).
 
 ## Layer diagram
 
@@ -65,7 +65,7 @@ All code under `app/src/main/java/in/c1ph3rj/scanly/`:
 | `data/update/` | Build-selected GitHub or Google Play update checks |
 | `data/processing/` | `PageImageProcessor` implementation |
 | `core/ml/` | LiteRT corner models, document gate, book/quad policies, auto model selection |
-| `core/processing/` | Perspective warp, OpenCV filters, filter adjustments |
+| `core/processing/` | Perspective warp, OpenCV filter engine (`filter/`), filter adjustments |
 | `core/editing/` | Crop quad editor logic |
 | `core/ui/` | Thumbnail cache, adaptive layout helpers |
 | `core/common/` | Result types, formatters |

@@ -1,13 +1,13 @@
 ﻿# Features
 
-Complete inventory of Scanly features as of **v1.0.13**.
+Complete inventory of Scanly features as of **v1.0.16**.
 
 ## Home dashboard
 
 - Shows up to **8 recent documents** and **6 recent groups**
 - Quick actions: start a new scan, create an empty document, create a group
 - **Gallery import** — pick up to 10 images to start a new document
-- **Suggested names** — create dialogs offer a **Suggest name** button with rotatable date-based title formats; duplicate titles receive numeric suffixes
+- **Default names** — new document and folder dialogs open with a duplicate-safe suggested name selected; a clear control empties the field, and **Suggest name** cycles date-based formats
 - Shortcut into the full Library
 - Adaptive layout: bottom navigation on phone, navigation rail on tablet
 
@@ -17,7 +17,7 @@ Complete inventory of Scanly features as of **v1.0.13**.
 - **Three filter pills:** All, Folders (groups), Documents — rounded Material 3 surfaces (not underline tabs)
 - **Search** across document and group titles
 - **Six sort options** (name, date created, date updated — ascending and descending)
-- Create, rename, and delete documents and groups with **Suggest name** for new items
+- Create, rename, and delete documents and groups; new items start with a suggested name plus clear / **Suggest name**
 - Move documents between groups or create a new group inline when moving
 - Open document detail or group detail from any list item
 - **All tab semantics:** foldered documents appear under their group, not in the main All list (unless searching)
@@ -100,6 +100,7 @@ Operate on **device PDFs** (system document picker) or **Scanly library document
 - **Live result preview** — shows the perspective-cropped page with the current filter and adjustments
 - **Crop screen** (`crop/page/{pageId}`) — **AI Detect**, **Left** / **Right** rotation, four-point handles, **Reset**, apply on Done
 - **Filter picker** (full-screen) — large live preview of each preset on the cropped page; optional apply-to-all-pages
+- **Filter engine** — Color, Shadow Reduce, and Magic stay recognizably the capture; Clean / B&W / Receipt stay scan-like; strength follows the page so looks are not overblown or underdone; picker chips match the saved JPEG
 - **Filter presets** (10 modes):
   - Original, Auto, Enhanced Color, Grayscale, Black & White
   - Clean, Shadow Reduction, Magic Color, Receipt, Soft Black & White
@@ -111,7 +112,7 @@ Operate on **device PDFs** (system document picker) or **Scanly library document
 ## Document groups (collections)
 
 - Optional folders for organizing related documents
-- Create, rename, delete groups with **Suggest name** formats
+- Create, rename, delete groups; new folders start with a suggested name, with clear and **Suggest name** formats
 - Move documents between groups or leave ungrouped
 - **Group detail screen** — view all documents in a group, manage membership, create documents in group
 - **Group export:**

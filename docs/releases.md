@@ -6,13 +6,13 @@ Version policy and release history for Scanly.
 
 | Field | Value |
 | --- | --- |
-| Version name | `1.0.13` |
-| Version code | `13` |
+| Version name | `1.0.16` |
+| Version code | `16` |
 | Application ID | `in.c1ph3rj.scanly` |
 | Room schema | `4` |
 | Min SDK | 29 (Android 10) |
 | Target / compile SDK | 36 |
-| Release date | 2026-07-17 |
+| Release date | 2026-09-16 |
 
 Canonical source: `versionCode` and `versionName` in `app/build.gradle.kts`.
 
@@ -20,14 +20,13 @@ The version shown in Settings reads `versionName` via `DefaultSettingsRepository
 
 ### Release highlights
 
-Version **1.0.13** (relative to `1.0.11`):
+Version **1.0.16** (relative to `1.0.14`):
 
-- Fixed the release-build crash when opening QR Scan after granting camera permission
-- Fixed the release-build crash when opening Create QR directly
-- Hardened ML Kit and CameraX initialization and cleanup for minified APKs
-- Prevented Create QR from briefly initializing the Scan camera path
+- Rebuilt document filters so Color, Shadow Reduce, and Magic stay recognizably the captured page
+- Filter strength now follows the page (gentle on already-good photos, stronger on dim or shadowed pages)
+- Picker chips, live preview, and saved JPEGs share one analysis profile
 
-The compact GitHub release description used by the in-app update dialog is available in [release-notes/v1.0.13.md](release-notes/v1.0.13.md).
+The compact GitHub release description used by the in-app update dialog is available in [release-notes/v1.0.16.md](release-notes/v1.0.16.md).
 
 ## Versioning policy
 
@@ -39,6 +38,18 @@ The compact GitHub release description used by the in-app update dialog is avail
 - Keep [VERSION.md](../VERSION.md) aligned with Gradle values.
 
 ## Recent releases
+
+### 1.0.16 (code 16) — 2026-09-16
+
+- Professional page filter engine (look stays connected to the capture)
+- Closed-loop filter strength (avoids overblown and underdone pages)
+- Picker, live preview, and save use the same filter analysis
+
+### 1.0.14 (code 14) — 2026-07-24
+
+- Shared illustrated empty states across the app
+- Multi-select add-to-folder workflow
+- Refined empty-state spacing, sizing, and wording
 
 ### 1.0.13 (code 13) — 2026-07-18
 
@@ -99,6 +110,12 @@ Major feature release:
 Full details: [CHANGELOG.md](../CHANGELOG.md)
 
 ## Upgrade notes
+
+### From 1.0.14 to 1.0.16
+
+- No Room schema change.
+- Existing pages keep their stored preset and adjustments. The new filter engine is used the next time a page is captured or saved from the editor.
+- Filter picker chips, live preview, and saved JPEGs now share one analysis profile.
 
 ### Room schema 3 → 4 (v1.0.11)
 

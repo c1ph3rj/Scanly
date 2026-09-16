@@ -1,6 +1,6 @@
 ﻿# Testing
 
-Test coverage and how to run tests in Scanly **v1.0.13**.
+Test coverage and how to run tests in Scanly **v1.0.16**.
 
 ## Running tests
 
@@ -17,12 +17,12 @@ Test coverage and how to run tests in Scanly **v1.0.13**.
 
 ## Unit tests (`app/src/test/`)
 
-**41 test files** covering core logic:
+**42 test files** covering core logic:
 
 | Area | Test files |
 | --- | --- |
 | ML / geometry | `DocumentCornerQuadTest`, `DocumentQuadPolicyTest`, `DocumentGatePolicyTest`, `CornerRegressionDecoderTest`, `BookPageQuadAnalyzerTest`, `AutomaticDocumentModelSelectionPolicyTest`, `PerspectiveQuadMathTest`, `CropQuadEditorTest` |
-| Processing | `AdaptivePageFilterTuningTest`, `PageFilterPresetTest`, `PageFilterAdjustmentsTest` |
+| Processing | `AdaptivePageFilterTuningTest`, `PageFilterStrengthControllerTest`, `PageFilterPresetTest`, `PageFilterAdjustmentsTest` |
 | Camera | `CaptureStabilityTrackerTest`, `DocumentGateStabilityTrackerTest`, `StableCornerSelectorTest`, `CaptureFrameQualityAnalyzerTest`, `CameraOverlayMapperTest`, `CameraPermissionSupportTest`, `ScanSessionScreenTest` |
 | UI / layout | `AdaptiveLayoutTest`, `PreviewImageSizerTest`, `ZoomableImageStateTest`, `OnboardingLayoutModeTest` |
 | Formatting | `StorageFormatterTest`, `DocumentPresentationFormatterTest`, `DocumentPreviewPathResolverTest` |
@@ -45,7 +45,7 @@ app/src/test/java/in/c1ph3rj/scanly/{matching/package}/YourTest.kt
 | File | Coverage |
 | --- | --- |
 | `OnboardingScreenTest.kt` | Compose UI test for onboarding screen |
-| `OpenCvPageFilterProcessorTest.kt` | Device-side OpenCV filter processor checks |
+| `OpenCvPageFilterProcessorTest.kt` | Device-side OpenCV filter engine checks (flatten, color marks, preview/save parity) |
 | `ExampleInstrumentedTest.kt` | Package name smoke test |
 
 ## Coverage gaps

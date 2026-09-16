@@ -3,6 +3,7 @@ package `in`.c1ph3rj.scanly.feature.camera
 import android.Manifest
 import android.app.Activity
 import android.content.Context
+import android.content.ContextWrapper
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -35,23 +36,55 @@ object CameraPermissionSupport {
             .apply()
     }
 
-    fun resolveStatus(activity: Activity?, context: Context): CameraPermissionStatus {
-        if (isGranted(context)) {
+    fun findActivity(context: Context): Activity? {
+        var current: Context? = context
+        while (current is ContextWrapper) {
+            if (current is Activity) return current
+            current = current.baseContext
+        }
+        return null
+    }
+
+    fun resolveStatus(
+        isGranted: Boolean,
+        shouldShowRationale: Boolean,
+        hasRequestedBefore: Boolean,
+        canInspectRationale: Boolean,
+    ): CameraPermissionStatus {
+        if (isGranted) {
             return CameraPermissionStatus.Granted
         }
-
-        val shouldShowRationale = activity
-            ?.shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) == true
         if (shouldShowRationale) {
             return CameraPermissionStatus.DeniedCanRetry
         }
-
-        return if (hasRequestedBefore(context)) {
-            CameraPermissionStatus.PermanentlyDenied
-        } else {
-            CameraPermissionStatus.NotRequested
+        if (!hasRequestedBefore) {
+            return CameraPermissionStatus.NotRequested
         }
+        // Without an Activity we cannot tell "never asked" leftovers from a
+        // permanent block — keep retrying the system prompt instead of Settings.
+        if (!canInspectRationale) {
+            return CameraPermissionStatus.DeniedCanRetry
+        }
+        return CameraPermissionStatus.PermanentlyDenied
     }
+
+    fun resolveStatus(activity: Activity?, context: Context): CameraPermissionStatus {
+        val resolvedActivity = activity ?: findActivity(context)
+        return resolveStatus(
+            isGranted = isGranted(context),
+            shouldShowRationale = resolvedActivity
+                ?.shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) == true,
+            hasRequestedBefore = hasRequestedBefore(context),
+            canInspectRationale = resolvedActivity != null,
+        )
+    }
+
+    fun shouldRequestSystemPermission(status: CameraPermissionStatus): Boolean =
+        status == CameraPermissionStatus.NotRequested ||
+            status == CameraPermissionStatus.DeniedCanRetry
+
+    fun shouldAutoRequestSystemPermission(status: CameraPermissionStatus): Boolean =
+        status == CameraPermissionStatus.NotRequested
 
     fun shouldOpenSettings(status: CameraPermissionStatus): Boolean =
         status == CameraPermissionStatus.PermanentlyDenied

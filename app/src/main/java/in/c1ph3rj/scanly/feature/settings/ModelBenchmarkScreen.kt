@@ -438,6 +438,7 @@ private fun BenchmarkEmptyState(
             onAction = onChooseImages,
             actionIcon = Icons.Filled.ImageSearch,
             compact = true,
+            illustrationSize = 220.dp,
         )
         Text(
             text = "Images stay on this device. Nothing is uploaded.",

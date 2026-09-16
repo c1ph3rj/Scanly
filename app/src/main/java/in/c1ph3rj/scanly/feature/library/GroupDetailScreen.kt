@@ -4,7 +4,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,17 +13,17 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.DeleteOutline
+import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.FileOpen
 import androidx.compose.material.icons.filled.FolderOpen
@@ -33,17 +32,20 @@ import androidx.compose.material.icons.filled.IosShare
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.PictureAsPdf
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.outlined.Circle
+import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material3.BottomSheetDefaults
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -56,19 +58,23 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.compositeOver
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import `in`.c1ph3rj.scanly.core.ui.MetricChip
+import `in`.c1ph3rj.scanly.core.ui.WindowWidthClass
 import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import `in`.c1ph3rj.scanly.domain.model.DocumentTitleFormat
 import `in`.c1ph3rj.scanly.domain.model.PdfExportOptions
@@ -116,7 +122,7 @@ fun GroupDetailRoute(
         onOpenDocument = onOpenDocument,
         onRenameGroup = viewModel::renameGroup,
         onDeleteGroup = viewModel::deleteGroup,
-        onAddDocument = viewModel::addDocumentToGroup,
+        onAddDocuments = viewModel::addDocumentsToGroup,
         onCreateDocument = viewModel::createDocumentInGroup,
         onSuggestTitle = viewModel::suggestDocumentTitle,
         onRemoveDocument = viewModel::removeDocumentFromGroup,
@@ -137,7 +143,7 @@ private fun GroupDetailScreen(
     onOpenDocument: (String) -> Unit,
     onRenameGroup: (String) -> Unit,
     onDeleteGroup: () -> Unit,
-    onAddDocument: (String) -> Unit,
+    onAddDocuments: (Collection<String>) -> Unit,
     onCreateDocument: (String) -> Unit,
     onSuggestTitle: suspend (DocumentTitleFormat) -> String,
     onRemoveDocument: (String) -> Unit,
@@ -169,7 +175,7 @@ private fun GroupDetailScreen(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             ScanlyDetailTopBar(
-                title = group?.title ?: "Group",
+                title = group?.title ?: "Folder",
                 onNavigateUp = onNavigateUp,
                 actions = {
                     IconButton(
@@ -187,7 +193,7 @@ private fun GroupDetailScreen(
                             onDismissRequest = { showMenu = false },
                         ) {
                             DropdownMenuItem(
-                                text = { Text("Rename group") },
+                                text = { Text("Rename folder") },
                                 leadingIcon = { Icon(Icons.Filled.Edit, contentDescription = null) },
                                 onClick = {
                                     showMenu = false
@@ -197,7 +203,7 @@ private fun GroupDetailScreen(
                             DropdownMenuItem(
                                 text = {
                                     Text(
-                                        "Delete group",
+                                        "Delete folder",
                                         color = MaterialTheme.colorScheme.error,
                                     )
                                 },
@@ -268,9 +274,9 @@ private fun GroupDetailScreen(
                                         document = document,
                                         onOpen = { onOpenDocument(document.id) },
                                         onDelete = { removeTarget = document },
-                                        onMove = null,
                                         showRename = false,
-                                        deleteContentDescription = "Remove from group",
+                                        deleteContentDescription = "Remove from folder",
+                                        deleteIsRemoveFromFolder = true,
                                         modifier = Modifier.weight(1f),
                                     )
                                 }
@@ -291,9 +297,9 @@ private fun GroupDetailScreen(
                                 document = document,
                                 onOpen = { onOpenDocument(document.id) },
                                 onDelete = { removeTarget = document },
-                                onMove = null,
                                 showRename = false,
-                                deleteContentDescription = "Remove from group",
+                                deleteContentDescription = "Remove from folder",
+                                deleteIsRemoveFromFolder = true,
                                 modifier = Modifier.animateItem(),
                             )
                         }
@@ -318,7 +324,7 @@ private fun GroupDetailScreen(
             }
 
             ScanlyExtendedFab(
-                text = "Add document",
+                text = "Add documents",
                 onClick = { showAddSheet = true },
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
@@ -333,7 +339,7 @@ private fun GroupDetailScreen(
     // Dialogs
     if (showRenameDialog) {
         GroupNameDialog(
-            title = "Rename group",
+            title = "Rename folder",
             initialValue = group?.title.orEmpty(),
             confirmLabel = "Save",
             onDismiss = { showRenameDialog = false },
@@ -346,9 +352,9 @@ private fun GroupDetailScreen(
 
     if (showDeleteDialog) {
         ScanlyConfirmDialog(
-            title = "Delete group?",
+            title = "Delete folder?",
             text = "\"${group?.title.orEmpty()}\" will be deleted. " +
-                "Documents inside will be moved to ungrouped.",
+                "Documents inside will be moved out of the folder.",
             onDismiss = { showDeleteDialog = false },
             onConfirm = {
                 showDeleteDialog = false
@@ -361,8 +367,8 @@ private fun GroupDetailScreen(
 
     removeTarget?.let { doc ->
         ScanlyConfirmDialog(
-            title = "Remove from group?",
-            text = "\"${doc.title}\" will be moved to ungrouped documents.",
+            title = "Remove from folder?",
+            text = "\"${doc.title}\" will be moved out of this folder.",
             onDismiss = { removeTarget = null },
             onConfirm = {
                 removeTarget = null
@@ -372,7 +378,7 @@ private fun GroupDetailScreen(
         )
     }
 
-    // Add-document bottom sheet
+    // Add-document bottom sheet (single or multi select)
     if (showAddSheet) {
         AddDocumentSheet(
             ungroupedDocuments = uiState.ungroupedDocuments,
@@ -380,9 +386,9 @@ private fun GroupDetailScreen(
                 showAddSheet = false
                 showCreateDialog = true
             },
-            onAdd = { docId ->
+            onAdd = { docIds ->
                 showAddSheet = false
-                onAddDocument(docId)
+                onAddDocuments(docIds)
             },
             onDismiss = { showAddSheet = false },
         )
@@ -399,6 +405,7 @@ private fun GroupDetailScreen(
                 onCreateDocument(newTitle)
             },
             onSuggestTitle = onSuggestTitle,
+            autoFillSuggestedName = true,
         )
     }
 
@@ -615,61 +622,103 @@ private fun ExportProgressBar(
 private fun AddDocumentSheet(
     ungroupedDocuments: List<ScanDocument>,
     onCreateNew: () -> Unit,
-    onAdd: (String) -> Unit,
+    onAdd: (Collection<String>) -> Unit,
     onDismiss: () -> Unit,
 ) {
-    val sheetState = rememberModalBottomSheetState()
+    val windowSizeInfo = rememberWindowSizeInfo()
+    val configuration = LocalConfiguration.current
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    var selectedIds by remember { mutableStateOf(setOf<String>()) }
+    val selectedCount = selectedIds.size
+    val selectedAccent = MaterialTheme.colorScheme.primary
+    val availableCount = ungroupedDocuments.size
+    val allSelected = availableCount > 0 && selectedCount == availableCount
+
+    // Scale list height to screen: shorter on landscape phones, taller on tablets.
+    val listMaxHeight = remember(configuration.screenHeightDp, windowSizeInfo) {
+        val screenH = configuration.screenHeightDp.toFloat()
+        when {
+            windowSizeInfo.useCompactLandscapeLayout -> (screenH * 0.32f).coerceIn(140f, 220f)
+            windowSizeInfo.isTablet -> (screenH * 0.46f).coerceIn(280f, 520f)
+            else -> (screenH * 0.40f).coerceIn(200f, 380f)
+        }.dp
+    }
+    val useTwoColumnList = windowSizeInfo.isTablet &&
+        windowSizeInfo.widthClass != WindowWidthClass.Compact &&
+        availableCount >= 4
+    val documentRows = remember(ungroupedDocuments, useTwoColumnList) {
+        if (useTwoColumnList) ungroupedDocuments.chunked(2) else null
+    }
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
+        containerColor = MaterialTheme.colorScheme.surface,
         dragHandle = { BottomSheetDefaults.DragHandle() },
     ) {
         ScanlySheetContent {
-            Text(
-                text = "Add document to group",
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.SemiBold,
-                modifier = Modifier.padding(bottom = 12.dp),
-            )
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(4.dp),
+            ) {
+                Text(
+                    text = "Add documents to folder",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.SemiBold,
+                )
+                Text(
+                    text = if (availableCount == 0) {
+                        "Create a new document, or move ones that are not in a folder yet."
+                    } else {
+                        "Create a new document, or pick from $availableCount outside this folder."
+                    },
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
 
             Surface(
                 onClick = onCreateNew,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 8.dp),
-                color = MaterialTheme.colorScheme.surfaceContainer,
-                shape = MaterialTheme.shapes.large,
-                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+                modifier = Modifier.fillMaxWidth(),
+                color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.55f),
+                shape = MaterialTheme.shapes.extraLarge,
+                border = BorderStroke(
+                    1.dp,
+                    MaterialTheme.colorScheme.primary.copy(alpha = 0.42f),
+                ),
+                shadowElevation = 0.dp,
+                tonalElevation = 0.dp,
             ) {
                 Row(
-                    modifier = Modifier.padding(14.dp),
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    horizontalArrangement = Arrangement.spacedBy(14.dp),
                 ) {
                     Surface(
-                        modifier = Modifier.size(36.dp),
-                        color = MaterialTheme.colorScheme.primaryContainer,
-                        shape = MaterialTheme.shapes.medium,
+                        modifier = Modifier.size(44.dp),
+                        color = MaterialTheme.colorScheme.primary,
+                        shape = MaterialTheme.shapes.large,
+                        shadowElevation = 0.dp,
+                        tonalElevation = 0.dp,
                     ) {
                         Box(contentAlignment = Alignment.Center) {
                             Icon(
                                 imageVector = Icons.Filled.Add,
                                 contentDescription = null,
-                                tint = MaterialTheme.colorScheme.primary,
-                                modifier = Modifier.size(20.dp),
+                                tint = MaterialTheme.colorScheme.onPrimary,
+                                modifier = Modifier.size(22.dp),
                             )
                         }
                     }
-                    Column {
+                    Column(modifier = Modifier.weight(1f)) {
                         Text(
                             text = "Create new document",
-                            style = MaterialTheme.typography.bodyLarge,
+                            style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.SemiBold,
                             color = MaterialTheme.colorScheme.onSurface,
                         )
                         Text(
-                            text = "Starts an empty document inside this folder.",
+                            text = "Starts empty inside this folder",
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
@@ -677,67 +726,274 @@ private fun AddDocumentSheet(
                 }
             }
 
-            Text(
-                text = "Or move an existing document",
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(top = 8.dp, bottom = 8.dp),
+            HorizontalDivider(
+                modifier = Modifier.padding(vertical = 4.dp),
+                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.7f),
             )
 
-            if (ungroupedDocuments.isEmpty()) {
-                Text(
-                    text = "No ungrouped documents available.",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(bottom = 24.dp),
-                )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = "Move existing",
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.SemiBold,
+                    )
+                    Text(
+                        text = if (availableCount == 0) {
+                            "Nothing available to move"
+                        } else {
+                            "Select one or more documents"
+                        },
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+                if (availableCount > 1) {
+                    TextButton(
+                        onClick = {
+                            selectedIds = if (allSelected) {
+                                emptySet()
+                            } else {
+                                ungroupedDocuments.map { it.id }.toSet()
+                            }
+                        },
+                    ) {
+                        Text(if (allSelected) "Clear" else "Select all")
+                    }
+                }
+            }
+
+            if (availableCount == 0) {
+                Surface(
+                    modifier = Modifier.fillMaxWidth(),
+                    color = MaterialTheme.colorScheme.surfaceContainerLow,
+                    shape = MaterialTheme.shapes.extraLarge,
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+                    shadowElevation = 0.dp,
+                    tonalElevation = 0.dp,
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 20.dp, vertical = 28.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Description,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.72f),
+                            modifier = Modifier.size(36.dp),
+                        )
+                        Text(
+                            text = "No loose documents",
+                            style = MaterialTheme.typography.titleSmall,
+                            fontWeight = FontWeight.SemiBold,
+                            textAlign = TextAlign.Center,
+                        )
+                        Text(
+                            text = "Documents already in folders won’t appear here. Create a new one instead.",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            textAlign = TextAlign.Center,
+                        )
+                    }
+                }
             } else {
                 LazyColumn(
-                    modifier = Modifier.heightIn(max = 320.dp),
-                    contentPadding = PaddingValues(bottom = 24.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(max = listMaxHeight),
+                    contentPadding = PaddingValues(vertical = 2.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
-                    items(
-                        items = ungroupedDocuments,
-                        key = { it.id },
-                        contentType = { "ungrouped_doc" },
-                    ) { doc ->
-                        Surface(
-                            onClick = { onAdd(doc.id) },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .animateItem(),
-                            color = MaterialTheme.colorScheme.surfaceContainer,
-                            shape = MaterialTheme.shapes.large,
-                        ) {
+                    if (documentRows != null) {
+                        items(
+                            items = documentRows,
+                            key = { row -> row.joinToString("-") { it.id } },
+                            contentType = { "ungrouped_doc_row" },
+                        ) { row ->
                             Row(
-                                modifier = Modifier.padding(12.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
                             ) {
-                                Icon(
-                                    imageVector = Icons.Filled.FolderOpen,
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.primary,
-                                )
-                                Column {
-                                    Text(
-                                        text = doc.title,
-                                        style = MaterialTheme.typography.bodyLarge,
-                                        fontWeight = FontWeight.Medium,
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis,
+                                row.forEach { doc ->
+                                    AddDocumentPickerRow(
+                                        document = doc,
+                                        isSelected = doc.id in selectedIds,
+                                        selectedAccent = selectedAccent,
+                                        onToggle = {
+                                            selectedIds = if (doc.id in selectedIds) {
+                                                selectedIds - doc.id
+                                            } else {
+                                                selectedIds + doc.id
+                                            }
+                                        },
+                                        modifier = Modifier.weight(1f),
                                     )
-                                    Text(
-                                        text = "${doc.pageCount} ${if (doc.pageCount == 1) "page" else "pages"}",
-                                        style = MaterialTheme.typography.bodySmall,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    )
+                                }
+                                if (row.size == 1) {
+                                    Spacer(modifier = Modifier.weight(1f))
                                 }
                             }
                         }
+                    } else {
+                        items(
+                            items = ungroupedDocuments,
+                            key = { it.id },
+                            contentType = { "ungrouped_doc" },
+                        ) { doc ->
+                            AddDocumentPickerRow(
+                                document = doc,
+                                isSelected = doc.id in selectedIds,
+                                selectedAccent = selectedAccent,
+                                onToggle = {
+                                    selectedIds = if (doc.id in selectedIds) {
+                                        selectedIds - doc.id
+                                    } else {
+                                        selectedIds + doc.id
+                                    }
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .animateItem(),
+                            )
+                        }
                     }
                 }
+            }
+
+            // Action row stays visible for empty + selection states.
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 4.dp),
+                contentAlignment = Alignment.Center,
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .then(
+                            if (windowSizeInfo.toolPrimaryActionMaxWidth != Dp.Unspecified) {
+                                Modifier.widthIn(max = windowSizeInfo.toolPrimaryActionMaxWidth)
+                            } else {
+                                Modifier
+                            },
+                        ),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    OutlinedButton(
+                        onClick = onDismiss,
+                        modifier = Modifier.weight(1f),
+                    ) {
+                        Text("Cancel")
+                    }
+                    Button(
+                        onClick = { onAdd(selectedIds) },
+                        enabled = selectedCount > 0,
+                        modifier = Modifier.weight(1.35f),
+                    ) {
+                        Text(
+                            text = when (selectedCount) {
+                                0 -> "Add selected"
+                                1 -> "Add 1 document"
+                                else -> "Add $selectedCount documents"
+                            },
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun AddDocumentPickerRow(
+    document: ScanDocument,
+    isSelected: Boolean,
+    selectedAccent: Color,
+    onToggle: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Surface(
+        onClick = onToggle,
+        modifier = modifier.semantics { selected = isSelected },
+        color = if (isSelected) {
+            MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.48f)
+        } else {
+            MaterialTheme.colorScheme.surfaceContainer
+        },
+        shape = MaterialTheme.shapes.large,
+        border = BorderStroke(
+            width = if (isSelected) 1.5.dp else 1.dp,
+            color = if (isSelected) {
+                selectedAccent.copy(alpha = 0.72f)
+            } else {
+                MaterialTheme.colorScheme.outlineVariant
+            },
+        ),
+        shadowElevation = 0.dp,
+        tonalElevation = 0.dp,
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Icon(
+                imageVector = if (isSelected) {
+                    Icons.Filled.CheckCircle
+                } else {
+                    Icons.Outlined.Circle
+                },
+                contentDescription = if (isSelected) "Selected" else "Not selected",
+                tint = if (isSelected) {
+                    selectedAccent
+                } else {
+                    MaterialTheme.colorScheme.onSurfaceVariant
+                },
+                modifier = Modifier.size(22.dp),
+            )
+            Surface(
+                modifier = Modifier.size(36.dp),
+                color = if (isSelected) {
+                    selectedAccent.copy(alpha = 0.16f)
+                } else {
+                    MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.55f)
+                },
+                shape = MaterialTheme.shapes.medium,
+                shadowElevation = 0.dp,
+                tonalElevation = 0.dp,
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    Icon(
+                        imageVector = Icons.Filled.Description,
+                        contentDescription = null,
+                        tint = if (isSelected) selectedAccent else MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(18.dp),
+                    )
+                }
+            }
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = document.title,
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Medium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+                Text(
+                    text = if (document.pageCount == 1) "1 page" else "${document.pageCount} pages",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             }
         }
     }

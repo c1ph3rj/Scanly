@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
@@ -38,6 +39,8 @@ import androidx.compose.material.icons.filled.FitScreen
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.PictureAsPdf
+import androidx.compose.material.icons.filled.ViewAgenda
+import androidx.compose.material.icons.filled.ViewCarousel
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.filled.WaterDrop
@@ -85,7 +88,6 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import `in`.c1ph3rj.scanly.core.common.StorageFormatter
 import `in`.c1ph3rj.scanly.core.ui.ChromeIconButton
-import `in`.c1ph3rj.scanly.core.ui.MetricChip
 import `in`.c1ph3rj.scanly.core.ui.WindowWidthClass
 import `in`.c1ph3rj.scanly.core.ui.ZoomableBitmapViewer
 import `in`.c1ph3rj.scanly.core.ui.ZoomableImageState
@@ -1589,6 +1591,8 @@ private fun PdfReaderViewer(
     val zoomStates = remember(uiState.pageCount) {
         (0 until uiState.pageCount).associateWith { ZoomableImageState() }
     }
+    val pageLabel = formatPdfReaderPageLabel(uiState.currentPageIndex, uiState.pageCount)
+    val documentTitle = uiState.documentTitle.ifBlank { "PDF" }
 
     LaunchedEffect(pagerState) {
         snapshotFlow { pagerState.settledPage }
@@ -1605,14 +1609,14 @@ private fun PdfReaderViewer(
 
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background,
+        color = MaterialTheme.colorScheme.surfaceContainerLowest,
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             if (uiState.pageCount > 0 && uiState.readerLayout == PdfReaderLayout.Paged) {
                 HorizontalPager(
                     state = pagerState,
                     modifier = Modifier.fillMaxSize(),
-                    userScrollEnabled = !zoomActive,
+                    userScrollEnabled = pdfReaderParentScrollerEnabled(zoomActive),
                     key = { it },
                 ) { pageIndex ->
                     val bitmap = uiState.pageBitmaps[pageIndex]
@@ -1621,12 +1625,10 @@ private fun PdfReaderViewer(
                         ZoomableBitmapViewer(
                             imageBitmap = bitmap.asImageBitmap(),
                             state = zoomState,
-                            allowParentHorizontalGestures = true,
+                            allowParentHorizontalGestures = pdfReaderAllowParentScrollGestures(),
                             onSingleTap = onToggleChrome,
-                            onZoomActiveChange = { active ->
-                                if (pageIndex == pagerState.settledPage) {
-                                    zoomActive = active
-                                }
+                            onZoomActiveChange = {
+                                zoomActive = pdfReaderZoomActive(zoomStates)
                             },
                             modifier = Modifier.fillMaxSize(),
                         )
@@ -1654,8 +1656,11 @@ private fun PdfReaderViewer(
             if (uiState.pageCount > 0 && uiState.readerLayout == PdfReaderLayout.Continuous) {
                 PdfReaderContinuousViewer(
                     uiState = uiState,
+                    zoomStates = zoomStates,
+                    zoomActive = zoomActive,
                     onPageChange = onPageChange,
                     onToggleChrome = onToggleChrome,
+                    onZoomActiveChange = { active -> zoomActive = active },
                 )
             }
 
@@ -1665,17 +1670,19 @@ private fun PdfReaderViewer(
                 exit = fadeOut(),
                 modifier = Modifier.align(Alignment.TopCenter),
             ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .statusBarsPadding()
-                        .padding(horizontal = 16.dp, vertical = 12.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
+                Surface(
+                    modifier = Modifier.fillMaxWidth(),
+                    color = MaterialTheme.colorScheme.surface.copy(alpha = 0.94f),
+                    shadowElevation = 0.dp,
+                    tonalElevation = 0.dp,
                 ) {
                     Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .statusBarsPadding()
+                            .padding(horizontal = 12.dp, vertical = 8.dp),
                         verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.weight(1f),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
                         ChromeIconButton(
                             icon = Icons.AutoMirrored.Filled.ArrowBack,
@@ -1684,35 +1691,20 @@ private fun PdfReaderViewer(
                             containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
                             contentColor = MaterialTheme.colorScheme.onSurface,
                         )
-                        Spacer(modifier = Modifier.width(12.dp))
-                        MetricChip(
-                            label = buildString {
-                                val title = uiState.documentTitle
-                                if (title.isNotBlank()) {
-                                    append(title.take(22))
-                                    if (title.length > 22) append('…')
-                                    append(" · ")
-                                }
-                                append("${uiState.currentPageIndex + 1}/${uiState.pageCount}")
-                            },
-                            containerColor = Color.Black.copy(alpha = 0.42f),
-                            contentColor = Color.White,
-                            border = BorderStroke(1.dp, Color.White.copy(alpha = 0.12f)),
-                        )
-                    }
-                    Row {
-                        if (zoomActive) {
-                            ChromeIconButton(
-                                icon = Icons.Filled.FitScreen,
-                                contentDescription = "Reset zoom",
-                                onClick = {
-                                    zoomStates[pagerState.settledPage]?.reset()
-                                    zoomActive = false
-                                },
-                                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-                                contentColor = MaterialTheme.colorScheme.onSurface,
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = documentTitle,
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.SemiBold,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
                             )
-                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = pageLabel,
+                                style = MaterialTheme.typography.labelLarge,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                maxLines = 1,
+                            )
                         }
                         Box {
                             ChromeIconButton(
@@ -1727,21 +1719,6 @@ private fun PdfReaderViewer(
                                 onDismissRequest = { onShowMenuChange(false) },
                             ) {
                                 DropdownMenuItem(
-                                    text = {
-                                        Text(
-                                            if (uiState.readerLayout == PdfReaderLayout.Paged) {
-                                                "Continuous scroll"
-                                            } else {
-                                                "Page by page"
-                                            },
-                                        )
-                                    },
-                                    onClick = {
-                                        onShowMenuChange(false)
-                                        onToggleReaderLayout()
-                                    },
-                                )
-                                DropdownMenuItem(
                                     text = { Text("Open another PDF") },
                                     onClick = {
                                         onShowMenuChange(false)
@@ -1753,16 +1730,75 @@ private fun PdfReaderViewer(
                     }
                 }
             }
+
+            AnimatedVisibility(
+                visible = uiState.chromeVisible,
+                enter = fadeIn(),
+                exit = fadeOut(),
+                modifier = Modifier.align(Alignment.BottomCenter),
+            ) {
+                Surface(
+                    modifier = Modifier.fillMaxWidth(),
+                    color = MaterialTheme.colorScheme.surface.copy(alpha = 0.94f),
+                    shadowElevation = 0.dp,
+                    tonalElevation = 0.dp,
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .navigationBarsPadding()
+                            .padding(horizontal = 16.dp, vertical = 10.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        Text(
+                            text = pageLabel,
+                            style = MaterialTheme.typography.titleSmall,
+                            fontWeight = FontWeight.SemiBold,
+                            modifier = Modifier.weight(1f),
+                        )
+                        ChromeIconButton(
+                            icon = if (uiState.readerLayout == PdfReaderLayout.Paged) {
+                                Icons.Filled.ViewAgenda
+                            } else {
+                                Icons.Filled.ViewCarousel
+                            },
+                            contentDescription = if (uiState.readerLayout == PdfReaderLayout.Paged) {
+                                "Continuous scroll"
+                            } else {
+                                "Page by page"
+                            },
+                            onClick = onToggleReaderLayout,
+                            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                            contentColor = MaterialTheme.colorScheme.onSurface,
+                        )
+                        if (zoomActive) {
+                            ChromeIconButton(
+                                icon = Icons.Filled.FitScreen,
+                                contentDescription = "Reset zoom",
+                                onClick = {
+                                    resetPdfReaderZoom(zoomStates)
+                                    zoomActive = false
+                                },
+                                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                                contentColor = MaterialTheme.colorScheme.onSurface,
+                            )
+                        }
+                    }
+                }
+            }
         }
     }
-
 }
 
 @Composable
 private fun PdfReaderContinuousViewer(
     uiState: PdfReaderUiState,
+    zoomStates: Map<Int, ZoomableImageState>,
+    zoomActive: Boolean,
     onPageChange: (Int) -> Unit,
     onToggleChrome: () -> Unit,
+    onZoomActiveChange: (Boolean) -> Unit,
 ) {
     val listState = rememberLazyListState()
 
@@ -1788,9 +1824,10 @@ private fun PdfReaderContinuousViewer(
     LazyColumn(
         state = listState,
         modifier = Modifier.fillMaxSize(),
+        userScrollEnabled = pdfReaderParentScrollerEnabled(zoomActive),
         contentPadding = androidx.compose.foundation.layout.PaddingValues(
-            top = 96.dp,
-            bottom = 32.dp,
+            top = 12.dp,
+            bottom = 12.dp,
             start = windowSizeInfo.horizontalPadding,
             end = windowSizeInfo.horizontalPadding,
         ),
@@ -1812,12 +1849,15 @@ private fun PdfReaderContinuousViewer(
                 )
                 .fillMaxWidth()
             if (bitmap != null) {
-                val zoomState = rememberZoomableImageState("continuous-$pageIndex")
+                val zoomState = zoomStates[pageIndex] ?: rememberZoomableImageState("continuous-$pageIndex")
                 ZoomableBitmapViewer(
                     imageBitmap = bitmap.asImageBitmap(),
                     state = zoomState,
-                    allowParentHorizontalGestures = true,
+                    allowParentHorizontalGestures = pdfReaderAllowParentScrollGestures(),
                     onSingleTap = onToggleChrome,
+                    onZoomActiveChange = {
+                        onZoomActiveChange(pdfReaderZoomActive(zoomStates))
+                    },
                     modifier = pageModifier.aspectRatio(bitmap.width.toFloat() / bitmap.height),
                 )
             } else {

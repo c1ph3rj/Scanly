@@ -1,21 +1,22 @@
 ﻿# Tech Stack
 
-Dependencies and versions from `gradle/libs.versions.toml` as of **v1.0.13**.
+Dependencies and versions from `gradle/libs.versions.toml` as of **v1.0.16**.
 
 ## Build tooling
 
 | Tool | Version |
 | --- | --- |
 | Android Gradle Plugin | 9.2.1 |
-| Kotlin | 2.2.10 |
-| Gradle wrapper | 9.5.0 |
-| KSP | 2.3.2 |
+| Kotlin | 2.4.20 |
+| Gradle wrapper | 9.6.0 |
+| KSP | 2.3.12 |
+| AGP namespace check | `android.uniquePackageNames=false` (LiteRT `litert` + `litert-api` share a package) |
 
 ## Android SDK
 
 | Setting | Value |
 | --- | --- |
-| compileSdk | 36 (minor API 1) |
+| compileSdk | 37 (minor API 1) |
 | targetSdk | 36 |
 | minSdk | 29 |
 | Java compatibility | 11 |
@@ -25,34 +26,34 @@ Dependencies and versions from `gradle/libs.versions.toml` as of **v1.0.13**.
 
 | Library | Version |
 | --- | --- |
-| Compose BOM | 2026.02.01 |
+| Compose BOM | 2026.09.00 |
 | Material 3 | (BOM-managed) |
 | Material Icons Extended | (BOM-managed) |
-| Activity Compose | 1.8.0 |
-| Navigation Compose | 2.9.7 |
-| Lifecycle Runtime KTX | 2.6.1 |
-| Core KTX | 1.10.1 |
+| Activity Compose | 1.13.0 |
+| Navigation Compose | 2.10.1 |
+| Lifecycle Runtime KTX | 2.11.0 |
+| Core KTX | 1.19.0 |
 
 ## Dependency injection
 
 | Library | Version |
 | --- | --- |
-| Hilt | 2.59.2 |
-| Hilt Navigation Compose | 1.3.0 |
-| Hilt Work | 1.3.0 |
+| Hilt | 2.60.1 |
+| Hilt Navigation Compose | 1.4.0 |
+| Hilt Work | 1.4.0 |
 
 ## Camera
 
 | Library | Version |
 | --- | --- |
-| CameraX (camera2, lifecycle, view) | 1.5.3 |
+| CameraX (camera2, lifecycle, view) | 1.6.2 |
 
 ## Persistence
 
 | Library | Version |
 | --- | --- |
-| Room (runtime, ktx, compiler) | 2.8.4 |
-| DataStore Preferences | 1.1.7 |
+| Room (runtime, ktx, compiler) | 2.8.5 |
+| DataStore Preferences | 1.2.1 |
 
 ## Background work
 
@@ -64,8 +65,8 @@ Dependencies and versions from `gradle/libs.versions.toml` as of **v1.0.13**.
 
 | Library | Version |
 | --- | --- |
-| LiteRT (TFLite interpreter) | 1.4.1 |
-| OpenCV | 4.12.0 |
+| LiteRT (TFLite interpreter) | 2.2.0 |
+| OpenCV | 5.0.0.1 |
 | ExifInterface | 1.4.2 |
 | PDFBox Android | 2.0.27.0 |
 
@@ -80,8 +81,8 @@ Dependencies and versions from `gradle/libs.versions.toml` as of **v1.0.13**.
 | Library | Version |
 | --- | --- |
 | JUnit | 4.13.2 |
-| AndroidX JUnit | 1.1.5 |
-| Espresso Core | 3.5.1 |
+| AndroidX JUnit | 1.3.0 |
+| Espresso Core | 3.7.0 |
 | Compose UI Test JUnit4 | (BOM-managed) |
 | WorkManager Testing | 2.11.2 |
 

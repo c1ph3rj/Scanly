@@ -237,6 +237,7 @@ fun ToolsScreen(
                 onScan(value)
             },
             onSuggestTitle = onSuggestTitle,
+            autoFillSuggestedName = true,
         )
     }
 
