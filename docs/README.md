@@ -48,7 +48,7 @@ Choose a path based on your goal:
 | Trace navigation and screen flows | [architecture/navigation.md](architecture/navigation.md) |
 | Understand persistence and storage | [data/database.md](data/database.md) → [data/file-storage.md](data/file-storage.md) |
 | Understand the scan/processing pipeline | [processing/capture-and-scan.md](processing/capture-and-scan.md) → [processing/image-processing.md](processing/image-processing.md) |
-| Build, test, or contribute code | [development/setup.md](development/setup.md) → [development/conventions.md](development/conventions.md) |
+| Build, test, or contribute code | [development/setup.md](development/setup.md) → [development/running-and-testing.md](development/running-and-testing.md) → [development/conventions.md](development/conventions.md) |
 | Look up models, use cases, or dependencies | [reference/](reference/) |
 | See release history | [releases.md](releases.md) |
 
@@ -92,6 +92,7 @@ Choose a path based on your goal:
 | Document | Contents |
 | --- | --- |
 | [setup.md](development/setup.md) | Prerequisites, build commands, release signing |
+| [running-and-testing.md](development/running-and-testing.md) | Install/run the debug app, emulator/adb, JVM flow tests, device UI automation |
 | [conventions.md](development/conventions.md) | Layer rules, adding screens, Room migrations |
 | [testing.md](development/testing.md) | Test inventory, gaps, how to run tests |
 | [releasing.md](development/releasing.md) | Version bump checklist, docs to update |

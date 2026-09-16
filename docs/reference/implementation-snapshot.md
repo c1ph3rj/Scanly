@@ -27,7 +27,7 @@ ScanlyApplication (WorkManager + Hilt)
 
 ## Features (summary)
 
-Home · Library · Tools (scan/import, QR, PDF toolkit) · Camera scan + gate + multi-model overlay · Gallery import · Document detail · Page preview · **Page editor** (live cropped preview; full-screen Filters + Adjust; dedicated Crop with AI Detect) · Groups · PDF/ZIP export with save destination · Library backup/restore (`.scanly`) · Document detection settings + model benchmark · Pure black theme · Onboarding · **Home widgets + launcher quick actions** · GitHub/Play update channels
+Home · Library (paper cards, overflow actions) · Tools (QR, PDF toolkit studio chrome) · Camera scan + permission-ask-first + gate + multi-model overlay · Gallery import · Document detail (portrait page tiles) · Page preview · **Page editor** (live cropped preview; full-screen Filters + Adjust; dedicated Crop with AI Detect) · Groups · PDF reader (title, page n of m, paged/continuous, pinch-zoom) · PDF/ZIP export with save destination · Library backup/restore (`.scanly`) · Document detection settings + model benchmark · Pure black theme · Onboarding · **Home widgets + launcher quick actions** · GitHub/Play update channels
 
 ## Data
 
@@ -72,7 +72,7 @@ Kotlin · Compose · Material 3 · Hilt · Navigation Compose · CameraX · Room
 
 ## Tests
 
-42 unit-test files · 3 instrumented-test files (onboarding UI, OpenCV filter engine, smoke) · gaps in persistence integration and archive/export E2E
+50 unit-test classes plus in-memory fakes · 4 instrumented-test classes (device UI on `MainActivity`, onboarding Compose, OpenCV filter engine, package smoke) · remaining gaps: Room round-trips, real PDF/ZIP/`.scanly` I/O, live camera
 
 ## Principles
 

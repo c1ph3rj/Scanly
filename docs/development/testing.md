@@ -17,7 +17,7 @@ Test coverage and how to run tests in Scanly **v1.0.16**.
 
 ## Unit tests (`app/src/test/`)
 
-**42 test files** covering core logic:
+**50 test classes** covering core logic, plus in-memory repository fakes under `testing/`:
 
 | Area | Test files |
 | --- | --- |
@@ -27,10 +27,11 @@ Test coverage and how to run tests in Scanly **v1.0.16**.
 | UI / layout | `AdaptiveLayoutTest`, `PreviewImageSizerTest`, `ZoomableImageStateTest`, `OnboardingLayoutModeTest` |
 | Formatting | `StorageFormatterTest`, `DocumentPresentationFormatterTest`, `DocumentPreviewPathResolverTest` |
 | Domain models | `DocumentCornerModelTest`, `ExportDestinationTest`, `PageFilterPresetTest`, `PdfExportOptionsTest` |
-| Feature logic | `LibraryUiStateTest`, `DocumentDetailSelectionResolverTest`, `PageImagePreviewSelectionResolverTest`, `SuggestDocumentTitleUseCaseTest`, `ScanlyLaunchActionTest` |
+| Feature logic | `LibraryUiStateTest`, `DocumentDetailSelectionResolverTest`, `PageImagePreviewSelectionResolverTest`, `SuggestDocumentTitleUseCaseTest`, `ScanlyLaunchActionTest`, `LibraryCardPresentationTest`, `DocumentPageTilePresentationTest` |
+| Flow / use case | `DocumentLibraryFlowTest`, `ScanSessionAndPageEditFlowTest`, `ExportArchiveAndClearDataFlowTest`, `ToolsSettingsAndLaunchActionFlowTest` |
 | Updates | `AppUpdateDialogCooldownTest`, `ReleaseMarkdownParserTest`, `AppVersionComparatorTest`, `GitHubAppUpdateRepositoryTest`, `PlayInAppUpdatePolicyTest` |
 | Backup/export | `LibraryArchivePolicyTest`, `PdfPageLayoutResolverTest` |
-| Scaffold | `ExampleUnitTest` |
+| Tools presentation | `PdfReaderPresentationTest`, `PdfToolPresentationTest`, `QrToolPresentationTest` |
 
 ### Placement convention
 
@@ -44,21 +45,34 @@ app/src/test/java/in/c1ph3rj/scanly/{matching/package}/YourTest.kt
 
 | File | Coverage |
 | --- | --- |
+| `ScanlyDeviceUiTest.kt` | Real `MainActivity`: onboarding → Home, Library / Tools / Settings chrome, QR generate preview |
+| `ScanlyDeviceUiRobot.kt` | Shared Compose/UiAutomator helpers for the device UI suite |
 | `OnboardingScreenTest.kt` | Compose UI test for onboarding screen |
 | `OpenCvPageFilterProcessorTest.kt` | Device-side OpenCV filter engine checks (flatten, color marks, preview/save parity) |
 | `ExampleInstrumentedTest.kt` | Package name smoke test |
 
+Device UI tests use Android Test Orchestrator and clear app data between cases. Full run/install instructions: [running-and-testing.md](running-and-testing.md).
+
+## JVM flow tests (`domain/usecase/`)
+
+These call shipped use cases with in-memory fakes (no device):
+
+| File | Coverage |
+| --- | --- |
+| `DocumentLibraryFlowTest` | Document/group lifecycle, library visibility, page reorder/delete |
+| `ScanSessionAndPageEditFlowTest` | Scan add vs retake routes, import cap, crop/filter/adjust |
+| `ExportArchiveAndClearDataFlowTest` | PDF/ZIP export, backup restore Replace vs Merge, clear-all-data |
+| `ToolsSettingsAndLaunchActionFlowTest` | QR, PDF toolkit, prefs/onboarding, launch-action redirects |
+
 ## Coverage gaps
 
-Areas that need more tests (prioritized):
+Still not covered on-device or with real I/O (prioritized):
 
 1. **Persistence integration** — Room migrations, repository round-trips
-2. **Export end-to-end** — PDF/ZIP generation with real page data; save-to-destination flow
-3. **Archive end-to-end** — Backup/restore round-trip with `.scanly` validation
-4. **Capture instrumented** — Camera session flow on device (gate + multi-model path)
-5. **Group export** — Merged PDF and zipped PDF set
-6. **Clear-all-data** — Full wipe verification
-7. **Settings DataStore** — model/gate/theme preference round-trips
+2. **Export end-to-end** — PDF/ZIP bytes from the real exporter and save-to-destination
+3. **Archive end-to-end** — `.scanly` zip round-trip (JVM tests cover Replace vs Merge via in-memory fakes)
+4. **Capture instrumented** — Camera session on device (gate + multi-model path)
+5. **Settings DataStore** — preference round-trips against real DataStore (JVM tests cover use-case persistence against an in-memory settings store)
 
 ## What to test when contributing
 
@@ -69,11 +83,13 @@ Areas that need more tests (prioritized):
 | ViewModel state logic | Unit test for resolvers/state |
 | New use case | Unit test if non-trivial |
 | UI layout | Screenshot or instrumented test for critical flows |
+| Shell navigation / onboarding | `ScanlyDeviceUiTest` on a connected device |
 | Room migration | Manual test on device with old schema data |
 | User-facing feature | Update docs + manual device verification |
 
 ## Related docs
 
+- [running-and-testing.md](running-and-testing.md) — install the app, emulator/adb, JVM and device UI suites
 - [setup.md](setup.md) — build commands
 - [conventions.md](conventions.md) — code placement rules
 - [../../CONTRIBUTING.md](../../CONTRIBUTING.md) — contribution expectations

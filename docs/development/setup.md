@@ -102,5 +102,6 @@ package `in`.c1ph3rj.scanly
 ## Related docs
 
 - [conventions.md](conventions.md) — code conventions and adding features
+- [running-and-testing.md](running-and-testing.md) — install the app, emulator/adb, unit and device UI tests
 - [testing.md](testing.md) — running and writing tests
 - [releasing.md](releasing.md) — release checklist

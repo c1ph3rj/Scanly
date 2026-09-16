@@ -6,27 +6,28 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
-### Fixed
+## [1.0.16] - 2026-09-16
 
-- **Camera permission** — opening Scan or QR asks for camera access first. Settings is offered only after the permission is permanently blocked, with an in-app explanation.
-- **16 KB page size** — OpenCV 5.0.0.1 replaces the 4 KB-aligned `libc++_shared.so` from 5.0.0 so arm64 native libraries meet Google Play’s Android 15+ 16 KB page-size requirement.
+### Added
+
+- **Default names** — new document and folder dialogs open with a duplicate-safe suggested name already filled in and selected, so you can keep it and continue immediately.
+- **Clear name** — a trailing clear control empties the field so you can type a custom title; **Suggest name** still cycles other date formats from there.
 
 ### Changed
 
 - **Library and Home cards** — documents and folders use a page-shaped cover, title, and compact metadata (pages and date, or document/page counts). Rename, move, delete, and remove-from-folder live in one overflow or long-press menu instead of icon rows on every card.
 - **Document pages** — page tiles look like paper: portrait previews with a visible page number. Tap still opens review; long-press and drag still reorder when there is more than one page. Edit, retake, share, and delete stay on the review chrome.
 - **PDF reader** — reading chrome shows the full title, page n of m, page-by-page and continuous layouts, pinch-zoom in both, and tap to hide or show the bars.
-- **Default names** — new document and folder dialogs open with a duplicate-safe suggested name already filled in and selected, so you can keep it and continue immediately.
-- **Clear name** — a trailing clear control empties the field so you can type a custom title; **Suggest name** still cycles other date formats from there.
-- **Dependencies** — Gradle, Kotlin, Compose, AndroidX, Hilt, CameraX, Room, LiteRT, and OpenCV updated to current stable releases. AGP stays on 9.2.1.
-
-## [1.0.16] - 2026-09-16
-
-### Changed
-
+- **Tools workspace** — QR, merge, compress, password, and watermark use a quieter document-studio layout: paper file identity, sentence-case options, numbered merge order, and a Protect/Remove control.
 - **Document filters** — rebuilt as a professional reflectance engine so Color, Shadow Reduce, and Magic stay recognizably the captured page instead of looking over-processed or washed out.
 - **Filter strength** — cleanup follows the page: already-good photos stay gentle, dim or shadowed pages get more lift, and glare no longer pushes the look harder.
 - **Filter previews** — picker chips, the live editor preview, and the saved JPEG share one analysis profile so the selected look matches the export.
+- **Dependencies** — Gradle, Kotlin, Compose, AndroidX, Hilt, CameraX, Room, LiteRT, and OpenCV updated to current stable releases. AGP stays on 9.2.1.
+
+### Fixed
+
+- **Camera permission** — opening Scan or QR asks for camera access first. Settings is offered only after the permission is permanently blocked, with an in-app explanation.
+- **16 KB page size** — OpenCV 5.0.0.1 replaces the 4 KB-aligned `libc++_shared.so` from 5.0.0 so arm64 native libraries meet Google Play’s Android 15+ 16 KB page-size requirement.
 
 ## [1.0.14] - 2026-07-24
 

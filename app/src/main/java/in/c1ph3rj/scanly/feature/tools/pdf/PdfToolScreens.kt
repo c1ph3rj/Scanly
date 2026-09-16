@@ -86,7 +86,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import `in`.c1ph3rj.scanly.core.common.StorageFormatter
 import `in`.c1ph3rj.scanly.core.ui.ChromeIconButton
 import `in`.c1ph3rj.scanly.core.ui.WindowWidthClass
 import `in`.c1ph3rj.scanly.core.ui.ZoomableBitmapViewer
@@ -178,6 +177,9 @@ fun PdfMergeRoute(
                 }
             }
             ToolPhase.Ready -> {
+                ToolWorkspaceIntro(
+                    text = formatMergeReadyHint(uiState.sources.size),
+                )
                 ToolSourceList(
                     sources = uiState.sources,
                     onAdd = {
@@ -186,14 +188,6 @@ fun PdfMergeRoute(
                     },
                     onRemove = viewModel::removeSource,
                 )
-                if (uiState.sources.size < 2) {
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = "Add at least one more PDF to merge.",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
             }
         }
     }
@@ -273,7 +267,7 @@ fun PdfCompressRoute(
                         statusTitle = "Compression complete",
                         statusSubtitle = "Your compressed PDF is ready.",
                         previewHint = "Preview the finished file before saving or sharing it.",
-                        resultDetail = sizeComparisonLabel(before, after, savedPercent),
+                        resultDetail = formatCompressSizeComparison(before, after, savedPercent),
                         onPreview = { onPreviewPdf(result) },
                         onSave = viewModel::saveResult,
                         onShare = {
@@ -287,7 +281,7 @@ fun PdfCompressRoute(
                 val windowSizeInfo = rememberWindowSizeInfo()
                 val qualityOptions: @Composable () -> Unit = {
                     Text(
-                        text = "Compression level",
+                        text = "Quality",
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.SemiBold,
                     )
@@ -331,20 +325,13 @@ fun PdfCompressRoute(
                     ) {
                         PdfSelectedDocumentPreview(
                             title = uiState.sources.first().label(),
-                            supporting = buildString {
-                                val info = uiState.info
-                                if (info != null) {
-                                    append("${info.pageCount} pages")
-                                    (before ?: info.fileSizeBytes)?.let { bytes ->
-                                        append(" · ${StorageFormatter.formatBytes(bytes)}")
-                                    }
-                                } else {
-                                    before?.let { bytes -> append(StorageFormatter.formatBytes(bytes)) }
-                                }
-                            }.ifBlank { null },
+                            supporting = formatPdfDocumentMeta(
+                                pageCount = uiState.info?.pageCount,
+                                sizeBytes = before ?: uiState.info?.fileSizeBytes,
+                            ).ifBlank { null },
                             preview = uiState.sourcePagePreview,
                             isLoading = uiState.isSourcePagePreviewLoading,
-                            caption = "First page of the selected PDF",
+                            caption = "First page",
                             onChange = { showPicker = true },
                             modifier = Modifier.weight(0.46f),
                         )
@@ -359,20 +346,13 @@ fun PdfCompressRoute(
                 } else {
                     PdfSelectedDocumentPreview(
                         title = uiState.sources.first().label(),
-                        supporting = buildString {
-                            val info = uiState.info
-                            if (info != null) {
-                                append("${info.pageCount} pages")
-                                (before ?: info.fileSizeBytes)?.let { bytes ->
-                                    append(" · ${StorageFormatter.formatBytes(bytes)}")
-                                }
-                            } else {
-                                before?.let { bytes -> append(StorageFormatter.formatBytes(bytes)) }
-                            }
-                        }.ifBlank { null },
+                        supporting = formatPdfDocumentMeta(
+                            pageCount = uiState.info?.pageCount,
+                            sizeBytes = before ?: uiState.info?.fileSizeBytes,
+                        ).ifBlank { null },
                         preview = uiState.sourcePagePreview,
                         isLoading = uiState.isSourcePagePreviewLoading,
-                        caption = "First page of the selected PDF",
+                        caption = "First page",
                         onChange = { showPicker = true },
                     )
                     passwordFields()
@@ -414,19 +394,31 @@ private fun PdfSelectedDocumentPreview(
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
+            horizontalArrangement = Arrangement.spacedBy(14.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
+            Surface(
+                modifier = Modifier
+                    .width(48.dp)
+                    .height(64.dp),
+                shape = RoundedCornerShape(8.dp),
+                color = MaterialTheme.colorScheme.surfaceContainerHighest,
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    Icon(
+                        imageVector = Icons.Filled.PictureAsPdf,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(22.dp),
+                    )
+                }
+            }
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = "SELECTED PDF",
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.primary,
-                    fontWeight = FontWeight.SemiBold,
-                )
-                Text(
                     text = title,
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.SemiBold,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
@@ -569,15 +561,6 @@ private fun QualityOptionCard(
     }
 }
 
-private fun sizeComparisonLabel(before: Long?, after: Long?, savedPercent: Float?): String? {
-    if (before == null || after == null) return null
-    return if (after < before && savedPercent != null) {
-        "${StorageFormatter.formatBytes(before)} → ${StorageFormatter.formatBytes(after)} · saved ${savedPercent.toInt()}%"
-    } else {
-        "${StorageFormatter.formatBytes(before)} → ${StorageFormatter.formatBytes(after)}"
-    }
-}
-
 @Composable
 fun PdfPasswordRoute(
     onNavigateUp: () -> Unit,
@@ -630,7 +613,7 @@ fun PdfPasswordRoute(
                     enabled = if (isProtect) protectEnabled else removeEnabled,
                     modifier = Modifier.fillMaxWidth(),
                 ) {
-                    Text(if (isProtect) "Protect PDF" else "Remove password")
+                    Text(formatPasswordModeActionLabel(uiState.passwordMode))
                 }
             }
         } else null,
@@ -671,44 +654,49 @@ fun PdfPasswordRoute(
                 val windowSizeInfo = rememberWindowSizeInfo()
                 val modeOptions: @Composable () -> Unit = {
                     Text(
-                        text = "ACTION",
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.primary,
+                        text = "Action",
+                        style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.SemiBold,
                     )
                     Spacer(modifier = Modifier.height(8.dp))
-                    // Vertical stack keeps copy readable on tablet two-pane panes.
-                    PasswordModeOptionCard(
-                        title = "Protect",
-                        description = if (alreadyProtected) {
-                            "Replace the open password on this locked PDF"
-                        } else {
-                            "Lock the PDF with an open password"
-                        },
-                        selected = isProtect,
-                        onClick = { viewModel.setMode(PdfPasswordMode.Protect) },
-                    )
+                    SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
+                        SegmentedButton(
+                            selected = isProtect,
+                            onClick = { viewModel.setMode(PdfPasswordMode.Protect) },
+                            shape = SegmentedButtonDefaults.itemShape(index = 0, count = 2),
+                            label = { Text("Protect") },
+                        )
+                        SegmentedButton(
+                            selected = !isProtect,
+                            onClick = { viewModel.setMode(PdfPasswordMode.Remove) },
+                            shape = SegmentedButtonDefaults.itemShape(index = 1, count = 2),
+                            label = { Text("Remove") },
+                        )
+                    }
                     Spacer(modifier = Modifier.height(8.dp))
-                    PasswordModeOptionCard(
-                        title = "Remove",
-                        description = if (alreadyProtected) {
-                            "Create an unlocked copy of this protected file"
-                        } else {
-                            "Only available when the PDF is already protected"
+                    Text(
+                        text = when {
+                            isProtect && alreadyProtected ->
+                                "Replace the open password on this locked PDF."
+                            isProtect ->
+                                "Lock the PDF with an open password."
+                            alreadyProtected ->
+                                "Create an unlocked copy of this protected file."
+                            else ->
+                                "Remove is available when the PDF is already protected."
                         },
-                        selected = !isProtect,
-                        onClick = { viewModel.setMode(PdfPasswordMode.Remove) },
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
                 val passwordForm: @Composable () -> Unit = {
                     Text(
                         text = when {
-                            isProtect && alreadyProtected -> "PASSWORDS"
-                            isProtect -> "NEW PASSWORD"
-                            else -> "CURRENT PASSWORD"
+                            isProtect && alreadyProtected -> "Passwords"
+                            isProtect -> "New password"
+                            else -> "Current password"
                         },
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.primary,
+                        style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.SemiBold,
                     )
                     Spacer(modifier = Modifier.height(8.dp))
@@ -822,21 +810,14 @@ fun PdfPasswordRoute(
                     ) {
                         PdfSelectedDocumentPreview(
                             title = uiState.sources.first().label(),
-                            supporting = buildString {
-                                val info = uiState.info
-                                if (info != null) {
-                                    append("${info.pageCount} pages")
-                                    info.fileSizeBytes?.let { bytes ->
-                                        append(" · ${StorageFormatter.formatBytes(bytes)}")
-                                    }
-                                    append(if (info.isEncrypted) " · Protected" else " · Unlocked")
-                                } else if (uiState.needsPassword) {
-                                    append("Password required · Protected")
-                                }
-                            }.ifBlank { null },
+                            supporting = formatPdfDocumentMeta(
+                                pageCount = uiState.info?.pageCount,
+                                sizeBytes = uiState.info?.fileSizeBytes,
+                                isEncrypted = uiState.info?.isEncrypted ?: uiState.needsPassword.takeIf { it },
+                            ).ifBlank { null },
                             preview = uiState.sourcePagePreview,
                             isLoading = uiState.isSourcePagePreviewLoading,
-                            caption = "First page of the selected PDF",
+                            caption = "First page",
                             onChange = { showPicker = true },
                             modifier = Modifier.weight(0.42f),
                         )
@@ -849,21 +830,14 @@ fun PdfPasswordRoute(
                 } else {
                     PdfSelectedDocumentPreview(
                         title = uiState.sources.first().label(),
-                        supporting = buildString {
-                            val info = uiState.info
-                            if (info != null) {
-                                append("${info.pageCount} pages")
-                                info.fileSizeBytes?.let { bytes ->
-                                    append(" · ${StorageFormatter.formatBytes(bytes)}")
-                                }
-                                append(if (info.isEncrypted) " · Protected" else " · Unlocked")
-                            } else if (uiState.needsPassword) {
-                                append("Password required · Protected")
-                            }
-                        }.ifBlank { null },
+                        supporting = formatPdfDocumentMeta(
+                            pageCount = uiState.info?.pageCount,
+                            sizeBytes = uiState.info?.fileSizeBytes,
+                            isEncrypted = uiState.info?.isEncrypted ?: uiState.needsPassword.takeIf { it },
+                        ).ifBlank { null },
                         preview = uiState.sourcePagePreview,
                         isLoading = uiState.isSourcePagePreviewLoading,
-                        caption = "First page of the selected PDF",
+                        caption = "First page",
                         onChange = { showPicker = true },
                     )
                     Spacer(modifier = Modifier.height(20.dp))
@@ -921,62 +895,6 @@ private fun PasswordVisibilityField(
         supportingText = supportingText?.let { { Text(it) } },
         modifier = Modifier.fillMaxWidth(),
     )
-}
-
-@Composable
-private fun PasswordModeOptionCard(
-    title: String,
-    description: String,
-    selected: Boolean,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Surface(
-        onClick = onClick,
-        modifier = modifier.fillMaxWidth(),
-        shape = MaterialTheme.shapes.large,
-        color = if (selected) {
-            MaterialTheme.colorScheme.primaryContainer
-        } else {
-            MaterialTheme.colorScheme.surfaceContainerHigh
-        },
-        border = BorderStroke(
-            width = if (selected) 1.5.dp else 1.dp,
-            color = if (selected) {
-                MaterialTheme.colorScheme.primary.copy(alpha = 0.64f)
-            } else {
-                MaterialTheme.colorScheme.outlineVariant
-            },
-        ),
-        tonalElevation = 0.dp,
-        shadowElevation = 0.dp,
-    ) {
-        Row(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.SemiBold,
-                )
-                Text(
-                    text = description,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-            if (selected) {
-                Icon(
-                    Icons.Filled.Check,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary,
-                )
-            }
-        }
-    }
 }
 
 @Composable
@@ -1046,9 +964,8 @@ fun PdfWatermarkRoute(
                 val windowSizeInfo = rememberWindowSizeInfo()
                 val watermarkControls: @Composable () -> Unit = {
                     Text(
-                        text = "WATERMARK",
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.primary,
+                        text = "Stamp",
+                        style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.SemiBold,
                     )
                     Spacer(modifier = Modifier.height(8.dp))
@@ -1071,12 +988,7 @@ fun PdfWatermarkRoute(
                         onSelected = viewModel::setLayout,
                     )
                     Text(
-                        text = when (uiState.watermarkLayout) {
-                            WatermarkLayout.REPEATED ->
-                                "Dense field that covers the full page, including edges."
-                            WatermarkLayout.CENTERED ->
-                                "One large stamp sized to dominate the page."
-                        },
+                        text = formatWatermarkLayoutHint(uiState.watermarkLayout),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -1113,8 +1025,8 @@ fun PdfWatermarkRoute(
                     )
                     Spacer(modifier = Modifier.height(20.dp))
                     Text(
-                        text = "Opacity ${(uiState.watermarkOpacity * 100).toInt()}%",
-                        style = MaterialTheme.typography.labelMedium,
+                        text = formatWatermarkOpacityPercent(uiState.watermarkOpacity),
+                        style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.SemiBold,
                     )
                     Slider(
@@ -1210,14 +1122,9 @@ private fun WatermarkDocumentPreview(
         ) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = "SELECTED PDF",
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.primary,
-                    fontWeight = FontWeight.SemiBold,
-                )
-                Text(
                     text = title,
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.SemiBold,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
@@ -1290,9 +1197,8 @@ private fun <T> WatermarkChoiceRow(
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Text(
-            text = title.uppercase(),
-            style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.primary,
+            text = title,
+            style = MaterialTheme.typography.titleSmall,
             fontWeight = FontWeight.SemiBold,
         )
         SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {

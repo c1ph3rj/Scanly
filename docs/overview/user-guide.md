@@ -12,17 +12,20 @@ How end users interact with Scanly. This describes app behavior, not implementat
 
 ### From Home
 
-1. Tap the scan/create action (FAB menu).
-2. Choose **Scan** → a suggested name is already filled in. Keep it, tap the clear icon to type your own, or tap **Suggest name** to cycle formats → camera session opens.
-3. Point the camera at a **physical** document. Scanly filters out many phone screens and non-document rectangles before drawing edges.
-4. Live overlay shows detected page edges and quality hints. For open books, frame a single dominant page when possible.
-5. Tap capture (or use auto-capture when stable).
-6. Capture additional pages or finish the session.
-7. App navigates to **document detail** with all captured pages.
+1. Tap **Scan** (or **Import** / **Folder**) on the Home quick actions.
+2. A suggested name is already filled in. Keep it, tap the clear icon to type your own, or tap **Suggest name** to cycle formats → camera session opens.
+3. The first time, Android asks for camera access. If you deny, Scanly stays on an in-app prompt so you can allow it again. If you block camera permanently, Scanly explains that and offers **Open Settings** — it does not jump to Settings on first open.
+4. Point the camera at a **physical** document. Scanly filters out many phone screens and non-document rectangles before drawing edges.
+5. Live overlay shows detected page edges and quality hints. For open books, frame a single dominant page when possible.
+6. Tap capture (or use auto-capture when stable).
+7. Capture additional pages or finish the session.
+8. App navigates to **document detail** with all captured pages.
+
+Recent files and folders on Home use the same paper-shaped cards as Library. Tap a card to open it.
 
 ### From Library
 
-Same flow — create a new document via scan from the Library FAB menu.
+Same scan flow — create a new document from the Library FAB menu.
 
 ## Importing from gallery
 
@@ -43,7 +46,7 @@ Same flow — create a new document via scan from the Library FAB menu.
 
 ### Page preview
 
-1. From **document detail**, tap a page thumbnail.
+1. From **document detail**, tap a page tile (portrait paper preview with a page number).
 2. **Page preview** opens — swipe between pages.
 3. Pinch or double-tap to zoom. Double-tap again, or use the fit-to-screen action, to reset the image.
 4. The zoom level appears only while the page is enlarged.
@@ -61,9 +64,9 @@ Same flow — create a new document via scan from the Library FAB menu.
 
 From **document detail**:
 
-- Use move controls to reorder pages.
-- Delete unwanted pages.
-- Rename the document from the header. The current name is filled in; tap clear to type a new one.
+- Long-press and drag a page tile to reorder when the document has more than one page.
+- Open a page to review it; edit, retake, share, and delete live on that review chrome — not as buttons on every tile.
+- Rename or delete the document from the header overflow. The current name is filled in; tap clear to type a new one.
 
 ## Organizing with groups
 
@@ -125,9 +128,11 @@ Saved exports go to `Downloads/Scanly` by default. Change the base folder from *
 ## Library search and sort
 
 1. Open **Library**.
-2. Type in the search field to filter documents and groups by title.
-3. Switch filter pills: **All**, **Folders**, **Documents**.
-4. Change sort order (name or date, ascending or descending).
+2. Documents and folders show a page-shaped cover, title, and compact metadata (page count and date, or document/page counts for folders).
+3. Tap a card to open it. Rename, move, delete, or remove-from-folder are on the card’s overflow menu or a long-press menu — not as always-visible icon rows.
+4. Type in the search field to filter documents and groups by title.
+5. Switch filter pills: **All**, **Folders**, **Documents**.
+6. Change sort order (name or date, ascending or descending).
 
 ## Settings
 
@@ -211,13 +216,26 @@ Long-press the Scanly app icon to open shortcuts for **Scan**, **QR**, **Import*
 
 If onboarding has not finished yet, the action waits until onboarding completes, then continues.
 
-## Permissions
+## Tools
+
+Open the **Tools** tab for QR and offline PDF utilities. Pick a PDF from the device or the Scanly library.
+
+| Tool | What you do |
+| --- | --- |
+| QR | **Scan** a code (copy or open a link) or **Create** one from a URL or message |
+| Reader | Read a PDF with the full title, page n of m, page-by-page or continuous scroll, pinch-zoom, and tap to hide the bars |
+| Merge | Add two or more PDFs in listed order, then combine them |
+| Compress | Choose High / Balanced / Smallest quality, then reduce file size |
+| Password | **Protect** or **Remove** an open password |
+| Watermark | Stamp text with layout, size, pages, orientation, and opacity |
+
+When a PDF is ready, preview it in Scanly, then save or share.
 
 ## Permissions
 
 | Permission | When needed |
 | --- | --- |
-| Camera | Scanning documents |
+| Camera | Scanning documents and QR codes. Scanly asks the system first; Settings is only after a permanent block |
 | Internet | Optional update check only |
 | Notifications | Background backup/restore progress on Android 13+; declining does not block the operation |
 

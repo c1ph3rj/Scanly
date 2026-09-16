@@ -23,6 +23,14 @@ Thanks for your interest in contributing.
 ./gradlew.bat testDebugUnitTest
 ```
 
+With a phone or emulator attached (`adb devices` shows `device`):
+
+```powershell
+./gradlew.bat connectedDebugAndroidTest
+```
+
+See [docs/development/running-and-testing.md](docs/development/running-and-testing.md) for install, emulator, and which tests cover which flows.
+
 4. Update documentation when you change public behavior ([README.md](README.md), [CHANGELOG.md](CHANGELOG.md), and [VERSION.md](VERSION.md) when releasing). Update the relevant page under [docs/](docs/) when architecture, data flow, or processing changes.
 5. Keep commits descriptive and avoid mixing unrelated work.
 

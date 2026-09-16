@@ -75,6 +75,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.testTag
+import `in`.c1ph3rj.scanly.core.ui.ScanlyTestTags
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
@@ -467,8 +469,8 @@ private fun QrPermissionCard(
                 .then(if (maxWidth != Dp.Unspecified) Modifier.widthIn(max = maxWidth) else Modifier)
                 .fillMaxWidth(),
             shape = MaterialTheme.shapes.extraLarge,
-            color = MaterialTheme.colorScheme.primaryContainer,
-            border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.24f)),
+            color = MaterialTheme.colorScheme.surfaceContainer,
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
         ) {
             Column(
                 modifier = Modifier.padding(20.dp),
@@ -482,16 +484,15 @@ private fun QrPermissionCard(
                     },
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer,
                 )
                 Text(
                     if (CameraPermissionSupport.shouldOpenSettings(permissionStatus)) {
                         "Open Settings, tap Permissions, and turn Camera on for Scanly."
                     } else {
-                        "Scanly uses the camera only while this screen is open."
+                        "The camera is used only while this screen is open."
                     },
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.76f),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 Button(onClick = onAllow) {
                     Text(
@@ -640,8 +641,7 @@ private fun QrScanResultCard(
     onOpen: () -> Unit,
     onClear: () -> Unit,
 ) {
-    val isWebLink = result.startsWith("https://", ignoreCase = true) ||
-        result.startsWith("http://", ignoreCase = true)
+    val isWebLink = isQrWebLink(result)
 
     Surface(
         modifier = Modifier.fillMaxWidth(),
@@ -673,12 +673,12 @@ private fun QrScanResultCard(
                 }
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        if (isWebLink) "Link detected" else "Text detected",
+                        formatQrScanResultTitle(result),
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.SemiBold,
                     )
                     Text(
-                        if (isWebLink) "Ready to open or copy" else "Ready to copy",
+                        formatQrScanResultSubtitle(result),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -764,7 +764,9 @@ private fun QrGeneratePanel(
                         contentDescription = null,
                     )
                 },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag(ScanlyTestTags.QR_GENERATE_INPUT),
                 minLines = 3,
                 maxLines = 5,
                 shape = MaterialTheme.shapes.large,
@@ -842,11 +844,7 @@ private fun QrGeneratePanel(
                             modifier = Modifier.size(44.dp),
                         )
                         Text(
-                            if (content.isBlank()) {
-                                "Preview appears as you type"
-                            } else {
-                                "Generating preview…"
-                            },
+                            formatQrGeneratePlaceholderHint(content.isBlank()),
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             style = MaterialTheme.typography.bodyMedium,
                         )

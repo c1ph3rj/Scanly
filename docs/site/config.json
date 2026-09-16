@@ -38,21 +38,21 @@
         "imageUrl": "screenshots/mobile/image-4.jpeg",
         "fallbackAsset": "pages",
         "title": "Many pages, one document",
-        "body": "Check every page, add more, and long-press to reorder before you export."
+        "body": "Portrait page tiles with a page number. Tap to review; long-press to reorder before you export."
       },
       {
         "id": "library",
         "imageUrl": "screenshots/mobile/image-2.jpeg",
         "fallbackAsset": "library",
         "title": "Find it later",
-        "body": "Folders, documents, and search — so last week's receipt isn't lost in a camera roll."
+        "body": "Paper-shaped cards, folders, and search — so last week's receipt isn't lost in a camera roll."
       },
       {
         "id": "tools",
         "imageUrl": "screenshots/mobile/image-3.jpeg",
         "fallbackAsset": "tools",
         "title": "Handy extras",
-        "body": "QR codes and offline PDF tools sit next to scanning when you need them."
+        "body": "QR codes and offline PDF tools — merge, compress, password, watermark — sit next to scanning."
       },
       {
         "id": "export",

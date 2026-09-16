@@ -32,6 +32,7 @@ app/src/main/java/in/c1ph3rj/scanly/
 | [docs/architecture/overview.md](docs/architecture/overview.md) | Layers, DI, connection maps |
 | [docs/architecture/navigation.md](docs/architecture/navigation.md) | Routes and user flows |
 | [docs/development/setup.md](docs/development/setup.md) | Build commands |
+| [docs/development/running-and-testing.md](docs/development/running-and-testing.md) | Install/run debug app, JVM flow tests, device UI automation |
 | [docs/development/conventions.md](docs/development/conventions.md) | Adding screens, migrations |
 
 ## Build and Test (Windows/PowerShell)
@@ -44,6 +45,7 @@ app/src/main/java/in/c1ph3rj/scanly/
 ./gradlew.bat assembleDebug
 ./gradlew.bat testDebugUnitTest
 ./gradlew.bat lintDebug
+./gradlew.bat connectedDebugAndroidTest   # needs adb device
 ```
 
 - **Debug** — no minify; `UPDATE_CHANNEL = "github"`.

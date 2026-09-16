@@ -61,6 +61,7 @@ android {
         versionName = "1.0.16"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunnerArguments["clearPackageData"] = "true"
 
         ndk {
             abiFilters += listOf("arm64-v8a", "armeabi-v7a")
@@ -122,6 +123,10 @@ android {
     androidResources {
         noCompress += "tflite"
     }
+    testOptions {
+        animationsDisabled = true
+        execution = "ANDROIDX_TEST_ORCHESTRATOR"
+    }
 }
 
 androidComponents {
@@ -177,9 +182,12 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(libs.androidx.test.rules)
+    androidTestImplementation(libs.androidx.uiautomator)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(libs.androidx.work.testing)
+    androidTestUtil(libs.androidx.test.orchestrator)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 }

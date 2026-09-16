@@ -43,8 +43,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.luminance
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.vector.ImageVector
+import `in`.c1ph3rj.scanly.core.ui.ScanlyTestTags
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -200,6 +202,7 @@ private fun ScanlyNavigationBar(
             NavigationBarItem(
                 selected = selected,
                 onClick = { if (!selected) onNavigate(item.route) },
+                modifier = Modifier.testTag(ScanlyTestTags.navTag(item.route)),
                 icon = {
                     Icon(imageVector = item.icon, contentDescription = item.label)
                 },
@@ -243,6 +246,7 @@ private fun ScanlyNavigationRail(
                     icon = item.icon,
                     label = item.label,
                     selected = selected,
+                    testTag = ScanlyTestTags.navTag(item.route),
                     onClick = { if (!selected) onNavigate(item.route) },
                 )
                 Spacer(modifier = Modifier.height(8.dp))
@@ -263,6 +267,7 @@ private fun RailNavIcon(
     icon: ImageVector,
     label: String,
     selected: Boolean,
+    testTag: String,
     onClick: () -> Unit,
 ) {
     val scheme = MaterialTheme.colorScheme
@@ -282,7 +287,8 @@ private fun RailNavIcon(
     Surface(
         onClick = onClick,
         modifier = Modifier
-            .size(48.dp),
+            .size(48.dp)
+            .testTag(testTag),
         color = containerColor,
         shape = shape,
         border = if (selected) {

@@ -22,6 +22,11 @@ The version shown in Settings reads `versionName` via `DefaultSettingsRepository
 
 Version **1.0.16** (relative to `1.0.14`):
 
+- Paper-shaped Home and Library cards; rename / move / delete from overflow or long-press
+- Portrait document page tiles; PDF reader with title, page n of m, paged or continuous, pinch-zoom
+- Quieter Tools workspace for QR, merge, compress, password, and watermark
+- Camera permission asks first; Settings only after a permanent block
+- 16 KB-aligned OpenCV (`5.0.0.1`) for Android 15+ Play requirements
 - Rebuilt document filters so Color, Shadow Reduce, and Magic stay recognizably the captured page
 - Filter strength now follows the page (gentle on already-good photos, stronger on dim or shadowed pages)
 - Picker chips, live preview, and saved JPEGs share one analysis profile
@@ -41,6 +46,10 @@ The compact GitHub release description used by the in-app update dialog is avail
 
 ### 1.0.16 (code 16) — 2026-09-16
 
+- Paper library/home cards and overflow actions
+- Portrait document pages and document-style PDF reader
+- Tools studio chrome (QR, merge, compress, password, watermark)
+- Camera permission asks before Settings; OpenCV 16 KB page-size fix
 - Professional page filter engine (look stays connected to the capture)
 - Closed-loop filter strength (avoids overblown and underdone pages)
 - Picker, live preview, and save use the same filter analysis
@@ -116,6 +125,8 @@ Full details: [CHANGELOG.md](../CHANGELOG.md)
 - No Room schema change.
 - Existing pages keep their stored preset and adjustments. The new filter engine is used the next time a page is captured or saved from the editor.
 - Filter picker chips, live preview, and saved JPEGs now share one analysis profile.
+- Library, document, PDF reader, and Tools screens are visual-only; search, sort, export, and PDF processing semantics are unchanged.
+- Play Store 16 KB page-size support requires the OpenCV `5.0.0.1` native libraries bundled in this build.
 
 ### Room schema 3 → 4 (v1.0.11)
 

@@ -30,7 +30,7 @@ The version shown in **Settings** is read from `versionName` in `app/build.gradl
 
 ### 1.0.16 (version code 16)
 
-Professional page filter engine: looks stay connected to the capture, strength follows the page, and picker/preview/save match. See [CHANGELOG.md](CHANGELOG.md) for the complete release notes.
+Library and Home paper cards with overflow actions, portrait document page tiles, a document-style PDF reader, a quieter Tools workspace (QR, merge, compress, password, watermark), camera permission that asks before Settings, 16 KB-aligned OpenCV, and the professional page filter engine. See [CHANGELOG.md](CHANGELOG.md) for the complete release notes.
 
 ### 1.0.14 (version code 14)
 
