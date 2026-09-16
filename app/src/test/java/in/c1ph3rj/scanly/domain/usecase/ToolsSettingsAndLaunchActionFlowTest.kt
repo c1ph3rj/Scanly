@@ -77,9 +77,8 @@ class ToolsSettingsAndLaunchActionFlowTest {
         val bitmapResult = generateQr(content)
         assertEquals(content, qrRepository.lastGeneratedContent)
         assertTrue(qrRepository.lastGeneratedWidth > 0)
-        assertTrue(
-            bitmapResult is ScanlyResult.Success || bitmapResult is ScanlyResult.Failure,
-        )
+        val bitmapFailure = bitmapResult as ScanlyResult.Failure
+        assertTrue(bitmapFailure.error.message.contains("Bitmap is unavailable"))
 
         val artifact = saveQr(content).requireSuccess()
         assertEquals("image/png", artifact.mimeType)

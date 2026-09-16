@@ -20,7 +20,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - **PDF reader** — reading chrome shows the full title, page n of m, page-by-page and continuous layouts, pinch-zoom in both, and tap to hide or show the bars.
 - **Tools workspace** — QR, merge, compress, password, and watermark use a quieter document-studio layout: paper file identity, sentence-case options, numbered merge order, and a Protect/Remove control.
 - **Document filters** — rebuilt as a professional reflectance engine so Color, Shadow Reduce, and Magic stay recognizably the captured page instead of looking over-processed or washed out.
-- **Filter strength** — cleanup follows the page: already-good photos stay gentle, dim or shadowed pages get more lift, and glare no longer pushes the look harder.
+- **Filter strength** — cleanup follows the page: already-good photos stay gentle; dim, faded, blurry, or shadowed pages get more lift; glare no longer pushes the look harder.
 - **Filter previews** — picker chips, the live editor preview, and the saved JPEG share one analysis profile so the selected look matches the export.
 - **Dependencies** — Gradle, Kotlin, Compose, AndroidX, Hilt, CameraX, Room, LiteRT, and OpenCV updated to current stable releases. AGP stays on 9.2.1.
 
@@ -28,7 +28,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - **Camera permission** — opening Scan or QR asks for camera access first. Settings is offered only after the permission is permanently blocked, with an in-app explanation. Returning from Settings refreshes QR permission, and Generate stays reachable in landscape while camera is blocked.
 - **16 KB page size** — OpenCV 5.0.0.1 replaces the 4 KB-aligned `libc++_shared.so` from 5.0.0 so arm64 native libraries meet Google Play’s Android 15+ 16 KB page-size requirement.
-- **Scan filters** — grayscale, receipt, and other document looks no longer pull original color back in after cleanup.
+- **Scan filters** — grayscale, receipt, and other document looks no longer pull original color back in after cleanup. Faded or blurry even-lit pages still receive cleanup instead of being treated as already good.
+- **QR links** — Open link accepts the same trimmed, case-insensitive HTTP(S) values as the result card.
 
 ## [1.0.14] - 2026-07-24
 

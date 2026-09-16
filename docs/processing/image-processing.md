@@ -121,7 +121,7 @@ Two look families:
 | Shadow Reduction | `shadow_reduction` | Color pages under uneven lighting |
 | Magic Color | `magic_color` | Faded print / illustrations |
 | Receipt | `receipt` | Thermal receipts and long slips |
-| Soft Black & White | `soft_black_and_white` | Faint handwriting / gentler text |
+| Soft Black & White (Text Enhance) | `soft_black_and_white` | Faint handwriting / gentler text |
 
 ## Step 5: Post-filter adjustments
 

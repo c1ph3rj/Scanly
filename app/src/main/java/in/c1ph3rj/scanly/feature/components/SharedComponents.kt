@@ -101,6 +101,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import dagger.hilt.android.EntryPointAccessors
 import `in`.c1ph3rj.scanly.core.common.DocumentPresentationFormatter
+import `in`.c1ph3rj.scanly.core.common.runCatchingCancellable
 import `in`.c1ph3rj.scanly.core.ui.ChromeIconButton
 import `in`.c1ph3rj.scanly.core.ui.MetricChip
 import `in`.c1ph3rj.scanly.core.ui.PreviewDisplaySize
@@ -752,7 +753,7 @@ fun DocumentTitleDialog(
             return@LaunchedEffect
         }
         isFillingName = true
-        val suggested = runCatching { onSuggestTitle(DocumentTitleFormat.default) }.getOrNull()
+        val suggested = runCatchingCancellable { onSuggestTitle(DocumentTitleFormat.default) }.getOrNull()
         if (value.isBlank() && !suggested.isNullOrBlank()) {
             value = suggested
             suggestFormatIndex = DocumentTitleFormat.entries.indexOf(
@@ -893,7 +894,7 @@ fun GroupNameDialog(
             return@LaunchedEffect
         }
         isFillingName = true
-        val suggested = runCatching { onSuggestTitle(GroupTitleFormat.default) }.getOrNull()
+        val suggested = runCatchingCancellable { onSuggestTitle(GroupTitleFormat.default) }.getOrNull()
         if (value.isBlank() && !suggested.isNullOrBlank()) {
             value = suggested
             suggestFormatIndex = GroupTitleFormat.entries.indexOf(GroupTitleFormat.default.next())
@@ -963,7 +964,7 @@ fun MoveToFolderSheet(
             return@LaunchedEffect
         }
         isFillingName = true
-        val suggested = runCatching { onSuggestFolderName(GroupTitleFormat.default) }.getOrNull()
+        val suggested = runCatchingCancellable { onSuggestFolderName(GroupTitleFormat.default) }.getOrNull()
         if (creatingFolder && newFolderName.isBlank() && !suggested.isNullOrBlank()) {
             newFolderName = suggested
             suggestFormatIndex = GroupTitleFormat.entries.indexOf(GroupTitleFormat.default.next())

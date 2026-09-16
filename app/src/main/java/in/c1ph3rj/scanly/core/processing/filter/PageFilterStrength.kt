@@ -67,7 +67,12 @@ internal object PageFilterStrengthController {
         val lowContrastNeed = 1.0 - normalized(profile.contrast, 20.0, 52.0)
         val lowLightNeed = 1.0 - normalized(profile.brightness, 120.0, 205.0)
         val blurNeed = 1.0 - normalized(profile.sharpness, 14.0, 70.0)
-        val evenAndGood = evenLighting && paperGap < 4.0
+        val evenAndGood =
+            evenLighting &&
+                paperGap < 4.0 &&
+                lowContrastNeed < 0.10 &&
+                blurNeed < 0.10 &&
+                glare < 0.25
 
         val flattenNeed = if (evenAndGood) {
             0.0

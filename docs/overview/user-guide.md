@@ -12,14 +12,17 @@ How end users interact with Scanly. This describes app behavior, not implementat
 
 ### From Home
 
-1. Tap **Scan** (or **Import** / **Folder**) on the Home quick actions.
-2. A suggested name is already filled in. Keep it, tap the clear icon to type your own, or tap **Suggest name** to cycle formats → camera session opens.
-3. The first time, Android asks for camera access. If you deny, Scanly stays on an in-app prompt so you can allow it again. If you block camera permanently, Scanly explains that and offers **Open Settings** — it does not jump to Settings on first open.
-4. Point the camera at a **physical** document. Scanly filters out many phone screens and non-document rectangles before drawing edges.
-5. Live overlay shows detected page edges and quality hints. For open books, frame a single dominant page when possible.
-6. Tap capture (or use auto-capture when stable).
-7. Capture additional pages or finish the session.
-8. App navigates to **document detail** with all captured pages.
+Home quick actions are **Scan**, **Import**, and **Folder**. Only **Scan** opens the camera.
+
+1. Tap **Scan**. A suggested name is already filled in. Keep it, tap the clear icon to type your own, or tap **Suggest name** to cycle formats, then the camera session opens.
+2. The first time, Android asks for camera access. If you deny, Scanly stays on an in-app prompt so you can allow it again. If you block camera permanently, Scanly explains that and offers **Open Settings** — it does not jump to Settings on first open.
+3. Point the camera at a **physical** document. Scanly filters out many phone screens and non-document rectangles before drawing edges.
+4. Live overlay shows detected page edges and quality hints. For open books, frame a single dominant page when possible.
+5. Tap capture (or use auto-capture when stable).
+6. Capture additional pages or finish the session.
+7. App navigates to **document detail** with all captured pages.
+
+**Import** opens the gallery picker (up to 10 images; see below). **Folder** opens folder creation with a suggested name.
 
 Recent files and folders on Home use the same paper-shaped cards as Library. Tap a card to open it.
 

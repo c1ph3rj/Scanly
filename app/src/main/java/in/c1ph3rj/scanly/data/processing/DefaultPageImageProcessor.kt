@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import androidx.exifinterface.media.ExifInterface
 import `in`.c1ph3rj.scanly.core.common.ScanlyDispatchers
+import `in`.c1ph3rj.scanly.core.common.runCatchingCancellable
 import `in`.c1ph3rj.scanly.core.ml.AutomaticDocumentModelSelector
 import `in`.c1ph3rj.scanly.core.ml.BookAwareCornerResolver
 import `in`.c1ph3rj.scanly.core.ml.DocumentCornerDetector
@@ -112,7 +113,7 @@ class DefaultPageImageProcessor @Inject constructor(
                     quad = quad,
                 )
             } ?: editorOrientedBitmap.copy(Bitmap.Config.ARGB_8888, false)
-            val profile = runCatching {
+            val profile = runCatchingCancellable {
                 OpenCvPageFilterProcessor.analyze(correctedBitmap)
             }.getOrNull()
             val filtered = OpenCvPageFilterProcessor.applyWithResolvedPreset(
@@ -125,7 +126,7 @@ class DefaultPageImageProcessor @Inject constructor(
             }
             val filteredBitmap = filtered.bitmap
             val appliedFilterPreset = filtered.appliedPreset
-            val enhancedBitmap = runCatching {
+            val enhancedBitmap = runCatchingCancellable {
                 PageFilterAdjustmentsApplier.apply(filteredBitmap, filterAdjustments)
             }.getOrElse {
                 filteredBitmap.copy(Bitmap.Config.ARGB_8888, false)

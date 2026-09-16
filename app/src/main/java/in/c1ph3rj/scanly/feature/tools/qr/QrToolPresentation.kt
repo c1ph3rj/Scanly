@@ -6,6 +6,15 @@ fun isQrWebLink(value: String): Boolean {
         trimmed.startsWith("http://", ignoreCase = true)
 }
 
+/** Trimmed HTTP(S) URL to open, or null if [value] is not a web link. */
+fun qrWebLinkToOpen(value: String): String? =
+    value.trim().takeIf(::isQrWebLink)
+
+fun qrUriIsOpenableWebLink(scheme: String?): Boolean {
+    val normalized = scheme?.lowercase() ?: return false
+    return normalized == "http" || normalized == "https"
+}
+
 fun formatQrScanResultTitle(value: String): String =
     if (isQrWebLink(value)) "Link" else "Text"
 

@@ -48,9 +48,7 @@ val hasReleaseSigning = listOf(
 android {
     namespace = "in.c1ph3rj.scanly"
     compileSdk {
-        version = release(37) {
-            minorApiLevel = 1
-        }
+        version = release(37)
     }
 
     defaultConfig {

@@ -16,7 +16,7 @@ Dependencies and versions from `gradle/libs.versions.toml` as of **v1.0.16**.
 
 | Setting | Value |
 | --- | --- |
-| compileSdk | 37 (minor API 1) |
+| compileSdk | 37 |
 | targetSdk | 36 |
 | minSdk | 29 |
 | Java compatibility | 11 |

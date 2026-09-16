@@ -1,6 +1,7 @@
 package `in`.c1ph3rj.scanly.core.processing
 
 import android.graphics.Bitmap
+import `in`.c1ph3rj.scanly.core.common.runCatchingCancellable
 import `in`.c1ph3rj.scanly.core.processing.filter.PageFilterEngine
 import `in`.c1ph3rj.scanly.core.processing.filter.PageImageAnalyzer
 import `in`.c1ph3rj.scanly.domain.model.PageFilterPreset
@@ -13,7 +14,10 @@ object OpenCvPageFilterProcessor {
 
     data class AppliedFilter(
         val bitmap: Bitmap,
-        /** Concrete preset that was rendered (Auto resolves to grayscale/clean/etc.). */
+        /**
+         * Preset that was selected for this pass (Auto resolves to a concrete look).
+         * If rendering fails, [bitmap] is an unfiltered copy and this is [PageFilterPreset.ORIGINAL].
+         */
         val appliedPreset: PageFilterPreset,
     )
 
@@ -41,24 +45,29 @@ object OpenCvPageFilterProcessor {
 
         val sourceRgba = sourceBitmap.toMat()
         return try {
-            val resolvedProfile = profile ?: runCatching {
+            val resolvedProfile = profile ?: runCatchingCancellable {
                 PageImageAnalyzer.analyze(
                     sourceRgba = sourceRgba,
                     sourceAspectRatio = aspectRatio(sourceBitmap.width, sourceBitmap.height),
                 )
             }.getOrNull()
             val resolvedPreset = resolvePreset(filterPreset, resolvedProfile)
-            val bitmap = runCatching {
+            val rendered = runCatchingCancellable {
                 PageFilterEngine.render(
                     sourceRgba = sourceRgba,
                     filterPreset = resolvedPreset,
                     profile = resolvedProfile,
                     renderLongestEdge = maxOf(sourceBitmap.width, sourceBitmap.height),
                 )
-            }.getOrElse {
-                sourceRgba.toBitmap()
+            }.getOrNull()
+            if (rendered != null) {
+                AppliedFilter(bitmap = rendered, appliedPreset = resolvedPreset)
+            } else {
+                AppliedFilter(
+                    bitmap = sourceRgba.toBitmap(),
+                    appliedPreset = PageFilterPreset.ORIGINAL,
+                )
             }
-            AppliedFilter(bitmap = bitmap, appliedPreset = resolvedPreset)
         } finally {
             sourceRgba.release()
         }
@@ -96,7 +105,7 @@ object OpenCvPageFilterProcessor {
         ensureInitialized()
         val sourceRgba = sourceBitmap.toMat()
         return try {
-            val resolvedProfile = profile ?: runCatching {
+            val resolvedProfile = profile ?: runCatchingCancellable {
                 PageImageAnalyzer.analyze(
                     sourceRgba = sourceRgba,
                     sourceAspectRatio = aspectRatio(sourceBitmap.width, sourceBitmap.height),
@@ -108,7 +117,7 @@ object OpenCvPageFilterProcessor {
                     sourceRgba.toBitmap()
                 } else {
                     val resolvedPreset = resolvePreset(filterPreset, resolvedProfile)
-                    runCatching {
+                    runCatchingCancellable {
                         PageFilterEngine.render(
                             sourceRgba = sourceRgba,
                             filterPreset = resolvedPreset,

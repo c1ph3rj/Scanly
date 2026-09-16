@@ -196,8 +196,9 @@ fun QrToolRoute(
                             },
                             onOpen = {
                                 val text = uiState.scanResult ?: return@QrScanPanel
-                                val uri = runCatching { Uri.parse(text) }.getOrNull()
-                                if (uri != null && (uri.scheme == "http" || uri.scheme == "https")) {
+                                val url = qrWebLinkToOpen(text)
+                                val uri = url?.let { Uri.parse(it) }
+                                if (uri != null && qrUriIsOpenableWebLink(uri.scheme)) {
                                     context.startActivity(Intent(Intent.ACTION_VIEW, uri))
                                 } else {
                                     viewModel.emitMessage("Not a web URL")

@@ -15,6 +15,17 @@ class QrToolPresentationTest {
     }
 
     @Test
+    fun openingALinkUsesTheSameNormalizationAsDetection() {
+        assertEquals("HTTPS://Example.com/path", qrWebLinkToOpen("  HTTPS://Example.com/path  "))
+        assertEquals("http://example.com", qrWebLinkToOpen("http://example.com"))
+        assertEquals(null, qrWebLinkToOpen("WIFI:T:WPA;S:office;;"))
+        assertTrue(qrUriIsOpenableWebLink("HTTPS"))
+        assertTrue(qrUriIsOpenableWebLink("http"))
+        assertFalse(qrUriIsOpenableWebLink("wifi"))
+        assertFalse(qrUriIsOpenableWebLink(null))
+    }
+
+    @Test
     fun resultCopyDistinguishesLinkAndText() {
         assertEquals("Link", formatQrScanResultTitle("https://scanly.app"))
         assertEquals("Open in a browser or copy", formatQrScanResultSubtitle("https://scanly.app"))

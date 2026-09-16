@@ -34,6 +34,29 @@ class PageFilterStrengthControllerTest {
     }
 
     @Test
+    fun fadedEvenPageStillGetsCleanup() {
+        val faded = profile(
+            brightness = 198.0,
+            paperL = 198.0,
+            contrast = 16.0,
+            shadowRatio = 0.03,
+            highlightRatio = 0.04,
+            glareRatio = 0.01,
+            backgroundUnevenness = 4.0,
+            sharpness = 18.0,
+        )
+
+        val color = PageFilterStrengthController.resolve(
+            recipe = PageFilterRecipes.forPreset(PageFilterPreset.ENHANCED_COLOR),
+            profile = faded,
+            renderLongestEdge = 1_600,
+        )
+
+        assertTrue(color.claheStrength > 0.04)
+        assertTrue(color.sharpenAmount > 1.01)
+    }
+
+    @Test
     fun dimUnevenPageGetsStrongerButCappedColor() {
         val crisp = profile(
             brightness = 198.0,

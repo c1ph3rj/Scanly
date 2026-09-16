@@ -80,6 +80,7 @@ fun IllustratedEmptyState(
                 modifier = Modifier.size(illustrationSize ?: if (compact) 176.dp else 240.dp),
                 contentScale = ContentScale.Fit,
             )
+            Spacer(Modifier.height(if (compact) 12.dp else 16.dp))
             Text(
                 text = title,
                 style = if (compact) {
