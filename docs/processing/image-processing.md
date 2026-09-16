@@ -100,7 +100,7 @@ Cropped page
   → Preset recipe (look only: Natural vs Document, paper target, caps)
   → Strength controller (closed-loop gain, glare reduces flatten/CLAHE)
   → Shared operators (content-masked flatten, soft tone, paper WB, text-only sharpen)
-  → One-pass output guard (pull back over-white paper, restore weak text)
+  → One-pass output guard (Color only: pull back over-white paper; restore weak text)
 ```
 
 Kernels scale from a **1600px** reference edge so 320px picker chips, 1600px live preview, and 2400px saves share one look when they share one profile. Filter picker thumbs analyze the cropped page at ≥720px, then render chips at 320px with that profile.

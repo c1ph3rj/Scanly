@@ -159,6 +159,12 @@ class PageFilterStrengthControllerTest {
         assertEquals(1, small.blockSize % 2)
         assertEquals(1, preview.blockSize % 2)
         assertEquals(1, save.blockSize % 2)
+        assertEquals(4, small.tileGridSize)
+        assertEquals(8, preview.tileGridSize)
+        assertEquals(12, save.tileGridSize)
+        assertEquals(4, scaledTileGridSize(320.0 / 1_600.0))
+        assertEquals(8, scaledTileGridSize(1.0))
+        assertEquals(12, scaledTileGridSize(1.5))
     }
 
     @Test

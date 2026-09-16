@@ -98,6 +98,38 @@ class OpenCvPageFilterProcessorTest {
     }
 
     @Test
+    fun grayscaleDoesNotReintroduceCaptureColor() {
+        val source = shadedPaperBitmap(includeColorMarks = true)
+        val filtered = OpenCvPageFilterProcessor.apply(source, PageFilterPreset.GRAYSCALE)
+
+        try {
+            assertTrue(
+                "Grayscale output must not pull capture chroma back in.",
+                saturationAt(filtered, x = 132, y = 322) < 8.0,
+            )
+        } finally {
+            source.recycle()
+            filtered.recycle()
+        }
+    }
+
+    @Test
+    fun receiptDoesNotReintroduceCaptureColor() {
+        val source = shadedPaperBitmap(includeColorMarks = true)
+        val filtered = OpenCvPageFilterProcessor.apply(source, PageFilterPreset.RECEIPT)
+
+        try {
+            assertTrue(
+                "Receipt output must not pull capture chroma back in.",
+                saturationAt(filtered, x = 132, y = 322) < 8.0,
+            )
+        } finally {
+            source.recycle()
+            filtered.recycle()
+        }
+    }
+
+    @Test
     fun sharedProfileKeepsPaperLookAcrossRenderSizes() {
         val master = shadedPaperBitmap(
             includeColorMarks = true,

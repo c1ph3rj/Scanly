@@ -112,9 +112,13 @@ class DefaultPageImageProcessor @Inject constructor(
                     quad = quad,
                 )
             } ?: editorOrientedBitmap.copy(Bitmap.Config.ARGB_8888, false)
+            val profile = runCatching {
+                OpenCvPageFilterProcessor.analyze(correctedBitmap)
+            }.getOrNull()
             val filtered = OpenCvPageFilterProcessor.applyWithResolvedPreset(
                 sourceBitmap = correctedBitmap,
                 filterPreset = filterPreset,
+                profile = profile,
             )
             if (correctedBitmap !== filtered.bitmap) {
                 correctedBitmap.recycle()

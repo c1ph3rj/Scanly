@@ -10,7 +10,7 @@ See also [docs/releases.md](docs/releases.md) for release policy and history wit
 | Version code | `16` |
 | Application ID | `in.c1ph3rj.scanly` |
 | Min SDK | 29 (Android 10) |
-| Target / compile SDK | 36 |
+| Target / compile SDK | compile 37 / target 36 |
 | Room schema version | `4` |
 | Release date | 2026-09-16 |
 | Branch | `master` |

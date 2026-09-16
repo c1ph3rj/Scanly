@@ -26,8 +26,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Fixed
 
-- **Camera permission** — opening Scan or QR asks for camera access first. Settings is offered only after the permission is permanently blocked, with an in-app explanation.
+- **Camera permission** — opening Scan or QR asks for camera access first. Settings is offered only after the permission is permanently blocked, with an in-app explanation. Returning from Settings refreshes QR permission, and Generate stays reachable in landscape while camera is blocked.
 - **16 KB page size** — OpenCV 5.0.0.1 replaces the 4 KB-aligned `libc++_shared.so` from 5.0.0 so arm64 native libraries meet Google Play’s Android 15+ 16 KB page-size requirement.
+- **Scan filters** — grayscale, receipt, and other document looks no longer pull original color back in after cleanup.
 
 ## [1.0.14] - 2026-07-24
 

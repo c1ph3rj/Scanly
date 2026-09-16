@@ -114,7 +114,7 @@ internal fun rememberFilterPreviewBitmaps(
             fallbackImagePath = fallbackImagePath,
             rotationDegrees = rotationDegrees,
             cropQuad = cropQuad,
-            maxDimension = 720,
+            maxDimension = 1_600,
         ) ?: return@withContext FilterPreviewState(
             isLoading = false,
             previews = emptyMap(),
@@ -171,8 +171,11 @@ internal fun buildCroppedFilteredPreview(
         cropQuad = cropQuad,
         maxDimension = maxDimension,
     ) ?: return null
+    val profile = runCatching {
+        OpenCvPageFilterProcessor.analyze(cropped)
+    }.getOrNull()
     val filteredBitmap = runCatching {
-        OpenCvPageFilterProcessor.apply(cropped, selectedFilter)
+        OpenCvPageFilterProcessor.apply(cropped, selectedFilter, profile)
     }.getOrElse {
         cropped.copy(Bitmap.Config.ARGB_8888, false)
     }

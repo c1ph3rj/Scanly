@@ -103,32 +103,6 @@ Home-screen widgets / quick actions use `in.c1ph3rj.scanly.action.{SCAN,IMPORT,Q
 - Do not commit `local.properties`, keystore files, or build outputs.
 - Do not change on-disk storage layout without a migration plan.
 
-## Swiggy Builders Club and MCP
-
-The repository does not currently ship a Swiggy integration. These rules apply
-only when a task explicitly adds or changes one.
-
-- Swiggy Builders Club uses three independent streamable-HTTP MCP servers:
-  Food (`https://mcp.swiggy.com/food`), Instamart
-  (`https://mcp.swiggy.com/im`), and Dineout
-  (`https://mcp.swiggy.com/dineout`).
-- Before suggesting or implementing a Swiggy tool, parameter, error handling,
-  rate limit, or OAuth flow, consult the authoritative docs:
-  - index: `https://mcp.swiggy.com/builders/llms.txt`
-  - full reference: `https://mcp.swiggy.com/builders/llms-full.txt`
-  - focused reference: append `.md` to a Builders Club documentation URL.
-- Never invent tool names or parameters. Verify the relevant Food, Instamart,
-  or Dineout schema under `/builders/docs/reference/` first.
-- Authentication is OAuth 2.1 with PKCE, not an API key. Do not commit,
-  log, or persist access tokens in plaintext. Treat a 401 as a re-authorization
-  requirement; current access tokens last five days and refresh-token issuance
-  is not available in v1.0.
-- Keep live MCP connections opt-in. The example configuration in
-  `.mcp.json.example` is deliberately inactive: connecting it targets the
-  user's live Swiggy account, and write tools can place real orders or
-  reservations. Require an explicit user confirmation before invoking a
-  side-effecting tool.
-
 ## Docs updates — ask the user first (required)
 
 Whenever the user asks to **update the docs**, **update documentation**, **update the docs folder**, **refresh docs**, **docs/site config**, or similar, **do not invent content**. Stop and ask the user first:

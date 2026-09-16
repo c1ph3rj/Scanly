@@ -11,7 +11,7 @@ Version policy and release history for Scanly.
 | Application ID | `in.c1ph3rj.scanly` |
 | Room schema | `4` |
 | Min SDK | 29 (Android 10) |
-| Target / compile SDK | 36 |
+| Target / compile SDK | compile 37 / target 36 |
 | Release date | 2026-09-16 |
 
 Canonical source: `versionCode` and `versionName` in `app/build.gradle.kts`.

@@ -128,7 +128,7 @@ internal object PageFilterStrengthController {
             backgroundBlurSigma = (recipe.backgroundBlurSigmaAtRef * scale).coerceAtLeast(1.0),
             claheStrength = claheStrength,
             clipLimit = clipLimit,
-            tileGridSize = 8,
+            tileGridSize = scaledTileGridSize(scale),
             toneLift = toneLift,
             highlightRolloff = highlightRolloff,
             saturationScale = saturationScale,
@@ -162,7 +162,7 @@ internal object PageFilterStrengthController {
             backgroundBlurSigma = (recipe.backgroundBlurSigmaAtRef * scale).coerceAtLeast(1.0),
             claheStrength = recipe.maxClaheStrength * mid,
             clipLimit = lerp(recipe.clipLimitMin, recipe.clipLimitMax, mid),
-            tileGridSize = 8,
+            tileGridSize = scaledTileGridSize(scale),
             toneLift = recipe.maxToneLift * 0.35,
             highlightRolloff = 0.35,
             saturationScale = lerp(recipe.saturationMin, recipe.saturationMax, 0.5),
@@ -219,6 +219,9 @@ internal fun lerp(start: Double, end: Double, fraction: Double): Double {
     val normalizedFraction = fraction.coerceIn(0.0, 1.0)
     return start + ((end - start) * normalizedFraction)
 }
+
+internal fun scaledTileGridSize(scale: Double): Int =
+    (8 * scale).roundToInt().coerceIn(4, 12)
 
 internal fun scaledOddKernel(
     reference: Int,

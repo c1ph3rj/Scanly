@@ -14,3 +14,9 @@ fun formatQrScanResultSubtitle(value: String): String =
 
 fun formatQrGeneratePlaceholderHint(contentBlank: Boolean): String =
     if (contentBlank) "Preview appears as you type" else "Generating preview…"
+
+/**
+ * Landscape hosts Scan/Create inside the scan panel. A blocked camera must still
+ * show that control so Generate stays reachable without granting Camera.
+ */
+fun qrPermissionGateShowsModeSelector(twoPane: Boolean): Boolean = twoPane

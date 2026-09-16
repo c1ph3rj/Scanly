@@ -424,9 +424,12 @@ internal object PageFilterOperators {
         try {
             Imgproc.cvtColor(sourceRgba, sourceGray, Imgproc.COLOR_RGBA2GRAY)
             Imgproc.cvtColor(resultRgba, resultGray, Imgproc.COLOR_RGBA2GRAY)
+            // Only Color recipes may mix the capture back in. Gray / soft-binary
+            // output is GRAY2RGBA; blending sourceRgba would reintroduce chroma.
+            val canPullPaperTowardCapture = recipe.colorMode == PageFilterColorMode.Color
             Core.compare(resultGray, Scalar.all(PAPER_LIGHTNESS_THRESHOLD), paperMask, Core.CMP_GT)
             val paperPixels = Core.countNonZero(paperMask)
-            if (paperPixels > 0) {
+            if (canPullPaperTowardCapture && paperPixels > 0) {
                 val paperMean = Core.mean(resultGray, paperMask).`val`[0]
                 if (paperMean > params.paperTarget + GUARD_PAPER_SLACK) {
                     val pull = ((paperMean - params.paperTarget - GUARD_PAPER_SLACK) / 28.0)

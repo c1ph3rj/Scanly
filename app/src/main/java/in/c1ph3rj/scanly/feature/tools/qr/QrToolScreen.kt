@@ -86,6 +86,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
@@ -339,11 +341,17 @@ private fun QrScanPanel(
     onClear: () -> Unit,
 ) {
     val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
     val activity = CameraPermissionSupport.findActivity(context)
     var permissionStatus by remember {
         mutableStateOf(CameraPermissionSupport.resolveStatus(activity, context))
     }
     var hasAutoRequestedPermission by rememberSaveable { mutableStateOf(false) }
+
+    fun refreshCameraPermissionStatus() {
+        permissionStatus = CameraPermissionSupport.resolveStatus(activity, context)
+    }
+
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),
     ) {
@@ -361,18 +369,46 @@ private fun QrScanPanel(
         }
     }
 
+    DisposableEffect(lifecycleOwner, context, activity) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                refreshCameraPermissionStatus()
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
+
     if (permissionStatus != CameraPermissionStatus.Granted) {
-        QrPermissionCard(
-            permissionStatus = permissionStatus,
-            onAllow = {
-                if (CameraPermissionSupport.shouldOpenSettings(permissionStatus)) {
-                    CameraPermissionSupport.openAppSettings(context)
-                } else if (CameraPermissionSupport.shouldRequestSystemPermission(permissionStatus)) {
-                    permissionLauncher.launch(Manifest.permission.CAMERA)
+        val onAllow = {
+            if (CameraPermissionSupport.shouldOpenSettings(permissionStatus)) {
+                CameraPermissionSupport.openAppSettings(context)
+            } else if (CameraPermissionSupport.shouldRequestSystemPermission(permissionStatus)) {
+                permissionLauncher.launch(Manifest.permission.CAMERA)
+            }
+        }
+        val permissionCard: @Composable () -> Unit = {
+            QrPermissionCard(
+                permissionStatus = permissionStatus,
+                onAllow = onAllow,
+                maxWidth = if (layout.twoPane) 560.dp else Dp.Unspecified,
+            )
+        }
+        if (qrPermissionGateShowsModeSelector(layout.twoPane) && modeSelector != null) {
+            Column(modifier = Modifier.fillMaxSize()) {
+                modeSelector()
+                Spacer(modifier = Modifier.height(12.dp))
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f),
+                ) {
+                    permissionCard()
                 }
-            },
-            maxWidth = if (layout.twoPane) 560.dp else Dp.Unspecified,
-        )
+            }
+        } else {
+            permissionCard()
+        }
         return
     }
 

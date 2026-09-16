@@ -27,4 +27,10 @@ class QrToolPresentationTest {
         assertEquals("Preview appears as you type", formatQrGeneratePlaceholderHint(true))
         assertEquals("Generating preview…", formatQrGeneratePlaceholderHint(false))
     }
+
+    @Test
+    fun landscapePermissionGateKeepsModeSelectorReachable() {
+        assertTrue(qrPermissionGateShowsModeSelector(twoPane = true))
+        assertFalse(qrPermissionGateShowsModeSelector(twoPane = false))
+    }
 }
