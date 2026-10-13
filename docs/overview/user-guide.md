@@ -24,11 +24,15 @@ Home quick actions are **Scan**, **Import**, and **Folder**. Only **Scan** opens
 
 **Import** opens the gallery picker (up to 10 images; see below). **Folder** opens folder creation with a suggested name.
 
-Recent files and folders on Home use the same paper-shaped cards as Library. Tap a card to open it.
+Home shows the four most recently updated documents. Tap a row to open it, or **See all** to browse the full Library. Recent files and folders use the same presentation as Library.
 
 ### From Library
 
 Same scan flow — create a new document from the Library FAB menu.
+
+Library opens in a document grid. Use the grid/list controls beside **Last modified** to change layout, and tap the sort label for other ordering options. **All** includes documents in folders; a folder chip filters to its members. **Folders** opens folder management. Tap the magnifying glass for a separate search screen that always includes both documents and folders. Search matches names, including documents inside folders; returning to Library keeps its filters independent of the search query.
+
+The list layout joins compact rows on one shared card background with internal dividers, full-page thumbnails, filenames, page counts, and relative dates such as **Today**. Grid items do not display document tags. The overflow action stays within each card, and tapping a grid tile highlights only that tile's rounded bounds.
 
 ## Importing from gallery
 
@@ -57,8 +61,8 @@ Same scan flow — create a new document from the Library FAB menu.
 
 ### Page editor
 
-1. Tap **Filters** for a full-screen picker with a large live preview of each preset on the cropped page, then Done. Color looks stay close to the photo you captured; scan looks (Clean, B&W, Receipt) still whiten paper. Retake or delete from the editor toolbar as needed.
-2. Tap **Adjust** (next to Filters) to fine-tune brightness, contrast, saturation, and sharpness on a live cropped preview. Use reset in the adjust screen to clear customizations.
+1. Tap **Filters** for a full-screen picker with a large live preview of each preset on the cropped page, then Done. Color looks stay close to the photo you captured; scan looks (Grayscale, B&W, Faded Text) still whiten paper. Retake or delete from the editor toolbar as needed.
+2. Tap **Adjust** (next to Filters) to change the **Intensity** of the filter (0–150 %; 100 % is the default look, 0 only evens out lighting) and fine-tune brightness, contrast, saturation, and sharpness on a live cropped preview. Use reset in the adjust screen to clear customizations.
 3. Tap **Crop** to open the crop screen. Use **AI Detect** to find the document automatically, rotate with **Left** / **Right**, drag the four corner handles, use **Reset** to restore the starting crop, then **Done** to apply crop and rotation.
 4. Back on the editor, tap the check mark to save filter and adjustment changes — processed image and thumbnail regenerate from the raw capture.
 5. **Retake** — opens camera in replacement mode; after capture, returns directly to the editor.
@@ -91,7 +95,7 @@ From **document detail**:
 
 ### Ungrouped documents
 
-Documents without a `groupId` appear in the Documents tab and as "ungrouped" in All view.
+Documents without a `groupId` appear alongside foldered documents in Library's **All** view. A folder chip shows only documents assigned to that folder.
 
 ## Exporting and sharing
 

@@ -8,289 +8,197 @@ import org.opencv.core.Core
 import org.opencv.core.Mat
 import org.opencv.imgproc.Imgproc
 
+/**
+ * Renders a preset with the reflectance pipeline:
+ *
+ * ```
+ * page → paper-aware background model (360 px) → divide shading out (per channel for color)
+ *      → one tone curve (black point / white point / gamma) → vibrance (color)
+ *      → unsharp mask   |   B&W: anti-aliased global threshold + despeckle
+ * ```
+ */
 internal object PageFilterEngine {
+    /** Normalized paper level; the tone curve's white point then clips it to pure white. */
+    private const val NORMALIZED_PAPER = 250.0
+
     fun render(
         sourceRgba: Mat,
         filterPreset: PageFilterPreset,
         profile: PageImageProfile?,
+        intensity: Double,
         renderLongestEdge: Int,
     ): Bitmap {
         if (filterPreset == PageFilterPreset.ORIGINAL) {
             return sourceRgba.toBitmap()
         }
-
-        val recipe = PageFilterRecipes.forPreset(filterPreset)
-        val params = PageFilterStrengthController.resolve(
-            recipe = recipe,
+        val params = PageFilterLook.resolve(
+            preset = filterPreset,
             profile = profile,
+            intensity = intensity,
             renderLongestEdge = renderLongestEdge,
         )
-        val resultRgba = Mat()
+        val rgb = Mat()
+        val result = Mat()
+        var background: PageBackgroundModel? = null
         try {
-            when (recipe.colorMode) {
-                PageFilterColorMode.Color -> renderColor(sourceRgba, resultRgba, params)
-                PageFilterColorMode.Gray -> renderGray(sourceRgba, resultRgba, params)
-                PageFilterColorMode.SoftBinary,
-                PageFilterColorMode.HardBinary,
-                -> renderBinary(sourceRgba, resultRgba, params)
+            Imgproc.cvtColor(sourceRgba, rgb, Imgproc.COLOR_RGBA2RGB)
+            background = PageBackgroundModel.estimate(rgb, params.strokeFraction)
+            when (params.mode) {
+                PageFilterRenderMode.Color -> renderColor(rgb, background, params, result)
+                PageFilterRenderMode.Natural -> renderNatural(rgb, background, params, result)
+                PageFilterRenderMode.Gray -> renderGray(rgb, background, params, result)
+                PageFilterRenderMode.Binary -> renderBinary(rgb, background, params, result)
             }
-            PageFilterOperators.applyOutputGuard(sourceRgba, resultRgba, recipe, params)
-            return resultRgba.toBitmap()
+            return result.toBitmap()
         } finally {
-            resultRgba.release()
+            background?.release()
+            rgb.release()
+            result.release()
         }
     }
 
     private fun renderColor(
-        sourceRgba: Mat,
+        rgb: Mat,
+        background: PageBackgroundModel,
+        params: PageFilterRenderParams,
         resultRgba: Mat,
-        params: PageFilterAppliedParams,
     ) {
-        val bgr = Mat()
-        val denoised = Mat()
-        val enhancedBgr = Mat()
-        val saturatedBgr = Mat()
-        val protectMask = Mat()
+        val normalized = normalizeColor(rgb, background, params) { NORMALIZED_PAPER }
         try {
-            Imgproc.cvtColor(sourceRgba, bgr, Imgproc.COLOR_RGBA2BGR)
-            PageFilterOperators.buildContentProtectMask(bgr, protectMask)
-            PageFilterOperators.maybeBilateral(
-                source = bgr,
-                output = denoised,
-                diameter = params.bilateralDiameter,
-                sigmaColor = params.bilateralSigmaColor,
-                sigmaSpace = params.bilateralSigmaSpace,
+            PageFilterOperators.applyLut(
+                normalized,
+                normalized,
+                PageFilterOperators.toneCurve(params.blackPoint, params.whitePoint, params.gamma),
             )
-            enhanceLab(
-                sourceBgr = denoised,
-                outputBgr = enhancedBgr,
-                params = params,
-                protectMask = protectMask,
-            )
-            PageFilterOperators.boostSaturation(
-                sourceBgr = enhancedBgr,
-                outputBgr = saturatedBgr,
-                scale = params.saturationScale,
-            )
-            PageFilterOperators.sharpenColor(
-                sourceBgr = saturatedBgr,
-                outputBgr = enhancedBgr,
-                amount = params.sharpenAmount,
-                sigma = params.sharpenSigma,
-                textOnly = true,
-            )
-            Imgproc.cvtColor(enhancedBgr, resultRgba, Imgproc.COLOR_BGR2RGBA)
+            PageFilterOperators.vibrance(normalized, normalized, params.vibrance)
+            PageFilterOperators.sharpen(normalized, normalized, params.sharpenAmount, params.sharpenSigma)
+            Imgproc.cvtColor(normalized, resultRgba, Imgproc.COLOR_RGB2RGBA)
         } finally {
-            bgr.release()
-            denoised.release()
-            enhancedBgr.release()
-            saturatedBgr.release()
-            protectMask.release()
+            normalized.release()
         }
     }
 
-    private fun enhanceLab(
-        sourceBgr: Mat,
-        outputBgr: Mat,
-        params: PageFilterAppliedParams,
-        protectMask: Mat,
+    private fun renderNatural(
+        rgb: Mat,
+        background: PageBackgroundModel,
+        params: PageFilterRenderParams,
+        resultRgba: Mat,
     ) {
-        val lab = Mat()
-        val mergedLab = Mat()
-        val originalLightness = Mat()
-        val flattened = Mat()
-        val claheLightness = Mat()
-        val tonedLightness = Mat()
+        val reference = background.paperReference
+        val paperGray = background.paperReferenceGray.coerceAtLeast(1.0)
+        // Lift paper toward ~238 (never darken an already-bright page).
+        val liftedGray = maxOf(paperGray * 1.25, paperGray + 30.0).coerceAtMost(NATURAL_PAPER_MAX)
+        val targetGray = paperGray + (liftedGray - paperGray).coerceAtLeast(0.0) * params.naturalLift
+        val normalized = normalizeColor(rgb, background, params) { index ->
+            val channelPaper = reference[index]
+            val balanced = channelPaper + (paperGray - channelPaper) * params.naturalWhiteBalance
+            (balanced * targetGray / paperGray).coerceIn(1.0, 255.0)
+        }
         try {
-            Imgproc.cvtColor(sourceBgr, lab, Imgproc.COLOR_BGR2Lab)
-            val labChannels = mutableListOf<Mat>()
-            try {
-                Core.split(lab, labChannels)
-                labChannels[0].copyTo(originalLightness)
-                PageFilterOperators.flattenIllumination(
-                    sourceGray = labChannels[0],
-                    outputGray = flattened,
-                    backgroundBlurSigma = params.backgroundBlurSigma,
-                    strength = params.flattenStrength,
-                    targetBackground = params.flattenTarget,
-                    protectMask = protectMask,
-                )
-                PageFilterOperators.applyClahe(
-                    sourceGray = flattened,
-                    outputGray = claheLightness,
-                    clipLimit = params.clipLimit,
-                    tileGridSize = params.tileGridSize,
-                    strength = params.claheStrength,
-                )
-                PageFilterOperators.applySoftTone(
-                    sourceGray = claheLightness,
-                    outputGray = tonedLightness,
-                    lift = params.toneLift,
-                    highlightRolloff = params.highlightRolloff,
-                )
-                PageFilterOperators.neutralizePaperCast(
-                    lightness = originalLightness,
-                    channelA = labChannels[1],
-                    channelB = labChannels[2],
-                    strength = params.whiteBalanceStrength,
-                )
-                tonedLightness.copyTo(labChannels[0])
-                Core.merge(labChannels, mergedLab)
-            } finally {
-                labChannels.forEach(Mat::release)
-            }
-            Imgproc.cvtColor(mergedLab, outputBgr, Imgproc.COLOR_Lab2BGR)
+            PageFilterOperators.applyLut(
+                normalized,
+                normalized,
+                PageFilterOperators.toneCurve(params.blackPoint, params.whitePoint, params.gamma),
+            )
+            PageFilterOperators.sharpen(normalized, normalized, params.sharpenAmount, params.sharpenSigma)
+            Imgproc.cvtColor(normalized, resultRgba, Imgproc.COLOR_RGB2RGBA)
         } finally {
-            lab.release()
-            mergedLab.release()
-            originalLightness.release()
-            flattened.release()
-            claheLightness.release()
-            tonedLightness.release()
+            normalized.release()
         }
     }
 
     private fun renderGray(
-        sourceRgba: Mat,
+        rgb: Mat,
+        background: PageBackgroundModel,
+        params: PageFilterRenderParams,
         resultRgba: Mat,
-        params: PageFilterAppliedParams,
     ) {
-        val gray = Mat()
-        val flattened = Mat()
-        val claheGray = Mat()
-        val denoised = Mat()
-        val toned = Mat()
-        val textProtected = Mat()
-        val sharpened = Mat()
+        val gray = normalizeGray(rgb, background, params)
         try {
-            Imgproc.cvtColor(sourceRgba, gray, Imgproc.COLOR_RGBA2GRAY)
-            PageFilterOperators.flattenIllumination(
-                sourceGray = gray,
-                outputGray = flattened,
-                backgroundBlurSigma = params.backgroundBlurSigma,
-                strength = params.flattenStrength,
-                targetBackground = params.flattenTarget,
+            PageFilterOperators.applyLut(
+                gray,
+                gray,
+                PageFilterOperators.toneCurve(params.blackPoint, params.whitePoint, params.gamma),
             )
-            PageFilterOperators.applyClahe(
-                sourceGray = flattened,
-                outputGray = claheGray,
-                clipLimit = params.clipLimit,
-                tileGridSize = params.tileGridSize,
-                strength = params.claheStrength,
-            )
-            PageFilterOperators.maybeBilateral(
-                source = claheGray,
-                output = denoised,
-                diameter = params.bilateralDiameter,
-                sigmaColor = params.bilateralSigmaColor,
-                sigmaSpace = params.bilateralSigmaSpace,
-            )
-            PageFilterOperators.applySoftTone(
-                sourceGray = denoised,
-                outputGray = toned,
-                lift = params.toneLift,
-                highlightRolloff = params.highlightRolloff,
-            )
-            if (params.restoreText) {
-                PageFilterOperators.restoreTextDetails(
-                    referenceGray = claheGray,
-                    cleanedGray = toned,
-                    outputGray = textProtected,
-                )
-            } else {
-                toned.copyTo(textProtected)
-            }
-            PageFilterOperators.sharpenGray(
-                sourceGray = textProtected,
-                outputGray = sharpened,
-                amount = params.sharpenAmount,
-                sigma = params.sharpenSigma,
-                textOnly = true,
-            )
-            Imgproc.cvtColor(sharpened, resultRgba, Imgproc.COLOR_GRAY2RGBA)
+            PageFilterOperators.sharpen(gray, gray, params.sharpenAmount, params.sharpenSigma)
+            Imgproc.cvtColor(gray, resultRgba, Imgproc.COLOR_GRAY2RGBA)
         } finally {
             gray.release()
-            flattened.release()
-            claheGray.release()
-            denoised.release()
-            toned.release()
-            textProtected.release()
-            sharpened.release()
         }
     }
 
     private fun renderBinary(
-        sourceRgba: Mat,
+        rgb: Mat,
+        background: PageBackgroundModel,
+        params: PageFilterRenderParams,
         resultRgba: Mat,
-        params: PageFilterAppliedParams,
     ) {
-        val gray = Mat()
-        val flattened = Mat()
-        val claheGray = Mat()
-        val denoised = Mat()
-        val thresholded = Mat()
-        val blended = Mat()
-        val sharpened = Mat()
+        val gray = normalizeGray(rgb, background, params)
         try {
-            Imgproc.cvtColor(sourceRgba, gray, Imgproc.COLOR_RGBA2GRAY)
-            PageFilterOperators.flattenIllumination(
-                sourceGray = gray,
-                outputGray = flattened,
-                backgroundBlurSigma = params.backgroundBlurSigma,
-                strength = params.flattenStrength,
-                targetBackground = params.flattenTarget,
-            )
-            PageFilterOperators.applyClahe(
-                sourceGray = flattened,
-                outputGray = claheGray,
-                clipLimit = params.clipLimit,
-                tileGridSize = params.tileGridSize,
-                strength = params.claheStrength,
-            )
-            PageFilterOperators.maybeBilateral(
-                source = claheGray,
-                output = denoised,
-                diameter = params.bilateralDiameter,
-                sigmaColor = params.bilateralSigmaColor,
-                sigmaSpace = params.bilateralSigmaSpace,
-            )
-            Imgproc.adaptiveThreshold(
-                denoised,
-                thresholded,
-                255.0,
-                Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C,
-                Imgproc.THRESH_BINARY,
-                params.blockSize,
-                params.adaptiveC,
-            )
-            if (params.binaryBlend >= 0.995) {
-                thresholded.copyTo(blended)
-            } else {
-                Core.addWeighted(
-                    denoised,
-                    1.0 - params.binaryBlend,
-                    thresholded,
-                    params.binaryBlend,
-                    0.0,
-                    blended,
-                )
-            }
-            PageFilterOperators.sharpenGray(
-                sourceGray = blended,
-                outputGray = sharpened,
-                amount = params.sharpenAmount,
-                sigma = params.sharpenSigma,
-                textOnly = true,
-            )
-            Imgproc.cvtColor(sharpened, resultRgba, Imgproc.COLOR_GRAY2RGBA)
+            PageFilterOperators.binarize(gray, gray, params.binaryThreshold, params.binaryRamp)
+            PageFilterOperators.despeckle(gray, params.despeckleMinArea)
+            Imgproc.cvtColor(gray, resultRgba, Imgproc.COLOR_GRAY2RGBA)
         } finally {
             gray.release()
-            flattened.release()
-            claheGray.release()
-            denoised.release()
-            thresholded.release()
-            blended.release()
-            sharpened.release()
+        }
+    }
+
+    /** Divides each RGB channel by its own background, mapping paper to [targetFor] (index → level). */
+    private inline fun normalizeColor(
+        rgb: Mat,
+        background: PageBackgroundModel,
+        params: PageFilterRenderParams,
+        targetFor: (Int) -> Double,
+    ): Mat {
+        val channels = mutableListOf<Mat>()
+        val merged = Mat()
+        try {
+            Core.split(rgb, channels)
+            channels.forEachIndexed { index, channel ->
+                PageBackgroundModel.normalizeChannel(
+                    source = channel,
+                    backgroundSmall = background.channel(index),
+                    reference = background.paperReference[index],
+                    target = targetFor(index),
+                    maxGain = params.maxGain,
+                    denoiseSigma = params.denoiseSigma,
+                    output = channel,
+                )
+            }
+            Core.merge(channels, merged)
+            return merged
+        } catch (error: Throwable) {
+            merged.release()
+            throw error
+        } finally {
+            channels.forEach(Mat::release)
+        }
+    }
+
+    private fun normalizeGray(
+        rgb: Mat,
+        background: PageBackgroundModel,
+        params: PageFilterRenderParams,
+    ): Mat {
+        val gray = Mat()
+        val grayBackground = background.grayBackground()
+        try {
+            Imgproc.cvtColor(rgb, gray, Imgproc.COLOR_RGB2GRAY)
+            PageBackgroundModel.normalizeChannel(
+                source = gray,
+                backgroundSmall = grayBackground,
+                reference = background.paperReferenceGray,
+                target = NORMALIZED_PAPER,
+                maxGain = params.maxGain,
+                denoiseSigma = params.denoiseSigma,
+                output = gray,
+            )
+            return gray
+        } catch (error: Throwable) {
+            gray.release()
+            throw error
+        } finally {
+            grayBackground.release()
         }
     }
 
@@ -299,4 +207,6 @@ internal object PageFilterEngine {
         Utils.matToBitmap(this, bitmap)
         return bitmap
     }
+
+    private const val NATURAL_PAPER_MAX = 238.0
 }

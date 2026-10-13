@@ -193,6 +193,7 @@ class LibraryArchiveEngine @Inject constructor(
                 filterContrast = page.filterContrast,
                 filterSaturation = page.filterSaturation,
                 filterSharpness = page.filterSharpness,
+                filterIntensity = page.filterIntensity,
                 processingState = page.processingState,
                 createdAtMillis = page.createdAtMillis,
                 updatedAtMillis = page.updatedAtMillis,
@@ -380,6 +381,7 @@ class LibraryArchiveEngine @Inject constructor(
                     filterContrast = page.filterContrast,
                     filterSaturation = page.filterSaturation,
                     filterSharpness = page.filterSharpness,
+                    filterIntensity = page.filterIntensity,
                     processingState = page.processingState,
                     createdAtMillis = page.createdAtMillis,
                     updatedAtMillis = page.updatedAtMillis,
@@ -671,6 +673,7 @@ class LibraryArchiveEngine @Inject constructor(
         val filterContrast: Float = 0f,
         val filterSaturation: Float = 0f,
         val filterSharpness: Float = 0f,
+        val filterIntensity: Float = 1f,
         val processingState: String,
         val createdAtMillis: Long,
         val updatedAtMillis: Long,
@@ -688,6 +691,7 @@ class LibraryArchiveEngine @Inject constructor(
             put("filterContrast", filterContrast.toDouble())
             put("filterSaturation", filterSaturation.toDouble())
             put("filterSharpness", filterSharpness.toDouble())
+            put("filterIntensity", filterIntensity.toDouble())
             put("createdAtMillis", createdAtMillis); put("updatedAtMillis", updatedAtMillis)
         }
 
@@ -711,6 +715,7 @@ class LibraryArchiveEngine @Inject constructor(
                 filterContrast = json.optDouble("filterContrast", 0.0).toFloat(),
                 filterSaturation = json.optDouble("filterSaturation", 0.0).toFloat(),
                 filterSharpness = json.optDouble("filterSharpness", 0.0).toFloat(),
+                filterIntensity = json.optDouble("filterIntensity", 1.0).toFloat(),
                 processingState = json.getString("processingState"),
                 createdAtMillis = json.getLong("createdAtMillis"),
                 updatedAtMillis = json.getLong("updatedAtMillis"),

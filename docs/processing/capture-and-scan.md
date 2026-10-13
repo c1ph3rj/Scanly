@@ -18,6 +18,12 @@ Live detection is more than a single corner model: a **physical-document semanti
 
 Camera permission (`CAMERA`) is required. Hardware camera is optional at manifest level but needed for scanning. `CameraPermissionSupport` asks the system prompt on first open (`NotRequested`), retries in-app after a deniable refusal (`DeniedCanRetry`), and offers **Open Settings** only when the permission is permanently blocked. Scan and QR share that helper.
 
+### Capture resolution
+
+The scan session's `ImageCapture` uses `CAPTURE_MODE_MAXIMIZE_QUALITY` with `HIGHEST_AVAILABLE` resolution (4:3 with automatic fallback), so each JPEG is the sensor's highest-quality still rather than a latency-first capture. The live preview and analysis streams are unchanged (analysis stays at 640×480).
+
+Processing then caps the page at **2800 px** on its longest edge (see [image-processing.md](image-processing.md)). Raw captures are stored at the full captured resolution.
+
 ## Scan session modes
 
 ### Add pages (default)

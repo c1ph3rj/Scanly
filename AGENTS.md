@@ -59,7 +59,7 @@ app/src/main/java/in/c1ph3rj/scanly/
 - Keep dependency versions in `gradle/libs.versions.toml`; reference via `libs.*` in Gradle scripts.
 - Compose deps use BOM (`implementation(platform(libs.androidx.compose.bom))`).
 - Preserve raw captures — never overwrite files under `raw/`; regenerate `processed/` and `thumbs/`.
-- Room schema is version `4`. Any schema change requires a `Migration_X_Y` in `ScanlyDatabase.kt` and version bump.
+- Room schema is version `5`. Any schema change requires a `Migration_X_Y` in `ScanlyDatabase.kt` and version bump.
 - ML model assets under `app/src/main/assets/models/`: corner variants (Lite/Standard/High/Accurate) + `scanly_document_gate_float16.tflite` (keep `noCompress += "tflite"`).
 - Document detection prefs in DataStore: live/post models, automatic selection, document gate; pure black theme is separate (`pure_black_enabled`).
 - Gallery import limit: 10 images (`ImageImportSupport`).

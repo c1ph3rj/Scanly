@@ -135,7 +135,7 @@ class ScanSessionAndPageEditFlowTest {
             pageId = firstPageId,
             cropQuad = cropQuad,
             rotationDegrees = 90,
-            filterPreset = PageFilterPreset.CLEAN,
+            filterPreset = PageFilterPreset.GRAYSCALE,
             filterAdjustments = adjustments,
             applyFilterToAllPages = false,
         ).requireSuccess()
@@ -143,7 +143,7 @@ class ScanSessionAndPageEditFlowTest {
         val edited = observePage(firstPageId).first()!!
         assertEquals(cropQuad, edited.cropQuad)
         assertEquals(90, edited.rotationDegrees)
-        assertEquals(PageFilterPreset.CLEAN, edited.filterPreset)
+        assertEquals(PageFilterPreset.GRAYSCALE, edited.filterPreset)
         assertEquals(adjustments.sanitized(), edited.filterAdjustments)
 
         val untouched = observePage(secondPageId).first()!!
@@ -164,15 +164,15 @@ class ScanSessionAndPageEditFlowTest {
             pageId = firstPageId,
             cropQuad = cropQuad,
             rotationDegrees = 180,
-            filterPreset = PageFilterPreset.RECEIPT,
+            filterPreset = PageFilterPreset.FADED,
             filterAdjustments = adjustments,
             applyFilterToAllPages = true,
         ).requireSuccess()
 
         val edited = observePage(firstPageId).first()!!
         val other = observePage(secondPageId).first()!!
-        assertEquals(PageFilterPreset.RECEIPT, edited.filterPreset)
-        assertEquals(PageFilterPreset.RECEIPT, other.filterPreset)
+        assertEquals(PageFilterPreset.FADED, edited.filterPreset)
+        assertEquals(PageFilterPreset.FADED, other.filterPreset)
         assertEquals(cropQuad, edited.cropQuad)
         assertNull(other.cropQuad)
         assertEquals(180, edited.rotationDegrees)

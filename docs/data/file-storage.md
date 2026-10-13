@@ -82,7 +82,7 @@ Before capture or import:
 Processed JPEG output (from `PageImageProcessor`):
 
 - Quality: 94
-- Max dimension: 2400 px (longer edge)
+- Max dimension: 2800 px (longer edge; processing is capped at the same size, see [../processing/image-processing.md](../processing/image-processing.md))
 
 ## Storage usage reporting
 

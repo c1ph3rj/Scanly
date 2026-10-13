@@ -48,14 +48,14 @@ val captureTools: List<ToolItem> = listOf(
     ToolItem(
         id = ToolActionId.Scan,
         title = "Scan",
-        subtitle = "Capture with camera",
+        subtitle = "Use the camera",
         icon = Icons.Outlined.CameraAlt,
         accent = ToolAccent.Primary,
     ),
     ToolItem(
         id = ToolActionId.Import,
-        title = "Import",
-        subtitle = "Photos from gallery",
+        title = "Import photos",
+        subtitle = "From your gallery",
         icon = Icons.Outlined.PhotoLibrary,
         accent = ToolAccent.Secondary,
     ),
@@ -64,8 +64,8 @@ val captureTools: List<ToolItem> = listOf(
 val utilityTools: List<ToolItem> = listOf(
     ToolItem(
         id = ToolActionId.Qr,
-        title = "QR Code",
-        subtitle = "Scan or generate",
+        title = "QR code",
+        subtitle = "Scan or create",
         icon = Icons.Outlined.QrCode2,
         accent = ToolAccent.Tertiary,
         route = ToolsQrDestination.route,
@@ -75,8 +75,8 @@ val utilityTools: List<ToolItem> = listOf(
 val pdfTools: List<ToolItem> = listOf(
     ToolItem(
         id = ToolActionId.PdfReader,
-        title = "Reader",
-        subtitle = "View PDF pages",
+        title = "Read PDF",
+        subtitle = "Open any PDF",
         icon = Icons.AutoMirrored.Outlined.MenuBook,
         accent = ToolAccent.Primary,
         route = ToolsPdfReaderDestination.route,
@@ -84,7 +84,7 @@ val pdfTools: List<ToolItem> = listOf(
     ToolItem(
         id = ToolActionId.PdfMerge,
         title = "Merge",
-        subtitle = "Combine PDFs",
+        subtitle = "Combine files",
         icon = Icons.AutoMirrored.Outlined.MergeType,
         accent = ToolAccent.Secondary,
         route = ToolsPdfMergeDestination.route,
@@ -92,7 +92,7 @@ val pdfTools: List<ToolItem> = listOf(
     ToolItem(
         id = ToolActionId.PdfCompress,
         title = "Compress",
-        subtitle = "Reduce file size",
+        subtitle = "Make it smaller",
         icon = Icons.Outlined.Compress,
         accent = ToolAccent.Tertiary,
         route = ToolsPdfCompressDestination.route,
@@ -100,7 +100,7 @@ val pdfTools: List<ToolItem> = listOf(
     ToolItem(
         id = ToolActionId.PdfPassword,
         title = "Password",
-        subtitle = "Protect or unlock",
+        subtitle = "Lock or unlock",
         icon = Icons.Outlined.Lock,
         accent = ToolAccent.Primary,
         route = ToolsPdfPasswordDestination.route,
@@ -108,7 +108,7 @@ val pdfTools: List<ToolItem> = listOf(
     ToolItem(
         id = ToolActionId.PdfWatermark,
         title = "Watermark",
-        subtitle = "Stamp text on pages",
+        subtitle = "Stamp text",
         icon = Icons.Outlined.WaterDrop,
         accent = ToolAccent.Secondary,
         route = ToolsPdfWatermarkDestination.route,

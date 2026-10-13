@@ -120,6 +120,7 @@ class DefaultPageImageProcessor @Inject constructor(
                 sourceBitmap = correctedBitmap,
                 filterPreset = filterPreset,
                 profile = profile,
+                intensity = filterAdjustments.sanitized().intensity,
             )
             if (correctedBitmap !== filtered.bitmap) {
                 correctedBitmap.recycle()
@@ -245,23 +246,46 @@ class DefaultPageImageProcessor @Inject constructor(
             inSampleSize = sampleSize
             inPreferredConfig = Bitmap.Config.ARGB_8888
         }
-        return BitmapFactory.decodeFile(path, bitmapOptions)
+        val decoded = BitmapFactory.decodeFile(path, bitmapOptions) ?: return null
+
+        val longestEdge = maxOf(decoded.width, decoded.height)
+        if (longestEdge <= MAX_PROCESSING_DIMENSION) {
+            return decoded
+        }
+
+        // Power-of-two sampling only lands at or above the target, so finish with an exact,
+        // filtered downscale of the longest edge to MAX_PROCESSING_DIMENSION.
+        val targetWidth: Int
+        val targetHeight: Int
+        if (decoded.width >= decoded.height) {
+            targetWidth = MAX_PROCESSING_DIMENSION
+            targetHeight = (decoded.height * MAX_PROCESSING_DIMENSION / longestEdge).coerceAtLeast(1)
+        } else {
+            targetHeight = MAX_PROCESSING_DIMENSION
+            targetWidth = (decoded.width * MAX_PROCESSING_DIMENSION / longestEdge).coerceAtLeast(1)
+        }
+        val scaled = Bitmap.createScaledBitmap(decoded, targetWidth, targetHeight, true)
+        if (scaled !== decoded) {
+            decoded.recycle()
+        }
+        return scaled
     }
 
+    /**
+     * Largest power of two that keeps the longest edge at or above [maxDimension].
+     * Never undershoots the target; the caller finishes with an exact downscale when needed.
+     */
     private fun calculateInSampleSize(
         sourceWidth: Int,
         sourceHeight: Int,
         maxDimension: Int,
     ): Int {
+        val longestEdge = maxOf(sourceWidth, sourceHeight)
         var sampleSize = 1
-        var width = sourceWidth
-        var height = sourceHeight
-        while (width > maxDimension || height > maxDimension) {
-            width /= 2
-            height /= 2
+        while (longestEdge / (sampleSize * 2) >= maxDimension) {
             sampleSize *= 2
         }
-        return sampleSize.coerceAtLeast(1)
+        return sampleSize
     }
 
     private fun rotateBitmapIfNeeded(
@@ -290,7 +314,7 @@ class DefaultPageImageProcessor @Inject constructor(
     }
 
     private companion object {
-        const val MAX_PROCESSING_DIMENSION = 2_400
+        const val MAX_PROCESSING_DIMENSION = 2_800
         const val OUTPUT_JPEG_QUALITY = 94
     }
 

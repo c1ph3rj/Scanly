@@ -6,6 +6,9 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.isDisplayed
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.GrantPermissionRule
 import `in`.c1ph3rj.scanly.core.ui.ScanlyTestTags
@@ -38,22 +41,31 @@ class ScanlyDeviceUiTest {
     fun onboardingCompletesThenHomeIdentifyingUiIsVisible() {
         composeRule.completeOnboardingIfNeeded()
         composeRule.onNodeWithTag(ScanlyTestTags.HOME_SCREEN).assertIsDisplayed()
-        composeRule.onNodeWithText("Scan").assertIsDisplayed()
+        composeRule.onNodeWithText("Import").assertIsDisplayed()
         composeRule.onNodeWithText("Folder").assertIsDisplayed()
+        composeRule.onNodeWithTag(ScanlyTestTags.NAV_SCAN).assertIsDisplayed()
     }
 
     @Test
     fun libraryDestinationShowsIdentifyingUi() {
         composeRule.openDestination(ScanlyTestTags.NAV_LIBRARY, ScanlyTestTags.LIBRARY_SCREEN)
         composeRule.onNodeWithText("Folders").assertIsDisplayed()
-        composeRule.onNodeWithText("Documents").assertIsDisplayed()
+        composeRule.onNodeWithText("Last modified").assertIsDisplayed()
+        composeRule.onNodeWithTag(ScanlyTestTags.LIBRARY_SEARCH).performClick()
+        composeRule.awaitTag(ScanlyTestTags.SEARCH_SCREEN)
+        composeRule.waitUntil(20_000) { composeRule.onNodeWithTag(ScanlyTestTags.SEARCH_INPUT).isDisplayed() }
+        composeRule.onNodeWithTag(ScanlyTestTags.SEARCH_INPUT).assertIsDisplayed()
+        composeRule.onNodeWithText("Documents").assertDoesNotExist()
+        composeRule.onNodeWithContentDescription("Back").performClick()
+        composeRule.awaitTag(ScanlyTestTags.LIBRARY_SCREEN)
     }
 
     @Test
     fun toolsDestinationShowsIdentifyingUi() {
         composeRule.openDestination(ScanlyTestTags.NAV_TOOLS, ScanlyTestTags.TOOLS_SCREEN)
-        composeRule.onNodeWithText("PDF workspace").assertIsDisplayed()
-        composeRule.onNodeWithText("QR CODE").assertIsDisplayed()
+        composeRule.onNodeWithText("PDF").assertIsDisplayed()
+        composeRule.onNodeWithText("Read PDF").assertIsDisplayed()
+        composeRule.onNodeWithText("QR code").assertIsDisplayed()
     }
 
     @Test

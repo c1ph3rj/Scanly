@@ -41,7 +41,7 @@ enum class LibrarySortOption(
     val title: String,
     val description: String,
 ) {
-    RecentlyUpdated("Recently updated", "Latest changes first"),
+    RecentlyUpdated("Last modified", "Latest changes first"),
     OldestUpdated("Oldest updated", "Earliest changes first"),
     NameAscending("Name A–Z", "Alphabetical order"),
     NameDescending("Name Z–A", "Reverse alphabetical order"),
@@ -56,13 +56,14 @@ data class LibraryUiState(
     val searchQuery: String = "",
     val selectedTab: LibraryTab = LibraryTab.All,
     val sortOption: LibrarySortOption = LibrarySortOption.RecentlyUpdated,
+    val selectedGroupId: String? = null,
     val isLoading: Boolean = false,
 ) {
     private val normalizedQuery: String get() = searchQuery.trim()
 
     val visibleGroups: List<DocumentGroup>
         get() {
-            if (selectedTab == LibraryTab.Documents) return emptyList()
+            if (selectedTab == LibraryTab.Documents || selectedGroupId != null) return emptyList()
             return groups
                 .filter { normalizedQuery.isEmpty() || it.title.contains(normalizedQuery, ignoreCase = true) }
                 .sortedWith(groupComparator(sortOption))
@@ -71,14 +72,8 @@ data class LibraryUiState(
     val visibleDocuments: List<ScanDocument>
         get() {
             if (selectedTab == LibraryTab.Folders) return emptyList()
-            // All avoids duplicating foldered documents in its normal overview. Search and the
-            // Documents tab deliberately span every document, including documents in folders.
-            val source = if (selectedTab == LibraryTab.Documents || isSearchActive) {
-                allDocuments
-            } else {
-                ungroupedDocuments
-            }
-            return source
+            return allDocuments
+                .filter { selectedGroupId == null || it.groupId == selectedGroupId }
                 .filter { normalizedQuery.isEmpty() || it.title.contains(normalizedQuery, ignoreCase = true) }
                 .sortedWith(documentComparator(sortOption))
         }
@@ -91,6 +86,7 @@ private data class LibraryControls(
     val query: String,
     val tab: LibraryTab,
     val sortOption: LibrarySortOption,
+    val groupId: String?,
 )
 
 private fun groupComparator(option: LibrarySortOption): Comparator<DocumentGroup> = when (option) {
@@ -157,6 +153,7 @@ class LibraryViewModel @Inject constructor(
     private val _searchQuery = MutableStateFlow("")
     private val _selectedTab = MutableStateFlow(LibraryTab.All)
     private val _sortOption = MutableStateFlow(LibrarySortOption.RecentlyUpdated)
+    private val _selectedGroupId = MutableStateFlow<String?>(null)
     private val _events = MutableSharedFlow<LibraryEvent>()
     val events: SharedFlow<LibraryEvent> = _events.asSharedFlow()
 
@@ -164,8 +161,9 @@ class LibraryViewModel @Inject constructor(
         _searchQuery,
         _selectedTab,
         _sortOption,
-    ) { query, tab, sortOption ->
-        LibraryControls(query, tab, sortOption)
+        _selectedGroupId,
+    ) { query, tab, sortOption, groupId ->
+        LibraryControls(query, tab, sortOption, groupId)
     }
 
     val uiState: StateFlow<LibraryUiState> = combine(
@@ -181,6 +179,7 @@ class LibraryViewModel @Inject constructor(
             searchQuery = controls.query,
             selectedTab = controls.tab,
             sortOption = controls.sortOption,
+            selectedGroupId = controls.groupId?.takeIf { id -> groups.any { it.id == id } },
             isLoading = false,
         )
     }.stateIn(
@@ -199,6 +198,12 @@ class LibraryViewModel @Inject constructor(
 
     fun selectTab(tab: LibraryTab) {
         _selectedTab.value = tab
+        _selectedGroupId.value = null
+    }
+
+    fun selectGroup(groupId: String) {
+        _selectedTab.value = LibraryTab.Documents
+        _selectedGroupId.value = groupId
     }
 
     fun selectSortOption(option: LibrarySortOption) {

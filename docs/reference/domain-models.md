@@ -13,13 +13,15 @@ All model classes in `domain/model/` (25 files).
 | `PageCaptureDraft` | `PageCaptureDraft.kt` | Transient state during active capture session |
 | `PagePreviewPaths` | `PagePreviewPaths.kt` | Extension resolving display paths for preview |
 | `PageProcessingState` | `PageProcessingState.kt` | `CAPTURED`, `PROCESSED`, or `NEEDS_REVIEW` |
-| `PageFilterPreset` | `PageFilterPreset.kt` | Ten filter modes with `storageValue` strings |
+| `PageFilterPreset` | `PageFilterPreset.kt` | Eight filter presets with `storageValue` strings; legacy values map to replacements |
 | `DocumentTitleFormat` | `DocumentTitleFormat.kt` | Four rotatable auto-title formats for new documents |
 | `GroupTitleFormat` | `GroupTitleFormat.kt` | Four rotatable auto-title formats for new folders |
 
 ### PageFilterPreset values
 
-`ORIGINAL`, `AUTO`, `ENHANCED_COLOR`, `GRAYSCALE`, `BLACK_AND_WHITE`, `CLEAN`, `SHADOW_REDUCTION`, `MAGIC_COLOR`, `RECEIPT`, `SOFT_BLACK_AND_WHITE`
+`ORIGINAL` (`original`), `AUTO` (`auto`), `MAGIC_COLOR` (`magic_color`), `NATURAL_COLOR` (`natural_color`), `GRAYSCALE` (`grayscale`), `BLACK_AND_WHITE` (`black_and_white`), `WHITEBOARD` (`whiteboard`), `FADED` (`faded`)
+
+Legacy storage values are read through `PageFilterPreset.fromStorage` and remapped by the Room migration: `enhanced_color` → `natural_color`, `shadow_reduction` → `magic_color`, `clean` → `grayscale`, `soft_black_and_white` → `faded`, `receipt` → `faded`. Unknown values fall back to `ORIGINAL`.
 
 ### DocumentTitleFormat values
 

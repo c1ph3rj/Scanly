@@ -41,6 +41,7 @@ These top-level routes still exist but show `FeaturePlaceholderScreen` — they 
 | Route pattern | Helper object | Screen |
 | --- | --- | --- |
 | `document/{documentId}` | `DocumentDestination` | Document detail |
+| `library/search` | `LibrarySearchDestination` | Library name search across documents and folders; owns separate query state |
 | `camera/session/{documentId}?replacePageId={pageId}` | `ScanSessionDestination` | Scan session |
 | `preview/page/{pageId}` | `PageImagePreviewDestination` | Page preview |
 | `editor/page/{pageId}` | `PageEditorDestination` | Page editor (preview, filters/adjust overlays, retake, delete) |

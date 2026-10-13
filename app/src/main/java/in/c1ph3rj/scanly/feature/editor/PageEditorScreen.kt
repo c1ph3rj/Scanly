@@ -572,12 +572,10 @@ private fun EditorActionButton(
 private fun PageFilterPreset.toEditorLabel(): String = when (this) {
     PageFilterPreset.ORIGINAL -> "Original"
     PageFilterPreset.AUTO -> "Auto"
-    PageFilterPreset.ENHANCED_COLOR -> "Color"
+    PageFilterPreset.MAGIC_COLOR -> "Magic Color"
+    PageFilterPreset.NATURAL_COLOR -> "Natural"
     PageFilterPreset.GRAYSCALE -> "Grayscale"
     PageFilterPreset.BLACK_AND_WHITE -> "B&W"
-    PageFilterPreset.CLEAN -> "Clean Paper"
-    PageFilterPreset.SHADOW_REDUCTION -> "Shadow Reduce"
-    PageFilterPreset.MAGIC_COLOR -> "Magic"
-    PageFilterPreset.RECEIPT -> "Receipt"
-    PageFilterPreset.SOFT_BLACK_AND_WHITE -> "Text Enhance"
+    PageFilterPreset.WHITEBOARD -> "Whiteboard"
+    PageFilterPreset.FADED -> "Faded Text"
 }

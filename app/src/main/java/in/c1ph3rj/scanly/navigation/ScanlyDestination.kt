@@ -67,6 +67,10 @@ object ToolsQrDestination {
     fun route(mode: String): String = "$route?$modeArgument=$mode"
 }
 
+object LibrarySearchDestination {
+    const val route = "library/search"
+}
+
 object ToolsPdfReaderDestination {
     const val route = "tools/pdf/reader"
     const val filePathArgument = "filePath"

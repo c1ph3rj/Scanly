@@ -24,16 +24,21 @@ object OpenCvPageFilterProcessor {
     @Volatile
     private var initialized = false
 
+    /**
+     * @param intensity filter strength (0 = lighting correction only, 1 = tuned default, 1.5 = max).
+     */
     fun apply(
         sourceBitmap: Bitmap,
         filterPreset: PageFilterPreset,
         profile: PageImageProfile? = null,
-    ): Bitmap = applyWithResolvedPreset(sourceBitmap, filterPreset, profile).bitmap
+        intensity: Float = 1f,
+    ): Bitmap = applyWithResolvedPreset(sourceBitmap, filterPreset, profile, intensity).bitmap
 
     fun applyWithResolvedPreset(
         sourceBitmap: Bitmap,
         filterPreset: PageFilterPreset,
         profile: PageImageProfile? = null,
+        intensity: Float = 1f,
     ): AppliedFilter {
         ensureInitialized()
         if (filterPreset == PageFilterPreset.ORIGINAL) {
@@ -57,6 +62,7 @@ object OpenCvPageFilterProcessor {
                     sourceRgba = sourceRgba,
                     filterPreset = resolvedPreset,
                     profile = resolvedProfile,
+                    intensity = intensity.toDouble(),
                     renderLongestEdge = maxOf(sourceBitmap.width, sourceBitmap.height),
                 )
             }.getOrNull()
@@ -122,6 +128,7 @@ object OpenCvPageFilterProcessor {
                             sourceRgba = sourceRgba,
                             filterPreset = resolvedPreset,
                             profile = resolvedProfile,
+                            intensity = 1.0,
                             renderLongestEdge = renderLongestEdge,
                         )
                     }.getOrElse {

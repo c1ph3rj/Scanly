@@ -102,6 +102,8 @@ notebooks/.ipynb_checkpoints/
 /notebooks/scanly_doccorner_mobilenetv3_kaggle.ipynb
 /notebooks/scanly_document_gate_kaggle.ipynb
 /notebooks/scanly_document_gate_kaggle.py
+# Desktop filter tuning experiments stay local; Android source/tests are versioned.
+/notebooks/filter-lab/
 
 # --- Performance seed generated data (directory rules, not per-file lists) ---
 /scripts/performance-seed/.cache/

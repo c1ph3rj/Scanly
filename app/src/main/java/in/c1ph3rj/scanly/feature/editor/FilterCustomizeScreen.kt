@@ -61,6 +61,7 @@ import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import `in`.c1ph3rj.scanly.domain.model.PageFilterAdjustments
 import `in`.c1ph3rj.scanly.domain.model.PageFilterPreset
 import `in`.c1ph3rj.scanly.domain.model.ScanPage
+import kotlin.math.roundToInt
 
 /**
  * Full-screen filter customization with adaptive large-screen layouts.
@@ -569,6 +570,12 @@ private fun CustomizeControlsPane(
                 ) {
                     if (useTwoColumnSliders) {
                         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                            IntensityAdjustmentSlider(
+                                selectedFilter = selectedFilter,
+                                filterAdjustments = filterAdjustments,
+                                onAdjustmentsChange = onAdjustmentsChange,
+                                modifier = Modifier.fillMaxWidth(),
+                            )
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -625,6 +632,11 @@ private fun CustomizeControlsPane(
                             }
                         }
                     } else {
+                        IntensityAdjustmentSlider(
+                            selectedFilter = selectedFilter,
+                            filterAdjustments = filterAdjustments,
+                            onAdjustmentsChange = onAdjustmentsChange,
+                        )
                         AdjustmentSlider(
                             label = "Brightness",
                             valuePercent = filterAdjustments.brightnessPercent(),
@@ -681,6 +693,33 @@ private fun CustomizeControlsPane(
     }
 }
 
+/**
+ * Strength slider for the selected preset. Stays at 100% (the preset as designed) by default and
+ * is disabled on Original, where there is no filter look to scale.
+ */
+@Composable
+private fun IntensityAdjustmentSlider(
+    selectedFilter: PageFilterPreset,
+    filterAdjustments: PageFilterAdjustments,
+    onAdjustmentsChange: (PageFilterAdjustments) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    AdjustmentSlider(
+        label = "Intensity",
+        valuePercent = filterAdjustments.intensityPercent(),
+        valueRange = 0f..150f,
+        onValueChange = { percent ->
+            onAdjustmentsChange(
+                filterAdjustments.copy(intensity = percent.roundToInt() / 100f).sanitized(),
+            )
+        },
+        modifier = modifier,
+        signed = false,
+        suffix = "%",
+        enabled = selectedFilter != PageFilterPreset.ORIGINAL,
+    )
+}
+
 @Composable
 private fun AdjustmentSlider(
     label: String,
@@ -688,8 +727,12 @@ private fun AdjustmentSlider(
     valueRange: ClosedFloatingPointRange<Float>,
     onValueChange: (Float) -> Unit,
     modifier: Modifier = Modifier,
+    signed: Boolean = true,
+    suffix: String = "",
+    enabled: Boolean = true,
 ) {
     val colorScheme = MaterialTheme.colorScheme
+    val contentAlpha = if (enabled) 1f else 0.38f
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(4.dp),
@@ -702,23 +745,28 @@ private fun AdjustmentSlider(
             Text(
                 text = label,
                 style = MaterialTheme.typography.labelLarge,
-                color = colorScheme.onSurface,
+                color = colorScheme.onSurface.copy(alpha = contentAlpha),
             )
             Surface(
-                color = colorScheme.surfaceContainerHighest,
+                color = colorScheme.surfaceContainerHighest.copy(alpha = contentAlpha),
                 shape = RoundedCornerShape(8.dp),
             ) {
                 Text(
-                    text = if (valuePercent > 0) "+$valuePercent" else "$valuePercent",
+                    text = when {
+                        !signed -> "$valuePercent$suffix"
+                        valuePercent > 0 -> "+$valuePercent$suffix"
+                        else -> "$valuePercent$suffix"
+                    },
                     modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
                     style = MaterialTheme.typography.labelMedium,
-                    color = colorScheme.onSurfaceVariant,
+                    color = colorScheme.onSurfaceVariant.copy(alpha = contentAlpha),
                 )
             }
         }
         Slider(
             value = valuePercent.toFloat(),
             onValueChange = onValueChange,
+            enabled = enabled,
             valueRange = valueRange,
             colors = SliderDefaults.colors(
                 thumbColor = colorScheme.primary,
@@ -732,12 +780,10 @@ private fun AdjustmentSlider(
 private fun PageFilterPreset.toDisplayLabel(): String = when (this) {
     PageFilterPreset.ORIGINAL -> "Original"
     PageFilterPreset.AUTO -> "Auto"
-    PageFilterPreset.ENHANCED_COLOR -> "Color"
+    PageFilterPreset.MAGIC_COLOR -> "Magic Color"
+    PageFilterPreset.NATURAL_COLOR -> "Natural"
     PageFilterPreset.GRAYSCALE -> "Grayscale"
     PageFilterPreset.BLACK_AND_WHITE -> "B&W"
-    PageFilterPreset.CLEAN -> "Clean Paper"
-    PageFilterPreset.SHADOW_REDUCTION -> "Shadow Reduce"
-    PageFilterPreset.MAGIC_COLOR -> "Magic"
-    PageFilterPreset.RECEIPT -> "Receipt"
-    PageFilterPreset.SOFT_BLACK_AND_WHITE -> "Text Enhance"
+    PageFilterPreset.WHITEBOARD -> "Whiteboard"
+    PageFilterPreset.FADED -> "Faded Text"
 }

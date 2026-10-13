@@ -176,7 +176,7 @@ internal fun buildCroppedFilteredPreview(
         OpenCvPageFilterProcessor.analyze(cropped)
     }.getOrNull()
     val filteredBitmap = runCatchingCancellable {
-        OpenCvPageFilterProcessor.apply(cropped, selectedFilter, profile)
+        OpenCvPageFilterProcessor.apply(cropped, selectedFilter, profile, filterAdjustments.intensity)
     }.getOrElse {
         cropped.copy(Bitmap.Config.ARGB_8888, false)
     }

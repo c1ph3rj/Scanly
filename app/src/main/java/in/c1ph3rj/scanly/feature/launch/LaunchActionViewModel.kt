@@ -134,6 +134,16 @@ class LaunchActionViewModel @Inject constructor(
         }
     }
 
+    /** In-app Scan (bottom bar): same as the launcher shortcut — new document, straight to camera. */
+    fun requestScan() {
+        enqueue(ScanlyLaunchAction.Scan)
+    }
+
+    /** In-app Import (bottom bar): same as the launcher shortcut — opens the photo picker. */
+    fun requestImport() {
+        enqueue(ScanlyLaunchAction.Import)
+    }
+
     private fun enqueue(action: ScanlyLaunchAction) {
         if (!appReady) {
             pendingAction = action

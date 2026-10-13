@@ -61,7 +61,7 @@ class HomeViewModel @Inject constructor(
 
     val uiState: StateFlow<HomeUiState> = combine(
         observeRecentGroupsUseCase(limit = 6),
-        observeRecentDocumentsUseCase(limit = 8),
+        observeRecentDocumentsUseCase(limit = 4),
         importProgress,
     ) { groups, docs, progress ->
         HomeUiState(

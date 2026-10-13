@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CameraAlt
 import androidx.compose.material.icons.outlined.CreateNewFolder
@@ -40,6 +41,7 @@ fun HomeRoute(
     onOpenScanSession: (String) -> Unit,
     onOpenGroup: (String) -> Unit,
     onNavigateToLibrary: () -> Unit,
+    onSeeAllFolders: () -> Unit = onNavigateToLibrary,
 ) {
     val viewModel: HomeViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -82,6 +84,7 @@ fun HomeRoute(
         onOpenScanSession = onOpenScanSession,
         onOpenGroup = onOpenGroup,
         onNavigateToLibrary = onNavigateToLibrary,
+        onSeeAllFolders = onSeeAllFolders,
         onCreateGroup = viewModel::createGroup,
         onSuggestTitle = viewModel::suggestDocumentTitle,
         onSuggestGroupTitle = viewModel::suggestGroupTitle,
@@ -98,6 +101,7 @@ fun HomeScreen(
     onOpenScanSession: (String) -> Unit,
     onOpenGroup: (String) -> Unit,
     onNavigateToLibrary: () -> Unit,
+    onSeeAllFolders: () -> Unit = onNavigateToLibrary,
     onCreateGroup: (String) -> Unit,
     onSuggestTitle: suspend (DocumentTitleFormat) -> String,
     onSuggestGroupTitle: suspend (GroupTitleFormat) -> String,
@@ -159,35 +163,37 @@ fun HomeScreen(
                     importEnabled = !uiState.isImporting,
                     isTablet = windowSizeInfo.isTablet,
                     horizontalPadding = windowSizeInfo.horizontalPadding,
-                    modifier = Modifier.padding(bottom = 32.dp)
+                    modifier = Modifier.padding(bottom = 24.dp)
                 )
             }
 
             if (uiState.recentGroups.isNotEmpty()) {
                 item(key = "groups_header", contentType = "section_header") {
-                    SectionHeader(
-                        title = "Recent Folders",
-                        modifier = Modifier
-                            .padding(horizontal = windowSizeInfo.horizontalPadding)
-                            .padding(bottom = 16.dp),
+                    LibrarySectionHeader(
+                        title = "Recent folders",
+                        actionLabel = "See all",
+                        onAction = onSeeAllFolders,
+                        modifier = Modifier.padding(horizontal = windowSizeInfo.horizontalPadding),
                     )
                 }
                 item(key = "groups_row", contentType = "groups_row") {
+                    // Tiles carry their own press inset; pull the row out so the art aligns with the header.
                     LazyRow(
-                        contentPadding = PaddingValues(horizontal = windowSizeInfo.horizontalPadding),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
-                        modifier = Modifier.padding(bottom = 32.dp)
+                        contentPadding = PaddingValues(
+                            horizontal = (windowSizeInfo.horizontalPadding - LibraryFolderTileInset).coerceAtLeast(0.dp),
+                        ),
+                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                        modifier = Modifier.padding(bottom = 20.dp),
                     ) {
                         items(
                             items = uiState.recentGroups,
                             key = { it.id },
                             contentType = { "recent_group" },
                         ) { group ->
-                            GroupCard(
+                            LibraryFolderTile(
                                 group = group,
                                 onOpen = { onOpenGroup(group.id) },
-                                style = LibraryCardStyle.Grid,
-                                modifier = Modifier.width(if (windowSizeInfo.isTablet) 168.dp else 140.dp),
+                                modifier = Modifier.width(if (windowSizeInfo.isTablet) 132.dp else 104.dp),
                             )
                         }
                     }
@@ -196,29 +202,33 @@ fun HomeScreen(
 
             if (uiState.recentDocuments.isNotEmpty()) {
                 item(key = "files_header", contentType = "section_header") {
-                    SectionHeader(
-                        title = "Recent Files",
-                        actionLabel = "See all in Library",
+                    LibrarySectionHeader(
+                        title = "Recent documents",
+                        actionLabel = "See all",
                         onAction = onNavigateToLibrary,
                         modifier = Modifier
                             .padding(horizontal = windowSizeInfo.horizontalPadding)
-                            .padding(bottom = 16.dp),
+                            .padding(bottom = 4.dp),
                     )
                 }
-                items(
+                itemsIndexed(
                     items = uiState.recentDocuments,
-                    key = { it.id },
-                    contentType = { "recent_document" },
-                ) { doc ->
-                    DocumentCard(
-                        document = doc,
-                        onOpen = { onOpenDocument(doc.id) },
-                        style = LibraryCardStyle.List,
+                    key = { _, doc -> doc.id },
+                    contentType = { _, _ -> "recent_document" },
+                ) { index, doc ->
+                    LibraryListItem(
+                        first = index == 0,
+                        last = index == uiState.recentDocuments.lastIndex,
                         modifier = Modifier
                             .padding(horizontal = windowSizeInfo.horizontalPadding)
-                            .padding(bottom = 12.dp)
                             .animateItem(),
-                    )
+                    ) {
+                        DocumentCard(
+                            document = doc,
+                            onOpen = { onOpenDocument(doc.id) },
+                            style = LibraryCardStyle.PreviewList,
+                        )
+                    }
                 }
             } else if (uiState.recentGroups.isEmpty()) {
                 item(key = "empty_state", contentType = "empty") {

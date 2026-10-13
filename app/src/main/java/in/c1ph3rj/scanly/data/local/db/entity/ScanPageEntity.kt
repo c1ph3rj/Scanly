@@ -41,6 +41,7 @@ data class ScanPageEntity(
     val filterContrast: Float = 0f,
     val filterSaturation: Float = 0f,
     val filterSharpness: Float = 0f,
+    val filterIntensity: Float = 1f,
     val processingState: String,
     val createdAtMillis: Long,
     val updatedAtMillis: Long,

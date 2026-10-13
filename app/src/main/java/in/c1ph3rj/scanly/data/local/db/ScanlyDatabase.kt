@@ -10,6 +10,7 @@ import `in`.c1ph3rj.scanly.data.local.db.dao.ScanPageDao
 import `in`.c1ph3rj.scanly.data.local.db.entity.DocumentEntity
 import `in`.c1ph3rj.scanly.data.local.db.entity.DocumentGroupEntity
 import `in`.c1ph3rj.scanly.data.local.db.entity.ScanPageEntity
+import `in`.c1ph3rj.scanly.domain.model.PageFilterPreset
 
 @Database(
     entities = [
@@ -17,7 +18,7 @@ import `in`.c1ph3rj.scanly.data.local.db.entity.ScanPageEntity
         ScanPageEntity::class,
         DocumentGroupEntity::class,
     ],
-    version = 4,
+    version = 5,
     exportSchema = false,
 )
 abstract class ScanlyDatabase : RoomDatabase() {
@@ -122,6 +123,25 @@ abstract class ScanlyDatabase : RoomDatabase() {
                 db.execSQL(
                     "ALTER TABLE scan_pages ADD COLUMN filterSharpness REAL NOT NULL DEFAULT 0",
                 )
+            }
+        }
+
+        val MIGRATION_4_5: Migration = object : Migration(4, 5) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL(
+                    "ALTER TABLE scan_pages ADD COLUMN filterIntensity REAL NOT NULL DEFAULT 1",
+                )
+                // Presets removed in the filter overhaul are rewritten to their closest replacement.
+                PageFilterPreset.legacyStorageMigrations.forEach { (legacy, replacement) ->
+                    db.execSQL(
+                        "UPDATE scan_pages SET filterPreset = ? WHERE filterPreset = ?",
+                        arrayOf<Any>(replacement, legacy),
+                    )
+                    db.execSQL(
+                        "UPDATE documents SET preferredFilterPreset = ? WHERE preferredFilterPreset = ?",
+                        arrayOf<Any>(replacement, legacy),
+                    )
+                }
             }
         }
     }

@@ -74,7 +74,7 @@ Choose a path based on your goal:
 
 | Document | Contents |
 | --- | --- |
-| [database.md](data/database.md) | Room schema v4, entities, migrations, DAOs |
+| [database.md](data/database.md) | Room schema v5, entities, migrations, DAOs |
 | [file-storage.md](data/file-storage.md) | On-disk layout, raw/processed/thumbs, export cache |
 | [library-backup.md](data/library-backup.md) | `.scanly` format, destinations, validation, Replace/Merge restore |
 | [settings-and-updates.md](data/settings-and-updates.md) | DataStore prefs, FAQs/licenses, GitHub/Google Play update variants |

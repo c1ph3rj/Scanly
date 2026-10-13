@@ -33,7 +33,7 @@ For detection, Scanly uses on-device machine learning models to identify documen
 
 The editor is where a captured image becomes a useful document page. Scanly corrects perspective, applies document-focused filters that stay connected to the photo you captured, and lets you adjust the result when the automatic processing is not quite right.
 
-You can choose from several looks, including colour, grayscale, clean paper, shadow reduction, receipt, and black-and-white styles. You can also fine-tune brightness, contrast, saturation, and sharpness.
+You can choose from several looks, including colour, natural, grayscale, black-and-white, whiteboard, and faded-text styles, or let Auto pick one for the page. You can set how strong the look is and also fine-tune brightness, contrast, saturation, and sharpness.
 
 The important part is that these edits are derived from the original capture. Scanly keeps raw images separate from processed images and thumbnails. This gives you a non-destructive workflow and makes it possible to revisit a page later without degrading it each time you edit it.
 

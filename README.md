@@ -21,7 +21,7 @@ It is designed for a practical, local-only scanning workflow:
 - manual camera capture with live document guidance, multi-model corner detection, and a physical-document semantic gate
 - import images from the gallery to create or extend documents
 - page editor with live cropped preview, full-screen filters/adjust, and a crop screen (AI Detect, rotate, handles)
-- document filters that stay connected to the captured page (Color / Magic) or produce a consistent scan look (Clean / B&W)
+- document filters (Magic Color, Natural, Grayscale, B&W, Whiteboard, Faded Text, and Auto) with an adjustable intensity, built on a paper-aware lighting model
 - in-app PDF reader (title, page n of m, paged or continuous, pinch-zoom) and offline PDF tools (merge, compress, password, watermark)
 - Advanced PDF export/share with password protection, page numbering, auto orientation, print sizes, margins, and group-level export
 - direct export saving to `Downloads/Scanly` or a user-selected folder

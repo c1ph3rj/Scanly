@@ -765,25 +765,21 @@ private fun FilterItem(
 private fun PageFilterPreset.toDisplayLabel(): String = when (this) {
     PageFilterPreset.ORIGINAL -> "Original"
     PageFilterPreset.AUTO -> "Auto"
-    PageFilterPreset.ENHANCED_COLOR -> "Color"
+    PageFilterPreset.MAGIC_COLOR -> "Magic Color"
+    PageFilterPreset.NATURAL_COLOR -> "Natural"
     PageFilterPreset.GRAYSCALE -> "Grayscale"
     PageFilterPreset.BLACK_AND_WHITE -> "B&W"
-    PageFilterPreset.CLEAN -> "Clean Paper"
-    PageFilterPreset.SHADOW_REDUCTION -> "Shadow Reduce"
-    PageFilterPreset.MAGIC_COLOR -> "Magic"
-    PageFilterPreset.RECEIPT -> "Receipt"
-    PageFilterPreset.SOFT_BLACK_AND_WHITE -> "Text Enhance"
+    PageFilterPreset.WHITEBOARD -> "Whiteboard"
+    PageFilterPreset.FADED -> "Faded Text"
 }
 
 private fun PageFilterPreset.shortLabel(): String = when (this) {
     PageFilterPreset.ORIGINAL -> "O"
     PageFilterPreset.AUTO -> "A"
-    PageFilterPreset.ENHANCED_COLOR -> "C"
+    PageFilterPreset.MAGIC_COLOR -> "M"
+    PageFilterPreset.NATURAL_COLOR -> "N"
     PageFilterPreset.GRAYSCALE -> "G"
     PageFilterPreset.BLACK_AND_WHITE -> "B&W"
-    PageFilterPreset.CLEAN -> "CP"
-    PageFilterPreset.SHADOW_REDUCTION -> "SH"
-    PageFilterPreset.MAGIC_COLOR -> "M"
-    PageFilterPreset.RECEIPT -> "R"
-    PageFilterPreset.SOFT_BLACK_AND_WHITE -> "TXT"
+    PageFilterPreset.WHITEBOARD -> "WB"
+    PageFilterPreset.FADED -> "FT"
 }

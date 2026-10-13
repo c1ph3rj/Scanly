@@ -6,6 +6,31 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Added
+
+- **Library search screen** — search document and folder names across the entire library from a dedicated screen without category filters.
+
+- **Professional filter engine** — page filters divide out uneven paper lighting using a paper-aware background model, so photos, logos, and colour ink are not flattened and the paper comes out even. Each look uses one tone curve; colour looks add vibrance and paper neutralization, and B&W uses an anti-aliased threshold with speck removal.
+- **Eight filter presets** — Original, Auto, Magic Color, Natural, Grayscale, B&W, Whiteboard, and Faded Text. Auto picks Magic Color, Natural, Faded Text, or Grayscale for each page.
+- **Intensity slider** — Adjust starts with an **Intensity** control (0–150 %, default 100 %). At 0 only the lighting is corrected; higher values give a stronger look. The setting is saved per page and included in `.scanly` backups.
+
+### Changed
+
+- **Library layout** — the Library opens on a search field, a scrollable **Folders** shelf (each tile is drawn as a folder with a tab, the latest page tucked inside, a second sheet when it holds several documents, and a name that wraps to two lines; plus a **New folder** tile; **See all** — on the Library or on Home's Recent folders — expands the shelf into a folder grid in place and hides documents; a back arrow beside **Folders** (or system back) returns to the full Library), and **Documents** grouped into Today, Yesterday, Previous 7 days, and month sections when sorted by date. Cards under a section show the time or day instead of repeating the section date. Grid covers fill the tile and crop from the top of the page; titles wrap to two lines so auto-generated names stay readable. Folder category chips and the header search/new-folder icons are removed; All includes documents inside folders.
+- **Compact navigation bar** — a slimmer bar with outlined Home, Library, Tools, and Settings icons and a raised scanner button in the middle (also at the top of the tablet rail). The button asks **Scan with camera** or **Import from gallery** and opens that flow. The Library's floating **+** menu is removed; **New folder** stays on the Folders shelf, which now shows even when no folders exist.
+- **Tools layout** — Tools is a simple two-column grid of equal-height tiles in **Create**, **PDF**, and **Utilities** sections, with short descriptions.
+- **Search results** — folders and documents are listed under separate **Folders** and **Documents** headings; folder results show the folder illustration and a "Folder" label.
+- **Home recents** — Recent folders and Recent documents use the same folder tiles, segmented document rows, relative dates, and "See all" headers as the Library. Home shows only the four most recently updated documents; "See all" opens the full Library.
+- **Library polish** — compact sort button and grid/list selector with 48 dp touch targets; list rows are rounded segments per section (larger outer corners, a small gap instead of dividers) with top-cropped page thumbnails; grid cards have an inset press highlight so the cover and text never touch its edge, and press ripples stay inside each control's visible shape. Search always spans both documents and folders and uses the same rounded field.
+
+- **Capture and processing resolution** — camera captures use the highest-quality still at the sensor's maximum resolution, and processed pages are capped at 2800 px on the longest edge (up from 2400 px).
+- **Legacy filters** — Enhanced Color, Shadow Reduction, Clean, Soft Black & White, and Receipt are remapped to Natural, Magic Color, Grayscale, and Faded Text for existing pages and documents.
+- **Database** — schema 5 (`MIGRATION_4_5`) adds the page intensity column and remaps legacy presets. Upgrades run automatically.
+
+### Fixed
+
+- **Adjust brightness and contrast** — contrast now pivots on mid-gray instead of black, and the adjustments only change RGB, so the alpha channel is no longer scaled (which could leave pages semi-transparent).
+
 ## [1.0.16] - 2026-09-16
 
 ### Added

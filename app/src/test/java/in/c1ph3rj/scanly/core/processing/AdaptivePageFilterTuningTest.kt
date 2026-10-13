@@ -2,158 +2,132 @@ package `in`.c1ph3rj.scanly.core.processing
 
 import `in`.c1ph3rj.scanly.domain.model.PageFilterPreset
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class AdaptivePageFilterTuningTest {
     @Test
-    fun automaticUsesCleanPaperAsTheSafeFallback() {
-        val ordinaryDocument = profile(
-            brightness = 188.0,
-            contrast = 42.0,
-            shadowRatio = 0.02,
-            backgroundUnevenness = 5.0,
-            saturation = 12.0,
-            colorRatio = 0.005,
-            textDensity = 0.02,
-        )
-
-        assertEquals(PageFilterPreset.CLEAN, AdaptivePageFilterTuning.automatic(null))
-        assertEquals(PageFilterPreset.CLEAN, AdaptivePageFilterTuning.automatic(ordinaryDocument))
+    fun missingProfileFallsBackToMagicColor() {
+        assertEquals(PageFilterPreset.MAGIC_COLOR, AdaptivePageFilterTuning.automatic(null))
     }
 
     @Test
-    fun automaticPreservesUsefulColorAndRoutesLongReceiptsSeparately() {
-        val colorDocument = profile(
-            saturation = 36.0,
-            colorRatio = 0.04,
-            textDensity = 0.04,
+    fun photoLikePageUsesNaturalColor() {
+        val photo = profile(
+            colorRatio = 0.30,
+            saturation = 55.0,
+            textDensity = 0.005,
         )
+
+        assertEquals(PageFilterPreset.NATURAL_COLOR, AdaptivePageFilterTuning.automatic(photo))
+    }
+
+    @Test
+    fun longMonochromeReceiptUsesFaded() {
         val receipt = profile(
-            saturation = 8.0,
-            colorRatio = 0.004,
-            textDensity = 0.08,
             aspectRatio = 2.4,
+            textDensity = 0.08,
+            colorRatio = 0.004,
+            saturation = 8.0,
         )
 
-        assertEquals(PageFilterPreset.ENHANCED_COLOR, AdaptivePageFilterTuning.automatic(colorDocument))
-        assertEquals(PageFilterPreset.RECEIPT, AdaptivePageFilterTuning.automatic(receipt))
+        assertEquals(PageFilterPreset.FADED, AdaptivePageFilterTuning.automatic(receipt))
     }
 
     @Test
-    fun automaticUsesColorPreservingShadowReductionForStronglyShadowedColorPages() {
-        val shadowedColorDocument = profile(
-            shadowRatio = 0.18,
-            backgroundUnevenness = 17.0,
-            saturation = 32.0,
-            colorRatio = 0.05,
-            textDensity = 0.05,
-        )
-
-        assertEquals(
-            PageFilterPreset.SHADOW_REDUCTION,
-            AdaptivePageFilterTuning.automatic(shadowedColorDocument),
-        )
-    }
-
-    @Test
-    fun automaticKeepsMildUnevenColorAsEnhancedColor() {
-        val mildlyUnevenColor = profile(
-            shadowRatio = 0.10,
-            backgroundUnevenness = 13.0,
-            saturation = 36.0,
-            colorRatio = 0.04,
+    fun textPageWithFaintInkUsesFaded() {
+        val faintText = profile(
             textDensity = 0.04,
-        )
-
-        assertEquals(
-            PageFilterPreset.ENHANCED_COLOR,
-            AdaptivePageFilterTuning.automatic(mildlyUnevenColor),
-        )
-    }
-
-    @Test
-    fun automaticUsesCleanPaperForUnevenTextHeavyPages() {
-        val shadowedDocument = profile(
-            brightness = 132.0,
-            contrast = 24.0,
-            shadowRatio = 0.20,
-            backgroundUnevenness = 18.0,
-            saturation = 10.0,
-            colorRatio = 0.005,
-            textDensity = 0.07,
-        )
-
-        assertEquals(PageFilterPreset.CLEAN, AdaptivePageFilterTuning.automatic(shadowedDocument))
-    }
-
-    @Test
-    fun automaticDoesNotMistakeWarmLightingForUsefulDocumentColor() {
-        val warmMonochromePage = profile(
-            saturation = 36.0,
             colorRatio = 0.004,
-            textDensity = 0.05,
-        )
-
-        // Warm light without real chroma → clean mono paper, not enhanced color.
-        assertEquals(PageFilterPreset.CLEAN, AdaptivePageFilterTuning.automatic(warmMonochromePage))
-    }
-
-    @Test
-    fun automaticUsesSoftBlackAndWhiteForDenseWellLitText() {
-        val denseText = profile(
-            brightness = 190.0,
-            contrast = 40.0,
-            shadowRatio = 0.02,
-            backgroundUnevenness = 4.0,
             saturation = 8.0,
-            colorRatio = 0.003,
-            textDensity = 0.08,
-        ).copy(edgeDensity = 0.10)
-
-        assertEquals(
-            PageFilterPreset.SOFT_BLACK_AND_WHITE,
-            AdaptivePageFilterTuning.automatic(denseText),
+            toneInkLevel = 130.0,
         )
+
+        assertEquals(PageFilterPreset.FADED, AdaptivePageFilterTuning.automatic(faintText))
     }
 
     @Test
-    fun automaticKeepsLongColorDocumentsOutOfReceiptMode() {
-        val longColorDocument = profile(
-            saturation = 42.0,
-            colorRatio = 0.04,
-            textDensity = 0.08,
-            aspectRatio = 2.4,
+    fun colouredPageUsesMagicColor() {
+        val coloredPage = profile(
+            textDensity = 0.04,
+            colorRatio = 0.05,
+            saturation = 36.0,
         )
 
-        assertEquals(PageFilterPreset.ENHANCED_COLOR, AdaptivePageFilterTuning.automatic(longColorDocument))
+        assertEquals(PageFilterPreset.MAGIC_COLOR, AdaptivePageFilterTuning.automatic(coloredPage))
     }
 
     @Test
-    fun lowDetailPagesAvoidAggressiveTextEnhancement() {
-        val evenlyLitBlankPage = profile(
-            shadowRatio = 0.01,
-            backgroundUnevenness = 3.0,
+    fun plainMonochromeTextPageUsesGrayscale() {
+        val plainText = profile(
+            textDensity = 0.04,
             colorRatio = 0.002,
-            textDensity = 0.002,
-        ).copy(edgeDensity = 0.008)
-        val shadowedBlankPage = evenlyLitBlankPage.copy(
-            shadowRatio = 0.18,
-            backgroundUnevenness = 16.0,
+            saturation = 5.0,
+            toneInkLevel = 30.0,
         )
 
-        assertEquals(PageFilterPreset.ORIGINAL, AdaptivePageFilterTuning.automatic(evenlyLitBlankPage))
-        assertEquals(PageFilterPreset.SHADOW_REDUCTION, AdaptivePageFilterTuning.automatic(shadowedBlankPage))
+        assertEquals(PageFilterPreset.GRAYSCALE, AdaptivePageFilterTuning.automatic(plainText))
+    }
+
+    @Test
+    fun warmLightWithoutRealChromaIsNotTreatedAsColor() {
+        val warmMonochromePage = profile(
+            textDensity = 0.05,
+            colorRatio = 0.004,
+            saturation = 36.0,
+        )
+
+        assertEquals(PageFilterPreset.GRAYSCALE, AdaptivePageFilterTuning.automatic(warmMonochromePage))
+    }
+
+    @Test
+    fun autoNeverResolvesToAutoOrOriginal() {
+        val allowed = setOf(
+            PageFilterPreset.MAGIC_COLOR,
+            PageFilterPreset.NATURAL_COLOR,
+            PageFilterPreset.GRAYSCALE,
+            PageFilterPreset.FADED,
+        )
+
+        for (colorRatio in listOf(0.0, 0.004, 0.012, 0.03, 0.3)) {
+            for (textDensity in listOf(0.0, 0.005, 0.02, 0.08)) {
+                for (saturation in listOf(0.0, 10.0, 40.0)) {
+                    for (aspectRatio in listOf(1.0, 1.4, 2.4)) {
+                        for (ink in listOf(10.0, 60.0, 130.0, 220.0)) {
+                            for (edgeDensity in listOf(0.005, 0.07)) {
+                                val resolved = AdaptivePageFilterTuning.automatic(
+                                    profile(
+                                        colorRatio = colorRatio,
+                                        textDensity = textDensity,
+                                        saturation = saturation,
+                                        aspectRatio = aspectRatio,
+                                        toneInkLevel = ink,
+                                        edgeDensity = edgeDensity,
+                                    ),
+                                )
+                                assertTrue(
+                                    "Auto resolved to $resolved for colorRatio=$colorRatio textDensity=$textDensity " +
+                                        "saturation=$saturation aspect=$aspectRatio ink=$ink edge=$edgeDensity",
+                                    resolved in allowed,
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun profile(
         brightness: Double = 176.0,
         contrast: Double = 38.0,
         shadowRatio: Double = 0.04,
-        backgroundUnevenness: Double = 6.0,
         saturation: Double = 14.0,
+        edgeDensity: Double = 0.07,
         colorRatio: Double = 0.008,
         textDensity: Double = 0.04,
         aspectRatio: Double = 1.4,
+        toneInkLevel: Double = 40.0,
         longestEdge: Int = 1_800,
     ): PageImageProfile = PageImageProfile(
         brightness = brightness,
@@ -161,12 +135,12 @@ class AdaptivePageFilterTuningTest {
         shadowRatio = shadowRatio,
         highlightRatio = 0.18,
         saturation = saturation,
-        edgeDensity = 0.07,
+        edgeDensity = edgeDensity,
         sharpness = 48.0,
         longestEdge = longestEdge,
-        backgroundUnevenness = backgroundUnevenness,
         textDensity = textDensity,
         colorRatio = colorRatio,
         aspectRatio = aspectRatio,
+        toneInkLevel = toneInkLevel,
     )
 }

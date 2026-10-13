@@ -429,6 +429,7 @@ class DefaultPageRepository @Inject constructor(
             contrast = filterContrast,
             saturation = filterSaturation,
             sharpness = filterSharpness,
+            intensity = filterIntensity,
         ).sanitized(),
         processingState = PageProcessingState.fromStorage(processingState),
         createdAtMillis = createdAtMillis,
@@ -489,6 +490,7 @@ class DefaultPageRepository @Inject constructor(
             filterContrast = sanitizedAdjustments.contrast,
             filterSaturation = sanitizedAdjustments.saturation,
             filterSharpness = sanitizedAdjustments.sharpness,
+            filterIntensity = sanitizedAdjustments.intensity,
             processingState = processedArtifacts.processingState,
             updatedAtMillis = updatedAtMillis,
         )

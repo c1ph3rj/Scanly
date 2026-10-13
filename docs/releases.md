@@ -9,7 +9,7 @@ Version policy and release history for Scanly.
 | Version name | `1.0.16` |
 | Version code | `16` |
 | Application ID | `in.c1ph3rj.scanly` |
-| Room schema | `4` |
+| Room schema | `5` (unreleased filter overhaul; `1.0.16` shipped schema `4`) |
 | Min SDK | 29 (Android 10) |
 | Target / compile SDK | compile 37 / target 36 |
 | Release date | 2026-09-16 |
@@ -120,6 +120,14 @@ Full details: [CHANGELOG.md](../CHANGELOG.md)
 
 ## Upgrade notes
 
+### From 1.0.16 to the filter overhaul (schema 5, unreleased)
+
+- Room schema **5** via `ScanlyDatabase.MIGRATION_4_5`: adds `scan_pages.filterIntensity` (default `1`, the tuned look).
+- Legacy presets are remapped in `scan_pages.filterPreset` and `documents.preferredFilterPreset`: Enhanced Color → Natural, Shadow Reduction → Magic Color, Clean → Grayscale, Soft Black & White and Receipt → Faded Text.
+- Existing pages keep their stored adjustments and get the new engine the next time they are captured or saved from the editor.
+- `.scanly` backups written after this change include `filterIntensity`; older archives restore with `1`.
+- No manual steps required.
+
 ### From 1.0.14 to 1.0.16
 
 - No Room schema change.
@@ -149,7 +157,7 @@ Full details: [CHANGELOG.md](../CHANGELOG.md)
 
 ### From 1.0.0 to current
 
-- Room migrates automatically along `1→2→3→4` (filter preset, document groups, then filter adjustments).
+- Room migrates automatically along `1→2→3→4→5` (filter preset, document groups, filter adjustments, then filter intensity and the legacy preset remap).
 - Existing documents remain; they appear ungrouped until moved into a collection.
 - **Clear all data** (added in 1.0.4) is destructive and cannot be undone.
 - Completed external `.scanly` backups survive clear-all-data.

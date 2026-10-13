@@ -11,7 +11,8 @@ Raw JPEG (camera or import)
   → Optional physical-document semantic gate (capture/import only)
   → Corner detection (LiteRT post model + book-aware resolve) OR stored/manual crop quad
   → Perspective warp (`PerspectiveBitmapTransform`)
-  → Filter preset (`OpenCvPageFilterProcessor`)
+  → Decode/downscale to max 2800 px longest edge (processing path)
+  → Filter preset + intensity (`OpenCvPageFilterProcessor` → `PageFilterEngine`)
   → Optional post-filter adjustments (`PageFilterAdjustmentsApplier`)
   → Processed JPEG + thumbnail
   → Room record update
@@ -91,59 +92,148 @@ Maps the detected (or manual) quad to a flat rectangular output image.
 
 ## Step 4: Filter engine
 
-`OpenCvPageFilterProcessor` is the public facade. Internals live in `core/processing/filter/` and follow a reflectance model (`Image ≈ Reflectance × Shading`):
+`OpenCvPageFilterProcessor` is the public facade. Internals live in `core/processing/filter/` and render every preset with one reflectance model:
+
+```
+Image ≈ Reflectance × Shading
+```
+
+Shading (uneven light across the paper) is estimated and divided out, so paper goes to white while ink and colour keep their relative values. The pipeline:
 
 ```
 Cropped page
-  → Analyze at canonical 720px (`PageImageAnalyzer` → `PageImageProfile`)
-  → Auto routing (`AdaptivePageFilterTuning.automatic`) when the preset is Auto
-  → Preset recipe (look only: Natural vs Document, paper target, caps)
-  → Strength controller (closed-loop gain, glare reduces flatten/CLAHE)
-  → Shared operators (content-masked flatten, soft tone, paper WB, text-only sharpen)
-  → One-pass output guard (Color only: pull back over-white paper; restore weak text)
+  → Analyze at canonical 720 px (PageImageAnalyzer → PageImageProfile, incl. tone stats)
+  → Auto routing (AdaptivePageFilterTuning.automatic) when the preset is Auto
+  → Look parameters (PageFilterLook.resolve, scaled by intensity)
+  → Paper-aware background model at 360 px (PageBackgroundModel)
+  → Divide shading out (per RGB channel for colour looks; gray for Grayscale, Faded Text and B&W)
+  → One tone curve: black point / white point / gamma (PageFilterOperators.toneCurve)
+  → Colour looks: vibrance + paper neutralization
+  → Unsharp mask with noise damping   |   B&W: anti-aliased global threshold + despeckle
 ```
 
-Kernels scale from a **1600px** reference edge so 320px picker chips, 1600px live preview, and 2400px saves share one look when they share one profile. Filter picker thumbs analyze the cropped page at ≥720px, then render chips at 320px with that profile.
+### Paper-aware background model
 
-Two look families:
+`PageBackgroundModel` estimates the shading the page was lit with:
 
-- **Natural** (Color, Shadow Reduce, Magic) — stay recognizably the capture; flatten evens lighting toward current paper luminance; cream paper is not forced to sterile white.
-- **Document** (Clean, Grayscale, Text Enhance, B&W, Receipt) — explicit scan paper, still closed-loop so they do not blow out.
+1. **Fixed working size.** The page is reduced to a 360 px longest edge before estimation, so the same page gets the same shading at chip, preview and save sizes.
+2. **Stroke removal.** A morphological close (ellipse) removes ink strokes up to `strokeFraction` of the edge (3 % for most looks, 4.5 % for Whiteboard), followed by a small median blur.
+3. **Paper mask.** A pixel counts as paper only if it is bright relative to the page's paper level, close in colour to the paper reference (low chromaticity distance), and smooth (low local texture). Photos, logos and solid fills usually fail one of these tests.
+4. **Multi-scale fill.** Background under non-paper pixels is filled from surrounding paper with normalized convolution at four scales (3 %, 8 %, 20 % and 50 % of the edge). Where no paper is nearby it falls back to the paper reference. Photos and logos keep their own content instead of being flattened to white.
 
-| Preset | Storage value | Typical use |
+The paper reference is the median RGB of the brightest quarter of the page.
+
+### Division and gain floor
+
+Each channel is normalized as `out = src × target / background`. The background is floored at `reference / maxGain` (for example `maxGain` 4.0 for Magic Color) so very dark regions are not amplified without limit.
+
+Where the local gain is above about 1.6× (deep shadow), the source is blended toward a smoothed copy before division. This suppresses the sensor noise that would otherwise be amplified in shadows. The smoothing strength is `denoiseSigma`, which scales with the page size.
+
+### Render modes
+
+| Mode | Presets | Division | After division |
+| --- | --- | --- | --- |
+| Color | Magic Color, Whiteboard | Per RGB channel; paper → 250 | Tone curve → vibrance + paper neutralization → unsharp mask |
+| Natural | Natural | Per RGB channel; paper lifted toward ~238 (never darkened) with part of the cast removed | Tone curve → unsharp mask |
+| Gray | Grayscale, Faded Text | Gray; paper → 250 | Tone curve → unsharp mask |
+| Binary | B&W | Gray; paper → 250 | Anti-aliased global threshold → despeckle |
+
+### Tone curve
+
+A single LUT is built from three values: **black point**, **white point** and **gamma**. Input is mapped to `((v − black) / (white − black))^gamma`, clipped to 0…255. Gamma above 1 darkens mid-tones (ink) while paper stays clipped to white.
+
+The points come from **tone stats measured on the normalized page at 720 px** (`PageImageAnalyzer.measureTone`):
+
+| Stat | Measured as | Used for |
 | --- | --- | --- |
-| Original | `original` | No filter |
-| Auto | `auto` | Routes to a concrete preset; that choice is persisted |
-| Enhanced Color | `enhanced_color` | Cleans paper while retaining logos and color marks |
-| Grayscale | `grayscale` | General text documents |
-| Black & White | `black_and_white` | Strong text / invoice output |
-| Clean | `clean` | Uneven monochrome paper |
-| Shadow Reduction | `shadow_reduction` | Color pages under uneven lighting |
-| Magic Color | `magic_color` | Faded print / illustrations |
-| Receipt | `receipt` | Thermal receipts and long slips |
-| Soft Black & White (Text Enhance) | `soft_black_and_white` | Faint handwriting / gentler text |
+| Paper level | Histogram peak in the bright range (≥140) | Reference for the white point |
+| White point | 12th percentile of paper pixels near the paper peak (clamped 170…250) | Clipping of paper to white |
+| Ink level | 0.8th percentile of all pixels (clamped 0…230) | Black point, faint-ink detection |
+
+Because the stats are measured on the normalized page, the curve lands on what the ink and paper will actually look like after shading is removed.
+
+### Intensity
+
+Each page stores an `intensity` value from 0 to 1.5 (UI 0–150 %, default 1):
+
+| Intensity | Effect on colour and grayscale looks |
+| --- | --- |
+| 0 | Lighting correction only: shading is divided out; the tone curve is an identity mapping, with no vibrance or sharpening |
+| 1 | Tuned default |
+| 1.5 | Strongest: deeper ink, more paper lift, more vibrance and sharpening |
+
+Intensity scales the tonal parameters (black point, white point, gamma, vibrance, sharpening). For B&W, it moves the threshold instead: a higher intensity raises the threshold, so more faint marks are kept as ink. B&W still binarizes at intensity 0. **Original** ignores intensity.
+
+### Resolution independence
+
+Tonal parameters do not depend on the output size. They come from the 360 px background model and the 720 px analysis profile, so picker chips (320 px), the live editor preview (~1600 px) and the saved JPEG (up to 2800 px) produce the same look. Only pixel-level kernels scale with the longest edge, against a **1600 px reference edge**: sharpening sigma, shadow-denoise sigma and the despeckle area.
+
+### Presets
+
+| Preset | Storage value | Render | Typical use |
+| --- | --- | --- | --- |
+| Original | `original` | No processing | Keep the captured page as-is |
+| Auto | `auto` | Routes to Magic Color, Natural, Faded Text or Grayscale; the concrete choice is persisted | Mixed content, when you do not want to pick |
+| Magic Color | `magic_color` | Color; paper whitened, colour ink kept vivid | Forms with colour, stamps, highlighter, illustrations |
+| Natural | `natural_color` | Color; lighting evened, paper kept near its own tone, light white balance | Photos and logos, cream paper |
+| Grayscale | `grayscale` | Gray; clean paper, darker text | Plain text documents |
+| B&W | `black_and_white` | Two-tone threshold; specks removed | Invoices and strong text output |
+| Whiteboard | `whiteboard` | Color; stronger whitening and vibrance | Photos of whiteboards and marker |
+| Faded Text | `faded` | Gray; faint ink pulled toward black | Pencil, thermal receipts, faded print |
+
+### Auto routing
+
+`AdaptivePageFilterTuning.automatic` uses the page profile. Checks run in this order:
+
+| Page content | Resolves to |
+| --- | --- |
+| Mostly picture (high colour ratio, little text) | Natural |
+| Receipt-like (long narrow page, text, almost no colour) or faint ink | Faded Text |
+| Useful colour (enough chromatic area) | Magic Color |
+| Text-like (text or edges present) | Grayscale |
+| Anything else, or no profile | Magic Color |
+
+### Legacy presets
+
+Presets removed in the filter overhaul are remapped to their closest replacement. The Room migration (4 → 5) rewrites stored values, and `PageFilterPreset.fromStorage` maps them on read (for example from an older `.scanly` backup). Unknown values fall back to Original.
+
+| Legacy value | Replaced by | Former name |
+| --- | --- | --- |
+| `enhanced_color` | Natural (`natural_color`) | Enhanced Color |
+| `shadow_reduction` | Magic Color (`magic_color`) | Shadow Reduction |
+| `clean` | Grayscale (`grayscale`) | Clean |
+| `soft_black_and_white` | Faded Text (`faded`) | Soft Black & White (Text Enhance) |
+| `receipt` | Faded Text (`faded`) | Receipt |
+
+### Picker chips
+
+The filter picker thumbnails use `OpenCvPageFilterProcessor.applyAll`: one shared profile, every preset rendered at **intensity 1.0** (the designed look). The live preview and the saved JPEG use the page's own intensity.
 
 ## Step 5: Post-filter adjustments
 
 After the preset, `PageFilterAdjustmentsApplier` applies per-page tweaks persisted on `ScanPage`:
 
-| Field | Range (normalized) | Effect |
+| Field | Range | Effect |
 | --- | --- | --- |
-| `brightness` | −1…1 | Linear shift |
-| `contrast` | −1…1 | Scale around mid-tones |
+| `intensity` | 0…1.5 (UI 0–150 %, default 1) | Strength of the preset. Consumed by the filter engine, not by the adjustments applier. Shown as the first **Intensity** slider on Adjust. Has no effect on Original. |
+| `brightness` | −1…1 | Linear shift on RGB |
+| `contrast` | −1…1 | Scale on RGB around mid-gray (128). 0 is identity; −1 flattens to gray |
 | `saturation` | −1…1 | HSV saturation scale |
 | `sharpness` | 0…1 | Unsharp mask amount |
 
-Identity (all zero) skips extra work. Editor **Adjust** edits these; bulk “apply filter to all pages” changes only the preset, not other pages’ adjustments.
+Brightness and contrast operate on RGB only. The alpha channel is never scaled, so pixels can no longer become semi-transparent. Contrast pivots on mid-gray; earlier builds pivoted on black.
+
+Identity (all tonal fields zero) skips extra work. Editor **Adjust** edits these; bulk “apply filter to all pages” changes only the preset, not other pages’ intensity or adjustments.
 
 ## Step 6: Output
 
 | Output | Settings |
 | --- | --- |
-| Processed JPEG | Quality 94, max dimension 2400 px |
+| Processing size | Longest edge capped at **2800 px** (`DefaultPageImageProcessor.MAX_PROCESSING_DIMENSION`). Decoding samples down by a power of two, then finishes with an exact filtered downscale to the cap |
+| Processed JPEG | Quality 94, max dimension 2800 px |
 | Thumbnail | Generated for list display |
 
-Paths under `processed/` and `thumbs/` per document. `ThumbnailCache` is invalidated after reprocess.
+Paths under `processed/` and `thumbs/` per document. `ThumbnailCache` is invalidated after reprocess. Camera capture resolution is covered in [capture-and-scan.md](capture-and-scan.md).
 
 ## Failure handling
 
@@ -152,6 +242,7 @@ Paths under `processed/` and `thumbs/` per document. `ThumbnailCache` is invalid
 | No quad detected (capture/import) | Mark `NEEDS_REVIEW`; user fixes on crop screen |
 | AI Detect finds nothing | Snackbar; existing handles unchanged |
 | Processing exception | Fallback thumbnail from raw when possible; raw preserved |
+| Filter render exception | Unfiltered copy is saved and the applied preset is recorded as Original |
 | Editor reprocess failure | Raw preserved; previous processed path may remain |
 
 ## Editor integration
@@ -161,14 +252,14 @@ Paths under `processed/` and `thumbs/` per document. `ThumbnailCache` is invalid
 - Main surface: **live** cropped + filtered + adjusted preview (same pipeline as reprocess, preview-sized)
 - Toolbar: **Crop · Filters · Adjust · Retake · Delete**
 - **Filters** → full-screen `FilterPickerScreen` (large live preview + preset chips + apply-to-all)
-- **Adjust** → full-screen `FilterCustomizeScreen` (sliders, hold Compare for filter-only, scrollbar)
-- Done on the editor saves filter + adjustments (with latest crop/rotation from storage)
+- **Adjust** → full-screen `FilterCustomizeScreen` (**Intensity** first, then brightness, contrast, saturation, sharpness; hold Compare for filter-only; scrollbar)
+- Done on the editor saves filter, intensity and adjustments (with latest crop/rotation from storage)
 
 ### Crop screen (`crop/page/{pageId}`)
 
 - Full-frame preview with four-point handles (`CropQuadEditor`)
 - **AI Detect · Left · Right · Reset · Done**
-- Done → `UpdatePageEditsUseCase` with crop + rotation; keeps current filter + adjustments
+- Done → `UpdatePageEditsUseCase` with crop + rotation; keeps current filter, intensity + adjustments
 
 ### Shared support
 
@@ -183,14 +274,17 @@ Paths under `processed/` and `thumbs/` per document. `ThumbnailCache` is invalid
 | File | Package | Role |
 | --- | --- | --- |
 | `PageImageProcessor` | `domain/processing/` | Interface |
-| `DefaultPageImageProcessor` | `data/processing/` | Orchestrates full pipeline |
+| `DefaultPageImageProcessor` | `data/processing/` | Orchestrates full pipeline; 2800 px processing cap |
 | `PerspectiveQuadMath` | `core/processing/` | Geometry math |
 | `PerspectiveBitmapTransform` | `core/processing/` | Bitmap warp |
-| `OpenCvPageFilterProcessor` | `core/processing/` | Filter facade (`apply`, `analyze`, `applyAll`) |
-| `PageImageAnalyzer` | `core/processing/filter/` | Canonical 720px page profile |
-| `PageFilterRecipes` / `PageFilterStrengthController` | `core/processing/filter/` | Look identity and closed-loop gain |
-| `PageFilterOperators` / `PageFilterEngine` | `core/processing/filter/` | Shared ops, render, output guard |
-| `PageFilterAdjustmentsApplier` | `core/processing/` | Brightness/contrast/saturation/sharpness |
+| `OpenCvPageFilterProcessor` | `core/processing/` | Filter facade (`apply`, `applyWithResolvedPreset`, `analyze`, `applyAll`) |
+| `PageImageProfile` | `core/processing/` | Page profile (content, paper, noise and tone stats) |
+| `PageImageAnalyzer` | `core/processing/filter/` | Canonical 720 px profile, including tone stats |
+| `PageBackgroundModel` | `core/processing/filter/` | 360 px paper-aware shading model; mask, multi-scale fill, per-channel division |
+| `PageFilterLook` | `core/processing/filter/` | Preset → render parameters, scaled by intensity and resolution |
+| `PageFilterEngine` | `core/processing/filter/` | Renders the Color, Natural, Gray and Binary modes |
+| `PageFilterOperators` | `core/processing/filter/` | Tone curve LUT, vibrance, unsharp mask, threshold, despeckle |
+| `PageFilterAdjustmentsApplier` | `core/processing/` | Brightness / contrast / saturation / sharpness on RGB |
 | `AdaptivePageFilterTuning` | `core/processing/` | Auto preset routing |
 | `LiteRtDocumentCornerDetector` | `core/ml/` | Multi-model corner inference |
 | `LiteRtDocumentGateDetector` | `core/ml/` | Physical-document gate |
@@ -201,7 +295,7 @@ Paths under `processed/` and `thumbs/` per document. `ThumbnailCache` is invalid
 
 ## Related docs
 
-- [capture-and-scan.md](capture-and-scan.md) — camera session and finalize trigger
+- [capture-and-scan.md](capture-and-scan.md) — camera session, capture resolution and finalize trigger
 - [export.md](export.md) — uses processed images for PDF/ZIP
 - [../data/file-storage.md](../data/file-storage.md) — output file layout
 - [../architecture/screens.md](../architecture/screens.md) — editor / crop ViewModels

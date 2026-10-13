@@ -11,13 +11,13 @@ See also [docs/releases.md](docs/releases.md) for release policy and history wit
 | Application ID | `in.c1ph3rj.scanly` |
 | Min SDK | 29 (Android 10) |
 | Target / compile SDK | compile 37 / target 36 |
-| Room schema version | `4` |
+| Room schema version | `5` (unreleased filter overhaul; `1.0.16` shipped schema `4`) |
 | Release date | 2026-09-16 |
 | Branch | `master` |
 
 The version shown in **Settings** is read from `versionName` in `app/build.gradle.kts`.
 
-**Note:** Room schema **4** adds per-page filter adjustment columns. Existing libraries open through `MIGRATION_3_4`, and older `.scanly` backups restore with identity adjustment defaults.
+**Note:** Room schema **4** added per-page filter adjustment columns (`MIGRATION_3_4`). Room schema **5** (unreleased) adds `filterIntensity` and remaps legacy filter presets (`MIGRATION_4_5`). Older `.scanly` backups restore with identity adjustment defaults and intensity `1`.
 
 ## Versioning Policy
 

@@ -15,6 +15,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
@@ -230,6 +231,7 @@ private fun ScanlyApp(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding)
+                    .consumeWindowInsets(innerPadding)
                     .background(MaterialTheme.colorScheme.background),
             ) {
                 AnimatedContent(
@@ -260,6 +262,8 @@ private fun ScanlyApp(
                                 onCheckForUpdates = {
                                     appUpdateViewModel.checkForUpdates(AppUpdateCheckTrigger.Manual)
                                 },
+                                onScan = launchActionViewModel::requestScan,
+                                onImport = launchActionViewModel::requestImport,
                             )
                             // Start redirects only after NavHost is composed so Scan/Import
                             // skip the in-app name dialog and go straight to camera / picker.

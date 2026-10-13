@@ -9,7 +9,7 @@ import org.junit.Test
 class LibraryUiStateTest {
 
     @Test
-    fun allTabKeepsFolderedDocumentsInsideFoldersUntilSearchIsActive() {
+    fun allTabShowsEveryDocumentIncludingFolderedDocuments() {
         val grouped = document(id = "grouped", title = "Lease", groupId = "home")
         val ungrouped = document(id = "loose", title = "Receipt")
 
@@ -20,7 +20,7 @@ class LibraryUiStateTest {
         )
 
         assertEquals(listOf("home"), state.visibleGroups.map { it.id })
-        assertEquals(listOf("loose"), state.visibleDocuments.map { it.id })
+        assertEquals(listOf("grouped", "loose"), state.visibleDocuments.map { it.id })
     }
 
     @Test
@@ -107,6 +107,25 @@ class LibraryUiStateTest {
         )
 
         assertEquals(listOf("z", "m", "a"), state.visibleGroups.map { it.id })
+    }
+
+    @Test
+    fun folderChipFiltersDocumentsByMembershipAndKeepsSorting() {
+        val state = LibraryUiState(
+            groups = listOf(group("work", "Work"), group("personal", "Personal")),
+            allDocuments = listOf(
+                document("lease", "Lease", "personal"),
+                document("report", "Report", "work"),
+                document("invoice", "Invoice", "work"),
+                document("loose", "Receipt"),
+            ),
+            selectedGroupId = "work",
+            sortOption = LibrarySortOption.NameAscending,
+        )
+        assertTrue(state.visibleGroups.isEmpty())
+        assertEquals(listOf("invoice", "report"), state.visibleDocuments.map { it.id })
+        assertEquals(listOf("report"), state.copy(searchQuery = "report").visibleDocuments.map { it.id })
+        assertTrue(state.copy(selectedGroupId = "empty").visibleDocuments.isEmpty())
     }
 
     private fun group(

@@ -106,11 +106,12 @@ Selected PDFs in merge/compress/password/watermark show as paper-shaped identity
 - **Live result preview** — shows the perspective-cropped page with the current filter and adjustments
 - **Crop screen** (`crop/page/{pageId}`) — **AI Detect**, **Left** / **Right** rotation, four-point handles, **Reset**, apply on Done
 - **Filter picker** (full-screen) — large live preview of each preset on the cropped page; optional apply-to-all-pages
-- **Filter engine** — Color, Shadow Reduce, and Magic stay recognizably the capture; Clean / B&W / Receipt stay scan-like; strength follows the page so looks are not overblown or underdone; picker chips match the saved JPEG
-- **Filter presets** (10 modes):
-  - Original, Auto, Enhanced Color, Grayscale, Black & White
-  - Clean, Shadow Reduction, Magic Color, Receipt, Soft Black & White
-- **Filter adjust** (full-screen) — brightness, contrast, saturation, sharpness; hold **Compare** for filter-only; scrollbar beside sliders
+- **Filter engine** — a paper-aware lighting model removes uneven shading while keeping photos, logos and colour ink; colour looks stay recognizably the capture, scan looks (Grayscale, B&W, Faded Text) read as clean paper; the same look appears at chip, preview and saved-JPEG sizes
+- **Filter presets** (8):
+  - Original, Auto (picks Magic Color, Natural, Faded Text or Grayscale for the page)
+  - Magic Color, Natural, Grayscale, B&W, Whiteboard, Faded Text
+  - Pages saved with the earlier presets (Enhanced Color, Shadow Reduction, Clean, Soft B&W, Receipt) are remapped to the closest new preset when the app upgrades
+- **Filter adjust** (full-screen) — **Intensity** (0–150 %, default 100 %) first, then brightness, contrast, saturation, sharpness; hold **Compare** for filter-only; scrollbar beside sliders
 - **Retake** — opens camera session in replacement mode
 - **Delete page** from the editor
 - Non-destructive: edits reprocess from the raw capture; raw files are never overwritten
