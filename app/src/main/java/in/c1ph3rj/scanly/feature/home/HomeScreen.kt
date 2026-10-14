@@ -1,5 +1,13 @@
 package `in`.c1ph3rj.scanly.feature.home
 
+import androidx.compose.material3.Text
+import androidx.compose.material3.Icon
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.height
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.material.icons.outlined.Search
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -42,6 +50,7 @@ fun HomeRoute(
     onOpenGroup: (String) -> Unit,
     onNavigateToLibrary: () -> Unit,
     onSeeAllFolders: () -> Unit = onNavigateToLibrary,
+    onOpenSearch: () -> Unit = {},
 ) {
     val viewModel: HomeViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -85,6 +94,7 @@ fun HomeRoute(
         onOpenGroup = onOpenGroup,
         onNavigateToLibrary = onNavigateToLibrary,
         onSeeAllFolders = onSeeAllFolders,
+        onOpenSearch = onOpenSearch,
         onCreateGroup = viewModel::createGroup,
         onSuggestTitle = viewModel::suggestDocumentTitle,
         onSuggestGroupTitle = viewModel::suggestGroupTitle,
@@ -102,6 +112,7 @@ fun HomeScreen(
     onOpenGroup: (String) -> Unit,
     onNavigateToLibrary: () -> Unit,
     onSeeAllFolders: () -> Unit = onNavigateToLibrary,
+    onOpenSearch: () -> Unit = {},
     onCreateGroup: (String) -> Unit,
     onSuggestTitle: suspend (DocumentTitleFormat) -> String,
     onSuggestGroupTitle: suspend (GroupTitleFormat) -> String,
@@ -140,6 +151,15 @@ fun HomeScreen(
                     modifier = Modifier
                         .padding(horizontal = windowSizeInfo.horizontalPadding)
                         .padding(bottom = 12.dp),
+                )
+            }
+
+            item(key = "home_search", contentType = "search") {
+                HomeSearchPill(
+                    onClick = onOpenSearch,
+                    modifier = Modifier
+                        .padding(horizontal = windowSizeInfo.horizontalPadding)
+                        .padding(bottom = 16.dp),
                 )
             }
 
@@ -479,4 +499,43 @@ private fun EmptyHomeCard(
         actionIcon = Icons.Outlined.CameraAlt,
         modifier = modifier,
     )
+}
+
+/**
+ * Entry point to library search, styled as a field but opening the dedicated search screen
+ * so Home stays a launcher (no inline results pushing the quick actions around).
+ */
+@Composable
+private fun HomeSearchPill(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    androidx.compose.material3.Surface(
+        onClick = onClick,
+        modifier = modifier
+            .fillMaxWidth()
+            .height(52.dp)
+            .semantics { contentDescription = "Search documents and folders" },
+        shape = androidx.compose.foundation.shape.RoundedCornerShape(26.dp),
+        color = MaterialTheme.colorScheme.surfaceContainer,
+        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 18.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Icon(
+                androidx.compose.material.icons.Icons.Outlined.Search,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Text(
+                text = "Search documents and folders",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 1,
+            )
+        }
+    }
 }

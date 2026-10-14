@@ -557,8 +557,10 @@ private fun LibrarySearchLauncher(
             .testTag(ScanlyTestTags.LIBRARY_SEARCH)
             .semantics { contentDescription = "Search library" },
         shape = RoundedCornerShape(26.dp),
-        color = MaterialTheme.colorScheme.surfaceContainerHigh,
+        // Same card-style pill as Home's search, so both entry points look identical.
+        color = MaterialTheme.colorScheme.surfaceContainer,
         contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
     ) {
         Row(
             modifier = Modifier.heightIn(min = 52.dp).padding(horizontal = 18.dp),

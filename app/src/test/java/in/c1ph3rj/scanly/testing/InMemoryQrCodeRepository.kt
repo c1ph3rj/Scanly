@@ -20,6 +20,7 @@ class InMemoryQrCodeRepository(
     override suspend fun generateQrBitmap(
         content: String,
         sizePx: Int,
+        inkArgb: Long,
     ): ScanlyResult<Bitmap> = runLibraryResult("Could not generate QR code.") {
         val matrix = encode(content, sizePx)
         lastGeneratedContent = content.trim()
@@ -34,6 +35,8 @@ class InMemoryQrCodeRepository(
     override suspend fun saveQrPng(
         content: String,
         sizePx: Int,
+        inkArgb: Long,
+        caption: String?,
     ): ScanlyResult<ExportArtifact> = runLibraryResult("Could not save QR code.") {
         val matrix = encode(content, sizePx)
         lastGeneratedContent = content.trim()

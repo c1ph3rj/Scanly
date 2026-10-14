@@ -1,13 +1,13 @@
 ﻿# Implementation Snapshot
 
-One-page technical summary of Scanly **v1.0.16**. For detail see the full docs index at [../README.md](../README.md).
+One-page technical summary of Scanly **v1.0.17**. For detail see the full docs index at [../README.md](../README.md).
 
 ## Release
 
 | Field | Value |
 | --- | --- |
-| Version | `1.0.16` (code `16`) |
-| Room schema | `5` (unreleased filter overhaul; `1.0.16` shipped schema `4`) |
+| Version | `1.0.17` (code `17`) |
+| Room schema | `5` (`MIGRATION_4_5`, shipped in `1.0.17`) |
 | Min SDK | 29 |
 | Target SDK | 36 |
 | Module | `:app` only |

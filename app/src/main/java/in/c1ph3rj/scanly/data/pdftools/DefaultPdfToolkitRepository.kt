@@ -8,15 +8,11 @@ import android.net.Uri
 import android.os.ParcelFileDescriptor
 import com.tom_roush.pdfbox.android.PDFBoxResourceLoader
 import com.tom_roush.pdfbox.pdmodel.PDDocument
-import com.tom_roush.pdfbox.pdmodel.PDPage
 import com.tom_roush.pdfbox.pdmodel.PDPageContentStream
 import com.tom_roush.pdfbox.pdmodel.encryption.AccessPermission
 import com.tom_roush.pdfbox.pdmodel.encryption.InvalidPasswordException
 import com.tom_roush.pdfbox.pdmodel.encryption.StandardProtectionPolicy
-import com.tom_roush.pdfbox.pdmodel.font.PDType1Font
 import com.tom_roush.pdfbox.pdmodel.graphics.image.JPEGFactory
-import com.tom_roush.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState
-import com.tom_roush.pdfbox.util.Matrix as PdfMatrix
 import dagger.hilt.android.qualifiers.ApplicationContext
 import `in`.c1ph3rj.scanly.core.common.ScanlyDispatchers
 import `in`.c1ph3rj.scanly.core.common.ScanlyError
@@ -26,7 +22,6 @@ import `in`.c1ph3rj.scanly.domain.model.PdfCompressQuality
 import `in`.c1ph3rj.scanly.domain.model.PdfDocumentInfo
 import `in`.c1ph3rj.scanly.domain.model.PdfExportOptions
 import `in`.c1ph3rj.scanly.domain.model.PdfToolSource
-import `in`.c1ph3rj.scanly.domain.model.WatermarkLayout
 import `in`.c1ph3rj.scanly.domain.model.WatermarkOptions
 import `in`.c1ph3rj.scanly.domain.model.WatermarkPageRange
 import `in`.c1ph3rj.scanly.domain.repository.DocumentExportRepository
@@ -40,9 +35,6 @@ import java.io.FileOutputStream
 import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.math.abs
-import kotlin.math.cos
-import kotlin.math.sin
 
 @Singleton
 class DefaultPdfToolkitRepository @Inject constructor(
@@ -56,6 +48,11 @@ class DefaultPdfToolkitRepository @Inject constructor(
      * parallel, so serialize the export-and-copy step before handing each caller its own file.
      */
     private val libraryExportMutex = Mutex()
+
+    private val previewBaseMutex = Mutex()
+    private var previewBase: PreviewBase? = null
+
+    private data class PreviewBase(val key: String, val file: File, val createdAt: Long)
 
     override suspend fun inspect(
         source: PdfToolSource,
@@ -193,6 +190,7 @@ class DefaultPdfToolkitRepository @Inject constructor(
         source: PdfToolSource,
         newPassword: String,
         currentPassword: String?,
+        restrictEditing: Boolean,
     ): ScanlyResult<ExportArtifact> = withContext(dispatchers.io) {
         runCatching {
             require(newPassword.length in 4..64) { "Password must be 4–64 characters." }
@@ -203,10 +201,22 @@ class DefaultPdfToolkitRepository @Inject constructor(
                     if (document.isEncrypted) {
                         document.setAllSecurityToBeRemoved(true)
                     }
+                    val permissions = AccessPermission().apply {
+                        if (restrictEditing) {
+                            setCanModify(false)
+                            setCanModifyAnnotations(false)
+                            setCanFillInForm(false)
+                            setCanAssembleDocument(false)
+                            setCanExtractContent(false)
+                            // Accessibility extraction stays on so screen readers still work.
+                            setCanExtractForAccessibility(true)
+                            setCanPrint(true)
+                        }
+                    }
                     val policy = StandardProtectionPolicy(
                         UUID.randomUUID().toString(),
                         newPassword,
-                        AccessPermission(),
+                        permissions,
                     ).apply {
                         encryptionKeyLength = 256
                         setPreferAES(true)
@@ -248,15 +258,16 @@ class DefaultPdfToolkitRepository @Inject constructor(
             resolveLocalFile(source).useFile { local ->
                 val output = newOutputFile("watermarked")
                 openDocument(local, password).use { document ->
+                    require(document.numberOfPages > 0) { "This PDF has no pages." }
                     if (document.isEncrypted) {
                         document.setAllSecurityToBeRemoved(true)
                     }
-                    val text = options.text.trim()
+                    val stamper = PdfWatermarkStamper.create(document, options)
                     document.pages.forEachIndexed { pageIndex, page ->
                         if (options.pageRange == WatermarkPageRange.FIRST_PAGE && pageIndex != 0) {
                             return@forEachIndexed
                         }
-                        stampWatermarkPage(document, page, options, text)
+                        stamper.stamp(document, page)
                     }
                     document.save(output)
                 }
@@ -275,32 +286,53 @@ class DefaultPdfToolkitRepository @Inject constructor(
             require(options.text.isNotBlank()) { "Enter watermark text." }
             require(maxWidth > 0) { "Preview size is invalid." }
             ensurePdfBox()
-            resolveLocalFile(source).useFile { local ->
-                val previewFile = File(toolsDir(), "watermark_preview_${UUID.randomUUID()}.pdf")
-                try {
-                    openDocument(local, password).use { document ->
-                        require(document.numberOfPages > 0) { "This PDF has no pages." }
-                        if (document.isEncrypted) {
-                            document.setAllSecurityToBeRemoved(true)
-                        }
-                        while (document.numberOfPages > 1) {
-                            document.removePage(document.numberOfPages - 1)
-                        }
-                        stampWatermarkPage(
-                            document = document,
-                            page = document.getPage(0),
-                            options = options,
-                            text = options.text.trim(),
-                        )
-                        document.save(previewFile)
-                    }
-                    renderWithPdfRenderer(previewFile, pageIndex = 0, maxWidth = maxWidth)
-                } finally {
-                    previewFile.delete()
+            val base = watermarkPreviewBase(source, password)
+            val previewFile = File(toolsDir(), "watermark_preview_${UUID.randomUUID()}.pdf")
+            try {
+                PDDocument.load(base).use { document ->
+                    PdfWatermarkStamper.create(document, options).stamp(document, document.getPage(0))
+                    document.save(previewFile)
                 }
+                renderWithPdfRenderer(previewFile, pageIndex = 0, maxWidth = maxWidth)
+            } finally {
+                previewFile.delete()
             }
         }.toScanlyResult("Could not update watermark preview.")
     }
+
+    /**
+     * First page of [source], decrypted, saved once and reused while the editor is open so each
+     * preview refresh loads a tiny one-page file instead of re-exporting the whole document.
+     */
+    private suspend fun watermarkPreviewBase(source: PdfToolSource, password: String?): File =
+        previewBaseMutex.withLock {
+            val key = "${source.cacheKey()}|${password.orEmpty().hashCode()}"
+            val now = System.currentTimeMillis()
+            previewBase?.let { cached ->
+                if (cached.key == key && cached.file.isFile && now - cached.createdAt < PreviewBaseTtlMs) {
+                    return@withLock cached.file
+                }
+                cached.file.delete()
+            }
+            previewBase = null
+            val file = File(toolsDir(), "watermark_base_${UUID.randomUUID()}.pdf")
+            resolveLocalFile(source).useFile { local ->
+                openDocument(local, password).use { document ->
+                    require(document.numberOfPages > 0) { "This PDF has no pages." }
+                    if (document.isEncrypted) {
+                        document.setAllSecurityToBeRemoved(true)
+                    }
+                    // Removing pages (rather than importing page 1 into a new document) keeps
+                    // inherited /Rotate, /CropBox and resources intact.
+                    while (document.numberOfPages > 1) {
+                        document.removePage(document.numberOfPages - 1)
+                    }
+                    document.save(file)
+                }
+            }
+            previewBase = PreviewBase(key = key, file = file, createdAt = now)
+            file
+        }
 
     override suspend fun renderPage(
         source: PdfToolSource,
@@ -387,167 +419,6 @@ class DefaultPdfToolkitRepository @Inject constructor(
                 ResolvedFile(file = file, deleteOnClose = false)
             }
         }
-    }
-
-    private fun stampWatermarkPage(
-        document: PDDocument,
-        page: PDPage,
-        options: WatermarkOptions,
-        text: String,
-    ) {
-        // Use the visible crop box rather than the media box so centred and repeated marks
-        // follow exactly the page area rendered by Android's PdfRenderer.
-        val pageBox = page.cropBox ?: page.mediaBox
-        val font = PDType1Font.HELVETICA_BOLD
-        val fontSize = resolveWatermarkFontSize(
-            pageWidth = pageBox.width,
-            pageHeight = pageBox.height,
-            text = text,
-            font = font,
-            options = options,
-        )
-        val unitWidth = font.getStringWidth(text) / 1000f
-        // Slight tracking stretches letters so stamps read as watermarks, not body text.
-        val characterSpacing = when (options.layout) {
-            WatermarkLayout.CENTERED -> (fontSize * 0.045f).coerceIn(1.2f, 6f)
-            WatermarkLayout.REPEATED -> (fontSize * 0.03f).coerceIn(0.6f, 3.5f)
-        }
-        val trackingExtra = if (text.length > 1) (text.length - 1) * characterSpacing else 0f
-        val textWidth = unitWidth * fontSize + trackingExtra
-        val baselineOffset = fontSize * 0.32f
-        val radians = Math.toRadians(options.angleDegrees.toDouble())
-        val cos = cos(radians).toFloat()
-        val sin = sin(radians).toFloat()
-        val positions = when (options.layout) {
-            WatermarkLayout.CENTERED -> listOf(
-                pageBox.lowerLeftX + pageBox.width / 2f to
-                    pageBox.lowerLeftY + pageBox.height / 2f,
-            )
-            WatermarkLayout.REPEATED -> watermarkTilePositions(
-                lowerX = pageBox.lowerLeftX,
-                lowerY = pageBox.lowerLeftY,
-                width = pageBox.width,
-                height = pageBox.height,
-                textWidth = textWidth,
-                fontSize = fontSize,
-                angleDegrees = options.angleDegrees,
-            )
-        }
-
-        PDPageContentStream(
-            document,
-            page,
-            PDPageContentStream.AppendMode.APPEND,
-            true,
-            true,
-        ).use { stream ->
-            val graphicsState = PDExtendedGraphicsState().apply {
-                nonStrokingAlphaConstant = options.opacity.coerceIn(0.05f, 0.8f)
-            }
-            stream.setGraphicsStateParameters(graphicsState)
-            stream.beginText()
-            stream.setFont(font, fontSize)
-            stream.setCharacterSpacing(characterSpacing)
-            // Cool mid-gray reads as a security mark without drowning body text.
-            stream.setNonStrokingColor(0.42f, 0.42f, 0.46f)
-            positions.forEach { (centerX, centerY) ->
-                stream.setTextMatrix(PdfMatrix(cos, sin, -sin, cos, centerX, centerY))
-                stream.newLineAtOffset(-textWidth / 2f, -baselineOffset)
-                stream.showText(text)
-            }
-            stream.endText()
-        }
-    }
-
-    /**
-     * Page-relative point size so a Medium stamp looks intentional on both phone
-     * captures and full A4 pages instead of a fixed 42pt that is either tiny or sparse.
-     */
-    private fun resolveWatermarkFontSize(
-        pageWidth: Float,
-        pageHeight: Float,
-        text: String,
-        font: PDType1Font,
-        options: WatermarkOptions,
-    ): Float {
-        val scale = options.size.scale
-        val unitWidth = (font.getStringWidth(text) / 1000f).coerceAtLeast(0.01f)
-        val shortestEdge = minOf(pageWidth, pageHeight)
-        return when (options.layout) {
-            WatermarkLayout.CENTERED -> {
-                // Dominant single stamp: ~80–95% of the longer page edge so portrait
-                // pages still get a bold diagonal mark.
-                val referenceEdge = maxOf(pageWidth, pageHeight)
-                val widthFraction = (0.72f * scale).coerceIn(0.48f, 0.9f)
-                val targetWidth = referenceEdge * widthFraction
-                // Prefer spanning most of the page width on wide/short pages.
-                val widthTarget = pageWidth * (0.88f * scale).coerceIn(0.55f, 0.96f)
-                maxOf(targetWidth / unitWidth, widthTarget / unitWidth).coerceIn(48f, 180f)
-            }
-            WatermarkLayout.REPEATED -> {
-                // Tile size scales with paper so the field stays dense on any page size.
-                (shortestEdge * 0.064f * scale).coerceIn(16f, 52f)
-            }
-        }
-    }
-
-    private fun watermarkTilePositions(
-        lowerX: Float,
-        lowerY: Float,
-        width: Float,
-        height: Float,
-        textWidth: Float,
-        fontSize: Float,
-        angleDegrees: Float,
-    ): List<Pair<Float, Float>> {
-        val radians = Math.toRadians(angleDegrees.toDouble())
-        val absoluteCos = abs(cos(radians)).toFloat()
-        val absoluteSin = abs(sin(radians)).toFloat()
-        // Axis-aligned bounds of the rotated glyph box (width × body height).
-        val textHeight = fontSize
-        val rotatedWidth = textWidth * absoluteCos + textHeight * absoluteSin
-        val rotatedHeight = textWidth * absoluteSin + textHeight * absoluteCos
-        // 0 at horizontal/vertical, 1 near 45°. Diagonal stamps may pack tighter than
-        // their AABB; horizontal stamps must keep full width/height or they collide.
-        val diagonalFactor = abs(sin(2.0 * radians)).toFloat().coerceIn(0f, 1f)
-        val horizontalPack = 1f - 0.28f * diagonalFactor
-        val verticalPack = 1f - 0.40f * diagonalFactor
-        val horizontalGap = fontSize * (1.15f - 0.45f * diagonalFactor)
-        val verticalGap = fontSize * (1.55f - 0.55f * diagonalFactor)
-        val horizontalStep = maxOf(
-            rotatedWidth * horizontalPack + horizontalGap,
-            textWidth * (1f - 0.2f * diagonalFactor) + horizontalGap,
-            fontSize * 3.2f,
-        )
-        val verticalStep = maxOf(
-            rotatedHeight * verticalPack + verticalGap,
-            textHeight * (1.8f - 0.4f * diagonalFactor) + verticalGap,
-            fontSize * 2.6f,
-        )
-        // Bleed past the crop so rotated glyphs still cover corners and edges.
-        // Horizontal needs less bleed; diagonal needs more.
-        val padX = rotatedWidth * (0.35f + 0.25f * diagonalFactor)
-        val padY = rotatedHeight * (0.35f + 0.25f * diagonalFactor)
-        // Brick stagger only when diagonal — on horizontal it shifts rows into collisions.
-        val rowStagger = if (diagonalFactor < 0.12f) 0f else horizontalStep * 0.5f
-        return buildList {
-            var row = 0
-            var y = lowerY - padY
-            val maximumY = lowerY + height + padY
-            while (y <= maximumY + 0.5f) {
-                val rowOffset = if (row % 2 == 0) 0f else rowStagger
-                var x = lowerX - padX + rowOffset
-                val maximumX = lowerX + width + padX
-                while (x <= maximumX + 0.5f) {
-                    add(x to y)
-                    x += horizontalStep
-                }
-                y += verticalStep
-                row += 1
-                // Hard cap guards pathological short text / tiny pages from huge streams.
-                if (size >= MAX_WATERMARK_TILES) break
-            }
-        }.take(MAX_WATERMARK_TILES)
     }
 
     private fun openDocument(file: File, password: String?): PDDocument {
@@ -675,6 +546,12 @@ class DefaultPdfToolkitRepository @Inject constructor(
         PDFBoxResourceLoader.init(context.applicationContext)
     }
 
+    private fun PdfToolSource.cacheKey(): String = when (this) {
+        is PdfToolSource.DeviceUri -> "uri:$uriString"
+        is PdfToolSource.LibraryDocument -> "lib:$documentId"
+        is PdfToolSource.AppFile -> "file:$filePath:${File(filePath).lastModified()}"
+    }
+
     private fun PdfToolSource.displayLabel(): String = when (this) {
         is PdfToolSource.DeviceUri -> displayName
         is PdfToolSource.LibraryDocument -> title
@@ -712,7 +589,7 @@ class DefaultPdfToolkitRepository @Inject constructor(
         const val PdfMimeType = "application/pdf"
         /** ~32 MB ARGB ceiling for a single page during compress. */
         const val MaxCompressPagePixels = 8_000_000L
-        /** Safety cap for pathological short labels / tiny pages. */
-        const val MAX_WATERMARK_TILES = 96
+        /** Re-resolve the preview base after this long so edits to a library scan show up. */
+        const val PreviewBaseTtlMs = 5 * 60 * 1000L
     }
 }

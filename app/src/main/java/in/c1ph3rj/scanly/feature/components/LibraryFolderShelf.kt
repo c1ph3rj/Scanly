@@ -1,5 +1,6 @@
 package `in`.c1ph3rj.scanly.feature.components
 
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
@@ -191,7 +192,10 @@ fun LibraryFolderArt(
     modifier: Modifier = Modifier,
 ) {
     val colors = MaterialTheme.colorScheme
-    val backPanelColor = colors.primaryContainer
+    // primaryContainer is very pale on the light page; folders get a deeper teal there so
+    // they read as solid objects. Dark themes keep primaryContainer.
+    val folderColor = if (colors.background.luminance() > 0.5f) LightFolderTeal else colors.primaryContainer
+    val backPanelColor = folderColor
         .copy(alpha = 0.55f)
         .compositeOver(colors.background)
     val coverPath = group.coverThumbnailPath
@@ -286,7 +290,7 @@ fun LibraryFolderArt(
                         bottomEnd = 14.dp,
                     ),
                 )
-                .background(colors.primaryContainer),
+                .background(folderColor),
         ) {
             Box(
                 modifier = Modifier
@@ -385,3 +389,5 @@ fun LibraryNewFolderTile(
         }
     }
 }
+
+private val LightFolderTeal = androidx.compose.ui.graphics.Color(0xFFA9DDD5)

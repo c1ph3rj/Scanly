@@ -6,18 +6,18 @@ See also [docs/releases.md](docs/releases.md) for release policy and history wit
 
 | Field | Value |
 | --- | --- |
-| Version name | `1.0.16` |
-| Version code | `16` |
+| Version name | `1.0.17` |
+| Version code | `17` |
 | Application ID | `in.c1ph3rj.scanly` |
 | Min SDK | 29 (Android 10) |
 | Target / compile SDK | compile 37 / target 36 |
-| Room schema version | `5` (unreleased filter overhaul; `1.0.16` shipped schema `4`) |
-| Release date | 2026-09-16 |
+| Room schema version | `5` |
+| Release date | 2026-10-14 |
 | Branch | `master` |
 
 The version shown in **Settings** is read from `versionName` in `app/build.gradle.kts`.
 
-**Note:** Room schema **4** added per-page filter adjustment columns (`MIGRATION_3_4`). Room schema **5** (unreleased) adds `filterIntensity` and remaps legacy filter presets (`MIGRATION_4_5`). Older `.scanly` backups restore with identity adjustment defaults and intensity `1`.
+**Note:** Room schema **4** added per-page filter adjustment columns (`MIGRATION_3_4`). Room schema **5** (shipped in `1.0.17`) adds `filterIntensity` and remaps legacy filter presets (`MIGRATION_4_5`). Older `.scanly` backups restore with identity adjustment defaults and intensity `1`.
 
 ## Versioning Policy
 
@@ -27,6 +27,10 @@ The version shown in **Settings** is read from `versionName` in `app/build.gradl
 - Record user-visible changes in `CHANGELOG.md` and keep this file aligned with the Gradle values.
 
 ## Release History
+
+### 1.0.17 (version code 17)
+
+A rebuilt page filter engine with an Intensity control, a redesigned Library (folder shelf, dated sections, dedicated search) and Home (search bar, matching recents), and a redesigned Tools area: every PDF tool follows choose → options → done with a real result preview and editable file name, a rebuilt watermark engine, password editing restrictions, and a QR flow with typed results, five create types and on-phone history. Also a clearer light theme and a fixed navigation bar. Room schema 5. See [CHANGELOG.md](CHANGELOG.md) for the complete release notes.
 
 ### 1.0.16 (version code 16)
 

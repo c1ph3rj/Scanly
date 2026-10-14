@@ -28,7 +28,7 @@ It is designed for a practical, local-only scanning workflow:
 - compressed `.scanly` library backup and Replace/Merge restore under the dedicated `backup/` folder
 - settings with look & feel (including pure black AMOLED), configurable document detection models, storage usage, clear-all-data, FAQs, and license info
 
-**Current version:** `1.0.16` (version code `16`) — see [VERSION.md](VERSION.md) and [CHANGELOG.md](CHANGELOG.md).
+**Current version:** `1.0.17` (version code `17`) — see [VERSION.md](VERSION.md) and [CHANGELOG.md](CHANGELOG.md).
 
 ## Screenshots
 

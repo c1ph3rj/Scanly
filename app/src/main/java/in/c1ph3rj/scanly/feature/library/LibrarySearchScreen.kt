@@ -67,7 +67,7 @@ fun LibrarySearchBar(
     Surface(
         modifier = modifier.fillMaxWidth().testTag(ScanlyTestTags.SEARCH_FIELD),
         shape = RoundedCornerShape(26.dp),
-        color = MaterialTheme.colorScheme.surfaceContainerHigh,
+        color = MaterialTheme.colorScheme.surfaceContainer,
         border = BorderStroke(1.dp, borderColor),
     ) {
         Row(

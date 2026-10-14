@@ -1,6 +1,6 @@
 ﻿# Navigation
 
-All routes and user flows in Scanly **v1.0.16**.
+All routes and user flows in Scanly **v1.0.17**.
 
 Navigation is implemented with **Navigation Compose** in `ScanlyNavHost.kt`. Route helpers follow the `*Destination` object pattern with `routePattern` and `route()` factory functions.
 
@@ -23,7 +23,7 @@ Navigation is implemented with **Navigation Compose** in `ScanlyNavHost.kt`. Rou
 | --- | --- | --- |
 | `home` | Home dashboard | Yes |
 | `library` | Full library | Yes |
-| `tools` | Tools hub (capture, QR, PDF utilities) | Yes |
+| `tools` | Tools hub (Scan, PDF, Utilities) | Yes |
 | `settings` | Settings | Yes |
 
 ## Legacy placeholder routes
@@ -58,7 +58,7 @@ These top-level routes still exist but show `FeaturePlaceholderScreen` — they 
 | `settings/licenses` | `SettingsLicensesDestination` | Open-source licenses |
 | `settings/storage` | `SettingsStorageDestination` | Storage & backup |
 | `settings/model-benchmark` | `SettingsModelBenchmarkDestination` | Temporary local model comparison |
-| `tools/qr` | `ToolsQrDestination` | QR scan + generate |
+| `tools/qr` | `ToolsQrDestination` | QR scan, typed result, create, and history (in-route screens) |
 | `tools/pdf/reader?filePath={filePath}&fileName={fileName}` | `ToolsPdfReaderDestination` | PDF reader; optional app-owned result file opens directly |
 | `tools/pdf/merge` | `ToolsPdfMergeDestination` | PDF merge |
 | `tools/pdf/compress` | `ToolsPdfCompressDestination` | PDF compress |

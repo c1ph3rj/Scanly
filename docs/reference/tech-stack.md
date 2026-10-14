@@ -1,6 +1,6 @@
 ﻿# Tech Stack
 
-Dependencies and versions from `gradle/libs.versions.toml` as of **v1.0.16**.
+Dependencies and versions from `gradle/libs.versions.toml` as of **v1.0.17**.
 
 ## Build tooling
 

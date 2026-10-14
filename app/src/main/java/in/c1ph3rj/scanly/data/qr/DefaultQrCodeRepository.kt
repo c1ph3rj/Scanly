@@ -2,10 +2,14 @@ package `in`.c1ph3rj.scanly.data.qr
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.Typeface
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.EncodeHintType
 import com.google.zxing.qrcode.QRCodeWriter
+import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import `in`.c1ph3rj.scanly.core.common.ScanlyDispatchers
 import `in`.c1ph3rj.scanly.core.common.ScanlyError
@@ -27,28 +31,43 @@ class DefaultQrCodeRepository @Inject constructor(
     override suspend fun generateQrBitmap(
         content: String,
         sizePx: Int,
+        inkArgb: Long,
     ): ScanlyResult<Bitmap> = withContext(dispatchers.default) {
         runCatching {
-            require(content.isNotBlank()) { "Enter text or a URL to encode." }
-            encodeQr(content.trim(), sizePx.coerceIn(256, 2048))
+            require(content.isNotBlank()) { "Enter something to encode." }
+            encodeQr(content.trim(), sizePx.coerceIn(256, 2048), inkArgb.toInt())
         }.toScanlyResult("Could not generate QR code.")
     }
 
     override suspend fun saveQrPng(
         content: String,
         sizePx: Int,
+        inkArgb: Long,
+        caption: String?,
     ): ScanlyResult<ExportArtifact> = withContext(dispatchers.io) {
         runCatching {
-            require(content.isNotBlank()) { "Enter text or a URL to encode." }
-            val bitmap = encodeQr(content.trim(), sizePx.coerceIn(256, 2048))
+            require(content.isNotBlank()) { "Enter something to encode." }
+            val code = encodeQr(content.trim(), sizePx.coerceIn(256, 2048), inkArgb.toInt())
+            val label = caption?.trim()?.takeIf { it.isNotEmpty() }
+            val image = if (label == null) code else withCaption(code, label, inkArgb.toInt())
             val dir = File(context.cacheDir, "qr-tools").apply { mkdirs() }
-            val file = File(dir, "qr_${System.currentTimeMillis()}.png")
-            FileOutputStream(file).use { out ->
-                if (!bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)) {
-                    error("Could not write QR image.")
+            val slug = (label ?: content).lowercase()
+                .replace(Regex("^[a-z]+://"), "")
+                .replace(Regex("[^a-z0-9]+"), "-")
+                .trim('-')
+                .take(32)
+                .ifBlank { "code" }
+            val file = File(dir, "qr-$slug-${System.currentTimeMillis()}.png")
+            try {
+                FileOutputStream(file).use { out ->
+                    if (!image.compress(Bitmap.CompressFormat.PNG, 100, out)) {
+                        error("Could not write QR image.")
+                    }
                 }
+            } finally {
+                if (image !== code) image.recycle()
+                code.recycle()
             }
-            bitmap.recycle()
             ExportArtifact(
                 filePath = file.absolutePath,
                 fileName = file.name,
@@ -57,22 +76,56 @@ class DefaultQrCodeRepository @Inject constructor(
         }.toScanlyResult("Could not save QR code.")
     }
 
-    private fun encodeQr(content: String, sizePx: Int): Bitmap {
+    private fun encodeQr(content: String, sizePx: Int, ink: Int): Bitmap {
         val hints = mapOf(
             EncodeHintType.MARGIN to 1,
             EncodeHintType.CHARACTER_SET to "UTF-8",
+            // M survives printing and creases without bloating the module count.
+            EncodeHintType.ERROR_CORRECTION to ErrorCorrectionLevel.M,
         )
         val matrix = QRCodeWriter().encode(content, BarcodeFormat.QR_CODE, sizePx, sizePx, hints)
-        val pixels = IntArray(sizePx * sizePx)
-        for (y in 0 until sizePx) {
-            val offset = y * sizePx
-            for (x in 0 until sizePx) {
-                pixels[offset + x] = if (matrix[x, y]) Color.BLACK else Color.WHITE
+        val width = matrix.width
+        val height = matrix.height
+        val pixels = IntArray(width * height)
+        for (y in 0 until height) {
+            val offset = y * width
+            for (x in 0 until width) {
+                pixels[offset + x] = if (matrix[x, y]) ink else Color.WHITE
             }
         }
-        return Bitmap.createBitmap(sizePx, sizePx, Bitmap.Config.ARGB_8888).apply {
-            setPixels(pixels, 0, sizePx, 0, 0, sizePx, sizePx)
+        return Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888).apply {
+            setPixels(pixels, 0, width, 0, 0, width, height)
         }
+    }
+
+    /** Adds a white band under the code with [caption] centred in the ink colour. */
+    private fun withCaption(code: Bitmap, caption: String, ink: Int): Bitmap {
+        val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = ink
+            textAlign = Paint.Align.CENTER
+            typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
+            textSize = code.width * 0.055f
+        }
+        val maxWidth = code.width * 0.9f
+        while (paint.measureText(caption) > maxWidth && paint.textSize > code.width * 0.03f) {
+            paint.textSize *= 0.92f
+        }
+        val text = if (paint.measureText(caption) > maxWidth) {
+            val count = paint.breakText(caption, true, maxWidth - paint.measureText("\u2026"), null)
+            caption.take(count).trimEnd() + "\u2026"
+        } else {
+            caption
+        }
+        val band = (paint.textSize * 2.2f).toInt()
+        val output = Bitmap.createBitmap(code.width, code.height + band, Bitmap.Config.ARGB_8888)
+        Canvas(output).apply {
+            drawColor(Color.WHITE)
+            drawBitmap(code, 0f, 0f, null)
+            val centerY = code.height + band * 0.42f
+            val baseline = centerY - (paint.descent() + paint.ascent()) / 2f
+            drawText(text, code.width / 2f, baseline, paint)
+        }
+        return output
     }
 
     private fun <T> Result<T>.toScanlyResult(fallbackMessage: String): ScanlyResult<T> =

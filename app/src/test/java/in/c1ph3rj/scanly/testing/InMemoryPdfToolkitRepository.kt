@@ -68,6 +68,7 @@ class InMemoryPdfToolkitRepository(
         source: PdfToolSource,
         newPassword: String,
         currentPassword: String?,
+        restrictEditing: Boolean,
     ): ScanlyResult<ExportArtifact> = runLibraryResult("Could not protect PDF.") {
         lastSetPassword = newPassword
         writeArtifact("protected.pdf", "application/pdf", "PASSWORD ${newPassword.length}")

@@ -6,7 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [1.0.17] - 2026-10-14
+
 ### Added
+
+- **Home search** — a search bar under the Home greeting opens library search; Home, Library and the search screen share one field style.
+- **QR history** — scanned and created codes are kept on this phone with search, Scanned/Created filters and Clear history.
+- **Typed QR results** — scans are shown by type (link with its full domain, UPI payee, Wi-Fi network, contact, email, phone, text) with one-tap actions; raw content is always available.
+- **QR create types** — Link, Text, Wi-Fi, UPI and Contact codes, an optional caption printed under the code, and dark ink colours.
+- **Watermark colours, presets and date** — Grey, Red, Blue or Teal ink; CONFIDENTIAL, DRAFT, COPY and "For KYC use only" presets; optional date stamp.
+- **Restrict editing** — Password can lock a PDF so others can open and print it but not edit it or copy its text.
 
 - **Library search screen** — search document and folder names across the entire library from a dedicated screen without category filters.
 
@@ -16,9 +25,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 
+- **QR capture** — teal corners track the detected code before automatic capture; the analyzed camera frame freezes behind the result, and Scan again starts a fresh detection. Result details preserve the captured preview, and late history writes no longer restore dismissed results.
+- **QR mode buttons** — the Scan | Create switch is replaced by one rounded button in the top bar: **Create** on the scanner and **Scan** on the creator. On the scanner, **From photo** moves to the bottom bar beside **History**, and all QR actions share the same pill shape.
+- **QR result icons** — the found-code card's Open (icon matches the action), Copy, Share and Scan again buttons show icons.
+- **Tools redesign** — Tools is grouped into Scan, PDF and Utilities; Images to PDF is in the PDF section, while the QR tile opens straight into scanning with Create as a tab. PDF tools use a consistent choose-file → options → done flow with a live result preview and a single-line, end-aligned file name editor that keeps the ending of long names visible, with a small gap before the fixed extension.
+- **Light theme folders** — folder art uses a deeper teal on the light page so folders read as solid objects.
+- **Light theme contrast** — cards and panels are white on a cool grey page with clearer borders and wells, so sections no longer blend into the background.
+
 - **Library layout** — the Library opens on a search field, a scrollable **Folders** shelf (each tile is drawn as a folder with a tab, the latest page tucked inside, a second sheet when it holds several documents, and a name that wraps to two lines; plus a **New folder** tile; **See all** — on the Library or on Home's Recent folders — expands the shelf into a folder grid in place and hides documents; a back arrow beside **Folders** (or system back) returns to the full Library), and **Documents** grouped into Today, Yesterday, Previous 7 days, and month sections when sorted by date. Cards under a section show the time or day instead of repeating the section date. Grid covers fill the tile and crop from the top of the page; titles wrap to two lines so auto-generated names stay readable. Folder category chips and the header search/new-folder icons are removed; All includes documents inside folders.
 - **Compact navigation bar** — a slimmer bar with outlined Home, Library, Tools, and Settings icons and a raised scanner button in the middle (also at the top of the tablet rail). The button asks **Scan with camera** or **Import from gallery** and opens that flow. The Library's floating **+** menu is removed; **New folder** stays on the Folders shelf, which now shows even when no folders exist.
-- **Tools layout** — Tools is a simple two-column grid of equal-height tiles in **Create**, **PDF**, and **Utilities** sections, with short descriptions.
+- **Tools layout** — Tools uses a full-width Scan action and matching multi-column PDF and Utilities grids, with Images to PDF under PDF and short descriptions.
 - **Search results** — folders and documents are listed under separate **Folders** and **Documents** headings; folder results show the folder illustration and a "Folder" label.
 - **Home recents** — Recent folders and Recent documents use the same folder tiles, segmented document rows, relative dates, and "See all" headers as the Library. Home shows only the four most recently updated documents; "See all" opens the full Library.
 - **Library polish** — compact sort button and grid/list selector with 48 dp touch targets; list rows are rounded segments per section (larger outer corners, a small gap instead of dividers) with top-cropped page thumbnails; grid cards have an inset press highlight so the cover and text never touch its edge, and press ripples stay inside each control's visible shape. Search always spans both documents and folders and uses the same rounded field.
@@ -28,6 +44,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - **Database** — schema 5 (`MIGRATION_4_5`) adds the page intensity column and remaps legacy presets. Upgrades run automatically.
 
 ### Fixed
+
+- **PDF reader layout** — keep the first and last page clear of the title and bottom controls in both paged and continuous views.
+- **Navigation bar** — removed the opaque strip above the bottom bar that cut across the scan button (most visible in dark mode); content now scrolls under the raised button.
+- **Watermarks** — stamps now read upright and centred on rotated pages, single stamps always fit the page, tiles follow the stamp angle in even rows, symbols such as ₹ no longer make saving fail, and the live preview stays fast on long PDFs.
 
 - **Adjust brightness and contrast** — contrast now pivots on mid-gray instead of black, and the adjustments only change RGB, so the alpha channel is no longer scaled (which could leave pages semi-transparent).
 

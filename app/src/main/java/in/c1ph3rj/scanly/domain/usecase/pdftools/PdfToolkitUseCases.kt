@@ -45,7 +45,9 @@ class SetPdfPasswordUseCase @Inject constructor(
         source: PdfToolSource,
         newPassword: String,
         currentPassword: String? = null,
-    ): ScanlyResult<ExportArtifact> = repository.setPassword(source, newPassword, currentPassword)
+        restrictEditing: Boolean = false,
+    ): ScanlyResult<ExportArtifact> =
+        repository.setPassword(source, newPassword, currentPassword, restrictEditing)
 }
 
 class RemovePdfPasswordUseCase @Inject constructor(

@@ -100,6 +100,8 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -214,11 +216,20 @@ private fun ScanlyNavHostLayout(
                 }
             },
         ) { innerPadding ->
+            // The bottom bar's measured height includes the transparent strip the capture button
+            // rises into. Padding content by the full height left that strip as an opaque band of
+            // background colour above the bar (it read as a black bar cutting through the button
+            // in dark mode). Let content run under the strip so only the button overlaps it.
+            val contentBottomPadding = if (showBottomNav) {
+                (innerPadding.calculateBottomPadding() - CaptureButtonRise).coerceAtLeast(0.dp)
+            } else {
+                innerPadding.calculateBottomPadding()
+            }
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(bottom = innerPadding.calculateBottomPadding())
-                    .consumeWindowInsets(PaddingValues(bottom = innerPadding.calculateBottomPadding()))
+                    .padding(bottom = contentBottomPadding)
+                    .consumeWindowInsets(PaddingValues(bottom = contentBottomPadding))
                     .background(MaterialTheme.colorScheme.background),
             ) {
                 ScanlyNavHostContent(
@@ -240,10 +251,18 @@ private fun ScanlyNavigationBar(
 ) {
     var chooserVisible by rememberSaveable { mutableStateOf(false) }
     val barColor = MaterialTheme.colorScheme.surfaceContainer
+    val dividerColor = MaterialTheme.colorScheme.outlineVariant
     // The rise strip keeps the overlapping capture button inside this Box, so all of it is touchable.
     Box(modifier = Modifier.fillMaxWidth()) {
         Surface(
-            modifier = Modifier.fillMaxWidth().padding(top = CaptureButtonRise),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = CaptureButtonRise)
+                .drawBehind {
+                    // Hairline top edge so the bar separates from same-tone content scrolling under it.
+                    val stroke = 1.dp.toPx()
+                    drawRect(color = dividerColor, size = Size(size.width, stroke))
+                },
             color = barColor,
         ) {
             Row(
@@ -282,7 +301,8 @@ private fun ScanlyNavigationBar(
         }
         CaptureButton(
             onClick = { chooserVisible = true },
-            ringColor = barColor,
+            // Page-colour ring, as in the design: the button reads as sitting in a notch.
+            ringColor = MaterialTheme.colorScheme.background,
             modifier = Modifier.align(Alignment.TopCenter),
         )
     }
@@ -410,6 +430,7 @@ private fun CaptureChoiceRow(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
         color = MaterialTheme.colorScheme.surfaceContainer,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 14.dp, vertical = 12.dp),
@@ -629,6 +650,7 @@ private fun ScanlyNavHostContent(
                 onNavigate = { route -> navigateToTopLevel(navController, route) },
             ) {
                 HomeRoute(
+                    onOpenSearch = { navController.navigate(LibrarySearchDestination.route) },
                     onOpenDocument = { documentId ->
                         navController.navigate(DocumentDestination.route(documentId))
                     },
