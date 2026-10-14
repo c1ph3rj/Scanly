@@ -782,6 +782,8 @@ private fun PageFilterPreset.toDisplayLabel(): String = when (this) {
     PageFilterPreset.AUTO -> "Auto"
     PageFilterPreset.MAGIC_COLOR -> "Magic Color"
     PageFilterPreset.NATURAL_COLOR -> "Natural"
+    PageFilterPreset.VIVID_COLOR -> "Vivid"
+    PageFilterPreset.SCREEN -> "Screen"
     PageFilterPreset.GRAYSCALE -> "Grayscale"
     PageFilterPreset.BLACK_AND_WHITE -> "B&W"
     PageFilterPreset.WHITEBOARD -> "Whiteboard"

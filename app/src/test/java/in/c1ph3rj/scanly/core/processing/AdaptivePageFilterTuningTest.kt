@@ -118,6 +118,55 @@ class AdaptivePageFilterTuningTest {
         }
     }
 
+    @Test
+    fun screenLikeProfileAlwaysRoutesToScreen() {
+        val screenLikeProfiles = listOf(
+            profile(screenLikely = true),
+            profile(screenLikely = true, colorRatio = 0.30, saturation = 55.0, textDensity = 0.005),
+            profile(
+                screenLikely = true,
+                aspectRatio = 2.4,
+                textDensity = 0.08,
+                colorRatio = 0.004,
+                saturation = 8.0,
+            ),
+            profile(screenLikely = true, textDensity = 0.04, toneInkLevel = 130.0),
+            profile(screenLikely = true, textDensity = 0.04, colorRatio = 0.05, saturation = 36.0),
+        )
+
+        screenLikeProfiles.forEach { screenLike ->
+            assertEquals(PageFilterPreset.SCREEN, AdaptivePageFilterTuning.automatic(screenLike))
+        }
+    }
+
+    @Test
+    fun profilesThatAreNotScreenLikeKeepExistingRouting() {
+        assertEquals(
+            PageFilterPreset.NATURAL_COLOR,
+            AdaptivePageFilterTuning.automatic(
+                profile(screenLikely = false, colorRatio = 0.30, saturation = 55.0, textDensity = 0.005),
+            ),
+        )
+        assertEquals(
+            PageFilterPreset.FADED,
+            AdaptivePageFilterTuning.automatic(
+                profile(screenLikely = false, aspectRatio = 2.4, textDensity = 0.08, colorRatio = 0.004, saturation = 8.0),
+            ),
+        )
+        assertEquals(
+            PageFilterPreset.MAGIC_COLOR,
+            AdaptivePageFilterTuning.automatic(
+                profile(screenLikely = false, textDensity = 0.04, colorRatio = 0.05, saturation = 36.0),
+            ),
+        )
+        assertEquals(
+            PageFilterPreset.GRAYSCALE,
+            AdaptivePageFilterTuning.automatic(
+                profile(screenLikely = false, textDensity = 0.04, colorRatio = 0.002, saturation = 5.0, toneInkLevel = 30.0),
+            ),
+        )
+    }
+
     private fun profile(
         brightness: Double = 176.0,
         contrast: Double = 38.0,
@@ -129,6 +178,7 @@ class AdaptivePageFilterTuningTest {
         aspectRatio: Double = 1.4,
         toneInkLevel: Double = 40.0,
         longestEdge: Int = 1_800,
+        screenLikely: Boolean = false,
     ): PageImageProfile = PageImageProfile(
         brightness = brightness,
         contrast = contrast,
@@ -142,5 +192,6 @@ class AdaptivePageFilterTuningTest {
         colorRatio = colorRatio,
         aspectRatio = aspectRatio,
         toneInkLevel = toneInkLevel,
+        screenLikely = screenLikely,
     )
 }

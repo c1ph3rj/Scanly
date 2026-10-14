@@ -7,6 +7,8 @@ enum class PageFilterPreset(
     AUTO("auto"),
     MAGIC_COLOR("magic_color"),
     NATURAL_COLOR("natural_color"),
+    VIVID_COLOR("vivid_color"),
+    SCREEN("screen"),
     GRAYSCALE("grayscale"),
     BLACK_AND_WHITE("black_and_white"),
     WHITEBOARD("whiteboard"),

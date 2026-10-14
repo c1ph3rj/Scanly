@@ -62,6 +62,8 @@ The list layout joins compact rows on one shared card background with internal d
 ### Page editor
 
 1. Tap **Filters** for a full-screen picker with a large live preview of each preset on the cropped page, then Done. Color looks stay close to the photo you captured; scan looks (Grayscale, B&W, Faded Text) still whiten paper. Retake or delete from the editor toolbar as needed.
+   - **Vivid** — punchy color for posters, covers, photos.
+   - **Screen** — photos of monitors, laptops and phones: removes moiré, glare haze and screen color cast; keeps dark mode dark.
 2. Tap **Adjust** (next to Filters) to change the **Intensity** of the filter (0–150 %; 100 % is the default look, 0 only evens out lighting) and fine-tune brightness, contrast, saturation, and sharpness on a live cropped preview. Use reset in the adjust screen to clear customizations.
 3. Tap **Crop** to open the crop screen. Use **AI Detect** to find the document automatically, rotate with **Left** / **Right**, drag the four corner handles, use **Reset** to restore the starting crop, then **Done** to apply crop and rotation.
 4. Back on the editor, tap the check mark to save filter and adjustment changes — processed image and thumbnail regenerate from the raw capture.

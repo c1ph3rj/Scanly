@@ -35,10 +35,14 @@ internal object PageFilterOperators {
 
     /**
      * Vibrance on an RGB page: lifts muted colors (stamps, highlighter, pen) more than
-     * already-saturated ones, then forces near-white low-chroma pixels to neutral so the
-     * paper carries no tint.
+     * already-saturated ones, then (when [neutralizePaper]) forces near-white low-chroma
+     * pixels to neutral so the paper carries no tint.
      */
-    fun vibrance(sourceRgb: Mat, outputRgb: Mat, amount: Double) {
+    fun vibrance(sourceRgb: Mat, outputRgb: Mat, amount: Double, neutralizePaper: Boolean = true) {
+        if (!neutralizePaper && amount <= 0.005) {
+            if (sourceRgb !== outputRgb) sourceRgb.copyTo(outputRgb)
+            return
+        }
         val hsv = Mat()
         val channels = mutableListOf<Mat>()
         val brightMask = Mat()
@@ -53,10 +57,12 @@ internal object PageFilterOperators {
                 }
                 applyLut(channels[1], channels[1], table)
             }
-            Core.compare(channels[2], Scalar.all(PAPER_VALUE_MIN), brightMask, Core.CMP_GT)
-            Core.compare(channels[1], Scalar.all(PAPER_SATURATION_MAX), lowChromaMask, Core.CMP_LT)
-            Core.bitwise_and(brightMask, lowChromaMask, brightMask)
-            channels[1].setTo(Scalar.all(0.0), brightMask)
+            if (neutralizePaper) {
+                Core.compare(channels[2], Scalar.all(PAPER_VALUE_MIN), brightMask, Core.CMP_GT)
+                Core.compare(channels[1], Scalar.all(PAPER_SATURATION_MAX), lowChromaMask, Core.CMP_LT)
+                Core.bitwise_and(brightMask, lowChromaMask, brightMask)
+                channels[1].setTo(Scalar.all(0.0), brightMask)
+            }
             Core.merge(channels, hsv)
             Imgproc.cvtColor(hsv, outputRgb, Imgproc.COLOR_HSV2RGB)
         } finally {

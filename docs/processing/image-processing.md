@@ -92,7 +92,7 @@ Maps the detected (or manual) quad to a flat rectangular output image.
 
 ## Step 4: Filter engine
 
-`OpenCvPageFilterProcessor` is the public facade. Internals live in `core/processing/filter/` and render every preset with one reflectance model:
+`OpenCvPageFilterProcessor` is the public facade. Internals live in `core/processing/filter/`. The paper presets render with one reflectance model, and Screen and Vivid use global color looks instead (see [Global color looks](#global-color-looks-screen-vivid)):
 
 ```
 Image ≈ Reflectance × Shading
@@ -111,6 +111,8 @@ Cropped page
   → Colour looks: vibrance + paper neutralization
   → Unsharp mask with noise damping   |   B&W: anti-aliased global threshold + despeckle
 ```
+
+Screen and Vivid skip the background model and division entirely; they go straight to their global pipelines.
 
 ### Paper-aware background model
 
@@ -135,6 +137,8 @@ Where the local gain is above about 1.6× (deep shadow), the source is blended t
 | --- | --- | --- | --- |
 | Color | Magic Color, Whiteboard | Per RGB channel; paper → 250 | Tone curve → vibrance + paper neutralization → unsharp mask |
 | Natural | Natural | Per RGB channel; paper lifted toward ~238 (never darkened) with part of the cast removed | Tone curve → unsharp mask |
+| Screen | Screen | None (global); see [Global color looks](#global-color-looks-screen-vivid) | De-screen and veil removal, then levels → S-curve → vibrance → sharpen |
+| Vivid | Vivid | None (global); see [Global color looks](#global-color-looks-screen-vivid) | Levels → CLAHE on lightness → S-curve → vibrance → sharpen |
 | Gray | Grayscale, Faded Text | Gray; paper → 250 | Tone curve → unsharp mask |
 | Binary | B&W | Gray; paper → 250 | Anti-aliased global threshold → despeckle |
 
@@ -162,20 +166,56 @@ Each page stores an `intensity` value from 0 to 1.5 (UI 0–150 %, default 1):
 | 1 | Tuned default |
 | 1.5 | Strongest: deeper ink, more paper lift, more vibrance and sharpening |
 
-Intensity scales the tonal parameters (black point, white point, gamma, vibrance, sharpening). For B&W, it moves the threshold instead: a higher intensity raises the threshold, so more faint marks are kept as ink. B&W still binarizes at intensity 0. **Original** ignores intensity.
+Intensity scales the tonal parameters (black point, white point, gamma, vibrance, sharpening). For B&W, it moves the threshold instead: a higher intensity raises the threshold, so more faint marks are kept as ink. B&W still binarizes at intensity 0. **Original** ignores intensity. **Screen** and **Vivid** scale differently; see [Global color looks](#global-color-looks-screen-vivid).
 
 ### Resolution independence
 
 Tonal parameters do not depend on the output size. They come from the 360 px background model and the 720 px analysis profile, so picker chips (320 px), the live editor preview (~1600 px) and the saved JPEG (up to 2800 px) produce the same look. Only pixel-level kernels scale with the longest edge, against a **1600 px reference edge**: sharpening sigma, shadow-denoise sigma and the despeckle area.
+
+### Global color looks (Screen, Vivid)
+
+The paper presets assume a sheet of paper under uneven light: they find the paper, divide out the shading and push it to white. That model does not fit some captures, so Screen and Vivid skip it and correct the whole image instead (`PageColorLooks`):
+
+- **Emissive light.** A display is its own light source, not paper under a lamp.
+- **Dark mode.** On a dark page, the brightest-quarter paper reference is content, so paper detection would flatten the page.
+- **Full-screen images.** A photo that fills the screen has no paper to find.
+- **Pixel grid and moiré.** The display's pixel lattice beats against the camera sensor and shows as fine stripes and colour bands.
+- **Reflection veil.** Room light reflected off the glass adds an uneven, often tinted haze.
+- **Screen white point.** A display's white is rarely neutral. It casts its own colour, which camera white balance does not remove.
+
+Both looks measure their statistics on a 360 px copy of the page, the same working size as the background model, so chip, preview and saved JPEG agree. Pixel kernels (blur, sharpen) scale with the render size against the 1600 px reference edge, as they do for paper looks.
+
+**Screen pipeline**
+
+1. **De-screen.** The page is converted to YCrCb. Luma gets a Gaussian blur just wide enough to dissolve the pixel grid (sigma about 0.8 px at a 1600 px render). Chroma is resampled to a quarter resolution, blurred (sigma 2 px there), and resampled back, which removes colour moiré. Text edges ride on luma, so they stay sharp.
+2. **Dark-mode veil removal.** Runs only when the page's median luminance is below 100. Each channel's local minimum over about 8 % of the long edge (erode, then blur at 5 % of the edge) estimates the veil. A floor at 35 % of the veil's 5th-percentile luminance is removed from it, and the result is subtracted from the page at full resolution, scaled by intensity. Light-background screens skip this step, because their local minimum is content.
+3. **White reference.** Each channel's white is the 80th percentile of the brightest 1 % of low-saturation pixels (saturation below 25 %). If fewer than 30 such pixels exist, the brightest 1 % of all pixels is used. The dark level is the 0.5th luminance percentile.
+4. **Levels.** Per channel, the dark level (scaled by black clip) maps to black and the white reference maps to 248. White-balance gains are limited to ±15 % so colourful content cannot be pushed into a false cast.
+5. **S-curve.** Mid-tone contrast with 0 and 255 fixed.
+6. **Vibrance.** Without paper neutralization, so coloured content keeps its colour.
+7. **Sharpen.** Unsharp mask.
+
+**Vivid pipeline**
+
+1. **Bounded white balance and levels.** The same white reference, ±15 % gains and levels as Screen. White balance is 60 % of full at intensity 100 %, and black clip is 80 % × intensity, capped at 100 %.
+2. **Local contrast.** CLAHE on Lab lightness with a fixed 8×8 grid (so the look does not depend on render size) and a clip limit of 2. The result is blended with the original lightness at 45 % × intensity, capped at 65 %.
+3. **S-curve**, then **vibrance** (without paper neutralization), then **sharpen**. Sharpening is damped on noisy captures.
+
+**Intensity**
+
+- **Screen.** De-screening stays on even at intensity 0, because the moiré grid is never wanted. Veil removal, white balance and black clip scale with intensity and stop rising at 100 %. The S-curve, vibrance and sharpening keep scaling up to 150 %. At 0, only de-screening and a plain brightness stretch remain.
+- **Vivid.** At intensity 0, only the brightness stretch remains; local contrast, S-curve, vibrance and sharpening are all off. White balance and black clip stop rising at 100 %.
 
 ### Presets
 
 | Preset | Storage value | Render | Typical use |
 | --- | --- | --- | --- |
 | Original | `original` | No processing | Keep the captured page as-is |
-| Auto | `auto` | Routes to Magic Color, Natural, Faded Text or Grayscale; the concrete choice is persisted | Mixed content, when you do not want to pick |
+| Auto | `auto` | Routes to Screen, Magic Color, Natural, Faded Text or Grayscale; the concrete choice is persisted | Mixed content, when you do not want to pick |
 | Magic Color | `magic_color` | Color; paper whitened, colour ink kept vivid | Forms with colour, stamps, highlighter, illustrations |
 | Natural | `natural_color` | Color; lighting evened, paper kept near its own tone, light white balance | Photos and logos, cream paper |
+| Vivid | `vivid_color` | Global color; bounded white balance, local contrast, vibrance; no paper model | Posters, covers, photos |
+| Screen | `screen` | Global color; de-screened, glare haze and screen color cast removed, dark mode kept | Photos of monitors, laptops and phones |
 | Grayscale | `grayscale` | Gray; clean paper, darker text | Plain text documents |
 | B&W | `black_and_white` | Two-tone threshold; specks removed | Invoices and strong text output |
 | Whiteboard | `whiteboard` | Color; stronger whitening and vibrance | Photos of whiteboards and marker |
@@ -187,11 +227,14 @@ Tonal parameters do not depend on the output size. They come from the 360 px bac
 
 | Page content | Resolves to |
 | --- | --- |
+| Photo of a display (`screenLikely` hint set by the capture pipeline) | Screen |
 | Mostly picture (high colour ratio, little text) | Natural |
 | Receipt-like (long narrow page, text, almost no colour) or faint ink | Faded Text |
 | Useful colour (enough chromatic area) | Magic Color |
 | Text-like (text or edges present) | Grayscale |
 | Anything else, or no profile | Magic Color |
+
+The Screen check reads `PageImageProfile.screenLikely`. `DefaultPageImageProcessor` sets it only when all of these hold: the document gate is enabled in Settings, the page is captured or imported with no crop quad (`processCapture`), and the gate's top class is `DIGITAL_SCREEN` with probability at least 0.6 (`SCREEN_HINT_THRESHOLD`). Editor saves go through `reprocessPage` with a crop quad, so they do not set the hint.
 
 ### Legacy presets
 
@@ -278,14 +321,15 @@ Paths under `processed/` and `thumbs/` per document. `ThumbnailCache` is invalid
 | `PerspectiveQuadMath` | `core/processing/` | Geometry math |
 | `PerspectiveBitmapTransform` | `core/processing/` | Bitmap warp |
 | `OpenCvPageFilterProcessor` | `core/processing/` | Filter facade (`apply`, `applyWithResolvedPreset`, `analyze`, `applyAll`) |
-| `PageImageProfile` | `core/processing/` | Page profile (content, paper, noise and tone stats) |
+| `PageImageProfile` | `core/processing/` | Page profile (content, paper, noise and tone stats, and the `screenLikely` hint) |
 | `PageImageAnalyzer` | `core/processing/filter/` | Canonical 720 px profile, including tone stats |
 | `PageBackgroundModel` | `core/processing/filter/` | 360 px paper-aware shading model; mask, multi-scale fill, per-channel division |
 | `PageFilterLook` | `core/processing/filter/` | Preset → render parameters, scaled by intensity and resolution |
-| `PageFilterEngine` | `core/processing/filter/` | Renders the Color, Natural, Gray and Binary modes |
+| `PageFilterEngine` | `core/processing/filter/` | Renders the Color, Natural, Gray and Binary modes; hands Screen and Vivid to `PageColorLooks` |
+| `PageColorLooks` | `core/processing/filter/` | Global Screen and Vivid looks: de-screening, dark-mode veil removal, white reference, levels, CLAHE |
 | `PageFilterOperators` | `core/processing/filter/` | Tone curve LUT, vibrance, unsharp mask, threshold, despeckle |
 | `PageFilterAdjustmentsApplier` | `core/processing/` | Brightness / contrast / saturation / sharpness on RGB |
-| `AdaptivePageFilterTuning` | `core/processing/` | Auto preset routing |
+| `AdaptivePageFilterTuning` | `core/processing/` | Auto preset routing (Screen first, from the screen hint) |
 | `LiteRtDocumentCornerDetector` | `core/ml/` | Multi-model corner inference |
 | `LiteRtDocumentGateDetector` | `core/ml/` | Physical-document gate |
 | `AutomaticDocumentModelSelector` | `core/ml/` | Device latency calibration |

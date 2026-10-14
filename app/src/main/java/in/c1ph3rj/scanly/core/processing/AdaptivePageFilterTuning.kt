@@ -7,6 +7,7 @@ internal object AdaptivePageFilterTuning {
      * Chooses a concrete filter for Auto. Every document preset already removes shading,
      * so routing is about content: keep real color (Magic Color), keep photos natural,
      * rescue faint ink (Faded Text), and give plain mono text a clean Grayscale page.
+     * Photos of displays skip the paper model entirely (Screen).
      */
     internal fun automatic(profile: PageImageProfile?): PageFilterPreset {
         profile ?: return PageFilterPreset.MAGIC_COLOR
@@ -25,6 +26,7 @@ internal object AdaptivePageFilterTuning {
             (profile.colorRatio >= 0.012 && profile.saturation >= 34.0)
 
         return when {
+            profile.screenLikely -> PageFilterPreset.SCREEN
             photoLike -> PageFilterPreset.NATURAL_COLOR
             receiptLike || faintInk -> PageFilterPreset.FADED
             carriesUsefulColor -> PageFilterPreset.MAGIC_COLOR

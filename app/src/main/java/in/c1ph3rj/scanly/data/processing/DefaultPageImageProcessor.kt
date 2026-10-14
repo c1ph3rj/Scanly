@@ -11,6 +11,7 @@ import `in`.c1ph3rj.scanly.core.ml.BookAwareCornerResolver
 import `in`.c1ph3rj.scanly.core.ml.DocumentCornerDetector
 import `in`.c1ph3rj.scanly.core.ml.DocumentCornerQuad
 import `in`.c1ph3rj.scanly.core.ml.DocumentGateDetector
+import `in`.c1ph3rj.scanly.core.ml.DocumentGateClass
 import `in`.c1ph3rj.scanly.core.ml.DocumentGatePolicy
 import `in`.c1ph3rj.scanly.core.ml.DocumentQuadPolicy
 import `in`.c1ph3rj.scanly.core.ml.QuadReadiness
@@ -88,18 +89,23 @@ class DefaultPageImageProcessor @Inject constructor(
             // detection. The semantic gate no longer skips detection — that blocked
             // imports of already-cropped scans and borderline physical pages.
             // Gate only influences review state when no usable quad is found.
-            val gateAccepted = if (
+            val gateResult = if (
                 cropQuad == null &&
                 detectDocumentWhenCropQuadMissing &&
                 settingsRepository.getDocumentGateEnabled()
             ) {
-                runCatching {
-                    documentGateDetector.classify(editorOrientedBitmap)
-                        .acceptsPhysicalDocument(DocumentGatePolicy.POST_PROCESSING_THRESHOLD)
-                }.getOrDefault(true)
+                runCatching { documentGateDetector.classify(editorOrientedBitmap) }.getOrNull()
             } else {
-                true
+                null
             }
+            val gateAccepted = gateResult
+                ?.acceptsPhysicalDocument(DocumentGatePolicy.POST_PROCESSING_THRESHOLD)
+                ?: true
+            // Lets Auto pick the Screen look for photos of monitors / phones.
+            val screenLikely = gateResult?.let {
+                it.predictedClass == DocumentGateClass.DIGITAL_SCREEN &&
+                    (it.probabilities[DocumentGateClass.DIGITAL_SCREEN] ?: 0f) >= SCREEN_HINT_THRESHOLD
+            } ?: false
             val effectiveCropQuad = if (cropQuad != null) {
                 cropQuad
             } else if (detectDocumentWhenCropQuadMissing) {
@@ -115,7 +121,7 @@ class DefaultPageImageProcessor @Inject constructor(
             } ?: editorOrientedBitmap.copy(Bitmap.Config.ARGB_8888, false)
             val profile = runCatchingCancellable {
                 OpenCvPageFilterProcessor.analyze(correctedBitmap)
-            }.getOrNull()
+            }.getOrNull()?.copy(screenLikely = screenLikely)
             val filtered = OpenCvPageFilterProcessor.applyWithResolvedPreset(
                 sourceBitmap = correctedBitmap,
                 filterPreset = filterPreset,
@@ -316,6 +322,7 @@ class DefaultPageImageProcessor @Inject constructor(
     private companion object {
         const val MAX_PROCESSING_DIMENSION = 2_800
         const val OUTPUT_JPEG_QUALITY = 94
+        const val SCREEN_HINT_THRESHOLD = 0.6f
     }
 
     private fun normalizeRotationDegrees(rotationDegrees: Int): Int {

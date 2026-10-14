@@ -13,6 +13,14 @@ class PageFilterPresetTest {
     }
 
     @Test
+    fun vividAndScreenPresetsRoundTripThroughStorage() {
+        assertEquals("vivid_color", PageFilterPreset.VIVID_COLOR.storageValue)
+        assertEquals("screen", PageFilterPreset.SCREEN.storageValue)
+        assertEquals(PageFilterPreset.VIVID_COLOR, PageFilterPreset.fromStorage("vivid_color"))
+        assertEquals(PageFilterPreset.SCREEN, PageFilterPreset.fromStorage("screen"))
+    }
+
+    @Test
     fun storageValuesAreUnique() {
         val values = PageFilterPreset.entries.map { it.storageValue }
         assertEquals(values.size, values.toSet().size)

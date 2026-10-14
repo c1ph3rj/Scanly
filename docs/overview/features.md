@@ -112,9 +112,11 @@ Operate on **device PDFs** (system document picker) or **Scanly library document
 - **Crop screen** (`crop/page/{pageId}`) — **AI Detect**, **Left** / **Right** rotation, four-point handles, **Reset**, apply on Done
 - **Filter picker** (full-screen) — large live preview of each preset on the cropped page; optional apply-to-all-pages
 - **Filter engine** — a paper-aware lighting model removes uneven shading while keeping photos, logos and colour ink; colour looks stay recognizably the capture, scan looks (Grayscale, B&W, Faded Text) read as clean paper; the same look appears at chip, preview and saved-JPEG sizes
-- **Filter presets** (8):
-  - Original, Auto (picks Magic Color, Natural, Faded Text or Grayscale for the page)
+- **Filter presets** (10):
+  - Original, Auto (picks Screen, Magic Color, Natural, Faded Text or Grayscale for the page)
   - Magic Color, Natural, Grayscale, B&W, Whiteboard, Faded Text
+  - Vivid — punchy color for posters, covers, photos
+  - Screen — photos of monitors, laptops and phones: removes moiré, glare haze and screen color cast; keeps dark mode dark
   - Pages saved with the earlier presets (Enhanced Color, Shadow Reduction, Clean, Soft B&W, Receipt) are remapped to the closest new preset when the app upgrades
 - **Filter adjust** (full-screen) — **Intensity** (0–150 %, default 100 %) first, then brightness, contrast, saturation, sharpness; hold **Compare** for filter-only; scrollbar beside sliders
 - **Retake** — opens camera session in replacement mode

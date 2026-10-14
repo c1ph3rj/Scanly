@@ -188,6 +188,78 @@ class PageFilterLookTest {
         assertEquals(PageFilterRenderMode.Binary, resolve(PageFilterPreset.BLACK_AND_WHITE, profile).mode)
     }
 
+    @Test
+    fun screenAndVividPresetsUseTheirOwnRenderModes() {
+        val profile = profile()
+
+        assertEquals(PageFilterRenderMode.Screen, resolve(PageFilterPreset.SCREEN, profile).mode)
+        assertEquals(PageFilterRenderMode.Vivid, resolve(PageFilterPreset.VIVID_COLOR, profile).mode)
+    }
+
+    @Test
+    fun screenKeepsDeScreeningOnAtZeroIntensity() {
+        listOf(320, reference, 2_800).forEach { edge ->
+            val params = resolve(PageFilterPreset.SCREEN, profile(), intensity = 0.0, renderLongestEdge = edge)
+
+            assertTrue("descreenSigma at edge $edge was ${params.descreenSigma}", params.descreenSigma > 0.0)
+            assertTrue("chromaSigma at edge $edge was ${params.chromaSigma}", params.chromaSigma > 0.0)
+        }
+
+        val atZero = resolve(PageFilterPreset.SCREEN, profile(), intensity = 0.0)
+        assertEquals("SCREEN contrastCurve", 0.0, atZero.contrastCurve, 1e-9)
+        assertEquals("SCREEN vibrance", 0.0, atZero.vibrance, 1e-9)
+        assertEquals("SCREEN whiteBalance", 0.0, atZero.whiteBalance, 1e-9)
+        assertEquals("SCREEN blackClip", 0.0, atZero.blackClip, 1e-9)
+        assertEquals("SCREEN veilRemoval", 0.0, atZero.veilRemoval, 1e-9)
+    }
+
+    @Test
+    fun screenDeScreenSigmasGrowWithRenderEdge() {
+        val profile = profile()
+        val small = resolve(PageFilterPreset.SCREEN, profile, renderLongestEdge = 320)
+        val medium = resolve(PageFilterPreset.SCREEN, profile, renderLongestEdge = reference)
+        val large = resolve(PageFilterPreset.SCREEN, profile, renderLongestEdge = 2_800)
+
+        assertTrue("descreen 320 < 1600", small.descreenSigma < medium.descreenSigma)
+        assertTrue("descreen 1600 < 2800", medium.descreenSigma < large.descreenSigma)
+        assertTrue("chroma 320 < 1600", small.chromaSigma < medium.chromaSigma)
+        assertTrue("chroma 1600 < 2800", medium.chromaSigma < large.chromaSigma)
+    }
+
+    @Test
+    fun screenAndVividToneParamsDoNotDependOnRenderEdge() {
+        val profile = profile(ink = 60.0, white = 228.0, noise = 5.0)
+
+        listOf(PageFilterPreset.SCREEN, PageFilterPreset.VIVID_COLOR).forEach { preset ->
+            val medium = resolve(preset, profile, intensity = 1.0, renderLongestEdge = reference)
+
+            listOf(320, 2_800).forEach { edge ->
+                val other = resolve(preset, profile, intensity = 1.0, renderLongestEdge = edge)
+
+                assertEquals("$preset contrastCurve at $edge", medium.contrastCurve, other.contrastCurve, 1e-9)
+                assertEquals("$preset whiteBalance at $edge", medium.whiteBalance, other.whiteBalance, 1e-9)
+                assertEquals("$preset blackClip at $edge", medium.blackClip, other.blackClip, 1e-9)
+                assertEquals("$preset vibrance at $edge", medium.vibrance, other.vibrance, 1e-9)
+                assertEquals("$preset localContrast at $edge", medium.localContrast, other.localContrast, 1e-9)
+            }
+        }
+    }
+
+    @Test
+    fun vividLocalContrastNeverExceedsItsCap() {
+        listOf(0.0, 0.5, 1.0, 1.5, 3.0).forEach { intensity ->
+            val localContrast = resolve(PageFilterPreset.VIVID_COLOR, profile(), intensity = intensity).localContrast
+
+            assertTrue("VIVID localContrast at intensity $intensity was $localContrast", localContrast in 0.0..0.65)
+        }
+        assertEquals(
+            "VIVID localContrast should reach its 0.65 cap at maximum intensity",
+            0.65,
+            resolve(PageFilterPreset.VIVID_COLOR, profile(), intensity = MAX_FILTER_INTENSITY).localContrast,
+            1e-9,
+        )
+    }
+
     private fun resolve(
         preset: PageFilterPreset,
         profile: PageImageProfile?,

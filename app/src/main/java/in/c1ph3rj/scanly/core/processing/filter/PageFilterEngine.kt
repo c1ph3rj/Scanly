@@ -42,12 +42,25 @@ internal object PageFilterEngine {
         var background: PageBackgroundModel? = null
         try {
             Imgproc.cvtColor(sourceRgba, rgb, Imgproc.COLOR_RGBA2RGB)
+            if (params.mode == PageFilterRenderMode.Screen || params.mode == PageFilterRenderMode.Vivid) {
+                // Global color looks: no paper model (emissive screens, posters, photos).
+                if (params.mode == PageFilterRenderMode.Screen) {
+                    PageColorLooks.renderScreen(rgb, params, rgb)
+                } else {
+                    PageColorLooks.renderVivid(rgb, params, rgb)
+                }
+                Imgproc.cvtColor(rgb, result, Imgproc.COLOR_RGB2RGBA)
+                return result.toBitmap()
+            }
             background = PageBackgroundModel.estimate(rgb, params.strokeFraction)
             when (params.mode) {
                 PageFilterRenderMode.Color -> renderColor(rgb, background, params, result)
                 PageFilterRenderMode.Natural -> renderNatural(rgb, background, params, result)
                 PageFilterRenderMode.Gray -> renderGray(rgb, background, params, result)
                 PageFilterRenderMode.Binary -> renderBinary(rgb, background, params, result)
+                PageFilterRenderMode.Screen,
+                PageFilterRenderMode.Vivid,
+                -> error("Handled above.")
             }
             return result.toBitmap()
         } finally {

@@ -22,6 +22,16 @@ internal enum class PageFilterRenderMode {
 
     /** Gray background division + global anti-aliased threshold + despeckle. */
     Binary,
+
+    /**
+     * Photos of displays: de-screen (pixel grid / color moiré), remove reflection veil,
+     * neutralize the screen white and stretch levels. Global — no paper model, so dark
+     * mode and full-screen images survive.
+     */
+    Screen,
+
+    /** Punchy color for posters, covers and photos: global white balance, levels, local contrast. */
+    Vivid,
 }
 
 /**
@@ -50,6 +60,20 @@ internal data class PageFilterRenderParams(
     val binaryThreshold: Double = 0.0,
     val binaryRamp: Double = 0.0,
     val despeckleMinArea: Int = 0,
+    /** Screen / Vivid: mid-tone contrast S-curve strength. */
+    val contrastCurve: Double = 0.0,
+    /** Screen / Vivid: fraction of the white-reference cast removed (gain limited to ±15%). */
+    val whiteBalance: Double = 0.0,
+    /** Screen / Vivid: fraction of the darkest-luminance level mapped to black (haze / veil lift). */
+    val blackClip: Double = 0.0,
+    /** Screen: luma blur that suppresses the display's pixel grid. */
+    val descreenSigma: Double = 0.0,
+    /** Screen: chroma blur (at quarter resolution) that removes color moiré. */
+    val chromaSigma: Double = 0.0,
+    /** Screen: fraction of the spatial reflection veil subtracted on dark-background screens. */
+    val veilRemoval: Double = 0.0,
+    /** Vivid: CLAHE blend on lightness. */
+    val localContrast: Double = 0.0,
 )
 
 internal object PageFilterLook {
@@ -122,6 +146,43 @@ internal object PageFilterLook {
                 denoiseSigma = denoiseSigma,
                 naturalLift = t,
                 naturalWhiteBalance = 0.6 * t.coerceAtMost(1.0),
+            )
+
+            PageFilterPreset.VIVID_COLOR -> PageFilterRenderParams(
+                mode = PageFilterRenderMode.Vivid,
+                strokeFraction = 0.0,
+                maxGain = 1.0,
+                blackPoint = 0.0,
+                whitePoint = 255.0,
+                gamma = 1.0,
+                vibrance = 0.55 * t,
+                sharpenAmount = 0.4 * t * sharpenDamp,
+                sharpenSigma = sharpenSigma,
+                denoiseSigma = 0.0,
+                contrastCurve = 0.2 * t,
+                whiteBalance = 0.6 * t.coerceAtMost(1.0),
+                blackClip = 0.8 * t,
+                localContrast = (0.45 * t).coerceAtMost(0.65),
+            )
+
+            PageFilterPreset.SCREEN -> PageFilterRenderParams(
+                mode = PageFilterRenderMode.Screen,
+                strokeFraction = 0.0,
+                maxGain = 1.0,
+                blackPoint = 0.0,
+                whitePoint = 255.0,
+                gamma = 1.0,
+                vibrance = 0.22 * t,
+                sharpenAmount = 0.35 * t,
+                sharpenSigma = sharpenSigma,
+                denoiseSigma = 0.0,
+                contrastCurve = 0.15 * t,
+                whiteBalance = 0.9 * t.coerceAtMost(1.0),
+                blackClip = 0.9 * t.coerceAtMost(1.0),
+                // De-screening stays on even at low intensity: the grid is never wanted.
+                descreenSigma = (0.8 * scale * (0.6 + 0.4 * t.coerceAtMost(1.0))).coerceAtLeast(0.5),
+                chromaSigma = (2.0 * scale).coerceAtLeast(0.8),
+                veilRemoval = t.coerceAtMost(1.0),
             )
 
             PageFilterPreset.GRAYSCALE -> PageFilterRenderParams(
