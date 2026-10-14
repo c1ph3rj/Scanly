@@ -1,13 +1,13 @@
 ﻿# Implementation Snapshot
 
-One-page technical summary of Scanly **v1.0.16**. For detail see the full docs index at [../README.md](../README.md).
+One-page technical summary of Scanly **v1.0.17**. For detail see the full docs index at [../README.md](../README.md).
 
 ## Release
 
 | Field | Value |
 | --- | --- |
-| Version | `1.0.16` (code `16`) |
-| Room schema | `4` |
+| Version | `1.0.17` (code `17`) |
+| Room schema | `5` (`MIGRATION_4_5`, shipped in `1.0.17`) |
 | Min SDK | 29 |
 | Target SDK | 36 |
 | Module | `:app` only |
@@ -31,7 +31,7 @@ Home · Library (paper cards, overflow actions) · Tools (QR, PDF toolkit studio
 
 ## Data
 
-- **Room v4:** `documents`, `scan_pages` (+ filter adjustment columns), `document_groups`
+- **Room v5:** `documents`, `scan_pages` (+ filter adjustment and `filterIntensity` columns), `document_groups`
 - **Files:** `raw/` (immutable), `processed/`, `thumbs/` per document
 - **DataStore:** theme, pure black, onboarding, export destination, live/post models, automatic selection, document gate
 - **Export cache:** `cache/exports/`
@@ -46,9 +46,10 @@ Raw JPEG
   → optional semantic gate (capture/import)
   → LiteRT corners (post model; book resolve) OR stored/manual/AI-detect quad
   → perspective warp
-  → OpenCV filter engine (analyze → recipe → strength → operators → guard)
+  → decode, capped at 2800px longest edge
+  → OpenCV filter engine (analyze → paper-aware background at 360px → per-channel division → tone curve → vibrance / unsharp, or B&W threshold; strength via intensity)
   → optional brightness/contrast/saturation/sharpness adjustments
-  → processed JPEG (q94, max 2400px) + thumbnail
+  → processed JPEG (q94, max 2800px) + thumbnail
 ```
 
 Corner models: Lite (224) · Standard (288) · High (384) · Accurate (YOLO-pose). Gate: MobileNetV3-Small 160 px float16.

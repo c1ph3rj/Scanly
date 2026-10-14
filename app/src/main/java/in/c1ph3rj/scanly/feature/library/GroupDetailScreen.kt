@@ -1,5 +1,9 @@
 package `in`.c1ph3rj.scanly.feature.library
 
+import `in`.c1ph3rj.scanly.feature.components.LibraryCardStyle
+import `in`.c1ph3rj.scanly.feature.components.ScanlyModalBottomSheet
+import `in`.c1ph3rj.scanly.feature.components.LibraryListItem
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -240,15 +244,16 @@ private fun GroupDetailScreen(
                         top = 12.dp,
                         bottom = 100.dp,
                     ),
-                    verticalArrangement = Arrangement.spacedBy(10.dp),
                 ) {
-                    // Group stats header
+                    // Spacing is per item: the phone list is segmented and must not get extra gaps.
                     group?.let { g ->
                         item(key = "header") {
-                            GroupStatsHeader(
-                                documentCount = g.documentCount,
-                                totalPageCount = g.totalPageCount,
-                            )
+                            Box(modifier = Modifier.padding(bottom = 12.dp)) {
+                                GroupStatsHeader(
+                                    documentCount = g.documentCount,
+                                    totalPageCount = g.totalPageCount,
+                                )
+                            }
                         }
                     }
 
@@ -267,6 +272,7 @@ private fun GroupDetailScreen(
                                 horizontalArrangement = Arrangement.spacedBy(10.dp),
                                 modifier = Modifier
                                     .fillMaxWidth()
+                                    .padding(bottom = 10.dp)
                                     .animateItem(),
                             ) {
                                 rowItems.forEach { document ->
@@ -277,6 +283,7 @@ private fun GroupDetailScreen(
                                         showRename = false,
                                         deleteContentDescription = "Remove from folder",
                                         deleteIsRemoveFromFolder = true,
+                                        style = LibraryCardStyle.Preview,
                                         modifier = Modifier.weight(1f),
                                     )
                                 }
@@ -287,21 +294,27 @@ private fun GroupDetailScreen(
                             }
                         }
                     } else {
-                        // Phone: single-column list
-                        items(
+                        // Phone: segmented list, same rows and relative dates as the Library.
+                        itemsIndexed(
                             items = uiState.documents,
-                            key = { it.id },
-                            contentType = { "document_card" },
-                        ) { document ->
-                            DocumentCard(
-                                document = document,
-                                onOpen = { onOpenDocument(document.id) },
-                                onDelete = { removeTarget = document },
-                                showRename = false,
-                                deleteContentDescription = "Remove from folder",
-                                deleteIsRemoveFromFolder = true,
+                            key = { _, document -> document.id },
+                            contentType = { _, _ -> "document_row" },
+                        ) { index, document ->
+                            LibraryListItem(
+                                first = index == 0,
+                                last = index == uiState.documents.lastIndex,
                                 modifier = Modifier.animateItem(),
-                            )
+                            ) {
+                                DocumentCard(
+                                    document = document,
+                                    onOpen = { onOpenDocument(document.id) },
+                                    onDelete = { removeTarget = document },
+                                    showRename = false,
+                                    deleteContentDescription = "Remove from folder",
+                                    deleteIsRemoveFromFolder = true,
+                                    style = LibraryCardStyle.PreviewList,
+                                )
+                            }
                         }
                     }
                 }
@@ -462,10 +475,10 @@ private fun GroupExportShareSheet(
     val sheetState = rememberModalBottomSheetState()
     val docLabel = if (documentCount == 1) "1 document" else "$documentCount documents"
 
-    ModalBottomSheet(
+    ScanlyModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
-        containerColor = MaterialTheme.colorScheme.surface,
+        containerColor = { MaterialTheme.colorScheme.surface },
     ) {
         ScanlySheetContent {
             Text(
@@ -650,10 +663,10 @@ private fun AddDocumentSheet(
         if (useTwoColumnList) ungroupedDocuments.chunked(2) else null
     }
 
-    ModalBottomSheet(
+    ScanlyModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
-        containerColor = MaterialTheme.colorScheme.surface,
+        containerColor = { MaterialTheme.colorScheme.surface },
         dragHandle = { BottomSheetDefaults.DragHandle() },
     ) {
         ScanlySheetContent {

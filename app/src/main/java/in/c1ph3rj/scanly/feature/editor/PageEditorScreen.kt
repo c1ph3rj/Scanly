@@ -1,5 +1,6 @@
 package `in`.c1ph3rj.scanly.feature.editor
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -123,6 +124,12 @@ fun PageEditorScreen(
     var filtersVisible by remember { mutableStateOf(false) }
     var customizeVisible by remember { mutableStateOf(false) }
     var deleteDialogVisible by remember { mutableStateOf(false) }
+    BackHandler(enabled = uiState.isSaving || filtersVisible || customizeVisible) {
+        if (!uiState.isSaving) {
+            filtersVisible = false
+            customizeVisible = false
+        }
+    }
     val showBulkApplyLoader = uiState.isSaving && uiState.applyFilterToAllPages
     val statusLabel = when {
         showBulkApplyLoader -> "Processing"
@@ -364,6 +371,7 @@ private fun EditorTopBar(
             icon = Icons.AutoMirrored.Filled.ArrowBack,
             contentDescription = "Back",
             onClick = onNavigateUp,
+            enabled = !isSaving,
             containerColor = colorScheme.surfaceContainerHighest,
             contentColor = colorScheme.onSurface,
         )
@@ -572,12 +580,12 @@ private fun EditorActionButton(
 private fun PageFilterPreset.toEditorLabel(): String = when (this) {
     PageFilterPreset.ORIGINAL -> "Original"
     PageFilterPreset.AUTO -> "Auto"
-    PageFilterPreset.ENHANCED_COLOR -> "Color"
+    PageFilterPreset.MAGIC_COLOR -> "Magic Color"
+    PageFilterPreset.NATURAL_COLOR -> "Natural"
+    PageFilterPreset.VIVID_COLOR -> "Vivid"
+    PageFilterPreset.SCREEN -> "Screen"
     PageFilterPreset.GRAYSCALE -> "Grayscale"
     PageFilterPreset.BLACK_AND_WHITE -> "B&W"
-    PageFilterPreset.CLEAN -> "Clean Paper"
-    PageFilterPreset.SHADOW_REDUCTION -> "Shadow Reduce"
-    PageFilterPreset.MAGIC_COLOR -> "Magic"
-    PageFilterPreset.RECEIPT -> "Receipt"
-    PageFilterPreset.SOFT_BLACK_AND_WHITE -> "Text Enhance"
+    PageFilterPreset.WHITEBOARD -> "Whiteboard"
+    PageFilterPreset.FADED -> "Faded Text"
 }

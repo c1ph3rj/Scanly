@@ -24,7 +24,7 @@ enum class PdfCompressQuality(
     val maxDimension: Int,
 ) {
     HIGH("High quality", "Best clarity · less compression", 88, 2200),
-    MEDIUM("Balanced", "Recommended · good balance", 72, 1600),
+    MEDIUM("Balanced", "Good balance of size and clarity", 72, 1600),
     SMALL("Smallest", "Maximum compression · softer detail", 52, 1100),
 }
 
@@ -35,7 +35,27 @@ data class WatermarkOptions(
     val size: WatermarkSize = WatermarkSize.MEDIUM,
     val layout: WatermarkLayout = WatermarkLayout.CENTERED,
     val pageRange: WatermarkPageRange = WatermarkPageRange.ALL_PAGES,
+    val color: WatermarkColor = WatermarkColor.GREY,
 )
+
+/**
+ * Stamp inks. Kept dark and saturated so the mark stays legible at low opacity on white
+ * paper and survives photocopying.
+ */
+enum class WatermarkColor(
+    val label: String,
+    val argb: Long,
+) {
+    GREY("Grey", 0xFF4B5563),
+    RED("Red", 0xFFB91C1C),
+    BLUE("Blue", 0xFF1D4ED8),
+    TEAL("Teal", 0xFF0F766E),
+    ;
+
+    val red: Float get() = ((argb shr 16) and 0xFF) / 255f
+    val green: Float get() = ((argb shr 8) and 0xFF) / 255f
+    val blue: Float get() = (argb and 0xFF) / 255f
+}
 
 /**
  * Relative stamp scale. Absolute point size is derived from the page box so the

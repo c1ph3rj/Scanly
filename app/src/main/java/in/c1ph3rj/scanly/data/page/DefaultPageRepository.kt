@@ -9,7 +9,7 @@ import `in`.c1ph3rj.scanly.data.local.db.ScanlyDatabase
 import `in`.c1ph3rj.scanly.data.local.db.dao.DocumentDao
 import `in`.c1ph3rj.scanly.data.local.db.dao.ScanPageDao
 import `in`.c1ph3rj.scanly.data.local.db.entity.ScanPageEntity
-import `in`.c1ph3rj.scanly.data.archive.LibraryOperationCoordinator
+import `in`.c1ph3rj.scanly.data.common.LibraryOperationCoordinator
 import `in`.c1ph3rj.scanly.data.storage.DocumentStorageManager
 import `in`.c1ph3rj.scanly.domain.model.PageFilterAdjustments
 import `in`.c1ph3rj.scanly.domain.model.PageFilterPreset
@@ -429,6 +429,7 @@ class DefaultPageRepository @Inject constructor(
             contrast = filterContrast,
             saturation = filterSaturation,
             sharpness = filterSharpness,
+            intensity = filterIntensity,
         ).sanitized(),
         processingState = PageProcessingState.fromStorage(processingState),
         createdAtMillis = createdAtMillis,
@@ -489,6 +490,7 @@ class DefaultPageRepository @Inject constructor(
             filterContrast = sanitizedAdjustments.contrast,
             filterSaturation = sanitizedAdjustments.saturation,
             filterSharpness = sanitizedAdjustments.sharpness,
+            filterIntensity = sanitizedAdjustments.intensity,
             processingState = processedArtifacts.processingState,
             updatedAtMillis = updatedAtMillis,
         )

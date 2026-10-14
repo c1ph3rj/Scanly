@@ -14,7 +14,7 @@ Backup is enabled only when the library is non-empty, the destination is writabl
 
 `.scanly` is a DEFLATE ZIP whose first entry is `manifest.json`. The manifest contains the signature and format version, source app version and timestamp, groups/documents/pages with edit metadata (including crop coords, rotation, filter preset, and optional filter adjustment floats), relative asset paths, byte sizes, and SHA-256 checksums. Raw captures, processed files, page thumbnails, and covers are included exactly. Preferences, SQLite/WAL files, export cache, and other backups are excluded.
 
-Archives written before filter adjustments omit the four floats; restore fills `filterBrightness` / `filterContrast` / `filterSaturation` / `filterSharpness` with `0` (identity).
+Each page entry also carries `filterIntensity` (`0..1.5`, default `1`). Archives written before filter adjustments omit the four adjustment floats; restore fills `filterBrightness` / `filterContrast` / `filterSaturation` / `filterSharpness` with `0` (identity). Archives written before schema 5 omit `filterIntensity`; restore fills it with `1` (the tuned look). Legacy `filterPreset` values in older archives are mapped to their replacements on read.
 
 ## Restore safety
 

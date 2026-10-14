@@ -93,10 +93,9 @@ internal fun ComposeTestRule.openDestination(navTag: String, screenTag: String) 
 
 internal fun ComposeTestRule.generateQrFromTools(content: String) {
     openDestination(ScanlyTestTags.NAV_TOOLS, ScanlyTestTags.TOOLS_SCREEN)
-    onNodeWithText("QR CODE").performClick()
-    awaitText("Generate a code")
-    onNodeWithText("Generate a code").performClick()
-    awaitText("Create a QR code")
+    onNodeWithText("QR code").performClick()
+    awaitText("Create")
+    onNodeWithText("Create").performClick()
     awaitTag(ScanlyTestTags.QR_GENERATE_INPUT)
     onNodeWithTag(ScanlyTestTags.QR_GENERATE_INPUT).performTextReplacement(content)
     waitUntil(DEFAULT_TIMEOUT_MS) {

@@ -6,18 +6,24 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import `in`.c1ph3rj.scanly.data.local.db.dao.DocumentDao
 import `in`.c1ph3rj.scanly.data.local.db.dao.DocumentGroupDao
+import `in`.c1ph3rj.scanly.data.local.db.dao.PageTextDao
 import `in`.c1ph3rj.scanly.data.local.db.dao.ScanPageDao
 import `in`.c1ph3rj.scanly.data.local.db.entity.DocumentEntity
 import `in`.c1ph3rj.scanly.data.local.db.entity.DocumentGroupEntity
+import `in`.c1ph3rj.scanly.data.local.db.entity.PageTextEntity
+import `in`.c1ph3rj.scanly.data.local.db.entity.PageTextFtsEntity
 import `in`.c1ph3rj.scanly.data.local.db.entity.ScanPageEntity
+import `in`.c1ph3rj.scanly.domain.model.PageFilterPreset
 
 @Database(
     entities = [
         DocumentEntity::class,
         ScanPageEntity::class,
         DocumentGroupEntity::class,
+        PageTextEntity::class,
+        PageTextFtsEntity::class,
     ],
-    version = 4,
+    version = 6,
     exportSchema = false,
 )
 abstract class ScanlyDatabase : RoomDatabase() {
@@ -26,6 +32,8 @@ abstract class ScanlyDatabase : RoomDatabase() {
     abstract fun scanPageDao(): ScanPageDao
 
     abstract fun documentGroupDao(): DocumentGroupDao
+
+    abstract fun pageTextDao(): PageTextDao
 
     companion object {
         val MIGRATION_1_2: Migration = object : Migration(1, 2) {
@@ -124,5 +132,73 @@ abstract class ScanlyDatabase : RoomDatabase() {
                 )
             }
         }
+
+        val MIGRATION_4_5: Migration = object : Migration(4, 5) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL(
+                    "ALTER TABLE scan_pages ADD COLUMN filterIntensity REAL NOT NULL DEFAULT 1",
+                )
+                // Presets removed in the filter overhaul are rewritten to their closest replacement.
+                PageFilterPreset.legacyStorageMigrations.forEach { (legacy, replacement) ->
+                    db.execSQL(
+                        "UPDATE scan_pages SET filterPreset = ? WHERE filterPreset = ?",
+                        arrayOf<Any>(replacement, legacy),
+                    )
+                    db.execSQL(
+                        "UPDATE documents SET preferredFilterPreset = ? WHERE preferredFilterPreset = ?",
+                        arrayOf<Any>(replacement, legacy),
+                    )
+                }
+            }
+        }
+
+        /**
+         * Adds on-device page text (ML Kit) and its FTS4 external-content index. Existing pages
+         * have no rows yet; the text indexer picks them up in the background after upgrade.
+         * DDL mirrors Room's generated schema exactly so validation passes.
+         */
+        val MIGRATION_5_6: Migration = object : Migration(5, 6) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL(
+                    "CREATE TABLE IF NOT EXISTS `page_texts` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
+                        "`pageId` TEXT NOT NULL, `documentId` TEXT NOT NULL, `recognizedText` TEXT NOT NULL, " +
+                        "`userText` TEXT, `searchText` TEXT NOT NULL, `blocksJson` TEXT NOT NULL, " +
+                        "`imageWidth` INTEGER NOT NULL, `imageHeight` INTEGER NOT NULL, " +
+                        "`sourceUpdatedAtMillis` INTEGER NOT NULL, `recognizedAtMillis` INTEGER NOT NULL, `kind` TEXT, " +
+                        "FOREIGN KEY(`pageId`) REFERENCES `scan_pages`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+                )
+                db.execSQL(
+                    "CREATE UNIQUE INDEX IF NOT EXISTS `index_page_texts_pageId` ON `page_texts` (`pageId`)",
+                )
+                db.execSQL(
+                    "CREATE INDEX IF NOT EXISTS `index_page_texts_documentId` ON `page_texts` (`documentId`)",
+                )
+                db.execSQL(
+                    "CREATE VIRTUAL TABLE IF NOT EXISTS `page_texts_fts` USING FTS4(`searchText` TEXT NOT NULL, " +
+                        "tokenize=unicode61, content=`page_texts`)",
+                )
+                PAGE_TEXT_FTS_TRIGGERS.forEach(db::execSQL)
+            }
+        }
+
+        /**
+         * Read-only view of the FTS vocabulary (word → pages containing it), used for
+         * "did you mean" suggestions. Room doesn't manage fts4aux tables, so it is created
+         * idempotently on every open, which covers fresh installs and upgrades alike.
+         */
+        const val PAGE_TEXT_TERMS_TABLE = "page_texts_terms"
+        const val CREATE_PAGE_TEXT_TERMS =
+            "CREATE VIRTUAL TABLE IF NOT EXISTS `$PAGE_TEXT_TERMS_TABLE` USING fts4aux(page_texts_fts)"
+
+        private val PAGE_TEXT_FTS_TRIGGERS = listOf(
+            "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_page_texts_fts_BEFORE_UPDATE BEFORE UPDATE ON `page_texts` " +
+                "BEGIN DELETE FROM `page_texts_fts` WHERE `docid`=OLD.`rowid`; END",
+            "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_page_texts_fts_BEFORE_DELETE BEFORE DELETE ON `page_texts` " +
+                "BEGIN DELETE FROM `page_texts_fts` WHERE `docid`=OLD.`rowid`; END",
+            "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_page_texts_fts_AFTER_UPDATE AFTER UPDATE ON `page_texts` " +
+                "BEGIN INSERT INTO `page_texts_fts`(`docid`, `searchText`) VALUES (NEW.`rowid`, NEW.`searchText`); END",
+            "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_page_texts_fts_AFTER_INSERT AFTER INSERT ON `page_texts` " +
+                "BEGIN INSERT INTO `page_texts_fts`(`docid`, `searchText`) VALUES (NEW.`rowid`, NEW.`searchText`); END",
+        )
     }
 }

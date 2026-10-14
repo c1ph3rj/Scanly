@@ -4,6 +4,11 @@ import `in`.c1ph3rj.scanly.core.common.StorageFormatter
 import `in`.c1ph3rj.scanly.domain.model.PdfPasswordMode
 import `in`.c1ph3rj.scanly.domain.model.WatermarkLayout
 
+fun shouldReturnFromPdfPickerToPreviousStep(
+    hasSelectedSource: Boolean,
+    pickerOpenedForChange: Boolean,
+): Boolean = hasSelectedSource && pickerOpenedForChange
+
 fun formatPdfPageCount(pageCount: Int): String =
     if (pageCount == 1) "1 page" else "$pageCount pages"
 

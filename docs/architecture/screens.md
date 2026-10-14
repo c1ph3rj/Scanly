@@ -1,6 +1,6 @@
 ﻿# Screens and ViewModels
 
-Every feature screen in Scanly **v1.0.16** and its responsibilities.
+Every feature screen in Scanly **v1.0.17** and its responsibilities.
 
 ## Screen inventory
 
@@ -10,13 +10,13 @@ Every feature screen in Scanly **v1.0.16** and its responsibilities.
 | Home | `HomeScreen` | `HomeViewModel` | `home` | Recent paper cards, scan/import/folder, suggest names, library shortcut |
 | Widgets / shortcuts | (system chrome) | `LaunchActionViewModel` | via `MainActivity` intents | Scan, Import, QR, Library redirects |
 | Library | `LibraryScreen` | `LibraryViewModel` | `library` | Paper cards, overflow/long-press actions, search, filter pills, sort, CRUD, suggest names |
-| Tools hub | `ToolsScreen` | `ToolsViewModel` | `tools` | Workflow-focused tools workspace; scan/import, QR, and PDF utility entry points |
-| QR tool | `QrToolScreen` | `QrToolViewModel` | `tools/qr` | Camera QR/barcode scan (link vs text result); generate QR PNG save/share |
-| PDF reader | `PdfReaderRoute` | `PdfReaderViewModel` | `tools/pdf/reader` | Title, page n of m, paged or continuous, pinch-zoom, hideable chrome |
-| PDF merge | `PdfMergeRoute` | `PdfMergeViewModel` | `tools/pdf/merge` | Numbered file list in merge order |
-| PDF compress | `PdfCompressRoute` | `PdfCompressViewModel` | `tools/pdf/compress` | Quality presets while editing; focused `PdfToolCompleteScreen` with size-savings detail when done |
-| PDF password | `PdfPasswordRoute` | `PdfPasswordViewModel` | `tools/pdf/password` | First-page preview, compact Protect/Remove control, focused `PdfToolCompleteScreen` when done |
-| PDF watermark | `PdfWatermarkRoute` | `PdfWatermarkViewModel` | `tools/pdf/watermark` | Debounced first-page proof via the production engine; tiled/single layout, size presets, orientation, opacity, and page coverage |
+| Tools hub | `ToolsScreen` | `ToolsViewModel` | `tools` | Scan / PDF / Utilities groups; QR opens straight into scanning |
+| QR tool | `QrToolScreen` (+ `QrScanScreen`, `QrResultScreen`, `QrCreateScreen`, `QrHistoryScreen`) | `QrToolViewModel` | `tools/qr` | Scan with torch and photo import, typed results, Create types with caption and ink, on-phone history |
+| PDF reader | `PdfReaderRoute` | `PdfReaderViewModel` | `tools/pdf/reader` | Picker step, dark reader with one page counter, hideable chrome, Pages grid, Layout, Share |
+| PDF merge | `PdfMergeRoute` | `PdfMergeViewModel` | `tools/pdf/merge` | Multi-select picker → order & name → done |
+| PDF compress | `PdfCompressRoute` | `PdfCompressViewModel` | `tools/pdf/compress` | Picker → quality → working → done with saving and before/after |
+| PDF password | `PdfPasswordRoute` | `PdfPasswordViewModel` | `tools/pdf/password` | Picker → Add password (strength, restrict editing) or Remove password, chosen by the file → done |
+| PDF watermark | `PdfWatermarkRoute` | `PdfWatermarkViewModel` | `tools/pdf/watermark` | Picker → editor with pinned live preview (presets, date, style, colour, pages) → done |
 | Group detail | `GroupDetailScreen` | `GroupDetailViewModel` | `group/{groupId}` | Membership, rename, delete, group export, create doc in group |
 | Document detail | `DocumentDetailScreen` | `DocumentDetailViewModel` | `document/{documentId}` | Portrait page tiles, tap-to-review, long-press reorder, rename, import, export/save, move to group |
 | Scan session | `ScanSessionScreen` | `ScanSessionViewModel` | `camera/session/{docId}` | Camera permission (ask first), CameraX, gate + multi-model overlay, stability, auto-capture, finalize |

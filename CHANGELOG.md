@@ -6,6 +6,83 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Added
+
+- **Search inside your scans** — Scanly now reads the text on every page on this device (ML Kit Text Recognition v2, bundled model — nothing is uploaded) and library search finds documents by any word printed on their pages, not just by name. Name matches appear instantly as you type; page matches follow a moment later with highlighted excerpts and a "Page N" for each hit, and documents whose pages contain the words move above name-only matches.
+- **Smarter search** — typed words match as prefixes ("lea" finds "lease"), case and accents are ignored, "quoted phrases" match exactly, names tolerate one typo, and when nothing matches Scanly suggests a correction built from words that really occur in your pages. Filter by Everywhere / Names / Text in pages, and by document type.
+- **Document types** — invoices, receipts, contracts, statements, letters, certificates, ID documents, forms and résumés are recognised on-device from their text and shown in search results.
+- **Extracted text** — a new screen (document menu → Extract text, the page review dock, or tapping a search excerpt) with a clean **Text** view for reading and selecting, an **On page** view that outlines text regions on the scan so you can copy just one part, swipeable pages, Copy page / Share / Edit, and "Copy all pages" / "Share all pages". Corrections you make are kept and used for search.
+- **Add page tile** — every document's page grid ends with a dashed "Add page" slot that opens Scan / Import.
+- **Search start page** — before you type, search shows your recent searches, one-tap **Browse by type** (e.g. all contracts) and short search tips.
+- **Rate Scanly** — a small, dismissible "Enjoying Scanly?" card under the Settings header with five tappable stars (any star opens the same Google Play rating), a permanent Rate Scanly row under More, plus an occasional, easily dismissed nudge on Home shown only after you have just finished something (an export, share or PDF tool) and never more than once every 30 days.
+
+### Changed
+
+- **Folder previews** — Library and Home start with **New folder**, followed by up to three recent folders and a solid **View all** tile with a grid icon and arrow when more than three folders exist. The **See all** header link also opens the full folder list.
+- **Pure black sheets** — bottom sheets (Add a document, Add page, Export & share, Move to folder…) now sit on a visibly raised dark grey in the pure-black theme instead of blending into the black screen.
+- **Save location** — one clear row showing where exports go, with Change inline and Use default folder when a custom folder is set.
+- **Storage** (formerly Storage & backup) — redesigned around what uses space, with one-tap clearing of temporary exports, the save location, tidy-up actions and a single Clear all data action.
+- Text is indexed in the background as you scan, import, retake or edit pages; the search screen shows when some pages are still being read.
+
+### Removed
+
+- **Library backup & restore** (`.scanly` files), together with its foreground service and notification permission. Leftover backup workspace files are cleaned up automatically on upgrade.
+
+### Technical
+
+- Room schema **6** adds `page_texts` and its FTS4 index (`MIGRATION_5_6`); existing pages are read in the background after upgrade.
+
+### Fixed
+
+- **Back navigation** — PDF reader and compression pickers now return to their tool instead of reopening a previously selected file; explicit Change/Choose another actions in the reader, compression, and watermark tools return to the current step. Android Back now closes editor filter modes and stays in place during active capture, crop/filter saves, and PDF-tool processing.
+- The Settings rating card now waits for its saved state before appearing, so it no longer flashes and disappears on open.
+
+## [1.0.17] - 2026-10-14
+
+### Added
+
+- **Home search** — a search bar under the Home greeting opens library search; Home, Library and the search screen share one field style.
+- **QR history** — scanned and created codes are kept on this phone with search, Scanned/Created filters and Clear history.
+- **Typed QR results** — scans are shown by type (link with its full domain, UPI payee, Wi-Fi network, contact, email, phone, text) with one-tap actions; raw content is always available.
+- **QR create types** — Link, Text, Wi-Fi, UPI and Contact codes, an optional caption printed under the code, and dark ink colours.
+- **Watermark colours, presets and date** — Grey, Red, Blue or Teal ink; CONFIDENTIAL, DRAFT, COPY and "For KYC use only" presets; optional date stamp.
+- **Restrict editing** — Password can lock a PDF so others can open and print it but not edit it or copy its text.
+
+- **Library search screen** — search document and folder names across the entire library from a dedicated screen without category filters.
+
+- **Professional filter engine** — page filters divide out uneven paper lighting using a paper-aware background model, so photos, logos, and colour ink are not flattened and the paper comes out even. Each look uses one tone curve; colour looks add vibrance and paper neutralization, and B&W uses an anti-aliased threshold with speck removal.
+- **Eight filter presets** — Original, Auto, Magic Color, Natural, Grayscale, B&W, Whiteboard, and Faded Text. Auto picks Magic Color, Natural, Faded Text, or Grayscale for each page.
+- **Intensity slider** — Adjust starts with an **Intensity** control (0–150 %, default 100 %). At 0 only the lighting is corrected; higher values give a stronger look. The setting is saved per page and included in `.scanly` backups.
+
+### Changed
+
+- **QR capture** — teal corners track the detected code before automatic capture; the analyzed camera frame freezes behind the result, and Scan again starts a fresh detection. Result details preserve the captured preview, and late history writes no longer restore dismissed results.
+- **QR mode buttons** — the Scan | Create switch is replaced by one rounded button in the top bar: **Create** on the scanner and **Scan** on the creator. On the scanner, **From photo** moves to the bottom bar beside **History**, and all QR actions share the same pill shape.
+- **QR result icons** — the found-code card's Open (icon matches the action), Copy, Share and Scan again buttons show icons.
+- **Tools redesign** — Tools is grouped into Scan, PDF and Utilities; Images to PDF is in the PDF section, while the QR tile opens straight into scanning with Create as a tab. PDF tools use a consistent choose-file → options → done flow with a live result preview and a single-line, end-aligned file name editor that keeps the ending of long names visible, with a small gap before the fixed extension.
+- **Light theme folders** — folder art uses a deeper teal on the light page so folders read as solid objects.
+- **Light theme contrast** — cards and panels are white on a cool grey page with clearer borders and wells, so sections no longer blend into the background.
+
+- **Library layout** — the Library opens on a search field, a scrollable **Folders** shelf (each tile is drawn as a folder with a tab, the latest page tucked inside, a second sheet when it holds several documents, and a name that wraps to two lines; plus a **New folder** tile; **See all** — on the Library or on Home's Recent folders — expands the shelf into a folder grid in place and hides documents; a back arrow beside **Folders** (or system back) returns to the full Library), and **Documents** grouped into Today, Yesterday, Previous 7 days, and month sections when sorted by date. Cards under a section show the time or day instead of repeating the section date. Grid covers fill the tile and crop from the top of the page; titles wrap to two lines so auto-generated names stay readable. Folder category chips and the header search/new-folder icons are removed; All includes documents inside folders.
+- **Compact navigation bar** — a slimmer bar with outlined Home, Library, Tools, and Settings icons and a raised scanner button in the middle (also at the top of the tablet rail). The button asks **Scan with camera** or **Import from gallery** and opens that flow. The Library's floating **+** menu is removed; **New folder** stays on the Folders shelf, which now shows even when no folders exist.
+- **Tools layout** — Tools uses a full-width Scan action and matching multi-column PDF and Utilities grids, with Images to PDF under PDF and short descriptions.
+- **Search results** — folders and documents are listed under separate **Folders** and **Documents** headings; folder results show the folder illustration and a "Folder" label.
+- **Folder screen** — documents inside a folder use the same rounded list rows and relative dates as the Library (preview cards on tablets).
+- **Home recents** — Recent folders and Recent documents use the same folder tiles, segmented document rows, relative dates, and "See all" headers as the Library. Home shows only the four most recently updated documents; "See all" opens the full Library.
+- **Library polish** — compact sort button and grid/list selector with 48 dp touch targets; list rows are rounded segments per section (larger outer corners, a small gap instead of dividers) with top-cropped page thumbnails; grid cards have an inset press highlight so the cover and text never touch its edge, and press ripples stay inside each control's visible shape. Search always spans both documents and folders and uses the same rounded field.
+
+- **Capture and processing resolution** — camera captures use the highest-quality still at the sensor's maximum resolution, and processed pages are capped at 2800 px on the longest edge (up from 2400 px).
+- **Legacy filters** — Enhanced Color, Shadow Reduction, Clean, Soft Black & White, and Receipt are remapped to Natural, Magic Color, Grayscale, and Faded Text for existing pages and documents.
+- **Database** — schema 5 (`MIGRATION_4_5`) adds the page intensity column and remaps legacy presets. Upgrades run automatically.
+
+### Fixed
+
+- **PDF reader layout** — keep the first and last page clear of the title and bottom controls in both paged and continuous views.
+- **Navigation bar** — removed the opaque strip above the bottom bar that cut across the scan button (most visible in dark mode); content now scrolls under the raised button.
+- **Watermarks** — stamps now read upright and centred on rotated pages, single stamps always fit the page, tiles follow the stamp angle in even rows, symbols such as ₹ no longer make saving fail, and the live preview stays fast on long PDFs.
+
+- **Adjust brightness and contrast** — contrast now pivots on mid-gray instead of black, and the adjustments only change RGB, so the alpha channel is no longer scaled (which could leave pages semi-transparent).
+
 ## [1.0.16] - 2026-09-16
 
 ### Added

@@ -3,7 +3,7 @@ package `in`.c1ph3rj.scanly.ui.theme
 import androidx.compose.ui.graphics.Color
 
 // Premium Brand Colors
-val BrandPrimary = Color(0xFF00796B)     // Deep Teal
+val BrandPrimary = Color(0xFF0F766E)     // Deep Teal (redesign accent, 5.4:1 on white)
 val BrandPrimaryDark = Color(0xFF2DD4BF) // Crisp emerald for dark surfaces
 val BrandSecondary = Color(0xFF00BFA5)   // Vibrant Teal/Cyan
 val BrandTertiary = Color(0xFF00574B)    // Deep accent for light surfaces
@@ -43,22 +43,33 @@ val AmoledSecondaryContainer = Color(0xFF0E3A36)
 val AmoledTertiaryContainer = Color(0xFF1A2E2A)
 val AmoledErrorContainer = Color(0xFF4A151A)
 
+// Pure-black sheet elevation ramp (see liftedForPureBlackSheet).
+val AmoledSheetSurface = Color(0xFF181D1B)
+val AmoledSheetContainer = Color(0xFF212725)
+val AmoledSheetContainerHigh = Color(0xFF29302D)
+val AmoledSheetContainerHighest = Color(0xFF313936)
+
 // Light Mode Tints
-val LightBackground = Color(0xFFF7FAF9)
+// Cool-neutral ladder from the redesign foundations. Cards (surface / surfaceContainer) are
+// pure white on a #F1F3F5 page so they separate clearly; wells, tracks and chips step down to
+// #ECEFF2 so they stay visible *inside* white cards; hairlines are dark enough to read on both.
+// The previous green-tinted ladder kept page and cards within ~2% luminance, which made cards
+// and section backgrounds nearly invisible.
+val LightBackground = Color(0xFFF1F3F5)
 val LightSurface = Color(0xFFFFFFFF)
-val LightSurfaceVariant = Color(0xFFDDE7E4)
+val LightSurfaceVariant = Color(0xFFE3E7EB)
 val LightSurfaceContainerLowest = Color(0xFFFFFFFF)
-val LightSurfaceContainerLow = Color(0xFFFDFEFE)
-val LightSurfaceContainer = Color(0xFFF1F6F5)
-val LightSurfaceContainerHigh = Color(0xFFE8F0EE)
-val LightSurfaceContainerHighest = Color(0xFFDDE8E5)
-val LightOnBackground = Color(0xFF111817)
-val LightOnSurfaceVariant = Color(0xFF52615E)
-val LightOutline = Color(0xFF829A94)
-val LightOutlineVariant = Color(0xFFC8D6D2)
-val LightPrimaryContainer = Color(0xFFBDEAE3)
-val LightOnPrimaryContainer = Color(0xFF003731)
-val LightSecondaryContainer = Color(0xFFC8F3ED)
+val LightSurfaceContainerLow = Color(0xFFF7F8FA)
+val LightSurfaceContainer = Color(0xFFFFFFFF)
+val LightSurfaceContainerHigh = Color(0xFFECEFF2)
+val LightSurfaceContainerHighest = Color(0xFFE1E5E9)
+val LightOnBackground = Color(0xFF101418)
+val LightOnSurfaceVariant = Color(0xFF545E65)
+val LightOutline = Color(0xFF7C878F)
+val LightOutlineVariant = Color(0xFFD7DDE2)
+val LightPrimaryContainer = Color(0xFFD4EFEB)
+val LightOnPrimaryContainer = Color(0xFF0A4F49)
+val LightSecondaryContainer = Color(0xFFCFF0EB)
 val LightOnSecondaryContainer = Color(0xFF005048)
-val LightTertiaryContainer = Color(0xFFE1ECE9)
+val LightTertiaryContainer = Color(0xFFDDEAE7)
 val LightOnTertiaryContainer = Color(0xFF0A3D36)

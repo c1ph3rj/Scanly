@@ -22,4 +22,12 @@ data class PageImageProfile(
     val paperB: Double = 128.0,
     val glareRatio: Double = highlightRatio,
     val noise: Double = 0.0,
+    /** Paper peak of the background-normalized gray page (paper ≈ 250 when shading is removed). */
+    val tonePaperLevel: Double = 246.0,
+    /** Level above which normalized paper is pushed to pure white (12th percentile of paper pixels). */
+    val toneWhitePoint: Double = 235.0,
+    /** Darkest-ink level (0.8th percentile) of the normalized page; high values mean faint ink. */
+    val toneInkLevel: Double = 40.0,
+    /** Set by the capture pipeline when the semantic gate classified the photo as a display. */
+    val screenLikely: Boolean = false,
 )

@@ -15,9 +15,9 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class OpenCvPageFilterProcessorTest {
     @Test
-    fun shadowReductionFlattensPaperAndPreservesColorMarks() {
+    fun magicColorFlattensPaperAndPreservesColorMarks() {
         val source = shadedPaperBitmap(includeColorMarks = true)
-        val filtered = OpenCvPageFilterProcessor.apply(source, PageFilterPreset.SHADOW_REDUCTION)
+        val filtered = OpenCvPageFilterProcessor.apply(source, PageFilterPreset.MAGIC_COLOR)
 
         try {
             val sourceShadowDelta = luminanceDeltaAcrossPage(source)
@@ -46,9 +46,9 @@ class OpenCvPageFilterProcessorTest {
     }
 
     @Test
-    fun shadowReductionDoesNotAmplifyBlankPaperNoise() {
+    fun magicColorDoesNotAmplifyBlankPaperNoise() {
         val source = shadedPaperBitmap(includeColorMarks = false)
-        val filtered = OpenCvPageFilterProcessor.apply(source, PageFilterPreset.SHADOW_REDUCTION)
+        val filtered = OpenCvPageFilterProcessor.apply(source, PageFilterPreset.MAGIC_COLOR)
 
         try {
             val sourceNoise = luminanceStandardDeviation(source, left = 190, top = 220, right = 290, bottom = 420)
@@ -65,9 +65,9 @@ class OpenCvPageFilterProcessorTest {
     }
 
     @Test
-    fun enhancedColorKeepsEvenPaperAndColorMarks() {
+    fun naturalColorKeepsEvenPaperAndColorMarks() {
         val source = evenPaperBitmap()
-        val filtered = OpenCvPageFilterProcessor.apply(source, PageFilterPreset.ENHANCED_COLOR)
+        val filtered = OpenCvPageFilterProcessor.apply(source, PageFilterPreset.NATURAL_COLOR)
 
         try {
             val sourcePaper = meanLuminance(source, left = 28, top = 36, right = 92, bottom = 92)
@@ -98,14 +98,69 @@ class OpenCvPageFilterProcessorTest {
     }
 
     @Test
-    fun grayscaleDoesNotReintroduceCaptureColor() {
+    fun grayscaleOutputIsNeutralAndKeepsSize() {
         val source = shadedPaperBitmap(includeColorMarks = true)
         val filtered = OpenCvPageFilterProcessor.apply(source, PageFilterPreset.GRAYSCALE)
 
         try {
             assertTrue(
+                "Grayscale output must keep the source size.",
+                filtered.width == source.width && filtered.height == source.height,
+            )
+            assertTrue(
                 "Grayscale output must not pull capture chroma back in.",
                 saturationAt(filtered, x = 132, y = 322) < 8.0,
+            )
+            assertAllPixelsNeutral(filtered)
+        } finally {
+            source.recycle()
+            filtered.recycle()
+        }
+    }
+
+    @Test
+    fun fadedDoesNotReintroduceCaptureColor() {
+        val source = shadedPaperBitmap(includeColorMarks = true)
+        val filtered = OpenCvPageFilterProcessor.apply(source, PageFilterPreset.FADED)
+
+        try {
+            assertTrue(
+                "Faded output must not pull capture chroma back in.",
+                saturationAt(filtered, x = 132, y = 322) < 8.0,
+            )
+            assertAllPixelsNeutral(filtered)
+        } finally {
+            source.recycle()
+            filtered.recycle()
+        }
+    }
+
+    @Test
+    fun blackAndWhiteOutputIsAlmostEntirelyInkOrPaper() {
+        val source = shadedPaperBitmap(includeColorMarks = true)
+        val filtered = OpenCvPageFilterProcessor.apply(source, PageFilterPreset.BLACK_AND_WHITE)
+
+        try {
+            assertAllPixelsNeutral(filtered)
+
+            var midTonePixels = 0
+            var sampled = 0
+            for (y in 0 until filtered.height step 2) {
+                for (x in 0 until filtered.width step 2) {
+                    val value = Color.red(filtered.getPixel(x, y))
+                    if (value in 32..223) midTonePixels++
+                    sampled++
+                }
+            }
+            val midToneFraction = midTonePixels.toDouble() / sampled.coerceAtLeast(1)
+
+            assertTrue(
+                "Black and white output should be near-binary; mid-tone fraction was $midToneFraction.",
+                midToneFraction < 0.05,
+            )
+            assertTrue(
+                "Paper should render as white in black and white output.",
+                meanLuminance(filtered, left = 28, top = 36, right = 92, bottom = 92) > 250.0,
             )
         } finally {
             source.recycle()
@@ -114,18 +169,32 @@ class OpenCvPageFilterProcessorTest {
     }
 
     @Test
-    fun receiptDoesNotReintroduceCaptureColor() {
-        val source = shadedPaperBitmap(includeColorMarks = true)
-        val filtered = OpenCvPageFilterProcessor.apply(source, PageFilterPreset.RECEIPT)
+    fun magicColorFullIntensityDarkensInkMoreThanZeroIntensity() {
+        val source = shadedPaperBitmap(includeColorMarks = false, shadowAmount = 0.0)
+        val weak = OpenCvPageFilterProcessor.apply(
+            source,
+            PageFilterPreset.MAGIC_COLOR,
+            intensity = 0f,
+        )
+        val strong = OpenCvPageFilterProcessor.apply(
+            source,
+            PageFilterPreset.MAGIC_COLOR,
+            intensity = 1.5f,
+        )
 
         try {
+            // Title line only, so the paper and the lighter sub-line are not in the sample.
+            val weakInk = minLuminance(weak, left = 54, top = 100, right = 360, bottom = 135)
+            val strongInk = minLuminance(strong, left = 54, top = 100, right = 360, bottom = 135)
+
             assertTrue(
-                "Receipt output must not pull capture chroma back in.",
-                saturationAt(filtered, x = 132, y = 322) < 8.0,
+                "Full intensity should darken ink (weak min $weakInk, strong min $strongInk).",
+                strongInk < weakInk - 10.0,
             )
         } finally {
             source.recycle()
-            filtered.recycle()
+            weak.recycle()
+            strong.recycle()
         }
     }
 
@@ -141,17 +210,17 @@ class OpenCvPageFilterProcessorTest {
         val thumb = scaleToLongestEdge(master, 320)
         val filteredSave = OpenCvPageFilterProcessor.apply(
             master,
-            PageFilterPreset.SHADOW_REDUCTION,
+            PageFilterPreset.MAGIC_COLOR,
             profile,
         )
         val filteredPreview = OpenCvPageFilterProcessor.apply(
             preview,
-            PageFilterPreset.SHADOW_REDUCTION,
+            PageFilterPreset.MAGIC_COLOR,
             profile,
         )
         val filteredThumb = OpenCvPageFilterProcessor.apply(
             thumb,
-            PageFilterPreset.SHADOW_REDUCTION,
+            PageFilterPreset.MAGIC_COLOR,
             profile,
         )
 
@@ -187,6 +256,160 @@ class OpenCvPageFilterProcessorTest {
             filteredPreview.recycle()
             filteredThumb.recycle()
         }
+    }
+
+    @Test
+    fun screenKeepsDarkModeBackgroundDarkAndTextBright() {
+        val source = darkModeScreenBitmap()
+        val filtered = OpenCvPageFilterProcessor.apply(source, PageFilterPreset.SCREEN)
+
+        try {
+            assertSameSize(source, filtered)
+            val background = meanLuminance(filtered, left = 20, top = 400, right = 460, bottom = 600)
+            val text = meanLuminance(filtered, left = 80, top = 122, right = 400, bottom = 138)
+
+            assertTrue(
+                "Dark-mode background should stay dark after SCREEN (mean $background).",
+                background < 80.0,
+            )
+            assertTrue(
+                "Light text bars should stay bright after SCREEN (mean $text).",
+                text > 180.0,
+            )
+        } finally {
+            source.recycle()
+            filtered.recycle()
+        }
+    }
+
+    @Test
+    fun screenSuppressesSubPixelStripesOnFlatGray() {
+        val source = flatGrayWithSubPixelStripesBitmap()
+        val filtered = OpenCvPageFilterProcessor.apply(source, PageFilterPreset.SCREEN)
+
+        try {
+            assertSameSize(source, filtered)
+            val sourceSpread = luminanceStandardDeviation(source, left = 300, top = 200, right = 900, bottom = 1400)
+            val filteredSpread = luminanceStandardDeviation(filtered, left = 300, top = 200, right = 900, bottom = 1400)
+
+            // Levels / S-curve / sharpening re-add a little contrast, so expect at least a halving.
+            assertTrue(
+                "SCREEN should at least halve sub-pixel stripe spread (source $sourceSpread, filtered $filteredSpread).",
+                filteredSpread * 2.0 <= sourceSpread,
+            )
+        } finally {
+            source.recycle()
+            filtered.recycle()
+        }
+    }
+
+    @Test
+    fun vividColorRaisesMeanSaturationOfDullPage() {
+        val source = dullColoredBitmap()
+        val filtered = OpenCvPageFilterProcessor.apply(source, PageFilterPreset.VIVID_COLOR)
+
+        try {
+            assertSameSize(source, filtered)
+            val sourceSaturation = meanSaturation(source)
+            val filteredSaturation = meanSaturation(filtered)
+
+            assertTrue(
+                "VIVID_COLOR should raise mean saturation (source $sourceSaturation, filtered $filteredSaturation).",
+                filteredSaturation > sourceSaturation * 1.15,
+            )
+        } finally {
+            source.recycle()
+            filtered.recycle()
+        }
+    }
+
+    private fun darkModeScreenBitmap(width: Int = 480, height: Int = 640): Bitmap {
+        // Dark-gray background with light text-like bars, both carrying an RGB sub-pixel stripe.
+        val bars = listOf(
+            intArrayOf(120, 140, 60, 420),
+            intArrayOf(200, 212, 60, 300),
+            intArrayOf(280, 296, 60, 380),
+        )
+        val pixels = IntArray(width * height)
+        for (y in 0 until height) {
+            for (x in 0 until width) {
+                val inBar = bars.any { (top, bottom, left, right) ->
+                    y in top until bottom && x in left until right
+                }
+                val base = if (inBar) 200 else 40
+                pixels[(y * width) + x] = subPixelColor(base, boost = 20, phase = x % 3)
+            }
+        }
+        return bitmapFromPixels(width, height, pixels)
+    }
+
+    private fun flatGrayWithSubPixelStripesBitmap(width: Int = 1_200, height: Int = 1_600): Bitmap {
+        // Mid-gray with a 1-px red / green / blue column cycle (a display's sub-pixel grid),
+        // framed by black and white UI bands so the page has a real screen's dynamic range.
+        // 1200 px at the 1600 px reference keeps the de-screen kernel at its real-photo size.
+        val pixels = IntArray(width * height)
+        for (y in 0 until height) {
+            for (x in 0 until width) {
+                val phase = x % 3
+                pixels[(y * width) + x] = when {
+                    x < 180 -> Color.rgb(0, 0, 0)
+                    x >= width - 180 -> Color.rgb(255, 255, 255)
+                    else -> Color.rgb(
+                        if (phase == 0) 168 else 88,
+                        if (phase == 1) 168 else 88,
+                        if (phase == 2) 168 else 88,
+                    )
+                }
+            }
+        }
+        return bitmapFromPixels(width, height, pixels)
+    }
+
+    private fun dullColoredBitmap(width: Int = 480, height: Int = 640): Bitmap {
+        // Muted stripes (low chroma) across the whole page.
+        val palette = listOf(
+            Color.rgb(150, 120, 110),
+            Color.rgb(110, 135, 120),
+            Color.rgb(120, 120, 150),
+            Color.rgb(160, 150, 120),
+        )
+        val pixels = IntArray(width * height)
+        for (y in 0 until height) {
+            for (x in 0 until width) {
+                pixels[(y * width) + x] = palette[(x / 40) % palette.size]
+            }
+        }
+        return bitmapFromPixels(width, height, pixels)
+    }
+
+    private fun subPixelColor(base: Int, boost: Int, phase: Int): Int = Color.rgb(
+        (base + if (phase == 0) boost else 0).coerceIn(0, 255),
+        (base + if (phase == 1) boost else 0).coerceIn(0, 255),
+        (base + if (phase == 2) boost else 0).coerceIn(0, 255),
+    )
+
+    private fun bitmapFromPixels(width: Int, height: Int, pixels: IntArray): Bitmap =
+        Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888).also { bitmap ->
+            bitmap.setPixels(pixels, 0, width, 0, 0, width, height)
+        }
+
+    private fun assertSameSize(expected: Bitmap, actual: Bitmap) {
+        assertTrue(
+            "Filtered output must keep the source size.",
+            actual.width == expected.width && actual.height == expected.height,
+        )
+    }
+
+    private fun meanSaturation(bitmap: Bitmap): Double {
+        var total = 0.0
+        var count = 0
+        for (y in 0 until bitmap.height step 4) {
+            for (x in 0 until bitmap.width step 4) {
+                total += saturationAt(bitmap, x, y)
+                count++
+            }
+        }
+        return total / count.coerceAtLeast(1)
     }
 
     private fun evenPaperBitmap(): Bitmap =
@@ -248,6 +471,28 @@ class OpenCvPageFilterProcessorTest {
                 )
             }
         }
+    }
+
+    private fun assertAllPixelsNeutral(bitmap: Bitmap) {
+        for (y in 0 until bitmap.height step 3) {
+            for (x in 0 until bitmap.width step 3) {
+                val color = bitmap.getPixel(x, y)
+                assertTrue(
+                    "Pixel ($x, $y) is not neutral: ${Color.red(color)},${Color.green(color)},${Color.blue(color)}",
+                    Color.red(color) == Color.green(color) && Color.green(color) == Color.blue(color),
+                )
+            }
+        }
+    }
+
+    private fun minLuminance(bitmap: Bitmap, left: Int, top: Int, right: Int, bottom: Int): Double {
+        var minimum = Double.MAX_VALUE
+        for (y in top until bottom) {
+            for (x in left until right) {
+                minimum = minOf(minimum, luminance(bitmap.getPixel(x, y)))
+            }
+        }
+        return minimum
     }
 
     private fun luminanceDeltaAcrossPage(bitmap: Bitmap): Double {

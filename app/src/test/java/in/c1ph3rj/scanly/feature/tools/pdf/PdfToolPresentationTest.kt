@@ -4,7 +4,9 @@ import `in`.c1ph3rj.scanly.core.common.StorageFormatter
 import `in`.c1ph3rj.scanly.domain.model.PdfPasswordMode
 import `in`.c1ph3rj.scanly.domain.model.WatermarkLayout
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class PdfToolPresentationTest {
@@ -61,5 +63,12 @@ class PdfToolPresentationTest {
         assertEquals("Opacity 24%", formatWatermarkOpacityPercent(0.24f))
         assertEquals("Opacity 0%", formatWatermarkOpacityPercent(-1f))
         assertEquals("Opacity 100%", formatWatermarkOpacityPercent(2f))
+    }
+
+    @Test
+    fun pdfPickerBackReturnsToThePreviousStepOnlyWhenChangingASelectedFile() {
+        assertTrue(shouldReturnFromPdfPickerToPreviousStep(true, true))
+        assertFalse(shouldReturnFromPdfPickerToPreviousStep(true, false))
+        assertFalse(shouldReturnFromPdfPickerToPreviousStep(false, true))
     }
 }

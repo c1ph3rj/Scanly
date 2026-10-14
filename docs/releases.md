@@ -6,13 +6,13 @@ Version policy and release history for Scanly.
 
 | Field | Value |
 | --- | --- |
-| Version name | `1.0.16` |
-| Version code | `16` |
+| Version name | `1.0.17` |
+| Version code | `17` |
 | Application ID | `in.c1ph3rj.scanly` |
-| Room schema | `4` |
+| Room schema | `5` |
 | Min SDK | 29 (Android 10) |
 | Target / compile SDK | compile 37 / target 36 |
-| Release date | 2026-09-16 |
+| Release date | 2026-10-14 |
 
 Canonical source: `versionCode` and `versionName` in `app/build.gradle.kts`.
 
@@ -20,18 +20,19 @@ The version shown in Settings reads `versionName` via `DefaultSettingsRepository
 
 ### Release highlights
 
-Version **1.0.16** (relative to `1.0.14`):
+Version **1.0.17** (relative to `1.0.16`):
 
-- Paper-shaped Home and Library cards; rename / move / delete from overflow or long-press
-- Portrait document page tiles; PDF reader with title, page n of m, paged or continuous, pinch-zoom
-- Quieter Tools workspace for QR, merge, compress, password, and watermark
-- Camera permission asks first; Settings only after a permanent block
-- 16 KB-aligned OpenCV (`5.0.0.1`) for Android 15+ Play requirements
-- Rebuilt document filters so Color, Shadow Reduce, and Magic stay recognizably the captured page
-- Filter strength now follows the page (gentle on already-good photos, stronger on dim or shadowed pages)
-- Picker chips, live preview, and saved JPEGs share one analysis profile
+- Rebuilt page filter engine (paper-aware lighting model, eight presets, Intensity 0–150 %); Room schema 5
+- Library redesign: search field, folder shelf with See all, dated document sections, dedicated search screen
+- Home search bar; Home, Library and search share one field style
+- Tools redesign: Scan / PDF / Utilities groups; every PDF tool is choose a file → options → done
+- Full-screen PDF picker (empty scans hidden), real result preview, editable output name, Save to phone / Share
+- Watermark engine rebuilt: correct on rotated pages, fitted single stamps, angle-aligned tiles, colours, presets, date
+- Password can restrict editing; Merge orders files before merging; Reader adds a pages grid
+- QR: scan with torch and photo import, typed results (link, UPI, Wi-Fi, contact…), five create types, history
+- Clearer light theme; navigation bar strip fixed; status bar stays visible on dark camera/reader screens
 
-The compact GitHub release description used by the in-app update dialog is available in [release-notes/v1.0.16.md](release-notes/v1.0.16.md).
+The compact GitHub release description used by the in-app update dialog is available in [release-notes/v1.0.17.md](release-notes/v1.0.17.md).
 
 ## Versioning policy
 
@@ -43,6 +44,15 @@ The compact GitHub release description used by the in-app update dialog is avail
 - Keep [VERSION.md](../VERSION.md) aligned with Gradle values.
 
 ## Recent releases
+
+### 1.0.17 (code 17) — 2026-10-14
+
+- Professional filter engine with Intensity; legacy presets remapped (schema 5)
+- Library and Home redesign with shared search
+- Tools redesign: step-based PDF tools with result preview and file naming
+- Rebuilt watermark engine; password editing restriction; merge ordering; reader pages grid
+- QR typed results, create types, and on-phone history
+- Light theme contrast and navigation bar fixes
 
 ### 1.0.16 (code 16) — 2026-09-16
 
@@ -120,6 +130,14 @@ Full details: [CHANGELOG.md](../CHANGELOG.md)
 
 ## Upgrade notes
 
+### From 1.0.16 to 1.0.17 (schema 5)
+
+- Room schema **5** via `ScanlyDatabase.MIGRATION_4_5`: adds `scan_pages.filterIntensity` (default `1`, the tuned look).
+- Legacy presets are remapped in `scan_pages.filterPreset` and `documents.preferredFilterPreset`: Enhanced Color → Natural, Shadow Reduction → Magic Color, Clean → Grayscale, Soft Black & White and Receipt → Faded Text.
+- Existing pages keep their stored adjustments and get the new engine the next time they are captured or saved from the editor.
+- `.scanly` backups written after this change include `filterIntensity`; older archives restore with `1`.
+- No manual steps required.
+
 ### From 1.0.14 to 1.0.16
 
 - No Room schema change.
@@ -149,7 +167,7 @@ Full details: [CHANGELOG.md](../CHANGELOG.md)
 
 ### From 1.0.0 to current
 
-- Room migrates automatically along `1→2→3→4` (filter preset, document groups, then filter adjustments).
+- Room migrates automatically along `1→2→3→4→5` (filter preset, document groups, filter adjustments, then filter intensity and the legacy preset remap).
 - Existing documents remain; they appear ungrouped until moved into a collection.
 - **Clear all data** (added in 1.0.4) is destructive and cannot be undone.
 - Completed external `.scanly` backups survive clear-all-data.

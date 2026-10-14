@@ -1,65 +1,12 @@
 package `in`.c1ph3rj.scanly.navigation
 
-import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.FolderOpen
-import androidx.compose.material.icons.filled.Handyman
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemDefaults
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.luminance
-import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.graphics.vector.ImageVector
 import `in`.c1ph3rj.scanly.core.ui.ScanlyTestTags
-import androidx.navigation.NavBackStackEntry
-import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.NavHostController
-import androidx.navigation.NavType
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.navArgument
+import `in`.c1ph3rj.scanly.feature.components.ScanlyModalBottomSheet
 import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
-import `in`.c1ph3rj.scanly.feature.components.ScanlyAppLogo
-import `in`.c1ph3rj.scanly.feature.update.AppUpdateUiState
+import `in`.c1ph3rj.scanly.domain.model.PdfToolSource
 import `in`.c1ph3rj.scanly.feature.camera.ScanSessionDestination
 import `in`.c1ph3rj.scanly.feature.camera.ScanSessionRoute
+import `in`.c1ph3rj.scanly.feature.components.ScanlyAppLogo
 import `in`.c1ph3rj.scanly.feature.document.DocumentDestination
 import `in`.c1ph3rj.scanly.feature.document.DocumentDetailRoute
 import `in`.c1ph3rj.scanly.feature.editor.PageCropDestination
@@ -67,8 +14,12 @@ import `in`.c1ph3rj.scanly.feature.editor.PageCropRoute
 import `in`.c1ph3rj.scanly.feature.editor.PageEditorDestination
 import `in`.c1ph3rj.scanly.feature.editor.PageEditorRoute
 import `in`.c1ph3rj.scanly.feature.home.HomeRoute
-import `in`.c1ph3rj.scanly.feature.library.LibraryRoute
 import `in`.c1ph3rj.scanly.feature.library.GroupDetailRoute
+import `in`.c1ph3rj.scanly.feature.library.LibraryRoute
+import `in`.c1ph3rj.scanly.feature.library.LibrarySearchRoute
+import `in`.c1ph3rj.scanly.feature.text.PageTextDestination
+import `in`.c1ph3rj.scanly.feature.text.PageTextRoute
+import `in`.c1ph3rj.scanly.feature.library.LibraryTab
 import `in`.c1ph3rj.scanly.feature.placeholder.FeaturePlaceholderRoute
 import `in`.c1ph3rj.scanly.feature.preview.PageImagePreviewDestination
 import `in`.c1ph3rj.scanly.feature.preview.PageImagePreviewRoute
@@ -89,9 +40,89 @@ import `in`.c1ph3rj.scanly.feature.tools.pdf.PdfMergeRoute
 import `in`.c1ph3rj.scanly.feature.tools.pdf.PdfPasswordRoute
 import `in`.c1ph3rj.scanly.feature.tools.pdf.PdfReaderRoute
 import `in`.c1ph3rj.scanly.feature.tools.pdf.PdfWatermarkRoute
-import `in`.c1ph3rj.scanly.feature.tools.qr.QrToolRoute
 import `in`.c1ph3rj.scanly.feature.tools.qr.QrToolMode
-import `in`.c1ph3rj.scanly.domain.model.PdfToolSource
+import `in`.c1ph3rj.scanly.feature.tools.qr.QrToolRoute
+import `in`.c1ph3rj.scanly.feature.update.AppUpdateUiState
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.indication
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.outlined.DocumentScanner
+import androidx.compose.material.icons.outlined.Folder
+import androidx.compose.material.icons.outlined.GridView
+import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.PhotoLibrary
+import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.ripple
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavHostController
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.navArgument
 
 private data class BottomNavItem(
     val route: String,
@@ -103,22 +134,22 @@ private val bottomNavItems = listOf(
     BottomNavItem(
         route = ScanlyDestination.Home.route,
         label = "Home",
-        icon = Icons.Filled.Home,
+        icon = Icons.Outlined.Home,
     ),
     BottomNavItem(
         route = ScanlyDestination.Library.route,
         label = "Library",
-        icon = Icons.Filled.FolderOpen,
+        icon = Icons.Outlined.Folder,
     ),
     BottomNavItem(
         route = ScanlyDestination.Tools.route,
         label = "Tools",
-        icon = Icons.Filled.Handyman,
+        icon = Icons.Outlined.GridView,
     ),
     BottomNavItem(
         route = ScanlyDestination.Settings.route,
         label = "Settings",
-        icon = Icons.Filled.Settings,
+        icon = Icons.Outlined.Settings,
     ),
 )
 
@@ -135,6 +166,26 @@ fun ScanlyNavHost(
     appUpdateUiState: AppUpdateUiState,
     onCheckForUpdates: () -> Unit,
     modifier: Modifier = Modifier,
+    onScan: () -> Unit = {},
+    onImport: () -> Unit = {},
+) {
+    val captureActions = remember(onScan, onImport) { ScanlyCaptureActions(onScan, onImport) }
+    CompositionLocalProvider(LocalScanlyCaptureActions provides captureActions) {
+        ScanlyNavHostLayout(navController, appUpdateUiState, onCheckForUpdates, modifier)
+    }
+}
+
+/** Actions behind the center capture button; same flows as the launcher Scan / Import shortcuts. */
+private class ScanlyCaptureActions(val onScan: () -> Unit, val onImport: () -> Unit)
+
+private val LocalScanlyCaptureActions = staticCompositionLocalOf { ScanlyCaptureActions({}, {}) }
+
+@Composable
+private fun ScanlyNavHostLayout(
+    navController: NavHostController,
+    appUpdateUiState: AppUpdateUiState,
+    onCheckForUpdates: () -> Unit,
+    modifier: Modifier,
 ) {
     val windowSizeInfo = rememberWindowSizeInfo()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -168,10 +219,20 @@ fun ScanlyNavHost(
                 }
             },
         ) { innerPadding ->
+            // The bottom bar's measured height includes the transparent strip the capture button
+            // rises into. Padding content by the full height left that strip as an opaque band of
+            // background colour above the bar (it read as a black bar cutting through the button
+            // in dark mode). Let content run under the strip so only the button overlaps it.
+            val contentBottomPadding = if (showBottomNav) {
+                (innerPadding.calculateBottomPadding() - CaptureButtonRise).coerceAtLeast(0.dp)
+            } else {
+                innerPadding.calculateBottomPadding()
+            }
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(bottom = innerPadding.calculateBottomPadding())
+                    .padding(bottom = contentBottomPadding)
+                    .consumeWindowInsets(PaddingValues(bottom = contentBottomPadding))
                     .background(MaterialTheme.colorScheme.background),
             ) {
                 ScanlyNavHostContent(
@@ -191,36 +252,218 @@ private fun ScanlyNavigationBar(
     currentRoute: String?,
     onNavigate: (String) -> Unit,
 ) {
-    NavigationBar(
-        modifier = Modifier.fillMaxWidth(),
-        containerColor = MaterialTheme.colorScheme.surfaceContainer,
-        contentColor = MaterialTheme.colorScheme.onSurface,
-        tonalElevation = 3.dp,
-    ) {
-        bottomNavItems.forEach { item ->
-            val selected = currentRoute == item.route
-            NavigationBarItem(
-                selected = selected,
-                onClick = { if (!selected) onNavigate(item.route) },
-                modifier = Modifier.testTag(ScanlyTestTags.navTag(item.route)),
-                icon = {
-                    Icon(imageVector = item.icon, contentDescription = item.label)
+    var chooserVisible by rememberSaveable { mutableStateOf(false) }
+    val barColor = MaterialTheme.colorScheme.surfaceContainer
+    val dividerColor = MaterialTheme.colorScheme.outlineVariant
+    // The rise strip keeps the overlapping capture button inside this Box, so all of it is touchable.
+    Box(modifier = Modifier.fillMaxWidth()) {
+        Surface(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = CaptureButtonRise)
+                .drawBehind {
+                    // Hairline top edge so the bar separates from same-tone content scrolling under it.
+                    val stroke = 1.dp.toPx()
+                    drawRect(color = dividerColor, size = Size(size.width, stroke))
                 },
-                label = {
-                    Text(
-                        text = item.label,
-                        style = MaterialTheme.typography.labelSmall,
+            color = barColor,
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .navigationBarsPadding()
+                    .height(CompactNavBarHeight)
+                    .selectableGroup(),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                bottomNavItems.forEachIndexed { index, item ->
+                    if (index == bottomNavItems.size / 2) {
+                        Box(
+                            modifier = Modifier.weight(1f).height(CompactNavBarHeight),
+                            contentAlignment = Alignment.BottomCenter,
+                        ) {
+                            Text(
+                                text = "Scan",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier
+                                    .padding(bottom = 8.dp)
+                                    .clearAndSetSemantics {},
+                            )
+                        }
+                    }
+                    val selected = currentRoute == item.route
+                    CompactNavItem(
+                        item = item,
+                        selected = selected,
+                        onClick = { if (!selected) onNavigate(item.route) },
+                        modifier = Modifier.weight(1f),
                     )
+                }
+            }
+        }
+        CaptureButton(
+            onClick = { chooserVisible = true },
+            // Page-colour ring, as in the design: the button reads as sitting in a notch.
+            ringColor = MaterialTheme.colorScheme.background,
+            modifier = Modifier.align(Alignment.TopCenter),
+        )
+    }
+    if (chooserVisible) {
+        CaptureChooserSheet(onDismiss = { chooserVisible = false })
+    }
+}
+
+@Composable
+private fun CompactNavItem(
+    item: BottomNavItem,
+    selected: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val tint = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+    Column(
+        modifier = modifier
+            .height(CompactNavBarHeight)
+            .selectable(
+                selected = selected,
+                interactionSource = interactionSource,
+                indication = null,
+                role = Role.Tab,
+                onClick = onClick,
+            )
+            .testTag(ScanlyTestTags.navTag(item.route)),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+    ) {
+        // Ripple and selection pill share the icon's 56 x 30 shape.
+        Box(
+            modifier = Modifier
+                .size(width = 56.dp, height = 30.dp)
+                .clip(RoundedCornerShape(15.dp))
+                .background(if (selected) MaterialTheme.colorScheme.primaryContainer else Color.Transparent)
+                .indication(interactionSource, ripple()),
+            contentAlignment = Alignment.Center,
+        ) {
+            Icon(item.icon, contentDescription = null, tint = tint, modifier = Modifier.size(22.dp))
+        }
+        Spacer(Modifier.height(2.dp))
+        Text(item.label, style = MaterialTheme.typography.labelSmall, color = tint, maxLines = 1)
+    }
+}
+
+@Composable
+private fun CaptureButton(
+    onClick: () -> Unit,
+    ringColor: Color,
+    modifier: Modifier = Modifier,
+) {
+    Surface(
+        onClick = onClick,
+        modifier = modifier
+            .size(CaptureButtonSize)
+            .testTag(ScanlyTestTags.NAV_SCAN)
+            .semantics { contentDescription = "Scan or import" },
+        shape = CircleShape,
+        color = MaterialTheme.colorScheme.primary,
+        contentColor = MaterialTheme.colorScheme.onPrimary,
+        border = BorderStroke(4.dp, ringColor),
+        shadowElevation = 3.dp,
+    ) {
+        Box(contentAlignment = Alignment.Center) {
+            Icon(Icons.Outlined.DocumentScanner, contentDescription = null, modifier = Modifier.size(24.dp))
+        }
+    }
+}
+
+/** Asks whether to capture with the camera or import photos, then hands off to that flow. */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun CaptureChooserSheet(onDismiss: () -> Unit) {
+    val actions = LocalScanlyCaptureActions.current
+    ScanlyModalBottomSheet(
+        onDismissRequest = onDismiss,
+        containerColor = { MaterialTheme.colorScheme.surfaceContainerLow },
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .navigationBarsPadding()
+                .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Text(
+                "Add a document",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier.padding(start = 4.dp, bottom = 4.dp),
+            )
+            CaptureChoiceRow(
+                icon = Icons.Outlined.DocumentScanner,
+                title = "Scan with camera",
+                subtitle = "Capture pages now",
+                onClick = {
+                    onDismiss()
+                    actions.onScan()
                 },
-                colors = NavigationBarItemDefaults.colors(
-                    indicatorColor = MaterialTheme.colorScheme.primaryContainer,
-                    selectedIconColor = MaterialTheme.colorScheme.primary,
-                    selectedTextColor = MaterialTheme.colorScheme.primary,
-                ),
+            )
+            CaptureChoiceRow(
+                icon = Icons.Outlined.PhotoLibrary,
+                title = "Import from gallery",
+                subtitle = "Up to 10 photos",
+                onClick = {
+                    onDismiss()
+                    actions.onImport()
+                },
             )
         }
     }
 }
+
+@Composable
+private fun CaptureChoiceRow(
+    icon: ImageVector,
+    title: String,
+    subtitle: String,
+    onClick: () -> Unit,
+) {
+    Surface(
+        onClick = onClick,
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        color = MaterialTheme.colorScheme.surfaceContainer,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 14.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(14.dp),
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(44.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(MaterialTheme.colorScheme.primaryContainer),
+                contentAlignment = Alignment.Center,
+            ) {
+                Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.onPrimaryContainer)
+            }
+            Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                Text(title, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
+                Text(
+                    subtitle,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
+    }
+}
+
+private val CompactNavBarHeight = 64.dp
+private val CaptureButtonSize = 52.dp
+private val CaptureButtonRise = 16.dp
 
 @Composable
 private fun ScanlyNavigationRail(
@@ -239,6 +482,25 @@ private fun ScanlyNavigationRail(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             ScanlyAppLogo(size = 56.dp)
+            Spacer(modifier = Modifier.height(20.dp))
+            var chooserVisible by rememberSaveable { mutableStateOf(false) }
+            Surface(
+                onClick = { chooserVisible = true },
+                modifier = Modifier
+                    .size(56.dp)
+                    .testTag(ScanlyTestTags.NAV_SCAN)
+                    .semantics { contentDescription = "Scan or import" },
+                shape = RoundedCornerShape(18.dp),
+                color = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    Icon(Icons.Outlined.DocumentScanner, contentDescription = null, modifier = Modifier.size(24.dp))
+                }
+            }
+            if (chooserVisible) {
+                CaptureChooserSheet(onDismiss = { chooserVisible = false })
+            }
             Spacer(modifier = Modifier.height(20.dp))
             bottomNavItems.forEach { item ->
                 val selected = currentRoute == item.route
@@ -362,6 +624,8 @@ private fun ScanlyNavHostContent(
     useTabletNavigationRail: Boolean,
     modifier: Modifier = Modifier,
 ) {
+    // One-shot request from Home's "See all" actions for how the Library should open.
+    var libraryTabRequest by remember { mutableStateOf<LibraryTab?>(null) }
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -389,6 +653,7 @@ private fun ScanlyNavHostContent(
                 onNavigate = { route -> navigateToTopLevel(navController, route) },
             ) {
                 HomeRoute(
+                    onOpenSearch = { navController.navigate(LibrarySearchDestination.route) },
                     onOpenDocument = { documentId ->
                         navController.navigate(DocumentDestination.route(documentId))
                     },
@@ -399,6 +664,11 @@ private fun ScanlyNavHostContent(
                         navController.navigate(GroupDetailDestination.route(groupId))
                     },
                     onNavigateToLibrary = {
+                        libraryTabRequest = LibraryTab.All
+                        navigateToTopLevel(navController, ScanlyDestination.Library.route)
+                    },
+                    onSeeAllFolders = {
+                        libraryTabRequest = LibraryTab.Folders
                         navigateToTopLevel(navController, ScanlyDestination.Library.route)
                     },
                 )
@@ -417,6 +687,9 @@ private fun ScanlyNavHostContent(
                 onNavigate = { route -> navigateToTopLevel(navController, route) },
             ) {
                 LibraryRoute(
+                    tabRequest = libraryTabRequest,
+                    onTabRequestHandled = { libraryTabRequest = null },
+                    onOpenSearch = { navController.navigate(LibrarySearchDestination.route) },
                     onOpenDocument = { documentId ->
                         navController.navigate(DocumentDestination.route(documentId))
                     },
@@ -428,6 +701,36 @@ private fun ScanlyNavHostContent(
                     },
                 )
             }
+        }
+        composable(route = LibrarySearchDestination.route) {
+            LibrarySearchRoute(
+                onBack = { navController.popBackStack() },
+                onOpenDocument = { navController.navigate(DocumentDestination.route(it)) },
+                onOpenGroup = { navController.navigate(GroupDetailDestination.route(it)) },
+                onOpenPageText = { documentId, pageIndex, query ->
+                    navController.navigate(PageTextDestination.route(documentId, pageIndex, query))
+                },
+            )
+        }
+        composable(
+            route = PageTextDestination.routePattern,
+            arguments = listOf(
+                navArgument(PageTextDestination.documentIdArgument) { type = NavType.StringType },
+                navArgument(PageTextDestination.pageArgument) {
+                    type = NavType.StringType
+                    defaultValue = "0"
+                },
+                navArgument(PageTextDestination.queryArgument) {
+                    type = NavType.StringType
+                    defaultValue = ""
+                },
+            ),
+            enterTransition = { detailPushEnter() },
+            exitTransition = { detailPushExit() },
+            popEnterTransition = { detailPopEnter() },
+            popExitTransition = { detailPopExit() },
+        ) {
+            PageTextRoute(onNavigateUp = navController::navigateUp)
         }
         composable(
             route = ScanlyDestination.Tools.route,
@@ -778,6 +1081,9 @@ private fun ScanlyNavHostContent(
                 },
                 onOpenPageEditor = { pageId ->
                     navController.navigate(PageImagePreviewDestination.route(pageId))
+                },
+                onOpenText = { pageIndex ->
+                    navController.navigate(PageTextDestination.route(documentId, pageIndex))
                 },
                 onReplacePage = { pageId ->
                     navController.navigate(ScanSessionDestination.route(documentId, replacePageId = pageId))

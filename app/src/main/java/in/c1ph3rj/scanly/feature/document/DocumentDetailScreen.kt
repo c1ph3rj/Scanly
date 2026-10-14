@@ -36,6 +36,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.Notes
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Crop
@@ -84,6 +85,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.graphicsLayer
@@ -104,6 +115,7 @@ import androidx.core.content.FileProvider
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import `in`.c1ph3rj.scanly.core.ui.ChromeIconButton
+import `in`.c1ph3rj.scanly.feature.components.ScanlyModalBottomSheet
 import `in`.c1ph3rj.scanly.core.ui.ImageImportSupport
 import `in`.c1ph3rj.scanly.core.ui.MetricChip
 import `in`.c1ph3rj.scanly.core.ui.ZoomableImageDialog
@@ -156,6 +168,7 @@ fun DocumentDetailRoute(
     onOpenCamera: () -> Unit,
     onOpenPageEditor: (String) -> Unit,
     onReplacePage: (String) -> Unit,
+    onOpenText: (pageIndex: Int) -> Unit = {},
     viewModel: DocumentDetailViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -193,6 +206,7 @@ fun DocumentDetailRoute(
         onOpenCamera = onOpenCamera,
         onOpenPageEditor = onOpenPageEditor,
         onReplacePage = onReplacePage,
+        onOpenText = onOpenText,
         onSelectPage = viewModel::selectPage,
         onMovePage = viewModel::movePage,
         onDeleteSelectedPage = viewModel::deleteSelectedPage,
@@ -235,6 +249,7 @@ fun DocumentDetailScreen(
     onImportImage: () -> Unit,
     onRenameDocument: (String) -> Unit,
     onDeleteDocument: () -> Unit,
+    onOpenText: (pageIndex: Int) -> Unit = {},
 ) {
     val windowSizeInfo = rememberWindowSizeInfo()
     val useMasterDetailLayout = windowSizeInfo.useTabletLandscapeLayout
@@ -411,6 +426,8 @@ fun DocumentDetailScreen(
                 pageReviewActive = !useMasterDetailLayout && isReviewingPage && selectedPage != null,
                 onSharePage = onShareSelectedPage,
                 menuEnabled = document != null,
+                onOpenText = { onOpenText(selectedPage?.pageIndex ?: 0) },
+                textEnabled = uiState.pages.isNotEmpty(),
             )
         }
     ) { innerPadding ->
@@ -448,6 +465,7 @@ fun DocumentDetailScreen(
                 onMoveToFolder = { moveSheetVisible = true },
                 onPreviewPage = { pageId -> previewPageId = pageId },
                 density = density,
+                onOpenText = onOpenText,
             )
         } else {
             Box(
@@ -554,6 +572,7 @@ fun DocumentDetailScreen(
                         enabled = !uiState.isMutatingPage,
                         onEdit = { onOpenPageEditor(selectedPage.id) },
                         onReplace = { onReplacePage(selectedPage.id) },
+                        onText = { onOpenText(selectedPage.pageIndex) },
                         onShare = onShareSelectedPage,
                         onDelete = { deleteDialogVisible = true },
                     )
@@ -567,9 +586,11 @@ fun DocumentDetailScreen(
                         onAddPage = { addPageSheetVisible = true },
                     )
                 }
+                // The add tile takes the next free cell after the last page, like "New folder"
+                // does in the library shelf. A null entry marks it.
                 items(
-                    items = uiState.pages.chunked(windowSizeInfo.pageColumns),
-                    key = { rowPages -> rowPages.joinToString(separator = "-") { page -> page.id } },
+                    items = (uiState.pages + listOf<ScanPage?>(null)).chunked(windowSizeInfo.pageColumns),
+                    key = { rowPages -> rowPages.joinToString(separator = "-") { page -> page?.id ?: "add" } },
                     contentType = { "page_row" },
                 ) { rowPages ->
                     Row(
@@ -577,6 +598,15 @@ fun DocumentDetailScreen(
                         horizontalArrangement = Arrangement.spacedBy(12.dp),
                     ) {
                         rowPages.forEach { page ->
+                            if (page == null) {
+                                AddPageTile(
+                                    enabled = !uiState.isMutatingPage && draggedPageId == null,
+                                    compact = windowSizeInfo.pageColumns == 1,
+                                    onClick = { addPageSheetVisible = true },
+                                    modifier = Modifier.weight(1f),
+                                )
+                                return@forEach
+                            }
                             DisposableEffect(page.id) {
                                 onDispose {
                                     pageTileBounds.remove(page.id)
@@ -806,6 +836,8 @@ private fun ReviewTopBar(
     pageReviewActive: Boolean,
     onSharePage: () -> Unit,
     menuEnabled: Boolean,
+    onOpenText: () -> Unit,
+    textEnabled: Boolean,
 ) {
     var showMenu by remember { mutableStateOf(false) }
 
@@ -874,6 +906,17 @@ private fun ReviewTopBar(
                             },
                         )
                         DropdownMenuItem(
+                            text = { Text("Extract text") },
+                            leadingIcon = {
+                                Icon(Icons.AutoMirrored.Filled.Notes, contentDescription = null)
+                            },
+                            enabled = textEnabled,
+                            onClick = {
+                                showMenu = false
+                                onOpenText()
+                            },
+                        )
+                        DropdownMenuItem(
                             text = { Text("Rename document") },
                             leadingIcon = {
                                 Icon(Icons.Filled.Edit, contentDescription = null)
@@ -918,9 +961,9 @@ private fun AddPageSheet(
     onCapture: () -> Unit,
     onUploadImage: () -> Unit,
 ) {
-    ModalBottomSheet(
+    ScanlyModalBottomSheet(
         onDismissRequest = onDismiss,
-        containerColor = MaterialTheme.colorScheme.surface,
+        containerColor = { MaterialTheme.colorScheme.surface },
     ) {
         ScanlySheetContent {
             Text(
@@ -961,9 +1004,9 @@ private fun ExportShareSheet(
     onSaveImageArchive: () -> Unit,
     onShareImages: () -> Unit,
 ) {
-    ModalBottomSheet(
+    ScanlyModalBottomSheet(
         onDismissRequest = onDismiss,
-        containerColor = MaterialTheme.colorScheme.surface,
+        containerColor = { MaterialTheme.colorScheme.surface },
     ) {
         ScanlySheetContent {
             Text(
@@ -1066,6 +1109,7 @@ private fun DocumentMasterDetailLayout(
     onMoveToFolder: () -> Unit,
     onPreviewPage: (String) -> Unit,
     density: Density,
+    onOpenText: (pageIndex: Int) -> Unit,
 ) {
     Row(
         modifier = Modifier
@@ -1187,6 +1231,14 @@ private fun DocumentMasterDetailLayout(
                             },
                         )
                     }
+                    item(key = "add_page", contentType = "add_page") {
+                        AddPageTile(
+                            enabled = !uiState.isMutatingPage && draggedPageId == null,
+                            compact = true,
+                            onClick = onAddPage,
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+                    }
                 }
             }
 
@@ -1292,6 +1344,11 @@ private fun DocumentMasterDetailLayout(
                                         icon = Icons.Filled.CameraAlt,
                                         contentDescription = "Retake page",
                                         onClick = { onReplacePage(selectedPage.id) },
+                                    )
+                                    PreviewActionButton(
+                                        icon = Icons.AutoMirrored.Filled.Notes,
+                                        contentDescription = "Extract text",
+                                        onClick = { onOpenText(selectedPage.pageIndex) },
                                     )
                                     PreviewActionButton(
                                         icon = Icons.Filled.IosShare,
@@ -1571,6 +1628,7 @@ private fun ReviewActionDock(
     enabled: Boolean,
     onEdit: () -> Unit,
     onReplace: () -> Unit,
+    onText: () -> Unit,
     onShare: () -> Unit,
     onDelete: () -> Unit,
 ) {
@@ -1598,6 +1656,13 @@ private fun ReviewActionDock(
                 label = "Retake",
                 enabled = enabled,
                 onClick = onReplace,
+                modifier = Modifier.weight(1f),
+            )
+            ReviewToolButton(
+                icon = Icons.AutoMirrored.Filled.Notes,
+                label = "Text",
+                enabled = enabled,
+                onClick = onText,
                 modifier = Modifier.weight(1f),
             )
             ReviewToolButton(
@@ -1758,6 +1823,108 @@ private fun PageOverviewTile(
                     fontWeight = FontWeight.SemiBold,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center,
+                )
+            }
+        }
+    }
+}
+
+/**
+ * Dashed "next page" slot at the end of the pages grid: same geometry as a page tile, so it
+ * reads as the place the new page will land. Opens the Scan / Import sheet.
+ */
+@Composable
+private fun AddPageTile(
+    enabled: Boolean,
+    compact: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val tileShape = MaterialTheme.shapes.large
+    val dashColor = MaterialTheme.colorScheme.outline.copy(alpha = if (enabled) 0.7f else 0.35f)
+    val accent = if (enabled) {
+        MaterialTheme.colorScheme.primary
+    } else {
+        MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
+    }
+    val dashed = Modifier.drawBehind {
+        val stroke = 1.5.dp.toPx()
+        drawRoundRect(
+            color = dashColor,
+            topLeft = Offset(stroke / 2f, stroke / 2f),
+            size = Size(size.width - stroke, size.height - stroke),
+            cornerRadius = CornerRadius(16.dp.toPx()),
+            style = Stroke(
+                width = stroke,
+                pathEffect = PathEffect.dashPathEffect(floatArrayOf(8.dp.toPx(), 6.dp.toPx())),
+            ),
+        )
+    }
+    val addBadge: @Composable (Dp) -> Unit = { size ->
+        Box(
+            modifier = Modifier
+                .size(size)
+                .background(accent.copy(alpha = 0.14f), CircleShape),
+            contentAlignment = Alignment.Center,
+        ) {
+            Icon(Icons.Filled.Add, contentDescription = null, tint = accent, modifier = Modifier.size(size * 0.55f))
+        }
+    }
+    Box(
+        modifier = modifier
+            .clip(tileShape)
+            .clickable(enabled = enabled, role = Role.Button, onClickLabel = "Add page", onClick = onClick)
+            .semantics(mergeDescendants = true) { contentDescription = "Add page. Scan or import." }
+            .then(dashed),
+    ) {
+        if (compact) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 10.dp, vertical = 10.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Box(
+                    modifier = Modifier.width(56.dp).aspectRatio(documentPageTileAspectRatio()),
+                    contentAlignment = Alignment.Center,
+                ) { addBadge(32.dp) }
+                Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                    Text("Add page", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold, color = accent)
+                    Text(
+                        "Scan or import",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            }
+        } else {
+            // Mirrors PageOverviewTile's 8dp padding, paper area and centered label.
+            Column(
+                modifier = Modifier.fillMaxWidth().padding(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                Column(
+                    modifier = Modifier.fillMaxWidth().aspectRatio(documentPageTileAspectRatio()),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                ) {
+                    addBadge(48.dp)
+                    Spacer(Modifier.height(10.dp))
+                    Text(
+                        "Scan or import",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+                Text(
+                    text = "Add page",
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = FontWeight.SemiBold,
+                    color = accent,
+                    maxLines = 1,
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center,
                 )

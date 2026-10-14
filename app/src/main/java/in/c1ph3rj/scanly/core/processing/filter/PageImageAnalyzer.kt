@@ -111,6 +111,8 @@ internal object PageImageAnalyzer {
                 fallbackL = resolvedBackgroundMean,
             )
 
+            val tone = measureTone(analysisRgba)
+
             return PageImageProfile(
                 brightness = luminanceMean.toArray().firstOrNull() ?: 0.0,
                 contrast = luminanceStdDev.toArray().firstOrNull() ?: 0.0,
@@ -129,6 +131,9 @@ internal object PageImageAnalyzer {
                 paperB = paperStats.b,
                 glareRatio = Core.countNonZero(glareMask).toDouble() / pixelCount,
                 noise = residualStdDev.toArray().firstOrNull() ?: 0.0,
+                tonePaperLevel = tone.paperLevel,
+                toneWhitePoint = tone.whitePoint,
+                toneInkLevel = tone.inkLevel,
             )
         } finally {
             if (ownsAnalysisRgba) {
@@ -162,6 +167,72 @@ internal object PageImageAnalyzer {
             residualStdDev.release()
         }
     }
+
+    /**
+     * Tone stats of the page after its shading is divided out (the same normalization
+     * the filters use), so presets can place black / white points on what the ink and
+     * paper will actually look like.
+     */
+    private fun measureTone(analysisRgba: Mat): ToneStats {
+        val rgb = Mat()
+        val gray = Mat()
+        var background: PageBackgroundModel? = null
+        var grayBackground: Mat? = null
+        try {
+            Imgproc.cvtColor(analysisRgba, rgb, Imgproc.COLOR_RGBA2RGB)
+            val model = PageBackgroundModel.estimate(rgb, strokeFraction = 0.03)
+            background = model
+            grayBackground = model.grayBackground()
+            Imgproc.cvtColor(rgb, gray, Imgproc.COLOR_RGB2GRAY)
+            PageBackgroundModel.normalizeChannel(
+                source = gray,
+                backgroundSmall = grayBackground,
+                reference = model.paperReferenceGray,
+                target = 250.0,
+                maxGain = 4.0,
+                denoiseSigma = 0.0,
+                output = gray,
+            )
+            val pixelCount = gray.rows() * gray.cols()
+            val pixels = ByteArray(pixelCount)
+            gray.get(0, 0, pixels)
+            val histogram = IntArray(256)
+            for (value in pixels) histogram[value.toInt() and 0xFF]++
+
+            var paperPeak = 255
+            for (bin in TONE_PAPER_MIN..255) {
+                if (histogram[bin] > histogram[paperPeak]) paperPeak = bin
+            }
+            val paperFloor = (paperPeak - 40).coerceAtLeast(0)
+            val paperHistogram = IntArray(256)
+            var paperCount = 0
+            for (bin in paperFloor..255) {
+                paperHistogram[bin] = histogram[bin]
+                paperCount += histogram[bin]
+            }
+            val whitePoint = if (paperCount > 0) {
+                percentileOf(paperHistogram, paperCount, 0.12)
+            } else {
+                235.0
+            }
+            return ToneStats(
+                paperLevel = paperPeak.toDouble(),
+                whitePoint = whitePoint.coerceIn(170.0, 250.0),
+                inkLevel = percentileOf(histogram, pixelCount, 0.008).coerceIn(0.0, 230.0),
+            )
+        } finally {
+            grayBackground?.release()
+            background?.release()
+            rgb.release()
+            gray.release()
+        }
+    }
+
+    private data class ToneStats(
+        val paperLevel: Double,
+        val whitePoint: Double,
+        val inkLevel: Double,
+    )
 
     private fun estimatePaperLab(
         lightness: Mat,
@@ -235,6 +306,7 @@ internal object PageImageAnalyzer {
         val b: Double,
     )
 
+    private const val TONE_PAPER_MIN = 140
     private const val HIGHLIGHT_THRESHOLD = 220.0
     private const val GLARE_THRESHOLD = 235.0
     private const val COLOR_SATURATION_THRESHOLD = 40.0

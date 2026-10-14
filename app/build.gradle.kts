@@ -55,8 +55,8 @@ android {
         applicationId = "in.c1ph3rj.scanly"
         minSdk = 29
         targetSdk = 36
-        versionCode = 16
-        versionName = "1.0.16"
+        versionCode = 17
+        versionName = "1.0.17"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         testInstrumentationRunnerArguments["clearPackageData"] = "true"
@@ -169,8 +169,11 @@ dependencies {
     implementation(libs.google.dagger.hilt.android)
     implementation(libs.google.play.app.update)
     implementation(libs.google.play.app.update.ktx)
+    implementation(libs.google.play.review)
+    implementation(libs.google.play.review.ktx)
     implementation(libs.pdfbox.android)
     implementation(libs.mlkit.barcode.scanning)
+    implementation(libs.mlkit.text.recognition)
     implementation(libs.zxing.core)
     implementation(libs.androidx.work.runtime)
     implementation(libs.androidx.hilt.work)

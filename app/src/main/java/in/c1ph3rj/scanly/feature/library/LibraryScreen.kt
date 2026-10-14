@@ -1,32 +1,41 @@
 package `in`.c1ph3rj.scanly.feature.library
 
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.foundation.indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsFocusedAsState
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.outlined.GridView
+import androidx.compose.material.icons.automirrored.outlined.List
+import androidx.compose.ui.graphics.Color
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Sort
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Inventory2
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.CreateNewFolder
-import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material.icons.filled.FolderOff
-import androidx.compose.material.icons.filled.FolderOpen
 import androidx.compose.material.icons.filled.PostAdd
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.SortByAlpha
@@ -40,16 +49,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
 import `in`.c1ph3rj.scanly.core.ui.ScanlyTestTags
+import `in`.c1ph3rj.scanly.feature.components.ScanlyModalBottomSheet
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -67,10 +72,20 @@ fun LibraryRoute(
     onOpenDocument: (String) -> Unit,
     onOpenScanSession: (String) -> Unit,
     onOpenGroup: (String) -> Unit,
+    onOpenSearch: () -> Unit,
     viewModel: LibraryViewModel = hiltViewModel(),
+    tabRequest: LibraryTab? = null,
+    onTabRequestHandled: () -> Unit = {},
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(tabRequest) {
+        if (tabRequest != null) {
+            viewModel.selectTab(tabRequest)
+            onTabRequestHandled()
+        }
+    }
 
     LaunchedEffect(viewModel) {
         viewModel.events.collectLatest { event ->
@@ -96,8 +111,8 @@ fun LibraryRoute(
         onOpenDocument = onOpenDocument,
         onOpenScanSession = onOpenScanSession,
         onOpenGroup = onOpenGroup,
-        onSearchQueryChange = viewModel::setSearchQuery,
-        onClearSearch = viewModel::clearSearch,
+        onOpenSearch = onOpenSearch,
+        onGroupSelected = viewModel::selectGroup,
         onTabSelected = viewModel::selectTab,
         onSortSelected = viewModel::selectSortOption,
         onSuggestTitle = viewModel::suggestDocumentTitle,
@@ -121,8 +136,8 @@ fun LibraryScreen(
     onOpenDocument: (String) -> Unit,
     onOpenScanSession: (String) -> Unit,
     onOpenGroup: (String) -> Unit,
-    onSearchQueryChange: (String) -> Unit,
-    onClearSearch: () -> Unit,
+    onOpenSearch: () -> Unit,
+    onGroupSelected: (String) -> Unit,
     onTabSelected: (LibraryTab) -> Unit,
     onSortSelected: (LibrarySortOption) -> Unit,
     onSuggestTitle: suspend (DocumentTitleFormat) -> String,
@@ -135,17 +150,31 @@ fun LibraryScreen(
     var renameGroupTarget by remember { mutableStateOf<DocumentGroup?>(null) }
     var deleteGroupTarget by remember { mutableStateOf<DocumentGroup?>(null) }
     var moveDocTarget by remember { mutableStateOf<ScanDocument?>(null) }
-    var showFabMenu by rememberSaveable { mutableStateOf(false) }
+    var gridLayout by rememberSaveable { mutableStateOf(true) }
     var showSortSheet by rememberSaveable { mutableStateOf(false) }
     val windowSizeInfo = rememberWindowSizeInfo()
+    val showingFolders = uiState.selectedTab == LibraryTab.Folders && uiState.groups.isNotEmpty()
     val visibleGroups = remember(uiState) { uiState.visibleGroups }
-    val visibleDocuments = remember(uiState) { uiState.visibleDocuments }
-    val groupRows = remember(visibleGroups, windowSizeInfo.groupColumns) {
-        visibleGroups.chunked(windowSizeInfo.groupColumns)
+    val previewGroups = remember(visibleGroups) {
+        visibleGroups.sortedByDescending { it.updatedAtMillis }.take(3)
     }
-    val documentRows = remember(visibleDocuments, windowSizeInfo.groupColumns) {
-        visibleDocuments.chunked(windowSizeInfo.groupColumns)
+    val visibleDocuments = remember(uiState) {
+        if (showingFolders) emptyList() else uiState.visibleDocuments
     }
+    val documentSections = remember(visibleDocuments, uiState.sortOption) {
+        libraryDocumentSections(visibleDocuments, uiState.sortOption)
+    }
+    val documentColumns = windowSizeInfo.groupColumns
+    val folderColumns = if (windowSizeInfo.isTablet) windowSizeInfo.groupColumns + 2 else 3
+    val folderGridRows = remember(visibleGroups, folderColumns) {
+        (listOf<DocumentGroup?>(null) + visibleGroups).chunked(folderColumns)
+    }
+    val inset = Modifier.padding(horizontal = windowSizeInfo.horizontalPadding)
+    // Grid cards carry their own press inset; pull rows out so covers align with the labels.
+    val gridRowInset = (windowSizeInfo.horizontalPadding - LibraryPreviewCardInset).coerceAtLeast(0.dp)
+    val folderRowInset = (windowSizeInfo.horizontalPadding - LibraryFolderTileInset).coerceAtLeast(0.dp)
+
+    BackHandler(enabled = showingFolders) { onTabSelected(LibraryTab.All) }
 
     Scaffold(
         modifier = Modifier
@@ -163,214 +192,235 @@ fun LibraryScreen(
             if (uiState.isLoading) {
                 FullScreenLoader(modifier = Modifier.fillMaxSize())
             } else {
+                // Items carry their own horizontal inset so the folder shelf can scroll edge to edge.
                 LazyColumn(
                     modifier = if (windowSizeInfo.isTablet) {
                         Modifier.widthIn(max = windowSizeInfo.contentMaxWidth).fillMaxHeight()
                     } else {
                         Modifier.fillMaxSize()
                     },
-                    contentPadding = PaddingValues(
-                        start = windowSizeInfo.horizontalPadding,
-                        end = windowSizeInfo.horizontalPadding,
-                        top = 0.dp,
-                        bottom = 120.dp,
-                    ),
-                    verticalArrangement = Arrangement.spacedBy(0.dp),
+                    contentPadding = PaddingValues(bottom = 24.dp),
                 ) {
                     item(key = "header") {
                         LibraryHeader(
-                            groupCount = uiState.groups.size,
                             documentCount = uiState.allDocuments.size,
-                            modifier = Modifier.padding(bottom = 18.dp),
+                            pageCount = uiState.allDocuments.sumOf { it.pageCount },
+                            modifier = inset.padding(bottom = 16.dp),
                         )
                     }
 
-                    item(key = "search_and_sort") {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(bottom = 16.dp),
-                            horizontalArrangement = Arrangement.spacedBy(10.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            LibrarySearchBar(
-                                query = uiState.searchQuery,
-                                onQueryChange = onSearchQueryChange,
-                                onClear = onClearSearch,
-                                selectedTab = uiState.selectedTab,
-                                modifier = Modifier.weight(1f),
-                            )
-                            LibrarySortButton(
-                                selectedOption = uiState.sortOption,
-                                onClick = { showSortSheet = true },
-                            )
-                        }
-                    }
-
-                    item(key = "tabs") {
-                        LibraryTabs(
-                            selectedTab = uiState.selectedTab,
-                            onTabSelected = onTabSelected,
-                            modifier = Modifier.padding(bottom = 18.dp),
+                    item(key = "search") {
+                        LibrarySearchLauncher(
+                            onClick = onOpenSearch,
+                            modifier = inset.padding(bottom = 16.dp),
                         )
                     }
 
-                    if (visibleGroups.isEmpty() && visibleDocuments.isEmpty()) {
-                        item(key = "empty_${uiState.selectedTab}") {
-                            when {
-                                uiState.isSearchActive -> NoResultsCard(
-                                    query = uiState.searchQuery,
-                                    selectedTab = uiState.selectedTab,
-                                )
-                                !uiState.hasAnyItems || uiState.selectedTab == LibraryTab.All -> EmptyLibraryCard(
-                                    onCreateDocument = { createDocDialogVisible = true },
-                                    onCreateGroup = { createGroupDialogVisible = true },
-                                )
-                                else -> EmptyLibraryTabCard(
-                                    selectedTab = uiState.selectedTab,
+                    if (!uiState.hasAnyItems) {
+                        item(key = "empty_library") {
+                            Box(inset) {
+                                EmptyLibraryCard(
                                     onCreateDocument = { createDocDialogVisible = true },
                                     onCreateGroup = { createGroupDialogVisible = true },
                                 )
                             }
                         }
                     } else {
-                        item(key = "result_summary") {
-                            LibraryResultSummary(
-                                itemCount = visibleGroups.size + visibleDocuments.size,
-                                sortOption = uiState.sortOption,
-                                modifier = Modifier.padding(bottom = 12.dp),
-                            )
-                        }
-
-                        if (visibleGroups.isNotEmpty()) {
-                            if (uiState.selectedTab == LibraryTab.All) {
-                                item(key = "groups_label") {
-                                    LibrarySectionHeader(
-                                        title = "Folders",
-                                        count = visibleGroups.size,
-                                        modifier = Modifier.padding(bottom = 12.dp),
-                                    )
-                                }
+                        item(key = "folders_header") {
+                            if (showingFolders) {
+                                LibraryFoldersExpandedHeader(
+                                    folderCount = visibleGroups.size,
+                                    sortOption = uiState.sortOption,
+                                    onBack = { onTabSelected(LibraryTab.All) },
+                                    onSort = { showSortSheet = true },
+                                    modifier = inset,
+                                )
+                            } else {
+                                LibrarySectionHeader(
+                                    title = "Folders",
+                                    count = visibleGroups.size,
+                                    actionLabel = if (visibleGroups.isNotEmpty()) "See all" else null,
+                                    onAction = { onTabSelected(LibraryTab.Folders) },
+                                    modifier = inset,
+                                )
                             }
+                        }
+                        if (showingFolders) {
+                            // Expanded in place: the shelf becomes a grid and documents are hidden.
                             items(
-                                items = groupRows,
-                                key = { rowItems -> "group_row_${rowItems.first().id}" },
-                                contentType = { "group_row" },
+                                items = folderGridRows,
+                                key = { rowItems -> "folder_row_${rowItems.first()?.id ?: "new"}" },
+                                contentType = { "folder_row" },
                             ) { rowItems ->
                                 Row(
-                                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                    horizontalArrangement = Arrangement.spacedBy(4.dp),
                                     modifier = Modifier
+                                        .padding(horizontal = folderRowInset)
                                         .fillMaxWidth()
-                                        .padding(bottom = 12.dp)
+                                        .padding(bottom = 8.dp)
                                         .animateItem(),
                                 ) {
                                     rowItems.forEach { group ->
-                                        GroupCard(
-                                            group = group,
-                                            onOpen = { onOpenGroup(group.id) },
-                                            onRename = { renameGroupTarget = group },
-                                            onDelete = { deleteGroupTarget = group },
-                                            modifier = Modifier.weight(1f),
-                                        )
+                                        if (group == null) {
+                                            LibraryNewFolderTile(
+                                                onClick = { createGroupDialogVisible = true },
+                                                modifier = Modifier.weight(1f),
+                                            )
+                                        } else {
+                                            LibraryFolderTile(
+                                                group = group,
+                                                onOpen = { onOpenGroup(group.id) },
+                                                onRename = { renameGroupTarget = group },
+                                                onDelete = { deleteGroupTarget = group },
+                                                modifier = Modifier.weight(1f),
+                                            )
+                                        }
                                     }
-                                    repeat(windowSizeInfo.groupColumns - rowItems.size) {
+                                    repeat(folderColumns - rowItems.size) {
                                         Spacer(modifier = Modifier.weight(1f))
                                     }
                                 }
                             }
-                        }
-
-                        if (visibleGroups.isNotEmpty() && visibleDocuments.isNotEmpty()) {
-                            item(key = "section_spacer") { Spacer(modifier = Modifier.height(12.dp)) }
-                        }
-
-                        if (visibleDocuments.isNotEmpty()) {
-                            if (uiState.selectedTab == LibraryTab.All) {
-                                item(key = "documents_label") {
-                                    LibrarySectionHeader(
-                                        title = "Documents",
-                                        count = visibleDocuments.size,
-                                        modifier = Modifier.padding(bottom = 12.dp),
-                                    )
+                        } else {
+                            item(key = "folders_shelf") {
+                                LazyRow(
+                                    modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp),
+                                    contentPadding = PaddingValues(horizontal = folderRowInset),
+                                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                                ) {
+                                    item(key = "new_folder") {
+                                        LibraryNewFolderTile(
+                                            onClick = { createGroupDialogVisible = true },
+                                            modifier = Modifier.width(FolderShelfTileWidth),
+                                        )
+                                    }
+                                    items(previewGroups, key = { it.id }) { group ->
+                                        LibraryFolderTile(
+                                            group = group,
+                                            onOpen = { onOpenGroup(group.id) },
+                                            onRename = { renameGroupTarget = group },
+                                            onDelete = { deleteGroupTarget = group },
+                                            modifier = Modifier.width(FolderShelfTileWidth),
+                                        )
+                                    }
+                                    if (visibleGroups.size > 3) {
+                                        item(key = "view_all_folders") {
+                                            LibraryViewAllFoldersTile(
+                                                onClick = { onTabSelected(LibraryTab.Folders) },
+                                                modifier = Modifier.width(FolderShelfTileWidth),
+                                            )
+                                        }
+                                    }
                                 }
                             }
-                            if (windowSizeInfo.isTablet) {
-                                items(
-                                    items = documentRows,
-                                    key = { rowItems -> "document_row_${rowItems.first().id}" },
-                                    contentType = { "document_row" },
-                                ) { rowItems ->
-                                    Row(
-                                        horizontalArrangement = Arrangement.spacedBy(12.dp),
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(bottom = 12.dp)
-                                            .animateItem(),
-                                    ) {
-                                        rowItems.forEach { document ->
+                        }
+
+                        if (!showingFolders) {
+                            item(key = "documents_header") {
+                                LibraryDocumentsHeader(
+                                    documentCount = visibleDocuments.size,
+                                    sortOption = uiState.sortOption,
+                                    gridLayout = gridLayout,
+                                    onSort = { showSortSheet = true },
+                                    onLayoutChange = { gridLayout = it },
+                                    modifier = inset.padding(bottom = 4.dp),
+                                )
+                            }
+
+                            if (visibleDocuments.isEmpty()) {
+                                item(key = "empty_documents") {
+                                    Box(inset) {
+                                        EmptyLibraryTabCard(
+                                            selectedTab = LibraryTab.Documents,
+                                            onCreateDocument = { createDocDialogVisible = true },
+                                            onCreateGroup = { createGroupDialogVisible = true },
+                                        )
+                                    }
+                                }
+                            }
+
+                            documentSections.forEach { section ->
+                                section.title?.let { title ->
+                                    item(key = "section_${section.key}", contentType = "section_label") {
+                                        Text(
+                                            text = title,
+                                            style = MaterialTheme.typography.labelLarge,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                            modifier = inset
+                                                .padding(top = 8.dp, bottom = 8.dp)
+                                                .semantics { heading() }
+                                                .animateItem(),
+                                        )
+                                    }
+                                }
+                                if (gridLayout) {
+                                    items(
+                                        items = section.documents.chunked(documentColumns),
+                                        key = { rowItems -> "document_row_${rowItems.first().id}" },
+                                        contentType = { "document_row" },
+                                    ) { rowItems ->
+                                        Row(
+                                            modifier = Modifier
+                                                .padding(horizontal = gridRowInset)
+                                                .fillMaxWidth()
+                                                .padding(bottom = 8.dp)
+                                                .animateItem(),
+                                        ) {
+                                            rowItems.forEach { document ->
+                                                DocumentCard(
+                                                    document = document,
+                                                    onOpen = { onOpenDocument(document.id) },
+                                                    onRename = { renameDocTarget = document },
+                                                    onDelete = { deleteDocTarget = document },
+                                                    onMove = { moveDocTarget = document },
+                                                    style = LibraryCardStyle.Preview,
+                                                    sectionedDate = section.title != null,
+                                                    modifier = Modifier.weight(1f),
+                                                )
+                                            }
+                                            repeat(documentColumns - rowItems.size) {
+                                                Spacer(modifier = Modifier.weight(1f))
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    itemsIndexed(
+                                        items = section.documents,
+                                        key = { _, document -> "document_${document.id}" },
+                                        contentType = { _, _ -> "document" },
+                                    ) { index, document ->
+                                        LibraryListItem(
+                                            first = index == 0,
+                                            last = index == section.documents.lastIndex,
+                                            modifier = inset
+                                                .padding(bottom = if (index == section.documents.lastIndex) 20.dp else 0.dp)
+                                                .animateItem(),
+                                        ) {
                                             DocumentCard(
                                                 document = document,
                                                 onOpen = { onOpenDocument(document.id) },
                                                 onRename = { renameDocTarget = document },
                                                 onDelete = { deleteDocTarget = document },
                                                 onMove = { moveDocTarget = document },
-                                                style = LibraryCardStyle.Grid,
-                                                modifier = Modifier.weight(1f),
+                                                style = LibraryCardStyle.PreviewList,
+                                                sectionedDate = section.title != null,
                                             )
                                         }
-                                        repeat(windowSizeInfo.groupColumns - rowItems.size) {
-                                            Spacer(modifier = Modifier.weight(1f))
-                                        }
                                     }
-                                }
-                            } else {
-                                items(
-                                    items = visibleDocuments,
-                                    key = { "document_${it.id}" },
-                                    contentType = { "document" },
-                                ) { document ->
-                                    DocumentCard(
-                                        document = document,
-                                        onOpen = { onOpenDocument(document.id) },
-                                        onRename = { renameDocTarget = document },
-                                        onDelete = { deleteDocTarget = document },
-                                        onMove = { moveDocTarget = document },
-                                        modifier = Modifier
-                                            .padding(bottom = 12.dp)
-                                            .animateItem(),
-                                    )
                                 }
                             }
                         }
                     }
-            }
+                }
             }
 
-            FabMenuScrim(
-                visible = showFabMenu,
-                onDismiss = { showFabMenu = false },
-            )
-
-            if (!uiState.isLoading) {
-                ScanlyExpandableFabMenu(
-                    expanded = showFabMenu,
-                    onExpandedChange = { showFabMenu = it },
-                    onNewFolder = { createGroupDialogVisible = true },
-                    onNewDocument = { createDocDialogVisible = true },
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                        .padding(
-                            end = 16.dp,
-                            bottom = innerPadding.calculateBottomPadding() + 16.dp,
-                        ),
-                )
-            }
         }
     }
 
     if (createDocDialogVisible) {
         NewDocumentDialog(
             groups = uiState.groups,
+            initialGroupId = uiState.selectedGroupId,
             onDismiss = { createDocDialogVisible = false },
             onConfirm = { title, groupId ->
                 createDocDialogVisible = false
@@ -478,266 +528,183 @@ fun LibraryScreen(
     }
 }
 
-@Composable
-fun LibraryHeader(groupCount: Int, documentCount: Int, modifier: Modifier = Modifier) {
-    ScanlyTabScreenHeader(
-        title = "Library",
-        subtitle = buildString {
-            if (groupCount > 0) {
-                append("$groupCount ${if (groupCount == 1) "folder" else "folders"}")
-                if (documentCount > 0) append("  ·  ")
-            }
-            if (documentCount > 0) {
-                append("$documentCount ${if (documentCount == 1) "document" else "documents"}")
-            }
-            if (groupCount == 0 && documentCount == 0) append("Empty")
-        },
-        modifier = modifier,
-    )
-}
+/** Includes the tile's press inset; leaves the next tile peeking on a 360 dp phone. */
+private val FolderShelfTileWidth = 104.dp
 
 @Composable
-fun LibrarySearchBar(
-    query: String,
-    onQueryChange: (String) -> Unit,
-    onClear: () -> Unit,
-    selectedTab: LibraryTab,
+private fun LibraryHeader(
+    documentCount: Int,
+    pageCount: Int,
     modifier: Modifier = Modifier,
 ) {
-    val interactionSource = remember { MutableInteractionSource() }
-    val isFocused by interactionSource.collectIsFocusedAsState()
-    val searchPlaceholder = when (selectedTab) {
-        LibraryTab.All -> "Search folders and documents…"
-        LibraryTab.Folders -> "Search folders…"
-        LibraryTab.Documents -> "Search documents…"
+    Column(
+        modifier = modifier.fillMaxWidth().statusBarsPadding().padding(top = 20.dp),
+        verticalArrangement = Arrangement.spacedBy(2.dp),
+    ) {
+        Text(
+            text = "Library",
+            style = MaterialTheme.typography.headlineMedium,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.semantics { heading() },
+        )
+        Text(
+            "$documentCount ${if (documentCount == 1) "document" else "documents"} · " +
+                "$pageCount ${if (pageCount == 1) "page" else "pages"}",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
     }
-    val borderColor = if (isFocused) {
-        MaterialTheme.colorScheme.primary
-    } else {
-        MaterialTheme.colorScheme.outlineVariant
-    }
+}
 
+/** Looks like a search field but routes to the dedicated search screen. */
+@Composable
+private fun LibrarySearchLauncher(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     Surface(
-        modifier = modifier.fillMaxWidth(),
-        shape = MaterialTheme.shapes.extraLarge,
-        color = MaterialTheme.colorScheme.surfaceContainerHigh,
-        border = BorderStroke(1.dp, borderColor),
+        onClick = onClick,
+        modifier = modifier
+            .fillMaxWidth()
+            .testTag(ScanlyTestTags.LIBRARY_SEARCH)
+            .semantics { contentDescription = "Search library" },
+        shape = RoundedCornerShape(26.dp),
+        // Same card-style pill as Home's search, so both entry points look identical.
+        color = MaterialTheme.colorScheme.surfaceContainer,
+        contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(min = 52.dp)
-                .padding(start = 16.dp, end = 4.dp),
+            modifier = Modifier.heightIn(min = 52.dp).padding(horizontal = 18.dp),
             verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            Icon(
-                imageVector = Icons.Filled.Search,
-                contentDescription = null,
-                modifier = Modifier.size(22.dp),
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            Icon(Icons.Filled.Search, contentDescription = null, modifier = Modifier.size(22.dp))
+            Text(
+                "Search names and text in pages",
+                style = MaterialTheme.typography.bodyLarge,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
             )
-            Spacer(Modifier.width(12.dp))
-            Box(
-                modifier = Modifier.weight(1f),
-                contentAlignment = Alignment.CenterStart,
-            ) {
-                if (query.isEmpty()) {
-                    Text(
-                        text = searchPlaceholder,
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                }
-                BasicTextField(
-                    value = query,
-                    onValueChange = onQueryChange,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .semantics { contentDescription = searchPlaceholder },
-                    textStyle = MaterialTheme.typography.bodyLarge.copy(
-                        color = MaterialTheme.colorScheme.onSurface,
-                    ),
-                    singleLine = true,
-                    interactionSource = interactionSource,
-                    cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-                    keyboardActions = KeyboardActions(onSearch = {}),
-                )
-            }
-            if (query.isNotEmpty()) {
-                IconButton(
-                    onClick = onClear,
-                    modifier = Modifier.size(40.dp),
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Clear,
-                        contentDescription = "Clear search",
-                        modifier = Modifier.size(20.dp),
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
-            }
         }
     }
 }
 
 @Composable
-fun LibraryTabs(
-    selectedTab: LibraryTab,
-    onTabSelected: (LibraryTab) -> Unit,
+private fun LibraryDocumentsHeader(
+    documentCount: Int,
+    sortOption: LibrarySortOption,
+    gridLayout: Boolean,
+    onSort: () -> Unit,
+    onLayoutChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val pillShape = MaterialTheme.shapes.extraLarge
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(48.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    Row(modifier = modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+        LibrarySectionTitle("Documents", documentCount, modifier = Modifier.weight(1f))
+        LibrarySortButton(sortOption, onSort)
+        Spacer(Modifier.width(4.dp))
+        LibraryLayoutToggle(gridLayout, onLayoutChange)
+    }
+}
+
+/**
+ * Header while folders are expanded in place. The back arrow sits beside "Folders" (not
+ * "Library", which is a tab) because it only collapses this section, like system back.
+ */
+@Composable
+private fun LibraryFoldersExpandedHeader(
+    folderCount: Int,
+    sortOption: LibrarySortOption,
+    onBack: () -> Unit,
+    onSort: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Row(modifier = modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+        LibraryIconButton(
+            onBack,
+            Icons.AutoMirrored.Filled.ArrowBack,
+            "Back to library",
+            modifier = Modifier.offset(x = (-12).dp),
+        )
+        LibrarySectionTitle("Folders", folderCount, modifier = Modifier.weight(1f).offset(x = (-8).dp))
+        LibrarySortButton(sortOption, onSort)
+    }
+}
+
+@Composable
+private fun LibrarySortButton(sortOption: LibrarySortOption, onClick: () -> Unit) {
+    Surface(
+        onClick = onClick,
+        shape = RoundedCornerShape(20.dp),
+        color = Color.Transparent,
+        contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        modifier = Modifier.semantics { contentDescription = "Sort library" },
     ) {
-        LibraryTab.entries.forEach { tab ->
-            val selected = tab == selectedTab
-            Surface(
+        Row(
+            modifier = Modifier.heightIn(min = 48.dp).padding(horizontal = 10.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+        ) {
+            Icon(Icons.AutoMirrored.Filled.Sort, contentDescription = null, modifier = Modifier.size(18.dp))
+            Text(sortOption.title, style = MaterialTheme.typography.labelLarge, maxLines = 1)
+        }
+    }
+}
+
+/** Slim 40 dp segmented track; each segment keeps a 48 dp touch target. */
+@Composable
+private fun LibraryLayoutToggle(gridLayout: Boolean, onLayoutChange: (Boolean) -> Unit) {
+    val trackColor = MaterialTheme.colorScheme.surfaceContainerHigh
+    Row(
+        modifier = Modifier
+            .testTag(ScanlyTestTags.LIBRARY_LAYOUT_SWITCH)
+            .drawBehind {
+                val inset = 4.dp.toPx()
+                drawRoundRect(
+                    color = trackColor,
+                    topLeft = Offset(0f, inset),
+                    size = Size(size.width, size.height - inset * 2),
+                    cornerRadius = CornerRadius(20.dp.toPx()),
+                )
+            }
+            .selectableGroup(),
+    ) {
+        listOf(true, false).forEach { grid ->
+            val selected = gridLayout == grid
+            val interactionSource = remember { MutableInteractionSource() }
+            // 48 dp hit area, but the ripple is drawn only on the visible 40 dp pill.
+            Box(
                 modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight()
-                    .clip(pillShape)
+                    .size(48.dp)
                     .selectable(
                         selected = selected,
-                        onClick = { onTabSelected(tab) },
-                        role = Role.Tab,
+                        interactionSource = interactionSource,
+                        indication = null,
+                        role = Role.RadioButton,
+                        onClick = { onLayoutChange(grid) },
                     ),
-                shape = pillShape,
-                color = if (selected) {
-                    MaterialTheme.colorScheme.primaryContainer
-                } else {
-                    MaterialTheme.colorScheme.surfaceContainerHigh
-                },
-                border = BorderStroke(
-                    width = 1.dp,
-                    color = if (selected) {
-                        MaterialTheme.colorScheme.primary
-                    } else {
-                        MaterialTheme.colorScheme.outlineVariant
-                    },
-                ),
+                contentAlignment = Alignment.Center,
             ) {
-                Box(contentAlignment = Alignment.Center) {
-                    Text(
-                        text = tab.name,
-                        style = MaterialTheme.typography.labelLarge,
-                        color = if (selected) {
+                Box(
+                    modifier = Modifier
+                        .size(width = 46.dp, height = 40.dp)
+                        .clip(RoundedCornerShape(20.dp))
+                        .indication(interactionSource, ripple())
+                        .background(if (selected) MaterialTheme.colorScheme.primaryContainer else Color.Transparent),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Icon(
+                        if (grid) Icons.Outlined.GridView else Icons.AutoMirrored.Outlined.List,
+                        if (grid) "Grid view" else "List view",
+                        modifier = Modifier.size(20.dp),
+                        tint = if (selected) {
                             MaterialTheme.colorScheme.onPrimaryContainer
                         } else {
                             MaterialTheme.colorScheme.onSurfaceVariant
                         },
-                        fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium,
                     )
                 }
             }
-        }
-    }
-}
-
-@Composable
-private fun LibrarySortButton(
-    selectedOption: LibrarySortOption,
-    onClick: () -> Unit,
-) {
-    Surface(
-        onClick = onClick,
-        modifier = Modifier.size(52.dp),
-        color = MaterialTheme.colorScheme.surfaceContainerHigh,
-        shape = MaterialTheme.shapes.extraLarge,
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
-    ) {
-        Box(contentAlignment = Alignment.Center) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.Sort,
-                contentDescription = "Sort: ${selectedOption.title}",
-                tint = MaterialTheme.colorScheme.onSurface,
-            )
-            if (selectedOption != LibrarySortOption.RecentlyUpdated) {
-                Box(
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .padding(9.dp)
-                        .size(7.dp)
-                        .clip(MaterialTheme.shapes.small)
-                        .background(MaterialTheme.colorScheme.primary),
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun LibraryResultSummary(
-    itemCount: Int,
-    sortOption: LibrarySortOption,
-    modifier: Modifier = Modifier,
-) {
-    Text(
-        text = "$itemCount ${if (itemCount == 1) "item" else "items"}  ·  ${sortOption.title}",
-        style = MaterialTheme.typography.bodySmall,
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
-        modifier = modifier,
-    )
-}
-
-@Composable
-private fun LibrarySectionHeader(
-    title: String,
-    count: Int,
-    modifier: Modifier = Modifier,
-) {
-    Text(
-        text = "$title  ·  $count",
-        style = MaterialTheme.typography.titleMedium,
-        fontWeight = FontWeight.SemiBold,
-        color = MaterialTheme.colorScheme.onSurface,
-        modifier = modifier,
-    )
-}
-
-@Composable
-fun NoResultsCard(
-    query: String,
-    selectedTab: LibraryTab,
-) {
-    val resultType = when (selectedTab) {
-        LibraryTab.All -> "folders or documents"
-        LibraryTab.Folders -> "folders"
-        LibraryTab.Documents -> "documents"
-    }
-    Surface(
-        modifier = Modifier.fillMaxWidth(),
-        color = MaterialTheme.colorScheme.surfaceContainerHigh,
-        shape = MaterialTheme.shapes.extraLarge,
-    ) {
-        Column(
-            modifier = Modifier.padding(32.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            Icon(
-                imageVector = Icons.Filled.Search,
-                contentDescription = null,
-                modifier = Modifier.size(48.dp),
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-            Text(
-                text = "No $resultType found",
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.SemiBold,
-            )
-            Text(
-                text = "Nothing matches \"${query.trim()}\". Try a different name.",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
-            )
         }
     }
 }
@@ -776,9 +743,9 @@ private fun LibrarySortSheet(
         LibraryTab.Folders -> "folders"
         LibraryTab.Documents -> "documents"
     }
-    ModalBottomSheet(
+    ScanlyModalBottomSheet(
         onDismissRequest = onDismiss,
-        containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+        containerColor = { MaterialTheme.colorScheme.surfaceContainerLow },
     ) {
         Column(
             modifier = Modifier
@@ -893,12 +860,13 @@ private fun LibrarySortOption.sortIcon(): ImageVector = when (this) {
 @Composable
 fun NewDocumentDialog(
     groups: List<DocumentGroup>,
+    initialGroupId: String? = null,
     onDismiss: () -> Unit,
     onConfirm: (title: String, groupId: String?) -> Unit,
     onSuggestTitle: (suspend (DocumentTitleFormat) -> String)? = null,
 ) {
     var title by rememberSaveable { mutableStateOf("") }
-    var selectedGroupId by rememberSaveable { mutableStateOf<String?>(null) }
+    var selectedGroupId by rememberSaveable { mutableStateOf(initialGroupId) }
     var isFillingName by remember {
         mutableStateOf(title.isBlank() && onSuggestTitle != null)
     }

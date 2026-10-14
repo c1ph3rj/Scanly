@@ -20,6 +20,7 @@ import `in`.c1ph3rj.scanly.domain.usecase.ObserveGroupUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveUngroupedDocumentsUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.PrepareGroupPdfShareUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.PrepareGroupZippedPdfsShareUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.RecordPositiveMomentUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.RenameGroupUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.SetDocumentGroupUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.SaveExportArtifactUseCase
@@ -72,6 +73,7 @@ class GroupDetailViewModel @Inject constructor(
     private val prepareGroupPdfShareUseCase: PrepareGroupPdfShareUseCase,
     private val prepareGroupZippedPdfsShareUseCase: PrepareGroupZippedPdfsShareUseCase,
     private val suggestDocumentTitleUseCase: SuggestDocumentTitleUseCase,
+    private val recordPositiveMomentUseCase: RecordPositiveMomentUseCase,
 ) : ViewModel() {
 
     val groupId: String = checkNotNull(savedStateHandle["groupId"])
@@ -252,6 +254,7 @@ class GroupDetailViewModel @Inject constructor(
                 when (result) {
                     is ScanlyResult.Success -> {
                         _exportProgress.value = null
+                        recordPositiveMomentUseCase()
                         onSuccess(result.value)
                     }
                     is ScanlyResult.Failure -> {

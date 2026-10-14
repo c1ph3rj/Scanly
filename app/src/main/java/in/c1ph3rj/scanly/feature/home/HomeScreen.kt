@@ -1,10 +1,19 @@
 package `in`.c1ph3rj.scanly.feature.home
 
+import androidx.compose.material3.Text
+import androidx.compose.material3.Icon
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.height
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.material.icons.outlined.Search
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CameraAlt
 import androidx.compose.material.icons.outlined.CreateNewFolder
@@ -40,6 +49,8 @@ fun HomeRoute(
     onOpenScanSession: (String) -> Unit,
     onOpenGroup: (String) -> Unit,
     onNavigateToLibrary: () -> Unit,
+    onSeeAllFolders: () -> Unit = onNavigateToLibrary,
+    onOpenSearch: () -> Unit = {},
 ) {
     val viewModel: HomeViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -82,10 +93,14 @@ fun HomeRoute(
         onOpenScanSession = onOpenScanSession,
         onOpenGroup = onOpenGroup,
         onNavigateToLibrary = onNavigateToLibrary,
+        onSeeAllFolders = onSeeAllFolders,
+        onOpenSearch = onOpenSearch,
         onCreateGroup = viewModel::createGroup,
         onSuggestTitle = viewModel::suggestDocumentTitle,
         onSuggestGroupTitle = viewModel::suggestGroupTitle,
     )
+
+    HomeRatingPromptHost(viewModel = viewModel)
 }
 
 @Composable
@@ -98,6 +113,8 @@ fun HomeScreen(
     onOpenScanSession: (String) -> Unit,
     onOpenGroup: (String) -> Unit,
     onNavigateToLibrary: () -> Unit,
+    onSeeAllFolders: () -> Unit = onNavigateToLibrary,
+    onOpenSearch: () -> Unit = {},
     onCreateGroup: (String) -> Unit,
     onSuggestTitle: suspend (DocumentTitleFormat) -> String,
     onSuggestGroupTitle: suspend (GroupTitleFormat) -> String,
@@ -139,6 +156,15 @@ fun HomeScreen(
                 )
             }
 
+            item(key = "home_search", contentType = "search") {
+                HomeSearchPill(
+                    onClick = onOpenSearch,
+                    modifier = Modifier
+                        .padding(horizontal = windowSizeInfo.horizontalPadding)
+                        .padding(bottom = 16.dp),
+                )
+            }
+
             if (uiState.isLoading) {
                 item(key = "home_loading", contentType = "loading") {
                     Box(
@@ -159,36 +185,52 @@ fun HomeScreen(
                     importEnabled = !uiState.isImporting,
                     isTablet = windowSizeInfo.isTablet,
                     horizontalPadding = windowSizeInfo.horizontalPadding,
-                    modifier = Modifier.padding(bottom = 32.dp)
+                    modifier = Modifier.padding(bottom = 24.dp)
                 )
             }
 
             if (uiState.recentGroups.isNotEmpty()) {
                 item(key = "groups_header", contentType = "section_header") {
-                    SectionHeader(
-                        title = "Recent Folders",
-                        modifier = Modifier
-                            .padding(horizontal = windowSizeInfo.horizontalPadding)
-                            .padding(bottom = 16.dp),
+                    LibrarySectionHeader(
+                        title = "Recent folders",
+                        actionLabel = "See all",
+                        onAction = onSeeAllFolders,
+                        modifier = Modifier.padding(horizontal = windowSizeInfo.horizontalPadding),
                     )
                 }
                 item(key = "groups_row", contentType = "groups_row") {
+                    // Tiles carry their own press inset; pull the row out so the art aligns with the header.
                     LazyRow(
-                        contentPadding = PaddingValues(horizontal = windowSizeInfo.horizontalPadding),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
-                        modifier = Modifier.padding(bottom = 32.dp)
+                        contentPadding = PaddingValues(
+                            horizontal = (windowSizeInfo.horizontalPadding - LibraryFolderTileInset).coerceAtLeast(0.dp),
+                        ),
+                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                        modifier = Modifier.padding(bottom = 20.dp),
                     ) {
+                        item(key = "new_folder", contentType = "new_folder") {
+                            LibraryNewFolderTile(
+                                onClick = { createFolderDialogVisible = true },
+                                modifier = Modifier.width(if (windowSizeInfo.isTablet) 132.dp else 104.dp),
+                            )
+                        }
                         items(
                             items = uiState.recentGroups,
                             key = { it.id },
                             contentType = { "recent_group" },
                         ) { group ->
-                            GroupCard(
+                            LibraryFolderTile(
                                 group = group,
                                 onOpen = { onOpenGroup(group.id) },
-                                style = LibraryCardStyle.Grid,
-                                modifier = Modifier.width(if (windowSizeInfo.isTablet) 168.dp else 140.dp),
+                                modifier = Modifier.width(if (windowSizeInfo.isTablet) 132.dp else 104.dp),
                             )
+                        }
+                        if (uiState.hasMoreGroups) {
+                            item(key = "view_all_folders", contentType = "view_all_folders") {
+                                LibraryViewAllFoldersTile(
+                                    onClick = onSeeAllFolders,
+                                    modifier = Modifier.width(if (windowSizeInfo.isTablet) 132.dp else 104.dp),
+                                )
+                            }
                         }
                     }
                 }
@@ -196,29 +238,33 @@ fun HomeScreen(
 
             if (uiState.recentDocuments.isNotEmpty()) {
                 item(key = "files_header", contentType = "section_header") {
-                    SectionHeader(
-                        title = "Recent Files",
-                        actionLabel = "See all in Library",
+                    LibrarySectionHeader(
+                        title = "Recent documents",
+                        actionLabel = "See all",
                         onAction = onNavigateToLibrary,
                         modifier = Modifier
                             .padding(horizontal = windowSizeInfo.horizontalPadding)
-                            .padding(bottom = 16.dp),
+                            .padding(bottom = 4.dp),
                     )
                 }
-                items(
+                itemsIndexed(
                     items = uiState.recentDocuments,
-                    key = { it.id },
-                    contentType = { "recent_document" },
-                ) { doc ->
-                    DocumentCard(
-                        document = doc,
-                        onOpen = { onOpenDocument(doc.id) },
-                        style = LibraryCardStyle.List,
+                    key = { _, doc -> doc.id },
+                    contentType = { _, _ -> "recent_document" },
+                ) { index, doc ->
+                    LibraryListItem(
+                        first = index == 0,
+                        last = index == uiState.recentDocuments.lastIndex,
                         modifier = Modifier
                             .padding(horizontal = windowSizeInfo.horizontalPadding)
-                            .padding(bottom = 12.dp)
                             .animateItem(),
-                    )
+                    ) {
+                        DocumentCard(
+                            document = doc,
+                            onOpen = { onOpenDocument(doc.id) },
+                            style = LibraryCardStyle.PreviewList,
+                        )
+                    }
                 }
             } else if (uiState.recentGroups.isEmpty()) {
                 item(key = "empty_state", contentType = "empty") {
@@ -469,4 +515,43 @@ private fun EmptyHomeCard(
         actionIcon = Icons.Outlined.CameraAlt,
         modifier = modifier,
     )
+}
+
+/**
+ * Entry point to library search, styled as a field but opening the dedicated search screen
+ * so Home stays a launcher (no inline results pushing the quick actions around).
+ */
+@Composable
+private fun HomeSearchPill(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    androidx.compose.material3.Surface(
+        onClick = onClick,
+        modifier = modifier
+            .fillMaxWidth()
+            .height(52.dp)
+            .semantics { contentDescription = "Search names and text in pages" },
+        shape = androidx.compose.foundation.shape.RoundedCornerShape(26.dp),
+        color = MaterialTheme.colorScheme.surfaceContainer,
+        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 18.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Icon(
+                androidx.compose.material.icons.Icons.Outlined.Search,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Text(
+                text = "Search names and text in pages",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 1,
+            )
+        }
+    }
 }

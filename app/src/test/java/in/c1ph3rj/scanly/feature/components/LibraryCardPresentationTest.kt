@@ -8,6 +8,17 @@ import org.junit.Test
 class LibraryCardPresentationTest {
 
     @Test
+    fun modifiedDateUsesLocalCalendarDaysAcrossMidnight() {
+        val zone = java.time.ZoneId.of("Asia/Kolkata")
+        val now = java.time.Instant.parse("2026-10-12T19:00:00Z").toEpochMilli()
+        val today = java.time.Instant.parse("2026-10-12T18:45:00Z").toEpochMilli()
+        val yesterday = java.time.Instant.parse("2026-10-12T18:00:00Z").toEpochMilli()
+        assertEquals("Today", formatLibraryModifiedDate(today, now, zone))
+        assertEquals("Yesterday", formatLibraryModifiedDate(yesterday, now, zone))
+        assertTrue(formatLibraryModifiedDate(java.time.Instant.parse("2025-01-01T00:00:00Z").toEpochMilli(), now, zone).contains("2025"))
+    }
+
+    @Test
     fun coverAspectIsPortraitPaperNotSquare() {
         val aspect = libraryCardCoverAspectRatio()
         assertEquals(LIBRARY_PAGE_COVER_ASPECT_RATIO, aspect, 0.0001f)
@@ -83,5 +94,16 @@ class LibraryCardPresentationTest {
         assertEquals("1 document", formatGroupCardMeta(1, 0))
         assertEquals("2 documents  ·  1 page", formatGroupCardMeta(2, 1))
         assertEquals("4 documents  ·  12 pages", formatGroupCardMeta(4, 12))
+    }
+
+    @Test
+    fun sectionedDateShowsTimeForRecentDaysAndDayMonthOtherwise() {
+        val zone = java.time.ZoneId.of("UTC")
+        val now = java.time.Instant.parse("2026-10-14T12:00:00Z").toEpochMilli()
+        val locale = java.util.Locale.ENGLISH
+        val yesterdayEvening = java.time.Instant.parse("2026-10-13T22:39:00Z").toEpochMilli()
+        assertTrue(formatLibrarySectionedDate(yesterdayEvening, now, zone, locale).contains("10:39"))
+        assertTrue(formatLibrarySectionedDate(java.time.Instant.parse("2026-09-16T11:28:00Z").toEpochMilli(), now, zone, locale).startsWith("16 Sep"))
+        assertEquals("5 Dec 2025", formatLibrarySectionedDate(java.time.Instant.parse("2025-12-05T08:00:00Z").toEpochMilli(), now, zone, locale))
     }
 }

@@ -3,10 +3,6 @@ package `in`.c1ph3rj.scanly.data.storage
 import android.content.ContentValues
 import android.content.Context
 import android.net.Uri
-import android.os.Build
-import android.os.Environment
-import android.os.StatFs
-import android.os.storage.StorageManager
 import android.provider.DocumentsContract
 import android.provider.MediaStore
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -18,13 +14,6 @@ import java.io.File
 import java.io.OutputStream
 import javax.inject.Inject
 import javax.inject.Singleton
-
-data class DestinationCapacity(
-    val destination: ExportDestination,
-    val availableBytes: Long?,
-    val backupDirectoryReady: Boolean,
-    val errorMessage: String? = null,
-)
 
 @Singleton
 class SharedStorageDestinationManager @Inject constructor(
@@ -61,85 +50,12 @@ class SharedStorageDestinationManager @Inject constructor(
         }
     }
 
-    suspend fun inspectBackupCapacity(): DestinationCapacity {
-        val destination = currentDestination()
-        return runCatching {
-            when (destination) {
-                ExportDestination.DefaultDownloadsScanly -> DestinationCapacity(
-                    destination = destination,
-                    availableBytes = StatFs(Environment.getExternalStorageDirectory().absolutePath)
-                        .availableBytes,
-                    backupDirectoryReady = true,
-                )
-
-                is ExportDestination.CustomTree -> {
-                    val treeUri = requireWritableTree(destination)
-                    ensureChildDirectory(treeUri, BACKUP_DIRECTORY_NAME)
-                    DestinationCapacity(
-                        destination = destination,
-                        availableBytes = queryProviderAvailableBytes(treeUri)
-                            ?: queryExternalStorageAvailableBytes(treeUri),
-                        backupDirectoryReady = true,
-                    )
-                }
-            }
-        }.getOrElse { error ->
-            DestinationCapacity(
-                destination = destination,
-                availableBytes = null,
-                backupDirectoryReady = false,
-                errorMessage = error.message ?: "The backup folder is unavailable.",
-            )
-        }
-    }
-
-    suspend fun writeBackup(
-        requestedName: String,
-        writer: suspend (OutputStream) -> Unit,
-    ): SavedExport = when (val destination = currentDestination()) {
-        ExportDestination.DefaultDownloadsScanly -> writeMediaStoreStream(
-            relativePath = DEFAULT_BACKUP_RELATIVE_PATH,
-            requestedName = requestedName,
-            mimeType = BACKUP_MIME_TYPE,
-            destinationLabel = destination.backupLabel,
-            writer = writer,
-        )
-
-        is ExportDestination.CustomTree -> {
-            val backupDirectory = ensureChildDirectory(
-                requireWritableTree(destination),
-                BACKUP_DIRECTORY_NAME,
-            )
-            writeTreeFile(
-                parentUri = backupDirectory,
-                requestedName = requestedName,
-                mimeType = BACKUP_MIME_TYPE,
-                destinationLabel = destination.backupLabel,
-                publishAfterWrite = true,
-                writer = writer,
-            )
-        }
-    }
-
-    private suspend fun writeMediaStoreFile(
+    private fun writeMediaStoreFile(
         relativePath: String,
         requestedName: String,
         mimeType: String,
         source: File,
         destinationLabel: String,
-    ): SavedExport = writeMediaStoreStream(
-        relativePath = relativePath,
-        requestedName = requestedName,
-        mimeType = mimeType,
-        destinationLabel = destinationLabel,
-    ) { output -> source.inputStream().use { input -> input.copyTo(output) } }
-
-    private suspend fun writeMediaStoreStream(
-        relativePath: String,
-        requestedName: String,
-        mimeType: String,
-        destinationLabel: String,
-        writer: suspend (OutputStream) -> Unit,
     ): SavedExport {
         val resolver = context.contentResolver
         val collection = MediaStore.Downloads.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
@@ -153,7 +69,8 @@ class SharedStorageDestinationManager @Inject constructor(
         val uri = resolver.insert(collection, values)
             ?: error("Could not create a file in $destinationLabel.")
         try {
-            resolver.openOutputStream(uri, "w")?.use { output -> writer(output) }
+            resolver.openOutputStream(uri, "w")
+                ?.use { output -> source.inputStream().use { input -> input.copyTo(output) } }
                 ?: error("Could not open $destinationLabel for writing.")
             resolver.update(
                 uri,
@@ -168,32 +85,25 @@ class SharedStorageDestinationManager @Inject constructor(
         return SavedExport(fileName, destinationLabel, uri.toString())
     }
 
-    private suspend fun writeTreeFile(
+    private fun writeTreeFile(
         parentUri: Uri,
         requestedName: String,
         mimeType: String,
         destinationLabel: String,
-        publishAfterWrite: Boolean = false,
-        writer: suspend (OutputStream) -> Unit,
+        writer: (OutputStream) -> Unit,
     ): SavedExport {
         val resolver = context.contentResolver
         val fileName = uniqueTreeName(parentUri, requestedName)
-        val createName = if (publishAfterWrite) uniqueTreeName(parentUri, "$fileName.partial") else fileName
-        val uri = DocumentsContract.createDocument(resolver, parentUri, mimeType, createName)
+        val uri = DocumentsContract.createDocument(resolver, parentUri, mimeType, fileName)
             ?: error("Could not create a file in $destinationLabel.")
-        var publishedUri = uri
         try {
             resolver.openOutputStream(uri, "w")?.use { output -> writer(output) }
                 ?: error("Could not open $destinationLabel for writing.")
-            if (publishAfterWrite) {
-                publishedUri = DocumentsContract.renameDocument(resolver, uri, fileName)
-                    ?: error("The selected folder cannot publish completed backups.")
-            }
         } catch (error: Throwable) {
             DocumentsContract.deleteDocument(resolver, uri)
             throw error
         }
-        return SavedExport(fileName, destinationLabel, publishedUri.toString())
+        return SavedExport(fileName, destinationLabel, uri.toString())
     }
 
     private fun requireWritableTree(destination: ExportDestination.CustomTree): Uri {
@@ -203,17 +113,6 @@ class SharedStorageDestinationManager @Inject constructor(
         val treeUri = Uri.parse(destination.uriString)
         val documentId = DocumentsContract.getTreeDocumentId(treeUri)
         return DocumentsContract.buildDocumentUriUsingTree(treeUri, documentId)
-    }
-
-    private fun ensureChildDirectory(parentUri: Uri, name: String): Uri {
-        val resolver = context.contentResolver
-        findChild(parentUri, name, DocumentsContract.Document.MIME_TYPE_DIR)?.let { return it }
-        return DocumentsContract.createDocument(
-            resolver,
-            parentUri,
-            DocumentsContract.Document.MIME_TYPE_DIR,
-            name,
-        ) ?: error("Could not create the $name folder.")
     }
 
     private fun uniqueTreeName(parentUri: Uri, requestedName: String): String {
@@ -242,39 +141,6 @@ class SharedStorageDestinationManager @Inject constructor(
         return "$stem ($index)$extension"
     }
 
-    private fun findChild(parentUri: Uri, name: String, mimeType: String): Uri? {
-        val resolver = context.contentResolver
-        val treeUri = parentUri
-        val childrenUri = DocumentsContract.buildChildDocumentsUriUsingTree(
-            treeUri,
-            DocumentsContract.getDocumentId(parentUri),
-        )
-        return resolver.query(
-            childrenUri,
-            arrayOf(
-                DocumentsContract.Document.COLUMN_DOCUMENT_ID,
-                DocumentsContract.Document.COLUMN_DISPLAY_NAME,
-                DocumentsContract.Document.COLUMN_MIME_TYPE,
-            ),
-            null,
-            null,
-            null,
-        )?.use { cursor ->
-            val idColumn = cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_DOCUMENT_ID)
-            val nameColumn = cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_DISPLAY_NAME)
-            val mimeColumn = cursor.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_MIME_TYPE)
-            while (cursor.moveToNext()) {
-                if (cursor.getString(nameColumn) == name && cursor.getString(mimeColumn) == mimeType) {
-                    return@use DocumentsContract.buildDocumentUriUsingTree(
-                        treeUri,
-                        cursor.getString(idColumn),
-                    )
-                }
-            }
-            null
-        }
-    }
-
     private fun childNames(parentUri: Uri): Set<String> {
         val resolver = context.contentResolver
         val childrenUri = DocumentsContract.buildChildDocumentsUriUsingTree(
@@ -295,74 +161,9 @@ class SharedStorageDestinationManager @Inject constructor(
         }.orEmpty()
     }
 
-    private fun queryProviderAvailableBytes(treeUri: Uri): Long? {
-        val authority = treeUri.authority ?: return null
-        val treeDocumentId = DocumentsContract.getTreeDocumentId(treeUri)
-        return try {
-            context.contentResolver.query(
-                DocumentsContract.buildRootsUri(authority),
-                arrayOf(
-                    DocumentsContract.Root.COLUMN_ROOT_ID,
-                    DocumentsContract.Root.COLUMN_AVAILABLE_BYTES,
-                ),
-                null,
-                null,
-                null,
-            )?.use { cursor ->
-                val rootColumn = cursor.getColumnIndexOrThrow(DocumentsContract.Root.COLUMN_ROOT_ID)
-                val bytesColumn = cursor.getColumnIndex(DocumentsContract.Root.COLUMN_AVAILABLE_BYTES)
-                if (bytesColumn < 0) return@use null
-                while (cursor.moveToNext()) {
-                    val rootId = cursor.getString(rootColumn)
-                    if (treeDocumentId == rootId || treeDocumentId.startsWith("$rootId:")) {
-                        return@use if (cursor.isNull(bytesColumn)) {
-                            null
-                        } else {
-                            cursor.getLong(bytesColumn).takeIf { it >= 0L }
-                        }
-                    }
-                }
-                null
-            }
-        } catch (e: Exception) {
-            null
-        }
-    }
-
-    /**
-     * Some device document providers omit COLUMN_AVAILABLE_BYTES even for local storage. Resolve
-     * those external-storage trees back to their mounted volume so a valid local folder does not
-     * leave backup permanently unavailable.
-     */
-    private fun queryExternalStorageAvailableBytes(treeUri: Uri): Long? {
-        if (treeUri.authority != EXTERNAL_STORAGE_DOCUMENTS_AUTHORITY) return null
-        val rootId = runCatching { DocumentsContract.getTreeDocumentId(treeUri).substringBefore(':') }
-            .getOrNull()
-            ?: return null
-        val directory = if (rootId.equals(PRIMARY_STORAGE_ROOT_ID, ignoreCase = true)) {
-            Environment.getExternalStorageDirectory()
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            context.getSystemService(StorageManager::class.java)
-                .storageVolumes
-                .firstOrNull { it.uuid.equals(rootId, ignoreCase = true) }
-                ?.directory
-        } else {
-            File("/storage/$rootId")
-        }
-        return directory
-            ?.takeIf(File::exists)
-            ?.let { runCatching { StatFs(it.absolutePath).availableBytes }.getOrNull() }
-    }
-
     private fun String.withTrailingSlash(): String = if (endsWith('/')) this else "$this/"
 
     companion object {
-        const val BACKUP_DIRECTORY_NAME = "backup"
-        const val BACKUP_MIME_TYPE = "application/zip"
         const val DEFAULT_EXPORT_RELATIVE_PATH = "Download/Scanly"
-        const val DEFAULT_BACKUP_RELATIVE_PATH = "Download/Scanly/backup"
-        private const val EXTERNAL_STORAGE_DOCUMENTS_AUTHORITY =
-            "com.android.externalstorage.documents"
-        private const val PRIMARY_STORAGE_ROOT_ID = "primary"
     }
 }

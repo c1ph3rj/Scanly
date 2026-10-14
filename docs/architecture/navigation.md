@@ -1,6 +1,6 @@
 ﻿# Navigation
 
-All routes and user flows in Scanly **v1.0.16**.
+All routes and user flows in Scanly **v1.0.17**.
 
 Navigation is implemented with **Navigation Compose** in `ScanlyNavHost.kt`. Route helpers follow the `*Destination` object pattern with `routePattern` and `route()` factory functions.
 
@@ -23,7 +23,7 @@ Navigation is implemented with **Navigation Compose** in `ScanlyNavHost.kt`. Rou
 | --- | --- | --- |
 | `home` | Home dashboard | Yes |
 | `library` | Full library | Yes |
-| `tools` | Tools hub (capture, QR, PDF utilities) | Yes |
+| `tools` | Tools hub (Scan, PDF, Utilities) | Yes |
 | `settings` | Settings | Yes |
 
 ## Legacy placeholder routes
@@ -41,6 +41,7 @@ These top-level routes still exist but show `FeaturePlaceholderScreen` — they 
 | Route pattern | Helper object | Screen |
 | --- | --- | --- |
 | `document/{documentId}` | `DocumentDestination` | Document detail |
+| `library/search` | `LibrarySearchDestination` | Library name search across documents and folders; owns separate query state |
 | `camera/session/{documentId}?replacePageId={pageId}` | `ScanSessionDestination` | Scan session |
 | `preview/page/{pageId}` | `PageImagePreviewDestination` | Page preview |
 | `editor/page/{pageId}` | `PageEditorDestination` | Page editor (preview, filters/adjust overlays, retake, delete) |
@@ -57,12 +58,19 @@ These top-level routes still exist but show `FeaturePlaceholderScreen` — they 
 | `settings/licenses` | `SettingsLicensesDestination` | Open-source licenses |
 | `settings/storage` | `SettingsStorageDestination` | Storage & backup |
 | `settings/model-benchmark` | `SettingsModelBenchmarkDestination` | Temporary local model comparison |
-| `tools/qr` | `ToolsQrDestination` | QR scan + generate |
+| `tools/qr` | `ToolsQrDestination` | QR scan, typed result, create, and history (in-route screens) |
 | `tools/pdf/reader?filePath={filePath}&fileName={fileName}` | `ToolsPdfReaderDestination` | PDF reader; optional app-owned result file opens directly |
 | `tools/pdf/merge` | `ToolsPdfMergeDestination` | PDF merge |
 | `tools/pdf/compress` | `ToolsPdfCompressDestination` | PDF compress |
 | `tools/pdf/password` | `ToolsPdfPasswordDestination` | PDF password protect/remove |
 | `tools/pdf/watermark` | `ToolsPdfWatermarkDestination` | PDF text watermark |
+
+### Back behavior
+
+- When opened from Tools, Back from a PDF reader returns to the file picker; Back from that picker exits to Tools. A PDF preview opened from a PDF tool returns to that tool's result screen. **Choose another** opens a temporary picker, where Back returns to the current reader.
+- In PDF compression, Back from options returns to the file picker; Back from that picker exits to Tools. **Change** opens a temporary picker, where Back returns to options.
+- In watermarking, Back from the editor returns to the picker; **Change** opens a temporary picker, where Back returns to the current editor.
+- Android Back closes the editor's full-screen filter and adjustment modes before leaving the editor. It is blocked while a page is being captured, cropped/saved, filter-saved, or processed by a PDF tool.
 
 ### Scan session arguments
 

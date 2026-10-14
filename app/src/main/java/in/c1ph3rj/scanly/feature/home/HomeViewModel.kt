@@ -17,6 +17,10 @@ import `in`.c1ph3rj.scanly.domain.usecase.SuggestGroupTitleUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ImportImagesUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveRecentDocumentsUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveRecentGroupsUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.ObserveShouldShowRatingPromptUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.MarkRatingPromptShownUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.DismissRatingPromptUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.MarkAppRatedUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -30,6 +34,7 @@ import javax.inject.Inject
 
 data class HomeUiState(
     val recentGroups: List<DocumentGroup> = emptyList(),
+    val hasMoreGroups: Boolean = false,
     val recentDocuments: List<ScanDocument> = emptyList(),
     val isLoading: Boolean = false,
     val isImporting: Boolean = false,
@@ -53,19 +58,57 @@ class HomeViewModel @Inject constructor(
     private val importImagesUseCase: ImportImagesUseCase,
     private val suggestDocumentTitleUseCase: SuggestDocumentTitleUseCase,
     private val suggestGroupTitleUseCase: SuggestGroupTitleUseCase,
+    private val observeShouldShowRatingPromptUseCase: ObserveShouldShowRatingPromptUseCase,
+    private val markRatingPromptShownUseCase: MarkRatingPromptShownUseCase,
+    private val dismissRatingPromptUseCase: DismissRatingPromptUseCase,
+    private val markAppRatedUseCase: MarkAppRatedUseCase,
 ) : ViewModel() {
 
     private val _events = MutableSharedFlow<HomeEvent>()
     val events: SharedFlow<HomeEvent> = _events.asSharedFlow()
     private val importProgress = MutableStateFlow(ImportProgressSnapshot())
 
+    private val ratingPromptPresentedInThisSession = MutableStateFlow(ratingPromptPresentedThisProcess)
+
+    /**
+     * True when the rating nudge is allowed and has not yet been presented in this process. The
+     * screen waits a short moment on Home before presenting it.
+     */
+    val showRatingPrompt: StateFlow<Boolean> = combine(
+        observeShouldShowRatingPromptUseCase(),
+        ratingPromptPresentedInThisSession,
+    ) { shouldShow, presented -> shouldShow && !presented }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = false,
+        )
+
+    /** Called once the rating sheet is actually on screen. */
+    fun onRatingPromptPresented() {
+        ratingPromptPresentedThisProcess = true
+        ratingPromptPresentedInThisSession.value = true
+        viewModelScope.launch { markRatingPromptShownUseCase() }
+    }
+
+    /** "Not now" or swipe-away on the rating sheet. */
+    fun onRatingPromptDismissed() {
+        viewModelScope.launch { dismissRatingPromptUseCase() }
+    }
+
+    /** Any rating action on the sheet (the stars and the primary button share one path). */
+    fun onRatingPromptRated() {
+        viewModelScope.launch { markAppRatedUseCase() }
+    }
+
     val uiState: StateFlow<HomeUiState> = combine(
-        observeRecentGroupsUseCase(limit = 6),
-        observeRecentDocumentsUseCase(limit = 8),
+        observeRecentGroupsUseCase(limit = 4),
+        observeRecentDocumentsUseCase(limit = 4),
         importProgress,
     ) { groups, docs, progress ->
         HomeUiState(
-            recentGroups = groups,
+            recentGroups = groups.take(3),
+            hasMoreGroups = groups.size > 3,
             recentDocuments = docs,
             isLoading = false,
             isImporting = progress.active,
@@ -163,6 +206,9 @@ class HomeViewModel @Inject constructor(
         }
     }
 }
+
+/** Process-wide: the rating nudge is shown at most once per app process. */
+private var ratingPromptPresentedThisProcess = false
 
 private data class ImportProgressSnapshot(
     val active: Boolean = false,

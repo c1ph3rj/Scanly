@@ -25,10 +25,15 @@ interface PdfToolkitRepository {
         password: String? = null,
     ): ScanlyResult<ExportArtifact>
 
+    /**
+     * Encrypts with AES-256. When [restrictEditing] is true the owner permissions block
+     * editing, annotating, form filling and copying text; opening and printing stay allowed.
+     */
     suspend fun setPassword(
         source: PdfToolSource,
         newPassword: String,
         currentPassword: String? = null,
+        restrictEditing: Boolean = false,
     ): ScanlyResult<ExportArtifact>
 
     suspend fun removePassword(

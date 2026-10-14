@@ -89,6 +89,7 @@ fun ScanlyExpandableFabMenu(
     onNewFolder: () -> Unit,
     onNewDocument: () -> Unit,
     modifier: Modifier = Modifier,
+    fabShape: androidx.compose.ui.graphics.Shape = CircleShape,
 ) {
     Column(
         modifier = modifier,
@@ -118,10 +119,11 @@ fun ScanlyExpandableFabMenu(
         FloatingActionButton(
             onClick = { onExpandedChange(!expanded) },
             modifier = Modifier.graphicsLayer {
-                shape = CircleShape
+                shape = fabShape
                 clip = true
             },
             containerColor = MaterialTheme.colorScheme.primary,
+            shape = fabShape,
             contentColor = MaterialTheme.colorScheme.onPrimary,
             elevation = fabMenuElevation(),
         ) {

@@ -1,6 +1,7 @@
 package `in`.c1ph3rj.scanly.feature.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -182,7 +183,9 @@ fun CachedThumbnail(
     modifier: Modifier = Modifier,
     shape: androidx.compose.ui.graphics.Shape = MaterialTheme.shapes.large,
     contentScale: ContentScale = ContentScale.Crop,
+    alignment: Alignment = Alignment.Center,
     placeholderIcon: (@Composable () -> Unit)?,
+    containerColor: Color? = null,
 ) {
     val context = LocalContext.current
     val density = LocalDensity.current.density
@@ -233,7 +236,7 @@ fun CachedThumbnail(
                 containerSize = size
             }
         },
-        color = if (imageBitmap != null) {
+        color = containerColor ?: if (imageBitmap != null) {
             MaterialTheme.colorScheme.surfaceContainerHighest
         } else {
             MaterialTheme.colorScheme.primaryContainer
@@ -246,6 +249,7 @@ fun CachedThumbnail(
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize(),
                 contentScale = contentScale,
+                alignment = alignment,
                 filterQuality = FilterQuality.High,
             )
         } else {
@@ -972,9 +976,9 @@ fun MoveToFolderSheet(
         isFillingName = false
     }
 
-    ModalBottomSheet(
+    ScanlyModalBottomSheet(
         onDismissRequest = onDismiss,
-        containerColor = MaterialTheme.colorScheme.surface,
+        containerColor = { MaterialTheme.colorScheme.surface },
     ) {
         ScanlySheetContent {
             Text(
@@ -1143,9 +1147,17 @@ enum class LibraryCardStyle {
     List,
     /** Vertical tile for multi-column grids. */
     Grid,
+    /** Paper preview with metadata below the cover, used by the library. */
+    Preview,
+    /** Compact document row with a fitted page preview. */
+    PreviewList,
 }
 
 private val GridCardMaxWidth = 280.dp
+
+/** Inset between a library grid card's press bounds and its cover/text; grid rows offset it. */
+val LibraryPreviewCardInset = 8.dp
+private val LibraryPreviewPressShapeRadius = 20.dp
 
 @Composable
 fun GroupCard(
@@ -1164,8 +1176,12 @@ fun GroupCard(
     Surface(
         modifier = modifier.fillMaxWidth(),
         color = MaterialTheme.colorScheme.surfaceContainer,
-        shape = MaterialTheme.shapes.extraLarge,
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+        shape = when (style) {
+            LibraryCardStyle.PreviewList -> RoundedCornerShape(0.dp)
+            LibraryCardStyle.Preview -> RoundedCornerShape(12.dp)
+            else -> MaterialTheme.shapes.extraLarge
+        },
+        border = if (style == LibraryCardStyle.PreviewList) null else BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
         shadowElevation = 0.dp,
         tonalElevation = 0.dp,
     ) {
@@ -1179,8 +1195,8 @@ fun GroupCard(
                 ),
         ) {
             val useGrid = when (style) {
-                LibraryCardStyle.Grid -> true
-                LibraryCardStyle.List -> false
+                LibraryCardStyle.Grid, LibraryCardStyle.Preview -> true
+                LibraryCardStyle.List, LibraryCardStyle.PreviewList -> false
                 LibraryCardStyle.Auto -> maxWidth < GridCardMaxWidth
             }
             if (useGrid) {
@@ -1219,6 +1235,7 @@ fun GroupCard(
                 )
             } else {
                 LibraryCoverListFace(
+                    compact = style == LibraryCardStyle.PreviewList,
                     title = group.title,
                     meta = formatGroupCardMeta(group.documentCount, group.totalPageCount),
                     thumbnailPath = group.coverThumbnailPath,
@@ -1268,9 +1285,15 @@ fun DocumentCard(
     showRename: Boolean = onRename != null,
     deleteContentDescription: String = "Delete",
     deleteIsRemoveFromFolder: Boolean = false,
+    /** True when a section header above the card already names the day or month. */
+    sectionedDate: Boolean = false,
 ) {
-    val updatedDate = remember(document.updatedAtMillis) {
-        document.updatedAtMillis.toShortDate()
+    val updatedDate = remember(document.updatedAtMillis, style, sectionedDate) {
+        when {
+            sectionedDate -> formatLibrarySectionedDate(document.updatedAtMillis)
+            style == LibraryCardStyle.Preview || style == LibraryCardStyle.PreviewList -> formatLibraryModifiedDate(document.updatedAtMillis)
+            else -> document.updatedAtMillis.toShortDate()
+        }
     }
     val actions = libraryCardSecondaryActions(
         showRename = showRename && onRename != null,
@@ -1299,9 +1322,13 @@ fun DocumentCard(
     }
     Surface(
         modifier = modifier.fillMaxWidth(),
-        color = MaterialTheme.colorScheme.surfaceContainer,
-        shape = MaterialTheme.shapes.extraLarge,
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+        color = if (style == LibraryCardStyle.Preview) Color.Transparent else MaterialTheme.colorScheme.surfaceContainer,
+        shape = when (style) {
+            LibraryCardStyle.PreviewList -> RoundedCornerShape(0.dp)
+            LibraryCardStyle.Preview -> RoundedCornerShape(LibraryPreviewPressShapeRadius)
+            else -> MaterialTheme.shapes.extraLarge
+        },
+        border = if (style == LibraryCardStyle.Preview || style == LibraryCardStyle.PreviewList) null else BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
         shadowElevation = 0.dp,
         tonalElevation = 0.dp,
     ) {
@@ -1315,8 +1342,8 @@ fun DocumentCard(
                 ),
         ) {
             val useGrid = when (style) {
-                LibraryCardStyle.Grid -> true
-                LibraryCardStyle.List -> false
+                LibraryCardStyle.Grid, LibraryCardStyle.Preview -> true
+                LibraryCardStyle.List, LibraryCardStyle.PreviewList -> false
                 LibraryCardStyle.Auto -> maxWidth < GridCardMaxWidth
             }
             val initials: @Composable () -> Unit = {
@@ -1331,7 +1358,18 @@ fun DocumentCard(
                     fontWeight = FontWeight.SemiBold,
                 )
             }
-            if (useGrid) {
+            if (style == LibraryCardStyle.Preview) {
+                LibraryDocumentPreview(
+                    document = document,
+                    meta = formatDocumentCardMeta(document.pageCount, updatedDate),
+                    overflowVisible = actions.isNotEmpty(),
+                    menuExpanded = menuExpanded,
+                    onOverflowClick = { menuExpanded = true },
+                    onDismissOverflow = { menuExpanded = false },
+                    overflowMenu = overflowMenu,
+                    placeholderIcon = initials,
+                )
+            } else if (useGrid) {
                 LibraryCoverCardFace(
                     title = document.title,
                     meta = formatDocumentCardMeta(document.pageCount, updatedDate),
@@ -1346,6 +1384,7 @@ fun DocumentCard(
                 )
             } else {
                 LibraryCoverListFace(
+                    compact = style == LibraryCardStyle.PreviewList,
                     title = document.title,
                     meta = formatDocumentCardMeta(document.pageCount, updatedDate),
                     thumbnailPath = document.coverThumbnailPath,
@@ -1370,6 +1409,54 @@ private fun Modifier.libraryCardGestures(
     onClick = onOpen,
     onLongClick = if (hasOverflowActions) onOpenOverflow else null,
 )
+
+@Composable
+private fun LibraryDocumentPreview(
+    document: ScanDocument,
+    meta: String,
+    overflowVisible: Boolean,
+    menuExpanded: Boolean,
+    onOverflowClick: () -> Unit,
+    onDismissOverflow: () -> Unit,
+    overflowMenu: @Composable () -> Unit,
+    placeholderIcon: @Composable () -> Unit,
+) {
+    // The padding keeps cover and text clear of the pressed highlight's edge.
+    Column(
+        modifier = Modifier.padding(LibraryPreviewCardInset),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+    ) {
+        val coverShape = RoundedCornerShape(12.dp)
+        CachedThumbnail(
+            thumbnailPath = document.coverThumbnailPath,
+            title = document.title,
+            contentRevision = document.updatedAtMillis,
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(libraryCardCoverAspectRatio())
+                .border(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.7f), coverShape),
+            shape = coverShape,
+            contentScale = ContentScale.Crop,
+            alignment = Alignment.TopCenter,
+            placeholderIcon = placeholderIcon,
+            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+        )
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(start = 2.dp),
+            verticalAlignment = Alignment.Top,
+        ) {
+            Column(modifier = Modifier.weight(1f).padding(top = 2.dp), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                Text(document.title, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold,
+                    maxLines = 2, overflow = TextOverflow.Ellipsis)
+                Text(meta, style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            }
+            if (overflowVisible) {
+                LibraryCardOverflowButton(menuExpanded, onOverflowClick, onDismissOverflow, menu = overflowMenu)
+            }
+        }
+    }
+}
 
 @Composable
 private fun LibraryCoverCardFace(
@@ -1431,6 +1518,7 @@ private fun LibraryCoverCardFace(
 
 @Composable
 private fun LibraryCoverListFace(
+    compact: Boolean = false,
     title: String,
     meta: String,
     thumbnailPath: String?,
@@ -1443,33 +1531,55 @@ private fun LibraryCoverListFace(
     placeholderIcon: @Composable () -> Unit,
 ) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(12.dp),
-        horizontalArrangement = Arrangement.spacedBy(14.dp),
+        modifier = if (compact) {
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 12.dp)
+        } else {
+            Modifier
+                .fillMaxWidth()
+                .padding(12.dp)
+        },
+        horizontalArrangement = Arrangement.spacedBy(if (compact) 16.dp else 14.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        LibraryPageCover(
-            thumbnailPath = thumbnailPath,
-            title = title,
-            contentRevision = contentRevision,
-            modifier = Modifier.width(72.dp),
-            placeholderIcon = placeholderIcon,
-        )
+        if (compact) {
+            CachedThumbnail(
+                thumbnailPath = thumbnailPath,
+                title = title,
+                contentRevision = contentRevision,
+                modifier = Modifier
+                    .size(width = 48.dp, height = 64.dp)
+                    .border(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.7f), RoundedCornerShape(8.dp)),
+                shape = RoundedCornerShape(8.dp),
+                contentScale = ContentScale.Crop,
+                alignment = Alignment.TopCenter,
+                placeholderIcon = placeholderIcon,
+                containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+            )
+        } else {
+            LibraryPageCover(
+                thumbnailPath = thumbnailPath,
+                title = title,
+                contentRevision = contentRevision,
+                modifier = Modifier.width(72.dp),
+                placeholderIcon = placeholderIcon,
+            )
+        }
         Column(
             modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
             Text(
                 text = title,
-                style = MaterialTheme.typography.titleMedium,
+                style = if (compact) MaterialTheme.typography.titleSmall else MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
             )
             Text(
                 text = meta,
-                style = MaterialTheme.typography.bodyMedium,
+                style = if (compact) MaterialTheme.typography.bodySmall else MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
@@ -1525,33 +1635,29 @@ private fun LibraryCardOverflowButton(
     menu: @Composable () -> Unit,
 ) {
     Box(modifier = modifier) {
-        IconButton(
-            onClick = onClick,
-            modifier = Modifier.size(if (overlayOnCover) 36.dp else 40.dp),
-        ) {
-            Surface(
-                modifier = Modifier.fillMaxSize(),
-                shape = MaterialTheme.shapes.medium,
-                color = if (overlayOnCover) {
-                    Color.Black.copy(alpha = 0.42f)
-                } else {
-                    Color.Transparent
-                },
-                shadowElevation = 0.dp,
-                tonalElevation = 0.dp,
+        if (overlayOnCover) {
+            IconButton(
+                onClick = onClick,
+                modifier = Modifier.size(36.dp),
             ) {
-                Box(contentAlignment = Alignment.Center) {
-                    Icon(
-                        imageVector = Icons.Filled.MoreVert,
-                        contentDescription = "More options",
-                        tint = if (overlayOnCover) {
-                            Color.White
-                        } else {
-                            MaterialTheme.colorScheme.onSurfaceVariant
-                        },
-                    )
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    shape = MaterialTheme.shapes.medium,
+                    color = Color.Black.copy(alpha = 0.42f),
+                    shadowElevation = 0.dp,
+                    tonalElevation = 0.dp,
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Icon(
+                            imageVector = Icons.Filled.MoreVert,
+                            contentDescription = "More options",
+                            tint = Color.White,
+                        )
+                    }
                 }
             }
+        } else {
+            LibraryIconButton(onClick, Icons.Filled.MoreVert, "More options")
         }
         menu()
     }

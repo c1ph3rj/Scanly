@@ -52,7 +52,7 @@ app/
 | `MainActivity.kt` | App shell |
 | `ScanlyApplication.kt` | Hilt application |
 | `navigation/ScanlyNavHost.kt` | Navigation |
-| `data/local/db/ScanlyDatabase.kt` | Room schema (v4) + migrations |
+| `data/local/db/ScanlyDatabase.kt` | Room schema (v5) + migrations |
 | `data/page/DefaultPageRepository.kt` | Capture finalize and page edits |
 | `feature/editor/` | Page editor, Filters/Adjust overlays, crop route |
 | `data/export/DefaultDocumentExportRepository.kt` | Export |

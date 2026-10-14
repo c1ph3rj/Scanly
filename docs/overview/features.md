@@ -1,8 +1,10 @@
 ﻿# Features
 
-Complete inventory of Scanly features as of **v1.0.16**.
+Complete inventory of Scanly features as of **v1.0.17**.
 
 ## Home dashboard
+
+- **Search bar** under the greeting opens library search (same field style as the Library)
 
 - Shows up to **8 recent documents** and **6 recent groups** as paper-shaped cards (same language as Library)
 - Quick actions: **Scan**, **Import**, **Folder**
@@ -51,31 +53,34 @@ Complete inventory of Scanly features as of **v1.0.16**.
 
 ## Tools hub
 
-Fourth bottom-nav tab with categorized utilities:
+Fourth bottom-nav tab, grouped into **Scan**, **PDF**, and **Utilities**:
 
-### Create
+- **Scan a document** — create a document and open the camera session
+- **Images to PDF** — gallery import (max 10 images) into a new document
+- **QR code** — opens straight into scanning; Create is a tab on the same screen
 
-- **Scan** — create a document and open the camera session
-- **Import** — gallery import (max 10 images) into a new document
+### QR code
 
-### QR Code
-
-- **Scan** — CameraX + ML Kit barcode scanning; copy or open http(s) results
-- **Generate** — encode text/URL with ZXing; live preview; save PNG to export folder or share
+- **Scan** — CameraX + ML Kit; torch; **From photo** decodes a gallery image. A found code shows a result card over the camera and is saved to history
+- **Typed results** — Link (full domain, http warning), UPI (payee, UPI ID, amount; hands off to a UPI app — Scanly never pays), Wi-Fi (one-tap join on Android 11+, copy password otherwise), Contact (save / call), Email, Phone, Text. Raw content is always available
+- **Create** — Link, Text, Wi-Fi, UPI, and Contact payloads; live preview; optional caption printed under the code; dark ink colours only; Save image (PNG, 1024 px) or Share
+- **History** — on-phone list of scanned and created codes with search, All / Scanned / Created filters, and Clear history
 
 ### PDF tools
 
-Operate on **device PDFs** (system document picker) or **Scanly library documents** (exported to a temporary PDF first). Every generated result can be previewed in Scanly's built-in reader before it is saved to the configured export destination or shared; an external PDF app is not required.
+Operate on **device PDFs** (system document picker) or **Scanly library documents** (exported to a temporary PDF first). Every tool follows the same steps:
+
+1. **Choose a file** — full-screen picker: Phone storage, then Scanly documents as page thumbnails with search and sort; empty scans are hidden
+2. **Options** — tool-specific settings with one primary action
+3. **Done** — first-page preview of the result (tap to open in the reader), editable file name, a summary of what was applied, **Save to phone** and **Share**. The original is never changed
 
 | Tool | Behavior |
 | --- | --- |
-| Reader | Full title, page n of m, page-by-page or continuous scroll, pinch-zoom, tap to hide chrome; password unlock when required |
-| Merge | Numbered file list in merge order; combine two or more PDFs into one |
-| Compress | High / Balanced / Smallest quality presets via page re-encode |
-| Password | First-page preview; compact Protect / Remove control; export-focused completion with Preview / Save / Share |
-| Watermark | Export-accurate first-page proof from the production stamping engine; page-relative font size; dense tiled security field or one large single stamp; Small/Medium/Large scale; first-page or all-page coverage; diagonal/horizontal orientation; opacity control |
-
-Selected PDFs in merge/compress/password/watermark show as paper-shaped identity (cover, title, compact metadata) with sentence-case options.
+| Reader | Real file name, one page counter, paged or continuous, pinch-zoom, tap to hide chrome, **Pages** grid to jump, Share; password unlock when required |
+| Merge | Multi-select in tap order, then reorder (move up / down), see page totals, and name the output before merging |
+| Compress | High / Balanced / Smallest quality via page re-encode; result shows the saving and before/after sizes, with "Try another quality" |
+| Password | Unlocked files open **Add password** (strength meter, live match check, optional **Restrict editing**); locked files open **Remove password**. AES-256 |
+| Watermark | Live preview from the production engine pinned above the controls; presets (CONFIDENTIAL, DRAFT, COPY, For KYC use only) and optional date; Tiled or Single; diagonal or horizontal; size and opacity sliders; Grey / Red / Blue / Teal; all pages or first page. Stamps follow page rotation, single stamps always fit the page, and tiles run in even rows along the stamp angle |
 
 ## Document detail
 
@@ -106,11 +111,14 @@ Selected PDFs in merge/compress/password/watermark show as paper-shaped identity
 - **Live result preview** — shows the perspective-cropped page with the current filter and adjustments
 - **Crop screen** (`crop/page/{pageId}`) — **AI Detect**, **Left** / **Right** rotation, four-point handles, **Reset**, apply on Done
 - **Filter picker** (full-screen) — large live preview of each preset on the cropped page; optional apply-to-all-pages
-- **Filter engine** — Color, Shadow Reduce, and Magic stay recognizably the capture; Clean / B&W / Receipt stay scan-like; strength follows the page so looks are not overblown or underdone; picker chips match the saved JPEG
-- **Filter presets** (10 modes):
-  - Original, Auto, Enhanced Color, Grayscale, Black & White
-  - Clean, Shadow Reduction, Magic Color, Receipt, Soft Black & White
-- **Filter adjust** (full-screen) — brightness, contrast, saturation, sharpness; hold **Compare** for filter-only; scrollbar beside sliders
+- **Filter engine** — a paper-aware lighting model removes uneven shading while keeping photos, logos and colour ink; colour looks stay recognizably the capture, scan looks (Grayscale, B&W, Faded Text) read as clean paper; the same look appears at chip, preview and saved-JPEG sizes
+- **Filter presets** (10):
+  - Original, Auto (picks Screen, Magic Color, Natural, Faded Text or Grayscale for the page)
+  - Magic Color, Natural, Grayscale, B&W, Whiteboard, Faded Text
+  - Vivid — punchy color for posters, covers, photos
+  - Screen — photos of monitors, laptops and phones: removes moiré, glare haze and screen color cast; keeps dark mode dark
+  - Pages saved with the earlier presets (Enhanced Color, Shadow Reduction, Clean, Soft B&W, Receipt) are remapped to the closest new preset when the app upgrades
+- **Filter adjust** (full-screen) — **Intensity** (0–150 %, default 100 %) first, then brightness, contrast, saturation, sharpness; hold **Compare** for filter-only; scrollbar beside sliders
 - **Retake** — opens camera session in replacement mode
 - **Delete page** from the editor
 - Non-destructive: edits reprocess from the raw capture; raw files are never overwritten

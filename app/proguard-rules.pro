@@ -30,6 +30,9 @@
 -dontwarn com.gemalto.jp2.JP2Decoder
 -dontwarn com.gemalto.jp2.JP2Encoder
 
+# Play Review KTX references an annotation absent from its runtime dependencies.
+-dontwarn com.google.android.gms.common.annotation.NoNullnessRewrite
+
 # The QR flow creates ML Kit's barcode client and CameraX's provider from the
 # release APK. Keep their reflective/native entry points available after R8.
 -keep class com.google.mlkit.** { *; }

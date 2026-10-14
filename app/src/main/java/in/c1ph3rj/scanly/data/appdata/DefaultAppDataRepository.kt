@@ -2,14 +2,15 @@ package `in`.c1ph3rj.scanly.data.appdata
 
 import android.content.Context
 import androidx.room.withTransaction
+import androidx.work.WorkManager
 import dagger.hilt.android.qualifiers.ApplicationContext
 import `in`.c1ph3rj.scanly.core.common.ScanlyDispatchers
 import `in`.c1ph3rj.scanly.core.common.ScanlyError
 import `in`.c1ph3rj.scanly.core.common.ScanlyResult
 import `in`.c1ph3rj.scanly.core.ui.ThumbnailCache
+import `in`.c1ph3rj.scanly.data.common.LibraryOperationCoordinator
 import `in`.c1ph3rj.scanly.data.local.db.ScanlyDatabase
 import `in`.c1ph3rj.scanly.data.storage.DocumentStorageManager
-import `in`.c1ph3rj.scanly.data.archive.LibraryOperationCoordinator
 import `in`.c1ph3rj.scanly.domain.model.AppStorageUsage
 import `in`.c1ph3rj.scanly.domain.repository.AppDataRepository
 import kotlinx.coroutines.withContext
@@ -34,8 +35,6 @@ class DefaultAppDataRepository @Inject constructor(
                     documentsBytes = directorySize(documentsDirectory()),
                     exportCacheBytes = directorySize(exportCacheDirectory()),
                     databaseBytes = databaseFileSize(),
-                    archiveWorkingBytes = directorySize(archiveWorkingDirectory()) +
-                        directorySize(archiveJournalDirectory()),
                 )
             }.fold(
                 onSuccess = { ScanlyResult.Success(it) },
@@ -53,27 +52,71 @@ class DefaultAppDataRepository @Inject constructor(
     override suspend fun clearAllLibraryData(): ScanlyResult<Unit> =
         withContext(dispatchers.io) {
             operationCoordinator.withMutation {
+                runCatching {
+                    database.withTransaction {
+                        database.clearAllTables()
+                    }
+                    documentStorageManager.clearAllDocumentStorage()
+                    exportCacheDirectory().deleteRecursively()
+                    legacyArchiveWorkingDirectory().deleteRecursively()
+                    legacyArchiveJournalDirectory().deleteRecursively()
+                    thumbnailCache.clearAll()
+                }.fold(
+                    onSuccess = { ScanlyResult.Success(Unit) },
+                    onFailure = { throwable ->
+                        ScanlyResult.Failure(
+                            ScanlyError(
+                                message = throwable.message ?: "Could not clear app data.",
+                                cause = throwable,
+                            ),
+                        )
+                    },
+                )
+            }
+        }
+
+    override suspend fun clearExportCache(): ScanlyResult<Unit> =
+        withContext(dispatchers.io) {
             runCatching {
-                database.withTransaction {
-                    database.clearAllTables()
+                exportCacheDirectory().listFiles().orEmpty().forEach { entry ->
+                    entry.deleteRecursively()
                 }
-                documentStorageManager.clearAllDocumentStorage()
-                exportCacheDirectory().deleteRecursively()
-                archiveWorkingDirectory().deleteRecursively()
-                archiveJournalDirectory().deleteRecursively()
-                thumbnailCache.clearAll()
             }.fold(
                 onSuccess = { ScanlyResult.Success(Unit) },
                 onFailure = { throwable ->
                     ScanlyResult.Failure(
                         ScanlyError(
-                            message = throwable.message ?: "Could not clear app data.",
+                            message = throwable.message ?: "Could not clear temporary exports.",
                             cause = throwable,
                         ),
                     )
                 },
             )
+        }
+
+    override suspend fun deleteLegacyArchiveLeftovers(): ScanlyResult<Unit> =
+        withContext(dispatchers.io) {
+            // Cancel the unique work the removed library backup worker used, so an orphaned run
+            // from an older app version cannot keep executing after upgrade.
+            runCatching {
+                WorkManager.getInstance(context)
+                    .cancelUniqueWork(LEGACY_ARCHIVE_UNIQUE_WORK_NAME)
+                    .result.get()
             }
+            runCatching {
+                legacyArchiveWorkingDirectory().deleteRecursively()
+                legacyArchiveJournalDirectory().deleteRecursively()
+            }.fold(
+                onSuccess = { ScanlyResult.Success(Unit) },
+                onFailure = { throwable ->
+                    ScanlyResult.Failure(
+                        ScanlyError(
+                            message = throwable.message ?: "Could not remove old backup files.",
+                            cause = throwable,
+                        ),
+                    )
+                },
+            )
         }
 
     private fun documentsDirectory(): File =
@@ -82,11 +125,11 @@ class DefaultAppDataRepository @Inject constructor(
     private fun exportCacheDirectory(): File =
         File(context.cacheDir, EXPORT_CACHE_DIRECTORY)
 
-    private fun archiveWorkingDirectory(): File =
-        File(context.cacheDir, ARCHIVE_WORK_DIRECTORY)
+    private fun legacyArchiveWorkingDirectory(): File =
+        File(context.cacheDir, LEGACY_ARCHIVE_WORK_DIRECTORY)
 
-    private fun archiveJournalDirectory(): File =
-        File(context.filesDir, ARCHIVE_JOURNAL_DIRECTORY)
+    private fun legacyArchiveJournalDirectory(): File =
+        File(context.filesDir, LEGACY_ARCHIVE_JOURNAL_DIRECTORY)
 
     private fun databaseFileSize(): Long {
         val databaseDirectory = context.getDatabasePath(DATABASE_NAME).parentFile ?: return 0L
@@ -108,9 +151,12 @@ class DefaultAppDataRepository @Inject constructor(
     private companion object {
         const val DOCUMENTS_DIRECTORY = "documents"
         const val EXPORT_CACHE_DIRECTORY = "exports"
-        const val ARCHIVE_WORK_DIRECTORY = "library-archive"
-        const val ARCHIVE_JOURNAL_DIRECTORY = "library-archive-journal"
         const val DATABASE_NAME = "scanly.db"
         val DATABASE_FILE_SUFFIXES = listOf("", "-wal", "-shm")
+
+        // Identifiers of the removed library backup/restore feature, kept only for upgrade cleanup.
+        const val LEGACY_ARCHIVE_UNIQUE_WORK_NAME = "scanly-library-archive"
+        const val LEGACY_ARCHIVE_WORK_DIRECTORY = "library-archive"
+        const val LEGACY_ARCHIVE_JOURNAL_DIRECTORY = "library-archive-journal"
     }
 }

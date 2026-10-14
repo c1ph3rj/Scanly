@@ -132,7 +132,7 @@ class DocumentLibraryFlowTest {
             allDocuments = allDocuments,
         )
         assertEquals(setOf(travelId, workId), allTab.visibleGroups.map { it.id }.toSet())
-        assertEquals(listOf(receiptId), allTab.visibleDocuments.map { it.id })
+        assertEquals(setOf(ticketId, invoiceId, receiptId), allTab.visibleDocuments.map { it.id }.toSet())
 
         val search = allTab.copy(searchQuery = " travel ")
         assertEquals(listOf(travelId), search.visibleGroups.map { it.id })

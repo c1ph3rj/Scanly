@@ -3,14 +3,11 @@ package `in`.c1ph3rj.scanly.feature.settings
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import `in`.c1ph3rj.scanly.core.common.StorageFormatter
 import `in`.c1ph3rj.scanly.domain.model.AppStorageUsage
 import `in`.c1ph3rj.scanly.domain.model.SettingsContent
 import `in`.c1ph3rj.scanly.domain.model.ThemeMode
 import `in`.c1ph3rj.scanly.domain.model.ExportDestination
-import `in`.c1ph3rj.scanly.domain.model.BackupEstimate
-import `in`.c1ph3rj.scanly.domain.model.ArchiveWorkState
-import `in`.c1ph3rj.scanly.domain.model.ArchiveWorkPhase
-import `in`.c1ph3rj.scanly.domain.model.RestoreMode
 import `in`.c1ph3rj.scanly.domain.model.DocumentCornerModel
 import `in`.c1ph3rj.scanly.core.ml.AutomaticDocumentModelSelector
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveLiveDetectionModelUseCase
@@ -22,6 +19,7 @@ import `in`.c1ph3rj.scanly.domain.usecase.SetAutomaticModelSelectionUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveDocumentGateEnabledUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.SetDocumentGateEnabledUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ClearAllAppDataUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.ClearExportCacheUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.DeleteEmptyDocumentsUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.DeleteEmptyGroupsUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.GetAppStorageUsageUseCase
@@ -32,12 +30,10 @@ import `in`.c1ph3rj.scanly.domain.usecase.SetThemeModeUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.SetPureBlackEnabledUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveExportDestinationUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.SetExportDestinationUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.MarkAppRatedUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ResetExportDestinationUseCase
-import `in`.c1ph3rj.scanly.domain.usecase.EstimateLibraryBackupUseCase
-import `in`.c1ph3rj.scanly.domain.usecase.StartLibraryBackupUseCase
-import `in`.c1ph3rj.scanly.domain.usecase.StartLibraryRestoreUseCase
-import `in`.c1ph3rj.scanly.domain.usecase.ObserveLibraryArchiveWorkUseCase
-import `in`.c1ph3rj.scanly.domain.usecase.CancelLibraryArchiveWorkUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.DismissSettingsRatingCardUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.ObserveRatingPromptStateUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -56,12 +52,10 @@ data class SettingsUiState(
     val storageUsage: AppStorageUsage? = null,
     val isLoadingStorage: Boolean = true,
     val isClearingData: Boolean = false,
+    val isClearingExportCache: Boolean = false,
     val isCleaningEmptyDocuments: Boolean = false,
     val isCleaningEmptyFolders: Boolean = false,
     val exportDestination: ExportDestination = ExportDestination.DefaultDownloadsScanly,
-    val backupEstimate: BackupEstimate? = null,
-    val isLoadingBackupEstimate: Boolean = true,
-    val archiveWork: ArchiveWorkState = ArchiveWorkState(),
     val liveDetectionModel: DocumentCornerModel = DocumentCornerModel.ACCURATE,
     val postProcessingModel: DocumentCornerModel = DocumentCornerModel.ACCURATE,
     val automaticModelSelectionEnabled: Boolean = true,
@@ -69,7 +63,14 @@ data class SettingsUiState(
     val isCalibratingModels: Boolean = false,
     val automaticLiveModel: DocumentCornerModel? = null,
     val automaticPostProcessingModel: DocumentCornerModel? = null,
-)
+    val hasRated: Boolean = false,
+    val settingsCardDismissed: Boolean = false,
+    val ratingPromptStateLoaded: Boolean = false,
+) {
+    /** The friendly rating card under the Settings header shows until rated or dismissed. */
+    val showRatingCard: Boolean
+        get() = ratingPromptStateLoaded && !hasRated && !settingsCardDismissed
+}
 
 sealed interface SettingsEvent {
     data class ShowMessage(val message: String) : SettingsEvent
@@ -84,16 +85,12 @@ class SettingsViewModel @Inject constructor(
     private val loadSettingsContentUseCase: LoadSettingsContentUseCase,
     private val getAppStorageUsageUseCase: GetAppStorageUsageUseCase,
     private val clearAllAppDataUseCase: ClearAllAppDataUseCase,
+    private val clearExportCacheUseCase: ClearExportCacheUseCase,
     private val deleteEmptyDocumentsUseCase: DeleteEmptyDocumentsUseCase,
     private val deleteEmptyGroupsUseCase: DeleteEmptyGroupsUseCase,
     observeExportDestinationUseCase: ObserveExportDestinationUseCase,
     private val setExportDestinationUseCase: SetExportDestinationUseCase,
     private val resetExportDestinationUseCase: ResetExportDestinationUseCase,
-    private val estimateLibraryBackupUseCase: EstimateLibraryBackupUseCase,
-    private val startLibraryBackupUseCase: StartLibraryBackupUseCase,
-    private val startLibraryRestoreUseCase: StartLibraryRestoreUseCase,
-    observeLibraryArchiveWorkUseCase: ObserveLibraryArchiveWorkUseCase,
-    private val cancelLibraryArchiveWorkUseCase: CancelLibraryArchiveWorkUseCase,
     observeLiveDetectionModelUseCase: ObserveLiveDetectionModelUseCase,
     private val setLiveDetectionModelUseCase: SetLiveDetectionModelUseCase,
     observePostProcessingModelUseCase: ObservePostProcessingModelUseCase,
@@ -103,6 +100,9 @@ class SettingsViewModel @Inject constructor(
     observeDocumentGateEnabledUseCase: ObserveDocumentGateEnabledUseCase,
     private val setDocumentGateEnabledUseCase: SetDocumentGateEnabledUseCase,
     private val automaticDocumentModelSelector: AutomaticDocumentModelSelector,
+    private val markAppRatedUseCase: MarkAppRatedUseCase,
+    observeRatingPromptStateUseCase: ObserveRatingPromptStateUseCase,
+    private val dismissSettingsRatingCardUseCase: DismissSettingsRatingCardUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SettingsUiState())
@@ -166,31 +166,23 @@ class SettingsViewModel @Inject constructor(
             }
         }
         viewModelScope.launch {
-            observeExportDestinationUseCase().collectLatest { destination ->
-                _uiState.update { current -> current.copy(exportDestination = destination) }
-                loadBackupEstimate()
+            observeRatingPromptStateUseCase().collectLatest { state ->
+                _uiState.update { current ->
+                    current.copy(
+                        hasRated = state.hasRated,
+                        settingsCardDismissed = state.settingsCardDismissed,
+                        ratingPromptStateLoaded = true,
+                    )
+                }
             }
         }
         viewModelScope.launch {
-            var previousPhase = ArchiveWorkPhase.IDLE
-            observeLibraryArchiveWorkUseCase().collectLatest { work ->
-                _uiState.update { current -> current.copy(archiveWork = work) }
-                if (work.phase != previousPhase && work.phase in setOf(
-                        ArchiveWorkPhase.SUCCEEDED,
-                        ArchiveWorkPhase.FAILED,
-                        ArchiveWorkPhase.CANCELLED,
-                    )
-                ) {
-                    work.message?.let { _events.emit(SettingsEvent.ShowMessage(it)) }
-                    loadStorageUsage()
-                    loadBackupEstimate()
-                }
-                previousPhase = work.phase
+            observeExportDestinationUseCase().collectLatest { destination ->
+                _uiState.update { current -> current.copy(exportDestination = destination) }
             }
         }
         refresh()
         loadStorageUsage()
-        loadBackupEstimate()
     }
 
     fun loadStorageUsage() {
@@ -226,7 +218,6 @@ class SettingsViewModel @Inject constructor(
                     _uiState.update { current -> current.copy(isClearingData = false) }
                     _events.emit(SettingsEvent.ShowMessage("All data cleared."))
                     loadStorageUsage()
-                    loadBackupEstimate()
                 }
 
                 is `in`.c1ph3rj.scanly.core.common.ScanlyResult.Failure -> {
@@ -237,8 +228,30 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
+    fun clearExportCache() {
+        if (_uiState.value.isClearingExportCache) return
+        val freedBytes = _uiState.value.storageUsage?.exportCacheBytes ?: 0L
+        viewModelScope.launch {
+            _uiState.update { it.copy(isClearingExportCache = true) }
+            when (val result = clearExportCacheUseCase()) {
+                is `in`.c1ph3rj.scanly.core.common.ScanlyResult.Success -> {
+                    _uiState.update { it.copy(isClearingExportCache = false) }
+                    _events.emit(
+                        SettingsEvent.ShowMessage("Freed ${StorageFormatter.formatBytes(freedBytes)}"),
+                    )
+                    loadStorageUsage()
+                }
+
+                is `in`.c1ph3rj.scanly.core.common.ScanlyResult.Failure -> {
+                    _uiState.update { it.copy(isClearingExportCache = false) }
+                    _events.emit(SettingsEvent.ShowMessage(result.error.message))
+                }
+            }
+        }
+    }
+
     fun deleteEmptyDocuments() {
-        if (_uiState.value.isCleaningEmptyDocuments || _uiState.value.archiveWork.isRunning) return
+        if (_uiState.value.isCleaningEmptyDocuments) return
         viewModelScope.launch {
             _uiState.update { it.copy(isCleaningEmptyDocuments = true) }
             when (val result = deleteEmptyDocumentsUseCase()) {
@@ -255,7 +268,6 @@ class SettingsViewModel @Inject constructor(
                         ),
                     )
                     loadStorageUsage()
-                    loadBackupEstimate()
                 }
 
                 is `in`.c1ph3rj.scanly.core.common.ScanlyResult.Failure -> {
@@ -267,7 +279,7 @@ class SettingsViewModel @Inject constructor(
     }
 
     fun deleteEmptyFolders() {
-        if (_uiState.value.isCleaningEmptyFolders || _uiState.value.archiveWork.isRunning) return
+        if (_uiState.value.isCleaningEmptyFolders) return
         viewModelScope.launch {
             _uiState.update { it.copy(isCleaningEmptyFolders = true) }
             when (val result = deleteEmptyGroupsUseCase()) {
@@ -284,7 +296,6 @@ class SettingsViewModel @Inject constructor(
                         ),
                     )
                     loadStorageUsage()
-                    loadBackupEstimate()
                 }
 
                 is `in`.c1ph3rj.scanly.core.common.ScanlyResult.Failure -> {
@@ -384,6 +395,18 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Records that the user chose to rate Scanly from Settings. The store flow itself is launched
+     * by the screen, which owns the Activity.
+     */
+    fun onRateApp() {
+        viewModelScope.launch { markAppRatedUseCase() }
+    }
+
+    fun dismissRatingCard() {
+        viewModelScope.launch { dismissSettingsRatingCardUseCase() }
+    }
+
     fun resetExportDestination() {
         viewModelScope.launch {
             when (val result = resetExportDestinationUseCase()) {
@@ -396,51 +419,4 @@ class SettingsViewModel @Inject constructor(
             }
         }
     }
-
-    fun loadBackupEstimate() {
-        viewModelScope.launch {
-            _uiState.update { it.copy(isLoadingBackupEstimate = true) }
-            when (val result = estimateLibraryBackupUseCase()) {
-                is `in`.c1ph3rj.scanly.core.common.ScanlyResult.Success -> {
-                    _uiState.update {
-                        it.copy(backupEstimate = result.value, isLoadingBackupEstimate = false)
-                    }
-                }
-                is `in`.c1ph3rj.scanly.core.common.ScanlyResult.Failure -> {
-                    _uiState.update { it.copy(backupEstimate = null, isLoadingBackupEstimate = false) }
-                    _events.emit(SettingsEvent.ShowMessage(result.error.message))
-                }
-            }
-        }
-    }
-
-    fun startBackup() {
-        if (_uiState.value.archiveWork.isRunning || _uiState.value.backupEstimate?.canBackup != true) return
-        viewModelScope.launch {
-            when (val result = startLibraryBackupUseCase()) {
-                is `in`.c1ph3rj.scanly.core.common.ScanlyResult.Success -> Unit
-                is `in`.c1ph3rj.scanly.core.common.ScanlyResult.Failure -> {
-                    _events.emit(SettingsEvent.ShowMessage(result.error.message))
-                    loadBackupEstimate()
-                }
-            }
-        }
-    }
-
-    fun startRestore(uriString: String, mode: RestoreMode) {
-        if (_uiState.value.archiveWork.isRunning) return
-        viewModelScope.launch {
-            when (val result = startLibraryRestoreUseCase(uriString, mode)) {
-                is `in`.c1ph3rj.scanly.core.common.ScanlyResult.Success -> Unit
-                is `in`.c1ph3rj.scanly.core.common.ScanlyResult.Failure -> {
-                    _events.emit(SettingsEvent.ShowMessage(result.error.message))
-                }
-            }
-        }
-    }
-
-    fun cancelArchiveWork() {
-        viewModelScope.launch { cancelLibraryArchiveWorkUseCase() }
-    }
-
 }

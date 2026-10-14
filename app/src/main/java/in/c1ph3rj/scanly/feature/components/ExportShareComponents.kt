@@ -162,10 +162,10 @@ fun PdfOptionsSheet(
         sheetState = sheetState,
     )
 
-    ModalBottomSheet(
+    ScanlyModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
-        containerColor = MaterialTheme.colorScheme.surface,
+        containerColor = { MaterialTheme.colorScheme.surface },
         sheetGesturesEnabled = false,
     ) {
         Box(

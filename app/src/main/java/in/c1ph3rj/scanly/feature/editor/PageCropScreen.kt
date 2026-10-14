@@ -1,5 +1,6 @@
 package `in`.c1ph3rj.scanly.feature.editor
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
@@ -123,6 +124,9 @@ fun PageCropScreen(
     onDetectDocument: () -> Unit,
     onApply: () -> Unit,
 ) {
+    BackHandler(enabled = uiState.isSaving) {
+        // Keep the route alive until the edited page is committed.
+    }
     val actionsEnabled = !uiState.isSaving && !uiState.isDetecting
     val statusLabel = when {
         uiState.isDetecting -> "Detecting"
@@ -146,6 +150,7 @@ fun PageCropScreen(
             CropTopBar(
                 statusLabel = statusLabel,
                 onNavigateUp = onNavigateUp,
+                backEnabled = !uiState.isSaving,
                 onApply = onApply,
                 applyEnabled = actionsEnabled,
                 contentMaxWidth = chromeMaxWidth,
@@ -343,6 +348,7 @@ private fun DetectingOverlay() {
 private fun CropTopBar(
     statusLabel: String,
     onNavigateUp: () -> Unit,
+    backEnabled: Boolean,
     onApply: () -> Unit,
     applyEnabled: Boolean,
     contentMaxWidth: Dp,
@@ -368,6 +374,7 @@ private fun CropTopBar(
                 icon = Icons.AutoMirrored.Filled.ArrowBack,
                 contentDescription = "Back",
                 onClick = onNavigateUp,
+                enabled = backEnabled,
                 containerColor = colorScheme.surfaceContainerHighest,
                 contentColor = colorScheme.onSurface,
             )
