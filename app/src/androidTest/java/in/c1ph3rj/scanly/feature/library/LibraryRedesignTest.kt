@@ -1,5 +1,8 @@
 package `in`.c1ph3rj.scanly.feature.library
 
+import `in`.c1ph3rj.scanly.domain.model.SearchScope
+import `in`.c1ph3rj.scanly.domain.search.LibrarySearchRanker
+import `in`.c1ph3rj.scanly.domain.search.SearchQuery
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
@@ -158,16 +161,31 @@ class LibraryRedesignTest {
         composeRule.setContent {
             var state by remember { mutableStateOf(fixture) }
             var search by remember { mutableStateOf(false) }
-            var searchState by remember { mutableStateOf(fixture) }
+            var searchQuery by remember { mutableStateOf("") }
             ScanlyTheme(darkTheme = dark, pureBlack = pureBlack) {
                 if (search) {
                     LibrarySearchScreen(
-                        uiState = searchState,
+                        uiState = LibrarySearchUiState(
+                            query = searchQuery,
+                            results = LibrarySearchRanker.rank(
+                                query = SearchQuery.parse(searchQuery),
+                                documents = fixture.allDocuments,
+                                groups = fixture.groups,
+                                documentKinds = emptyMap(),
+                                textHits = emptyList(),
+                                scope = SearchScope.EVERYWHERE,
+                            ),
+                            isLoading = false,
+                            hasLibrary = true,
+                        ),
                         onBack = { search = false },
                         onOpenDocument = { openedDocument = it },
                         onOpenGroup = {},
-                        onQueryChange = { searchState = searchState.copy(searchQuery = it) },
-                        onClear = { searchState = searchState.copy(searchQuery = "") },
+                        onOpenPageText = { _, _, _ -> },
+                        onQueryChange = { searchQuery = it },
+                        onClear = { searchQuery = "" },
+                        onScopeChange = {},
+                        onKindChange = {},
                     )
                 } else {
                     LibraryScreen(

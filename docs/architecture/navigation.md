@@ -65,6 +65,13 @@ These top-level routes still exist but show `FeaturePlaceholderScreen` — they 
 | `tools/pdf/password` | `ToolsPdfPasswordDestination` | PDF password protect/remove |
 | `tools/pdf/watermark` | `ToolsPdfWatermarkDestination` | PDF text watermark |
 
+### Back behavior
+
+- When opened from Tools, Back from a PDF reader returns to the file picker; Back from that picker exits to Tools. A PDF preview opened from a PDF tool returns to that tool's result screen. **Choose another** opens a temporary picker, where Back returns to the current reader.
+- In PDF compression, Back from options returns to the file picker; Back from that picker exits to Tools. **Change** opens a temporary picker, where Back returns to options.
+- In watermarking, Back from the editor returns to the picker; **Change** opens a temporary picker, where Back returns to the current editor.
+- Android Back closes the editor's full-screen filter and adjustment modes before leaving the editor. It is blocked while a page is being captured, cropped/saved, filter-saved, or processed by a PDF tool.
+
 ### Scan session arguments
 
 - `documentId` (required) — target document

@@ -14,11 +14,7 @@ sealed interface ExportDestination {
             is CustomTree -> displayName
         }
 
-    val backupLabel: String
-        get() = "${exportLabel.trimEnd('/')}/backup"
-
     companion object {
         const val DEFAULT_EXPORT_LABEL = "Downloads/Scanly"
-        const val DEFAULT_BACKUP_LABEL = "Downloads/Scanly/backup"
     }
 }

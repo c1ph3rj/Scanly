@@ -6,6 +6,7 @@ import `in`.c1ph3rj.scanly.core.common.ScanlyResult
 import `in`.c1ph3rj.scanly.domain.model.PdfPasswordMode
 import `in`.c1ph3rj.scanly.domain.model.PdfToolSource
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveDocumentsUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.RecordPositiveMomentUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.SaveExportArtifactUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.pdftools.InspectPdfUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.pdftools.RemovePdfPasswordUseCase
@@ -36,7 +37,8 @@ class PdfPasswordViewModel @Inject constructor(
     private val inspectPdfUseCase: InspectPdfUseCase,
     saveExportArtifactUseCase: SaveExportArtifactUseCase,
     renderPdfPageUseCase: RenderPdfPageUseCase,
-) : BasePdfToolViewModel(observeDocumentsUseCase, saveExportArtifactUseCase, renderPdfPageUseCase) {
+    recordPositiveMomentUseCase: RecordPositiveMomentUseCase,
+) : BasePdfToolViewModel(observeDocumentsUseCase, saveExportArtifactUseCase, renderPdfPageUseCase, recordPositiveMomentUseCase) {
     private val _restrictEditing = MutableStateFlow(false)
 
     /** "Restrict editing" switch for the Add password flow. */

@@ -98,6 +98,7 @@ fun PdfCompressRoute(
     val context = LocalContext.current
     // rememberSaveable: rotation must keep the picker open after "Change" and closed after a pick.
     var showPicker by rememberSaveable { mutableStateOf(true) }
+    var returnToOptionsOnPickerBack by rememberSaveable { mutableStateOf(false) }
     val step = when {
         uiState.result != null -> CompressStep.Done
         uiState.isProcessing -> CompressStep.Working
@@ -106,6 +107,7 @@ fun PdfCompressRoute(
     }
 
     val devicePicker = rememberSinglePdfPicker { uri ->
+        returnToOptionsOnPickerBack = false
         showPicker = false
         viewModel.onSourcesChosen(
             listOf(PdfToolSource.DeviceUri(uri.toString(), uriDisplayName(context, uri))),
@@ -118,10 +120,19 @@ fun PdfCompressRoute(
         }
     }
 
-    BackHandler(enabled = step == CompressStep.Pick && uiState.sources.isNotEmpty()) {
-        showPicker = false
+    val onPickerBack = {
+        if (shouldReturnFromPdfPickerToPreviousStep(uiState.sources.isNotEmpty(), returnToOptionsOnPickerBack)) {
+            returnToOptionsOnPickerBack = false
+            showPicker = false
+        } else {
+            onNavigateUp()
+        }
     }
-    BackHandler(enabled = step == CompressStep.Options) { showPicker = true }
+    BackHandler(enabled = step == CompressStep.Pick && uiState.sources.isNotEmpty(), onBack = onPickerBack)
+    BackHandler(enabled = step == CompressStep.Options) {
+        returnToOptionsOnPickerBack = false
+        showPicker = true
+    }
     BackHandler(enabled = step == CompressStep.Done) { viewModel.clearResult() }
     // A compression run cannot be cancelled, so back does nothing until it finishes.
     BackHandler(enabled = step == CompressStep.Working) { }
@@ -139,15 +150,10 @@ fun PdfCompressRoute(
                     subtitle = "Shrink a PDF for email or upload limits.",
                     stepText = "Step 1 of 3 · Choose a file",
                     documents = uiState.libraryDocuments,
-                    onBack = {
-                        if (uiState.sources.isNotEmpty()) {
-                            showPicker = false
-                        } else {
-                            onNavigateUp()
-                        }
-                    },
+                    onBack = onPickerBack,
                     onPickDevice = { devicePicker.launch(arrayOf("application/pdf")) },
                     onPickLibrary = { document ->
+                        returnToOptionsOnPickerBack = false
                         showPicker = false
                         viewModel.onSourcesChosen(
                             listOf(PdfToolSource.LibraryDocument(document.id, document.title)),
@@ -157,7 +163,10 @@ fun PdfCompressRoute(
                 )
                 CompressStep.Options -> CompressOptionsStep(
                     uiState = uiState,
-                    onChange = { showPicker = true },
+                    onChange = {
+                        returnToOptionsOnPickerBack = true
+                        showPicker = true
+                    },
                     onQualitySelected = viewModel::setQuality,
                     onPasswordChange = viewModel::setCurrentPassword,
                     onUnlock = viewModel::unlockOrRefresh,

@@ -6,6 +6,37 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Added
+
+- **Search inside your scans** — Scanly now reads the text on every page on this device (ML Kit Text Recognition v2, bundled model — nothing is uploaded) and library search finds documents by any word printed on their pages, not just by name. Name matches appear instantly as you type; page matches follow a moment later with highlighted excerpts and a "Page N" for each hit, and documents whose pages contain the words move above name-only matches.
+- **Smarter search** — typed words match as prefixes ("lea" finds "lease"), case and accents are ignored, "quoted phrases" match exactly, names tolerate one typo, and when nothing matches Scanly suggests a correction built from words that really occur in your pages. Filter by Everywhere / Names / Text in pages, and by document type.
+- **Document types** — invoices, receipts, contracts, statements, letters, certificates, ID documents, forms and résumés are recognised on-device from their text and shown in search results.
+- **Extracted text** — a new screen (document menu → Extract text, the page review dock, or tapping a search excerpt) with a clean **Text** view for reading and selecting, an **On page** view that outlines text regions on the scan so you can copy just one part, swipeable pages, Copy page / Share / Edit, and "Copy all pages" / "Share all pages". Corrections you make are kept and used for search.
+- **Add page tile** — every document's page grid ends with a dashed "Add page" slot that opens Scan / Import.
+- **Search start page** — before you type, search shows your recent searches, one-tap **Browse by type** (e.g. all contracts) and short search tips.
+- **Rate Scanly** — a small, dismissible "Enjoying Scanly?" card under the Settings header with five tappable stars (any star opens the same Google Play rating), a permanent Rate Scanly row under More, plus an occasional, easily dismissed nudge on Home shown only after you have just finished something (an export, share or PDF tool) and never more than once every 30 days.
+
+### Changed
+
+- **Folder previews** — Library and Home start with **New folder**, followed by up to three recent folders and a solid **View all** tile with a grid icon and arrow when more than three folders exist. The **See all** header link also opens the full folder list.
+- **Pure black sheets** — bottom sheets (Add a document, Add page, Export & share, Move to folder…) now sit on a visibly raised dark grey in the pure-black theme instead of blending into the black screen.
+- **Save location** — one clear row showing where exports go, with Change inline and Use default folder when a custom folder is set.
+- **Storage** (formerly Storage & backup) — redesigned around what uses space, with one-tap clearing of temporary exports, the save location, tidy-up actions and a single Clear all data action.
+- Text is indexed in the background as you scan, import, retake or edit pages; the search screen shows when some pages are still being read.
+
+### Removed
+
+- **Library backup & restore** (`.scanly` files), together with its foreground service and notification permission. Leftover backup workspace files are cleaned up automatically on upgrade.
+
+### Technical
+
+- Room schema **6** adds `page_texts` and its FTS4 index (`MIGRATION_5_6`); existing pages are read in the background after upgrade.
+
+### Fixed
+
+- **Back navigation** — PDF reader and compression pickers now return to their tool instead of reopening a previously selected file; explicit Change/Choose another actions in the reader, compression, and watermark tools return to the current step. Android Back now closes editor filter modes and stays in place during active capture, crop/filter saves, and PDF-tool processing.
+- The Settings rating card now waits for its saved state before appearing, so it no longer flashes and disappears on open.
+
 ## [1.0.17] - 2026-10-14
 
 ### Added
@@ -36,6 +67,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - **Compact navigation bar** — a slimmer bar with outlined Home, Library, Tools, and Settings icons and a raised scanner button in the middle (also at the top of the tablet rail). The button asks **Scan with camera** or **Import from gallery** and opens that flow. The Library's floating **+** menu is removed; **New folder** stays on the Folders shelf, which now shows even when no folders exist.
 - **Tools layout** — Tools uses a full-width Scan action and matching multi-column PDF and Utilities grids, with Images to PDF under PDF and short descriptions.
 - **Search results** — folders and documents are listed under separate **Folders** and **Documents** headings; folder results show the folder illustration and a "Folder" label.
+- **Folder screen** — documents inside a folder use the same rounded list rows and relative dates as the Library (preview cards on tablets).
 - **Home recents** — Recent folders and Recent documents use the same folder tiles, segmented document rows, relative dates, and "See all" headers as the Library. Home shows only the four most recently updated documents; "See all" opens the full Library.
 - **Library polish** — compact sort button and grid/list selector with 48 dp touch targets; list rows are rounded segments per section (larger outer corners, a small gap instead of dividers) with top-cropped page thumbnails; grid cards have an inset press highlight so the cover and text never touch its edge, and press ripples stay inside each control's visible shape. Search always spans both documents and folders and uses the same rounded field.
 

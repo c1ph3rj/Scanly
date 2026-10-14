@@ -4,6 +4,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import `in`.c1ph3rj.scanly.domain.model.PdfToolSource
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveDocumentsUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.RecordPositiveMomentUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.SaveExportArtifactUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.pdftools.MergePdfsUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.pdftools.RenderPdfPageUseCase
@@ -19,7 +20,8 @@ class PdfMergeViewModel @Inject constructor(
     private val mergePdfsUseCase: MergePdfsUseCase,
     saveExportArtifactUseCase: SaveExportArtifactUseCase,
     renderPdfPageUseCase: RenderPdfPageUseCase,
-) : BasePdfToolViewModel(observeDocumentsUseCase, saveExportArtifactUseCase, renderPdfPageUseCase) {
+    recordPositiveMomentUseCase: RecordPositiveMomentUseCase,
+) : BasePdfToolViewModel(observeDocumentsUseCase, saveExportArtifactUseCase, renderPdfPageUseCase, recordPositiveMomentUseCase) {
 
     /** Picker tap: appends the library document to the merge order, or removes it if already picked. */
     fun toggleLibraryDocument(document: ScanDocument) {

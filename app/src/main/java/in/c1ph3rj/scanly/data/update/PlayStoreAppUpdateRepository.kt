@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Build
 import dagger.hilt.android.qualifiers.ApplicationContext
 import `in`.c1ph3rj.scanly.core.common.AppVersionComparator
+import `in`.c1ph3rj.scanly.core.common.PlayStoreLinks
 import `in`.c1ph3rj.scanly.core.common.ScanlyResult
 import `in`.c1ph3rj.scanly.domain.model.AppRelease
 import `in`.c1ph3rj.scanly.domain.model.AppUpdateChannel
@@ -72,7 +73,7 @@ class PlayStoreAppUpdateRepository @Inject constructor(
 
             Tap **Update** to download and install the update without leaving the app.
         """.trimIndent(),
-        htmlUrl = PLAY_STORE_LISTING_URL,
+        htmlUrl = PlayStoreLinks.LISTING_URL,
         publishedAt = null,
         apkAsset = null,
     )
@@ -88,10 +89,5 @@ class PlayStoreAppUpdateRepository @Inject constructor(
             context.packageManager.getPackageInfo(context.packageName, 0)
         }
         return packageInfo.versionName ?: "0"
-    }
-
-    private companion object {
-        const val PLAY_STORE_LISTING_URL =
-            "https://play.google.com/store/apps/details?id=in.c1ph3rj.scanly"
     }
 }

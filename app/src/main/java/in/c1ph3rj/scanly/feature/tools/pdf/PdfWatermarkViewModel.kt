@@ -11,6 +11,7 @@ import `in`.c1ph3rj.scanly.domain.model.WatermarkOrientation
 import `in`.c1ph3rj.scanly.domain.model.WatermarkPageRange
 import `in`.c1ph3rj.scanly.domain.model.WatermarkSize
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveDocumentsUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.RecordPositiveMomentUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.SaveExportArtifactUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.pdftools.InspectPdfUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.pdftools.RenderPdfPageUseCase
@@ -58,7 +59,8 @@ class PdfWatermarkViewModel @Inject constructor(
     private val renderPdfPageUseCase: RenderPdfPageUseCase,
     private val renderWatermarkPreviewUseCase: RenderWatermarkPreviewUseCase,
     saveExportArtifactUseCase: SaveExportArtifactUseCase,
-) : BasePdfToolViewModel(observeDocumentsUseCase, saveExportArtifactUseCase, renderPdfPageUseCase) {
+    recordPositiveMomentUseCase: RecordPositiveMomentUseCase,
+) : BasePdfToolViewModel(observeDocumentsUseCase, saveExportArtifactUseCase, renderPdfPageUseCase, recordPositiveMomentUseCase) {
     private var previewJob: Job? = null
     private var previewRequestId = 0L
     private var inspectJob: Job? = null

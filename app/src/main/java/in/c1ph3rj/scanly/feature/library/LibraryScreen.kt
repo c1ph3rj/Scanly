@@ -53,6 +53,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
 import `in`.c1ph3rj.scanly.core.ui.ScanlyTestTags
+import `in`.c1ph3rj.scanly.feature.components.ScanlyModalBottomSheet
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -154,6 +155,9 @@ fun LibraryScreen(
     val windowSizeInfo = rememberWindowSizeInfo()
     val showingFolders = uiState.selectedTab == LibraryTab.Folders && uiState.groups.isNotEmpty()
     val visibleGroups = remember(uiState) { uiState.visibleGroups }
+    val previewGroups = remember(visibleGroups) {
+        visibleGroups.sortedByDescending { it.updatedAtMillis }.take(3)
+    }
     val visibleDocuments = remember(uiState) {
         if (showingFolders) emptyList() else uiState.visibleDocuments
     }
@@ -163,7 +167,7 @@ fun LibraryScreen(
     val documentColumns = windowSizeInfo.groupColumns
     val folderColumns = if (windowSizeInfo.isTablet) windowSizeInfo.groupColumns + 2 else 3
     val folderGridRows = remember(visibleGroups, folderColumns) {
-        (visibleGroups + listOf<DocumentGroup?>(null)).chunked(folderColumns)
+        (listOf<DocumentGroup?>(null) + visibleGroups).chunked(folderColumns)
     }
     val inset = Modifier.padding(horizontal = windowSizeInfo.horizontalPadding)
     // Grid cards carry their own press inset; pull rows out so covers align with the labels.
@@ -284,7 +288,13 @@ fun LibraryScreen(
                                     contentPadding = PaddingValues(horizontal = folderRowInset),
                                     horizontalArrangement = Arrangement.spacedBy(4.dp),
                                 ) {
-                                    items(visibleGroups, key = { it.id }) { group ->
+                                    item(key = "new_folder") {
+                                        LibraryNewFolderTile(
+                                            onClick = { createGroupDialogVisible = true },
+                                            modifier = Modifier.width(FolderShelfTileWidth),
+                                        )
+                                    }
+                                    items(previewGroups, key = { it.id }) { group ->
                                         LibraryFolderTile(
                                             group = group,
                                             onOpen = { onOpenGroup(group.id) },
@@ -293,11 +303,13 @@ fun LibraryScreen(
                                             modifier = Modifier.width(FolderShelfTileWidth),
                                         )
                                     }
-                                    item(key = "new_folder") {
-                                        LibraryNewFolderTile(
-                                            onClick = { createGroupDialogVisible = true },
-                                            modifier = Modifier.width(FolderShelfTileWidth),
-                                        )
+                                    if (visibleGroups.size > 3) {
+                                        item(key = "view_all_folders") {
+                                            LibraryViewAllFoldersTile(
+                                                onClick = { onTabSelected(LibraryTab.Folders) },
+                                                modifier = Modifier.width(FolderShelfTileWidth),
+                                            )
+                                        }
                                     }
                                 }
                             }
@@ -569,7 +581,7 @@ private fun LibrarySearchLauncher(
         ) {
             Icon(Icons.Filled.Search, contentDescription = null, modifier = Modifier.size(22.dp))
             Text(
-                "Search documents and folders",
+                "Search names and text in pages",
                 style = MaterialTheme.typography.bodyLarge,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
@@ -731,9 +743,9 @@ private fun LibrarySortSheet(
         LibraryTab.Folders -> "folders"
         LibraryTab.Documents -> "documents"
     }
-    ModalBottomSheet(
+    ScanlyModalBottomSheet(
         onDismissRequest = onDismiss,
-        containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+        containerColor = { MaterialTheme.colorScheme.surfaceContainerLow },
     ) {
         Column(
             modifier = Modifier

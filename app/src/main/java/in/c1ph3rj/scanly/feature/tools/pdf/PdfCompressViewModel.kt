@@ -6,6 +6,7 @@ import `in`.c1ph3rj.scanly.core.common.ScanlyResult
 import `in`.c1ph3rj.scanly.domain.model.PdfCompressQuality
 import `in`.c1ph3rj.scanly.domain.model.PdfToolSource
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveDocumentsUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.RecordPositiveMomentUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.SaveExportArtifactUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.pdftools.CompressPdfUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.pdftools.InspectPdfUseCase
@@ -23,7 +24,8 @@ class PdfCompressViewModel @Inject constructor(
     private val inspectPdfUseCase: InspectPdfUseCase,
     private val renderPdfPageUseCase: RenderPdfPageUseCase,
     saveExportArtifactUseCase: SaveExportArtifactUseCase,
-) : BasePdfToolViewModel(observeDocumentsUseCase, saveExportArtifactUseCase, renderPdfPageUseCase) {
+    recordPositiveMomentUseCase: RecordPositiveMomentUseCase,
+) : BasePdfToolViewModel(observeDocumentsUseCase, saveExportArtifactUseCase, renderPdfPageUseCase, recordPositiveMomentUseCase) {
     private var previewJob: Job? = null
     private var previewRequestId = 0L
 

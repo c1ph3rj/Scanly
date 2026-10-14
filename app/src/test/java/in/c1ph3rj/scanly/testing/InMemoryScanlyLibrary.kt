@@ -1,19 +1,15 @@
 package `in`.c1ph3rj.scanly.testing
 
-import `in`.c1ph3rj.scanly.data.archive.LibraryArchivePolicy
 import `in`.c1ph3rj.scanly.domain.model.DocumentGroup
-import `in`.c1ph3rj.scanly.domain.model.RestoreMode
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
 import `in`.c1ph3rj.scanly.domain.model.ScanPage
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import java.util.UUID
 import java.util.concurrent.atomic.AtomicLong
 
 /**
- * Contract-complete in-memory library used by JVM flow tests. Title uniqueness and
- * restore copy naming delegate to the shipped helpers the real repositories use.
+ * Contract-complete in-memory library used by JVM flow tests.
  */
 class InMemoryScanlyLibrary {
     private val clock = AtomicLong(1_700_000_000_000L)
@@ -85,58 +81,6 @@ class InMemoryScanlyLibrary {
         replacePages(page.documentId, remaining)
     }
 
-    fun snapshot(): LibrarySnapshot = LibrarySnapshot(
-        documents = documentsState.value,
-        groups = groupsState.value,
-        pages = pagesState.value,
-    )
-
-    fun restore(snapshot: LibrarySnapshot, mode: RestoreMode) {
-        val groupIds = snapshot.groups.associate { it.id to UUID.randomUUID().toString() }
-        val documentIds = snapshot.documents.associate { it.id to UUID.randomUUID().toString() }
-        val pageIds = snapshot.pages.associate { it.id to UUID.randomUUID().toString() }
-        val usedGroupTitles = if (mode == RestoreMode.MERGE) {
-            groupsState.value.mapTo(mutableSetOf()) { it.title.lowercase() }
-        } else {
-            mutableSetOf()
-        }
-        val usedDocumentTitles = if (mode == RestoreMode.MERGE) {
-            documentsState.value.mapTo(mutableSetOf()) { it.title.lowercase() }
-        } else {
-            mutableSetOf()
-        }
-        val restoredGroups = snapshot.groups.map { group ->
-            group.copy(
-                id = groupIds.getValue(group.id),
-                title = LibraryArchivePolicy.uniqueRestoredTitle(group.title, usedGroupTitles),
-            )
-        }
-        val restoredDocuments = snapshot.documents.map { document ->
-            document.copy(
-                id = documentIds.getValue(document.id),
-                title = LibraryArchivePolicy.uniqueRestoredTitle(document.title, usedDocumentTitles),
-                groupId = document.groupId?.let(groupIds::getValue),
-                rootDirectoryPath = "/documents/${documentIds.getValue(document.id)}",
-            )
-        }
-        val restoredPages = snapshot.pages.map { page ->
-            page.copy(
-                id = pageIds.getValue(page.id),
-                documentId = documentIds.getValue(page.documentId),
-            )
-        }
-        if (mode == RestoreMode.REPLACE) {
-            documentsState.value = restoredDocuments
-            groupsState.value = restoredGroups
-            pagesState.value = restoredPages
-        } else {
-            documentsState.value = documentsState.value + restoredDocuments
-            groupsState.value = groupsState.value + restoredGroups
-            pagesState.value = pagesState.value + restoredPages
-        }
-        refreshDerivedState()
-    }
-
     fun clearAll() {
         documentsState.value = emptyList()
         groupsState.value = emptyList()
@@ -164,9 +108,3 @@ class InMemoryScanlyLibrary {
         }
     }
 }
-
-data class LibrarySnapshot(
-    val documents: List<ScanDocument>,
-    val groups: List<DocumentGroup>,
-    val pages: List<ScanPage>,
-)

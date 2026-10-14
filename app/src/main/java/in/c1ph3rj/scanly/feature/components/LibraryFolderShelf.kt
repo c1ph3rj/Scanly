@@ -18,6 +18,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CreateNewFolder
+import androidx.compose.material.icons.outlined.GridView
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material3.DropdownMenu
@@ -311,6 +314,22 @@ fun LibraryFolderArt(
 fun LibraryNewFolderTile(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+) = LibraryFolderActionTile("New folder", "Organise scans", Icons.Outlined.CreateNewFolder, onClick, modifier)
+
+@Composable
+fun LibraryViewAllFoldersTile(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) = LibraryFolderActionTile("View all", "All folders", Icons.Outlined.GridView, onClick, modifier, filled = true)
+
+@Composable
+private fun LibraryFolderActionTile(
+    title: String,
+    subtitle: String,
+    icon: ImageVector,
+    onClick: () -> Unit,
+    modifier: Modifier,
+    filled: Boolean = false,
 ) {
     val dashedColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.7f)
 
@@ -333,37 +352,60 @@ fun LibraryNewFolderTile(
         ) {
             val width = maxWidth
 
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .drawBehind {
-                        val strokeWidth = 1.5.dp.toPx()
-                        val inset = strokeWidth / 2f
-                        val w = size.width
-                        drawRoundRect(
-                            color = dashedColor,
-                            topLeft = Offset(inset, w * 0.12f + inset),
-                            size = Size(w - strokeWidth, w * 0.88f - strokeWidth),
-                            cornerRadius = CornerRadius(14.dp.toPx()),
-                            style = Stroke(
-                                width = strokeWidth,
-                                pathEffect = PathEffect.dashPathEffect(
-                                    floatArrayOf(8.dp.toPx(), 6.dp.toPx()),
+            if (filled) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(top = width * 0.12f)
+                        .clip(RoundedCornerShape(20.dp))
+                        .background(MaterialTheme.colorScheme.secondaryContainer),
+                ) {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = null,
+                        modifier = Modifier.align(Alignment.Center).size(36.dp),
+                        tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                    )
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                        contentDescription = null,
+                        modifier = Modifier.align(Alignment.TopEnd).padding(8.dp).size(16.dp),
+                        tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                    )
+                }
+            } else {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .drawBehind {
+                            val strokeWidth = 1.5.dp.toPx()
+                            val inset = strokeWidth / 2f
+                            val w = size.width
+                            drawRoundRect(
+                                color = dashedColor,
+                                topLeft = Offset(inset, w * 0.12f + inset),
+                                size = Size(w - strokeWidth, w * 0.88f - strokeWidth),
+                                cornerRadius = CornerRadius(14.dp.toPx()),
+                                style = Stroke(
+                                    width = strokeWidth,
+                                    pathEffect = PathEffect.dashPathEffect(
+                                        floatArrayOf(8.dp.toPx(), 6.dp.toPx()),
+                                    ),
                                 ),
-                            ),
-                        )
-                    },
-            ) { }
+                            )
+                        },
+                ) { }
 
-            Icon(
-                imageVector = Icons.Outlined.CreateNewFolder,
-                contentDescription = null,
-                modifier = Modifier
-                    .align(Alignment.Center)
-                    .padding(top = width * 0.12f)
-                    .size(28.dp),
-                tint = MaterialTheme.colorScheme.primary,
-            )
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .padding(top = width * 0.12f)
+                        .size(28.dp),
+                    tint = MaterialTheme.colorScheme.primary,
+                )
+            }
         }
 
         // Text block mirrors LibraryFolderTile's two-line structure.
@@ -372,7 +414,7 @@ fun LibraryNewFolderTile(
             verticalArrangement = Arrangement.spacedBy(2.dp),
         ) {
             Text(
-                text = "New folder",
+                text = title,
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.primary,
@@ -380,7 +422,7 @@ fun LibraryNewFolderTile(
                 overflow = TextOverflow.Ellipsis,
             )
             Text(
-                text = "Organise scans",
+                text = subtitle,
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,

@@ -99,6 +99,8 @@ fun HomeRoute(
         onSuggestTitle = viewModel::suggestDocumentTitle,
         onSuggestGroupTitle = viewModel::suggestGroupTitle,
     )
+
+    HomeRatingPromptHost(viewModel = viewModel)
 }
 
 @Composable
@@ -205,6 +207,12 @@ fun HomeScreen(
                         horizontalArrangement = Arrangement.spacedBy(4.dp),
                         modifier = Modifier.padding(bottom = 20.dp),
                     ) {
+                        item(key = "new_folder", contentType = "new_folder") {
+                            LibraryNewFolderTile(
+                                onClick = { createFolderDialogVisible = true },
+                                modifier = Modifier.width(if (windowSizeInfo.isTablet) 132.dp else 104.dp),
+                            )
+                        }
                         items(
                             items = uiState.recentGroups,
                             key = { it.id },
@@ -215,6 +223,14 @@ fun HomeScreen(
                                 onOpen = { onOpenGroup(group.id) },
                                 modifier = Modifier.width(if (windowSizeInfo.isTablet) 132.dp else 104.dp),
                             )
+                        }
+                        if (uiState.hasMoreGroups) {
+                            item(key = "view_all_folders", contentType = "view_all_folders") {
+                                LibraryViewAllFoldersTile(
+                                    onClick = onSeeAllFolders,
+                                    modifier = Modifier.width(if (windowSizeInfo.isTablet) 132.dp else 104.dp),
+                                )
+                            }
                         }
                     }
                 }
@@ -515,7 +531,7 @@ private fun HomeSearchPill(
         modifier = modifier
             .fillMaxWidth()
             .height(52.dp)
-            .semantics { contentDescription = "Search documents and folders" },
+            .semantics { contentDescription = "Search names and text in pages" },
         shape = androidx.compose.foundation.shape.RoundedCornerShape(26.dp),
         color = MaterialTheme.colorScheme.surfaceContainer,
         border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
@@ -531,7 +547,7 @@ private fun HomeSearchPill(
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             Text(
-                text = "Search documents and folders",
+                text = "Search names and text in pages",
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,

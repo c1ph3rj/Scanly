@@ -105,6 +105,9 @@ fun PdfMergeRoute(
     BackHandler(enabled = step == MergeStep.Order || step == MergeStep.Done) {
         if (step == MergeStep.Done) onNavigateUp() else goTo(MergeStep.Pick)
     }
+    BackHandler(enabled = step == MergeStep.Working) {
+        // The merge runs in this route's ViewModel and cannot be cancelled safely.
+    }
 
     Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
         when (step) {

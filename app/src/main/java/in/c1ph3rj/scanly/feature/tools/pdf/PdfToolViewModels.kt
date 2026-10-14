@@ -19,6 +19,7 @@ import `in`.c1ph3rj.scanly.domain.model.WatermarkOrientation
 import `in`.c1ph3rj.scanly.domain.model.WatermarkPageRange
 import `in`.c1ph3rj.scanly.domain.model.WatermarkSize
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveDocumentsUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.RecordPositiveMomentUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.SaveExportArtifactUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.pdftools.CompressPdfUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.pdftools.InspectPdfUseCase
@@ -118,6 +119,7 @@ abstract class BasePdfToolViewModel(
     observeDocumentsUseCase: ObserveDocumentsUseCase,
     private val saveExportArtifactUseCase: SaveExportArtifactUseCase,
     private val resultPageRenderer: RenderPdfPageUseCase,
+    private val recordPositiveMomentUseCase: RecordPositiveMomentUseCase,
 ) : ViewModel() {
     private var resultPreviewJob: Job? = null
     protected val _uiState = MutableStateFlow(PdfToolUiState())
@@ -285,6 +287,7 @@ abstract class BasePdfToolViewModel(
                             },
                         )
                     }
+                    recordPositiveMomentUseCase()
                     onResultReady(result.value)
                 }
                 is ScanlyResult.Failure -> {

@@ -131,23 +131,39 @@ fun PdfReaderRoute(
     val context = LocalContext.current
     // Survives rotation. The picker opens first when no source was handed in.
     var showPicker by rememberSaveable { mutableStateOf(initialSource == null) }
+    var returnToReaderOnPickerBack by rememberSaveable { mutableStateOf(false) }
     // Empty means nothing is open yet (hub entry) or the last open failed. A handed-in source is
     // about to open, so stay blank for that first frame instead of flashing the picker.
     val pickerVisible = showPicker ||
         (uiState.phase == PdfReaderPhase.Empty && (uiState.source != null || initialSource == null))
 
-    // Back steps out one level: picker -> open document -> hub (or the Done screen that opened us).
+    // Back leaves the reader for the picker, then the tool; choosing another can return to this PDF.
     val onBack: () -> Unit = {
         when {
-            pickerVisible && uiState.phase != PdfReaderPhase.Empty -> { showPicker = false }
+            pickerVisible && uiState.phase != PdfReaderPhase.Empty -> {
+                if (shouldReturnFromPdfPickerToPreviousStep(
+                        hasSelectedSource = uiState.phase != PdfReaderPhase.Empty,
+                        pickerOpenedForChange = returnToReaderOnPickerBack,
+                    )
+                ) {
+                    returnToReaderOnPickerBack = false
+                    showPicker = false
+                } else {
+                    onNavigateUp()
+                }
+            }
             pickerVisible -> onNavigateUp()
-            initialSource == null -> { showPicker = true }
+            initialSource == null -> {
+                returnToReaderOnPickerBack = false
+                showPicker = true
+            }
             else -> onNavigateUp()
         }
     }
     BackHandler(onBack = onBack)
 
     val devicePicker = rememberSinglePdfPicker { uri ->
+        returnToReaderOnPickerBack = false
         showPicker = false
         viewModel.onSourcesChosen(
             listOf(PdfToolSource.DeviceUri(uri.toString(), uriDisplayName(context, uri))),
@@ -178,6 +194,7 @@ fun PdfReaderRoute(
                     onBack = onBack,
                     onPickDevice = { devicePicker.launch(arrayOf(PDF_MIME_TYPE)) },
                     onPickLibrary = { document ->
+                        returnToReaderOnPickerBack = false
                         showPicker = false
                         viewModel.onSourcesChosen(
                             listOf(PdfToolSource.LibraryDocument(document.id, document.title)),
@@ -196,7 +213,10 @@ fun PdfReaderRoute(
                     error = uiState.passwordError,
                     onPasswordChange = viewModel::setPasswordDraft,
                     onUnlock = viewModel::unlock,
-                    onChooseAnother = { showPicker = true },
+                    onChooseAnother = {
+                        returnToReaderOnPickerBack = true
+                        showPicker = true
+                    },
                     onBack = onBack,
                 )
                 PdfReaderPhase.Ready -> PdfReaderViewer(

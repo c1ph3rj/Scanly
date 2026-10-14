@@ -4,7 +4,10 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
+import androidx.compose.material3.ColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 
 private val DarkColorScheme = darkColorScheme(
@@ -121,9 +124,29 @@ fun ScanlyTheme(
         else -> LightColorScheme
     }
 
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = Typography,
-        content = content,
-    )
+    CompositionLocalProvider(LocalPureBlack provides (darkTheme && pureBlack)) {
+        MaterialTheme(
+            colorScheme = colorScheme,
+            typography = Typography,
+            content = content,
+        )
+    }
 }
+
+/** True when the pure-black (AMOLED) dark theme is active. */
+val LocalPureBlack = staticCompositionLocalOf { false }
+
+/**
+ * Pure black has no room "below" the background, so elevated surfaces (sheets) must step up
+ * visibly. Inside a sheet every surface token moves up one level: the sheet itself reads as
+ * raised dark grey and its cards stay lighter than it, keeping the usual hierarchy.
+ */
+fun ColorScheme.liftedForPureBlackSheet(): ColorScheme = copy(
+    surface = AmoledSheetSurface,
+    surfaceContainerLowest = AmoledSurfaceContainerHigh,
+    surfaceContainerLow = AmoledSheetSurface,
+    surfaceContainer = AmoledSheetContainer,
+    surfaceContainerHigh = AmoledSheetContainerHigh,
+    surfaceContainerHighest = AmoledSheetContainerHighest,
+    surfaceVariant = AmoledSheetContainerHigh,
+)

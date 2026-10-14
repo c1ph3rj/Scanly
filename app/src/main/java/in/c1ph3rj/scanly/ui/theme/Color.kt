@@ -43,6 +43,12 @@ val AmoledSecondaryContainer = Color(0xFF0E3A36)
 val AmoledTertiaryContainer = Color(0xFF1A2E2A)
 val AmoledErrorContainer = Color(0xFF4A151A)
 
+// Pure-black sheet elevation ramp (see liftedForPureBlackSheet).
+val AmoledSheetSurface = Color(0xFF181D1B)
+val AmoledSheetContainer = Color(0xFF212725)
+val AmoledSheetContainerHigh = Color(0xFF29302D)
+val AmoledSheetContainerHighest = Color(0xFF313936)
+
 // Light Mode Tints
 // Cool-neutral ladder from the redesign foundations. Cards (surface / surfaceContainer) are
 // pure white on a #F1F3F5 page so they separate clearly; wells, tracks and chips step down to

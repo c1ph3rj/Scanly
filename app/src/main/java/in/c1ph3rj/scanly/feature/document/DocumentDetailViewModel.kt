@@ -25,6 +25,7 @@ import `in`.c1ph3rj.scanly.domain.usecase.ObserveGroupsUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.PrepareDocumentPdfShareUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.PrepareDocumentImageShareUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ImportImagesUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.RecordPositiveMomentUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.RenameDocumentUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.SetDocumentGroupUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.SaveExportArtifactUseCase
@@ -87,6 +88,7 @@ class DocumentDetailViewModel @Inject constructor(
     private val setDocumentGroupUseCase: SetDocumentGroupUseCase,
     private val createGroupUseCase: CreateGroupUseCase,
     private val suggestGroupTitleUseCase: SuggestGroupTitleUseCase,
+    private val recordPositiveMomentUseCase: RecordPositiveMomentUseCase,
 ) : ViewModel() {
     private val documentId: String = checkNotNull(savedStateHandle[DocumentDestination.documentIdArgument])
 
@@ -419,6 +421,7 @@ class DocumentDetailViewModel @Inject constructor(
                             exportMessage = null,
                         )
                     }
+                    recordPositiveMomentUseCase()
                     _events.emit(onSuccess(result.value))
                 }
 

@@ -1,6 +1,7 @@
 package `in`.c1ph3rj.scanly.navigation
 
 import `in`.c1ph3rj.scanly.core.ui.ScanlyTestTags
+import `in`.c1ph3rj.scanly.feature.components.ScanlyModalBottomSheet
 import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import `in`.c1ph3rj.scanly.domain.model.PdfToolSource
 import `in`.c1ph3rj.scanly.feature.camera.ScanSessionDestination
@@ -16,6 +17,8 @@ import `in`.c1ph3rj.scanly.feature.home.HomeRoute
 import `in`.c1ph3rj.scanly.feature.library.GroupDetailRoute
 import `in`.c1ph3rj.scanly.feature.library.LibraryRoute
 import `in`.c1ph3rj.scanly.feature.library.LibrarySearchRoute
+import `in`.c1ph3rj.scanly.feature.text.PageTextDestination
+import `in`.c1ph3rj.scanly.feature.text.PageTextRoute
 import `in`.c1ph3rj.scanly.feature.library.LibraryTab
 import `in`.c1ph3rj.scanly.feature.placeholder.FeaturePlaceholderRoute
 import `in`.c1ph3rj.scanly.feature.preview.PageImagePreviewDestination
@@ -379,9 +382,9 @@ private fun CaptureButton(
 @Composable
 private fun CaptureChooserSheet(onDismiss: () -> Unit) {
     val actions = LocalScanlyCaptureActions.current
-    ModalBottomSheet(
+    ScanlyModalBottomSheet(
         onDismissRequest = onDismiss,
-        containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+        containerColor = { MaterialTheme.colorScheme.surfaceContainerLow },
     ) {
         Column(
             modifier = Modifier
@@ -704,7 +707,30 @@ private fun ScanlyNavHostContent(
                 onBack = { navController.popBackStack() },
                 onOpenDocument = { navController.navigate(DocumentDestination.route(it)) },
                 onOpenGroup = { navController.navigate(GroupDetailDestination.route(it)) },
+                onOpenPageText = { documentId, pageIndex, query ->
+                    navController.navigate(PageTextDestination.route(documentId, pageIndex, query))
+                },
             )
+        }
+        composable(
+            route = PageTextDestination.routePattern,
+            arguments = listOf(
+                navArgument(PageTextDestination.documentIdArgument) { type = NavType.StringType },
+                navArgument(PageTextDestination.pageArgument) {
+                    type = NavType.StringType
+                    defaultValue = "0"
+                },
+                navArgument(PageTextDestination.queryArgument) {
+                    type = NavType.StringType
+                    defaultValue = ""
+                },
+            ),
+            enterTransition = { detailPushEnter() },
+            exitTransition = { detailPushExit() },
+            popEnterTransition = { detailPopEnter() },
+            popExitTransition = { detailPopExit() },
+        ) {
+            PageTextRoute(onNavigateUp = navController::navigateUp)
         }
         composable(
             route = ScanlyDestination.Tools.route,
@@ -1055,6 +1081,9 @@ private fun ScanlyNavHostContent(
                 },
                 onOpenPageEditor = { pageId ->
                     navController.navigate(PageImagePreviewDestination.route(pageId))
+                },
+                onOpenText = { pageIndex ->
+                    navController.navigate(PageTextDestination.route(documentId, pageIndex))
                 },
                 onReplacePage = { pageId ->
                     navController.navigate(ScanSessionDestination.route(documentId, replacePageId = pageId))

@@ -4,8 +4,7 @@ data class AppStorageUsage(
     val documentsBytes: Long,
     val exportCacheBytes: Long,
     val databaseBytes: Long,
-    val archiveWorkingBytes: Long,
 ) {
     val totalBytes: Long
-        get() = documentsBytes + exportCacheBytes + databaseBytes + archiveWorkingBytes
+        get() = documentsBytes + exportCacheBytes + databaseBytes
 }

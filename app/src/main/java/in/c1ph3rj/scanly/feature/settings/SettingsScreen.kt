@@ -1,5 +1,11 @@
 package `in`.c1ph3rj.scanly.feature.settings
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -15,6 +21,7 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.Storage
 import androidx.compose.material.icons.filled.Widgets
+import androidx.compose.material.icons.outlined.StarOutline
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -25,8 +32,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import `in`.c1ph3rj.scanly.core.ui.ScanlyTestTags
@@ -35,8 +44,12 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import `in`.c1ph3rj.scanly.core.common.StorageFormatter
 import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import `in`.c1ph3rj.scanly.domain.model.ThemeMode
+import `in`.c1ph3rj.scanly.feature.camera.CameraPermissionSupport
 import `in`.c1ph3rj.scanly.feature.components.ScanlyTabScreenHeader
+import `in`.c1ph3rj.scanly.feature.rating.currentRatingChannel
+import `in`.c1ph3rj.scanly.feature.rating.launchRating
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @Composable
 fun SettingsRoute(
@@ -48,6 +61,8 @@ fun SettingsRoute(
     onOpenAbout: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -68,6 +83,17 @@ fun SettingsRoute(
         onOpenWidgets = onOpenWidgets,
         onOpenFaqs = onOpenFaqs,
         onOpenAbout = onOpenAbout,
+        onDismissRatingCard = viewModel::dismissRatingCard,
+        onRateApp = {
+            viewModel.onRateApp()
+            val activity = CameraPermissionSupport.findActivity(context)
+            if (activity != null) {
+                scope.launch {
+                    launchRating(activity, currentRatingChannel())
+                    snackbarHostState.showSnackbar("Thanks for supporting Scanly")
+                }
+            }
+        },
     )
 }
 
@@ -81,6 +107,8 @@ fun SettingsScreen(
     onOpenWidgets: () -> Unit,
     onOpenFaqs: () -> Unit,
     onOpenAbout: () -> Unit,
+    onRateApp: () -> Unit,
+    onDismissRatingCard: () -> Unit,
 ) {
     val content = uiState.content
     val windowSizeInfo = rememberWindowSizeInfo()
@@ -102,7 +130,14 @@ fun SettingsScreen(
             append(StorageFormatter.formatBytes(it.totalBytes))
             append(" · ")
         }
-        append("Backup & export")
+        append("Save location & cleanup")
+    }
+
+    // Drives the enter/exit animation of the rating card while keeping its LazyColumn item alive
+    // long enough to animate out before the item is removed.
+    val ratingCardState = remember { MutableTransitionState(uiState.showRatingCard) }
+    LaunchedEffect(uiState.showRatingCard) {
+        ratingCardState.targetState = uiState.showRatingCard
     }
 
     Scaffold(
@@ -150,6 +185,24 @@ fun SettingsScreen(
                         )
                     }
 
+                    if (ratingCardState.currentState || ratingCardState.targetState) {
+                        item(key = "rating") {
+                            AnimatedVisibility(
+                                visibleState = ratingCardState,
+                                enter = fadeIn() + expandVertically(),
+                                exit = fadeOut() + shrinkVertically(),
+                            ) {
+                                RateScanlyCard(
+                                    onRate = onRateApp,
+                                    onDismiss = {
+                                        ratingCardState.targetState = false
+                                        onDismissRatingCard()
+                                    },
+                                )
+                            }
+                        }
+                    }
+
                     item(key = "preferences") {
                         SettingsGroup(title = "Preferences") {
                             SettingsNavigationRow(
@@ -165,7 +218,7 @@ fun SettingsScreen(
                         SettingsGroup(title = "Library") {
                             SettingsNavigationRow(
                                 icon = Icons.Filled.Storage,
-                                title = "Storage & backup",
+                                title = "Storage",
                                 subtitle = storageSubtitle,
                                 onClick = onOpenStorage,
                             )
@@ -207,6 +260,15 @@ fun SettingsScreen(
                                     color = MaterialTheme.colorScheme.outlineVariant,
                                 )
                             }
+                            SettingsNavigationRow(
+                                icon = Icons.Outlined.StarOutline,
+                                title = "Rate Scanly",
+                                subtitle = "Leave a rating on Google Play",
+                                onClick = onRateApp,
+                            )
+                            HorizontalDivider(
+                                color = MaterialTheme.colorScheme.outlineVariant,
+                            )
                             SettingsNavigationRow(
                                 icon = Icons.Filled.Info,
                                 title = "About",

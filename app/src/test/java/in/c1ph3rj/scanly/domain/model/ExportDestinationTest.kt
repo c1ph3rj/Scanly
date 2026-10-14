@@ -5,16 +5,13 @@ import org.junit.Test
 
 class ExportDestinationTest {
     @Test
-    fun `default destination separates exports and backups`() {
-        val destination = ExportDestination.DefaultDownloadsScanly
-        assertEquals("Downloads/Scanly", destination.exportLabel)
-        assertEquals("Downloads/Scanly/backup", destination.backupLabel)
+    fun `default destination uses the Downloads Scanly label`() {
+        assertEquals("Downloads/Scanly", ExportDestination.DefaultDownloadsScanly.exportLabel)
     }
 
     @Test
-    fun `custom destination owns a backup child`() {
+    fun `custom destination uses its display name`() {
         val destination = ExportDestination.CustomTree("content://tree", "My scans/")
         assertEquals("My scans/", destination.exportLabel)
-        assertEquals("My scans/backup", destination.backupLabel)
     }
 }

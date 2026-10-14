@@ -102,6 +102,7 @@ fun PdfWatermarkRoute(
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
     var editing by rememberSaveable { mutableStateOf(false) }
+    var returnToEditorOnPickerBack by rememberSaveable { mutableStateOf(false) }
 
     val step = when {
         uiState.result != null -> WatermarkStep.Done
@@ -111,8 +112,18 @@ fun PdfWatermarkRoute(
     }
 
     val devicePicker = rememberSinglePdfPicker { uri ->
+        returnToEditorOnPickerBack = false
         viewModel.setSources(listOf(PdfToolSource.DeviceUri(uri.toString(), uriDisplayName(context, uri))))
         editing = true
+    }
+
+    val onPickerBack = {
+        if (shouldReturnFromPdfPickerToPreviousStep(uiState.sources.isNotEmpty(), returnToEditorOnPickerBack)) {
+            returnToEditorOnPickerBack = false
+            editing = true
+        } else {
+            onNavigateUp()
+        }
     }
 
     LaunchedEffect(viewModel) {
@@ -122,6 +133,13 @@ fun PdfWatermarkRoute(
     }
 
     BackHandler(enabled = step == WatermarkStep.Edit) { editing = false }
+    BackHandler(
+        enabled = step == WatermarkStep.Pick && uiState.sources.isNotEmpty() && returnToEditorOnPickerBack,
+        onBack = onPickerBack,
+    )
+    BackHandler(enabled = step == WatermarkStep.Working) {
+        // Keep the watermark job alive until it produces its result.
+    }
 
     val pageCount = uiState.info?.pageCount
     Box(
@@ -135,16 +153,24 @@ fun PdfWatermarkRoute(
                 subtitle = "Stamp text like CONFIDENTIAL or \"For KYC use only\".",
                 stepText = "Step 1 of 3 · Choose a file",
                 documents = uiState.libraryDocuments,
-                onBack = onNavigateUp,
+                onBack = onPickerBack,
                 onPickDevice = { devicePicker.launch(arrayOf("application/pdf")) },
                 onPickLibrary = { document ->
+                    returnToEditorOnPickerBack = false
                     viewModel.setSources(listOf(PdfToolSource.LibraryDocument(document.id, document.title)))
                     editing = true
                 },
             )
             WatermarkStep.Edit -> WatermarkEditor(
                 uiState = uiState,
-                onBack = { editing = false },
+                onBack = {
+                    returnToEditorOnPickerBack = false
+                    editing = false
+                },
+                onChange = {
+                    returnToEditorOnPickerBack = true
+                    editing = false
+                },
                 viewModel = viewModel,
             )
             WatermarkStep.Working -> ToolWorkingState(
@@ -215,6 +241,7 @@ fun PdfWatermarkRoute(
 private fun WatermarkEditor(
     uiState: PdfToolUiState,
     onBack: () -> Unit,
+    onChange: () -> Unit,
     viewModel: PdfWatermarkViewModel,
 ) {
     val windowSizeInfo = rememberWindowSizeInfo()
@@ -234,7 +261,7 @@ private fun WatermarkEditor(
             subtitle = listOfNotNull(source?.label(), pageCount?.let(::formatPdfPageCount)).joinToString(" · "),
             onBack = onBack,
             actionLabel = "Change",
-            onAction = onBack,
+            onAction = onChange,
         )
         if (windowSizeInfo.useToolTwoPaneLayout) {
             Row(

@@ -72,7 +72,7 @@ class ScanlyDeviceUiTest {
     fun settingsDestinationShowsIdentifyingUi() {
         composeRule.openDestination(ScanlyTestTags.NAV_SETTINGS, ScanlyTestTags.SETTINGS_SCREEN)
         composeRule.onNodeWithText("Appearance").assertIsDisplayed()
-        composeRule.onNodeWithText("Storage & backup").assertIsDisplayed()
+        composeRule.onNodeWithText("Storage").assertIsDisplayed()
     }
 
     @Test

@@ -2,6 +2,7 @@ package `in`.c1ph3rj.scanly.feature.camera
 
 import android.Manifest
 import android.util.Size
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.Camera
@@ -67,6 +68,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -150,6 +152,11 @@ fun ScanSessionRoute(
     var imageCapture by remember { mutableStateOf<ImageCapture?>(null) }
     var previewView by remember { mutableStateOf<PreviewView?>(null) }
     var cameraControl by remember { mutableStateOf<CameraControl?>(null) }
+    val handleNavigateUp = { if (!uiState.captureInProgress) onNavigateUp() }
+    val currentNavigateUp by rememberUpdatedState(handleNavigateUp)
+    BackHandler(enabled = uiState.captureInProgress) {
+        // Let CameraX capture and page finalization finish before leaving this route.
+    }
 
     fun refreshCameraPermissionStatus() {
         cameraPermissionStatus = CameraPermissionSupport.resolveStatus(activity, context)
@@ -204,7 +211,7 @@ fun ScanSessionRoute(
 
                 is ScanSessionEvent.ShowMessage -> snackbarHostState.showSnackbar(event.message)
                 is ScanSessionEvent.ReplacementCompleted -> onReplacementCompleted(event.pageId)
-                ScanSessionEvent.NavigateUp -> onNavigateUp()
+                ScanSessionEvent.NavigateUp -> currentNavigateUp()
             }
         }
     }
@@ -221,9 +228,9 @@ fun ScanSessionRoute(
                 permissionLauncher.launch(Manifest.permission.CAMERA)
             }
         },
-        onNavigateUp = onNavigateUp,
+        onNavigateUp = handleNavigateUp,
         onOpenDocument = {
-            uiState.document?.id?.let(onOpenDocument)
+            if (!uiState.captureInProgress) uiState.document?.id?.let(onOpenDocument)
         },
         onCapture = viewModel::requestCapture,
         onAutoCaptureEnabledChange = viewModel::onAutoCaptureEnabledChanged,
@@ -378,6 +385,7 @@ private fun CameraCaptureLayout(
         ) {
             CameraLeftRail(
                 onNavigateUp = onNavigateUp,
+                navigationEnabled = !uiState.captureInProgress,
                 autoCaptureEnabled = autoCaptureEnabled,
                 onAutoCaptureToggle = onAutoCaptureToggle,
                 gridEnabled = gridEnabled,
@@ -431,6 +439,7 @@ private fun CameraCaptureLayout(
             ) {
                 CameraTopBar(
                     onNavigateUp = onNavigateUp,
+                    navigationEnabled = !uiState.captureInProgress,
                     autoCaptureEnabled = autoCaptureEnabled,
                     onAutoCaptureToggle = onAutoCaptureToggle,
                     gridEnabled = gridEnabled,
@@ -473,6 +482,7 @@ private fun CameraCaptureLayout(
 @Composable
 private fun CameraLeftRail(
     onNavigateUp: () -> Unit,
+    navigationEnabled: Boolean,
     autoCaptureEnabled: Boolean,
     onAutoCaptureToggle: () -> Unit,
     gridEnabled: Boolean,
@@ -507,6 +517,7 @@ private fun CameraLeftRail(
                 icon = Icons.AutoMirrored.Filled.ArrowBack,
                 contentDescription = "Back",
                 onClick = onNavigateUp,
+                enabled = navigationEnabled,
                 containerColor = Color.Transparent,
                 contentColor = Color.White,
             )
@@ -786,6 +797,7 @@ private fun RecentCaptureStack(
 @Composable
 private fun CameraTopBar(
     onNavigateUp: () -> Unit,
+    navigationEnabled: Boolean,
     autoCaptureEnabled: Boolean,
     onAutoCaptureToggle: () -> Unit,
     gridEnabled: Boolean,
@@ -804,6 +816,7 @@ private fun CameraTopBar(
             icon = Icons.AutoMirrored.Filled.ArrowBack,
             contentDescription = "Back",
             onClick = onNavigateUp,
+            enabled = navigationEnabled,
             containerColor = Color.Transparent,
             contentColor = Color.White,
         )
