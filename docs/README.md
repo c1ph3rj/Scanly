@@ -2,6 +2,8 @@
 
 Complete documentation for **Scanly v1.0.17** — an offline-first Android document scanner.
 
+Website: https://www.usescanly.co.in · Google Play: https://play.google.com/store/apps/details?id=in.c1ph3rj.scanly
+
 If you are new to this project, start here. This folder contains everything needed to understand what Scanly is, how users interact with it, and how the codebase is built.
 
 ## What is Scanly?

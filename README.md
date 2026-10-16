@@ -1,10 +1,12 @@
 ﻿# Scanly
 
+**[Website](https://www.usescanly.co.in)** · **[Get it on Google Play](https://play.google.com/store/apps/details?id=in.c1ph3rj.scanly)** · **[Docs](https://www.usescanly.co.in/docs)** · **[Privacy](https://www.usescanly.co.in/privacy-policy)**
+
 <p align="center">
   <img src="screenshots/scanly-intro.png" alt="Scanly intro screenshot" width="900" />
 </p>
 
-Scanly is an offline-first Android document scanner built with Kotlin, Jetpack Compose, and Material 3.
+Scanly is a free, open-source, offline-first **document scanner for Android** — scan paper, receipts, notes, and ID cards into clean PDFs on your phone with no account, no ads, no watermark, and no cloud upload. Built with Kotlin, Jetpack Compose, and Material 3.
 
 It is designed for a practical, local-only scanning workflow:
 
@@ -13,6 +15,20 @@ It is designed for a practical, local-only scanning workflow:
 3. refine pages with editing tools
 4. store and organize multi-page documents locally, including collections
 5. export as PDF or image sets
+
+## Why Scanly
+
+- **Works fully offline** — scanning, editing, storage, and export run on your device.
+- **No account or sign-up** — open the app and start scanning.
+- **No ads, no watermark, and no subscription** for core scanning.
+- **Documents stay on your device** until you export or share them.
+- **Open source (AGPL-3.0-only)** — the privacy claims are verifiable in the code.
+- **A privacy-first alternative** to cloud scanners like CamScanner, Adobe Scan, and the retired Microsoft Lens (Microsoft retired Lens in early 2026).
+
+## Download
+
+- **Google Play:** [Scanly on Google Play](https://play.google.com/store/apps/details?id=in.c1ph3rj.scanly)
+- **Website:** [www.usescanly.co.in](https://www.usescanly.co.in)
 
 ## Highlights
 
@@ -69,7 +85,7 @@ It is designed for a practical, local-only scanning workflow:
 
 - `app/` – Android application source and module build files
 - `docs/` – complete project documentation (start at [docs/README.md](docs/README.md))
-- `scanly-web/` – separately versioned React website checkout that renders GitHub-backed marketing content and these docs
+- `scanly-web/` – separately versioned React website checkout that renders GitHub-backed marketing content and these docs — live at https://www.usescanly.co.in
 - `gradle/` – wrapper and version catalog configuration
 
 ## Current Architecture
@@ -125,6 +141,16 @@ For an additional verification pass:
 | [SECURITY.md](SECURITY.md) | Vulnerability reporting |
 | [Agents.md](Agents.md) | AI coding agent guidance |
 | [LICENSE](LICENSE) | GNU AGPL-3.0-only |
+
+## Links
+
+- Website: [https://www.usescanly.co.in](https://www.usescanly.co.in)
+- Google Play: [https://play.google.com/store/apps/details?id=in.c1ph3rj.scanly](https://play.google.com/store/apps/details?id=in.c1ph3rj.scanly)
+- Docs: [https://www.usescanly.co.in/docs](https://www.usescanly.co.in/docs)
+- llms.txt (AI-readable summary): [https://www.usescanly.co.in/llms.txt](https://www.usescanly.co.in/llms.txt)
+- Privacy policy: [https://www.usescanly.co.in/privacy-policy](https://www.usescanly.co.in/privacy-policy)
+- Terms: [https://www.usescanly.co.in/terms-and-conditions](https://www.usescanly.co.in/terms-and-conditions)
+- Source: [https://github.com/c1ph3rj/Scanly](https://github.com/c1ph3rj/Scanly)
 
 ## License
 

@@ -42,7 +42,7 @@ import kotlinx.coroutines.launch
 import androidx.compose.runtime.rememberCoroutineScope
 
 internal const val DEVELOPER_PORTFOLIO_URL = "https://c1ph3rj.in"
-internal const val PROJECT_WEBSITE_URL = "https://scanly.c1ph3rj.in"
+internal const val PROJECT_WEBSITE_URL = "https://www.usescanly.co.in"
 internal const val SUPPORT_EMAIL = "info@c1ph3rj.in"
 
 @Composable
