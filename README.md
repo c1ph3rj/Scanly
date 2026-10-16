@@ -52,26 +52,6 @@ It is designed for a practical, local-only scanning workflow:
   </tr>
 </table>
 
-### Tablet
-
-<table>
-  <tr>
-	<td><img src="screenshots/tablet/image-1.jpeg" alt="Scanly tablet screenshot 1" width="100%" /></td>
-	<td><img src="screenshots/tablet/image-2.jpeg" alt="Scanly tablet screenshot 2" width="100%" /></td>
-	<td><img src="screenshots/tablet/image-3.jpeg" alt="Scanly tablet screenshot 3" width="100%" /></td>
-  </tr>
-  <tr>
-	<td><img src="screenshots/tablet/image-4.jpeg" alt="Scanly tablet screenshot 4" width="100%" /></td>
-	<td><img src="screenshots/tablet/image-5.jpeg" alt="Scanly tablet screenshot 5" width="100%" /></td>
-	<td><img src="screenshots/tablet/image-6.jpeg" alt="Scanly tablet screenshot 6" width="100%" /></td>
-  </tr>
-  <tr>
-	<td><img src="screenshots/tablet/image-7.jpeg" alt="Scanly tablet screenshot 7" width="100%" /></td>
-	<td><img src="screenshots/tablet/image-8.jpeg" alt="Scanly tablet screenshot 8" width="100%" /></td>
-	<td><img src="screenshots/tablet/image-9.jpeg" alt="Scanly tablet screenshot 9" width="100%" /></td>
-  </tr>
-</table>
-
 ## Tech Stack
 
 - Kotlin
