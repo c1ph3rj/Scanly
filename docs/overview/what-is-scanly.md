@@ -1,5 +1,7 @@
 # Scanly: a private document scanner built for real life
 
+Website: https://www.usescanly.co.in · Google Play: https://play.google.com/store/apps/details?id=in.c1ph3rj.scanly
+
 Scanly is an Android document scanner that I built around a simple idea: scanning a document should feel quick, reliable, and private.
 
 When I scan something, I do not want to create an account, start a subscription, or send a personal document to a remote service just to turn it into a PDF. I wanted a tool that could handle the whole process on the phone, from capturing a page to exporting the finished document.

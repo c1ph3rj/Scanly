@@ -50,11 +50,11 @@ enum class LegalDocumentType(
     val title: String,
 ) {
     Privacy(
-        url = "https://scanly.c1ph3rj.in/privacy-policy",
+        url = "https://www.usescanly.co.in/privacy-policy",
         title = "Privacy Policy",
     ),
     Terms(
-        url = "https://scanly.c1ph3rj.in/terms-and-conditions",
+        url = "https://www.usescanly.co.in/terms-and-conditions",
         title = "Terms & Conditions",
     ),
 }
