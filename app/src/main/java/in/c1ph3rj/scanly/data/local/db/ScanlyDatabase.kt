@@ -6,13 +6,17 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import `in`.c1ph3rj.scanly.data.local.db.dao.DocumentDao
 import `in`.c1ph3rj.scanly.data.local.db.dao.DocumentGroupDao
+import `in`.c1ph3rj.scanly.data.local.db.dao.PageMarkupDao
 import `in`.c1ph3rj.scanly.data.local.db.dao.PageTextDao
 import `in`.c1ph3rj.scanly.data.local.db.dao.ScanPageDao
+import `in`.c1ph3rj.scanly.data.local.db.dao.SignatureDao
 import `in`.c1ph3rj.scanly.data.local.db.entity.DocumentEntity
 import `in`.c1ph3rj.scanly.data.local.db.entity.DocumentGroupEntity
+import `in`.c1ph3rj.scanly.data.local.db.entity.PageMarkupEntity
 import `in`.c1ph3rj.scanly.data.local.db.entity.PageTextEntity
 import `in`.c1ph3rj.scanly.data.local.db.entity.PageTextFtsEntity
 import `in`.c1ph3rj.scanly.data.local.db.entity.ScanPageEntity
+import `in`.c1ph3rj.scanly.data.local.db.entity.SignatureEntity
 import `in`.c1ph3rj.scanly.domain.model.PageFilterPreset
 
 @Database(
@@ -22,8 +26,10 @@ import `in`.c1ph3rj.scanly.domain.model.PageFilterPreset
         DocumentGroupEntity::class,
         PageTextEntity::class,
         PageTextFtsEntity::class,
+        SignatureEntity::class,
+        PageMarkupEntity::class,
     ],
-    version = 6,
+    version = 7,
     exportSchema = false,
 )
 abstract class ScanlyDatabase : RoomDatabase() {
@@ -34,6 +40,10 @@ abstract class ScanlyDatabase : RoomDatabase() {
     abstract fun documentGroupDao(): DocumentGroupDao
 
     abstract fun pageTextDao(): PageTextDao
+
+    abstract fun signatureDao(): SignatureDao
+
+    abstract fun pageMarkupDao(): PageMarkupDao
 
     companion object {
         val MIGRATION_1_2: Migration = object : Migration(1, 2) {
@@ -178,6 +188,29 @@ abstract class ScanlyDatabase : RoomDatabase() {
                         "tokenize=unicode61, content=`page_texts`)",
                 )
                 PAGE_TEXT_FTS_TRIGGERS.forEach(db::execSQL)
+            }
+        }
+
+        /**
+         * Adds saved signatures and per-page sign markups. DDL mirrors Room's generated schema
+         * exactly so validation passes.
+         */
+        val MIGRATION_6_7: Migration = object : Migration(6, 7) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL(
+                    "CREATE TABLE IF NOT EXISTS `signatures` (`id` TEXT NOT NULL, `kind` TEXT NOT NULL, " +
+                        "`source` TEXT NOT NULL, `imagePath` TEXT NOT NULL, `widthPx` INTEGER NOT NULL, " +
+                        "`heightPx` INTEGER NOT NULL, `createdAtMillis` INTEGER NOT NULL, " +
+                        "`updatedAtMillis` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+                )
+                db.execSQL(
+                    "CREATE INDEX IF NOT EXISTS `index_signatures_updatedAtMillis` ON `signatures` (`updatedAtMillis`)",
+                )
+                db.execSQL(
+                    "CREATE TABLE IF NOT EXISTS `page_markups` (`pageId` TEXT NOT NULL, `marksJson` TEXT NOT NULL, " +
+                        "`baseImagePath` TEXT NOT NULL, `updatedAtMillis` INTEGER NOT NULL, PRIMARY KEY(`pageId`), " +
+                        "FOREIGN KEY(`pageId`) REFERENCES `scan_pages`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+                )
             }
         }
 

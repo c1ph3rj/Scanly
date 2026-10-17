@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.withTransaction
 import androidx.work.WorkManager
 import dagger.hilt.android.qualifiers.ApplicationContext
+import `in`.c1ph3rj.scanly.data.sign.DefaultSignatureRepository
 import `in`.c1ph3rj.scanly.core.common.ScanlyDispatchers
 import `in`.c1ph3rj.scanly.core.common.ScanlyError
 import `in`.c1ph3rj.scanly.core.common.ScanlyResult
@@ -58,6 +59,7 @@ class DefaultAppDataRepository @Inject constructor(
                     }
                     documentStorageManager.clearAllDocumentStorage()
                     exportCacheDirectory().deleteRecursively()
+                    DefaultSignatureRepository.signaturesRoot(context).deleteRecursively()
                     legacyArchiveWorkingDirectory().deleteRecursively()
                     legacyArchiveJournalDirectory().deleteRecursively()
                     thumbnailCache.clearAll()
