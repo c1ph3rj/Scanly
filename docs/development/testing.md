@@ -1,6 +1,6 @@
 ﻿# Testing
 
-Test coverage and how to run tests in Scanly **v1.0.17**.
+Test coverage and how to run tests in Scanly **v1.0.18**.
 
 ## Running tests
 
@@ -17,7 +17,7 @@ Test coverage and how to run tests in Scanly **v1.0.17**.
 
 ## Unit tests (`app/src/test/`)
 
-**50 test classes** covering core logic, plus in-memory repository fakes under `testing/`:
+**78 JVM test source files** cover core logic, plus in-memory repository fakes under `testing/`:
 
 | Area | Test files |
 | --- | --- |
@@ -28,9 +28,11 @@ Test coverage and how to run tests in Scanly **v1.0.17**.
 | Formatting | `StorageFormatterTest`, `DocumentPresentationFormatterTest`, `DocumentPreviewPathResolverTest` |
 | Domain models | `DocumentCornerModelTest`, `ExportDestinationTest`, `PageFilterPresetTest`, `PdfExportOptionsTest` |
 | Feature logic | `LibraryUiStateTest`, `DocumentDetailSelectionResolverTest`, `PageImagePreviewSelectionResolverTest`, `SuggestDocumentTitleUseCaseTest`, `ScanlyLaunchActionTest`, `LibraryCardPresentationTest`, `DocumentPageTilePresentationTest` |
-| Flow / use case | `DocumentLibraryFlowTest`, `ScanSessionAndPageEditFlowTest`, `ExportArchiveAndClearDataFlowTest`, `ToolsSettingsAndLaunchActionFlowTest` |
+| Page text search | `LibrarySearchRankerTest`, `NameMatcherTest`, `RecentSearchesTest`, `SearchQueryTest`, `SnippetParserTest`, `SpellingSuggesterTest`, `DocumentKindClassifierTest`, `TextReflowTest` |
+| Signing | `InkStrokeBuilderTest`, `SignGeometryTest`, `SignMarkCodecTest`, `SignEditorControllerTest`, `SignOverlayGeometryTest` |
+| Flow / use case | `DocumentLibraryFlowTest`, `ScanSessionAndPageEditFlowTest`, `ExportAndClearDataFlowTest`, `ToolsSettingsAndLaunchActionFlowTest` |
 | Updates | `AppUpdateDialogCooldownTest`, `ReleaseMarkdownParserTest`, `AppVersionComparatorTest`, `GitHubAppUpdateRepositoryTest`, `PlayInAppUpdatePolicyTest` |
-| Backup/export | `LibraryArchivePolicyTest`, `PdfPageLayoutResolverTest` |
+| Export | `PdfPageLayoutResolverTest` |
 | Tools presentation | `PdfReaderPresentationTest`, `PdfToolPresentationTest`, `QrToolPresentationTest` |
 
 ### Placement convention
@@ -50,6 +52,7 @@ app/src/test/java/in/c1ph3rj/scanly/{matching/package}/YourTest.kt
 | `OnboardingScreenTest.kt` | Compose UI test for onboarding screen |
 | `OpenCvPageFilterProcessorTest.kt` | Device-side OpenCV filter engine checks (flatten, color marks, preview/save parity) |
 | `ExampleInstrumentedTest.kt` | Package name smoke test |
+| `LibraryRedesignTest.kt` | Library screen layout and key actions |
 
 Device UI tests use Android Test Orchestrator and clear app data between cases. Full run/install instructions: [running-and-testing.md](running-and-testing.md).
 
@@ -61,7 +64,7 @@ These call shipped use cases with in-memory fakes (no device):
 | --- | --- |
 | `DocumentLibraryFlowTest` | Document/group lifecycle, library visibility, page reorder/delete |
 | `ScanSessionAndPageEditFlowTest` | Scan add vs retake routes, import cap, crop/filter/adjust |
-| `ExportArchiveAndClearDataFlowTest` | PDF/ZIP export, backup restore Replace vs Merge, clear-all-data |
+| `ExportAndClearDataFlowTest` | PDF/ZIP export, export-cache cleanup, clear-all-data |
 | `ToolsSettingsAndLaunchActionFlowTest` | QR, PDF toolkit, prefs/onboarding, launch-action redirects |
 
 ## Coverage gaps
@@ -70,7 +73,7 @@ Still not covered on-device or with real I/O (prioritized):
 
 1. **Persistence integration** — Room migrations, repository round-trips
 2. **Export end-to-end** — PDF/ZIP bytes from the real exporter and save-to-destination
-3. **Archive end-to-end** — `.scanly` zip round-trip (JVM tests cover Replace vs Merge via in-memory fakes)
+3. **Page-text recognition integration** — bundled ML Kit recognition and background indexing on representative scans
 4. **Capture instrumented** — Camera session on device (gate + multi-model path)
 5. **Settings DataStore** — preference round-trips against real DataStore (JVM tests cover use-case persistence against an in-memory settings store)
 

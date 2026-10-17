@@ -6,7 +6,7 @@ Scanly is an Android document scanner that I built around a simple idea: scannin
 
 When I scan something, I do not want to create an account, start a subscription, or send a personal document to a remote service just to turn it into a PDF. I wanted a tool that could handle the whole process on the phone, from capturing a page to exporting the finished document.
 
-That is what Scanly is. It helps you capture paper documents, improve their readability, keep pages together in a local library, and export them when you are ready to share them.
+That is what Scanly is. It helps you capture paper documents, improve their readability, search the text on their pages, sign PDFs or scans, keep pages together in a local library, and export them when you are ready to share them.
 
 ## The experience I wanted to create
 
@@ -19,7 +19,8 @@ The main flow is deliberately straightforward:
 3. Review the pages and retake only the ones that need another attempt.
 4. Crop, rotate, enhance, and adjust the pages in the editor.
 5. Arrange the document in the local library and place it in a folder if needed.
-6. Export the result as a PDF or image archive, or share it directly.
+6. Search recognized page text or read and correct the extracted text.
+7. Add editable marks to a scan or sign a PDF, then export the result or share it directly.
 
 The app keeps the original captures available, so editing a page does not mean losing the source image. That makes it easier to try a different crop or filter later without starting the scan again.
 
@@ -45,10 +46,11 @@ As the project grew, Scanly became more than a camera screen. I added the surrou
 
 - Home gives quick access to recent documents, folders, scanning, importing, and creating new items.
 - Library lets you search, sort, rename, delete, and organise documents.
+- Search can find words recognized on scanned pages; the bundled ML Kit model runs on-device.
 - Tools brings scanning, gallery import, QR scanning and generation, and PDF utilities into one place.
-- PDF utilities support reading, merging, compressing, password protection, and watermarking.
+- PDF utilities support reading, merging, compressing, password protection, watermarking, and signing.
+- Saved signatures and initials can be reused on PDFs or placed on scans, where they remain editable.
 - Widgets and launcher shortcuts let you start common actions without opening the app first.
-- Backup and restore let you create a portable local library archive when you want an extra copy of your work.
 
 I wanted these features to feel like part of the same workflow. A person should be able to scan a document, organise it, prepare a PDF, and share it without having to move between several unrelated apps.
 
@@ -56,7 +58,7 @@ I wanted these features to feel like part of the same workflow. A person should 
 
 Scanly is offline-first by design. The core scanning, editing, storage, and export workflows run locally on the device. There is no account system, cloud document library, or automatic upload of scanned pages.
 
-This approach also makes the product easier to understand. Your documents live in your local library. You decide when to export, share, or copy a backup. The app does not quietly turn a private scan into data that needs to be stored somewhere else.
+This approach also makes the product easier to understand. Your documents live in your local library. You decide when to export or share them. The app does not quietly turn a private scan into data that needs to be stored somewhere else.
 
 ## How I built it
 
@@ -65,11 +67,11 @@ Scanly is a single-module Android application built with Kotlin and Jetpack Comp
 - `feature/` contains screens and ViewModels.
 - `navigation/` defines the app destinations and user flows.
 - `domain/` contains models, repository contracts, and use cases.
-- `data/` handles Room, DataStore, local files, exports, updates, and backups.
+- `data/` handles Room, DataStore, local files, page-text indexing, signatures, exports, and updates.
 - `core/` contains shared UI, machine learning, OpenCV processing, and utilities.
 - `di/` contains the Hilt dependency wiring.
 
-The main technologies are Kotlin, Jetpack Compose, Material 3, CameraX, LiteRT, OpenCV, Room, DataStore, WorkManager, Hilt, and Coroutines with Flow.
+The main technologies are Kotlin, Jetpack Compose, Material 3, CameraX, ML Kit Text Recognition, LiteRT, OpenCV, Room, DataStore, WorkManager, Hilt, and Coroutines with Flow.
 
 The processing path is intentionally local and layered. A captured image is normalised, checked, analysed for document corners, perspective-corrected, enhanced, and then saved as a processed page with a thumbnail. The raw capture remains available underneath that result.
 
@@ -83,7 +85,7 @@ I have also tried to keep the app calm and focused. The interface should make th
 
 ## What Scanly is not
 
-Scanly is not intended to be a cloud document platform or a replacement for a full enterprise records system. It does not currently focus on OCR, cloud collaboration, scheduled cloud backups, or account-based document synchronisation.
+Scanly is not intended to be a cloud document platform or a replacement for a full enterprise records system. Page OCR and search run on-device; the app does not provide cloud collaboration, scheduled cloud backups, or account-based document synchronisation.
 
 The focus is narrower and more practical: capture, improve, organise, and export documents privately on Android.
 

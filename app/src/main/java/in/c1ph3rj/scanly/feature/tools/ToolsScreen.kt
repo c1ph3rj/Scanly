@@ -58,7 +58,7 @@ fun ToolsRoute(
     val snackbarHostState = remember { SnackbarHostState() }
 
     val importImagesLauncher = rememberLauncherForActivityResult(
-        contract = ImageImportSupport.pickMultipleVisualMediaContract(),
+        contract = ImageImportSupport.pickImagesContract(),
     ) { uris ->
         if (uris.isNotEmpty()) {
             viewModel.importImagesAsDocument(uris)

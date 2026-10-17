@@ -41,8 +41,8 @@ app/
     ├── debug/                         # Local debug update binding
     ├── githubRelease/                 # GitHub release update binding
     ├── playStoreRelease/              # Google Play release update binding
-    ├── test/                          # Unit tests (40 files)
-    └── androidTest/                   # Instrumented tests (3 files)
+    ├── test/                          # JVM tests (78 Kotlin files)
+    └── androidTest/                   # Instrumented tests (6 Kotlin files)
 ```
 
 ## Key source files
@@ -52,13 +52,13 @@ app/
 | `MainActivity.kt` | App shell |
 | `ScanlyApplication.kt` | Hilt application |
 | `navigation/ScanlyNavHost.kt` | Navigation |
-| `data/local/db/ScanlyDatabase.kt` | Room schema (v5) + migrations |
+| `data/local/db/ScanlyDatabase.kt` | Room schema (v7) + migrations |
 | `data/page/DefaultPageRepository.kt` | Capture finalize and page edits |
 | `feature/editor/` | Page editor, Filters/Adjust overlays, crop route |
 | `data/export/DefaultDocumentExportRepository.kt` | Export |
 | `data/storage/DocumentStorageManager.kt` | File I/O |
-| `data/archive/LibraryArchiveEngine.kt` | `.scanly` backup, validation, and restore |
-| `data/archive/LibraryArchiveWorker.kt` | Foreground WorkManager backup/restore |
+| `data/text/` | Page-text recognition, search, and background indexing |
+| `data/sign/` | Reusable signatures and editable page markups |
 | `data/export/DefaultExportStorageRepository.kt` | Save exports to configured destination |
 | `core/ml/` | Corner detector, document gate, book/quad policies, automatic model selector |
 | `core/processing/` | Filters, adjustments, perspective warp |

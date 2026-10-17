@@ -58,7 +58,8 @@ private val CaptionGap = 8.dp
 private val CrossSize = 12.dp
 private val CrossGap = 6.dp
 private val CrossStroke = 1.5.dp
-private val PadButtonSize = 36.dp
+/** 48dp touch target (was 36dp); Undo and Clear sit next to each other. */
+private val PadButtonSize = 48.dp
 private val PadButtonIconSize = 18.dp
 private val PadButtonInset = 8.dp
 

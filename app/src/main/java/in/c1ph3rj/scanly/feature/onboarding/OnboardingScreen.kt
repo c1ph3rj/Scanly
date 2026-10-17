@@ -586,9 +586,13 @@ private fun OnboardingAction(
                     .testTag(ScanlyTestTags.ONBOARDING_GET_STARTED),
                 shape = MaterialTheme.shapes.large,
                 contentPadding = PaddingValues(horizontal = 22.dp),
+                // Disabled colours must stay primary: the default disabled container is a light grey,
+                // which hid the onPrimary spinner while the app was completing onboarding.
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.primary,
                     contentColor = MaterialTheme.colorScheme.onPrimary,
+                    disabledContainerColor = MaterialTheme.colorScheme.primary,
+                    disabledContentColor = MaterialTheme.colorScheme.onPrimary,
                 ),
             ) {
                 if (isCompleting) {

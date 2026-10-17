@@ -27,7 +27,7 @@
     "id": "import_gallery",
     "category": "Scanning",
     "question": "Can I import pages from my gallery?",
-    "answer": "Yes. Tap the raised scan button in the bottom bar and choose Import from gallery, or use Import from the Add page options. You can pick up to 10 photos for each import."
+    "answer": "Yes. Tap the raised scan button in the bottom bar and choose Import from gallery, or use Import from the Add page options. The system file picker opens so you can choose images from any folder, and you can pick up to 50 images for each import."
   },
   {
     "id": "crop_rotate",
@@ -231,7 +231,7 @@
     "id": "data_sharing",
     "category": "Privacy & storage",
     "question": "Does Scanly send my data anywhere or show ads?",
-    "answer": "Scanly's privacy policy says it does not sell personal data and includes no advertising or third-party analytics. The app asks only for camera and internet access. Photos are picked with Android's photo picker, so Scanly does not get broad access to your gallery."
+    "answer": "Scanly's privacy policy says it does not sell personal data and includes no advertising or third-party analytics. The app asks only for camera and internet access. Images are picked with Android's system file picker, so Scanly only gets access to the files you choose."
   },
   {
     "id": "storage_space",

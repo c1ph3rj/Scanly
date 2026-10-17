@@ -8,6 +8,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- **PDF to JPG** (Tools → PDF) — pick a PDF, choose pages, JPG or PNG, and sharing (1240 px) or print (2480 px, 300 dpi A4) size. Images save to Pictures/Scanly and can be shared all at once or a few at a time.
+
+### Changed
+
+- **New document covers** — documents without a scanned page yet get a redesigned generated cover: a dark brand-teal field, a stack of tilted sheets crossed by a scan beam, and the title set large at the bottom. Each document keeps its own colour (teal, midnight, ember or lime), picked from its title. Existing empty documents pick up the new cover when you rename them.
+
+## [1.0.18] - 2026-10-17
+
+### Added
+
 - **Sign documents** — a new **Sign** tool (Tools → PDF) places your signature, initials, today's date, text or a checkbox tick on any PDF from your phone or your Scanly library, then saves a signed copy to Downloads/Scanly or shares it. Marks can be dragged, resized from their corners, recoloured (navy, black, blue, red), duplicated or deleted, on any page.
 - **Sign a scan in place** — document menu → **Sign document** stamps the marks into the scanned pages, so previews, thumbnails and every export include them. They stay editable: open Sign again to move or remove them, and they survive crop, filter and retake edits.
 - **Your signatures** — draw a signature or initials on a smooth, pressure-aware pad, or upload a photo of your signature on paper (Scanly lifts the ink off the background; transparent PNGs work too). Saved signatures stay on this phone and can be managed from the editor.
@@ -34,7 +44,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Technical
 
-- Room schema **6** adds `page_texts` and its FTS4 index (`MIGRATION_5_6`); existing pages are read in the background after upgrade.
+- Room schema **7** includes the page-text table and FTS4 index (`MIGRATION_5_6`) and adds saved signatures and per-page markups (`MIGRATION_6_7`). Existing pages are indexed in the background after upgrade.
 
 ### Fixed
 

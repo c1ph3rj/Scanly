@@ -11,7 +11,10 @@ files/documents/{documentId}/
 ├── raw/
 │   └── page_001.jpg, page_002.jpg, …    # Immutable captures
 ├── processed/
-│   └── page_001.jpg, page_002.jpg, …    # Derived corrected/filtered output
+│   ├── page_001.jpg, page_002.jpg, …    # Derived corrected/filtered output; signed composite when marked
+│   └── page_001.base.jpg                # Clean image retained while page marks are editable
+├── markups/
+│   └── {markId}.png                     # Private copies of signature images placed on pages
 └── thumbs/
     ├── cover.jpg                         # Document cover thumbnail
     └── page_001.jpg, page_002.jpg, …     # Page list thumbnails
@@ -21,7 +24,11 @@ files/documents/{documentId}/
 | --- | --- | --- |
 | `raw/` | **Immutable** | Original camera capture or imported image |
 | `processed/` | Regenerated on edit | Perspective-corrected, filtered JPEG |
+| `processed/*.base.jpg` | Regenerated on edit | Clean pre-signing page retained while editable marks exist |
+| `markups/` | Regenerated on edit | Page-owned copies of placed signature images |
 | `thumbs/` | Regenerated on edit | Small previews for lists and covers |
+
+Reusable signature ink masks are stored separately under `files/signatures/{signatureId}/ink.png`. They stay on this device; page markups keep private image copies so deleting a reusable signature does not change a signed page.
 
 ## Design rules
 
@@ -33,8 +40,8 @@ files/documents/{documentId}/
 
 | Path | Purpose |
 | --- | --- |
-| `cache/library-archive/` | Restore staging workspace |
-| `files/library-archive-journal/` | Durable restore recovery journal |
+| `cache/library-archive/` | Legacy restore workspace; cleaned up after the backup/restore feature was removed |
+| `files/library-archive-journal/` | Legacy restore journal; cleaned up after the backup/restore feature was removed |
 | `databases/scanly.db` (+ `-wal`, `-shm`) | Room database |
 
 ## Export cache
@@ -48,18 +55,17 @@ cache/exports/group_{groupId}/  # Group merged PDF or zipped PDFs
 
 Export cache can be cleared without losing library data. It is included in storage usage reporting and wiped by clear-all-data.
 
-## User-visible exports and backups
+## User-visible exports
 
 Generated cache artifacts are copied to shared storage when the user chooses Save:
 
 ```text
 Downloads/Scanly/                 # Default direct-save destination
-└── backup/                       # Reserved for .scanly backups
 ```
 
-A Storage Access Framework tree selected in Settings replaces `Downloads/Scanly` as the base. Normal exports use the base; Scanly creates and manages its lowercase `backup` child. Persisted access is required, existing names receive numeric suffixes, and partial writes are removed after failure or cancellation.
+A Storage Access Framework tree selected in Settings replaces `Downloads/Scanly` as the export base. Persisted access is required, existing names receive numeric suffixes, and partial writes are removed after failure or cancellation.
 
-`.scanly` is a ZIP container with a versioned manifest, entity metadata, exact raw/processed/thumbnail assets, sizes, and SHA-256 checksums. Settings, export cache, SQLite files, and previous backups are excluded.
+Library backup and restore were removed in v1.0.18. See [library-backup.md](library-backup.md) for the retained legacy format notes.
 
 ## Thumbnail cache
 
@@ -92,10 +98,9 @@ Processed JPEG output (from `PageImageProcessor`):
 | --- | --- |
 | Documents | All files under `files/documents/` |
 | Export cache | All files under `cache/exports/` |
-| Database | `scanly.db` file size |
-| Archive workspace | Restore staging and recovery journals |
+| Database & search index | `scanly.db` and its `-wal` / `-shm` files, including the page-text search index |
 
-Displayed in Settings via `StorageFormatter`.
+Displayed in Settings via `StorageFormatter`. Legacy archive workspaces are not counted; they are removed during upgrade cleanup.
 
 ## Clear all data
 
@@ -103,9 +108,10 @@ Displayed in Settings via `StorageFormatter`.
 
 1. `database.clearAllTables()` — all Room records
 2. Delete every directory under `files/documents/`
-3. Delete `cache/exports/`
-4. `thumbnailCache.clearAll()`
-5. Delete backup/restore workspace files; completed external `.scanly` backups are kept
+3. Delete `files/signatures/`
+4. Delete `cache/exports/`
+5. `thumbnailCache.clearAll()`
+6. Delete leftover legacy backup/restore workspace files
 
 **Destructive and irreversible.** Requires user confirmation in Settings.
 

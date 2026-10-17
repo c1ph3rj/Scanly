@@ -146,7 +146,6 @@ class DocumentSignViewModel @Inject constructor(
     }
 
     override fun onCleared() {
-        _pageBitmaps.value.values.forEach { it.recycle() }
         _pageBitmaps.value = emptyMap()
         super.onCleared()
     }
@@ -214,7 +213,10 @@ class DocumentSignViewModel @Inject constructor(
         evictDistantPages()
     }
 
-    /** Removes and recycles decoded pages farther than [KeptPageRadius] from the current page. */
+    /**
+     * Drops decoded pages farther than [KeptPageRadius] from the current page. They are not
+     * recycled: the UI may still draw them for a frame, and drawing a recycled bitmap crashes.
+     */
     private fun evictDistantPages() {
         val center = editor.state.value.currentPage
         val (kept, evicted) = _pageBitmaps.value.entries.partition { entry ->
@@ -222,7 +224,6 @@ class DocumentSignViewModel @Inject constructor(
         }
         if (evicted.isEmpty()) return
         _pageBitmaps.value = kept.associate { entry -> entry.key to entry.value }
-        evicted.forEach { entry -> entry.value.recycle() }
     }
 
     private companion object {

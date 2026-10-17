@@ -1,6 +1,6 @@
 ﻿# Features
 
-Complete inventory of Scanly features as of **v1.0.17**.
+Complete inventory of Scanly features as of **v1.0.18**.
 
 ## Home dashboard
 
@@ -8,7 +8,7 @@ Complete inventory of Scanly features as of **v1.0.17**.
 
 - Shows up to **8 recent documents** and **6 recent groups** as paper-shaped cards (same language as Library)
 - Quick actions: **Scan**, **Import**, **Folder**
-- **Gallery import** — pick up to 10 images to start a new document
+- **Gallery import** — pick up to 50 images from the system file picker to start a new document
 - **Default names** — new document and folder dialogs open with a duplicate-safe suggested name selected; a clear control empties the field, and **Suggest name** cycles date-based formats
 - Shortcut into the full Library
 - Adaptive layout: bottom navigation on phone, navigation rail on tablet
@@ -17,7 +17,7 @@ Complete inventory of Scanly features as of **v1.0.17**.
 
 - Primary place to search, browse, and manage all content
 - **Three filter pills:** All, Folders (groups), Documents — rounded Material 3 surfaces (not underline tabs)
-- **Search** across document and group titles
+- **Search** across document and group titles, with page-text matches in the dedicated search screen
 - **Six sort options** (name, date created, date updated — ascending and descending)
 - Paper-shaped document and folder cards with title and compact metadata; tap opens the item
 - Rename, move, delete, and remove-from-folder from a single overflow or long-press menu (not always-visible icon rows)
@@ -25,6 +25,15 @@ Complete inventory of Scanly features as of **v1.0.17**.
 - Move documents between groups or create a new group inline when moving
 - Open document detail or group detail from any list item
 - **All tab semantics:** foldered documents appear under their group, not in the main All list (unless searching)
+
+### Search inside scans
+
+- ML Kit Text Recognition v2 reads pages on-device using the bundled model; page images and recognized text are not uploaded
+- Library search can match recognized or corrected page text as well as document and folder names
+- Results include highlighted excerpts and page numbers; documents with page-text matches rank above name-only matches
+- Prefix matching, accent/case folding, exact quoted phrases, typo-tolerant names, correction suggestions, and filters for Everywhere / Names / Text in pages and document type
+- Open extracted text in **Text** view or **On page** view; copy, share, edit recognized text, or inspect text regions over the scan
+- Page indexing runs in the background after capture, import, retake, or edits; search indicates when pages are still being indexed
 
 ## Document scanning (camera session)
 
@@ -56,7 +65,7 @@ Complete inventory of Scanly features as of **v1.0.17**.
 Fourth bottom-nav tab, grouped into **Scan**, **PDF**, and **Utilities**:
 
 - **Scan a document** — create a document and open the camera session
-- **Images to PDF** — gallery import (max 10 images) into a new document
+- **Images to PDF** — gallery import (max 50 images) into a new document
 - **QR code** — opens straight into scanning; Create is a tab on the same screen
 
 ### QR code
@@ -81,6 +90,15 @@ Operate on **device PDFs** (system document picker) or **Scanly library document
 | Compress | High / Balanced / Smallest quality via page re-encode; result shows the saving and before/after sizes, with "Try another quality" |
 | Password | Unlocked files open **Add password** (strength meter, live match check, optional **Restrict editing**); locked files open **Remove password**. AES-256 |
 | Watermark | Live preview from the production engine pinned above the controls; presets (CONFIDENTIAL, DRAFT, COPY, For KYC use only) and optional date; Tiled or Single; diagonal or horizontal; size and opacity sliders; Grey / Red / Blue / Teal; all pages or first page. Stamps follow page rotation, single stamps always fit the page, and tiles run in even rows along the stamp angle |
+| Sign | Place signatures, initials, dates, text, and checkboxes on PDFs from the phone or Scanly library; move, resize, recolour, duplicate, or delete marks on any page; save or share a new signed PDF |
+
+## Sign documents
+
+- Create reusable signatures or initials by drawing on the signature pad or importing a photo and extracting the ink; transparent PNGs are supported
+- Manage saved signatures on the device and reuse them in PDF or scan signing
+- Sign a PDF as a separate output; the source PDF is not overwritten
+- Sign a Scanly document in place. Marks are composited into its page image and remain editable from the Sign screen; crop, filter, and retake edits preserve them
+- Mark types are signature image, initials image, text, date, and checkbox; choose navy, black, blue, or red ink
 
 ## Document detail
 
@@ -141,20 +159,23 @@ Main **Settings** hub keeps a short list; details open as sub-screens:
 | Hub | Sub-screen | Highlights |
 | --- | --- | --- |
 | Appearance | `settings/appearance` | Theme (System/Light/Dark), pure black AMOLED option |
-| Storage & backup | `settings/storage` | Usage, export path, backup/restore, empty cleanup, clear all |
+| Storage | `settings/storage` | Usage, export path, clear temporary exports, clean empty items, clear all |
 | Document detection | `settings/detection` | Automatic or manual models, document gate, model benchmark |
 | Widgets | `settings/widgets` | Pin Actions / Scan / QR |
-| Help & FAQ | `settings/faq` | Bundled FAQ topics |
+| Help & FAQ | `settings/faq` | Searchable, category-filtered FAQ with 46 answers |
 | About | `settings/about` | Version, updates, support links, privacy/terms/licenses |
 
-### Storage & backup (`settings/storage`)
+- **Rate Scanly** — a dismissible Settings card and permanent row open the same Google Play rating; a Home reminder may appear after a completed export, share, or PDF tool and is limited to once every 30 days
 
-- **Storage usage** — documents, export cache, database, and archive workspace bytes
+### Storage (`settings/storage`)
+
+- **Storage usage** — documents, export cache, and database
 - **Save location** — exports default to `Downloads/Scanly`; custom base folder via SAF folder picker
-- **Library backup** — exact compressed `.scanly` archives under `{destination}/backup/` after free-space preflight
-- **Library restore** — validate and stage a `.scanly` archive; **Replace** or **Merge as copies**
+- **Temporary exports** — clear generated export files without removing the document library
 - **Library cleanup** — remove empty documents / empty folders
 - **Clear all data** — destructive wipe of library and caches (with confirmation)
+
+Library backup and restore were removed in v1.0.18.
 
 ## Onboarding
 

@@ -97,8 +97,9 @@ class ToolsViewModel @Inject constructor(
                                 _events.emit(
                                     ToolsEvent.ShowMessage(
                                         ImageImportSupport.importResultMessage(
-                                            importedCount = cappedSelection.items.size,
+                                            importedCount = importResult.value.importedCount,
                                             truncated = cappedSelection.truncated,
+                                            skippedCount = importResult.value.skippedCount,
                                         ),
                                     ),
                                 )

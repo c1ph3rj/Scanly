@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -157,12 +158,15 @@ private fun AnimatedRatingStars(onRate: () -> Unit) {
     }
 
     Row(
+        // Min height sits inside the clickable so the whole 48dp row is the target
+        // (padding applied after clickable was not tappable).
         modifier = Modifier
+            .defaultMinSize(minHeight = 48.dp)
             .clickable(role = Role.Button, onClick = onRate)
             .semantics(mergeDescendants = true) {
                 contentDescription = "Rate Scanly, opens Google Play"
-            }
-            .padding(vertical = 4.dp),
+            },
+        verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(6.dp),
     ) {
         scales.forEach { scale ->

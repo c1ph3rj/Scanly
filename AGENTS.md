@@ -8,7 +8,7 @@ Guidance for AI coding agents working in the Scanly repository.
 
 - Single-module Android app (`:app`) using Kotlin + Jetpack Compose + Material 3.
 - Package: `in.c1ph3rj.scanly` — escape `in` as ``package `in`.c1ph3rj.scanly``.
-- Current version: `1.0.17` (version code `17`) — see `app/build.gradle.kts`, [VERSION.md](VERSION.md).
+- Current version: `1.0.18` (version code `18`) — see `app/build.gradle.kts`, [VERSION.md](VERSION.md).
 - Entry point: `MainActivity.kt` → onboarding gate → `ScanlyNavHost`.
 - Offline-first document scanner: camera capture, page editing, local persistence, PDF/image export, on-device page text (OCR) and full-text search.
 
@@ -19,8 +19,8 @@ app/src/main/java/in/c1ph3rj/scanly/
 ├── ui/theme/          # ScanlyTheme, colors, typography
 ├── navigation/        # ScanlyDestination, ScanlyNavHost
 ├── feature/           # Screens + ViewModels (home, library, tools, camera, editor, widgets, …)
-├── domain/            # Models, repository interfaces, use cases (73 classes)
-├── data/              # Room, storage, export, archive, settings, update implementations
+├── domain/            # Models, repository interfaces, use cases
+├── data/              # Room, storage, export, text, signing, settings, update implementations
 ├── core/              # ML (corners + gate), OpenCV filter engine, editing math, shared UI utilities
 └── di/                # Hilt modules (+ flavor-specific update bindings)
 ```
@@ -63,7 +63,7 @@ app/src/main/java/in/c1ph3rj/scanly/
 - Page text lives in `page_texts` with an FTS4 external-content index `page_texts_fts` (Room triggers keep it in sync — always replace rows with delete + insert, never `REPLACE`). `page_texts_terms` (fts4aux) is created on open for spelling suggestions. `TextIndexScheduler` re-reads any page whose `updatedAtMillis` differs from its text row, so features never need to call the indexer.
 - ML model assets under `app/src/main/assets/models/`: corner variants (Lite/Standard/High/Accurate) + `scanly_document_gate_float16.tflite` (keep `noCompress += "tflite"`).
 - Document detection prefs in DataStore: live/post models, automatic selection, document gate; pure black theme is separate (`pure_black_enabled`).
-- Gallery import limit: 10 images (`ImageImportSupport`).
+- Gallery import limit: 50 images via the system file picker (`ImageImportSupport`).
 - Export saves go to `Downloads/Scanly` by default; custom SAF trees persist via DataStore (`export_tree_uri`, `export_tree_label`).
 
 ## Navigation Quick Reference
@@ -83,7 +83,7 @@ Typed routes (real flows):
 - `document/{documentId}/text?page={page}&query={query}` — extracted text (Text / On page views)
 - `settings/appearance`, `settings/detection`, `settings/widgets`, `settings/about`, `settings/faq`, `settings/licenses`, `settings/storage`, `settings/model-benchmark` — settings hub sub-screens
 - `tools/qr` — QR scan + generate
-- `tools/pdf/reader`, `tools/pdf/merge`, `tools/pdf/compress`, `tools/pdf/password`, `tools/pdf/watermark`, `tools/pdf/sign` — PDF toolkit
+- `tools/pdf/reader`, `tools/pdf/merge`, `tools/pdf/compress`, `tools/pdf/to-images`, `tools/pdf/password`, `tools/pdf/watermark`, `tools/pdf/sign` — PDF toolkit
 - `document/{documentId}/sign?page={page}` — sign a scan in place (marks composited into `processed/`, clean image kept as `processed/page_NNN.base.jpg`, layer data in `page_markups`)
 - `signatures/manage`, `signatures/create?kind={kind}` — saved signatures (`files/signatures/{id}/ink.png`, black ink alpha masks)
 
@@ -93,7 +93,7 @@ Home-screen widgets / quick actions use `in.c1ph3rj.scanly.action.{SCAN,IMPORT,Q
 
 ## Testing Reality
 
-- Unit tests: `app/src/test/java/in/c1ph3rj/scanly/` (41 files).
+- Unit tests: `app/src/test/java/in/c1ph3rj/scanly/` (78 Kotlin test files).
 - Instrumented: `app/src/androidTest/` (onboarding UI, OpenCV filter processor, smoke).
 - See [docs/development/testing.md](docs/development/testing.md) for gaps.
 

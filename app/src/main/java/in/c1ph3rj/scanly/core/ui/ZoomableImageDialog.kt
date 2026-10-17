@@ -154,9 +154,10 @@ fun ZoomableImageViewer(
         Box(
             modifier = Modifier.fillMaxSize(),
         ) {
-            val imageBitmap by rememberZoomableImageBitmap(imagePath)
+            val imageLoad by rememberZoomableImageBitmap(imagePath)
+            val imageBitmap = imageLoad.bitmap
             when {
-                imageBitmap == null && imagePath != null -> {
+                imageBitmap == null && imageLoad.isLoading -> {
                     Box(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center,
@@ -184,7 +185,7 @@ fun ZoomableImageViewer(
 
                 else -> {
                     ZoomableImageCanvas(
-                        imageBitmap = imageBitmap!!,
+                        imageBitmap = imageBitmap,
                         scale = state.scale,
                         offset = state.offset,
                         onScaleChange = { state.scale = it },
@@ -491,15 +492,23 @@ private fun clampPanOffset(
     )
 }
 
+/** [isLoading] separates "still decoding" from "could not decode", so a broken file is not an endless spinner. */
+private data class ZoomableImageLoad(
+    val bitmap: ImageBitmap?,
+    val isLoading: Boolean,
+)
+
 @Composable
-private fun rememberZoomableImageBitmap(imagePath: String?) = produceState<ImageBitmap?>(
-    initialValue = null,
+private fun rememberZoomableImageBitmap(imagePath: String?) = produceState(
+    initialValue = ZoomableImageLoad(bitmap = null, isLoading = imagePath != null),
     key1 = imagePath,
     key2 = imagePath?.let { path -> File(path).takeIf { it.exists() }?.lastModified() },
 ) {
-    value = withContext(Dispatchers.IO) {
-        imagePath?.let(::decodeZoomableBitmap)?.asImageBitmap()
+    value = value.copy(isLoading = imagePath != null)
+    val decoded = withContext(Dispatchers.IO) {
+        imagePath?.let { path -> runCatching { decodeZoomableBitmap(path) }.getOrNull() }?.asImageBitmap()
     }
+    value = ZoomableImageLoad(bitmap = decoded, isLoading = false)
 }
 
 private fun decodeZoomableBitmap(path: String) =

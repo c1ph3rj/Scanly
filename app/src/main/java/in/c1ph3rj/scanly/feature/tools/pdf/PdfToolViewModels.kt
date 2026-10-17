@@ -182,23 +182,18 @@ abstract class BasePdfToolViewModel(
                     rendered.value.recycle()
                     return@launch
                 }
-                val previous = _uiState.value.resultPreview
                 _uiState.update { it.copy(resultPreview = rendered.value) }
-                if (previous !== rendered.value) previous?.recycle()
             }
         }
     }
 
     protected fun recycleResultPreview() {
         resultPreviewJob?.cancel()
-        val previous = _uiState.value.resultPreview
         _uiState.update { it.copy(resultPreview = null, resultSizeBytes = null) }
-        previous?.recycle()
     }
 
     override fun onCleared() {
         resultPreviewJob?.cancel()
-        _uiState.value.resultPreview?.recycle()
         super.onCleared()
     }
 

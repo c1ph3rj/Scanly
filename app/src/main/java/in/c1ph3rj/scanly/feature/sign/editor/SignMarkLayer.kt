@@ -4,6 +4,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.awaitTouchSlopOrCancellation
@@ -72,8 +73,8 @@ import kotlin.math.roundToInt
 /** Visible corner handle radius (12dp circle). */
 private val HandleVisualRadius = 6.dp
 
-/** Radius around a corner that still grabs the handle (24dp touch target). */
-private val HandleTouchRadius = 12.dp
+/** Radius around a corner that still grabs the handle: 24dp radius = 48dp touch target. */
+private val HandleTouchRadius = 24.dp
 
 private val ToolbarGap = 8.dp
 private val SelectionDashOn = 6.dp
@@ -397,7 +398,7 @@ private fun SelectedMarkToolbar(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Box {
-                IconButton(onClick = { inkMenuOpen = true }, modifier = Modifier.size(40.dp)) {
+                IconButton(onClick = { inkMenuOpen = true }, modifier = Modifier.size(48.dp)) {
                     InkDot(color = Color(mark.ink.argb))
                 }
                 DropdownMenu(
@@ -425,7 +426,7 @@ private fun SelectedMarkToolbar(
             if (mark is SignMark.Checkbox) {
                 IconButton(
                     onClick = { onAction(SignEditorAction.ToggleCheck(mark.id)) },
-                    modifier = Modifier.size(40.dp),
+                    modifier = Modifier.size(48.dp),
                 ) {
                     Icon(
                         imageVector = if (mark.checked) Icons.Outlined.CheckBox else Icons.Outlined.CheckBoxOutlineBlank,
@@ -437,7 +438,7 @@ private fun SelectedMarkToolbar(
             }
             IconButton(
                 onClick = { onAction(SignEditorAction.Duplicate(mark.id)) },
-                modifier = Modifier.size(40.dp),
+                modifier = Modifier.size(48.dp),
             ) {
                 Icon(
                     imageVector = Icons.Outlined.ContentCopy,
@@ -448,7 +449,7 @@ private fun SelectedMarkToolbar(
             }
             IconButton(
                 onClick = { onAction(SignEditorAction.Delete(mark.id)) },
-                modifier = Modifier.size(40.dp),
+                modifier = Modifier.size(48.dp),
             ) {
                 Icon(
                     imageVector = Icons.Outlined.Delete,
@@ -479,19 +480,27 @@ private fun InkSwatch(
     selected: Boolean,
     onClick: () -> Unit,
 ) {
+    // 48dp touch target around a 32dp dot. Clip before clickable so the ripple stays round.
     Box(
         modifier = Modifier
-            .size(32.dp)
-            .border(
-                width = if (selected) 2.dp else 0.dp,
-                color = MaterialTheme.colorScheme.primary,
-                shape = CircleShape,
-            )
-            .padding(4.dp)
-            .background(color = Color(ink.argb), shape = CircleShape)
+            .size(48.dp)
+            .clip(CircleShape)
             .clickable(onClick = onClick)
             .semantics { contentDescription = ink.label },
-    )
+        contentAlignment = Alignment.Center,
+    ) {
+        Box(
+            modifier = Modifier
+                .size(32.dp)
+                .border(
+                    width = if (selected) 2.dp else 0.dp,
+                    color = MaterialTheme.colorScheme.primary,
+                    shape = CircleShape,
+                )
+                .padding(4.dp)
+                .background(color = Color(ink.argb), shape = CircleShape),
+        )
+    }
 }
 
 private fun lockAspectFor(mark: SignMark): Boolean = mark is SignMark.Image || mark is SignMark.Checkbox

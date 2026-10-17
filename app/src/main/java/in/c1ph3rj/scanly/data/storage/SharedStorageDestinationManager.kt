@@ -34,6 +34,7 @@ class SharedStorageDestinationManager @Inject constructor(
         require(source.isFile && source.length() > 0L) { "The exported file is unavailable." }
         return when (val destination = currentDestination()) {
             ExportDestination.DefaultDownloadsScanly -> writeMediaStoreFile(
+                collection = MediaStore.Downloads.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY),
                 relativePath = DEFAULT_EXPORT_RELATIVE_PATH,
                 requestedName = fileName,
                 mimeType = mimeType,
@@ -50,7 +51,24 @@ class SharedStorageDestinationManager @Inject constructor(
         }
     }
 
+    /**
+     * Saves an image into the shared gallery under Pictures/Scanly. Images always go here, not
+     * to the configured export folder, so they show up in Photos/Gallery straight away.
+     */
+    fun saveImageToGallery(source: File, fileName: String, mimeType: String): SavedExport {
+        require(source.isFile && source.length() > 0L) { "The exported image is unavailable." }
+        return writeMediaStoreFile(
+            collection = MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY),
+            relativePath = GALLERY_RELATIVE_PATH,
+            requestedName = fileName,
+            mimeType = mimeType,
+            source = source,
+            destinationLabel = GALLERY_LABEL,
+        )
+    }
+
     private fun writeMediaStoreFile(
+        collection: Uri,
         relativePath: String,
         requestedName: String,
         mimeType: String,
@@ -58,7 +76,6 @@ class SharedStorageDestinationManager @Inject constructor(
         destinationLabel: String,
     ): SavedExport {
         val resolver = context.contentResolver
-        val collection = MediaStore.Downloads.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
         val fileName = uniqueMediaStoreName(collection, relativePath, requestedName)
         val values = ContentValues().apply {
             put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
@@ -165,5 +182,7 @@ class SharedStorageDestinationManager @Inject constructor(
 
     companion object {
         const val DEFAULT_EXPORT_RELATIVE_PATH = "Download/Scanly"
+        const val GALLERY_RELATIVE_PATH = "Pictures/Scanly"
+        const val GALLERY_LABEL = "Pictures/Scanly"
     }
 }

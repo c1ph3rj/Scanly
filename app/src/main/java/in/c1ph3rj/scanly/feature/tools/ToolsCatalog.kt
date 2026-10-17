@@ -6,6 +6,7 @@ import androidx.compose.material.icons.automirrored.outlined.MergeType
 import androidx.compose.material.icons.outlined.Compress
 import androidx.compose.material.icons.outlined.DocumentScanner
 import androidx.compose.material.icons.outlined.Draw
+import androidx.compose.material.icons.outlined.Image
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.PhotoLibrary
 import androidx.compose.material.icons.outlined.QrCode2
@@ -16,6 +17,7 @@ import `in`.c1ph3rj.scanly.navigation.ToolsPdfMergeDestination
 import `in`.c1ph3rj.scanly.navigation.ToolsPdfPasswordDestination
 import `in`.c1ph3rj.scanly.navigation.ToolsPdfReaderDestination
 import `in`.c1ph3rj.scanly.navigation.ToolsPdfSignDestination
+import `in`.c1ph3rj.scanly.navigation.ToolsPdfToImagesDestination
 import `in`.c1ph3rj.scanly.navigation.ToolsPdfWatermarkDestination
 import `in`.c1ph3rj.scanly.navigation.ToolsQrDestination
 
@@ -26,6 +28,7 @@ enum class ToolActionId {
     Qr,
     PdfMerge,
     PdfCompress,
+    PdfToImages,
     PdfPassword,
     PdfWatermark,
     PdfReader,
@@ -86,6 +89,13 @@ val pdfTools: List<ToolItem> = listOf(
         caption = "Make it smaller",
         icon = Icons.Outlined.Compress,
         route = ToolsPdfCompressDestination.route,
+    ),
+    ToolItem(
+        id = ToolActionId.PdfToImages,
+        title = "PDF to JPG",
+        caption = "Pages as images",
+        icon = Icons.Outlined.Image,
+        route = ToolsPdfToImagesDestination.route,
     ),
     ToolItem(
         id = ToolActionId.PdfPassword,

@@ -765,14 +765,20 @@ private fun SearchLanding(
                                 Icon(Icons.Outlined.History, contentDescription = null, Modifier.size(18.dp))
                             },
                             trailingIcon = {
-                                Icon(
-                                    Icons.Filled.Close,
-                                    contentDescription = "Remove $recent from recent searches",
+                                // 48dp hit box around the 18dp glyph; the icon alone was a tiny target.
+                                Box(
                                     modifier = Modifier
-                                        .size(18.dp)
+                                        .size(48.dp)
                                         .clip(CircleShape)
-                                        .clickable { onRemoveRecent(recent) },
-                                )
+                                        .clickable(role = Role.Button) { onRemoveRecent(recent) },
+                                    contentAlignment = Alignment.Center,
+                                ) {
+                                    Icon(
+                                        Icons.Filled.Close,
+                                        contentDescription = "Remove $recent from recent searches",
+                                        modifier = Modifier.size(18.dp),
+                                    )
+                                }
                             },
                             shape = CircleShape,
                         )

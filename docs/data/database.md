@@ -1,6 +1,6 @@
 # Database (Room)
 
-Scanly persists document metadata in a **Room** database at schema version **5**.
+Scanly persists document metadata in a **Room** database at schema version **7**.
 
 ## Database file
 
@@ -8,7 +8,7 @@ Scanly persists document metadata in a **Room** database at schema version **5**
 | --- | --- |
 | Class | `ScanlyDatabase` |
 | Path | `databases/scanly.db` (+ `-wal`, `-shm`) under app internal storage |
-| Schema version | `5` |
+| Schema version | `7` |
 | `exportSchema` | `false` |
 
 Location: `app/src/main/java/in/c1ph3rj/scanly/data/local/db/ScanlyDatabase.kt`
@@ -65,6 +65,20 @@ Unique constraint: `(documentId, pageIndex)`
 
 Index: `updatedAtMillis`
 
+### `page_texts` (`PageTextEntity`)
+
+One row per scanned page, with recognized text, an optional user correction, the text used for search, normalized text-layout blocks, source image dimensions, and recognition timestamps. `pageId` is unique and references `scan_pages` with cascade delete; `documentId` is indexed.
+
+`page_texts_fts` is an FTS4 external-content index over `searchText`. Room-managed triggers keep it synchronized. Rows are replaced with delete + insert so the triggers run. `page_texts_terms` is an FTS4 vocabulary table created idempotently when the database opens.
+
+### `signatures` (`SignatureEntity`)
+
+Saved signatures and initials with source type, app-private image path, dimensions, and creation/update timestamps. Indexed by `updatedAtMillis`.
+
+### `page_markups` (`PageMarkupEntity`)
+
+One row per signed Scanly page, containing serialized marks, the clean base-image path, and update time. `pageId` is the primary key and cascades with its `scan_pages` row. The visible `processed` image contains the composite; the base image lets the user edit or remove marks later.
+
 ## DAOs
 
 | DAO | Key operations |
@@ -72,6 +86,9 @@ Index: `updatedAtMillis`
 | `DocumentDao` | Observe all/recent/ungrouped/by-group; CRUD; update snapshots |
 | `ScanPageDao` | Observe by document; CRUD; reorder (update indices) |
 | `DocumentGroupDao` | Observe all/recent; CRUD; join stats (doc count, page count, cover) |
+| `PageTextDao` | Read/write per-page OCR text, FTS search, and index progress |
+| `SignatureDao` | Observe, save, and delete saved signatures |
+| `PageMarkupDao` | Read/write per-page markups |
 
 ## Migrations
 
@@ -112,6 +129,14 @@ Registered in `DatabaseModule` with `MIGRATION_1_2` and `MIGRATION_2_3`.
 
 The mapping comes from `PageFilterPreset.legacyStorageMigrations`, so the migration and `PageFilterPreset.fromStorage` stay in sync. Registered in `DatabaseModule` after `MIGRATION_3_4`.
 
+### `MIGRATION_5_6`
+
+Creates `page_texts`, its FTS4 external-content table, the page/document indexes, and synchronization triggers. Existing pages have no text rows yet; the background indexer recognizes them after upgrade.
+
+### `MIGRATION_6_7`
+
+Creates `signatures` and `page_markups`, including the signature timestamp index and the markup-to-page foreign key. Existing document pages and their images are unchanged.
+
 ## Repository mapping
 
 | Repository | DAOs used |
@@ -121,12 +146,16 @@ The mapping comes from `PageFilterPreset.legacyStorageMigrations`, so the migrat
 | `DefaultGroupRepository` | `DocumentGroupDao`, `DocumentDao` |
 | `DefaultDocumentExportRepository` | `DocumentDao`, `ScanPageDao`, `DocumentGroupDao` |
 | `DefaultAppDataRepository` | `ScanlyDatabase.clearAllTables()` |
+| `DefaultPageTextRepository` | `PageTextDao`, `ScanPageDao`, `DocumentDao` |
+| `DefaultSignatureRepository` | `SignatureDao` and app-private signature image files |
+| `DefaultPageMarkupRepository` | `PageMarkupDao`, page/document DAOs, page image files |
 
 ## Upgrade notes
 
-- Upgrading from v1.0.0: Room migrates automatically from schema 1 or 2 to 3.
+- Upgrading from v1.0.0: Room migrates automatically from schema 1 or 2 through schema 7.
 - Existing documents remain; they appear ungrouped until moved into a collection.
-- Upgrading to schema 5 (filter overhaul): `MIGRATION_4_5` adds `filterIntensity` and remaps legacy presets.
+- Upgrading from schema 5: Room runs `MIGRATION_5_6` and `MIGRATION_6_7`; page-text indexing resumes in the background.
+- Upgrading from schema 6: `MIGRATION_6_7` adds saved signatures and editable page markups.
 - No manual migration steps required.
 
 See [../releases.md](../releases.md) and [../../VERSION.md](../../VERSION.md).

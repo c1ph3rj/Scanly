@@ -1,6 +1,7 @@
 package `in`.c1ph3rj.scanly.feature.camera
 
 import android.Manifest
+import android.util.Log
 import android.util.Size
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -72,6 +73,8 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.draw.clipToBounds
@@ -952,7 +955,8 @@ private fun CaptureButton(
                 onClick = onClick,
                 enabled = !busy,
                 modifier = Modifier
-                    .fillMaxSize(),
+                    .fillMaxSize()
+                    .semantics { contentDescription = if (replacement) "Replace page" else "Capture" },
                 shape = CircleShape,
                 color = when {
                     busy -> colorScheme.primary
@@ -1173,6 +1177,7 @@ private fun CameraPreview(
     val analysisExecutor = remember { Executors.newSingleThreadExecutor() }
     var previewView by remember { mutableStateOf<PreviewView?>(null) }
     var focusIndicatorOffset by remember { mutableStateOf<Offset?>(null) }
+    var cameraError by remember { mutableStateOf<String?>(null) }
 
     LaunchedEffect(focusIndicatorOffset) {
         if (focusIndicatorOffset != null) {
@@ -1194,16 +1199,17 @@ private fun CameraPreview(
         } else {
             val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
             var disposed = false
-            val listener = Runnable {
-                if (disposed) {
-                    return@Runnable
-                }
-                val cameraProvider = cameraProviderFuture.get()
+            var imageAnalysisRef: ImageAnalysis? = null
+
+            /** Returns false when the view is not attached yet (no display / viewport) so it can retry. */
+            fun bindCamera(cameraProvider: ProcessCameraProvider, view: PreviewView): Boolean {
+                val rotation = view.display?.rotation ?: return false
+                val viewPort = view.viewPort ?: return false
                 val preview = Preview.Builder()
-                    .setTargetRotation(currentPreviewView.display.rotation)
+                    .setTargetRotation(rotation)
                     .build()
                     .also { useCase ->
-                        useCase.surfaceProvider = currentPreviewView.surfaceProvider
+                        useCase.surfaceProvider = view.surfaceProvider
                     }
                 val imageCaptureResolutionSelector = ResolutionSelector.Builder()
                     .setAspectRatioStrategy(AspectRatioStrategy.RATIO_4_3_FALLBACK_AUTO_STRATEGY)
@@ -1215,7 +1221,7 @@ private fun CameraPreview(
                     .setJpegQuality(CaptureJpegQuality)
                     .build()
                     .apply {
-                        targetRotation = currentPreviewView.display.rotation
+                        targetRotation = rotation
                     }
                 val imageAnalysis = ImageAnalysis.Builder()
                     .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
@@ -1223,7 +1229,7 @@ private fun CameraPreview(
                     .setTargetResolution(AnalysisResolution)
                     .build()
                     .apply {
-                        targetRotation = currentPreviewView.display.rotation
+                        targetRotation = rotation
                         var lastAcceptedFrameNanos = 0L
                         setAnalyzer(analysisExecutor) { imageProxy ->
                             try {
@@ -1241,7 +1247,7 @@ private fun CameraPreview(
                             }
                         }
                     }
-                val viewPort = currentPreviewView.viewPort ?: return@Runnable
+                imageAnalysisRef = imageAnalysis
                 val useCaseGroup = UseCaseGroup.Builder()
                     .setViewPort(viewPort)
                     .addUseCase(preview)
@@ -1255,7 +1261,34 @@ private fun CameraPreview(
                     CameraSelector.DEFAULT_BACK_CAMERA,
                     useCaseGroup,
                 )
-                onCameraReady(imageCapture, currentPreviewView, boundCamera)
+                onCameraReady(imageCapture, view, boundCamera)
+                return true
+            }
+
+            var bindAttempts = 0
+
+            val listener = object : Runnable {
+                override fun run() {
+                    if (disposed) {
+                        return
+                    }
+                    // Camera start-up throws on devices without a back camera, when another app holds
+                    // the camera, or when the use-case combination is unsupported. Show an error
+                    // instead of crashing; manual retry is leaving and reopening the screen.
+                    try {
+                        if (bindCamera(cameraProviderFuture.get(), currentPreviewView)) {
+                            cameraError = null
+                        } else if (++bindAttempts < MaxCameraBindAttempts) {
+                            // doOnLayout fires once; retry shortly instead of leaving a black preview.
+                            currentPreviewView.postDelayed(this, CameraBindRetryDelayMillis)
+                        } else {
+                            cameraError = "Camera couldn't start. Leave this screen and open it again."
+                        }
+                    } catch (error: Exception) {
+                        Log.w(CameraPreviewTag, "Could not start the camera.", error)
+                        cameraError = "Camera couldn't start. Close other apps using the camera and try again."
+                    }
+                }
             }
 
             currentPreviewView.doOnLayout {
@@ -1265,8 +1298,10 @@ private fun CameraPreview(
             }
             onDispose {
                 disposed = true
+                currentPreviewView.removeCallbacks(listener)
+                imageAnalysisRef?.clearAnalyzer()
                 if (cameraProviderFuture.isDone) {
-                    cameraProviderFuture.get().unbindAll()
+                    runCatching { cameraProviderFuture.get().unbindAll() }
                 }
             }
         }
@@ -1304,6 +1339,22 @@ private fun CameraPreview(
             focusOffset = focusIndicatorOffset,
             modifier = Modifier.fillMaxSize(),
         )
+        cameraError?.let { message ->
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.72f))
+                    .padding(24.dp),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    text = message,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = Color.White,
+                    textAlign = TextAlign.Center,
+                )
+            }
+        }
     }
 }
 
@@ -1499,7 +1550,7 @@ private fun capturePage(
     onSaved: () -> Unit,
     onFailure: (String) -> Unit,
 ) {
-    imageCapture.targetRotation = previewView.display.rotation
+    previewView.display?.let { display -> imageCapture.targetRotation = display.rotation }
     val outputFile = File(draft.rawImagePath)
     outputFile.parentFile?.mkdirs()
     val outputOptions = ImageCapture.OutputFileOptions.Builder(outputFile).build()
@@ -1592,6 +1643,9 @@ private val OverlayGrid = Color(0x22FFFFFF)
 private val OverlayGuide = Color(0xC2FFFFFF)
 private val OverlayWarning = Color(0xFFFFC857)
 private const val RgbaPixelStride = 4
+private const val CameraPreviewTag = "ScanCameraPreview"
+private const val MaxCameraBindAttempts = 10
+private const val CameraBindRetryDelayMillis = 100L
 private const val AnalysisFramesPerSecond = 8L
 private const val AnalysisIntervalNanos = 1_000_000_000L / AnalysisFramesPerSecond
 private const val TapFocusAutoCancelSeconds = 3L

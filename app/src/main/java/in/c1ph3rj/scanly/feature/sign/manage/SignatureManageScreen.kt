@@ -252,11 +252,13 @@ private fun SavedMarkCard(
                 .padding(12.dp),
             contentDescription = "Saved ${signature.kind.label.lowercase()}",
         )
+        // 48dp, inset from the card corner so the touch target is not clipped by the rounded edge.
         IconButton(
             onClick = onDelete,
             modifier = Modifier
                 .align(Alignment.TopEnd)
-                .size(40.dp),
+                .padding(4.dp)
+                .size(48.dp),
         ) {
             Icon(
                 imageVector = Icons.Outlined.Delete,

@@ -55,6 +55,9 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -393,10 +396,12 @@ private fun QualityOptionCard(
     selected: Boolean,
     onClick: () -> Unit,
 ) {
+    // onClick goes to ToolCard (Surface) so the ripple is clipped to the 14dp corners.
     ToolCard(
         modifier = Modifier
             .fillMaxWidth()
-            .selectable(selected = selected, role = Role.RadioButton, onClick = onClick),
+            .semantics { this.selected = selected; role = Role.RadioButton },
+        onClick = onClick,
         selected = selected,
     ) {
         Row(

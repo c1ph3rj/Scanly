@@ -147,11 +147,9 @@ class SignatureCreateViewModel @Inject constructor(
     /** Uses the picked image (a content or file URI string) as the upload source and extracts its ink. */
     fun onImagePicked(uriString: String) {
         if (_uiState.value.isSaving) return
-        val previous = _uiState.value.uploadPreview
         _uiState.update {
             it.copy(uploadUri = uriString, uploadPreview = null, uploadError = null, isExtracting = false)
         }
-        previous?.recycle()
         scheduleExtraction(debounceMs = 0L)
     }
 
@@ -160,11 +158,9 @@ class SignatureCreateViewModel @Inject constructor(
         if (_uiState.value.isSaving) return
         extractRequest++
         extractJob?.cancel()
-        val previous = _uiState.value.uploadPreview
         _uiState.update {
             it.copy(uploadUri = null, uploadPreview = null, uploadError = null, isExtracting = false)
         }
-        previous?.recycle()
     }
 
     /** Opens the page list for a scanned document, or closes it when [documentId] is null. */
@@ -230,16 +226,12 @@ class SignatureCreateViewModel @Inject constructor(
             }
             when (result) {
                 is ScanlyResult.Success -> {
-                    val previous = _uiState.value.uploadPreview
                     _uiState.update { it.copy(uploadPreview = result.value, isExtracting = false) }
-                    if (previous !== result.value) previous?.recycle()
                 }
                 is ScanlyResult.Failure -> {
-                    val previous = _uiState.value.uploadPreview
                     _uiState.update {
                         it.copy(uploadPreview = null, isExtracting = false, uploadError = result.error.message)
                     }
-                    previous?.recycle()
                 }
             }
         }
@@ -257,7 +249,6 @@ class SignatureCreateViewModel @Inject constructor(
 
     override fun onCleared() {
         extractJob?.cancel()
-        _uiState.value.uploadPreview?.recycle()
         super.onCleared()
     }
 

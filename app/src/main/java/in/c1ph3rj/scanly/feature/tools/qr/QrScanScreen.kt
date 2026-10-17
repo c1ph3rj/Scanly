@@ -318,7 +318,7 @@ private fun QrScanHeader(
             Surface(
                 onClick = onToggleTorch,
                 modifier = Modifier
-                    .size(44.dp)
+                    .size(48.dp)
                     .semantics {
                         stateDescription = if (torchEnabled) "On" else "Off"
                     },
@@ -540,7 +540,7 @@ private fun QrFoundCard(
                         overflow = TextOverflow.Ellipsis,
                     )
                 }
-                IconButton(onClick = onDetails, modifier = Modifier.size(44.dp)) {
+                IconButton(onClick = onDetails, modifier = Modifier.size(48.dp)) {
                     Icon(
                         imageVector = Icons.Outlined.ChevronRight,
                         contentDescription = "Details",

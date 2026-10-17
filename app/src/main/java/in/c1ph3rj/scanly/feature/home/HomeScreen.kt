@@ -58,7 +58,7 @@ fun HomeRoute(
     var createForScan by rememberSaveable { mutableStateOf(false) }
 
     val importImagesLauncher = rememberLauncherForActivityResult(
-        contract = ImageImportSupport.pickMultipleVisualMediaContract(),
+        contract = ImageImportSupport.pickImagesContract(),
     ) { uris ->
         if (uris.isNotEmpty()) {
             viewModel.importImagesAsDocument(uris)

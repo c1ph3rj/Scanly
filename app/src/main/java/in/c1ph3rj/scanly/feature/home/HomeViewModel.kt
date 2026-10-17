@@ -183,8 +183,9 @@ class HomeViewModel @Inject constructor(
                                 _events.emit(
                                     HomeEvent.ShowMessage(
                                         ImageImportSupport.importResultMessage(
-                                            importedCount = cappedSelection.items.size,
+                                            importedCount = importResult.value.importedCount,
                                             truncated = cappedSelection.truncated,
+                                            skippedCount = importResult.value.skippedCount,
                                         ),
                                     ),
                                 )

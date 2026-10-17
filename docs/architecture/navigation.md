@@ -1,6 +1,6 @@
 ﻿# Navigation
 
-All routes and user flows in Scanly **v1.0.17**.
+All routes and user flows in Scanly **v1.0.18**.
 
 Navigation is implemented with **Navigation Compose** in `ScanlyNavHost.kt`. Route helpers follow the `*Destination` object pattern with `routePattern` and `route()` factory functions.
 
@@ -41,13 +41,13 @@ These top-level routes still exist but show `FeaturePlaceholderScreen` — they 
 | Route pattern | Helper object | Screen |
 | --- | --- | --- |
 | `document/{documentId}` | `DocumentDestination` | Document detail |
-| `library/search` | `LibrarySearchDestination` | Library name search across documents and folders; owns separate query state |
+| `library/search` | `LibrarySearchDestination` | Search document/folder names and recognized page text; owns query, filters, and result state |
+| `document/{documentId}/text?page={page}&query={query}` | `PageTextDestination` | Extracted text in Text or On page view, with optional search context |
 | `camera/session/{documentId}?replacePageId={pageId}` | `ScanSessionDestination` | Scan session |
 | `preview/page/{pageId}` | `PageImagePreviewDestination` | Page preview |
 | `editor/page/{pageId}` | `PageEditorDestination` | Page editor (preview, filters/adjust overlays, retake, delete) |
 | `crop/page/{pageId}` | `PageCropDestination` | AI detect, rotate, four-point crop, reset, apply |
 
-**Editor overlays (not NavHost routes):** `FilterPickerScreen` and `FilterCustomizeScreen` share `PageEditorViewModel` and replace the editor content in place (same pattern as a full-screen mode, not a bottom sheet).
 | `group/{groupId}` | `GroupDetailDestination` | Group detail |
 | `legal/{documentType}` | `LegalDocumentDestination` | Privacy or terms viewer |
 | `settings/appearance` | `SettingsAppearanceDestination` | Theme + pure black |
@@ -56,7 +56,7 @@ These top-level routes still exist but show `FeaturePlaceholderScreen` — they 
 | `settings/about` | `SettingsAboutDestination` | Version, updates, legal, support |
 | `settings/faq` | `SettingsFaqDestination` | FAQ sub-screen |
 | `settings/licenses` | `SettingsLicensesDestination` | Open-source licenses |
-| `settings/storage` | `SettingsStorageDestination` | Storage & backup |
+| `settings/storage` | `SettingsStorageDestination` | Storage usage, export destination, cleanup, clear data |
 | `settings/model-benchmark` | `SettingsModelBenchmarkDestination` | Temporary local model comparison |
 | `tools/qr` | `ToolsQrDestination` | QR scan, typed result, create, and history (in-route screens) |
 | `tools/pdf/reader?filePath={filePath}&fileName={fileName}` | `ToolsPdfReaderDestination` | PDF reader; optional app-owned result file opens directly |
@@ -64,6 +64,12 @@ These top-level routes still exist but show `FeaturePlaceholderScreen` — they 
 | `tools/pdf/compress` | `ToolsPdfCompressDestination` | PDF compress |
 | `tools/pdf/password` | `ToolsPdfPasswordDestination` | PDF password protect/remove |
 | `tools/pdf/watermark` | `ToolsPdfWatermarkDestination` | PDF text watermark |
+| `tools/pdf/sign` | `ToolsPdfSignDestination` | Sign a device or Scanly library PDF, then save or share the signed copy |
+| `document/{documentId}/sign?page={page}` | `DocumentSignDestination` | Place editable marks on Scanly pages in place |
+| `signatures/manage` | `SignatureManageDestination` | Manage saved signatures and initials |
+| `signatures/create?kind={kind}` | `SignatureCreateDestination` | Draw or import a reusable signature or initials |
+
+**Editor overlays (not NavHost routes):** `FilterPickerScreen` and `FilterCustomizeScreen` share `PageEditorViewModel` and replace the editor content in place (same pattern as a full-screen mode, not a bottom sheet).
 
 ### Back behavior
 
@@ -102,8 +108,6 @@ Widget or quick action (Scan)
         └─► (after onboarding) suggest title + create document
               └─► camera/session/{newDocId}
 ```
-
-## User flow diagrams
 
 ## User flow diagrams
 
@@ -148,7 +152,7 @@ document/{docId}
 
 ```
 Home (new doc) or document/{docId} (add pages)
-  └─► photo picker (≤10 images)
+  └─► system file picker (≤50 images)
         └─► import pipeline (same as capture finalize)
               └─► document/{docId}
 ```
@@ -173,12 +177,23 @@ document/{docId} or group/{groupId}
         └─► Share → cache/exports → FileProvider share sheet
 ```
 
-### Library backup and restore
+### Search page text
 
 ```
-settings → settings/storage
-  ├─► Back up library → WorkManager foreground job → {destination}/backup/*.scanly
-  └─► Restore → pick .scanly in backup folder → Replace or Merge as copies
+Home or Library → library/search
+  └─► Search names or page text
+        ├─► Page result → document/{documentId}/text?page={page}&query={query}
+        └─► Filter by Everywhere / Names / Text in pages or document type
+```
+
+### Sign documents
+
+```
+Tools → Sign PDF → choose phone/library PDF → add marks across pages
+  └─► Review → Save to phone or Share (source PDF remains unchanged)
+
+Document detail → Sign document → place marks on scan pages → save in place
+  └─► Marks remain editable and are included in previews and exports
 ```
 
 ### Settings
@@ -186,7 +201,7 @@ settings → settings/storage
 ```
 settings
   ├─► Look & feel: theme mode + pure black (AMOLED) toggle
-  ├─► settings/storage (usage, destination, backup/restore, clear data)
+  ├─► settings/storage (usage, export destination, temporary-export cleanup, clear data)
   ├─► Document detection: automatic or manual live/post models
   ├─► Document detection: physical-document gate on/off
   ├─► settings/model-benchmark (gate + four corner models on local images)

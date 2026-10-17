@@ -238,7 +238,7 @@ The Screen check reads `PageImageProfile.screenLikely`. `DefaultPageImageProcess
 
 ### Legacy presets
 
-Presets removed in the filter overhaul are remapped to their closest replacement. The Room migration (4 → 5) rewrites stored values, and `PageFilterPreset.fromStorage` maps them on read (for example from an older `.scanly` backup). Unknown values fall back to Original.
+Presets removed in the filter overhaul are remapped to their closest replacement. The Room migration (4 → 5) rewrites stored values, and `PageFilterPreset.fromStorage` maps legacy values when reading stored settings. Unknown values fall back to Original.
 
 | Legacy value | Replaced by | Former name |
 | --- | --- | --- |

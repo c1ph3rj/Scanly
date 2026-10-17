@@ -473,7 +473,7 @@ private fun QueryPill(query: String, matchesOnPage: Int, onClear: () -> Unit, mo
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.widthIn(max = 260.dp),
                 )
-                IconButton(onClick = onClear, modifier = Modifier.size(40.dp)) {
+                IconButton(onClick = onClear, modifier = Modifier.size(48.dp)) {
                     Icon(
                         Icons.Filled.Close,
                         contentDescription = "Stop highlighting",

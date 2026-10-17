@@ -76,7 +76,7 @@ Cache is ephemeral — safe to delete without losing library data. Included in s
 
 ## Save destination
 
-Save actions copy generated artifacts directly to the configured base folder. The default uses `MediaStore.Downloads` with `Download/Scanly`; a custom folder uses its persisted Storage Access Framework tree. Filename collisions receive ` (n)` suffixes. The dedicated lowercase `backup/` child is reserved for `.scanly` library archives and is never used for normal PDF/image exports.
+Save actions copy generated artifacts directly to the configured base folder. The default uses `MediaStore.Downloads` with `Download/Scanly`; a custom folder uses its persisted Storage Access Framework tree. Filename collisions receive ` (n)` suffixes. Library backup and restore were removed in v1.0.18; the app no longer creates a `backup/` child.
 
 ## Share flow
 

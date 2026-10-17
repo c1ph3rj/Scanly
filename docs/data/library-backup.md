@@ -1,6 +1,8 @@
 # Library Backup and Restore
 
-Scanly creates portable, local `.scanly` archives from **Settings → Storage & backup**.
+> **Legacy documentation:** Library backup and restore were removed in v1.0.18. The current app no longer creates or restores `.scanly` archives. The details below describe the retired archive format and earlier behavior.
+
+Earlier versions created portable, local `.scanly` archives from **Settings → Storage & backup**.
 
 ## Destination
 

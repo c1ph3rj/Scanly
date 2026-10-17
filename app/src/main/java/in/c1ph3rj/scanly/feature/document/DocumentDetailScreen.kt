@@ -86,6 +86,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Size
@@ -127,8 +128,10 @@ import `in`.c1ph3rj.scanly.domain.model.GroupTitleFormat
 import `in`.c1ph3rj.scanly.domain.model.PageProcessingState
 import `in`.c1ph3rj.scanly.domain.model.PdfExportOptions
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
+import `in`.c1ph3rj.scanly.domain.model.previewImagePath
 import `in`.c1ph3rj.scanly.domain.model.ScanPage
 import `in`.c1ph3rj.scanly.domain.model.ShareArtifact
+import `in`.c1ph3rj.scanly.feature.components.CachedThumbnail
 import `in`.c1ph3rj.scanly.feature.components.PagePreview
 import `in`.c1ph3rj.scanly.feature.components.ScanlyImportProgressOverlay
 import `in`.c1ph3rj.scanly.core.ui.PreviewDisplaySize
@@ -178,7 +181,7 @@ fun DocumentDetailRoute(
     val context = LocalContext.current
 
     val importImagesLauncher = rememberLauncherForActivityResult(
-        contract = ImageImportSupport.pickMultipleVisualMediaContract(),
+        contract = ImageImportSupport.pickImagesContract(),
     ) { uris ->
         if (uris.isNotEmpty()) {
             viewModel.importImages(uris)
@@ -1004,7 +1007,7 @@ private fun AddPageSheet(
             ExportActionRow(
                 icon = Icons.Filled.PhotoLibrary,
                 title = "Choose images",
-                description = "Pick up to ${ImageImportSupport.MAX_IMAGES_PER_IMPORT} photos from your device",
+                description = "Pick up to ${ImageImportSupport.MAX_IMAGES_PER_IMPORT} images from your files",
                 enabled = true,
                 onClick = onUploadImage,
             )
@@ -1561,10 +1564,10 @@ private fun SelectedPageCard(
         page.createdAtMillis.toReadableDateTime()
     }
     val previewMaxHeight = 280.dp
+    // Surface(onClick) clips the ripple to the rounded shape; a clickable modifier did not.
     Surface(
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable(onClick = onPreview),
+        onClick = onPreview,
+        modifier = modifier.fillMaxWidth(),
         color = MaterialTheme.colorScheme.surfaceContainer,
         shape = MaterialTheme.shapes.large,
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
@@ -1732,7 +1735,9 @@ private fun ReviewToolButton(
         MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.58f)
     }
     Surface(
-        modifier = modifier.clickable(enabled = enabled, onClick = onClick),
+        onClick = onClick,
+        enabled = enabled,
+        modifier = modifier,
         color = resolvedContainerColor,
         shape = MaterialTheme.shapes.medium,
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
@@ -1785,7 +1790,8 @@ private fun PageOverviewTile(
 
     Surface(
         onClick = onClick,
-        modifier = modifier.clip(tileShape),
+        // No outer clip: it cut off the drag shadow. Surface(shape) already clips the ripple.
+        modifier = modifier,
         color = MaterialTheme.colorScheme.surfaceContainer,
         border = BorderStroke(width = tileBorderWidth, color = tileBorderColor),
         shape = tileShape,
@@ -1974,12 +1980,17 @@ private fun DocumentPagePaperPreview(
         tonalElevation = 0.dp,
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
-            PagePreview(
-                page = page,
-                displaySize = if (compact) PreviewDisplaySize.COMPACT else PreviewDisplaySize.CARD,
+            val displaySize = if (compact) PreviewDisplaySize.COMPACT else PreviewDisplaySize.CARD
+            CachedThumbnail(
+                thumbnailPath = page.previewImagePath(displaySize),
+                title = "Page ${page.pageIndex + 1}",
+                displaySize = displaySize,
+                contentRevision = page.updatedAtMillis,
                 modifier = Modifier.fillMaxSize(),
-                minHeight = if (compact) 48.dp else 88.dp,
-                aspectRatio = null,
+                shape = shape,
+                contentScale = ContentScale.Fit,
+                placeholderIcon = null,
+                containerColor = Color.White,
             )
             Surface(
                 modifier = Modifier
@@ -2160,9 +2171,8 @@ private fun PreviewActionButton(
     onClick: () -> Unit,
 ) {
     Surface(
-        modifier = Modifier
-            .size(44.dp)
-            .clickable(onClick = onClick),
+        onClick = onClick,
+        modifier = Modifier.size(48.dp),
         color = Color.Black.copy(alpha = 0.42f),
         contentColor = Color.White,
         shape = MaterialTheme.shapes.large,

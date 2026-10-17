@@ -217,6 +217,9 @@ class DefaultDocumentExportRepository @Inject constructor(
         val groupFileStem = DocumentPresentationFormatter.safeFileStem(group.title)
         val zipFile = File(exportDir, "${groupFileStem}_documents.zip")
         val tempPdfFiles = mutableListOf<File>()
+        // File stems drop case and punctuation (and non-Latin titles become "untitled"), so two
+        // documents can share one; a duplicate ZIP entry would fail the whole export.
+        val usedStems = mutableSetOf<String>()
         var bundledDocuments = 0
 
         try {
@@ -229,7 +232,7 @@ class DefaultDocumentExportRepository @Inject constructor(
                     }
                     if (pageImagePaths.isEmpty()) return@forEachIndexed
 
-                    val docFileStem = DocumentPresentationFormatter.safeFileStem(doc.title)
+                    val docFileStem = uniqueStem(DocumentPresentationFormatter.safeFileStem(doc.title), usedStems)
                     val tempPdf = File(exportDir, "$docFileStem.pdf")
                     tempPdfFiles.add(tempPdf)
                     writePdf(tempPdf, pageImagePaths, options)
@@ -250,6 +253,17 @@ class DefaultDocumentExportRepository @Inject constructor(
     }
 
     // ─── Private helpers ────────────────────────────────────────────────────────
+
+    /** Returns [stem], or `stem_2`, `stem_3`, … when it is already in [used]; records the result. */
+    private fun uniqueStem(stem: String, used: MutableSet<String>): String {
+        var candidate = stem
+        var suffix = 2
+        while (!used.add(candidate)) {
+            candidate = "${stem}_$suffix"
+            suffix++
+        }
+        return candidate
+    }
 
     private suspend fun loadExportInput(documentId: String): ExportInput {
         val document = documentDao.getDocument(documentId) ?: error("Document not found.")

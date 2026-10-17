@@ -336,16 +336,19 @@ private fun GroupDetailScreen(
                 }
             }
 
-            ScanlyExtendedFab(
-                text = "Add documents",
-                onClick = { showAddSheet = true },
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(
-                        end = 16.dp,
-                        bottom = innerPadding.calculateBottomPadding() + 16.dp,
-                    ),
-            )
+            // Hidden while exporting: it sat on top of the progress bar's Cancel button.
+            if (uiState.exportProgress == null) {
+                ScanlyExtendedFab(
+                    text = "Add documents",
+                    onClick = { showAddSheet = true },
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(
+                            end = 16.dp,
+                            bottom = innerPadding.calculateBottomPadding() + 16.dp,
+                        ),
+                )
+            }
         }
     }
 

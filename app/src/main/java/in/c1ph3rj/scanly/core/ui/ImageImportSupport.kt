@@ -1,16 +1,25 @@
 package `in`.c1ph3rj.scanly.core.ui
 
-import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 
 object ImageImportSupport {
-    const val MAX_IMAGES_PER_IMPORT = 10
+    /**
+     * Pages are imported one at a time (decoded, downscaled and recycled per image), so peak
+     * memory does not grow with the count; the cap bounds total import time and storage.
+     */
+    const val MAX_IMAGES_PER_IMPORT = 50
 
-    fun createPickRequest(): PickVisualMediaRequest =
-        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+    private val IMAGE_MIME_TYPES = arrayOf("image/*")
 
-    fun pickMultipleVisualMediaContract(): ActivityResultContracts.PickMultipleVisualMedia =
-        ActivityResultContracts.PickMultipleVisualMedia(MAX_IMAGES_PER_IMPORT)
+    /** MIME filter passed to the system file picker so only images are selectable. */
+    fun createPickRequest(): Array<String> = IMAGE_MIME_TYPES
+
+    /**
+     * Opens the system Files picker (browse any folder, Downloads, Drive, etc.) limited to
+     * images. The picker has no selection limit, so results go through [capSelection].
+     */
+    fun pickImagesContract(): ActivityResultContracts.OpenMultipleDocuments =
+        ActivityResultContracts.OpenMultipleDocuments()
 
     fun <T> capSelection(items: List<T>): CappedSelection<T> {
         if (items.size <= MAX_IMAGES_PER_IMPORT) {
@@ -22,17 +31,21 @@ object ImageImportSupport {
         )
     }
 
-    fun importResultMessage(importedCount: Int, truncated: Boolean): String {
-        val base = if (importedCount == 1) {
-            "Imported 1 image."
-        } else {
-            "Imported $importedCount images."
+    fun importResultMessage(importedCount: Int, truncated: Boolean, skippedCount: Int = 0): String {
+        val parts = mutableListOf(
+            if (importedCount == 1) "Imported 1 image." else "Imported $importedCount images.",
+        )
+        if (skippedCount > 0) {
+            parts += if (skippedCount == 1) {
+                "Skipped 1 file that couldn't be opened."
+            } else {
+                "Skipped $skippedCount files that couldn't be opened."
+            }
         }
-        return if (truncated) {
-            "$base Only $MAX_IMAGES_PER_IMPORT images can be added at a time."
-        } else {
-            base
+        if (truncated) {
+            parts += "Only $MAX_IMAGES_PER_IMPORT images can be added at a time."
         }
+        return parts.joinToString(" ")
     }
 }
 

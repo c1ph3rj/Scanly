@@ -6,18 +6,18 @@ See also [docs/releases.md](docs/releases.md) for release policy and history wit
 
 | Field | Value |
 | --- | --- |
-| Version name | `1.0.17` |
-| Version code | `17` |
+| Version name | `1.0.18` |
+| Version code | `18` |
 | Application ID | `in.c1ph3rj.scanly` |
 | Min SDK | 29 (Android 10) |
 | Target / compile SDK | compile 37 / target 36 |
-| Room schema version | `5` |
-| Release date | 2026-10-14 |
+| Room schema version | `7` |
+| Release date | 2026-10-17 |
 | Branch | `master` |
 
 The version shown in **Settings** is read from `versionName` in `app/build.gradle.kts`.
 
-**Note:** Room schema **4** added per-page filter adjustment columns (`MIGRATION_3_4`). Room schema **5** (shipped in `1.0.17`) adds `filterIntensity` and remaps legacy filter presets (`MIGRATION_4_5`). Older `.scanly` backups restore with identity adjustment defaults and intensity `1`.
+**Database:** Room schema **6** adds on-device page text and its FTS4 search index (`MIGRATION_5_6`). Schema **7** adds saved signatures and editable per-page marks (`MIGRATION_6_7`). Existing pages are indexed after upgrade. Migrations run automatically. Library backup and restore are no longer available in v1.0.18.
 
 ## Versioning Policy
 
@@ -27,6 +27,10 @@ The version shown in **Settings** is read from `versionName` in `app/build.gradl
 - Record user-visible changes in `CHANGELOG.md` and keep this file aligned with the Gradle values.
 
 ## Release History
+
+### 1.0.18 (version code 18)
+
+On-device OCR and page-text search, document-type labels, searchable extracted text, and saved signatures. Sign PDFs or place editable marks on scans; signing supports signatures, initials, text, dates, and checkboxes. Help & FAQ and Settings storage were refreshed, and library backup and restore were removed. Room schema 7. See [CHANGELOG.md](CHANGELOG.md) for full details.
 
 ### 1.0.17 (version code 17)
 

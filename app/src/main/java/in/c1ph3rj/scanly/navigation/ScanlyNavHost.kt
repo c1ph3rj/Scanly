@@ -1,5 +1,6 @@
 package `in`.c1ph3rj.scanly.navigation
 
+import `in`.c1ph3rj.scanly.core.ui.ImageImportSupport
 import `in`.c1ph3rj.scanly.core.ui.ScanlyTestTags
 import `in`.c1ph3rj.scanly.feature.components.ScanlyModalBottomSheet
 import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
@@ -41,6 +42,7 @@ import `in`.c1ph3rj.scanly.feature.tools.pdf.PdfPasswordRoute
 import `in`.c1ph3rj.scanly.feature.tools.pdf.PdfReaderRoute
 import `in`.c1ph3rj.scanly.feature.tools.pdf.PdfWatermarkRoute
 import `in`.c1ph3rj.scanly.feature.tools.pdf.PdfSignRoute
+import `in`.c1ph3rj.scanly.feature.tools.pdf.PdfToImagesRoute
 import `in`.c1ph3rj.scanly.feature.sign.create.SignatureCreateRoute
 import `in`.c1ph3rj.scanly.feature.sign.document.DocumentSignRoute
 import `in`.c1ph3rj.scanly.feature.sign.manage.SignatureManageRoute
@@ -415,7 +417,7 @@ private fun CaptureChooserSheet(onDismiss: () -> Unit) {
             CaptureChoiceRow(
                 icon = Icons.Outlined.PhotoLibrary,
                 title = "Import from gallery",
-                subtitle = "Up to 10 photos",
+                subtitle = "Up to ${ImageImportSupport.MAX_IMAGES_PER_IMPORT} images",
                 onClick = {
                     onDismiss()
                     actions.onImport()
@@ -848,6 +850,17 @@ private fun ScanlyNavHostContent(
                         ToolsPdfReaderDestination.route(artifact.filePath, artifact.fileName),
                     )
                 },
+            )
+        }
+        composable(
+            route = ToolsPdfToImagesDestination.route,
+            enterTransition = { detailPushEnter() },
+            exitTransition = { detailPushExit() },
+            popEnterTransition = { detailPopEnter() },
+            popExitTransition = { detailPopExit() },
+        ) {
+            PdfToImagesRoute(
+                onNavigateUp = navController::navigateUp,
             )
         }
         composable(

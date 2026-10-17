@@ -584,6 +584,9 @@ internal fun PageCropEditor(
         }
         val latestPreviewRect = rememberUpdatedState(previewRect)
         val latestHandlePositions = rememberUpdatedState(handlePositions)
+        // pointerInput(Unit) captures its lambdas once; read the latest callback so the
+        // actionsEnabled gating at the call sites applies to in-flight drags too.
+        val latestOnHandleMoved = rememberUpdatedState(onHandleMoved)
         val latestHandleSelectionRadius = rememberUpdatedState(handleSelectionRadiusPx)
 
         Image(
@@ -625,7 +628,7 @@ internal fun PageCropEditor(
                             change.consume()
                             val clampedOffset = latestPreviewRect.value.clampOffset(change.position)
                             dragOffset = clampedOffset
-                            onHandleMoved(
+                            latestOnHandleMoved.value(
                                 handle,
                                 latestPreviewRect.value.toNormalizedPointClamped(clampedOffset),
                             )

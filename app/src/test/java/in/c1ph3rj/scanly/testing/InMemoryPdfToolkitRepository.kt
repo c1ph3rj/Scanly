@@ -5,8 +5,12 @@ import `in`.c1ph3rj.scanly.core.common.ScanlyResult
 import `in`.c1ph3rj.scanly.domain.model.ExportArtifact
 import `in`.c1ph3rj.scanly.domain.model.PdfCompressQuality
 import `in`.c1ph3rj.scanly.domain.model.PdfDocumentInfo
+import `in`.c1ph3rj.scanly.domain.model.PdfImageExport
+import `in`.c1ph3rj.scanly.domain.model.PdfImageOptions
+import `in`.c1ph3rj.scanly.domain.model.PdfPageImage
 import `in`.c1ph3rj.scanly.domain.model.PdfSignSession
 import `in`.c1ph3rj.scanly.domain.model.PdfToolSource
+import `in`.c1ph3rj.scanly.domain.model.PdfWorkingCopy
 import `in`.c1ph3rj.scanly.domain.model.SignMark
 import `in`.c1ph3rj.scanly.domain.model.SignPageSize
 import `in`.c1ph3rj.scanly.domain.model.WatermarkOptions
@@ -31,6 +35,12 @@ class InMemoryPdfToolkitRepository(
     var lastWatermarkOptions: WatermarkOptions? = null
         private set
     var lastSignedMarks: List<SignMark> = emptyList()
+        private set
+    var lastClosedWorkingCopy: PdfWorkingCopy? = null
+        private set
+    var lastImageExportPageIndexes: List<Int> = emptyList()
+        private set
+    var lastImageExportOptions: PdfImageOptions? = null
         private set
 
     override suspend fun inspect(
@@ -141,6 +151,58 @@ class InMemoryPdfToolkitRepository(
 
     override suspend fun closeSignSession(session: PdfSignSession) {
         File(session.file.filePath).delete()
+    }
+
+    override suspend fun openWorkingCopy(
+        source: PdfToolSource,
+        password: String?,
+    ): ScanlyResult<PdfWorkingCopy> = runLibraryResult("Could not open this PDF.") {
+        val copy = writeArtifact("working_copy.pdf", "application/pdf", "WORKING ${source.displayName()}")
+        PdfWorkingCopy(
+            file = PdfToolSource.AppFile(copy.filePath, source.displayName()),
+            pageCount = 2,
+        )
+    }
+
+    override suspend fun closeWorkingCopy(copy: PdfWorkingCopy) {
+        lastClosedWorkingCopy = copy
+        File(copy.file.filePath).delete()
+    }
+
+    override suspend fun estimatePageImageBytes(
+        copy: PdfWorkingCopy,
+        pageIndex: Int,
+        options: PdfImageOptions,
+    ): ScanlyResult<Long> = runLibraryResult("Could not estimate page size.") {
+        200_000L
+    }
+
+    override suspend fun exportPagesAsImages(
+        copy: PdfWorkingCopy,
+        pageIndexes: List<Int>,
+        options: PdfImageOptions,
+        baseName: String,
+        onProgress: suspend (done: Int, total: Int) -> Unit,
+    ): ScanlyResult<PdfImageExport> = runLibraryResult("Could not export images.") {
+        lastImageExportPageIndexes = pageIndexes
+        lastImageExportOptions = options
+        val images = pageIndexes.mapIndexed { done, index ->
+            val fileName = "$baseName – page ${index + 1}.${options.format.extension}"
+            val artifact = writeArtifact(fileName, options.format.mimeType, "IMAGE ${index + 1}")
+            onProgress(done + 1, pageIndexes.size)
+            PdfPageImage(
+                pageIndex = index,
+                fileName = fileName,
+                filePath = artifact.filePath,
+                contentUri = "content://test/$fileName",
+                sizeBytes = File(artifact.filePath).length(),
+            )
+        }
+        PdfImageExport(
+            images = images,
+            destinationLabel = "Pictures/Scanly",
+            options = options,
+        )
     }
 
     override suspend fun prepareShare(artifact: ExportArtifact): ScanlyResult<List<String>> =

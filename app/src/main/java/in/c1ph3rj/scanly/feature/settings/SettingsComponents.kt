@@ -4,6 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -224,7 +225,10 @@ internal fun SettingsToggleRow(
     modifier: Modifier = Modifier,
 ) {
     Row(
-        modifier = modifier.settingsRowSurface(),
+        // Whole row toggles, not just the 52dp switch. Switch has no handler of its own here.
+        modifier = modifier
+            .settingsRowSurface()
+            .toggleable(value = checked, role = Role.Switch, onValueChange = onCheckedChange),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
@@ -245,7 +249,7 @@ internal fun SettingsToggleRow(
         }
         Switch(
             checked = checked,
-            onCheckedChange = onCheckedChange,
+            onCheckedChange = null,
         )
     }
 }
@@ -797,7 +801,7 @@ internal fun RateScanlyCard(
                     val filled = index < filledStars
                     Box(
                         modifier = Modifier
-                            .size(44.dp)
+                            .size(48.dp)
                             .clip(CircleShape)
                             .clickable(role = Role.Button) {
                                 if (!isRating) {

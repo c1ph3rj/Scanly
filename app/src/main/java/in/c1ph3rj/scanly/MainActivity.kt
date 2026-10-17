@@ -122,7 +122,7 @@ private fun ScanlyApp(
         appUpdateViewModel.onPlayUpdateFlowResult(result.resultCode)
     }
     val importImagesLauncher = rememberLauncherForActivityResult(
-        contract = ImageImportSupport.pickMultipleVisualMediaContract(),
+        contract = ImageImportSupport.pickImagesContract(),
     ) { uris ->
         launchActionViewModel.importImagesAsDocument(uris)
     }

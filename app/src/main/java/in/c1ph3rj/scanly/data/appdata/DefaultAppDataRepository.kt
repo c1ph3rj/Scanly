@@ -34,7 +34,8 @@ class DefaultAppDataRepository @Inject constructor(
             runCatching {
                 AppStorageUsage(
                     documentsBytes = directorySize(documentsDirectory()),
-                    exportCacheBytes = directorySize(exportCacheDirectory()),
+                    exportCacheBytes = directorySize(exportCacheDirectory()) +
+                        directorySize(pdfToolsCacheDirectory()),
                     databaseBytes = databaseFileSize(),
                 )
             }.fold(
@@ -59,6 +60,9 @@ class DefaultAppDataRepository @Inject constructor(
                     }
                     documentStorageManager.clearAllDocumentStorage()
                     exportCacheDirectory().deleteRecursively()
+                    // PDF tool outputs and working copies, including decrypted copies of
+                    // password-protected PDFs, must not survive "Clear all data".
+                    pdfToolsCacheDirectory().deleteRecursively()
                     DefaultSignatureRepository.signaturesRoot(context).deleteRecursively()
                     legacyArchiveWorkingDirectory().deleteRecursively()
                     legacyArchiveJournalDirectory().deleteRecursively()
@@ -83,6 +87,11 @@ class DefaultAppDataRepository @Inject constructor(
                 exportCacheDirectory().listFiles().orEmpty().forEach { entry ->
                     entry.deleteRecursively()
                 }
+                // Skip recent files: a PDF tool that is still open reads its working copy here.
+                val cutoff = System.currentTimeMillis() - PDF_TOOLS_IN_USE_WINDOW_MILLIS
+                pdfToolsCacheDirectory().listFiles().orEmpty()
+                    .filter { entry -> entry.lastModified() < cutoff }
+                    .forEach { entry -> entry.deleteRecursively() }
             }.fold(
                 onSuccess = { ScanlyResult.Success(Unit) },
                 onFailure = { throwable ->
@@ -127,6 +136,9 @@ class DefaultAppDataRepository @Inject constructor(
     private fun exportCacheDirectory(): File =
         File(context.cacheDir, EXPORT_CACHE_DIRECTORY)
 
+    private fun pdfToolsCacheDirectory(): File =
+        File(context.cacheDir, PDF_TOOLS_CACHE_DIRECTORY)
+
     private fun legacyArchiveWorkingDirectory(): File =
         File(context.cacheDir, LEGACY_ARCHIVE_WORK_DIRECTORY)
 
@@ -153,6 +165,9 @@ class DefaultAppDataRepository @Inject constructor(
     private companion object {
         const val DOCUMENTS_DIRECTORY = "documents"
         const val EXPORT_CACHE_DIRECTORY = "exports"
+        /** Matches `DefaultPdfToolkitRepository.toolsDir()`. */
+        const val PDF_TOOLS_CACHE_DIRECTORY = "pdf-tools"
+        const val PDF_TOOLS_IN_USE_WINDOW_MILLIS = 60 * 60 * 1000L
         const val DATABASE_NAME = "scanly.db"
         val DATABASE_FILE_SUFFIXES = listOf("", "-wal", "-shm")
 

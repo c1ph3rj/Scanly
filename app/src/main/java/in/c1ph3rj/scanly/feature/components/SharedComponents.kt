@@ -19,6 +19,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
@@ -448,6 +450,8 @@ fun ScanlyFormDialogShell(
     modifier: Modifier = Modifier,
     horizontalMargin: Dp = 24.dp,
     maxWidth: Dp = 560.dp,
+    /** False while an operation is running: blocks back, scrim and [onDismiss] until it finishes. */
+    dismissible: Boolean = true,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     val windowSizeInfo = rememberWindowSizeInfo()
@@ -455,12 +459,19 @@ fun ScanlyFormDialogShell(
     val horizontalPadding = if (windowSizeInfo.isTablet) 32.dp else horizontalMargin
 
     BasicAlertDialog(
-        onDismissRequest = onDismiss,
+        onDismissRequest = { if (dismissible) onDismiss() },
         modifier = modifier.fillMaxWidth(),
-        properties = DialogProperties(usePlatformDefaultWidth = false),
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false,
+            dismissOnBackPress = dismissible,
+            dismissOnClickOutside = dismissible,
+        ),
     ) {
         Box(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                // Keep the dialog above the keyboard when a text field inside it has focus.
+                .imePadding(),
             contentAlignment = Alignment.Center,
         ) {
             Surface(
@@ -497,7 +508,7 @@ fun ScanlyConfirmDialog(
     dismissEnabled: Boolean = true,
     confirmEnabled: Boolean = true,
 ) {
-    ScanlyFormDialogShell(onDismiss = onDismiss) {
+    ScanlyFormDialogShell(onDismiss = onDismiss, dismissible = dismissEnabled) {
         Text(
             text = title,
             style = MaterialTheme.typography.headlineSmall,
@@ -524,12 +535,14 @@ fun ScanlyConfirmDialog(
                 onClick = onConfirm,
                 enabled = confirmEnabled,
             ) {
+                // Set colour explicitly for the disabled state: a Text colour overrides the button's
+                // disabled content colour, so a disabled destructive action used to look fully enabled.
                 Text(
                     text = confirmLabel,
-                    color = if (confirmDestructive) {
-                        MaterialTheme.colorScheme.error
-                    } else {
-                        MaterialTheme.colorScheme.primary
+                    color = when {
+                        !confirmEnabled -> MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+                        confirmDestructive -> MaterialTheme.colorScheme.error
+                        else -> MaterialTheme.colorScheme.primary
                     },
                 )
             }
@@ -1033,12 +1046,14 @@ fun MoveToFolderSheet(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
+                    // Equal weights: the two actions were packed together on the left, close enough to mis-tap.
                     TextButton(
                         onClick = {
                             creatingFolder = false
                             newFolderName = ""
                             suggestFormatIndex = 0
                         },
+                        modifier = Modifier.weight(1f),
                     ) { Text("Cancel") }
                     Button(
                         onClick = {
@@ -1046,6 +1061,7 @@ fun MoveToFolderSheet(
                             if (name.isNotEmpty()) onCreateFolderAndMove(name)
                         },
                         enabled = newFolderName.isNotBlank() && !isFillingName,
+                        modifier = Modifier.weight(1f),
                     ) { Text("Create & move") }
                 }
             } else {
@@ -1636,12 +1652,13 @@ private fun LibraryCardOverflowButton(
 ) {
     Box(modifier = modifier) {
         if (overlayOnCover) {
+            // 48dp touch target around a 36dp visual scrim, so the hit area is not capped at 36.
             IconButton(
                 onClick = onClick,
-                modifier = Modifier.size(36.dp),
+                modifier = Modifier.size(48.dp),
             ) {
                 Surface(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.size(36.dp),
                     shape = MaterialTheme.shapes.medium,
                     color = Color.Black.copy(alpha = 0.42f),
                     shadowElevation = 0.dp,
@@ -1675,9 +1692,11 @@ private fun LibraryCardOverflowMenu(
         expanded = expanded,
         onDismissRequest = onDismiss,
     ) {
-        actions.forEach { action ->
+        actions.forEachIndexed { index, action ->
             val destructive = action == LibraryCardSecondaryAction.Delete ||
                 action == LibraryCardSecondaryAction.RemoveFromFolder
+            // Separate destructive items so a tap meant for Rename can't land on Delete.
+            if (destructive && index > 0) HorizontalDivider()
             DropdownMenuItem(
                 text = {
                     Text(

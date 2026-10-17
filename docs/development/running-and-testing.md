@@ -61,10 +61,9 @@ If `adb devices` is empty, Android Studio did not start a device, USB debugging 
 | Permission | When |
 | --- | --- |
 | Camera | Scan session / QR scan |
-| Notifications | Backup/restore progress on Android 13+; declining does not block the job |
 | Internet | Optional update check only |
 
-Grant camera when you want to scan. Gallery import uses the system photo picker (no storage permission on current SDKs).
+Grant camera when you want to scan. Gallery import uses the system file picker (`OpenMultipleDocuments`, images only; no storage permission needed).
 
 ### Create an emulator if you have none
 
@@ -97,9 +96,9 @@ After Home is visible:
 1. **Home** — Scan / Import / Folder actions.
 2. **Library** — All / Folders / Documents, search.
 3. **Tools** — QR (scan or generate), PDF workspace.
-4. **Settings** — Appearance, Storage & backup, Document detection.
+4. **Settings** — Appearance, Storage, Document detection.
 
-Live camera, the system photo picker, SAF folder pick, share sheet, widgets, and Play in-app updates are manual-only (not in the automated UI suite).
+Live camera, the system file picker, SAF folder pick, share sheet, widgets, and Play in-app updates are manual-only (not in the automated UI suite).
 
 ## Automated tests
 
@@ -107,7 +106,7 @@ Two layers:
 
 | Layer | Command | Needs device? | What it proves |
 | --- | --- | --- | --- |
-| JVM unit | `./gradlew.bat testDebugUnitTest` | No | Domain use cases, routing helpers, library visibility, export/archive/QR/PDF/settings flows with in-memory fakes |
+| JVM unit | `./gradlew.bat testDebugUnitTest` | No | Domain use cases, routing helpers, library visibility, page-text search, signing, export/QR/PDF/settings flows with in-memory fakes |
 | Instrumented | `./gradlew.bat connectedDebugAndroidTest` | Yes (`adb` status `device`) | Real `MainActivity` UI, onboarding Compose, OpenCV filters, package smoke |
 
 Also useful:
@@ -130,8 +129,8 @@ Flow tests that drive **shipped use cases** (not mocked UI) live under `app/src/
 | Class | Coverage |
 | --- | --- |
 | `DocumentLibraryFlowTest` | Create / rename / delete documents and groups, duplicate-safe titles, membership, Library All/Folders/Documents search and sort, page reorder/delete |
-| `ScanSessionAndPageEditFlowTest` | Add vs retake scan routes, gallery import cap of 10, crop / filter / adjust persist |
-| `ExportArchiveAndClearDataFlowTest` | Document PDF + image ZIP, group merged PDF + zipped PDFs, backup then restore Replace vs Merge, clear-all-data |
+| `ScanSessionAndPageEditFlowTest` | Add vs retake scan routes, gallery import cap of 50, crop / filter / adjust persist |
+| `ExportAndClearDataFlowTest` | Document PDF + image ZIP, group merged PDF + zipped PDFs, clear export cache, clear-all-data |
 | `ToolsSettingsAndLaunchActionFlowTest` | QR generate, PDF inspect/merge/compress/password/watermark, appearance and detection prefs, onboarding flag, SCAN/IMPORT/QR/LIBRARY redirects |
 
 Run one class:
@@ -170,14 +169,14 @@ Reports: `app/build/reports/androidTests/connected/debug/index.html`.
 
 #### What the device UI suite does
 
-`ScanlyDeviceUiTest` starts the **real** `MainActivity` (Hilt app process), not an isolated composable. Android Test Orchestrator clears app data before each test, so onboarding runs again. Camera and (on API 33+) notifications are granted; leftover system dialogs are dismissed.
+`ScanlyDeviceUiTest` starts the **real** `MainActivity` (Hilt app process), not an isolated composable. Android Test Orchestrator clears app data before each test, so onboarding runs again. Camera permission is granted; leftover system dialogs are dismissed.
 
 | Test | Actions and assertions |
 | --- | --- |
 | `onboardingCompletesThenHomeIdentifyingUiIsVisible` | Taps **Get started** if shown; Home with Scan and Folder is visible |
 | `libraryDestinationShowsIdentifyingUi` | Taps Library; Folders and Documents tabs visible |
 | `toolsDestinationShowsIdentifyingUi` | Taps Tools; PDF workspace and QR CODE visible |
-| `settingsDestinationShowsIdentifyingUi` | Taps Settings; Appearance and Storage & backup visible |
+| `settingsDestinationShowsIdentifyingUi` | Taps Settings; Appearance and Storage visible |
 | `generatingAQrCodeShowsAPreview` | Tools → Generate a code → types a URL → **QR code preview** is shown |
 
 Helpers live in `ScanlyDeviceUiRobot.kt`. Selectors are `ScanlyTestTags` in `app/src/main/.../core/ui/ScanlyTestTags.kt` (nav tabs and screen roots).
@@ -196,7 +195,7 @@ Run only the shell UI class:
 
 #### What device UI tests do not cover
 
-Live CameraX capture, LiteRT corner/gate on a real camera, auto-capture, torch, system photo picker, SAF folder picker, Android share sheet, widget pin, Play in-app update UI, and a single NavHost marathon of every route.
+Live CameraX capture, LiteRT corner/gate on a real camera, auto-capture, torch, system file picker, SAF folder picker, Android share sheet, widget pin, Play in-app update UI, and a single NavHost marathon of every route.
 
 ### Lint
 

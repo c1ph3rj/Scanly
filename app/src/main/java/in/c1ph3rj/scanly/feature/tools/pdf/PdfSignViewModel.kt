@@ -218,7 +218,7 @@ class PdfSignViewModel @Inject constructor(
         }
     }
 
-    /** Closes the current session, invalidates in-flight renders and recycles every page bitmap. */
+    /** Closes the current session, invalidates in-flight renders and drops every page bitmap. */
     private fun releaseSession() {
         openJob?.cancel()
         sessionGeneration += 1
@@ -233,17 +233,15 @@ class PdfSignViewModel @Inject constructor(
         val current = editor.state.value.currentPage
         val pages = _pageBitmaps.value.toMutableMap()
         pages[index] = bitmap
-        val evicted = pages.keys
+        // Far pages are dropped, not recycled: the UI may still draw them for a frame.
+        pages.keys
             .filter { it != index && abs(it - current) > KeptPageRadius }
-            .mapNotNull { pages.remove(it) }
+            .forEach { pages.remove(it) }
         _pageBitmaps.value = pages
-        evicted.forEach { it.recycle() }
     }
 
     private fun recycleAllPages() {
-        val bitmaps = _pageBitmaps.value.values.toList()
         _pageBitmaps.value = emptyMap()
-        bitmaps.forEach { it.recycle() }
     }
 
     /** Closes the session off the main thread, even if the ViewModel is being cleared. */

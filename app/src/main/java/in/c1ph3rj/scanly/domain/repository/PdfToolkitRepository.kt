@@ -5,8 +5,11 @@ import `in`.c1ph3rj.scanly.core.common.ScanlyResult
 import `in`.c1ph3rj.scanly.domain.model.ExportArtifact
 import `in`.c1ph3rj.scanly.domain.model.PdfCompressQuality
 import `in`.c1ph3rj.scanly.domain.model.PdfDocumentInfo
+import `in`.c1ph3rj.scanly.domain.model.PdfImageExport
+import `in`.c1ph3rj.scanly.domain.model.PdfImageOptions
 import `in`.c1ph3rj.scanly.domain.model.PdfSignSession
 import `in`.c1ph3rj.scanly.domain.model.PdfToolSource
+import `in`.c1ph3rj.scanly.domain.model.PdfWorkingCopy
 import `in`.c1ph3rj.scanly.domain.model.SignMark
 import `in`.c1ph3rj.scanly.domain.model.WatermarkOptions
 
@@ -78,6 +81,34 @@ interface PdfToolkitRepository {
 
     /** Deletes the session's local copy. */
     suspend fun closeSignSession(session: PdfSignSession)
+
+    /** Resolves and decrypts [source] once into a local copy that later calls read in place. */
+    suspend fun openWorkingCopy(
+        source: PdfToolSource,
+        password: String? = null,
+    ): ScanlyResult<PdfWorkingCopy>
+
+    /** Deletes the working copy's local file. */
+    suspend fun closeWorkingCopy(copy: PdfWorkingCopy)
+
+    /** Encoded size of one page at [options], used for the "~220 KB each" estimate. */
+    suspend fun estimatePageImageBytes(
+        copy: PdfWorkingCopy,
+        pageIndex: Int,
+        options: PdfImageOptions,
+    ): ScanlyResult<Long>
+
+    /**
+     * Renders [pageIndexes] to images and saves each to the gallery (Pictures/Scanly) as
+     * "[baseName] – page N". [onProgress] reports pages finished so far.
+     */
+    suspend fun exportPagesAsImages(
+        copy: PdfWorkingCopy,
+        pageIndexes: List<Int>,
+        options: PdfImageOptions,
+        baseName: String,
+        onProgress: suspend (done: Int, total: Int) -> Unit = { _, _ -> },
+    ): ScanlyResult<PdfImageExport>
 
     /** Copies a tool result into a shareable path set and returns absolute paths. */
     suspend fun prepareShare(artifact: ExportArtifact): ScanlyResult<List<String>>

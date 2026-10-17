@@ -821,6 +821,8 @@ private fun ReaderPageThumbnail(
     Column(
         modifier = Modifier
             .fillMaxWidth()
+            // Clip before selectable so the ripple follows the 8dp highlight corners.
+            .clip(highlightShape)
             .selectable(selected = selected, role = Role.Button, onClick = onClick),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(6.dp),

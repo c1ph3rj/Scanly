@@ -90,6 +90,10 @@ object ToolsPdfCompressDestination {
     const val route = "tools/pdf/compress"
 }
 
+object ToolsPdfToImagesDestination {
+    const val route = "tools/pdf/to-images"
+}
+
 object ToolsPdfPasswordDestination {
     const val route = "tools/pdf/password"
 }

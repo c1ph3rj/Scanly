@@ -61,6 +61,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
@@ -98,7 +99,8 @@ object ToolTokens {
     val ButtonHeight = 52.dp
     val FieldHeight = 50.dp
     val ScreenPadding = 20.dp
-    val MinTouch = 44.dp
+    /** Material minimum touch target; text actions and segments must not go below this. */
+    val MinTouch = 48.dp
 }
 
 /** Amber "heads up" colours from the design (warnbg / warntx / warnline). */
@@ -401,8 +403,7 @@ fun ToolNote(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(ToolTokens.FieldRadius))
-            .background(container)
+            // Border before clip: drawn after clip, its outer half was cut off by the rounded shape.
             .then(
                 if (warning) {
                     Modifier.border(1.dp, warn.border, RoundedCornerShape(ToolTokens.FieldRadius))
@@ -410,6 +411,8 @@ fun ToolNote(
                     Modifier
                 },
             )
+            .clip(RoundedCornerShape(ToolTokens.FieldRadius))
+            .background(container)
             .padding(horizontal = 12.dp, vertical = 10.dp),
         horizontalArrangement = Arrangement.spacedBy(10.dp),
         verticalAlignment = Alignment.Top,
@@ -529,7 +532,7 @@ fun <T> ToolSegmented(
             Box(
                 modifier = Modifier
                     .weight(1f)
-                    .height(38.dp)
+                    .height(ToolTokens.MinTouch)
                     .then(
                         if (isSelected) {
                             Modifier
@@ -609,8 +612,8 @@ fun ToolChoiceChip(
     Surface(
         onClick = onClick,
         modifier = modifier
-            .heightIn(min = 36.dp)
-            .semantics { this.selected = selected },
+            .heightIn(min = ToolTokens.MinTouch)
+            .semantics { this.selected = selected; role = Role.RadioButton },
         shape = shape,
         color = fill,
         contentColor = textColor,
@@ -634,7 +637,7 @@ fun ToolChoiceChip(
     }
 }
 
-/** Round colour swatch radio (44dp target, 28dp dot, accent ring when selected). */
+/** Round colour swatch radio (48dp target, 28dp dot, accent ring when selected). */
 @Composable
 fun ToolColorSwatch(
     color: Color,
@@ -645,13 +648,14 @@ fun ToolColorSwatch(
 ) {
     Box(
         modifier = modifier
-            .size(44.dp)
-            .clip(CircleShape)
+            .size(ToolTokens.MinTouch)
+            // Ring drawn before clip so its outer half is not cut off.
             .border(
                 width = 2.dp,
                 color = if (selected) MaterialTheme.colorScheme.primary else Color.Transparent,
                 shape = CircleShape,
             )
+            .clip(CircleShape)
             .selectable(selected = selected, role = Role.RadioButton, onClick = onClick)
             .semantics { contentDescription = name },
         contentAlignment = Alignment.Center,
