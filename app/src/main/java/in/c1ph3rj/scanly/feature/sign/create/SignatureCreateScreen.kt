@@ -86,8 +86,11 @@ import `in`.c1ph3rj.scanly.feature.tools.ToolCard
 import kotlin.math.ceil
 import kotlinx.coroutines.flow.collect
 
-private const val SignatureAspectRatio = 2f
-private const val InitialsAspectRatio = 1.4f
+/** Pad width / height in portrait; the same for signatures and initials. */
+private const val PadAspectRatio = 1.3f
+
+/** Height kept free under the pad for the pen-weight row. */
+private val PenRowAllowance = 72.dp
 
 /** Smallest pad height, so the pad stays usable on a narrow phone. */
 private val MinPadHeight = 200.dp
@@ -349,10 +352,10 @@ private fun SignatureDrawArea(
     onClear: () -> Unit,
     onPenWidthChange: (SignaturePenWidth) -> Unit,
 ) {
-    val ratio = if (uiState.kind == SignatureKind.INITIALS) InitialsAspectRatio else SignatureAspectRatio
     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
         val landscape = maxWidth > maxHeight
-        val padHeight = maxOf(maxWidth / ratio, MinPadHeight)
+        // One roomy pad for signatures and initials alike, leaving space for the pen row.
+        val padHeight = minOf(maxWidth / PadAspectRatio, maxHeight - PenRowAllowance).coerceAtLeast(MinPadHeight)
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -370,9 +373,6 @@ private fun SignatureDrawArea(
                     .then(if (landscape) Modifier.weight(1f) else Modifier.height(padHeight)),
             )
             PenWidthRow(selected = uiState.penWidth, onSelect = onPenWidthChange)
-            if (!landscape) {
-                ToolNote(text = "Tip: turn your phone sideways for a bigger pad.")
-            }
         }
     }
 }

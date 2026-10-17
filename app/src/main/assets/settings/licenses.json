@@ -20,7 +20,7 @@
   },
   {
     "id": "androidx_stack",
-    "name": "AndroidX, Jetpack Compose, CameraX, Room, WorkManager, Hilt",
+    "name": "AndroidX, Jetpack Compose, CameraX, Room, WorkManager, WebKit, Hilt",
     "summary": "These libraries provide the Android UI, storage, background work, dependency injection, and camera foundations used by the app.",
     "license": "Apache-2.0",
     "websiteUrl": "https://developer.android.com/jetpack/androidx/licenses"

@@ -1,22 +1,278 @@
 [
   {
-    "id": "capture_quality",
-    "question": "How do I get the cleanest scans?",
-    "answer": "Keep the full page visible, avoid harsh shadows, and use the editor if the crop needs adjustment."
+    "id": "clean_scans",
+    "category": "Scanning",
+    "question": "How do I get clean scans?",
+    "answer": "Place the page on a flat surface with all four edges visible, and keep the light even to avoid shadows and glare. Hold the phone parallel to the page and wait until the edges are detected before you capture. If the result is still off, fix the corners in the crop screen."
   },
   {
     "id": "auto_capture",
-    "question": "When should I use auto-capture?",
-    "answer": "Use auto-capture when the page is fully visible and stable. If the scene is busy or moving, switch to manual capture."
+    "category": "Scanning",
+    "question": "When should I use auto-capture instead of the shutter button?",
+    "answer": "Auto-capture takes the picture by itself once a page is detected and the phone is steady. It works best for flat, fully visible pages. Turn auto-capture off with its button on the camera screen when the scene is busy or you want to choose the exact moment, then tap the shutter."
   },
   {
-    "id": "processed_vs_raw",
-    "question": "Why do some pages look different after processing?",
-    "answer": "Scanly preserves the original raw image, then creates a processed scan for readability. You can reopen any page and adjust crop, filter, or rotation."
+    "id": "multi_page",
+    "category": "Scanning",
+    "question": "How do I scan several pages or add pages to a document later?",
+    "answer": "Keep the camera open to capture more pages in the same session; each saved page is confirmed on screen. To add pages later, open the document and tap the dashed Add page tile at the end of the page grid, then choose Scan or Import."
   },
   {
-    "id": "export_files",
-    "question": "What can I export right now?",
-    "answer": "You can save a PDF, save a ZIP of page images, share a PDF, or share the processed page images directly."
+    "id": "retake_page",
+    "category": "Scanning",
+    "question": "How do I retake a page?",
+    "answer": "Open the page and tap Retake in the bar at the bottom of the page view. The new capture replaces the old one, goes through the same processing, and keeps any signatures you stamped on that page."
+  },
+  {
+    "id": "import_gallery",
+    "category": "Scanning",
+    "question": "Can I import pages from my gallery?",
+    "answer": "Yes. Tap the raised scan button in the bottom bar and choose Import from gallery, or use Import from the Add page options. You can pick up to 10 photos for each import."
+  },
+  {
+    "id": "crop_rotate",
+    "category": "Editing pages",
+    "question": "How do I fix the crop or rotate a page?",
+    "answer": "Open the page in the editor and tap Crop. Tap AI Detect to find the page corners again, or drag the four corner handles to adjust them. Use the rotate buttons to turn the page, then tap Apply crop to save, or Reset crop to start over."
+  },
+  {
+    "id": "filters_adjust",
+    "category": "Editing pages",
+    "question": "What filters are available and how do I fine-tune them?",
+    "answer": "The presets are Original, Auto, Magic Color, Natural, Grayscale, B&W, Whiteboard and Faded Text. Auto picks a preset for each page. Use Customize filter to adjust Intensity (0 to 150 percent), brightness, contrast, saturation and sharpness, and hold the preview to compare with the plain filter."
+  },
+  {
+    "id": "apply_filter_all",
+    "category": "Editing pages",
+    "question": "Can I apply one filter to every page?",
+    "answer": "Yes. In the editor, choose Apply Filter To All Pages after you pick a filter. Only the filter is copied to the other pages, and each page keeps its own crop, rotation and adjustments."
+  },
+  {
+    "id": "reorder_pages",
+    "category": "Editing pages",
+    "question": "How do I change the order of pages?",
+    "answer": "Open the document, long-press a page and drag it to its new position. Scanly confirms when the pages have been reordered."
+  },
+  {
+    "id": "delete_page",
+    "category": "Editing pages",
+    "question": "How do I delete a page?",
+    "answer": "Open the page and choose Delete page, or use Remove from document in the editor. Scanly asks you to confirm before the page is removed from the document."
+  },
+  {
+    "id": "reversible_edits",
+    "category": "Editing pages",
+    "question": "Can I undo changes to crop or filters?",
+    "answer": "Yes. Scanly keeps the original photo of every page, so crop, rotation, filter and adjustment changes can be reset or changed again at any time. Use Reset crop or Reset adjustments in the editor to go back."
+  },
+  {
+    "id": "folders",
+    "category": "Find & organise",
+    "question": "How do I organise documents into folders?",
+    "answer": "Tap New folder on the Folders shelf in Library or Home. Then move a document into a folder with Move to folder from its menu. Documents inside folders still appear when you view All."
+  },
+  {
+    "id": "rename",
+    "category": "Find & organise",
+    "question": "How do I rename a document or a folder?",
+    "answer": "To rename a document, open it, go to Document options and choose Rename document. Folders can be renamed from their own menu with Rename folder."
+  },
+  {
+    "id": "search",
+    "category": "Find & organise",
+    "question": "How do I find a document?",
+    "answer": "Type in the search field on Library or Home. Results match document and folder names and the words printed on your pages, and you can filter by Everywhere, Names, Text in pages or document type. Words match from their first letters and ignore case and accents, quoted phrases match exactly, and names tolerate one typo."
+  },
+  {
+    "id": "search_languages",
+    "category": "Find & organise",
+    "question": "Which languages can Scanly read for text search?",
+    "answer": "Page text is read on your phone with a bundled Latin-script model, so text in the Latin alphabet is indexed. Text in other scripts, such as Devanagari, Arabic or Chinese, is not read. Nothing is uploaded for this."
+  },
+  {
+    "id": "extract_text",
+    "category": "Find & organise",
+    "question": "What is Extract text and can I correct it?",
+    "answer": "Open Extract text from a document's menu to see the text Scanly read from each page. The Text view lets you read and select it, and the On page view outlines text regions on the scan so you can copy just one part. Use Edit to fix mistakes, and your corrections are kept and used for search."
+  },
+  {
+    "id": "document_types",
+    "category": "Find & organise",
+    "question": "What types of documents does Scanly recognise?",
+    "answer": "Scanly recognises invoices, receipts, contracts, statements, letters, certificates, ID documents, forms and resumes from their text, on your phone. The type is shown in search results, and Browse by type on the search start page lists them."
+  },
+  {
+    "id": "sign_pdf_tool",
+    "category": "Sign documents",
+    "question": "How do I sign a PDF?",
+    "answer": "Open Tools → Sign and choose a PDF, JPG or PNG from your phone or a document in your Scanly library. Place your signature and any other marks, then save. Scanly saves a signed copy to Downloads/Scanly or lets you share it, and the original file is not changed."
+  },
+  {
+    "id": "sign_scan_in_place",
+    "category": "Sign documents",
+    "question": "How do I sign a scanned page in Scanly?",
+    "answer": "Open the document and choose Sign document from its menu, or tap Sign while viewing a page. The marks are stamped into the scanned pages, so previews, thumbnails and exports include them. Open Sign again to move or remove marks, and they survive crop, filter and retake edits."
+  },
+  {
+    "id": "create_signature",
+    "category": "Sign documents",
+    "question": "How do I create a signature?",
+    "answer": "In the sign screen, tap the dashed + card under Your signatures (or open Manage and tap +). Draw on the pad and pick a pen weight, or switch to Upload and choose a photo from Photos, a JPG or PNG from Files, or a page you scanned in Scanly. Scanly removes the paper background and keeps only the ink; the Ink sensitivity slider controls how much faint ink is kept."
+  },
+  {
+    "id": "add_marks",
+    "category": "Sign documents",
+    "question": "How do I add initials, a date, text or a checkbox?",
+    "answer": "Use the toolbar in the sign screen to add your signature or initials, a date, text or a checkbox. Tap Date or Text again to add another one, and double-tap a date or line of text to edit it. Use the toolbar to tick or untick a checkbox."
+  },
+  {
+    "id": "edit_marks",
+    "category": "Sign documents",
+    "question": "Can I move, resize, recolour or delete a signature?",
+    "answer": "Yes. Drag a mark to move it and drag its corners to resize it. Choose navy, black, blue or red for its colour, or duplicate or delete it. On a multi-page document, swipe between pages or use the page switcher to place marks on each page."
+  },
+  {
+    "id": "signature_storage",
+    "category": "Sign documents",
+    "question": "Where are my saved signatures stored?",
+    "answer": "Saved signatures stay on this phone and are never uploaded. Deleting a saved signature does not change pages you have already signed."
+  },
+  {
+    "id": "visual_signature",
+    "category": "Sign documents",
+    "question": "Is a signature made in Scanly a legal digital signature?",
+    "answer": "No. Scanly adds a visual, handwritten-style signature, not a certificate-based digital signature. Check whether the person receiving the document accepts a visual signature before you rely on it."
+  },
+  {
+    "id": "merge_pdfs",
+    "category": "PDF tools",
+    "question": "How do I merge PDFs?",
+    "answer": "Open Tools → Merge, pick at least two files, and put them in order from top to bottom. Give the merged file a name and save it. Your original files are not changed."
+  },
+  {
+    "id": "compress_pdf",
+    "category": "PDF tools",
+    "question": "How do I make a PDF smaller?",
+    "answer": "Open Tools → Compress, choose High quality, Balanced or Smallest, and check the before and after sizes. Compression re-encodes the pages as images, so text in the compressed PDF can no longer be selected or searched. If the file does not get smaller, try another quality."
+  },
+  {
+    "id": "lock_pdf",
+    "category": "PDF tools",
+    "question": "How do I lock a PDF with a password?",
+    "answer": "Open Tools → Password, choose Lock PDF, then enter and confirm a password of 4 to 64 characters. The file is protected with AES-256 encryption. Turn on Restrict editing if you want others to be able to open and print it but not edit or copy its text."
+  },
+  {
+    "id": "unlock_pdf",
+    "category": "PDF tools",
+    "question": "How do I open or unlock a password-protected PDF?",
+    "answer": "To remove a password, open Tools → Password, choose the file and enter its current password, then choose Remove password. To read a protected PDF, open Tools → Read PDF and enter the password when asked. Scanly can only remove passwords you already know, and it cannot recover one you have lost."
+  },
+  {
+    "id": "watermark_pdf",
+    "category": "PDF tools",
+    "question": "How do I add a watermark to a PDF?",
+    "answer": "Open Tools → Watermark and choose a preset such as CONFIDENTIAL, DRAFT, COPY or For KYC use only, or type your own text. Pick a colour (Grey, Red, Blue or Teal), size, opacity and angle, and choose Single or Tiled layout. Apply it to all pages or the first page only, and you can add the date."
+  },
+  {
+    "id": "export_pdf_options",
+    "category": "Export & share",
+    "question": "What PDF export options are there?",
+    "answer": "Open a document, go to Export & share and choose PDF options. You can set the orientation (Auto, Portrait or Landscape), the page size (Auto fit to match each scan, or a fixed size such as A4, A5, Letter or Legal), the margins, and page numbers at the bottom left, centre or right."
+  },
+  {
+    "id": "export_password",
+    "category": "Export & share",
+    "question": "Can I password-protect an exported PDF?",
+    "answer": "Yes. In PDF options, turn on Password protection and enter a password of 4 to 64 characters, then confirm it. The exported PDF is encrypted with AES-256 and needs the password to open."
+  },
+  {
+    "id": "export_outputs",
+    "category": "Export & share",
+    "question": "What can I save or share from a document?",
+    "answer": "From Export & share you can save a PDF, save a ZIP of the page images, share the PDF, or share the page images. Scanly shows the file name and where it was saved once the save finishes."
+  },
+  {
+    "id": "save_location",
+    "category": "Export & share",
+    "question": "Where are exported files saved?",
+    "answer": "Exports go to Downloads/Scanly by default. To pick another folder, open Settings → Storage and tap Change in the Save location row. Tap Use default folder to go back to Downloads/Scanly."
+  },
+  {
+    "id": "qr_scan",
+    "category": "QR codes",
+    "question": "How do I scan a QR code?",
+    "answer": "Open Tools → QR code and point the camera at the code. The corners turn teal as the code is detected, and a result card appears with its type, such as a link, Wi-Fi network, UPI payment, contact, email, phone number or text. To scan a picture already on your phone, tap From photo."
+  },
+  {
+    "id": "qr_create",
+    "category": "QR codes",
+    "question": "How do I create a QR code?",
+    "answer": "Open Tools → QR code and switch to Create. Choose Link, Text, Wi-Fi, UPI or Contact, fill in the details, and optionally add a caption to print under the code. Use a dark ink colour such as Navy or Maroon, because light colours can be hard for cameras to read."
+  },
+  {
+    "id": "qr_history",
+    "category": "QR codes",
+    "question": "Where can I find QR codes I scanned or created before?",
+    "answer": "Tap History on the QR screen. Scanned and created codes are kept on this phone, and you can search them or filter by Scanned or Created. Delete a single item from history, or use Clear history to remove them all."
+  },
+  {
+    "id": "widgets_shortcuts",
+    "category": "Widgets & shortcuts",
+    "question": "What home-screen widgets and app shortcuts are there?",
+    "answer": "The Scanly actions widget has Scan, Import, QR and Library buttons, the Scan widget starts a new scan, and the QR widget opens the QR tool. Add them from your launcher's widget picker. On launchers that support app shortcuts, long-press the Scanly icon to start Scan, QR, Import or Library directly."
+  },
+  {
+    "id": "offline_use",
+    "category": "Privacy & storage",
+    "question": "Does Scanly need an account or an internet connection?",
+    "answer": "No account is needed, and scanning, text reading, search, signatures and PDF tools all run on your phone. The internet is used only for optional update checks, for loading the privacy and terms pages inside the app, and for links you open from Settings. No document content is uploaded during an update check."
+  },
+  {
+    "id": "data_sharing",
+    "category": "Privacy & storage",
+    "question": "Does Scanly send my data anywhere or show ads?",
+    "answer": "Scanly's privacy policy says it does not sell personal data and includes no advertising or third-party analytics. The app asks only for camera and internet access. Photos are picked with Android's photo picker, so Scanly does not get broad access to your gallery."
+  },
+  {
+    "id": "storage_space",
+    "category": "Privacy & storage",
+    "question": "What is using my storage and how do I free space?",
+    "answer": "Open Settings → Storage to see what uses space, including library files and the database and search index. Use Clear on Temporary exports to remove leftover export files, and Tidy up to remove documents with no pages and folders with no documents. Clear all data permanently deletes every document, folder and page on this phone."
+  },
+  {
+    "id": "uninstall_backup",
+    "category": "Privacy & storage",
+    "question": "What happens to my data when I uninstall Scanly, and is there a backup?",
+    "answer": "Uninstalling removes Scanly's app-private data, including your documents and saved signatures. Files you saved or shared outside the app, such as PDFs in Downloads/Scanly, stay until you delete them yourself. Scanly has no built-in backup or restore, so keep copies of important documents by exporting them."
+  },
+  {
+    "id": "blurry_dark",
+    "category": "Troubleshooting",
+    "question": "Why are my scans blurry or too dark?",
+    "answer": "Clean the camera lens and tap the screen to focus. If Scanly says it is too dark, add light or turn on the flash from the camera toolbar. Hold the phone steady, move closer so the page fills more of the frame, and retake the page if it still looks soft."
+  },
+  {
+    "id": "edges_not_detected",
+    "category": "Troubleshooting",
+    "question": "Why are the edges of my page not detected?",
+    "answer": "Place the whole page on a plain background with all four corners visible. Point the camera at a physical page, because Scanly rejects screens. If Scanly says the edges are ambiguous, hold steady or move closer, or fix the corners by hand in the crop screen."
+  },
+  {
+    "id": "search_missing_text",
+    "category": "Troubleshooting",
+    "question": "Why does search not find a word that is on my page?",
+    "answer": "Page text is read in the background after a page is scanned, imported, retaken or edited, so a new page can take a moment to become searchable. The search screen shows when some pages are still being read. Very stylised or handwritten text may not be read at all."
+  },
+  {
+    "id": "password_protected_message",
+    "category": "Troubleshooting",
+    "question": "Why does Scanly say a PDF is password protected?",
+    "answer": "The PDF is encrypted, so Scanly needs its password before it can open the file. Enter the password when the tool asks for it, whether you are reading, compressing, watermarking or signing. Without the password, the file cannot be opened in Scanly."
+  },
+  {
+    "id": "script_limits",
+    "category": "Troubleshooting",
+    "question": "Why does a watermark or signature text show an error about scripts?",
+    "answer": "Text added to a PDF, by Watermark or by Tools → Sign, can use Latin, Greek and Cyrillic letters, digits and symbols. Scripts such as Tamil, Hindi, Arabic and Thai cannot be drawn as PDF text yet, so Scanly shows a message instead of saving them. Text you add with Sign document on a scanned page is drawn into the image and works in any script."
   }
 ]

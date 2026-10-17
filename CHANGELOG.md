@@ -21,6 +21,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 
+- **Help & FAQ** — rewritten with 46 answers across scanning, editing, search, signing, PDF tools, export, QR, widgets, privacy and troubleshooting, with search and category filters.
 - **Folder previews** — Library and Home start with **New folder**, followed by up to three recent folders and a solid **View all** tile with a grid icon and arrow when more than three folders exist. The **See all** header link also opens the full folder list.
 - **Pure black sheets** — bottom sheets (Add a document, Add page, Export & share, Move to folder…) now sit on a visibly raised dark grey in the pure-black theme instead of blending into the black screen.
 - **Save location** — one clear row showing where exports go, with Change inline and Use default folder when a custom folder is set.
@@ -37,6 +38,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Fixed
 
+- Privacy Policy and Terms pages: headings and buttons were nearly invisible in dark mode inside the app.
 - **Back navigation** — PDF reader and compression pickers now return to their tool instead of reopening a previously selected file; explicit Change/Choose another actions in the reader, compression, and watermark tools return to the current step. Android Back now closes editor filter modes and stays in place during active capture, crop/filter saves, and PDF-tool processing.
 - The Settings rating card now waits for its saved state before appearing, so it no longer flashes and disappears on open.
 

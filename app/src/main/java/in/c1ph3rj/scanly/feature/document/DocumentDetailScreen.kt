@@ -432,6 +432,7 @@ fun DocumentDetailScreen(
                 menuEnabled = document != null,
                 onOpenText = { onOpenText(selectedPage?.pageIndex ?: 0) },
                 textEnabled = uiState.pages.isNotEmpty(),
+                onOpenSign = { onOpenSign(selectedPage?.pageIndex ?: 0) },
             )
         }
     ) { innerPadding ->
@@ -843,6 +844,7 @@ private fun ReviewTopBar(
     menuEnabled: Boolean,
     onOpenText: () -> Unit,
     textEnabled: Boolean,
+    onOpenSign: () -> Unit,
 ) {
     var showMenu by remember { mutableStateOf(false) }
 
@@ -908,6 +910,17 @@ private fun ReviewTopBar(
                             onClick = {
                                 showMenu = false
                                 onOpenExportSheet()
+                            },
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Sign document") },
+                            leadingIcon = {
+                                Icon(Icons.Filled.Draw, contentDescription = null)
+                            },
+                            enabled = textEnabled,
+                            onClick = {
+                                showMenu = false
+                                onOpenSign()
                             },
                         )
                         DropdownMenuItem(
