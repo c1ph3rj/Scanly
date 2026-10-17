@@ -491,7 +491,8 @@ private fun SavedItemCard(
             .width(width)
             .height(SavedCardHeight),
         shape = RoundedCornerShape(14.dp),
-        color = MaterialTheme.colorScheme.surface,
+        // Paper-white in every theme so dark ink stays readable, like the page itself.
+        color = Color.White,
         border = BorderStroke(if (selected) 2.dp else 1.dp, borderColor),
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
@@ -558,9 +559,9 @@ private fun AddSavedItemCard(
 @Composable
 private fun ToolHint(tool: SignTool) {
     val hint = when (tool) {
-        SignTool.Date -> "Tap Date to stamp today's date"
-        SignTool.Text -> "Tap Text to add a line you can edit"
-        SignTool.Checkbox -> "Tap Checkbox to place a tick mark"
+        SignTool.Date -> "Tap Date again for another stamp · double-tap a date to edit it"
+        SignTool.Text -> "Tap Text again for another line · double-tap text to edit it"
+        SignTool.Checkbox -> "Tap Checkbox again for another tick · drag it onto a box"
         SignTool.Signature, SignTool.Initials -> ""
     }
     Box(

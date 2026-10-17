@@ -62,16 +62,20 @@ class SignEditorControllerTest {
     }
 
     @Test
-    fun repeatedPlacementsCascadeDiagonally() {
+    fun repeatedPlacementsNeverOverlap() {
         val c = newController().withPages()
         repeat(3) { c.onAction(SignEditorAction.PlaceTool(SignTool.Date, pageIndex = 0)) }
 
-        val marks = c.marks()
-        val first = marks[0].box
-        assertEquals(first.left + 0.03f, marks[1].box.left, 1e-4f)
-        assertEquals(first.top + 0.03f, marks[1].box.top, 1e-4f)
-        assertEquals(first.left + 0.06f, marks[2].box.left, 1e-4f)
-        assertEquals(first.top + 0.06f, marks[2].box.top, 1e-4f)
+        val boxes = c.marks().map { it.box }
+        assertEquals(boxes[0].left, boxes[1].left, 1e-4f)
+        assertTrue("second goes below the first", boxes[1].top >= boxes[0].bottom)
+        assertTrue("third goes above the first", boxes[2].bottom <= boxes[0].top)
+        for (i in boxes.indices) for (j in boxes.indices) if (i < j) {
+            val a = boxes[i]
+            val b = boxes[j]
+            val overlaps = a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom
+            assertFalse("marks $i and $j overlap", overlaps)
+        }
     }
 
     @Test

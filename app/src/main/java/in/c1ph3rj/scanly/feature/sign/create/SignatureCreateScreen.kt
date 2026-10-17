@@ -65,8 +65,8 @@ import `in`.c1ph3rj.scanly.feature.tools.ToolTextAction
 import kotlin.math.ceil
 import kotlinx.coroutines.flow.collect
 
-private const val SignatureAspectRatio = 2.4f
-private const val InitialsAspectRatio = 1.6f
+private const val SignatureAspectRatio = 1.6f
+private const val InitialsAspectRatio = 1.25f
 
 /** Pen width on the pad, in dp. */
 private val PenWidth = 3.2.dp
@@ -250,7 +250,7 @@ private fun SignatureDrawArea(
 ) {
     val ratio = if (uiState.kind == SignatureKind.INITIALS) InitialsAspectRatio else SignatureAspectRatio
     val hasStrokes = uiState.strokes.isNotEmpty()
-    BoxWithConstraints(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+    BoxWithConstraints(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
         val padHeightLimit = (maxHeight - ActionRowHeight).coerceAtLeast(MinPadHeight)
         val padWidth = minOf(maxWidth, padHeightLimit * ratio)
         Column(

@@ -172,7 +172,12 @@ internal fun SignMarkLayer(
                             val h = latestHeight.value
                             val current = latestMarks.value
                             val selectedMark = current.firstOrNull { it.id == latestSelectedId.value }
-                            val corner = selectedMark?.let { cornerNear(it.box.toRect(w, h), start, handleTouchPx) }
+                            val corner = selectedMark?.let { mark ->
+                                val rect = mark.box.toRect(w, h)
+                                // On a small box the handles cover its body; a grab inside it moves.
+                                val bodyGrab = rect.contains(start) && minOf(rect.width, rect.height) < handleTouchPx * 3f
+                                cornerNear(rect, start, handleTouchPx).takeUnless { bodyGrab }
+                            }
                             totalX = 0f
                             totalY = 0f
                             drag = if (selectedMark != null && corner != null) {

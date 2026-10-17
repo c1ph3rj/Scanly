@@ -70,11 +70,11 @@ private const val DateWidth = 0.24f
 private const val DateAspect = 5.5f
 private const val TextWidth = 0.30f
 private const val TextAspect = 6.5f
-private const val CheckboxWidth = 0.05f
+private const val CheckboxWidth = 0.08f
 private const val CheckboxAspect = 1f
 private const val MaxSignatureHeight = 0.5f
 private const val CascadeStep = 0.03f
-private const val CascadeTolerance = 0.01f
+private const val PlacementGap = 0.015f
 private const val MaxCascadeTries = 10
 private const val MaxTextLength = 80
 private const val MaxTextWidth = 0.9f
@@ -259,22 +259,26 @@ internal object SignEditorReducer {
             isDirty = true,
         )
 
-    /** Centred on the page, cascaded diagonally while another mark sits at the same top-left. */
+    /**
+     * Centred on the page; when that spot overlaps another mark, the box steps down (then up)
+     * by its own height so new marks never land on top of existing ones.
+     */
     private fun placeBox(state: SignEditorUiState, pageIndex: Int, width: Float, height: Float): NormRect {
-        var box = NormRect.centeredAt(0.5f, 0.5f, width, height).clampedToPage()
-        var tries = 0
-        while (tries < MaxCascadeTries && isOccupied(state, pageIndex, box)) {
-            box = box.offsetBy(CascadeStep, CascadeStep).clampedToPage()
-            tries++
-        }
-        return box
+        val centred = NormRect.centeredAt(0.5f, 0.5f, width, height).clampedToPage()
+        val step = height + PlacementGap
+        val candidates = sequenceOf(0) + (1..MaxCascadeTries).asSequence().flatMap { sequenceOf(it, -it) }
+        return candidates
+            .map { k -> centred.offsetBy(0f, k * step) }
+            .filter { it.top >= 0f && it.bottom <= 1f }
+            .firstOrNull { !isOccupied(state, pageIndex, it) }
+            ?: centred.offsetBy(CascadeStep, CascadeStep).clampedToPage()
     }
 
     private fun isOccupied(state: SignEditorUiState, pageIndex: Int, box: NormRect): Boolean =
         state.marks.any { mark ->
             mark.pageIndex == pageIndex &&
-                abs(mark.box.left - box.left) <= CascadeTolerance &&
-                abs(mark.box.top - box.top) <= CascadeTolerance
+                mark.box.left < box.right && box.left < mark.box.right &&
+                mark.box.top < box.bottom && box.top < mark.box.bottom
         }
 
     private fun normaliseText(raw: String): String =

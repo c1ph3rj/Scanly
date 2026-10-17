@@ -69,7 +69,7 @@ val pdfTools: List<ToolItem> = listOf(
     ToolItem(
         id = ToolActionId.PdfSign,
         title = "Sign",
-        caption = "Add your signature",
+        caption = "Sign any PDF",
         icon = Icons.Outlined.Draw,
         route = ToolsPdfSignDestination.route,
     ),
