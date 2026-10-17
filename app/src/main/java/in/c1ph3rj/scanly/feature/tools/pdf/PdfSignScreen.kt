@@ -119,11 +119,12 @@ fun PdfSignRoute(
         when (step) {
             SignStep.Pick -> PdfFilePickerScreen(
                 title = "Sign PDF",
-                subtitle = "Choose a PDF to sign",
+                subtitle = "Choose a PDF or an image to sign",
                 stepText = "Step 1 of 3 · Choose",
                 documents = uiState.libraryDocuments,
                 onBack = onPickerBack,
-                onPickDevice = { devicePicker.launch(arrayOf("application/pdf")) },
+                onPickDevice = { devicePicker.launch(SignableMimeTypes) },
+                deviceSubtitle = "PDF, JPG or PNG from Downloads, Drive and other apps",
                 onPickLibrary = { document ->
                     returnToEditorOnPickerBack = false
                     viewModel.setSources(listOf(PdfToolSource.LibraryDocument(document.id, document.title)))
@@ -260,3 +261,6 @@ private fun signSummary(markCount: Int, pageCount: Int): String {
     val marks = if (markCount == 1) "1 mark" else "$markCount marks"
     return "$marks on ${formatPdfPageCount(pageCount)}"
 }
+
+/** What the Sign tool can open from phone storage: PDFs and common images (signed as a PDF). */
+private val SignableMimeTypes = arrayOf("application/pdf", "image/jpeg", "image/png", "image/webp")

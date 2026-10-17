@@ -104,6 +104,9 @@ internal object SignEditorReducer {
             is SignEditorAction.PlaceTool -> placeTool(state, action, env)
             is SignEditorAction.UpdateBox -> updateMark(state, action.id) { it.withBox(action.box.clampedToPage()) }
             is SignEditorAction.SetInk -> updateMark(state, action.id) { it.withInk(action.ink) }
+            is SignEditorAction.ToggleCheck -> updateMark(state, action.id) { mark ->
+                if (mark is SignMark.Checkbox) mark.copy(checked = !mark.checked) else mark
+            }
             is SignEditorAction.Duplicate -> duplicate(state, action.id, env)
             is SignEditorAction.Delete -> delete(state, action.id)
             is SignEditorAction.StartEditText -> startEditText(state, action.id)

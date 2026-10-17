@@ -108,6 +108,8 @@ internal class PdfSignatureStamper(private val document: PDDocument) {
         val unit = SignGeometry.unitSquareToUser(mark.box, frame)
         val side = minOf(hypot(unit.a, unit.b), hypot(unit.c, unit.d))
         stream.setStrokingColor(mark.ink.red, mark.ink.green, mark.ink.blue)
+        drawCheckboxBorder(stream, unit, side)
+        if (!mark.checked) return
         stream.setLineWidth(side * SignMarkStyle.CheckStrokeFraction)
         stream.setLineCapStyle(1)
         stream.setLineJoinStyle(1)
@@ -117,6 +119,37 @@ internal class PdfSignatureStamper(private val document: PDDocument) {
         }
         stream.stroke()
     }
+
+    /** Rounded square inset by half the border width, built from the box's unit square. */
+    private fun drawCheckboxBorder(stream: PDPageContentStream, unit: SignGeometry.Affine, side: Float) {
+        val border = side * SignMarkStyle.CheckboxBorderFraction
+        val inset = border / 2f / side
+        val r = SignMarkStyle.CheckboxCornerFraction
+        val k = 0.5523f * r // Bezier circle approximation.
+        val lo = inset
+        val hi = 1f - inset
+        fun p(x: Float, y: Float) = unit.apply(x, y)
+        stream.setLineWidth(border)
+        val (sx, sy) = p(lo + r, lo)
+        stream.moveTo(sx, sy)
+        p(hi - r, lo).let { (x, y) -> stream.lineTo(x, y) }
+        curve(stream, p(hi - r + k, lo), p(hi, lo + r - k), p(hi, lo + r))
+        p(hi, hi - r).let { (x, y) -> stream.lineTo(x, y) }
+        curve(stream, p(hi, hi - r + k), p(hi - r + k, hi), p(hi - r, hi))
+        p(lo + r, hi).let { (x, y) -> stream.lineTo(x, y) }
+        curve(stream, p(lo + r - k, hi), p(lo, hi - r + k), p(lo, hi - r))
+        p(lo, lo + r).let { (x, y) -> stream.lineTo(x, y) }
+        curve(stream, p(lo, lo + r - k), p(lo + r - k, lo), p(lo + r, lo))
+        stream.closePath()
+        stream.stroke()
+    }
+
+    private fun curve(
+        stream: PDPageContentStream,
+        c1: Pair<Float, Float>,
+        c2: Pair<Float, Float>,
+        end: Pair<Float, Float>,
+    ) = stream.curveTo(c1.first, c1.second, c2.first, c2.second, end.first, end.second)
 
     private fun SignGeometry.Affine.toMatrix() = Matrix(a, b, c, d, e, f)
 }

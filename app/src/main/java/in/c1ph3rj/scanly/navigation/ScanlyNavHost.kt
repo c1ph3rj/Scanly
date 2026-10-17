@@ -1231,6 +1231,9 @@ private fun ScanlyNavHostContent(
                         ScanSessionDestination.route(documentId, replacePageId = pageId),
                     )
                 },
+                onSignPage = { documentId, pageIndex ->
+                    navController.navigate(DocumentSignDestination.route(documentId, pageIndex))
+                },
             )
         }
         composable(

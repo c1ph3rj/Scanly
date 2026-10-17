@@ -54,6 +54,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.material3.IconButton
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.shadow
@@ -218,9 +221,12 @@ fun SignEditorScreen(
             } else {
                 HorizontalPager(
                     state = pagerState,
-                    modifier = Modifier.fillMaxSize(),
-                    // A selected mark owns the drag gesture, so swiping waits until it is deselected.
-                    userScrollEnabled = state.selectedMarkId == null,
+                    // Leave room under the sheet for the page switcher so it never covers the page.
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(bottom = if (pageCount > 1) 60.dp else 0.dp),
+                    // Marks claim only drags that start on them, so empty paper always swipes pages.
+                    userScrollEnabled = true,
                 ) { pageIndex ->
                     SignPageSheet(
                         pageIndex = pageIndex,
@@ -230,6 +236,16 @@ fun SignEditorScreen(
                         selectedMarkId = state.selectedMarkId,
                         onAction = onAction,
                         onRequestPage = onRequestPage,
+                    )
+                }
+                if (pageCount > 1) {
+                    PageSwitcher(
+                        current = state.currentPage,
+                        count = pageCount,
+                        onChange = { onAction(SignEditorAction.ChangePage(it)) },
+                        modifier = Modifier
+                            .align(Alignment.BottomCenter)
+                            .padding(bottom = 8.dp),
                     )
                 }
             }
@@ -561,7 +577,7 @@ private fun ToolHint(tool: SignTool) {
     val hint = when (tool) {
         SignTool.Date -> "Tap Date again for another stamp · double-tap a date to edit it"
         SignTool.Text -> "Tap Text again for another line · double-tap text to edit it"
-        SignTool.Checkbox -> "Tap Checkbox again for another tick · drag it onto a box"
+        SignTool.Checkbox -> "Tap Checkbox again for another box · use the toolbar to tick or untick"
         SignTool.Signature, SignTool.Initials -> ""
     }
     Box(
@@ -650,4 +666,43 @@ private fun SignTextEditDialog(
             TextButton(onClick = onDismiss) { Text("Cancel") }
         },
     )
+}
+
+/** "‹  2 / 6  ›" pill so multi-page documents are obviously navigable (swiping works too). */
+@Composable
+private fun PageSwitcher(
+    current: Int,
+    count: Int,
+    onChange: (Int) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Surface(
+        modifier = modifier,
+        shape = RoundedCornerShape(50),
+        color = MaterialTheme.colorScheme.inverseSurface.copy(alpha = 0.92f),
+        contentColor = MaterialTheme.colorScheme.inverseOnSurface,
+        shadowElevation = 4.dp,
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            IconButton(onClick = { onChange(current - 1) }, enabled = current > 0) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                    contentDescription = "Previous page",
+                    tint = MaterialTheme.colorScheme.inverseOnSurface.copy(alpha = if (current > 0) 1f else 0.35f),
+                )
+            }
+            Text(
+                text = "${current + 1} / $count",
+                style = MaterialTheme.typography.labelLarge,
+                fontWeight = FontWeight.SemiBold,
+            )
+            IconButton(onClick = { onChange(current + 1) }, enabled = current < count - 1) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                    contentDescription = "Next page",
+                    tint = MaterialTheme.colorScheme.inverseOnSurface.copy(alpha = if (current < count - 1) 1f else 0.35f),
+                )
+            }
+        }
+    }
 }

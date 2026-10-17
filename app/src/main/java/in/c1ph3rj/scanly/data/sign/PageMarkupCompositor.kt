@@ -77,6 +77,16 @@ class PageMarkupCompositor @Inject constructor() {
 
     private fun drawCheck(canvas: Canvas, mark: SignMark.Checkbox, rect: RectF) {
         val side = minOf(rect.width(), rect.height())
+        val border = SignMarkStyle.CheckboxBorderFraction * side
+        val boxPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            style = Paint.Style.STROKE
+            strokeWidth = border
+            color = mark.ink.argb.toInt()
+        }
+        val inset = RectF(rect).apply { inset(border / 2f, border / 2f) }
+        val radius = SignMarkStyle.CheckboxCornerFraction * side
+        canvas.drawRoundRect(inset, radius, radius, boxPaint)
+        if (!mark.checked) return
         val path = Path()
         SignMarkStyle.CheckPoints.forEachIndexed { index, (fx, fy) ->
             val x = rect.left + fx * rect.width()

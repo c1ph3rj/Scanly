@@ -155,12 +155,13 @@ sealed interface SignMark {
         override fun withId(id: String) = copy(id = id)
     }
 
-    /** A tick for filling printed checkboxes. Square on the page. */
+    /** A square checkbox, ticked when [checked]. Square on the page. */
     data class Checkbox(
         override val id: String,
         override val pageIndex: Int,
         override val box: NormRect,
         override val ink: SignInk,
+        val checked: Boolean = true,
     ) : SignMark {
         override fun withBox(box: NormRect) = copy(box = box)
         override fun withInk(ink: SignInk) = copy(ink = ink)
@@ -188,10 +189,16 @@ object SignMarkStyle {
     const val TextBaselineFraction = 0.78f
 
     /** Tick polyline inside the checkbox box, x/y fractions with y down. */
-    val CheckPoints: List<Pair<Float, Float>> = listOf(0.16f to 0.54f, 0.41f to 0.78f, 0.86f to 0.24f)
+    val CheckPoints: List<Pair<Float, Float>> = listOf(0.24f to 0.53f, 0.43f to 0.72f, 0.78f to 0.3f)
 
     /** Tick stroke width as a fraction of the box side. */
-    const val CheckStrokeFraction = 0.13f
+    const val CheckStrokeFraction = 0.11f
+
+    /** Checkbox border stroke width as a fraction of the box side; drawn inset by half its width. */
+    const val CheckboxBorderFraction = 0.07f
+
+    /** Checkbox corner radius as a fraction of the box side. */
+    const val CheckboxCornerFraction = 0.12f
 
     /** Font size in output units for [text] in a box of [boxWidth] × [boxHeight] given its width at size 1. */
     fun fontSizeFor(boxWidth: Float, boxHeight: Float, widthAtSizeOne: Float): Float {

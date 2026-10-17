@@ -41,7 +41,7 @@ internal object SignMarkCodec {
 
         is SignMark.Text -> baseJson("text").put("text", text)
         is SignMark.Date -> baseJson("date").put("text", text)
-        is SignMark.Checkbox -> baseJson("checkbox")
+        is SignMark.Checkbox -> baseJson("checkbox").put("checked", checked)
     }
 
     private fun SignMark.baseJson(type: String): JSONObject = JSONObject()
@@ -102,7 +102,7 @@ internal object SignMarkCodec {
                 SignMark.Date(id, page, box, ink, text)
             }
 
-            "checkbox" -> SignMark.Checkbox(id, page, box, ink)
+            "checkbox" -> SignMark.Checkbox(id, page, box, ink, checked = optBoolean("checked", true))
             else -> null
         }
     }

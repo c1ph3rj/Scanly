@@ -8,7 +8,9 @@ import android.net.Uri
 import android.os.ParcelFileDescriptor
 import com.tom_roush.pdfbox.android.PDFBoxResourceLoader
 import com.tom_roush.pdfbox.pdmodel.PDDocument
+import com.tom_roush.pdfbox.pdmodel.PDPage
 import com.tom_roush.pdfbox.pdmodel.PDPageContentStream
+import com.tom_roush.pdfbox.pdmodel.common.PDRectangle
 import com.tom_roush.pdfbox.pdmodel.encryption.AccessPermission
 import com.tom_roush.pdfbox.pdmodel.encryption.InvalidPasswordException
 import com.tom_roush.pdfbox.pdmodel.encryption.StandardProtectionPolicy
@@ -344,6 +346,14 @@ class DefaultPdfToolkitRepository @Inject constructor(
         runCatching {
             ensurePdfBox()
             val file = File(toolsDir(), "sign_${UUID.randomUUID()}.pdf")
+            val imageSource = (source as? PdfToolSource.DeviceUri)?.takeIf { it.isImage() }
+            if (imageSource != null) {
+                val size = writeImageAsPdf(Uri.parse(imageSource.uriString), file)
+                return@runCatching PdfSignSession(
+                    file = PdfToolSource.AppFile(file.absolutePath, source.displayLabel()),
+                    pageSizes = listOf(size),
+                )
+            }
             val pageSizes = resolveLocalFile(source).useFile { local ->
                 openDocument(local, password).use { document ->
                     require(document.numberOfPages > 0) { "This PDF has no pages." }
@@ -366,6 +376,50 @@ class DefaultPdfToolkitRepository @Inject constructor(
                 pageSizes = pageSizes,
             )
         }.toScanlyResult("Could not open this PDF for signing.")
+    }
+
+    private fun PdfToolSource.DeviceUri.isImage(): Boolean =
+        context.contentResolver.getType(Uri.parse(uriString))?.startsWith("image/") == true
+
+    /**
+     * Wraps a picked photo/scan in a one-page PDF so it can be signed like any PDF. The page is
+     * sized like Scanly's PDF export (long edge 842 pt, A4 height) with the image filling it.
+     */
+    private fun writeImageAsPdf(uri: Uri, target: File): SignPageSize {
+        val source = android.graphics.ImageDecoder.createSource(context.contentResolver, uri)
+        val decoded = android.graphics.ImageDecoder.decodeBitmap(source) { decoder, info, _ ->
+            decoder.allocator = android.graphics.ImageDecoder.ALLOCATOR_SOFTWARE
+            val longEdge = maxOf(info.size.width, info.size.height)
+            if (longEdge > MaxImagePageEdgePx) {
+                val scale = MaxImagePageEdgePx.toFloat() / longEdge
+                decoder.setTargetSize(
+                    (info.size.width * scale).toInt().coerceAtLeast(1),
+                    (info.size.height * scale).toInt().coerceAtLeast(1),
+                )
+            }
+        }
+        // Flatten any transparency onto white paper before JPEG encoding.
+        val flat = Bitmap.createBitmap(decoded.width, decoded.height, Bitmap.Config.ARGB_8888)
+        android.graphics.Canvas(flat).apply {
+            drawColor(Color.WHITE)
+            drawBitmap(decoded, 0f, 0f, null)
+        }
+        decoded.recycle()
+        val scale = ImagePageLongEdgePt / maxOf(flat.width, flat.height)
+        val width = flat.width * scale
+        val height = flat.height * scale
+        try {
+            PDDocument().use { document ->
+                val page = PDPage(PDRectangle(width, height))
+                document.addPage(page)
+                val image = JPEGFactory.createFromByteArray(document, flat.toJpegBytes(ImagePageJpegQuality))
+                PDPageContentStream(document, page).use { stream -> stream.drawImage(image, 0f, 0f, width, height) }
+                document.save(target)
+            }
+        } finally {
+            flat.recycle()
+        }
+        return SignPageSize(width, height)
     }
 
     override suspend fun sign(
@@ -653,6 +707,9 @@ class DefaultPdfToolkitRepository @Inject constructor(
 
     private companion object {
         const val PdfMimeType = "application/pdf"
+        const val MaxImagePageEdgePx = 3000
+        const val ImagePageLongEdgePt = 842f
+        const val ImagePageJpegQuality = 92
         /** ~32 MB ARGB ceiling for a single page during compress. */
         const val MaxCompressPagePixels = 8_000_000L
         /** Re-resolve the preview base after this long so edits to a library scan show up. */

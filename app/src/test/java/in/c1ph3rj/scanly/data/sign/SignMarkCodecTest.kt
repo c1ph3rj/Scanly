@@ -102,4 +102,14 @@ class SignMarkCodecTest {
 
         assertEquals(SignInk.Default, decoded.single().ink)
     }
+
+    @Test
+    fun checkboxKeepsCheckedStateAndOldDataDefaultsToTicked() {
+        val unticked = SignMark.Checkbox("c", 0, NormRect(0.1f, 0.1f, 0.05f, 0.05f), SignInk.Default, checked = false)
+        assertEquals(listOf(unticked), SignMarkCodec.decode(SignMarkCodec.encode(listOf(unticked))))
+
+        val legacy = """{"v":1,"marks":[{"type":"checkbox","id":"old","page":0,"l":0.1,"t":0.1,"w":0.05,"h":0.05,"ink":"navy"}]}"""
+        val decoded = SignMarkCodec.decode(legacy).single() as SignMark.Checkbox
+        assertEquals(true, decoded.checked)
+    }
 }

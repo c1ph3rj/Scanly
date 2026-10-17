@@ -4,7 +4,10 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.awaitTouchSlopOrCancellation
+import androidx.compose.foundation.gestures.drag
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,6 +21,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.CheckBox
+import androidx.compose.material.icons.outlined.CheckBoxOutlineBlank
 import androidx.compose.material.icons.outlined.ContentCopy
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.DropdownMenu
@@ -163,49 +168,40 @@ internal fun SignMarkLayer(
                     )
                 }
                 .pointerInput(Unit) {
-                    var drag: LayerDrag? = null
-                    var totalX = 0f
-                    var totalY = 0f
-                    detectDragGestures(
-                        onDragStart = { start ->
-                            val w = latestWidth.value
-                            val h = latestHeight.value
-                            val current = latestMarks.value
-                            val selectedMark = current.firstOrNull { it.id == latestSelectedId.value }
-                            val corner = selectedMark?.let { mark ->
-                                val rect = mark.box.toRect(w, h)
-                                // On a small box the handles cover its body; a grab inside it moves.
-                                val bodyGrab = rect.contains(start) && minOf(rect.width, rect.height) < handleTouchPx * 3f
-                                cornerNear(rect, start, handleTouchPx).takeUnless { bodyGrab }
-                            }
-                            totalX = 0f
-                            totalY = 0f
-                            drag = if (selectedMark != null && corner != null) {
-                                LayerDrag.Resize(
-                                    id = selectedMark.id,
-                                    corner = corner,
-                                    start = selectedMark.box,
-                                    lockAspect = lockAspectFor(selectedMark),
-                                )
-                            } else {
-                                val hit = hitMark(current, start, w, h)
-                                if (hit == null) {
-                                    null
-                                } else {
-                                    if (hit.id != latestSelectedId.value) {
-                                        latestOnAction.value(SignEditorAction.SelectMark(hit.id))
-                                    }
-                                    LayerDrag.Move(id = hit.id, start = hit.box)
-                                }
-                            }
-                        },
-                        onDrag = { change, amount ->
-                            val active = drag ?: return@detectDragGestures
-                            change.consume()
-                            totalX += amount.x
-                            totalY += amount.y
-                            val dx = totalX / latestWidth.value
-                            val dy = totalY / latestHeight.value
+                    // Claims a touch only when it starts on a mark or a handle; swipes on empty
+                    // paper fall through to the page pager so every page stays reachable.
+                    awaitEachGesture {
+                        val down = awaitFirstDown(requireUnconsumed = false)
+                        val start = down.position
+                        val w = latestWidth.value
+                        val h = latestHeight.value
+                        val current = latestMarks.value
+                        val selectedMark = current.firstOrNull { it.id == latestSelectedId.value }
+                        val corner = selectedMark?.let { mark ->
+                            val rect = mark.box.toRect(w, h)
+                            // On a small box the handles cover its body; a grab inside it moves.
+                            val bodyGrab = rect.contains(start) && minOf(rect.width, rect.height) < handleTouchPx * 3f
+                            cornerNear(rect, start, handleTouchPx).takeUnless { bodyGrab }
+                        }
+                        val active: LayerDrag = if (selectedMark != null && corner != null) {
+                            LayerDrag.Resize(
+                                id = selectedMark.id,
+                                corner = corner,
+                                start = selectedMark.box,
+                                lockAspect = lockAspectFor(selectedMark),
+                            )
+                        } else {
+                            val hit = hitMark(current, start, w, h) ?: return@awaitEachGesture
+                            LayerDrag.Move(id = hit.id, start = hit.box)
+                        }
+                        val slop = awaitTouchSlopOrCancellation(down.id) { change, _ -> change.consume() }
+                            ?: return@awaitEachGesture
+                        if (active.id != latestSelectedId.value) {
+                            latestOnAction.value(SignEditorAction.SelectMark(active.id))
+                        }
+                        fun emit(position: Offset) {
+                            val dx = (position.x - start.x) / latestWidth.value
+                            val dy = (position.y - start.y) / latestHeight.value
                             val next = when (active) {
                                 is LayerDrag.Move -> moveBox(active.start, dx, dy)
                                 is LayerDrag.Resize -> resizeFromCorner(
@@ -218,10 +214,13 @@ internal fun SignMarkLayer(
                                 )
                             }
                             latestOnAction.value(SignEditorAction.UpdateBox(active.id, next))
-                        },
-                        onDragEnd = { drag = null },
-                        onDragCancel = { drag = null },
-                    )
+                        }
+                        emit(slop.position)
+                        drag(slop.id) { change ->
+                            change.consume()
+                            emit(change.position)
+                        }
+                    }
                 },
         ) {
             // Placeholder so the gesture surface is laid out; the marks draw above it.
@@ -302,7 +301,7 @@ private fun MarkContent(mark: SignMark) {
         )
         is SignMark.Text -> TextMarkContent(text = mark.text, ink = mark.ink)
         is SignMark.Date -> TextMarkContent(text = mark.text, ink = mark.ink)
-        is SignMark.Checkbox -> CheckboxMarkContent(ink = mark.ink)
+        is SignMark.Checkbox -> CheckboxMarkContent(ink = mark.ink, checked = mark.checked)
     }
 }
 
@@ -337,9 +336,9 @@ private fun TextMarkContent(text: String, ink: SignInk) {
     )
 }
 
-/** Tick polyline from [SignMarkStyle.CheckPoints] with round caps, sized like the PDF output. */
+/** Rounded square with a tick from [SignMarkStyle.CheckPoints], sized like the PDF output. */
 @Composable
-private fun CheckboxMarkContent(ink: SignInk) {
+private fun CheckboxMarkContent(ink: SignInk, checked: Boolean) {
     val color = Color(ink.argb)
     Spacer(
         modifier = Modifier
@@ -352,7 +351,17 @@ private fun CheckboxMarkContent(ink: SignInk) {
                     val y = fy * size.height
                     if (index == 0) path.moveTo(x, y) else path.lineTo(x, y)
                 }
+                val side = min(size.width, size.height)
+                val border = SignMarkStyle.CheckboxBorderFraction * side
                 onDrawBehind {
+                    drawRoundRect(
+                        color = color,
+                        topLeft = androidx.compose.ui.geometry.Offset(border / 2f, border / 2f),
+                        size = androidx.compose.ui.geometry.Size(size.width - border, size.height - border),
+                        cornerRadius = androidx.compose.ui.geometry.CornerRadius(SignMarkStyle.CheckboxCornerFraction * side),
+                        style = Stroke(width = border),
+                    )
+                    if (!checked) return@onDrawBehind
                     drawPath(
                         path = path,
                         color = color,
@@ -411,6 +420,19 @@ private fun SelectedMarkToolbar(
                             )
                         }
                     }
+                }
+            }
+            if (mark is SignMark.Checkbox) {
+                IconButton(
+                    onClick = { onAction(SignEditorAction.ToggleCheck(mark.id)) },
+                    modifier = Modifier.size(40.dp),
+                ) {
+                    Icon(
+                        imageVector = if (mark.checked) Icons.Outlined.CheckBox else Icons.Outlined.CheckBoxOutlineBlank,
+                        contentDescription = if (mark.checked) "Untick" else "Tick",
+                        tint = colors.inverseOnSurface,
+                        modifier = Modifier.size(20.dp),
+                    )
                 }
             }
             IconButton(

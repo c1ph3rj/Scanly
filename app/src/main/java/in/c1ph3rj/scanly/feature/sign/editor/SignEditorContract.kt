@@ -59,4 +59,7 @@ sealed interface SignEditorAction {
     data class StartEditText(val id: String) : SignEditorAction
     data class CommitText(val id: String, val text: String) : SignEditorAction
     data object CancelEditText : SignEditorAction
+
+    /** Ticks or clears a checkbox mark. */
+    data class ToggleCheck(val id: String) : SignEditorAction
 }

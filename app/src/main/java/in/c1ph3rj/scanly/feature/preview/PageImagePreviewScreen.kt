@@ -28,6 +28,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.DeleteOutline
+import androidx.compose.material.icons.filled.Draw
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.FitScreen
 import androidx.compose.material.icons.filled.IosShare
@@ -72,6 +73,7 @@ fun PageImagePreviewRoute(
     onNavigateUp: () -> Unit,
     onEditPage: (String) -> Unit,
     onRetakePage: (documentId: String, pageId: String) -> Unit,
+    onSignPage: (documentId: String, pageIndex: Int) -> Unit = { _, _ -> },
     viewModel: PageImagePreviewViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -96,6 +98,7 @@ fun PageImagePreviewRoute(
         onNavigateUp = onNavigateUp,
         onEditPage = onEditPage,
         onRetakePage = onRetakePage,
+        onSignPage = onSignPage,
         onSharePage = viewModel::sharePage,
         onDeletePage = viewModel::deletePage,
         onSelectPage = viewModel::selectPage,
@@ -109,6 +112,7 @@ fun PageImagePreviewScreen(
     onNavigateUp: () -> Unit,
     onEditPage: (String) -> Unit,
     onRetakePage: (documentId: String, pageId: String) -> Unit,
+    onSignPage: (documentId: String, pageIndex: Int) -> Unit,
     onSharePage: (String) -> Unit,
     onDeletePage: (String) -> Unit,
     onSelectPage: (String) -> Unit,
@@ -250,6 +254,7 @@ fun PageImagePreviewScreen(
                     enabled = !uiState.isDeleting,
                     onShare = { onSharePage(visiblePage.id) },
                     onEdit = { onEditPage(visiblePage.id) },
+                    onSign = { onSignPage(visiblePage.documentId, visiblePage.pageIndex) },
                     onRetake = { onRetakePage(visiblePage.documentId, visiblePage.id) },
                     onDelete = { deleteTarget = visiblePage },
                 )
@@ -279,6 +284,7 @@ private fun PreviewBottomActionBar(
     enabled: Boolean,
     onShare: () -> Unit,
     onEdit: () -> Unit,
+    onSign: () -> Unit,
     onRetake: () -> Unit,
     onDelete: () -> Unit,
 ) {
@@ -311,6 +317,13 @@ private fun PreviewBottomActionBar(
                 label = "Edit",
                 enabled = enabled,
                 onClick = onEdit,
+                modifier = Modifier.weight(1f),
+            )
+            PreviewBottomAction(
+                icon = Icons.Filled.Draw,
+                label = "Sign",
+                enabled = enabled,
+                onClick = onSign,
                 modifier = Modifier.weight(1f),
             )
             PreviewBottomAction(
