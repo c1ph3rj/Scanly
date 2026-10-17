@@ -42,6 +42,7 @@ import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Crop
 import androidx.compose.material.icons.filled.DeleteOutline
 import androidx.compose.material.icons.filled.Description
+import androidx.compose.material.icons.filled.Draw
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.FileDownload
 import androidx.compose.material.icons.filled.Folder
@@ -169,6 +170,7 @@ fun DocumentDetailRoute(
     onOpenPageEditor: (String) -> Unit,
     onReplacePage: (String) -> Unit,
     onOpenText: (pageIndex: Int) -> Unit = {},
+    onOpenSign: (pageIndex: Int) -> Unit = {},
     viewModel: DocumentDetailViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -207,6 +209,7 @@ fun DocumentDetailRoute(
         onOpenPageEditor = onOpenPageEditor,
         onReplacePage = onReplacePage,
         onOpenText = onOpenText,
+        onOpenSign = onOpenSign,
         onSelectPage = viewModel::selectPage,
         onMovePage = viewModel::movePage,
         onDeleteSelectedPage = viewModel::deleteSelectedPage,
@@ -250,6 +253,7 @@ fun DocumentDetailScreen(
     onRenameDocument: (String) -> Unit,
     onDeleteDocument: () -> Unit,
     onOpenText: (pageIndex: Int) -> Unit = {},
+    onOpenSign: (pageIndex: Int) -> Unit = {},
 ) {
     val windowSizeInfo = rememberWindowSizeInfo()
     val useMasterDetailLayout = windowSizeInfo.useTabletLandscapeLayout
@@ -428,6 +432,7 @@ fun DocumentDetailScreen(
                 menuEnabled = document != null,
                 onOpenText = { onOpenText(selectedPage?.pageIndex ?: 0) },
                 textEnabled = uiState.pages.isNotEmpty(),
+                onOpenSign = { onOpenSign(selectedPage?.pageIndex ?: 0) },
             )
         }
     ) { innerPadding ->
@@ -466,6 +471,7 @@ fun DocumentDetailScreen(
                 onPreviewPage = { pageId -> previewPageId = pageId },
                 density = density,
                 onOpenText = onOpenText,
+                onOpenSign = onOpenSign,
             )
         } else {
             Box(
@@ -838,6 +844,7 @@ private fun ReviewTopBar(
     menuEnabled: Boolean,
     onOpenText: () -> Unit,
     textEnabled: Boolean,
+    onOpenSign: () -> Unit,
 ) {
     var showMenu by remember { mutableStateOf(false) }
 
@@ -903,6 +910,17 @@ private fun ReviewTopBar(
                             onClick = {
                                 showMenu = false
                                 onOpenExportSheet()
+                            },
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Sign document") },
+                            leadingIcon = {
+                                Icon(Icons.Filled.Draw, contentDescription = null)
+                            },
+                            enabled = textEnabled,
+                            onClick = {
+                                showMenu = false
+                                onOpenSign()
                             },
                         )
                         DropdownMenuItem(
@@ -1110,6 +1128,7 @@ private fun DocumentMasterDetailLayout(
     onPreviewPage: (String) -> Unit,
     density: Density,
     onOpenText: (pageIndex: Int) -> Unit,
+    onOpenSign: (pageIndex: Int) -> Unit,
 ) {
     Row(
         modifier = Modifier
@@ -1349,6 +1368,11 @@ private fun DocumentMasterDetailLayout(
                                         icon = Icons.AutoMirrored.Filled.Notes,
                                         contentDescription = "Extract text",
                                         onClick = { onOpenText(selectedPage.pageIndex) },
+                                    )
+                                    PreviewActionButton(
+                                        icon = Icons.Filled.Draw,
+                                        contentDescription = "Sign document",
+                                        onClick = { onOpenSign(selectedPage.pageIndex) },
                                     )
                                     PreviewActionButton(
                                         icon = Icons.Filled.IosShare,

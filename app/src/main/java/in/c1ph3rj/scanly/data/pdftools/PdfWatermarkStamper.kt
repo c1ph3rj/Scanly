@@ -5,12 +5,10 @@ import com.tom_roush.pdfbox.pdmodel.PDDocument
 import com.tom_roush.pdfbox.pdmodel.PDPage
 import com.tom_roush.pdfbox.pdmodel.PDPageContentStream
 import com.tom_roush.pdfbox.pdmodel.font.PDFont
-import com.tom_roush.pdfbox.pdmodel.font.PDType0Font
 import com.tom_roush.pdfbox.pdmodel.font.PDType1Font
 import com.tom_roush.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState
 import com.tom_roush.pdfbox.util.Matrix
 import `in`.c1ph3rj.scanly.domain.model.WatermarkOptions
-import java.io.File
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -93,17 +91,6 @@ internal class PdfWatermarkStamper private constructor(
         private const val MinOpacity = 0.05f
         private const val MaxOpacity = 0.85f
 
-        /** Bold, broad-coverage system fonts tried in order when Helvetica can't encode the text. */
-        private val SystemFontCandidates = listOf(
-            "/system/fonts/Roboto-Bold.ttf",
-            "/system/fonts/NotoSans-Bold.ttf",
-            "/system/fonts/DroidSans-Bold.ttf",
-            "/system/fonts/RobotoStatic-Regular.ttf",
-            "/system/fonts/NotoSans-Regular.ttf",
-            "/system/fonts/Roboto-Regular.ttf",
-            "/system/fonts/DroidSans.ttf",
-        )
-
         /**
          * Prepares a stamper for [document]. Throws [IllegalArgumentException] with a user-facing
          * message when the text can't be drawn faithfully.
@@ -115,30 +102,12 @@ internal class PdfWatermarkStamper private constructor(
                 "Watermarks support Latin, Greek and Cyrillic text, digits and symbols. " +
                     "Try the text in English."
             }
-            val font = resolveFont(document, text)
+            val font = PdfFontResolver.resolve(document, text, PDType1Font.HELVETICA_BOLD, PdfFontResolver.BoldCandidates)
                 ?: throw IllegalArgumentException(
                     "Some characters in the watermark can't be drawn. Remove emoji or unusual symbols.",
                 )
             return PdfWatermarkStamper(font, text, options)
         }
-
-        private fun resolveFont(document: PDDocument, text: String): PDFont? {
-            val helvetica = PDType1Font.HELVETICA_BOLD
-            if (canEncode(helvetica, text)) return helvetica
-            for (path in SystemFontCandidates) {
-                val file = File(path)
-                if (!file.isFile) continue
-                val font = runCatching { PDType0Font.load(document, file) }.getOrNull() ?: continue
-                if (canEncode(font, text)) return font
-            }
-            return null
-        }
-
-        private fun canEncode(font: PDFont, text: String): Boolean =
-            runCatching {
-                font.encode(text)
-                font.getStringWidth(text)
-            }.isSuccess
 
         private fun resolveCapHeight(font: PDFont): Float {
             val fromDescriptor = font.fontDescriptor?.capHeight?.takeIf { it > 0f }?.div(1000f)

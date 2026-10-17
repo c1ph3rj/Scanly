@@ -21,7 +21,10 @@ import `in`.c1ph3rj.scanly.domain.model.ExportArtifact
 import `in`.c1ph3rj.scanly.domain.model.PdfCompressQuality
 import `in`.c1ph3rj.scanly.domain.model.PdfDocumentInfo
 import `in`.c1ph3rj.scanly.domain.model.PdfExportOptions
+import `in`.c1ph3rj.scanly.domain.model.PdfSignSession
 import `in`.c1ph3rj.scanly.domain.model.PdfToolSource
+import `in`.c1ph3rj.scanly.domain.model.SignMark
+import `in`.c1ph3rj.scanly.domain.model.SignPageSize
 import `in`.c1ph3rj.scanly.domain.model.WatermarkOptions
 import `in`.c1ph3rj.scanly.domain.model.WatermarkPageRange
 import `in`.c1ph3rj.scanly.domain.repository.DocumentExportRepository
@@ -333,6 +336,69 @@ class DefaultPdfToolkitRepository @Inject constructor(
             previewBase = PreviewBase(key = key, file = file, createdAt = now)
             file
         }
+
+    override suspend fun openSignSession(
+        source: PdfToolSource,
+        password: String?,
+    ): ScanlyResult<PdfSignSession> = withContext(dispatchers.io) {
+        runCatching {
+            ensurePdfBox()
+            val file = File(toolsDir(), "sign_${UUID.randomUUID()}.pdf")
+            val pageSizes = resolveLocalFile(source).useFile { local ->
+                openDocument(local, password).use { document ->
+                    require(document.numberOfPages > 0) { "This PDF has no pages." }
+                    if (document.isEncrypted) {
+                        document.setAllSecurityToBeRemoved(true)
+                    }
+                    val sizes = document.pages.map { page ->
+                        val box = page.cropBox ?: page.mediaBox
+                        val (width, height) = WatermarkGeometry.visualSize(box.width, box.height, page.rotation)
+                        SignPageSize(width, height)
+                    }
+                    // One decrypted local copy for the whole editing session: page renders read
+                    // it in place instead of re-copying or re-exporting the source each time.
+                    document.save(file)
+                    sizes
+                }
+            }
+            PdfSignSession(
+                file = PdfToolSource.AppFile(file.absolutePath, source.displayLabel()),
+                pageSizes = pageSizes,
+            )
+        }.toScanlyResult("Could not open this PDF for signing.")
+    }
+
+    override suspend fun sign(
+        session: PdfSignSession,
+        marks: List<SignMark>,
+    ): ScanlyResult<ExportArtifact> = withContext(dispatchers.io) {
+        runCatching {
+            require(marks.isNotEmpty()) { "Place a signature or another mark first." }
+            ensurePdfBox()
+            resolveLocalFile(session.file).useFile { local ->
+                val output = newOutputFile("signed")
+                openDocument(local, null).use { document ->
+                    val stamper = PdfSignatureStamper(document)
+                    stamper.validate(marks)
+                    marks.groupBy { it.pageIndex }.forEach { (pageIndex, pageMarks) ->
+                        require(pageIndex in 0 until document.numberOfPages) { "A mark is on a missing page." }
+                        stamper.stamp(document.getPage(pageIndex), pageMarks)
+                    }
+                    document.save(output)
+                }
+                artifact(output)
+            }
+        }.toScanlyResult("Could not sign this PDF.")
+    }
+
+    override suspend fun closeSignSession(session: PdfSignSession) {
+        withContext(dispatchers.io) {
+            val file = File(session.file.filePath)
+            if (file.parentFile?.canonicalFile == toolsDir().canonicalFile && file.name.startsWith("sign_")) {
+                file.delete()
+            }
+        }
+    }
 
     override suspend fun renderPage(
         source: PdfToolSource,

@@ -10,6 +10,7 @@ import `in`.c1ph3rj.scanly.data.local.db.dao.DocumentDao
 import `in`.c1ph3rj.scanly.data.local.db.dao.ScanPageDao
 import `in`.c1ph3rj.scanly.data.local.db.entity.ScanPageEntity
 import `in`.c1ph3rj.scanly.data.common.LibraryOperationCoordinator
+import `in`.c1ph3rj.scanly.data.sign.PageMarkupStore
 import `in`.c1ph3rj.scanly.data.storage.DocumentStorageManager
 import `in`.c1ph3rj.scanly.domain.model.PageFilterAdjustments
 import `in`.c1ph3rj.scanly.domain.model.PageFilterPreset
@@ -36,6 +37,7 @@ class DefaultPageRepository @Inject constructor(
     private val thumbnailCache: ThumbnailCache,
     private val dispatchers: ScanlyDispatchers,
     private val operationCoordinator: LibraryOperationCoordinator,
+    private val markupStore: PageMarkupStore,
 ) : PageRepository {
 
     override fun observePages(documentId: String): Flow<List<ScanPage>> =
@@ -152,6 +154,15 @@ class DefaultPageRepository @Inject constructor(
                     processedArtifacts.thumbnailPath,
                     processedArtifacts.processedImagePath,
                 )
+                if (existingPage != null) {
+                    // Retake keeps the page's signatures: stamp them onto the new capture.
+                    markupStore.reapplyAfterReprocess(
+                        existingPage.copy(
+                            processedImagePath = processedArtifacts.processedImagePath,
+                            thumbnailPath = processedArtifacts.thumbnailPath,
+                        ),
+                    )
+                }
                 val page = ScanPageEntity(
                     id = draft.pageId,
                     documentId = draft.documentId,
@@ -277,6 +288,8 @@ class DefaultPageRepository @Inject constructor(
                 val document = documentDao.getDocument(page.documentId)
                     ?: error("Document not found.")
                 val timestamp = System.currentTimeMillis()
+                // The markup row cascades with the page; read it first to clean up its files.
+                val markup = markupStore.markupFor(pageId)
 
                 database.withTransaction {
                     scanPageDao.deleteById(pageId)
@@ -298,6 +311,7 @@ class DefaultPageRepository @Inject constructor(
                 }
 
                 deletePageAssets(page)
+                markupStore.deleteAssets(markup, page.processedImagePath)
             }.fold(
                 onSuccess = { ScanlyResult.Success(Unit) },
                 onFailure = { throwable ->
@@ -471,6 +485,13 @@ class DefaultPageRepository @Inject constructor(
         invalidateImageCache(
             processedArtifacts.thumbnailPath,
             processedArtifacts.processedImagePath,
+        )
+        // The pipeline rewrote a clean image; stamp any signatures onto it again.
+        markupStore.reapplyAfterReprocess(
+            copy(
+                processedImagePath = processedArtifacts.processedImagePath,
+                thumbnailPath = processedArtifacts.thumbnailPath,
+            ),
         )
 
         return copy(

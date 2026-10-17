@@ -59,7 +59,7 @@ app/src/main/java/in/c1ph3rj/scanly/
 - Keep dependency versions in `gradle/libs.versions.toml`; reference via `libs.*` in Gradle scripts.
 - Compose deps use BOM (`implementation(platform(libs.androidx.compose.bom))`).
 - Preserve raw captures — never overwrite files under `raw/`; regenerate `processed/` and `thumbs/`.
-- Room schema is version `6`. Any schema change requires a `Migration_X_Y` in `ScanlyDatabase.kt` and version bump.
+- Room schema is version `7` (v7 adds `signatures` and `page_markups`). Any schema change requires a `Migration_X_Y` in `ScanlyDatabase.kt` and version bump.
 - Page text lives in `page_texts` with an FTS4 external-content index `page_texts_fts` (Room triggers keep it in sync — always replace rows with delete + insert, never `REPLACE`). `page_texts_terms` (fts4aux) is created on open for spelling suggestions. `TextIndexScheduler` re-reads any page whose `updatedAtMillis` differs from its text row, so features never need to call the indexer.
 - ML model assets under `app/src/main/assets/models/`: corner variants (Lite/Standard/High/Accurate) + `scanly_document_gate_float16.tflite` (keep `noCompress += "tflite"`).
 - Document detection prefs in DataStore: live/post models, automatic selection, document gate; pure black theme is separate (`pure_black_enabled`).
@@ -83,7 +83,9 @@ Typed routes (real flows):
 - `document/{documentId}/text?page={page}&query={query}` — extracted text (Text / On page views)
 - `settings/appearance`, `settings/detection`, `settings/widgets`, `settings/about`, `settings/faq`, `settings/licenses`, `settings/storage`, `settings/model-benchmark` — settings hub sub-screens
 - `tools/qr` — QR scan + generate
-- `tools/pdf/reader`, `tools/pdf/merge`, `tools/pdf/compress`, `tools/pdf/password`, `tools/pdf/watermark` — PDF toolkit
+- `tools/pdf/reader`, `tools/pdf/merge`, `tools/pdf/compress`, `tools/pdf/password`, `tools/pdf/watermark`, `tools/pdf/sign` — PDF toolkit
+- `document/{documentId}/sign?page={page}` — sign a scan in place (marks composited into `processed/`, clean image kept as `processed/page_NNN.base.jpg`, layer data in `page_markups`)
+- `signatures/manage`, `signatures/create?kind={kind}` — saved signatures (`files/signatures/{id}/ink.png`, black ink alpha masks)
 
 Legacy placeholder routes (`camera`, `review`, `editor` top-level) use `FeaturePlaceholderScreen` — do not wire new features there.
 

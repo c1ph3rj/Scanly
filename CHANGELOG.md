@@ -8,6 +8,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- **Sign documents** — a new **Sign** tool (Tools → PDF) places your signature, initials, today's date, text or a checkbox tick on any PDF from your phone or your Scanly library, then saves a signed copy to Downloads/Scanly or shares it. Marks can be dragged, resized from their corners, recoloured (navy, black, blue, red), duplicated or deleted, on any page.
+- **Sign a scan in place** — document menu → **Sign document** stamps the marks into the scanned pages, so previews, thumbnails and every export include them. They stay editable: open Sign again to move or remove them, and they survive crop, filter and retake edits.
+- **Your signatures** — draw a signature or initials on a smooth, pressure-aware pad, or upload a photo of your signature on paper (Scanly lifts the ink off the background; transparent PNGs work too). Saved signatures stay on this phone and can be managed from the editor.
 - **Search inside your scans** — Scanly now reads the text on every page on this device (ML Kit Text Recognition v2, bundled model — nothing is uploaded) and library search finds documents by any word printed on their pages, not just by name. Name matches appear instantly as you type; page matches follow a moment later with highlighted excerpts and a "Page N" for each hit, and documents whose pages contain the words move above name-only matches.
 - **Smarter search** — typed words match as prefixes ("lea" finds "lease"), case and accents are ignored, "quoted phrases" match exactly, names tolerate one typo, and when nothing matches Scanly suggests a correction built from words that really occur in your pages. Filter by Everywhere / Names / Text in pages, and by document type.
 - **Document types** — invoices, receipts, contracts, statements, letters, certificates, ID documents, forms and résumés are recognised on-device from their text and shown in search results.

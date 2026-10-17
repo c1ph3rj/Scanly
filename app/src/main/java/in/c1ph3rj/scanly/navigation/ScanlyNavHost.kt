@@ -40,6 +40,10 @@ import `in`.c1ph3rj.scanly.feature.tools.pdf.PdfMergeRoute
 import `in`.c1ph3rj.scanly.feature.tools.pdf.PdfPasswordRoute
 import `in`.c1ph3rj.scanly.feature.tools.pdf.PdfReaderRoute
 import `in`.c1ph3rj.scanly.feature.tools.pdf.PdfWatermarkRoute
+import `in`.c1ph3rj.scanly.feature.tools.pdf.PdfSignRoute
+import `in`.c1ph3rj.scanly.feature.sign.create.SignatureCreateRoute
+import `in`.c1ph3rj.scanly.feature.sign.document.DocumentSignRoute
+import `in`.c1ph3rj.scanly.feature.sign.manage.SignatureManageRoute
 import `in`.c1ph3rj.scanly.feature.tools.qr.QrToolMode
 import `in`.c1ph3rj.scanly.feature.tools.qr.QrToolRoute
 import `in`.c1ph3rj.scanly.feature.update.AppUpdateUiState
@@ -878,6 +882,71 @@ private fun ScanlyNavHostContent(
                 },
             )
         }
+        composable(
+            route = ToolsPdfSignDestination.route,
+            enterTransition = { detailPushEnter() },
+            exitTransition = { detailPushExit() },
+            popEnterTransition = { detailPopEnter() },
+            popExitTransition = { detailPopExit() },
+        ) {
+            PdfSignRoute(
+                onNavigateUp = navController::navigateUp,
+                onPreviewPdf = { artifact ->
+                    navController.navigate(
+                        ToolsPdfReaderDestination.route(artifact.filePath, artifact.fileName),
+                    )
+                },
+                onManageSignatures = { navController.navigate(SignatureManageDestination.route) },
+                onCreateSignature = { kind -> navController.navigate(SignatureCreateDestination.route(kind)) },
+            )
+        }
+        composable(
+            route = DocumentSignDestination.routePattern,
+            arguments = listOf(
+                navArgument(DocumentSignDestination.documentIdArgument) { type = NavType.StringType },
+                navArgument(DocumentSignDestination.pageArgument) {
+                    type = NavType.StringType
+                    defaultValue = "0"
+                },
+            ),
+            enterTransition = { detailPushEnter() },
+            exitTransition = { detailPushExit() },
+            popEnterTransition = { detailPopEnter() },
+            popExitTransition = { detailPopExit() },
+        ) {
+            DocumentSignRoute(
+                onNavigateUp = navController::navigateUp,
+                onManageSignatures = { navController.navigate(SignatureManageDestination.route) },
+                onCreateSignature = { kind -> navController.navigate(SignatureCreateDestination.route(kind)) },
+            )
+        }
+        composable(
+            route = SignatureManageDestination.route,
+            enterTransition = { detailPushEnter() },
+            exitTransition = { detailPushExit() },
+            popEnterTransition = { detailPopEnter() },
+            popExitTransition = { detailPopExit() },
+        ) {
+            SignatureManageRoute(
+                onNavigateUp = navController::navigateUp,
+                onCreate = { kind -> navController.navigate(SignatureCreateDestination.route(kind)) },
+            )
+        }
+        composable(
+            route = SignatureCreateDestination.routePattern,
+            arguments = listOf(
+                navArgument(SignatureCreateDestination.kindArgument) {
+                    type = NavType.StringType
+                    defaultValue = "signature"
+                },
+            ),
+            enterTransition = { detailPushEnter() },
+            exitTransition = { detailPushExit() },
+            popEnterTransition = { detailPopEnter() },
+            popExitTransition = { detailPopExit() },
+        ) {
+            SignatureCreateRoute(onNavigateUp = navController::navigateUp)
+        }
         composable(ScanlyDestination.Camera.route) {
             FeaturePlaceholderRoute(
                 destination = ScanlyDestination.Camera,
@@ -1084,6 +1153,9 @@ private fun ScanlyNavHostContent(
                 },
                 onOpenText = { pageIndex ->
                     navController.navigate(PageTextDestination.route(documentId, pageIndex))
+                },
+                onOpenSign = { pageIndex ->
+                    navController.navigate(DocumentSignDestination.route(documentId, pageIndex))
                 },
                 onReplacePage = { pageId ->
                     navController.navigate(ScanSessionDestination.route(documentId, replacePageId = pageId))

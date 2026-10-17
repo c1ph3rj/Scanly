@@ -5,7 +5,10 @@ import `in`.c1ph3rj.scanly.core.common.ScanlyResult
 import `in`.c1ph3rj.scanly.domain.model.ExportArtifact
 import `in`.c1ph3rj.scanly.domain.model.PdfCompressQuality
 import `in`.c1ph3rj.scanly.domain.model.PdfDocumentInfo
+import `in`.c1ph3rj.scanly.domain.model.PdfSignSession
 import `in`.c1ph3rj.scanly.domain.model.PdfToolSource
+import `in`.c1ph3rj.scanly.domain.model.SignMark
+import `in`.c1ph3rj.scanly.domain.model.SignPageSize
 import `in`.c1ph3rj.scanly.domain.model.WatermarkOptions
 import `in`.c1ph3rj.scanly.domain.repository.PdfToolkitRepository
 import java.io.File
@@ -26,6 +29,8 @@ class InMemoryPdfToolkitRepository(
     var lastRemovedPassword: String? = null
         private set
     var lastWatermarkOptions: WatermarkOptions? = null
+        private set
+    var lastSignedMarks: List<SignMark> = emptyList()
         private set
 
     override suspend fun inspect(
@@ -111,6 +116,31 @@ class InMemoryPdfToolkitRepository(
         maxWidth: Int,
     ): ScanlyResult<Bitmap> = runLibraryResult("Could not render PDF page.") {
         error("Bitmap preview is unavailable on the JVM.")
+    }
+
+    override suspend fun openSignSession(
+        source: PdfToolSource,
+        password: String?,
+    ): ScanlyResult<PdfSignSession> = runLibraryResult("Could not open this PDF for signing.") {
+        val copy = writeArtifact("sign_session.pdf", "application/pdf", "SESSION ${source.displayName()}")
+        PdfSignSession(
+            file = PdfToolSource.AppFile(copy.filePath, source.displayName()),
+            pageSizes = listOf(SignPageSize(595f, 842f), SignPageSize(842f, 595f)),
+        )
+    }
+
+    override suspend fun sign(
+        session: PdfSignSession,
+        marks: List<SignMark>,
+    ): ScanlyResult<ExportArtifact> = runLibraryResult("Could not sign this PDF.") {
+        require(marks.isNotEmpty()) { "Place a signature or another mark first." }
+        require(marks.all { it.pageIndex in session.pageSizes.indices }) { "A mark is on a missing page." }
+        lastSignedMarks = marks
+        writeArtifact("signed.pdf", "application/pdf", "SIGNED ${marks.size} marks")
+    }
+
+    override suspend fun closeSignSession(session: PdfSignSession) {
+        File(session.file.filePath).delete()
     }
 
     override suspend fun prepareShare(artifact: ExportArtifact): ScanlyResult<List<String>> =

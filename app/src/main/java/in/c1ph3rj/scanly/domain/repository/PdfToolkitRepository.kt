@@ -5,7 +5,9 @@ import `in`.c1ph3rj.scanly.core.common.ScanlyResult
 import `in`.c1ph3rj.scanly.domain.model.ExportArtifact
 import `in`.c1ph3rj.scanly.domain.model.PdfCompressQuality
 import `in`.c1ph3rj.scanly.domain.model.PdfDocumentInfo
+import `in`.c1ph3rj.scanly.domain.model.PdfSignSession
 import `in`.c1ph3rj.scanly.domain.model.PdfToolSource
+import `in`.c1ph3rj.scanly.domain.model.SignMark
 import `in`.c1ph3rj.scanly.domain.model.WatermarkOptions
 
 interface PdfToolkitRepository {
@@ -61,6 +63,21 @@ interface PdfToolkitRepository {
         password: String? = null,
         maxWidth: Int = 1080,
     ): ScanlyResult<Bitmap>
+
+    /** Resolves and decrypts [source] once into a local copy for the sign editor. */
+    suspend fun openSignSession(
+        source: PdfToolSource,
+        password: String? = null,
+    ): ScanlyResult<PdfSignSession>
+
+    /** Flattens [marks] into a new PDF built from the session copy. */
+    suspend fun sign(
+        session: PdfSignSession,
+        marks: List<SignMark>,
+    ): ScanlyResult<ExportArtifact>
+
+    /** Deletes the session's local copy. */
+    suspend fun closeSignSession(session: PdfSignSession)
 
     /** Copies a tool result into a shareable path set and returns absolute paths. */
     suspend fun prepareShare(artifact: ExportArtifact): ScanlyResult<List<String>>

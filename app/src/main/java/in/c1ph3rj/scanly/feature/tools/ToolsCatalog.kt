@@ -5,6 +5,7 @@ import androidx.compose.material.icons.automirrored.outlined.MenuBook
 import androidx.compose.material.icons.automirrored.outlined.MergeType
 import androidx.compose.material.icons.outlined.Compress
 import androidx.compose.material.icons.outlined.DocumentScanner
+import androidx.compose.material.icons.outlined.Draw
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.PhotoLibrary
 import androidx.compose.material.icons.outlined.QrCode2
@@ -14,6 +15,7 @@ import `in`.c1ph3rj.scanly.navigation.ToolsPdfCompressDestination
 import `in`.c1ph3rj.scanly.navigation.ToolsPdfMergeDestination
 import `in`.c1ph3rj.scanly.navigation.ToolsPdfPasswordDestination
 import `in`.c1ph3rj.scanly.navigation.ToolsPdfReaderDestination
+import `in`.c1ph3rj.scanly.navigation.ToolsPdfSignDestination
 import `in`.c1ph3rj.scanly.navigation.ToolsPdfWatermarkDestination
 import `in`.c1ph3rj.scanly.navigation.ToolsQrDestination
 
@@ -27,6 +29,7 @@ enum class ToolActionId {
     PdfPassword,
     PdfWatermark,
     PdfReader,
+    PdfSign,
 }
 
 /**
@@ -62,6 +65,13 @@ val pdfTools: List<ToolItem> = listOf(
         title = "Images to PDF",
         caption = "From gallery",
         icon = Icons.Outlined.PhotoLibrary,
+    ),
+    ToolItem(
+        id = ToolActionId.PdfSign,
+        title = "Sign",
+        caption = "Add your signature",
+        icon = Icons.Outlined.Draw,
+        route = ToolsPdfSignDestination.route,
     ),
     ToolItem(
         id = ToolActionId.PdfMerge,

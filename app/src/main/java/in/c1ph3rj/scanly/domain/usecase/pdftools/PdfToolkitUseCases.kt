@@ -5,7 +5,9 @@ import `in`.c1ph3rj.scanly.core.common.ScanlyResult
 import `in`.c1ph3rj.scanly.domain.model.ExportArtifact
 import `in`.c1ph3rj.scanly.domain.model.PdfCompressQuality
 import `in`.c1ph3rj.scanly.domain.model.PdfDocumentInfo
+import `in`.c1ph3rj.scanly.domain.model.PdfSignSession
 import `in`.c1ph3rj.scanly.domain.model.PdfToolSource
+import `in`.c1ph3rj.scanly.domain.model.SignMark
 import `in`.c1ph3rj.scanly.domain.model.WatermarkOptions
 import `in`.c1ph3rj.scanly.domain.repository.PdfToolkitRepository
 import javax.inject.Inject
@@ -97,4 +99,28 @@ class PreparePdfToolShareUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(artifact: ExportArtifact): ScanlyResult<List<String>> =
         repository.prepareShare(artifact)
+}
+
+class OpenPdfSignSessionUseCase @Inject constructor(
+    private val repository: PdfToolkitRepository,
+) {
+    suspend operator fun invoke(
+        source: PdfToolSource,
+        password: String? = null,
+    ): ScanlyResult<PdfSignSession> = repository.openSignSession(source, password)
+}
+
+class SignPdfUseCase @Inject constructor(
+    private val repository: PdfToolkitRepository,
+) {
+    suspend operator fun invoke(
+        session: PdfSignSession,
+        marks: List<SignMark>,
+    ): ScanlyResult<ExportArtifact> = repository.sign(session, marks)
+}
+
+class ClosePdfSignSessionUseCase @Inject constructor(
+    private val repository: PdfToolkitRepository,
+) {
+    suspend operator fun invoke(session: PdfSignSession) = repository.closeSignSession(session)
 }
