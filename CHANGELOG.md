@@ -6,8 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [1.0.18] - 2026-10-20
+
 ### Added
 
+- **Sign documents** — a new **Sign** tool (Tools → PDF) places your signature, initials, today's date, text or a checkbox tick on any PDF from your phone or your Scanly library, then saves a signed copy to Downloads/Scanly or shares it. Marks can be dragged, resized from their corners, recoloured (navy, black, blue, red), duplicated or deleted, on any page.
+- **Sign a scan in place** — document menu → **Sign document** stamps the marks into the scanned pages, so previews, thumbnails and every export include them. They stay editable: open Sign again to move or remove them, and they survive crop, filter and retake edits.
+- **Your signatures** — draw a signature or initials on a smooth, pressure-aware pad, or upload a photo of your signature on paper (Scanly lifts the ink off the background; transparent PNGs work too). Saved signatures stay on this phone and can be managed from the editor.
 - **Search inside your scans** — Scanly now reads the text on every page on this device (ML Kit Text Recognition v2, bundled model — nothing is uploaded) and library search finds documents by any word printed on their pages, not just by name. Name matches appear instantly as you type; page matches follow a moment later with highlighted excerpts and a "Page N" for each hit, and documents whose pages contain the words move above name-only matches.
 - **Smarter search** — typed words match as prefixes ("lea" finds "lease"), case and accents are ignored, "quoted phrases" match exactly, names tolerate one typo, and when nothing matches Scanly suggests a correction built from words that really occur in your pages. Filter by Everywhere / Names / Text in pages, and by document type.
 - **Document types** — invoices, receipts, contracts, statements, letters, certificates, ID documents, forms and résumés are recognised on-device from their text and shown in search results.
@@ -15,14 +20,32 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - **Add page tile** — every document's page grid ends with a dashed "Add page" slot that opens Scan / Import.
 - **Search start page** — before you type, search shows your recent searches, one-tap **Browse by type** (e.g. all contracts) and short search tips.
 - **Rate Scanly** — a small, dismissible "Enjoying Scanly?" card under the Settings header with five tappable stars (any star opens the same Google Play rating), a permanent Rate Scanly row under More, plus an occasional, easily dismissed nudge on Home shown only after you have just finished something (an export, share or PDF tool) and never more than once every 30 days.
+- **PDF to JPG** (Tools → PDF) — pick a PDF, choose pages, JPG or PNG, and sharing (1240 px) or print (2480 px, 300 dpi A4) size. Images save to Pictures/Scanly and can be shared all at once or a few at a time.
+- **Meet Pip** — Scanly's pixel mascot from the website now lives in the app as a friendly helper. Pip says one short line on first run, every empty screen (Home, Library, folders, documents, search, QR history, help, page text), the camera permission screen and the export sheet, then gets out of the way. Tap Pip for a hello.
+- **Camera coaching** — the camera's guide line now has Pip in it, reacting to detection (searching, edges found, hold steady with a progress bar, captured, too dark, blurry, lens covered). The preview, edge overlay, grid and countdown are unchanged.
+- **Daily tip on Home** — one short, closable tip a day about a real feature, under the greeting.
+- **Settings › Pip, your helper** — turn Pip off entirely (screens fall back to plain text) or choose tips, camera coaching, export cheers and animation separately. Pip stays still when system animations are off.
+- **Camera step in onboarding** — on a fresh install (or after clearing app data) "Get started" leads to a short step that asks for the camera with context. It is skipped when the camera is already allowed, and "Maybe later" always continues.
+- **Done in the camera** — once a page is captured, a teal **Done** button opens the document.
+- **Open PDFs from other apps** — choose **Open in Scanly** when opening or sharing a PDF from Files, Gmail, Drive, WhatsApp and similar apps. The PDF opens in Scanly's reader; Scanly works on a copy and never changes the original.
+- **Reader → any PDF tool** — the reader's ⋮ menu now has Share, All pages, Sign, Compress, Merge with other PDFs, Password protect, Add watermark, Save pages as images and Open another PDF. Tools open with the current file already chosen, and Back returns to the reader.
 
 ### Changed
 
+- **Help & FAQ** — rewritten with 46 answers across scanning, editing, search, signing, PDF tools, export, QR, widgets, privacy and troubleshooting, with search and category filters.
 - **Folder previews** — Library and Home start with **New folder**, followed by up to three recent folders and a solid **View all** tile with a grid icon and arrow when more than three folders exist. The **See all** header link also opens the full folder list.
 - **Pure black sheets** — bottom sheets (Add a document, Add page, Export & share, Move to folder…) now sit on a visibly raised dark grey in the pure-black theme instead of blending into the black screen.
 - **Save location** — one clear row showing where exports go, with Change inline and Use default folder when a custom folder is set.
 - **Storage** (formerly Storage & backup) — redesigned around what uses space, with one-tap clearing of temporary exports, the save location, tidy-up actions and a single Clear all data action.
 - Text is indexed in the background as you scan, import, retake or edit pages; the search screen shows when some pages are still being read.
+- **Home loading** — on launch, Home shows shimmering placeholders for recent folders and documents until they load, instead of briefly flashing "No documents yet".
+- **Add documents to folder** — each document in the picker now shows its cover page, page count and when it was last edited (e.g. "7 pages · Today, 3:35 pm"), with the selection check on the right, so similarly named scans are easy to tell apart.
+- **Camera layout** — rounded preview (same 3:4 ratio), Pip's coaching at the bottom of the preview with the countdown in its line, captures on the left, a labelled AUTO pill and quieter flash/grid buttons. The whole shutter ring is now tappable.
+- **Recent searches** — redesigned pills: centred text, a 44dp height, and separate tap targets for searching again and removing.
+- **Touch feedback** — settings switches, the "Apply filter to all pages" card and Pip's master switch now highlight their full shape when pressed.
+- **Camera permission screen** — redesigned around an empty viewfinder with Pip; the blocked state spells out the trip to Settings.
+- **Empty states** — the generated illustrations are replaced by Pip (and removed from the app).
+- **New document covers** — documents without a scanned page yet get a redesigned generated cover: a dark brand-teal field, a stack of tilted sheets crossed by a scan beam, and the title set large at the bottom. Each document keeps its own colour (teal, midnight, ember or lime), picked from its title. Existing empty documents pick up the new cover when you rename them.
 
 ### Removed
 
@@ -30,10 +53,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Technical
 
-- Room schema **6** adds `page_texts` and its FTS4 index (`MIGRATION_5_6`); existing pages are read in the background after upgrade.
+- Room schema **7** includes the page-text table and FTS4 index (`MIGRATION_5_6`) and adds saved signatures and per-page markups (`MIGRATION_6_7`). Existing pages are indexed in the background after upgrade.
+- Pip preferences are stored in DataStore (`pip_enabled`, `pip_home_tips`, `pip_camera_coaching`, `pip_celebrations`, `pip_motion`, `pip_tip_dismissed_epoch_day`).
+- PDF tool routes accept an optional `source` argument so a tool can start with a file already chosen; PDFs opened from other apps are copied to `cache/incoming_pdf/` (newest few kept).
 
 ### Fixed
 
+- Privacy Policy and Terms pages: headings and buttons were nearly invisible in dark mode inside the app.
 - **Back navigation** — PDF reader and compression pickers now return to their tool instead of reopening a previously selected file; explicit Change/Choose another actions in the reader, compression, and watermark tools return to the current step. Android Back now closes editor filter modes and stays in place during active capture, crop/filter saves, and PDF-tool processing.
 - The Settings rating card now waits for its saved state before appearing, so it no longer flashes and disappears on open.
 

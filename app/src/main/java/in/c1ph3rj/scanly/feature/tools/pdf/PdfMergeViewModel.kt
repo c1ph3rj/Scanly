@@ -38,6 +38,13 @@ class PdfMergeViewModel @Inject constructor(
         }
     }
 
+    /** Puts the PDF the user came from (the reader) at the front of the order. */
+    fun addInitialSource(source: PdfToolSource) {
+        _uiState.update { state ->
+            if (source in state.sources) state else state.copy(sources = listOf(source) + state.sources, result = null)
+        }
+    }
+
     /** Appends files picked from phone storage, skipping any that are already in the order. */
     fun addDeviceSources(sources: List<PdfToolSource.DeviceUri>) {
         _uiState.update { state ->

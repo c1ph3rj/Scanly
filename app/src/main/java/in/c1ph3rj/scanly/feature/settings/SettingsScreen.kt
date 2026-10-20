@@ -59,6 +59,7 @@ fun SettingsRoute(
     onOpenDetection: () -> Unit,
     onOpenWidgets: () -> Unit,
     onOpenAbout: () -> Unit,
+    onOpenPip: () -> Unit = {},
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
@@ -78,6 +79,7 @@ fun SettingsRoute(
         uiState = uiState,
         snackbarHostState = snackbarHostState,
         onOpenAppearance = onOpenAppearance,
+        onOpenPip = onOpenPip,
         onOpenStorage = onOpenStorage,
         onOpenDetection = onOpenDetection,
         onOpenWidgets = onOpenWidgets,
@@ -102,6 +104,7 @@ fun SettingsScreen(
     uiState: SettingsUiState,
     snackbarHostState: SnackbarHostState,
     onOpenAppearance: () -> Unit,
+    onOpenPip: () -> Unit = {},
     onOpenStorage: () -> Unit,
     onOpenDetection: () -> Unit,
     onOpenWidgets: () -> Unit,
@@ -112,6 +115,7 @@ fun SettingsScreen(
 ) {
     val content = uiState.content
     val windowSizeInfo = rememberWindowSizeInfo()
+    val pipPreferences = `in`.c1ph3rj.scanly.feature.pip.LocalPipPreferences.current
     val appearanceSubtitle = buildString {
         append(uiState.themeMode.settingsLabel())
         if (uiState.pureBlackEnabled && uiState.themeMode != ThemeMode.LIGHT) {
@@ -210,6 +214,16 @@ fun SettingsScreen(
                                 title = "Appearance",
                                 subtitle = appearanceSubtitle,
                                 onClick = onOpenAppearance,
+                            )
+                            HorizontalDivider(
+                                color = MaterialTheme.colorScheme.outlineVariant,
+                            )
+                            SettingsNavigationRow(
+                                icon = Icons.Filled.Palette,
+                                title = "Pip, your helper",
+                                subtitle = pipPreferences.settingsSummary(),
+                                onClick = onOpenPip,
+                                leading = { PipSettingsIcon(enabled = pipPreferences.enabled) },
                             )
                         }
                     }

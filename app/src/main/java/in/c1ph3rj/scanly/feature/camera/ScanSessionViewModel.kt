@@ -28,14 +28,14 @@ import `in`.c1ph3rj.scanly.domain.usecase.ObserveDocumentUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.PreparePageCaptureUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.PrepareReplacementCaptureUseCase
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -96,6 +96,11 @@ class ScanSessionViewModel @Inject constructor(
     private val stabilityTracker = CaptureStabilityTracker()
     private val gateStabilityTracker = DocumentGateStabilityTracker()
     private val stableCornerSelector = StableCornerSelector()
+    /**
+     * Guards [gateStabilityTracker] and [stableCornerSelector]: frames update them on
+     * Dispatchers.Default while settings changes and captures reset them on the main thread.
+     */
+    private val trackerLock = Any()
     @Volatile
     private var liveModel: DocumentCornerModel = DocumentCornerModel.ACCURATE
     @Volatile
@@ -107,8 +112,10 @@ class ScanSessionViewModel @Inject constructor(
     )
     val uiState: StateFlow<ScanSessionUiState> = _uiState.asStateFlow()
 
-    private val _events = MutableSharedFlow<ScanSessionEvent>()
-    val events: SharedFlow<ScanSessionEvent> = _events.asSharedFlow()
+    // A buffered channel, not a SharedFlow: the screen's collector restarts whenever the camera
+    // rebinds, and a dropped PerformCapture would leave captureInProgress stuck (and Back blocked).
+    private val _events = Channel<ScanSessionEvent>(Channel.BUFFERED)
+    val events: Flow<ScanSessionEvent> = _events.receiveAsFlow()
 
     init {
         viewModelScope.launch {
@@ -126,8 +133,7 @@ class ScanSessionViewModel @Inject constructor(
                 }
                 liveModel = model
                 stabilityTracker.reset()
-                gateStabilityTracker.reset()
-                stableCornerSelector.reset()
+                resetFrameTrackers()
                 _uiState.update { current ->
                     current.copy(liveDetection = current.liveDetection.copy(model = model))
                 }
@@ -137,8 +143,7 @@ class ScanSessionViewModel @Inject constructor(
             observeDocumentGateEnabledUseCase().collectLatest { enabled ->
                 documentGateEnabled = enabled
                 stabilityTracker.reset()
-                gateStabilityTracker.reset()
-                stableCornerSelector.reset()
+                resetFrameTrackers()
             }
         }
         viewModelScope.launch {
@@ -236,12 +241,18 @@ class ScanSessionViewModel @Inject constructor(
                             } else {
                                 null
                             }
-                            val gateAccepted = gate?.let(gateStabilityTracker::evaluate) ?: true
-                            if (gate == null) gateStabilityTracker.reset()
+                            val gateAccepted = synchronized(trackerLock) {
+                                if (gate == null) {
+                                    gateStabilityTracker.reset()
+                                    true
+                                } else {
+                                    gateStabilityTracker.evaluate(gate)
+                                }
+                            }
                             val cornerResolution = if (gateAccepted) {
                                 bookAwareCornerResolver.detect(bitmap, selectedModel)
                             } else {
-                                stableCornerSelector.reset()
+                                synchronized(trackerLock) { stableCornerSelector.reset() }
                                 `in`.c1ph3rj.scanly.core.ml.CornerResolution(
                                     result = CornerDetectionResult(
                                         quad = null,
@@ -252,7 +263,9 @@ class ScanSessionViewModel @Inject constructor(
                                     ),
                                 )
                             }
-                            val detection = stableCornerSelector.select(cornerResolution.result)
+                            val detection = synchronized(trackerLock) {
+                                stableCornerSelector.select(cornerResolution.result)
+                            }
                             val quality = CaptureFrameQualityAnalyzer.analyze(frame)
                             FrameAnalysis(
                                 detection = detection,
@@ -266,7 +279,7 @@ class ScanSessionViewModel @Inject constructor(
                         }
                     }
                 }.getOrElse {
-                    stableCornerSelector.reset()
+                    synchronized(trackerLock) { stableCornerSelector.reset() }
                     _uiState.update { current ->
                         current.copy(
                             liveDetection = current.liveDetection.copy(
@@ -346,7 +359,7 @@ class ScanSessionViewModel @Inject constructor(
                         )
                     }
                 }
-                is ScanlyResult.Failure -> _events.emit(ScanSessionEvent.ShowMessage(result.error.message))
+                is ScanlyResult.Failure -> _events.send(ScanSessionEvent.ShowMessage(result.error.message))
             }
             pendingCaptureQuad = null
             pendingCaptureTrigger = CaptureTrigger.MANUAL
@@ -366,7 +379,7 @@ class ScanSessionViewModel @Inject constructor(
                     ),
                 )
             }
-            completionEvent?.let { event -> _events.emit(event) }
+            completionEvent?.let { event -> _events.send(event) }
         }
     }
 
@@ -385,7 +398,7 @@ class ScanSessionViewModel @Inject constructor(
                     ),
                 )
             }
-            _events.emit(ScanSessionEvent.ShowMessage(message))
+            _events.send(ScanSessionEvent.ShowMessage(message))
         }
     }
 
@@ -399,7 +412,7 @@ class ScanSessionViewModel @Inject constructor(
 
         pendingCaptureTrigger = trigger
         pendingCaptureQuad = _uiState.value.liveDetection.quad
-        stableCornerSelector.reset()
+        synchronized(trackerLock) { stableCornerSelector.reset() }
         val autoCaptureEnabled = _uiState.value.liveDetection.autoCaptureEnabled
         val captureState = stabilityTracker.capturingState(autoCaptureEnabled)
         _uiState.update { current ->
@@ -421,7 +434,7 @@ class ScanSessionViewModel @Inject constructor(
         }
 
         when (val result = capturePreparationResult) {
-            is ScanlyResult.Success -> _events.emit(ScanSessionEvent.PerformCapture(result.value))
+            is ScanlyResult.Success -> _events.send(ScanSessionEvent.PerformCapture(result.value))
             is ScanlyResult.Failure -> {
                 pendingCaptureQuad = null
                 pendingCaptureTrigger = CaptureTrigger.MANUAL
@@ -435,14 +448,19 @@ class ScanSessionViewModel @Inject constructor(
                         ),
                     )
                 }
-                _events.emit(ScanSessionEvent.ShowMessage(result.error.message))
+                _events.send(ScanSessionEvent.ShowMessage(result.error.message))
             }
         }
     }
 
+    private fun resetFrameTrackers() = synchronized(trackerLock) {
+        gateStabilityTracker.reset()
+        stableCornerSelector.reset()
+    }
+
     private fun emitMessage(message: String) {
         viewModelScope.launch {
-            _events.emit(ScanSessionEvent.ShowMessage(message))
+            _events.send(ScanSessionEvent.ShowMessage(message))
         }
     }
 

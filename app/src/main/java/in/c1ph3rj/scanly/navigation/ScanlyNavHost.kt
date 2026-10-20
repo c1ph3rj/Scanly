@@ -1,5 +1,6 @@
 package `in`.c1ph3rj.scanly.navigation
 
+import `in`.c1ph3rj.scanly.core.ui.ImageImportSupport
 import `in`.c1ph3rj.scanly.core.ui.ScanlyTestTags
 import `in`.c1ph3rj.scanly.feature.components.ScanlyModalBottomSheet
 import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
@@ -28,6 +29,7 @@ import `in`.c1ph3rj.scanly.feature.settings.LegalDocumentType
 import `in`.c1ph3rj.scanly.feature.settings.ModelBenchmarkRoute
 import `in`.c1ph3rj.scanly.feature.settings.SettingsAboutRoute
 import `in`.c1ph3rj.scanly.feature.settings.SettingsAppearanceRoute
+import `in`.c1ph3rj.scanly.feature.settings.SettingsPipRoute
 import `in`.c1ph3rj.scanly.feature.settings.SettingsDetectionRoute
 import `in`.c1ph3rj.scanly.feature.settings.SettingsFaqRoute
 import `in`.c1ph3rj.scanly.feature.settings.SettingsLicensesRoute
@@ -39,7 +41,13 @@ import `in`.c1ph3rj.scanly.feature.tools.pdf.PdfCompressRoute
 import `in`.c1ph3rj.scanly.feature.tools.pdf.PdfMergeRoute
 import `in`.c1ph3rj.scanly.feature.tools.pdf.PdfPasswordRoute
 import `in`.c1ph3rj.scanly.feature.tools.pdf.PdfReaderRoute
+import `in`.c1ph3rj.scanly.feature.tools.pdf.PdfReaderTool
 import `in`.c1ph3rj.scanly.feature.tools.pdf.PdfWatermarkRoute
+import `in`.c1ph3rj.scanly.feature.tools.pdf.PdfSignRoute
+import `in`.c1ph3rj.scanly.feature.tools.pdf.PdfToImagesRoute
+import `in`.c1ph3rj.scanly.feature.sign.create.SignatureCreateRoute
+import `in`.c1ph3rj.scanly.feature.sign.document.DocumentSignRoute
+import `in`.c1ph3rj.scanly.feature.sign.manage.SignatureManageRoute
 import `in`.c1ph3rj.scanly.feature.tools.qr.QrToolMode
 import `in`.c1ph3rj.scanly.feature.tools.qr.QrToolRoute
 import `in`.c1ph3rj.scanly.feature.update.AppUpdateUiState
@@ -411,7 +419,7 @@ private fun CaptureChooserSheet(onDismiss: () -> Unit) {
             CaptureChoiceRow(
                 icon = Icons.Outlined.PhotoLibrary,
                 title = "Import from gallery",
-                subtitle = "Up to 10 photos",
+                subtitle = "Up to ${ImageImportSupport.MAX_IMAGES_PER_IMPORT} images",
                 onClick = {
                     onDismiss()
                     actions.onImport()
@@ -806,6 +814,17 @@ private fun ScanlyNavHostContent(
                 .orEmpty()
             PdfReaderRoute(
                 onNavigateUp = navController::navigateUp,
+                onOpenTool = { tool, source ->
+                    val toolRoute = when (tool) {
+                        PdfReaderTool.SIGN -> ToolsPdfSignDestination.route
+                        PdfReaderTool.COMPRESS -> ToolsPdfCompressDestination.route
+                        PdfReaderTool.MERGE -> ToolsPdfMergeDestination.route
+                        PdfReaderTool.PASSWORD -> ToolsPdfPasswordDestination.route
+                        PdfReaderTool.WATERMARK -> ToolsPdfWatermarkDestination.route
+                        PdfReaderTool.TO_IMAGES -> ToolsPdfToImagesDestination.route
+                    }
+                    navController.navigate(pdfToolRoute(toolRoute, source))
+                },
                 initialSource = filePath.takeIf(String::isNotBlank)?.let {
                     PdfToolSource.AppFile(
                         filePath = it,
@@ -815,13 +834,15 @@ private fun ScanlyNavHostContent(
             )
         }
         composable(
-            route = ToolsPdfMergeDestination.route,
+            route = pdfToolRoutePattern(ToolsPdfMergeDestination.route),
+            arguments = listOf(pdfToolSourceNavArgument()),
             enterTransition = { detailPushEnter() },
             exitTransition = { detailPushExit() },
             popEnterTransition = { detailPopEnter() },
             popExitTransition = { detailPopExit() },
         ) {
             PdfMergeRoute(
+                initialSource = it.pdfToolSource(),
                 onNavigateUp = navController::navigateUp,
                 onPreviewPdf = { artifact ->
                     navController.navigate(
@@ -831,13 +852,15 @@ private fun ScanlyNavHostContent(
             )
         }
         composable(
-            route = ToolsPdfCompressDestination.route,
+            route = pdfToolRoutePattern(ToolsPdfCompressDestination.route),
+            arguments = listOf(pdfToolSourceNavArgument()),
             enterTransition = { detailPushEnter() },
             exitTransition = { detailPushExit() },
             popEnterTransition = { detailPopEnter() },
             popExitTransition = { detailPopExit() },
         ) {
             PdfCompressRoute(
+                initialSource = it.pdfToolSource(),
                 onNavigateUp = navController::navigateUp,
                 onPreviewPdf = { artifact ->
                     navController.navigate(
@@ -847,13 +870,28 @@ private fun ScanlyNavHostContent(
             )
         }
         composable(
-            route = ToolsPdfPasswordDestination.route,
+            route = pdfToolRoutePattern(ToolsPdfToImagesDestination.route),
+            arguments = listOf(pdfToolSourceNavArgument()),
+            enterTransition = { detailPushEnter() },
+            exitTransition = { detailPushExit() },
+            popEnterTransition = { detailPopEnter() },
+            popExitTransition = { detailPopExit() },
+        ) {
+            PdfToImagesRoute(
+                initialSource = it.pdfToolSource(),
+                onNavigateUp = navController::navigateUp,
+            )
+        }
+        composable(
+            route = pdfToolRoutePattern(ToolsPdfPasswordDestination.route),
+            arguments = listOf(pdfToolSourceNavArgument()),
             enterTransition = { detailPushEnter() },
             exitTransition = { detailPushExit() },
             popEnterTransition = { detailPopEnter() },
             popExitTransition = { detailPopExit() },
         ) {
             PdfPasswordRoute(
+                initialSource = it.pdfToolSource(),
                 onNavigateUp = navController::navigateUp,
                 onPreviewPdf = { artifact ->
                     navController.navigate(
@@ -863,13 +901,15 @@ private fun ScanlyNavHostContent(
             )
         }
         composable(
-            route = ToolsPdfWatermarkDestination.route,
+            route = pdfToolRoutePattern(ToolsPdfWatermarkDestination.route),
+            arguments = listOf(pdfToolSourceNavArgument()),
             enterTransition = { detailPushEnter() },
             exitTransition = { detailPushExit() },
             popEnterTransition = { detailPopEnter() },
             popExitTransition = { detailPopExit() },
         ) {
             PdfWatermarkRoute(
+                initialSource = it.pdfToolSource(),
                 onNavigateUp = navController::navigateUp,
                 onPreviewPdf = { artifact ->
                     navController.navigate(
@@ -877,6 +917,73 @@ private fun ScanlyNavHostContent(
                     )
                 },
             )
+        }
+        composable(
+            route = pdfToolRoutePattern(ToolsPdfSignDestination.route),
+            arguments = listOf(pdfToolSourceNavArgument()),
+            enterTransition = { detailPushEnter() },
+            exitTransition = { detailPushExit() },
+            popEnterTransition = { detailPopEnter() },
+            popExitTransition = { detailPopExit() },
+        ) {
+            PdfSignRoute(
+                initialSource = it.pdfToolSource(),
+                onNavigateUp = navController::navigateUp,
+                onPreviewPdf = { artifact ->
+                    navController.navigate(
+                        ToolsPdfReaderDestination.route(artifact.filePath, artifact.fileName),
+                    )
+                },
+                onManageSignatures = { navController.navigate(SignatureManageDestination.route) },
+                onCreateSignature = { kind -> navController.navigate(SignatureCreateDestination.route(kind)) },
+            )
+        }
+        composable(
+            route = DocumentSignDestination.routePattern,
+            arguments = listOf(
+                navArgument(DocumentSignDestination.documentIdArgument) { type = NavType.StringType },
+                navArgument(DocumentSignDestination.pageArgument) {
+                    type = NavType.StringType
+                    defaultValue = "0"
+                },
+            ),
+            enterTransition = { detailPushEnter() },
+            exitTransition = { detailPushExit() },
+            popEnterTransition = { detailPopEnter() },
+            popExitTransition = { detailPopExit() },
+        ) {
+            DocumentSignRoute(
+                onNavigateUp = navController::navigateUp,
+                onManageSignatures = { navController.navigate(SignatureManageDestination.route) },
+                onCreateSignature = { kind -> navController.navigate(SignatureCreateDestination.route(kind)) },
+            )
+        }
+        composable(
+            route = SignatureManageDestination.route,
+            enterTransition = { detailPushEnter() },
+            exitTransition = { detailPushExit() },
+            popEnterTransition = { detailPopEnter() },
+            popExitTransition = { detailPopExit() },
+        ) {
+            SignatureManageRoute(
+                onNavigateUp = navController::navigateUp,
+                onCreate = { kind -> navController.navigate(SignatureCreateDestination.route(kind)) },
+            )
+        }
+        composable(
+            route = SignatureCreateDestination.routePattern,
+            arguments = listOf(
+                navArgument(SignatureCreateDestination.kindArgument) {
+                    type = NavType.StringType
+                    defaultValue = "signature"
+                },
+            ),
+            enterTransition = { detailPushEnter() },
+            exitTransition = { detailPushExit() },
+            popEnterTransition = { detailPopEnter() },
+            popExitTransition = { detailPopExit() },
+        ) {
+            SignatureCreateRoute(onNavigateUp = navController::navigateUp)
         }
         composable(ScanlyDestination.Camera.route) {
             FeaturePlaceholderRoute(
@@ -915,6 +1022,7 @@ private fun ScanlyNavHostContent(
                     onOpenDetection = { navController.navigate(SettingsDetectionDestination.route) },
                     onOpenWidgets = { navController.navigate(SettingsWidgetsDestination.route) },
                     onOpenAbout = { navController.navigate(SettingsAboutDestination.route) },
+                    onOpenPip = { navController.navigate(SettingsPipDestination.route) },
                 )
             }
         }
@@ -932,6 +1040,15 @@ private fun ScanlyNavHostContent(
                 onNavigateUp = navController::navigateUp,
                 parentEntry = parentEntry,
             )
+        }
+        composable(
+            route = SettingsPipDestination.route,
+            enterTransition = { detailPushEnter() },
+            exitTransition = { detailPushExit() },
+            popEnterTransition = { detailPopEnter() },
+            popExitTransition = { detailPopExit() },
+        ) {
+            SettingsPipRoute(onNavigateUp = navController::navigateUp)
         }
         composable(
             route = SettingsDetectionDestination.route,
@@ -1085,6 +1202,9 @@ private fun ScanlyNavHostContent(
                 onOpenText = { pageIndex ->
                     navController.navigate(PageTextDestination.route(documentId, pageIndex))
                 },
+                onOpenSign = { pageIndex ->
+                    navController.navigate(DocumentSignDestination.route(documentId, pageIndex))
+                },
                 onReplacePage = { pageId ->
                     navController.navigate(ScanSessionDestination.route(documentId, replacePageId = pageId))
                 },
@@ -1158,6 +1278,9 @@ private fun ScanlyNavHostContent(
                     navController.navigate(
                         ScanSessionDestination.route(documentId, replacePageId = pageId),
                     )
+                },
+                onSignPage = { documentId, pageIndex ->
+                    navController.navigate(DocumentSignDestination.route(documentId, pageIndex))
                 },
             )
         }

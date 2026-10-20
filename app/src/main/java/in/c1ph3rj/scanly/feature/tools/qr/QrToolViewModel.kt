@@ -261,11 +261,12 @@ class QrToolViewModel @Inject constructor(
         }
     }
 
-    /** Swaps in [bitmap] first, then recycles the old one so it is never recycled while in state. */
+    /**
+     * Swaps in [bitmap]. The old one is left to the GC, not recycled: Compose may still draw the
+     * previous state for a frame after the swap, and drawing a recycled bitmap crashes.
+     */
     private fun replacePreview(bitmap: Bitmap?) {
-        val previous = _uiState.value.previewBitmap
         _uiState.update { it.copy(previewBitmap = bitmap) }
-        if (previous !== bitmap) previous?.recycle()
     }
 
     fun saveCreatedCode() {
@@ -363,11 +364,6 @@ class QrToolViewModel @Inject constructor(
         viewModelScope.launch {
             _events.emit(QrToolEvent.ShowMessage(message))
         }
-    }
-
-    override fun onCleared() {
-        _uiState.value.previewBitmap?.recycle()
-        super.onCleared()
     }
 
     private companion object {

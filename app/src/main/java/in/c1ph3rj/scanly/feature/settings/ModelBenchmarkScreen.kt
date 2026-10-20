@@ -430,15 +430,15 @@ private fun BenchmarkEmptyState(
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
-        `in`.c1ph3rj.scanly.feature.components.IllustratedEmptyState(
-            illustrationRes = `in`.c1ph3rj.scanly.R.drawable.empty_tools_illustration,
+        `in`.c1ph3rj.scanly.feature.components.PipEmptyState(
+            pipLine = `in`.c1ph3rj.scanly.feature.pip.PipLines.BENCHMARK_EMPTY,
+            pipMood = `in`.c1ph3rj.scanly.feature.pip.PipMood.WOW,
             title = "Compare detectors on your photos",
             description = "Choose real documents or rectangular objects. Scanly will time every detector and show the detected edges.",
             actionLabel = "Choose images and run",
             onAction = onChooseImages,
             actionIcon = Icons.Filled.ImageSearch,
             compact = true,
-            illustrationSize = 220.dp,
         )
         Text(
             text = "Images stay on this device. Nothing is uploaded.",

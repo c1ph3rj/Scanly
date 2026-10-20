@@ -6,19 +6,35 @@ Version policy and release history for Scanly.
 
 | Field | Value |
 | --- | --- |
-| Version name | `1.0.17` |
-| Version code | `17` |
+| Version name | `1.0.18` |
+| Version code | `18` |
 | Application ID | `in.c1ph3rj.scanly` |
-| Room schema | `5` |
+| Room schema | `7` |
 | Min SDK | 29 (Android 10) |
 | Target / compile SDK | compile 37 / target 36 |
-| Release date | 2026-10-14 |
+| Release date | 2026-10-20 |
 
 Canonical source: `versionCode` and `versionName` in `app/build.gradle.kts`.
 
 The version shown in Settings reads `versionName` via `DefaultSettingsRepository`.
 
 ### Release highlights
+
+Version **1.0.18** (relative to `1.0.17`):
+
+- On-device OCR indexes scanned pages; Library search can match page text, highlight excerpts, filter by document type, and suggest corrections
+- Extracted text has Text and On page views, with copy, share, and editable corrections
+- Sign PDFs from the device or Scanly library; place signatures, initials, dates, text, and checkboxes across pages
+- Sign scanned pages in place; marks remain editable and persist through page reprocessing
+- Save signatures or initials by drawing them or extracting ink from a photo
+- Pip, an optional pixel helper: lines on empty screens, camera coaching, a daily Home tip, and its own Settings screen
+- PDF to images (JPG/PNG, Sharing or Print size) and **Open in Scanly** for PDFs from other apps; the reader's ⋮ menu hands the open file to every PDF tool
+- Camera step in onboarding, redesigned camera and camera-permission screen, new generated covers, shimmer loading on Home, and cover thumbnails in the Add documents sheet
+- Room schema 7 adds saved signatures and per-page markups; prior schema 5 installs migrate through the page-text index in schema 6
+- Help & FAQ and Settings storage were refreshed; Library backup and restore were removed
+- Fixes for legal-page dark-mode contrast, PDF-tool back navigation, and Settings rating-card loading
+
+The compact GitHub release description used by the in-app update dialog is available in [release-notes/v1.0.18.md](release-notes/v1.0.18.md).
 
 Version **1.0.17** (relative to `1.0.16`):
 
@@ -44,6 +60,16 @@ The compact GitHub release description used by the in-app update dialog is avail
 - Keep [VERSION.md](../VERSION.md) aligned with Gradle values.
 
 ## Recent releases
+
+### 1.0.18 (code 18) — 2026-10-20
+
+- On-device OCR, extracted text, and full-text Library search
+- Sign PDFs and scans; save signatures and initials for reuse
+- Pip helper, PDF to images, Open in Scanly, reader-to-tool hand-off, onboarding camera step
+- Camera, permission screen, empty states, covers, and Home loading redesigned
+- Schema 7 adds signature records and editable page markups
+- Help & FAQ and storage settings refresh; Library backup and restore removed
+- Legal-page dark-mode and Settings rating-card fixes
 
 ### 1.0.17 (code 17) — 2026-10-14
 
@@ -130,6 +156,12 @@ Full details: [CHANGELOG.md](../CHANGELOG.md)
 
 ## Upgrade notes
 
+### From 1.0.17 to 1.0.18 (schema 7)
+
+- `MIGRATION_6_7` adds the `signatures` and `page_markups` tables. Existing scanned pages are unchanged.
+- Installs still on schema 5 also run `MIGRATION_5_6`, which creates the page-text table and FTS4 search index; existing pages are indexed in the background.
+- No manual migration steps are required. Library backup and restore are no longer available in v1.0.18.
+
 ### From 1.0.16 to 1.0.17 (schema 5)
 
 - Room schema **5** via `ScanlyDatabase.MIGRATION_4_5`: adds `scan_pages.filterIntensity` (default `1`, the tuned look).
@@ -167,10 +199,10 @@ Full details: [CHANGELOG.md](../CHANGELOG.md)
 
 ### From 1.0.0 to current
 
-- Room migrates automatically along `1→2→3→4→5` (filter preset, document groups, filter adjustments, then filter intensity and the legacy preset remap).
+- Room migrates automatically along `1→2→3→4→5→6→7` (filter presets, document groups, filter adjustments, intensity and legacy preset remapping, page text and search index, then signatures and page markups).
 - Existing documents remain; they appear ungrouped until moved into a collection.
 - **Clear all data** (added in 1.0.4) is destructive and cannot be undone.
-- Completed external `.scanly` backups survive clear-all-data.
+- `.scanly` backup files created by earlier app versions are external files and are not affected by clear-all-data; current versions no longer restore them.
 - No manual migration steps required.
 
 See [VERSION.md](../VERSION.md) for extended upgrade guidance.

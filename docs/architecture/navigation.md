@@ -1,6 +1,6 @@
 ﻿# Navigation
 
-All routes and user flows in Scanly **v1.0.17**.
+All routes and user flows in Scanly **v1.0.18**.
 
 Navigation is implemented with **Navigation Compose** in `ScanlyNavHost.kt`. Route helpers follow the `*Destination` object pattern with `routePattern` and `route()` factory functions.
 
@@ -41,33 +41,43 @@ These top-level routes still exist but show `FeaturePlaceholderScreen` — they 
 | Route pattern | Helper object | Screen |
 | --- | --- | --- |
 | `document/{documentId}` | `DocumentDestination` | Document detail |
-| `library/search` | `LibrarySearchDestination` | Library name search across documents and folders; owns separate query state |
+| `library/search` | `LibrarySearchDestination` | Search document/folder names and recognized page text; owns query, filters, and result state |
+| `document/{documentId}/text?page={page}&query={query}` | `PageTextDestination` | Extracted text in Text or On page view, with optional search context |
 | `camera/session/{documentId}?replacePageId={pageId}` | `ScanSessionDestination` | Scan session |
 | `preview/page/{pageId}` | `PageImagePreviewDestination` | Page preview |
 | `editor/page/{pageId}` | `PageEditorDestination` | Page editor (preview, filters/adjust overlays, retake, delete) |
 | `crop/page/{pageId}` | `PageCropDestination` | AI detect, rotate, four-point crop, reset, apply |
-
-**Editor overlays (not NavHost routes):** `FilterPickerScreen` and `FilterCustomizeScreen` share `PageEditorViewModel` and replace the editor content in place (same pattern as a full-screen mode, not a bottom sheet).
 | `group/{groupId}` | `GroupDetailDestination` | Group detail |
 | `legal/{documentType}` | `LegalDocumentDestination` | Privacy or terms viewer |
 | `settings/appearance` | `SettingsAppearanceDestination` | Theme + pure black |
+| `settings/pip` | `SettingsPipDestination` | Pip master switch, tips, camera coaching, export cheers, animation |
 | `settings/detection` | `SettingsDetectionDestination` | Models, gate, benchmark link |
 | `settings/widgets` | `SettingsWidgetsDestination` | Pin home-screen widgets |
 | `settings/about` | `SettingsAboutDestination` | Version, updates, legal, support |
 | `settings/faq` | `SettingsFaqDestination` | FAQ sub-screen |
 | `settings/licenses` | `SettingsLicensesDestination` | Open-source licenses |
-| `settings/storage` | `SettingsStorageDestination` | Storage & backup |
+| `settings/storage` | `SettingsStorageDestination` | Storage usage, export destination, cleanup, clear data |
 | `settings/model-benchmark` | `SettingsModelBenchmarkDestination` | Temporary local model comparison |
 | `tools/qr` | `ToolsQrDestination` | QR scan, typed result, create, and history (in-route screens) |
 | `tools/pdf/reader?filePath={filePath}&fileName={fileName}` | `ToolsPdfReaderDestination` | PDF reader; optional app-owned result file opens directly |
-| `tools/pdf/merge` | `ToolsPdfMergeDestination` | PDF merge |
-| `tools/pdf/compress` | `ToolsPdfCompressDestination` | PDF compress |
-| `tools/pdf/password` | `ToolsPdfPasswordDestination` | PDF password protect/remove |
-| `tools/pdf/watermark` | `ToolsPdfWatermarkDestination` | PDF text watermark |
+| `tools/pdf/merge?source={source}` | `ToolsPdfMergeDestination` | PDF merge |
+| `tools/pdf/compress?source={source}` | `ToolsPdfCompressDestination` | PDF compress |
+| `tools/pdf/password?source={source}` | `ToolsPdfPasswordDestination` | PDF password protect/remove |
+| `tools/pdf/watermark?source={source}` | `ToolsPdfWatermarkDestination` | PDF text watermark |
+| `tools/pdf/to-images?source={source}` | `ToolsPdfToImagesDestination` | PDF to JPG/PNG images saved to `Pictures/Scanly` |
+| `tools/pdf/sign?source={source}` | `ToolsPdfSignDestination` | Sign a device or Scanly library PDF, then save or share the signed copy |
+| `document/{documentId}/sign?page={page}` | `DocumentSignDestination` | Place editable marks on Scanly pages in place |
+| `signatures/manage` | `SignatureManageDestination` | Manage saved signatures and initials |
+| `signatures/create?kind={kind}` | `SignatureCreateDestination` | Draw or import a reusable signature or initials |
+
+**PDF tool `source` argument:** optional; built by `pdfToolRoute()` in `PdfToolSourceArgument.kt`. It encodes a `PdfToolSource` (`app` file path, device `uri`, or `lib` document id, plus a display label) so a tool can start with a file already chosen — used by the reader's ⋮ menu. Plain routes without the argument still match and open the file picker.
+
+**Editor overlays (not NavHost routes):** `FilterPickerScreen` and `FilterCustomizeScreen` share `PageEditorViewModel` and replace the editor content in place (same pattern as a full-screen mode, not a bottom sheet).
 
 ### Back behavior
 
 - When opened from Tools, Back from a PDF reader returns to the file picker; Back from that picker exits to Tools. A PDF preview opened from a PDF tool returns to that tool's result screen. **Choose another** opens a temporary picker, where Back returns to the current reader.
+- A tool opened from the reader's ⋮ menu starts on its options step with the reader's file; Back returns to the reader.
 - In PDF compression, Back from options returns to the file picker; Back from that picker exits to Tools. **Change** opens a temporary picker, where Back returns to options.
 - In watermarking, Back from the editor returns to the picker; **Change** opens a temporary picker, where Back returns to the current editor.
 - Android Back closes the editor's full-screen filter and adjustment modes before leaving the editor. It is blocked while a page is being captured, cropped/saved, filter-saved, or processed by a PDF tool.
@@ -94,6 +104,17 @@ Settings sub-screens that edit preferences (`appearance`, `detection`, `widgets`
 
 Config: `AndroidManifest.xml` receivers + `res/xml/shortcuts.xml`; providers live under `feature/widget/`.
 
+### Open with Scanly (PDFs from other apps)
+
+`MainActivity` also has `ACTION_VIEW` (`content`/`file`, `application/pdf`) and `ACTION_SEND` (`application/pdf`) intent filters labelled **Open in Scanly**. `IncomingPdf.uriFrom()` reads the URI from the cold-start or new intent; once onboarding is `COMPLETE`, `IncomingPdf.copyToCache()` copies it to `cache/incoming_pdf/` (keeping the newest few) and the app navigates to `tools/pdf/reader?filePath=…&fileName=…`. If the copy fails, a "Couldn't open that PDF." toast is shown. The source file is never modified.
+
+```
+Files / Gmail / Drive / chat → "Open in Scanly"
+  └─► MainActivity (VIEW or SEND, application/pdf)
+        └─► (after onboarding) copy to cache/incoming_pdf/
+              └─► tools/pdf/reader?filePath=…&fileName=…
+```
+
 ### Widget / shortcut → scan
 
 ```
@@ -105,14 +126,12 @@ Widget or quick action (Scan)
 
 ## User flow diagrams
 
-## User flow diagrams
-
 ### App startup
 
 ```
 Launch
   └─► Onboarding required?
-        ├─ Yes → OnboardingScreen → complete → Home
+        ├─ Yes → OnboardingScreen (intro → camera step if not yet allowed) → complete → Home
         └─ No  → Home
               └─► (background) update check if cooldown expired
 ```
@@ -148,7 +167,7 @@ document/{docId}
 
 ```
 Home (new doc) or document/{docId} (add pages)
-  └─► photo picker (≤10 images)
+  └─► system file picker (≤50 images)
         └─► import pipeline (same as capture finalize)
               └─► document/{docId}
 ```
@@ -173,12 +192,23 @@ document/{docId} or group/{groupId}
         └─► Share → cache/exports → FileProvider share sheet
 ```
 
-### Library backup and restore
+### Search page text
 
 ```
-settings → settings/storage
-  ├─► Back up library → WorkManager foreground job → {destination}/backup/*.scanly
-  └─► Restore → pick .scanly in backup folder → Replace or Merge as copies
+Home or Library → library/search
+  └─► Search names or page text
+        ├─► Page result → document/{documentId}/text?page={page}&query={query}
+        └─► Filter by Everywhere / Names / Text in pages or document type
+```
+
+### Sign documents
+
+```
+Tools → Sign PDF → choose phone/library PDF → add marks across pages
+  └─► Review → Save to phone or Share (source PDF remains unchanged)
+
+Document detail → Sign document → place marks on scan pages → save in place
+  └─► Marks remain editable and are included in previews and exports
 ```
 
 ### Settings
@@ -186,7 +216,7 @@ settings → settings/storage
 ```
 settings
   ├─► Look & feel: theme mode + pure black (AMOLED) toggle
-  ├─► settings/storage (usage, destination, backup/restore, clear data)
+  ├─► settings/storage (usage, export destination, temporary-export cleanup, clear data)
   ├─► Document detection: automatic or manual live/post models
   ├─► Document detection: physical-document gate on/off
   ├─► settings/model-benchmark (gate + four corner models on local images)

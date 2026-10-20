@@ -318,7 +318,7 @@ private fun QrScanHeader(
             Surface(
                 onClick = onToggleTorch,
                 modifier = Modifier
-                    .size(44.dp)
+                    .size(48.dp)
                     .semantics {
                         stateDescription = if (torchEnabled) "On" else "Off"
                     },
@@ -458,12 +458,29 @@ private fun QrPermissionPrompt(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(14.dp),
     ) {
-        Icon(
-            imageVector = Icons.Outlined.CameraAlt,
-            contentDescription = null,
-            tint = Color.White.copy(alpha = 0.8f),
-            modifier = Modifier.size(40.dp),
-        )
+        if (`in`.c1ph3rj.scanly.feature.pip.LocalPipPreferences.current.enabled) {
+            `in`.c1ph3rj.scanly.feature.pip.PipSays(
+                line = if (blocked) {
+                    `in`.c1ph3rj.scanly.feature.pip.PipLines.CAMERA_BLOCKED
+                } else {
+                    `in`.c1ph3rj.scanly.feature.pip.PipLines.QR_PERMISSION
+                },
+                mood = if (blocked) {
+                    `in`.c1ph3rj.scanly.feature.pip.PipMood.DIZZY
+                } else {
+                    `in`.c1ph3rj.scanly.feature.pip.PipMood.SLEEP
+                },
+                size = 80.dp,
+                modifier = Modifier.padding(bottom = 4.dp),
+            )
+        } else {
+            Icon(
+                imageVector = Icons.Outlined.CameraAlt,
+                contentDescription = null,
+                tint = Color.White.copy(alpha = 0.8f),
+                modifier = Modifier.size(40.dp),
+            )
+        }
         Text(
             text = if (blocked) "Camera permission is blocked" else "Allow camera to scan",
             style = MaterialTheme.typography.titleMedium,
@@ -540,7 +557,7 @@ private fun QrFoundCard(
                         overflow = TextOverflow.Ellipsis,
                     )
                 }
-                IconButton(onClick = onDetails, modifier = Modifier.size(44.dp)) {
+                IconButton(onClick = onDetails, modifier = Modifier.size(48.dp)) {
                     Icon(
                         imageVector = Icons.Outlined.ChevronRight,
                         contentDescription = "Details",

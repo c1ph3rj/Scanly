@@ -1,6 +1,7 @@
 package `in`.c1ph3rj.scanly.feature.camera
 
 import android.Manifest
+import android.util.Log
 import android.util.Size
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -44,15 +45,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.CameraAlt
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Description
-import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.FlashOff
 import androidx.compose.material.icons.filled.FlashOn
 import androidx.compose.material.icons.filled.Grid3x3
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -72,16 +71,17 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -99,6 +99,7 @@ import `in`.c1ph3rj.scanly.core.ml.DetectionFrame
 import `in`.c1ph3rj.scanly.domain.model.PageCaptureDraft
 import `in`.c1ph3rj.scanly.domain.model.ScanPage
 import `in`.c1ph3rj.scanly.feature.components.PagePreview
+import `in`.c1ph3rj.scanly.feature.pip.LocalPipPreferences
 import `in`.c1ph3rj.scanly.core.ui.PreviewDisplaySize
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -457,7 +458,8 @@ private fun CameraCaptureLayout(
             CameraPreviewViewport(
                 modifier = Modifier
                     .weight(1f)
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp, vertical = 4.dp),
                 aspectRatio = previewAspectRatio,
                 liveDetection = uiState.liveDetection,
                 onCameraReady = onCameraReady,
@@ -577,7 +579,7 @@ private fun CameraPreviewViewport(
             modifier = Modifier
                 .width(previewSize.width.dp)
                 .height(previewSize.height.dp)
-                .clipToBounds(),
+                .clip(CameraPreviewShape),
         ) {
             CameraPreview(
                 modifier = Modifier.fillMaxSize(),
@@ -649,12 +651,22 @@ private fun CameraPreviewFeedback(
     Box(
         modifier = modifier,
     ) {
-        PreviewStatusHud(
-            liveDetection = liveDetection,
-            modifier = Modifier
-                .align(Alignment.TopCenter)
-                .padding(top = 16.dp),
-        )
+        if (LocalPipPreferences.current.showCameraCoaching) {
+            PipCameraCoach(
+                liveDetection = liveDetection,
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .fillMaxWidth()
+                    .padding(start = 12.dp, end = 12.dp, bottom = 12.dp),
+            )
+        } else {
+            PreviewStatusHud(
+                liveDetection = liveDetection,
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .padding(top = 16.dp),
+            )
+        }
     }
 }
 
@@ -669,16 +681,24 @@ private fun PortraitCaptureDockContent(
             .fillMaxSize()
             .padding(horizontal = 18.dp, vertical = 8.dp),
     ) {
+        RecentCaptureStack(
+            pages = uiState.pages,
+            enabled = !uiState.captureInProgress,
+            onOpenDocument = onOpenDocument,
+            modifier = Modifier.align(Alignment.CenterStart),
+        )
         CaptureButton(
             busy = uiState.captureInProgress,
             replacement = uiState.isReplacementMode,
             onClick = onCapture,
             modifier = Modifier.align(Alignment.Center),
         )
-        RecentCaptureStack(
-            pages = uiState.pages,
+        CaptureDoneButton(
+            pageCount = uiState.pages.size,
+            visible = uiState.pages.isNotEmpty() && !uiState.isReplacementMode,
             enabled = !uiState.captureInProgress,
-            onOpenDocument = onOpenDocument,
+            onClick = onOpenDocument,
+            compact = false,
             modifier = Modifier.align(Alignment.CenterEnd),
         )
     }
@@ -706,6 +726,14 @@ private fun LandscapeCaptureDockContent(
             replacement = uiState.isReplacementMode,
             onClick = onCapture,
             modifier = Modifier.align(Alignment.Center),
+        )
+        CaptureDoneButton(
+            pageCount = uiState.pages.size,
+            visible = uiState.pages.isNotEmpty() && !uiState.isReplacementMode,
+            enabled = !uiState.captureInProgress,
+            onClick = onOpenDocument,
+            compact = true,
+            modifier = Modifier.align(Alignment.BottomCenter),
         )
     }
 }
@@ -813,8 +841,8 @@ private fun CameraTopBar(
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         ChromeIconButton(
-            icon = Icons.AutoMirrored.Filled.ArrowBack,
-            contentDescription = "Back",
+            icon = Icons.Filled.Close,
+            contentDescription = "Close camera",
             onClick = onNavigateUp,
             enabled = navigationEnabled,
             containerColor = Color.Transparent,
@@ -852,10 +880,8 @@ private fun CaptureControlStrip(
             enabled = torchAvailable,
             onClick = onTorchToggle,
         )
-        TopControlButton(
-            icon = Icons.Filled.AutoAwesome,
-            label = if (autoCaptureEnabled) "Turn auto-capture off" else "Turn auto-capture on",
-            active = autoCaptureEnabled,
+        AutoCapturePill(
+            enabled = autoCaptureEnabled,
             onClick = onAutoCaptureToggle,
         )
         TopControlButton(
@@ -892,16 +918,12 @@ private fun TopControlButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
 ) {
-    val colorScheme = MaterialTheme.colorScheme
-    val containerColor = when {
-        active -> colorScheme.primary
-        enabled -> colorScheme.surfaceContainerHighest
-        else -> colorScheme.surfaceContainer
-    }
+    // Over the camera, controls stay quiet: white glyphs, and a soft disc with a teal glyph when on.
+    val containerColor = if (active) Color.White.copy(alpha = 0.14f) else Color.Transparent
     val contentColor = when {
-        active -> colorScheme.onPrimary
-        enabled -> colorScheme.onSurface
-        else -> colorScheme.onSurface.copy(alpha = 0.38f)
+        !enabled -> Color.White.copy(alpha = 0.38f)
+        active -> CameraAccent
+        else -> Color.White
     }
     Surface(
         onClick = onClick,
@@ -910,10 +932,6 @@ private fun TopControlButton(
             .size(48.dp),
         color = containerColor,
         shape = CircleShape,
-        border = BorderStroke(
-            1.dp,
-            if (active) Color.Transparent else colorScheme.outline.copy(alpha = 0.52f),
-        ),
         tonalElevation = 0.dp,
         shadowElevation = 0.dp,
     ) {
@@ -936,8 +954,13 @@ private fun CaptureButton(
     replacement: Boolean = false,
 ) {
     val colorScheme = MaterialTheme.colorScheme
+    // The whole 86dp ring is the button; before, only the inner disc took taps.
     Surface(
-        modifier = modifier.size(86.dp),
+        onClick = onClick,
+        enabled = !busy,
+        modifier = modifier
+            .size(86.dp)
+            .semantics { contentDescription = if (replacement) "Replace page" else "Capture" },
         shape = CircleShape,
         color = Color.Transparent,
         border = BorderStroke(3.dp, colorScheme.primary),
@@ -949,10 +972,7 @@ private fun CaptureButton(
             contentAlignment = Alignment.Center,
         ) {
             Surface(
-                onClick = onClick,
-                enabled = !busy,
-                modifier = Modifier
-                    .fillMaxSize(),
+                modifier = Modifier.fillMaxSize(),
                 shape = CircleShape,
                 color = when {
                     busy -> colorScheme.primary
@@ -972,151 +992,6 @@ private fun CaptureButton(
                 }
             }
         }
-    }
-}
-
-@Composable
-private fun CameraPermissionPrompt(
-    isPermanentlyDenied: Boolean,
-    onAllowCamera: () -> Unit,
-    onNavigateUp: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    val windowSizeInfo = rememberWindowSizeInfo()
-    val cardMaxWidth = if (windowSizeInfo.isTablet) 440.dp else 360.dp
-
-    Column(
-        modifier = modifier
-            .background(Color.Black)
-            .statusBarsPadding()
-            .navigationBarsPadding(),
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 12.dp, vertical = 8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            ChromeIconButton(
-                icon = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = "Back",
-                onClick = onNavigateUp,
-                containerColor = Color.Transparent,
-                contentColor = Color.White,
-            )
-        }
-
-        Box(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxWidth()
-                .padding(horizontal = 24.dp),
-            contentAlignment = Alignment.Center,
-        ) {
-            Surface(
-                modifier = Modifier.widthIn(max = cardMaxWidth),
-                color = MaterialTheme.colorScheme.surfaceContainerHigh,
-                shape = MaterialTheme.shapes.extraLarge,
-            ) {
-                Column(
-                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 28.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                ) {
-                    Surface(
-                        modifier = Modifier.size(56.dp),
-                        shape = MaterialTheme.shapes.large,
-                        color = MaterialTheme.colorScheme.primaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                    ) {
-                        Box(contentAlignment = Alignment.Center) {
-                            Icon(
-                                imageVector = Icons.Filled.CameraAlt,
-                                contentDescription = null,
-                                modifier = Modifier.size(28.dp),
-                            )
-                        }
-                    }
-
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
-                    ) {
-                        Text(
-                            text = "Camera access needed",
-                            style = MaterialTheme.typography.headlineSmall,
-                            fontWeight = FontWeight.SemiBold,
-                            textAlign = TextAlign.Center,
-                        )
-                        Text(
-                            text = if (isPermanentlyDenied) {
-                                "Camera permission is blocked for Scanly. Open Settings, " +
-                                    "tap Permissions, and turn Camera on to scan documents."
-                            } else {
-                                "Scanly needs your camera to capture and straighten document pages. " +
-                                    "Photos stay on your device until you export or share them."
-                            },
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            textAlign = TextAlign.Center,
-                        )
-                    }
-
-                    if (!isPermanentlyDenied) {
-                        Column(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalArrangement = Arrangement.spacedBy(10.dp),
-                        ) {
-                            CameraPermissionBullet("Live preview with edge detection")
-                            CameraPermissionBullet("Camera active only while scanning")
-                            CameraPermissionBullet("Scans saved locally on this device")
-                        }
-                    }
-
-                    Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(4.dp),
-                    ) {
-                        Button(
-                            onClick = onAllowCamera,
-                            modifier = Modifier.fillMaxWidth(),
-                        ) {
-                            Text(
-                                text = if (isPermanentlyDenied) {
-                                    "Open Settings"
-                                } else {
-                                    "Allow camera access"
-                                },
-                            )
-                        }
-                        TextButton(onClick = onNavigateUp) {
-                            Text("Not now")
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun CameraPermissionBullet(text: String) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-        verticalAlignment = Alignment.Top,
-    ) {
-        Text(
-            text = "•",
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.primary,
-        )
-        Text(
-            text = text,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
     }
 }
 
@@ -1141,6 +1016,7 @@ private fun CameraStateCard(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
+                PipMissingDocumentNote()
                 Text(
                     text = title,
                     style = MaterialTheme.typography.headlineSmall,
@@ -1173,6 +1049,7 @@ private fun CameraPreview(
     val analysisExecutor = remember { Executors.newSingleThreadExecutor() }
     var previewView by remember { mutableStateOf<PreviewView?>(null) }
     var focusIndicatorOffset by remember { mutableStateOf<Offset?>(null) }
+    var cameraError by remember { mutableStateOf<String?>(null) }
 
     LaunchedEffect(focusIndicatorOffset) {
         if (focusIndicatorOffset != null) {
@@ -1194,16 +1071,17 @@ private fun CameraPreview(
         } else {
             val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
             var disposed = false
-            val listener = Runnable {
-                if (disposed) {
-                    return@Runnable
-                }
-                val cameraProvider = cameraProviderFuture.get()
+            var imageAnalysisRef: ImageAnalysis? = null
+
+            /** Returns false when the view is not attached yet (no display / viewport) so it can retry. */
+            fun bindCamera(cameraProvider: ProcessCameraProvider, view: PreviewView): Boolean {
+                val rotation = view.display?.rotation ?: return false
+                val viewPort = view.viewPort ?: return false
                 val preview = Preview.Builder()
-                    .setTargetRotation(currentPreviewView.display.rotation)
+                    .setTargetRotation(rotation)
                     .build()
                     .also { useCase ->
-                        useCase.surfaceProvider = currentPreviewView.surfaceProvider
+                        useCase.surfaceProvider = view.surfaceProvider
                     }
                 val imageCaptureResolutionSelector = ResolutionSelector.Builder()
                     .setAspectRatioStrategy(AspectRatioStrategy.RATIO_4_3_FALLBACK_AUTO_STRATEGY)
@@ -1215,7 +1093,7 @@ private fun CameraPreview(
                     .setJpegQuality(CaptureJpegQuality)
                     .build()
                     .apply {
-                        targetRotation = currentPreviewView.display.rotation
+                        targetRotation = rotation
                     }
                 val imageAnalysis = ImageAnalysis.Builder()
                     .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
@@ -1223,7 +1101,7 @@ private fun CameraPreview(
                     .setTargetResolution(AnalysisResolution)
                     .build()
                     .apply {
-                        targetRotation = currentPreviewView.display.rotation
+                        targetRotation = rotation
                         var lastAcceptedFrameNanos = 0L
                         setAnalyzer(analysisExecutor) { imageProxy ->
                             try {
@@ -1241,7 +1119,7 @@ private fun CameraPreview(
                             }
                         }
                     }
-                val viewPort = currentPreviewView.viewPort ?: return@Runnable
+                imageAnalysisRef = imageAnalysis
                 val useCaseGroup = UseCaseGroup.Builder()
                     .setViewPort(viewPort)
                     .addUseCase(preview)
@@ -1255,7 +1133,34 @@ private fun CameraPreview(
                     CameraSelector.DEFAULT_BACK_CAMERA,
                     useCaseGroup,
                 )
-                onCameraReady(imageCapture, currentPreviewView, boundCamera)
+                onCameraReady(imageCapture, view, boundCamera)
+                return true
+            }
+
+            var bindAttempts = 0
+
+            val listener = object : Runnable {
+                override fun run() {
+                    if (disposed) {
+                        return
+                    }
+                    // Camera start-up throws on devices without a back camera, when another app holds
+                    // the camera, or when the use-case combination is unsupported. Show an error
+                    // instead of crashing; manual retry is leaving and reopening the screen.
+                    try {
+                        if (bindCamera(cameraProviderFuture.get(), currentPreviewView)) {
+                            cameraError = null
+                        } else if (++bindAttempts < MaxCameraBindAttempts) {
+                            // doOnLayout fires once; retry shortly instead of leaving a black preview.
+                            currentPreviewView.postDelayed(this, CameraBindRetryDelayMillis)
+                        } else {
+                            cameraError = "Camera couldn't start. Leave this screen and open it again."
+                        }
+                    } catch (error: Exception) {
+                        Log.w(CameraPreviewTag, "Could not start the camera.", error)
+                        cameraError = "Camera couldn't start. Close other apps using the camera and try again."
+                    }
+                }
             }
 
             currentPreviewView.doOnLayout {
@@ -1265,8 +1170,10 @@ private fun CameraPreview(
             }
             onDispose {
                 disposed = true
+                currentPreviewView.removeCallbacks(listener)
+                imageAnalysisRef?.clearAnalyzer()
                 if (cameraProviderFuture.isDone) {
-                    cameraProviderFuture.get().unbindAll()
+                    runCatching { cameraProviderFuture.get().unbindAll() }
                 }
             }
         }
@@ -1304,6 +1211,22 @@ private fun CameraPreview(
             focusOffset = focusIndicatorOffset,
             modifier = Modifier.fillMaxSize(),
         )
+        cameraError?.let { message ->
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.72f))
+                    .padding(24.dp),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    text = message,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = Color.White,
+                    textAlign = TextAlign.Center,
+                )
+            }
+        }
     }
 }
 
@@ -1413,7 +1336,11 @@ private fun DocumentDetectionOverlay(
             )
         }
 
-        if (liveDetection.autoCaptureEnabled && liveDetection.countdownValue != null) {
+        if (
+            liveDetection.autoCaptureEnabled &&
+            liveDetection.countdownValue != null &&
+            !LocalPipPreferences.current.showCameraCoaching
+        ) {
             Surface(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
@@ -1499,7 +1426,7 @@ private fun capturePage(
     onSaved: () -> Unit,
     onFailure: (String) -> Unit,
 ) {
-    imageCapture.targetRotation = previewView.display.rotation
+    previewView.display?.let { display -> imageCapture.targetRotation = display.rotation }
     val outputFile = File(draft.rawImagePath)
     outputFile.parentFile?.mkdirs()
     val outputOptions = ImageCapture.OutputFileOptions.Builder(outputFile).build()
@@ -1592,6 +1519,9 @@ private val OverlayGrid = Color(0x22FFFFFF)
 private val OverlayGuide = Color(0xC2FFFFFF)
 private val OverlayWarning = Color(0xFFFFC857)
 private const val RgbaPixelStride = 4
+private const val CameraPreviewTag = "ScanCameraPreview"
+private const val MaxCameraBindAttempts = 10
+private const val CameraBindRetryDelayMillis = 100L
 private const val AnalysisFramesPerSecond = 8L
 private const val AnalysisIntervalNanos = 1_000_000_000L / AnalysisFramesPerSecond
 private const val TapFocusAutoCancelSeconds = 3L

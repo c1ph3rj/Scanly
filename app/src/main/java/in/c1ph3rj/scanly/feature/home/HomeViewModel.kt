@@ -119,7 +119,8 @@ class HomeViewModel @Inject constructor(
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000),
-        initialValue = HomeUiState(isLoading = false),
+        // Loading until Room's first emission, so Home never flashes its empty state.
+        initialValue = HomeUiState(isLoading = true),
     )
 
     fun createDocument(title: String) {
@@ -183,8 +184,9 @@ class HomeViewModel @Inject constructor(
                                 _events.emit(
                                     HomeEvent.ShowMessage(
                                         ImageImportSupport.importResultMessage(
-                                            importedCount = cappedSelection.items.size,
+                                            importedCount = importResult.value.importedCount,
                                             truncated = cappedSelection.truncated,
+                                            skippedCount = importResult.value.skippedCount,
                                         ),
                                     ),
                                 )

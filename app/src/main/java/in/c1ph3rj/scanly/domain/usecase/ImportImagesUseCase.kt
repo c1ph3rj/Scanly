@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
-import android.os.Build
 import dagger.hilt.android.qualifiers.ApplicationContext
 import `in`.c1ph3rj.scanly.core.common.ScanlyDispatchers
 import `in`.c1ph3rj.scanly.core.common.ScanlyError
@@ -37,6 +36,12 @@ data class ImportImagesProgress(
         get() = stageLabel
 }
 
+/** Outcome of an import: pages added, and picked files that could not be read as images. */
+data class ImportImagesSummary(
+    val importedCount: Int,
+    val skippedCount: Int,
+)
+
 enum class ImportStage {
     Preparing,
     Detecting,
@@ -50,6 +55,9 @@ enum class ImportStage {
  * [PageRepository.finalizeCapture] path as camera captures — document gate (soft),
  * post-processing corner model, still-process quad readiness, Auto filter, and
  * thumbnail generation.
+ *
+ * Files that can't be decoded as images are skipped (no page is created for them) and
+ * counted in [ImportImagesSummary.skippedCount]; the import fails only when none decode.
  */
 class ImportImagesUseCase @Inject constructor(
     @ApplicationContext private val context: Context,
@@ -60,23 +68,28 @@ class ImportImagesUseCase @Inject constructor(
         documentId: String,
         imageUris: List<Uri>,
         onProgress: suspend (ImportImagesProgress) -> Unit = {},
-    ): ScanlyResult<Unit> = withContext(dispatchers.io) {
+    ): ScanlyResult<ImportImagesSummary> = withContext(dispatchers.io) {
         runCatching {
             val total = imageUris.size
             require(total > 0) { "No images selected." }
+            var imported = 0
 
             imageUris.forEachIndexed { index, uri ->
                 val current = index + 1
                 reportProgress(onProgress, current, total, ImportStage.Preparing)
 
+                // Decode before creating the draft so an unreadable file leaves no empty page.
+                val bitmap = decodeBitmap(uri) ?: return@forEachIndexed
+
                 val draftResult = pageRepository.prepareCapture(documentId)
                 if (draftResult !is ScanlyResult.Success) {
+                    bitmap.recycle()
                     error("Failed to prepare page capture for imported image.")
                 }
                 val draft = draftResult.value
                 val rawFile = File(draft.rawImagePath)
 
-                writeNormalizedJpeg(uri, rawFile)
+                writeNormalizedJpeg(bitmap, rawFile)
 
                 reportProgress(onProgress, current, total, ImportStage.Detecting)
                 val finalizeResult = pageRepository.finalizeCapture(draft)
@@ -85,9 +98,19 @@ class ImportImagesUseCase @Inject constructor(
                 }
 
                 reportProgress(onProgress, current, total, ImportStage.Finalizing)
+                imported++
             }
+
+            check(imported > 0) {
+                if (total == 1) {
+                    "The selected file couldn't be opened as an image."
+                } else {
+                    "None of the selected files could be opened as images."
+                }
+            }
+            ImportImagesSummary(importedCount = imported, skippedCount = total - imported)
         }.fold(
-            onSuccess = { ScanlyResult.Success(Unit) },
+            onSuccess = { summary -> ScanlyResult.Success(summary) },
             onFailure = { throwable ->
                 ScanlyResult.Failure(
                     ScanlyError(
@@ -117,12 +140,9 @@ class ImportImagesUseCase @Inject constructor(
     }
 
     /**
-     * Decode via ImageDecoder (HEIC/WEBP-friendly on API 28+) and write a consistent
-     * JPEG so EXIF orientation and format quirks don't skip the processing pipeline.
+     * Writes the ImageDecoder output (HEIC/WEBP-friendly) as a consistent JPEG so EXIF orientation and format quirks don't skip the processing pipeline.
      */
-    private fun writeNormalizedJpeg(uri: Uri, target: File) {
-        val bitmap = decodeBitmap(uri)
-            ?: error("Could not decode imported image.")
+    private fun writeNormalizedJpeg(bitmap: Bitmap, target: File) {
         try {
             target.parentFile?.mkdirs()
             FileOutputStream(target).use { output ->
@@ -142,23 +162,36 @@ class ImportImagesUseCase @Inject constructor(
         }
     }
 
+    /**
+     * Files from the document picker can be far larger than camera photos (scans, 50MP+
+     * shots), so the decode is downscaled to [MAX_IMPORT_EDGE_PX] — still above the
+     * processing size — to keep peak memory bounded on low-RAM devices.
+     */
     private fun decodeBitmap(uri: Uri): Bitmap? {
         return runCatching {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                val source = ImageDecoder.createSource(context.contentResolver, uri)
-                ImageDecoder.decodeBitmap(source) { decoder, _, _ ->
-                    decoder.isMutableRequired = false
-                    decoder.allocator = ImageDecoder.ALLOCATOR_SOFTWARE
-                }.copy(Bitmap.Config.ARGB_8888, false)
+            val source = ImageDecoder.createSource(context.contentResolver, uri)
+            val decoded = ImageDecoder.decodeBitmap(source) { decoder, info, _ ->
+                decoder.isMutableRequired = false
+                decoder.allocator = ImageDecoder.ALLOCATOR_SOFTWARE
+                val longEdge = maxOf(info.size.width, info.size.height)
+                if (longEdge > MAX_IMPORT_EDGE_PX) {
+                    val scale = MAX_IMPORT_EDGE_PX.toFloat() / longEdge
+                    decoder.setTargetSize(
+                        (info.size.width * scale).toInt().coerceAtLeast(1),
+                        (info.size.height * scale).toInt().coerceAtLeast(1),
+                    )
+                }
+            }
+            if (decoded.config == Bitmap.Config.ARGB_8888) {
+                decoded
             } else {
-                context.contentResolver.openInputStream(uri)?.use { input ->
-                    android.graphics.BitmapFactory.decodeStream(input)
-                }?.copy(Bitmap.Config.ARGB_8888, false)
+                decoded.copy(Bitmap.Config.ARGB_8888, false).also { decoded.recycle() }
             }
         }.getOrNull()
     }
 
     private companion object {
         const val IMPORT_JPEG_QUALITY = 95
+        const val MAX_IMPORT_EDGE_PX = 4_096
     }
 }

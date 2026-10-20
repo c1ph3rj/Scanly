@@ -54,6 +54,9 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
 import `in`.c1ph3rj.scanly.core.ui.ScanlyTestTags
 import `in`.c1ph3rj.scanly.feature.components.ScanlyModalBottomSheet
+import `in`.c1ph3rj.scanly.feature.pip.PipLines
+import `in`.c1ph3rj.scanly.feature.pip.PipLook
+import `in`.c1ph3rj.scanly.feature.pip.PipMood
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -716,8 +719,10 @@ private fun EmptyLibraryTabCard(
     onCreateGroup: () -> Unit,
 ) {
     val isFolders = selectedTab == LibraryTab.Folders
-    IllustratedEmptyState(
-        illustrationRes = `in`.c1ph3rj.scanly.R.drawable.empty_library_illustration,
+    PipEmptyState(
+        pipLine = if (isFolders) PipLines.LIBRARY_NO_FOLDERS else PipLines.LIBRARY_NO_DOCUMENTS,
+        pipMood = PipMood.IDLE,
+        pipLook = if (isFolders) PipLook.RIGHT else PipLook.AHEAD,
         title = if (isFolders) "No folders yet" else "No documents yet",
         description = if (isFolders) {
             "Create a folder to keep related documents easy to find."
@@ -1044,8 +1049,9 @@ fun EmptyLibraryCard(
     onCreateDocument: () -> Unit,
     onCreateGroup: () -> Unit,
 ) {
-    IllustratedEmptyState(
-        illustrationRes = `in`.c1ph3rj.scanly.R.drawable.empty_library_illustration,
+    PipEmptyState(
+        pipLine = PipLines.LIBRARY_EMPTY,
+        pipMood = PipMood.HAPPY,
         title = "Your library is ready",
         description = "Create a folder to stay organised, or add a document and start capturing.",
         actionLabel = "New folder",

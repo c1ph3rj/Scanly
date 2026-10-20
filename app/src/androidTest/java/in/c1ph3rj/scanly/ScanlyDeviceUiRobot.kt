@@ -68,6 +68,11 @@ internal fun ComposeTestRule.completeOnboardingIfNeeded() {
     if (hasTag(ScanlyTestTags.ONBOARDING_GET_STARTED)) {
         onNodeWithTag(ScanlyTestTags.ONBOARDING_GET_STARTED).performClick()
     }
+    // The camera step only shows when the camera is not granted yet; skip it if it does.
+    waitForIdle()
+    if (hasTag("onboarding_camera_later")) {
+        onNodeWithTag("onboarding_camera_later").performClick()
+    }
     dismissBlockingSystemDialogs()
     waitUntil(DEFAULT_TIMEOUT_MS) {
         hasTag(ScanlyTestTags.HOME_SCREEN) || hasTag(ScanlyTestTags.NAV_HOME)

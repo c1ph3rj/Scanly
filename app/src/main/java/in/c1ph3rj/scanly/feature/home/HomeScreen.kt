@@ -10,6 +10,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.material.icons.outlined.Search
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -39,6 +40,9 @@ import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import `in`.c1ph3rj.scanly.domain.model.DocumentTitleFormat
 import `in`.c1ph3rj.scanly.domain.model.GroupTitleFormat
 import `in`.c1ph3rj.scanly.feature.components.*
+import `in`.c1ph3rj.scanly.feature.pip.LocalPipPreferences
+import `in`.c1ph3rj.scanly.feature.pip.PipLines
+import `in`.c1ph3rj.scanly.feature.pip.PipViewModel
 import androidx.compose.ui.unit.Dp
 import androidx.activity.compose.BackHandler
 import kotlinx.coroutines.flow.collectLatest
@@ -53,12 +57,13 @@ fun HomeRoute(
     onOpenSearch: () -> Unit = {},
 ) {
     val viewModel: HomeViewModel = hiltViewModel()
+    val pipViewModel: PipViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     var createForScan by rememberSaveable { mutableStateOf(false) }
 
     val importImagesLauncher = rememberLauncherForActivityResult(
-        contract = ImageImportSupport.pickMultipleVisualMediaContract(),
+        contract = ImageImportSupport.pickImagesContract(),
     ) { uris ->
         if (uris.isNotEmpty()) {
             viewModel.importImagesAsDocument(uris)
@@ -98,6 +103,7 @@ fun HomeRoute(
         onCreateGroup = viewModel::createGroup,
         onSuggestTitle = viewModel::suggestDocumentTitle,
         onSuggestGroupTitle = viewModel::suggestGroupTitle,
+        onDismissPipTip = pipViewModel::dismissTodaysTip,
     )
 
     HomeRatingPromptHost(viewModel = viewModel)
@@ -118,10 +124,22 @@ fun HomeScreen(
     onCreateGroup: (String) -> Unit,
     onSuggestTitle: suspend (DocumentTitleFormat) -> String,
     onSuggestGroupTitle: suspend (GroupTitleFormat) -> String,
+    onDismissPipTip: () -> Unit = {},
 ) {
     var createDialogVisible by rememberSaveable { mutableStateOf(false) }
     var createFolderDialogVisible by rememberSaveable { mutableStateOf(false) }
     val windowSizeInfo = rememberWindowSizeInfo()
+    val pipPreferences = LocalPipPreferences.current
+    val todayEpochDay = remember { java.time.LocalDate.now().toEpochDay() }
+    val hasContent = uiState.recentDocuments.isNotEmpty() || uiState.recentGroups.isNotEmpty()
+    var pokeCount by remember { mutableIntStateOf(0) }
+    var pokeLine by remember { mutableStateOf<String?>(null) }
+    LaunchedEffect(pokeCount) {
+        if (pokeCount == 0) return@LaunchedEffect
+        pokeLine = PipLines.pokes[(pokeCount - 1) % PipLines.pokes.size]
+        kotlinx.coroutines.delay(3_600L)
+        pokeLine = null
+    }
 
     BackHandler(enabled = uiState.isImporting) { /* block back while processing */ }
 
@@ -153,7 +171,30 @@ fun HomeScreen(
                     modifier = Modifier
                         .padding(horizontal = windowSizeInfo.horizontalPadding)
                         .padding(bottom = 12.dp),
+                    pip = if (pipPreferences.enabled && hasContent) {
+                        { HomeHeaderPip(onPoke = { pokeCount++ }) }
+                    } else {
+                        null
+                    },
                 )
+            }
+
+            val showTip = pipPreferences.showHomeTips &&
+                hasContent &&
+                !uiState.isLoading &&
+                pipPreferences.tipDismissedEpochDay != todayEpochDay
+            if (pipPreferences.enabled && (pokeLine != null || showTip)) {
+                item(key = "home_pip_note", contentType = "pip_note") {
+                    HomePipNote(
+                        line = pokeLine ?: PipLines.homeTipFor(todayEpochDay),
+                        isTip = pokeLine == null,
+                        onDismissTip = onDismissPipTip,
+                        modifier = Modifier
+                            .padding(horizontal = windowSizeInfo.horizontalPadding)
+                            .padding(bottom = 16.dp)
+                            .animateItem(),
+                    )
+                }
             }
 
             item(key = "home_search", contentType = "search") {
@@ -165,18 +206,6 @@ fun HomeScreen(
                 )
             }
 
-            if (uiState.isLoading) {
-                item(key = "home_loading", contentType = "loading") {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 48.dp),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        CircularProgressIndicator()
-                    }
-                }
-            } else {
             item(key = "quick_actions", contentType = "quick_actions") {
                 QuickActionsRow(
                     onScan = { createDialogVisible = true },
@@ -189,6 +218,14 @@ fun HomeScreen(
                 )
             }
 
+            if (uiState.isLoading) {
+                item(key = "home_loading", contentType = "loading") {
+                    HomeLoadingSkeleton(
+                        isTablet = windowSizeInfo.isTablet,
+                        horizontalPadding = windowSizeInfo.horizontalPadding,
+                    )
+                }
+            } else {
             if (uiState.recentGroups.isNotEmpty()) {
                 item(key = "groups_header", contentType = "section_header") {
                     LibrarySectionHeader(
@@ -324,15 +361,20 @@ fun HomeHeader(
     groupCount: Int,
     documentCount: Int,
     modifier: Modifier = Modifier,
+    pip: (@Composable () -> Unit)? = null,
 ) {
     val hour = java.util.Calendar.getInstance().get(java.util.Calendar.HOUR_OF_DAY)
     val greeting = greetingForHour(hour)
 
-    Column(
+    Row(
         modifier = modifier
             .fillMaxWidth()
             .statusBarsPadding()
             .padding(top = 14.dp),
+        verticalAlignment = Alignment.Bottom,
+    ) {
+    Column(
+        modifier = Modifier.weight(1f),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Text(
@@ -357,6 +399,11 @@ fun HomeHeader(
             fontWeight = FontWeight.SemiBold,
             color = MaterialTheme.colorScheme.onBackground,
         )
+    }
+    if (pip != null) {
+        Spacer(Modifier.width(8.dp))
+        pip()
+    }
     }
 }
 
@@ -501,13 +548,114 @@ fun QuickActionCard(
     }
 }
 
+/**
+ * Shimmering stand-in for the folders row and recent documents, shown until the library's
+ * first load lands. Shapes mirror [LibraryFolderTile] and the compact document row so the
+ * real content settles in without a jump.
+ */
+@Composable
+private fun HomeLoadingSkeleton(
+    isTablet: Boolean,
+    horizontalPadding: Dp,
+    modifier: Modifier = Modifier,
+) {
+    val progress = rememberShimmerProgress()
+    val lineShape = androidx.compose.foundation.shape.RoundedCornerShape(6.dp)
+    val tileWidth = if (isTablet) 132.dp else 104.dp
+
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .semantics { contentDescription = "Loading your documents" },
+    ) {
+        SkeletonSectionHeader(progress, Modifier.padding(horizontal = horizontalPadding))
+        // Not user-scrollable: the scroll container only lets tiles run off the edge like the real row.
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .horizontalScroll(androidx.compose.foundation.rememberScrollState(), enabled = false)
+                .padding(horizontal = (horizontalPadding - LibraryFolderTileInset).coerceAtLeast(0.dp))
+                .padding(bottom = 20.dp),
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+            repeat(4) {
+                Column(
+                    modifier = Modifier
+                        .width(tileWidth)
+                        .padding(LibraryFolderTileInset),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    ShimmerBlock(
+                        progress = progress,
+                        shape = MaterialTheme.shapes.large,
+                        modifier = Modifier.fillMaxWidth().aspectRatio(1f),
+                    )
+                    ShimmerBlock(progress, lineShape, Modifier.fillMaxWidth(0.8f).height(14.dp))
+                    ShimmerBlock(progress, lineShape, Modifier.fillMaxWidth(0.55f).height(10.dp))
+                }
+            }
+        }
+
+        SkeletonSectionHeader(
+            progress,
+            Modifier.padding(horizontal = horizontalPadding).padding(bottom = 4.dp),
+        )
+        val rowCount = 3
+        repeat(rowCount) { index ->
+            LibraryListItem(
+                first = index == 0,
+                last = index == rowCount - 1,
+                modifier = Modifier.padding(horizontal = horizontalPadding),
+            ) {
+                Row(
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    ShimmerBlock(
+                        progress = progress,
+                        shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp),
+                        modifier = Modifier.size(width = 48.dp, height = 64.dp),
+                    )
+                    Column(
+                        modifier = Modifier.weight(1f),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        ShimmerBlock(progress, lineShape, Modifier.fillMaxWidth(0.7f).height(16.dp))
+                        ShimmerBlock(progress, lineShape, Modifier.fillMaxWidth(0.45f).height(12.dp))
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun SkeletonSectionHeader(
+    progress: State<Float>,
+    modifier: Modifier = Modifier,
+) {
+    val lineShape = androidx.compose.foundation.shape.RoundedCornerShape(6.dp)
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(48.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+    ) {
+        ShimmerBlock(progress, lineShape, Modifier.width(140.dp).height(18.dp))
+        ShimmerBlock(progress, lineShape, Modifier.width(52.dp).height(14.dp))
+    }
+}
+
 @Composable
 private fun EmptyHomeCard(
     onCreateDocument: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    IllustratedEmptyState(
-        illustrationRes = `in`.c1ph3rj.scanly.R.drawable.empty_capture_illustration,
+    PipEmptyState(
+        pipLine = `in`.c1ph3rj.scanly.feature.pip.PipLines.HOME_EMPTY,
+        pipMood = `in`.c1ph3rj.scanly.feature.pip.PipMood.IDLE,
         title = "No documents yet",
         description = "Scan your first page and it will be ready here whenever you need it.",
         actionLabel = "Start scanning",

@@ -116,12 +116,9 @@ fun ScanlyExpandableFabMenu(
                 },
             )
         }
+        // No graphicsLayer clip: clip = true cut the FAB's elevation shadow to the circle.
         FloatingActionButton(
             onClick = { onExpandedChange(!expanded) },
-            modifier = Modifier.graphicsLayer {
-                shape = fabShape
-                clip = true
-            },
             containerColor = MaterialTheme.colorScheme.primary,
             shape = fabShape,
             contentColor = MaterialTheme.colorScheme.onPrimary,

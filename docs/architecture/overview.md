@@ -1,6 +1,6 @@
 ﻿# Architecture Overview
 
-How Scanly is structured at **v1.0.17**. For navigation detail see [navigation.md](navigation.md). For screen inventory see [screens.md](screens.md).
+How Scanly is structured at **v1.0.18**. For navigation detail see [navigation.md](navigation.md). For screen inventory see [screens.md](screens.md).
 
 ## Layer diagram
 
@@ -28,11 +28,11 @@ How Scanly is structured at **v1.0.17**. For navigation detail see [navigation.m
 | Component | File | Role |
 | --- | --- | --- |
 | Application | `ScanlyApplication.kt` | `@HiltAndroidApp`; custom WorkManager + `HiltWorkerFactory` |
-| Activity | `MainActivity.kt` | Onboarding gate, theme, NavHost, update dialog, widget/shortcut launch actions |
+| Activity | `MainActivity.kt` | Onboarding gate, theme, NavHost, update dialog, widget/shortcut launch actions, Open in Scanly PDF intents (`IncomingPdf`) |
 | Theme | `ui/theme/` | `ScanlyTheme`, colors, typography |
 | Navigation | `navigation/ScanlyNavHost.kt` | Route registration, bottom nav / rail |
 
-`MainActivity` hosts three top-level ViewModels:
+`MainActivity` hosts four top-level ViewModels:
 
 - `AppSettingsViewModel` — observes theme mode and pure black preference
 - `OnboardingViewModel` — first-run gate
@@ -48,25 +48,31 @@ All code under `app/src/main/java/in/c1ph3rj/scanly/`:
 | `ui/theme/` | Material 3 theming |
 | `navigation/` | Destinations and NavHost |
 | `feature/` | Screen UI and ViewModels |
+| `feature/library/` | Library and combined name/page-text search |
+| `feature/text/` | Extracted page-text reading and correction |
+| `feature/sign/` | PDF and scan signing, signature creation and management |
+| `feature/pip/` | Pip mascot: art, speech bubble, lines, `PipViewModel`, `LocalPipPreferences` |
+| `feature/tools/pdf/` | PDF reader and tools; `IncomingPdf` (Open in Scanly), `PdfReaderMenu` (hand-off to tools) |
 | `feature/launch/` | Widget/shortcut launch action parsing and redirects |
 | `feature/widget/` | App widget providers (actions, scan, QR) |
 | `domain/model/` | Business models |
 | `domain/repository/` | Repository contracts |
-| `domain/usecase/` | Business operations (73 use case classes) |
+| `domain/usecase/` | Business operations |
 | `domain/processing/` | `PageImageProcessor` interface |
 | `data/local/db/` | Room database, entities, DAOs |
 | `data/document/` | Document repository |
 | `data/page/` | Page repository and capture finalize |
 | `data/group/` | Group repository |
 | `data/export/` | PDF/ZIP export |
-| `data/archive/` | Versioned library backup/restore, workers, operation coordination |
+| `data/text/` | On-device OCR, page-text persistence/search, background indexing |
+| `data/sign/` | Saved signatures, editable page markups, image compositing |
 | `data/storage/` | App-private file manager |
 | `data/settings/` | DataStore and bundled assets |
 | `data/update/` | Build-selected GitHub or Google Play update checks |
 | `data/processing/` | `PageImageProcessor` implementation |
 | `core/ml/` | LiteRT corner models, document gate, book/quad policies, auto model selection |
 | `core/processing/` | Perspective warp, OpenCV filter engine (`filter/`), filter adjustments |
-| `core/editing/` | Crop quad editor logic |
+| `core/editing/` | Crop quad editor and signature ink stroke processing |
 | `core/ui/` | Thumbnail cache, adaptive layout helpers |
 | `core/common/` | Result types, formatters |
 | `di/` | Hilt modules |
@@ -97,7 +103,10 @@ Hilt modules in `di/` install into `SingletonComponent`:
 | `DatabaseModule` | `ScanlyDatabase`, DAOs, migrations |
 | `DocumentDataModule` | Document, page, group repos; storage manager |
 | `ExportModule` | `DocumentExportRepository`, `ExportStorageRepository` |
-| `ArchiveModule` | `LibraryArchiveRepository` |
+| `PageTextModule` | `PageTextRepository`, `SearchHistoryRepository` |
+| `SignatureModule` | `SignatureRepository`, `PageMarkupRepository` |
+| `RatingModule` | Rating-prompt repository |
+| `PipModule` | `PipRepository` → `DefaultPipRepository` (DataStore `pip_*` keys) |
 | `SettingsModule` | `SettingsRepository` |
 | `AppDataModule` | `AppDataRepository` |
 | `ProcessingModule` | `PageImageProcessor` |
@@ -145,15 +154,20 @@ DocumentDetailViewModel / GroupDetailViewModel
   → SaveExportArtifactUseCase → configured Downloads/SAF destination
 ```
 
-### Library backup and restore
+### Page text search
 
 ```text
-SettingsViewModel
-  → LibraryArchiveRepository → unique foreground WorkManager job
-    → LibraryArchiveEngine
-      → free-space preflight + mutation coordinator
-      → versioned manifest + exact files + SHA-256 → destination/backup/*.scanly
-      → validate + stage → transactional Replace or Merge with rewritten app-private paths
+LibrarySearchViewModel
+  → PageTextRepository → Room page_texts + FTS4 index
+    → TextIndexScheduler → WorkManager TextIndexWorker → bundled on-device ML Kit
+```
+
+### Document signing
+
+```text
+PDF signing: PdfSignViewModel → open/sign session use cases → PdfToolkitRepository → new signed PDF in export cache
+Scan signing: DocumentSignViewModel → PageMarkupRepository → page_markups + composed processed image
+Reusable signatures: SignatureRepository → Room signatures + files/signatures/{id}/ink.png
 ```
 
 ### Clear all data
@@ -170,8 +184,6 @@ SettingsViewModel
 | --- | --- |
 | `CAMERA` | Document capture |
 | `INTERNET` | Google Play update check, GitHub release notes |
-| `POST_NOTIFICATIONS` | Background archive progress on Android 13+ |
-| `FOREGROUND_SERVICE`, `FOREGROUND_SERVICE_DATA_SYNC` | Long-running backup and restore |
 
 Camera hardware is optional (`android:required="false"`). No `REQUEST_INSTALL_PACKAGES`.
 

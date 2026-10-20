@@ -178,6 +178,7 @@ class DefaultSettingsRepository @Inject constructor(
                         id = item.getString("id"),
                         question = item.getString("question"),
                         answer = item.getString("answer"),
+                        category = item.optString("category").ifBlank { "General" },
                     ),
                 )
             }

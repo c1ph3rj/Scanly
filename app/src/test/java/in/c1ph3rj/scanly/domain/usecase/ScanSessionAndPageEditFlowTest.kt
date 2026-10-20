@@ -101,19 +101,33 @@ class ScanSessionAndPageEditFlowTest {
     }
 
     @Test
-    fun galleryImportCap_limitsSelectionToTenImages() {
-        val underCap = ImageImportSupport.capSelection((1..10).toList())
-        assertEquals(10, underCap.items.size)
+    fun galleryImportCap_limitsSelectionToMaxImages() {
+        val max = ImageImportSupport.MAX_IMAGES_PER_IMPORT
+        val underCap = ImageImportSupport.capSelection((1..max).toList())
+        assertEquals(max, underCap.items.size)
         assertFalse(underCap.truncated)
-        assertEquals("Imported 10 images.", ImageImportSupport.importResultMessage(10, false))
+        assertEquals("Imported $max images.", ImageImportSupport.importResultMessage(max, false))
 
-        val overCap = ImageImportSupport.capSelection((1..14).map { "image-$it" })
-        assertEquals(ImageImportSupport.MAX_IMAGES_PER_IMPORT, overCap.items.size)
+        val overCap = ImageImportSupport.capSelection((1..max + 4).map { "image-$it" })
+        assertEquals(max, overCap.items.size)
         assertTrue(overCap.truncated)
-        assertEquals((1..10).map { "image-$it" }, overCap.items)
+        assertEquals((1..max).map { "image-$it" }, overCap.items)
         assertEquals(
-            "Imported 10 images. Only ${ImageImportSupport.MAX_IMAGES_PER_IMPORT} images can be added at a time.",
+            "Imported $max images. Only $max images can be added at a time.",
             ImageImportSupport.importResultMessage(overCap.items.size, overCap.truncated),
+        )
+    }
+
+    @Test
+    fun galleryImportMessage_reportsSkippedFiles() {
+        assertEquals(
+            "Imported 3 images. Skipped 1 file that couldn't be opened.",
+            ImageImportSupport.importResultMessage(3, truncated = false, skippedCount = 1),
+        )
+        val max = ImageImportSupport.MAX_IMAGES_PER_IMPORT
+        assertEquals(
+            "Imported 1 image. Skipped 2 files that couldn't be opened. Only $max images can be added at a time.",
+            ImageImportSupport.importResultMessage(1, truncated = true, skippedCount = 2),
         )
     }
 

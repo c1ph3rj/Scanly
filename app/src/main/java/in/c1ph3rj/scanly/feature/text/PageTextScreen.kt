@@ -473,7 +473,7 @@ private fun QueryPill(query: String, matchesOnPage: Int, onClear: () -> Unit, mo
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.widthIn(max = 260.dp),
                 )
-                IconButton(onClick = onClear, modifier = Modifier.size(40.dp)) {
+                IconButton(onClick = onClear, modifier = Modifier.size(48.dp)) {
                     Icon(
                         Icons.Filled.Close,
                         contentDescription = "Stop highlighting",
@@ -943,7 +943,16 @@ private fun EmptyDocumentText() {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        Icon(Icons.Outlined.Notes, contentDescription = null, modifier = Modifier.size(40.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+        if (`in`.c1ph3rj.scanly.feature.pip.LocalPipPreferences.current.enabled) {
+            `in`.c1ph3rj.scanly.feature.pip.PipSays(
+                line = `in`.c1ph3rj.scanly.feature.pip.PipLines.PAGE_TEXT_EMPTY,
+                mood = `in`.c1ph3rj.scanly.feature.pip.PipMood.SLEEP,
+                size = 80.dp,
+                modifier = Modifier.padding(bottom = 8.dp),
+            )
+        } else {
+            Icon(Icons.Outlined.Notes, contentDescription = null, modifier = Modifier.size(40.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
         Text("This document has no pages yet", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
         Text(
             "Scan or import a page and its text will appear here.",

@@ -96,13 +96,24 @@ private enum class WatermarkStep { Pick, Edit, Working, Done }
 fun PdfWatermarkRoute(
     onNavigateUp: () -> Unit,
     onPreviewPdf: (ExportArtifact) -> Unit,
+    initialSource: PdfToolSource? = null,
 ) {
     val viewModel: PdfWatermarkViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
-    var editing by rememberSaveable { mutableStateOf(false) }
+    var editing by rememberSaveable { mutableStateOf(initialSource != null) }
     var returnToEditorOnPickerBack by rememberSaveable { mutableStateOf(false) }
+
+    // Opened from the reader's menu with that PDF: skip the picker, and back returns to the reader.
+    val fromReader = initialSource != null
+    var initialSourceApplied by rememberSaveable { mutableStateOf(false) }
+    LaunchedEffect(initialSource) {
+        if (initialSource != null && !initialSourceApplied) {
+            initialSourceApplied = true
+            viewModel.setSources(listOf(initialSource))
+        }
+    }
 
     val step = when {
         uiState.result != null -> WatermarkStep.Done
@@ -132,7 +143,7 @@ fun PdfWatermarkRoute(
         }
     }
 
-    BackHandler(enabled = step == WatermarkStep.Edit) { editing = false }
+    BackHandler(enabled = step == WatermarkStep.Edit) { if (fromReader) onNavigateUp() else editing = false }
     BackHandler(
         enabled = step == WatermarkStep.Pick && uiState.sources.isNotEmpty() && returnToEditorOnPickerBack,
         onBack = onPickerBack,
@@ -164,8 +175,12 @@ fun PdfWatermarkRoute(
             WatermarkStep.Edit -> WatermarkEditor(
                 uiState = uiState,
                 onBack = {
-                    returnToEditorOnPickerBack = false
-                    editing = false
+                    if (fromReader) {
+                        onNavigateUp()
+                    } else {
+                        returnToEditorOnPickerBack = false
+                        editing = false
+                    }
                 },
                 onChange = {
                     returnToEditorOnPickerBack = true

@@ -11,7 +11,7 @@ Managed by `DefaultSettingsRepository` (`data/settings/`).
 | `theme_mode` | String | `"system"` | `SYSTEM`, `LIGHT`, or `DARK` (`ThemeMode.storageValue`) |
 | `pure_black_enabled` | Boolean | `false` | Pure black Material 3 surfaces when dark theme is active (AMOLED) |
 | `onboarding_completed` | Boolean | `false` | First-run gate flag |
-| `export_tree_uri` | String? | null | Persisted SAF tree URI for custom export/backup base |
+| `export_tree_uri` | String? | null | Persisted SAF tree URI for custom export base |
 | `export_tree_label` | String? | null | Display name for custom export folder |
 | `live_detection_model` | String | `"legacy"` | Manual live-preview corner model (`lite` / `standard` / `accurate`=High / `legacy`=Accurate) |
 | `post_processing_model` | String | `"legacy"` | Manual captured-image corner model (same storage values) |
@@ -67,10 +67,10 @@ Main **Settings** is a hub with a short list of destinations. Advanced controls 
 | Hub row | Route | Contents |
 | --- | --- | --- |
 | Appearance | `settings/appearance` | Theme mode, pure black |
-| Storage & backup | `settings/storage` | Usage, backup/restore, destination, empty cleanup, clear all |
+| Storage | `settings/storage` | Usage, export destination, temporary-export cleanup, empty cleanup, clear all |
 | Document detection | `settings/detection` | Automatic/manual models, gate, benchmark link |
 | Widgets | `settings/widgets` | Pin Actions / Scan / QR |
-| Help & FAQ | `settings/faq` | `faqs.json` |
+| Help & FAQ | `settings/faq` | Searchable, category-filtered bundled FAQ (`faqs.json`, 46 answers) |
 | About | `settings/about` | Version, updates, support links, legal, licenses |
 
 | Nested | Route | Notes |
@@ -80,6 +80,8 @@ Main **Settings** is a hub with a short list of destinations. Advanced controls 
 | Licenses | `settings/licenses` | From About |
 
 ## App update flow
+
+The Settings screen also shows the dismissible rating card and a permanent **Rate Scanly** row. The optional Home reminder appears after a completed export/share/PDF-tool action, at most once every 30 days.
 
 ### Components
 
@@ -180,6 +182,6 @@ Play in-app updates only work for `playStoreRelease` builds installed from Googl
 ## Related docs
 
 - [../architecture/screens.md](../architecture/screens.md) — SettingsViewModel mapping
-- [library-backup.md](library-backup.md) — backup destination and format
+- [library-backup.md](library-backup.md) — legacy `.scanly` backup format, retired in v1.0.18
 - [../releases.md](../releases.md) — version policy
 - [../overview/features.md](../overview/features.md) — user-facing settings features

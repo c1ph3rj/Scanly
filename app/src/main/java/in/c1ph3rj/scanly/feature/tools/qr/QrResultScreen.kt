@@ -306,7 +306,7 @@ private fun QrWifiDetails(
                     value = if (passwordVisible) password else qrWifiPasswordMask(password),
                     monospace = true,
                     trailing = {
-                        IconButton(onClick = onTogglePassword, modifier = Modifier.size(44.dp)) {
+                        IconButton(onClick = onTogglePassword, modifier = Modifier.size(48.dp)) {
                             Icon(
                                 imageVector = if (passwordVisible) {
                                     Icons.Outlined.VisibilityOff

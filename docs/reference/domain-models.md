@@ -1,6 +1,6 @@
 # Domain Models
 
-All model classes in `domain/model/` (25 files).
+Model classes and enums under `domain/model/`.
 
 ## Document and pages
 
@@ -13,6 +13,10 @@ All model classes in `domain/model/` (25 files).
 | `PageCaptureDraft` | `PageCaptureDraft.kt` | Transient state during active capture session |
 | `PagePreviewPaths` | `PagePreviewPaths.kt` | Extension resolving display paths for preview |
 | `PageProcessingState` | `PageProcessingState.kt` | `CAPTURED`, `PROCESSED`, or `NEEDS_REVIEW` |
+| `DocumentKind` | `DocumentKind.kt` | On-device document-type classification used in search filters and results |
+| `PageText` / `PageTextBlock` / `PageTextLine` | `PageText.kt` | Recognized/corrected page text and normalized layout for reading and overlays |
+| `TextIndexProgress` | `PageText.kt` | Total and pending pages for background index progress |
+| `LibrarySearch` models | `LibrarySearch.kt` | Search query, result filters, and ranked name/page-text hits |
 | `PageFilterPreset` | `PageFilterPreset.kt` | Ten filter presets with `storageValue` strings; legacy values map to replacements |
 | `DocumentTitleFormat` | `DocumentTitleFormat.kt` | Four rotatable auto-title formats for new documents |
 | `GroupTitleFormat` | `GroupTitleFormat.kt` | Four rotatable auto-title formats for new folders |
@@ -41,15 +45,17 @@ Legacy storage values are read through `PageFilterPreset.fromStorage` and remapp
 | `SavedExport` | `SavedExport.kt` | Final shared-storage name, destination label, and URI |
 | `ExportDestination` | `ExportDestination.kt` | `DefaultDownloadsScanly` or `CustomTree(uri, displayName)` |
 
-## Library backup and restore
+## Library signing
 
 | Model | File | Purpose |
 | --- | --- | --- |
-| `RestoreMode` | `LibraryArchive.kt` | `REPLACE` or `MERGE` |
-| `BackupEstimate` | `LibraryArchive.kt` | Source/required/available bytes and backup eligibility |
-| `ArchiveOperation` | `LibraryArchive.kt` | `BACKUP` or `RESTORE` |
-| `ArchiveWorkPhase` | `LibraryArchive.kt` | WorkManager phase enum |
-| `ArchiveWorkState` | `LibraryArchive.kt` | Progress, message, cancel state |
+| `SignatureKind` / `SignatureSource` | `SignModels.kt` | Signature vs initials, and drawn vs imported source |
+| `SavedSignature` | `SignModels.kt` | Reusable local ink image and dimensions |
+| `SignInk` | `SignModels.kt` | Navy, black, blue, or red mark colour |
+| `NormRect` | `SignModels.kt` | Page-relative mark placement |
+| `SignMark` | `SignModels.kt` | Image signature, text, date, or checkbox mark |
+| `PageMarkup` | `SignModels.kt` | Editable marks and clean base image for a Scanly page |
+| `PdfSignSession` / `SignPageSize` | `SignModels.kt` | Local PDF session and visual page dimensions |
 
 ## Settings and app data
 
@@ -60,7 +66,7 @@ Legacy storage values are read through `PageFilterPreset.fromStorage` and remapp
 | `SettingsContent` | `SettingsContent.kt` | Aggregated FAQs and licenses for Settings |
 | `SettingsFaq` | `SettingsFaq.kt` | Single FAQ entry |
 | `LicenseInfo` | `LicenseInfo.kt` | Third-party license entry |
-| `AppStorageUsage` | `AppStorageUsage.kt` | Byte counts: documents, export cache, database, archive workspace |
+| `AppStorageUsage` | `AppStorageUsage.kt` | Byte counts for library files, temporary export cache, and the database/search index |
 
 Pure black (AMOLED) is a boolean DataStore preference (`pure_black_enabled`), not a `ThemeMode` value.
 

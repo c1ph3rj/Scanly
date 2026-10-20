@@ -55,8 +55,8 @@ android {
         applicationId = "in.c1ph3rj.scanly"
         minSdk = 29
         targetSdk = 36
-        versionCode = 17
-        versionName = "1.0.17"
+        versionCode = 18
+        versionName = "1.0.18"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         testInstrumentationRunnerArguments["clearPackageData"] = "true"
@@ -175,12 +175,15 @@ dependencies {
     implementation(libs.mlkit.barcode.scanning)
     implementation(libs.mlkit.text.recognition)
     implementation(libs.zxing.core)
+    implementation(libs.androidx.webkit)
     implementation(libs.androidx.work.runtime)
     implementation(libs.androidx.hilt.work)
     ksp(libs.androidx.room.compiler)
     ksp(libs.google.dagger.hilt.compiler)
     ksp(libs.androidx.hilt.compiler)
     testImplementation(libs.junit)
+    // Real org.json for JVM tests; android.jar only ships stubs.
+    testImplementation(libs.org.json)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.test.rules)

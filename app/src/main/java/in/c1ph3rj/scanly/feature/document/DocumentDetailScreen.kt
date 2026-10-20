@@ -42,6 +42,7 @@ import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Crop
 import androidx.compose.material.icons.filled.DeleteOutline
 import androidx.compose.material.icons.filled.Description
+import androidx.compose.material.icons.filled.Draw
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.FileDownload
 import androidx.compose.material.icons.filled.Folder
@@ -85,6 +86,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Size
@@ -126,8 +128,10 @@ import `in`.c1ph3rj.scanly.domain.model.GroupTitleFormat
 import `in`.c1ph3rj.scanly.domain.model.PageProcessingState
 import `in`.c1ph3rj.scanly.domain.model.PdfExportOptions
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
+import `in`.c1ph3rj.scanly.domain.model.previewImagePath
 import `in`.c1ph3rj.scanly.domain.model.ScanPage
 import `in`.c1ph3rj.scanly.domain.model.ShareArtifact
+import `in`.c1ph3rj.scanly.feature.components.CachedThumbnail
 import `in`.c1ph3rj.scanly.feature.components.PagePreview
 import `in`.c1ph3rj.scanly.feature.components.ScanlyImportProgressOverlay
 import `in`.c1ph3rj.scanly.core.ui.PreviewDisplaySize
@@ -169,6 +173,7 @@ fun DocumentDetailRoute(
     onOpenPageEditor: (String) -> Unit,
     onReplacePage: (String) -> Unit,
     onOpenText: (pageIndex: Int) -> Unit = {},
+    onOpenSign: (pageIndex: Int) -> Unit = {},
     viewModel: DocumentDetailViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -176,7 +181,7 @@ fun DocumentDetailRoute(
     val context = LocalContext.current
 
     val importImagesLauncher = rememberLauncherForActivityResult(
-        contract = ImageImportSupport.pickMultipleVisualMediaContract(),
+        contract = ImageImportSupport.pickImagesContract(),
     ) { uris ->
         if (uris.isNotEmpty()) {
             viewModel.importImages(uris)
@@ -207,6 +212,7 @@ fun DocumentDetailRoute(
         onOpenPageEditor = onOpenPageEditor,
         onReplacePage = onReplacePage,
         onOpenText = onOpenText,
+        onOpenSign = onOpenSign,
         onSelectPage = viewModel::selectPage,
         onMovePage = viewModel::movePage,
         onDeleteSelectedPage = viewModel::deleteSelectedPage,
@@ -250,6 +256,7 @@ fun DocumentDetailScreen(
     onRenameDocument: (String) -> Unit,
     onDeleteDocument: () -> Unit,
     onOpenText: (pageIndex: Int) -> Unit = {},
+    onOpenSign: (pageIndex: Int) -> Unit = {},
 ) {
     val windowSizeInfo = rememberWindowSizeInfo()
     val useMasterDetailLayout = windowSizeInfo.useTabletLandscapeLayout
@@ -428,6 +435,7 @@ fun DocumentDetailScreen(
                 menuEnabled = document != null,
                 onOpenText = { onOpenText(selectedPage?.pageIndex ?: 0) },
                 textEnabled = uiState.pages.isNotEmpty(),
+                onOpenSign = { onOpenSign(selectedPage?.pageIndex ?: 0) },
             )
         }
     ) { innerPadding ->
@@ -466,6 +474,7 @@ fun DocumentDetailScreen(
                 onPreviewPage = { pageId -> previewPageId = pageId },
                 density = density,
                 onOpenText = onOpenText,
+                onOpenSign = onOpenSign,
             )
         } else {
             Box(
@@ -709,6 +718,7 @@ fun DocumentDetailScreen(
 
     if (exportSheetVisible && document != null) {
         ExportShareSheet(
+            pageCount = uiState.pages.size,
             exportInProgress = uiState.isExporting,
             onDismiss = { exportSheetVisible = false },
             onSavePdf = {
@@ -838,6 +848,7 @@ private fun ReviewTopBar(
     menuEnabled: Boolean,
     onOpenText: () -> Unit,
     textEnabled: Boolean,
+    onOpenSign: () -> Unit,
 ) {
     var showMenu by remember { mutableStateOf(false) }
 
@@ -903,6 +914,17 @@ private fun ReviewTopBar(
                             onClick = {
                                 showMenu = false
                                 onOpenExportSheet()
+                            },
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Sign document") },
+                            leadingIcon = {
+                                Icon(Icons.Filled.Draw, contentDescription = null)
+                            },
+                            enabled = textEnabled,
+                            onClick = {
+                                showMenu = false
+                                onOpenSign()
                             },
                         )
                         DropdownMenuItem(
@@ -986,7 +1008,7 @@ private fun AddPageSheet(
             ExportActionRow(
                 icon = Icons.Filled.PhotoLibrary,
                 title = "Choose images",
-                description = "Pick up to ${ImageImportSupport.MAX_IMAGES_PER_IMPORT} photos from your device",
+                description = "Pick up to ${ImageImportSupport.MAX_IMAGES_PER_IMPORT} images from your files",
                 enabled = true,
                 onClick = onUploadImage,
             )
@@ -997,6 +1019,7 @@ private fun AddPageSheet(
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 private fun ExportShareSheet(
+    pageCount: Int,
     exportInProgress: Boolean,
     onDismiss: () -> Unit,
     onSavePdf: () -> Unit,
@@ -1009,6 +1032,16 @@ private fun ExportShareSheet(
         containerColor = { MaterialTheme.colorScheme.surface },
     ) {
         ScanlySheetContent {
+            if (`in`.c1ph3rj.scanly.feature.pip.LocalPipPreferences.current.showCelebrations && pageCount > 0) {
+                `in`.c1ph3rj.scanly.feature.pip.PipSays(
+                    line = `in`.c1ph3rj.scanly.feature.pip.PipLines.exportReady(pageCount),
+                    mood = `in`.c1ph3rj.scanly.feature.pip.PipMood.HAPPY,
+                    size = 48.dp,
+                    layout = `in`.c1ph3rj.scanly.feature.pip.PipLayout.BESIDE,
+                    bubbleMaxWidth = 260.dp,
+                    modifier = Modifier.padding(bottom = 4.dp),
+                )
+            }
             Text(
                 text = "Export & share",
                 style = MaterialTheme.typography.titleLarge,
@@ -1110,6 +1143,7 @@ private fun DocumentMasterDetailLayout(
     onPreviewPage: (String) -> Unit,
     density: Density,
     onOpenText: (pageIndex: Int) -> Unit,
+    onOpenSign: (pageIndex: Int) -> Unit,
 ) {
     Row(
         modifier = Modifier
@@ -1351,6 +1385,11 @@ private fun DocumentMasterDetailLayout(
                                         onClick = { onOpenText(selectedPage.pageIndex) },
                                     )
                                     PreviewActionButton(
+                                        icon = Icons.Filled.Draw,
+                                        contentDescription = "Sign document",
+                                        onClick = { onOpenSign(selectedPage.pageIndex) },
+                                    )
+                                    PreviewActionButton(
                                         icon = Icons.Filled.IosShare,
                                         contentDescription = "Share page",
                                         onClick = onShareSelectedPage,
@@ -1510,8 +1549,9 @@ private fun EmptyDocumentCard(
     onUploadImage: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    `in`.c1ph3rj.scanly.feature.components.IllustratedEmptyState(
-        illustrationRes = `in`.c1ph3rj.scanly.R.drawable.empty_pages_illustration,
+    `in`.c1ph3rj.scanly.feature.components.PipEmptyState(
+        pipLine = `in`.c1ph3rj.scanly.feature.pip.PipLines.DOCUMENT_NO_PAGES,
+        pipMood = `in`.c1ph3rj.scanly.feature.pip.PipMood.TALK,
         title = "No pages yet",
         description = "Scan a page or import up to ${ImageImportSupport.MAX_IMAGES_PER_IMPORT} images to begin this document.",
         actionLabel = "Scan a page",
@@ -1537,10 +1577,10 @@ private fun SelectedPageCard(
         page.createdAtMillis.toReadableDateTime()
     }
     val previewMaxHeight = 280.dp
+    // Surface(onClick) clips the ripple to the rounded shape; a clickable modifier did not.
     Surface(
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable(onClick = onPreview),
+        onClick = onPreview,
+        modifier = modifier.fillMaxWidth(),
         color = MaterialTheme.colorScheme.surfaceContainer,
         shape = MaterialTheme.shapes.large,
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
@@ -1708,7 +1748,9 @@ private fun ReviewToolButton(
         MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.58f)
     }
     Surface(
-        modifier = modifier.clickable(enabled = enabled, onClick = onClick),
+        onClick = onClick,
+        enabled = enabled,
+        modifier = modifier,
         color = resolvedContainerColor,
         shape = MaterialTheme.shapes.medium,
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
@@ -1761,7 +1803,8 @@ private fun PageOverviewTile(
 
     Surface(
         onClick = onClick,
-        modifier = modifier.clip(tileShape),
+        // No outer clip: it cut off the drag shadow. Surface(shape) already clips the ripple.
+        modifier = modifier,
         color = MaterialTheme.colorScheme.surfaceContainer,
         border = BorderStroke(width = tileBorderWidth, color = tileBorderColor),
         shape = tileShape,
@@ -1950,12 +1993,17 @@ private fun DocumentPagePaperPreview(
         tonalElevation = 0.dp,
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
-            PagePreview(
-                page = page,
-                displaySize = if (compact) PreviewDisplaySize.COMPACT else PreviewDisplaySize.CARD,
+            val displaySize = if (compact) PreviewDisplaySize.COMPACT else PreviewDisplaySize.CARD
+            CachedThumbnail(
+                thumbnailPath = page.previewImagePath(displaySize),
+                title = "Page ${page.pageIndex + 1}",
+                displaySize = displaySize,
+                contentRevision = page.updatedAtMillis,
                 modifier = Modifier.fillMaxSize(),
-                minHeight = if (compact) 48.dp else 88.dp,
-                aspectRatio = null,
+                shape = shape,
+                contentScale = ContentScale.Fit,
+                placeholderIcon = null,
+                containerColor = Color.White,
             )
             Surface(
                 modifier = Modifier
@@ -2136,9 +2184,8 @@ private fun PreviewActionButton(
     onClick: () -> Unit,
 ) {
     Surface(
-        modifier = Modifier
-            .size(44.dp)
-            .clickable(onClick = onClick),
+        onClick = onClick,
+        modifier = Modifier.size(48.dp),
         color = Color.Black.copy(alpha = 0.42f),
         contentColor = Color.White,
         shape = MaterialTheme.shapes.large,

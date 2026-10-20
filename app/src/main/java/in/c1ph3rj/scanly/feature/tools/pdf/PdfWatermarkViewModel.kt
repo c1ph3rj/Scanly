@@ -212,7 +212,6 @@ class PdfWatermarkViewModel @Inject constructor(
             }
             when (result) {
                 is ScanlyResult.Success -> {
-                    val previous = _uiState.value.watermarkPreview
                     _uiState.update {
                         it.copy(
                             watermarkPreview = result.value,
@@ -220,7 +219,6 @@ class PdfWatermarkViewModel @Inject constructor(
                             watermarkPreviewError = stampError,
                         )
                     }
-                    if (previous !== result.value) previous?.recycle()
                 }
                 is ScanlyResult.Failure -> _uiState.update {
                     it.copy(isWatermarkPreviewLoading = false, watermarkPreviewError = stampError)
@@ -232,16 +230,13 @@ class PdfWatermarkViewModel @Inject constructor(
     private fun recyclePreview() {
         previewJob?.cancel()
         previewRequestId += 1
-        val previous = _uiState.value.watermarkPreview
         _uiState.update {
             it.copy(watermarkPreview = null, isWatermarkPreviewLoading = false, watermarkPreviewError = null)
         }
-        previous?.recycle()
     }
 
     override fun onCleared() {
         previewJob?.cancel()
-        _uiState.value.watermarkPreview?.recycle()
         super.onCleared()
     }
 

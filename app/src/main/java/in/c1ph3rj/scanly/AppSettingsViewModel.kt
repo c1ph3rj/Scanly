@@ -3,8 +3,10 @@ package `in`.c1ph3rj.scanly
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import `in`.c1ph3rj.scanly.domain.model.PipPreferences
 import `in`.c1ph3rj.scanly.domain.model.ThemeMode
 import `in`.c1ph3rj.scanly.domain.usecase.DeleteLegacyArchiveLeftoversUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.ObservePipPreferencesUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObservePureBlackEnabledUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.RecordFirstSeenUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveThemeModeUseCase
@@ -18,6 +20,7 @@ import javax.inject.Inject
 class AppSettingsViewModel @Inject constructor(
     observeThemeModeUseCase: ObserveThemeModeUseCase,
     observePureBlackEnabledUseCase: ObservePureBlackEnabledUseCase,
+    observePipPreferencesUseCase: ObservePipPreferencesUseCase,
     private val deleteLegacyArchiveLeftoversUseCase: DeleteLegacyArchiveLeftoversUseCase,
     private val recordFirstSeenUseCase: RecordFirstSeenUseCase,
 ) : ViewModel() {
@@ -39,5 +42,11 @@ class AppSettingsViewModel @Inject constructor(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5_000),
         initialValue = false,
+    )
+
+    val pipPreferences: StateFlow<PipPreferences> = observePipPreferencesUseCase().stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5_000),
+        initialValue = PipPreferences(),
     )
 }

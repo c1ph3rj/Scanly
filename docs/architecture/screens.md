@@ -1,23 +1,30 @@
 ﻿# Screens and ViewModels
 
-Every feature screen in Scanly **v1.0.17** and its responsibilities.
+Every feature screen in Scanly **v1.0.18** and its responsibilities.
 
 ## Screen inventory
 
 | Feature | Screen | ViewModel | Route | Primary responsibilities |
 | --- | --- | --- | --- | --- |
-| Onboarding | `OnboardingScreen` | `OnboardingViewModel` | (gate in MainActivity) | First-run intro; persist completion |
-| Home | `HomeScreen` | `HomeViewModel` | `home` | Recent paper cards, scan/import/folder, suggest names, library shortcut |
+| Onboarding | `OnboardingScreen` | `OnboardingViewModel` | (gate in MainActivity) | First-run intro, then a camera-permission step when the camera is not yet allowed; persist completion |
+| Home | `HomeScreen` | `HomeViewModel` | `home` | Recent folders and documents (shimmer placeholders until the first load), scan/import/folder, suggest names, daily Pip tip, library shortcut |
 | Widgets / shortcuts | (system chrome) | `LaunchActionViewModel` | via `MainActivity` intents | Scan, Import, QR, Library redirects |
 | Library | `LibraryScreen` | `LibraryViewModel` | `library` | Paper cards, overflow/long-press actions, search, filter pills, sort, CRUD, suggest names |
+| Library search | `LibrarySearchScreen` | `LibrarySearchViewModel` | `library/search` | Search names and page text, recent searches, type filters, ranked excerpts |
+| Extracted text | `PageTextScreen` | `PageTextViewModel` | `document/{documentId}/text` | Read or correct recognized text; copy/share; show text regions on the scan |
 | Tools hub | `ToolsScreen` | `ToolsViewModel` | `tools` | Scan / PDF / Utilities groups; QR opens straight into scanning |
 | QR tool | `QrToolScreen` (+ `QrScanScreen`, `QrResultScreen`, `QrCreateScreen`, `QrHistoryScreen`) | `QrToolViewModel` | `tools/qr` | Scan with torch and photo import, typed results, Create types with caption and ink, on-phone history |
-| PDF reader | `PdfReaderRoute` | `PdfReaderViewModel` | `tools/pdf/reader` | Picker step, dark reader with one page counter, hideable chrome, Pages grid, Layout, Share |
+| PDF reader | `PdfReaderRoute` | `PdfReaderViewModel` | `tools/pdf/reader` | Picker step, dark reader with one page counter, hideable chrome, Pages grid, Layout; ⋮ menu (`PdfReaderOverflowMenu`) with Share, All pages, hand-off to each PDF tool, Open another PDF; also the target of Open in Scanly |
 | PDF merge | `PdfMergeRoute` | `PdfMergeViewModel` | `tools/pdf/merge` | Multi-select picker → order & name → done |
 | PDF compress | `PdfCompressRoute` | `PdfCompressViewModel` | `tools/pdf/compress` | Picker → quality → working → done with saving and before/after |
 | PDF password | `PdfPasswordRoute` | `PdfPasswordViewModel` | `tools/pdf/password` | Picker → Add password (strength, restrict editing) or Remove password, chosen by the file → done |
 | PDF watermark | `PdfWatermarkRoute` | `PdfWatermarkViewModel` | `tools/pdf/watermark` | Picker → editor with pinned live preview (presets, date, style, colour, pages) → done |
-| Group detail | `GroupDetailScreen` | `GroupDetailViewModel` | `group/{groupId}` | Membership, rename, delete, group export, create doc in group |
+| PDF to images | `PdfToImagesRoute` | `PdfToImagesViewModel` | `tools/pdf/to-images` | Picker → pages, JPG/PNG, Sharing or Print size → images in `Pictures/Scanly`, share all or some |
+| PDF signing | `PdfSignRoute` | `PdfSignViewModel` | `tools/pdf/sign` | Pick a PDF, place marks across pages, review, save or share a new signed PDF |
+| Scan signing | `DocumentSignRoute` + `SignEditorScreen` | `DocumentSignViewModel` | `document/{documentId}/sign` | Place editable marks on scan pages; update page composites and thumbnails |
+| Saved signatures | `SignatureManageRoute` | `SignatureManageViewModel` | `signatures/manage` | Review and delete saved signatures or initials |
+| Create signature | `SignatureCreateRoute` | `SignatureCreateViewModel` | `signatures/create?kind={kind}` | Draw a signature/initials or extract ink from an imported photo |
+| Group detail | `GroupDetailScreen` | `GroupDetailViewModel` | `group/{groupId}` | Membership (Add documents sheet with cover thumbnails and edited dates), rename, delete, group export, create doc in group |
 | Document detail | `DocumentDetailScreen` | `DocumentDetailViewModel` | `document/{documentId}` | Portrait page tiles, tap-to-review, long-press reorder, rename, import, export/save, move to group |
 | Scan session | `ScanSessionScreen` | `ScanSessionViewModel` | `camera/session/{docId}` | Camera permission (ask first), CameraX, gate + multi-model overlay, stability, auto-capture, finalize |
 | Page preview | `PageImagePreviewScreen` | `PageImagePreviewViewModel` | `preview/page/{pageId}` | Image-only paging, zoom, share/edit/retake/delete overflow |
@@ -26,7 +33,8 @@ Every feature screen in Scanly **v1.0.17** and its responsibilities.
 | Filter adjust | `FilterCustomizeScreen` | (shares `PageEditorViewModel`) | (editor overlay) | Brightness/contrast/saturation/sharpness sliders |
 | Page crop | `PageCropScreen` | `PageCropViewModel` | `crop/page/{pageId}` | AI detect, rotate, four-point crop handles, reset, apply |
 | Settings | `SettingsScreen` | `SettingsViewModel` | `settings` | Look & feel, document detection, links, manual update check |
-| Storage & backup | `StorageBackupScreen` | `SettingsViewModel` | `settings/storage` | Destination, usage, backup/restore progress, clear data |
+| Pip settings | `SettingsPipScreen` | `PipViewModel` | `settings/pip` | Pip master switch, Home tips, camera coaching, export cheers, animation |
+| Storage | `SettingsStorageScreen` | `SettingsViewModel` | `settings/storage` | Usage, export destination, clear temporary exports, clean empty items, clear data |
 | Model benchmark | `ModelBenchmarkRoute` | `ModelBenchmarkViewModel` | `settings/model-benchmark` | Per-image overview with polygon overlays on scaled previews for each corner model, plus gate/pipeline stats |
 | FAQs | `SettingsFaqScreen` | `SettingsViewModel` | `settings/faq` | Bundled FAQ content |
 | Licenses | `SettingsLicensesScreen` | `SettingsViewModel` | `settings/licenses` | Third-party license list |
@@ -110,11 +118,21 @@ Hosted in `MainActivity`, not tied to a single screen:
 - Live / post model observe+set, automatic selection, document gate use cases
 - `LoadSettingsContentUseCase`, `GetAppStorageUsageUseCase`
 - `ObserveExportDestinationUseCase`, `SetExportDestinationUseCase`, `ResetExportDestinationUseCase`
-- `EstimateLibraryBackupUseCase`, `StartLibraryBackupUseCase`, `StartLibraryRestoreUseCase`
-- `ObserveLibraryArchiveWorkUseCase`, `CancelLibraryArchiveWorkUseCase`
-- `ClearAllAppDataUseCase`
+- `ClearExportCacheUseCase`, `DeleteEmptyDocumentsUseCase`, `DeleteEmptyGroupsUseCase`, `ClearAllAppDataUseCase`
+- `ObserveRatingPromptStateUseCase`, `DismissSettingsRatingCardUseCase`, `MarkAppRatedUseCase`
 - `AutomaticDocumentModelSelector` for calibrated automatic picks
 - Triggers `AppUpdateViewModel.checkForUpdates(Manual)`
+
+### LibrarySearchViewModel and PageTextViewModel
+
+- Search combines document/folder name results with on-device page-text results, recent searches, ranking, filters, and correction suggestions.
+- `PageTextViewModel` loads extracted page text, saves corrections, and prepares page/all-page copy and share actions.
+
+### Signing ViewModels
+
+- `PdfSignViewModel` opens a PDF signing session, manages marks by page, and saves the signed PDF as a separate output.
+- `DocumentSignViewModel` loads and saves editable markups for a Scanly document; `SignEditorScreen` handles mark placement and editing.
+- `SignatureCreateViewModel` saves drawn/imported signature images; `SignatureManageViewModel` observes and deletes them.
 
 ### ModelBenchmarkViewModel
 
@@ -138,7 +156,7 @@ Hosted in `MainActivity`, not tied to a single screen:
 | `ScanlyChrome.kt` | Top bars, shared chrome |
 | `ThumbnailCache.kt` | In-memory thumbnail cache |
 | `PreviewImageSizer.kt` | Consistent preview dimensions |
-| `ImageImportSupport.kt` | Gallery picker (10 image limit) |
+| `ImageImportSupport.kt` | System file picker for images (50 image limit) |
 | `AdaptiveLayout.kt` | Phone vs tablet / width-class helpers |
 | `ZoomableImageDialog.kt` | Pinch-zoom preview (document detail) |
 | `ZoomableImageViewer.kt` | Pinch-zoom viewer (page preview) |

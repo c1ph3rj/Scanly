@@ -1,6 +1,6 @@
 # Use Cases
 
-All **73** use case classes under `domain/usecase/` (including `pdftools/` and `qr/`), grouped by area.
+Use case classes under `domain/usecase/` (including `pdftools/` and `qr/`), grouped by area.
 
 ViewModels call use cases. Use cases call repository interfaces (or thin processors).
 
@@ -60,15 +60,39 @@ ViewModels call use cases. Use cases call repository interfaces (or thin process
 | `PrepareGroupZippedPdfsShareUseCase` | Prepare zipped PDFs share |
 | `SaveExportArtifactUseCase` | Copy an export into the configured shared-storage base folder |
 
-## Library backup and restore
+## Page text and search
 
 | Use case | Purpose |
 | --- | --- |
-| `EstimateLibraryBackupUseCase` | Calculate source, required, and available destination bytes |
-| `StartLibraryBackupUseCase` | Enqueue a unique background `.scanly` backup |
-| `StartLibraryRestoreUseCase` | Enqueue validated Replace or Merge restore |
-| `ObserveLibraryArchiveWorkUseCase` | Observe WorkManager phase and progress |
-| `CancelLibraryArchiveWorkUseCase` | Cancel the active backup or restore |
+| `RecognizeDocumentTextUseCase` | Ensure all pages in a document have current text recognition |
+| `RecognizePageTextUseCase` | Recognize a page with the on-device ML Kit model |
+| `UpdatePageTextUseCase` | Persist user corrections to recognized text |
+| `SearchPageTextUseCase` | Search the page-text index and return matching pages |
+| `SuggestSearchCorrectionUseCase` | Suggest a correction from indexed page vocabulary |
+| `ObserveRecentSearchesUseCase` | Observe saved recent queries |
+| `AddRecentSearchUseCase` | Record a submitted query |
+| `RemoveRecentSearchUseCase` | Remove one recent query |
+| `ClearRecentSearchesUseCase` | Clear recent query history |
+
+## Document signing
+
+| Use case | Purpose |
+| --- | --- |
+| `ObserveSignaturesUseCase` | Observe saved signatures and initials |
+| `SaveSignatureUseCase` | Save a drawn or imported ink mask locally |
+| `ExtractSignatureInkUseCase` | Extract signature ink from an imported image |
+| `DeleteSignatureUseCase` | Delete a reusable signature |
+| `LoadDocumentMarkupsUseCase` | Load editable marks on a Scanly document's pages |
+| `SaveDocumentMarkupsUseCase` | Save mark changes and composite signed page images |
+| `OpenPdfSignSessionUseCase` | Open and inspect a PDF for signing |
+| `SignPdfUseCase` | Render marks into a new signed PDF |
+| `ClosePdfSignSessionUseCase` | Release a PDF signing session |
+
+## Legacy archive cleanup
+
+| Use case | Purpose |
+| --- | --- |
+| `DeleteLegacyArchiveLeftoversUseCase` | Remove leftover temporary files from the retired backup/restore flow during upgrade |
 
 ## Settings and app data
 
@@ -89,11 +113,14 @@ ViewModels call use cases. Use cases call repository interfaces (or thin process
 | `ObserveExportDestinationUseCase` | Flow of the configured export base folder |
 | `SetExportDestinationUseCase` | Persist a custom SAF base folder |
 | `ResetExportDestinationUseCase` | Return to `Downloads/Scanly` |
+| `ClearExportCacheUseCase` | Remove temporary generated exports |
+| `DeleteEmptyDocumentsUseCase` / `DeleteEmptyGroupsUseCase` | Clean empty library items |
 | `LoadSettingsContentUseCase` | Load FAQs and licenses |
 | `ObserveOnboardingCompletedUseCase` | Flow of onboarding flag |
 | `CompleteOnboardingUseCase` | Mark onboarding done |
 | `GetAppStorageUsageUseCase` | Calculate storage byte counts |
 | `ClearAllAppDataUseCase` | Wipe all local data |
+| `ObserveRatingPromptStateUseCase`, `DismissSettingsRatingCardUseCase`, `MarkAppRatedUseCase` | Manage Settings rating-card state |
 
 ## Tools — QR
 

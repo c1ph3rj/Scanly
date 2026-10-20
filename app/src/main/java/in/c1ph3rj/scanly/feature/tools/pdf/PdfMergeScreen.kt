@@ -73,6 +73,7 @@ private enum class MergeStep { Pick, Order, Working, Done }
 fun PdfMergeRoute(
     onNavigateUp: () -> Unit,
     onPreviewPdf: (ExportArtifact) -> Unit,
+    initialSource: PdfToolSource? = null,
 ) {
     val viewModel: PdfMergeViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -88,6 +89,16 @@ fun PdfMergeRoute(
     }
     fun goTo(target: MergeStep) {
         requestedStep = target.name
+    }
+
+    // Opened from the reader's menu with that PDF: skip the picker, and back returns to the reader.
+    val fromReader = initialSource != null
+    var initialSourceApplied by rememberSaveable { mutableStateOf(false) }
+    LaunchedEffect(initialSource) {
+        if (initialSource != null && !initialSourceApplied) {
+            initialSourceApplied = true
+            viewModel.addInitialSource(initialSource)
+        }
     }
 
     val devicePicker = rememberMultiPdfPicker { uris ->
@@ -233,7 +244,7 @@ private fun DeviceFileRows(
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                     )
-                    IconButton(onClick = { onRemove(index) }, modifier = Modifier.size(44.dp)) {
+                    IconButton(onClick = { onRemove(index) }, modifier = Modifier.size(48.dp)) {
                         Icon(
                             Icons.Filled.Close,
                             contentDescription = "Remove ${file.displayName}",
@@ -381,18 +392,18 @@ private fun MergeOrderRow(
             IconButton(
                 onClick = onMoveUp,
                 enabled = index > 0,
-                modifier = Modifier.size(44.dp),
+                modifier = Modifier.size(48.dp),
             ) {
                 Icon(Icons.Filled.KeyboardArrowUp, contentDescription = "Move $name up")
             }
             IconButton(
                 onClick = onMoveDown,
                 enabled = index < count - 1,
-                modifier = Modifier.size(44.dp),
+                modifier = Modifier.size(48.dp),
             ) {
                 Icon(Icons.Filled.KeyboardArrowDown, contentDescription = "Move $name down")
             }
-            IconButton(onClick = onRemove, modifier = Modifier.size(44.dp)) {
+            IconButton(onClick = onRemove, modifier = Modifier.size(48.dp)) {
                 Icon(Icons.Filled.Close, contentDescription = "Remove $name")
             }
         }

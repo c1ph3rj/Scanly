@@ -55,17 +55,17 @@ Existing migrations: `1→2` (preferred filter preset on documents), `2→3` (do
 Do not change on-disk paths without a migration plan:
 
 ```
-files/documents/{documentId}/raw|processed|thumbs/
+files/documents/{documentId}/raw|processed|markups|thumbs/
+files/signatures/{signatureId}/ink.png
 cache/exports/
-cache/library-archive/
-files/library-archive-journal/
+cache/library-archive/              # Legacy workspace cleaned during upgrade
+files/library-archive-journal/      # Legacy journal cleaned during upgrade
 ```
 
 User-visible paths (via MediaStore or SAF):
 
 ```
-Downloads/Scanly/           # Default export base
-Downloads/Scanly/backup/    # Reserved for .scanly library archives
+Downloads/Scanly/           # Default export base; backup/ is no longer created
 ```
 
 ## Dependency management

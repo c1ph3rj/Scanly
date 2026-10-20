@@ -1,13 +1,14 @@
 ﻿# Implementation Snapshot
 
-One-page technical summary of Scanly **v1.0.17**. For detail see the full docs index at [../README.md](../README.md).
+One-page technical summary of Scanly **v1.0.18**. For detail see the full docs index at [../README.md](../README.md).
 
 ## Release
 
 | Field | Value |
 | --- | --- |
-| Version | `1.0.17` (code `17`) |
-| Room schema | `5` (`MIGRATION_4_5`, shipped in `1.0.17`) |
+| Version | `1.0.18` (code `18`) |
+| Room schema | `7` (`MIGRATION_5_6` page text; `MIGRATION_6_7` signatures and markups) |
+| Release date | `2026-10-20` |
 | Min SDK | 29 |
 | Target SDK | 36 |
 | Module | `:app` only |
@@ -17,9 +18,9 @@ One-page technical summary of Scanly **v1.0.17**. For detail see the full docs i
 
 ```
 ScanlyApplication (WorkManager + Hilt)
-  → MainActivity → onboarding gate → ScanlyNavHost (+ widget/shortcut launch actions)
+  → MainActivity → onboarding gate → ScanlyNavHost (+ widget/shortcut launch actions, Open in Scanly for PDFs)
   feature/ (UI + ViewModels)
-    → domain/usecase/ (73 use case classes)
+    → domain/usecase/
       → domain/repository/ (interfaces)
         → data/ (implementations)
           → core/ (ML, OpenCV, utils)
@@ -27,16 +28,16 @@ ScanlyApplication (WorkManager + Hilt)
 
 ## Features (summary)
 
-Home · Library (paper cards, overflow actions) · Tools (QR, PDF toolkit studio chrome) · Camera scan + permission-ask-first + gate + multi-model overlay · Gallery import · Document detail (portrait page tiles) · Page preview · **Page editor** (live cropped preview; full-screen Filters + Adjust; dedicated Crop with AI Detect) · Groups · PDF reader (title, page n of m, paged/continuous, pinch-zoom) · PDF/ZIP export with save destination · Library backup/restore (`.scanly`) · Document detection settings + model benchmark · Pure black theme · Onboarding · **Home widgets + launcher quick actions** · GitHub/Play update channels
+Home (shimmer loading) · Pip helper with camera coaching and daily tips · Library and folder management · on-device OCR, extracted-text views, and full-text search · Tools (QR, PDF toolkit incl. PDF to images; reader hands its file to any tool) · Open PDFs from other apps · Sign PDFs and scanned pages, with reusable signatures · Camera scan + document gate + multi-model detection · Gallery import · Page preview/editor/crop/filter/adjust · Groups · PDF/ZIP export with save destination · Storage cleanup (library backup/restore retired) · Document detection settings + model benchmark · Pure black theme · Onboarding · Home widgets + launcher quick actions · GitHub/Play update channels
 
 ## Data
 
-- **Room v5:** `documents`, `scan_pages` (+ filter adjustment and `filterIntensity` columns), `document_groups`
-- **Files:** `raw/` (immutable), `processed/`, `thumbs/` per document
-- **DataStore:** theme, pure black, onboarding, export destination, live/post models, automatic selection, document gate
-- **Export cache:** `cache/exports/`
-- **Backup workspace:** `cache/library-archive/`, `files/library-archive-journal/`
-- **User-visible:** `Downloads/Scanly/` exports + `Downloads/Scanly/backup/` archives (or custom SAF tree)
+- **Room v7:** documents, pages, groups, page text + FTS4, saved signatures, and editable page markups
+- **Files:** `raw/` (immutable), `processed/`, optional clean `.base.jpg`, page-owned `markups/`, and `thumbs/` per document; reusable ink under `files/signatures/`
+- **DataStore:** theme, pure black, onboarding, export destination, live/post models, automatic selection, document gate, Pip preferences (`pip_*`)
+- **Export cache:** `cache/exports/`; PDFs opened from other apps are copied to `cache/incoming_pdf/` (newest few kept)
+- **Legacy cleanup:** leftover archive workspace files under `cache/library-archive/` and `files/library-archive-journal/` are cleaned after backup/restore removal
+- **User-visible:** `Downloads/Scanly/` exports (or a custom SAF tree); library backup/restore is no longer available
 
 ## Processing
 
@@ -54,6 +55,8 @@ Raw JPEG
 
 Corner models: Lite (224) · Standard (288) · High (384) · Accurate (YOLO-pose). Gate: MobileNetV3-Small 160 px float16.
 
+Page-text recognition uses bundled ML Kit Text Recognition v2 on-device; `TextIndexWorker` fills the FTS4 index in the background.
+
 ## Editor surfaces
 
 | Surface | Route / host | Notes |
@@ -62,18 +65,21 @@ Corner models: Lite (224) · Standard (288) · High (384) · Accurate (YOLO-pose
 | Filter picker | Editor overlay | Live preview + presets |
 | Filter adjust | Editor overlay | Sliders + Compare + scrollbar |
 | Crop | `crop/page/{pageId}` | AI Detect, rotate, handles, Reset |
+| Extracted text | `document/{documentId}/text` | Text / On page views, corrections, copy and share |
+| Sign scan | `document/{documentId}/sign` | Editable marks composited onto page images |
+| Sign PDF | `tools/pdf/sign?source={source}` | Sign a device or library PDF and save/share a new file |
 
 ## Background work
 
-`LibraryArchiveWorker` — unique foreground WorkManager job (`scanly-library-archive`) for backup/restore with `dataSync` service type.
+`TextIndexWorker` — WorkManager job that indexes pages with pending or stale OCR text; it requires battery-not-low and uses bundled on-device recognition.
 
 ## Stack
 
-Kotlin · Compose · Material 3 · Hilt · Navigation Compose · CameraX · Room · DataStore · WorkManager · LiteRT · OpenCV · PdfBox-Android · Play App Update · Coroutines/Flow
+Kotlin · Compose · Material 3 · Hilt · Navigation Compose · CameraX · Room · DataStore · WorkManager · ML Kit Text Recognition v2 · LiteRT · OpenCV · PdfBox-Android · Play App Update · Coroutines/Flow
 
 ## Tests
 
-50 unit-test classes plus in-memory fakes · 4 instrumented-test classes (device UI on `MainActivity`, onboarding Compose, OpenCV filter engine, package smoke) · remaining gaps: Room round-trips, real PDF/ZIP/`.scanly` I/O, live camera
+83 JVM test source files (including in-memory fakes) · 6 instrumented-test source files · new unit coverage for signature ink, mark geometry/codec, and editor state · remaining gaps: Room round-trips, real PDF/ZIP I/O, live camera
 
 ## Principles
 

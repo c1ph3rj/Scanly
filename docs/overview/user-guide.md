@@ -4,9 +4,11 @@ How end users interact with Scanly. This describes app behavior, not implementat
 
 ## First launch
 
-1. App opens to the **onboarding** intro screen.
-2. User completes onboarding → lands on **Home**.
-3. On subsequent launches, onboarding is skipped.
+1. App opens to the **onboarding** intro screen, where Pip says hello.
+2. Tap **Get started**. If the camera is not allowed yet, a short step explains why Scanly needs it and asks for access. **Maybe later** always continues; the step is skipped when the camera is already allowed.
+3. You land on **Home**. On later launches, onboarding is skipped.
+
+While Home loads your library, shimmering placeholders stand in for folders and documents.
 
 ## Scanning a new document
 
@@ -15,16 +17,16 @@ How end users interact with Scanly. This describes app behavior, not implementat
 Home quick actions are **Scan**, **Import**, and **Folder**. Only **Scan** opens the camera.
 
 1. Tap **Scan**. A suggested name is already filled in. Keep it, tap the clear icon to type your own, or tap **Suggest name** to cycle formats, then the camera session opens.
-2. The first time, Android asks for camera access. If you deny, Scanly stays on an in-app prompt so you can allow it again. If you block camera permanently, Scanly explains that and offers **Open Settings** — it does not jump to Settings on first open.
+2. If you skipped the camera step in onboarding, Android asks for camera access now. If you deny, Scanly stays on an in-app prompt (an empty viewfinder with Pip) so you can allow it again. If you block camera permanently, Scanly spells out how to allow it in **Settings** — it does not jump to Settings on first open.
 3. Point the camera at a **physical** document. Scanly filters out many phone screens and non-document rectangles before drawing edges.
 4. Live overlay shows detected page edges and quality hints. For open books, frame a single dominant page when possible.
-5. Tap capture (or use auto-capture when stable).
-6. Capture additional pages or finish the session.
+5. Tap the shutter ring (or leave **AUTO** on to capture when the page is steady). Pip's line at the bottom of the preview coaches you — edges found, hold steady, too dark, blurry, lens covered — and shows the countdown.
+6. Capture additional pages, or tap **Done** to open the document.
 7. App navigates to **document detail** with all captured pages.
 
-**Import** opens the gallery picker (up to 10 images; see below). **Folder** opens folder creation with a suggested name.
+**Import** opens the gallery picker (up to 50 images; see below). **Folder** opens folder creation with a suggested name.
 
-Home shows the four most recently updated documents. Tap a row to open it, or **See all** to browse the full Library. Recent files and folders use the same presentation as Library.
+Home shows **New folder**, up to three recent folders (plus **View all** when there are more), and the four most recently updated documents. Tap a row to open it, or **See all** to browse the full Library. Recent files and folders use the same presentation as Library. A closable Pip tip may appear under the greeting once a day.
 
 ### From Library
 
@@ -39,7 +41,7 @@ The list layout joins compact rows on one shared card background with internal d
 ### Start a new document
 
 1. On **Home**, choose **Import from gallery** in the FAB menu.
-2. Select up to 10 images.
+2. Select up to 50 images in the file picker.
 3. Each image is processed through the same pipeline as a camera capture.
 4. Land on **document detail** with imported pages.
 
@@ -87,7 +89,7 @@ From **document detail**:
 ### Add documents to a group
 
 - From **document detail** → assign to a group.
-- From **group detail** → add existing documents.
+- From **group detail** → **Add documents**. Create a new document inside the folder, or tick documents that are not in a folder yet and tap **Add** (the button counts your selection, e.g. "Add 2 documents"). Each row shows the document's cover page, page count, and when it was last edited (for example "7 pages · Today, 3:35 pm"), so similar names are easy to tell apart. **Select all** / **Clear** toggles every row.
 
 ### Browse a group
 
@@ -132,16 +134,41 @@ From **group detail**:
 
 Merged and zipped group PDFs use the same advanced PDF options. In a merged PDF, page numbering runs continuously across the group. In a ZIP, numbering restarts at 1 in each document.
 
-Saved exports go to `Downloads/Scanly` by default. Change the base folder from **Settings → Storage & backup**. Scanly creates unique filenames rather than replacing an existing export.
+Saved exports go to `Downloads/Scanly` by default. Change the base folder from **Settings → Storage**. Scanly creates unique filenames rather than replacing an existing export.
 
 ## Library search and sort
 
 1. Open **Library**.
 2. Documents and folders show a page-shaped cover, title, and compact metadata (page count and date, or document/page counts for folders).
 3. Tap a card to open it. Rename, move, delete, or remove-from-folder are on the card’s overflow menu or a long-press menu — not as always-visible icon rows.
-4. Type in the search field to filter documents and groups by title.
-5. Switch filter pills: **All**, **Folders**, **Documents**.
-6. Change sort order (name or date, ascending or descending).
+4. Type in the search field to find documents and groups by title or words on scanned pages.
+5. In the dedicated search screen, choose **Everywhere**, **Names**, or **Text in pages** and optionally filter by document type.
+6. Tap a page-text excerpt to open extracted text at that page. Results show a matching excerpt and page number.
+7. Change sort order (name or date, ascending or descending) in the Library.
+
+### Read and correct extracted text
+
+1. Open a page-text search result, or choose **Extract text** from a document or page action.
+2. Use **Text** to read and select recognized text, or **On page** to see text regions over the scan.
+3. Copy or share a page or all pages. Edit recognition when needed; corrections are kept and used in later searches.
+
+Page text is recognized on-device with a bundled ML Kit model. Existing pages are indexed in the background after upgrade; search indicates when indexing is still in progress.
+
+## Sign documents
+
+### Sign a PDF
+
+1. Open **Tools → PDF → Sign** and choose a PDF from the phone or the Scanly library.
+2. Add a saved signature or initials, text, today's date, or a checkbox. Move or resize marks, choose an ink colour, and repeat on other pages as needed.
+3. Review the signed PDF, set its output name, then **Save to phone** or **Share**. The source PDF is not changed.
+
+### Sign a Scanly document
+
+1. Open the document and choose **Sign document**.
+2. Place and edit marks on its pages, then save. Marks appear in previews, thumbnails, and exports and remain editable if you reopen Sign.
+3. Crop, filter, and retake edits preserve placed marks.
+
+Create a reusable signature or initials by drawing on the signature pad, or import a photo and extract its ink. Saved signatures stay on this device.
 
 ## Settings
 
@@ -153,6 +180,12 @@ The main Settings list is a short hub. Open a row for the full controls.
 2. Choose **System**, **Light**, or **Dark**. Applied immediately and persisted.
 3. Optionally enable **Pure black** for true black surfaces in dark theme (helps battery on AMOLED displays).
 
+### Pip, your helper
+
+1. Open **Settings → Pip, your helper**.
+2. Turn Pip off entirely (screens fall back to plain text), or keep Pip and choose **Home tips**, **camera coaching**, **export cheers**, and **animation** separately.
+3. Pip stays still when system animations are turned off.
+
 ### Document detection
 
 1. Open **Settings → Document detection**.
@@ -162,27 +195,16 @@ The main Settings list is a short hub. Open a row for the full controls.
 
 ### Storage usage
 
-Open **Settings → Storage & backup** to view library, export-cache, database, and archive-workspace usage, clean empty items, or clear all data.
+Open **Settings → Storage** to view library, export-cache, and database usage, clear temporary exports, clean empty items, or clear all data.
 
 ### Save location
 
-1. Open **Settings → Storage & backup**.
+1. Open **Settings → Storage**.
 2. Tap **Change folder** and grant Scanly persistent access to a base folder.
-3. Normal exports are saved in that folder; backups are kept in its lowercase `backup` child.
-4. Tap **Reset default** to return to `Downloads/Scanly` and `Downloads/Scanly/backup`.
+3. Exports are saved in the selected folder.
+4. Tap **Reset default** to return to `Downloads/Scanly`.
 
-### Back up the library
-
-1. Open **Settings → Storage & backup** and wait for the size/free-space check.
-2. **Back up library** is enabled only when the destination is writable and has enough reported space.
-3. Confirm the privacy and duration warning. Scanly continues in the background and shows progress.
-4. The result is an exact `Scanly-library-*.scanly` snapshot in the `backup` folder. Compression is not encryption.
-
-### Restore a backup
-
-1. Tap **Restore**. Scanly opens the configured `backup` folder; select a `.scanly` file.
-2. Choose **Merge as copies** to preserve current items, or **Replace current library**.
-3. Scanly validates checksums, paths, relationships, format version, and staging space before committing changes.
+Library backup and restore are not available in v1.0.18.
 
 ### Clear all data
 
@@ -219,7 +241,7 @@ Long-press the Scanly app icon to open shortcuts for **Scan**, **QR**, **Import*
 | Action | Result |
 | --- | --- |
 | Scan | Creates a document with a suggested title and opens the camera session |
-| Import | Opens the photo picker (up to 10 images) and creates an imported document |
+| Import | Opens the file picker (up to 50 images) and creates an imported document |
 | QR | Opens Tools → QR in scan mode |
 | Library | Opens the Library tab |
 
@@ -232,13 +254,19 @@ Open the **Tools** tab for QR and offline PDF utilities. Pick a PDF from the dev
 | Tool | What you do |
 | --- | --- |
 | QR | **Scan** a code (copy or open a link) or **Create** one from a URL or message |
-| Reader | Read a PDF with the full title, page n of m, page-by-page or continuous scroll, pinch-zoom, and tap to hide the bars |
+| Reader | Read a PDF with the full title, page n of m, page-by-page or continuous scroll, pinch-zoom, and tap to hide the bars. The ⋮ menu shares the file, jumps to **All pages**, opens it in any PDF tool below (Back returns to the reader), or opens another PDF |
 | Merge | Add two or more PDFs in listed order, then combine them |
 | Compress | Choose High / Balanced / Smallest quality, then reduce file size |
 | Password | **Protect** or **Remove** an open password |
 | Watermark | Stamp text with layout, size, pages, orientation, and opacity |
+| PDF to images | Choose pages, JPG or PNG, and **Sharing** (1240 px) or **Print** (2480 px, 300 dpi A4) size. Images save to Pictures/Scanly; share them all at once or a few at a time |
+| Sign | Place signatures, initials, text, dates, and checkboxes on a PDF, then save or share it |
 
 When a PDF is ready, preview it in Scanly, then save or share.
+
+### Open PDFs from other apps
+
+In Files, Gmail, Drive, WhatsApp, or any app that opens or shares PDFs, choose **Open in Scanly**. The PDF opens in Scanly's reader, where the ⋮ menu offers every PDF tool. Scanly works on a copy; the original file is never changed.
 
 ## Permissions
 
@@ -246,7 +274,6 @@ When a PDF is ready, preview it in Scanly, then save or share.
 | --- | --- |
 | Camera | Scanning documents and QR codes. Scanly asks the system first; Settings is only after a permanent block |
 | Internet | Optional update check only |
-| Notifications | Background backup/restore progress on Android 13+; declining does not block the operation |
 
 Camera is optional at the hardware level — the app installs on devices without a camera but scanning requires one.
 

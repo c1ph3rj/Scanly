@@ -320,8 +320,9 @@ class DocumentDetailViewModel @Inject constructor(
                         _events.emit(
                             DocumentDetailEvent.ShowMessage(
                                 ImageImportSupport.importResultMessage(
-                                    importedCount = cappedSelection.items.size,
+                                    importedCount = result.value.importedCount,
                                     truncated = cappedSelection.truncated,
+                                    skippedCount = result.value.skippedCount,
                                 ),
                             ),
                         )

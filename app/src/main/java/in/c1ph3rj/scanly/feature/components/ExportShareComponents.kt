@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.selection.toggleable
+import androidx.compose.ui.semantics.Role
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
@@ -512,7 +514,10 @@ private fun PdfPasswordSection(
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                // Label is part of the switch's tap target, not just the 52dp switch.
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .toggleable(value = enabled, role = Role.Switch, onValueChange = onProtectionChanged),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
@@ -539,7 +544,7 @@ private fun PdfPasswordSection(
                 }
                 Switch(
                     checked = enabled,
-                    onCheckedChange = onProtectionChanged,
+                    onCheckedChange = null,
                 )
             }
 

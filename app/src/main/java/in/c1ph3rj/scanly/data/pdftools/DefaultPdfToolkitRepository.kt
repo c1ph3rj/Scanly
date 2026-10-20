@@ -8,7 +8,9 @@ import android.net.Uri
 import android.os.ParcelFileDescriptor
 import com.tom_roush.pdfbox.android.PDFBoxResourceLoader
 import com.tom_roush.pdfbox.pdmodel.PDDocument
+import com.tom_roush.pdfbox.pdmodel.PDPage
 import com.tom_roush.pdfbox.pdmodel.PDPageContentStream
+import com.tom_roush.pdfbox.pdmodel.common.PDRectangle
 import com.tom_roush.pdfbox.pdmodel.encryption.AccessPermission
 import com.tom_roush.pdfbox.pdmodel.encryption.InvalidPasswordException
 import com.tom_roush.pdfbox.pdmodel.encryption.StandardProtectionPolicy
@@ -21,18 +23,31 @@ import `in`.c1ph3rj.scanly.domain.model.ExportArtifact
 import `in`.c1ph3rj.scanly.domain.model.PdfCompressQuality
 import `in`.c1ph3rj.scanly.domain.model.PdfDocumentInfo
 import `in`.c1ph3rj.scanly.domain.model.PdfExportOptions
+import `in`.c1ph3rj.scanly.domain.model.PdfImageExport
+import `in`.c1ph3rj.scanly.domain.model.PdfImageFormat
+import `in`.c1ph3rj.scanly.domain.model.PdfImageOptions
+import `in`.c1ph3rj.scanly.domain.model.PdfPageImage
+import `in`.c1ph3rj.scanly.domain.model.PdfSignSession
 import `in`.c1ph3rj.scanly.domain.model.PdfToolSource
+import `in`.c1ph3rj.scanly.domain.model.PdfWorkingCopy
+import `in`.c1ph3rj.scanly.domain.model.SignMark
+import `in`.c1ph3rj.scanly.domain.model.SignPageSize
 import `in`.c1ph3rj.scanly.domain.model.WatermarkOptions
 import `in`.c1ph3rj.scanly.domain.model.WatermarkPageRange
+import `in`.c1ph3rj.scanly.data.storage.SharedStorageDestinationManager
 import `in`.c1ph3rj.scanly.domain.repository.DocumentExportRepository
 import `in`.c1ph3rj.scanly.domain.repository.PdfToolkitRepository
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
+import java.io.OutputStream
 import java.util.UUID
+import kotlin.coroutines.coroutineContext
+import kotlin.math.sqrt
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -40,6 +55,7 @@ import javax.inject.Singleton
 class DefaultPdfToolkitRepository @Inject constructor(
     @ApplicationContext private val context: Context,
     private val documentExportRepository: DocumentExportRepository,
+    private val storageDestinationManager: SharedStorageDestinationManager,
     private val dispatchers: ScanlyDispatchers,
 ) : PdfToolkitRepository {
 
@@ -334,6 +350,121 @@ class DefaultPdfToolkitRepository @Inject constructor(
             file
         }
 
+    override suspend fun openSignSession(
+        source: PdfToolSource,
+        password: String?,
+    ): ScanlyResult<PdfSignSession> = withContext(dispatchers.io) {
+        runCatching {
+            ensurePdfBox()
+            val file = File(toolsDir(), "sign_${UUID.randomUUID()}.pdf")
+            val imageSource = (source as? PdfToolSource.DeviceUri)?.takeIf { it.isImage() }
+            if (imageSource != null) {
+                val size = writeImageAsPdf(Uri.parse(imageSource.uriString), file)
+                return@runCatching PdfSignSession(
+                    file = PdfToolSource.AppFile(file.absolutePath, source.displayLabel()),
+                    pageSizes = listOf(size),
+                )
+            }
+            val pageSizes = resolveLocalFile(source).useFile { local ->
+                openDocument(local, password).use { document ->
+                    require(document.numberOfPages > 0) { "This PDF has no pages." }
+                    if (document.isEncrypted) {
+                        document.setAllSecurityToBeRemoved(true)
+                    }
+                    val sizes = document.pages.map { page ->
+                        val box = page.cropBox ?: page.mediaBox
+                        val (width, height) = WatermarkGeometry.visualSize(box.width, box.height, page.rotation)
+                        SignPageSize(width, height)
+                    }
+                    // One decrypted local copy for the whole editing session: page renders read
+                    // it in place instead of re-copying or re-exporting the source each time.
+                    document.save(file)
+                    sizes
+                }
+            }
+            PdfSignSession(
+                file = PdfToolSource.AppFile(file.absolutePath, source.displayLabel()),
+                pageSizes = pageSizes,
+            )
+        }.toScanlyResult("Could not open this PDF for signing.")
+    }
+
+    private fun PdfToolSource.DeviceUri.isImage(): Boolean =
+        context.contentResolver.getType(Uri.parse(uriString))?.startsWith("image/") == true
+
+    /**
+     * Wraps a picked photo/scan in a one-page PDF so it can be signed like any PDF. The page is
+     * sized like Scanly's PDF export (long edge 842 pt, A4 height) with the image filling it.
+     */
+    private fun writeImageAsPdf(uri: Uri, target: File): SignPageSize {
+        val source = android.graphics.ImageDecoder.createSource(context.contentResolver, uri)
+        val decoded = android.graphics.ImageDecoder.decodeBitmap(source) { decoder, info, _ ->
+            decoder.allocator = android.graphics.ImageDecoder.ALLOCATOR_SOFTWARE
+            val longEdge = maxOf(info.size.width, info.size.height)
+            if (longEdge > MaxImagePageEdgePx) {
+                val scale = MaxImagePageEdgePx.toFloat() / longEdge
+                decoder.setTargetSize(
+                    (info.size.width * scale).toInt().coerceAtLeast(1),
+                    (info.size.height * scale).toInt().coerceAtLeast(1),
+                )
+            }
+        }
+        // Flatten any transparency onto white paper before JPEG encoding.
+        val flat = Bitmap.createBitmap(decoded.width, decoded.height, Bitmap.Config.ARGB_8888)
+        android.graphics.Canvas(flat).apply {
+            drawColor(Color.WHITE)
+            drawBitmap(decoded, 0f, 0f, null)
+        }
+        decoded.recycle()
+        val scale = ImagePageLongEdgePt / maxOf(flat.width, flat.height)
+        val width = flat.width * scale
+        val height = flat.height * scale
+        try {
+            PDDocument().use { document ->
+                val page = PDPage(PDRectangle(width, height))
+                document.addPage(page)
+                val image = JPEGFactory.createFromByteArray(document, flat.toJpegBytes(ImagePageJpegQuality))
+                PDPageContentStream(document, page).use { stream -> stream.drawImage(image, 0f, 0f, width, height) }
+                document.save(target)
+            }
+        } finally {
+            flat.recycle()
+        }
+        return SignPageSize(width, height)
+    }
+
+    override suspend fun sign(
+        session: PdfSignSession,
+        marks: List<SignMark>,
+    ): ScanlyResult<ExportArtifact> = withContext(dispatchers.io) {
+        runCatching {
+            require(marks.isNotEmpty()) { "Place a signature or another mark first." }
+            ensurePdfBox()
+            resolveLocalFile(session.file).useFile { local ->
+                val output = newOutputFile("signed")
+                openDocument(local, null).use { document ->
+                    val stamper = PdfSignatureStamper(document)
+                    stamper.validate(marks)
+                    marks.groupBy { it.pageIndex }.forEach { (pageIndex, pageMarks) ->
+                        require(pageIndex in 0 until document.numberOfPages) { "A mark is on a missing page." }
+                        stamper.stamp(document.getPage(pageIndex), pageMarks)
+                    }
+                    document.save(output)
+                }
+                artifact(output)
+            }
+        }.toScanlyResult("Could not sign this PDF.")
+    }
+
+    override suspend fun closeSignSession(session: PdfSignSession) {
+        withContext(dispatchers.io) {
+            val file = File(session.file.filePath)
+            if (file.parentFile?.canonicalFile == toolsDir().canonicalFile && file.name.startsWith("sign_")) {
+                file.delete()
+            }
+        }
+    }
+
     override suspend fun renderPage(
         source: PdfToolSource,
         pageIndex: Int,
@@ -363,6 +494,170 @@ class DefaultPdfToolkitRepository @Inject constructor(
                 }
             }
         }.toScanlyResult("Could not render PDF page.")
+    }
+
+    override suspend fun openWorkingCopy(
+        source: PdfToolSource,
+        password: String?,
+    ): ScanlyResult<PdfWorkingCopy> = withContext(dispatchers.io) {
+        runCatching {
+            ensurePdfBox()
+            val file = File(toolsDir(), "work_${UUID.randomUUID()}.pdf")
+            try {
+                val pageCount = resolveLocalFile(source).useFile { local ->
+                    openDocument(local, password).use { document ->
+                        require(document.numberOfPages > 0) { "This PDF has no pages." }
+                        if (document.isEncrypted) {
+                            document.setAllSecurityToBeRemoved(true)
+                            document.save(file)
+                        } else {
+                            // A byte copy keeps the file exactly as authored and skips a slow re-save.
+                            local.copyTo(file, overwrite = true)
+                        }
+                        document.numberOfPages
+                    }
+                }
+                // Some files PDFBox accepts still trip PdfRenderer; a PDFBox re-save fixes those.
+                val renderable = unlockForRendererIfNeeded(file, null)
+                if (renderable != file) {
+                    file.delete()
+                    check(renderable.renameTo(file)) { "Could not prepare this PDF." }
+                }
+                PdfWorkingCopy(
+                    file = PdfToolSource.AppFile(file.absolutePath, source.displayLabel()),
+                    pageCount = pageCount,
+                )
+            } catch (error: Throwable) {
+                file.delete()
+                throw error
+            }
+        }.toScanlyResult("Could not open this PDF.")
+    }
+
+    override suspend fun closeWorkingCopy(copy: PdfWorkingCopy) {
+        withContext(dispatchers.io) {
+            val file = File(copy.file.filePath)
+            if (file.parentFile?.canonicalFile == toolsDir().canonicalFile && file.name.startsWith("work_")) {
+                file.delete()
+            }
+        }
+    }
+
+    override suspend fun estimatePageImageBytes(
+        copy: PdfWorkingCopy,
+        pageIndex: Int,
+        options: PdfImageOptions,
+    ): ScanlyResult<Long> = withContext(dispatchers.io) {
+        runCatching {
+            resolveLocalFile(copy.file).useFile { local ->
+                ParcelFileDescriptor.open(local, ParcelFileDescriptor.MODE_READ_ONLY).use { pfd ->
+                    PdfRenderer(pfd).use { renderer ->
+                        require(pageIndex in 0 until renderer.pageCount) { "Page is out of range." }
+                        val bitmap = renderPageForImage(renderer, pageIndex, options.resolution.widthPx)
+                        try {
+                            val stream = ByteArrayOutputStream()
+                            bitmap.encodeTo(options.format, stream)
+                            stream.size().toLong()
+                        } finally {
+                            bitmap.recycle()
+                        }
+                    }
+                }
+            }
+        }.toScanlyResult("Could not estimate the image size.")
+    }
+
+    override suspend fun exportPagesAsImages(
+        copy: PdfWorkingCopy,
+        pageIndexes: List<Int>,
+        options: PdfImageOptions,
+        baseName: String,
+        onProgress: suspend (done: Int, total: Int) -> Unit,
+    ): ScanlyResult<PdfImageExport> = withContext(dispatchers.io) {
+        runCatching {
+            require(pageIndexes.isNotEmpty()) { "Choose at least one page." }
+            val format = options.format
+            val base = baseName.ifBlank { "Scanly" }
+            // Only the latest export's share copies are kept; the gallery holds the real files.
+            val imagesRoot = File(toolsDir(), "images")
+            imagesRoot.listFiles()?.forEach(File::deleteRecursively)
+            val outDir = File(imagesRoot, System.currentTimeMillis().toString()).apply { mkdirs() }
+            val images = mutableListOf<PdfPageImage>()
+            try {
+                resolveLocalFile(copy.file).useFile { local ->
+                    ParcelFileDescriptor.open(local, ParcelFileDescriptor.MODE_READ_ONLY).use { pfd ->
+                        PdfRenderer(pfd).use { renderer ->
+                            pageIndexes.forEachIndexed { done, pageIndex ->
+                                coroutineContext.ensureActive()
+                                require(pageIndex in 0 until renderer.pageCount) { "Page ${pageIndex + 1} is missing." }
+                                val name = "$base – page ${pageIndex + 1}.${format.extension}"
+                                val target = File(outDir, name)
+                                val bitmap = renderPageForImage(renderer, pageIndex, options.resolution.widthPx)
+                                try {
+                                    FileOutputStream(target).use { output -> bitmap.encodeTo(format, output) }
+                                } finally {
+                                    bitmap.recycle()
+                                }
+                                val saved = storageDestinationManager.saveImageToGallery(target, name, format.mimeType)
+                                images += PdfPageImage(
+                                    pageIndex = pageIndex,
+                                    fileName = saved.fileName,
+                                    filePath = target.absolutePath,
+                                    contentUri = saved.uriString,
+                                    sizeBytes = target.length(),
+                                )
+                                onProgress(done + 1, pageIndexes.size)
+                            }
+                        }
+                    }
+                }
+            } catch (oom: OutOfMemoryError) {
+                throw IllegalStateException(
+                    "Not enough memory for this page size. Try the \"For sharing\" resolution.",
+                    oom,
+                )
+            }
+            PdfImageExport(
+                images = images,
+                destinationLabel = SharedStorageDestinationManager.GALLERY_LABEL,
+                options = options,
+            )
+        }.toScanlyResult("Could not save the images.")
+    }
+
+    /**
+     * Renders a page exactly [widthPx] wide (height follows the page), capped at
+     * [MaxImagePagePixels] so a very tall page cannot exhaust memory.
+     */
+    private fun renderPageForImage(renderer: PdfRenderer, pageIndex: Int, widthPx: Int): Bitmap {
+        renderer.openPage(pageIndex).use { page ->
+            val pageW = page.width.coerceAtLeast(1).toDouble()
+            val pageH = page.height.coerceAtLeast(1).toDouble()
+            var width = widthPx.toDouble()
+            var height = width * pageH / pageW
+            val pixels = width * height
+            if (pixels > MaxImagePagePixels) {
+                val shrink = sqrt(MaxImagePagePixels / pixels)
+                width *= shrink
+                height *= shrink
+            }
+            val bitmap = Bitmap.createBitmap(
+                width.toInt().coerceAtLeast(1),
+                height.toInt().coerceAtLeast(1),
+                Bitmap.Config.ARGB_8888,
+            )
+            bitmap.eraseColor(Color.WHITE)
+            page.render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
+            return bitmap
+        }
+    }
+
+    private fun Bitmap.encodeTo(format: PdfImageFormat, output: OutputStream) {
+        val ok = when (format) {
+            PdfImageFormat.JPG -> compress(Bitmap.CompressFormat.JPEG, ImageExportJpegQuality, output)
+            PdfImageFormat.PNG -> compress(Bitmap.CompressFormat.PNG, 100, output)
+        }
+        require(ok) { "Failed to encode page image." }
     }
 
     override suspend fun prepareShare(artifact: ExportArtifact): ScanlyResult<List<String>> =
@@ -416,6 +711,9 @@ class DefaultPdfToolkitRepository @Inject constructor(
                     "This PDF is not stored in Scanly."
                 }
                 require(file.isFile && file.length() > 0L) { "The preview PDF is missing." }
+                // Mark it in use: storage cleanup skips pdf-tools files touched in the last hour,
+                // so a reader or sign session left open for a long time keeps its working copy.
+                file.setLastModified(System.currentTimeMillis())
                 ResolvedFile(file = file, deleteOnClose = false)
             }
         }
@@ -539,8 +837,18 @@ class DefaultPdfToolkitRepository @Inject constructor(
     private fun toolsDir(): File {
         val dir = File(context.cacheDir, "pdf-tools")
         if (!dir.exists()) dir.mkdirs()
+        if (staleSweepDone.compareAndSet(false, true)) {
+            // Once per process: drop leftovers (outputs, working copies, decrypted temp copies)
+            // from earlier runs, including runs that were killed before their cleanup ran.
+            val cutoff = System.currentTimeMillis() - StaleToolFileMs
+            dir.listFiles().orEmpty()
+                .filter { it.lastModified() < cutoff }
+                .forEach { it.deleteRecursively() }
+        }
         return dir
     }
+
+    private val staleSweepDone = java.util.concurrent.atomic.AtomicBoolean(false)
 
     private fun ensurePdfBox() {
         PDFBoxResourceLoader.init(context.applicationContext)
@@ -587,9 +895,17 @@ class DefaultPdfToolkitRepository @Inject constructor(
 
     private companion object {
         const val PdfMimeType = "application/pdf"
+        const val MaxImagePageEdgePx = 3000
+        const val ImagePageLongEdgePt = 842f
+        const val ImagePageJpegQuality = 92
         /** ~32 MB ARGB ceiling for a single page during compress. */
         const val MaxCompressPagePixels = 8_000_000L
+        /** ~48 MB ARGB ceiling per page image; A4 at 2480 px wide is ~8.7 MP. */
+        const val MaxImagePagePixels = 12_000_000.0
+        const val ImageExportJpegQuality = 90
         /** Re-resolve the preview base after this long so edits to a library scan show up. */
         const val PreviewBaseTtlMs = 5 * 60 * 1000L
+        /** Tool files untouched this long are leftovers from an earlier run. */
+        const val StaleToolFileMs = 24 * 60 * 60 * 1000L
     }
 }

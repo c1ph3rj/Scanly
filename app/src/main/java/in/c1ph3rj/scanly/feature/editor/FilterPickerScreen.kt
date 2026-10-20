@@ -510,12 +510,13 @@ private fun FilterScopeOption(
     onApplyToAllPagesChange: (Boolean) -> Unit,
 ) {
     val colorScheme = MaterialTheme.colorScheme
+    // Toggleable Surface: the ripple is clipped to the rounded card, and the whole card is one
+    // switch for accessibility (the Switch below only mirrors the state).
     Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(enabled = enabled) {
-                onApplyToAllPagesChange(!applyToAllPages)
-            },
+        checked = applyToAllPages,
+        onCheckedChange = onApplyToAllPagesChange,
+        enabled = enabled,
+        modifier = Modifier.fillMaxWidth(),
         color = colorScheme.surfaceContainerHigh,
         shape = MaterialTheme.shapes.extraLarge,
         border = BorderStroke(
@@ -545,7 +546,7 @@ private fun FilterScopeOption(
             }
             Switch(
                 checked = applyToAllPages,
-                onCheckedChange = onApplyToAllPagesChange,
+                onCheckedChange = null,
                 enabled = enabled,
                 colors = SwitchDefaults.colors(
                     checkedThumbColor = colorScheme.onPrimary,

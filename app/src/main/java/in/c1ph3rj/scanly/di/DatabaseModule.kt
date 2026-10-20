@@ -12,8 +12,10 @@ import dagger.hilt.components.SingletonComponent
 import `in`.c1ph3rj.scanly.data.local.db.ScanlyDatabase
 import `in`.c1ph3rj.scanly.data.local.db.dao.DocumentDao
 import `in`.c1ph3rj.scanly.data.local.db.dao.DocumentGroupDao
+import `in`.c1ph3rj.scanly.data.local.db.dao.PageMarkupDao
 import `in`.c1ph3rj.scanly.data.local.db.dao.PageTextDao
 import `in`.c1ph3rj.scanly.data.local.db.dao.ScanPageDao
+import `in`.c1ph3rj.scanly.data.local.db.dao.SignatureDao
 import javax.inject.Singleton
 
 @Module
@@ -33,6 +35,7 @@ object DatabaseModule {
         ScanlyDatabase.MIGRATION_3_4,
         ScanlyDatabase.MIGRATION_4_5,
         ScanlyDatabase.MIGRATION_5_6,
+        ScanlyDatabase.MIGRATION_6_7,
     ).addCallback(object : RoomDatabase.Callback() {
         override fun onOpen(db: SupportSQLiteDatabase) {
             db.execSQL("PRAGMA foreign_keys=ON")
@@ -52,6 +55,12 @@ object DatabaseModule {
 
     @Provides
     fun providePageTextDao(database: ScanlyDatabase): PageTextDao = database.pageTextDao()
+
+    @Provides
+    fun provideSignatureDao(database: ScanlyDatabase): SignatureDao = database.signatureDao()
+
+    @Provides
+    fun providePageMarkupDao(database: ScanlyDatabase): PageMarkupDao = database.pageMarkupDao()
 
     private const val DATABASE_NAME = "scanly.db"
 }

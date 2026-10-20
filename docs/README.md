@@ -1,6 +1,6 @@
 ﻿# Scanly Documentation
 
-Complete documentation for **Scanly v1.0.17** — an offline-first Android document scanner.
+Complete documentation for **Scanly v1.0.18** — an offline-first Android document scanner with on-device text search and document signing.
 
 Website: https://www.usescanly.co.in · Google Play: https://play.google.com/store/apps/details?id=in.c1ph3rj.scanly
 
@@ -8,7 +8,7 @@ If you are new to this project, start here. This folder contains everything need
 
 ## What is Scanly?
 
-Scanly is a local-only document scanner for Android. Users capture pages with the camera or import images from the gallery, correct page geometry, apply filters, organize multi-page documents into collections, and export PDFs or image archives — all without a backend or cloud sync.
+Scanly is a local-only document scanner for Android. Users capture or import pages, correct page geometry, apply filters, organize documents, search text recognized on scans, sign PDFs or scanned pages, and export results — all without a backend or cloud sync.
 
 | Attribute | Value |
 | --- | --- |
@@ -16,12 +16,12 @@ Scanly is a local-only document scanner for Android. Users capture pages with th
 | UI | Jetpack Compose + Material 3 |
 | Architecture | Single module (`:app`), clean-architecture-style layers |
 | Data | Room database, app-private files, DataStore preferences |
-| Processing | LiteRT multi-model corners + semantic gate + OpenCV filters + CameraX capture |
-| Background work | WorkManager foreground backup/restore (`LibraryArchiveWorker`) |
-| Export / backup | PDFBox-encrypted PDFs; `.scanly` library archives to `Downloads/Scanly/backup/` |
+| Processing | CameraX capture, LiteRT multi-model corners + semantic gate, OpenCV filters, on-device text recognition |
+| Background work | WorkManager page-text indexing (`TextIndexWorker`) |
+| Export | PDFBox PDFs and image archives; signed PDFs can be saved or shared |
 | Distribution | `githubRelease` (GitHub updates) and `playStoreRelease` (Play in-app updates) |
 | License | AGPL-3.0-only ([LICENSE](../LICENSE)) |
-| Current version | `1.0.17` (version code `17`) |
+| Current version | `1.0.18` (version code `18`) |
 
 ## Core workflow
 
@@ -32,8 +32,9 @@ Capture or import image
   → Perspective correction + filter preset + optional fine adjustments
   → Save as page in a local document
   → Organize in library / groups
+  → Search on-device recognized text or open editable extracted text
+  → Sign a PDF or add editable marks to a scan
   → Export PDF or share images (save to Downloads/Scanly or custom folder)
-  → Back up entire library as compressed .scanly archive (optional restore)
 ```
 
 **Design principles:** offline-first, preserve raw captures, treat processed output as derived, keep manual controls when automation fails.
@@ -76,9 +77,9 @@ Choose a path based on your goal:
 
 | Document | Contents |
 | --- | --- |
-| [database.md](data/database.md) | Room schema v5, entities, migrations, DAOs |
+| [database.md](data/database.md) | Room schema v7, entities, migrations, DAOs |
 | [file-storage.md](data/file-storage.md) | On-disk layout, raw/processed/thumbs, export cache |
-| [library-backup.md](data/library-backup.md) | `.scanly` format, destinations, validation, Replace/Merge restore |
+| [library-backup.md](data/library-backup.md) | Legacy `.scanly` format (backup and restore retired in v1.0.18) |
 | [settings-and-updates.md](data/settings-and-updates.md) | DataStore prefs, FAQs/licenses, GitHub/Google Play update variants |
 
 ### Processing — capture, ML, filters, export
@@ -106,7 +107,7 @@ Choose a path based on your goal:
 | [implementation-snapshot.md](reference/implementation-snapshot.md) | One-page technical snapshot |
 | [tech-stack.md](reference/tech-stack.md) | Dependencies and versions from `libs.versions.toml` |
 | [domain-models.md](reference/domain-models.md) | All domain model classes |
-| [use-cases.md](reference/use-cases.md) | All 73 use cases grouped by area |
+| [use-cases.md](reference/use-cases.md) | Use cases grouped by area |
 | [repository-layout.md](reference/repository-layout.md) | Root repo file and folder guide |
 
 ### Releases
@@ -139,7 +140,8 @@ These files live at the repository root for GitHub conventions and quick access:
 | Domain logic | `app/src/main/java/in/c1ph3rj/scanly/domain/` |
 | Data layer | `app/src/main/java/in/c1ph3rj/scanly/data/` |
 | ML / processing | `app/src/main/java/in/c1ph3rj/scanly/core/` |
-| Library backup | `app/src/main/java/in/c1ph3rj/scanly/data/archive/` |
+| Page text | `app/src/main/java/in/c1ph3rj/scanly/data/text/` and `feature/text/` |
+| Signing | `app/src/main/java/in/c1ph3rj/scanly/data/sign/` and `feature/sign/` |
 | Export storage | `app/src/main/java/in/c1ph3rj/scanly/data/export/DefaultExportStorageRepository.kt` |
 | Build config | `app/build.gradle.kts`, `gradle/libs.versions.toml` |
 | ML models | `app/src/main/assets/models/` (Lite/Standard/High/Accurate corners + document gate) |

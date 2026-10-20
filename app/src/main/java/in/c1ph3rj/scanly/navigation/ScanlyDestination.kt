@@ -90,12 +90,41 @@ object ToolsPdfCompressDestination {
     const val route = "tools/pdf/compress"
 }
 
+object ToolsPdfToImagesDestination {
+    const val route = "tools/pdf/to-images"
+}
+
 object ToolsPdfPasswordDestination {
     const val route = "tools/pdf/password"
 }
 
 object ToolsPdfWatermarkDestination {
     const val route = "tools/pdf/watermark"
+}
+
+object ToolsPdfSignDestination {
+    const val route = "tools/pdf/sign"
+}
+
+/** Signs a Scanly document in place; marks are stamped into the pages but stay editable. */
+object DocumentSignDestination {
+    const val documentIdArgument = "documentId"
+    const val pageArgument = "page"
+    const val routePattern = "document/{$documentIdArgument}/sign?$pageArgument={$pageArgument}"
+
+    fun route(documentId: String, pageIndex: Int = 0): String = "document/$documentId/sign?$pageArgument=$pageIndex"
+}
+
+object SignatureManageDestination {
+    const val route = "signatures/manage"
+}
+
+object SignatureCreateDestination {
+    const val kindArgument = "kind"
+    const val routePattern = "signatures/create?$kindArgument={$kindArgument}"
+
+    fun route(kind: `in`.c1ph3rj.scanly.domain.model.SignatureKind): String =
+        "signatures/create?$kindArgument=${kind.storageValue}"
 }
 
 /** Route helpers for screens that accept typed arguments. */
@@ -122,6 +151,10 @@ object SettingsStorageDestination {
 
 object SettingsAppearanceDestination {
     const val route = "settings/appearance"
+}
+
+object SettingsPipDestination {
+    const val route = "settings/pip"
 }
 
 object SettingsDetectionDestination {

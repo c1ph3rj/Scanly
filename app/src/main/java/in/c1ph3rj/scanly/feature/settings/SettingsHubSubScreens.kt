@@ -1,5 +1,7 @@
 package `in`.c1ph3rj.scanly.feature.settings
 
+import android.content.ActivityNotFoundException
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -27,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.platform.UriHandler
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -347,13 +350,22 @@ fun SettingsAboutRoute(
         appUpdateUiState = appUpdateUiState,
         onNavigateUp = onNavigateUp,
         onCheckForUpdates = onCheckForUpdates,
-        onOpenPortfolio = { uriHandler.openUri(DEVELOPER_PORTFOLIO_URL) },
+        onOpenPortfolio = { uriHandler.openUriSafely(DEVELOPER_PORTFOLIO_URL) },
         onOpenFaqs = onOpenFaqs,
         onOpenLegalDocument = onOpenLegalDocument,
         onOpenLicenses = onOpenLicenses,
-        onOpenWebsite = { uriHandler.openUri(PROJECT_WEBSITE_URL) },
-        onContactSupport = { uriHandler.openUri("mailto:$SUPPORT_EMAIL") },
+        onOpenWebsite = { uriHandler.openUriSafely(PROJECT_WEBSITE_URL) },
+        onContactSupport = { uriHandler.openUriSafely("mailto:$SUPPORT_EMAIL") },
     )
+}
+
+/** openUri throws when no app can handle the link (e.g. mailto: with no mail app). */
+private fun UriHandler.openUriSafely(uri: String) {
+    try {
+        openUri(uri)
+    } catch (_: ActivityNotFoundException) {
+        // Nothing to open the link with; the row stays inert rather than crashing.
+    }
 }
 
 @Composable

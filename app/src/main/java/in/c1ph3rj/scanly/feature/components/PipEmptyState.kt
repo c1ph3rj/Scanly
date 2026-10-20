@@ -1,8 +1,6 @@
 package `in`.c1ph3rj.scanly.feature.components
 
-import androidx.annotation.DrawableRes
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,23 +22,27 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.Dp
+import `in`.c1ph3rj.scanly.feature.pip.LocalPipPreferences
+import `in`.c1ph3rj.scanly.feature.pip.PipLook
+import `in`.c1ph3rj.scanly.feature.pip.PipMood
+import `in`.c1ph3rj.scanly.feature.pip.PipSays
 
 /**
- * Shared visual language for Scanly's zero-content and first-use states.
- * The illustration is decorative; meaning and actions remain available as text.
+ * Shared zero-content and first-use state: Pip says one short line above the title, description
+ * and actions. With Pip switched off in settings the card keeps only the plain copy, which always
+ * carries the full meaning on its own.
  */
 @Composable
-fun IllustratedEmptyState(
-    @DrawableRes illustrationRes: Int,
+fun PipEmptyState(
+    pipLine: String,
+    pipMood: PipMood,
     title: String,
     description: String,
     modifier: Modifier = Modifier,
+    pipLook: PipLook = PipLook.AHEAD,
     actionLabel: String? = null,
     onAction: (() -> Unit)? = null,
     actionIcon: ImageVector? = null,
@@ -49,8 +51,8 @@ fun IllustratedEmptyState(
     onSecondaryAction: (() -> Unit)? = null,
     secondaryActionEnabled: Boolean = true,
     compact: Boolean = false,
-    illustrationSize: Dp? = null,
 ) {
+    val pipEnabled = LocalPipPreferences.current.enabled
     Surface(
         modifier = modifier.fillMaxWidth(),
         color = MaterialTheme.colorScheme.surfaceContainer,
@@ -72,15 +74,15 @@ fun IllustratedEmptyState(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top,
         ) {
-            Image(
-                painter = painterResource(illustrationRes),
-                contentDescription = null,
-                // Give the illustration enough visual weight to balance the
-                // empty-state card without crowding the supporting content.
-                modifier = Modifier.size(illustrationSize ?: if (compact) 176.dp else 240.dp),
-                contentScale = ContentScale.Fit,
-            )
-            Spacer(Modifier.height(if (compact) 12.dp else 16.dp))
+            if (pipEnabled) {
+                PipSays(
+                    line = pipLine,
+                    mood = pipMood,
+                    look = pipLook,
+                    size = if (compact) 80.dp else 96.dp,
+                )
+                Spacer(Modifier.height(if (compact) 16.dp else 20.dp))
+            }
             Text(
                 text = title,
                 style = if (compact) {
@@ -91,7 +93,7 @@ fun IllustratedEmptyState(
                 fontWeight = FontWeight.SemiBold,
                 textAlign = TextAlign.Center,
             )
-            Spacer(Modifier.height(if (compact) 10.dp else 12.dp))
+            Spacer(Modifier.height(if (compact) 8.dp else 10.dp))
             Text(
                 text = description,
                 style = MaterialTheme.typography.bodyLarge,
@@ -100,7 +102,7 @@ fun IllustratedEmptyState(
             )
 
             if (actionLabel != null && onAction != null) {
-                Spacer(Modifier.height(if (compact) 14.dp else 16.dp))
+                Spacer(Modifier.height(if (compact) 14.dp else 18.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center,

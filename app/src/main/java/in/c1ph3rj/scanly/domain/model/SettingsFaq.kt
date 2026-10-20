@@ -4,4 +4,5 @@ data class SettingsFaq(
     val id: String,
     val question: String,
     val answer: String,
+    val category: String,
 )

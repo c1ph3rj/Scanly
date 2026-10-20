@@ -38,13 +38,16 @@ It is designed for a practical, local-only scanning workflow:
 - import images from the gallery to create or extend documents
 - page editor with live cropped preview, full-screen filters/adjust, and a crop screen (AI Detect, rotate, handles)
 - document filters (Magic Color, Natural, Vivid, Screen, Grayscale, B&W, Whiteboard, Faded Text, and Auto) with an adjustable intensity; paper presets use a paper-aware lighting model, and Screen and Vivid use global color looks
-- in-app PDF reader (title, page n of m, paged or continuous, pinch-zoom) and offline PDF tools (merge, compress, password, watermark)
+- in-app PDF reader (title, page n of m, paged or continuous, pinch-zoom) that hands its file to any offline PDF tool (merge, compress, password, watermark, sign, PDF to images)
+- open PDFs from other apps with **Open in Scanly** (Files, mail, chat, cloud apps)
+- on-device OCR and searchable page text, with editable text corrections and extracted-text reading
+- sign PDFs or scanned pages with saved signatures, initials, dates, text, and checkboxes
+- Pip, an optional pixel helper for empty screens, camera coaching, and a daily tip (all switchable in Settings)
 - Advanced PDF export/share with password protection, page numbering, auto orientation, print sizes, margins, and group-level export
 - direct export saving to `Downloads/Scanly` or a user-selected folder
-- compressed `.scanly` library backup and Replace/Merge restore under the dedicated `backup/` folder
-- settings with look & feel (including pure black AMOLED), configurable document detection models, storage usage, clear-all-data, FAQs, and license info
+- settings with look & feel (including pure black AMOLED), configurable document detection models, storage usage, clear-all-data, Help & FAQ, and license info
 
-**Current version:** `1.0.17` (version code `17`) — see [VERSION.md](VERSION.md) and [CHANGELOG.md](CHANGELOG.md).
+**Current version:** `1.0.18` (version code `18`) — see [VERSION.md](VERSION.md) and [CHANGELOG.md](CHANGELOG.md).
 
 ## Screenshots
 
@@ -95,7 +98,7 @@ The repository is organized as a production-style single-module app:
 - `:app` is the only Android module
 - entry point: `app/src/main/java/in/c1ph3rj/scanly/MainActivity.kt`
 - app wiring: `ScanlyApplication`, navigation, Hilt modules, feature screens, and domain/data layers live under `app/src/main/java/in/c1ph3rj/scanly/`
-- local data: Room, DataStore, app-private file storage, and portable `.scanly` archives
+- local data: Room, DataStore, page-text search index, signatures, and app-private file storage
 - camera and processing stack: CameraX, LiteRT, and OpenCV-based page processing
 
 ## Build and Run

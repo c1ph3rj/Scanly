@@ -6,10 +6,15 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import `in`.c1ph3rj.scanly.core.common.ScanlyResult
 import `in`.c1ph3rj.scanly.domain.model.PdfToolSource
+import `in`.c1ph3rj.scanly.domain.model.PdfWorkingCopy
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveDocumentsUseCase
-import `in`.c1ph3rj.scanly.domain.usecase.pdftools.InspectPdfUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.pdftools.ClosePdfWorkingCopyUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.pdftools.OpenPdfWorkingCopyUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.pdftools.RenderPdfPageUseCase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -57,7 +62,8 @@ data class PdfReaderUiState(
 @HiltViewModel
 class PdfReaderViewModel @Inject constructor(
     observeDocumentsUseCase: ObserveDocumentsUseCase,
-    private val inspectPdfUseCase: InspectPdfUseCase,
+    private val openPdfWorkingCopyUseCase: OpenPdfWorkingCopyUseCase,
+    private val closePdfWorkingCopyUseCase: ClosePdfWorkingCopyUseCase,
     private val renderPdfPageUseCase: RenderPdfPageUseCase,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(PdfReaderUiState())
@@ -66,12 +72,18 @@ class PdfReaderViewModel @Inject constructor(
     private val _events = MutableSharedFlow<PdfToolEvent>()
     val events: SharedFlow<PdfToolEvent> = _events.asSharedFlow()
 
-    /** Bumped whenever bitmaps are recycled, so renders started for an old document are dropped. */
+    /** Bumped whenever a new document opens, so renders started for an old document are dropped. */
     private var documentGeneration = 0
 
     /** Access-ordered, so the least recently requested thumbnail is evicted first. Main thread only. */
     private val thumbnailCache = LinkedHashMap<Int, Bitmap>(16, 0.75f, true)
     private val pendingThumbnails = HashSet<Int>()
+
+    /**
+     * Decrypted local copy of the open PDF. Every page and thumbnail renders from it, so the
+     * source is copied, exported or decrypted once per document instead of once per page.
+     */
+    private var workingCopy: PdfWorkingCopy? = null
 
     init {
         viewModelScope.launch {
@@ -83,7 +95,7 @@ class PdfReaderViewModel @Inject constructor(
 
     fun onSourcesChosen(sources: List<PdfToolSource>) {
         val source = sources.firstOrNull() ?: return
-        recycleAll()
+        releaseAll()
         _uiState.update {
             it.copy(
                 source = source,
@@ -132,16 +144,14 @@ class PdfReaderViewModel @Inject constructor(
         if (index !in 0 until state.pageCount) return
         // Reading the access-ordered cache also marks the entry as most recently used.
         if (thumbnailCache[index] != null || index in pendingThumbnails) return
-        val source = state.source ?: return
+        val copy = workingCopy ?: return
         pendingThumbnails += index
         val generation = documentGeneration
-        val password = state.passwordDraft.ifBlank { null }
         viewModelScope.launch {
             _uiState.update { it.copy(loadingThumbnails = it.loadingThumbnails + index) }
             val result = renderPdfPageUseCase(
-                source = source,
+                source = copy.file,
                 pageIndex = index,
-                password = password,
                 maxWidth = READER_THUMBNAIL_MAX_WIDTH,
             )
             if (generation != documentGeneration) {
@@ -165,14 +175,20 @@ class PdfReaderViewModel @Inject constructor(
                 it.copy(phase = PdfReaderPhase.Opening, passwordError = null)
             }
             val password = _uiState.value.passwordDraft.ifBlank { null }
-            when (val result = inspectPdfUseCase(source, password)) {
+            when (val result = openPdfWorkingCopyUseCase(source, password)) {
                 is ScanlyResult.Success -> {
-                    recycleAll()
+                    if (_uiState.value.source != source) {
+                        // Another file was chosen while this one was opening.
+                        closeQuietly(result.value)
+                        return@launch
+                    }
+                    releaseAll()
+                    workingCopy = result.value
                     _uiState.update {
                         it.copy(
                             phase = PdfReaderPhase.Ready,
                             pageCount = result.value.pageCount,
-                            documentTitle = result.value.displayName.ifBlank { source.label() },
+                            documentTitle = source.label(),
                             currentPageIndex = 0,
                             pageBitmaps = emptyMap(),
                             loadingPages = emptySet(),
@@ -183,6 +199,8 @@ class PdfReaderViewModel @Inject constructor(
                     ensurePagesAround(0)
                 }
                 is ScanlyResult.Failure -> {
+                    // A late failure for a file the user already replaced must not touch the new one.
+                    if (_uiState.value.source != source) return@launch
                     val needsPw = result.error.message.contains("password", ignoreCase = true)
                     _uiState.update {
                         it.copy(
@@ -201,14 +219,18 @@ class PdfReaderViewModel @Inject constructor(
     private fun ensurePagesAround(center: Int) {
         val count = _uiState.value.pageCount
         if (count <= 0) return
-        val radius = if (_uiState.value.readerLayout == PdfReaderLayout.Continuous) 2 else 1
-        val range = ((center - radius)..(center + radius)).filter { it in 0 until count }
+        // Continuous mode reports the first visible page as [center], and short or landscape pages
+        // can put several pages below it on screen, so keep more pages ahead than behind.
+        val range = if (_uiState.value.readerLayout == PdfReaderLayout.Continuous) {
+            (center - 1)..(center + 4)
+        } else {
+            (center - 1)..(center + 1)
+        }.filter { it in 0 until count }
         range.forEach { renderIfNeeded(it) }
-        // Evict far pages
+        // Evict far pages. Never recycle() them here: Compose may still draw the previous state
+        // for a frame, and drawing a recycled bitmap crashes. Dropping the reference is enough.
         val keep = range.toSet()
         _uiState.update { state ->
-            val evicted = state.pageBitmaps.filterKeys { it !in keep }
-            evicted.values.forEach { it.recycle() }
             state.copy(pageBitmaps = state.pageBitmaps.filterKeys { it in keep })
         }
     }
@@ -216,15 +238,14 @@ class PdfReaderViewModel @Inject constructor(
     private fun renderIfNeeded(index: Int) {
         val state = _uiState.value
         if (state.pageBitmaps.containsKey(index) || index in state.loadingPages) return
-        val source = state.source ?: return
+        val copy = workingCopy ?: return
         val generation = documentGeneration
         viewModelScope.launch {
             _uiState.update { it.copy(loadingPages = it.loadingPages + index) }
             when (
                 val result = renderPdfPageUseCase(
-                    source = source,
+                    source = copy.file,
                     pageIndex = index,
-                    password = state.passwordDraft.ifBlank { null },
                     maxWidth = READER_PAGE_MAX_WIDTH,
                 )
             ) {
@@ -250,10 +271,10 @@ class PdfReaderViewModel @Inject constructor(
     }
 
     private fun cacheThumbnail(index: Int, bitmap: Bitmap) {
-        thumbnailCache.put(index, bitmap)?.recycle()
+        // Evicted thumbnails may still be on screen this frame, so they are released, not recycled.
+        thumbnailCache[index] = bitmap
         while (thumbnailCache.size > READER_THUMBNAIL_CACHE_LIMIT) {
-            val eldest = thumbnailCache.keys.first()
-            thumbnailCache.remove(eldest)?.recycle()
+            thumbnailCache.remove(thumbnailCache.keys.first())
         }
         _uiState.update {
             it.copy(
@@ -263,16 +284,24 @@ class PdfReaderViewModel @Inject constructor(
         }
     }
 
-    private fun recycleAll() {
+    /**
+     * Drops every page and thumbnail of the current document. Bitmaps are left to the GC rather
+     * than recycled, because the UI may still be drawing them until the new state arrives.
+     */
+    private fun releaseAll() {
         documentGeneration++
-        _uiState.value.pageBitmaps.values.forEach { it.recycle() }
-        thumbnailCache.values.forEach { it.recycle() }
         thumbnailCache.clear()
         pendingThumbnails.clear()
+        workingCopy?.let(::closeQuietly)
+        workingCopy = null
+    }
+
+    private fun closeQuietly(copy: PdfWorkingCopy) {
+        CoroutineScope(Dispatchers.IO + NonCancellable).launch { closePdfWorkingCopyUseCase(copy) }
     }
 
     override fun onCleared() {
-        recycleAll()
+        releaseAll()
         super.onCleared()
     }
 }

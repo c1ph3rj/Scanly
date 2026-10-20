@@ -8,7 +8,7 @@ Guidance for AI coding agents working in the Scanly repository.
 
 - Single-module Android app (`:app`) using Kotlin + Jetpack Compose + Material 3.
 - Package: `in.c1ph3rj.scanly` — escape `in` as ``package `in`.c1ph3rj.scanly``.
-- Current version: `1.0.17` (version code `17`) — see `app/build.gradle.kts`, [VERSION.md](VERSION.md).
+- Current version: `1.0.18` (version code `18`) — see `app/build.gradle.kts`, [VERSION.md](VERSION.md).
 - Entry point: `MainActivity.kt` → onboarding gate → `ScanlyNavHost`.
 - Offline-first document scanner: camera capture, page editing, local persistence, PDF/image export, on-device page text (OCR) and full-text search.
 
@@ -19,8 +19,8 @@ app/src/main/java/in/c1ph3rj/scanly/
 ├── ui/theme/          # ScanlyTheme, colors, typography
 ├── navigation/        # ScanlyDestination, ScanlyNavHost
 ├── feature/           # Screens + ViewModels (home, library, tools, camera, editor, widgets, …)
-├── domain/            # Models, repository interfaces, use cases (73 classes)
-├── data/              # Room, storage, export, archive, settings, update implementations
+├── domain/            # Models, repository interfaces, use cases
+├── data/              # Room, storage, export, text, signing, settings, update implementations
 ├── core/              # ML (corners + gate), OpenCV filter engine, editing math, shared UI utilities
 └── di/                # Hilt modules (+ flavor-specific update bindings)
 ```
@@ -59,11 +59,11 @@ app/src/main/java/in/c1ph3rj/scanly/
 - Keep dependency versions in `gradle/libs.versions.toml`; reference via `libs.*` in Gradle scripts.
 - Compose deps use BOM (`implementation(platform(libs.androidx.compose.bom))`).
 - Preserve raw captures — never overwrite files under `raw/`; regenerate `processed/` and `thumbs/`.
-- Room schema is version `6`. Any schema change requires a `Migration_X_Y` in `ScanlyDatabase.kt` and version bump.
+- Room schema is version `7` (v7 adds `signatures` and `page_markups`). Any schema change requires a `Migration_X_Y` in `ScanlyDatabase.kt` and version bump.
 - Page text lives in `page_texts` with an FTS4 external-content index `page_texts_fts` (Room triggers keep it in sync — always replace rows with delete + insert, never `REPLACE`). `page_texts_terms` (fts4aux) is created on open for spelling suggestions. `TextIndexScheduler` re-reads any page whose `updatedAtMillis` differs from its text row, so features never need to call the indexer.
 - ML model assets under `app/src/main/assets/models/`: corner variants (Lite/Standard/High/Accurate) + `scanly_document_gate_float16.tflite` (keep `noCompress += "tflite"`).
 - Document detection prefs in DataStore: live/post models, automatic selection, document gate; pure black theme is separate (`pure_black_enabled`).
-- Gallery import limit: 10 images (`ImageImportSupport`).
+- Gallery import limit: 50 images via the system file picker (`ImageImportSupport`).
 - Export saves go to `Downloads/Scanly` by default; custom SAF trees persist via DataStore (`export_tree_uri`, `export_tree_label`).
 
 ## Navigation Quick Reference
@@ -81,17 +81,21 @@ Typed routes (real flows):
 - `legal/{documentType}` — privacy/licenses viewer
 - `library/search` — name + page-text search
 - `document/{documentId}/text?page={page}&query={query}` — extracted text (Text / On page views)
-- `settings/appearance`, `settings/detection`, `settings/widgets`, `settings/about`, `settings/faq`, `settings/licenses`, `settings/storage`, `settings/model-benchmark` — settings hub sub-screens
+- `settings/appearance`, `settings/pip`, `settings/detection`, `settings/widgets`, `settings/about`, `settings/faq`, `settings/licenses`, `settings/storage`, `settings/model-benchmark` — settings hub sub-screens
 - `tools/qr` — QR scan + generate
-- `tools/pdf/reader`, `tools/pdf/merge`, `tools/pdf/compress`, `tools/pdf/password`, `tools/pdf/watermark` — PDF toolkit
+- `tools/pdf/reader`, `tools/pdf/merge`, `tools/pdf/compress`, `tools/pdf/to-images`, `tools/pdf/password`, `tools/pdf/watermark`, `tools/pdf/sign` — PDF toolkit (tool routes take an optional `?source=` so the reader can hand over its open file; see `PdfToolSourceArgument.kt`)
+- `document/{documentId}/sign?page={page}` — sign a scan in place (marks composited into `processed/`, clean image kept as `processed/page_NNN.base.jpg`, layer data in `page_markups`)
+- `signatures/manage`, `signatures/create?kind={kind}` — saved signatures (`files/signatures/{id}/ink.png`, black ink alpha masks)
 
 Legacy placeholder routes (`camera`, `review`, `editor` top-level) use `FeaturePlaceholderScreen` — do not wire new features there.
+
+PDFs opened or shared from other apps ("Open in Scanly", `ACTION_VIEW` / `ACTION_SEND`) are copied to `cache/incoming_pdf/` by `IncomingPdf` and open in the reader after onboarding.
 
 Home-screen widgets / quick actions use `in.c1ph3rj.scanly.action.{SCAN,IMPORT,QR,LIBRARY}` → `LaunchActionViewModel` (see [docs/architecture/navigation.md](docs/architecture/navigation.md)).
 
 ## Testing Reality
 
-- Unit tests: `app/src/test/java/in/c1ph3rj/scanly/` (41 files).
+- Unit tests: `app/src/test/java/in/c1ph3rj/scanly/` (83 Kotlin test files).
 - Instrumented: `app/src/androidTest/` (onboarding UI, OpenCV filter processor, smoke).
 - See [docs/development/testing.md](docs/development/testing.md) for gaps.
 
@@ -121,7 +125,7 @@ Related product-config authoring notes: [docs/site/README.md](docs/site/README.m
 
 | File | Purpose |
 | --- | --- |
-| `MainActivity.kt` | App shell, onboarding gate, theme / pure black, update dialog, widget/shortcut redirects |
+| `MainActivity.kt` | App shell, onboarding gate, theme / pure black, update dialog, widget/shortcut redirects, Open in Scanly PDF hand-off |
 | `feature/launch/` | `ScanlyLaunchAction`, `LaunchActionViewModel` |
 | `feature/widget/` | Actions / Scan / QR `AppWidgetProvider`s |
 | `res/xml/shortcuts.xml` | Launcher quick actions |

@@ -13,6 +13,8 @@ import android.webkit.WebResourceResponse
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.webkit.WebViewCompat
+import androidx.webkit.WebViewFeature
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -38,6 +40,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
@@ -83,6 +86,10 @@ fun LegalDocumentScreen(
     val isDarkTheme = backgroundColor.luminance() < 0.5f
     var loadProgress by remember(documentType) { mutableIntStateOf(0) }
     var loadFailed by remember(documentType) { mutableStateOf(false) }
+    // The site picks its palette once at startup from localStorage, so the page stays hidden
+    // until a load has started with the app's theme already stored (see syncThemeThenConfigure).
+    var themeReady by remember(documentType) { mutableStateOf(false) }
+    var themeReloads by remember(documentType) { mutableIntStateOf(0) }
 
     val webView = remember(context, documentType) {
         WebView(context).apply {
@@ -98,6 +105,15 @@ fun LegalDocumentScreen(
                 safeBrowsingEnabled = true
             }
             CookieManager.getInstance().setAcceptThirdPartyCookies(this, false)
+            // The site reads its theme from localStorage once, before React's first paint. Store
+            // the app's theme ahead of every page script so headings get the matching palette.
+            if (WebViewFeature.isFeatureSupported(WebViewFeature.DOCUMENT_START_SCRIPT)) {
+                WebViewCompat.addDocumentStartJavaScript(
+                    this,
+                    "try { localStorage.setItem('scanly-theme', '${if (isDarkTheme) "dark" else "light"}'); } catch (e) {}",
+                    setOf(LegalSiteOrigin),
+                )
+            }
             webChromeClient = object : WebChromeClient() {
                 override fun onProgressChanged(view: WebView?, newProgress: Int) {
                     loadProgress = newProgress
@@ -112,11 +128,14 @@ fun LegalDocumentScreen(
                 override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                     loadFailed = false
                     loadProgress = 0
+                    themeReady = false
                 }
 
                 override fun onPageFinished(view: WebView?, url: String?) {
                     loadProgress = 100
-                    view?.applyReadOnlyPageConfiguration(isDarkTheme)
+                    view?.syncThemeThenConfigure(isDarkTheme, allowReload = themeReloads == 0) { reloaded ->
+                        if (reloaded) themeReloads += 1 else themeReady = true
+                    }
                 }
 
                 override fun onReceivedError(
@@ -166,14 +185,13 @@ fun LegalDocumentScreen(
                 factory = { webView },
                 update = { view ->
                     view.setBackgroundColor(backgroundColor.toArgb())
-                    if (loadProgress == 100) {
-                        view.applyReadOnlyPageConfiguration(isDarkTheme)
-                    }
                 },
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .alpha(if (themeReady) 1f else 0f),
             )
 
-            if (!loadFailed && loadProgress < 100) {
+            if (!loadFailed && !themeReady) {
                 LinearProgressIndicator(
                     progress = { loadProgress / 100f },
                     modifier = Modifier
@@ -253,6 +271,41 @@ private fun Context.openExternalUri(uri: Uri) {
     }
 }
 
+/**
+ * The website reads `scanly-theme` from localStorage once, when React starts, and colours its
+ * headings from that. Setting it after load only flips the CSS background, leaving dark headings
+ * on a dark page. So when the stored theme differs from the app's, store it and reload once;
+ * [onResult] gets true when a reload was started, false once the page is ready to show.
+ */
+private fun WebView.syncThemeThenConfigure(
+    isDarkTheme: Boolean,
+    allowReload: Boolean,
+    onResult: (reloaded: Boolean) -> Unit,
+) {
+    val theme = if (isDarkTheme) "dark" else "light"
+    evaluateJavascript(
+        """
+        (() => {
+          try {
+            if (window.localStorage.getItem('scanly-theme') !== '$theme') {
+              window.localStorage.setItem('scanly-theme', '$theme');
+              return 'stale';
+            }
+          } catch (_) {}
+          return 'ok';
+        })();
+        """.trimIndent(),
+    ) { result ->
+        if (allowReload && result?.contains("stale") == true) {
+            onResult(true)
+            reload()
+        } else {
+            applyReadOnlyPageConfiguration(isDarkTheme)
+            onResult(false)
+        }
+    }
+}
+
 private fun WebView.applyReadOnlyPageConfiguration(isDarkTheme: Boolean) {
     val theme = if (isDarkTheme) "dark" else "light"
     evaluateJavascript(
@@ -299,3 +352,6 @@ private fun WebView.applyReadOnlyPageConfiguration(isDarkTheme: Boolean) {
         null,
     )
 }
+
+/** Origin of the hosted legal pages; the theme script is injected only there. */
+private const val LegalSiteOrigin = "https://www.usescanly.co.in"

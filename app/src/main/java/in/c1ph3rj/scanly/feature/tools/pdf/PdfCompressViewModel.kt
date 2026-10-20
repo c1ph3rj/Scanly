@@ -159,14 +159,12 @@ class PdfCompressViewModel @Inject constructor(
             }
             when (result) {
                 is ScanlyResult.Success -> {
-                    val previous = _uiState.value.sourcePagePreview
                     _uiState.update {
                         it.copy(
                             sourcePagePreview = result.value,
                             isSourcePagePreviewLoading = false,
                         )
                     }
-                    if (previous !== result.value) previous?.recycle()
                 }
                 is ScanlyResult.Failure -> {
                     _uiState.update { it.copy(isSourcePagePreviewLoading = false) }
@@ -179,7 +177,6 @@ class PdfCompressViewModel @Inject constructor(
     private fun recycleSourcePreview() {
         previewJob?.cancel()
         previewRequestId += 1
-        _uiState.value.sourcePagePreview?.recycle()
         _uiState.update {
             it.copy(sourcePagePreview = null, isSourcePagePreviewLoading = false)
         }

@@ -40,7 +40,8 @@ fun ChromeIconButton(
         MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.58f)
     }
     Surface(
-        modifier = modifier.size(44.dp),
+        // 48dp so the IconButton's minimum touch size is not capped by the parent.
+        modifier = modifier.size(48.dp),
         color = resolvedContainerColor,
         shape = MaterialTheme.shapes.large,
         shadowElevation = 0.dp,
