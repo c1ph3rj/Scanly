@@ -112,6 +112,7 @@ fun QrHistoryScreen(
                     QrEmptyState(
                         title = "No codes yet",
                         body = "Scanned and created codes are kept here.",
+                        pipLine = `in`.c1ph3rj.scanly.feature.pip.PipLines.QR_HISTORY_EMPTY,
                     )
                 }
                 sections.isEmpty() -> Box(
@@ -121,6 +122,8 @@ fun QrHistoryScreen(
                     QrEmptyState(
                         title = "No matches",
                         body = "Try another search or filter.",
+                        pipLine = `in`.c1ph3rj.scanly.feature.pip.PipLines.QR_NO_MATCHES,
+                        pipMood = `in`.c1ph3rj.scanly.feature.pip.PipMood.DIZZY,
                     )
                 }
                 else -> LazyColumn(

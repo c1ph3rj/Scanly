@@ -265,6 +265,14 @@ private fun FaqEmptyState(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
+        if (`in`.c1ph3rj.scanly.feature.pip.LocalPipPreferences.current.enabled) {
+            `in`.c1ph3rj.scanly.feature.pip.PipSays(
+                line = `in`.c1ph3rj.scanly.feature.pip.PipLines.FAQ_EMPTY,
+                mood = `in`.c1ph3rj.scanly.feature.pip.PipMood.DIZZY,
+                size = 64.dp,
+                modifier = Modifier.padding(bottom = 8.dp),
+            )
+        }
         Text(
             text = if (query.isEmpty()) {
                 "No answers in this category."

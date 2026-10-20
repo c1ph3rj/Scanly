@@ -45,15 +45,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.CameraAlt
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Description
-import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.FlashOff
 import androidx.compose.material.icons.filled.FlashOn
 import androidx.compose.material.icons.filled.Grid3x3
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -77,14 +75,13 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -102,6 +99,7 @@ import `in`.c1ph3rj.scanly.core.ml.DetectionFrame
 import `in`.c1ph3rj.scanly.domain.model.PageCaptureDraft
 import `in`.c1ph3rj.scanly.domain.model.ScanPage
 import `in`.c1ph3rj.scanly.feature.components.PagePreview
+import `in`.c1ph3rj.scanly.feature.pip.LocalPipPreferences
 import `in`.c1ph3rj.scanly.core.ui.PreviewDisplaySize
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -460,7 +458,8 @@ private fun CameraCaptureLayout(
             CameraPreviewViewport(
                 modifier = Modifier
                     .weight(1f)
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp, vertical = 4.dp),
                 aspectRatio = previewAspectRatio,
                 liveDetection = uiState.liveDetection,
                 onCameraReady = onCameraReady,
@@ -580,7 +579,7 @@ private fun CameraPreviewViewport(
             modifier = Modifier
                 .width(previewSize.width.dp)
                 .height(previewSize.height.dp)
-                .clipToBounds(),
+                .clip(CameraPreviewShape),
         ) {
             CameraPreview(
                 modifier = Modifier.fillMaxSize(),
@@ -652,12 +651,22 @@ private fun CameraPreviewFeedback(
     Box(
         modifier = modifier,
     ) {
-        PreviewStatusHud(
-            liveDetection = liveDetection,
-            modifier = Modifier
-                .align(Alignment.TopCenter)
-                .padding(top = 16.dp),
-        )
+        if (LocalPipPreferences.current.showCameraCoaching) {
+            PipCameraCoach(
+                liveDetection = liveDetection,
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .fillMaxWidth()
+                    .padding(start = 12.dp, end = 12.dp, bottom = 12.dp),
+            )
+        } else {
+            PreviewStatusHud(
+                liveDetection = liveDetection,
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .padding(top = 16.dp),
+            )
+        }
     }
 }
 
@@ -672,16 +681,24 @@ private fun PortraitCaptureDockContent(
             .fillMaxSize()
             .padding(horizontal = 18.dp, vertical = 8.dp),
     ) {
+        RecentCaptureStack(
+            pages = uiState.pages,
+            enabled = !uiState.captureInProgress,
+            onOpenDocument = onOpenDocument,
+            modifier = Modifier.align(Alignment.CenterStart),
+        )
         CaptureButton(
             busy = uiState.captureInProgress,
             replacement = uiState.isReplacementMode,
             onClick = onCapture,
             modifier = Modifier.align(Alignment.Center),
         )
-        RecentCaptureStack(
-            pages = uiState.pages,
+        CaptureDoneButton(
+            pageCount = uiState.pages.size,
+            visible = uiState.pages.isNotEmpty() && !uiState.isReplacementMode,
             enabled = !uiState.captureInProgress,
-            onOpenDocument = onOpenDocument,
+            onClick = onOpenDocument,
+            compact = false,
             modifier = Modifier.align(Alignment.CenterEnd),
         )
     }
@@ -709,6 +726,14 @@ private fun LandscapeCaptureDockContent(
             replacement = uiState.isReplacementMode,
             onClick = onCapture,
             modifier = Modifier.align(Alignment.Center),
+        )
+        CaptureDoneButton(
+            pageCount = uiState.pages.size,
+            visible = uiState.pages.isNotEmpty() && !uiState.isReplacementMode,
+            enabled = !uiState.captureInProgress,
+            onClick = onOpenDocument,
+            compact = true,
+            modifier = Modifier.align(Alignment.BottomCenter),
         )
     }
 }
@@ -816,8 +841,8 @@ private fun CameraTopBar(
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         ChromeIconButton(
-            icon = Icons.AutoMirrored.Filled.ArrowBack,
-            contentDescription = "Back",
+            icon = Icons.Filled.Close,
+            contentDescription = "Close camera",
             onClick = onNavigateUp,
             enabled = navigationEnabled,
             containerColor = Color.Transparent,
@@ -855,10 +880,8 @@ private fun CaptureControlStrip(
             enabled = torchAvailable,
             onClick = onTorchToggle,
         )
-        TopControlButton(
-            icon = Icons.Filled.AutoAwesome,
-            label = if (autoCaptureEnabled) "Turn auto-capture off" else "Turn auto-capture on",
-            active = autoCaptureEnabled,
+        AutoCapturePill(
+            enabled = autoCaptureEnabled,
             onClick = onAutoCaptureToggle,
         )
         TopControlButton(
@@ -895,16 +918,12 @@ private fun TopControlButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
 ) {
-    val colorScheme = MaterialTheme.colorScheme
-    val containerColor = when {
-        active -> colorScheme.primary
-        enabled -> colorScheme.surfaceContainerHighest
-        else -> colorScheme.surfaceContainer
-    }
+    // Over the camera, controls stay quiet: white glyphs, and a soft disc with a teal glyph when on.
+    val containerColor = if (active) Color.White.copy(alpha = 0.14f) else Color.Transparent
     val contentColor = when {
-        active -> colorScheme.onPrimary
-        enabled -> colorScheme.onSurface
-        else -> colorScheme.onSurface.copy(alpha = 0.38f)
+        !enabled -> Color.White.copy(alpha = 0.38f)
+        active -> CameraAccent
+        else -> Color.White
     }
     Surface(
         onClick = onClick,
@@ -913,10 +932,6 @@ private fun TopControlButton(
             .size(48.dp),
         color = containerColor,
         shape = CircleShape,
-        border = BorderStroke(
-            1.dp,
-            if (active) Color.Transparent else colorScheme.outline.copy(alpha = 0.52f),
-        ),
         tonalElevation = 0.dp,
         shadowElevation = 0.dp,
     ) {
@@ -939,8 +954,13 @@ private fun CaptureButton(
     replacement: Boolean = false,
 ) {
     val colorScheme = MaterialTheme.colorScheme
+    // The whole 86dp ring is the button; before, only the inner disc took taps.
     Surface(
-        modifier = modifier.size(86.dp),
+        onClick = onClick,
+        enabled = !busy,
+        modifier = modifier
+            .size(86.dp)
+            .semantics { contentDescription = if (replacement) "Replace page" else "Capture" },
         shape = CircleShape,
         color = Color.Transparent,
         border = BorderStroke(3.dp, colorScheme.primary),
@@ -952,11 +972,7 @@ private fun CaptureButton(
             contentAlignment = Alignment.Center,
         ) {
             Surface(
-                onClick = onClick,
-                enabled = !busy,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .semantics { contentDescription = if (replacement) "Replace page" else "Capture" },
+                modifier = Modifier.fillMaxSize(),
                 shape = CircleShape,
                 color = when {
                     busy -> colorScheme.primary
@@ -976,151 +992,6 @@ private fun CaptureButton(
                 }
             }
         }
-    }
-}
-
-@Composable
-private fun CameraPermissionPrompt(
-    isPermanentlyDenied: Boolean,
-    onAllowCamera: () -> Unit,
-    onNavigateUp: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    val windowSizeInfo = rememberWindowSizeInfo()
-    val cardMaxWidth = if (windowSizeInfo.isTablet) 440.dp else 360.dp
-
-    Column(
-        modifier = modifier
-            .background(Color.Black)
-            .statusBarsPadding()
-            .navigationBarsPadding(),
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 12.dp, vertical = 8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            ChromeIconButton(
-                icon = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = "Back",
-                onClick = onNavigateUp,
-                containerColor = Color.Transparent,
-                contentColor = Color.White,
-            )
-        }
-
-        Box(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxWidth()
-                .padding(horizontal = 24.dp),
-            contentAlignment = Alignment.Center,
-        ) {
-            Surface(
-                modifier = Modifier.widthIn(max = cardMaxWidth),
-                color = MaterialTheme.colorScheme.surfaceContainerHigh,
-                shape = MaterialTheme.shapes.extraLarge,
-            ) {
-                Column(
-                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 28.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                ) {
-                    Surface(
-                        modifier = Modifier.size(56.dp),
-                        shape = MaterialTheme.shapes.large,
-                        color = MaterialTheme.colorScheme.primaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                    ) {
-                        Box(contentAlignment = Alignment.Center) {
-                            Icon(
-                                imageVector = Icons.Filled.CameraAlt,
-                                contentDescription = null,
-                                modifier = Modifier.size(28.dp),
-                            )
-                        }
-                    }
-
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
-                    ) {
-                        Text(
-                            text = "Camera access needed",
-                            style = MaterialTheme.typography.headlineSmall,
-                            fontWeight = FontWeight.SemiBold,
-                            textAlign = TextAlign.Center,
-                        )
-                        Text(
-                            text = if (isPermanentlyDenied) {
-                                "Camera permission is blocked for Scanly. Open Settings, " +
-                                    "tap Permissions, and turn Camera on to scan documents."
-                            } else {
-                                "Scanly needs your camera to capture and straighten document pages. " +
-                                    "Photos stay on your device until you export or share them."
-                            },
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            textAlign = TextAlign.Center,
-                        )
-                    }
-
-                    if (!isPermanentlyDenied) {
-                        Column(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalArrangement = Arrangement.spacedBy(10.dp),
-                        ) {
-                            CameraPermissionBullet("Live preview with edge detection")
-                            CameraPermissionBullet("Camera active only while scanning")
-                            CameraPermissionBullet("Scans saved locally on this device")
-                        }
-                    }
-
-                    Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(4.dp),
-                    ) {
-                        Button(
-                            onClick = onAllowCamera,
-                            modifier = Modifier.fillMaxWidth(),
-                        ) {
-                            Text(
-                                text = if (isPermanentlyDenied) {
-                                    "Open Settings"
-                                } else {
-                                    "Allow camera access"
-                                },
-                            )
-                        }
-                        TextButton(onClick = onNavigateUp) {
-                            Text("Not now")
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun CameraPermissionBullet(text: String) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-        verticalAlignment = Alignment.Top,
-    ) {
-        Text(
-            text = "•",
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.primary,
-        )
-        Text(
-            text = text,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
     }
 }
 
@@ -1145,6 +1016,7 @@ private fun CameraStateCard(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
+                PipMissingDocumentNote()
                 Text(
                     text = title,
                     style = MaterialTheme.typography.headlineSmall,
@@ -1464,7 +1336,11 @@ private fun DocumentDetectionOverlay(
             )
         }
 
-        if (liveDetection.autoCaptureEnabled && liveDetection.countdownValue != null) {
+        if (
+            liveDetection.autoCaptureEnabled &&
+            liveDetection.countdownValue != null &&
+            !LocalPipPreferences.current.showCameraCoaching
+        ) {
             Surface(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)

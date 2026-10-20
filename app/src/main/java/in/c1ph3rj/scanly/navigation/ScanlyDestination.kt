@@ -153,6 +153,10 @@ object SettingsAppearanceDestination {
     const val route = "settings/appearance"
 }
 
+object SettingsPipDestination {
+    const val route = "settings/pip"
+}
+
 object SettingsDetectionDestination {
     const val route = "settings/detection"
 }

@@ -10,8 +10,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - **PDF to JPG** (Tools → PDF) — pick a PDF, choose pages, JPG or PNG, and sharing (1240 px) or print (2480 px, 300 dpi A4) size. Images save to Pictures/Scanly and can be shared all at once or a few at a time.
 
+- **Meet Pip** — Scanly's pixel mascot from the website now lives in the app as a friendly helper. Pip says one short line on first run, every empty screen (Home, Library, folders, documents, search, QR history, help, page text), the camera permission screen and the export sheet, then gets out of the way. Tap Pip for a hello.
+- **Camera coaching** — the guide at the top of the camera now has Pip in it, reacting to detection (searching, edges found, hold steady with a progress bar, captured, too dark, blurry, lens covered). The preview, edge overlay, grid and countdown are unchanged.
+- **Daily tip on Home** — one short, closable tip a day about a real feature, under the greeting.
+- **Settings › Pip, your helper** — turn Pip off entirely (screens fall back to plain text) or choose tips, camera coaching, export cheers and animation separately. Pip stays still when system animations are off.
+
+- **Camera step in onboarding** — on a fresh install (or after clearing app data) "Get started" leads to a short step that asks for the camera with context. It is skipped when the camera is already allowed, and "Maybe later" always continues.
+- **Done in the camera** — once a page is captured, a teal **Done** button opens the document.
+
 ### Changed
 
+- **Camera layout** — rounded preview (same 3:4 ratio), Pip's coaching at the bottom of the preview with the countdown in its line, captures on the left, a labelled AUTO pill and quieter flash/grid buttons. The whole shutter ring is now tappable.
+- **Recent searches** — redesigned pills: centred text, a 44dp height, and separate tap targets for searching again and removing.
+- **Touch feedback** — settings switches, the "Apply filter to all pages" card and Pip's master switch now highlight their full shape when pressed.
+- **Camera permission screen** — redesigned around an empty viewfinder with Pip; the blocked state spells out the trip to Settings.
+- **Empty states** — the generated illustrations are replaced by Pip (and removed from the app).
 - **New document covers** — documents without a scanned page yet get a redesigned generated cover: a dark brand-teal field, a stack of tilted sheets crossed by a scan beam, and the title set large at the bottom. Each document keeps its own colour (teal, midnight, ember or lime), picked from its title. Existing empty documents pick up the new cover when you rename them.
 
 ## [1.0.18] - 2026-10-17

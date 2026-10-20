@@ -1,11 +1,6 @@
 package `in`.c1ph3rj.scanly.feature.onboarding
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.scaleIn
@@ -24,7 +19,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
@@ -36,10 +30,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
-import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.CameraAlt
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.PictureAsPdf
@@ -62,15 +53,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import `in`.c1ph3rj.scanly.core.ui.ScanlyTestTags
-import androidx.compose.ui.semantics.clearAndSetSemantics
-import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -79,6 +66,12 @@ import androidx.compose.ui.unit.dp
 import `in`.c1ph3rj.scanly.core.ui.WindowWidthClass
 import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import `in`.c1ph3rj.scanly.feature.components.ScanlyAppLogo
+import `in`.c1ph3rj.scanly.feature.pip.PipLines
+import `in`.c1ph3rj.scanly.feature.pip.PipMood
+import `in`.c1ph3rj.scanly.feature.pip.PipSays
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import `in`.c1ph3rj.scanly.ui.theme.ScanlyTheme
 import kotlinx.coroutines.delay
 
@@ -440,7 +433,12 @@ private fun OnboardingMessage(
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text(
-                text = "Paper in. Ready-to-share out.",
+                text = buildAnnotatedString {
+                    withStyle(SpanStyle(color = MaterialTheme.colorScheme.primary)) {
+                        append("Paper in.")
+                    }
+                    append(" Ready-to-share out.")
+                },
                 style = if (prominent) {
                     MaterialTheme.typography.displaySmall
                 } else {
@@ -641,51 +639,12 @@ private fun ScannerHero(
     visible: Boolean,
     compact: Boolean,
     modifier: Modifier = Modifier,
-    heroHeight: Dp = if (compact) 184.dp else 360.dp,
+    heroHeight: Dp = if (compact) 248.dp else 360.dp,
 ) {
-    val transition = rememberInfiniteTransition(label = "onboarding_scanner")
-    val scanProgress by transition.animateFloat(
-        initialValue = 0f,
-        targetValue = 1f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(2_200, easing = FastOutSlowInEasing),
-            repeatMode = RepeatMode.Reverse,
-        ),
-        label = "scan_progress",
-    )
-    val floatingOffset by transition.animateFloat(
-        initialValue = -4f,
-        targetValue = 4f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(2_800, easing = FastOutSlowInEasing),
-            repeatMode = RepeatMode.Reverse,
-        ),
-        label = "floating_offset",
-    )
-    val cardRotation by transition.animateFloat(
-        initialValue = -1.2f,
-        targetValue = 1.2f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(3_600, easing = FastOutSlowInEasing),
-            repeatMode = RepeatMode.Reverse,
-        ),
-        label = "document_rotation",
-    )
-    val expanded = !compact && heroHeight >= 400.dp
-    val documentWidth = when {
-        compact -> 116.dp
-        expanded -> 190.dp
-        else -> 166.dp
-    }
-    val documentHeight = when {
-        compact -> 142.dp
-        expanded -> 238.dp
-        else -> 208.dp
-    }
-    val scanRange = when {
-        compact -> 100.dp
-        expanded -> 184.dp
-        else -> 158.dp
+    val pipSize = when {
+        compact -> 112.dp
+        heroHeight >= 400.dp -> 160.dp
+        else -> 128.dp
     }
 
     AnimatedVisibility(
@@ -697,143 +656,26 @@ private fun ScannerHero(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(heroHeight)
-                .clip(MaterialTheme.shapes.extraLarge)
-                .background(
-                    Brush.radialGradient(
-                        colors = listOf(
-                            MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.92f),
-                            MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.62f),
-                            MaterialTheme.colorScheme.surfaceContainer,
-                        ),
-                    ),
-                )
-                .clearAndSetSemantics {
-                    contentDescription = "Scanly automatically detecting a document"
-                },
+                .testTag("onboarding_pip"),
             contentAlignment = Alignment.Center,
         ) {
-            FloatingIconTile(
-                icon = Icons.Filled.AutoAwesome,
-                size = if (compact) 38.dp else if (expanded) 56.dp else 50.dp,
-                modifier = Modifier
-                    .align(Alignment.TopStart)
-                    .padding(if (compact) 16.dp else if (expanded) 36.dp else 28.dp)
-                    .offset(y = floatingOffset.dp),
-            )
-            FloatingIconTile(
-                icon = Icons.Filled.Folder,
-                size = if (compact) 36.dp else if (expanded) 54.dp else 48.dp,
-                modifier = Modifier
-                    .align(Alignment.BottomStart)
-                    .padding(if (compact) 18.dp else if (expanded) 42.dp else 34.dp)
-                    .offset(y = (-floatingOffset).dp),
-            )
-            FloatingIconTile(
-                icon = Icons.Filled.PictureAsPdf,
-                size = if (compact) 38.dp else if (expanded) 56.dp else 50.dp,
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(if (compact) 18.dp else if (expanded) 40.dp else 32.dp)
-                    .offset(y = (-floatingOffset).dp),
-            )
-
-            Surface(
-                modifier = Modifier
-                    .width(documentWidth)
-                    .height(documentHeight)
-                    .graphicsLayer { rotationZ = cardRotation }
-                    .shadow(16.dp, RoundedCornerShape(20.dp)),
-                shape = RoundedCornerShape(20.dp),
-                color = MaterialTheme.colorScheme.surface,
-                border = BorderStroke(
-                    1.dp,
-                    MaterialTheme.colorScheme.primary.copy(alpha = 0.25f),
-                ),
-            ) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                PipSays(
+                    line = PipLines.ONBOARDING,
+                    mood = PipMood.IDLE,
+                    size = pipSize,
+                    bubbleMaxWidth = if (compact) 270.dp else 320.dp,
+                )
+                // A soft floor so Pip stands on something.
                 Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Description,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.58f),
-                        modifier = Modifier.size(
-                            if (compact) 58.dp else if (expanded) 94.dp else 82.dp,
-                        ),
-                    )
-                    Box(
-                        modifier = Modifier
-                            .align(Alignment.TopCenter)
-                            .offset(y = 18.dp + (scanRange * scanProgress))
-                            .fillMaxWidth()
-                            .height(3.dp)
-                            .background(
-                                Brush.horizontalGradient(
-                                    colors = listOf(
-                                        Color.Transparent,
-                                        MaterialTheme.colorScheme.primary,
-                                        Color.Transparent,
-                                    ),
-                                ),
-                            ),
-                    )
-                }
+                    modifier = Modifier
+                        .padding(top = 2.dp)
+                        .width(pipSize * 0.6f)
+                        .height(6.dp)
+                        .clip(RoundedCornerShape(50))
+                        .background(MaterialTheme.colorScheme.onBackground.copy(alpha = 0.08f)),
+                )
             }
-
-            Surface(
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(if (compact) 14.dp else if (expanded) 34.dp else 28.dp)
-                    .offset(y = floatingOffset.dp),
-                shape = RoundedCornerShape(50),
-                color = MaterialTheme.colorScheme.surface.copy(alpha = 0.94f),
-                contentColor = MaterialTheme.colorScheme.primary,
-                shadowElevation = 6.dp,
-            ) {
-                Row(
-                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
-                    horizontalArrangement = Arrangement.spacedBy(7.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.CheckCircle,
-                        contentDescription = null,
-                        modifier = Modifier.size(18.dp),
-                    )
-                    Text(
-                        text = "Edges detected",
-                        style = MaterialTheme.typography.labelLarge,
-                        fontWeight = FontWeight.SemiBold,
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun FloatingIconTile(
-    icon: ImageVector,
-    size: Dp,
-    modifier: Modifier = Modifier,
-) {
-    Surface(
-        modifier = modifier.size(size),
-        shape = MaterialTheme.shapes.medium,
-        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.82f),
-        contentColor = MaterialTheme.colorScheme.primary,
-        border = BorderStroke(
-            1.dp,
-            MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.65f),
-        ),
-    ) {
-        Box(contentAlignment = Alignment.Center) {
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                modifier = Modifier.size(size * 0.5f),
-            )
         }
     }
 }

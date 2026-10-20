@@ -175,6 +175,8 @@ fun QrEmptyState(
     title: String,
     body: String,
     modifier: Modifier = Modifier,
+    pipLine: String? = null,
+    pipMood: `in`.c1ph3rj.scanly.feature.pip.PipMood = `in`.c1ph3rj.scanly.feature.pip.PipMood.IDLE,
 ) {
     Column(
         modifier = modifier
@@ -183,6 +185,14 @@ fun QrEmptyState(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
+        if (pipLine != null && `in`.c1ph3rj.scanly.feature.pip.LocalPipPreferences.current.enabled) {
+            `in`.c1ph3rj.scanly.feature.pip.PipSays(
+                line = pipLine,
+                mood = pipMood,
+                size = 80.dp,
+                modifier = Modifier.padding(bottom = 12.dp),
+            )
+        }
         Text(
             text = title,
             style = MaterialTheme.typography.titleMedium,

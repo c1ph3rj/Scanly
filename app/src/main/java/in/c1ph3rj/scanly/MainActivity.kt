@@ -26,6 +26,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -40,6 +41,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
+import `in`.c1ph3rj.scanly.feature.pip.LocalPipPreferences
 import `in`.c1ph3rj.scanly.core.ui.ImageImportSupport
 import `in`.c1ph3rj.scanly.domain.model.ThemeMode
 import `in`.c1ph3rj.scanly.feature.camera.ScanSessionDestination
@@ -48,7 +50,7 @@ import `in`.c1ph3rj.scanly.feature.document.DocumentDestination
 import `in`.c1ph3rj.scanly.feature.launch.LaunchActionEvent
 import `in`.c1ph3rj.scanly.feature.launch.LaunchActionViewModel
 import `in`.c1ph3rj.scanly.feature.widget.ScanlyWidgetSupport
-import `in`.c1ph3rj.scanly.feature.onboarding.OnboardingScreen
+import `in`.c1ph3rj.scanly.feature.onboarding.OnboardingFlow
 import `in`.c1ph3rj.scanly.feature.onboarding.OnboardingStatus
 import `in`.c1ph3rj.scanly.feature.onboarding.OnboardingViewModel
 import `in`.c1ph3rj.scanly.feature.update.AppUpdateCheckTrigger
@@ -105,6 +107,7 @@ private fun ScanlyApp(
     val launchActionViewModel: LaunchActionViewModel = hiltViewModel()
     val themeMode by appSettingsViewModel.themeMode.collectAsStateWithLifecycle()
     val pureBlackEnabled by appSettingsViewModel.pureBlackEnabled.collectAsStateWithLifecycle()
+    val pipPreferences by appSettingsViewModel.pipPreferences.collectAsStateWithLifecycle()
     val updateUiState by appUpdateViewModel.uiState.collectAsStateWithLifecycle()
     val onboardingUiState by onboardingViewModel.uiState.collectAsStateWithLifecycle()
     val launchImportProgress by launchActionViewModel.importProgress.collectAsStateWithLifecycle()
@@ -208,109 +211,111 @@ private fun ScanlyApp(
         onDispose {}
     }
 
-    ScanlyTheme(
-        darkTheme = isDarkTheme,
-        pureBlack = pureBlackEnabled,
-    ) {
-        Scaffold(
-            snackbarHost = {
-                FlexibleUpdateSnackbarHost(
-                    hostState = flexibleUpdateSnackbarHostState,
-                    visible = updateUiState.flexibleUpdateDownloaded,
-                    promptToken = updateUiState.flexibleUpdatePromptToken,
-                    onRestartNow = appUpdateViewModel::completeFlexibleUpdate,
-                    modifier = Modifier.padding(16.dp),
-                )
-            },
-            containerColor = MaterialTheme.colorScheme.background,
-            contentWindowInsets = WindowInsets.safeDrawing.only(
-                WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom,
-            ),
-        ) { innerPadding ->
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-                    .consumeWindowInsets(innerPadding)
-                    .background(MaterialTheme.colorScheme.background),
-            ) {
-                AnimatedContent(
-                    targetState = onboardingUiState.status,
-                    transitionSpec = {
-                        fadeIn(tween(durationMillis = 320)) togetherWith
-                            fadeOut(tween(durationMillis = 220))
-                    },
-                    label = "first_run_content",
-                ) { onboardingStatus ->
-                    when (onboardingStatus) {
-                        OnboardingStatus.LOADING -> Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(MaterialTheme.colorScheme.background),
-                        )
-
-                        OnboardingStatus.REQUIRED -> OnboardingScreen(
-                            uiState = onboardingUiState,
-                            onComplete = onboardingViewModel::completeOnboarding,
-                            onDismissError = onboardingViewModel::dismissError,
-                        )
-
-                        OnboardingStatus.COMPLETE -> {
-                            ScanlyNavHost(
-                                navController = navController,
-                                appUpdateUiState = updateUiState,
-                                onCheckForUpdates = {
-                                    appUpdateViewModel.checkForUpdates(AppUpdateCheckTrigger.Manual)
-                                },
-                                onScan = launchActionViewModel::requestScan,
-                                onImport = launchActionViewModel::requestImport,
+    CompositionLocalProvider(LocalPipPreferences provides pipPreferences) {
+        ScanlyTheme(
+            darkTheme = isDarkTheme,
+            pureBlack = pureBlackEnabled,
+        ) {
+            Scaffold(
+                snackbarHost = {
+                    FlexibleUpdateSnackbarHost(
+                        hostState = flexibleUpdateSnackbarHostState,
+                        visible = updateUiState.flexibleUpdateDownloaded,
+                        promptToken = updateUiState.flexibleUpdatePromptToken,
+                        onRestartNow = appUpdateViewModel::completeFlexibleUpdate,
+                        modifier = Modifier.padding(16.dp),
+                    )
+                },
+                containerColor = MaterialTheme.colorScheme.background,
+                contentWindowInsets = WindowInsets.safeDrawing.only(
+                    WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom,
+                ),
+            ) { innerPadding ->
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding)
+                        .consumeWindowInsets(innerPadding)
+                        .background(MaterialTheme.colorScheme.background),
+                ) {
+                    AnimatedContent(
+                        targetState = onboardingUiState.status,
+                        transitionSpec = {
+                            fadeIn(tween(durationMillis = 320)) togetherWith
+                                fadeOut(tween(durationMillis = 220))
+                        },
+                        label = "first_run_content",
+                    ) { onboardingStatus ->
+                        when (onboardingStatus) {
+                            OnboardingStatus.LOADING -> Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .background(MaterialTheme.colorScheme.background),
                             )
-                            // Start redirects only after NavHost is composed so Scan/Import
-                            // skip the in-app name dialog and go straight to camera / picker.
-                            LaunchedEffect(launchActionViewModel, navController) {
-                                launch {
-                                    launchActionViewModel.events.collect { event ->
-                                        handleLaunchActionEvent(
-                                            event = event,
-                                            navController = navController,
-                                            onRequestImport = {
-                                                importImagesLauncher.launch(
-                                                    ImageImportSupport.createPickRequest(),
-                                                )
-                                            },
-                                            onShowMessage = { message ->
-                                                android.widget.Toast.makeText(
-                                                    context,
-                                                    message,
-                                                    android.widget.Toast.LENGTH_LONG,
-                                                ).show()
-                                            },
-                                        )
+
+                            OnboardingStatus.REQUIRED -> OnboardingFlow(
+                                uiState = onboardingUiState,
+                                onComplete = onboardingViewModel::completeOnboarding,
+                                onDismissError = onboardingViewModel::dismissError,
+                            )
+
+                            OnboardingStatus.COMPLETE -> {
+                                ScanlyNavHost(
+                                    navController = navController,
+                                    appUpdateUiState = updateUiState,
+                                    onCheckForUpdates = {
+                                        appUpdateViewModel.checkForUpdates(AppUpdateCheckTrigger.Manual)
+                                    },
+                                    onScan = launchActionViewModel::requestScan,
+                                    onImport = launchActionViewModel::requestImport,
+                                )
+                                // Start redirects only after NavHost is composed so Scan/Import
+                                // skip the in-app name dialog and go straight to camera / picker.
+                                LaunchedEffect(launchActionViewModel, navController) {
+                                    launch {
+                                        launchActionViewModel.events.collect { event ->
+                                            handleLaunchActionEvent(
+                                                event = event,
+                                                navController = navController,
+                                                onRequestImport = {
+                                                    importImagesLauncher.launch(
+                                                        ImageImportSupport.createPickRequest(),
+                                                    )
+                                                },
+                                                onShowMessage = { message ->
+                                                    android.widget.Toast.makeText(
+                                                        context,
+                                                        message,
+                                                        android.widget.Toast.LENGTH_LONG,
+                                                    ).show()
+                                                },
+                                            )
+                                        }
                                     }
+                                    yield()
+                                    launchActionViewModel.onAppReady()
                                 }
-                                yield()
-                                launchActionViewModel.onAppReady()
                             }
                         }
                     }
-                }
 
-                if (onboardingUiState.status == OnboardingStatus.COMPLETE) {
-                    updateUiState.dialogCheckResult?.let { checkResult ->
-                        AppUpdateDialog(
-                            checkResult = checkResult,
-                            onDismiss = appUpdateViewModel::dismissUpdateDialog,
-                            onUpdate = appUpdateViewModel::startUpdate,
+                    if (onboardingUiState.status == OnboardingStatus.COMPLETE) {
+                        updateUiState.dialogCheckResult?.let { checkResult ->
+                            AppUpdateDialog(
+                                checkResult = checkResult,
+                                onDismiss = appUpdateViewModel::dismissUpdateDialog,
+                                onUpdate = appUpdateViewModel::startUpdate,
+                            )
+                        }
+                    }
+
+                    if (launchImportProgress.active) {
+                        ScanlyImportProgressOverlay(
+                            current = launchImportProgress.current,
+                            total = launchImportProgress.total,
+                            stageLabel = launchImportProgress.stageLabel,
                         )
                     }
-                }
-
-                if (launchImportProgress.active) {
-                    ScanlyImportProgressOverlay(
-                        current = launchImportProgress.current,
-                        total = launchImportProgress.total,
-                        stageLabel = launchImportProgress.stageLabel,
-                    )
                 }
             }
         }

@@ -39,6 +39,9 @@ import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import `in`.c1ph3rj.scanly.domain.model.DocumentTitleFormat
 import `in`.c1ph3rj.scanly.domain.model.GroupTitleFormat
 import `in`.c1ph3rj.scanly.feature.components.*
+import `in`.c1ph3rj.scanly.feature.pip.LocalPipPreferences
+import `in`.c1ph3rj.scanly.feature.pip.PipLines
+import `in`.c1ph3rj.scanly.feature.pip.PipViewModel
 import androidx.compose.ui.unit.Dp
 import androidx.activity.compose.BackHandler
 import kotlinx.coroutines.flow.collectLatest
@@ -53,6 +56,7 @@ fun HomeRoute(
     onOpenSearch: () -> Unit = {},
 ) {
     val viewModel: HomeViewModel = hiltViewModel()
+    val pipViewModel: PipViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     var createForScan by rememberSaveable { mutableStateOf(false) }
@@ -98,6 +102,7 @@ fun HomeRoute(
         onCreateGroup = viewModel::createGroup,
         onSuggestTitle = viewModel::suggestDocumentTitle,
         onSuggestGroupTitle = viewModel::suggestGroupTitle,
+        onDismissPipTip = pipViewModel::dismissTodaysTip,
     )
 
     HomeRatingPromptHost(viewModel = viewModel)
@@ -118,10 +123,22 @@ fun HomeScreen(
     onCreateGroup: (String) -> Unit,
     onSuggestTitle: suspend (DocumentTitleFormat) -> String,
     onSuggestGroupTitle: suspend (GroupTitleFormat) -> String,
+    onDismissPipTip: () -> Unit = {},
 ) {
     var createDialogVisible by rememberSaveable { mutableStateOf(false) }
     var createFolderDialogVisible by rememberSaveable { mutableStateOf(false) }
     val windowSizeInfo = rememberWindowSizeInfo()
+    val pipPreferences = LocalPipPreferences.current
+    val todayEpochDay = remember { java.time.LocalDate.now().toEpochDay() }
+    val hasContent = uiState.recentDocuments.isNotEmpty() || uiState.recentGroups.isNotEmpty()
+    var pokeCount by remember { mutableIntStateOf(0) }
+    var pokeLine by remember { mutableStateOf<String?>(null) }
+    LaunchedEffect(pokeCount) {
+        if (pokeCount == 0) return@LaunchedEffect
+        pokeLine = PipLines.pokes[(pokeCount - 1) % PipLines.pokes.size]
+        kotlinx.coroutines.delay(3_600L)
+        pokeLine = null
+    }
 
     BackHandler(enabled = uiState.isImporting) { /* block back while processing */ }
 
@@ -153,7 +170,30 @@ fun HomeScreen(
                     modifier = Modifier
                         .padding(horizontal = windowSizeInfo.horizontalPadding)
                         .padding(bottom = 12.dp),
+                    pip = if (pipPreferences.enabled && hasContent) {
+                        { HomeHeaderPip(onPoke = { pokeCount++ }) }
+                    } else {
+                        null
+                    },
                 )
+            }
+
+            val showTip = pipPreferences.showHomeTips &&
+                hasContent &&
+                !uiState.isLoading &&
+                pipPreferences.tipDismissedEpochDay != todayEpochDay
+            if (pipPreferences.enabled && (pokeLine != null || showTip)) {
+                item(key = "home_pip_note", contentType = "pip_note") {
+                    HomePipNote(
+                        line = pokeLine ?: PipLines.homeTipFor(todayEpochDay),
+                        isTip = pokeLine == null,
+                        onDismissTip = onDismissPipTip,
+                        modifier = Modifier
+                            .padding(horizontal = windowSizeInfo.horizontalPadding)
+                            .padding(bottom = 16.dp)
+                            .animateItem(),
+                    )
+                }
             }
 
             item(key = "home_search", contentType = "search") {
@@ -324,15 +364,20 @@ fun HomeHeader(
     groupCount: Int,
     documentCount: Int,
     modifier: Modifier = Modifier,
+    pip: (@Composable () -> Unit)? = null,
 ) {
     val hour = java.util.Calendar.getInstance().get(java.util.Calendar.HOUR_OF_DAY)
     val greeting = greetingForHour(hour)
 
-    Column(
+    Row(
         modifier = modifier
             .fillMaxWidth()
             .statusBarsPadding()
             .padding(top = 14.dp),
+        verticalAlignment = Alignment.Bottom,
+    ) {
+    Column(
+        modifier = Modifier.weight(1f),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Text(
@@ -357,6 +402,11 @@ fun HomeHeader(
             fontWeight = FontWeight.SemiBold,
             color = MaterialTheme.colorScheme.onBackground,
         )
+    }
+    if (pip != null) {
+        Spacer(Modifier.width(8.dp))
+        pip()
+    }
     }
 }
 
@@ -506,8 +556,9 @@ private fun EmptyHomeCard(
     onCreateDocument: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    IllustratedEmptyState(
-        illustrationRes = `in`.c1ph3rj.scanly.R.drawable.empty_capture_illustration,
+    PipEmptyState(
+        pipLine = `in`.c1ph3rj.scanly.feature.pip.PipLines.HOME_EMPTY,
+        pipMood = `in`.c1ph3rj.scanly.feature.pip.PipMood.IDLE,
         title = "No documents yet",
         description = "Scan your first page and it will be ready here whenever you need it.",
         actionLabel = "Start scanning",

@@ -29,6 +29,7 @@ import `in`.c1ph3rj.scanly.feature.settings.LegalDocumentType
 import `in`.c1ph3rj.scanly.feature.settings.ModelBenchmarkRoute
 import `in`.c1ph3rj.scanly.feature.settings.SettingsAboutRoute
 import `in`.c1ph3rj.scanly.feature.settings.SettingsAppearanceRoute
+import `in`.c1ph3rj.scanly.feature.settings.SettingsPipRoute
 import `in`.c1ph3rj.scanly.feature.settings.SettingsDetectionRoute
 import `in`.c1ph3rj.scanly.feature.settings.SettingsFaqRoute
 import `in`.c1ph3rj.scanly.feature.settings.SettingsLicensesRoute
@@ -997,6 +998,7 @@ private fun ScanlyNavHostContent(
                     onOpenDetection = { navController.navigate(SettingsDetectionDestination.route) },
                     onOpenWidgets = { navController.navigate(SettingsWidgetsDestination.route) },
                     onOpenAbout = { navController.navigate(SettingsAboutDestination.route) },
+                    onOpenPip = { navController.navigate(SettingsPipDestination.route) },
                 )
             }
         }
@@ -1014,6 +1016,15 @@ private fun ScanlyNavHostContent(
                 onNavigateUp = navController::navigateUp,
                 parentEntry = parentEntry,
             )
+        }
+        composable(
+            route = SettingsPipDestination.route,
+            enterTransition = { detailPushEnter() },
+            exitTransition = { detailPushExit() },
+            popEnterTransition = { detailPopEnter() },
+            popExitTransition = { detailPopExit() },
+        ) {
+            SettingsPipRoute(onNavigateUp = navController::navigateUp)
         }
         composable(
             route = SettingsDetectionDestination.route,

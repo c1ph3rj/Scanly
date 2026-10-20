@@ -1,9 +1,9 @@
 package `in`.c1ph3rj.scanly.feature.library
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.material3.InputChip
 import androidx.compose.material3.AssistChip
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.outlined.History
@@ -84,6 +84,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.SolidColor
@@ -757,30 +758,10 @@ private fun SearchLanding(
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     uiState.recentSearches.forEach { recent ->
-                        InputChip(
-                            selected = false,
-                            onClick = { onRecent(recent) },
-                            label = { Text(recent, maxLines = 1, overflow = TextOverflow.Ellipsis) },
-                            leadingIcon = {
-                                Icon(Icons.Outlined.History, contentDescription = null, Modifier.size(18.dp))
-                            },
-                            trailingIcon = {
-                                // 48dp hit box around the 18dp glyph; the icon alone was a tiny target.
-                                Box(
-                                    modifier = Modifier
-                                        .size(48.dp)
-                                        .clip(CircleShape)
-                                        .clickable(role = Role.Button) { onRemoveRecent(recent) },
-                                    contentAlignment = Alignment.Center,
-                                ) {
-                                    Icon(
-                                        Icons.Filled.Close,
-                                        contentDescription = "Remove $recent from recent searches",
-                                        modifier = Modifier.size(18.dp),
-                                    )
-                                }
-                            },
-                            shape = CircleShape,
+                        RecentSearchPill(
+                            text = recent,
+                            onSearch = { onRecent(recent) },
+                            onRemove = { onRemoveRecent(recent) },
                         )
                     }
                 }
@@ -896,12 +877,29 @@ fun NoResultsCard(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            Icon(
-                imageVector = Icons.Filled.Search,
-                contentDescription = null,
-                modifier = Modifier.size(48.dp),
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
+            if (`in`.c1ph3rj.scanly.feature.pip.LocalPipPreferences.current.enabled) {
+                `in`.c1ph3rj.scanly.feature.pip.PipSays(
+                    line = if (stillReading) {
+                        `in`.c1ph3rj.scanly.feature.pip.PipLines.SEARCH_STILL_READING
+                    } else {
+                        `in`.c1ph3rj.scanly.feature.pip.PipLines.searchNoResults(query)
+                    },
+                    mood = if (stillReading) {
+                        `in`.c1ph3rj.scanly.feature.pip.PipMood.TALK
+                    } else {
+                        `in`.c1ph3rj.scanly.feature.pip.PipMood.DIZZY
+                    },
+                    size = 80.dp,
+                    modifier = Modifier.padding(bottom = 8.dp),
+                )
+            } else {
+                Icon(
+                    imageVector = Icons.Filled.Search,
+                    contentDescription = null,
+                    modifier = Modifier.size(48.dp),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
             Text(
                 text = "No results found",
                 style = MaterialTheme.typography.titleLarge,
@@ -966,3 +964,64 @@ private fun resultMeta(result: DocumentSearchResult): String = listOfNotNull(
 ).joinToString(" · ")
 
 private const val COLLAPSED_PAGE_HITS = 3
+
+/**
+ * A recent search: tapping the text searches again, the × removes it. Two separate touch targets,
+ * each with its ripple clipped to its own shape, inside one 44dp outlined pill.
+ */
+@Composable
+private fun RecentSearchPill(
+    text: String,
+    onSearch: () -> Unit,
+    onRemove: () -> Unit,
+) {
+    Surface(
+        shape = CircleShape,
+        color = Color.Transparent,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+    ) {
+        Row(
+            modifier = Modifier.height(44.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .clip(RoundedCornerShape(topStart = 22.dp, bottomStart = 22.dp))
+                    .clickable(role = Role.Button, onClickLabel = "Search again", onClick = onSearch)
+                    .padding(start = 14.dp, end = 6.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                Icon(
+                    Icons.Outlined.History,
+                    contentDescription = null,
+                    modifier = Modifier.size(18.dp),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Text(
+                    text = text,
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.widthIn(max = 200.dp),
+                )
+            }
+            Box(
+                modifier = Modifier
+                    .size(44.dp)
+                    .clip(CircleShape)
+                    .clickable(role = Role.Button, onClick = onRemove),
+                contentAlignment = Alignment.Center,
+            ) {
+                Icon(
+                    Icons.Filled.Close,
+                    contentDescription = "Remove $text from recent searches",
+                    modifier = Modifier.size(18.dp),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
+    }
+}

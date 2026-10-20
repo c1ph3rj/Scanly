@@ -583,8 +583,9 @@ private fun GroupStatsHeader(documentCount: Int, totalPageCount: Int) {
 
 @Composable
 private fun EmptyGroupCard(onAddDocument: () -> Unit) {
-    `in`.c1ph3rj.scanly.feature.components.IllustratedEmptyState(
-        illustrationRes = `in`.c1ph3rj.scanly.R.drawable.empty_library_illustration,
+    `in`.c1ph3rj.scanly.feature.components.PipEmptyState(
+        pipLine = `in`.c1ph3rj.scanly.feature.pip.PipLines.FOLDER_EMPTY,
+        pipMood = `in`.c1ph3rj.scanly.feature.pip.PipMood.IDLE,
         title = "This folder is empty",
         description = "Add a document here to keep related scans together.",
         actionLabel = "Add documents",

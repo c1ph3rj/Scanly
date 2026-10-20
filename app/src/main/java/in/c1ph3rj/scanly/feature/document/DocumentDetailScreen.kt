@@ -718,6 +718,7 @@ fun DocumentDetailScreen(
 
     if (exportSheetVisible && document != null) {
         ExportShareSheet(
+            pageCount = uiState.pages.size,
             exportInProgress = uiState.isExporting,
             onDismiss = { exportSheetVisible = false },
             onSavePdf = {
@@ -1018,6 +1019,7 @@ private fun AddPageSheet(
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 private fun ExportShareSheet(
+    pageCount: Int,
     exportInProgress: Boolean,
     onDismiss: () -> Unit,
     onSavePdf: () -> Unit,
@@ -1030,6 +1032,16 @@ private fun ExportShareSheet(
         containerColor = { MaterialTheme.colorScheme.surface },
     ) {
         ScanlySheetContent {
+            if (`in`.c1ph3rj.scanly.feature.pip.LocalPipPreferences.current.showCelebrations && pageCount > 0) {
+                `in`.c1ph3rj.scanly.feature.pip.PipSays(
+                    line = `in`.c1ph3rj.scanly.feature.pip.PipLines.exportReady(pageCount),
+                    mood = `in`.c1ph3rj.scanly.feature.pip.PipMood.HAPPY,
+                    size = 48.dp,
+                    layout = `in`.c1ph3rj.scanly.feature.pip.PipLayout.BESIDE,
+                    bubbleMaxWidth = 260.dp,
+                    modifier = Modifier.padding(bottom = 4.dp),
+                )
+            }
             Text(
                 text = "Export & share",
                 style = MaterialTheme.typography.titleLarge,
@@ -1537,8 +1549,9 @@ private fun EmptyDocumentCard(
     onUploadImage: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    `in`.c1ph3rj.scanly.feature.components.IllustratedEmptyState(
-        illustrationRes = `in`.c1ph3rj.scanly.R.drawable.empty_pages_illustration,
+    `in`.c1ph3rj.scanly.feature.components.PipEmptyState(
+        pipLine = `in`.c1ph3rj.scanly.feature.pip.PipLines.DOCUMENT_NO_PAGES,
+        pipMood = `in`.c1ph3rj.scanly.feature.pip.PipMood.TALK,
         title = "No pages yet",
         description = "Scan a page or import up to ${ImageImportSupport.MAX_IMAGES_PER_IMPORT} images to begin this document.",
         actionLabel = "Scan a page",
