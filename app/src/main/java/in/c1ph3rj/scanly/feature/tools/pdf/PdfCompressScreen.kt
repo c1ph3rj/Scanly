@@ -94,14 +94,25 @@ private enum class CompressStep { Pick, Options, Working, Done }
 fun PdfCompressRoute(
     onNavigateUp: () -> Unit,
     onPreviewPdf: (ExportArtifact) -> Unit,
+    initialSource: PdfToolSource? = null,
 ) {
     val viewModel: PdfCompressViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
     // rememberSaveable: rotation must keep the picker open after "Change" and closed after a pick.
-    var showPicker by rememberSaveable { mutableStateOf(true) }
+    var showPicker by rememberSaveable { mutableStateOf(initialSource == null) }
     var returnToOptionsOnPickerBack by rememberSaveable { mutableStateOf(false) }
+
+    // Opened from the reader's menu with that PDF: skip the picker, and back returns to the reader.
+    val fromReader = initialSource != null
+    var initialSourceApplied by rememberSaveable { mutableStateOf(false) }
+    LaunchedEffect(initialSource) {
+        if (initialSource != null && !initialSourceApplied) {
+            initialSourceApplied = true
+            viewModel.onSourcesChosen(listOf(initialSource))
+        }
+    }
     val step = when {
         uiState.result != null -> CompressStep.Done
         uiState.isProcessing -> CompressStep.Working
@@ -133,8 +144,12 @@ fun PdfCompressRoute(
     }
     BackHandler(enabled = step == CompressStep.Pick && uiState.sources.isNotEmpty(), onBack = onPickerBack)
     BackHandler(enabled = step == CompressStep.Options) {
-        returnToOptionsOnPickerBack = false
-        showPicker = true
+        if (fromReader) {
+            onNavigateUp()
+        } else {
+            returnToOptionsOnPickerBack = false
+            showPicker = true
+        }
     }
     BackHandler(enabled = step == CompressStep.Done) { viewModel.clearResult() }
     // A compression run cannot be cancelled, so back does nothing until it finishes.

@@ -8,6 +8,12 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.layout.ContentScale
+import `in`.c1ph3rj.scanly.core.common.DocumentPresentationFormatter
+import `in`.c1ph3rj.scanly.feature.components.CachedThumbnail
+import `in`.c1ph3rj.scanly.feature.components.formatLibraryModifiedDate
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,7 +33,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.DeleteOutline
-import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.FileOpen
 import androidx.compose.material.icons.filled.FolderOpen
@@ -939,6 +944,20 @@ private fun AddDocumentPickerRow(
     onToggle: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val context = LocalContext.current
+    // Names alone are often near-identical ("Scan 20-Oct…"), so pair the cover with when it was last edited.
+    val meta = remember(document.pageCount, document.updatedAtMillis) {
+        val pages = when (document.pageCount) {
+            0 -> "No pages yet"
+            1 -> "1 page"
+            else -> "${document.pageCount} pages"
+        }
+        val time = android.text.format.DateFormat.getTimeFormat(context)
+            .format(java.util.Date(document.updatedAtMillis))
+        "$pages  ·  ${formatLibraryModifiedDate(document.updatedAtMillis)}, $time"
+    }
+    val thumbShape = RoundedCornerShape(8.dp)
+
     Surface(
         onClick = onToggle,
         modifier = modifier.semantics { selected = isSelected },
@@ -960,10 +979,49 @@ private fun AddDocumentPickerRow(
         tonalElevation = 0.dp,
     ) {
         Row(
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 12.dp),
+            modifier = Modifier.padding(start = 10.dp, end = 14.dp, top = 10.dp, bottom = 10.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalArrangement = Arrangement.spacedBy(14.dp),
         ) {
+            CachedThumbnail(
+                thumbnailPath = document.coverThumbnailPath,
+                title = document.title,
+                contentRevision = document.updatedAtMillis,
+                modifier = Modifier
+                    .size(width = 48.dp, height = 64.dp)
+                    .border(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.7f), thumbShape),
+                shape = thumbShape,
+                contentScale = ContentScale.Crop,
+                alignment = Alignment.TopCenter,
+                placeholderIcon = {
+                    Text(
+                        text = DocumentPresentationFormatter.initials(document.title),
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        fontWeight = FontWeight.SemiBold,
+                    )
+                },
+                containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+            )
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(4.dp),
+            ) {
+                Text(
+                    text = document.title,
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.SemiBold,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                )
+                Text(
+                    text = meta,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
             Icon(
                 imageVector = if (isSelected) {
                     Icons.Filled.CheckCircle
@@ -976,42 +1034,8 @@ private fun AddDocumentPickerRow(
                 } else {
                     MaterialTheme.colorScheme.onSurfaceVariant
                 },
-                modifier = Modifier.size(22.dp),
+                modifier = Modifier.size(24.dp),
             )
-            Surface(
-                modifier = Modifier.size(36.dp),
-                color = if (isSelected) {
-                    selectedAccent.copy(alpha = 0.16f)
-                } else {
-                    MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.55f)
-                },
-                shape = MaterialTheme.shapes.medium,
-                shadowElevation = 0.dp,
-                tonalElevation = 0.dp,
-            ) {
-                Box(contentAlignment = Alignment.Center) {
-                    Icon(
-                        imageVector = Icons.Filled.Description,
-                        contentDescription = null,
-                        tint = if (isSelected) selectedAccent else MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(18.dp),
-                    )
-                }
-            }
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = document.title,
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Medium,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
-                Text(
-                    text = if (document.pageCount == 1) "1 page" else "${document.pageCount} pages",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
         }
     }
 }

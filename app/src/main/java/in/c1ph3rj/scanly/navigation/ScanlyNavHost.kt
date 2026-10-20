@@ -41,6 +41,7 @@ import `in`.c1ph3rj.scanly.feature.tools.pdf.PdfCompressRoute
 import `in`.c1ph3rj.scanly.feature.tools.pdf.PdfMergeRoute
 import `in`.c1ph3rj.scanly.feature.tools.pdf.PdfPasswordRoute
 import `in`.c1ph3rj.scanly.feature.tools.pdf.PdfReaderRoute
+import `in`.c1ph3rj.scanly.feature.tools.pdf.PdfReaderTool
 import `in`.c1ph3rj.scanly.feature.tools.pdf.PdfWatermarkRoute
 import `in`.c1ph3rj.scanly.feature.tools.pdf.PdfSignRoute
 import `in`.c1ph3rj.scanly.feature.tools.pdf.PdfToImagesRoute
@@ -813,6 +814,17 @@ private fun ScanlyNavHostContent(
                 .orEmpty()
             PdfReaderRoute(
                 onNavigateUp = navController::navigateUp,
+                onOpenTool = { tool, source ->
+                    val toolRoute = when (tool) {
+                        PdfReaderTool.SIGN -> ToolsPdfSignDestination.route
+                        PdfReaderTool.COMPRESS -> ToolsPdfCompressDestination.route
+                        PdfReaderTool.MERGE -> ToolsPdfMergeDestination.route
+                        PdfReaderTool.PASSWORD -> ToolsPdfPasswordDestination.route
+                        PdfReaderTool.WATERMARK -> ToolsPdfWatermarkDestination.route
+                        PdfReaderTool.TO_IMAGES -> ToolsPdfToImagesDestination.route
+                    }
+                    navController.navigate(pdfToolRoute(toolRoute, source))
+                },
                 initialSource = filePath.takeIf(String::isNotBlank)?.let {
                     PdfToolSource.AppFile(
                         filePath = it,
@@ -822,13 +834,15 @@ private fun ScanlyNavHostContent(
             )
         }
         composable(
-            route = ToolsPdfMergeDestination.route,
+            route = pdfToolRoutePattern(ToolsPdfMergeDestination.route),
+            arguments = listOf(pdfToolSourceNavArgument()),
             enterTransition = { detailPushEnter() },
             exitTransition = { detailPushExit() },
             popEnterTransition = { detailPopEnter() },
             popExitTransition = { detailPopExit() },
         ) {
             PdfMergeRoute(
+                initialSource = it.pdfToolSource(),
                 onNavigateUp = navController::navigateUp,
                 onPreviewPdf = { artifact ->
                     navController.navigate(
@@ -838,13 +852,15 @@ private fun ScanlyNavHostContent(
             )
         }
         composable(
-            route = ToolsPdfCompressDestination.route,
+            route = pdfToolRoutePattern(ToolsPdfCompressDestination.route),
+            arguments = listOf(pdfToolSourceNavArgument()),
             enterTransition = { detailPushEnter() },
             exitTransition = { detailPushExit() },
             popEnterTransition = { detailPopEnter() },
             popExitTransition = { detailPopExit() },
         ) {
             PdfCompressRoute(
+                initialSource = it.pdfToolSource(),
                 onNavigateUp = navController::navigateUp,
                 onPreviewPdf = { artifact ->
                     navController.navigate(
@@ -854,24 +870,28 @@ private fun ScanlyNavHostContent(
             )
         }
         composable(
-            route = ToolsPdfToImagesDestination.route,
+            route = pdfToolRoutePattern(ToolsPdfToImagesDestination.route),
+            arguments = listOf(pdfToolSourceNavArgument()),
             enterTransition = { detailPushEnter() },
             exitTransition = { detailPushExit() },
             popEnterTransition = { detailPopEnter() },
             popExitTransition = { detailPopExit() },
         ) {
             PdfToImagesRoute(
+                initialSource = it.pdfToolSource(),
                 onNavigateUp = navController::navigateUp,
             )
         }
         composable(
-            route = ToolsPdfPasswordDestination.route,
+            route = pdfToolRoutePattern(ToolsPdfPasswordDestination.route),
+            arguments = listOf(pdfToolSourceNavArgument()),
             enterTransition = { detailPushEnter() },
             exitTransition = { detailPushExit() },
             popEnterTransition = { detailPopEnter() },
             popExitTransition = { detailPopExit() },
         ) {
             PdfPasswordRoute(
+                initialSource = it.pdfToolSource(),
                 onNavigateUp = navController::navigateUp,
                 onPreviewPdf = { artifact ->
                     navController.navigate(
@@ -881,13 +901,15 @@ private fun ScanlyNavHostContent(
             )
         }
         composable(
-            route = ToolsPdfWatermarkDestination.route,
+            route = pdfToolRoutePattern(ToolsPdfWatermarkDestination.route),
+            arguments = listOf(pdfToolSourceNavArgument()),
             enterTransition = { detailPushEnter() },
             exitTransition = { detailPushExit() },
             popEnterTransition = { detailPopEnter() },
             popExitTransition = { detailPopExit() },
         ) {
             PdfWatermarkRoute(
+                initialSource = it.pdfToolSource(),
                 onNavigateUp = navController::navigateUp,
                 onPreviewPdf = { artifact ->
                     navController.navigate(
@@ -897,13 +919,15 @@ private fun ScanlyNavHostContent(
             )
         }
         composable(
-            route = ToolsPdfSignDestination.route,
+            route = pdfToolRoutePattern(ToolsPdfSignDestination.route),
+            arguments = listOf(pdfToolSourceNavArgument()),
             enterTransition = { detailPushEnter() },
             exitTransition = { detailPushExit() },
             popEnterTransition = { detailPopEnter() },
             popExitTransition = { detailPopExit() },
         ) {
             PdfSignRoute(
+                initialSource = it.pdfToolSource(),
                 onNavigateUp = navController::navigateUp,
                 onPreviewPdf = { artifact ->
                     navController.navigate(

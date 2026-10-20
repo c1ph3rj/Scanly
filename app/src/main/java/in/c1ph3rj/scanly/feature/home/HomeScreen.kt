@@ -10,6 +10,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.material.icons.outlined.Search
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -205,18 +206,6 @@ fun HomeScreen(
                 )
             }
 
-            if (uiState.isLoading) {
-                item(key = "home_loading", contentType = "loading") {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 48.dp),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        CircularProgressIndicator()
-                    }
-                }
-            } else {
             item(key = "quick_actions", contentType = "quick_actions") {
                 QuickActionsRow(
                     onScan = { createDialogVisible = true },
@@ -229,6 +218,14 @@ fun HomeScreen(
                 )
             }
 
+            if (uiState.isLoading) {
+                item(key = "home_loading", contentType = "loading") {
+                    HomeLoadingSkeleton(
+                        isTablet = windowSizeInfo.isTablet,
+                        horizontalPadding = windowSizeInfo.horizontalPadding,
+                    )
+                }
+            } else {
             if (uiState.recentGroups.isNotEmpty()) {
                 item(key = "groups_header", contentType = "section_header") {
                     LibrarySectionHeader(
@@ -548,6 +545,106 @@ fun QuickActionCard(
                 color = resolvedContentColor
             )
         }
+    }
+}
+
+/**
+ * Shimmering stand-in for the folders row and recent documents, shown until the library's
+ * first load lands. Shapes mirror [LibraryFolderTile] and the compact document row so the
+ * real content settles in without a jump.
+ */
+@Composable
+private fun HomeLoadingSkeleton(
+    isTablet: Boolean,
+    horizontalPadding: Dp,
+    modifier: Modifier = Modifier,
+) {
+    val progress = rememberShimmerProgress()
+    val lineShape = androidx.compose.foundation.shape.RoundedCornerShape(6.dp)
+    val tileWidth = if (isTablet) 132.dp else 104.dp
+
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .semantics { contentDescription = "Loading your documents" },
+    ) {
+        SkeletonSectionHeader(progress, Modifier.padding(horizontal = horizontalPadding))
+        // Not user-scrollable: the scroll container only lets tiles run off the edge like the real row.
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .horizontalScroll(androidx.compose.foundation.rememberScrollState(), enabled = false)
+                .padding(horizontal = (horizontalPadding - LibraryFolderTileInset).coerceAtLeast(0.dp))
+                .padding(bottom = 20.dp),
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+            repeat(4) {
+                Column(
+                    modifier = Modifier
+                        .width(tileWidth)
+                        .padding(LibraryFolderTileInset),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    ShimmerBlock(
+                        progress = progress,
+                        shape = MaterialTheme.shapes.large,
+                        modifier = Modifier.fillMaxWidth().aspectRatio(1f),
+                    )
+                    ShimmerBlock(progress, lineShape, Modifier.fillMaxWidth(0.8f).height(14.dp))
+                    ShimmerBlock(progress, lineShape, Modifier.fillMaxWidth(0.55f).height(10.dp))
+                }
+            }
+        }
+
+        SkeletonSectionHeader(
+            progress,
+            Modifier.padding(horizontal = horizontalPadding).padding(bottom = 4.dp),
+        )
+        val rowCount = 3
+        repeat(rowCount) { index ->
+            LibraryListItem(
+                first = index == 0,
+                last = index == rowCount - 1,
+                modifier = Modifier.padding(horizontal = horizontalPadding),
+            ) {
+                Row(
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    ShimmerBlock(
+                        progress = progress,
+                        shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp),
+                        modifier = Modifier.size(width = 48.dp, height = 64.dp),
+                    )
+                    Column(
+                        modifier = Modifier.weight(1f),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        ShimmerBlock(progress, lineShape, Modifier.fillMaxWidth(0.7f).height(16.dp))
+                        ShimmerBlock(progress, lineShape, Modifier.fillMaxWidth(0.45f).height(12.dp))
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun SkeletonSectionHeader(
+    progress: State<Float>,
+    modifier: Modifier = Modifier,
+) {
+    val lineShape = androidx.compose.foundation.shape.RoundedCornerShape(6.dp)
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(48.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+    ) {
+        ShimmerBlock(progress, lineShape, Modifier.width(140.dp).height(18.dp))
+        ShimmerBlock(progress, lineShape, Modifier.width(52.dp).height(14.dp))
     }
 }
 

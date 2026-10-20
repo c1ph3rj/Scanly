@@ -28,11 +28,11 @@ How Scanly is structured at **v1.0.18**. For navigation detail see [navigation.m
 | Component | File | Role |
 | --- | --- | --- |
 | Application | `ScanlyApplication.kt` | `@HiltAndroidApp`; custom WorkManager + `HiltWorkerFactory` |
-| Activity | `MainActivity.kt` | Onboarding gate, theme, NavHost, update dialog, widget/shortcut launch actions |
+| Activity | `MainActivity.kt` | Onboarding gate, theme, NavHost, update dialog, widget/shortcut launch actions, Open in Scanly PDF intents (`IncomingPdf`) |
 | Theme | `ui/theme/` | `ScanlyTheme`, colors, typography |
 | Navigation | `navigation/ScanlyNavHost.kt` | Route registration, bottom nav / rail |
 
-`MainActivity` hosts three top-level ViewModels:
+`MainActivity` hosts four top-level ViewModels:
 
 - `AppSettingsViewModel` — observes theme mode and pure black preference
 - `OnboardingViewModel` — first-run gate
@@ -51,6 +51,8 @@ All code under `app/src/main/java/in/c1ph3rj/scanly/`:
 | `feature/library/` | Library and combined name/page-text search |
 | `feature/text/` | Extracted page-text reading and correction |
 | `feature/sign/` | PDF and scan signing, signature creation and management |
+| `feature/pip/` | Pip mascot: art, speech bubble, lines, `PipViewModel`, `LocalPipPreferences` |
+| `feature/tools/pdf/` | PDF reader and tools; `IncomingPdf` (Open in Scanly), `PdfReaderMenu` (hand-off to tools) |
 | `feature/launch/` | Widget/shortcut launch action parsing and redirects |
 | `feature/widget/` | App widget providers (actions, scan, QR) |
 | `domain/model/` | Business models |
@@ -104,6 +106,7 @@ Hilt modules in `di/` install into `SingletonComponent`:
 | `PageTextModule` | `PageTextRepository`, `SearchHistoryRepository` |
 | `SignatureModule` | `SignatureRepository`, `PageMarkupRepository` |
 | `RatingModule` | Rating-prompt repository |
+| `PipModule` | `PipRepository` → `DefaultPipRepository` (DataStore `pip_*` keys) |
 | `SettingsModule` | `SettingsRepository` |
 | `AppDataModule` | `AppDataRepository` |
 | `ProcessingModule` | `PageImageProcessor` |

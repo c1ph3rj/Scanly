@@ -1,5 +1,29 @@
 package `in`.c1ph3rj.scanly.feature.tools.pdf
 
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.animation.core.animate
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.calculateCentroid
+import androidx.compose.foundation.gestures.calculatePan
+import androidx.compose.foundation.gestures.calculateZoom
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.FilterQuality
+import androidx.compose.ui.graphics.TransformOrigin
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onSizeChanged
+import kotlinx.coroutines.launch
 import android.content.ClipData
 import android.content.Context
 import android.content.Intent
@@ -124,6 +148,7 @@ private val ReaderChromeMuted = Color(0xFF9AA5AB)
 fun PdfReaderRoute(
     onNavigateUp: () -> Unit,
     initialSource: PdfToolSource? = null,
+    onOpenTool: (PdfReaderTool, PdfToolSource) -> Unit = { _, _ -> },
 ) {
     val viewModel: PdfReaderViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -226,6 +251,11 @@ fun PdfReaderRoute(
                     onToggleChrome = viewModel::toggleChrome,
                     onToggleReaderLayout = viewModel::toggleReaderLayout,
                     onRequestThumbnail = viewModel::requestThumbnail,
+                    onOpenTool = { tool -> uiState.source?.let { onOpenTool(tool, it) } },
+                    onOpenAnother = {
+                        returnToReaderOnPickerBack = true
+                        showPicker = true
+                    },
                 )
             }
         }
@@ -341,6 +371,8 @@ private fun PdfReaderViewer(
     onToggleChrome: () -> Unit,
     onToggleReaderLayout: () -> Unit,
     onRequestThumbnail: (Int) -> Unit,
+    onOpenTool: (PdfReaderTool) -> Unit = {},
+    onOpenAnother: () -> Unit = {},
 ) {
     ForceLightSystemBarIcons()
     val context = LocalContext.current
@@ -349,6 +381,7 @@ private fun PdfReaderViewer(
         pageCount = { uiState.pageCount.coerceAtLeast(1) },
     )
     var zoomActive by remember { mutableStateOf(false) }
+    var zoomResetKey by remember { mutableIntStateOf(0) }
     var showPages by rememberSaveable { mutableStateOf(false) }
     val zoomStates = remember(uiState.pageCount) {
         (0 until uiState.pageCount).associateWith { ZoomableImageState() }
@@ -370,21 +403,22 @@ private fun PdfReaderViewer(
         }
     }
 
-    Box(modifier = Modifier.fillMaxSize().background(ReaderBackground)) {
-        Column(modifier = Modifier.fillMaxSize()) {
-            AnimatedVisibility(
-                visible = uiState.chromeVisible,
-                enter = fadeIn(),
-                exit = fadeOut(),
-            ) {
-                ReaderTopBar(title = documentTitle, onBack = onBack)
-            }
+    // The bars float over the pages and slide away, so hiding them never reflows the document.
+    // The pages keep a fixed inset of the bars' last measured height instead.
+    val density = LocalDensity.current
+    var topChromeHeight by remember { mutableIntStateOf(0) }
+    var bottomChromeHeight by remember { mutableIntStateOf(0) }
+    val topInset = with(density) { topChromeHeight.toDp() }
+    val bottomInset = with(density) { bottomChromeHeight.toDp() }
 
-            Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
+    Box(modifier = Modifier.fillMaxSize().background(ReaderBackground)) {
+            Box(modifier = Modifier.fillMaxSize()) {
                 if (uiState.pageCount > 0 && uiState.readerLayout == PdfReaderLayout.Paged) {
                     HorizontalPager(
                         state = pagerState,
-                        modifier = Modifier.fillMaxSize(),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(top = topInset, bottom = bottomInset),
                         userScrollEnabled = pdfReaderParentScrollerEnabled(zoomActive),
                         key = { it },
                     ) { pageIndex ->
@@ -430,16 +464,44 @@ private fun PdfReaderViewer(
                         onPageChange = onPageChange,
                         onToggleChrome = onToggleChrome,
                         onZoomActiveChange = { active -> zoomActive = active },
+                        topInset = topInset,
+                        bottomInset = bottomInset,
+                        zoomResetKey = zoomResetKey,
                     )
                 }
             }
 
             AnimatedVisibility(
                 visible = uiState.chromeVisible,
-                enter = fadeIn(),
-                exit = fadeOut(),
+                enter = slideInVertically(ChromeEnterSpec) { -it } + fadeIn(ChromeFadeSpec),
+                exit = slideOutVertically(ChromeExitSpec) { -it } + fadeOut(ChromeFadeSpec),
+                modifier = Modifier.align(Alignment.TopCenter),
+            ) {
+                ReaderTopBar(
+                    title = documentTitle,
+                    onBack = onBack,
+                    modifier = Modifier.onSizeChanged { topChromeHeight = it.height },
+                    actions = {
+                        PdfReaderOverflowMenu(
+                            canShare = pdfReaderCanShare(source),
+                            onShare = { source?.let { sharePdfSource(context, it) } },
+                            onOpenPages = { showPages = true },
+                            onOpenTool = onOpenTool,
+                            onOpenAnother = onOpenAnother,
+                            iconTint = ReaderChromeText,
+                        )
+                    },
+                )
+            }
+
+            AnimatedVisibility(
+                visible = uiState.chromeVisible,
+                enter = slideInVertically(ChromeEnterSpec) { it } + fadeIn(ChromeFadeSpec),
+                exit = slideOutVertically(ChromeExitSpec) { it } + fadeOut(ChromeFadeSpec),
+                modifier = Modifier.align(Alignment.BottomCenter),
             ) {
                 ReaderBottomChrome(
+                    modifier = Modifier.onSizeChanged { bottomChromeHeight = it.height },
                     pageCounter = pageCounter,
                     layout = uiState.readerLayout,
                     zoomActive = zoomActive,
@@ -448,12 +510,12 @@ private fun PdfReaderViewer(
                     onToggleLayout = onToggleReaderLayout,
                     onResetZoom = {
                         resetPdfReaderZoom(zoomStates)
+                        zoomResetKey++
                         zoomActive = false
                     },
                     onShare = { source?.let { sharePdfSource(context, it) } },
                 )
             }
-        }
 
         // With the chrome hidden, the counter stays in the corner so the page is still located.
         AnimatedVisibility(
@@ -493,6 +555,9 @@ private fun PdfReaderContinuousViewer(
     onPageChange: (Int) -> Unit,
     onToggleChrome: () -> Unit,
     onZoomActiveChange: (Boolean) -> Unit,
+    topInset: Dp = 0.dp,
+    bottomInset: Dp = 0.dp,
+    zoomResetKey: Int = 0,
 ) {
     val listState = rememberLazyListState()
 
@@ -515,13 +580,95 @@ private fun PdfReaderContinuousViewer(
         WindowWidthClass.Medium -> 720.dp
         WindowWidthClass.Expanded -> 840.dp
     }
+    // Document-level zoom, like Drive: pinch scales every page together, one finger keeps scrolling
+    // (with fling) through the whole document, and a zoomed document pans sideways.
+    var docScale by remember { mutableFloatStateOf(1f) }
+    var docOffsetX by remember { mutableFloatStateOf(0f) }
+    var viewportWidth by remember { mutableFloatStateOf(0f) }
+    val zoomScope = rememberCoroutineScope()
+    fun clampX(x: Float, scale: Float): Float {
+        val max = (viewportWidth * scale - viewportWidth) / 2f
+        return x.coerceIn(-max, max)
+    }
+    LaunchedEffect(docScale) { onZoomActiveChange(docScale > 1.01f) }
+    LaunchedEffect(zoomResetKey) {
+        if (zoomResetKey == 0) return@LaunchedEffect
+        val from = docScale
+        val startX = docOffsetX
+        animate(0f, 1f, animationSpec = tween(220)) { t, _ ->
+            docScale = from + (1f - from) * t
+            docOffsetX = startX * (1f - t)
+        }
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .clipToBounds()
+            .onSizeChanged { viewportWidth = it.width.toFloat() }
+            .pointerInput(Unit) {
+                awaitEachGesture {
+                    awaitFirstDown(requireUnconsumed = false, pass = PointerEventPass.Initial)
+                    do {
+                        val event = awaitPointerEvent(PointerEventPass.Initial)
+                        val pressed = event.changes.count { it.pressed }
+                        if (pressed >= 2) {
+                            val zoom = event.calculateZoom()
+                            val pan = event.calculatePan()
+                            val centroid = event.calculateCentroid(useCurrent = true)
+                            val oldScale = docScale
+                            val newScale = (oldScale * zoom).coerceIn(1f, MaxDocumentZoom)
+                            if (newScale != oldScale || pan != Offset.Zero) {
+                                // Keep the point under the fingers still while scaling.
+                                val anchoredX = docOffsetX + (centroid.x - viewportWidth / 2f - docOffsetX) * (1f - newScale / oldScale)
+                                docOffsetX = clampX(anchoredX + pan.x, newScale)
+                                val anchorScroll = centroid.y / oldScale - centroid.y / newScale
+                                listState.dispatchRawDelta(anchorScroll - pan.y / newScale)
+                                docScale = newScale
+                            }
+                            event.changes.forEach { it.consume() }
+                        } else if (docScale > 1f && pressed == 1) {
+                            // Vertical goes to the list (keeps fling); we only pan sideways.
+                            val pan = event.calculatePan()
+                            docOffsetX = clampX(docOffsetX + pan.x, docScale)
+                        }
+                    } while (event.changes.any { it.pressed })
+                }
+            }
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onTap = { onToggleChrome() },
+                    onDoubleTap = { tap ->
+                        zoomScope.launch {
+                            val from = docScale
+                            val to = if (from > 1.05f) 1f else DoubleTapZoom
+                            val startX = docOffsetX
+                            val targetX = if (to == 1f) 0f else clampX((viewportWidth / 2f - tap.x) * (to - 1f), to)
+                            animate(0f, 1f, animationSpec = tween(220)) { t, _ ->
+                                val scale = from + (to - from) * t
+                                val previous = docScale
+                                docScale = scale
+                                docOffsetX = clampX(startX + (targetX - startX) * t, scale)
+                                listState.dispatchRawDelta(tap.y / previous - tap.y / scale)
+                            }
+                        }
+                    },
+                )
+            },
+    ) {
     LazyColumn(
         state = listState,
-        modifier = Modifier.fillMaxSize(),
-        userScrollEnabled = pdfReaderParentScrollerEnabled(zoomActive),
+        modifier = Modifier
+            .fillMaxSize()
+            .graphicsLayer {
+                scaleX = docScale
+                scaleY = docScale
+                translationX = docOffsetX
+                transformOrigin = TransformOrigin(0.5f, 0f)
+            },
         contentPadding = PaddingValues(
-            top = 12.dp,
-            bottom = 12.dp,
+            top = 12.dp + topInset,
+            bottom = 12.dp + bottomInset,
             start = windowSizeInfo.horizontalPadding,
             end = windowSizeInfo.horizontalPadding,
         ),
@@ -543,25 +690,21 @@ private fun PdfReaderContinuousViewer(
                 )
                 .fillMaxWidth()
             if (bitmap != null) {
-                val zoomState = zoomStates[pageIndex] ?: rememberZoomableImageState("continuous-$pageIndex")
-                ZoomableBitmapViewer(
-                    imageBitmap = bitmap.asImageBitmap(),
-                    state = zoomState,
-                    allowParentHorizontalGestures = pdfReaderAllowParentScrollGestures(),
-                    onSingleTap = onToggleChrome,
-                    onZoomActiveChange = {
-                        onZoomActiveChange(pdfReaderZoomActive(zoomStates))
-                    },
-                    modifier = pageModifier.aspectRatio(bitmap.width.toFloat() / bitmap.height),
+                val imageBitmap = remember(bitmap) { bitmap.asImageBitmap() }
+                Image(
+                    bitmap = imageBitmap,
+                    contentDescription = "Page ${pageIndex + 1}",
+                    contentScale = ContentScale.Fit,
+                    filterQuality = FilterQuality.High,
+                    modifier = pageModifier
+                        .aspectRatio(bitmap.width.toFloat() / bitmap.height)
+                        .background(Color.White),
                 )
             } else {
                 Box(
                     modifier = pageModifier
-                        .height(280.dp)
-                        .background(ReaderPlaceholder)
-                        .pointerInput(pageIndex) {
-                            detectTapGestures(onTap = { onToggleChrome() })
-                        },
+                        .aspectRatio(PlaceholderPageAspect)
+                        .background(ReaderPlaceholder),
                     contentAlignment = Alignment.Center,
                 ) {
                     if (pageIndex in uiState.loadingPages) {
@@ -576,7 +719,18 @@ private fun PdfReaderContinuousViewer(
             }
         }
     }
+    }
 }
+
+private val ChromeEnterSpec = tween<androidx.compose.ui.unit.IntOffset>(240, easing = FastOutSlowInEasing)
+private val ChromeExitSpec = tween<androidx.compose.ui.unit.IntOffset>(200, easing = FastOutSlowInEasing)
+private val ChromeFadeSpec = tween<Float>(180)
+
+private const val MaxDocumentZoom = 5f
+private const val DoubleTapZoom = 2.5f
+
+/** A4 portrait until the page has rendered, so the scroll position doesn't jump. */
+private const val PlaceholderPageAspect = 0.707f
 
 /** Dark top chrome: back, the real file name on one line, and nothing on the right. */
 @Composable
@@ -584,6 +738,7 @@ private fun ReaderTopBar(
     title: String,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
+    actions: (@Composable () -> Unit)? = null,
 ) {
     Row(
         modifier = modifier
@@ -611,8 +766,8 @@ private fun ReaderTopBar(
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
         )
-        // Mirrors the back button so the file name stays centred. The right side is intentionally empty.
-        Spacer(Modifier.size(48.dp))
+        // Same width as the back button, so the file name stays centred with or without the menu.
+        if (actions != null) actions() else Spacer(Modifier.size(48.dp))
     }
 }
 
@@ -626,9 +781,10 @@ private fun ReaderBottomChrome(
     onToggleLayout: () -> Unit,
     onResetZoom: () -> Unit,
     onShare: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .background(ReaderChrome),
     ) {

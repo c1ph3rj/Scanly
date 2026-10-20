@@ -17,7 +17,7 @@ Test coverage and how to run tests in Scanly **v1.0.18**.
 
 ## Unit tests (`app/src/test/`)
 
-**78 JVM test source files** cover core logic, plus in-memory repository fakes under `testing/`:
+**83 JVM test source files** (73 test classes plus 10 in-memory repository fakes under `testing/`) cover core logic:
 
 | Area | Test files |
 | --- | --- |
@@ -34,6 +34,7 @@ Test coverage and how to run tests in Scanly **v1.0.18**.
 | Updates | `AppUpdateDialogCooldownTest`, `ReleaseMarkdownParserTest`, `AppVersionComparatorTest`, `GitHubAppUpdateRepositoryTest`, `PlayInAppUpdatePolicyTest` |
 | Export | `PdfPageLayoutResolverTest` |
 | Tools presentation | `PdfReaderPresentationTest`, `PdfToolPresentationTest`, `QrToolPresentationTest` |
+| Navigation | `PdfToolSourceArgumentTest` (PDF tool `source` argument encode/decode) |
 
 ### Placement convention
 

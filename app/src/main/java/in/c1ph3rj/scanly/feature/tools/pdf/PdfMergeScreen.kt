@@ -73,6 +73,7 @@ private enum class MergeStep { Pick, Order, Working, Done }
 fun PdfMergeRoute(
     onNavigateUp: () -> Unit,
     onPreviewPdf: (ExportArtifact) -> Unit,
+    initialSource: PdfToolSource? = null,
 ) {
     val viewModel: PdfMergeViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -88,6 +89,16 @@ fun PdfMergeRoute(
     }
     fun goTo(target: MergeStep) {
         requestedStep = target.name
+    }
+
+    // Opened from the reader's menu with that PDF: skip the picker, and back returns to the reader.
+    val fromReader = initialSource != null
+    var initialSourceApplied by rememberSaveable { mutableStateOf(false) }
+    LaunchedEffect(initialSource) {
+        if (initialSource != null && !initialSourceApplied) {
+            initialSourceApplied = true
+            viewModel.addInitialSource(initialSource)
+        }
     }
 
     val devicePicker = rememberMultiPdfPicker { uris ->

@@ -62,6 +62,7 @@ fun PdfSignRoute(
     onManageSignatures: () -> Unit,
     onCreateSignature: (SignatureKind) -> Unit,
     viewModel: PdfSignViewModel = hiltViewModel(),
+    initialSource: PdfToolSource? = null,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val editorState by viewModel.editorState.collectAsStateWithLifecycle()
@@ -70,8 +71,18 @@ fun PdfSignRoute(
     val isOpening by viewModel.isOpening.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
-    var editing by rememberSaveable { mutableStateOf(false) }
+    var editing by rememberSaveable { mutableStateOf(initialSource != null) }
     var returnToEditorOnPickerBack by rememberSaveable { mutableStateOf(false) }
+
+    // Opened from the reader's menu with that PDF: skip the picker, and back returns to the reader.
+    val fromReader = initialSource != null
+    var initialSourceApplied by rememberSaveable { mutableStateOf(false) }
+    LaunchedEffect(initialSource) {
+        if (initialSource != null && !initialSourceApplied) {
+            initialSourceApplied = true
+            viewModel.setSources(listOf(initialSource))
+        }
+    }
 
     val step = when {
         uiState.result != null -> SignStep.Done
@@ -102,7 +113,7 @@ fun PdfSignRoute(
         }
     }
 
-    BackHandler(enabled = step == SignStep.Unlock) { editing = false }
+    BackHandler(enabled = step == SignStep.Unlock) { if (fromReader) onNavigateUp() else editing = false }
     BackHandler(
         enabled = step == SignStep.Pick && uiState.sources.isNotEmpty() && returnToEditorOnPickerBack,
         onBack = onPickerBack,
@@ -134,7 +145,7 @@ fun PdfSignRoute(
             SignStep.Unlock -> SignUnlockStep(
                 uiState = uiState,
                 viewModel = viewModel,
-                onBack = { editing = false },
+                onBack = { if (fromReader) onNavigateUp() else editing = false },
             )
             SignStep.Edit -> if (isOpening || !isSessionReady) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {

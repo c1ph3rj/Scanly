@@ -41,6 +41,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
+import `in`.c1ph3rj.scanly.feature.tools.pdf.IncomingPdf
+import `in`.c1ph3rj.scanly.navigation.ToolsPdfReaderDestination
+import kotlinx.coroutines.flow.first
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import `in`.c1ph3rj.scanly.feature.pip.LocalPipPreferences
 import `in`.c1ph3rj.scanly.core.ui.ImageImportSupport
 import `in`.c1ph3rj.scanly.domain.model.ThemeMode
@@ -130,14 +135,39 @@ private fun ScanlyApp(
         launchActionViewModel.importImagesAsDocument(uris)
     }
 
+    var pendingPdfUri by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf<String?>(null) }
+    var coldStartPdfHandled by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf(false) }
+
     LaunchedEffect(launchActionViewModel, coldStartIntent) {
         launchActionViewModel.onColdStartIntent(coldStartIntent)
+        if (!coldStartPdfHandled) {
+            coldStartPdfHandled = true
+            IncomingPdf.uriFrom(coldStartIntent)?.let { pendingPdfUri = it.toString() }
+        }
     }
 
     LaunchedEffect(launchActionViewModel, externalIntents) {
         externalIntents.collect { intent ->
             launchActionViewModel.onNewIntent(intent)
+            IncomingPdf.uriFrom(intent)?.let { pendingPdfUri = it.toString() }
         }
+    }
+
+    // "Open with Scanly": copy the PDF and open it in the reader once the app is past onboarding.
+    LaunchedEffect(pendingPdfUri, onboardingUiState.status) {
+        val uri = pendingPdfUri ?: return@LaunchedEffect
+        if (onboardingUiState.status != OnboardingStatus.COMPLETE) return@LaunchedEffect
+        val copied = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
+            IncomingPdf.copyToCache(context, android.net.Uri.parse(uri))
+        }
+        pendingPdfUri = null
+        if (copied == null) {
+            android.widget.Toast.makeText(context, "Couldn't open that PDF.", android.widget.Toast.LENGTH_LONG).show()
+            return@LaunchedEffect
+        }
+        // The nav graph is set when the NavHost first composes; wait for it.
+        androidx.compose.runtime.snapshotFlow { navController.currentBackStackEntry }.first { it != null }
+        navController.navigate(ToolsPdfReaderDestination.route(copied.first, copied.second))
     }
 
     LaunchedEffect(appUpdateViewModel) {

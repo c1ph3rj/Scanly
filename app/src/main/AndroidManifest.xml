@@ -37,6 +37,20 @@
                 <action android:name="in.c1ph3rj.scanly.action.LIBRARY" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+            <!-- "Open with Scanly" for PDFs from Files, mail, chat and cloud apps. -->
+            <intent-filter android:label="Open in Scanly">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="content" />
+                <data android:scheme="file" />
+                <data android:mimeType="application/pdf" />
+            </intent-filter>
+            <intent-filter android:label="Open in Scanly">
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="application/pdf" />
+            </intent-filter>
             <meta-data
                 android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />

@@ -114,14 +114,24 @@ private enum class PdfToImagesStep { Pick, Pages, Working, Done }
 private val PageCellMinWidth = 96.dp
 
 @Composable
-fun PdfToImagesRoute(onNavigateUp: () -> Unit) {
+fun PdfToImagesRoute(onNavigateUp: () -> Unit, initialSource: PdfToolSource? = null) {
     val viewModel: PdfToImagesViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
     // rememberSaveable: rotation must keep the picker open after "Change" and closed after a pick.
-    var showPicker by rememberSaveable { mutableStateOf(true) }
+    var showPicker by rememberSaveable { mutableStateOf(initialSource == null) }
     var returnToPagesOnPickerBack by rememberSaveable { mutableStateOf(false) }
+
+    // Opened from the reader's menu with that PDF: skip the picker, and back returns to the reader.
+    val fromReader = initialSource != null
+    var initialSourceApplied by rememberSaveable { mutableStateOf(false) }
+    LaunchedEffect(initialSource) {
+        if (initialSource != null && !initialSourceApplied) {
+            initialSourceApplied = true
+            viewModel.onSourceChosen(initialSource)
+        }
+    }
     val step = when {
         uiState.result != null -> PdfToImagesStep.Done
         uiState.isExporting -> PdfToImagesStep.Working
@@ -157,7 +167,7 @@ fun PdfToImagesRoute(onNavigateUp: () -> Unit) {
         }
     }
     BackHandler(enabled = step == PdfToImagesStep.Pick && uiState.source != null, onBack = onPickerBack)
-    BackHandler(enabled = step == PdfToImagesStep.Pages, onBack = openPicker)
+    BackHandler(enabled = step == PdfToImagesStep.Pages, onBack = if (fromReader) onNavigateUp else openPicker)
     // An export can't be cancelled halfway (pages already in the gallery would be orphaned).
     BackHandler(enabled = step == PdfToImagesStep.Working) { }
 
@@ -182,7 +192,7 @@ fun PdfToImagesRoute(onNavigateUp: () -> Unit) {
                 )
                 PdfToImagesStep.Pages -> PagesStep(
                     uiState = uiState,
-                    onBack = openPicker,
+                    onBack = if (fromReader) onNavigateUp else openPicker,
                     onChange = openPicker,
                     onRequestThumbnail = viewModel::requestThumbnail,
                     onTogglePage = viewModel::togglePage,

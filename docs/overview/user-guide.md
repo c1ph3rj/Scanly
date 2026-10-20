@@ -4,9 +4,11 @@ How end users interact with Scanly. This describes app behavior, not implementat
 
 ## First launch
 
-1. App opens to the **onboarding** intro screen.
-2. User completes onboarding → lands on **Home**.
-3. On subsequent launches, onboarding is skipped.
+1. App opens to the **onboarding** intro screen, where Pip says hello.
+2. Tap **Get started**. If the camera is not allowed yet, a short step explains why Scanly needs it and asks for access. **Maybe later** always continues; the step is skipped when the camera is already allowed.
+3. You land on **Home**. On later launches, onboarding is skipped.
+
+While Home loads your library, shimmering placeholders stand in for folders and documents.
 
 ## Scanning a new document
 
@@ -15,16 +17,16 @@ How end users interact with Scanly. This describes app behavior, not implementat
 Home quick actions are **Scan**, **Import**, and **Folder**. Only **Scan** opens the camera.
 
 1. Tap **Scan**. A suggested name is already filled in. Keep it, tap the clear icon to type your own, or tap **Suggest name** to cycle formats, then the camera session opens.
-2. The first time, Android asks for camera access. If you deny, Scanly stays on an in-app prompt so you can allow it again. If you block camera permanently, Scanly explains that and offers **Open Settings** — it does not jump to Settings on first open.
+2. If you skipped the camera step in onboarding, Android asks for camera access now. If you deny, Scanly stays on an in-app prompt (an empty viewfinder with Pip) so you can allow it again. If you block camera permanently, Scanly spells out how to allow it in **Settings** — it does not jump to Settings on first open.
 3. Point the camera at a **physical** document. Scanly filters out many phone screens and non-document rectangles before drawing edges.
 4. Live overlay shows detected page edges and quality hints. For open books, frame a single dominant page when possible.
-5. Tap capture (or use auto-capture when stable).
-6. Capture additional pages or finish the session.
+5. Tap the shutter ring (or leave **AUTO** on to capture when the page is steady). Pip's line at the bottom of the preview coaches you — edges found, hold steady, too dark, blurry, lens covered — and shows the countdown.
+6. Capture additional pages, or tap **Done** to open the document.
 7. App navigates to **document detail** with all captured pages.
 
 **Import** opens the gallery picker (up to 50 images; see below). **Folder** opens folder creation with a suggested name.
 
-Home shows the four most recently updated documents. Tap a row to open it, or **See all** to browse the full Library. Recent files and folders use the same presentation as Library.
+Home shows **New folder**, up to three recent folders (plus **View all** when there are more), and the four most recently updated documents. Tap a row to open it, or **See all** to browse the full Library. Recent files and folders use the same presentation as Library. A closable Pip tip may appear under the greeting once a day.
 
 ### From Library
 
@@ -87,7 +89,7 @@ From **document detail**:
 ### Add documents to a group
 
 - From **document detail** → assign to a group.
-- From **group detail** → add existing documents.
+- From **group detail** → **Add documents**. Create a new document inside the folder, or tick documents that are not in a folder yet and tap **Add** (the button counts your selection, e.g. "Add 2 documents"). Each row shows the document's cover page, page count, and when it was last edited (for example "7 pages · Today, 3:35 pm"), so similar names are easy to tell apart. **Select all** / **Clear** toggles every row.
 
 ### Browse a group
 
@@ -178,6 +180,12 @@ The main Settings list is a short hub. Open a row for the full controls.
 2. Choose **System**, **Light**, or **Dark**. Applied immediately and persisted.
 3. Optionally enable **Pure black** for true black surfaces in dark theme (helps battery on AMOLED displays).
 
+### Pip, your helper
+
+1. Open **Settings → Pip, your helper**.
+2. Turn Pip off entirely (screens fall back to plain text), or keep Pip and choose **Home tips**, **camera coaching**, **export cheers**, and **animation** separately.
+3. Pip stays still when system animations are turned off.
+
 ### Document detection
 
 1. Open **Settings → Document detection**.
@@ -246,14 +254,19 @@ Open the **Tools** tab for QR and offline PDF utilities. Pick a PDF from the dev
 | Tool | What you do |
 | --- | --- |
 | QR | **Scan** a code (copy or open a link) or **Create** one from a URL or message |
-| Reader | Read a PDF with the full title, page n of m, page-by-page or continuous scroll, pinch-zoom, and tap to hide the bars |
+| Reader | Read a PDF with the full title, page n of m, page-by-page or continuous scroll, pinch-zoom, and tap to hide the bars. The ⋮ menu shares the file, jumps to **All pages**, opens it in any PDF tool below (Back returns to the reader), or opens another PDF |
 | Merge | Add two or more PDFs in listed order, then combine them |
 | Compress | Choose High / Balanced / Smallest quality, then reduce file size |
 | Password | **Protect** or **Remove** an open password |
 | Watermark | Stamp text with layout, size, pages, orientation, and opacity |
+| PDF to images | Choose pages, JPG or PNG, and **Sharing** (1240 px) or **Print** (2480 px, 300 dpi A4) size. Images save to Pictures/Scanly; share them all at once or a few at a time |
 | Sign | Place signatures, initials, text, dates, and checkboxes on a PDF, then save or share it |
 
 When a PDF is ready, preview it in Scanly, then save or share.
+
+### Open PDFs from other apps
+
+In Files, Gmail, Drive, WhatsApp, or any app that opens or shares PDFs, choose **Open in Scanly**. The PDF opens in Scanly's reader, where the ⋮ menu offers every PDF tool. Scanly works on a copy; the original file is never changed.
 
 ## Permissions
 

@@ -81,19 +81,21 @@ Typed routes (real flows):
 - `legal/{documentType}` — privacy/licenses viewer
 - `library/search` — name + page-text search
 - `document/{documentId}/text?page={page}&query={query}` — extracted text (Text / On page views)
-- `settings/appearance`, `settings/detection`, `settings/widgets`, `settings/about`, `settings/faq`, `settings/licenses`, `settings/storage`, `settings/model-benchmark` — settings hub sub-screens
+- `settings/appearance`, `settings/pip`, `settings/detection`, `settings/widgets`, `settings/about`, `settings/faq`, `settings/licenses`, `settings/storage`, `settings/model-benchmark` — settings hub sub-screens
 - `tools/qr` — QR scan + generate
-- `tools/pdf/reader`, `tools/pdf/merge`, `tools/pdf/compress`, `tools/pdf/to-images`, `tools/pdf/password`, `tools/pdf/watermark`, `tools/pdf/sign` — PDF toolkit
+- `tools/pdf/reader`, `tools/pdf/merge`, `tools/pdf/compress`, `tools/pdf/to-images`, `tools/pdf/password`, `tools/pdf/watermark`, `tools/pdf/sign` — PDF toolkit (tool routes take an optional `?source=` so the reader can hand over its open file; see `PdfToolSourceArgument.kt`)
 - `document/{documentId}/sign?page={page}` — sign a scan in place (marks composited into `processed/`, clean image kept as `processed/page_NNN.base.jpg`, layer data in `page_markups`)
 - `signatures/manage`, `signatures/create?kind={kind}` — saved signatures (`files/signatures/{id}/ink.png`, black ink alpha masks)
 
 Legacy placeholder routes (`camera`, `review`, `editor` top-level) use `FeaturePlaceholderScreen` — do not wire new features there.
 
+PDFs opened or shared from other apps ("Open in Scanly", `ACTION_VIEW` / `ACTION_SEND`) are copied to `cache/incoming_pdf/` by `IncomingPdf` and open in the reader after onboarding.
+
 Home-screen widgets / quick actions use `in.c1ph3rj.scanly.action.{SCAN,IMPORT,QR,LIBRARY}` → `LaunchActionViewModel` (see [docs/architecture/navigation.md](docs/architecture/navigation.md)).
 
 ## Testing Reality
 
-- Unit tests: `app/src/test/java/in/c1ph3rj/scanly/` (78 Kotlin test files).
+- Unit tests: `app/src/test/java/in/c1ph3rj/scanly/` (83 Kotlin test files).
 - Instrumented: `app/src/androidTest/` (onboarding UI, OpenCV filter processor, smoke).
 - See [docs/development/testing.md](docs/development/testing.md) for gaps.
 
@@ -123,7 +125,7 @@ Related product-config authoring notes: [docs/site/README.md](docs/site/README.m
 
 | File | Purpose |
 | --- | --- |
-| `MainActivity.kt` | App shell, onboarding gate, theme / pure black, update dialog, widget/shortcut redirects |
+| `MainActivity.kt` | App shell, onboarding gate, theme / pure black, update dialog, widget/shortcut redirects, Open in Scanly PDF hand-off |
 | `feature/launch/` | `ScanlyLaunchAction`, `LaunchActionViewModel` |
 | `feature/widget/` | Actions / Scan / QR `AppWidgetProvider`s |
 | `res/xml/shortcuts.xml` | Launcher quick actions |

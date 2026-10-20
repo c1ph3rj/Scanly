@@ -12,7 +12,7 @@ Version policy and release history for Scanly.
 | Room schema | `7` |
 | Min SDK | 29 (Android 10) |
 | Target / compile SDK | compile 37 / target 36 |
-| Release date | 2026-10-17 |
+| Release date | 2026-10-20 |
 
 Canonical source: `versionCode` and `versionName` in `app/build.gradle.kts`.
 
@@ -27,9 +27,12 @@ Version **1.0.18** (relative to `1.0.17`):
 - Sign PDFs from the device or Scanly library; place signatures, initials, dates, text, and checkboxes across pages
 - Sign scanned pages in place; marks remain editable and persist through page reprocessing
 - Save signatures or initials by drawing them or extracting ink from a photo
+- Pip, an optional pixel helper: lines on empty screens, camera coaching, a daily Home tip, and its own Settings screen
+- PDF to images (JPG/PNG, Sharing or Print size) and **Open in Scanly** for PDFs from other apps; the reader's ⋮ menu hands the open file to every PDF tool
+- Camera step in onboarding, redesigned camera and camera-permission screen, new generated covers, shimmer loading on Home, and cover thumbnails in the Add documents sheet
 - Room schema 7 adds saved signatures and per-page markups; prior schema 5 installs migrate through the page-text index in schema 6
 - Help & FAQ and Settings storage were refreshed; Library backup and restore were removed
-- Fixes for legal-page dark-mode contrast and Settings rating-card loading
+- Fixes for legal-page dark-mode contrast, PDF-tool back navigation, and Settings rating-card loading
 
 The compact GitHub release description used by the in-app update dialog is available in [release-notes/v1.0.18.md](release-notes/v1.0.18.md).
 
@@ -58,10 +61,12 @@ The compact GitHub release description used by the in-app update dialog is avail
 
 ## Recent releases
 
-### 1.0.18 (code 18) — 2026-10-17
+### 1.0.18 (code 18) — 2026-10-20
 
 - On-device OCR, extracted text, and full-text Library search
 - Sign PDFs and scans; save signatures and initials for reuse
+- Pip helper, PDF to images, Open in Scanly, reader-to-tool hand-off, onboarding camera step
+- Camera, permission screen, empty states, covers, and Home loading redesigned
 - Schema 7 adds signature records and editable page markups
 - Help & FAQ and storage settings refresh; Library backup and restore removed
 - Legal-page dark-mode and Settings rating-card fixes

@@ -41,7 +41,7 @@ app/
     ├── debug/                         # Local debug update binding
     ├── githubRelease/                 # GitHub release update binding
     ├── playStoreRelease/              # Google Play release update binding
-    ├── test/                          # JVM tests (78 Kotlin files)
+    ├── test/                          # JVM tests (83 Kotlin files)
     └── androidTest/                   # Instrumented tests (6 Kotlin files)
 ```
 

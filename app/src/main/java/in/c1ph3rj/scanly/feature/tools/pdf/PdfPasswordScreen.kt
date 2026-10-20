@@ -97,6 +97,7 @@ private fun PdfToolUiState.passwordStep(): PasswordStep = when {
 fun PdfPasswordRoute(
     onNavigateUp: () -> Unit,
     onPreviewPdf: (ExportArtifact) -> Unit,
+    initialSource: PdfToolSource? = null,
 ) {
     val viewModel: PdfPasswordViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -106,6 +107,17 @@ fun PdfPasswordRoute(
     val context = LocalContext.current
 
     val step = uiState.passwordStep()
+
+    // Opened from the reader's menu with that PDF: skip the picker, and back returns to the reader.
+    val fromReader = initialSource != null
+    var initialSourceApplied by rememberSaveable { mutableStateOf(false) }
+    LaunchedEffect(initialSource) {
+        if (initialSource != null && !initialSourceApplied) {
+            initialSourceApplied = true
+            viewModel.onSourcesChosen(listOf(initialSource))
+        }
+    }
+    val backFromFile: () -> Unit = { if (fromReader) onNavigateUp() else viewModel.reset() }
     val isProtect = uiState.passwordMode == PdfPasswordMode.Protect
     val fileName = uiState.sources.firstOrNull()?.label().orEmpty()
     val pageCountText = uiState.info?.pageCount?.takeIf { it > 0 }?.let(::formatPdfPageCount)
@@ -130,7 +142,7 @@ fun PdfPasswordRoute(
         // Locking or unlocking cannot be cancelled safely; stay on the working state.
     }
     BackHandler(enabled = step == PasswordStep.Set || step == PasswordStep.Unlock || step == PasswordStep.Inspecting) {
-        viewModel.reset()
+        backFromFile()
     }
     BackHandler(enabled = step == PasswordStep.Done, onBack = onNavigateUp)
 
@@ -154,7 +166,7 @@ fun PdfPasswordRoute(
             }
             PasswordStep.Inspecting -> InspectingStep(
                 subtitle = fileSubtitle,
-                onBack = viewModel::reset,
+                onBack = backFromFile,
             )
             PasswordStep.Set -> SetPasswordStep(
                 subtitle = fileSubtitle,

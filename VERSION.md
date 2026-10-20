@@ -12,7 +12,7 @@ See also [docs/releases.md](docs/releases.md) for release policy and history wit
 | Min SDK | 29 (Android 10) |
 | Target / compile SDK | compile 37 / target 36 |
 | Room schema version | `7` |
-| Release date | 2026-10-17 |
+| Release date | 2026-10-20 |
 | Branch | `master` |
 
 The version shown in **Settings** is read from `versionName` in `app/build.gradle.kts`.
@@ -30,7 +30,7 @@ The version shown in **Settings** is read from `versionName` in `app/build.gradl
 
 ### 1.0.18 (version code 18)
 
-On-device OCR and page-text search, document-type labels, searchable extracted text, and saved signatures. Sign PDFs or place editable marks on scans; signing supports signatures, initials, text, dates, and checkboxes. Help & FAQ and Settings storage were refreshed, and library backup and restore were removed. Room schema 7. See [CHANGELOG.md](CHANGELOG.md) for full details.
+On-device OCR and page-text search, document-type labels, searchable extracted text, and saved signatures. Sign PDFs or place editable marks on scans; signing supports signatures, initials, text, dates, and checkboxes. Adds Pip (an optional in-app helper with camera coaching and daily tips), a PDF to images tool, Open in Scanly for PDFs from other apps, a reader menu that hands the open file to any PDF tool, and a camera step in onboarding. The camera, camera permission screen, empty states, new-document covers and Home loading were redesigned. Help & FAQ and Settings storage were refreshed, and library backup and restore were removed. Room schema 7. See [CHANGELOG.md](CHANGELOG.md) for full details.
 
 ### 1.0.17 (version code 17)
 

@@ -8,7 +8,7 @@ One-page technical summary of Scanly **v1.0.18**. For detail see the full docs i
 | --- | --- |
 | Version | `1.0.18` (code `18`) |
 | Room schema | `7` (`MIGRATION_5_6` page text; `MIGRATION_6_7` signatures and markups) |
-| Release date | `2026-10-17` |
+| Release date | `2026-10-20` |
 | Min SDK | 29 |
 | Target SDK | 36 |
 | Module | `:app` only |
@@ -18,7 +18,7 @@ One-page technical summary of Scanly **v1.0.18**. For detail see the full docs i
 
 ```
 ScanlyApplication (WorkManager + Hilt)
-  → MainActivity → onboarding gate → ScanlyNavHost (+ widget/shortcut launch actions)
+  → MainActivity → onboarding gate → ScanlyNavHost (+ widget/shortcut launch actions, Open in Scanly for PDFs)
   feature/ (UI + ViewModels)
     → domain/usecase/
       → domain/repository/ (interfaces)
@@ -28,14 +28,14 @@ ScanlyApplication (WorkManager + Hilt)
 
 ## Features (summary)
 
-Home · Library and folder management · on-device OCR, extracted-text views, and full-text search · Tools (QR, PDF toolkit) · Sign PDFs and scanned pages, with reusable signatures · Camera scan + document gate + multi-model detection · Gallery import · Page preview/editor/crop/filter/adjust · Groups · PDF/ZIP export with save destination · Storage cleanup (library backup/restore retired) · Document detection settings + model benchmark · Pure black theme · Onboarding · Home widgets + launcher quick actions · GitHub/Play update channels
+Home (shimmer loading) · Pip helper with camera coaching and daily tips · Library and folder management · on-device OCR, extracted-text views, and full-text search · Tools (QR, PDF toolkit incl. PDF to images; reader hands its file to any tool) · Open PDFs from other apps · Sign PDFs and scanned pages, with reusable signatures · Camera scan + document gate + multi-model detection · Gallery import · Page preview/editor/crop/filter/adjust · Groups · PDF/ZIP export with save destination · Storage cleanup (library backup/restore retired) · Document detection settings + model benchmark · Pure black theme · Onboarding · Home widgets + launcher quick actions · GitHub/Play update channels
 
 ## Data
 
 - **Room v7:** documents, pages, groups, page text + FTS4, saved signatures, and editable page markups
 - **Files:** `raw/` (immutable), `processed/`, optional clean `.base.jpg`, page-owned `markups/`, and `thumbs/` per document; reusable ink under `files/signatures/`
-- **DataStore:** theme, pure black, onboarding, export destination, live/post models, automatic selection, document gate
-- **Export cache:** `cache/exports/`
+- **DataStore:** theme, pure black, onboarding, export destination, live/post models, automatic selection, document gate, Pip preferences (`pip_*`)
+- **Export cache:** `cache/exports/`; PDFs opened from other apps are copied to `cache/incoming_pdf/` (newest few kept)
 - **Legacy cleanup:** leftover archive workspace files under `cache/library-archive/` and `files/library-archive-journal/` are cleaned after backup/restore removal
 - **User-visible:** `Downloads/Scanly/` exports (or a custom SAF tree); library backup/restore is no longer available
 
@@ -67,7 +67,7 @@ Page-text recognition uses bundled ML Kit Text Recognition v2 on-device; `TextIn
 | Crop | `crop/page/{pageId}` | AI Detect, rotate, handles, Reset |
 | Extracted text | `document/{documentId}/text` | Text / On page views, corrections, copy and share |
 | Sign scan | `document/{documentId}/sign` | Editable marks composited onto page images |
-| Sign PDF | `tools/pdf/sign` | Sign a device or library PDF and save/share a new file |
+| Sign PDF | `tools/pdf/sign?source={source}` | Sign a device or library PDF and save/share a new file |
 
 ## Background work
 
@@ -79,7 +79,7 @@ Kotlin · Compose · Material 3 · Hilt · Navigation Compose · CameraX · Room
 
 ## Tests
 
-78 JVM test source files plus in-memory fakes · 6 instrumented-test source files · new unit coverage for signature ink, mark geometry/codec, and editor state · remaining gaps: Room round-trips, real PDF/ZIP I/O, live camera
+83 JVM test source files (including in-memory fakes) · 6 instrumented-test source files · new unit coverage for signature ink, mark geometry/codec, and editor state · remaining gaps: Room round-trips, real PDF/ZIP I/O, live camera
 
 ## Principles
 
