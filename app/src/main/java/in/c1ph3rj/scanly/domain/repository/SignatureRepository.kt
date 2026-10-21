@@ -26,6 +26,9 @@ interface SignatureRepository {
      */
     suspend fun extractInk(uriString: String, sensitivity: Float): ScanlyResult<Bitmap>
 
+    /** Frees the decoded upload that [extractInk] keeps between calls. Call when the create screen closes. */
+    fun clearUploadCache()
+
     suspend fun deleteSignature(id: String): ScanlyResult<Unit>
 
     /** Puts [id] first among its kind, so the sign editor offers it before the others. */

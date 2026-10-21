@@ -168,7 +168,7 @@ document/{docId}
 
 ```
 Home (new doc) or document/{docId} (add pages)
-  └─► system file picker (≤50 images)
+  └─► system image picker (≤50 images)
         └─► import pipeline (same as capture finalize)
               └─► document/{docId}
 ```

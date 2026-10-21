@@ -84,6 +84,10 @@ class GroupDetailViewModel @Inject constructor(
 
     private var exportJob: Job? = null
 
+    // In-flight guards so a fast double-tap can't delete the folder or create a document twice.
+    private var isDeleting = false
+    private var isCreatingDocument = false
+
     val uiState: StateFlow<GroupDetailUiState> = combine(
         observeGroupUseCase(groupId),
         observeGroupDocumentsUseCase(groupId),
@@ -113,20 +117,32 @@ class GroupDetailViewModel @Inject constructor(
     }
 
     fun deleteGroup(includeDocuments: Boolean) {
+        if (isDeleting) return
+        isDeleting = true
         viewModelScope.launch {
             val title = uiState.value.group?.title ?: "Folder"
             when (val result = moveGroupToTrashUseCase(groupId, title, includeDocuments)) {
+                // Stay latched on success: the folder is gone and the screen is about to close.
                 is ScanlyResult.Success -> _events.emit(GroupDetailEvent.GroupDeleted)
-                is ScanlyResult.Failure -> _events.emit(GroupDetailEvent.ShowMessage(result.error.message))
+                is ScanlyResult.Failure -> {
+                    isDeleting = false
+                    _events.emit(GroupDetailEvent.ShowMessage(result.error.message))
+                }
             }
         }
     }
 
     fun createDocumentInGroup(title: String) {
+        if (isCreatingDocument) return
+        isCreatingDocument = true
         viewModelScope.launch {
-            when (val result = createDocumentUseCase(title, groupId)) {
-                is ScanlyResult.Success -> _events.emit(GroupDetailEvent.OpenDocument(result.value))
-                is ScanlyResult.Failure -> _events.emit(GroupDetailEvent.ShowMessage(result.error.message))
+            try {
+                when (val result = createDocumentUseCase(title, groupId)) {
+                    is ScanlyResult.Success -> _events.emit(GroupDetailEvent.OpenDocument(result.value))
+                    is ScanlyResult.Failure -> _events.emit(GroupDetailEvent.ShowMessage(result.error.message))
+                }
+            } finally {
+                isCreatingDocument = false
             }
         }
     }

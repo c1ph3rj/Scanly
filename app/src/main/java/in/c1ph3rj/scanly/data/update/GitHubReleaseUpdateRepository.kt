@@ -89,13 +89,17 @@ class GitHubReleaseUpdateRepository @Inject constructor(
 
         return AppRelease(
             tagName = releaseJson.getString("tag_name"),
-            title = releaseJson.optString("name").ifBlank { releaseJson.getString("tag_name") },
-            bodyMarkdown = releaseJson.optString("body"),
+            title = releaseJson.optStringOrEmpty("name").ifBlank { releaseJson.getString("tag_name") },
+            bodyMarkdown = releaseJson.optStringOrEmpty("body"),
             htmlUrl = releaseJson.getString("html_url"),
-            publishedAt = releaseJson.optString("published_at").takeIf { it.isNotBlank() },
+            publishedAt = releaseJson.optStringOrEmpty("published_at").takeIf { it.isNotBlank() },
             apkAsset = apkAsset,
         )
     }
+
+    /** Like [JSONObject.optString], but a JSON `null` becomes "" instead of the literal "null". */
+    private fun JSONObject.optStringOrEmpty(key: String): String =
+        if (isNull(key)) "" else optString(key)
 
     private companion object {
         const val LATEST_RELEASE_URL = "https://api.github.com/repos/c1ph3rj/Scanly/releases/latest"

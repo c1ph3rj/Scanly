@@ -4,8 +4,11 @@ import android.content.Context
 import android.os.Build
 import android.content.Intent
 import android.net.Uri
+import androidx.datastore.core.handlers.ReplaceFileCorruptionHandler
+import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -19,7 +22,9 @@ import `in`.c1ph3rj.scanly.domain.model.ThemeMode
 import `in`.c1ph3rj.scanly.domain.model.ExportDestination
 import `in`.c1ph3rj.scanly.domain.model.DocumentCornerModel
 import `in`.c1ph3rj.scanly.domain.repository.SettingsRepository
+import java.io.IOException
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
@@ -27,7 +32,10 @@ import org.json.JSONArray
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private val Context.settingsDataStore by preferencesDataStore(name = "scanly_settings")
+private val Context.settingsDataStore by preferencesDataStore(
+    name = "scanly_settings",
+    corruptionHandler = ReplaceFileCorruptionHandler { emptyPreferences() },
+)
 
 @Singleton
 class DefaultSettingsRepository @Inject constructor(
@@ -35,23 +43,29 @@ class DefaultSettingsRepository @Inject constructor(
     private val dispatchers: ScanlyDispatchers,
 ) : SettingsRepository {
 
+    /** Reads fall back to defaults when the preferences file cannot be read, instead of crashing. */
+    private val safeData: Flow<Preferences>
+        get() = context.settingsDataStore.data.catch { e ->
+            if (e is IOException) emit(emptyPreferences()) else throw e
+        }
+
     override fun observeLiveDetectionModel(): Flow<DocumentCornerModel> =
-        context.settingsDataStore.data.map { DocumentCornerModel.fromStorage(it[liveDetectionModelKey]) }
+        safeData.map { DocumentCornerModel.fromStorage(it[liveDetectionModelKey]) }
 
     override suspend fun setLiveDetectionModel(model: DocumentCornerModel): ScanlyResult<Unit> =
         updateModelPreference(liveDetectionModelKey, model)
 
     override fun observePostProcessingModel(): Flow<DocumentCornerModel> =
-        context.settingsDataStore.data.map { DocumentCornerModel.fromStorage(it[postProcessingModelKey]) }
+        safeData.map { DocumentCornerModel.fromStorage(it[postProcessingModelKey]) }
 
     override suspend fun setPostProcessingModel(model: DocumentCornerModel): ScanlyResult<Unit> =
         updateModelPreference(postProcessingModelKey, model)
 
     override suspend fun getPostProcessingModel(): DocumentCornerModel =
-        DocumentCornerModel.fromStorage(context.settingsDataStore.data.first()[postProcessingModelKey])
+        DocumentCornerModel.fromStorage(safeData.first()[postProcessingModelKey])
 
     override fun observeAutomaticModelSelection(): Flow<Boolean> =
-        context.settingsDataStore.data.map { preferences ->
+        safeData.map { preferences ->
             preferences[automaticModelSelectionKey] ?: true
         }
 
@@ -59,10 +73,10 @@ class DefaultSettingsRepository @Inject constructor(
         updateBooleanPreference(automaticModelSelectionKey, enabled)
 
     override suspend fun getAutomaticModelSelection(): Boolean =
-        context.settingsDataStore.data.first()[automaticModelSelectionKey] ?: true
+        safeData.first()[automaticModelSelectionKey] ?: true
 
     override fun observeDocumentGateEnabled(): Flow<Boolean> =
-        context.settingsDataStore.data.map { preferences ->
+        safeData.map { preferences ->
             preferences[documentGateEnabledKey] ?: true
         }
 
@@ -70,10 +84,10 @@ class DefaultSettingsRepository @Inject constructor(
         updateBooleanPreference(documentGateEnabledKey, enabled)
 
     override suspend fun getDocumentGateEnabled(): Boolean =
-        context.settingsDataStore.data.first()[documentGateEnabledKey] ?: true
+        safeData.first()[documentGateEnabledKey] ?: true
 
     override fun observeExportDestination(): Flow<ExportDestination> =
-        context.settingsDataStore.data.map { preferences ->
+        safeData.map { preferences ->
             val uri = preferences[exportTreeUriKey]
             val label = preferences[exportTreeLabelKey]
             if (uri.isNullOrBlank() || label.isNullOrBlank()) {
@@ -91,7 +105,7 @@ class DefaultSettingsRepository @Inject constructor(
         updateExportDestination(null)
 
     override fun observeThemeMode(): Flow<ThemeMode> =
-        context.settingsDataStore.data.map { preferences ->
+        safeData.map { preferences ->
             ThemeMode.fromStorage(preferences[themeModeKey] ?: ThemeMode.SYSTEM.storageValue)
         }
 
@@ -115,7 +129,7 @@ class DefaultSettingsRepository @Inject constructor(
         }
 
     override fun observePureBlackEnabled(): Flow<Boolean> =
-        context.settingsDataStore.data.map { preferences ->
+        safeData.map { preferences ->
             preferences[pureBlackEnabledKey] ?: false
         }
 
@@ -123,7 +137,7 @@ class DefaultSettingsRepository @Inject constructor(
         updateBooleanPreference(pureBlackEnabledKey, enabled)
 
     override fun observeOnboardingCompleted(): Flow<Boolean> =
-        context.settingsDataStore.data.map { preferences ->
+        safeData.map { preferences ->
             preferences[onboardingCompletedKey] ?: false
         }
 
@@ -223,7 +237,7 @@ class DefaultSettingsRepository @Inject constructor(
         destination: ExportDestination.CustomTree?,
     ): ScanlyResult<Unit> = withContext(dispatchers.io) {
         runCatching {
-            val previousUri = context.settingsDataStore.data.first()[exportTreeUriKey]
+            val previousUri = safeData.first()[exportTreeUriKey]
             context.settingsDataStore.edit { preferences ->
                 if (destination == null) {
                     preferences.remove(exportTreeUriKey)

@@ -626,6 +626,11 @@ private fun TopLevelDestinationShell(
     }
 }
 
+/** Pushes [route] unless it is already on top, so a fast double-tap can't stack duplicate screens. */
+private fun NavHostController.navigateSingleTop(route: String) {
+    navigate(route) { launchSingleTop = true }
+}
+
 fun navigateScanlyTopLevel(navController: NavHostController, route: String) {
     navController.navigate(route) {
         popUpTo(navController.graph.findStartDestination().id) {
@@ -677,15 +682,15 @@ private fun ScanlyNavHostContent(
                 onNavigate = { route -> navigateToTopLevel(navController, route) },
             ) {
                 HomeRoute(
-                    onOpenSearch = { navController.navigate(LibrarySearchDestination.route) },
+                    onOpenSearch = { navController.navigateSingleTop(LibrarySearchDestination.route) },
                     onOpenDocument = { documentId ->
-                        navController.navigate(DocumentDestination.route(documentId))
+                        navController.navigateSingleTop(DocumentDestination.route(documentId))
                     },
                     onOpenScanSession = { documentId ->
-                        navController.navigate(ScanSessionDestination.route(documentId))
+                        navController.navigateSingleTop(ScanSessionDestination.route(documentId))
                     },
                     onOpenGroup = { groupId ->
-                        navController.navigate(GroupDetailDestination.route(groupId))
+                        navController.navigateSingleTop(GroupDetailDestination.route(groupId))
                     },
                     onNavigateToLibrary = {
                         libraryTabRequest = LibraryTab.All
@@ -713,15 +718,15 @@ private fun ScanlyNavHostContent(
                 LibraryRoute(
                     tabRequest = libraryTabRequest,
                     onTabRequestHandled = { libraryTabRequest = null },
-                    onOpenSearch = { navController.navigate(LibrarySearchDestination.route) },
+                    onOpenSearch = { navController.navigateSingleTop(LibrarySearchDestination.route) },
                     onOpenDocument = { documentId ->
-                        navController.navigate(DocumentDestination.route(documentId))
+                        navController.navigateSingleTop(DocumentDestination.route(documentId))
                     },
                     onOpenScanSession = { documentId ->
-                        navController.navigate(ScanSessionDestination.route(documentId))
+                        navController.navigateSingleTop(ScanSessionDestination.route(documentId))
                     },
                     onOpenGroup = { groupId ->
-                        navController.navigate(GroupDetailDestination.route(groupId))
+                        navController.navigateSingleTop(GroupDetailDestination.route(groupId))
                     },
                 )
             }
@@ -737,11 +742,11 @@ private fun ScanlyNavHostContent(
         }
         composable(route = LibrarySearchDestination.route) {
             LibrarySearchRoute(
-                onBack = { navController.popBackStack() },
-                onOpenDocument = { navController.navigate(DocumentDestination.route(it)) },
-                onOpenGroup = { navController.navigate(GroupDetailDestination.route(it)) },
+                onBack = navController::navigateUp,
+                onOpenDocument = { navController.navigateSingleTop(DocumentDestination.route(it)) },
+                onOpenGroup = { navController.navigateSingleTop(GroupDetailDestination.route(it)) },
                 onOpenPageText = { documentId, pageIndex, query ->
-                    navController.navigate(PageTextDestination.route(documentId, pageIndex, query))
+                    navController.navigateSingleTop(PageTextDestination.route(documentId, pageIndex, query))
                 },
             )
         }
@@ -779,13 +784,13 @@ private fun ScanlyNavHostContent(
             ) {
                 ToolsRoute(
                     onOpenDocument = { documentId ->
-                        navController.navigate(DocumentDestination.route(documentId))
+                        navController.navigateSingleTop(DocumentDestination.route(documentId))
                     },
                     onOpenScanSession = { documentId ->
-                        navController.navigate(ScanSessionDestination.route(documentId))
+                        navController.navigateSingleTop(ScanSessionDestination.route(documentId))
                     },
                     onOpenTool = { route ->
-                        navController.navigate(route)
+                        navController.navigateSingleTop(route)
                     },
                 )
             }
@@ -827,6 +832,7 @@ private fun ScanlyNavHostContent(
                     navController.navigate(PageTextDestination.route(documentId)) {
                         // Imported photos: Back from the text returns to Tools, not to a stale picker.
                         if (replaceTool) popUpTo(ToolsImageTextDestination.route) { inclusive = true }
+                        launchSingleTop = true
                     }
                 },
             )
@@ -866,7 +872,7 @@ private fun ScanlyNavHostContent(
                         PdfReaderTool.TO_IMAGES -> ToolsPdfToImagesDestination.route
                         PdfReaderTool.IMPORT -> ToolsPdfImportDestination.route
                     }
-                    navController.navigate(pdfToolRoute(toolRoute, source))
+                    navController.navigateSingleTop(pdfToolRoute(toolRoute, source))
                 },
                 initialSource = filePath.takeIf(String::isNotBlank)?.let {
                     PdfToolSource.AppFile(
@@ -888,7 +894,7 @@ private fun ScanlyNavHostContent(
                 initialSource = it.pdfToolSource(),
                 onNavigateUp = navController::navigateUp,
                 onPreviewPdf = { artifact ->
-                    navController.navigate(
+                    navController.navigateSingleTop(
                         ToolsPdfReaderDestination.route(artifact.filePath, artifact.fileName),
                     )
                 },
@@ -906,7 +912,7 @@ private fun ScanlyNavHostContent(
                 initialSource = it.pdfToolSource(),
                 onNavigateUp = navController::navigateUp,
                 onPreviewPdf = { artifact ->
-                    navController.navigate(
+                    navController.navigateSingleTop(
                         ToolsPdfReaderDestination.route(artifact.filePath, artifact.fileName),
                     )
                 },
@@ -940,6 +946,7 @@ private fun ScanlyNavHostContent(
                     // Replace the tool so Back from the new document returns to where the import started.
                     navController.navigate(DocumentDestination.route(documentId)) {
                         popUpTo(pdfToolRoutePattern(ToolsPdfImportDestination.route)) { inclusive = true }
+                        launchSingleTop = true
                     }
                 },
             )
@@ -956,7 +963,7 @@ private fun ScanlyNavHostContent(
                 initialSource = it.pdfToolSource(),
                 onNavigateUp = navController::navigateUp,
                 onPreviewPdf = { artifact ->
-                    navController.navigate(
+                    navController.navigateSingleTop(
                         ToolsPdfReaderDestination.route(artifact.filePath, artifact.fileName),
                     )
                 },
@@ -974,7 +981,7 @@ private fun ScanlyNavHostContent(
                 initialSource = it.pdfToolSource(),
                 onNavigateUp = navController::navigateUp,
                 onPreviewPdf = { artifact ->
-                    navController.navigate(
+                    navController.navigateSingleTop(
                         ToolsPdfReaderDestination.route(artifact.filePath, artifact.fileName),
                     )
                 },
@@ -992,12 +999,12 @@ private fun ScanlyNavHostContent(
                 initialSource = it.pdfToolSource(),
                 onNavigateUp = navController::navigateUp,
                 onPreviewPdf = { artifact ->
-                    navController.navigate(
+                    navController.navigateSingleTop(
                         ToolsPdfReaderDestination.route(artifact.filePath, artifact.fileName),
                     )
                 },
-                onManageSignatures = { navController.navigate(SignatureManageDestination.route) },
-                onCreateSignature = { kind -> navController.navigate(SignatureCreateDestination.route(kind)) },
+                onManageSignatures = { navController.navigateSingleTop(SignatureManageDestination.route) },
+                onCreateSignature = { kind -> navController.navigateSingleTop(SignatureCreateDestination.route(kind)) },
             )
         }
         composable(
@@ -1016,8 +1023,8 @@ private fun ScanlyNavHostContent(
         ) {
             DocumentSignRoute(
                 onNavigateUp = navController::navigateUp,
-                onManageSignatures = { navController.navigate(SignatureManageDestination.route) },
-                onCreateSignature = { kind -> navController.navigate(SignatureCreateDestination.route(kind)) },
+                onManageSignatures = { navController.navigateSingleTop(SignatureManageDestination.route) },
+                onCreateSignature = { kind -> navController.navigateSingleTop(SignatureCreateDestination.route(kind)) },
             )
         }
         composable(
@@ -1029,14 +1036,14 @@ private fun ScanlyNavHostContent(
         ) {
             SignatureManageRoute(
                 onNavigateUp = navController::navigateUp,
-                onCreate = { kind -> navController.navigate(SignatureCreateDestination.route(kind)) },
+                onCreate = { kind -> navController.navigateSingleTop(SignatureCreateDestination.route(kind)) },
                 onSignPdf = {
                     // Opened from the Sign tool: go back to it rather than stacking a second one.
                     val returned = navController.popBackStack(
                         pdfToolRoutePattern(ToolsPdfSignDestination.route),
                         inclusive = false,
                     )
-                    if (!returned) navController.navigate(ToolsPdfSignDestination.route)
+                    if (!returned) navController.navigateSingleTop(ToolsPdfSignDestination.route)
                 },
             )
         }
@@ -1086,14 +1093,14 @@ private fun ScanlyNavHostContent(
                 onNavigate = { route -> navigateToTopLevel(navController, route) },
             ) {
                 SettingsRoute(
-                    onOpenFaqs = { navController.navigate(SettingsFaqDestination.route) },
-                    onOpenStorage = { navController.navigate(SettingsStorageDestination.route) },
-                    onOpenRecentlyDeleted = { navController.navigate(LibraryTrashDestination.route) },
-                    onOpenAppearance = { navController.navigate(SettingsAppearanceDestination.route) },
-                    onOpenDetection = { navController.navigate(SettingsDetectionDestination.route) },
-                    onOpenWidgets = { navController.navigate(SettingsWidgetsDestination.route) },
-                    onOpenAbout = { navController.navigate(SettingsAboutDestination.route) },
-                    onOpenPip = { navController.navigate(SettingsPipDestination.route) },
+                    onOpenFaqs = { navController.navigateSingleTop(SettingsFaqDestination.route) },
+                    onOpenStorage = { navController.navigateSingleTop(SettingsStorageDestination.route) },
+                    onOpenRecentlyDeleted = { navController.navigateSingleTop(LibraryTrashDestination.route) },
+                    onOpenAppearance = { navController.navigateSingleTop(SettingsAppearanceDestination.route) },
+                    onOpenDetection = { navController.navigateSingleTop(SettingsDetectionDestination.route) },
+                    onOpenWidgets = { navController.navigateSingleTop(SettingsWidgetsDestination.route) },
+                    onOpenAbout = { navController.navigateSingleTop(SettingsAboutDestination.route) },
+                    onOpenPip = { navController.navigateSingleTop(SettingsPipDestination.route) },
                 )
             }
         }
@@ -1134,7 +1141,7 @@ private fun ScanlyNavHostContent(
             SettingsDetectionRoute(
                 onNavigateUp = navController::navigateUp,
                 onOpenModelBenchmark = {
-                    navController.navigate(SettingsModelBenchmarkDestination.route)
+                    navController.navigateSingleTop(SettingsModelBenchmarkDestination.route)
                 },
                 parentEntry = parentEntry,
             )
@@ -1169,10 +1176,10 @@ private fun ScanlyNavHostContent(
                 appUpdateUiState = appUpdateUiState,
                 onCheckForUpdates = onCheckForUpdates,
                 onOpenLegalDocument = { documentType ->
-                    navController.navigate(LegalDocumentDestination.route(documentType))
+                    navController.navigateSingleTop(LegalDocumentDestination.route(documentType))
                 },
-                onOpenFaqs = { navController.navigate(SettingsFaqDestination.route) },
-                onOpenLicenses = { navController.navigate(SettingsLicensesDestination.route) },
+                onOpenFaqs = { navController.navigateSingleTop(SettingsFaqDestination.route) },
+                onOpenLicenses = { navController.navigateSingleTop(SettingsLicensesDestination.route) },
                 parentEntry = parentEntry,
             )
         }
@@ -1228,7 +1235,7 @@ private fun ScanlyNavHostContent(
             SettingsStorageRoute(
                 onNavigateUp = navController::navigateUp,
                 parentEntry = parentEntry,
-                onOpenRecentlyDeleted = { navController.navigate(LibraryTrashDestination.route) },
+                onOpenRecentlyDeleted = { navController.navigateSingleTop(LibraryTrashDestination.route) },
             )
         }
         composable(
@@ -1266,19 +1273,19 @@ private fun ScanlyNavHostContent(
             DocumentDetailRoute(
                 onNavigateUp = navController::navigateUp,
                 onOpenCamera = {
-                    navController.navigate(ScanSessionDestination.route(documentId))
+                    navController.navigateSingleTop(ScanSessionDestination.route(documentId))
                 },
                 onOpenPageEditor = { pageId ->
-                    navController.navigate(PageImagePreviewDestination.route(pageId))
+                    navController.navigateSingleTop(PageImagePreviewDestination.route(pageId))
                 },
                 onOpenText = { pageIndex ->
-                    navController.navigate(PageTextDestination.route(documentId, pageIndex))
+                    navController.navigateSingleTop(PageTextDestination.route(documentId, pageIndex))
                 },
                 onOpenSign = { pageIndex ->
-                    navController.navigate(DocumentSignDestination.route(documentId, pageIndex))
+                    navController.navigateSingleTop(DocumentSignDestination.route(documentId, pageIndex))
                 },
                 onReplacePage = { pageId ->
-                    navController.navigate(ScanSessionDestination.route(documentId, replacePageId = pageId))
+                    navController.navigateSingleTop(ScanSessionDestination.route(documentId, replacePageId = pageId))
                 },
             )
         }
@@ -1344,15 +1351,15 @@ private fun ScanlyNavHostContent(
             PageImagePreviewRoute(
                 onNavigateUp = navController::navigateUp,
                 onEditPage = { pageId ->
-                    navController.navigate(PageEditorDestination.route(pageId))
+                    navController.navigateSingleTop(PageEditorDestination.route(pageId))
                 },
                 onRetakePage = { documentId, pageId ->
-                    navController.navigate(
+                    navController.navigateSingleTop(
                         ScanSessionDestination.route(documentId, replacePageId = pageId),
                     )
                 },
                 onSignPage = { documentId, pageIndex ->
-                    navController.navigate(DocumentSignDestination.route(documentId, pageIndex))
+                    navController.navigateSingleTop(DocumentSignDestination.route(documentId, pageIndex))
                 },
             )
         }
@@ -1371,10 +1378,10 @@ private fun ScanlyNavHostContent(
             PageEditorRoute(
                 onNavigateUp = navController::navigateUp,
                 onOpenCrop = { pageId ->
-                    navController.navigate(PageCropDestination.route(pageId))
+                    navController.navigateSingleTop(PageCropDestination.route(pageId))
                 },
                 onRetakePage = { documentId, pageId ->
-                    navController.navigate(ScanSessionDestination.route(documentId, replacePageId = pageId))
+                    navController.navigateSingleTop(ScanSessionDestination.route(documentId, replacePageId = pageId))
                 },
             )
         }
@@ -1409,7 +1416,7 @@ private fun ScanlyNavHostContent(
             GroupDetailRoute(
                 onNavigateUp = navController::navigateUp,
                 onOpenDocument = { documentId ->
-                    navController.navigate(DocumentDestination.route(documentId))
+                    navController.navigateSingleTop(DocumentDestination.route(documentId))
                 },
             )
         }

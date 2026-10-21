@@ -12,6 +12,7 @@ import `in`.c1ph3rj.scanly.domain.model.ScanDocument
 import `in`.c1ph3rj.scanly.domain.model.ScanPage
 import `in`.c1ph3rj.scanly.domain.model.SignatureKind
 import `in`.c1ph3rj.scanly.domain.model.SignatureSource
+import `in`.c1ph3rj.scanly.domain.usecase.ClearSignatureUploadCacheUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ExtractSignatureInkUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveDocumentPagesUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveDocumentsUseCase
@@ -78,6 +79,7 @@ class SignatureCreateViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val saveSignatureUseCase: SaveSignatureUseCase,
     private val extractSignatureInkUseCase: ExtractSignatureInkUseCase,
+    private val clearSignatureUploadCacheUseCase: ClearSignatureUploadCacheUseCase,
     observeDocumentsUseCase: ObserveDocumentsUseCase,
     private val observeDocumentPagesUseCase: ObserveDocumentPagesUseCase,
 ) : ViewModel() {
@@ -249,6 +251,8 @@ class SignatureCreateViewModel @Inject constructor(
 
     override fun onCleared() {
         extractJob?.cancel()
+        // The singleton repository would otherwise hold the decoded upload (~23 MB) until the next one.
+        clearSignatureUploadCacheUseCase()
         super.onCleared()
     }
 

@@ -63,7 +63,7 @@ app/src/main/java/in/c1ph3rj/scanly/
 - Page text lives in `page_texts` with an FTS4 external-content index `page_texts_fts` (Room triggers keep it in sync — always replace rows with delete + insert, never `REPLACE`). `page_texts_terms` (fts4aux) is created on open for spelling suggestions. `TextIndexScheduler` re-reads any page whose `updatedAtMillis` differs from its text row, so features never need to call the indexer.
 - ML model assets under `app/src/main/assets/models/`: corner variants (Lite/Standard/High/Accurate) + `scanly_document_gate_float16.tflite` (keep `noCompress += "tflite"`).
 - Document detection prefs in DataStore: live/post models, automatic selection, document gate; pure black theme is separate (`pure_black_enabled`).
-- Gallery import limit: 50 images via the system file picker (`ImageImportSupport`).
+- Gallery import limit: 50 images via the system image picker (`ImageImportSupport`, `GetMultipleContents` so gallery apps appear; do not switch back to `OpenMultipleDocuments`, which hides them).
 - Export saves go to `Downloads/Scanly` by default; custom SAF trees persist via DataStore (`export_tree_uri`, `export_tree_label`).
 
 ## Navigation Quick Reference

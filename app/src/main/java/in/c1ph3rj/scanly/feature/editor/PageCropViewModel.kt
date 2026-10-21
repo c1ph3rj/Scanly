@@ -15,13 +15,13 @@ import `in`.c1ph3rj.scanly.domain.model.ScanPage
 import `in`.c1ph3rj.scanly.domain.usecase.DetectDocumentCornersUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObservePageUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.UpdatePageEditsUseCase
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -62,8 +62,9 @@ class PageCropViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(PageCropUiState())
     val uiState: StateFlow<PageCropUiState> = _uiState.asStateFlow()
 
-    private val _events = MutableSharedFlow<PageCropEvent>()
-    val events: SharedFlow<PageCropEvent> = _events.asSharedFlow()
+    // Buffered so events sent while the screen re-subscribes (rotation) are not lost.
+    private val _events = Channel<PageCropEvent>(Channel.BUFFERED)
+    val events: Flow<PageCropEvent> = _events.receiveAsFlow()
 
     init {
         viewModelScope.launch {
@@ -132,7 +133,7 @@ class PageCropViewModel @Inject constructor(
         val rawImagePath = page.rawImagePath
         if (rawImagePath.isNullOrBlank()) {
             viewModelScope.launch {
-                _events.emit(PageCropEvent.ShowMessage("Raw image is not available for detection."))
+                _events.send(PageCropEvent.ShowMessage("Raw image is not available for detection."))
             }
             return
         }
@@ -154,12 +155,12 @@ class PageCropViewModel @Inject constructor(
                             hasUnsavedChanges = true,
                         )
                     }
-                    _events.emit(PageCropEvent.ShowMessage("Document detected."))
+                    _events.send(PageCropEvent.ShowMessage("Document detected."))
                 }
 
                 is ScanlyResult.Failure -> {
                     _uiState.update { it.copy(isDetecting = false) }
-                    _events.emit(PageCropEvent.ShowMessage(result.error.message))
+                    _events.send(PageCropEvent.ShowMessage(result.error.message))
                 }
             }
         }
@@ -190,13 +191,13 @@ class PageCropViewModel @Inject constructor(
                             hasUnsavedChanges = false,
                         )
                     }
-                    _events.emit(PageCropEvent.ShowMessage("Crop updated."))
-                    _events.emit(PageCropEvent.Saved)
+                    _events.send(PageCropEvent.ShowMessage("Crop updated."))
+                    _events.send(PageCropEvent.Saved)
                 }
 
                 is ScanlyResult.Failure -> {
                     _uiState.update { it.copy(isSaving = false) }
-                    _events.emit(PageCropEvent.ShowMessage(result.error.message))
+                    _events.send(PageCropEvent.ShowMessage(result.error.message))
                 }
             }
         }

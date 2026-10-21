@@ -7,6 +7,7 @@ import android.graphics.pdf.PdfRenderer
 import android.net.Uri
 import android.os.ParcelFileDescriptor
 import com.tom_roush.pdfbox.android.PDFBoxResourceLoader
+import com.tom_roush.pdfbox.io.MemoryUsageSetting
 import com.tom_roush.pdfbox.pdmodel.PDDocument
 import com.tom_roush.pdfbox.pdmodel.PDPage
 import com.tom_roush.pdfbox.pdmodel.PDPageContentStream
@@ -97,28 +98,45 @@ class DefaultPdfToolkitRepository @Inject constructor(
             require(sources.size >= 2) { "Select at least two PDFs to merge." }
             ensurePdfBox()
             val output = newOutputFile("merged")
-            val resolvedSources = sources.map { resolveLocalFile(it) }
-            try {
-                val sourceDocuments = mutableListOf<PDDocument>()
+            // Resolved one by one so a failure part-way still cleans up the copies made so far.
+            val resolvedSources = mutableListOf<ResolvedFile>()
+            output.deleteOnFailure {
                 try {
-                    resolvedSources.forEachIndexed { index, resolved ->
-                        sourceDocuments += openDocument(resolved.file, passwords[index])
-                    }
-                    PDDocument().use { merged ->
-                        sourceDocuments.forEach { document ->
-                            for (page in document.pages) {
-                                merged.importPage(page)
+                    sources.forEach { resolvedSources += resolveLocalFile(it) }
+                    val sourceDocuments = mutableListOf<PDDocument>()
+                    try {
+                        resolvedSources.forEachIndexed { index, resolved ->
+                            val password = passwords[index]
+                            sourceDocuments += try {
+                                openDocument(resolved.file, password)
+                            } catch (error: IllegalArgumentException) {
+                                // Merge has no password prompt, so say which file needs unlocking.
+                                if (password.isNullOrBlank() && error.message == PasswordProtectedMessage) {
+                                    val label = sources[index].displayLabel().ifBlank { "One of the PDFs" }
+                                    throw IllegalArgumentException(
+                                        "\"$label\" is password protected. Remove its password first.",
+                                        error,
+                                    )
+                                }
+                                throw error
                             }
                         }
-                        // importPage retains page streams until save, so source documents must
-                        // remain open for the entire write.
-                        merged.save(output)
+                        PDDocument().use { merged ->
+                            sourceDocuments.forEach { document ->
+                                for (page in document.pages) {
+                                    merged.importPage(page)
+                                }
+                            }
+                            // importPage retains page streams until save, so source documents must
+                            // remain open for the entire write.
+                            merged.save(output)
+                        }
+                    } finally {
+                        sourceDocuments.asReversed().forEach(PDDocument::close)
                     }
                 } finally {
-                    sourceDocuments.asReversed().forEach(PDDocument::close)
+                    resolvedSources.forEach(ResolvedFile::cleanup)
                 }
-            } finally {
-                resolvedSources.forEach(ResolvedFile::cleanup)
             }
             artifact(output)
         }.toScanlyResult("Could not merge PDFs.")
@@ -133,8 +151,8 @@ class DefaultPdfToolkitRepository @Inject constructor(
             ensurePdfBox()
             resolveLocalFile(source).useFile { local ->
                 val renderFile = unlockForRendererIfNeeded(local, password)
+                val output = newOutputFile("compressed")
                 try {
-                    val output = newOutputFile("compressed")
                     ParcelFileDescriptor.open(renderFile, ParcelFileDescriptor.MODE_READ_ONLY).use { pfd ->
                         PdfRenderer(pfd).use { renderer ->
                             require(renderer.pageCount > 0) { "PDF has no pages." }
@@ -187,12 +205,20 @@ class DefaultPdfToolkitRepository @Inject constructor(
                             }
                         }
                     }
+                    // Re-rendering already-lean PDFs can grow them; keep the original in that case.
+                    check(output.length() < local.length()) {
+                        "This PDF is already well optimised. Compressing it would not make it smaller."
+                    }
                     artifact(output)
                 } catch (oom: OutOfMemoryError) {
+                    output.delete()
                     throw IllegalStateException(
                         "Not enough memory to compress this PDF. Try Smallest quality or a shorter file.",
                         oom,
                     )
+                } catch (error: Throwable) {
+                    output.delete()
+                    throw error
                 } finally {
                     if (renderFile != local) {
                         renderFile.delete()
@@ -213,32 +239,34 @@ class DefaultPdfToolkitRepository @Inject constructor(
             ensurePdfBox()
             resolveLocalFile(source).useFile { local ->
                 val output = newOutputFile("protected")
-                openDocument(local, currentPassword).use { document ->
-                    if (document.isEncrypted) {
-                        document.setAllSecurityToBeRemoved(true)
-                    }
-                    val permissions = AccessPermission().apply {
-                        if (restrictEditing) {
-                            setCanModify(false)
-                            setCanModifyAnnotations(false)
-                            setCanFillInForm(false)
-                            setCanAssembleDocument(false)
-                            setCanExtractContent(false)
-                            // Accessibility extraction stays on so screen readers still work.
-                            setCanExtractForAccessibility(true)
-                            setCanPrint(true)
+                output.deleteOnFailure {
+                    openDocument(local, currentPassword).use { document ->
+                        if (document.isEncrypted) {
+                            document.setAllSecurityToBeRemoved(true)
                         }
+                        val permissions = AccessPermission().apply {
+                            if (restrictEditing) {
+                                setCanModify(false)
+                                setCanModifyAnnotations(false)
+                                setCanFillInForm(false)
+                                setCanAssembleDocument(false)
+                                setCanExtractContent(false)
+                                // Accessibility extraction stays on so screen readers still work.
+                                setCanExtractForAccessibility(true)
+                                setCanPrint(true)
+                            }
+                        }
+                        val policy = StandardProtectionPolicy(
+                            UUID.randomUUID().toString(),
+                            newPassword,
+                            permissions,
+                        ).apply {
+                            encryptionKeyLength = 256
+                            setPreferAES(true)
+                        }
+                        document.protect(policy)
+                        document.save(output)
                     }
-                    val policy = StandardProtectionPolicy(
-                        UUID.randomUUID().toString(),
-                        newPassword,
-                        permissions,
-                    ).apply {
-                        encryptionKeyLength = 256
-                        setPreferAES(true)
-                    }
-                    document.protect(policy)
-                    document.save(output)
                 }
                 artifact(output)
             }
@@ -254,9 +282,11 @@ class DefaultPdfToolkitRepository @Inject constructor(
             ensurePdfBox()
             resolveLocalFile(source).useFile { local ->
                 val output = newOutputFile("unlocked")
-                openDocument(local, currentPassword).use { document ->
-                    document.setAllSecurityToBeRemoved(true)
-                    document.save(output)
+                output.deleteOnFailure {
+                    openDocument(local, currentPassword).use { document ->
+                        document.setAllSecurityToBeRemoved(true)
+                        document.save(output)
+                    }
                 }
                 artifact(output)
             }
@@ -273,19 +303,21 @@ class DefaultPdfToolkitRepository @Inject constructor(
             ensurePdfBox()
             resolveLocalFile(source).useFile { local ->
                 val output = newOutputFile("watermarked")
-                openDocument(local, password).use { document ->
-                    require(document.numberOfPages > 0) { "This PDF has no pages." }
-                    if (document.isEncrypted) {
-                        document.setAllSecurityToBeRemoved(true)
-                    }
-                    val stamper = PdfWatermarkStamper.create(document, options)
-                    document.pages.forEachIndexed { pageIndex, page ->
-                        if (options.pageRange == WatermarkPageRange.FIRST_PAGE && pageIndex != 0) {
-                            return@forEachIndexed
+                output.deleteOnFailure {
+                    openDocument(local, password).use { document ->
+                        require(document.numberOfPages > 0) { "This PDF has no pages." }
+                        if (document.isEncrypted) {
+                            document.setAllSecurityToBeRemoved(true)
                         }
-                        stamper.stamp(document, page)
+                        val stamper = PdfWatermarkStamper.create(document, options)
+                        document.pages.forEachIndexed { pageIndex, page ->
+                            if (options.pageRange == WatermarkPageRange.FIRST_PAGE && pageIndex != 0) {
+                                return@forEachIndexed
+                            }
+                            stamper.stamp(document, page)
+                        }
+                        document.save(output)
                     }
-                    document.save(output)
                 }
                 artifact(output)
             }
@@ -332,18 +364,20 @@ class DefaultPdfToolkitRepository @Inject constructor(
             }
             previewBase = null
             val file = File(toolsDir(), "watermark_base_${UUID.randomUUID()}.pdf")
-            resolveLocalFile(source).useFile { local ->
-                openDocument(local, password).use { document ->
-                    require(document.numberOfPages > 0) { "This PDF has no pages." }
-                    if (document.isEncrypted) {
-                        document.setAllSecurityToBeRemoved(true)
+            file.deleteOnFailure {
+                resolveLocalFile(source).useFile { local ->
+                    openDocument(local, password).use { document ->
+                        require(document.numberOfPages > 0) { "This PDF has no pages." }
+                        if (document.isEncrypted) {
+                            document.setAllSecurityToBeRemoved(true)
+                        }
+                        // Removing pages (rather than importing page 1 into a new document) keeps
+                        // inherited /Rotate, /CropBox and resources intact.
+                        while (document.numberOfPages > 1) {
+                            document.removePage(document.numberOfPages - 1)
+                        }
+                        document.save(file)
                     }
-                    // Removing pages (rather than importing page 1 into a new document) keeps
-                    // inherited /Rotate, /CropBox and resources intact.
-                    while (document.numberOfPages > 1) {
-                        document.removePage(document.numberOfPages - 1)
-                    }
-                    document.save(file)
                 }
             }
             previewBase = PreviewBase(key = key, file = file, createdAt = now)
@@ -357,35 +391,41 @@ class DefaultPdfToolkitRepository @Inject constructor(
         runCatching {
             ensurePdfBox()
             val file = File(toolsDir(), "sign_${UUID.randomUUID()}.pdf")
-            val imageSource = (source as? PdfToolSource.DeviceUri)?.takeIf { it.isImage() }
-            if (imageSource != null) {
-                val size = writeImageAsPdf(Uri.parse(imageSource.uriString), file)
-                return@runCatching PdfSignSession(
+            // A cancelled open would otherwise return its session to nobody (withContext throws
+            // on return), so the check inside this block deletes the copy before that happens.
+            file.deleteOnFailure {
+                val imageSource = (source as? PdfToolSource.DeviceUri)?.takeIf { it.isImage() }
+                if (imageSource != null) {
+                    val size = writeImageAsPdf(Uri.parse(imageSource.uriString), file)
+                    coroutineContext.ensureActive()
+                    return@runCatching PdfSignSession(
+                        file = PdfToolSource.AppFile(file.absolutePath, source.displayLabel()),
+                        pageSizes = listOf(size),
+                    )
+                }
+                val pageSizes = resolveLocalFile(source).useFile { local ->
+                    openDocument(local, password).use { document ->
+                        require(document.numberOfPages > 0) { "This PDF has no pages." }
+                        if (document.isEncrypted) {
+                            document.setAllSecurityToBeRemoved(true)
+                        }
+                        val sizes = document.pages.map { page ->
+                            val box = page.cropBox ?: page.mediaBox
+                            val (width, height) = WatermarkGeometry.visualSize(box.width, box.height, page.rotation)
+                            SignPageSize(width, height)
+                        }
+                        // One decrypted local copy for the whole editing session: page renders read
+                        // it in place instead of re-copying or re-exporting the source each time.
+                        document.save(file)
+                        sizes
+                    }
+                }
+                coroutineContext.ensureActive()
+                PdfSignSession(
                     file = PdfToolSource.AppFile(file.absolutePath, source.displayLabel()),
-                    pageSizes = listOf(size),
+                    pageSizes = pageSizes,
                 )
             }
-            val pageSizes = resolveLocalFile(source).useFile { local ->
-                openDocument(local, password).use { document ->
-                    require(document.numberOfPages > 0) { "This PDF has no pages." }
-                    if (document.isEncrypted) {
-                        document.setAllSecurityToBeRemoved(true)
-                    }
-                    val sizes = document.pages.map { page ->
-                        val box = page.cropBox ?: page.mediaBox
-                        val (width, height) = WatermarkGeometry.visualSize(box.width, box.height, page.rotation)
-                        SignPageSize(width, height)
-                    }
-                    // One decrypted local copy for the whole editing session: page renders read
-                    // it in place instead of re-copying or re-exporting the source each time.
-                    document.save(file)
-                    sizes
-                }
-            }
-            PdfSignSession(
-                file = PdfToolSource.AppFile(file.absolutePath, source.displayLabel()),
-                pageSizes = pageSizes,
-            )
         }.toScanlyResult("Could not open this PDF for signing.")
     }
 
@@ -442,14 +482,16 @@ class DefaultPdfToolkitRepository @Inject constructor(
             ensurePdfBox()
             resolveLocalFile(session.file).useFile { local ->
                 val output = newOutputFile("signed")
-                openDocument(local, null).use { document ->
-                    val stamper = PdfSignatureStamper(document)
-                    stamper.validate(marks)
-                    marks.groupBy { it.pageIndex }.forEach { (pageIndex, pageMarks) ->
-                        require(pageIndex in 0 until document.numberOfPages) { "A mark is on a missing page." }
-                        stamper.stamp(document.getPage(pageIndex), pageMarks)
+                output.deleteOnFailure {
+                    openDocument(local, null).use { document ->
+                        val stamper = PdfSignatureStamper(document)
+                        stamper.validate(marks)
+                        marks.groupBy { it.pageIndex }.forEach { (pageIndex, pageMarks) ->
+                            require(pageIndex in 0 until document.numberOfPages) { "A mark is on a missing page." }
+                            stamper.stamp(document.getPage(pageIndex), pageMarks)
+                        }
+                        document.save(output)
                     }
-                    document.save(output)
                 }
                 artifact(output)
             }
@@ -479,9 +521,11 @@ class DefaultPdfToolkitRepository @Inject constructor(
                     // Decrypt to temp for PdfRenderer when password is required.
                     ensurePdfBox()
                     val unlocked = File(toolsDir(), "render_${UUID.randomUUID()}.pdf")
-                    openDocument(local, password).use { document ->
-                        document.setAllSecurityToBeRemoved(true)
-                        document.save(unlocked)
+                    unlocked.deleteOnFailure {
+                        openDocument(local, password).use { document ->
+                            document.setAllSecurityToBeRemoved(true)
+                            document.save(unlocked)
+                        }
                     }
                     unlocked
                 }
@@ -523,6 +567,9 @@ class DefaultPdfToolkitRepository @Inject constructor(
                     file.delete()
                     check(renderable.renameTo(file)) { "Could not prepare this PDF." }
                 }
+                // A cancelled open can no longer hand its copy to anyone (withContext throws on
+                // return), so bail out here and let the catch below delete it.
+                coroutineContext.ensureActive()
                 PdfWorkingCopy(
                     file = PdfToolSource.AppFile(file.absolutePath, source.displayLabel()),
                     pageCount = pageCount,
@@ -714,9 +761,11 @@ class DefaultPdfToolkitRepository @Inject constructor(
             is PdfToolSource.DeviceUri -> {
                 val uri = Uri.parse(source.uriString)
                 val target = File(toolsDir(), "src_${UUID.randomUUID()}.pdf")
-                context.contentResolver.openInputStream(uri)?.use { input ->
-                    FileOutputStream(target).use { output -> input.copyTo(output) }
-                } ?: error("Could not read selected PDF.")
+                target.deleteOnFailure {
+                    context.contentResolver.openInputStream(uri)?.use { input ->
+                        FileOutputStream(target).use { output -> input.copyTo(output) }
+                    } ?: error("Could not read selected PDF.")
+                }
                 ResolvedFile(file = target, deleteOnClose = true)
             }
             is PdfToolSource.LibraryDocument -> {
@@ -733,7 +782,7 @@ class DefaultPdfToolkitRepository @Inject constructor(
                                 "The Scanly document could not be prepared as a PDF."
                             }
                             val readerCopy = File(toolsDir(), "library_${UUID.randomUUID()}.pdf")
-                            exportedFile.copyTo(readerCopy, overwrite = true)
+                            readerCopy.deleteOnFailure { exportedFile.copyTo(readerCopy, overwrite = true) }
                             ResolvedFile(file = readerCopy, deleteOnClose = true)
                         }
                         is ScanlyResult.Failure -> error(exported.error.message)
@@ -762,35 +811,54 @@ class DefaultPdfToolkitRepository @Inject constructor(
     private fun openDocument(file: File, password: String?): PDDocument {
         return try {
             if (password.isNullOrBlank()) {
-                PDDocument.load(file)
+                PDDocument.load(file, scratchSettings())
             } else {
-                PDDocument.load(file, password)
+                PDDocument.load(file, password, scratchSettings())
             }
         } catch (error: InvalidPasswordException) {
-            throw IllegalArgumentException("Incorrect PDF password.", error)
+            // Without a supplied password this just means the file is locked, not a wrong guess.
+            val message = if (password.isNullOrBlank()) PasswordProtectedMessage else "Incorrect PDF password."
+            throw IllegalArgumentException(message, error)
         } catch (error: Exception) {
             // Retry with empty password string for some encrypted files.
             if (!password.isNullOrBlank()) throw error
             try {
-                PDDocument.load(file, "")
+                PDDocument.load(file, "", scratchSettings())
             } catch (encrypted: Exception) {
                 if (encrypted is InvalidPasswordException ||
                     encrypted.message?.contains("password", ignoreCase = true) == true
                 ) {
-                    throw IllegalArgumentException("This PDF is password protected.")
+                    throw IllegalArgumentException(PasswordProtectedMessage)
                 }
                 throw error
             }
         }
     }
 
+    /**
+     * PDFBox keeps decoded streams in a scratch buffer; the default is main memory, which runs
+     * out on large PDFs. Past a small in-memory budget it spills to a temp file instead.
+     */
+    private fun scratchSettings(): MemoryUsageSetting = MemoryUsageSetting.setupMixed(ScratchMemoryBytes)
+
+    /** Runs [block]; if it throws (cancellation included), deletes this partial file before rethrowing. */
+    private inline fun <T> File.deleteOnFailure(block: () -> T): T =
+        try {
+            block()
+        } catch (error: Throwable) {
+            delete()
+            throw error
+        }
+
     private fun unlockForRendererIfNeeded(file: File, password: String?): File {
         if (!password.isNullOrBlank()) {
             ensurePdfBox()
             val unlocked = File(toolsDir(), "unlock_${UUID.randomUUID()}.pdf")
-            openDocument(file, password).use { document ->
-                document.setAllSecurityToBeRemoved(true)
-                document.save(unlocked)
+            unlocked.deleteOnFailure {
+                openDocument(file, password).use { document ->
+                    document.setAllSecurityToBeRemoved(true)
+                    document.save(unlocked)
+                }
             }
             return unlocked
         }
@@ -806,18 +874,20 @@ class DefaultPdfToolkitRepository @Inject constructor(
         ensurePdfBox()
         return try {
             val unlocked = File(toolsDir(), "unlock_${UUID.randomUUID()}.pdf")
-            openDocument(file, null).use { document ->
-                if (document.isEncrypted) {
-                    document.setAllSecurityToBeRemoved(true)
+            unlocked.deleteOnFailure {
+                openDocument(file, null).use { document ->
+                    if (document.isEncrypted) {
+                        document.setAllSecurityToBeRemoved(true)
+                    }
+                    document.save(unlocked)
                 }
-                document.save(unlocked)
             }
             unlocked
         } catch (error: Exception) {
             if (error.message?.contains("password", ignoreCase = true) == true ||
                 error is InvalidPasswordException
             ) {
-                throw IllegalArgumentException("This PDF is password protected.")
+                throw IllegalArgumentException(PasswordProtectedMessage)
             }
             throw error
         }
@@ -927,14 +997,19 @@ class DefaultPdfToolkitRepository @Inject constructor(
         fold(
             onSuccess = { ScanlyResult.Success(it) },
             onFailure = {
-                ScanlyResult.Failure(
-                    ScanlyError(message = it.message ?: fallbackMessage, cause = it),
-                )
+                // runCatching also catches OutOfMemoryError; its raw "Failed to allocate…" text is
+                // not something to show.
+                val message = if (it is OutOfMemoryError) TooLargeMessage else it.message ?: fallbackMessage
+                ScanlyResult.Failure(ScanlyError(message = message, cause = it))
             },
         )
 
     private companion object {
         const val PdfMimeType = "application/pdf"
+        const val PasswordProtectedMessage = "This PDF is password protected."
+        const val TooLargeMessage = "This PDF is too large to process on this device."
+        /** In-memory scratch budget for PDFBox before it spills to a temp file. */
+        const val ScratchMemoryBytes = 8L * 1024 * 1024
         const val MaxImagePageEdgePx = 3000
         const val ImagePageLongEdgePt = 842f
         const val ImagePageJpegQuality = 92

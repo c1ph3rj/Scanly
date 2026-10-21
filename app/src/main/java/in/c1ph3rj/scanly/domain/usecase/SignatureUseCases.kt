@@ -37,6 +37,12 @@ class ExtractSignatureInkUseCase @Inject constructor(
         repository.extractInk(uriString, sensitivity)
 }
 
+class ClearSignatureUploadCacheUseCase @Inject constructor(
+    private val repository: SignatureRepository,
+) {
+    operator fun invoke() = repository.clearUploadCache()
+}
+
 class DeleteSignatureUseCase @Inject constructor(
     private val repository: SignatureRepository,
 ) {

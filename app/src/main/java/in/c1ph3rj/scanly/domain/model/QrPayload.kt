@@ -341,7 +341,8 @@ object QrPayloadBuilder {
     /** "250", "250.5" → "250.00" / "250.50"; invalid or zero → null. */
     fun normalizeAmount(input: String): String? {
         val cleaned = input.trim().removePrefix("₹").replace(",", "").trim()
-        if (cleaned.isEmpty()) return null
+        // Plain decimal only: exponent forms like "1e1000000000" would make setScale throw.
+        if (!Regex("""\d+(\.\d{1,2})?""").matches(cleaned)) return null
         val value = cleaned.toBigDecimalOrNull() ?: return null
         if (value.signum() <= 0) return null
         return value.setScale(2, java.math.RoundingMode.HALF_UP).toPlainString()

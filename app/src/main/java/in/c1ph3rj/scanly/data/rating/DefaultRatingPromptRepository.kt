@@ -1,32 +1,45 @@
 package `in`.c1ph3rj.scanly.data.rating
 
 import android.content.Context
+import androidx.datastore.core.handlers.ReplaceFileCorruptionHandler
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import `in`.c1ph3rj.scanly.domain.model.RatingPromptState
 import `in`.c1ph3rj.scanly.domain.repository.RatingPromptRepository
+import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.map
 
-private val Context.ratingPromptDataStore by preferencesDataStore(name = "rating_prompt")
+private val Context.ratingPromptDataStore by preferencesDataStore(
+    name = "rating_prompt",
+    corruptionHandler = ReplaceFileCorruptionHandler { emptyPreferences() },
+)
 
 @Singleton
 class DefaultRatingPromptRepository @Inject constructor(
     @param:ApplicationContext private val context: Context,
 ) : RatingPromptRepository {
 
+    /** Reads fall back to defaults when the preferences file cannot be read, instead of crashing. */
+    private val safeData: Flow<Preferences>
+        get() = context.ratingPromptDataStore.data.catch { e ->
+            if (e is IOException) emit(emptyPreferences()) else throw e
+        }
+
     override fun observeState(): Flow<RatingPromptState> =
-        context.ratingPromptDataStore.data.map { preferences -> preferences.toState() }
+        safeData.map { preferences -> preferences.toState() }
 
     override suspend fun recordFirstSeenIfAbsent(nowMillis: Long) {
         context.ratingPromptDataStore.edit { preferences ->

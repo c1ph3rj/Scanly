@@ -63,6 +63,7 @@ import `in`.c1ph3rj.scanly.core.ui.ZoomableImageViewer
 import `in`.c1ph3rj.scanly.domain.model.ScanPage
 import `in`.c1ph3rj.scanly.domain.model.ShareArtifact
 import `in`.c1ph3rj.scanly.feature.components.ScanlyConfirmDialog
+import `in`.c1ph3rj.scanly.feature.library.TrashCopy
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
@@ -78,6 +79,19 @@ fun PageImagePreviewRoute(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
+    // Deleting the last page both emits PageDeleted and flips missingPage; leave only once.
+    var hasLeft by remember { mutableStateOf(false) }
+    val leaveScreen: () -> Unit = {
+        if (!hasLeft) {
+            hasLeft = true
+            onNavigateUp()
+        }
+    }
+
+    // A page that is genuinely gone (not merely still loading) is a dead end, so go back.
+    LaunchedEffect(uiState.isLoading, uiState.missingPage) {
+        if (!uiState.isLoading && uiState.missingPage) leaveScreen()
+    }
 
     LaunchedEffect(viewModel) {
         viewModel.events.collectLatest { event ->
@@ -87,7 +101,7 @@ fun PageImagePreviewRoute(
                 }
                 is PageImagePreviewEvent.ShareFiles -> sharePreparedFiles(context, event.artifact)
                 is PageImagePreviewEvent.PageDeleted -> {
-                    if (event.wasLastPage) onNavigateUp()
+                    if (event.wasLastPage) leaveScreen()
                 }
             }
         }
@@ -265,7 +279,7 @@ fun PageImagePreviewScreen(
     deleteTarget?.let { target ->
         ScanlyConfirmDialog(
             title = "Delete page?",
-            text = "Page ${target.pageIndex + 1} will be permanently deleted from this document.",
+            text = TrashCopy.page(target.pageIndex + 1),
             confirmLabel = "Delete",
             confirmDestructive = true,
             onDismiss = { deleteTarget = null },

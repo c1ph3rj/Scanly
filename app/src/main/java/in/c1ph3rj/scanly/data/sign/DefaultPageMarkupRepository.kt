@@ -10,10 +10,13 @@ import `in`.c1ph3rj.scanly.data.local.db.ScanlyDatabase
 import `in`.c1ph3rj.scanly.data.local.db.dao.DocumentDao
 import `in`.c1ph3rj.scanly.data.local.db.dao.PageMarkupDao
 import `in`.c1ph3rj.scanly.data.local.db.dao.ScanPageDao
+import `in`.c1ph3rj.scanly.data.local.db.entity.ScanPageEntity
 import `in`.c1ph3rj.scanly.domain.model.PageMarkup
 import `in`.c1ph3rj.scanly.domain.model.SignMark
 import `in`.c1ph3rj.scanly.domain.repository.PageMarkupRepository
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.withContext
+import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -51,15 +54,33 @@ class DefaultPageMarkupRepository @Inject constructor(
                 val document = documentDao.getDocument(documentId) ?: error("Document not found.")
                 val pages = scanPageDao.getPages(documentId).associateBy { it.id }
                 val timestamp = System.currentTimeMillis()
-                val changedPages = marksByPageId.mapNotNull { (pageId, marks) ->
-                    val page = pages[pageId] ?: return@mapNotNull null
-                    if (markupStore.apply(page, marks)) page.copy(updatedAtMillis = timestamp) else null
+                // Fail before touching any page, so a stale signature never leaves a half-saved document.
+                // Only marks the document does not own yet are copied on save, so only those must exist.
+                marksByPageId.forEach { (pageId, marks) ->
+                    if (pageId !in pages) return@forEach
+                    marks.filterIsInstance<SignMark.Image>()
+                        .filterNot { mark -> PageMarkupStore.isOwnedMarkupImage(mark.imagePath) }
+                        .forEach { mark ->
+                            require(File(mark.imagePath).isFile) { "A signature image is missing. Place it again." }
+                        }
                 }
-                if (changedPages.isEmpty()) return@runCatchingCancellable
-                database.withTransaction {
-                    // A new updatedAtMillis also makes the text indexer re-read the stamped pages.
-                    scanPageDao.updateAll(changedPages)
-                    documentDao.update(document.copy(updatedAtMillis = timestamp))
+                val changedPages = mutableListOf<ScanPageEntity>()
+                try {
+                    marksByPageId.forEach { (pageId, marks) ->
+                        val page = pages[pageId] ?: return@forEach
+                        if (markupStore.apply(page, marks)) changedPages += page.copy(updatedAtMillis = timestamp)
+                    }
+                } finally {
+                    // Pages stamped before a failure changed on disk too, so they are recorded either way.
+                    if (changedPages.isNotEmpty()) {
+                        withContext(NonCancellable) {
+                            database.withTransaction {
+                                // A new updatedAtMillis also makes the text indexer re-read the stamped pages.
+                                scanPageDao.updateAll(changedPages)
+                                documentDao.update(document.copy(updatedAtMillis = timestamp))
+                            }
+                        }
+                    }
                 }
             }.toScanlyResult("Could not save the signed pages.")
         }

@@ -181,9 +181,14 @@ fun PageTextScreen(
     val documentTitle = uiState.document?.title.orEmpty()
 
     // Jump to the requested page once pages are known (the pager starts at 0 while loading).
+    // Only once: a later rotation or page-count change must not yank the reader back.
+    var didInitialScroll by rememberSaveable { mutableStateOf(false) }
     LaunchedEffect(pageCount) {
-        if (pageCount > 0 && pagerState.currentPage == 0 && uiState.initialPageIndex in 1 until pageCount) {
-            pagerState.scrollToPage(uiState.initialPageIndex)
+        if (pageCount > 0 && !didInitialScroll) {
+            didInitialScroll = true
+            if (pagerState.currentPage == 0 && uiState.initialPageIndex in 1 until pageCount) {
+                pagerState.scrollToPage(uiState.initialPageIndex)
+            }
         }
     }
 

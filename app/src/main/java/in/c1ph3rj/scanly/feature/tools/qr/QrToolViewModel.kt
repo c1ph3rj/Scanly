@@ -255,8 +255,8 @@ class QrToolViewModel @Inject constructor(
             }
             when (val result = generateQrBitmapUseCase(payload, inkArgb = draft.ink.argb)) {
                 is ScanlyResult.Success -> replacePreview(result.value)
-                // Keep the last good preview while the input is still incomplete.
-                is ScanlyResult.Failure -> Unit
+                // The old code no longer matches the draft, so it must not stay on screen to export.
+                is ScanlyResult.Failure -> replacePreview(null)
             }
         }
     }

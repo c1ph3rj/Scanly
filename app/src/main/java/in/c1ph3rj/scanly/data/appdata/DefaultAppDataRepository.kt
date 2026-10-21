@@ -14,6 +14,7 @@ import `in`.c1ph3rj.scanly.data.local.db.ScanlyDatabase
 import `in`.c1ph3rj.scanly.data.storage.DocumentStorageManager
 import `in`.c1ph3rj.scanly.domain.model.AppStorageUsage
 import `in`.c1ph3rj.scanly.domain.repository.AppDataRepository
+import `in`.c1ph3rj.scanly.domain.repository.QrHistoryRepository
 import kotlinx.coroutines.withContext
 import java.io.File
 import javax.inject.Inject
@@ -27,6 +28,7 @@ class DefaultAppDataRepository @Inject constructor(
     private val thumbnailCache: ThumbnailCache,
     private val dispatchers: ScanlyDispatchers,
     private val operationCoordinator: LibraryOperationCoordinator,
+    private val qrHistoryRepository: QrHistoryRepository,
 ) : AppDataRepository {
 
     override suspend fun getStorageUsage(): ScanlyResult<AppStorageUsage> =
@@ -35,7 +37,9 @@ class DefaultAppDataRepository @Inject constructor(
                 AppStorageUsage(
                     documentsBytes = directorySize(documentsDirectory()),
                     exportCacheBytes = directorySize(exportCacheDirectory()) +
-                        directorySize(pdfToolsCacheDirectory()),
+                        directorySize(pdfToolsCacheDirectory()) +
+                        directorySize(incomingPdfDirectory()) +
+                        directorySize(qrToolsCacheDirectory()),
                     databaseBytes = databaseFileSize(),
                 )
             }.fold(
@@ -63,7 +67,14 @@ class DefaultAppDataRepository @Inject constructor(
                     // PDF tool outputs and working copies, including decrypted copies of
                     // password-protected PDFs, must not survive "Clear all data".
                     pdfToolsCacheDirectory().deleteRecursively()
+                    // PDFs opened from other apps are private copies of the user's files.
+                    incomingPdfDirectory().deleteRecursively()
+                    qrToolsCacheDirectory().deleteRecursively()
+                    signatureShareDirectory().deleteRecursively()
                     DefaultSignatureRepository.signaturesRoot(context).deleteRecursively()
+                    // Scanned QR contents are private history; clearing through the repository also
+                    // resets its in-memory copy.
+                    qrHistoryRepository.clear()
                     legacyArchiveWorkingDirectory().deleteRecursively()
                     legacyArchiveJournalDirectory().deleteRecursively()
                     thumbnailCache.clearAll()
@@ -87,11 +98,15 @@ class DefaultAppDataRepository @Inject constructor(
                 exportCacheDirectory().listFiles().orEmpty().forEach { entry ->
                     entry.deleteRecursively()
                 }
-                // Skip recent files: a PDF tool that is still open reads its working copy here.
+                // Skip recent files: a PDF tool or reader that is still open reads its working copy
+                // here, and a QR code that was just shared may still be read by the receiving app.
                 val cutoff = System.currentTimeMillis() - PDF_TOOLS_IN_USE_WINDOW_MILLIS
-                pdfToolsCacheDirectory().listFiles().orEmpty()
-                    .filter { entry -> entry.lastModified() < cutoff }
-                    .forEach { entry -> entry.deleteRecursively() }
+                listOf(pdfToolsCacheDirectory(), incomingPdfDirectory(), qrToolsCacheDirectory())
+                    .forEach { directory ->
+                        directory.listFiles().orEmpty()
+                            .filter { entry -> entry.lastModified() < cutoff }
+                            .forEach { entry -> entry.deleteRecursively() }
+                    }
             }.fold(
                 onSuccess = { ScanlyResult.Success(Unit) },
                 onFailure = { throwable ->
@@ -139,6 +154,15 @@ class DefaultAppDataRepository @Inject constructor(
     private fun pdfToolsCacheDirectory(): File =
         File(context.cacheDir, PDF_TOOLS_CACHE_DIRECTORY)
 
+    private fun incomingPdfDirectory(): File =
+        File(context.cacheDir, INCOMING_PDF_CACHE_DIRECTORY)
+
+    private fun qrToolsCacheDirectory(): File =
+        File(context.cacheDir, QR_TOOLS_CACHE_DIRECTORY)
+
+    private fun signatureShareDirectory(): File =
+        File(context.cacheDir, SIGNATURE_SHARE_DIRECTORY)
+
     private fun legacyArchiveWorkingDirectory(): File =
         File(context.cacheDir, LEGACY_ARCHIVE_WORK_DIRECTORY)
 
@@ -167,6 +191,12 @@ class DefaultAppDataRepository @Inject constructor(
         const val EXPORT_CACHE_DIRECTORY = "exports"
         /** Matches `DefaultPdfToolkitRepository.toolsDir()`. */
         const val PDF_TOOLS_CACHE_DIRECTORY = "pdf-tools"
+        /** Matches `IncomingPdf.copyToCache()`. */
+        const val INCOMING_PDF_CACHE_DIRECTORY = "incoming_pdf"
+        /** Matches `DefaultQrCodeRepository`. */
+        const val QR_TOOLS_CACHE_DIRECTORY = "qr-tools"
+        /** Matches `DefaultSignatureRepository`. */
+        const val SIGNATURE_SHARE_DIRECTORY = "signature_share"
         const val PDF_TOOLS_IN_USE_WINDOW_MILLIS = 60 * 60 * 1000L
         const val DATABASE_NAME = "scanly.db"
         val DATABASE_FILE_SUFFIXES = listOf("", "-wal", "-shm")

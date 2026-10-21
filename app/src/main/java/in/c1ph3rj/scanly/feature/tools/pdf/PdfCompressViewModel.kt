@@ -28,6 +28,7 @@ class PdfCompressViewModel @Inject constructor(
 ) : BasePdfToolViewModel(observeDocumentsUseCase, saveExportArtifactUseCase, renderPdfPageUseCase, recordPositiveMomentUseCase) {
     private var previewJob: Job? = null
     private var previewRequestId = 0L
+    private var inspectJob: Job? = null
 
     fun setQuality(quality: PdfCompressQuality) {
         _uiState.update {
@@ -53,6 +54,8 @@ class PdfCompressViewModel @Inject constructor(
                 originalSizeBytes = null,
                 info = null,
                 needsPassword = false,
+                // A new file never inherits the previous one's password.
+                currentPassword = "",
             )
         }
         sources.firstOrNull()?.let {
@@ -77,17 +80,19 @@ class PdfCompressViewModel @Inject constructor(
             return
         }
         val state = _uiState.value
+        if (state.isProcessing) return
         recycleResultPreview()
+        // Set before launching so a double tap cannot start a second run.
+        _uiState.update {
+            it.copy(
+                isProcessing = true,
+                progressMessage = "Compressing PDF…",
+                result = null,
+                compressedSizeBytes = null,
+                savedDestinationLabel = null,
+            )
+        }
         viewModelScope.launch {
-            _uiState.update {
-                it.copy(
-                    isProcessing = true,
-                    progressMessage = "Compressing PDF…",
-                    result = null,
-                    compressedSizeBytes = null,
-                    savedDestinationLabel = null,
-                )
-            }
             when (
                 val result = compressPdfUseCase(
                     source = source,
@@ -117,13 +122,15 @@ class PdfCompressViewModel @Inject constructor(
     }
 
     private fun inspect(source: PdfToolSource) {
-        viewModelScope.launch {
-            when (
-                val result = inspectPdfUseCase(
-                    source,
-                    _uiState.value.currentPassword.ifBlank { null },
-                )
-            ) {
+        inspectJob?.cancel()
+        inspectJob = viewModelScope.launch {
+            val result = inspectPdfUseCase(
+                source,
+                _uiState.value.currentPassword.ifBlank { null },
+            )
+            // A newer pick (or a cleared selection) supersedes this answer.
+            if (_uiState.value.sources.firstOrNull() != source) return@launch
+            when (result) {
                 is ScanlyResult.Success -> _uiState.update {
                     it.copy(
                         info = result.value,

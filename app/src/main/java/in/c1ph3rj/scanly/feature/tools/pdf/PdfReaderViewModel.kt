@@ -107,6 +107,8 @@ class PdfReaderViewModel @Inject constructor(
                 loadingPages = emptySet(),
                 thumbnails = emptyMap(),
                 loadingThumbnails = emptySet(),
+                // A new document never inherits the previous one's password.
+                passwordDraft = "",
                 passwordError = null,
                 chromeVisible = true,
             )
@@ -205,7 +207,9 @@ class PdfReaderViewModel @Inject constructor(
                     _uiState.update {
                         it.copy(
                             phase = if (needsPw) PdfReaderPhase.Locked else PdfReaderPhase.Empty,
-                            passwordError = if (needsPw) result.error.message else null,
+                            // The first "it's locked" is shown by the lock screen itself; only a
+                            // password the user actually typed can be reported as wrong.
+                            passwordError = if (needsPw && password != null) result.error.message else null,
                         )
                     }
                     if (!needsPw) {

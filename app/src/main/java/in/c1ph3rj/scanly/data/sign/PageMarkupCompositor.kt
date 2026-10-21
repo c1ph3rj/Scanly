@@ -54,10 +54,23 @@ class PageMarkupCompositor @Inject constructor() {
         }
         try {
             val paint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG)
-            canvas.drawBitmap(tinted, null, rect, paint)
+            canvas.drawBitmap(tinted, null, fitInside(rect, tinted.width.toFloat() / tinted.height), paint)
         } finally {
             tinted.recycle()
         }
+    }
+
+    /** Largest rect of [aspect] (width / height) centred in [rect], like the editor's ContentScale.Fit. */
+    private fun fitInside(rect: RectF, aspect: Float): RectF {
+        if (aspect <= 0f || !aspect.isFinite()) return rect
+        val width = minOf(rect.width(), rect.height() * aspect)
+        val height = width / aspect
+        return RectF(
+            rect.centerX() - width / 2f,
+            rect.centerY() - height / 2f,
+            rect.centerX() + width / 2f,
+            rect.centerY() + height / 2f,
+        )
     }
 
     private fun drawText(canvas: Canvas, text: String, mark: SignMark, rect: RectF) {

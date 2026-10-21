@@ -10,7 +10,7 @@ Complete inventory of Scanly features as of **v1.0.18**.
 - **Recent documents** — up to four, as compact rows with a cover thumbnail, page count, and edited date
 - **Loading placeholders** — shimmering folder tiles and document rows show until the library's first load, so Home never flashes its empty state
 - **Daily tip** — one closable Pip tip a day about a real feature, under the greeting (see [Pip](#pip-the-helper))
-- **Gallery import** — pick up to 50 images from the system file picker to start a new document
+- **Gallery import** — pick up to 50 images from the system image picker (photo picker, Gallery, Google Photos, Files, Drive) to start a new document
 - **Default names** — new document and folder dialogs open with a duplicate-safe suggested name selected; a clear control empties the field, and **Suggest name** cycles date-based formats
 - Shortcut into the full Library
 - Adaptive layout: bottom navigation on phone, navigation rail on tablet
@@ -60,7 +60,7 @@ Complete inventory of Scanly features as of **v1.0.18**.
 
 ## Gallery import
 
-- Import up to **50 images** per pick from the system file picker (`ImageImportSupport`)
+- Import up to **50 images** per pick from the system image picker (`ImageImportSupport`, `ACTION_GET_CONTENT`): gallery apps such as Gallery and Google Photos appear alongside Files, Downloads and Drive
 - Available on **Home**, **Tools**, and **Document detail** (extend existing documents)
 - Reuses the same capture finalize pipeline as camera captures
 

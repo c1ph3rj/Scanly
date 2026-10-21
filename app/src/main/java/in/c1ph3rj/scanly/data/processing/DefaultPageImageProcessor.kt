@@ -313,9 +313,22 @@ class DefaultPageImageProcessor @Inject constructor(
     ) {
         val outputFile = File(outputPath)
         outputFile.parentFile?.mkdirs()
-        FileOutputStream(outputFile).use { outputStream ->
-            bitmap.compress(Bitmap.CompressFormat.JPEG, OUTPUT_JPEG_QUALITY, outputStream)
-            outputStream.flush()
+        // Encode beside the target and swap it in so a failed write keeps the previous image.
+        val tempFile = File("${outputFile.path}.tmp")
+        try {
+            val compressed = FileOutputStream(tempFile).use { outputStream ->
+                bitmap.compress(Bitmap.CompressFormat.JPEG, OUTPUT_JPEG_QUALITY, outputStream).also {
+                    outputStream.flush()
+                }
+            }
+            check(compressed) { "Could not encode image to $outputPath." }
+            if (!tempFile.renameTo(outputFile)) {
+                tempFile.copyTo(outputFile, overwrite = true)
+            }
+        } finally {
+            if (tempFile.exists()) {
+                tempFile.delete()
+            }
         }
     }
 

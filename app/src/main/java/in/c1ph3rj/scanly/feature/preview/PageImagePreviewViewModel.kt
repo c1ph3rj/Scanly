@@ -7,17 +7,17 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import `in`.c1ph3rj.scanly.domain.model.ScanPage
 import `in`.c1ph3rj.scanly.domain.model.ShareArtifact
 import `in`.c1ph3rj.scanly.core.common.ScanlyResult
-import `in`.c1ph3rj.scanly.domain.usecase.DeletePageUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.MovePageToTrashUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveDocumentPagesUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObservePageUseCase
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -51,15 +51,16 @@ class PageImagePreviewViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     observePageUseCase: ObservePageUseCase,
     observeDocumentPagesUseCase: ObserveDocumentPagesUseCase,
-    private val deletePageUseCase: DeletePageUseCase,
+    private val movePageToTrashUseCase: MovePageToTrashUseCase,
 ) : ViewModel() {
     private val pageId: String = checkNotNull(savedStateHandle[PageImagePreviewDestination.pageIdArgument])
 
     private val _uiState = MutableStateFlow(PageImagePreviewUiState())
     val uiState: StateFlow<PageImagePreviewUiState> = _uiState.asStateFlow()
 
-    private val _events = MutableSharedFlow<PageImagePreviewEvent>()
-    val events: SharedFlow<PageImagePreviewEvent> = _events.asSharedFlow()
+    // Buffered so events sent while the screen re-subscribes (rotation) are not lost.
+    private val _events = Channel<PageImagePreviewEvent>(Channel.BUFFERED)
+    val events: Flow<PageImagePreviewEvent> = _events.receiveAsFlow()
 
     init {
         viewModelScope.launch {
@@ -110,11 +111,11 @@ class PageImagePreviewViewModel @Inject constructor(
 
         viewModelScope.launch {
             if (imagePath == null) {
-                _events.emit(PageImagePreviewEvent.ShowMessage("Page image is not available yet."))
+                _events.send(PageImagePreviewEvent.ShowMessage("Page image is not available yet."))
                 return@launch
             }
 
-            _events.emit(
+            _events.send(
                 PageImagePreviewEvent.ShareFiles(
                     ShareArtifact(
                         mimeType = PageImageMimeType,
@@ -135,7 +136,7 @@ class PageImagePreviewViewModel @Inject constructor(
 
         viewModelScope.launch {
             _uiState.update { it.copy(isDeleting = true) }
-            when (val result = deletePageUseCase(page.id)) {
+            when (val result = movePageToTrashUseCase(page.id, page.pageIndex + 1)) {
                 is ScanlyResult.Success -> {
                     _uiState.update {
                         it.copy(
@@ -143,13 +144,13 @@ class PageImagePreviewViewModel @Inject constructor(
                             isDeleting = false,
                         )
                     }
-                    _events.emit(PageImagePreviewEvent.ShowMessage("Deleted page ${page.pageIndex + 1}."))
-                    _events.emit(PageImagePreviewEvent.PageDeleted(wasLastPage = fallbackPageId == null))
+                    // The app-wide snackbar says where it went and offers Undo.
+                    _events.send(PageImagePreviewEvent.PageDeleted(wasLastPage = fallbackPageId == null))
                 }
 
                 is ScanlyResult.Failure -> {
                     _uiState.update { it.copy(isDeleting = false) }
-                    _events.emit(PageImagePreviewEvent.ShowMessage(result.error.message))
+                    _events.send(PageImagePreviewEvent.ShowMessage(result.error.message))
                 }
             }
         }

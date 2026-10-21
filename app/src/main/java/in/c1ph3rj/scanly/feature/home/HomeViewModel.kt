@@ -11,6 +11,7 @@ import `in`.c1ph3rj.scanly.domain.model.ScanDocument
 import `in`.c1ph3rj.scanly.domain.model.DocumentTitleFormat
 import `in`.c1ph3rj.scanly.domain.usecase.CreateDocumentUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.CreateGroupUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.DeleteDocumentUseCase
 import `in`.c1ph3rj.scanly.domain.model.GroupTitleFormat
 import `in`.c1ph3rj.scanly.domain.usecase.SuggestDocumentTitleUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.SuggestGroupTitleUseCase
@@ -56,6 +57,7 @@ class HomeViewModel @Inject constructor(
     private val createDocumentUseCase: CreateDocumentUseCase,
     private val createGroupUseCase: CreateGroupUseCase,
     private val importImagesUseCase: ImportImagesUseCase,
+    private val deleteDocumentUseCase: DeleteDocumentUseCase,
     private val suggestDocumentTitleUseCase: SuggestDocumentTitleUseCase,
     private val suggestGroupTitleUseCase: SuggestGroupTitleUseCase,
     private val observeShouldShowRatingPromptUseCase: ObserveShouldShowRatingPromptUseCase,
@@ -193,6 +195,8 @@ class HomeViewModel @Inject constructor(
                             }
 
                             is ScanlyResult.Failure -> {
+                                // No page was saved, so drop the empty "Imported" document.
+                                deleteDocumentUseCase(createResult.value)
                                 _events.emit(HomeEvent.ShowMessage(importResult.error.message))
                             }
                         }

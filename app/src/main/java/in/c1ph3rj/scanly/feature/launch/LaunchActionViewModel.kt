@@ -9,6 +9,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import `in`.c1ph3rj.scanly.core.common.ScanlyResult
 import `in`.c1ph3rj.scanly.core.ui.ImageImportSupport
 import `in`.c1ph3rj.scanly.domain.usecase.CreateDocumentUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.DeleteDocumentUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ImportImagesUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.SuggestDocumentTitleUseCase
 import javax.inject.Inject
@@ -43,6 +44,7 @@ class LaunchActionViewModel @Inject constructor(
     private val createDocumentUseCase: CreateDocumentUseCase,
     private val suggestDocumentTitleUseCase: SuggestDocumentTitleUseCase,
     private val importImagesUseCase: ImportImagesUseCase,
+    private val deleteDocumentUseCase: DeleteDocumentUseCase,
 ) : ViewModel() {
 
     private val _importProgress = MutableStateFlow(LaunchImportProgress())
@@ -120,6 +122,8 @@ class LaunchActionViewModel @Inject constructor(
                             }
 
                             is ScanlyResult.Failure -> {
+                                // No page was saved, so drop the empty "Imported" document.
+                                deleteDocumentUseCase(createResult.value)
                                 _events.emit(LaunchActionEvent.ShowMessage(importResult.error.message))
                             }
                         }
@@ -173,14 +177,23 @@ class LaunchActionViewModel @Inject constructor(
     }
 
     private suspend fun startScan() {
-        val title = suggestDocumentTitleUseCase()
-        when (val result = createDocumentUseCase(title)) {
-            is ScanlyResult.Success ->
-                _events.emit(LaunchActionEvent.OpenScanSession(result.value))
-            is ScanlyResult.Failure ->
-                _events.emit(LaunchActionEvent.ShowMessage(result.error.message))
+        // A fast double tap would otherwise create two documents and stack two camera sessions.
+        if (isStartingScan) return
+        isStartingScan = true
+        try {
+            val title = suggestDocumentTitleUseCase()
+            when (val result = createDocumentUseCase(title)) {
+                is ScanlyResult.Success ->
+                    _events.emit(LaunchActionEvent.OpenScanSession(result.value))
+                is ScanlyResult.Failure ->
+                    _events.emit(LaunchActionEvent.ShowMessage(result.error.message))
+            }
+        } finally {
+            isStartingScan = false
         }
     }
+
+    private var isStartingScan = false
 
     private companion object {
         const val KEY_COLD_START_HANDLED = "launch_cold_start_handled"

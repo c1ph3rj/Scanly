@@ -79,7 +79,11 @@ fun HomeRoute(
                     createForScan = false
                 }
                 is HomeEvent.OpenGroup -> onOpenGroup(event.groupId)
-                is HomeEvent.ShowMessage -> snackbarHostState.showSnackbar(event.message)
+                is HomeEvent.ShowMessage -> {
+                    // A failed create must not leave the scan intent armed for the next document.
+                    createForScan = false
+                    snackbarHostState.showSnackbar(event.message)
+                }
             }
         }
     }

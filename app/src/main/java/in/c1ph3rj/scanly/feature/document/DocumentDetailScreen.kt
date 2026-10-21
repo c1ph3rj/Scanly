@@ -81,6 +81,7 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -286,6 +287,10 @@ fun DocumentDetailScreen(
     var dragTargetPageId by remember { mutableStateOf<String?>(null) }
     var dragTargetIndex by remember { mutableStateOf<Int?>(null) }
     var autoScrollDelta by remember { mutableStateOf(0f) }
+    // The drag gesture lambdas outlive a recomposition; read the page list and callback through
+    // these so an undo/delete mid-session cannot leave reorder targets one page off.
+    val currentPages by rememberUpdatedState(uiState.pages)
+    val currentOnMovePage by rememberUpdatedState(onMovePage)
     val density = LocalDensity.current
     val autoScrollThresholdPx = with(density) { 96.dp.toPx() }
     val maxAutoScrollDeltaPx = with(density) { 22.dp.toPx() }
@@ -330,7 +335,7 @@ fun DocumentDetailScreen(
             val activeCenter = dragCenterInRoot
             if (activePageId != null && activeCenter != null) {
                 val targetIndex = resolvePageReorderTargetIndex(
-                    pageIds = uiState.pages.map { page -> page.id },
+                    pageIds = currentPages.map { page -> page.id },
                     pageBounds = pageTileBounds,
                     draggedPageId = activePageId,
                     dragCenter = activeCenter,
@@ -338,7 +343,7 @@ fun DocumentDetailScreen(
                 )
                 dragTargetIndex = targetIndex
                 dragTargetPageId = resolvePageReorderTargetPageId(
-                    pageIds = uiState.pages.map { page -> page.id },
+                    pageIds = currentPages.map { page -> page.id },
                     draggedPageId = activePageId,
                     targetIndex = targetIndex,
                 )
@@ -373,7 +378,7 @@ fun DocumentDetailScreen(
         dragOffset = updatedOffset
         dragCenterInRoot = updatedCenter
         val targetIndex = resolvePageReorderTargetIndex(
-            pageIds = uiState.pages.map { page -> page.id },
+            pageIds = currentPages.map { page -> page.id },
             pageBounds = pageTileBounds,
             draggedPageId = activePageId,
             dragCenter = updatedCenter,
@@ -381,7 +386,7 @@ fun DocumentDetailScreen(
         )
         dragTargetIndex = targetIndex
         dragTargetPageId = resolvePageReorderTargetPageId(
-            pageIds = uiState.pages.map { page -> page.id },
+            pageIds = currentPages.map { page -> page.id },
             draggedPageId = activePageId,
             targetIndex = targetIndex,
         )
@@ -396,7 +401,7 @@ fun DocumentDetailScreen(
         val activePageId = draggedPageId
         val targetIndex = dragTargetIndex
         if (activePageId != null && targetIndex != null) {
-            onMovePage(activePageId, targetIndex)
+            currentOnMovePage(activePageId, targetIndex)
         }
         draggedPageId = null
         dragStartBounds = null
@@ -1146,6 +1151,14 @@ private fun DocumentMasterDetailLayout(
     onOpenText: (pageIndex: Int) -> Unit,
     onOpenSign: (pageIndex: Int) -> Unit,
 ) {
+    // pointerInput only restarts on reorderEnabled, so its lambdas must read the latest values
+    // through these instead of the first composition's (listBounds is null then).
+    val currentListBounds by rememberUpdatedState(listBounds)
+    val currentDraggedPageId by rememberUpdatedState(draggedPageId)
+    val currentOnStartPageDrag by rememberUpdatedState(onStartPageDrag)
+    val currentOnUpdatePageDrag by rememberUpdatedState(onUpdatePageDrag)
+    val currentOnEndPageDrag by rememberUpdatedState(onEndPageDrag)
+    val currentOnCancelPageDrag by rememberUpdatedState(onCancelPageDrag)
     Row(
         modifier = Modifier
             .fillMaxSize()
@@ -1164,27 +1177,27 @@ private fun DocumentMasterDetailLayout(
                     if (!reorderEnabled) return@pointerInput
                     detectDragGesturesAfterLongPress(
                         onDragStart = { offset ->
-                            val bounds = listBounds ?: return@detectDragGesturesAfterLongPress
+                            val bounds = currentListBounds ?: return@detectDragGesturesAfterLongPress
                             val touchInRoot = bounds.topLeft + offset
                             val pressedPageId = pageTileBounds.entries.firstOrNull { it.value.contains(touchInRoot) }?.key
                             if (pressedPageId != null) {
-                                onStartPageDrag(pressedPageId)
+                                currentOnStartPageDrag(pressedPageId)
                             }
                         },
                         onDrag = { change, dragAmount ->
-                            if (draggedPageId != null) {
+                            if (currentDraggedPageId != null) {
                                 change.consume()
-                                onUpdatePageDrag(dragAmount)
+                                currentOnUpdatePageDrag(dragAmount)
                             }
                         },
                         onDragEnd = {
-                            if (draggedPageId != null) {
-                                onEndPageDrag()
+                            if (currentDraggedPageId != null) {
+                                currentOnEndPageDrag()
                             }
                         },
                         onDragCancel = {
-                            if (draggedPageId != null) {
-                                onCancelPageDrag()
+                            if (currentDraggedPageId != null) {
+                                currentOnCancelPageDrag()
                             }
                         },
                     )

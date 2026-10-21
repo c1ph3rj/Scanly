@@ -78,7 +78,7 @@ interface DocumentGroupDao {
                 LIMIT 1)                      AS coverUpdatedAtMillis
         FROM document_groups dg
         LEFT JOIN documents d ON d.groupId = dg.id AND d.deletedAtMillis IS NULL
-        WHERE dg.id = :groupId
+        WHERE dg.id = :groupId AND dg.deletedAtMillis IS NULL
         GROUP BY dg.id
         """,
     )

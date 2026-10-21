@@ -64,7 +64,8 @@ class RecentlyDeletedViewModel @Inject constructor(
 ) : ViewModel() {
     private val busy = MutableStateFlow(BusyState())
 
-    private val _events = MutableSharedFlow<RecentlyDeletedEvent>()
+    // Buffered so a snackbar that is still showing never suspends the action that emitted the message.
+    private val _events = MutableSharedFlow<RecentlyDeletedEvent>(extraBufferCapacity = 8)
     val events: SharedFlow<RecentlyDeletedEvent> = _events.asSharedFlow()
 
     val uiState: StateFlow<RecentlyDeletedUiState> = combine(
@@ -108,6 +109,24 @@ class RecentlyDeletedViewModel @Inject constructor(
         }
     }
 
+    /** Restores every row in [rows]; one message sums up the result. */
+    fun restoreAll(rows: List<RecentlyDeletedRow>) = runForRows(rows) {
+        // Folders first, so their documents are back before any of their pages.
+        val outcome = runEach(rows.sortedBy { it.item.kind.restoreOrder() }) { row ->
+            restoreTrashedItemUseCase(row.item.kind, row.item.id)
+        }
+        emit(outcome.message(verb = "Restored"))
+    }
+
+    /** Permanently deletes every row in [rows]; one message sums up the result. */
+    fun deleteForeverAll(rows: List<RecentlyDeletedRow>) = runForRows(rows) {
+        // Pages first, then documents, then folders: a parent removal would cascade its children uncounted.
+        val outcome = runEach(rows.sortedByDescending { it.item.kind.restoreOrder() }) { row ->
+            deleteTrashedItemForeverUseCase(row.item.kind, row.item.id)
+        }
+        emit(outcome.message(verb = "Deleted", suffix = " permanently"))
+    }
+
     fun emptyAll() {
         if (busy.value.emptying) return
         viewModelScope.launch {
@@ -138,8 +157,48 @@ class RecentlyDeletedViewModel @Inject constructor(
         }
     }
 
+    private fun runForRows(rows: List<RecentlyDeletedRow>, block: suspend () -> Unit) {
+        val keys = rows.map { it.key }.toSet()
+        if (keys.isEmpty() || busy.value.emptying || keys.any { it in busy.value.keys }) return
+        viewModelScope.launch {
+            busy.update { it.copy(keys = it.keys + keys) }
+            try {
+                block()
+            } finally {
+                busy.update { it.copy(keys = it.keys - keys) }
+            }
+        }
+    }
+
+    private suspend fun runEach(
+        rows: List<RecentlyDeletedRow>,
+        action: suspend (RecentlyDeletedRow) -> ScanlyResult<Unit>,
+    ): BatchOutcome {
+        var succeeded = 0
+        var firstError: String? = null
+        rows.forEach { row ->
+            when (val result = action(row)) {
+                is ScanlyResult.Success -> succeeded++
+                is ScanlyResult.Failure -> if (firstError == null) firstError = result.error.message
+            }
+        }
+        return BatchOutcome(total = rows.size, succeeded = succeeded, firstError = firstError)
+    }
+
     private suspend fun emit(message: String) {
         _events.emit(RecentlyDeletedEvent.ShowMessage(message))
+    }
+
+    private data class BatchOutcome(val total: Int, val succeeded: Int, val firstError: String?) {
+        /** "Restored 3 items", or "Restored 2 of 3 items. <first error>" when some failed. */
+        fun message(verb: String, suffix: String = ""): String {
+            val noun = if (total == 1) "item" else "items"
+            return if (firstError == null) {
+                "$verb $total $noun$suffix"
+            } else {
+                "$verb $succeeded of $total $noun$suffix. $firstError"
+            }
+        }
     }
 
     private data class BusyState(
@@ -148,11 +207,11 @@ class RecentlyDeletedViewModel @Inject constructor(
     )
 }
 
-/** "Deleted permanently in 5 days", "… in 1 day", "… today". */
-fun purgeLabel(daysUntilPurge: Int): String = when (daysUntilPurge) {
-    0 -> "Deleted permanently today"
-    1 -> "Deleted permanently in 1 day"
-    else -> "Deleted permanently in $daysUntilPurge days"
+/** Folders, then documents, then pages: parents come back before their children. */
+private fun TrashKind.restoreOrder(): Int = when (this) {
+    TrashKind.FOLDER -> 0
+    TrashKind.DOCUMENT -> 1
+    TrashKind.PAGE -> 2
 }
 
 /** Retention line shown under the bin's title. */

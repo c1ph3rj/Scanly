@@ -63,7 +63,7 @@ If `adb devices` is empty, Android Studio did not start a device, USB debugging 
 | Camera | Scan session / QR scan |
 | Internet | Optional update check only |
 
-Grant camera when you want to scan. Gallery import uses the system file picker (`OpenMultipleDocuments`, images only; no storage permission needed).
+Grant camera when you want to scan. Gallery import uses the system image picker (`GetMultipleContents`, `image/*`; no storage permission needed): the Android photo picker where available, whose "Browse…" lists Files, Drive, Gallery and Photos.
 
 ### Create an emulator if you have none
 

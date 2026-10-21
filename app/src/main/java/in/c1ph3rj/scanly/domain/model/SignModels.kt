@@ -1,5 +1,7 @@
 package `in`.c1ph3rj.scanly.domain.model
 
+import kotlin.math.sqrt
+
 /** Whether a saved mark is a full signature or a short set of initials. */
 enum class SignatureKind(val storageValue: String, val label: String) {
     SIGNATURE("signature", "Signature"),
@@ -70,6 +72,19 @@ data class NormRect(
             width = w,
             height = h,
         )
+    }
+
+    /**
+     * Re-fits this rect when the page it sits on changes from [oldPageAspect] to [newPageAspect]
+     * (width / height, e.g. after a 90° rotate). Keeps the centre, the on-screen proportions (so a
+     * signature is not stretched) and the share of the page it covers, then clamps to the page.
+     */
+    fun reshapedForPageAspect(oldPageAspect: Float, newPageAspect: Float): NormRect {
+        if (oldPageAspect <= 0f || newPageAspect <= 0f || width <= 0f || height <= 0f) return this
+        // Width / height as page fractions that keeps the same pixel proportions on the new page.
+        val ratio = (width / height) * (oldPageAspect / newPageAspect)
+        val area = width * height
+        return centeredAt(centerX, centerY, sqrt(area * ratio), sqrt(area / ratio)).clampedToPage()
     }
 
     companion object {

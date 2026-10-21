@@ -89,8 +89,12 @@ class PageTextViewModel @Inject constructor(
     private val recordPositiveMomentUseCase: RecordPositiveMomentUseCase,
 ) : ViewModel() {
     private val documentId: String = checkNotNull(savedStateHandle[PageTextDestination.documentIdArgument])
-    private val initialPage: Int = savedStateHandle.get<String>(PageTextDestination.pageArgument)
-        ?.toIntOrNull() ?: savedStateHandle.get<Int>(PageTextDestination.pageArgument) ?: 0
+    // The route argument arrives as a String, but a restored state may hold an Int; read it untyped.
+    private val initialPage: Int = when (val raw = savedStateHandle.get<Any?>(PageTextDestination.pageArgument)) {
+        is Int -> raw
+        is String -> raw.toIntOrNull()
+        else -> null
+    } ?: 0
     private val query = MutableStateFlow(savedStateHandle.get<String>(PageTextDestination.queryArgument).orEmpty())
     private val recognition = MutableStateFlow<RecognitionStatus>(RecognitionStatus.Idle)
     private val _events = MutableSharedFlow<PageTextEvent>()

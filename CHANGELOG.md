@@ -11,12 +11,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - **Recently deleted** — deleted pages, documents and folders go to Recently deleted instead of being erased. An **Undo** snackbar appears right after every delete (also after deleting from inside a document or the page editor). Open it from **Settings › Recently deleted** (also under Settings › Storage) to restore items, delete them forever, or empty it. **Pages are kept for 2 days; documents and folders for 7 days**, then removed for good.
 - **Deleting a folder** asks what to do with its documents: **Delete folder only** (the documents stay in your Library; restoring the folder puts them back in it, unless you have moved them since) or **Delete folder and documents** (both go to Recently deleted; restoring the folder brings them all back), or Cancel. Empty folders just ask to confirm. A document restored on its own while its folder is still deleted comes back outside the folder.
 - **Deleting a page** moves it to Recently deleted; restoring puts it back at the position it was deleted from. Its text, signatures and edits come back with it.
+- **Recently deleted rows** show a clear "N days left" pill (red on the last day) with Restore and Delete forever icon buttons. Tap or long-press a folder, document or page for a quick menu (Restore, Select, Delete forever); **Select** turns on multi-select, with Select all and a bottom bar to restore or permanently delete everything selected at once.
 - **Add PDF to library** (Tools → PDF, and the PDF reader's ⋮ menu → Add to Scanly library) — turn a PDF from your phone into a Scanly document: pick pages, name it, and choose **Keep as is** (pages exactly like the PDF) or **Enhance** (Auto filter for scanned PDFs). Pages are added straight, without edge detection, and can then be cropped, filtered, signed, searched and exported like any scan. Password-protected PDFs are unlocked with their password. Your original file is never changed.
 - **Image to text** (Tools → Utilities) — pick photos (up to 50) or one of your scans and read its text in the Extracted text screen: Text and On page views, copy, share and edit. Photos are saved as a new document, so their text is searchable later. Text is read on this phone.
 - **My signatures** (Tools → Utilities) — opens Your signatures directly. Tap a saved signature or initials to preview it in navy, black, blue or red ink, **Share** it or **Save to phone** (Pictures/Scanly) as a transparent PNG, choose **Use first when signing** so the sign editor offers it first (marked "Used first"), jump to **Sign a PDF**, or delete it.
 
 ### Changed
 
+- **Import shows your gallery apps** — Import (Home, Tools, Add page, Image to text, shortcuts) now opens Android's image picker instead of the plain Files browser. You get your photos and albums straight away (Google Photos included where the phone supports it), and **Browse…** lists Gallery, Photos and My Files alongside Downloads and Drive. Still up to 50 images, no storage permission.
 - **QR & barcode** — the Utilities QR tile and scanner now say "QR & barcode", since the scanner already reads EAN-13 product barcodes, Code 128, PDF417, Data Matrix and Aztec codes as well as QR codes.
 
 - **Privacy: no Google Drive backup** — Scanly now opts out of Android's automatic cloud backup, so scans, the library database and settings are never copied to Google Drive. Android 12+ phone-to-phone transfer still moves your library to a new phone.
@@ -30,7 +32,30 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Fixed
 
+- **Deleting a page from page review erased it permanently** — the Delete button on the page review screen skipped Recently deleted. It now moves the page there with an Undo snackbar, like deleting from the document or the page editor.
 - **Page images could be overwritten** — new pages were named after their position (`page_003.jpg`), so after deleting or reordering pages a new capture could overwrite another page's image. New captures now always get an unused file name.
+- **Crash on a damaged settings file** — an unreadable settings file no longer crashes Scanly on launch or capture; it falls back to defaults.
+- **Crashes on phones without a browser or mail app** — opening a website, licence or GitHub release link now shows a message instead of crashing.
+- **QR & barcode** — a huge UPI amount such as `1e1000000000` no longer crashes the app; scanning a QR code from a very large photo no longer runs out of memory; saved QR images are named by type (`qr-wifi-…`) instead of including the encoded content (which could put a Wi-Fi password in the file name); a code that can't be generated no longer leaves the previous code on screen.
+- **Clear all data** now also removes PDFs opened from other apps, QR history and QR images, and shared signature copies.
+- **Signing** — a signed page is now saved atomically, so running out of space or closing the app mid-save can't corrupt the page or burn a signature in permanently; a page's signatures are no longer lost after a crop or filter if their saved data can't be read; signatures keep their shape after rotating or cropping a page; reordering pages no longer re-renders every signed page; deleting a saved signature that is placed but not yet saved no longer leaves a document half signed.
+- **PDF tools** — password-protected PDFs show "This PDF is password protected" instead of an "Incorrect password" error before you typed anything; Merge says which PDF is locked; very large PDFs use disk instead of running out of memory; Compress no longer produces a file larger than the original; double-tapping Export/Save can no longer start two runs that delete each other's output; temporary and decrypted copies are cleaned up after failures and when you leave a tool mid-open.
+- **Reordering pages re-read every page's text** — moving or deleting a page no longer marks the whole document's text as out of date and re-runs text recognition on every page.
+- **Retake kept the old page's edited text** — retaking a page now reads its text fresh.
+- **Leaving the camera while a page was saving lost the photo** — the capture is now always finished and saved.
+- **Apply filter to all pages** — if one page fails, the pages that succeeded are saved instead of being left half applied.
+- **Editor cropped pages without a stored crop** — opening the page editor on a page with no detected corners and pressing Done no longer trims 8% off every edge.
+- **Unsaved edits** — leaving the page editor or crop screen with unsaved changes now asks "Discard changes?".
+- **Drag to reorder** didn't work in the tablet landscape layout, and on phones a reorder right after Undo could drop the page one slot off.
+- **Stuck screens after rotating** — Done, Delete and other actions that finish while the screen rotates now still navigate; deleting the only page from the editor no longer lands on a dead "Page not found" screen.
+- **Crop handles** can no longer be dragged into a crossed or dented shape that produced a garbled page.
+- **Camera** — the live document outline and auto-capture now follow a 180° landscape flip; after a one-time camera grant expires, Scanly asks again instead of sending you to Settings; a save that keeps failing (e.g. storage full) no longer retriggers auto-capture every two seconds.
+- **Import** — if some photos fail to save, the rest are still imported, and a failed import no longer leaves an empty "Imported" document behind.
+- **Library** — deleting the last folder from the Folders view no longer shows "No documents yet"; fast double-taps no longer open a screen twice or create two documents or folders.
+- **Recently deleted** — buttons no longer stay disabled while an earlier snackbar is showing.
+- **Exports of non-Latin titles** keep their name (e.g. Tamil or Hindi) instead of becoming `scanly_document`.
+- **Release notes** no longer show the word "null" when a release has no description.
+- **Open in Scanly** accepts PDFs shared by content URI only (no raw `file://` paths).
 
 ## [1.0.18] - 2026-10-20
 

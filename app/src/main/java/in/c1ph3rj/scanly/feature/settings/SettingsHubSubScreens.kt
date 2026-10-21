@@ -360,7 +360,7 @@ fun SettingsAboutRoute(
 }
 
 /** openUri throws when no app can handle the link (e.g. mailto: with no mail app). */
-private fun UriHandler.openUriSafely(uri: String) {
+internal fun UriHandler.openUriSafely(uri: String) {
     try {
         openUri(uri)
     } catch (_: ActivityNotFoundException) {

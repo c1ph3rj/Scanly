@@ -157,6 +157,10 @@ class LibraryViewModel @Inject constructor(
     private val _events = MutableSharedFlow<LibraryEvent>()
     val events: SharedFlow<LibraryEvent> = _events.asSharedFlow()
 
+    // Guards against a fast double-tap on a dialog's confirm creating the item twice.
+    private var isCreatingDocument = false
+    private var isCreatingGroup = false
+
     private val controls = combine(
         _searchQuery,
         _selectedTab,
@@ -177,7 +181,8 @@ class LibraryViewModel @Inject constructor(
             ungroupedDocuments = ungrouped,
             allDocuments = allDocs,
             searchQuery = controls.query,
-            selectedTab = controls.tab,
+            // The Folders tab has no content (or back control) once the last folder is gone.
+            selectedTab = if (controls.tab == LibraryTab.Folders && groups.isEmpty()) LibraryTab.All else controls.tab,
             sortOption = controls.sortOption,
             selectedGroupId = controls.groupId?.takeIf { id -> groups.any { it.id == id } },
             isLoading = false,
@@ -187,6 +192,18 @@ class LibraryViewModel @Inject constructor(
         started = SharingStarted.WhileSubscribed(5_000),
         initialValue = LibraryUiState(isLoading = true),
     )
+
+    init {
+        // Drop the stored Folders tab when the last folder disappears so it doesn't snap back
+        // the next time a folder is created.
+        viewModelScope.launch {
+            observeGroupsUseCase().collect { groups ->
+                if (groups.isEmpty() && _selectedTab.value == LibraryTab.Folders) {
+                    _selectedTab.value = LibraryTab.All
+                }
+            }
+        }
+    }
 
     fun setSearchQuery(query: String) {
         _searchQuery.value = query
@@ -211,10 +228,16 @@ class LibraryViewModel @Inject constructor(
     }
 
     fun createDocument(title: String, groupId: String? = null) {
+        if (isCreatingDocument) return
+        isCreatingDocument = true
         viewModelScope.launch {
-            when (val result = createDocumentUseCase(title, groupId)) {
-                is ScanlyResult.Success -> _events.emit(LibraryEvent.OpenDocument(result.value))
-                is ScanlyResult.Failure -> _events.emit(LibraryEvent.ShowMessage(result.error.message))
+            try {
+                when (val result = createDocumentUseCase(title, groupId)) {
+                    is ScanlyResult.Success -> _events.emit(LibraryEvent.OpenDocument(result.value))
+                    is ScanlyResult.Failure -> _events.emit(LibraryEvent.ShowMessage(result.error.message))
+                }
+            } finally {
+                isCreatingDocument = false
             }
         }
     }
@@ -245,10 +268,16 @@ class LibraryViewModel @Inject constructor(
     }
 
     fun createGroup(title: String) {
+        if (isCreatingGroup) return
+        isCreatingGroup = true
         viewModelScope.launch {
-            when (val result = createGroupUseCase(title)) {
-                is ScanlyResult.Success -> _events.emit(LibraryEvent.OpenGroup(result.value))
-                is ScanlyResult.Failure -> _events.emit(LibraryEvent.ShowMessage(result.error.message))
+            try {
+                when (val result = createGroupUseCase(title)) {
+                    is ScanlyResult.Success -> _events.emit(LibraryEvent.OpenGroup(result.value))
+                    is ScanlyResult.Failure -> _events.emit(LibraryEvent.ShowMessage(result.error.message))
+                }
+            } finally {
+                isCreatingGroup = false
             }
         }
     }

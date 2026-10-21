@@ -6,12 +6,15 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.net.wifi.WifiNetworkSuggestion
 import android.os.Build
 import android.provider.ContactsContract
 import android.provider.Settings
 import androidx.annotation.RequiresApi
+import androidx.exifinterface.media.ExifInterface
 import com.google.android.gms.tasks.Task
 import com.google.mlkit.vision.barcode.BarcodeScanner
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
@@ -183,16 +186,51 @@ private fun qrBarcodeOptions(): BarcodeScannerOptions =
 suspend fun decodeQrFromPhoto(context: Context, uri: Uri): String? = withContext(Dispatchers.IO) {
     val scanner = createQrBarcodeScanner() ?: return@withContext null
     try {
-        val image = InputImage.fromFilePath(context, uri)
-        scanner.process(image).awaitBarcodes()
-            .firstNotNullOfOrNull { barcode -> barcode.rawValue?.takeIf(String::isNotBlank) }
+        val photo = decodeQrPhoto(context, uri) ?: return@withContext null
+        val barcodes = scanner.process(InputImage.fromBitmap(photo.bitmap, photo.rotationDegrees))
+            .awaitBarcodes()
+        // Processing has finished, so the pixels are no longer needed.
+        photo.bitmap.recycle()
+        barcodes.firstNotNullOfOrNull { barcode -> barcode.rawValue?.takeIf(String::isNotBlank) }
     } catch (cancelled: CancellationException) {
         throw cancelled
     } catch (_: Exception) {
         null
+    } catch (_: OutOfMemoryError) {
+        null
     } finally {
         scanner.close()
     }
+}
+
+/** A photo decoded at a size ML Kit can handle, with the rotation its EXIF data asks for. */
+private class QrPhoto(val bitmap: Bitmap, val rotationDegrees: Int)
+
+/** Longest edge the photo is decoded to; QR codes stay readable at this size. */
+private const val MAX_QR_PHOTO_EDGE_PX = 2560
+
+/**
+ * Decodes [uri] downsampled so its longest edge is at most [MAX_QR_PHOTO_EDGE_PX]. Decoding a
+ * full-resolution camera photo can exhaust memory before ML Kit even runs.
+ */
+private fun decodeQrPhoto(context: Context, uri: Uri): QrPhoto? {
+    val resolver = context.contentResolver
+    val rotation = runCatching {
+        resolver.openInputStream(uri)?.use { stream -> ExifInterface(stream).rotationDegrees }
+    }.getOrNull() ?: 0
+
+    val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+    resolver.openInputStream(uri)?.use { stream -> BitmapFactory.decodeStream(stream, null, bounds) }
+    if (bounds.outWidth <= 0 || bounds.outHeight <= 0) return null
+
+    val longEdge = maxOf(bounds.outWidth, bounds.outHeight)
+    var sampleSize = 1
+    while (longEdge / sampleSize > MAX_QR_PHOTO_EDGE_PX) sampleSize *= 2
+    val options = BitmapFactory.Options().apply { inSampleSize = sampleSize }
+    val bitmap = resolver.openInputStream(uri)?.use { stream ->
+        BitmapFactory.decodeStream(stream, null, options)
+    } ?: return null
+    return QrPhoto(bitmap, rotation)
 }
 
 private suspend fun Task<List<Barcode>>.awaitBarcodes(): List<Barcode> =

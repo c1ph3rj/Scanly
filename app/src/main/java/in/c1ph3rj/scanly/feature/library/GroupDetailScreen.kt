@@ -419,8 +419,10 @@ private fun GroupDetailScreen(
             confirmLabel = "Create",
             onDismiss = { showCreateDialog = false },
             onConfirm = { newTitle ->
-                showCreateDialog = false
-                onCreateDocument(newTitle)
+                if (showCreateDialog) {
+                    showCreateDialog = false
+                    onCreateDocument(newTitle)
+                }
             },
             onSuggestTitle = onSuggestTitle,
             autoFillSuggestedName = true,

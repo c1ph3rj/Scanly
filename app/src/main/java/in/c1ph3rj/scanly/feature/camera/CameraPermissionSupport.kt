@@ -20,6 +20,7 @@ enum class CameraPermissionStatus {
 object CameraPermissionSupport {
     private const val preferencesName = "scanly_camera_permission"
     private const val requestedKey = "camera_permission_requested"
+    private const val permanentlyDeniedKey = "camera_permission_permanently_denied"
 
     fun isGranted(context: Context): Boolean =
         ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) ==
@@ -29,10 +30,32 @@ object CameraPermissionSupport {
         context.getSharedPreferences(preferencesName, Context.MODE_PRIVATE)
             .getBoolean(requestedKey, false)
 
+    /** True only after a system prompt result came back denied with no rationale left to show. */
+    fun isPermanentlyDeniedRecorded(context: Context): Boolean =
+        context.getSharedPreferences(preferencesName, Context.MODE_PRIVATE)
+            .getBoolean(permanentlyDeniedKey, false)
+
+    /**
+     * Call from the permission launcher callback. The rationale flag is only trustworthy right
+     * after a real prompt result, so the "permanently denied" outcome is recorded here instead
+     * of being inferred later (it is also false after a one-time grant expires or "Ask every time").
+     */
     fun markRequested(context: Context) {
+        val permanentlyDenied = !isGranted(context) &&
+            findActivity(context)
+                ?.let { !it.shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) } == true
         context.getSharedPreferences(preferencesName, Context.MODE_PRIVATE)
             .edit()
             .putBoolean(requestedKey, true)
+            .putBoolean(permanentlyDeniedKey, permanentlyDenied)
+            .apply()
+    }
+
+    private fun clearPermanentlyDenied(context: Context) {
+        if (!isPermanentlyDeniedRecorded(context)) return
+        context.getSharedPreferences(preferencesName, Context.MODE_PRIVATE)
+            .edit()
+            .putBoolean(permanentlyDeniedKey, false)
             .apply()
     }
 
@@ -50,6 +73,7 @@ object CameraPermissionSupport {
         shouldShowRationale: Boolean,
         hasRequestedBefore: Boolean,
         canInspectRationale: Boolean,
+        permanentlyDeniedRecorded: Boolean = true,
     ): CameraPermissionStatus {
         if (isGranted) {
             return CameraPermissionStatus.Granted
@@ -65,17 +89,27 @@ object CameraPermissionSupport {
         if (!canInspectRationale) {
             return CameraPermissionStatus.DeniedCanRetry
         }
+        // Not granted and no rationale is also what an expired one-time grant or "Ask every time"
+        // looks like; only a recorded denied prompt result proves the dialog will no longer show.
+        if (!permanentlyDeniedRecorded) {
+            return CameraPermissionStatus.DeniedCanRetry
+        }
         return CameraPermissionStatus.PermanentlyDenied
     }
 
     fun resolveStatus(activity: Activity?, context: Context): CameraPermissionStatus {
         val resolvedActivity = activity ?: findActivity(context)
+        val granted = isGranted(context)
+        val shouldShowRationale = resolvedActivity
+            ?.shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) == true
+        // A granted or rationale-eligible state means the system dialog works again.
+        if (granted || shouldShowRationale) clearPermanentlyDenied(context)
         return resolveStatus(
-            isGranted = isGranted(context),
-            shouldShowRationale = resolvedActivity
-                ?.shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) == true,
+            isGranted = granted,
+            shouldShowRationale = shouldShowRationale,
             hasRequestedBefore = hasRequestedBefore(context),
             canInspectRationale = resolvedActivity != null,
+            permanentlyDeniedRecorded = isPermanentlyDeniedRecorded(context),
         )
     }
 

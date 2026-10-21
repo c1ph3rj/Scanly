@@ -20,6 +20,14 @@ class DocumentPresentationFormatterTest {
     }
 
     @Test
+    fun safeFileStem_keepsNonLatinLettersAndReplacesPunctuation() {
+        assertEquals("invoice_april", DocumentPresentationFormatter.safeFileStem("Invoice / April!"))
+        assertEquals("தமிழ்_ஆவணம்", DocumentPresentationFormatter.safeFileStem("தமிழ் ஆவணம்"))
+        assertEquals("हिन्दी_दस्तावेज़", DocumentPresentationFormatter.safeFileStem("हिन्दी दस्तावेज़"))
+        assertEquals("scanly_document", DocumentPresentationFormatter.safeFileStem("!!!"))
+    }
+
+    @Test
     fun initials_useFirstTwoWordsOrTwoLettersFromSingleWord() {
         assertEquals("IA", DocumentPresentationFormatter.initials("Invoice April"))
         assertEquals("RE", DocumentPresentationFormatter.initials("Receipt"))

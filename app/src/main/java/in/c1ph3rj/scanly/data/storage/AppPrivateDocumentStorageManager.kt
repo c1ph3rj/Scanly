@@ -86,19 +86,18 @@ class AppPrivateDocumentStorageManager @Inject constructor(
         val rotationDegrees = ExifInterface(rawImagePath).rotationDegrees
         val bitmap = decodeSampledBitmap(rawImagePath, THUMBNAIL_MAX_DIMENSION, THUMBNAIL_MAX_DIMENSION)
             ?: error("Could not decode captured image at $rawImagePath.")
-        val rotatedBitmap = rotateBitmapIfNeeded(bitmap, rotationDegrees)
         val outputFile = File(thumbnailPath)
-        outputFile.parentFile?.let(::ensureDirectory)
-
-        FileOutputStream(outputFile).use { outputStream ->
-            rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, THUMBNAIL_JPEG_QUALITY, outputStream)
-            outputStream.flush()
+        var rotatedBitmap = bitmap
+        try {
+            rotatedBitmap = rotateBitmapIfNeeded(bitmap, rotationDegrees)
+            outputFile.parentFile?.let(::ensureDirectory)
+            writeJpegAtomically(rotatedBitmap, outputFile, THUMBNAIL_JPEG_QUALITY)
+        } finally {
+            if (rotatedBitmap !== bitmap) {
+                rotatedBitmap.recycle()
+            }
+            bitmap.recycle()
         }
-
-        if (rotatedBitmap !== bitmap) {
-            rotatedBitmap.recycle()
-        }
-        bitmap.recycle()
 
         PageThumbnailResult(
             thumbnailPath = outputFile.absolutePath,
@@ -134,11 +133,38 @@ class AppPrivateDocumentStorageManager @Inject constructor(
     ) {
         outputFile.parentFile?.let(::ensureDirectory)
         val coverBitmap = coverArtFactory.create(title)
-        FileOutputStream(outputFile).use { outputStream ->
-            coverBitmap.compress(Bitmap.CompressFormat.JPEG, JPEG_QUALITY, outputStream)
-            outputStream.flush()
+        try {
+            writeJpegAtomically(coverBitmap, outputFile, JPEG_QUALITY)
+        } finally {
+            coverBitmap.recycle()
         }
-        coverBitmap.recycle()
+    }
+
+    /**
+     * Encodes to `<path>.tmp` and swaps it in, so a failed or interrupted write never
+     * truncates the file that is already there.
+     */
+    private fun writeJpegAtomically(
+        bitmap: Bitmap,
+        outputFile: File,
+        quality: Int,
+    ) {
+        val tempFile = File("${outputFile.path}.tmp")
+        try {
+            val compressed = FileOutputStream(tempFile).use { outputStream ->
+                bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream).also {
+                    outputStream.flush()
+                }
+            }
+            check(compressed) { "Could not encode image to ${outputFile.absolutePath}." }
+            if (!tempFile.renameTo(outputFile)) {
+                tempFile.copyTo(outputFile, overwrite = true)
+            }
+        } finally {
+            if (tempFile.exists()) {
+                tempFile.delete()
+            }
+        }
     }
 
     private fun decodeSampledBitmap(

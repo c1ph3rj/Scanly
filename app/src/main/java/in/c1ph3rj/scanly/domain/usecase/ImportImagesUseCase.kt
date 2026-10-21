@@ -10,6 +10,7 @@ import `in`.c1ph3rj.scanly.core.common.ScanlyError
 import `in`.c1ph3rj.scanly.core.common.ScanlyResult
 import `in`.c1ph3rj.scanly.domain.repository.PageRepository
 import kotlinx.coroutines.withContext
+import kotlin.coroutines.cancellation.CancellationException
 import java.io.File
 import java.io.FileOutputStream
 import javax.inject.Inject
@@ -57,7 +58,8 @@ enum class ImportStage {
  * thumbnail generation.
  *
  * Files that can't be decoded as images are skipped (no page is created for them) and
- * counted in [ImportImagesSummary.skippedCount]; the import fails only when none decode.
+ * counted in [ImportImagesSummary.skippedCount]. An image whose page can't be saved is skipped
+ * the same way; the import fails only when no page could be saved.
  */
 class ImportImagesUseCase @Inject constructor(
     @ApplicationContext private val context: Context,
@@ -81,24 +83,21 @@ class ImportImagesUseCase @Inject constructor(
                 // Decode before creating the draft so an unreadable file leaves no empty page.
                 val bitmap = decodeBitmap(uri) ?: return@forEachIndexed
 
-                val draftResult = pageRepository.prepareCapture(documentId)
-                if (draftResult !is ScanlyResult.Success) {
-                    bitmap.recycle()
-                    error("Failed to prepare page capture for imported image.")
+                // A page that fails to save is skipped, so the pages already saved from this batch are kept.
+                val saved = try {
+                    savePage(documentId, bitmap, current, total, onProgress)
+                } catch (cancelled: CancellationException) {
+                    throw cancelled
+                } catch (failure: Exception) {
+                    false
+                } finally {
+                    if (!bitmap.isRecycled) {
+                        bitmap.recycle()
+                    }
                 }
-                val draft = draftResult.value
-                val rawFile = File(draft.rawImagePath)
-
-                writeNormalizedJpeg(bitmap, rawFile)
-
-                reportProgress(onProgress, current, total, ImportStage.Detecting)
-                val finalizeResult = pageRepository.finalizeCapture(draft)
-                if (finalizeResult !is ScanlyResult.Success) {
-                    error("Failed to finalize captured page for imported image.")
+                if (saved) {
+                    imported++
                 }
-
-                reportProgress(onProgress, current, total, ImportStage.Finalizing)
-                imported++
             }
 
             check(imported > 0) {
@@ -112,6 +111,8 @@ class ImportImagesUseCase @Inject constructor(
         }.fold(
             onSuccess = { summary -> ScanlyResult.Success(summary) },
             onFailure = { throwable ->
+                // Cancellation is not a failed import: rethrow so pages already saved are not treated as empty.
+                if (throwable is CancellationException) throw throwable
                 ScanlyResult.Failure(
                     ScanlyError(
                         message = throwable.message ?: "Failed to import images.",
@@ -120,6 +121,30 @@ class ImportImagesUseCase @Inject constructor(
                 )
             },
         )
+    }
+
+    /**
+     * Saves one decoded image as a page through the same capture path as the camera.
+     * @return false when the page could not be prepared or finalized.
+     */
+    private suspend fun savePage(
+        documentId: String,
+        bitmap: Bitmap,
+        current: Int,
+        total: Int,
+        onProgress: suspend (ImportImagesProgress) -> Unit,
+    ): Boolean {
+        val draftResult = pageRepository.prepareCapture(documentId)
+        if (draftResult !is ScanlyResult.Success) return false
+        val draft = draftResult.value
+
+        writeNormalizedJpeg(bitmap, File(draft.rawImagePath))
+
+        reportProgress(onProgress, current, total, ImportStage.Detecting)
+        if (pageRepository.finalizeCapture(draft) !is ScanlyResult.Success) return false
+
+        reportProgress(onProgress, current, total, ImportStage.Finalizing)
+        return true
     }
 
     private suspend fun reportProgress(

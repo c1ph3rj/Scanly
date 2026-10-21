@@ -166,7 +166,7 @@ On processing failure:
 
 `ImportImagesUseCase`:
 
-1. User picks ≤50 images via the system file picker (`ImageImportSupport`).
+1. User picks ≤50 images via the system image picker (`ImageImportSupport`, `ACTION_GET_CONTENT`).
 2. For each image: `prepareCapture` → copy URI to raw path → `finalizeCapture`.
 3. Same processing pipeline as camera capture (including gate + post-processing model).
 

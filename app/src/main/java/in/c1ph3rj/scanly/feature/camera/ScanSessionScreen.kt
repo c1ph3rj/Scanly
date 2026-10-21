@@ -1,6 +1,10 @@
 package `in`.c1ph3rj.scanly.feature.camera
 
 import android.Manifest
+import android.content.Context
+import android.hardware.display.DisplayManager
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.util.Size
 import androidx.activity.compose.BackHandler
@@ -171,8 +175,10 @@ fun ScanSessionRoute(
     }
 
     LaunchedEffect(cameraPermissionStatus) {
+        // Ask the system first on entry; Settings is offered only once a prompt result proved the
+        // dialog no longer appears (an expired one-time grant must not jump straight to Settings).
         if (
-            CameraPermissionSupport.shouldAutoRequestSystemPermission(cameraPermissionStatus) &&
+            CameraPermissionSupport.shouldRequestSystemPermission(cameraPermissionStatus) &&
             !hasAutoRequestedPermission
         ) {
             hasAutoRequestedPermission = true
@@ -1071,6 +1077,8 @@ private fun CameraPreview(
         } else {
             val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
             var disposed = false
+            var previewRef: Preview? = null
+            var imageCaptureRef: ImageCapture? = null
             var imageAnalysisRef: ImageAnalysis? = null
 
             /** Returns false when the view is not attached yet (no display / viewport) so it can retry. */
@@ -1119,6 +1127,8 @@ private fun CameraPreview(
                             }
                         }
                     }
+                previewRef = preview
+                imageCaptureRef = imageCapture
                 imageAnalysisRef = imageAnalysis
                 val useCaseGroup = UseCaseGroup.Builder()
                     .setViewPort(viewPort)
@@ -1163,6 +1173,25 @@ private fun CameraPreview(
                 }
             }
 
+            // The activity is not recreated on a 180-degree landscape flip, so use cases bound with
+            // the old target rotation would keep delivering frames (and captures) with a stale one.
+            val displayManager = context.getSystemService(Context.DISPLAY_SERVICE) as? DisplayManager
+            val displayListener = object : DisplayManager.DisplayListener {
+                override fun onDisplayAdded(displayId: Int) = Unit
+
+                override fun onDisplayRemoved(displayId: Int) = Unit
+
+                override fun onDisplayChanged(displayId: Int) {
+                    val display = currentPreviewView.display ?: return
+                    if (display.displayId != displayId) return
+                    val rotation = display.rotation
+                    previewRef?.targetRotation = rotation
+                    imageCaptureRef?.targetRotation = rotation
+                    imageAnalysisRef?.targetRotation = rotation
+                }
+            }
+            displayManager?.registerDisplayListener(displayListener, Handler(Looper.getMainLooper()))
+
             currentPreviewView.doOnLayout {
                 if (!disposed) {
                     cameraProviderFuture.addListener(listener, mainExecutor)
@@ -1170,6 +1199,7 @@ private fun CameraPreview(
             }
             onDispose {
                 disposed = true
+                displayManager?.unregisterDisplayListener(displayListener)
                 currentPreviewView.removeCallbacks(listener)
                 imageAnalysisRef?.clearAnalyzer()
                 if (cameraProviderFuture.isDone) {

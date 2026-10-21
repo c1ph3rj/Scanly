@@ -21,16 +21,23 @@ internal object SignMarkCodec {
      * Decodes marks written by [encode]. Unknown types and malformed entries are skipped; a
      * malformed root or an unknown future version returns an empty list.
      */
-    fun decode(json: String?): List<SignMark> {
-        if (json.isNullOrBlank()) return emptyList()
+    fun decode(json: String?): List<SignMark> = decodeOrNull(json).orEmpty()
+
+    /**
+     * Like [decode], but returns null when [json] cannot be read at all (blank, malformed root,
+     * unknown version, no marks array), so callers can tell "unreadable" from "no marks" and avoid
+     * discarding data they do not understand.
+     */
+    fun decodeOrNull(json: String?): List<SignMark>? {
+        if (json.isNullOrBlank()) return null
         return runCatching {
             val root = JSONObject(json)
-            if (root.optInt("v", -1) != Version) return emptyList()
-            val marks = root.optJSONArray("marks") ?: return emptyList()
+            if (root.optInt("v", -1) != Version) return null
+            val marks = root.optJSONArray("marks") ?: return null
             List(marks.length()) { index ->
                 runCatching { marks.getJSONObject(index).toMark() }.getOrNull()
             }.filterNotNull()
-        }.getOrDefault(emptyList())
+        }.getOrNull()
     }
 
     private fun SignMark.toJson(): JSONObject = when (this) {

@@ -181,7 +181,17 @@ private fun ScanlyApp(
                     ).show()
                 }
 
-                is AppUpdateEvent.OpenUri -> uriHandler.openUri(event.uri)
+                is AppUpdateEvent.OpenUri -> {
+                    try {
+                        uriHandler.openUri(event.uri)
+                    } catch (_: android.content.ActivityNotFoundException) {
+                        android.widget.Toast.makeText(
+                            context,
+                            "No app found to open this link.",
+                            android.widget.Toast.LENGTH_LONG,
+                        ).show()
+                    }
+                }
 
                 is AppUpdateEvent.LaunchPlayUpdate -> {
                     appUpdateViewModel.launchPlayUpdate(

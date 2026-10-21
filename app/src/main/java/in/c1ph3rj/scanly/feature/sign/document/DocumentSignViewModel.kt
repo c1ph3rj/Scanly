@@ -26,6 +26,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.io.File
 import javax.inject.Inject
 import kotlin.math.abs
 
@@ -168,7 +169,10 @@ class DocumentSignViewModel @Inject constructor(
 
         var hasUnsignablePage = false
         val backgrounds = pages.map { page ->
-            val background = markupsByPageId[page.id]?.baseImagePath ?: page.processedImagePath
+            // A missing base file would leave the page loading forever, so fall back to the page image.
+            val background = markupsByPageId[page.id]?.baseImagePath
+                ?.takeIf { File(it).isFile }
+                ?: page.processedImagePath
             if (background == null) hasUnsignablePage = true
             background
         }

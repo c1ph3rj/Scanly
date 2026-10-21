@@ -46,6 +46,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -125,10 +126,21 @@ fun PageEditorScreen(
     var filtersVisible by remember { mutableStateOf(false) }
     var customizeVisible by remember { mutableStateOf(false) }
     var deleteDialogVisible by remember { mutableStateOf(false) }
-    BackHandler(enabled = uiState.isSaving || filtersVisible || customizeVisible) {
+    var discardDialogVisible by rememberSaveable { mutableStateOf(false) }
+    // Leaving with unsaved filter/adjustment edits asks first; otherwise navigate straight away.
+    val requestNavigateUp: () -> Unit = {
+        if (uiState.hasUnsavedChanges) discardDialogVisible = true else onNavigateUp()
+    }
+    BackHandler(
+        enabled = uiState.isSaving || filtersVisible || customizeVisible || uiState.hasUnsavedChanges,
+    ) {
         if (!uiState.isSaving) {
-            filtersVisible = false
-            customizeVisible = false
+            if (filtersVisible || customizeVisible) {
+                filtersVisible = false
+                customizeVisible = false
+            } else {
+                discardDialogVisible = true
+            }
         }
     }
     val showBulkApplyLoader = uiState.isSaving && uiState.applyFilterToAllPages
@@ -178,7 +190,7 @@ fun PageEditorScreen(
             topBar = {
                 EditorTopBar(
                     statusLabel = statusLabel,
-                    onNavigateUp = onNavigateUp,
+                    onNavigateUp = requestNavigateUp,
                     onSave = onSave,
                     isSaving = uiState.isSaving,
                 )
@@ -334,6 +346,21 @@ fun PageEditorScreen(
         if (showBulkApplyLoader) {
             BulkFilterApplyOverlay()
         }
+    }
+
+    if (discardDialogVisible) {
+        ScanlyConfirmDialog(
+            title = "Discard changes?",
+            text = "Your edits to this page have not been saved.",
+            confirmLabel = "Discard",
+            dismissLabel = "Keep editing",
+            onDismiss = { discardDialogVisible = false },
+            onConfirm = {
+                discardDialogVisible = false
+                onNavigateUp()
+            },
+            confirmDestructive = true,
+        )
     }
 
     if (deleteDialogVisible && uiState.page != null) {

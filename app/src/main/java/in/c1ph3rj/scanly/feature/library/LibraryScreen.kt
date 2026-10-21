@@ -431,8 +431,11 @@ fun LibraryScreen(
             initialGroupId = uiState.selectedGroupId,
             onDismiss = { createDocDialogVisible = false },
             onConfirm = { title, groupId ->
-                createDocDialogVisible = false
-                onCreateDocument(title, groupId)
+                // Ignore a second tap that lands before the dialog leaves composition.
+                if (createDocDialogVisible) {
+                    createDocDialogVisible = false
+                    onCreateDocument(title, groupId)
+                }
             },
             onSuggestTitle = onSuggestTitle,
         )
@@ -444,8 +447,10 @@ fun LibraryScreen(
             initialValue = "",
             onDismiss = { createGroupDialogVisible = false },
             onConfirm = { title ->
-                createGroupDialogVisible = false
-                onCreateGroup(title)
+                if (createGroupDialogVisible) {
+                    createGroupDialogVisible = false
+                    onCreateGroup(title)
+                }
             },
             onSuggestTitle = onSuggestGroupTitle,
             autoFillSuggestedName = true,
@@ -896,9 +901,13 @@ fun NewDocumentDialog(
         isFillingName = false
     }
 
+    var confirmed by remember { mutableStateOf(false) }
     val confirm = {
         val name = title.trim()
-        if (name.isNotEmpty()) onConfirm(name, selectedGroupId)
+        if (name.isNotEmpty() && !confirmed) {
+            confirmed = true
+            onConfirm(name, selectedGroupId)
+        }
     }
 
     ScanlyFormDialogShell(onDismiss = onDismiss) {

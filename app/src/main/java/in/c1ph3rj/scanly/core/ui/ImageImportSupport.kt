@@ -9,17 +9,19 @@ object ImageImportSupport {
      */
     const val MAX_IMAGES_PER_IMPORT = 50
 
-    private val IMAGE_MIME_TYPES = arrayOf("image/*")
+    private const val IMAGE_MIME_TYPE = "image/*"
 
-    /** MIME filter passed to the system file picker so only images are selectable. */
-    fun createPickRequest(): Array<String> = IMAGE_MIME_TYPES
+    /** MIME filter passed to the picker so only images are selectable. */
+    fun createPickRequest(): String = IMAGE_MIME_TYPE
 
     /**
-     * Opens the system Files picker (browse any folder, Downloads, Drive, etc.) limited to
-     * images. The picker has no selection limit, so results go through [capSelection].
+     * Opens the system picker with `ACTION_GET_CONTENT` for images: the Files browser (Downloads,
+     * Drive, other storage) plus gallery apps such as Gallery and Google Photos, which
+     * `ACTION_OPEN_DOCUMENT` does not list. The picker has no selection limit, so results go
+     * through [capSelection].
      */
-    fun pickImagesContract(): ActivityResultContracts.OpenMultipleDocuments =
-        ActivityResultContracts.OpenMultipleDocuments()
+    fun pickImagesContract(): ActivityResultContracts.GetMultipleContents =
+        ActivityResultContracts.GetMultipleContents()
 
     fun <T> capSelection(items: List<T>): CappedSelection<T> {
         if (items.size <= MAX_IMAGES_PER_IMPORT) {

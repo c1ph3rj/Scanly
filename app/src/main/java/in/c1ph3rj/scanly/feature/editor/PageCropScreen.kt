@@ -47,6 +47,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -78,6 +79,7 @@ import `in`.c1ph3rj.scanly.core.ui.MetricChip
 import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import `in`.c1ph3rj.scanly.domain.model.PageFilterPreset
 import `in`.c1ph3rj.scanly.domain.model.ScanPage
+import `in`.c1ph3rj.scanly.feature.components.ScanlyConfirmDialog
 import kotlinx.coroutines.flow.collectLatest
 import kotlin.math.min
 import kotlin.math.roundToInt
@@ -124,8 +126,14 @@ fun PageCropScreen(
     onDetectDocument: () -> Unit,
     onApply: () -> Unit,
 ) {
-    BackHandler(enabled = uiState.isSaving) {
-        // Keep the route alive until the edited page is committed.
+    var discardDialogVisible by rememberSaveable { mutableStateOf(false) }
+    // Leaving with unapplied crop edits asks first; otherwise navigate straight away.
+    val requestNavigateUp: () -> Unit = {
+        if (uiState.hasUnsavedChanges) discardDialogVisible = true else onNavigateUp()
+    }
+    BackHandler(enabled = uiState.isSaving || uiState.hasUnsavedChanges) {
+        // While saving, keep the route alive until the edited page is committed.
+        if (!uiState.isSaving) discardDialogVisible = true
     }
     val actionsEnabled = !uiState.isSaving && !uiState.isDetecting
     val statusLabel = when {
@@ -149,7 +157,7 @@ fun PageCropScreen(
         topBar = {
             CropTopBar(
                 statusLabel = statusLabel,
-                onNavigateUp = onNavigateUp,
+                onNavigateUp = requestNavigateUp,
                 backEnabled = !uiState.isSaving,
                 onApply = onApply,
                 applyEnabled = actionsEnabled,
@@ -307,6 +315,21 @@ fun PageCropScreen(
                 }
             }
         }
+    }
+
+    if (discardDialogVisible) {
+        ScanlyConfirmDialog(
+            title = "Discard changes?",
+            text = "Your crop changes have not been applied.",
+            confirmLabel = "Discard",
+            dismissLabel = "Keep editing",
+            onDismiss = { discardDialogVisible = false },
+            onConfirm = {
+                discardDialogVisible = false
+                onNavigateUp()
+            },
+            confirmDestructive = true,
+        )
     }
 }
 

@@ -504,7 +504,8 @@ private fun rememberZoomableImageBitmap(imagePath: String?) = produceState(
     key1 = imagePath,
     key2 = imagePath?.let { path -> File(path).takeIf { it.exists() }?.lastModified() },
 ) {
-    value = value.copy(isLoading = imagePath != null)
+    // Drop the previous page's bitmap so it doesn't flash while the new one decodes.
+    value = ZoomableImageLoad(bitmap = null, isLoading = imagePath != null)
     val decoded = withContext(Dispatchers.IO) {
         imagePath?.let { path -> runCatching { decodeZoomableBitmap(path) }.getOrNull() }?.asImageBitmap()
     }

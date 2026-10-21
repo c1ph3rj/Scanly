@@ -185,7 +185,8 @@ object DocumentPresentationFormatter {
     fun safeFileStem(title: String): String {
         val cleaned = normalizeTitle(title)
             .lowercase(Locale.US)
-            .replace("[^a-z0-9]+".toRegex(), "_")
+            // Keep letters, combining marks (Indic vowel signs) and digits so non-Latin titles survive.
+            .replace("[^\\p{L}\\p{M}\\p{N}]+".toRegex(), "_")
             .trim('_')
 
         return cleaned.ifBlank { untitledFileStem }

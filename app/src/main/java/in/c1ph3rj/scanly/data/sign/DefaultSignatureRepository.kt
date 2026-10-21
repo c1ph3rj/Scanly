@@ -93,6 +93,18 @@ class DefaultSignatureRepository @Inject constructor(
             }.toScanlyResult("Could not read this image.")
         }
 
+    override fun clearUploadCache() {
+        // A running extraction owns the bitmap; the next clear frees it instead.
+        if (!decodeMutex.tryLock()) return
+        try {
+            decodedBitmap?.recycle()
+            decodedBitmap = null
+            decodedUri = null
+        } finally {
+            decodeMutex.unlock()
+        }
+    }
+
     override suspend fun deleteSignature(id: String): ScanlyResult<Unit> = withContext(dispatchers.io) {
         runCatchingCancellable {
             signatureDao.deleteSignature(id)

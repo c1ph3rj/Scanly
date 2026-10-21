@@ -51,7 +51,14 @@ class DefaultQrCodeRepository @Inject constructor(
             val label = caption?.trim()?.takeIf { it.isNotEmpty() }
             val image = if (label == null) code else withCaption(code, label, inkArgb.toInt())
             val dir = File(context.cacheDir, "qr-tools").apply { mkdirs() }
-            val slug = (label ?: content).lowercase()
+            // Older exports were already shared or saved; sweep them so the folder doesn't grow forever.
+            val staleBefore = System.currentTimeMillis() - STALE_EXPORT_MILLIS
+            dir.listFiles().orEmpty()
+                .filter { entry -> entry.lastModified() < staleBefore }
+                .forEach { entry -> entry.delete() }
+            // The file name is shown in Downloads and the snackbar, so it must never carry the
+            // encoded content (Wi-Fi passwords, contact details, payment links).
+            val slug = (label ?: contentTypeLabel(content.trim())).lowercase()
                 .replace(Regex("^[a-z]+://"), "")
                 .replace(Regex("[^a-z0-9]+"), "-")
                 .trim('-')
@@ -128,6 +135,17 @@ class DefaultQrCodeRepository @Inject constructor(
         return output
     }
 
+    /** Generic file-name label for the content type; never includes the content itself. */
+    private fun contentTypeLabel(content: String): String = when {
+        content.startsWith("WIFI:", ignoreCase = true) -> "wifi"
+        content.startsWith("MECARD:", ignoreCase = true) ||
+            content.startsWith("BEGIN:VCARD", ignoreCase = true) -> "contact"
+        content.startsWith("upi://", ignoreCase = true) -> "upi"
+        content.startsWith("http://", ignoreCase = true) ||
+            content.startsWith("https://", ignoreCase = true) -> "link"
+        else -> "code"
+    }
+
     private fun <T> Result<T>.toScanlyResult(fallbackMessage: String): ScanlyResult<T> =
         fold(
             onSuccess = { ScanlyResult.Success(it) },
@@ -137,4 +155,8 @@ class DefaultQrCodeRepository @Inject constructor(
                 )
             },
         )
+
+    private companion object {
+        const val STALE_EXPORT_MILLIS = 60 * 60 * 1000L
+    }
 }

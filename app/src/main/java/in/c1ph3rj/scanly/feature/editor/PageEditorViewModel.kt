@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import `in`.c1ph3rj.scanly.core.common.ScanlyResult
-import `in`.c1ph3rj.scanly.core.editing.CropQuadEditor
 import `in`.c1ph3rj.scanly.core.ml.DocumentCornerQuad
 import `in`.c1ph3rj.scanly.domain.model.PageFilterAdjustments
 import `in`.c1ph3rj.scanly.domain.model.PageFilterPreset
@@ -14,13 +13,13 @@ import `in`.c1ph3rj.scanly.domain.model.ScanPage
 import `in`.c1ph3rj.scanly.domain.usecase.MovePageToTrashUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObservePageUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.UpdatePageEditsUseCase
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -62,8 +61,9 @@ class PageEditorViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(PageEditorUiState())
     val uiState: StateFlow<PageEditorUiState> = _uiState.asStateFlow()
 
-    private val _events = MutableSharedFlow<PageEditorEvent>()
-    val events: SharedFlow<PageEditorEvent> = _events.asSharedFlow()
+    // Buffered so events sent while the screen re-subscribes (rotation) are not lost.
+    private val _events = Channel<PageEditorEvent>(Channel.BUFFERED)
+    val events: Flow<PageEditorEvent> = _events.receiveAsFlow()
 
     init {
         viewModelScope.launch {
@@ -75,7 +75,8 @@ class PageEditorViewModel @Inject constructor(
                             missingPage = true,
                         )
                     } else if (current.page?.id != page.id || !current.hasUnsavedChanges) {
-                        val baseQuad = page.cropQuad ?: CropQuadEditor.defaultQuad()
+                        // Pages without a stored crop show the full frame; an inset default would silently crop them on Done.
+                        val baseQuad = page.cropQuad ?: DocumentCornerQuad.FullFrame
                         current.copy(
                             page = page,
                             cropQuad = baseQuad,
@@ -91,7 +92,7 @@ class PageEditorViewModel @Inject constructor(
                         // Keep local filter/adjustment drafts; adopt crop/rotation from crop screen.
                         current.copy(
                             page = page,
-                            cropQuad = page.cropQuad ?: CropQuadEditor.defaultQuad(),
+                            cropQuad = page.cropQuad ?: DocumentCornerQuad.FullFrame,
                             rotationDegrees = resolveInitialRotation(page),
                             missingPage = false,
                         )
@@ -162,7 +163,7 @@ class PageEditorViewModel @Inject constructor(
                             applyFilterToAllPages = false,
                         )
                     }
-                    _events.emit(
+                    _events.send(
                         PageEditorEvent.ShowMessage(
                             if (snapshot.applyFilterToAllPages) {
                                 "Filter applied to all pages."
@@ -171,12 +172,12 @@ class PageEditorViewModel @Inject constructor(
                             },
                         ),
                     )
-                    _events.emit(PageEditorEvent.Saved)
+                    _events.send(PageEditorEvent.Saved)
                 }
 
                 is ScanlyResult.Failure -> {
                     _uiState.update { it.copy(isSaving = false) }
-                    _events.emit(PageEditorEvent.ShowMessage(result.error.message))
+                    _events.send(PageEditorEvent.ShowMessage(result.error.message))
                 }
             }
         }
@@ -192,12 +193,12 @@ class PageEditorViewModel @Inject constructor(
                 is ScanlyResult.Success -> {
                     _uiState.update { it.copy(isSaving = false) }
                     // The app-wide snackbar says where it went and offers Undo.
-                    _events.emit(PageEditorEvent.PageDeleted)
+                    _events.send(PageEditorEvent.PageDeleted)
                 }
 
                 is ScanlyResult.Failure -> {
                     _uiState.update { it.copy(isSaving = false) }
-                    _events.emit(PageEditorEvent.ShowMessage(result.error.message))
+                    _events.send(PageEditorEvent.ShowMessage(result.error.message))
                 }
             }
         }

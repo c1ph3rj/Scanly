@@ -237,9 +237,11 @@ abstract class BasePdfToolViewModel(
     }
 
     fun saveResult() {
+        if (_uiState.value.isProcessing) return
         val artifact = _uiState.value.namedResult() ?: return
+        // Set before launching so a double tap cannot start a second save.
+        _uiState.update { it.copy(isProcessing = true, progressMessage = "Saving…") }
         viewModelScope.launch {
-            _uiState.update { it.copy(isProcessing = true, progressMessage = "Saving…") }
             when (val result = saveExportArtifactUseCase(artifact)) {
                 is ScanlyResult.Success -> {
                     _uiState.update { it.copy(savedDestinationLabel = result.value.destinationLabel) }
@@ -260,16 +262,18 @@ abstract class BasePdfToolViewModel(
         outputName: String? = null,
         block: suspend () -> ScanlyResult<ExportArtifact>,
     ) {
+        if (_uiState.value.isProcessing) return
         recycleResultPreview()
+        // Set before launching so a double tap cannot start a second run.
+        _uiState.update {
+            it.copy(
+                isProcessing = true,
+                progressMessage = message,
+                result = null,
+                savedDestinationLabel = null,
+            )
+        }
         viewModelScope.launch {
-            _uiState.update {
-                it.copy(
-                    isProcessing = true,
-                    progressMessage = message,
-                    result = null,
-                    savedDestinationLabel = null,
-                )
-            }
             when (val result = block()) {
                 is ScanlyResult.Success -> {
                     _uiState.update {

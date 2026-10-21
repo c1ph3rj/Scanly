@@ -340,6 +340,7 @@ class ScanSessionViewModel @Inject constructor(
         viewModelScope.launch {
             var capturedPageId: String? = null
             var completionEvent: ScanSessionEvent? = null
+            var failureMessage: String? = null
             when (val result = finalizeCapturedPageUseCase(draft)) {
                 is ScanlyResult.Success -> {
                     capturedPageId = result.value
@@ -359,7 +360,13 @@ class ScanSessionViewModel @Inject constructor(
                         )
                     }
                 }
-                is ScanlyResult.Failure -> _events.send(ScanSessionEvent.ShowMessage(result.error.message))
+                is ScanlyResult.Failure -> {
+                    failureMessage = result.error.message
+                    // Back off like a commit so a persistent failure (e.g. disk full) does not
+                    // re-trigger auto-capture every time the still scene turns stable again.
+                    applyFailureCooldown()
+                    _events.send(ScanSessionEvent.ShowMessage(result.error.message))
+                }
             }
             pendingCaptureQuad = null
             pendingCaptureTrigger = CaptureTrigger.MANUAL
@@ -369,7 +376,9 @@ class ScanSessionViewModel @Inject constructor(
                     latestCapturedPageId = capturedPageId ?: current.latestCapturedPageId,
                     liveDetection = current.liveDetection.copy(
                         phase = if (current.liveDetection.autoCaptureEnabled) AutoCapturePhase.COOLDOWN else AutoCapturePhase.OFF,
-                        statusMessage = if (current.liveDetection.autoCaptureEnabled) {
+                        statusMessage = if (failureMessage != null) {
+                            "Page not saved. Reposition the document and try again."
+                        } else if (current.liveDetection.autoCaptureEnabled) {
                             "Move to the next page before auto-capture re-arms."
                         } else {
                             "Auto-capture is off. Use the shutter when ready."
@@ -385,6 +394,7 @@ class ScanSessionViewModel @Inject constructor(
 
     fun onCaptureFailed(message: String) {
         viewModelScope.launch {
+            applyFailureCooldown()
             pendingCaptureQuad = null
             pendingCaptureTrigger = CaptureTrigger.MANUAL
             _uiState.update { current ->
@@ -436,6 +446,7 @@ class ScanSessionViewModel @Inject constructor(
         when (val result = capturePreparationResult) {
             is ScanlyResult.Success -> _events.send(ScanSessionEvent.PerformCapture(result.value))
             is ScanlyResult.Failure -> {
+                applyFailureCooldown()
                 pendingCaptureQuad = null
                 pendingCaptureTrigger = CaptureTrigger.MANUAL
                 _uiState.update { current ->
@@ -451,6 +462,14 @@ class ScanSessionViewModel @Inject constructor(
                 _events.send(ScanSessionEvent.ShowMessage(result.error.message))
             }
         }
+    }
+
+    /** Same back-off as a committed capture, minus the success path, for every failed attempt. */
+    private fun applyFailureCooldown() {
+        stabilityTracker.onCaptureCommitted(
+            quad = pendingCaptureQuad,
+            nowMillis = System.currentTimeMillis(),
+        )
     }
 
     private fun resetFrameTrackers() = synchronized(trackerLock) {

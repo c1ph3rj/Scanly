@@ -60,7 +60,7 @@ interface PageTextDao {
                p.processedImagePath AS processedImagePath, p.rawImagePath AS rawImagePath,
                p.updatedAtMillis AS updatedAtMillis
         FROM scan_pages p
-        INNER JOIN documents d ON d.id = p.documentId
+        INNER JOIN documents d ON d.id = p.documentId AND d.deletedAtMillis IS NULL
         LEFT JOIN page_texts t ON t.pageId = p.id
         WHERE p.deletedAtMillis IS NULL
           AND (t.pageId IS NULL OR t.sourceUpdatedAtMillis != p.updatedAtMillis)
@@ -112,8 +112,11 @@ interface PageTextDao {
     @Query(
         """
         SELECT
-            (SELECT COUNT(*) FROM scan_pages WHERE deletedAtMillis IS NULL) AS totalPages,
             (SELECT COUNT(*) FROM scan_pages p
+                INNER JOIN documents d ON d.id = p.documentId AND d.deletedAtMillis IS NULL
+                WHERE p.deletedAtMillis IS NULL) AS totalPages,
+            (SELECT COUNT(*) FROM scan_pages p
+                INNER JOIN documents d ON d.id = p.documentId AND d.deletedAtMillis IS NULL
                 LEFT JOIN page_texts t ON t.pageId = p.id
                 WHERE p.deletedAtMillis IS NULL
                   AND (t.pageId IS NULL OR t.sourceUpdatedAtMillis != p.updatedAtMillis)

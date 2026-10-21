@@ -314,7 +314,7 @@ fun SettingsLicensesRoute(
         licenses = uiState.content?.licenses.orEmpty(),
         isLoading = uiState.isLoading && uiState.content == null,
         onNavigateUp = onNavigateUp,
-        onOpenWebsite = uriHandler::openUri,
+        onOpenWebsite = { uriHandler.openUriSafely(it) },
     )
 }
 

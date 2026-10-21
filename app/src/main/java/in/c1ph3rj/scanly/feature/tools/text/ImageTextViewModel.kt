@@ -8,6 +8,7 @@ import `in`.c1ph3rj.scanly.core.common.ScanlyResult
 import `in`.c1ph3rj.scanly.core.ui.ImageImportSupport
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
 import `in`.c1ph3rj.scanly.domain.usecase.CreateDocumentUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.DeleteDocumentUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ImportImagesUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveDocumentsUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -44,6 +45,7 @@ class ImageTextViewModel @Inject constructor(
     observeDocumentsUseCase: ObserveDocumentsUseCase,
     private val createDocumentUseCase: CreateDocumentUseCase,
     private val importImagesUseCase: ImportImagesUseCase,
+    private val deleteDocumentUseCase: DeleteDocumentUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ImageTextUiState())
@@ -107,8 +109,11 @@ class ImageTextViewModel @Inject constructor(
                         }
                         _events.emit(ImageTextEvent.OpenText(documentId, notice))
                     }
-                    is ScanlyResult.Failure ->
+                    is ScanlyResult.Failure -> {
+                        // No page was saved, so drop the empty "Imported" document.
+                        deleteDocumentUseCase(documentId)
                         _events.emit(ImageTextEvent.ShowMessage(importResult.error.message))
+                    }
                 }
             } finally {
                 _uiState.update {

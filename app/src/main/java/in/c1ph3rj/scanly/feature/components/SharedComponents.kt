@@ -388,6 +388,8 @@ fun ScanlyDetailTopBar(
     onNavigateUp: () -> Unit,
     modifier: Modifier = Modifier,
     actions: @Composable RowScope.() -> Unit = {},
+    navigationIcon: ImageVector = Icons.AutoMirrored.Filled.ArrowBack,
+    navigationContentDescription: String = "Back",
 ) {
     TopAppBar(
         modifier = modifier,
@@ -403,8 +405,8 @@ fun ScanlyDetailTopBar(
         navigationIcon = {
             IconButton(onClick = onNavigateUp) {
                 Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Back",
+                    imageVector = navigationIcon,
+                    contentDescription = navigationContentDescription,
                 )
             }
         },
@@ -423,6 +425,9 @@ fun ScanlyDetailScaffold(
     modifier: Modifier = Modifier,
     actions: @Composable RowScope.() -> Unit = {},
     snackbarHost: @Composable () -> Unit = {},
+    navigationIcon: ImageVector = Icons.AutoMirrored.Filled.ArrowBack,
+    navigationContentDescription: String = "Back",
+    bottomBar: @Composable () -> Unit = {},
     content: @Composable (PaddingValues) -> Unit,
 ) {
     Scaffold(
@@ -434,8 +439,11 @@ fun ScanlyDetailScaffold(
                 title = title,
                 onNavigateUp = onNavigateUp,
                 actions = actions,
+                navigationIcon = navigationIcon,
+                navigationContentDescription = navigationContentDescription,
             )
         },
+        bottomBar = bottomBar,
         snackbarHost = snackbarHost,
         content = content,
     )
@@ -698,8 +706,11 @@ fun DocumentTitleSuggestRow(
         scope.launch {
             isSuggesting = true
             try {
-                onSuggested(onSuggestTitle(format))
-                formatIndex = (formatIndex + 1) % DocumentTitleFormat.entries.size
+                val suggested = runCatchingCancellable { onSuggestTitle(format) }.getOrNull()
+                if (suggested != null) {
+                    onSuggested(suggested)
+                    formatIndex = (formatIndex + 1) % DocumentTitleFormat.entries.size
+                }
             } finally {
                 isSuggesting = false
             }
@@ -839,8 +850,11 @@ fun GroupTitleSuggestRow(
         scope.launch {
             isSuggesting = true
             try {
-                onSuggested(onSuggestTitle(format))
-                formatIndex = (formatIndex + 1) % GroupTitleFormat.entries.size
+                val suggested = runCatchingCancellable { onSuggestTitle(format) }.getOrNull()
+                if (suggested != null) {
+                    onSuggested(suggested)
+                    formatIndex = (formatIndex + 1) % GroupTitleFormat.entries.size
+                }
             } finally {
                 isSuggesting = false
             }
