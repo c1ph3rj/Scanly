@@ -11,7 +11,7 @@ import `in`.c1ph3rj.scanly.domain.model.PageFilterAdjustments
 import `in`.c1ph3rj.scanly.domain.model.PageFilterPreset
 import `in`.c1ph3rj.scanly.domain.model.PageProcessingState
 import `in`.c1ph3rj.scanly.domain.model.ScanPage
-import `in`.c1ph3rj.scanly.domain.usecase.DeletePageUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.MovePageToTrashUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObservePageUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.UpdatePageEditsUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -55,7 +55,7 @@ class PageEditorViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val observePageUseCase: ObservePageUseCase,
     private val updatePageEditsUseCase: UpdatePageEditsUseCase,
-    private val deletePageUseCase: DeletePageUseCase,
+    private val movePageToTrashUseCase: MovePageToTrashUseCase,
 ) : ViewModel() {
     private val pageId: String = checkNotNull(savedStateHandle[PageEditorDestination.pageIdArgument])
 
@@ -188,10 +188,10 @@ class PageEditorViewModel @Inject constructor(
 
         viewModelScope.launch {
             _uiState.update { it.copy(isSaving = true) }
-            when (val result = deletePageUseCase(page.id)) {
+            when (val result = movePageToTrashUseCase(page.id, page.pageIndex + 1)) {
                 is ScanlyResult.Success -> {
                     _uiState.update { it.copy(isSaving = false) }
-                    _events.emit(PageEditorEvent.ShowMessage("Deleted page ${page.pageIndex + 1}."))
+                    // The app-wide snackbar says where it went and offers Undo.
                     _events.emit(PageEditorEvent.PageDeleted)
                 }
 

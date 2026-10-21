@@ -111,7 +111,7 @@ import kotlinx.coroutines.flow.collectLatest
 private enum class PdfToImagesStep { Pick, Pages, Working, Done }
 
 /** Grid cells grow on wide screens but stay three-up on phones, like the design. */
-private val PageCellMinWidth = 96.dp
+internal val PageCellMinWidth = 96.dp
 
 @Composable
 fun PdfToImagesRoute(onNavigateUp: () -> Unit, initialSource: PdfToolSource? = null) {
@@ -398,7 +398,7 @@ private fun ColumnScope.PagesStep(
 
 /** "Lease agreement · 6 pages · Change" — the name ellipsizes, "Change" always fits. */
 @Composable
-private fun FileSummaryLine(name: String, pageCount: Int, onChange: () -> Unit) {
+internal fun FileSummaryLine(name: String, pageCount: Int, onChange: () -> Unit) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         val meta = listOfNotNull(
             name.takeIf { it.isNotBlank() },
@@ -417,7 +417,7 @@ private fun FileSummaryLine(name: String, pageCount: Int, onChange: () -> Unit) 
 }
 
 @Composable
-private fun PasswordPanel(
+internal fun PasswordPanel(
     password: String,
     busy: Boolean,
     onPasswordChange: (String) -> Unit,
@@ -460,7 +460,7 @@ private fun PasswordPanel(
  * action in a list header.
  */
 @Composable
-private fun SelectAllAction(
+internal fun SelectAllAction(
     selectedCount: Int,
     totalCount: Int,
     onSelectAll: () -> Unit,
@@ -484,7 +484,7 @@ private fun SelectAllAction(
  * unselected ones fade back so the selection reads at a glance.
  */
 @Composable
-private fun PageCell(
+internal fun PageCell(
     bitmap: Bitmap?,
     label: String,
     selected: Boolean,
@@ -540,7 +540,7 @@ private fun PageCell(
 }
 
 @Composable
-private fun SelectionMark(selected: Boolean, modifier: Modifier = Modifier) {
+internal fun SelectionMark(selected: Boolean, modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .padding(2.dp)
@@ -898,7 +898,7 @@ private fun ShareSelectionLine(selectedCount: Int, totalCount: Int, onClear: () 
 }
 
 @Composable
-private fun GridHint(text: String) {
+internal fun GridHint(text: String) {
     Text(
         text = text,
         style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.5.sp),
@@ -906,17 +906,17 @@ private fun GridHint(text: String) {
     )
 }
 
-private const val PageKeyPrefix = "page-"
+internal const val PageKeyPrefix = "page-"
 private const val ImageKeyPrefix = "image-"
-private val GridTopPadding = 2.dp
+internal val GridTopPadding = 2.dp
 
 /** Grid keys look like "page-3"; anything else (headers, footers) is not selectable. */
-private fun selectableId(key: Any, prefix: String): Int? =
+internal fun selectableId(key: Any, prefix: String): Int? =
     (key as? String)?.takeIf { it.startsWith(prefix) }?.removePrefix(prefix)?.toIntOrNull()
 
 /** Page frames are a little wider than A4 so landscape pages still read at a glance. */
-private const val PageFrameRatio = 0.74f
+internal const val PageFrameRatio = 0.74f
 
-private fun LazyGridScope.fullWidth(key: String, content: @Composable () -> Unit) {
+internal fun LazyGridScope.fullWidth(key: String, content: @Composable () -> Unit) {
     item(key = key, span = { GridItemSpan(maxLineSpan) }) { content() }
 }

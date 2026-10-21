@@ -15,4 +15,6 @@ data class DocumentGroupEntity(
     val title: String,
     val createdAtMillis: Long,
     val updatedAtMillis: Long,
+    /** Set when the folder (with its documents) is in Recently deleted; null for live folders. */
+    val deletedAtMillis: Long? = null,
 )

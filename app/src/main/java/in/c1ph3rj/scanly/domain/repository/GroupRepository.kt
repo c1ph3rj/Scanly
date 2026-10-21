@@ -4,6 +4,7 @@ import `in`.c1ph3rj.scanly.core.common.ScanlyResult
 import `in`.c1ph3rj.scanly.domain.model.DocumentGroup
 import `in`.c1ph3rj.scanly.domain.model.GroupTitleFormat
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
+import `in`.c1ph3rj.scanly.domain.model.TrashedFolder
 import kotlinx.coroutines.flow.Flow
 
 interface GroupRepository {
@@ -23,7 +24,28 @@ interface GroupRepository {
 
     suspend fun renameGroup(groupId: String, title: String): ScanlyResult<Unit>
 
+    /** Deletes the folder only; its documents move out of it. */
     suspend fun deleteGroup(groupId: String): ScanlyResult<Unit>
+
+    /**
+     * Moves the folder to Recently deleted. With [includeDocuments] its documents go with it;
+     * otherwise they move to the library and rejoin the folder if it is restored.
+     */
+    suspend fun moveGroupToTrash(groupId: String, includeDocuments: Boolean = true): ScanlyResult<Unit>
+
+    /** Brings a trashed folder back with the documents that went with it (or were kept out of it). */
+    suspend fun restoreGroup(groupId: String): ScanlyResult<Unit>
+
+    fun observeTrashedGroups(): Flow<List<TrashedFolder>>
+
+    /** Permanently deletes a trashed folder and the documents that went with it. */
+    suspend fun deleteGroupForever(groupId: String): ScanlyResult<Unit>
+
+    /** Permanently deletes every trashed folder. @return number of folders removed */
+    suspend fun emptyTrashedGroups(): ScanlyResult<Int>
+
+    /** Permanently deletes folders trashed at or before [cutoffMillis]. @return number removed */
+    suspend fun purgeTrashedGroupsBefore(cutoffMillis: Long): ScanlyResult<Int>
 
     /**
      * Deletes folders/groups that contain no documents.

@@ -14,6 +14,8 @@ import `in`.c1ph3rj.scanly.data.common.LibraryOperationCoordinator
 import `in`.c1ph3rj.scanly.domain.model.DocumentGroup
 import `in`.c1ph3rj.scanly.domain.model.GroupTitleFormat
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
+import `in`.c1ph3rj.scanly.domain.model.TrashedFolder
+import `in`.c1ph3rj.scanly.data.storage.DocumentStorageManager
 import `in`.c1ph3rj.scanly.domain.repository.GroupRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -27,6 +29,7 @@ class DefaultGroupRepository @Inject constructor(
     private val database: ScanlyDatabase,
     private val documentGroupDao: DocumentGroupDao,
     private val documentDao: DocumentDao,
+    private val documentStorageManager: DocumentStorageManager,
     private val dispatchers: ScanlyDispatchers,
     private val operationCoordinator: LibraryOperationCoordinator,
 ) : GroupRepository {
@@ -125,6 +128,7 @@ class DefaultGroupRepository @Inject constructor(
             runCatching {
                 // FK ON DELETE SET NULL will null out groupId on all documents automatically
                 database.withTransaction {
+                    documentDao.forgetReleasedGroup(groupId)
                     documentGroupDao.deleteById(groupId)
                 }
             }.fold(
@@ -135,6 +139,87 @@ class DefaultGroupRepository @Inject constructor(
                     )
                 },
             )
+            }
+        }
+
+    override suspend fun moveGroupToTrash(groupId: String, includeDocuments: Boolean): ScanlyResult<Unit> =
+        mutateGroup("Could not move the folder to Recently deleted.") {
+            checkNotNull(documentGroupDao.getGroup(groupId)) { "Folder not found." }
+            val timestamp = System.currentTimeMillis()
+            database.withTransaction {
+                documentGroupDao.setDeletedAt(groupId, timestamp)
+                if (includeDocuments) {
+                    documentDao.trashWithGroup(groupId, timestamp)
+                } else {
+                    documentDao.releaseFromGroup(groupId)
+                }
+            }
+        }
+
+    override suspend fun restoreGroup(groupId: String): ScanlyResult<Unit> =
+        mutateGroup("Could not restore the folder.") {
+            checkNotNull(documentGroupDao.getGroup(groupId)) { "Folder not found." }
+            database.withTransaction {
+                documentGroupDao.setDeletedAt(groupId, null)
+                documentDao.restoreWithGroup(groupId)
+                documentDao.returnReleasedToGroup(groupId)
+                documentDao.forgetReleasedGroup(groupId)
+            }
+        }
+
+    override fun observeTrashedGroups(): Flow<List<TrashedFolder>> =
+        documentGroupDao.observeTrashedGroups().map { rows ->
+            rows.map { row ->
+                TrashedFolder(
+                    id = row.id,
+                    title = row.title,
+                    documentCount = row.documentCount,
+                    pageCount = row.totalPageCount,
+                    coverThumbnailPath = row.coverThumbnailPath,
+                    deletedAtMillis = row.deletedAtMillis,
+                    keptDocumentCount = row.keptDocumentCount,
+                )
+            }
+        }
+
+    override suspend fun deleteGroupForever(groupId: String): ScanlyResult<Unit> =
+        mutateGroup("Could not delete the folder.") { deleteTrashedGroups(listOf(groupId)) }
+
+    override suspend fun emptyTrashedGroups(): ScanlyResult<Int> =
+        mutateGroup("Could not delete the folders.") {
+            deleteTrashedGroups(documentGroupDao.getTrashedGroupIds())
+        }
+
+    override suspend fun purgeTrashedGroupsBefore(cutoffMillis: Long): ScanlyResult<Int> =
+        mutateGroup("Could not clear old deleted folders.") {
+            deleteTrashedGroups(documentGroupDao.getTrashedGroupIdsBefore(cutoffMillis))
+        }
+
+    /** Removes the folders and the documents that went to the bin with them, files included. */
+    private suspend fun deleteTrashedGroups(groupIds: List<String>): Int {
+        if (groupIds.isEmpty()) return 0
+        val documentIds = groupIds.flatMap { documentDao.getIdsDeletedWithGroup(it) }
+        database.withTransaction {
+            documentIds.forEach { documentDao.deleteById(it) }
+            // Documents deleted on their own earlier keep their bin entry; the FK moves them out.
+            groupIds.forEach {
+                documentDao.forgetReleasedGroup(it)
+                documentGroupDao.deleteById(it)
+            }
+        }
+        documentIds.forEach { id -> runCatching { documentStorageManager.deleteDocumentStorage(id) } }
+        return groupIds.size
+    }
+
+    private suspend fun <T> mutateGroup(failureMessage: String, block: suspend () -> T): ScanlyResult<T> =
+        withContext(dispatchers.io) {
+            operationCoordinator.withMutation {
+                runCatching { block() }.fold(
+                    onSuccess = { ScanlyResult.Success(it) },
+                    onFailure = {
+                        ScanlyResult.Failure(ScanlyError(message = it.message ?: failureMessage, cause = it))
+                    },
+                )
             }
         }
 
@@ -171,6 +256,8 @@ class DefaultGroupRepository @Inject constructor(
                     documentDao.update(
                         doc.copy(
                             groupId = groupId,
+                            // A move by hand overrides "rejoin the folder if it is restored".
+                            releasedFromGroupId = null,
                             updatedAtMillis = System.currentTimeMillis(),
                         ),
                     )

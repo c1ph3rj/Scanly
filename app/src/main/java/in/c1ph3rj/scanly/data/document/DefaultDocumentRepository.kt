@@ -7,6 +7,7 @@ import `in`.c1ph3rj.scanly.core.common.ScanlyError
 import `in`.c1ph3rj.scanly.core.common.ScanlyResult
 import `in`.c1ph3rj.scanly.data.local.db.ScanlyDatabase
 import `in`.c1ph3rj.scanly.data.local.db.dao.DocumentDao
+import `in`.c1ph3rj.scanly.data.local.db.dao.DocumentGroupDao
 import `in`.c1ph3rj.scanly.data.local.db.dao.ScanPageDao
 import `in`.c1ph3rj.scanly.data.local.db.entity.DocumentEntity
 import `in`.c1ph3rj.scanly.data.local.db.entity.ScanPageEntity
@@ -27,6 +28,7 @@ import javax.inject.Singleton
 class DefaultDocumentRepository @Inject constructor(
     private val database: ScanlyDatabase,
     private val documentDao: DocumentDao,
+    private val documentGroupDao: DocumentGroupDao,
     private val scanPageDao: ScanPageDao,
     private val documentStorageManager: DocumentStorageManager,
     private val dispatchers: ScanlyDispatchers,
@@ -182,6 +184,82 @@ class DefaultDocumentRepository @Inject constructor(
             }
         }
 
+    override suspend fun moveDocumentToTrash(documentId: String): ScanlyResult<Unit> =
+        setDeletedAt(documentId, System.currentTimeMillis(), "Could not move the document to Recently deleted.")
+
+    override suspend fun restoreDocument(documentId: String): ScanlyResult<Unit> =
+        setDeletedAt(documentId, null, "Could not restore the document.")
+
+    private suspend fun setDeletedAt(
+        documentId: String,
+        deletedAtMillis: Long?,
+        failureMessage: String,
+    ): ScanlyResult<Unit> = withContext(dispatchers.io) {
+        operationCoordinator.withMutation {
+            runCatching {
+                val document = checkNotNull(documentDao.getDocument(documentId)) { "Document not found." }
+                database.withTransaction {
+                    documentDao.setDeletedAt(documentId, deletedAtMillis)
+                    // Back from the bin while its folder is still there: it returns outside the folder.
+                    val groupId = document.groupId
+                    if (deletedAtMillis == null && groupId != null &&
+                        documentGroupDao.getGroup(groupId)?.deletedAtMillis != null
+                    ) {
+                        documentDao.clearGroup(documentId)
+                    }
+                }
+            }.fold(
+                onSuccess = { ScanlyResult.Success(Unit) },
+                onFailure = { throwable ->
+                    ScanlyResult.Failure(
+                        ScanlyError(message = throwable.message ?: failureMessage, cause = throwable),
+                    )
+                },
+            )
+        }
+    }
+
+    override fun observeTrashedDocuments(): Flow<List<ScanDocument>> =
+        documentDao.observeTrashedDocuments().map { documents ->
+            documents.map { it.toDomain() }
+        }
+
+    override suspend fun emptyTrash(): ScanlyResult<Int> =
+        deleteDocumentsPermanently("Could not empty Recently deleted.") {
+            documentDao.getTrashedDocumentIds()
+        }
+
+    override suspend fun purgeTrashDeletedBefore(cutoffMillis: Long): ScanlyResult<Int> =
+        deleteDocumentsPermanently("Could not clear old deleted documents.") {
+            documentDao.getTrashedDocumentIdsBefore(cutoffMillis)
+        }
+
+    private suspend fun deleteDocumentsPermanently(
+        failureMessage: String,
+        selectIds: suspend () -> List<String>,
+    ): ScanlyResult<Int> = withContext(dispatchers.io) {
+        operationCoordinator.withMutation {
+            runCatching {
+                val ids = selectIds()
+                if (ids.isEmpty()) return@runCatching 0
+                database.withTransaction {
+                    ids.forEach { documentDao.deleteById(it) }
+                }
+                ids.forEach { id ->
+                    runCatching { documentStorageManager.deleteDocumentStorage(id) }
+                }
+                ids.size
+            }.fold(
+                onSuccess = { ScanlyResult.Success(it) },
+                onFailure = { throwable ->
+                    ScanlyResult.Failure(
+                        ScanlyError(message = throwable.message ?: failureMessage, cause = throwable),
+                    )
+                },
+            )
+        }
+    }
+
     override suspend fun deleteEmptyDocuments(): ScanlyResult<Int> =
         withContext(dispatchers.io) {
             operationCoordinator.withMutation {
@@ -219,6 +297,7 @@ class DefaultDocumentRepository @Inject constructor(
         createdAtMillis = createdAtMillis,
         updatedAtMillis = updatedAtMillis,
         groupId = groupId,
+        deletedAtMillis = deletedAtMillis,
     )
 }
 

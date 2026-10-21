@@ -1,19 +1,30 @@
-<?xml version="1.0" encoding="utf-8"?><!--
-   Sample data extraction rules file; uncomment and customize as necessary.
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+   Scanly keeps documents on the phone. Cloud backup (Google Drive) is turned
+   off, so scans, the database and preferences are never uploaded to the cloud.
+   Device-to-device transfer (Android 12+ phone-to-phone migration over cable or
+   local Wi-Fi) is kept on, so a user moving to a new phone keeps their library.
    See https://developer.android.com/about/versions/12/backup-restore#xml-changes
-   for details.
 -->
 <data-extraction-rules>
     <cloud-backup>
-        <!-- TODO: Use <include> and <exclude> to control what is backed up.
-        <include .../>
-        <exclude .../>
-        -->
+        <!-- Back up nothing to the cloud. -->
+        <exclude domain="root" path="." />
+        <exclude domain="file" path="." />
+        <exclude domain="database" path="." />
+        <exclude domain="sharedpref" path="." />
+        <exclude domain="external" path="." />
+        <exclude domain="device_root" path="." />
+        <exclude domain="device_file" path="." />
+        <exclude domain="device_database" path="." />
+        <exclude domain="device_sharedpref" path="." />
     </cloud-backup>
-    <!--
     <device-transfer>
-        <include .../>
-        <exclude .../>
+        <!-- Keep everything for phone-to-phone transfer. -->
+        <include domain="root" path="." />
+        <include domain="file" path="." />
+        <include domain="database" path="." />
+        <include domain="sharedpref" path="." />
+        <include domain="external" path="." />
     </device-transfer>
-    -->
 </data-extraction-rules>

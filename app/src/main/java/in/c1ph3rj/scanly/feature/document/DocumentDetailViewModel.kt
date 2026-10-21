@@ -14,8 +14,8 @@ import `in`.c1ph3rj.scanly.domain.model.GroupTitleFormat
 import `in`.c1ph3rj.scanly.domain.model.ScanPage
 import `in`.c1ph3rj.scanly.domain.usecase.CreateGroupUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.SuggestGroupTitleUseCase
-import `in`.c1ph3rj.scanly.domain.usecase.DeleteDocumentUseCase
-import `in`.c1ph3rj.scanly.domain.usecase.DeletePageUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.MoveDocumentToTrashUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.MovePageToTrashUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ExportDocumentImageArchiveUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ExportDocumentPdfUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.MovePageUseCase
@@ -75,7 +75,7 @@ class DocumentDetailViewModel @Inject constructor(
     private val observeDocumentUseCase: ObserveDocumentUseCase,
     private val observeDocumentPagesUseCase: ObserveDocumentPagesUseCase,
     private val movePageUseCase: MovePageUseCase,
-    private val deletePageUseCase: DeletePageUseCase,
+    private val movePageToTrashUseCase: MovePageToTrashUseCase,
     private val exportDocumentPdfUseCase: ExportDocumentPdfUseCase,
     private val exportDocumentImageArchiveUseCase: ExportDocumentImageArchiveUseCase,
     private val saveExportArtifactUseCase: SaveExportArtifactUseCase,
@@ -83,7 +83,7 @@ class DocumentDetailViewModel @Inject constructor(
     private val prepareDocumentImageShareUseCase: PrepareDocumentImageShareUseCase,
     private val importImagesUseCase: ImportImagesUseCase,
     private val renameDocumentUseCase: RenameDocumentUseCase,
-    private val deleteDocumentUseCase: DeleteDocumentUseCase,
+    private val moveDocumentToTrashUseCase: MoveDocumentToTrashUseCase,
     private val observeGroupsUseCase: ObserveGroupsUseCase,
     private val setDocumentGroupUseCase: SetDocumentGroupUseCase,
     private val createGroupUseCase: CreateGroupUseCase,
@@ -203,10 +203,8 @@ class DocumentDetailViewModel @Inject constructor(
 
     fun deleteSelectedPage() {
         val selectedPage = _uiState.value.selectedPage ?: return
-        mutateSelectedPage(
-            successMessage = "Deleted page ${selectedPage.pageIndex + 1}.",
-        ) {
-            deletePageUseCase(selectedPage.id)
+        mutateSelectedPage {
+            movePageToTrashUseCase(selectedPage.id, selectedPage.pageIndex + 1)
         }
     }
 
@@ -361,7 +359,8 @@ class DocumentDetailViewModel @Inject constructor(
 
     fun deleteDocument() {
         viewModelScope.launch {
-            when (val result = deleteDocumentUseCase(documentId)) {
+            val title = _uiState.value.document?.title ?: "Document"
+            when (val result = moveDocumentToTrashUseCase(documentId, title)) {
                 is ScanlyResult.Success -> _events.emit(DocumentDetailEvent.DocumentDeleted)
                 is ScanlyResult.Failure -> {
                     _events.emit(DocumentDetailEvent.ShowMessage(result.error.message))

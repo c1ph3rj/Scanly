@@ -7,6 +7,8 @@ import `in`.c1ph3rj.scanly.domain.model.PageFilterAdjustments
 import `in`.c1ph3rj.scanly.domain.model.PageFilterPreset
 import `in`.c1ph3rj.scanly.domain.model.PageProcessingState
 import `in`.c1ph3rj.scanly.domain.model.ScanPage
+import `in`.c1ph3rj.scanly.domain.model.TrashedPage
+import `in`.c1ph3rj.scanly.domain.repository.FlatPageSetup
 import `in`.c1ph3rj.scanly.domain.repository.PageRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -14,6 +16,8 @@ import java.util.UUID
 
 class InMemoryPageRepository(
     private val library: InMemoryScanlyLibrary,
+    /** Root for page image paths; point it at a temp folder when a test writes real files. */
+    private val storageRoot: String = "/documents",
 ) : PageRepository {
     override fun observePages(documentId: String): Flow<List<ScanPage>> =
         library.pages.map { pages ->
@@ -47,8 +51,20 @@ class InMemoryPageRepository(
             )
         }
 
-    override suspend fun finalizeCapture(draft: PageCaptureDraft): ScanlyResult<String> =
+    /** Every [FlatPageSetup] passed to [finalizeCapture], in call order (null for camera captures). */
+    val receivedFlatPages: MutableList<FlatPageSetup?> = mutableListOf()
+
+    /** The most recent [FlatPageSetup] passed to [finalizeCapture]. */
+    var lastFlatPage: FlatPageSetup? = null
+        private set
+
+    override suspend fun finalizeCapture(
+        draft: PageCaptureDraft,
+        flatPage: FlatPageSetup?,
+    ): ScanlyResult<String> =
         runLibraryResult("Could not save the captured page.") {
+            lastFlatPage = flatPage
+            receivedFlatPages += flatPage
             library.document(draft.documentId) ?: error("Document not found.")
             val existing = library.page(draft.pageId)
             val timestamp = library.now()
@@ -62,7 +78,7 @@ class InMemoryPageRepository(
                     thumbnailPath = draft.thumbnailPath,
                     rotationDegrees = existing?.rotationDegrees ?: 0,
                     cropQuad = existing?.cropQuad,
-                    filterPreset = existing?.filterPreset ?: PageFilterPreset.AUTO,
+                    filterPreset = flatPage?.filterPreset ?: existing?.filterPreset ?: PageFilterPreset.AUTO,
                     filterAdjustments = existing?.filterAdjustments ?: PageFilterAdjustments.Default,
                     processingState = PageProcessingState.PROCESSED,
                     createdAtMillis = existing?.createdAtMillis ?: timestamp,
@@ -96,6 +112,45 @@ class InMemoryPageRepository(
         runLibraryResult("Could not delete the page.") {
             library.page(pageId) ?: error("Page not found.")
             library.deletePage(pageId)
+        }
+
+    override suspend fun movePageToTrash(pageId: String): ScanlyResult<Unit> =
+        runLibraryResult("Could not delete the page.") {
+            library.page(pageId) ?: error("Page not found.")
+            library.trashPage(pageId, library.now())
+        }
+
+    override suspend fun restorePage(pageId: String): ScanlyResult<Unit> =
+        runLibraryResult("Could not restore the page.") {
+            // A live page is a no-op, as in the DB repository.
+            if (library.page(pageId) != null) return@runLibraryResult
+            library.trashedPageRecord(pageId) ?: error("Page not found.")
+            library.restorePage(pageId)
+        }
+
+    override fun observeTrashedPages(): Flow<List<TrashedPage>> = library.trashedPages
+
+    override suspend fun deletePageForever(pageId: String): ScanlyResult<Unit> =
+        runLibraryResult("Could not delete the page.") {
+            check(library.page(pageId) == null) { "Only pages in Recently deleted can be deleted forever." }
+            // Unknown ids are a no-op, as in the DB repository.
+            library.removeTrashedPages(listOf(pageId))
+        }
+
+    override suspend fun emptyTrashedPages(): ScanlyResult<Int> =
+        runLibraryResult("Could not delete the pages.") {
+            val ids = library.trashedPageRecords().map { it.page.id }
+            library.removeTrashedPages(ids)
+            ids.size
+        }
+
+    override suspend fun purgeTrashedPagesBefore(cutoffMillis: Long): ScanlyResult<Int> =
+        runLibraryResult("Could not clear old deleted pages.") {
+            val dueIds = library.trashedPageRecords()
+                .filter { it.deletedAtMillis <= cutoffMillis }
+                .map { it.page.id }
+            library.removeTrashedPages(dueIds)
+            dueIds.size
         }
 
     override suspend fun updatePageEdits(
@@ -141,9 +196,9 @@ class InMemoryPageRepository(
         pageId = pageId,
         documentId = documentId,
         pageIndex = pageIndex,
-        rawImagePath = "/documents/$documentId/raw/$pageId.jpg",
-        processedImagePath = "/documents/$documentId/processed/$pageId.jpg",
-        thumbnailPath = "/documents/$documentId/thumbs/$pageId.jpg",
+        rawImagePath = "$storageRoot/$documentId/raw/$pageId.jpg",
+        processedImagePath = "$storageRoot/$documentId/processed/$pageId.jpg",
+        thumbnailPath = "$storageRoot/$documentId/thumbs/$pageId.jpg",
         replacementPageId = replacementPageId,
     )
 }

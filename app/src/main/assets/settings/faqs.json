@@ -243,7 +243,7 @@
     "id": "uninstall_backup",
     "category": "Privacy & storage",
     "question": "What happens to my data when I uninstall Scanly, and is there a backup?",
-    "answer": "Uninstalling removes Scanly's app-private data, including your documents and saved signatures. Files you saved or shared outside the app, such as PDFs in Downloads/Scanly, stay until you delete them yourself. Scanly has no built-in backup or restore, so keep copies of important documents by exporting them."
+    "answer": "Uninstalling removes Scanly's app-private data, including your documents and saved signatures. Files you saved or shared outside the app, such as PDFs in Downloads/Scanly, stay until you delete them yourself. Scanly has no built-in backup or restore, so keep copies of important documents by exporting them. Scanly opts out of Android's Google Drive backup, so your scans are never copied to the cloud; Android's phone-to-phone transfer can still move them to a new phone."
   },
   {
     "id": "blurry_dark",

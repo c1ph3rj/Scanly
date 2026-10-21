@@ -625,6 +625,46 @@ class DefaultPdfToolkitRepository @Inject constructor(
         }.toScanlyResult("Could not save the images.")
     }
 
+    override suspend fun renderPageToJpeg(
+        copy: PdfWorkingCopy,
+        pageIndex: Int,
+        longEdgePx: Int,
+        targetPath: String,
+    ): ScanlyResult<Unit> = withContext(dispatchers.io) {
+        runCatching {
+            resolveLocalFile(copy.file).useFile { local ->
+                ParcelFileDescriptor.open(local, ParcelFileDescriptor.MODE_READ_ONLY).use { pfd ->
+                    PdfRenderer(pfd).use { renderer ->
+                        require(pageIndex in 0 until renderer.pageCount) { "Page ${pageIndex + 1} is missing." }
+                        // Landscape pages get the long edge as their width; portrait pages as height.
+                        val widthPx = renderer.openPage(pageIndex).use { page ->
+                            val pageW = page.width.coerceAtLeast(1)
+                            val pageH = page.height.coerceAtLeast(1)
+                            if (pageW >= pageH) longEdgePx else (longEdgePx.toLong() * pageW / pageH).toInt()
+                        }
+                        val bitmap = try {
+                            renderPageForImage(renderer, pageIndex, widthPx.coerceAtLeast(1))
+                        } catch (oom: OutOfMemoryError) {
+                            throw IllegalStateException("Not enough memory to read page ${pageIndex + 1}.", oom)
+                        }
+                        try {
+                            val target = File(targetPath)
+                            target.parentFile?.mkdirs()
+                            FileOutputStream(target).use { output ->
+                                require(bitmap.compress(Bitmap.CompressFormat.JPEG, LibraryPageJpegQuality, output)) {
+                                    "Failed to encode page ${pageIndex + 1}."
+                                }
+                            }
+                        } finally {
+                            bitmap.recycle()
+                        }
+                    }
+                }
+            }
+            Unit
+        }.toScanlyResult("Could not read this page.")
+    }
+
     /**
      * Renders a page exactly [widthPx] wide (height follows the page), capped at
      * [MaxImagePagePixels] so a very tall page cannot exhaust memory.
@@ -903,6 +943,8 @@ class DefaultPdfToolkitRepository @Inject constructor(
         /** ~48 MB ARGB ceiling per page image; A4 at 2480 px wide is ~8.7 MP. */
         const val MaxImagePagePixels = 12_000_000.0
         const val ImageExportJpegQuality = 90
+        /** Matches gallery imports, so PDF pages enter the processing pipeline at the same quality. */
+        const val LibraryPageJpegQuality = 95
         /** Re-resolve the preview base after this long so edits to a library scan show up. */
         const val PreviewBaseTtlMs = 5 * 60 * 1000L
         /** Tool files untouched this long are leftovers from an earlier run. */

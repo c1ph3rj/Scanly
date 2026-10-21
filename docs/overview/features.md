@@ -70,9 +70,11 @@ Fourth bottom-nav tab, grouped into **Scan**, **PDF**, and **Utilities**:
 
 - **Scan a document** — create a document and open the camera session
 - **Images to PDF** — gallery import (max 50 images) into a new document
-- **QR code** — opens straight into scanning; Create is a tab on the same screen
+- **QR & barcode** — opens straight into scanning; Create is a tab on the same screen
+- **Image to text** — pick photos (max 50) or a Scanly scan; photos become a new document, then the [Extracted text](#search-inside-scans) screen reads them on-device
+- **My signatures** — opens Your signatures (see [Sign documents](#sign-documents))
 
-### QR code
+### QR & barcode
 
 - **Scan** — CameraX + ML Kit; torch; **From photo** decodes a gallery image. A found code shows a result card over the camera and is saved to history
 - **Typed results** — Link (full domain, http warning), UPI (payee, UPI ID, amount; hands off to a UPI app — Scanly never pays), Wi-Fi (one-tap join on Android 11+, copy password otherwise), Contact (save / call), Email, Phone, Text. Raw content is always available
@@ -107,6 +109,7 @@ Operate on **device PDFs** (system document picker) or **Scanly library document
 
 - Create reusable signatures or initials by drawing on the signature pad or importing a photo and extracting the ink; transparent PNGs are supported
 - Manage saved signatures on the device and reuse them in PDF or scan signing
+- Tap a saved mark to preview it in any ink, share it or save it to `Pictures/Scanly` as a transparent PNG, make it **Used first** in the sign editor, open **Sign a PDF**, or delete it
 - Sign a PDF as a separate output; the source PDF is not overwritten
 - Sign a Scanly document in place. Marks are composited into its page image and remain editable from the Sign screen; crop, filter, and retake edits preserve them
 - Mark types are signature image, initials image, text, date, and checkbox; choose navy, black, blue, or red ink

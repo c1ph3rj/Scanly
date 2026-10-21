@@ -11,6 +11,7 @@ import androidx.compose.material.icons.outlined.Draw
 import androidx.compose.material.icons.outlined.FileOpen
 import androidx.compose.material.icons.outlined.GridView
 import androidx.compose.material.icons.outlined.Image
+import androidx.compose.material.icons.outlined.LibraryAdd
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material.icons.outlined.WaterDrop
@@ -39,6 +40,7 @@ enum class PdfReaderTool(val label: String, val icon: ImageVector) {
     PASSWORD("Password protect", Icons.Outlined.Lock),
     WATERMARK("Add watermark", Icons.Outlined.WaterDrop),
     TO_IMAGES("Save pages as images", Icons.Outlined.Image),
+    IMPORT("Add to Scanly library", Icons.Outlined.LibraryAdd),
 }
 
 /** The reader's ⋮ menu: share, jump to pages, the PDF tools, and opening another file. */

@@ -67,8 +67,18 @@ object ToolsQrDestination {
     fun route(mode: String): String = "$route?$modeArgument=$mode"
 }
 
+/** Image to text: photos or a scan, read in the Extracted text screen. */
+object ToolsImageTextDestination {
+    const val route = "tools/text"
+}
+
 object LibrarySearchDestination {
     const val route = "library/search"
+}
+
+/** Recently deleted: trashed folders and documents (7 days) and pages (2 days). */
+object LibraryTrashDestination {
+    const val route = "library/trash"
 }
 
 object ToolsPdfReaderDestination {
@@ -104,6 +114,11 @@ object ToolsPdfWatermarkDestination {
 
 object ToolsPdfSignDestination {
     const val route = "tools/pdf/sign"
+}
+
+/** Adds a PDF's pages to the library as a new, editable Scanly document. */
+object ToolsPdfImportDestination {
+    const val route = "tools/pdf/import"
 }
 
 /** Signs a Scanly document in place; marks are stamped into the pages but stay editable. */

@@ -46,7 +46,17 @@ class SuggestDocumentTitleUseCaseTest {
 
         override suspend fun renameDocument(documentId: String, title: String) = error("Not used")
 
+        override suspend fun moveDocumentToTrash(documentId: String) = error("Not used")
+
+        override suspend fun restoreDocument(documentId: String) = error("Not used")
+
+        override fun observeTrashedDocuments() = error("Not used")
+
         override suspend fun deleteDocument(documentId: String) = error("Not used")
+
+        override suspend fun emptyTrash() = error("Not used")
+
+        override suspend fun purgeTrashDeletedBefore(cutoffMillis: Long) = error("Not used")
 
         override suspend fun deleteEmptyDocuments() = error("Not used")
     }

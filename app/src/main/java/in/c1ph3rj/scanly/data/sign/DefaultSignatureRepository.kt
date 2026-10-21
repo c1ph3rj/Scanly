@@ -12,7 +12,10 @@ import `in`.c1ph3rj.scanly.core.common.runCatchingCancellable
 import `in`.c1ph3rj.scanly.core.processing.SignatureInkExtractor
 import `in`.c1ph3rj.scanly.data.local.db.dao.SignatureDao
 import `in`.c1ph3rj.scanly.data.local.db.entity.SignatureEntity
+import `in`.c1ph3rj.scanly.data.storage.SharedStorageDestinationManager
+import `in`.c1ph3rj.scanly.domain.model.SavedExport
 import `in`.c1ph3rj.scanly.domain.model.SavedSignature
+import `in`.c1ph3rj.scanly.domain.model.SignInk
 import `in`.c1ph3rj.scanly.domain.model.SignatureKind
 import `in`.c1ph3rj.scanly.domain.model.SignatureSource
 import `in`.c1ph3rj.scanly.domain.repository.SignatureRepository
@@ -32,6 +35,7 @@ class DefaultSignatureRepository @Inject constructor(
     @param:ApplicationContext private val context: Context,
     private val signatureDao: SignatureDao,
     private val inkExtractor: SignatureInkExtractor,
+    private val storageDestinationManager: SharedStorageDestinationManager,
     private val dispatchers: ScanlyDispatchers,
 ) : SignatureRepository {
 
@@ -97,6 +101,52 @@ class DefaultSignatureRepository @Inject constructor(
         }.toScanlyResult("Could not delete the signature.")
     }
 
+    override suspend fun moveSignatureToFront(id: String): ScanlyResult<Unit> = withContext(dispatchers.io) {
+        runCatchingCancellable {
+            signatureDao.touchSignature(id, System.currentTimeMillis())
+        }.toScanlyResult("Could not update the signature.")
+    }
+
+    override suspend fun exportSignatureImage(id: String, ink: SignInk): ScanlyResult<String> =
+        withContext(dispatchers.io) {
+            runCatchingCancellable {
+                renderTintedPng(id, ink).absolutePath
+            }.toScanlyResult("Could not prepare the image.")
+        }
+
+    override suspend fun saveSignatureToGallery(id: String, ink: SignInk): ScanlyResult<SavedExport> =
+        withContext(dispatchers.io) {
+            runCatchingCancellable {
+                val file = renderTintedPng(id, ink)
+                storageDestinationManager.saveImageToGallery(file, file.name, PNG_MIME_TYPE)
+            }.toScanlyResult("Could not save the image.")
+        }
+
+    /** Writes the saved mask for [id] in [ink], at full size, to `cache/signature_share/`. */
+    private suspend fun renderTintedPng(id: String, ink: SignInk): File {
+        val entity = signatureDao.getSignature(id) ?: error("This signature no longer exists.")
+        val mask = SignInkBitmaps.decodeMask(entity.imagePath, maxEdge = Int.MAX_VALUE)
+            ?: error("The signature image could not be read.")
+        val tinted = try {
+            SignInkBitmaps.tinted(mask, ink)
+        } finally {
+            mask.recycle()
+        }
+        val directory = File(context.cacheDir, SHARE_DIRECTORY).apply {
+            if (!exists() && !mkdirs()) error("Could not prepare the image.")
+        }
+        val kind = SignatureKind.fromStorage(entity.kind)
+        val file = File(directory, "Scanly ${kind.label.lowercase()} ${ink.label.lowercase()}.png")
+        try {
+            FileOutputStream(file).use { output ->
+                check(tinted.compress(Bitmap.CompressFormat.PNG, 100, output)) { "Could not prepare the image." }
+            }
+        } finally {
+            tinted.recycle()
+        }
+        return file
+    }
+
     private fun decodeCached(uriString: String): Bitmap {
         decodedBitmap?.takeIf { decodedUri == uriString && !it.isRecycled }?.let { return it }
         decodedBitmap?.recycle()
@@ -140,6 +190,8 @@ class DefaultSignatureRepository @Inject constructor(
         private const val SIGNATURES_DIRECTORY = "signatures"
         private const val INK_FILE_NAME = "ink.png"
         private const val MAX_DECODE_EDGE = 2400
+        private const val SHARE_DIRECTORY = "signature_share"
+        private const val PNG_MIME_TYPE = "image/png"
 
         /** App-private root for saved signatures; cleared with the rest of the library. */
         fun signaturesRoot(context: Context): File = File(context.filesDir, SIGNATURES_DIRECTORY)

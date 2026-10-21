@@ -1,5 +1,10 @@
 package `in`.c1ph3rj.scanly.feature.library
 
+import androidx.compose.material3.Surface
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.material3.Icon
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.BorderStroke
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
@@ -133,7 +138,7 @@ fun LibraryScreen(
     onDeleteDocument: (String) -> Unit,
     onCreateGroup: (String) -> Unit,
     onRenameGroup: (String, String) -> Unit,
-    onDeleteGroup: (String) -> Unit,
+    onDeleteGroup: (groupId: String, includeDocuments: Boolean) -> Unit,
     onMoveDocumentToGroup: (String, String?) -> Unit,
     onMoveDocumentToNewGroup: (String, String) -> Unit,
     onOpenDocument: (String) -> Unit,
@@ -463,7 +468,7 @@ fun LibraryScreen(
     deleteDocTarget?.let { doc ->
         ScanlyConfirmDialog(
             title = "Delete document?",
-            text = "\"${doc.title}\" and its pages will be removed permanently.",
+            text = TrashCopy.document(doc.title),
             confirmLabel = "Delete",
             onDismiss = { deleteDocTarget = null },
             onConfirm = {
@@ -488,16 +493,14 @@ fun LibraryScreen(
     }
 
     deleteGroupTarget?.let { group ->
-        ScanlyConfirmDialog(
-            title = "Delete folder?",
-            text = "\"${group.title}\" will be deleted. Documents inside will become ungrouped.",
-            confirmLabel = "Delete",
+        FolderDeleteDialog(
+            title = group.title,
+            documentCount = group.documentCount,
             onDismiss = { deleteGroupTarget = null },
-            onConfirm = {
+            onDelete = { includeDocuments ->
                 deleteGroupTarget = null
-                onDeleteGroup(group.id)
+                onDeleteGroup(group.id, includeDocuments)
             },
-            confirmDestructive = true,
         )
     }
 

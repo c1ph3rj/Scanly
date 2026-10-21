@@ -151,7 +151,7 @@ private fun GroupDetailScreen(
     onNavigateUp: () -> Unit,
     onOpenDocument: (String) -> Unit,
     onRenameGroup: (String) -> Unit,
-    onDeleteGroup: () -> Unit,
+    onDeleteGroup: (includeDocuments: Boolean) -> Unit,
     onAddDocuments: (Collection<String>) -> Unit,
     onCreateDocument: (String) -> Unit,
     onSuggestTitle: suspend (DocumentTitleFormat) -> String,
@@ -372,17 +372,14 @@ private fun GroupDetailScreen(
     }
 
     if (showDeleteDialog) {
-        ScanlyConfirmDialog(
-            title = "Delete folder?",
-            text = "\"${group?.title.orEmpty()}\" will be deleted. " +
-                "Documents inside will be moved out of the folder.",
+        FolderDeleteDialog(
+            title = group?.title.orEmpty(),
+            documentCount = group?.documentCount ?: 0,
             onDismiss = { showDeleteDialog = false },
-            onConfirm = {
+            onDelete = { includeDocuments ->
                 showDeleteDialog = false
-                onDeleteGroup()
+                onDeleteGroup(includeDocuments)
             },
-            confirmLabel = "Delete",
-            confirmDestructive = true,
         )
     }
 

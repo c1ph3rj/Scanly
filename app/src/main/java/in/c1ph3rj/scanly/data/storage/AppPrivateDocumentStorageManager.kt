@@ -56,7 +56,16 @@ class AppPrivateDocumentStorageManager @Inject constructor(
         val rawDirectory = ensureDirectory(File(rootDirectory, RAW_DIRECTORY))
         val processedDirectory = ensureDirectory(File(rootDirectory, PROCESSED_DIRECTORY))
         val thumbnailDirectory = ensureDirectory(File(rootDirectory, THUMBNAILS_DIRECTORY))
-        val fileName = pageFileName(pageIndex)
+        // Names follow the page's position when it was captured, but pages move (reorder, delete,
+        // Recently deleted keeps a trashed page's files), so skip any name another page still owns.
+        var fileNumber = pageIndex
+        while (
+            listOf(rawDirectory, processedDirectory, thumbnailDirectory)
+                .any { directory -> File(directory, pageFileName(fileNumber)).exists() }
+        ) {
+            fileNumber++
+        }
+        val fileName = pageFileName(fileNumber)
 
         PageCaptureStorageDraft(
             rawImagePath = File(rawDirectory, fileName).absolutePath,

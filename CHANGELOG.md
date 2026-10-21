@@ -6,6 +6,32 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Added
+
+- **Recently deleted** — deleted pages, documents and folders go to Recently deleted instead of being erased. An **Undo** snackbar appears right after every delete (also after deleting from inside a document or the page editor). Open it from **Settings › Recently deleted** (also under Settings › Storage) to restore items, delete them forever, or empty it. **Pages are kept for 2 days; documents and folders for 7 days**, then removed for good.
+- **Deleting a folder** asks what to do with its documents: **Delete folder only** (the documents stay in your Library; restoring the folder puts them back in it, unless you have moved them since) or **Delete folder and documents** (both go to Recently deleted; restoring the folder brings them all back), or Cancel. Empty folders just ask to confirm. A document restored on its own while its folder is still deleted comes back outside the folder.
+- **Deleting a page** moves it to Recently deleted; restoring puts it back at the position it was deleted from. Its text, signatures and edits come back with it.
+- **Add PDF to library** (Tools → PDF, and the PDF reader's ⋮ menu → Add to Scanly library) — turn a PDF from your phone into a Scanly document: pick pages, name it, and choose **Keep as is** (pages exactly like the PDF) or **Enhance** (Auto filter for scanned PDFs). Pages are added straight, without edge detection, and can then be cropped, filtered, signed, searched and exported like any scan. Password-protected PDFs are unlocked with their password. Your original file is never changed.
+- **Image to text** (Tools → Utilities) — pick photos (up to 50) or one of your scans and read its text in the Extracted text screen: Text and On page views, copy, share and edit. Photos are saved as a new document, so their text is searchable later. Text is read on this phone.
+- **My signatures** (Tools → Utilities) — opens Your signatures directly. Tap a saved signature or initials to preview it in navy, black, blue or red ink, **Share** it or **Save to phone** (Pictures/Scanly) as a transparent PNG, choose **Use first when signing** so the sign editor offers it first (marked "Used first"), jump to **Sign a PDF**, or delete it.
+
+### Changed
+
+- **QR & barcode** — the Utilities QR tile and scanner now say "QR & barcode", since the scanner already reads EAN-13 product barcodes, Code 128, PDF417, Data Matrix and Aztec codes as well as QR codes.
+
+- **Privacy: no Google Drive backup** — Scanly now opts out of Android's automatic cloud backup, so scans, the library database and settings are never copied to Google Drive. Android 12+ phone-to-phone transfer still moves your library to a new phone.
+
+### Technical
+
+- Room schema **8** adds `documents.deletedAtMillis` (`MIGRATION_7_8`); schema **9** adds `document_groups.deletedAtMillis`, `documents.deletedWithGroup`, and `scan_pages.deletedAtMillis` / `deletedFromIndex` (`MIGRATION_8_9`); schema **10** adds `documents.releasedFromGroupId` for "Delete folder only" (`MIGRATION_9_10`). Trashed items are filtered out of every library, folder, page, export, text and search query. A trashed page keeps its row at a negative `pageIndex` so live pages stay numbered 0..n-1. Expired items are purged on app start and when Recently deleted opens (`PurgeExpiredTrashUseCase`, retention in `TrashKind`).
+- `data_extraction_rules.xml` excludes every domain from `cloud-backup` and includes them for `device-transfer`; `backup_rules.xml` (Android 10–11) excludes everything.
+- `PageRepository.finalizeCapture` takes an optional `FlatPageSetup` (full-frame crop, chosen filter, no detection); `PdfToolkitRepository.renderPageToJpeg` renders PDF pages for import. New route `tools/pdf/import?source=` and `library/trash`.
+- New route `tools/text` (`ImageTextRoute`) imports photos through `ImportImagesUseCase` and hands off to `PageTextDestination`; `PdfFilePickerScreen` takes optional device-row and copy labels. `SignatureRepository` gains `moveSignatureToFront` (bumps `updatedAtMillis`, no schema change), `exportSignatureImage` (tinted PNG in `cache/signature_share/`) and `saveSignatureToGallery`.
+
+### Fixed
+
+- **Page images could be overwritten** — new pages were named after their position (`page_003.jpg`), so after deleting or reordering pages a new capture could overwrite another page's image. New captures now always get an unused file name.
+
 ## [1.0.18] - 2026-10-20
 
 ### Added

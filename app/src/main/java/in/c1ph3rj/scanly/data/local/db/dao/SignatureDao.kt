@@ -18,6 +18,10 @@ interface SignatureDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertSignature(signature: SignatureEntity)
 
+    /** Lists are newest-updated first, so bumping the time moves a mark to the front. */
+    @Query("UPDATE signatures SET updatedAtMillis = :updatedAtMillis WHERE id = :id")
+    suspend fun touchSignature(id: String, updatedAtMillis: Long)
+
     @Query("DELETE FROM signatures WHERE id = :id")
     suspend fun deleteSignature(id: String)
 }

@@ -31,6 +31,7 @@ import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material.icons.filled.FolderOff
 import androidx.compose.material.icons.outlined.Restore
+import androidx.compose.material.icons.outlined.RestoreFromTrash
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -72,6 +73,7 @@ import kotlinx.coroutines.launch
 fun SettingsStorageRoute(
     onNavigateUp: () -> Unit,
     parentEntry: NavBackStackEntry,
+    onOpenRecentlyDeleted: () -> Unit = {},
     viewModel: SettingsViewModel = hiltViewModel(parentEntry),
 ) {
     val context = LocalContext.current
@@ -123,6 +125,7 @@ fun SettingsStorageRoute(
         onDeleteEmptyDocuments = viewModel::deleteEmptyDocuments,
         onDeleteEmptyFolders = viewModel::deleteEmptyFolders,
         onClearAllData = viewModel::clearAllData,
+        onOpenRecentlyDeleted = onOpenRecentlyDeleted,
     )
 }
 
@@ -137,6 +140,7 @@ private fun SettingsStorageScreen(
     onDeleteEmptyDocuments: () -> Unit,
     onDeleteEmptyFolders: () -> Unit,
     onClearAllData: () -> Unit,
+    onOpenRecentlyDeleted: () -> Unit,
 ) {
     val window = rememberWindowSizeInfo()
     var showEmptyDocumentsWarning by remember { mutableStateOf(false) }
@@ -200,6 +204,14 @@ private fun SettingsStorageScreen(
 
             item("tidy") {
                 SettingsGroup(title = "Tidy up") {
+                    SettingsActionRow(
+                        icon = Icons.Outlined.RestoreFromTrash,
+                        title = "Recently deleted",
+                        subtitle = "Restore deleted folders, documents and pages",
+                        enabled = true,
+                        isBusy = false,
+                        onClick = onOpenRecentlyDeleted,
+                    )
                     SettingsActionRow(
                         icon = Icons.Filled.Description,
                         title = "Remove empty documents",

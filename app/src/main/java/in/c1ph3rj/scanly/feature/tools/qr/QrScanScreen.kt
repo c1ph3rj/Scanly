@@ -239,7 +239,7 @@ fun QrScanScreen(
                 }
                 QrStatusPill(
                     text = found?.let { formatQrFoundStatus(QrPayloadParser.parse(it.raw)) }
-                        ?: if (isReadingPhoto) "Reading photo…" else if (hasTarget) "QR found · hold steady" else "Point at a QR code",
+                        ?: if (isReadingPhoto) "Reading photo…" else if (hasTarget) "Code found · hold steady" else "Point at a QR code or barcode",
                     modifier = Modifier
                         .align(Alignment.TopCenter)
                         .padding(top = 16.dp),
@@ -306,7 +306,7 @@ private fun QrScanHeader(
             )
         }
         Text(
-            text = "Scan QR code",
+            text = "Scan QR & barcode",
             style = MaterialTheme.typography.titleMedium.copy(fontSize = 17.sp),
             fontWeight = FontWeight.SemiBold,
             color = Color.White,

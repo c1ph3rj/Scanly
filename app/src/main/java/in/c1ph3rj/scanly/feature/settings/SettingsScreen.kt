@@ -1,5 +1,8 @@
 package `in`.c1ph3rj.scanly.feature.settings
 
+import `in`.c1ph3rj.scanly.feature.library.retentionLabel
+import `in`.c1ph3rj.scanly.domain.trash.TrashKind
+import androidx.compose.material.icons.filled.RestoreFromTrash
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.expandVertically
@@ -60,6 +63,7 @@ fun SettingsRoute(
     onOpenWidgets: () -> Unit,
     onOpenAbout: () -> Unit,
     onOpenPip: () -> Unit = {},
+    onOpenRecentlyDeleted: () -> Unit = {},
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
@@ -81,6 +85,7 @@ fun SettingsRoute(
         onOpenAppearance = onOpenAppearance,
         onOpenPip = onOpenPip,
         onOpenStorage = onOpenStorage,
+        onOpenRecentlyDeleted = onOpenRecentlyDeleted,
         onOpenDetection = onOpenDetection,
         onOpenWidgets = onOpenWidgets,
         onOpenFaqs = onOpenFaqs,
@@ -111,6 +116,7 @@ fun SettingsScreen(
     onOpenFaqs: () -> Unit,
     onOpenAbout: () -> Unit,
     onRateApp: () -> Unit,
+    onOpenRecentlyDeleted: () -> Unit = {},
     onDismissRatingCard: () -> Unit,
 ) {
     val content = uiState.content
@@ -235,6 +241,16 @@ fun SettingsScreen(
                                 title = "Storage",
                                 subtitle = storageSubtitle,
                                 onClick = onOpenStorage,
+                            )
+                            HorizontalDivider(
+                                color = MaterialTheme.colorScheme.outlineVariant,
+                            )
+                            SettingsNavigationRow(
+                                icon = Icons.Filled.RestoreFromTrash,
+                                title = "Recently deleted",
+                                subtitle = "Pages kept ${TrashKind.PAGE.retentionLabel()}, " +
+                                    "documents and folders ${TrashKind.DOCUMENT.retentionLabel()}",
+                                onClick = onOpenRecentlyDeleted,
                             )
                         }
                     }

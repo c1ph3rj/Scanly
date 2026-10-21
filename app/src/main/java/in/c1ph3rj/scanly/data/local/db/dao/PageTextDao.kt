@@ -39,13 +39,19 @@ data class TextIndexProgressRow(
 
 @Dao
 interface PageTextDao {
-    @Query("SELECT * FROM page_texts WHERE documentId = :documentId")
+    @Query(
+        "SELECT t.* FROM page_texts t INNER JOIN scan_pages p ON p.id = t.pageId " +
+            "WHERE t.documentId = :documentId AND p.deletedAtMillis IS NULL",
+    )
     fun observeDocumentTexts(documentId: String): Flow<List<PageTextEntity>>
 
     @Query("SELECT * FROM page_texts WHERE pageId = :pageId")
     suspend fun getPageText(pageId: String): PageTextEntity?
 
-    @Query("SELECT * FROM page_texts WHERE documentId = :documentId")
+    @Query(
+        "SELECT t.* FROM page_texts t INNER JOIN scan_pages p ON p.id = t.pageId " +
+            "WHERE t.documentId = :documentId AND p.deletedAtMillis IS NULL",
+    )
     suspend fun getDocumentTexts(documentId: String): List<PageTextEntity>
 
     @Query(
@@ -56,7 +62,8 @@ interface PageTextDao {
         FROM scan_pages p
         INNER JOIN documents d ON d.id = p.documentId
         LEFT JOIN page_texts t ON t.pageId = p.id
-        WHERE (t.pageId IS NULL OR t.sourceUpdatedAtMillis != p.updatedAtMillis)
+        WHERE p.deletedAtMillis IS NULL
+          AND (t.pageId IS NULL OR t.sourceUpdatedAtMillis != p.updatedAtMillis)
           AND (p.processedImagePath IS NOT NULL OR p.rawImagePath IS NOT NULL)
         ORDER BY d.updatedAtMillis DESC, p.pageIndex ASC
         LIMIT :limit
@@ -71,7 +78,7 @@ interface PageTextDao {
                p.updatedAtMillis AS updatedAtMillis
         FROM scan_pages p
         LEFT JOIN page_texts t ON t.pageId = p.id
-        WHERE p.documentId = :documentId
+        WHERE p.documentId = :documentId AND p.deletedAtMillis IS NULL
           AND (t.pageId IS NULL OR t.sourceUpdatedAtMillis != p.updatedAtMillis)
           AND (p.processedImagePath IS NOT NULL OR p.rawImagePath IS NOT NULL)
         ORDER BY p.pageIndex ASC
@@ -85,7 +92,7 @@ interface PageTextDao {
                p.processedImagePath AS processedImagePath, p.rawImagePath AS rawImagePath,
                p.updatedAtMillis AS updatedAtMillis
         FROM scan_pages p
-        WHERE p.documentId = :documentId
+        WHERE p.documentId = :documentId AND p.deletedAtMillis IS NULL
           AND (p.processedImagePath IS NOT NULL OR p.rawImagePath IS NOT NULL)
         ORDER BY p.pageIndex ASC
         """,
@@ -105,10 +112,11 @@ interface PageTextDao {
     @Query(
         """
         SELECT
-            (SELECT COUNT(*) FROM scan_pages) AS totalPages,
+            (SELECT COUNT(*) FROM scan_pages WHERE deletedAtMillis IS NULL) AS totalPages,
             (SELECT COUNT(*) FROM scan_pages p
                 LEFT JOIN page_texts t ON t.pageId = p.id
-                WHERE (t.pageId IS NULL OR t.sourceUpdatedAtMillis != p.updatedAtMillis)
+                WHERE p.deletedAtMillis IS NULL
+                  AND (t.pageId IS NULL OR t.sourceUpdatedAtMillis != p.updatedAtMillis)
                   AND (p.processedImagePath IS NOT NULL OR p.rawImagePath IS NOT NULL)
             ) AS pendingPages
         """,
@@ -127,7 +135,8 @@ interface PageTextDao {
         FROM page_texts_fts
         INNER JOIN page_texts t ON t.id = page_texts_fts.rowid
         INNER JOIN scan_pages p ON p.id = t.pageId
-        WHERE page_texts_fts MATCH :match
+        INNER JOIN documents d ON d.id = p.documentId AND d.deletedAtMillis IS NULL
+        WHERE page_texts_fts MATCH :match AND p.deletedAtMillis IS NULL
         LIMIT :limit
         """,
     )
@@ -139,7 +148,7 @@ interface PageTextDao {
         SELECT t.documentId AS documentId, t.kind AS kind
         FROM page_texts t
         INNER JOIN scan_pages p ON p.id = t.pageId
-        WHERE t.kind IS NOT NULL
+        WHERE t.kind IS NOT NULL AND p.deletedAtMillis IS NULL
         ORDER BY t.documentId, p.pageIndex ASC
         """,
     )

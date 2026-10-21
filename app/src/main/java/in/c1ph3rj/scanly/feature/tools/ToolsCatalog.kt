@@ -6,13 +6,19 @@ import androidx.compose.material.icons.automirrored.outlined.MergeType
 import androidx.compose.material.icons.outlined.Compress
 import androidx.compose.material.icons.outlined.DocumentScanner
 import androidx.compose.material.icons.outlined.Draw
+import androidx.compose.material.icons.outlined.Gesture
 import androidx.compose.material.icons.outlined.Image
+import androidx.compose.material.icons.outlined.LibraryAdd
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.PhotoLibrary
 import androidx.compose.material.icons.outlined.QrCode2
+import androidx.compose.material.icons.outlined.TextFields
 import androidx.compose.material.icons.outlined.WaterDrop
 import androidx.compose.ui.graphics.vector.ImageVector
+import `in`.c1ph3rj.scanly.navigation.SignatureManageDestination
+import `in`.c1ph3rj.scanly.navigation.ToolsImageTextDestination
 import `in`.c1ph3rj.scanly.navigation.ToolsPdfCompressDestination
+import `in`.c1ph3rj.scanly.navigation.ToolsPdfImportDestination
 import `in`.c1ph3rj.scanly.navigation.ToolsPdfMergeDestination
 import `in`.c1ph3rj.scanly.navigation.ToolsPdfPasswordDestination
 import `in`.c1ph3rj.scanly.navigation.ToolsPdfReaderDestination
@@ -26,6 +32,8 @@ enum class ToolActionId {
     Scan,
     Import,
     Qr,
+    ImageText,
+    Signatures,
     PdfMerge,
     PdfCompress,
     PdfToImages,
@@ -33,6 +41,7 @@ enum class ToolActionId {
     PdfWatermark,
     PdfReader,
     PdfSign,
+    PdfImport,
 }
 
 /**
@@ -118,15 +127,39 @@ val pdfTools: List<ToolItem> = listOf(
         icon = Icons.AutoMirrored.Outlined.MenuBook,
         route = ToolsPdfReaderDestination.route,
     ),
+    ToolItem(
+        id = ToolActionId.PdfImport,
+        title = "Add to library",
+        caption = "PDF to editable scan",
+        icon = Icons.Outlined.LibraryAdd,
+        route = ToolsPdfImportDestination.route,
+    ),
 )
 
-/** "Utilities": the QR tile opens straight into scanning, where Create is a tab. */
+/**
+ * "Utilities": the QR tile opens straight into scanning (it also reads product barcodes), where
+ * Create is a tab. Image to text and Signatures reuse the Extracted text and Your signatures screens.
+ */
 val utilityTools: List<ToolItem> = listOf(
     ToolItem(
         id = ToolActionId.Qr,
-        title = "QR code",
+        title = "QR & barcode",
         caption = "Scan or create",
         icon = Icons.Outlined.QrCode2,
         route = ToolsQrDestination.route,
+    ),
+    ToolItem(
+        id = ToolActionId.ImageText,
+        title = "Image to text",
+        caption = "Photos & scans",
+        icon = Icons.Outlined.TextFields,
+        route = ToolsImageTextDestination.route,
+    ),
+    ToolItem(
+        id = ToolActionId.Signatures,
+        title = "My signatures",
+        caption = "Create & manage",
+        icon = Icons.Outlined.Gesture,
+        route = SignatureManageDestination.route,
     ),
 )

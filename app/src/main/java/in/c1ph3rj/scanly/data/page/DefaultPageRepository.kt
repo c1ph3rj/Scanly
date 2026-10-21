@@ -18,6 +18,9 @@ import `in`.c1ph3rj.scanly.domain.model.PageCaptureDraft
 import `in`.c1ph3rj.scanly.domain.model.PageProcessingState
 import `in`.c1ph3rj.scanly.domain.model.ScanPage
 import `in`.c1ph3rj.scanly.domain.processing.PageImageProcessor
+import `in`.c1ph3rj.scanly.core.ml.DocumentCornerQuad
+import `in`.c1ph3rj.scanly.domain.model.TrashedPage
+import `in`.c1ph3rj.scanly.domain.repository.FlatPageSetup
 import `in`.c1ph3rj.scanly.domain.repository.PageRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -116,7 +119,10 @@ class DefaultPageRepository @Inject constructor(
             }
         }
 
-    override suspend fun finalizeCapture(draft: PageCaptureDraft): ScanlyResult<String> =
+    override suspend fun finalizeCapture(
+        draft: PageCaptureDraft,
+        flatPage: FlatPageSetup?,
+    ): ScanlyResult<String> =
         withContext(dispatchers.io) {
             operationCoordinator.withMutation {
             runCatching {
@@ -133,12 +139,24 @@ class DefaultPageRepository @Inject constructor(
                     ?.let(PageFilterPreset::fromStorage)
                     ?: PageFilterPreset.AUTO
                 val processedArtifacts = runCatching {
-                    pageImageProcessor.processCapture(
-                        rawImagePath = draft.rawImagePath,
-                        processedImagePath = draft.processedImagePath,
-                        thumbnailPath = draft.thumbnailPath,
-                        filterPreset = captureFilterPreset,
-                    ).toPersistedArtifacts()
+                    if (flatPage != null) {
+                        pageImageProcessor.reprocessPage(
+                            rawImagePath = draft.rawImagePath,
+                            processedImagePath = draft.processedImagePath,
+                            thumbnailPath = draft.thumbnailPath,
+                            cropQuad = DocumentCornerQuad.FullFrame,
+                            rotationDegrees = 0,
+                            filterPreset = flatPage.filterPreset,
+                            detectDocumentWhenCropQuadMissing = false,
+                        )
+                    } else {
+                        pageImageProcessor.processCapture(
+                            rawImagePath = draft.rawImagePath,
+                            processedImagePath = draft.processedImagePath,
+                            thumbnailPath = draft.thumbnailPath,
+                            filterPreset = captureFilterPreset,
+                        )
+                    }.toPersistedArtifacts()
                 }.getOrElse {
                     val fallbackThumbnail = storageManager.generatePageThumbnail(
                         rawImagePath = draft.rawImagePath,
@@ -323,6 +341,111 @@ class DefaultPageRepository @Inject constructor(
                     )
                 },
             )
+            }
+        }
+
+    override suspend fun movePageToTrash(pageId: String): ScanlyResult<Unit> =
+        mutatePages("Could not delete the page.") {
+            val page = scanPageDao.getPage(pageId) ?: error("Page not found.")
+            check(page.deletedAtMillis == null) { "This page is already in Recently deleted." }
+            val document = documentDao.getDocument(page.documentId) ?: error("Document not found.")
+            val timestamp = System.currentTimeMillis()
+            database.withTransaction {
+                // Park below every other index so the unique (document, index) pair stays free.
+                val parkedIndex = minOf(scanPageDao.minPageIndex(document.id) ?: 0, 0) - 1
+                // updatedAtMillis is left alone so the page's text stays valid for when it comes back.
+                scanPageDao.update(
+                    page.copy(pageIndex = parkedIndex, deletedAtMillis = timestamp, deletedFromIndex = page.pageIndex),
+                )
+                renumberLivePages(document.id)
+                updateDocumentSnapshot(document = document, updatedAtMillis = timestamp)
+            }
+        }
+
+    override suspend fun restorePage(pageId: String): ScanlyResult<Unit> =
+        mutatePages("Could not restore the page.") {
+            val page = scanPageDao.getPage(pageId) ?: error("Page not found.")
+            if (page.deletedAtMillis == null) return@mutatePages
+            val document = documentDao.getDocument(page.documentId) ?: error("Document not found.")
+            val timestamp = System.currentTimeMillis()
+            database.withTransaction {
+                val livePages = scanPageDao.getPages(document.id)
+                val target = (page.deletedFromIndex ?: livePages.size).coerceIn(0, livePages.size)
+                // Shift later pages up one, last first, so no two pages ever share an index.
+                livePages.filter { it.pageIndex >= target }
+                    .sortedByDescending { it.pageIndex }
+                    .forEach { scanPageDao.update(it.copy(pageIndex = it.pageIndex + 1)) }
+                scanPageDao.update(page.copy(pageIndex = target, deletedAtMillis = null, deletedFromIndex = null))
+                updateDocumentSnapshot(document = document, updatedAtMillis = timestamp)
+            }
+        }
+
+    override fun observeTrashedPages(): Flow<List<TrashedPage>> =
+        scanPageDao.observeTrashedPages().map { rows ->
+            rows.map { row ->
+                TrashedPage(
+                    id = row.id,
+                    documentId = row.documentId,
+                    documentTitle = row.documentTitle,
+                    pageNumber = row.deletedFromIndex + 1,
+                    thumbnailPath = row.thumbnailPath,
+                    deletedAtMillis = row.deletedAtMillis,
+                )
+            }
+        }
+
+    override suspend fun deletePageForever(pageId: String): ScanlyResult<Unit> =
+        mutatePages("Could not delete the page.") {
+            val page = scanPageDao.getPage(pageId) ?: return@mutatePages
+            check(page.deletedAtMillis != null) { "Only pages in Recently deleted can be deleted forever." }
+            deleteTrashedPages(listOf(page))
+        }
+
+    override suspend fun emptyTrashedPages(): ScanlyResult<Int> =
+        mutatePages("Could not delete the pages.") { deleteTrashedPages(scanPageDao.getTrashedPages()) }
+
+    override suspend fun purgeTrashedPagesBefore(cutoffMillis: Long): ScanlyResult<Int> =
+        mutatePages("Could not clear old deleted pages.") {
+            deleteTrashedPages(scanPageDao.getTrashedPagesBefore(cutoffMillis))
+        }
+
+    /** Trashed pages sit outside the numbering, so removing them never renumbers live pages. */
+    private suspend fun deleteTrashedPages(pages: List<ScanPageEntity>): Int {
+        if (pages.isEmpty()) return 0
+        // Markup rows cascade with their pages; read them first to clean up their files.
+        val markups = pages.associate { it.id to markupStore.markupFor(it.id) }
+        database.withTransaction {
+            pages.forEach { scanPageDao.deleteById(it.id) }
+        }
+        pages.forEach { page ->
+            runCatching {
+                deletePageAssets(page)
+                markupStore.deleteAssets(markups[page.id], page.processedImagePath)
+            }
+        }
+        return pages.size
+    }
+
+    /** Closes the gap a trashed page left. Images are unchanged, so their text stays indexed. */
+    private suspend fun renumberLivePages(documentId: String) {
+        val livePages = scanPageDao.getPages(documentId)
+        val renumbered = livePages.mapIndexedNotNull { index, livePage ->
+            if (livePage.pageIndex == index) null else livePage.copy(pageIndex = index)
+        }
+        if (renumbered.isNotEmpty()) scanPageDao.updateAll(renumbered)
+    }
+
+    private suspend fun <T> mutatePages(failureMessage: String, block: suspend () -> T): ScanlyResult<T> =
+        withContext(dispatchers.io) {
+            operationCoordinator.withMutation {
+                runCatching { block() }.fold(
+                    onSuccess = { ScanlyResult.Success(it) },
+                    onFailure = { throwable ->
+                        ScanlyResult.Failure(
+                            ScanlyError(message = throwable.message ?: failureMessage, cause = throwable),
+                        )
+                    },
+                )
             }
         }
 

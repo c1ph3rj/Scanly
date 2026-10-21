@@ -1,5 +1,6 @@
 package `in`.c1ph3rj.scanly.feature.editor
 
+import `in`.c1ph3rj.scanly.feature.library.TrashCopy
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -338,7 +339,7 @@ fun PageEditorScreen(
     if (deleteDialogVisible && uiState.page != null) {
         ScanlyConfirmDialog(
             title = "Delete page",
-            text = "Page ${uiState.page.pageIndex + 1} will be removed from this document.",
+            text = TrashCopy.page(uiState.page.pageIndex + 1),
             confirmLabel = "Delete",
             onDismiss = { deleteDialogVisible = false },
             onConfirm = {

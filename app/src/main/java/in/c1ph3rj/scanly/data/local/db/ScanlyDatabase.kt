@@ -29,7 +29,7 @@ import `in`.c1ph3rj.scanly.domain.model.PageFilterPreset
         SignatureEntity::class,
         PageMarkupEntity::class,
     ],
-    version = 7,
+    version = 10,
     exportSchema = false,
 )
 abstract class ScanlyDatabase : RoomDatabase() {
@@ -211,6 +211,37 @@ abstract class ScanlyDatabase : RoomDatabase() {
                         "`baseImagePath` TEXT NOT NULL, `updatedAtMillis` INTEGER NOT NULL, PRIMARY KEY(`pageId`), " +
                         "FOREIGN KEY(`pageId`) REFERENCES `scan_pages`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
                 )
+            }
+        }
+
+        /**
+         * Adds Recently deleted: a document with a non-null `deletedAtMillis` is in the trash
+         * (hidden from the library, restorable) until it is purged.
+         */
+        val MIGRATION_7_8: Migration = object : Migration(7, 8) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE `documents` ADD COLUMN `deletedAtMillis` INTEGER")
+            }
+        }
+
+        /**
+         * Recently deleted for folders and pages. A trashed folder takes its documents with it
+         * (`deletedWithGroup`); a trashed page keeps its row at a negative index and remembers
+         * where it was (`deletedFromIndex`).
+         */
+        val MIGRATION_8_9: Migration = object : Migration(8, 9) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE `document_groups` ADD COLUMN `deletedAtMillis` INTEGER")
+                db.execSQL("ALTER TABLE `documents` ADD COLUMN `deletedWithGroup` INTEGER NOT NULL DEFAULT 0")
+                db.execSQL("ALTER TABLE `scan_pages` ADD COLUMN `deletedAtMillis` INTEGER")
+                db.execSQL("ALTER TABLE `scan_pages` ADD COLUMN `deletedFromIndex` INTEGER")
+            }
+        }
+
+        /** "Delete folder only": documents remember the folder they left, so restoring it can bring them back. */
+        val MIGRATION_9_10: Migration = object : Migration(9, 10) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE `documents` ADD COLUMN `releasedFromGroupId` TEXT")
             }
         }
 

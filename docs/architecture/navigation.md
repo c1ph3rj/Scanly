@@ -59,6 +59,7 @@ These top-level routes still exist but show `FeaturePlaceholderScreen` — they 
 | `settings/storage` | `SettingsStorageDestination` | Storage usage, export destination, cleanup, clear data |
 | `settings/model-benchmark` | `SettingsModelBenchmarkDestination` | Temporary local model comparison |
 | `tools/qr` | `ToolsQrDestination` | QR scan, typed result, create, and history (in-route screens) |
+| `tools/text` | `ToolsImageTextDestination` | Image to text: pick photos (imported as a new document, then replaced by its text screen) or a scan → `document/{documentId}/text` |
 | `tools/pdf/reader?filePath={filePath}&fileName={fileName}` | `ToolsPdfReaderDestination` | PDF reader; optional app-owned result file opens directly |
 | `tools/pdf/merge?source={source}` | `ToolsPdfMergeDestination` | PDF merge |
 | `tools/pdf/compress?source={source}` | `ToolsPdfCompressDestination` | PDF compress |

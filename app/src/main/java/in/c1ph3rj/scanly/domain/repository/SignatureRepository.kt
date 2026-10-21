@@ -2,7 +2,9 @@ package `in`.c1ph3rj.scanly.domain.repository
 
 import android.graphics.Bitmap
 import `in`.c1ph3rj.scanly.core.common.ScanlyResult
+import `in`.c1ph3rj.scanly.domain.model.SavedExport
 import `in`.c1ph3rj.scanly.domain.model.SavedSignature
+import `in`.c1ph3rj.scanly.domain.model.SignInk
 import `in`.c1ph3rj.scanly.domain.model.SignatureKind
 import `in`.c1ph3rj.scanly.domain.model.SignatureSource
 import kotlinx.coroutines.flow.Flow
@@ -25,4 +27,16 @@ interface SignatureRepository {
     suspend fun extractInk(uriString: String, sensitivity: Float): ScanlyResult<Bitmap>
 
     suspend fun deleteSignature(id: String): ScanlyResult<Unit>
+
+    /** Puts [id] first among its kind, so the sign editor offers it before the others. */
+    suspend fun moveSignatureToFront(id: String): ScanlyResult<Unit>
+
+    /**
+     * Renders [id] as a transparent PNG in [ink] into the app cache and returns its path, ready
+     * to share. The file is overwritten by the next export.
+     */
+    suspend fun exportSignatureImage(id: String, ink: SignInk): ScanlyResult<String>
+
+    /** Saves [id] as a transparent PNG in [ink] to Pictures/Scanly. */
+    suspend fun saveSignatureToGallery(id: String, ink: SignInk): ScanlyResult<SavedExport>
 }

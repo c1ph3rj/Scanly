@@ -3,7 +3,9 @@ package `in`.c1ph3rj.scanly.domain.usecase
 import android.graphics.Bitmap
 import `in`.c1ph3rj.scanly.core.common.ScanlyResult
 import `in`.c1ph3rj.scanly.domain.model.PageMarkup
+import `in`.c1ph3rj.scanly.domain.model.SavedExport
 import `in`.c1ph3rj.scanly.domain.model.SavedSignature
+import `in`.c1ph3rj.scanly.domain.model.SignInk
 import `in`.c1ph3rj.scanly.domain.model.SignMark
 import `in`.c1ph3rj.scanly.domain.model.SignatureKind
 import `in`.c1ph3rj.scanly.domain.model.SignatureSource
@@ -39,6 +41,26 @@ class DeleteSignatureUseCase @Inject constructor(
     private val repository: SignatureRepository,
 ) {
     suspend operator fun invoke(id: String): ScanlyResult<Unit> = repository.deleteSignature(id)
+}
+
+class MoveSignatureToFrontUseCase @Inject constructor(
+    private val repository: SignatureRepository,
+) {
+    suspend operator fun invoke(id: String): ScanlyResult<Unit> = repository.moveSignatureToFront(id)
+}
+
+class ExportSignatureImageUseCase @Inject constructor(
+    private val repository: SignatureRepository,
+) {
+    suspend operator fun invoke(id: String, ink: SignInk): ScanlyResult<String> =
+        repository.exportSignatureImage(id, ink)
+}
+
+class SaveSignatureToGalleryUseCase @Inject constructor(
+    private val repository: SignatureRepository,
+) {
+    suspend operator fun invoke(id: String, ink: SignInk): ScanlyResult<SavedExport> =
+        repository.saveSignatureToGallery(id, ink)
 }
 
 class LoadDocumentMarkupsUseCase @Inject constructor(

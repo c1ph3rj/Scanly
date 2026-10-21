@@ -41,6 +41,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
@@ -77,6 +78,8 @@ enum class PdfPickerSort(val label: String) {
  * - Single-select ([selectedOrder] == null): tapping a row calls [onPickLibrary].
  * - Multi-select (merge): pass the ordered selected ids; rows show their merge position
  *   and [onPickLibrary] toggles. Supply [bottomBar] for the confirm action.
+ * - Non-PDF tools (Image to text) relabel the device row and the copy with [deviceTitle],
+ *   [deviceIcon], [itemNoun], [countLabel] and the hint parameters.
  */
 @Composable
 fun PdfFilePickerScreen(
@@ -88,7 +91,13 @@ fun PdfFilePickerScreen(
     onPickDevice: () -> Unit,
     onPickLibrary: (ScanDocument) -> Unit,
     modifier: Modifier = Modifier,
+    deviceTitle: String = "Phone storage",
     deviceSubtitle: String = "Downloads, Drive and other apps",
+    deviceIcon: ImageVector = Icons.Outlined.PhoneAndroid,
+    itemNoun: String = "PDFs",
+    countLabel: (Int) -> String = ::formatMergeFileCount,
+    emptyLibraryHint: String = "No scans yet. Pick a PDF from phone storage, or scan one first.",
+    noPagesHint: String = "Your scans have no pages yet. Pick a PDF from phone storage.",
     selectedOrder: List<String>? = null,
     defaultSort: PdfPickerSort = PdfPickerSort.Recent,
     rowMeta: (ScanDocument) -> String = ::defaultPdfPickerMeta,
@@ -127,7 +136,7 @@ fun PdfFilePickerScreen(
                 ToolSearchField(
                     value = query,
                     onValueChange = { query = it },
-                    placeholder = "Search your PDFs",
+                    placeholder = "Search your $itemNoun",
                 )
             }
             headerExtra?.invoke(this)
@@ -152,10 +161,10 @@ fun PdfFilePickerScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(14.dp),
                     ) {
-                        ToolIconWell(Icons.Outlined.PhoneAndroid, size = 44.dp, iconSize = 22.dp, accent = true)
+                        ToolIconWell(deviceIcon, size = 44.dp, iconSize = 22.dp, accent = true)
                         Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
                             Text(
-                                "Phone storage",
+                                deviceTitle,
                                 style = MaterialTheme.typography.titleSmall.copy(fontSize = 15.sp),
                                 fontWeight = FontWeight.SemiBold,
                             )
@@ -182,7 +191,7 @@ fun PdfFilePickerScreen(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         ToolSectionLabel(
-                            text = "In Scanly · ${formatMergeFileCount(usable.size)}",
+                            text = "In Scanly · ${countLabel(usable.size)}",
                             modifier = Modifier.weight(1f),
                         )
                         Surface(
@@ -225,11 +234,9 @@ fun PdfFilePickerScreen(
             }
             item(key = "footer") {
                 val footer = when {
-                    usable.isEmpty() && hiddenEmpty == 0 ->
-                        "No scans yet. Pick a PDF from phone storage, or scan one first."
-                    usable.isEmpty() ->
-                        "Your scans have no pages yet. Pick a PDF from phone storage."
-                    visible.isEmpty() -> "No PDFs match \"${query.trim()}\"."
+                    usable.isEmpty() && hiddenEmpty == 0 -> emptyLibraryHint
+                    usable.isEmpty() -> noPagesHint
+                    visible.isEmpty() -> "No $itemNoun match \"${query.trim()}\"."
                     hiddenEmpty == 1 -> "1 empty scan is hidden"
                     hiddenEmpty > 1 -> "$hiddenEmpty empty scans are hidden"
                     else -> null

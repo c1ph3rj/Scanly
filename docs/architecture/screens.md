@@ -12,7 +12,8 @@ Every feature screen in Scanly **v1.0.18** and its responsibilities.
 | Library | `LibraryScreen` | `LibraryViewModel` | `library` | Paper cards, overflow/long-press actions, search, filter pills, sort, CRUD, suggest names |
 | Library search | `LibrarySearchScreen` | `LibrarySearchViewModel` | `library/search` | Search names and page text, recent searches, type filters, ranked excerpts |
 | Extracted text | `PageTextScreen` | `PageTextViewModel` | `document/{documentId}/text` | Read or correct recognized text; copy/share; show text regions on the scan |
-| Tools hub | `ToolsScreen` | `ToolsViewModel` | `tools` | Scan / PDF / Utilities groups; QR opens straight into scanning |
+| Tools hub | `ToolsScreen` | `ToolsViewModel` | `tools` | Scan / PDF / Utilities groups; Utilities: QR & barcode (opens straight into scanning), Image to text, My signatures |
+| Image to text | `ImageTextRoute` (reuses `PdfFilePickerScreen`) | `ImageTextViewModel` | `tools/text` | Photos → new document → Extracted text; scans open their Extracted text directly |
 | QR tool | `QrToolScreen` (+ `QrScanScreen`, `QrResultScreen`, `QrCreateScreen`, `QrHistoryScreen`) | `QrToolViewModel` | `tools/qr` | Scan with torch and photo import, typed results, Create types with caption and ink, on-phone history |
 | PDF reader | `PdfReaderRoute` | `PdfReaderViewModel` | `tools/pdf/reader` | Picker step, dark reader with one page counter, hideable chrome, Pages grid, Layout; ⋮ menu (`PdfReaderOverflowMenu`) with Share, All pages, hand-off to each PDF tool, Open another PDF; also the target of Open in Scanly |
 | PDF merge | `PdfMergeRoute` | `PdfMergeViewModel` | `tools/pdf/merge` | Multi-select picker → order & name → done |

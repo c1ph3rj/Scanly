@@ -12,19 +12,26 @@ import java.util.UUID
 
 class InMemoryDocumentRepository(
     private val library: InMemoryScanlyLibrary,
+    private val now: () -> Long = { library.now() },
 ) : DocumentRepository {
-    override fun observeDocuments(): Flow<List<ScanDocument>> = library.documents
+    private val liveDocuments: Flow<List<ScanDocument>> =
+        library.documents.map { documents -> documents.filter { it.deletedAtMillis == null } }
+
+    override fun observeDocuments(): Flow<List<ScanDocument>> = liveDocuments
 
     override fun observeRecentDocuments(limit: Int): Flow<List<ScanDocument>> =
-        library.documents.map { documents ->
+        liveDocuments.map { documents ->
             documents.sortedByDescending { it.updatedAtMillis }.take(limit)
         }
 
     override fun observeUngroupedDocuments(): Flow<List<ScanDocument>> =
-        library.documents.map { documents -> documents.filter { it.groupId == null } }
+        liveDocuments.map { documents -> documents.filter { it.groupId == null } }
 
     override fun observeDocument(documentId: String): Flow<ScanDocument?> =
         library.documents.map { documents -> documents.firstOrNull { it.id == documentId } }
+
+    /** Documents deleted on their own; ones that went with a folder are listed under the folder. */
+    override fun observeTrashedDocuments(): Flow<List<ScanDocument>> = library.trashedDocuments
 
     override suspend fun getAllDocumentTitles(): List<String> =
         library.documents.value.map { it.title }
@@ -83,15 +90,61 @@ class InMemoryDocumentRepository(
         )
     }
 
+    override suspend fun moveDocumentToTrash(documentId: String): ScanlyResult<Unit> =
+        runLibraryResult("Could not move the document to Recently deleted.") {
+            val existing = library.document(documentId) ?: error("Document not found.")
+            library.upsertDocument(existing.copy(deletedAtMillis = now()))
+        }
+
+    /**
+     * Like the DB: a document whose folder is still in Recently deleted comes back outside it.
+     * The deleted-with-folder flag is left as it is (the real setDeletedAt does not clear it).
+     */
+    override suspend fun restoreDocument(documentId: String): ScanlyResult<Unit> =
+        runLibraryResult("Could not restore the document.") {
+            val existing = library.document(documentId) ?: error("Document not found.")
+            library.upsertDocument(
+                existing.copy(
+                    deletedAtMillis = null,
+                    groupId = existing.groupId?.takeUnless { library.isGroupTrashed(it) },
+                ),
+            )
+        }
+
     override suspend fun deleteDocument(documentId: String): ScanlyResult<Unit> =
         runLibraryResult("Could not delete the document.") {
             library.document(documentId) ?: error("Document not found.")
             library.deleteDocument(documentId)
         }
 
+    /** Only documents deleted on their own, like the DB query (folder documents go with the folder). */
+    override suspend fun emptyTrash(): ScanlyResult<Int> =
+        runLibraryResult("Could not empty Recently deleted.") {
+            val trashedIds = ownTrashedIds { true }
+            trashedIds.forEach(library::deleteDocument)
+            trashedIds.size
+        }
+
+    override suspend fun purgeTrashDeletedBefore(cutoffMillis: Long): ScanlyResult<Int> =
+        runLibraryResult("Could not clear old deleted documents.") {
+            val dueIds = ownTrashedIds { deletedAt -> deletedAt <= cutoffMillis }
+            dueIds.forEach(library::deleteDocument)
+            dueIds.size
+        }
+
+    private fun ownTrashedIds(predicate: (deletedAtMillis: Long) -> Boolean): List<String> =
+        library.documents.value
+            .filter { document ->
+                val deletedAt = document.deletedAtMillis ?: return@filter false
+                predicate(deletedAt) && !library.isDocumentDeletedWithGroup(document.id)
+            }
+            .map { it.id }
+
     override suspend fun deleteEmptyDocuments(): ScanlyResult<Int> =
         runLibraryResult("Could not remove empty documents.") {
-            val emptyIds = library.documents.value.filter { it.pageCount == 0 }.map { it.id }
+            val emptyIds = library.documents.value
+                .filter { it.pageCount == 0 && it.deletedAtMillis == null }
+                .map { it.id }
             emptyIds.forEach(library::deleteDocument)
             emptyIds.size
         }

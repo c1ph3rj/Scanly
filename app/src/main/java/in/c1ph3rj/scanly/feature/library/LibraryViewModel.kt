@@ -12,8 +12,8 @@ import `in`.c1ph3rj.scanly.domain.model.GroupTitleFormat
 import `in`.c1ph3rj.scanly.domain.usecase.SuggestDocumentTitleUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.SuggestGroupTitleUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.CreateGroupUseCase
-import `in`.c1ph3rj.scanly.domain.usecase.DeleteDocumentUseCase
-import `in`.c1ph3rj.scanly.domain.usecase.DeleteGroupUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.MoveDocumentToTrashUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.MoveGroupToTrashUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveDocumentsUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveGroupsUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveUngroupedDocumentsUseCase
@@ -141,10 +141,10 @@ class LibraryViewModel @Inject constructor(
     observeDocumentsUseCase: ObserveDocumentsUseCase,
     private val createDocumentUseCase: CreateDocumentUseCase,
     private val renameDocumentUseCase: RenameDocumentUseCase,
-    private val deleteDocumentUseCase: DeleteDocumentUseCase,
+    private val moveDocumentToTrashUseCase: MoveDocumentToTrashUseCase,
     private val createGroupUseCase: CreateGroupUseCase,
     private val renameGroupUseCase: RenameGroupUseCase,
-    private val deleteGroupUseCase: DeleteGroupUseCase,
+    private val moveGroupToTrashUseCase: MoveGroupToTrashUseCase,
     private val setDocumentGroupUseCase: SetDocumentGroupUseCase,
     private val suggestDocumentTitleUseCase: SuggestDocumentTitleUseCase,
     private val suggestGroupTitleUseCase: SuggestGroupTitleUseCase,
@@ -236,7 +236,8 @@ class LibraryViewModel @Inject constructor(
 
     fun deleteDocument(documentId: String) {
         viewModelScope.launch {
-            when (val result = deleteDocumentUseCase(documentId)) {
+            val title = uiState.value.allDocuments.firstOrNull { it.id == documentId }?.title ?: "Document"
+            when (val result = moveDocumentToTrashUseCase(documentId, title)) {
                 is ScanlyResult.Success -> Unit
                 is ScanlyResult.Failure -> _events.emit(LibraryEvent.ShowMessage(result.error.message))
             }
@@ -261,9 +262,10 @@ class LibraryViewModel @Inject constructor(
         }
     }
 
-    fun deleteGroup(groupId: String) {
+    fun deleteGroup(groupId: String, includeDocuments: Boolean) {
         viewModelScope.launch {
-            when (val result = deleteGroupUseCase(groupId)) {
+            val title = uiState.value.groups.firstOrNull { it.id == groupId }?.title ?: "Folder"
+            when (val result = moveGroupToTrashUseCase(groupId, title, includeDocuments)) {
                 is ScanlyResult.Success -> Unit
                 is ScanlyResult.Failure -> _events.emit(LibraryEvent.ShowMessage(result.error.message))
             }

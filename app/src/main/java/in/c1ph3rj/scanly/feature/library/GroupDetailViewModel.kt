@@ -12,7 +12,7 @@ import `in`.c1ph3rj.scanly.domain.model.ShareArtifact
 import `in`.c1ph3rj.scanly.domain.model.DocumentTitleFormat
 import `in`.c1ph3rj.scanly.domain.usecase.CreateDocumentUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.SuggestDocumentTitleUseCase
-import `in`.c1ph3rj.scanly.domain.usecase.DeleteGroupUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.MoveGroupToTrashUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ExportGroupPdfUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ExportGroupZippedPdfsUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveGroupDocumentsUseCase
@@ -64,7 +64,7 @@ class GroupDetailViewModel @Inject constructor(
     observeGroupDocumentsUseCase: ObserveGroupDocumentsUseCase,
     observeUngroupedDocumentsUseCase: ObserveUngroupedDocumentsUseCase,
     private val renameGroupUseCase: RenameGroupUseCase,
-    private val deleteGroupUseCase: DeleteGroupUseCase,
+    private val moveGroupToTrashUseCase: MoveGroupToTrashUseCase,
     private val setDocumentGroupUseCase: SetDocumentGroupUseCase,
     private val createDocumentUseCase: CreateDocumentUseCase,
     private val exportGroupPdfUseCase: ExportGroupPdfUseCase,
@@ -112,9 +112,10 @@ class GroupDetailViewModel @Inject constructor(
         }
     }
 
-    fun deleteGroup() {
+    fun deleteGroup(includeDocuments: Boolean) {
         viewModelScope.launch {
-            when (val result = deleteGroupUseCase(groupId)) {
+            val title = uiState.value.group?.title ?: "Folder"
+            when (val result = moveGroupToTrashUseCase(groupId, title, includeDocuments)) {
                 is ScanlyResult.Success -> _events.emit(GroupDetailEvent.GroupDeleted)
                 is ScanlyResult.Failure -> _events.emit(GroupDetailEvent.ShowMessage(result.error.message))
             }

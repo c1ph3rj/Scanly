@@ -59,7 +59,7 @@ app/src/main/java/in/c1ph3rj/scanly/
 - Keep dependency versions in `gradle/libs.versions.toml`; reference via `libs.*` in Gradle scripts.
 - Compose deps use BOM (`implementation(platform(libs.androidx.compose.bom))`).
 - Preserve raw captures — never overwrite files under `raw/`; regenerate `processed/` and `thumbs/`.
-- Room schema is version `7` (v7 adds `signatures` and `page_markups`). Any schema change requires a `Migration_X_Y` in `ScanlyDatabase.kt` and version bump.
+- Room schema is version `10` (v7 adds `signatures` and `page_markups`; v8–v10 add Recently deleted: `deletedAtMillis` on `documents`, `document_groups` and `scan_pages`, plus `documents.deletedWithGroup`, `documents.releasedFromGroupId` ("Delete folder only") and `scan_pages.deletedFromIndex`). Live queries must filter `deletedAtMillis IS NULL`; a trashed page sits at a negative `pageIndex`. Repository `delete*` methods are permanent — UI deletes go through `MoveDocumentToTrashUseCase` / `MoveGroupToTrashUseCase` / `MovePageToTrashUseCase`. Retention lives in `TrashKind` (pages 2 days, documents and folders 7). Any schema change requires a `Migration_X_Y` in `ScanlyDatabase.kt` and version bump.
 - Page text lives in `page_texts` with an FTS4 external-content index `page_texts_fts` (Room triggers keep it in sync — always replace rows with delete + insert, never `REPLACE`). `page_texts_terms` (fts4aux) is created on open for spelling suggestions. `TextIndexScheduler` re-reads any page whose `updatedAtMillis` differs from its text row, so features never need to call the indexer.
 - ML model assets under `app/src/main/assets/models/`: corner variants (Lite/Standard/High/Accurate) + `scanly_document_gate_float16.tflite` (keep `noCompress += "tflite"`).
 - Document detection prefs in DataStore: live/post models, automatic selection, document gate; pure black theme is separate (`pure_black_enabled`).
@@ -80,10 +80,12 @@ Typed routes (real flows):
 - `group/{groupId}` — group detail
 - `legal/{documentType}` — privacy/licenses viewer
 - `library/search` — name + page-text search
+- `library/trash` — Recently deleted (folders, documents, pages; opened from Settings; purged on app start and on open)
 - `document/{documentId}/text?page={page}&query={query}` — extracted text (Text / On page views)
 - `settings/appearance`, `settings/pip`, `settings/detection`, `settings/widgets`, `settings/about`, `settings/faq`, `settings/licenses`, `settings/storage`, `settings/model-benchmark` — settings hub sub-screens
 - `tools/qr` — QR scan + generate
-- `tools/pdf/reader`, `tools/pdf/merge`, `tools/pdf/compress`, `tools/pdf/to-images`, `tools/pdf/password`, `tools/pdf/watermark`, `tools/pdf/sign` — PDF toolkit (tool routes take an optional `?source=` so the reader can hand over its open file; see `PdfToolSourceArgument.kt`)
+- `tools/text` — Image to text (photos → new document → `document/{documentId}/text`)
+- `tools/pdf/reader`, `tools/pdf/merge`, `tools/pdf/compress`, `tools/pdf/to-images`, `tools/pdf/password`, `tools/pdf/watermark`, `tools/pdf/sign`, `tools/pdf/import` — PDF toolkit (tool routes take an optional `?source=` so the reader can hand over its open file; see `PdfToolSourceArgument.kt`)
 - `document/{documentId}/sign?page={page}` — sign a scan in place (marks composited into `processed/`, clean image kept as `processed/page_NNN.base.jpg`, layer data in `page_markups`)
 - `signatures/manage`, `signatures/create?kind={kind}` — saved signatures (`files/signatures/{id}/ink.png`, black ink alpha masks)
 

@@ -1,5 +1,6 @@
 package `in`.c1ph3rj.scanly.feature.document
 
+import `in`.c1ph3rj.scanly.feature.library.TrashCopy
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -696,7 +697,7 @@ fun DocumentDetailScreen(
     if (deleteDialogVisible && selectedPage != null) {
         ScanlyConfirmDialog(
             title = "Delete page",
-            text = "Page ${selectedPage.pageIndex + 1} will be removed from this document.",
+            text = TrashCopy.page(selectedPage.pageIndex + 1),
             confirmLabel = "Delete",
             onDismiss = { deleteDialogVisible = false },
             onConfirm = {
@@ -787,7 +788,7 @@ fun DocumentDetailScreen(
     if (deleteDocumentDialogVisible && document != null) {
         ScanlyConfirmDialog(
             title = "Delete document?",
-            text = "\"${document.title}\" and all of its pages will be removed permanently.",
+            text = TrashCopy.document(document.title),
             confirmLabel = "Delete",
             onDismiss = { deleteDocumentDialogVisible = false },
             onConfirm = {

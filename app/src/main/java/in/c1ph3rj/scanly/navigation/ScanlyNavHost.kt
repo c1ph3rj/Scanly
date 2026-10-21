@@ -35,6 +35,8 @@ import `in`.c1ph3rj.scanly.feature.settings.SettingsFaqRoute
 import `in`.c1ph3rj.scanly.feature.settings.SettingsLicensesRoute
 import `in`.c1ph3rj.scanly.feature.settings.SettingsRoute
 import `in`.c1ph3rj.scanly.feature.settings.SettingsStorageRoute
+import `in`.c1ph3rj.scanly.feature.library.RecentlyDeletedRoute
+import `in`.c1ph3rj.scanly.feature.library.TrashUndoSnackbarHost
 import `in`.c1ph3rj.scanly.feature.settings.SettingsWidgetsRoute
 import `in`.c1ph3rj.scanly.feature.tools.ToolsRoute
 import `in`.c1ph3rj.scanly.feature.tools.pdf.PdfCompressRoute
@@ -44,12 +46,14 @@ import `in`.c1ph3rj.scanly.feature.tools.pdf.PdfReaderRoute
 import `in`.c1ph3rj.scanly.feature.tools.pdf.PdfReaderTool
 import `in`.c1ph3rj.scanly.feature.tools.pdf.PdfWatermarkRoute
 import `in`.c1ph3rj.scanly.feature.tools.pdf.PdfSignRoute
+import `in`.c1ph3rj.scanly.feature.tools.pdf.PdfImportRoute
 import `in`.c1ph3rj.scanly.feature.tools.pdf.PdfToImagesRoute
 import `in`.c1ph3rj.scanly.feature.sign.create.SignatureCreateRoute
 import `in`.c1ph3rj.scanly.feature.sign.document.DocumentSignRoute
 import `in`.c1ph3rj.scanly.feature.sign.manage.SignatureManageRoute
 import `in`.c1ph3rj.scanly.feature.tools.qr.QrToolMode
 import `in`.c1ph3rj.scanly.feature.tools.qr.QrToolRoute
+import `in`.c1ph3rj.scanly.feature.tools.text.ImageTextRoute
 import `in`.c1ph3rj.scanly.feature.update.AppUpdateUiState
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.EnterTransition
@@ -213,6 +217,12 @@ private fun ScanlyNavHostLayout(
                 useTabletNavigationRail = true,
                 modifier = Modifier.fillMaxSize(),
             )
+            TrashUndoSnackbarHost(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .navigationBarsPadding()
+                    .padding(16.dp),
+            )
         }
     } else {
         Scaffold(
@@ -249,6 +259,12 @@ private fun ScanlyNavHostLayout(
                     onCheckForUpdates = onCheckForUpdates,
                     useTabletNavigationRail = false,
                     modifier = Modifier.fillMaxSize(),
+                )
+                TrashUndoSnackbarHost(
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .then(if (showBottomNav) Modifier else Modifier.navigationBarsPadding())
+                        .padding(16.dp),
                 )
             }
         }
@@ -710,6 +726,15 @@ private fun ScanlyNavHostContent(
                 )
             }
         }
+        composable(
+            route = LibraryTrashDestination.route,
+            enterTransition = { detailPushEnter() },
+            exitTransition = { detailPushExit() },
+            popEnterTransition = { detailPopEnter() },
+            popExitTransition = { detailPopExit() },
+        ) {
+            RecentlyDeletedRoute(onNavigateUp = navController::navigateUp)
+        }
         composable(route = LibrarySearchDestination.route) {
             LibrarySearchRoute(
                 onBack = { navController.popBackStack() },
@@ -790,6 +815,23 @@ private fun ScanlyNavHostContent(
             )
         }
         composable(
+            route = ToolsImageTextDestination.route,
+            enterTransition = { detailPushEnter() },
+            exitTransition = { detailPushExit() },
+            popEnterTransition = { detailPopEnter() },
+            popExitTransition = { detailPopExit() },
+        ) {
+            ImageTextRoute(
+                onNavigateUp = navController::navigateUp,
+                onOpenText = { documentId, replaceTool ->
+                    navController.navigate(PageTextDestination.route(documentId)) {
+                        // Imported photos: Back from the text returns to Tools, not to a stale picker.
+                        if (replaceTool) popUpTo(ToolsImageTextDestination.route) { inclusive = true }
+                    }
+                },
+            )
+        }
+        composable(
             route = ToolsPdfReaderDestination.routePattern,
             arguments = listOf(
                 navArgument(ToolsPdfReaderDestination.filePathArgument) {
@@ -822,6 +864,7 @@ private fun ScanlyNavHostContent(
                         PdfReaderTool.PASSWORD -> ToolsPdfPasswordDestination.route
                         PdfReaderTool.WATERMARK -> ToolsPdfWatermarkDestination.route
                         PdfReaderTool.TO_IMAGES -> ToolsPdfToImagesDestination.route
+                        PdfReaderTool.IMPORT -> ToolsPdfImportDestination.route
                     }
                     navController.navigate(pdfToolRoute(toolRoute, source))
                 },
@@ -880,6 +923,25 @@ private fun ScanlyNavHostContent(
             PdfToImagesRoute(
                 initialSource = it.pdfToolSource(),
                 onNavigateUp = navController::navigateUp,
+            )
+        }
+        composable(
+            route = pdfToolRoutePattern(ToolsPdfImportDestination.route),
+            arguments = listOf(pdfToolSourceNavArgument()),
+            enterTransition = { detailPushEnter() },
+            exitTransition = { detailPushExit() },
+            popEnterTransition = { detailPopEnter() },
+            popExitTransition = { detailPopExit() },
+        ) {
+            PdfImportRoute(
+                initialSource = it.pdfToolSource(),
+                onNavigateUp = navController::navigateUp,
+                onOpenDocument = { documentId ->
+                    // Replace the tool so Back from the new document returns to where the import started.
+                    navController.navigate(DocumentDestination.route(documentId)) {
+                        popUpTo(pdfToolRoutePattern(ToolsPdfImportDestination.route)) { inclusive = true }
+                    }
+                },
             )
         }
         composable(
@@ -968,6 +1030,14 @@ private fun ScanlyNavHostContent(
             SignatureManageRoute(
                 onNavigateUp = navController::navigateUp,
                 onCreate = { kind -> navController.navigate(SignatureCreateDestination.route(kind)) },
+                onSignPdf = {
+                    // Opened from the Sign tool: go back to it rather than stacking a second one.
+                    val returned = navController.popBackStack(
+                        pdfToolRoutePattern(ToolsPdfSignDestination.route),
+                        inclusive = false,
+                    )
+                    if (!returned) navController.navigate(ToolsPdfSignDestination.route)
+                },
             )
         }
         composable(
@@ -1018,6 +1088,7 @@ private fun ScanlyNavHostContent(
                 SettingsRoute(
                     onOpenFaqs = { navController.navigate(SettingsFaqDestination.route) },
                     onOpenStorage = { navController.navigate(SettingsStorageDestination.route) },
+                    onOpenRecentlyDeleted = { navController.navigate(LibraryTrashDestination.route) },
                     onOpenAppearance = { navController.navigate(SettingsAppearanceDestination.route) },
                     onOpenDetection = { navController.navigate(SettingsDetectionDestination.route) },
                     onOpenWidgets = { navController.navigate(SettingsWidgetsDestination.route) },
@@ -1157,6 +1228,7 @@ private fun ScanlyNavHostContent(
             SettingsStorageRoute(
                 onNavigateUp = navController::navigateUp,
                 parentEntry = parentEntry,
+                onOpenRecentlyDeleted = { navController.navigate(LibraryTrashDestination.route) },
             )
         }
         composable(

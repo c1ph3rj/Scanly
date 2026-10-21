@@ -11,7 +11,7 @@
     <string name="shortcut_import_disabled">Import unavailable</string>
 
     <string name="shortcut_qr_short">QR</string>
-    <string name="shortcut_qr_long">Scan or create a QR code</string>
+    <string name="shortcut_qr_long">Scan or create QR, read barcodes</string>
     <string name="shortcut_qr_disabled">QR tool unavailable</string>
 
     <string name="shortcut_library_short">Library</string>
