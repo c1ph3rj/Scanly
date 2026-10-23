@@ -109,6 +109,8 @@ def build_info(library):
     """The getBuildInformation() text embedded in the library."""
     data = library.read_bytes()
     start = data.find(b"General configuration for OpenCV")
+    if start < 0:
+        sys.exit(f"No OpenCV build information in {library}.")
     return data[start:data.find(b"\0", start)].decode("utf-8", "replace")
 
 

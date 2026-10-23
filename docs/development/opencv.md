@@ -30,7 +30,9 @@ and the app's results and speed stay the same.
 
 `app/build.gradle.kts` uses `third_party/opencv/opencv-5.0.0-slim.aar` when it exists and falls
 back to the Maven artifact otherwise, which has the same API. Release builds stop with an error
-without the slim AAR, so a release never ships the full library by accident.
+without the slim AAR, so a release never ships the full library by accident. To build a release
+with the full library on purpose (for an A/B comparison), move the AAR aside and pass
+`-Pscanly.allowFullOpenCv=true`.
 
 Requirements: Android SDK with `ndk/27.2.12479018` and `cmake/3.22.1`, JDK 17 in `JAVA_HOME`
 (OpenCV's Gradle projects use Kotlin 1.8.20, which rejects newer JVM targets), Python 3.8+ and

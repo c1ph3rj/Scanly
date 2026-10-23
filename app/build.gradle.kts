@@ -46,11 +46,13 @@ val hasReleaseSigning = listOf(
 ).all(String::isNotBlank)
 
 // Slim OpenCV 5.0.0 (only the modules the app uses), built by scripts/opencv/build_slim_opencv.py.
-// Without it the build falls back to the full Maven artifact: same API and results, ~45 MB more
-// native code. Release builds refuse the fallback so a release never ships the full library.
+// Without it the build falls back to the full Maven artifact: same API and results, ~32 MB more
+// native code. Release builds refuse the fallback so a release never ships the full library;
+// -Pscanly.allowFullOpenCv=true allows it on purpose (A/B comparisons against the official AAR).
 val slimOpenCvAar = rootProject.file("third_party/opencv/opencv-5.0.0-slim.aar")
+val allowFullOpenCv = providers.gradleProperty("scanly.allowFullOpenCv").orNull == "true"
 val buildingRelease = gradle.startParameter.taskNames.any { it.contains("Release", ignoreCase = true) }
-if (buildingRelease && !slimOpenCvAar.exists()) {
+if (buildingRelease && !slimOpenCvAar.exists() && !allowFullOpenCv) {
     throw GradleException(
         "Release builds need ${slimOpenCvAar.relativeTo(rootDir)}; build it with " +
             "scripts/opencv/build_slim_opencv.py (see docs/development/opencv.md).",
