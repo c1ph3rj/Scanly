@@ -72,12 +72,13 @@ Choose a path based on your goal:
 | [overview.md](architecture/overview.md) | Layers, packages, DI, connection maps |
 | [navigation.md](architecture/navigation.md) | Routes, transitions, user flow diagrams |
 | [screens.md](architecture/screens.md) | Every screen, ViewModel, and responsibility |
+| [ocr-engines.md](architecture/ocr-engines.md) | Page text engines (ML Kit, Indra OCR), fallback ladder, crash guard, re-reading |
 
 ### Data — persistence and storage
 
 | Document | Contents |
 | --- | --- |
-| [database.md](data/database.md) | Room schema v7, entities, migrations, DAOs |
+| [database.md](data/database.md) | Room schema v11, entities, migrations, DAOs |
 | [file-storage.md](data/file-storage.md) | On-disk layout, raw/processed/thumbs, export cache |
 | [library-backup.md](data/library-backup.md) | Legacy `.scanly` format (backup and restore retired in v1.0.18) |
 | [settings-and-updates.md](data/settings-and-updates.md) | DataStore prefs, FAQs/licenses, GitHub/Google Play update variants |

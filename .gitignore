@@ -115,6 +115,9 @@ notebooks/.ipynb_checkpoints/
 # in the index; ship new ones with: git add -f app/src/main/assets/models/<name>.tflite
 /app/src/main/assets/models/*.tflite
 app/src/main/assets/models/*.tflite
+# Indra OCR models and vocabularies are local only; without them Indra reports itself
+# unavailable and pages are read with ML Kit.
+/app/src/main/assets/models/indra/
 
 # --- Validation fixtures (local only) ---
 /app/src/main/assets/validation/images/*.jpg

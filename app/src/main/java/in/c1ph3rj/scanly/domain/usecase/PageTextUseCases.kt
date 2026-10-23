@@ -1,5 +1,6 @@
 package `in`.c1ph3rj.scanly.domain.usecase
 
+import `in`.c1ph3rj.scanly.domain.model.OcrEngine
 import `in`.c1ph3rj.scanly.domain.repository.PageTextRepository
 import `in`.c1ph3rj.scanly.domain.search.SearchQuery
 import javax.inject.Inject
@@ -32,6 +33,14 @@ class RecognizePageTextUseCase @Inject constructor(private val repository: PageT
 class UpdatePageTextUseCase @Inject constructor(private val repository: PageTextRepository) {
     /** Pass null to discard the user's edits and go back to the recognized text. */
     suspend operator fun invoke(pageId: String, text: String?) = repository.updateUserText(pageId, text)
+}
+
+class ObservePagesNotReadWithUseCase @Inject constructor(private val repository: PageTextRepository) {
+    operator fun invoke(engine: OcrEngine) = repository.observePagesNotReadWith(engine)
+}
+
+class RereadPagesNotReadWithUseCase @Inject constructor(private val repository: PageTextRepository) {
+    suspend operator fun invoke(engine: OcrEngine) = repository.rereadPagesNotReadWith(engine)
 }
 
 class SuggestSearchCorrectionUseCase @Inject constructor(private val repository: PageTextRepository) {

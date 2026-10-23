@@ -21,6 +21,7 @@ import `in`.c1ph3rj.scanly.domain.model.SettingsFaq
 import `in`.c1ph3rj.scanly.domain.model.ThemeMode
 import `in`.c1ph3rj.scanly.domain.model.ExportDestination
 import `in`.c1ph3rj.scanly.domain.model.DocumentCornerModel
+import `in`.c1ph3rj.scanly.domain.model.OcrEngine
 import `in`.c1ph3rj.scanly.domain.repository.SettingsRepository
 import java.io.IOException
 import kotlinx.coroutines.flow.Flow
@@ -85,6 +86,30 @@ class DefaultSettingsRepository @Inject constructor(
 
     override suspend fun getDocumentGateEnabled(): Boolean =
         safeData.first()[documentGateEnabledKey] ?: true
+
+    override fun observeOcrEngine(): Flow<OcrEngine> =
+        safeData.map { preferences -> ocrEngineFromStorage(preferences[ocrEngineKey]) }
+
+    override suspend fun setOcrEngine(engine: OcrEngine): ScanlyResult<Unit> =
+        withContext(dispatchers.io) {
+            runCatching {
+                context.settingsDataStore.edit { it[ocrEngineKey] = engine.name }
+            }.fold(
+                onSuccess = { ScanlyResult.Success(Unit) },
+                onFailure = { throwable ->
+                    ScanlyResult.Failure(
+                        ScanlyError(throwable.message ?: "Could not update text recognition engine.", throwable),
+                    )
+                },
+            )
+        }
+
+    override suspend fun getOcrEngine(): OcrEngine =
+        ocrEngineFromStorage(safeData.first()[ocrEngineKey])
+
+    /** Unknown or missing values fall back to ML Kit, the default engine. */
+    private fun ocrEngineFromStorage(value: String?): OcrEngine =
+        OcrEngine.entries.firstOrNull { it.name == value } ?: OcrEngine.ML_KIT
 
     override fun observeExportDestination(): Flow<ExportDestination> =
         safeData.map { preferences ->
@@ -306,6 +331,7 @@ class DefaultSettingsRepository @Inject constructor(
         val postProcessingModelKey = stringPreferencesKey("post_processing_model")
         val automaticModelSelectionKey = booleanPreferencesKey("automatic_document_model_selection")
         val documentGateEnabledKey = booleanPreferencesKey("document_gate_enabled")
+        val ocrEngineKey = stringPreferencesKey("ocr_engine")
         const val faqsAssetPath = "settings/faqs.json"
         const val licensesAssetPath = "settings/licenses.json"
         const val developerWebsite = ""

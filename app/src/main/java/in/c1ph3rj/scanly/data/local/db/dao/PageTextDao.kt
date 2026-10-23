@@ -127,6 +127,45 @@ interface PageTextDao {
     fun observeIndexProgress(): Flow<TextIndexProgressRow>
 
     /**
+     * Live pages with a text row that [engine] did not produce (another engine, or nothing
+     * recognized). A blank result from the other engine is worth retrying, so those count too.
+     * Pages [engine] already tried and failed on, or found empty, are left out: reading them again
+     * would only fall back again. Pages skipped because Indra was paused or timed out still count.
+     */
+    @Query(
+        """
+        SELECT COUNT(*) FROM page_texts t
+        INNER JOIN scan_pages p ON p.id = t.pageId
+        INNER JOIN documents d ON d.id = p.documentId AND d.deletedAtMillis IS NULL
+        WHERE p.deletedAtMillis IS NULL
+          AND (p.processedImagePath IS NOT NULL OR p.rawImagePath IS NOT NULL)
+          AND (t.engine IS NULL OR t.engine != :engine)
+          AND NOT (t.requestedEngine = :engine AND t.fallbackReason IN ('INDRA_FAILED', 'INDRA_EMPTY'))
+        """,
+    )
+    fun observePagesNotReadWith(engine: String): Flow<Int>
+
+    /**
+     * Marks the same pages as stale (`sourceUpdatedAtMillis = -1` never equals a page's
+     * `updatedAtMillis`), so the indexer re-reads them. Returns the rows marked.
+     */
+    @Query(
+        """
+        UPDATE page_texts SET sourceUpdatedAtMillis = -1
+        WHERE pageId IN (
+            SELECT t.pageId FROM page_texts t
+            INNER JOIN scan_pages p ON p.id = t.pageId
+            INNER JOIN documents d ON d.id = p.documentId AND d.deletedAtMillis IS NULL
+            WHERE p.deletedAtMillis IS NULL
+              AND (p.processedImagePath IS NOT NULL OR p.rawImagePath IS NOT NULL)
+              AND (t.engine IS NULL OR t.engine != :engine)
+              AND NOT (t.requestedEngine = :engine AND t.fallbackReason IN ('INDRA_FAILED', 'INDRA_EMPTY'))
+        )
+        """,
+    )
+    suspend fun markPagesNotReadWithStale(engine: String): Int
+
+    /**
      * Full-text search. Ranking happens in Kotlin because FTS4 has no built-in rank; the
      * limit bounds snippet work on very common terms.
      */

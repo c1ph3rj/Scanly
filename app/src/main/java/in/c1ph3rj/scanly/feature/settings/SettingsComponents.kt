@@ -29,7 +29,9 @@ import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.SystemUpdate
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material.icons.rounded.StarOutline
 import androidx.compose.material3.CircularProgressIndicator
@@ -66,6 +68,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import `in`.c1ph3rj.scanly.domain.model.DocumentCornerModel
+import `in`.c1ph3rj.scanly.domain.model.OcrEngine
 import `in`.c1ph3rj.scanly.feature.components.ScanlyModalBottomSheet
 import `in`.c1ph3rj.scanly.domain.model.ThemeMode
 import `in`.c1ph3rj.scanly.feature.components.ScanlyAppLogo
@@ -612,6 +615,96 @@ private fun ModelPickerOption(
 }
 
 @Composable
+internal fun OcrEngineSelector(
+    selected: OcrEngine,
+    onSelected: (OcrEngine) -> Unit,
+) {
+    val options = listOf(
+        Triple(
+            OcrEngine.ML_KIT,
+            "ML Kit",
+            "Google's on-device Latin text recognizer. Recommended.",
+        ),
+        Triple(
+            OcrEngine.INDRA,
+            "Indra OCR",
+            "Experimental multi-script on-device OCR (Latin, CJK, Arabic/Hebrew, Indic and more). " +
+                "Slower than ML Kit. If it can't read a page, ML Kit reads it instead.",
+        ),
+    )
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .selectableGroup(),
+    ) {
+        options.forEachIndexed { index, (engine, title, subtitle) ->
+            val isSelected = engine == selected
+            val titleColor = if (isSelected) {
+                MaterialTheme.colorScheme.primary
+            } else {
+                MaterialTheme.colorScheme.onSurface
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .selectable(
+                        selected = isSelected,
+                        onClick = { onSelected(engine) },
+                        role = Role.RadioButton,
+                    )
+                    .padding(SettingsRowPadding),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(14.dp),
+            ) {
+                Column(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(2.dp),
+                ) {
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Medium,
+                        color = titleColor,
+                    )
+                    Text(
+                        text = subtitle,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+                Box(
+                    modifier = Modifier
+                        .size(28.dp)
+                        .clip(CircleShape)
+                        .background(
+                            if (isSelected) {
+                                MaterialTheme.colorScheme.primary
+                            } else {
+                                MaterialTheme.colorScheme.surfaceContainerHighest
+                            },
+                        ),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    if (isSelected) {
+                        Icon(
+                            imageVector = Icons.Filled.Check,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onPrimary,
+                            modifier = Modifier.size(16.dp),
+                        )
+                    }
+                }
+            }
+            if (index < options.lastIndex) {
+                HorizontalDivider(
+                    color = MaterialTheme.colorScheme.outlineVariant,
+                )
+            }
+        }
+    }
+}
+
+@Composable
 internal fun AboutHero(
     versionLabel: String?,
     onOpenPortfolio: () -> Unit,
@@ -843,3 +936,52 @@ internal fun RateScanlyCard(
 }
 
 private const val RATING_FEEDBACK_MILLIS = 150L
+
+/** Re-read and pause notices under the OCR engine selector. */
+@Composable
+internal fun OcrEngineStatusRows(
+    uiState: SettingsUiState,
+    onRereadClick: () -> Unit,
+) {
+    val engineName = if (uiState.ocrEngine == OcrEngine.INDRA) "Indra OCR" else "ML Kit"
+    if (uiState.ocrEngine == OcrEngine.INDRA && uiState.indraSuspended) {
+        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+        Row(
+            modifier = Modifier.settingsRowSurface(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Warning,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.error,
+                modifier = Modifier.size(22.dp),
+            )
+            Text(
+                text = "Indra OCR paused — it stopped unexpectedly twice, so pages are being read " +
+                    "with ML Kit. Select Indra OCR again to retry.",
+                modifier = Modifier.weight(1f),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+    }
+    val count = uiState.pagesNotReadWithSelectedEngine
+    if (count > 0) {
+        val reading = uiState.indexPendingPages > 0
+        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+        SettingsActionRow(
+            icon = Icons.Filled.Refresh,
+            title = "Re-read existing pages",
+            subtitle = when {
+                reading -> "Reading text… ${uiState.indexPendingPages} " +
+                    "${if (uiState.indexPendingPages == 1) "page" else "pages"} left"
+                count == 1 -> "1 page was read with another engine. Re-read it with $engineName in the background."
+                else -> "$count pages were read with another engine. Re-read them with $engineName in the background."
+            },
+            enabled = !reading,
+            isBusy = reading,
+            onClick = onRereadClick,
+        )
+    }
+}

@@ -2,6 +2,7 @@ package `in`.c1ph3rj.scanly.domain.repository
 
 import `in`.c1ph3rj.scanly.core.common.ScanlyResult
 import `in`.c1ph3rj.scanly.domain.model.DocumentKind
+import `in`.c1ph3rj.scanly.domain.model.OcrEngine
 import `in`.c1ph3rj.scanly.domain.model.PageText
 import `in`.c1ph3rj.scanly.domain.model.PageTextHit
 import `in`.c1ph3rj.scanly.domain.model.TextIndexProgress
@@ -44,4 +45,17 @@ interface PageTextRepository {
 
     /** Asks the background indexer to catch up (no-op when nothing is pending). */
     fun requestBackgroundIndexing()
+
+    /**
+     * How many live pages have a text row that [engine] did not produce (another engine, or
+     * nothing recognized). Pages the user edited are included; their edits survive a re-read.
+     */
+    fun observePagesNotReadWith(engine: OcrEngine): Flow<Int>
+
+    /**
+     * One-shot: queues every page counted by [observePagesNotReadWith] for a background re-read
+     * and starts the indexer. Returns how many pages were queued. Never runs automatically, so a
+     * page that falls back to another engine is not retried forever.
+     */
+    suspend fun rereadPagesNotReadWith(engine: OcrEngine): ScanlyResult<Int>
 }

@@ -159,7 +159,7 @@ DocumentDetailViewModel / GroupDetailViewModel
 ```text
 LibrarySearchViewModel
   → PageTextRepository → Room page_texts + FTS4 index
-    → TextIndexScheduler → WorkManager TextIndexWorker → bundled on-device ML Kit
+    → TextIndexScheduler → WorkManager TextIndexWorker → SelectablePageTextRecognizer (ML Kit, or experimental Indra OCR with ML Kit fallback)
 ```
 
 ### Document signing
@@ -192,6 +192,7 @@ FileProvider: `${applicationId}.fileprovider` for export/share URIs.
 ## Related docs
 
 - [navigation.md](navigation.md) — routes and user flows
+- [ocr-engines.md](ocr-engines.md) — page text engines, fallback ladder and crash guard
 - [screens.md](screens.md) — screen and ViewModel table
 - [../data/database.md](../data/database.md) — Room schema
 - [../processing/](../processing/) — capture and image processing

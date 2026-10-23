@@ -29,7 +29,7 @@ import `in`.c1ph3rj.scanly.domain.model.PageFilterPreset
         SignatureEntity::class,
         PageMarkupEntity::class,
     ],
-    version = 10,
+    version = 11,
     exportSchema = false,
 )
 abstract class ScanlyDatabase : RoomDatabase() {
@@ -242,6 +242,23 @@ abstract class ScanlyDatabase : RoomDatabase() {
         val MIGRATION_9_10: Migration = object : Migration(9, 10) {
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL("ALTER TABLE `documents` ADD COLUMN `releasedFromGroupId` TEXT")
+            }
+        }
+
+        /**
+         * Records which OCR engine read each page. Every page read before this version used ML Kit,
+         * so non-empty rows are backfilled; empty rows stay null (nothing was recognized). The
+         * UPDATE re-fires the FTS sync triggers, which re-index the unchanged `searchText`.
+         */
+        val MIGRATION_10_11: Migration = object : Migration(10, 11) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE `page_texts` ADD COLUMN `engine` TEXT")
+                db.execSQL("ALTER TABLE `page_texts` ADD COLUMN `requestedEngine` TEXT")
+                db.execSQL("ALTER TABLE `page_texts` ADD COLUMN `fallbackReason` TEXT")
+                db.execSQL(
+                    "UPDATE `page_texts` SET `engine` = 'ML_KIT', `requestedEngine` = 'ML_KIT' " +
+                        "WHERE `recognizedText` != ''",
+                )
             }
         }
 

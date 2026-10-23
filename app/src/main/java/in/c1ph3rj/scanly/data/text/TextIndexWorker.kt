@@ -19,7 +19,7 @@ class TextIndexWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted params: WorkerParameters,
     private val repository: PageTextRepository,
-    private val recognizer: MlKitPageTextRecognizer,
+    private val recognizer: PageTextRecognizer,
 ) : CoroutineWorker(context, params) {
 
     override suspend fun doWork(): Result {

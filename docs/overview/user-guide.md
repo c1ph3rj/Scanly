@@ -192,6 +192,7 @@ The main Settings list is a short hub. Open a row for the full controls.
 2. **Automatic model selection** is on by default: Scanly times Lite/Standard/High on this device and picks responsive live + accurate post models. Turn it off to choose **Live preview** and **Post-processing** models manually (Lite, Standard, High, Accurate).
 3. Keep **Physical-document gate** on to reject screens and non-documents before edge detection (recommended). Turn it off only for troubleshooting.
 4. Open **Model benchmark** to run your own photos through the gate and all corner models and review timings (local-only; nothing is uploaded).
+5. Under **Text recognition (experimental)**, choose **ML Kit** (default, recommended) or **Indra OCR**. Indra OCR is slower than ML Kit. If it can't read a page, ML Kit reads that page instead, and the page's text screen says so. If Indra stops unexpectedly twice, it is **paused** and a warning appears; select Indra OCR again to retry. **Re-read existing pages** appears under the selector when other pages were read with a different engine; tap it and confirm to re-read them in the background (switching engines offers it once). Text you edited is kept. When a page's text screen offers **Read again**, it re-reads that page with the selected engine.
 
 ### Storage usage
 

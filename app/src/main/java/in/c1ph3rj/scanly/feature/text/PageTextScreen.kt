@@ -114,6 +114,8 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import `in`.c1ph3rj.scanly.core.ui.PreviewDisplaySize
 import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
+import `in`.c1ph3rj.scanly.domain.model.OcrEngine
+import `in`.c1ph3rj.scanly.domain.model.PageText
 import `in`.c1ph3rj.scanly.domain.model.PageTextBlock
 import `in`.c1ph3rj.scanly.domain.model.previewImagePath
 import `in`.c1ph3rj.scanly.domain.search.FoldedText
@@ -598,30 +600,46 @@ private fun TextModePage(
 
 @Composable
 private fun PageHeader(item: PageTextItem, pageCount: Int) {
-    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-        Text(
-            text = "Page ${item.page.pageIndex + 1}" + if (pageCount > 1) " of $pageCount" else "",
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.SemiBold,
-        )
-        item.text?.takeIf { it.hasText }?.let { text ->
+    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             Text(
-                text = "${text.wordCount} ${if (text.wordCount == 1) "word" else "words"}",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                text = "Page ${item.page.pageIndex + 1}" + if (pageCount > 1) " of $pageCount" else "",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold,
             )
-            if (text.isEdited) {
-                Surface(shape = CircleShape, color = MaterialTheme.colorScheme.secondaryContainer) {
-                    Text(
-                        text = "Edited",
-                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 3.dp),
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer,
-                    )
+            item.text?.takeIf { it.hasText }?.let { text ->
+                Text(
+                    text = "${text.wordCount} ${if (text.wordCount == 1) "word" else "words"}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                if (text.isEdited) {
+                    Surface(shape = CircleShape, color = MaterialTheme.colorScheme.secondaryContainer) {
+                        Text(
+                            text = "Edited",
+                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 3.dp),
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        )
+                    }
                 }
             }
         }
+        item.text?.takeIf { it.hasText }?.let(::ocrEngineCaption)?.let { caption ->
+            Text(
+                text = caption,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
     }
+}
+
+/** Which engine read the page, when that is worth saying; plain ML Kit pages need no note. */
+internal fun ocrEngineCaption(text: PageText): String? = when {
+    text.fallbackReason != null -> "Read with ML Kit (Indra OCR couldn't read this page)"
+    text.engine == OcrEngine.INDRA -> "Read with Indra OCR (experimental)"
+    else -> null
 }
 
 @Composable

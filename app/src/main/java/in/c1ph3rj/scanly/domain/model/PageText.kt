@@ -35,6 +35,12 @@ data class PageText(
     val sourceUpdatedAtMillis: Long,
     val recognizedAtMillis: Long,
     val kind: DocumentKind?,
+    /** Engine that produced [recognizedText]; null when nothing was recognized or the page predates tracking. */
+    val engine: OcrEngine? = null,
+    /** Engine the user had selected when the page was read. */
+    val requestedEngine: OcrEngine? = null,
+    /** Set when [requestedEngine] was Indra but ML Kit read the page. */
+    val fallbackReason: OcrFallbackReason? = null,
 ) {
     /** What the user reads, copies, shares and searches. */
     val text: String get() = userText ?: recognizedText

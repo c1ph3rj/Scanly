@@ -46,4 +46,10 @@ data class PageTextEntity(
     val recognizedAtMillis: Long,
     /** Storage value of the detected [`in`.c1ph3rj.scanly.domain.model.DocumentKind], if any. */
     val kind: String?,
+    /** [`in`.c1ph3rj.scanly.domain.model.OcrEngine] name that produced the text; null when nothing was recognized. */
+    val engine: String? = null,
+    /** [`in`.c1ph3rj.scanly.domain.model.OcrEngine] name the user had selected when the page was read. */
+    val requestedEngine: String? = null,
+    /** [`in`.c1ph3rj.scanly.domain.model.OcrFallbackReason] name when the requested engine was not used. */
+    val fallbackReason: String? = null,
 )

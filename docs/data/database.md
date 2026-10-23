@@ -1,6 +1,6 @@
 # Database (Room)
 
-Scanly persists document metadata in a **Room** database at schema version **7**.
+Scanly persists document metadata in a **Room** database at schema version **11**.
 
 ## Database file
 
@@ -8,7 +8,7 @@ Scanly persists document metadata in a **Room** database at schema version **7**
 | --- | --- |
 | Class | `ScanlyDatabase` |
 | Path | `databases/scanly.db` (+ `-wal`, `-shm`) under app internal storage |
-| Schema version | `7` |
+| Schema version | `11` |
 | `exportSchema` | `false` |
 
 Location: `app/src/main/java/in/c1ph3rj/scanly/data/local/db/ScanlyDatabase.kt`
@@ -70,6 +70,8 @@ Index: `updatedAtMillis`
 One row per scanned page, with recognized text, an optional user correction, the text used for search, normalized text-layout blocks, source image dimensions, and recognition timestamps. `pageId` is unique and references `scan_pages` with cascade delete; `documentId` is indexed.
 
 `page_texts_fts` is an FTS4 external-content index over `searchText`. Room-managed triggers keep it synchronized. Rows are replaced with delete + insert so the triggers run. `page_texts_terms` is an FTS4 vocabulary table created idempotently when the database opens.
+
+Schema 11 adds `engine`, `requestedEngine` and `fallbackReason`: which OCR engine read the page, which engine was selected, and why ML Kit stepped in. See [../architecture/ocr-engines.md](../architecture/ocr-engines.md).
 
 ### `signatures` (`SignatureEntity`)
 
@@ -137,6 +139,22 @@ Creates `page_texts`, its FTS4 external-content table, the page/document indexes
 
 Creates `signatures` and `page_markups`, including the signature timestamp index and the markup-to-page foreign key. Existing document pages and their images are unchanged.
 
+### `MIGRATION_7_8`
+
+Adds `documents.deletedAtMillis` for Recently deleted.
+
+### `MIGRATION_8_9`
+
+Adds `document_groups.deletedAtMillis`, `documents.deletedWithGroup`, and `scan_pages.deletedAtMillis` and `deletedFromIndex`.
+
+### `MIGRATION_9_10`
+
+Adds `documents.releasedFromGroupId` for "Delete folder only".
+
+### `MIGRATION_10_11`
+
+Adds `page_texts.engine`, `requestedEngine` and `fallbackReason` (nullable `TEXT`). Rows with non-empty text are marked `ML_KIT` in both engine columns, since every earlier read used ML Kit. Blank rows stay NULL.
+
 ## Repository mapping
 
 | Repository | DAOs used |
@@ -152,10 +170,11 @@ Creates `signatures` and `page_markups`, including the signature timestamp index
 
 ## Upgrade notes
 
-- Upgrading from v1.0.0: Room migrates automatically from schema 1 or 2 through schema 7.
+- Upgrading from v1.0.0: Room migrates automatically from schema 1 or 2 through schema 11.
 - Existing documents remain; they appear ungrouped until moved into a collection.
 - Upgrading from schema 5: Room runs `MIGRATION_5_6` and `MIGRATION_6_7`; page-text indexing resumes in the background.
 - Upgrading from schema 6: `MIGRATION_6_7` adds saved signatures and editable page markups.
+- Upgrading from schema 10: `MIGRATION_10_11` adds the OCR provenance columns; pages are not re-read automatically.
 - No manual migration steps required.
 
 See [../releases.md](../releases.md) and [../../VERSION.md](../../VERSION.md).

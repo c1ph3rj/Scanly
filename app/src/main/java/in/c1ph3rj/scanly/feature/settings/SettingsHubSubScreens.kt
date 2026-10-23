@@ -36,7 +36,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavBackStackEntry
 import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import `in`.c1ph3rj.scanly.domain.model.DocumentCornerModel
+import `in`.c1ph3rj.scanly.domain.model.OcrEngine
 import `in`.c1ph3rj.scanly.domain.model.ThemeMode
+import `in`.c1ph3rj.scanly.feature.components.ScanlyConfirmDialog
 import `in`.c1ph3rj.scanly.feature.components.ScanlyDetailScaffold
 import `in`.c1ph3rj.scanly.feature.update.AppUpdateUiState
 import `in`.c1ph3rj.scanly.feature.widget.ScanlyWidgetSupport
@@ -118,13 +120,28 @@ fun SettingsDetectionRoute(
     viewModel: SettingsViewModel = hiltViewModel(parentEntry),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(viewModel) {
+        viewModel.events.collectLatest { event ->
+            when (event) {
+                is SettingsEvent.ShowMessage -> snackbarHostState.showSnackbar(event.message)
+            }
+        }
+    }
+
     SettingsDetectionScreen(
         uiState = uiState,
+        snackbarHostState = snackbarHostState,
         onNavigateUp = onNavigateUp,
         onLiveDetectionModelSelected = viewModel::setLiveDetectionModel,
         onPostProcessingModelSelected = viewModel::setPostProcessingModel,
         onAutomaticModelSelectionChanged = viewModel::setAutomaticModelSelection,
         onDocumentGateEnabledChanged = viewModel::setDocumentGateEnabled,
+        onOcrEngineSelected = viewModel::setOcrEngine,
+        onRereadClick = viewModel::requestReread,
+        onRereadConfirm = viewModel::confirmReread,
+        onRereadDismiss = viewModel::dismissRereadPrompt,
         onOpenModelBenchmark = onOpenModelBenchmark,
     )
 }
@@ -132,17 +149,23 @@ fun SettingsDetectionRoute(
 @Composable
 fun SettingsDetectionScreen(
     uiState: SettingsUiState,
+    snackbarHostState: SnackbarHostState,
     onNavigateUp: () -> Unit,
     onLiveDetectionModelSelected: (DocumentCornerModel) -> Unit,
     onPostProcessingModelSelected: (DocumentCornerModel) -> Unit,
     onAutomaticModelSelectionChanged: (Boolean) -> Unit,
     onDocumentGateEnabledChanged: (Boolean) -> Unit,
+    onOcrEngineSelected: (OcrEngine) -> Unit,
+    onRereadClick: () -> Unit,
+    onRereadConfirm: () -> Unit,
+    onRereadDismiss: () -> Unit,
     onOpenModelBenchmark: () -> Unit,
 ) {
     val window = rememberWindowSizeInfo()
     ScanlyDetailScaffold(
         title = "Document detection",
         onNavigateUp = onNavigateUp,
+        snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { innerPadding ->
         LazyColumn(
             modifier = Modifier.fillMaxSize().padding(innerPadding),
@@ -206,6 +229,18 @@ fun SettingsDetectionScreen(
                     )
                 }
             }
+            item("ocr") {
+                SettingsGroup(title = "Text recognition (experimental)") {
+                    OcrEngineSelector(
+                        selected = uiState.ocrEngine,
+                        onSelected = onOcrEngineSelected,
+                    )
+                    OcrEngineStatusRows(
+                        uiState = uiState,
+                        onRereadClick = onRereadClick,
+                    )
+                }
+            }
             item("tools") {
                 SettingsGroup(title = "Tools") {
                     SettingsNavigationRow(
@@ -217,6 +252,18 @@ fun SettingsDetectionScreen(
                 }
             }
         }
+    }
+
+    if (uiState.showRereadPrompt && uiState.pagesNotReadWithSelectedEngine > 0) {
+        val count = uiState.pagesNotReadWithSelectedEngine
+        ScanlyConfirmDialog(
+            title = "Re-read $count ${if (count == 1) "page" else "pages"}?",
+            text = "Runs in the background while your battery isn't low. " +
+                "Text you edited yourself is kept.",
+            confirmLabel = "Re-read",
+            onDismiss = onRereadDismiss,
+            onConfirm = onRereadConfirm,
+        )
     }
 }
 

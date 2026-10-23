@@ -11,6 +11,8 @@ import `in`.c1ph3rj.scanly.data.local.db.dao.PageTextDao
 import `in`.c1ph3rj.scanly.data.local.db.dao.PendingTextPageRow
 import `in`.c1ph3rj.scanly.data.local.db.entity.PageTextEntity
 import `in`.c1ph3rj.scanly.domain.model.DocumentKind
+import `in`.c1ph3rj.scanly.domain.model.OcrEngine
+import `in`.c1ph3rj.scanly.domain.model.OcrFallbackReason
 import `in`.c1ph3rj.scanly.domain.model.PageText
 import `in`.c1ph3rj.scanly.domain.model.PageTextHit
 import `in`.c1ph3rj.scanly.domain.model.TextIndexProgress
@@ -36,7 +38,7 @@ import javax.inject.Singleton
 class DefaultPageTextRepository @Inject constructor(
     private val dao: PageTextDao,
     private val database: ScanlyDatabase,
-    private val recognizer: MlKitPageTextRecognizer,
+    private val recognizer: PageTextRecognizer,
     private val scheduler: TextIndexScheduler,
     private val dispatchers: ScanlyDispatchers,
 ) : PageTextRepository {
@@ -191,6 +193,19 @@ class DefaultPageTextRepository @Inject constructor(
         scheduler.enqueue()
     }
 
+    override fun observePagesNotReadWith(engine: OcrEngine): Flow<Int> =
+        dao.observePagesNotReadWith(engine.name).distinctUntilChanged()
+
+    override suspend fun rereadPagesNotReadWith(engine: OcrEngine): ScanlyResult<Int> =
+        withContext(dispatchers.io) {
+            resultOf("Could not queue pages to be read again.") {
+                // Stale rows go through the normal indexer, which keeps the user's own edits.
+                val marked = dao.markPagesNotReadWithStale(engine.name)
+                scheduler.enqueue()
+                marked
+            }
+        }
+
     /** Returns true when the page was (re)read. */
     private suspend fun recognizeSource(source: PendingTextPageRow, force: Boolean): Boolean =
         recognitionMutex.withLock {
@@ -202,9 +217,10 @@ class DefaultPageTextRepository @Inject constructor(
                 imagePath?.let { recognizer.recognize(it) }
             } catch (cancellation: CancellationException) {
                 throw cancellation
-            } catch (exception: Exception) {
-                // An unreadable image is stored as "no text" so the indexer doesn't retry it
-                // forever; the Text screen offers "Read again" for a manual retry.
+            } catch (exception: Throwable) {
+                // An unreadable image (or an Error such as OutOfMemoryError) is stored as "no
+                // text" so the indexer doesn't retry it forever; the Text screen offers "Read
+                // again" for a manual retry.
                 Log.w(TAG, "Text recognition failed for page ${source.pageId}", exception)
                 null
             }
@@ -225,6 +241,9 @@ class DefaultPageTextRepository @Inject constructor(
                         sourceUpdatedAtMillis = source.updatedAtMillis,
                         recognizedAtMillis = System.currentTimeMillis(),
                         kind = DocumentKindClassifier.classify(searchText)?.storageValue,
+                        engine = recognized?.engine?.name,
+                        requestedEngine = recognized?.requestedEngine?.name,
+                        fallbackReason = recognized?.fallbackReason?.name,
                     ),
                 )
             } catch (_: SQLiteConstraintException) {
@@ -239,8 +258,9 @@ class DefaultPageTextRepository @Inject constructor(
             ScanlyResult.Success(block())
         } catch (cancellation: CancellationException) {
             throw cancellation
-        } catch (exception: Exception) {
-            ScanlyResult.Failure(ScanlyError(exception.message ?: fallbackMessage, exception))
+        } catch (error: Throwable) {
+            // Errors (e.g. OutOfMemoryError from a recognizer) become a failed result, not a crash.
+            ScanlyResult.Failure(ScanlyError(error.message ?: fallbackMessage, error))
         }
 
     private fun PageTextEntity.toDomain(): PageText = PageText(
@@ -254,7 +274,14 @@ class DefaultPageTextRepository @Inject constructor(
         sourceUpdatedAtMillis = sourceUpdatedAtMillis,
         recognizedAtMillis = recognizedAtMillis,
         kind = DocumentKind.fromStorage(kind),
+        engine = ocrEngineFromStorage(engine),
+        requestedEngine = ocrEngineFromStorage(requestedEngine),
+        fallbackReason = OcrFallbackReason.entries.firstOrNull { it.name == fallbackReason },
     )
+
+    /** Unknown or missing values read as "not recorded" rather than guessing an engine. */
+    private fun ocrEngineFromStorage(value: String?): OcrEngine? =
+        OcrEngine.entries.firstOrNull { it.name == value }
 
     private companion object {
         const val TAG = "PageTextRepository"

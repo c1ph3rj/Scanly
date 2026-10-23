@@ -43,6 +43,9 @@ Pure black only changes surface colors when dark theme is active (Dark mode, or 
 | Post-processing model | Independent manual pick for capture/import finalize |
 | Physical-document gate | Enable/bypass gate inference for live + post pipelines |
 | Model benchmark | Temporary local image run; does not persist results |
+| Text recognition (experimental) | `ocr_engine` DataStore key: `ML_KIT` (default) or `INDRA`. Indra OCR is opt-in and multi-script; a page it cannot read is read with ML Kit instead. If Indra stops unexpectedly twice it is paused (warning shown) until it is selected again. **Re-read existing pages** (under the selector) re-reads pages the other engine read, after confirmation. See [../architecture/ocr-engines.md](../architecture/ocr-engines.md) |
+
+The Indra OCR models live under `assets/models/indra/` (`det`, `orient`, `script`, `rec`, `rec_cjk`, `rec_rtl`, `rec_world` `.tflite` plus `vocab_*.json`). `order.tflite` is not bundled.
 
 ## Bundled assets
 

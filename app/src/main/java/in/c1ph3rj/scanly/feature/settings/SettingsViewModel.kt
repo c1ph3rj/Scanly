@@ -18,6 +18,14 @@ import `in`.c1ph3rj.scanly.domain.usecase.ObserveAutomaticModelSelectionUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.SetAutomaticModelSelectionUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveDocumentGateEnabledUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.SetDocumentGateEnabledUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.ObserveOcrEngineUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.SetOcrEngineUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.ObserveIndraSuspendedUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.ObservePagesNotReadWithUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.ObserveTextIndexProgressUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.ResetIndraUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.RereadPagesNotReadWithUseCase
+import `in`.c1ph3rj.scanly.domain.model.OcrEngine
 import `in`.c1ph3rj.scanly.domain.usecase.ClearAllAppDataUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ClearExportCacheUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.DeleteEmptyDocumentsUseCase
@@ -39,7 +47,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -60,6 +71,13 @@ data class SettingsUiState(
     val postProcessingModel: DocumentCornerModel = DocumentCornerModel.ACCURATE,
     val automaticModelSelectionEnabled: Boolean = true,
     val documentGateEnabled: Boolean = true,
+    val ocrEngine: OcrEngine = OcrEngine.ML_KIT,
+    /** Pages whose text was not produced by [ocrEngine] (read by the other engine, or empty). */
+    val pagesNotReadWithSelectedEngine: Int = 0,
+    /** Pages still waiting for the background indexer, including ones queued for a re-read. */
+    val indexPendingPages: Int = 0,
+    val indraSuspended: Boolean = false,
+    val showRereadPrompt: Boolean = false,
     val isCalibratingModels: Boolean = false,
     val automaticLiveModel: DocumentCornerModel? = null,
     val automaticPostProcessingModel: DocumentCornerModel? = null,
@@ -76,6 +94,7 @@ sealed interface SettingsEvent {
     data class ShowMessage(val message: String) : SettingsEvent
 }
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     observeThemeModeUseCase: ObserveThemeModeUseCase,
@@ -99,6 +118,13 @@ class SettingsViewModel @Inject constructor(
     private val setAutomaticModelSelectionUseCase: SetAutomaticModelSelectionUseCase,
     observeDocumentGateEnabledUseCase: ObserveDocumentGateEnabledUseCase,
     private val setDocumentGateEnabledUseCase: SetDocumentGateEnabledUseCase,
+    observeOcrEngineUseCase: ObserveOcrEngineUseCase,
+    private val setOcrEngineUseCase: SetOcrEngineUseCase,
+    observePagesNotReadWithUseCase: ObservePagesNotReadWithUseCase,
+    private val rereadPagesNotReadWithUseCase: RereadPagesNotReadWithUseCase,
+    observeTextIndexProgressUseCase: ObserveTextIndexProgressUseCase,
+    observeIndraSuspendedUseCase: ObserveIndraSuspendedUseCase,
+    private val resetIndraUseCase: ResetIndraUseCase,
     private val automaticDocumentModelSelector: AutomaticDocumentModelSelector,
     private val markAppRatedUseCase: MarkAppRatedUseCase,
     observeRatingPromptStateUseCase: ObserveRatingPromptStateUseCase,
@@ -110,6 +136,9 @@ class SettingsViewModel @Inject constructor(
 
     private val _events = MutableSharedFlow<SettingsEvent>()
     val events: SharedFlow<SettingsEvent> = _events.asSharedFlow()
+
+    /** Set by an actual user switch, so the re-read prompt appears then and not on screen open. */
+    private var promptAfterSwitchTo: OcrEngine? = null
 
     init {
         viewModelScope.launch {
@@ -153,6 +182,35 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch {
             observeDocumentGateEnabledUseCase().collectLatest { enabled ->
                 _uiState.update { it.copy(documentGateEnabled = enabled) }
+            }
+        }
+        viewModelScope.launch {
+            observeOcrEngineUseCase().collectLatest { engine ->
+                _uiState.update { it.copy(ocrEngine = engine) }
+            }
+        }
+        viewModelScope.launch {
+            observeOcrEngineUseCase()
+                .flatMapLatest { engine -> observePagesNotReadWithUseCase(engine).map { engine to it } }
+                .collectLatest { (engine, count) ->
+                    val prompt = promptAfterSwitchTo == engine
+                    if (prompt) promptAfterSwitchTo = null
+                    _uiState.update {
+                        it.copy(
+                            pagesNotReadWithSelectedEngine = count,
+                            showRereadPrompt = if (prompt) count > 0 else it.showRereadPrompt && count > 0,
+                        )
+                    }
+                }
+        }
+        viewModelScope.launch {
+            observeTextIndexProgressUseCase().collectLatest { progress ->
+                _uiState.update { it.copy(indexPendingPages = progress.pendingPages) }
+            }
+        }
+        viewModelScope.launch {
+            observeIndraSuspendedUseCase().collectLatest { suspended ->
+                _uiState.update { it.copy(indraSuspended = suspended) }
             }
         }
         viewModelScope.launch {
@@ -376,6 +434,56 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch {
             if (setDocumentGateEnabledUseCase(enabled) is `in`.c1ph3rj.scanly.core.common.ScanlyResult.Failure) {
                 _events.emit(SettingsEvent.ShowMessage("Could not update the physical-document gate."))
+            }
+        }
+    }
+
+    fun setOcrEngine(engine: OcrEngine) {
+        val switching = _uiState.value.ocrEngine != engine
+        if (!switching && engine != OcrEngine.INDRA) return
+        viewModelScope.launch {
+            // Choosing Indra, even when it is already chosen, is the way to retry after a pause.
+            if (engine == OcrEngine.INDRA) resetIndraUseCase()
+            if (!switching) return@launch
+            promptAfterSwitchTo = engine
+            if (setOcrEngineUseCase(engine) is `in`.c1ph3rj.scanly.core.common.ScanlyResult.Failure) {
+                promptAfterSwitchTo = null
+                _events.emit(SettingsEvent.ShowMessage("Could not update the text recognition engine."))
+            }
+        }
+    }
+
+    fun requestReread() {
+        if (_uiState.value.pagesNotReadWithSelectedEngine > 0) {
+            _uiState.update { it.copy(showRereadPrompt = true) }
+        }
+    }
+
+    fun dismissRereadPrompt() {
+        _uiState.update { it.copy(showRereadPrompt = false) }
+    }
+
+    fun confirmReread() {
+        val engine = _uiState.value.ocrEngine
+        _uiState.update { it.copy(showRereadPrompt = false) }
+        viewModelScope.launch {
+            when (val result = rereadPagesNotReadWithUseCase(engine)) {
+                is `in`.c1ph3rj.scanly.core.common.ScanlyResult.Success -> {
+                    val count = result.value
+                    _events.emit(
+                        SettingsEvent.ShowMessage(
+                            when (count) {
+                                0 -> "No pages to read again."
+                                1 -> "Reading 1 page again in the background."
+                                else -> "Reading $count pages again in the background."
+                            },
+                        ),
+                    )
+                }
+
+                is `in`.c1ph3rj.scanly.core.common.ScanlyResult.Failure -> {
+                    _events.emit(SettingsEvent.ShowMessage(result.error.message))
+                }
             }
         }
     }
