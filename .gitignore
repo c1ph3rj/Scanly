@@ -119,6 +119,11 @@ app/src/main/assets/models/*.tflite
 # unavailable and pages are read with ML Kit.
 /app/src/main/assets/models/indra/
 
+# --- Slim OpenCV build (scripts/opencv/build_slim_opencv.py) ---
+# The AAR and its build-info-<abi>.txt provenance files are versioned; build logs are local.
+!/third_party/opencv/opencv-*-slim.aar
+/third_party/opencv/*.log
+
 # --- Validation fixtures (local only) ---
 /app/src/main/assets/validation/images/*.jpg
 /app/src/main/assets/validation/images/*.jpeg

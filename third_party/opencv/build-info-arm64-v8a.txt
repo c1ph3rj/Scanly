@@ -1,0 +1,90 @@
+General configuration for OpenCV 5.0.0 =====================================
+  Version control:               unknown
+
+  Platform:
+    Timestamp:                   2026-10-23T11:31:48Z
+    Host:                        Windows 10.0.26200 AMD64
+    Target:                      Android 1 aarch64
+    CMake:                       3.22.1-g37088a8-dirty
+    CMake generator:             Ninja
+    CMake build tool:            C:/Users/jeeva/AppData/Local/Android/Sdk/cmake/3.22.1/bin/ninja.exe
+    Configuration:               Release
+    Algorithm Hint:              ALGO_HINT_ACCURATE
+
+  CPU/HW features:
+    Baseline:                    NEON FP16
+      requested:                 DETECT
+    Dispatched code generation:  NEON_DOTPROD NEON_FP16 NEON_BF16
+      requested:                 NEON_FP16 NEON_BF16 NEON_DOTPROD
+      NEON_DOTPROD (3 files):    + NEON_DOTPROD
+      NEON_FP16 (1 files):       + NEON_FP16
+      NEON_BF16 (0 files):       + NEON_BF16
+
+  C/C++:
+    Built as dynamic libs?:      NO
+    C++ standard:                17
+    C++ Compiler:                C:/Users/jeeva/AppData/Local/Android/Sdk/ndk/27.2.12479018/toolchains/llvm/prebuilt/windows-x86_64/bin/clang++.exe  (ver 18.0.3)
+    C++ flags (Release):         -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D__BIONIC_NO_PAGE_SIZE_MACRO -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security     -fsigned-char -W -Wall -Wreturn-type -Wnon-virtual-dtor -Waddress -Wsequence-point -Wformat -Wformat-security -Wmissing-declarations -Wmissing-prototypes -Wstrict-prototypes -Wundef -Winit-self -Wpointer-arith -Wshadow -Wsign-promo -Wuninitialized -Winconsistent-missing-override -Wno-delete-non-virtual-dtor -Wno-unnamed-type-template-args -Wno-comment -Wno-deprecated-enum-enum-conversion -Wno-deprecated-anon-enum-enum-conversion -fdiagnostics-show-option -Qunused-arguments  -fvisibility=hidden -fvisibility-inlines-hidden  -O3 -DNDEBUG   -DNDEBUG
+    C++ flags (Debug):           -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D__BIONIC_NO_PAGE_SIZE_MACRO -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security     -fsigned-char -W -Wall -Wreturn-type -Wnon-virtual-dtor -Waddress -Wsequence-point -Wformat -Wformat-security -Wmissing-declarations -Wmissing-prototypes -Wstrict-prototypes -Wundef -Winit-self -Wpointer-arith -Wshadow -Wsign-promo -Wuninitialized -Winconsistent-missing-override -Wno-delete-non-virtual-dtor -Wno-unnamed-type-template-args -Wno-comment -Wno-deprecated-enum-enum-conversion -Wno-deprecated-anon-enum-enum-conversion -fdiagnostics-show-option -Qunused-arguments  -fvisibility=hidden -fvisibility-inlines-hidden  -fno-limit-debug-info   -O0 -DDEBUG -D_DEBUG -g
+    C Compiler:                  C:/Users/jeeva/AppData/Local/Android/Sdk/ndk/27.2.12479018/toolchains/llvm/prebuilt/windows-x86_64/bin/clang.exe
+    C flags (Release):           -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D__BIONIC_NO_PAGE_SIZE_MACRO -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security    -fsigned-char -W -Wall -Wreturn-type -Wnon-virtual-dtor -Waddress -Wsequence-point -Wformat -Wformat-security -Wmissing-declarations -Wmissing-prototypes -Wstrict-prototypes -Wundef -Winit-self -Wpointer-arith -Wshadow -Wsign-promo -Wuninitialized -Winconsistent-missing-override -Wno-delete-non-virtual-dtor -Wno-unnamed-type-template-args -Wno-comment -Wno-deprecated-enum-enum-conversion -Wno-deprecated-anon-enum-enum-conversion -fdiagnostics-show-option -Qunused-arguments  -fvisibility=hidden -fvisibility-inlines-hidden  -O3 -DNDEBUG   -DNDEBUG
+    C flags (Debug):             -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D__BIONIC_NO_PAGE_SIZE_MACRO -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security    -fsigned-char -W -Wall -Wreturn-type -Wnon-virtual-dtor -Waddress -Wsequence-point -Wformat -Wformat-security -Wmissing-declarations -Wmissing-prototypes -Wstrict-prototypes -Wundef -Winit-self -Wpointer-arith -Wshadow -Wsign-promo -Wuninitialized -Winconsistent-missing-override -Wno-delete-non-virtual-dtor -Wno-unnamed-type-template-args -Wno-comment -Wno-deprecated-enum-enum-conversion -Wno-deprecated-anon-enum-enum-conversion -fdiagnostics-show-option -Qunused-arguments  -fvisibility=hidden -fvisibility-inlines-hidden  -fno-limit-debug-info   -O0 -DDEBUG -D_DEBUG -g
+    Linker flags (Release):      -Wl,-z,max-page-size=16384 -Wl,--build-id=sha1 -Wl,--no-rosegment -Wl,--no-undefined-version -Wl,--fatal-warnings -Wl,--no-undefined -Qunused-arguments  -Wl,-z,max-page-size=16384  -Wl,--as-needed -Wl,--no-undefined -Wl,--gc-sections  
+    Linker flags (Debug):        -Wl,-z,max-page-size=16384 -Wl,--build-id=sha1 -Wl,--no-rosegment -Wl,--no-undefined-version -Wl,--fatal-warnings -Wl,--no-undefined -Qunused-arguments  -Wl,-z,max-page-size=16384  -Wl,--as-needed -Wl,--no-undefined  
+    ccache:                      NO
+    Precompiled headers:         NO
+    Extra dependencies:          z dl m log
+    3rdparty dependencies:       tbb libcpufeatures ittnotify tegra_hal kleidicv_hal kleidicv kleidicv_thread
+
+  OpenCV modules:
+    To be built:                 core flann geometry imgcodecs imgproc java videoio
+    Disabled:                    world
+    Disabled by dependency:      calib dnn features highgui js_bindings_generator objc_bindings_generator objdetect photo ptcloud stereo stitching video
+    Unavailable:                 python3 ts
+    Applications:                -
+    Documentation:               NO
+    Non-free algorithms:         NO
+
+  Android NDK:                   C:/Users/jeeva/AppData/Local/Android/Sdk/ndk/27.2.12479018 (ver 27.2.12479018)
+    Android ABI:                 arm64-v8a
+    NDK toolchain:               aarch64-linux-android-clang
+    STL type:                    c++_shared
+    Native API level:            21
+  Android SDK:                   C:/Users/jeeva/AppData/Local/Android/Sdk (tools:  build tools: 36.1.0)
+
+  GUI: 
+    Built-in Unicode font:       YES
+
+  Media I/O: 
+    ZLib:                        z (ver 1.3.0.1)
+    GIF:                         NO
+    HDR:                         NO
+    SUNRASTER:                   NO
+    PXM:                         NO
+    PFM:                         NO
+
+  Video I/O:
+    Orbbec:                      NO
+   MEDIANDK:                     YES
+   NDK Camera:                   NO
+
+  Parallel framework:            TBB (ver 2022.1 interface 12150)
+
+  Trace:                         YES (with Intel ITT(3.25.4))
+
+  Other third-party libraries:
+    Custom HAL:                  YES (carotene (ver 0.0.1) KleidiCV (ver 26.03))
+    Flatbuffers:                 builtin/3rdparty (25.9.23)
+
+  ONNX Runtime:                  NO
+
+  Python (for build):            C:/Python314/python.exe
+
+  Java:                          export all functions
+    ant:                         NO
+    Java wrappers:               YES (GRADLE)
+    Java tests:                  NO
+
+  Install to:                    C:/Users/jeeva/AppData/Local/Temp/claude/ob/build/o4a/install
+-----------------------------------------------------------------
+

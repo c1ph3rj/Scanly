@@ -45,6 +45,18 @@ val hasReleaseSigning = listOf(
     releaseKeyPassword,
 ).all(String::isNotBlank)
 
+// Slim OpenCV 5.0.0 (only the modules the app uses), built by scripts/opencv/build_slim_opencv.py.
+// Without it the build falls back to the full Maven artifact: same API and results, ~45 MB more
+// native code. Release builds refuse the fallback so a release never ships the full library.
+val slimOpenCvAar = rootProject.file("third_party/opencv/opencv-5.0.0-slim.aar")
+val buildingRelease = gradle.startParameter.taskNames.any { it.contains("Release", ignoreCase = true) }
+if (buildingRelease && !slimOpenCvAar.exists()) {
+    throw GradleException(
+        "Release builds need ${slimOpenCvAar.relativeTo(rootDir)}; build it with " +
+            "scripts/opencv/build_slim_opencv.py (see docs/development/opencv.md).",
+    )
+}
+
 android {
     namespace = "in.c1ph3rj.scanly"
     compileSdk {
@@ -162,7 +174,11 @@ dependencies {
     implementation(libs.androidx.camera.view)
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.exifinterface)
-    implementation(libs.opencv)
+    if (slimOpenCvAar.exists()) {
+        implementation(files(slimOpenCvAar))
+    } else {
+        implementation(libs.opencv)
+    }
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     implementation(libs.google.ai.edge.litert)
