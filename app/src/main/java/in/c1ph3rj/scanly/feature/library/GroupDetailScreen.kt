@@ -2,6 +2,7 @@ package `in`.c1ph3rj.scanly.feature.library
 
 import `in`.c1ph3rj.scanly.feature.components.LibraryCardStyle
 import `in`.c1ph3rj.scanly.feature.components.ScanlyModalBottomSheet
+import `in`.c1ph3rj.scanly.feature.components.rememberScanlySheetState
 import `in`.c1ph3rj.scanly.feature.components.LibraryListItem
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.animation.AnimatedVisibility
@@ -27,6 +28,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -84,7 +86,9 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import `in`.c1ph3rj.scanly.core.ui.MetricChip
 import `in`.c1ph3rj.scanly.core.ui.WindowWidthClass
+import `in`.c1ph3rj.scanly.core.ui.adaptiveColumnCount
 import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
+import androidx.compose.ui.unit.takeOrElse
 import `in`.c1ph3rj.scanly.domain.model.DocumentTitleFormat
 import `in`.c1ph3rj.scanly.domain.model.PdfExportOptions
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
@@ -175,10 +179,7 @@ private fun GroupDetailScreen(
     val windowSizeInfo = rememberWindowSizeInfo()
     val group = uiState.group
     val hasDocuments = uiState.documents.isNotEmpty()
-    val documentRows = remember(uiState.documents, windowSizeInfo.groupColumns) {
-        if (windowSizeInfo.isTablet) uiState.documents.chunked(windowSizeInfo.groupColumns)
-        else null
-    }
+    val isCompactWidth = windowSizeInfo.widthClass == WindowWidthClass.Compact
 
     Scaffold(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
@@ -235,12 +236,20 @@ private fun GroupDetailScreen(
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { innerPadding ->
-        Box(modifier = Modifier.fillMaxSize()) {
+        BoxWithConstraints(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
+            // Wide windows: a cover grid sized like the Library's, so covers never balloon.
+            val gridWidth = minOf(maxWidth, windowSizeInfo.wideContentMaxWidth.takeOrElse { maxWidth }) -
+                windowSizeInfo.horizontalPadding * 2
+            val gridColumns = adaptiveColumnCount(gridWidth, 148.dp, minColumns = 2)
+            val documentRows = remember(uiState.documents, gridColumns, isCompactWidth) {
+                if (isCompactWidth) null else uiState.documents.chunked(gridColumns)
+            }
             if (uiState.isLoading) {
                 FullScreenLoader(modifier = Modifier.padding(innerPadding))
             } else {
                 LazyColumn(
                     modifier = Modifier
+                        .widthIn(max = windowSizeInfo.wideContentMaxWidth)
                         .fillMaxSize()
                         .padding(innerPadding),
                     contentPadding = PaddingValues(
@@ -292,7 +301,7 @@ private fun GroupDetailScreen(
                                         modifier = Modifier.weight(1f),
                                     )
                                 }
-                                val emptyCells = windowSizeInfo.groupColumns - rowItems.size
+                                val emptyCells = gridColumns - rowItems.size
                                 repeat(emptyCells) {
                                     Spacer(modifier = Modifier.weight(1f))
                                 }
@@ -479,7 +488,7 @@ private fun GroupExportShareSheet(
     onDismiss: () -> Unit,
     onSelectAction: (GroupExportAction) -> Unit,
 ) {
-    val sheetState = rememberModalBottomSheetState()
+    val sheetState = rememberScanlySheetState()
     val docLabel = if (documentCount == 1) "1 document" else "$documentCount documents"
 
     ScanlyModalBottomSheet(

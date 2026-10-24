@@ -37,6 +37,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import `in`.c1ph3rj.scanly.feature.tools.rememberToolSplitLayout
+import `in`.c1ph3rj.scanly.feature.tools.ToolSplitPanes
+import `in`.c1ph3rj.scanly.feature.tools.ToolSplitMaxWidth
+import `in`.c1ph3rj.scanly.feature.tools.ToolColumnMaxWidth
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.Role
@@ -112,6 +116,12 @@ fun PdfImportRoute(
         returnToPagesOnPickerBack = true
         showPicker = true
     }
+    // Back from the pages step is a step back, not "Change": back again on the picker leaves the
+    // tool instead of bouncing to the pages step forever.
+    val backToPicker = {
+        returnToPagesOnPickerBack = false
+        showPicker = true
+    }
 
     LaunchedEffect(viewModel) {
         viewModel.events.collectLatest {
@@ -128,7 +138,7 @@ fun PdfImportRoute(
         }
     }
     BackHandler(enabled = step == PdfImportStep.Pick && uiState.source != null, onBack = onPickerBack)
-    BackHandler(enabled = step == PdfImportStep.Pages, onBack = if (fromReader) onNavigateUp else openPicker)
+    BackHandler(enabled = step == PdfImportStep.Pages, onBack = if (fromReader) onNavigateUp else backToPicker)
     // Leaving halfway would throw the half-built document away; stay until it is done.
     BackHandler(enabled = step == PdfImportStep.Working) { }
 
@@ -138,7 +148,9 @@ fun PdfImportRoute(
             .background(MaterialTheme.colorScheme.background),
         contentAlignment = Alignment.TopCenter,
     ) {
-        Column(modifier = Modifier.fillMaxSize().widthIn(max = 640.dp)) {
+        // The pages step splits into two panes on wide landscape windows; the rest stay one column.
+        val split = rememberToolSplitLayout() && step == PdfImportStep.Pages
+        Column(modifier = Modifier.widthIn(max = if (split) ToolSplitMaxWidth else ToolColumnMaxWidth).fillMaxSize()) {
             when (step) {
                 // Library documents are already in Scanly, so only files on the phone are offered.
                 PdfImportStep.Pick -> PdfFilePickerScreen(
@@ -152,7 +164,7 @@ fun PdfImportRoute(
                 )
                 PdfImportStep.Pages -> PagesStep(
                     uiState = uiState,
-                    onBack = if (fromReader) onNavigateUp else openPicker,
+                    onBack = if (fromReader) onNavigateUp else backToPicker,
                     onChange = openPicker,
                     onRequestThumbnail = viewModel::requestThumbnail,
                     onTogglePage = viewModel::togglePage,
@@ -208,116 +220,137 @@ private fun ColumnScope.PagesStep(
     val gridState = rememberLazyGridState()
     val pageOrder = remember(uiState.pageCount) { (0 until uiState.pageCount).toList() }
 
-    ToolTopBar(onBack = onBack, stepText = "Step 2 of 3 · Pages and name")
-    LazyVerticalGrid(
-        columns = GridCells.Adaptive(PageCellMinWidth),
-        state = gridState,
-        modifier = Modifier
-            .weight(1f)
-            .fillMaxWidth()
-            .gridDragSelect(
-                state = gridState,
-                order = pageOrder,
-                selection = uiState.selectedPages,
-                idForKey = { key -> selectableId(key, PageKeyPrefix) },
-                onSelectionChange = onSelectionChange,
-                contentPaddingStart = ToolTokens.ScreenPadding,
-                contentPaddingTop = GridTopPadding,
-            ),
-        contentPadding = PaddingValues(
-            start = ToolTokens.ScreenPadding,
-            end = ToolTokens.ScreenPadding,
-            top = GridTopPadding,
-            bottom = 24.dp,
-        ),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
-        fullWidth("title") {
-            Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                ToolLargeTitle(title = "Add to library")
-                FileSummaryLine(
-                    name = uiState.source?.label().orEmpty(),
-                    pageCount = uiState.pageCount,
-                    onChange = onChange,
-                )
-            }
+    val nameField: @Composable () -> Unit = {
+        Column(
+            modifier = Modifier.padding(top = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
+            ToolFieldLabel(text = "Document name")
+            ToolTextField(
+                value = uiState.title,
+                onValueChange = onTitleChange,
+                placeholder = "Name this document",
+                isError = uiState.title.isBlank(),
+                keyboardOptions = KeyboardOptions(
+                    capitalization = KeyboardCapitalization.Sentences,
+                    imeAction = ImeAction.Done,
+                ),
+            )
         }
+    }
 
-        when {
-            uiState.needsPassword -> fullWidth("password") {
-                PasswordPanel(
-                    password = uiState.password,
-                    busy = uiState.isOpening,
-                    onPasswordChange = onPasswordChange,
-                    onUnlock = onUnlock,
-                )
-            }
-            !uiState.isReady -> fullWidth("opening") {
-                Box(Modifier.fillMaxWidth().heightIn(min = 200.dp), contentAlignment = Alignment.Center) {
-                    if (uiState.isOpening) CircularProgressIndicator(Modifier.size(28.dp), strokeWidth = 2.5.dp)
-                }
-            }
-            else -> {
-                fullWidth("name") {
-                    Column(
-                        modifier = Modifier.padding(top = 8.dp),
-                        verticalArrangement = Arrangement.spacedBy(10.dp),
-                    ) {
-                        ToolFieldLabel(text = "Document name")
-                        ToolTextField(
-                            value = uiState.title,
-                            onValueChange = onTitleChange,
-                            placeholder = "Name this document",
-                            isError = uiState.title.isBlank(),
-                            keyboardOptions = KeyboardOptions(
-                                capitalization = KeyboardCapitalization.Sentences,
-                                imeAction = ImeAction.Done,
-                            ),
-                        )
-                    }
-                }
-                fullWidth("pages-header") {
-                    Column(
-                        modifier = Modifier.padding(top = 8.dp),
-                        verticalArrangement = Arrangement.spacedBy(2.dp),
-                    ) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        ) {
-                            ToolSectionLabel(
-                                text = formatPdfToImagesPagesLabel(selectedCount, uiState.pageCount),
-                                modifier = Modifier.weight(1f),
-                            )
-                            SelectAllAction(
-                                selectedCount = selectedCount,
-                                totalCount = uiState.pageCount,
-                                onSelectAll = onSelectAll,
-                                onSelectNone = onSelectNone,
-                            )
-                        }
-                        if (uiState.pageCount > 2) {
-                            GridHint(text = "Tap a page, or long-press and drag across several.")
-                        }
-                    }
-                }
-                items(count = uiState.pageCount, key = { index -> "$PageKeyPrefix$index" }) { index ->
-                    LaunchedEffect(index) { onRequestThumbnail(index) }
-                    PageCell(
-                        bitmap = uiState.thumbnails[index],
-                        label = (index + 1).toString(),
-                        selected = index in uiState.selectedPages,
-                        contentDescription = "Page ${index + 1}",
-                        onToggle = { onTogglePage(index) },
+    ToolTopBar(onBack = onBack, stepText = "Step 2 of 3 · Pages and name")
+    // Wide landscape: pages on the start side, the settings beside them instead of below.
+    val split = rememberToolSplitLayout() && uiState.isReady && !uiState.needsPassword
+    val grid: @Composable (Modifier) -> Unit = { gridModifier ->
+        LazyVerticalGrid(
+            columns = GridCells.Adaptive(PageCellMinWidth),
+            state = gridState,
+            modifier = gridModifier
+                .gridDragSelect(
+                    state = gridState,
+                    order = pageOrder,
+                    selection = uiState.selectedPages,
+                    idForKey = { key -> selectableId(key, PageKeyPrefix) },
+                    onSelectionChange = onSelectionChange,
+                    contentPaddingStart = ToolTokens.ScreenPadding,
+                    contentPaddingTop = GridTopPadding,
+                ),
+            contentPadding = PaddingValues(
+                start = ToolTokens.ScreenPadding,
+                end = ToolTokens.ScreenPadding,
+                top = GridTopPadding,
+                bottom = 24.dp,
+            ),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            fullWidth("title") {
+                Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                    ToolLargeTitle(title = "Add to library")
+                    FileSummaryLine(
+                        name = uiState.source?.label().orEmpty(),
+                        pageCount = uiState.pageCount,
+                        onChange = onChange,
                     )
                 }
-                fullWidth("look") {
-                    LookSection(selected = uiState.look, onSelected = onLookSelected)
+            }
+
+            when {
+                uiState.needsPassword -> fullWidth("password") {
+                    PasswordPanel(
+                        password = uiState.password,
+                        busy = uiState.isOpening,
+                        onPasswordChange = onPasswordChange,
+                        onUnlock = onUnlock,
+                    )
+                }
+                !uiState.isReady -> fullWidth("opening") {
+                    Box(Modifier.fillMaxWidth().heightIn(min = 200.dp), contentAlignment = Alignment.Center) {
+                        if (uiState.isOpening) CircularProgressIndicator(Modifier.size(28.dp), strokeWidth = 2.5.dp)
+                    }
+                }
+                else -> {
+                    if (!split) {
+                        fullWidth("name") { nameField() }
+                    }
+                    fullWidth("pages-header") {
+                        Column(
+                            modifier = Modifier.padding(top = 8.dp),
+                            verticalArrangement = Arrangement.spacedBy(2.dp),
+                        ) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            ) {
+                                ToolSectionLabel(
+                                    text = formatPdfToImagesPagesLabel(selectedCount, uiState.pageCount),
+                                    modifier = Modifier.weight(1f),
+                                )
+                                SelectAllAction(
+                                    selectedCount = selectedCount,
+                                    totalCount = uiState.pageCount,
+                                    onSelectAll = onSelectAll,
+                                    onSelectNone = onSelectNone,
+                                )
+                            }
+                            if (uiState.pageCount > 2) {
+                                GridHint(text = "Tap a page, or long-press and drag across several.")
+                            }
+                        }
+                    }
+                    items(count = uiState.pageCount, key = { index -> "$PageKeyPrefix$index" }) { index ->
+                        LaunchedEffect(index) { onRequestThumbnail(index) }
+                        PageCell(
+                            bitmap = uiState.thumbnails[index],
+                            label = (index + 1).toString(),
+                            selected = index in uiState.selectedPages,
+                            contentDescription = "Page ${index + 1}",
+                            onToggle = { onTogglePage(index) },
+                        )
+                    }
+                    if (!split) {
+                        fullWidth("look") {
+                            LookSection(selected = uiState.look, onSelected = onLookSelected)
+                        }
+                    }
                 }
             }
         }
+    }
+    if (split) {
+        ToolSplitPanes(
+            start = { grid(Modifier.fillMaxSize()) },
+            end = {
+                nameField()
+                LookSection(selected = uiState.look, onSelected = onLookSelected)
+            },
+            startWeight = 0.58f,
+            endSpacing = 8.dp,
+        )
+    } else {
+        grid(Modifier.weight(1f).fillMaxWidth())
     }
 
     ToolBottomBar {

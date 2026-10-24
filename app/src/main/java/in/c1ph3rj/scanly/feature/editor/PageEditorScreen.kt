@@ -535,7 +535,8 @@ private fun EditorActionRow(
         modifier = Modifier
             .fillMaxWidth()
             .padding(bottom = 18.dp),
-        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        // Centred when the five buttons fit (tablets); a phone still scrolls them from the start.
+        horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally),
         contentPadding = PaddingValues(horizontal = 2.dp),
     ) {
         item {

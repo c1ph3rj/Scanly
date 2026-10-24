@@ -44,6 +44,16 @@ data class HomeUiState(
     val importStageLabel: String = "",
 )
 
+internal const val HOME_RECENT_GROUPS_MAX = 8
+internal const val HOME_RECENT_DOCUMENTS_MAX = 8
+
+/** Phone-width Home keeps its short launcher lists: three folders and four documents. */
+internal fun HomeUiState.trimmedForCompactWidth(): HomeUiState = copy(
+    recentGroups = recentGroups.take(3),
+    hasMoreGroups = hasMoreGroups || recentGroups.size > 3,
+    recentDocuments = recentDocuments.take(4),
+)
+
 sealed interface HomeEvent {
     data class OpenDocument(val documentId: String) : HomeEvent
     data class OpenGroup(val groupId: String) : HomeEvent
@@ -103,14 +113,15 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch { markAppRatedUseCase() }
     }
 
+    // Enough recents for a tablet's two-column layout; phones trim to the first few (see HomeScreen).
     val uiState: StateFlow<HomeUiState> = combine(
-        observeRecentGroupsUseCase(limit = 4),
-        observeRecentDocumentsUseCase(limit = 4),
+        observeRecentGroupsUseCase(limit = HOME_RECENT_GROUPS_MAX + 1),
+        observeRecentDocumentsUseCase(limit = HOME_RECENT_DOCUMENTS_MAX),
         importProgress,
     ) { groups, docs, progress ->
         HomeUiState(
-            recentGroups = groups.take(3),
-            hasMoreGroups = groups.size > 3,
+            recentGroups = groups.take(HOME_RECENT_GROUPS_MAX),
+            hasMoreGroups = groups.size > HOME_RECENT_GROUPS_MAX,
             recentDocuments = docs,
             isLoading = false,
             isImporting = progress.active,

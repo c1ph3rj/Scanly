@@ -450,7 +450,8 @@ private fun CropActionRow(
         modifier = Modifier
             .fillMaxWidth()
             .padding(bottom = 18.dp),
-        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        // Centred when the tools fit (tablets), like the editor's action row.
+        horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally),
         contentPadding = PaddingValues(horizontal = 2.dp),
     ) {
         item {

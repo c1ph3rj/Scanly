@@ -72,7 +72,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -96,7 +100,6 @@ import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.PhotoLibrary
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -116,9 +119,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
@@ -126,6 +129,7 @@ import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -204,7 +208,7 @@ private fun ScanlyNavHostLayout(
     val currentRoute = navBackStackEntry?.destination?.route
     val showBottomNav = currentRoute in topLevelRoutes
 
-    if (windowSizeInfo.isTablet) {
+    if (windowSizeInfo.useNavigationRail) {
         Box(
             modifier = modifier
                 .fillMaxSize()
@@ -494,105 +498,139 @@ private fun ScanlyNavigationRail(
     currentRoute: String?,
     onNavigate: (String) -> Unit,
 ) {
-    Row(modifier = Modifier.fillMaxHeight()) {
-        Column(
-            modifier = Modifier
-                .width(92.dp)
-                .fillMaxHeight()
-                .background(MaterialTheme.colorScheme.surfaceContainerLowest)
-                .statusBarsPadding()
-                .padding(horizontal = 12.dp)
-                .padding(top = 16.dp, bottom = 16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            ScanlyAppLogo(size = 56.dp)
-            Spacer(modifier = Modifier.height(20.dp))
-            var chooserVisible by rememberSaveable { mutableStateOf(false) }
-            Surface(
-                onClick = { chooserVisible = true },
-                modifier = Modifier
-                    .size(56.dp)
-                    .testTag(ScanlyTestTags.NAV_SCAN)
-                    .semantics { contentDescription = "Scan or import" },
-                shape = RoundedCornerShape(18.dp),
-                color = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary,
-            ) {
-                Box(contentAlignment = Alignment.Center) {
-                    Icon(Icons.Outlined.DocumentScanner, contentDescription = null, modifier = Modifier.size(24.dp))
-                }
-            }
-            if (chooserVisible) {
-                CaptureChooserSheet(onDismiss = { chooserVisible = false })
-            }
-            Spacer(modifier = Modifier.height(20.dp))
-            bottomNavItems.forEach { item ->
-                val selected = currentRoute == item.route
-                RailNavIcon(
-                    icon = item.icon,
-                    label = item.label,
-                    selected = selected,
-                    testTag = ScanlyTestTags.navTag(item.route),
-                    onClick = { if (!selected) onNavigate(item.route) },
+    val windowSizeInfo = rememberWindowSizeInfo()
+    // Short windows (phone landscape, small split screen) drop the logo and tighten spacing so
+    // every destination stays reachable; the column scrolls if even that does not fit.
+    val compact = windowSizeInfo.isHeightConstrained
+    val railColor = MaterialTheme.colorScheme.surfaceContainerLowest
+    val dividerColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
+    // The app root pads the start cutout and the bottom navigation/task bar, so the rail cannot
+    // lay out there. Paint its surface out into those strips instead of leaving page-colour gaps.
+    val safeDrawing = WindowInsets.safeDrawing
+    var chooserVisible by rememberSaveable { mutableStateOf(false) }
+    Column(
+        modifier = Modifier
+            .width(RailWidth)
+            .fillMaxHeight()
+            .drawBehind {
+                val rtl = layoutDirection == LayoutDirection.Rtl
+                val startBleed = if (rtl) {
+                    safeDrawing.getRight(this, layoutDirection)
+                } else {
+                    safeDrawing.getLeft(this, layoutDirection)
+                }.toFloat()
+                val bottomBleed = safeDrawing.getBottom(this).toFloat()
+                val stroke = 1.dp.toPx()
+                drawRect(
+                    color = railColor,
+                    topLeft = Offset(if (rtl) 0f else -startBleed, 0f),
+                    size = Size(size.width + startBleed, size.height + bottomBleed),
                 )
-                Spacer(modifier = Modifier.height(8.dp))
+                drawRect(
+                    color = dividerColor,
+                    topLeft = Offset(if (rtl) 0f else size.width - stroke, 0f),
+                    size = Size(stroke, size.height + bottomBleed),
+                )
             }
-            Spacer(modifier = Modifier.weight(1f))
+            .selectableGroup()
+            .verticalScroll(rememberScrollState())
+            .statusBarsPadding()
+            .padding(vertical = if (compact) 8.dp else 20.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        if (!compact) {
+            ScanlyAppLogo(size = 44.dp)
+            Spacer(modifier = Modifier.height(20.dp))
         }
-        HorizontalDivider(
+        Surface(
+            onClick = { chooserVisible = true },
             modifier = Modifier
-                .fillMaxHeight()
-                .width(1.dp),
-            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                .size(if (compact) 48.dp else 56.dp)
+                .testTag(ScanlyTestTags.NAV_SCAN)
+                .semantics { contentDescription = "Scan or import" },
+            shape = RoundedCornerShape(16.dp),
+            color = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary,
+            shadowElevation = 2.dp,
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                Icon(Icons.Outlined.DocumentScanner, contentDescription = null, modifier = Modifier.size(24.dp))
+            }
+        }
+        if (!compact) {
+            Text(
+                text = "Scan",
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier
+                    .padding(top = 6.dp)
+                    .clearAndSetSemantics {},
+            )
+        }
+        Spacer(modifier = Modifier.height(if (compact) 12.dp else 24.dp))
+        bottomNavItems.forEach { item ->
+            val selected = currentRoute == item.route
+            RailNavItem(
+                item = item,
+                selected = selected,
+                compact = compact,
+                onClick = { if (!selected) onNavigate(item.route) },
+            )
+            Spacer(modifier = Modifier.height(if (compact) 2.dp else 8.dp))
+        }
+    }
+    if (chooserVisible) {
+        CaptureChooserSheet(onDismiss = { chooserVisible = false })
+    }
+}
+
+/** Rail destination: the bottom bar's pill indicator with the label underneath (Material 3 rail). */
+@Composable
+private fun RailNavItem(
+    item: BottomNavItem,
+    selected: Boolean,
+    compact: Boolean,
+    onClick: () -> Unit,
+) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val tint = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+    Column(
+        modifier = Modifier
+            .width(RailWidth)
+            .height(if (compact) 52.dp else 60.dp)
+            .selectable(
+                selected = selected,
+                interactionSource = interactionSource,
+                indication = null,
+                role = Role.Tab,
+                onClick = onClick,
+            )
+            .testTag(ScanlyTestTags.navTag(item.route)),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+    ) {
+        Box(
+            modifier = Modifier
+                .size(width = 56.dp, height = 32.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .background(if (selected) MaterialTheme.colorScheme.primaryContainer else Color.Transparent)
+                .indication(interactionSource, ripple()),
+            contentAlignment = Alignment.Center,
+        ) {
+            Icon(item.icon, contentDescription = null, tint = tint, modifier = Modifier.size(22.dp))
+        }
+        Spacer(Modifier.height(4.dp))
+        Text(
+            text = item.label,
+            style = MaterialTheme.typography.labelMedium,
+            fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal,
+            color = tint,
+            maxLines = 1,
         )
     }
 }
 
-@Composable
-private fun RailNavIcon(
-    icon: ImageVector,
-    label: String,
-    selected: Boolean,
-    testTag: String,
-    onClick: () -> Unit,
-) {
-    val scheme = MaterialTheme.colorScheme
-    val isDark = scheme.background.luminance() < 0.5f
-    val shape = RoundedCornerShape(14.dp)
-    val containerColor = when {
-        selected && isDark -> scheme.surfaceContainerHigh
-        selected -> scheme.surfaceContainerLow
-        isDark -> scheme.surfaceContainer
-        else -> scheme.surfaceContainerHigh
-    }
-    val contentColor = when {
-        selected -> scheme.primary
-        else -> scheme.onSurfaceVariant
-    }
-
-    Surface(
-        onClick = onClick,
-        modifier = Modifier
-            .size(48.dp)
-            .testTag(testTag),
-        color = containerColor,
-        shape = shape,
-        border = if (selected) {
-            BorderStroke(1.dp, scheme.primary.copy(alpha = if (isDark) 0.72f else 0.64f))
-        } else {
-            null
-        },
-    ) {
-        Box(contentAlignment = Alignment.Center) {
-            Icon(
-                imageVector = icon,
-                contentDescription = label,
-                tint = contentColor,
-                modifier = Modifier.size(22.dp),
-            )
-        }
-    }
-}
+private val RailWidth = 80.dp
 
 @Composable
 private fun TopLevelDestinationShell(

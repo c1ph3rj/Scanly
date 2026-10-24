@@ -70,7 +70,7 @@ fun ImageTextRoute(
             .background(MaterialTheme.colorScheme.background),
         contentAlignment = Alignment.TopCenter,
     ) {
-        Column(modifier = Modifier.fillMaxSize().widthIn(max = 640.dp)) {
+        Column(modifier = Modifier.widthIn(max = 640.dp).fillMaxSize()) {
             PdfFilePickerScreen(
                 title = "Image to text",
                 subtitle = "Copy text from photos or scans. Text is read on this phone.",

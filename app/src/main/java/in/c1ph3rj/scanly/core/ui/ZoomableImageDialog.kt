@@ -117,6 +117,8 @@ fun ZoomableImageViewer(
     showZoomBadge: Boolean = true,
     onSingleTap: () -> Unit = {},
     onZoomActiveChange: (Boolean) -> Unit = {},
+    /** Matte around the fitted image; embedded panes pass a surface colour instead of black. */
+    canvasColor: Color = Color.Black,
     trailingAction: @Composable (
         zoomActive: Boolean,
         onResetZoom: () -> Unit,
@@ -195,6 +197,7 @@ fun ZoomableImageViewer(
                         allowParentHorizontalGestures = allowParentHorizontalGestures,
                         showZoomBadge = showZoomBadge,
                         modifier = Modifier.fillMaxSize(),
+                        canvasColor = canvasColor,
                     )
                 }
             }
@@ -320,6 +323,7 @@ private fun ZoomableImageCanvas(
     allowParentHorizontalGestures: Boolean,
     showZoomBadge: Boolean,
     modifier: Modifier = Modifier,
+    canvasColor: Color = Color.Black,
 ) {
     val density = LocalDensity.current
     var containerSize by remember { mutableStateOf(IntSize.Zero) }
@@ -342,7 +346,7 @@ private fun ZoomableImageCanvas(
     Box(
         modifier = modifier
             .onSizeChanged { containerSize = it }
-            .background(Color.Black)
+            .background(canvasColor)
             .clipToBounds()
             .combinedClickable(
                 interactionSource = remember { MutableInteractionSource() },

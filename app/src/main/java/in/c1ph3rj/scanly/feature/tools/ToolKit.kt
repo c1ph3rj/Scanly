@@ -7,6 +7,10 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import `in`.c1ph3rj.scanly.core.ui.WindowWidthClass
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
@@ -25,6 +29,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.CircleShape
@@ -50,6 +55,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.Alignment
+import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
@@ -175,12 +181,14 @@ fun ToolLargeTitle(
     modifier: Modifier = Modifier,
     subtitle: String? = null,
 ) {
-    Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(4.dp)) {
+    // Short windows (phone landscape) get a smaller title so the tool's content stays in view.
+    val compact = rememberWindowSizeInfo().isHeightConstrained
+    Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(if (compact) 2.dp else 4.dp)) {
         Text(
             text = title,
             style = MaterialTheme.typography.headlineMedium.copy(
-                fontSize = 28.sp,
-                lineHeight = 34.sp,
+                fontSize = if (compact) 22.sp else 28.sp,
+                lineHeight = if (compact) 28.sp else 34.sp,
                 letterSpacing = (-0.6).sp,
             ),
             fontWeight = FontWeight.Bold,
@@ -191,6 +199,8 @@ fun ToolLargeTitle(
                 text = subtitle,
                 style = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp),
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = if (compact) 1 else Int.MAX_VALUE,
+                overflow = TextOverflow.Ellipsis,
             )
         }
     }
@@ -370,20 +380,87 @@ fun ToolIconWell(
     }
 }
 
+// ---------------------------------------------------------------------------------------------
+// Large-screen step layout
+// ---------------------------------------------------------------------------------------------
+
+/** One readable tool column on phones and in portrait. */
+val ToolColumnMaxWidth = 640.dp
+
+/** Tool steps that split into two panes use up to this width. */
+val ToolSplitMaxWidth = 1100.dp
+
+/**
+ * Landscape windows with room lay a tool step out as two panes, like Watermark: the preview or
+ * page grid on the start side, the settings beside it, instead of one narrow centred column.
+ */
+@Composable
+fun rememberToolSplitLayout(): Boolean {
+    val window = rememberWindowSizeInfo()
+    return window.isLandscape && window.widthClass != WindowWidthClass.Compact
+}
+
+/**
+ * Two panes filling the rest of a tool step: [start] (preview or pages) and [end] (settings,
+ * scrolls on its own). Use inside the step's column, between its header and [ToolBottomBar].
+ */
+@Composable
+fun ColumnScope.ToolSplitPanes(
+    start: @Composable BoxScope.() -> Unit,
+    end: @Composable ColumnScope.() -> Unit,
+    modifier: Modifier = Modifier,
+    startWeight: Float = 0.5f,
+    endSpacing: Dp = 20.dp,
+) {
+    Row(
+        modifier = modifier
+            .weight(1f)
+            .fillMaxWidth(),
+    ) {
+        Box(
+            modifier = Modifier
+                .weight(startWeight)
+                .fillMaxHeight(),
+            content = start,
+        )
+        Column(
+            modifier = Modifier
+                .weight(1f - startWeight)
+                .fillMaxHeight()
+                .verticalScroll(rememberScrollState())
+                .padding(start = 12.dp, end = ToolTokens.ScreenPadding, top = 8.dp, bottom = 20.dp),
+            verticalArrangement = Arrangement.spacedBy(endSpacing),
+            content = end,
+        )
+    }
+}
+
 /** Sticky footer with a hairline top border; holds the screen's primary action. */
 @Composable
 fun ToolBottomBar(
     modifier: Modifier = Modifier,
     content: @Composable ColumnScope.() -> Unit,
 ) {
-    Column(modifier = modifier.fillMaxWidth().background(MaterialTheme.colorScheme.background)) {
+    Column(
+        modifier = modifier.fillMaxWidth().background(MaterialTheme.colorScheme.background),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+        // The divider spans the screen; the actions keep the 640 dp tool column on tablets.
+        // Short windows trim the padding so the bar doesn't take a third of the height.
+        val compact = rememberWindowSizeInfo().isHeightConstrained
         Column(
             modifier = Modifier
+                .widthIn(max = 640.dp)
                 .fillMaxWidth()
                 .navigationBarsPadding()
-                .padding(start = ToolTokens.ScreenPadding, end = ToolTokens.ScreenPadding, top = 12.dp, bottom = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
+                .padding(
+                    start = ToolTokens.ScreenPadding,
+                    end = ToolTokens.ScreenPadding,
+                    top = if (compact) 8.dp else 12.dp,
+                    bottom = if (compact) 8.dp else 16.dp,
+                ),
+            verticalArrangement = Arrangement.spacedBy(if (compact) 6.dp else 10.dp),
             content = content,
         )
     }
@@ -443,7 +520,7 @@ fun ToolPrimaryButton(
     Surface(
         onClick = onClick,
         enabled = enabled && !loading,
-        modifier = modifier.fillMaxWidth().height(ToolTokens.ButtonHeight),
+        modifier = modifier.fillMaxWidth().height(toolButtonHeight()),
         shape = RoundedCornerShape(ToolTokens.CardRadius),
         color = if (enabled) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainerHighest,
         contentColor = if (enabled) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant,
@@ -466,7 +543,7 @@ fun ToolSecondaryButton(
     Surface(
         onClick = onClick,
         enabled = enabled && !loading,
-        modifier = modifier.fillMaxWidth().height(ToolTokens.ButtonHeight),
+        modifier = modifier.fillMaxWidth().height(toolButtonHeight()),
         shape = RoundedCornerShape(ToolTokens.CardRadius),
         color = Color.Transparent,
         contentColor = if (enabled) contentColor else MaterialTheme.colorScheme.onSurfaceVariant,
@@ -475,6 +552,11 @@ fun ToolSecondaryButton(
         ToolButtonContent(text = text, icon = icon, loading = loading)
     }
 }
+
+/** 52 dp buttons, down to the 48 dp touch minimum on short windows. */
+@Composable
+private fun toolButtonHeight() =
+    if (rememberWindowSizeInfo().isHeightConstrained) ToolTokens.MinTouch else ToolTokens.ButtonHeight
 
 @Composable
 private fun ToolButtonContent(text: String, icon: ImageVector?, loading: Boolean) {

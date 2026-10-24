@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -230,13 +231,19 @@ fun SignatureCreateScreen(
             )
         },
     ) { paddingValues ->
-        Column(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
+        // Header and save bar span the screen; the pad and its controls keep a signing-sized
+        // column on tablets instead of a 1000 dp strip.
+        Column(
+            modifier = Modifier.fillMaxSize().padding(paddingValues),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
             ToolCompactHeader(
                 title = if (isInitials) "New initials" else "New signature",
                 onBack = onBack,
             )
             Column(
                 modifier = Modifier
+                    .widthIn(max = MaxContentWidth)
                     .fillMaxWidth()
                     .padding(start = 16.dp, end = 16.dp, top = 4.dp, bottom = 12.dp),
             ) {
@@ -250,6 +257,7 @@ fun SignatureCreateScreen(
             }
             PrimaryTabRow(
                 selectedTabIndex = uiState.mode.ordinal,
+                modifier = Modifier.widthIn(max = MaxContentWidth),
                 containerColor = MaterialTheme.colorScheme.background,
             ) {
                 SignatureCreateMode.entries.forEach { mode ->
@@ -264,6 +272,7 @@ fun SignatureCreateScreen(
             Box(
                 modifier = Modifier
                     .weight(1f)
+                    .widthIn(max = MaxContentWidth)
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 16.dp),
             ) {
@@ -325,6 +334,8 @@ fun SignatureCreateScreen(
         )
     }
 }
+
+private val MaxContentWidth = 720.dp
 
 private fun SignatureCreateMode.tabLabel(): String = when (this) {
     SignatureCreateMode.Draw -> "Draw"

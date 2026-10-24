@@ -9,6 +9,8 @@ import androidx.compose.ui.unit.dp
 
 enum class WindowWidthClass { Compact, Medium, Expanded }
 
+enum class WindowHeightClass { Compact, Medium, Expanded }
+
 /**
  * Adaptive layout information derived from the current window configuration.
  *
@@ -17,14 +19,41 @@ enum class WindowWidthClass { Compact, Medium, Expanded }
  *  - Medium   : 600–839 dp — tablet portrait / large phone landscape
  *  - Expanded : ≥ 840 dp  — tablet landscape / foldable / desktop
  *
+ * Height classes: Compact < 480 dp (phone landscape), Medium 480–899 dp, Expanded ≥ 900 dp.
+ *
  * [isTablet] is based on smallest screen width so phones rotated into landscape
- * keep compact navigation and one-pane flows.
+ * keep one-pane editing flows; navigation chrome follows the window width instead.
  */
 data class WindowSizeInfo(
     val widthClass: WindowWidthClass,
     val isLandscape: Boolean,
     val isTablet: Boolean,
+    val heightClass: WindowHeightClass = WindowHeightClass.Medium,
 ) {
+    /**
+     * Side navigation rail instead of the bottom bar. Width-driven, so a phone in landscape,
+     * an unfolded foldable and a tablet in split screen get it too: a bottom bar there would
+     * eat a fifth of an already short window.
+     */
+    val useNavigationRail: Boolean
+        get() = widthClass != WindowWidthClass.Compact
+
+    /** Short window (phone landscape, small split screen): trim headers and chrome. */
+    val isHeightConstrained: Boolean
+        get() = heightClass == WindowHeightClass.Compact
+
+    /** Side-by-side panes for hub screens (Home, Settings) once there is room for two columns. */
+    val useTwoPaneLayout: Boolean
+        get() = widthClass == WindowWidthClass.Expanded
+
+    /** Max width for grid-heavy screens (Library, folders) that benefit from extra columns. */
+    val wideContentMaxWidth: Dp
+        get() = when (widthClass) {
+            WindowWidthClass.Compact  -> Dp.Unspecified
+            WindowWidthClass.Medium   -> 840.dp
+            WindowWidthClass.Expanded -> 1240.dp
+        }
+
     /** Number of columns for folder/group grids. */
     val groupColumns: Int
         get() = when (widthClass) {
@@ -161,6 +190,7 @@ fun rememberWindowSizeInfo(): WindowSizeInfo {
             screenWidthDp = configuration.screenWidthDp,
             smallestScreenWidthDp = configuration.smallestScreenWidthDp,
             isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE,
+            screenHeightDp = configuration.screenHeightDp,
         )
     }
 }
@@ -169,15 +199,37 @@ internal fun resolveWindowSizeInfo(
     screenWidthDp: Int,
     smallestScreenWidthDp: Int,
     isLandscape: Boolean,
+    screenHeightDp: Int = if (isLandscape) smallestScreenWidthDp else screenWidthDp * 2,
 ): WindowSizeInfo {
     val widthClass = when {
         screenWidthDp < 600 -> WindowWidthClass.Compact
         screenWidthDp < 840 -> WindowWidthClass.Medium
         else -> WindowWidthClass.Expanded
     }
+    val heightClass = when {
+        screenHeightDp < 480 -> WindowHeightClass.Compact
+        screenHeightDp < 900 -> WindowHeightClass.Medium
+        else -> WindowHeightClass.Expanded
+    }
     return WindowSizeInfo(
         widthClass = widthClass,
         isLandscape = isLandscape,
         isTablet = smallestScreenWidthDp >= 600,
+        heightClass = heightClass,
     )
+}
+
+/**
+ * Columns that fit [availableWidth] when every cell needs at least [minCellWidth] (gaps included),
+ * clamped to [minColumns]..[maxColumns]. Drives grids from the space a screen actually has, so
+ * a tablet beside a navigation rail or in split screen gets the right count, not a device guess.
+ */
+fun adaptiveColumnCount(
+    availableWidth: Dp,
+    minCellWidth: Dp,
+    minColumns: Int = 1,
+    maxColumns: Int = 6,
+): Int {
+    if (availableWidth == Dp.Unspecified || availableWidth <= 0.dp) return minColumns
+    return (availableWidth / minCellWidth).toInt().coerceIn(minColumns, maxColumns)
 }

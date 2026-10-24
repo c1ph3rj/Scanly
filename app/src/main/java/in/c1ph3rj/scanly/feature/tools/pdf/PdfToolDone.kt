@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -24,6 +25,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import `in`.c1ph3rj.scanly.feature.tools.rememberToolSplitLayout
+import `in`.c1ph3rj.scanly.feature.tools.ToolSplitPanes
+import `in`.c1ph3rj.scanly.feature.tools.ToolSplitMaxWidth
+import `in`.c1ph3rj.scanly.feature.tools.ToolColumnMaxWidth
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
@@ -70,11 +75,13 @@ fun PdfToolDoneScreen(
     headerExtra: (@Composable ColumnScope.() -> Unit)? = null,
     extraContent: (@Composable ColumnScope.() -> Unit)? = null,
 ) {
+    val split = rememberToolSplitLayout()
     Column(
         modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
             .imePadding(),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         ToolTopBar(
             onBack = onClose,
@@ -83,56 +90,90 @@ fun PdfToolDoneScreen(
             backContentDescription = "Close",
             centerStep = true,
         )
-        Column(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxWidth()
-                .verticalScroll(rememberScrollState())
-                .padding(start = 20.dp, end = 20.dp, top = 8.dp, bottom = 20.dp),
-            verticalArrangement = Arrangement.spacedBy(18.dp),
-        ) {
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(14.dp),
-            ) {
-                Box {
-                    ToolPaperPage(
-                        bitmap = preview,
-                        loading = preview == null,
-                        elevation = 10.dp,
-                        contentDescription = "Open the finished PDF",
-                        modifier = Modifier
-                            .width(128.dp)
-                            .clickable(role = Role.Button, onClickLabel = "Open PDF", onClick = onOpenPreview),
-                        overlay = previewOverlay,
-                    )
-                    previewBadge?.invoke(this)
-                }
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(4.dp),
-                ) {
-                    Text(
-                        text = title,
-                        style = MaterialTheme.typography.headlineSmall.copy(fontSize = 26.sp, letterSpacing = (-0.6).sp),
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center,
-                    )
-                    Text(
-                        text = subtitle,
-                        style = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp),
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        textAlign = TextAlign.Center,
-                    )
-                }
-                headerExtra?.invoke(this)
+        val previewCard: @Composable () -> Unit = {
+            Box {
+                ToolPaperPage(
+                    bitmap = preview,
+                    loading = preview == null,
+                    elevation = 10.dp,
+                    contentDescription = "Open the finished PDF",
+                    modifier = Modifier
+                        .width(if (split) 200.dp else 128.dp)
+                        .clickable(role = Role.Button, onClickLabel = "Open PDF", onClick = onOpenPreview),
+                    overlay = previewOverlay,
+                )
+                previewBadge?.invoke(this)
             }
+        }
+        val heading: @Composable ColumnScope.() -> Unit = {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(4.dp),
+            ) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.headlineSmall.copy(fontSize = 26.sp, letterSpacing = (-0.6).sp),
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                )
+                Text(
+                    text = subtitle,
+                    style = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center,
+                )
+            }
+            headerExtra?.invoke(this)
+        }
+        val fields: @Composable ColumnScope.() -> Unit = {
             ToolFileNameField(value = outputName, onValueChange = onOutputNameChange)
             if (details.isNotEmpty()) {
                 ToolDetailList(rows = details)
             }
             extraContent?.invoke(this)
+        }
+        if (split) {
+            // Wide landscape: the finished page and headline on one side, name and details beside.
+            ToolSplitPanes(
+                modifier = Modifier.widthIn(max = ToolSplitMaxWidth),
+                start = {
+                    Column(
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .verticalScroll(rememberScrollState())
+                            .padding(24.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                    ) {
+                        previewCard()
+                        heading()
+                    }
+                },
+                end = fields,
+                startWeight = 0.45f,
+                endSpacing = 18.dp,
+            )
+        } else {
+            // Same centred 640 dp column as the other tool steps, whichever tool hosts it.
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .widthIn(max = ToolColumnMaxWidth)
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState())
+                    .padding(start = 20.dp, end = 20.dp, top = 8.dp, bottom = 20.dp),
+                verticalArrangement = Arrangement.spacedBy(18.dp),
+            ) {
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(14.dp),
+                ) {
+                    previewCard()
+                    heading()
+                }
+                fields()
+            }
         }
         ToolBottomBar {
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {

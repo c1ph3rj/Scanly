@@ -12,6 +12,7 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTextReplacement
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
@@ -98,7 +99,7 @@ internal fun ComposeTestRule.openDestination(navTag: String, screenTag: String) 
 
 internal fun ComposeTestRule.generateQrFromTools(content: String) {
     openDestination(ScanlyTestTags.NAV_TOOLS, ScanlyTestTags.TOOLS_SCREEN)
-    onNodeWithText("QR code").performClick()
+    onNodeWithText("QR & barcode").performScrollTo().performClick()
     awaitText("Create")
     onNodeWithText("Create").performClick()
     awaitTag(ScanlyTestTags.QR_GENERATE_INPUT)

@@ -24,6 +24,11 @@
 # Keep the runtime package intact so release builds can still create interpreters.
 -keep class org.tensorflow.lite.** { *; }
 
+# CpuAffinity's external functions are bound by JNI name.
+-keepclasseswithmembernames,includedescriptorclasses class in.c1ph3rj.scanly.core.ml.CpuAffinity {
+    native <methods>;
+}
+
 # PdfBox-Android exposes optional JPEG 2000 support through JP2Android. Scanly only
 # encrypts PDFs that it renders from Android bitmaps, so those optional codecs are
 # intentionally not bundled.

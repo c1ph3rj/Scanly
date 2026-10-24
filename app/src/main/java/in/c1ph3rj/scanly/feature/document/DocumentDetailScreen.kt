@@ -125,6 +125,11 @@ import `in`.c1ph3rj.scanly.core.ui.MetricChip
 import `in`.c1ph3rj.scanly.core.ui.ZoomableImageDialog
 import `in`.c1ph3rj.scanly.core.ui.ZoomableImageViewer
 import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
+import `in`.c1ph3rj.scanly.core.ui.WindowWidthClass
+import `in`.c1ph3rj.scanly.core.ui.adaptiveColumnCount
+import `in`.c1ph3rj.scanly.core.ui.rememberZoomableImageState
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.ui.unit.takeOrElse
 import `in`.c1ph3rj.scanly.domain.model.ExportArtifact
 import `in`.c1ph3rj.scanly.domain.model.GroupTitleFormat
 import `in`.c1ph3rj.scanly.domain.model.PageProcessingState
@@ -165,6 +170,9 @@ private enum class PdfActionMode {
     SAVE,
     SHARE,
 }
+
+/** Smallest page thumbnail in the single-pane grid; two still fit a 360 dp phone. */
+private val PageGridCellMinWidth = 150.dp
 
 private fun Int.toPageCountLabel(): String = if (this == 1) "1 page" else "$this pages"
 
@@ -261,7 +269,11 @@ fun DocumentDetailScreen(
     onOpenSign: (pageIndex: Int) -> Unit = {},
 ) {
     val windowSizeInfo = rememberWindowSizeInfo()
-    val useMasterDetailLayout = windowSizeInfo.useTabletLandscapeLayout
+    // Pages list beside a live preview whenever a landscape window has the width for it,
+    // phones included: a page grid in a 400 dp tall window shows barely one row.
+    val useMasterDetailLayout = windowSizeInfo.isLandscape &&
+        windowSizeInfo.widthClass != WindowWidthClass.Compact
+    val isCompactWidth = windowSizeInfo.widthClass == WindowWidthClass.Compact
     var deleteDialogVisible by rememberSaveable(uiState.selectedPageId) { mutableStateOf(false) }
     var previewPageId by rememberSaveable { mutableStateOf<String?>(null) }
     var exportSheetVisible by rememberSaveable { mutableStateOf(false) }
@@ -483,26 +495,30 @@ fun DocumentDetailScreen(
                 onOpenSign = onOpenSign,
             )
         } else {
-            Box(
+            BoxWithConstraints(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding)
                     .background(MaterialTheme.colorScheme.background),
-                contentAlignment = if (windowSizeInfo.isTablet) {
-                    Alignment.TopCenter
-                } else {
+                contentAlignment = if (isCompactWidth) {
                     Alignment.TopStart
+                } else {
+                    Alignment.TopCenter
                 },
             ) {
+                // Page thumbnails keep a steady size; wider windows get more of them per row.
+                val gridWidth = minOf(maxWidth, windowSizeInfo.contentMaxWidth.takeOrElse { maxWidth }) -
+                    windowSizeInfo.horizontalPadding * 2
+                val pageColumns = adaptiveColumnCount(gridWidth, PageGridCellMinWidth, minColumns = 2, maxColumns = 6)
                 Box(
                     modifier = Modifier
                         .then(
-                            if (windowSizeInfo.isTablet) {
+                            if (isCompactWidth) {
+                                Modifier.fillMaxSize()
+                            } else {
                                 Modifier
                                     .widthIn(max = windowSizeInfo.contentMaxWidth)
                                     .fillMaxHeight()
-                            } else {
-                                Modifier.fillMaxSize()
                             },
                         )
                         .background(MaterialTheme.colorScheme.background)
@@ -604,7 +620,7 @@ fun DocumentDetailScreen(
                 // The add tile takes the next free cell after the last page, like "New folder"
                 // does in the library shelf. A null entry marks it.
                 items(
-                    items = (uiState.pages + listOf<ScanPage?>(null)).chunked(windowSizeInfo.pageColumns),
+                    items = (uiState.pages + listOf<ScanPage?>(null)).chunked(pageColumns),
                     key = { rowPages -> rowPages.joinToString(separator = "-") { page -> page?.id ?: "add" } },
                     contentType = { "page_row" },
                 ) { rowPages ->
@@ -616,7 +632,7 @@ fun DocumentDetailScreen(
                             if (page == null) {
                                 AddPageTile(
                                     enabled = !uiState.isMutatingPage && draggedPageId == null,
-                                    compact = windowSizeInfo.pageColumns == 1,
+                                    compact = pageColumns == 1,
                                     onClick = { addPageSheetVisible = true },
                                     modifier = Modifier.weight(1f),
                                 )
@@ -634,7 +650,7 @@ fun DocumentDetailScreen(
                                 isDragging = isDragging,
                                 isDropTarget = dragTargetPageId == page.id,
                                 isSelected = draggedPageId == null && page.id == selectedPage?.id,
-                                compact = windowSizeInfo.pageColumns == 1,
+                                compact = pageColumns == 1,
                                 reorderEnabled = reorderEnabled && !isReviewingPage,
                                 modifier = Modifier
                                     .weight(1f)
@@ -651,7 +667,7 @@ fun DocumentDetailScreen(
                                 },
                             )
                         }
-                        val emptyCells = windowSizeInfo.pageColumns - rowPages.size
+                        val emptyCells = pageColumns - rowPages.size
                         repeat(emptyCells) {
                             Box(modifier = Modifier.weight(1f))
                         }
@@ -672,7 +688,7 @@ fun DocumentDetailScreen(
                         pageCount = uiState.pages.size,
                         isDragging = true,
                         isDropTarget = false,
-                        compact = windowSizeInfo.pageColumns == 1,
+                        compact = pageColumns == 1,
                         modifier = Modifier
                             .width(with(density) { startBounds.width.toDp() })
                             .height(with(density) { overlayHeight.toDp() })
@@ -1360,6 +1376,21 @@ private fun DocumentMasterDetailLayout(
                     }
                 }
                 selectedPage != null -> {
+                    val imagePath = selectedPage.processedImagePath ?: selectedPage.rawImagePath ?: selectedPage.thumbnailPath
+                    val zoomState = rememberZoomableImageState(imagePath)
+                    // Title and actions sit in their own toolbar above the page, so nothing covers it.
+                    PagePreviewToolbar(
+                        title = "Page ${selectedPage.pageIndex + 1} of ${uiState.pages.size}",
+                        enabled = !uiState.isMutatingPage,
+                        zoomActive = zoomState.isZoomActive,
+                        onResetZoom = zoomState::reset,
+                        onEdit = { onOpenPageEditor(selectedPage.id) },
+                        onRetake = { onReplacePage(selectedPage.id) },
+                        onText = { onOpenText(selectedPage.pageIndex) },
+                        onSign = { onOpenSign(selectedPage.pageIndex) },
+                        onShare = onShareSelectedPage,
+                        onDelete = onDeleteSelectedPage,
+                    )
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -1368,53 +1399,12 @@ private fun DocumentMasterDetailLayout(
                             .border(1.dp, MaterialTheme.colorScheme.outlineVariant, MaterialTheme.shapes.extraLarge),
                     ) {
                         ZoomableImageViewer(
-                            imagePath = selectedPage.processedImagePath ?: selectedPage.rawImagePath ?: selectedPage.thumbnailPath,
+                            imagePath = imagePath,
                             title = "Page ${selectedPage.pageIndex + 1} of ${uiState.pages.size}",
                             onNavigateUp = null,
-                            trailingAction = { zoomActive, onResetZoom ->
-                                Row(
-                                    horizontalArrangement = Arrangement.spacedBy(10.dp),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                ) {
-                                    if (zoomActive) {
-                                        PreviewActionButton(
-                                            icon = Icons.Filled.Refresh,
-                                            contentDescription = "Reset zoom",
-                                            onClick = onResetZoom,
-                                        )
-                                    }
-                                    PreviewActionButton(
-                                        icon = Icons.Filled.Crop,
-                                        contentDescription = "Edit page",
-                                        onClick = { onOpenPageEditor(selectedPage.id) },
-                                    )
-                                    PreviewActionButton(
-                                        icon = Icons.Filled.CameraAlt,
-                                        contentDescription = "Retake page",
-                                        onClick = { onReplacePage(selectedPage.id) },
-                                    )
-                                    PreviewActionButton(
-                                        icon = Icons.AutoMirrored.Filled.Notes,
-                                        contentDescription = "Extract text",
-                                        onClick = { onOpenText(selectedPage.pageIndex) },
-                                    )
-                                    PreviewActionButton(
-                                        icon = Icons.Filled.Draw,
-                                        contentDescription = "Sign document",
-                                        onClick = { onOpenSign(selectedPage.pageIndex) },
-                                    )
-                                    PreviewActionButton(
-                                        icon = Icons.Filled.IosShare,
-                                        contentDescription = "Share page",
-                                        onClick = onShareSelectedPage,
-                                    )
-                                    PreviewActionButton(
-                                        icon = Icons.Filled.DeleteOutline,
-                                        contentDescription = "Delete page",
-                                        onClick = onDeleteSelectedPage,
-                                    )
-                                }
-                            },
+                            state = zoomState,
+                            showTopBar = false,
+                            canvasColor = MaterialTheme.colorScheme.surfaceContainerHigh,
                         )
                     }
                 }
@@ -2191,26 +2181,83 @@ private fun Context.exportUriFor(path: String): Uri = FileProvider.getUriForFile
     File(path),
 )
 
+/**
+ * Toolbar over the two-pane page preview: page label on the start side, the primary Edit action
+ * as a labelled button and the rest as icon buttons. Labels drop away when the pane is narrow.
+ */
 @Composable
-private fun PreviewActionButton(
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
-    contentDescription: String,
-    onClick: () -> Unit,
+private fun PagePreviewToolbar(
+    title: String,
+    enabled: Boolean,
+    zoomActive: Boolean,
+    onResetZoom: () -> Unit,
+    onEdit: () -> Unit,
+    onRetake: () -> Unit,
+    onText: () -> Unit,
+    onSign: () -> Unit,
+    onShare: () -> Unit,
+    onDelete: () -> Unit,
 ) {
-    Surface(
-        onClick = onClick,
-        modifier = Modifier.size(48.dp),
-        color = Color.Black.copy(alpha = 0.42f),
-        contentColor = Color.White,
-        shape = MaterialTheme.shapes.large,
-        border = BorderStroke(1.dp, Color.White.copy(alpha = 0.12f)),
-    ) {
-        Box(contentAlignment = Alignment.Center) {
-            Icon(
-                imageVector = icon,
-                contentDescription = contentDescription,
-                tint = Color.White,
+    BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
+        val roomy = maxWidth >= 560.dp
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.weight(1f),
+            )
+            if (zoomActive) {
+                PagePreviewToolButton(Icons.Filled.Refresh, "Reset zoom", true, onResetZoom)
+            }
+            if (roomy) {
+                androidx.compose.material3.FilledTonalButton(
+                    onClick = onEdit,
+                    enabled = enabled,
+                    contentPadding = PaddingValues(horizontal = 16.dp),
+                ) {
+                    Icon(Icons.Filled.Crop, contentDescription = null, modifier = Modifier.size(18.dp))
+                    Spacer(Modifier.width(8.dp))
+                    Text("Edit")
+                }
+                Spacer(Modifier.width(4.dp))
+            } else {
+                PagePreviewToolButton(Icons.Filled.Crop, "Edit page", enabled, onEdit)
+            }
+            PagePreviewToolButton(Icons.Filled.CameraAlt, "Retake page", enabled, onRetake)
+            PagePreviewToolButton(Icons.AutoMirrored.Filled.Notes, "Extract text", enabled, onText)
+            PagePreviewToolButton(Icons.Filled.Draw, "Sign document", enabled, onSign)
+            PagePreviewToolButton(Icons.Filled.IosShare, "Share page", enabled, onShare)
+            PagePreviewToolButton(
+                icon = Icons.Filled.DeleteOutline,
+                contentDescription = "Delete page",
+                enabled = enabled,
+                onClick = onDelete,
+                tint = MaterialTheme.colorScheme.error,
             )
         }
+    }
+}
+
+@Composable
+private fun PagePreviewToolButton(
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    contentDescription: String,
+    enabled: Boolean,
+    onClick: () -> Unit,
+    tint: Color = MaterialTheme.colorScheme.onSurfaceVariant,
+) {
+    IconButton(onClick = onClick, enabled = enabled) {
+        Icon(
+            imageVector = icon,
+            contentDescription = contentDescription,
+            tint = if (enabled) tint else tint.copy(alpha = 0.38f),
+        )
     }
 }

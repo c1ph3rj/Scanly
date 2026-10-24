@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -53,6 +54,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
+import `in`.c1ph3rj.scanly.core.ui.WindowWidthClass
+import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import androidx.compose.ui.Modifier
 import androidx.compose.material3.IconButton
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
@@ -195,23 +198,13 @@ fun SignEditorScreen(
         )
     }
 
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background),
-    ) {
-        SignTopBar(
-            title = title,
-            subtitle = if (pageCount == 0) "" else "Page ${state.currentPage + 1} of $pageCount",
-            onCancel = requestCancel,
-            onDone = onDone,
-            doneEnabled = doneEnabled,
-        )
+    // Landscape windows with room: the page keeps the full height and the tools sit beside it.
+    // A bottom tray there would leave the page a thumbnail.
+    val window = rememberWindowSizeInfo()
+    val useSidePanel = window.isLandscape && window.widthClass != WindowWidthClass.Compact
+    val pageArea: @Composable (Modifier) -> Unit = { areaModifier ->
         Box(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.surfaceContainer),
+            modifier = areaModifier.background(MaterialTheme.colorScheme.surfaceContainer),
         ) {
             if (pageCount == 0) {
                 CircularProgressIndicator(
@@ -250,14 +243,59 @@ fun SignEditorScreen(
                 }
             }
         }
-        SignBottomPanel(
-            state = state,
-            onAction = onAction,
-            onManageSignatures = onManageSignatures,
-            onCreateSignature = onCreateSignature,
+    }
+
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background),
+    ) {
+        SignTopBar(
+            title = title,
+            subtitle = if (pageCount == 0) "" else "Page ${state.currentPage + 1} of $pageCount",
+            onCancel = requestCancel,
+            onDone = onDone,
+            doneEnabled = doneEnabled,
         )
+        if (useSidePanel) {
+            Row(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth(),
+            ) {
+                pageArea(
+                    Modifier
+                        .weight(1f)
+                        .fillMaxHeight(),
+                )
+                SignBottomPanel(
+                    state = state,
+                    onAction = onAction,
+                    onManageSignatures = onManageSignatures,
+                    onCreateSignature = onCreateSignature,
+                    sidePanel = true,
+                    modifier = Modifier
+                        .width(SidePanelWidth)
+                        .fillMaxHeight(),
+                )
+            }
+        } else {
+            pageArea(
+                Modifier
+                    .weight(1f)
+                    .fillMaxWidth(),
+            )
+            SignBottomPanel(
+                state = state,
+                onAction = onAction,
+                onManageSignatures = onManageSignatures,
+                onCreateSignature = onCreateSignature,
+            )
+        }
     }
 }
+
+private val SidePanelWidth = 360.dp
 
 @Composable
 private fun SignTopBar(
@@ -378,6 +416,9 @@ private fun SignBottomPanel(
     onAction: (SignEditorAction) -> Unit,
     onManageSignatures: () -> Unit,
     onCreateSignature: (SignatureKind) -> Unit,
+    modifier: Modifier = Modifier,
+    /** Docked beside the page (landscape): full height, tools pinned to the bottom. */
+    sidePanel: Boolean = false,
 ) {
     val kind: SignatureKind? = when (state.activeTool) {
         SignTool.Signature -> SignatureKind.SIGNATURE
@@ -386,14 +427,19 @@ private fun SignBottomPanel(
     }
 
     Surface(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
+        modifier = modifier.then(if (sidePanel) Modifier else Modifier.fillMaxWidth()),
+        shape = if (sidePanel) {
+            RoundedCornerShape(topStart = 24.dp)
+        } else {
+            RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
+        },
         color = MaterialTheme.colorScheme.surface,
         shadowElevation = 8.dp,
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .then(if (sidePanel) Modifier.fillMaxHeight() else Modifier)
                 .navigationBarsPadding()
                 .padding(top = 16.dp, bottom = 8.dp),
         ) {
@@ -430,6 +476,7 @@ private fun SignBottomPanel(
                 ToolHint(tool = state.activeTool)
             }
             Spacer(Modifier.height(8.dp))
+            if (sidePanel) Spacer(Modifier.weight(1f))
             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
             ToolRow(
                 activeTool = state.activeTool,

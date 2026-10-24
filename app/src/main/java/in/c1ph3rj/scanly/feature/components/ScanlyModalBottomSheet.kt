@@ -12,6 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import `in`.c1ph3rj.scanly.core.ui.WindowWidthClass
+import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import `in`.c1ph3rj.scanly.ui.theme.LocalPureBlack
 import `in`.c1ph3rj.scanly.ui.theme.liftedForPureBlackSheet
 
@@ -28,7 +30,7 @@ import `in`.c1ph3rj.scanly.ui.theme.liftedForPureBlackSheet
 fun ScanlyModalBottomSheet(
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
-    sheetState: SheetState = rememberModalBottomSheetState(),
+    sheetState: SheetState = rememberScanlySheetState(),
     sheetGesturesEnabled: Boolean = true,
     containerColor: @Composable () -> Color = { MaterialTheme.colorScheme.surfaceContainerLow },
     tonalElevation: Dp = 0.dp,
@@ -51,4 +53,18 @@ fun ScanlyModalBottomSheet(
             content = content,
         )
     }
+}
+
+/**
+ * Sheet state for Scanly sheets. In landscape or on wide windows a half-open sheet cuts its
+ * actions off below the fold (there is little height and the sheet is width-capped anyway), so it
+ * opens fully; phones in portrait keep the usual half-open step for long sheets.
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun rememberScanlySheetState(): SheetState {
+    val window = rememberWindowSizeInfo()
+    return rememberModalBottomSheetState(
+        skipPartiallyExpanded = window.isLandscape || window.widthClass != WindowWidthClass.Compact,
+    )
 }

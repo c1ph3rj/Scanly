@@ -135,6 +135,13 @@ android {
     androidResources {
         noCompress += "tflite"
     }
+    // Tiny JNI helper (CPU affinity) that keeps LiteRT inference bit-reproducible; see CpuAffinity.kt.
+    externalNativeBuild {
+        cmake {
+            path = file("src/main/cpp/CMakeLists.txt")
+            version = "3.22.1"
+        }
+    }
     testOptions {
         animationsDisabled = true
         execution = "ANDROIDX_TEST_ORCHESTRATOR"

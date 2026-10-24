@@ -49,6 +49,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import `in`.c1ph3rj.scanly.feature.tools.rememberToolSplitLayout
+import `in`.c1ph3rj.scanly.feature.tools.ToolSplitPanes
+import `in`.c1ph3rj.scanly.feature.tools.ToolSplitMaxWidth
+import `in`.c1ph3rj.scanly.feature.tools.ToolColumnMaxWidth
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.asImageBitmap
@@ -161,7 +165,9 @@ fun PdfCompressRoute(
             .background(MaterialTheme.colorScheme.background),
         contentAlignment = Alignment.TopCenter,
     ) {
-        Column(modifier = Modifier.fillMaxSize().widthIn(max = 640.dp)) {
+        // Options and result split into two panes on wide landscape windows; the rest stay one column.
+        val split = rememberToolSplitLayout() && (step == CompressStep.Options || step == CompressStep.Done)
+        Column(modifier = Modifier.widthIn(max = if (split) ToolSplitMaxWidth else ToolColumnMaxWidth).fillMaxSize()) {
             when (step) {
                 CompressStep.Pick -> PdfFilePickerScreen(
                     title = "Compress PDF",
@@ -239,24 +245,16 @@ private fun ColumnScope.CompressOptionsStep(
         actionLabel = "Change",
         onAction = onChange,
     )
-    Column(
-        modifier = Modifier
-            .weight(1f)
-            .fillMaxWidth()
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = ToolTokens.ScreenPadding)
-            .padding(top = 8.dp, bottom = 20.dp),
-        verticalArrangement = Arrangement.spacedBy(20.dp),
-    ) {
+    val split = rememberToolSplitLayout()
+    val preview: @Composable (Modifier) -> Unit = { previewModifier ->
         ToolPaperPage(
             bitmap = uiState.sourcePagePreview,
             loading = uiState.isSourcePagePreviewLoading,
             contentDescription = "First page of ${name.ifBlank { "the PDF" }}",
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .width(120.dp),
+            modifier = previewModifier,
         )
-
+    }
+    val settings: @Composable ColumnScope.() -> Unit = {
         if (locked) {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 ToolFieldLabel(text = "PDF password")
@@ -311,6 +309,39 @@ private fun ColumnScope.CompressOptionsStep(
         }
 
         ToolNote(text = "Pages are re-encoded as images, so text in the PDF can no longer be selected or searched.")
+    }
+    if (split) {
+        ToolSplitPanes(
+            start = {
+                // The first page at a size you can actually judge, beside the quality choices.
+                preview(
+                    Modifier
+                        .align(Alignment.Center)
+                        .padding(24.dp)
+                        .widthIn(max = 320.dp),
+                )
+            },
+            end = settings,
+            startWeight = 0.45f,
+        )
+    } else {
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = ToolTokens.ScreenPadding)
+                .padding(top = 8.dp, bottom = 20.dp),
+            verticalArrangement = Arrangement.spacedBy(20.dp),
+        ) {
+            preview(
+                Modifier
+                    .align(Alignment.CenterHorizontally)
+                    // Smaller thumbnail on short windows so the quality choices show without scrolling.
+                    .width(if (rememberWindowSizeInfo().isHeightConstrained) 72.dp else 120.dp),
+            )
+            settings()
+        }
     }
 
     ToolBottomBar {

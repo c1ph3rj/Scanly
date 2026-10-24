@@ -65,6 +65,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import `in`.c1ph3rj.scanly.feature.tools.rememberToolSplitLayout
+import `in`.c1ph3rj.scanly.feature.tools.ToolSplitPanes
+import `in`.c1ph3rj.scanly.feature.tools.ToolSplitMaxWidth
+import `in`.c1ph3rj.scanly.feature.tools.ToolColumnMaxWidth
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
@@ -151,6 +155,12 @@ fun PdfToImagesRoute(onNavigateUp: () -> Unit, initialSource: PdfToolSource? = n
         returnToPagesOnPickerBack = true
         showPicker = true
     }
+    // Back from the pages step is a step back, not "Change": back again on the picker leaves the
+    // tool instead of bouncing to the pages step forever.
+    val backToPicker = {
+        returnToPagesOnPickerBack = false
+        showPicker = true
+    }
 
     LaunchedEffect(viewModel) {
         viewModel.events.collectLatest {
@@ -167,7 +177,7 @@ fun PdfToImagesRoute(onNavigateUp: () -> Unit, initialSource: PdfToolSource? = n
         }
     }
     BackHandler(enabled = step == PdfToImagesStep.Pick && uiState.source != null, onBack = onPickerBack)
-    BackHandler(enabled = step == PdfToImagesStep.Pages, onBack = if (fromReader) onNavigateUp else openPicker)
+    BackHandler(enabled = step == PdfToImagesStep.Pages, onBack = if (fromReader) onNavigateUp else backToPicker)
     // An export can't be cancelled halfway (pages already in the gallery would be orphaned).
     BackHandler(enabled = step == PdfToImagesStep.Working) { }
 
@@ -177,7 +187,9 @@ fun PdfToImagesRoute(onNavigateUp: () -> Unit, initialSource: PdfToolSource? = n
             .background(MaterialTheme.colorScheme.background),
         contentAlignment = Alignment.TopCenter,
     ) {
-        Column(modifier = Modifier.fillMaxSize().widthIn(max = 640.dp)) {
+        // Pages and result split into two panes on wide landscape windows; the rest stay one column.
+        val split = rememberToolSplitLayout() && (step == PdfToImagesStep.Pages || step == PdfToImagesStep.Done)
+        Column(modifier = Modifier.widthIn(max = if (split) ToolSplitMaxWidth else ToolColumnMaxWidth).fillMaxSize()) {
             when (step) {
                 PdfToImagesStep.Pick -> PdfFilePickerScreen(
                     title = "PDF to JPG",
@@ -192,7 +204,7 @@ fun PdfToImagesRoute(onNavigateUp: () -> Unit, initialSource: PdfToolSource? = n
                 )
                 PdfToImagesStep.Pages -> PagesStep(
                     uiState = uiState,
-                    onBack = if (fromReader) onNavigateUp else openPicker,
+                    onBack = if (fromReader) onNavigateUp else backToPicker,
                     onChange = openPicker,
                     onRequestThumbnail = viewModel::requestThumbnail,
                     onTogglePage = viewModel::togglePage,
@@ -278,105 +290,120 @@ private fun ColumnScope.PagesStep(
     val gridState = rememberLazyGridState()
     val pageOrder = remember(uiState.pageCount) { (0 until uiState.pageCount).toList() }
 
-    ToolTopBar(onBack = onBack, stepText = "Step 2 of 3 · Pages and format")
-    LazyVerticalGrid(
-        columns = GridCells.Adaptive(PageCellMinWidth),
-        state = gridState,
-        modifier = Modifier
-            .weight(1f)
-            .fillMaxWidth()
-            .gridDragSelect(
-                state = gridState,
-                order = pageOrder,
-                selection = uiState.selectedPages,
-                idForKey = { key -> selectableId(key, PageKeyPrefix) },
-                onSelectionChange = onSelectionChange,
-                contentPaddingStart = ToolTokens.ScreenPadding,
-                contentPaddingTop = GridTopPadding,
-            ),
-        contentPadding = PaddingValues(
-            start = ToolTokens.ScreenPadding,
-            end = ToolTokens.ScreenPadding,
-            top = GridTopPadding,
-            bottom = 24.dp,
-        ),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
-        fullWidth("title") {
-            Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                ToolLargeTitle(title = "PDF to JPG")
-                FileSummaryLine(
-                    name = name,
-                    pageCount = uiState.pageCount,
-                    onChange = onChange,
-                )
-            }
+    val settings: @Composable () -> Unit = {
+        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            FormatSection(selected = uiState.options.format, onSelected = onFormatSelected)
+            ResolutionSection(
+                selected = uiState.options.resolution,
+                estimates = uiState.estimates,
+                onSelected = onResolutionSelected,
+            )
         }
+    }
 
-        when {
-            uiState.needsPassword -> fullWidth("password") {
-                PasswordPanel(
-                    password = uiState.password,
-                    busy = uiState.isOpening,
-                    onPasswordChange = onPasswordChange,
-                    onUnlock = onUnlock,
-                )
-            }
-            !uiState.isReady -> fullWidth("opening") {
-                Box(Modifier.fillMaxWidth().heightIn(min = 200.dp), contentAlignment = Alignment.Center) {
-                    if (uiState.isOpening) CircularProgressIndicator(Modifier.size(28.dp), strokeWidth = 2.5.dp)
+    ToolTopBar(onBack = onBack, stepText = "Step 2 of 3 · Pages and format")
+    // Wide landscape: pages on the start side, the settings beside them instead of below.
+    val split = rememberToolSplitLayout() && uiState.isReady && !uiState.needsPassword
+    val grid: @Composable (Modifier) -> Unit = { gridModifier ->
+        LazyVerticalGrid(
+            columns = GridCells.Adaptive(PageCellMinWidth),
+            state = gridState,
+            modifier = gridModifier
+                .gridDragSelect(
+                    state = gridState,
+                    order = pageOrder,
+                    selection = uiState.selectedPages,
+                    idForKey = { key -> selectableId(key, PageKeyPrefix) },
+                    onSelectionChange = onSelectionChange,
+                    contentPaddingStart = ToolTokens.ScreenPadding,
+                    contentPaddingTop = GridTopPadding,
+                ),
+            contentPadding = PaddingValues(
+                start = ToolTokens.ScreenPadding,
+                end = ToolTokens.ScreenPadding,
+                top = GridTopPadding,
+                bottom = 24.dp,
+            ),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            fullWidth("title") {
+                Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                    ToolLargeTitle(title = "PDF to JPG")
+                    FileSummaryLine(
+                        name = name,
+                        pageCount = uiState.pageCount,
+                        onChange = onChange,
+                    )
                 }
             }
-            else -> {
-                fullWidth("pages-header") {
-                    Column(
-                        modifier = Modifier.padding(top = 8.dp),
-                        verticalArrangement = Arrangement.spacedBy(2.dp),
-                    ) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        ) {
-                            ToolSectionLabel(
-                                text = formatPdfToImagesPagesLabel(selectedCount, uiState.pageCount),
-                                modifier = Modifier.weight(1f),
-                            )
-                            SelectAllAction(
-                                selectedCount = selectedCount,
-                                totalCount = uiState.pageCount,
-                                onSelectAll = onSelectAll,
-                                onSelectNone = onSelectNone,
-                            )
-                        }
-                        if (uiState.pageCount > 2) {
-                            GridHint(text = "Tap a page, or long-press and drag across several.")
-                        }
+
+            when {
+                uiState.needsPassword -> fullWidth("password") {
+                    PasswordPanel(
+                        password = uiState.password,
+                        busy = uiState.isOpening,
+                        onPasswordChange = onPasswordChange,
+                        onUnlock = onUnlock,
+                    )
+                }
+                !uiState.isReady -> fullWidth("opening") {
+                    Box(Modifier.fillMaxWidth().heightIn(min = 200.dp), contentAlignment = Alignment.Center) {
+                        if (uiState.isOpening) CircularProgressIndicator(Modifier.size(28.dp), strokeWidth = 2.5.dp)
                     }
                 }
-                items(count = uiState.pageCount, key = { index -> "$PageKeyPrefix$index" }) { index ->
-                    LaunchedEffect(index) { onRequestThumbnail(index) }
-                    PageCell(
-                        bitmap = uiState.thumbnails[index],
-                        label = (index + 1).toString(),
-                        selected = index in uiState.selectedPages,
-                        contentDescription = "Page ${index + 1}",
-                        onToggle = { onTogglePage(index) },
-                    )
-                }
-                fullWidth("format") {
-                    FormatSection(selected = uiState.options.format, onSelected = onFormatSelected)
-                }
-                fullWidth("resolution") {
-                    ResolutionSection(
-                        selected = uiState.options.resolution,
-                        estimates = uiState.estimates,
-                        onSelected = onResolutionSelected,
-                    )
+                else -> {
+                    fullWidth("pages-header") {
+                        Column(
+                            modifier = Modifier.padding(top = 8.dp),
+                            verticalArrangement = Arrangement.spacedBy(2.dp),
+                        ) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            ) {
+                                ToolSectionLabel(
+                                    text = formatPdfToImagesPagesLabel(selectedCount, uiState.pageCount),
+                                    modifier = Modifier.weight(1f),
+                                )
+                                SelectAllAction(
+                                    selectedCount = selectedCount,
+                                    totalCount = uiState.pageCount,
+                                    onSelectAll = onSelectAll,
+                                    onSelectNone = onSelectNone,
+                                )
+                            }
+                            if (uiState.pageCount > 2) {
+                                GridHint(text = "Tap a page, or long-press and drag across several.")
+                            }
+                        }
+                    }
+                    items(count = uiState.pageCount, key = { index -> "$PageKeyPrefix$index" }) { index ->
+                        LaunchedEffect(index) { onRequestThumbnail(index) }
+                        PageCell(
+                            bitmap = uiState.thumbnails[index],
+                            label = (index + 1).toString(),
+                            selected = index in uiState.selectedPages,
+                            contentDescription = "Page ${index + 1}",
+                            onToggle = { onTogglePage(index) },
+                        )
+                    }
+                    if (!split) {
+                        fullWidth("format") { settings() }
+                    }
                 }
             }
         }
+    }
+    if (split) {
+        ToolSplitPanes(
+            start = { grid(Modifier.fillMaxSize()) },
+            end = { settings() },
+            startWeight = 0.58f,
+        )
+    } else {
+        grid(Modifier.weight(1f).fillMaxWidth())
     }
 
     ToolBottomBar {
@@ -769,6 +796,8 @@ private fun ColumnScope.DoneStep(
         // compact three-up grid of the pages step.
         columns = when {
             imageCount <= 1 -> GridCells.Fixed(1)
+            // Wide windows: steady 180 dp previews rather than two half-screen A4 pages.
+            rememberToolSplitLayout() -> GridCells.Adaptive(180.dp)
             imageCount <= 4 -> GridCells.Fixed(2)
             else -> GridCells.Adaptive(PageCellMinWidth)
         },

@@ -36,6 +36,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import `in`.c1ph3rj.scanly.feature.tools.ToolSplitMaxWidth
+import `in`.c1ph3rj.scanly.feature.tools.ToolColumnMaxWidth
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
@@ -168,9 +170,9 @@ fun PdfMergeRoute(
 
 /** Keeps each step to a readable column on tablets (max 640dp, centred). */
 @Composable
-private fun MergeStepFrame(content: @Composable () -> Unit) {
+private fun MergeStepFrame(wide: Boolean = false, content: @Composable () -> Unit) {
     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
-        Box(Modifier.widthIn(max = 640.dp).fillMaxSize()) {
+        Box(Modifier.widthIn(max = if (wide) ToolSplitMaxWidth else ToolColumnMaxWidth).fillMaxSize()) {
             content()
         }
     }
@@ -448,7 +450,8 @@ private fun MergeDoneStep(
         uiState.resultSizeBytes?.let { add(ToolDetailRow("Size", StorageFormatter.formatBytes(it))) }
         add(ToolDetailRow("Original files", "Kept, unchanged"))
     }
-    MergeStepFrame {
+    // The result can split into preview | details on wide windows, so give it the wide frame.
+    MergeStepFrame(wide = true) {
         PdfToolDoneScreen(
             title = "Merged",
             subtitle = "${filesLabel(count)} combined into one PDF",

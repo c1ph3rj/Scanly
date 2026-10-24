@@ -218,7 +218,8 @@ fun PdfPasswordRoute(
                             )
                         }
                     },
-                    modifier = Modifier.widthIn(max = MaxStepWidth).fillMaxWidth(),
+                    // The shared result screen caps its own column and splits on wide windows.
+                    modifier = Modifier.fillMaxWidth(),
                     isSaving = uiState.isProcessing && uiState.result != null,
                     savedDestinationLabel = uiState.savedDestinationLabel,
                     previewBadge = { PasswordResultBadge(locked = isProtect) },

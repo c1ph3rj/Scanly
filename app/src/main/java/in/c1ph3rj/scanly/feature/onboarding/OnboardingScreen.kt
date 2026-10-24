@@ -10,6 +10,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -240,37 +241,47 @@ private fun MediumOnboardingLayout(
                 modifier = Modifier.padding(top = 16.dp),
             )
 
-            Column(
+            // Centre the hero and copy in the space above the button: on a tall tablet they used
+            // to sit at the top with a large empty gap below.
+            BoxWithConstraints(
                 modifier = Modifier
                     .weight(1f)
-                    .fillMaxWidth()
-                    .verticalScroll(rememberScrollState()),
-                horizontalAlignment = Alignment.CenterHorizontally,
+                    .fillMaxWidth(),
             ) {
-                Spacer(modifier = Modifier.height(28.dp))
-                ScannerHero(
-                    visible = animationStage >= 2,
-                    compact = false,
-                    heroHeight = 280.dp,
+                val viewportHeight = maxHeight
+                Column(
                     modifier = Modifier
-                        .widthIn(max = 640.dp)
-                        .fillMaxWidth(),
-                )
-                Spacer(modifier = Modifier.height(28.dp))
-                OnboardingMessage(
-                    visible = animationStage >= 2,
-                    modifier = Modifier
-                        .widthIn(max = 600.dp)
-                        .fillMaxWidth(),
-                )
-                Spacer(modifier = Modifier.height(24.dp))
-                FeatureList(
-                    animationStage = animationStage,
-                    modifier = Modifier
-                        .widthIn(max = 600.dp)
-                        .fillMaxWidth(),
-                )
-                Spacer(modifier = Modifier.height(24.dp))
+                        .fillMaxWidth()
+                        .verticalScroll(rememberScrollState())
+                        .heightIn(min = viewportHeight),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                ) {
+                    Spacer(modifier = Modifier.height(28.dp))
+                    ScannerHero(
+                        visible = animationStage >= 2,
+                        compact = false,
+                        heroHeight = if (viewportHeight >= 900.dp) 360.dp else 280.dp,
+                        modifier = Modifier
+                            .widthIn(max = 640.dp)
+                            .fillMaxWidth(),
+                    )
+                    Spacer(modifier = Modifier.height(28.dp))
+                    OnboardingMessage(
+                        visible = animationStage >= 2,
+                        modifier = Modifier
+                            .widthIn(max = 600.dp)
+                            .fillMaxWidth(),
+                    )
+                    Spacer(modifier = Modifier.height(24.dp))
+                    FeatureList(
+                        animationStage = animationStage,
+                        modifier = Modifier
+                            .widthIn(max = 600.dp)
+                            .fillMaxWidth(),
+                    )
+                    Spacer(modifier = Modifier.height(24.dp))
+                }
             }
 
             OnboardingAction(
@@ -298,11 +309,17 @@ private fun WideOnboardingLayout(
         contentAlignment = Alignment.Center,
     ) {
         val heightConstrained = maxHeight < 680.dp
+        // Phone landscape (~400 dp tall): titles-only features and a hero that fits the height.
+        val veryShort = maxHeight < 480.dp
         val widthConstrained = maxWidth < 960.dp
         val horizontalPadding = if (widthConstrained) 24.dp else 48.dp
         val verticalPadding = if (heightConstrained) 16.dp else 28.dp
         val paneSpacing = if (widthConstrained) 28.dp else 64.dp
-        val heroHeight = if (heightConstrained) 280.dp else 440.dp
+        val heroHeight = when {
+            veryShort -> (maxHeight - 140.dp).coerceIn(180.dp, 280.dp)
+            heightConstrained -> 280.dp
+            else -> 440.dp
+        }
 
         Column(
             modifier = Modifier
@@ -341,11 +358,13 @@ private fun WideOnboardingLayout(
                         OnboardingMessage(
                             visible = animationStage >= 2,
                             prominent = !heightConstrained,
+                            showSupporting = !veryShort,
                         )
-                        Spacer(modifier = Modifier.height(if (heightConstrained) 16.dp else 28.dp))
+                        Spacer(modifier = Modifier.height(if (veryShort) 10.dp else if (heightConstrained) 16.dp else 28.dp))
                         FeatureList(
                             animationStage = animationStage,
                             spacious = !heightConstrained,
+                            showDetails = !veryShort,
                         )
                     }
                     Spacer(modifier = Modifier.height(if (heightConstrained) 12.dp else 20.dp))
@@ -425,6 +444,8 @@ private fun OnboardingMessage(
     visible: Boolean,
     modifier: Modifier = Modifier,
     prominent: Boolean = false,
+    /** False on very short windows, where the feature titles already say it. */
+    showSupporting: Boolean = true,
 ) {
     AnimatedVisibility(
         visible = visible,
@@ -447,11 +468,13 @@ private fun OnboardingMessage(
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onBackground,
             )
-            Text(
-                text = "Capture, clean up, organize, and export your documents without leaving Scanly.",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
+            if (showSupporting) {
+                Text(
+                    text = "Capture, clean up, organize, and export your documents without leaving Scanly.",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
         }
     }
 }
@@ -461,10 +484,12 @@ private fun FeatureList(
     animationStage: Int,
     modifier: Modifier = Modifier,
     spacious: Boolean = false,
+    /** False on very short windows: titles only, so all three fit beside the hero. */
+    showDetails: Boolean = true,
 ) {
     Column(
         modifier = modifier.testTag("onboarding_features"),
-        verticalArrangement = Arrangement.spacedBy(14.dp),
+        verticalArrangement = Arrangement.spacedBy(if (showDetails) 14.dp else 8.dp),
     ) {
         FeatureRow(
             visible = animationStage >= 3,
@@ -474,6 +499,7 @@ private fun FeatureList(
             containerColor = MaterialTheme.colorScheme.primaryContainer,
             contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
             spacious = spacious,
+            showDetails = showDetails,
         )
         FeatureRow(
             visible = animationStage >= 4,
@@ -483,6 +509,7 @@ private fun FeatureList(
             containerColor = MaterialTheme.colorScheme.secondaryContainer,
             contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
             spacious = spacious,
+            showDetails = showDetails,
         )
         FeatureRow(
             visible = animationStage >= 5,
@@ -492,6 +519,7 @@ private fun FeatureList(
             containerColor = MaterialTheme.colorScheme.tertiaryContainer,
             contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
             spacious = spacious,
+            showDetails = showDetails,
         )
     }
 }
@@ -506,6 +534,7 @@ private fun FeatureRow(
     contentColor: Color,
     modifier: Modifier = Modifier,
     spacious: Boolean = false,
+    showDetails: Boolean = true,
 ) {
     AnimatedVisibility(
         visible = visible,
@@ -518,7 +547,7 @@ private fun FeatureRow(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Surface(
-                modifier = Modifier.size(if (spacious) 56.dp else 48.dp),
+                modifier = Modifier.size(if (spacious) 56.dp else if (showDetails) 48.dp else 40.dp),
                 shape = MaterialTheme.shapes.large,
                 color = containerColor,
                 contentColor = contentColor,
@@ -545,15 +574,17 @@ private fun FeatureRow(
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onBackground,
                 )
-                Text(
-                    text = description,
-                    style = if (spacious) {
-                        MaterialTheme.typography.bodyLarge
-                    } else {
-                        MaterialTheme.typography.bodyMedium
-                    },
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
+                if (showDetails) {
+                    Text(
+                        text = description,
+                        style = if (spacious) {
+                            MaterialTheme.typography.bodyLarge
+                        } else {
+                            MaterialTheme.typography.bodyMedium
+                        },
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
             }
         }
     }

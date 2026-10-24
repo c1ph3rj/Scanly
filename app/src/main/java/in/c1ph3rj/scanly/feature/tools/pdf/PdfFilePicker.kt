@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -37,6 +38,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.unit.Dp
+import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
@@ -121,141 +124,154 @@ fun PdfFilePickerScreen(
             }
     }
 
-    Column(
+    val scrollHeader = rememberWindowSizeInfo().isHeightConstrained
+
+    // One readable, centred column on tablets; every tool's "choose a file" step looks the same.
+    Box(
         modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background),
+        contentAlignment = Alignment.TopCenter,
     ) {
-        ToolTopBar(onBack = onBack, stepText = stepText)
-        Column(
-            modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 2.dp, bottom = 12.dp),
-            verticalArrangement = Arrangement.spacedBy(14.dp),
-        ) {
-            ToolLargeTitle(title = title, subtitle = subtitle)
-            if (usable.isNotEmpty()) {
-                ToolSearchField(
-                    value = query,
-                    onValueChange = { query = it },
-                    placeholder = "Search your $itemNoun",
-                )
-            }
-            headerExtra?.invoke(this)
-        }
-        LazyColumn(
-            modifier = Modifier.weight(1f).fillMaxWidth(),
-            contentPadding = PaddingValues(start = 8.dp, end = 8.dp, bottom = 24.dp),
-            verticalArrangement = Arrangement.spacedBy(2.dp),
-        ) {
-            item(key = "device") {
-                ToolCard(
-                    onClick = onPickDevice,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 4.dp)
-                        .padding(bottom = 8.dp),
+        Column(modifier = Modifier.widthIn(max = 640.dp).fillMaxSize()) {
+            ToolTopBar(onBack = onBack, stepText = stepText)
+            val header: @Composable (horizontalPadding: Dp) -> Unit = { horizontalPadding ->
+                Column(
+                    modifier = Modifier.padding(start = horizontalPadding, end = horizontalPadding, top = 2.dp, bottom = 12.dp),
+                    verticalArrangement = Arrangement.spacedBy(if (scrollHeader) 10.dp else 14.dp),
                 ) {
-                    Row(
-                        modifier = Modifier
-                            .heightIn(min = 64.dp)
-                            .padding(horizontal = 12.dp, vertical = 10.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(14.dp),
-                    ) {
-                        ToolIconWell(deviceIcon, size = 44.dp, iconSize = 22.dp, accent = true)
-                        Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                            Text(
-                                deviceTitle,
-                                style = MaterialTheme.typography.titleSmall.copy(fontSize = 15.sp),
-                                fontWeight = FontWeight.SemiBold,
-                            )
-                            Text(
-                                deviceSubtitle,
-                                style = MaterialTheme.typography.bodySmall.copy(fontSize = 13.sp),
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
-                        }
-                        Icon(
-                            Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    ToolLargeTitle(title = title, subtitle = subtitle)
+                    if (usable.isNotEmpty()) {
+                        ToolSearchField(
+                            value = query,
+                            onValueChange = { query = it },
+                            placeholder = "Search your $itemNoun",
                         )
                     }
+                    headerExtra?.invoke(this)
                 }
             }
-            if (usable.isNotEmpty()) {
-                item(key = "header") {
-                    Row(
+            if (!scrollHeader) header(20.dp)
+            LazyColumn(
+                modifier = Modifier.weight(1f).fillMaxWidth(),
+                contentPadding = PaddingValues(start = 8.dp, end = 8.dp, bottom = 24.dp),
+                verticalArrangement = Arrangement.spacedBy(2.dp),
+            ) {
+                // Short windows: the title and search scroll away with the list, so files show.
+                if (scrollHeader) {
+                    item(key = "picker_header") { header(12.dp) }
+                }
+                item(key = "device") {
+                    ToolCard(
+                        onClick = onPickDevice,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(start = 12.dp, end = 12.dp, top = 8.dp, bottom = 6.dp),
-                        verticalAlignment = Alignment.CenterVertically,
+                            .padding(horizontal = 4.dp)
+                            .padding(bottom = 8.dp),
                     ) {
-                        ToolSectionLabel(
-                            text = "In Scanly · ${countLabel(usable.size)}",
-                            modifier = Modifier.weight(1f),
-                        )
-                        Surface(
-                            onClick = {
-                                val all = PdfPickerSort.entries
-                                sort = all[(all.indexOf(sort) + 1) % all.size]
-                            },
-                            shape = RoundedCornerShape(18.dp),
-                            color = Color.Transparent,
-                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+                        Row(
                             modifier = Modifier
-                                .heightIn(min = 36.dp)
-                                .semantics { stateDescription = "Sorted by ${sort.label}" },
+                                .heightIn(min = 64.dp)
+                                .padding(horizontal = 12.dp, vertical = 10.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(14.dp),
                         ) {
-                            Row(
-                                modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(6.dp),
-                            ) {
+                            ToolIconWell(deviceIcon, size = 44.dp, iconSize = 22.dp, accent = true)
+                            Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
                                 Text(
-                                    sort.label,
-                                    style = MaterialTheme.typography.labelLarge.copy(fontSize = 13.sp),
+                                    deviceTitle,
+                                    style = MaterialTheme.typography.titleSmall.copy(fontSize = 15.sp),
                                     fontWeight = FontWeight.SemiBold,
                                 )
-                                Icon(Icons.Outlined.SwapVert, contentDescription = null, modifier = Modifier.size(16.dp))
+                                Text(
+                                    deviceSubtitle,
+                                    style = MaterialTheme.typography.bodySmall.copy(fontSize = 13.sp),
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            }
+                            Icon(
+                                Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                    }
+                }
+                if (usable.isNotEmpty()) {
+                    item(key = "header") {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 12.dp, end = 12.dp, top = 8.dp, bottom = 6.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            ToolSectionLabel(
+                                text = "In Scanly · ${countLabel(usable.size)}",
+                                modifier = Modifier.weight(1f),
+                            )
+                            Surface(
+                                onClick = {
+                                    val all = PdfPickerSort.entries
+                                    sort = all[(all.indexOf(sort) + 1) % all.size]
+                                },
+                                shape = RoundedCornerShape(18.dp),
+                                color = Color.Transparent,
+                                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+                                modifier = Modifier
+                                    .heightIn(min = 36.dp)
+                                    .semantics { stateDescription = "Sorted by ${sort.label}" },
+                            ) {
+                                Row(
+                                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                                ) {
+                                    Text(
+                                        sort.label,
+                                        style = MaterialTheme.typography.labelLarge.copy(fontSize = 13.sp),
+                                        fontWeight = FontWeight.SemiBold,
+                                    )
+                                    Icon(Icons.Outlined.SwapVert, contentDescription = null, modifier = Modifier.size(16.dp))
+                                }
                             }
                         }
                     }
                 }
-            }
-            items(visible, key = { it.id }) { document ->
-                val position = selectedOrder?.indexOf(document.id)?.takeIf { it >= 0 }
-                PdfPickerRow(
-                    document = document,
-                    meta = rowMeta(document),
-                    multiSelect = selectedOrder != null,
-                    selectedPosition = position,
-                    onClick = { onPickLibrary(document) },
-                )
-            }
-            item(key = "footer") {
-                val footer = when {
-                    usable.isEmpty() && hiddenEmpty == 0 -> emptyLibraryHint
-                    usable.isEmpty() -> noPagesHint
-                    visible.isEmpty() -> "No $itemNoun match \"${query.trim()}\"."
-                    hiddenEmpty == 1 -> "1 empty scan is hidden"
-                    hiddenEmpty > 1 -> "$hiddenEmpty empty scans are hidden"
-                    else -> null
-                }
-                if (footer != null) {
-                    Text(
-                        text = footer,
-                        style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.5.sp),
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 24.dp, vertical = 14.dp),
+                items(visible, key = { it.id }) { document ->
+                    val position = selectedOrder?.indexOf(document.id)?.takeIf { it >= 0 }
+                    PdfPickerRow(
+                        document = document,
+                        meta = rowMeta(document),
+                        multiSelect = selectedOrder != null,
+                        selectedPosition = position,
+                        onClick = { onPickLibrary(document) },
                     )
                 }
+                item(key = "footer") {
+                    val footer = when {
+                        usable.isEmpty() && hiddenEmpty == 0 -> emptyLibraryHint
+                        usable.isEmpty() -> noPagesHint
+                        visible.isEmpty() -> "No $itemNoun match \"${query.trim()}\"."
+                        hiddenEmpty == 1 -> "1 empty scan is hidden"
+                        hiddenEmpty > 1 -> "$hiddenEmpty empty scans are hidden"
+                        else -> null
+                    }
+                    if (footer != null) {
+                        Text(
+                            text = footer,
+                            style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.5.sp),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 24.dp, vertical = 14.dp),
+                        )
+                    }
+                }
             }
-        }
-        if (bottomBar != null) {
-            ToolBottomBar(content = bottomBar)
+            if (bottomBar != null) {
+                ToolBottomBar(content = bottomBar)
+            }
         }
     }
 }

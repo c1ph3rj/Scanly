@@ -21,7 +21,8 @@ class LiteRtDocumentCornerDetector @Inject constructor(
     @param:ApplicationContext private val context: Context,
     private val dispatchers: ScanlyDispatchers,
 ) : DocumentCornerDetector {
-    private val runtimes = mutableMapOf<DocumentCornerModel, Runtime>()
+    /** Keyed by model and reproducibility: reproducible runtimes are single-threaded and pinned. */
+    private val runtimes = mutableMapOf<Pair<DocumentCornerModel, Boolean>, Runtime>()
 
     override suspend fun detect(
         frame: DetectionFrame,
@@ -29,7 +30,7 @@ class LiteRtDocumentCornerDetector @Inject constructor(
     ): CornerDetectionResult = withContext(dispatchers.default) {
         val oriented = frame.toOrientedBitmap()
         try {
-            detectBitmap(oriented, getOrCreateRuntime(model))
+            detectBitmap(oriented, getOrCreateRuntime(model, reproducible = false))
         } finally {
             oriented.recycle()
         }
@@ -38,20 +39,24 @@ class LiteRtDocumentCornerDetector @Inject constructor(
     override suspend fun detect(
         bitmap: Bitmap,
         model: DocumentCornerModel,
+        reproducible: Boolean,
     ): CornerDetectionResult = withContext(dispatchers.default) {
-        detectBitmap(bitmap, getOrCreateRuntime(model))
+        detectBitmap(bitmap, getOrCreateRuntime(model, reproducible))
     }
 
-    private fun getOrCreateRuntime(model: DocumentCornerModel): Runtime = synchronized(runtimes) {
-        runtimes[model] ?: createRuntime(model).also { runtimes[model] = it }
+    private fun getOrCreateRuntime(model: DocumentCornerModel, reproducible: Boolean): Runtime = synchronized(runtimes) {
+        val key = model to reproducible
+        runtimes[key] ?: createRuntime(model, reproducible).also { runtimes[key] = it }
     }
 
-    private fun createRuntime(model: DocumentCornerModel): Runtime {
+    private fun createRuntime(model: DocumentCornerModel, reproducible: Boolean): Runtime {
         TensorFlowLite.init()
         val modelContract = ScanlyModelAssets.contract(model)
+        // One thread so every kernel runs on the pinned calling thread (see CpuAffinity).
+        val threads = if (reproducible) 1 else LiteRtPoseConstants.DEFAULT_THREAD_COUNT
         val interpreter = InterpreterApi.create(
             loadModelBuffer(modelContract.assetPath),
-            InterpreterApi.Options().apply { setNumThreads(LiteRtPoseConstants.DEFAULT_THREAD_COUNT) },
+            InterpreterApi.Options().apply { setNumThreads(threads) },
         )
         interpreter.allocateTensors()
         val inputShape = interpreter.getInputTensor(0).shape()
@@ -68,6 +73,7 @@ class LiteRtDocumentCornerDetector @Inject constructor(
             inputWidth = inputShape.getOrElse(2) { error("LiteRT input width is missing.") },
             inputHeight = inputShape.getOrElse(1) { error("LiteRT input height is missing.") },
             legacyPredictionCount = legacyPredictionCount,
+            reproducible = reproducible,
         )
     }
 
@@ -83,9 +89,11 @@ class LiteRtDocumentCornerDetector @Inject constructor(
         val preprocessingNanos = System.nanoTime() - preprocessingStart
         val inferenceStart = System.nanoTime()
         val decoded = synchronized(runtime.lock) {
-            when (runtime.modelContract.outputKind) {
-                ScanlyModelContract.OutputKind.LEGACY_POSE -> runLegacy(runtime, prepared, bitmap)
-                ScanlyModelContract.OutputKind.CORNERS_AND_PRESENCE -> runCornerRegression(runtime, prepared, bitmap)
+            runtime.onCores {
+                when (runtime.modelContract.outputKind) {
+                    ScanlyModelContract.OutputKind.LEGACY_POSE -> runLegacy(runtime, prepared, bitmap)
+                    ScanlyModelContract.OutputKind.CORNERS_AND_PRESENCE -> runCornerRegression(runtime, prepared, bitmap)
+                }
             }
         }
         val inferenceAndRunNanos = System.nanoTime() - inferenceStart
@@ -169,8 +177,11 @@ class LiteRtDocumentCornerDetector @Inject constructor(
         val inputWidth: Int,
         val inputHeight: Int,
         val legacyPredictionCount: Int,
+        val reproducible: Boolean,
         val lock: Any = Any(),
     ) {
+        fun <T> onCores(block: () -> T): T = if (reproducible) CpuAffinity.run(block) else block()
+
         fun allocateOutput(index: Int): ByteBuffer = ByteBuffer.allocateDirect(interpreter.getOutputTensor(index).numBytes())
             .order(ByteOrder.nativeOrder())
     }

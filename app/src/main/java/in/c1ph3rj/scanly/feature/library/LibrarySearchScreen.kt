@@ -265,33 +265,41 @@ fun LibrarySearchScreen(
                     .background(MaterialTheme.colorScheme.surfaceContainerLowest)
                     .statusBarsPadding(),
             ) {
-                Row(
+                // Field and filters share the results' centred column on wide windows.
+                Column(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 4.dp, end = window.horizontalPadding, top = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
+                        .align(Alignment.CenterHorizontally)
+                        .widthIn(max = window.contentMaxWidth)
+                        .fillMaxWidth(),
                 ) {
-                    LibraryIconButton(onBack, Icons.AutoMirrored.Filled.ArrowBack, "Back")
-                    Spacer(Modifier.width(4.dp))
-                    LibrarySearchBar(
-                        query = query,
-                        onQueryChange = onQueryChange,
-                        onClear = onClear,
-                        modifier = Modifier.weight(1f),
-                        inputModifier = Modifier
-                            .focusRequester(focusRequester)
-                            .testTag(ScanlyTestTags.SEARCH_INPUT),
-                        onSearch = { focusManager.clearFocus(); onQuerySubmitted() },
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 4.dp, end = window.horizontalPadding, top = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        LibraryIconButton(onBack, Icons.AutoMirrored.Filled.ArrowBack, "Back")
+                        Spacer(Modifier.width(4.dp))
+                        LibrarySearchBar(
+                            query = query,
+                            onQueryChange = onQueryChange,
+                            onClear = onClear,
+                            modifier = Modifier.weight(1f),
+                            inputModifier = Modifier
+                                .focusRequester(focusRequester)
+                                .testTag(ScanlyTestTags.SEARCH_INPUT),
+                            onSearch = { focusManager.clearFocus(); onQuerySubmitted() },
+                        )
+                    }
+                    SearchFilterRow(
+                        scope = uiState.scope,
+                        kind = uiState.kindFilter,
+                        availableKinds = uiState.availableKinds,
+                        onScopeChange = onScopeChange,
+                        onKindChange = onKindChange,
+                        horizontalPadding = window.horizontalPadding,
                     )
                 }
-                SearchFilterRow(
-                    scope = uiState.scope,
-                    kind = uiState.kindFilter,
-                    availableKinds = uiState.availableKinds,
-                    onScopeChange = onScopeChange,
-                    onKindChange = onKindChange,
-                    horizontalPadding = window.horizontalPadding,
-                )
                 Box(Modifier.fillMaxWidth().height(2.dp)) {
                     if (uiState.isSearchActive && !results.isTextSearchComplete) {
                         LinearProgressIndicator(Modifier.fillMaxWidth().height(2.dp))
@@ -310,9 +318,10 @@ fun LibrarySearchScreen(
             contentAlignment = Alignment.TopCenter,
         ) {
             LazyColumn(
+                // Cap before filling: fillMaxSize first would pin the width and ignore the cap.
                 modifier = Modifier
-                    .fillMaxSize()
-                    .then(if (window.isTablet) Modifier.widthIn(max = window.contentMaxWidth) else Modifier),
+                    .widthIn(max = window.contentMaxWidth)
+                    .fillMaxSize(),
                 contentPadding = PaddingValues(
                     start = window.horizontalPadding,
                     end = window.horizontalPadding,

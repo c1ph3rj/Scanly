@@ -11,7 +11,9 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -45,6 +47,7 @@ import `in`.c1ph3rj.scanly.core.ui.ScanlyTestTags
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import `in`.c1ph3rj.scanly.core.common.StorageFormatter
+import `in`.c1ph3rj.scanly.core.ui.WindowWidthClass
 import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import `in`.c1ph3rj.scanly.domain.model.ThemeMode
 import `in`.c1ph3rj.scanly.feature.camera.CameraPermissionSupport
@@ -150,6 +153,98 @@ fun SettingsScreen(
         ratingCardState.targetState = uiState.showRatingCard
     }
 
+    val preferencesGroup: @Composable () -> Unit = {
+        SettingsGroup(title = "Preferences") {
+            SettingsNavigationRow(
+                icon = Icons.Filled.Palette,
+                title = "Appearance",
+                subtitle = appearanceSubtitle,
+                onClick = onOpenAppearance,
+            )
+            HorizontalDivider(
+                color = MaterialTheme.colorScheme.outlineVariant,
+            )
+            SettingsNavigationRow(
+                icon = Icons.Filled.Palette,
+                title = "Pip, your helper",
+                subtitle = pipPreferences.settingsSummary(),
+                onClick = onOpenPip,
+                leading = { PipSettingsIcon(enabled = pipPreferences.enabled) },
+            )
+        }
+    }
+    val libraryGroup: @Composable () -> Unit = {
+        SettingsGroup(title = "Library") {
+            SettingsNavigationRow(
+                icon = Icons.Filled.Storage,
+                title = "Storage",
+                subtitle = storageSubtitle,
+                onClick = onOpenStorage,
+            )
+            HorizontalDivider(
+                color = MaterialTheme.colorScheme.outlineVariant,
+            )
+            SettingsNavigationRow(
+                icon = Icons.Filled.RestoreFromTrash,
+                title = "Recently deleted",
+                subtitle = "Pages kept ${TrashKind.PAGE.retentionLabel()}, " +
+                    "documents and folders ${TrashKind.DOCUMENT.retentionLabel()}",
+                onClick = onOpenRecentlyDeleted,
+            )
+        }
+    }
+    val scanningGroup: @Composable () -> Unit = {
+        SettingsGroup(title = "Scanning") {
+            SettingsNavigationRow(
+                icon = Icons.Filled.DocumentScanner,
+                title = "Document detection",
+                subtitle = detectionSubtitle,
+                onClick = onOpenDetection,
+            )
+        }
+    }
+    val homeScreenGroup: @Composable () -> Unit = {
+        SettingsGroup(title = "Home screen") {
+            SettingsNavigationRow(
+                icon = Icons.Filled.Widgets,
+                title = "Widgets",
+                subtitle = "Actions, Scan, and QR",
+                onClick = onOpenWidgets,
+            )
+        }
+    }
+    val moreGroup: @Composable () -> Unit = {
+        SettingsGroup(title = "More") {
+            if (!content?.faqs.isNullOrEmpty()) {
+                SettingsNavigationRow(
+                    icon = Icons.AutoMirrored.Filled.HelpOutline,
+                    title = "Help & FAQ",
+                    subtitle = "${content!!.faqs.size} topics",
+                    onClick = onOpenFaqs,
+                )
+                HorizontalDivider(
+                    color = MaterialTheme.colorScheme.outlineVariant,
+                )
+            }
+            SettingsNavigationRow(
+                icon = Icons.Outlined.StarOutline,
+                title = "Rate Scanly",
+                subtitle = "Leave a rating on Google Play",
+                onClick = onRateApp,
+            )
+            HorizontalDivider(
+                color = MaterialTheme.colorScheme.outlineVariant,
+            )
+            SettingsNavigationRow(
+                icon = Icons.Filled.Info,
+                title = "About",
+                subtitle = content?.appVersionLabel?.let { "Scanly $it" }
+                    ?: "Version, updates, and legal",
+                onClick = onOpenAbout,
+            )
+        }
+    }
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
@@ -174,10 +269,10 @@ fun SettingsScreen(
                 contentAlignment = Alignment.TopCenter,
             ) {
                 LazyColumn(
-                    modifier = if (windowSizeInfo.isTablet) {
-                        Modifier.widthIn(max = windowSizeInfo.contentMaxWidth).fillMaxHeight()
-                    } else {
+                    modifier = if (windowSizeInfo.widthClass == WindowWidthClass.Compact) {
                         Modifier.fillMaxSize()
+                    } else {
+                        Modifier.widthIn(max = windowSizeInfo.contentMaxWidth).fillMaxHeight()
                     },
                     contentPadding = PaddingValues(
                         start = windowSizeInfo.horizontalPadding,
@@ -213,100 +308,33 @@ fun SettingsScreen(
                         }
                     }
 
-                    item(key = "preferences") {
-                        SettingsGroup(title = "Preferences") {
-                            SettingsNavigationRow(
-                                icon = Icons.Filled.Palette,
-                                title = "Appearance",
-                                subtitle = appearanceSubtitle,
-                                onClick = onOpenAppearance,
-                            )
-                            HorizontalDivider(
-                                color = MaterialTheme.colorScheme.outlineVariant,
-                            )
-                            SettingsNavigationRow(
-                                icon = Icons.Filled.Palette,
-                                title = "Pip, your helper",
-                                subtitle = pipPreferences.settingsSummary(),
-                                onClick = onOpenPip,
-                                leading = { PipSettingsIcon(enabled = pipPreferences.enabled) },
-                            )
-                        }
-                    }
-
-                    item(key = "library") {
-                        SettingsGroup(title = "Library") {
-                            SettingsNavigationRow(
-                                icon = Icons.Filled.Storage,
-                                title = "Storage",
-                                subtitle = storageSubtitle,
-                                onClick = onOpenStorage,
-                            )
-                            HorizontalDivider(
-                                color = MaterialTheme.colorScheme.outlineVariant,
-                            )
-                            SettingsNavigationRow(
-                                icon = Icons.Filled.RestoreFromTrash,
-                                title = "Recently deleted",
-                                subtitle = "Pages kept ${TrashKind.PAGE.retentionLabel()}, " +
-                                    "documents and folders ${TrashKind.DOCUMENT.retentionLabel()}",
-                                onClick = onOpenRecentlyDeleted,
-                            )
-                        }
-                    }
-
-                    item(key = "scanning") {
-                        SettingsGroup(title = "Scanning") {
-                            SettingsNavigationRow(
-                                icon = Icons.Filled.DocumentScanner,
-                                title = "Document detection",
-                                subtitle = detectionSubtitle,
-                                onClick = onOpenDetection,
-                            )
-                        }
-                    }
-
-                    item(key = "home") {
-                        SettingsGroup(title = "Home screen") {
-                            SettingsNavigationRow(
-                                icon = Icons.Filled.Widgets,
-                                title = "Widgets",
-                                subtitle = "Actions, Scan, and QR",
-                                onClick = onOpenWidgets,
-                            )
-                        }
-                    }
-
-                    item(key = "more") {
-                        SettingsGroup(title = "More") {
-                            if (!content?.faqs.isNullOrEmpty()) {
-                                SettingsNavigationRow(
-                                    icon = Icons.AutoMirrored.Filled.HelpOutline,
-                                    title = "Help & FAQ",
-                                    subtitle = "${content!!.faqs.size} topics",
-                                    onClick = onOpenFaqs,
-                                )
-                                HorizontalDivider(
-                                    color = MaterialTheme.colorScheme.outlineVariant,
-                                )
+                    if (windowSizeInfo.useTwoPaneLayout) {
+                        // Wide windows: two balanced columns of groups instead of rows stretched edge to edge.
+                        item(key = "groups_two_pane") {
+                            Row(horizontalArrangement = Arrangement.spacedBy(20.dp)) {
+                                Column(
+                                    modifier = Modifier.weight(1f),
+                                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                                ) {
+                                    preferencesGroup()
+                                    libraryGroup()
+                                }
+                                Column(
+                                    modifier = Modifier.weight(1f),
+                                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                                ) {
+                                    scanningGroup()
+                                    homeScreenGroup()
+                                    moreGroup()
+                                }
                             }
-                            SettingsNavigationRow(
-                                icon = Icons.Outlined.StarOutline,
-                                title = "Rate Scanly",
-                                subtitle = "Leave a rating on Google Play",
-                                onClick = onRateApp,
-                            )
-                            HorizontalDivider(
-                                color = MaterialTheme.colorScheme.outlineVariant,
-                            )
-                            SettingsNavigationRow(
-                                icon = Icons.Filled.Info,
-                                title = "About",
-                                subtitle = content?.appVersionLabel?.let { "Scanly $it" }
-                                    ?: "Version, updates, and legal",
-                                onClick = onOpenAbout,
-                            )
                         }
+                    } else {
+                        item(key = "preferences") { preferencesGroup() }
+                        item(key = "library") { libraryGroup() }
+                        item(key = "scanning") { scanningGroup() }
+                        item(key = "home") { homeScreenGroup() }
+                        item(key = "more") { moreGroup() }
                     }
                 }
             }

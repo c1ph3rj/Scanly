@@ -14,6 +14,8 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -53,6 +55,9 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.unit.Dp
+import `in`.c1ph3rj.scanly.core.ui.WindowWidthClass
+import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -155,12 +160,11 @@ private fun OnboardingCameraStep(
             .testTag("onboarding_camera_step"),
         contentAlignment = Alignment.TopCenter,
     ) {
-        Column(
-            modifier = Modifier
-                .widthIn(max = 560.dp)
-                .fillMaxSize()
-                .padding(horizontal = 20.dp),
-        ) {
+        val window = rememberWindowSizeInfo()
+        // Wide landscape: Pip on one side, the ask and its buttons on the other, instead of a
+        // narrow column with empty space either side (and a scroll on a phone held sideways).
+        val sideBySide = window.isLandscape && window.widthClass != WindowWidthClass.Compact
+        val topRow: @Composable () -> Unit = {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -178,45 +182,40 @@ private fun OnboardingCameraStep(
                     modifier = Modifier.padding(end = 8.dp),
                 )
             }
-
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(20.dp),
-            ) {
-                Spacer(Modifier.height(8.dp))
-                PipSays(
-                    line = if (blocked) PipLines.CAMERA_BLOCKED else PipLines.ONBOARDING_CAMERA,
-                    mood = if (blocked) PipMood.DIZZY else PipMood.WOW,
-                    size = 112.dp,
-                    modifier = Modifier.fillMaxWidth(),
+        }
+        val pip: @Composable (Dp) -> Unit = { size ->
+            PipSays(
+                line = if (blocked) PipLines.CAMERA_BLOCKED else PipLines.ONBOARDING_CAMERA,
+                mood = if (blocked) PipMood.DIZZY else PipMood.WOW,
+                size = size,
+                modifier = Modifier.fillMaxWidth(),
+            )
+        }
+        val copy: @Composable () -> Unit = {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text(
+                    text = "Let Pip use the camera",
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = colorScheme.onBackground,
                 )
-                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Text(
-                        text = "Let Pip use the camera",
-                        style = MaterialTheme.typography.headlineMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = colorScheme.onBackground,
-                    )
-                    Text(
-                        text = if (blocked) {
-                            "The camera is turned off for Scanly. Open Settings, tap Permissions, and allow Camera."
-                        } else {
-                            "Scanly needs the camera to capture and straighten pages. You can change this anytime."
-                        },
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = colorScheme.onSurfaceVariant,
-                    )
-                }
-                Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
-                    CameraStepPoint(Icons.Outlined.CameraAlt, "Only on while you're scanning")
-                    CameraStepPoint(Icons.Outlined.Lock, "Photos stay on this phone until you share them")
-                    CameraStepPoint(Icons.Outlined.PhotoLibrary, "Importing from your gallery works without it")
-                }
-                Spacer(Modifier.height(8.dp))
+                Text(
+                    text = if (blocked) {
+                        "The camera is turned off for Scanly. Open Settings, tap Permissions, and allow Camera."
+                    } else {
+                        "Scanly needs the camera to capture and straighten pages. You can change this anytime."
+                    },
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = colorScheme.onSurfaceVariant,
+                )
             }
-
+            Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
+                CameraStepPoint(Icons.Outlined.CameraAlt, "Only on while you're scanning")
+                CameraStepPoint(Icons.Outlined.Lock, "Photos stay on this phone until you share them")
+                CameraStepPoint(Icons.Outlined.PhotoLibrary, "Importing from your gallery works without it")
+            }
+        }
+        val actions: @Composable () -> Unit = {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -266,6 +265,75 @@ private fun OnboardingCameraStep(
                 ) {
                     Text("Maybe later", style = MaterialTheme.typography.labelLarge)
                 }
+            }
+        }
+        if (sideBySide) {
+            Column(
+                modifier = Modifier
+                    .widthIn(max = 1000.dp)
+                    .fillMaxSize()
+                    .padding(horizontal = 24.dp),
+            ) {
+                topRow()
+                Row(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(40.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .weight(0.45f)
+                            .fillMaxHeight(),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        pip(if (window.isHeightConstrained) 88.dp else 140.dp)
+                    }
+                    Column(
+                        modifier = Modifier
+                            .weight(0.55f)
+                            .fillMaxHeight(),
+                        verticalArrangement = Arrangement.Center,
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .weight(1f, fill = false)
+                                .verticalScroll(rememberScrollState()),
+                            verticalArrangement = Arrangement.spacedBy(if (window.isHeightConstrained) 12.dp else 20.dp),
+                        ) {
+                            copy()
+                        }
+                        Spacer(Modifier.height(16.dp))
+                        actions()
+                    }
+                }
+            }
+        } else {
+            Column(
+                modifier = Modifier
+                    .widthIn(max = 560.dp)
+                    .fillMaxSize()
+                    .padding(horizontal = 20.dp),
+            ) {
+                topRow()
+                // Centred in the space above the buttons, so a tall tablet has no empty band.
+                BoxWithConstraints(modifier = Modifier.weight(1f)) {
+                    val viewportHeight = maxHeight
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .verticalScroll(rememberScrollState())
+                            .heightIn(min = viewportHeight),
+                        verticalArrangement = Arrangement.spacedBy(20.dp, Alignment.CenterVertically),
+                    ) {
+                        Spacer(Modifier.height(8.dp))
+                        pip(if (viewportHeight >= 800.dp) 140.dp else 112.dp)
+                        copy()
+                        Spacer(Modifier.height(8.dp))
+                    }
+                }
+                actions()
             }
         }
     }

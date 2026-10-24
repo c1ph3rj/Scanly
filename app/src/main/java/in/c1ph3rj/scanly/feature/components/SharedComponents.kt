@@ -8,6 +8,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -108,6 +110,7 @@ import `in`.c1ph3rj.scanly.core.common.runCatchingCancellable
 import `in`.c1ph3rj.scanly.core.ui.ChromeIconButton
 import `in`.c1ph3rj.scanly.core.ui.MetricChip
 import `in`.c1ph3rj.scanly.core.ui.PreviewDisplaySize
+import `in`.c1ph3rj.scanly.core.ui.WindowWidthClass
 import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import `in`.c1ph3rj.scanly.core.ui.PreviewImageSizer
 import `in`.c1ph3rj.scanly.domain.model.DocumentGroup
@@ -361,16 +364,18 @@ fun ScanlyTabScreenHeader(
     subtitle: String,
     modifier: Modifier = Modifier,
 ) {
+    // Short windows (phone landscape): a smaller title so the content starts above the fold.
+    val compact = rememberWindowSizeInfo().isHeightConstrained
     Column(
         modifier = modifier
             .fillMaxWidth()
             .statusBarsPadding()
-            .padding(top = 24.dp),
-        verticalArrangement = Arrangement.spacedBy(4.dp),
+            .padding(top = if (compact) 8.dp else 24.dp),
+        verticalArrangement = Arrangement.spacedBy(if (compact) 2.dp else 4.dp),
     ) {
         Text(
             text = title,
-            style = MaterialTheme.typography.displaySmall,
+            style = if (compact) MaterialTheme.typography.headlineMedium else MaterialTheme.typography.displaySmall,
             fontWeight = FontWeight.Bold,
         )
         Text(
@@ -445,8 +450,15 @@ fun ScanlyDetailScaffold(
         },
         bottomBar = bottomBar,
         snackbarHost = snackbarHost,
-        content = content,
-    )
+    ) { innerPadding ->
+        // Detail pages read as one centred column on tablets instead of rows stretched edge to edge.
+        val contentMaxWidth = rememberWindowSizeInfo().contentMaxWidth
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
+            Box(modifier = Modifier.widthIn(max = contentMaxWidth).fillMaxSize()) {
+                content(innerPadding)
+            }
+        }
+    }
 }
 
 // ─── Dialogs ───────────────────────────────────────────────────────────────────
@@ -463,8 +475,10 @@ fun ScanlyFormDialogShell(
     content: @Composable ColumnScope.() -> Unit,
 ) {
     val windowSizeInfo = rememberWindowSizeInfo()
-    val adaptiveMaxWidth = if (windowSizeInfo.isTablet) windowSizeInfo.dialogMaxWidth else maxWidth
-    val horizontalPadding = if (windowSizeInfo.isTablet) 32.dp else horizontalMargin
+    // Width-driven, so a phone in landscape gets a dialog-sized card rather than a 900 dp banner.
+    val wideWindow = windowSizeInfo.widthClass != WindowWidthClass.Compact
+    val adaptiveMaxWidth = if (wideWindow) windowSizeInfo.dialogMaxWidth else maxWidth
+    val horizontalPadding = if (wideWindow) 32.dp else horizontalMargin
 
     BasicAlertDialog(
         onDismissRequest = { if (dismissible) onDismiss() },
@@ -492,9 +506,11 @@ fun ScanlyFormDialogShell(
                 border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
                 tonalElevation = 0.dp,
             ) {
+                // Scrolls when it doesn't fit, e.g. a phone in landscape with the keyboard up.
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .verticalScroll(rememberScrollState())
                         .padding(24.dp),
                     verticalArrangement = Arrangement.spacedBy(20.dp),
                     content = content,
@@ -564,6 +580,7 @@ fun ScanlySheetContent(
     content: @Composable ColumnScope.() -> Unit,
 ) {
     val windowSizeInfo = rememberWindowSizeInfo()
+    val wideWindow = windowSizeInfo.widthClass != WindowWidthClass.Compact
     Box(
         modifier = Modifier.fillMaxWidth(),
         contentAlignment = Alignment.TopCenter,
@@ -571,13 +588,13 @@ fun ScanlySheetContent(
         Column(
             modifier = modifier
                 .then(
-                    if (windowSizeInfo.isTablet) {
+                    if (wideWindow) {
                         Modifier.widthIn(max = windowSizeInfo.sheetMaxWidth)
                     } else {
                         Modifier.fillMaxWidth()
                     },
                 )
-                .padding(horizontal = if (windowSizeInfo.isTablet) 24.dp else 20.dp)
+                .padding(horizontal = if (wideWindow) 24.dp else 20.dp)
                 .padding(bottom = 28.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
             content = content,

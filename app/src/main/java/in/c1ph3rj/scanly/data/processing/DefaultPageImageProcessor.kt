@@ -14,7 +14,9 @@ import `in`.c1ph3rj.scanly.core.ml.DocumentGateDetector
 import `in`.c1ph3rj.scanly.core.ml.DocumentGateClass
 import `in`.c1ph3rj.scanly.core.ml.DocumentGatePolicy
 import `in`.c1ph3rj.scanly.core.ml.DocumentQuadPolicy
+import `in`.c1ph3rj.scanly.core.ml.FlatPageQuadPolicy
 import `in`.c1ph3rj.scanly.core.ml.QuadReadiness
+import `in`.c1ph3rj.scanly.core.ml.toPixelGrid
 import `in`.c1ph3rj.scanly.core.processing.OpenCvPageFilterProcessor
 import `in`.c1ph3rj.scanly.core.processing.PageFilterAdjustmentsApplier
 import `in`.c1ph3rj.scanly.core.processing.PerspectiveBitmapTransform
@@ -94,7 +96,7 @@ class DefaultPageImageProcessor @Inject constructor(
                 detectDocumentWhenCropQuadMissing &&
                 settingsRepository.getDocumentGateEnabled()
             ) {
-                runCatching { documentGateDetector.classify(editorOrientedBitmap) }.getOrNull()
+                runCatching { documentGateDetector.classify(editorOrientedBitmap, reproducible = true) }.getOrNull()
             } else {
                 null
             }
@@ -211,8 +213,17 @@ class DefaultPageImageProcessor @Inject constructor(
      * Still-image corner detection aligned with Model Benchmark behaviour:
      * 1) Book-aware resolver in STILL_PROCESS mode (no book-gutter damage, card-friendly aspect)
      * 2) Raw detector fallback if the resolver still drops a usable model quad
+     * 3) Full frame instead when the page already fills the image (PDF render, screenshot,
+     *    clean scan) — see [FlatPageQuadPolicy]
      */
     private suspend fun detectStillImageQuad(bitmap: Bitmap): DocumentCornerQuad? {
+        val quad = detectModelStillImageQuad(bitmap) ?: return null
+        return runCatchingCancellable {
+            FlatPageQuadPolicy.resolve(quad, bitmap.toPixelGrid())
+        }.getOrDefault(quad)
+    }
+
+    private suspend fun detectModelStillImageQuad(bitmap: Bitmap): DocumentCornerQuad? {
         val selectedModel = if (settingsRepository.getAutomaticModelSelection()) {
             runCatching { automaticDocumentModelSelector.selection().postProcessingModel }
                 .getOrDefault(settingsRepository.getPostProcessingModel())
@@ -231,7 +242,7 @@ class DefaultPageImageProcessor @Inject constructor(
 
         // Same path the benchmark visualizes: raw model corners.
         val raw = runCatching {
-            documentCornerDetector.detect(bitmap, selectedModel).quad
+            documentCornerDetector.detect(bitmap, selectedModel, reproducible = true).quad
         }.getOrNull()
         return raw?.takeIf(DocumentQuadPolicy::isStillProcessReady)
             ?: raw?.takeIf { it.isValid() && it.isConvex() }

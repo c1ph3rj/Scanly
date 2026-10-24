@@ -192,7 +192,7 @@ class LibraryRedesignTest {
                         uiState = state,
                         snackbarHostState = remember { SnackbarHostState() },
                         onCreateDocument = { _, _ -> }, onRenameDocument = { _, _ -> }, onDeleteDocument = {},
-                        onCreateGroup = {}, onRenameGroup = { _, _ -> }, onDeleteGroup = {},
+                        onCreateGroup = {}, onRenameGroup = { _, _ -> }, onDeleteGroup = { _, _ -> },
                         onMoveDocumentToGroup = { _, _ -> }, onMoveDocumentToNewGroup = { _, _ -> },
                         onOpenDocument = { openedDocument = it }, onOpenScanSession = {}, onOpenGroup = { openedGroup = it },
                         onOpenSearch = { search = true },

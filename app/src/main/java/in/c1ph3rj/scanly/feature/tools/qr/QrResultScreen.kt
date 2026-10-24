@@ -51,6 +51,7 @@ import `in`.c1ph3rj.scanly.domain.model.QrPayloadParser
 import `in`.c1ph3rj.scanly.domain.model.WifiSecurity
 import `in`.c1ph3rj.scanly.domain.model.headline
 import `in`.c1ph3rj.scanly.domain.model.kindLabel
+import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import `in`.c1ph3rj.scanly.feature.tools.ToolBottomBar
 import `in`.c1ph3rj.scanly.feature.tools.ToolCard
 import `in`.c1ph3rj.scanly.feature.tools.ToolIconWell
@@ -120,12 +121,23 @@ fun QrResultScreen(
             }
         }
 
+        // Short windows put all three actions on one row instead of stacking two rows of buttons.
+        val oneRow = rememberWindowSizeInfo().isHeightConstrained
         ToolBottomBar {
-            ToolPrimaryButton(
-                text = primary.resultLabel,
-                onClick = { runQrPrimaryAction(context, payload)?.let(onMessage) },
-            )
+            if (!oneRow) {
+                ToolPrimaryButton(
+                    text = primary.resultLabel,
+                    onClick = { runQrPrimaryAction(context, payload)?.let(onMessage) },
+                )
+            }
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                if (oneRow) {
+                    ToolPrimaryButton(
+                        text = primary.resultLabel,
+                        onClick = { runQrPrimaryAction(context, payload)?.let(onMessage) },
+                        modifier = Modifier.weight(1.4f),
+                    )
+                }
                 secondary?.let { action ->
                     ToolSecondaryButton(
                         text = action.label,

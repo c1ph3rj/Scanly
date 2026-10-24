@@ -7,7 +7,9 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
@@ -55,6 +57,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.platform.testTag
 import `in`.c1ph3rj.scanly.core.ui.ScanlyTestTags
+import `in`.c1ph3rj.scanly.core.ui.WindowWidthClass
+import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import `in`.c1ph3rj.scanly.domain.model.QrCreateType
 import `in`.c1ph3rj.scanly.domain.model.WifiSecurity
 import `in`.c1ph3rj.scanly.feature.tools.ToolBottomBar
@@ -86,6 +90,8 @@ fun QrCreateScreen(
 ) {
     val payload = remember(draft) { qrCreatePayload(draft) }
     val canExport = payload != null && !isSaving
+    val window = rememberWindowSizeInfo()
+    val twoPane = window.isLandscape && window.widthClass != WindowWidthClass.Compact
 
     Column(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
         Row(
@@ -118,6 +124,8 @@ fun QrCreateScreen(
 
         Row(
             modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .widthIn(max = if (twoPane) TwoPaneMaxWidth else 640.dp)
                 .fillMaxWidth()
                 .horizontalScroll(rememberScrollState())
                 .selectableGroup()
@@ -134,68 +142,104 @@ fun QrCreateScreen(
             }
         }
 
+        val formFields: @Composable ColumnScope.() -> Unit = {
+            QrCreateFields(draft = draft, onUpdate = onUpdate)
+
+            ToolFieldLabel("Caption under the code · optional", muted = true)
+            ToolTextField(
+                value = draft.caption,
+                onValueChange = { value ->
+                    if (value.length <= QR_CREATE_CAPTION_MAX_LENGTH) {
+                        onUpdate { it.copy(caption = value) }
+                    }
+                },
+                placeholder = "Shown under the code",
+                supportingText = {
+                    Text(
+                        text = "${draft.caption.length} / $QR_CREATE_CAPTION_MAX_LENGTH",
+                        style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.End,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                },
+            )
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                ToolFieldLabel("Colour", muted = true, modifier = Modifier.weight(1f))
+                Row(
+                    modifier = Modifier.selectableGroup(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    QrInkColor.entries.forEach { ink ->
+                        ToolColorSwatch(
+                            color = Color(ink.argb),
+                            name = ink.label,
+                            selected = ink == draft.ink,
+                            onClick = { onUpdate { it.copy(ink = ink) } },
+                        )
+                    }
+                }
+            }
+            ToolNote(text = "Only dark colours, so every camera can read the code.")
+        }
+        val previewCard: @Composable (Modifier) -> Unit = { previewModifier ->
+            QrPreviewPaper(
+                preview = preview,
+                hasPayload = payload != null,
+                ink = Color(draft.ink.argb),
+                caption = draft.caption.trim(),
+                modifier = previewModifier,
+            )
+        }
         Box(
             modifier = Modifier.weight(1f).fillMaxWidth(),
             contentAlignment = Alignment.TopCenter,
         ) {
-            Column(
-                modifier = Modifier
-                    .widthIn(max = 640.dp)
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
-                    .padding(horizontal = 20.dp, vertical = 8.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-            ) {
-                QrPreviewPaper(
-                    preview = preview,
-                    hasPayload = payload != null,
-                    ink = Color(draft.ink.argb),
-                    caption = draft.caption.trim(),
-                    modifier = Modifier.align(Alignment.CenterHorizontally),
-                )
-
-                QrCreateFields(draft = draft, onUpdate = onUpdate)
-
-                ToolFieldLabel("Caption under the code · optional", muted = true)
-                ToolTextField(
-                    value = draft.caption,
-                    onValueChange = { value ->
-                        if (value.length <= QR_CREATE_CAPTION_MAX_LENGTH) {
-                            onUpdate { it.copy(caption = value) }
-                        }
-                    },
-                    placeholder = "Shown under the code",
-                    supportingText = {
-                        Text(
-                            text = "${draft.caption.length} / $QR_CREATE_CAPTION_MAX_LENGTH",
-                            style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            textAlign = TextAlign.End,
-                            modifier = Modifier.fillMaxWidth(),
-                        )
-                    },
-                )
-
+            if (twoPane) {
+                // Wide landscape: the code stays in view beside the fields while you type.
                 Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    modifier = Modifier
+                        .widthIn(max = TwoPaneMaxWidth)
+                        .fillMaxSize()
+                        .padding(horizontal = 20.dp),
+                    horizontalArrangement = Arrangement.spacedBy(28.dp),
                 ) {
-                    ToolFieldLabel("Colour", muted = true, modifier = Modifier.weight(1f))
-                    Row(
-                        modifier = Modifier.selectableGroup(),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    Box(
+                        modifier = Modifier
+                            .weight(0.42f)
+                            .fillMaxHeight()
+                            .verticalScroll(rememberScrollState())
+                            .padding(vertical = 8.dp),
+                        contentAlignment = Alignment.TopCenter,
                     ) {
-                        QrInkColor.entries.forEach { ink ->
-                            ToolColorSwatch(
-                                color = Color(ink.argb),
-                                name = ink.label,
-                                selected = ink == draft.ink,
-                                onClick = { onUpdate { it.copy(ink = ink) } },
-                            )
-                        }
+                        previewCard(Modifier)
                     }
+                    Column(
+                        modifier = Modifier
+                            .weight(0.58f)
+                            .fillMaxHeight()
+                            .verticalScroll(rememberScrollState())
+                            .padding(vertical = 8.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                        content = formFields,
+                    )
                 }
-                ToolNote(text = "Only dark colours, so every camera can read the code.")
+            } else {
+                Column(
+                    modifier = Modifier
+                        .widthIn(max = 640.dp)
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
+                        .padding(horizontal = 20.dp, vertical = 8.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                ) {
+                    previewCard(Modifier.align(Alignment.CenterHorizontally))
+                    formFields()
+                }
             }
         }
 
@@ -216,7 +260,8 @@ fun QrCreateScreen(
                     modifier = Modifier.weight(1f),
                 )
             }
-            Text(
+            // Supporting line only where there is height for it.
+            if (!window.isHeightConstrained) Text(
                 text = "Saved to QR history · PNG, 1024 px",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -226,6 +271,8 @@ fun QrCreateScreen(
         }
     }
 }
+
+private val TwoPaneMaxWidth = 1000.dp
 
 /** White paper card: the code (or a placeholder) with the caption printed in the ink colour. */
 @Composable

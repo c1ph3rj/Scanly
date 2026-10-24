@@ -67,7 +67,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import `in`.c1ph3rj.scanly.core.ui.WindowWidthClass
+import `in`.c1ph3rj.scanly.core.ui.adaptiveColumnCount
 import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
+import androidx.compose.ui.unit.takeOrElse
 import `in`.c1ph3rj.scanly.domain.model.DocumentGroup
 import `in`.c1ph3rj.scanly.domain.model.DocumentTitleFormat
 import `in`.c1ph3rj.scanly.domain.model.GroupTitleFormat
@@ -163,19 +166,17 @@ fun LibraryScreen(
     val windowSizeInfo = rememberWindowSizeInfo()
     val showingFolders = uiState.selectedTab == LibraryTab.Folders && uiState.groups.isNotEmpty()
     val visibleGroups = remember(uiState) { uiState.visibleGroups }
-    val previewGroups = remember(visibleGroups) {
-        visibleGroups.sortedByDescending { it.updatedAtMillis }.take(3)
-    }
     val visibleDocuments = remember(uiState) {
         if (showingFolders) emptyList() else uiState.visibleDocuments
     }
     val documentSections = remember(visibleDocuments, uiState.sortOption) {
         libraryDocumentSections(visibleDocuments, uiState.sortOption)
     }
-    val documentColumns = windowSizeInfo.groupColumns
-    val folderColumns = if (windowSizeInfo.isTablet) windowSizeInfo.groupColumns + 2 else 3
-    val folderGridRows = remember(visibleGroups, folderColumns) {
-        (listOf<DocumentGroup?>(null) + visibleGroups).chunked(folderColumns)
+    val isCompactWidth = windowSizeInfo.widthClass == WindowWidthClass.Compact
+    val folderShelfTileWidth = if (isCompactWidth || windowSizeInfo.isHeightConstrained) {
+        FolderShelfTileWidth
+    } else {
+        FolderShelfTileWidthLarge
     }
     val inset = Modifier.padding(horizontal = windowSizeInfo.horizontalPadding)
     // Grid cards carry their own press inset; pull rows out so covers align with the labels.
@@ -191,21 +192,36 @@ fun LibraryScreen(
         containerColor = MaterialTheme.colorScheme.background,
         snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { innerPadding ->
-        Box(
+        BoxWithConstraints(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(bottom = innerPadding.calculateBottomPadding()),
             contentAlignment = Alignment.TopCenter,
         ) {
+            // Columns follow the width this screen really has (beside the rail, in split screen),
+            // so covers stay a comfortable size instead of growing with the window.
+            val listWidth = minOf(maxWidth, windowSizeInfo.wideContentMaxWidth.takeOrElse { maxWidth })
+            val rowWidth = listWidth - windowSizeInfo.horizontalPadding * 2
+            val documentColumns = adaptiveColumnCount(rowWidth, LibraryGridCellMinWidth, minColumns = 2)
+            val listColumns = adaptiveColumnCount(rowWidth, LibraryListCellMinWidth, minColumns = 1, maxColumns = 2)
+            val folderColumns = adaptiveColumnCount(rowWidth, LibraryFolderCellMinWidth, minColumns = 3, maxColumns = 8)
+            val folderGridRows = remember(visibleGroups, folderColumns) {
+                (listOf<DocumentGroup?>(null) + visibleGroups).chunked(folderColumns)
+            }
+            // Shelf: as many recent folders as fit beside the "New folder" and "View all" tiles.
+            val shelfSlots = adaptiveColumnCount(rowWidth, folderShelfTileWidth + 4.dp, minColumns = 5, maxColumns = 12)
+            val previewGroups = remember(visibleGroups, shelfSlots) {
+                visibleGroups.sortedByDescending { it.updatedAtMillis }.take(shelfSlots - 2)
+            }
             if (uiState.isLoading) {
                 FullScreenLoader(modifier = Modifier.fillMaxSize())
             } else {
                 // Items carry their own horizontal inset so the folder shelf can scroll edge to edge.
                 LazyColumn(
-                    modifier = if (windowSizeInfo.isTablet) {
-                        Modifier.widthIn(max = windowSizeInfo.contentMaxWidth).fillMaxHeight()
-                    } else {
+                    modifier = if (isCompactWidth) {
                         Modifier.fillMaxSize()
+                    } else {
+                        Modifier.widthIn(max = windowSizeInfo.wideContentMaxWidth).fillMaxHeight()
                     },
                     contentPadding = PaddingValues(bottom = 24.dp),
                 ) {
@@ -299,7 +315,7 @@ fun LibraryScreen(
                                     item(key = "new_folder") {
                                         LibraryNewFolderTile(
                                             onClick = { createGroupDialogVisible = true },
-                                            modifier = Modifier.width(FolderShelfTileWidth),
+                                            modifier = Modifier.width(folderShelfTileWidth),
                                         )
                                     }
                                     items(previewGroups, key = { it.id }) { group ->
@@ -308,14 +324,14 @@ fun LibraryScreen(
                                             onOpen = { onOpenGroup(group.id) },
                                             onRename = { renameGroupTarget = group },
                                             onDelete = { deleteGroupTarget = group },
-                                            modifier = Modifier.width(FolderShelfTileWidth),
+                                            modifier = Modifier.width(folderShelfTileWidth),
                                         )
                                     }
-                                    if (visibleGroups.size > 3) {
+                                    if (visibleGroups.size > previewGroups.size) {
                                         item(key = "view_all_folders") {
                                             LibraryViewAllFoldersTile(
                                                 onClick = { onTabSelected(LibraryTab.Folders) },
-                                                modifier = Modifier.width(FolderShelfTileWidth),
+                                                modifier = Modifier.width(folderShelfTileWidth),
                                             )
                                         }
                                     }
@@ -387,6 +403,43 @@ fun LibraryScreen(
                                                 )
                                             }
                                             repeat(documentColumns - rowItems.size) {
+                                                Spacer(modifier = Modifier.weight(1f))
+                                            }
+                                        }
+                                    }
+                                } else if (listColumns > 1) {
+                                    // Wide windows: rounded rows side by side, so a row never stretches
+                                    // a short title across a 1000 dp tablet.
+                                    val rows = section.documents.chunked(listColumns)
+                                    itemsIndexed(
+                                        items = rows,
+                                        key = { _, rowItems -> "document_list_row_${rowItems.first().id}" },
+                                        contentType = { _, _ -> "document_list_row" },
+                                    ) { index, rowItems ->
+                                        Row(
+                                            modifier = inset
+                                                .padding(bottom = if (index == rows.lastIndex) 20.dp else 8.dp)
+                                                .animateItem(),
+                                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                        ) {
+                                            rowItems.forEach { document ->
+                                                LibraryListItem(
+                                                    first = true,
+                                                    last = true,
+                                                    modifier = Modifier.weight(1f),
+                                                ) {
+                                                    DocumentCard(
+                                                        document = document,
+                                                        onOpen = { onOpenDocument(document.id) },
+                                                        onRename = { renameDocTarget = document },
+                                                        onDelete = { deleteDocTarget = document },
+                                                        onMove = { moveDocTarget = document },
+                                                        style = LibraryCardStyle.PreviewList,
+                                                        sectionedDate = section.title != null,
+                                                    )
+                                                }
+                                            }
+                                            repeat(listColumns - rowItems.size) {
                                                 Spacer(modifier = Modifier.weight(1f))
                                             }
                                         }
@@ -542,19 +595,33 @@ fun LibraryScreen(
 /** Includes the tile's press inset; leaves the next tile peeking on a 360 dp phone. */
 private val FolderShelfTileWidth = 104.dp
 
+/** Shelf tiles on tablet widths, matching Home's folder row. */
+private val FolderShelfTileWidthLarge = 132.dp
+
+/** Smallest comfortable paper-preview card; two still fit on a 360 dp phone. */
+private val LibraryGridCellMinWidth = 148.dp
+
+/** List rows split into two columns once each can be this wide. */
+private val LibraryListCellMinWidth = 340.dp
+
+/** Folder tiles in the expanded "All folders" grid. */
+private val LibraryFolderCellMinWidth = 124.dp
+
 @Composable
 private fun LibraryHeader(
     documentCount: Int,
     pageCount: Int,
     modifier: Modifier = Modifier,
 ) {
+    // Short windows (phone landscape) keep the title tight so documents show above the fold.
+    val compact = rememberWindowSizeInfo().isHeightConstrained
     Column(
-        modifier = modifier.fillMaxWidth().statusBarsPadding().padding(top = 20.dp),
+        modifier = modifier.fillMaxWidth().statusBarsPadding().padding(top = if (compact) 8.dp else 20.dp),
         verticalArrangement = Arrangement.spacedBy(2.dp),
     ) {
         Text(
             text = "Library",
-            style = MaterialTheme.typography.headlineMedium,
+            style = if (compact) MaterialTheme.typography.headlineSmall else MaterialTheme.typography.headlineMedium,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.semantics { heading() },
         )

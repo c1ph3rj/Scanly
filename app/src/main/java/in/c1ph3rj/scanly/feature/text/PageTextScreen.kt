@@ -324,8 +324,8 @@ fun PageTextScreen(
             }
             Row(
                 modifier = Modifier
-                    .fillMaxWidth()
                     .widthIn(max = window.contentMaxWidth)
+                    .fillMaxWidth()
                     .padding(horizontal = window.horizontalPadding, vertical = 8.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -376,8 +376,8 @@ fun PageTextScreen(
                     val item = uiState.pages[index]
                     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
                         val pageModifier = Modifier
-                            .fillMaxSize()
                             .widthIn(max = window.contentMaxWidth)
+                            .fillMaxSize()
                         AnimatedContent(
                             targetState = mode,
                             transitionSpec = { fadeIn(tween(180)) togetherWith fadeOut(tween(120)) },
@@ -808,10 +808,12 @@ private fun PageTextActionBar(
         color = MaterialTheme.colorScheme.surfaceContainerLow,
         tonalElevation = 2.dp,
     ) {
-        Column {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
+            // Same 640 dp action column as the tool screens, instead of buttons across a tablet.
             Row(
                 modifier = Modifier
+                    .widthIn(max = 640.dp)
                     .fillMaxWidth()
                     .navigationBarsPadding()
                     .padding(horizontal = 16.dp, vertical = 12.dp),

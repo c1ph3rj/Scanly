@@ -569,7 +569,7 @@ private fun WatermarkControls(
                 selected = uiState.watermarkPageRange,
                 onSelect = viewModel::setPageRange,
                 label = { applyToLabel(it, pageCount, short = false) },
-                modifier = Modifier.fillMaxWidth().widthIn(max = 520.dp),
+                modifier = Modifier.widthIn(max = 520.dp).fillMaxWidth(),
             )
         }
     }
