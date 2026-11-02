@@ -8,7 +8,7 @@ Guidance for AI coding agents working in the Scanly repository.
 
 - Single-module Android app (`:app`) using Kotlin + Jetpack Compose + Material 3.
 - Package: `in.c1ph3rj.scanly` — escape `in` as ``package `in`.c1ph3rj.scanly``.
-- Current version: `1.0.18` (version code `18`) — see `app/build.gradle.kts`, [VERSION.md](VERSION.md).
+- Current version: `1.0.19-beta.1` (version code `19`) — see `app/build.gradle.kts`, [VERSION.md](VERSION.md).
 - Entry point: `MainActivity.kt` → onboarding gate → `ScanlyNavHost`.
 - Offline-first document scanner: camera capture, page editing, local persistence, PDF/image export, on-device page text (OCR) and full-text search.
 

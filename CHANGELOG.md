@@ -28,6 +28,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Technical
 
+- Prepare version `1.0.19-beta.1` (version code `19`) for testing. Release builds explicitly disable debugging, including the `playStoreRelease` variant used for Google Play uploads.
 - Room schema **8** adds `documents.deletedAtMillis` (`MIGRATION_7_8`); schema **9** adds `document_groups.deletedAtMillis`, `documents.deletedWithGroup`, and `scan_pages.deletedAtMillis` / `deletedFromIndex` (`MIGRATION_8_9`); schema **10** adds `documents.releasedFromGroupId` for "Delete folder only" (`MIGRATION_9_10`). Trashed items are filtered out of every library, folder, page, export, text and search query. A trashed page keeps its row at a negative `pageIndex` so live pages stay numbered 0..n-1. Expired items are purged on app start and when Recently deleted opens (`PurgeExpiredTrashUseCase`, retention in `TrashKind`).
 - Room schema **11** adds `page_texts.engine`, `requestedEngine` and `fallbackReason` (`MIGRATION_10_11`), recording which OCR engine read each page and why ML Kit stepped in; existing non-blank rows are marked as ML Kit reads. Indra's crash guard keeps its state in SharedPreferences (`indra_crash_guard`), not Room.
 - `data_extraction_rules.xml` excludes every domain from `cloud-backup` and includes them for `device-transfer`; `backup_rules.xml` (Android 10–11) excludes everything.

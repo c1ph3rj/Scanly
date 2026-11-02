@@ -6,13 +6,13 @@ See also [docs/releases.md](docs/releases.md) for release policy and history wit
 
 | Field | Value |
 | --- | --- |
-| Version name | `1.0.18` |
-| Version code | `18` |
+| Version name | `1.0.19-beta.1` |
+| Version code | `19` |
 | Application ID | `in.c1ph3rj.scanly` |
 | Min SDK | 29 (Android 10) |
 | Target / compile SDK | compile 37 / target 36 |
 | Room schema version | `7` |
-| Release date | 2026-10-20 |
+| Release status | Prepared for testing; not yet published |
 | Branch | `master` |
 
 The version shown in **Settings** is read from `versionName` in `app/build.gradle.kts`.
@@ -21,7 +21,7 @@ The version shown in **Settings** is read from `versionName` in `app/build.gradl
 
 ## Versioning Policy
 
-- **Version name** follows semantic-style `MAJOR.MINOR.PATCH` strings for user-facing releases.
+- **Version name** follows semantic-style `MAJOR.MINOR.PATCH` strings for user-facing releases, with an optional testing suffix (currently `1.0.19-beta.1`). The suffix is a display label; Play Store uploads still use a signed, non-debuggable `playStoreRelease` build.
 - **Version code** is a monotonically increasing integer required by Google Play; GitHub builds compare `versionName` with the latest release tag.
 - Bump both values together whenever you ship a public release.
 - Record user-visible changes in `CHANGELOG.md` and keep this file aligned with the Gradle values.
