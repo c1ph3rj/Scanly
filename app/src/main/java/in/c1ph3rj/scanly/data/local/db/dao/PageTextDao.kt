@@ -9,6 +9,7 @@ import androidx.room.Transaction
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
 import `in`.c1ph3rj.scanly.data.local.db.entity.PageTextEntity
+import `in`.c1ph3rj.scanly.domain.search.FtsExpression
 import kotlinx.coroutines.flow.Flow
 
 /** A page that has no text yet, or whose image changed since its text was read. */
@@ -21,13 +22,29 @@ data class PendingTextPageRow(
     val updatedAtMillis: Long,
 )
 
-/** One FTS hit. [snippet] marks matches with \u0002…\u0003; [offsets] is FTS4 `offsets()`. */
-data class PageTextHitRow(
+/**
+ * A page matching an FTS query, before ranking. [matchinfo] is FTS4 `matchinfo(…, 'pcnalx')`
+ * (see `Bm25`); snippets are fetched afterwards for the best pages only.
+ */
+class PageTextCandidateRow(
     val pageId: String,
     val documentId: String,
     val pageIndex: Int,
+    val matchinfo: ByteArray,
+)
+
+/** [snippet] marks matches with …; [offsets] is FTS4 `offsets()`. */
+data class PageTextSnippetRow(
+    val pageId: String,
     val snippet: String,
     val offsets: String,
+)
+
+/** A page's indexed text, for re-deriving its search forms or building a snippet in Kotlin. */
+data class PageSearchTextRow(
+    val id: Long,
+    val pageId: String,
+    val searchText: String,
 )
 
 data class DocumentKindRow(
@@ -169,14 +186,13 @@ interface PageTextDao {
     suspend fun markPagesNotReadWithStale(engine: String): Int
 
     /**
-     * Full-text search. Ranking happens in Kotlin because FTS4 has no built-in rank; the
-     * limit bounds snippet work on very common terms.
+     * Pages matching [match], with what BM25 ranking needs and nothing else; FTS4 has no
+     * built-in rank, so ranking happens in Kotlin and [snippetQuery] runs for the top pages only.
      */
     @Query(
         """
         SELECT t.pageId AS pageId, t.documentId AS documentId, p.pageIndex AS pageIndex,
-               snippet(page_texts_fts, char(2), char(3), '…', -1, 14) AS snippet,
-               offsets(page_texts_fts) AS offsets
+               matchinfo(page_texts_fts, 'pcnalx') AS matchinfo
         FROM page_texts_fts
         INNER JOIN page_texts t ON t.id = page_texts_fts.rowid
         INNER JOIN scan_pages p ON p.id = t.pageId
@@ -185,7 +201,7 @@ interface PageTextDao {
         LIMIT :limit
         """,
     )
-    suspend fun search(match: String, limit: Int): List<PageTextHitRow>
+    suspend fun searchCandidates(match: String, limit: Int): List<PageTextCandidateRow>
 
     /** Pages matching [match], without the snippet work; used to tell exact hits from prefix ones. */
     @Query(
@@ -198,9 +214,30 @@ interface PageTextDao {
     )
     suspend fun searchPageIds(match: String, limit: Int): List<String>
 
-    /** Same row shape as [search], for queries assembled at runtime (see [closeMatchQuery]). */
+    /** Candidates for queries assembled at runtime (see [groupedMatchQuery]). */
     @RawQuery
-    suspend fun searchRaw(query: SupportSQLiteQuery): List<PageTextHitRow>
+    suspend fun searchCandidatesRaw(query: SupportSQLiteQuery): List<PageTextCandidateRow>
+
+    /** Snippets for chosen pages (see [snippetQuery]). */
+    @RawQuery
+    suspend fun snippetsRaw(query: SupportSQLiteQuery): List<PageTextSnippetRow>
+
+    /** Text rows whose derived search forms predate [version] (see `SearchTextDeriver`). */
+    @Query("SELECT id, pageId, searchText FROM page_texts WHERE derivedVersion < :version LIMIT :limit")
+    suspend fun getRowsWithDerivedVersionBelow(version: Int, limit: Int): List<PageSearchTextRow>
+
+    @Query("SELECT COUNT(*) FROM page_texts WHERE derivedVersion < :version")
+    suspend fun countRowsWithDerivedVersionBelow(version: Int): Int
+
+    /** A plain UPDATE: Room's FTS sync triggers re-index the row. */
+    @Query(
+        "UPDATE page_texts SET searchText = :searchText, derivedText = :derivedText, " +
+            "derivedVersion = :version WHERE id = :id",
+    )
+    suspend fun updateDerived(id: Long, searchText: String, derivedText: String, version: Int)
+
+    @Query("SELECT id, pageId, searchText FROM page_texts WHERE pageId IN (:pageIds)")
+    suspend fun getSearchTexts(pageIds: List<String>): List<PageSearchTextRow>
 
     /** Kind of each document, taken from its earliest page that has one. */
     @Query(
@@ -229,19 +266,22 @@ interface PageTextDao {
 }
 
 /**
- * Pages matching every one of [groups] (each an FTS expression of OR-ed alternatives), with
- * snippets marking any alternative. Each group is checked in its own sub-select instead of
- * `(a OR b) c`: parentheses need SQLite's enhanced query syntax, which a device may not have,
- * and without them OR and implicit AND bind differently between the two syntaxes.
+ * Candidates matching every group of [expression] (each group's alternatives OR-ed) and none of
+ * its exclusions, checked in
+ * one sub-select per group instead of `(a OR b) c`: parentheses need SQLite's enhanced query
+ * syntax, which a device may not have, and without them OR and implicit AND bind differently
+ * between the two syntaxes. The outer MATCH is every alternative OR-ed, so `matchinfo` and
+ * snippets see all of them.
  */
-internal fun closeMatchQuery(groups: List<String>, limit: Int): SupportSQLiteQuery {
-    val groupFilters = groups.joinToString("") {
+internal fun groupedMatchQuery(expression: FtsExpression, limit: Int): SupportSQLiteQuery {
+    val groupFilters = expression.groups.joinToString("") {
         " AND page_texts_fts.rowid IN (SELECT docid FROM page_texts_fts WHERE page_texts_fts MATCH ?)"
+    } + expression.excluded.joinToString("") {
+        " AND page_texts_fts.rowid NOT IN (SELECT docid FROM page_texts_fts WHERE page_texts_fts MATCH ?)"
     }
     val sql = """
         SELECT t.pageId AS pageId, t.documentId AS documentId, p.pageIndex AS pageIndex,
-               snippet(page_texts_fts, char(2), char(3), '…', -1, 14) AS snippet,
-               offsets(page_texts_fts) AS offsets
+               matchinfo(page_texts_fts, 'pcnalx') AS matchinfo
         FROM page_texts_fts
         INNER JOIN page_texts t ON t.id = page_texts_fts.rowid
         INNER JOIN scan_pages p ON p.id = t.pageId
@@ -250,9 +290,31 @@ internal fun closeMatchQuery(groups: List<String>, limit: Int): SupportSQLiteQue
         LIMIT ?
     """.trimIndent()
     val args = buildList<Any> {
-        add(groups.joinToString(" OR "))
-        addAll(groups)
+        add(expression.anyOf)
+        expression.groups.indices.forEach { add(expression.group(it)) }
+        addAll(expression.excluded)
         add(limit)
     }
     return SimpleSQLiteQuery(sql, args.toTypedArray())
 }
+
+/**
+ * Snippet and offsets for [pageIds] (at most [MAX_SQL_ARGUMENTS] − 1), highlighting [match].
+ * Snippets come from the text column only; derived forms are never shown.
+ */
+internal fun snippetQuery(match: String, pageIds: List<String>): SupportSQLiteQuery {
+    require(pageIds.size < MAX_SQL_ARGUMENTS)
+    val placeholders = pageIds.joinToString(",") { "?" }
+    val sql = """
+        SELECT t.pageId AS pageId,
+               snippet(page_texts_fts, char(2), char(3), '…', 0, 14) AS snippet,
+               offsets(page_texts_fts) AS offsets
+        FROM page_texts_fts
+        INNER JOIN page_texts t ON t.id = page_texts_fts.rowid
+        WHERE page_texts_fts MATCH ? AND t.pageId IN ($placeholders)
+    """.trimIndent()
+    return SimpleSQLiteQuery(sql, (listOf<Any>(match) + pageIds).toTypedArray())
+}
+
+/** Bound parameters per statement stay well under SQLite's oldest default limit of 999. */
+internal const val MAX_SQL_ARGUMENTS = 500

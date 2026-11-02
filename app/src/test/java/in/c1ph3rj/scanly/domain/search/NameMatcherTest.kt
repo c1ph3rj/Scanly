@@ -7,6 +7,20 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class NameMatcherTest {
+    @Test
+    fun exclusionsRejectNamesMentioningThem() {
+        assertNull(NameMatcher.match("Draft lease", SearchQuery.parse("lease -draft")))
+        assertNotNull(NameMatcher.match("Final lease", SearchQuery.parse("lease -draft")))
+        assertTrue(NameMatcher.mentions("Drafts folder", listOf(listOf("draft"))))
+    }
+
+    @Test
+    fun anyOfNeedsOneAlternative() {
+        assertNotNull(NameMatcher.match("Rent receipt", SearchQuery.parse("rent OR lease")))
+        assertNotNull(NameMatcher.match("Lease agreement", SearchQuery.parse("rent OR lease")))
+        assertNull(NameMatcher.match("Holiday photos", SearchQuery.parse("rent OR lease")))
+    }
+
     private fun match(title: String, query: String) = NameMatcher.match(title, SearchQuery.parse(query))
 
     @Test

@@ -49,6 +49,15 @@ class SuggestSearchCorrectionUseCase @Inject constructor(private val repository:
     suspend operator fun invoke(query: SearchQuery) = repository.suggestCorrection(query)
 }
 
+class CompleteSearchWordUseCase @Inject constructor(private val repository: PageTextRepository) {
+    suspend operator fun invoke(prefix: String) = repository.completeWord(prefix, MAX_WORDS)
+
+    private companion object {
+        /** A few more than shown, so words dropped as duplicates of names still leave a full row. */
+        const val MAX_WORDS = 10
+    }
+}
+
 class SearchPageTextUseCase @Inject constructor(private val repository: PageTextRepository) {
     suspend operator fun invoke(query: SearchQuery): ScanlyResult<PageTextSearch> =
         repository.searchPages(query, MAX_PAGE_HITS)

@@ -10,8 +10,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import `in`.c1ph3rj.scanly.domain.model.HighlightedText
-import `in`.c1ph3rj.scanly.domain.search.FoldedText
-import `in`.c1ph3rj.scanly.domain.search.TextFolding
+import `in`.c1ph3rj.scanly.domain.search.SearchHighlights
 import java.text.BreakIterator
 import java.util.Locale
 
@@ -67,14 +66,10 @@ private fun HighlightedText.characterHighlightRanges(): List<IntRange> {
 
 /**
  * Highlights every word in [text] that starts with one of [words] (already folded), matching
- * how the search index treats typed words as prefixes. Case- and accent-insensitive.
+ * how the search index treats typed words as prefixes, plus text whose derived form matches
+ * ("1,250" for 1250). Case- and accent-insensitive.
  */
 fun highlightWordPrefixes(text: String, words: List<String>, style: SpanStyle): AnnotatedString {
     if (words.isEmpty() || text.isEmpty()) return AnnotatedString(text)
-    val folded = FoldedText.of(text)
-    val ranges = TextFolding.words(folded.text).mapNotNull { word ->
-        val prefix = words.filter { word.value.startsWith(it) }.maxOfOrNull { it.length } ?: return@mapNotNull null
-        folded.toSourceRange(word.range.first until word.range.first + prefix)
-    }.toList()
-    return HighlightedText(text, ranges).toAnnotatedString(style)
+    return HighlightedText(text, SearchHighlights.ranges(text, words)).toAnnotatedString(style)
 }

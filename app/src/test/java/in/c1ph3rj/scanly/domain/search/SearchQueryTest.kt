@@ -37,9 +37,24 @@ class SearchQueryTest {
 
     @Test
     fun operatorsAndPunctuationCannotReachFts() {
-        val match = SearchQuery.parse("INV-2041 OR (NEAR*)").toFtsMatch()!!
-        assertEquals("inv* 2041* or* near*", match)
-        assertTrue(match.none { it == '(' || it == ')' || it == '-' })
+        val expression = SearchQuery.parse("INV-2041 or (NEAR*)").ftsGroups { null }!!
+        assertEquals(listOf(listOf("\"inv 2041\"", "inv2041*"), listOf("or*"), listOf("near*")), expression.groups)
+        assertTrue(expression.anyOf.none { it == '(' || it == ')' || it == '-' })
+    }
+
+    @Test
+    fun numbersAndDatesAlsoSearchTheirDerivedForms() {
+        val amount = SearchQuery.parse("1,250").ftsGroups { null }!!
+        assertEquals(listOf(listOf("\"1 250\"", "1250")), amount.groups)
+        val date = SearchQuery.parse("rent 02/11/2026").ftsGroups { null }!!
+        assertEquals(listOf("\"02 11 2026\"", "d20261102", "d20260211"), date.groups.first())
+        assertEquals(listOf("rent*"), date.groups[1])
+        assertTrue("d20261102" in SearchQuery.parse("02/11/2026").allWords)
+    }
+
+    @Test
+    fun derivedWordsStillCountAsTermsForNames() {
+        assertEquals(listOf("inv", "2041"), SearchQuery.parse("INV-2041").terms)
     }
 
     @Test
@@ -59,12 +74,53 @@ class SearchQueryTest {
         val groups = SearchQuery.parse("\"due date\" rent reciept").ftsGroups { term ->
             if (term == "reciept") listOf("receipt", "recept") else null
         }
-        assertEquals(listOf("\"due date\"", "rent*", "receipt OR recept"), groups)
+        assertEquals(listOf(listOf("\"due date\""), listOf("rent*"), listOf("receipt", "recept")), groups!!.groups)
+        assertEquals("\"due date\" OR rent* OR receipt OR recept", groups.anyOf)
+        assertEquals(listOf(0, 0, 1, 2, 2), groups.termGroups.toList())
+        assertEquals(null, groups.allOf)
     }
 
     @Test
     fun ftsGroupsGiveUpWhenATermHasNoAlternatives() {
         assertNull(SearchQuery.parse("rent zzzz").ftsGroups { term -> if (term == "zzzz") emptyList() else null })
+    }
+
+    @Test
+    fun minusExcludesWordsAndPhrasesButNotHyphenatedWords() {
+        val query = SearchQuery.parse("lease -draft -\"old copy\" INV-2041")
+        assertEquals(listOf(listOf("draft"), listOf("old", "copy")), query.excluded)
+        assertEquals(listOf("lease", "inv", "2041"), query.terms)
+        assertTrue("draft" !in query.allWords)
+        val expression = query.ftsGroups { null }!!
+        assertEquals(listOf("draft*", "\"old copy\""), expression.excluded)
+        assertNull(expression.allOf)
+    }
+
+    @Test
+    fun exclusionsAloneSearchNothing() {
+        assertTrue(SearchQuery.parse("-draft").isBlank)
+        assertNull(SearchQuery.parse("-draft").ftsGroups { null })
+    }
+
+    @Test
+    fun uppercaseOrMakesAnyOfGroups() {
+        val query = SearchQuery.parse("rent OR lease OR \"x\" deposit")
+        assertEquals(listOf(listOf(listOf("rent"), listOf("lease"), listOf("x"))), query.anyOf)
+        assertEquals(listOf("deposit"), query.terms)
+        assertEquals(listOf(listOf("rent*", "lease*", "x*"), listOf("deposit*")), query.ftsGroups { null }!!.groups)
+    }
+
+    @Test
+    fun lowercaseOrAndDanglingOrAreJustWords() {
+        assertEquals(listOf("rent", "or", "lease"), SearchQuery.parse("rent or lease").terms)
+        val typing = SearchQuery.parse("rent OR")
+        assertTrue(typing.anyOf.isEmpty())
+        assertEquals(listOf("rent"), typing.terms)
+    }
+
+    @Test
+    fun exactMatchIgnoresExclusions() {
+        assertEquals("lease", SearchQuery.parse("lease -draft").toExactFtsMatch())
     }
 
     @Test

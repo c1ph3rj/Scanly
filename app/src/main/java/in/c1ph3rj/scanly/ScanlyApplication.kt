@@ -4,7 +4,9 @@ import android.app.Application
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import dagger.hilt.android.HiltAndroidApp
+import `in`.c1ph3rj.scanly.data.text.IcuRomanizer
 import `in`.c1ph3rj.scanly.data.text.TextIndexScheduler
+import `in`.c1ph3rj.scanly.domain.search.SearchTextDeriver
 import `in`.c1ph3rj.scanly.domain.usecase.PurgeExpiredTrashUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -20,6 +22,8 @@ class ScanlyApplication : Application(), Configuration.Provider {
 
     override fun onCreate() {
         super.onCreate()
+        // Before the indexer runs, so derived text gets English-spelling keys from the start.
+        SearchTextDeriver.romanizer = IcuRomanizer()
         // Keeps page text (and therefore search) caught up with every capture and edit.
         textIndexScheduler.start()
         // Recently deleted keeps pages 2 days and documents/folders 7; anything older goes for good.

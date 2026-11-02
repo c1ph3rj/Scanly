@@ -1,5 +1,6 @@
 package `in`.c1ph3rj.scanly.data.local.db.entity
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
@@ -52,4 +53,11 @@ data class PageTextEntity(
     val requestedEngine: String? = null,
     /** [`in`.c1ph3rj.scanly.domain.model.OcrFallbackReason] name when the requested engine was not used. */
     val fallbackReason: String? = null,
+    /**
+     * Extra searchable forms of [searchText] (joined words, numbers, dates), from
+     * [`in`.c1ph3rj.scanly.domain.search.SearchTextDeriver]; indexed beside it.
+     */
+    @ColumnInfo(defaultValue = "''") val derivedText: String = "",
+    /** Deriver version [derivedText] was made with; older rows are re-derived in the background. */
+    @ColumnInfo(defaultValue = "0") val derivedVersion: Int = 0,
 )

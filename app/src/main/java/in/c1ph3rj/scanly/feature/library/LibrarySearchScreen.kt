@@ -10,6 +10,9 @@ import androidx.compose.material.icons.outlined.History
 import androidx.compose.material.icons.outlined.ShortText
 import androidx.compose.material.icons.outlined.FormatQuote
 import androidx.compose.material.icons.outlined.Spellcheck
+import androidx.compose.material.icons.outlined.Tune
+import androidx.compose.material.icons.outlined.Block
+import androidx.compose.material.icons.outlined.AltRoute
 import androidx.compose.material.icons.outlined.RequestQuote
 import androidx.compose.material.icons.outlined.ReceiptLong
 import androidx.compose.material.icons.outlined.Gavel
@@ -56,14 +59,10 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.FilledTonalButton
@@ -84,6 +83,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.material3.SuggestionChip
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -106,11 +109,15 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import `in`.c1ph3rj.scanly.core.ui.PreviewDisplaySize
 import `in`.c1ph3rj.scanly.core.ui.ScanlyTestTags
 import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
+import `in`.c1ph3rj.scanly.domain.model.DocumentGroup
 import `in`.c1ph3rj.scanly.domain.model.DocumentKind
 import `in`.c1ph3rj.scanly.domain.model.DocumentSearchResult
 import `in`.c1ph3rj.scanly.domain.model.FolderSearchResult
 import `in`.c1ph3rj.scanly.domain.model.MatchTier
 import `in`.c1ph3rj.scanly.domain.model.PageTextHit
+import `in`.c1ph3rj.scanly.domain.model.SearchFilters
+import `in`.c1ph3rj.scanly.domain.search.Completion
+import `in`.c1ph3rj.scanly.domain.search.SearchCompletion
 import `in`.c1ph3rj.scanly.domain.model.SearchScope
 import `in`.c1ph3rj.scanly.feature.components.DocumentThumbnail
 import `in`.c1ph3rj.scanly.feature.components.LibraryFolderArt
@@ -133,6 +140,10 @@ fun LibrarySearchBar(
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
+    // Typing keeps the field's own cursor and IME composition; a query set from outside (a
+    // completion, a recent search) puts the cursor at its end, so typing carries on there.
+    var field by remember { mutableStateOf(TextFieldValue(query, TextRange(query.length))) }
+    val fieldValue = if (field.text == query) field else TextFieldValue(query, TextRange(query.length))
     val borderColor = if (isFocused) {
         MaterialTheme.colorScheme.primary
     } else {
@@ -173,8 +184,11 @@ fun LibrarySearchBar(
                     )
                 }
                 BasicTextField(
-                    value = query,
-                    onValueChange = onQueryChange,
+                    value = fieldValue,
+                    onValueChange = { value ->
+                        field = value
+                        if (value.text != query) onQueryChange(value.text)
+                    },
                     modifier = inputModifier
                         .fillMaxWidth()
                         .semantics { contentDescription = placeholder },
@@ -205,9 +219,11 @@ fun LibrarySearchRoute(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val query by viewModel.query.collectAsStateWithLifecycle()
+    val completions by viewModel.completions.collectAsStateWithLifecycle()
     LibrarySearchScreen(
         uiState = uiState,
         query = query,
+        completions = completions.completions.takeIf { completions.query == query }.orEmpty(),
         onBack = onBack,
         onOpenDocument = onOpenDocument,
         onOpenGroup = onOpenGroup,
@@ -216,6 +232,7 @@ fun LibrarySearchRoute(
         onClear = viewModel::clearQuery,
         onScopeChange = viewModel::setScope,
         onKindChange = viewModel::setKindFilter,
+        onFiltersChange = viewModel::setFilters,
         onQuerySubmitted = viewModel::rememberCurrentQuery,
         onRemoveRecent = viewModel::removeRecentSearch,
         onClearRecent = viewModel::clearRecentSearches,
@@ -227,6 +244,8 @@ fun LibrarySearchScreen(
     uiState: LibrarySearchUiState,
     onBack: () -> Unit,
     query: String = uiState.query,
+    /** Words finishing the one being typed; shown under the field while it has focus. */
+    completions: List<Completion> = emptyList(),
     onOpenDocument: (String) -> Unit,
     onOpenGroup: (String) -> Unit,
     onOpenPageText: (documentId: String, pageIndex: Int, query: String) -> Unit,
@@ -234,6 +253,7 @@ fun LibrarySearchScreen(
     onClear: () -> Unit,
     onScopeChange: (SearchScope) -> Unit,
     onKindChange: (DocumentKind?) -> Unit,
+    onFiltersChange: (SearchFilters) -> Unit = {},
     onQuerySubmitted: () -> Unit = {},
     onRemoveRecent: (String) -> Unit = {},
     onClearRecent: () -> Unit = {},
@@ -249,18 +269,33 @@ fun LibrarySearchScreen(
         initialFocusDone = true
     }
     val results = uiState.results
+    var showFilters by rememberSaveable { mutableStateOf(false) }
+    var fieldFocused by remember { mutableStateOf(false) }
     val openDocument: (String) -> Unit = { focusManager.clearFocus(); onQuerySubmitted(); onOpenDocument(it) }
     val openPage: (PageTextHit) -> Unit = { hit ->
         focusManager.clearFocus()
         onQuerySubmitted()
         // A close match has none of the typed words; hand the similar ones over so the page
         // opens with what actually matched highlighted.
-        val pageQuery = if (hit.tier == MatchTier.CLOSE) {
-            (listOf(uiState.query) + results.closeTerms).joinToString(" ")
-        } else {
-            uiState.query
+        val pageQuery = when (hit.tier) {
+            MatchTier.CLOSE -> (listOf(uiState.query) + results.closeTerms).joinToString(" ")
+            MatchTier.OCR_VARIANT -> (listOf(uiState.query) + hit.snippet.highlightedParts).distinct().joinToString(" ")
+            else -> uiState.query
         }
         onOpenPageText(hit.documentId, hit.pageIndex, pageQuery)
+    }
+
+    if (showFilters) {
+        SearchFiltersSheet(
+            filters = uiState.filters,
+            availableKinds = uiState.availableKinds,
+            kindCounts = uiState.kindCounts,
+            folders = uiState.folders,
+            resultCount = results.documentCount,
+            showsResults = uiState.isSearchActive,
+            onFiltersChange = onFiltersChange,
+            onDismiss = { showFilters = false },
+        )
     }
 
     Scaffold(
@@ -295,16 +330,26 @@ fun LibrarySearchScreen(
                             modifier = Modifier.weight(1f),
                             inputModifier = Modifier
                                 .focusRequester(focusRequester)
+                                .onFocusChanged { fieldFocused = it.isFocused }
                                 .testTag(ScanlyTestTags.SEARCH_INPUT),
                             onSearch = { focusManager.clearFocus(); onQuerySubmitted() },
                         )
                     }
+                    val typedWord = SearchCompletion.typedWord(query)
+                    if (fieldFocused && typedWord != null && completions.isNotEmpty()) {
+                        CompletionRow(
+                            completions = completions,
+                            onPick = { word -> onQueryChange(SearchCompletion.apply(query, typedWord, word)) },
+                            horizontalPadding = window.horizontalPadding,
+                        )
+                    }
                     SearchFilterRow(
                         scope = uiState.scope,
-                        kind = uiState.kindFilter,
-                        availableKinds = uiState.availableKinds,
+                        filters = uiState.filters,
+                        folders = uiState.folders,
                         onScopeChange = onScopeChange,
-                        onKindChange = onKindChange,
+                        onOpenFilters = { focusManager.clearFocus(); showFilters = true },
+                        onFiltersChange = onFiltersChange,
                         horizontalPadding = window.horizontalPadding,
                     )
                 }
@@ -387,7 +432,7 @@ fun LibrarySearchScreen(
                             item(key = "name_heading") {
                                 ResultSectionTitle(
                                     when {
-                                        uiState.isBrowsingKind -> uiState.kindFilter!!.pluralLabel()
+                                        uiState.isBrowsing -> browseTitle(uiState.filters)
                                         results.textMatches.isEmpty() -> "Documents"
                                         else -> "Matching names"
                                     },
@@ -450,16 +495,17 @@ fun LibrarySearchScreen(
 @Composable
 private fun SearchFilterRow(
     scope: SearchScope,
-    kind: DocumentKind?,
-    availableKinds: List<DocumentKind>,
+    filters: SearchFilters,
+    folders: List<DocumentGroup>,
     onScopeChange: (SearchScope) -> Unit,
-    onKindChange: (DocumentKind?) -> Unit,
+    onOpenFilters: () -> Unit,
+    onFiltersChange: (SearchFilters) -> Unit,
     horizontalPadding: androidx.compose.ui.unit.Dp,
 ) {
     val scrollState = rememberScrollState()
-    // The type chip is last in the row; bring it into view when a type gets picked.
-    LaunchedEffect(kind) {
-        if (kind != null) scrollState.animateScrollTo(scrollState.maxValue)
+    // Filter chips sit at the end of the row; bring a newly added one into view.
+    LaunchedEffect(filters.activeCount) {
+        if (filters.activeCount > 0) scrollState.animateScrollTo(scrollState.maxValue)
     }
     Row(
         modifier = Modifier
@@ -482,34 +528,62 @@ private fun SearchFilterRow(
                 ),
             )
         }
-        if (availableKinds.isNotEmpty()) {
-            var expanded by remember { mutableStateOf(false) }
-            Box {
-                FilterChip(
-                    selected = kind != null,
-                    onClick = { expanded = true },
-                    label = { Text(kind?.label ?: "Any type") },
-                    trailingIcon = { Icon(Icons.Filled.ArrowDropDown, contentDescription = null, Modifier.size(18.dp)) },
-                    shape = CircleShape,
-                    modifier = Modifier.semantics { contentDescription = "Document type: ${kind?.label ?: "Any type"}" },
-                )
-                DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-                    (listOf<DocumentKind?>(null) + availableKinds).forEach { option ->
-                        DropdownMenuItem(
-                            text = { Text(option?.label ?: "Any type") },
-                            leadingIcon = {
-                                if (option == kind) Icon(Icons.Filled.Check, contentDescription = null)
-                            },
-                            onClick = {
-                                expanded = false
-                                onKindChange(option)
-                            },
-                        )
+        val active = filters.activeCount
+        FilterChip(
+            selected = active > 0,
+            onClick = onOpenFilters,
+            label = { Text(if (active > 0) "Filters · $active" else "Filters") },
+            leadingIcon = { Icon(Icons.Outlined.Tune, contentDescription = null, Modifier.size(18.dp)) },
+            shape = CircleShape,
+            modifier = Modifier.semantics {
+                contentDescription = if (active > 0) "Filters, $active on" else "Filters"
+            },
+        )
+        ActiveFilterChips(filters = filters, folders = folders, onFiltersChange = onFiltersChange)
+    }
+}
+
+/** Words finishing the one being typed, each with how many documents contain it. */
+@Composable
+private fun CompletionRow(
+    completions: List<Completion>,
+    onPick: (String) -> Unit,
+    horizontalPadding: androidx.compose.ui.unit.Dp,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .horizontalScroll(rememberScrollState())
+            .padding(start = horizontalPadding, end = horizontalPadding, top = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        completions.forEach { completion ->
+            val count = completion.documentCount
+            SuggestionChip(
+                onClick = { onPick(completion.word) },
+                label = {
+                    Text(
+                        if (count != null) "${completion.word}  ·  $count" else completion.word,
+                        maxLines = 1,
+                    )
+                },
+                shape = CircleShape,
+                modifier = Modifier.semantics {
+                    contentDescription = buildString {
+                        append("Complete to ").append(completion.word)
+                        if (count != null) append(", in $count ${if (count == 1) "document" else "documents"}")
                     }
-                }
-            }
+                },
+            )
         }
     }
+}
+
+/** Heading for browsing without a query: the type's plural when only a type is chosen. */
+private fun browseTitle(filters: SearchFilters): String {
+    val onlyKind = filters.kind != null && !filters.copy(kind = null).narrows
+    return if (onlyKind) filters.kind!!.pluralLabel() else "Documents"
 }
 
 @Composable
@@ -664,13 +738,28 @@ private fun SnippetRow(hit: PageTextHit, onClick: () -> Unit) {
             fontWeight = FontWeight.SemiBold,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
-        Text(
-            text = hit.snippet.toAnnotatedString(highlight),
-            modifier = Modifier.weight(1f),
-            style = MaterialTheme.typography.bodyMedium,
-            maxLines = 3,
-            overflow = TextOverflow.Ellipsis,
-        )
+        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+            Text(
+                text = hit.snippet.toAnnotatedString(highlight),
+                style = MaterialTheme.typography.bodyMedium,
+                maxLines = 3,
+                overflow = TextOverflow.Ellipsis,
+            )
+            // Say why a page without the typed word showed up.
+            val matched = hit.snippet.highlightedParts.firstOrNull()
+            val reason = when (hit.tier) {
+                MatchTier.OCR_VARIANT -> matched?.let { "Scanned as “$it”" }
+                MatchTier.TRANSLITERATED -> matched?.let { "Matched “$it”" }
+                else -> null
+            }
+            if (reason != null) {
+                Text(
+                    text = reason,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
     }
 }
 
@@ -854,6 +943,8 @@ private fun SearchLanding(
                         SearchTip(Icons.Outlined.ShortText, "Type part of a word", "“lea” finds lease and leasing")
                         SearchTip(Icons.Outlined.FormatQuote, "Use quotes for a phrase", "“security deposit”, in that order")
                         SearchTip(Icons.Outlined.Spellcheck, "Small typos are fine", "You’ll get the closest word from your scans")
+                        SearchTip(Icons.Outlined.Block, "Leave a word out", "“lease -draft” skips anything that mentions draft")
+                        SearchTip(Icons.Outlined.AltRoute, "Either word", "“rent OR lease” finds pages with one or the other")
                     }
                 }
             }

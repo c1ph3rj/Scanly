@@ -28,6 +28,7 @@ mlkitBarcode = "17.3.0"
 mlkitTextRecognition = "16.0.1"
 zxing = "3.5.4"
 orgJson = "20240303"
+icu4j = "77.1"
 webkit = "1.12.1"
 
 [libraries]
@@ -73,6 +74,7 @@ mlkit-barcode-scanning = { group = "com.google.mlkit", name = "barcode-scanning"
 mlkit-text-recognition = { group = "com.google.mlkit", name = "text-recognition", version.ref = "mlkitTextRecognition" }
 zxing-core = { group = "com.google.zxing", name = "core", version.ref = "zxing" }
 org-json = { group = "org.json", name = "json", version.ref = "orgJson" }
+icu4j = { group = "com.ibm.icu", name = "icu4j", version.ref = "icu4j" }
 androidx-webkit = { group = "androidx.webkit", name = "webkit", version.ref = "webkit" }
 androidx-work-runtime = { group = "androidx.work", name = "work-runtime", version.ref = "work" }
 androidx-work-testing = { group = "androidx.work", name = "work-testing", version.ref = "work" }

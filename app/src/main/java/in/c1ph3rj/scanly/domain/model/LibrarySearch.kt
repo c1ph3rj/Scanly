@@ -1,10 +1,19 @@
 package `in`.c1ph3rj.scanly.domain.model
 
+import kotlin.math.ln
+
 /** Text plus the character ranges to emphasise. */
 data class HighlightedText(
     val text: String,
     val highlights: List<IntRange> = emptyList(),
-)
+) {
+    /** The highlighted pieces of [text], in order. */
+    val highlightedParts: List<String>
+        get() = highlights.mapNotNull { range ->
+            text.substring(range.first.coerceIn(0, text.length), (range.last + 1).coerceIn(0, text.length))
+                .takeIf { it.isNotBlank() }
+        }
+}
 
 enum class SearchScope(val label: String) {
     EVERYWHERE("Everywhere"),
@@ -20,6 +29,12 @@ enum class MatchTier {
     /** The page has words starting with what was typed ("lea" → "lease"). */
     PREFIX,
 
+    /** The page has a word in another script spelled like the English typed ("chennai" → சென்னை). */
+    TRANSLITERATED,
+
+    /** The page has a typed word as OCR misread it ("invoice" read as "lnvoice"). */
+    OCR_VARIANT,
+
     /** Only words spelled close to the typed ones ("reciept" → "receipt"). */
     CLOSE,
 }
@@ -32,6 +47,10 @@ data class PageTextHit(
     val snippet: HighlightedText,
     val matchCount: Int,
     val tier: MatchTier = MatchTier.PREFIX,
+    /** BM25 relevance of this page for the query (higher is better). */
+    val relevance: Double = ln(1.0 + matchCount),
+    /** How close together the page has every part of the query, 0 to 1. */
+    val proximity: Double = 0.0,
 )
 
 /** Page-text hits for one query. */

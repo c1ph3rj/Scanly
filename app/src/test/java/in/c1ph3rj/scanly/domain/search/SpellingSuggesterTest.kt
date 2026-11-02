@@ -25,6 +25,26 @@ class SpellingSuggesterTest {
     }
 
     @Test
+    fun ocrVariantsFindMisreadsButNotTypos() {
+        val pages = listOf(
+            VocabularyTerm("invoice", 8),
+            VocabularyTerm("invoices", 2),
+            VocabularyTerm("lnvoice", 3),
+            VocabularyTerm("invoace", 1),
+            VocabularyTerm("rnodel", 1),
+        )
+        assertEquals(listOf("lnvoice"), SpellingSuggester.ocrVariants("invoice", pages, limit = 3))
+        assertEquals(listOf("rnodel"), SpellingSuggester.ocrVariants("model", pages, limit = 3))
+        assertEquals(emptyList<String>(), SpellingSuggester.ocrVariants("1250", pages, limit = 3))
+    }
+
+    @Test
+    fun closeMatchesPreferOcrLookAlikesOverTypos() {
+        val pages = listOf(VocabularyTerm("recelpt", 1), VocabularyTerm("receipz", 9))
+        assertEquals(listOf("recelpt", "receipz"), SpellingSuggester.closeMatches("receipt", pages, limit = 2))
+    }
+
+    @Test
     fun suggestsClosestWordFromThePages() {
         assertEquals("website", SpellingSuggester.bestMatch("webiste", vocabulary))
     }

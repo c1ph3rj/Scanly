@@ -210,6 +210,8 @@ dependencies {
     testImplementation(libs.junit)
     // Real org.json for JVM tests; android.jar only ships stubs.
     testImplementation(libs.org.json)
+    // ICU4J has the same Transliterator as android.icu, so romanization quality is testable on the JVM.
+    testImplementation(libs.icu4j)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.test.rules)

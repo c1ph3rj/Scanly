@@ -26,21 +26,42 @@ object SpellingSuggester {
     /**
      * Up to [limit] candidates within the allowed edit distance, closest first, the same order
      * [bestMatch] uses. These are the words searched in place of a typed word nothing matched.
+     * OCR look-alikes count as less than a full edit (see [OcrEditDistance]).
      */
     fun closeMatches(term: String, candidates: List<VocabularyTerm>, limit: Int): List<String> {
         if (term.length < MIN_TERM_LENGTH) return emptyList()
-        val allowedEdits = maxEdits(term)
-        return candidates.asSequence()
-            .filter { it.term != term }
-            .map { it to NameMatcher.editDistance(term, it.term) }
-            .filter { (_, distance) -> distance <= allowedEdits }
-            .sortedWith(
-                compareBy<Pair<VocabularyTerm, Int>> { it.second }
-                    .thenByDescending { it.first.pageCount }
-                    .thenBy { it.first.term },
-            )
-            .take(limit)
-            .map { it.first.term }
-            .toList()
+        return closest(term, candidates, maxEdits(term).toDouble(), limit) { it.term != term }
     }
+
+    /**
+     * Words in the pages that look like [term] misread by OCR ("lnvoice" for "invoice"):
+     * reachable only through look-alike characters, never a plain typo. Words that start with
+     * [term] are left out, since the typed search already finds them.
+     */
+    fun ocrVariants(term: String, candidates: List<VocabularyTerm>, limit: Int): List<String> {
+        if (term.length < MIN_TERM_LENGTH || term.all(Char::isDigit)) return emptyList()
+        return closest(term, candidates, MAX_OCR_VARIANT_COST, limit) { !it.term.startsWith(term) }
+    }
+
+    /** Most OCR look-alike cost a variant may have; any plain edit costs a full 1. */
+    private const val MAX_OCR_VARIANT_COST = 0.8
+
+    private fun closest(
+        term: String,
+        candidates: List<VocabularyTerm>,
+        maxCost: Double,
+        limit: Int,
+        keep: (VocabularyTerm) -> Boolean,
+    ): List<String> = candidates.asSequence()
+        .filter(keep)
+        .map { it to OcrEditDistance.distance(term, it.term, maxCost) }
+        .filter { (_, distance) -> distance <= maxCost }
+        .sortedWith(
+            compareBy<Pair<VocabularyTerm, Double>> { it.second }
+                .thenByDescending { it.first.pageCount }
+                .thenBy { it.first.term },
+        )
+        .take(limit)
+        .map { it.first.term }
+        .toList()
 }

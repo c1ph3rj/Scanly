@@ -7,6 +7,7 @@ import `in`.c1ph3rj.scanly.domain.model.PageText
 import `in`.c1ph3rj.scanly.domain.model.PageTextSearch
 import `in`.c1ph3rj.scanly.domain.model.TextIndexProgress
 import `in`.c1ph3rj.scanly.domain.search.SearchQuery
+import `in`.c1ph3rj.scanly.domain.search.VocabularyTerm
 import kotlinx.coroutines.flow.Flow
 
 /** On-device page text: recognition, user corrections, and the full-text index. */
@@ -32,6 +33,12 @@ interface PageTextRepository {
     /** Reads up to [limit] stale pages library-wide, newest documents first. Returns pages read. */
     suspend fun recognizePendingPages(limit: Int): ScanlyResult<Int>
 
+    /**
+     * Re-derives search forms (numbers, dates, joined words) for up to [limit] rows made with
+     * an older deriver, without reading pages again. Returns rows updated.
+     */
+    suspend fun refreshDerivedText(limit: Int): ScanlyResult<Int>
+
     /** Saves the user's correction; null restores the recognized text. */
     suspend fun updateUserText(pageId: String, text: String?): ScanlyResult<Unit>
 
@@ -42,6 +49,9 @@ interface PageTextRepository {
      * word already appears somewhere (or nothing close enough exists).
      */
     suspend fun suggestCorrection(query: SearchQuery): String?
+
+    /** Library words starting with the folded [prefix], those in the most documents first. */
+    suspend fun completeWord(prefix: String, limit: Int): List<VocabularyTerm>
 
     /** Asks the background indexer to catch up (no-op when nothing is pending). */
     fun requestBackgroundIndexing()

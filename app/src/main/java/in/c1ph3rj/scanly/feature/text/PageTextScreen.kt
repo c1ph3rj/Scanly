@@ -118,8 +118,7 @@ import `in`.c1ph3rj.scanly.domain.model.OcrEngine
 import `in`.c1ph3rj.scanly.domain.model.PageText
 import `in`.c1ph3rj.scanly.domain.model.PageTextBlock
 import `in`.c1ph3rj.scanly.domain.model.previewImagePath
-import `in`.c1ph3rj.scanly.domain.search.FoldedText
-import `in`.c1ph3rj.scanly.domain.search.TextFolding
+import `in`.c1ph3rj.scanly.domain.search.SearchHighlights
 import `in`.c1ph3rj.scanly.feature.components.CachedThumbnail
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -989,11 +988,10 @@ private fun EmptyDocumentText() {
     }
 }
 
-/** Counts words in [text] that start with any of the folded [words]. */
+/** Counts places in [text] that match the folded [words] (see [SearchHighlights]). */
 internal fun countMatches(text: String, words: List<String>): Int {
     if (words.isEmpty() || text.isEmpty()) return 0
-    val folded = FoldedText.of(text).text
-    return TextFolding.words(folded).count { match -> words.any { match.value.startsWith(it) } }
+    return SearchHighlights.ranges(text, words).size
 }
 
 private fun shareText(context: Context, subject: String, text: String) {

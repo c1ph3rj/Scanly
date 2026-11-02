@@ -8,20 +8,26 @@ import `in`.c1ph3rj.scanly.core.common.ScanlyDispatchers
 import `in`.c1ph3rj.scanly.core.common.ScanlyResult
 import `in`.c1ph3rj.scanly.domain.model.DocumentGroup
 import `in`.c1ph3rj.scanly.domain.model.DocumentKind
+import `in`.c1ph3rj.scanly.domain.model.FolderFilter
 import `in`.c1ph3rj.scanly.domain.model.LibrarySearchResults
 import `in`.c1ph3rj.scanly.domain.model.PageTextHit
 import `in`.c1ph3rj.scanly.domain.model.PageTextSearch
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
+import `in`.c1ph3rj.scanly.domain.model.SearchFilters
 import `in`.c1ph3rj.scanly.domain.model.SearchScope
 import `in`.c1ph3rj.scanly.domain.model.TextIndexProgress
 import `in`.c1ph3rj.scanly.domain.search.LibrarySearchRanker
+import `in`.c1ph3rj.scanly.domain.search.Completion
+import `in`.c1ph3rj.scanly.domain.search.SearchCompletion
 import `in`.c1ph3rj.scanly.domain.search.SearchQuery
+import `in`.c1ph3rj.scanly.domain.search.TextFolding
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveDocumentKindsUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveDocumentsUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveGroupsUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveTextIndexProgressUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.AddRecentSearchUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ClearRecentSearchesUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.CompleteSearchWordUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveRecentSearchesUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.RemoveRecentSearchUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.SearchPageTextUseCase
@@ -46,9 +52,12 @@ import javax.inject.Inject
 data class LibrarySearchUiState(
     val query: String = "",
     val scope: SearchScope = SearchScope.EVERYWHERE,
-    val kindFilter: DocumentKind? = null,
+    /** Type, date, folder and sort from the filter sheet. */
+    val filters: SearchFilters = SearchFilters(),
     /** Kinds that exist in the library, so the type filter never offers an empty choice. */
     val availableKinds: List<DocumentKind> = emptyList(),
+    /** Folders to offer in the filter sheet. */
+    val folders: List<DocumentGroup> = emptyList(),
     /** How many documents of each type exist, for the "Browse by type" chips. */
     val kindCounts: Map<DocumentKind, Int> = emptyMap(),
     val recentSearches: List<String> = emptyList(),
@@ -59,9 +68,13 @@ data class LibrarySearchUiState(
     val isLoading: Boolean = true,
     val hasLibrary: Boolean = false,
 ) {
-    /** A typed query, or a document type chosen to browse. */
-    val isSearchActive: Boolean get() = !SearchQuery.parse(query).isBlank || kindFilter != null
-    val isBrowsingKind: Boolean get() = SearchQuery.parse(query).isBlank && kindFilter != null
+    val kindFilter: DocumentKind? get() = filters.kind
+
+    /** A typed query, or filters chosen to browse by. */
+    val isSearchActive: Boolean get() = !SearchQuery.parse(query).isBlank || filters.narrows
+
+    /** No query, just filters: every document they allow is listed. */
+    val isBrowsing: Boolean get() = SearchQuery.parse(query).isBlank && filters.narrows
     val highlightWords: List<String> get() = SearchQuery.parse(query).allWords
     val isIndexing: Boolean get() = indexProgress?.isComplete == false
 }
@@ -75,7 +88,13 @@ private data class LibrarySnapshot(
 private data class SearchControls(
     val query: String,
     val scope: SearchScope,
-    val kind: DocumentKind?,
+    val filters: SearchFilters,
+)
+
+/** Autocomplete for [query] (the text it was computed for, so stale words never show). */
+data class CompletionState(
+    val query: String = "",
+    val completions: List<Completion> = emptyList(),
 )
 
 /** Text hits for one query; [hits] is null while that query's text search is in flight. */
@@ -107,6 +126,7 @@ class LibrarySearchViewModel @Inject constructor(
     private val removeRecentSearchUseCase: RemoveRecentSearchUseCase,
     private val clearRecentSearchesUseCase: ClearRecentSearchesUseCase,
     private val suggestSearchCorrectionUseCase: SuggestSearchCorrectionUseCase,
+    private val completeSearchWordUseCase: CompleteSearchWordUseCase,
     private val dispatchers: ScanlyDispatchers,
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
@@ -118,7 +138,7 @@ class LibrarySearchViewModel @Inject constructor(
      */
     val query: StateFlow<String> = savedStateHandle.getStateFlow(QUERY_KEY, "")
     private val scope = MutableStateFlow(SearchScope.EVERYWHERE)
-    private val kindFilter = MutableStateFlow<DocumentKind?>(null)
+    private val filters = MutableStateFlow(SearchFilters())
 
     private val indexProgress = observeTextIndexProgressUseCase()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
@@ -133,7 +153,7 @@ class LibrarySearchViewModel @Inject constructor(
     private val recentSearches = observeRecentSearchesUseCase()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
-    private val controls = combine(query, scope, kindFilter, ::SearchControls)
+    private val controls = combine(query, scope, filters, ::SearchControls)
 
     private val textHits: Flow<TextHitsState> = run {
         var lastSearched: Pair<String, SearchScope>? = null
@@ -169,6 +189,30 @@ class LibrarySearchViewModel @Inject constructor(
             .onStart { emit(TextHitsState("", SearchScope.EVERYWHERE, emptyList())) }
     }
 
+    /** Words finishing the one being typed, from page text and document and folder names. */
+    val completions: StateFlow<CompletionState> = combine(query, library) { text, snapshot -> text to snapshot }
+        .flatMapLatest { (text, snapshot) ->
+            flow {
+                val typed = SearchCompletion.typedWord(text)
+                if (typed == null) {
+                    emit(CompletionState(text))
+                    return@flow
+                }
+                delay(COMPLETION_DEBOUNCE_MILLIS)
+                val nameWords = (snapshot.documents.map { it.title } + snapshot.groups.map { it.title })
+                    .flatMap { title -> TextFolding.words(TextFolding.fold(title)).map { it.value }.toList() }
+                val words = SearchCompletion.merge(
+                    prefix = typed.prefix,
+                    vocabulary = completeSearchWordUseCase(typed.prefix),
+                    nameWords = nameWords,
+                    limit = MAX_COMPLETIONS,
+                )
+                emit(CompletionState(text, words))
+            }
+        }
+        .flowOn(dispatchers.default)
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), CompletionState())
+
     val uiState: StateFlow<LibrarySearchUiState> = combine(
         controls,
         library,
@@ -182,11 +226,21 @@ class LibrarySearchViewModel @Inject constructor(
             hitsState.query == controls.query && hitsState.scope == controls.scope
         }
         val availableKinds = snapshot.kinds.values.toSet().sortedBy { it.ordinal }
+        // A filter whose type or folder no longer exists would hide everything; drop it.
+        val activeFilters = controls.filters.let { chosen ->
+            chosen.copy(
+                kind = chosen.kind?.takeIf { it in availableKinds },
+                folder = chosen.folder.takeIf { folder ->
+                    folder !is FolderFilter.In || snapshot.groups.any { it.id == folder.groupId }
+                } ?: FolderFilter.Any,
+            )
+        }
         LibrarySearchUiState(
             query = controls.query,
             scope = controls.scope,
-            kindFilter = controls.kind?.takeIf { it in availableKinds },
+            filters = activeFilters,
             availableKinds = availableKinds,
+            folders = snapshot.groups.sortedBy { it.title.lowercase() },
             kindCounts = snapshot.documents
                 .mapNotNull { snapshot.kinds[it.id] }
                 .groupingBy { it }
@@ -199,7 +253,7 @@ class LibrarySearchViewModel @Inject constructor(
                 documentKinds = snapshot.kinds,
                 textHits = hits,
                 scope = controls.scope,
-                kindFilter = controls.kind?.takeIf { it in availableKinds },
+                filters = activeFilters,
                 closeTerms = hitsState.closeTerms.takeIf { hits != null }.orEmpty(),
             ),
             indexProgress = progress,
@@ -222,7 +276,11 @@ class LibrarySearchViewModel @Inject constructor(
     }
 
     fun setKindFilter(value: DocumentKind?) {
-        kindFilter.value = value
+        filters.value = filters.value.copy(kind = value)
+    }
+
+    fun setFilters(value: SearchFilters) {
+        filters.value = value
     }
 
     /** Remembers the current query once the user acts on it (opens a result or submits). */
@@ -243,5 +301,7 @@ class LibrarySearchViewModel @Inject constructor(
     private companion object {
         const val QUERY_KEY = "query"
         const val TEXT_SEARCH_DEBOUNCE_MILLIS = 160L
+        const val COMPLETION_DEBOUNCE_MILLIS = 120L
+        const val MAX_COMPLETIONS = 6
     }
 }
