@@ -69,6 +69,10 @@ Each `page_texts` row records how its text was read (Room schema v11):
 
 The Text screen shows a caption only when it is useful: "Read with Indra OCR (experimental)" for an Indra read, or "Read with ML Kit (Indra OCR couldn't read this page)" when a fallback happened. ML Kit pages show no caption.
 
+## Text highlighting
+
+The Text screen maps folded word-prefix matches back to the original OCR text. `feature/text/TextHighlight.kt` expands those ranges to character boundaries with `BreakIterator` and merges touching ranges before applying styles. This keeps Tamil vowel signs and pulli attached to their base letters rather than splitting a displayed character across different font weights or colours. Search titles and snippets use the same boundary handling. Stored text, query folding and the FTS index are unchanged; existing pages do not need to be re-read.
+
 ## Re-reading existing pages
 
 - **Re-read existing pages** appears under the engine selector in Settings when live pages have a text row that the selected engine did not produce (read by the other engine, or nothing recognized). It is disabled while the indexer is working ("Reading text… N pages left").

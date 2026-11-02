@@ -4,7 +4,7 @@ import `in`.c1ph3rj.scanly.core.common.ScanlyResult
 import `in`.c1ph3rj.scanly.domain.model.DocumentKind
 import `in`.c1ph3rj.scanly.domain.model.OcrEngine
 import `in`.c1ph3rj.scanly.domain.model.PageText
-import `in`.c1ph3rj.scanly.domain.model.PageTextHit
+import `in`.c1ph3rj.scanly.domain.model.PageTextSearch
 import `in`.c1ph3rj.scanly.domain.model.TextIndexProgress
 import `in`.c1ph3rj.scanly.domain.search.SearchQuery
 import kotlinx.coroutines.flow.Flow
@@ -35,7 +35,7 @@ interface PageTextRepository {
     /** Saves the user's correction; null restores the recognized text. */
     suspend fun updateUserText(pageId: String, text: String?): ScanlyResult<Unit>
 
-    suspend fun searchPages(query: SearchQuery, limit: Int): ScanlyResult<List<PageTextHit>>
+    suspend fun searchPages(query: SearchQuery, limit: Int): ScanlyResult<PageTextSearch>
 
     /**
      * A corrected query built from words that occur in the user's pages, or null when every

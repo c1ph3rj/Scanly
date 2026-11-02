@@ -27,6 +27,36 @@ data class SearchQuery(
         return parts.takeIf { it.isNotEmpty() }?.joinToString(" ")
     }
 
+    /** Like [toFtsMatch], but terms must be whole words: "lease" no longer finds "leases". */
+    fun toExactFtsMatch(): String? {
+        val parts = buildList {
+            phrases.forEach { words -> add(words.joinToString(" ", prefix = "\"", postfix = "\"")) }
+            terms.filter(::isIndexableTerm).forEach(::add)
+        }
+        return parts.takeIf { it.isNotEmpty() }?.joinToString(" ")
+    }
+
+    /**
+     * One FTS expression per part of the query, all of which a page must match. [alternatives]
+     * may swap a term for other words (OR-ed together), or return null to keep the term as a
+     * prefix. Returns null when there is nothing to search, or a term's alternatives are empty
+     * (that part can't match, so neither can the query).
+     */
+    fun ftsGroups(alternatives: (term: String) -> List<String>?): List<String>? {
+        val groups = buildList {
+            phrases.forEach { words -> add(words.joinToString(" ", prefix = "\"", postfix = "\"")) }
+            terms.filter(::isIndexableTerm).forEach { term ->
+                val swapped = alternatives(term)
+                when {
+                    swapped == null -> add("$term*")
+                    swapped.isEmpty() -> return null
+                    else -> add(swapped.joinToString(" OR "))
+                }
+            }
+        }
+        return groups.takeIf { it.isNotEmpty() }
+    }
+
     private fun isIndexableTerm(term: String): Boolean =
         term.length >= MIN_PREFIX_LENGTH || term.all(Char::isDigit)
 

@@ -24,6 +24,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - **Import shows your gallery apps** — Import (Home, Tools, Add page, Image to text, shortcuts) now opens Android's image picker instead of the plain Files browser. You get your photos and albums straight away (Google Photos included where the phone supports it), and **Browse…** lists Gallery, Photos and My Files alongside Downloads and Drive. Still up to 50 images, no storage permission.
 - **QR & barcode** — the Utilities QR tile and scanner now say "QR & barcode", since the scanner already reads EAN-13 product barcodes, Code 128, PDF417, Data Matrix and Aztec codes as well as QR codes.
 
+- **Search finds close words when nothing matches exactly** — page-text search now tries the words you typed first (pages with the whole word rank above pages with words that only start with it). When a word appears nowhere in your pages, Search looks for similar words that do ("reciept" finds "receipt") and lists those documents last under **Close matches**, naming the words it used. Opening a close match highlights the similar word on the page.
+
 - **Privacy: no Google Drive backup** — Scanly now opts out of Android's automatic cloud backup, so scans, the library database and settings are never copied to Google Drive. Android 12+ phone-to-phone transfer still moves your library to a new phone.
 
 ### Technical
@@ -38,6 +40,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Fixed
 
+- **Searching Tamil, Hindi, Kannada, Telugu and other Indic text found nothing** — typed queries dropped viramas, pullis and anusvaras and split words at vowel signs, so they never matched the page text Indra OCR indexed. Queries are now folded exactly the way the index stores words: only a single accent on a Latin letter is dropped ("Résumé" still finds "resume"), and every other mark stays part of the word. This also fixes Cyrillic й, accented Greek and Vietnamese searches, and Korean in name search. Existing pages don't need to be re-read.
+- **Tamil search highlights split characters in Extracted text** — highlighting now keeps vowel signs and pulli with their base letters, so `மி` stays joined. Search-result highlights use the same character boundaries; existing OCR text and search indexing are unchanged.
 - **Back looped in PDF to JPG and Add to library** — pressing Back on the pages step opened the file picker, and Back there jumped to the pages step again, so the tool could not be left with Back. Back from the picker now leaves the tool (Change still returns to the pages step).
 - **Width limits ignored on tablets** — Compress, PDF to JPG, Add to library, Image to text, Search and Extracted text stretched edge to edge on wide screens because their width cap came after a fill modifier. They now keep their centred column.
 - **Imported flat pages were cropped wrongly** — importing an image that is already a full flat page (a PDF render, a screenshot, a clean scan with no background) could crop it to a stamp, cut off a coloured letterhead band, or drop a strip along an edge. Scanly now checks the edge of the image first: when it shows paper rather than a desk or background, and the detected outline cuts through page content, the page is kept whole. Photos of documents on a desk still crop as before, and so do receipts or cards scanned on a plain scanner lid. **AI Detect** on the crop screen follows the same rule.

@@ -14,6 +14,17 @@ class SpellingSuggesterTest {
     )
 
     @Test
+    fun closeMatchesListNearWordsClosestFirstUpToTheLimit() {
+        assertEquals(listOf("lease", "least"), SpellingSuggester.closeMatches("leasr", vocabulary, limit = 4))
+        assertEquals(listOf("lease"), SpellingSuggester.closeMatches("leasr", vocabulary, limit = 1))
+    }
+
+    @Test
+    fun closeMatchesIgnoreShortWords() {
+        assertEquals(emptyList<String>(), SpellingSuggester.closeMatches("lea", vocabulary, limit = 4))
+    }
+
+    @Test
     fun suggestsClosestWordFromThePages() {
         assertEquals("website", SpellingSuggester.bestMatch("webiste", vocabulary))
     }

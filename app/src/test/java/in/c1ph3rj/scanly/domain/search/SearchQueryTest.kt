@@ -43,6 +43,31 @@ class SearchQueryTest {
     }
 
     @Test
+    fun indicWordsStayWholeTermsMatchingTheIndex() {
+        assertEquals(listOf("தமிழ்நாடு"), SearchQuery.parse("தமிழ்நாடு").terms)
+        assertEquals("प्रधानमंत्री*", SearchQuery.parse("प्रधानमंत्री").toFtsMatch())
+    }
+
+    @Test
+    fun exactMatchDropsPrefixStars() {
+        assertEquals("\"security deposit\" rent", SearchQuery.parse("\"security deposit\" rent").toExactFtsMatch())
+        assertNull(SearchQuery.parse("a").toExactFtsMatch())
+    }
+
+    @Test
+    fun ftsGroupsSwapOnlyTheTermsGivenAlternatives() {
+        val groups = SearchQuery.parse("\"due date\" rent reciept").ftsGroups { term ->
+            if (term == "reciept") listOf("receipt", "recept") else null
+        }
+        assertEquals(listOf("\"due date\"", "rent*", "receipt OR recept"), groups)
+    }
+
+    @Test
+    fun ftsGroupsGiveUpWhenATermHasNoAlternatives() {
+        assertNull(SearchQuery.parse("rent zzzz").ftsGroups { term -> if (term == "zzzz") emptyList() else null })
+    }
+
+    @Test
     fun blankQueryIsBlank() {
         assertTrue(SearchQuery.parse("  ,, ").isBlank)
     }

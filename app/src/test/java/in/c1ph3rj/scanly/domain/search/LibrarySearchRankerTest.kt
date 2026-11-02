@@ -3,6 +3,7 @@ package `in`.c1ph3rj.scanly.domain.search
 import `in`.c1ph3rj.scanly.domain.model.DocumentGroup
 import `in`.c1ph3rj.scanly.domain.model.DocumentKind
 import `in`.c1ph3rj.scanly.domain.model.HighlightedText
+import `in`.c1ph3rj.scanly.domain.model.MatchTier
 import `in`.c1ph3rj.scanly.domain.model.PageTextHit
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
 import `in`.c1ph3rj.scanly.domain.model.SearchScope
@@ -24,11 +25,52 @@ class LibrarySearchRankerTest {
         hit("inv", page = 0, count = 1),
     )
 
+    @Test
+    fun exactWordPagesOutrankPrefixOnlyPages() {
+        val results = rank(
+            "zebra",
+            textHits = listOf(hit("other", page = 0, count = 1), hit("inv", page = 0, count = 1, tier = MatchTier.EXACT)),
+        )
+        // Holiday photos is newer, but only the invoice has the whole word.
+        assertEquals(listOf("inv", "other"), results.textMatches.map { it.document.id })
+    }
+
+    @Test
+    fun closeOnlyDocumentsComeAfterEverythingTheUserTyped() {
+        val results = rank(
+            "lease",
+            textHits = listOf(
+                hit("other", page = 0, count = 5, tier = MatchTier.CLOSE),
+                hit("inv", page = 0, count = 1),
+            ),
+            closeTerms = listOf("least"),
+        )
+        assertEquals(listOf("inv"), results.textMatches.map { it.document.id })
+        assertEquals(setOf("lease", "notes"), results.nameMatches.map { it.document.id }.toSet())
+        assertEquals(listOf("other"), results.closeMatches.map { it.document.id })
+        assertEquals(listOf("least"), results.closeTerms)
+        assertEquals(4, results.documentCount)
+    }
+
+    @Test
+    fun nameMatchWithOnlyCloseTextStaysWithNameMatches() {
+        val results = rank("lease", textHits = listOf(hit("lease", page = 0, count = 1, tier = MatchTier.CLOSE)))
+        assertTrue(results.closeMatches.isEmpty())
+        assertTrue(results.nameMatches.any { it.document.id == "lease" && it.pageHits.size == 1 })
+    }
+
+    @Test
+    fun closeTermsAreDroppedWhenNoCloseMatchSurvives() {
+        val results = rank("lease", textHits = hits, closeTerms = listOf("least"))
+        assertTrue(results.closeTerms.isEmpty())
+    }
+
     private fun rank(
         query: String,
         textHits: List<PageTextHit>? = hits,
         scope: SearchScope = SearchScope.EVERYWHERE,
         kind: DocumentKind? = null,
+        closeTerms: List<String> = emptyList(),
     ) = LibrarySearchRanker.rank(
         SearchQuery.parse(query),
         documents,
@@ -37,6 +79,7 @@ class LibrarySearchRankerTest {
         textHits,
         scope,
         kind,
+        closeTerms,
     )
 
     @Test
@@ -104,6 +147,6 @@ class LibrarySearchRankerTest {
         groupId = groupId,
     )
 
-    private fun hit(documentId: String, page: Int, count: Int) =
-        PageTextHit("$documentId-$page", documentId, page, HighlightedText("…"), count)
+    private fun hit(documentId: String, page: Int, count: Int, tier: MatchTier = MatchTier.PREFIX) =
+        PageTextHit("$documentId-$page", documentId, page, HighlightedText("…"), count, tier)
 }

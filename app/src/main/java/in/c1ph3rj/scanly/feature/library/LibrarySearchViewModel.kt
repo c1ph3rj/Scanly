@@ -10,6 +10,7 @@ import `in`.c1ph3rj.scanly.domain.model.DocumentGroup
 import `in`.c1ph3rj.scanly.domain.model.DocumentKind
 import `in`.c1ph3rj.scanly.domain.model.LibrarySearchResults
 import `in`.c1ph3rj.scanly.domain.model.PageTextHit
+import `in`.c1ph3rj.scanly.domain.model.PageTextSearch
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
 import `in`.c1ph3rj.scanly.domain.model.SearchScope
 import `in`.c1ph3rj.scanly.domain.model.TextIndexProgress
@@ -83,6 +84,8 @@ private data class TextHitsState(
     val scope: SearchScope,
     val hits: List<PageTextHit>?,
     val suggestion: String? = null,
+    /** Similar words searched because nothing matched the typed ones. */
+    val closeTerms: List<String> = emptyList(),
 )
 
 /**
@@ -153,13 +156,14 @@ class LibrarySearchViewModel @Inject constructor(
                         emit(TextHitsState(text, searchScope, null))
                         delay(TEXT_SEARCH_DEBOUNCE_MILLIS)
                     }
-                    val hits = when (val result = searchPageTextUseCase(parsed)) {
+                    val search: PageTextSearch = when (val result = searchPageTextUseCase(parsed)) {
                         is ScanlyResult.Success -> result.value
-                        is ScanlyResult.Failure -> emptyList()
+                        is ScanlyResult.Failure -> PageTextSearch()
                     }
                     lastSearched = text to searchScope
-                    val suggestion = if (hits.isEmpty()) suggestSearchCorrectionUseCase(parsed) else null
-                    emit(TextHitsState(text, searchScope, hits, suggestion))
+                    // Close matches already answer "did you mean"; only offer it when they found nothing.
+                    val suggestion = if (search.hits.isEmpty()) suggestSearchCorrectionUseCase(parsed) else null
+                    emit(TextHitsState(text, searchScope, search.hits, suggestion, search.closeTerms))
                 }
             }
             .onStart { emit(TextHitsState("", SearchScope.EVERYWHERE, emptyList())) }
@@ -196,6 +200,7 @@ class LibrarySearchViewModel @Inject constructor(
                 textHits = hits,
                 scope = controls.scope,
                 kindFilter = controls.kind?.takeIf { it in availableKinds },
+                closeTerms = hitsState.closeTerms.takeIf { hits != null }.orEmpty(),
             ),
             indexProgress = progress,
             suggestion = hitsState.suggestion.takeIf { hits != null },

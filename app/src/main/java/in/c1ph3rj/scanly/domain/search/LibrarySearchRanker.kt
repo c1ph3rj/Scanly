@@ -6,6 +6,7 @@ import `in`.c1ph3rj.scanly.domain.model.DocumentSearchResult
 import `in`.c1ph3rj.scanly.domain.model.FolderSearchResult
 import `in`.c1ph3rj.scanly.domain.model.HighlightedText
 import `in`.c1ph3rj.scanly.domain.model.LibrarySearchResults
+import `in`.c1ph3rj.scanly.domain.model.MatchTier
 import `in`.c1ph3rj.scanly.domain.model.PageTextHit
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
 import `in`.c1ph3rj.scanly.domain.model.SearchScope
@@ -18,7 +19,11 @@ import kotlin.math.ln
  * 1. Documents whose pages contain the query — those whose name matches too float to the top,
  *    then more matches and more matching pages win. This is where users find "that letter
  *    which mentioned X", which names alone can't answer.
+ *    Within these, pages that contain every typed word whole beat pages that only have words
+ *    starting with it.
  * 2. Documents that match by name only, best name match first.
+ * 3. Documents whose pages only have words spelled close to the query ([MatchTier.CLOSE]),
+ *    so a near miss never outranks what the user actually typed.
  * Folders are listed separately. While text hits are still loading ([textHits] == null),
  * name matches are returned on their own so results appear instantly as the user types.
  */
@@ -26,6 +31,7 @@ object LibrarySearchRanker {
     private const val NAME_ALSO_MATCHES_BOOST = 2.0
     private const val PAGE_SPREAD_WEIGHT = 0.35
     private const val RECENCY_WEIGHT = 0.15
+    private const val EXACT_WORD_BOOST = 0.75
 
     fun rank(
         query: SearchQuery,
@@ -35,6 +41,7 @@ object LibrarySearchRanker {
         textHits: List<PageTextHit>?,
         scope: SearchScope,
         kindFilter: DocumentKind? = null,
+        closeTerms: List<String> = emptyList(),
     ): LibrarySearchResults {
         val groupTitles = groups.associate { it.id to it.title }
         if (query.isBlank) {
@@ -67,6 +74,7 @@ object LibrarySearchRanker {
 
         val textMatches = mutableListOf<Pair<Double, DocumentSearchResult>>()
         val nameMatches = mutableListOf<Pair<Double, DocumentSearchResult>>()
+        val closeMatches = mutableListOf<Pair<Double, DocumentSearchResult>>()
         documents.forEach { document ->
             val kind = documentKinds[document.id]
             if (kindFilter != null && kind != kindFilter) return@forEach
@@ -85,15 +93,18 @@ object LibrarySearchRanker {
                 pageHits = pageHits,
             )
             val recency = recencyScore(document.updatedAtMillis, oldest, newest)
-            if (pageHits.isNotEmpty()) {
-                val pageSpread = pageHits.size.toDouble() / document.pageCount.coerceAtLeast(1)
-                val score = (nameMatch?.let { NAME_ALSO_MATCHES_BOOST + it.score } ?: 0.0) +
-                    ln(1.0 + textMatchCount) +
-                    PAGE_SPREAD_WEIGHT * pageSpread +
-                    RECENCY_WEIGHT * recency
-                textMatches += score to result
-            } else {
-                nameMatches += (nameMatch!!.score + RECENCY_WEIGHT * recency) to result
+            val pageSpread = pageHits.size.toDouble() / document.pageCount.coerceAtLeast(1)
+            val textScore = ln(1.0 + textMatchCount) + PAGE_SPREAD_WEIGHT * pageSpread + RECENCY_WEIGHT * recency
+            val isCloseOnly = pageHits.isNotEmpty() && pageHits.all { it.tier == MatchTier.CLOSE }
+            when {
+                pageHits.isNotEmpty() && !isCloseOnly -> {
+                    val exactBoost = if (pageHits.any { it.tier == MatchTier.EXACT }) EXACT_WORD_BOOST else 0.0
+                    val score = (nameMatch?.let { NAME_ALSO_MATCHES_BOOST + it.score } ?: 0.0) + textScore + exactBoost
+                    textMatches += score to result
+                }
+                // A name match is what the user typed; its near-miss pages still show under it.
+                nameMatch != null -> nameMatches += (nameMatch.score + RECENCY_WEIGHT * recency) to result
+                else -> closeMatches += textScore to result
             }
         }
 
@@ -113,6 +124,8 @@ object LibrarySearchRanker {
             query = query.raw,
             textMatches = textMatches.sortedWith(resultOrder()).map { it.second },
             nameMatches = nameMatches.sortedWith(resultOrder()).map { it.second },
+            closeMatches = closeMatches.sortedWith(resultOrder()).map { it.second },
+            closeTerms = closeTerms.takeIf { closeMatches.isNotEmpty() }.orEmpty(),
             folders = folders,
             isTextSearchComplete = textHits != null || scope == SearchScope.NAMES,
         )

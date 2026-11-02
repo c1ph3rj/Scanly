@@ -8,13 +8,17 @@ import `in`.c1ph3rj.scanly.core.common.ScanlyError
 import `in`.c1ph3rj.scanly.core.common.ScanlyResult
 import `in`.c1ph3rj.scanly.data.local.db.ScanlyDatabase
 import `in`.c1ph3rj.scanly.data.local.db.dao.PageTextDao
+import `in`.c1ph3rj.scanly.data.local.db.dao.PageTextHitRow
 import `in`.c1ph3rj.scanly.data.local.db.dao.PendingTextPageRow
+import `in`.c1ph3rj.scanly.data.local.db.dao.closeMatchQuery
 import `in`.c1ph3rj.scanly.data.local.db.entity.PageTextEntity
 import `in`.c1ph3rj.scanly.domain.model.DocumentKind
+import `in`.c1ph3rj.scanly.domain.model.MatchTier
 import `in`.c1ph3rj.scanly.domain.model.OcrEngine
 import `in`.c1ph3rj.scanly.domain.model.OcrFallbackReason
 import `in`.c1ph3rj.scanly.domain.model.PageText
 import `in`.c1ph3rj.scanly.domain.model.PageTextHit
+import `in`.c1ph3rj.scanly.domain.model.PageTextSearch
 import `in`.c1ph3rj.scanly.domain.model.TextIndexProgress
 import `in`.c1ph3rj.scanly.domain.repository.PageTextRepository
 import `in`.c1ph3rj.scanly.domain.search.SearchQuery
@@ -31,6 +35,7 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.text.Normalizer
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -115,7 +120,7 @@ class DefaultPageTextRepository @Inject constructor(
                 recognitionMutex.withLock {
                     val existing = dao.getPageText(pageId) ?: error("Read this page's text first.")
                     val userText = text?.takeIf { it != existing.recognizedText }
-                    val searchText = userText ?: existing.recognizedText
+                    val searchText = indexable(userText ?: existing.recognizedText)
                     dao.replace(
                         existing.copy(
                             userText = userText,
@@ -127,27 +132,63 @@ class DefaultPageTextRepository @Inject constructor(
             }
         }
 
-    override suspend fun searchPages(query: SearchQuery, limit: Int): ScanlyResult<List<PageTextHit>> =
+    /**
+     * Tiered page-text search, best matches first:
+     * 1. pages with words starting with what was typed, marked [MatchTier.EXACT] when every
+     *    typed word also appears whole;
+     * 2. only when nothing matched and some typed word appears nowhere in the library: the same
+     *    search with that word swapped for similar words that do appear ([MatchTier.CLOSE]).
+     */
+    override suspend fun searchPages(query: SearchQuery, limit: Int): ScanlyResult<PageTextSearch> =
         withContext(dispatchers.io) {
-            val match = query.toFtsMatch() ?: return@withContext ScanlyResult.Success(emptyList())
+            val match = query.toFtsMatch() ?: return@withContext ScanlyResult.Success(PageTextSearch())
             try {
-                ScanlyResult.Success(
-                    dao.search(match, limit).map { row ->
-                        PageTextHit(
-                            pageId = row.pageId,
-                            documentId = row.documentId,
-                            pageIndex = row.pageIndex,
-                            snippet = SnippetParser.parse(row.snippet),
-                            matchCount = SnippetParser.matchCount(row.offsets),
-                        )
-                    },
-                )
+                val prefixHits = dao.search(match, limit)
+                if (prefixHits.isNotEmpty()) {
+                    // Quoted phrases alone are already exact; no second query needed.
+                    val exactMatch = query.toExactFtsMatch()
+                    val exact = exactMatch?.takeIf { it != match }?.let { dao.searchPageIds(it, limit).toSet() }
+                    return@withContext ScanlyResult.Success(
+                        PageTextSearch(
+                            hits = prefixHits.map { row ->
+                                val isExact = exact?.contains(row.pageId) ?: (exactMatch != null)
+                                row.toHit(if (isExact) MatchTier.EXACT else MatchTier.PREFIX)
+                            },
+                        ),
+                    )
+                }
+                ScanlyResult.Success(searchCloseMatches(query, limit))
             } catch (exception: SQLiteException) {
                 // A query the FTS parser rejects simply has no text matches.
                 Log.w(TAG, "Text search rejected query", exception)
-                ScanlyResult.Success(emptyList())
+                ScanlyResult.Success(PageTextSearch())
             }
         }
+
+    private suspend fun searchCloseMatches(query: SearchQuery, limit: Int): PageTextSearch {
+        val closeTerms = mutableListOf<String>()
+        val groups = query.ftsGroups { term ->
+            if (term.length < SpellingSuggester.MIN_TERM_LENGTH || vocabularyHasPrefix(term)) {
+                null
+            } else {
+                SpellingSuggester.closeMatches(term, vocabularyNear(term), MAX_CLOSE_TERMS)
+                    .also { closeTerms += it }
+            }
+        }
+        // Nothing to swap in: every word occurs somewhere, they just never share a page.
+        if (groups == null || closeTerms.isEmpty()) return PageTextSearch()
+        val hits = dao.searchRaw(closeMatchQuery(groups, limit)).map { it.toHit(MatchTier.CLOSE) }
+        return PageTextSearch(hits = hits, closeTerms = closeTerms.distinct().takeIf { hits.isNotEmpty() }.orEmpty())
+    }
+
+    private fun PageTextHitRow.toHit(tier: MatchTier) = PageTextHit(
+        pageId = pageId,
+        documentId = documentId,
+        pageIndex = pageIndex,
+        snippet = SnippetParser.parse(snippet),
+        matchCount = SnippetParser.matchCount(offsets),
+        tier = tier,
+    )
 
     override suspend fun suggestCorrection(query: SearchQuery): String? = withContext(dispatchers.io) {
         try {
@@ -226,7 +267,7 @@ class DefaultPageTextRepository @Inject constructor(
             }
             val recognizedText = recognized?.text.orEmpty()
             val userText = existing?.userText
-            val searchText = userText ?: recognizedText
+            val searchText = indexable(userText ?: recognizedText)
             try {
                 dao.replace(
                     PageTextEntity(
@@ -286,5 +327,14 @@ class DefaultPageTextRepository @Inject constructor(
     private companion object {
         const val TAG = "PageTextRepository"
         const val MAX_VOCABULARY_CANDIDATES = 5_000
+
+        /** Similar words tried per typed word; more only adds noise below the best few. */
+        const val MAX_CLOSE_TERMS = 4
+
+        /**
+         * Indexed text in NFC, the form queries are folded to, so "क़" read as one code point
+         * and typed as क + ़ is the same word to the index.
+         */
+        fun indexable(text: String): String = Normalizer.normalize(text, Normalizer.Form.NFC)
     }
 }

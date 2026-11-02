@@ -18,32 +18,55 @@ class FoldedText private constructor(
     companion object {
         fun of(source: String): FoldedText {
             val builder = StringBuilder(source.length)
-            val indices = IntArray(source.length)
-            var count = 0
+            var indices = IntArray(source.length)
             source.forEachIndexed { index, char ->
-                val folded = TextFolding.foldChar(char)
-                if (folded != null) {
+                // A char folds to zero chars (a dropped accent), one, or two (क़ in NFC is क + ़).
+                TextFolding.foldChar(char).forEach { folded ->
+                    if (builder.length == indices.size) indices = indices.copyOf(indices.size * 2 + 1)
+                    indices[builder.length] = index
                     builder.append(folded)
-                    indices[count++] = index
                 }
             }
-            return FoldedText(builder.toString(), indices.copyOf(count))
+            return FoldedText(builder.toString(), indices.copyOf(builder.length))
         }
     }
 }
 
+/**
+ * Folds text the way the page-text index (SQLite FTS4 `unicode61`) tokenizes it, so a typed
+ * query and the indexed words line up:
+ * - case is folded in every script;
+ * - only a single accent on a Latin letter is dropped ("Résumé" → "resume"), which is all
+ *   `unicode61` removes;
+ * - every other mark is part of the word. Indic vowel signs, viramas and anusvaras (ா, ि, ், ं)
+ *   change the word, and so do Greek tonos, Cyrillic й or Vietnamese ệ, as far as the index
+ *   is concerned.
+ *
+ * Text is also put in NFC, so a precomposed letter and its decomposed spelling agree.
+ */
 object TextFolding {
-    private val combiningMarks = Regex("\\p{Mn}+")
-    private val wordPattern = Regex("[\\p{L}\\p{N}]+")
+    private val wordPattern = Regex("[\\p{L}\\p{M}\\p{N}]+")
+    private const val COMBINING_DIACRITICS_START = '̀'
+    private const val COMBINING_DIACRITICS_END = 'ͯ'
 
     fun fold(value: String): String = FoldedText.of(value).text
 
-    /** Folds one char to a single char, or null for chars that vanish (combining marks). */
-    internal fun foldChar(char: Char): Char? {
-        if (char.code < 0x80) return char.lowercaseChar()
-        val decomposed = combiningMarks.replace(Normalizer.normalize(char.toString(), Normalizer.Form.NFD), "")
-        return decomposed.lowercase(Locale.ROOT).firstOrNull()
+    /** Folds one char to the chars that stand for it in folded text (possibly none). */
+    internal fun foldChar(char: Char): String {
+        if (char.code < 0x80) return char.lowercaseChar().toString()
+        // A loose generic accent (from decomposed Latin text) is dropped like a precomposed one.
+        if (isGenericDiacritic(char)) return ""
+        val lower = char.toString().lowercase(Locale.ROOT)
+        val decomposed = Normalizer.normalize(lower, Normalizer.Form.NFD)
+        if (decomposed.length == 2 && decomposed[0].code < 0x80 && isGenericDiacritic(decomposed[1])) {
+            return decomposed.substring(0, 1)
+        }
+        return Normalizer.normalize(lower, Normalizer.Form.NFC)
     }
 
+    private fun isGenericDiacritic(char: Char): Boolean =
+        char in COMBINING_DIACRITICS_START..COMBINING_DIACRITICS_END
+
+    /** Words in folded text. Marks belong to their word, matching the index's tokenizer. */
     fun words(folded: String): Sequence<MatchResult> = wordPattern.findAll(folded)
 }

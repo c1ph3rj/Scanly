@@ -109,6 +109,7 @@ import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import `in`.c1ph3rj.scanly.domain.model.DocumentKind
 import `in`.c1ph3rj.scanly.domain.model.DocumentSearchResult
 import `in`.c1ph3rj.scanly.domain.model.FolderSearchResult
+import `in`.c1ph3rj.scanly.domain.model.MatchTier
 import `in`.c1ph3rj.scanly.domain.model.PageTextHit
 import `in`.c1ph3rj.scanly.domain.model.SearchScope
 import `in`.c1ph3rj.scanly.feature.components.DocumentThumbnail
@@ -252,7 +253,14 @@ fun LibrarySearchScreen(
     val openPage: (PageTextHit) -> Unit = { hit ->
         focusManager.clearFocus()
         onQuerySubmitted()
-        onOpenPageText(hit.documentId, hit.pageIndex, uiState.query)
+        // A close match has none of the typed words; hand the similar ones over so the page
+        // opens with what actually matched highlighted.
+        val pageQuery = if (hit.tier == MatchTier.CLOSE) {
+            (listOf(uiState.query) + results.closeTerms).joinToString(" ")
+        } else {
+            uiState.query
+        }
+        onOpenPageText(hit.documentId, hit.pageIndex, pageQuery)
     }
 
     Scaffold(
@@ -396,6 +404,25 @@ fun LibrarySearchScreen(
                                 }
                             }
                         }
+                        if (results.closeMatches.isNotEmpty()) {
+                            val hasExactResults = results.textMatches.isNotEmpty() || results.nameMatches.isNotEmpty()
+                            item(key = "close_heading") {
+                                CloseMatchesHeading(
+                                    closeTerms = results.closeTerms,
+                                    modifier = Modifier.animateItem().padding(top = if (hasExactResults) 8.dp else 0.dp),
+                                )
+                            }
+                            results.closeMatches.forEach { result ->
+                                item(key = "doc_${result.document.id}") {
+                                    TextResultCard(
+                                        result = result,
+                                        onOpenDocument = { openDocument(result.document.id) },
+                                        onOpenPage = openPage,
+                                        modifier = Modifier.animateItem(),
+                                    )
+                                }
+                            }
+                        }
                         if (results.folders.isNotEmpty()) {
                             item(key = "folder_heading") {
                                 ResultSectionTitle("Folders", Modifier.animateItem().padding(top = 8.dp))
@@ -496,6 +523,10 @@ private fun ResultSummary(uiState: LibrarySearchUiState, modifier: Modifier = Mo
             "$matches ${if (matches == 1) "match" else "matches"} in $inDocs ${if (inDocs == 1) "document" else "documents"}" +
                 if (results.nameMatches.isNotEmpty()) " · ${results.nameMatches.size} by name" else ""
         }
+        results.textMatches.isEmpty() && results.nameMatches.isEmpty() && results.closeMatches.isNotEmpty() -> {
+            val close = results.closeMatches.size
+            "No exact matches · $close ${if (close == 1) "document" else "documents"} with similar words"
+        }
         documents > 0 -> "$documents ${if (documents == 1) "document" else "documents"}"
         results.folders.isNotEmpty() -> "${results.folders.size} ${if (results.folders.size == 1) "folder" else "folders"}"
         else -> "Searching text in pages…"
@@ -508,6 +539,22 @@ private fun ResultSummary(uiState: LibrarySearchUiState, modifier: Modifier = Mo
         style = MaterialTheme.typography.bodyMedium,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
     )
+}
+
+/** Heads the near-miss results and says which words of the user's pages they matched. */
+@Composable
+private fun CloseMatchesHeading(closeTerms: List<String>, modifier: Modifier = Modifier) {
+    Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(2.dp)) {
+        ResultSectionTitle("Close matches")
+        if (closeTerms.isNotEmpty()) {
+            Text(
+                text = "Similar words: " + closeTerms.joinToString(", ") { "“$it”" },
+                modifier = Modifier.padding(horizontal = 4.dp),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+    }
 }
 
 @Composable

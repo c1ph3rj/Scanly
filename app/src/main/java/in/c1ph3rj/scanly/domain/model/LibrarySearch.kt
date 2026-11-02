@@ -12,6 +12,18 @@ enum class SearchScope(val label: String) {
     TEXT("Text in pages"),
 }
 
+/** How closely a page's words match what the user typed, best first. */
+enum class MatchTier {
+    /** Every typed word appears whole on the page. */
+    EXACT,
+
+    /** The page has words starting with what was typed ("lea" → "lease"). */
+    PREFIX,
+
+    /** Only words spelled close to the typed ones ("reciept" → "receipt"). */
+    CLOSE,
+}
+
 /** One page that contains the query, as returned by the full-text index. */
 data class PageTextHit(
     val pageId: String,
@@ -19,6 +31,17 @@ data class PageTextHit(
     val pageIndex: Int,
     val snippet: HighlightedText,
     val matchCount: Int,
+    val tier: MatchTier = MatchTier.PREFIX,
+)
+
+/** Page-text hits for one query. */
+data class PageTextSearch(
+    val hits: List<PageTextHit> = emptyList(),
+    /**
+     * Words from the library searched in place of typed words nothing matched, for the
+     * [MatchTier.CLOSE] hits. Empty when every hit matched the typed words themselves.
+     */
+    val closeTerms: List<String> = emptyList(),
 )
 
 data class DocumentSearchResult(
@@ -43,11 +66,19 @@ data class LibrarySearchResults(
     val textMatches: List<DocumentSearchResult> = emptyList(),
     /** Documents that match only by name — shown after text matches. */
     val nameMatches: List<DocumentSearchResult> = emptyList(),
+    /**
+     * Documents whose pages only have words spelled close to the query, shown last so exact
+     * matches always come first.
+     */
+    val closeMatches: List<DocumentSearchResult> = emptyList(),
+    /** The similar words behind [closeMatches]. */
+    val closeTerms: List<String> = emptyList(),
     val folders: List<FolderSearchResult> = emptyList(),
     /** False while the page-text query is still running; name matches are already final. */
     val isTextSearchComplete: Boolean = true,
 ) {
-    val documentCount: Int get() = textMatches.size + nameMatches.size
+    val documentCount: Int get() = textMatches.size + nameMatches.size + closeMatches.size
     val totalTextMatches: Int get() = textMatches.sumOf { it.textMatchCount }
-    val isEmpty: Boolean get() = textMatches.isEmpty() && nameMatches.isEmpty() && folders.isEmpty()
+    val isEmpty: Boolean
+        get() = textMatches.isEmpty() && nameMatches.isEmpty() && closeMatches.isEmpty() && folders.isEmpty()
 }

@@ -20,20 +20,27 @@ object SpellingSuggester {
      * Picks the closest candidate within the allowed edit distance; ties go to the word found
      * on more pages, then alphabetical order so results are stable.
      */
-    fun bestMatch(term: String, candidates: List<VocabularyTerm>): String? {
-        if (term.length < MIN_TERM_LENGTH) return null
-        val limit = maxEdits(term)
+    fun bestMatch(term: String, candidates: List<VocabularyTerm>): String? =
+        closeMatches(term, candidates, limit = 1).firstOrNull()
+
+    /**
+     * Up to [limit] candidates within the allowed edit distance, closest first, the same order
+     * [bestMatch] uses. These are the words searched in place of a typed word nothing matched.
+     */
+    fun closeMatches(term: String, candidates: List<VocabularyTerm>, limit: Int): List<String> {
+        if (term.length < MIN_TERM_LENGTH) return emptyList()
+        val allowedEdits = maxEdits(term)
         return candidates.asSequence()
             .filter { it.term != term }
             .map { it to NameMatcher.editDistance(term, it.term) }
-            .filter { (_, distance) -> distance <= limit }
+            .filter { (_, distance) -> distance <= allowedEdits }
             .sortedWith(
                 compareBy<Pair<VocabularyTerm, Int>> { it.second }
                     .thenByDescending { it.first.pageCount }
                     .thenBy { it.first.term },
             )
-            .firstOrNull()
-            ?.first
-            ?.term
+            .take(limit)
+            .map { it.first.term }
+            .toList()
     }
 }

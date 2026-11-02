@@ -4,7 +4,10 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.RawQuery
 import androidx.room.Transaction
+import androidx.sqlite.db.SimpleSQLiteQuery
+import androidx.sqlite.db.SupportSQLiteQuery
 import `in`.c1ph3rj.scanly.data.local.db.entity.PageTextEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -184,6 +187,21 @@ interface PageTextDao {
     )
     suspend fun search(match: String, limit: Int): List<PageTextHitRow>
 
+    /** Pages matching [match], without the snippet work; used to tell exact hits from prefix ones. */
+    @Query(
+        """
+        SELECT t.pageId FROM page_texts_fts
+        INNER JOIN page_texts t ON t.id = page_texts_fts.rowid
+        WHERE page_texts_fts MATCH :match
+        LIMIT :limit
+        """,
+    )
+    suspend fun searchPageIds(match: String, limit: Int): List<String>
+
+    /** Same row shape as [search], for queries assembled at runtime (see [closeMatchQuery]). */
+    @RawQuery
+    suspend fun searchRaw(query: SupportSQLiteQuery): List<PageTextHitRow>
+
     /** Kind of each document, taken from its earliest page that has one. */
     @Query(
         """
@@ -208,4 +226,33 @@ interface PageTextDao {
         deleteByPageId(entity.pageId)
         insert(entity.copy(id = 0L))
     }
+}
+
+/**
+ * Pages matching every one of [groups] (each an FTS expression of OR-ed alternatives), with
+ * snippets marking any alternative. Each group is checked in its own sub-select instead of
+ * `(a OR b) c`: parentheses need SQLite's enhanced query syntax, which a device may not have,
+ * and without them OR and implicit AND bind differently between the two syntaxes.
+ */
+internal fun closeMatchQuery(groups: List<String>, limit: Int): SupportSQLiteQuery {
+    val groupFilters = groups.joinToString("") {
+        " AND page_texts_fts.rowid IN (SELECT docid FROM page_texts_fts WHERE page_texts_fts MATCH ?)"
+    }
+    val sql = """
+        SELECT t.pageId AS pageId, t.documentId AS documentId, p.pageIndex AS pageIndex,
+               snippet(page_texts_fts, char(2), char(3), '…', -1, 14) AS snippet,
+               offsets(page_texts_fts) AS offsets
+        FROM page_texts_fts
+        INNER JOIN page_texts t ON t.id = page_texts_fts.rowid
+        INNER JOIN scan_pages p ON p.id = t.pageId
+        INNER JOIN documents d ON d.id = p.documentId AND d.deletedAtMillis IS NULL
+        WHERE page_texts_fts MATCH ? AND p.deletedAtMillis IS NULL$groupFilters
+        LIMIT ?
+    """.trimIndent()
+    val args = buildList<Any> {
+        add(groups.joinToString(" OR "))
+        addAll(groups)
+        add(limit)
+    }
+    return SimpleSQLiteQuery(sql, args.toTypedArray())
 }

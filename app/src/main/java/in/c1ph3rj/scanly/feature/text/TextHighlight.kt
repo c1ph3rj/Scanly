@@ -11,6 +11,9 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import `in`.c1ph3rj.scanly.domain.model.HighlightedText
 import `in`.c1ph3rj.scanly.domain.search.FoldedText
+import `in`.c1ph3rj.scanly.domain.search.TextFolding
+import java.text.BreakIterator
+import java.util.Locale
 
 /**
  * The "marker pen" used for search matches: warm yellow on light surfaces, a softer amber wash
@@ -29,11 +32,37 @@ fun matchHighlightStyle(): SpanStyle {
 
 fun HighlightedText.toAnnotatedString(style: SpanStyle): AnnotatedString = buildAnnotatedString {
     append(text)
-    highlights.forEach { range ->
+    characterHighlightRanges().forEach { range -> addStyle(style, range.first, range.last + 1) }
+}
+
+/**
+ * Search offsets refer to code units, not displayed characters. In Tamil, for example,
+ * a prefix can end between ம and its vowel sign ி, or between a consonant and its pulli (்).
+ * Keep the entire character in one style run, including for index-provided snippets.
+ */
+private fun HighlightedText.characterHighlightRanges(): List<IntRange> {
+    if (text.isEmpty() || highlights.isEmpty()) return emptyList()
+    val characters = BreakIterator.getCharacterInstance(Locale.ROOT)
+    characters.setText(text)
+    val expanded = highlights.mapNotNull { range ->
         val start = range.first.coerceIn(0, text.length)
         val end = (range.last + 1).coerceIn(start, text.length)
-        if (end > start) addStyle(style, start, end)
+        if (end <= start) return@mapNotNull null
+        val characterStart = if (characters.isBoundary(start)) start else characters.preceding(start)
+        val characterEnd = if (characters.isBoundary(end)) end else characters.following(end)
+        characterStart until characterEnd
+    }.sortedBy { it.first }
+    // Expanding neighboring matches can make them touch; use one continuous style run.
+    val merged = mutableListOf<IntRange>()
+    expanded.forEach { range ->
+        val previous = merged.lastOrNull()
+        if (previous != null && range.first <= previous.last + 1) {
+            merged[merged.lastIndex] = previous.first..maxOf(previous.last, range.last)
+        } else {
+            merged += range
+        }
     }
+    return merged
 }
 
 /**
@@ -43,14 +72,9 @@ fun HighlightedText.toAnnotatedString(style: SpanStyle): AnnotatedString = build
 fun highlightWordPrefixes(text: String, words: List<String>, style: SpanStyle): AnnotatedString {
     if (words.isEmpty() || text.isEmpty()) return AnnotatedString(text)
     val folded = FoldedText.of(text)
-    return buildAnnotatedString {
-        append(text)
-        wordPattern.findAll(folded.text).forEach { word ->
-            val prefix = words.filter { word.value.startsWith(it) }.maxOfOrNull { it.length } ?: return@forEach
-            val source = folded.toSourceRange(word.range.first until word.range.first + prefix)
-            addStyle(style, source.first, source.last + 1)
-        }
-    }
+    val ranges = TextFolding.words(folded.text).mapNotNull { word ->
+        val prefix = words.filter { word.value.startsWith(it) }.maxOfOrNull { it.length } ?: return@mapNotNull null
+        folded.toSourceRange(word.range.first until word.range.first + prefix)
+    }.toList()
+    return HighlightedText(text, ranges).toAnnotatedString(style)
 }
-
-private val wordPattern = Regex("[\\p{L}\\p{N}]+")

@@ -1,6 +1,8 @@
 package `in`.c1ph3rj.scanly.domain.usecase
 
+import `in`.c1ph3rj.scanly.core.common.ScanlyResult
 import `in`.c1ph3rj.scanly.domain.model.OcrEngine
+import `in`.c1ph3rj.scanly.domain.model.PageTextSearch
 import `in`.c1ph3rj.scanly.domain.repository.PageTextRepository
 import `in`.c1ph3rj.scanly.domain.search.SearchQuery
 import javax.inject.Inject
@@ -48,7 +50,8 @@ class SuggestSearchCorrectionUseCase @Inject constructor(private val repository:
 }
 
 class SearchPageTextUseCase @Inject constructor(private val repository: PageTextRepository) {
-    suspend operator fun invoke(query: SearchQuery) = repository.searchPages(query, MAX_PAGE_HITS)
+    suspend operator fun invoke(query: SearchQuery): ScanlyResult<PageTextSearch> =
+        repository.searchPages(query, MAX_PAGE_HITS)
 
     private companion object {
         /** Bounds snippet work for very common words; ranking only needs the best few hundred. */
