@@ -68,6 +68,13 @@
     "websiteUrl": "https://developers.google.com/ml-kit/vision/text-recognition/v2"
   },
   {
+    "id": "indra_ocr_models",
+    "name": "Indra OCR models (datalab-to/indra-ocr)",
+    "summary": "Experimental on-device text recognition models (detection, orientation, script, and recognition) used by the optional Indra OCR engine. Code is Apache-2.0; the model weights are distributed under the Datalab modified OpenRAIL-M license.",
+    "license": "Code: Apache-2.0 · Weights: Datalab modified OpenRAIL-M",
+    "websiteUrl": "https://huggingface.co/datalab-to/indra-ocr"
+  },
+  {
     "id": "zxing_core",
     "name": "ZXing Core",
     "summary": "QR code generation library used to encode text and URLs into QR images.",

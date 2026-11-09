@@ -9,9 +9,14 @@ interface DocumentCornerDetector {
         model: DocumentCornerModel = DocumentCornerModel.ACCURATE,
     ): CornerDetectionResult
 
+    /**
+     * @param reproducible run on one core type so the same bitmap always gives bit-identical
+     *   corners (slower; for imports and saved pages, not live preview). See [CpuAffinity].
+     */
     suspend fun detect(
         bitmap: Bitmap,
         model: DocumentCornerModel = DocumentCornerModel.ACCURATE,
+        reproducible: Boolean = false,
     ): CornerDetectionResult
 }
 

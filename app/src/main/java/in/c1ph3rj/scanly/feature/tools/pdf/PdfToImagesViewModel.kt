@@ -36,6 +36,8 @@ import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
 
 data class PdfToImagesUiState(
     val libraryDocuments: List<ScanDocument> = emptyList(),
@@ -254,22 +256,25 @@ class PdfToImagesViewModel @Inject constructor(
     fun export() {
         val copy = workingCopy ?: return
         val state = _uiState.value
+        // A second tap while saving would wipe the first export's image folder.
+        if (state.isExporting) return
         val pages = state.sortedSelection
         if (pages.isEmpty()) {
-            emitMessage("Choose at least one page.")
+            emitMessage(appString(R.string.import_pdf_to_library_use_case_choose_at_least_one_page))
             return
         }
         val baseName = sanitizePdfBaseName(state.source?.label().orEmpty()).ifBlank { "Scanly" }
+        // Set before launching so a second call on the same frame already sees it.
+        _uiState.update {
+            it.copy(
+                isExporting = true,
+                exportedCount = 0,
+                exportTotal = pages.size,
+                exportPages = pages,
+                result = null,
+            )
+        }
         viewModelScope.launch {
-            _uiState.update {
-                it.copy(
-                    isExporting = true,
-                    exportedCount = 0,
-                    exportTotal = pages.size,
-                    exportPages = pages,
-                    result = null,
-                )
-            }
             // The Saving screen shows the page in progress: render it (and each next one) as a
             // thumbnail while the full-size image encodes. Cached pages return immediately.
             requestThumbnail(pages.first())

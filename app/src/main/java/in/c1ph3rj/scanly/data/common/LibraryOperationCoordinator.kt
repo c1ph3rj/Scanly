@@ -6,6 +6,8 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import javax.inject.Inject
 import javax.inject.Singleton
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
 
 @Singleton
 class LibraryOperationCoordinator @Inject constructor() {
@@ -15,7 +17,7 @@ class LibraryOperationCoordinator @Inject constructor() {
 
     suspend fun <T> withMutation(block: suspend () -> T): T = mutex.withLock {
         check(_maintenanceMessage.value == null) {
-            _maintenanceMessage.value ?: "Library maintenance is in progress."
+            _maintenanceMessage.value ?: appString(R.string.library_operation_coordinator_library_maintenance_is_in_progress)
         }
         block()
     }

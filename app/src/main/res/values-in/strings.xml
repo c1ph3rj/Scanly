@@ -1,0 +1,1967 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="shortcut_scan_short">Pindai</string>
+    <string name="shortcut_scan_long">Mulai pindaian baru</string>
+    <string name="shortcut_scan_disabled">Pemindaian tidak tersedia</string>
+    <string name="shortcut_import_short">Impor</string>
+    <string name="shortcut_import_long">Impor foto</string>
+    <string name="shortcut_import_disabled">Impor tidak tersedia</string>
+    <string name="shortcut_qr_short">QR</string>
+    <string name="shortcut_qr_long">Pindai atau buat QR, baca barcode</string>
+    <string name="shortcut_qr_disabled">Alat QR tidak tersedia</string>
+    <string name="shortcut_library_short">Koleksi</string>
+    <string name="shortcut_library_long">Buka koleksi Anda</string>
+    <string name="shortcut_library_disabled">Koleksi tidak tersedia</string>
+    <string name="widget_actions_label">Tindakan Scanly</string>
+    <string name="widget_actions_description">Akses cepat ke Pindai, Impor, QR, dan Koleksi.</string>
+    <string name="widget_scan_label">Pindai Scanly</string>
+    <string name="widget_scan_description">Mulai memindai dokumen baru.</string>
+    <string name="widget_qr_label">QR Scanly</string>
+    <string name="widget_qr_description">Buka alat pindai dan buat QR.</string>
+    <string name="widget_action_scan">Pindai</string>
+    <string name="widget_action_import">Impor</string>
+    <string name="widget_action_qr">QR</string>
+    <string name="widget_action_library">Koleksi</string>
+    <!-- DocumentPresentationFormatter -->
+    <string name="document_presentation_formatter_imported">"Diimpor %1$s"</string>
+    <string name="document_presentation_formatter_folder">"Folder %1$s"</string>
+    <string name="document_presentation_formatter_new_folder">"Folder baru %1$s"</string>
+    <string name="document_presentation_formatter_scan">"Pindaian %1$s"</string>
+    <string name="document_presentation_formatter_document">"Dokumen %1$s"</string>
+    <!-- ImageImportSupport -->
+    <string name="image_import_only_images_can_be_added">"Maksimal %1$s gambar dapat ditambahkan sekaligus."</string>
+    <string name="image_import_skipped_files_that_couldn_t">"%1$s file yang tidak dapat dibuka dilewati."</string>
+    <string name="image_import_skipped_1_file_that_couldn">1 file yang tidak dapat dibuka dilewati.</string>
+    <string name="image_import_imported_images">"%1$s gambar diimpor."</string>
+    <string name="image_import_imported_1_image">1 gambar diimpor.</string>
+    <!-- ZoomableImageDialog -->
+    <string name="zoomable_image_image_unavailable">Gambar tidak tersedia</string>
+    <string name="zoomable_image_reset_zoom">Reset zoom</string>
+    <string name="zoomable_image_back">Kembali</string>
+    <string name="zoomable_image_close">Tutup</string>
+    <!-- LibraryOperationCoordinator -->
+    <string name="library_operation_coordinator_library_maintenance_is_in_progress">Koleksi sedang dirapikan.</string>
+    <!-- DefaultDocumentRepository -->
+    <string name="default_document_repository_could_not_remove_empty_documents">Tidak dapat menghapus dokumen kosong.</string>
+    <string name="default_document_repository_could_not_clear_old_deleted">Tidak dapat membersihkan dokumen lama yang dihapus.</string>
+    <string name="default_document_repository_could_not_empty_recently_deleted">Tidak dapat mengosongkan Baru dihapus.</string>
+    <string name="default_document_repository_could_not_restore_the_document">Tidak dapat memulihkan dokumen.</string>
+    <string name="default_document_repository_could_not_move_the_document">Tidak dapat memindahkan dokumen ke Baru dihapus.</string>
+    <!-- DefaultDocumentExportRepository -->
+    <string name="default_document_export_repository_could_not_prepare_group_zip">Tidak dapat menyiapkan ZIP grup untuk dibagikan.</string>
+    <string name="default_document_export_repository_could_not_prepare_group_pdf">Tidak dapat menyiapkan PDF grup untuk dibagikan.</string>
+    <string name="default_document_export_repository_could_not_export_group_as">Tidak dapat mengekspor grup sebagai ZIP.</string>
+    <string name="default_document_export_repository_could_not_export_group_as_2">Tidak dapat mengekspor grup sebagai PDF.</string>
+    <string name="default_document_export_repository_could_not_prepare_images_for">Tidak dapat menyiapkan gambar untuk dibagikan.</string>
+    <string name="default_document_export_repository_could_not_export_images">Tidak dapat mengekspor gambar.</string>
+    <string name="default_document_export_repository_could_not_prepare_pdf_share">Tidak dapat menyiapkan PDF untuk dibagikan.</string>
+    <string name="default_document_export_repository_could_not_export_pdf">Tidak dapat mengekspor PDF.</string>
+    <!-- DefaultGroupRepository -->
+    <string name="default_group_repository_could_not_clear_old_deleted">Tidak dapat membersihkan folder lama yang dihapus.</string>
+    <string name="default_group_repository_could_not_delete_the_folders">Tidak dapat menghapus folder.</string>
+    <string name="default_group_repository_could_not_delete_the_folder">Tidak dapat menghapus folder.</string>
+    <string name="default_group_repository_could_not_restore_the_folder">Tidak dapat memulihkan folder.</string>
+    <string name="default_group_repository_could_not_move_the_folder">Tidak dapat memindahkan folder ke Baru dihapus.</string>
+    <!-- DefaultPageRepository -->
+    <string name="default_page_repository_applied_to_of_pages_save">"Diterapkan ke %1$s dari %2$s halaman. Simpan lagi untuk mencoba sisanya."</string>
+    <string name="default_page_repository_could_not_clear_old_deleted">Tidak dapat membersihkan halaman lama yang dihapus.</string>
+    <string name="default_page_repository_could_not_delete_the_pages">Tidak dapat menghapus halaman.</string>
+    <string name="default_page_repository_could_not_delete_the_page">Tidak dapat menghapus halaman.</string>
+    <string name="default_page_repository_could_not_restore_the_page">Tidak dapat memulihkan halaman.</string>
+    <!-- DefaultPdfToolkitRepository -->
+    <string name="default_pdf_toolkit_repository_incorrect_pdf_password">Sandi PDF salah.</string>
+    <string name="default_pdf_toolkit_repository_this_pdf_is_not_stored">PDF ini tidak tersimpan di Scanly.</string>
+    <string name="default_pdf_toolkit_repository_the_scanly_document_could_not">Dokumen Scanly tidak dapat disiapkan sebagai PDF.</string>
+    <string name="default_pdf_toolkit_repository_could_not_prepare_share">Tidak dapat menyiapkan untuk dibagikan.</string>
+    <string name="default_pdf_toolkit_repository_could_not_read_this_page">Tidak dapat membaca halaman ini.</string>
+    <string name="default_pdf_toolkit_repository_failed_to_encode_page">Gagal mengenkode halaman %1$s.</string>
+    <string name="default_pdf_toolkit_repository_could_not_save_the_images">Tidak dapat menyimpan gambar.</string>
+    <string name="default_pdf_toolkit_repository_page">"%1$s – halaman %2$s.%3$s"</string>
+    <string name="default_pdf_toolkit_repository_could_not_estimate_the_image">Tidak dapat memperkirakan ukuran gambar.</string>
+    <string name="default_pdf_toolkit_repository_could_not_open_this_pdf">Tidak dapat membuka PDF ini.</string>
+    <string name="default_pdf_toolkit_repository_could_not_render_pdf_page">Tidak dapat menampilkan halaman PDF.</string>
+    <string name="default_pdf_toolkit_repository_could_not_sign_this_pdf">Tidak dapat menandatangani PDF ini.</string>
+    <string name="default_pdf_toolkit_repository_could_not_open_this_pdf_2">Tidak dapat membuka PDF ini untuk ditandatangani.</string>
+    <string name="default_pdf_toolkit_repository_could_not_update_watermark_preview">Tidak dapat memperbarui pratinjau tanda air.</string>
+    <string name="default_pdf_toolkit_repository_could_not_add_watermark">Tidak dapat menambahkan tanda air.</string>
+    <string name="default_pdf_toolkit_repository_could_not_remove_pdf_password">Tidak dapat menghapus sandi PDF.</string>
+    <string name="default_pdf_toolkit_repository_could_not_password_protect_pdf">Tidak dapat melindungi PDF dengan sandi.</string>
+    <string name="default_pdf_toolkit_repository_could_not_compress_pdf">Tidak dapat mengompres PDF.</string>
+    <string name="default_pdf_toolkit_repository_this_pdf_is_already_well">PDF ini sudah teroptimalkan. Mengompresnya tidak akan membuatnya lebih kecil.</string>
+    <string name="default_pdf_toolkit_repository_page_is_too_large_to">"Halaman %1$s terlalu besar untuk dikompres di perangkat ini. Coba kualitas Terkecil."</string>
+    <string name="default_pdf_toolkit_repository_could_not_merge_pdfs">Tidak dapat menggabungkan PDF.</string>
+    <string name="default_pdf_toolkit_repository_one_of_the_pdfs">Salah satu PDF</string>
+    <string name="default_pdf_toolkit_repository_could_not_open_pdf">Tidak dapat membuka PDF.</string>
+    <!-- PdfSignatureStamper -->
+    <string name="pdf_signature_stamper_text_and_dates_support_latin">Teks dan tanggal mendukung huruf Latin, Yunani, dan Sirilik, serta angka dan simbol.</string>
+    <!-- PdfWatermarkStamper -->
+    <string name="pdf_watermark_stamper_watermarks_support_latin_greek_and">Tanda air mendukung huruf Latin, Yunani, dan Sirilik, serta angka dan simbol. Coba tulis teks dalam bahasa Inggris.</string>
+    <!-- DefaultQrCodeRepository -->
+    <string name="default_qr_code_repository_could_not_save_qr_code">Tidak dapat menyimpan kode QR.</string>
+    <string name="default_qr_code_repository_could_not_generate_qr_code">Tidak dapat membuat kode QR.</string>
+    <!-- DefaultPageMarkupRepository -->
+    <string name="default_page_markup_repository_could_not_save_the_signed">Tidak dapat menyimpan halaman yang ditandatangani.</string>
+    <string name="default_page_markup_repository_could_not_load_signatures_for">Tidak dapat memuat tanda tangan untuk dokumen ini.</string>
+    <!-- DefaultSignatureRepository -->
+    <string name="default_signature_repository_could_not_save_the_image">Tidak dapat menyimpan gambar.</string>
+    <string name="default_signature_repository_could_not_prepare_the_image">Tidak dapat menyiapkan gambar.</string>
+    <string name="default_signature_repository_could_not_update_the_signature">Tidak dapat memperbarui tanda tangan.</string>
+    <string name="default_signature_repository_could_not_delete_the_signature">Tidak dapat menghapus tanda tangan.</string>
+    <string name="default_signature_repository_could_not_read_this_image">Tidak dapat membaca gambar ini.</string>
+    <string name="default_signature_repository_could_not_save_the_signature">Tidak dapat menyimpan tanda tangan.</string>
+    <!-- PageMarkupStore -->
+    <string name="page_markup_store_could_not_save_the_signed">Tidak dapat menyimpan halaman yang ditandatangani.</string>
+    <!-- DefaultPageTextRepository -->
+    <string name="default_page_text_repository_could_not_queue_pages_to">Tidak dapat mengantrekan halaman untuk dibaca ulang.</string>
+    <string name="default_page_text_repository_could_not_update_the_text">Tidak dapat memperbarui indeks teks.</string>
+    <string name="default_page_text_repository_could_not_save_your_changes">Tidak dapat menyimpan perubahan Anda.</string>
+    <string name="default_page_text_repository_could_not_read_text_from">Tidak dapat membaca teks dari halaman ini.</string>
+    <string name="default_page_text_repository_could_not_read_text_from_2">Tidak dapat membaca teks dari dokumen ini.</string>
+    <!-- DefaultPlayInAppUpdateCoordinator -->
+    <string name="default_play_in_app_update_coordinator_could_not_check_google_play">Tidak dapat memeriksa update di Google Play.</string>
+    <string name="default_play_in_app_update_coordinator_google_play_could_not_check">Google Play tidak dapat memeriksa update.</string>
+    <!-- PlayStoreAppUpdateRepository -->
+    <string name="play_store_app_update_repository_update_available">Update tersedia</string>
+    <string name="play_store_app_update_repository_latest">Terbaru</string>
+    <!-- PdfExportOptions -->
+    <string name="pdf_export_options_use_no_more_than_characters">"Gunakan maksimal %1$s karakter."</string>
+    <string name="pdf_export_options_use_at_least_characters">"Gunakan minimal %1$s karakter."</string>
+    <string name="pdf_export_options_enter_a_pdf_password">Masukkan sandi PDF.</string>
+    <!-- QrPayload -->
+    <string name="qr_payload_text_characters">"Teks · %1$s karakter"</string>
+    <string name="qr_payload_phone_number">Nomor telepon</string>
+    <string name="qr_payload_email">Email</string>
+    <string name="qr_payload_contact_card">Kartu kontak</string>
+    <string name="qr_payload_wi_fi">"Wi-Fi · %1$s"</string>
+    <string name="qr_payload_upi">"UPI · %1$s"</string>
+    <string name="qr_payload_link_not_secure_http">Link · tidak aman (http)</string>
+    <string name="qr_payload_link_https">Link · https</string>
+    <string name="qr_payload_empty_text">Teks kosong</string>
+    <string name="qr_payload_contact">Kontak</string>
+    <string name="qr_payload_wi_fi_network">Jaringan Wi-Fi</string>
+    <string name="qr_payload_pay">"Bayar %1$s"</string>
+    <string name="qr_payload_text">Teks</string>
+    <string name="qr_payload_phone">Telepon</string>
+    <string name="qr_payload_wi_fi_2">Wi-Fi</string>
+    <string name="qr_payload_upi_payment">Pembayaran UPI</string>
+    <string name="qr_payload_link">Link</string>
+    <!-- DetectDocumentCornersUseCase -->
+    <string name="detect_document_corners_use_case_document_detection_failed">Deteksi dokumen gagal.</string>
+    <string name="detect_document_corners_use_case_could_not_detect_a_document">Tidak dapat mendeteksi dokumen dalam gambar ini.</string>
+    <!-- ImportImagesUseCase -->
+    <string name="import_images_use_case_none_of_the_selected_files">Tidak ada file terpilih yang dapat dibuka sebagai gambar.</string>
+    <string name="import_images_use_case_the_selected_file_couldn_t">File yang dipilih tidak dapat dibuka sebagai gambar.</string>
+    <string name="import_images_use_case_saving_page">Menyimpan halaman</string>
+    <string name="import_images_use_case_detecting_document">Mendeteksi dokumen</string>
+    <string name="import_images_use_case_preparing_page">Menyiapkan halaman</string>
+    <!-- TrashUseCases -->
+    <string name="trash_use_cases_page">"Halaman %1$s"</string>
+    <!-- ImportPdfToLibraryUseCase -->
+    <string name="import_pdf_to_library_use_case_could_not_add_this_pdf">Tidak dapat menambahkan PDF ini ke koleksi Anda.</string>
+    <string name="import_pdf_to_library_use_case_choose_at_least_one_page">Pilih minimal satu halaman.</string>
+    <!-- CameraCaptureChrome -->
+    <string name="camera_capture_chrome_done">Selesai</string>
+    <string name="camera_capture_chrome_done_review_pages">"Selesai, tinjau %1$s halaman"</string>
+    <string name="camera_capture_chrome_done_review_1_page">Selesai, tinjau 1 halaman</string>
+    <string name="camera_capture_chrome_turn_auto_capture_on">Aktifkan ambil otomatis</string>
+    <string name="camera_capture_chrome_turn_auto_capture_off">Nonaktifkan ambil otomatis</string>
+    <!-- CaptureStabilityTracker -->
+    <string name="capture_stability_tracker_saving_page">Menyimpan halaman…</string>
+    <string name="capture_stability_tracker_capturing_page">Mengambil halaman…</string>
+    <string name="capture_stability_tracker_hold_steady">Tahan agar stabil.</string>
+    <string name="capture_stability_tracker_capturing_now">Mengambil sekarang.</string>
+    <string name="capture_stability_tracker_hold_steady_to_auto_capture">Tahan agar stabil untuk ambil otomatis.</string>
+    <string name="capture_stability_tracker_hold_position_auto_capture_is">Tahan posisi. Ambil otomatis sedang jeda sebentar.</string>
+    <string name="capture_stability_tracker_move_to_the_next_page">Pindah ke halaman berikutnya sebelum ambil otomatis aktif lagi.</string>
+    <string name="capture_stability_tracker_point_your_camera_at_a">Arahkan kamera ke seluruh dokumen.</string>
+    <string name="capture_stability_tracker_document_detected_tap_capture_whenever">Dokumen terdeteksi. Ketuk ambil kapan pun Anda siap.</string>
+    <string name="capture_stability_tracker_auto_capture_is_off_use">Ambil otomatis nonaktif. Gunakan tombol rana saat siap.</string>
+    <!-- PipCameraComponents -->
+    <string name="pip_camera_not_now">Lain kali</string>
+    <string name="pip_camera_allow_camera_access">Izinkan akses kamera</string>
+    <string name="pip_camera_open_settings">Buka Setelan</string>
+    <string name="pip_camera_photos_stay_on_your_device">Foto tetap di perangkat Anda sampai Anda mengekspor atau membagikannya</string>
+    <string name="pip_camera_camera_active_only_while_scanning">Kamera hanya aktif saat memindai</string>
+    <string name="pip_camera_live_preview_with_edge_detection">Pratinjau langsung dengan deteksi tepi</string>
+    <string name="pip_camera_come_back_here_and_pip">Kembali ke sini, Pip akan siap</string>
+    <string name="pip_camera_settings_permissions_camera_allow">Setelan › Izin › Kamera › Izinkan</string>
+    <string name="pip_camera_scanly_needs_your_camera_to">Scanly memerlukan kamera untuk mengambil dan meluruskan halaman dokumen.</string>
+    <string name="pip_camera_camera_permission_is_blocked_for">Izin kamera diblokir untuk Scanly. Buka Setelan, ketuk Izin, lalu aktifkan Kamera untuk memindai dokumen.</string>
+    <string name="pip_camera_camera_access_needed">Akses kamera diperlukan</string>
+    <string name="pip_camera_show_me_the_whole_page">tunjukkan seluruh halamannya, keempat sudutnya ya.</string>
+    <string name="pip_camera_hold_it_almost_there">tahan… sedikit lagi.</string>
+    <string name="pip_camera_hold_it">"tahan… %1$s"</string>
+    <string name="pip_camera_ooh_edges_hold_still_a">wah, ada tepinya! diam sebentar ya…</string>
+    <string name="pip_camera_auto_capture_is_off_tap">ambil otomatis nonaktif. ketuk rana kalau sudah siap.</string>
+    <string name="pip_camera_found_the_edges_tap_the">tepinya ketemu. ketuk rana kapan saja.</string>
+    <string name="pip_camera_got_it_on_to_the">dapat! lanjut ke halaman berikutnya.</string>
+    <string name="pip_camera_snap_saving_that_page">cekrek! menyimpan halaman itu…</string>
+    <string name="pip_camera_it_s_all_fuzzy_tap">buram semua. ketuk halamannya untuk fokus.</string>
+    <string name="pip_camera_bit_dark_in_here_more">agak gelap nih. tambah cahaya, atau coba flash?</string>
+    <string name="pip_camera_everything_s_dark_is_something">gelap semua. ada yang menutupi lensa?</string>
+    <!-- ScanSessionScreen -->
+    <string name="scan_session_camera_couldn_t_start_close">Kamera tidak dapat dimulai. Tutup aplikasi lain yang memakai kamera, lalu coba lagi.</string>
+    <string name="scan_session_camera_couldn_t_start_leave">Kamera tidak dapat dimulai. Tinggalkan layar ini, lalu buka lagi.</string>
+    <string name="scan_session_capture">Ambil</string>
+    <string name="scan_session_replace_page">Ganti halaman</string>
+    <string name="scan_session_show_grid">Tampilkan petak</string>
+    <string name="scan_session_hide_grid">Sembunyikan petak</string>
+    <string name="scan_session_turn_flash_on">Aktifkan flash</string>
+    <string name="scan_session_turn_flash_off">Nonaktifkan flash</string>
+    <string name="scan_session_close_camera">Tutup kamera</string>
+    <string name="scan_session_no_captures">Belum ada foto</string>
+    <string name="scan_session_open_a_valid_document_first">Buka dokumen yang valid terlebih dahulu.</string>
+    <string name="scan_session_document_missing">Dokumen tidak ada</string>
+    <string name="scan_session_camera_is_not_ready_yet">Kamera belum siap.</string>
+    <!-- ScanSessionViewModel -->
+    <string name="scan_session_checking_document">Memeriksa dokumen…</string>
+    <string name="scan_session_point_your_camera_at_a">Arahkan kamera ke dokumen fisik.</string>
+    <string name="scan_session_screen_detected_point_at_a">Layar terdeteksi. Arahkan ke dokumen fisik.</string>
+    <string name="scan_session_page_edges_are_ambiguous_hold">Tepi halaman kurang jelas. Tahan agar stabil atau dekatkan kamera.</string>
+    <string name="scan_session_two_pages_are_visible_move">Terlihat dua halaman. Dekatkan kamera dan bingkai satu halaman saja.</string>
+    <string name="scan_session_page_saved">"Halaman %1$s disimpan."</string>
+    <string name="scan_session_auto_captured_page">Halaman %1$s diambil otomatis.</string>
+    <string name="scan_session_document_not_found">Dokumen tidak ditemukan.</string>
+    <string name="scan_session_capture_failed_reposition_the_document">Gagal mengambil. Atur ulang posisi dokumen, lalu coba lagi.</string>
+    <string name="scan_session_page_not_saved_reposition_the">Halaman tidak disimpan. Atur ulang posisi dokumen, lalu coba lagi.</string>
+    <string name="scan_session_live_detection_is_unavailable_manual">Deteksi langsung tidak tersedia. Pengambilan manual tetap bisa dipakai.</string>
+    <string name="scan_session_point_your_camera_at_a_2">Arahkan kamera ke dokumen.</string>
+    <!-- ExportShareComponents -->
+    <string name="export_share_passwords_match">Sandi cocok.</string>
+    <string name="export_share_confirm_password">Konfirmasi sandi</string>
+    <string name="export_share_4_64_characters_send_it">4–64 karakter. Kirim secara terpisah dari PDF-nya.</string>
+    <string name="export_share_show_password">Tampilkan sandi</string>
+    <string name="export_share_hide_password">Sembunyikan sandi</string>
+    <string name="export_share_pdf_password">Sandi PDF</string>
+    <string name="export_share_off">Nonaktif</string>
+    <string name="export_share_a_password_will_be_required">Sandi diperlukan untuk membuka PDF.</string>
+    <string name="export_share_password_protection">Perlindungan sandi</string>
+    <string name="export_share_cancel">Batal</string>
+    <string name="export_share_add_white_space_around_the">Tambahkan ruang putih di sekitar halaman pindaian.</string>
+    <string name="export_share_margins">Margin</string>
+    <string name="export_share_fixed_sizes_use_their_real">Ukuran tetap memakai dimensi cetak sebenarnya.</string>
+    <string name="export_share_page_size">Ukuran halaman</string>
+    <string name="export_share_auto_follows_each_scanned_page">Otomatis mengikuti setiap halaman pindaian.</string>
+    <string name="export_share_orientation">Orientasi</string>
+    <string name="export_share_add_the_page_index_to">Tambahkan nomor halaman di footer PDF.</string>
+    <string name="export_share_page_numbers">Nomor halaman</string>
+    <string name="export_share_choose_how_every_page_is">Pilih cara setiap halaman dibuat.</string>
+    <string name="export_share_passwords_do_not_match">Sandi tidak cocok.</string>
+    <string name="export_share_confirm_the_password">Konfirmasi sandi.</string>
+    <string name="export_share_pdf_options">Opsi PDF</string>
+    <!-- FabComponents -->
+    <string name="fab_open_add_menu">Buka menu tambah</string>
+    <string name="fab_close_menu">Tutup menu</string>
+    <string name="fab_new_document">Dokumen baru</string>
+    <string name="fab_new_folder">Folder baru</string>
+    <!-- LibraryCardPresentation -->
+    <string name="library_card_presentation_remove_from_folder">Keluarkan dari folder</string>
+    <string name="library_card_presentation_move_to_folder">Pindahkan ke folder</string>
+    <string name="library_card_presentation_rename">Ganti nama</string>
+    <string name="library_card_presentation_delete">Hapus</string>
+    <string name="library_card_presentation_1_page">1 halaman</string>
+    <string name="library_card_presentation_1_document">1 dokumen</string>
+    <string name="library_card_presentation_yesterday">Kemarin</string>
+    <string name="library_card_presentation_today">Hari ini</string>
+    <!-- LibraryFolderShelf -->
+    <string name="library_folder_shelf_all_folders">Semua folder</string>
+    <string name="library_folder_shelf_view_all">Lihat semua</string>
+    <string name="library_folder_shelf_organise_scans">Atur pindaian</string>
+    <string name="library_folder_shelf_new_folder">Folder baru</string>
+    <!-- SharedComponents -->
+    <string name="shared_please_wait">Harap tunggu</string>
+    <string name="shared_working_on_your_photos">Memproses foto Anda…</string>
+    <string name="shared_importing_images">Mengimpor gambar</string>
+    <string name="shared_more_options">Opsi lainnya</string>
+    <string name="shared_selected">Dipilih</string>
+    <string name="shared_create_new_folder">Buat folder baru</string>
+    <string name="shared_create_move">Buat &amp; pindahkan</string>
+    <string name="shared_new_folder_name">Nama folder baru</string>
+    <string name="shared_no_folder">Tanpa folder</string>
+    <string name="shared_folder_name">Nama folder</string>
+    <string name="shared_create">Buat</string>
+    <string name="shared_suggest_name">Sarankan nama</string>
+    <string name="shared_title">Judul</string>
+    <string name="shared_clear_name">Hapus nama</string>
+    <string name="shared_confirm">Konfirmasi</string>
+    <string name="shared_scanly">Scanly</string>
+    <!-- DocumentDetailScreen -->
+    <string name="document_detail_delete_page">Hapus halaman</string>
+    <string name="document_detail_share_page">Bagikan halaman</string>
+    <string name="document_detail_sign_document">Tanda tangani dokumen</string>
+    <string name="document_detail_extract_text">Ekstrak teks</string>
+    <string name="document_detail_retake_page">Ambil ulang halaman</string>
+    <string name="document_detail_edit_page">Edit halaman</string>
+    <string name="document_detail_edit">Edit</string>
+    <string name="document_detail_share">"Bagikan %1$s"</string>
+    <string name="document_detail_review">Tinjau</string>
+    <string name="document_detail_ready">Siap</string>
+    <string name="document_detail_new">Baru</string>
+    <string name="document_detail_captured">Diambil</string>
+    <string name="document_detail_add_page">Tambah halaman</string>
+    <string name="document_detail_scan_or_import">Pindai atau impor</string>
+    <string name="document_detail_add_page_scan_or_import">Tambah halaman. Pindai atau impor.</string>
+    <string name="document_detail_share_2">Bagikan</string>
+    <string name="document_detail_retake">Ambil ulang</string>
+    <string name="document_detail_open_zoom_view">Buka tampilan zoom</string>
+    <string name="document_detail_page_of">"Halaman %1$s dari %2$s"</string>
+    <string name="document_detail_import_images">Impor gambar</string>
+    <string name="document_detail_scan_a_page">Pindai halaman</string>
+    <string name="document_detail_scan_a_page_or_import">"Pindai halaman atau impor hingga %1$s gambar untuk memulai dokumen ini."</string>
+    <string name="document_detail_no_pages_yet">Belum ada halaman</string>
+    <string name="document_detail_return_to_the_library_and">Kembali ke koleksi dan buka dokumen lain.</string>
+    <string name="document_detail_document_not_found">Dokumen tidak ditemukan</string>
+    <string name="document_detail_select_a_page_to_preview">Pilih halaman untuk dipratinjau</string>
+    <string name="document_detail_tap_to_review_long_press">Ketuk untuk meninjau. Tekan lama dan tarik untuk mengatur urutan.</string>
+    <string name="document_detail_long_press_and_drag_to">Tekan lama dan tarik untuk mengatur urutan</string>
+    <string name="document_detail_pages">Halaman</string>
+    <string name="document_detail_use_scan_or_import_to">Gunakan Pindai atau Impor untuk menambahkan halaman pertama.</string>
+    <string name="document_detail_please_wait_while_the_file">Harap tunggu, file sedang disiapkan.</string>
+    <string name="document_detail_share_pages">Bagikan halaman</string>
+    <string name="document_detail_save_images_zip">Simpan ZIP gambar</string>
+    <string name="document_detail_share_pdf">Bagikan PDF</string>
+    <string name="document_detail_save_pdf">Simpan PDF</string>
+    <string name="document_detail_export_share">Ekspor &amp; bagikan</string>
+    <string name="document_detail_pick_up_to_images_from">"Pilih hingga %1$s gambar dari file Anda"</string>
+    <string name="document_detail_choose_images">Pilih gambar</string>
+    <string name="document_detail_open_the_camera_to_scan">Buka kamera untuk memindai halaman baru</string>
+    <string name="document_detail_capture_a_new_scan_or">"Ambil pindaian baru atau pilih hingga %1$s gambar dari galeri."</string>
+    <string name="document_detail_delete_document">Hapus dokumen</string>
+    <string name="document_detail_rename_document">Ganti nama dokumen</string>
+    <string name="document_detail_document_options">Opsi dokumen</string>
+    <string name="document_detail_working_on_your_photos">Memproses foto Anda</string>
+    <string name="document_detail_preparing_export">Menyiapkan ekspor</string>
+    <string name="document_detail_generate">Buat</string>
+    <string name="document_detail_delete_document_2">Hapus dokumen?</string>
+    <string name="document_detail_save">Simpan</string>
+    <string name="document_detail_document">Dokumen</string>
+    <!-- DocumentDetailViewModel -->
+    <string name="document_detail_document_renamed">Nama dokumen diganti.</string>
+    <string name="document_detail_starting_import">Memulai impor</string>
+    <string name="document_detail_page_image_is_not_available">Gambar halaman belum tersedia.</string>
+    <string name="document_detail_preparing_pages">Menyiapkan halaman</string>
+    <string name="document_detail_saved_to">"%1$s disimpan ke %2$s"</string>
+    <string name="document_detail_preparing_and_saving_zip">Menyiapkan dan menyimpan ZIP</string>
+    <string name="document_detail_preparing_pdf">Menyiapkan PDF</string>
+    <string name="document_detail_generating_and_saving_pdf">Membuat dan menyimpan PDF</string>
+    <string name="document_detail_reordered_pages">Urutan halaman diubah.</string>
+    <string name="document_detail_moved_to_folder">Dipindahkan ke folder</string>
+    <string name="document_detail_moved_to">"Dipindahkan ke %1$s"</string>
+    <string name="document_detail_removed_from_folder">Dikeluarkan dari folder</string>
+    <!-- FilterCustomizeScreen -->
+    <string name="filter_customize_faded_text">Teks pudar</string>
+    <string name="filter_customize_whiteboard">Papan tulis</string>
+    <string name="filter_customize_grayscale">Hitam putih</string>
+    <string name="filter_customize_screen">Layar</string>
+    <string name="filter_customize_vivid">Cerah</string>
+    <string name="filter_customize_natural">Alami</string>
+    <string name="filter_customize_magic_color">Warna ajaib</string>
+    <string name="filter_customize_auto">Otomatis</string>
+    <string name="filter_customize_original">Asli</string>
+    <string name="filter_customize_intensity">Intensitas</string>
+    <string name="filter_customize_sharpness">Ketajaman</string>
+    <string name="filter_customize_saturation">Saturasi</string>
+    <string name="filter_customize_contrast">Kontras</string>
+    <string name="filter_customize_brightness">Kecerahan</string>
+    <string name="filter_customize_fine_tune_on_this_page">"Sesuaikan %1$s di halaman ini. Tahan Bandingkan untuk melihat filter saja."</string>
+    <string name="filter_customize_customize_filter">Sesuaikan filter</string>
+    <string name="filter_customize_adjusted">Disesuaikan</string>
+    <string name="filter_customize_filter_only">Filter saja</string>
+    <string name="filter_customize_filter_adjustment_preview">Pratinjau penyesuaian filter</string>
+    <string name="filter_customize_selected_filter_without_adjustments">Filter terpilih tanpa penyesuaian</string>
+    <string name="filter_customize_loading_preview">Memuat pratinjau…</string>
+    <string name="filter_customize_hold_to_compare_with_filter">Tahan untuk membandingkan dengan filter saja</string>
+    <string name="filter_customize_reset_adjustments">Reset penyesuaian</string>
+    <string name="filter_customize_adjust">Sesuaikan</string>
+    <string name="filter_customize_compare">Bandingkan</string>
+    <!-- FilterPickerScreen -->
+    <string name="filter_picker_selected_filter">Filter terpilih</string>
+    <string name="filter_picker_filter_thumbnail">"Thumbnail filter %1$s"</string>
+    <string name="filter_picker_analyzing_the_page_to_tune">Menganalisis halaman untuk menyesuaikan setiap filter.</string>
+    <string name="filter_picker_filter_only_crop_rotation_and">Hanya filter. Pangkasan, rotasi, dan penyesuaian tetap per halaman.</string>
+    <string name="filter_picker_apply_filter_to_all_pages">Terapkan filter ke semua halaman</string>
+    <string name="filter_picker_tap_a_preset_to_update">Ketuk preset untuk memperbarui pratinjau langsung. Simpan dari editor setelah selesai.</string>
+    <string name="filter_picker_filters">Filter</string>
+    <string name="filter_picker_filter_preview">"Pratinjau filter %1$s"</string>
+    <!-- PageCropScreen -->
+    <string name="page_crop_page_crop_preview">Pratinjau pangkas halaman</string>
+    <string name="page_crop_detecting">Mendeteksi</string>
+    <string name="page_crop_reset">Reset</string>
+    <string name="page_crop_ai_detect">Deteksi AI</string>
+    <string name="page_crop_right">Kanan</string>
+    <string name="page_crop_left">Kiri</string>
+    <string name="page_crop_apply_crop">Terapkan pangkasan</string>
+    <string name="page_crop_detecting_document">Mendeteksi dokumen…</string>
+    <string name="page_crop_keep_editing">Lanjut edit</string>
+    <string name="page_crop_discard">Buang</string>
+    <string name="page_crop_your_crop_changes_have_not">Perubahan pangkasan Anda belum diterapkan.</string>
+    <string name="page_crop_discard_changes">Buang perubahan?</string>
+    <string name="page_crop_full_frame_corners">Sudut bingkai penuh</string>
+    <string name="page_crop_reset_crop">Reset pangkasan</string>
+    <string name="page_crop_rotate_right">Putar ke kanan</string>
+    <string name="page_crop_rotate_left">Putar ke kiri</string>
+    <string name="page_crop_find_the_document_corners">Temukan sudut dokumen</string>
+    <string name="page_crop_detecting_2">Mendeteksi…</string>
+    <string name="page_crop_detect_edges_rotate_then_drag">Deteksi tepi, putar, lalu tarik titik sudut. Ketuk Selesai untuk menerapkan.</string>
+    <string name="page_crop_crop_tools">Alat pangkas</string>
+    <string name="page_crop_page_not_found">Halaman tidak ditemukan.</string>
+    <string name="page_crop_crop">Pangkas</string>
+    <string name="page_crop_processing">Memproses</string>
+    <!-- PageCropViewModel -->
+    <string name="page_crop_crop_updated">Pangkasan diperbarui.</string>
+    <string name="page_crop_document_detected">Dokumen terdeteksi.</string>
+    <string name="page_crop_raw_image_is_not_available">Gambar asli tidak tersedia untuk deteksi.</string>
+    <!-- PageEditorScreen -->
+    <string name="page_editor_please_wait_while_scanly_adapts">Harap tunggu, Scanly sedang menyesuaikan filter dan memperbarui seluruh dokumen.</string>
+    <string name="page_editor_processing_image_data_for_all">Memproses gambar untuk semua halaman</string>
+    <string name="page_editor_page_editor_preview">Pratinjau editor halaman</string>
+    <string name="page_editor_your_edits_to_this_page">Hasil edit halaman ini belum disimpan.</string>
+    <string name="page_editor_remove_from_document">Hapus dari dokumen</string>
+    <string name="page_editor_capture_this_page_again">Ambil ulang halaman ini</string>
+    <string name="page_editor_brightness_contrast_more">Kecerahan, kontras, lainnya</string>
+    <string name="page_editor_ai_detect_rotate_handles">Deteksi AI, putar, titik sudut</string>
+    <string name="page_editor_crop_filter_and_adjust_this">Pangkas, beri filter, dan sesuaikan halaman ini. Simpan dengan Selesai.</string>
+    <string name="page_editor_edit_tools">Alat edit</string>
+    <string name="page_editor_editor">Editor</string>
+    <!-- PageEditorViewModel -->
+    <string name="page_editor_page_updated">Halaman diperbarui.</string>
+    <string name="page_editor_filter_applied_to_all_pages">Filter diterapkan ke semua halaman.</string>
+    <!-- HomePip -->
+    <string name="home_pip_hide_today_s_tip">Sembunyikan tips hari ini</string>
+    <!-- HomeRatingPrompt -->
+    <string name="home_rating_prompt_rate_scanly_opens_google_play">Beri rating Scanly, membuka Google Play</string>
+    <string name="home_rating_prompt_rate_on_google_play">Beri rating di Google Play</string>
+    <string name="home_rating_prompt_scanly_is_free_private_and">Scanly gratis, menjaga privasi, dan bebas iklan. Kalau Scanly menghemat waktu Anda, rating singkat di Google Play sangat membantu.</string>
+    <string name="home_rating_prompt_rate_scanly">Beri rating Scanly</string>
+    <!-- HomeScreen -->
+    <string name="home_search_names_and_text_in">Telusuri nama dan teks di halaman</string>
+    <string name="home_start_scanning">Mulai memindai</string>
+    <string name="home_scan_your_first_page_and">Pindai halaman pertama Anda, dan halaman itu akan siap di sini kapan pun Anda perlukan.</string>
+    <string name="home_no_documents_yet">Belum ada dokumen</string>
+    <string name="home_loading_your_documents">Memuat dokumen Anda</string>
+    <string name="home_folder">Folder</string>
+    <string name="home_import">Impor</string>
+    <string name="home_scan">Pindai</string>
+    <string name="home_save_it_now">Simpan sekarang</string>
+    <string name="home_save_it_now_find_it">Simpan sekarang,\ntemukan besok.</string>
+    <string name="home_still_scanning">Masih memindai?</string>
+    <string name="home_wrap_up_and_digitize_your">Tutup hari ini\ndengan rapi dan digital.</string>
+    <string name="home_good_evening">Selamat malam,</string>
+    <string name="home_let_s_capture_some_documents">Yuk, pindai\nbeberapa dokumen.</string>
+    <string name="home_good_afternoon">Selamat siang,</string>
+    <string name="home_what_are_we_scanning_today">Mau memindai\napa hari ini?</string>
+    <string name="home_good_morning">Selamat pagi,</string>
+    <string name="home_see_all">Lihat semua</string>
+    <string name="home_recent_documents">Dokumen terbaru</string>
+    <string name="home_recent_folders">Folder terbaru</string>
+    <string name="home_new_scan">Pindaian baru</string>
+    <!-- FolderDeleteDialog -->
+    <string name="folder_delete_both_go_to_recently_deleted">"Keduanya masuk ke Baru dihapus selama %1$s"</string>
+    <string name="folder_delete_delete_folder_and_documents">Hapus folder dan dokumen</string>
+    <string name="folder_delete_keep_the_in_your_library">"Simpan %1$s di Koleksi Anda"</string>
+    <string name="folder_delete_delete_folder_only">Hapus folder saja</string>
+    <string name="folder_delete_delete_folder">Hapus folder?</string>
+    <!-- GroupDetailScreen -->
+    <string name="group_detail_not_selected">Tidak dipilih</string>
+    <string name="group_detail_add_documents">"Tambahkan %1$s dokumen"</string>
+    <string name="group_detail_add_1_document">Tambahkan 1 dokumen</string>
+    <string name="group_detail_add_selected">Tambahkan yang dipilih</string>
+    <string name="group_detail_documents_already_in_folders_won">Dokumen yang sudah ada di folder tidak muncul di sini. Buat dokumen baru saja.</string>
+    <string name="group_detail_no_loose_documents">Tidak ada dokumen di luar folder</string>
+    <string name="group_detail_select_all">Pilih semua</string>
+    <string name="group_detail_clear">Hapus pilihan</string>
+    <string name="group_detail_select_one_or_more_documents">Pilih satu dokumen atau lebih</string>
+    <string name="group_detail_nothing_available_to_move">Tidak ada yang bisa dipindahkan</string>
+    <string name="group_detail_move_existing">Pindahkan yang ada</string>
+    <string name="group_detail_starts_empty_inside_this_folder">Dimulai kosong di dalam folder ini</string>
+    <string name="group_detail_create_new_document">Buat dokumen baru</string>
+    <string name="group_detail_create_a_new_document_or">"Buat dokumen baru, atau pilih dari %1$s di luar folder ini."</string>
+    <string name="group_detail_create_a_new_document_or_2">Buat dokumen baru, atau pindahkan dokumen yang belum ada di folder.</string>
+    <string name="group_detail_add_documents_to_folder">Tambahkan dokumen ke folder</string>
+    <string name="group_detail_add_documents_2">Tambahkan dokumen</string>
+    <string name="group_detail_add_a_document_here_to">Tambahkan dokumen di sini agar pindaian terkait tetap bersama.</string>
+    <string name="group_detail_this_folder_is_empty">Folder ini kosong</string>
+    <string name="group_detail_share_pdfs_as_zip">Bagikan PDF sebagai ZIP</string>
+    <string name="group_detail_save_pdfs_as_zip">Simpan PDF sebagai ZIP</string>
+    <string name="group_detail_separate_pdfs_one_pdf_per">PDF terpisah · satu PDF per dokumen, digabung dalam ZIP</string>
+    <string name="group_detail_share_merged_pdf">Bagikan PDF gabungan</string>
+    <string name="group_detail_save_merged_pdf">Simpan PDF gabungan</string>
+    <string name="group_detail_single_pdf_merged_into_one">"Satu PDF · %1$s digabung jadi satu file"</string>
+    <string name="group_detail_new_document">Dokumen baru</string>
+    <string name="group_detail_remove">Keluarkan</string>
+    <string name="group_detail_will_be_moved_out_of">\"%1$s\" akan dikeluarkan dari folder ini.</string>
+    <string name="group_detail_remove_from_folder">Keluarkan dari folder?</string>
+    <string name="group_detail_rename_folder">Ganti nama folder</string>
+    <string name="group_detail_delete_folder">Hapus folder</string>
+    <string name="group_detail_export_and_share">Ekspor dan bagikan</string>
+    <!-- GroupDetailViewModel -->
+    <string name="group_detail_generating_pdf_of">"Membuat PDF %1$s dari %2$s…"</string>
+    <string name="group_detail_generating_page_of">"Membuat halaman %1$s dari %2$s…"</string>
+    <string name="group_detail_document_removed_from_folder">Dokumen dikeluarkan dari folder.</string>
+    <string name="group_detail_added_documents_to_folder">"%1$s dokumen ditambahkan ke folder."</string>
+    <string name="group_detail_added_1_document_to_folder">1 dokumen ditambahkan ke folder.</string>
+    <string name="group_detail_added_of_documents">"%1$s dari %2$s dokumen ditambahkan. %3$s"</string>
+    <string name="group_detail_folder_renamed">Nama folder diganti.</string>
+    <!-- LibraryScreen -->
+    <string name="library_create_a_folder_to_stay">Buat folder agar tetap rapi, atau tambahkan dokumen dan mulai memindai.</string>
+    <string name="library_your_library_is_ready">Koleksi Anda sudah siap</string>
+    <string name="library_save_to">Simpan ke</string>
+    <string name="library_choose_how_are_ordered">"Pilih cara mengurutkan %1$s."</string>
+    <string name="library_sort_library">Urutkan koleksi</string>
+    <string name="library_folders_and_documents">folder dan dokumen</string>
+    <string name="library_create_a_document_then_scan">Buat dokumen, lalu pindai halaman atau impor dari galeri.</string>
+    <string name="library_create_a_folder_to_keep">Buat folder agar dokumen terkait mudah ditemukan.</string>
+    <string name="library_no_folders_yet">Belum ada folder</string>
+    <string name="library_list_view">Tampilan daftar</string>
+    <string name="library_grid_view">Tampilan petak</string>
+    <string name="library_folders">Folder</string>
+    <string name="library_back_to_library">Kembali ke koleksi</string>
+    <string name="library_documents">Dokumen</string>
+    <string name="library_search_library">Telusuri koleksi</string>
+    <string name="library_library">Koleksi</string>
+    <!-- LibrarySearchScreen -->
+    <string name="library_search_remove_from_recent_searches">"Hapus %1$s dari penelusuran terbaru"</string>
+    <string name="library_search_search_again">Telusuri lagi</string>
+    <string name="library_search_text_is_read_on_this">Teks dibaca di perangkat ini. Halaman Anda tidak pernah dikirim ke mana pun.</string>
+    <string name="library_search_some_pages_are_still_being">Beberapa halaman masih dibaca, jadi hasil yang cocok mungkin segera muncul.</string>
+    <string name="library_search_search_for_instead">Telusuri “%1$s”</string>
+    <string name="library_search_nothing_matches_try_fewer_words">Tidak ada yang cocok dengan “%1$s”. Coba kata yang lebih sedikit atau periksa ejaannya.</string>
+    <string name="library_search_no_results_found">Tidak ada hasil</string>
+    <string name="library_search_rent_or_lease_finds_pages">“sewa OR kontrak” menemukan halaman dengan salah satunya</string>
+    <string name="library_search_either_word">Salah satu kata</string>
+    <string name="library_search_lease_draft_skips_anything_that">“kontrak -draf” melewati apa pun yang menyebut draf</string>
+    <string name="library_search_leave_a_word_out">Kecualikan kata</string>
+    <string name="library_search_you_ll_get_the_closest">Anda akan mendapat kata terdekat dari pindaian Anda</string>
+    <string name="library_search_small_typos_are_fine">Salah ketik kecil tidak masalah</string>
+    <string name="library_search_security_deposit_in_that_order">“uang jaminan”, sesuai urutan itu</string>
+    <string name="library_search_use_quotes_for_a_phrase">Gunakan tanda kutip untuk frasa</string>
+    <string name="library_search_lea_finds_lease_and_leasing">“kontr” menemukan kontrak dan kontrakan</string>
+    <string name="library_search_type_part_of_a_word">Ketik sebagian kata</string>
+    <string name="library_search_search_tips">Tips penelusuran</string>
+    <string name="library_search_browse_by_type">Jelajahi menurut jenis</string>
+    <string name="library_search_recent">Terbaru</string>
+    <string name="library_search_folder">"Folder · "</string>
+    <string name="library_search_matched">Cocok dengan “%1$s”</string>
+    <string name="library_search_scanned_as">Terbaca sebagai “%1$s”</string>
+    <string name="library_search_show_page_text">Tampilkan teks halaman</string>
+    <string name="library_search_show_fewer_pages">Tampilkan lebih sedikit halaman</string>
+    <string name="library_search_open_document">Buka dokumen</string>
+    <string name="library_search_similar_words">"Kata serupa: "</string>
+    <string name="library_search_close_matches">Hasil yang mirip</string>
+    <string name="library_search_searching_text_in_pages">Menelusuri teks di halaman…</string>
+    <string name="library_search_by_name">" · %1$s menurut nama"</string>
+    <string name="library_search_complete_to">"Lengkapi menjadi "</string>
+    <string name="library_search_filters_on">"Filter, %1$s aktif"</string>
+    <string name="library_search_filters">"Filter · %1$s"</string>
+    <string name="library_search_matching_names">Nama yang cocok</string>
+    <string name="library_search_found_in_pages">Ditemukan di halaman</string>
+    <string name="library_search_clear_search">Hapus penelusuran</string>
+    <!-- RecentlyDeletedScreen -->
+    <string name="recently_deleted_page_of_will_be_deleted">"Halaman %1$s dari \"%2$s\" akan dihapus permanen. Tindakan ini tidak dapat diurungkan."</string>
+    <string name="recently_deleted_and_its_pages_will_be">\"%1$s\" beserta halamannya akan dihapus permanen. Tindakan ini tidak dapat diurungkan.</string>
+    <string name="recently_deleted_and_the_documents_that_were">\"%1$s\" beserta dokumen di dalamnya akan dihapus permanen. Tindakan ini tidak dapat diurungkan.</string>
+    <string name="recently_deleted_its_documents_stay_in_your">" Dokumen di dalamnya tetap ada di Koleksi Anda."</string>
+    <string name="recently_deleted_the_folder_will_be_deleted">Folder \"%1$s\" akan dihapus permanen. Tindakan ini tidak dapat diurungkan.</string>
+    <string name="recently_deleted_page_of">"halaman %1$s dari \"%2$s\""</string>
+    <string name="recently_deleted_days_left">"Tersisa %1$s hari"</string>
+    <string name="recently_deleted_1_day_left">Tersisa 1 hari</string>
+    <string name="recently_deleted_last_day">Hari terakhir</string>
+    <string name="recently_deleted_from">Dari \"%1$s\"</string>
+    <string name="recently_deleted_no_documents">Tidak ada dokumen</string>
+    <string name="recently_deleted_folder_only_documents_kept_in">"Hanya folder · %1$s dokumen tetap di Koleksi"</string>
+    <string name="recently_deleted_folder_only_1_document_kept">Hanya folder · 1 dokumen tetap di Koleksi</string>
+    <string name="recently_deleted_restore">Pulihkan</string>
+    <string name="recently_deleted_delete_forever">Hapus permanen</string>
+    <string name="recently_deleted_select">Pilih</string>
+    <string name="recently_deleted_delete_forever_2">"Hapus permanen %1$s"</string>
+    <string name="recently_deleted_restore_2">"Pulihkan %1$s"</string>
+    <string name="recently_deleted_show_options">Tampilkan opsi</string>
+    <string name="recently_deleted_the_selected_items_will_be">"%1$s item terpilih akan dihapus permanen. Tindakan ini tidak dapat diurungkan."</string>
+    <string name="recently_deleted_delete_items_forever">"Hapus permanen %1$s item?"</string>
+    <string name="recently_deleted_delete_1_item_forever">Hapus permanen 1 item?</string>
+    <string name="recently_deleted_delete_forever_3">Hapus permanen?</string>
+    <string name="recently_deleted_delete_all">Hapus semua</string>
+    <string name="recently_deleted_all_items_will_be_deleted">"Semua %1$s item akan dihapus permanen. Tindakan ini tidak dapat diurungkan."</string>
+    <string name="recently_deleted_this_item_will_be_deleted">Item ini akan dihapus permanen. Tindakan ini tidak dapat diurungkan.</string>
+    <string name="recently_deleted_empty_recently_deleted">Kosongkan Baru dihapus?</string>
+    <string name="recently_deleted_deleted_pages_stay_here_for">Halaman yang dihapus disimpan di sini selama %1$s, sedangkan dokumen dan folder selama %2$s, jadi Anda masih bisa memulihkannya.</string>
+    <string name="recently_deleted_nothing_here">Tidak ada apa-apa</string>
+    <string name="recently_deleted_nothing_in_the_bin_deleted">sampahnya kosong. yang dihapus akan menunggu di sini beberapa hari.</string>
+    <string name="recently_deleted_empty">Kosongkan</string>
+    <string name="recently_deleted_select_none">Batalkan semua pilihan</string>
+    <string name="recently_deleted_clear_selection">Hapus pilihan</string>
+    <string name="recently_deleted_recently_deleted">Baru dihapus</string>
+    <!-- RecentlyDeletedViewModel -->
+    <string name="recently_deleted_page_restored_to">"Halaman %1$s dipulihkan ke \"%2$s\""</string>
+    <string name="recently_deleted_document_restored">Dokumen dipulihkan</string>
+    <string name="recently_deleted_folder_restored">Folder dipulihkan</string>
+    <string name="recently_deleted_recently_deleted_is_empty">Baru dihapus kosong</string>
+    <string name="recently_deleted_deleted_permanently">Dihapus permanen</string>
+    <!-- SearchFiltersSheet -->
+    <string name="search_filters_apply">Terapkan</string>
+    <string name="search_filters_remove_filter">"Hapus filter: %1$s"</string>
+    <string name="search_filters_in">"Di %1$s"</string>
+    <string name="search_filters_not_in_a_folder">Tidak dalam folder</string>
+    <string name="search_filters_sort_by">Urutkan menurut</string>
+    <string name="search_filters_any_folder">Folder apa pun</string>
+    <string name="search_filters_date_modified">Tanggal diubah</string>
+    <string name="search_filters_any_type">Jenis apa pun</string>
+    <string name="search_filters_type">Jenis</string>
+    <!-- TrashCopy -->
+    <string name="trash_copy_page_moves_to_recently_deleted">"Halaman %1$s dipindahkan ke Baru dihapus. Anda dapat memulihkannya selama %2$s."</string>
+    <string name="trash_copy_and_its_documents_move_to">"\"%1$s\" beserta %2$s dokumennya dipindahkan ke Baru dihapus. Anda dapat memulihkannya selama %3$s."</string>
+    <string name="trash_copy_and_the_document_in_it">\"%1$s\" beserta dokumen di dalamnya dipindahkan ke Baru dihapus. Anda dapat memulihkannya selama %2$s.</string>
+    <string name="trash_copy_moves_to_recently_deleted_you">\"%1$s\" dipindahkan ke Baru dihapus. Anda dapat memulihkannya selama %2$s.</string>
+    <string name="trash_copy_1_day">1 hari</string>
+    <!-- TrashUndoSnackbar -->
+    <string name="trash_undo_snackbar_moved_to_recently_deleted">\"%1$s\" dipindahkan ke Baru dihapus</string>
+    <string name="trash_undo_snackbar_moved_to_recently_deleted_2">"%1$s dipindahkan ke Baru dihapus"</string>
+    <string name="trash_undo_snackbar_undo">Urungkan</string>
+    <!-- OnboardingFlow -->
+    <string name="onboarding_flow_enable_camera">Aktifkan kamera</string>
+    <string name="onboarding_flow_enable_the_camera_to_scan">Aktifkan kamera untuk memindai kertas. Anda tetap bisa mengimpor gambar tanpa kamera.</string>
+    <string name="onboarding_flow_open_settings_tap_permissions_and">Buka Setelan, ketuk Izin, lalu izinkan Kamera. Anda tetap bisa mengimpor gambar tanpa kamera.</string>
+    <string name="onboarding_flow_ready_for_your_first_scan">Siap untuk pindaian pertama?</string>
+    <string name="onboarding_flow_camera_access_is_turned_off">Akses kamera dinonaktifkan</string>
+    <!-- OnboardingScreen -->
+    <string name="onboarding_no_account_no_cloud_upload">Tanpa akun. Tanpa upload ke cloud.</string>
+    <string name="onboarding_continue">Lanjutkan</string>
+    <string name="onboarding_get_started">Mulai</string>
+    <string name="onboarding_page_of_3">"%1$s, halaman %2$s dari 3"</string>
+    <string name="onboarding_page_of_3_2">"Halaman %1$s dari 3"</string>
+    <string name="onboarding_skip">Lewati</string>
+    <string name="onboarding_scanly">Scanly.</string>
+    <string name="onboarding_previous_page">Halaman sebelumnya</string>
+    <string name="onboarding_feature_edge_detection">Deteksi tepi otomatis</string>
+    <string name="onboarding_feature_crop_straighten">Pangkas dan luruskan halaman</string>
+    <string name="onboarding_feature_filters">Warna ajaib, Papan tulis, dan lainnya</string>
+    <string name="onboarding_feature_ocr">Pengenalan teks di perangkat</string>
+    <string name="onboarding_feature_search">Telusuri kata di semua pindaian</string>
+    <string name="onboarding_feature_copy_text">Salin teks dari halaman mana pun</string>
+    <string name="onboarding_feature_multipage_pdf">PDF multi-halaman</string>
+    <string name="onboarding_feature_password">Lindungi dengan sandi sebelum dibagikan</string>
+    <string name="onboarding_feature_sign">Tanda tangani dokumen</string>
+    <string name="onboarding_assurance_offline">Berfungsi sepenuhnya offline.</string>
+    <string name="onboarding_assurance_on_device">Teks Anda tidak pernah keluar dari perangkat ini.</string>
+    <!-- Pip -->
+    <string name="pip_poke_pip_scanly_s_helper">Colek Pip, asisten Scanly</string>
+    <!-- PipBubble -->
+    <string name="pip_bubble_dismiss">Tutup</string>
+    <!-- PipLines -->
+    <string name="pip_lines_all_set_pages_nice_and">"beres! %1$s halaman, rapi dan lurus."</string>
+    <string name="pip_lines_all_set_1_page_nice">beres! 1 halaman, rapi dan lurus.</string>
+    <string name="pip_lines_ready_when_you_are">siap kapan pun kamu siap.</string>
+    <string name="pip_lines_i_looked_on_every_page">aku sudah cek setiap halaman. tidak ada “%1$s” di mana pun.</string>
+    <!-- FeaturePlaceholderScreen -->
+    <string name="feature_placeholder_planned_for">Direncanakan untuk %1$s.</string>
+    <!-- PageImagePreviewScreen -->
+    <string name="page_image_preview_sign">Tanda tangani</string>
+    <string name="page_image_preview_delete_page">Hapus halaman?</string>
+    <!-- PageImagePreviewViewModel -->
+    <string name="page_image_preview_scanly_page">"Halaman Scanly %1$s"</string>
+    <!-- LegalDocumentScreen -->
+    <string name="legal_document_open_in_browser">Buka di browser</string>
+    <string name="legal_document_retry">Coba lagi</string>
+    <string name="legal_document_check_your_internet_connection_and">Periksa koneksi internet Anda, lalu coba lagi.</string>
+    <string name="legal_document_couldn_t_be_loaded">"%1$s tidak dapat dimuat"</string>
+    <!-- ModelBenchmarkScreen -->
+    <string name="model_benchmark_pipeline_s_1f_ms" formatted="false">Pipeline: %s · %.1f ms</string>
+    <string name="model_benchmark_total_1f_ms" formatted="false">total %.1f ms</string>
+    <string name="model_benchmark_pre_0f_inf_0f_post" formatted="false">pra %.0f · inf %.0f · pasca %.0f</string>
+    <string name="model_benchmark_not_detected">Tidak terdeteksi</string>
+    <string name="model_benchmark_detected_conf_0f" formatted="false">Terdeteksi · keyakinan %.0f%%</string>
+    <string name="model_benchmark_none">Tidak ada</string>
+    <string name="model_benchmark_quad">Segi empat</string>
+    <string name="model_benchmark_error">Error</string>
+    <string name="model_benchmark_no_preview">Tidak ada pratinjau</string>
+    <string name="model_benchmark_detection_preview">"Pratinjau deteksi %1$s"</string>
+    <string name="model_benchmark_avg_1f_p50_1f_p95" formatted="false">rata-rata %.1f · P50 %.1f · P95 %.1f ms · terdeteksi %d/%d · gagal %d</string>
+    <string name="model_benchmark_avg_1f_p95_1f_ms" formatted="false">rata-rata %.1f · P95 %.1f ms · diterima %d/%d</string>
+    <string name="model_benchmark_document_gate">Gerbang dokumen</string>
+    <string name="model_benchmark_aggregate">Agregat</string>
+    <string name="model_benchmark_images_processed">"%1$s / %2$s gambar diproses"</string>
+    <string name="model_benchmark_choose_images_and_run">Pilih gambar dan jalankan</string>
+    <string name="model_benchmark_benchmark_running">Benchmark berjalan…</string>
+    <string name="model_benchmark_select_more_photos_to_measure">Pilih lebih banyak foto untuk mengukur latensi gerbang, deteksi sudut, overlay poligon, dan waktu pipeline lengkap.</string>
+    <string name="model_benchmark_run_another_pass">Jalankan lagi</string>
+    <string name="model_benchmark_images_stay_on_this_device">Gambar tetap di perangkat ini. Tidak ada yang diupload.</string>
+    <string name="model_benchmark_choose_real_documents_or_rectangular">Pilih dokumen asli atau benda persegi panjang. Scanly akan mengukur waktu setiap detektor dan menampilkan tepi yang terdeteksi.</string>
+    <string name="model_benchmark_compare_detectors_on_your_photos">Bandingkan detektor pada foto Anda</string>
+    <string name="model_benchmark_model_benchmark">Benchmark model</string>
+    <string name="model_benchmark_image">Gambar</string>
+    <string name="model_benchmark_model_failed">Model gagal</string>
+    <string name="model_benchmark_could_not_decode_image">Tidak dapat mendekode gambar</string>
+    <!-- PipSettingsScreen -->
+    <string name="pip_settings_on">"Aktif · "</string>
+    <string name="pip_settings_on_2">Aktif</string>
+    <string name="pip_settings_napping">Tidur siang</string>
+    <string name="pip_settings_napping_screens_show_plain_text">Tidur siang · layar hanya menampilkan teks biasa</string>
+    <string name="pip_settings_on_around_the_app">Aktif di seluruh aplikasi</string>
+    <string name="pip_settings_show_pip">Tampilkan Pip</string>
+    <string name="pip_settings_scanly_s_little_helper_pip">Asisten kecil Scanly. Pip muncul di layar kosong, di kamera, dan saat sesuatu sudah siap, mengucapkan satu hal singkat, lalu menyingkir.</string>
+    <string name="pip_settings_pip">Pip</string>
+    <string name="pip_settings_hi_this_is_where_you">hai! di sini kamu bisa atur seberapa banyak aku membantu.</string>
+    <string name="pip_settings_i_ll_keep_still_still">aku diam saja ya. tapi tetap di sini kok.</string>
+    <string name="pip_settings_okay_i_ll_nap_switch">oke, aku tidur siang dulu. nyalakan lagi kapan saja.</string>
+    <string name="pip_settings_pip_lives_on_this_phone">Pip ada di ponsel ini dan tidak pernah melihat dokumen Anda. Semua ucapannya sudah tertanam di Scanly.</string>
+    <string name="pip_settings_blinks_talks_and_hops_pip">Berkedip, berbicara, dan melompat. Pip diam saat animasi sistem dinonaktifkan.</string>
+    <string name="pip_settings_animate_pip">Animasikan Pip</string>
+    <string name="pip_settings_motion">Gerakan</string>
+    <string name="pip_settings_a_happy_hello_when_a">Sapaan ceria saat dokumen siap dibagikan.</string>
+    <string name="pip_settings_cheer_on_exports">Rayakan ekspor</string>
+    <string name="pip_settings_pip_helps_you_frame_pages">Pip membantu Anda membingkai halaman. Jika nonaktif, panduan biasa ditampilkan.</string>
+    <string name="pip_settings_camera_coaching">Panduan kamera</string>
+    <string name="pip_settings_one_short_tip_a_day">Satu tips singkat setiap hari di bawah sapaan.</string>
+    <string name="pip_settings_tips_on_home">Tips di Beranda</string>
+    <string name="pip_settings_where_pip_helps">Tempat Pip membantu</string>
+    <!-- SettingsComponents -->
+    <string name="settings_pages_were_read_with_another">"%1$s halaman dibaca dengan mesin lain. Baca ulang dengan %2$s di latar belakang."</string>
+    <string name="settings_1_page_was_read_with">"1 halaman dibaca dengan mesin lain. Baca ulang dengan %1$s di latar belakang."</string>
+    <string name="settings_re_read_existing_pages">Baca ulang halaman yang ada</string>
+    <string name="settings_indra_ocr_paused_it_stopped">Indra OCR dijeda — berhenti tiba-tiba dua kali, jadi halaman dibaca dengan ML Kit. Pilih Indra OCR lagi untuk mencoba ulang.</string>
+    <string name="settings_ml_kit">ML Kit</string>
+    <string name="settings_indra_ocr">Indra OCR</string>
+    <string name="settings_rate_scanly_on_google_play">Beri rating Scanly di Google Play</string>
+    <string name="settings_it_s_free_private_and">Gratis, menjaga privasi, dan bebas iklan. Rating singkat di Google Play membantu orang lain menemukannya.</string>
+    <string name="settings_enjoying_scanly">Suka Scanly?</string>
+    <string name="settings_dark">Gelap</string>
+    <string name="settings_light">Terang</string>
+    <string name="settings_system">Sistem</string>
+    <string name="settings_tap_to_check">"Ketuk untuk memeriksa %1$s"</string>
+    <string name="settings_you_are_on_latest_is">Versi Anda %1$s. Versi terbaru %2$s.</string>
+    <string name="settings_scanly_is_available_on">"Scanly %1$s tersedia di %2$s."</string>
+    <string name="settings_checking">Memeriksa %1$s...</string>
+    <string name="settings_check_for_updates">Periksa update</string>
+    <string name="settings_by_jeevaprakash_g">oleh jeevaprakash g</string>
+    <string name="settings_version_unavailable">Versi tidak tersedia</string>
+    <string name="settings_pick_the_detector_that_fits">Pilih detektor yang sesuai dengan perangkat dan alur kerja ini.</string>
+    <string name="settings_choose">"Pilih %1$s"</string>
+    <string name="settings_highest_accuracy_maximum_compatibility">Akurasi tertinggi · kompatibilitas maksimal</string>
+    <string name="settings_higher_accuracy_best_after_capture">Akurasi lebih tinggi · terbaik setelah pengambilan</string>
+    <string name="settings_balanced_speed_and_accuracy">Kecepatan dan akurasi seimbang</string>
+    <string name="settings_fastest_ideal_for_live_camera">Tercepat · ideal untuk pratinjau kamera langsung</string>
+    <!-- SettingsDetailScreens -->
+    <string name="settings_detail_screens_open_source">Open source</string>
+    <string name="settings_detail_screens_try_a_different_word_or">Coba kata lain, atau jelajahi kategori.</string>
+    <string name="settings_detail_screens_no_answers_for">Tidak ada jawaban untuk “%1$s”.</string>
+    <string name="settings_detail_screens_no_answers_in_this_category">Tidak ada jawaban di kategori ini.</string>
+    <string name="settings_detail_screens_all">Semua</string>
+    <string name="settings_detail_screens_search_help">Telusuri bantuan</string>
+    <string name="settings_detail_screens_help_faq">Bantuan &amp; FAQ</string>
+    <!-- SettingsHubSubScreens -->
+    <string name="settings_hub_sub_screens_terms_conditions">Persyaratan &amp; Ketentuan</string>
+    <string name="settings_hub_sub_screens_privacy_policy">Kebijakan Privasi</string>
+    <string name="settings_hub_sub_screens_legal">Hukum</string>
+    <string name="settings_hub_sub_screens_project_website">Situs proyek</string>
+    <string name="settings_hub_sub_screens_contact_support">Hubungi dukungan</string>
+    <string name="settings_hub_sub_screens_help">Bantuan</string>
+    <string name="settings_hub_sub_screens_about">Tentang</string>
+    <string name="settings_hub_sub_screens_open_the_qr_tool">Buka alat QR</string>
+    <string name="settings_hub_sub_screens_qr_widget">Widget QR</string>
+    <string name="settings_hub_sub_screens_start_a_new_document_scan">Mulai memindai dokumen baru</string>
+    <string name="settings_hub_sub_screens_scan_widget">Widget Pindai</string>
+    <string name="settings_hub_sub_screens_scan_import_qr_library">Pindai · Impor · QR · Koleksi</string>
+    <string name="settings_hub_sub_screens_actions_bar">Bilah tindakan</string>
+    <string name="settings_hub_sub_screens_home_screen">Layar utama</string>
+    <string name="settings_hub_sub_screens_widgets">Widget</string>
+    <string name="settings_hub_sub_screens_long_press_home_screen_widgets">Tekan lama layar utama → Widget → Scanly</string>
+    <string name="settings_hub_sub_screens_tap_to_add_a_widget">Ketuk untuk menambahkan widget ke layar utama</string>
+    <string name="settings_hub_sub_screens_could_not_open_the_add">Tidak dapat membuka dialog tambah widget.</string>
+    <string name="settings_hub_sub_screens_your_launcher_doesn_t_support">Launcher Anda tidak mendukung penambahan widget dari aplikasi. Tekan lama layar utama, lalu pilih Scanly dari Widget.</string>
+    <string name="settings_hub_sub_screens_compare_all_models_on_local">Bandingkan semua model pada gambar lokal</string>
+    <string name="settings_hub_sub_screens_tools">Alat</string>
+    <string name="settings_hub_sub_screens_reject_screens_and_non_documents">Tolak layar dan bukan dokumen sebelum deteksi tepi</string>
+    <string name="settings_hub_sub_screens_physical_document_gate">Gerbang dokumen fisik</string>
+    <string name="settings_hub_sub_screens_capture_quality">Kualitas pengambilan</string>
+    <string name="settings_hub_sub_screens_used_after_camera_or_gallery">Dipakai setelah pengambilan dari kamera atau galeri</string>
+    <string name="settings_hub_sub_screens_selected_automatically_for_higher_accuracy">Dipilih otomatis untuk akurasi lebih tinggi</string>
+    <string name="settings_hub_sub_screens_post_processing_model">Model pascapemrosesan</string>
+    <string name="settings_hub_sub_screens_used_while_the_camera_preview">Dipakai saat pratinjau kamera berjalan</string>
+    <string name="settings_hub_sub_screens_selected_automatically_for_responsive_preview">Dipilih otomatis untuk pratinjau yang responsif</string>
+    <string name="settings_hub_sub_screens_live_preview_model">Model pratinjau langsung</string>
+    <string name="settings_hub_sub_screens_choose_the_best_models_for">Pilih model terbaik untuk perangkat ini</string>
+    <string name="settings_hub_sub_screens_live_processing">"Langsung: %1$s · Pemrosesan: %2$s"</string>
+    <string name="settings_hub_sub_screens_testing_model_speed_on_this">Menguji kecepatan model di perangkat ini…</string>
+    <string name="settings_hub_sub_screens_automatic_model_selection">Pemilihan model otomatis</string>
+    <string name="settings_hub_sub_screens_models">Model</string>
+    <string name="settings_hub_sub_screens_document_detection">Deteksi dokumen</string>
+    <string name="settings_hub_sub_screens_true_black_surfaces_saves_battery">Permukaan hitam pekat · menghemat baterai di layar AMOLED</string>
+    <string name="settings_hub_sub_screens_takes_effect_in_dark_theme">Berlaku di tema gelap · menghemat baterai di layar AMOLED</string>
+    <string name="settings_hub_sub_screens_pure_black">Hitam pekat</string>
+    <string name="settings_hub_sub_screens_theme">Tema</string>
+    <string name="settings_hub_sub_screens_appearance">Tampilan</string>
+    <!-- SettingsScreen -->
+    <string name="settings_preferences_and_app_info">Preferensi dan info aplikasi</string>
+    <string name="settings_scanly">"Scanly %1$s"</string>
+    <string name="settings_settings">Setelan</string>
+    <string name="settings_version_updates_and_legal">Versi, update, dan hukum</string>
+    <string name="settings_leave_a_rating_on_google">Beri rating di Google Play</string>
+    <string name="settings_more">Lainnya</string>
+    <string name="settings_actions_scan_and_qr">Tindakan, Pindai, dan QR</string>
+    <string name="settings_text_recognition">Pengenalan teks</string>
+    <string name="settings_intelligence">Kecerdasan</string>
+    <string name="settings_pages_kept_documents_and_folders">"Halaman disimpan %1$s, dokumen dan folder %2$s"</string>
+    <string name="settings_storage">Penyimpanan</string>
+    <string name="settings_pip_your_helper">Pip, asisten Anda</string>
+    <string name="settings_preferences">Preferensi</string>
+    <string name="settings_save_location_cleanup">Lokasi simpan &amp; pembersihan</string>
+    <string name="settings_indra_ocr_100_languages_experimental">Indra OCR · 100+ bahasa (eksperimental)</string>
+    <string name="settings_ml_kit_latin_script_languages">ML Kit · bahasa beraksara Latin</string>
+    <string name="settings_gate_off">"%1$s · Gerbang nonaktif"</string>
+    <string name="settings_gate_on">"%1$s · Gerbang aktif"</string>
+    <string name="settings_manual_models">Model manual</string>
+    <string name="settings_automatic_models">Model otomatis</string>
+    <string name="settings_calibrating">Mengkalibrasi…</string>
+    <string name="settings_pure_black">" · Hitam pekat"</string>
+    <string name="settings_thanks_for_supporting_scanly">Terima kasih telah mendukung Scanly</string>
+    <!-- SettingsTextRecognitionScreen -->
+    <string name="settings_text_recognition_weights_openrail_m_code_apache">Bobot: OpenRAIL-M · Kode: Apache-2.0</string>
+    <string name="settings_text_recognition_visit_datalab_to">Kunjungi datalab.to</string>
+    <string name="settings_text_recognition_a_big_thank_you_to">Terima kasih banyak untuk Datalab yang telah membuat Indra OCR dan mengizinkan Scanly menjalankannya langsung di ponsel Anda. Karena itulah Scanly bisa membaca 100+ bahasa.</string>
+    <string name="settings_text_recognition_datalab">Datalab</string>
+    <string name="settings_text_recognition_indra_ocr_by">INDRA OCR OLEH</string>
+    <string name="settings_text_recognition_datalab_logo">Logo Datalab</string>
+    <string name="settings_text_recognition_latin_script_only_pages_in">Hanya aksara Latin. Halaman dengan aksara lain, seperti Hindi, Tamil, Arab, atau Mandarin, akan kosong atau berantakan. Gunakan Indra OCR untuk halaman tersebut.</string>
+    <string name="settings_text_recognition_5_script_families_read_in">5 rumpun aksara, dibaca sekaligus. Setiap baris diarahkan ke pengenal yang tepat, jadi halaman dengan campuran bahasa pun bisa dibaca.</string>
+    <string name="settings_text_recognition_reads_100_languages_across_many">Membaca 100+ bahasa dalam berbagai aksara, termasuk Hindi, Tamil, Arab, Mandarin, dan Jepang. Lebih lambat daripada ML Kit.</string>
+    <string name="settings_text_recognition_experimental">Eksperimental</string>
+    <string name="settings_text_recognition_google_s_fast_on_device">Pengenal teks cepat dari Google yang berjalan di perangkat. Terbaik untuk bahasa beraksara Latin seperti Indonesia, Inggris, dan Spanyol.</string>
+    <string name="settings_text_recognition_default">Default</string>
+    <string name="settings_text_recognition_if_a_page_s_text">Jika teks halaman tampak kosong atau berantakan, kemungkinan aksaranya tidak bisa dibaca ML Kit. Beralihlah ke Indra OCR, lalu gunakan Baca ulang halaman yang ada.</string>
+    <string name="settings_text_recognition_tip">Tips</string>
+    <string name="settings_text_recognition_switching_engines_only_affects_new">Mengganti mesin hanya berlaku untuk pembacaan baru. Halaman yang sudah ada dapat dibaca ulang dari layar ini, dan teks yang Anda koreksi sendiri tidak akan pernah diganti.</string>
+    <string name="settings_text_recognition_your_edits_are_kept">Hasil edit Anda tetap disimpan</string>
+    <string name="settings_text_recognition_if_indra_ocr_can_t">Jika Indra OCR tidak dapat membaca halaman, terlalu lama, atau berhenti, ML Kit akan membacanya.</string>
+    <string name="settings_text_recognition_ml_kit_is_the_safety">ML Kit sebagai cadangan</string>
+    <string name="settings_text_recognition_both_engines_run_on_the">Kedua mesin berjalan di perangkat. Halaman tidak pernah diupload untuk dibaca.</string>
+    <string name="settings_text_recognition_stays_on_your_phone">Tetap di ponsel Anda</string>
+    <string name="settings_text_recognition_ml_kit_is_the_default">ML Kit adalah mesin default. Cepat dan sangat akurat untuk bahasa beraksara Latin seperti Indonesia, Inggris, Spanyol, dan Jerman.\n\nIndra OCR untuk bahasa lainnya. Mesin ini membaca 100+ bahasa, termasuk Hindi, Tamil, Bengali, Arab, Urdu, Mandarin, Jepang, Korea, dan Thai, serta dapat menangani halaman dengan campuran bahasa. Masih eksperimental dan lebih lambat, jadi halaman perlu waktu lebih lama agar bisa ditelusuri.</string>
+    <string name="settings_text_recognition_choosing_an_engine">Memilih mesin</string>
+    <string name="settings_text_recognition_after_you_scan_scanly_reads">Setelah Anda memindai, Scanly membaca kata-kata di setiap halaman. Teks inilah yang memungkinkan Anda menelusuri koleksi berdasarkan isi halaman, menyalin atau membagikan teks dari pindaian, dan mengekspornya.</string>
+    <string name="settings_text_recognition_what_it_does">Fungsinya</string>
+    <string name="settings_text_recognition_also_called_ocr">Disebut juga OCR</string>
+    <string name="settings_text_recognition_re_read">Baca ulang</string>
+    <string name="settings_text_recognition_runs_in_the_background_while">Berjalan di latar belakang selama baterai tidak lemah. Teks yang Anda edit sendiri tetap disimpan.</string>
+    <string name="settings_text_recognition_on_device_text_recognition_v2">Pengenalan teks di perangkat v2</string>
+    <string name="settings_text_recognition_google_ml_kit">Google ML Kit</string>
+    <string name="settings_text_recognition_credits">Kredit</string>
+    <string name="settings_text_recognition_supported_languages">Bahasa yang didukung</string>
+    <string name="settings_text_recognition_engine">Mesin</string>
+    <string name="settings_text_recognition_about_text_recognition">Tentang pengenalan teks</string>
+    <!-- SettingsViewModel -->
+    <string name="settings_save_location_reset_to_downloads">Lokasi simpan direset ke Downloads/Scanly.</string>
+    <string name="settings_save_location_updated">Lokasi simpan diperbarui.</string>
+    <string name="settings_reading_pages_again_in_the">"Membaca ulang %1$s halaman di latar belakang."</string>
+    <string name="settings_reading_1_page_again_in">Membaca ulang 1 halaman di latar belakang.</string>
+    <string name="settings_no_pages_to_read_again">Tidak ada halaman untuk dibaca ulang.</string>
+    <string name="settings_could_not_update_the_text">Tidak dapat memperbarui mesin pengenalan teks.</string>
+    <string name="settings_could_not_update_the_physical">Tidak dapat memperbarui gerbang dokumen fisik.</string>
+    <string name="settings_could_not_update_automatic_model">Tidak dapat memperbarui pemilihan model otomatis.</string>
+    <string name="settings_could_not_update_the_post">Tidak dapat memperbarui model pascapemrosesan.</string>
+    <string name="settings_could_not_update_the_live">Tidak dapat memperbarui model pratinjau langsung.</string>
+    <string name="settings_could_not_update_pure_black">Tidak dapat memperbarui tema hitam pekat.</string>
+    <string name="settings_removed_empty_folders">"%1$s folder kosong dihapus."</string>
+    <string name="settings_removed_1_empty_folder">1 folder kosong dihapus.</string>
+    <string name="settings_no_empty_folders_found">Tidak ada folder kosong.</string>
+    <string name="settings_removed_empty_documents">"%1$s dokumen kosong dihapus."</string>
+    <string name="settings_removed_1_empty_document">1 dokumen kosong dihapus.</string>
+    <string name="settings_no_empty_documents_found">Tidak ada dokumen kosong.</string>
+    <string name="settings_freed">"%1$s dikosongkan"</string>
+    <string name="settings_all_data_cleared">Semua data dihapus.</string>
+    <!-- StorageScreen -->
+    <string name="storage_temporary_exports">Ekspor sementara</string>
+    <string name="storage_database_search_index">Database &amp; indeks penelusuran</string>
+    <string name="storage_library_files">File koleksi</string>
+    <string name="storage_scanly_is_using">Scanly menggunakan</string>
+    <string name="storage_calculating">Menghitung…</string>
+    <string name="storage_change">Ubah</string>
+    <string name="storage_exports_save_to">Ekspor disimpan ke</string>
+    <string name="storage_this_permanently_deletes_all_documents">Tindakan ini menghapus permanen semua dokumen, folder, halaman, dan ekspor sementara di perangkat ini. File yang sudah Anda simpan ke folder ekspor tetap ada.</string>
+    <string name="storage_clear_all_data">Hapus semua data?</string>
+    <string name="storage_deletes_every_folder_group_that">Menghapus setiap folder (grup) yang tidak berisi dokumen. Folder yang masih berisi dokumen tetap disimpan.</string>
+    <string name="storage_remove_empty_folders">Hapus folder kosong?</string>
+    <string name="storage_deletes_every_document_that_has">Menghapus setiap dokumen tanpa halaman, termasuk pengambilan yang ditinggalkan, dan mengosongkan penyimpanan lokalnya. Dokumen yang masih memiliki halaman tetap disimpan.</string>
+    <string name="storage_remove_empty_documents">Hapus dokumen kosong?</string>
+    <string name="storage_deletes_every_document_folder_and">Menghapus semua dokumen, folder, dan halaman di perangkat ini</string>
+    <string name="storage_clear_all_data_2">Hapus semua data</string>
+    <string name="storage_danger_zone">Zona berbahaya</string>
+    <string name="storage_folders_with_no_documents">Folder tanpa dokumen</string>
+    <string name="storage_remove_empty_folders_2">Hapus folder kosong</string>
+    <string name="storage_documents_with_no_pages">Dokumen tanpa halaman</string>
+    <string name="storage_remove_empty_documents_2">Hapus dokumen kosong</string>
+    <string name="storage_restore_deleted_folders_documents_and">Pulihkan folder, dokumen, dan halaman yang dihapus</string>
+    <string name="storage_tidy_up">Rapikan</string>
+    <string name="storage_use_default_folder">Gunakan folder default</string>
+    <string name="storage_pdfs_and_images_you_export">PDF dan gambar yang Anda ekspor disimpan di sini.</string>
+    <string name="storage_save_location">Lokasi simpan</string>
+    <string name="storage_could_not_use_the_selected">Tidak dapat menggunakan folder yang dipilih.</string>
+    <string name="storage_selected_folder">Folder yang dipilih</string>
+    <!-- ScannedPagePickerSheet -->
+    <string name="scanned_page_picker_no_pages_in_this_document">Tidak ada halaman di dokumen ini yang dapat digunakan.</string>
+    <string name="scanned_page_picker_back_to_documents">Kembali ke dokumen</string>
+    <string name="scanned_page_picker_no_scanned_documents_yet_scan">Belum ada dokumen pindaian. Pindai halaman di Scanly, dan halaman itu akan muncul di sini.</string>
+    <string name="scanned_page_picker_scanned_pages">Halaman pindaian</string>
+    <!-- SignatureCreateScreen -->
+    <string name="signature_create_choose_another">Pilih yang lain</string>
+    <string name="signature_create_bolder">Lebih tebal</string>
+    <string name="signature_create_fainter">Lebih tipis</string>
+    <string name="signature_create_ink_sensitivity">Sensitivitas tinta</string>
+    <string name="signature_create_extracted_signature_preview">Pratinjau tanda tangan yang diekstrak</string>
+    <string name="signature_create_scanly_removes_the_paper_background">Scanly menghapus latar kertas dan hanya menyisakan tintanya.</string>
+    <string name="signature_create_use_a_page_you_scanned">Gunakan halaman yang Anda pindai di Scanly</string>
+    <string name="signature_create_scanned_page">Halaman pindaian</string>
+    <string name="signature_create_jpg_or_png_from_your">JPG atau PNG dari ponsel Anda</string>
+    <string name="signature_create_files">File</string>
+    <string name="signature_create_pick_a_photo_of_your">Pilih foto tanda tangan Anda</string>
+    <string name="signature_create_photos">Foto</string>
+    <string name="signature_create_choose_where_your_signature_is">Pilih letak tanda tangan Anda</string>
+    <string name="signature_create_choose_where_your_initials_are">Pilih letak paraf Anda</string>
+    <string name="signature_create_pen">Pena</string>
+    <string name="signature_create_upload">Upload</string>
+    <string name="signature_create_draw">Gambar</string>
+    <string name="signature_create_save_signature">Simpan tanda tangan</string>
+    <string name="signature_create_save_initials">Simpan paraf</string>
+    <string name="signature_create_sign_above_the_line">Tanda tangan di atas garis</string>
+    <string name="signature_create_write_your_initials_above_the">Tulis paraf di atas garis</string>
+    <string name="signature_create_new_signature">Tanda tangan baru</string>
+    <string name="signature_create_new_initials">Paraf baru</string>
+    <!-- SignatureCreateViewModel -->
+    <string name="signature_create_choose_a_photo_of_your">Pilih foto tanda tangan Anda terlebih dahulu.</string>
+    <string name="signature_create_still_reading_the_photo_try">Masih membaca foto. Coba lagi sebentar lagi.</string>
+    <string name="signature_create_draw_your_signature_first">Gambar tanda tangan Anda terlebih dahulu.</string>
+    <!-- SignaturePad -->
+    <string name="signature_pad_draw_here">Gambar di sini</string>
+    <!-- DocumentSignScreen -->
+    <string name="document_sign_stamping_signatures">Membubuhkan tanda tangan…</string>
+    <!-- DocumentSignViewModel -->
+    <string name="document_sign_saved_signatures_couldn_t_be">Tanda tangan tersimpan tidak dapat dimuat, jadi dokumen ini tidak bisa ditandatangani sekarang.</string>
+    <!-- SignEditorScreen -->
+    <string name="sign_editor_next_page">Halaman berikutnya</string>
+    <string name="sign_editor_add_text">Tambahkan teks</string>
+    <string name="sign_editor_edit_date">Edit tanggal</string>
+    <string name="sign_editor_tap_checkbox_again_for_another">Ketuk Kotak centang lagi untuk kotak lain · gunakan toolbar untuk mencentang atau menghapus centang</string>
+    <string name="sign_editor_tap_text_again_for_another">Ketuk Teks lagi untuk baris lain · ketuk dua kali teks untuk mengeditnya</string>
+    <string name="sign_editor_tap_date_again_for_another">Ketuk Tanggal lagi untuk tanggal lain · ketuk dua kali tanggal untuk mengeditnya</string>
+    <string name="sign_editor_manage">Kelola</string>
+    <string name="sign_editor_your_signatures">Tanda tangan Anda</string>
+    <string name="sign_editor_signatures_and_marks_you_added">Tanda tangan dan tanda lain yang Anda tambahkan atau ubah di dokumen ini tidak akan disimpan.</string>
+    <!-- SignMarkLayer -->
+    <string name="sign_mark_layer_duplicate">Duplikat</string>
+    <string name="sign_mark_layer_tick">Centang</string>
+    <string name="sign_mark_layer_untick">Hapus centang</string>
+    <!-- SignatureManageScreen -->
+    <string name="signature_manage_added">"%1$s · Ditambahkan %2$s"</string>
+    <string name="signature_manage_from_a_photo">Dari foto</string>
+    <string name="signature_manage_drawn">Digambar</string>
+    <string name="signature_manage_pages_you_ve_already_signed">Halaman yang sudah Anda tanda tangani tetap memakainya</string>
+    <string name="signature_manage_place_it_on_a_pdf">Bubuhkan di PDF atau dokumen Scanly</string>
+    <string name="signature_manage_sign_a_pdf">Tanda tangani PDF</string>
+    <string name="signature_manage_use_first_when_signing">Gunakan pertama saat menandatangani</string>
+    <string name="signature_manage_shared_and_saved_as_a">Dibagikan dan disimpan sebagai PNG transparan, siap dipakai untuk dokumen, formulir, dan email.</string>
+    <string name="signature_manage_save_to_phone">Simpan ke ponsel</string>
+    <string name="signature_manage_ink_colour">Warna tinta</string>
+    <string name="signature_manage_in_ink">"%1$s, tinta: %2$s"</string>
+    <string name="signature_manage_used_first">Dipakai pertama</string>
+    <string name="signature_manage_used_first_2">, dipakai pertama</string>
+    <string name="signature_manage_pages_you_ve_already_signed_2">Halaman yang sudah Anda tanda tangani tetap memakainya.</string>
+    <string name="signature_manage_initials">Paraf</string>
+    <string name="signature_manage_signatures">Tanda tangan</string>
+    <string name="signature_manage_signatures_stay_on_this_phone">Tanda tangan tetap ada di ponsel ini. Gambar tanda tangan atau upload fotonya.</string>
+    <string name="signature_manage_tap_one_to_share_save">Ketuk salah satu untuk membagikan, menyimpan, atau mengatur urutan</string>
+    <!-- SignatureManageViewModel -->
+    <string name="signature_manage_saved_to">"Disimpan ke %1$s"</string>
+    <string name="signature_manage_will_be_offered_first_when">"%1$s akan ditawarkan pertama saat menandatangani"</string>
+    <!-- PageTextScreen -->
+    <string name="page_text_share_text">Bagikan teks</string>
+    <string name="page_text_scan_or_import_a_page">Pindai atau impor halaman, dan teksnya akan muncul di sini.</string>
+    <string name="page_text_this_document_has_no_pages">Dokumen ini belum memiliki halaman</string>
+    <string name="page_text_reading_text">Membaca teks</string>
+    <string name="page_text_copy_page">Salin halaman</string>
+    <string name="page_text_save_changes">Simpan perubahan</string>
+    <string name="page_text_copy">Salin</string>
+    <string name="page_text_tap_an_outlined_area_to">Ketuk area bergaris tepi untuk menyalin bagian itu saja.</string>
+    <string name="page_text_regions_are_hidden_because_this">Area disembunyikan karena halaman ini berubah setelah teksnya dibaca.</string>
+    <string name="page_text_page_image_with_text_regions">"Gambar halaman dengan %1$s area teks"</string>
+    <string name="page_text_read_with_indra_ocr_experimental">Dibaca dengan Indra OCR (eksperimental)</string>
+    <string name="page_text_read_with_ml_kit_indra">Dibaca dengan ML Kit (Indra OCR tidak dapat membaca halaman ini)</string>
+    <string name="page_text_edited">Diedit</string>
+    <string name="page_text_read_again">Baca ulang</string>
+    <string name="page_text_photos_and_handwriting_may_not">Foto dan tulisan tangan mungkin tidak berisi teks cetak yang terbaca. Pindaian yang lebih tajam dan terang biasanya membantu.</string>
+    <string name="page_text_no_text_found_on_this">Tidak ada teks di halaman ini</string>
+    <string name="page_text_read_this_page">Baca halaman ini</string>
+    <string name="page_text_scanly_reads_page_text_on">Scanly membaca teks halaman di perangkat ini.</string>
+    <string name="page_text_text_not_read_yet">Teks belum dibaca</string>
+    <string name="page_text_try_again">Coba lagi</string>
+    <string name="page_text_couldn_t_read_this_page">Tidak dapat membaca halaman ini</string>
+    <string name="page_text_your_corrections_are_used_for">Koreksi Anda dipakai untuk salin, bagikan, dan penelusuran.</string>
+    <string name="page_text_this_page_changed_after_its">Halaman ini berubah setelah teksnya dibaca.</string>
+    <string name="page_text_stop_highlighting">Berhenti menyorot</string>
+    <string name="page_text_on_this_page">"%1$s di halaman ini"</string>
+    <string name="page_text_not_on_this_page">tidak ada di halaman ini</string>
+    <string name="page_text_reading_text_2">Membaca teks…</string>
+    <string name="page_text_reading_page_of">"Membaca halaman %1$s dari %2$s…"</string>
+    <string name="page_text_page">"%1$s — halaman %2$s"</string>
+    <string name="page_text_read_all_pages_again">Baca ulang semua halaman</string>
+    <string name="page_text_restore_original_text">Pulihkan teks asli</string>
+    <string name="page_text_share_all_pages">Bagikan semua halaman</string>
+    <string name="page_text_all_pages">semua halaman</string>
+    <string name="page_text_copy_all_pages">Salin semua halaman</string>
+    <string name="page_text_extracted_text">Teks yang diekstrak</string>
+    <string name="page_text_copied">"%1$s disalin"</string>
+    <!-- PageTextViewModel -->
+    <string name="page_text_original_text_restored">Teks asli dipulihkan</string>
+    <string name="page_text_changes_saved_search_uses_your">Perubahan disimpan. Penelusuran memakai hasil edit Anda.</string>
+    <string name="page_text_page_text_read_again">Teks halaman dibaca ulang</string>
+    <!-- ToolKit -->
+    <string name="tool_kit_file_name">Nama file</string>
+    <!-- ToolsScreen -->
+    <string name="tools_everything_runs_offline_on_this">Semuanya berjalan offline, di ponsel ini</string>
+    <string name="tools_utilities">Utilitas</string>
+    <!-- PdfCompressScreen -->
+    <string name="pdf_compress_recommended">Direkomendasikan</string>
+    <string name="pdf_compress_compress_this_pdf_again_with">Kompres PDF ini lagi dengan setelan lain</string>
+    <string name="pdf_compress_try_another_quality">Coba kualitas lain</string>
+    <string name="pdf_compress_after">Sesudah</string>
+    <string name="pdf_compress_before">Sebelum</string>
+    <string name="pdf_compress_quality">Kualitas</string>
+    <string name="pdf_compress_this_quality_didn_t_make">Kualitas ini tidak membuat file lebih kecil. Coba kualitas lain.</string>
+    <string name="pdf_compress_compressed">Dikompres</string>
+    <string name="pdf_compress_already_compact">Sudah ringkas</string>
+    <string name="pdf_compress_saved">Hemat %1$s%%</string>
+    <string name="pdf_compress_compressing">Mengompres…</string>
+    <string name="pdf_compress_compress">Kompres</string>
+    <string name="pdf_compress_pages_are_re_encoded_as">Halaman dienkode ulang sebagai gambar, jadi teks dalam PDF tidak bisa lagi dipilih atau ditelusuri.</string>
+    <string name="pdf_compress_unlock">Buka kunci</string>
+    <string name="pdf_compress_enter_the_password">Masukkan sandi</string>
+    <string name="pdf_compress_compressed_pdf">PDF terkompresi</string>
+    <string name="pdf_compress_step_1_of_3_choose">Langkah 1 dari 3 · Pilih file</string>
+    <string name="pdf_compress_shrink_a_pdf_for_email">Perkecil PDF untuk batas email atau upload.</string>
+    <string name="pdf_compress_compress_pdf">Kompres PDF</string>
+    <!-- PdfCompressViewModel -->
+    <string name="pdf_compress_compressing_pdf">Mengompres PDF…</string>
+    <string name="pdf_compress_choose_a_pdf_first">Pilih PDF terlebih dahulu.</string>
+    <!-- PdfFilePicker -->
+    <string name="pdf_file_picker_days_ago">"%1$s hari lalu"</string>
+    <string name="pdf_file_picker_selected_position">"Dipilih, posisi %1$s"</string>
+    <string name="pdf_file_picker_empty_scans_are_hidden">"%1$s pindaian kosong disembunyikan"</string>
+    <string name="pdf_file_picker_1_empty_scan_is_hidden">1 pindaian kosong disembunyikan</string>
+    <string name="pdf_file_picker_no_match">"Tidak ada %1$s yang cocok dengan \"%2$s\"."</string>
+    <string name="pdf_file_picker_sorted_by">"Diurutkan menurut %1$s"</string>
+    <string name="pdf_file_picker_in_scanly">"Di Scanly · %1$s"</string>
+    <string name="pdf_file_picker_search_your">"Telusuri %1$s Anda"</string>
+    <string name="pdf_file_picker_your_scans_have_no_pages">Pindaian Anda belum memiliki halaman. Pilih PDF dari penyimpanan ponsel.</string>
+    <string name="pdf_file_picker_no_scans_yet_pick_a">Belum ada pindaian. Pilih PDF dari penyimpanan ponsel, atau pindai dulu.</string>
+    <string name="pdf_file_picker_pdfs">PDF</string>
+    <string name="pdf_file_picker_downloads_drive_and_other_apps">Download, Drive, dan aplikasi lain</string>
+    <string name="pdf_file_picker_phone_storage">Penyimpanan ponsel</string>
+    <!-- PdfImportScreen -->
+    <string name="pdf_import_add_pages">"Tambahkan %1$s halaman"</string>
+    <string name="pdf_import_add_1_page">Tambahkan 1 halaman</string>
+    <string name="pdf_import_add_to_library">Tambahkan ke koleksi</string>
+    <string name="pdf_import_another_pdf">PDF lain</string>
+    <string name="pdf_import_crop_filter_sign_or_search">"%1$s · %2$s. Pangkas, beri filter, tanda tangani, atau telusuri seperti pindaian lainnya."</string>
+    <string name="pdf_import_added_to_your_library">Ditambahkan ke koleksi Anda</string>
+    <string name="pdf_import_step_3_of_3_done">Langkah 3 dari 3 · Selesai</string>
+    <string name="pdf_import_adding_to_library">Menambahkan ke koleksi…</string>
+    <string name="pdf_import_look">Lihat</string>
+    <string name="pdf_import_your_pdf_file_stays_as">File PDF Anda tetap seperti semula; Scanly menyimpan salinannya sendiri</string>
+    <string name="pdf_import_tap_a_page_or_long">Ketuk halaman, atau tekan lama dan tarik untuk memilih beberapa.</string>
+    <string name="pdf_import_step_2_of_3_pages">Langkah 2 dari 3 · Halaman dan nama</string>
+    <string name="pdf_import_name_this_document">Beri nama dokumen ini</string>
+    <string name="pdf_import_document_name">Nama dokumen</string>
+    <string name="pdf_import_turn_a_pdf_into_a">Ubah PDF menjadi dokumen Scanly yang bisa diedit, ditandatangani, dan ditelusuri.</string>
+    <string name="pdf_import_add_pdf_to_library">Tambahkan PDF ke koleksi</string>
+    <!-- PdfImportViewModel -->
+    <string name="pdf_import_give_the_document_a_name">Beri nama dokumen.</string>
+    <string name="pdf_import_imported_pdf">PDF yang diimpor</string>
+    <!-- PdfMergeScreen -->
+    <string name="pdf_merge_1_file">1 file</string>
+    <string name="pdf_merge_your_original_files_are_unchanged">File asli Anda tidak berubah</string>
+    <string name="pdf_merge_combined_into_one_pdf">"%1$s digabung menjadi satu PDF"</string>
+    <string name="pdf_merge_merged">Digabung</string>
+    <string name="pdf_merge_kept_unchanged">Disimpan, tidak berubah</string>
+    <string name="pdf_merge_original_files">File asli</string>
+    <string name="pdf_merge_size">Ukuran</string>
+    <string name="pdf_merge_remove">"Hapus %1$s"</string>
+    <string name="pdf_merge_move_down">"Pindahkan %1$s ke bawah"</string>
+    <string name="pdf_merge_move_up">"Pindahkan %1$s ke atas"</string>
+    <string name="pdf_merge_pdf_from_scanly">PDF dari Scanly</string>
+    <string name="pdf_merge_pdf_from_phone">PDF dari ponsel</string>
+    <string name="pdf_merge_page_count_unknown">Jumlah halaman tidak diketahui</string>
+    <string name="pdf_merge_merge_pdfs">Gabungkan PDF</string>
+    <string name="pdf_merge_merge_files">"Gabungkan %1$s file"</string>
+    <string name="pdf_merge_add_more">Tambah lagi</string>
+    <string name="pdf_merge_merge_order">"Urutan gabung · %1$s"</string>
+    <string name="pdf_merge_files_are_joined_from_top">File digabung dari atas ke bawah.</string>
+    <string name="pdf_merge_order_name">Urutan &amp; nama</string>
+    <string name="pdf_merge_step_2_of_3_order">Langkah 2 dari 3 · Urutan &amp; nama</string>
+    <string name="pdf_merge_in_total">"Total %1$s"</string>
+    <string name="pdf_merge_from_phone">"Dari ponsel: %1$s"</string>
+    <string name="pdf_merge_next">Berikutnya</string>
+    <string name="pdf_merge_next_files">"Berikutnya · %1$s file"</string>
+    <string name="pdf_merge_pick_at_least_2_files">Pilih minimal 2 file</string>
+    <string name="pdf_merge_step_1_of_3_pick">Langkah 1 dari 3 · Pilih file</string>
+    <string name="pdf_merge_pick_files_in_the_order">Pilih file sesuai urutan yang Anda inginkan.</string>
+    <string name="pdf_merge_merged_pdf">PDF gabungan</string>
+    <string name="pdf_merge_merging">Menggabungkan…</string>
+    <!-- PdfMergeViewModel -->
+    <string name="pdf_merge_add_at_least_two_pdfs">Tambahkan minimal dua PDF untuk digabungkan.</string>
+    <!-- PdfPasswordScreen -->
+    <string name="pdf_password_file">File</string>
+    <string name="pdf_password_allowed">Diizinkan</string>
+    <string name="pdf_password_restricted">Dibatasi</string>
+    <string name="pdf_password_editing">Pengeditan</string>
+    <string name="pdf_password_no_password">Tanpa sandi</string>
+    <string name="pdf_password_aes_256_password">Sandi AES-256</string>
+    <string name="pdf_password_protection">Perlindungan</string>
+    <string name="pdf_password_a_short_phrase_you_ll">Frasa singkat yang mudah diingat lebih baik daripada huruf acak.</string>
+    <string name="pdf_password_doesn_t_match_yet">Belum cocok</string>
+    <string name="pdf_password_passwords_match">Sandi cocok</string>
+    <string name="pdf_password_remove_password">Hapus sandi</string>
+    <string name="pdf_password_the_unlocked_copy_opens_for">Salinan yang tidak terkunci bisa dibuka siapa saja yang memilikinya. Scanly hanya menghapus sandi yang sudah Anda ketahui.</string>
+    <string name="pdf_password_bank_and_portal_pdfs_often">PDF dari bank dan portal sering memakai tanggal lahir atau ID pelanggan Anda.</string>
+    <string name="pdf_password_password_for_this_pdf">Sandi untuk PDF ini</string>
+    <string name="pdf_password_current_password">Sandi saat ini</string>
+    <string name="pdf_password_locked_pdf">PDF terkunci</string>
+    <string name="pdf_password_lock_pdf">Kunci PDF</string>
+    <string name="pdf_password_scanly_can_t_recover_this">Scanly tidak dapat memulihkan sandi ini. Jika Anda lupa, PDF tidak bisa dibuka.</string>
+    <string name="pdf_password_others_can_open_and_print">Orang lain dapat membuka dan mencetak, tetapi tidak dapat mengedit atau menyalin teks</string>
+    <string name="pdf_password_restrict_editing">Batasi pengeditan</string>
+    <string name="pdf_password_type_it_again">Ketik lagi</string>
+    <string name="pdf_password_at_least_characters">"Minimal %1$s karakter"</string>
+    <string name="pdf_password_new_password">Sandi baru</string>
+    <string name="pdf_password_add_password">Tambahkan sandi</string>
+    <string name="pdf_password_checking_the_file">Memeriksa file…</string>
+    <string name="pdf_password_unlocked_pdf">PDF tidak terkunci</string>
+    <string name="pdf_password_protected_pdf">PDF terlindungi</string>
+    <string name="pdf_password_it_now_opens_without_a">Sekarang PDF bisa dibuka tanpa sandi.</string>
+    <string name="pdf_password_anyone_opening_it_will_need">Siapa pun yang membukanya akan memerlukan sandi.</string>
+    <string name="pdf_password_password_removed">Sandi dihapus</string>
+    <string name="pdf_password_pdf_locked">PDF dikunci</string>
+    <string name="pdf_password_unlocking">Membuka kunci…</string>
+    <string name="pdf_password_locking">Mengunci…</string>
+    <string name="pdf_password_lock_a_pdf_or_remove">Kunci PDF, atau hapus sandi yang Anda ketahui.</string>
+    <!-- PdfPasswordViewModel -->
+    <string name="pdf_password_unlocking_pdf">Membuka kunci PDF…</string>
+    <string name="pdf_password_enter_the_current_password">Masukkan sandi saat ini.</string>
+    <string name="pdf_password_locking_pdf">Mengunci PDF…</string>
+    <string name="pdf_password_use_to_characters_for_the">"Gunakan %1$s–%2$s karakter untuk sandi."</string>
+    <!-- PdfReaderMenu -->
+    <string name="pdf_reader_menu_open_another_pdf">Buka PDF lain</string>
+    <string name="pdf_reader_menu_all_pages">Semua halaman</string>
+    <!-- PdfReaderPresentation -->
+    <string name="pdf_reader_presentation_0_of_0">0 dari 0</string>
+    <string name="pdf_reader_presentation_paged">Per halaman</string>
+    <string name="pdf_reader_presentation_continuous">Bersambung</string>
+    <!-- PdfReaderScreen -->
+    <string name="pdf_reader_tap_a_page_to_jump">Ketuk halaman untuk membukanya</string>
+    <string name="pdf_reader_loading_page">Memuat halaman %1$s…</string>
+    <string name="pdf_reader_loading_page_2">Memuat halaman…</string>
+    <string name="pdf_reader_choose_another_pdf">Pilih PDF lain</string>
+    <string name="pdf_reader_password">Sandi</string>
+    <string name="pdf_reader_this_pdf_is_password_protected">PDF ini dilindungi sandi. Masukkan sandi untuk membaca %1$s.</string>
+    <string name="pdf_reader_unlock_pdf">Buka kunci PDF</string>
+    <string name="pdf_reader_choose_a_file">Pilih file</string>
+    <string name="pdf_reader_open_any_pdf_from_scanly">Buka PDF apa pun dari Scanly atau ponsel Anda.</string>
+    <string name="pdf_reader_read_a_pdf">Baca PDF</string>
+    <!-- PdfSignScreen -->
+    <string name="pdf_sign_1_mark">1 tanda</string>
+    <string name="pdf_sign_the_signed_copy_is_saved">Salinan yang ditandatangani disimpan tanpa sandi.</string>
+    <string name="pdf_sign_this_pdf_is_locked">PDF ini terkunci</string>
+    <string name="pdf_sign_back_to_the_editor">Kembali ke editor</string>
+    <string name="pdf_sign_edit_signatures">Edit tanda tangan</string>
+    <string name="pdf_sign_signed_pdf">PDF bertanda tangan</string>
+    <string name="pdf_sign_saved_as">Disimpan sebagai</string>
+    <string name="pdf_sign_marks_placed">Tanda dibubuhkan</string>
+    <string name="pdf_sign_pages_signed">Halaman ditandatangani</string>
+    <string name="pdf_sign_signed">Ditandatangani</string>
+    <string name="pdf_sign_placing_signatures_on_each_page">Membubuhkan tanda tangan di setiap halaman…</string>
+    <string name="pdf_sign_signing_your_pdf">Menandatangani PDF Anda</string>
+    <string name="pdf_sign_pdf_jpg_or_png_from">PDF, JPG, atau PNG dari Download, Drive, dan aplikasi lain</string>
+    <string name="pdf_sign_step_1_of_3_choose">Langkah 1 dari 3 · Pilih</string>
+    <string name="pdf_sign_choose_a_pdf_or_an">Pilih PDF atau gambar untuk ditandatangani</string>
+    <string name="pdf_sign_sign_pdf">Tanda tangani PDF</string>
+    <!-- PdfSignViewModel -->
+    <string name="pdf_sign_signing">Menandatangani…</string>
+    <string name="pdf_sign_place_a_signature_first">Bubuhkan tanda tangan terlebih dahulu.</string>
+    <string name="pdf_sign_open_a_pdf_first">Buka PDF terlebih dahulu.</string>
+    <!-- PdfToImagesPresentation -->
+    <string name="pdf_to_images_presentation_page">"Halaman %1$s · %2$s"</string>
+    <string name="pdf_to_images_presentation_share_all">"Bagikan semua %1$s"</string>
+    <string name="pdf_to_images_presentation_share_image">Bagikan gambar</string>
+    <string name="pdf_to_images_presentation_in_all">"Total %1$s"</string>
+    <string name="pdf_to_images_presentation_of_pages">"%1$s dari %2$s halaman"</string>
+    <string name="pdf_to_images_presentation_all_pages">"Semua %1$s halaman"</string>
+    <string name="pdf_to_images_presentation_export">"Ekspor %1$s"</string>
+    <string name="pdf_to_images_presentation_choose_pages_to_export">Pilih halaman untuk diekspor</string>
+    <string name="pdf_to_images_presentation_1_image">1 gambar</string>
+    <string name="pdf_to_images_presentation_1f_gb" formatted="false">%.1f GB</string>
+    <string name="pdf_to_images_presentation_1f_mb" formatted="false">%.1f MB</string>
+    <string name="pdf_to_images_presentation_kb">"%1$s KB"</string>
+    <string name="pdf_to_images_presentation_0_kb">0 KB</string>
+    <!-- PdfToImagesScreen -->
+    <string name="pdf_to_images_of_selected">"%1$s dari %2$s dipilih"</string>
+    <string name="pdf_to_images_tap_images_or_long_press">Ketuk gambar, atau tekan lama dan tarik, untuk membagikan sebagian saja.</string>
+    <string name="pdf_to_images_open_gallery">Buka galeri</string>
+    <string name="pdf_to_images_pick_a_different_file">Pilih file lain</string>
+    <string name="pdf_to_images_png_or_print_size">PNG atau ukuran cetak</string>
+    <string name="pdf_to_images_export_again">Ekspor lagi</string>
+    <string name="pdf_to_images_saving_images">Menyimpan gambar…</string>
+    <string name="pdf_to_images_each">~%1$s per gambar</string>
+    <string name="pdf_to_images_resolution">Resolusi</string>
+    <string name="pdf_to_images_format">Format</string>
+    <string name="pdf_to_images_deselect_all">Batalkan semua pilihan</string>
+    <string name="pdf_to_images_this_pdf_is_password_protected">PDF ini dilindungi sandi. Masukkan sandinya untuk melihat halaman.</string>
+    <string name="pdf_to_images_images_show_up_in_your">Gambar langsung muncul di galeri Anda</string>
+    <string name="pdf_to_images_pdf_to_jpg">PDF ke JPG</string>
+    <string name="pdf_to_images_step_2_of_3_pages">Langkah 2 dari 3 · Halaman dan format</string>
+    <string name="pdf_to_images_no_gallery_app_found_the">Aplikasi galeri tidak ditemukan. Gambar ada di Pictures/Scanly.</string>
+    <string name="pdf_to_images_turn_pages_into_images_for">Ubah halaman menjadi gambar untuk chat, slide, atau galeri Anda.</string>
+    <!-- PdfToolDone -->
+    <string name="pdf_tool_done_open_pdf">Buka PDF</string>
+    <string name="pdf_tool_done_open_the_finished_pdf">Buka PDF yang sudah selesai</string>
+    <string name="pdf_tool_done_your_original_file_is_unchanged">File asli Anda tidak berubah</string>
+    <!-- PdfToolPresentation -->
+    <string name="pdf_tool_presentation_files_merge_in_this_order">File digabung sesuai urutan ini. PDF pertama menjadi awal dokumen.</string>
+    <string name="pdf_tool_presentation_add_at_least_one_more">Tambahkan minimal satu PDF lagi untuk digabungkan.</string>
+    <string name="pdf_tool_presentation_opacity">Opasitas %1$s%%</string>
+    <string name="pdf_tool_presentation_one_large_stamp_sized_to">Satu cap besar yang memenuhi halaman.</string>
+    <string name="pdf_tool_presentation_repeats_across_the_full_page">Berulang di seluruh halaman, termasuk tepinya.</string>
+    <string name="pdf_tool_presentation_protect_pdf">Lindungi PDF</string>
+    <string name="pdf_tool_presentation_saved">"%1$s → %2$s  ·  hemat %3$s%%"</string>
+    <string name="pdf_tool_presentation_unlocked">Tidak terkunci</string>
+    <string name="pdf_tool_presentation_protected">Terlindungi</string>
+    <string name="pdf_tool_presentation_pdfs">"%1$s PDF"</string>
+    <string name="pdf_tool_presentation_1_pdf">1 PDF</string>
+    <string name="pdf_tool_presentation_no_files">Tidak ada file</string>
+    <!-- PdfToolShared -->
+    <string name="pdf_tool_shared_scanly_pdf">PDF Scanly</string>
+    <!-- PdfToolViewModels -->
+    <string name="pdf_tool_view_models_saving">Menyimpan…</string>
+    <!-- PdfWatermarkScreen -->
+    <string name="pdf_watermark_the_page">Halaman</string>
+    <string name="pdf_watermark_first_page_only">Halaman pertama saja</string>
+    <string name="pdf_watermark_apply_to">Terapkan ke</string>
+    <string name="pdf_watermark_colour">Warna</string>
+    <string name="pdf_watermark_opacity">Opasitas</string>
+    <string name="pdf_watermark_large">Besar</string>
+    <string name="pdf_watermark_medium">Sedang</string>
+    <string name="pdf_watermark_small">Kecil</string>
+    <string name="pdf_watermark_horizontal">Horizontal</string>
+    <string name="pdf_watermark_diagonal">Diagonal</string>
+    <string name="pdf_watermark_single">Tunggal</string>
+    <string name="pdf_watermark_tiled">Berulang</string>
+    <string name="pdf_watermark_style">Gaya</string>
+    <string name="pdf_watermark_stamps">Mencap \"%1$s\"</string>
+    <string name="pdf_watermark_add_date">Tambahkan tanggal</string>
+    <string name="pdf_watermark_presets">Preset</string>
+    <string name="pdf_watermark_the_watermarked_copy_is_saved">Salinan bertanda air disimpan tanpa sandi. Anda dapat menguncinya lagi dengan alat Sandi.</string>
+    <string name="pdf_watermark_live_preview_of_the_saved">Pratinjau langsung file yang disimpan</string>
+    <string name="pdf_watermark_page_1">Halaman 1</string>
+    <string name="pdf_watermark_preview_of_page_1_with">Pratinjau halaman 1 dengan tanda air</string>
+    <string name="pdf_watermark_apply_watermark">Terapkan tanda air</string>
+    <string name="pdf_watermark_apply_to_pages">"Terapkan ke %1$s halaman"</string>
+    <string name="pdf_watermark_apply_to_page">Terapkan ke halaman</string>
+    <string name="pdf_watermark_apply_to_first_page">Terapkan ke halaman pertama</string>
+    <string name="pdf_watermark_unlock_the_pdf_first">Buka kunci PDF terlebih dahulu</string>
+    <string name="pdf_watermark_watermark">Tanda air</string>
+    <string name="pdf_watermark_edit_stamp">Edit cap</string>
+    <string name="pdf_watermark_watermarked_pdf">PDF bertanda air</string>
+    <string name="pdf_watermark_kept_unstamped">Disimpan, tanpa cap</string>
+    <string name="pdf_watermark_stamp">Cap</string>
+    <string name="pdf_watermark_on_every_page_tap_the">Di setiap halaman. Ketuk halaman untuk memeriksanya.</string>
+    <string name="pdf_watermark_on_all_pages_tap_the">"Di semua %1$s halaman. Ketuk halaman untuk memeriksanya."</string>
+    <string name="pdf_watermark_on_both_pages_tap_the">Di kedua halaman. Ketuk halaman untuk memeriksanya.</string>
+    <string name="pdf_watermark_on_the_page_tap_it">Di halaman. Ketuk untuk memeriksanya.</string>
+    <string name="pdf_watermark_on_the_first_page_tap">Di halaman pertama. Ketuk halaman untuk memeriksanya.</string>
+    <string name="pdf_watermark_watermark_added">Tanda air ditambahkan</string>
+    <string name="pdf_watermark_stamping_every_page">Mencap setiap halaman</string>
+    <string name="pdf_watermark_stamping">"Mencap %1$s"</string>
+    <string name="pdf_watermark_stamping_the_first_page">Mencap halaman pertama</string>
+    <string name="pdf_watermark_adding_watermark">Menambahkan tanda air…</string>
+    <string name="pdf_watermark_stamp_text_like_confidential_or">Cap teks seperti RAHASIA atau \"Khusus untuk KYC\".</string>
+    <!-- PdfWatermarkViewModel -->
+    <string name="pdf_watermark_kyc_copy">Salinan KYC</string>
+    <string name="pdf_watermark_enter_watermark_text">Masukkan teks tanda air.</string>
+    <!-- QrActions -->
+    <string name="qr_actions_qr_text">Teks QR</string>
+    <string name="qr_actions_no_app_can_search_the">Tidak ada aplikasi untuk menelusuri web</string>
+    <string name="qr_actions_no_email_app_is_set">Belum ada aplikasi email yang disiapkan di ponsel ini</string>
+    <string name="qr_actions_no_phone_app_can_open">Tidak ada aplikasi telepon yang dapat membuka nomor ini</string>
+    <string name="qr_actions_no_contacts_app_can_save">Tidak ada aplikasi kontak yang dapat menyimpan ini</string>
+    <string name="qr_actions_pick_in_wi_fi_settings">Pilih \"%1$s\" di setelan Wi-Fi</string>
+    <string name="qr_actions_password_copied_pick_the_network">Sandi disalin — pilih jaringannya</string>
+    <string name="qr_actions_wi_fi_settings_can_t">Setelan Wi-Fi tidak dapat dibuka</string>
+    <string name="qr_actions_wi_fi_password">Sandi Wi-Fi</string>
+    <string name="qr_actions_wi_fi_settings_can_t_2">Setelan Wi-Fi tidak dapat menambahkan jaringan ini</string>
+    <string name="qr_actions_no_upi_app_can_open">Tidak ada aplikasi UPI yang dapat membuka kode ini</string>
+    <string name="qr_actions_pay_with">Bayar dengan</string>
+    <string name="qr_actions_no_app_can_open_this">Tidak ada aplikasi yang dapat membuka link ini</string>
+    <string name="qr_actions_not_a_web_link">Bukan link web</string>
+    <string name="qr_actions_nothing_can_receive_this_text">Tidak ada aplikasi yang dapat menerima teks ini</string>
+    <string name="qr_actions_share_qr_code">Bagikan kode QR</string>
+    <string name="qr_actions_copied_to_clipboard">Disalin ke papan klip</string>
+    <!-- QrCreateScreen -->
+    <string name="qr_create_full_name">Nama lengkap</string>
+    <string name="qr_create_name">Nama</string>
+    <string name="qr_create_leave_the_amount_empty_so">Kosongkan jumlah agar pelanggan dapat memasukkan nominal yang harus dibayar.</string>
+    <string name="qr_create_enter_an_amount_above_zero">Masukkan jumlah di atas nol</string>
+    <string name="qr_create_any">₹ Bebas</string>
+    <string name="qr_create_amount_optional">Jumlah · opsional</string>
+    <string name="qr_create_shop_name">Nama toko</string>
+    <string name="qr_create_payee_name">Nama penerima</string>
+    <string name="qr_create_name_bank">nama@bank</string>
+    <string name="qr_create_upi_id">ID UPI</string>
+    <string name="qr_create_security">Keamanan</string>
+    <string name="qr_create_network_password">Sandi jaringan</string>
+    <string name="qr_create_network_name">Nama jaringan</string>
+    <string name="qr_create_characters">"%1$s / %2$s karakter"</string>
+    <string name="qr_create_anything_up_to_characters">"Apa saja, hingga %1$s karakter"</string>
+    <string name="qr_create_web_address">Alamat web</string>
+    <string name="qr_create_qr_code_preview">Pratinjau kode QR</string>
+    <string name="qr_create_saved_to_qr_history_png">Disimpan ke histori QR · PNG, 1024 px</string>
+    <string name="qr_create_save_image">Simpan gambar</string>
+    <string name="qr_create_only_dark_colours_so_every">Hanya warna gelap, agar semua kamera bisa membaca kodenya.</string>
+    <string name="qr_create_shown_under_the_code">Ditampilkan di bawah kode</string>
+    <string name="qr_create_caption_under_the_code_optional">Keterangan di bawah kode · opsional</string>
+    <string name="qr_create_create_qr">Buat QR</string>
+    <!-- QrHistoryScreen -->
+    <string name="qr_history_created">Dibuat</string>
+    <string name="qr_history_scanned">Dipindai</string>
+    <string name="qr_history_clear_history">Hapus histori</string>
+    <string name="qr_history_every_scanned_and_created_code">Semua kode yang dipindai dan dibuat akan dihapus dari ponsel ini. Tindakan ini tidak dapat diurungkan.</string>
+    <string name="qr_history_clear_qr_history">Hapus histori QR?</string>
+    <string name="qr_history_clear_history_2">Hapus histori…</string>
+    <string name="qr_history_history_stays_on_this_phone">Histori tetap di ponsel ini.</string>
+    <string name="qr_history_try_another_search_or_filter">Coba penelusuran atau filter lain.</string>
+    <string name="qr_history_no_matches">Tidak ada yang cocok</string>
+    <string name="qr_history_scanned_and_created_codes_are">Kode yang dipindai dan dibuat disimpan di sini.</string>
+    <string name="qr_history_no_codes_yet">Belum ada kode</string>
+    <string name="qr_history_search_links_networks_names">Telusuri link, jaringan, nama</string>
+    <string name="qr_history_qr_history">Histori QR</string>
+    <!-- QrResultScreen -->
+    <string name="qr_result_show_raw_content">Tampilkan konten mentah</string>
+    <string name="qr_result_hide_raw_content">Sembunyikan konten mentah</string>
+    <string name="qr_result_raw_content">Konten mentah</string>
+    <string name="qr_result_organisation">Organisasi</string>
+    <string name="qr_result_wi_fi_settings_can_t">Setelan Wi-Fi tidak dapat menambahkan jaringan WEP, jadi sandi disalin dan setelan dibuka.</string>
+    <string name="qr_result_not_in_the_code">Tidak ada di kode</string>
+    <string name="qr_result_network">Jaringan</string>
+    <string name="qr_result_scanly_doesn_t_make_payments">Scanly tidak melakukan pembayaran. Pastikan nama penerima di aplikasi UPI Anda sebelum membayar.</string>
+    <string name="qr_result_not_set_you_ll_enter">Belum diisi. Anda akan memasukkannya di aplikasi UPI.</string>
+    <string name="qr_result_amount">Jumlah</string>
+    <string name="qr_result_payee">Penerima</string>
+    <string name="qr_result_this_link_isn_t_encrypted">Link ini tidak dienkripsi (http). Pastikan domainnya sesuai dugaan Anda sebelum membuka.</string>
+    <string name="qr_result_check_the_domain_is_the">Pastikan domainnya sesuai dugaan Anda sebelum membuka.</string>
+    <string name="qr_result_full_address">Alamat lengkap</string>
+    <string name="qr_result_number">Nomor</string>
+    <string name="qr_result_subject">Subjek</string>
+    <string name="qr_result_address">Alamat</string>
+    <string name="qr_result_search_the_web">Telusuri web</string>
+    <string name="qr_result_copy_number">Salin nomor</string>
+    <string name="qr_result_email_address">Alamat email</string>
+    <string name="qr_result_copy_address">Salin alamat</string>
+    <string name="qr_result_call">Telepon</string>
+    <string name="qr_result_copy_network_name">Salin nama jaringan</string>
+    <string name="qr_result_copy_password">Salin sandi</string>
+    <string name="qr_result_copy_upi_id">Salin ID UPI</string>
+    <string name="qr_result_copy_link">Salin link</string>
+    <string name="qr_result_delete_from_history">Hapus dari histori</string>
+    <string name="qr_result_saved_to_history">" · disimpan ke Histori"</string>
+    <!-- QrScanScreen -->
+    <string name="qr_scan_captured_qr_code">Kode QR yang diambil</string>
+    <string name="qr_scan_history">Histori</string>
+    <string name="qr_scan_from_photo">Dari foto</string>
+    <string name="qr_scan_scan_again">Pindai lagi</string>
+    <string name="qr_scan_qr_code">Kode QR</string>
+    <string name="qr_scan_details">Detail</string>
+    <string name="qr_scan_allow_camera">Izinkan kamera</string>
+    <string name="qr_scan_open_settings">Buka setelan</string>
+    <string name="qr_scan_the_camera_is_used_only">Kamera hanya dipakai saat layar ini terbuka. \"Dari foto\" bisa dipakai tanpa kamera.</string>
+    <string name="qr_scan_open_settings_tap_permissions_and">Buka Setelan, ketuk Izin, lalu aktifkan Kamera untuk Scanly.</string>
+    <string name="qr_scan_allow_camera_to_scan">Izinkan kamera untuk memindai</string>
+    <string name="qr_scan_camera_permission_is_blocked">Izin kamera diblokir</string>
+    <string name="qr_scan_torch_on_off">Senter aktif/nonaktif</string>
+    <string name="qr_scan_scan_qr_barcode">Pindai QR &amp; barcode</string>
+    <string name="qr_scan_point_at_a_qr_code">Arahkan ke kode QR atau barcode</string>
+    <string name="qr_scan_code_found_hold_steady">Kode ditemukan · tahan agar stabil</string>
+    <string name="qr_scan_reading_photo">Membaca foto…</string>
+    <string name="qr_scan_the_camera_isn_t_available">Kamera tidak tersedia saat ini. Coba \"Dari foto\".</string>
+    <!-- QrToolPresentation -->
+    <string name="qr_tool_presentation_h_ago">"%1$s jam lalu"</string>
+    <string name="qr_tool_presentation_min_ago">"%1$s menit lalu"</string>
+    <string name="qr_tool_presentation_just_now">baru saja</string>
+    <string name="qr_tool_presentation_some_text">teks</string>
+    <string name="qr_tool_presentation_a_phone_number">nomor telepon</string>
+    <string name="qr_tool_presentation_an_email_address">alamat email</string>
+    <string name="qr_tool_presentation_a_contact">kontak</string>
+    <string name="qr_tool_presentation_a_wi_fi_network">jaringan Wi-Fi</string>
+    <string name="qr_tool_presentation_a_upi_payment">pembayaran UPI</string>
+    <string name="qr_tool_presentation_a_link">link</string>
+    <string name="qr_tool_presentation_found">"Ditemukan "</string>
+    <string name="qr_tool_presentation_generating_preview">Membuat pratinjau…</string>
+    <string name="qr_tool_presentation_preview_appears_as_you_type">Pratinjau muncul saat Anda mengetik</string>
+    <string name="qr_tool_presentation_copy_to_the_clipboard">Salin ke papan klip</string>
+    <string name="qr_tool_presentation_open_in_a_browser_or">Buka di browser atau salin</string>
+    <!-- QrToolViewModel -->
+    <string name="qr_tool_qr_history_cleared">Histori QR dihapus</string>
+    <string name="qr_tool_add_the_details_first">Isi detailnya terlebih dahulu</string>
+    <string name="qr_tool_no_qr_code_found_in">Tidak ada kode QR di foto itu</string>
+    <!-- ImageTextScreen -->
+    <string name="image_text_photos_are_saved_as_a">Foto disimpan sebagai dokumen baru, jadi teksnya bisa ditelusuri nanti.</string>
+    <string name="image_text_your_scans_have_no_pages">Pindaian Anda belum memiliki halaman. Pilih foto untuk membaca teksnya.</string>
+    <string name="image_text_no_scans_yet_pick_photos">Belum ada pindaian. Pilih foto untuk membaca teksnya.</string>
+    <string name="image_text_1_scan">1 pindaian</string>
+    <string name="image_text_up_to_from_your_gallery">"Hingga %1$s dari galeri atau file Anda"</string>
+    <string name="image_text_copy_text_from_photos_or">Salin teks dari foto atau pindaian. Teks dibaca di ponsel ini.</string>
+    <string name="image_text_image_to_text">Gambar ke teks</string>
+    <!-- AppUpdateDialog -->
+    <string name="app_update_published">"Dirilis %1$s"</string>
+    <string name="app_update_current">Saat ini</string>
+    <string name="app_update_update">Update</string>
+    <string name="app_update_what_s_new">Yang baru</string>
+    <!-- AppUpdateViewModel -->
+    <string name="app_update_scanly_is_up_to_date">Scanly sudah versi terbaru. Versi Anda %1$s.</string>
+    <string name="app_update_could_not_check_for_updates">"Tidak dapat memeriksa update di %1$s."</string>
+    <!-- FlexibleUpdateSnackbar -->
+    <string name="flexible_update_snackbar_restart">Mulai ulang</string>
+    <string name="flexible_update_snackbar_update_downloaded_restart_scanly_to">Update sudah didownload. Mulai ulang Scanly untuk menyelesaikan penginstalan.</string>
+    <!-- ReleaseMarkdown -->
+    <string name="release_markdown_no_release_notes_were_provided">Tidak ada catatan rilis untuk versi ini.</string>
+    <!-- ScanlyNavHost -->
+    <string name="scanly_nav_host_up_to_images">"Hingga %1$s gambar"</string>
+    <string name="scanly_nav_host_import_from_gallery">Impor dari galeri</string>
+    <string name="scanly_nav_host_capture_pages_now">Ambil halaman sekarang</string>
+    <string name="scanly_nav_host_scan_with_camera">Pindai dengan kamera</string>
+    <string name="scanly_nav_host_add_a_document">Tambahkan dokumen</string>
+    <!-- pdf_page_orientation -->
+    <string name="pdf_page_orientation_portrait">Potret</string>
+    <string name="pdf_page_orientation_landscape">Lanskap</string>
+    <!-- pdf_page_size -->
+    <string name="pdf_page_size_auto_fit">Sesuaikan otomatis</string>
+    <string name="pdf_page_size_a3">A3</string>
+    <string name="pdf_page_size_a4">A4</string>
+    <string name="pdf_page_size_a5">A5</string>
+    <string name="pdf_page_size_b4">B4</string>
+    <string name="pdf_page_size_b5">B5</string>
+    <string name="pdf_page_size_letter">Letter</string>
+    <string name="pdf_page_size_tabloid">Tabloid</string>
+    <string name="pdf_page_size_executive">Executive</string>
+    <string name="pdf_page_size_postcard">Kartu pos</string>
+    <string name="pdf_page_size_american_foolscap">Folio Amerika</string>
+    <string name="pdf_page_size_european_foolscap">Folio Eropa</string>
+    <!-- pdf_page_margin -->
+    <string name="pdf_page_margin_no_margin">Tanpa margin</string>
+    <string name="pdf_page_margin_big">Lebar</string>
+    <!-- pdf_page_number -->
+    <string name="pdf_page_number_center">Tengah</string>
+    <!-- pdf_image_format -->
+    <string name="pdf_image_format_smaller_files_best_for_photos">File lebih kecil, terbaik untuk foto dan berbagi</string>
+    <string name="pdf_image_format_crisper_text_files_about_3">Teks lebih tajam, file sekitar 3× lebih besar</string>
+    <!-- pdf_image_resolution -->
+    <string name="pdf_image_resolution_for_sharing">Untuk berbagi</string>
+    <string name="pdf_image_resolution_1240_px_wide_sharp_on">Lebar 1240 px · tajam di ponsel dan WhatsApp</string>
+    <string name="pdf_image_resolution_for_printing">Untuk dicetak</string>
+    <string name="pdf_image_resolution_2480_px_wide_300_dpi">Lebar 2480 px · 300 dpi di A4</string>
+    <!-- pdf_compress_quality -->
+    <string name="pdf_compress_quality_high_quality">Kualitas tinggi</string>
+    <string name="pdf_compress_quality_best_clarity_less_compression">Paling jernih · kompresi lebih sedikit</string>
+    <string name="pdf_compress_quality_balanced">Seimbang</string>
+    <string name="pdf_compress_quality_good_balance_of_size_and">Keseimbangan yang baik antara ukuran dan kejernihan</string>
+    <string name="pdf_compress_quality_smallest">Terkecil</string>
+    <string name="pdf_compress_quality_maximum_compression_softer_detail">Kompresi maksimal · detail lebih halus</string>
+    <!-- watermark_color -->
+    <string name="watermark_color_grey">Abu-abu</string>
+    <string name="watermark_color_red">Merah</string>
+    <string name="watermark_color_blue">Biru</string>
+    <string name="watermark_color_teal">Hijau toska</string>
+    <!-- signature_kind -->
+    <string name="signature_kind_signature">Tanda tangan</string>
+    <!-- sign_ink -->
+    <string name="sign_ink_navy">Biru dongker</string>
+    <string name="sign_ink_black">Hitam</string>
+    <!-- date_filter -->
+    <string name="date_filter_any_time">Kapan saja</string>
+    <string name="date_filter_last_7_days">7 hari terakhir</string>
+    <string name="date_filter_last_30_days">30 hari terakhir</string>
+    <string name="date_filter_this_year">Tahun ini</string>
+    <string name="date_filter_custom_range">Rentang kustom</string>
+    <!-- search_sort -->
+    <string name="search_sort_best_match">Paling cocok</string>
+    <string name="search_sort_newest">Terbaru</string>
+    <string name="search_sort_oldest">Terlama</string>
+    <string name="search_sort_name_a_z">Nama A–Z</string>
+    <!-- search_scope -->
+    <string name="search_scope_everywhere">Di mana saja</string>
+    <string name="search_scope_names">Nama</string>
+    <string name="search_scope_text_in_pages">Teks di halaman</string>
+    <!-- app_update_channel -->
+    <string name="app_update_channel_github">GitHub</string>
+    <string name="app_update_channel_google_play">Google Play</string>
+    <!-- document_kind -->
+    <string name="document_kind_invoice">Faktur</string>
+    <string name="document_kind_receipt">Struk</string>
+    <string name="document_kind_contract">Kontrak</string>
+    <string name="document_kind_statement">Laporan rekening</string>
+    <string name="document_kind_certificate">Sertifikat</string>
+    <string name="document_kind_id_document">Kartu identitas</string>
+    <string name="document_kind_form">Formulir</string>
+    <string name="document_kind_r_sum">CV</string>
+    <!-- document_corner_model -->
+    <string name="document_corner_model_lite">Ringan</string>
+    <string name="document_corner_model_standard">Standar</string>
+    <string name="document_corner_model_high">Tinggi</string>
+    <string name="document_corner_model_accurate">Akurat</string>
+    <!-- document_title_format -->
+    <string name="document_title_format_scan_with_date_and_time">Pindaian dengan tanggal dan waktu</string>
+    <string name="document_title_format_scan_date_time">Pindaian · tanggal &amp; waktu</string>
+    <string name="document_title_format_document_with_date_and_time">Dokumen dengan tanggal dan waktu</string>
+    <string name="document_title_format_document_date_time">Dokumen · tanggal &amp; waktu</string>
+    <string name="document_title_format_scan_with_date">Pindaian dengan tanggal</string>
+    <string name="document_title_format_scan_date">Pindaian · tanggal</string>
+    <string name="document_title_format_scan_with_iso_date">Pindaian dengan tanggal ISO</string>
+    <string name="document_title_format_scan_yyyy_mm_dd">Pindaian · YYYY-MM-DD</string>
+    <!-- group_title_format -->
+    <string name="group_title_format_folder_with_date_and_time">Folder dengan tanggal dan waktu</string>
+    <string name="group_title_format_folder_date_time">Folder · tanggal &amp; waktu</string>
+    <string name="group_title_format_new_folder_with_date_and">Folder baru dengan tanggal dan waktu</string>
+    <string name="group_title_format_new_folder_date_time">Folder baru · tanggal &amp; waktu</string>
+    <string name="group_title_format_folder_with_date">Folder dengan tanggal</string>
+    <string name="group_title_format_folder_date">Folder · tanggal</string>
+    <string name="group_title_format_folder_with_iso_date">Folder dengan tanggal ISO</string>
+    <string name="group_title_format_folder_yyyy_mm_dd">Folder · YYYY-MM-DD</string>
+    <!-- wifi_security -->
+    <string name="wifi_security_wpa_wpa2">WPA/WPA2</string>
+    <string name="wifi_security_wep">WEP</string>
+    <string name="wifi_security_open">Terbuka</string>
+    <!-- qr_create_type -->
+    <string name="qr_create_type_upi">UPI</string>
+    <!-- pdf_import_look -->
+    <string name="pdf_import_look_keep_as_is">Biarkan apa adanya</string>
+    <string name="pdf_import_look_pages_look_exactly_like_the">Halaman terlihat persis seperti PDF-nya</string>
+    <string name="pdf_import_look_enhance">Perbaiki</string>
+    <string name="pdf_import_look_even_out_scanned_pages_and">Ratakan halaman pindaian dan pertajam teks</string>
+    <!-- capture_scene_issue -->
+    <string name="capture_scene_issue_lens_may_be_covered_clear">Lensa mungkin tertutup. Bersihkan, lalu coba lagi.</string>
+    <string name="capture_scene_issue_too_dark_add_light_or">Terlalu gelap. Tambah cahaya atau aktifkan flash.</string>
+    <string name="capture_scene_issue_image_looks_blurry_clean_the">Gambar tampak buram. Bersihkan lensa atau ketuk untuk fokus.</string>
+    <!-- group_export_action -->
+    <string name="group_export_action_merged_pdf_options">Opsi PDF gabungan</string>
+    <string name="group_export_action_separate_pdfs_options">Opsi PDF terpisah</string>
+    <!-- library_sort_option -->
+    <string name="library_sort_option_last_modified">Terakhir diubah</string>
+    <string name="library_sort_option_latest_changes_first">Perubahan terbaru dulu</string>
+    <string name="library_sort_option_oldest_updated">Paling lama diperbarui</string>
+    <string name="library_sort_option_earliest_changes_first">Perubahan terlama dulu</string>
+    <string name="library_sort_option_alphabetical_order">Urutan abjad</string>
+    <string name="library_sort_option_name_z_a">Nama Z–A</string>
+    <string name="library_sort_option_reverse_alphabetical_order">Urutan abjad terbalik</string>
+    <string name="library_sort_option_newest_created">Terbaru dibuat</string>
+    <string name="library_sort_option_recently_added_first">Baru ditambahkan dulu</string>
+    <string name="library_sort_option_oldest_created">Terlama dibuat</string>
+    <string name="library_sort_option_earliest_added_first">Paling awal ditambahkan dulu</string>
+    <!-- signature_pen_width -->
+    <string name="signature_pen_width_fine">Tipis</string>
+    <string name="signature_pen_width_bold">Tebal</string>
+    <!-- onboarding_page -->
+    <string name="onboarding_page_capture">PINDAI</string>
+    <string name="onboarding_page_paper_to_polished">Dari kertas jadi rapi.</string>
+    <string name="onboarding_page_capture_straighten_and_clean_up">Ambil, luruskan, dan rapikan halaman Anda.</string>
+    <string name="onboarding_page_find">TEMUKAN</string>
+    <string name="onboarding_page_find_more_than_files">Temukan lebih dari sekadar file.</string>
+    <string name="onboarding_page_recognize_text_on_your_device">Kenali teks di perangkat Anda. Telusuri isi pindaian.</string>
+    <string name="onboarding_page_share">BAGIKAN</string>
+    <string name="onboarding_page_ready_when_you_are">Siap kapan pun Anda siap.</string>
+    <string name="onboarding_page_keep_pages_together_share_a">Satukan halaman. Bagikan PDF yang rapi dengan beberapa ketukan.</string>
+    <!-- pdf_reader_tool -->
+    <string name="pdf_reader_tool_merge_with_other_pdfs">Gabungkan dengan PDF lain</string>
+    <string name="pdf_reader_tool_password_protect">Lindungi dengan sandi</string>
+    <string name="pdf_reader_tool_add_watermark">Tambahkan tanda air</string>
+    <string name="pdf_reader_tool_save_pages_as_images">Simpan halaman sebagai gambar</string>
+    <string name="pdf_reader_tool_add_to_scanly_library">Tambahkan ke koleksi Scanly</string>
+    <!-- pdf_picker_sort -->
+    <string name="pdf_picker_sort_most_pages">Halaman terbanyak</string>
+    <!-- qr_ink_color -->
+    <string name="qr_ink_color_ink">Tinta</string>
+    <string name="qr_ink_color_maroon">Merah marun</string>
+    <!-- qr_primary_action -->
+    <string name="qr_primary_action_pay_with_a_upi_app">Bayar dengan aplikasi UPI</string>
+    <string name="qr_primary_action_pay">Bayar</string>
+    <string name="qr_primary_action_join_this_network">Hubungkan ke jaringan ini</string>
+    <string name="qr_primary_action_join">Hubungkan</string>
+    <string name="qr_primary_action_save_to_contacts">Simpan ke kontak</string>
+    <string name="qr_primary_action_send_email">Kirim email</string>
+    <string name="qr_primary_action_call_this_number">Telepon nomor ini</string>
+    <string name="qr_primary_action_copy_text">Salin teks</string>
+    <!-- qr_history_section -->
+    <string name="qr_history_section_earlier">Sebelumnya</string>
+    <!-- sign_tool -->
+    <string name="sign_tool_date">Tanggal</string>
+    <string name="sign_tool_checkbox">Kotak centang</string>
+    <!-- scanly_destination -->
+    <string name="scanly_destination_home">Beranda</string>
+    <string name="scanly_destination_camera">Kamera</string>
+    <!-- settings_text_recognition -->
+    <string name="settings_text_recognition_and_more">dan lainnya</string>
+    <string name="settings_text_recognition_romanian">Rumania</string>
+    <string name="settings_text_recognition_czech">Ceko</string>
+    <string name="settings_text_recognition_swedish">Swedia</string>
+    <string name="settings_text_recognition_swahili">Swahili</string>
+    <string name="settings_text_recognition_filipino">Filipino</string>
+    <string name="settings_text_recognition_vietnamese">Vietnam</string>
+    <string name="settings_text_recognition_malay">Melayu</string>
+    <string name="settings_text_recognition_indonesian">Indonesia</string>
+    <string name="settings_text_recognition_turkish">Turki</string>
+    <string name="settings_text_recognition_polish">Polandia</string>
+    <string name="settings_text_recognition_dutch">Belanda</string>
+    <string name="settings_text_recognition_portuguese">Portugis</string>
+    <string name="settings_text_recognition_italian">Italia</string>
+    <string name="settings_text_recognition_german">Jerman</string>
+    <string name="settings_text_recognition_french">Prancis</string>
+    <string name="settings_text_recognition_spanish">Spanyol</string>
+    <string name="settings_text_recognition_english">Inggris</string>
+    <string name="settings_text_recognition_latin">Latin</string>
+    <string name="settings_text_recognition_amharic">Amhara</string>
+    <string name="settings_text_recognition_georgian">Georgia</string>
+    <string name="settings_text_recognition_armenian">Armenia</string>
+    <string name="settings_text_recognition_burmese">Burma</string>
+    <string name="settings_text_recognition_khmer">Khmer</string>
+    <string name="settings_text_recognition_lao">Laos</string>
+    <string name="settings_text_recognition_thai">Thai</string>
+    <string name="settings_text_recognition_southeast_asia_more">Asia Tenggara &amp; lainnya</string>
+    <string name="settings_text_recognition_hebrew">Ibrani</string>
+    <string name="settings_text_recognition_urdu">Urdu</string>
+    <string name="settings_text_recognition_persian">Persia</string>
+    <string name="settings_text_recognition_arabic">Arab</string>
+    <string name="settings_text_recognition_right_to_left">Kanan ke kiri</string>
+    <string name="settings_text_recognition_korean">Korea</string>
+    <string name="settings_text_recognition_japanese">Jepang</string>
+    <string name="settings_text_recognition_chinese">Mandarin</string>
+    <string name="settings_text_recognition_east_asian">Asia Timur</string>
+    <string name="settings_text_recognition_sinhala">Sinhala</string>
+    <string name="settings_text_recognition_odia">Odia</string>
+    <string name="settings_text_recognition_punjabi">Punjabi</string>
+    <string name="settings_text_recognition_gujarati">Gujarat</string>
+    <string name="settings_text_recognition_malayalam">Malayalam</string>
+    <string name="settings_text_recognition_kannada">Kannada</string>
+    <string name="settings_text_recognition_telugu">Telugu</string>
+    <string name="settings_text_recognition_tamil">Tamil</string>
+    <string name="settings_text_recognition_bengali">Bengali</string>
+    <string name="settings_text_recognition_nepali">Nepal</string>
+    <string name="settings_text_recognition_marathi">Marathi</string>
+    <string name="settings_text_recognition_hindi">Hindi</string>
+    <string name="settings_text_recognition_indian_scripts">Aksara India</string>
+    <string name="settings_text_recognition_greek">Yunani</string>
+    <string name="settings_text_recognition_serbian">Serbia</string>
+    <string name="settings_text_recognition_bulgarian">Bulgaria</string>
+    <string name="settings_text_recognition_ukrainian">Ukraina</string>
+    <string name="settings_text_recognition_russian">Rusia</string>
+    <string name="settings_text_recognition_latin_cyrillic_greek">Latin, Sirilik &amp; Yunani</string>
+    <!-- tools_catalog -->
+    <string name="tools_catalog_camera_with_edge_detection">Kamera dengan deteksi tepi</string>
+    <string name="tools_catalog_scan_a_document">Pindai dokumen</string>
+    <string name="tools_catalog_pdf_to_editable_scan">PDF ke pindaian yang dapat diedit</string>
+    <string name="tools_catalog_open_any_pdf">Buka PDF apa pun</string>
+    <string name="tools_catalog_read_pdf">Baca PDF</string>
+    <string name="tools_catalog_stamp_text">Cap teks</string>
+    <string name="tools_catalog_lock_or_unlock">Kunci atau buka kunci</string>
+    <string name="tools_catalog_pages_as_images">Halaman sebagai gambar</string>
+    <string name="tools_catalog_make_it_smaller">Perkecil ukuran</string>
+    <string name="tools_catalog_combine_files">Gabungkan file</string>
+    <string name="tools_catalog_merge">Gabungkan</string>
+    <string name="tools_catalog_sign_any_pdf">Tanda tangani PDF apa pun</string>
+    <string name="tools_catalog_from_gallery">Dari galeri</string>
+    <string name="tools_catalog_images_to_pdf">Gambar ke PDF</string>
+    <string name="tools_catalog_create_manage">Buat &amp; kelola</string>
+    <string name="tools_catalog_my_signatures">Tanda tangan saya</string>
+    <string name="tools_catalog_photos_scans">Foto &amp; pindaian</string>
+    <string name="tools_catalog_scan_or_create">Pindai atau buat</string>
+    <string name="tools_catalog_qr_barcode">QR &amp; barcode</string>
+    <!-- pip_lines -->
+    <string name="pip_lines_tip_folders_keep_related_scans">tips: folder bikin pindaian terkait tetap bersama. coba buat satu untuk struk.</string>
+    <string name="pip_lines_tip_turn_on_the_grid">tips: nyalakan petak di kamera supaya halaman lurus.</string>
+    <string name="pip_lines_tip_add_a_scanly_widget">tips: tambahkan widget scanly ke layar utama untuk memindai sekali ketuk.</string>
+    <string name="pip_lines_tip_the_tools_tab_can">tips: tab alat bisa menggabungkan, mengompres, dan menandatangani pdf.</string>
+    <string name="pip_lines_tip_open_a_document_s">tips: buka teks dokumen untuk menyalin atau membagikan isinya.</string>
+    <string name="pip_lines_tip_long_press_a_page">tips: tekan lama halaman lalu tarik untuk mengatur urutan.</string>
+    <string name="pip_lines_tip_search_finds_words_inside">tips: penelusuran menemukan kata di dalam pindaian, bukan cuma namanya.</string>
+    <string name="pip_lines_okay_okay_i_felt_that">iya, iya, yang itu kerasa.</string>
+    <string name="pip_lines_still_free_still_no_account">tetap gratis. tetap tanpa akun. tetap tanpa iklan.</string>
+    <string name="pip_lines_i_m_open_source_you">aku open source. kamu bisa baca setiap baris kodeku.</string>
+    <string name="pip_lines_your_original_photos_are_kept">foto aslimu tetap disimpan, jadi hasil edit selalu bisa dibatalkan.</string>
+    <string name="pip_lines_i_live_on_your_phone">aku tinggal di ponselmu. tidak ada server yang perlu dihubungi.</string>
+    <string name="pip_lines_hey_that_tickles">hei! geli tahu.</string>
+    <!-- pdf_watermark -->
+    <string name="pdf_watermark_for_kyc_use_only">Khusus untuk KYC</string>
+    <!-- document_presentation_formatter -->
+    <string name="document_presentation_formatter_untitled_document">Dokumen tanpa judul</string>
+    <string name="document_presentation_formatter_untitled_folder">Folder tanpa judul</string>
+    <!-- default_pdf_toolkit_repository -->
+    <string name="default_pdf_toolkit_repository_this_pdf_is_password_protected">PDF ini dilindungi sandi.</string>
+    <string name="default_pdf_toolkit_repository_this_pdf_is_too_large">PDF ini terlalu besar untuk diproses di perangkat ini.</string>
+    <!-- document_cover_art_factory -->
+    <string name="document_cover_art_factory_scanned_document">Dokumen pindaian</string>
+    <!-- document_sign -->
+    <string name="document_sign_some_pages_are_still_processing">Beberapa halaman masih diproses dan belum bisa ditandatangani.</string>
+    <!-- pip_lines -->
+    <string name="pip_lines_hi_i_m_pip_point">hai, aku pip! arahkan aku ke halaman mana pun, nanti aku luruskan untukmu.</string>
+    <string name="pip_lines_one_last_thing_can_i">satu lagi! boleh pinjam kameranya? cuma aktif saat kamu memindai kok.</string>
+    <string name="pip_lines_nothing_here_yet_let_s">belum ada apa-apa. yuk, pindai halaman pertamamu bareng.</string>
+    <string name="pip_lines_a_clean_shelf_start_a">rak yang bersih! buat folder, atau pindai sesuatu.</string>
+    <string name="pip_lines_no_folders_yet_they_re">belum ada folder. cocok banget untuk struk, tagihan, dan urusan sekolah.</string>
+    <string name="pip_lines_no_documents_yet_i_m">belum ada dokumen. aku siap kapan pun kamu siap.</string>
+    <string name="pip_lines_this_folder_is_waiting_for">folder ini menunggu dokumen pertamanya.</string>
+    <string name="pip_lines_no_pages_yet_point_me">belum ada halaman. arahkan aku ke kertas!</string>
+    <string name="pip_lines_no_pages_means_no_words">belum ada halaman, jadi belum ada kata.</string>
+    <string name="pip_lines_pick_a_few_photos_and">pilih beberapa foto, nanti aku adu para detektornya.</string>
+    <string name="pip_lines_hmm_i_don_t_have">hmm, aku belum punya jawaban untuk yang itu.</string>
+    <string name="pip_lines_no_codes_yet_scan_or">belum ada kode. pindai atau buat satu, nanti aku simpan di sini.</string>
+    <string name="pip_lines_nothing_matches_that_try_another">tidak ada yang cocok. coba kata lain?</string>
+    <string name="pip_lines_i_m_still_reading_some">aku masih membaca beberapa halaman. hasilnya mungkin muncul sebentar lagi.</string>
+    <string name="pip_lines_i_can_t_see_a">aku belum bisa lihat apa-apa. boleh pinjam kameranya?</string>
+    <string name="pip_lines_the_camera_is_switched_off">kamera dinonaktifkan untuk scanly. mampir sebentar ke setelan untuk memperbaikinya.</string>
+    <string name="pip_lines_lend_me_the_camera_and">pinjami aku kamera, nanti aku bacakan kodenya.</string>
+    <string name="pip_lines_huh_that_document_wandered_off">lho, dokumennya kabur entah ke mana.</string>
+    <!-- pdf_page_size -->
+    <string name="pdf_page_size_match_each_scan">Sesuai setiap pindaian</string>
+    <string name="pdf_page_size_29_7_42_0_cm">29,7 × 42,0 cm</string>
+    <string name="pdf_page_size_21_0_29_7_cm">21,0 × 29,7 cm</string>
+    <string name="pdf_page_size_14_8_21_0_cm">14,8 × 21,0 cm</string>
+    <string name="pdf_page_size_25_0_35_3_cm">25,0 × 35,3 cm</string>
+    <string name="pdf_page_size_17_6_25_0_cm">17,6 × 25,0 cm</string>
+    <string name="pdf_page_size_21_6_27_9_cm">21,6 × 27,9 cm</string>
+    <string name="pdf_page_size_27_9_43_2_cm">27,9 × 43,2 cm</string>
+    <string name="pdf_page_size_21_6_35_6_cm">21,6 × 35,6 cm</string>
+    <string name="pdf_page_size_18_4_26_7_cm">18,4 × 26,7 cm</string>
+    <string name="pdf_page_size_10_0_14_8_cm">10,0 × 14,8 cm</string>
+    <string name="pdf_page_size_21_6_33_0_cm">21,6 × 33,0 cm</string>
+    <string name="pdf_page_size_22_9_33_0_cm">22,9 × 33,0 cm</string>
+    <!-- PageTextScreen view modes -->
+    <string name="page_text_text">Teks</string>
+    <string name="page_text_on_page">Di halaman</string>
+    <!-- Shared counts -->
+    <plurals name="common_documents">
+        <item quantity="other">%d dokumen</item>
+    </plurals>
+    <plurals name="common_pages">
+        <item quantity="other">%d halaman</item>
+    </plurals>
+    <plurals name="common_folders">
+        <item quantity="other">%d folder</item>
+    </plurals>
+    <plurals name="common_matches">
+        <item quantity="other">%d hasil yang cocok</item>
+    </plurals>
+    <plurals name="common_words">
+        <item quantity="other">%d kata</item>
+    </plurals>
+    <string name="common_two_parts">%1$s · %2$s</string>
+    <!-- Library search -->
+    <plurals name="library_search_in_documents">
+        <item quantity="other">", di %d dokumen"</item>
+    </plurals>
+    <plurals name="library_search_no_exact_matches">
+        <item quantity="other">Tidak ada yang sama persis · %d dokumen dengan kata serupa</item>
+    </plurals>
+    <plurals name="library_search_show_more_pages">
+        <item quantity="other">Tampilkan hasil di %d halaman lainnya</item>
+    </plurals>
+    <plurals name="library_search_still_reading">
+        <item quantity="other">Masih membaca teks di %d halaman. Hasil baru akan muncul di sini.</item>
+    </plurals>
+    <string name="library_search_matches_in_documents">%1$s di %2$s</string>
+    <plurals name="search_filters_show_results">
+        <item quantity="other">Tampilkan %d hasil</item>
+    </plurals>
+    <!-- Settings -->
+    <plurals name="settings_reading_text_pages_left">
+        <item quantity="other">Membaca teks… %d halaman lagi</item>
+    </plurals>
+    <plurals name="settings_text_recognition_reread_pages">
+        <item quantity="other">Baca ulang %d halaman?</item>
+    </plurals>
+    <string name="settings_could_not_calibrate_models">Tidak dapat mengkalibrasi model dokumen di perangkat ini.</string>
+    <!-- Recently deleted -->
+    <string name="recently_deleted_long_press_for_options">Tekan lama item untuk opsi lainnya.</string>
+    <string name="recently_deleted_retention_note">Halaman disimpan selama %1$s, sedangkan dokumen dan folder selama %2$s. Setelah itu, semuanya dihapus permanen.</string>
+    <plurals name="recently_deleted_restored_items">
+        <item quantity="other">%d item dipulihkan</item>
+    </plurals>
+    <plurals name="recently_deleted_restored_some_items">
+        <item quantity="other">%2$d dari %3$d item dipulihkan. %4$s</item>
+    </plurals>
+    <plurals name="recently_deleted_deleted_items">
+        <item quantity="other">%d item dihapus permanen</item>
+    </plurals>
+    <plurals name="recently_deleted_deleted_some_items">
+        <item quantity="other">%2$d dari %3$d item dihapus permanen. %4$s</item>
+    </plurals>
+    <!-- %1$s = folder name, %2$d = number of documents in it. -->
+    <plurals name="folder_delete_what_should_happen">
+        <item quantity="other">\"%1$s\" berisi %2$d dokumen. Apa yang perlu dilakukan dengan dokumen tersebut?</item>
+    </plurals>
+    <!-- PDF tools -->
+    <string name="pdf_compress_first_page_of">Halaman pertama %1$s</string>
+    <string name="pdf_compress_the_pdf">PDF</string>
+    <string name="pdf_password_strength_too_short">Terlalu pendek</string>
+    <string name="pdf_password_strength_too_long">Terlalu panjang</string>
+    <string name="pdf_password_strength_weak">Lemah</string>
+    <string name="pdf_password_strength_fair">Cukup</string>
+    <string name="pdf_password_strength_strong">Kuat</string>
+    <string name="model_benchmark_gate_prefix">Gerbang: %1$s</string>
+    <string name="model_benchmark_unavailable">Tidak tersedia</string>
+    <!-- Error messages shown in snackbars and dialogs -->
+    <string name="error_document_not_found">Dokumen tidak ditemukan.</string>
+    <string name="error_group_not_found">Grup tidak ditemukan.</string>
+    <string name="error_no_documents_in_group">Tidak ada dokumen di grup.</string>
+    <string name="error_no_pages_available_to_export">Tidak ada halaman yang dapat diekspor.</string>
+    <string name="error_could_not_create_export_directory">Tidak dapat membuat direktori ekspor.</string>
+    <string name="error_could_not_replace_existing_pdf">Tidak dapat mengganti PDF yang ada.</string>
+    <string name="error_folder_not_found">Folder tidak ditemukan.</string>
+    <string name="error_this_page_is_already_in_recently_deleted">Halaman ini sudah ada di Baru dihapus.</string>
+    <string name="error_only_pages_in_recently_deleted_can_be">Hanya halaman di Baru dihapus yang dapat dihapus permanen.</string>
+    <string name="error_page_not_found">Halaman tidak ditemukan.</string>
+    <string name="error_page_not_found_in_document_order">Halaman tidak ditemukan dalam urutan dokumen.</string>
+    <string name="error_select_at_least_two_pdfs_to_merge">Pilih minimal dua PDF untuk digabungkan.</string>
+    <string name="error_pdf_has_no_pages">PDF tidak memiliki halaman.</string>
+    <string name="error_password_must_be_4_64_characters">Sandi harus 4–64 karakter.</string>
+    <string name="error_enter_the_current_pdf_password">Masukkan sandi PDF saat ini.</string>
+    <string name="error_enter_watermark_text">Masukkan teks tanda air.</string>
+    <string name="error_this_pdf_has_no_pages">PDF ini tidak memiliki halaman.</string>
+    <string name="error_preview_size_is_invalid">Ukuran pratinjau tidak valid.</string>
+    <string name="error_place_a_signature_or_another_mark_first">Bubuhkan tanda tangan atau tanda lain terlebih dahulu.</string>
+    <string name="error_a_mark_is_on_a_missing_page">Ada tanda di halaman yang tidak ada.</string>
+    <string name="error_could_not_prepare_this_pdf">Tidak dapat menyiapkan PDF ini.</string>
+    <string name="error_page_is_out_of_range">Halaman di luar rentang.</string>
+    <string name="error_choose_at_least_one_page">Pilih minimal satu halaman.</string>
+    <string name="error_failed_to_encode_page_image">Gagal mengenkode gambar halaman.</string>
+    <string name="error_export_file_is_missing">File ekspor tidak ada.</string>
+    <string name="error_the_preview_pdf_is_missing">PDF pratinjau tidak ada.</string>
+    <string name="error_could_not_read_selected_pdf">Tidak dapat membaca PDF yang dipilih.</string>
+    <string name="error_not_enough_memory_to_compress_this_pdf">Memori tidak cukup untuk mengompres PDF ini. Coba kualitas Terkecil atau file yang lebih pendek.</string>
+    <string name="error_a_text_box_is_empty_type_something">Ada kotak teks yang kosong. Ketik sesuatu atau hapus kotaknya.</string>
+    <string name="error_a_signature_image_is_missing_remove_it">Gambar tanda tangan tidak ada. Hapus, lalu bubuhkan lagi.</string>
+    <string name="error_some_characters_cant_be_drawn_remove_emoji">Beberapa karakter tidak dapat digambar. Hapus emoji atau simbol yang tidak umum.</string>
+    <string name="error_some_characters_in_the_watermark_cant_be">Beberapa karakter dalam tanda air tidak dapat digambar. Hapus emoji atau simbol yang tidak umum.</string>
+    <string name="error_enter_something_to_encode">Masukkan sesuatu untuk dienkode.</string>
+    <string name="error_could_not_write_qr_image">Tidak dapat menulis gambar QR.</string>
+    <string name="error_a_signature_image_is_missing_place_it">Gambar tanda tangan tidak ada. Bubuhkan lagi.</string>
+    <string name="error_the_signature_is_empty">Tanda tangan kosong.</string>
+    <string name="error_could_not_save_the_signature">Tidak dapat menyimpan tanda tangan.</string>
+    <string name="error_could_not_prepare_the_image">Tidak dapat menyiapkan gambar.</string>
+    <string name="error_could_not_create_signature_storage">Tidak dapat membuat penyimpanan tanda tangan.</string>
+    <string name="error_no_signature_found_in_this_image_try">Tidak ada tanda tangan di gambar ini. Coba tinta gelap di kertas terang.</string>
+    <string name="error_this_signature_no_longer_exists">Tanda tangan ini sudah tidak ada.</string>
+    <string name="error_the_signature_image_could_not_be_read">Gambar tanda tangan tidak dapat dibaca.</string>
+    <string name="error_a_signature_image_is_missing_open_sign">Gambar tanda tangan tidak ada. Buka Tanda tangani, lalu bubuhkan lagi.</string>
+    <string name="error_this_page_is_still_processing_try_again">Halaman ini masih diproses. Coba lagi sebentar lagi.</string>
+    <string name="error_could_not_read_the_page_image">Tidak dapat membaca gambar halaman.</string>
+    <string name="error_invalid_page_image_path">Jalur gambar halaman tidak valid.</string>
+    <string name="error_the_exported_file_is_unavailable">File yang diekspor tidak tersedia.</string>
+    <string name="error_the_exported_image_is_unavailable">Gambar yang diekspor tidak tersedia.</string>
+    <string name="error_the_selected_save_folder_is_no_longer">Folder simpan yang dipilih sudah tidak tersedia. Pilih lagi di Setelan.</string>
+    <string name="error_this_page_no_longer_exists">Halaman ini sudah tidak ada.</string>
+    <string name="error_read_this_pages_text_first">Baca teks halaman ini terlebih dahulu.</string>
+    <string name="error_page_image_could_not_be_read">Gambar halaman tidak dapat dibaca.</string>
+    <string name="error_opencv_could_not_be_initialized">OpenCV tidak dapat diinisialisasi.</string>
+    <string name="error_no_images_selected">Tidak ada gambar yang dipilih.</string>
+    <string name="error_could_not_write_imported_image">Tidak dapat menulis gambar yang diimpor.</string>
+    <string name="error_imported_image_file_is_empty">File gambar yang diimpor kosong.</string>
+    <string name="error_image_decode_failed">Gagal mendekode gambar</string>
+    <!-- Language settings -->
+    <string name="settings_language">Bahasa</string>
+    <string name="settings_language_system_default">Default sistem</string>
+    <string name="settings_language_follow_phone">Bahasa ponsel</string>
+    <string name="settings_language_uses_phone_language">"Mengikuti ponsel: %1$s"</string>
+    <string name="settings_language_app_language">Bahasa aplikasi</string>
+    <string name="settings_language_note">Nama dokumen, teks halaman yang dikenali, dan PDF yang Anda buka tetap dalam bahasa aslinya.</string>
+    <!-- Manifest -->
+    <string name="intent_open_in_scanly">Buka di Scanly</string>
+    <!-- Library date sections -->
+    <string name="library_section_previous_7_days">7 hari sebelumnya</string>
+    <!-- Month and year as a section title, e.g. "December 2025". %1$s = month name, %2$d = year. -->
+    <string name="library_section_month_year">"%1$s %2$d"</string>
+    <!-- Camera -->
+    <string name="scan_session_capture_failed">Gagal mengambil.</string>
+    <!-- Signature kinds as whole phrases (Signature vs Initials) -->
+    <string name="sign_kind_add_signature">Tambahkan tanda tangan</string>
+    <string name="sign_kind_add_initials">Tambahkan paraf</string>
+    <string name="sign_kind_delete_signature">Hapus tanda tangan</string>
+    <string name="sign_kind_delete_initials">Hapus paraf</string>
+    <string name="sign_kind_delete_signature_question">Hapus tanda tangan?</string>
+    <string name="sign_kind_delete_initials_question">Hapus paraf?</string>
+    <string name="sign_kind_open_signature_options">Buka opsi tanda tangan</string>
+    <string name="sign_kind_open_initials_options">Buka opsi paraf</string>
+    <string name="sign_kind_saved_signature">Tanda tangan tersimpan</string>
+    <string name="sign_kind_saved_initials">Paraf tersimpan</string>
+    <string name="sign_kind_show_signature_first">Tampilkan tanda tangan ini sebelum yang lain</string>
+    <string name="sign_kind_show_initials_first">Tampilkan paraf ini sebelum yang lain</string>
+    <!-- Watermark -->
+    <!-- Watermark presets are stamped into PDFs with a Latin/Cyrillic font. In languages written in
+         another script (Indic, CJK, Thai), keep these in English so the stamp can be drawn. -->
+    <string name="pdf_watermark_preset_confidential">RAHASIA</string>
+    <string name="pdf_watermark_preset_draft">DRAF</string>
+    <string name="pdf_watermark_preset_copy">SALINAN</string>
+    <string name="pdf_watermark_opacity_percent">"%1$d%%"</string>
+    <!-- Localized counts and progress (no English-only plural branches). -->
+    <plurals name="common_days">
+        <item quantity="other">"%d hari"</item>
+    </plurals>
+    <plurals name="common_files">
+        <item quantity="other">"%d file"</item>
+    </plurals>
+    <plurals name="common_images">
+        <item quantity="other">"%d gambar"</item>
+    </plurals>
+    <plurals name="common_marks">
+        <item quantity="other">"%d tanda"</item>
+    </plurals>
+    <plurals name="common_scans">
+        <item quantity="other">"%d pindaian"</item>
+    </plurals>
+    <plurals name="common_topics">
+        <item quantity="other">"%d topik"</item>
+    </plurals>
+    <plurals name="common_libraries">
+        <item quantity="other">"%d library"</item>
+    </plurals>
+    <plurals name="common_selected">
+        <item quantity="other">"%d dipilih"</item>
+    </plurals>
+    <plurals name="pdf_to_images_saved_count">
+        <item quantity="other">"%d gambar disimpan"</item>
+    </plurals>
+    <plurals name="pdf_to_images_export_count">
+        <item quantity="other">"Ekspor %d gambar"</item>
+    </plurals>
+    <string name="common_current_of_total">"%1$d dari %2$d"</string>
+    <!-- Error fallbacks found in the final extraction audit. -->
+    <string name="error_failed_to_import_images">"Gagal mengimpor gambar."</string>
+    <string name="error_could_not_calculate_storage_usage">"Tidak dapat menghitung penggunaan penyimpanan."</string>
+    <string name="error_could_not_clear_app_data">"Tidak dapat menghapus data aplikasi."</string>
+    <string name="error_could_not_clear_temporary_exports">"Tidak dapat menyelesaikan ekspor sementara."</string>
+    <string name="error_could_not_remove_old_backup_files">"Tidak dapat menghapus file cadangan lama."</string>
+    <string name="error_could_not_create_the_document">"Tidak dapat membuat dokumen."</string>
+    <string name="error_could_not_rename_the_document">"Tidak dapat mengganti nama dokumen."</string>
+    <string name="error_could_not_delete_the_document">"Tidak dapat menghapus dokumen."</string>
+    <string name="error_could_not_create_the_group">"Tidak dapat membuat grup."</string>
+    <string name="error_could_not_rename_the_group">"Tidak dapat mengganti nama grup."</string>
+    <string name="error_could_not_delete_the_group">"Tidak dapat menghapus grup."</string>
+    <string name="error_could_not_remove_empty_folders">"Tidak dapat menghapus folder kosong."</string>
+    <string name="error_could_not_update_document_group">"Tidak dapat memperbarui grup dokumen."</string>
+    <string name="error_could_not_prepare_page_capture">"Tidak dapat menyiapkan pengambilan halaman."</string>
+    <string name="error_could_not_prepare_page_replacement">"Tidak dapat menyiapkan halaman pengganti."</string>
+    <string name="error_could_not_save_the_captured_page">"Tidak dapat menyimpan halaman yang diambil."</string>
+    <string name="error_could_not_reorder_the_page">"Tidak dapat menyusun ulang halaman."</string>
+    <string name="error_could_not_save_page_edits">"Tidak dapat menyimpan hasil edit halaman."</string>
+    <string name="error_could_not_update_text_recognition_engine">"Tidak dapat memperbarui mesin pengenalan teks."</string>
+    <string name="error_could_not_update_theme_mode">"Tidak dapat memperbarui mode tema."</string>
+    <string name="error_could_not_finish_onboarding">"Tidak dapat menyelesaikan orientasi."</string>
+    <string name="error_could_not_load_settings_content">"Tidak dapat memuat konten pengaturan."</string>
+    <string name="error_could_not_update_the_save_location">"Tidak dapat memperbarui lokasi penyimpanan."</string>
+    <string name="error_could_not_update_model_selection">"Tidak dapat memperbarui pilihan model."</string>
+    <string name="error_could_not_update_document_detection_settings">"Tidak dapat memperbarui pengaturan deteksi dokumen."</string>
+    <string name="error_could_not_save_the_exported_file">"Tidak dapat menyimpan file yang diekspor."</string>
+    <string name="error_could_not_store_update_prompt_state">"Tidak dapat menyimpan status prompt pembaruan."</string>
+    <string name="error_could_not_check_github_releases">"Tidak dapat memeriksa rilis GitHub."</string>
+</resources>

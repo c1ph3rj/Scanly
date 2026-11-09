@@ -5,6 +5,7 @@ import `in`.c1ph3rj.scanly.domain.model.SettingsContent
 import `in`.c1ph3rj.scanly.domain.model.ThemeMode
 import `in`.c1ph3rj.scanly.domain.model.ExportDestination
 import `in`.c1ph3rj.scanly.domain.model.DocumentCornerModel
+import `in`.c1ph3rj.scanly.domain.model.OcrEngine
 import kotlinx.coroutines.flow.Flow
 
 interface SettingsRepository {
@@ -49,4 +50,10 @@ interface SettingsRepository {
     suspend fun setDocumentGateEnabled(enabled: Boolean): ScanlyResult<Unit>
 
     suspend fun getDocumentGateEnabled(): Boolean
+
+    fun observeOcrEngine(): Flow<OcrEngine>
+
+    suspend fun setOcrEngine(engine: OcrEngine): ScanlyResult<Unit>
+
+    suspend fun getOcrEngine(): OcrEngine
 }

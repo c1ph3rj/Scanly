@@ -7,7 +7,9 @@ import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -23,6 +25,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
@@ -60,13 +63,18 @@ import `in`.c1ph3rj.scanly.core.ui.ChromeIconButton
 import `in`.c1ph3rj.scanly.core.ui.MetricChip
 import `in`.c1ph3rj.scanly.core.ui.ZoomableImageState
 import `in`.c1ph3rj.scanly.core.ui.ZoomableImageViewer
+import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import `in`.c1ph3rj.scanly.domain.model.ScanPage
 import `in`.c1ph3rj.scanly.domain.model.ShareArtifact
 import `in`.c1ph3rj.scanly.feature.components.ScanlyConfirmDialog
+import `in`.c1ph3rj.scanly.feature.library.TrashCopy
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import java.io.File
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun PageImagePreviewRoute(
@@ -78,6 +86,19 @@ fun PageImagePreviewRoute(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
+    // Deleting the last page both emits PageDeleted and flips missingPage; leave only once.
+    var hasLeft by remember { mutableStateOf(false) }
+    val leaveScreen: () -> Unit = {
+        if (!hasLeft) {
+            hasLeft = true
+            onNavigateUp()
+        }
+    }
+
+    // A page that is genuinely gone (not merely still loading) is a dead end, so go back.
+    LaunchedEffect(uiState.isLoading, uiState.missingPage) {
+        if (!uiState.isLoading && uiState.missingPage) leaveScreen()
+    }
 
     LaunchedEffect(viewModel) {
         viewModel.events.collectLatest { event ->
@@ -87,7 +108,7 @@ fun PageImagePreviewRoute(
                 }
                 is PageImagePreviewEvent.ShareFiles -> sharePreparedFiles(context, event.artifact)
                 is PageImagePreviewEvent.PageDeleted -> {
-                    if (event.wasLastPage) onNavigateUp()
+                    if (event.wasLastPage) leaveScreen()
                 }
             }
         }
@@ -137,7 +158,7 @@ fun PageImagePreviewScreen(
             contentAlignment = Alignment.Center,
         ) {
             Text(
-                text = "Page not found.",
+                text = stringResource(R.string.page_crop_page_not_found),
                 color = MaterialTheme.colorScheme.onBackground,
                 style = MaterialTheme.typography.titleLarge,
             )
@@ -161,6 +182,7 @@ fun PageImagePreviewScreen(
     val visibleZoomState = zoomStates[visiblePage.id]
     var chromeVisible by rememberSaveable { mutableStateOf(true) }
     var deleteTarget by remember { mutableStateOf<ScanPage?>(null) }
+    val window = rememberWindowSizeInfo()
 
     LaunchedEffect(pagerState, pages) {
         snapshotFlow { pagerState.settledPage }
@@ -220,14 +242,14 @@ fun PageImagePreviewScreen(
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         ChromeIconButton(
                             icon = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back",
+                            contentDescription = stringResource(R.string.zoomable_image_back),
                             onClick = onNavigateUp,
                             containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
                             contentColor = MaterialTheme.colorScheme.onSurface,
                         )
                         Spacer(modifier = Modifier.width(12.dp))
                         MetricChip(
-                            label = "Page ${visiblePage.pageIndex + 1} of ${pages.size}",
+                            label = stringResource(R.string.document_detail_page_of, visiblePage.pageIndex + 1, pages.size),
                             containerColor = Color.Black.copy(alpha = 0.42f),
                             contentColor = Color.White,
                             border = BorderStroke(1.dp, Color.White.copy(alpha = 0.12f)),
@@ -237,21 +259,25 @@ fun PageImagePreviewScreen(
                     if (visibleZoomState?.isZoomActive == true) {
                         PreviewActionButton(
                             icon = Icons.Filled.FitScreen,
-                            contentDescription = "Reset zoom",
+                            contentDescription = stringResource(R.string.zoomable_image_reset_zoom),
                             onClick = visibleZoomState::reset,
                         )
                     }
                 }
             }
 
+            // Short landscape windows: dock the actions on the side, where the pillarboxed page
+            // leaves room, instead of covering the bottom quarter of the page.
+            val sideDock = window.isLandscape && window.isHeightConstrained
             AnimatedVisibility(
                 visible = chromeVisible,
-                modifier = Modifier.align(Alignment.BottomCenter),
-                enter = fadeIn() + slideInVertically { it / 3 },
-                exit = fadeOut() + slideOutVertically { it / 3 },
+                modifier = Modifier.align(if (sideDock) Alignment.CenterEnd else Alignment.BottomCenter),
+                enter = fadeIn() + if (sideDock) slideInHorizontally { it / 3 } else slideInVertically { it / 3 },
+                exit = fadeOut() + if (sideDock) slideOutHorizontally { it / 3 } else slideOutVertically { it / 3 },
             ) {
                 PreviewBottomActionBar(
                     enabled = !uiState.isDeleting,
+                    vertical = sideDock,
                     onShare = { onSharePage(visiblePage.id) },
                     onEdit = { onEditPage(visiblePage.id) },
                     onSign = { onSignPage(visiblePage.documentId, visiblePage.pageIndex) },
@@ -264,9 +290,9 @@ fun PageImagePreviewScreen(
 
     deleteTarget?.let { target ->
         ScanlyConfirmDialog(
-            title = "Delete page?",
-            text = "Page ${target.pageIndex + 1} will be permanently deleted from this document.",
-            confirmLabel = "Delete",
+            title = stringResource(R.string.page_image_preview_delete_page),
+            text = TrashCopy.page(target.pageIndex + 1),
+            confirmLabel = stringResource(R.string.library_card_presentation_delete),
             confirmDestructive = true,
             onDismiss = { deleteTarget = null },
             onConfirm = {
@@ -282,68 +308,84 @@ fun PageImagePreviewScreen(
 @Composable
 private fun PreviewBottomActionBar(
     enabled: Boolean,
+    vertical: Boolean = false,
     onShare: () -> Unit,
     onEdit: () -> Unit,
     onSign: () -> Unit,
     onRetake: () -> Unit,
     onDelete: () -> Unit,
 ) {
+    val actions: List<PreviewDockAction> = listOf(
+        PreviewDockAction(Icons.Filled.IosShare, stringResource(R.string.document_detail_share_2), onShare),
+        PreviewDockAction(Icons.Filled.Edit, stringResource(R.string.document_detail_edit), onEdit),
+        PreviewDockAction(Icons.Filled.Draw, stringResource(R.string.page_image_preview_sign), onSign),
+        PreviewDockAction(Icons.Filled.Refresh, stringResource(R.string.document_detail_retake), onRetake),
+        PreviewDockAction(Icons.Filled.DeleteOutline, stringResource(R.string.library_card_presentation_delete), onDelete, destructive = true),
+    )
+    // A floating dock: phone-wide on phones, a compact centred bar on tablets rather than five
+    // actions spread across the whole screen; a vertical dock on short landscape windows.
     Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .navigationBarsPadding()
-            .padding(horizontal = 16.dp, vertical = 12.dp),
+        modifier = if (vertical) {
+            Modifier
+                .navigationBarsPadding()
+                .padding(horizontal = 12.dp, vertical = 8.dp)
+        } else {
+            Modifier
+                .widthIn(max = 560.dp)
+                .fillMaxWidth()
+                .navigationBarsPadding()
+                .padding(horizontal = 16.dp, vertical = 12.dp)
+        },
         color = Color.Black.copy(alpha = 0.72f),
         shape = MaterialTheme.shapes.extraLarge,
         border = BorderStroke(1.dp, Color.White.copy(alpha = 0.10f)),
         shadowElevation = 0.dp,
         tonalElevation = 0.dp,
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 8.dp, vertical = 10.dp),
-            horizontalArrangement = Arrangement.spacedBy(4.dp),
-        ) {
-            PreviewBottomAction(
-                icon = Icons.Filled.IosShare,
-                label = "Share",
-                enabled = enabled,
-                onClick = onShare,
-                modifier = Modifier.weight(1f),
-            )
-            PreviewBottomAction(
-                icon = Icons.Filled.Edit,
-                label = "Edit",
-                enabled = enabled,
-                onClick = onEdit,
-                modifier = Modifier.weight(1f),
-            )
-            PreviewBottomAction(
-                icon = Icons.Filled.Draw,
-                label = "Sign",
-                enabled = enabled,
-                onClick = onSign,
-                modifier = Modifier.weight(1f),
-            )
-            PreviewBottomAction(
-                icon = Icons.Filled.Refresh,
-                label = "Retake",
-                enabled = enabled,
-                onClick = onRetake,
-                modifier = Modifier.weight(1f),
-            )
-            PreviewBottomAction(
-                icon = Icons.Filled.DeleteOutline,
-                label = "Delete",
-                enabled = enabled,
-                onClick = onDelete,
-                modifier = Modifier.weight(1f),
-                contentColor = MaterialTheme.colorScheme.error,
-            )
+        if (vertical) {
+            Column(
+                modifier = Modifier.padding(horizontal = 6.dp, vertical = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(2.dp),
+            ) {
+                actions.forEach { action ->
+                    PreviewBottomAction(
+                        icon = action.icon,
+                        label = action.label,
+                        enabled = enabled,
+                        onClick = action.onClick,
+                        modifier = Modifier.width(72.dp),
+                        contentColor = if (action.destructive) MaterialTheme.colorScheme.error else Color.White,
+                    )
+                }
+            }
+        } else {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp, vertical = 10.dp),
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+            ) {
+                actions.forEach { action ->
+                    PreviewBottomAction(
+                        icon = action.icon,
+                        label = action.label,
+                        enabled = enabled,
+                        onClick = action.onClick,
+                        modifier = Modifier.weight(1f),
+                        contentColor = if (action.destructive) MaterialTheme.colorScheme.error else Color.White,
+                    )
+                }
+            }
         }
     }
 }
+
+private class PreviewDockAction(
+    val icon: ImageVector,
+    val label: String,
+    val onClick: () -> Unit,
+    val destructive: Boolean = false,
+)
 
 @Composable
 private fun PreviewBottomAction(
@@ -437,7 +479,7 @@ private fun sharePreparedFiles(
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
     }
-    context.startActivity(Intent.createChooser(shareIntent, "Share ${artifact.title}"))
+    context.startActivity(Intent.createChooser(shareIntent, appString(R.string.document_detail_share, artifact.title)))
 }
 
 private fun Context.exportUriFor(path: String): Uri = FileProvider.getUriForFile(

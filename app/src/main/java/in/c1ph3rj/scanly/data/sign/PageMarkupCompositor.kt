@@ -10,6 +10,8 @@ import `in`.c1ph3rj.scanly.domain.model.SignMark
 import `in`.c1ph3rj.scanly.domain.model.SignMarkStyle
 import javax.inject.Inject
 import javax.inject.Singleton
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
 
 /**
  * Burns sign marks into a page image so the result matches what the PDF stamper writes: same
@@ -46,7 +48,7 @@ class PageMarkupCompositor @Inject constructor() {
     private fun drawImage(canvas: Canvas, mark: SignMark.Image, rect: RectF) {
         val maxEdge = (maxOf(rect.width(), rect.height()).toInt() * 2).coerceIn(1, 2400)
         val mask = SignInkBitmaps.decodeMask(mark.imagePath, maxEdge = maxEdge)
-            ?: error("A signature image is missing. Open Sign and place it again.")
+            ?: error(appString(R.string.error_a_signature_image_is_missing_open_sign))
         val tinted = try {
             SignInkBitmaps.tinted(mask, mark.ink)
         } finally {
@@ -54,10 +56,23 @@ class PageMarkupCompositor @Inject constructor() {
         }
         try {
             val paint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG)
-            canvas.drawBitmap(tinted, null, rect, paint)
+            canvas.drawBitmap(tinted, null, fitInside(rect, tinted.width.toFloat() / tinted.height), paint)
         } finally {
             tinted.recycle()
         }
+    }
+
+    /** Largest rect of [aspect] (width / height) centred in [rect], like the editor's ContentScale.Fit. */
+    private fun fitInside(rect: RectF, aspect: Float): RectF {
+        if (aspect <= 0f || !aspect.isFinite()) return rect
+        val width = minOf(rect.width(), rect.height() * aspect)
+        val height = width / aspect
+        return RectF(
+            rect.centerX() - width / 2f,
+            rect.centerY() - height / 2f,
+            rect.centerX() + width / 2f,
+            rect.centerY() + height / 2f,
+        )
     }
 
     private fun drawText(canvas: Canvas, text: String, mark: SignMark, rect: RectF) {

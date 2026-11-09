@@ -1,0 +1,1967 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="shortcut_scan_short">扫描</string>
+    <string name="shortcut_scan_long">开始新的扫描</string>
+    <string name="shortcut_scan_disabled">无法扫描</string>
+    <string name="shortcut_import_short">导入</string>
+    <string name="shortcut_import_long">导入照片</string>
+    <string name="shortcut_import_disabled">无法导入</string>
+    <string name="shortcut_qr_short">QR</string>
+    <string name="shortcut_qr_long">扫描或生成二维码，读取条形码</string>
+    <string name="shortcut_qr_disabled">二维码工具不可用</string>
+    <string name="shortcut_library_short">文档库</string>
+    <string name="shortcut_library_long">打开文档库</string>
+    <string name="shortcut_library_disabled">文档库不可用</string>
+    <string name="widget_actions_label">Scanly 快捷操作</string>
+    <string name="widget_actions_description">快速使用扫描、导入、二维码和文档库。</string>
+    <string name="widget_scan_label">Scanly 扫描</string>
+    <string name="widget_scan_description">开始扫描新文档。</string>
+    <string name="widget_qr_label">Scanly 二维码</string>
+    <string name="widget_qr_description">打开二维码扫描和生成工具。</string>
+    <string name="widget_action_scan">扫描</string>
+    <string name="widget_action_import">导入</string>
+    <string name="widget_action_qr">QR</string>
+    <string name="widget_action_library">文档库</string>
+    <!-- DocumentPresentationFormatter -->
+    <string name="document_presentation_formatter_imported">"导入 %1$s"</string>
+    <string name="document_presentation_formatter_folder">"文件夹 %1$s"</string>
+    <string name="document_presentation_formatter_new_folder">"新建文件夹 %1$s"</string>
+    <string name="document_presentation_formatter_scan">"扫描件 %1$s"</string>
+    <string name="document_presentation_formatter_document">"文档 %1$s"</string>
+    <!-- ImageImportSupport -->
+    <string name="image_import_only_images_can_be_added">"每次最多只能添加 %1$s 张图片。"</string>
+    <string name="image_import_skipped_files_that_couldn_t">"已跳过 %1$s 个无法打开的文件。"</string>
+    <string name="image_import_skipped_1_file_that_couldn">已跳过 1 个无法打开的文件。</string>
+    <string name="image_import_imported_images">"已导入 %1$s 张图片。"</string>
+    <string name="image_import_imported_1_image">已导入 1 张图片。</string>
+    <!-- ZoomableImageDialog -->
+    <string name="zoomable_image_image_unavailable">图片不可用</string>
+    <string name="zoomable_image_reset_zoom">重置缩放</string>
+    <string name="zoomable_image_back">返回</string>
+    <string name="zoomable_image_close">关闭</string>
+    <!-- LibraryOperationCoordinator -->
+    <string name="library_operation_coordinator_library_maintenance_is_in_progress">正在维护文档库。</string>
+    <!-- DefaultDocumentRepository -->
+    <string name="default_document_repository_could_not_remove_empty_documents">无法移除空文档。</string>
+    <string name="default_document_repository_could_not_clear_old_deleted">无法清除较早删除的文档。</string>
+    <string name="default_document_repository_could_not_empty_recently_deleted">无法清空“最近删除”。</string>
+    <string name="default_document_repository_could_not_restore_the_document">无法恢复文档。</string>
+    <string name="default_document_repository_could_not_move_the_document">无法将文档移至“最近删除”。</string>
+    <!-- DefaultDocumentExportRepository -->
+    <string name="default_document_export_repository_could_not_prepare_group_zip">无法准备分享文件夹 ZIP。</string>
+    <string name="default_document_export_repository_could_not_prepare_group_pdf">无法准备分享文件夹 PDF。</string>
+    <string name="default_document_export_repository_could_not_export_group_as">无法将文件夹导出为 ZIP。</string>
+    <string name="default_document_export_repository_could_not_export_group_as_2">无法将文件夹导出为 PDF。</string>
+    <string name="default_document_export_repository_could_not_prepare_images_for">无法准备要分享的图片。</string>
+    <string name="default_document_export_repository_could_not_export_images">无法导出图片。</string>
+    <string name="default_document_export_repository_could_not_prepare_pdf_share">无法准备分享 PDF。</string>
+    <string name="default_document_export_repository_could_not_export_pdf">无法导出 PDF。</string>
+    <!-- DefaultGroupRepository -->
+    <string name="default_group_repository_could_not_clear_old_deleted">无法清除较早删除的文件夹。</string>
+    <string name="default_group_repository_could_not_delete_the_folders">无法删除这些文件夹。</string>
+    <string name="default_group_repository_could_not_delete_the_folder">无法删除文件夹。</string>
+    <string name="default_group_repository_could_not_restore_the_folder">无法恢复文件夹。</string>
+    <string name="default_group_repository_could_not_move_the_folder">无法将文件夹移至“最近删除”。</string>
+    <!-- DefaultPageRepository -->
+    <string name="default_page_repository_applied_to_of_pages_save">"已应用到 %1$s/%2$s 页。再次保存可重试其余页面。"</string>
+    <string name="default_page_repository_could_not_clear_old_deleted">无法清除较早删除的页面。</string>
+    <string name="default_page_repository_could_not_delete_the_pages">无法删除这些页面。</string>
+    <string name="default_page_repository_could_not_delete_the_page">无法删除页面。</string>
+    <string name="default_page_repository_could_not_restore_the_page">无法恢复页面。</string>
+    <!-- DefaultPdfToolkitRepository -->
+    <string name="default_pdf_toolkit_repository_incorrect_pdf_password">PDF 密码错误。</string>
+    <string name="default_pdf_toolkit_repository_this_pdf_is_not_stored">此 PDF 未存储在 Scanly 中。</string>
+    <string name="default_pdf_toolkit_repository_the_scanly_document_could_not">无法将此 Scanly 文档生成 PDF。</string>
+    <string name="default_pdf_toolkit_repository_could_not_prepare_share">无法准备分享。</string>
+    <string name="default_pdf_toolkit_repository_could_not_read_this_page">无法读取此页面。</string>
+    <string name="default_pdf_toolkit_repository_failed_to_encode_page">第 %1$s 页编码失败。</string>
+    <string name="default_pdf_toolkit_repository_could_not_save_the_images">无法保存图片。</string>
+    <string name="default_pdf_toolkit_repository_page">"%1$s – 第 %2$s 页.%3$s"</string>
+    <string name="default_pdf_toolkit_repository_could_not_estimate_the_image">无法估算图片大小。</string>
+    <string name="default_pdf_toolkit_repository_could_not_open_this_pdf">无法打开此 PDF。</string>
+    <string name="default_pdf_toolkit_repository_could_not_render_pdf_page">无法渲染 PDF 页面。</string>
+    <string name="default_pdf_toolkit_repository_could_not_sign_this_pdf">无法签署此 PDF。</string>
+    <string name="default_pdf_toolkit_repository_could_not_open_this_pdf_2">无法打开此 PDF 进行签名。</string>
+    <string name="default_pdf_toolkit_repository_could_not_update_watermark_preview">无法更新水印预览。</string>
+    <string name="default_pdf_toolkit_repository_could_not_add_watermark">无法添加水印。</string>
+    <string name="default_pdf_toolkit_repository_could_not_remove_pdf_password">无法移除 PDF 密码。</string>
+    <string name="default_pdf_toolkit_repository_could_not_password_protect_pdf">无法为 PDF 设置密码保护。</string>
+    <string name="default_pdf_toolkit_repository_could_not_compress_pdf">无法压缩 PDF。</string>
+    <string name="default_pdf_toolkit_repository_this_pdf_is_already_well">此 PDF 已充分优化，压缩后也不会变小。</string>
+    <string name="default_pdf_toolkit_repository_page_is_too_large_to">"第 %1$s 页过大，无法在此设备上压缩。请试试“最小”画质。"</string>
+    <string name="default_pdf_toolkit_repository_could_not_merge_pdfs">无法合并 PDF。</string>
+    <string name="default_pdf_toolkit_repository_one_of_the_pdfs">其中一个 PDF</string>
+    <string name="default_pdf_toolkit_repository_could_not_open_pdf">无法打开 PDF。</string>
+    <!-- PdfSignatureStamper -->
+    <string name="pdf_signature_stamper_text_and_dates_support_latin">文字和日期仅支持拉丁文、希腊文、西里尔文字符、数字和符号。</string>
+    <!-- PdfWatermarkStamper -->
+    <string name="pdf_watermark_stamper_watermarks_support_latin_greek_and">水印仅支持拉丁文、希腊文、西里尔文字符、数字和符号。请尝试使用英文。</string>
+    <!-- DefaultQrCodeRepository -->
+    <string name="default_qr_code_repository_could_not_save_qr_code">无法保存二维码。</string>
+    <string name="default_qr_code_repository_could_not_generate_qr_code">无法生成二维码。</string>
+    <!-- DefaultPageMarkupRepository -->
+    <string name="default_page_markup_repository_could_not_save_the_signed">无法保存已签名的页面。</string>
+    <string name="default_page_markup_repository_could_not_load_signatures_for">无法加载此文档的签名。</string>
+    <!-- DefaultSignatureRepository -->
+    <string name="default_signature_repository_could_not_save_the_image">无法保存图片。</string>
+    <string name="default_signature_repository_could_not_prepare_the_image">无法准备图片。</string>
+    <string name="default_signature_repository_could_not_update_the_signature">无法更新签名。</string>
+    <string name="default_signature_repository_could_not_delete_the_signature">无法删除签名。</string>
+    <string name="default_signature_repository_could_not_read_this_image">无法读取此图片。</string>
+    <string name="default_signature_repository_could_not_save_the_signature">无法保存签名。</string>
+    <!-- PageMarkupStore -->
+    <string name="page_markup_store_could_not_save_the_signed">无法保存已签名的页面。</string>
+    <!-- DefaultPageTextRepository -->
+    <string name="default_page_text_repository_could_not_queue_pages_to">无法将页面加入重新识别队列。</string>
+    <string name="default_page_text_repository_could_not_update_the_text">无法更新文字索引。</string>
+    <string name="default_page_text_repository_could_not_save_your_changes">无法保存你的更改。</string>
+    <string name="default_page_text_repository_could_not_read_text_from">无法识别此页面中的文字。</string>
+    <string name="default_page_text_repository_could_not_read_text_from_2">无法识别此文档中的文字。</string>
+    <!-- DefaultPlayInAppUpdateCoordinator -->
+    <string name="default_play_in_app_update_coordinator_could_not_check_google_play">无法通过 Google Play 检查更新。</string>
+    <string name="default_play_in_app_update_coordinator_google_play_could_not_check">Google Play 无法检查更新。</string>
+    <!-- PlayStoreAppUpdateRepository -->
+    <string name="play_store_app_update_repository_update_available">有可用更新</string>
+    <string name="play_store_app_update_repository_latest">最新版本</string>
+    <!-- PdfExportOptions -->
+    <string name="pdf_export_options_use_no_more_than_characters">"最多 %1$s 个字符。"</string>
+    <string name="pdf_export_options_use_at_least_characters">"至少需要 %1$s 个字符。"</string>
+    <string name="pdf_export_options_enter_a_pdf_password">请输入 PDF 密码。</string>
+    <!-- QrPayload -->
+    <string name="qr_payload_text_characters">"文本 · %1$s 个字符"</string>
+    <string name="qr_payload_phone_number">电话号码</string>
+    <string name="qr_payload_email">电子邮件</string>
+    <string name="qr_payload_contact_card">联系人名片</string>
+    <string name="qr_payload_wi_fi">"Wi-Fi · %1$s"</string>
+    <string name="qr_payload_upi">"UPI · %1$s"</string>
+    <string name="qr_payload_link_not_secure_http">链接 · 不安全 (http)</string>
+    <string name="qr_payload_link_https">链接 · https</string>
+    <string name="qr_payload_empty_text">空文本</string>
+    <string name="qr_payload_contact">联系人</string>
+    <string name="qr_payload_wi_fi_network">Wi-Fi 网络</string>
+    <string name="qr_payload_pay">"向 %1$s 付款"</string>
+    <string name="qr_payload_text">文本</string>
+    <string name="qr_payload_phone">电话</string>
+    <string name="qr_payload_wi_fi_2">Wi-Fi</string>
+    <string name="qr_payload_upi_payment">UPI 付款</string>
+    <string name="qr_payload_link">链接</string>
+    <!-- DetectDocumentCornersUseCase -->
+    <string name="detect_document_corners_use_case_document_detection_failed">文档检测失败。</string>
+    <string name="detect_document_corners_use_case_could_not_detect_a_document">未能在此图片中检测到文档。</string>
+    <!-- ImportImagesUseCase -->
+    <string name="import_images_use_case_none_of_the_selected_files">所选文件均无法作为图片打开。</string>
+    <string name="import_images_use_case_the_selected_file_couldn_t">所选文件无法作为图片打开。</string>
+    <string name="import_images_use_case_saving_page">正在保存页面</string>
+    <string name="import_images_use_case_detecting_document">正在检测文档</string>
+    <string name="import_images_use_case_preparing_page">正在准备页面</string>
+    <!-- TrashUseCases -->
+    <string name="trash_use_cases_page">"第 %1$s 页"</string>
+    <!-- ImportPdfToLibraryUseCase -->
+    <string name="import_pdf_to_library_use_case_could_not_add_this_pdf">无法将此 PDF 添加到文档库。</string>
+    <string name="import_pdf_to_library_use_case_choose_at_least_one_page">请至少选择一页。</string>
+    <!-- CameraCaptureChrome -->
+    <string name="camera_capture_chrome_done">完成</string>
+    <string name="camera_capture_chrome_done_review_pages">"完成，查看 %1$s 页"</string>
+    <string name="camera_capture_chrome_done_review_1_page">完成，查看 1 页</string>
+    <string name="camera_capture_chrome_turn_auto_capture_on">开启自动拍摄</string>
+    <string name="camera_capture_chrome_turn_auto_capture_off">关闭自动拍摄</string>
+    <!-- CaptureStabilityTracker -->
+    <string name="capture_stability_tracker_saving_page">正在保存页面…</string>
+    <string name="capture_stability_tracker_capturing_page">正在拍摄页面…</string>
+    <string name="capture_stability_tracker_hold_steady">请保持稳定。</string>
+    <string name="capture_stability_tracker_capturing_now">正在拍摄。</string>
+    <string name="capture_stability_tracker_hold_steady_to_auto_capture">保持稳定即可自动拍摄。</string>
+    <string name="capture_stability_tracker_hold_position_auto_capture_is">请保持不动，自动拍摄正在冷却。</string>
+    <string name="capture_stability_tracker_move_to_the_next_page">请先换到下一页，自动拍摄才会再次就绪。</string>
+    <string name="capture_stability_tracker_point_your_camera_at_a">请将相机对准完整的文档。</string>
+    <string name="capture_stability_tracker_document_detected_tap_capture_whenever">已检测到文档。准备好后点按拍摄。</string>
+    <string name="capture_stability_tracker_auto_capture_is_off_use">自动拍摄已关闭。准备好后按下快门。</string>
+    <!-- PipCameraComponents -->
+    <string name="pip_camera_not_now">以后再说</string>
+    <string name="pip_camera_allow_camera_access">允许使用相机</string>
+    <string name="pip_camera_open_settings">打开设置</string>
+    <string name="pip_camera_photos_stay_on_your_device">照片会一直保存在你的设备上，除非你导出或分享</string>
+    <string name="pip_camera_camera_active_only_while_scanning">仅在扫描时使用相机</string>
+    <string name="pip_camera_live_preview_with_edge_detection">实时预览并检测边缘</string>
+    <string name="pip_camera_come_back_here_and_pip">设置好后回到这里，Pip 会随时待命</string>
+    <string name="pip_camera_settings_permissions_camera_allow">设置 › 权限 › 相机 › 允许</string>
+    <string name="pip_camera_scanly_needs_your_camera_to">Scanly 需要使用相机来拍摄并矫正文档页面。</string>
+    <string name="pip_camera_camera_permission_is_blocked_for">Scanly 的相机权限已被禁止。请打开设置，点按“权限”，然后开启“相机”以扫描文档。</string>
+    <string name="pip_camera_camera_access_needed">需要相机权限</string>
+    <string name="pip_camera_show_me_the_whole_page">让我看看整页吧，四个角都要拍进来哦。</string>
+    <string name="pip_camera_hold_it_almost_there">稳住…马上就好。</string>
+    <string name="pip_camera_hold_it">"稳住…%1$s"</string>
+    <string name="pip_camera_ooh_edges_hold_still_a">哇，找到边缘啦！稍微别动…</string>
+    <string name="pip_camera_auto_capture_is_off_tap">自动拍摄已关闭，准备好就按快门吧。</string>
+    <string name="pip_camera_found_the_edges_tap_the">找到边缘啦，随时都可以按快门。</string>
+    <string name="pip_camera_got_it_on_to_the">拍好啦！继续下一页吧。</string>
+    <string name="pip_camera_snap_saving_that_page">咔嚓！正在保存这一页…</string>
+    <string name="pip_camera_it_s_all_fuzzy_tap">画面好模糊，点按页面对个焦吧。</string>
+    <string name="pip_camera_bit_dark_in_here_more">这里有点暗。多点光线，或者试试闪光灯？</string>
+    <string name="pip_camera_everything_s_dark_is_something">一片漆黑。是不是有东西挡住镜头了？</string>
+    <!-- ScanSessionScreen -->
+    <string name="scan_session_camera_couldn_t_start_close">相机无法启动。请关闭其他正在使用相机的应用，然后重试。</string>
+    <string name="scan_session_camera_couldn_t_start_leave">相机无法启动。请退出此界面后重新打开。</string>
+    <string name="scan_session_capture">拍摄</string>
+    <string name="scan_session_replace_page">替换页面</string>
+    <string name="scan_session_show_grid">显示网格</string>
+    <string name="scan_session_hide_grid">隐藏网格</string>
+    <string name="scan_session_turn_flash_on">开启闪光灯</string>
+    <string name="scan_session_turn_flash_off">关闭闪光灯</string>
+    <string name="scan_session_close_camera">关闭相机</string>
+    <string name="scan_session_no_captures">尚未拍摄</string>
+    <string name="scan_session_open_a_valid_document_first">请先打开一个有效的文档。</string>
+    <string name="scan_session_document_missing">文档不存在</string>
+    <string name="scan_session_camera_is_not_ready_yet">相机尚未就绪。</string>
+    <!-- ScanSessionViewModel -->
+    <string name="scan_session_checking_document">正在检查文档…</string>
+    <string name="scan_session_point_your_camera_at_a">请将相机对准实体文档。</string>
+    <string name="scan_session_screen_detected_point_at_a">检测到屏幕。请对准实体文档。</string>
+    <string name="scan_session_page_edges_are_ambiguous_hold">页面边缘不清晰。请保持稳定或靠近一些。</string>
+    <string name="scan_session_two_pages_are_visible_move">画面中有两页。请靠近一些，只框住一页。</string>
+    <string name="scan_session_page_saved">"第 %1$s 页已保存。"</string>
+    <string name="scan_session_auto_captured_page">已自动拍摄第 %1$s 页。</string>
+    <string name="scan_session_document_not_found">找不到文档。</string>
+    <string name="scan_session_capture_failed_reposition_the_document">拍摄失败。请调整文档位置后重试。</string>
+    <string name="scan_session_page_not_saved_reposition_the">页面未保存。请调整文档位置后重试。</string>
+    <string name="scan_session_live_detection_is_unavailable_manual">实时检测不可用，但仍可手动拍摄。</string>
+    <string name="scan_session_point_your_camera_at_a_2">请将相机对准文档。</string>
+    <!-- ExportShareComponents -->
+    <string name="export_share_passwords_match">密码一致。</string>
+    <string name="export_share_confirm_password">确认密码</string>
+    <string name="export_share_4_64_characters_send_it">4–64 个字符。请与 PDF 分开发送密码。</string>
+    <string name="export_share_show_password">显示密码</string>
+    <string name="export_share_hide_password">隐藏密码</string>
+    <string name="export_share_pdf_password">PDF 密码</string>
+    <string name="export_share_off">关闭</string>
+    <string name="export_share_a_password_will_be_required">打开 PDF 时需要输入密码。</string>
+    <string name="export_share_password_protection">密码保护</string>
+    <string name="export_share_cancel">取消</string>
+    <string name="export_share_add_white_space_around_the">在扫描页面四周添加留白。</string>
+    <string name="export_share_margins">页边距</string>
+    <string name="export_share_fixed_sizes_use_their_real">固定尺寸按实际打印尺寸输出。</string>
+    <string name="export_share_page_size">页面尺寸</string>
+    <string name="export_share_auto_follows_each_scanned_page">“自动”会匹配每张扫描页面的尺寸。</string>
+    <string name="export_share_orientation">方向</string>
+    <string name="export_share_add_the_page_index_to">在 PDF 页脚添加页码。</string>
+    <string name="export_share_page_numbers">页码</string>
+    <string name="export_share_choose_how_every_page_is">选择每一页的生成方式。</string>
+    <string name="export_share_passwords_do_not_match">两次输入的密码不一致。</string>
+    <string name="export_share_confirm_the_password">请确认密码。</string>
+    <string name="export_share_pdf_options">PDF 选项</string>
+    <!-- FabComponents -->
+    <string name="fab_open_add_menu">打开添加菜单</string>
+    <string name="fab_close_menu">关闭菜单</string>
+    <string name="fab_new_document">新建文档</string>
+    <string name="fab_new_folder">新建文件夹</string>
+    <!-- LibraryCardPresentation -->
+    <string name="library_card_presentation_remove_from_folder">移出文件夹</string>
+    <string name="library_card_presentation_move_to_folder">移至文件夹</string>
+    <string name="library_card_presentation_rename">重命名</string>
+    <string name="library_card_presentation_delete">删除</string>
+    <string name="library_card_presentation_1_page">1 页</string>
+    <string name="library_card_presentation_1_document">1 个文档</string>
+    <string name="library_card_presentation_yesterday">昨天</string>
+    <string name="library_card_presentation_today">今天</string>
+    <!-- LibraryFolderShelf -->
+    <string name="library_folder_shelf_all_folders">所有文件夹</string>
+    <string name="library_folder_shelf_view_all">查看全部</string>
+    <string name="library_folder_shelf_organise_scans">整理扫描件</string>
+    <string name="library_folder_shelf_new_folder">新建文件夹</string>
+    <!-- SharedComponents -->
+    <string name="shared_please_wait">请稍候</string>
+    <string name="shared_working_on_your_photos">正在处理你的照片…</string>
+    <string name="shared_importing_images">正在导入图片</string>
+    <string name="shared_more_options">更多选项</string>
+    <string name="shared_selected">已选择</string>
+    <string name="shared_create_new_folder">新建文件夹</string>
+    <string name="shared_create_move">新建并移动</string>
+    <string name="shared_new_folder_name">新文件夹名称</string>
+    <string name="shared_no_folder">无文件夹</string>
+    <string name="shared_folder_name">文件夹名称</string>
+    <string name="shared_create">创建</string>
+    <string name="shared_suggest_name">推荐名称</string>
+    <string name="shared_title">标题</string>
+    <string name="shared_clear_name">清除名称</string>
+    <string name="shared_confirm">确认</string>
+    <string name="shared_scanly">Scanly</string>
+    <!-- DocumentDetailScreen -->
+    <string name="document_detail_delete_page">删除页面</string>
+    <string name="document_detail_share_page">分享页面</string>
+    <string name="document_detail_sign_document">签署文档</string>
+    <string name="document_detail_extract_text">提取文字</string>
+    <string name="document_detail_retake_page">重拍页面</string>
+    <string name="document_detail_edit_page">编辑页面</string>
+    <string name="document_detail_edit">编辑</string>
+    <string name="document_detail_share">"分享 %1$s"</string>
+    <string name="document_detail_review">查看</string>
+    <string name="document_detail_ready">就绪</string>
+    <string name="document_detail_new">新</string>
+    <string name="document_detail_captured">已拍摄</string>
+    <string name="document_detail_add_page">添加页面</string>
+    <string name="document_detail_scan_or_import">扫描或导入</string>
+    <string name="document_detail_add_page_scan_or_import">添加页面。扫描或导入。</string>
+    <string name="document_detail_share_2">分享</string>
+    <string name="document_detail_retake">重拍</string>
+    <string name="document_detail_open_zoom_view">打开缩放视图</string>
+    <string name="document_detail_page_of">"第 %1$s 页，共 %2$s 页"</string>
+    <string name="document_detail_import_images">导入图片</string>
+    <string name="document_detail_scan_a_page">扫描页面</string>
+    <string name="document_detail_scan_a_page_or_import">"扫描一页，或导入最多 %1$s 张图片，开始创建此文档。"</string>
+    <string name="document_detail_no_pages_yet">还没有页面</string>
+    <string name="document_detail_return_to_the_library_and">请返回文档库并打开其他文档。</string>
+    <string name="document_detail_document_not_found">找不到文档</string>
+    <string name="document_detail_select_a_page_to_preview">选择要预览的页面</string>
+    <string name="document_detail_tap_to_review_long_press">点按即可查看。长按并拖动可调整顺序。</string>
+    <string name="document_detail_long_press_and_drag_to">长按并拖动可调整顺序</string>
+    <string name="document_detail_pages">页面</string>
+    <string name="document_detail_use_scan_or_import_to">使用“扫描”或“导入”添加第一页。</string>
+    <string name="document_detail_please_wait_while_the_file">正在准备文件，请稍候。</string>
+    <string name="document_detail_share_pages">分享页面</string>
+    <string name="document_detail_save_images_zip">保存图片 ZIP</string>
+    <string name="document_detail_share_pdf">分享 PDF</string>
+    <string name="document_detail_save_pdf">保存 PDF</string>
+    <string name="document_detail_export_share">导出和分享</string>
+    <string name="document_detail_pick_up_to_images_from">"从文件中选择最多 %1$s 张图片"</string>
+    <string name="document_detail_choose_images">选择图片</string>
+    <string name="document_detail_open_the_camera_to_scan">打开相机扫描新页面</string>
+    <string name="document_detail_capture_a_new_scan_or">"拍摄新的扫描件，或从图库中选择最多 %1$s 张图片。"</string>
+    <string name="document_detail_delete_document">删除文档</string>
+    <string name="document_detail_rename_document">重命名文档</string>
+    <string name="document_detail_document_options">文档选项</string>
+    <string name="document_detail_working_on_your_photos">正在处理你的照片</string>
+    <string name="document_detail_preparing_export">正在准备导出</string>
+    <string name="document_detail_generate">生成</string>
+    <string name="document_detail_delete_document_2">要删除文档吗？</string>
+    <string name="document_detail_save">保存</string>
+    <string name="document_detail_document">文档</string>
+    <!-- DocumentDetailViewModel -->
+    <string name="document_detail_document_renamed">文档已重命名。</string>
+    <string name="document_detail_starting_import">正在开始导入</string>
+    <string name="document_detail_page_image_is_not_available">页面图片暂不可用。</string>
+    <string name="document_detail_preparing_pages">正在准备页面</string>
+    <string name="document_detail_saved_to">"已将 %1$s 保存到 %2$s"</string>
+    <string name="document_detail_preparing_and_saving_zip">正在准备并保存 ZIP</string>
+    <string name="document_detail_preparing_pdf">正在准备 PDF</string>
+    <string name="document_detail_generating_and_saving_pdf">正在生成并保存 PDF</string>
+    <string name="document_detail_reordered_pages">已调整页面顺序。</string>
+    <string name="document_detail_moved_to_folder">已移至文件夹</string>
+    <string name="document_detail_moved_to">"已移至 %1$s"</string>
+    <string name="document_detail_removed_from_folder">已移出文件夹</string>
+    <!-- FilterCustomizeScreen -->
+    <string name="filter_customize_faded_text">褪色文字</string>
+    <string name="filter_customize_whiteboard">白板</string>
+    <string name="filter_customize_grayscale">灰度</string>
+    <string name="filter_customize_screen">屏幕</string>
+    <string name="filter_customize_vivid">鲜艳</string>
+    <string name="filter_customize_natural">自然</string>
+    <string name="filter_customize_magic_color">魔法色彩</string>
+    <string name="filter_customize_auto">自动</string>
+    <string name="filter_customize_original">原图</string>
+    <string name="filter_customize_intensity">强度</string>
+    <string name="filter_customize_sharpness">锐度</string>
+    <string name="filter_customize_saturation">饱和度</string>
+    <string name="filter_customize_contrast">对比度</string>
+    <string name="filter_customize_brightness">亮度</string>
+    <string name="filter_customize_fine_tune_on_this_page">"微调此页的“%1$s”效果。按住“对比”可仅预览滤镜效果。"</string>
+    <string name="filter_customize_customize_filter">自定义滤镜</string>
+    <string name="filter_customize_adjusted">已调整</string>
+    <string name="filter_customize_filter_only">仅滤镜</string>
+    <string name="filter_customize_filter_adjustment_preview">滤镜调整预览</string>
+    <string name="filter_customize_selected_filter_without_adjustments">所选滤镜（未调整）</string>
+    <string name="filter_customize_loading_preview">正在加载预览…</string>
+    <string name="filter_customize_hold_to_compare_with_filter">按住可与仅滤镜效果对比</string>
+    <string name="filter_customize_reset_adjustments">重置调整</string>
+    <string name="filter_customize_adjust">调整</string>
+    <string name="filter_customize_compare">对比</string>
+    <!-- FilterPickerScreen -->
+    <string name="filter_picker_selected_filter">所选滤镜</string>
+    <string name="filter_picker_filter_thumbnail">"“%1$s”滤镜缩略图"</string>
+    <string name="filter_picker_analyzing_the_page_to_tune">正在分析页面，以调整各个滤镜。</string>
+    <string name="filter_picker_filter_only_crop_rotation_and">仅应用滤镜。裁剪、旋转和调整仍按页单独保留。</string>
+    <string name="filter_picker_apply_filter_to_all_pages">将滤镜应用到所有页面</string>
+    <string name="filter_picker_tap_a_preset_to_update">点按预设即可更新实时预览。完成后在编辑器中保存。</string>
+    <string name="filter_picker_filters">滤镜</string>
+    <string name="filter_picker_filter_preview">"“%1$s”滤镜预览"</string>
+    <!-- PageCropScreen -->
+    <string name="page_crop_page_crop_preview">页面裁剪预览</string>
+    <string name="page_crop_detecting">正在检测</string>
+    <string name="page_crop_reset">重置</string>
+    <string name="page_crop_ai_detect">AI 检测</string>
+    <string name="page_crop_right">向右</string>
+    <string name="page_crop_left">向左</string>
+    <string name="page_crop_apply_crop">应用裁剪</string>
+    <string name="page_crop_detecting_document">正在检测文档…</string>
+    <string name="page_crop_keep_editing">继续编辑</string>
+    <string name="page_crop_discard">舍弃</string>
+    <string name="page_crop_your_crop_changes_have_not">你的裁剪更改尚未应用。</string>
+    <string name="page_crop_discard_changes">要舍弃更改吗？</string>
+    <string name="page_crop_full_frame_corners">全画面角点</string>
+    <string name="page_crop_reset_crop">重置裁剪</string>
+    <string name="page_crop_rotate_right">向右旋转</string>
+    <string name="page_crop_rotate_left">向左旋转</string>
+    <string name="page_crop_find_the_document_corners">查找文档角点</string>
+    <string name="page_crop_detecting_2">正在检测…</string>
+    <string name="page_crop_detect_edges_rotate_then_drag">检测边缘、旋转，然后拖动控制点。点按“完成”即可应用。</string>
+    <string name="page_crop_crop_tools">裁剪工具</string>
+    <string name="page_crop_page_not_found">找不到页面。</string>
+    <string name="page_crop_crop">裁剪</string>
+    <string name="page_crop_processing">正在处理</string>
+    <!-- PageCropViewModel -->
+    <string name="page_crop_crop_updated">裁剪已更新。</string>
+    <string name="page_crop_document_detected">已检测到文档。</string>
+    <string name="page_crop_raw_image_is_not_available">原始图片不可用，无法检测。</string>
+    <!-- PageEditorScreen -->
+    <string name="page_editor_please_wait_while_scanly_adapts">Scanly 正在调整滤镜并更新整个文档，请稍候。</string>
+    <string name="page_editor_processing_image_data_for_all">正在处理所有页面的图片数据</string>
+    <string name="page_editor_page_editor_preview">页面编辑器预览</string>
+    <string name="page_editor_your_edits_to_this_page">你对此页的修改尚未保存。</string>
+    <string name="page_editor_remove_from_document">从文档中移除</string>
+    <string name="page_editor_capture_this_page_again">重新拍摄此页</string>
+    <string name="page_editor_brightness_contrast_more">亮度、对比度等</string>
+    <string name="page_editor_ai_detect_rotate_handles">AI 检测、旋转、控制点</string>
+    <string name="page_editor_crop_filter_and_adjust_this">裁剪此页、添加滤镜并进行调整。点按“完成”即可保存。</string>
+    <string name="page_editor_edit_tools">编辑工具</string>
+    <string name="page_editor_editor">编辑器</string>
+    <!-- PageEditorViewModel -->
+    <string name="page_editor_page_updated">页面已更新。</string>
+    <string name="page_editor_filter_applied_to_all_pages">已将滤镜应用到所有页面。</string>
+    <!-- HomePip -->
+    <string name="home_pip_hide_today_s_tip">隐藏今日小贴士</string>
+    <!-- HomeRatingPrompt -->
+    <string name="home_rating_prompt_rate_scanly_opens_google_play">为 Scanly 评分，将打开 Google Play</string>
+    <string name="home_rating_prompt_rate_on_google_play">在 Google Play 上评分</string>
+    <string name="home_rating_prompt_scanly_is_free_private_and">Scanly 免费、注重隐私且无广告。如果它帮你节省了时间，欢迎在 Google Play 上给个评分，这对我们帮助很大。</string>
+    <string name="home_rating_prompt_rate_scanly">为 Scanly 评分</string>
+    <!-- HomeScreen -->
+    <string name="home_search_names_and_text_in">搜索名称和页面中的文字</string>
+    <string name="home_start_scanning">开始扫描</string>
+    <string name="home_scan_your_first_page_and">扫描第一页后，它会保存在这里，随时可以查看。</string>
+    <string name="home_no_documents_yet">还没有文档</string>
+    <string name="home_loading_your_documents">正在加载你的文档</string>
+    <string name="home_folder">文件夹</string>
+    <string name="home_import">导入</string>
+    <string name="home_scan">扫描</string>
+    <string name="home_save_it_now">现在就保存</string>
+    <string name="home_save_it_now_find_it">今天存起来，\n明天随时找。</string>
+    <string name="home_still_scanning">还在扫描吗？</string>
+    <string name="home_wrap_up_and_digitize_your">收个尾，\n把今天数字化。</string>
+    <string name="home_good_evening">晚上好，</string>
+    <string name="home_let_s_capture_some_documents">来扫描\n一些文档吧。</string>
+    <string name="home_good_afternoon">下午好，</string>
+    <string name="home_what_are_we_scanning_today">今天要\n扫描什么？</string>
+    <string name="home_good_morning">早上好，</string>
+    <string name="home_see_all">查看全部</string>
+    <string name="home_recent_documents">最近的文档</string>
+    <string name="home_recent_folders">最近的文件夹</string>
+    <string name="home_new_scan">新建扫描</string>
+    <!-- FolderDeleteDialog -->
+    <string name="folder_delete_both_go_to_recently_deleted">"两者都会移至“最近删除”并保留 %1$s"</string>
+    <string name="folder_delete_delete_folder_and_documents">删除文件夹和文档</string>
+    <string name="folder_delete_keep_the_in_your_library">"将这 %1$s 保留在文档库中"</string>
+    <string name="folder_delete_delete_folder_only">仅删除文件夹</string>
+    <string name="folder_delete_delete_folder">要删除文件夹吗？</string>
+    <!-- GroupDetailScreen -->
+    <string name="group_detail_not_selected">未选择</string>
+    <string name="group_detail_add_documents">"添加 %1$s 个文档"</string>
+    <string name="group_detail_add_1_document">添加 1 个文档</string>
+    <string name="group_detail_add_selected">添加所选项</string>
+    <string name="group_detail_documents_already_in_folders_won">已在文件夹中的文档不会显示在这里。你可以新建一个文档。</string>
+    <string name="group_detail_no_loose_documents">没有未归档的文档</string>
+    <string name="group_detail_select_all">全选</string>
+    <string name="group_detail_clear">清除</string>
+    <string name="group_detail_select_one_or_more_documents">选择一个或多个文档</string>
+    <string name="group_detail_nothing_available_to_move">没有可移动的内容</string>
+    <string name="group_detail_move_existing">移入现有文档</string>
+    <string name="group_detail_starts_empty_inside_this_folder">在此文件夹中新建空白文档</string>
+    <string name="group_detail_create_new_document">新建文档</string>
+    <string name="group_detail_create_a_new_document_or">"新建文档，或从此文件夹外的 %1$s 个文档中选择。"</string>
+    <string name="group_detail_create_a_new_document_or_2">新建文档，或移入尚未归入文件夹的文档。</string>
+    <string name="group_detail_add_documents_to_folder">向文件夹添加文档</string>
+    <string name="group_detail_add_documents_2">添加文档</string>
+    <string name="group_detail_add_a_document_here_to">在这里添加文档，把相关的扫描件放在一起。</string>
+    <string name="group_detail_this_folder_is_empty">此文件夹为空</string>
+    <string name="group_detail_share_pdfs_as_zip">以 ZIP 分享 PDF</string>
+    <string name="group_detail_save_pdfs_as_zip">以 ZIP 保存 PDF</string>
+    <string name="group_detail_separate_pdfs_one_pdf_per">单独的 PDF · 每个文档一个 PDF，打包为 ZIP</string>
+    <string name="group_detail_share_merged_pdf">分享合并后的 PDF</string>
+    <string name="group_detail_save_merged_pdf">保存合并后的 PDF</string>
+    <string name="group_detail_single_pdf_merged_into_one">"单个 PDF · 将 %1$s合并为一个文件"</string>
+    <string name="group_detail_new_document">新建文档</string>
+    <string name="group_detail_remove">移除</string>
+    <string name="group_detail_will_be_moved_out_of">“%1$s”将被移出此文件夹。</string>
+    <string name="group_detail_remove_from_folder">要移出文件夹吗？</string>
+    <string name="group_detail_rename_folder">重命名文件夹</string>
+    <string name="group_detail_delete_folder">删除文件夹</string>
+    <string name="group_detail_export_and_share">导出和分享</string>
+    <!-- GroupDetailViewModel -->
+    <string name="group_detail_generating_pdf_of">"正在生成第 %1$s 个 PDF，共 %2$s 个…"</string>
+    <string name="group_detail_generating_page_of">"正在生成第 %1$s 页，共 %2$s 页…"</string>
+    <string name="group_detail_document_removed_from_folder">已将文档移出文件夹。</string>
+    <string name="group_detail_added_documents_to_folder">"已向文件夹添加 %1$s 个文档。"</string>
+    <string name="group_detail_added_1_document_to_folder">已向文件夹添加 1 个文档。</string>
+    <string name="group_detail_added_of_documents">"已添加 %1$s/%2$s 个文档。%3$s"</string>
+    <string name="group_detail_folder_renamed">文件夹已重命名。</string>
+    <!-- LibraryScreen -->
+    <string name="library_create_a_folder_to_stay">新建文件夹来整理内容，或添加文档并开始拍摄。</string>
+    <string name="library_your_library_is_ready">你的文档库已准备就绪</string>
+    <string name="library_save_to">保存到</string>
+    <string name="library_choose_how_are_ordered">"选择%1$s的排序方式。"</string>
+    <string name="library_sort_library">文档库排序</string>
+    <string name="library_folders_and_documents">文件夹和文档</string>
+    <string name="library_create_a_document_then_scan">新建文档，然后扫描页面或从图库导入。</string>
+    <string name="library_create_a_folder_to_keep">新建文件夹，方便找到相关文档。</string>
+    <string name="library_no_folders_yet">还没有文件夹</string>
+    <string name="library_list_view">列表视图</string>
+    <string name="library_grid_view">网格视图</string>
+    <string name="library_folders">文件夹</string>
+    <string name="library_back_to_library">返回文档库</string>
+    <string name="library_documents">文档</string>
+    <string name="library_search_library">搜索文档库</string>
+    <string name="library_library">文档库</string>
+    <!-- LibrarySearchScreen -->
+    <string name="library_search_remove_from_recent_searches">"从最近搜索中移除“%1$s”"</string>
+    <string name="library_search_search_again">重新搜索</string>
+    <string name="library_search_text_is_read_on_this">文字在此设备上识别，你的页面绝不会离开设备。</string>
+    <string name="library_search_some_pages_are_still_being">部分页面仍在识别中，稍后可能会出现更多匹配结果。</string>
+    <string name="library_search_search_for_instead">改为搜索“%1$s”</string>
+    <string name="library_search_nothing_matches_try_fewer_words">没有与“%1$s”匹配的结果。请减少关键词或检查拼写。</string>
+    <string name="library_search_no_results_found">未找到结果</string>
+    <string name="library_search_rent_or_lease_finds_pages">“rent OR lease”会找出包含其中任一词的页面</string>
+    <string name="library_search_either_word">任一词</string>
+    <string name="library_search_lease_draft_skips_anything_that">“lease -draft”会排除提到 draft 的内容</string>
+    <string name="library_search_leave_a_word_out">排除某个词</string>
+    <string name="library_search_you_ll_get_the_closest">会匹配扫描件中最接近的词</string>
+    <string name="library_search_small_typos_are_fine">小的拼写错误也没关系</string>
+    <string name="library_search_security_deposit_in_that_order">“security deposit”，按此顺序</string>
+    <string name="library_search_use_quotes_for_a_phrase">用引号搜索词组</string>
+    <string name="library_search_lea_finds_lease_and_leasing">“lea”可找到 lease 和 leasing</string>
+    <string name="library_search_type_part_of_a_word">输入词的一部分</string>
+    <string name="library_search_search_tips">搜索技巧</string>
+    <string name="library_search_browse_by_type">按类型浏览</string>
+    <string name="library_search_recent">最近</string>
+    <string name="library_search_folder">"文件夹 · "</string>
+    <string name="library_search_matched">匹配“%1$s”</string>
+    <string name="library_search_scanned_as">识别为“%1$s”</string>
+    <string name="library_search_show_page_text">显示页面文字</string>
+    <string name="library_search_show_fewer_pages">显示较少页面</string>
+    <string name="library_search_open_document">打开文档</string>
+    <string name="library_search_similar_words">"相似词："</string>
+    <string name="library_search_close_matches">相近结果</string>
+    <string name="library_search_searching_text_in_pages">正在搜索页面中的文字…</string>
+    <string name="library_search_by_name">" · 名称匹配 %1$s 个"</string>
+    <string name="library_search_complete_to">"补全为 "</string>
+    <string name="library_search_filters_on">"筛选条件，已启用 %1$s 个"</string>
+    <string name="library_search_filters">"筛选 · %1$s"</string>
+    <string name="library_search_matching_names">名称匹配</string>
+    <string name="library_search_found_in_pages">页面中找到</string>
+    <string name="library_search_clear_search">清除搜索内容</string>
+    <!-- RecentlyDeletedScreen -->
+    <string name="recently_deleted_page_of_will_be_deleted">"“%2$s”的第 %1$s 页将被永久删除。此操作无法撤消。"</string>
+    <string name="recently_deleted_and_its_pages_will_be">“%1$s”及其所有页面将被永久删除。此操作无法撤消。</string>
+    <string name="recently_deleted_and_the_documents_that_were">“%1$s”及其中的文档将被永久删除。此操作无法撤消。</string>
+    <string name="recently_deleted_its_documents_stay_in_your">"其中的文档仍会保留在文档库中。"</string>
+    <string name="recently_deleted_the_folder_will_be_deleted">文件夹“%1$s”将被永久删除。此操作无法撤消。</string>
+    <string name="recently_deleted_page_of">"“%2$s”的第 %1$s 页"</string>
+    <string name="recently_deleted_days_left">"还剩 %1$s 天"</string>
+    <string name="recently_deleted_1_day_left">还剩 1 天</string>
+    <string name="recently_deleted_last_day">最后一天</string>
+    <string name="recently_deleted_from">来自“%1$s”</string>
+    <string name="recently_deleted_no_documents">没有文档</string>
+    <string name="recently_deleted_folder_only_documents_kept_in">"仅文件夹 · %1$s 个文档保留在文档库中"</string>
+    <string name="recently_deleted_folder_only_1_document_kept">仅文件夹 · 1 个文档保留在文档库中</string>
+    <string name="recently_deleted_restore">恢复</string>
+    <string name="recently_deleted_delete_forever">永久删除</string>
+    <string name="recently_deleted_select">选择</string>
+    <string name="recently_deleted_delete_forever_2">"永久删除“%1$s”"</string>
+    <string name="recently_deleted_restore_2">"恢复“%1$s”"</string>
+    <string name="recently_deleted_show_options">显示选项</string>
+    <string name="recently_deleted_the_selected_items_will_be">"所选的 %1$s 项内容将被永久删除。此操作无法撤消。"</string>
+    <string name="recently_deleted_delete_items_forever">"要永久删除 %1$s 项内容吗？"</string>
+    <string name="recently_deleted_delete_1_item_forever">要永久删除 1 项内容吗？</string>
+    <string name="recently_deleted_delete_forever_3">要永久删除吗？</string>
+    <string name="recently_deleted_delete_all">全部删除</string>
+    <string name="recently_deleted_all_items_will_be_deleted">"全部 %1$s 项内容将被永久删除。此操作无法撤消。"</string>
+    <string name="recently_deleted_this_item_will_be_deleted">此项内容将被永久删除。此操作无法撤消。</string>
+    <string name="recently_deleted_empty_recently_deleted">要清空“最近删除”吗？</string>
+    <string name="recently_deleted_deleted_pages_stay_here_for">已删除的页面会在这里保留 %1$s，文档和文件夹保留 %2$s，在此期间可以恢复。</string>
+    <string name="recently_deleted_nothing_here">这里空空如也</string>
+    <string name="recently_deleted_nothing_in_the_bin_deleted">回收站空空的。删除的内容会在这里待上几天。</string>
+    <string name="recently_deleted_empty">清空</string>
+    <string name="recently_deleted_select_none">取消全选</string>
+    <string name="recently_deleted_clear_selection">清除所选内容</string>
+    <string name="recently_deleted_recently_deleted">最近删除</string>
+    <!-- RecentlyDeletedViewModel -->
+    <string name="recently_deleted_page_restored_to">"第 %1$s 页已恢复到“%2$s”"</string>
+    <string name="recently_deleted_document_restored">文档已恢复</string>
+    <string name="recently_deleted_folder_restored">文件夹已恢复</string>
+    <string name="recently_deleted_recently_deleted_is_empty">“最近删除”为空</string>
+    <string name="recently_deleted_deleted_permanently">已永久删除</string>
+    <!-- SearchFiltersSheet -->
+    <string name="search_filters_apply">应用</string>
+    <string name="search_filters_remove_filter">"移除筛选条件：%1$s"</string>
+    <string name="search_filters_in">"位于“%1$s”"</string>
+    <string name="search_filters_not_in_a_folder">不在文件夹中</string>
+    <string name="search_filters_sort_by">排序方式</string>
+    <string name="search_filters_any_folder">任意文件夹</string>
+    <string name="search_filters_date_modified">修改日期</string>
+    <string name="search_filters_any_type">任意类型</string>
+    <string name="search_filters_type">类型</string>
+    <!-- TrashCopy -->
+    <string name="trash_copy_page_moves_to_recently_deleted">"第 %1$s 页将移至“最近删除”，%2$s内可以恢复。"</string>
+    <string name="trash_copy_and_its_documents_move_to">"“%1$s”及其中的 %2$s 个文档将移至“最近删除”，%3$s内可以恢复。"</string>
+    <string name="trash_copy_and_the_document_in_it">“%1$s”及其中的文档将移至“最近删除”，%2$s内可以恢复。</string>
+    <string name="trash_copy_moves_to_recently_deleted_you">“%1$s”将移至“最近删除”，%2$s内可以恢复。</string>
+    <string name="trash_copy_1_day">1 天</string>
+    <!-- TrashUndoSnackbar -->
+    <string name="trash_undo_snackbar_moved_to_recently_deleted">已将“%1$s”移至“最近删除”</string>
+    <string name="trash_undo_snackbar_moved_to_recently_deleted_2">"已将 %1$s 移至“最近删除”"</string>
+    <string name="trash_undo_snackbar_undo">撤消</string>
+    <!-- OnboardingFlow -->
+    <string name="onboarding_flow_enable_camera">启用相机</string>
+    <string name="onboarding_flow_enable_the_camera_to_scan">启用相机即可扫描纸质文档。不启用也可以导入图片。</string>
+    <string name="onboarding_flow_open_settings_tap_permissions_and">请打开设置，点按“权限”，然后允许使用“相机”。不启用也可以导入图片。</string>
+    <string name="onboarding_flow_ready_for_your_first_scan">准备好第一次扫描了吗？</string>
+    <string name="onboarding_flow_camera_access_is_turned_off">相机权限已关闭</string>
+    <!-- OnboardingScreen -->
+    <string name="onboarding_no_account_no_cloud_upload">无需账号，不会上传到云端。</string>
+    <string name="onboarding_continue">继续</string>
+    <string name="onboarding_get_started">开始使用</string>
+    <string name="onboarding_page_of_3">"%1$s，第 %2$s 页，共 3 页"</string>
+    <string name="onboarding_page_of_3_2">"第 %1$s 页，共 3 页"</string>
+    <string name="onboarding_skip">跳过</string>
+    <string name="onboarding_scanly">Scanly。</string>
+    <string name="onboarding_previous_page">上一页</string>
+    <string name="onboarding_feature_edge_detection">自动检测边缘</string>
+    <string name="onboarding_feature_crop_straighten">裁剪并矫正页面</string>
+    <string name="onboarding_feature_filters">魔法色彩、白板等滤镜</string>
+    <string name="onboarding_feature_ocr">设备端文字识别</string>
+    <string name="onboarding_feature_search">在所有扫描件中搜索文字</string>
+    <string name="onboarding_feature_copy_text">从任意页面复制文字</string>
+    <string name="onboarding_feature_multipage_pdf">多页 PDF</string>
+    <string name="onboarding_feature_password">分享前设置密码保护</string>
+    <string name="onboarding_feature_sign">签署文档</string>
+    <string name="onboarding_assurance_offline">完全离线可用。</string>
+    <string name="onboarding_assurance_on_device">你的文字绝不会离开此设备。</string>
+    <!-- Pip -->
+    <string name="pip_poke_pip_scanly_s_helper">戳一戳 Scanly 的小助手 Pip</string>
+    <!-- PipBubble -->
+    <string name="pip_bubble_dismiss">关闭</string>
+    <!-- PipLines -->
+    <string name="pip_lines_all_set_pages_nice_and">"搞定！%1$s 页，整整齐齐。"</string>
+    <string name="pip_lines_all_set_1_page_nice">搞定！1 页，整整齐齐。</string>
+    <string name="pip_lines_ready_when_you_are">你准备好了，我就准备好了。</string>
+    <string name="pip_lines_i_looked_on_every_page">每一页我都找过了，哪儿都没有“%1$s”。</string>
+    <!-- FeaturePlaceholderScreen -->
+    <string name="feature_placeholder_planned_for">计划于%1$s推出。</string>
+    <!-- PageImagePreviewScreen -->
+    <string name="page_image_preview_sign">签名</string>
+    <string name="page_image_preview_delete_page">要删除页面吗？</string>
+    <!-- PageImagePreviewViewModel -->
+    <string name="page_image_preview_scanly_page">"Scanly 第 %1$s 页"</string>
+    <!-- LegalDocumentScreen -->
+    <string name="legal_document_open_in_browser">在浏览器中打开</string>
+    <string name="legal_document_retry">重试</string>
+    <string name="legal_document_check_your_internet_connection_and">请检查网络连接，然后重试。</string>
+    <string name="legal_document_couldn_t_be_loaded">"无法加载“%1$s”"</string>
+    <!-- ModelBenchmarkScreen -->
+    <string name="model_benchmark_pipeline_s_1f_ms" formatted="false">流水线：%s · %.1f 毫秒</string>
+    <string name="model_benchmark_total_1f_ms" formatted="false">总计 %.1f 毫秒</string>
+    <string name="model_benchmark_pre_0f_inf_0f_post" formatted="false">预处理 %.0f · 推理 %.0f · 后处理 %.0f</string>
+    <string name="model_benchmark_not_detected">未检测到</string>
+    <string name="model_benchmark_detected_conf_0f" formatted="false">已检测到 · 置信度 %.0f%%</string>
+    <string name="model_benchmark_none">无</string>
+    <string name="model_benchmark_quad">四边形</string>
+    <string name="model_benchmark_error">错误</string>
+    <string name="model_benchmark_no_preview">无预览</string>
+    <string name="model_benchmark_detection_preview">"%1$s 检测预览"</string>
+    <string name="model_benchmark_avg_1f_p50_1f_p95" formatted="false">平均 %.1f · P50 %.1f · P95 %.1f 毫秒 · 检测到 %d/%d · 失败 %d</string>
+    <string name="model_benchmark_avg_1f_p95_1f_ms" formatted="false">平均 %.1f · P95 %.1f 毫秒 · 通过 %d/%d</string>
+    <string name="model_benchmark_document_gate">文档门控</string>
+    <string name="model_benchmark_aggregate">汇总</string>
+    <string name="model_benchmark_images_processed">"已处理 %1$s / %2$s 张图片"</string>
+    <string name="model_benchmark_choose_images_and_run">选择图片并运行</string>
+    <string name="model_benchmark_benchmark_running">正在运行基准测试…</string>
+    <string name="model_benchmark_select_more_photos_to_measure">选择更多照片，测量门控延迟、角点检测、多边形叠加和完整流水线耗时。</string>
+    <string name="model_benchmark_run_another_pass">再运行一次</string>
+    <string name="model_benchmark_images_stay_on_this_device">图片仅保存在此设备上，不会上传任何内容。</string>
+    <string name="model_benchmark_choose_real_documents_or_rectangular">请选择真实文档或矩形物体。Scanly 会为每个检测器计时，并显示检测到的边缘。</string>
+    <string name="model_benchmark_compare_detectors_on_your_photos">用你的照片比较各检测器</string>
+    <string name="model_benchmark_model_benchmark">模型基准测试</string>
+    <string name="model_benchmark_image">图片</string>
+    <string name="model_benchmark_model_failed">模型运行失败</string>
+    <string name="model_benchmark_could_not_decode_image">无法解码图片</string>
+    <!-- PipSettingsScreen -->
+    <string name="pip_settings_on">"开启 · "</string>
+    <string name="pip_settings_on_2">开启</string>
+    <string name="pip_settings_napping">打盹中</string>
+    <string name="pip_settings_napping_screens_show_plain_text">打盹中 · 界面显示普通文字</string>
+    <string name="pip_settings_on_around_the_app">在应用各处出现</string>
+    <string name="pip_settings_show_pip">显示 Pip</string>
+    <string name="pip_settings_scanly_s_little_helper_pip">Scanly 的小助手。Pip 会在空白界面、相机中以及内容准备好时出现，说一句简短的话，然后就不打扰你了。</string>
+    <string name="pip_settings_pip">Pip</string>
+    <string name="pip_settings_hi_this_is_where_you">嗨！你可以在这里决定我帮多少忙。</string>
+    <string name="pip_settings_i_ll_keep_still_still">我会安安静静的，不过还在这儿哦。</string>
+    <string name="pip_settings_okay_i_ll_nap_switch">好吧，我去打个盹。随时可以叫醒我。</string>
+    <string name="pip_settings_pip_lives_on_this_phone">Pip 只存在于这部手机上，从不查看你的文档。它说的每句话都内置在 Scanly 中。</string>
+    <string name="pip_settings_blinks_talks_and_hops_pip">会眨眼、说话和蹦跳。关闭系统动画后，Pip 会保持静止。</string>
+    <string name="pip_settings_animate_pip">Pip 动画</string>
+    <string name="pip_settings_motion">动效</string>
+    <string name="pip_settings_a_happy_hello_when_a">文档可以分享时，开心地打个招呼。</string>
+    <string name="pip_settings_cheer_on_exports">导出时欢呼</string>
+    <string name="pip_settings_pip_helps_you_frame_pages">Pip 会帮你对准页面。关闭后显示普通引导。</string>
+    <string name="pip_settings_camera_coaching">拍摄指导</string>
+    <string name="pip_settings_one_short_tip_a_day">每天在问候语下方显示一条小贴士。</string>
+    <string name="pip_settings_tips_on_home">首页小贴士</string>
+    <string name="pip_settings_where_pip_helps">Pip 出现的位置</string>
+    <!-- SettingsComponents -->
+    <string name="settings_pages_were_read_with_another">"有 %1$s 页是用其他引擎识别的。可在后台用 %2$s 重新识别。"</string>
+    <string name="settings_1_page_was_read_with">"有 1 页是用其他引擎识别的。可在后台用 %1$s 重新识别。"</string>
+    <string name="settings_re_read_existing_pages">重新识别现有页面</string>
+    <string name="settings_indra_ocr_paused_it_stopped">Indra OCR 已暂停 — 它两次意外停止，因此目前改用 ML Kit 识别页面。再次选择 Indra OCR 即可重试。</string>
+    <string name="settings_ml_kit">ML Kit</string>
+    <string name="settings_indra_ocr">Indra OCR</string>
+    <string name="settings_rate_scanly_on_google_play">在 Google Play 上为 Scanly 评分</string>
+    <string name="settings_it_s_free_private_and">免费、注重隐私且无广告。在 Google Play 上评个分，能帮助更多人发现它。</string>
+    <string name="settings_enjoying_scanly">喜欢 Scanly 吗？</string>
+    <string name="settings_dark">深色</string>
+    <string name="settings_light">浅色</string>
+    <string name="settings_system">跟随系统</string>
+    <string name="settings_tap_to_check">"点按即可检查 %1$s"</string>
+    <string name="settings_you_are_on_latest_is">当前版本为 %1$s，最新版本为 %2$s。</string>
+    <string name="settings_scanly_is_available_on">"Scanly %1$s 已在 %2$s 上推出。"</string>
+    <string name="settings_checking">正在检查 %1$s...</string>
+    <string name="settings_check_for_updates">检查更新</string>
+    <string name="settings_by_jeevaprakash_g">开发者：jeevaprakash g</string>
+    <string name="settings_version_unavailable">无法获取版本信息</string>
+    <string name="settings_pick_the_detector_that_fits">选择适合此设备和使用方式的检测器。</string>
+    <string name="settings_choose">"选择 %1$s"</string>
+    <string name="settings_highest_accuracy_maximum_compatibility">准确度最高 · 兼容性最强</string>
+    <string name="settings_higher_accuracy_best_after_capture">准确度较高 · 最适合拍摄后处理</string>
+    <string name="settings_balanced_speed_and_accuracy">兼顾速度与准确度</string>
+    <string name="settings_fastest_ideal_for_live_camera">速度最快 · 适合相机实时预览</string>
+    <!-- SettingsDetailScreens -->
+    <string name="settings_detail_screens_open_source">开源</string>
+    <string name="settings_detail_screens_try_a_different_word_or">请换个关键词，或浏览分类。</string>
+    <string name="settings_detail_screens_no_answers_for">没有与“%1$s”相关的解答。</string>
+    <string name="settings_detail_screens_no_answers_in_this_category">此分类中没有解答。</string>
+    <string name="settings_detail_screens_all">全部</string>
+    <string name="settings_detail_screens_search_help">搜索帮助</string>
+    <string name="settings_detail_screens_help_faq">帮助和常见问题</string>
+    <!-- SettingsHubSubScreens -->
+    <string name="settings_hub_sub_screens_terms_conditions">条款及条件</string>
+    <string name="settings_hub_sub_screens_privacy_policy">隐私权政策</string>
+    <string name="settings_hub_sub_screens_legal">法律信息</string>
+    <string name="settings_hub_sub_screens_project_website">项目网站</string>
+    <string name="settings_hub_sub_screens_contact_support">联系支持团队</string>
+    <string name="settings_hub_sub_screens_help">帮助</string>
+    <string name="settings_hub_sub_screens_about">关于</string>
+    <string name="settings_hub_sub_screens_open_the_qr_tool">打开二维码工具</string>
+    <string name="settings_hub_sub_screens_qr_widget">二维码微件</string>
+    <string name="settings_hub_sub_screens_start_a_new_document_scan">开始扫描新文档</string>
+    <string name="settings_hub_sub_screens_scan_widget">扫描微件</string>
+    <string name="settings_hub_sub_screens_scan_import_qr_library">扫描 · 导入 · 二维码 · 文档库</string>
+    <string name="settings_hub_sub_screens_actions_bar">快捷操作栏</string>
+    <string name="settings_hub_sub_screens_home_screen">主屏幕</string>
+    <string name="settings_hub_sub_screens_widgets">微件</string>
+    <string name="settings_hub_sub_screens_long_press_home_screen_widgets">长按主屏幕 → 微件 → Scanly</string>
+    <string name="settings_hub_sub_screens_tap_to_add_a_widget">点按即可将微件添加到主屏幕</string>
+    <string name="settings_hub_sub_screens_could_not_open_the_add">无法打开添加微件对话框。</string>
+    <string name="settings_hub_sub_screens_your_launcher_doesn_t_support">你的启动器不支持从应用内添加微件。请长按主屏幕，然后在“微件”中选择 Scanly。</string>
+    <string name="settings_hub_sub_screens_compare_all_models_on_local">用本地图片比较所有模型</string>
+    <string name="settings_hub_sub_screens_tools">工具</string>
+    <string name="settings_hub_sub_screens_reject_screens_and_non_documents">在检测边缘前排除屏幕和非文档内容</string>
+    <string name="settings_hub_sub_screens_physical_document_gate">实体文档门控</string>
+    <string name="settings_hub_sub_screens_capture_quality">拍摄质量</string>
+    <string name="settings_hub_sub_screens_used_after_camera_or_gallery">在相机拍摄或从图库导入后使用</string>
+    <string name="settings_hub_sub_screens_selected_automatically_for_higher_accuracy">自动选择以提高准确度</string>
+    <string name="settings_hub_sub_screens_post_processing_model">后处理模型</string>
+    <string name="settings_hub_sub_screens_used_while_the_camera_preview">在相机预览运行时使用</string>
+    <string name="settings_hub_sub_screens_selected_automatically_for_responsive_preview">自动选择以确保预览流畅</string>
+    <string name="settings_hub_sub_screens_live_preview_model">实时预览模型</string>
+    <string name="settings_hub_sub_screens_choose_the_best_models_for">为此设备选择最合适的模型</string>
+    <string name="settings_hub_sub_screens_live_processing">"实时：%1$s · 处理：%2$s"</string>
+    <string name="settings_hub_sub_screens_testing_model_speed_on_this">正在测试此设备上的模型速度…</string>
+    <string name="settings_hub_sub_screens_automatic_model_selection">自动选择模型</string>
+    <string name="settings_hub_sub_screens_models">模型</string>
+    <string name="settings_hub_sub_screens_document_detection">文档检测</string>
+    <string name="settings_hub_sub_screens_true_black_surfaces_saves_battery">纯黑背景 · 在 AMOLED 屏幕上更省电</string>
+    <string name="settings_hub_sub_screens_takes_effect_in_dark_theme">在深色主题下生效 · 在 AMOLED 屏幕上更省电</string>
+    <string name="settings_hub_sub_screens_pure_black">纯黑</string>
+    <string name="settings_hub_sub_screens_theme">主题</string>
+    <string name="settings_hub_sub_screens_appearance">外观</string>
+    <!-- SettingsScreen -->
+    <string name="settings_preferences_and_app_info">偏好设置和应用信息</string>
+    <string name="settings_scanly">"Scanly %1$s"</string>
+    <string name="settings_settings">设置</string>
+    <string name="settings_version_updates_and_legal">版本、更新和法律信息</string>
+    <string name="settings_leave_a_rating_on_google">在 Google Play 上评分</string>
+    <string name="settings_more">更多</string>
+    <string name="settings_actions_scan_and_qr">快捷操作、扫描和二维码</string>
+    <string name="settings_text_recognition">文字识别</string>
+    <string name="settings_intelligence">智能</string>
+    <string name="settings_pages_kept_documents_and_folders">"页面保留 %1$s，文档和文件夹保留 %2$s"</string>
+    <string name="settings_storage">存储</string>
+    <string name="settings_pip_your_helper">Pip 小助手</string>
+    <string name="settings_preferences">偏好设置</string>
+    <string name="settings_save_location_cleanup">保存位置和清理</string>
+    <string name="settings_indra_ocr_100_languages_experimental">Indra OCR · 100 多种语言（实验性）</string>
+    <string name="settings_ml_kit_latin_script_languages">ML Kit · 拉丁字母语言</string>
+    <string name="settings_gate_off">"%1$s · 门控已关闭"</string>
+    <string name="settings_gate_on">"%1$s · 门控已开启"</string>
+    <string name="settings_manual_models">手动选择模型</string>
+    <string name="settings_automatic_models">自动选择模型</string>
+    <string name="settings_calibrating">正在校准…</string>
+    <string name="settings_pure_black">" · 纯黑"</string>
+    <string name="settings_thanks_for_supporting_scanly">感谢你支持 Scanly</string>
+    <!-- SettingsTextRecognitionScreen -->
+    <string name="settings_text_recognition_weights_openrail_m_code_apache">权重：OpenRAIL-M · 代码：Apache-2.0</string>
+    <string name="settings_text_recognition_visit_datalab_to">访问 datalab.to</string>
+    <string name="settings_text_recognition_a_big_thank_you_to">衷心感谢 Datalab 打造了 Indra OCR，并允许 Scanly 直接在你的手机上运行它。正因如此，Scanly 才能识别 100 多种语言。</string>
+    <string name="settings_text_recognition_datalab">Datalab</string>
+    <string name="settings_text_recognition_indra_ocr_by">INDRA OCR 开发者</string>
+    <string name="settings_text_recognition_datalab_logo">Datalab 徽标</string>
+    <string name="settings_text_recognition_latin_script_only_pages_in">仅支持拉丁字母。印地文、泰米尔文、阿拉伯文或中文等其他文字的页面会识别为空白或乱码。识别这些页面请改用 Indra OCR。</string>
+    <string name="settings_text_recognition_5_script_families_read_in">一次识别 5 大类文字。每一行都会交给合适的识别器处理，因此混合多种语言的页面也能识别。</string>
+    <string name="settings_text_recognition_reads_100_languages_across_many">可识别多种文字的 100 多种语言，包括印地语、泰米尔语、阿拉伯语、中文和日语。速度比 ML Kit 慢。</string>
+    <string name="settings_text_recognition_experimental">实验性</string>
+    <string name="settings_text_recognition_google_s_fast_on_device">Google 推出的快速设备端识别器。最适合英语、西班牙语和法语等拉丁字母语言。</string>
+    <string name="settings_text_recognition_default">默认</string>
+    <string name="settings_text_recognition_if_a_page_s_text">如果页面文字显示为空白或乱码，可能是 ML Kit 无法识别该文字。请改用 Indra OCR，然后使用“重新识别现有页面”。</string>
+    <string name="settings_text_recognition_tip">提示</string>
+    <string name="settings_text_recognition_switching_engines_only_affects_new">切换引擎只会影响之后的识别。现有页面可在此界面重新识别，你亲自修改过的文字绝不会被替换。</string>
+    <string name="settings_text_recognition_your_edits_are_kept">你的修改会保留</string>
+    <string name="settings_text_recognition_if_indra_ocr_can_t">如果 Indra OCR 无法识别某页、耗时过长或中途停止，将改由 ML Kit 识别。</string>
+    <string name="settings_text_recognition_ml_kit_is_the_safety">ML Kit 兜底</string>
+    <string name="settings_text_recognition_both_engines_run_on_the">两种引擎都在设备上运行，识别时绝不会上传页面。</string>
+    <string name="settings_text_recognition_stays_on_your_phone">数据留在你的手机上</string>
+    <string name="settings_text_recognition_ml_kit_is_the_default">ML Kit 是默认引擎。它速度快，对英语、西班牙语、法语和德语等拉丁字母语言的识别非常准确。\n\nIndra OCR 适用于其他所有语言。它可识别 100 多种语言，包括印地语、泰米尔语、孟加拉语、阿拉伯语、乌尔都语、中文、日语、韩语和泰语，还能处理混合多种语言的页面。它目前处于实验阶段，速度较慢，因此页面需要更久才能被搜索到。</string>
+    <string name="settings_text_recognition_choosing_an_engine">如何选择引擎</string>
+    <string name="settings_text_recognition_after_you_scan_scanly_reads">扫描后，Scanly 会识别每一页上的文字。有了这些文字，你就可以按页面内容搜索文档库，复制或分享扫描件中的文字，还能将其导出。</string>
+    <string name="settings_text_recognition_what_it_does">功能介绍</string>
+    <string name="settings_text_recognition_also_called_ocr">也称为 OCR</string>
+    <string name="settings_text_recognition_re_read">重新识别</string>
+    <string name="settings_text_recognition_runs_in_the_background_while">在电量充足时于后台运行。你亲自修改过的文字会保留。</string>
+    <string name="settings_text_recognition_on_device_text_recognition_v2">设备端文字识别 v2</string>
+    <string name="settings_text_recognition_google_ml_kit">Google ML Kit</string>
+    <string name="settings_text_recognition_credits">致谢</string>
+    <string name="settings_text_recognition_supported_languages">支持的语言</string>
+    <string name="settings_text_recognition_engine">引擎</string>
+    <string name="settings_text_recognition_about_text_recognition">关于文字识别</string>
+    <!-- SettingsViewModel -->
+    <string name="settings_save_location_reset_to_downloads">保存位置已重置为 Downloads/Scanly。</string>
+    <string name="settings_save_location_updated">保存位置已更新。</string>
+    <string name="settings_reading_pages_again_in_the">"正在后台重新识别 %1$s 页。"</string>
+    <string name="settings_reading_1_page_again_in">正在后台重新识别 1 页。</string>
+    <string name="settings_no_pages_to_read_again">没有需要重新识别的页面。</string>
+    <string name="settings_could_not_update_the_text">无法更新文字识别引擎。</string>
+    <string name="settings_could_not_update_the_physical">无法更新实体文档门控。</string>
+    <string name="settings_could_not_update_automatic_model">无法更新自动选择模型设置。</string>
+    <string name="settings_could_not_update_the_post">无法更新后处理模型。</string>
+    <string name="settings_could_not_update_the_live">无法更新实时预览模型。</string>
+    <string name="settings_could_not_update_pure_black">无法更新纯黑主题。</string>
+    <string name="settings_removed_empty_folders">"已移除 %1$s 个空文件夹。"</string>
+    <string name="settings_removed_1_empty_folder">已移除 1 个空文件夹。</string>
+    <string name="settings_no_empty_folders_found">未发现空文件夹。</string>
+    <string name="settings_removed_empty_documents">"已移除 %1$s 个空文档。"</string>
+    <string name="settings_removed_1_empty_document">已移除 1 个空文档。</string>
+    <string name="settings_no_empty_documents_found">未发现空文档。</string>
+    <string name="settings_freed">"已释放 %1$s"</string>
+    <string name="settings_all_data_cleared">已清除所有数据。</string>
+    <!-- StorageScreen -->
+    <string name="storage_temporary_exports">临时导出文件</string>
+    <string name="storage_database_search_index">数据库和搜索索引</string>
+    <string name="storage_library_files">文档库文件</string>
+    <string name="storage_scanly_is_using">Scanly 已使用</string>
+    <string name="storage_calculating">正在计算…</string>
+    <string name="storage_change">更改</string>
+    <string name="storage_exports_save_to">导出文件保存到</string>
+    <string name="storage_this_permanently_deletes_all_documents">此操作会永久删除此设备上的所有文档、文件夹、页面和临时导出文件。已保存到导出文件夹中的文件会保留。</string>
+    <string name="storage_clear_all_data">要清除所有数据吗？</string>
+    <string name="storage_deletes_every_folder_group_that">删除所有不含文档的文件夹（分组）。仍有文档的文件夹会保留。</string>
+    <string name="storage_remove_empty_folders">要移除空文件夹吗？</string>
+    <string name="storage_deletes_every_document_that_has">删除所有没有页面的文档（包括中途放弃的拍摄），并释放其占用的本地存储空间。仍有页面的文档会保留。</string>
+    <string name="storage_remove_empty_documents">要移除空文档吗？</string>
+    <string name="storage_deletes_every_document_folder_and">删除此设备上的所有文档、文件夹和页面</string>
+    <string name="storage_clear_all_data_2">清除所有数据</string>
+    <string name="storage_danger_zone">危险操作</string>
+    <string name="storage_folders_with_no_documents">不含文档的文件夹</string>
+    <string name="storage_remove_empty_folders_2">移除空文件夹</string>
+    <string name="storage_documents_with_no_pages">没有页面的文档</string>
+    <string name="storage_remove_empty_documents_2">移除空文档</string>
+    <string name="storage_restore_deleted_folders_documents_and">恢复已删除的文件夹、文档和页面</string>
+    <string name="storage_tidy_up">整理</string>
+    <string name="storage_use_default_folder">使用默认文件夹</string>
+    <string name="storage_pdfs_and_images_you_export">你导出的 PDF 和图片会保存在这里。</string>
+    <string name="storage_save_location">保存位置</string>
+    <string name="storage_could_not_use_the_selected">无法使用所选文件夹。</string>
+    <string name="storage_selected_folder">所选文件夹</string>
+    <!-- ScannedPagePickerSheet -->
+    <string name="scanned_page_picker_no_pages_in_this_document">此文档中没有可用的页面。</string>
+    <string name="scanned_page_picker_back_to_documents">返回文档列表</string>
+    <string name="scanned_page_picker_no_scanned_documents_yet_scan">还没有扫描的文档。在 Scanly 中扫描页面后，它就会显示在这里。</string>
+    <string name="scanned_page_picker_scanned_pages">扫描的页面</string>
+    <!-- SignatureCreateScreen -->
+    <string name="signature_create_choose_another">另选一个</string>
+    <string name="signature_create_bolder">更粗</string>
+    <string name="signature_create_fainter">更淡</string>
+    <string name="signature_create_ink_sensitivity">墨迹灵敏度</string>
+    <string name="signature_create_extracted_signature_preview">提取的签名预览</string>
+    <string name="signature_create_scanly_removes_the_paper_background">Scanly 会去除纸张背景，只保留墨迹。</string>
+    <string name="signature_create_use_a_page_you_scanned">使用你在 Scanly 中扫描的页面</string>
+    <string name="signature_create_scanned_page">扫描的页面</string>
+    <string name="signature_create_jpg_or_png_from_your">手机中的 JPG 或 PNG</string>
+    <string name="signature_create_files">文件</string>
+    <string name="signature_create_pick_a_photo_of_your">选择一张签名照片</string>
+    <string name="signature_create_photos">照片</string>
+    <string name="signature_create_choose_where_your_signature_is">选择签名所在位置</string>
+    <string name="signature_create_choose_where_your_initials_are">选择姓名缩写所在位置</string>
+    <string name="signature_create_pen">笔</string>
+    <string name="signature_create_upload">上传</string>
+    <string name="signature_create_draw">手写</string>
+    <string name="signature_create_save_signature">保存签名</string>
+    <string name="signature_create_save_initials">保存姓名缩写</string>
+    <string name="signature_create_sign_above_the_line">请在线上签名</string>
+    <string name="signature_create_write_your_initials_above_the">请在线上写下姓名缩写</string>
+    <string name="signature_create_new_signature">新建签名</string>
+    <string name="signature_create_new_initials">新建姓名缩写</string>
+    <!-- SignatureCreateViewModel -->
+    <string name="signature_create_choose_a_photo_of_your">请先选择一张签名照片。</string>
+    <string name="signature_create_still_reading_the_photo_try">仍在读取照片，请稍后再试。</string>
+    <string name="signature_create_draw_your_signature_first">请先手写签名。</string>
+    <!-- SignaturePad -->
+    <string name="signature_pad_draw_here">在此手写</string>
+    <!-- DocumentSignScreen -->
+    <string name="document_sign_stamping_signatures">正在添加签名…</string>
+    <!-- DocumentSignViewModel -->
+    <string name="document_sign_saved_signatures_couldn_t_be">无法加载已保存的签名，因此暂时无法签署此文档。</string>
+    <!-- SignEditorScreen -->
+    <string name="sign_editor_next_page">下一页</string>
+    <string name="sign_editor_add_text">添加文字</string>
+    <string name="sign_editor_edit_date">编辑日期</string>
+    <string name="sign_editor_tap_checkbox_again_for_another">再次点按“复选框”可添加另一个框 · 使用工具栏勾选或取消勾选</string>
+    <string name="sign_editor_tap_text_again_for_another">"再次点击文本另一行 · 双击文本进行编辑"</string>
+    <string name="sign_editor_tap_date_again_for_another">"再次点击日期以获取另一个印章 · 双击日期进行编辑"</string>
+    <string name="sign_editor_manage">"管理"</string>
+    <string name="sign_editor_your_signatures">"您的签名"</string>
+    <string name="sign_editor_signatures_and_marks_you_added">"您在本文档上添加或更改的签名和标记将不会被保留。"</string>
+    <!-- SignMarkLayer -->
+    <string name="sign_mark_layer_duplicate">"复制"</string>
+    <string name="sign_mark_layer_tick">"勾选"</string>
+    <string name="sign_mark_layer_untick">"取消勾选"</string>
+    <!-- SignatureManageScreen -->
+    <string name="signature_manage_added">"%1$s · 新增 %2$s"</string>
+    <string name="signature_manage_from_a_photo">"来自照片"</string>
+    <string name="signature_manage_drawn">"绘制"</string>
+    <string name="signature_manage_pages_you_ve_already_signed">"已签名的页面保留"</string>
+    <string name="signature_manage_place_it_on_a_pdf">"将其放在 PDF 或 Scanly 文档上"</string>
+    <string name="signature_manage_sign_a_pdf">"签署PDF"</string>
+    <string name="signature_manage_use_first_when_signing">"签名时先使用"</string>
+    <string name="signature_manage_shared_and_saved_as_a">"共享并保存为透明的 PNG，可用于文档、表格和电子邮件。"</string>
+    <string name="signature_manage_save_to_phone">"保存到手机"</string>
+    <string name="signature_manage_ink_colour">"墨水颜色"</string>
+    <string name="signature_manage_in_ink">"%1$s，墨水：%2$s"</string>
+    <string name="signature_manage_used_first">"先用"</string>
+    <string name="signature_manage_used_first_2">"首先使用"</string>
+    <string name="signature_manage_pages_you_ve_already_signed_2">"您已签名的页面将保留。"</string>
+    <string name="signature_manage_initials">"缩写"</string>
+    <string name="signature_manage_signatures">"签名"</string>
+    <string name="signature_manage_signatures_stay_on_this_phone">"签名保留在此手机上。画一个签名或上传一张签名照片。"</string>
+    <string name="signature_manage_tap_one_to_share_save">"点击其中一个即可共享、保存或重新排序"</string>
+    <!-- SignatureManageViewModel -->
+    <string name="signature_manage_saved_to">"保存至 %1$s"</string>
+    <string name="signature_manage_will_be_offered_first_when">"签约时优先提供%1$s"</string>
+    <!-- PageTextScreen -->
+    <string name="page_text_share_text">"分享文字"</string>
+    <string name="page_text_scan_or_import_a_page">"扫描或导入页面，其文本将出现在此处。"</string>
+    <string name="page_text_this_document_has_no_pages">"该文档还没有页数"</string>
+    <string name="page_text_reading_text">"阅读文字"</string>
+    <string name="page_text_copy_page">"复制页面"</string>
+    <string name="page_text_save_changes">"保存更改"</string>
+    <string name="page_text_copy">"复制"</string>
+    <string name="page_text_tap_an_outlined_area_to">"点击轮廓区域以仅复制该部分。"</string>
+    <string name="page_text_regions_are_hidden_because_this">"区域被隐藏，因为该页面在阅读其文本后发生了更改。"</string>
+    <string name="page_text_page_image_with_text_regions">"带有 %1$s 文本区域的页面图像"</string>
+    <string name="page_text_read_with_indra_ocr_experimental">"用Indra OCR读取（实验）"</string>
+    <string name="page_text_read_with_ml_kit_indra">"用ML Kit读取（Indra OCR无法读取此页）"</string>
+    <string name="page_text_edited">"编辑"</string>
+    <string name="page_text_read_again">"再读一遍"</string>
+    <string name="page_text_photos_and_handwriting_may_not">"照片和手写内容不得包含可读的印刷文本。更清晰、光线充足的扫描通常会有所帮助。"</string>
+    <string name="page_text_no_text_found_on_this">"本页未找到文字"</string>
+    <string name="page_text_read_this_page">"阅读本页"</string>
+    <string name="page_text_scanly_reads_page_text_on">"Scanly 读取该设备上的页面文本。"</string>
+    <string name="page_text_text_not_read_yet">"文本尚未阅读"</string>
+    <string name="page_text_try_again">"再试一次"</string>
+    <string name="page_text_couldn_t_read_this_page">"无法阅读此页"</string>
+    <string name="page_text_your_corrections_are_used_for">"您的更正将用于复制、共享和搜索。"</string>
+    <string name="page_text_this_page_changed_after_its">"该页面在阅读其文本后发生了变化。"</string>
+    <string name="page_text_stop_highlighting">"停止突出显示"</string>
+    <string name="page_text_on_this_page">"本页%1$s"</string>
+    <string name="page_text_not_on_this_page">"不在本页"</string>
+    <string name="page_text_reading_text_2">"阅读文字…"</string>
+    <string name="page_text_reading_page_of">"读取%2$s…的%1$s页"</string>
+    <string name="page_text_page">"%1$s — 第 %2$s 页"</string>
+    <string name="page_text_read_all_pages_again">"再次阅读所有页面"</string>
+    <string name="page_text_restore_original_text">"恢复原文"</string>
+    <string name="page_text_share_all_pages">"分享所有页面"</string>
+    <string name="page_text_all_pages">"所有页面"</string>
+    <string name="page_text_copy_all_pages">"复制所有页面"</string>
+    <string name="page_text_extracted_text">"提取文本"</string>
+    <string name="page_text_copied">"复制%1$s"</string>
+    <!-- PageTextViewModel -->
+    <string name="page_text_original_text_restored">"恢复原文"</string>
+    <string name="page_text_changes_saved_search_uses_your">"更改已保存。搜索使用您的编辑。"</string>
+    <string name="page_text_page_text_read_again">"再次阅读页面文本"</string>
+    <!-- ToolKit -->
+    <string name="tool_kit_file_name">"文件名"</string>
+    <!-- ToolsScreen -->
+    <string name="tools_everything_runs_offline_on_this">"一切都在这款手机上离线运行"</string>
+    <string name="tools_utilities">"公用事业"</string>
+    <!-- PdfCompressScreen -->
+    <string name="pdf_compress_recommended">"推荐"</string>
+    <string name="pdf_compress_compress_this_pdf_again_with">"使用不同的设置再次压缩此 PDF"</string>
+    <string name="pdf_compress_try_another_quality">"尝试另一种品质"</string>
+    <string name="pdf_compress_after">"之后"</string>
+    <string name="pdf_compress_before">"之前"</string>
+    <string name="pdf_compress_quality">"质量"</string>
+    <string name="pdf_compress_this_quality_didn_t_make">"这种质量并没有使文件变小。尝试另一个。"</string>
+    <string name="pdf_compress_compressed">"压缩"</string>
+    <string name="pdf_compress_already_compact">"已经紧凑"</string>
+    <string name="pdf_compress_saved">"已保存 %1$s%%"</string>
+    <string name="pdf_compress_compressing">"压缩…"</string>
+    <string name="pdf_compress_compress">"压缩"</string>
+    <string name="pdf_compress_pages_are_re_encoded_as">"页面被重新编码为图像，因此无法再选择或搜索PDF中的文本。"</string>
+    <string name="pdf_compress_unlock">"解锁"</string>
+    <string name="pdf_compress_enter_the_password">"输入密码"</string>
+    <string name="pdf_compress_compressed_pdf">"压缩后的PDF"</string>
+    <string name="pdf_compress_step_1_of_3_choose">"第 1 步（共 3 步） · 选择文件"</string>
+    <string name="pdf_compress_shrink_a_pdf_for_email">"缩小 PDF 的电子邮件或上传限制。"</string>
+    <string name="pdf_compress_compress_pdf">"压缩PDF"</string>
+    <!-- PdfCompressViewModel -->
+    <string name="pdf_compress_compressing_pdf">"压缩PDF…"</string>
+    <string name="pdf_compress_choose_a_pdf_first">"首先选择PDF。"</string>
+    <!-- PdfFilePicker -->
+    <string name="pdf_file_picker_days_ago">"%1$s 几天前"</string>
+    <string name="pdf_file_picker_selected_position">"选中，位置%1$s"</string>
+    <string name="pdf_file_picker_empty_scans_are_hidden">"%1$s空扫描被隐藏"</string>
+    <string name="pdf_file_picker_1_empty_scan_is_hidden">"1个空扫描被隐藏"</string>
+    <string name="pdf_file_picker_no_match">"没有%1$s匹配“%2$s”。"</string>
+    <string name="pdf_file_picker_sorted_by">"按%1$s排序"</string>
+    <string name="pdf_file_picker_in_scanly">"Scanly · %1$s"</string>
+    <string name="pdf_file_picker_search_your">"搜索您的%1$s"</string>
+    <string name="pdf_file_picker_your_scans_have_no_pages">"您的扫描还没有页面。从手机存储中选择 PDF。"</string>
+    <string name="pdf_file_picker_no_scans_yet_pick_a">"尚未扫描。从手机存储中选择 PDF，或先扫描一个。"</string>
+    <string name="pdf_file_picker_pdfs">"PDF文件"</string>
+    <string name="pdf_file_picker_downloads_drive_and_other_apps">"下载、云端硬盘和其他应用程序"</string>
+    <string name="pdf_file_picker_phone_storage">"手机存储"</string>
+    <!-- PdfImportScreen -->
+    <string name="pdf_import_add_pages">"添加%1$s页面"</string>
+    <string name="pdf_import_add_1_page">"添加1页"</string>
+    <string name="pdf_import_add_to_library">"添加到库"</string>
+    <string name="pdf_import_another_pdf">"另一个PDF"</string>
+    <string name="pdf_import_crop_filter_sign_or_search">"%1$s · %2$s。像任何扫描一样裁剪、过滤、签名或搜索它。"</string>
+    <string name="pdf_import_added_to_your_library">"添加到您的图书馆"</string>
+    <string name="pdf_import_step_3_of_3_done">"第 3 步（共 3 步） · 已完成"</string>
+    <string name="pdf_import_adding_to_library">"添加库…"</string>
+    <string name="pdf_import_look">"看"</string>
+    <string name="pdf_import_your_pdf_file_stays_as">"您的PDF文件保持原样； Scanly 保留自己的副本"</string>
+    <string name="pdf_import_tap_a_page_or_long">"点击一个页面，或长按并拖动多个页面。"</string>
+    <string name="pdf_import_step_2_of_3_pages">"第 2 步（共 3 页） · 页码和名称"</string>
+    <string name="pdf_import_name_this_document">"命名该文档"</string>
+    <string name="pdf_import_document_name">"文件名称"</string>
+    <string name="pdf_import_turn_a_pdf_into_a">"将 PDF 转换为可编辑、签名和搜索的 Scanly 文档。"</string>
+    <string name="pdf_import_add_pdf_to_library">"将PDF添加到库中"</string>
+    <!-- PdfImportViewModel -->
+    <string name="pdf_import_give_the_document_a_name">"为文档命名。"</string>
+    <string name="pdf_import_imported_pdf">"进口PDF"</string>
+    <!-- PdfMergeScreen -->
+    <string name="pdf_merge_1_file">"1 个文件"</string>
+    <string name="pdf_merge_your_original_files_are_unchanged">"你的原始文件没有改变"</string>
+    <string name="pdf_merge_combined_into_one_pdf">"%1$s 组合成一台 PDF"</string>
+    <string name="pdf_merge_merged">"合并"</string>
+    <string name="pdf_merge_kept_unchanged">"保持，不变"</string>
+    <string name="pdf_merge_original_files">"原始文件"</string>
+    <string name="pdf_merge_size">"尺寸"</string>
+    <string name="pdf_merge_remove">"删除%1$s"</string>
+    <string name="pdf_merge_move_down">"下移%1$s"</string>
+    <string name="pdf_merge_move_up">"将 %1$s 向上移动"</string>
+    <string name="pdf_merge_pdf_from_scanly">"PDF 来自 Scanly"</string>
+    <string name="pdf_merge_pdf_from_phone">"电话 PDF"</string>
+    <string name="pdf_merge_page_count_unknown">"页数未知"</string>
+    <string name="pdf_merge_merge_pdfs">"合并PDF文件"</string>
+    <string name="pdf_merge_merge_files">"合并%1$s文件"</string>
+    <string name="pdf_merge_add_more">"添加更多"</string>
+    <string name="pdf_merge_merge_order">"合并订单 · %1$s"</string>
+    <string name="pdf_merge_files_are_joined_from_top">"文件从上到下连接。"</string>
+    <string name="pdf_merge_order_name">"订单及名称"</string>
+    <string name="pdf_merge_step_2_of_3_order">"第 2 步（共 3 步） · 订单和名称"</string>
+    <string name="pdf_merge_in_total">"共%1$s"</string>
+    <string name="pdf_merge_from_phone">"电话：%1$s"</string>
+    <string name="pdf_merge_next">"下一步"</string>
+    <string name="pdf_merge_next_files">"接下来的· %1$s文件"</string>
+    <string name="pdf_merge_pick_at_least_2_files">"选择至少 2 个文件"</string>
+    <string name="pdf_merge_step_1_of_3_pick">"第 1 步（共 3 个 · 选择文件）"</string>
+    <string name="pdf_merge_pick_files_in_the_order">"按照您想要的顺序选择文件。"</string>
+    <string name="pdf_merge_merged_pdf">"合并PDF"</string>
+    <string name="pdf_merge_merging">"合并…"</string>
+    <!-- PdfMergeViewModel -->
+    <string name="pdf_merge_add_at_least_two_pdfs">"添加至少两个PDF文件进行合并。"</string>
+    <!-- PdfPasswordScreen -->
+    <string name="pdf_password_file">"文件"</string>
+    <string name="pdf_password_allowed">"允许"</string>
+    <string name="pdf_password_restricted">"限制"</string>
+    <string name="pdf_password_editing">"编辑"</string>
+    <string name="pdf_password_no_password">"没有密码"</string>
+    <string name="pdf_password_aes_256_password">"AES-256密码"</string>
+    <string name="pdf_password_protection">"保护"</string>
+    <string name="pdf_password_a_short_phrase_you_ll">"你会记住的短语胜过随机字母。"</string>
+    <string name="pdf_password_doesn_t_match_yet">"尚未匹配"</string>
+    <string name="pdf_password_passwords_match">"密码匹配"</string>
+    <string name="pdf_password_remove_password">"删除密码"</string>
+    <string name="pdf_password_the_unlocked_copy_opens_for">"解锁副本向任何拥有它的人开放。 Scanly 仅删除您已知的密码。"</string>
+    <string name="pdf_password_bank_and_portal_pdfs_often">"银行和门户网站 PDF 文件通常使用您的出生日期或客户 ID。"</string>
+    <string name="pdf_password_password_for_this_pdf">"PDF 的密码"</string>
+    <string name="pdf_password_current_password">"当前密码"</string>
+    <string name="pdf_password_locked_pdf">"锁定PDF"</string>
+    <string name="pdf_password_lock_pdf">"锁PDF"</string>
+    <string name="pdf_password_scanly_can_t_recover_this">"Scanly 无法恢复该密码。如果忘记，PDF将无法打开。"</string>
+    <string name="pdf_password_others_can_open_and_print">"其他人可以打开和打印，但不能编辑或复制文本"</string>
+    <string name="pdf_password_restrict_editing">"限制编辑"</string>
+    <string name="pdf_password_type_it_again">"再次输入"</string>
+    <string name="pdf_password_at_least_characters">"至少%1$s字符"</string>
+    <string name="pdf_password_new_password">"新密码"</string>
+    <string name="pdf_password_add_password">"添加密码"</string>
+    <string name="pdf_password_checking_the_file">"检查文件…"</string>
+    <string name="pdf_password_unlocked_pdf">"解锁PDF"</string>
+    <string name="pdf_password_protected_pdf">"受保护的PDF"</string>
+    <string name="pdf_password_it_now_opens_without_a">"现在无需密码即可打开。"</string>
+    <string name="pdf_password_anyone_opening_it_will_need">"任何人打开它都需要密码。"</string>
+    <string name="pdf_password_password_removed">"密码已删除"</string>
+    <string name="pdf_password_pdf_locked">"PDF 已锁定"</string>
+    <string name="pdf_password_unlocking">"解锁…"</string>
+    <string name="pdf_password_locking">"锁定…"</string>
+    <string name="pdf_password_lock_a_pdf_or_remove">"锁定 PDF，或删除您知道的密码。"</string>
+    <!-- PdfPasswordViewModel -->
+    <string name="pdf_password_unlocking_pdf">"解锁PDF…"</string>
+    <string name="pdf_password_enter_the_current_password">"输入当前密码。"</string>
+    <string name="pdf_password_locking_pdf">"锁定 PDF…"</string>
+    <string name="pdf_password_use_to_characters_for_the">"使用 %1$s 到 %2$s 字符作为密码。"</string>
+    <!-- PdfReaderMenu -->
+    <string name="pdf_reader_menu_open_another_pdf">"再打开一个PDF"</string>
+    <string name="pdf_reader_menu_all_pages">"所有页面"</string>
+    <!-- PdfReaderPresentation -->
+    <string name="pdf_reader_presentation_0_of_0">"0 共 0"</string>
+    <string name="pdf_reader_presentation_paged">"寻呼"</string>
+    <string name="pdf_reader_presentation_continuous">"连续"</string>
+    <!-- PdfReaderScreen -->
+    <string name="pdf_reader_tap_a_page_to_jump">"点击页面即可跳转到该页面"</string>
+    <string name="pdf_reader_loading_page">"加载页面 %1$s…"</string>
+    <string name="pdf_reader_loading_page_2">"加载页面…"</string>
+    <string name="pdf_reader_choose_another_pdf">"选择另一个PDF"</string>
+    <string name="pdf_reader_password">"密码"</string>
+    <string name="pdf_reader_this_pdf_is_password_protected">"该 PDF 受密码保护。输入密码读取%1$s。"</string>
+    <string name="pdf_reader_unlock_pdf">"解锁PDF"</string>
+    <string name="pdf_reader_choose_a_file">"选择一个文件"</string>
+    <string name="pdf_reader_open_any_pdf_from_scanly">"从 Scanly 或您的手机打开任何 PDF。"</string>
+    <string name="pdf_reader_read_a_pdf">"读取PDF"</string>
+    <!-- PdfSignScreen -->
+    <string name="pdf_sign_1_mark">"1 分"</string>
+    <string name="pdf_sign_the_signed_copy_is_saved">"保存签名后的副本，无需密码。"</string>
+    <string name="pdf_sign_this_pdf_is_locked">"此PDF已锁定"</string>
+    <string name="pdf_sign_back_to_the_editor">"返回编辑器"</string>
+    <string name="pdf_sign_edit_signatures">"编辑签名"</string>
+    <string name="pdf_sign_signed_pdf">"签名PDF"</string>
+    <string name="pdf_sign_saved_as">"另存为"</string>
+    <string name="pdf_sign_marks_placed">"放置标记"</string>
+    <string name="pdf_sign_pages_signed">"签名页"</string>
+    <string name="pdf_sign_signed">"签署"</string>
+    <string name="pdf_sign_placing_signatures_on_each_page">"每页签名…"</string>
+    <string name="pdf_sign_signing_your_pdf">"签署您的PDF"</string>
+    <string name="pdf_sign_pdf_jpg_or_png_from">"来自下载、云端硬盘和其他应用程序的 PDF、JPG 或 PNG"</string>
+    <string name="pdf_sign_step_1_of_3_choose">"第 1 步（共 3 步） · 选择"</string>
+    <string name="pdf_sign_choose_a_pdf_or_an">"选择 PDF 或图像进行签名"</string>
+    <string name="pdf_sign_sign_pdf">"签名PDF"</string>
+    <!-- PdfSignViewModel -->
+    <string name="pdf_sign_signing">"签名…"</string>
+    <string name="pdf_sign_place_a_signature_first">"先签名。"</string>
+    <string name="pdf_sign_open_a_pdf_first">"先打开一个PDF。"</string>
+    <!-- PdfToImagesPresentation -->
+    <string name="pdf_to_images_presentation_page">"页码 %1$s · %2$s"</string>
+    <string name="pdf_to_images_presentation_share_all">"分享全部%1$s"</string>
+    <string name="pdf_to_images_presentation_share_image">"分享图片"</string>
+    <string name="pdf_to_images_presentation_in_all">"共%1$s"</string>
+    <string name="pdf_to_images_presentation_of_pages">"%2$s页面的%1$s"</string>
+    <string name="pdf_to_images_presentation_all_pages">"%1$s所有页面"</string>
+    <string name="pdf_to_images_presentation_export">"导出%1$s"</string>
+    <string name="pdf_to_images_presentation_choose_pages_to_export">"选择要导出的页面"</string>
+    <string name="pdf_to_images_presentation_1_image">"1 张图片"</string>
+    <string name="pdf_to_images_presentation_1f_gb" formatted="false">"%.1f GB"</string>
+    <string name="pdf_to_images_presentation_1f_mb" formatted="false">"%.1f MB"</string>
+    <string name="pdf_to_images_presentation_kb">"%1$s KB"</string>
+    <string name="pdf_to_images_presentation_0_kb">"0 KB"</string>
+    <!-- PdfToImagesScreen -->
+    <string name="pdf_to_images_of_selected">"%1$s 或 %2$s 已选中"</string>
+    <string name="pdf_to_images_tap_images_or_long_press">"点击图像，或长按并拖动，仅共享部分图像。"</string>
+    <string name="pdf_to_images_open_gallery">"打开画廊"</string>
+    <string name="pdf_to_images_pick_a_different_file">"选择不同的文件"</string>
+    <string name="pdf_to_images_png_or_print_size">"PNG或打印尺寸"</string>
+    <string name="pdf_to_images_export_again">"再次导出"</string>
+    <string name="pdf_to_images_saving_images">"保存图片…"</string>
+    <string name="pdf_to_images_each">"~%1$s 各"</string>
+    <string name="pdf_to_images_resolution">"决议"</string>
+    <string name="pdf_to_images_format">"格式"</string>
+    <string name="pdf_to_images_deselect_all">"取消全选"</string>
+    <string name="pdf_to_images_this_pdf_is_password_protected">"该 PDF 受密码保护。输入密码即可查看页面。"</string>
+    <string name="pdf_to_images_images_show_up_in_your">"图像立即显示在您的图库中"</string>
+    <string name="pdf_to_images_pdf_to_jpg">"PDF 至 JPG"</string>
+    <string name="pdf_to_images_step_2_of_3_pages">"第 2 步（共 3 页） · 页和格式"</string>
+    <string name="pdf_to_images_no_gallery_app_found_the">"未找到图库应用程序。图像位于 Pictures/Scanly 中。"</string>
+    <string name="pdf_to_images_turn_pages_into_images_for">"将页面变成图像以供聊天、幻灯片或画廊使用。"</string>
+    <!-- PdfToolDone -->
+    <string name="pdf_tool_done_open_pdf">"打开PDF"</string>
+    <string name="pdf_tool_done_open_the_finished_pdf">"打开做好的PDF"</string>
+    <string name="pdf_tool_done_your_original_file_is_unchanged">"你的原始文件没有改变"</string>
+    <!-- PdfToolPresentation -->
+    <string name="pdf_tool_presentation_files_merge_in_this_order">"文件按此顺序合并。第一个 PDF 启动该文档。"</string>
+    <string name="pdf_tool_presentation_add_at_least_one_more">"添加至少一个 PDF 进行组合。"</string>
+    <string name="pdf_tool_presentation_opacity">"不透明度 %1$s%%"</string>
+    <string name="pdf_tool_presentation_one_large_stamp_sized_to">"一张大邮票，其大小足以占据整个页面。"</string>
+    <string name="pdf_tool_presentation_repeats_across_the_full_page">"在整个页面上重复，包括边缘。"</string>
+    <string name="pdf_tool_presentation_protect_pdf">"保护PDF"</string>
+    <string name="pdf_tool_presentation_saved">"%1$s → %2$s · 已保存 %3$s%%"</string>
+    <string name="pdf_tool_presentation_unlocked">"解锁"</string>
+    <string name="pdf_tool_presentation_protected">"受保护"</string>
+    <string name="pdf_tool_presentation_pdfs">"%1$s PDF 文件"</string>
+    <string name="pdf_tool_presentation_1_pdf">"1 PDF"</string>
+    <string name="pdf_tool_presentation_no_files">"没有文件"</string>
+    <!-- PdfToolShared -->
+    <string name="pdf_tool_shared_scanly_pdf">"Scanly PDF"</string>
+    <!-- PdfToolViewModels -->
+    <string name="pdf_tool_view_models_saving">"节省…"</string>
+    <!-- PdfWatermarkScreen -->
+    <string name="pdf_watermark_the_page">"页面"</string>
+    <string name="pdf_watermark_first_page_only">"仅第一页"</string>
+    <string name="pdf_watermark_apply_to">"申请"</string>
+    <string name="pdf_watermark_colour">"颜色"</string>
+    <string name="pdf_watermark_opacity">"不透明度"</string>
+    <string name="pdf_watermark_large">"大号"</string>
+    <string name="pdf_watermark_medium">"中等"</string>
+    <string name="pdf_watermark_small">"小"</string>
+    <string name="pdf_watermark_horizontal">"水平"</string>
+    <string name="pdf_watermark_diagonal">"对角线"</string>
+    <string name="pdf_watermark_single">"单身"</string>
+    <string name="pdf_watermark_tiled">"平铺"</string>
+    <string name="pdf_watermark_style">"风格"</string>
+    <string name="pdf_watermark_stamps">"邮票“%1$s”"</string>
+    <string name="pdf_watermark_add_date">"添加日期"</string>
+    <string name="pdf_watermark_presets">"预设"</string>
+    <string name="pdf_watermark_the_watermarked_copy_is_saved">"带水印的副本无需密码即可保存。您可以使用密码工具再次锁定它。"</string>
+    <string name="pdf_watermark_live_preview_of_the_saved">"保存文件的实时预览"</string>
+    <string name="pdf_watermark_page_1">"第 1 页"</string>
+    <string name="pdf_watermark_preview_of_page_1_with">"带水印的第1页预览"</string>
+    <string name="pdf_watermark_apply_watermark">"应用水印"</string>
+    <string name="pdf_watermark_apply_to_pages">"申请到%1$s页面"</string>
+    <string name="pdf_watermark_apply_to_page">"申请页面"</string>
+    <string name="pdf_watermark_apply_to_first_page">"应用于首页"</string>
+    <string name="pdf_watermark_unlock_the_pdf_first">"先解锁PDF"</string>
+    <string name="pdf_watermark_watermark">"水印"</string>
+    <string name="pdf_watermark_edit_stamp">"编辑图章"</string>
+    <string name="pdf_watermark_watermarked_pdf">"带水印的PDF"</string>
+    <string name="pdf_watermark_kept_unstamped">"保留，未加盖印章"</string>
+    <string name="pdf_watermark_stamp">"邮票"</string>
+    <string name="pdf_watermark_on_every_page_tap_the">"在每一页上。点击页面进行检查。"</string>
+    <string name="pdf_watermark_on_all_pages_tap_the">"在所有 %1$s 页面上。点击页面进行检查。"</string>
+    <string name="pdf_watermark_on_both_pages_tap_the">"在两页上。点击页面进行检查。"</string>
+    <string name="pdf_watermark_on_the_page_tap_it">"在页面上。点击它进行检查。"</string>
+    <string name="pdf_watermark_on_the_first_page_tap">"在第一页。点击页面进行检查。"</string>
+    <string name="pdf_watermark_watermark_added">"添加水印"</string>
+    <string name="pdf_watermark_stamping_every_page">"在每一页上盖章"</string>
+    <string name="pdf_watermark_stamping">"冲压%1$s"</string>
+    <string name="pdf_watermark_stamping_the_first_page">"在第一页上盖章"</string>
+    <string name="pdf_watermark_adding_watermark">"添加水印…"</string>
+    <string name="pdf_watermark_stamp_text_like_confidential_or">"标记文本，如“机密”或“仅供 KYC 使用”。"</string>
+    <!-- PdfWatermarkViewModel -->
+    <string name="pdf_watermark_kyc_copy">"KYC 副本"</string>
+    <string name="pdf_watermark_enter_watermark_text">"输入水印文本。"</string>
+    <!-- QrActions -->
+    <string name="qr_actions_qr_text">"QR 文字"</string>
+    <string name="qr_actions_no_app_can_search_the">"没有应用程序可以搜索网络"</string>
+    <string name="qr_actions_no_email_app_is_set">"此手机上未设置电子邮件应用程序"</string>
+    <string name="qr_actions_no_phone_app_can_open">"没有手机应用程序可以打开此号码"</string>
+    <string name="qr_actions_no_contacts_app_can_save">"没有联系人应用程序可以保存此信息"</string>
+    <string name="qr_actions_pick_in_wi_fi_settings">"在Wi-Fi设置中选择“%1$s”"</string>
+    <string name="qr_actions_password_copied_pick_the_network">"密码复制——选择网络"</string>
+    <string name="qr_actions_wi_fi_settings_can_t">"Wi-Fi设置打不开"</string>
+    <string name="qr_actions_wi_fi_password">"Wi-Fi密码"</string>
+    <string name="qr_actions_wi_fi_settings_can_t_2">"Wi-Fi设置无法添加该网络"</string>
+    <string name="qr_actions_no_upi_app_can_open">"没有UPI应用程序可以打开此代码"</string>
+    <string name="qr_actions_pay_with">"支付方式"</string>
+    <string name="qr_actions_no_app_can_open_this">"没有应用程序可以打开此链接"</string>
+    <string name="qr_actions_not_a_web_link">"不是网页链接"</string>
+    <string name="qr_actions_nothing_can_receive_this_text">"任何人都无法收到此文本"</string>
+    <string name="qr_actions_share_qr_code">"分享QR代码"</string>
+    <string name="qr_actions_copied_to_clipboard">"复制到剪贴板"</string>
+    <!-- QrCreateScreen -->
+    <string name="qr_create_full_name">"全名"</string>
+    <string name="qr_create_name">"姓名"</string>
+    <string name="qr_create_leave_the_amount_empty_so">"将金额留空，以便客户可以输入他们所欠的金额。"</string>
+    <string name="qr_create_enter_an_amount_above_zero">"输入大于零的金额"</string>
+    <string name="qr_create_any">"$ 任意"</string>
+    <string name="qr_create_amount_optional">"数量 · 可选"</string>
+    <string name="qr_create_shop_name">"店铺名称"</string>
+    <string name="qr_create_payee_name">"收款人姓名"</string>
+    <string name="qr_create_name_bank">"姓名@银行"</string>
+    <string name="qr_create_upi_id">"统一识别码"</string>
+    <string name="qr_create_security">"安全"</string>
+    <string name="qr_create_network_password">"网络密码"</string>
+    <string name="qr_create_network_name">"网络名称"</string>
+    <string name="qr_create_characters">"%1$s / %2$s 人物"</string>
+    <string name="qr_create_anything_up_to_characters">"%1$s 字符以内的任何内容"</string>
+    <string name="qr_create_web_address">"网址"</string>
+    <string name="qr_create_qr_code_preview">"QR代码预览"</string>
+    <string name="qr_create_saved_to_qr_history_png">"保存到QR历史记录· PNG，1024像素"</string>
+    <string name="qr_create_save_image">"保存图像"</string>
+    <string name="qr_create_only_dark_colours_so_every">"只有深色，所以每个摄像头都可以读取代码。"</string>
+    <string name="qr_create_shown_under_the_code">"代码下所示"</string>
+    <string name="qr_create_caption_under_the_code_optional">"代码·下的标题可选"</string>
+    <string name="qr_create_create_qr">"创建QR"</string>
+    <!-- QrHistoryScreen -->
+    <string name="qr_history_created">"创建"</string>
+    <string name="qr_history_scanned">"扫描"</string>
+    <string name="qr_history_clear_history">"清除历史记录"</string>
+    <string name="qr_history_every_scanned_and_created_code">"所有扫描和创建的代码都会从此手机中删除。这无法撤消。"</string>
+    <string name="qr_history_clear_qr_history">"清除QR历史记录？"</string>
+    <string name="qr_history_clear_history_2">"清除历史记录…"</string>
+    <string name="qr_history_history_stays_on_this_phone">"历史记录保留在这款手机上。"</string>
+    <string name="qr_history_try_another_search_or_filter">"尝试其他搜索或过滤器。"</string>
+    <string name="qr_history_no_matches">"没有匹配项"</string>
+    <string name="qr_history_scanned_and_created_codes_are">"扫描和创建的代码保存在此处。"</string>
+    <string name="qr_history_no_codes_yet">"还没有代码"</string>
+    <string name="qr_history_search_links_networks_names">"搜索链接、网络、名称"</string>
+    <string name="qr_history_qr_history">"QR历史"</string>
+    <!-- QrResultScreen -->
+    <string name="qr_result_show_raw_content">"显示原始内容"</string>
+    <string name="qr_result_hide_raw_content">"隐藏原始内容"</string>
+    <string name="qr_result_raw_content">"原始内容"</string>
+    <string name="qr_result_organisation">"组织机构"</string>
+    <string name="qr_result_wi_fi_settings_can_t">"Wi-Fi设置无法添加WEP网络，所以密码被复制并打开设置。"</string>
+    <string name="qr_result_not_in_the_code">"不在代码中"</string>
+    <string name="qr_result_network">"网络"</string>
+    <string name="qr_result_scanly_doesn_t_make_payments">"Scanly不付款。付款前请在 UPI 应用程序中确认收款人姓名。"</string>
+    <string name="qr_result_not_set_you_ll_enter">"未设置。您将在 UPI 应用程序中输入它。"</string>
+    <string name="qr_result_amount">"金额"</string>
+    <string name="qr_result_payee">"收款人"</string>
+    <string name="qr_result_this_link_isn_t_encrypted">"此链接未加密 (http)。在打开之前检查域名是否是您期望的域名。"</string>
+    <string name="qr_result_check_the_domain_is_the">"在打开之前检查域名是否是您期望的域名。"</string>
+    <string name="qr_result_full_address">"详细地址"</string>
+    <string name="qr_result_number">"数量"</string>
+    <string name="qr_result_subject">"主题"</string>
+    <string name="qr_result_address">"地址"</string>
+    <string name="qr_result_search_the_web">"搜索网络"</string>
+    <string name="qr_result_copy_number">"复印号码"</string>
+    <string name="qr_result_email_address">"电子邮件地址"</string>
+    <string name="qr_result_copy_address">"复制地址"</string>
+    <string name="qr_result_call">"打电话"</string>
+    <string name="qr_result_copy_network_name">"复制网络名称"</string>
+    <string name="qr_result_copy_password">"复制密码"</string>
+    <string name="qr_result_copy_upi_id">"复制UPI ID"</string>
+    <string name="qr_result_copy_link">"复制链接"</string>
+    <string name="qr_result_delete_from_history">"从历史记录中删除"</string>
+    <string name="qr_result_saved_to_history">" · 保存到历史记录"</string>
+    <!-- QrScanScreen -->
+    <string name="qr_scan_captured_qr_code">"捕获QR代码"</string>
+    <string name="qr_scan_history">"历史"</string>
+    <string name="qr_scan_from_photo">"从照片来看"</string>
+    <string name="qr_scan_scan_again">"再次扫描"</string>
+    <string name="qr_scan_qr_code">"QR代码"</string>
+    <string name="qr_scan_details">"详细信息"</string>
+    <string name="qr_scan_allow_camera">"允许拍照"</string>
+    <string name="qr_scan_open_settings">"打开设置"</string>
+    <string name="qr_scan_the_camera_is_used_only">"仅当此屏幕打开时才可使用相机。没有它，“来自照片”就可以工作。"</string>
+    <string name="qr_scan_open_settings_tap_permissions_and">"打开“设置”，点击“权限”，然后打开 Scanly 的相机。"</string>
+    <string name="qr_scan_allow_camera_to_scan">"允许相机扫描"</string>
+    <string name="qr_scan_camera_permission_is_blocked">"相机权限被屏蔽"</string>
+    <string name="qr_scan_torch_on_off">"割炬开/关"</string>
+    <string name="qr_scan_scan_qr_barcode">"扫描QR &amp; 条码"</string>
+    <string name="qr_scan_point_at_a_qr_code">"指向 QR 代码或条形码"</string>
+    <string name="qr_scan_code_found_hold_steady">"代码发现·保持稳定"</string>
+    <string name="qr_scan_reading_photo">"读照片…"</string>
+    <string name="qr_scan_the_camera_isn_t_available">"相机目前不可用。请尝试“来自照片”。"</string>
+    <!-- QrToolPresentation -->
+    <string name="qr_tool_presentation_h_ago">"%1$s 小时前"</string>
+    <string name="qr_tool_presentation_min_ago">"%1$s 分钟前"</string>
+    <string name="qr_tool_presentation_just_now">"刚才"</string>
+    <string name="qr_tool_presentation_some_text">"一些文字"</string>
+    <string name="qr_tool_presentation_a_phone_number">"电话号码"</string>
+    <string name="qr_tool_presentation_an_email_address">"电子邮件地址"</string>
+    <string name="qr_tool_presentation_a_contact">"联系方式"</string>
+    <string name="qr_tool_presentation_a_wi_fi_network">"Wi-Fi网络"</string>
+    <string name="qr_tool_presentation_a_upi_payment">"UPI 付款"</string>
+    <string name="qr_tool_presentation_a_link">"一个链接"</string>
+    <string name="qr_tool_presentation_found">"发现 "</string>
+    <string name="qr_tool_presentation_generating_preview">"生成预览…"</string>
+    <string name="qr_tool_presentation_preview_appears_as_you_type">"键入时会出现预览"</string>
+    <string name="qr_tool_presentation_copy_to_the_clipboard">"复制到剪贴板"</string>
+    <string name="qr_tool_presentation_open_in_a_browser_or">"在浏览器中打开或复制"</string>
+    <!-- QrToolViewModel -->
+    <string name="qr_tool_qr_history_cleared">"QR历史记录清除"</string>
+    <string name="qr_tool_add_the_details_first">"首先添加详细信息"</string>
+    <string name="qr_tool_no_qr_code_found_in">"在那张照片中找不到 QR 代码"</string>
+    <!-- ImageTextScreen -->
+    <string name="image_text_photos_are_saved_as_a">"照片被保存为新文档，以便您稍后可以搜索其文本。"</string>
+    <string name="image_text_your_scans_have_no_pages">"您的扫描还没有页面。选择照片来阅读其中的文字。"</string>
+    <string name="image_text_no_scans_yet_pick_photos">"尚未扫描。选择照片来阅读其中的文字。"</string>
+    <string name="image_text_1_scan">"1 次扫描"</string>
+    <string name="image_text_up_to_from_your_gallery">"从您的图库或文件中最多 %1$s"</string>
+    <string name="image_text_copy_text_from_photos_or">"从照片或扫描件中复制文本。在此手机上阅读文本。"</string>
+    <string name="image_text_image_to_text">"图像到文本"</string>
+    <!-- AppUpdateDialog -->
+    <string name="app_update_published">"发布%1$s"</string>
+    <string name="app_update_current">"当前"</string>
+    <string name="app_update_update">"更新"</string>
+    <string name="app_update_what_s_new">"新增内容"</string>
+    <!-- AppUpdateViewModel -->
+    <string name="app_update_scanly_is_up_to_date">"Scanly 已更新。您现在的位置是 %1$s。"</string>
+    <string name="app_update_could_not_check_for_updates">"无法检查 %1$s 的更新。"</string>
+    <!-- FlexibleUpdateSnackbar -->
+    <string name="flexible_update_snackbar_restart">"重新启动"</string>
+    <string name="flexible_update_snackbar_update_downloaded_restart_scanly_to">"更新已下载。重启Scanly完成安装。"</string>
+    <!-- ReleaseMarkdown -->
+    <string name="release_markdown_no_release_notes_were_provided">"该版本没有提供发行说明。"</string>
+    <!-- ScanlyNavHost -->
+    <string name="scanly_nav_host_up_to_images">"最多%1$s图像"</string>
+    <string name="scanly_nav_host_import_from_gallery">"从图库导入"</string>
+    <string name="scanly_nav_host_capture_pages_now">"立即捕获页面"</string>
+    <string name="scanly_nav_host_scan_with_camera">"相机扫描"</string>
+    <string name="scanly_nav_host_add_a_document">"添加文档"</string>
+    <!-- pdf_page_orientation -->
+    <string name="pdf_page_orientation_portrait">"纵向"</string>
+    <string name="pdf_page_orientation_landscape">"横向"</string>
+    <!-- pdf_page_size -->
+    <string name="pdf_page_size_auto_fit">"自动调整"</string>
+    <string name="pdf_page_size_a3">"A3"</string>
+    <string name="pdf_page_size_a4">"A4"</string>
+    <string name="pdf_page_size_a5">"A5"</string>
+    <string name="pdf_page_size_b4">"B4"</string>
+    <string name="pdf_page_size_b5">"B5"</string>
+    <string name="pdf_page_size_letter">"美式信纸"</string>
+    <string name="pdf_page_size_tabloid">"小报"</string>
+    <string name="pdf_page_size_executive">"行政人员"</string>
+    <string name="pdf_page_size_postcard">"明信片"</string>
+    <string name="pdf_page_size_american_foolscap">"美国傻瓜"</string>
+    <string name="pdf_page_size_european_foolscap">"欧洲傻瓜"</string>
+    <!-- pdf_page_margin -->
+    <string name="pdf_page_margin_no_margin">"无边距"</string>
+    <string name="pdf_page_margin_big">"大"</string>
+    <!-- pdf_page_number -->
+    <string name="pdf_page_number_center">"中心"</string>
+    <!-- pdf_image_format -->
+    <string name="pdf_image_format_smaller_files_best_for_photos">"较小的文件，最适合照片和共享"</string>
+    <string name="pdf_image_format_crisper_text_files_about_3">"文字更清晰，文件大约3×"</string>
+    <!-- pdf_image_resolution -->
+    <string name="pdf_image_resolution_for_sharing">"为了分享"</string>
+    <string name="pdf_image_resolution_1240_px_wide_sharp_on">"1240 px 宽 · 在手机和 WhatsApp 上锐利"</string>
+    <string name="pdf_image_resolution_for_printing">"用于打印"</string>
+    <string name="pdf_image_resolution_2480_px_wide_300_dpi">"2480 像素宽 · 300 dpi A4"</string>
+    <!-- pdf_compress_quality -->
+    <string name="pdf_compress_quality_high_quality">"高品质"</string>
+    <string name="pdf_compress_quality_best_clarity_less_compression">"最佳清晰度 · 较少压缩"</string>
+    <string name="pdf_compress_quality_balanced">"平衡"</string>
+    <string name="pdf_compress_quality_good_balance_of_size_and">"尺寸和清晰度的良好平衡"</string>
+    <string name="pdf_compress_quality_smallest">"最小"</string>
+    <string name="pdf_compress_quality_maximum_compression_softer_detail">"最大压缩· 细节更柔和"</string>
+    <!-- watermark_color -->
+    <string name="watermark_color_grey">"灰色"</string>
+    <string name="watermark_color_red">"红色"</string>
+    <string name="watermark_color_blue">"蓝色"</string>
+    <string name="watermark_color_teal">"青色"</string>
+    <!-- signature_kind -->
+    <string name="signature_kind_signature">"签名"</string>
+    <!-- sign_ink -->
+    <string name="sign_ink_navy">"藏蓝色"</string>
+    <string name="sign_ink_black">"黑色"</string>
+    <!-- date_filter -->
+    <string name="date_filter_any_time">"任何时候"</string>
+    <string name="date_filter_last_7_days">"过去 7 天"</string>
+    <string name="date_filter_last_30_days">"过去 30 天"</string>
+    <string name="date_filter_this_year">"今年"</string>
+    <string name="date_filter_custom_range">"自定义范围"</string>
+    <!-- search_sort -->
+    <string name="search_sort_best_match">"最佳匹配"</string>
+    <string name="search_sort_newest">"最新"</string>
+    <string name="search_sort_oldest">"最老的"</string>
+    <string name="search_sort_name_a_z">"名称 A–Z"</string>
+    <!-- search_scope -->
+    <string name="search_scope_everywhere">"无处不在"</string>
+    <string name="search_scope_names">"名字"</string>
+    <string name="search_scope_text_in_pages">"页面中的文本"</string>
+    <!-- app_update_channel -->
+    <string name="app_update_channel_github">"GitHub"</string>
+    <string name="app_update_channel_google_play">"Google Play"</string>
+    <!-- document_kind -->
+    <string name="document_kind_invoice">"发票"</string>
+    <string name="document_kind_receipt">"收据"</string>
+    <string name="document_kind_contract">"合同"</string>
+    <string name="document_kind_statement">"银行对账单"</string>
+    <string name="document_kind_certificate">"证书"</string>
+    <string name="document_kind_id_document">"身份证件"</string>
+    <string name="document_kind_form">"表格"</string>
+    <string name="document_kind_r_sum">"简历"</string>
+    <!-- document_corner_model -->
+    <string name="document_corner_model_lite">"精简版"</string>
+    <string name="document_corner_model_standard">"标准"</string>
+    <string name="document_corner_model_high">"高"</string>
+    <string name="document_corner_model_accurate">"准确"</string>
+    <!-- document_title_format -->
+    <string name="document_title_format_scan_with_date_and_time">"扫描日期和时间"</string>
+    <string name="document_title_format_scan_date_time">"扫描件 · 日期和时间"</string>
+    <string name="document_title_format_document_with_date_and_time">"带有日期和时间的文件"</string>
+    <string name="document_title_format_document_date_time">"文档 · 日期和时间"</string>
+    <string name="document_title_format_scan_with_date">"扫描日期"</string>
+    <string name="document_title_format_scan_date">"扫描件 · 日期"</string>
+    <string name="document_title_format_scan_with_iso_date">"使用 ISO 日期扫描"</string>
+    <string name="document_title_format_scan_yyyy_mm_dd">"扫描件 · YYYY-MM-DD"</string>
+    <!-- group_title_format -->
+    <string name="group_title_format_folder_with_date_and_time">"带有日期和时间的文件夹"</string>
+    <string name="group_title_format_folder_date_time">"文件夹 · 日期和时间"</string>
+    <string name="group_title_format_new_folder_with_date_and">"带有日期和时间的新文件夹"</string>
+    <string name="group_title_format_new_folder_date_time">"新文件夹 · 日期和时间"</string>
+    <string name="group_title_format_folder_with_date">"带日期的文件夹"</string>
+    <string name="group_title_format_folder_date">"文件夹 · 日期"</string>
+    <string name="group_title_format_folder_with_iso_date">"带有 ISO 日期的文件夹"</string>
+    <string name="group_title_format_folder_yyyy_mm_dd">"文件夹 · YYYY-MM-DD"</string>
+    <!-- wifi_security -->
+    <string name="wifi_security_wpa_wpa2">"WPA/WPA2"</string>
+    <string name="wifi_security_wep">"WEP"</string>
+    <string name="wifi_security_open">"无加密"</string>
+    <!-- qr_create_type -->
+    <string name="qr_create_type_upi">"统一国际联盟"</string>
+    <!-- pdf_import_look -->
+    <string name="pdf_import_look_keep_as_is">"保持原样"</string>
+    <string name="pdf_import_look_pages_look_exactly_like_the">"页面看起来与 PDF 一模一样"</string>
+    <string name="pdf_import_look_enhance">"增强"</string>
+    <string name="pdf_import_look_even_out_scanned_pages_and">"均匀扫描页面并锐化文本"</string>
+    <!-- capture_scene_issue -->
+    <string name="capture_scene_issue_lens_may_be_covered_clear">"镜头可能被遮盖。揭开它并重试。"</string>
+    <string name="capture_scene_issue_too_dark_add_light_or">"太黑了。添加灯光或打开闪光灯。"</string>
+    <string name="capture_scene_issue_image_looks_blurry_clean_the">"图像看起来模糊。清洁镜头或点击对焦。"</string>
+    <!-- group_export_action -->
+    <string name="group_export_action_merged_pdf_options">"合并PDF选项"</string>
+    <string name="group_export_action_separate_pdfs_options">"单独的PDF文件选项"</string>
+    <!-- library_sort_option -->
+    <string name="library_sort_option_last_modified">"最后修改时间"</string>
+    <string name="library_sort_option_latest_changes_first">"最新变更优先"</string>
+    <string name="library_sort_option_oldest_updated">"最旧更新"</string>
+    <string name="library_sort_option_earliest_changes_first">"最早的更改优先"</string>
+    <string name="library_sort_option_alphabetical_order">"按字母顺序排列"</string>
+    <string name="library_sort_option_name_z_a">"名称Z–A"</string>
+    <string name="library_sort_option_reverse_alphabetical_order">"颠倒字母顺序"</string>
+    <string name="library_sort_option_newest_created">"最新创建"</string>
+    <string name="library_sort_option_recently_added_first">"最近添加的优先"</string>
+    <string name="library_sort_option_oldest_created">"最古老的创建"</string>
+    <string name="library_sort_option_earliest_added_first">"最早添加的在前"</string>
+    <!-- signature_pen_width -->
+    <string name="signature_pen_width_fine">"薄"</string>
+    <string name="signature_pen_width_bold">"厚"</string>
+    <!-- onboarding_page -->
+    <string name="onboarding_page_capture">"捕捉"</string>
+    <string name="onboarding_page_paper_to_polished">"纸质文档，清晰扫描。"</string>
+    <string name="onboarding_page_capture_straighten_and_clean_up">"捕获、拉直和清理页面。"</string>
+    <string name="onboarding_page_find">"查找"</string>
+    <string name="onboarding_page_find_more_than_files">"扫描件里的文字也能搜。"</string>
+    <string name="onboarding_page_recognize_text_on_your_device">"识别设备上的文本。在扫描件中进行搜索。"</string>
+    <string name="onboarding_page_share">"分享"</string>
+    <string name="onboarding_page_ready_when_you_are">"随时准备，轻松分享。"</string>
+    <string name="onboarding_page_keep_pages_together_share_a">"将页面放在一起。只需轻按几下即可共享干净的 PDF。"</string>
+    <!-- pdf_reader_tool -->
+    <string name="pdf_reader_tool_merge_with_other_pdfs">"与其他PDF文件合并"</string>
+    <string name="pdf_reader_tool_password_protect">"密码保护"</string>
+    <string name="pdf_reader_tool_add_watermark">"添加水印"</string>
+    <string name="pdf_reader_tool_save_pages_as_images">"将页面另存为图像"</string>
+    <string name="pdf_reader_tool_add_to_scanly_library">"添加到Scanly库"</string>
+    <!-- pdf_picker_sort -->
+    <string name="pdf_picker_sort_most_pages">"大多数页面"</string>
+    <!-- qr_ink_color -->
+    <string name="qr_ink_color_ink">"墨水"</string>
+    <string name="qr_ink_color_maroon">"栗色"</string>
+    <!-- qr_primary_action -->
+    <string name="qr_primary_action_pay_with_a_upi_app">"使用 UPI 应用程序付款"</string>
+    <string name="qr_primary_action_pay">"支付"</string>
+    <string name="qr_primary_action_join_this_network">"加入这个网络"</string>
+    <string name="qr_primary_action_join">"加入"</string>
+    <string name="qr_primary_action_save_to_contacts">"保存到联系人"</string>
+    <string name="qr_primary_action_send_email">"发送电子邮件"</string>
+    <string name="qr_primary_action_call_this_number">"拨打这个号码"</string>
+    <string name="qr_primary_action_copy_text">"复制文本"</string>
+    <!-- qr_history_section -->
+    <string name="qr_history_section_earlier">"早些时候"</string>
+    <!-- sign_tool -->
+    <string name="sign_tool_date">"日期"</string>
+    <string name="sign_tool_checkbox">"复选框"</string>
+    <!-- scanly_destination -->
+    <string name="scanly_destination_home">"首页"</string>
+    <string name="scanly_destination_camera">"相机"</string>
+    <!-- settings_text_recognition -->
+    <string name="settings_text_recognition_and_more">"以及更多"</string>
+    <string name="settings_text_recognition_romanian">"罗马尼亚语"</string>
+    <string name="settings_text_recognition_czech">"捷克语"</string>
+    <string name="settings_text_recognition_swedish">"瑞典语"</string>
+    <string name="settings_text_recognition_swahili">"斯瓦希里语"</string>
+    <string name="settings_text_recognition_filipino">"菲律宾人"</string>
+    <string name="settings_text_recognition_vietnamese">"越南语"</string>
+    <string name="settings_text_recognition_malay">"马来语"</string>
+    <string name="settings_text_recognition_indonesian">"印度尼西亚语"</string>
+    <string name="settings_text_recognition_turkish">"土耳其语"</string>
+    <string name="settings_text_recognition_polish">"波兰语"</string>
+    <string name="settings_text_recognition_dutch">"荷兰语"</string>
+    <string name="settings_text_recognition_portuguese">"葡萄牙语"</string>
+    <string name="settings_text_recognition_italian">"意大利语"</string>
+    <string name="settings_text_recognition_german">"德语"</string>
+    <string name="settings_text_recognition_french">"法语"</string>
+    <string name="settings_text_recognition_spanish">"西班牙语"</string>
+    <string name="settings_text_recognition_english">"英语"</string>
+    <string name="settings_text_recognition_latin">"拉丁字母"</string>
+    <string name="settings_text_recognition_amharic">"阿姆哈拉语"</string>
+    <string name="settings_text_recognition_georgian">"格鲁吉亚语"</string>
+    <string name="settings_text_recognition_armenian">"亚美尼亚语"</string>
+    <string name="settings_text_recognition_burmese">"缅甸语"</string>
+    <string name="settings_text_recognition_khmer">"高棉语"</string>
+    <string name="settings_text_recognition_lao">"老挝语"</string>
+    <string name="settings_text_recognition_thai">"泰语"</string>
+    <string name="settings_text_recognition_southeast_asia_more">"东南亚及其他地区"</string>
+    <string name="settings_text_recognition_hebrew">"希伯来语"</string>
+    <string name="settings_text_recognition_urdu">"乌尔都语"</string>
+    <string name="settings_text_recognition_persian">"波斯语"</string>
+    <string name="settings_text_recognition_arabic">"阿拉伯语"</string>
+    <string name="settings_text_recognition_right_to_left">"从右到左"</string>
+    <string name="settings_text_recognition_korean">"韩国人"</string>
+    <string name="settings_text_recognition_japanese">"日语"</string>
+    <string name="settings_text_recognition_chinese">"中文"</string>
+    <string name="settings_text_recognition_east_asian">"东亚"</string>
+    <string name="settings_text_recognition_sinhala">"僧伽罗语"</string>
+    <string name="settings_text_recognition_odia">"奥迪亚"</string>
+    <string name="settings_text_recognition_punjabi">"旁遮普语"</string>
+    <string name="settings_text_recognition_gujarati">"古吉拉特语"</string>
+    <string name="settings_text_recognition_malayalam">"马拉雅拉姆语"</string>
+    <string name="settings_text_recognition_kannada">"卡纳达语"</string>
+    <string name="settings_text_recognition_telugu">"泰卢固语"</string>
+    <string name="settings_text_recognition_tamil">"泰米尔语"</string>
+    <string name="settings_text_recognition_bengali">"孟加拉语"</string>
+    <string name="settings_text_recognition_nepali">"尼泊尔语"</string>
+    <string name="settings_text_recognition_marathi">"马拉地语"</string>
+    <string name="settings_text_recognition_hindi">"印地语"</string>
+    <string name="settings_text_recognition_indian_scripts">"印度文字"</string>
+    <string name="settings_text_recognition_greek">"希腊语"</string>
+    <string name="settings_text_recognition_serbian">"塞尔维亚语"</string>
+    <string name="settings_text_recognition_bulgarian">"保加利亚语"</string>
+    <string name="settings_text_recognition_ukrainian">"乌克兰语"</string>
+    <string name="settings_text_recognition_russian">"俄语"</string>
+    <string name="settings_text_recognition_latin_cyrillic_greek">"拉丁语、西里尔语和希腊语"</string>
+    <!-- tools_catalog -->
+    <string name="tools_catalog_camera_with_edge_detection">"带边缘检测的相机"</string>
+    <string name="tools_catalog_scan_a_document">"扫描文档"</string>
+    <string name="tools_catalog_pdf_to_editable_scan">"PDF 可编辑扫描"</string>
+    <string name="tools_catalog_open_any_pdf">"打开任意PDF"</string>
+    <string name="tools_catalog_read_pdf">"读取PDF"</string>
+    <string name="tools_catalog_stamp_text">"文字水印"</string>
+    <string name="tools_catalog_lock_or_unlock">"锁定或解锁"</string>
+    <string name="tools_catalog_pages_as_images">"页面作为图像"</string>
+    <string name="tools_catalog_make_it_smaller">"让它变小"</string>
+    <string name="tools_catalog_combine_files">"合并文件"</string>
+    <string name="tools_catalog_merge">"合并"</string>
+    <string name="tools_catalog_sign_any_pdf">"签署任何PDF"</string>
+    <string name="tools_catalog_from_gallery">"来自画廊"</string>
+    <string name="tools_catalog_images_to_pdf">"图像至 PDF"</string>
+    <string name="tools_catalog_create_manage">"创建和管理"</string>
+    <string name="tools_catalog_my_signatures">"我的签名"</string>
+    <string name="tools_catalog_photos_scans">"照片和扫描件"</string>
+    <string name="tools_catalog_scan_or_create">"扫描或创建"</string>
+    <string name="tools_catalog_qr_barcode">"QR &amp; 条码"</string>
+    <!-- pip_lines -->
+    <string name="pip_lines_tip_folders_keep_related_scans">"提示：文件夹将相关扫描保存在一起。尝试一张收据。"</string>
+    <string name="pip_lines_tip_turn_on_the_grid">"提示：打开相机中的网格，使页面对齐。"</string>
+    <string name="pip_lines_tip_add_a_scanly_widget">"提示：将 Scanly 小部件添加到主屏幕以进行一键扫描。"</string>
+    <string name="pip_lines_tip_the_tools_tab_can">"提示：工具选项卡可以对PDF进行合并、压缩和签名。"</string>
+    <string name="pip_lines_tip_open_a_document_s">"提示：打开文档的文本以复制或共享其中的内容。"</string>
+    <string name="pip_lines_tip_long_press_a_page">"提示：长按页面并拖动即可重新排序。"</string>
+    <string name="pip_lines_tip_search_finds_words_inside">"提示：搜索会查找扫描结果中的单词，而不仅仅是名称。"</string>
+    <string name="pip_lines_okay_okay_i_felt_that">"好吧好吧，我也有这种感觉。"</string>
+    <string name="pip_lines_still_free_still_no_account">"永远免费。无需帐户。没有广告。"</string>
+    <string name="pip_lines_i_m_open_source_you">"我的源代码是开放的。你可以阅读它的每一行。"</string>
+    <string name="pip_lines_your_original_photos_are_kept">"您的原始照片将被保留，因此编辑可以随时撤消。"</string>
+    <string name="pip_lines_i_live_on_your_phone">"我用你的手机工作。您的扫描永远不会发送到服务器。"</string>
+    <string name="pip_lines_hey_that_tickles">"嘿！很痒。"</string>
+    <!-- pdf_watermark -->
+    <string name="pdf_watermark_for_kyc_use_only">For KYC use only</string>
+    <!-- document_presentation_formatter -->
+    <string name="document_presentation_formatter_untitled_document">"无标题文件"</string>
+    <string name="document_presentation_formatter_untitled_folder">"无标题文件夹"</string>
+    <!-- default_pdf_toolkit_repository -->
+    <string name="default_pdf_toolkit_repository_this_pdf_is_password_protected">"该 PDF 受密码保护。"</string>
+    <string name="default_pdf_toolkit_repository_this_pdf_is_too_large">"PDF 太大，无法在此设备上处理。"</string>
+    <!-- document_cover_art_factory -->
+    <string name="document_cover_art_factory_scanned_document">"扫描文件"</string>
+    <!-- document_sign -->
+    <string name="document_sign_some_pages_are_still_processing">"某些页面仍在处理中，尚无法签名。"</string>
+    <!-- pip_lines -->
+    <string name="pip_lines_hi_i_m_pip_point">"大家好，我是Pip！给我看一页，我会帮你整理扫描件。"</string>
+    <string name="pip_lines_one_last_thing_can_i">"最后一件事！我可以使用相机吗？它仅在您扫描时打开。"</string>
+    <string name="pip_lines_nothing_here_yet_let_s">"这里还什么都没有。让我们一起扫描您的第一页。"</string>
+    <string name="pip_lines_a_clean_shelf_start_a">"干净的架子！启动一个文件夹，或者扫描其中的内容。"</string>
+    <string name="pip_lines_no_folders_yet_they_re">"还没有文件夹。用它们来整理收据、账单和学校论文。"</string>
+    <string name="pip_lines_no_documents_yet_i_m">"还没有文件。当你准备好时我也准备好了。"</string>
+    <string name="pip_lines_this_folder_is_waiting_for">"该文件夹正在等待其第一个文档。"</string>
+    <string name="pip_lines_no_pages_yet_point_me">"还没有页面。给我指一些纸！"</string>
+    <string name="pip_lines_no_pages_means_no_words">"没有页数意味着还没有文字。"</string>
+    <string name="pip_lines_pick_a_few_photos_and">"挑选一些照片，让我们看看探测器的工作速度有多快！"</string>
+    <string name="pip_lines_hmm_i_don_t_have">"嗯，我没有这个问题的答案。"</string>
+    <string name="pip_lines_no_codes_yet_scan_or">"还没有代码。扫描或制作一份，我会把它放在这里。"</string>
+    <string name="pip_lines_nothing_matches_that_try_another">"没有什么可以匹配的。尝试另一个词？"</string>
+    <string name="pip_lines_i_m_still_reading_some">"我还在读一些书页。匹配可能会在一秒钟内出现。"</string>
+    <string name="pip_lines_i_can_t_see_a">"我还什么也看不到。我可以借相机吗？"</string>
+    <string name="pip_lines_the_camera_is_switched_off">"Scanly 的相机已关闭。快速访问设置即可解决此问题。"</string>
+    <string name="pip_lines_lend_me_the_camera_and">"把相机借给我，我帮你读一下密码。"</string>
+    <string name="pip_lines_huh_that_document_wandered_off">"嗯，那个文件好像不见了。"</string>
+    <!-- pdf_page_size -->
+    <string name="pdf_page_size_match_each_scan">"适合每个扫描页面的尺寸"</string>
+    <string name="pdf_page_size_29_7_42_0_cm">"29.7 × 42.0 厘米"</string>
+    <string name="pdf_page_size_21_0_29_7_cm">"21.0 × 29.7 厘米"</string>
+    <string name="pdf_page_size_14_8_21_0_cm">"14.8 × 21.0 厘米"</string>
+    <string name="pdf_page_size_25_0_35_3_cm">"25.0 × 35.3 厘米"</string>
+    <string name="pdf_page_size_17_6_25_0_cm">"17.6 × 25.0 厘米"</string>
+    <string name="pdf_page_size_21_6_27_9_cm">"21.6 × 27.9 厘米"</string>
+    <string name="pdf_page_size_27_9_43_2_cm">"27.9 × 43.2 厘米"</string>
+    <string name="pdf_page_size_21_6_35_6_cm">"21.6 × 35.6 厘米"</string>
+    <string name="pdf_page_size_18_4_26_7_cm">"18.4 × 26.7 厘米"</string>
+    <string name="pdf_page_size_10_0_14_8_cm">"10.0 × 14.8 厘米"</string>
+    <string name="pdf_page_size_21_6_33_0_cm">"21.6 × 33.0 厘米"</string>
+    <string name="pdf_page_size_22_9_33_0_cm">"22.9 × 33.0 厘米"</string>
+    <!-- PageTextScreen view modes -->
+    <string name="page_text_text">"文本"</string>
+    <string name="page_text_on_page">"在页面上"</string>
+    <!-- Shared counts -->
+    <plurals name="common_documents">
+        <item quantity="other">"%d 个文档"</item>
+    </plurals>
+    <plurals name="common_pages">
+        <item quantity="other">"%d 页"</item>
+    </plurals>
+    <plurals name="common_folders">
+        <item quantity="other">"%d 个文件夹"</item>
+    </plurals>
+    <plurals name="common_matches">
+        <item quantity="other">"%d 个匹配项"</item>
+    </plurals>
+    <plurals name="common_words">
+        <item quantity="other">"%d 个词"</item>
+    </plurals>
+    <string name="common_two_parts">"%1$s · %2$s"</string>
+    <!-- Library search -->
+    <plurals name="library_search_in_documents">
+        <item quantity="other">"，在 %d 个文档中"</item>
+    </plurals>
+    <plurals name="library_search_no_exact_matches">
+        <item quantity="other">"无精确匹配 · %d 个文档包含相似词语"</item>
+    </plurals>
+    <plurals name="library_search_show_more_pages">
+        <item quantity="other">"显示另外 %d 页中的匹配项"</item>
+    </plurals>
+    <plurals name="library_search_still_reading">
+        <item quantity="other">"仍在识别 %d 页的文字。新的匹配项会显示在这里。"</item>
+    </plurals>
+    <string name="library_search_matches_in_documents">"%1$s中的%2$s"</string>
+    <plurals name="search_filters_show_results">
+        <item quantity="other">"显示 %d 个结果"</item>
+    </plurals>
+    <!-- Settings -->
+    <plurals name="settings_reading_text_pages_left">
+        <item quantity="other">"正在识别文字…还剩 %d 页"</item>
+    </plurals>
+    <plurals name="settings_text_recognition_reread_pages">
+        <item quantity="other">"重新识别 %d 页？"</item>
+    </plurals>
+    <string name="settings_could_not_calibrate_models">"无法在此设备上校准文档模型。"</string>
+    <!-- Recently deleted -->
+    <string name="recently_deleted_long_press_for_options">"长按某个项目可获得更多选项。"</string>
+    <string name="recently_deleted_retention_note">"%1$s 保留页面，%2$s 保留文档和文件夹。之后它们将被永久删除。"</string>
+    <plurals name="recently_deleted_restored_items">
+        <item quantity="other">"已恢复 %d 项"</item>
+    </plurals>
+    <plurals name="recently_deleted_restored_some_items">
+        <item quantity="other">"已恢复 %3$d 项中的 %2$d 项。%4$s"</item>
+    </plurals>
+    <plurals name="recently_deleted_deleted_items">
+        <item quantity="other">"已永久删除 %d 项"</item>
+    </plurals>
+    <plurals name="recently_deleted_deleted_some_items">
+        <item quantity="other">"已永久删除 %3$d 项中的 %2$d 项。%4$s"</item>
+    </plurals>
+    <!-- %1$s = folder name, %2$d = number of documents in it. -->
+    <plurals name="folder_delete_what_should_happen">
+        <item quantity="other">"“%1$s”中有 %2$d 个文档。你想如何处理？"</item>
+    </plurals>
+    <!-- PDF tools -->
+    <string name="pdf_compress_first_page_of">"%1$s首页"</string>
+    <string name="pdf_compress_the_pdf">"PDF"</string>
+    <string name="pdf_password_strength_too_short">"太短"</string>
+    <string name="pdf_password_strength_too_long">"太长"</string>
+    <string name="pdf_password_strength_weak">"弱"</string>
+    <string name="pdf_password_strength_fair">"中等"</string>
+    <string name="pdf_password_strength_strong">"坚强"</string>
+    <string name="model_benchmark_gate_prefix">"文档检测：%1$s"</string>
+    <string name="model_benchmark_unavailable">"不可用"</string>
+    <!-- Error messages shown in snackbars and dialogs -->
+    <string name="error_document_not_found">"找不到文档。"</string>
+    <string name="error_group_not_found">"找不到组。"</string>
+    <string name="error_no_documents_in_group">"组内无文件。"</string>
+    <string name="error_no_pages_available_to_export">"没有可导出的页面。"</string>
+    <string name="error_could_not_create_export_directory">"无法创建导出目录。"</string>
+    <string name="error_could_not_replace_existing_pdf">"无法替换现有的PDF。"</string>
+    <string name="error_folder_not_found">"找不到文件夹。"</string>
+    <string name="error_this_page_is_already_in_recently_deleted">"该页面已在最近删除中。"</string>
+    <string name="error_only_pages_in_recently_deleted_can_be">"只有最近删除的页面才能永久删除。"</string>
+    <string name="error_page_not_found">"找不到页面。"</string>
+    <string name="error_page_not_found_in_document_order">"在文档顺序中找不到页面。"</string>
+    <string name="error_select_at_least_two_pdfs_to_merge">"选择至少两个要合并的 PDF 文件。"</string>
+    <string name="error_pdf_has_no_pages">"PDF没有页面。"</string>
+    <string name="error_password_must_be_4_64_characters">"密码必须为4–64个字符。"</string>
+    <string name="error_enter_the_current_pdf_password">"输入当前PDF 密码。"</string>
+    <string name="error_enter_watermark_text">"输入水印文本。"</string>
+    <string name="error_this_pdf_has_no_pages">"此PDF没有页面。"</string>
+    <string name="error_preview_size_is_invalid">"预览尺寸无效。"</string>
+    <string name="error_place_a_signature_or_another_mark_first">"首先签名或其他标记。"</string>
+    <string name="error_a_mark_is_on_a_missing_page">"缺页上有标记。"</string>
+    <string name="error_could_not_prepare_this_pdf">"无法准备此PDF。"</string>
+    <string name="error_page_is_out_of_range">"页面超出范围。"</string>
+    <string name="error_choose_at_least_one_page">"请至少选择一页。"</string>
+    <string name="error_failed_to_encode_page_image">"页面图片编码失败。"</string>
+    <string name="error_export_file_is_missing">"导出文件丢失。"</string>
+    <string name="error_the_preview_pdf_is_missing">"缺少预览版PDF。"</string>
+    <string name="error_could_not_read_selected_pdf">"无法读取选定的PDF。"</string>
+    <string name="error_not_enough_memory_to_compress_this_pdf">"没有足够的内存来压缩此PDF。尝试最小质量或更短的文件。"</string>
+    <string name="error_a_text_box_is_empty_type_something">"文本框为空。输入一些内容或将其删除。"</string>
+    <string name="error_a_signature_image_is_missing_remove_it">"缺少签名图像。将其取出并重新放置。"</string>
+    <string name="error_some_characters_cant_be_drawn_remove_emoji">"有些角色无法绘制。删除表情符号或不寻常的符号。"</string>
+    <string name="error_some_characters_in_the_watermark_cant_be">"水印中的某些字符无法绘制。删除表情符号或不寻常的符号。"</string>
+    <string name="error_enter_something_to_encode">"输入要编码的内容。"</string>
+    <string name="error_could_not_write_qr_image">"无法写入QR 映像。"</string>
+    <string name="error_a_signature_image_is_missing_place_it">"缺少签名图像。再次放置。"</string>
+    <string name="error_the_signature_is_empty">"签名为空。"</string>
+    <string name="error_could_not_save_the_signature">"无法保存签名。"</string>
+    <string name="error_could_not_prepare_the_image">"无法准备图片。"</string>
+    <string name="error_could_not_create_signature_storage">"无法创建签名存储。"</string>
+    <string name="error_no_signature_found_in_this_image_try">"此图像中未发现签名。尝试在浅色纸张上使用深色墨水。"</string>
+    <string name="error_this_signature_no_longer_exists">"该签名不再存在。"</string>
+    <string name="error_the_signature_image_could_not_be_read">"无法读取签名图像。"</string>
+    <string name="error_a_signature_image_is_missing_open_sign">"缺少签名图片。请打开签名工具并重新放置。"</string>
+    <string name="error_this_page_is_still_processing_try_again">"此页面仍在处理中。稍后再试一次。"</string>
+    <string name="error_could_not_read_the_page_image">"无法读取页面图像。"</string>
+    <string name="error_invalid_page_image_path">"页面图片路径无效。"</string>
+    <string name="error_the_exported_file_is_unavailable">"导出的文件不可用。"</string>
+    <string name="error_the_exported_image_is_unavailable">"导出的图片不可用。"</string>
+    <string name="error_the_selected_save_folder_is_no_longer">"所选的保存文件夹不再可用。在“设置”中再次选择它。"</string>
+    <string name="error_this_page_no_longer_exists">"该页面已不存在。"</string>
+    <string name="error_read_this_pages_text_first">"首先阅读本页的文字。"</string>
+    <string name="error_page_image_could_not_be_read">"无法读取页面图像。"</string>
+    <string name="error_opencv_could_not_be_initialized">"OpenCV 无法初始化。"</string>
+    <string name="error_no_images_selected">"未选择图像。"</string>
+    <string name="error_could_not_write_imported_image">"无法写入导入的图像。"</string>
+    <string name="error_imported_image_file_is_empty">"导入的图像文件为空。"</string>
+    <string name="error_image_decode_failed">"图像解码失败"</string>
+    <!-- Language settings -->
+    <string name="settings_language">"语言"</string>
+    <string name="settings_language_system_default">"系统默认"</string>
+    <string name="settings_language_follow_phone">"手机语言"</string>
+    <string name="settings_language_uses_phone_language">"与手机保持一致：%1$s"</string>
+    <string name="settings_language_app_language">"应用程序语言"</string>
+    <string name="settings_language_note">"文档名称、识别出的文字和你打开的 PDF 会保留原来的语言。"</string>
+    <!-- Manifest -->
+    <string name="intent_open_in_scanly">"在Scanly中打开"</string>
+    <!-- Library date sections -->
+    <string name="library_section_previous_7_days">"过去 7 天"</string>
+    <!-- Month and year as a section title, e.g. "December 2025". %1$s = month name, %2$d = year. -->
+    <string name="library_section_month_year">"%2$d年%1$s"</string>
+    <!-- Camera -->
+    <string name="scan_session_capture_failed">"捕获失败。"</string>
+    <!-- Signature kinds as whole phrases (Signature vs Initials) -->
+    <string name="sign_kind_add_signature">"添加签名"</string>
+    <string name="sign_kind_add_initials">"添加缩写"</string>
+    <string name="sign_kind_delete_signature">"删除签名"</string>
+    <string name="sign_kind_delete_initials">"删除缩写"</string>
+    <string name="sign_kind_delete_signature_question">"删除签名？"</string>
+    <string name="sign_kind_delete_initials_question">"删除缩写？"</string>
+    <string name="sign_kind_open_signature_options">"打开签名选项"</string>
+    <string name="sign_kind_open_initials_options">"打开缩写选项"</string>
+    <string name="sign_kind_saved_signature">"保存的签名"</string>
+    <string name="sign_kind_saved_initials">"保存姓名首字母"</string>
+    <string name="sign_kind_show_signature_first">"在其他人面前出示此签名"</string>
+    <string name="sign_kind_show_initials_first">"在其他人之前显示这些姓名首字母"</string>
+    <!-- Watermark -->
+    <!-- Watermark presets are stamped into PDFs with a Latin/Cyrillic font. In languages written in
+         another script (Indic, CJK, Thai), keep these in English so the stamp can be drawn. -->
+    <string name="pdf_watermark_preset_confidential">CONFIDENTIAL</string>
+    <string name="pdf_watermark_preset_draft">DRAFT</string>
+    <string name="pdf_watermark_preset_copy">COPY</string>
+    <string name="pdf_watermark_opacity_percent">"%1$d%%"</string>
+    <!-- Localized counts and progress (no English-only plural branches). -->
+    <plurals name="common_days">
+        <item quantity="other">"%d 天"</item>
+    </plurals>
+    <plurals name="common_files">
+        <item quantity="other">"%d 个文件"</item>
+    </plurals>
+    <plurals name="common_images">
+        <item quantity="other">"%d 张图片"</item>
+    </plurals>
+    <plurals name="common_marks">
+        <item quantity="other">"%d 个标记"</item>
+    </plurals>
+    <plurals name="common_scans">
+        <item quantity="other">"%d 个扫描件"</item>
+    </plurals>
+    <plurals name="common_topics">
+        <item quantity="other">"%d 个主题"</item>
+    </plurals>
+    <plurals name="common_libraries">
+        <item quantity="other">"%d 个软件库"</item>
+    </plurals>
+    <plurals name="common_selected">
+        <item quantity="other">"已选择 %d 项"</item>
+    </plurals>
+    <plurals name="pdf_to_images_saved_count">
+        <item quantity="other">"已保存 %d 张图片"</item>
+    </plurals>
+    <plurals name="pdf_to_images_export_count">
+        <item quantity="other">"导出 %d 张图片"</item>
+    </plurals>
+    <string name="common_current_of_total">"%1$d / %2$d"</string>
+    <!-- Error fallbacks found in the final extraction audit. -->
+    <string name="error_failed_to_import_images">"导入图片失败。"</string>
+    <string name="error_could_not_calculate_storage_usage">"无法计算存储使用情况。"</string>
+    <string name="error_could_not_clear_app_data">"无法清除应用程序数据。"</string>
+    <string name="error_could_not_clear_temporary_exports">"无法清关临时出口。"</string>
+    <string name="error_could_not_remove_old_backup_files">"无法删除旧的备份文件。"</string>
+    <string name="error_could_not_create_the_document">"无法创建文档。"</string>
+    <string name="error_could_not_rename_the_document">"无法重命名文档。"</string>
+    <string name="error_could_not_delete_the_document">"无法删除文档。"</string>
+    <string name="error_could_not_create_the_group">"无法创建群组。"</string>
+    <string name="error_could_not_rename_the_group">"无法重命名该组。"</string>
+    <string name="error_could_not_delete_the_group">"无法删除群组。"</string>
+    <string name="error_could_not_remove_empty_folders">"无法删除空文件夹。"</string>
+    <string name="error_could_not_update_document_group">"无法更新文档组。"</string>
+    <string name="error_could_not_prepare_page_capture">"无法准备页面捕获。"</string>
+    <string name="error_could_not_prepare_page_replacement">"无法准备页面替换。"</string>
+    <string name="error_could_not_save_the_captured_page">"无法保存捕获的页面。"</string>
+    <string name="error_could_not_reorder_the_page">"无法重新排序页面。"</string>
+    <string name="error_could_not_save_page_edits">"无法保存页面编辑。"</string>
+    <string name="error_could_not_update_text_recognition_engine">"无法更新文本识别引擎。"</string>
+    <string name="error_could_not_update_theme_mode">"无法更新主题模式。"</string>
+    <string name="error_could_not_finish_onboarding">"无法完成入职。"</string>
+    <string name="error_could_not_load_settings_content">"无法加载设置内容。"</string>
+    <string name="error_could_not_update_the_save_location">"无法更新保存位置。"</string>
+    <string name="error_could_not_update_model_selection">"无法更新模型选择。"</string>
+    <string name="error_could_not_update_document_detection_settings">"无法更新文档检测设置。"</string>
+    <string name="error_could_not_save_the_exported_file">"无法保存导出的文件。"</string>
+    <string name="error_could_not_store_update_prompt_state">"无法存储更新提示状态。"</string>
+    <string name="error_could_not_check_github_releases">"无法检查 GitHub 版本。"</string>
+</resources>

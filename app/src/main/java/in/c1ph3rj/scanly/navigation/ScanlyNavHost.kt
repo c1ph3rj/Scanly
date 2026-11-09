@@ -29,12 +29,16 @@ import `in`.c1ph3rj.scanly.feature.settings.LegalDocumentType
 import `in`.c1ph3rj.scanly.feature.settings.ModelBenchmarkRoute
 import `in`.c1ph3rj.scanly.feature.settings.SettingsAboutRoute
 import `in`.c1ph3rj.scanly.feature.settings.SettingsAppearanceRoute
+import `in`.c1ph3rj.scanly.feature.settings.SettingsLanguageRoute
 import `in`.c1ph3rj.scanly.feature.settings.SettingsPipRoute
 import `in`.c1ph3rj.scanly.feature.settings.SettingsDetectionRoute
+import `in`.c1ph3rj.scanly.feature.settings.SettingsTextRecognitionRoute
 import `in`.c1ph3rj.scanly.feature.settings.SettingsFaqRoute
 import `in`.c1ph3rj.scanly.feature.settings.SettingsLicensesRoute
 import `in`.c1ph3rj.scanly.feature.settings.SettingsRoute
 import `in`.c1ph3rj.scanly.feature.settings.SettingsStorageRoute
+import `in`.c1ph3rj.scanly.feature.library.RecentlyDeletedRoute
+import `in`.c1ph3rj.scanly.feature.library.TrashUndoSnackbarHost
 import `in`.c1ph3rj.scanly.feature.settings.SettingsWidgetsRoute
 import `in`.c1ph3rj.scanly.feature.tools.ToolsRoute
 import `in`.c1ph3rj.scanly.feature.tools.pdf.PdfCompressRoute
@@ -44,12 +48,14 @@ import `in`.c1ph3rj.scanly.feature.tools.pdf.PdfReaderRoute
 import `in`.c1ph3rj.scanly.feature.tools.pdf.PdfReaderTool
 import `in`.c1ph3rj.scanly.feature.tools.pdf.PdfWatermarkRoute
 import `in`.c1ph3rj.scanly.feature.tools.pdf.PdfSignRoute
+import `in`.c1ph3rj.scanly.feature.tools.pdf.PdfImportRoute
 import `in`.c1ph3rj.scanly.feature.tools.pdf.PdfToImagesRoute
 import `in`.c1ph3rj.scanly.feature.sign.create.SignatureCreateRoute
 import `in`.c1ph3rj.scanly.feature.sign.document.DocumentSignRoute
 import `in`.c1ph3rj.scanly.feature.sign.manage.SignatureManageRoute
 import `in`.c1ph3rj.scanly.feature.tools.qr.QrToolMode
 import `in`.c1ph3rj.scanly.feature.tools.qr.QrToolRoute
+import `in`.c1ph3rj.scanly.feature.tools.text.ImageTextRoute
 import `in`.c1ph3rj.scanly.feature.update.AppUpdateUiState
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.EnterTransition
@@ -65,10 +71,18 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -92,7 +106,6 @@ import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.PhotoLibrary
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -112,9 +125,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
@@ -122,6 +135,7 @@ import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -131,6 +145,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
+import `in`.c1ph3rj.scanly.R
+import androidx.compose.ui.res.stringResource
+import `in`.c1ph3rj.scanly.core.common.appString
 
 private data class BottomNavItem(
     val route: String,
@@ -138,25 +155,25 @@ private data class BottomNavItem(
     val icon: ImageVector,
 )
 
-private val bottomNavItems = listOf(
+private val bottomNavItems get() = listOf(
     BottomNavItem(
         route = ScanlyDestination.Home.route,
-        label = "Home",
+        label = appString(R.string.scanly_destination_home),
         icon = Icons.Outlined.Home,
     ),
     BottomNavItem(
         route = ScanlyDestination.Library.route,
-        label = "Library",
+        label = appString(R.string.library_library),
         icon = Icons.Outlined.Folder,
     ),
     BottomNavItem(
         route = ScanlyDestination.Tools.route,
-        label = "Tools",
+        label = appString(R.string.settings_hub_sub_screens_tools),
         icon = Icons.Outlined.GridView,
     ),
     BottomNavItem(
         route = ScanlyDestination.Settings.route,
-        label = "Settings",
+        label = appString(R.string.settings_settings),
         icon = Icons.Outlined.Settings,
     ),
 )
@@ -200,7 +217,7 @@ private fun ScanlyNavHostLayout(
     val currentRoute = navBackStackEntry?.destination?.route
     val showBottomNav = currentRoute in topLevelRoutes
 
-    if (windowSizeInfo.isTablet) {
+    if (windowSizeInfo.useNavigationRail) {
         Box(
             modifier = modifier
                 .fillMaxSize()
@@ -212,6 +229,12 @@ private fun ScanlyNavHostLayout(
                 onCheckForUpdates = onCheckForUpdates,
                 useTabletNavigationRail = true,
                 modifier = Modifier.fillMaxSize(),
+            )
+            TrashUndoSnackbarHost(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .navigationBarsPadding()
+                    .padding(16.dp),
             )
         }
     } else {
@@ -250,6 +273,12 @@ private fun ScanlyNavHostLayout(
                     useTabletNavigationRail = false,
                     modifier = Modifier.fillMaxSize(),
                 )
+                TrashUndoSnackbarHost(
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .then(if (showBottomNav) Modifier else Modifier.navigationBarsPadding())
+                        .padding(16.dp),
+                )
             }
         }
     }
@@ -260,6 +289,11 @@ private fun ScanlyNavigationBar(
     currentRoute: String?,
     onNavigate: (String) -> Unit,
 ) {
+    val labelLineHeight = MaterialTheme.typography.labelSmall.lineHeight
+    val navHeight = maxOf(
+        CompactNavBarHeight,
+        with(LocalDensity.current) { labelLineHeight.toDp() * 2 } + 36.dp,
+    )
     var chooserVisible by rememberSaveable { mutableStateOf(false) }
     val barColor = MaterialTheme.colorScheme.surfaceContainer
     val dividerColor = MaterialTheme.colorScheme.outlineVariant
@@ -280,18 +314,18 @@ private fun ScanlyNavigationBar(
                 modifier = Modifier
                     .fillMaxWidth()
                     .navigationBarsPadding()
-                    .height(CompactNavBarHeight)
+                    .height(navHeight)
                     .selectableGroup(),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 bottomNavItems.forEachIndexed { index, item ->
                     if (index == bottomNavItems.size / 2) {
                         Box(
-                            modifier = Modifier.weight(1f).height(CompactNavBarHeight),
+                            modifier = Modifier.weight(1f).height(navHeight),
                             contentAlignment = Alignment.BottomCenter,
                         ) {
                             Text(
-                                text = "Scan",
+                                text = stringResource(R.string.home_scan),
                                 style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 modifier = Modifier
@@ -303,6 +337,7 @@ private fun ScanlyNavigationBar(
                     val selected = currentRoute == item.route
                     CompactNavItem(
                         item = item,
+                        height = navHeight,
                         selected = selected,
                         onClick = { if (!selected) onNavigate(item.route) },
                         modifier = Modifier.weight(1f),
@@ -325,6 +360,7 @@ private fun ScanlyNavigationBar(
 @Composable
 private fun CompactNavItem(
     item: BottomNavItem,
+    height: Dp,
     selected: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -333,7 +369,7 @@ private fun CompactNavItem(
     val tint = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
     Column(
         modifier = modifier
-            .height(CompactNavBarHeight)
+            .height(height)
             .selectable(
                 selected = selected,
                 interactionSource = interactionSource,
@@ -357,7 +393,13 @@ private fun CompactNavItem(
             Icon(item.icon, contentDescription = null, tint = tint, modifier = Modifier.size(22.dp))
         }
         Spacer(Modifier.height(2.dp))
-        Text(item.label, style = MaterialTheme.typography.labelSmall, color = tint, maxLines = 1)
+        Text(
+            item.label,
+            style = MaterialTheme.typography.labelSmall,
+            color = tint,
+            maxLines = 2,
+            textAlign = TextAlign.Center,
+        )
     }
 }
 
@@ -372,7 +414,7 @@ private fun CaptureButton(
         modifier = modifier
             .size(CaptureButtonSize)
             .testTag(ScanlyTestTags.NAV_SCAN)
-            .semantics { contentDescription = "Scan or import" },
+            .semantics { contentDescription = appString(R.string.document_detail_scan_or_import) },
         shape = CircleShape,
         color = MaterialTheme.colorScheme.primary,
         contentColor = MaterialTheme.colorScheme.onPrimary,
@@ -402,15 +444,15 @@ private fun CaptureChooserSheet(onDismiss: () -> Unit) {
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Text(
-                "Add a document",
+                stringResource(R.string.scanly_nav_host_add_a_document),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold,
                 modifier = Modifier.padding(start = 4.dp, bottom = 4.dp),
             )
             CaptureChoiceRow(
                 icon = Icons.Outlined.DocumentScanner,
-                title = "Scan with camera",
-                subtitle = "Capture pages now",
+                title = stringResource(R.string.scanly_nav_host_scan_with_camera),
+                subtitle = stringResource(R.string.scanly_nav_host_capture_pages_now),
                 onClick = {
                     onDismiss()
                     actions.onScan()
@@ -418,8 +460,8 @@ private fun CaptureChooserSheet(onDismiss: () -> Unit) {
             )
             CaptureChoiceRow(
                 icon = Icons.Outlined.PhotoLibrary,
-                title = "Import from gallery",
-                subtitle = "Up to ${ImageImportSupport.MAX_IMAGES_PER_IMPORT} images",
+                title = stringResource(R.string.scanly_nav_host_import_from_gallery),
+                subtitle = stringResource(R.string.scanly_nav_host_up_to_images, ImageImportSupport.MAX_IMAGES_PER_IMPORT),
                 onClick = {
                     onDismiss()
                     actions.onImport()
@@ -478,105 +520,140 @@ private fun ScanlyNavigationRail(
     currentRoute: String?,
     onNavigate: (String) -> Unit,
 ) {
-    Row(modifier = Modifier.fillMaxHeight()) {
-        Column(
-            modifier = Modifier
-                .width(92.dp)
-                .fillMaxHeight()
-                .background(MaterialTheme.colorScheme.surfaceContainerLowest)
-                .statusBarsPadding()
-                .padding(horizontal = 12.dp)
-                .padding(top = 16.dp, bottom = 16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            ScanlyAppLogo(size = 56.dp)
-            Spacer(modifier = Modifier.height(20.dp))
-            var chooserVisible by rememberSaveable { mutableStateOf(false) }
-            Surface(
-                onClick = { chooserVisible = true },
-                modifier = Modifier
-                    .size(56.dp)
-                    .testTag(ScanlyTestTags.NAV_SCAN)
-                    .semantics { contentDescription = "Scan or import" },
-                shape = RoundedCornerShape(18.dp),
-                color = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary,
-            ) {
-                Box(contentAlignment = Alignment.Center) {
-                    Icon(Icons.Outlined.DocumentScanner, contentDescription = null, modifier = Modifier.size(24.dp))
-                }
-            }
-            if (chooserVisible) {
-                CaptureChooserSheet(onDismiss = { chooserVisible = false })
-            }
-            Spacer(modifier = Modifier.height(20.dp))
-            bottomNavItems.forEach { item ->
-                val selected = currentRoute == item.route
-                RailNavIcon(
-                    icon = item.icon,
-                    label = item.label,
-                    selected = selected,
-                    testTag = ScanlyTestTags.navTag(item.route),
-                    onClick = { if (!selected) onNavigate(item.route) },
+    val windowSizeInfo = rememberWindowSizeInfo()
+    // Short windows (phone landscape, small split screen) drop the logo and tighten spacing so
+    // every destination stays reachable; the column scrolls if even that does not fit.
+    val compact = windowSizeInfo.isHeightConstrained
+    val railColor = MaterialTheme.colorScheme.surfaceContainerLowest
+    val dividerColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
+    // The app root pads the start cutout and the bottom navigation/task bar, so the rail cannot
+    // lay out there. Paint its surface out into those strips instead of leaving page-colour gaps.
+    val safeDrawing = WindowInsets.safeDrawing
+    var chooserVisible by rememberSaveable { mutableStateOf(false) }
+    Column(
+        modifier = Modifier
+            .width(RailWidth)
+            .fillMaxHeight()
+            .drawBehind {
+                val rtl = layoutDirection == LayoutDirection.Rtl
+                val startBleed = if (rtl) {
+                    safeDrawing.getRight(this, layoutDirection)
+                } else {
+                    safeDrawing.getLeft(this, layoutDirection)
+                }.toFloat()
+                val bottomBleed = safeDrawing.getBottom(this).toFloat()
+                val stroke = 1.dp.toPx()
+                drawRect(
+                    color = railColor,
+                    topLeft = Offset(if (rtl) 0f else -startBleed, 0f),
+                    size = Size(size.width + startBleed, size.height + bottomBleed),
                 )
-                Spacer(modifier = Modifier.height(8.dp))
+                drawRect(
+                    color = dividerColor,
+                    topLeft = Offset(if (rtl) 0f else size.width - stroke, 0f),
+                    size = Size(stroke, size.height + bottomBleed),
+                )
             }
-            Spacer(modifier = Modifier.weight(1f))
+            .selectableGroup()
+            .verticalScroll(rememberScrollState())
+            .statusBarsPadding()
+            .padding(vertical = if (compact) 8.dp else 20.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        if (!compact) {
+            ScanlyAppLogo(size = 44.dp)
+            Spacer(modifier = Modifier.height(20.dp))
         }
-        HorizontalDivider(
+        Surface(
+            onClick = { chooserVisible = true },
             modifier = Modifier
-                .fillMaxHeight()
-                .width(1.dp),
-            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                .size(if (compact) 48.dp else 56.dp)
+                .testTag(ScanlyTestTags.NAV_SCAN)
+                .semantics { contentDescription = appString(R.string.document_detail_scan_or_import) },
+            shape = RoundedCornerShape(16.dp),
+            color = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary,
+            shadowElevation = 2.dp,
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                Icon(Icons.Outlined.DocumentScanner, contentDescription = null, modifier = Modifier.size(24.dp))
+            }
+        }
+        if (!compact) {
+            Text(
+                text = stringResource(R.string.home_scan),
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier
+                    .padding(top = 6.dp)
+                    .clearAndSetSemantics {},
+            )
+        }
+        Spacer(modifier = Modifier.height(if (compact) 12.dp else 24.dp))
+        bottomNavItems.forEach { item ->
+            val selected = currentRoute == item.route
+            RailNavItem(
+                item = item,
+                selected = selected,
+                compact = compact,
+                onClick = { if (!selected) onNavigate(item.route) },
+            )
+            Spacer(modifier = Modifier.height(if (compact) 2.dp else 8.dp))
+        }
+    }
+    if (chooserVisible) {
+        CaptureChooserSheet(onDismiss = { chooserVisible = false })
+    }
+}
+
+/** Rail destination: the bottom bar's pill indicator with the label underneath (Material 3 rail). */
+@Composable
+private fun RailNavItem(
+    item: BottomNavItem,
+    selected: Boolean,
+    compact: Boolean,
+    onClick: () -> Unit,
+) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val tint = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+    Column(
+        modifier = Modifier
+            .width(RailWidth)
+            .heightIn(min = if (compact) 68.dp else 76.dp)
+            .selectable(
+                selected = selected,
+                interactionSource = interactionSource,
+                indication = null,
+                role = Role.Tab,
+                onClick = onClick,
+            )
+            .testTag(ScanlyTestTags.navTag(item.route)),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+    ) {
+        Box(
+            modifier = Modifier
+                .size(width = 56.dp, height = 32.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .background(if (selected) MaterialTheme.colorScheme.primaryContainer else Color.Transparent)
+                .indication(interactionSource, ripple()),
+            contentAlignment = Alignment.Center,
+        ) {
+            Icon(item.icon, contentDescription = null, tint = tint, modifier = Modifier.size(22.dp))
+        }
+        Spacer(Modifier.height(4.dp))
+        Text(
+            text = item.label,
+            style = MaterialTheme.typography.labelMedium,
+            fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal,
+            color = tint,
+            maxLines = 2,
+            textAlign = TextAlign.Center,
         )
     }
 }
 
-@Composable
-private fun RailNavIcon(
-    icon: ImageVector,
-    label: String,
-    selected: Boolean,
-    testTag: String,
-    onClick: () -> Unit,
-) {
-    val scheme = MaterialTheme.colorScheme
-    val isDark = scheme.background.luminance() < 0.5f
-    val shape = RoundedCornerShape(14.dp)
-    val containerColor = when {
-        selected && isDark -> scheme.surfaceContainerHigh
-        selected -> scheme.surfaceContainerLow
-        isDark -> scheme.surfaceContainer
-        else -> scheme.surfaceContainerHigh
-    }
-    val contentColor = when {
-        selected -> scheme.primary
-        else -> scheme.onSurfaceVariant
-    }
-
-    Surface(
-        onClick = onClick,
-        modifier = Modifier
-            .size(48.dp)
-            .testTag(testTag),
-        color = containerColor,
-        shape = shape,
-        border = if (selected) {
-            BorderStroke(1.dp, scheme.primary.copy(alpha = if (isDark) 0.72f else 0.64f))
-        } else {
-            null
-        },
-    ) {
-        Box(contentAlignment = Alignment.Center) {
-            Icon(
-                imageVector = icon,
-                contentDescription = label,
-                tint = contentColor,
-                modifier = Modifier.size(22.dp),
-            )
-        }
-    }
-}
+private val RailWidth = 80.dp
 
 @Composable
 private fun TopLevelDestinationShell(
@@ -608,6 +685,11 @@ private fun TopLevelDestinationShell(
             content()
         }
     }
+}
+
+/** Pushes [route] unless it is already on top, so a fast double-tap can't stack duplicate screens. */
+private fun NavHostController.navigateSingleTop(route: String) {
+    navigate(route) { launchSingleTop = true }
 }
 
 fun navigateScanlyTopLevel(navController: NavHostController, route: String) {
@@ -661,15 +743,15 @@ private fun ScanlyNavHostContent(
                 onNavigate = { route -> navigateToTopLevel(navController, route) },
             ) {
                 HomeRoute(
-                    onOpenSearch = { navController.navigate(LibrarySearchDestination.route) },
+                    onOpenSearch = { navController.navigateSingleTop(LibrarySearchDestination.route) },
                     onOpenDocument = { documentId ->
-                        navController.navigate(DocumentDestination.route(documentId))
+                        navController.navigateSingleTop(DocumentDestination.route(documentId))
                     },
                     onOpenScanSession = { documentId ->
-                        navController.navigate(ScanSessionDestination.route(documentId))
+                        navController.navigateSingleTop(ScanSessionDestination.route(documentId))
                     },
                     onOpenGroup = { groupId ->
-                        navController.navigate(GroupDetailDestination.route(groupId))
+                        navController.navigateSingleTop(GroupDetailDestination.route(groupId))
                     },
                     onNavigateToLibrary = {
                         libraryTabRequest = LibraryTab.All
@@ -697,26 +779,35 @@ private fun ScanlyNavHostContent(
                 LibraryRoute(
                     tabRequest = libraryTabRequest,
                     onTabRequestHandled = { libraryTabRequest = null },
-                    onOpenSearch = { navController.navigate(LibrarySearchDestination.route) },
+                    onOpenSearch = { navController.navigateSingleTop(LibrarySearchDestination.route) },
                     onOpenDocument = { documentId ->
-                        navController.navigate(DocumentDestination.route(documentId))
+                        navController.navigateSingleTop(DocumentDestination.route(documentId))
                     },
                     onOpenScanSession = { documentId ->
-                        navController.navigate(ScanSessionDestination.route(documentId))
+                        navController.navigateSingleTop(ScanSessionDestination.route(documentId))
                     },
                     onOpenGroup = { groupId ->
-                        navController.navigate(GroupDetailDestination.route(groupId))
+                        navController.navigateSingleTop(GroupDetailDestination.route(groupId))
                     },
                 )
             }
         }
+        composable(
+            route = LibraryTrashDestination.route,
+            enterTransition = { detailPushEnter() },
+            exitTransition = { detailPushExit() },
+            popEnterTransition = { detailPopEnter() },
+            popExitTransition = { detailPopExit() },
+        ) {
+            RecentlyDeletedRoute(onNavigateUp = navController::navigateUp)
+        }
         composable(route = LibrarySearchDestination.route) {
             LibrarySearchRoute(
-                onBack = { navController.popBackStack() },
-                onOpenDocument = { navController.navigate(DocumentDestination.route(it)) },
-                onOpenGroup = { navController.navigate(GroupDetailDestination.route(it)) },
+                onBack = navController::navigateUp,
+                onOpenDocument = { navController.navigateSingleTop(DocumentDestination.route(it)) },
+                onOpenGroup = { navController.navigateSingleTop(GroupDetailDestination.route(it)) },
                 onOpenPageText = { documentId, pageIndex, query ->
-                    navController.navigate(PageTextDestination.route(documentId, pageIndex, query))
+                    navController.navigateSingleTop(PageTextDestination.route(documentId, pageIndex, query))
                 },
             )
         }
@@ -754,13 +845,13 @@ private fun ScanlyNavHostContent(
             ) {
                 ToolsRoute(
                     onOpenDocument = { documentId ->
-                        navController.navigate(DocumentDestination.route(documentId))
+                        navController.navigateSingleTop(DocumentDestination.route(documentId))
                     },
                     onOpenScanSession = { documentId ->
-                        navController.navigate(ScanSessionDestination.route(documentId))
+                        navController.navigateSingleTop(ScanSessionDestination.route(documentId))
                     },
                     onOpenTool = { route ->
-                        navController.navigate(route)
+                        navController.navigateSingleTop(route)
                     },
                 )
             }
@@ -787,6 +878,24 @@ private fun ScanlyNavHostContent(
             QrToolRoute(
                 onNavigateUp = navController::navigateUp,
                 initialMode = mode,
+            )
+        }
+        composable(
+            route = ToolsImageTextDestination.route,
+            enterTransition = { detailPushEnter() },
+            exitTransition = { detailPushExit() },
+            popEnterTransition = { detailPopEnter() },
+            popExitTransition = { detailPopExit() },
+        ) {
+            ImageTextRoute(
+                onNavigateUp = navController::navigateUp,
+                onOpenText = { documentId, replaceTool ->
+                    navController.navigate(PageTextDestination.route(documentId)) {
+                        // Imported photos: Back from the text returns to Tools, not to a stale picker.
+                        if (replaceTool) popUpTo(ToolsImageTextDestination.route) { inclusive = true }
+                        launchSingleTop = true
+                    }
+                },
             )
         }
         composable(
@@ -822,13 +931,14 @@ private fun ScanlyNavHostContent(
                         PdfReaderTool.PASSWORD -> ToolsPdfPasswordDestination.route
                         PdfReaderTool.WATERMARK -> ToolsPdfWatermarkDestination.route
                         PdfReaderTool.TO_IMAGES -> ToolsPdfToImagesDestination.route
+                        PdfReaderTool.IMPORT -> ToolsPdfImportDestination.route
                     }
-                    navController.navigate(pdfToolRoute(toolRoute, source))
+                    navController.navigateSingleTop(pdfToolRoute(toolRoute, source))
                 },
                 initialSource = filePath.takeIf(String::isNotBlank)?.let {
                     PdfToolSource.AppFile(
                         filePath = it,
-                        displayName = fileName.ifBlank { "Scanly PDF" },
+                        displayName = fileName.ifBlank { stringResource(R.string.pdf_tool_shared_scanly_pdf) },
                     )
                 },
             )
@@ -845,7 +955,7 @@ private fun ScanlyNavHostContent(
                 initialSource = it.pdfToolSource(),
                 onNavigateUp = navController::navigateUp,
                 onPreviewPdf = { artifact ->
-                    navController.navigate(
+                    navController.navigateSingleTop(
                         ToolsPdfReaderDestination.route(artifact.filePath, artifact.fileName),
                     )
                 },
@@ -863,7 +973,7 @@ private fun ScanlyNavHostContent(
                 initialSource = it.pdfToolSource(),
                 onNavigateUp = navController::navigateUp,
                 onPreviewPdf = { artifact ->
-                    navController.navigate(
+                    navController.navigateSingleTop(
                         ToolsPdfReaderDestination.route(artifact.filePath, artifact.fileName),
                     )
                 },
@@ -883,6 +993,26 @@ private fun ScanlyNavHostContent(
             )
         }
         composable(
+            route = pdfToolRoutePattern(ToolsPdfImportDestination.route),
+            arguments = listOf(pdfToolSourceNavArgument()),
+            enterTransition = { detailPushEnter() },
+            exitTransition = { detailPushExit() },
+            popEnterTransition = { detailPopEnter() },
+            popExitTransition = { detailPopExit() },
+        ) {
+            PdfImportRoute(
+                initialSource = it.pdfToolSource(),
+                onNavigateUp = navController::navigateUp,
+                onOpenDocument = { documentId ->
+                    // Replace the tool so Back from the new document returns to where the import started.
+                    navController.navigate(DocumentDestination.route(documentId)) {
+                        popUpTo(pdfToolRoutePattern(ToolsPdfImportDestination.route)) { inclusive = true }
+                        launchSingleTop = true
+                    }
+                },
+            )
+        }
+        composable(
             route = pdfToolRoutePattern(ToolsPdfPasswordDestination.route),
             arguments = listOf(pdfToolSourceNavArgument()),
             enterTransition = { detailPushEnter() },
@@ -894,7 +1024,7 @@ private fun ScanlyNavHostContent(
                 initialSource = it.pdfToolSource(),
                 onNavigateUp = navController::navigateUp,
                 onPreviewPdf = { artifact ->
-                    navController.navigate(
+                    navController.navigateSingleTop(
                         ToolsPdfReaderDestination.route(artifact.filePath, artifact.fileName),
                     )
                 },
@@ -912,7 +1042,7 @@ private fun ScanlyNavHostContent(
                 initialSource = it.pdfToolSource(),
                 onNavigateUp = navController::navigateUp,
                 onPreviewPdf = { artifact ->
-                    navController.navigate(
+                    navController.navigateSingleTop(
                         ToolsPdfReaderDestination.route(artifact.filePath, artifact.fileName),
                     )
                 },
@@ -930,12 +1060,12 @@ private fun ScanlyNavHostContent(
                 initialSource = it.pdfToolSource(),
                 onNavigateUp = navController::navigateUp,
                 onPreviewPdf = { artifact ->
-                    navController.navigate(
+                    navController.navigateSingleTop(
                         ToolsPdfReaderDestination.route(artifact.filePath, artifact.fileName),
                     )
                 },
-                onManageSignatures = { navController.navigate(SignatureManageDestination.route) },
-                onCreateSignature = { kind -> navController.navigate(SignatureCreateDestination.route(kind)) },
+                onManageSignatures = { navController.navigateSingleTop(SignatureManageDestination.route) },
+                onCreateSignature = { kind -> navController.navigateSingleTop(SignatureCreateDestination.route(kind)) },
             )
         }
         composable(
@@ -954,8 +1084,8 @@ private fun ScanlyNavHostContent(
         ) {
             DocumentSignRoute(
                 onNavigateUp = navController::navigateUp,
-                onManageSignatures = { navController.navigate(SignatureManageDestination.route) },
-                onCreateSignature = { kind -> navController.navigate(SignatureCreateDestination.route(kind)) },
+                onManageSignatures = { navController.navigateSingleTop(SignatureManageDestination.route) },
+                onCreateSignature = { kind -> navController.navigateSingleTop(SignatureCreateDestination.route(kind)) },
             )
         }
         composable(
@@ -967,7 +1097,15 @@ private fun ScanlyNavHostContent(
         ) {
             SignatureManageRoute(
                 onNavigateUp = navController::navigateUp,
-                onCreate = { kind -> navController.navigate(SignatureCreateDestination.route(kind)) },
+                onCreate = { kind -> navController.navigateSingleTop(SignatureCreateDestination.route(kind)) },
+                onSignPdf = {
+                    // Opened from the Sign tool: go back to it rather than stacking a second one.
+                    val returned = navController.popBackStack(
+                        pdfToolRoutePattern(ToolsPdfSignDestination.route),
+                        inclusive = false,
+                    )
+                    if (!returned) navController.navigateSingleTop(ToolsPdfSignDestination.route)
+                },
             )
         }
         composable(
@@ -1016,13 +1154,18 @@ private fun ScanlyNavHostContent(
                 onNavigate = { route -> navigateToTopLevel(navController, route) },
             ) {
                 SettingsRoute(
-                    onOpenFaqs = { navController.navigate(SettingsFaqDestination.route) },
-                    onOpenStorage = { navController.navigate(SettingsStorageDestination.route) },
-                    onOpenAppearance = { navController.navigate(SettingsAppearanceDestination.route) },
-                    onOpenDetection = { navController.navigate(SettingsDetectionDestination.route) },
-                    onOpenWidgets = { navController.navigate(SettingsWidgetsDestination.route) },
-                    onOpenAbout = { navController.navigate(SettingsAboutDestination.route) },
-                    onOpenPip = { navController.navigate(SettingsPipDestination.route) },
+                    onOpenFaqs = { navController.navigateSingleTop(SettingsFaqDestination.route) },
+                    onOpenStorage = { navController.navigateSingleTop(SettingsStorageDestination.route) },
+                    onOpenRecentlyDeleted = { navController.navigateSingleTop(LibraryTrashDestination.route) },
+                    onOpenAppearance = { navController.navigateSingleTop(SettingsAppearanceDestination.route) },
+                    onOpenLanguage = { navController.navigateSingleTop(SettingsLanguageDestination.route) },
+                    onOpenDetection = { navController.navigateSingleTop(SettingsDetectionDestination.route) },
+                    onOpenTextRecognition = {
+                        navController.navigateSingleTop(SettingsTextRecognitionDestination.route)
+                    },
+                    onOpenWidgets = { navController.navigateSingleTop(SettingsWidgetsDestination.route) },
+                    onOpenAbout = { navController.navigateSingleTop(SettingsAboutDestination.route) },
+                    onOpenPip = { navController.navigateSingleTop(SettingsPipDestination.route) },
                 )
             }
         }
@@ -1040,6 +1183,15 @@ private fun ScanlyNavHostContent(
                 onNavigateUp = navController::navigateUp,
                 parentEntry = parentEntry,
             )
+        }
+        composable(
+            route = SettingsLanguageDestination.route,
+            enterTransition = { detailPushEnter() },
+            exitTransition = { detailPushExit() },
+            popEnterTransition = { detailPopEnter() },
+            popExitTransition = { detailPopExit() },
+        ) {
+            SettingsLanguageRoute(onNavigateUp = navController::navigateUp)
         }
         composable(
             route = SettingsPipDestination.route,
@@ -1063,8 +1215,23 @@ private fun ScanlyNavHostContent(
             SettingsDetectionRoute(
                 onNavigateUp = navController::navigateUp,
                 onOpenModelBenchmark = {
-                    navController.navigate(SettingsModelBenchmarkDestination.route)
+                    navController.navigateSingleTop(SettingsModelBenchmarkDestination.route)
                 },
+                parentEntry = parentEntry,
+            )
+        }
+        composable(
+            route = SettingsTextRecognitionDestination.route,
+            enterTransition = { detailPushEnter() },
+            exitTransition = { detailPushExit() },
+            popEnterTransition = { detailPopEnter() },
+            popExitTransition = { detailPopExit() },
+        ) {
+            val parentEntry = remember(it) {
+                navController.getBackStackEntry(ScanlyDestination.Settings.route)
+            }
+            SettingsTextRecognitionRoute(
+                onNavigateUp = navController::navigateUp,
                 parentEntry = parentEntry,
             )
         }
@@ -1098,10 +1265,10 @@ private fun ScanlyNavHostContent(
                 appUpdateUiState = appUpdateUiState,
                 onCheckForUpdates = onCheckForUpdates,
                 onOpenLegalDocument = { documentType ->
-                    navController.navigate(LegalDocumentDestination.route(documentType))
+                    navController.navigateSingleTop(LegalDocumentDestination.route(documentType))
                 },
-                onOpenFaqs = { navController.navigate(SettingsFaqDestination.route) },
-                onOpenLicenses = { navController.navigate(SettingsLicensesDestination.route) },
+                onOpenFaqs = { navController.navigateSingleTop(SettingsFaqDestination.route) },
+                onOpenLicenses = { navController.navigateSingleTop(SettingsLicensesDestination.route) },
                 parentEntry = parentEntry,
             )
         }
@@ -1157,6 +1324,7 @@ private fun ScanlyNavHostContent(
             SettingsStorageRoute(
                 onNavigateUp = navController::navigateUp,
                 parentEntry = parentEntry,
+                onOpenRecentlyDeleted = { navController.navigateSingleTop(LibraryTrashDestination.route) },
             )
         }
         composable(
@@ -1194,19 +1362,19 @@ private fun ScanlyNavHostContent(
             DocumentDetailRoute(
                 onNavigateUp = navController::navigateUp,
                 onOpenCamera = {
-                    navController.navigate(ScanSessionDestination.route(documentId))
+                    navController.navigateSingleTop(ScanSessionDestination.route(documentId))
                 },
                 onOpenPageEditor = { pageId ->
-                    navController.navigate(PageImagePreviewDestination.route(pageId))
+                    navController.navigateSingleTop(PageImagePreviewDestination.route(pageId))
                 },
                 onOpenText = { pageIndex ->
-                    navController.navigate(PageTextDestination.route(documentId, pageIndex))
+                    navController.navigateSingleTop(PageTextDestination.route(documentId, pageIndex))
                 },
                 onOpenSign = { pageIndex ->
-                    navController.navigate(DocumentSignDestination.route(documentId, pageIndex))
+                    navController.navigateSingleTop(DocumentSignDestination.route(documentId, pageIndex))
                 },
                 onReplacePage = { pageId ->
-                    navController.navigate(ScanSessionDestination.route(documentId, replacePageId = pageId))
+                    navController.navigateSingleTop(ScanSessionDestination.route(documentId, replacePageId = pageId))
                 },
             )
         }
@@ -1272,15 +1440,15 @@ private fun ScanlyNavHostContent(
             PageImagePreviewRoute(
                 onNavigateUp = navController::navigateUp,
                 onEditPage = { pageId ->
-                    navController.navigate(PageEditorDestination.route(pageId))
+                    navController.navigateSingleTop(PageEditorDestination.route(pageId))
                 },
                 onRetakePage = { documentId, pageId ->
-                    navController.navigate(
+                    navController.navigateSingleTop(
                         ScanSessionDestination.route(documentId, replacePageId = pageId),
                     )
                 },
                 onSignPage = { documentId, pageIndex ->
-                    navController.navigate(DocumentSignDestination.route(documentId, pageIndex))
+                    navController.navigateSingleTop(DocumentSignDestination.route(documentId, pageIndex))
                 },
             )
         }
@@ -1299,10 +1467,10 @@ private fun ScanlyNavHostContent(
             PageEditorRoute(
                 onNavigateUp = navController::navigateUp,
                 onOpenCrop = { pageId ->
-                    navController.navigate(PageCropDestination.route(pageId))
+                    navController.navigateSingleTop(PageCropDestination.route(pageId))
                 },
                 onRetakePage = { documentId, pageId ->
-                    navController.navigate(ScanSessionDestination.route(documentId, replacePageId = pageId))
+                    navController.navigateSingleTop(ScanSessionDestination.route(documentId, replacePageId = pageId))
                 },
             )
         }
@@ -1337,7 +1505,7 @@ private fun ScanlyNavHostContent(
             GroupDetailRoute(
                 onNavigateUp = navController::navigateUp,
                 onOpenDocument = { documentId ->
-                    navController.navigate(DocumentDestination.route(documentId))
+                    navController.navigateSingleTop(DocumentDestination.route(documentId))
                 },
             )
         }

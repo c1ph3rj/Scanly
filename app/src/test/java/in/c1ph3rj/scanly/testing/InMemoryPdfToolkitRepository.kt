@@ -1,6 +1,7 @@
 package `in`.c1ph3rj.scanly.testing
 
 import android.graphics.Bitmap
+import `in`.c1ph3rj.scanly.core.common.ScanlyError
 import `in`.c1ph3rj.scanly.core.common.ScanlyResult
 import `in`.c1ph3rj.scanly.domain.model.ExportArtifact
 import `in`.c1ph3rj.scanly.domain.model.PdfCompressQuality
@@ -203,6 +204,34 @@ class InMemoryPdfToolkitRepository(
             destinationLabel = "Pictures/Scanly",
             options = options,
         )
+    }
+
+    /** When set, [renderPageToJpeg] fails for this page index instead of writing a file. */
+    var failRenderAtPage: Int? = null
+
+    /** Every [renderPageToJpeg] call as "pageIndex -> targetPath", in call order. */
+    val renderedPages: MutableList<RenderedPage> = mutableListOf()
+
+    data class RenderedPage(
+        val pageIndex: Int,
+        val longEdgePx: Int,
+        val targetPath: String,
+    )
+
+    override suspend fun renderPageToJpeg(
+        copy: PdfWorkingCopy,
+        pageIndex: Int,
+        longEdgePx: Int,
+        targetPath: String,
+    ): ScanlyResult<Unit> {
+        renderedPages += RenderedPage(pageIndex, longEdgePx, targetPath)
+        if (pageIndex == failRenderAtPage) {
+            return ScanlyResult.Failure(ScanlyError("Render failed"))
+        }
+        val target = File(targetPath)
+        target.parentFile?.mkdirs()
+        target.writeBytes(byteArrayOf(0xFF.toByte(), 0xD8.toByte(), 0xFF.toByte(), 0xD9.toByte()))
+        return ScanlyResult.Success(Unit)
     }
 
     override suspend fun prepareShare(artifact: ExportArtifact): ScanlyResult<List<String>> =

@@ -28,6 +28,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import `in`.c1ph3rj.scanly.domain.model.SignatureKind
 import `in`.c1ph3rj.scanly.feature.sign.editor.SignEditorScreen
+import `in`.c1ph3rj.scanly.R
+import androidx.compose.ui.res.stringResource
 
 /** Space kept between the snackbar and the bottom edge, clearing the editor's bottom panel. */
 private val SnackbarBottomInset = 160.dp
@@ -86,7 +88,7 @@ fun DocumentSignRoute(
                 onDone = viewModel::save,
                 onManageSignatures = onManageSignatures,
                 onCreateSignature = onCreateSignature,
-                title = "Sign",
+                title = stringResource(R.string.page_image_preview_sign),
                 doneEnabled = !uiState.isSaving,
             )
         }
@@ -118,7 +120,7 @@ private fun SavingOverlay() {
             CircularProgressIndicator(color = Color.White)
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = "Stamping signatures…",
+                text = stringResource(R.string.document_sign_stamping_signatures),
                 style = MaterialTheme.typography.bodyMedium,
                 color = Color.White,
             )

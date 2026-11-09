@@ -2,10 +2,12 @@ package `in`.c1ph3rj.scanly.domain.repository
 
 import `in`.c1ph3rj.scanly.core.common.ScanlyResult
 import `in`.c1ph3rj.scanly.domain.model.DocumentKind
+import `in`.c1ph3rj.scanly.domain.model.OcrEngine
 import `in`.c1ph3rj.scanly.domain.model.PageText
-import `in`.c1ph3rj.scanly.domain.model.PageTextHit
+import `in`.c1ph3rj.scanly.domain.model.PageTextSearch
 import `in`.c1ph3rj.scanly.domain.model.TextIndexProgress
 import `in`.c1ph3rj.scanly.domain.search.SearchQuery
+import `in`.c1ph3rj.scanly.domain.search.VocabularyTerm
 import kotlinx.coroutines.flow.Flow
 
 /** On-device page text: recognition, user corrections, and the full-text index. */
@@ -31,10 +33,16 @@ interface PageTextRepository {
     /** Reads up to [limit] stale pages library-wide, newest documents first. Returns pages read. */
     suspend fun recognizePendingPages(limit: Int): ScanlyResult<Int>
 
+    /**
+     * Re-derives search forms (numbers, dates, joined words) for up to [limit] rows made with
+     * an older deriver, without reading pages again. Returns rows updated.
+     */
+    suspend fun refreshDerivedText(limit: Int): ScanlyResult<Int>
+
     /** Saves the user's correction; null restores the recognized text. */
     suspend fun updateUserText(pageId: String, text: String?): ScanlyResult<Unit>
 
-    suspend fun searchPages(query: SearchQuery, limit: Int): ScanlyResult<List<PageTextHit>>
+    suspend fun searchPages(query: SearchQuery, limit: Int): ScanlyResult<PageTextSearch>
 
     /**
      * A corrected query built from words that occur in the user's pages, or null when every
@@ -42,6 +50,22 @@ interface PageTextRepository {
      */
     suspend fun suggestCorrection(query: SearchQuery): String?
 
+    /** Library words starting with the folded [prefix], those in the most documents first. */
+    suspend fun completeWord(prefix: String, limit: Int): List<VocabularyTerm>
+
     /** Asks the background indexer to catch up (no-op when nothing is pending). */
     fun requestBackgroundIndexing()
+
+    /**
+     * How many live pages have a text row that [engine] did not produce (another engine, or
+     * nothing recognized). Pages the user edited are included; their edits survive a re-read.
+     */
+    fun observePagesNotReadWith(engine: OcrEngine): Flow<Int>
+
+    /**
+     * One-shot: queues every page counted by [observePagesNotReadWith] for a background re-read
+     * and starts the indexer. Returns how many pages were queued. Never runs automatically, so a
+     * page that falls back to another engine is not retried forever.
+     */
+    suspend fun rereadPagesNotReadWith(engine: OcrEngine): ScanlyResult<Int>
 }

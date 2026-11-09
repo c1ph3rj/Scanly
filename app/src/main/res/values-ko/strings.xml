@@ -1,0 +1,1967 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="shortcut_scan_short">스캔</string>
+    <string name="shortcut_scan_long">새로 스캔하기</string>
+    <string name="shortcut_scan_disabled">스캔을 사용할 수 없음</string>
+    <string name="shortcut_import_short">가져오기</string>
+    <string name="shortcut_import_long">사진 가져오기</string>
+    <string name="shortcut_import_disabled">가져오기를 사용할 수 없음</string>
+    <string name="shortcut_qr_short">QR</string>
+    <string name="shortcut_qr_long">QR 스캔·만들기, 바코드 읽기</string>
+    <string name="shortcut_qr_disabled">QR 도구를 사용할 수 없음</string>
+    <string name="shortcut_library_short">라이브러리</string>
+    <string name="shortcut_library_long">라이브러리 열기</string>
+    <string name="shortcut_library_disabled">라이브러리를 사용할 수 없음</string>
+    <string name="widget_actions_label">Scanly 바로가기</string>
+    <string name="widget_actions_description">스캔, 가져오기, QR, 라이브러리를 빠르게 열 수 있어요.</string>
+    <string name="widget_scan_label">Scanly 스캔</string>
+    <string name="widget_scan_description">새 문서를 스캔해요.</string>
+    <string name="widget_qr_label">Scanly QR</string>
+    <string name="widget_qr_description">QR 스캔 및 생성 도구를 열어요.</string>
+    <string name="widget_action_scan">스캔</string>
+    <string name="widget_action_import">가져오기</string>
+    <string name="widget_action_qr">QR</string>
+    <string name="widget_action_library">라이브러리</string>
+    <!-- DocumentPresentationFormatter -->
+    <string name="document_presentation_formatter_imported">"가져온 문서 %1$s"</string>
+    <string name="document_presentation_formatter_folder">"폴더 %1$s"</string>
+    <string name="document_presentation_formatter_new_folder">"새 폴더 %1$s"</string>
+    <string name="document_presentation_formatter_scan">"스캔 %1$s"</string>
+    <string name="document_presentation_formatter_document">"문서 %1$s"</string>
+    <!-- ImageImportSupport -->
+    <string name="image_import_only_images_can_be_added">"한 번에 최대 %1$s장까지 추가할 수 있어요."</string>
+    <string name="image_import_skipped_files_that_couldn_t">"열 수 없는 파일 %1$s개를 건너뛰었어요."</string>
+    <string name="image_import_skipped_1_file_that_couldn">열 수 없는 파일 1개를 건너뛰었어요.</string>
+    <string name="image_import_imported_images">"이미지 %1$s장을 가져왔어요."</string>
+    <string name="image_import_imported_1_image">이미지 1장을 가져왔어요.</string>
+    <!-- ZoomableImageDialog -->
+    <string name="zoomable_image_image_unavailable">이미지를 표시할 수 없음</string>
+    <string name="zoomable_image_reset_zoom">확대/축소 초기화</string>
+    <string name="zoomable_image_back">뒤로</string>
+    <string name="zoomable_image_close">닫기</string>
+    <!-- LibraryOperationCoordinator -->
+    <string name="library_operation_coordinator_library_maintenance_is_in_progress">라이브러리를 정리하는 중이에요.</string>
+    <!-- DefaultDocumentRepository -->
+    <string name="default_document_repository_could_not_remove_empty_documents">빈 문서를 삭제하지 못했어요.</string>
+    <string name="default_document_repository_could_not_clear_old_deleted">오래전에 삭제된 문서를 정리하지 못했어요.</string>
+    <string name="default_document_repository_could_not_empty_recently_deleted">최근 삭제된 항목을 비우지 못했어요.</string>
+    <string name="default_document_repository_could_not_restore_the_document">문서를 복원하지 못했어요.</string>
+    <string name="default_document_repository_could_not_move_the_document">문서를 최근 삭제된 항목으로 옮기지 못했어요.</string>
+    <!-- DefaultDocumentExportRepository -->
+    <string name="default_document_export_repository_could_not_prepare_group_zip">폴더 ZIP 공유를 준비하지 못했어요.</string>
+    <string name="default_document_export_repository_could_not_prepare_group_pdf">폴더 PDF 공유를 준비하지 못했어요.</string>
+    <string name="default_document_export_repository_could_not_export_group_as">폴더를 ZIP으로 내보내지 못했어요.</string>
+    <string name="default_document_export_repository_could_not_export_group_as_2">폴더를 PDF로 내보내지 못했어요.</string>
+    <string name="default_document_export_repository_could_not_prepare_images_for">공유할 이미지를 준비하지 못했어요.</string>
+    <string name="default_document_export_repository_could_not_export_images">이미지를 내보내지 못했어요.</string>
+    <string name="default_document_export_repository_could_not_prepare_pdf_share">PDF 공유를 준비하지 못했어요.</string>
+    <string name="default_document_export_repository_could_not_export_pdf">PDF를 내보내지 못했어요.</string>
+    <!-- DefaultGroupRepository -->
+    <string name="default_group_repository_could_not_clear_old_deleted">오래전에 삭제된 폴더를 정리하지 못했어요.</string>
+    <string name="default_group_repository_could_not_delete_the_folders">폴더를 삭제하지 못했어요.</string>
+    <string name="default_group_repository_could_not_delete_the_folder">폴더를 삭제하지 못했어요.</string>
+    <string name="default_group_repository_could_not_restore_the_folder">폴더를 복원하지 못했어요.</string>
+    <string name="default_group_repository_could_not_move_the_folder">폴더를 최근 삭제된 항목으로 옮기지 못했어요.</string>
+    <!-- DefaultPageRepository -->
+    <string name="default_page_repository_applied_to_of_pages_save">"전체 %2$s페이지 중 %1$s페이지에 적용했어요. 나머지는 다시 저장해 재시도하세요."</string>
+    <string name="default_page_repository_could_not_clear_old_deleted">오래전에 삭제된 페이지를 정리하지 못했어요.</string>
+    <string name="default_page_repository_could_not_delete_the_pages">페이지를 삭제하지 못했어요.</string>
+    <string name="default_page_repository_could_not_delete_the_page">페이지를 삭제하지 못했어요.</string>
+    <string name="default_page_repository_could_not_restore_the_page">페이지를 복원하지 못했어요.</string>
+    <!-- DefaultPdfToolkitRepository -->
+    <string name="default_pdf_toolkit_repository_incorrect_pdf_password">PDF 비밀번호가 올바르지 않아요.</string>
+    <string name="default_pdf_toolkit_repository_this_pdf_is_not_stored">Scanly에 저장된 PDF가 아니에요.</string>
+    <string name="default_pdf_toolkit_repository_the_scanly_document_could_not">Scanly 문서를 PDF로 준비하지 못했어요.</string>
+    <string name="default_pdf_toolkit_repository_could_not_prepare_share">공유를 준비하지 못했어요.</string>
+    <string name="default_pdf_toolkit_repository_could_not_read_this_page">이 페이지를 읽지 못했어요.</string>
+    <string name="default_pdf_toolkit_repository_failed_to_encode_page">%1$s페이지를 인코딩하지 못했어요.</string>
+    <string name="default_pdf_toolkit_repository_could_not_save_the_images">이미지를 저장하지 못했어요.</string>
+    <string name="default_pdf_toolkit_repository_page">"%1$s – %2$s페이지.%3$s"</string>
+    <string name="default_pdf_toolkit_repository_could_not_estimate_the_image">이미지 크기를 예측하지 못했어요.</string>
+    <string name="default_pdf_toolkit_repository_could_not_open_this_pdf">이 PDF를 열지 못했어요.</string>
+    <string name="default_pdf_toolkit_repository_could_not_render_pdf_page">PDF 페이지를 표시하지 못했어요.</string>
+    <string name="default_pdf_toolkit_repository_could_not_sign_this_pdf">이 PDF에 서명하지 못했어요.</string>
+    <string name="default_pdf_toolkit_repository_could_not_open_this_pdf_2">서명할 PDF를 열지 못했어요.</string>
+    <string name="default_pdf_toolkit_repository_could_not_update_watermark_preview">워터마크 미리보기를 업데이트하지 못했어요.</string>
+    <string name="default_pdf_toolkit_repository_could_not_add_watermark">워터마크를 추가하지 못했어요.</string>
+    <string name="default_pdf_toolkit_repository_could_not_remove_pdf_password">PDF 비밀번호를 삭제하지 못했어요.</string>
+    <string name="default_pdf_toolkit_repository_could_not_password_protect_pdf">PDF에 비밀번호를 설정하지 못했어요.</string>
+    <string name="default_pdf_toolkit_repository_could_not_compress_pdf">PDF를 압축하지 못했어요.</string>
+    <string name="default_pdf_toolkit_repository_this_pdf_is_already_well">이미 충분히 최적화된 PDF예요. 압축해도 크기가 줄지 않아요.</string>
+    <string name="default_pdf_toolkit_repository_page_is_too_large_to">"%1$s페이지는 이 기기에서 압축하기에 너무 커요. 최소 화질을 사용해 보세요."</string>
+    <string name="default_pdf_toolkit_repository_could_not_merge_pdfs">PDF를 병합하지 못했어요.</string>
+    <string name="default_pdf_toolkit_repository_one_of_the_pdfs">PDF 중 하나</string>
+    <string name="default_pdf_toolkit_repository_could_not_open_pdf">PDF를 열지 못했어요.</string>
+    <!-- PdfSignatureStamper -->
+    <string name="pdf_signature_stamper_text_and_dates_support_latin">텍스트와 날짜에는 라틴 문자, 그리스 문자, 키릴 문자와 숫자, 기호만 사용할 수 있어요.</string>
+    <!-- PdfWatermarkStamper -->
+    <string name="pdf_watermark_stamper_watermarks_support_latin_greek_and">워터마크에는 라틴 문자, 그리스 문자, 키릴 문자와 숫자, 기호만 사용할 수 있어요. 영어로 입력해 보세요.</string>
+    <!-- DefaultQrCodeRepository -->
+    <string name="default_qr_code_repository_could_not_save_qr_code">QR 코드를 저장하지 못했어요.</string>
+    <string name="default_qr_code_repository_could_not_generate_qr_code">QR 코드를 만들지 못했어요.</string>
+    <!-- DefaultPageMarkupRepository -->
+    <string name="default_page_markup_repository_could_not_save_the_signed">서명한 페이지를 저장하지 못했어요.</string>
+    <string name="default_page_markup_repository_could_not_load_signatures_for">이 문서의 서명을 불러오지 못했어요.</string>
+    <!-- DefaultSignatureRepository -->
+    <string name="default_signature_repository_could_not_save_the_image">이미지를 저장하지 못했어요.</string>
+    <string name="default_signature_repository_could_not_prepare_the_image">이미지를 준비하지 못했어요.</string>
+    <string name="default_signature_repository_could_not_update_the_signature">서명을 업데이트하지 못했어요.</string>
+    <string name="default_signature_repository_could_not_delete_the_signature">서명을 삭제하지 못했어요.</string>
+    <string name="default_signature_repository_could_not_read_this_image">이 이미지를 읽지 못했어요.</string>
+    <string name="default_signature_repository_could_not_save_the_signature">서명을 저장하지 못했어요.</string>
+    <!-- PageMarkupStore -->
+    <string name="page_markup_store_could_not_save_the_signed">서명한 페이지를 저장하지 못했어요.</string>
+    <!-- DefaultPageTextRepository -->
+    <string name="default_page_text_repository_could_not_queue_pages_to">페이지를 다시 읽도록 예약하지 못했어요.</string>
+    <string name="default_page_text_repository_could_not_update_the_text">텍스트 색인을 업데이트하지 못했어요.</string>
+    <string name="default_page_text_repository_could_not_save_your_changes">변경사항을 저장하지 못했어요.</string>
+    <string name="default_page_text_repository_could_not_read_text_from">이 페이지에서 텍스트를 읽지 못했어요.</string>
+    <string name="default_page_text_repository_could_not_read_text_from_2">이 문서에서 텍스트를 읽지 못했어요.</string>
+    <!-- DefaultPlayInAppUpdateCoordinator -->
+    <string name="default_play_in_app_update_coordinator_could_not_check_google_play">Google Play에서 업데이트를 확인하지 못했어요.</string>
+    <string name="default_play_in_app_update_coordinator_google_play_could_not_check">Google Play에서 업데이트를 확인할 수 없어요.</string>
+    <!-- PlayStoreAppUpdateRepository -->
+    <string name="play_store_app_update_repository_update_available">업데이트 가능</string>
+    <string name="play_store_app_update_repository_latest">최신 버전</string>
+    <!-- PdfExportOptions -->
+    <string name="pdf_export_options_use_no_more_than_characters">"%1$s자 이하로 입력하세요."</string>
+    <string name="pdf_export_options_use_at_least_characters">"%1$s자 이상 입력하세요."</string>
+    <string name="pdf_export_options_enter_a_pdf_password">PDF 비밀번호를 입력하세요.</string>
+    <!-- QrPayload -->
+    <string name="qr_payload_text_characters">"텍스트 · %1$s자"</string>
+    <string name="qr_payload_phone_number">전화번호</string>
+    <string name="qr_payload_email">이메일</string>
+    <string name="qr_payload_contact_card">연락처 카드</string>
+    <string name="qr_payload_wi_fi">"Wi-Fi · %1$s"</string>
+    <string name="qr_payload_upi">"UPI · %1$s"</string>
+    <string name="qr_payload_link_not_secure_http">링크 · 안전하지 않음(http)</string>
+    <string name="qr_payload_link_https">링크 · https</string>
+    <string name="qr_payload_empty_text">빈 텍스트</string>
+    <string name="qr_payload_contact">연락처</string>
+    <string name="qr_payload_wi_fi_network">Wi-Fi 네트워크</string>
+    <string name="qr_payload_pay">"결제: %1$s"</string>
+    <string name="qr_payload_text">텍스트</string>
+    <string name="qr_payload_phone">전화</string>
+    <string name="qr_payload_wi_fi_2">Wi-Fi</string>
+    <string name="qr_payload_upi_payment">UPI 결제</string>
+    <string name="qr_payload_link">링크</string>
+    <!-- DetectDocumentCornersUseCase -->
+    <string name="detect_document_corners_use_case_document_detection_failed">문서를 감지하지 못했어요.</string>
+    <string name="detect_document_corners_use_case_could_not_detect_a_document">이 이미지에서 문서를 찾지 못했어요.</string>
+    <!-- ImportImagesUseCase -->
+    <string name="import_images_use_case_none_of_the_selected_files">선택한 파일을 이미지로 열 수 없어요.</string>
+    <string name="import_images_use_case_the_selected_file_couldn_t">선택한 파일을 이미지로 열 수 없어요.</string>
+    <string name="import_images_use_case_saving_page">페이지 저장 중</string>
+    <string name="import_images_use_case_detecting_document">문서 감지 중</string>
+    <string name="import_images_use_case_preparing_page">페이지 준비 중</string>
+    <!-- TrashUseCases -->
+    <string name="trash_use_cases_page">"%1$s페이지"</string>
+    <!-- ImportPdfToLibraryUseCase -->
+    <string name="import_pdf_to_library_use_case_could_not_add_this_pdf">이 PDF를 라이브러리에 추가하지 못했어요.</string>
+    <string name="import_pdf_to_library_use_case_choose_at_least_one_page">페이지를 하나 이상 선택하세요.</string>
+    <!-- CameraCaptureChrome -->
+    <string name="camera_capture_chrome_done">완료</string>
+    <string name="camera_capture_chrome_done_review_pages">"완료, %1$s페이지 검토"</string>
+    <string name="camera_capture_chrome_done_review_1_page">완료, 1페이지 검토</string>
+    <string name="camera_capture_chrome_turn_auto_capture_on">자동 촬영 켜기</string>
+    <string name="camera_capture_chrome_turn_auto_capture_off">자동 촬영 끄기</string>
+    <!-- CaptureStabilityTracker -->
+    <string name="capture_stability_tracker_saving_page">페이지 저장 중…</string>
+    <string name="capture_stability_tracker_capturing_page">페이지 촬영 중…</string>
+    <string name="capture_stability_tracker_hold_steady">움직이지 마세요.</string>
+    <string name="capture_stability_tracker_capturing_now">지금 촬영하고 있어요.</string>
+    <string name="capture_stability_tracker_hold_steady_to_auto_capture">움직이지 않으면 자동으로 촬영돼요.</string>
+    <string name="capture_stability_tracker_hold_position_auto_capture_is">그대로 있어 주세요. 자동 촬영을 준비하고 있어요.</string>
+    <string name="capture_stability_tracker_move_to_the_next_page">자동 촬영이 다시 시작되기 전에 다음 페이지로 옮기세요.</string>
+    <string name="capture_stability_tracker_point_your_camera_at_a">문서 전체가 보이도록 카메라를 맞추세요.</string>
+    <string name="capture_stability_tracker_document_detected_tap_capture_whenever">문서를 감지했어요. 준비되면 촬영을 탭하세요.</string>
+    <string name="capture_stability_tracker_auto_capture_is_off_use">자동 촬영이 꺼져 있어요. 준비되면 셔터를 누르세요.</string>
+    <!-- PipCameraComponents -->
+    <string name="pip_camera_not_now">나중에</string>
+    <string name="pip_camera_allow_camera_access">카메라 액세스 허용</string>
+    <string name="pip_camera_open_settings">설정 열기</string>
+    <string name="pip_camera_photos_stay_on_your_device">내보내거나 공유하기 전까지 사진은 기기에만 저장돼요</string>
+    <string name="pip_camera_camera_active_only_while_scanning">카메라는 스캔하는 동안에만 작동해요</string>
+    <string name="pip_camera_live_preview_with_edge_detection">가장자리를 감지하는 실시간 미리보기</string>
+    <string name="pip_camera_come_back_here_and_pip">다시 돌아오면 Pip이 기다리고 있을게요</string>
+    <string name="pip_camera_settings_permissions_camera_allow">설정 › 권한 › 카메라 › 허용</string>
+    <string name="pip_camera_scanly_needs_your_camera_to">Scanly는 문서 페이지를 촬영하고 반듯하게 펴기 위해 카메라가 필요해요.</string>
+    <string name="pip_camera_camera_permission_is_blocked_for">Scanly의 카메라 권한이 차단되어 있어요. 문서를 스캔하려면 설정을 열고 권한을 탭한 다음 카메라를 허용하세요.</string>
+    <string name="pip_camera_camera_access_needed">카메라 액세스 필요</string>
+    <string name="pip_camera_show_me_the_whole_page">페이지 전체를 보여 주세요. 네 모서리 모두요.</string>
+    <string name="pip_camera_hold_it_almost_there">그대로… 거의 다 됐어요.</string>
+    <string name="pip_camera_hold_it">"그대로… %1$s"</string>
+    <string name="pip_camera_ooh_edges_hold_still_a">오, 가장자리 찾았다! 잠깐만 그대로요…</string>
+    <string name="pip_camera_auto_capture_is_off_tap">자동 촬영이 꺼져 있어요. 준비되면 셔터를 누르세요.</string>
+    <string name="pip_camera_found_the_edges_tap_the">가장자리를 찾았어요. 언제든 셔터를 누르세요.</string>
+    <string name="pip_camera_got_it_on_to_the">찰칵! 다음 페이지로 가요.</string>
+    <string name="pip_camera_snap_saving_that_page">찰칵! 페이지 저장 중…</string>
+    <string name="pip_camera_it_s_all_fuzzy_tap">너무 흐릿해요. 페이지를 탭해서 초점을 맞추세요.</string>
+    <string name="pip_camera_bit_dark_in_here_more">좀 어두워요. 더 밝은 곳으로 가거나 플래시를 켜 볼까요?</string>
+    <string name="pip_camera_everything_s_dark_is_something">아무것도 안 보여요. 렌즈가 가려져 있나요?</string>
+    <!-- ScanSessionScreen -->
+    <string name="scan_session_camera_couldn_t_start_close">카메라를 시작할 수 없어요. 카메라를 사용 중인 다른 앱을 닫고 다시 시도하세요.</string>
+    <string name="scan_session_camera_couldn_t_start_leave">카메라를 시작할 수 없어요. 이 화면을 나갔다가 다시 열어 주세요.</string>
+    <string name="scan_session_capture">촬영</string>
+    <string name="scan_session_replace_page">페이지 교체</string>
+    <string name="scan_session_show_grid">격자 표시</string>
+    <string name="scan_session_hide_grid">격자 숨기기</string>
+    <string name="scan_session_turn_flash_on">플래시 켜기</string>
+    <string name="scan_session_turn_flash_off">플래시 끄기</string>
+    <string name="scan_session_close_camera">카메라 닫기</string>
+    <string name="scan_session_no_captures">촬영한 페이지 없음</string>
+    <string name="scan_session_open_a_valid_document_first">먼저 올바른 문서를 여세요.</string>
+    <string name="scan_session_document_missing">문서 없음</string>
+    <string name="scan_session_camera_is_not_ready_yet">카메라가 아직 준비되지 않았어요.</string>
+    <!-- ScanSessionViewModel -->
+    <string name="scan_session_checking_document">문서 확인 중…</string>
+    <string name="scan_session_point_your_camera_at_a">실제 종이 문서에 카메라를 맞추세요.</string>
+    <string name="scan_session_screen_detected_point_at_a">화면이 감지됐어요. 실제 종이 문서에 맞추세요.</string>
+    <string name="scan_session_page_edges_are_ambiguous_hold">페이지 가장자리가 불분명해요. 움직이지 말거나 더 가까이 가세요.</string>
+    <string name="scan_session_two_pages_are_visible_move">두 페이지가 보여요. 더 가까이 가서 한 페이지만 담으세요.</string>
+    <string name="scan_session_page_saved">"%1$s페이지를 저장했어요."</string>
+    <string name="scan_session_auto_captured_page">%1$s페이지를 자동으로 촬영했어요.</string>
+    <string name="scan_session_document_not_found">문서를 찾을 수 없어요.</string>
+    <string name="scan_session_capture_failed_reposition_the_document">촬영하지 못했어요. 문서 위치를 조정하고 다시 시도하세요.</string>
+    <string name="scan_session_page_not_saved_reposition_the">페이지를 저장하지 못했어요. 문서 위치를 조정하고 다시 시도하세요.</string>
+    <string name="scan_session_live_detection_is_unavailable_manual">실시간 감지를 사용할 수 없어요. 수동 촬영은 계속 사용할 수 있어요.</string>
+    <string name="scan_session_point_your_camera_at_a_2">문서에 카메라를 맞추세요.</string>
+    <!-- ExportShareComponents -->
+    <string name="export_share_passwords_match">비밀번호가 일치해요.</string>
+    <string name="export_share_confirm_password">비밀번호 확인</string>
+    <string name="export_share_4_64_characters_send_it">4–64자. PDF와 별도로 전달하세요.</string>
+    <string name="export_share_show_password">비밀번호 표시</string>
+    <string name="export_share_hide_password">비밀번호 숨기기</string>
+    <string name="export_share_pdf_password">PDF 비밀번호</string>
+    <string name="export_share_off">사용 안함</string>
+    <string name="export_share_a_password_will_be_required">PDF를 열 때 비밀번호가 필요해요.</string>
+    <string name="export_share_password_protection">비밀번호 보호</string>
+    <string name="export_share_cancel">취소</string>
+    <string name="export_share_add_white_space_around_the">스캔한 페이지 주위에 여백을 추가해요.</string>
+    <string name="export_share_margins">여백</string>
+    <string name="export_share_fixed_sizes_use_their_real">고정 크기는 실제 인쇄 크기를 사용해요.</string>
+    <string name="export_share_page_size">페이지 크기</string>
+    <string name="export_share_auto_follows_each_scanned_page">자동은 스캔한 각 페이지 크기를 따라요.</string>
+    <string name="export_share_orientation">방향</string>
+    <string name="export_share_add_the_page_index_to">PDF 바닥글에 페이지 번호를 추가해요.</string>
+    <string name="export_share_page_numbers">페이지 번호</string>
+    <string name="export_share_choose_how_every_page_is">모든 페이지를 생성할 방식을 선택하세요.</string>
+    <string name="export_share_passwords_do_not_match">비밀번호가 일치하지 않아요.</string>
+    <string name="export_share_confirm_the_password">비밀번호를 한 번 더 입력하세요.</string>
+    <string name="export_share_pdf_options">PDF 옵션</string>
+    <!-- FabComponents -->
+    <string name="fab_open_add_menu">추가 메뉴 열기</string>
+    <string name="fab_close_menu">메뉴 닫기</string>
+    <string name="fab_new_document">새 문서</string>
+    <string name="fab_new_folder">새 폴더</string>
+    <!-- LibraryCardPresentation -->
+    <string name="library_card_presentation_remove_from_folder">폴더에서 빼기</string>
+    <string name="library_card_presentation_move_to_folder">폴더로 이동</string>
+    <string name="library_card_presentation_rename">이름 바꾸기</string>
+    <string name="library_card_presentation_delete">삭제</string>
+    <string name="library_card_presentation_1_page">1페이지</string>
+    <string name="library_card_presentation_1_document">문서 1개</string>
+    <string name="library_card_presentation_yesterday">어제</string>
+    <string name="library_card_presentation_today">오늘</string>
+    <!-- LibraryFolderShelf -->
+    <string name="library_folder_shelf_all_folders">모든 폴더</string>
+    <string name="library_folder_shelf_view_all">모두 보기</string>
+    <string name="library_folder_shelf_organise_scans">스캔 정리하기</string>
+    <string name="library_folder_shelf_new_folder">새 폴더</string>
+    <!-- SharedComponents -->
+    <string name="shared_please_wait">잠시 기다려 주세요</string>
+    <string name="shared_working_on_your_photos">사진을 처리하는 중…</string>
+    <string name="shared_importing_images">이미지 가져오는 중</string>
+    <string name="shared_more_options">옵션 더보기</string>
+    <string name="shared_selected">선택됨</string>
+    <string name="shared_create_new_folder">새 폴더 만들기</string>
+    <string name="shared_create_move">만들고 이동</string>
+    <string name="shared_new_folder_name">새 폴더 이름</string>
+    <string name="shared_no_folder">폴더 없음</string>
+    <string name="shared_folder_name">폴더 이름</string>
+    <string name="shared_create">만들기</string>
+    <string name="shared_suggest_name">이름 추천</string>
+    <string name="shared_title">제목</string>
+    <string name="shared_clear_name">이름 지우기</string>
+    <string name="shared_confirm">확인</string>
+    <string name="shared_scanly">Scanly</string>
+    <!-- DocumentDetailScreen -->
+    <string name="document_detail_delete_page">페이지 삭제</string>
+    <string name="document_detail_share_page">페이지 공유</string>
+    <string name="document_detail_sign_document">문서에 서명</string>
+    <string name="document_detail_extract_text">텍스트 추출</string>
+    <string name="document_detail_retake_page">페이지 다시 촬영</string>
+    <string name="document_detail_edit_page">페이지 편집</string>
+    <string name="document_detail_edit">편집</string>
+    <string name="document_detail_share">"%1$s 공유"</string>
+    <string name="document_detail_review">검토</string>
+    <string name="document_detail_ready">준비됨</string>
+    <string name="document_detail_new">새 페이지</string>
+    <string name="document_detail_captured">촬영됨</string>
+    <string name="document_detail_add_page">페이지 추가</string>
+    <string name="document_detail_scan_or_import">스캔 또는 가져오기</string>
+    <string name="document_detail_add_page_scan_or_import">페이지 추가. 스캔하거나 가져오세요.</string>
+    <string name="document_detail_share_2">공유</string>
+    <string name="document_detail_retake">다시 촬영</string>
+    <string name="document_detail_open_zoom_view">확대해서 보기</string>
+    <string name="document_detail_page_of">"%1$s/%2$s페이지"</string>
+    <string name="document_detail_import_images">이미지 가져오기</string>
+    <string name="document_detail_scan_a_page">페이지 스캔</string>
+    <string name="document_detail_scan_a_page_or_import">"페이지를 스캔하거나 이미지를 최대 %1$s장까지 가져와서 문서를 시작하세요."</string>
+    <string name="document_detail_no_pages_yet">아직 페이지가 없어요</string>
+    <string name="document_detail_return_to_the_library_and">라이브러리로 돌아가서 다른 문서를 여세요.</string>
+    <string name="document_detail_document_not_found">문서를 찾을 수 없음</string>
+    <string name="document_detail_select_a_page_to_preview">미리 볼 페이지를 선택하세요</string>
+    <string name="document_detail_tap_to_review_long_press">탭하면 검토하고, 길게 눌러 드래그하면 순서를 바꿀 수 있어요.</string>
+    <string name="document_detail_long_press_and_drag_to">길게 눌러 드래그해서 순서 변경</string>
+    <string name="document_detail_pages">페이지</string>
+    <string name="document_detail_use_scan_or_import_to">스캔하거나 가져와서 첫 페이지를 추가하세요.</string>
+    <string name="document_detail_please_wait_while_the_file">파일을 준비하는 동안 잠시 기다려 주세요.</string>
+    <string name="document_detail_share_pages">페이지 공유</string>
+    <string name="document_detail_save_images_zip">이미지 ZIP 저장</string>
+    <string name="document_detail_share_pdf">PDF 공유</string>
+    <string name="document_detail_save_pdf">PDF 저장</string>
+    <string name="document_detail_export_share">내보내기 및 공유</string>
+    <string name="document_detail_pick_up_to_images_from">"파일에서 이미지를 최대 %1$s장까지 선택"</string>
+    <string name="document_detail_choose_images">이미지 선택</string>
+    <string name="document_detail_open_the_camera_to_scan">카메라를 열어 새 페이지 스캔</string>
+    <string name="document_detail_capture_a_new_scan_or">"새로 스캔하거나 갤러리에서 이미지를 최대 %1$s장까지 선택하세요."</string>
+    <string name="document_detail_delete_document">문서 삭제</string>
+    <string name="document_detail_rename_document">문서 이름 바꾸기</string>
+    <string name="document_detail_document_options">문서 옵션</string>
+    <string name="document_detail_working_on_your_photos">사진을 처리하는 중</string>
+    <string name="document_detail_preparing_export">내보낼 파일 준비 중</string>
+    <string name="document_detail_generate">생성</string>
+    <string name="document_detail_delete_document_2">문서를 삭제할까요?</string>
+    <string name="document_detail_save">저장</string>
+    <string name="document_detail_document">문서</string>
+    <!-- DocumentDetailViewModel -->
+    <string name="document_detail_document_renamed">문서 이름을 바꿨어요.</string>
+    <string name="document_detail_starting_import">가져오기 시작 중</string>
+    <string name="document_detail_page_image_is_not_available">페이지 이미지가 아직 준비되지 않았어요.</string>
+    <string name="document_detail_preparing_pages">페이지 준비 중</string>
+    <string name="document_detail_saved_to">"%1$s 파일을 %2$s에 저장했어요"</string>
+    <string name="document_detail_preparing_and_saving_zip">ZIP 준비 및 저장 중</string>
+    <string name="document_detail_preparing_pdf">PDF 준비 중</string>
+    <string name="document_detail_generating_and_saving_pdf">PDF 생성 및 저장 중</string>
+    <string name="document_detail_reordered_pages">페이지 순서를 바꿨어요.</string>
+    <string name="document_detail_moved_to_folder">폴더로 이동했어요</string>
+    <string name="document_detail_moved_to">"이동 완료: %1$s"</string>
+    <string name="document_detail_removed_from_folder">폴더에서 뺐어요</string>
+    <!-- FilterCustomizeScreen -->
+    <string name="filter_customize_faded_text">흐린 글씨</string>
+    <string name="filter_customize_whiteboard">화이트보드</string>
+    <string name="filter_customize_grayscale">회색조</string>
+    <string name="filter_customize_screen">화면</string>
+    <string name="filter_customize_vivid">선명하게</string>
+    <string name="filter_customize_natural">자연스럽게</string>
+    <string name="filter_customize_magic_color">매직 컬러</string>
+    <string name="filter_customize_auto">자동</string>
+    <string name="filter_customize_original">원본</string>
+    <string name="filter_customize_intensity">강도</string>
+    <string name="filter_customize_sharpness">선명도</string>
+    <string name="filter_customize_saturation">채도</string>
+    <string name="filter_customize_contrast">대비</string>
+    <string name="filter_customize_brightness">밝기</string>
+    <string name="filter_customize_fine_tune_on_this_page">"이 페이지의 필터를 세부 조정하세요(%1$s). 비교를 길게 누르면 필터만 적용된 모습을 볼 수 있어요."</string>
+    <string name="filter_customize_customize_filter">필터 맞춤 설정</string>
+    <string name="filter_customize_adjusted">조정됨</string>
+    <string name="filter_customize_filter_only">필터만</string>
+    <string name="filter_customize_filter_adjustment_preview">필터 조정 미리보기</string>
+    <string name="filter_customize_selected_filter_without_adjustments">조정 없이 선택한 필터만 적용</string>
+    <string name="filter_customize_loading_preview">미리보기 로드 중…</string>
+    <string name="filter_customize_hold_to_compare_with_filter">길게 눌러 필터만 적용한 모습과 비교</string>
+    <string name="filter_customize_reset_adjustments">조정 초기화</string>
+    <string name="filter_customize_adjust">조정</string>
+    <string name="filter_customize_compare">비교</string>
+    <!-- FilterPickerScreen -->
+    <string name="filter_picker_selected_filter">선택한 필터</string>
+    <string name="filter_picker_filter_thumbnail">"%1$s 필터 썸네일"</string>
+    <string name="filter_picker_analyzing_the_page_to_tune">각 필터에 맞게 페이지를 분석하는 중이에요.</string>
+    <string name="filter_picker_filter_only_crop_rotation_and">필터만 적용돼요. 자르기, 회전, 조정은 페이지별로 유지돼요.</string>
+    <string name="filter_picker_apply_filter_to_all_pages">모든 페이지에 필터 적용</string>
+    <string name="filter_picker_tap_a_preset_to_update">프리셋을 탭하면 실시간 미리보기에 반영돼요. 완료되면 편집기에서 저장하세요.</string>
+    <string name="filter_picker_filters">필터</string>
+    <string name="filter_picker_filter_preview">"%1$s 필터 미리보기"</string>
+    <!-- PageCropScreen -->
+    <string name="page_crop_page_crop_preview">페이지 자르기 미리보기</string>
+    <string name="page_crop_detecting">감지 중</string>
+    <string name="page_crop_reset">초기화</string>
+    <string name="page_crop_ai_detect">AI 감지</string>
+    <string name="page_crop_right">오른쪽</string>
+    <string name="page_crop_left">왼쪽</string>
+    <string name="page_crop_apply_crop">자르기 적용</string>
+    <string name="page_crop_detecting_document">문서 감지 중…</string>
+    <string name="page_crop_keep_editing">계속 편집</string>
+    <string name="page_crop_discard">삭제</string>
+    <string name="page_crop_your_crop_changes_have_not">자르기 변경사항이 적용되지 않았어요.</string>
+    <string name="page_crop_discard_changes">변경사항을 삭제할까요?</string>
+    <string name="page_crop_full_frame_corners">전체 화면 모서리</string>
+    <string name="page_crop_reset_crop">자르기 초기화</string>
+    <string name="page_crop_rotate_right">오른쪽으로 회전</string>
+    <string name="page_crop_rotate_left">왼쪽으로 회전</string>
+    <string name="page_crop_find_the_document_corners">문서 모서리 찾기</string>
+    <string name="page_crop_detecting_2">감지 중…</string>
+    <string name="page_crop_detect_edges_rotate_then_drag">가장자리를 감지하고 회전한 다음 핸들을 드래그하세요. 완료를 탭하면 적용돼요.</string>
+    <string name="page_crop_crop_tools">자르기 도구</string>
+    <string name="page_crop_page_not_found">페이지를 찾을 수 없어요.</string>
+    <string name="page_crop_crop">자르기</string>
+    <string name="page_crop_processing">처리 중</string>
+    <!-- PageCropViewModel -->
+    <string name="page_crop_crop_updated">자르기를 적용했어요.</string>
+    <string name="page_crop_document_detected">문서를 감지했어요.</string>
+    <string name="page_crop_raw_image_is_not_available">감지에 사용할 원본 이미지가 없어요.</string>
+    <!-- PageEditorScreen -->
+    <string name="page_editor_please_wait_while_scanly_adapts">Scanly가 필터를 맞추고 문서 전체를 업데이트하는 동안 잠시 기다려 주세요.</string>
+    <string name="page_editor_processing_image_data_for_all">모든 페이지의 이미지를 처리하는 중</string>
+    <string name="page_editor_page_editor_preview">페이지 편집기 미리보기</string>
+    <string name="page_editor_your_edits_to_this_page">이 페이지의 수정사항이 저장되지 않았어요.</string>
+    <string name="page_editor_remove_from_document">문서에서 삭제</string>
+    <string name="page_editor_capture_this_page_again">이 페이지 다시 촬영</string>
+    <string name="page_editor_brightness_contrast_more">밝기, 대비 등</string>
+    <string name="page_editor_ai_detect_rotate_handles">AI 감지, 회전, 핸들</string>
+    <string name="page_editor_crop_filter_and_adjust_this">이 페이지를 자르고 필터와 조정을 적용하세요. 완료를 누르면 저장돼요.</string>
+    <string name="page_editor_edit_tools">편집 도구</string>
+    <string name="page_editor_editor">편집기</string>
+    <!-- PageEditorViewModel -->
+    <string name="page_editor_page_updated">페이지를 업데이트했어요.</string>
+    <string name="page_editor_filter_applied_to_all_pages">모든 페이지에 필터를 적용했어요.</string>
+    <!-- HomePip -->
+    <string name="home_pip_hide_today_s_tip">오늘의 팁 숨기기</string>
+    <!-- HomeRatingPrompt -->
+    <string name="home_rating_prompt_rate_scanly_opens_google_play">Scanly 평가하기, Google Play 열림</string>
+    <string name="home_rating_prompt_rate_on_google_play">Google Play에서 평가하기</string>
+    <string name="home_rating_prompt_scanly_is_free_private_and">Scanly는 무료이고 개인정보를 보호하며 광고도 없어요. 시간을 아끼는 데 도움이 됐다면 Google Play에 평점을 남겨 주세요. 큰 힘이 돼요.</string>
+    <string name="home_rating_prompt_rate_scanly">Scanly 평가하기</string>
+    <!-- HomeScreen -->
+    <string name="home_search_names_and_text_in">이름 및 페이지 텍스트 검색</string>
+    <string name="home_start_scanning">스캔 시작</string>
+    <string name="home_scan_your_first_page_and">첫 페이지를 스캔하면 필요할 때 언제든 여기서 볼 수 있어요.</string>
+    <string name="home_no_documents_yet">아직 문서가 없어요</string>
+    <string name="home_loading_your_documents">문서를 불러오는 중</string>
+    <string name="home_folder">폴더</string>
+    <string name="home_import">가져오기</string>
+    <string name="home_scan">스캔</string>
+    <string name="home_save_it_now">지금 저장하세요</string>
+    <string name="home_save_it_now_find_it">오늘 저장하고,\n내일 바로 찾으세요.</string>
+    <string name="home_still_scanning">아직 스캔 중인가요?</string>
+    <string name="home_wrap_up_and_digitize_your">오늘 하루를\n디지털로 정리해요.</string>
+    <string name="home_good_evening">좋은 저녁이에요,</string>
+    <string name="home_let_s_capture_some_documents">문서를\n스캔해 볼까요?</string>
+    <string name="home_good_afternoon">좋은 오후예요,</string>
+    <string name="home_what_are_we_scanning_today">오늘은 무엇을\n스캔할까요?</string>
+    <string name="home_good_morning">좋은 아침이에요,</string>
+    <string name="home_see_all">모두 보기</string>
+    <string name="home_recent_documents">최근 문서</string>
+    <string name="home_recent_folders">최근 폴더</string>
+    <string name="home_new_scan">새 스캔</string>
+    <!-- FolderDeleteDialog -->
+    <string name="folder_delete_both_go_to_recently_deleted">"둘 다 최근 삭제된 항목에 %1$s 동안 보관돼요"</string>
+    <string name="folder_delete_delete_folder_and_documents">폴더와 문서 삭제</string>
+    <string name="folder_delete_keep_the_in_your_library">"라이브러리에 %1$s 유지"</string>
+    <string name="folder_delete_delete_folder_only">폴더만 삭제</string>
+    <string name="folder_delete_delete_folder">폴더를 삭제할까요?</string>
+    <!-- GroupDetailScreen -->
+    <string name="group_detail_not_selected">선택 안 됨</string>
+    <string name="group_detail_add_documents">"문서 %1$s개 추가"</string>
+    <string name="group_detail_add_1_document">문서 1개 추가</string>
+    <string name="group_detail_add_selected">선택 항목 추가</string>
+    <string name="group_detail_documents_already_in_folders_won">이미 폴더에 있는 문서는 여기에 표시되지 않아요. 대신 새 문서를 만드세요.</string>
+    <string name="group_detail_no_loose_documents">폴더 밖에 있는 문서 없음</string>
+    <string name="group_detail_select_all">모두 선택</string>
+    <string name="group_detail_clear">선택 해제</string>
+    <string name="group_detail_select_one_or_more_documents">문서를 하나 이상 선택하세요</string>
+    <string name="group_detail_nothing_available_to_move">이동할 수 있는 항목 없음</string>
+    <string name="group_detail_move_existing">기존 문서 이동</string>
+    <string name="group_detail_starts_empty_inside_this_folder">이 폴더 안에 빈 문서로 만들어져요</string>
+    <string name="group_detail_create_new_document">새 문서 만들기</string>
+    <string name="group_detail_create_a_new_document_or">"새 문서를 만들거나, 이 폴더 밖의 %1$s 중에서 선택하세요."</string>
+    <string name="group_detail_create_a_new_document_or_2">새 문서를 만들거나, 아직 폴더에 없는 문서를 옮기세요.</string>
+    <string name="group_detail_add_documents_to_folder">폴더에 문서 추가</string>
+    <string name="group_detail_add_documents_2">문서 추가</string>
+    <string name="group_detail_add_a_document_here_to">관련 스캔을 한곳에 모으려면 여기에 문서를 추가하세요.</string>
+    <string name="group_detail_this_folder_is_empty">빈 폴더예요</string>
+    <string name="group_detail_share_pdfs_as_zip">PDF를 ZIP으로 공유</string>
+    <string name="group_detail_save_pdfs_as_zip">PDF를 ZIP으로 저장</string>
+    <string name="group_detail_separate_pdfs_one_pdf_per">개별 PDF · 문서마다 PDF 하나씩, ZIP으로 묶음</string>
+    <string name="group_detail_share_merged_pdf">병합한 PDF 공유</string>
+    <string name="group_detail_save_merged_pdf">병합한 PDF 저장</string>
+    <string name="group_detail_single_pdf_merged_into_one">"단일 PDF · %1$s 하나의 파일로 병합"</string>
+    <string name="group_detail_new_document">새 문서</string>
+    <string name="group_detail_remove">빼기</string>
+    <string name="group_detail_will_be_moved_out_of">\"%1$s\" 문서가 이 폴더 밖으로 이동돼요.</string>
+    <string name="group_detail_remove_from_folder">폴더에서 뺄까요?</string>
+    <string name="group_detail_rename_folder">폴더 이름 바꾸기</string>
+    <string name="group_detail_delete_folder">폴더 삭제</string>
+    <string name="group_detail_export_and_share">내보내기 및 공유</string>
+    <!-- GroupDetailViewModel -->
+    <string name="group_detail_generating_pdf_of">"PDF 생성 중(%1$s/%2$s)…"</string>
+    <string name="group_detail_generating_page_of">"페이지 생성 중(%1$s/%2$s)…"</string>
+    <string name="group_detail_document_removed_from_folder">문서를 폴더에서 뺐어요.</string>
+    <string name="group_detail_added_documents_to_folder">"폴더에 문서 %1$s개를 추가했어요."</string>
+    <string name="group_detail_added_1_document_to_folder">폴더에 문서 1개를 추가했어요.</string>
+    <string name="group_detail_added_of_documents">"문서 %2$s개 중 %1$s개를 추가했어요. %3$s"</string>
+    <string name="group_detail_folder_renamed">폴더 이름을 바꿨어요.</string>
+    <!-- LibraryScreen -->
+    <string name="library_create_a_folder_to_stay">폴더를 만들어 정리하거나, 문서를 추가해 스캔을 시작하세요.</string>
+    <string name="library_your_library_is_ready">라이브러리가 준비됐어요</string>
+    <string name="library_save_to">저장 위치</string>
+    <string name="library_choose_how_are_ordered">"%1$s 정렬 방식을 선택하세요."</string>
+    <string name="library_sort_library">라이브러리 정렬</string>
+    <string name="library_folders_and_documents">폴더 및 문서</string>
+    <string name="library_create_a_document_then_scan">문서를 만든 다음 페이지를 스캔하거나 갤러리에서 가져오세요.</string>
+    <string name="library_create_a_folder_to_keep">폴더를 만들면 관련 문서를 쉽게 찾을 수 있어요.</string>
+    <string name="library_no_folders_yet">아직 폴더가 없어요</string>
+    <string name="library_list_view">목록 보기</string>
+    <string name="library_grid_view">그리드 보기</string>
+    <string name="library_folders">폴더</string>
+    <string name="library_back_to_library">라이브러리로 돌아가기</string>
+    <string name="library_documents">문서</string>
+    <string name="library_search_library">라이브러리 검색</string>
+    <string name="library_library">라이브러리</string>
+    <!-- LibrarySearchScreen -->
+    <string name="library_search_remove_from_recent_searches">"최근 검색어에서 %1$s 삭제"</string>
+    <string name="library_search_search_again">다시 검색</string>
+    <string name="library_search_text_is_read_on_this">텍스트는 이 기기에서 인식돼요. 페이지가 기기 밖으로 나가지 않아요.</string>
+    <string name="library_search_some_pages_are_still_being">아직 읽는 중인 페이지가 있어서 곧 결과가 더 나타날 수 있어요.</string>
+    <string name="library_search_search_for_instead">대신 “%1$s” 검색</string>
+    <string name="library_search_nothing_matches_try_fewer_words">“%1$s”와(과) 일치하는 결과가 없어요. 단어 수를 줄이거나 맞춤법을 확인하세요.</string>
+    <string name="library_search_no_results_found">검색 결과 없음</string>
+    <string name="library_search_rent_or_lease_finds_pages">“월세 OR 임대”는 둘 중 하나가 있는 페이지를 찾아요</string>
+    <string name="library_search_either_word">둘 중 하나</string>
+    <string name="library_search_lease_draft_skips_anything_that">“임대 -초안”은 초안이 언급된 항목을 제외해요</string>
+    <string name="library_search_leave_a_word_out">특정 단어 제외</string>
+    <string name="library_search_you_ll_get_the_closest">스캔에서 가장 비슷한 단어를 찾아 드려요</string>
+    <string name="library_search_small_typos_are_fine">작은 오타는 괜찮아요</string>
+    <string name="library_search_security_deposit_in_that_order">“임대 보증금”, 이 순서 그대로</string>
+    <string name="library_search_use_quotes_for_a_phrase">구문은 따옴표로 묶기</string>
+    <string name="library_search_lea_finds_lease_and_leasing">“계약”으로 계약서, 계약금도 찾아요</string>
+    <string name="library_search_type_part_of_a_word">단어 일부만 입력</string>
+    <string name="library_search_search_tips">검색 팁</string>
+    <string name="library_search_browse_by_type">유형별로 찾아보기</string>
+    <string name="library_search_recent">최근</string>
+    <string name="library_search_folder">"폴더 · "</string>
+    <string name="library_search_matched">일치: “%1$s”</string>
+    <string name="library_search_scanned_as">인식된 텍스트: “%1$s”</string>
+    <string name="library_search_show_page_text">페이지 텍스트 표시</string>
+    <string name="library_search_show_fewer_pages">페이지 적게 표시</string>
+    <string name="library_search_open_document">문서 열기</string>
+    <string name="library_search_similar_words">"비슷한 단어: "</string>
+    <string name="library_search_close_matches">비슷한 결과</string>
+    <string name="library_search_searching_text_in_pages">페이지 텍스트 검색 중…</string>
+    <string name="library_search_by_name">" · 이름 일치 %1$s건"</string>
+    <string name="library_search_complete_to">"자동 완성: "</string>
+    <string name="library_search_filters_on">"필터, %1$s개 사용 중"</string>
+    <string name="library_search_filters">"필터 · %1$s"</string>
+    <string name="library_search_matching_names">이름 일치</string>
+    <string name="library_search_found_in_pages">페이지에서 찾음</string>
+    <string name="library_search_clear_search">검색어 지우기</string>
+    <!-- RecentlyDeletedScreen -->
+    <string name="recently_deleted_page_of_will_be_deleted">"\"%2$s\" 문서의 %1$s페이지가 영구 삭제돼요. 이 작업은 되돌릴 수 없어요."</string>
+    <string name="recently_deleted_and_its_pages_will_be">\"%1$s\" 문서와 모든 페이지가 영구 삭제돼요. 이 작업은 되돌릴 수 없어요.</string>
+    <string name="recently_deleted_and_the_documents_that_were">\"%1$s\" 폴더와 그 안에 있던 문서가 영구 삭제돼요. 이 작업은 되돌릴 수 없어요.</string>
+    <string name="recently_deleted_its_documents_stay_in_your">" 폴더 안의 문서는 라이브러리에 그대로 남아요."</string>
+    <string name="recently_deleted_the_folder_will_be_deleted">\"%1$s\" 폴더가 영구 삭제돼요. 이 작업은 되돌릴 수 없어요.</string>
+    <string name="recently_deleted_page_of">"\"%2$s\" 문서의 %1$s페이지"</string>
+    <string name="recently_deleted_days_left">"%1$s일 남음"</string>
+    <string name="recently_deleted_1_day_left">1일 남음</string>
+    <string name="recently_deleted_last_day">오늘 삭제됨</string>
+    <string name="recently_deleted_from">원래 위치: \"%1$s\"</string>
+    <string name="recently_deleted_no_documents">문서 없음</string>
+    <string name="recently_deleted_folder_only_documents_kept_in">"폴더만 · 문서 %1$s개는 라이브러리에 유지"</string>
+    <string name="recently_deleted_folder_only_1_document_kept">폴더만 · 문서 1개는 라이브러리에 유지</string>
+    <string name="recently_deleted_restore">복원</string>
+    <string name="recently_deleted_delete_forever">영구 삭제</string>
+    <string name="recently_deleted_select">선택</string>
+    <string name="recently_deleted_delete_forever_2">"%1$s 영구 삭제"</string>
+    <string name="recently_deleted_restore_2">"%1$s 복원"</string>
+    <string name="recently_deleted_show_options">옵션 표시</string>
+    <string name="recently_deleted_the_selected_items_will_be">"선택한 항목 %1$s개가 영구 삭제돼요. 이 작업은 되돌릴 수 없어요."</string>
+    <string name="recently_deleted_delete_items_forever">"항목 %1$s개를 영구 삭제할까요?"</string>
+    <string name="recently_deleted_delete_1_item_forever">항목 1개를 영구 삭제할까요?</string>
+    <string name="recently_deleted_delete_forever_3">영구 삭제할까요?</string>
+    <string name="recently_deleted_delete_all">모두 삭제</string>
+    <string name="recently_deleted_all_items_will_be_deleted">"항목 %1$s개가 모두 영구 삭제돼요. 이 작업은 되돌릴 수 없어요."</string>
+    <string name="recently_deleted_this_item_will_be_deleted">이 항목이 영구 삭제돼요. 이 작업은 되돌릴 수 없어요.</string>
+    <string name="recently_deleted_empty_recently_deleted">최근 삭제된 항목을 비울까요?</string>
+    <string name="recently_deleted_deleted_pages_stay_here_for">삭제한 페이지는 %1$s, 문서와 폴더는 %2$s 동안 여기에 보관되어 다시 복원할 수 있어요.</string>
+    <string name="recently_deleted_nothing_here">항목 없음</string>
+    <string name="recently_deleted_nothing_in_the_bin_deleted">휴지통이 비어 있어요. 삭제한 항목은 며칠 동안 여기서 기다려요.</string>
+    <string name="recently_deleted_empty">비우기</string>
+    <string name="recently_deleted_select_none">선택 안함</string>
+    <string name="recently_deleted_clear_selection">선택 해제</string>
+    <string name="recently_deleted_recently_deleted">최근 삭제된 항목</string>
+    <!-- RecentlyDeletedViewModel -->
+    <string name="recently_deleted_page_restored_to">"%1$s페이지를 \"%2$s\" 문서에 복원했어요"</string>
+    <string name="recently_deleted_document_restored">문서를 복원했어요</string>
+    <string name="recently_deleted_folder_restored">폴더를 복원했어요</string>
+    <string name="recently_deleted_recently_deleted_is_empty">최근 삭제된 항목이 비어 있어요</string>
+    <string name="recently_deleted_deleted_permanently">영구 삭제했어요</string>
+    <!-- SearchFiltersSheet -->
+    <string name="search_filters_apply">적용</string>
+    <string name="search_filters_remove_filter">"필터 삭제: %1$s"</string>
+    <string name="search_filters_in">"위치: %1$s"</string>
+    <string name="search_filters_not_in_a_folder">폴더에 없음</string>
+    <string name="search_filters_sort_by">정렬 기준</string>
+    <string name="search_filters_any_folder">모든 폴더</string>
+    <string name="search_filters_date_modified">수정한 날짜</string>
+    <string name="search_filters_any_type">모든 유형</string>
+    <string name="search_filters_type">유형</string>
+    <!-- TrashCopy -->
+    <string name="trash_copy_page_moves_to_recently_deleted">"%1$s페이지가 최근 삭제된 항목으로 이동해요. %2$s 동안 복원할 수 있어요."</string>
+    <string name="trash_copy_and_its_documents_move_to">"\"%1$s\" 폴더와 문서 %2$s개가 최근 삭제된 항목으로 이동해요. %3$s 동안 복원할 수 있어요."</string>
+    <string name="trash_copy_and_the_document_in_it">\"%1$s\" 폴더와 안에 있는 문서가 최근 삭제된 항목으로 이동해요. %2$s 동안 복원할 수 있어요.</string>
+    <string name="trash_copy_moves_to_recently_deleted_you">\"%1$s\" 항목이 최근 삭제된 항목으로 이동해요. %2$s 동안 복원할 수 있어요.</string>
+    <string name="trash_copy_1_day">1일</string>
+    <!-- TrashUndoSnackbar -->
+    <string name="trash_undo_snackbar_moved_to_recently_deleted">\"%1$s\" 항목을 최근 삭제된 항목으로 옮겼어요</string>
+    <string name="trash_undo_snackbar_moved_to_recently_deleted_2">"최근 삭제된 항목으로 이동: %1$s"</string>
+    <string name="trash_undo_snackbar_undo">실행취소</string>
+    <!-- OnboardingFlow -->
+    <string name="onboarding_flow_enable_camera">카메라 사용 설정</string>
+    <string name="onboarding_flow_enable_the_camera_to_scan">종이 문서를 스캔하려면 카메라를 허용하세요. 카메라 없이도 이미지를 가져올 수 있어요.</string>
+    <string name="onboarding_flow_open_settings_tap_permissions_and">설정을 열고 권한을 탭한 다음 카메라를 허용하세요. 카메라 없이도 이미지를 가져올 수 있어요.</string>
+    <string name="onboarding_flow_ready_for_your_first_scan">첫 스캔을 시작해 볼까요?</string>
+    <string name="onboarding_flow_camera_access_is_turned_off">카메라 액세스가 꺼져 있어요</string>
+    <!-- OnboardingScreen -->
+    <string name="onboarding_no_account_no_cloud_upload">계정도, 클라우드 업로드도 필요 없어요.</string>
+    <string name="onboarding_continue">계속</string>
+    <string name="onboarding_get_started">시작하기</string>
+    <string name="onboarding_page_of_3">"%1$s, %2$s/3페이지"</string>
+    <string name="onboarding_page_of_3_2">"%1$s/3페이지"</string>
+    <string name="onboarding_skip">건너뛰기</string>
+    <string name="onboarding_scanly">Scanly.</string>
+    <string name="onboarding_previous_page">이전 페이지</string>
+    <string name="onboarding_feature_edge_detection">가장자리 자동 감지</string>
+    <string name="onboarding_feature_crop_straighten">페이지 자르기 및 반듯하게 펴기</string>
+    <string name="onboarding_feature_filters">매직 컬러, 화이트보드 등</string>
+    <string name="onboarding_feature_ocr">기기 내 텍스트 인식</string>
+    <string name="onboarding_feature_search">모든 스캔에서 단어 검색</string>
+    <string name="onboarding_feature_copy_text">어떤 페이지에서든 텍스트 복사</string>
+    <string name="onboarding_feature_multipage_pdf">여러 페이지 PDF</string>
+    <string name="onboarding_feature_password">공유 전에 비밀번호로 보호</string>
+    <string name="onboarding_feature_sign">문서에 서명</string>
+    <string name="onboarding_assurance_offline">완전히 오프라인으로 작동해요.</string>
+    <string name="onboarding_assurance_on_device">텍스트가 이 기기 밖으로 나가지 않아요.</string>
+    <!-- Pip -->
+    <string name="pip_poke_pip_scanly_s_helper">Scanly 도우미 Pip 콕 찌르기</string>
+    <!-- PipBubble -->
+    <string name="pip_bubble_dismiss">닫기</string>
+    <!-- PipLines -->
+    <string name="pip_lines_all_set_pages_nice_and">"다 됐어요! %1$s페이지, 반듯하게 정리했어요."</string>
+    <string name="pip_lines_all_set_1_page_nice">다 됐어요! 1페이지, 반듯하게 정리했어요.</string>
+    <string name="pip_lines_ready_when_you_are">준비되면 언제든 말해요.</string>
+    <string name="pip_lines_i_looked_on_every_page">모든 페이지를 살펴봤는데 “%1$s”는(은) 어디에도 없어요.</string>
+    <!-- FeaturePlaceholderScreen -->
+    <string name="feature_placeholder_planned_for">%1$s에 추가될 예정이에요.</string>
+    <!-- PageImagePreviewScreen -->
+    <string name="page_image_preview_sign">서명</string>
+    <string name="page_image_preview_delete_page">페이지를 삭제할까요?</string>
+    <!-- PageImagePreviewViewModel -->
+    <string name="page_image_preview_scanly_page">"Scanly 페이지 %1$s"</string>
+    <!-- LegalDocumentScreen -->
+    <string name="legal_document_open_in_browser">브라우저에서 열기</string>
+    <string name="legal_document_retry">다시 시도</string>
+    <string name="legal_document_check_your_internet_connection_and">인터넷 연결을 확인하고 다시 시도하세요.</string>
+    <string name="legal_document_couldn_t_be_loaded">"%1$s 문서를 불러오지 못했어요"</string>
+    <!-- ModelBenchmarkScreen -->
+    <string name="model_benchmark_pipeline_s_1f_ms" formatted="false">파이프라인: %s · %.1f ms</string>
+    <string name="model_benchmark_total_1f_ms" formatted="false">합계 %.1f ms</string>
+    <string name="model_benchmark_pre_0f_inf_0f_post" formatted="false">전처리 %.0f · 추론 %.0f · 후처리 %.0f</string>
+    <string name="model_benchmark_not_detected">감지 안 됨</string>
+    <string name="model_benchmark_detected_conf_0f" formatted="false">감지됨 · 신뢰도 %.0f%%</string>
+    <string name="model_benchmark_none">없음</string>
+    <string name="model_benchmark_quad">사각형</string>
+    <string name="model_benchmark_error">오류</string>
+    <string name="model_benchmark_no_preview">미리보기 없음</string>
+    <string name="model_benchmark_detection_preview">"%1$s 감지 미리보기"</string>
+    <string name="model_benchmark_avg_1f_p50_1f_p95" formatted="false">평균 %.1f · P50 %.1f · P95 %.1f ms · 감지 %d/%d · 실패 %d</string>
+    <string name="model_benchmark_avg_1f_p95_1f_ms" formatted="false">평균 %.1f · P95 %.1f ms · 통과 %d/%d</string>
+    <string name="model_benchmark_document_gate">문서 게이트</string>
+    <string name="model_benchmark_aggregate">종합</string>
+    <string name="model_benchmark_images_processed">"이미지 %1$s / %2$s개 처리됨"</string>
+    <string name="model_benchmark_choose_images_and_run">이미지 선택 후 실행</string>
+    <string name="model_benchmark_benchmark_running">벤치마크 실행 중…</string>
+    <string name="model_benchmark_select_more_photos_to_measure">사진을 더 선택해 게이트 지연 시간, 모서리 감지, 다각형 오버레이, 전체 파이프라인 시간을 측정하세요.</string>
+    <string name="model_benchmark_run_another_pass">한 번 더 실행</string>
+    <string name="model_benchmark_images_stay_on_this_device">이미지는 이 기기에만 저장돼요. 아무것도 업로드되지 않아요.</string>
+    <string name="model_benchmark_choose_real_documents_or_rectangular">실제 문서나 사각형 물체를 선택하세요. Scanly가 모든 감지기의 시간을 재고 감지된 가장자리를 보여 줘요.</string>
+    <string name="model_benchmark_compare_detectors_on_your_photos">내 사진으로 감지기 비교</string>
+    <string name="model_benchmark_model_benchmark">모델 벤치마크</string>
+    <string name="model_benchmark_image">이미지</string>
+    <string name="model_benchmark_model_failed">모델 오류</string>
+    <string name="model_benchmark_could_not_decode_image">이미지를 디코딩하지 못했어요</string>
+    <!-- PipSettingsScreen -->
+    <string name="pip_settings_on">"사용 · "</string>
+    <string name="pip_settings_on_2">사용</string>
+    <string name="pip_settings_napping">낮잠 중</string>
+    <string name="pip_settings_napping_screens_show_plain_text">낮잠 중 · 화면에 일반 텍스트만 표시</string>
+    <string name="pip_settings_on_around_the_app">앱 곳곳에서 사용</string>
+    <string name="pip_settings_show_pip">Pip 표시</string>
+    <string name="pip_settings_scanly_s_little_helper_pip">Scanly의 작은 도우미예요. Pip은 빈 화면이나 카메라, 무언가 준비됐을 때 나타나 짧게 한마디 하고 비켜 줘요.</string>
+    <string name="pip_settings_pip">Pip</string>
+    <string name="pip_settings_hi_this_is_where_you">안녕하세요! 여기서 제가 얼마나 도와드릴지 정할 수 있어요.</string>
+    <string name="pip_settings_i_ll_keep_still_still">가만히 있을게요. 그래도 여기 있어요.</string>
+    <string name="pip_settings_okay_i_ll_nap_switch">알겠어요, 낮잠 잘게요. 언제든 다시 깨워 주세요.</string>
+    <string name="pip_settings_pip_lives_on_this_phone">Pip은 이 휴대전화에만 있고 문서를 절대 보지 않아요. Pip이 하는 말은 모두 Scanly에 내장되어 있어요.</string>
+    <string name="pip_settings_blinks_talks_and_hops_pip">눈을 깜박이고, 말하고, 깡충 뛰어요. 시스템 애니메이션이 꺼져 있으면 Pip도 가만히 있어요.</string>
+    <string name="pip_settings_animate_pip">Pip 애니메이션</string>
+    <string name="pip_settings_motion">움직임</string>
+    <string name="pip_settings_a_happy_hello_when_a">문서를 공유할 준비가 되면 반갑게 인사해요.</string>
+    <string name="pip_settings_cheer_on_exports">내보내기 응원</string>
+    <string name="pip_settings_pip_helps_you_frame_pages">Pip이 페이지 구도를 잡도록 도와줘요. 끄면 기본 가이드가 표시돼요.</string>
+    <string name="pip_settings_camera_coaching">카메라 코칭</string>
+    <string name="pip_settings_one_short_tip_a_day">인사말 아래에 하루 한 번 짧은 팁을 보여 줘요.</string>
+    <string name="pip_settings_tips_on_home">홈에 팁 표시</string>
+    <string name="pip_settings_where_pip_helps">Pip이 도와주는 곳</string>
+    <!-- SettingsComponents -->
+    <string name="settings_pages_were_read_with_another">"%1$s페이지가 다른 엔진으로 인식됐어요. 백그라운드에서 %2$s(으)로 다시 읽어 보세요."</string>
+    <string name="settings_1_page_was_read_with">"1페이지가 다른 엔진으로 인식됐어요. 백그라운드에서 %1$s(으)로 다시 읽어 보세요."</string>
+    <string name="settings_re_read_existing_pages">기존 페이지 다시 읽기</string>
+    <string name="settings_indra_ocr_paused_it_stopped">Indra OCR 일시중지됨 — 예기치 않게 두 번 중단되어 ML Kit로 페이지를 읽고 있어요. 다시 시도하려면 Indra OCR을 다시 선택하세요.</string>
+    <string name="settings_ml_kit">ML Kit</string>
+    <string name="settings_indra_ocr">Indra OCR</string>
+    <string name="settings_rate_scanly_on_google_play">Google Play에서 Scanly 평가하기</string>
+    <string name="settings_it_s_free_private_and">무료이고 개인정보를 보호하며 광고도 없어요. Google Play에 평점을 남겨 주시면 다른 사람들이 Scanly를 찾는 데 도움이 돼요.</string>
+    <string name="settings_enjoying_scanly">Scanly가 마음에 드세요?</string>
+    <string name="settings_dark">어둡게</string>
+    <string name="settings_light">밝게</string>
+    <string name="settings_system">시스템 설정</string>
+    <string name="settings_tap_to_check">"탭하여 %1$s 확인"</string>
+    <string name="settings_you_are_on_latest_is">현재 버전: %1$s · 최신 버전: %2$s</string>
+    <string name="settings_scanly_is_available_on">"%2$s에서 Scanly %1$s 버전을 받을 수 있어요."</string>
+    <string name="settings_checking">%1$s 확인 중...</string>
+    <string name="settings_check_for_updates">업데이트 확인</string>
+    <string name="settings_by_jeevaprakash_g">개발: jeevaprakash g</string>
+    <string name="settings_version_unavailable">버전 정보 없음</string>
+    <string name="settings_pick_the_detector_that_fits">이 기기와 사용 방식에 맞는 감지기를 선택하세요.</string>
+    <string name="settings_choose">"%1$s 선택"</string>
+    <string name="settings_highest_accuracy_maximum_compatibility">최고 정확도 · 최대 호환성</string>
+    <string name="settings_higher_accuracy_best_after_capture">높은 정확도 · 촬영 후 처리에 적합</string>
+    <string name="settings_balanced_speed_and_accuracy">속도와 정확도의 균형</string>
+    <string name="settings_fastest_ideal_for_live_camera">가장 빠름 · 실시간 카메라 미리보기에 적합</string>
+    <!-- SettingsDetailScreens -->
+    <string name="settings_detail_screens_open_source">오픈소스</string>
+    <string name="settings_detail_screens_try_a_different_word_or">다른 단어로 검색하거나 카테고리를 둘러보세요.</string>
+    <string name="settings_detail_screens_no_answers_for">“%1$s”에 대한 답변이 없어요.</string>
+    <string name="settings_detail_screens_no_answers_in_this_category">이 카테고리에는 답변이 없어요.</string>
+    <string name="settings_detail_screens_all">전체</string>
+    <string name="settings_detail_screens_search_help">도움말 검색</string>
+    <string name="settings_detail_screens_help_faq">도움말 및 FAQ</string>
+    <!-- SettingsHubSubScreens -->
+    <string name="settings_hub_sub_screens_terms_conditions">이용약관</string>
+    <string name="settings_hub_sub_screens_privacy_policy">개인정보처리방침</string>
+    <string name="settings_hub_sub_screens_legal">법률 정보</string>
+    <string name="settings_hub_sub_screens_project_website">프로젝트 웹사이트</string>
+    <string name="settings_hub_sub_screens_contact_support">고객 지원 문의</string>
+    <string name="settings_hub_sub_screens_help">도움말</string>
+    <string name="settings_hub_sub_screens_about">정보</string>
+    <string name="settings_hub_sub_screens_open_the_qr_tool">QR 도구 열기</string>
+    <string name="settings_hub_sub_screens_qr_widget">QR 위젯</string>
+    <string name="settings_hub_sub_screens_start_a_new_document_scan">새 문서 스캔 시작</string>
+    <string name="settings_hub_sub_screens_scan_widget">스캔 위젯</string>
+    <string name="settings_hub_sub_screens_scan_import_qr_library">스캔 · 가져오기 · QR · 라이브러리</string>
+    <string name="settings_hub_sub_screens_actions_bar">바로가기 바</string>
+    <string name="settings_hub_sub_screens_home_screen">홈 화면</string>
+    <string name="settings_hub_sub_screens_widgets">위젯</string>
+    <string name="settings_hub_sub_screens_long_press_home_screen_widgets">홈 화면 길게 누르기 → 위젯 → Scanly</string>
+    <string name="settings_hub_sub_screens_tap_to_add_a_widget">탭하여 홈 화면에 위젯 추가</string>
+    <string name="settings_hub_sub_screens_could_not_open_the_add">위젯 추가 창을 열지 못했어요.</string>
+    <string name="settings_hub_sub_screens_your_launcher_doesn_t_support">사용 중인 런처는 앱에서 위젯 추가를 지원하지 않아요. 홈 화면을 길게 누르고 위젯에서 Scanly를 선택하세요.</string>
+    <string name="settings_hub_sub_screens_compare_all_models_on_local">기기의 이미지로 모든 모델 비교</string>
+    <string name="settings_hub_sub_screens_tools">도구</string>
+    <string name="settings_hub_sub_screens_reject_screens_and_non_documents">가장자리 감지 전에 화면이나 문서가 아닌 대상 제외</string>
+    <string name="settings_hub_sub_screens_physical_document_gate">실물 문서 게이트</string>
+    <string name="settings_hub_sub_screens_capture_quality">촬영 품질</string>
+    <string name="settings_hub_sub_screens_used_after_camera_or_gallery">카메라 촬영 또는 갤러리 가져오기 후에 사용</string>
+    <string name="settings_hub_sub_screens_selected_automatically_for_higher_accuracy">더 높은 정확도를 위해 자동 선택됨</string>
+    <string name="settings_hub_sub_screens_post_processing_model">후처리 모델</string>
+    <string name="settings_hub_sub_screens_used_while_the_camera_preview">카메라 미리보기 중에 사용</string>
+    <string name="settings_hub_sub_screens_selected_automatically_for_responsive_preview">빠른 미리보기를 위해 자동 선택됨</string>
+    <string name="settings_hub_sub_screens_live_preview_model">실시간 미리보기 모델</string>
+    <string name="settings_hub_sub_screens_choose_the_best_models_for">이 기기에 가장 적합한 모델 선택</string>
+    <string name="settings_hub_sub_screens_live_processing">"실시간: %1$s · 처리: %2$s"</string>
+    <string name="settings_hub_sub_screens_testing_model_speed_on_this">이 기기에서 모델 속도를 테스트하는 중…</string>
+    <string name="settings_hub_sub_screens_automatic_model_selection">모델 자동 선택</string>
+    <string name="settings_hub_sub_screens_models">모델</string>
+    <string name="settings_hub_sub_screens_document_detection">문서 감지</string>
+    <string name="settings_hub_sub_screens_true_black_surfaces_saves_battery">완전한 검은색 배경 · AMOLED 화면에서 배터리 절약</string>
+    <string name="settings_hub_sub_screens_takes_effect_in_dark_theme">어두운 테마에서 적용 · AMOLED 화면에서 배터리 절약</string>
+    <string name="settings_hub_sub_screens_pure_black">완전한 검은색</string>
+    <string name="settings_hub_sub_screens_theme">테마</string>
+    <string name="settings_hub_sub_screens_appearance">디자인</string>
+    <!-- SettingsScreen -->
+    <string name="settings_preferences_and_app_info">환경설정 및 앱 정보</string>
+    <string name="settings_scanly">"Scanly %1$s"</string>
+    <string name="settings_settings">설정</string>
+    <string name="settings_version_updates_and_legal">버전, 업데이트, 법률 정보</string>
+    <string name="settings_leave_a_rating_on_google">Google Play에 평점 남기기</string>
+    <string name="settings_more">더보기</string>
+    <string name="settings_actions_scan_and_qr">바로가기, 스캔, QR</string>
+    <string name="settings_text_recognition">텍스트 인식</string>
+    <string name="settings_intelligence">인텔리전스</string>
+    <string name="settings_pages_kept_documents_and_folders">"보관 기간: 페이지 %1$s, 문서 및 폴더 %2$s"</string>
+    <string name="settings_storage">저장용량</string>
+    <string name="settings_pip_your_helper">도우미 Pip</string>
+    <string name="settings_preferences">환경설정</string>
+    <string name="settings_save_location_cleanup">저장 위치 및 정리</string>
+    <string name="settings_indra_ocr_100_languages_experimental">Indra OCR · 100개 이상 언어(실험용)</string>
+    <string name="settings_ml_kit_latin_script_languages">ML Kit · 라틴 문자 언어</string>
+    <string name="settings_gate_off">"%1$s · 게이트 사용 안함"</string>
+    <string name="settings_gate_on">"%1$s · 게이트 사용"</string>
+    <string name="settings_manual_models">수동 모델</string>
+    <string name="settings_automatic_models">자동 모델</string>
+    <string name="settings_calibrating">보정 중…</string>
+    <string name="settings_pure_black">" · 완전한 검은색"</string>
+    <string name="settings_thanks_for_supporting_scanly">Scanly를 응원해 주셔서 감사해요</string>
+    <!-- SettingsTextRecognitionScreen -->
+    <string name="settings_text_recognition_weights_openrail_m_code_apache">가중치: OpenRAIL-M · 코드: Apache-2.0</string>
+    <string name="settings_text_recognition_visit_datalab_to">datalab.to 방문하기</string>
+    <string name="settings_text_recognition_a_big_thank_you_to">Indra OCR을 만들고 Scanly가 휴대전화에서 직접 실행할 수 있게 해 준 Datalab에 큰 감사를 전해요. 덕분에 Scanly가 100개 이상의 언어를 읽을 수 있어요.</string>
+    <string name="settings_text_recognition_datalab">Datalab</string>
+    <string name="settings_text_recognition_indra_ocr_by">INDRA OCR 제공</string>
+    <string name="settings_text_recognition_datalab_logo">Datalab 로고</string>
+    <string name="settings_text_recognition_latin_script_only_pages_in">라틴 문자만 지원해요. 힌디어, 타밀어, 아랍어, 중국어 등 다른 문자로 된 페이지는 비어 있거나 깨져서 나와요. 이런 페이지에는 Indra OCR을 사용하세요.</string>
+    <string name="settings_text_recognition_5_script_families_read_in">5가지 문자 계열을 한 번에 읽어요. 줄마다 알맞은 인식기로 보내므로 여러 언어가 섞인 페이지도 인식돼요.</string>
+    <string name="settings_text_recognition_reads_100_languages_across_many">힌디어, 타밀어, 아랍어, 중국어, 일본어 등 다양한 문자로 된 100개 이상의 언어를 읽어요. ML Kit보다 느려요.</string>
+    <string name="settings_text_recognition_experimental">실험용</string>
+    <string name="settings_text_recognition_google_s_fast_on_device">Google의 빠른 기기 내 인식기예요. 영어, 스페인어, 프랑스어 같은 라틴 문자 언어에 가장 적합해요.</string>
+    <string name="settings_text_recognition_default">기본값</string>
+    <string name="settings_text_recognition_if_a_page_s_text">페이지 텍스트가 비어 있거나 깨져 보이면 ML Kit가 읽을 수 없는 문자일 가능성이 높아요. Indra OCR로 전환한 다음 기존 페이지 다시 읽기를 사용하세요.</string>
+    <string name="settings_text_recognition_tip">팁</string>
+    <string name="settings_text_recognition_switching_engines_only_affects_new">엔진을 바꾸면 새로 읽는 페이지에만 적용돼요. 기존 페이지는 이 화면에서 다시 읽을 수 있고, 직접 수정한 텍스트는 절대 바뀌지 않아요.</string>
+    <string name="settings_text_recognition_your_edits_are_kept">수정한 내용은 유지돼요</string>
+    <string name="settings_text_recognition_if_indra_ocr_can_t">Indra OCR이 페이지를 읽지 못하거나, 너무 오래 걸리거나, 중단되면 ML Kit가 대신 읽어요.</string>
+    <string name="settings_text_recognition_ml_kit_is_the_safety">ML Kit가 뒤를 받쳐 줘요</string>
+    <string name="settings_text_recognition_both_engines_run_on_the">두 엔진 모두 기기에서 실행돼요. 텍스트를 읽기 위해 페이지를 업로드하지 않아요.</string>
+    <string name="settings_text_recognition_stays_on_your_phone">휴대전화에만 저장돼요</string>
+    <string name="settings_text_recognition_ml_kit_is_the_default">ML Kit가 기본값이에요. 영어, 스페인어, 프랑스어, 독일어 같은 라틴 문자 언어를 빠르고 매우 정확하게 읽어요.\n\nIndra OCR은 그 밖의 모든 언어를 위한 엔진이에요. 힌디어, 타밀어, 벵골어, 아랍어, 우르두어, 중국어, 일본어, 한국어, 태국어 등 100개 이상의 언어를 읽고, 여러 언어가 섞인 페이지도 처리해요. 실험용이고 더 느려서 페이지를 검색할 수 있게 되기까지 시간이 더 걸려요.</string>
+    <string name="settings_text_recognition_choosing_an_engine">엔진 선택하기</string>
+    <string name="settings_text_recognition_after_you_scan_scanly_reads">스캔하면 Scanly가 각 페이지의 글자를 읽어요. 이 텍스트 덕분에 페이지 내용으로 라이브러리를 검색하고, 스캔에서 텍스트를 복사하거나 공유하고, 내보낼 수 있어요.</string>
+    <string name="settings_text_recognition_what_it_does">하는 일</string>
+    <string name="settings_text_recognition_also_called_ocr">OCR이라고도 해요</string>
+    <string name="settings_text_recognition_re_read">다시 읽기</string>
+    <string name="settings_text_recognition_runs_in_the_background_while">배터리가 부족하지 않을 때 백그라운드에서 실행돼요. 직접 수정한 텍스트는 유지돼요.</string>
+    <string name="settings_text_recognition_on_device_text_recognition_v2">기기 내 텍스트 인식 v2</string>
+    <string name="settings_text_recognition_google_ml_kit">Google ML Kit</string>
+    <string name="settings_text_recognition_credits">크레딧</string>
+    <string name="settings_text_recognition_supported_languages">지원 언어</string>
+    <string name="settings_text_recognition_engine">엔진</string>
+    <string name="settings_text_recognition_about_text_recognition">텍스트 인식 정보</string>
+    <!-- SettingsViewModel -->
+    <string name="settings_save_location_reset_to_downloads">저장 위치를 Downloads/Scanly로 초기화했어요.</string>
+    <string name="settings_save_location_updated">저장 위치를 변경했어요.</string>
+    <string name="settings_reading_pages_again_in_the">"백그라운드에서 %1$s페이지를 다시 읽는 중이에요."</string>
+    <string name="settings_reading_1_page_again_in">백그라운드에서 1페이지를 다시 읽는 중이에요.</string>
+    <string name="settings_no_pages_to_read_again">다시 읽을 페이지가 없어요.</string>
+    <string name="settings_could_not_update_the_text">텍스트 인식 엔진을 변경하지 못했어요.</string>
+    <string name="settings_could_not_update_the_physical">실물 문서 게이트 설정을 변경하지 못했어요.</string>
+    <string name="settings_could_not_update_automatic_model">모델 자동 선택 설정을 변경하지 못했어요.</string>
+    <string name="settings_could_not_update_the_post">후처리 모델을 변경하지 못했어요.</string>
+    <string name="settings_could_not_update_the_live">실시간 미리보기 모델을 변경하지 못했어요.</string>
+    <string name="settings_could_not_update_pure_black">완전한 검은색 테마 설정을 변경하지 못했어요.</string>
+    <string name="settings_removed_empty_folders">"빈 폴더 %1$s개를 삭제했어요."</string>
+    <string name="settings_removed_1_empty_folder">빈 폴더 1개를 삭제했어요.</string>
+    <string name="settings_no_empty_folders_found">빈 폴더가 없어요.</string>
+    <string name="settings_removed_empty_documents">"빈 문서 %1$s개를 삭제했어요."</string>
+    <string name="settings_removed_1_empty_document">빈 문서 1개를 삭제했어요.</string>
+    <string name="settings_no_empty_documents_found">빈 문서가 없어요.</string>
+    <string name="settings_freed">"%1$s 확보됨"</string>
+    <string name="settings_all_data_cleared">모든 데이터를 삭제했어요.</string>
+    <!-- StorageScreen -->
+    <string name="storage_temporary_exports">임시 내보내기 파일</string>
+    <string name="storage_database_search_index">데이터베이스 및 검색 색인</string>
+    <string name="storage_library_files">라이브러리 파일</string>
+    <string name="storage_scanly_is_using">Scanly 사용 용량</string>
+    <string name="storage_calculating">계산 중…</string>
+    <string name="storage_change">변경</string>
+    <string name="storage_exports_save_to">내보내기 저장 위치</string>
+    <string name="storage_this_permanently_deletes_all_documents">이 기기의 모든 문서, 폴더, 페이지, 임시 내보내기 파일이 영구 삭제돼요. 내보내기 폴더에 이미 저장한 파일은 유지돼요.</string>
+    <string name="storage_clear_all_data">모든 데이터를 삭제할까요?</string>
+    <string name="storage_deletes_every_folder_group_that">문서가 없는 폴더(그룹)를 모두 삭제해요. 문서가 있는 폴더는 유지돼요.</string>
+    <string name="storage_remove_empty_folders">빈 폴더를 삭제할까요?</string>
+    <string name="storage_deletes_every_document_that_has">중단된 촬영을 포함해 페이지가 없는 문서를 모두 삭제하고 저장공간을 확보해요. 페이지가 있는 문서는 유지돼요.</string>
+    <string name="storage_remove_empty_documents">빈 문서를 삭제할까요?</string>
+    <string name="storage_deletes_every_document_folder_and">이 기기의 모든 문서, 폴더, 페이지 삭제</string>
+    <string name="storage_clear_all_data_2">모든 데이터 삭제</string>
+    <string name="storage_danger_zone">주의 구역</string>
+    <string name="storage_folders_with_no_documents">문서가 없는 폴더</string>
+    <string name="storage_remove_empty_folders_2">빈 폴더 삭제</string>
+    <string name="storage_documents_with_no_pages">페이지가 없는 문서</string>
+    <string name="storage_remove_empty_documents_2">빈 문서 삭제</string>
+    <string name="storage_restore_deleted_folders_documents_and">삭제한 폴더, 문서, 페이지 복원</string>
+    <string name="storage_tidy_up">정리하기</string>
+    <string name="storage_use_default_folder">기본 폴더 사용</string>
+    <string name="storage_pdfs_and_images_you_export">내보낸 PDF와 이미지가 여기에 저장돼요.</string>
+    <string name="storage_save_location">저장 위치</string>
+    <string name="storage_could_not_use_the_selected">선택한 폴더를 사용할 수 없어요.</string>
+    <string name="storage_selected_folder">선택한 폴더</string>
+    <!-- ScannedPagePickerSheet -->
+    <string name="scanned_page_picker_no_pages_in_this_document">이 문서에는 사용할 수 있는 페이지가 없어요.</string>
+    <string name="scanned_page_picker_back_to_documents">문서로 돌아가기</string>
+    <string name="scanned_page_picker_no_scanned_documents_yet_scan">아직 스캔한 문서가 없어요. Scanly에서 페이지를 스캔하면 여기에 표시돼요.</string>
+    <string name="scanned_page_picker_scanned_pages">스캔한 페이지</string>
+    <!-- SignatureCreateScreen -->
+    <string name="signature_create_choose_another">다른 이미지 선택</string>
+    <string name="signature_create_bolder">진하게</string>
+    <string name="signature_create_fainter">연하게</string>
+    <string name="signature_create_ink_sensitivity">잉크 감도</string>
+    <string name="signature_create_extracted_signature_preview">추출한 서명 미리보기</string>
+    <string name="signature_create_scanly_removes_the_paper_background">Scanly가 종이 배경을 지우고 잉크만 남겨요.</string>
+    <string name="signature_create_use_a_page_you_scanned">Scanly에서 스캔한 페이지 사용</string>
+    <string name="signature_create_scanned_page">스캔한 페이지</string>
+    <string name="signature_create_jpg_or_png_from_your">휴대전화에 있는 JPG 또는 PNG</string>
+    <string name="signature_create_files">파일</string>
+    <string name="signature_create_pick_a_photo_of_your">서명 사진 선택</string>
+    <string name="signature_create_photos">사진</string>
+    <string name="signature_create_choose_where_your_signature_is">서명이 있는 위치를 선택하세요</string>
+    <string name="signature_create_choose_where_your_initials_are">이니셜이 있는 위치를 선택하세요</string>
+    <string name="signature_create_pen">펜</string>
+    <string name="signature_create_upload">업로드</string>
+    <string name="signature_create_draw">그리기</string>
+    <string name="signature_create_save_signature">서명 저장</string>
+    <string name="signature_create_save_initials">이니셜 저장</string>
+    <string name="signature_create_sign_above_the_line">선 위에 서명하세요</string>
+    <string name="signature_create_write_your_initials_above_the">선 위에 이니셜을 쓰세요</string>
+    <string name="signature_create_new_signature">새 서명</string>
+    <string name="signature_create_new_initials">새 이니셜</string>
+    <!-- SignatureCreateViewModel -->
+    <string name="signature_create_choose_a_photo_of_your">먼저 서명 사진을 선택하세요.</string>
+    <string name="signature_create_still_reading_the_photo_try">아직 사진을 읽는 중이에요. 잠시 후 다시 시도하세요.</string>
+    <string name="signature_create_draw_your_signature_first">먼저 서명을 그리세요.</string>
+    <!-- SignaturePad -->
+    <string name="signature_pad_draw_here">여기에 그리세요</string>
+    <!-- DocumentSignScreen -->
+    <string name="document_sign_stamping_signatures">서명 넣는 중…</string>
+    <!-- DocumentSignViewModel -->
+    <string name="document_sign_saved_signatures_couldn_t_be">저장된 서명을 불러오지 못해서 지금은 이 문서에 서명할 수 없어요.</string>
+    <!-- SignEditorScreen -->
+    <string name="sign_editor_next_page">다음 페이지</string>
+    <string name="sign_editor_add_text">텍스트 추가</string>
+    <string name="sign_editor_edit_date">날짜 수정</string>
+    <string name="sign_editor_tap_checkbox_again_for_another">체크박스를 다시 탭하면 상자가 하나 더 추가돼요 · 툴바에서 체크하거나 해제하세요</string>
+    <string name="sign_editor_tap_text_again_for_another">텍스트를 다시 탭하면 줄이 하나 더 추가돼요 · 텍스트를 두 번 탭하면 수정할 수 있어요</string>
+    <string name="sign_editor_tap_date_again_for_another">날짜를 다시 탭하면 하나 더 추가돼요 · 날짜를 두 번 탭하면 수정할 수 있어요</string>
+    <string name="sign_editor_manage">관리</string>
+    <string name="sign_editor_your_signatures">내 서명</string>
+    <string name="sign_editor_signatures_and_marks_you_added">이 문서에 추가하거나 변경한 서명과 표시는 저장되지 않아요.</string>
+    <!-- SignMarkLayer -->
+    <string name="sign_mark_layer_duplicate">복제</string>
+    <string name="sign_mark_layer_tick">체크</string>
+    <string name="sign_mark_layer_untick">체크 해제</string>
+    <!-- SignatureManageScreen -->
+    <string name="signature_manage_added">"%1$s · %2$s 추가됨"</string>
+    <string name="signature_manage_from_a_photo">사진에서 가져옴</string>
+    <string name="signature_manage_drawn">직접 그림</string>
+    <string name="signature_manage_pages_you_ve_already_signed">이미 서명한 페이지에는 그대로 남아요</string>
+    <string name="signature_manage_place_it_on_a_pdf">PDF나 Scanly 문서에 넣기</string>
+    <string name="signature_manage_sign_a_pdf">PDF에 서명</string>
+    <string name="signature_manage_use_first_when_signing">서명할 때 우선 사용</string>
+    <string name="signature_manage_shared_and_saved_as_a">투명 PNG로 공유되고 저장되어 문서, 양식, 이메일에 바로 사용할 수 있어요.</string>
+    <string name="signature_manage_save_to_phone">휴대전화에 저장</string>
+    <string name="signature_manage_ink_colour">잉크 색상</string>
+    <string name="signature_manage_in_ink">"%1$s, 잉크: %2$s"</string>
+    <string name="signature_manage_used_first">우선 사용</string>
+    <string name="signature_manage_used_first_2">, 우선 사용</string>
+    <string name="signature_manage_pages_you_ve_already_signed_2">이미 서명한 페이지에는 그대로 남아요.</string>
+    <string name="signature_manage_initials">이니셜</string>
+    <string name="signature_manage_signatures">서명</string>
+    <string name="signature_manage_signatures_stay_on_this_phone">서명은 이 휴대전화에만 저장돼요. 직접 그리거나 서명 사진을 업로드하세요.</string>
+    <string name="signature_manage_tap_one_to_share_save">탭하여 공유, 저장 또는 순서 변경</string>
+    <!-- SignatureManageViewModel -->
+    <string name="signature_manage_saved_to">"저장 위치: %1$s"</string>
+    <string name="signature_manage_will_be_offered_first_when">"서명할 때 먼저 표시: %1$s"</string>
+    <!-- PageTextScreen -->
+    <string name="page_text_share_text">텍스트 공유</string>
+    <string name="page_text_scan_or_import_a_page">페이지를 스캔하거나 가져오면 텍스트가 여기에 표시돼요.</string>
+    <string name="page_text_this_document_has_no_pages">이 문서에는 아직 페이지가 없어요</string>
+    <string name="page_text_reading_text">텍스트 읽는 중</string>
+    <string name="page_text_copy_page">페이지 복사</string>
+    <string name="page_text_save_changes">변경사항 저장</string>
+    <string name="page_text_copy">복사</string>
+    <string name="page_text_tap_an_outlined_area_to">테두리가 있는 영역을 탭하면 그 부분만 복사돼요.</string>
+    <string name="page_text_regions_are_hidden_because_this">텍스트를 읽은 후 페이지가 변경되어 영역이 숨겨졌어요.</string>
+    <string name="page_text_page_image_with_text_regions">"텍스트 영역이 %1$s개 있는 페이지 이미지"</string>
+    <string name="page_text_read_with_indra_ocr_experimental">Indra OCR로 읽음(실험용)</string>
+    <string name="page_text_read_with_ml_kit_indra">ML Kit로 읽음(Indra OCR이 이 페이지를 읽지 못함)</string>
+    <string name="page_text_edited">수정됨</string>
+    <string name="page_text_read_again">다시 읽기</string>
+    <string name="page_text_photos_and_handwriting_may_not">사진이나 손글씨에는 읽을 수 있는 인쇄된 텍스트가 없을 수 있어요. 더 선명하고 밝게 스캔하면 대개 도움이 돼요.</string>
+    <string name="page_text_no_text_found_on_this">이 페이지에서 텍스트를 찾지 못했어요</string>
+    <string name="page_text_read_this_page">이 페이지 읽기</string>
+    <string name="page_text_scanly_reads_page_text_on">Scanly는 이 기기에서 페이지 텍스트를 읽어요.</string>
+    <string name="page_text_text_not_read_yet">아직 텍스트를 읽지 않았어요</string>
+    <string name="page_text_try_again">다시 시도</string>
+    <string name="page_text_couldn_t_read_this_page">이 페이지를 읽지 못했어요</string>
+    <string name="page_text_your_corrections_are_used_for">수정한 내용은 복사, 공유, 검색에 사용돼요.</string>
+    <string name="page_text_this_page_changed_after_its">텍스트를 읽은 후 이 페이지가 변경됐어요.</string>
+    <string name="page_text_stop_highlighting">강조 표시 중지</string>
+    <string name="page_text_on_this_page">"이 페이지에 %1$s"</string>
+    <string name="page_text_not_on_this_page">이 페이지에 없음</string>
+    <string name="page_text_reading_text_2">텍스트 읽는 중…</string>
+    <string name="page_text_reading_page_of">"페이지 읽는 중(%1$s/%2$s)…"</string>
+    <string name="page_text_page">"%1$s — %2$s페이지"</string>
+    <string name="page_text_read_all_pages_again">모든 페이지 다시 읽기</string>
+    <string name="page_text_restore_original_text">원본 텍스트 복원</string>
+    <string name="page_text_share_all_pages">모든 페이지 공유</string>
+    <string name="page_text_all_pages">모든 페이지</string>
+    <string name="page_text_copy_all_pages">모든 페이지 복사</string>
+    <string name="page_text_extracted_text">추출된 텍스트</string>
+    <string name="page_text_copied">"%1$s 복사됨"</string>
+    <!-- PageTextViewModel -->
+    <string name="page_text_original_text_restored">원본 텍스트를 복원했어요</string>
+    <string name="page_text_changes_saved_search_uses_your">변경사항을 저장했어요. 검색에 수정한 내용이 반영돼요.</string>
+    <string name="page_text_page_text_read_again">페이지 텍스트를 다시 읽었어요</string>
+    <!-- ToolKit -->
+    <string name="tool_kit_file_name">파일 이름</string>
+    <!-- ToolsScreen -->
+    <string name="tools_everything_runs_offline_on_this">모든 기능이 이 휴대전화에서 오프라인으로 작동해요</string>
+    <string name="tools_utilities">유틸리티</string>
+    <!-- PdfCompressScreen -->
+    <string name="pdf_compress_recommended">추천</string>
+    <string name="pdf_compress_compress_this_pdf_again_with">다른 설정으로 이 PDF 다시 압축</string>
+    <string name="pdf_compress_try_another_quality">다른 화질 시도</string>
+    <string name="pdf_compress_after">압축 후</string>
+    <string name="pdf_compress_before">압축 전</string>
+    <string name="pdf_compress_quality">화질</string>
+    <string name="pdf_compress_this_quality_didn_t_make">이 화질로는 파일 크기가 줄지 않았어요. 다른 화질을 선택해 보세요.</string>
+    <string name="pdf_compress_compressed">압축됨</string>
+    <string name="pdf_compress_already_compact">이미 작은 크기예요</string>
+    <string name="pdf_compress_saved">%1$s%% 절감</string>
+    <string name="pdf_compress_compressing">압축 중…</string>
+    <string name="pdf_compress_compress">압축</string>
+    <string name="pdf_compress_pages_are_re_encoded_as">페이지가 이미지로 다시 인코딩되므로 PDF의 텍스트를 더 이상 선택하거나 검색할 수 없어요.</string>
+    <string name="pdf_compress_unlock">잠금 해제</string>
+    <string name="pdf_compress_enter_the_password">비밀번호를 입력하세요</string>
+    <string name="pdf_compress_compressed_pdf">압축한 PDF</string>
+    <string name="pdf_compress_step_1_of_3_choose">1/3단계 · 파일 선택</string>
+    <string name="pdf_compress_shrink_a_pdf_for_email">이메일이나 업로드 용량 제한에 맞게 PDF 크기를 줄여요.</string>
+    <string name="pdf_compress_compress_pdf">PDF 압축</string>
+    <!-- PdfCompressViewModel -->
+    <string name="pdf_compress_compressing_pdf">PDF 압축 중…</string>
+    <string name="pdf_compress_choose_a_pdf_first">먼저 PDF를 선택하세요.</string>
+    <!-- PdfFilePicker -->
+    <string name="pdf_file_picker_days_ago">"%1$s일 전"</string>
+    <string name="pdf_file_picker_selected_position">"선택됨, %1$s번째"</string>
+    <string name="pdf_file_picker_empty_scans_are_hidden">"빈 스캔 %1$s개 숨겨짐"</string>
+    <string name="pdf_file_picker_1_empty_scan_is_hidden">빈 스캔 1개 숨겨짐</string>
+    <string name="pdf_file_picker_no_match">"\"%2$s\" 검색 결과: 일치하는 %1$s 없음"</string>
+    <string name="pdf_file_picker_sorted_by">"정렬: %1$s"</string>
+    <string name="pdf_file_picker_in_scanly">"Scanly 내 · %1$s"</string>
+    <string name="pdf_file_picker_search_your">"%1$s 검색"</string>
+    <string name="pdf_file_picker_your_scans_have_no_pages">스캔에 아직 페이지가 없어요. 휴대전화 저장공간에서 PDF를 선택하세요.</string>
+    <string name="pdf_file_picker_no_scans_yet_pick_a">아직 스캔이 없어요. 휴대전화 저장공간에서 PDF를 선택하거나 먼저 스캔하세요.</string>
+    <string name="pdf_file_picker_pdfs">PDF</string>
+    <string name="pdf_file_picker_downloads_drive_and_other_apps">다운로드, Drive 및 기타 앱</string>
+    <string name="pdf_file_picker_phone_storage">휴대전화 저장공간</string>
+    <!-- PdfImportScreen -->
+    <string name="pdf_import_add_pages">"%1$s페이지 추가"</string>
+    <string name="pdf_import_add_1_page">1페이지 추가</string>
+    <string name="pdf_import_add_to_library">라이브러리에 추가</string>
+    <string name="pdf_import_another_pdf">다른 PDF</string>
+    <string name="pdf_import_crop_filter_sign_or_search">"%1$s · %2$s. 다른 스캔처럼 자르고, 필터를 적용하고, 서명하고, 검색할 수 있어요."</string>
+    <string name="pdf_import_added_to_your_library">라이브러리에 추가했어요</string>
+    <string name="pdf_import_step_3_of_3_done">3/3단계 · 완료</string>
+    <string name="pdf_import_adding_to_library">라이브러리에 추가하는 중…</string>
+    <string name="pdf_import_look">보기</string>
+    <string name="pdf_import_your_pdf_file_stays_as">원본 PDF 파일은 그대로 두고, Scanly가 별도의 사본을 보관해요</string>
+    <string name="pdf_import_tap_a_page_or_long">페이지를 탭하거나, 길게 누른 채 드래그해서 여러 페이지를 선택하세요.</string>
+    <string name="pdf_import_step_2_of_3_pages">2/3단계 · 페이지 및 이름</string>
+    <string name="pdf_import_name_this_document">문서 이름 지정</string>
+    <string name="pdf_import_document_name">문서 이름</string>
+    <string name="pdf_import_turn_a_pdf_into_a">PDF를 편집, 서명, 검색할 수 있는 Scanly 문서로 바꿔요.</string>
+    <string name="pdf_import_add_pdf_to_library">PDF를 라이브러리에 추가</string>
+    <!-- PdfImportViewModel -->
+    <string name="pdf_import_give_the_document_a_name">문서 이름을 입력하세요.</string>
+    <string name="pdf_import_imported_pdf">가져온 PDF</string>
+    <!-- PdfMergeScreen -->
+    <string name="pdf_merge_1_file">파일 1개</string>
+    <string name="pdf_merge_your_original_files_are_unchanged">원본 파일은 변경되지 않아요</string>
+    <string name="pdf_merge_combined_into_one_pdf">"%1$s, PDF 하나로 병합됨"</string>
+    <string name="pdf_merge_merged">병합됨</string>
+    <string name="pdf_merge_kept_unchanged">변경 없이 유지됨</string>
+    <string name="pdf_merge_original_files">원본 파일</string>
+    <string name="pdf_merge_size">크기</string>
+    <string name="pdf_merge_remove">"%1$s 삭제"</string>
+    <string name="pdf_merge_move_down">"%1$s 아래로 이동"</string>
+    <string name="pdf_merge_move_up">"%1$s 위로 이동"</string>
+    <string name="pdf_merge_pdf_from_scanly">Scanly의 PDF</string>
+    <string name="pdf_merge_pdf_from_phone">휴대전화의 PDF</string>
+    <string name="pdf_merge_page_count_unknown">페이지 수 알 수 없음</string>
+    <string name="pdf_merge_merge_pdfs">PDF 병합</string>
+    <string name="pdf_merge_merge_files">"파일 %1$s개 병합"</string>
+    <string name="pdf_merge_add_more">더 추가</string>
+    <string name="pdf_merge_merge_order">"병합 순서 · %1$s"</string>
+    <string name="pdf_merge_files_are_joined_from_top">파일은 위에서 아래 순서로 합쳐져요.</string>
+    <string name="pdf_merge_order_name">순서 및 이름</string>
+    <string name="pdf_merge_step_2_of_3_order">2/3단계 · 순서 및 이름</string>
+    <string name="pdf_merge_in_total">"총 %1$s"</string>
+    <string name="pdf_merge_from_phone">"휴대전화: %1$s"</string>
+    <string name="pdf_merge_next">다음</string>
+    <string name="pdf_merge_next_files">"다음 · 파일 %1$s개"</string>
+    <string name="pdf_merge_pick_at_least_2_files">파일을 2개 이상 선택하세요</string>
+    <string name="pdf_merge_step_1_of_3_pick">1/3단계 · 파일 선택</string>
+    <string name="pdf_merge_pick_files_in_the_order">원하는 순서대로 파일을 선택하세요.</string>
+    <string name="pdf_merge_merged_pdf">병합한 PDF</string>
+    <string name="pdf_merge_merging">병합 중…</string>
+    <!-- PdfMergeViewModel -->
+    <string name="pdf_merge_add_at_least_two_pdfs">병합하려면 PDF를 2개 이상 추가하세요.</string>
+    <!-- PdfPasswordScreen -->
+    <string name="pdf_password_file">파일</string>
+    <string name="pdf_password_allowed">허용됨</string>
+    <string name="pdf_password_restricted">제한됨</string>
+    <string name="pdf_password_editing">편집</string>
+    <string name="pdf_password_no_password">비밀번호 없음</string>
+    <string name="pdf_password_aes_256_password">AES-256 비밀번호</string>
+    <string name="pdf_password_protection">보호</string>
+    <string name="pdf_password_a_short_phrase_you_ll">무작위 글자보다 기억하기 쉬운 짧은 문구가 더 좋아요.</string>
+    <string name="pdf_password_doesn_t_match_yet">아직 일치하지 않아요</string>
+    <string name="pdf_password_passwords_match">비밀번호가 일치해요</string>
+    <string name="pdf_password_remove_password">비밀번호 삭제</string>
+    <string name="pdf_password_the_unlocked_copy_opens_for">잠금 해제된 사본은 파일을 가진 누구나 열 수 있어요. Scanly는 이미 알고 있는 비밀번호만 삭제해요.</string>
+    <string name="pdf_password_bank_and_portal_pdfs_often">은행이나 포털 PDF는 주로 생년월일이나 고객 번호를 비밀번호로 사용해요.</string>
+    <string name="pdf_password_password_for_this_pdf">이 PDF의 비밀번호</string>
+    <string name="pdf_password_current_password">현재 비밀번호</string>
+    <string name="pdf_password_locked_pdf">잠긴 PDF</string>
+    <string name="pdf_password_lock_pdf">PDF 잠그기</string>
+    <string name="pdf_password_scanly_can_t_recover_this">Scanly는 이 비밀번호를 복구할 수 없어요. 잊어버리면 PDF를 열 수 없어요.</string>
+    <string name="pdf_password_others_can_open_and_print">다른 사람이 열고 인쇄할 수는 있지만 편집하거나 텍스트를 복사할 수는 없어요</string>
+    <string name="pdf_password_restrict_editing">편집 제한</string>
+    <string name="pdf_password_type_it_again">한 번 더 입력하세요</string>
+    <string name="pdf_password_at_least_characters">"%1$s자 이상"</string>
+    <string name="pdf_password_new_password">새 비밀번호</string>
+    <string name="pdf_password_add_password">비밀번호 추가</string>
+    <string name="pdf_password_checking_the_file">파일 확인 중…</string>
+    <string name="pdf_password_unlocked_pdf">잠금 해제된 PDF</string>
+    <string name="pdf_password_protected_pdf">보호된 PDF</string>
+    <string name="pdf_password_it_now_opens_without_a">이제 비밀번호 없이 열려요.</string>
+    <string name="pdf_password_anyone_opening_it_will_need">파일을 열려면 비밀번호가 필요해요.</string>
+    <string name="pdf_password_password_removed">비밀번호 삭제됨</string>
+    <string name="pdf_password_pdf_locked">PDF 잠김</string>
+    <string name="pdf_password_unlocking">잠금 해제 중…</string>
+    <string name="pdf_password_locking">잠그는 중…</string>
+    <string name="pdf_password_lock_a_pdf_or_remove">PDF를 잠그거나, 알고 있는 비밀번호를 삭제하세요.</string>
+    <!-- PdfPasswordViewModel -->
+    <string name="pdf_password_unlocking_pdf">PDF 잠금 해제 중…</string>
+    <string name="pdf_password_enter_the_current_password">현재 비밀번호를 입력하세요.</string>
+    <string name="pdf_password_locking_pdf">PDF 잠그는 중…</string>
+    <string name="pdf_password_use_to_characters_for_the">"비밀번호는 %1$s~%2$s자로 입력하세요."</string>
+    <!-- PdfReaderMenu -->
+    <string name="pdf_reader_menu_open_another_pdf">다른 PDF 열기</string>
+    <string name="pdf_reader_menu_all_pages">모든 페이지</string>
+    <!-- PdfReaderPresentation -->
+    <string name="pdf_reader_presentation_0_of_0">0/0</string>
+    <string name="pdf_reader_presentation_paged">페이지 단위</string>
+    <string name="pdf_reader_presentation_continuous">연속 스크롤</string>
+    <!-- PdfReaderScreen -->
+    <string name="pdf_reader_tap_a_page_to_jump">페이지를 탭하면 해당 페이지로 이동해요</string>
+    <string name="pdf_reader_loading_page">%1$s페이지 로드 중…</string>
+    <string name="pdf_reader_loading_page_2">페이지 로드 중…</string>
+    <string name="pdf_reader_choose_another_pdf">다른 PDF 선택</string>
+    <string name="pdf_reader_password">비밀번호</string>
+    <string name="pdf_reader_this_pdf_is_password_protected">비밀번호로 보호된 PDF예요. %1$s 파일을 읽으려면 비밀번호를 입력하세요.</string>
+    <string name="pdf_reader_unlock_pdf">PDF 잠금 해제</string>
+    <string name="pdf_reader_choose_a_file">파일 선택</string>
+    <string name="pdf_reader_open_any_pdf_from_scanly">Scanly나 휴대전화에 있는 PDF를 열어 보세요.</string>
+    <string name="pdf_reader_read_a_pdf">PDF 읽기</string>
+    <!-- PdfSignScreen -->
+    <string name="pdf_sign_1_mark">표시 1개</string>
+    <string name="pdf_sign_the_signed_copy_is_saved">서명한 사본은 비밀번호 없이 저장돼요.</string>
+    <string name="pdf_sign_this_pdf_is_locked">잠긴 PDF예요</string>
+    <string name="pdf_sign_back_to_the_editor">편집기로 돌아가기</string>
+    <string name="pdf_sign_edit_signatures">서명 수정</string>
+    <string name="pdf_sign_signed_pdf">서명한 PDF</string>
+    <string name="pdf_sign_saved_as">저장된 이름</string>
+    <string name="pdf_sign_marks_placed">추가한 표시</string>
+    <string name="pdf_sign_pages_signed">서명한 페이지</string>
+    <string name="pdf_sign_signed">서명 완료</string>
+    <string name="pdf_sign_placing_signatures_on_each_page">"각 페이지에 서명 배치…"</string>
+    <string name="pdf_sign_signing_your_pdf">"PDF 서명"</string>
+    <string name="pdf_sign_pdf_jpg_or_png_from">"다운로드, 드라이브 및 기타 앱의 PDF, JPG 또는 PNG"</string>
+    <string name="pdf_sign_step_1_of_3_choose">"3단계 중 1단계 · 선택"</string>
+    <string name="pdf_sign_choose_a_pdf_or_an">"서명할 PDF 또는 이미지를 선택하세요."</string>
+    <string name="pdf_sign_sign_pdf">"PDF 서명"</string>
+    <!-- PdfSignViewModel -->
+    <string name="pdf_sign_signing">"서명…"</string>
+    <string name="pdf_sign_place_a_signature_first">"먼저 서명을 하세요."</string>
+    <string name="pdf_sign_open_a_pdf_first">"먼저 PDF를 엽니다."</string>
+    <!-- PdfToImagesPresentation -->
+    <string name="pdf_to_images_presentation_page">"페이지 %1$s · %2$s"</string>
+    <string name="pdf_to_images_presentation_share_all">"모든 %1$s 공유"</string>
+    <string name="pdf_to_images_presentation_share_image">"이미지 공유"</string>
+    <string name="pdf_to_images_presentation_in_all">"전체적으로 %1$s"</string>
+    <string name="pdf_to_images_presentation_of_pages">"%2$s 페이지의 %1$s"</string>
+    <string name="pdf_to_images_presentation_all_pages">"모든 %1$s 페이지"</string>
+    <string name="pdf_to_images_presentation_export">"%1$s 내보내기"</string>
+    <string name="pdf_to_images_presentation_choose_pages_to_export">"내보낼 페이지 선택"</string>
+    <string name="pdf_to_images_presentation_1_image">"이미지 1개"</string>
+    <string name="pdf_to_images_presentation_1f_gb" formatted="false">"%.1f GB"</string>
+    <string name="pdf_to_images_presentation_1f_mb" formatted="false">"%.1f MB"</string>
+    <string name="pdf_to_images_presentation_kb">"%1$s KB"</string>
+    <string name="pdf_to_images_presentation_0_kb">"0 KB"</string>
+    <!-- PdfToImagesScreen -->
+    <string name="pdf_to_images_of_selected">"%2$s의 %1$s가 선택되었습니다."</string>
+    <string name="pdf_to_images_tap_images_or_long_press">"이미지를 탭하거나 길게 누르고 드래그하여 일부만 공유하세요."</string>
+    <string name="pdf_to_images_open_gallery">"오픈갤러리"</string>
+    <string name="pdf_to_images_pick_a_different_file">"다른 파일을 선택하세요"</string>
+    <string name="pdf_to_images_png_or_print_size">"PNG 또는 인쇄 크기"</string>
+    <string name="pdf_to_images_export_again">"다시 내보내기"</string>
+    <string name="pdf_to_images_saving_images">"이미지 저장…"</string>
+    <string name="pdf_to_images_each">"~%1$s 각"</string>
+    <string name="pdf_to_images_resolution">"결의"</string>
+    <string name="pdf_to_images_format">"형식"</string>
+    <string name="pdf_to_images_deselect_all">"모두 선택 취소"</string>
+    <string name="pdf_to_images_this_pdf_is_password_protected">"이 PDF는 비밀번호로 보호되어 있습니다. 페이지를 보려면 비밀번호를 입력하세요."</string>
+    <string name="pdf_to_images_images_show_up_in_your">"이미지가 갤러리에 바로 표시됩니다."</string>
+    <string name="pdf_to_images_pdf_to_jpg">"PDF ~ JPG"</string>
+    <string name="pdf_to_images_step_2_of_3_pages">"· 페이지 3개 중 2단계 및 형식"</string>
+    <string name="pdf_to_images_no_gallery_app_found_the">"갤러리 앱을 찾을 수 없습니다. 이미지는 Pictures/Scanly에 있습니다."</string>
+    <string name="pdf_to_images_turn_pages_into_images_for">"페이지를 채팅, 슬라이드 또는 갤러리용 이미지로 변환하세요."</string>
+    <!-- PdfToolDone -->
+    <string name="pdf_tool_done_open_pdf">"PDF 열기"</string>
+    <string name="pdf_tool_done_open_the_finished_pdf">"완성된 PDF를 엽니다."</string>
+    <string name="pdf_tool_done_your_original_file_is_unchanged">"원본 파일은 변경되지 않았습니다."</string>
+    <!-- PdfToolPresentation -->
+    <string name="pdf_tool_presentation_files_merge_in_this_order">"파일은 이 순서대로 병합됩니다. 첫 번째 PDF는 문서를 시작합니다."</string>
+    <string name="pdf_tool_presentation_add_at_least_one_more">"결합하려면 PDF를 하나 이상 추가하세요."</string>
+    <string name="pdf_tool_presentation_opacity">"불투명도 %1$s%%"</string>
+    <string name="pdf_tool_presentation_one_large_stamp_sized_to">"페이지를 가득 채울 만큼 큰 우표 1개."</string>
+    <string name="pdf_tool_presentation_repeats_across_the_full_page">"가장자리를 포함하여 전체 페이지에 걸쳐 반복됩니다."</string>
+    <string name="pdf_tool_presentation_protect_pdf">"PDF 보호"</string>
+    <string name="pdf_tool_presentation_saved">"%1$s → %2$s ·가 %3$s%%를 저장했습니다."</string>
+    <string name="pdf_tool_presentation_unlocked">"잠금 해제"</string>
+    <string name="pdf_tool_presentation_protected">"보호됨"</string>
+    <string name="pdf_tool_presentation_pdfs">"%1$s PDF 파일"</string>
+    <string name="pdf_tool_presentation_1_pdf">"1 PDF"</string>
+    <string name="pdf_tool_presentation_no_files">"파일이 없습니다"</string>
+    <!-- PdfToolShared -->
+    <string name="pdf_tool_shared_scanly_pdf">"Scanly PDF"</string>
+    <!-- PdfToolViewModels -->
+    <string name="pdf_tool_view_models_saving">"저장…"</string>
+    <!-- PdfWatermarkScreen -->
+    <string name="pdf_watermark_the_page">"페이지"</string>
+    <string name="pdf_watermark_first_page_only">"첫 페이지만"</string>
+    <string name="pdf_watermark_apply_to">"신청하다"</string>
+    <string name="pdf_watermark_colour">"색상"</string>
+    <string name="pdf_watermark_opacity">"불투명도"</string>
+    <string name="pdf_watermark_large">"대형"</string>
+    <string name="pdf_watermark_medium">"미디엄"</string>
+    <string name="pdf_watermark_small">"작은"</string>
+    <string name="pdf_watermark_horizontal">"수평"</string>
+    <string name="pdf_watermark_diagonal">"대각선"</string>
+    <string name="pdf_watermark_single">"싱글"</string>
+    <string name="pdf_watermark_tiled">"타일"</string>
+    <string name="pdf_watermark_style">"스타일"</string>
+    <string name="pdf_watermark_stamps">"우표 \"%1$s\""</string>
+    <string name="pdf_watermark_add_date">"날짜 추가"</string>
+    <string name="pdf_watermark_presets">"프리셋"</string>
+    <string name="pdf_watermark_the_watermarked_copy_is_saved">"워터마크가 있는 사본은 비밀번호 없이 저장됩니다. 비밀번호 도구를 사용하여 다시 잠글 수 있습니다."</string>
+    <string name="pdf_watermark_live_preview_of_the_saved">"저장된 파일의 실시간 미리보기"</string>
+    <string name="pdf_watermark_page_1">"페이지 1"</string>
+    <string name="pdf_watermark_preview_of_page_1_with">"워터마크가 포함된 1페이지 미리보기"</string>
+    <string name="pdf_watermark_apply_watermark">"워터마크 적용"</string>
+    <string name="pdf_watermark_apply_to_pages">"%1$s 페이지에 적용"</string>
+    <string name="pdf_watermark_apply_to_page">"페이지에 적용"</string>
+    <string name="pdf_watermark_apply_to_first_page">"첫 페이지에 적용"</string>
+    <string name="pdf_watermark_unlock_the_pdf_first">"먼저 PDF를 잠금 해제하세요."</string>
+    <string name="pdf_watermark_watermark">"워터마크"</string>
+    <string name="pdf_watermark_edit_stamp">"스탬프 편집"</string>
+    <string name="pdf_watermark_watermarked_pdf">"워터마크 PDF"</string>
+    <string name="pdf_watermark_kept_unstamped">"스탬프가 찍히지 않은 상태로 보관됨"</string>
+    <string name="pdf_watermark_stamp">"스탬프"</string>
+    <string name="pdf_watermark_on_every_page_tap_the">"모든 페이지에. 페이지를 탭하여 확인하세요."</string>
+    <string name="pdf_watermark_on_all_pages_tap_the">"모든 %1$s 페이지에서. 페이지를 탭하여 확인하세요."</string>
+    <string name="pdf_watermark_on_both_pages_tap_the">"두 페이지 모두에. 페이지를 탭하여 확인하세요."</string>
+    <string name="pdf_watermark_on_the_page_tap_it">"페이지에서. 확인하려면 탭하세요."</string>
+    <string name="pdf_watermark_on_the_first_page_tap">"첫 페이지에. 페이지를 탭하여 확인하세요."</string>
+    <string name="pdf_watermark_watermark_added">"워터마크 추가"</string>
+    <string name="pdf_watermark_stamping_every_page">"모든 페이지에 스탬프 찍기"</string>
+    <string name="pdf_watermark_stamping">"%1$s 스탬핑"</string>
+    <string name="pdf_watermark_stamping_the_first_page">"첫 페이지 스탬프 찍기"</string>
+    <string name="pdf_watermark_adding_watermark">"워터마크 추가…"</string>
+    <string name="pdf_watermark_stamp_text_like_confidential_or">"CONFIDENTIAL 또는 \"KYC 전용\"과 같은 텍스트를 스탬프로 찍습니다."</string>
+    <!-- PdfWatermarkViewModel -->
+    <string name="pdf_watermark_kyc_copy">"KYC 사본"</string>
+    <string name="pdf_watermark_enter_watermark_text">"워터마크 텍스트를 입력하세요."</string>
+    <!-- QrActions -->
+    <string name="qr_actions_qr_text">"QR 텍스트"</string>
+    <string name="qr_actions_no_app_can_search_the">"웹을 검색할 수 있는 앱은 없습니다."</string>
+    <string name="qr_actions_no_email_app_is_set">"이 휴대폰에는 이메일 앱이 설정되어 있지 않습니다."</string>
+    <string name="qr_actions_no_phone_app_can_open">"어떤 전화 앱도 이 번호를 열 수 없습니다"</string>
+    <string name="qr_actions_no_contacts_app_can_save">"어떤 연락처 앱도 이것을 저장할 수 없습니다"</string>
+    <string name="qr_actions_pick_in_wi_fi_settings">"Wi-Fi 설정에서 \"%1$s\"를 선택하세요."</string>
+    <string name="qr_actions_password_copied_pick_the_network">"비밀번호 복사됨 - 네트워크 선택"</string>
+    <string name="qr_actions_wi_fi_settings_can_t">"Wi-Fi 설정을 열 수 없습니다"</string>
+    <string name="qr_actions_wi_fi_password">"Wi-Fi 비밀번호"</string>
+    <string name="qr_actions_wi_fi_settings_can_t_2">"Wi-Fi 설정은 이 네트워크를 추가할 수 없습니다."</string>
+    <string name="qr_actions_no_upi_app_can_open">"어떤 UPI 앱도 이 코드를 열 수 없습니다"</string>
+    <string name="qr_actions_pay_with">"결제 수단"</string>
+    <string name="qr_actions_no_app_can_open_this">"어떤 앱도 이 링크를 열 수 없습니다"</string>
+    <string name="qr_actions_not_a_web_link">"웹 링크가 아님"</string>
+    <string name="qr_actions_nothing_can_receive_this_text">"이 문자는 아무것도 받을 수 없습니다."</string>
+    <string name="qr_actions_share_qr_code">"QR 코드 공유"</string>
+    <string name="qr_actions_copied_to_clipboard">"클립보드에 복사됨"</string>
+    <!-- QrCreateScreen -->
+    <string name="qr_create_full_name">"성명"</string>
+    <string name="qr_create_name">"이름"</string>
+    <string name="qr_create_leave_the_amount_empty_so">"고객이 지불해야 할 금액을 입력할 수 있도록 금액을 비워 두십시오."</string>
+    <string name="qr_create_enter_an_amount_above_zero">"0보다 큰 금액을 입력하세요"</string>
+    <string name="qr_create_any">"₹ 모두"</string>
+    <string name="qr_create_amount_optional">"선택 금액 ·"</string>
+    <string name="qr_create_shop_name">"가게 이름"</string>
+    <string name="qr_create_payee_name">"수취인 이름"</string>
+    <string name="qr_create_name_bank">"이름@은행"</string>
+    <string name="qr_create_upi_id">"UPI 아이디"</string>
+    <string name="qr_create_security">"보안"</string>
+    <string name="qr_create_network_password">"네트워크 비밀번호"</string>
+    <string name="qr_create_network_name">"네트워크 이름"</string>
+    <string name="qr_create_characters">"%1$s / %2$s 문자"</string>
+    <string name="qr_create_anything_up_to_characters">"최대 %1$s 문자까지 가능"</string>
+    <string name="qr_create_web_address">"웹 주소"</string>
+    <string name="qr_create_qr_code_preview">"QR 코드 미리보기"</string>
+    <string name="qr_create_saved_to_qr_history_png">"QR 기록에 저장됨 · PNG, 1024px"</string>
+    <string name="qr_create_save_image">"이미지 저장"</string>
+    <string name="qr_create_only_dark_colours_so_every">"어두운 색상만 사용하면 모든 카메라에서 코드를 읽을 수 있습니다."</string>
+    <string name="qr_create_shown_under_the_code">"코드 아래에 표시됨"</string>
+    <string name="qr_create_caption_under_the_code_optional">"· 코드 아래 캡션 선택 사항"</string>
+    <string name="qr_create_create_qr">"QR 생성"</string>
+    <!-- QrHistoryScreen -->
+    <string name="qr_history_created">"생성됨"</string>
+    <string name="qr_history_scanned">"스캔됨"</string>
+    <string name="qr_history_clear_history">"기록 지우기"</string>
+    <string name="qr_history_every_scanned_and_created_code">"스캔하고 생성된 모든 코드는 이 전화기에서 제거됩니다. 이 작업은 취소할 수 없습니다."</string>
+    <string name="qr_history_clear_qr_history">"QR 기록을 삭제하시겠습니까?"</string>
+    <string name="qr_history_clear_history_2">"기록 지우기…"</string>
+    <string name="qr_history_history_stays_on_this_phone">"기록은 이 전화기에 남아 있습니다."</string>
+    <string name="qr_history_try_another_search_or_filter">"다른 검색이나 필터를 사용해 보세요."</string>
+    <string name="qr_history_no_matches">"일치하는 항목이 없습니다."</string>
+    <string name="qr_history_scanned_and_created_codes_are">"스캔하고 생성한 코드는 여기에 보관됩니다."</string>
+    <string name="qr_history_no_codes_yet">"아직 코드가 없습니다"</string>
+    <string name="qr_history_search_links_networks_names">"링크, 네트워크, 이름 검색"</string>
+    <string name="qr_history_qr_history">"QR 역사"</string>
+    <!-- QrResultScreen -->
+    <string name="qr_result_show_raw_content">"원시 콘텐츠 표시"</string>
+    <string name="qr_result_hide_raw_content">"원시 콘텐츠 숨기기"</string>
+    <string name="qr_result_raw_content">"원시 콘텐츠"</string>
+    <string name="qr_result_organisation">"조직"</string>
+    <string name="qr_result_wi_fi_settings_can_t">"Wi-Fi 설정은 WEP 네트워크를 추가할 수 없으므로 비밀번호가 복사되고 설정이 열립니다."</string>
+    <string name="qr_result_not_in_the_code">"코드에 없음"</string>
+    <string name="qr_result_network">"네트워크"</string>
+    <string name="qr_result_scanly_doesn_t_make_payments">"Scanly는 결제가 되지 않습니다. 결제하기 전에 UPI 앱에서 수취인 이름을 확인하세요."</string>
+    <string name="qr_result_not_set_you_ll_enter">"설정되지 않았습니다. UPI 앱에 입력합니다."</string>
+    <string name="qr_result_amount">"금액"</string>
+    <string name="qr_result_payee">"수취인"</string>
+    <string name="qr_result_this_link_isn_t_encrypted">"이 링크는 암호화되지 않습니다(http). 열기 전에 도메인이 원하는 도메인인지 확인하세요."</string>
+    <string name="qr_result_check_the_domain_is_the">"도메인을 열기 전에 원하는 도메인인지 확인하세요."</string>
+    <string name="qr_result_full_address">"전체 주소"</string>
+    <string name="qr_result_number">"번호"</string>
+    <string name="qr_result_subject">"주제"</string>
+    <string name="qr_result_address">"주소"</string>
+    <string name="qr_result_search_the_web">"웹 검색"</string>
+    <string name="qr_result_copy_number">"번호 복사"</string>
+    <string name="qr_result_email_address">"이메일 주소"</string>
+    <string name="qr_result_copy_address">"주소 복사"</string>
+    <string name="qr_result_call">"전화"</string>
+    <string name="qr_result_copy_network_name">"네트워크 이름 복사"</string>
+    <string name="qr_result_copy_password">"비밀번호 복사"</string>
+    <string name="qr_result_copy_upi_id">"UPI ID 복사"</string>
+    <string name="qr_result_copy_link">"링크 복사"</string>
+    <string name="qr_result_delete_from_history">"기록에서 삭제"</string>
+    <string name="qr_result_saved_to_history">" ·가 기록에 저장되었습니다."</string>
+    <!-- QrScanScreen -->
+    <string name="qr_scan_captured_qr_code">"캡처된 QR 코드"</string>
+    <string name="qr_scan_history">"역사"</string>
+    <string name="qr_scan_from_photo">"사진에서"</string>
+    <string name="qr_scan_scan_again">"다시 스캔"</string>
+    <string name="qr_scan_qr_code">"QR 코드"</string>
+    <string name="qr_scan_details">"세부 사항"</string>
+    <string name="qr_scan_allow_camera">"카메라 허용"</string>
+    <string name="qr_scan_open_settings">"설정 열기"</string>
+    <string name="qr_scan_the_camera_is_used_only">"카메라는 이 화면이 열려 있는 동안에만 사용됩니다. \"사진에서\"는 그것 없이도 작동합니다."</string>
+    <string name="qr_scan_open_settings_tap_permissions_and">"설정을 열고 권한을 탭한 후 Scanly에 대한 카메라를 켜세요."</string>
+    <string name="qr_scan_allow_camera_to_scan">"카메라 스캔 허용"</string>
+    <string name="qr_scan_camera_permission_is_blocked">"카메라 권한이 차단되었습니다"</string>
+    <string name="qr_scan_torch_on_off">"토치 온/오프"</string>
+    <string name="qr_scan_scan_qr_barcode">"QR 및 바코드 스캔"</string>
+    <string name="qr_scan_point_at_a_qr_code">"QR 코드 또는 바코드를 가리킵니다."</string>
+    <string name="qr_scan_code_found_hold_steady">"·가 안정적으로 유지되는 코드 발견"</string>
+    <string name="qr_scan_reading_photo">"사진 읽기…"</string>
+    <string name="qr_scan_the_camera_isn_t_available">"지금은 카메라를 사용할 수 없습니다. 대신 '사진에서'를 시도해 보세요."</string>
+    <!-- QrToolPresentation -->
+    <string name="qr_tool_presentation_h_ago">"%1$s 시간 전"</string>
+    <string name="qr_tool_presentation_min_ago">"%1$s분 전"</string>
+    <string name="qr_tool_presentation_just_now">"지금 막"</string>
+    <string name="qr_tool_presentation_some_text">"일부 텍스트"</string>
+    <string name="qr_tool_presentation_a_phone_number">"전화번호"</string>
+    <string name="qr_tool_presentation_an_email_address">"이메일 주소"</string>
+    <string name="qr_tool_presentation_a_contact">"연락처"</string>
+    <string name="qr_tool_presentation_a_wi_fi_network">"Wi-Fi 네트워크"</string>
+    <string name="qr_tool_presentation_a_upi_payment">"UPI 지불"</string>
+    <string name="qr_tool_presentation_a_link">"링크"</string>
+    <string name="qr_tool_presentation_found">"발견 "</string>
+    <string name="qr_tool_presentation_generating_preview">"미리보기… 생성"</string>
+    <string name="qr_tool_presentation_preview_appears_as_you_type">"입력하는 동안 미리보기가 나타납니다."</string>
+    <string name="qr_tool_presentation_copy_to_the_clipboard">"클립보드에 복사"</string>
+    <string name="qr_tool_presentation_open_in_a_browser_or">"브라우저에서 열거나 복사하세요."</string>
+    <!-- QrToolViewModel -->
+    <string name="qr_tool_qr_history_cleared">"QR 기록 삭제"</string>
+    <string name="qr_tool_add_the_details_first">"먼저 세부 사항을 추가하십시오"</string>
+    <string name="qr_tool_no_qr_code_found_in">"해당 사진에는 QR 코드가 없습니다."</string>
+    <!-- ImageTextScreen -->
+    <string name="image_text_photos_are_saved_as_a">"사진은 새 문서로 저장되므로 나중에 텍스트를 검색할 수 있습니다."</string>
+    <string name="image_text_your_scans_have_no_pages">"스캔에 아직 페이지가 없습니다. 텍스트를 읽을 사진을 선택하세요."</string>
+    <string name="image_text_no_scans_yet_pick_photos">"아직 스캔이 없습니다. 텍스트를 읽을 사진을 선택하세요."</string>
+    <string name="image_text_1_scan">"1스캔"</string>
+    <string name="image_text_up_to_from_your_gallery">"갤러리 또는 파일에서 최대 %1$s까지"</string>
+    <string name="image_text_copy_text_from_photos_or">"사진이나 스캔에서 텍스트를 복사합니다. 이 휴대전화에서 문자를 읽습니다."</string>
+    <string name="image_text_image_to_text">"이미지를 텍스트로"</string>
+    <!-- AppUpdateDialog -->
+    <string name="app_update_published">"%1$s 출판"</string>
+    <string name="app_update_current">"현재"</string>
+    <string name="app_update_update">"업데이트"</string>
+    <string name="app_update_what_s_new">"새로운 소식"</string>
+    <!-- AppUpdateViewModel -->
+    <string name="app_update_scanly_is_up_to_date">"Scanly가 최신 버전입니다. 당신은 %1$s에 있습니다."</string>
+    <string name="app_update_could_not_check_for_updates">"%1$s의 업데이트를 확인할 수 없습니다."</string>
+    <!-- FlexibleUpdateSnackbar -->
+    <string name="flexible_update_snackbar_restart">"다시 시작"</string>
+    <string name="flexible_update_snackbar_update_downloaded_restart_scanly_to">"업데이트가 다운로드되었습니다. 설치를 완료하려면 Scanly를 다시 시작하세요."</string>
+    <!-- ReleaseMarkdown -->
+    <string name="release_markdown_no_release_notes_were_provided">"이 버전에는 릴리스 노트가 제공되지 않았습니다."</string>
+    <!-- ScanlyNavHost -->
+    <string name="scanly_nav_host_up_to_images">"최대 %1$s 이미지"</string>
+    <string name="scanly_nav_host_import_from_gallery">"갤러리에서 가져오기"</string>
+    <string name="scanly_nav_host_capture_pages_now">"지금 페이지 캡처"</string>
+    <string name="scanly_nav_host_scan_with_camera">"카메라로 스캔"</string>
+    <string name="scanly_nav_host_add_a_document">"문서 추가"</string>
+    <!-- pdf_page_orientation -->
+    <string name="pdf_page_orientation_portrait">"세로"</string>
+    <string name="pdf_page_orientation_landscape">"가로"</string>
+    <!-- pdf_page_size -->
+    <string name="pdf_page_size_auto_fit">"자동 맞춤"</string>
+    <string name="pdf_page_size_a3">"A3"</string>
+    <string name="pdf_page_size_a4">"A4"</string>
+    <string name="pdf_page_size_a5">"A5"</string>
+    <string name="pdf_page_size_b4">"B4"</string>
+    <string name="pdf_page_size_b5">"B5"</string>
+    <string name="pdf_page_size_letter">"레터"</string>
+    <string name="pdf_page_size_tabloid">"타블로이드"</string>
+    <string name="pdf_page_size_executive">"임원"</string>
+    <string name="pdf_page_size_postcard">"엽서"</string>
+    <string name="pdf_page_size_american_foolscap">"아메리칸 풀스캡"</string>
+    <string name="pdf_page_size_european_foolscap">"유럽 바보"</string>
+    <!-- pdf_page_margin -->
+    <string name="pdf_page_margin_no_margin">"마진 없음"</string>
+    <string name="pdf_page_margin_big">"빅"</string>
+    <!-- pdf_page_number -->
+    <string name="pdf_page_number_center">"센터"</string>
+    <!-- pdf_image_format -->
+    <string name="pdf_image_format_smaller_files_best_for_photos">"더 작은 파일, 사진 및 공유에 가장 적합"</string>
+    <string name="pdf_image_format_crisper_text_files_about_3">"더 선명한 텍스트, 3×에 대한 파일이 더 커짐"</string>
+    <!-- pdf_image_resolution -->
+    <string name="pdf_image_resolution_for_sharing">"공유를 위해"</string>
+    <string name="pdf_image_resolution_1240_px_wide_sharp_on">"휴대폰 및 WhatsApp에서 선명한 1240픽셀 너비의 ·"</string>
+    <string name="pdf_image_resolution_for_printing">"인쇄용"</string>
+    <string name="pdf_image_resolution_2480_px_wide_300_dpi">"A4에 2480픽셀 너비 · 300dpi"</string>
+    <!-- pdf_compress_quality -->
+    <string name="pdf_compress_quality_high_quality">"고품질"</string>
+    <string name="pdf_compress_quality_best_clarity_less_compression">"압축률이 낮은 · 최고의 선명도"</string>
+    <string name="pdf_compress_quality_balanced">"균형 잡힌"</string>
+    <string name="pdf_compress_quality_good_balance_of_size_and">"크기와 선명도의 균형이 잘 맞습니다."</string>
+    <string name="pdf_compress_quality_smallest">"가장 작은"</string>
+    <string name="pdf_compress_quality_maximum_compression_softer_detail">"최대 압축 · 더 부드러운 디테일"</string>
+    <!-- watermark_color -->
+    <string name="watermark_color_grey">"그레이"</string>
+    <string name="watermark_color_red">"레드"</string>
+    <string name="watermark_color_blue">"블루"</string>
+    <string name="watermark_color_teal">"청록색"</string>
+    <!-- signature_kind -->
+    <string name="signature_kind_signature">"서명"</string>
+    <!-- sign_ink -->
+    <string name="sign_ink_navy">"남색"</string>
+    <string name="sign_ink_black">"블랙"</string>
+    <!-- date_filter -->
+    <string name="date_filter_any_time">"언제든지"</string>
+    <string name="date_filter_last_7_days">"지난 7일"</string>
+    <string name="date_filter_last_30_days">"지난 30일"</string>
+    <string name="date_filter_this_year">"올해"</string>
+    <string name="date_filter_custom_range">"맞춤형 범위"</string>
+    <!-- search_sort -->
+    <string name="search_sort_best_match">"베스트 매치"</string>
+    <string name="search_sort_newest">"최신"</string>
+    <string name="search_sort_oldest">"가장 오래된"</string>
+    <string name="search_sort_name_a_z">"이름 A–Z"</string>
+    <!-- search_scope -->
+    <string name="search_scope_everywhere">"모든 곳에서"</string>
+    <string name="search_scope_names">"이름"</string>
+    <string name="search_scope_text_in_pages">"페이지의 텍스트"</string>
+    <!-- app_update_channel -->
+    <string name="app_update_channel_github">"GitHub"</string>
+    <string name="app_update_channel_google_play">"Google Play"</string>
+    <!-- document_kind -->
+    <string name="document_kind_invoice">"송장"</string>
+    <string name="document_kind_receipt">"영수증"</string>
+    <string name="document_kind_contract">"계약"</string>
+    <string name="document_kind_statement">"은행 명세서"</string>
+    <string name="document_kind_certificate">"인증서"</string>
+    <string name="document_kind_id_document">"신분증"</string>
+    <string name="document_kind_form">"양식"</string>
+    <string name="document_kind_r_sum">"이력서"</string>
+    <!-- document_corner_model -->
+    <string name="document_corner_model_lite">"라이트"</string>
+    <string name="document_corner_model_standard">"표준"</string>
+    <string name="document_corner_model_high">"높음"</string>
+    <string name="document_corner_model_accurate">"정확하다"</string>
+    <!-- document_title_format -->
+    <string name="document_title_format_scan_with_date_and_time">"날짜와 시간으로 스캔"</string>
+    <string name="document_title_format_scan_date_time">"스캔 · 날짜 및 시간"</string>
+    <string name="document_title_format_document_with_date_and_time">"날짜와 시간이 적힌 문서"</string>
+    <string name="document_title_format_document_date_time">"문서 · 날짜 및 시간"</string>
+    <string name="document_title_format_scan_with_date">"날짜로 스캔"</string>
+    <string name="document_title_format_scan_date">"스캔 · 날짜"</string>
+    <string name="document_title_format_scan_with_iso_date">"ISO 날짜로 스캔"</string>
+    <string name="document_title_format_scan_yyyy_mm_dd">"스캔 · YYYY-MM-DD"</string>
+    <!-- group_title_format -->
+    <string name="group_title_format_folder_with_date_and_time">"날짜와 시간이 포함된 폴더"</string>
+    <string name="group_title_format_folder_date_time">"폴더 · 날짜 및 시간"</string>
+    <string name="group_title_format_new_folder_with_date_and">"날짜와 시간이 포함된 새 폴더"</string>
+    <string name="group_title_format_new_folder_date_time">"새 폴더 · 날짜 및 시간"</string>
+    <string name="group_title_format_folder_with_date">"날짜가 있는 폴더"</string>
+    <string name="group_title_format_folder_date">"폴더 · 날짜"</string>
+    <string name="group_title_format_folder_with_iso_date">"ISO 날짜가 포함된 폴더"</string>
+    <string name="group_title_format_folder_yyyy_mm_dd">"폴더 · YYYY-MM-DD"</string>
+    <!-- wifi_security -->
+    <string name="wifi_security_wpa_wpa2">"WPA/WPA2"</string>
+    <string name="wifi_security_wep">"WEP"</string>
+    <string name="wifi_security_open">"보안 없음"</string>
+    <!-- qr_create_type -->
+    <string name="qr_create_type_upi">"UPI"</string>
+    <!-- pdf_import_look -->
+    <string name="pdf_import_look_keep_as_is">"그대로 유지"</string>
+    <string name="pdf_import_look_pages_look_exactly_like_the">"페이지는 PDF와 똑같아 보입니다."</string>
+    <string name="pdf_import_look_enhance">"강화"</string>
+    <string name="pdf_import_look_even_out_scanned_pages_and">"스캔한 페이지를 고르게 하고 텍스트를 선명하게 합니다."</string>
+    <!-- capture_scene_issue -->
+    <string name="capture_scene_issue_lens_may_be_covered_clear">"렌즈가 가려져 있을 수 있습니다. 그것을 발견하고 다시 시도하십시오."</string>
+    <string name="capture_scene_issue_too_dark_add_light_or">"너무 어둡다. 조명을 추가하거나 플래시를 켜세요."</string>
+    <string name="capture_scene_issue_image_looks_blurry_clean_the">"이미지가 흐릿하게 보입니다. 렌즈를 청소하거나 탭하여 초점을 맞추세요."</string>
+    <!-- group_export_action -->
+    <string name="group_export_action_merged_pdf_options">"PDF 옵션 병합"</string>
+    <string name="group_export_action_separate_pdfs_options">"별도의 PDF 파일 옵션"</string>
+    <!-- library_sort_option -->
+    <string name="library_sort_option_last_modified">"최종 수정"</string>
+    <string name="library_sort_option_latest_changes_first">"최신 변경사항 먼저"</string>
+    <string name="library_sort_option_oldest_updated">"가장 오래된 업데이트"</string>
+    <string name="library_sort_option_earliest_changes_first">"가장 빠른 변경사항부터"</string>
+    <string name="library_sort_option_alphabetical_order">"알파벳순"</string>
+    <string name="library_sort_option_name_z_a">"이름 Z–A"</string>
+    <string name="library_sort_option_reverse_alphabetical_order">"알파벳 역순"</string>
+    <string name="library_sort_option_newest_created">"최신 생성됨"</string>
+    <string name="library_sort_option_recently_added_first">"최근 추가된 것 먼저"</string>
+    <string name="library_sort_option_oldest_created">"가장 오래된 생성"</string>
+    <string name="library_sort_option_earliest_added_first">"가장 먼저 추가된 항목부터"</string>
+    <!-- signature_pen_width -->
+    <string name="signature_pen_width_fine">"가는 선"</string>
+    <string name="signature_pen_width_bold">"굵은 선"</string>
+    <!-- onboarding_page -->
+    <string name="onboarding_page_capture">"캡처"</string>
+    <string name="onboarding_page_paper_to_polished">"종이 문서를 깔끔한 스캔으로."</string>
+    <string name="onboarding_page_capture_straighten_and_clean_up">"페이지를 캡처하고 정리하고 정리하세요."</string>
+    <string name="onboarding_page_find">"찾기"</string>
+    <string name="onboarding_page_find_more_than_files">"스캔 속 단어도 찾아보세요."</string>
+    <string name="onboarding_page_recognize_text_on_your_device">"장치의 텍스트를 인식합니다. 스캔 내부를 검색하세요."</string>
+    <string name="onboarding_page_share">"공유"</string>
+    <string name="onboarding_page_ready_when_you_are">"필요할 때 바로 공유해요."</string>
+    <string name="onboarding_page_keep_pages_together_share_a">"페이지를 함께 보관하십시오. 몇 번의 탭만으로 깨끗한 PDF를 공유하세요."</string>
+    <!-- pdf_reader_tool -->
+    <string name="pdf_reader_tool_merge_with_other_pdfs">"다른 PDF 파일과 병합"</string>
+    <string name="pdf_reader_tool_password_protect">"비밀번호 보호"</string>
+    <string name="pdf_reader_tool_add_watermark">"워터마크 추가"</string>
+    <string name="pdf_reader_tool_save_pages_as_images">"페이지를 이미지로 저장"</string>
+    <string name="pdf_reader_tool_add_to_scanly_library">"Scanly 라이브러리에 추가"</string>
+    <!-- pdf_picker_sort -->
+    <string name="pdf_picker_sort_most_pages">"대부분의 페이지"</string>
+    <!-- qr_ink_color -->
+    <string name="qr_ink_color_ink">"잉크"</string>
+    <string name="qr_ink_color_maroon">"마룬"</string>
+    <!-- qr_primary_action -->
+    <string name="qr_primary_action_pay_with_a_upi_app">"UPI 앱으로 결제"</string>
+    <string name="qr_primary_action_pay">"지불"</string>
+    <string name="qr_primary_action_join_this_network">"이 네트워크에 가입하세요"</string>
+    <string name="qr_primary_action_join">"가입"</string>
+    <string name="qr_primary_action_save_to_contacts">"연락처에 저장"</string>
+    <string name="qr_primary_action_send_email">"이메일 보내기"</string>
+    <string name="qr_primary_action_call_this_number">"이 번호로 전화해"</string>
+    <string name="qr_primary_action_copy_text">"텍스트 복사"</string>
+    <!-- qr_history_section -->
+    <string name="qr_history_section_earlier">"이전"</string>
+    <!-- sign_tool -->
+    <string name="sign_tool_date">"날짜"</string>
+    <string name="sign_tool_checkbox">"체크박스"</string>
+    <!-- scanly_destination -->
+    <string name="scanly_destination_home">"홈"</string>
+    <string name="scanly_destination_camera">"카메라"</string>
+    <!-- settings_text_recognition -->
+    <string name="settings_text_recognition_and_more">"그리고 더"</string>
+    <string name="settings_text_recognition_romanian">"루마니아어"</string>
+    <string name="settings_text_recognition_czech">"체코어"</string>
+    <string name="settings_text_recognition_swedish">"스웨덴어"</string>
+    <string name="settings_text_recognition_swahili">"스와힐리어"</string>
+    <string name="settings_text_recognition_filipino">"필리핀 사람"</string>
+    <string name="settings_text_recognition_vietnamese">"베트남인"</string>
+    <string name="settings_text_recognition_malay">"말레이 사람"</string>
+    <string name="settings_text_recognition_indonesian">"인도네시아어"</string>
+    <string name="settings_text_recognition_turkish">"터키어"</string>
+    <string name="settings_text_recognition_polish">"폴란드어"</string>
+    <string name="settings_text_recognition_dutch">"네덜란드 사람"</string>
+    <string name="settings_text_recognition_portuguese">"포르투갈어"</string>
+    <string name="settings_text_recognition_italian">"이탈리아어"</string>
+    <string name="settings_text_recognition_german">"독일인"</string>
+    <string name="settings_text_recognition_french">"프랑스어"</string>
+    <string name="settings_text_recognition_spanish">"스페인어"</string>
+    <string name="settings_text_recognition_english">"영어"</string>
+    <string name="settings_text_recognition_latin">"라틴 문자"</string>
+    <string name="settings_text_recognition_amharic">"암하라어"</string>
+    <string name="settings_text_recognition_georgian">"그루지야어"</string>
+    <string name="settings_text_recognition_armenian">"아르메니아 사람"</string>
+    <string name="settings_text_recognition_burmese">"버마인"</string>
+    <string name="settings_text_recognition_khmer">"크메르어"</string>
+    <string name="settings_text_recognition_lao">"라오스"</string>
+    <string name="settings_text_recognition_thai">"태국어"</string>
+    <string name="settings_text_recognition_southeast_asia_more">"동남아시아 등"</string>
+    <string name="settings_text_recognition_hebrew">"히브리어"</string>
+    <string name="settings_text_recognition_urdu">"우르두어"</string>
+    <string name="settings_text_recognition_persian">"페르시아인"</string>
+    <string name="settings_text_recognition_arabic">"아랍어"</string>
+    <string name="settings_text_recognition_right_to_left">"오른쪽에서 왼쪽으로"</string>
+    <string name="settings_text_recognition_korean">"한국어"</string>
+    <string name="settings_text_recognition_japanese">"일본어"</string>
+    <string name="settings_text_recognition_chinese">"중국어"</string>
+    <string name="settings_text_recognition_east_asian">"동아시아"</string>
+    <string name="settings_text_recognition_sinhala">"싱할라어"</string>
+    <string name="settings_text_recognition_odia">"오디아"</string>
+    <string name="settings_text_recognition_punjabi">"펀잡어"</string>
+    <string name="settings_text_recognition_gujarati">"구자라트어"</string>
+    <string name="settings_text_recognition_malayalam">"말라얄람어"</string>
+    <string name="settings_text_recognition_kannada">"칸나다어"</string>
+    <string name="settings_text_recognition_telugu">"텔루구어"</string>
+    <string name="settings_text_recognition_tamil">"타밀어"</string>
+    <string name="settings_text_recognition_bengali">"벵골어"</string>
+    <string name="settings_text_recognition_nepali">"네팔인"</string>
+    <string name="settings_text_recognition_marathi">"마라티어"</string>
+    <string name="settings_text_recognition_hindi">"힌디어"</string>
+    <string name="settings_text_recognition_indian_scripts">"인도 문자"</string>
+    <string name="settings_text_recognition_greek">"그리스어"</string>
+    <string name="settings_text_recognition_serbian">"세르비아어"</string>
+    <string name="settings_text_recognition_bulgarian">"불가리아어"</string>
+    <string name="settings_text_recognition_ukrainian">"우크라이나어"</string>
+    <string name="settings_text_recognition_russian">"러시아어"</string>
+    <string name="settings_text_recognition_latin_cyrillic_greek">"라틴어, 키릴어, 그리스어"</string>
+    <!-- tools_catalog -->
+    <string name="tools_catalog_camera_with_edge_detection">"가장자리 감지 기능이 있는 카메라"</string>
+    <string name="tools_catalog_scan_a_document">"문서 스캔"</string>
+    <string name="tools_catalog_pdf_to_editable_scan">"편집 가능한 스캔에 대한 PDF"</string>
+    <string name="tools_catalog_open_any_pdf">"PDF를 엽니다."</string>
+    <string name="tools_catalog_read_pdf">"PDF 읽기"</string>
+    <string name="tools_catalog_stamp_text">"텍스트 워터마크"</string>
+    <string name="tools_catalog_lock_or_unlock">"잠금 또는 잠금 해제"</string>
+    <string name="tools_catalog_pages_as_images">"이미지로서의 페이지"</string>
+    <string name="tools_catalog_make_it_smaller">"작게 만들어라"</string>
+    <string name="tools_catalog_combine_files">"파일 결합"</string>
+    <string name="tools_catalog_merge">"병합"</string>
+    <string name="tools_catalog_sign_any_pdf">"PDF에 서명하세요."</string>
+    <string name="tools_catalog_from_gallery">"갤러리에서"</string>
+    <string name="tools_catalog_images_to_pdf">"이미지를 PDF로"</string>
+    <string name="tools_catalog_create_manage">"생성 및 관리"</string>
+    <string name="tools_catalog_my_signatures">"내 서명"</string>
+    <string name="tools_catalog_photos_scans">"사진 및 스캔"</string>
+    <string name="tools_catalog_scan_or_create">"스캔 또는 생성"</string>
+    <string name="tools_catalog_qr_barcode">"QR 및 바코드"</string>
+    <!-- pip_lines -->
+    <string name="pip_lines_tip_folders_keep_related_scans">"팁: 폴더는 관련 스캔을 함께 보관합니다. 영수증으로 사용해 보세요."</string>
+    <string name="pip_lines_tip_turn_on_the_grid">"팁: 페이지를 정렬하려면 카메라의 그리드를 켜세요."</string>
+    <string name="pip_lines_tip_add_a_scanly_widget">"팁: 원터치 스캔을 위해 홈 화면에 Scanly 위젯을 추가하세요."</string>
+    <string name="pip_lines_tip_the_tools_tab_can">"팁: 도구 탭에서는 PDF를 병합, 압축 및 서명할 수 있습니다."</string>
+    <string name="pip_lines_tip_open_a_document_s">"팁: 문서의 텍스트를 열어 내용을 복사하거나 공유하세요."</string>
+    <string name="pip_lines_tip_long_press_a_page">"팁: 페이지를 길게 누르고 드래그하여 재정렬하세요."</string>
+    <string name="pip_lines_tip_search_finds_words_inside">"팁: 검색은 이름뿐만 아니라 스캔 내용에 포함된 단어도 찾습니다."</string>
+    <string name="pip_lines_okay_okay_i_felt_that">"알았어 알았어, 그거 느꼈어."</string>
+    <string name="pip_lines_still_free_still_no_account">"항상 무료입니다. 계정이 필요하지 않습니다. 광고가 없습니다."</string>
+    <string name="pip_lines_i_m_open_source_you">"내 소스 코드가 공개되었습니다. 모든 줄을 읽을 수 있습니다."</string>
+    <string name="pip_lines_your_original_photos_are_kept">"원본 사진은 보관되므로 편집 내용은 언제든지 취소할 수 있습니다."</string>
+    <string name="pip_lines_i_live_on_your_phone">"나는 당신의 전화로 일합니다. 귀하의 스캔은 결코 서버로 이동하지 않습니다."</string>
+    <string name="pip_lines_hey_that_tickles">"야! 간지러워요."</string>
+    <!-- pdf_watermark -->
+    <string name="pdf_watermark_for_kyc_use_only">For KYC use only</string>
+    <!-- document_presentation_formatter -->
+    <string name="document_presentation_formatter_untitled_document">"제목 없는 문서"</string>
+    <string name="document_presentation_formatter_untitled_folder">"제목 없는 폴더"</string>
+    <!-- default_pdf_toolkit_repository -->
+    <string name="default_pdf_toolkit_repository_this_pdf_is_password_protected">"이 PDF는 비밀번호로 보호되어 있습니다."</string>
+    <string name="default_pdf_toolkit_repository_this_pdf_is_too_large">"이 PDF는 너무 커서 이 장치에서 처리할 수 없습니다."</string>
+    <!-- document_cover_art_factory -->
+    <string name="document_cover_art_factory_scanned_document">"스캔한 문서"</string>
+    <!-- document_sign -->
+    <string name="document_sign_some_pages_are_still_processing">"일부 페이지는 아직 처리 중이므로 아직 서명할 수 없습니다."</string>
+    <!-- pip_lines -->
+    <string name="pip_lines_hi_i_m_pip_point">"안녕하세요, 저는 Pip입니다! 페이지를 보여주시면 스캔 내용을 바로잡아 드리겠습니다."</string>
+    <string name="pip_lines_one_last_thing_can_i">"마지막으로 한 가지! 카메라를 사용해도 될까요? 스캔하는 동안에만 켜집니다."</string>
+    <string name="pip_lines_nothing_here_yet_let_s">"아직 아무것도 없습니다. 첫 페이지를 함께 스캔해 보세요."</string>
+    <string name="pip_lines_a_clean_shelf_start_a">"깔끔한 선반! 폴더를 시작하거나 무언가를 스캔하세요."</string>
+    <string name="pip_lines_no_folders_yet_they_re">"아직 폴더가 없습니다. 영수증, 청구서, 학교 서류를 정리하는 데 사용하세요."</string>
+    <string name="pip_lines_no_documents_yet_i_m">"아직 서류가 없습니다. 당신이 준비되면 난 준비가 되어 있어요."</string>
+    <string name="pip_lines_this_folder_is_waiting_for">"이 폴더는 첫 번째 문서를 기다리고 있습니다."</string>
+    <string name="pip_lines_no_pages_yet_point_me">"아직 페이지가 없습니다. 나한테 종이 좀 알려줘!"</string>
+    <string name="pip_lines_no_pages_means_no_words">"페이지가 없다는 것은 아직 단어가 없다는 것을 의미합니다."</string>
+    <string name="pip_lines_pick_a_few_photos_and">"사진 몇 장을 골라 감지기가 얼마나 빨리 작동하는지 확인해 보세요!"</string>
+    <string name="pip_lines_hmm_i_don_t_have">"흠, 그건 답이 없네요."</string>
+    <string name="pip_lines_no_codes_yet_scan_or">"아직 코드가 없습니다. 스캔하거나 만들어서 여기에 보관하겠습니다."</string>
+    <string name="pip_lines_nothing_matches_that_try_another">"그와 일치하는 것은 없습니다. 다른 단어를 써볼까?"</string>
+    <string name="pip_lines_i_m_still_reading_some">"저는 아직도 몇 페이지를 읽고 있어요. 몇 초 안에 일치하는 항목이 나타날 수 있습니다."</string>
+    <string name="pip_lines_i_can_t_see_a">"아직 아무것도 보이지 않아요. 카메라 좀 빌릴 수 있을까요?"</string>
+    <string name="pip_lines_the_camera_is_switched_off">"Scanly의 경우 카메라가 꺼집니다. 설정으로 빠르게 이동하면 문제가 해결됩니다."</string>
+    <string name="pip_lines_lend_me_the_camera_and">"나에게 카메라를 빌려주시면 코드를 읽어드리겠습니다."</string>
+    <string name="pip_lines_huh_that_document_wandered_off">"흠, 그 문서가 없어진 것 같네요."</string>
+    <!-- pdf_page_size -->
+    <string name="pdf_page_size_match_each_scan">"스캔한 각 페이지의 크기를 맞춥니다."</string>
+    <string name="pdf_page_size_29_7_42_0_cm">"29.7 × 42.0cm"</string>
+    <string name="pdf_page_size_21_0_29_7_cm">"21.0 × 29.7cm"</string>
+    <string name="pdf_page_size_14_8_21_0_cm">"14.8 × 21.0cm"</string>
+    <string name="pdf_page_size_25_0_35_3_cm">"25.0 × 35.3cm"</string>
+    <string name="pdf_page_size_17_6_25_0_cm">"17.6 × 25.0cm"</string>
+    <string name="pdf_page_size_21_6_27_9_cm">"21.6 × 27.9cm"</string>
+    <string name="pdf_page_size_27_9_43_2_cm">"27.9 × 43.2cm"</string>
+    <string name="pdf_page_size_21_6_35_6_cm">"21.6 × 35.6cm"</string>
+    <string name="pdf_page_size_18_4_26_7_cm">"18.4 × 26.7cm"</string>
+    <string name="pdf_page_size_10_0_14_8_cm">"10.0 × 14.8cm"</string>
+    <string name="pdf_page_size_21_6_33_0_cm">"21.6 × 33.0cm"</string>
+    <string name="pdf_page_size_22_9_33_0_cm">"22.9 × 33.0cm"</string>
+    <!-- PageTextScreen view modes -->
+    <string name="page_text_text">"텍스트"</string>
+    <string name="page_text_on_page">"페이지에서"</string>
+    <!-- Shared counts -->
+    <plurals name="common_documents">
+        <item quantity="other">"문서 %d개"</item>
+    </plurals>
+    <plurals name="common_pages">
+        <item quantity="other">"%d페이지"</item>
+    </plurals>
+    <plurals name="common_folders">
+        <item quantity="other">"폴더 %d개"</item>
+    </plurals>
+    <plurals name="common_matches">
+        <item quantity="other">"일치 항목 %d개"</item>
+    </plurals>
+    <plurals name="common_words">
+        <item quantity="other">"%d단어"</item>
+    </plurals>
+    <string name="common_two_parts">"%1$s · %2$s"</string>
+    <!-- Library search -->
+    <plurals name="library_search_in_documents">
+        <item quantity="other">", 문서 %d개에서"</item>
+    </plurals>
+    <plurals name="library_search_no_exact_matches">
+        <item quantity="other">"정확히 일치하는 항목 없음 · 비슷한 단어가 있는 문서 %d개"</item>
+    </plurals>
+    <plurals name="library_search_show_more_pages">
+        <item quantity="other">"%d개 페이지의 일치 항목 더 보기"</item>
+    </plurals>
+    <plurals name="library_search_still_reading">
+        <item quantity="other">"아직 %d개 페이지의 텍스트를 읽고 있어요. 새로운 일치 항목이 여기에 표시돼요."</item>
+    </plurals>
+    <string name="library_search_matches_in_documents">"%2$s의 %1$s"</string>
+    <plurals name="search_filters_show_results">
+        <item quantity="other">"결과 %d개 보기"</item>
+    </plurals>
+    <!-- Settings -->
+    <plurals name="settings_reading_text_pages_left">
+        <item quantity="other">"텍스트 읽는 중… %d페이지 남음"</item>
+    </plurals>
+    <plurals name="settings_text_recognition_reread_pages">
+        <item quantity="other">"%d개 페이지를 다시 읽을까요?"</item>
+    </plurals>
+    <string name="settings_could_not_calibrate_models">"이 장치에서는 문서 모델을 보정할 수 없습니다."</string>
+    <!-- Recently deleted -->
+    <string name="recently_deleted_long_press_for_options">"더 많은 옵션을 보려면 항목을 길게 누르세요."</string>
+    <string name="recently_deleted_retention_note">"%1$s용 페이지, %2$s용 문서 및 폴더가 보관됩니다. 그 후에는 영구적으로 삭제됩니다."</string>
+    <plurals name="recently_deleted_restored_items">
+        <item quantity="other">"항목 %d개를 복원했어요"</item>
+    </plurals>
+    <plurals name="recently_deleted_restored_some_items">
+        <item quantity="other">"항목 %3$d개 중 %2$d개를 복원했어요. %4$s"</item>
+    </plurals>
+    <plurals name="recently_deleted_deleted_items">
+        <item quantity="other">"항목 %d개를 영구 삭제했어요"</item>
+    </plurals>
+    <plurals name="recently_deleted_deleted_some_items">
+        <item quantity="other">"항목 %3$d개 중 %2$d개를 영구 삭제했어요. %4$s"</item>
+    </plurals>
+    <!-- %1$s = folder name, %2$d = number of documents in it. -->
+    <plurals name="folder_delete_what_should_happen">
+        <item quantity="other">"“%1$s”에 문서 %2$d개가 있어요. 어떻게 처리할까요?"</item>
+    </plurals>
+    <!-- PDF tools -->
+    <string name="pdf_compress_first_page_of">"%1$s의 첫 번째 페이지"</string>
+    <string name="pdf_compress_the_pdf">"PDF"</string>
+    <string name="pdf_password_strength_too_short">"너무 짧다"</string>
+    <string name="pdf_password_strength_too_long">"너무 길어요"</string>
+    <string name="pdf_password_strength_weak">"약하다"</string>
+    <string name="pdf_password_strength_fair">"보통"</string>
+    <string name="pdf_password_strength_strong">"강한"</string>
+    <string name="model_benchmark_gate_prefix">"문서 판별: %1$s"</string>
+    <string name="model_benchmark_unavailable">"사용할 수 없음"</string>
+    <!-- Error messages shown in snackbars and dialogs -->
+    <string name="error_document_not_found">"문서를 찾을 수 없어요."</string>
+    <string name="error_group_not_found">"그룹을 찾을 수 없습니다."</string>
+    <string name="error_no_documents_in_group">"그룹에 문서가 없습니다."</string>
+    <string name="error_no_pages_available_to_export">"내보낼 수 있는 페이지가 없습니다."</string>
+    <string name="error_could_not_create_export_directory">"내보내기 디렉터리를 생성할 수 없습니다."</string>
+    <string name="error_could_not_replace_existing_pdf">"기존 PDF를 교체할 수 없습니다."</string>
+    <string name="error_folder_not_found">"폴더를 찾을 수 없습니다."</string>
+    <string name="error_this_page_is_already_in_recently_deleted">"이 페이지는 이미 최근에 삭제되었습니다."</string>
+    <string name="error_only_pages_in_recently_deleted_can_be">"최근 삭제된 페이지만 영구 삭제할 수 있습니다."</string>
+    <string name="error_page_not_found">"페이지를 찾을 수 없어요."</string>
+    <string name="error_page_not_found_in_document_order">"문서순서에서 페이지를 찾을 수 없습니다."</string>
+    <string name="error_select_at_least_two_pdfs_to_merge">"병합할 PDF 파일을 2개 이상 선택하세요."</string>
+    <string name="error_pdf_has_no_pages">"PDF에는 페이지가 없습니다."</string>
+    <string name="error_password_must_be_4_64_characters">"비밀번호는 4–64자여야 합니다."</string>
+    <string name="error_enter_the_current_pdf_password">"현재 PDF 비밀번호를 입력하세요."</string>
+    <string name="error_enter_watermark_text">"워터마크 텍스트를 입력하세요."</string>
+    <string name="error_this_pdf_has_no_pages">"이 PDF에는 페이지가 없습니다."</string>
+    <string name="error_preview_size_is_invalid">"미리보기 크기가 유효하지 않습니다."</string>
+    <string name="error_place_a_signature_or_another_mark_first">"서명이나 다른 표시를 먼저 배치하십시오."</string>
+    <string name="error_a_mark_is_on_a_missing_page">"누락된 페이지에 표시가 있습니다."</string>
+    <string name="error_could_not_prepare_this_pdf">"이 PDF를 준비할 수 없습니다."</string>
+    <string name="error_page_is_out_of_range">"페이지가 범위를 벗어났습니다."</string>
+    <string name="error_choose_at_least_one_page">"페이지를 하나 이상 선택하세요."</string>
+    <string name="error_failed_to_encode_page_image">"페이지 이미지 인코딩에 실패했습니다."</string>
+    <string name="error_export_file_is_missing">"내보내기 파일이 없습니다."</string>
+    <string name="error_the_preview_pdf_is_missing">"미리보기 PDF가 없습니다."</string>
+    <string name="error_could_not_read_selected_pdf">"선택한 PDF를 읽을 수 없습니다."</string>
+    <string name="error_not_enough_memory_to_compress_this_pdf">"이 PDF를 압축하기에는 메모리가 부족합니다. 가장 낮은 품질이나 더 짧은 파일을 사용해 보세요."</string>
+    <string name="error_a_text_box_is_empty_type_something">"텍스트 상자가 비어 있습니다. 무언가를 입력하거나 삭제하세요."</string>
+    <string name="error_a_signature_image_is_missing_remove_it">"서명 이미지가 누락되었습니다. 그것을 제거하고 다시 넣으십시오."</string>
+    <string name="error_some_characters_cant_be_drawn_remove_emoji">"일부 캐릭터를 그릴 수 없습니다. 이모티콘이나 특이한 기호를 제거하세요."</string>
+    <string name="error_some_characters_in_the_watermark_cant_be">"워터마크의 일부 문자를 그릴 수 없습니다. 이모티콘이나 특이한 기호를 제거하세요."</string>
+    <string name="error_enter_something_to_encode">"인코딩할 내용을 입력하세요."</string>
+    <string name="error_could_not_write_qr_image">"QR 이미지를 쓸 수 없습니다."</string>
+    <string name="error_a_signature_image_is_missing_place_it">"서명 이미지가 누락되었습니다. 다시 놓으십시오."</string>
+    <string name="error_the_signature_is_empty">"서명이 비어 있습니다."</string>
+    <string name="error_could_not_save_the_signature">"서명을 저장하지 못했어요."</string>
+    <string name="error_could_not_prepare_the_image">"이미지를 준비하지 못했어요."</string>
+    <string name="error_could_not_create_signature_storage">"서명 저장소를 생성할 수 없습니다."</string>
+    <string name="error_no_signature_found_in_this_image_try">"이 이미지에는 서명이 없습니다. 밝은 종이에 어두운 잉크를 사용해 보세요."</string>
+    <string name="error_this_signature_no_longer_exists">"이 서명은 더 이상 존재하지 않습니다."</string>
+    <string name="error_the_signature_image_could_not_be_read">"서명 이미지를 읽을 수 없습니다."</string>
+    <string name="error_a_signature_image_is_missing_open_sign">"서명 이미지가 없어요. 서명 도구를 열어 다시 배치해 주세요."</string>
+    <string name="error_this_page_is_still_processing_try_again">"이 페이지는 아직 처리 중입니다. 잠시 후에 다시 시도해 보세요."</string>
+    <string name="error_could_not_read_the_page_image">"페이지 이미지를 읽을 수 없습니다."</string>
+    <string name="error_invalid_page_image_path">"페이지 이미지 경로가 잘못되었습니다."</string>
+    <string name="error_the_exported_file_is_unavailable">"내보낸 파일을 사용할 수 없습니다."</string>
+    <string name="error_the_exported_image_is_unavailable">"내보낸 이미지를 사용할 수 없습니다."</string>
+    <string name="error_the_selected_save_folder_is_no_longer">"선택한 저장 폴더는 더 이상 사용할 수 없습니다. 설정에서 다시 선택하세요."</string>
+    <string name="error_this_page_no_longer_exists">"이 페이지는 더 이상 존재하지 않습니다."</string>
+    <string name="error_read_this_pages_text_first">"먼저 이 페이지의 텍스트를 읽어보세요."</string>
+    <string name="error_page_image_could_not_be_read">"페이지 이미지를 읽을 수 없습니다."</string>
+    <string name="error_opencv_could_not_be_initialized">"OpenCV를 초기화할 수 없습니다."</string>
+    <string name="error_no_images_selected">"선택한 이미지가 없습니다."</string>
+    <string name="error_could_not_write_imported_image">"가져온 이미지를 쓸 수 없습니다."</string>
+    <string name="error_imported_image_file_is_empty">"가져온 이미지 파일이 비어 있습니다."</string>
+    <string name="error_image_decode_failed">"이미지 디코딩 실패"</string>
+    <!-- Language settings -->
+    <string name="settings_language">"언어"</string>
+    <string name="settings_language_system_default">"시스템 기본값"</string>
+    <string name="settings_language_follow_phone">"휴대폰 언어"</string>
+    <string name="settings_language_uses_phone_language">"휴대폰과 같은 언어: %1$s"</string>
+    <string name="settings_language_app_language">"앱 언어"</string>
+    <string name="settings_language_note">"문서 이름, 인식한 텍스트, 열어 본 PDF의 언어는 바뀌지 않아요."</string>
+    <!-- Manifest -->
+    <string name="intent_open_in_scanly">"Scanly에서 열기"</string>
+    <!-- Library date sections -->
+    <string name="library_section_previous_7_days">"지난 7일"</string>
+    <!-- Month and year as a section title, e.g. "December 2025". %1$s = month name, %2$d = year. -->
+    <string name="library_section_month_year">"%2$d년 %1$s"</string>
+    <!-- Camera -->
+    <string name="scan_session_capture_failed">"캡처에 실패했습니다."</string>
+    <!-- Signature kinds as whole phrases (Signature vs Initials) -->
+    <string name="sign_kind_add_signature">"서명 추가"</string>
+    <string name="sign_kind_add_initials">"이니셜 추가"</string>
+    <string name="sign_kind_delete_signature">"서명 삭제"</string>
+    <string name="sign_kind_delete_initials">"이니셜 삭제"</string>
+    <string name="sign_kind_delete_signature_question">"서명을 삭제하시겠습니까?"</string>
+    <string name="sign_kind_delete_initials_question">"이니셜을 삭제하시겠습니까?"</string>
+    <string name="sign_kind_open_signature_options">"서명 옵션 열기"</string>
+    <string name="sign_kind_open_initials_options">"이니셜 옵션 열기"</string>
+    <string name="sign_kind_saved_signature">"저장된 서명"</string>
+    <string name="sign_kind_saved_initials">"저장된 이니셜"</string>
+    <string name="sign_kind_show_signature_first">"이 서명을 다른 사람보다 먼저 보여주세요."</string>
+    <string name="sign_kind_show_initials_first">"다른 이니셜보다 먼저 이 이니셜을 표시하세요."</string>
+    <!-- Watermark -->
+    <!-- Watermark presets are stamped into PDFs with a Latin/Cyrillic font. In languages written in
+         another script (Indic, CJK, Thai), keep these in English so the stamp can be drawn. -->
+    <string name="pdf_watermark_preset_confidential">CONFIDENTIAL</string>
+    <string name="pdf_watermark_preset_draft">DRAFT</string>
+    <string name="pdf_watermark_preset_copy">COPY</string>
+    <string name="pdf_watermark_opacity_percent">"%1$d%%"</string>
+    <!-- Localized counts and progress (no English-only plural branches). -->
+    <plurals name="common_days">
+        <item quantity="other">"%d일"</item>
+    </plurals>
+    <plurals name="common_files">
+        <item quantity="other">"파일 %d개"</item>
+    </plurals>
+    <plurals name="common_images">
+        <item quantity="other">"이미지 %d개"</item>
+    </plurals>
+    <plurals name="common_marks">
+        <item quantity="other">"표시 %d개"</item>
+    </plurals>
+    <plurals name="common_scans">
+        <item quantity="other">"스캔 %d개"</item>
+    </plurals>
+    <plurals name="common_topics">
+        <item quantity="other">"주제 %d개"</item>
+    </plurals>
+    <plurals name="common_libraries">
+        <item quantity="other">"라이브러리 %d개"</item>
+    </plurals>
+    <plurals name="common_selected">
+        <item quantity="other">"%d개 선택됨"</item>
+    </plurals>
+    <plurals name="pdf_to_images_saved_count">
+        <item quantity="other">"이미지 %d개를 저장했어요"</item>
+    </plurals>
+    <plurals name="pdf_to_images_export_count">
+        <item quantity="other">"이미지 %d개 내보내기"</item>
+    </plurals>
+    <string name="common_current_of_total">"%2$d개 중 %1$d개"</string>
+    <!-- Error fallbacks found in the final extraction audit. -->
+    <string name="error_failed_to_import_images">"이미지 가져오기에 실패했습니다."</string>
+    <string name="error_could_not_calculate_storage_usage">"스토리지 사용량을 계산할 수 없습니다."</string>
+    <string name="error_could_not_clear_app_data">"앱 데이터를 지울 수 없습니다."</string>
+    <string name="error_could_not_clear_temporary_exports">"임시 내보내기를 취소할 수 없습니다."</string>
+    <string name="error_could_not_remove_old_backup_files">"오래된 백업 파일을 제거할 수 없습니다."</string>
+    <string name="error_could_not_create_the_document">"문서를 생성할 수 없습니다."</string>
+    <string name="error_could_not_rename_the_document">"문서 이름을 바꿀 수 없습니다."</string>
+    <string name="error_could_not_delete_the_document">"문서를 삭제할 수 없습니다."</string>
+    <string name="error_could_not_create_the_group">"그룹을 생성할 수 없습니다."</string>
+    <string name="error_could_not_rename_the_group">"그룹 이름을 변경할 수 없습니다."</string>
+    <string name="error_could_not_delete_the_group">"그룹을 삭제할 수 없습니다."</string>
+    <string name="error_could_not_remove_empty_folders">"빈 폴더를 제거할 수 없습니다."</string>
+    <string name="error_could_not_update_document_group">"문서 그룹을 업데이트할 수 없습니다."</string>
+    <string name="error_could_not_prepare_page_capture">"페이지 캡처를 준비할 수 없습니다."</string>
+    <string name="error_could_not_prepare_page_replacement">"페이지 교체를 준비할 수 없습니다."</string>
+    <string name="error_could_not_save_the_captured_page">"캡쳐된 페이지를 저장할 수 없습니다."</string>
+    <string name="error_could_not_reorder_the_page">"페이지 순서를 변경할 수 없습니다."</string>
+    <string name="error_could_not_save_page_edits">"페이지 편집 내용을 저장할 수 없습니다."</string>
+    <string name="error_could_not_update_text_recognition_engine">"텍스트 인식 엔진을 업데이트할 수 없습니다."</string>
+    <string name="error_could_not_update_theme_mode">"테마 모드를 업데이트할 수 없습니다."</string>
+    <string name="error_could_not_finish_onboarding">"온보딩을 완료할 수 없습니다."</string>
+    <string name="error_could_not_load_settings_content">"설정 내용을 로드할 수 없습니다."</string>
+    <string name="error_could_not_update_the_save_location">"저장 위치를 ​​업데이트할 수 없습니다."</string>
+    <string name="error_could_not_update_model_selection">"모델 선택을 업데이트할 수 없습니다."</string>
+    <string name="error_could_not_update_document_detection_settings">"문서 감지 설정을 업데이트할 수 없습니다."</string>
+    <string name="error_could_not_save_the_exported_file">"내보낸 파일을 저장할 수 없습니다."</string>
+    <string name="error_could_not_store_update_prompt_state">"업데이트 프롬프트 상태를 저장할 수 없습니다."</string>
+    <string name="error_could_not_check_github_releases">"GitHub 릴리스를 확인할 수 없습니다."</string>
+</resources>

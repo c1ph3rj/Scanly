@@ -8,6 +8,7 @@ import `in`.c1ph3rj.scanly.core.common.ScanlyResult
 import `in`.c1ph3rj.scanly.core.ui.ImageImportSupport
 import `in`.c1ph3rj.scanly.domain.model.DocumentTitleFormat
 import `in`.c1ph3rj.scanly.domain.usecase.CreateDocumentUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.DeleteDocumentUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ImportImagesUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.SuggestDocumentTitleUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -19,6 +20,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
 
 data class ToolsUiState(
     val isImporting: Boolean = false,
@@ -37,6 +40,7 @@ sealed interface ToolsEvent {
 class ToolsViewModel @Inject constructor(
     private val createDocumentUseCase: CreateDocumentUseCase,
     private val importImagesUseCase: ImportImagesUseCase,
+    private val deleteDocumentUseCase: DeleteDocumentUseCase,
     private val suggestDocumentTitleUseCase: SuggestDocumentTitleUseCase,
 ) : ViewModel() {
 
@@ -71,7 +75,7 @@ class ToolsViewModel @Inject constructor(
                     isImporting = true,
                     importCurrent = 0,
                     importTotal = cappedSelection.items.size,
-                    importStageLabel = "Starting import",
+                    importStageLabel = appString(R.string.document_detail_starting_import),
                 )
             }
             try {
@@ -104,8 +108,11 @@ class ToolsViewModel @Inject constructor(
                                     ),
                                 )
                             }
-                            is ScanlyResult.Failure ->
+                            is ScanlyResult.Failure -> {
+                                // No page was saved, so drop the empty "Imported" document.
+                                deleteDocumentUseCase(createResult.value)
                                 _events.emit(ToolsEvent.ShowMessage(importResult.error.message))
+                            }
                         }
                     }
                     is ScanlyResult.Failure ->

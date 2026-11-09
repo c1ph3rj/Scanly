@@ -49,6 +49,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import `in`.c1ph3rj.scanly.feature.tools.rememberToolSplitLayout
+import `in`.c1ph3rj.scanly.feature.tools.ToolSplitPanes
+import `in`.c1ph3rj.scanly.feature.tools.ToolSplitMaxWidth
+import `in`.c1ph3rj.scanly.feature.tools.ToolColumnMaxWidth
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.asImageBitmap
@@ -86,6 +90,9 @@ import `in`.c1ph3rj.scanly.feature.tools.ToolTextField
 import `in`.c1ph3rj.scanly.feature.tools.ToolTokens
 import `in`.c1ph3rj.scanly.feature.tools.ToolWorkingState
 import kotlinx.coroutines.flow.collectLatest
+import `in`.c1ph3rj.scanly.R
+import androidx.compose.ui.res.stringResource
+import `in`.c1ph3rj.scanly.core.common.appString
 
 /** The four screens of the Compress flow, in order: Choose a file, Choose quality, Compressing, Done. */
 private enum class CompressStep { Pick, Options, Working, Done }
@@ -161,12 +168,14 @@ fun PdfCompressRoute(
             .background(MaterialTheme.colorScheme.background),
         contentAlignment = Alignment.TopCenter,
     ) {
-        Column(modifier = Modifier.fillMaxSize().widthIn(max = 640.dp)) {
+        // Options and result split into two panes on wide landscape windows; the rest stay one column.
+        val split = rememberToolSplitLayout() && (step == CompressStep.Options || step == CompressStep.Done)
+        Column(modifier = Modifier.widthIn(max = if (split) ToolSplitMaxWidth else ToolColumnMaxWidth).fillMaxSize()) {
             when (step) {
                 CompressStep.Pick -> PdfFilePickerScreen(
-                    title = "Compress PDF",
-                    subtitle = "Shrink a PDF for email or upload limits.",
-                    stepText = "Step 1 of 3 · Choose a file",
+                    title = stringResource(R.string.pdf_compress_compress_pdf),
+                    subtitle = stringResource(R.string.pdf_compress_shrink_a_pdf_for_email),
+                    stepText = stringResource(R.string.pdf_compress_step_1_of_3_choose),
                     documents = uiState.libraryDocuments,
                     onBack = onPickerBack,
                     onPickDevice = { devicePicker.launch(arrayOf("application/pdf")) },
@@ -198,7 +207,7 @@ fun PdfCompressRoute(
                     onOutputNameChange = viewModel::setOutputName,
                     onSave = viewModel::saveResult,
                     onShare = {
-                        viewModel.prepareNamedShare { shareExportArtifact(context, it, "Compressed PDF") }
+                        viewModel.prepareNamedShare { shareExportArtifact(context, it, appString(R.string.pdf_compress_compressed_pdf)) }
                     },
                     onTryAnotherQuality = viewModel::clearResult,
                 )
@@ -233,37 +242,32 @@ private fun ColumnScope.CompressOptionsStep(
     var showPassword by rememberSaveable { mutableStateOf(false) }
 
     ToolCompactHeader(
-        title = "Compress",
+        title = stringResource(R.string.pdf_compress_compress),
         onBack = onChange,
         subtitle = subtitle.takeIf { it.isNotBlank() },
-        actionLabel = "Change",
+        actionLabel = stringResource(R.string.storage_change),
         onAction = onChange,
     )
-    Column(
-        modifier = Modifier
-            .weight(1f)
-            .fillMaxWidth()
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = ToolTokens.ScreenPadding)
-            .padding(top = 8.dp, bottom = 20.dp),
-        verticalArrangement = Arrangement.spacedBy(20.dp),
-    ) {
+    val split = rememberToolSplitLayout()
+    val preview: @Composable (Modifier) -> Unit = { previewModifier ->
         ToolPaperPage(
             bitmap = uiState.sourcePagePreview,
             loading = uiState.isSourcePagePreviewLoading,
-            contentDescription = "First page of ${name.ifBlank { "the PDF" }}",
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .width(120.dp),
+            contentDescription = stringResource(
+                R.string.pdf_compress_first_page_of,
+                name.ifBlank { stringResource(R.string.pdf_compress_the_pdf) },
+            ),
+            modifier = previewModifier,
         )
-
+    }
+    val settings: @Composable ColumnScope.() -> Unit = {
         if (locked) {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                ToolFieldLabel(text = "PDF password")
+                ToolFieldLabel(text = stringResource(R.string.export_share_pdf_password))
                 ToolTextField(
                     value = uiState.currentPassword,
                     onValueChange = onPasswordChange,
-                    placeholder = "Enter the password",
+                    placeholder = stringResource(R.string.pdf_compress_enter_the_password),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                     visualTransformation = if (showPassword) {
                         VisualTransformation.None
@@ -278,7 +282,7 @@ private fun ColumnScope.CompressOptionsStep(
                                 } else {
                                     Icons.Outlined.Visibility
                                 },
-                                contentDescription = if (showPassword) "Hide password" else "Show password",
+                                contentDescription = if (showPassword) stringResource(R.string.export_share_hide_password) else stringResource(R.string.export_share_show_password),
                             )
                         }
                     },
@@ -287,13 +291,13 @@ private fun ColumnScope.CompressOptionsStep(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.End,
                 ) {
-                    ToolTextAction(label = "Unlock", onClick = onUnlock)
+                    ToolTextAction(label = stringResource(R.string.pdf_compress_unlock), onClick = onUnlock)
                 }
             }
         }
 
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            ToolFieldLabel(text = "Quality")
+            ToolFieldLabel(text = stringResource(R.string.pdf_compress_quality))
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -310,12 +314,45 @@ private fun ColumnScope.CompressOptionsStep(
             }
         }
 
-        ToolNote(text = "Pages are re-encoded as images, so text in the PDF can no longer be selected or searched.")
+        ToolNote(text = stringResource(R.string.pdf_compress_pages_are_re_encoded_as))
+    }
+    if (split) {
+        ToolSplitPanes(
+            start = {
+                // The first page at a size you can actually judge, beside the quality choices.
+                preview(
+                    Modifier
+                        .align(Alignment.Center)
+                        .padding(24.dp)
+                        .widthIn(max = 320.dp),
+                )
+            },
+            end = settings,
+            startWeight = 0.45f,
+        )
+    } else {
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = ToolTokens.ScreenPadding)
+                .padding(top = 8.dp, bottom = 20.dp),
+            verticalArrangement = Arrangement.spacedBy(20.dp),
+        ) {
+            preview(
+                Modifier
+                    .align(Alignment.CenterHorizontally)
+                    // Smaller thumbnail on short windows so the quality choices show without scrolling.
+                    .width(if (rememberWindowSizeInfo().isHeightConstrained) 72.dp else 120.dp),
+            )
+            settings()
+        }
     }
 
     ToolBottomBar {
         ToolPrimaryButton(
-            text = "Compress",
+            text = stringResource(R.string.pdf_compress_compress),
             onClick = onCompress,
             enabled = !uiState.isProcessing && (!locked || uiState.currentPassword.isNotBlank()),
             icon = Icons.Outlined.Compress,
@@ -328,7 +365,7 @@ private fun ColumnScope.CompressOptionsStep(
 private fun CompressWorkingStep(uiState: PdfToolUiState) {
     val pages = uiState.info?.pageCount?.takeIf { it > 0 }?.let(::formatPdfPageCount)
     ToolWorkingState(
-        title = "Compressing…",
+        title = stringResource(R.string.pdf_compress_compressing),
         caption = listOfNotNull(uiState.compressQuality.label, pages).joinToString(" · "),
         preview = {
             ToolPaperPage(
@@ -364,20 +401,20 @@ private fun CompressDoneStep(
         null
     }
     val title = when {
-        savedPercent != null -> "Saved $savedPercent%"
-        sizeLine != null -> "Already compact"
-        else -> "Compressed"
+        savedPercent != null -> stringResource(R.string.pdf_compress_saved, savedPercent)
+        sizeLine != null -> stringResource(R.string.pdf_compress_already_compact)
+        else -> stringResource(R.string.pdf_compress_compressed)
     }
     val subtitle = when {
         savedPercent != null -> sizeLine.orEmpty()
-        sizeLine != null -> "This quality didn't make the file smaller. Try another one."
+        sizeLine != null -> stringResource(R.string.pdf_compress_this_quality_didn_t_make)
         else -> ""
     }
     val details = buildList {
-        add(ToolDetailRow("Quality", uiState.compressQuality.label))
-        if (before != null) add(ToolDetailRow("Before", StorageFormatter.formatBytes(before)))
-        if (after != null) add(ToolDetailRow("After", StorageFormatter.formatBytes(after)))
-        uiState.info?.pageCount?.takeIf { it > 0 }?.let { add(ToolDetailRow("Pages", it.toString())) }
+        add(ToolDetailRow(stringResource(R.string.pdf_compress_quality), uiState.compressQuality.label))
+        if (before != null) add(ToolDetailRow(stringResource(R.string.pdf_compress_before), StorageFormatter.formatBytes(before)))
+        if (after != null) add(ToolDetailRow(stringResource(R.string.pdf_compress_after), StorageFormatter.formatBytes(after)))
+        uiState.info?.pageCount?.takeIf { it > 0 }?.let { add(ToolDetailRow(stringResource(R.string.document_detail_pages), it.toString())) }
     }
 
     PdfToolDoneScreen(
@@ -396,8 +433,8 @@ private fun CompressDoneStep(
         extraContent = {
             ToolShortcutTile(
                 icon = Icons.Outlined.Tune,
-                title = "Try another quality",
-                caption = "Compress this PDF again with a different setting",
+                title = stringResource(R.string.pdf_compress_try_another_quality),
+                caption = stringResource(R.string.pdf_compress_compress_this_pdf_again_with),
                 onClick = onTryAnotherQuality,
                 modifier = Modifier.fillMaxWidth(),
             )
@@ -465,7 +502,7 @@ private fun RecommendedChip() {
         color = MaterialTheme.colorScheme.primaryContainer,
     ) {
         Text(
-            text = "Recommended",
+            text = stringResource(R.string.pdf_compress_recommended),
             modifier = Modifier.padding(horizontal = 7.dp, vertical = 2.dp),
             style = MaterialTheme.typography.labelSmall.copy(fontSize = 11.sp),
             fontWeight = FontWeight.SemiBold,

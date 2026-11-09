@@ -34,9 +34,18 @@ object IncomingPdf {
             mkdirs()
         }
         val target = File(dir, "${System.currentTimeMillis()}_${name.replace(Regex("[^\\w.\\- ]"), "_")}")
-        context.contentResolver.openInputStream(uri)?.use { input ->
-            target.outputStream().use { output -> input.copyTo(output) }
-        } ?: return null
+        try {
+            context.contentResolver.openInputStream(uri)?.use { input ->
+                target.outputStream().use { output -> input.copyTo(output) }
+            } ?: run {
+                target.delete()
+                return null
+            }
+        } catch (error: Throwable) {
+            // Don't leave a half-copied PDF behind in the cache.
+            target.delete()
+            throw error
+        }
         target.absolutePath to name.removeSuffix(".pdf").removeSuffix(".PDF")
     }.getOrNull()
 

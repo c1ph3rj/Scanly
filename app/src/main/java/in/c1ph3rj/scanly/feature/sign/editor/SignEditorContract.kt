@@ -4,14 +4,20 @@ import `in`.c1ph3rj.scanly.domain.model.NormRect
 import `in`.c1ph3rj.scanly.domain.model.SavedSignature
 import `in`.c1ph3rj.scanly.domain.model.SignInk
 import `in`.c1ph3rj.scanly.domain.model.SignMark
+import androidx.annotation.StringRes
+import `in`.c1ph3rj.scanly.core.common.appString
+import `in`.c1ph3rj.scanly.R
 
 /** The five tools in the editor's bottom row. */
-enum class SignTool(val label: String) {
-    Signature("Signature"),
-    Initials("Initials"),
-    Date("Date"),
-    Text("Text"),
-    Checkbox("Checkbox"),
+enum class SignTool(@param:StringRes val labelRes: Int) {
+    Signature(R.string.signature_kind_signature),
+    Initials(R.string.signature_manage_initials),
+    Date(R.string.sign_tool_date),
+    Text(R.string.qr_payload_text),
+    Checkbox(R.string.sign_tool_checkbox),
+    ;
+
+    val label: String get() = appString(labelRes)
 }
 
 /** One page in the editor. [aspectRatio] is visual width / height. */

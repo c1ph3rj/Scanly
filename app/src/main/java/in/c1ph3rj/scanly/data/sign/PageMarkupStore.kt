@@ -8,10 +8,15 @@ import `in`.c1ph3rj.scanly.data.local.db.entity.PageMarkupEntity
 import `in`.c1ph3rj.scanly.data.local.db.entity.ScanPageEntity
 import `in`.c1ph3rj.scanly.data.storage.DocumentStorageManager
 import `in`.c1ph3rj.scanly.domain.model.SignMark
+import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.math.abs
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
 
 /**
  * Burns sign marks into a page's processed image while keeping it editable.
@@ -21,6 +26,10 @@ import javax.inject.Singleton
  * - `processed/page_NNN.base.jpg` — the clean image the marks are drawn onto.
  * - `markups/{markId}.png` — private copies of placed signature images, so deleting a saved
  *   signature never changes a signed page.
+ *
+ * Every image write goes to a sibling `.tmp` file first and is swapped in afterwards, and the
+ * markup row is saved before the composite replaces the page image, so a page that carries marks
+ * always has a row (and base) to edit them from.
  *
  * Callers run on an IO dispatcher inside the library mutation lock.
  */
@@ -37,21 +46,52 @@ class PageMarkupStore @Inject constructor(
     /**
      * Called right after the page pipeline rewrote [page]'s processed image from raw (crop,
      * filter, rotate or retake): that fresh output becomes the new clean base and the marks are
-     * stamped onto it again, so signatures survive page edits.
+     * stamped onto it again, so signatures survive page edits. Boxes are re-fitted when the page
+     * aspect changed (a rotate swaps width and height), so marks keep their proportions.
      */
     suspend fun reapplyAfterReprocess(page: ScanPageEntity) {
         val markup = markupDao.getMarkup(page.id) ?: return
         val processedPath = page.processedImagePath ?: return
-        val marks = SignMarkCodec.decode(markup.marksJson)
         val basePath = basePathFor(processedPath)
-        File(processedPath).copyTo(File(basePath), overwrite = true)
-        if (marks.isEmpty()) {
+        // A row that cannot be read is left alone: the fresh image stays unsigned, nothing is lost.
+        // The base still tracks the new clean image so a later sign never stamps onto a stale one.
+        val decoded = SignMarkCodec.decodeOrNull(markup.marksJson) ?: run {
+            copyReplacing(File(processedPath), File(basePath))
+            if (markup.baseImagePath != basePath) {
+                markupDao.upsertMarkup(markup.copy(baseImagePath = basePath, updatedAtMillis = System.currentTimeMillis()))
+            }
+            return
+        }
+        if (decoded.isEmpty()) {
             markupDao.deleteMarkup(page.id)
             File(basePath).delete()
             return
         }
-        renderComposite(basePath, processedPath, page.thumbnailPath, marks)
-        markupDao.upsertMarkup(markup.copy(baseImagePath = basePath, updatedAtMillis = System.currentTimeMillis()))
+        // Read before the old base is overwritten below.
+        val oldAspect = listOf(basePath, markup.baseImagePath).firstNotNullOfOrNull { imageAspect(it) }
+        val newAspect = imageAspect(processedPath)
+        val aspectChanged = oldAspect != null && newAspect != null &&
+            abs(newAspect / oldAspect - 1f) > AspectTolerance
+        val marks = if (aspectChanged) {
+            decoded.map { it.withBox(it.box.reshapedForPageAspect(oldAspect!!, newAspect!!)) }
+        } else {
+            decoded
+        }
+        copyReplacing(File(processedPath), File(basePath))
+        val composite = renderToTemp(basePath, processedPath, marks)
+        try {
+            markupDao.upsertMarkup(
+                markup.copy(
+                    marksJson = if (aspectChanged) SignMarkCodec.encode(marks) else markup.marksJson,
+                    baseImagePath = basePath,
+                    updatedAtMillis = System.currentTimeMillis(),
+                ),
+            )
+            replaceFile(composite, File(processedPath))
+        } finally {
+            composite.delete()
+        }
+        refreshThumbnail(processedPath, page.thumbnailPath)
     }
 
     /**
@@ -59,40 +99,68 @@ class PageMarkupStore @Inject constructor(
      * An empty list restores the clean image and forgets the markup.
      */
     suspend fun apply(page: ScanPageEntity, marks: List<SignMark>): Boolean {
-        val processedPath = page.processedImagePath ?: error("This page is still processing. Try again in a moment.")
+        val processedPath = page.processedImagePath ?: error(appString(R.string.error_this_page_is_still_processing_try_again))
         val existing = markupDao.getMarkup(page.id)
-        val existingMarks = existing?.let { SignMarkCodec.decode(it.marksJson) }.orEmpty()
+        // Null when there is no row or it cannot be read; an unreadable row is never treated as empty.
+        val existingMarks = existing?.let { SignMarkCodec.decodeOrNull(it.marksJson) }
         val markupsDir = File(documentRootOf(processedPath), MARKUPS_DIRECTORY)
 
         if (marks.isEmpty()) {
             if (existing == null) return false
             val base = File(existing.baseImagePath)
             if (base.isFile) {
-                base.copyTo(File(processedPath), overwrite = true)
-                base.delete()
+                copyReplacing(base, File(processedPath))
             }
             markupDao.deleteMarkup(page.id)
-            deleteUnusedImages(existingMarks, emptyList(), markupsDir)
+            base.delete()
+            deleteUnusedImages(existingMarks.orEmpty(), emptyList(), markupsDir)
             refreshThumbnail(processedPath, page.thumbnailPath)
             return true
         }
 
         val ownedMarks = marks.map { mark -> mark.ownedBy(markupsDir) }
-        if (existing != null && ownedMarks == existingMarks) return false
+        // pageIndex is re-keyed to the page's position by the caller, so a reorder is not a change.
+        if (existingMarks != null && ownedMarks.withoutPageIndex() == existingMarks.withoutPageIndex()) return false
 
-        val basePath = existing?.baseImagePath?.takeIf { File(it).isFile } ?: basePathFor(processedPath).also {
-            File(processedPath).copyTo(File(it), overwrite = true)
+        // An unreadable row still owns its base: reuse it rather than rebasing onto a signed image.
+        val existingBase = existing?.baseImagePath?.takeIf { File(it).isFile }
+        val basePath = existingBase ?: basePathFor(processedPath)
+        var rowSaved = false
+        try {
+            if (existingBase == null) copyReplacing(File(processedPath), File(basePath))
+            val composite = renderToTemp(basePath, processedPath, ownedMarks)
+            try {
+                // The row goes in first: once marks are burnt into processed/, a row always exists.
+                markupDao.upsertMarkup(
+                    PageMarkupEntity(
+                        pageId = page.id,
+                        marksJson = SignMarkCodec.encode(ownedMarks),
+                        baseImagePath = basePath,
+                        updatedAtMillis = System.currentTimeMillis(),
+                    ),
+                )
+                rowSaved = true
+                replaceFile(composite, File(processedPath))
+            } finally {
+                composite.delete()
+            }
+        } catch (error: Throwable) {
+            runCatching {
+                withContext(NonCancellable) {
+                    if (existing == null) {
+                        // The page had no markup: forget the row and the base made for this attempt.
+                        markupDao.deleteMarkup(page.id)
+                        File(basePath).delete()
+                    } else if (rowSaved) {
+                        // The image still shows the previous marks, so the previous row stays true.
+                        markupDao.upsertMarkup(existing)
+                    }
+                }
+            }
+            throw error
         }
-        renderComposite(basePath, processedPath, page.thumbnailPath, ownedMarks)
-        markupDao.upsertMarkup(
-            PageMarkupEntity(
-                pageId = page.id,
-                marksJson = SignMarkCodec.encode(ownedMarks),
-                baseImagePath = basePath,
-                updatedAtMillis = System.currentTimeMillis(),
-            ),
-        )
-        deleteUnusedImages(existingMarks, ownedMarks, markupsDir)
+        refreshThumbnail(processedPath, page.thumbnailPath)
+        deleteUnusedImages(existingMarks.orEmpty(), ownedMarks, markupsDir)
         return true
     }
 
@@ -104,31 +172,53 @@ class PageMarkupStore @Inject constructor(
         deleteUnusedImages(SignMarkCodec.decode(markup.marksJson), emptyList(), markupsDir)
     }
 
-    private suspend fun renderComposite(
-        basePath: String,
-        processedPath: String,
-        thumbnailPath: String?,
-        marks: List<SignMark>,
-    ) {
-        val base = BitmapFactory.decodeFile(
-            basePath,
-            BitmapFactory.Options().apply { inPreferredConfig = Bitmap.Config.ARGB_8888 },
-        ) ?: error("Could not read the page image.")
-        val composite = try {
-            compositor.composite(base, marks)
-        } finally {
-            base.recycle()
-        }
+    /**
+     * Draws [marks] onto the base image and writes the JPEG next to [processedPath] as a `.tmp`
+     * file. The caller swaps it in with [replaceFile] and deletes the temp file afterwards.
+     */
+    private fun renderToTemp(basePath: String, processedPath: String, marks: List<SignMark>): File {
+        val temp = File("$processedPath$TEMP_SUFFIX")
         try {
-            FileOutputStream(processedPath).use { output ->
-                check(composite.compress(Bitmap.CompressFormat.JPEG, JPEG_QUALITY, output)) {
-                    "Could not save the signed page."
-                }
+            val base = BitmapFactory.decodeFile(
+                basePath,
+                BitmapFactory.Options().apply { inPreferredConfig = Bitmap.Config.ARGB_8888 },
+            ) ?: error(appString(R.string.error_could_not_read_the_page_image))
+            val composite = try {
+                compositor.composite(base, marks)
+            } finally {
+                base.recycle()
             }
-        } finally {
-            composite.recycle()
+            try {
+                FileOutputStream(temp).use { output ->
+                    check(composite.compress(Bitmap.CompressFormat.JPEG, JPEG_QUALITY, output)) {
+                        appString(R.string.page_markup_store_could_not_save_the_signed)
+                    }
+                    output.fd.sync()
+                }
+            } finally {
+                composite.recycle()
+            }
+        } catch (error: Throwable) {
+            temp.delete()
+            throw error
         }
-        refreshThumbnail(processedPath, thumbnailPath)
+        return temp
+    }
+
+    /** Moves [temp] over [target]; falls back to a copy when the rename is refused. */
+    private fun replaceFile(temp: File, target: File) {
+        if (!temp.renameTo(target)) temp.copyTo(target, overwrite = true)
+    }
+
+    /** Copies [source] over [target] through a temp file, so [target] is never left half-written. */
+    private fun copyReplacing(source: File, target: File) {
+        val temp = File("${target.path}$TEMP_SUFFIX")
+        try {
+            source.copyTo(temp, overwrite = true)
+            replaceFile(temp, target)
+        } finally {
+            temp.delete()
+        }
     }
 
     private suspend fun refreshThumbnail(processedPath: String, thumbnailPath: String?) {
@@ -143,8 +233,8 @@ class PageMarkupStore @Inject constructor(
         if (this !is SignMark.Image) return this
         val source = File(imagePath)
         if (source.parentFile?.canonicalPath == markupsDir.canonicalPath) return this
-        if (!markupsDir.exists() && !markupsDir.mkdirs()) error("Could not create signature storage.")
-        require(source.isFile) { "A signature image is missing. Place it again." }
+        if (!markupsDir.exists() && !markupsDir.mkdirs()) error(appString(R.string.error_could_not_create_signature_storage))
+        require(source.isFile) { appString(R.string.error_a_signature_image_is_missing_place_it) }
         val target = File(markupsDir, "$id.png")
         source.copyTo(target, overwrite = true)
         return copy(imagePath = target.absolutePath)
@@ -160,7 +250,16 @@ class PageMarkupStore @Inject constructor(
 
     companion object {
         private const val MARKUPS_DIRECTORY = "markups"
+
+        /** True when [imagePath] is a private copy a document already owns (see [ownedBy]). */
+        fun isOwnedMarkupImage(imagePath: String): Boolean =
+            File(imagePath).parentFile?.name == MARKUPS_DIRECTORY
+
         private const val JPEG_QUALITY = 94
+        private const val TEMP_SUFFIX = ".tmp"
+
+        /** Relative page-aspect change below which marks keep their boxes as they are. */
+        private const val AspectTolerance = 0.01f
 
         /** `processed/page_001.jpg` → `processed/page_001.base.jpg`. */
         fun basePathFor(processedPath: String): String {
@@ -169,6 +268,24 @@ class PageMarkupStore @Inject constructor(
         }
 
         private fun documentRootOf(processedPath: String): File =
-            File(processedPath).parentFile?.parentFile ?: error("Invalid page image path.")
+            File(processedPath).parentFile?.parentFile ?: error(appString(R.string.error_invalid_page_image_path))
+
+        /** Width / height of the image at [path] without decoding it, or null if it cannot be read. */
+        private fun imageAspect(path: String): Float? {
+            val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+            BitmapFactory.decodeFile(path, bounds)
+            if (bounds.outWidth <= 0 || bounds.outHeight <= 0) return null
+            return bounds.outWidth.toFloat() / bounds.outHeight
+        }
+
+        /** Marks with [SignMark.pageIndex] zeroed, to compare content regardless of page position. */
+        private fun List<SignMark>.withoutPageIndex(): List<SignMark> = map { mark ->
+            when (mark) {
+                is SignMark.Image -> mark.copy(pageIndex = 0)
+                is SignMark.Text -> mark.copy(pageIndex = 0)
+                is SignMark.Date -> mark.copy(pageIndex = 0)
+                is SignMark.Checkbox -> mark.copy(pageIndex = 0)
+            }
+        }
     }
 }

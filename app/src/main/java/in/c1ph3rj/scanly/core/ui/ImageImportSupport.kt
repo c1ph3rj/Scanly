@@ -1,6 +1,8 @@
 package `in`.c1ph3rj.scanly.core.ui
 
 import androidx.activity.result.contract.ActivityResultContracts
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
 
 object ImageImportSupport {
     /**
@@ -9,17 +11,19 @@ object ImageImportSupport {
      */
     const val MAX_IMAGES_PER_IMPORT = 50
 
-    private val IMAGE_MIME_TYPES = arrayOf("image/*")
+    private const val IMAGE_MIME_TYPE = "image/*"
 
-    /** MIME filter passed to the system file picker so only images are selectable. */
-    fun createPickRequest(): Array<String> = IMAGE_MIME_TYPES
+    /** MIME filter passed to the picker so only images are selectable. */
+    fun createPickRequest(): String = IMAGE_MIME_TYPE
 
     /**
-     * Opens the system Files picker (browse any folder, Downloads, Drive, etc.) limited to
-     * images. The picker has no selection limit, so results go through [capSelection].
+     * Opens the system picker with `ACTION_GET_CONTENT` for images: the Files browser (Downloads,
+     * Drive, other storage) plus gallery apps such as Gallery and Google Photos, which
+     * `ACTION_OPEN_DOCUMENT` does not list. The picker has no selection limit, so results go
+     * through [capSelection].
      */
-    fun pickImagesContract(): ActivityResultContracts.OpenMultipleDocuments =
-        ActivityResultContracts.OpenMultipleDocuments()
+    fun pickImagesContract(): ActivityResultContracts.GetMultipleContents =
+        ActivityResultContracts.GetMultipleContents()
 
     fun <T> capSelection(items: List<T>): CappedSelection<T> {
         if (items.size <= MAX_IMAGES_PER_IMPORT) {
@@ -33,17 +37,17 @@ object ImageImportSupport {
 
     fun importResultMessage(importedCount: Int, truncated: Boolean, skippedCount: Int = 0): String {
         val parts = mutableListOf(
-            if (importedCount == 1) "Imported 1 image." else "Imported $importedCount images.",
+            if (importedCount == 1) appString(R.string.image_import_imported_1_image) else appString(R.string.image_import_imported_images, importedCount),
         )
         if (skippedCount > 0) {
             parts += if (skippedCount == 1) {
-                "Skipped 1 file that couldn't be opened."
+                appString(R.string.image_import_skipped_1_file_that_couldn)
             } else {
-                "Skipped $skippedCount files that couldn't be opened."
+                appString(R.string.image_import_skipped_files_that_couldn_t, skippedCount)
             }
         }
         if (truncated) {
-            parts += "Only $MAX_IMAGES_PER_IMPORT images can be added at a time."
+            parts += appString(R.string.image_import_only_images_can_be_added, MAX_IMAGES_PER_IMPORT)
         }
         return parts.joinToString(" ")
     }

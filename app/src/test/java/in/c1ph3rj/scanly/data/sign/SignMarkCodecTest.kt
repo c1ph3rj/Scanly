@@ -6,6 +6,7 @@ import `in`.c1ph3rj.scanly.domain.model.SignMark
 import `in`.c1ph3rj.scanly.domain.model.SignatureKind
 import org.json.JSONObject
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -67,6 +68,16 @@ class SignMarkCodecTest {
     fun unknownFutureVersionDecodesToEmpty() {
         val future = JSONObject(SignMarkCodec.encode(marks)).put("v", 99).toString()
         assertTrue(SignMarkCodec.decode(future).isEmpty())
+    }
+
+    @Test
+    fun decodeOrNullSeparatesUnreadableFromEmpty() {
+        assertNull(SignMarkCodec.decodeOrNull(null))
+        assertNull(SignMarkCodec.decodeOrNull("not json"))
+        assertNull(SignMarkCodec.decodeOrNull("""{"v":1}"""))
+        assertNull(SignMarkCodec.decodeOrNull(JSONObject(SignMarkCodec.encode(marks)).put("v", 99).toString()))
+        assertEquals(emptyList<SignMark>(), SignMarkCodec.decodeOrNull(SignMarkCodec.encode(emptyList())))
+        assertEquals(marks, SignMarkCodec.decodeOrNull(SignMarkCodec.encode(marks)))
     }
 
     @Test

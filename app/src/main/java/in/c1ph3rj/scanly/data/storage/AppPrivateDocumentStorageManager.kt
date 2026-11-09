@@ -1,5 +1,7 @@
 package `in`.c1ph3rj.scanly.data.storage
 
+import `in`.c1ph3rj.scanly.core.common.appString
+import `in`.c1ph3rj.scanly.R
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -56,7 +58,16 @@ class AppPrivateDocumentStorageManager @Inject constructor(
         val rawDirectory = ensureDirectory(File(rootDirectory, RAW_DIRECTORY))
         val processedDirectory = ensureDirectory(File(rootDirectory, PROCESSED_DIRECTORY))
         val thumbnailDirectory = ensureDirectory(File(rootDirectory, THUMBNAILS_DIRECTORY))
-        val fileName = pageFileName(pageIndex)
+        // Names follow the page's position when it was captured, but pages move (reorder, delete,
+        // Recently deleted keeps a trashed page's files), so skip any name another page still owns.
+        var fileNumber = pageIndex
+        while (
+            listOf(rawDirectory, processedDirectory, thumbnailDirectory)
+                .any { directory -> File(directory, pageFileName(fileNumber)).exists() }
+        ) {
+            fileNumber++
+        }
+        val fileName = pageFileName(fileNumber)
 
         PageCaptureStorageDraft(
             rawImagePath = File(rawDirectory, fileName).absolutePath,
@@ -71,25 +82,24 @@ class AppPrivateDocumentStorageManager @Inject constructor(
     ): PageThumbnailResult = withContext(dispatchers.io) {
         val rawFile = File(rawImagePath)
         if (!rawFile.exists() || rawFile.length() <= 0L) {
-            error("Captured image missing at $rawImagePath.")
+            error(appString(R.string.error_could_not_read_the_page_image))
         }
 
         val rotationDegrees = ExifInterface(rawImagePath).rotationDegrees
         val bitmap = decodeSampledBitmap(rawImagePath, THUMBNAIL_MAX_DIMENSION, THUMBNAIL_MAX_DIMENSION)
-            ?: error("Could not decode captured image at $rawImagePath.")
-        val rotatedBitmap = rotateBitmapIfNeeded(bitmap, rotationDegrees)
+            ?: error(appString(R.string.error_could_not_read_the_page_image))
         val outputFile = File(thumbnailPath)
-        outputFile.parentFile?.let(::ensureDirectory)
-
-        FileOutputStream(outputFile).use { outputStream ->
-            rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, THUMBNAIL_JPEG_QUALITY, outputStream)
-            outputStream.flush()
+        var rotatedBitmap = bitmap
+        try {
+            rotatedBitmap = rotateBitmapIfNeeded(bitmap, rotationDegrees)
+            outputFile.parentFile?.let(::ensureDirectory)
+            writeJpegAtomically(rotatedBitmap, outputFile, THUMBNAIL_JPEG_QUALITY)
+        } finally {
+            if (rotatedBitmap !== bitmap) {
+                rotatedBitmap.recycle()
+            }
+            bitmap.recycle()
         }
-
-        if (rotatedBitmap !== bitmap) {
-            rotatedBitmap.recycle()
-        }
-        bitmap.recycle()
 
         PageThumbnailResult(
             thumbnailPath = outputFile.absolutePath,
@@ -114,7 +124,7 @@ class AppPrivateDocumentStorageManager @Inject constructor(
 
     private fun ensureDirectory(directory: File): File {
         if (!directory.exists() && !directory.mkdirs()) {
-            error("Could not create ${directory.absolutePath}.")
+            error(appString(R.string.error_could_not_save_the_captured_page))
         }
         return directory
     }
@@ -125,11 +135,38 @@ class AppPrivateDocumentStorageManager @Inject constructor(
     ) {
         outputFile.parentFile?.let(::ensureDirectory)
         val coverBitmap = coverArtFactory.create(title)
-        FileOutputStream(outputFile).use { outputStream ->
-            coverBitmap.compress(Bitmap.CompressFormat.JPEG, JPEG_QUALITY, outputStream)
-            outputStream.flush()
+        try {
+            writeJpegAtomically(coverBitmap, outputFile, JPEG_QUALITY)
+        } finally {
+            coverBitmap.recycle()
         }
-        coverBitmap.recycle()
+    }
+
+    /**
+     * Encodes to `<path>.tmp` and swaps it in, so a failed or interrupted write never
+     * truncates the file that is already there.
+     */
+    private fun writeJpegAtomically(
+        bitmap: Bitmap,
+        outputFile: File,
+        quality: Int,
+    ) {
+        val tempFile = File("${outputFile.path}.tmp")
+        try {
+            val compressed = FileOutputStream(tempFile).use { outputStream ->
+                bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream).also {
+                    outputStream.flush()
+                }
+            }
+            check(compressed) { appString(R.string.default_signature_repository_could_not_save_the_image) }
+            if (!tempFile.renameTo(outputFile)) {
+                tempFile.copyTo(outputFile, overwrite = true)
+            }
+        } finally {
+            if (tempFile.exists()) {
+                tempFile.delete()
+            }
+        }
     }
 
     private fun decodeSampledBitmap(

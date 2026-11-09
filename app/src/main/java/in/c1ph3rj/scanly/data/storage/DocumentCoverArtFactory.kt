@@ -16,6 +16,8 @@ import android.text.TextUtils
 import `in`.c1ph3rj.scanly.core.common.DocumentPresentationFormatter
 import javax.inject.Inject
 import javax.inject.Singleton
+import `in`.c1ph3rj.scanly.core.common.appString
+import `in`.c1ph3rj.scanly.R
 
 /**
  * Generates the cover thumbnail for documents without a scanned page yet.
@@ -331,7 +333,7 @@ class DocumentCoverArtFactory @Inject constructor() {
         const val TITLE_TEXT_SIZE = 46f
         const val TITLE_MAX_LINES = 3
         const val WORDMARK = "SCANLY"
-        const val FOOTER_TEXT = "Scanned document"
+        val FOOTER_TEXT: String get() = appString(R.string.document_cover_art_factory_scanned_document)
         val PAPER_COLOR = Color.argb(245, 244, 247, 246)
 
         // Dark, brand-tinted fields. The accent drives the badge, beam and signature line.

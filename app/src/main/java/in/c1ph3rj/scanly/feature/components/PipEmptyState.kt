@@ -4,9 +4,11 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -103,15 +105,15 @@ fun PipEmptyState(
 
             if (actionLabel != null && onAction != null) {
                 Spacer(Modifier.height(if (compact) 14.dp else 18.dp))
-                Row(
+                FlowRow(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
                 ) {
                     Button(
                         onClick = onAction,
                         enabled = actionEnabled,
-                        modifier = Modifier.height(50.dp),
+                        modifier = Modifier.heightIn(min = 50.dp),
                         shape = RoundedCornerShape(25.dp),
                         contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
                     ) {
@@ -123,16 +125,15 @@ fun PipEmptyState(
                             )
                             Spacer(Modifier.width(ButtonDefaults.IconSpacing))
                         }
-                        Text(actionLabel)
+                        Text(actionLabel, textAlign = TextAlign.Center)
                     }
                     if (secondaryActionLabel != null && onSecondaryAction != null) {
-                        Spacer(Modifier.width(8.dp))
                         TextButton(
                             onClick = onSecondaryAction,
                             enabled = secondaryActionEnabled,
-                            modifier = Modifier.height(50.dp),
+                            modifier = Modifier.heightIn(min = 50.dp),
                         ) {
-                            Text(secondaryActionLabel)
+                            Text(secondaryActionLabel, textAlign = TextAlign.Center)
                         }
                     }
                 }

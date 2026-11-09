@@ -11,6 +11,7 @@ import `in`.c1ph3rj.scanly.domain.model.ScanDocument
 import `in`.c1ph3rj.scanly.domain.model.DocumentTitleFormat
 import `in`.c1ph3rj.scanly.domain.usecase.CreateDocumentUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.CreateGroupUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.DeleteDocumentUseCase
 import `in`.c1ph3rj.scanly.domain.model.GroupTitleFormat
 import `in`.c1ph3rj.scanly.domain.usecase.SuggestDocumentTitleUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.SuggestGroupTitleUseCase
@@ -31,6 +32,8 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
 
 data class HomeUiState(
     val recentGroups: List<DocumentGroup> = emptyList(),
@@ -41,6 +44,16 @@ data class HomeUiState(
     val importCurrent: Int = 0,
     val importTotal: Int = 0,
     val importStageLabel: String = "",
+)
+
+internal const val HOME_RECENT_GROUPS_MAX = 8
+internal const val HOME_RECENT_DOCUMENTS_MAX = 8
+
+/** Phone-width Home keeps its short launcher lists: three folders and four documents. */
+internal fun HomeUiState.trimmedForCompactWidth(): HomeUiState = copy(
+    recentGroups = recentGroups.take(3),
+    hasMoreGroups = hasMoreGroups || recentGroups.size > 3,
+    recentDocuments = recentDocuments.take(4),
 )
 
 sealed interface HomeEvent {
@@ -56,6 +69,7 @@ class HomeViewModel @Inject constructor(
     private val createDocumentUseCase: CreateDocumentUseCase,
     private val createGroupUseCase: CreateGroupUseCase,
     private val importImagesUseCase: ImportImagesUseCase,
+    private val deleteDocumentUseCase: DeleteDocumentUseCase,
     private val suggestDocumentTitleUseCase: SuggestDocumentTitleUseCase,
     private val suggestGroupTitleUseCase: SuggestGroupTitleUseCase,
     private val observeShouldShowRatingPromptUseCase: ObserveShouldShowRatingPromptUseCase,
@@ -101,14 +115,15 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch { markAppRatedUseCase() }
     }
 
+    // Enough recents for a tablet's two-column layout; phones trim to the first few (see HomeScreen).
     val uiState: StateFlow<HomeUiState> = combine(
-        observeRecentGroupsUseCase(limit = 4),
-        observeRecentDocumentsUseCase(limit = 4),
+        observeRecentGroupsUseCase(limit = HOME_RECENT_GROUPS_MAX + 1),
+        observeRecentDocumentsUseCase(limit = HOME_RECENT_DOCUMENTS_MAX),
         importProgress,
     ) { groups, docs, progress ->
         HomeUiState(
-            recentGroups = groups.take(3),
-            hasMoreGroups = groups.size > 3,
+            recentGroups = groups.take(HOME_RECENT_GROUPS_MAX),
+            hasMoreGroups = groups.size > HOME_RECENT_GROUPS_MAX,
             recentDocuments = docs,
             isLoading = false,
             isImporting = progress.active,
@@ -160,7 +175,7 @@ class HomeViewModel @Inject constructor(
                 active = true,
                 current = 0,
                 total = total,
-                stageLabel = "Starting import",
+                stageLabel = appString(R.string.document_detail_starting_import),
             )
             try {
                 when (val createResult = createDocumentUseCase.createImported()) {
@@ -193,6 +208,8 @@ class HomeViewModel @Inject constructor(
                             }
 
                             is ScanlyResult.Failure -> {
+                                // No page was saved, so drop the empty "Imported" document.
+                                deleteDocumentUseCase(createResult.value)
                                 _events.emit(HomeEvent.ShowMessage(importResult.error.message))
                             }
                         }

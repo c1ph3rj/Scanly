@@ -114,14 +114,27 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import `in`.c1ph3rj.scanly.core.ui.PreviewDisplaySize
 import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
+import `in`.c1ph3rj.scanly.domain.model.OcrEngine
+import `in`.c1ph3rj.scanly.domain.model.PageText
 import `in`.c1ph3rj.scanly.domain.model.PageTextBlock
 import `in`.c1ph3rj.scanly.domain.model.previewImagePath
-import `in`.c1ph3rj.scanly.domain.search.FoldedText
+import `in`.c1ph3rj.scanly.domain.search.SearchHighlights
 import `in`.c1ph3rj.scanly.feature.components.CachedThumbnail
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
+import androidx.compose.ui.res.stringResource
+import androidx.annotation.StringRes
+import androidx.compose.ui.res.pluralStringResource
 
-private enum class TextViewMode(val label: String) { TEXT("Text"), PAGE("On page") }
+private enum class TextViewMode(@param:StringRes val labelRes: Int) {
+    TEXT(R.string.page_text_text),
+    PAGE(R.string.page_text_on_page),
+    ;
+
+    val label: String get() = appString(labelRes)
+}
 
 @Composable
 fun PageTextRoute(
@@ -181,9 +194,14 @@ fun PageTextScreen(
     val documentTitle = uiState.document?.title.orEmpty()
 
     // Jump to the requested page once pages are known (the pager starts at 0 while loading).
+    // Only once: a later rotation or page-count change must not yank the reader back.
+    var didInitialScroll by rememberSaveable { mutableStateOf(false) }
     LaunchedEffect(pageCount) {
-        if (pageCount > 0 && pagerState.currentPage == 0 && uiState.initialPageIndex in 1 until pageCount) {
-            pagerState.scrollToPage(uiState.initialPageIndex)
+        if (pageCount > 0 && !didInitialScroll) {
+            didInitialScroll = true
+            if (pagerState.currentPage == 0 && uiState.initialPageIndex in 1 until pageCount) {
+                pagerState.scrollToPage(uiState.initialPageIndex)
+            }
         }
     }
 
@@ -198,7 +216,7 @@ fun PageTextScreen(
             clipboard.setClipEntry(ClipEntry(ClipData.newPlainText(documentTitle, text)))
             // Android 13+ shows its own clipboard confirmation.
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-                snackbarHostState.showSnackbar("Copied $what")
+                snackbarHostState.showSnackbar(appString(R.string.page_text_copied, what))
             }
         }
     }
@@ -211,7 +229,7 @@ fun PageTextScreen(
                 title = {
                     Column {
                         Text(
-                            text = "Extracted text",
+                            text = stringResource(R.string.page_text_extracted_text),
                             style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.SemiBold,
                         )
@@ -228,26 +246,26 @@ fun PageTextScreen(
                 },
                 navigationIcon = {
                     IconButton(onClick = onNavigateUp) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.zoomable_image_back))
                     }
                 },
                 actions = {
                     Box {
                         IconButton(onClick = { menuOpen = true }, enabled = editingPageId == null) {
-                            Icon(Icons.Filled.MoreVert, contentDescription = "More options")
+                            Icon(Icons.Filled.MoreVert, contentDescription = stringResource(R.string.shared_more_options))
                         }
                         DropdownMenu(expanded = menuOpen, onDismissRequest = { menuOpen = false }) {
                             DropdownMenuItem(
-                                text = { Text("Copy all pages") },
+                                text = { Text(stringResource(R.string.page_text_copy_all_pages)) },
                                 leadingIcon = { Icon(Icons.Outlined.ContentCopy, null) },
                                 enabled = uiState.hasAnyText,
                                 onClick = {
                                     menuOpen = false
-                                    copy(uiState.documentText, "all pages")
+                                    copy(uiState.documentText, appString(R.string.page_text_all_pages))
                                 },
                             )
                             DropdownMenuItem(
-                                text = { Text("Share all pages") },
+                                text = { Text(stringResource(R.string.page_text_share_all_pages)) },
                                 leadingIcon = { Icon(Icons.Outlined.Share, null) },
                                 enabled = uiState.hasAnyText,
                                 onClick = {
@@ -257,7 +275,7 @@ fun PageTextScreen(
                             )
                             if (currentItem?.text?.isEdited == true) {
                                 DropdownMenuItem(
-                                    text = { Text("Restore original text") },
+                                    text = { Text(stringResource(R.string.page_text_restore_original_text)) },
                                     leadingIcon = { Icon(Icons.Outlined.Restore, null) },
                                     onClick = {
                                         menuOpen = false
@@ -267,7 +285,7 @@ fun PageTextScreen(
                             }
                             HorizontalDivider()
                             DropdownMenuItem(
-                                text = { Text("Read all pages again") },
+                                text = { Text(stringResource(R.string.page_text_read_all_pages_again)) },
                                 leadingIcon = { Icon(Icons.Outlined.Refresh, null) },
                                 enabled = uiState.recognition !is RecognitionStatus.Running && pageCount > 0,
                                 onClick = {
@@ -287,8 +305,8 @@ fun PageTextScreen(
                     editing = editingPageId != null,
                     hasText = currentText.isNotBlank(),
                     canEdit = currentItem?.text != null,
-                    onCopy = { copy(currentText, "page ${pagerState.currentPage + 1}") },
-                    onShare = { share("$documentTitle — page ${pagerState.currentPage + 1}", currentText) },
+                    onCopy = { copy(currentText, appString(R.string.trash_use_cases_page, pagerState.currentPage + 1)) },
+                    onShare = { share(appString(R.string.page_text_page, documentTitle, pagerState.currentPage + 1), currentText) },
                     onEdit = {
                         currentItem?.let {
                             editValue = currentText
@@ -317,8 +335,8 @@ fun PageTextScreen(
             }
             Row(
                 modifier = Modifier
-                    .fillMaxWidth()
                     .widthIn(max = window.contentMaxWidth)
+                    .fillMaxWidth()
                     .padding(horizontal = window.horizontalPadding, vertical = 8.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -369,8 +387,8 @@ fun PageTextScreen(
                     val item = uiState.pages[index]
                     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
                         val pageModifier = Modifier
-                            .fillMaxSize()
                             .widthIn(max = window.contentMaxWidth)
+                            .fillMaxSize()
                         AnimatedContent(
                             targetState = mode,
                             transitionSpec = { fadeIn(tween(180)) togetherWith fadeOut(tween(120)) },
@@ -418,9 +436,9 @@ private fun RecognitionProgress(running: RecognitionStatus.Running?) {
         }
         Text(
             text = if (running != null && running.total > 1) {
-                "Reading page ${(running.done + 1).coerceAtMost(running.total)} of ${running.total}…"
+                stringResource(R.string.page_text_reading_page_of, (running.done + 1).coerceAtMost(running.total), running.total)
             } else {
-                "Reading text…"
+                stringResource(R.string.page_text_reading_text_2)
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -441,16 +459,16 @@ private fun PageStepper(current: Int, count: Int, enabled: Boolean, onStep: (Int
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             IconButton(onClick = { onStep(-1) }, enabled = enabled && current > 0) {
-                Icon(Icons.AutoMirrored.Filled.KeyboardArrowLeft, contentDescription = "Previous page")
+                Icon(Icons.AutoMirrored.Filled.KeyboardArrowLeft, contentDescription = stringResource(R.string.onboarding_previous_page))
             }
             Text(
                 text = "${current + 1} / $count",
-                modifier = Modifier.semantics { contentDescription = "Page ${current + 1} of $count" },
+                modifier = Modifier.semantics { contentDescription = appString(R.string.document_detail_page_of, current + 1, count) },
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.SemiBold,
             )
             IconButton(onClick = { onStep(1) }, enabled = enabled && current < count - 1) {
-                Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = "Next page")
+                Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = stringResource(R.string.sign_editor_next_page))
             }
         }
     }
@@ -466,7 +484,7 @@ private fun QueryPill(query: String, matchesOnPage: Int, onClear: () -> Unit, mo
             ) {
                 Text(
                     text = "“${query.trim()}” · " +
-                        if (matchesOnPage == 0) "not on this page" else "$matchesOnPage on this page",
+                        if (matchesOnPage == 0) stringResource(R.string.page_text_not_on_this_page) else stringResource(R.string.page_text_on_this_page, matchesOnPage),
                     style = MaterialTheme.typography.labelLarge,
                     color = matchHighlightStyle().color,
                     maxLines = 1,
@@ -476,7 +494,7 @@ private fun QueryPill(query: String, matchesOnPage: Int, onClear: () -> Unit, mo
                 IconButton(onClick = onClear, modifier = Modifier.size(48.dp)) {
                     Icon(
                         Icons.Filled.Close,
-                        contentDescription = "Stop highlighting",
+                        contentDescription = stringResource(R.string.page_text_stop_highlighting),
                         modifier = Modifier.size(18.dp),
                         tint = matchHighlightStyle().color,
                     )
@@ -513,8 +531,8 @@ private fun TextModePage(
             item(key = "stale") {
                 InlineNotice(
                     icon = Icons.Outlined.Update,
-                    text = "This page changed after its text was read.",
-                    actionLabel = "Read again",
+                    text = stringResource(R.string.page_text_this_page_changed_after_its),
+                    actionLabel = stringResource(R.string.page_text_read_again),
                     onAction = onReadPage,
                     enabled = recognition !is RecognitionStatus.Running,
                 )
@@ -534,7 +552,7 @@ private fun TextModePage(
                         focusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
                         unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
                     ),
-                    supportingText = { Text("Your corrections are used for copy, share and search.") },
+                    supportingText = { Text(stringResource(R.string.page_text_your_corrections_are_used_for)) },
                 )
             }
             text == null -> item(key = "pending") {
@@ -542,16 +560,16 @@ private fun TextModePage(
                     is RecognitionStatus.Running -> ReadingPlaceholder()
                     is RecognitionStatus.Failed -> PageMessage(
                         icon = Icons.Outlined.ErrorOutline,
-                        title = "Couldn't read this page",
+                        title = stringResource(R.string.page_text_couldn_t_read_this_page),
                         body = recognition.message,
-                        actionLabel = "Try again",
+                        actionLabel = stringResource(R.string.page_text_try_again),
                         onAction = onReadPage,
                     )
                     RecognitionStatus.Idle -> PageMessage(
                         icon = Icons.Outlined.TextFields,
-                        title = "Text not read yet",
-                        body = "Scanly reads page text on this device.",
-                        actionLabel = "Read this page",
+                        title = stringResource(R.string.page_text_text_not_read_yet),
+                        body = stringResource(R.string.page_text_scanly_reads_page_text_on),
+                        actionLabel = stringResource(R.string.page_text_read_this_page),
                         onAction = onReadPage,
                     )
                 }
@@ -559,10 +577,9 @@ private fun TextModePage(
             !text.hasText -> item(key = "empty") {
                 PageMessage(
                     icon = Icons.Outlined.ImageSearch,
-                    title = "No text found on this page",
-                    body = "Photos and handwriting may not contain readable printed text. " +
-                        "A sharper, well-lit scan usually helps.",
-                    actionLabel = "Read again",
+                    title = stringResource(R.string.page_text_no_text_found_on_this),
+                    body = stringResource(R.string.page_text_photos_and_handwriting_may_not),
+                    actionLabel = stringResource(R.string.page_text_read_again),
                     onAction = onReadPage,
                     actionEnabled = recognition !is RecognitionStatus.Running,
                 )
@@ -593,30 +610,46 @@ private fun TextModePage(
 
 @Composable
 private fun PageHeader(item: PageTextItem, pageCount: Int) {
-    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-        Text(
-            text = "Page ${item.page.pageIndex + 1}" + if (pageCount > 1) " of $pageCount" else "",
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.SemiBold,
-        )
-        item.text?.takeIf { it.hasText }?.let { text ->
+    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             Text(
-                text = "${text.wordCount} ${if (text.wordCount == 1) "word" else "words"}",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                text = stringResource(R.string.trash_use_cases_page, item.page.pageIndex + 1) + if (pageCount > 1) " of $pageCount" else "",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold,
             )
-            if (text.isEdited) {
-                Surface(shape = CircleShape, color = MaterialTheme.colorScheme.secondaryContainer) {
-                    Text(
-                        text = "Edited",
-                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 3.dp),
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer,
-                    )
+            item.text?.takeIf { it.hasText }?.let { text ->
+                Text(
+                    text = pluralStringResource(R.plurals.common_words, text.wordCount, text.wordCount),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                if (text.isEdited) {
+                    Surface(shape = CircleShape, color = MaterialTheme.colorScheme.secondaryContainer) {
+                        Text(
+                            text = stringResource(R.string.page_text_edited),
+                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 3.dp),
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        )
+                    }
                 }
             }
         }
+        item.text?.takeIf { it.hasText }?.let(::ocrEngineCaption)?.let { caption ->
+            Text(
+                text = caption,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
     }
+}
+
+/** Which engine read the page, when that is worth saying; plain ML Kit pages need no note. */
+internal fun ocrEngineCaption(text: PageText): String? = when {
+    text.fallbackReason != null -> appString(R.string.page_text_read_with_ml_kit_indra)
+    text.engine == OcrEngine.INDRA -> appString(R.string.page_text_read_with_indra_ocr_experimental)
+    else -> null
 }
 
 @Composable
@@ -658,7 +691,7 @@ private fun OnPageModePage(
             ) {
                 CachedThumbnail(
                     thumbnailPath = item.page.previewImagePath(PreviewDisplaySize.DETAIL),
-                    title = "Page ${item.page.pageIndex + 1}",
+                    title = stringResource(R.string.trash_use_cases_page, item.page.pageIndex + 1),
                     displaySize = PreviewDisplaySize.DETAIL,
                     contentRevision = item.page.updatedAtMillis,
                     modifier = Modifier.fillMaxSize(),
@@ -670,7 +703,7 @@ private fun OnPageModePage(
                     Canvas(
                         modifier = Modifier
                             .fillMaxSize()
-                            .semantics { contentDescription = "Page image with ${blocks.size} text regions" }
+                            .semantics { contentDescription = appString(R.string.page_text_page_image_with_text_regions, blocks.size) }
                             .pointerInput(blocks) {
                                 detectTapGestures { offset ->
                                     val x = offset.x / size.width
@@ -719,7 +752,7 @@ private fun OnPageModePage(
         when {
             item.isStale -> InlineNotice(
                 icon = Icons.Outlined.Update,
-                text = "Regions are hidden because this page changed after its text was read.",
+                text = stringResource(R.string.page_text_regions_are_hidden_because_this),
             )
             selected != null -> SelectedBlockCard(
                 text = selected.text,
@@ -728,7 +761,7 @@ private fun OnPageModePage(
                 onDismiss = { selectedIndex = null },
             )
             blocks.isNotEmpty() -> Text(
-                text = "Tap an outlined area to copy just that part.",
+                text = stringResource(R.string.page_text_tap_an_outlined_area_to),
                 modifier = Modifier.fillMaxWidth(),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -762,9 +795,9 @@ private fun SelectedBlockCard(
                 FilledTonalButton(onClick = onCopy) {
                     Icon(Icons.Outlined.ContentCopy, contentDescription = null, modifier = Modifier.size(18.dp))
                     Spacer(Modifier.width(8.dp))
-                    Text("Copy")
+                    Text(stringResource(R.string.page_text_copy))
                 }
-                TextButton(onClick = onDismiss) { Text("Done") }
+                TextButton(onClick = onDismiss) { Text(stringResource(R.string.camera_capture_chrome_done)) }
             }
         }
     }
@@ -785,10 +818,12 @@ private fun PageTextActionBar(
         color = MaterialTheme.colorScheme.surfaceContainerLow,
         tonalElevation = 2.dp,
     ) {
-        Column {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
+            // Same 640 dp action column as the tool screens, instead of buttons across a tablet.
             Row(
                 modifier = Modifier
+                    .widthIn(max = 640.dp)
                     .fillMaxWidth()
                     .navigationBarsPadding()
                     .padding(horizontal = 16.dp, vertical = 12.dp),
@@ -796,10 +831,10 @@ private fun PageTextActionBar(
             ) {
                 if (editing) {
                     OutlinedButton(onClick = onCancelEdit, modifier = Modifier.weight(1f).height(52.dp)) {
-                        Text("Cancel")
+                        Text(stringResource(R.string.export_share_cancel))
                     }
                     Button(onClick = onSaveEdit, modifier = Modifier.weight(1f).height(52.dp)) {
-                        Text("Save changes")
+                        Text(stringResource(R.string.page_text_save_changes))
                     }
                 } else {
                     Button(
@@ -810,7 +845,7 @@ private fun PageTextActionBar(
                     ) {
                         Icon(Icons.Outlined.ContentCopy, contentDescription = null, modifier = Modifier.size(18.dp))
                         Spacer(Modifier.width(8.dp))
-                        Text("Copy page", maxLines = 1)
+                        Text(stringResource(R.string.page_text_copy_page), maxLines = 1)
                     }
                     OutlinedButton(
                         onClick = onShare,
@@ -820,7 +855,7 @@ private fun PageTextActionBar(
                     ) {
                         Icon(Icons.Outlined.Share, contentDescription = null, modifier = Modifier.size(18.dp))
                         Spacer(Modifier.width(6.dp))
-                        Text("Share", maxLines = 1)
+                        Text(stringResource(R.string.document_detail_share_2), maxLines = 1)
                     }
                     OutlinedButton(
                         onClick = onEdit,
@@ -830,7 +865,7 @@ private fun PageTextActionBar(
                     ) {
                         Icon(Icons.Outlined.Edit, contentDescription = null, modifier = Modifier.size(18.dp))
                         Spacer(Modifier.width(6.dp))
-                        Text("Edit", maxLines = 1)
+                        Text(stringResource(R.string.document_detail_edit), maxLines = 1)
                     }
                 }
             }
@@ -917,7 +952,7 @@ private fun ReadingPlaceholder() {
     )
     val widths = listOf(1f, 0.94f, 0.98f, 0.62f, 0f, 1f, 0.9f, 0.96f, 0.4f)
     Column(
-        modifier = Modifier.fillMaxWidth().semantics { contentDescription = "Reading text" },
+        modifier = Modifier.fillMaxWidth().semantics { contentDescription = appString(R.string.page_text_reading_text) },
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
         widths.forEach { fraction ->
@@ -953,9 +988,9 @@ private fun EmptyDocumentText() {
         } else {
             Icon(Icons.Outlined.Notes, contentDescription = null, modifier = Modifier.size(40.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
         }
-        Text("This document has no pages yet", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+        Text(stringResource(R.string.page_text_this_document_has_no_pages), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
         Text(
-            "Scan or import a page and its text will appear here.",
+            stringResource(R.string.page_text_scan_or_import_a_page),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center,
@@ -963,11 +998,10 @@ private fun EmptyDocumentText() {
     }
 }
 
-/** Counts words in [text] that start with any of the folded [words]. */
+/** Counts places in [text] that match the folded [words] (see [SearchHighlights]). */
 internal fun countMatches(text: String, words: List<String>): Int {
     if (words.isEmpty() || text.isEmpty()) return 0
-    val folded = FoldedText.of(text).text
-    return Regex("[\\p{L}\\p{N}]+").findAll(folded).count { match -> words.any { match.value.startsWith(it) } }
+    return SearchHighlights.ranges(text, words).size
 }
 
 private fun shareText(context: Context, subject: String, text: String) {
@@ -977,7 +1011,7 @@ private fun shareText(context: Context, subject: String, text: String) {
         putExtra(Intent.EXTRA_SUBJECT, subject)
         putExtra(Intent.EXTRA_TEXT, text)
     }
-    context.startActivity(Intent.createChooser(send, "Share text"))
+    context.startActivity(Intent.createChooser(send, appString(R.string.page_text_share_text)))
 }
 
 private const val TAP_SLOP = 0.012f

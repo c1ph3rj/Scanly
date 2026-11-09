@@ -19,10 +19,13 @@ class LiteRtDocumentGateDetector @Inject constructor(
     @param:ApplicationContext private val context: Context,
     private val dispatchers: ScanlyDispatchers,
 ) : DocumentGateDetector {
-    private val runtime: Runtime by lazy(LazyThreadSafetyMode.SYNCHRONIZED, ::createRuntime)
+    private val runtime: Runtime by lazy(LazyThreadSafetyMode.SYNCHRONIZED) { createRuntime(THREAD_COUNT) }
 
-    override suspend fun classify(bitmap: Bitmap): DocumentGateResult = withContext(dispatchers.default) {
-        val activeRuntime = runtime
+    /** Single-threaded and pinned to one core type, so results are bit-identical (see CpuAffinity). */
+    private val reproducibleRuntime: Runtime by lazy(LazyThreadSafetyMode.SYNCHRONIZED) { createRuntime(1) }
+
+    override suspend fun classify(bitmap: Bitmap, reproducible: Boolean): DocumentGateResult = withContext(dispatchers.default) {
+        val activeRuntime = if (reproducible) reproducibleRuntime else runtime
         val totalStart = System.nanoTime()
         val preprocessingStart = System.nanoTime()
         val prepared = prepareInput(
@@ -35,7 +38,11 @@ class LiteRtDocumentGateDetector @Inject constructor(
         val output = ByteBuffer.allocateDirect(activeRuntime.outputBytes).order(ByteOrder.nativeOrder())
         val inferenceStart = System.nanoTime()
         synchronized(activeRuntime.lock) {
-            activeRuntime.interpreter.run(prepared.inputBuffer, output)
+            if (reproducible) {
+                CpuAffinity.run { activeRuntime.interpreter.run(prepared.inputBuffer, output) }
+            } else {
+                activeRuntime.interpreter.run(prepared.inputBuffer, output)
+            }
         }
         val inferenceNanos = System.nanoTime() - inferenceStart
         val postprocessingStart = System.nanoTime()
@@ -57,11 +64,11 @@ class LiteRtDocumentGateDetector @Inject constructor(
         )
     }
 
-    private fun createRuntime(): Runtime {
+    private fun createRuntime(threads: Int): Runtime {
         TensorFlowLite.init()
         val interpreter = InterpreterApi.create(
             loadMappedModelBuffer(),
-            InterpreterApi.Options().apply { setNumThreads(THREAD_COUNT) },
+            InterpreterApi.Options().apply { setNumThreads(threads) },
         )
         interpreter.allocateTensors()
         val inputShape = interpreter.getInputTensor(0).shape()

@@ -6,19 +6,35 @@ Version policy and release history for Scanly.
 
 | Field | Value |
 | --- | --- |
-| Version name | `1.0.18` |
-| Version code | `18` |
+| Version name | `1.0.20` |
+| Version code | `20` |
 | Application ID | `in.c1ph3rj.scanly` |
-| Room schema | `7` |
+| Room schema | `12` |
 | Min SDK | 29 (Android 10) |
 | Target / compile SDK | compile 37 / target 36 |
-| Release date | 2026-10-20 |
+| Release date | 2026-11-09 |
 
 Canonical source: `versionCode` and `versionName` in `app/build.gradle.kts`.
 
 The version shown in Settings reads `versionName` via `DefaultSettingsRepository`.
 
 ### Release highlights
+
+Version **1.0.20** (relative to `1.0.18`):
+
+- Scanly in 25 languages, chosen in Settings or following the phone's language; switching updates the screen in place
+- Indra OCR (experimental): a second on-device, multi-script text engine with ML Kit fallback, crash guard and background re-read
+- Text recognition gets its own Settings page; ML Kit stays the default
+- Recently deleted with Undo: pages kept 2 days, documents and folders 7 days; folder delete asks whether to keep its documents
+- Add PDF to library, Image to text, and My signatures tools
+- Search: filters and sort, word suggestions, `-exclude` and `OR`, English spelling finds Indic text, close-word and OCR-misread matches, BM25 ranking, number/date/hyphen matching
+- New illustrated first-run introduction; layouts adapted for tablets, foldables, landscape and short windows
+- Import opens the system photo picker; QR tool renamed "QR & barcode"
+- Opts out of Google Drive auto-backup (device-to-device transfer still works)
+- Slim self-built OpenCV 5.0.0 (~32 MB smaller APK)
+- Room schemas 8–12; many stability fixes across signing, PDF tools, camera, import, crop and Indic search
+
+The compact GitHub release description used by the in-app update dialog is available in [release-notes/v1.0.20.md](release-notes/v1.0.20.md).
 
 Version **1.0.18** (relative to `1.0.17`):
 
@@ -60,6 +76,16 @@ The compact GitHub release description used by the in-app update dialog is avail
 - Keep [VERSION.md](../VERSION.md) aligned with Gradle values.
 
 ## Recent releases
+
+### 1.0.20 (code 20) — 2026-11-09
+
+- 25 app languages with in-place switching
+- Indra OCR (experimental) with ML Kit fallback and a dedicated Text recognition page
+- Recently deleted with Undo and folder-delete choices
+- Add PDF to library, Image to text, My signatures
+- Search filters, suggestions, exclusions, OR, Indic transliteration, close and OCR-variant matches, better ranking
+- New onboarding; tablet, foldable and landscape layouts
+- Slim OpenCV build; no Google Drive auto-backup; schema 12
 
 ### 1.0.18 (code 18) — 2026-10-20
 
@@ -155,6 +181,13 @@ Major feature release:
 Full details: [CHANGELOG.md](../CHANGELOG.md)
 
 ## Upgrade notes
+
+### From 1.0.18 to 1.0.20 (schema 12)
+
+- `MIGRATION_7_8` → `MIGRATION_9_10` add Recently deleted columns (`deletedAtMillis`, `deletedWithGroup`, `deletedFromIndex`, `releasedFromGroupId`); expired items are purged on app start.
+- `MIGRATION_10_11` records which OCR engine read each page; existing rows are marked as ML Kit reads.
+- `MIGRATION_11_12` adds derived search text and rebuilds the FTS4 index; existing pages are re-derived in the background without being read again.
+- No manual migration steps are required.
 
 ### From 1.0.17 to 1.0.18 (schema 7)
 

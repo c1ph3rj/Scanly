@@ -41,6 +41,20 @@ class CropQuadEditorTest {
     }
 
     @Test
+    fun moveHandleNeverProducesConcaveQuad() {
+        val quad = CropQuadEditor.defaultQuad()
+
+        val moved = CropQuadEditor.moveHandle(
+            quad = quad,
+            handle = CropHandle.BOTTOM_RIGHT,
+            target = NormalizedPoint(0.2f, 0.2f),
+        )
+
+        assertTrue(moved.isConvex())
+        assertTrue(moved.isValid(minArea = 0.005f, minDistance = 0.015f))
+    }
+
+    @Test
     fun defaultQuadProducesValidInsetCrop() {
         val quad = CropQuadEditor.defaultQuad()
 

@@ -35,6 +35,8 @@ import java.util.zip.ZipOutputStream
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.math.min
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
 
 @Singleton
 class DefaultDocumentExportRepository @Inject constructor(
@@ -63,7 +65,7 @@ class DefaultDocumentExportRepository @Inject constructor(
                     fileName = fileName,
                     mimeType = pdfMimeType,
                 )
-            }.toScanlyResult("Could not export PDF.")
+            }.toScanlyResult(appString(R.string.default_document_export_repository_could_not_export_pdf))
         }
 
     override suspend fun preparePdfShare(
@@ -80,7 +82,7 @@ class DefaultDocumentExportRepository @Inject constructor(
                 title = exportInput.documentTitle,
                 filePaths = listOf(outputFile.absolutePath),
             )
-        }.toScanlyResult("Could not prepare PDF share.")
+        }.toScanlyResult(appString(R.string.default_document_export_repository_could_not_prepare_pdf_share))
     }
 
     override suspend fun exportImageArchive(documentId: String): ScanlyResult<ExportArtifact> =
@@ -100,7 +102,7 @@ class DefaultDocumentExportRepository @Inject constructor(
                     fileName = fileName,
                     mimeType = zipMimeType,
                 )
-            }.toScanlyResult("Could not export images.")
+            }.toScanlyResult(appString(R.string.default_document_export_repository_could_not_export_images))
         }
 
     override suspend fun prepareImageShare(documentId: String): ScanlyResult<ShareArtifact> =
@@ -112,7 +114,7 @@ class DefaultDocumentExportRepository @Inject constructor(
                     title = exportInput.documentTitle,
                     filePaths = exportInput.pageImagePaths,
                 )
-            }.toScanlyResult("Could not prepare images for sharing.")
+            }.toScanlyResult(appString(R.string.default_document_export_repository_could_not_prepare_images_for))
         }
 
     // ─── Group exports ──────────────────────────────────────────────────────────
@@ -129,7 +131,7 @@ class DefaultDocumentExportRepository @Inject constructor(
                 fileName = output.file.name,
                 mimeType = pdfMimeType,
             )
-        }.toScanlyResult("Could not export group as PDF.")
+        }.toScanlyResult(appString(R.string.default_document_export_repository_could_not_export_group_as_2))
     }
 
     override suspend fun exportGroupAsZippedPdfs(
@@ -144,7 +146,7 @@ class DefaultDocumentExportRepository @Inject constructor(
                 fileName = output.file.name,
                 mimeType = zipMimeType,
             )
-        }.toScanlyResult("Could not export group as ZIP.")
+        }.toScanlyResult(appString(R.string.default_document_export_repository_could_not_export_group_as))
     }
 
     override suspend fun prepareGroupSinglePdfShare(
@@ -159,7 +161,7 @@ class DefaultDocumentExportRepository @Inject constructor(
                 title = output.title,
                 filePaths = listOf(output.file.absolutePath),
             )
-        }.toScanlyResult("Could not prepare group PDF share.")
+        }.toScanlyResult(appString(R.string.default_document_export_repository_could_not_prepare_group_pdf))
     }
 
     override suspend fun prepareGroupZippedPdfsShare(
@@ -174,7 +176,7 @@ class DefaultDocumentExportRepository @Inject constructor(
                 title = output.title,
                 filePaths = listOf(output.file.absolutePath),
             )
-        }.toScanlyResult("Could not prepare group ZIP share.")
+        }.toScanlyResult(appString(R.string.default_document_export_repository_could_not_prepare_group_zip))
     }
 
     private suspend fun buildGroupSinglePdf(
@@ -182,18 +184,18 @@ class DefaultDocumentExportRepository @Inject constructor(
         options: PdfExportOptions,
         onProgress: (current: Int, total: Int) -> Unit,
     ): GroupExportOutput {
-        val group = documentGroupDao.getGroup(groupId) ?: error("Group not found.")
+        val group = documentGroupDao.getGroup(groupId) ?: error(appString(R.string.error_group_not_found))
         val documents = documentDao.getDocumentsByGroup(groupId)
-        if (documents.isEmpty()) error("No documents in group.")
+        if (documents.isEmpty()) error(appString(R.string.error_no_documents_in_group))
 
         // Collect all page image paths across all documents in title order
         val allPagePaths = documents.flatMap { doc ->
             scanPageDao.getPages(doc.id).map { page ->
                 page.processedImagePath ?: page.rawImagePath
-                    ?: error("Missing image for a page in \"${doc.title}\".")
+                    ?: error(appString(R.string.error_could_not_read_the_page_image))
             }
         }
-        if (allPagePaths.isEmpty()) error("No pages available to export.")
+        if (allPagePaths.isEmpty()) error(appString(R.string.error_no_pages_available_to_export))
 
         val exportDir = ensureFreshGroupExportDirectory(groupId)
         val fileStem = DocumentPresentationFormatter.safeFileStem(group.title)
@@ -209,9 +211,9 @@ class DefaultDocumentExportRepository @Inject constructor(
         options: PdfExportOptions,
         onProgress: (currentDoc: Int, totalDocs: Int) -> Unit,
     ): GroupExportOutput {
-        val group = documentGroupDao.getGroup(groupId) ?: error("Group not found.")
+        val group = documentGroupDao.getGroup(groupId) ?: error(appString(R.string.error_group_not_found))
         val documents = documentDao.getDocumentsByGroup(groupId)
-        if (documents.isEmpty()) error("No documents in group.")
+        if (documents.isEmpty()) error(appString(R.string.error_no_documents_in_group))
 
         val exportDir = ensureFreshGroupExportDirectory(groupId)
         val groupFileStem = DocumentPresentationFormatter.safeFileStem(group.title)
@@ -247,7 +249,7 @@ class DefaultDocumentExportRepository @Inject constructor(
             tempPdfFiles.forEach { it.delete() }
         }
 
-        if (bundledDocuments == 0) error("No pages available to export.")
+        if (bundledDocuments == 0) error(appString(R.string.error_no_pages_available_to_export))
 
         return GroupExportOutput(file = zipFile, title = group.title)
     }
@@ -266,13 +268,13 @@ class DefaultDocumentExportRepository @Inject constructor(
     }
 
     private suspend fun loadExportInput(documentId: String): ExportInput {
-        val document = documentDao.getDocument(documentId) ?: error("Document not found.")
+        val document = documentDao.getDocument(documentId) ?: error(appString(R.string.error_document_not_found))
         val pages = scanPageDao.getPages(documentId)
         val pageImagePaths = pages.map { page ->
             page.processedImagePath ?: page.rawImagePath
-                ?: error("Missing image for page ${page.pageIndex + 1}.")
+                ?: error(appString(R.string.error_could_not_read_the_page_image))
         }
-        if (pageImagePaths.isEmpty()) error("No pages available to export.")
+        if (pageImagePaths.isEmpty()) error(appString(R.string.error_no_pages_available_to_export))
         return ExportInput(
             documentTitle = document.title,
             fileStem = DocumentPresentationFormatter.safeFileStem(document.title),
@@ -289,7 +291,7 @@ class DefaultDocumentExportRepository @Inject constructor(
     private fun ensureDirectory(relativePath: String): File {
         val directory = File(context.cacheDir, relativePath)
         if (directory.exists()) directory.deleteRecursively()
-        if (!directory.mkdirs()) error("Could not create export directory.")
+        if (!directory.mkdirs()) error(appString(R.string.error_could_not_create_export_directory))
         return directory
     }
 
@@ -336,7 +338,7 @@ class DefaultDocumentExportRepository @Inject constructor(
         try {
             pageImagePaths.forEachIndexed { index, imagePath ->
                 val bitmap = decodeBitmapForExport(imagePath)
-                    ?: error("Could not decode $imagePath for export.")
+                    ?: error(appString(R.string.error_could_not_read_the_page_image))
                 val pageLayout = PdfPageLayoutResolver.resolve(bitmap.width, bitmap.height, options)
                 val pageInfo = PdfDocument.PageInfo.Builder(
                     pageLayout.pageWidthPoints,
@@ -421,7 +423,7 @@ class DefaultDocumentExportRepository @Inject constructor(
     ) {
         PDFBoxResourceLoader.init(context.applicationContext)
         if (outputFile.exists() && !outputFile.delete()) {
-            error("Could not replace existing PDF.")
+            error(appString(R.string.error_could_not_replace_existing_pdf))
         }
         PDDocument.load(plainPdf).use { document ->
             val permissions = AccessPermission()

@@ -1,5 +1,7 @@
 package `in`.c1ph3rj.scanly.data.update
 
+import `in`.c1ph3rj.scanly.core.common.appString
+import `in`.c1ph3rj.scanly.R
 import `in`.c1ph3rj.scanly.core.common.ScanlyDispatchers
 import `in`.c1ph3rj.scanly.core.common.ScanlyError
 import `in`.c1ph3rj.scanly.core.common.ScanlyResult
@@ -28,7 +30,7 @@ class GitHubReleaseUpdateRepository @Inject constructor(
                 onFailure = { throwable ->
                     ScanlyResult.Failure(
                         ScanlyError(
-                            message = throwable.message ?: "Could not check GitHub releases.",
+                            message = throwable.message ?: appString(R.string.error_could_not_check_github_releases),
                             cause = throwable,
                         ),
                     )
@@ -89,13 +91,17 @@ class GitHubReleaseUpdateRepository @Inject constructor(
 
         return AppRelease(
             tagName = releaseJson.getString("tag_name"),
-            title = releaseJson.optString("name").ifBlank { releaseJson.getString("tag_name") },
-            bodyMarkdown = releaseJson.optString("body"),
+            title = releaseJson.optStringOrEmpty("name").ifBlank { releaseJson.getString("tag_name") },
+            bodyMarkdown = releaseJson.optStringOrEmpty("body"),
             htmlUrl = releaseJson.getString("html_url"),
-            publishedAt = releaseJson.optString("published_at").takeIf { it.isNotBlank() },
+            publishedAt = releaseJson.optStringOrEmpty("published_at").takeIf { it.isNotBlank() },
             apkAsset = apkAsset,
         )
     }
+
+    /** Like [JSONObject.optString], but a JSON `null` becomes "" instead of the literal "null". */
+    private fun JSONObject.optStringOrEmpty(key: String): String =
+        if (isNull(key)) "" else optString(key)
 
     private companion object {
         const val LATEST_RELEASE_URL = "https://api.github.com/repos/c1ph3rj/Scanly/releases/latest"

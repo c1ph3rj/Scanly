@@ -29,6 +29,8 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
 
 object PageTextDestination {
     const val documentIdArgument = "documentId"
@@ -89,8 +91,12 @@ class PageTextViewModel @Inject constructor(
     private val recordPositiveMomentUseCase: RecordPositiveMomentUseCase,
 ) : ViewModel() {
     private val documentId: String = checkNotNull(savedStateHandle[PageTextDestination.documentIdArgument])
-    private val initialPage: Int = savedStateHandle.get<String>(PageTextDestination.pageArgument)
-        ?.toIntOrNull() ?: savedStateHandle.get<Int>(PageTextDestination.pageArgument) ?: 0
+    // The route argument arrives as a String, but a restored state may hold an Int; read it untyped.
+    private val initialPage: Int = when (val raw = savedStateHandle.get<Any?>(PageTextDestination.pageArgument)) {
+        is Int -> raw
+        is String -> raw.toIntOrNull()
+        else -> null
+    } ?: 0
     private val query = MutableStateFlow(savedStateHandle.get<String>(PageTextDestination.queryArgument).orEmpty())
     private val recognition = MutableStateFlow<RecognitionStatus>(RecognitionStatus.Idle)
     private val _events = MutableSharedFlow<PageTextEvent>()
@@ -144,7 +150,7 @@ class PageTextViewModel @Inject constructor(
             when (val result = recognizePageTextUseCase(pageId, force = true)) {
                 is ScanlyResult.Success -> {
                     recognition.value = RecognitionStatus.Idle
-                    _events.emit(PageTextEvent.ShowMessage("Page text read again"))
+                    _events.emit(PageTextEvent.ShowMessage(appString(R.string.page_text_page_text_read_again)))
                 }
                 is ScanlyResult.Failure -> {
                     recognition.value = RecognitionStatus.Idle
@@ -157,7 +163,7 @@ class PageTextViewModel @Inject constructor(
     fun saveEdit(pageId: String, text: String) {
         viewModelScope.launch {
             when (val result = updatePageTextUseCase(pageId, text.trim())) {
-                is ScanlyResult.Success -> _events.emit(PageTextEvent.ShowMessage("Changes saved. Search uses your edits."))
+                is ScanlyResult.Success -> _events.emit(PageTextEvent.ShowMessage(appString(R.string.page_text_changes_saved_search_uses_your)))
                 is ScanlyResult.Failure -> _events.emit(PageTextEvent.ShowMessage(result.error.message))
             }
         }
@@ -166,7 +172,7 @@ class PageTextViewModel @Inject constructor(
     fun restoreRecognized(pageId: String) {
         viewModelScope.launch {
             when (val result = updatePageTextUseCase(pageId, null)) {
-                is ScanlyResult.Success -> _events.emit(PageTextEvent.ShowMessage("Original text restored"))
+                is ScanlyResult.Success -> _events.emit(PageTextEvent.ShowMessage(appString(R.string.page_text_original_text_restored)))
                 is ScanlyResult.Failure -> _events.emit(PageTextEvent.ShowMessage(result.error.message))
             }
         }

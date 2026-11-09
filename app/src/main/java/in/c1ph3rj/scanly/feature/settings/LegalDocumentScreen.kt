@@ -47,19 +47,26 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import `in`.c1ph3rj.scanly.feature.components.ScanlyDetailScaffold
+import `in`.c1ph3rj.scanly.R
+import androidx.compose.ui.res.stringResource
+import androidx.annotation.StringRes
+import `in`.c1ph3rj.scanly.core.common.appString
 
 enum class LegalDocumentType(
     val url: String,
-    val title: String,
+    @param:StringRes val titleRes: Int,
 ) {
     Privacy(
         url = "https://www.usescanly.co.in/privacy-policy",
-        title = "Privacy Policy",
+        titleRes = R.string.settings_hub_sub_screens_privacy_policy,
     ),
     Terms(
         url = "https://www.usescanly.co.in/terms-and-conditions",
-        title = "Terms & Conditions",
+        titleRes = R.string.settings_hub_sub_screens_terms_conditions,
     ),
+    ;
+
+    val title: String get() = appString(titleRes)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -238,12 +245,12 @@ private fun LegalDocumentLoadError(
             tint = MaterialTheme.colorScheme.onSurfaceVariant,
         )
         Text(
-            text = "$documentTitle couldn't be loaded",
+            text = stringResource(R.string.legal_document_couldn_t_be_loaded, documentTitle),
             style = MaterialTheme.typography.titleMedium,
             modifier = Modifier.padding(top = 16.dp),
         )
         Text(
-            text = "Check your internet connection and try again.",
+            text = stringResource(R.string.legal_document_check_your_internet_connection_and),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(top = 8.dp),
@@ -252,10 +259,10 @@ private fun LegalDocumentLoadError(
             onClick = onRetry,
             modifier = Modifier.padding(top = 24.dp),
         ) {
-            Text("Retry")
+            Text(stringResource(R.string.legal_document_retry))
         }
         TextButton(onClick = onOpenInBrowser) {
-            Text("Open in browser")
+            Text(stringResource(R.string.legal_document_open_in_browser))
         }
     }
 }

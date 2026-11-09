@@ -33,7 +33,8 @@ data class DocumentGateTiming(
 }
 
 interface DocumentGateDetector {
-    suspend fun classify(bitmap: Bitmap): DocumentGateResult
+    /** @param reproducible bit-identical results for the same bitmap (slower), see [CpuAffinity]. */
+    suspend fun classify(bitmap: Bitmap, reproducible: Boolean = false): DocumentGateResult
 }
 
 object DocumentGatePolicy {

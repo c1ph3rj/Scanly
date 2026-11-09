@@ -1,10 +1,10 @@
 ﻿{
   "schemaVersion": 1,
-  "lastUpdated": "2026-10-20",
+  "lastUpdated": "2026-11-09",
   "release": {
-    "stableVersion": "v1.0.18",
+    "stableVersion": "v1.0.20",
     "developmentLabel": "What's new",
-    "developmentUrl": "https://github.com/c1ph3rj/Scanly/blob/master/docs/release-notes/v1.0.18.md",
+    "developmentUrl": "https://github.com/c1ph3rj/Scanly/blob/master/docs/release-notes/v1.0.20.md",
     "releasesUrl": "https://play.google.com/store/apps/details?id=in.c1ph3rj.scanly"
   },
   "screenshots": {
@@ -101,41 +101,41 @@
     ]
   },
   "development": {
-    "eyebrow": "What's new in v1.0.18",
-    "title": "Search scans, sign documents, meet Pip.",
-    "description": "Find words inside scanned pages, sign PDFs or scans with reusable signatures, and get a little help from Pip — all on your device.",
+    "eyebrow": "What's new in v1.0.20",
+    "title": "25 languages, Indra OCR, safer deletes.",
+    "description": "Use Scanly in your language, read more scripts on-device with Indra OCR, and undo deletes with Recently deleted — all on your device.",
     "items": [
       {
-        "title": "Find words inside scans",
-        "body": "Bundled ML Kit text recognition runs on-device; search results include the matching page and excerpt."
+        "title": "Scanly in 25 languages",
+        "body": "Follow your phone's language or pick one in Settings; the screen updates instantly, and dates and sizes follow your choice."
       },
       {
-        "title": "Read and correct extracted text",
-        "body": "Read recognized text, inspect its position on the scan, then copy, share, or correct it for future searches."
+        "title": "Indra OCR (experimental)",
+        "body": "A second on-device text engine that reads Indian scripts, Cyrillic, Greek, Chinese, Japanese, Korean, Arabic and more, with ML Kit as fallback."
       },
       {
-        "title": "Sign PDFs",
-        "body": "Place signatures, initials, dates, text, and checkboxes on a PDF, then save or share a new signed copy."
+        "title": "Recently deleted",
+        "body": "Deleted pages stay for 2 days and documents and folders for 7, with Undo right after every delete."
       },
       {
-        "title": "Sign scanned pages",
-        "body": "Add editable marks to a Scanly document; they remain in previews and exports through crop, filter, and retake edits."
+        "title": "Smarter search",
+        "body": "Filters and sort, word suggestions, -word and OR, English spellings that find Indic text, and matches despite typos or OCR misreads."
       },
       {
-        "title": "Reuse your signatures",
-        "body": "Draw a signature or initials, or import a photo and extract its ink. Saved marks stay on this device."
+        "title": "Add PDF to library",
+        "body": "Turn any PDF on your phone into a Scanly document you can crop, filter, sign, search and export."
       },
       {
-        "title": "Meet Pip",
-        "body": "Scanly's pixel helper cheers up empty screens, coaches you while you aim the camera, and leaves one short tip a day. Turn any of it off in Settings."
+        "title": "Image to text",
+        "body": "Pick photos or a scan and read, copy or share its text, recognised on this phone."
       },
       {
-        "title": "Open PDFs from anywhere",
-        "body": "Choose Open in Scanly from Files, mail, or chat apps, then sign, compress, watermark, or turn pages into images from the reader's menu."
+        "title": "Built for big screens",
+        "body": "A new first-run introduction, plus layouts for tablets, foldables, landscape and split screen."
       },
       {
-        "title": "A simpler Storage screen",
-        "body": "Clear temporary exports, manage the save location, and tidy the library. Library backup and restore have been removed."
+        "title": "Smaller and more private",
+        "body": "A slimmer OpenCV build makes the app smaller, and scans are no longer copied to Google Drive backup."
       }
     ]
   },

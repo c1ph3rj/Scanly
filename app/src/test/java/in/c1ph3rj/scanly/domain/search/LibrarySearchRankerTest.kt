@@ -1,11 +1,16 @@
 package `in`.c1ph3rj.scanly.domain.search
 
 import `in`.c1ph3rj.scanly.domain.model.DocumentGroup
+import `in`.c1ph3rj.scanly.domain.model.DateFilter
 import `in`.c1ph3rj.scanly.domain.model.DocumentKind
+import `in`.c1ph3rj.scanly.domain.model.FolderFilter
 import `in`.c1ph3rj.scanly.domain.model.HighlightedText
+import `in`.c1ph3rj.scanly.domain.model.MatchTier
 import `in`.c1ph3rj.scanly.domain.model.PageTextHit
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
+import `in`.c1ph3rj.scanly.domain.model.SearchFilters
 import `in`.c1ph3rj.scanly.domain.model.SearchScope
+import `in`.c1ph3rj.scanly.domain.model.SearchSort
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -24,11 +29,136 @@ class LibrarySearchRankerTest {
         hit("inv", page = 0, count = 1),
     )
 
+    @Test
+    fun exactWordPagesOutrankPrefixOnlyPages() {
+        val results = rank(
+            "zebra",
+            textHits = listOf(hit("other", page = 0, count = 1), hit("inv", page = 0, count = 1, tier = MatchTier.EXACT)),
+        )
+        // Holiday photos is newer, but only the invoice has the whole word.
+        assertEquals(listOf("inv", "other"), results.textMatches.map { it.document.id })
+    }
+
+    @Test
+    fun closeOnlyDocumentsComeAfterEverythingTheUserTyped() {
+        val results = rank(
+            "lease",
+            textHits = listOf(
+                hit("other", page = 0, count = 5, tier = MatchTier.CLOSE),
+                hit("inv", page = 0, count = 1),
+            ),
+            closeTerms = listOf("least"),
+        )
+        assertEquals(listOf("inv"), results.textMatches.map { it.document.id })
+        assertEquals(setOf("lease", "notes"), results.nameMatches.map { it.document.id }.toSet())
+        assertEquals(listOf("other"), results.closeMatches.map { it.document.id })
+        assertEquals(listOf("least"), results.closeTerms)
+        assertEquals(4, results.documentCount)
+    }
+
+    @Test
+    fun nameMatchWithOnlyCloseTextStaysWithNameMatches() {
+        val results = rank("lease", textHits = listOf(hit("lease", page = 0, count = 1, tier = MatchTier.CLOSE)))
+        assertTrue(results.closeMatches.isEmpty())
+        assertTrue(results.nameMatches.any { it.document.id == "lease" && it.pageHits.size == 1 })
+    }
+
+    @Test
+    fun closeTermsAreDroppedWhenNoCloseMatchSurvives() {
+        val results = rank("lease", textHits = hits, closeTerms = listOf("least"))
+        assertTrue(results.closeTerms.isEmpty())
+    }
+
+    @Test
+    fun ocrVariantPagesRankBelowTypedMatchesButStayInText() {
+        val results = rank(
+            "zebra",
+            textHits = listOf(
+                hit("other", page = 0, count = 1, tier = MatchTier.OCR_VARIANT),
+                hit("inv", page = 0, count = 1),
+            ),
+        )
+        assertEquals(listOf("inv", "other"), results.textMatches.map { it.document.id })
+        assertTrue(results.closeMatches.isEmpty())
+    }
+
+    @Test
+    fun excludedWordsDropDocumentsByNameEvenWithTextHits() {
+        val results = rank("lease -notes")
+        assertTrue(results.documentCount > 0)
+        assertTrue((results.textMatches + results.nameMatches).none { it.document.id == "notes" })
+    }
+
+    @Test
+    fun folderAndDateFiltersNarrowDocumentsAndHideFolders() {
+        val inHome = LibrarySearchRanker.rank(
+            SearchQuery.parse("lease"), documents, groups, emptyMap(), hits, SearchScope.EVERYWHERE,
+            SearchFilters(folder = FolderFilter.In("home")),
+        )
+        assertEquals(listOf("lease"), (inHome.textMatches + inHome.nameMatches).map { it.document.id })
+        assertTrue(inHome.folders.isEmpty())
+        val recent = LibrarySearchRanker.rank(
+            SearchQuery.parse("lease"), documents, groups, emptyMap(), hits, SearchScope.EVERYWHERE,
+            SearchFilters(date = DateFilter.CUSTOM, customStartUtcMillis = 0, customEndUtcMillis = 0),
+            nowMillis = 0, zone = java.time.ZoneOffset.UTC,
+        )
+        // Every fixture document was changed within the first day of 1970.
+        assertEquals(3, recent.documentCount)
+    }
+
+    @Test
+    fun blankQueryWithFiltersBrowsesInTheChosenOrder() {
+        val browse = LibrarySearchRanker.rank(
+            SearchQuery.parse(""), documents, groups, emptyMap(), null, SearchScope.EVERYWHERE,
+            SearchFilters(folder = FolderFilter.None, sort = SearchSort.NAME),
+        )
+        assertEquals(listOf("Holiday photos", "Invoice INV-2041", "Lease notes"), browse.nameMatches.map { it.document.title })
+    }
+
+    @Test
+    fun sortOtherThanBestMatchReordersEachSection() {
+        val oldest = LibrarySearchRanker.rank(
+            SearchQuery.parse("lease"), documents, groups, emptyMap(), hits, SearchScope.EVERYWHERE,
+            SearchFilters(sort = SearchSort.OLDEST),
+        )
+        assertEquals(listOf("lease", "inv"), oldest.textMatches.map { it.document.id })
+        val newest = LibrarySearchRanker.rank(
+            SearchQuery.parse("lease"), documents, groups, emptyMap(), hits, SearchScope.EVERYWHERE,
+            SearchFilters(sort = SearchSort.NEWEST),
+        )
+        assertEquals(listOf("inv", "lease"), newest.textMatches.map { it.document.id })
+    }
+
+    @Test
+    fun moreRelevantPageBeatsMoreMatches() {
+        val results = rank(
+            "zebra",
+            textHits = listOf(
+                hit("other", page = 0, count = 6, relevance = 1.0),
+                hit("inv", page = 0, count = 1, relevance = 4.0),
+            ),
+        )
+        assertEquals(listOf("inv", "other"), results.textMatches.map { it.document.id })
+    }
+
+    @Test
+    fun wordsCloseTogetherBreakTies() {
+        val results = rank(
+            "zebra crossing",
+            textHits = listOf(
+                hit("other", page = 0, count = 2, relevance = 2.0, proximity = 0.1),
+                hit("inv", page = 0, count = 2, relevance = 2.0, proximity = 0.9),
+            ),
+        )
+        assertEquals(listOf("inv", "other"), results.textMatches.map { it.document.id })
+    }
+
     private fun rank(
         query: String,
         textHits: List<PageTextHit>? = hits,
         scope: SearchScope = SearchScope.EVERYWHERE,
         kind: DocumentKind? = null,
+        closeTerms: List<String> = emptyList(),
     ) = LibrarySearchRanker.rank(
         SearchQuery.parse(query),
         documents,
@@ -36,7 +166,8 @@ class LibrarySearchRankerTest {
         mapOf("lease" to DocumentKind.CONTRACT, "inv" to DocumentKind.INVOICE),
         textHits,
         scope,
-        kind,
+        SearchFilters(kind = kind),
+        closeTerms,
     )
 
     @Test
@@ -104,6 +235,14 @@ class LibrarySearchRankerTest {
         groupId = groupId,
     )
 
-    private fun hit(documentId: String, page: Int, count: Int) =
-        PageTextHit("$documentId-$page", documentId, page, HighlightedText("…"), count)
+    private fun hit(
+        documentId: String,
+        page: Int,
+        count: Int,
+        tier: MatchTier = MatchTier.PREFIX,
+        relevance: Double? = null,
+        proximity: Double = 0.0,
+    ) = PageTextHit("$documentId-$page", documentId, page, HighlightedText("…"), count, tier).let { hit ->
+        hit.copy(relevance = relevance ?: hit.relevance, proximity = proximity)
+    }
 }

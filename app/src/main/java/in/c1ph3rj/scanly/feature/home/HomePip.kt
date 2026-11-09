@@ -19,6 +19,8 @@ import `in`.c1ph3rj.scanly.feature.pip.PipBubbleTail
 import `in`.c1ph3rj.scanly.feature.pip.PipLook
 import `in`.c1ph3rj.scanly.feature.pip.PipMood
 import kotlinx.coroutines.delay
+import `in`.c1ph3rj.scanly.R
+import androidx.compose.ui.res.stringResource
 
 /** Pip beside the greeting, glancing at the actions below. Poke it for a line about itself. */
 @Composable
@@ -62,7 +64,7 @@ internal fun HomePipNote(
             tail = PipBubbleTail.TOP,
             tailPosition = 0.9f,
             onDismiss = if (isTip) onDismissTip else null,
-            dismissLabel = "Hide today's tip",
+            dismissLabel = stringResource(R.string.home_pip_hide_today_s_tip),
             modifier = Modifier.widthIn(max = 340.dp),
         )
     }

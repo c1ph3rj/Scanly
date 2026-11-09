@@ -1,11 +1,16 @@
 package `in`.c1ph3rj.scanly.data.settings
 
+import `in`.c1ph3rj.scanly.core.common.appString
+import `in`.c1ph3rj.scanly.R
 import android.content.Context
 import android.os.Build
 import android.content.Intent
 import android.net.Uri
+import androidx.datastore.core.handlers.ReplaceFileCorruptionHandler
+import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -18,8 +23,11 @@ import `in`.c1ph3rj.scanly.domain.model.SettingsFaq
 import `in`.c1ph3rj.scanly.domain.model.ThemeMode
 import `in`.c1ph3rj.scanly.domain.model.ExportDestination
 import `in`.c1ph3rj.scanly.domain.model.DocumentCornerModel
+import `in`.c1ph3rj.scanly.domain.model.OcrEngine
 import `in`.c1ph3rj.scanly.domain.repository.SettingsRepository
+import java.io.IOException
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
@@ -27,7 +35,10 @@ import org.json.JSONArray
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private val Context.settingsDataStore by preferencesDataStore(name = "scanly_settings")
+private val Context.settingsDataStore by preferencesDataStore(
+    name = "scanly_settings",
+    corruptionHandler = ReplaceFileCorruptionHandler { emptyPreferences() },
+)
 
 @Singleton
 class DefaultSettingsRepository @Inject constructor(
@@ -35,23 +46,29 @@ class DefaultSettingsRepository @Inject constructor(
     private val dispatchers: ScanlyDispatchers,
 ) : SettingsRepository {
 
+    /** Reads fall back to defaults when the preferences file cannot be read, instead of crashing. */
+    private val safeData: Flow<Preferences>
+        get() = context.settingsDataStore.data.catch { e ->
+            if (e is IOException) emit(emptyPreferences()) else throw e
+        }
+
     override fun observeLiveDetectionModel(): Flow<DocumentCornerModel> =
-        context.settingsDataStore.data.map { DocumentCornerModel.fromStorage(it[liveDetectionModelKey]) }
+        safeData.map { DocumentCornerModel.fromStorage(it[liveDetectionModelKey]) }
 
     override suspend fun setLiveDetectionModel(model: DocumentCornerModel): ScanlyResult<Unit> =
         updateModelPreference(liveDetectionModelKey, model)
 
     override fun observePostProcessingModel(): Flow<DocumentCornerModel> =
-        context.settingsDataStore.data.map { DocumentCornerModel.fromStorage(it[postProcessingModelKey]) }
+        safeData.map { DocumentCornerModel.fromStorage(it[postProcessingModelKey]) }
 
     override suspend fun setPostProcessingModel(model: DocumentCornerModel): ScanlyResult<Unit> =
         updateModelPreference(postProcessingModelKey, model)
 
     override suspend fun getPostProcessingModel(): DocumentCornerModel =
-        DocumentCornerModel.fromStorage(context.settingsDataStore.data.first()[postProcessingModelKey])
+        DocumentCornerModel.fromStorage(safeData.first()[postProcessingModelKey])
 
     override fun observeAutomaticModelSelection(): Flow<Boolean> =
-        context.settingsDataStore.data.map { preferences ->
+        safeData.map { preferences ->
             preferences[automaticModelSelectionKey] ?: true
         }
 
@@ -59,10 +76,10 @@ class DefaultSettingsRepository @Inject constructor(
         updateBooleanPreference(automaticModelSelectionKey, enabled)
 
     override suspend fun getAutomaticModelSelection(): Boolean =
-        context.settingsDataStore.data.first()[automaticModelSelectionKey] ?: true
+        safeData.first()[automaticModelSelectionKey] ?: true
 
     override fun observeDocumentGateEnabled(): Flow<Boolean> =
-        context.settingsDataStore.data.map { preferences ->
+        safeData.map { preferences ->
             preferences[documentGateEnabledKey] ?: true
         }
 
@@ -70,10 +87,34 @@ class DefaultSettingsRepository @Inject constructor(
         updateBooleanPreference(documentGateEnabledKey, enabled)
 
     override suspend fun getDocumentGateEnabled(): Boolean =
-        context.settingsDataStore.data.first()[documentGateEnabledKey] ?: true
+        safeData.first()[documentGateEnabledKey] ?: true
+
+    override fun observeOcrEngine(): Flow<OcrEngine> =
+        safeData.map { preferences -> ocrEngineFromStorage(preferences[ocrEngineKey]) }
+
+    override suspend fun setOcrEngine(engine: OcrEngine): ScanlyResult<Unit> =
+        withContext(dispatchers.io) {
+            runCatching {
+                context.settingsDataStore.edit { it[ocrEngineKey] = engine.name }
+            }.fold(
+                onSuccess = { ScanlyResult.Success(Unit) },
+                onFailure = { throwable ->
+                    ScanlyResult.Failure(
+                        ScanlyError(throwable.message ?: appString(R.string.error_could_not_update_text_recognition_engine), throwable),
+                    )
+                },
+            )
+        }
+
+    override suspend fun getOcrEngine(): OcrEngine =
+        ocrEngineFromStorage(safeData.first()[ocrEngineKey])
+
+    /** Unknown or missing values fall back to ML Kit, the default engine. */
+    private fun ocrEngineFromStorage(value: String?): OcrEngine =
+        OcrEngine.entries.firstOrNull { it.name == value } ?: OcrEngine.ML_KIT
 
     override fun observeExportDestination(): Flow<ExportDestination> =
-        context.settingsDataStore.data.map { preferences ->
+        safeData.map { preferences ->
             val uri = preferences[exportTreeUriKey]
             val label = preferences[exportTreeLabelKey]
             if (uri.isNullOrBlank() || label.isNullOrBlank()) {
@@ -91,7 +132,7 @@ class DefaultSettingsRepository @Inject constructor(
         updateExportDestination(null)
 
     override fun observeThemeMode(): Flow<ThemeMode> =
-        context.settingsDataStore.data.map { preferences ->
+        safeData.map { preferences ->
             ThemeMode.fromStorage(preferences[themeModeKey] ?: ThemeMode.SYSTEM.storageValue)
         }
 
@@ -106,7 +147,7 @@ class DefaultSettingsRepository @Inject constructor(
                 onFailure = { throwable ->
                     ScanlyResult.Failure(
                         ScanlyError(
-                            message = throwable.message ?: "Could not update theme mode.",
+                            message = throwable.message ?: appString(R.string.error_could_not_update_theme_mode),
                             cause = throwable,
                         ),
                     )
@@ -115,7 +156,7 @@ class DefaultSettingsRepository @Inject constructor(
         }
 
     override fun observePureBlackEnabled(): Flow<Boolean> =
-        context.settingsDataStore.data.map { preferences ->
+        safeData.map { preferences ->
             preferences[pureBlackEnabledKey] ?: false
         }
 
@@ -123,7 +164,7 @@ class DefaultSettingsRepository @Inject constructor(
         updateBooleanPreference(pureBlackEnabledKey, enabled)
 
     override fun observeOnboardingCompleted(): Flow<Boolean> =
-        context.settingsDataStore.data.map { preferences ->
+        safeData.map { preferences ->
             preferences[onboardingCompletedKey] ?: false
         }
 
@@ -138,7 +179,7 @@ class DefaultSettingsRepository @Inject constructor(
                 onFailure = { throwable ->
                     ScanlyResult.Failure(
                         ScanlyError(
-                            message = throwable.message ?: "Could not finish onboarding.",
+                            message = throwable.message ?: appString(R.string.error_could_not_finish_onboarding),
                             cause = throwable,
                         ),
                     )
@@ -160,7 +201,7 @@ class DefaultSettingsRepository @Inject constructor(
                 onFailure = { throwable ->
                     ScanlyResult.Failure(
                         ScanlyError(
-                            message = throwable.message ?: "Could not load settings content.",
+                            message = throwable.message ?: appString(R.string.error_could_not_load_settings_content),
                             cause = throwable,
                         ),
                     )
@@ -223,7 +264,7 @@ class DefaultSettingsRepository @Inject constructor(
         destination: ExportDestination.CustomTree?,
     ): ScanlyResult<Unit> = withContext(dispatchers.io) {
         runCatching {
-            val previousUri = context.settingsDataStore.data.first()[exportTreeUriKey]
+            val previousUri = safeData.first()[exportTreeUriKey]
             context.settingsDataStore.edit { preferences ->
                 if (destination == null) {
                     preferences.remove(exportTreeUriKey)
@@ -246,7 +287,7 @@ class DefaultSettingsRepository @Inject constructor(
             onFailure = { throwable ->
                 ScanlyResult.Failure(
                     ScanlyError(
-                        message = throwable.message ?: "Could not update the save location.",
+                        message = throwable.message ?: appString(R.string.error_could_not_update_the_save_location),
                         cause = throwable,
                     ),
                 )
@@ -263,7 +304,7 @@ class DefaultSettingsRepository @Inject constructor(
         }.fold(
             onSuccess = { ScanlyResult.Success(Unit) },
             onFailure = { throwable ->
-                ScanlyResult.Failure(ScanlyError(throwable.message ?: "Could not update model selection.", throwable))
+                ScanlyResult.Failure(ScanlyError(throwable.message ?: appString(R.string.error_could_not_update_model_selection), throwable))
             },
         )
     }
@@ -277,7 +318,7 @@ class DefaultSettingsRepository @Inject constructor(
         }.fold(
             onSuccess = { ScanlyResult.Success(Unit) },
             onFailure = { throwable ->
-                ScanlyResult.Failure(ScanlyError(throwable.message ?: "Could not update document detection settings.", throwable))
+                ScanlyResult.Failure(ScanlyError(throwable.message ?: appString(R.string.error_could_not_update_document_detection_settings), throwable))
             },
         )
     }
@@ -292,6 +333,7 @@ class DefaultSettingsRepository @Inject constructor(
         val postProcessingModelKey = stringPreferencesKey("post_processing_model")
         val automaticModelSelectionKey = booleanPreferencesKey("automatic_document_model_selection")
         val documentGateEnabledKey = booleanPreferencesKey("document_gate_enabled")
+        val ocrEngineKey = stringPreferencesKey("ocr_engine")
         const val faqsAssetPath = "settings/faqs.json"
         const val licensesAssetPath = "settings/licenses.json"
         const val developerWebsite = ""

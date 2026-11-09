@@ -1,49 +1,68 @@
 package `in`.c1ph3rj.scanly.domain.model
 
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
+import androidx.annotation.StringRes
+
 enum class PdfPageOrientation(
-    val label: String,
+    @param:StringRes val labelRes: Int,
 ) {
-    AUTO("Auto"),
-    PORTRAIT("Portrait"),
-    LANDSCAPE("Landscape"),
+    AUTO(R.string.filter_customize_auto),
+    PORTRAIT(R.string.pdf_page_orientation_portrait),
+    LANDSCAPE(R.string.pdf_page_orientation_landscape),
+    ;
+
+    val label: String get() = appString(labelRes)
 }
 
 enum class PdfPageSize(
-    val label: String,
-    val dimensionsLabel: String,
+    @param:StringRes val labelRes: Int,
+    @param:StringRes val dimensionsLabelRes: Int,
     internal val portraitWidthPoints: Int?,
     internal val portraitHeightPoints: Int?,
 ) {
-    FIT("Auto fit", "Match each scan", null, null),
-    A3("A3", "29.7 × 42.0 cm", 842, 1_191),
-    A4("A4", "21.0 × 29.7 cm", 595, 842),
-    A5("A5", "14.8 × 21.0 cm", 420, 595),
-    B4("B4", "25.0 × 35.3 cm", 709, 1_001),
-    B5("B5", "17.6 × 25.0 cm", 499, 709),
-    US_LETTER("Letter", "21.6 × 27.9 cm", 612, 792),
-    TABLOID("Tabloid", "27.9 × 43.2 cm", 792, 1_224),
-    LEGAL("Legal", "21.6 × 35.6 cm", 612, 1_008),
-    EXECUTIVE("Executive", "18.4 × 26.7 cm", 522, 756),
-    POSTCARD("Postcard", "10.0 × 14.8 cm", 283, 420),
-    AMERICAN_FOOLSCAP("American foolscap", "21.6 × 33.0 cm", 612, 936),
-    EUROPEAN_FOOLSCAP("European foolscap", "22.9 × 33.0 cm", 649, 936),
+    FIT(R.string.pdf_page_size_auto_fit, R.string.pdf_page_size_match_each_scan, null, null),
+    A3(R.string.pdf_page_size_a3, R.string.pdf_page_size_29_7_42_0_cm, 842, 1_191),
+    A4(R.string.pdf_page_size_a4, R.string.pdf_page_size_21_0_29_7_cm, 595, 842),
+    A5(R.string.pdf_page_size_a5, R.string.pdf_page_size_14_8_21_0_cm, 420, 595),
+    B4(R.string.pdf_page_size_b4, R.string.pdf_page_size_25_0_35_3_cm, 709, 1_001),
+    B5(R.string.pdf_page_size_b5, R.string.pdf_page_size_17_6_25_0_cm, 499, 709),
+    US_LETTER(R.string.pdf_page_size_letter, R.string.pdf_page_size_21_6_27_9_cm, 612, 792),
+    TABLOID(R.string.pdf_page_size_tabloid, R.string.pdf_page_size_27_9_43_2_cm, 792, 1_224),
+    LEGAL(R.string.settings_hub_sub_screens_legal, R.string.pdf_page_size_21_6_35_6_cm, 612, 1_008),
+    EXECUTIVE(R.string.pdf_page_size_executive, R.string.pdf_page_size_18_4_26_7_cm, 522, 756),
+    POSTCARD(R.string.pdf_page_size_postcard, R.string.pdf_page_size_10_0_14_8_cm, 283, 420),
+    AMERICAN_FOOLSCAP(R.string.pdf_page_size_american_foolscap, R.string.pdf_page_size_21_6_33_0_cm, 612, 936),
+    EUROPEAN_FOOLSCAP(R.string.pdf_page_size_european_foolscap, R.string.pdf_page_size_22_9_33_0_cm, 649, 936),
+    ;
+
+    val dimensionsLabel: String get() = appString(dimensionsLabelRes)
+
+
+    val label: String get() = appString(labelRes)
 }
 
 enum class PdfPageMargin(
-    val label: String,
+    @param:StringRes val labelRes: Int,
 ) {
-    NONE("No margin"),
-    SMALL("Small"),
-    LARGE("Big"),
+    NONE(R.string.pdf_page_margin_no_margin),
+    SMALL(R.string.pdf_watermark_small),
+    LARGE(R.string.pdf_page_margin_big),
+    ;
+
+    val label: String get() = appString(labelRes)
 }
 
 enum class PdfPageNumber(
-    val label: String,
+    @param:StringRes val labelRes: Int,
 ) {
-    NONE("None"),
-    BOTTOM_LEFT("Left"),
-    BOTTOM_CENTER("Center"),
-    BOTTOM_RIGHT("Right"),
+    NONE(R.string.model_benchmark_none),
+    BOTTOM_LEFT(R.string.page_crop_left),
+    BOTTOM_CENTER(R.string.pdf_page_number_center),
+    BOTTOM_RIGHT(R.string.page_crop_right),
+    ;
+
+    val label: String get() = appString(labelRes)
 }
 
 data class PdfExportOptions(
@@ -57,11 +76,11 @@ data class PdfExportOptions(
 
 fun PdfExportOptions.validationError(): String? = when {
     password == null -> null
-    password.isBlank() -> "Enter a PDF password."
+    password.isBlank() -> appString(R.string.pdf_export_options_enter_a_pdf_password)
     password.length < MinimumPdfPasswordLength ->
-        "Use at least $MinimumPdfPasswordLength characters."
+        appString(R.string.pdf_export_options_use_at_least_characters, MinimumPdfPasswordLength)
     password.length > MaximumPdfPasswordLength ->
-        "Use no more than $MaximumPdfPasswordLength characters."
+        appString(R.string.pdf_export_options_use_no_more_than_characters, MaximumPdfPasswordLength)
     else -> null
 }
 

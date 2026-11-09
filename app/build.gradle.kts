@@ -45,6 +45,20 @@ val hasReleaseSigning = listOf(
     releaseKeyPassword,
 ).all(String::isNotBlank)
 
+// Slim OpenCV 5.0.0 (only the modules the app uses), built by scripts/opencv/build_slim_opencv.py.
+// Without it the build falls back to the full Maven artifact: same API and results, ~32 MB more
+// native code. Release builds refuse the fallback so a release never ships the full library;
+// -Pscanly.allowFullOpenCv=true allows it on purpose (A/B comparisons against the official AAR).
+val slimOpenCvAar = rootProject.file("third_party/opencv/opencv-5.0.0-slim.aar")
+val allowFullOpenCv = providers.gradleProperty("scanly.allowFullOpenCv").orNull == "true"
+val buildingRelease = gradle.startParameter.taskNames.any { it.contains("Release", ignoreCase = true) }
+if (buildingRelease && !slimOpenCvAar.exists() && !allowFullOpenCv) {
+    throw GradleException(
+        "Release builds need ${slimOpenCvAar.relativeTo(rootDir)}; build it with " +
+            "scripts/opencv/build_slim_opencv.py (see docs/development/opencv.md).",
+    )
+}
+
 android {
     namespace = "in.c1ph3rj.scanly"
     compileSdk {
@@ -55,8 +69,8 @@ android {
         applicationId = "in.c1ph3rj.scanly"
         minSdk = 29
         targetSdk = 36
-        versionCode = 18
-        versionName = "1.0.18"
+        versionCode = 20
+        versionName = "1.0.20"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         testInstrumentationRunnerArguments["clearPackageData"] = "true"
@@ -84,6 +98,7 @@ android {
         }
 
         release {
+            isDebuggable = false
             isMinifyEnabled = true
             isShrinkResources = true
             installation {
@@ -120,6 +135,13 @@ android {
     }
     androidResources {
         noCompress += "tflite"
+    }
+    // Tiny JNI helper (CPU affinity) that keeps LiteRT inference bit-reproducible; see CpuAffinity.kt.
+    externalNativeBuild {
+        cmake {
+            path = file("src/main/cpp/CMakeLists.txt")
+            version = "3.22.1"
+        }
     }
     testOptions {
         animationsDisabled = true
@@ -162,7 +184,11 @@ dependencies {
     implementation(libs.androidx.camera.view)
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.exifinterface)
-    implementation(libs.opencv)
+    if (slimOpenCvAar.exists()) {
+        implementation(files(slimOpenCvAar))
+    } else {
+        implementation(libs.opencv)
+    }
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     implementation(libs.google.ai.edge.litert)
@@ -184,6 +210,8 @@ dependencies {
     testImplementation(libs.junit)
     // Real org.json for JVM tests; android.jar only ships stubs.
     testImplementation(libs.org.json)
+    // ICU4J has the same Transliterator as android.icu, so romanization quality is testable on the JVM.
+    testImplementation(libs.icu4j)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.test.rules)

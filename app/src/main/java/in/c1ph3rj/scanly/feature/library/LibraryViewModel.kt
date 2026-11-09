@@ -12,8 +12,8 @@ import `in`.c1ph3rj.scanly.domain.model.GroupTitleFormat
 import `in`.c1ph3rj.scanly.domain.usecase.SuggestDocumentTitleUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.SuggestGroupTitleUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.CreateGroupUseCase
-import `in`.c1ph3rj.scanly.domain.usecase.DeleteDocumentUseCase
-import `in`.c1ph3rj.scanly.domain.usecase.DeleteGroupUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.MoveDocumentToTrashUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.MoveGroupToTrashUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveDocumentsUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveGroupsUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveUngroupedDocumentsUseCase
@@ -30,6 +30,9 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
+import androidx.annotation.StringRes
 
 enum class LibraryTab {
     All,
@@ -38,15 +41,19 @@ enum class LibraryTab {
 }
 
 enum class LibrarySortOption(
-    val title: String,
-    val description: String,
+    @param:StringRes val titleRes: Int,
+    @param:StringRes val descriptionRes: Int,
 ) {
-    RecentlyUpdated("Last modified", "Latest changes first"),
-    OldestUpdated("Oldest updated", "Earliest changes first"),
-    NameAscending("Name A–Z", "Alphabetical order"),
-    NameDescending("Name Z–A", "Reverse alphabetical order"),
-    NewestCreated("Newest created", "Recently added first"),
-    OldestCreated("Oldest created", "Earliest added first"),
+    RecentlyUpdated(R.string.library_sort_option_last_modified, R.string.library_sort_option_latest_changes_first),
+    OldestUpdated(R.string.library_sort_option_oldest_updated, R.string.library_sort_option_earliest_changes_first),
+    NameAscending(R.string.search_sort_name_a_z, R.string.library_sort_option_alphabetical_order),
+    NameDescending(R.string.library_sort_option_name_z_a, R.string.library_sort_option_reverse_alphabetical_order),
+    NewestCreated(R.string.library_sort_option_newest_created, R.string.library_sort_option_recently_added_first),
+    OldestCreated(R.string.library_sort_option_oldest_created, R.string.library_sort_option_earliest_added_first),
+    ;
+
+    val title: String get() = appString(titleRes)
+    val description: String get() = appString(descriptionRes)
 }
 
 data class LibraryUiState(
@@ -141,10 +148,10 @@ class LibraryViewModel @Inject constructor(
     observeDocumentsUseCase: ObserveDocumentsUseCase,
     private val createDocumentUseCase: CreateDocumentUseCase,
     private val renameDocumentUseCase: RenameDocumentUseCase,
-    private val deleteDocumentUseCase: DeleteDocumentUseCase,
+    private val moveDocumentToTrashUseCase: MoveDocumentToTrashUseCase,
     private val createGroupUseCase: CreateGroupUseCase,
     private val renameGroupUseCase: RenameGroupUseCase,
-    private val deleteGroupUseCase: DeleteGroupUseCase,
+    private val moveGroupToTrashUseCase: MoveGroupToTrashUseCase,
     private val setDocumentGroupUseCase: SetDocumentGroupUseCase,
     private val suggestDocumentTitleUseCase: SuggestDocumentTitleUseCase,
     private val suggestGroupTitleUseCase: SuggestGroupTitleUseCase,
@@ -156,6 +163,10 @@ class LibraryViewModel @Inject constructor(
     private val _selectedGroupId = MutableStateFlow<String?>(null)
     private val _events = MutableSharedFlow<LibraryEvent>()
     val events: SharedFlow<LibraryEvent> = _events.asSharedFlow()
+
+    // Guards against a fast double-tap on a dialog's confirm creating the item twice.
+    private var isCreatingDocument = false
+    private var isCreatingGroup = false
 
     private val controls = combine(
         _searchQuery,
@@ -177,7 +188,8 @@ class LibraryViewModel @Inject constructor(
             ungroupedDocuments = ungrouped,
             allDocuments = allDocs,
             searchQuery = controls.query,
-            selectedTab = controls.tab,
+            // The Folders tab has no content (or back control) once the last folder is gone.
+            selectedTab = if (controls.tab == LibraryTab.Folders && groups.isEmpty()) LibraryTab.All else controls.tab,
             sortOption = controls.sortOption,
             selectedGroupId = controls.groupId?.takeIf { id -> groups.any { it.id == id } },
             isLoading = false,
@@ -187,6 +199,18 @@ class LibraryViewModel @Inject constructor(
         started = SharingStarted.WhileSubscribed(5_000),
         initialValue = LibraryUiState(isLoading = true),
     )
+
+    init {
+        // Drop the stored Folders tab when the last folder disappears so it doesn't snap back
+        // the next time a folder is created.
+        viewModelScope.launch {
+            observeGroupsUseCase().collect { groups ->
+                if (groups.isEmpty() && _selectedTab.value == LibraryTab.Folders) {
+                    _selectedTab.value = LibraryTab.All
+                }
+            }
+        }
+    }
 
     fun setSearchQuery(query: String) {
         _searchQuery.value = query
@@ -211,10 +235,16 @@ class LibraryViewModel @Inject constructor(
     }
 
     fun createDocument(title: String, groupId: String? = null) {
+        if (isCreatingDocument) return
+        isCreatingDocument = true
         viewModelScope.launch {
-            when (val result = createDocumentUseCase(title, groupId)) {
-                is ScanlyResult.Success -> _events.emit(LibraryEvent.OpenDocument(result.value))
-                is ScanlyResult.Failure -> _events.emit(LibraryEvent.ShowMessage(result.error.message))
+            try {
+                when (val result = createDocumentUseCase(title, groupId)) {
+                    is ScanlyResult.Success -> _events.emit(LibraryEvent.OpenDocument(result.value))
+                    is ScanlyResult.Failure -> _events.emit(LibraryEvent.ShowMessage(result.error.message))
+                }
+            } finally {
+                isCreatingDocument = false
             }
         }
     }
@@ -236,7 +266,8 @@ class LibraryViewModel @Inject constructor(
 
     fun deleteDocument(documentId: String) {
         viewModelScope.launch {
-            when (val result = deleteDocumentUseCase(documentId)) {
+            val title = uiState.value.allDocuments.firstOrNull { it.id == documentId }?.title ?: appString(R.string.document_detail_document)
+            when (val result = moveDocumentToTrashUseCase(documentId, title)) {
                 is ScanlyResult.Success -> Unit
                 is ScanlyResult.Failure -> _events.emit(LibraryEvent.ShowMessage(result.error.message))
             }
@@ -244,10 +275,16 @@ class LibraryViewModel @Inject constructor(
     }
 
     fun createGroup(title: String) {
+        if (isCreatingGroup) return
+        isCreatingGroup = true
         viewModelScope.launch {
-            when (val result = createGroupUseCase(title)) {
-                is ScanlyResult.Success -> _events.emit(LibraryEvent.OpenGroup(result.value))
-                is ScanlyResult.Failure -> _events.emit(LibraryEvent.ShowMessage(result.error.message))
+            try {
+                when (val result = createGroupUseCase(title)) {
+                    is ScanlyResult.Success -> _events.emit(LibraryEvent.OpenGroup(result.value))
+                    is ScanlyResult.Failure -> _events.emit(LibraryEvent.ShowMessage(result.error.message))
+                }
+            } finally {
+                isCreatingGroup = false
             }
         }
     }
@@ -261,9 +298,10 @@ class LibraryViewModel @Inject constructor(
         }
     }
 
-    fun deleteGroup(groupId: String) {
+    fun deleteGroup(groupId: String, includeDocuments: Boolean) {
         viewModelScope.launch {
-            when (val result = deleteGroupUseCase(groupId)) {
+            val title = uiState.value.groups.firstOrNull { it.id == groupId }?.title ?: appString(R.string.home_folder)
+            when (val result = moveGroupToTrashUseCase(groupId, title, includeDocuments)) {
                 is ScanlyResult.Success -> Unit
                 is ScanlyResult.Failure -> _events.emit(LibraryEvent.ShowMessage(result.error.message))
             }
@@ -287,7 +325,7 @@ class LibraryViewModel @Inject constructor(
             when (val createResult = createGroupUseCase(name)) {
                 is ScanlyResult.Success -> {
                     when (val moveResult = setDocumentGroupUseCase(documentId, createResult.value)) {
-                        is ScanlyResult.Success -> _events.emit(LibraryEvent.ShowMessage("Moved to $name"))
+                        is ScanlyResult.Success -> _events.emit(LibraryEvent.ShowMessage(appString(R.string.document_detail_moved_to, name)))
                         is ScanlyResult.Failure -> _events.emit(LibraryEvent.ShowMessage(moveResult.error.message))
                     }
                 }
@@ -299,9 +337,9 @@ class LibraryViewModel @Inject constructor(
 
     private fun moveConfirmationMessage(groupId: String?): String {
         if (groupId == null) {
-            return "Removed from folder"
+            return appString(R.string.document_detail_removed_from_folder)
         }
         val folderName = uiState.value.groups.firstOrNull { it.id == groupId }?.title
-        return if (folderName != null) "Moved to $folderName" else "Moved to folder"
+        return if (folderName != null) appString(R.string.document_detail_moved_to, folderName) else appString(R.string.document_detail_moved_to_folder)
     }
 }

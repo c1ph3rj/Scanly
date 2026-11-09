@@ -115,6 +115,9 @@ import `in`.c1ph3rj.scanly.feature.tools.ToolPrimaryButton
 import `in`.c1ph3rj.scanly.feature.tools.ToolSecondaryButton
 import `in`.c1ph3rj.scanly.feature.tools.ToolTextAction
 import java.util.concurrent.atomic.AtomicBoolean
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
+import androidx.compose.ui.res.stringResource
 
 private val ScanTeal = Color(0xFF2DD4BF)
 
@@ -226,7 +229,7 @@ fun QrScanScreen(
                 )
                 if (cameraUnavailable) {
                     Text(
-                        text = "The camera isn't available right now. Try \"From photo\" instead.",
+                        text = stringResource(R.string.qr_scan_the_camera_isn_t_available),
                         style = MaterialTheme.typography.bodyMedium,
                         color = Color.White.copy(alpha = 0.8f),
                         modifier = Modifier
@@ -239,7 +242,7 @@ fun QrScanScreen(
                 }
                 QrStatusPill(
                     text = found?.let { formatQrFoundStatus(QrPayloadParser.parse(it.raw)) }
-                        ?: if (isReadingPhoto) "Reading photo…" else if (hasTarget) "QR found · hold steady" else "Point at a QR code",
+                        ?: if (isReadingPhoto) stringResource(R.string.qr_scan_reading_photo) else if (hasTarget) stringResource(R.string.qr_scan_code_found_hold_steady) else stringResource(R.string.qr_scan_point_at_a_qr_code),
                     modifier = Modifier
                         .align(Alignment.TopCenter)
                         .padding(top = 16.dp),
@@ -301,12 +304,12 @@ private fun QrScanHeader(
         IconButton(onClick = onClose, modifier = Modifier.size(48.dp)) {
             Icon(
                 imageVector = Icons.Outlined.Close,
-                contentDescription = "Close",
+                contentDescription = stringResource(R.string.zoomable_image_close),
                 tint = Color.White,
             )
         }
         Text(
-            text = "Scan QR code",
+            text = stringResource(R.string.qr_scan_scan_qr_barcode),
             style = MaterialTheme.typography.titleMedium.copy(fontSize = 17.sp),
             fontWeight = FontWeight.SemiBold,
             color = Color.White,
@@ -320,7 +323,7 @@ private fun QrScanHeader(
                 modifier = Modifier
                     .size(48.dp)
                     .semantics {
-                        stateDescription = if (torchEnabled) "On" else "Off"
+                        stateDescription = if (torchEnabled) appString(R.string.pip_settings_on_2) else appString(R.string.export_share_off)
                     },
                 shape = CircleShape,
                 color = if (torchEnabled) ScanTeal else Color.White.copy(alpha = 0.12f),
@@ -328,7 +331,7 @@ private fun QrScanHeader(
                 Box(contentAlignment = Alignment.Center) {
                     Icon(
                         imageVector = if (torchEnabled) Icons.Outlined.FlashOn else Icons.Outlined.FlashOff,
-                        contentDescription = "Torch on/off",
+                        contentDescription = stringResource(R.string.qr_scan_torch_on_off),
                         tint = if (torchEnabled) Color(0xFF042F2A) else Color.White,
                         modifier = Modifier.size(20.dp),
                     )
@@ -336,7 +339,7 @@ private fun QrScanHeader(
             }
         }
         QrPillButton(
-            label = "Create",
+            label = stringResource(R.string.shared_create),
             icon = Icons.Outlined.QrCode2,
             onClick = onSelectCreate,
             dark = true,
@@ -482,7 +485,7 @@ private fun QrPermissionPrompt(
             )
         }
         Text(
-            text = if (blocked) "Camera permission is blocked" else "Allow camera to scan",
+            text = if (blocked) stringResource(R.string.qr_scan_camera_permission_is_blocked) else stringResource(R.string.qr_scan_allow_camera_to_scan),
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.SemiBold,
             color = Color.White,
@@ -490,9 +493,9 @@ private fun QrPermissionPrompt(
         )
         Text(
             text = if (blocked) {
-                "Open Settings, tap Permissions, and turn Camera on for Scanly."
+                stringResource(R.string.qr_scan_open_settings_tap_permissions_and)
             } else {
-                "The camera is used only while this screen is open. \"From photo\" works without it."
+                stringResource(R.string.qr_scan_the_camera_is_used_only)
             },
             style = MaterialTheme.typography.bodyMedium,
             color = Color.White.copy(alpha = 0.7f),
@@ -500,7 +503,7 @@ private fun QrPermissionPrompt(
         )
         Spacer(modifier = Modifier.height(4.dp))
         ToolPrimaryButton(
-            text = if (blocked) "Open settings" else "Allow camera",
+            text = if (blocked) stringResource(R.string.qr_scan_open_settings) else stringResource(R.string.qr_scan_allow_camera),
             onClick = onAllow,
         )
     }
@@ -560,7 +563,7 @@ private fun QrFoundCard(
                 IconButton(onClick = onDetails, modifier = Modifier.size(48.dp)) {
                     Icon(
                         imageVector = Icons.Outlined.ChevronRight,
-                        contentDescription = "Details",
+                        contentDescription = stringResource(R.string.qr_scan_details),
                     )
                 }
             }
@@ -574,14 +577,14 @@ private fun QrFoundCard(
                 )
                 if (primary != QrPrimaryAction.CopyText) {
                     ToolSecondaryButton(
-                        text = "Copy",
-                        onClick = { onMessage(copyQrText(context, "QR code", item.raw)) },
+                        text = stringResource(R.string.page_text_copy),
+                        onClick = { onMessage(copyQrText(context, appString(R.string.qr_scan_qr_code), item.raw)) },
                         icon = Icons.Outlined.ContentCopy,
                         modifier = Modifier.weight(1f),
                     )
                 }
                 ToolSecondaryButton(
-                    text = "Share",
+                    text = stringResource(R.string.document_detail_share_2),
                     onClick = { shareQrText(context, item.raw)?.let(onMessage) },
                     icon = Icons.Outlined.Share,
                     modifier = Modifier.weight(1f),
@@ -589,7 +592,7 @@ private fun QrFoundCard(
             }
 
             ToolTextAction(
-                label = "Scan again",
+                label = stringResource(R.string.qr_scan_scan_again),
                 onClick = onScanAgain,
                 icon = Icons.Outlined.QrCodeScanner,
                 modifier = Modifier.align(Alignment.CenterHorizontally),
@@ -612,14 +615,14 @@ private fun QrScanBottomBar(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         QrPillButton(
-            label = "From photo",
+            label = stringResource(R.string.qr_scan_from_photo),
             icon = Icons.Outlined.Image,
             onClick = onPickPhoto,
             dark = true,
         )
         Spacer(modifier = Modifier.weight(1f))
         QrPillButton(
-            label = "History",
+            label = stringResource(R.string.qr_scan_history),
             icon = Icons.Outlined.History,
             onClick = onOpenHistory,
             dark = true,
@@ -632,7 +635,9 @@ private fun QrScanBottomBar(
  * a visible lock precedes capture; stale callbacks cannot publish into a new scan.
  */
 @Composable
-@androidx.annotation.OptIn(markerClass = [ExperimentalGetImage::class])
+@androidx.annotation.OptIn(
+    markerClass = [ExperimentalGetImage::class, androidx.camera.view.TransformExperimental::class],
+)
 private fun QrCameraPreview(
     onBarcode: (String, QrCapturePreview?) -> Unit,
     detecting: Boolean,
@@ -867,7 +872,7 @@ private fun QrCameraPreview(
             Box(Modifier.fillMaxSize().background(Color.Black))
         }
         capture?.bitmap?.let { bitmap ->
-            Image(bitmap.asImageBitmap(), contentDescription = "Captured QR code",
+            Image(bitmap.asImageBitmap(), contentDescription = appString(R.string.qr_scan_captured_qr_code),
                 modifier = Modifier.fillMaxSize().background(Color.Black), contentScale = ContentScale.Fit)
         }
         val displayedCorners = capture?.corners ?: corners

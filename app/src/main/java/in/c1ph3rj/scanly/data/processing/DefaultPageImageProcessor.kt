@@ -1,5 +1,7 @@
 package `in`.c1ph3rj.scanly.data.processing
 
+import `in`.c1ph3rj.scanly.core.common.appString
+import `in`.c1ph3rj.scanly.R
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
@@ -14,7 +16,9 @@ import `in`.c1ph3rj.scanly.core.ml.DocumentGateDetector
 import `in`.c1ph3rj.scanly.core.ml.DocumentGateClass
 import `in`.c1ph3rj.scanly.core.ml.DocumentGatePolicy
 import `in`.c1ph3rj.scanly.core.ml.DocumentQuadPolicy
+import `in`.c1ph3rj.scanly.core.ml.FlatPageQuadPolicy
 import `in`.c1ph3rj.scanly.core.ml.QuadReadiness
+import `in`.c1ph3rj.scanly.core.ml.toPixelGrid
 import `in`.c1ph3rj.scanly.core.processing.OpenCvPageFilterProcessor
 import `in`.c1ph3rj.scanly.core.processing.PageFilterAdjustmentsApplier
 import `in`.c1ph3rj.scanly.core.processing.PerspectiveBitmapTransform
@@ -72,7 +76,7 @@ class DefaultPageImageProcessor @Inject constructor(
         val exifRotationDegrees = ExifInterface(rawImagePath).rotationDegrees
         val userRotationDegrees = normalizeRotationDegrees(rotationDegrees)
         val decodedBitmap = decodeForProcessing(rawImagePath)
-            ?: error("Could not decode captured image at $rawImagePath.")
+            ?: error(appString(R.string.error_could_not_read_the_page_image))
         val orientedBitmap = rotateBitmapIfNeeded(decodedBitmap, exifRotationDegrees)
         if (orientedBitmap !== decodedBitmap) {
             decodedBitmap.recycle()
@@ -94,7 +98,7 @@ class DefaultPageImageProcessor @Inject constructor(
                 detectDocumentWhenCropQuadMissing &&
                 settingsRepository.getDocumentGateEnabled()
             ) {
-                runCatching { documentGateDetector.classify(editorOrientedBitmap) }.getOrNull()
+                runCatching { documentGateDetector.classify(editorOrientedBitmap, reproducible = true) }.getOrNull()
             } else {
                 null
             }
@@ -211,8 +215,17 @@ class DefaultPageImageProcessor @Inject constructor(
      * Still-image corner detection aligned with Model Benchmark behaviour:
      * 1) Book-aware resolver in STILL_PROCESS mode (no book-gutter damage, card-friendly aspect)
      * 2) Raw detector fallback if the resolver still drops a usable model quad
+     * 3) Full frame instead when the page already fills the image (PDF render, screenshot,
+     *    clean scan) — see [FlatPageQuadPolicy]
      */
     private suspend fun detectStillImageQuad(bitmap: Bitmap): DocumentCornerQuad? {
+        val quad = detectModelStillImageQuad(bitmap) ?: return null
+        return runCatchingCancellable {
+            FlatPageQuadPolicy.resolve(quad, bitmap.toPixelGrid())
+        }.getOrDefault(quad)
+    }
+
+    private suspend fun detectModelStillImageQuad(bitmap: Bitmap): DocumentCornerQuad? {
         val selectedModel = if (settingsRepository.getAutomaticModelSelection()) {
             runCatching { automaticDocumentModelSelector.selection().postProcessingModel }
                 .getOrDefault(settingsRepository.getPostProcessingModel())
@@ -231,7 +244,7 @@ class DefaultPageImageProcessor @Inject constructor(
 
         // Same path the benchmark visualizes: raw model corners.
         val raw = runCatching {
-            documentCornerDetector.detect(bitmap, selectedModel).quad
+            documentCornerDetector.detect(bitmap, selectedModel, reproducible = true).quad
         }.getOrNull()
         return raw?.takeIf(DocumentQuadPolicy::isStillProcessReady)
             ?: raw?.takeIf { it.isValid() && it.isConvex() }
@@ -313,9 +326,22 @@ class DefaultPageImageProcessor @Inject constructor(
     ) {
         val outputFile = File(outputPath)
         outputFile.parentFile?.mkdirs()
-        FileOutputStream(outputFile).use { outputStream ->
-            bitmap.compress(Bitmap.CompressFormat.JPEG, OUTPUT_JPEG_QUALITY, outputStream)
-            outputStream.flush()
+        // Encode beside the target and swap it in so a failed write keeps the previous image.
+        val tempFile = File("${outputFile.path}.tmp")
+        try {
+            val compressed = FileOutputStream(tempFile).use { outputStream ->
+                bitmap.compress(Bitmap.CompressFormat.JPEG, OUTPUT_JPEG_QUALITY, outputStream).also {
+                    outputStream.flush()
+                }
+            }
+            check(compressed) { appString(R.string.default_signature_repository_could_not_save_the_image) }
+            if (!tempFile.renameTo(outputFile)) {
+                tempFile.copyTo(outputFile, overwrite = true)
+            }
+        } finally {
+            if (tempFile.exists()) {
+                tempFile.delete()
+            }
         }
     }
 

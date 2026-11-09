@@ -7,6 +7,7 @@ import android.graphics.pdf.PdfRenderer
 import android.net.Uri
 import android.os.ParcelFileDescriptor
 import com.tom_roush.pdfbox.android.PDFBoxResourceLoader
+import com.tom_roush.pdfbox.io.MemoryUsageSetting
 import com.tom_roush.pdfbox.pdmodel.PDDocument
 import com.tom_roush.pdfbox.pdmodel.PDPage
 import com.tom_roush.pdfbox.pdmodel.PDPageContentStream
@@ -50,6 +51,8 @@ import kotlin.coroutines.coroutineContext
 import kotlin.math.sqrt
 import javax.inject.Inject
 import javax.inject.Singleton
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
 
 @Singleton
 class DefaultPdfToolkitRepository @Inject constructor(
@@ -86,7 +89,7 @@ class DefaultPdfToolkitRepository @Inject constructor(
                     )
                 }
             }
-        }.toScanlyResult("Could not open PDF.")
+        }.toScanlyResult(appString(R.string.default_pdf_toolkit_repository_could_not_open_pdf))
     }
 
     override suspend fun merge(
@@ -94,34 +97,51 @@ class DefaultPdfToolkitRepository @Inject constructor(
         passwords: Map<Int, String>,
     ): ScanlyResult<ExportArtifact> = withContext(dispatchers.io) {
         runCatching {
-            require(sources.size >= 2) { "Select at least two PDFs to merge." }
+            require(sources.size >= 2) { appString(R.string.error_select_at_least_two_pdfs_to_merge) }
             ensurePdfBox()
             val output = newOutputFile("merged")
-            val resolvedSources = sources.map { resolveLocalFile(it) }
-            try {
-                val sourceDocuments = mutableListOf<PDDocument>()
+            // Resolved one by one so a failure part-way still cleans up the copies made so far.
+            val resolvedSources = mutableListOf<ResolvedFile>()
+            output.deleteOnFailure {
                 try {
-                    resolvedSources.forEachIndexed { index, resolved ->
-                        sourceDocuments += openDocument(resolved.file, passwords[index])
-                    }
-                    PDDocument().use { merged ->
-                        sourceDocuments.forEach { document ->
-                            for (page in document.pages) {
-                                merged.importPage(page)
+                    sources.forEach { resolvedSources += resolveLocalFile(it) }
+                    val sourceDocuments = mutableListOf<PDDocument>()
+                    try {
+                        resolvedSources.forEachIndexed { index, resolved ->
+                            val password = passwords[index]
+                            sourceDocuments += try {
+                                openDocument(resolved.file, password)
+                            } catch (error: IllegalArgumentException) {
+                                // Merge has no password prompt, so say which file needs unlocking.
+                                if (password.isNullOrBlank() && error.message == PasswordProtectedMessage) {
+                                    val label = sources[index].displayLabel().ifBlank { appString(R.string.default_pdf_toolkit_repository_one_of_the_pdfs) }
+                                    throw IllegalArgumentException(
+                                        "\"$label\" is password protected. Remove its password first.",
+                                        error,
+                                    )
+                                }
+                                throw error
                             }
                         }
-                        // importPage retains page streams until save, so source documents must
-                        // remain open for the entire write.
-                        merged.save(output)
+                        PDDocument().use { merged ->
+                            sourceDocuments.forEach { document ->
+                                for (page in document.pages) {
+                                    merged.importPage(page)
+                                }
+                            }
+                            // importPage retains page streams until save, so source documents must
+                            // remain open for the entire write.
+                            merged.save(output)
+                        }
+                    } finally {
+                        sourceDocuments.asReversed().forEach(PDDocument::close)
                     }
                 } finally {
-                    sourceDocuments.asReversed().forEach(PDDocument::close)
+                    resolvedSources.forEach(ResolvedFile::cleanup)
                 }
-            } finally {
-                resolvedSources.forEach(ResolvedFile::cleanup)
             }
             artifact(output)
-        }.toScanlyResult("Could not merge PDFs.")
+        }.toScanlyResult(appString(R.string.default_pdf_toolkit_repository_could_not_merge_pdfs))
     }
 
     override suspend fun compress(
@@ -133,11 +153,11 @@ class DefaultPdfToolkitRepository @Inject constructor(
             ensurePdfBox()
             resolveLocalFile(source).useFile { local ->
                 val renderFile = unlockForRendererIfNeeded(local, password)
+                val output = newOutputFile("compressed")
                 try {
-                    val output = newOutputFile("compressed")
                     ParcelFileDescriptor.open(renderFile, ParcelFileDescriptor.MODE_READ_ONLY).use { pfd ->
                         PdfRenderer(pfd).use { renderer ->
-                            require(renderer.pageCount > 0) { "PDF has no pages." }
+                            require(renderer.pageCount > 0) { appString(R.string.error_pdf_has_no_pages) }
                             PDDocument().use { document ->
                                 for (index in 0 until renderer.pageCount) {
                                     renderer.openPage(index).use { page ->
@@ -148,7 +168,7 @@ class DefaultPdfToolkitRepository @Inject constructor(
                                         val bmpH = (pageH * scale).toInt().coerceAtLeast(1)
                                         val pixelCount = bmpW.toLong() * bmpH
                                         require(pixelCount <= MaxCompressPagePixels) {
-                                            "Page ${index + 1} is too large to compress on this device. Try Smallest quality."
+                                            appString(R.string.default_pdf_toolkit_repository_page_is_too_large_to, index + 1)
                                         }
                                         val bitmap = Bitmap.createBitmap(
                                             bmpW,
@@ -187,19 +207,27 @@ class DefaultPdfToolkitRepository @Inject constructor(
                             }
                         }
                     }
+                    // Re-rendering already-lean PDFs can grow them; keep the original in that case.
+                    check(output.length() < local.length()) {
+                        appString(R.string.default_pdf_toolkit_repository_this_pdf_is_already_well)
+                    }
                     artifact(output)
                 } catch (oom: OutOfMemoryError) {
+                    output.delete()
                     throw IllegalStateException(
-                        "Not enough memory to compress this PDF. Try Smallest quality or a shorter file.",
+                        appString(R.string.error_not_enough_memory_to_compress_this_pdf),
                         oom,
                     )
+                } catch (error: Throwable) {
+                    output.delete()
+                    throw error
                 } finally {
                     if (renderFile != local) {
                         renderFile.delete()
                     }
                 }
             }
-        }.toScanlyResult("Could not compress PDF.")
+        }.toScanlyResult(appString(R.string.default_pdf_toolkit_repository_could_not_compress_pdf))
     }
 
     override suspend fun setPassword(
@@ -209,40 +237,42 @@ class DefaultPdfToolkitRepository @Inject constructor(
         restrictEditing: Boolean,
     ): ScanlyResult<ExportArtifact> = withContext(dispatchers.io) {
         runCatching {
-            require(newPassword.length in 4..64) { "Password must be 4–64 characters." }
+            require(newPassword.length in 4..64) { appString(R.string.error_password_must_be_4_64_characters) }
             ensurePdfBox()
             resolveLocalFile(source).useFile { local ->
                 val output = newOutputFile("protected")
-                openDocument(local, currentPassword).use { document ->
-                    if (document.isEncrypted) {
-                        document.setAllSecurityToBeRemoved(true)
-                    }
-                    val permissions = AccessPermission().apply {
-                        if (restrictEditing) {
-                            setCanModify(false)
-                            setCanModifyAnnotations(false)
-                            setCanFillInForm(false)
-                            setCanAssembleDocument(false)
-                            setCanExtractContent(false)
-                            // Accessibility extraction stays on so screen readers still work.
-                            setCanExtractForAccessibility(true)
-                            setCanPrint(true)
+                output.deleteOnFailure {
+                    openDocument(local, currentPassword).use { document ->
+                        if (document.isEncrypted) {
+                            document.setAllSecurityToBeRemoved(true)
                         }
+                        val permissions = AccessPermission().apply {
+                            if (restrictEditing) {
+                                setCanModify(false)
+                                setCanModifyAnnotations(false)
+                                setCanFillInForm(false)
+                                setCanAssembleDocument(false)
+                                setCanExtractContent(false)
+                                // Accessibility extraction stays on so screen readers still work.
+                                setCanExtractForAccessibility(true)
+                                setCanPrint(true)
+                            }
+                        }
+                        val policy = StandardProtectionPolicy(
+                            UUID.randomUUID().toString(),
+                            newPassword,
+                            permissions,
+                        ).apply {
+                            encryptionKeyLength = 256
+                            setPreferAES(true)
+                        }
+                        document.protect(policy)
+                        document.save(output)
                     }
-                    val policy = StandardProtectionPolicy(
-                        UUID.randomUUID().toString(),
-                        newPassword,
-                        permissions,
-                    ).apply {
-                        encryptionKeyLength = 256
-                        setPreferAES(true)
-                    }
-                    document.protect(policy)
-                    document.save(output)
                 }
                 artifact(output)
             }
-        }.toScanlyResult("Could not password-protect PDF.")
+        }.toScanlyResult(appString(R.string.default_pdf_toolkit_repository_could_not_password_protect_pdf))
     }
 
     override suspend fun removePassword(
@@ -250,17 +280,19 @@ class DefaultPdfToolkitRepository @Inject constructor(
         currentPassword: String,
     ): ScanlyResult<ExportArtifact> = withContext(dispatchers.io) {
         runCatching {
-            require(currentPassword.isNotBlank()) { "Enter the current PDF password." }
+            require(currentPassword.isNotBlank()) { appString(R.string.error_enter_the_current_pdf_password) }
             ensurePdfBox()
             resolveLocalFile(source).useFile { local ->
                 val output = newOutputFile("unlocked")
-                openDocument(local, currentPassword).use { document ->
-                    document.setAllSecurityToBeRemoved(true)
-                    document.save(output)
+                output.deleteOnFailure {
+                    openDocument(local, currentPassword).use { document ->
+                        document.setAllSecurityToBeRemoved(true)
+                        document.save(output)
+                    }
                 }
                 artifact(output)
             }
-        }.toScanlyResult("Could not remove PDF password.")
+        }.toScanlyResult(appString(R.string.default_pdf_toolkit_repository_could_not_remove_pdf_password))
     }
 
     override suspend fun watermark(
@@ -269,27 +301,29 @@ class DefaultPdfToolkitRepository @Inject constructor(
         password: String?,
     ): ScanlyResult<ExportArtifact> = withContext(dispatchers.io) {
         runCatching {
-            require(options.text.isNotBlank()) { "Enter watermark text." }
+            require(options.text.isNotBlank()) { appString(R.string.error_enter_watermark_text) }
             ensurePdfBox()
             resolveLocalFile(source).useFile { local ->
                 val output = newOutputFile("watermarked")
-                openDocument(local, password).use { document ->
-                    require(document.numberOfPages > 0) { "This PDF has no pages." }
-                    if (document.isEncrypted) {
-                        document.setAllSecurityToBeRemoved(true)
-                    }
-                    val stamper = PdfWatermarkStamper.create(document, options)
-                    document.pages.forEachIndexed { pageIndex, page ->
-                        if (options.pageRange == WatermarkPageRange.FIRST_PAGE && pageIndex != 0) {
-                            return@forEachIndexed
+                output.deleteOnFailure {
+                    openDocument(local, password).use { document ->
+                        require(document.numberOfPages > 0) { appString(R.string.error_this_pdf_has_no_pages) }
+                        if (document.isEncrypted) {
+                            document.setAllSecurityToBeRemoved(true)
                         }
-                        stamper.stamp(document, page)
+                        val stamper = PdfWatermarkStamper.create(document, options)
+                        document.pages.forEachIndexed { pageIndex, page ->
+                            if (options.pageRange == WatermarkPageRange.FIRST_PAGE && pageIndex != 0) {
+                                return@forEachIndexed
+                            }
+                            stamper.stamp(document, page)
+                        }
+                        document.save(output)
                     }
-                    document.save(output)
                 }
                 artifact(output)
             }
-        }.toScanlyResult("Could not add watermark.")
+        }.toScanlyResult(appString(R.string.default_pdf_toolkit_repository_could_not_add_watermark))
     }
 
     override suspend fun renderWatermarkPreview(
@@ -299,8 +333,8 @@ class DefaultPdfToolkitRepository @Inject constructor(
         maxWidth: Int,
     ): ScanlyResult<Bitmap> = withContext(dispatchers.io) {
         runCatching {
-            require(options.text.isNotBlank()) { "Enter watermark text." }
-            require(maxWidth > 0) { "Preview size is invalid." }
+            require(options.text.isNotBlank()) { appString(R.string.error_enter_watermark_text) }
+            require(maxWidth > 0) { appString(R.string.error_preview_size_is_invalid) }
             ensurePdfBox()
             val base = watermarkPreviewBase(source, password)
             val previewFile = File(toolsDir(), "watermark_preview_${UUID.randomUUID()}.pdf")
@@ -313,7 +347,7 @@ class DefaultPdfToolkitRepository @Inject constructor(
             } finally {
                 previewFile.delete()
             }
-        }.toScanlyResult("Could not update watermark preview.")
+        }.toScanlyResult(appString(R.string.default_pdf_toolkit_repository_could_not_update_watermark_preview))
     }
 
     /**
@@ -332,18 +366,20 @@ class DefaultPdfToolkitRepository @Inject constructor(
             }
             previewBase = null
             val file = File(toolsDir(), "watermark_base_${UUID.randomUUID()}.pdf")
-            resolveLocalFile(source).useFile { local ->
-                openDocument(local, password).use { document ->
-                    require(document.numberOfPages > 0) { "This PDF has no pages." }
-                    if (document.isEncrypted) {
-                        document.setAllSecurityToBeRemoved(true)
+            file.deleteOnFailure {
+                resolveLocalFile(source).useFile { local ->
+                    openDocument(local, password).use { document ->
+                        require(document.numberOfPages > 0) { appString(R.string.error_this_pdf_has_no_pages) }
+                        if (document.isEncrypted) {
+                            document.setAllSecurityToBeRemoved(true)
+                        }
+                        // Removing pages (rather than importing page 1 into a new document) keeps
+                        // inherited /Rotate, /CropBox and resources intact.
+                        while (document.numberOfPages > 1) {
+                            document.removePage(document.numberOfPages - 1)
+                        }
+                        document.save(file)
                     }
-                    // Removing pages (rather than importing page 1 into a new document) keeps
-                    // inherited /Rotate, /CropBox and resources intact.
-                    while (document.numberOfPages > 1) {
-                        document.removePage(document.numberOfPages - 1)
-                    }
-                    document.save(file)
                 }
             }
             previewBase = PreviewBase(key = key, file = file, createdAt = now)
@@ -357,36 +393,42 @@ class DefaultPdfToolkitRepository @Inject constructor(
         runCatching {
             ensurePdfBox()
             val file = File(toolsDir(), "sign_${UUID.randomUUID()}.pdf")
-            val imageSource = (source as? PdfToolSource.DeviceUri)?.takeIf { it.isImage() }
-            if (imageSource != null) {
-                val size = writeImageAsPdf(Uri.parse(imageSource.uriString), file)
-                return@runCatching PdfSignSession(
+            // A cancelled open would otherwise return its session to nobody (withContext throws
+            // on return), so the check inside this block deletes the copy before that happens.
+            file.deleteOnFailure {
+                val imageSource = (source as? PdfToolSource.DeviceUri)?.takeIf { it.isImage() }
+                if (imageSource != null) {
+                    val size = writeImageAsPdf(Uri.parse(imageSource.uriString), file)
+                    coroutineContext.ensureActive()
+                    return@runCatching PdfSignSession(
+                        file = PdfToolSource.AppFile(file.absolutePath, source.displayLabel()),
+                        pageSizes = listOf(size),
+                    )
+                }
+                val pageSizes = resolveLocalFile(source).useFile { local ->
+                    openDocument(local, password).use { document ->
+                        require(document.numberOfPages > 0) { appString(R.string.error_this_pdf_has_no_pages) }
+                        if (document.isEncrypted) {
+                            document.setAllSecurityToBeRemoved(true)
+                        }
+                        val sizes = document.pages.map { page ->
+                            val box = page.cropBox ?: page.mediaBox
+                            val (width, height) = WatermarkGeometry.visualSize(box.width, box.height, page.rotation)
+                            SignPageSize(width, height)
+                        }
+                        // One decrypted local copy for the whole editing session: page renders read
+                        // it in place instead of re-copying or re-exporting the source each time.
+                        document.save(file)
+                        sizes
+                    }
+                }
+                coroutineContext.ensureActive()
+                PdfSignSession(
                     file = PdfToolSource.AppFile(file.absolutePath, source.displayLabel()),
-                    pageSizes = listOf(size),
+                    pageSizes = pageSizes,
                 )
             }
-            val pageSizes = resolveLocalFile(source).useFile { local ->
-                openDocument(local, password).use { document ->
-                    require(document.numberOfPages > 0) { "This PDF has no pages." }
-                    if (document.isEncrypted) {
-                        document.setAllSecurityToBeRemoved(true)
-                    }
-                    val sizes = document.pages.map { page ->
-                        val box = page.cropBox ?: page.mediaBox
-                        val (width, height) = WatermarkGeometry.visualSize(box.width, box.height, page.rotation)
-                        SignPageSize(width, height)
-                    }
-                    // One decrypted local copy for the whole editing session: page renders read
-                    // it in place instead of re-copying or re-exporting the source each time.
-                    document.save(file)
-                    sizes
-                }
-            }
-            PdfSignSession(
-                file = PdfToolSource.AppFile(file.absolutePath, source.displayLabel()),
-                pageSizes = pageSizes,
-            )
-        }.toScanlyResult("Could not open this PDF for signing.")
+        }.toScanlyResult(appString(R.string.default_pdf_toolkit_repository_could_not_open_this_pdf_2))
     }
 
     private fun PdfToolSource.DeviceUri.isImage(): Boolean =
@@ -438,22 +480,24 @@ class DefaultPdfToolkitRepository @Inject constructor(
         marks: List<SignMark>,
     ): ScanlyResult<ExportArtifact> = withContext(dispatchers.io) {
         runCatching {
-            require(marks.isNotEmpty()) { "Place a signature or another mark first." }
+            require(marks.isNotEmpty()) { appString(R.string.error_place_a_signature_or_another_mark_first) }
             ensurePdfBox()
             resolveLocalFile(session.file).useFile { local ->
                 val output = newOutputFile("signed")
-                openDocument(local, null).use { document ->
-                    val stamper = PdfSignatureStamper(document)
-                    stamper.validate(marks)
-                    marks.groupBy { it.pageIndex }.forEach { (pageIndex, pageMarks) ->
-                        require(pageIndex in 0 until document.numberOfPages) { "A mark is on a missing page." }
-                        stamper.stamp(document.getPage(pageIndex), pageMarks)
+                output.deleteOnFailure {
+                    openDocument(local, null).use { document ->
+                        val stamper = PdfSignatureStamper(document)
+                        stamper.validate(marks)
+                        marks.groupBy { it.pageIndex }.forEach { (pageIndex, pageMarks) ->
+                            require(pageIndex in 0 until document.numberOfPages) { appString(R.string.error_a_mark_is_on_a_missing_page) }
+                            stamper.stamp(document.getPage(pageIndex), pageMarks)
+                        }
+                        document.save(output)
                     }
-                    document.save(output)
                 }
                 artifact(output)
             }
-        }.toScanlyResult("Could not sign this PDF.")
+        }.toScanlyResult(appString(R.string.default_pdf_toolkit_repository_could_not_sign_this_pdf))
     }
 
     override suspend fun closeSignSession(session: PdfSignSession) {
@@ -479,9 +523,11 @@ class DefaultPdfToolkitRepository @Inject constructor(
                     // Decrypt to temp for PdfRenderer when password is required.
                     ensurePdfBox()
                     val unlocked = File(toolsDir(), "render_${UUID.randomUUID()}.pdf")
-                    openDocument(local, password).use { document ->
-                        document.setAllSecurityToBeRemoved(true)
-                        document.save(unlocked)
+                    unlocked.deleteOnFailure {
+                        openDocument(local, password).use { document ->
+                            document.setAllSecurityToBeRemoved(true)
+                            document.save(unlocked)
+                        }
                     }
                     unlocked
                 }
@@ -493,7 +539,7 @@ class DefaultPdfToolkitRepository @Inject constructor(
                     }
                 }
             }
-        }.toScanlyResult("Could not render PDF page.")
+        }.toScanlyResult(appString(R.string.default_pdf_toolkit_repository_could_not_render_pdf_page))
     }
 
     override suspend fun openWorkingCopy(
@@ -506,7 +552,7 @@ class DefaultPdfToolkitRepository @Inject constructor(
             try {
                 val pageCount = resolveLocalFile(source).useFile { local ->
                     openDocument(local, password).use { document ->
-                        require(document.numberOfPages > 0) { "This PDF has no pages." }
+                        require(document.numberOfPages > 0) { appString(R.string.error_this_pdf_has_no_pages) }
                         if (document.isEncrypted) {
                             document.setAllSecurityToBeRemoved(true)
                             document.save(file)
@@ -521,8 +567,11 @@ class DefaultPdfToolkitRepository @Inject constructor(
                 val renderable = unlockForRendererIfNeeded(file, null)
                 if (renderable != file) {
                     file.delete()
-                    check(renderable.renameTo(file)) { "Could not prepare this PDF." }
+                    check(renderable.renameTo(file)) { appString(R.string.error_could_not_prepare_this_pdf) }
                 }
+                // A cancelled open can no longer hand its copy to anyone (withContext throws on
+                // return), so bail out here and let the catch below delete it.
+                coroutineContext.ensureActive()
                 PdfWorkingCopy(
                     file = PdfToolSource.AppFile(file.absolutePath, source.displayLabel()),
                     pageCount = pageCount,
@@ -531,7 +580,7 @@ class DefaultPdfToolkitRepository @Inject constructor(
                 file.delete()
                 throw error
             }
-        }.toScanlyResult("Could not open this PDF.")
+        }.toScanlyResult(appString(R.string.default_pdf_toolkit_repository_could_not_open_this_pdf))
     }
 
     override suspend fun closeWorkingCopy(copy: PdfWorkingCopy) {
@@ -552,7 +601,7 @@ class DefaultPdfToolkitRepository @Inject constructor(
             resolveLocalFile(copy.file).useFile { local ->
                 ParcelFileDescriptor.open(local, ParcelFileDescriptor.MODE_READ_ONLY).use { pfd ->
                     PdfRenderer(pfd).use { renderer ->
-                        require(pageIndex in 0 until renderer.pageCount) { "Page is out of range." }
+                        require(pageIndex in 0 until renderer.pageCount) { appString(R.string.error_page_is_out_of_range) }
                         val bitmap = renderPageForImage(renderer, pageIndex, options.resolution.widthPx)
                         try {
                             val stream = ByteArrayOutputStream()
@@ -564,7 +613,7 @@ class DefaultPdfToolkitRepository @Inject constructor(
                     }
                 }
             }
-        }.toScanlyResult("Could not estimate the image size.")
+        }.toScanlyResult(appString(R.string.default_pdf_toolkit_repository_could_not_estimate_the_image))
     }
 
     override suspend fun exportPagesAsImages(
@@ -575,7 +624,7 @@ class DefaultPdfToolkitRepository @Inject constructor(
         onProgress: suspend (done: Int, total: Int) -> Unit,
     ): ScanlyResult<PdfImageExport> = withContext(dispatchers.io) {
         runCatching {
-            require(pageIndexes.isNotEmpty()) { "Choose at least one page." }
+            require(pageIndexes.isNotEmpty()) { appString(R.string.error_choose_at_least_one_page) }
             val format = options.format
             val base = baseName.ifBlank { "Scanly" }
             // Only the latest export's share copies are kept; the gallery holds the real files.
@@ -589,8 +638,8 @@ class DefaultPdfToolkitRepository @Inject constructor(
                         PdfRenderer(pfd).use { renderer ->
                             pageIndexes.forEachIndexed { done, pageIndex ->
                                 coroutineContext.ensureActive()
-                                require(pageIndex in 0 until renderer.pageCount) { "Page ${pageIndex + 1} is missing." }
-                                val name = "$base – page ${pageIndex + 1}.${format.extension}"
+                                require(pageIndex in 0 until renderer.pageCount) { appString(R.string.error_page_not_found) }
+                                val name = appString(R.string.default_pdf_toolkit_repository_page, base, pageIndex + 1, format.extension)
                                 val target = File(outDir, name)
                                 val bitmap = renderPageForImage(renderer, pageIndex, options.resolution.widthPx)
                                 try {
@@ -622,7 +671,47 @@ class DefaultPdfToolkitRepository @Inject constructor(
                 destinationLabel = SharedStorageDestinationManager.GALLERY_LABEL,
                 options = options,
             )
-        }.toScanlyResult("Could not save the images.")
+        }.toScanlyResult(appString(R.string.default_pdf_toolkit_repository_could_not_save_the_images))
+    }
+
+    override suspend fun renderPageToJpeg(
+        copy: PdfWorkingCopy,
+        pageIndex: Int,
+        longEdgePx: Int,
+        targetPath: String,
+    ): ScanlyResult<Unit> = withContext(dispatchers.io) {
+        runCatching {
+            resolveLocalFile(copy.file).useFile { local ->
+                ParcelFileDescriptor.open(local, ParcelFileDescriptor.MODE_READ_ONLY).use { pfd ->
+                    PdfRenderer(pfd).use { renderer ->
+                        require(pageIndex in 0 until renderer.pageCount) { appString(R.string.error_page_not_found) }
+                        // Landscape pages get the long edge as their width; portrait pages as height.
+                        val widthPx = renderer.openPage(pageIndex).use { page ->
+                            val pageW = page.width.coerceAtLeast(1)
+                            val pageH = page.height.coerceAtLeast(1)
+                            if (pageW >= pageH) longEdgePx else (longEdgePx.toLong() * pageW / pageH).toInt()
+                        }
+                        val bitmap = try {
+                            renderPageForImage(renderer, pageIndex, widthPx.coerceAtLeast(1))
+                        } catch (oom: OutOfMemoryError) {
+                            throw IllegalStateException(appString(R.string.default_pdf_toolkit_repository_could_not_read_this_page), oom)
+                        }
+                        try {
+                            val target = File(targetPath)
+                            target.parentFile?.mkdirs()
+                            FileOutputStream(target).use { output ->
+                                require(bitmap.compress(Bitmap.CompressFormat.JPEG, LibraryPageJpegQuality, output)) {
+                                    appString(R.string.default_pdf_toolkit_repository_failed_to_encode_page, pageIndex + 1)
+                                }
+                            }
+                        } finally {
+                            bitmap.recycle()
+                        }
+                    }
+                }
+            }
+            Unit
+        }.toScanlyResult(appString(R.string.default_pdf_toolkit_repository_could_not_read_this_page))
     }
 
     /**
@@ -657,16 +746,16 @@ class DefaultPdfToolkitRepository @Inject constructor(
             PdfImageFormat.JPG -> compress(Bitmap.CompressFormat.JPEG, ImageExportJpegQuality, output)
             PdfImageFormat.PNG -> compress(Bitmap.CompressFormat.PNG, 100, output)
         }
-        require(ok) { "Failed to encode page image." }
+        require(ok) { appString(R.string.error_failed_to_encode_page_image) }
     }
 
     override suspend fun prepareShare(artifact: ExportArtifact): ScanlyResult<List<String>> =
         withContext(dispatchers.io) {
             runCatching {
                 val file = File(artifact.filePath)
-                require(file.exists()) { "Export file is missing." }
+                require(file.exists()) { appString(R.string.error_export_file_is_missing) }
                 listOf(file.absolutePath)
-            }.toScanlyResult("Could not prepare share.")
+            }.toScanlyResult(appString(R.string.default_pdf_toolkit_repository_could_not_prepare_share))
         }
 
     private suspend fun resolveLocalFile(source: PdfToolSource): ResolvedFile {
@@ -674,9 +763,11 @@ class DefaultPdfToolkitRepository @Inject constructor(
             is PdfToolSource.DeviceUri -> {
                 val uri = Uri.parse(source.uriString)
                 val target = File(toolsDir(), "src_${UUID.randomUUID()}.pdf")
-                context.contentResolver.openInputStream(uri)?.use { input ->
-                    FileOutputStream(target).use { output -> input.copyTo(output) }
-                } ?: error("Could not read selected PDF.")
+                target.deleteOnFailure {
+                    context.contentResolver.openInputStream(uri)?.use { input ->
+                        FileOutputStream(target).use { output -> input.copyTo(output) }
+                    } ?: error(appString(R.string.error_could_not_read_selected_pdf))
+                }
                 ResolvedFile(file = target, deleteOnClose = true)
             }
             is PdfToolSource.LibraryDocument -> {
@@ -690,10 +781,10 @@ class DefaultPdfToolkitRepository @Inject constructor(
                         is ScanlyResult.Success -> {
                             val exportedFile = File(exported.value.filePath)
                             require(exportedFile.isFile && exportedFile.length() > 0L) {
-                                "The Scanly document could not be prepared as a PDF."
+                                appString(R.string.default_pdf_toolkit_repository_the_scanly_document_could_not)
                             }
                             val readerCopy = File(toolsDir(), "library_${UUID.randomUUID()}.pdf")
-                            exportedFile.copyTo(readerCopy, overwrite = true)
+                            readerCopy.deleteOnFailure { exportedFile.copyTo(readerCopy, overwrite = true) }
                             ResolvedFile(file = readerCopy, deleteOnClose = true)
                         }
                         is ScanlyResult.Failure -> error(exported.error.message)
@@ -708,9 +799,9 @@ class DefaultPdfToolkitRepository @Inject constructor(
                     context.externalCacheDir,
                 ).map(File::getCanonicalFile)
                 require(allowedRoots.any { root -> file.path.startsWith(root.path + File.separator) }) {
-                    "This PDF is not stored in Scanly."
+                    appString(R.string.default_pdf_toolkit_repository_this_pdf_is_not_stored)
                 }
-                require(file.isFile && file.length() > 0L) { "The preview PDF is missing." }
+                require(file.isFile && file.length() > 0L) { appString(R.string.error_the_preview_pdf_is_missing) }
                 // Mark it in use: storage cleanup skips pdf-tools files touched in the last hour,
                 // so a reader or sign session left open for a long time keeps its working copy.
                 file.setLastModified(System.currentTimeMillis())
@@ -722,35 +813,54 @@ class DefaultPdfToolkitRepository @Inject constructor(
     private fun openDocument(file: File, password: String?): PDDocument {
         return try {
             if (password.isNullOrBlank()) {
-                PDDocument.load(file)
+                PDDocument.load(file, scratchSettings())
             } else {
-                PDDocument.load(file, password)
+                PDDocument.load(file, password, scratchSettings())
             }
         } catch (error: InvalidPasswordException) {
-            throw IllegalArgumentException("Incorrect PDF password.", error)
+            // Without a supplied password this just means the file is locked, not a wrong guess.
+            val message = if (password.isNullOrBlank()) PasswordProtectedMessage else appString(R.string.default_pdf_toolkit_repository_incorrect_pdf_password)
+            throw IllegalArgumentException(message, error)
         } catch (error: Exception) {
             // Retry with empty password string for some encrypted files.
             if (!password.isNullOrBlank()) throw error
             try {
-                PDDocument.load(file, "")
+                PDDocument.load(file, "", scratchSettings())
             } catch (encrypted: Exception) {
                 if (encrypted is InvalidPasswordException ||
                     encrypted.message?.contains("password", ignoreCase = true) == true
                 ) {
-                    throw IllegalArgumentException("This PDF is password protected.")
+                    throw IllegalArgumentException(PasswordProtectedMessage)
                 }
                 throw error
             }
         }
     }
 
+    /**
+     * PDFBox keeps decoded streams in a scratch buffer; the default is main memory, which runs
+     * out on large PDFs. Past a small in-memory budget it spills to a temp file instead.
+     */
+    private fun scratchSettings(): MemoryUsageSetting = MemoryUsageSetting.setupMixed(ScratchMemoryBytes)
+
+    /** Runs [block]; if it throws (cancellation included), deletes this partial file before rethrowing. */
+    private inline fun <T> File.deleteOnFailure(block: () -> T): T =
+        try {
+            block()
+        } catch (error: Throwable) {
+            delete()
+            throw error
+        }
+
     private fun unlockForRendererIfNeeded(file: File, password: String?): File {
         if (!password.isNullOrBlank()) {
             ensurePdfBox()
             val unlocked = File(toolsDir(), "unlock_${UUID.randomUUID()}.pdf")
-            openDocument(file, password).use { document ->
-                document.setAllSecurityToBeRemoved(true)
-                document.save(unlocked)
+            unlocked.deleteOnFailure {
+                openDocument(file, password).use { document ->
+                    document.setAllSecurityToBeRemoved(true)
+                    document.save(unlocked)
+                }
             }
             return unlocked
         }
@@ -766,18 +876,20 @@ class DefaultPdfToolkitRepository @Inject constructor(
         ensurePdfBox()
         return try {
             val unlocked = File(toolsDir(), "unlock_${UUID.randomUUID()}.pdf")
-            openDocument(file, null).use { document ->
-                if (document.isEncrypted) {
-                    document.setAllSecurityToBeRemoved(true)
+            unlocked.deleteOnFailure {
+                openDocument(file, null).use { document ->
+                    if (document.isEncrypted) {
+                        document.setAllSecurityToBeRemoved(true)
+                    }
+                    document.save(unlocked)
                 }
-                document.save(unlocked)
             }
             unlocked
         } catch (error: Exception) {
             if (error.message?.contains("password", ignoreCase = true) == true ||
                 error is InvalidPasswordException
             ) {
-                throw IllegalArgumentException("This PDF is password protected.")
+                throw IllegalArgumentException(PasswordProtectedMessage)
             }
             throw error
         }
@@ -792,14 +904,14 @@ class DefaultPdfToolkitRepository @Inject constructor(
     private fun Bitmap.toJpegBytes(quality: Int): ByteArray {
         val stream = ByteArrayOutputStream()
         val ok = compress(Bitmap.CompressFormat.JPEG, quality.coerceIn(1, 100), stream)
-        require(ok && stream.size() > 0) { "Failed to encode page image." }
+        require(ok && stream.size() > 0) { appString(R.string.error_failed_to_encode_page_image) }
         return stream.toByteArray()
     }
 
     private fun renderWithPdfRenderer(file: File, pageIndex: Int, maxWidth: Int): Bitmap {
         ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY).use { pfd ->
             PdfRenderer(pfd).use { renderer ->
-                require(pageIndex in 0 until renderer.pageCount) { "Page is out of range." }
+                require(pageIndex in 0 until renderer.pageCount) { appString(R.string.error_page_is_out_of_range) }
                 return renderWithPdfRenderer(renderer, pageIndex, maxWidth)
             }
         }
@@ -887,14 +999,19 @@ class DefaultPdfToolkitRepository @Inject constructor(
         fold(
             onSuccess = { ScanlyResult.Success(it) },
             onFailure = {
-                ScanlyResult.Failure(
-                    ScanlyError(message = it.message ?: fallbackMessage, cause = it),
-                )
+                // runCatching also catches OutOfMemoryError; its raw "Failed to allocate…" text is
+                // not something to show.
+                val message = if (it is OutOfMemoryError) TooLargeMessage else it.message ?: fallbackMessage
+                ScanlyResult.Failure(ScanlyError(message = message, cause = it))
             },
         )
 
     private companion object {
         const val PdfMimeType = "application/pdf"
+        val PasswordProtectedMessage: String get() = appString(R.string.default_pdf_toolkit_repository_this_pdf_is_password_protected)
+        val TooLargeMessage: String get() = appString(R.string.default_pdf_toolkit_repository_this_pdf_is_too_large)
+        /** In-memory scratch budget for PDFBox before it spills to a temp file. */
+        const val ScratchMemoryBytes = 8L * 1024 * 1024
         const val MaxImagePageEdgePx = 3000
         const val ImagePageLongEdgePt = 842f
         const val ImagePageJpegQuality = 92
@@ -903,6 +1020,8 @@ class DefaultPdfToolkitRepository @Inject constructor(
         /** ~48 MB ARGB ceiling per page image; A4 at 2480 px wide is ~8.7 MP. */
         const val MaxImagePagePixels = 12_000_000.0
         const val ImageExportJpegQuality = 90
+        /** Matches gallery imports, so PDF pages enter the processing pipeline at the same quality. */
+        const val LibraryPageJpegQuality = 95
         /** Re-resolve the preview base after this long so edits to a library scan show up. */
         const val PreviewBaseTtlMs = 5 * 60 * 1000L
         /** Tool files untouched this long are leftovers from an earlier run. */

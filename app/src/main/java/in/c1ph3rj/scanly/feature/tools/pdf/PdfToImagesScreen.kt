@@ -1,5 +1,6 @@
 package `in`.c1ph3rj.scanly.feature.tools.pdf
 
+import `in`.c1ph3rj.scanly.core.common.appPluralString
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.graphics.Bitmap
@@ -65,6 +66,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import `in`.c1ph3rj.scanly.feature.tools.rememberToolSplitLayout
+import `in`.c1ph3rj.scanly.feature.tools.ToolSplitPanes
+import `in`.c1ph3rj.scanly.feature.tools.ToolSplitMaxWidth
+import `in`.c1ph3rj.scanly.feature.tools.ToolColumnMaxWidth
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
@@ -106,12 +111,15 @@ import `in`.c1ph3rj.scanly.feature.tools.ToolTokens
 import `in`.c1ph3rj.scanly.feature.tools.ToolTopBar
 import `in`.c1ph3rj.scanly.feature.tools.ToolWorkingState
 import kotlinx.coroutines.flow.collectLatest
+import `in`.c1ph3rj.scanly.R
+import androidx.compose.ui.res.stringResource
+import `in`.c1ph3rj.scanly.core.common.appString
 
 /** The screens of PDF to JPG, in order: Choose a file, Pages and format, Saving, Done. */
 private enum class PdfToImagesStep { Pick, Pages, Working, Done }
 
 /** Grid cells grow on wide screens but stay three-up on phones, like the design. */
-private val PageCellMinWidth = 96.dp
+internal val PageCellMinWidth = 96.dp
 
 @Composable
 fun PdfToImagesRoute(onNavigateUp: () -> Unit, initialSource: PdfToolSource? = null) {
@@ -151,6 +159,12 @@ fun PdfToImagesRoute(onNavigateUp: () -> Unit, initialSource: PdfToolSource? = n
         returnToPagesOnPickerBack = true
         showPicker = true
     }
+    // Back from the pages step is a step back, not "Change": back again on the picker leaves the
+    // tool instead of bouncing to the pages step forever.
+    val backToPicker = {
+        returnToPagesOnPickerBack = false
+        showPicker = true
+    }
 
     LaunchedEffect(viewModel) {
         viewModel.events.collectLatest {
@@ -167,7 +181,7 @@ fun PdfToImagesRoute(onNavigateUp: () -> Unit, initialSource: PdfToolSource? = n
         }
     }
     BackHandler(enabled = step == PdfToImagesStep.Pick && uiState.source != null, onBack = onPickerBack)
-    BackHandler(enabled = step == PdfToImagesStep.Pages, onBack = if (fromReader) onNavigateUp else openPicker)
+    BackHandler(enabled = step == PdfToImagesStep.Pages, onBack = if (fromReader) onNavigateUp else backToPicker)
     // An export can't be cancelled halfway (pages already in the gallery would be orphaned).
     BackHandler(enabled = step == PdfToImagesStep.Working) { }
 
@@ -177,12 +191,14 @@ fun PdfToImagesRoute(onNavigateUp: () -> Unit, initialSource: PdfToolSource? = n
             .background(MaterialTheme.colorScheme.background),
         contentAlignment = Alignment.TopCenter,
     ) {
-        Column(modifier = Modifier.fillMaxSize().widthIn(max = 640.dp)) {
+        // Pages and result split into two panes on wide landscape windows; the rest stay one column.
+        val split = rememberToolSplitLayout() && (step == PdfToImagesStep.Pages || step == PdfToImagesStep.Done)
+        Column(modifier = Modifier.widthIn(max = if (split) ToolSplitMaxWidth else ToolColumnMaxWidth).fillMaxSize()) {
             when (step) {
                 PdfToImagesStep.Pick -> PdfFilePickerScreen(
-                    title = "PDF to JPG",
-                    subtitle = "Turn pages into images for chats, slides or your gallery.",
-                    stepText = "Step 1 of 3 · Choose a file",
+                    title = stringResource(R.string.pdf_to_images_pdf_to_jpg),
+                    subtitle = stringResource(R.string.pdf_to_images_turn_pages_into_images_for),
+                    stepText = stringResource(R.string.pdf_compress_step_1_of_3_choose),
                     documents = uiState.libraryDocuments,
                     onBack = onPickerBack,
                     onPickDevice = { devicePicker.launch(arrayOf("application/pdf")) },
@@ -192,7 +208,7 @@ fun PdfToImagesRoute(onNavigateUp: () -> Unit, initialSource: PdfToolSource? = n
                 )
                 PdfToImagesStep.Pages -> PagesStep(
                     uiState = uiState,
-                    onBack = if (fromReader) onNavigateUp else openPicker,
+                    onBack = if (fromReader) onNavigateUp else backToPicker,
                     onChange = openPicker,
                     onRequestThumbnail = viewModel::requestThumbnail,
                     onTogglePage = viewModel::togglePage,
@@ -227,7 +243,7 @@ fun PdfToImagesRoute(onNavigateUp: () -> Unit, initialSource: PdfToolSource? = n
                         try {
                             context.startActivity(intent)
                         } catch (_: ActivityNotFoundException) {
-                            viewModel.showMessage("No gallery app found. The images are in Pictures/Scanly.")
+                            viewModel.showMessage(appString(R.string.pdf_to_images_no_gallery_app_found_the))
                         }
                     },
                     onShare = {
@@ -238,7 +254,7 @@ fun PdfToImagesRoute(onNavigateUp: () -> Unit, initialSource: PdfToolSource? = n
                                 context = context,
                                 artifact = ShareArtifact(
                                     mimeType = format.mimeType,
-                                    title = if (targets.size == 1) "Image" else "${targets.size} images",
+                                    title = appPluralString(R.plurals.common_images, targets.size, targets.size),
                                     filePaths = targets.map(PdfPageImage::filePath),
                                 ),
                             )
@@ -278,105 +294,120 @@ private fun ColumnScope.PagesStep(
     val gridState = rememberLazyGridState()
     val pageOrder = remember(uiState.pageCount) { (0 until uiState.pageCount).toList() }
 
-    ToolTopBar(onBack = onBack, stepText = "Step 2 of 3 · Pages and format")
-    LazyVerticalGrid(
-        columns = GridCells.Adaptive(PageCellMinWidth),
-        state = gridState,
-        modifier = Modifier
-            .weight(1f)
-            .fillMaxWidth()
-            .gridDragSelect(
-                state = gridState,
-                order = pageOrder,
-                selection = uiState.selectedPages,
-                idForKey = { key -> selectableId(key, PageKeyPrefix) },
-                onSelectionChange = onSelectionChange,
-                contentPaddingStart = ToolTokens.ScreenPadding,
-                contentPaddingTop = GridTopPadding,
-            ),
-        contentPadding = PaddingValues(
-            start = ToolTokens.ScreenPadding,
-            end = ToolTokens.ScreenPadding,
-            top = GridTopPadding,
-            bottom = 24.dp,
-        ),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
-        fullWidth("title") {
-            Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                ToolLargeTitle(title = "PDF to JPG")
-                FileSummaryLine(
-                    name = name,
-                    pageCount = uiState.pageCount,
-                    onChange = onChange,
-                )
-            }
+    val settings: @Composable () -> Unit = {
+        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            FormatSection(selected = uiState.options.format, onSelected = onFormatSelected)
+            ResolutionSection(
+                selected = uiState.options.resolution,
+                estimates = uiState.estimates,
+                onSelected = onResolutionSelected,
+            )
         }
+    }
 
-        when {
-            uiState.needsPassword -> fullWidth("password") {
-                PasswordPanel(
-                    password = uiState.password,
-                    busy = uiState.isOpening,
-                    onPasswordChange = onPasswordChange,
-                    onUnlock = onUnlock,
-                )
-            }
-            !uiState.isReady -> fullWidth("opening") {
-                Box(Modifier.fillMaxWidth().heightIn(min = 200.dp), contentAlignment = Alignment.Center) {
-                    if (uiState.isOpening) CircularProgressIndicator(Modifier.size(28.dp), strokeWidth = 2.5.dp)
+    ToolTopBar(onBack = onBack, stepText = stringResource(R.string.pdf_to_images_step_2_of_3_pages))
+    // Wide landscape: pages on the start side, the settings beside them instead of below.
+    val split = rememberToolSplitLayout() && uiState.isReady && !uiState.needsPassword
+    val grid: @Composable (Modifier) -> Unit = { gridModifier ->
+        LazyVerticalGrid(
+            columns = GridCells.Adaptive(PageCellMinWidth),
+            state = gridState,
+            modifier = gridModifier
+                .gridDragSelect(
+                    state = gridState,
+                    order = pageOrder,
+                    selection = uiState.selectedPages,
+                    idForKey = { key -> selectableId(key, PageKeyPrefix) },
+                    onSelectionChange = onSelectionChange,
+                    contentPaddingStart = ToolTokens.ScreenPadding,
+                    contentPaddingTop = GridTopPadding,
+                ),
+            contentPadding = PaddingValues(
+                start = ToolTokens.ScreenPadding,
+                end = ToolTokens.ScreenPadding,
+                top = GridTopPadding,
+                bottom = 24.dp,
+            ),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            fullWidth("title") {
+                Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                    ToolLargeTitle(title = stringResource(R.string.pdf_to_images_pdf_to_jpg))
+                    FileSummaryLine(
+                        name = name,
+                        pageCount = uiState.pageCount,
+                        onChange = onChange,
+                    )
                 }
             }
-            else -> {
-                fullWidth("pages-header") {
-                    Column(
-                        modifier = Modifier.padding(top = 8.dp),
-                        verticalArrangement = Arrangement.spacedBy(2.dp),
-                    ) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        ) {
-                            ToolSectionLabel(
-                                text = formatPdfToImagesPagesLabel(selectedCount, uiState.pageCount),
-                                modifier = Modifier.weight(1f),
-                            )
-                            SelectAllAction(
-                                selectedCount = selectedCount,
-                                totalCount = uiState.pageCount,
-                                onSelectAll = onSelectAll,
-                                onSelectNone = onSelectNone,
-                            )
-                        }
-                        if (uiState.pageCount > 2) {
-                            GridHint(text = "Tap a page, or long-press and drag across several.")
-                        }
+
+            when {
+                uiState.needsPassword -> fullWidth("password") {
+                    PasswordPanel(
+                        password = uiState.password,
+                        busy = uiState.isOpening,
+                        onPasswordChange = onPasswordChange,
+                        onUnlock = onUnlock,
+                    )
+                }
+                !uiState.isReady -> fullWidth("opening") {
+                    Box(Modifier.fillMaxWidth().heightIn(min = 200.dp), contentAlignment = Alignment.Center) {
+                        if (uiState.isOpening) CircularProgressIndicator(Modifier.size(28.dp), strokeWidth = 2.5.dp)
                     }
                 }
-                items(count = uiState.pageCount, key = { index -> "$PageKeyPrefix$index" }) { index ->
-                    LaunchedEffect(index) { onRequestThumbnail(index) }
-                    PageCell(
-                        bitmap = uiState.thumbnails[index],
-                        label = (index + 1).toString(),
-                        selected = index in uiState.selectedPages,
-                        contentDescription = "Page ${index + 1}",
-                        onToggle = { onTogglePage(index) },
-                    )
-                }
-                fullWidth("format") {
-                    FormatSection(selected = uiState.options.format, onSelected = onFormatSelected)
-                }
-                fullWidth("resolution") {
-                    ResolutionSection(
-                        selected = uiState.options.resolution,
-                        estimates = uiState.estimates,
-                        onSelected = onResolutionSelected,
-                    )
+                else -> {
+                    fullWidth("pages-header") {
+                        Column(
+                            modifier = Modifier.padding(top = 8.dp),
+                            verticalArrangement = Arrangement.spacedBy(2.dp),
+                        ) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            ) {
+                                ToolSectionLabel(
+                                    text = formatPdfToImagesPagesLabel(selectedCount, uiState.pageCount),
+                                    modifier = Modifier.weight(1f),
+                                )
+                                SelectAllAction(
+                                    selectedCount = selectedCount,
+                                    totalCount = uiState.pageCount,
+                                    onSelectAll = onSelectAll,
+                                    onSelectNone = onSelectNone,
+                                )
+                            }
+                            if (uiState.pageCount > 2) {
+                                GridHint(text = stringResource(R.string.pdf_import_tap_a_page_or_long))
+                            }
+                        }
+                    }
+                    items(count = uiState.pageCount, key = { index -> "$PageKeyPrefix$index" }) { index ->
+                        LaunchedEffect(index) { onRequestThumbnail(index) }
+                        PageCell(
+                            bitmap = uiState.thumbnails[index],
+                            label = (index + 1).toString(),
+                            selected = index in uiState.selectedPages,
+                            contentDescription = stringResource(R.string.trash_use_cases_page, index + 1),
+                            onToggle = { onTogglePage(index) },
+                        )
+                    }
+                    if (!split) {
+                        fullWidth("format") { settings() }
+                    }
                 }
             }
         }
+    }
+    if (split) {
+        ToolSplitPanes(
+            start = { grid(Modifier.fillMaxSize()) },
+            end = { settings() },
+            startWeight = 0.58f,
+        )
+    } else {
+        grid(Modifier.weight(1f).fillMaxWidth())
     }
 
     ToolBottomBar {
@@ -387,7 +418,7 @@ private fun ColumnScope.PagesStep(
             icon = Icons.Outlined.Image,
         )
         Text(
-            text = "Images show up in your gallery right away",
+            text = stringResource(R.string.pdf_to_images_images_show_up_in_your),
             style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.5.sp),
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center,
@@ -398,7 +429,7 @@ private fun ColumnScope.PagesStep(
 
 /** "Lease agreement · 6 pages · Change" — the name ellipsizes, "Change" always fits. */
 @Composable
-private fun FileSummaryLine(name: String, pageCount: Int, onChange: () -> Unit) {
+internal fun FileSummaryLine(name: String, pageCount: Int, onChange: () -> Unit) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         val meta = listOfNotNull(
             name.takeIf { it.isNotBlank() },
@@ -412,12 +443,12 @@ private fun FileSummaryLine(name: String, pageCount: Int, onChange: () -> Unit) 
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier.weight(1f, fill = false),
         )
-        ToolTextAction(label = "Change", onClick = onChange)
+        ToolTextAction(label = stringResource(R.string.storage_change), onClick = onChange)
     }
 }
 
 @Composable
-private fun PasswordPanel(
+internal fun PasswordPanel(
     password: String,
     busy: Boolean,
     onPasswordChange: (String) -> Unit,
@@ -428,25 +459,25 @@ private fun PasswordPanel(
         modifier = Modifier.padding(top = 12.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
-        ToolNote(text = "This PDF is password protected. Enter its password to see the pages.")
-        ToolFieldLabel(text = "PDF password")
+        ToolNote(text = stringResource(R.string.pdf_to_images_this_pdf_is_password_protected))
+        ToolFieldLabel(text = stringResource(R.string.export_share_pdf_password))
         ToolTextField(
             value = password,
             onValueChange = onPasswordChange,
-            placeholder = "Enter the password",
+            placeholder = stringResource(R.string.pdf_compress_enter_the_password),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
             trailingIcon = {
                 IconButton(onClick = { showPassword = !showPassword }) {
                     Icon(
                         imageVector = if (showPassword) Icons.Outlined.VisibilityOff else Icons.Outlined.Visibility,
-                        contentDescription = if (showPassword) "Hide password" else "Show password",
+                        contentDescription = if (showPassword) stringResource(R.string.export_share_hide_password) else stringResource(R.string.export_share_show_password),
                     )
                 }
             },
         )
         ToolSecondaryButton(
-            text = "Unlock",
+            text = stringResource(R.string.pdf_compress_unlock),
             onClick = onUnlock,
             enabled = password.isNotBlank(),
             loading = busy,
@@ -460,7 +491,7 @@ private fun PasswordPanel(
  * action in a list header.
  */
 @Composable
-private fun SelectAllAction(
+internal fun SelectAllAction(
     selectedCount: Int,
     totalCount: Int,
     onSelectAll: () -> Unit,
@@ -468,7 +499,7 @@ private fun SelectAllAction(
 ) {
     val allSelected = totalCount > 0 && selectedCount == totalCount
     ToolTextAction(
-        label = if (allSelected) "Deselect all" else "Select all",
+        label = if (allSelected) stringResource(R.string.pdf_to_images_deselect_all) else stringResource(R.string.group_detail_select_all),
         onClick = if (allSelected) onSelectNone else onSelectAll,
         icon = when {
             allSelected -> Icons.Outlined.CheckBox
@@ -484,7 +515,7 @@ private fun SelectAllAction(
  * unselected ones fade back so the selection reads at a glance.
  */
 @Composable
-private fun PageCell(
+internal fun PageCell(
     bitmap: Bitmap?,
     label: String,
     selected: Boolean,
@@ -540,7 +571,7 @@ private fun PageCell(
 }
 
 @Composable
-private fun SelectionMark(selected: Boolean, modifier: Modifier = Modifier) {
+internal fun SelectionMark(selected: Boolean, modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .padding(2.dp)
@@ -574,7 +605,7 @@ private fun FormatSection(selected: PdfImageFormat, onSelected: (PdfImageFormat)
         modifier = Modifier.padding(top = 12.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
-        ToolFieldLabel(text = "Format")
+        ToolFieldLabel(text = stringResource(R.string.pdf_to_images_format))
         Row(
             modifier = Modifier.fillMaxWidth().selectableGroup(),
             horizontalArrangement = Arrangement.spacedBy(10.dp),
@@ -620,7 +651,7 @@ private fun ResolutionSection(
         modifier = Modifier.padding(top = 8.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
-        ToolFieldLabel(text = "Resolution")
+        ToolFieldLabel(text = stringResource(R.string.pdf_to_images_resolution))
         ToolCard(modifier = Modifier.fillMaxWidth().selectableGroup()) {
             Column {
                 PdfImageResolution.entries.forEachIndexed { index, resolution ->
@@ -670,7 +701,7 @@ private fun ResolutionRow(
             )
         }
         Text(
-            text = estimateBytes?.let { "~${formatImageBytes(it)} each" } ?: "…",
+            text = estimateBytes?.let { stringResource(R.string.pdf_to_images_each, formatImageBytes(it)) } ?: "…",
             style = MaterialTheme.typography.labelMedium.copy(fontSize = 12.5.sp),
             fontWeight = FontWeight.SemiBold,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -707,9 +738,9 @@ private fun WorkingStep(uiState: PdfToImagesUiState) {
         pages.getOrNull(i)?.let { uiState.thumbnails[it] }
     }
     ToolWorkingState(
-        title = "Saving images…",
+        title = stringResource(R.string.pdf_to_images_saving_images),
         caption = listOf(
-            "${(uiState.exportedCount + 1).coerceAtMost(total)} of $total",
+            stringResource(R.string.common_current_of_total, (uiState.exportedCount + 1).coerceAtMost(total), total),
             uiState.options.format.label,
             "${uiState.options.resolution.widthPx} px",
         ).joinToString(" · "),
@@ -726,7 +757,7 @@ private fun WorkingStep(uiState: PdfToImagesUiState) {
                 )
                 if (currentPage != null) {
                     Text(
-                        text = "Page ${currentPage + 1}",
+                        text = stringResource(R.string.trash_use_cases_page, currentPage + 1),
                         style = MaterialTheme.typography.labelLarge.copy(fontSize = 13.sp),
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -755,9 +786,9 @@ private fun ColumnScope.DoneStep(
 
     ToolTopBar(
         onBack = onClose,
-        stepText = "Step 3 of 3 · Done",
+        stepText = stringResource(R.string.pdf_import_step_3_of_3_done),
         backIcon = Icons.Outlined.Close,
-        backContentDescription = "Close",
+        backContentDescription = stringResource(R.string.zoomable_image_close),
         centerStep = true,
     )
     val imageCount = export.images.size
@@ -769,6 +800,8 @@ private fun ColumnScope.DoneStep(
         // compact three-up grid of the pages step.
         columns = when {
             imageCount <= 1 -> GridCells.Fixed(1)
+            // Wide windows: steady 180 dp previews rather than two half-screen A4 pages.
+            rememberToolSplitLayout() -> GridCells.Adaptive(180.dp)
             imageCount <= 4 -> GridCells.Fixed(2)
             else -> GridCells.Adaptive(PageCellMinWidth)
         },
@@ -834,15 +867,15 @@ private fun ColumnScope.DoneStep(
             ) {
                 ToolShortcutTile(
                     icon = Icons.Outlined.Tune,
-                    title = "Export again",
-                    caption = "PNG or print size",
+                    title = stringResource(R.string.pdf_to_images_export_again),
+                    caption = stringResource(R.string.pdf_to_images_png_or_print_size),
                     onClick = onExportAgain,
                     modifier = Modifier.weight(1f).fillMaxHeight(),
                 )
                 ToolShortcutTile(
                     icon = Icons.Outlined.PictureAsPdf,
-                    title = "Another PDF",
-                    caption = "Pick a different file",
+                    title = stringResource(R.string.pdf_import_another_pdf),
+                    caption = stringResource(R.string.pdf_to_images_pick_a_different_file),
                     onClick = onConvertAnother,
                     modifier = Modifier.weight(1f).fillMaxHeight(),
                 )
@@ -853,7 +886,7 @@ private fun ColumnScope.DoneStep(
     ToolBottomBar {
         Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             ToolSecondaryButton(
-                text = "Open gallery",
+                text = stringResource(R.string.pdf_to_images_open_gallery),
                 onClick = onOpenGallery,
                 icon = Icons.Outlined.PhotoLibrary,
                 modifier = Modifier.weight(1f),
@@ -880,9 +913,9 @@ private fun ShareSelectionLine(selectedCount: Int, totalCount: Int, onClear: () 
     ) {
         Text(
             text = if (selectedCount == 0) {
-                "Tap images, or long-press and drag, to share only some."
+                stringResource(R.string.pdf_to_images_tap_images_or_long_press)
             } else {
-                "$selectedCount of $totalCount selected"
+                stringResource(R.string.pdf_to_images_of_selected, selectedCount, totalCount)
             },
             style = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp),
             fontWeight = if (selectedCount == 0) FontWeight.Normal else FontWeight.SemiBold,
@@ -893,12 +926,12 @@ private fun ShareSelectionLine(selectedCount: Int, totalCount: Int, onClear: () 
             },
             modifier = Modifier.weight(1f),
         )
-        if (selectedCount > 0) ToolTextAction(label = "Clear", onClick = onClear)
+        if (selectedCount > 0) ToolTextAction(label = stringResource(R.string.group_detail_clear), onClick = onClear)
     }
 }
 
 @Composable
-private fun GridHint(text: String) {
+internal fun GridHint(text: String) {
     Text(
         text = text,
         style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.5.sp),
@@ -906,17 +939,17 @@ private fun GridHint(text: String) {
     )
 }
 
-private const val PageKeyPrefix = "page-"
+internal const val PageKeyPrefix = "page-"
 private const val ImageKeyPrefix = "image-"
-private val GridTopPadding = 2.dp
+internal val GridTopPadding = 2.dp
 
 /** Grid keys look like "page-3"; anything else (headers, footers) is not selectable. */
-private fun selectableId(key: Any, prefix: String): Int? =
+internal fun selectableId(key: Any, prefix: String): Int? =
     (key as? String)?.takeIf { it.startsWith(prefix) }?.removePrefix(prefix)?.toIntOrNull()
 
 /** Page frames are a little wider than A4 so landscape pages still read at a glance. */
-private const val PageFrameRatio = 0.74f
+internal const val PageFrameRatio = 0.74f
 
-private fun LazyGridScope.fullWidth(key: String, content: @Composable () -> Unit) {
+internal fun LazyGridScope.fullWidth(key: String, content: @Composable () -> Unit) {
     item(key = key, span = { GridItemSpan(maxLineSpan) }) { content() }
 }

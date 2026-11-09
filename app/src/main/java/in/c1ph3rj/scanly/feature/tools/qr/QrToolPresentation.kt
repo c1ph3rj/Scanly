@@ -13,6 +13,9 @@ import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
+import androidx.annotation.StringRes
 
 fun isQrWebLink(value: String): Boolean {
     val trimmed = value.trim()
@@ -30,13 +33,13 @@ fun qrUriIsOpenableWebLink(scheme: String?): Boolean {
 }
 
 fun formatQrScanResultTitle(value: String): String =
-    if (isQrWebLink(value)) "Link" else "Text"
+    if (isQrWebLink(value)) appString(R.string.qr_payload_link) else appString(R.string.qr_payload_text)
 
 fun formatQrScanResultSubtitle(value: String): String =
-    if (isQrWebLink(value)) "Open in a browser or copy" else "Copy to the clipboard"
+    if (isQrWebLink(value)) appString(R.string.qr_tool_presentation_open_in_a_browser_or) else appString(R.string.qr_tool_presentation_copy_to_the_clipboard)
 
 fun formatQrGeneratePlaceholderHint(contentBlank: Boolean): String =
-    if (contentBlank) "Preview appears as you type" else "Generating preview…"
+    if (contentBlank) appString(R.string.qr_tool_presentation_preview_appears_as_you_type) else appString(R.string.qr_tool_presentation_generating_preview)
 
 /**
  * Landscape hosts Scan/Create inside the scan panel. A blocked camera must still
@@ -45,22 +48,29 @@ fun formatQrGeneratePlaceholderHint(contentBlank: Boolean): String =
 fun qrPermissionGateShowsModeSelector(twoPane: Boolean): Boolean = twoPane
 
 /** Colours offered for a created code. All are dark enough to scan on white paper. */
-enum class QrInkColor(val label: String, val argb: Long) {
-    Ink("Ink", DefaultQrInkArgb),
-    Teal("Teal", 0xFF0F5F58),
-    Navy("Navy", 0xFF1E3A8A),
-    Maroon("Maroon", 0xFF7F1D1D),
+enum class QrInkColor(@param:StringRes val labelRes: Int, val argb: Long) {
+    Ink(R.string.qr_ink_color_ink, DefaultQrInkArgb),
+    Teal(R.string.watermark_color_teal, 0xFF0F5F58),
+    Navy(R.string.sign_ink_navy, 0xFF1E3A8A),
+    Maroon(R.string.qr_ink_color_maroon, 0xFF7F1D1D),
+    ;
+
+    val label: String get() = appString(labelRes)
 }
 
 /** What the big button does for a decoded code (result screen and scan card). */
-enum class QrPrimaryAction(val resultLabel: String, val cardLabel: String) {
-    OpenLink("Open in browser", "Open"),
-    PayUpi("Pay with a UPI app", "Pay"),
-    JoinWifi("Join this network", "Join"),
-    SaveContact("Save to contacts", "Save"),
-    SendEmail("Send email", "Email"),
-    Call("Call this number", "Call"),
-    CopyText("Copy text", "Copy"),
+enum class QrPrimaryAction(@param:StringRes val resultLabelRes: Int, @param:StringRes val cardLabelRes: Int) {
+    OpenLink(R.string.legal_document_open_in_browser, R.string.wifi_security_open),
+    PayUpi(R.string.qr_primary_action_pay_with_a_upi_app, R.string.qr_primary_action_pay),
+    JoinWifi(R.string.qr_primary_action_join_this_network, R.string.qr_primary_action_join),
+    SaveContact(R.string.qr_primary_action_save_to_contacts, R.string.document_detail_save),
+    SendEmail(R.string.qr_primary_action_send_email, R.string.qr_payload_email),
+    Call(R.string.qr_primary_action_call_this_number, R.string.qr_result_call),
+    CopyText(R.string.qr_primary_action_copy_text, R.string.page_text_copy),
+    ;
+
+    val resultLabel: String get() = appString(resultLabelRes)
+    val cardLabel: String get() = appString(cardLabelRes)
 }
 
 fun qrPrimaryActionFor(payload: QrPayload): QrPrimaryAction = when (payload) {
@@ -74,14 +84,14 @@ fun qrPrimaryActionFor(payload: QrPayload): QrPrimaryAction = when (payload) {
 }
 
 /** Status pill text while the camera is looking at a code ("Found a link"). */
-fun formatQrFoundStatus(payload: QrPayload): String = "Found " + when (payload) {
-    is QrPayload.Link -> "a link"
-    is QrPayload.Upi -> "a UPI payment"
-    is QrPayload.Wifi -> "a Wi-Fi network"
-    is QrPayload.Contact -> "a contact"
-    is QrPayload.Email -> "an email address"
-    is QrPayload.Phone -> "a phone number"
-    is QrPayload.Text -> "some text"
+fun formatQrFoundStatus(payload: QrPayload): String = appString(R.string.qr_tool_presentation_found) + when (payload) {
+    is QrPayload.Link -> appString(R.string.qr_tool_presentation_a_link)
+    is QrPayload.Upi -> appString(R.string.qr_tool_presentation_a_upi_payment)
+    is QrPayload.Wifi -> appString(R.string.qr_tool_presentation_a_wi_fi_network)
+    is QrPayload.Contact -> appString(R.string.qr_tool_presentation_a_contact)
+    is QrPayload.Email -> appString(R.string.qr_tool_presentation_an_email_address)
+    is QrPayload.Phone -> appString(R.string.qr_tool_presentation_a_phone_number)
+    is QrPayload.Text -> appString(R.string.qr_tool_presentation_some_text)
 }
 
 /** A link split into the parts the full-address block styles differently. */
@@ -105,9 +115,9 @@ fun formatQrRelativeTime(thenMillis: Long, nowMillis: Long, zone: ZoneId = ZoneI
     val elapsed = nowMillis - thenMillis
     val minutes = elapsed / 60_000L
     return when {
-        elapsed < 60_000L -> "just now"
-        minutes < 60L -> "$minutes min ago"
-        minutes < 24 * 60L -> "${minutes / 60} h ago"
+        elapsed < 60_000L -> appString(R.string.qr_tool_presentation_just_now)
+        minutes < 60L -> appString(R.string.qr_tool_presentation_min_ago, minutes)
+        minutes < 24 * 60L -> appString(R.string.qr_tool_presentation_h_ago, minutes / 60)
         else -> "on " + Instant.ofEpochMilli(thenMillis).atZone(zone)
             .format(DateTimeFormatter.ofPattern("d MMM", Locale.getDefault()))
     }
@@ -117,16 +127,22 @@ fun formatQrRelativeTime(thenMillis: Long, nowMillis: Long, zone: ZoneId = ZoneI
 // History
 // ---------------------------------------------------------------------------------------------
 
-enum class QrHistoryFilter(val label: String) {
-    All("All"),
-    Scanned("Scanned"),
-    Created("Created"),
+enum class QrHistoryFilter(@param:StringRes val labelRes: Int) {
+    All(R.string.settings_detail_screens_all),
+    Scanned(R.string.qr_history_scanned),
+    Created(R.string.qr_history_created),
+    ;
+
+    val label: String get() = appString(labelRes)
 }
 
-enum class QrHistorySection(val label: String) {
-    Today("Today"),
-    Yesterday("Yesterday"),
-    Earlier("Earlier"),
+enum class QrHistorySection(@param:StringRes val labelRes: Int) {
+    Today(R.string.library_card_presentation_today),
+    Yesterday(R.string.library_card_presentation_yesterday),
+    Earlier(R.string.qr_history_section_earlier),
+    ;
+
+    val label: String get() = appString(labelRes)
 }
 
 fun qrHistoryMatches(entry: QrHistoryEntry, query: String, filter: QrHistoryFilter): Boolean {

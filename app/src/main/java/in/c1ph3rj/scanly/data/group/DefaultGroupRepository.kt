@@ -14,6 +14,8 @@ import `in`.c1ph3rj.scanly.data.common.LibraryOperationCoordinator
 import `in`.c1ph3rj.scanly.domain.model.DocumentGroup
 import `in`.c1ph3rj.scanly.domain.model.GroupTitleFormat
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
+import `in`.c1ph3rj.scanly.domain.model.TrashedFolder
+import `in`.c1ph3rj.scanly.data.storage.DocumentStorageManager
 import `in`.c1ph3rj.scanly.domain.repository.GroupRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -21,12 +23,15 @@ import kotlinx.coroutines.withContext
 import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
 
 @Singleton
 class DefaultGroupRepository @Inject constructor(
     private val database: ScanlyDatabase,
     private val documentGroupDao: DocumentGroupDao,
     private val documentDao: DocumentDao,
+    private val documentStorageManager: DocumentStorageManager,
     private val dispatchers: ScanlyDispatchers,
     private val operationCoordinator: LibraryOperationCoordinator,
 ) : GroupRepository {
@@ -87,7 +92,7 @@ class DefaultGroupRepository @Inject constructor(
                 onSuccess = { ScanlyResult.Success(it) },
                 onFailure = {
                     ScanlyResult.Failure(
-                        ScanlyError(message = it.message ?: "Could not create the group.", cause = it),
+                        ScanlyError(message = it.message ?: appString(R.string.error_could_not_create_the_group), cause = it),
                     )
                 },
             )
@@ -99,7 +104,7 @@ class DefaultGroupRepository @Inject constructor(
             operationCoordinator.withMutation {
             val normalizedTitle = DocumentPresentationFormatter.normalizeGroupTitle(title)
             runCatching {
-                val existing = documentGroupDao.getGroup(groupId) ?: error("Group not found.")
+                val existing = documentGroupDao.getGroup(groupId) ?: error(appString(R.string.error_group_not_found))
                 database.withTransaction {
                     documentGroupDao.update(
                         existing.copy(
@@ -112,7 +117,7 @@ class DefaultGroupRepository @Inject constructor(
                 onSuccess = { ScanlyResult.Success(Unit) },
                 onFailure = {
                     ScanlyResult.Failure(
-                        ScanlyError(message = it.message ?: "Could not rename the group.", cause = it),
+                        ScanlyError(message = it.message ?: appString(R.string.error_could_not_rename_the_group), cause = it),
                     )
                 },
             )
@@ -125,16 +130,98 @@ class DefaultGroupRepository @Inject constructor(
             runCatching {
                 // FK ON DELETE SET NULL will null out groupId on all documents automatically
                 database.withTransaction {
+                    documentDao.forgetReleasedGroup(groupId)
                     documentGroupDao.deleteById(groupId)
                 }
             }.fold(
                 onSuccess = { ScanlyResult.Success(Unit) },
                 onFailure = {
                     ScanlyResult.Failure(
-                        ScanlyError(message = it.message ?: "Could not delete the group.", cause = it),
+                        ScanlyError(message = it.message ?: appString(R.string.error_could_not_delete_the_group), cause = it),
                     )
                 },
             )
+            }
+        }
+
+    override suspend fun moveGroupToTrash(groupId: String, includeDocuments: Boolean): ScanlyResult<Unit> =
+        mutateGroup(appString(R.string.default_group_repository_could_not_move_the_folder)) {
+            checkNotNull(documentGroupDao.getGroup(groupId)) { appString(R.string.error_folder_not_found) }
+            val timestamp = System.currentTimeMillis()
+            database.withTransaction {
+                documentGroupDao.setDeletedAt(groupId, timestamp)
+                if (includeDocuments) {
+                    documentDao.trashWithGroup(groupId, timestamp)
+                } else {
+                    documentDao.releaseFromGroup(groupId)
+                }
+            }
+        }
+
+    override suspend fun restoreGroup(groupId: String): ScanlyResult<Unit> =
+        mutateGroup(appString(R.string.default_group_repository_could_not_restore_the_folder)) {
+            checkNotNull(documentGroupDao.getGroup(groupId)) { appString(R.string.error_folder_not_found) }
+            database.withTransaction {
+                documentGroupDao.setDeletedAt(groupId, null)
+                documentDao.restoreWithGroup(groupId)
+                documentDao.returnReleasedToGroup(groupId)
+                documentDao.forgetReleasedGroup(groupId)
+            }
+        }
+
+    override fun observeTrashedGroups(): Flow<List<TrashedFolder>> =
+        documentGroupDao.observeTrashedGroups().map { rows ->
+            rows.map { row ->
+                TrashedFolder(
+                    id = row.id,
+                    title = row.title,
+                    documentCount = row.documentCount,
+                    pageCount = row.totalPageCount,
+                    coverThumbnailPath = row.coverThumbnailPath,
+                    deletedAtMillis = row.deletedAtMillis,
+                    keptDocumentCount = row.keptDocumentCount,
+                )
+            }
+        }
+
+    override suspend fun deleteGroupForever(groupId: String): ScanlyResult<Unit> =
+        mutateGroup(appString(R.string.default_group_repository_could_not_delete_the_folder)) { deleteTrashedGroups(listOf(groupId)) }
+
+    override suspend fun emptyTrashedGroups(): ScanlyResult<Int> =
+        mutateGroup(appString(R.string.default_group_repository_could_not_delete_the_folders)) {
+            deleteTrashedGroups(documentGroupDao.getTrashedGroupIds())
+        }
+
+    override suspend fun purgeTrashedGroupsBefore(cutoffMillis: Long): ScanlyResult<Int> =
+        mutateGroup(appString(R.string.default_group_repository_could_not_clear_old_deleted)) {
+            deleteTrashedGroups(documentGroupDao.getTrashedGroupIdsBefore(cutoffMillis))
+        }
+
+    /** Removes the folders and the documents that went to the bin with them, files included. */
+    private suspend fun deleteTrashedGroups(groupIds: List<String>): Int {
+        if (groupIds.isEmpty()) return 0
+        val documentIds = groupIds.flatMap { documentDao.getIdsDeletedWithGroup(it) }
+        database.withTransaction {
+            documentIds.forEach { documentDao.deleteById(it) }
+            // Documents deleted on their own earlier keep their bin entry; the FK moves them out.
+            groupIds.forEach {
+                documentDao.forgetReleasedGroup(it)
+                documentGroupDao.deleteById(it)
+            }
+        }
+        documentIds.forEach { id -> runCatching { documentStorageManager.deleteDocumentStorage(id) } }
+        return groupIds.size
+    }
+
+    private suspend fun <T> mutateGroup(failureMessage: String, block: suspend () -> T): ScanlyResult<T> =
+        withContext(dispatchers.io) {
+            operationCoordinator.withMutation {
+                runCatching { block() }.fold(
+                    onSuccess = { ScanlyResult.Success(it) },
+                    onFailure = {
+                        ScanlyResult.Failure(ScanlyError(message = it.message ?: failureMessage, cause = it))
+                    },
+                )
             }
         }
 
@@ -153,7 +240,7 @@ class DefaultGroupRepository @Inject constructor(
                     onFailure = {
                         ScanlyResult.Failure(
                             ScanlyError(
-                                message = it.message ?: "Could not remove empty folders.",
+                                message = it.message ?: appString(R.string.error_could_not_remove_empty_folders),
                                 cause = it,
                             ),
                         )
@@ -166,11 +253,13 @@ class DefaultGroupRepository @Inject constructor(
         withContext(dispatchers.io) {
             operationCoordinator.withMutation {
             runCatching {
-                val doc = documentDao.getDocument(documentId) ?: error("Document not found.")
+                val doc = documentDao.getDocument(documentId) ?: error(appString(R.string.error_document_not_found))
                 database.withTransaction {
                     documentDao.update(
                         doc.copy(
                             groupId = groupId,
+                            // A move by hand overrides "rejoin the folder if it is restored".
+                            releasedFromGroupId = null,
                             updatedAtMillis = System.currentTimeMillis(),
                         ),
                     )
@@ -180,7 +269,7 @@ class DefaultGroupRepository @Inject constructor(
                 onFailure = {
                     ScanlyResult.Failure(
                         ScanlyError(
-                            message = it.message ?: "Could not update document group.",
+                            message = it.message ?: appString(R.string.error_could_not_update_document_group),
                             cause = it,
                         ),
                     )

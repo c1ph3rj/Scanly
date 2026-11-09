@@ -27,6 +27,7 @@ object NameMatcher {
         if (query.isBlank) return null
         val folded = FoldedText.of(title)
         val words = TextFolding.words(folded.text).toList()
+        if (mentionsAny(folded.text, words, query.excluded)) return null
         val highlights = mutableListOf<IntRange>()
         var total = 0.0
         var parts = 0
@@ -44,6 +45,13 @@ object NameMatcher {
             total += termMatch.score
             parts++
         }
+        query.anyOf.forEach { alternatives ->
+            val best = alternatives.mapNotNull { alternative -> matchAlternative(alternative, folded.text, words) }
+                .maxByOrNull { it.score } ?: return null
+            highlights += folded.toSourceRange(best.range)
+            total += best.score
+            parts++
+        }
         val normalizedTitle = words.joinToString(" ") { it.value }
         val normalizedQuery = (query.phrases.flatten() + query.terms).joinToString(" ")
         val score = if (normalizedTitle == normalizedQuery) EXACT_SCORE else total / parts
@@ -51,6 +59,26 @@ object NameMatcher {
     }
 
     private data class TermMatch(val range: IntRange, val score: Double)
+
+    /** True when [title] contains any excluded word (as a word start) or phrase. */
+    fun mentions(title: String, excluded: List<List<String>>): Boolean {
+        if (excluded.isEmpty()) return false
+        val folded = TextFolding.fold(title)
+        return mentionsAny(folded, TextFolding.words(folded).toList(), excluded)
+    }
+
+    private fun mentionsAny(text: String, words: List<MatchResult>, excluded: List<List<String>>): Boolean =
+        excluded.any { phrase ->
+            if (phrase.size == 1) words.any { it.value.startsWith(phrase.single()) } else phrase.joinToString(" ") in text
+        }
+
+    private fun matchAlternative(alternative: List<String>, text: String, words: List<MatchResult>): TermMatch? {
+        if (alternative.size == 1) return matchTerm(alternative.single(), text, words)
+        val needle = alternative.joinToString(" ")
+        val start = text.indexOf(needle).takeIf { it >= 0 } ?: return null
+        val score = if (words.any { it.range.first == start }) PREFIX_SCORE else INFIX_SCORE
+        return TermMatch(start until start + needle.length, score)
+    }
 
     private fun matchTerm(term: String, text: String, words: List<MatchResult>): TermMatch? {
         words.forEachIndexed { index, word ->

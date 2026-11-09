@@ -7,6 +7,7 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import dagger.hilt.android.qualifiers.ApplicationContext
 import `in`.c1ph3rj.scanly.data.local.db.dao.PageTextDao
+import `in`.c1ph3rj.scanly.domain.search.SearchTextDeriver
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
@@ -37,6 +38,11 @@ class TextIndexScheduler @Inject constructor(
     @OptIn(FlowPreview::class)
     fun start() {
         if (!started.compareAndSet(false, true)) return
+        scope.launch {
+            // After an update that changes derived search forms, rows need re-deriving even when
+            // no page is waiting to be read.
+            if (dao.countRowsWithDerivedVersionBelow(SearchTextDeriver.VERSION) > 0) enqueue()
+        }
         scope.launch {
             var previousPending = 0
             dao.observeIndexProgress()

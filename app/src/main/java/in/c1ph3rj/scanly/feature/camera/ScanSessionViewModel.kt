@@ -41,6 +41,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
 
 data class ScanSessionUiState(
     val document: ScanDocument? = null,
@@ -196,9 +198,9 @@ class ScanSessionViewModel @Inject constructor(
                     autoCaptureEnabled = enabled,
                     phase = if (enabled) AutoCapturePhase.SEARCHING else AutoCapturePhase.OFF,
                     statusMessage = if (enabled) {
-                        "Point your camera at a document."
+                        appString(R.string.scan_session_point_your_camera_at_a_2)
                     } else {
-                        "Auto-capture is off. Use the shutter when ready."
+                        appString(R.string.capture_stability_tracker_auto_capture_is_off_use)
                     },
                     countdownValue = null,
                 ),
@@ -287,7 +289,7 @@ class ScanSessionViewModel @Inject constructor(
                                 overlayFrame = frame.toDetectionOverlayFrame(),
                                 sceneIssue = null,
                                 phase = if (current.liveDetection.autoCaptureEnabled) AutoCapturePhase.SEARCHING else AutoCapturePhase.OFF,
-                                statusMessage = "Live detection is unavailable. Manual capture still works.",
+                                statusMessage = appString(R.string.scan_session_live_detection_is_unavailable_manual),
                                 countdownValue = null,
                             ),
                         )
@@ -340,6 +342,7 @@ class ScanSessionViewModel @Inject constructor(
         viewModelScope.launch {
             var capturedPageId: String? = null
             var completionEvent: ScanSessionEvent? = null
+            var failureMessage: String? = null
             when (val result = finalizeCapturedPageUseCase(draft)) {
                 is ScanlyResult.Success -> {
                     capturedPageId = result.value
@@ -359,7 +362,13 @@ class ScanSessionViewModel @Inject constructor(
                         )
                     }
                 }
-                is ScanlyResult.Failure -> _events.send(ScanSessionEvent.ShowMessage(result.error.message))
+                is ScanlyResult.Failure -> {
+                    failureMessage = result.error.message
+                    // Back off like a commit so a persistent failure (e.g. disk full) does not
+                    // re-trigger auto-capture every time the still scene turns stable again.
+                    applyFailureCooldown()
+                    _events.send(ScanSessionEvent.ShowMessage(result.error.message))
+                }
             }
             pendingCaptureQuad = null
             pendingCaptureTrigger = CaptureTrigger.MANUAL
@@ -369,10 +378,12 @@ class ScanSessionViewModel @Inject constructor(
                     latestCapturedPageId = capturedPageId ?: current.latestCapturedPageId,
                     liveDetection = current.liveDetection.copy(
                         phase = if (current.liveDetection.autoCaptureEnabled) AutoCapturePhase.COOLDOWN else AutoCapturePhase.OFF,
-                        statusMessage = if (current.liveDetection.autoCaptureEnabled) {
-                            "Move to the next page before auto-capture re-arms."
+                        statusMessage = if (failureMessage != null) {
+                            appString(R.string.scan_session_page_not_saved_reposition_the)
+                        } else if (current.liveDetection.autoCaptureEnabled) {
+                            appString(R.string.capture_stability_tracker_move_to_the_next_page)
                         } else {
-                            "Auto-capture is off. Use the shutter when ready."
+                            appString(R.string.capture_stability_tracker_auto_capture_is_off_use)
                         },
                         countdownValue = null,
                         sceneIssue = null,
@@ -385,6 +396,7 @@ class ScanSessionViewModel @Inject constructor(
 
     fun onCaptureFailed(message: String) {
         viewModelScope.launch {
+            applyFailureCooldown()
             pendingCaptureQuad = null
             pendingCaptureTrigger = CaptureTrigger.MANUAL
             _uiState.update { current ->
@@ -392,7 +404,7 @@ class ScanSessionViewModel @Inject constructor(
                     captureInProgress = false,
                     liveDetection = current.liveDetection.copy(
                         phase = if (current.liveDetection.autoCaptureEnabled) AutoCapturePhase.SEARCHING else AutoCapturePhase.OFF,
-                        statusMessage = "Capture failed. Reposition the document and try again.",
+                        statusMessage = appString(R.string.scan_session_capture_failed_reposition_the_document),
                         countdownValue = null,
                         sceneIssue = null,
                     ),
@@ -405,7 +417,7 @@ class ScanSessionViewModel @Inject constructor(
     private suspend fun startCapture(trigger: CaptureTrigger) {
         if (_uiState.value.captureInProgress || _uiState.value.document == null) {
             if (_uiState.value.document == null) {
-                emitMessage("Document not found.")
+                emitMessage(appString(R.string.scan_session_document_not_found))
             }
             return
         }
@@ -436,6 +448,7 @@ class ScanSessionViewModel @Inject constructor(
         when (val result = capturePreparationResult) {
             is ScanlyResult.Success -> _events.send(ScanSessionEvent.PerformCapture(result.value))
             is ScanlyResult.Failure -> {
+                applyFailureCooldown()
                 pendingCaptureQuad = null
                 pendingCaptureTrigger = CaptureTrigger.MANUAL
                 _uiState.update { current ->
@@ -453,6 +466,14 @@ class ScanSessionViewModel @Inject constructor(
         }
     }
 
+    /** Same back-off as a committed capture, minus the success path, for every failed attempt. */
+    private fun applyFailureCooldown() {
+        stabilityTracker.onCaptureCommitted(
+            quad = pendingCaptureQuad,
+            nowMillis = System.currentTimeMillis(),
+        )
+    }
+
     private fun resetFrameTrackers() = synchronized(trackerLock) {
         gateStabilityTracker.reset()
         stableCornerSelector.reset()
@@ -468,8 +489,8 @@ class ScanSessionViewModel @Inject constructor(
         draft: PageCaptureDraft,
         trigger: CaptureTrigger,
     ): String = when {
-        trigger == CaptureTrigger.AUTO -> "Auto-captured page ${draft.pageIndex + 1}."
-        else -> "Page ${draft.pageIndex + 1} saved."
+        trigger == CaptureTrigger.AUTO -> appString(R.string.scan_session_auto_captured_page, draft.pageIndex + 1)
+        else -> appString(R.string.scan_session_page_saved, draft.pageIndex + 1)
     }
 
 }
@@ -485,15 +506,15 @@ private data class FrameAnalysis(
 private fun gateGuidance(analysis: FrameAnalysis): String? = when {
     analysis.sceneIssue != null -> null
     analysis.cornerIssue == CornerResolutionIssue.TWO_PAGES_AMBIGUOUS ->
-        "Two pages are visible. Move closer and frame one page."
+        appString(R.string.scan_session_two_pages_are_visible_move)
     analysis.cornerIssue == CornerResolutionIssue.MODELS_DISAGREE ->
-        "Page edges are ambiguous. Hold steady or move closer."
+        appString(R.string.scan_session_page_edges_are_ambiguous_hold)
     analysis.gateAccepted -> null
     analysis.gate?.predictedClass == DocumentGateClass.DIGITAL_SCREEN ->
-        "Screen detected. Point at a physical document."
+        appString(R.string.scan_session_screen_detected_point_at_a)
     analysis.gate?.predictedClass == DocumentGateClass.NEITHER ->
-        "Point your camera at a physical document."
-    else -> "Checking document…"
+        appString(R.string.scan_session_point_your_camera_at_a)
+    else -> appString(R.string.scan_session_checking_document)
 }
 
 internal fun replacementCompletionEvent(

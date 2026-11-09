@@ -66,6 +66,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
 import kotlin.math.min
+import `in`.c1ph3rj.scanly.R
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun ZoomableImageDialog(
@@ -99,7 +101,7 @@ fun ZoomableImageDialog(
             imagePath = imagePath,
             title = title,
             onNavigateUp = onDismiss,
-            closeContentDescription = "Close",
+            closeContentDescription = stringResource(R.string.zoomable_image_close),
         )
     }
 }
@@ -111,12 +113,14 @@ fun ZoomableImageViewer(
     onNavigateUp: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
     state: ZoomableImageState = rememberZoomableImageState(imagePath),
-    closeContentDescription: String = "Back",
+    closeContentDescription: String = stringResource(R.string.zoomable_image_back),
     allowParentHorizontalGestures: Boolean = false,
     showTopBar: Boolean = true,
     showZoomBadge: Boolean = true,
     onSingleTap: () -> Unit = {},
     onZoomActiveChange: (Boolean) -> Unit = {},
+    /** Matte around the fitted image; embedded panes pass a surface colour instead of black. */
+    canvasColor: Color = Color.Black,
     trailingAction: @Composable (
         zoomActive: Boolean,
         onResetZoom: () -> Unit,
@@ -124,7 +128,7 @@ fun ZoomableImageViewer(
         if (zoomActive) {
             ChromeIconButton(
                 icon = Icons.Filled.FitScreen,
-                contentDescription = "Reset zoom",
+                contentDescription = stringResource(R.string.zoomable_image_reset_zoom),
                 onClick = onResetZoom,
                 containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
                 contentColor = MaterialTheme.colorScheme.onSurface,
@@ -176,7 +180,7 @@ fun ZoomableImageViewer(
                         contentAlignment = Alignment.Center,
                     ) {
                         Text(
-                            text = "Image unavailable",
+                            text = stringResource(R.string.zoomable_image_image_unavailable),
                             style = MaterialTheme.typography.titleMedium,
                             color = MaterialTheme.colorScheme.onBackground,
                         )
@@ -195,6 +199,7 @@ fun ZoomableImageViewer(
                         allowParentHorizontalGestures = allowParentHorizontalGestures,
                         showZoomBadge = showZoomBadge,
                         modifier = Modifier.fillMaxSize(),
+                        canvasColor = canvasColor,
                     )
                 }
             }
@@ -320,6 +325,7 @@ private fun ZoomableImageCanvas(
     allowParentHorizontalGestures: Boolean,
     showZoomBadge: Boolean,
     modifier: Modifier = Modifier,
+    canvasColor: Color = Color.Black,
 ) {
     val density = LocalDensity.current
     var containerSize by remember { mutableStateOf(IntSize.Zero) }
@@ -342,7 +348,7 @@ private fun ZoomableImageCanvas(
     Box(
         modifier = modifier
             .onSizeChanged { containerSize = it }
-            .background(Color.Black)
+            .background(canvasColor)
             .clipToBounds()
             .combinedClickable(
                 interactionSource = remember { MutableInteractionSource() },
@@ -504,7 +510,8 @@ private fun rememberZoomableImageBitmap(imagePath: String?) = produceState(
     key1 = imagePath,
     key2 = imagePath?.let { path -> File(path).takeIf { it.exists() }?.lastModified() },
 ) {
-    value = value.copy(isLoading = imagePath != null)
+    // Drop the previous page's bitmap so it doesn't flash while the new one decodes.
+    value = ZoomableImageLoad(bitmap = null, isLoading = imagePath != null)
     val decoded = withContext(Dispatchers.IO) {
         imagePath?.let { path -> runCatching { decodeZoomableBitmap(path) }.getOrNull() }?.asImageBitmap()
     }

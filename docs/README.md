@@ -1,6 +1,6 @@
 ﻿# Scanly Documentation
 
-Complete documentation for **Scanly v1.0.18** — an offline-first Android document scanner with on-device text search and document signing.
+Complete documentation for **Scanly v1.0.20** — an offline-first Android document scanner with on-device text search and document signing.
 
 Website: https://www.usescanly.co.in · Google Play: https://play.google.com/store/apps/details?id=in.c1ph3rj.scanly
 
@@ -21,7 +21,7 @@ Scanly is a local-only document scanner for Android. Users capture or import pag
 | Export | PDFBox PDFs and image archives; signed PDFs can be saved or shared |
 | Distribution | `githubRelease` (GitHub updates) and `playStoreRelease` (Play in-app updates) |
 | License | AGPL-3.0-only ([LICENSE](../LICENSE)) |
-| Current version | `1.0.18` (version code `18`) |
+| Current version | `1.0.20` (version code `20`) |
 
 ## Core workflow
 
@@ -72,12 +72,13 @@ Choose a path based on your goal:
 | [overview.md](architecture/overview.md) | Layers, packages, DI, connection maps |
 | [navigation.md](architecture/navigation.md) | Routes, transitions, user flow diagrams |
 | [screens.md](architecture/screens.md) | Every screen, ViewModel, and responsibility |
+| [ocr-engines.md](architecture/ocr-engines.md) | Page text engines (ML Kit, Indra OCR), fallback ladder, crash guard, re-reading |
 
 ### Data — persistence and storage
 
 | Document | Contents |
 | --- | --- |
-| [database.md](data/database.md) | Room schema v7, entities, migrations, DAOs |
+| [database.md](data/database.md) | Room schema v11, entities, migrations, DAOs |
 | [file-storage.md](data/file-storage.md) | On-disk layout, raw/processed/thumbs, export cache |
 | [library-backup.md](data/library-backup.md) | Legacy `.scanly` format (backup and restore retired in v1.0.18) |
 | [settings-and-updates.md](data/settings-and-updates.md) | DataStore prefs, FAQs/licenses, GitHub/Google Play update variants |

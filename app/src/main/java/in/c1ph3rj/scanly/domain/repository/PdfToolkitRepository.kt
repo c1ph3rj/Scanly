@@ -110,6 +110,17 @@ interface PdfToolkitRepository {
         onProgress: suspend (done: Int, total: Int) -> Unit = { _, _ -> },
     ): ScanlyResult<PdfImageExport>
 
+    /**
+     * Renders one page of [copy] on white with its longest edge at [longEdgePx] and writes it
+     * as a JPEG to [targetPath] (used to add PDF pages to the library as scan pages).
+     */
+    suspend fun renderPageToJpeg(
+        copy: PdfWorkingCopy,
+        pageIndex: Int,
+        longEdgePx: Int,
+        targetPath: String,
+    ): ScanlyResult<Unit>
+
     /** Copies a tool result into a shareable path set and returns absolute paths. */
     suspend fun prepareShare(artifact: ExportArtifact): ScanlyResult<List<String>>
 }

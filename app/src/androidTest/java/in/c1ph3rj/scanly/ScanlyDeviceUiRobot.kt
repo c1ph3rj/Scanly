@@ -12,6 +12,7 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTextReplacement
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
@@ -61,14 +62,19 @@ internal fun ComposeTestRule.awaitText(text: String, timeoutMs: Long = DEFAULT_T
 
 internal fun ComposeTestRule.completeOnboardingIfNeeded() {
     waitUntil(DEFAULT_TIMEOUT_MS) {
-        hasTag(ScanlyTestTags.ONBOARDING_GET_STARTED) ||
+        hasTag("onboarding_skip") ||
+            hasTag(ScanlyTestTags.ONBOARDING_GET_STARTED) ||
             hasTag(ScanlyTestTags.HOME_SCREEN) ||
             hasTag(ScanlyTestTags.NAV_HOME)
+    }
+    if (hasTag("onboarding_skip")) {
+        onNodeWithTag("onboarding_skip").performClick()
+        awaitTag(ScanlyTestTags.ONBOARDING_GET_STARTED)
     }
     if (hasTag(ScanlyTestTags.ONBOARDING_GET_STARTED)) {
         onNodeWithTag(ScanlyTestTags.ONBOARDING_GET_STARTED).performClick()
     }
-    // The camera step only shows when the camera is not granted yet; skip it if it does.
+    // Camera permission is an optional sheet, and is absent when already granted.
     waitForIdle()
     if (hasTag("onboarding_camera_later")) {
         onNodeWithTag("onboarding_camera_later").performClick()
@@ -98,7 +104,7 @@ internal fun ComposeTestRule.openDestination(navTag: String, screenTag: String) 
 
 internal fun ComposeTestRule.generateQrFromTools(content: String) {
     openDestination(ScanlyTestTags.NAV_TOOLS, ScanlyTestTags.TOOLS_SCREEN)
-    onNodeWithText("QR code").performClick()
+    onNodeWithText("QR & barcode").performScrollTo().performClick()
     awaitText("Create")
     onNodeWithText("Create").performClick()
     awaitTag(ScanlyTestTags.QR_GENERATE_INPUT)

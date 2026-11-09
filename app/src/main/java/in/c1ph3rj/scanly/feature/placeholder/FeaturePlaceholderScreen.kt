@@ -16,6 +16,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import `in`.c1ph3rj.scanly.feature.components.ScanlyDetailScaffold
 import `in`.c1ph3rj.scanly.navigation.ScanlyDestination
+import `in`.c1ph3rj.scanly.R
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun FeaturePlaceholderRoute(
@@ -39,7 +41,7 @@ fun FeaturePlaceholderScreen(
         modifier = Modifier.fillMaxSize(),
         actions = {
             TextButton(onClick = onNavigateUp) {
-                Text(text = "Back")
+                Text(text = stringResource(R.string.zoomable_image_back))
             }
         },
     ) { innerPadding ->
@@ -66,7 +68,7 @@ fun FeaturePlaceholderScreen(
             }
             item {
                 Text(
-                    text = "Planned for ${destination.sprintLabel}.",
+                    text = stringResource(R.string.feature_placeholder_planned_for, destination.sprintLabel),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )

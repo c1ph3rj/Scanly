@@ -47,6 +47,7 @@ When no crop quad is supplied (or detect-when-missing is requested):
 | `DocumentCornerQuad` | Four normalized corner points |
 | `DocumentQuadPolicy` | Accepts only capture-ready convex quads |
 | `BookAwareCornerResolver` | Book gutter trim / ambiguous-spread reject |
+| `FlatPageQuadPolicy` | Still images only: swaps the model quad for the full frame when the page already fills the image (see below) |
 | `AutomaticDocumentModelSelector` | On-device calibration for automatic model pick |
 
 ### Model assets (`assets/models/`)
@@ -68,6 +69,20 @@ Keep `noCompress += "tflite"` in Gradle. NDK ABI filters: `arm64-v8a`, `armeabi-
 - **Automatic selection** benchmarks Lite, Standard, and High on-device, then chooses under separate latency budgets for live vs post
 - Semantic gate: live and post thresholds differ; rejected frames skip corner inference on the camera path
 - Book captures use gutter analysis via `BookAwareCornerResolver`
+
+### Flat pages (full-frame check)
+
+Corner models are trained on photos of paper on a surface. On an image that is already a flat page (PDF render, screenshot, clean scan) they tend to return the strongest inner rectangle: a stamp, the edge of a letterhead band, a form box. After the still-image path finds a quad, `FlatPageQuadPolicy` reads a 160 px grid of the image (`Bitmap.toPixelGrid`) and looks at a thin ring along the frame edge:
+
+| Frame ring | Result |
+| --- | --- |
+| Any side textured or shaded (desk, lighting falloff) | Keep the model quad (photo) |
+| Plain, fewer than two paper-white sides (dark lid, coloured desk) | Keep the model quad |
+| Plain paper edge, ink outside the quad | Full frame: the quad cut through the page |
+| Plain paper sides plus a flat coloured side | Full frame: a printed band at the page edge |
+| Paper all round, nothing outside the quad | Keep the quad (document on a white lid, or blank-margin trim) |
+
+The full frame is stored as `DocumentCornerQuad.FullFrame`, the same crop the PDF import uses.
 
 ### Crop screen AI Detect
 

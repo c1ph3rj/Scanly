@@ -1,5 +1,8 @@
 package `in`.c1ph3rj.scanly.domain.usecase
 
+import `in`.c1ph3rj.scanly.core.common.ScanlyResult
+import `in`.c1ph3rj.scanly.domain.model.OcrEngine
+import `in`.c1ph3rj.scanly.domain.model.PageTextSearch
 import `in`.c1ph3rj.scanly.domain.repository.PageTextRepository
 import `in`.c1ph3rj.scanly.domain.search.SearchQuery
 import javax.inject.Inject
@@ -34,12 +37,30 @@ class UpdatePageTextUseCase @Inject constructor(private val repository: PageText
     suspend operator fun invoke(pageId: String, text: String?) = repository.updateUserText(pageId, text)
 }
 
+class ObservePagesNotReadWithUseCase @Inject constructor(private val repository: PageTextRepository) {
+    operator fun invoke(engine: OcrEngine) = repository.observePagesNotReadWith(engine)
+}
+
+class RereadPagesNotReadWithUseCase @Inject constructor(private val repository: PageTextRepository) {
+    suspend operator fun invoke(engine: OcrEngine) = repository.rereadPagesNotReadWith(engine)
+}
+
 class SuggestSearchCorrectionUseCase @Inject constructor(private val repository: PageTextRepository) {
     suspend operator fun invoke(query: SearchQuery) = repository.suggestCorrection(query)
 }
 
+class CompleteSearchWordUseCase @Inject constructor(private val repository: PageTextRepository) {
+    suspend operator fun invoke(prefix: String) = repository.completeWord(prefix, MAX_WORDS)
+
+    private companion object {
+        /** A few more than shown, so words dropped as duplicates of names still leave a full row. */
+        const val MAX_WORDS = 10
+    }
+}
+
 class SearchPageTextUseCase @Inject constructor(private val repository: PageTextRepository) {
-    suspend operator fun invoke(query: SearchQuery) = repository.searchPages(query, MAX_PAGE_HITS)
+    suspend operator fun invoke(query: SearchQuery): ScanlyResult<PageTextSearch> =
+        repository.searchPages(query, MAX_PAGE_HITS)
 
     private companion object {
         /** Bounds snippet work for very common words; ranking only needs the best few hundred. */

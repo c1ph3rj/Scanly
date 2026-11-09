@@ -1,10 +1,31 @@
 package `in`.c1ph3rj.scanly.domain.model
 
+import kotlin.math.sqrt
+import androidx.annotation.StringRes
+import `in`.c1ph3rj.scanly.core.common.appString
+import `in`.c1ph3rj.scanly.R
+
 /** Whether a saved mark is a full signature or a short set of initials. */
-enum class SignatureKind(val storageValue: String, val label: String) {
-    SIGNATURE("signature", "Signature"),
-    INITIALS("initials", "Initials"),
+enum class SignatureKind(val storageValue: String, @param:StringRes val labelRes: Int) {
+    SIGNATURE("signature", R.string.signature_kind_signature),
+    INITIALS("initials", R.string.signature_manage_initials),
     ;
+
+    val label: String get() = appString(labelRes)
+
+    // Whole phrases per kind, so translations never splice a noun into a sentence.
+    val addLabel: String
+        get() = appString(if (this == SIGNATURE) R.string.sign_kind_add_signature else R.string.sign_kind_add_initials)
+    val deleteLabel: String
+        get() = appString(if (this == SIGNATURE) R.string.sign_kind_delete_signature else R.string.sign_kind_delete_initials)
+    val deleteQuestion: String
+        get() = appString(if (this == SIGNATURE) R.string.sign_kind_delete_signature_question else R.string.sign_kind_delete_initials_question)
+    val openOptionsLabel: String
+        get() = appString(if (this == SIGNATURE) R.string.sign_kind_open_signature_options else R.string.sign_kind_open_initials_options)
+    val savedLabel: String
+        get() = appString(if (this == SIGNATURE) R.string.sign_kind_saved_signature else R.string.sign_kind_saved_initials)
+    val showFirstLabel: String
+        get() = appString(if (this == SIGNATURE) R.string.sign_kind_show_signature_first else R.string.sign_kind_show_initials_first)
 
     companion object {
         fun fromStorage(value: String?): SignatureKind =
@@ -72,6 +93,19 @@ data class NormRect(
         )
     }
 
+    /**
+     * Re-fits this rect when the page it sits on changes from [oldPageAspect] to [newPageAspect]
+     * (width / height, e.g. after a 90° rotate). Keeps the centre, the on-screen proportions (so a
+     * signature is not stretched) and the share of the page it covers, then clamps to the page.
+     */
+    fun reshapedForPageAspect(oldPageAspect: Float, newPageAspect: Float): NormRect {
+        if (oldPageAspect <= 0f || newPageAspect <= 0f || width <= 0f || height <= 0f) return this
+        // Width / height as page fractions that keeps the same pixel proportions on the new page.
+        val ratio = (width / height) * (oldPageAspect / newPageAspect)
+        val area = width * height
+        return centeredAt(centerX, centerY, sqrt(area * ratio), sqrt(area / ratio)).clampedToPage()
+    }
+
     companion object {
         const val MinSide = 0.005f
 
@@ -81,12 +115,15 @@ data class NormRect(
 }
 
 /** Ink colours offered for placed marks. Navy is the default, like a ballpoint pen. */
-enum class SignInk(val storageValue: String, val label: String, val argb: Long) {
-    NAVY("navy", "Navy", 0xFF14286B),
-    BLACK("black", "Black", 0xFF111827),
-    BLUE("blue", "Blue", 0xFF1D4ED8),
-    RED("red", "Red", 0xFFB91C1C),
+enum class SignInk(val storageValue: String, @param:StringRes val labelRes: Int, val argb: Long) {
+    NAVY("navy", R.string.sign_ink_navy, 0xFF14286B),
+    BLACK("black", R.string.sign_ink_black, 0xFF111827),
+    BLUE("blue", R.string.watermark_color_blue, 0xFF1D4ED8),
+    RED("red", R.string.watermark_color_red, 0xFFB91C1C),
     ;
+
+    val label: String get() = appString(labelRes)
+
 
     val red: Float get() = ((argb shr 16) and 0xFF) / 255f
     val green: Float get() = ((argb shr 8) and 0xFF) / 255f

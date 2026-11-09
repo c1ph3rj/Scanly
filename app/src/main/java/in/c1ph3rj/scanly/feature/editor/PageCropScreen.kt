@@ -47,6 +47,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -78,9 +79,12 @@ import `in`.c1ph3rj.scanly.core.ui.MetricChip
 import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import `in`.c1ph3rj.scanly.domain.model.PageFilterPreset
 import `in`.c1ph3rj.scanly.domain.model.ScanPage
+import `in`.c1ph3rj.scanly.feature.components.ScanlyConfirmDialog
 import kotlinx.coroutines.flow.collectLatest
 import kotlin.math.min
 import kotlin.math.roundToInt
+import `in`.c1ph3rj.scanly.R
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun PageCropRoute(
@@ -124,14 +128,20 @@ fun PageCropScreen(
     onDetectDocument: () -> Unit,
     onApply: () -> Unit,
 ) {
-    BackHandler(enabled = uiState.isSaving) {
-        // Keep the route alive until the edited page is committed.
+    var discardDialogVisible by rememberSaveable { mutableStateOf(false) }
+    // Leaving with unapplied crop edits asks first; otherwise navigate straight away.
+    val requestNavigateUp: () -> Unit = {
+        if (uiState.hasUnsavedChanges) discardDialogVisible = true else onNavigateUp()
+    }
+    BackHandler(enabled = uiState.isSaving || uiState.hasUnsavedChanges) {
+        // While saving, keep the route alive until the edited page is committed.
+        if (!uiState.isSaving) discardDialogVisible = true
     }
     val actionsEnabled = !uiState.isSaving && !uiState.isDetecting
     val statusLabel = when {
-        uiState.isDetecting -> "Detecting"
-        uiState.isSaving -> "Processing"
-        else -> "Crop"
+        uiState.isDetecting -> stringResource(R.string.page_crop_detecting)
+        uiState.isSaving -> stringResource(R.string.page_crop_processing)
+        else -> stringResource(R.string.page_crop_crop)
     }
     val windowSizeInfo = rememberWindowSizeInfo()
     val twoPane = rememberEditorTwoPaneSpec(windowSizeInfo)
@@ -149,7 +159,7 @@ fun PageCropScreen(
         topBar = {
             CropTopBar(
                 statusLabel = statusLabel,
-                onNavigateUp = onNavigateUp,
+                onNavigateUp = requestNavigateUp,
                 backEnabled = !uiState.isSaving,
                 onApply = onApply,
                 applyEnabled = actionsEnabled,
@@ -170,7 +180,7 @@ fun PageCropScreen(
                     contentAlignment = Alignment.Center,
                 ) {
                     Text(
-                        text = "Page not found.",
+                        text = stringResource(R.string.page_crop_page_not_found),
                         color = MaterialTheme.colorScheme.onBackground,
                         style = MaterialTheme.typography.titleLarge,
                     )
@@ -206,19 +216,19 @@ fun PageCropScreen(
                         }
                     }
                     EditorToolPanel(
-                        title = "Crop tools",
-                        subtitle = "Detect edges, rotate, then drag handles. Tap Done to apply.",
+                        title = stringResource(R.string.page_crop_crop_tools),
+                        subtitle = stringResource(R.string.page_crop_detect_edges_rotate_then_drag),
                         modifier = Modifier
                             .weight(twoPane.controlsWeight)
                             .fillMaxHeight()
                             .widthIn(max = twoPane.controlsMaxWidth),
                     ) {
-                        EditorSideBadge(text = "Page ${uiState.page.pageIndex + 1}")
+                        EditorSideBadge(text = stringResource(R.string.trash_use_cases_page, uiState.page.pageIndex + 1))
                         Spacer(modifier = Modifier.height(4.dp))
                         EditorRailAction(
                             icon = Icons.Filled.AutoAwesome,
-                            label = if (uiState.isDetecting) "Detecting…" else "AI Detect",
-                            subtitle = "Find the document corners",
+                            label = if (uiState.isDetecting) stringResource(R.string.page_crop_detecting_2) else stringResource(R.string.page_crop_ai_detect),
+                            subtitle = stringResource(R.string.page_crop_find_the_document_corners),
                             onClick = onDetectDocument,
                             enabled = actionsEnabled || uiState.isDetecting,
                             emphasized = true,
@@ -237,20 +247,20 @@ fun PageCropScreen(
                         )
                         EditorRailAction(
                             icon = Icons.AutoMirrored.Filled.RotateLeft,
-                            label = "Rotate left",
+                            label = stringResource(R.string.page_crop_rotate_left),
                             onClick = onRotateLeft,
                             enabled = actionsEnabled,
                         )
                         EditorRailAction(
                             icon = Icons.AutoMirrored.Filled.RotateRight,
-                            label = "Rotate right",
+                            label = stringResource(R.string.page_crop_rotate_right),
                             onClick = onRotateRight,
                             enabled = actionsEnabled,
                         )
                         EditorRailAction(
                             icon = Icons.Filled.CropFree,
-                            label = "Reset crop",
-                            subtitle = "Full frame corners",
+                            label = stringResource(R.string.page_crop_reset_crop),
+                            subtitle = stringResource(R.string.page_crop_full_frame_corners),
                             onClick = onResetCrop,
                             enabled = actionsEnabled,
                         )
@@ -308,6 +318,21 @@ fun PageCropScreen(
             }
         }
     }
+
+    if (discardDialogVisible) {
+        ScanlyConfirmDialog(
+            title = stringResource(R.string.page_crop_discard_changes),
+            text = stringResource(R.string.page_crop_your_crop_changes_have_not),
+            confirmLabel = stringResource(R.string.page_crop_discard),
+            dismissLabel = stringResource(R.string.page_crop_keep_editing),
+            onDismiss = { discardDialogVisible = false },
+            onConfirm = {
+                discardDialogVisible = false
+                onNavigateUp()
+            },
+            confirmDestructive = true,
+        )
+    }
 }
 
 @Composable
@@ -335,7 +360,7 @@ private fun DetectingOverlay() {
                     strokeWidth = 2.5.dp,
                 )
                 Text(
-                    text = "Detecting document…",
+                    text = stringResource(R.string.page_crop_detecting_document),
                     color = MaterialTheme.colorScheme.onSurface,
                     style = MaterialTheme.typography.labelLarge,
                 )
@@ -372,7 +397,7 @@ private fun CropTopBar(
         ) {
             ChromeIconButton(
                 icon = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = "Back",
+                contentDescription = stringResource(R.string.zoomable_image_back),
                 onClick = onNavigateUp,
                 enabled = backEnabled,
                 containerColor = colorScheme.surfaceContainerHighest,
@@ -385,7 +410,7 @@ private fun CropTopBar(
             )
             ChromeIconButton(
                 icon = Icons.Filled.Check,
-                contentDescription = "Apply crop",
+                contentDescription = stringResource(R.string.page_crop_apply_crop),
                 onClick = onApply,
                 enabled = applyEnabled,
                 containerColor = colorScheme.primary,
@@ -405,7 +430,7 @@ private fun CropPageBadge(
             shape = CircleShape,
         ) {
             Text(
-                text = "Page ${pageIndex + 1}",
+                text = stringResource(R.string.trash_use_cases_page, pageIndex + 1),
                 modifier = Modifier.padding(horizontal = 18.dp, vertical = 8.dp),
                 color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.labelLarge,
@@ -427,12 +452,13 @@ private fun CropActionRow(
         modifier = Modifier
             .fillMaxWidth()
             .padding(bottom = 18.dp),
-        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        // Centred when the tools fit (tablets), like the editor's action row.
+        horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally),
         contentPadding = PaddingValues(horizontal = 2.dp),
     ) {
         item {
             CropActionButton(
-                label = "Left",
+                label = stringResource(R.string.page_crop_left),
                 icon = Icons.AutoMirrored.Filled.RotateLeft,
                 onClick = onRotateLeft,
                 enabled = enabled,
@@ -440,7 +466,7 @@ private fun CropActionRow(
         }
         item {
             CropActionButton(
-                label = "Right",
+                label = stringResource(R.string.page_crop_right),
                 icon = Icons.AutoMirrored.Filled.RotateRight,
                 onClick = onRotateRight,
                 enabled = enabled,
@@ -448,7 +474,7 @@ private fun CropActionRow(
         }
         item {
             CropActionButton(
-                label = if (isDetecting) "Detecting" else "AI Detect",
+                label = if (isDetecting) stringResource(R.string.page_crop_detecting) else stringResource(R.string.page_crop_ai_detect),
                 icon = Icons.Filled.AutoAwesome,
                 onClick = onDetectDocument,
                 enabled = enabled || isDetecting,
@@ -457,7 +483,7 @@ private fun CropActionRow(
         }
         item {
             CropActionButton(
-                label = "Reset",
+                label = stringResource(R.string.page_crop_reset),
                 icon = Icons.Filled.CropFree,
                 onClick = onResetCrop,
                 enabled = enabled,
@@ -489,7 +515,7 @@ private fun CropActionButton(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(6.dp),
         ) {
-            if (forceDisabled && label == "Detecting") {
+            if (forceDisabled && label == stringResource(R.string.page_crop_detecting)) {
                 CircularProgressIndicator(
                     modifier = Modifier.size(22.dp),
                     color = colorScheme.primary,
@@ -548,7 +574,7 @@ internal fun PageCropEditor(
                 contentAlignment = Alignment.Center,
             ) {
                 Text(
-                    text = "Loading preview…",
+                    text = stringResource(R.string.filter_customize_loading_preview),
                     color = Color.White,
                 )
             }
@@ -591,7 +617,7 @@ internal fun PageCropEditor(
 
         Image(
             bitmap = imageBitmap,
-            contentDescription = "Page crop preview",
+            contentDescription = stringResource(R.string.page_crop_page_crop_preview),
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Fit,
         )

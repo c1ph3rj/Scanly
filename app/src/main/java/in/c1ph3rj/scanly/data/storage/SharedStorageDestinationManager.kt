@@ -14,6 +14,8 @@ import java.io.File
 import java.io.OutputStream
 import javax.inject.Inject
 import javax.inject.Singleton
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
 
 @Singleton
 class SharedStorageDestinationManager @Inject constructor(
@@ -31,7 +33,7 @@ class SharedStorageDestinationManager @Inject constructor(
     }
 
     suspend fun saveExport(source: File, fileName: String, mimeType: String): SavedExport {
-        require(source.isFile && source.length() > 0L) { "The exported file is unavailable." }
+        require(source.isFile && source.length() > 0L) { appString(R.string.error_the_exported_file_is_unavailable) }
         return when (val destination = currentDestination()) {
             ExportDestination.DefaultDownloadsScanly -> writeMediaStoreFile(
                 collection = MediaStore.Downloads.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY),
@@ -56,7 +58,7 @@ class SharedStorageDestinationManager @Inject constructor(
      * to the configured export folder, so they show up in Photos/Gallery straight away.
      */
     fun saveImageToGallery(source: File, fileName: String, mimeType: String): SavedExport {
-        require(source.isFile && source.length() > 0L) { "The exported image is unavailable." }
+        require(source.isFile && source.length() > 0L) { appString(R.string.error_the_exported_image_is_unavailable) }
         return writeMediaStoreFile(
             collection = MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY),
             relativePath = GALLERY_RELATIVE_PATH,
@@ -84,11 +86,11 @@ class SharedStorageDestinationManager @Inject constructor(
             put(MediaStore.MediaColumns.IS_PENDING, 1)
         }
         val uri = resolver.insert(collection, values)
-            ?: error("Could not create a file in $destinationLabel.")
+            ?: error(appString(R.string.error_could_not_save_the_exported_file))
         try {
             resolver.openOutputStream(uri, "w")
                 ?.use { output -> source.inputStream().use { input -> input.copyTo(output) } }
-                ?: error("Could not open $destinationLabel for writing.")
+                ?: error(appString(R.string.error_could_not_save_the_exported_file))
             resolver.update(
                 uri,
                 ContentValues().apply { put(MediaStore.MediaColumns.IS_PENDING, 0) },
@@ -112,10 +114,10 @@ class SharedStorageDestinationManager @Inject constructor(
         val resolver = context.contentResolver
         val fileName = uniqueTreeName(parentUri, requestedName)
         val uri = DocumentsContract.createDocument(resolver, parentUri, mimeType, fileName)
-            ?: error("Could not create a file in $destinationLabel.")
+            ?: error(appString(R.string.error_could_not_save_the_exported_file))
         try {
             resolver.openOutputStream(uri, "w")?.use { output -> writer(output) }
-                ?: error("Could not open $destinationLabel for writing.")
+                ?: error(appString(R.string.error_could_not_save_the_exported_file))
         } catch (error: Throwable) {
             DocumentsContract.deleteDocument(resolver, uri)
             throw error
@@ -125,7 +127,7 @@ class SharedStorageDestinationManager @Inject constructor(
 
     private fun requireWritableTree(destination: ExportDestination.CustomTree): Uri {
         if (!hasPersistedAccess(destination)) {
-            error("The selected save folder is no longer available. Choose it again in Settings.")
+            error(appString(R.string.error_the_selected_save_folder_is_no_longer))
         }
         val treeUri = Uri.parse(destination.uriString)
         val documentId = DocumentsContract.getTreeDocumentId(treeUri)

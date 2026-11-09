@@ -4,12 +4,21 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material3.Icon
+import `in`.c1ph3rj.scanly.core.ui.adaptiveColumnCount
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.widthIn
@@ -41,11 +50,14 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import `in`.c1ph3rj.scanly.core.ui.ImageImportSupport
 import `in`.c1ph3rj.scanly.core.ui.ScanlyTestTags
+import `in`.c1ph3rj.scanly.core.ui.WindowWidthClass
 import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import `in`.c1ph3rj.scanly.domain.model.DocumentTitleFormat
 import `in`.c1ph3rj.scanly.feature.components.DocumentTitleDialog
 import `in`.c1ph3rj.scanly.feature.components.ScanlyImportProgressOverlay
 import kotlinx.coroutines.flow.collectLatest
+import `in`.c1ph3rj.scanly.R
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun ToolsRoute(
@@ -99,7 +111,14 @@ fun ToolsScreen(
     // Survive rotation: do not re-open the title dialog after a config change.
     var createDialogVisible by rememberSaveable { mutableStateOf(false) }
     val windowSizeInfo = rememberWindowSizeInfo()
-    val gridColumns = if (windowSizeInfo.isTablet) 3 else 2
+    val isCompactWidth = windowSizeInfo.widthClass == WindowWidthClass.Compact
+    // Taller cards (icon, title, caption stacked) wherever there is room; short windows keep the
+    // 64 dp row tiles so everything stays above the fold.
+    val richCards = !isCompactWidth && !windowSizeInfo.isHeightConstrained
+    val onTool: (ToolItem) -> Unit = { tool ->
+        onHubTool(tool, onScan = { createDialogVisible = true }, onImport = onImport, onOpenTool = onOpenTool)
+    }
+    val pdfEnabled: (ToolItem) -> Boolean = { tool -> tool.id != ToolActionId.Import || !uiState.isImporting }
 
     BackHandler(enabled = uiState.isImporting) { /* block back while processing */ }
 
@@ -110,51 +129,113 @@ fun ToolsScreen(
         containerColor = MaterialTheme.colorScheme.background,
         snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { innerPadding ->
-        Box(
+        BoxWithConstraints(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(bottom = innerPadding.calculateBottomPadding()),
             contentAlignment = Alignment.TopCenter,
         ) {
-            Column(
-                modifier = Modifier
-                    .then(
-                        if (windowSizeInfo.isTablet) {
-                            Modifier.widthIn(max = windowSizeInfo.contentMaxWidth)
+            val horizontalPadding = windowSizeInfo.horizontalPadding
+            if (windowSizeInfo.useTwoPaneLayout) {
+                // Wide: Scan and Utilities on the start side, the PDF toolkit grid beside them.
+                val contentWidth = minOf(maxWidth, windowSizeInfo.wideContentMaxWidth)
+                val rowWidth = contentWidth - horizontalPadding * 2
+                val startPaneWidth = (rowWidth * 0.32f).coerceIn(240.dp, 380.dp)
+                val gridWidth = rowWidth - startPaneWidth - ToolsPaneSpacing
+                val pdfColumns = adaptiveColumnCount(
+                    availableWidth = gridWidth,
+                    minCellWidth = if (richCards) 150.dp else 190.dp,
+                    minColumns = 2,
+                    maxColumns = 3,
+                )
+                Column(
+                    modifier = Modifier
+                        .width(contentWidth)
+                        .fillMaxHeight()
+                        .verticalScroll(rememberScrollState())
+                        .padding(horizontal = horizontalPadding)
+                        .padding(bottom = 24.dp),
+                    verticalArrangement = Arrangement.spacedBy(20.dp),
+                ) {
+                    ToolsHeader()
+                    Row(horizontalArrangement = Arrangement.spacedBy(ToolsPaneSpacing)) {
+                        Column(
+                            modifier = Modifier.width(startPaneWidth),
+                            verticalArrangement = Arrangement.spacedBy(20.dp),
+                        ) {
+                            ToolsSection(label = stringResource(R.string.home_scan)) {
+                                ToolsScanHero(
+                                    tool = scanTools.first(),
+                                    tall = richCards,
+                                    onClick = { onTool(scanTools.first()) },
+                                )
+                            }
+                            ToolsSection(label = stringResource(R.string.tools_utilities)) {
+                                ToolsTileGrid(tools = utilityTools, columns = 1, enabled = { true }, onClick = onTool)
+                            }
+                        }
+                        Column(modifier = Modifier.weight(1f)) {
+                            ToolsSection(label = "PDF") {
+                                ToolsTileGrid(
+                                    tools = pdfTools,
+                                    columns = pdfColumns,
+                                    enabled = pdfEnabled,
+                                    onClick = onTool,
+                                    rich = richCards,
+                                )
+                            }
+                        }
+                    }
+                }
+            } else {
+                // Phones: two columns of row tiles. Tablet and foldable portrait: three columns of
+                // taller cards under a prominent Scan card, filling the column.
+                val gridColumns = if (isCompactWidth) 2 else 3
+                Column(
+                    modifier = Modifier
+                        .then(
+                            if (isCompactWidth) {
+                                Modifier
+                            } else {
+                                Modifier.widthIn(max = windowSizeInfo.contentMaxWidth)
+                            },
+                        )
+                        .fillMaxWidth()
+                        .verticalScroll(rememberScrollState())
+                        .padding(horizontal = horizontalPadding)
+                        .padding(bottom = 24.dp),
+                    verticalArrangement = Arrangement.spacedBy(20.dp),
+                ) {
+                    ToolsHeader()
+                    ToolsSection(label = stringResource(R.string.home_scan)) {
+                        if (isCompactWidth) {
+                            ToolsTileGrid(tools = scanTools, columns = 1, enabled = { true }, onClick = onTool)
                         } else {
-                            Modifier
-                        },
-                    )
-                    .fillMaxWidth()
-                    .verticalScroll(rememberScrollState())
-                    .padding(horizontal = windowSizeInfo.horizontalPadding)
-                    .padding(bottom = 24.dp),
-                verticalArrangement = Arrangement.spacedBy(20.dp),
-            ) {
-                ToolsHeader()
-                ToolsSection(label = "Scan") {
-                    ToolsTileGrid(
-                        tools = scanTools,
-                        columns = 1,
-                        enabled = { true },
-                        onClick = { tool -> onHubTool(tool, onScan = { createDialogVisible = true }, onImport = onImport, onOpenTool = onOpenTool) },
-                    )
-                }
-                ToolsSection(label = "PDF") {
-                    ToolsTileGrid(
-                        tools = pdfTools,
-                        columns = gridColumns,
-                        enabled = { tool -> tool.id != ToolActionId.Import || !uiState.isImporting },
-                        onClick = { tool -> onHubTool(tool, onScan = {}, onImport = onImport, onOpenTool = onOpenTool) },
-                    )
-                }
-                ToolsSection(label = "Utilities") {
-                    ToolsTileGrid(
-                        tools = utilityTools,
-                        columns = gridColumns,
-                        enabled = { true },
-                        onClick = { tool -> onHubTool(tool, onScan = {}, onImport = onImport, onOpenTool = onOpenTool) },
-                    )
+                            ToolsScanHero(
+                                tool = scanTools.first(),
+                                tall = false,
+                                onClick = { onTool(scanTools.first()) },
+                            )
+                        }
+                    }
+                    ToolsSection(label = "PDF") {
+                        ToolsTileGrid(
+                            tools = pdfTools,
+                            columns = gridColumns,
+                            enabled = pdfEnabled,
+                            onClick = onTool,
+                            rich = richCards,
+                        )
+                    }
+                    ToolsSection(label = stringResource(R.string.tools_utilities)) {
+                        ToolsTileGrid(
+                            tools = utilityTools,
+                            columns = gridColumns,
+                            enabled = { true },
+                            onClick = onTool,
+                            rich = richCards,
+                        )
+                    }
                 }
             }
 
@@ -162,7 +243,7 @@ fun ToolsScreen(
                 ScanlyImportProgressOverlay(
                     current = uiState.importCurrent,
                     total = uiState.importTotal,
-                    stageLabel = uiState.importStageLabel.ifBlank { "Working on your photos" },
+                    stageLabel = uiState.importStageLabel.ifBlank { stringResource(R.string.document_detail_working_on_your_photos) },
                 )
             }
         }
@@ -170,9 +251,9 @@ fun ToolsScreen(
 
     if (createDialogVisible && !uiState.isImporting) {
         DocumentTitleDialog(
-            title = "New scan",
+            title = stringResource(R.string.home_new_scan),
             initialValue = "",
-            confirmLabel = "Scan",
+            confirmLabel = stringResource(R.string.home_scan),
             onDismiss = { createDialogVisible = false },
             onConfirm = { value ->
                 createDialogVisible = false
@@ -200,15 +281,16 @@ private fun onHubTool(
 
 @Composable
 private fun ToolsHeader() {
+    val compact = rememberWindowSizeInfo().isHeightConstrained
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .statusBarsPadding()
-            .padding(top = 20.dp),
+            .padding(top = if (compact) 8.dp else 20.dp),
         verticalArrangement = Arrangement.spacedBy(3.dp),
     ) {
         Text(
-            text = "Tools",
+            text = stringResource(R.string.settings_hub_sub_screens_tools),
             style = MaterialTheme.typography.headlineMedium.copy(
                 fontSize = 28.sp,
                 lineHeight = 34.sp,
@@ -219,7 +301,7 @@ private fun ToolsHeader() {
             modifier = Modifier.semantics { heading() },
         )
         Text(
-            text = "Everything runs offline, on this phone",
+            text = stringResource(R.string.tools_everything_runs_offline_on_this),
             style = MaterialTheme.typography.bodyMedium.copy(fontSize = 13.sp),
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
@@ -247,17 +329,29 @@ private fun ToolsTileGrid(
     columns: Int,
     enabled: (ToolItem) -> Boolean,
     onClick: (ToolItem) -> Unit,
+    /** Stacked icon, title and caption cards for tablets instead of 64 dp row tiles. */
+    rich: Boolean = false,
 ) {
-    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+    val gap = if (rich) 12.dp else 10.dp
+    Column(verticalArrangement = Arrangement.spacedBy(gap)) {
         tools.chunked(columns.coerceAtLeast(1)).forEach { rowTools ->
-            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            Row(modifier = Modifier.height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(gap)) {
                 rowTools.forEach { tool ->
-                    ToolsHubTile(
-                        tool = tool,
-                        enabled = enabled(tool),
-                        onClick = { onClick(tool) },
-                        modifier = Modifier.weight(1f),
-                    )
+                    if (rich) {
+                        ToolsFeatureCard(
+                            tool = tool,
+                            enabled = enabled(tool),
+                            onClick = { onClick(tool) },
+                            modifier = Modifier.weight(1f),
+                        )
+                    } else {
+                        ToolsHubTile(
+                            tool = tool,
+                            enabled = enabled(tool),
+                            onClick = { onClick(tool) },
+                            modifier = Modifier.weight(1f),
+                        )
+                    }
                 }
                 repeat(columns - rowTools.size) { Spacer(Modifier.weight(1f)) }
             }
@@ -265,7 +359,7 @@ private fun ToolsTileGrid(
     }
 }
 
-/** 64dp hub tile: 38dp icon well, 14.5sp title and 12sp caption. */
+/** Hub tile grows with translated titles and keeps both rows aligned. */
 @Composable
 private fun ToolsHubTile(
     tool: ToolItem,
@@ -275,14 +369,15 @@ private fun ToolsHubTile(
 ) {
     ToolCard(
         modifier = modifier
-            .height(64.dp)
+            .heightIn(min = 80.dp)
+            .fillMaxHeight()
             .alpha(if (enabled) 1f else 0.5f),
         onClick = if (enabled) onClick else null,
     ) {
         Row(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 12.dp),
+                .padding(horizontal = 12.dp, vertical = 10.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
@@ -293,19 +388,134 @@ private fun ToolsHubTile(
             ) {
                 Text(
                     text = tool.title,
-                    style = MaterialTheme.typography.titleSmall.copy(fontSize = 14.5.sp, lineHeight = 18.sp),
+                    style = MaterialTheme.typography.titleSmall.copy(fontSize = 14.5.sp, lineHeight = 22.sp),
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onSurface,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
                 )
                 Text(
                     text = tool.caption,
-                    style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp, lineHeight = 16.sp),
+                    style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp, lineHeight = 18.sp),
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
+            }
+        }
+    }
+}
+
+private val ToolsPaneSpacing = 28.dp
+
+/** Tablet tool card: 48 dp icon well over a title and caption, in an even-height grid. */
+@Composable
+private fun ToolsFeatureCard(
+    tool: ToolItem,
+    enabled: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    ToolCard(
+        modifier = modifier
+            .heightIn(min = 144.dp)
+            .fillMaxHeight()
+            .alpha(if (enabled) 1f else 0.5f),
+        onClick = if (enabled) onClick else null,
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+        ) {
+            ToolIconWell(icon = tool.icon, accent = tool.accent, size = 48.dp, iconSize = 24.dp)
+            Spacer(Modifier.height(12.dp))
+            Text(
+                text = tool.title,
+                style = MaterialTheme.typography.titleMedium.copy(fontSize = 16.sp, lineHeight = 20.sp),
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+            Text(
+                text = tool.caption,
+                style = MaterialTheme.typography.bodySmall.copy(fontSize = 13.sp, lineHeight = 17.sp),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+        }
+    }
+}
+
+/**
+ * The camera action as a highlighted card on tablets: it is the tool people come here for most.
+ * [tall] stacks the icon over the text for the narrow start pane, so the title never truncates.
+ */
+@Composable
+private fun ToolsScanHero(
+    tool: ToolItem,
+    tall: Boolean,
+    onClick: () -> Unit,
+) {
+    val title: @Composable () -> Unit = {
+        Text(
+            text = tool.title,
+            style = MaterialTheme.typography.titleLarge.copy(fontSize = if (tall) 20.sp else 17.sp, lineHeight = 22.sp),
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.onSurface,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
+        )
+    }
+    val caption: @Composable () -> Unit = {
+        Text(
+            text = tool.caption,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
+    }
+    val arrow: @Composable () -> Unit = {
+        Icon(
+            imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.primary,
+        )
+    }
+    ToolCard(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(if (tall) 160.dp else 88.dp),
+        onClick = onClick,
+        color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.45f),
+    ) {
+        if (tall) {
+            Column(modifier = Modifier.fillMaxSize().padding(18.dp)) {
+                Row(verticalAlignment = Alignment.Top) {
+                    ToolIconWell(icon = tool.icon, accent = true, size = 56.dp, iconSize = 28.dp)
+                    Spacer(Modifier.weight(1f))
+                    arrow()
+                }
+                Spacer(Modifier.weight(1f))
+                title()
+                caption()
+            }
+        } else {
+            Row(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 18.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                ToolIconWell(icon = tool.icon, accent = true, size = 52.dp, iconSize = 26.dp)
+                Column(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(2.dp),
+                ) {
+                    title()
+                    caption()
+                }
+                arrow()
             }
         }
     }

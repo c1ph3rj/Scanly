@@ -2,58 +2,63 @@ package `in`.c1ph3rj.scanly.navigation
 
 import android.net.Uri
 import `in`.c1ph3rj.scanly.feature.settings.LegalDocumentType
+import androidx.annotation.StringRes
+import `in`.c1ph3rj.scanly.core.common.appString
+import `in`.c1ph3rj.scanly.R
 
 sealed class ScanlyDestination(
     val route: String,
-    val title: String,
+    @param:StringRes val titleRes: Int,
     val summary: String,
     val sprintLabel: String,
 ) {
+    val title: String get() = appString(titleRes)
+
     data object Home : ScanlyDestination(
         route = "home",
-        title = "Home",
+        titleRes = R.string.scanly_destination_home,
         summary = "Your local document library and scanning workspace.",
         sprintLabel = "Sprint 2",
     )
 
     data object Library : ScanlyDestination(
         route = "library",
-        title = "Library",
+        titleRes = R.string.library_library,
         summary = "Document collections, persistence, and generated thumbnails live here.",
         sprintLabel = "Sprint 2",
     )
 
     data object Camera : ScanlyDestination(
         route = "camera",
-        title = "Camera",
+        titleRes = R.string.scanly_destination_camera,
         summary = "Manual capture becomes the first truly useful scanning workflow after the shell.",
         sprintLabel = "Sprint 3",
     )
 
     data object Review : ScanlyDestination(
         route = "review",
-        title = "Review",
+        titleRes = R.string.document_detail_review,
         summary = "Multi-page review and document assembly are planned after scanning and editing mature.",
         sprintLabel = "Sprint 7",
     )
 
     data object Editor : ScanlyDestination(
         route = "editor",
-        title = "Editor",
+        titleRes = R.string.page_editor_editor,
         summary = "The 4-point cropper and page adjustments live here once the processing pipeline is ready.",
         sprintLabel = "Sprint 6",
     )
 
     data object Tools : ScanlyDestination(
         route = "tools",
-        title = "Tools",
+        titleRes = R.string.settings_hub_sub_screens_tools,
         summary = "Capture, QR, and PDF utilities.",
         sprintLabel = "Tools",
     )
 
     data object Settings : ScanlyDestination(
         route = "settings",
-        title = "Settings",
+        titleRes = R.string.settings_settings,
         summary = "Look & feel, FAQs, licensing, and developer links live here.",
         sprintLabel = "Sprint 8",
     )
@@ -67,8 +72,18 @@ object ToolsQrDestination {
     fun route(mode: String): String = "$route?$modeArgument=$mode"
 }
 
+/** Image to text: photos or a scan, read in the Extracted text screen. */
+object ToolsImageTextDestination {
+    const val route = "tools/text"
+}
+
 object LibrarySearchDestination {
     const val route = "library/search"
+}
+
+/** Recently deleted: trashed folders and documents (7 days) and pages (2 days). */
+object LibraryTrashDestination {
+    const val route = "library/trash"
 }
 
 object ToolsPdfReaderDestination {
@@ -104,6 +119,11 @@ object ToolsPdfWatermarkDestination {
 
 object ToolsPdfSignDestination {
     const val route = "tools/pdf/sign"
+}
+
+/** Adds a PDF's pages to the library as a new, editable Scanly document. */
+object ToolsPdfImportDestination {
+    const val route = "tools/pdf/import"
 }
 
 /** Signs a Scanly document in place; marks are stamped into the pages but stay editable. */
@@ -153,12 +173,20 @@ object SettingsAppearanceDestination {
     const val route = "settings/appearance"
 }
 
+object SettingsLanguageDestination {
+    const val route = "settings/language"
+}
+
 object SettingsPipDestination {
     const val route = "settings/pip"
 }
 
 object SettingsDetectionDestination {
     const val route = "settings/detection"
+}
+
+object SettingsTextRecognitionDestination {
+    const val route = "settings/text-recognition"
 }
 
 object SettingsWidgetsDestination {

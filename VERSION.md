@@ -6,27 +6,31 @@ See also [docs/releases.md](docs/releases.md) for release policy and history wit
 
 | Field | Value |
 | --- | --- |
-| Version name | `1.0.18` |
-| Version code | `18` |
+| Version name | `1.0.20` |
+| Version code | `20` |
 | Application ID | `in.c1ph3rj.scanly` |
 | Min SDK | 29 (Android 10) |
 | Target / compile SDK | compile 37 / target 36 |
-| Room schema version | `7` |
-| Release date | 2026-10-20 |
+| Room schema version | `12` |
+| Release status | Prepared for release (2026-11-09) |
 | Branch | `master` |
 
 The version shown in **Settings** is read from `versionName` in `app/build.gradle.kts`.
 
-**Database:** Room schema **6** adds on-device page text and its FTS4 search index (`MIGRATION_5_6`). Schema **7** adds saved signatures and editable per-page marks (`MIGRATION_6_7`). Existing pages are indexed after upgrade. Migrations run automatically. Library backup and restore are no longer available in v1.0.18.
+**Database:** Room schema **12**. Schemas **8–10** add Recently deleted (`MIGRATION_7_8`, `MIGRATION_8_9`, `MIGRATION_9_10`), schema **11** records the OCR engine for each page (`MIGRATION_10_11`), and schema **12** adds derived search text and rebuilds the page-text index (`MIGRATION_11_12`). Migrations run automatically; existing pages are re-indexed in the background without being read again.
 
 ## Versioning Policy
 
-- **Version name** follows semantic-style `MAJOR.MINOR.PATCH` strings for user-facing releases.
+- **Version name** follows semantic-style `MAJOR.MINOR.PATCH` strings for user-facing releases, with an optional testing suffix (for example `1.0.19-beta.1`; the current release `1.0.20` has none). The suffix is a display label; Play Store uploads still use a signed, non-debuggable `playStoreRelease` build.
 - **Version code** is a monotonically increasing integer required by Google Play; GitHub builds compare `versionName` with the latest release tag.
 - Bump both values together whenever you ship a public release.
 - Record user-visible changes in `CHANGELOG.md` and keep this file aligned with the Gradle values.
 
 ## Release History
+
+### 1.0.20 (version code 20)
+
+Scanly in 25 languages, the experimental Indra OCR engine (multi-script, on-device, with ML Kit fallback) and a dedicated Text recognition page, Recently deleted with Undo, Add PDF to library, Image to text and My signatures tools, much stronger search (filters, suggestions, exclusions, OR, English spelling for Indic text, close and OCR-misread matches, BM25 ranking), a new first-run introduction, tablet/foldable/landscape layouts, a slim OpenCV build, and opting out of Google Drive auto-backup. Room schema 12. See [CHANGELOG.md](CHANGELOG.md) for full details.
 
 ### 1.0.18 (version code 18)
 

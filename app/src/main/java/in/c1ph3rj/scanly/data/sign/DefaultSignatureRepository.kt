@@ -12,7 +12,10 @@ import `in`.c1ph3rj.scanly.core.common.runCatchingCancellable
 import `in`.c1ph3rj.scanly.core.processing.SignatureInkExtractor
 import `in`.c1ph3rj.scanly.data.local.db.dao.SignatureDao
 import `in`.c1ph3rj.scanly.data.local.db.entity.SignatureEntity
+import `in`.c1ph3rj.scanly.data.storage.SharedStorageDestinationManager
+import `in`.c1ph3rj.scanly.domain.model.SavedExport
 import `in`.c1ph3rj.scanly.domain.model.SavedSignature
+import `in`.c1ph3rj.scanly.domain.model.SignInk
 import `in`.c1ph3rj.scanly.domain.model.SignatureKind
 import `in`.c1ph3rj.scanly.domain.model.SignatureSource
 import `in`.c1ph3rj.scanly.domain.repository.SignatureRepository
@@ -26,12 +29,15 @@ import java.io.FileOutputStream
 import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
 
 @Singleton
 class DefaultSignatureRepository @Inject constructor(
     @param:ApplicationContext private val context: Context,
     private val signatureDao: SignatureDao,
     private val inkExtractor: SignatureInkExtractor,
+    private val storageDestinationManager: SharedStorageDestinationManager,
     private val dispatchers: ScanlyDispatchers,
 ) : SignatureRepository {
 
@@ -49,14 +55,14 @@ class DefaultSignatureRepository @Inject constructor(
         source: SignatureSource,
     ): ScanlyResult<SavedSignature> = withContext(dispatchers.io) {
         runCatchingCancellable {
-            require(inkMask.width > 0 && inkMask.height > 0) { "The signature is empty." }
+            require(inkMask.width > 0 && inkMask.height > 0) { appString(R.string.error_the_signature_is_empty) }
             val id = UUID.randomUUID().toString()
             val directory = File(signaturesRoot(context), id).apply {
-                if (!exists() && !mkdirs()) error("Could not create signature storage.")
+                if (!exists() && !mkdirs()) error(appString(R.string.error_could_not_create_signature_storage))
             }
             val file = File(directory, INK_FILE_NAME)
             FileOutputStream(file).use { output ->
-                check(inkMask.compress(Bitmap.CompressFormat.PNG, 100, output)) { "Could not save the signature." }
+                check(inkMask.compress(Bitmap.CompressFormat.PNG, 100, output)) { appString(R.string.error_could_not_save_the_signature) }
             }
             val now = System.currentTimeMillis()
             val entity = SignatureEntity(
@@ -71,7 +77,7 @@ class DefaultSignatureRepository @Inject constructor(
             )
             signatureDao.upsertSignature(entity)
             entity.toDomain()
-        }.toScanlyResult("Could not save the signature.")
+        }.toScanlyResult(appString(R.string.default_signature_repository_could_not_save_the_signature))
     }
 
     override suspend fun extractInk(uriString: String, sensitivity: Float): ScanlyResult<Bitmap> =
@@ -84,17 +90,75 @@ class DefaultSignatureRepository @Inject constructor(
                     } else {
                         inkExtractor.extract(source, sensitivity.coerceIn(0f, 1f))
                     }
-                    mask ?: error("No signature found in this image. Try dark ink on light paper.")
+                    mask ?: error(appString(R.string.error_no_signature_found_in_this_image_try))
                 }
-            }.toScanlyResult("Could not read this image.")
+            }.toScanlyResult(appString(R.string.default_signature_repository_could_not_read_this_image))
         }
+
+    override fun clearUploadCache() {
+        // A running extraction owns the bitmap; the next clear frees it instead.
+        if (!decodeMutex.tryLock()) return
+        try {
+            decodedBitmap?.recycle()
+            decodedBitmap = null
+            decodedUri = null
+        } finally {
+            decodeMutex.unlock()
+        }
+    }
 
     override suspend fun deleteSignature(id: String): ScanlyResult<Unit> = withContext(dispatchers.io) {
         runCatchingCancellable {
             signatureDao.deleteSignature(id)
             File(signaturesRoot(context), id).deleteRecursively()
             Unit
-        }.toScanlyResult("Could not delete the signature.")
+        }.toScanlyResult(appString(R.string.default_signature_repository_could_not_delete_the_signature))
+    }
+
+    override suspend fun moveSignatureToFront(id: String): ScanlyResult<Unit> = withContext(dispatchers.io) {
+        runCatchingCancellable {
+            signatureDao.touchSignature(id, System.currentTimeMillis())
+        }.toScanlyResult(appString(R.string.default_signature_repository_could_not_update_the_signature))
+    }
+
+    override suspend fun exportSignatureImage(id: String, ink: SignInk): ScanlyResult<String> =
+        withContext(dispatchers.io) {
+            runCatchingCancellable {
+                renderTintedPng(id, ink).absolutePath
+            }.toScanlyResult(appString(R.string.default_signature_repository_could_not_prepare_the_image))
+        }
+
+    override suspend fun saveSignatureToGallery(id: String, ink: SignInk): ScanlyResult<SavedExport> =
+        withContext(dispatchers.io) {
+            runCatchingCancellable {
+                val file = renderTintedPng(id, ink)
+                storageDestinationManager.saveImageToGallery(file, file.name, PNG_MIME_TYPE)
+            }.toScanlyResult(appString(R.string.default_signature_repository_could_not_save_the_image))
+        }
+
+    /** Writes the saved mask for [id] in [ink], at full size, to `cache/signature_share/`. */
+    private suspend fun renderTintedPng(id: String, ink: SignInk): File {
+        val entity = signatureDao.getSignature(id) ?: error(appString(R.string.error_this_signature_no_longer_exists))
+        val mask = SignInkBitmaps.decodeMask(entity.imagePath, maxEdge = Int.MAX_VALUE)
+            ?: error(appString(R.string.error_the_signature_image_could_not_be_read))
+        val tinted = try {
+            SignInkBitmaps.tinted(mask, ink)
+        } finally {
+            mask.recycle()
+        }
+        val directory = File(context.cacheDir, SHARE_DIRECTORY).apply {
+            if (!exists() && !mkdirs()) error(appString(R.string.error_could_not_prepare_the_image))
+        }
+        val kind = SignatureKind.fromStorage(entity.kind)
+        val file = File(directory, "Scanly ${kind.label.lowercase()} ${ink.label.lowercase()}.png")
+        try {
+            FileOutputStream(file).use { output ->
+                check(tinted.compress(Bitmap.CompressFormat.PNG, 100, output)) { appString(R.string.error_could_not_prepare_the_image) }
+            }
+        } finally {
+            tinted.recycle()
+        }
+        return file
     }
 
     private fun decodeCached(uriString: String): Bitmap {
@@ -140,6 +204,8 @@ class DefaultSignatureRepository @Inject constructor(
         private const val SIGNATURES_DIRECTORY = "signatures"
         private const val INK_FILE_NAME = "ink.png"
         private const val MAX_DECODE_EDGE = 2400
+        private const val SHARE_DIRECTORY = "signature_share"
+        private const val PNG_MIME_TYPE = "image/png"
 
         /** App-private root for saved signatures; cleared with the rest of the library. */
         fun signaturesRoot(context: Context): File = File(context.filesDir, SIGNATURES_DIRECTORY)

@@ -69,6 +69,8 @@ import `in`.c1ph3rj.scanly.feature.sign.manage.SavedSignatureImage
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
+import `in`.c1ph3rj.scanly.R
+import androidx.compose.ui.res.stringResource
 
 /** Visible corner handle radius (12dp circle). */
 private val HandleVisualRadius = 6.dp
@@ -430,7 +432,7 @@ private fun SelectedMarkToolbar(
                 ) {
                     Icon(
                         imageVector = if (mark.checked) Icons.Outlined.CheckBox else Icons.Outlined.CheckBoxOutlineBlank,
-                        contentDescription = if (mark.checked) "Untick" else "Tick",
+                        contentDescription = if (mark.checked) stringResource(R.string.sign_mark_layer_untick) else stringResource(R.string.sign_mark_layer_tick),
                         tint = colors.inverseOnSurface,
                         modifier = Modifier.size(20.dp),
                     )
@@ -442,7 +444,7 @@ private fun SelectedMarkToolbar(
             ) {
                 Icon(
                     imageVector = Icons.Outlined.ContentCopy,
-                    contentDescription = "Duplicate",
+                    contentDescription = stringResource(R.string.sign_mark_layer_duplicate),
                     tint = colors.inverseOnSurface,
                     modifier = Modifier.size(20.dp),
                 )
@@ -453,7 +455,7 @@ private fun SelectedMarkToolbar(
             ) {
                 Icon(
                     imageVector = Icons.Outlined.Delete,
-                    contentDescription = "Delete",
+                    contentDescription = stringResource(R.string.library_card_presentation_delete),
                     tint = DeleteTint,
                     modifier = Modifier.size(20.dp),
                 )

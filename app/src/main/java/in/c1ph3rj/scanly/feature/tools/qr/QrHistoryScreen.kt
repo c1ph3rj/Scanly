@@ -47,6 +47,8 @@ import `in`.c1ph3rj.scanly.feature.tools.ToolSectionLabel
 import `in`.c1ph3rj.scanly.feature.tools.ToolSegmented
 import `in`.c1ph3rj.scanly.feature.tools.ToolTopBar
 import java.time.ZoneId
+import `in`.c1ph3rj.scanly.R
+import androidx.compose.ui.res.stringResource
 
 /** All scanned and created codes, filterable and searchable. Tapping a row opens its result. */
 @Composable
@@ -84,14 +86,14 @@ fun QrHistoryScreen(
         ) {
             ToolTopBar(onBack = onBack)
             ToolLargeTitle(
-                title = "QR history",
+                title = stringResource(R.string.qr_history_qr_history),
                 modifier = Modifier.padding(horizontal = 20.dp),
             )
             Spacer(modifier = Modifier.height(14.dp))
             ToolSearchField(
                 value = query,
                 onValueChange = onQueryChange,
-                placeholder = "Search links, networks, names",
+                placeholder = stringResource(R.string.qr_history_search_links_networks_names),
                 modifier = Modifier.padding(horizontal = 20.dp),
             )
             Spacer(modifier = Modifier.height(10.dp))
@@ -110,8 +112,8 @@ fun QrHistoryScreen(
                     contentAlignment = Alignment.Center,
                 ) {
                     QrEmptyState(
-                        title = "No codes yet",
-                        body = "Scanned and created codes are kept here.",
+                        title = stringResource(R.string.qr_history_no_codes_yet),
+                        body = stringResource(R.string.qr_history_scanned_and_created_codes_are),
                         pipLine = `in`.c1ph3rj.scanly.feature.pip.PipLines.QR_HISTORY_EMPTY,
                     )
                 }
@@ -120,8 +122,8 @@ fun QrHistoryScreen(
                     contentAlignment = Alignment.Center,
                 ) {
                     QrEmptyState(
-                        title = "No matches",
-                        body = "Try another search or filter.",
+                        title = stringResource(R.string.qr_history_no_matches),
+                        body = stringResource(R.string.qr_history_try_another_search_or_filter),
                         pipLine = `in`.c1ph3rj.scanly.feature.pip.PipLines.QR_NO_MATCHES,
                         pipMood = `in`.c1ph3rj.scanly.feature.pip.PipMood.DIZZY,
                     )
@@ -154,7 +156,7 @@ fun QrHistoryScreen(
                             verticalArrangement = Arrangement.spacedBy(6.dp),
                         ) {
                             Text(
-                                text = "History stays on this phone.",
+                                text = stringResource(R.string.qr_history_history_stays_on_this_phone),
                                 style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.5.sp),
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
@@ -166,7 +168,7 @@ fun QrHistoryScreen(
                                 ),
                             ) {
                                 Text(
-                                    text = "Clear history…",
+                                    text = stringResource(R.string.qr_history_clear_history_2),
                                     style = MaterialTheme.typography.labelLarge.copy(fontSize = 14.sp),
                                     fontWeight = FontWeight.SemiBold,
                                 )
@@ -181,9 +183,9 @@ fun QrHistoryScreen(
     if (confirmClear) {
         AlertDialog(
             onDismissRequest = { confirmClear = false },
-            title = { Text("Clear QR history?") },
+            title = { Text(stringResource(R.string.qr_history_clear_qr_history)) },
             text = {
-                Text("Every scanned and created code is removed from this phone. This can't be undone.")
+                Text(stringResource(R.string.qr_history_every_scanned_and_created_code))
             },
             confirmButton = {
                 TextButton(
@@ -195,12 +197,12 @@ fun QrHistoryScreen(
                         contentColor = MaterialTheme.colorScheme.error,
                     ),
                 ) {
-                    Text("Clear history")
+                    Text(stringResource(R.string.qr_history_clear_history))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { confirmClear = false }) {
-                    Text("Cancel")
+                    Text(stringResource(R.string.export_share_cancel))
                 }
             },
         )
@@ -283,7 +285,7 @@ private fun QrOriginTag(scanned: Boolean) {
         contentAlignment = Alignment.Center,
     ) {
         Text(
-            text = if (scanned) "Scanned" else "Created",
+            text = if (scanned) stringResource(R.string.qr_history_scanned) else stringResource(R.string.qr_history_created),
             style = MaterialTheme.typography.labelSmall.copy(fontSize = 11.sp),
             fontWeight = FontWeight.SemiBold,
             color = if (scanned) {

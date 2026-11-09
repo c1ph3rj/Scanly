@@ -1,8 +1,11 @@
 package `in`.c1ph3rj.scanly.feature.tools.pdf
 
+import `in`.c1ph3rj.scanly.core.common.appPluralString
 import `in`.c1ph3rj.scanly.core.common.StorageFormatter
 import `in`.c1ph3rj.scanly.domain.model.PdfPasswordMode
 import `in`.c1ph3rj.scanly.domain.model.WatermarkLayout
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
 
 fun shouldReturnFromPdfPickerToPreviousStep(
     hasSelectedSource: Boolean,
@@ -10,18 +13,18 @@ fun shouldReturnFromPdfPickerToPreviousStep(
 ): Boolean = hasSelectedSource && pickerOpenedForChange
 
 fun formatPdfPageCount(pageCount: Int): String =
-    if (pageCount == 1) "1 page" else "$pageCount pages"
+    appPluralString(R.plurals.common_pages, pageCount, pageCount)
 
 fun formatMergeFileCount(fileCount: Int): String = when {
-    fileCount <= 0 -> "No files"
-    fileCount == 1 -> "1 PDF"
-    else -> "$fileCount PDFs"
+    fileCount <= 0 -> appString(R.string.pdf_tool_presentation_no_files)
+    fileCount == 1 -> appString(R.string.pdf_tool_presentation_1_pdf)
+    else -> appString(R.string.pdf_tool_presentation_pdfs, fileCount)
 }
 
 fun formatMergeFileOrdinal(index: Int): String = (index + 1).toString()
 
 fun formatPdfProtectionLabel(isEncrypted: Boolean): String =
-    if (isEncrypted) "Protected" else "Unlocked"
+    if (isEncrypted) appString(R.string.pdf_tool_presentation_protected) else appString(R.string.pdf_tool_presentation_unlocked)
 
 fun formatPdfDocumentMeta(
     pageCount: Int?,
@@ -45,30 +48,30 @@ fun formatCompressSizeComparison(
     val before = StorageFormatter.formatBytes(beforeBytes)
     val after = StorageFormatter.formatBytes(afterBytes)
     return if (afterBytes < beforeBytes && savedPercent != null) {
-        "$before → $after  ·  saved ${savedPercent.toInt()}%"
+        appString(R.string.pdf_tool_presentation_saved, before, after, savedPercent.toInt())
     } else {
         "$before → $after"
     }
 }
 
 fun formatPasswordModeActionLabel(mode: PdfPasswordMode): String = when (mode) {
-    PdfPasswordMode.Protect -> "Protect PDF"
-    PdfPasswordMode.Remove -> "Remove password"
+    PdfPasswordMode.Protect -> appString(R.string.pdf_tool_presentation_protect_pdf)
+    PdfPasswordMode.Remove -> appString(R.string.pdf_password_remove_password)
 }
 
 fun formatWatermarkLayoutHint(layout: WatermarkLayout): String = when (layout) {
-    WatermarkLayout.REPEATED -> "Repeats across the full page, including the edges."
-    WatermarkLayout.CENTERED -> "One large stamp sized to dominate the page."
+    WatermarkLayout.REPEATED -> appString(R.string.pdf_tool_presentation_repeats_across_the_full_page)
+    WatermarkLayout.CENTERED -> appString(R.string.pdf_tool_presentation_one_large_stamp_sized_to)
 }
 
 fun formatWatermarkOpacityPercent(opacity: Float): String {
     val percent = (opacity * 100f).toInt().coerceIn(0, 100)
-    return "Opacity $percent%"
+    return appString(R.string.pdf_tool_presentation_opacity, percent)
 }
 
 fun formatMergeReadyHint(fileCount: Int): String =
     if (fileCount < 2) {
-        "Add at least one more PDF to combine."
+        appString(R.string.pdf_tool_presentation_add_at_least_one_more)
     } else {
-        "Files merge in this order. The first PDF starts the document."
+        appString(R.string.pdf_tool_presentation_files_merge_in_this_order)
     }

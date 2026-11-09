@@ -5,6 +5,7 @@ import `in`.c1ph3rj.scanly.core.common.ScanlyResult
 import `in`.c1ph3rj.scanly.domain.model.DocumentGroup
 import `in`.c1ph3rj.scanly.domain.model.GroupTitleFormat
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
+import `in`.c1ph3rj.scanly.domain.model.TrashedFolder
 import `in`.c1ph3rj.scanly.domain.repository.GroupRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -24,7 +25,9 @@ class InMemoryGroupRepository(
         library.groups.map { groups -> groups.firstOrNull { it.id == groupId } }
 
     override fun observeGroupDocuments(groupId: String): Flow<List<ScanDocument>> =
-        library.documents.map { documents -> documents.filter { it.groupId == groupId } }
+        library.documents.map { documents ->
+            documents.filter { it.groupId == groupId && it.deletedAtMillis == null }
+        }
 
     override suspend fun getAllGroupTitles(): List<String> =
         library.groups.value.map { it.title }
@@ -74,6 +77,42 @@ class InMemoryGroupRepository(
             library.deleteGroup(groupId)
         }
 
+    override suspend fun moveGroupToTrash(groupId: String, includeDocuments: Boolean): ScanlyResult<Unit> =
+        runLibraryResult("Could not move the folder to Recently deleted.") {
+            library.group(groupId) ?: error("Folder not found.")
+            library.trashGroup(groupId, library.now(), includeDocuments)
+        }
+
+    override suspend fun restoreGroup(groupId: String): ScanlyResult<Unit> =
+        runLibraryResult("Could not restore the folder.") {
+            library.group(groupId) ?: error("Folder not found.")
+            library.restoreGroup(groupId)
+        }
+
+    override fun observeTrashedGroups(): Flow<List<TrashedFolder>> = library.trashedFolders
+
+    override suspend fun deleteGroupForever(groupId: String): ScanlyResult<Unit> =
+        runLibraryResult("Could not delete the folder.") {
+            library.deleteTrashedGroups(listOf(groupId))
+        }
+
+    override suspend fun emptyTrashedGroups(): ScanlyResult<Int> =
+        runLibraryResult("Could not delete the folders.") {
+            val ids = library.trashedGroupTimes().keys.toList()
+            library.deleteTrashedGroups(ids)
+            ids.size
+        }
+
+    override suspend fun purgeTrashedGroupsBefore(cutoffMillis: Long): ScanlyResult<Int> =
+        runLibraryResult("Could not clear old deleted folders.") {
+            val dueIds = library.trashedGroupTimes()
+                .filterValues { deletedAt -> deletedAt <= cutoffMillis }
+                .keys
+                .toList()
+            library.deleteTrashedGroups(dueIds)
+            dueIds.size
+        }
+
     override suspend fun deleteEmptyGroups(): ScanlyResult<Int> =
         runLibraryResult("Could not remove empty folders.") {
             val emptyIds = library.groups.value.filter { it.documentCount == 0 }.map { it.id }
@@ -92,5 +131,6 @@ class InMemoryGroupRepository(
         library.upsertDocument(
             document.copy(groupId = groupId, updatedAtMillis = library.now()),
         )
+        library.forgetRelease(documentId)
     }
 }

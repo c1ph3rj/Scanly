@@ -18,6 +18,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
 
 /** Shortest password the backend accepts (see PdfToolkitRepository.setPassword). */
 internal const val PDF_PASSWORD_MIN_LENGTH = 4
@@ -104,16 +106,16 @@ class PdfPasswordViewModel @Inject constructor(
             PdfPasswordMode.Protect -> {
                 if (state.password.length !in PDF_PASSWORD_MIN_LENGTH..PDF_PASSWORD_MAX_LENGTH) {
                     emitMessage(
-                        "Use $PDF_PASSWORD_MIN_LENGTH to $PDF_PASSWORD_MAX_LENGTH characters for the password.",
+                        appString(R.string.pdf_password_use_to_characters_for_the, PDF_PASSWORD_MIN_LENGTH, PDF_PASSWORD_MAX_LENGTH),
                     )
                     return
                 }
                 if (state.password != state.confirmPassword) {
-                    emitMessage("Passwords do not match.")
+                    emitMessage(appString(R.string.export_share_passwords_do_not_match))
                     return
                 }
                 val restrict = _restrictEditing.value
-                runProcess("Locking PDF…", outputName = suggestPdfOutputName(source, "locked")) {
+                runProcess(appString(R.string.pdf_password_locking_pdf), outputName = suggestPdfOutputName(source, "locked")) {
                     setPdfPasswordUseCase(
                         source = source,
                         newPassword = state.password,
@@ -123,10 +125,10 @@ class PdfPasswordViewModel @Inject constructor(
             }
             PdfPasswordMode.Remove -> {
                 if (state.currentPassword.isBlank()) {
-                    _passwordError.value = "Enter the current password."
+                    _passwordError.value = appString(R.string.pdf_password_enter_the_current_password)
                     return
                 }
-                runProcess("Unlocking PDF…", outputName = suggestPdfOutputName(source, "unlocked")) {
+                runProcess(appString(R.string.pdf_password_unlocking_pdf), outputName = suggestPdfOutputName(source, "unlocked")) {
                     removePdfPasswordUseCase(source, state.currentPassword).also { result ->
                         _passwordError.value = (result as? ScanlyResult.Failure)
                             ?.error?.message

@@ -25,7 +25,7 @@ object CropQuadEditor {
     ): DocumentCornerQuad {
         val clampedTarget = target.clampToBounds()
         val directCandidate = quad.withHandle(handle, clampedTarget)
-        if (directCandidate.isValid(minArea = 0.005f, minDistance = 0.015f)) {
+        if (directCandidate.isAcceptable()) {
             return directCandidate
         }
 
@@ -38,7 +38,7 @@ object CropQuadEditor {
             val progress = (low + high) / 2f
             val candidatePoint = originPoint.interpolateTo(clampedTarget, progress)
             val candidateQuad = quad.withHandle(handle, candidatePoint)
-            if (candidateQuad.isValid(minArea = 0.005f, minDistance = 0.015f)) {
+            if (candidateQuad.isAcceptable()) {
                 bestQuad = candidateQuad
                 low = progress
             } else {
@@ -72,6 +72,10 @@ object CropQuadEditor {
         x = point.y,
         y = 1f - point.x,
     )
+
+    // Convexity keeps a dragged corner from folding the quad into a bow-tie or dart.
+    private fun DocumentCornerQuad.isAcceptable(): Boolean =
+        isValid(minArea = 0.005f, minDistance = 0.015f) && isConvex()
 
     private fun DocumentCornerQuad.withHandle(
         handle: CropHandle,

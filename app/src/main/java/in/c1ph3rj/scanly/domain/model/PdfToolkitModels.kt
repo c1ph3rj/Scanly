@@ -1,11 +1,15 @@
 package `in`.c1ph3rj.scanly.domain.model
 
+import androidx.annotation.StringRes
+import `in`.c1ph3rj.scanly.core.common.appString
+import `in`.c1ph3rj.scanly.R
+
 /**
  * Input for PDF toolkit operations. Device URIs are opaque content URIs;
  * library documents are resolved by exporting a temporary PDF first.
  */
 sealed interface PdfToolSource {
-    data class DeviceUri(val uriString: String, val displayName: String = "Document") : PdfToolSource
+    data class DeviceUri(val uriString: String, val displayName: String = appString(R.string.document_detail_document)) : PdfToolSource
     data class LibraryDocument(val documentId: String, val title: String) : PdfToolSource
     data class AppFile(val filePath: String, val displayName: String) : PdfToolSource
 }
@@ -18,14 +22,18 @@ data class PdfDocumentInfo(
 )
 
 enum class PdfCompressQuality(
-    val label: String,
-    val description: String,
+    @param:StringRes val labelRes: Int,
+    @param:StringRes val descriptionRes: Int,
     val jpegQuality: Int,
     val maxDimension: Int,
 ) {
-    HIGH("High quality", "Best clarity · less compression", 88, 2200),
-    MEDIUM("Balanced", "Good balance of size and clarity", 72, 1600),
-    SMALL("Smallest", "Maximum compression · softer detail", 52, 1100),
+    HIGH(R.string.pdf_compress_quality_high_quality, R.string.pdf_compress_quality_best_clarity_less_compression, 88, 2200),
+    MEDIUM(R.string.pdf_compress_quality_balanced, R.string.pdf_compress_quality_good_balance_of_size_and, 72, 1600),
+    SMALL(R.string.pdf_compress_quality_smallest, R.string.pdf_compress_quality_maximum_compression_softer_detail, 52, 1100),
+    ;
+
+    val label: String get() = appString(labelRes)
+    val description: String get() = appString(descriptionRes)
 }
 
 data class WatermarkOptions(
@@ -43,14 +51,17 @@ data class WatermarkOptions(
  * paper and survives photocopying.
  */
 enum class WatermarkColor(
-    val label: String,
+    @param:StringRes val labelRes: Int,
     val argb: Long,
 ) {
-    GREY("Grey", 0xFF4B5563),
-    RED("Red", 0xFFB91C1C),
-    BLUE("Blue", 0xFF1D4ED8),
-    TEAL("Teal", 0xFF0F766E),
+    GREY(R.string.watermark_color_grey, 0xFF4B5563),
+    RED(R.string.watermark_color_red, 0xFFB91C1C),
+    BLUE(R.string.watermark_color_blue, 0xFF1D4ED8),
+    TEAL(R.string.watermark_color_teal, 0xFF0F766E),
     ;
+
+    val label: String get() = appString(labelRes)
+
 
     val red: Float get() = ((argb shr 16) and 0xFF) / 255f
     val green: Float get() = ((argb shr 8) and 0xFF) / 255f

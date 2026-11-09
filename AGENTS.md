@@ -8,7 +8,7 @@ Guidance for AI coding agents working in the Scanly repository.
 
 - Single-module Android app (`:app`) using Kotlin + Jetpack Compose + Material 3.
 - Package: `in.c1ph3rj.scanly` — escape `in` as ``package `in`.c1ph3rj.scanly``.
-- Current version: `1.0.18` (version code `18`) — see `app/build.gradle.kts`, [VERSION.md](VERSION.md).
+- Current version: `1.0.20` (version code `20`) — see `app/build.gradle.kts`, [VERSION.md](VERSION.md).
 - Entry point: `MainActivity.kt` → onboarding gate → `ScanlyNavHost`.
 - Offline-first document scanner: camera capture, page editing, local persistence, PDF/image export, on-device page text (OCR) and full-text search.
 
@@ -59,11 +59,12 @@ app/src/main/java/in/c1ph3rj/scanly/
 - Keep dependency versions in `gradle/libs.versions.toml`; reference via `libs.*` in Gradle scripts.
 - Compose deps use BOM (`implementation(platform(libs.androidx.compose.bom))`).
 - Preserve raw captures — never overwrite files under `raw/`; regenerate `processed/` and `thumbs/`.
-- Room schema is version `7` (v7 adds `signatures` and `page_markups`). Any schema change requires a `Migration_X_Y` in `ScanlyDatabase.kt` and version bump.
+- Room schema is version `11` (v7 adds `signatures` and `page_markups`; v8–v10 add Recently deleted: `deletedAtMillis` on `documents`, `document_groups` and `scan_pages`, plus `documents.deletedWithGroup`, `documents.releasedFromGroupId` ("Delete folder only") and `scan_pages.deletedFromIndex`; v11 adds `page_texts.engine`, `requestedEngine` and `fallbackReason` — which OCR engine read the page, which one the user had selected, and why ML Kit stepped in; null engine = nothing recognized). Live queries must filter `deletedAtMillis IS NULL`; a trashed page sits at a negative `pageIndex`. Repository `delete*` methods are permanent — UI deletes go through `MoveDocumentToTrashUseCase` / `MoveGroupToTrashUseCase` / `MovePageToTrashUseCase`. Retention lives in `TrashKind` (pages 2 days, documents and folders 7). Any schema change requires a `Migration_X_Y` in `ScanlyDatabase.kt` and version bump.
 - Page text lives in `page_texts` with an FTS4 external-content index `page_texts_fts` (Room triggers keep it in sync — always replace rows with delete + insert, never `REPLACE`). `page_texts_terms` (fts4aux) is created on open for spelling suggestions. `TextIndexScheduler` re-reads any page whose `updatedAtMillis` differs from its text row, so features never need to call the indexer.
 - ML model assets under `app/src/main/assets/models/`: corner variants (Lite/Standard/High/Accurate) + `scanly_document_gate_float16.tflite` (keep `noCompress += "tflite"`).
 - Document detection prefs in DataStore: live/post models, automatic selection, document gate; pure black theme is separate (`pure_black_enabled`).
-- Gallery import limit: 50 images via the system file picker (`ImageImportSupport`).
+- Gallery import limit: 50 images via the system image picker (`ImageImportSupport`, `GetMultipleContents` so gallery apps appear; do not switch back to `OpenMultipleDocuments`, which hides them).
+- UI text lives in `res/values/strings.xml` (plus `values-<lang>/` translations for the 25 languages in `AppLanguage`). Never hard-code user-visible text: use `stringResource` in composables and `appString`/`appPluralString` elsewhere, and add every new string to all translations (lint fails on missing ones). Use whole-sentence strings with positional placeholders instead of splicing words together. The in-app language is applied by `AppLocales` (LocaleManager on Android 13+, a wrapped context on 10–12).
 - Export saves go to `Downloads/Scanly` by default; custom SAF trees persist via DataStore (`export_tree_uri`, `export_tree_label`).
 
 ## Navigation Quick Reference
@@ -80,10 +81,12 @@ Typed routes (real flows):
 - `group/{groupId}` — group detail
 - `legal/{documentType}` — privacy/licenses viewer
 - `library/search` — name + page-text search
+- `library/trash` — Recently deleted (folders, documents, pages; opened from Settings; purged on app start and on open)
 - `document/{documentId}/text?page={page}&query={query}` — extracted text (Text / On page views)
-- `settings/appearance`, `settings/pip`, `settings/detection`, `settings/widgets`, `settings/about`, `settings/faq`, `settings/licenses`, `settings/storage`, `settings/model-benchmark` — settings hub sub-screens
+- `settings/appearance`, `settings/language`, `settings/pip`, `settings/detection`, `settings/widgets`, `settings/about`, `settings/faq`, `settings/licenses`, `settings/storage`, `settings/model-benchmark` — settings hub sub-screens
 - `tools/qr` — QR scan + generate
-- `tools/pdf/reader`, `tools/pdf/merge`, `tools/pdf/compress`, `tools/pdf/to-images`, `tools/pdf/password`, `tools/pdf/watermark`, `tools/pdf/sign` — PDF toolkit (tool routes take an optional `?source=` so the reader can hand over its open file; see `PdfToolSourceArgument.kt`)
+- `tools/text` — Image to text (photos → new document → `document/{documentId}/text`)
+- `tools/pdf/reader`, `tools/pdf/merge`, `tools/pdf/compress`, `tools/pdf/to-images`, `tools/pdf/password`, `tools/pdf/watermark`, `tools/pdf/sign`, `tools/pdf/import` — PDF toolkit (tool routes take an optional `?source=` so the reader can hand over its open file; see `PdfToolSourceArgument.kt`)
 - `document/{documentId}/sign?page={page}` — sign a scan in place (marks composited into `processed/`, clean image kept as `processed/page_NNN.base.jpg`, layer data in `page_markups`)
 - `signatures/manage`, `signatures/create?kind={kind}` — saved signatures (`files/signatures/{id}/ink.png`, black ink alpha masks)
 

@@ -1,15 +1,48 @@
 package `in`.c1ph3rj.scanly.domain.model
 
+import kotlin.math.ln
+import androidx.annotation.StringRes
+import `in`.c1ph3rj.scanly.core.common.appString
+import `in`.c1ph3rj.scanly.R
+
 /** Text plus the character ranges to emphasise. */
 data class HighlightedText(
     val text: String,
     val highlights: List<IntRange> = emptyList(),
-)
+) {
+    /** The highlighted pieces of [text], in order. */
+    val highlightedParts: List<String>
+        get() = highlights.mapNotNull { range ->
+            text.substring(range.first.coerceIn(0, text.length), (range.last + 1).coerceIn(0, text.length))
+                .takeIf { it.isNotBlank() }
+        }
+}
 
-enum class SearchScope(val label: String) {
-    EVERYWHERE("Everywhere"),
-    NAMES("Names"),
-    TEXT("Text in pages"),
+enum class SearchScope(@param:StringRes val labelRes: Int) {
+    EVERYWHERE(R.string.search_scope_everywhere),
+    NAMES(R.string.search_scope_names),
+    TEXT(R.string.search_scope_text_in_pages),
+    ;
+
+    val label: String get() = appString(labelRes)
+}
+
+/** How closely a page's words match what the user typed, best first. */
+enum class MatchTier {
+    /** Every typed word appears whole on the page. */
+    EXACT,
+
+    /** The page has words starting with what was typed ("lea" → "lease"). */
+    PREFIX,
+
+    /** The page has a word in another script spelled like the English typed ("chennai" → சென்னை). */
+    TRANSLITERATED,
+
+    /** The page has a typed word as OCR misread it ("invoice" read as "lnvoice"). */
+    OCR_VARIANT,
+
+    /** Only words spelled close to the typed ones ("reciept" → "receipt"). */
+    CLOSE,
 }
 
 /** One page that contains the query, as returned by the full-text index. */
@@ -19,6 +52,21 @@ data class PageTextHit(
     val pageIndex: Int,
     val snippet: HighlightedText,
     val matchCount: Int,
+    val tier: MatchTier = MatchTier.PREFIX,
+    /** BM25 relevance of this page for the query (higher is better). */
+    val relevance: Double = ln(1.0 + matchCount),
+    /** How close together the page has every part of the query, 0 to 1. */
+    val proximity: Double = 0.0,
+)
+
+/** Page-text hits for one query. */
+data class PageTextSearch(
+    val hits: List<PageTextHit> = emptyList(),
+    /**
+     * Words from the library searched in place of typed words nothing matched, for the
+     * [MatchTier.CLOSE] hits. Empty when every hit matched the typed words themselves.
+     */
+    val closeTerms: List<String> = emptyList(),
 )
 
 data class DocumentSearchResult(
@@ -43,11 +91,19 @@ data class LibrarySearchResults(
     val textMatches: List<DocumentSearchResult> = emptyList(),
     /** Documents that match only by name — shown after text matches. */
     val nameMatches: List<DocumentSearchResult> = emptyList(),
+    /**
+     * Documents whose pages only have words spelled close to the query, shown last so exact
+     * matches always come first.
+     */
+    val closeMatches: List<DocumentSearchResult> = emptyList(),
+    /** The similar words behind [closeMatches]. */
+    val closeTerms: List<String> = emptyList(),
     val folders: List<FolderSearchResult> = emptyList(),
     /** False while the page-text query is still running; name matches are already final. */
     val isTextSearchComplete: Boolean = true,
 ) {
-    val documentCount: Int get() = textMatches.size + nameMatches.size
+    val documentCount: Int get() = textMatches.size + nameMatches.size + closeMatches.size
     val totalTextMatches: Int get() = textMatches.sumOf { it.textMatchCount }
-    val isEmpty: Boolean get() = textMatches.isEmpty() && nameMatches.isEmpty() && folders.isEmpty()
+    val isEmpty: Boolean
+        get() = textMatches.isEmpty() && nameMatches.isEmpty() && closeMatches.isEmpty() && folders.isEmpty()
 }

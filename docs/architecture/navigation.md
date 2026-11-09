@@ -1,6 +1,6 @@
 ﻿# Navigation
 
-All routes and user flows in Scanly **v1.0.18**.
+All routes and user flows in Scanly **v1.0.20**.
 
 Navigation is implemented with **Navigation Compose** in `ScanlyNavHost.kt`. Route helpers follow the `*Destination` object pattern with `routePattern` and `route()` factory functions.
 
@@ -50,6 +50,7 @@ These top-level routes still exist but show `FeaturePlaceholderScreen` — they 
 | `group/{groupId}` | `GroupDetailDestination` | Group detail |
 | `legal/{documentType}` | `LegalDocumentDestination` | Privacy or terms viewer |
 | `settings/appearance` | `SettingsAppearanceDestination` | Theme + pure black |
+| `settings/language` | `SettingsLanguageDestination` | App language (system default or one of 25 languages; `AppLocales`) |
 | `settings/pip` | `SettingsPipDestination` | Pip master switch, tips, camera coaching, export cheers, animation |
 | `settings/detection` | `SettingsDetectionDestination` | Models, gate, benchmark link |
 | `settings/widgets` | `SettingsWidgetsDestination` | Pin home-screen widgets |
@@ -59,6 +60,7 @@ These top-level routes still exist but show `FeaturePlaceholderScreen` — they 
 | `settings/storage` | `SettingsStorageDestination` | Storage usage, export destination, cleanup, clear data |
 | `settings/model-benchmark` | `SettingsModelBenchmarkDestination` | Temporary local model comparison |
 | `tools/qr` | `ToolsQrDestination` | QR scan, typed result, create, and history (in-route screens) |
+| `tools/text` | `ToolsImageTextDestination` | Image to text: pick photos (imported as a new document, then replaced by its text screen) or a scan → `document/{documentId}/text` |
 | `tools/pdf/reader?filePath={filePath}&fileName={fileName}` | `ToolsPdfReaderDestination` | PDF reader; optional app-owned result file opens directly |
 | `tools/pdf/merge?source={source}` | `ToolsPdfMergeDestination` | PDF merge |
 | `tools/pdf/compress?source={source}` | `ToolsPdfCompressDestination` | PDF compress |
@@ -131,7 +133,7 @@ Widget or quick action (Scan)
 ```
 Launch
   └─► Onboarding required?
-        ├─ Yes → OnboardingScreen (intro → camera step if not yet allowed) → complete → Home
+        ├─ Yes → OnboardingFlow (Capture → Find → Share → optional camera sheet) → complete → Home
         └─ No  → Home
               └─► (background) update check if cooldown expired
 ```
@@ -167,7 +169,7 @@ document/{docId}
 
 ```
 Home (new doc) or document/{docId} (add pages)
-  └─► system file picker (≤50 images)
+  └─► system image picker (≤50 images)
         └─► import pipeline (same as capture finalize)
               └─► document/{docId}
 ```
@@ -233,10 +235,12 @@ settings
 | State | UI |
 | --- | --- |
 | `LOADING` | Blank / loading |
-| `REQUIRED` | `OnboardingScreen` |
+| `REQUIRED` | `OnboardingFlow`: three-page `OnboardingScreen`, then optional camera-permission bottom sheet |
 | `COMPLETE` | `ScanlyNavHost` |
 
 Automatic update checks run on `ON_START` only when onboarding is `COMPLETE`.
+
+The pager retains its page across recreation and adapts to its available bounds, including split screen. Below 600 dp it stacks the illustration and copy; portrait windows from 600–839 dp center that stack; wider or medium landscape windows use two panes. The main action and page controls stay outside the scrollable content. Skip moves to Share without completing onboarding. Get started completes immediately when camera access is already granted; otherwise it opens a modal sheet over Share. Enable camera launches the system request, while Not now completes without requesting access. Dismissing the sheet returns to Share. Permanent denial offers Settings, and returning after granting there completes onboarding. A denied system request also continues, with camera access handled again when scanning is attempted.
 
 ## Related docs
 

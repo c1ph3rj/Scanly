@@ -1,10 +1,13 @@
 package `in`.c1ph3rj.scanly.feature.components
 
+import `in`.c1ph3rj.scanly.core.common.appPluralString
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.util.Locale
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
 
 /**
  * Shared library/home card presentation rules. Compose screens call these
@@ -51,7 +54,7 @@ fun libraryCardSecondaryActions(
 }
 
 fun formatDocumentCardMeta(pageCount: Int, dateLabel: String): String {
-    val pages = if (pageCount == 1) "1 page" else "$pageCount pages"
+    val pages = appPluralString(R.plurals.common_pages, pageCount, pageCount)
     val date = dateLabel.trim()
     return if (date.isEmpty()) pages else "$pages  ·  $date"
 }
@@ -64,8 +67,8 @@ fun formatLibraryModifiedDate(
     val date = Instant.ofEpochMilli(modifiedAtMillis).atZone(zoneId).toLocalDate()
     val today = Instant.ofEpochMilli(nowMillis).atZone(zoneId).toLocalDate()
     return when (date) {
-        today -> "Today"
-        today.minusDays(1) -> "Yesterday"
+        today -> appString(R.string.library_card_presentation_today)
+        today.minusDays(1) -> appString(R.string.library_card_presentation_yesterday)
         else -> date.format(DateTimeFormatter.ofPattern(if (date.year == today.year) "d MMM" else "d MMM yyyy", Locale.getDefault()))
     }
 }
@@ -91,18 +94,18 @@ fun formatLibrarySectionedDate(
 }
 
 fun formatGroupCardMeta(documentCount: Int, totalPageCount: Int): String {
-    val documents = if (documentCount == 1) "1 document" else "$documentCount documents"
+    val documents = appPluralString(R.plurals.common_documents, documentCount, documentCount)
     if (totalPageCount <= 0) return documents
-    val pages = if (totalPageCount == 1) "1 page" else "$totalPageCount pages"
+    val pages = appPluralString(R.plurals.common_pages, totalPageCount, totalPageCount)
     return "$documents  ·  $pages"
 }
 
 fun libraryCardSecondaryActionLabel(
     action: LibraryCardSecondaryAction,
-    deleteContentDescription: String = "Delete",
+    deleteContentDescription: String = appString(R.string.library_card_presentation_delete),
 ): String = when (action) {
-    LibraryCardSecondaryAction.Rename -> "Rename"
-    LibraryCardSecondaryAction.Move -> "Move to folder"
+    LibraryCardSecondaryAction.Rename -> appString(R.string.library_card_presentation_rename)
+    LibraryCardSecondaryAction.Move -> appString(R.string.library_card_presentation_move_to_folder)
     LibraryCardSecondaryAction.Delete -> deleteContentDescription
-    LibraryCardSecondaryAction.RemoveFromFolder -> "Remove from folder"
+    LibraryCardSecondaryAction.RemoveFromFolder -> appString(R.string.library_card_presentation_remove_from_folder)
 }

@@ -49,6 +49,20 @@ class CameraPermissionSupportTest {
     }
 
     @Test
+    fun noRationaleWithoutARecordedDeniedResultStillRetriesTheSystemPrompt() {
+        val status = CameraPermissionSupport.resolveStatus(
+            isGranted = false,
+            shouldShowRationale = false,
+            hasRequestedBefore = true,
+            canInspectRationale = true,
+            permanentlyDeniedRecorded = false,
+        )
+        assertEquals(CameraPermissionStatus.DeniedCanRetry, status)
+        assertTrue(CameraPermissionSupport.shouldRequestSystemPermission(status))
+        assertFalse(CameraPermissionSupport.shouldOpenSettings(status))
+    }
+
+    @Test
     fun missingActivityDoesNotTreatAPriorRequestAsPermanent() {
         val status = CameraPermissionSupport.resolveStatus(
             isGranted = false,

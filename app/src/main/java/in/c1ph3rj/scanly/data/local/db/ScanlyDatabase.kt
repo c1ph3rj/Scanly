@@ -12,6 +12,7 @@ import `in`.c1ph3rj.scanly.data.local.db.dao.ScanPageDao
 import `in`.c1ph3rj.scanly.data.local.db.dao.SignatureDao
 import `in`.c1ph3rj.scanly.data.local.db.entity.DocumentEntity
 import `in`.c1ph3rj.scanly.data.local.db.entity.DocumentGroupEntity
+import `in`.c1ph3rj.scanly.data.local.db.entity.PAGE_TEXT_TOKENIZER_ARG
 import `in`.c1ph3rj.scanly.data.local.db.entity.PageMarkupEntity
 import `in`.c1ph3rj.scanly.data.local.db.entity.PageTextEntity
 import `in`.c1ph3rj.scanly.data.local.db.entity.PageTextFtsEntity
@@ -29,7 +30,7 @@ import `in`.c1ph3rj.scanly.domain.model.PageFilterPreset
         SignatureEntity::class,
         PageMarkupEntity::class,
     ],
-    version = 7,
+    version = 12,
     exportSchema = false,
 )
 abstract class ScanlyDatabase : RoomDatabase() {
@@ -187,7 +188,7 @@ abstract class ScanlyDatabase : RoomDatabase() {
                     "CREATE VIRTUAL TABLE IF NOT EXISTS `page_texts_fts` USING FTS4(`searchText` TEXT NOT NULL, " +
                         "tokenize=unicode61, content=`page_texts`)",
                 )
-                PAGE_TEXT_FTS_TRIGGERS.forEach(db::execSQL)
+                PAGE_TEXT_FTS_TRIGGERS_V6.forEach(db::execSQL)
             }
         }
 
@@ -215,6 +216,78 @@ abstract class ScanlyDatabase : RoomDatabase() {
         }
 
         /**
+         * Adds Recently deleted: a document with a non-null `deletedAtMillis` is in the trash
+         * (hidden from the library, restorable) until it is purged.
+         */
+        val MIGRATION_7_8: Migration = object : Migration(7, 8) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE `documents` ADD COLUMN `deletedAtMillis` INTEGER")
+            }
+        }
+
+        /**
+         * Recently deleted for folders and pages. A trashed folder takes its documents with it
+         * (`deletedWithGroup`); a trashed page keeps its row at a negative index and remembers
+         * where it was (`deletedFromIndex`).
+         */
+        val MIGRATION_8_9: Migration = object : Migration(8, 9) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE `document_groups` ADD COLUMN `deletedAtMillis` INTEGER")
+                db.execSQL("ALTER TABLE `documents` ADD COLUMN `deletedWithGroup` INTEGER NOT NULL DEFAULT 0")
+                db.execSQL("ALTER TABLE `scan_pages` ADD COLUMN `deletedAtMillis` INTEGER")
+                db.execSQL("ALTER TABLE `scan_pages` ADD COLUMN `deletedFromIndex` INTEGER")
+            }
+        }
+
+        /** "Delete folder only": documents remember the folder they left, so restoring it can bring them back. */
+        val MIGRATION_9_10: Migration = object : Migration(9, 10) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE `documents` ADD COLUMN `releasedFromGroupId` TEXT")
+            }
+        }
+
+        /**
+         * Records which OCR engine read each page. Every page read before this version used ML Kit,
+         * so non-empty rows are backfilled; empty rows stay null (nothing was recognized). The
+         * UPDATE re-fires the FTS sync triggers, which re-index the unchanged `searchText`.
+         */
+        val MIGRATION_10_11: Migration = object : Migration(10, 11) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE `page_texts` ADD COLUMN `engine` TEXT")
+                db.execSQL("ALTER TABLE `page_texts` ADD COLUMN `requestedEngine` TEXT")
+                db.execSQL("ALTER TABLE `page_texts` ADD COLUMN `fallbackReason` TEXT")
+                db.execSQL(
+                    "UPDATE `page_texts` SET `engine` = 'ML_KIT', `requestedEngine` = 'ML_KIT' " +
+                        "WHERE `recognizedText` != ''",
+                )
+            }
+        }
+
+        /**
+         * Indexes derived search forms (`derivedText`: joined words, numbers, dates) as a second
+         * FTS column. FTS4 can't add a column, so the index is rebuilt from `page_texts`; the
+         * vocabulary view goes first since it reads the index. Existing rows start with an empty
+         * `derivedText` at version 0 and are filled in by the background indexer, no re-reading.
+         * The rebuild also re-tokenizes Indic text with [PAGE_TEXT_TOKENIZER_ARG], so words
+         * older SQLite had split at vowel signs are indexed whole.
+         */
+        val MIGRATION_11_12: Migration = object : Migration(11, 12) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE `page_texts` ADD COLUMN `derivedText` TEXT NOT NULL DEFAULT ''")
+                db.execSQL("ALTER TABLE `page_texts` ADD COLUMN `derivedVersion` INTEGER NOT NULL DEFAULT 0")
+                db.execSQL("DROP TABLE IF EXISTS `$PAGE_TEXT_TERMS_TABLE`")
+                PAGE_TEXT_FTS_TRIGGER_NAMES.forEach { db.execSQL("DROP TRIGGER IF EXISTS `$it`") }
+                db.execSQL("DROP TABLE IF EXISTS `page_texts_fts`")
+                db.execSQL(
+                    "CREATE VIRTUAL TABLE IF NOT EXISTS `page_texts_fts` USING FTS4(`searchText` TEXT NOT NULL, " +
+                        "`derivedText` TEXT NOT NULL, tokenize=unicode61 `$PAGE_TEXT_TOKENIZER_ARG`, content=`page_texts`)",
+                )
+                PAGE_TEXT_FTS_TRIGGERS.forEach(db::execSQL)
+                db.execSQL("INSERT INTO `page_texts_fts`(`page_texts_fts`) VALUES('rebuild')")
+            }
+        }
+
+        /**
          * Read-only view of the FTS vocabulary (word → pages containing it), used for
          * "did you mean" suggestions. Room doesn't manage fts4aux tables, so it is created
          * idempotently on every open, which covers fresh installs and upgrades alike.
@@ -223,7 +296,8 @@ abstract class ScanlyDatabase : RoomDatabase() {
         const val CREATE_PAGE_TEXT_TERMS =
             "CREATE VIRTUAL TABLE IF NOT EXISTS `$PAGE_TEXT_TERMS_TABLE` USING fts4aux(page_texts_fts)"
 
-        private val PAGE_TEXT_FTS_TRIGGERS = listOf(
+        /** Room's sync triggers for the one-column index of schema 6–11. */
+        private val PAGE_TEXT_FTS_TRIGGERS_V6 = listOf(
             "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_page_texts_fts_BEFORE_UPDATE BEFORE UPDATE ON `page_texts` " +
                 "BEGIN DELETE FROM `page_texts_fts` WHERE `docid`=OLD.`rowid`; END",
             "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_page_texts_fts_BEFORE_DELETE BEFORE DELETE ON `page_texts` " +
@@ -233,5 +307,20 @@ abstract class ScanlyDatabase : RoomDatabase() {
             "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_page_texts_fts_AFTER_INSERT AFTER INSERT ON `page_texts` " +
                 "BEGIN INSERT INTO `page_texts_fts`(`docid`, `searchText`) VALUES (NEW.`rowid`, NEW.`searchText`); END",
         )
+
+        /** Room's sync triggers for the current index (schema 12+), matching what Room generates. */
+        private val PAGE_TEXT_FTS_TRIGGERS = listOf(
+            "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_page_texts_fts_BEFORE_UPDATE BEFORE UPDATE ON `page_texts` " +
+                "BEGIN DELETE FROM `page_texts_fts` WHERE `docid`=OLD.`rowid`; END",
+            "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_page_texts_fts_BEFORE_DELETE BEFORE DELETE ON `page_texts` " +
+                "BEGIN DELETE FROM `page_texts_fts` WHERE `docid`=OLD.`rowid`; END",
+            "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_page_texts_fts_AFTER_UPDATE AFTER UPDATE ON `page_texts` " +
+                "BEGIN INSERT INTO `page_texts_fts`(`docid`, `searchText`, `derivedText`) VALUES (NEW.`rowid`, NEW.`searchText`, NEW.`derivedText`); END",
+            "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_page_texts_fts_AFTER_INSERT AFTER INSERT ON `page_texts` " +
+                "BEGIN INSERT INTO `page_texts_fts`(`docid`, `searchText`, `derivedText`) VALUES (NEW.`rowid`, NEW.`searchText`, NEW.`derivedText`); END",
+        )
+
+        private val PAGE_TEXT_FTS_TRIGGER_NAMES = listOf("BEFORE_UPDATE", "BEFORE_DELETE", "AFTER_UPDATE", "AFTER_INSERT")
+            .map { "room_fts_content_sync_page_texts_fts_$it" }
     }
 }

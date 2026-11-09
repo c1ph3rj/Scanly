@@ -13,6 +13,6 @@ object StorageFormatter {
         val units = arrayOf("B", "KB", "MB", "GB", "TB")
         val digitGroups = (ln(bytes.toDouble()) / ln(1024.0)).toInt().coerceIn(0, units.lastIndex)
         val value = bytes / 1024.0.pow(digitGroups.toDouble())
-        return String.format(Locale.US, "%.1f %s", value, units[digitGroups])
+        return String.format(Locale.getDefault(), "%.1f %s", value, units[digitGroups])
     }
 }

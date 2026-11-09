@@ -1,5 +1,6 @@
 package `in`.c1ph3rj.scanly.feature.sign.create
 
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -47,6 +48,8 @@ import `in`.c1ph3rj.scanly.feature.components.ScanlyModalBottomSheet
 import `in`.c1ph3rj.scanly.feature.components.ScanlySheetContent
 import `in`.c1ph3rj.scanly.feature.tools.ToolCard
 import `in`.c1ph3rj.scanly.feature.tools.ToolNote
+import `in`.c1ph3rj.scanly.R
+import androidx.compose.ui.res.stringResource
 
 private val ListMaxHeight = 420.dp
 private val GridMaxHeight = 460.dp
@@ -82,12 +85,12 @@ fun ScannedPagePickerSheet(
         ScanlySheetContent {
             if (selectedDocument == null) {
                 Text(
-                    text = "Scanned pages",
+                    text = stringResource(R.string.scanned_page_picker_scanned_pages),
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.SemiBold,
                 )
                 if (documents.isEmpty()) {
-                    ToolNote(text = "No scanned documents yet. Scan a page in Scanly and it will show up here.")
+                    ToolNote(text = stringResource(R.string.scanned_page_picker_no_scanned_documents_yet_scan))
                 } else {
                     LazyColumn(
                         modifier = Modifier.heightIn(max = ListMaxHeight),
@@ -119,7 +122,7 @@ private fun ScannedDocumentRow(
     document: ScanDocument,
     onClick: () -> Unit,
 ) {
-    val pageLabel = if (document.pageCount == 1) "1 page" else "${document.pageCount} pages"
+    val pageLabel = pluralStringResource(R.plurals.common_pages, document.pageCount, document.pageCount)
     ToolCard(modifier = Modifier.fillMaxWidth(), onClick = onClick) {
         Row(
             modifier = Modifier.fillMaxWidth().padding(10.dp),
@@ -187,7 +190,7 @@ private fun ScannedPageGrid(
         IconButton(onClick = onBack) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = "Back to documents",
+                contentDescription = stringResource(R.string.scanned_page_picker_back_to_documents),
             )
         }
         Text(
@@ -200,7 +203,7 @@ private fun ScannedPageGrid(
         )
     }
     if (pages.isEmpty()) {
-        ToolNote(text = "No pages in this document can be used.")
+        ToolNote(text = stringResource(R.string.scanned_page_picker_no_pages_in_this_document))
     } else {
         LazyVerticalGrid(
             columns = GridCells.Fixed(3),
@@ -221,7 +224,7 @@ private fun ScannedPageTile(
     page: ScanPage,
     onClick: () -> Unit,
 ) {
-    val title = "Page ${page.pageIndex + 1}"
+    val title = stringResource(R.string.trash_use_cases_page, page.pageIndex + 1)
     Column(
         modifier = Modifier
             .fillMaxWidth()

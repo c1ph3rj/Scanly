@@ -42,6 +42,9 @@ import `in`.c1ph3rj.scanly.feature.pip.Pip
 import `in`.c1ph3rj.scanly.feature.pip.PipMood
 import `in`.c1ph3rj.scanly.feature.pip.PipSays
 import `in`.c1ph3rj.scanly.feature.pip.PipViewModel
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun SettingsPipRoute(
@@ -68,7 +71,7 @@ fun SettingsPipScreen(
 ) {
     val window = rememberWindowSizeInfo()
     ScanlyDetailScaffold(
-        title = "Pip",
+        title = stringResource(R.string.pip_settings_pip),
         onNavigateUp = onNavigateUp,
     ) { innerPadding ->
         LazyColumn(
@@ -88,26 +91,26 @@ fun SettingsPipScreen(
                 )
             }
             item("where") {
-                SettingsGroup(title = "Where Pip helps") {
+                SettingsGroup(title = stringResource(R.string.pip_settings_where_pip_helps)) {
                     SettingsToggleRow(
-                        title = "Tips on Home",
-                        subtitle = "One short tip a day under the greeting.",
+                        title = stringResource(R.string.pip_settings_tips_on_home),
+                        subtitle = stringResource(R.string.pip_settings_one_short_tip_a_day),
                         checked = preferences.homeTips,
                         enabled = preferences.enabled,
                         onCheckedChange = { onPreferenceChange(PipPreference.HOME_TIPS, it) },
                     )
                     HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
                     SettingsToggleRow(
-                        title = "Camera coaching",
-                        subtitle = "Pip helps you frame pages. Off shows the plain guide.",
+                        title = stringResource(R.string.pip_settings_camera_coaching),
+                        subtitle = stringResource(R.string.pip_settings_pip_helps_you_frame_pages),
                         checked = preferences.cameraCoaching,
                         enabled = preferences.enabled,
                         onCheckedChange = { onPreferenceChange(PipPreference.CAMERA_COACHING, it) },
                     )
                     HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
                     SettingsToggleRow(
-                        title = "Cheer on exports",
-                        subtitle = "A happy hello when a document is ready to share.",
+                        title = stringResource(R.string.pip_settings_cheer_on_exports),
+                        subtitle = stringResource(R.string.pip_settings_a_happy_hello_when_a),
                         checked = preferences.celebrations,
                         enabled = preferences.enabled,
                         onCheckedChange = { onPreferenceChange(PipPreference.CELEBRATIONS, it) },
@@ -115,10 +118,10 @@ fun SettingsPipScreen(
                 }
             }
             item("motion") {
-                SettingsGroup(title = "Motion") {
+                SettingsGroup(title = stringResource(R.string.pip_settings_motion)) {
                     SettingsToggleRow(
-                        title = "Animate Pip",
-                        subtitle = "Blinks, talks and hops. Pip stays still when system animations are off.",
+                        title = stringResource(R.string.pip_settings_animate_pip),
+                        subtitle = stringResource(R.string.pip_settings_blinks_talks_and_hops_pip),
                         checked = preferences.motion,
                         enabled = preferences.enabled,
                         onCheckedChange = { onPreferenceChange(PipPreference.MOTION, it) },
@@ -140,8 +143,7 @@ fun SettingsPipScreen(
                         modifier = Modifier.size(16.dp).padding(top = 2.dp),
                     )
                     Text(
-                        text = "Pip lives on this phone and never looks at your documents. " +
-                            "Everything it says is built into Scanly.",
+                        text = stringResource(R.string.pip_settings_pip_lives_on_this_phone),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -157,9 +159,9 @@ private fun PipHeroCard(
     onEnabledChange: (Boolean) -> Unit,
 ) {
     val (line, mood) = when {
-        !preferences.enabled -> "okay, i'll nap. switch me back on anytime." to PipMood.SLEEP
-        !preferences.motion -> "i'll keep still. still here, though." to PipMood.IDLE
-        else -> "hi! this is where you choose how much i help." to PipMood.HAPPY
+        !preferences.enabled -> stringResource(R.string.pip_settings_okay_i_ll_nap_switch) to PipMood.SLEEP
+        !preferences.motion -> stringResource(R.string.pip_settings_i_ll_keep_still_still) to PipMood.IDLE
+        else -> stringResource(R.string.pip_settings_hi_this_is_where_you) to PipMood.HAPPY
     }
     val switchContainer by animateColorAsState(
         targetValue = if (preferences.enabled) {
@@ -182,13 +184,12 @@ private fun PipHeroCard(
             PipSays(line = line, mood = mood, size = 112.dp)
             Spacer(Modifier.height(16.dp))
             Text(
-                text = "Pip",
+                text = stringResource(R.string.pip_settings_pip),
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.SemiBold,
             )
             Text(
-                text = "Scanly's little helper. Pip turns up on empty screens, in the camera and " +
-                    "when something's ready, says one short thing, then gets out of the way.",
+                text = stringResource(R.string.pip_settings_scanly_s_little_helper_pip),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center,
@@ -211,15 +212,15 @@ private fun PipHeroCard(
                 ) {
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
-                            text = "Show Pip",
+                            text = stringResource(R.string.pip_settings_show_pip),
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.SemiBold,
                         )
                         Text(
                             text = if (preferences.enabled) {
-                                "On around the app"
+                                stringResource(R.string.pip_settings_on_around_the_app)
                             } else {
-                                "Napping · screens show plain text"
+                                stringResource(R.string.pip_settings_napping_screens_show_plain_text)
                             },
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -234,13 +235,13 @@ private fun PipHeroCard(
 
 /** Settings hub summary of what Pip is doing. */
 internal fun PipPreferences.settingsSummary(): String {
-    if (!enabled) return "Napping"
+    if (!enabled) return appString(R.string.pip_settings_napping)
     val parts = buildList {
         if (homeTips) add("tips")
         if (cameraCoaching) add("coaching")
         if (celebrations) add("cheers")
     }
-    return if (parts.isEmpty()) "On" else "On · " + parts.joinToString(", ")
+    return if (parts.isEmpty()) appString(R.string.pip_settings_on_2) else appString(R.string.pip_settings_on) + parts.joinToString(", ")
 }
 
 /** A small Pip that stands in for a settings icon. */

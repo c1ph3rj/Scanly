@@ -62,6 +62,9 @@ import `in`.c1ph3rj.scanly.domain.model.PageFilterAdjustments
 import `in`.c1ph3rj.scanly.domain.model.PageFilterPreset
 import `in`.c1ph3rj.scanly.domain.model.ScanPage
 import kotlin.math.roundToInt
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
+import androidx.compose.ui.res.stringResource
 
 /**
  * Full-screen filter customization with adaptive large-screen layouts.
@@ -349,13 +352,13 @@ private fun CustomizeTopBar(
         ) {
             ChromeIconButton(
                 icon = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = "Back",
+                contentDescription = stringResource(R.string.zoomable_image_back),
                 onClick = onNavigateUp,
                 containerColor = colorScheme.surfaceContainerHighest,
                 contentColor = colorScheme.onSurface,
             )
             MetricChip(
-                label = if (comparing) "Compare" else "Adjust",
+                label = if (comparing) stringResource(R.string.filter_customize_compare) else stringResource(R.string.filter_customize_adjust),
                 containerColor = if (comparing) {
                     colorScheme.primaryContainer
                 } else {
@@ -375,7 +378,7 @@ private fun CustomizeTopBar(
                 )
                 ChromeIconButton(
                     icon = Icons.Filled.RestartAlt,
-                    contentDescription = "Reset adjustments",
+                    contentDescription = stringResource(R.string.filter_customize_reset_adjustments),
                     onClick = onReset,
                     enabled = resetEnabled,
                     containerColor = colorScheme.surfaceContainerHighest,
@@ -383,7 +386,7 @@ private fun CustomizeTopBar(
                 )
                 ChromeIconButton(
                     icon = Icons.Filled.Check,
-                    contentDescription = "Done",
+                    contentDescription = stringResource(R.string.camera_capture_chrome_done),
                     onClick = onDone,
                     containerColor = colorScheme.primary,
                     contentColor = colorScheme.onPrimary,
@@ -444,7 +447,7 @@ private fun CompareIconButton(
         ) {
             Icon(
                 imageVector = Icons.Filled.Compare,
-                contentDescription = "Hold to compare with filter only",
+                contentDescription = stringResource(R.string.filter_customize_hold_to_compare_with_filter),
                 tint = contentColor,
             )
         }
@@ -470,14 +473,14 @@ private fun CustomizePreviewPane(
             contentAlignment = Alignment.Center,
         ) {
             if (previewBitmap == null) {
-                Text(text = "Loading preview…", color = Color.White)
+                Text(text = stringResource(R.string.filter_customize_loading_preview), color = Color.White)
             } else {
                 Image(
                     bitmap = previewBitmap,
                     contentDescription = if (comparing) {
-                        "Selected filter without adjustments"
+                        stringResource(R.string.filter_customize_selected_filter_without_adjustments)
                     } else {
-                        "Filter adjustment preview"
+                        stringResource(R.string.filter_customize_filter_adjustment_preview)
                     },
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Fit,
@@ -496,7 +499,7 @@ private fun CustomizePreviewPane(
                 shape = CircleShape,
             ) {
                 Text(
-                    text = if (comparing) "Filter only" else "Adjusted",
+                    text = if (comparing) stringResource(R.string.filter_customize_filter_only) else stringResource(R.string.filter_customize_adjusted),
                     modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
                     color = Color.White,
                     style = MaterialTheme.typography.labelMedium,
@@ -538,13 +541,13 @@ private fun CustomizeControlsPane(
                 verticalArrangement = Arrangement.spacedBy(4.dp),
             ) {
                 Text(
-                    text = "Customize filter",
+                    text = stringResource(R.string.filter_customize_customize_filter),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold,
                     color = colorScheme.onSurface,
                 )
                 Text(
-                    text = "Fine-tune ${selectedFilter.toDisplayLabel()} on this page. Hold Compare to preview the filter alone.",
+                    text = stringResource(R.string.filter_customize_fine_tune_on_this_page, selectedFilter.toDisplayLabel()),
                     style = MaterialTheme.typography.bodySmall,
                     color = colorScheme.onSurfaceVariant,
                 )
@@ -581,7 +584,7 @@ private fun CustomizeControlsPane(
                                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                             ) {
                                 AdjustmentSlider(
-                                    label = "Brightness",
+                                    label = stringResource(R.string.filter_customize_brightness),
                                     valuePercent = filterAdjustments.brightnessPercent(),
                                     valueRange = -100f..100f,
                                     onValueChange = { percent ->
@@ -592,7 +595,7 @@ private fun CustomizeControlsPane(
                                     modifier = Modifier.weight(1f),
                                 )
                                 AdjustmentSlider(
-                                    label = "Contrast",
+                                    label = stringResource(R.string.filter_customize_contrast),
                                     valuePercent = filterAdjustments.contrastPercent(),
                                     valueRange = -100f..100f,
                                     onValueChange = { percent ->
@@ -608,7 +611,7 @@ private fun CustomizeControlsPane(
                                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                             ) {
                                 AdjustmentSlider(
-                                    label = "Saturation",
+                                    label = stringResource(R.string.filter_customize_saturation),
                                     valuePercent = filterAdjustments.saturationPercent(),
                                     valueRange = -100f..100f,
                                     onValueChange = { percent ->
@@ -619,7 +622,7 @@ private fun CustomizeControlsPane(
                                     modifier = Modifier.weight(1f),
                                 )
                                 AdjustmentSlider(
-                                    label = "Sharpness",
+                                    label = stringResource(R.string.filter_customize_sharpness),
                                     valuePercent = filterAdjustments.sharpnessPercent(),
                                     valueRange = 0f..100f,
                                     onValueChange = { percent ->
@@ -638,7 +641,7 @@ private fun CustomizeControlsPane(
                             onAdjustmentsChange = onAdjustmentsChange,
                         )
                         AdjustmentSlider(
-                            label = "Brightness",
+                            label = stringResource(R.string.filter_customize_brightness),
                             valuePercent = filterAdjustments.brightnessPercent(),
                             valueRange = -100f..100f,
                             onValueChange = { percent ->
@@ -648,7 +651,7 @@ private fun CustomizeControlsPane(
                             },
                         )
                         AdjustmentSlider(
-                            label = "Contrast",
+                            label = stringResource(R.string.filter_customize_contrast),
                             valuePercent = filterAdjustments.contrastPercent(),
                             valueRange = -100f..100f,
                             onValueChange = { percent ->
@@ -658,7 +661,7 @@ private fun CustomizeControlsPane(
                             },
                         )
                         AdjustmentSlider(
-                            label = "Saturation",
+                            label = stringResource(R.string.filter_customize_saturation),
                             valuePercent = filterAdjustments.saturationPercent(),
                             valueRange = -100f..100f,
                             onValueChange = { percent ->
@@ -668,7 +671,7 @@ private fun CustomizeControlsPane(
                             },
                         )
                         AdjustmentSlider(
-                            label = "Sharpness",
+                            label = stringResource(R.string.filter_customize_sharpness),
                             valuePercent = filterAdjustments.sharpnessPercent(),
                             valueRange = 0f..100f,
                             onValueChange = { percent ->
@@ -705,7 +708,7 @@ private fun IntensityAdjustmentSlider(
     modifier: Modifier = Modifier,
 ) {
     AdjustmentSlider(
-        label = "Intensity",
+        label = stringResource(R.string.filter_customize_intensity),
         valuePercent = filterAdjustments.intensityPercent(),
         valueRange = 0f..150f,
         onValueChange = { percent ->
@@ -778,14 +781,14 @@ private fun AdjustmentSlider(
 }
 
 private fun PageFilterPreset.toDisplayLabel(): String = when (this) {
-    PageFilterPreset.ORIGINAL -> "Original"
-    PageFilterPreset.AUTO -> "Auto"
-    PageFilterPreset.MAGIC_COLOR -> "Magic Color"
-    PageFilterPreset.NATURAL_COLOR -> "Natural"
-    PageFilterPreset.VIVID_COLOR -> "Vivid"
-    PageFilterPreset.SCREEN -> "Screen"
-    PageFilterPreset.GRAYSCALE -> "Grayscale"
+    PageFilterPreset.ORIGINAL -> appString(R.string.filter_customize_original)
+    PageFilterPreset.AUTO -> appString(R.string.filter_customize_auto)
+    PageFilterPreset.MAGIC_COLOR -> appString(R.string.filter_customize_magic_color)
+    PageFilterPreset.NATURAL_COLOR -> appString(R.string.filter_customize_natural)
+    PageFilterPreset.VIVID_COLOR -> appString(R.string.filter_customize_vivid)
+    PageFilterPreset.SCREEN -> appString(R.string.filter_customize_screen)
+    PageFilterPreset.GRAYSCALE -> appString(R.string.filter_customize_grayscale)
     PageFilterPreset.BLACK_AND_WHITE -> "B&W"
-    PageFilterPreset.WHITEBOARD -> "Whiteboard"
-    PageFilterPreset.FADED -> "Faded Text"
+    PageFilterPreset.WHITEBOARD -> appString(R.string.filter_customize_whiteboard)
+    PageFilterPreset.FADED -> appString(R.string.filter_customize_faded_text)
 }

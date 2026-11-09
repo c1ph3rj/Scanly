@@ -65,7 +65,7 @@ class InMemoryDocumentExportRepository(
         onProgress: (current: Int, total: Int) -> Unit,
     ): ScanlyResult<ExportArtifact> = runLibraryResult("Could not export group PDF.") {
         val group = library.group(groupId) ?: error("Group not found.")
-        val members = library.documents.value.filter { it.groupId == groupId }
+        val members = library.documents.value.filter { it.groupId == groupId && it.deletedAtMillis == null }
         val totalPages = members.sumOf { it.pageCount }.coerceAtLeast(1)
         onProgress(totalPages, totalPages)
         recordedRequests += RecordedExport.GroupPdf(groupId, options)
@@ -82,7 +82,7 @@ class InMemoryDocumentExportRepository(
         onProgress: (currentDoc: Int, totalDocs: Int) -> Unit,
     ): ScanlyResult<ExportArtifact> = runLibraryResult("Could not export group ZIP.") {
         val group = library.group(groupId) ?: error("Group not found.")
-        val members = library.documents.value.filter { it.groupId == groupId }
+        val members = library.documents.value.filter { it.groupId == groupId && it.deletedAtMillis == null }
         val totalDocs = members.size.coerceAtLeast(1)
         onProgress(totalDocs, totalDocs)
         recordedRequests += RecordedExport.GroupZippedPdfs(groupId, options)

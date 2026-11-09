@@ -9,4 +9,6 @@ data class ScanDocument(
     val createdAtMillis: Long,
     val updatedAtMillis: Long,
     val groupId: String? = null,
+    /** When the document was moved to Recently deleted; null for live documents. */
+    val deletedAtMillis: Long? = null,
 )

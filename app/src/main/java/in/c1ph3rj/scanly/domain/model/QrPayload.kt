@@ -3,6 +3,9 @@ package `in`.c1ph3rj.scanly.domain.model
 import java.net.URLDecoder
 import java.net.URLEncoder
 import java.util.Locale
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
+import androidx.annotation.StringRes
 
 /**
  * A decoded QR code, shaped by what it contains (design: QrResult "result by type").
@@ -51,55 +54,61 @@ sealed interface QrPayload {
     data class Text(override val raw: String) : QrPayload
 }
 
-enum class WifiSecurity(val label: String, val token: String) {
-    WPA("WPA/WPA2", "WPA"),
-    WEP("WEP", "WEP"),
-    OPEN("Open", "nopass"),
+enum class WifiSecurity(@param:StringRes val labelRes: Int, val token: String) {
+    WPA(R.string.wifi_security_wpa_wpa2, "WPA"),
+    WEP(R.string.wifi_security_wep, "WEP"),
+    OPEN(R.string.wifi_security_open, "nopass"),
+    ;
+
+    val label: String get() = appString(labelRes)
 }
 
 /** The type picker on the Create tab, in design order. */
-enum class QrCreateType(val label: String) {
-    Link("Link"),
-    Text("Text"),
-    Wifi("Wi-Fi"),
-    Upi("UPI"),
-    Contact("Contact"),
+enum class QrCreateType(@param:StringRes val labelRes: Int) {
+    Link(R.string.qr_payload_link),
+    Text(R.string.qr_payload_text),
+    Wifi(R.string.qr_payload_wi_fi_2),
+    Upi(R.string.qr_create_type_upi),
+    Contact(R.string.qr_payload_contact),
+    ;
+
+    val label: String get() = appString(labelRes)
 }
 
 /** One-word kind used for headers, history rows and filters ("LINK", "WI-FI"). */
 val QrPayload.kindLabel: String
     get() = when (this) {
-        is QrPayload.Link -> "Link"
-        is QrPayload.Upi -> "UPI payment"
-        is QrPayload.Wifi -> "Wi-Fi"
-        is QrPayload.Contact -> "Contact"
-        is QrPayload.Email -> "Email"
-        is QrPayload.Phone -> "Phone"
-        is QrPayload.Text -> "Text"
+        is QrPayload.Link -> appString(R.string.qr_payload_link)
+        is QrPayload.Upi -> appString(R.string.qr_payload_upi_payment)
+        is QrPayload.Wifi -> appString(R.string.qr_payload_wi_fi_2)
+        is QrPayload.Contact -> appString(R.string.qr_payload_contact)
+        is QrPayload.Email -> appString(R.string.qr_payload_email)
+        is QrPayload.Phone -> appString(R.string.qr_payload_phone)
+        is QrPayload.Text -> appString(R.string.qr_payload_text)
     }
 
 /** Main line for a result card or history row. */
 val QrPayload.headline: String
     get() = when (this) {
         is QrPayload.Link -> host
-        is QrPayload.Upi -> payeeName?.let { "Pay $it" } ?: payeeAddress
-        is QrPayload.Wifi -> ssid.ifBlank { "Wi-Fi network" }
-        is QrPayload.Contact -> name ?: phone ?: email ?: "Contact"
+        is QrPayload.Upi -> payeeName?.let { appString(R.string.qr_payload_pay, it) } ?: payeeAddress
+        is QrPayload.Wifi -> ssid.ifBlank { appString(R.string.qr_payload_wi_fi_network) }
+        is QrPayload.Contact -> name ?: phone ?: email ?: appString(R.string.qr_payload_contact)
         is QrPayload.Email -> address
         is QrPayload.Phone -> number
-        is QrPayload.Text -> raw.lineSequence().firstOrNull { it.isNotBlank() }?.trim()?.take(80) ?: "Empty text"
+        is QrPayload.Text -> raw.lineSequence().firstOrNull { it.isNotBlank() }?.trim()?.take(80) ?: appString(R.string.qr_payload_empty_text)
     }
 
 /** Secondary line ("Link · https", "Wi-Fi · WPA2", "Text · 68 characters"). */
 val QrPayload.summary: String
     get() = when (this) {
-        is QrPayload.Link -> if (isSecure) "Link · https" else "Link · not secure (http)"
-        is QrPayload.Upi -> "UPI · $payeeAddress"
-        is QrPayload.Wifi -> "Wi-Fi · ${security.label}"
-        is QrPayload.Contact -> "Contact card"
-        is QrPayload.Email -> "Email"
-        is QrPayload.Phone -> "Phone number"
-        is QrPayload.Text -> "Text · ${raw.length} characters"
+        is QrPayload.Link -> if (isSecure) appString(R.string.qr_payload_link_https) else appString(R.string.qr_payload_link_not_secure_http)
+        is QrPayload.Upi -> appString(R.string.qr_payload_upi, payeeAddress)
+        is QrPayload.Wifi -> appString(R.string.qr_payload_wi_fi, security.label)
+        is QrPayload.Contact -> appString(R.string.qr_payload_contact_card)
+        is QrPayload.Email -> appString(R.string.qr_payload_email)
+        is QrPayload.Phone -> appString(R.string.qr_payload_phone_number)
+        is QrPayload.Text -> appString(R.string.qr_payload_text_characters, raw.length)
     }
 
 object QrPayloadParser {
@@ -341,7 +350,8 @@ object QrPayloadBuilder {
     /** "250", "250.5" → "250.00" / "250.50"; invalid or zero → null. */
     fun normalizeAmount(input: String): String? {
         val cleaned = input.trim().removePrefix("₹").replace(",", "").trim()
-        if (cleaned.isEmpty()) return null
+        // Plain decimal only: exponent forms like "1e1000000000" would make setScale throw.
+        if (!Regex("""\d+(\.\d{1,2})?""").matches(cleaned)) return null
         val value = cleaned.toBigDecimalOrNull() ?: return null
         if (value.signum() <= 0) return null
         return value.setScale(2, java.math.RoundingMode.HALF_UP).toPlainString()

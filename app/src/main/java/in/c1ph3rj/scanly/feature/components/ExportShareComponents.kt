@@ -76,6 +76,8 @@ import `in`.c1ph3rj.scanly.domain.model.PdfPageNumber
 import `in`.c1ph3rj.scanly.domain.model.PdfPageOrientation
 import `in`.c1ph3rj.scanly.domain.model.PdfPageSize
 import `in`.c1ph3rj.scanly.domain.model.validationError
+import `in`.c1ph3rj.scanly.R
+import androidx.compose.ui.res.stringResource
 
 /**
  * A single tappable export/share action row used across the document and folder
@@ -140,7 +142,7 @@ fun PdfOptionsSheet(
     onDismiss: () -> Unit,
     onOptionsChanged: (PdfExportOptions) -> Unit,
     onConfirm: () -> Unit,
-    titleText: String = "PDF options",
+    titleText: String = stringResource(R.string.export_share_pdf_options),
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var passwordConfirmation by remember { mutableStateOf(options.password.orEmpty()) }
@@ -148,8 +150,8 @@ fun PdfOptionsSheet(
     val passwordError = options.validationError()
     val confirmationError = when {
         options.password == null -> null
-        passwordConfirmation.isEmpty() -> "Confirm the password."
-        passwordConfirmation != options.password -> "Passwords do not match."
+        passwordConfirmation.isEmpty() -> stringResource(R.string.export_share_confirm_the_password)
+        passwordConfirmation != options.password -> stringResource(R.string.export_share_passwords_do_not_match)
         else -> null
     }
     val confirmEnabled = passwordError == null && confirmationError == null
@@ -191,7 +193,7 @@ fun PdfOptionsSheet(
                         fontWeight = FontWeight.SemiBold,
                     )
                     Text(
-                        text = "Choose how every page is generated.",
+                        text = stringResource(R.string.export_share_choose_how_every_page_is),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -233,8 +235,8 @@ fun PdfOptionsSheet(
                         )
 
                         PdfOptionSection(
-                            title = "Page numbers",
-                            description = "Add the page index to the PDF footer.",
+                            title = stringResource(R.string.export_share_page_numbers),
+                            description = stringResource(R.string.export_share_add_the_page_index_to),
                         ) {
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
@@ -255,8 +257,8 @@ fun PdfOptionsSheet(
                         }
 
                         PdfOptionSection(
-                            title = "Orientation",
-                            description = "Auto follows each scanned page.",
+                            title = stringResource(R.string.export_share_orientation),
+                            description = stringResource(R.string.export_share_auto_follows_each_scanned_page),
                         ) {
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
@@ -277,8 +279,8 @@ fun PdfOptionsSheet(
                         }
 
                         PdfOptionSection(
-                            title = "Page size",
-                            description = "Fixed sizes use their real print dimensions.",
+                            title = stringResource(R.string.export_share_page_size),
+                            description = stringResource(R.string.export_share_fixed_sizes_use_their_real),
                         ) {
                             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                                 PdfPageSize.entries.chunked(2).forEach { rowItems ->
@@ -306,8 +308,8 @@ fun PdfOptionsSheet(
                         }
 
                         PdfOptionSection(
-                            title = "Margins",
-                            description = "Add white space around the scanned page.",
+                            title = stringResource(R.string.export_share_margins),
+                            description = stringResource(R.string.export_share_add_white_space_around_the),
                         ) {
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
@@ -339,7 +341,7 @@ fun PdfOptionsSheet(
                         modifier = Modifier.weight(1f),
                         onClick = onDismiss,
                     ) {
-                        Text(text = "Cancel")
+                        Text(text = stringResource(R.string.export_share_cancel))
                     }
                     Button(
                         modifier = Modifier.weight(1f),
@@ -532,12 +534,12 @@ private fun PdfPasswordSection(
                 )
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = "Password protection",
+                        text = stringResource(R.string.export_share_password_protection),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.SemiBold,
                     )
                     Text(
-                        text = if (enabled) "A password will be required to open the PDF." else "Off",
+                        text = if (enabled) stringResource(R.string.export_share_a_password_will_be_required) else stringResource(R.string.export_share_off),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -555,7 +557,7 @@ private fun PdfPasswordSection(
                         onPasswordChanged(value.take(MaximumPdfPasswordLength))
                     },
                     modifier = Modifier.fillMaxWidth(),
-                    label = { Text("PDF password") },
+                    label = { Text(stringResource(R.string.export_share_pdf_password)) },
                     singleLine = true,
                     isError = passwordError != null,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
@@ -572,12 +574,12 @@ private fun PdfPasswordSection(
                                 } else {
                                     Icons.Outlined.Visibility
                                 },
-                                contentDescription = if (passwordVisible) "Hide password" else "Show password",
+                                contentDescription = if (passwordVisible) stringResource(R.string.export_share_hide_password) else stringResource(R.string.export_share_show_password),
                             )
                         }
                     },
                     supportingText = {
-                        Text(passwordError ?: "4–64 characters. Send it separately from the PDF.")
+                        Text(passwordError ?: stringResource(R.string.export_share_4_64_characters_send_it))
                     },
                 )
                 OutlinedTextField(
@@ -586,13 +588,13 @@ private fun PdfPasswordSection(
                         onConfirmationChanged(value.take(MaximumPdfPasswordLength))
                     },
                     modifier = Modifier.fillMaxWidth(),
-                    label = { Text("Confirm password") },
+                    label = { Text(stringResource(R.string.export_share_confirm_password)) },
                     singleLine = true,
                     isError = confirmationError != null,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                     visualTransformation = PasswordVisualTransformation(),
                     supportingText = {
-                        Text(confirmationError ?: "Passwords match.")
+                        Text(confirmationError ?: stringResource(R.string.export_share_passwords_match))
                     },
                 )
             }

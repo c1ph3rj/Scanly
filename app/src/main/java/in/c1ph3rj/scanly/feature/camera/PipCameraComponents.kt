@@ -57,6 +57,9 @@ import `in`.c1ph3rj.scanly.feature.pip.PipLines
 import `in`.c1ph3rj.scanly.feature.pip.PipMood
 import `in`.c1ph3rj.scanly.feature.pip.PipSays
 import kotlinx.coroutines.delay
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
+import androidx.compose.ui.res.stringResource
 
 /** What Pip shows and says in the camera guide for one detection state. */
 internal data class PipCoach(
@@ -79,31 +82,31 @@ internal fun pipCoachFor(
     hasDocument: Boolean,
 ): PipCoach = when {
     sceneIssue == CaptureSceneIssue.LENS_BLOCKED ->
-        PipCoach(PipMood.DIZZY, "everything's dark. is something over the lens?", null, warning = true)
+        PipCoach(PipMood.DIZZY, appString(R.string.pip_camera_everything_s_dark_is_something), null, warning = true)
     sceneIssue == CaptureSceneIssue.TOO_DARK ->
-        PipCoach(PipMood.SLEEP, "bit dark in here. more light, or try the flash?", null, warning = true)
+        PipCoach(PipMood.SLEEP, appString(R.string.pip_camera_bit_dark_in_here_more), null, warning = true)
     sceneIssue == CaptureSceneIssue.BLURRY ->
-        PipCoach(PipMood.DIZZY, "it's all fuzzy. tap the page to focus.", null, warning = true)
+        PipCoach(PipMood.DIZZY, appString(R.string.pip_camera_it_s_all_fuzzy_tap), null, warning = true)
     phase == AutoCapturePhase.CAPTURING ->
-        PipCoach(PipMood.HAPPY, "snap! saving that page…", 1f)
+        PipCoach(PipMood.HAPPY, appString(R.string.pip_camera_snap_saving_that_page), 1f)
     phase == AutoCapturePhase.COOLDOWN ->
-        PipCoach(PipMood.HAPPY, "got it! on to the next page.", null)
+        PipCoach(PipMood.HAPPY, appString(R.string.pip_camera_got_it_on_to_the), null)
     phase == AutoCapturePhase.OFF && hasDocument ->
-        PipCoach(PipMood.WOW, "found the edges. tap the shutter whenever.", null)
+        PipCoach(PipMood.WOW, appString(R.string.pip_camera_found_the_edges_tap_the), null)
     phase == AutoCapturePhase.OFF ->
-        PipCoach(PipMood.IDLE, "auto-capture is off. tap the shutter when ready.", null)
+        PipCoach(PipMood.IDLE, appString(R.string.pip_camera_auto_capture_is_off_tap), null)
     phase == AutoCapturePhase.HOLD_STEADY ->
-        PipCoach(PipMood.WOW, "ooh, edges! hold still a sec…", 0.2f)
+        PipCoach(PipMood.WOW, appString(R.string.pip_camera_ooh_edges_hold_still_a), 0.2f)
     phase == AutoCapturePhase.COUNTDOWN -> PipCoach(
         mood = PipMood.WOW,
-        line = if (countdownValue != null) "hold it… $countdownValue" else "hold it… almost there.",
+        line = if (countdownValue != null) appString(R.string.pip_camera_hold_it, countdownValue) else appString(R.string.pip_camera_hold_it_almost_there),
         progress = when (countdownValue) {
             3 -> 0.45f
             2 -> 0.7f
             else -> 0.92f
         },
     )
-    else -> PipCoach(PipMood.IDLE, "show me the whole page, all four corners.", null)
+    else -> PipCoach(PipMood.IDLE, appString(R.string.pip_camera_show_me_the_whole_page), null)
 }
 
 /**
@@ -224,7 +227,7 @@ internal fun CameraPermissionPrompt(
         ) {
             ChromeIconButton(
                 icon = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = "Back",
+                contentDescription = stringResource(R.string.zoomable_image_back),
                 onClick = onNavigateUp,
                 containerColor = Color.Transparent,
                 contentColor = Color.White,
@@ -266,17 +269,16 @@ internal fun CameraPermissionPrompt(
 
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     Text(
-                        text = "Camera access needed",
+                        text = stringResource(R.string.pip_camera_camera_access_needed),
                         style = MaterialTheme.typography.headlineSmall,
                         fontWeight = FontWeight.SemiBold,
                         color = Color.White,
                     )
                     Text(
                         text = if (isPermanentlyDenied) {
-                            "Camera permission is blocked for Scanly. Open Settings, " +
-                                "tap Permissions, and turn Camera on to scan documents."
+                            stringResource(R.string.pip_camera_camera_permission_is_blocked_for)
                         } else {
-                            "Scanly needs your camera to capture and straighten document pages."
+                            stringResource(R.string.pip_camera_scanly_needs_your_camera_to)
                         },
                         style = MaterialTheme.typography.bodyLarge,
                         color = muted,
@@ -285,12 +287,12 @@ internal fun CameraPermissionPrompt(
 
                 Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                     if (isPermanentlyDenied) {
-                        PermissionPoint("Settings › Permissions › Camera › Allow")
-                        PermissionPoint("Come back here and Pip will be ready")
+                        PermissionPoint(stringResource(R.string.pip_camera_settings_permissions_camera_allow))
+                        PermissionPoint(stringResource(R.string.pip_camera_come_back_here_and_pip))
                     } else {
-                        PermissionPoint("Live preview with edge detection")
-                        PermissionPoint("Camera active only while scanning")
-                        PermissionPoint("Photos stay on your device until you export or share them")
+                        PermissionPoint(stringResource(R.string.pip_camera_live_preview_with_edge_detection))
+                        PermissionPoint(stringResource(R.string.pip_camera_camera_active_only_while_scanning))
+                        PermissionPoint(stringResource(R.string.pip_camera_photos_stay_on_your_device))
                     }
                 }
 
@@ -307,7 +309,7 @@ internal fun CameraPermissionPrompt(
                         shape = RoundedCornerShape(26.dp),
                     ) {
                         Text(
-                            text = if (isPermanentlyDenied) "Open Settings" else "Allow camera access",
+                            text = if (isPermanentlyDenied) stringResource(R.string.pip_camera_open_settings) else stringResource(R.string.pip_camera_allow_camera_access),
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.SemiBold,
                         )
@@ -316,7 +318,7 @@ internal fun CameraPermissionPrompt(
                         onClick = onNavigateUp,
                         modifier = Modifier.heightIn(min = 48.dp),
                     ) {
-                        Text("Not now", style = MaterialTheme.typography.titleMedium)
+                        Text(stringResource(R.string.pip_camera_not_now), style = MaterialTheme.typography.titleMedium)
                     }
                 }
             }

@@ -1,5 +1,6 @@
 package `in`.c1ph3rj.scanly.feature.components
 
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -54,6 +55,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import `in`.c1ph3rj.scanly.domain.model.DocumentGroup
+import `in`.c1ph3rj.scanly.R
+import androidx.compose.ui.res.stringResource
+import `in`.c1ph3rj.scanly.core.common.appString
 
 /** Inset between a folder tile's press bounds and its art/text; callers offset rows by it. */
 val LibraryFolderTileInset = 6.dp
@@ -74,11 +78,7 @@ fun LibraryFolderTile(
     val hasMenu = onRename != null || onDelete != null
     var menuExpanded by remember { mutableStateOf(false) }
     val openMenu: () -> Unit = { menuExpanded = true }
-    val documentsLabel = if (group.documentCount == 1) {
-        "1 document"
-    } else {
-        "${group.documentCount} documents"
-    }
+    val documentsLabel = pluralStringResource(R.plurals.common_documents, group.documentCount, group.documentCount)
 
     Box(modifier = modifier) {
         Column(
@@ -93,13 +93,13 @@ fun LibraryFolderTile(
                 .semantics(mergeDescendants = true) {
                     customActions = listOfNotNull(
                         onRename?.let { callback ->
-                            CustomAccessibilityAction("Rename") {
+                            CustomAccessibilityAction(appString(R.string.library_card_presentation_rename)) {
                                 callback()
                                 true
                             }
                         },
                         onDelete?.let { callback ->
-                            CustomAccessibilityAction("Delete") {
+                            CustomAccessibilityAction(appString(R.string.library_card_presentation_delete)) {
                                 callback()
                                 true
                             }
@@ -145,7 +145,7 @@ fun LibraryFolderTile(
             ) {
                 if (onRename != null) {
                     DropdownMenuItem(
-                        text = { Text("Rename") },
+                        text = { Text(stringResource(R.string.library_card_presentation_rename)) },
                         leadingIcon = {
                             Icon(
                                 imageVector = Icons.Outlined.Edit,
@@ -162,7 +162,7 @@ fun LibraryFolderTile(
                     DropdownMenuItem(
                         text = {
                             Text(
-                                text = "Delete",
+                                text = stringResource(R.string.library_card_presentation_delete),
                                 color = MaterialTheme.colorScheme.error,
                             )
                         },
@@ -314,13 +314,13 @@ fun LibraryFolderArt(
 fun LibraryNewFolderTile(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-) = LibraryFolderActionTile("New folder", "Organise scans", Icons.Outlined.CreateNewFolder, onClick, modifier)
+) = LibraryFolderActionTile(stringResource(R.string.library_folder_shelf_new_folder), stringResource(R.string.library_folder_shelf_organise_scans), Icons.Outlined.CreateNewFolder, onClick, modifier)
 
 @Composable
 fun LibraryViewAllFoldersTile(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-) = LibraryFolderActionTile("View all", "All folders", Icons.Outlined.GridView, onClick, modifier, filled = true)
+) = LibraryFolderActionTile(stringResource(R.string.library_folder_shelf_view_all), stringResource(R.string.library_folder_shelf_all_folders), Icons.Outlined.GridView, onClick, modifier, filled = true)
 
 @Composable
 private fun LibraryFolderActionTile(

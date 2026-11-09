@@ -21,6 +21,8 @@ import java.io.File
 import java.io.FileOutputStream
 import javax.inject.Inject
 import javax.inject.Singleton
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
 
 @Singleton
 class DefaultQrCodeRepository @Inject constructor(
@@ -34,9 +36,9 @@ class DefaultQrCodeRepository @Inject constructor(
         inkArgb: Long,
     ): ScanlyResult<Bitmap> = withContext(dispatchers.default) {
         runCatching {
-            require(content.isNotBlank()) { "Enter something to encode." }
+            require(content.isNotBlank()) { appString(R.string.error_enter_something_to_encode) }
             encodeQr(content.trim(), sizePx.coerceIn(256, 2048), inkArgb.toInt())
-        }.toScanlyResult("Could not generate QR code.")
+        }.toScanlyResult(appString(R.string.default_qr_code_repository_could_not_generate_qr_code))
     }
 
     override suspend fun saveQrPng(
@@ -46,12 +48,19 @@ class DefaultQrCodeRepository @Inject constructor(
         caption: String?,
     ): ScanlyResult<ExportArtifact> = withContext(dispatchers.io) {
         runCatching {
-            require(content.isNotBlank()) { "Enter something to encode." }
+            require(content.isNotBlank()) { appString(R.string.error_enter_something_to_encode) }
             val code = encodeQr(content.trim(), sizePx.coerceIn(256, 2048), inkArgb.toInt())
             val label = caption?.trim()?.takeIf { it.isNotEmpty() }
             val image = if (label == null) code else withCaption(code, label, inkArgb.toInt())
             val dir = File(context.cacheDir, "qr-tools").apply { mkdirs() }
-            val slug = (label ?: content).lowercase()
+            // Older exports were already shared or saved; sweep them so the folder doesn't grow forever.
+            val staleBefore = System.currentTimeMillis() - STALE_EXPORT_MILLIS
+            dir.listFiles().orEmpty()
+                .filter { entry -> entry.lastModified() < staleBefore }
+                .forEach { entry -> entry.delete() }
+            // The file name is shown in Downloads and the snackbar, so it must never carry the
+            // encoded content (Wi-Fi passwords, contact details, payment links).
+            val slug = (label ?: contentTypeLabel(content.trim())).lowercase()
                 .replace(Regex("^[a-z]+://"), "")
                 .replace(Regex("[^a-z0-9]+"), "-")
                 .trim('-')
@@ -61,7 +70,7 @@ class DefaultQrCodeRepository @Inject constructor(
             try {
                 FileOutputStream(file).use { out ->
                     if (!image.compress(Bitmap.CompressFormat.PNG, 100, out)) {
-                        error("Could not write QR image.")
+                        error(appString(R.string.error_could_not_write_qr_image))
                     }
                 }
             } finally {
@@ -73,7 +82,7 @@ class DefaultQrCodeRepository @Inject constructor(
                 fileName = file.name,
                 mimeType = "image/png",
             )
-        }.toScanlyResult("Could not save QR code.")
+        }.toScanlyResult(appString(R.string.default_qr_code_repository_could_not_save_qr_code))
     }
 
     private fun encodeQr(content: String, sizePx: Int, ink: Int): Bitmap {
@@ -128,6 +137,17 @@ class DefaultQrCodeRepository @Inject constructor(
         return output
     }
 
+    /** Generic file-name label for the content type; never includes the content itself. */
+    private fun contentTypeLabel(content: String): String = when {
+        content.startsWith("WIFI:", ignoreCase = true) -> "wifi"
+        content.startsWith("MECARD:", ignoreCase = true) ||
+            content.startsWith("BEGIN:VCARD", ignoreCase = true) -> "contact"
+        content.startsWith("upi://", ignoreCase = true) -> "upi"
+        content.startsWith("http://", ignoreCase = true) ||
+            content.startsWith("https://", ignoreCase = true) -> "link"
+        else -> "code"
+    }
+
     private fun <T> Result<T>.toScanlyResult(fallbackMessage: String): ScanlyResult<T> =
         fold(
             onSuccess = { ScanlyResult.Success(it) },
@@ -137,4 +157,8 @@ class DefaultQrCodeRepository @Inject constructor(
                 )
             },
         )
+
+    private companion object {
+        const val STALE_EXPORT_MILLIS = 60 * 60 * 1000L
+    }
 }

@@ -36,7 +36,13 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import `in`.c1ph3rj.scanly.core.ui.ImageImportSupport
+import `in`.c1ph3rj.scanly.core.ui.WindowWidthClass
+import `in`.c1ph3rj.scanly.core.ui.adaptiveColumnCount
 import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
+import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.ui.unit.takeOrElse
 import `in`.c1ph3rj.scanly.domain.model.DocumentTitleFormat
 import `in`.c1ph3rj.scanly.domain.model.GroupTitleFormat
 import `in`.c1ph3rj.scanly.feature.components.*
@@ -46,6 +52,9 @@ import `in`.c1ph3rj.scanly.feature.pip.PipViewModel
 import androidx.compose.ui.unit.Dp
 import androidx.activity.compose.BackHandler
 import kotlinx.coroutines.flow.collectLatest
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun HomeRoute(
@@ -79,7 +88,11 @@ fun HomeRoute(
                     createForScan = false
                 }
                 is HomeEvent.OpenGroup -> onOpenGroup(event.groupId)
-                is HomeEvent.ShowMessage -> snackbarHostState.showSnackbar(event.message)
+                is HomeEvent.ShowMessage -> {
+                    // A failed create must not leave the scan intent armed for the next document.
+                    createForScan = false
+                    snackbarHostState.showSnackbar(event.message)
+                }
             }
         }
     }
@@ -143,6 +156,25 @@ fun HomeScreen(
 
     BackHandler(enabled = uiState.isImporting) { /* block back while processing */ }
 
+    val showTip = pipPreferences.showHomeTips &&
+        hasContent &&
+        !uiState.isLoading &&
+        pipPreferences.tipDismissedEpochDay != todayEpochDay
+    val showPipNote = pipPreferences.enabled && (pokeLine != null || showTip)
+    val headerPip: (@Composable () -> Unit)? = if (pipPreferences.enabled && hasContent) {
+        { HomeHeaderPip(onPoke = { pokeCount++ }) }
+    } else {
+        null
+    }
+    val compactHeight = windowSizeInfo.isHeightConstrained
+    val horizontalPadding = windowSizeInfo.horizontalPadding
+    val recentsState = if (windowSizeInfo.widthClass == WindowWidthClass.Compact) {
+        remember(uiState) { uiState.trimmedForCompactWidth() }
+    } else {
+        uiState
+    }
+    val folderTileWidth = if (windowSizeInfo.widthClass == WindowWidthClass.Compact) 104.dp else 132.dp
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
@@ -150,187 +182,182 @@ fun HomeScreen(
         containerColor = MaterialTheme.colorScheme.background,
         snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { innerPadding ->
-        Box(
+        BoxWithConstraints(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(bottom = innerPadding.calculateBottomPadding()),
             contentAlignment = Alignment.TopCenter,
         ) {
-        LazyColumn(
-            modifier = if (windowSizeInfo.isTablet) {
-                Modifier.widthIn(max = windowSizeInfo.contentMaxWidth).fillMaxHeight()
-            } else {
-                Modifier.fillMaxSize()
-            },
-            contentPadding = PaddingValues(bottom = 120.dp),
-        ) {
-            item(key = "home_header", contentType = "header") {
-                HomeHeader(
-                    groupCount = uiState.recentGroups.size,
-                    documentCount = uiState.recentDocuments.size,
-                    modifier = Modifier
-                        .padding(horizontal = windowSizeInfo.horizontalPadding)
-                        .padding(bottom = 12.dp),
-                    pip = if (pipPreferences.enabled && hasContent) {
-                        { HomeHeaderPip(onPoke = { pokeCount++ }) }
-                    } else {
-                        null
-                    },
-                )
-            }
-
-            val showTip = pipPreferences.showHomeTips &&
-                hasContent &&
-                !uiState.isLoading &&
-                pipPreferences.tipDismissedEpochDay != todayEpochDay
-            if (pipPreferences.enabled && (pokeLine != null || showTip)) {
-                item(key = "home_pip_note", contentType = "pip_note") {
-                    HomePipNote(
-                        line = pokeLine ?: PipLines.homeTipFor(todayEpochDay),
-                        isTip = pokeLine == null,
-                        onDismissTip = onDismissPipTip,
-                        modifier = Modifier
-                            .padding(horizontal = windowSizeInfo.horizontalPadding)
-                            .padding(bottom = 16.dp)
-                            .animateItem(),
-                    )
-                }
-            }
-
-            item(key = "home_search", contentType = "search") {
-                HomeSearchPill(
-                    onClick = onOpenSearch,
-                    modifier = Modifier
-                        .padding(horizontal = windowSizeInfo.horizontalPadding)
-                        .padding(bottom = 16.dp),
-                )
-            }
-
-            item(key = "quick_actions", contentType = "quick_actions") {
-                QuickActionsRow(
-                    onScan = { createDialogVisible = true },
-                    onImport = onImportImages,
+            val recents: LazyListScope.(start: Dp, end: Dp, columns: Int) -> Unit = { start, end, columns ->
+                homeRecents(
+                    uiState = recentsState,
+                    start = start,
+                    end = end,
+                    columns = columns,
+                    folderTileWidth = folderTileWidth,
+                    isTablet = windowSizeInfo.widthClass != WindowWidthClass.Compact,
                     onNewFolder = { createFolderDialogVisible = true },
-                    importEnabled = !uiState.isImporting,
-                    isTablet = windowSizeInfo.isTablet,
-                    horizontalPadding = windowSizeInfo.horizontalPadding,
-                    modifier = Modifier.padding(bottom = 24.dp)
+                    onOpenGroup = onOpenGroup,
+                    onSeeAllFolders = onSeeAllFolders,
+                    onNavigateToLibrary = onNavigateToLibrary,
+                    onOpenDocument = onOpenDocument,
+                    onCreateDocument = { createDialogVisible = true },
                 )
             }
 
-            if (uiState.isLoading) {
-                item(key = "home_loading", contentType = "loading") {
-                    HomeLoadingSkeleton(
-                        isTablet = windowSizeInfo.isTablet,
-                        horizontalPadding = windowSizeInfo.horizontalPadding,
-                    )
-                }
-            } else {
-            if (uiState.recentGroups.isNotEmpty()) {
-                item(key = "groups_header", contentType = "section_header") {
-                    LibrarySectionHeader(
-                        title = "Recent folders",
-                        actionLabel = "See all",
-                        onAction = onSeeAllFolders,
-                        modifier = Modifier.padding(horizontal = windowSizeInfo.horizontalPadding),
-                    )
-                }
-                item(key = "groups_row", contentType = "groups_row") {
-                    // Tiles carry their own press inset; pull the row out so the art aligns with the header.
-                    LazyRow(
-                        contentPadding = PaddingValues(
-                            horizontal = (windowSizeInfo.horizontalPadding - LibraryFolderTileInset).coerceAtLeast(0.dp),
-                        ),
-                        horizontalArrangement = Arrangement.spacedBy(4.dp),
-                        modifier = Modifier.padding(bottom = 20.dp),
+            if (windowSizeInfo.useTwoPaneLayout) {
+                // Launcher pane (greeting, search, actions) stays put while recents scroll beside it.
+                val contentWidth = minOf(maxWidth, windowSizeInfo.wideContentMaxWidth)
+                val launchPaneWidth = (contentWidth * 0.4f).coerceIn(300.dp, 400.dp)
+                Row(
+                    modifier = Modifier
+                        .width(contentWidth)
+                        .fillMaxHeight(),
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .width(launchPaneWidth + horizontalPadding)
+                            .fillMaxHeight()
+                            .verticalScroll(rememberScrollState())
+                            .padding(start = horizontalPadding, bottom = 24.dp),
                     ) {
-                        item(key = "new_folder", contentType = "new_folder") {
-                            LibraryNewFolderTile(
-                                onClick = { createFolderDialogVisible = true },
-                                modifier = Modifier.width(if (windowSizeInfo.isTablet) 132.dp else 104.dp),
+                        HomeHeader(
+                            groupCount = uiState.recentGroups.size,
+                            documentCount = uiState.recentDocuments.size,
+                            compact = compactHeight,
+                            modifier = Modifier.padding(bottom = 12.dp),
+                            pip = headerPip,
+                        )
+                        if (showPipNote) {
+                            HomePipNote(
+                                line = pokeLine ?: PipLines.homeTipFor(todayEpochDay),
+                                isTip = pokeLine == null,
+                                onDismissTip = onDismissPipTip,
+                                modifier = Modifier.padding(bottom = 16.dp),
                             )
                         }
-                        items(
-                            items = uiState.recentGroups,
-                            key = { it.id },
-                            contentType = { "recent_group" },
-                        ) { group ->
-                            LibraryFolderTile(
-                                group = group,
-                                onOpen = { onOpenGroup(group.id) },
-                                modifier = Modifier.width(if (windowSizeInfo.isTablet) 132.dp else 104.dp),
-                            )
-                        }
-                        if (uiState.hasMoreGroups) {
-                            item(key = "view_all_folders", contentType = "view_all_folders") {
-                                LibraryViewAllFoldersTile(
-                                    onClick = onSeeAllFolders,
-                                    modifier = Modifier.width(if (windowSizeInfo.isTablet) 132.dp else 104.dp),
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-
-            if (uiState.recentDocuments.isNotEmpty()) {
-                item(key = "files_header", contentType = "section_header") {
-                    LibrarySectionHeader(
-                        title = "Recent documents",
-                        actionLabel = "See all",
-                        onAction = onNavigateToLibrary,
-                        modifier = Modifier
-                            .padding(horizontal = windowSizeInfo.horizontalPadding)
-                            .padding(bottom = 4.dp),
-                    )
-                }
-                itemsIndexed(
-                    items = uiState.recentDocuments,
-                    key = { _, doc -> doc.id },
-                    contentType = { _, _ -> "recent_document" },
-                ) { index, doc ->
-                    LibraryListItem(
-                        first = index == 0,
-                        last = index == uiState.recentDocuments.lastIndex,
-                        modifier = Modifier
-                            .padding(horizontal = windowSizeInfo.horizontalPadding)
-                            .animateItem(),
-                    ) {
-                        DocumentCard(
-                            document = doc,
-                            onOpen = { onOpenDocument(doc.id) },
-                            style = LibraryCardStyle.PreviewList,
+                        HomeSearchPill(
+                            onClick = onOpenSearch,
+                            modifier = Modifier.padding(bottom = 16.dp),
+                        )
+                        QuickActionsRow(
+                            onScan = { createDialogVisible = true },
+                            onImport = onImportImages,
+                            onNewFolder = { createFolderDialogVisible = true },
+                            importEnabled = !uiState.isImporting,
+                            horizontalPadding = 0.dp,
                         )
                     }
-                }
-            } else if (uiState.recentGroups.isEmpty()) {
-                item(key = "empty_state", contentType = "empty") {
-                    EmptyHomeCard(
-                        onCreateDocument = { createDialogVisible = true },
+                    Spacer(Modifier.width(32.dp))
+                    BoxWithConstraints(
                         modifier = Modifier
-                            .padding(horizontal = windowSizeInfo.horizontalPadding)
-                            .padding(top = 16.dp),
-                    )
+                            .weight(1f)
+                            .fillMaxHeight(),
+                    ) {
+                        val columns = adaptiveColumnCount(
+                            availableWidth = maxWidth - horizontalPadding,
+                            minCellWidth = HomeRecentCellMinWidth,
+                            minColumns = 1,
+                            maxColumns = 2,
+                        )
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize(),
+                            contentPadding = PaddingValues(bottom = 120.dp),
+                        ) {
+                            item(key = "recents_top_inset", contentType = "inset") {
+                                Spacer(
+                                    Modifier
+                                        .statusBarsPadding()
+                                        .height(if (compactHeight) 8.dp else 14.dp),
+                                )
+                            }
+                            recents(0.dp, horizontalPadding, columns)
+                        }
+                    }
+                }
+            } else {
+                val listModifier = if (windowSizeInfo.widthClass == WindowWidthClass.Compact) {
+                    Modifier.fillMaxSize()
+                } else {
+                    Modifier.widthIn(max = windowSizeInfo.contentMaxWidth).fillMaxHeight()
+                }
+                val listWidth = minOf(maxWidth, windowSizeInfo.contentMaxWidth.takeOrElse { maxWidth })
+                val columns = adaptiveColumnCount(
+                    availableWidth = listWidth - horizontalPadding * 2,
+                    minCellWidth = HomeRecentCellMinWidth,
+                    minColumns = 1,
+                    maxColumns = 2,
+                )
+                LazyColumn(
+                    modifier = listModifier,
+                    contentPadding = PaddingValues(bottom = 120.dp),
+                ) {
+                    item(key = "home_header", contentType = "header") {
+                        HomeHeader(
+                            groupCount = uiState.recentGroups.size,
+                            documentCount = uiState.recentDocuments.size,
+                            compact = compactHeight,
+                            modifier = Modifier
+                                .padding(horizontal = horizontalPadding)
+                                .padding(bottom = 12.dp),
+                            pip = headerPip,
+                        )
+                    }
+
+                    if (showPipNote) {
+                        item(key = "home_pip_note", contentType = "pip_note") {
+                            HomePipNote(
+                                line = pokeLine ?: PipLines.homeTipFor(todayEpochDay),
+                                isTip = pokeLine == null,
+                                onDismissTip = onDismissPipTip,
+                                modifier = Modifier
+                                    .padding(horizontal = horizontalPadding)
+                                    .padding(bottom = 16.dp)
+                                    .animateItem(),
+                            )
+                        }
+                    }
+
+                    item(key = "home_search", contentType = "search") {
+                        HomeSearchPill(
+                            onClick = onOpenSearch,
+                            modifier = Modifier
+                                .padding(horizontal = horizontalPadding)
+                                .padding(bottom = 16.dp),
+                        )
+                    }
+
+                    item(key = "quick_actions", contentType = "quick_actions") {
+                        QuickActionsRow(
+                            onScan = { createDialogVisible = true },
+                            onImport = onImportImages,
+                            onNewFolder = { createFolderDialogVisible = true },
+                            importEnabled = !uiState.isImporting,
+                            wide = windowSizeInfo.widthClass != WindowWidthClass.Compact,
+                            horizontalPadding = horizontalPadding,
+                            modifier = Modifier.padding(bottom = 24.dp),
+                        )
+                    }
+
+                    recents(horizontalPadding, horizontalPadding, columns)
                 }
             }
-            }
-        }
 
             if (uiState.isImporting) {
                 ScanlyImportProgressOverlay(
                     current = uiState.importCurrent,
                     total = uiState.importTotal,
-                    stageLabel = uiState.importStageLabel.ifBlank { "Working on your photos" },
+                    stageLabel = uiState.importStageLabel.ifBlank { stringResource(R.string.document_detail_working_on_your_photos) },
                 )
             }
-        } // end outer Box
+        }
     }
 
     if (createDialogVisible && !uiState.isImporting) {
         DocumentTitleDialog(
-            title = "New scan",
+            title = stringResource(R.string.home_new_scan),
             initialValue = "",
-            confirmLabel = "Create",
+            confirmLabel = stringResource(R.string.shared_create),
             onDismiss = { createDialogVisible = false },
             onConfirm = { value ->
                 createDialogVisible = false
@@ -343,7 +370,7 @@ fun HomeScreen(
 
     if (createFolderDialogVisible && !uiState.isImporting) {
         GroupNameDialog(
-            title = "New folder",
+            title = stringResource(R.string.library_folder_shelf_new_folder),
             initialValue = "",
             onDismiss = { createFolderDialogVisible = false },
             onConfirm = { title ->
@@ -356,11 +383,160 @@ fun HomeScreen(
     }
 }
 
+/** Recent rows stay readable down to this width; wider panes fit two side by side. */
+private val HomeRecentCellMinWidth = 300.dp
+
+/**
+ * Loading skeleton, recent folders shelf and recent documents. Shared by the single-column
+ * layout and the recents pane of the two-pane layout; [start] and [end] are the row insets.
+ */
+private fun LazyListScope.homeRecents(
+    uiState: HomeUiState,
+    start: Dp,
+    end: Dp,
+    columns: Int,
+    folderTileWidth: Dp,
+    isTablet: Boolean,
+    onNewFolder: () -> Unit,
+    onOpenGroup: (String) -> Unit,
+    onSeeAllFolders: () -> Unit,
+    onNavigateToLibrary: () -> Unit,
+    onOpenDocument: (String) -> Unit,
+    onCreateDocument: () -> Unit,
+) {
+    val inset = Modifier.padding(start = start, end = end)
+    if (uiState.isLoading) {
+        item(key = "home_loading", contentType = "loading") {
+            HomeLoadingSkeleton(
+                isTablet = isTablet,
+                start = start,
+                end = end,
+            )
+        }
+        return
+    }
+    if (uiState.recentGroups.isNotEmpty()) {
+        item(key = "groups_header", contentType = "section_header") {
+            LibrarySectionHeader(
+                title = appString(R.string.home_recent_folders),
+                actionLabel = appString(R.string.home_see_all),
+                onAction = onSeeAllFolders,
+                modifier = inset,
+            )
+        }
+        item(key = "groups_row", contentType = "groups_row") {
+            // Tiles carry their own press inset; pull the row out so the art aligns with the header.
+            LazyRow(
+                contentPadding = PaddingValues(
+                    start = (start - LibraryFolderTileInset).coerceAtLeast(0.dp),
+                    end = (end - LibraryFolderTileInset).coerceAtLeast(0.dp),
+                ),
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                modifier = Modifier.padding(bottom = 20.dp),
+            ) {
+                item(key = "new_folder", contentType = "new_folder") {
+                    LibraryNewFolderTile(
+                        onClick = onNewFolder,
+                        modifier = Modifier.width(folderTileWidth),
+                    )
+                }
+                items(
+                    items = uiState.recentGroups,
+                    key = { it.id },
+                    contentType = { "recent_group" },
+                ) { group ->
+                    LibraryFolderTile(
+                        group = group,
+                        onOpen = { onOpenGroup(group.id) },
+                        modifier = Modifier.width(folderTileWidth),
+                    )
+                }
+                if (uiState.hasMoreGroups) {
+                    item(key = "view_all_folders", contentType = "view_all_folders") {
+                        LibraryViewAllFoldersTile(
+                            onClick = onSeeAllFolders,
+                            modifier = Modifier.width(folderTileWidth),
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    if (uiState.recentDocuments.isNotEmpty()) {
+        item(key = "files_header", contentType = "section_header") {
+            LibrarySectionHeader(
+                title = appString(R.string.home_recent_documents),
+                actionLabel = appString(R.string.home_see_all),
+                onAction = onNavigateToLibrary,
+                modifier = inset.padding(bottom = 4.dp),
+            )
+        }
+        if (columns <= 1) {
+            itemsIndexed(
+                items = uiState.recentDocuments,
+                key = { _, doc -> doc.id },
+                contentType = { _, _ -> "recent_document" },
+            ) { index, doc ->
+                LibraryListItem(
+                    first = index == 0,
+                    last = index == uiState.recentDocuments.lastIndex,
+                    modifier = inset.animateItem(),
+                ) {
+                    DocumentCard(
+                        document = doc,
+                        onOpen = { onOpenDocument(doc.id) },
+                        style = LibraryCardStyle.PreviewList,
+                    )
+                }
+            }
+        } else {
+            // Wide panes: separate rounded cards side by side instead of one long grouped list.
+            items(
+                items = uiState.recentDocuments.chunked(columns),
+                key = { row -> "recent_row_${row.first().id}" },
+                contentType = { "recent_document_row" },
+            ) { row ->
+                Row(
+                    modifier = inset
+                        .padding(bottom = 8.dp)
+                        .animateItem(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    row.forEach { doc ->
+                        LibraryListItem(
+                            first = true,
+                            last = true,
+                            modifier = Modifier.weight(1f),
+                        ) {
+                            DocumentCard(
+                                document = doc,
+                                onOpen = { onOpenDocument(doc.id) },
+                                style = LibraryCardStyle.PreviewList,
+                            )
+                        }
+                    }
+                    repeat(columns - row.size) { Spacer(Modifier.weight(1f)) }
+                }
+            }
+        }
+    } else if (uiState.recentGroups.isEmpty()) {
+        item(key = "empty_state", contentType = "empty") {
+            EmptyHomeCard(
+                onCreateDocument = onCreateDocument,
+                modifier = inset.padding(top = 16.dp),
+            )
+        }
+    }
+}
+
 @Composable
 fun HomeHeader(
     groupCount: Int,
     documentCount: Int,
     modifier: Modifier = Modifier,
+    /** Short window: smaller headline so the search and actions stay above the fold. */
+    compact: Boolean = false,
     pip: (@Composable () -> Unit)? = null,
 ) {
     val hour = java.util.Calendar.getInstance().get(java.util.Calendar.HOUR_OF_DAY)
@@ -370,16 +546,16 @@ fun HomeHeader(
         modifier = modifier
             .fillMaxWidth()
             .statusBarsPadding()
-            .padding(top = 14.dp),
+            .padding(top = if (compact) 8.dp else 14.dp),
         verticalAlignment = Alignment.Bottom,
     ) {
     Column(
         modifier = Modifier.weight(1f),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(if (compact) 4.dp else 8.dp),
     ) {
         Text(
             text = greeting.salutation,
-            style = MaterialTheme.typography.titleLarge,
+            style = if (compact) MaterialTheme.typography.titleMedium else MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
         Text(
@@ -395,7 +571,7 @@ fun HomeHeader(
                     append(greeting.headline.substring(start + greeting.highlight.length))
                 }
             },
-            style = MaterialTheme.typography.displaySmall,
+            style = if (compact) MaterialTheme.typography.headlineMedium else MaterialTheme.typography.displaySmall,
             fontWeight = FontWeight.SemiBold,
             color = MaterialTheme.colorScheme.onBackground,
         )
@@ -415,24 +591,24 @@ private data class HomeGreeting(
 
 private fun greetingForHour(hour: Int): HomeGreeting = when (hour) {
     in 5..11 -> HomeGreeting(
-        salutation = "Good morning,",
-        headline = "What are we\nscanning today?",
+        salutation = appString(R.string.home_good_morning),
+        headline = appString(R.string.home_what_are_we_scanning_today),
         highlight = "scanning",
     )
     in 12..16 -> HomeGreeting(
-        salutation = "Good afternoon,",
-        headline = "Let's capture\nsome documents.",
+        salutation = appString(R.string.home_good_afternoon),
+        headline = appString(R.string.home_let_s_capture_some_documents),
         highlight = "documents",
     )
     in 17..20 -> HomeGreeting(
-        salutation = "Good evening,",
-        headline = "Wrap up and\ndigitize your day.",
+        salutation = appString(R.string.home_good_evening),
+        headline = appString(R.string.home_wrap_up_and_digitize_your),
         highlight = "digitize",
     )
     else -> HomeGreeting(
-        salutation = "Still scanning?",
-        headline = "Save it now,\nfind it tomorrow.",
-        highlight = "Save it now",
+        salutation = appString(R.string.home_still_scanning),
+        headline = appString(R.string.home_save_it_now_find_it),
+        highlight = appString(R.string.home_save_it_now),
     )
 }
 
@@ -442,46 +618,44 @@ fun QuickActionsRow(
     onImport: () -> Unit,
     onNewFolder: () -> Unit,
     importEnabled: Boolean = true,
-    isTablet: Boolean = false,
+    /** Tablet widths: short horizontal cards spanning the column instead of big squares. */
+    wide: Boolean = false,
     horizontalPadding: Dp = 20.dp,
     modifier: Modifier = Modifier
 ) {
-    val rowModifier = if (isTablet) {
-        modifier
-            .widthIn(max = 480.dp)
-            .padding(horizontal = horizontalPadding)
-    } else {
-        modifier
+    Row(
+        modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = horizontalPadding)
-    }
-    Row(
-        modifier = rowModifier,
+            .height(IntrinsicSize.Min),
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         QuickActionCard(
-            title = "Scan",
+            title = stringResource(R.string.home_scan),
             icon = Icons.Outlined.CameraAlt,
             onClick = onScan,
             accentContainerColor = MaterialTheme.colorScheme.primaryContainer,
             accentContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+            wide = wide,
             modifier = Modifier.weight(1f)
         )
         QuickActionCard(
-            title = "Import",
+            title = stringResource(R.string.home_import),
             icon = Icons.Outlined.PhotoLibrary,
             onClick = onImport,
             enabled = importEnabled,
             accentContainerColor = MaterialTheme.colorScheme.secondaryContainer,
             accentContentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+            wide = wide,
             modifier = Modifier.weight(1f)
         )
         QuickActionCard(
-            title = "Folder",
+            title = stringResource(R.string.home_folder),
             icon = Icons.Outlined.CreateNewFolder,
             onClick = onNewFolder,
             accentContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
             accentContentColor = MaterialTheme.colorScheme.onTertiaryContainer,
+            wide = wide,
             modifier = Modifier.weight(1f)
         )
     }
@@ -495,6 +669,7 @@ fun QuickActionCard(
     accentContainerColor: androidx.compose.ui.graphics.Color,
     accentContentColor: androidx.compose.ui.graphics.Color,
     enabled: Boolean = true,
+    wide: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     val resolvedContentColor = if (enabled) {
@@ -502,10 +677,26 @@ fun QuickActionCard(
     } else {
         MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.58f)
     }
+    val iconBadge: @Composable () -> Unit = {
+        Surface(
+            modifier = Modifier.size(46.dp),
+            color = if (enabled) accentContainerColor else MaterialTheme.colorScheme.surfaceContainerHighest,
+            shape = MaterialTheme.shapes.large,
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = title,
+                    tint = if (enabled) accentContentColor else resolvedContentColor,
+                    modifier = Modifier.size(26.dp)
+                )
+            }
+        }
+    }
     Surface(
         onClick = onClick,
         enabled = enabled,
-        modifier = modifier.aspectRatio(1f),
+        modifier = modifier.heightIn(min = if (wide) 80.dp else 120.dp).fillMaxHeight(),
         color = if (enabled) {
             MaterialTheme.colorScheme.surfaceContainer
         } else {
@@ -516,34 +707,43 @@ fun QuickActionCard(
         shadowElevation = 0.dp,
         tonalElevation = 0.dp,
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 6.dp, vertical = 8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Surface(
-                modifier = Modifier.size(46.dp),
-                color = if (enabled) accentContainerColor else MaterialTheme.colorScheme.surfaceContainerHighest,
-                shape = MaterialTheme.shapes.large,
+        if (wide) {
+            Row(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(14.dp),
             ) {
-                Box(contentAlignment = Alignment.Center) {
-                    Icon(
-                        imageVector = icon,
-                        contentDescription = title,
-                        tint = if (enabled) accentContentColor else resolvedContentColor,
-                        modifier = Modifier.size(26.dp)
-                    )
-                }
+                iconBadge()
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    color = resolvedContentColor,
+                    maxLines = 2,
+                    textAlign = TextAlign.Center,
+                )
             }
-            Spacer(modifier = Modifier.height(9.dp))
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold,
-                color = resolvedContentColor
-            )
+        } else {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 6.dp, vertical = 8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                iconBadge()
+                Spacer(modifier = Modifier.height(9.dp))
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.SemiBold,
+                    color = resolvedContentColor,
+                    maxLines = 2,
+                    textAlign = TextAlign.Center,
+                )
+            }
         }
     }
 }
@@ -556,25 +756,30 @@ fun QuickActionCard(
 @Composable
 private fun HomeLoadingSkeleton(
     isTablet: Boolean,
-    horizontalPadding: Dp,
+    start: Dp,
+    end: Dp,
     modifier: Modifier = Modifier,
 ) {
     val progress = rememberShimmerProgress()
     val lineShape = androidx.compose.foundation.shape.RoundedCornerShape(6.dp)
     val tileWidth = if (isTablet) 132.dp else 104.dp
+    val inset = Modifier.padding(start = start, end = end)
 
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .semantics { contentDescription = "Loading your documents" },
+            .semantics { contentDescription = appString(R.string.home_loading_your_documents) },
     ) {
-        SkeletonSectionHeader(progress, Modifier.padding(horizontal = horizontalPadding))
+        SkeletonSectionHeader(progress, inset)
         // Not user-scrollable: the scroll container only lets tiles run off the edge like the real row.
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .horizontalScroll(androidx.compose.foundation.rememberScrollState(), enabled = false)
-                .padding(horizontal = (horizontalPadding - LibraryFolderTileInset).coerceAtLeast(0.dp))
+                .padding(
+                    start = (start - LibraryFolderTileInset).coerceAtLeast(0.dp),
+                    end = (end - LibraryFolderTileInset).coerceAtLeast(0.dp),
+                )
                 .padding(bottom = 20.dp),
             horizontalArrangement = Arrangement.spacedBy(4.dp),
         ) {
@@ -598,14 +803,14 @@ private fun HomeLoadingSkeleton(
 
         SkeletonSectionHeader(
             progress,
-            Modifier.padding(horizontal = horizontalPadding).padding(bottom = 4.dp),
+            inset.padding(bottom = 4.dp),
         )
         val rowCount = 3
         repeat(rowCount) { index ->
             LibraryListItem(
                 first = index == 0,
                 last = index == rowCount - 1,
-                modifier = Modifier.padding(horizontal = horizontalPadding),
+                modifier = inset,
             ) {
                 Row(
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
@@ -656,9 +861,9 @@ private fun EmptyHomeCard(
     PipEmptyState(
         pipLine = `in`.c1ph3rj.scanly.feature.pip.PipLines.HOME_EMPTY,
         pipMood = `in`.c1ph3rj.scanly.feature.pip.PipMood.IDLE,
-        title = "No documents yet",
-        description = "Scan your first page and it will be ready here whenever you need it.",
-        actionLabel = "Start scanning",
+        title = stringResource(R.string.home_no_documents_yet),
+        description = stringResource(R.string.home_scan_your_first_page_and),
+        actionLabel = stringResource(R.string.home_start_scanning),
         onAction = onCreateDocument,
         actionIcon = Icons.Outlined.CameraAlt,
         modifier = modifier,
@@ -679,7 +884,7 @@ private fun HomeSearchPill(
         modifier = modifier
             .fillMaxWidth()
             .height(52.dp)
-            .semantics { contentDescription = "Search names and text in pages" },
+            .semantics { contentDescription = appString(R.string.home_search_names_and_text_in) },
         shape = androidx.compose.foundation.shape.RoundedCornerShape(26.dp),
         color = MaterialTheme.colorScheme.surfaceContainer,
         border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
@@ -695,7 +900,7 @@ private fun HomeSearchPill(
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             Text(
-                text = "Search names and text in pages",
+                text = stringResource(R.string.home_search_names_and_text_in),
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,

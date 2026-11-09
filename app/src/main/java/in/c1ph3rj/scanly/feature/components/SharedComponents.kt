@@ -8,6 +8,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -108,6 +110,7 @@ import `in`.c1ph3rj.scanly.core.common.runCatchingCancellable
 import `in`.c1ph3rj.scanly.core.ui.ChromeIconButton
 import `in`.c1ph3rj.scanly.core.ui.MetricChip
 import `in`.c1ph3rj.scanly.core.ui.PreviewDisplaySize
+import `in`.c1ph3rj.scanly.core.ui.WindowWidthClass
 import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import `in`.c1ph3rj.scanly.core.ui.PreviewImageSizer
 import `in`.c1ph3rj.scanly.domain.model.DocumentGroup
@@ -120,6 +123,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.text.DateFormat
 import java.util.Date
+import `in`.c1ph3rj.scanly.R
+import androidx.compose.ui.res.stringResource
 
 // ─── Formatting Helpers ────────────────────────────────────────────────────────
 
@@ -319,7 +324,7 @@ fun PagePreview(
 ) {
     DocumentThumbnail(
         thumbnailPath = page.previewImagePath(displaySize),
-        title = "Page ${page.pageIndex + 1}",
+        title = stringResource(R.string.trash_use_cases_page, page.pageIndex + 1),
         contentRevision = page.updatedAtMillis,
         displaySize = displaySize,
         modifier = modifier,
@@ -344,7 +349,7 @@ fun ScanlyAppLogo(
     }
     Image(
         painter = painter,
-        contentDescription = "Scanly",
+        contentDescription = stringResource(R.string.shared_scanly),
         modifier = modifier
             .size(size)
             .clip(RoundedCornerShape(size * 0.24f)),
@@ -361,16 +366,18 @@ fun ScanlyTabScreenHeader(
     subtitle: String,
     modifier: Modifier = Modifier,
 ) {
+    // Short windows (phone landscape): a smaller title so the content starts above the fold.
+    val compact = rememberWindowSizeInfo().isHeightConstrained
     Column(
         modifier = modifier
             .fillMaxWidth()
             .statusBarsPadding()
-            .padding(top = 24.dp),
-        verticalArrangement = Arrangement.spacedBy(4.dp),
+            .padding(top = if (compact) 8.dp else 24.dp),
+        verticalArrangement = Arrangement.spacedBy(if (compact) 2.dp else 4.dp),
     ) {
         Text(
             text = title,
-            style = MaterialTheme.typography.displaySmall,
+            style = if (compact) MaterialTheme.typography.headlineMedium else MaterialTheme.typography.displaySmall,
             fontWeight = FontWeight.Bold,
         )
         Text(
@@ -388,6 +395,8 @@ fun ScanlyDetailTopBar(
     onNavigateUp: () -> Unit,
     modifier: Modifier = Modifier,
     actions: @Composable RowScope.() -> Unit = {},
+    navigationIcon: ImageVector = Icons.AutoMirrored.Filled.ArrowBack,
+    navigationContentDescription: String = stringResource(R.string.zoomable_image_back),
 ) {
     TopAppBar(
         modifier = modifier,
@@ -403,8 +412,8 @@ fun ScanlyDetailTopBar(
         navigationIcon = {
             IconButton(onClick = onNavigateUp) {
                 Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Back",
+                    imageVector = navigationIcon,
+                    contentDescription = navigationContentDescription,
                 )
             }
         },
@@ -423,6 +432,9 @@ fun ScanlyDetailScaffold(
     modifier: Modifier = Modifier,
     actions: @Composable RowScope.() -> Unit = {},
     snackbarHost: @Composable () -> Unit = {},
+    navigationIcon: ImageVector = Icons.AutoMirrored.Filled.ArrowBack,
+    navigationContentDescription: String = stringResource(R.string.zoomable_image_back),
+    bottomBar: @Composable () -> Unit = {},
     content: @Composable (PaddingValues) -> Unit,
 ) {
     Scaffold(
@@ -434,11 +446,21 @@ fun ScanlyDetailScaffold(
                 title = title,
                 onNavigateUp = onNavigateUp,
                 actions = actions,
+                navigationIcon = navigationIcon,
+                navigationContentDescription = navigationContentDescription,
             )
         },
+        bottomBar = bottomBar,
         snackbarHost = snackbarHost,
-        content = content,
-    )
+    ) { innerPadding ->
+        // Detail pages read as one centred column on tablets instead of rows stretched edge to edge.
+        val contentMaxWidth = rememberWindowSizeInfo().contentMaxWidth
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
+            Box(modifier = Modifier.widthIn(max = contentMaxWidth).fillMaxSize()) {
+                content(innerPadding)
+            }
+        }
+    }
 }
 
 // ─── Dialogs ───────────────────────────────────────────────────────────────────
@@ -455,8 +477,10 @@ fun ScanlyFormDialogShell(
     content: @Composable ColumnScope.() -> Unit,
 ) {
     val windowSizeInfo = rememberWindowSizeInfo()
-    val adaptiveMaxWidth = if (windowSizeInfo.isTablet) windowSizeInfo.dialogMaxWidth else maxWidth
-    val horizontalPadding = if (windowSizeInfo.isTablet) 32.dp else horizontalMargin
+    // Width-driven, so a phone in landscape gets a dialog-sized card rather than a 900 dp banner.
+    val wideWindow = windowSizeInfo.widthClass != WindowWidthClass.Compact
+    val adaptiveMaxWidth = if (wideWindow) windowSizeInfo.dialogMaxWidth else maxWidth
+    val horizontalPadding = if (wideWindow) 32.dp else horizontalMargin
 
     BasicAlertDialog(
         onDismissRequest = { if (dismissible) onDismiss() },
@@ -484,9 +508,11 @@ fun ScanlyFormDialogShell(
                 border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
                 tonalElevation = 0.dp,
             ) {
+                // Scrolls when it doesn't fit, e.g. a phone in landscape with the keyboard up.
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .verticalScroll(rememberScrollState())
                         .padding(24.dp),
                     verticalArrangement = Arrangement.spacedBy(20.dp),
                     content = content,
@@ -502,8 +528,8 @@ fun ScanlyConfirmDialog(
     text: String,
     onDismiss: () -> Unit,
     onConfirm: () -> Unit,
-    confirmLabel: String = "Confirm",
-    dismissLabel: String = "Cancel",
+    confirmLabel: String = stringResource(R.string.shared_confirm),
+    dismissLabel: String = stringResource(R.string.export_share_cancel),
     confirmDestructive: Boolean = false,
     dismissEnabled: Boolean = true,
     confirmEnabled: Boolean = true,
@@ -556,6 +582,7 @@ fun ScanlySheetContent(
     content: @Composable ColumnScope.() -> Unit,
 ) {
     val windowSizeInfo = rememberWindowSizeInfo()
+    val wideWindow = windowSizeInfo.widthClass != WindowWidthClass.Compact
     Box(
         modifier = Modifier.fillMaxWidth(),
         contentAlignment = Alignment.TopCenter,
@@ -563,13 +590,13 @@ fun ScanlySheetContent(
         Column(
             modifier = modifier
                 .then(
-                    if (windowSizeInfo.isTablet) {
+                    if (wideWindow) {
                         Modifier.widthIn(max = windowSizeInfo.sheetMaxWidth)
                     } else {
                         Modifier.fillMaxWidth()
                     },
                 )
-                .padding(horizontal = if (windowSizeInfo.isTablet) 24.dp else 20.dp)
+                .padding(horizontal = if (wideWindow) 24.dp else 20.dp)
                 .padding(bottom = 28.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
             content = content,
@@ -589,7 +616,7 @@ private fun ScanlyDialogActions(
         horizontalArrangement = Arrangement.End,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        TextButton(onClick = onDismiss) { Text("Cancel") }
+        TextButton(onClick = onDismiss) { Text(stringResource(R.string.export_share_cancel)) }
         Spacer(Modifier.width(8.dp))
         TextButton(
             onClick = onConfirm,
@@ -658,7 +685,7 @@ fun NameTextField(
                 ) {
                     Icon(
                         imageVector = Icons.Filled.Clear,
-                        contentDescription = "Clear name",
+                        contentDescription = stringResource(R.string.shared_clear_name),
                     )
                 }
             }
@@ -698,8 +725,11 @@ fun DocumentTitleSuggestRow(
         scope.launch {
             isSuggesting = true
             try {
-                onSuggested(onSuggestTitle(format))
-                formatIndex = (formatIndex + 1) % DocumentTitleFormat.entries.size
+                val suggested = runCatchingCancellable { onSuggestTitle(format) }.getOrNull()
+                if (suggested != null) {
+                    onSuggested(suggested)
+                    formatIndex = (formatIndex + 1) % DocumentTitleFormat.entries.size
+                }
             } finally {
                 isSuggesting = false
             }
@@ -733,7 +763,7 @@ fun DocumentTitleSuggestRow(
                 verticalArrangement = Arrangement.spacedBy(2.dp),
             ) {
                 Text(
-                    text = "Suggest name",
+                    text = stringResource(R.string.shared_suggest_name),
                     style = MaterialTheme.typography.labelLarge,
                 )
                 Text(
@@ -794,7 +824,7 @@ fun DocumentTitleDialog(
         NameTextField(
             value = value,
             onValueChange = { value = it },
-            label = "Title",
+            label = stringResource(R.string.shared_title),
             isLoading = isFillingName,
             onKeyboardDone = confirm,
         )
@@ -839,8 +869,11 @@ fun GroupTitleSuggestRow(
         scope.launch {
             isSuggesting = true
             try {
-                onSuggested(onSuggestTitle(format))
-                formatIndex = (formatIndex + 1) % GroupTitleFormat.entries.size
+                val suggested = runCatchingCancellable { onSuggestTitle(format) }.getOrNull()
+                if (suggested != null) {
+                    onSuggested(suggested)
+                    formatIndex = (formatIndex + 1) % GroupTitleFormat.entries.size
+                }
             } finally {
                 isSuggesting = false
             }
@@ -874,7 +907,7 @@ fun GroupTitleSuggestRow(
                 verticalArrangement = Arrangement.spacedBy(2.dp),
             ) {
                 Text(
-                    text = "Suggest name",
+                    text = stringResource(R.string.shared_suggest_name),
                     style = MaterialTheme.typography.labelLarge,
                 )
                 Text(
@@ -893,7 +926,7 @@ fun GroupNameDialog(
     initialValue: String,
     onDismiss: () -> Unit,
     onConfirm: (String) -> Unit,
-    confirmLabel: String = "Create",
+    confirmLabel: String = stringResource(R.string.shared_create),
     onSuggestTitle: (suspend (GroupTitleFormat) -> String)? = null,
     autoFillSuggestedName: Boolean = false,
 ) {
@@ -933,7 +966,7 @@ fun GroupNameDialog(
         NameTextField(
             value = value,
             onValueChange = { value = it },
-            label = "Folder name",
+            label = stringResource(R.string.shared_folder_name),
             isLoading = isFillingName,
             onKeyboardDone = confirm,
         )
@@ -995,13 +1028,13 @@ fun MoveToFolderSheet(
     ) {
         ScanlySheetContent {
             Text(
-                text = "Move to folder",
+                text = stringResource(R.string.library_card_presentation_move_to_folder),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.SemiBold,
             )
 
             FolderPickerRow(
-                label = "No folder",
+                label = stringResource(R.string.shared_no_folder),
                 icon = Icons.Filled.FolderOff,
                 selected = currentGroupId == null,
                 onClick = { onSelectFolder(null) },
@@ -1027,7 +1060,7 @@ fun MoveToFolderSheet(
                 NameTextField(
                     value = newFolderName,
                     onValueChange = { newFolderName = it },
-                    label = "New folder name",
+                    label = stringResource(R.string.shared_new_folder_name),
                     isLoading = isFillingName,
                     onKeyboardDone = {
                         val name = newFolderName.trim()
@@ -1054,7 +1087,7 @@ fun MoveToFolderSheet(
                             suggestFormatIndex = 0
                         },
                         modifier = Modifier.weight(1f),
-                    ) { Text("Cancel") }
+                    ) { Text(stringResource(R.string.export_share_cancel)) }
                     Button(
                         onClick = {
                             val name = newFolderName.trim()
@@ -1062,11 +1095,11 @@ fun MoveToFolderSheet(
                         },
                         enabled = newFolderName.isNotBlank() && !isFillingName,
                         modifier = Modifier.weight(1f),
-                    ) { Text("Create & move") }
+                    ) { Text(stringResource(R.string.shared_create_move)) }
                 }
             } else {
                 FolderPickerRow(
-                    label = "Create new folder",
+                    label = stringResource(R.string.shared_create_new_folder),
                     icon = Icons.Filled.CreateNewFolder,
                     selected = false,
                     onClick = { creatingFolder = true },
@@ -1144,7 +1177,7 @@ fun FolderPickerRow(
                 if (selected) {
                     Icon(
                         imageVector = Icons.Filled.Check,
-                        contentDescription = "Selected",
+                        contentDescription = stringResource(R.string.shared_selected),
                         tint = selectedAccentColor,
                     )
                 }
@@ -1299,7 +1332,7 @@ fun DocumentCard(
     modifier: Modifier = Modifier,
     style: LibraryCardStyle = LibraryCardStyle.Auto,
     showRename: Boolean = onRename != null,
-    deleteContentDescription: String = "Delete",
+    deleteContentDescription: String = stringResource(R.string.library_card_presentation_delete),
     deleteIsRemoveFromFolder: Boolean = false,
     /** True when a section header above the card already names the day or month. */
     sectionedDate: Boolean = false,
@@ -1667,14 +1700,14 @@ private fun LibraryCardOverflowButton(
                     Box(contentAlignment = Alignment.Center) {
                         Icon(
                             imageVector = Icons.Filled.MoreVert,
-                            contentDescription = "More options",
+                            contentDescription = stringResource(R.string.shared_more_options),
                             tint = Color.White,
                         )
                     }
                 }
             }
         } else {
-            LibraryIconButton(onClick, Icons.Filled.MoreVert, "More options")
+            LibraryIconButton(onClick, Icons.Filled.MoreVert, stringResource(R.string.shared_more_options))
         }
         menu()
     }
@@ -1686,7 +1719,7 @@ private fun LibraryCardOverflowMenu(
     expanded: Boolean,
     onDismiss: () -> Unit,
     onAction: (LibraryCardSecondaryAction) -> Unit,
-    deleteContentDescription: String = "Delete",
+    deleteContentDescription: String = stringResource(R.string.library_card_presentation_delete),
 ) {
     DropdownMenu(
         expanded = expanded,
@@ -1895,13 +1928,13 @@ fun ScanlyImportProgressOverlay(
     }.coerceIn(0.04f, 0.98f)
 
     ScanlyBlockingProgressOverlay(
-        title = "Importing images",
-        subtitle = stageLabel.ifBlank { "Working on your photos…" },
+        title = stringResource(R.string.shared_importing_images),
+        subtitle = stageLabel.ifBlank { stringResource(R.string.shared_working_on_your_photos) },
         progress = fraction,
         progressLabel = if (safeTotal > 0 && safeCurrent > 0) {
-            "$safeCurrent of $safeTotal"
+            stringResource(R.string.common_current_of_total, safeCurrent, safeTotal)
         } else {
-            "Please wait"
+            stringResource(R.string.shared_please_wait)
         },
         modifier = modifier,
     )

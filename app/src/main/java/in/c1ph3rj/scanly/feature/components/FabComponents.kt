@@ -35,6 +35,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import `in`.c1ph3rj.scanly.R
+import androidx.compose.ui.res.stringResource
 
 @Composable
 private fun fabMenuElevation() = FloatingActionButtonDefaults.elevation(
@@ -98,7 +100,7 @@ fun ScanlyExpandableFabMenu(
     ) {
         AnimatedFabMenuItem(visible = expanded, index = 0) {
             ScanlyFabMenuAction(
-                text = "New Folder",
+                text = stringResource(R.string.fab_new_folder),
                 icon = Icons.Filled.CreateNewFolder,
                 onClick = {
                     onExpandedChange(false)
@@ -108,7 +110,7 @@ fun ScanlyExpandableFabMenu(
         }
         AnimatedFabMenuItem(visible = expanded, index = 1) {
             ScanlyFabMenuAction(
-                text = "New Document",
+                text = stringResource(R.string.fab_new_document),
                 icon = Icons.Filled.Description,
                 onClick = {
                     onExpandedChange(false)
@@ -127,7 +129,7 @@ fun ScanlyExpandableFabMenu(
             AnimatedFabIconRotation(expanded = expanded) {
                 Icon(
                     imageVector = Icons.Filled.Add,
-                    contentDescription = if (expanded) "Close menu" else "Open add menu",
+                    contentDescription = if (expanded) stringResource(R.string.fab_close_menu) else stringResource(R.string.fab_open_add_menu),
                 )
             }
         }

@@ -4,8 +4,8 @@ How end users interact with Scanly. This describes app behavior, not implementat
 
 ## First launch
 
-1. App opens to the **onboarding** intro screen, where Pip says hello.
-2. Tap **Get started**. If the camera is not allowed yet, a short step explains why Scanly needs it and asks for access. **Maybe later** always continues; the step is skipped when the camera is already allowed.
+1. App opens to three illustrated **onboarding** pages with Pip: **Capture**, **Find**, and **Share**. Swipe, tap **Continue**, or use the page dots. **Skip** takes you to the last page; Back returns to the previous one.
+2. Tap **Get started** on the last page. If the camera is not allowed yet, a bottom sheet offers **Enable camera** or **Not now**. Only Enable camera opens Android's permission prompt. Not now continues without camera access; closing the sheet returns to the last page. If camera access is blocked, the sheet offers **Open Settings**. The sheet is skipped when the camera is already allowed.
 3. You land on **Home**. On later launches, onboarding is skipped.
 
 While Home loads your library, shimmering placeholders stand in for folders and documents.
@@ -192,6 +192,7 @@ The main Settings list is a short hub. Open a row for the full controls.
 2. **Automatic model selection** is on by default: Scanly times Lite/Standard/High on this device and picks responsive live + accurate post models. Turn it off to choose **Live preview** and **Post-processing** models manually (Lite, Standard, High, Accurate).
 3. Keep **Physical-document gate** on to reject screens and non-documents before edge detection (recommended). Turn it off only for troubleshooting.
 4. Open **Model benchmark** to run your own photos through the gate and all corner models and review timings (local-only; nothing is uploaded).
+5. Under **Text recognition (experimental)**, choose **ML Kit** (default, recommended) or **Indra OCR**. Indra OCR is slower than ML Kit. If it can't read a page, ML Kit reads that page instead, and the page's text screen says so. If Indra stops unexpectedly twice, it is **paused** and a warning appears; select Indra OCR again to retry. **Re-read existing pages** appears under the selector when other pages were read with a different engine; tap it and confirm to re-read them in the background (switching engines offers it once). Text you edited is kept. When a page's text screen offers **Read again**, it re-reads that page with the selected engine.
 
 ### Storage usage
 

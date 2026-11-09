@@ -34,7 +34,7 @@ Open this folder in Android Studio (File → Open). Let Gradle sync. The only An
 2. Plug in a phone with USB debugging, or start an emulator (API 29+).
 3. Run `app` (green play). Entry point is `MainActivity`.
 
-First launch shows **onboarding**. Tap **Get started** to reach Home (Scan / Import / Folder). Later launches skip onboarding.
+First launch shows three **onboarding** pages. Swipe or tap **Continue**, or **Skip** to the last page, then tap **Get started**. If camera access is missing, an optional bottom sheet offers **Enable camera** or **Not now**, then continues to Home (Scan / Import / Folder). Later launches skip onboarding.
 
 ### Command line (install debug APK)
 
@@ -63,7 +63,7 @@ If `adb devices` is empty, Android Studio did not start a device, USB debugging 
 | Camera | Scan session / QR scan |
 | Internet | Optional update check only |
 
-Grant camera when you want to scan. Gallery import uses the system file picker (`OpenMultipleDocuments`, images only; no storage permission needed).
+Grant camera when you want to scan. Gallery import uses the system image picker (`GetMultipleContents`, `image/*`; no storage permission needed): the Android photo picker where available, whose "Browse…" lists Files, Drive, Gallery and Photos.
 
 ### Create an emulator if you have none
 

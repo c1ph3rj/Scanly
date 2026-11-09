@@ -45,11 +45,13 @@ class BookAwareCornerResolver @Inject constructor(
         selectedModel: DocumentCornerModel,
         readiness: QuadReadiness,
     ): CornerResolution {
-        val primaryRaw = runCatching { detector.detect(bitmap, selectedModel) }
+        // Saved pages must come out the same on every import; live frames favour speed.
+        val reproducible = readiness == QuadReadiness.STILL_PROCESS
+        val primaryRaw = runCatching { detector.detect(bitmap, selectedModel, reproducible) }
             .recoverCatching { error ->
                 // Fall back to Accurate (YOLO-pose) for maximum compatibility.
                 if (selectedModel == DocumentCornerModel.ACCURATE) throw error
-                detector.detect(bitmap, DocumentCornerModel.ACCURATE)
+                detector.detect(bitmap, DocumentCornerModel.ACCURATE, reproducible)
             }
             .getOrThrow()
         val primary = prepareCandidate(bitmap, primaryRaw, readiness)
@@ -61,7 +63,7 @@ class BookAwareCornerResolver @Inject constructor(
             return primary.toResolution()
         }
 
-        val highRaw = runCatching { detector.detect(bitmap, DocumentCornerModel.HIGH) }
+        val highRaw = runCatching { detector.detect(bitmap, DocumentCornerModel.HIGH, reproducible) }
             .getOrNull() ?: return primary.toResolution()
         val high = prepareCandidate(bitmap, highRaw, readiness)
         val combinedTiming = primaryRaw.timing + highRaw.timing

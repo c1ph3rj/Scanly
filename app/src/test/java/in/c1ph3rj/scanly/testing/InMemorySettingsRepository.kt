@@ -3,6 +3,7 @@ package `in`.c1ph3rj.scanly.testing
 import `in`.c1ph3rj.scanly.core.common.ScanlyResult
 import `in`.c1ph3rj.scanly.domain.model.DocumentCornerModel
 import `in`.c1ph3rj.scanly.domain.model.ExportDestination
+import `in`.c1ph3rj.scanly.domain.model.OcrEngine
 import `in`.c1ph3rj.scanly.domain.model.SettingsContent
 import `in`.c1ph3rj.scanly.domain.model.ThemeMode
 import `in`.c1ph3rj.scanly.domain.repository.SettingsRepository
@@ -21,6 +22,7 @@ class InMemorySettingsRepository : SettingsRepository {
     private val postProcessingModel = MutableStateFlow(DocumentCornerModel.fromStorage(null))
     private val automaticModelSelection = MutableStateFlow(true)
     private val documentGateEnabled = MutableStateFlow(true)
+    private val ocrEngine = MutableStateFlow(OcrEngine.ML_KIT)
 
     override fun observeThemeMode(): Flow<ThemeMode> = themeMode.asStateFlow()
 
@@ -103,4 +105,13 @@ class InMemorySettingsRepository : SettingsRepository {
         }
 
     override suspend fun getDocumentGateEnabled(): Boolean = documentGateEnabled.value
+
+    override fun observeOcrEngine(): Flow<OcrEngine> = ocrEngine.asStateFlow()
+
+    override suspend fun setOcrEngine(engine: OcrEngine): ScanlyResult<Unit> =
+        runLibraryResult("Could not set OCR engine.") {
+            ocrEngine.value = engine
+        }
+
+    override suspend fun getOcrEngine(): OcrEngine = ocrEngine.value
 }

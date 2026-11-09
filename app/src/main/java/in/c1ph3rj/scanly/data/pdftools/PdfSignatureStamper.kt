@@ -14,6 +14,8 @@ import `in`.c1ph3rj.scanly.domain.model.SignMark
 import `in`.c1ph3rj.scanly.domain.model.SignMarkStyle
 import `in`.c1ph3rj.scanly.domain.model.textContent
 import kotlin.math.hypot
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
 
 /**
  * Flattens sign marks into PDF page content. Positions come from [SignGeometry], so marks land
@@ -30,9 +32,9 @@ internal class PdfSignatureStamper(private val document: PDDocument) {
     fun validate(marks: List<SignMark>) {
         marks.forEach { mark ->
             val text = mark.textContent?.let(::normalizeWatermarkText) ?: return@forEach
-            require(text.isNotEmpty()) { "A text box is empty. Type something or delete it." }
+            require(text.isNotEmpty()) { appString(R.string.error_a_text_box_is_empty_type_something) }
             require(!needsComplexShaping(text)) {
-                "Text and dates support Latin, Greek and Cyrillic text, digits and symbols."
+                appString(R.string.pdf_signature_stamper_text_and_dates_support_latin)
             }
         }
     }
@@ -64,7 +66,7 @@ internal class PdfSignatureStamper(private val document: PDDocument) {
     private fun drawImage(stream: PDPageContentStream, mark: SignMark.Image, frame: SignGeometry.PageFrame) {
         val image = images.getOrPut(mark.imagePath to mark.ink) {
             val mask = SignInkBitmaps.decodeMask(mark.imagePath)
-                ?: throw IllegalArgumentException("A signature image is missing. Remove it and place it again.")
+                ?: throw IllegalArgumentException(appString(R.string.error_a_signature_image_is_missing_remove_it))
             val tinted = SignInkBitmaps.tinted(mask, mark.ink)
             mask.recycle()
             try {
@@ -86,7 +88,7 @@ internal class PdfSignatureStamper(private val document: PDDocument) {
         if (text.isEmpty()) return
         val font = fonts.getOrPut(text) {
             PdfFontResolver.resolve(document, text, PDType1Font.HELVETICA, PdfFontResolver.RegularCandidates)
-                ?: throw IllegalArgumentException("Some characters can't be drawn. Remove emoji or unusual symbols.")
+                ?: throw IllegalArgumentException(appString(R.string.error_some_characters_cant_be_drawn_remove_emoji))
         }
         val unit = SignGeometry.unitSquareToUser(mark.box, frame)
         val boxWidth = hypot(unit.a, unit.b)

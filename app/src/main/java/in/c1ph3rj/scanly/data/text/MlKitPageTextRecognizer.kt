@@ -10,6 +10,8 @@ import com.google.mlkit.vision.text.Text
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.TextRecognizer
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
+import `in`.c1ph3rj.scanly.domain.model.OcrEngine
+import `in`.c1ph3rj.scanly.domain.model.OcrFallbackReason
 import `in`.c1ph3rj.scanly.domain.model.PageTextBlock
 import `in`.c1ph3rj.scanly.domain.model.PageTextLine
 import `in`.c1ph3rj.scanly.domain.model.TextBox
@@ -22,12 +24,21 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
 
+/**
+ * One recognized page. [engine] is the engine that produced it; [requestedEngine] and
+ * [fallbackReason] differ from it only when the selected engine could not read the page.
+ */
 data class RecognizedPage(
     val text: String,
     val blocks: List<PageTextBlock>,
     val imageWidth: Int,
     val imageHeight: Int,
+    val engine: OcrEngine,
+    val requestedEngine: OcrEngine = engine,
+    val fallbackReason: OcrFallbackReason? = null,
 )
 
 /**
@@ -36,13 +47,13 @@ data class RecognizedPage(
  * peak memory to a single decoded page.
  */
 @Singleton
-class MlKitPageTextRecognizer @Inject constructor() {
+class MlKitPageTextRecognizer @Inject constructor() : PageTextRecognizer {
     private val mutex = Mutex()
     private var recognizer: TextRecognizer? = null
 
-    suspend fun recognize(imagePath: String): RecognizedPage = mutex.withLock {
+    override suspend fun recognize(imagePath: String): RecognizedPage = mutex.withLock {
         val bitmap = decodeForRecognition(imagePath)
-            ?: throw IllegalStateException("Page image could not be read.")
+            ?: throw IllegalStateException(appString(R.string.error_page_image_could_not_be_read))
         try {
             val rotation = exifRotation(imagePath)
             val result = client().process(InputImage.fromBitmap(bitmap, rotation)).await()
@@ -58,7 +69,7 @@ class MlKitPageTextRecognizer @Inject constructor() {
     }
 
     /** Frees the model's native memory once a batch is done; the next call recreates it. */
-    suspend fun release() = mutex.withLock {
+    override suspend fun release() = mutex.withLock {
         recognizer?.close()
         recognizer = null
     }
@@ -81,6 +92,7 @@ class MlKitPageTextRecognizer @Inject constructor() {
             blocks = blocks,
             imageWidth = width,
             imageHeight = height,
+            engine = OcrEngine.ML_KIT,
         )
     }
 

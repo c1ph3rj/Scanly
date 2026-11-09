@@ -1,6 +1,6 @@
 ﻿# Architecture Overview
 
-How Scanly is structured at **v1.0.18**. For navigation detail see [navigation.md](navigation.md). For screen inventory see [screens.md](screens.md).
+How Scanly is structured at **v1.0.20**. For navigation detail see [navigation.md](navigation.md). For screen inventory see [screens.md](screens.md).
 
 ## Layer diagram
 
@@ -38,6 +38,8 @@ How Scanly is structured at **v1.0.18**. For navigation detail see [navigation.m
 - `OnboardingViewModel` — first-run gate
 - `AppUpdateViewModel` — update checks and dialog state
 - `LaunchActionViewModel` — widget/shortcut actions (scan, import, QR, library)
+
+`AppLocaleProvider` supplies the selected language’s context, resources, configuration and layout direction to the existing composition. Language selection preserves the activity/window, navigation and scroll state. `AppLocales` uses the platform per-app locale on Android 13+ and a private preference on Android 10–12; MainActivity handles `locale|layoutDirection|screenLayout` changes without recreation. Application configuration callbacks refresh Compose resources, the non-Compose `AppStrings` cache and widget bindings.
 
 ## Package layout
 
@@ -159,7 +161,7 @@ DocumentDetailViewModel / GroupDetailViewModel
 ```text
 LibrarySearchViewModel
   → PageTextRepository → Room page_texts + FTS4 index
-    → TextIndexScheduler → WorkManager TextIndexWorker → bundled on-device ML Kit
+    → TextIndexScheduler → WorkManager TextIndexWorker → SelectablePageTextRecognizer (ML Kit, or experimental Indra OCR with ML Kit fallback)
 ```
 
 ### Document signing
@@ -192,6 +194,7 @@ FileProvider: `${applicationId}.fileprovider` for export/share URIs.
 ## Related docs
 
 - [navigation.md](navigation.md) — routes and user flows
+- [ocr-engines.md](ocr-engines.md) — page text engines, fallback ladder and crash guard
 - [screens.md](screens.md) — screen and ViewModel table
 - [../data/database.md](../data/database.md) — Room schema
 - [../processing/](../processing/) — capture and image processing

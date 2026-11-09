@@ -1,28 +1,36 @@
 package `in`.c1ph3rj.scanly.domain.model
 
+import androidx.annotation.StringRes
+import `in`.c1ph3rj.scanly.core.common.appString
+import `in`.c1ph3rj.scanly.R
+
 enum class GroupTitleFormat(
-    val label: String,
-    val shortLabel: String,
+    @param:StringRes val labelRes: Int,
+    @param:StringRes val shortLabelRes: Int,
     val isDefault: Boolean = false,
 ) {
     FolderDateTime(
-        label = "Folder with date and time",
-        shortLabel = "Folder · date & time",
+        labelRes = R.string.group_title_format_folder_with_date_and_time,
+        shortLabelRes = R.string.group_title_format_folder_date_time,
         isDefault = true,
     ),
     NewFolderDateTime(
-        label = "New folder with date and time",
-        shortLabel = "New folder · date & time",
+        labelRes = R.string.group_title_format_new_folder_with_date_and,
+        shortLabelRes = R.string.group_title_format_new_folder_date_time,
     ),
     FolderDate(
-        label = "Folder with date",
-        shortLabel = "Folder · date",
+        labelRes = R.string.group_title_format_folder_with_date,
+        shortLabelRes = R.string.group_title_format_folder_date,
     ),
     FolderIsoDate(
-        label = "Folder with ISO date",
-        shortLabel = "Folder · YYYY-MM-DD",
+        labelRes = R.string.group_title_format_folder_with_iso_date,
+        shortLabelRes = R.string.group_title_format_folder_yyyy_mm_dd,
     ),
     ;
+
+    val label: String get() = appString(labelRes)
+    val shortLabel: String get() = appString(shortLabelRes)
+
 
     fun next(): GroupTitleFormat {
         val all = entries

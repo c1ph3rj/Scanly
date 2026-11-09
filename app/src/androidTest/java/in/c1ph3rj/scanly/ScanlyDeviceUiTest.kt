@@ -1,13 +1,13 @@
 package `in`.c1ph3rj.scanly
 
 import android.Manifest
-import android.os.Build
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.isDisplayed
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.GrantPermissionRule
@@ -20,14 +20,7 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class ScanlyDeviceUiTest {
     @get:Rule(order = 0)
-    val grantPermissions: GrantPermissionRule = GrantPermissionRule.grant(
-        *buildList {
-            add(Manifest.permission.CAMERA)
-            if (Build.VERSION.SDK_INT >= 33) {
-                add(Manifest.permission.POST_NOTIFICATIONS)
-            }
-        }.toTypedArray(),
-    )
+    val grantPermissions: GrantPermissionRule = GrantPermissionRule.grant(Manifest.permission.CAMERA)
 
     @get:Rule(order = 1)
     val composeRule = createAndroidComposeRule<MainActivity>()
@@ -49,8 +42,9 @@ class ScanlyDeviceUiTest {
     @Test
     fun libraryDestinationShowsIdentifyingUi() {
         composeRule.openDestination(ScanlyTestTags.NAV_LIBRARY, ScanlyTestTags.LIBRARY_SCREEN)
-        composeRule.onNodeWithText("Folders").assertIsDisplayed()
-        composeRule.onNodeWithText("Last modified").assertIsDisplayed()
+        // The suite clears app data, so the library opens on its empty state.
+        composeRule.onNodeWithText("Your library is ready").assertIsDisplayed()
+        composeRule.onNodeWithText("New folder").assertIsDisplayed()
         composeRule.onNodeWithTag(ScanlyTestTags.LIBRARY_SEARCH).performClick()
         composeRule.awaitTag(ScanlyTestTags.SEARCH_SCREEN)
         composeRule.waitUntil(20_000) { composeRule.onNodeWithTag(ScanlyTestTags.SEARCH_INPUT).isDisplayed() }
@@ -65,7 +59,7 @@ class ScanlyDeviceUiTest {
         composeRule.openDestination(ScanlyTestTags.NAV_TOOLS, ScanlyTestTags.TOOLS_SCREEN)
         composeRule.onNodeWithText("PDF").assertIsDisplayed()
         composeRule.onNodeWithText("Read PDF").assertIsDisplayed()
-        composeRule.onNodeWithText("QR code").assertIsDisplayed()
+        composeRule.onNodeWithText("QR & barcode").performScrollTo().assertIsDisplayed()
     }
 
     @Test

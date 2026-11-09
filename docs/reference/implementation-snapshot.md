@@ -1,14 +1,14 @@
 ﻿# Implementation Snapshot
 
-One-page technical summary of Scanly **v1.0.18**. For detail see the full docs index at [../README.md](../README.md).
+One-page technical summary of Scanly **v1.0.20**. For detail see the full docs index at [../README.md](../README.md).
 
 ## Release
 
 | Field | Value |
 | --- | --- |
-| Version | `1.0.18` (code `18`) |
-| Room schema | `7` (`MIGRATION_5_6` page text; `MIGRATION_6_7` signatures and markups) |
-| Release date | `2026-10-20` |
+| Version | `1.0.20` (code `20`) |
+| Room schema | `12` (`MIGRATION_7_8`–`MIGRATION_9_10` Recently deleted; `MIGRATION_10_11` OCR engine provenance; `MIGRATION_11_12` derived search text) |
+| Release date | `2026-11-09` |
 | Min SDK | 29 |
 | Target SDK | 36 |
 | Module | `:app` only |

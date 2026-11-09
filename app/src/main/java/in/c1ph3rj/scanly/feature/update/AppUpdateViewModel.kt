@@ -25,6 +25,8 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
 
 data class AppUpdateUiState(
     val channel: AppUpdateChannel,
@@ -106,7 +108,7 @@ class AppUpdateViewModel @Inject constructor(
                         _events.emit(
                             AppUpdateEvent.ShowMessage(
                                 result.error.message.ifBlank {
-                                    "Could not check ${updateChannel.sourceLabel} for updates."
+                                    appString(R.string.app_update_could_not_check_for_updates, updateChannel.sourceLabel)
                                 },
                             ),
                         )
@@ -247,7 +249,7 @@ class AppUpdateViewModel @Inject constructor(
             trigger == AppUpdateCheckTrigger.Manual && !checkResult.updateAvailable -> {
                 _events.emit(
                     AppUpdateEvent.ShowMessage(
-                        "Scanly is up to date. You are on ${versionLabel(checkResult.installedVersionName)}.",
+                        appString(R.string.app_update_scanly_is_up_to_date, versionLabel(checkResult.installedVersionName)),
                     ),
                 )
             }

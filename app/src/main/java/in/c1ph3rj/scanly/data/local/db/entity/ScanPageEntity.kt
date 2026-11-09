@@ -45,4 +45,11 @@ data class ScanPageEntity(
     val processingState: String,
     val createdAtMillis: Long,
     val updatedAtMillis: Long,
+    /**
+     * Set when the page is in Recently deleted. A trashed page keeps its row (text, signatures,
+     * files) but moves to a negative [pageIndex] so live pages stay numbered 0..n-1.
+     */
+    val deletedAtMillis: Long? = null,
+    /** The page's index before it was deleted, so restore puts it back where it was. */
+    val deletedFromIndex: Int? = null,
 )

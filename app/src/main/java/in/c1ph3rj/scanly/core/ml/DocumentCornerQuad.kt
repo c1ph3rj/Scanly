@@ -107,5 +107,13 @@ data class DocumentCornerQuad(
         const val EXPECTED_POINT_COUNT = 4
         const val MIN_AREA = 0.01f
         const val MIN_POINT_DISTANCE = 0.02f
+
+        /** The whole image: for pages that are already flat, such as pages imported from a PDF. */
+        val FullFrame = DocumentCornerQuad(
+            topLeft = NormalizedPoint(0f, 0f),
+            topRight = NormalizedPoint(1f, 0f),
+            bottomRight = NormalizedPoint(1f, 1f),
+            bottomLeft = NormalizedPoint(0f, 1f),
+        )
     }
 }

@@ -25,13 +25,21 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.formatStampDate
+import `in`.c1ph3rj.scanly.core.common.appString
 
 /** Common stamps offered as one-tap presets in the editor. */
-val WatermarkPresets: List<String> = listOf("CONFIDENTIAL", "DRAFT", "COPY", "For KYC use only")
+val WatermarkPresets: List<String>
+    get() = listOf(
+        appString(R.string.pdf_watermark_preset_confidential),
+        appString(R.string.pdf_watermark_preset_draft),
+        appString(R.string.pdf_watermark_preset_copy),
+        appString(R.string.pdf_watermark_for_kyc_use_only),
+    )
 
 /** "14 Oct 2026" — appended to the stamp when "Add date" is on. */
-fun formatWatermarkDate(millis: Long = System.currentTimeMillis()): String =
-    SimpleDateFormat("d MMM yyyy", Locale.ENGLISH).format(Date(millis))
+fun formatWatermarkDate(millis: Long = System.currentTimeMillis()): String = formatStampDate(millis)
 
 /** The exact text that will be stamped: user text plus the optional date. */
 fun PdfToolUiState.watermarkLabel(dateText: String = formatWatermarkDate()): String {
@@ -45,10 +53,10 @@ fun PdfToolUiState.watermarkLabel(dateText: String = formatWatermarkDate()): Str
 
 /** "Tiled · diagonal · 24%" — the style summary on the Done screen. */
 fun PdfToolUiState.watermarkStyleSummary(): String {
-    val layout = if (watermarkLayout == WatermarkLayout.REPEATED) "Tiled" else "Single"
-    val angle = if (watermarkOrientation == WatermarkOrientation.DIAGONAL) "diagonal" else "horizontal"
-    val percent = (watermarkOpacity * 100f).toInt()
-    return "$layout · $angle · $percent% · ${watermarkColor.label.lowercase()}"
+    val layout = if (watermarkLayout == WatermarkLayout.REPEATED) appString(R.string.pdf_watermark_tiled) else appString(R.string.pdf_watermark_single)
+    val angle = if (watermarkOrientation == WatermarkOrientation.DIAGONAL) appString(R.string.pdf_watermark_diagonal) else appString(R.string.pdf_watermark_horizontal)
+    val percent = appString(R.string.pdf_watermark_opacity_percent, (watermarkOpacity * 100f).toInt())
+    return listOf(layout, angle, percent, watermarkColor.label).joinToString(" · ")
 }
 
 @HiltViewModel
@@ -143,16 +151,16 @@ class PdfWatermarkViewModel @Inject constructor(
     fun run() {
         val state = _uiState.value
         val source = state.sources.firstOrNull() ?: run {
-            emitMessage("Choose a PDF first.")
+            emitMessage(appString(R.string.pdf_compress_choose_a_pdf_first))
             return
         }
         val options = state.watermarkOptions()
         if (options.text.isBlank()) {
-            emitMessage("Enter watermark text.")
+            emitMessage(appString(R.string.pdf_watermark_enter_watermark_text))
             return
         }
         runProcess(
-            message = "Adding watermark…",
+            message = appString(R.string.pdf_watermark_adding_watermark),
             outputName = suggestPdfOutputName(source, outputSuffix(state.watermarkText)),
         ) {
             watermarkPdfUseCase(
@@ -251,7 +259,7 @@ class PdfWatermarkViewModel @Inject constructor(
     )
 
     private fun outputSuffix(text: String): String = when {
-        text.contains("kyc", ignoreCase = true) -> "KYC copy"
+        text.contains("kyc", ignoreCase = true) -> appString(R.string.pdf_watermark_kyc_copy)
         text.equals("draft", ignoreCase = true) -> "draft"
         text.equals("copy", ignoreCase = true) -> "copy"
         else -> "watermarked"

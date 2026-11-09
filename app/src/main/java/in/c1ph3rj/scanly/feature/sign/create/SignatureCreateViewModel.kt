@@ -12,6 +12,7 @@ import `in`.c1ph3rj.scanly.domain.model.ScanDocument
 import `in`.c1ph3rj.scanly.domain.model.ScanPage
 import `in`.c1ph3rj.scanly.domain.model.SignatureKind
 import `in`.c1ph3rj.scanly.domain.model.SignatureSource
+import `in`.c1ph3rj.scanly.domain.usecase.ClearSignatureUploadCacheUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ExtractSignatureInkUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveDocumentPagesUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveDocumentsUseCase
@@ -33,15 +34,21 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
+import androidx.annotation.StringRes
 
 /** How the new mark is produced: drawn on the pad or extracted from a picked image. */
 enum class SignatureCreateMode { Draw, Upload }
 
 /** Pen thickness for the drawing pad. [baseDp] is the nominal pen width in dp. */
-enum class SignaturePenWidth(val label: String, val baseDp: Float) {
-    FINE("Fine", 2.2f),
-    MEDIUM("Medium", 3.2f),
-    BOLD("Bold", 4.6f),
+enum class SignaturePenWidth(@param:StringRes val labelRes: Int, val baseDp: Float) {
+    FINE(R.string.signature_pen_width_fine, 2.2f),
+    MEDIUM(R.string.pdf_watermark_medium, 3.2f),
+    BOLD(R.string.signature_pen_width_bold, 4.6f),
+    ;
+
+    val label: String get() = appString(labelRes)
 }
 
 data class SignatureCreateUiState(
@@ -78,6 +85,7 @@ class SignatureCreateViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val saveSignatureUseCase: SaveSignatureUseCase,
     private val extractSignatureInkUseCase: ExtractSignatureInkUseCase,
+    private val clearSignatureUploadCacheUseCase: ClearSignatureUploadCacheUseCase,
     observeDocumentsUseCase: ObserveDocumentsUseCase,
     private val observeDocumentPagesUseCase: ObserveDocumentPagesUseCase,
 ) : ViewModel() {
@@ -238,9 +246,9 @@ class SignatureCreateViewModel @Inject constructor(
     }
 
     private fun missingMarkMessage(state: SignatureCreateUiState): String = when {
-        state.mode == SignatureCreateMode.Draw -> "Draw your signature first."
-        state.isExtracting -> "Still reading the photo. Try again in a moment."
-        else -> "Choose a photo of your signature first."
+        state.mode == SignatureCreateMode.Draw -> appString(R.string.signature_create_draw_your_signature_first)
+        state.isExtracting -> appString(R.string.signature_create_still_reading_the_photo_try)
+        else -> appString(R.string.signature_create_choose_a_photo_of_your)
     }
 
     private fun emit(event: SignatureCreateEvent) {
@@ -249,6 +257,8 @@ class SignatureCreateViewModel @Inject constructor(
 
     override fun onCleared() {
         extractJob?.cancel()
+        // The singleton repository would otherwise hold the decoded upload (~23 MB) until the next one.
+        clearSignatureUploadCacheUseCase()
         super.onCleared()
     }
 

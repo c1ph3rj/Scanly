@@ -19,12 +19,20 @@ class TextIndexWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted params: WorkerParameters,
     private val repository: PageTextRepository,
-    private val recognizer: MlKitPageTextRecognizer,
+    private val recognizer: PageTextRecognizer,
 ) : CoroutineWorker(context, params) {
 
     override suspend fun doWork(): Result {
         val startedAt = SystemClock.elapsedRealtime()
         try {
+            // Re-deriving search forms is quick and needs no OCR; do it before reading pages.
+            while (!isStopped) {
+                val derived = when (val result = repository.refreshDerivedText(DERIVE_BATCH_SIZE)) {
+                    is ScanlyResult.Success -> result.value
+                    is ScanlyResult.Failure -> return Result.retry()
+                }
+                if (derived == 0) break
+            }
             while (!isStopped) {
                 val read = when (val result = repository.recognizePendingPages(BATCH_SIZE)) {
                     is ScanlyResult.Success -> result.value
@@ -47,6 +55,7 @@ class TextIndexWorker @AssistedInject constructor(
         const val UNIQUE_NAME = "page-text-index"
         const val TAG = "page-text-index"
         private const val BATCH_SIZE = 4
+        private const val DERIVE_BATCH_SIZE = 200
         private const val MAX_RUN_MILLIS = 8 * 60 * 1_000L
     }
 }

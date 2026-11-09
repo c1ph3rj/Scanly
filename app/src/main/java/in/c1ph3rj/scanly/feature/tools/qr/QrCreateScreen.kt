@@ -7,7 +7,9 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
@@ -55,6 +57,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.platform.testTag
 import `in`.c1ph3rj.scanly.core.ui.ScanlyTestTags
+import `in`.c1ph3rj.scanly.core.ui.WindowWidthClass
+import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import `in`.c1ph3rj.scanly.domain.model.QrCreateType
 import `in`.c1ph3rj.scanly.domain.model.WifiSecurity
 import `in`.c1ph3rj.scanly.feature.tools.ToolBottomBar
@@ -66,6 +70,8 @@ import `in`.c1ph3rj.scanly.feature.tools.ToolPrimaryButton
 import `in`.c1ph3rj.scanly.feature.tools.ToolSecondaryButton
 import `in`.c1ph3rj.scanly.feature.tools.ToolSegmented
 import `in`.c1ph3rj.scanly.feature.tools.ToolTextField
+import `in`.c1ph3rj.scanly.R
+import androidx.compose.ui.res.stringResource
 
 private val PaperInk = Color(0xFF59636A)
 
@@ -86,6 +92,8 @@ fun QrCreateScreen(
 ) {
     val payload = remember(draft) { qrCreatePayload(draft) }
     val canExport = payload != null && !isSaving
+    val window = rememberWindowSizeInfo()
+    val twoPane = window.isLandscape && window.widthClass != WindowWidthClass.Compact
 
     Column(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
         Row(
@@ -98,18 +106,18 @@ fun QrCreateScreen(
             IconButton(onClick = onBack, modifier = Modifier.size(48.dp)) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Back",
+                    contentDescription = stringResource(R.string.zoomable_image_back),
                 )
             }
             Text(
-                text = "Create QR",
+                text = stringResource(R.string.qr_create_create_qr),
                 style = MaterialTheme.typography.titleLarge.copy(fontSize = 20.sp),
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.weight(1f),
             )
             QrPillButton(
-                label = "Scan",
+                label = stringResource(R.string.home_scan),
                 icon = Icons.Outlined.CameraAlt,
                 onClick = onSelectScan,
                 dark = false,
@@ -118,6 +126,8 @@ fun QrCreateScreen(
 
         Row(
             modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .widthIn(max = if (twoPane) TwoPaneMaxWidth else 640.dp)
                 .fillMaxWidth()
                 .horizontalScroll(rememberScrollState())
                 .selectableGroup()
@@ -134,90 +144,127 @@ fun QrCreateScreen(
             }
         }
 
+        val formFields: @Composable ColumnScope.() -> Unit = {
+            QrCreateFields(draft = draft, onUpdate = onUpdate)
+
+            ToolFieldLabel(stringResource(R.string.qr_create_caption_under_the_code_optional), muted = true)
+            ToolTextField(
+                value = draft.caption,
+                onValueChange = { value ->
+                    if (value.length <= QR_CREATE_CAPTION_MAX_LENGTH) {
+                        onUpdate { it.copy(caption = value) }
+                    }
+                },
+                placeholder = stringResource(R.string.qr_create_shown_under_the_code),
+                supportingText = {
+                    Text(
+                        text = "${draft.caption.length} / $QR_CREATE_CAPTION_MAX_LENGTH",
+                        style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.End,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                },
+            )
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                ToolFieldLabel(stringResource(R.string.pdf_watermark_colour), muted = true, modifier = Modifier.weight(1f))
+                Row(
+                    modifier = Modifier.selectableGroup(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    QrInkColor.entries.forEach { ink ->
+                        ToolColorSwatch(
+                            color = Color(ink.argb),
+                            name = ink.label,
+                            selected = ink == draft.ink,
+                            onClick = { onUpdate { it.copy(ink = ink) } },
+                        )
+                    }
+                }
+            }
+            ToolNote(text = stringResource(R.string.qr_create_only_dark_colours_so_every))
+        }
+        val previewCard: @Composable (Modifier) -> Unit = { previewModifier ->
+            QrPreviewPaper(
+                preview = preview,
+                hasPayload = payload != null,
+                ink = Color(draft.ink.argb),
+                caption = draft.caption.trim(),
+                modifier = previewModifier,
+            )
+        }
         Box(
             modifier = Modifier.weight(1f).fillMaxWidth(),
             contentAlignment = Alignment.TopCenter,
         ) {
-            Column(
-                modifier = Modifier
-                    .widthIn(max = 640.dp)
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
-                    .padding(horizontal = 20.dp, vertical = 8.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-            ) {
-                QrPreviewPaper(
-                    preview = preview,
-                    hasPayload = payload != null,
-                    ink = Color(draft.ink.argb),
-                    caption = draft.caption.trim(),
-                    modifier = Modifier.align(Alignment.CenterHorizontally),
-                )
-
-                QrCreateFields(draft = draft, onUpdate = onUpdate)
-
-                ToolFieldLabel("Caption under the code · optional", muted = true)
-                ToolTextField(
-                    value = draft.caption,
-                    onValueChange = { value ->
-                        if (value.length <= QR_CREATE_CAPTION_MAX_LENGTH) {
-                            onUpdate { it.copy(caption = value) }
-                        }
-                    },
-                    placeholder = "Shown under the code",
-                    supportingText = {
-                        Text(
-                            text = "${draft.caption.length} / $QR_CREATE_CAPTION_MAX_LENGTH",
-                            style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            textAlign = TextAlign.End,
-                            modifier = Modifier.fillMaxWidth(),
-                        )
-                    },
-                )
-
+            if (twoPane) {
+                // Wide landscape: the code stays in view beside the fields while you type.
                 Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    modifier = Modifier
+                        .widthIn(max = TwoPaneMaxWidth)
+                        .fillMaxSize()
+                        .padding(horizontal = 20.dp),
+                    horizontalArrangement = Arrangement.spacedBy(28.dp),
                 ) {
-                    ToolFieldLabel("Colour", muted = true, modifier = Modifier.weight(1f))
-                    Row(
-                        modifier = Modifier.selectableGroup(),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    Box(
+                        modifier = Modifier
+                            .weight(0.42f)
+                            .fillMaxHeight()
+                            .verticalScroll(rememberScrollState())
+                            .padding(vertical = 8.dp),
+                        contentAlignment = Alignment.TopCenter,
                     ) {
-                        QrInkColor.entries.forEach { ink ->
-                            ToolColorSwatch(
-                                color = Color(ink.argb),
-                                name = ink.label,
-                                selected = ink == draft.ink,
-                                onClick = { onUpdate { it.copy(ink = ink) } },
-                            )
-                        }
+                        previewCard(Modifier)
                     }
+                    Column(
+                        modifier = Modifier
+                            .weight(0.58f)
+                            .fillMaxHeight()
+                            .verticalScroll(rememberScrollState())
+                            .padding(vertical = 8.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                        content = formFields,
+                    )
                 }
-                ToolNote(text = "Only dark colours, so every camera can read the code.")
+            } else {
+                Column(
+                    modifier = Modifier
+                        .widthIn(max = 640.dp)
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
+                        .padding(horizontal = 20.dp, vertical = 8.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                ) {
+                    previewCard(Modifier.align(Alignment.CenterHorizontally))
+                    formFields()
+                }
             }
         }
 
         ToolBottomBar {
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                 ToolSecondaryButton(
-                    text = "Save image",
+                    text = stringResource(R.string.qr_create_save_image),
                     onClick = onSave,
                     enabled = canExport,
                     icon = Icons.Outlined.FileDownload,
                     modifier = Modifier.weight(1f),
                 )
                 ToolPrimaryButton(
-                    text = "Share",
+                    text = stringResource(R.string.document_detail_share_2),
                     onClick = onShare,
                     enabled = canExport,
                     icon = Icons.Outlined.Share,
                     modifier = Modifier.weight(1f),
                 )
             }
-            Text(
-                text = "Saved to QR history · PNG, 1024 px",
+            // Supporting line only where there is height for it.
+            if (!window.isHeightConstrained) Text(
+                text = stringResource(R.string.qr_create_saved_to_qr_history_png),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center,
@@ -226,6 +273,8 @@ fun QrCreateScreen(
         }
     }
 }
+
+private val TwoPaneMaxWidth = 1000.dp
 
 /** White paper card: the code (or a placeholder) with the caption printed in the ink colour. */
 @Composable
@@ -253,7 +302,7 @@ private fun QrPreviewPaper(
             if (preview != null && !preview.isRecycled) {
                 Image(
                     bitmap = preview.asImageBitmap(),
-                    contentDescription = "QR code preview",
+                    contentDescription = stringResource(R.string.qr_create_qr_code_preview),
                     modifier = Modifier.fillMaxSize(),
                 )
             } else {
@@ -307,7 +356,7 @@ private fun QrCreateFields(
 @Composable
 private fun QrLinkFields(value: String, onValueChange: (String) -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        ToolFieldLabel("Web address", muted = true)
+        ToolFieldLabel(stringResource(R.string.qr_create_web_address), muted = true)
         ToolTextField(
             value = value,
             onValueChange = onValueChange,
@@ -321,16 +370,16 @@ private fun QrLinkFields(value: String, onValueChange: (String) -> Unit) {
 @Composable
 private fun QrTextFields(value: String, onValueChange: (String) -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        ToolFieldLabel("Text", muted = true)
+        ToolFieldLabel(stringResource(R.string.qr_payload_text), muted = true)
         ToolTextField(
             value = value,
             onValueChange = onValueChange,
-            placeholder = "Anything up to $QR_CREATE_TEXT_MAX_LENGTH characters",
+            placeholder = stringResource(R.string.qr_create_anything_up_to_characters, QR_CREATE_TEXT_MAX_LENGTH),
             singleLine = false,
             minLines = 3,
             supportingText = {
                 Text(
-                    text = "${value.length} / $QR_CREATE_TEXT_MAX_LENGTH characters",
+                    text = stringResource(R.string.qr_create_characters, value.length, QR_CREATE_TEXT_MAX_LENGTH),
                     style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.End,
@@ -349,20 +398,20 @@ private fun QrWifiFields(
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            ToolFieldLabel("Network name", muted = true)
+            ToolFieldLabel(stringResource(R.string.qr_create_network_name), muted = true)
             ToolTextField(
                 value = draft.wifiSsid,
                 onValueChange = { value -> onUpdate { it.copy(wifiSsid = value) } },
-                placeholder = "Network name",
+                placeholder = stringResource(R.string.qr_create_network_name),
             )
         }
         if (draft.wifiSecurity != WifiSecurity.OPEN) {
             Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                ToolFieldLabel("Password", muted = true)
+                ToolFieldLabel(stringResource(R.string.pdf_reader_password), muted = true)
                 ToolTextField(
                     value = draft.wifiPassword,
                     onValueChange = { value -> onUpdate { it.copy(wifiPassword = value) } },
-                    placeholder = "Network password",
+                    placeholder = stringResource(R.string.qr_create_network_password),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                     visualTransformation = if (passwordVisible) {
                         VisualTransformation.None
@@ -380,7 +429,7 @@ private fun QrWifiFields(
                                 } else {
                                     Icons.Outlined.Visibility
                                 },
-                                contentDescription = if (passwordVisible) "Hide password" else "Show password",
+                                contentDescription = if (passwordVisible) stringResource(R.string.export_share_hide_password) else stringResource(R.string.export_share_show_password),
                             )
                         }
                     },
@@ -388,7 +437,7 @@ private fun QrWifiFields(
             }
         }
         Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            ToolFieldLabel("Security", muted = true)
+            ToolFieldLabel(stringResource(R.string.qr_create_security), muted = true)
             ToolSegmented(
                 options = WifiSecurity.entries,
                 selected = draft.wifiSecurity,
@@ -407,37 +456,37 @@ private fun QrUpiFields(
     val amountValid = qrUpiAmountIsValid(draft.upiAmount)
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            ToolFieldLabel("UPI ID", muted = true)
+            ToolFieldLabel(stringResource(R.string.qr_create_upi_id), muted = true)
             ToolTextField(
                 value = draft.upiAddress,
                 onValueChange = { value -> onUpdate { it.copy(upiAddress = value) } },
-                placeholder = "name@bank",
+                placeholder = stringResource(R.string.qr_create_name_bank),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
             )
         }
         Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                ToolFieldLabel("Payee name", muted = true)
+                ToolFieldLabel(stringResource(R.string.qr_create_payee_name), muted = true)
                 ToolTextField(
                     value = draft.upiPayee,
                     onValueChange = { value -> onUpdate { it.copy(upiPayee = value) } },
-                    placeholder = "Shop name",
+                    placeholder = stringResource(R.string.qr_create_shop_name),
                 )
             }
             Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                ToolFieldLabel("Amount · optional", muted = true)
+                ToolFieldLabel(stringResource(R.string.qr_create_amount_optional), muted = true)
                 ToolTextField(
                     value = draft.upiAmount,
                     onValueChange = { value -> onUpdate { it.copy(upiAmount = value) } },
-                    placeholder = "₹ Any",
+                    placeholder = stringResource(R.string.qr_create_any),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                     isError = !amountValid,
-                    supportingText = if (amountValid) null else ({ Text("Enter an amount above zero") }),
+                    supportingText = if (amountValid) null else ({ Text(stringResource(R.string.qr_create_enter_an_amount_above_zero)) }),
                 )
             }
         }
         Text(
-            text = "Leave the amount empty so customers can enter what they owe.",
+            text = stringResource(R.string.qr_create_leave_the_amount_empty_so),
             style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.5.sp, lineHeight = 17.sp),
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
@@ -451,29 +500,29 @@ private fun QrContactFields(
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            ToolFieldLabel("Name", muted = true)
+            ToolFieldLabel(stringResource(R.string.qr_create_name), muted = true)
             ToolTextField(
                 value = draft.contactName,
                 onValueChange = { value -> onUpdate { it.copy(contactName = value) } },
-                placeholder = "Full name",
+                placeholder = stringResource(R.string.qr_create_full_name),
             )
         }
         Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                ToolFieldLabel("Phone", muted = true)
+                ToolFieldLabel(stringResource(R.string.qr_payload_phone), muted = true)
                 ToolTextField(
                     value = draft.contactPhone,
                     onValueChange = { value -> onUpdate { it.copy(contactPhone = value) } },
-                    placeholder = "Phone number",
+                    placeholder = stringResource(R.string.qr_payload_phone_number),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                 )
             }
             Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                ToolFieldLabel("Email", muted = true)
+                ToolFieldLabel(stringResource(R.string.qr_payload_email), muted = true)
                 ToolTextField(
                     value = draft.contactEmail,
                     onValueChange = { value -> onUpdate { it.copy(contactEmail = value) } },
-                    placeholder = "Email",
+                    placeholder = stringResource(R.string.qr_payload_email),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 )
             }
