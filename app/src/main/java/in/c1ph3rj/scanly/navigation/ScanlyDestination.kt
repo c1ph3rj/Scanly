@@ -193,6 +193,10 @@ object SettingsWidgetsDestination {
     const val route = "settings/widgets"
 }
 
+object SettingsFeedbackDestination {
+    const val route = "settings/feedback"
+}
+
 object SettingsAboutDestination {
     const val route = "settings/about"
 }

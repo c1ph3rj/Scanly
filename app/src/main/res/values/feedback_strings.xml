@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feedback_title">Send feedback</string>
+    <string name="feedback_summary">Suggestions, issues, or anything else</string>
+    <string name="feedback_description">Share your thoughts with the developer by email.</string>
+    <string name="feedback_type">Type</string>
+    <string name="feedback_suggestion">Suggestion</string>
+    <string name="feedback_issue">Issue</string>
+    <string name="feedback_other">Other</string>
+    <string name="feedback_subject">Subject (optional)</string>
+    <string name="feedback_message">Message</string>
+    <string name="feedback_character_count">%1$d / %2$d characters</string>
+    <string name="feedback_email_note">Review and send in your email app. App and Android versions are included.</string>
+    <string name="feedback_send">Continue to email</string>
+    <string name="feedback_copy">Copy text</string>
+    <string name="feedback_no_email">No email app available. Copy the draft and send it from your webmail.</string>
+    <string name="feedback_copied">Draft copied</string>
+    <string name="feedback_app_details">Scanly %1$s (%2$d) · Android %3$s</string>
+    <string name="rating_unavailable">Could not open Google Play or a browser. Please try again.</string>
+    <string name="feedback_attachments_title">Images (optional)</string>
+    <string name="feedback_attachment_limits">Up to %1$d images. Each is optimized to %2$s or less (%3$s total).</string>
+    <string name="feedback_add_images">Add images</string>
+    <string name="feedback_preparing_images">Preparing images…</string>
+    <string name="feedback_attachment_summary">%1$d of %2$d images · %3$s total</string>
+    <string name="feedback_image_label">Image %1$d</string>
+    <string name="feedback_remove_image">Remove image %1$d</string>
+    <string name="feedback_image_limit">You can attach up to %1$d images.</string>
+    <string name="feedback_image_failed">Some images could not be added. Use readable images up to 40 MB.</string>
+    <string name="feedback_missing_images">An image is no longer available. Remove it and add it again.</string>
+    <string name="feedback_copy_images_note">Text copied. Attach images separately in your email app.</string>
+    <string name="feedback_close_preview">Close preview</string>
+    <string name="feedback_sent_title">Did you send your feedback?</string>
+    <string name="feedback_sent_message">If you sent the email, we can clear this form and close it. Otherwise, keep your draft to continue later.</string>
+    <string name="feedback_sent_yes">Yes, sent</string>
+    <string name="feedback_sent_not_yet">Not yet</string>
+</resources>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feedback_title">ಅಭಿಪ್ರಾಯ ಕಳುಹಿಸಿ</string>
+    <string name="feedback_summary">ಸಲಹೆಗಳು, ಸಮಸ್ಯೆಗಳು ಅಥವಾ ಇನ್ನೇನಾದರೂ</string>
+    <string name="feedback_description">ಇಮೇಲ್ ಮೂಲಕ ಡೆವಲಪರ್‌ಗೆ ನಿಮ್ಮ ಅಭಿಪ್ರಾಯ ತಿಳಿಸಿ.</string>
+    <string name="feedback_type">ವಿಧ</string>
+    <string name="feedback_suggestion">ಸಲಹೆ</string>
+    <string name="feedback_issue">ಸಮಸ್ಯೆ</string>
+    <string name="feedback_other">ಇತರೆ</string>
+    <string name="feedback_subject">ವಿಷಯ (ಐಚ್ಛಿಕ)</string>
+    <string name="feedback_message">ಸಂದೇಶ</string>
+    <string name="feedback_character_count">%1$d / %2$d ಅಕ್ಷರಗಳು</string>
+    <string name="feedback_email_note">ಇಮೇಲ್ ಆ್ಯಪ್‌ನಲ್ಲಿ ಪರಿಶೀಲಿಸಿ ಕಳುಹಿಸಿ. ಆ್ಯಪ್ ಮತ್ತು Android ಆವೃತ್ತಿಗಳು ಸೇರಿವೆ.</string>
+    <string name="feedback_send">ಇಮೇಲ್‌ಗೆ ಮುಂದುವರಿಸಿ</string>
+    <string name="feedback_copy">ಪಠ್ಯ ನಕಲಿಸಿ</string>
+    <string name="feedback_no_email">ಇಮೇಲ್ ಆ್ಯಪ್ ಇಲ್ಲ. ಕರಡನ್ನು ನಕಲಿಸಿ ವೆಬ್‌ಮೇಲ್‌ನಿಂದ ಕಳುಹಿಸಿ.</string>
+    <string name="feedback_copied">ಕರಡು ನಕಲಿಸಲಾಗಿದೆ</string>
+    <string name="feedback_app_details">Scanly %1$s (%2$d) · Android %3$s</string>
+    <string name="rating_unavailable">Google Play ಅಥವಾ ಬ್ರೌಸರ್ ತೆರೆಯಲಾಗಲಿಲ್ಲ. ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.</string>
+    <string name="feedback_attachments_title">ಚಿತ್ರಗಳು (ಐಚ್ಛಿಕ)</string>
+    <string name="feedback_attachment_limits">ಗರಿಷ್ಠ %1$d ಚಿತ್ರಗಳು. ಪ್ರತಿಯೊಂದನ್ನು %2$s ಅಥವಾ ಕಡಿಮೆಗೆ ಸಿದ್ಧಪಡಿಸಲಾಗುತ್ತದೆ (ಒಟ್ಟು %3$s).</string>
+    <string name="feedback_add_images">ಚಿತ್ರಗಳನ್ನು ಸೇರಿಸಿ</string>
+    <string name="feedback_preparing_images">ಚಿತ್ರಗಳು ಸಿದ್ಧವಾಗುತ್ತಿವೆ…</string>
+    <string name="feedback_attachment_summary">%1$d / %2$d ಚಿತ್ರಗಳು · ಒಟ್ಟು %3$s</string>
+    <string name="feedback_image_label">ಚಿತ್ರ %1$d</string>
+    <string name="feedback_remove_image">ಚಿತ್ರ %1$d ತೆಗೆದುಹಾಕಿ</string>
+    <string name="feedback_image_limit">ಗರಿಷ್ಠ %1$d ಚಿತ್ರಗಳನ್ನು ಲಗತ್ತಿಸಬಹುದು.</string>
+    <string name="feedback_image_failed">ಕೆಲವು ಚಿತ್ರಗಳನ್ನು ಸೇರಿಸಲಾಗಲಿಲ್ಲ. 40 MB ವರೆಗಿನ ಓದಬಹುದಾದ ಚಿತ್ರಗಳನ್ನು ಬಳಸಿ.</string>
+    <string name="feedback_missing_images">ಒಂದು ಚಿತ್ರ ಈಗ ಲಭ್ಯವಿಲ್ಲ. ತೆಗೆದುಹಾಕಿ ಮತ್ತೆ ಸೇರಿಸಿ.</string>
+    <string name="feedback_copy_images_note">ಪಠ್ಯ ನಕಲಿಸಲಾಗಿದೆ. ಇಮೇಲ್ ಆ್ಯಪ್‌ನಲ್ಲಿ ಚಿತ್ರಗಳನ್ನು ಪ್ರತ್ಯೇಕವಾಗಿ ಲಗತ್ತಿಸಿ.</string>
+    <string name="feedback_close_preview">ಮುನ್ನೋಟ ಮುಚ್ಚಿ</string>
+    <string name="feedback_sent_title">ನಿಮ್ಮ ಅಭಿಪ್ರಾಯ ಕಳುಹಿಸಿದ್ದೀರಾ?</string>
+    <string name="feedback_sent_message">ಇಮೇಲ್ ಕಳುಹಿಸಿದ್ದರೆ, ಈ ಫಾರ್ಮ್ ಅನ್ನು ಖಾಲಿ ಮಾಡಿ ಮುಚ್ಚಬಹುದು. ಇಲ್ಲದಿದ್ದರೆ ನಂತರ ಮುಂದುವರಿಸಲು ಕರಡನ್ನು ಉಳಿಸಿಕೊಳ್ಳಿ.</string>
+    <string name="feedback_sent_yes">ಹೌದು, ಕಳುಹಿಸಿದ್ದೇನೆ</string>
+    <string name="feedback_sent_not_yet">ಇನ್ನೂ ಇಲ್ಲ</string>
+</resources>

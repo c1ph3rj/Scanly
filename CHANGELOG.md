@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Added
+
+- **Feedback email return** asks whether you sent the email only after a successful email-flow launch and return. **Yes, sent** clears and closes the form; **Not yet** or dismissing the question keeps the draft. Scanly does not automatically mark feedback as sent or detect email delivery.
+- **Send feedback** in Settings (also About → Contact support): choose Suggestion, Issue or Other, add a subject and message, and optionally attach up to **5 images**. Images are prepared on the phone at **1 MB each / 5 MB total**, using lossless PNG when it fits and resized JPEG copies otherwise. Originals are preserved. Previews, removal, prepared sizes, progress and error recovery sit in a cleaner form with a fixed **Continue to email** action. The email draft goes to `info@c1ph3rj.in` and includes the app and Android version. Text and prepared attachments survive rotation; **Copy text** is available for webmail. No location metadata is copied into prepared images.
+
+### Fixed
+
+- **Feedback image picker** now opens Android’s photo picker with only the remaining attachment slots available, switching to single-image selection when one slot remains. Scanly also enforces the five-image cap if a device’s fallback picker cannot limit selection.
+- **Rate Scanly** now opens Google Play with a reviews-section hint and falls back to the browser, rather than using the quota-limited in-app review dialog from an explicit button. A failed hand-off shows an error and does not mark the app as rated. Opening the store no longer shows a message implying a review was submitted. Google Play controls the final screen and whether the account can write a review.
+
 ## [1.0.20] - 2026-11-09
 
 ### Added

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feedback_title">Kirim masukan</string>
+    <string name="feedback_summary">Saran, masalah, atau hal lainnya</string>
+    <string name="feedback_description">Bagikan pendapat Anda kepada pengembang melalui email.</string>
+    <string name="feedback_type">Jenis</string>
+    <string name="feedback_suggestion">Saran</string>
+    <string name="feedback_issue">Masalah</string>
+    <string name="feedback_other">Lainnya</string>
+    <string name="feedback_subject">Subjek (opsional)</string>
+    <string name="feedback_message">Pesan</string>
+    <string name="feedback_character_count">%1$d / %2$d karakter</string>
+    <string name="feedback_email_note">Tinjau dan kirim di aplikasi email. Versi aplikasi dan Android disertakan.</string>
+    <string name="feedback_send">Lanjut ke email</string>
+    <string name="feedback_copy">Salin teks</string>
+    <string name="feedback_no_email">Tidak ada aplikasi email. Salin draf dan kirim melalui email web Anda.</string>
+    <string name="feedback_copied">Draf disalin</string>
+    <string name="feedback_app_details">Scanly %1$s (%2$d) · Android %3$s</string>
+    <string name="rating_unavailable">Tidak dapat membuka Google Play atau browser. Coba lagi.</string>
+    <string name="feedback_attachments_title">Gambar (opsional)</string>
+    <string name="feedback_attachment_limits">Maksimal %1$d gambar. Tiap gambar dioptimalkan hingga %2$s atau kurang (total %3$s).</string>
+    <string name="feedback_add_images">Tambah gambar</string>
+    <string name="feedback_preparing_images">Menyiapkan gambar…</string>
+    <string name="feedback_attachment_summary">%1$d dari %2$d gambar · total %3$s</string>
+    <string name="feedback_image_label">Gambar %1$d</string>
+    <string name="feedback_remove_image">Hapus gambar %1$d</string>
+    <string name="feedback_image_limit">Anda dapat melampirkan hingga %1$d gambar.</string>
+    <string name="feedback_image_failed">Beberapa gambar tidak dapat ditambahkan. Gunakan gambar yang terbaca hingga 40 MB.</string>
+    <string name="feedback_missing_images">Gambar tidak lagi tersedia. Hapus dan tambahkan lagi.</string>
+    <string name="feedback_copy_images_note">Teks disalin. Lampirkan gambar secara terpisah di aplikasi email.</string>
+    <string name="feedback_close_preview">Tutup pratinjau</string>
+    <string name="feedback_sent_title">Sudah mengirim masukan Anda?</string>
+    <string name="feedback_sent_message">Jika email sudah dikirim, formulir ini dapat dikosongkan dan ditutup. Jika belum, simpan draf untuk melanjutkan nanti.</string>
+    <string name="feedback_sent_yes">Ya, sudah</string>
+    <string name="feedback_sent_not_yet">Belum</string>
+</resources>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feedback_title">अभिप्राय पाठवा</string>
+    <string name="feedback_summary">सूचना, समस्या किंवा इतर काहीही</string>
+    <string name="feedback_description">विकसकाला ईमेलद्वारे तुमचे मत कळवा.</string>
+    <string name="feedback_type">प्रकार</string>
+    <string name="feedback_suggestion">सूचना</string>
+    <string name="feedback_issue">समस्या</string>
+    <string name="feedback_other">इतर</string>
+    <string name="feedback_subject">विषय (ऐच्छिक)</string>
+    <string name="feedback_message">संदेश</string>
+    <string name="feedback_character_count">%1$d / %2$d अक्षरे</string>
+    <string name="feedback_email_note">ईमेल अॅपमध्ये तपासून पाठवा. अॅप आणि Android च्या आवृत्त्या समाविष्ट आहेत.</string>
+    <string name="feedback_send">ईमेलमध्ये पुढे जा</string>
+    <string name="feedback_copy">मजकूर कॉपी करा</string>
+    <string name="feedback_no_email">ईमेल अॅप उपलब्ध नाही. मसुदा कॉपी करून वेबमेलमधून पाठवा.</string>
+    <string name="feedback_copied">मसुदा कॉपी झाला</string>
+    <string name="feedback_app_details">Scanly %1$s (%2$d) · Android %3$s</string>
+    <string name="rating_unavailable">Google Play किंवा ब्राउझर उघडता आला नाही. पुन्हा प्रयत्न करा.</string>
+    <string name="feedback_attachments_title">प्रतिमा (ऐच्छिक)</string>
+    <string name="feedback_attachment_limits">जास्तीत जास्त %1$d प्रतिमा. प्रत्येक %2$s किंवा कमी आकाराची केली जाते (एकूण %3$s).</string>
+    <string name="feedback_add_images">प्रतिमा जोडा</string>
+    <string name="feedback_preparing_images">प्रतिमा तयार होत आहेत…</string>
+    <string name="feedback_attachment_summary">%1$d / %2$d प्रतिमा · एकूण %3$s</string>
+    <string name="feedback_image_label">प्रतिमा %1$d</string>
+    <string name="feedback_remove_image">प्रतिमा %1$d काढा</string>
+    <string name="feedback_image_limit">जास्तीत जास्त %1$d प्रतिमा जोडू शकता.</string>
+    <string name="feedback_image_failed">काही प्रतिमा जोडता आल्या नाहीत. 40 MB पर्यंतच्या वाचता येणाऱ्या प्रतिमा वापरा.</string>
+    <string name="feedback_missing_images">एक प्रतिमा आता उपलब्ध नाही. ती काढून पुन्हा जोडा.</string>
+    <string name="feedback_copy_images_note">मजकूर कॉपी झाला. ईमेल अॅपमध्ये प्रतिमा स्वतंत्रपणे जोडा.</string>
+    <string name="feedback_close_preview">पूर्वावलोकन बंद करा</string>
+    <string name="feedback_sent_title">तुमचा अभिप्राय पाठवला का?</string>
+    <string name="feedback_sent_message">ईमेल पाठवला असेल तर आपण हा फॉर्म रिकामा करून बंद करू शकतो. नसेल तर नंतर पुढे सुरू ठेवण्यासाठी मसुदा जतन करा.</string>
+    <string name="feedback_sent_yes">हो, पाठवला</string>
+    <string name="feedback_sent_not_yet">अजून नाही</string>
+</resources>

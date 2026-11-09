@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feedback_title">પ્રતિસાદ મોકલો</string>
+    <string name="feedback_summary">સૂચનો, સમસ્યાઓ અથવા બીજું કંઈપણ</string>
+    <string name="feedback_description">ઇમેઇલ દ્વારા ડેવલપરને તમારો અભિપ્રાય જણાવો.</string>
+    <string name="feedback_type">પ્રકાર</string>
+    <string name="feedback_suggestion">સૂચન</string>
+    <string name="feedback_issue">સમસ્યા</string>
+    <string name="feedback_other">અન્ય</string>
+    <string name="feedback_subject">વિષય (વૈકલ્પિક)</string>
+    <string name="feedback_message">સંદેશ</string>
+    <string name="feedback_character_count">%1$d / %2$d અક્ષરો</string>
+    <string name="feedback_email_note">ઇમેઇલ ઍપમાં તપાસીને મોકલો. ઍપ અને Android ની આવૃત્તિઓ સામેલ છે.</string>
+    <string name="feedback_send">ઇમેઇલમાં આગળ વધો</string>
+    <string name="feedback_copy">ટેક્સ્ટ કૉપિ કરો</string>
+    <string name="feedback_no_email">કોઈ ઇમેઇલ ઍપ નથી. ડ્રાફ્ટ કૉપિ કરીને વેબમેઇલથી મોકલો.</string>
+    <string name="feedback_copied">ડ્રાફ્ટ કૉપિ થયો</string>
+    <string name="feedback_app_details">Scanly %1$s (%2$d) · Android %3$s</string>
+    <string name="rating_unavailable">Google Play અથવા બ્રાઉઝર ખોલી શકાયું નહીં. ફરી પ્રયાસ કરો.</string>
+    <string name="feedback_attachments_title">છબીઓ (વૈકલ્પિક)</string>
+    <string name="feedback_attachment_limits">વધુમાં વધુ %1$d છબીઓ. દરેક %2$s કે ઓછી કરવામાં આવશે (કુલ %3$s).</string>
+    <string name="feedback_add_images">છબીઓ ઉમેરો</string>
+    <string name="feedback_preparing_images">છબીઓ તૈયાર થાય છે…</string>
+    <string name="feedback_attachment_summary">%1$d / %2$d છબીઓ · કુલ %3$s</string>
+    <string name="feedback_image_label">છબી %1$d</string>
+    <string name="feedback_remove_image">છબી %1$d દૂર કરો</string>
+    <string name="feedback_image_limit">વધુમાં વધુ %1$d છબીઓ જોડી શકો છો.</string>
+    <string name="feedback_image_failed">કેટલીક છબીઓ ઉમેરી શકાઈ નથી. 40 MB સુધીની વાંચી શકાય તેવી છબીઓ વાપરો.</string>
+    <string name="feedback_missing_images">એક છબી હવે ઉપલબ્ધ નથી. દૂર કરીને ફરી ઉમેરો.</string>
+    <string name="feedback_copy_images_note">ટેક્સ્ટ કૉપિ થયો. ઇમેઇલ ઍપમાં છબીઓ અલગથી જોડો.</string>
+    <string name="feedback_close_preview">પૂર્વાવલોકન બંધ કરો</string>
+    <string name="feedback_sent_title">શું તમે તમારો પ્રતિસાદ મોકલી દીધો?</string>
+    <string name="feedback_sent_message">જો ઇમેઇલ મોકલી દીધો હોય, તો આપણે આ ફોર્મ ખાલી કરીને બંધ કરી શકીએ. ન મોકલ્યો હોય તો પછી ચાલુ રાખવા ડ્રાફ્ટ સાચવો.</string>
+    <string name="feedback_sent_yes">હા, મોકલી દીધો</string>
+    <string name="feedback_sent_not_yet">હજુ નહીં</string>
+</resources>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feedback_title">Отправить отзыв</string>
+    <string name="feedback_summary">Предложения, проблемы или другие вопросы</string>
+    <string name="feedback_description">Напишите разработчику по электронной почте.</string>
+    <string name="feedback_type">Тип</string>
+    <string name="feedback_suggestion">Предложение</string>
+    <string name="feedback_issue">Проблема</string>
+    <string name="feedback_other">Другое</string>
+    <string name="feedback_subject">Тема (необязательно)</string>
+    <string name="feedback_message">Сообщение</string>
+    <string name="feedback_character_count">%1$d / %2$d символов</string>
+    <string name="feedback_email_note">Проверьте и отправьте письмо в почтовом приложении. Версии приложения и Android включены.</string>
+    <string name="feedback_send">Перейти к почте</string>
+    <string name="feedback_copy">Копировать текст</string>
+    <string name="feedback_no_email">Нет почтового приложения. Скопируйте черновик и отправьте через веб-почту.</string>
+    <string name="feedback_copied">Черновик скопирован</string>
+    <string name="feedback_app_details">Scanly %1$s (%2$d) · Android %3$s</string>
+    <string name="rating_unavailable">Не удалось открыть Google Play или браузер. Попробуйте снова.</string>
+    <string name="feedback_attachments_title">Изображения (необязательно)</string>
+    <string name="feedback_attachment_limits">До %1$d изображений. Каждое оптимизируется до %2$s или меньше (%3$s всего).</string>
+    <string name="feedback_add_images">Добавить изображения</string>
+    <string name="feedback_preparing_images">Подготовка изображений…</string>
+    <string name="feedback_attachment_summary">%1$d из %2$d изображений · %3$s всего</string>
+    <string name="feedback_image_label">Изображение %1$d</string>
+    <string name="feedback_remove_image">Удалить изображение %1$d</string>
+    <string name="feedback_image_limit">Можно прикрепить до %1$d изображений.</string>
+    <string name="feedback_image_failed">Некоторые изображения не удалось добавить. Используйте читаемые изображения до 40 МБ.</string>
+    <string name="feedback_missing_images">Изображение больше недоступно. Удалите его и добавьте снова.</string>
+    <string name="feedback_copy_images_note">Текст скопирован. Прикрепите изображения отдельно в почтовом приложении.</string>
+    <string name="feedback_close_preview">Закрыть просмотр</string>
+    <string name="feedback_sent_title">Вы отправили отзыв?</string>
+    <string name="feedback_sent_message">Если вы отправили письмо, мы можем очистить и закрыть эту форму. Если нет, сохраните черновик, чтобы продолжить позже.</string>
+    <string name="feedback_sent_yes">Да, отправлено</string>
+    <string name="feedback_sent_not_yet">Ещё нет</string>
+</resources>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feedback_title">Envoyer un commentaire</string>
+    <string name="feedback_summary">Suggestions, problèmes ou autre</string>
+    <string name="feedback_description">Partagez vos idées avec le développeur par e-mail.</string>
+    <string name="feedback_type">Type</string>
+    <string name="feedback_suggestion">Suggestion</string>
+    <string name="feedback_issue">Problème</string>
+    <string name="feedback_other">Autre</string>
+    <string name="feedback_subject">Objet (facultatif)</string>
+    <string name="feedback_message">Message</string>
+    <string name="feedback_character_count">%1$d / %2$d caractères</string>
+    <string name="feedback_email_note">Vérifiez et envoyez depuis votre application e-mail. Les versions de l’application et d’Android sont incluses.</string>
+    <string name="feedback_send">Continuer vers l’e-mail</string>
+    <string name="feedback_copy">Copier le texte</string>
+    <string name="feedback_no_email">Aucune application de messagerie disponible. Copiez le brouillon et envoyez-le depuis votre messagerie web.</string>
+    <string name="feedback_copied">Brouillon copié</string>
+    <string name="feedback_app_details">Scanly %1$s (%2$d) · Android %3$s</string>
+    <string name="rating_unavailable">Impossible d’ouvrir Google Play ou un navigateur. Réessayez.</string>
+    <string name="feedback_attachments_title">Images (facultatif)</string>
+    <string name="feedback_attachment_limits">Jusqu’à %1$d images. Chacune est optimisée à %2$s maximum (%3$s au total).</string>
+    <string name="feedback_add_images">Ajouter des images</string>
+    <string name="feedback_preparing_images">Préparation des images…</string>
+    <string name="feedback_attachment_summary">%1$d sur %2$d images · %3$s au total</string>
+    <string name="feedback_image_label">Image %1$d</string>
+    <string name="feedback_remove_image">Supprimer l’image %1$d</string>
+    <string name="feedback_image_limit">Vous pouvez joindre jusqu’à %1$d images.</string>
+    <string name="feedback_image_failed">Certaines images n’ont pas pu être ajoutées. Utilisez des images lisibles de 40 Mo maximum.</string>
+    <string name="feedback_missing_images">Une image n’est plus disponible. Supprimez-la et ajoutez-la à nouveau.</string>
+    <string name="feedback_copy_images_note">Texte copié. Joignez les images séparément dans votre application e-mail.</string>
+    <string name="feedback_close_preview">Fermer l’aperçu</string>
+    <string name="feedback_sent_title">Avez-vous envoyé votre commentaire ?</string>
+    <string name="feedback_sent_message">Si vous avez envoyé l’e-mail, nous pouvons vider ce formulaire et le fermer. Sinon, conservez votre brouillon pour continuer plus tard.</string>
+    <string name="feedback_sent_yes">Oui, envoyé</string>
+    <string name="feedback_sent_not_yet">Pas encore</string>
+</resources>

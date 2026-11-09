@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feedback_title">의견 보내기</string>
+    <string name="feedback_summary">제안, 문제 또는 기타 의견</string>
+    <string name="feedback_description">개발자에게 이메일로 의견을 보내 주세요.</string>
+    <string name="feedback_type">유형</string>
+    <string name="feedback_suggestion">제안</string>
+    <string name="feedback_issue">문제</string>
+    <string name="feedback_other">기타</string>
+    <string name="feedback_subject">제목 (선택 사항)</string>
+    <string name="feedback_message">메시지</string>
+    <string name="feedback_character_count">%1$d / %2$d자</string>
+    <string name="feedback_email_note">이메일 앱에서 확인 후 보내세요. 앱과 Android 버전이 포함됩니다.</string>
+    <string name="feedback_send">이메일로 계속</string>
+    <string name="feedback_copy">텍스트 복사</string>
+    <string name="feedback_no_email">이메일 앱이 없습니다. 초안을 복사하여 웹메일로 보내 주세요.</string>
+    <string name="feedback_copied">초안 복사됨</string>
+    <string name="feedback_app_details">Scanly %1$s (%2$d) · Android %3$s</string>
+    <string name="rating_unavailable">Google Play 또는 브라우저를 열 수 없습니다. 다시 시도해 주세요.</string>
+    <string name="feedback_attachments_title">이미지 (선택 사항)</string>
+    <string name="feedback_attachment_limits">최대 %1$d장. 각 이미지를 %2$s 이하로 최적화합니다 (총 %3$s).</string>
+    <string name="feedback_add_images">이미지 추가</string>
+    <string name="feedback_preparing_images">이미지 준비 중…</string>
+    <string name="feedback_attachment_summary">%1$d / %2$d장 · 총 %3$s</string>
+    <string name="feedback_image_label">이미지 %1$d</string>
+    <string name="feedback_remove_image">이미지 %1$d 삭제</string>
+    <string name="feedback_image_limit">최대 %1$d장의 이미지를 첨부할 수 있습니다.</string>
+    <string name="feedback_image_failed">일부 이미지를 추가하지 못했습니다. 40 MB 이하의 읽을 수 있는 이미지를 사용하세요.</string>
+    <string name="feedback_missing_images">이미지를 더 이상 사용할 수 없습니다. 삭제 후 다시 추가하세요.</string>
+    <string name="feedback_copy_images_note">텍스트를 복사했습니다. 이메일 앱에서 이미지를 따로 첨부하세요.</string>
+    <string name="feedback_close_preview">미리보기 닫기</string>
+    <string name="feedback_sent_title">의견을 보내셨나요?</string>
+    <string name="feedback_sent_message">이메일을 보냈다면 이 양식을 비우고 닫을 수 있습니다. 아직 보내지 않았다면 초안을 유지하고 나중에 계속하세요.</string>
+    <string name="feedback_sent_yes">네, 보냈어요</string>
+    <string name="feedback_sent_not_yet">아직이에요</string>
+</resources>

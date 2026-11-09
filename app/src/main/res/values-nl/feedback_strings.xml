@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feedback_title">Feedback versturen</string>
+    <string name="feedback_summary">Suggesties, problemen of iets anders</string>
+    <string name="feedback_description">Deel je gedachten met de ontwikkelaar via e-mail.</string>
+    <string name="feedback_type">Type</string>
+    <string name="feedback_suggestion">Suggestie</string>
+    <string name="feedback_issue">Probleem</string>
+    <string name="feedback_other">Anders</string>
+    <string name="feedback_subject">Onderwerp (optioneel)</string>
+    <string name="feedback_message">Bericht</string>
+    <string name="feedback_character_count">%1$d / %2$d tekens</string>
+    <string name="feedback_email_note">Controleer en verstuur in je e-mailapp. App- en Android-versies worden toegevoegd.</string>
+    <string name="feedback_send">Verder naar e-mail</string>
+    <string name="feedback_copy">Tekst kopiëren</string>
+    <string name="feedback_no_email">Geen e-mailapp beschikbaar. Kopieer het concept en verstuur het via webmail.</string>
+    <string name="feedback_copied">Concept gekopieerd</string>
+    <string name="feedback_app_details">Scanly %1$s (%2$d) · Android %3$s</string>
+    <string name="rating_unavailable">Google Play of een browser kon niet worden geopend. Probeer het opnieuw.</string>
+    <string name="feedback_attachments_title">Afbeeldingen (optioneel)</string>
+    <string name="feedback_attachment_limits">Maximaal %1$d afbeeldingen. Elke afbeelding wordt geoptimaliseerd tot %2$s of minder (%3$s totaal).</string>
+    <string name="feedback_add_images">Afbeeldingen toevoegen</string>
+    <string name="feedback_preparing_images">Afbeeldingen voorbereiden…</string>
+    <string name="feedback_attachment_summary">%1$d van %2$d afbeeldingen · %3$s totaal</string>
+    <string name="feedback_image_label">Afbeelding %1$d</string>
+    <string name="feedback_remove_image">Afbeelding %1$d verwijderen</string>
+    <string name="feedback_image_limit">Je kunt maximaal %1$d afbeeldingen bijvoegen.</string>
+    <string name="feedback_image_failed">Sommige afbeeldingen konden niet worden toegevoegd. Gebruik leesbare afbeeldingen tot 40 MB.</string>
+    <string name="feedback_missing_images">Een afbeelding is niet meer beschikbaar. Verwijder deze en voeg opnieuw toe.</string>
+    <string name="feedback_copy_images_note">Tekst gekopieerd. Voeg de afbeeldingen apart toe in je e-mailapp.</string>
+    <string name="feedback_close_preview">Voorbeeld sluiten</string>
+    <string name="feedback_sent_title">Heb je je feedback verstuurd?</string>
+    <string name="feedback_sent_message">Als je de e-mail hebt verstuurd, kunnen we dit formulier leegmaken en sluiten. Bewaar anders je concept om later verder te gaan.</string>
+    <string name="feedback_sent_yes">Ja, verstuurd</string>
+    <string name="feedback_sent_not_yet">Nog niet</string>
+</resources>

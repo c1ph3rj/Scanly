@@ -23,6 +23,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.HelpOutline
 import androidx.compose.material.icons.filled.DocumentScanner
+import androidx.compose.material.icons.filled.Feedback
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.Storage
@@ -53,9 +54,7 @@ import `in`.c1ph3rj.scanly.core.ui.WindowWidthClass
 import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import `in`.c1ph3rj.scanly.domain.model.OcrEngine
 import `in`.c1ph3rj.scanly.domain.model.ThemeMode
-import `in`.c1ph3rj.scanly.feature.camera.CameraPermissionSupport
 import `in`.c1ph3rj.scanly.feature.components.ScanlyTabScreenHeader
-import `in`.c1ph3rj.scanly.feature.rating.currentRatingChannel
 import `in`.c1ph3rj.scanly.feature.rating.launchRating
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -74,6 +73,7 @@ fun SettingsRoute(
     onOpenTextRecognition: () -> Unit,
     onOpenWidgets: () -> Unit,
     onOpenAbout: () -> Unit,
+    onOpenFeedback: () -> Unit = {},
     onOpenLanguage: () -> Unit = {},
     onOpenPip: () -> Unit = {},
     onOpenRecentlyDeleted: () -> Unit = {},
@@ -105,14 +105,14 @@ fun SettingsRoute(
         onOpenWidgets = onOpenWidgets,
         onOpenFaqs = onOpenFaqs,
         onOpenAbout = onOpenAbout,
+        onOpenFeedback = onOpenFeedback,
         onDismissRatingCard = viewModel::dismissRatingCard,
         onRateApp = {
-            viewModel.onRateApp()
-            val activity = CameraPermissionSupport.findActivity(context)
-            if (activity != null) {
+            if (launchRating(context)) {
+                viewModel.onRateApp()
+            } else {
                 scope.launch {
-                    launchRating(activity, currentRatingChannel())
-                    snackbarHostState.showSnackbar(appString(R.string.settings_thanks_for_supporting_scanly))
+                    snackbarHostState.showSnackbar(appString(R.string.rating_unavailable))
                 }
             }
         },
@@ -124,6 +124,7 @@ fun SettingsScreen(
     uiState: SettingsUiState,
     snackbarHostState: SnackbarHostState,
     onOpenAppearance: () -> Unit,
+    onOpenFeedback: () -> Unit = {},
     onOpenLanguage: () -> Unit = {},
     onOpenPip: () -> Unit = {},
     onOpenStorage: () -> Unit,
@@ -265,6 +266,13 @@ fun SettingsScreen(
                     color = MaterialTheme.colorScheme.outlineVariant,
                 )
             }
+            SettingsNavigationRow(
+                icon = Icons.Filled.Feedback,
+                title = stringResource(R.string.feedback_title),
+                subtitle = stringResource(R.string.feedback_summary),
+                onClick = onOpenFeedback,
+            )
+            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
             SettingsNavigationRow(
                 icon = Icons.Outlined.StarOutline,
                 title = stringResource(R.string.home_rating_prompt_rate_scanly),

@@ -218,6 +218,14 @@ Library backup and restore are not available in v1.0.18.
 
 Open **Settings → FAQs** or **Settings → Open-source licenses** for bundled support content.
 
+### Send feedback and rate Scanly
+
+Open **Settings → Send feedback** (or **About → Contact support**) to share a suggestion, report an issue or write anything else. Choose a type, optionally add a subject, and enter your message. **Add images** opens Android’s photo picker for screenshots or photos, which you can preview and remove individually. The picker allows only the remaining attachment slots, switching to single-image selection when one slot remains. If a device’s fallback picker cannot limit selection, Scanly keeps only enough selected images to stay within five. You can attach **up to 5 images, with 1 MB per prepared image and 5 MB total**. Scanly automatically resizes large images (up to 2048 pixels on the longest edge) and compresses copies on the phone. Small screenshots use lossless PNG when they fit; larger images use JPEG. Original images are preserved, orientation is applied, and location metadata is omitted. Source images over 40 MB or unreadable images are skipped with a message.
+
+**Continue to email** opens a compatible email app with the recipient (`info@c1ph3rj.in`), subject, message and prepared attachments. Review and send it there. The draft includes the app and Android version. The size budget keeps attachments compact; your email provider can apply its own limits. Rotating the phone keeps your text and prepared attachments. After the email flow opens successfully and you return, Scanly asks **Did you send your feedback?** Choose **Yes, sent** to clear the form and close it, or **Not yet** to keep your draft. Dismissing the question also preserves the draft. The question is not shown after a failed launch. Scanly cannot detect email delivery and never marks feedback as sent automatically. If a cached image is unavailable, remove it and add it again. If no compatible email app is available, use **Copy text**, paste into webmail, and attach the images separately.
+
+**Rate Scanly** opens Google Play with a hint to show reviews, with a browser fallback. Play controls the destination and whether you can write a review; the app cannot force its review dialog to appear or detect a submitted rating. A failed hand-off does not mark the app as rated.
+
 ### Check for updates
 
 Manually checks the update channel built into the installed app. GitHub builds compare against the latest GitHub release and open its release page. Play Store builds use the Google Play in-app update flow.

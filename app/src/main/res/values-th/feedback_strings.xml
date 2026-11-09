@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feedback_title">ส่งความคิดเห็น</string>
+    <string name="feedback_summary">ข้อเสนอแนะ ปัญหา หรือเรื่องอื่น ๆ</string>
+    <string name="feedback_description">ส่งความคิดเห็นถึงนักพัฒนาทางอีเมล</string>
+    <string name="feedback_type">ประเภท</string>
+    <string name="feedback_suggestion">ข้อเสนอแนะ</string>
+    <string name="feedback_issue">ปัญหา</string>
+    <string name="feedback_other">อื่น ๆ</string>
+    <string name="feedback_subject">หัวเรื่อง (ไม่บังคับ)</string>
+    <string name="feedback_message">ข้อความ</string>
+    <string name="feedback_character_count">%1$d / %2$d ตัวอักษร</string>
+    <string name="feedback_email_note">ตรวจสอบและส่งในแอปอีเมล โดยจะระบุเวอร์ชันแอปและ Android</string>
+    <string name="feedback_send">ดำเนินการต่อในอีเมล</string>
+    <string name="feedback_copy">คัดลอกข้อความ</string>
+    <string name="feedback_no_email">ไม่มีแอปอีเมล โปรดคัดลอกร่างแล้วส่งผ่านเว็บเมล</string>
+    <string name="feedback_copied">คัดลอกร่างแล้ว</string>
+    <string name="feedback_app_details">Scanly %1$s (%2$d) · Android %3$s</string>
+    <string name="rating_unavailable">เปิด Google Play หรือเบราว์เซอร์ไม่ได้ โปรดลองอีกครั้ง</string>
+    <string name="feedback_attachments_title">รูปภาพ (ไม่บังคับ)</string>
+    <string name="feedback_attachment_limits">สูงสุด %1$d รูป แต่ละรูปจะปรับให้ไม่เกิน %2$s (รวม %3$s)</string>
+    <string name="feedback_add_images">เพิ่มรูปภาพ</string>
+    <string name="feedback_preparing_images">กำลังเตรียมรูปภาพ…</string>
+    <string name="feedback_attachment_summary">%1$d จาก %2$d รูป · รวม %3$s</string>
+    <string name="feedback_image_label">รูปภาพ %1$d</string>
+    <string name="feedback_remove_image">ลบรูปภาพ %1$d</string>
+    <string name="feedback_image_limit">แนบรูปภาพได้สูงสุด %1$d รูป</string>
+    <string name="feedback_image_failed">เพิ่มรูปภาพบางรูปไม่ได้ โปรดใช้รูปภาพที่อ่านได้ขนาดไม่เกิน 40 MB</string>
+    <string name="feedback_missing_images">รูปภาพไม่พร้อมใช้งานแล้ว โปรดลบแล้วเพิ่มใหม่</string>
+    <string name="feedback_copy_images_note">คัดลอกข้อความแล้ว โปรดแนบรูปภาพแยกในแอปอีเมล</string>
+    <string name="feedback_close_preview">ปิดตัวอย่าง</string>
+    <string name="feedback_sent_title">ส่งความคิดเห็นแล้วหรือยัง?</string>
+    <string name="feedback_sent_message">หากส่งอีเมลแล้ว เราสามารถล้างและปิดแบบฟอร์มนี้ได้ หากยังไม่ได้ส่ง ให้เก็บร่างไว้เพื่อดำเนินการต่อภายหลัง</string>
+    <string name="feedback_sent_yes">ส่งแล้ว</string>
+    <string name="feedback_sent_not_yet">ยังไม่ได้ส่ง</string>
+</resources>

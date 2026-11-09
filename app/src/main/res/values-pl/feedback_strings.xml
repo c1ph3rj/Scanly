@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feedback_title">Wyślij opinię</string>
+    <string name="feedback_summary">Sugestie, problemy lub inne sprawy</string>
+    <string name="feedback_description">Podziel się uwagami z twórcą przez e-mail.</string>
+    <string name="feedback_type">Typ</string>
+    <string name="feedback_suggestion">Sugestia</string>
+    <string name="feedback_issue">Problem</string>
+    <string name="feedback_other">Inne</string>
+    <string name="feedback_subject">Temat (opcjonalnie)</string>
+    <string name="feedback_message">Wiadomość</string>
+    <string name="feedback_character_count">%1$d / %2$d znaków</string>
+    <string name="feedback_email_note">Sprawdź i wyślij w aplikacji e-mail. Dołączono wersje aplikacji i Androida.</string>
+    <string name="feedback_send">Przejdź do e-maila</string>
+    <string name="feedback_copy">Kopiuj tekst</string>
+    <string name="feedback_no_email">Brak aplikacji e-mail. Skopiuj szkic i wyślij go przez pocztę w przeglądarce.</string>
+    <string name="feedback_copied">Szkic skopiowany</string>
+    <string name="feedback_app_details">Scanly %1$s (%2$d) · Android %3$s</string>
+    <string name="rating_unavailable">Nie udało się otworzyć Google Play ani przeglądarki. Spróbuj ponownie.</string>
+    <string name="feedback_attachments_title">Obrazy (opcjonalnie)</string>
+    <string name="feedback_attachment_limits">Do %1$d obrazów. Każdy jest optymalizowany do %2$s lub mniej (łącznie %3$s).</string>
+    <string name="feedback_add_images">Dodaj obrazy</string>
+    <string name="feedback_preparing_images">Przygotowywanie obrazów…</string>
+    <string name="feedback_attachment_summary">%1$d z %2$d obrazów · łącznie %3$s</string>
+    <string name="feedback_image_label">Obraz %1$d</string>
+    <string name="feedback_remove_image">Usuń obraz %1$d</string>
+    <string name="feedback_image_limit">Możesz dołączyć maksymalnie %1$d obrazów.</string>
+    <string name="feedback_image_failed">Nie udało się dodać niektórych obrazów. Użyj czytelnych obrazów do 40 MB.</string>
+    <string name="feedback_missing_images">Obraz nie jest już dostępny. Usuń go i dodaj ponownie.</string>
+    <string name="feedback_copy_images_note">Tekst skopiowany. Dołącz obrazy osobno w aplikacji e-mail.</string>
+    <string name="feedback_close_preview">Zamknij podgląd</string>
+    <string name="feedback_sent_title">Czy wysłano już opinię?</string>
+    <string name="feedback_sent_message">Jeśli e-mail został wysłany, możemy wyczyścić i zamknąć ten formularz. W przeciwnym razie zachowaj szkic, aby kontynuować później.</string>
+    <string name="feedback_sent_yes">Tak, wysłano</string>
+    <string name="feedback_sent_not_yet">Jeszcze nie</string>
+</resources>

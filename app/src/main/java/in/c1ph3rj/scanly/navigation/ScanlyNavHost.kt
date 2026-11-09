@@ -27,6 +27,7 @@ import `in`.c1ph3rj.scanly.feature.preview.PageImagePreviewRoute
 import `in`.c1ph3rj.scanly.feature.settings.LegalDocumentRoute
 import `in`.c1ph3rj.scanly.feature.settings.LegalDocumentType
 import `in`.c1ph3rj.scanly.feature.settings.ModelBenchmarkRoute
+import `in`.c1ph3rj.scanly.feature.settings.SettingsFeedbackRoute
 import `in`.c1ph3rj.scanly.feature.settings.SettingsAboutRoute
 import `in`.c1ph3rj.scanly.feature.settings.SettingsAppearanceRoute
 import `in`.c1ph3rj.scanly.feature.settings.SettingsLanguageRoute
@@ -1165,6 +1166,7 @@ private fun ScanlyNavHostContent(
                     },
                     onOpenWidgets = { navController.navigateSingleTop(SettingsWidgetsDestination.route) },
                     onOpenAbout = { navController.navigateSingleTop(SettingsAboutDestination.route) },
+                    onOpenFeedback = { navController.navigateSingleTop(SettingsFeedbackDestination.route) },
                     onOpenPip = { navController.navigateSingleTop(SettingsPipDestination.route) },
                 )
             }
@@ -1251,6 +1253,15 @@ private fun ScanlyNavHostContent(
             )
         }
         composable(
+            route = SettingsFeedbackDestination.route,
+            enterTransition = { detailPushEnter() },
+            exitTransition = { detailPushExit() },
+            popEnterTransition = { detailPopEnter() },
+            popExitTransition = { detailPopExit() },
+        ) {
+            SettingsFeedbackRoute(onNavigateUp = { navController.navigateUp() })
+        }
+        composable(
             route = SettingsAboutDestination.route,
             enterTransition = { detailPushEnter() },
             exitTransition = { detailPushExit() },
@@ -1269,6 +1280,7 @@ private fun ScanlyNavHostContent(
                 },
                 onOpenFaqs = { navController.navigateSingleTop(SettingsFaqDestination.route) },
                 onOpenLicenses = { navController.navigateSingleTop(SettingsLicensesDestination.route) },
+                onOpenFeedback = { navController.navigateSingleTop(SettingsFeedbackDestination.route) },
                 parentEntry = parentEntry,
             )
         }

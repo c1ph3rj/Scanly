@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feedback_title">Enviar feedback</string>
+    <string name="feedback_summary">Sugestões, problemas ou qualquer outra coisa</string>
+    <string name="feedback_description">Compartilhe suas ideias com o desenvolvedor por e-mail.</string>
+    <string name="feedback_type">Tipo</string>
+    <string name="feedback_suggestion">Sugestão</string>
+    <string name="feedback_issue">Problema</string>
+    <string name="feedback_other">Outro</string>
+    <string name="feedback_subject">Assunto (opcional)</string>
+    <string name="feedback_message">Mensagem</string>
+    <string name="feedback_character_count">%1$d / %2$d caracteres</string>
+    <string name="feedback_email_note">Revise e envie pelo app de e-mail. Inclui as versões do app e do Android.</string>
+    <string name="feedback_send">Continuar para o e-mail</string>
+    <string name="feedback_copy">Copiar texto</string>
+    <string name="feedback_no_email">Nenhum app de e-mail disponível. Copie o rascunho e envie pelo webmail.</string>
+    <string name="feedback_copied">Rascunho copiado</string>
+    <string name="feedback_app_details">Scanly %1$s (%2$d) · Android %3$s</string>
+    <string name="rating_unavailable">Não foi possível abrir o Google Play ou um navegador. Tente novamente.</string>
+    <string name="feedback_attachments_title">Imagens (opcional)</string>
+    <string name="feedback_attachment_limits">Até %1$d imagens. Cada uma é otimizada para %2$s ou menos (%3$s no total).</string>
+    <string name="feedback_add_images">Adicionar imagens</string>
+    <string name="feedback_preparing_images">Preparando imagens…</string>
+    <string name="feedback_attachment_summary">%1$d de %2$d imagens · %3$s no total</string>
+    <string name="feedback_image_label">Imagem %1$d</string>
+    <string name="feedback_remove_image">Remover imagem %1$d</string>
+    <string name="feedback_image_limit">Você pode anexar até %1$d imagens.</string>
+    <string name="feedback_image_failed">Algumas imagens não puderam ser adicionadas. Use imagens legíveis de até 40 MB.</string>
+    <string name="feedback_missing_images">Uma imagem não está mais disponível. Remova e adicione novamente.</string>
+    <string name="feedback_copy_images_note">Texto copiado. Anexe as imagens separadamente no app de e-mail.</string>
+    <string name="feedback_close_preview">Fechar prévia</string>
+    <string name="feedback_sent_title">Você enviou seu feedback?</string>
+    <string name="feedback_sent_message">Se você enviou o e-mail, podemos limpar este formulário e fechá-lo. Caso contrário, mantenha o rascunho para continuar depois.</string>
+    <string name="feedback_sent_yes">Sim, enviei</string>
+    <string name="feedback_sent_not_yet">Ainda não</string>
+</resources>

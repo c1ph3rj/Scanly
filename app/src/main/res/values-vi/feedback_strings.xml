@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feedback_title">Gửi phản hồi</string>
+    <string name="feedback_summary">Đề xuất, sự cố hoặc bất kỳ điều gì khác</string>
+    <string name="feedback_description">Chia sẻ ý kiến với nhà phát triển qua email.</string>
+    <string name="feedback_type">Loại</string>
+    <string name="feedback_suggestion">Đề xuất</string>
+    <string name="feedback_issue">Sự cố</string>
+    <string name="feedback_other">Khác</string>
+    <string name="feedback_subject">Tiêu đề (không bắt buộc)</string>
+    <string name="feedback_message">Tin nhắn</string>
+    <string name="feedback_character_count">%1$d / %2$d ký tự</string>
+    <string name="feedback_email_note">Xem lại và gửi trong ứng dụng email. Bao gồm phiên bản ứng dụng và Android.</string>
+    <string name="feedback_send">Tiếp tục đến email</string>
+    <string name="feedback_copy">Sao chép văn bản</string>
+    <string name="feedback_no_email">Không có ứng dụng email. Sao chép bản nháp và gửi từ email trên web.</string>
+    <string name="feedback_copied">Đã sao chép bản nháp</string>
+    <string name="feedback_app_details">Scanly %1$s (%2$d) · Android %3$s</string>
+    <string name="rating_unavailable">Không thể mở Google Play hoặc trình duyệt. Vui lòng thử lại.</string>
+    <string name="feedback_attachments_title">Hình ảnh (không bắt buộc)</string>
+    <string name="feedback_attachment_limits">Tối đa %1$d ảnh. Mỗi ảnh được tối ưu còn %2$s trở xuống (tổng %3$s).</string>
+    <string name="feedback_add_images">Thêm ảnh</string>
+    <string name="feedback_preparing_images">Đang chuẩn bị ảnh…</string>
+    <string name="feedback_attachment_summary">%1$d / %2$d ảnh · tổng %3$s</string>
+    <string name="feedback_image_label">Ảnh %1$d</string>
+    <string name="feedback_remove_image">Xóa ảnh %1$d</string>
+    <string name="feedback_image_limit">Bạn có thể đính kèm tối đa %1$d ảnh.</string>
+    <string name="feedback_image_failed">Không thể thêm một số ảnh. Hãy dùng ảnh đọc được, tối đa 40 MB.</string>
+    <string name="feedback_missing_images">Một ảnh không còn khả dụng. Hãy xóa rồi thêm lại.</string>
+    <string name="feedback_copy_images_note">Đã sao chép văn bản. Đính kèm ảnh riêng trong ứng dụng email.</string>
+    <string name="feedback_close_preview">Đóng bản xem trước</string>
+    <string name="feedback_sent_title">Bạn đã gửi phản hồi chưa?</string>
+    <string name="feedback_sent_message">Nếu bạn đã gửi email, chúng tôi có thể xóa nội dung biểu mẫu này và đóng lại. Nếu chưa, hãy giữ bản nháp để tiếp tục sau.</string>
+    <string name="feedback_sent_yes">Đã gửi</string>
+    <string name="feedback_sent_not_yet">Chưa gửi</string>
+</resources>

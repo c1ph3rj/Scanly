@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feedback_title">フィードバックを送信</string>
+    <string name="feedback_summary">提案、不具合、その他のご意見</string>
+    <string name="feedback_description">開発者にメールでご意見をお寄せください。</string>
+    <string name="feedback_type">種類</string>
+    <string name="feedback_suggestion">提案</string>
+    <string name="feedback_issue">不具合</string>
+    <string name="feedback_other">その他</string>
+    <string name="feedback_subject">件名（任意）</string>
+    <string name="feedback_message">メッセージ</string>
+    <string name="feedback_character_count">%1$d / %2$d 文字</string>
+    <string name="feedback_email_note">メールアプリで確認して送信してください。アプリとAndroidのバージョンが含まれます。</string>
+    <string name="feedback_send">メールへ進む</string>
+    <string name="feedback_copy">テキストをコピー</string>
+    <string name="feedback_no_email">メールアプリがありません。下書きをコピーしてウェブメールから送信してください。</string>
+    <string name="feedback_copied">下書きをコピーしました</string>
+    <string name="feedback_app_details">Scanly %1$s (%2$d) · Android %3$s</string>
+    <string name="rating_unavailable">Google Playまたはブラウザを開けませんでした。もう一度お試しください。</string>
+    <string name="feedback_attachments_title">画像（任意）</string>
+    <string name="feedback_attachment_limits">最大%1$d枚。各画像を%2$s以下に最適化します（合計%3$s）。</string>
+    <string name="feedback_add_images">画像を追加</string>
+    <string name="feedback_preparing_images">画像を準備中…</string>
+    <string name="feedback_attachment_summary">%1$d / %2$d枚 · 合計%3$s</string>
+    <string name="feedback_image_label">画像%1$d</string>
+    <string name="feedback_remove_image">画像%1$dを削除</string>
+    <string name="feedback_image_limit">最大%1$d枚の画像を添付できます。</string>
+    <string name="feedback_image_failed">一部の画像を追加できませんでした。40 MB以下の読み取れる画像を使用してください。</string>
+    <string name="feedback_missing_images">画像を利用できなくなりました。削除して追加し直してください。</string>
+    <string name="feedback_copy_images_note">テキストをコピーしました。メールアプリで画像を別途添付してください。</string>
+    <string name="feedback_close_preview">プレビューを閉じる</string>
+    <string name="feedback_sent_title">フィードバックを送信しましたか？</string>
+    <string name="feedback_sent_message">メールを送信した場合は、このフォームを空にして閉じることができます。まだ送信していない場合は、下書きを残して後で続けられます。</string>
+    <string name="feedback_sent_yes">はい、送信しました</string>
+    <string name="feedback_sent_not_yet">まだです</string>
+</resources>
