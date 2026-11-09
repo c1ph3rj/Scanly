@@ -1,6 +1,6 @@
 # Database (Room)
 
-Scanly persists document metadata in a **Room** database at schema version **11**.
+Scanly persists document metadata in a **Room** database at schema version **12**.
 
 ## Database file
 
@@ -8,7 +8,7 @@ Scanly persists document metadata in a **Room** database at schema version **11*
 | --- | --- |
 | Class | `ScanlyDatabase` |
 | Path | `databases/scanly.db` (+ `-wal`, `-shm`) under app internal storage |
-| Schema version | `11` |
+| Schema version | `12` |
 | `exportSchema` | `false` |
 
 Location: `app/src/main/java/in/c1ph3rj/scanly/data/local/db/ScanlyDatabase.kt`
@@ -170,11 +170,12 @@ Adds `page_texts.engine`, `requestedEngine` and `fallbackReason` (nullable `TEXT
 
 ## Upgrade notes
 
-- Upgrading from v1.0.0: Room migrates automatically from schema 1 or 2 through schema 11.
+- Upgrading from v1.0.0: Room migrates automatically from schema 1 or 2 through schema 12.
 - Existing documents remain; they appear ungrouped until moved into a collection.
 - Upgrading from schema 5: Room runs `MIGRATION_5_6` and `MIGRATION_6_7`; page-text indexing resumes in the background.
 - Upgrading from schema 6: `MIGRATION_6_7` adds saved signatures and editable page markups.
 - Upgrading from schema 10: `MIGRATION_10_11` adds the OCR provenance columns; pages are not re-read automatically.
+- Upgrading from schema 11: `MIGRATION_11_12` adds derived search text and rebuilds the page-text index; existing pages are re-derived in the background without being read again.
 - No manual migration steps required.
 
 See [../releases.md](../releases.md) and [../../VERSION.md](../../VERSION.md).

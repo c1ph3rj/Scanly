@@ -47,7 +47,7 @@ It is designed for a practical, local-only scanning workflow:
 - direct export saving to `Downloads/Scanly` or a user-selected folder
 - settings with look & feel (including pure black AMOLED), configurable document detection models, storage usage, clear-all-data, Help & FAQ, and license info
 
-**Current version:** `1.0.19-beta.1` (version code `19`) — see [VERSION.md](VERSION.md) and [CHANGELOG.md](CHANGELOG.md).
+**Current version:** `1.0.20` (version code `20`) — see [VERSION.md](VERSION.md) and [CHANGELOG.md](CHANGELOG.md).
 
 ## Screenshots
 

@@ -1,6 +1,6 @@
 ﻿# Features
 
-Complete inventory of Scanly features as of **v1.0.18**.
+Complete inventory of Scanly features as of **v1.0.20**.
 
 ## Home dashboard
 

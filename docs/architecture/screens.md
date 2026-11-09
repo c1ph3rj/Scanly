@@ -1,6 +1,6 @@
 ﻿# Screens and ViewModels
 
-Every feature screen in Scanly **v1.0.18** and its responsibilities.
+Every feature screen in Scanly **v1.0.20** and its responsibilities.
 
 ## Screen inventory
 

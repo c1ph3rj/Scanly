@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [1.0.20] - 2026-11-09
+
 ### Added
 
 - **Scanly in 25 languages** — English, Spanish, Portuguese (Brazil), French, German, Indonesian, Italian, Turkish, Vietnamese, Polish, Dutch, Hindi, Tamil, Bengali, Telugu, Marathi, Kannada, Malayalam, Gujarati, Russian, Ukrainian, Japanese, Korean, Chinese (Simplified) and Thai. Scanly follows your phone's language, or pick one in **Settings › Preferences › Language** (each language is listed in its own name). On Android 13 and later the choice is also available in system Settings › Apps › Scanly › Language. Dates, months and sizes follow the chosen language. Stamped PDF dates and watermark presets stay in English for scripts the embedded PDF font can't draw.
@@ -43,7 +45,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Technical
 
-- Prepare version `1.0.19-beta.1` (version code `19`) for testing. Release builds explicitly disable debugging, including the `playStoreRelease` variant used for Google Play uploads.
+- Version `1.0.20` (version code `20`). Release builds explicitly disable debugging, including the `playStoreRelease` variant used for Google Play uploads.
 - Room schema **8** adds `documents.deletedAtMillis` (`MIGRATION_7_8`); schema **9** adds `document_groups.deletedAtMillis`, `documents.deletedWithGroup`, and `scan_pages.deletedAtMillis` / `deletedFromIndex` (`MIGRATION_8_9`); schema **10** adds `documents.releasedFromGroupId` for "Delete folder only" (`MIGRATION_9_10`). Trashed items are filtered out of every library, folder, page, export, text and search query. A trashed page keeps its row at a negative `pageIndex` so live pages stay numbered 0..n-1. Expired items are purged on app start and when Recently deleted opens (`PurgeExpiredTrashUseCase`, retention in `TrashKind`).
 - Room schema **12** adds `page_texts.derivedText` and `derivedVersion` (`MIGRATION_11_12`) and rebuilds `page_texts_fts` with `derivedText` as a second column (FTS4 can't add one). The rebuilt index declares the Indic vowel signs and viramas (U+0900–U+0DFF combining marks) as `tokenchars`: Android 13's SQLite 3.32 otherwise splits words at them (தமிழ்நாடு → தம ழ ந ட), unlike newer SQLite. `SearchTextDeriver` fills it with joined words, digit-only numbers, `d`yyyymmdd dates and `tr`-prefixed loose English-spelling keys (`LooseRomanization` over the platform ICU `Any-Latin` transliterator); `TextIndexWorker` re-derives rows below `SearchTextDeriver.VERSION` before reading pages, also NFC-normalizing older `searchText`. Snippets come from column 0 only; pages matched only through derived forms get a snippet built in Kotlin (`DerivedSnippet`). Vocabulary lookups read `page_texts_terms` with `col = 0`.
 - Page-text search ranks in two steps: candidates with `matchinfo('pcnalx')` (BM25 in `Bm25`, derived column at half weight), then snippets and `offsets()` (proximity in `Proximity`) for the best 400. New match tiers `TRANSLITERATED` and `OCR_VARIANT` sit between prefix and close matches; OCR look-alike costs live in `OcrConfusions` / `OcrEditDistance`. Multi-alternative and excluded parts run as one sub-select per group (no enhanced FTS syntax needed). `com.ibm.icu:icu4j` is a test-only dependency for `RomanizationQualityTest` (94% recall on 88 place and name spellings when English-spelling search was turned on).

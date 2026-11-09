@@ -69,8 +69,8 @@ android {
         applicationId = "in.c1ph3rj.scanly"
         minSdk = 29
         targetSdk = 36
-        versionCode = 19
-        versionName = "1.0.19-beta.1"
+        versionCode = 20
+        versionName = "1.0.20"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         testInstrumentationRunnerArguments["clearPackageData"] = "true"
