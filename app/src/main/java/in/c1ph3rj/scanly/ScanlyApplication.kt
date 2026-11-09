@@ -10,6 +10,7 @@ import `in`.c1ph3rj.scanly.data.text.IcuRomanizer
 import `in`.c1ph3rj.scanly.data.text.TextIndexScheduler
 import `in`.c1ph3rj.scanly.domain.search.SearchTextDeriver
 import `in`.c1ph3rj.scanly.domain.usecase.PurgeExpiredTrashUseCase
+import `in`.c1ph3rj.scanly.feature.widget.ScanlyWidgetSupport
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -39,4 +40,11 @@ class ScanlyApplication : Application(), Configuration.Provider {
         get() = Configuration.Builder()
             .setWorkerFactory(workerFactory)
             .build()
+
+    override fun onConfigurationChanged(newConfig: android.content.res.Configuration) {
+        super.onConfigurationChanged(newConfig)
+        AppLocales.onConfigurationChanged(this)
+        // Locale changes no longer recreate MainActivity, which used to perform this rebind.
+        ScanlyWidgetSupport.refreshAll(this)
+    }
 }

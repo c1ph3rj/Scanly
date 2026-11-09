@@ -55,6 +55,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Fixed
 
+- **Language changes without a blank screen** — choosing a language updates the current screen in place, keeping its theme, navigation and scroll position instead of restarting the activity.
+
 - **Translated controls stay readable** — Home actions, tool cards, empty-state buttons and navigation labels grow or wrap for longer languages. Page, document, image and retention counts use localized plural forms, and remaining app-shell and error fallback messages follow the selected language.
 
 - **Searching Tamil, Hindi, Kannada, Telugu and other Indic text found nothing** — typed queries dropped viramas, pullis and anusvaras and split words at vowel signs, so they never matched the page text Indra OCR indexed. Queries are now folded exactly the way the index stores words: only a single accent on a Latin letter is dropped ("Résumé" still finds "resume"), and every other mark stays part of the word. This also fixes Cyrillic й, accented Greek and Vietnamese searches, and Korean in name search. Existing pages don't need to be re-read.

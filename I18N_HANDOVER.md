@@ -16,14 +16,14 @@ English (default), Spanish, Portuguese (Brazil), French, German, Indonesian, Ita
 | Branch | `feature/multi-language-support`, created from `feature/search-improvements` |
 | Commit scope | Owner approved committing the complete working tree together, including existing WIP |
 | English resources | 1,699 translatable strings + 27 plurals, plus the non-translatable `app_name` |
-| Locale switching | Verified on Android 11 / API 30 and Android 16 / API 36 |
+| Locale switching | Updates in place, retaining the activity/window, theme, navigation and list state; verified on Android 11 / API 30 and Android 16 / API 36 |
 | Language picker | Settings › Preferences › Language; seven representative languages exercised through the real picker |
 | Translations | **192/192 parts passing** (24 languages × 8 parts) |
 | Shipped resources | **24 complete `values-*/strings.xml` catalogs**, matching every translatable English key |
 | Debug builds | `assembleDebug` and `assembleDebugAndroidTest` passed |
 | Unit tests | **625 passed**, no failures, errors or skips |
 | Lint | Passed; **0 errors**, no `MissingTranslation` or `StringFormat*` findings |
-| Device tests | All 3 `AppLocaleDeviceTest` tests passed on each emulator; runtime-resource test repeated on the final wording build |
+| Device tests | All 4 `AppLocaleDeviceTest` tests passed on each emulator; final API 36 full-suite and API 30 focused rechecks passed (see §10) |
 | Cold-start persistence | Tamil selected through the UI survived force-stop/relaunch on both Android versions; original settings and language restored |
 
 **Combined scope:** the owner explicitly approved including the earlier `feature/search-improvements` work (including the first extraction pass, `AppStrings.kt`, onboarding images and `SettingsTextRecognitionScreen.kt`) together with this completion work. That work was preserved throughout verification.
@@ -35,7 +35,8 @@ English (default), Spanish, Portuguese (Brazil), French, German, Indonesian, Ita
 | File | Purpose |
 | --- | --- |
 | `app/src/main/java/in/c1ph3rj/scanly/core/common/AppLanguage.kt` | Enum of the 25 languages: BCP-47 `tag`, `nativeName` (autonym, e.g. "தமிழ்"), `displayName(locale)`, `from(Locale)` matching (handles legacy `in` for Indonesian, maps any `pt` → pt-BR, only Simplified Chinese matches `zh`; Traditional falls back to default), and `stampsInOwnScript` (see §6). |
-| `.../core/common/AppLocales.kt` | Applies the app language. **Android 13+**: `LocaleManager.applicationLocales` (system persists it, shows it in system Settings › Apps › Scanly › Language, recreates activities). **Android 10–12**: choice stored in SharedPreferences `scanly_app_locale/language_tag`, applied by `wrap(context)` in `MainActivity.attachBaseContext`, plus `Locale.setDefault`; `setLanguage()` recreates the activity. `null` = follow phone language. |
+| `.../core/common/AppLocales.kt` | Applies the app language. **Android 13+**: `LocaleManager.applicationLocales` (system persists it and shows it in system Settings › Apps › Scanly › Language). **Android 10–12**: choice stored in SharedPreferences `scanly_app_locale/language_tag`, plus `Locale.setDefault`. Both paths notify `AppLocaleProvider` to update resources in the existing composition. `null` = follow phone language. Locale changes do not recreate MainActivity. |
+| `.../core/common/AppLocaleProvider.kt` | Supplies localized Compose context, resources, configuration and layout direction in place, with the Activity retained in the context-wrapper chain. |
 | `.../core/common/StampDates.kt` | `formatStampDate()` for dates drawn into PDFs/scans; uses the app locale only if the script is PDF-drawable, else English. |
 | `.../feature/settings/SettingsLanguageScreen.kt` | Language picker: "System default" row (shows phone language) + list of 25 languages (native name, with the name in the current UI language as subtitle), check-circle selection, note that document names/OCR text keep their own language. |
 | `app/src/main/res/xml/locales_config.xml` | Locale list for the platform (referenced by `android:localeConfig` in the manifest). |
@@ -43,10 +44,10 @@ English (default), Spanish, Portuguese (Brazil), French, German, Indonesian, Ita
 
 ### 3.2 Changes to existing files
 
-- `MainActivity.kt`: `attachBaseContext` → `AppLocales.wrap(newBase)`.
-- `ScanlyApplication.kt`: `AppLocales.applyDefaultLocale(this)` before `AppStrings.init(this)`.
+- `MainActivity.kt`: hosts `AppLocaleProvider`, which supplies localized context, resources, configuration and layout direction without replacing the composition. Its themed context retains the Activity wrapper chain for permissions and Hilt.
+- `ScanlyApplication.kt`: `AppLocales.applyDefaultLocale(this)` before `AppStrings.init(this)`; configuration callbacks refresh the locale provider and non-Compose resource cache, including changes made in Android Settings.
 - `core/common/AppStrings.kt` (non-Compose string lookups via `appString()` / `appPluralString()`): now resolves through a localized context (`AppLocales.wrap`), cache cleared by `AppStrings.onLocaleChanged()`.
-- `AndroidManifest.xml`: `android:localeConfig="@xml/locales_config"`; the "Open in Scanly" intent labels now use `@string/intent_open_in_scanly`.
+- `AndroidManifest.xml`: `android:localeConfig="@xml/locales_config"`; MainActivity handles `locale|layoutDirection|screenLayout` configuration changes in place; the "Open in Scanly" intent labels now use `@string/intent_open_in_scanly`.
 - Navigation: `SettingsLanguageDestination` (`settings/language`) in `navigation/ScanlyDestination.kt`; composable added in `navigation/ScanlyNavHost.kt`; new Language row (icon `Icons.Filled.Language`) in the Preferences group of `feature/settings/SettingsScreen.kt` (`onOpenLanguage`).
 - **57 user-facing error messages** from `require`/`error`/exceptions in the data/domain layer (they reach snackbars via `ScanlyError.message`) moved to `error_*` strings. Developer-only invariants (ML/OpenCV internals) intentionally left in English.
 - **Grammar fixes (no more English word-splicing):**
@@ -103,7 +104,7 @@ The source split was kept stable. New count/progress/error resources were append
    - `formatStampDate()` falls back to English month names.
    - Proper fix later: embed Noto fonts for each script.
 2. **Lint `MissingTranslation` is an error.** Every `values-xx/strings.xml` must contain every translatable key. Any new English string must be added to all 24 files, or the build's lint fails.
-3. On **Android 10–12**, home-screen widgets and app shortcuts (`res/xml/shortcuts.xml`) use the device language, because they're rendered outside the wrapped activity. Android 13+ is fully covered.
+3. On **Android 10–12**, home-screen widgets and app shortcuts (`res/xml/shortcuts.xml`) use the device language, because they're rendered outside the localized composition. Android 13+ is fully covered.
 4. Traditional Chinese isn't shipped; `zh-TW`/`zh-HK` users get English.
 5. Digits stay ASCII inside strings; the format functions handle locale decimals.
 
@@ -168,3 +169,20 @@ All paths below are under the ignored `.i18n-work/` folder unless stated otherwi
 - `cold-start-final.log`, `cold-start-api30/`, `cold-start-api36/`: process-restart checks, UI dumps, screenshots and restoration backups.
 - `qa-api30/`, `qa-api36/`: 56 screenshots per version, plus contact sheets. Reviewed the seven representative languages; secondary descriptive captions/search placeholders can still ellipsize normally, while action labels can wrap or be reached by scrolling.
 - Standard Gradle reports: `app/build/reports/tests/testDebugUnitTest/index.html` and `app/build/reports/lint-results-debug.html`.
+
+
+## 10. Smooth language-switch follow-up (2026-11-09)
+
+The earlier locale setters recreated the activity, replacing the window and rebuilding its composition. Language selection now updates the existing composition through `AppLocaleProvider`. Navigation, picker scroll position and the active theme stay alive. Android 13+ still uses the platform's per-app language setting; Android 10–12 still persists the private preference and updates `Locale.getDefault`.
+
+The API 36 emulator reported locale configuration flags **0x2104** (`locale`, `layoutDirection`, `screenLayout`). MainActivity handles all three, so the first change from System default also stays in place. Other configuration changes retain their existing recreation behavior. Application configuration callbacks refresh the non-Compose resource cache and rebind widgets, replacing the rebind that previously occurred during locale-driven `onCreate`.
+
+On Android 10–12 the Activity's base context remains in the device language. Compose reads `stringResource`/`LocalResources` from the provider; non-Compose callers use `appString`/`appPluralString` through `AppLocales.wrap`.
+
+Verification:
+
+- Final `assembleDebug`, `assembleDebugAndroidTest`, `testDebugUnitTest` and `lintDebug` succeeded: **625 JVM tests passed; 0 lint errors**. Log: `.i18n-work/smooth-final-build.log`.
+- All four locale device tests passed on API 30 and API 36. The picker regression asserts the **same Activity and Window instances** and retained list scroll state while switching seven languages, then verifies explicit recreation, navigation and translated text. The additional test covers System default and platform-originated locale changes. The final APK's full API 36 suite and focused API 30 follow-System-default check passed: `smooth-final-api36.log`, `smooth-final-api30.log`; initial full API 30 log: `smooth-device-5556.log`.
+- Six screenrecord clips cover English → Tamil in **light, dark and pure-black** themes across both Android versions. All captured content frames contained the UI; none were blank. Screenrecord uses variable frame rates; this is transition verification, not a frame-rate benchmark. Clips and analysis: `.i18n-work/smooth-api30/`, `.i18n-work/smooth-api36/`; recording logs: `smooth-video-30.log`, `smooth-video-36.log`.
+- A UI-selected Tamil language survived force-stop/relaunch on the final APK on both versions. Original language and preference backups were restored afterward. Logs: `smooth-cold-30.log`, `smooth-cold-36.log`.
+- The locale tests and recording fixtures temporarily disable automatic model calibration to avoid the documented x86/ARM LiteRT emulation crash, then restore it. Production model behavior is unchanged. No physical-phone installation or performance check was performed.

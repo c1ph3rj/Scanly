@@ -7,6 +7,9 @@ import android.content.res.Configuration
 import android.content.res.Resources
 import android.os.Build
 import android.os.LocaleList
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import java.util.Locale
 
 /**
@@ -14,15 +17,17 @@ import java.util.Locale
  *
  * - Android 13+: the platform owns the choice through [LocaleManager]. It survives reinstalls via
  *   backup, appears in system Settings › Apps › Scanly › Language (see `locales_config.xml`), and
- *   the system recreates activities when it changes.
- * - Android 10–12: the choice is kept in a private preference and applied by wrapping the
- *   activity's base context ([wrap]) and the app-wide default [Locale].
+ *   MainActivity handles locale configuration changes without replacing its window.
+ * - Android 10–12: the choice is kept in a private preference. AppLocaleProvider updates the
+ *   existing composition's resources; [wrap] supplies resources to non-Compose callers.
  *
  * A null language means "follow the device language".
  */
 object AppLocales {
     private const val PREFS = "scanly_app_locale"
     private const val KEY_TAG = "language_tag"
+    private val configurationRevision = MutableStateFlow(0)
+    internal val changes = configurationRevision.asStateFlow()
 
     private val usesPlatformLocales: Boolean
         get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
@@ -45,20 +50,21 @@ object AppLocales {
         return Resources.getSystem().configuration.locales[0] ?: Locale.getDefault()
     }
 
-    /**
-     * Switches the app language. On Android 13+ the system recreates the activity; on older
-     * versions [activity] is recreated here so every screen picks up the new resources.
-     */
+    /** Switches resources in place, retaining navigation, scroll position and the current theme. */
     fun setLanguage(activity: Activity, language: AppLanguage?) {
-        prefs(activity).edit().putString(KEY_TAG, language?.tag).commit()
+        prefs(activity).edit().putString(KEY_TAG, language?.tag).apply()
         if (usesPlatformLocales) {
             activity.getSystemService(LocaleManager::class.java)?.applicationLocales =
                 if (language == null) LocaleList.getEmptyLocaleList() else LocaleList.forLanguageTags(language.tag)
-        } else {
-            applyDefaultLocale(activity.applicationContext)
-            AppStrings.onLocaleChanged()
-            activity.recreate()
         }
+        onConfigurationChanged(activity.applicationContext)
+    }
+
+    /** Also called for language changes made in Android Settings, including follow-phone mode. */
+    fun onConfigurationChanged(context: Context) {
+        applyDefaultLocale(context)
+        AppStrings.onLocaleChanged()
+        configurationRevision.update { it + 1 }
     }
 
     /** Android 10–12: makes [Locale.getDefault] (used by date and number formatting) follow the choice. */
@@ -68,12 +74,9 @@ object AppLocales {
         Locale.setDefault(locale)
     }
 
-    /** Android 10–12: [base] with the chosen language applied. Returns [base] when nothing is chosen. */
+    /** A resource context for the chosen language, including follow-phone mode. */
     fun wrap(base: Context): Context {
-        if (usesPlatformLocales) return base
-        val language = AppLanguage.fromTag(storedTag(base)) ?: return base
-        val locale = language.locale
-        Locale.setDefault(locale)
+        val locale = selectedLanguage(base)?.locale ?: deviceLocale(base)
         val config = Configuration(base.resources.configuration)
         config.setLocales(LocaleList(locale))
         return base.createConfigurationContext(config)

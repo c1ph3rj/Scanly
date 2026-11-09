@@ -15,12 +15,14 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performSemanticsAction
+import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import `in`.c1ph3rj.scanly.core.common.AppLanguage
 import `in`.c1ph3rj.scanly.core.common.AppLocales
+import `in`.c1ph3rj.scanly.core.common.AppLocaleProvider
 import `in`.c1ph3rj.scanly.core.common.DefaultScanlyDispatchers
 import `in`.c1ph3rj.scanly.core.common.appString
 import `in`.c1ph3rj.scanly.core.ui.ScanlyTestTags
@@ -30,6 +32,7 @@ import `in`.c1ph3rj.scanly.feature.onboarding.OnboardingStatus
 import `in`.c1ph3rj.scanly.feature.onboarding.OnboardingUiState
 import `in`.c1ph3rj.scanly.ui.theme.ScanlyTheme
 import kotlinx.coroutines.runBlocking
+import org.junit.Assert.assertSame
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertFalse
@@ -115,21 +118,35 @@ class AppLocaleDeviceTest {
             )
             languages.forEach { language ->
                 composeRule.openDestination(ScanlyTestTags.NAV_SETTINGS, ScanlyTestTags.SETTINGS_SCREEN)
-                composeRule.onNodeWithText(composeRule.activity.getString(R.string.settings_language))
+                composeRule.onNodeWithText(appString(R.string.settings_language))
                     .performScrollTo().performClick()
-                composeRule.onNodeWithText(language.nativeName).performScrollTo().performClick()
+                composeRule.onNodeWithText(language.nativeName).performScrollTo()
+                val activity = composeRule.activity
+                val window = activity.window
+                val scrollBefore = languageScrollPosition()
+                composeRule.onNodeWithText(language.nativeName).performClick()
                 composeRule.waitUntil(15_000) {
                     AppLocales.selectedLanguage(composeRule.activity) == language &&
-                        composeRule.activity.resources.configuration.locales[0].language == language.locale.language
+                        appString(R.string.settings_language) == localizedTitle(language.locale)
                 }
-                val title = composeRule.activity.getString(R.string.settings_language)
+                composeRule.waitForIdle()
+                assertSame("Language selection replaced the activity", activity, composeRule.activity)
+                assertSame("Language selection replaced the window", window, composeRule.activity.window)
+                assertEquals("Language selection reset the list", scrollBefore, languageScrollPosition(), 0.001f)
+                val title = localizedTitle(language.locale)
                 composeRule.onNodeWithText(title).assertIsDisplayed()
                 assertEquals(language.tag, title, appString(R.string.settings_language))
                 screenshot("${language.tag}-language")
                 composeRule.activityRule.scenario.recreate()
                 composeRule.waitForIdle()
                 assertEquals(language, AppLocales.selectedLanguage(composeRule.activity))
-                assertEquals(title, composeRule.activity.getString(R.string.settings_language))
+                assertEquals(title, appString(R.string.settings_language))
+                // Resource lookups are immediate; the restored NavHost must also finish loading
+                // before Back is sent, otherwise it can finish the activity during startup.
+                composeRule.waitUntil(20_000) {
+                    composeRule.onAllNodesWithText(title).fetchSemanticsNodes().isNotEmpty()
+                }
+                composeRule.onNodeWithText(title).assertIsDisplayed()
                 // Back from the picker, then exercise the stable routes in the chosen language.
                 androidx.test.uiautomator.UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).pressBack()
                 listOf(
@@ -141,15 +158,15 @@ class AppLocaleDeviceTest {
                     composeRule.onNodeWithTag(screen).assertIsDisplayed()
                     if (screen == ScanlyTestTags.HOME_SCREEN) {
                         listOf(R.string.home_scan, R.string.home_import, R.string.home_folder).forEach {
-                            assertTextFitsVertically(composeRule.activity.getString(it))
+                            assertTextFitsVertically(appString(it))
                         }
                     }
                     if (screen == ScanlyTestTags.LIBRARY_SCREEN) {
-                        assertTextFitsVertically(composeRule.activity.getString(R.string.group_detail_new_document))
+                        assertTextFitsVertically(appString(R.string.group_detail_new_document))
                     }
                     screenshot("${language.tag}-$screen")
                 }
-                composeRule.onNodeWithText(composeRule.activity.getString(R.string.tools_catalog_read_pdf))
+                composeRule.onNodeWithText(appString(R.string.tools_catalog_read_pdf))
                     .performScrollTo().performClick()
                 composeRule.waitForIdle()
                 screenshot("${language.tag}-pdf-reader")
@@ -160,6 +177,54 @@ class AppLocaleDeviceTest {
             composeRule.waitForIdle()
             composeRule.activityRule.scenario.close()
             runBlocking { settings.setAutomaticModelSelection(automaticModels) }
+        }
+    }
+
+    private fun localizedTitle(locale: Locale): String {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        return context.createConfigurationContext(Configuration(context.resources.configuration).apply {
+            setLocales(LocaleList(locale))
+        }).getString(R.string.settings_language)
+    }
+
+    private fun languageScrollPosition(): Float = composeRule.onNodeWithTag("settings_language_list")
+        .fetchSemanticsNode().config[SemanticsProperties.VerticalScrollAxisRange].value()
+
+    @Test
+    fun systemDefaultAndPlatformSelectionUpdateTheExistingComposition() {
+        val activity = composeRule.activity
+        val original = AppLocales.selectedLanguage(activity)
+        try {
+            composeRule.completeOnboardingIfNeeded()
+            composeRule.activityRule.scenario.onActivity { AppLocales.setLanguage(it, AppLanguage.TAMIL) }
+            composeRule.waitForIdle()
+            assertEquals(localizedTitle(AppLanguage.TAMIL.locale), appString(R.string.settings_language))
+            composeRule.onNodeWithText(appString(R.string.home_scan)).assertIsDisplayed()
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+                // Simulates changing the per-app language in Android Settings rather than the picker.
+                composeRule.activityRule.scenario.onActivity {
+                    it.getSystemService(android.app.LocaleManager::class.java).applicationLocales =
+                        LocaleList.forLanguageTags(AppLanguage.JAPANESE.tag)
+                }
+                composeRule.waitUntil(15_000) {
+                    appString(R.string.settings_language) == localizedTitle(AppLanguage.JAPANESE.locale)
+                }
+                composeRule.waitForIdle()
+                assertSame(activity, composeRule.activity)
+                composeRule.onNodeWithText(appString(R.string.home_scan)).assertIsDisplayed()
+            }
+            composeRule.activityRule.scenario.onActivity { AppLocales.setLanguage(it, null) }
+            composeRule.waitForIdle()
+            assertSame(activity, composeRule.activity)
+            assertEquals(null, AppLocales.selectedLanguage(activity))
+            assertEquals(localizedTitle(AppLocales.deviceLocale(activity)), appString(R.string.settings_language))
+            // The actual root composition (onboarding or Home) must read the new resources too.
+            composeRule.completeOnboardingIfNeeded()
+            composeRule.openDestination(ScanlyTestTags.NAV_HOME, ScanlyTestTags.HOME_SCREEN)
+            composeRule.onNodeWithText(appString(R.string.home_scan)).assertIsDisplayed()
+        } finally {
+            composeRule.activityRule.scenario.onActivity { AppLocales.setLanguage(it, original) }
+            composeRule.waitForIdle()
         }
     }
 
@@ -211,19 +276,21 @@ class AppLocaleDeviceTest {
             ).forEach { language ->
                 composeRule.activityRule.scenario.onActivity { AppLocales.setLanguage(it, language) }
                 composeRule.waitUntil(15_000) {
-                    composeRule.activity.resources.configuration.locales[0].language == language.locale.language
+                    AppLocales.selectedLanguage(composeRule.activity) == language
                 }
-                // Let the platform finish its locale-driven recreation before replacing content.
+                // Replace content only after the in-place locale update has settled.
                 InstrumentationRegistry.getInstrumentation().waitForIdleSync()
                 composeRule.activityRule.scenario.recreate()
                 composeRule.waitForIdle()
                 composeRule.activityRule.scenario.onActivity {
                     it.setContent {
                         key(language.tag) {
-                            ScanlyTheme {
-                                OnboardingScreen(
-                                    OnboardingUiState(status = OnboardingStatus.REQUIRED), {}, {},
-                                )
+                            AppLocaleProvider {
+                                ScanlyTheme {
+                                    OnboardingScreen(
+                                        OnboardingUiState(status = OnboardingStatus.REQUIRED), {}, {},
+                                    )
+                                }
                             }
                         }
                     }
@@ -234,7 +301,7 @@ class AppLocaleDeviceTest {
                     R.string.onboarding_page_find_more_than_files,
                     R.string.onboarding_page_ready_when_you_are,
                 ).forEachIndexed { index, title ->
-                    composeRule.onNodeWithText(composeRule.activity.getString(title)).assertIsDisplayed()
+                    composeRule.onNodeWithText(appString(title)).assertIsDisplayed()
                     screenshot("${language.tag}-onboarding-$index", "onboarding_screen")
                     if (index < 2) composeRule.onNodeWithTag("onboarding_continue").performClick()
                     composeRule.waitForIdle()

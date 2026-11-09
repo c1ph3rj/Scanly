@@ -22,7 +22,7 @@ object AppStrings {
     @Volatile
     private var context: Context? = null
 
-    /** [context] with the in-app language applied (Android 10–12 need this; 13+ get it for free). */
+    /** [context] with the current in-app language applied, refreshed on configuration changes. */
     @Volatile
     private var localized: Context? = null
 

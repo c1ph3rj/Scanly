@@ -22,6 +22,7 @@
         android:theme="@style/Theme.Scanly">
         <activity
             android:name=".MainActivity"
+            android:configChanges="locale|layoutDirection|screenLayout"
             android:exported="true"
             android:label="@string/app_name"
             android:launchMode="singleTop"

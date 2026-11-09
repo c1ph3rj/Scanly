@@ -1,6 +1,5 @@
 package `in`.c1ph3rj.scanly
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -42,7 +41,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
-import `in`.c1ph3rj.scanly.core.common.AppLocales
+import `in`.c1ph3rj.scanly.core.common.AppLocaleProvider
+import `in`.c1ph3rj.scanly.feature.camera.CameraPermissionSupport
 import `in`.c1ph3rj.scanly.feature.tools.pdf.IncomingPdf
 import `in`.c1ph3rj.scanly.navigation.ToolsPdfReaderDestination
 import kotlinx.coroutines.flow.first
@@ -82,11 +82,6 @@ class MainActivity : ComponentActivity() {
         onBufferOverflow = BufferOverflow.DROP_OLDEST,
     )
 
-    /** Android 10–12: applies the in-app language (13+ handle it in the platform). */
-    override fun attachBaseContext(newBase: Context) {
-        super.attachBaseContext(AppLocales.wrap(newBase))
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -94,10 +89,12 @@ class MainActivity : ComponentActivity() {
         // and labels stay visible after theme changes and process restarts.
         ScanlyWidgetSupport.refreshAll(this)
         setContent {
-            ScanlyApp(
-                coldStartIntent = intent,
-                externalIntents = externalIntents,
-            )
+            AppLocaleProvider {
+                ScanlyApp(
+                    coldStartIntent = intent,
+                    externalIntents = externalIntents,
+                )
+            }
         }
     }
 
@@ -130,7 +127,7 @@ private fun ScanlyApp(
     val resources = androidx.compose.ui.platform.LocalResources.current
     val uriHandler = androidx.compose.ui.platform.LocalUriHandler.current
     val lifecycleOwner = LocalLifecycleOwner.current
-    val activity = context as ComponentActivity
+    val activity = CameraPermissionSupport.findActivity(context) as ComponentActivity
     val flexibleUpdateSnackbarHostState = remember { SnackbarHostState() }
     val playUpdateLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartIntentSenderForResult(),

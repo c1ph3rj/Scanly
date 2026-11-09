@@ -21,14 +21,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -46,15 +43,14 @@ import java.util.Locale
 @Composable
 fun SettingsLanguageRoute(onNavigateUp: () -> Unit) {
     val context = LocalContext.current
-    var selected by remember { mutableStateOf(AppLocales.selectedLanguage(context)) }
-    val deviceLocale = remember { AppLocales.deviceLocale(context) }
+    val selected = AppLocales.selectedLanguage(context)
+    val deviceLocale = AppLocales.deviceLocale(context)
     SettingsLanguageScreen(
         selected = selected,
         deviceLocale = deviceLocale,
         onNavigateUp = onNavigateUp,
         onLanguageSelected = { language ->
             if (language != selected) {
-                selected = language
                 CameraPermissionSupport.findActivity(context)?.let { AppLocales.setLanguage(it, language) }
             }
         },
@@ -77,7 +73,7 @@ fun SettingsLanguageScreen(
         onNavigateUp = onNavigateUp,
     ) { innerPadding ->
         LazyColumn(
-            modifier = Modifier.fillMaxSize().padding(innerPadding),
+            modifier = Modifier.fillMaxSize().padding(innerPadding).testTag("settings_language_list"),
             contentPadding = PaddingValues(
                 start = window.horizontalPadding,
                 end = window.horizontalPadding,
