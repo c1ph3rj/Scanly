@@ -1,5 +1,7 @@
 package `in`.c1ph3rj.scanly.feature.library
 
+import androidx.compose.ui.res.pluralStringResource
+import `in`.c1ph3rj.scanly.core.common.appPluralString
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -85,6 +87,9 @@ import `in`.c1ph3rj.scanly.feature.components.ScanlyConfirmDialog
 import `in`.c1ph3rj.scanly.feature.components.ScanlyDetailScaffold
 import `in`.c1ph3rj.scanly.feature.pip.PipMood
 import kotlinx.coroutines.flow.collectLatest
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
+import androidx.compose.ui.res.stringResource
 
 /**
  * "Recently deleted" screen: lists folders, documents and pages in the bin with how long each has
@@ -176,10 +181,10 @@ fun RecentlyDeletedScreen(
     }
 
     ScanlyDetailScaffold(
-        title = if (selecting) "${selectedKeys.size} selected" else "Recently deleted",
+        title = if (selecting) pluralStringResource(R.plurals.common_selected, selectedKeys.size, selectedKeys.size) else stringResource(R.string.recently_deleted_recently_deleted),
         onNavigateUp = if (selecting) ({ selectedKeys = emptyList() }) else onNavigateUp,
         navigationIcon = if (selecting) Icons.Filled.Close else Icons.AutoMirrored.Filled.ArrowBack,
-        navigationContentDescription = if (selecting) "Clear selection" else "Back",
+        navigationContentDescription = if (selecting) stringResource(R.string.recently_deleted_clear_selection) else stringResource(R.string.zoomable_image_back),
         actions = {
             when {
                 selecting -> TextButton(
@@ -192,13 +197,13 @@ fun RecentlyDeletedScreen(
                     },
                     enabled = !uiState.isEmptying,
                 ) {
-                    Text(if (selectedKeys.size == allRows.size) "Select none" else "Select all")
+                    Text(if (selectedKeys.size == allRows.size) stringResource(R.string.recently_deleted_select_none) else stringResource(R.string.group_detail_select_all))
                 }
                 uiState.itemCount > 0 -> TextButton(
                     onClick = { showEmptyWarning = true },
                     enabled = !uiState.isEmptying,
                 ) {
-                    Text("Empty")
+                    Text(stringResource(R.string.recently_deleted_empty))
                 }
             }
         },
@@ -246,26 +251,25 @@ fun RecentlyDeletedScreen(
                     val documentRetention = TrashKind.DOCUMENT.retentionLabel()
                     item(key = "empty-state") {
                         PipEmptyState(
-                            pipLine = "nothing in the bin. deleted things wait here for a few days.",
+                            pipLine = stringResource(R.string.recently_deleted_nothing_in_the_bin_deleted),
                             pipMood = PipMood.IDLE,
-                            title = "Nothing here",
-                            description = "Deleted pages stay here for $pageRetention, and documents " +
-                                "and folders for $documentRetention, so you can bring them back.",
+                            title = stringResource(R.string.recently_deleted_nothing_here),
+                            description = stringResource(R.string.recently_deleted_deleted_pages_stay_here_for, pageRetention, documentRetention),
                         )
                     }
                 } else {
                     item(key = "retention-note") {
                         Text(
-                            text = recentlyDeletedRetentionNote + " Long-press an item for more options.",
+                            text = recentlyDeletedRetentionNote + " " + stringResource(R.string.recently_deleted_long_press_for_options),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.padding(horizontal = 4.dp, vertical = 4.dp),
                         )
                     }
                     listOf(
-                        "Folders" to uiState.folders,
-                        "Documents" to uiState.documents,
-                        "Pages" to uiState.pages,
+                        appString(R.string.library_folders) to uiState.folders,
+                        appString(R.string.library_documents) to uiState.documents,
+                        appString(R.string.document_detail_pages) to uiState.pages,
                     ).forEach { (title, rows) ->
                         trashSection(
                             title = title,
@@ -288,18 +292,18 @@ fun RecentlyDeletedScreen(
     if (showEmptyWarning) {
         val count = uiState.itemCount
         ScanlyConfirmDialog(
-            title = "Empty Recently deleted?",
+            title = stringResource(R.string.recently_deleted_empty_recently_deleted),
             text = if (count == 1) {
-                "This item will be deleted permanently. This can't be undone."
+                stringResource(R.string.recently_deleted_this_item_will_be_deleted)
             } else {
-                "All $count items will be deleted permanently. This can't be undone."
+                stringResource(R.string.recently_deleted_all_items_will_be_deleted, count)
             },
             onDismiss = { showEmptyWarning = false },
             onConfirm = {
                 showEmptyWarning = false
                 onEmptyAll()
             },
-            confirmLabel = "Delete all",
+            confirmLabel = stringResource(R.string.recently_deleted_delete_all),
             confirmDestructive = true,
             dismissEnabled = !uiState.isEmptying,
             confirmEnabled = !uiState.isEmptying,
@@ -308,14 +312,14 @@ fun RecentlyDeletedScreen(
 
     pendingDelete?.let { row ->
         ScanlyConfirmDialog(
-            title = "Delete forever?",
+            title = stringResource(R.string.recently_deleted_delete_forever_3),
             text = deleteForeverText(row.item),
             onDismiss = { pendingDeleteKey = null },
             onConfirm = {
                 pendingDeleteKey = null
                 onDeleteForever(row)
             },
-            confirmLabel = "Delete",
+            confirmLabel = stringResource(R.string.library_card_presentation_delete),
             confirmDestructive = true,
         )
     }
@@ -323,18 +327,18 @@ fun RecentlyDeletedScreen(
     if (confirmDeleteSelection && selectedRows.isNotEmpty()) {
         val count = selectedRows.size
         ScanlyConfirmDialog(
-            title = if (count == 1) "Delete 1 item forever?" else "Delete $count items forever?",
+            title = if (count == 1) stringResource(R.string.recently_deleted_delete_1_item_forever) else stringResource(R.string.recently_deleted_delete_items_forever, count),
             text = if (count == 1) {
                 deleteForeverText(selectedRows.single().item)
             } else {
-                "The $count selected items will be deleted permanently. This can't be undone."
+                stringResource(R.string.recently_deleted_the_selected_items_will_be, count)
             },
             onDismiss = { confirmDeleteSelection = false },
             onConfirm = {
                 confirmDeleteSelection = false
                 onDeleteForeverAll(selectedRows)
             },
-            confirmLabel = "Delete",
+            confirmLabel = stringResource(R.string.library_card_presentation_delete),
             confirmDestructive = true,
         )
     }
@@ -416,9 +420,9 @@ private fun RecentlyDeletedRowContent(
                 .combinedClickable(
                     enabled = actionsEnabled,
                     role = Role.Button,
-                    onClickLabel = if (selecting) "Select" else "Show options",
+                    onClickLabel = if (selecting) stringResource(R.string.recently_deleted_select) else stringResource(R.string.recently_deleted_show_options),
                     onClick = { if (selecting) onToggle() else menuOpen = true },
-                    onLongClickLabel = if (selecting) "Select" else "Show options",
+                    onLongClickLabel = if (selecting) stringResource(R.string.recently_deleted_select) else stringResource(R.string.recently_deleted_show_options),
                     onLongClick = {
                         haptics.performHapticFeedback(HapticFeedbackType.LongPress)
                         if (selecting) onToggle() else menuOpen = true
@@ -439,7 +443,7 @@ private fun RecentlyDeletedRowContent(
                 )
                 is TrashedPage -> TrashThumbnail(
                     thumbnailPath = item.thumbnailPath,
-                    title = "Page ${item.pageNumber}",
+                    title = stringResource(R.string.trash_use_cases_page, item.pageNumber),
                     placeholder = item.pageNumber.toString(),
                 )
             }
@@ -480,7 +484,7 @@ private fun RecentlyDeletedRowContent(
                 ) {
                     Icon(
                         imageVector = Icons.Outlined.Restore,
-                        contentDescription = "Restore $label",
+                        contentDescription = stringResource(R.string.recently_deleted_restore_2, label),
                         modifier = Modifier.size(22.dp),
                     )
                 }
@@ -490,7 +494,7 @@ private fun RecentlyDeletedRowContent(
                 ) {
                     Icon(
                         imageVector = Icons.Outlined.DeleteForever,
-                        contentDescription = "Delete $label forever",
+                        contentDescription = stringResource(R.string.recently_deleted_delete_forever_2, label),
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.size(22.dp),
                     )
@@ -527,19 +531,19 @@ private fun RowQuickMenu(
 ) {
     DropdownMenu(expanded = expanded, onDismissRequest = onDismiss) {
         DropdownMenuItem(
-            text = { Text("Restore") },
+            text = { Text(stringResource(R.string.recently_deleted_restore)) },
             leadingIcon = { Icon(Icons.Outlined.Restore, contentDescription = null) },
             onClick = onRestore,
         )
         DropdownMenuItem(
-            text = { Text("Select") },
+            text = { Text(stringResource(R.string.recently_deleted_select)) },
             leadingIcon = { Icon(Icons.Outlined.Checklist, contentDescription = null) },
             onClick = onSelect,
         )
         // Kept apart so a tap meant for Restore can't land on Delete forever.
         HorizontalDivider()
         DropdownMenuItem(
-            text = { Text("Delete forever", color = MaterialTheme.colorScheme.error) },
+            text = { Text(stringResource(R.string.recently_deleted_delete_forever), color = MaterialTheme.colorScheme.error) },
             leadingIcon = {
                 Icon(
                     Icons.Outlined.DeleteForever,
@@ -619,7 +623,7 @@ private fun SelectionActionBar(
                     )
                     Spacer(Modifier.width(8.dp))
                     Text(
-                        "Delete",
+                        stringResource(R.string.library_card_presentation_delete),
                         color = if (enabled) MaterialTheme.colorScheme.error else Color.Unspecified,
                     )
                 }
@@ -630,7 +634,7 @@ private fun SelectionActionBar(
                 ) {
                     Icon(Icons.Outlined.Restore, contentDescription = null, modifier = Modifier.size(18.dp))
                     Spacer(Modifier.width(8.dp))
-                    Text("Restore")
+                    Text(stringResource(R.string.recently_deleted_restore))
                 }
             }
         }
@@ -691,51 +695,46 @@ private fun TrashThumbnail(
 private fun rowTitle(item: TrashedItem): String = when (item) {
     is TrashedFolder -> item.title
     is TrashedDocument -> item.document.title
-    is TrashedPage -> "Page ${item.pageNumber}"
+    is TrashedPage -> appString(R.string.trash_use_cases_page, item.pageNumber)
 }
 
 /** "3 documents", "5 pages", "From \"Invoice\"", "Folder only · 2 documents kept in Library". */
 private fun rowDetail(item: TrashedItem): String = when (item) {
     is TrashedFolder -> when {
         // "Delete folder only": the documents stayed in the library and rejoin it on restore.
-        item.keptDocumentCount == 1 -> "Folder only · 1 document kept in Library"
-        item.keptDocumentCount > 1 -> "Folder only · ${item.keptDocumentCount} documents kept in Library"
-        item.documentCount == 0 -> "No documents"
-        item.documentCount == 1 -> "1 document"
-        else -> "${item.documentCount} documents"
+        item.keptDocumentCount == 1 -> appString(R.string.recently_deleted_folder_only_1_document_kept)
+        item.keptDocumentCount > 1 -> appString(R.string.recently_deleted_folder_only_documents_kept_in, item.keptDocumentCount)
+        item.documentCount == 0 -> appString(R.string.recently_deleted_no_documents)
+        else -> appPluralString(R.plurals.common_documents, item.documentCount, item.documentCount)
     }
-    is TrashedDocument -> if (item.document.pageCount == 1) {
-        "1 page"
-    } else {
-        "${item.document.pageCount} pages"
-    }
-    is TrashedPage -> "From \"${item.documentTitle}\""
+    is TrashedDocument -> appPluralString(R.plurals.common_pages, item.document.pageCount, item.document.pageCount)
+    is TrashedPage -> appString(R.string.recently_deleted_from, item.documentTitle)
 }
 
 /** "5 days left", "1 day left", "Last day". */
 private fun daysLeftLabel(daysUntilPurge: Int): String = when {
-    daysUntilPurge <= 0 -> "Last day"
-    daysUntilPurge == 1 -> "1 day left"
-    else -> "$daysUntilPurge days left"
+    daysUntilPurge <= 0 -> appString(R.string.recently_deleted_last_day)
+    daysUntilPurge == 1 -> appString(R.string.recently_deleted_1_day_left)
+    else -> appString(R.string.recently_deleted_days_left, daysUntilPurge)
 }
 
 /** Target of "Restore / Delete <label>" for screen readers. */
 private fun deleteLabel(item: TrashedItem): String = when (item) {
     is TrashedFolder -> "\"${item.title}\""
     is TrashedDocument -> "\"${item.document.title}\""
-    is TrashedPage -> "page ${item.pageNumber} of \"${item.documentTitle}\""
+    is TrashedPage -> appString(R.string.recently_deleted_page_of, item.pageNumber, item.documentTitle)
 }
 
 private fun deleteForeverText(item: TrashedItem): String = when (item) {
     is TrashedFolder -> if (item.documentCount == 0) {
         // Folder only (or empty): its documents, if any, are safe in the library.
-        "The folder \"${item.title}\" will be deleted permanently. This can't be undone." +
-            if (item.keptDocumentCount > 0) " Its documents stay in your Library." else ""
+        appString(R.string.recently_deleted_the_folder_will_be_deleted, item.title) +
+            if (item.keptDocumentCount > 0) appString(R.string.recently_deleted_its_documents_stay_in_your) else ""
     } else {
-        "\"${item.title}\" and the documents that were in it will be deleted permanently. This can't be undone."
+        appString(R.string.recently_deleted_and_the_documents_that_were, item.title)
     }
     is TrashedDocument ->
-        "\"${item.document.title}\" and its pages will be deleted permanently. This can't be undone."
+        appString(R.string.recently_deleted_and_its_pages_will_be, item.document.title)
     is TrashedPage ->
-        "Page ${item.pageNumber} of \"${item.documentTitle}\" will be deleted permanently. This can't be undone."
+        appString(R.string.recently_deleted_page_of_will_be_deleted, item.pageNumber, item.documentTitle)
 }

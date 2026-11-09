@@ -57,6 +57,8 @@ import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import `in`.c1ph3rj.scanly.domain.model.LicenseInfo
 import `in`.c1ph3rj.scanly.domain.model.SettingsFaq
 import `in`.c1ph3rj.scanly.feature.components.ScanlyDetailScaffold
+import `in`.c1ph3rj.scanly.R
+import androidx.compose.ui.res.stringResource
 
 private val DetailRowPadding = PaddingValues(horizontal = 16.dp, vertical = 14.dp)
 
@@ -100,7 +102,7 @@ fun SettingsFaqScreen(
     }
 
     ScanlyDetailScaffold(
-        title = "Help & FAQ",
+        title = stringResource(R.string.settings_detail_screens_help_faq),
         onNavigateUp = onNavigateUp,
         modifier = modifier,
     ) { innerPadding ->
@@ -209,14 +211,14 @@ private fun FaqSearchField(
         modifier = modifier.fillMaxWidth(),
         singleLine = true,
         shape = MaterialTheme.shapes.extraLarge,
-        placeholder = { Text("Search help") },
+        placeholder = { Text(stringResource(R.string.settings_detail_screens_search_help)) },
         leadingIcon = {
             Icon(imageVector = Icons.Filled.Search, contentDescription = null)
         },
         trailingIcon = {
             if (query.isNotEmpty()) {
                 IconButton(onClick = { onQueryChange("") }) {
-                    Icon(imageVector = Icons.Filled.Close, contentDescription = "Clear search")
+                    Icon(imageVector = Icons.Filled.Close, contentDescription = stringResource(R.string.library_search_clear_search))
                 }
             }
         },
@@ -241,7 +243,7 @@ private fun FaqCategoryChips(
         FilterChip(
             selected = selectedCategory == null,
             onClick = { onSelectCategory(null) },
-            label = { Text("All") },
+            label = { Text(stringResource(R.string.settings_detail_screens_all)) },
         )
         categories.forEach { category ->
             FilterChip(
@@ -275,15 +277,15 @@ private fun FaqEmptyState(
         }
         Text(
             text = if (query.isEmpty()) {
-                "No answers in this category."
+                stringResource(R.string.settings_detail_screens_no_answers_in_this_category)
             } else {
-                "No answers for “$query”."
+                stringResource(R.string.settings_detail_screens_no_answers_for, query)
             },
             style = MaterialTheme.typography.titleMedium,
             textAlign = TextAlign.Center,
         )
         Text(
-            text = "Try a different word, or browse a category.",
+            text = stringResource(R.string.settings_detail_screens_try_a_different_word_or),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center,
@@ -330,7 +332,7 @@ fun SettingsLicensesScreen(
     val windowSizeInfo = rememberWindowSizeInfo()
 
     ScanlyDetailScaffold(
-        title = "Open source",
+        title = stringResource(R.string.settings_detail_screens_open_source),
         onNavigateUp = onNavigateUp,
         modifier = modifier,
     ) { innerPadding ->

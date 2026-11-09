@@ -32,6 +32,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.withContext
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
 
 @Singleton
 class DefaultPlayInAppUpdateCoordinator @Inject constructor(
@@ -188,7 +190,7 @@ class DefaultPlayInAppUpdateCoordinator @Inject constructor(
     }
 
     private fun Throwable.toPlayUpdateMessage(): String = when (this) {
-        is InstallException -> message ?: "Google Play could not check for updates."
-        else -> message ?: "Could not check Google Play for updates."
+        is InstallException -> message ?: appString(R.string.default_play_in_app_update_coordinator_google_play_could_not_check)
+        else -> message ?: appString(R.string.default_play_in_app_update_coordinator_could_not_check_google_play)
     }
 }

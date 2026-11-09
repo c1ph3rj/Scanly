@@ -15,6 +15,8 @@ import java.io.FileOutputStream
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.math.abs
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
 
 /**
  * Burns sign marks into a page's processed image while keeping it editable.
@@ -97,7 +99,7 @@ class PageMarkupStore @Inject constructor(
      * An empty list restores the clean image and forgets the markup.
      */
     suspend fun apply(page: ScanPageEntity, marks: List<SignMark>): Boolean {
-        val processedPath = page.processedImagePath ?: error("This page is still processing. Try again in a moment.")
+        val processedPath = page.processedImagePath ?: error(appString(R.string.error_this_page_is_still_processing_try_again))
         val existing = markupDao.getMarkup(page.id)
         // Null when there is no row or it cannot be read; an unreadable row is never treated as empty.
         val existingMarks = existing?.let { SignMarkCodec.decodeOrNull(it.marksJson) }
@@ -180,7 +182,7 @@ class PageMarkupStore @Inject constructor(
             val base = BitmapFactory.decodeFile(
                 basePath,
                 BitmapFactory.Options().apply { inPreferredConfig = Bitmap.Config.ARGB_8888 },
-            ) ?: error("Could not read the page image.")
+            ) ?: error(appString(R.string.error_could_not_read_the_page_image))
             val composite = try {
                 compositor.composite(base, marks)
             } finally {
@@ -189,7 +191,7 @@ class PageMarkupStore @Inject constructor(
             try {
                 FileOutputStream(temp).use { output ->
                     check(composite.compress(Bitmap.CompressFormat.JPEG, JPEG_QUALITY, output)) {
-                        "Could not save the signed page."
+                        appString(R.string.page_markup_store_could_not_save_the_signed)
                     }
                     output.fd.sync()
                 }
@@ -231,8 +233,8 @@ class PageMarkupStore @Inject constructor(
         if (this !is SignMark.Image) return this
         val source = File(imagePath)
         if (source.parentFile?.canonicalPath == markupsDir.canonicalPath) return this
-        if (!markupsDir.exists() && !markupsDir.mkdirs()) error("Could not create signature storage.")
-        require(source.isFile) { "A signature image is missing. Place it again." }
+        if (!markupsDir.exists() && !markupsDir.mkdirs()) error(appString(R.string.error_could_not_create_signature_storage))
+        require(source.isFile) { appString(R.string.error_a_signature_image_is_missing_place_it) }
         val target = File(markupsDir, "$id.png")
         source.copyTo(target, overwrite = true)
         return copy(imagePath = target.absolutePath)
@@ -266,7 +268,7 @@ class PageMarkupStore @Inject constructor(
         }
 
         private fun documentRootOf(processedPath: String): File =
-            File(processedPath).parentFile?.parentFile ?: error("Invalid page image path.")
+            File(processedPath).parentFile?.parentFile ?: error(appString(R.string.error_invalid_page_image_path))
 
         /** Width / height of the image at [path] without decoding it, or null if it cannot be read. */
         private fun imageAspect(path: String): Float? {

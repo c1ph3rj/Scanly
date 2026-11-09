@@ -14,6 +14,8 @@ import kotlin.coroutines.cancellation.CancellationException
 import java.io.File
 import java.io.FileOutputStream
 import javax.inject.Inject
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
 
 /**
  * Progress emitted while each gallery image is decoded and run through the
@@ -27,9 +29,9 @@ data class ImportImagesProgress(
     /** Short, stable stage copy — pair with "X of Y" in the fixed-size loader. */
     val stageLabel: String
         get() = when (stage) {
-            ImportStage.Preparing -> "Preparing page"
-            ImportStage.Detecting -> "Detecting document"
-            ImportStage.Finalizing -> "Saving page"
+            ImportStage.Preparing -> appString(R.string.import_images_use_case_preparing_page)
+            ImportStage.Detecting -> appString(R.string.import_images_use_case_detecting_document)
+            ImportStage.Finalizing -> appString(R.string.import_images_use_case_saving_page)
         }
 
     @Deprecated("Use stageLabel + index fields for fixed loader layout", ReplaceWith("stageLabel"))
@@ -73,7 +75,7 @@ class ImportImagesUseCase @Inject constructor(
     ): ScanlyResult<ImportImagesSummary> = withContext(dispatchers.io) {
         runCatching {
             val total = imageUris.size
-            require(total > 0) { "No images selected." }
+            require(total > 0) { appString(R.string.error_no_images_selected) }
             var imported = 0
 
             imageUris.forEachIndexed { index, uri ->
@@ -102,9 +104,9 @@ class ImportImagesUseCase @Inject constructor(
 
             check(imported > 0) {
                 if (total == 1) {
-                    "The selected file couldn't be opened as an image."
+                    appString(R.string.import_images_use_case_the_selected_file_couldn_t)
                 } else {
-                    "None of the selected files could be opened as images."
+                    appString(R.string.import_images_use_case_none_of_the_selected_files)
                 }
             }
             ImportImagesSummary(importedCount = imported, skippedCount = total - imported)
@@ -115,7 +117,7 @@ class ImportImagesUseCase @Inject constructor(
                 if (throwable is CancellationException) throw throwable
                 ScanlyResult.Failure(
                     ScanlyError(
-                        message = throwable.message ?: "Failed to import images.",
+                        message = throwable.message ?: appString(R.string.error_failed_to_import_images),
                         cause = throwable,
                     ),
                 )
@@ -173,12 +175,12 @@ class ImportImagesUseCase @Inject constructor(
             FileOutputStream(target).use { output ->
                 val compressed = bitmap.compress(Bitmap.CompressFormat.JPEG, IMPORT_JPEG_QUALITY, output)
                 if (!compressed) {
-                    error("Could not write imported image.")
+                    error(appString(R.string.error_could_not_write_imported_image))
                 }
                 output.flush()
             }
             if (!target.exists() || target.length() <= 0L) {
-                error("Imported image file is empty.")
+                error(appString(R.string.error_imported_image_file_is_empty))
             }
         } finally {
             if (!bitmap.isRecycled) {

@@ -16,6 +16,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
 
 @HiltViewModel
 class PdfCompressViewModel @Inject constructor(
@@ -76,7 +78,7 @@ class PdfCompressViewModel @Inject constructor(
      */
     fun runCompress() {
         val source = _uiState.value.sources.firstOrNull() ?: run {
-            emitMessage("Choose a PDF first.")
+            emitMessage(appString(R.string.pdf_compress_choose_a_pdf_first))
             return
         }
         val state = _uiState.value
@@ -86,7 +88,7 @@ class PdfCompressViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 isProcessing = true,
-                progressMessage = "Compressing PDF…",
+                progressMessage = appString(R.string.pdf_compress_compressing_pdf),
                 result = null,
                 compressedSizeBytes = null,
                 savedDestinationLabel = null,

@@ -13,6 +13,8 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
 
 @HiltViewModel
 class PdfMergeViewModel @Inject constructor(
@@ -88,11 +90,11 @@ class PdfMergeViewModel @Inject constructor(
         val state = _uiState.value
         val sources = state.sources
         if (sources.size < 2) {
-            emitMessage("Add at least two PDFs to merge.")
+            emitMessage(appString(R.string.pdf_merge_add_at_least_two_pdfs))
             return
         }
         val name = sanitizePdfBaseName(state.outputName).ifBlank { defaultMergeName() }
-        runProcess("Merging…", outputName = name) { mergePdfsUseCase(sources) }
+        runProcess(appString(R.string.pdf_merge_merging), outputName = name) { mergePdfsUseCase(sources) }
     }
 
     private fun defaultMergeName(): String =

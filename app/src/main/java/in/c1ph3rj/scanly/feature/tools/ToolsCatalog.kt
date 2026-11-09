@@ -26,6 +26,8 @@ import `in`.c1ph3rj.scanly.navigation.ToolsPdfSignDestination
 import `in`.c1ph3rj.scanly.navigation.ToolsPdfToImagesDestination
 import `in`.c1ph3rj.scanly.navigation.ToolsPdfWatermarkDestination
 import `in`.c1ph3rj.scanly.navigation.ToolsQrDestination
+import `in`.c1ph3rj.scanly.core.common.appString
+import `in`.c1ph3rj.scanly.R
 
 /** Identifies what a hub tile does. Hub-local actions have no [ToolItem.route]. */
 enum class ToolActionId {
@@ -60,77 +62,77 @@ data class ToolItem(
 )
 
 /** "Scan": the single full-width camera action. */
-val scanTools: List<ToolItem> = listOf(
+val scanTools: List<ToolItem> get() = listOf(
     ToolItem(
         id = ToolActionId.Scan,
-        title = "Scan a document",
-        caption = "Camera with edge detection",
+        title = appString(R.string.tools_catalog_scan_a_document),
+        caption = appString(R.string.tools_catalog_camera_with_edge_detection),
         icon = Icons.Outlined.DocumentScanner,
         accent = true,
     ),
 )
 
 /** "PDF": gallery import plus PDF tools. */
-val pdfTools: List<ToolItem> = listOf(
+val pdfTools: List<ToolItem> get() = listOf(
     ToolItem(
         id = ToolActionId.Import,
-        title = "Images to PDF",
-        caption = "From gallery",
+        title = appString(R.string.tools_catalog_images_to_pdf),
+        caption = appString(R.string.tools_catalog_from_gallery),
         icon = Icons.Outlined.PhotoLibrary,
     ),
     ToolItem(
         id = ToolActionId.PdfSign,
-        title = "Sign",
-        caption = "Sign any PDF",
+        title = appString(R.string.page_image_preview_sign),
+        caption = appString(R.string.tools_catalog_sign_any_pdf),
         icon = Icons.Outlined.Draw,
         route = ToolsPdfSignDestination.route,
     ),
     ToolItem(
         id = ToolActionId.PdfMerge,
-        title = "Merge",
-        caption = "Combine files",
+        title = appString(R.string.tools_catalog_merge),
+        caption = appString(R.string.tools_catalog_combine_files),
         icon = Icons.AutoMirrored.Outlined.MergeType,
         route = ToolsPdfMergeDestination.route,
     ),
     ToolItem(
         id = ToolActionId.PdfCompress,
-        title = "Compress",
-        caption = "Make it smaller",
+        title = appString(R.string.pdf_compress_compress),
+        caption = appString(R.string.tools_catalog_make_it_smaller),
         icon = Icons.Outlined.Compress,
         route = ToolsPdfCompressDestination.route,
     ),
     ToolItem(
         id = ToolActionId.PdfToImages,
-        title = "PDF to JPG",
-        caption = "Pages as images",
+        title = appString(R.string.pdf_to_images_pdf_to_jpg),
+        caption = appString(R.string.tools_catalog_pages_as_images),
         icon = Icons.Outlined.Image,
         route = ToolsPdfToImagesDestination.route,
     ),
     ToolItem(
         id = ToolActionId.PdfPassword,
-        title = "Password",
-        caption = "Lock or unlock",
+        title = appString(R.string.pdf_reader_password),
+        caption = appString(R.string.tools_catalog_lock_or_unlock),
         icon = Icons.Outlined.Lock,
         route = ToolsPdfPasswordDestination.route,
     ),
     ToolItem(
         id = ToolActionId.PdfWatermark,
-        title = "Watermark",
-        caption = "Stamp text",
+        title = appString(R.string.pdf_watermark_watermark),
+        caption = appString(R.string.tools_catalog_stamp_text),
         icon = Icons.Outlined.WaterDrop,
         route = ToolsPdfWatermarkDestination.route,
     ),
     ToolItem(
         id = ToolActionId.PdfReader,
-        title = "Read PDF",
-        caption = "Open any PDF",
+        title = appString(R.string.tools_catalog_read_pdf),
+        caption = appString(R.string.tools_catalog_open_any_pdf),
         icon = Icons.AutoMirrored.Outlined.MenuBook,
         route = ToolsPdfReaderDestination.route,
     ),
     ToolItem(
         id = ToolActionId.PdfImport,
-        title = "Add to library",
-        caption = "PDF to editable scan",
+        title = appString(R.string.pdf_import_add_to_library),
+        caption = appString(R.string.tools_catalog_pdf_to_editable_scan),
         icon = Icons.Outlined.LibraryAdd,
         route = ToolsPdfImportDestination.route,
     ),
@@ -140,25 +142,25 @@ val pdfTools: List<ToolItem> = listOf(
  * "Utilities": the QR tile opens straight into scanning (it also reads product barcodes), where
  * Create is a tab. Image to text and Signatures reuse the Extracted text and Your signatures screens.
  */
-val utilityTools: List<ToolItem> = listOf(
+val utilityTools: List<ToolItem> get() = listOf(
     ToolItem(
         id = ToolActionId.Qr,
-        title = "QR & barcode",
-        caption = "Scan or create",
+        title = appString(R.string.tools_catalog_qr_barcode),
+        caption = appString(R.string.tools_catalog_scan_or_create),
         icon = Icons.Outlined.QrCode2,
         route = ToolsQrDestination.route,
     ),
     ToolItem(
         id = ToolActionId.ImageText,
-        title = "Image to text",
-        caption = "Photos & scans",
+        title = appString(R.string.image_text_image_to_text),
+        caption = appString(R.string.tools_catalog_photos_scans),
         icon = Icons.Outlined.TextFields,
         route = ToolsImageTextDestination.route,
     ),
     ToolItem(
         id = ToolActionId.Signatures,
-        title = "My signatures",
-        caption = "Create & manage",
+        title = appString(R.string.tools_catalog_my_signatures),
+        caption = appString(R.string.tools_catalog_create_manage),
         icon = Icons.Outlined.Gesture,
         route = SignatureManageDestination.route,
     ),

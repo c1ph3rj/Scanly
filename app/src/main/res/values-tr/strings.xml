@@ -1,0 +1,1994 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="shortcut_scan_short">Tara</string>
+    <string name="shortcut_scan_long">Yeni tarama başlat</string>
+    <string name="shortcut_scan_disabled">Tarama kullanılamıyor</string>
+    <string name="shortcut_import_short">İçe aktar</string>
+    <string name="shortcut_import_long">Fotoğrafları içe aktar</string>
+    <string name="shortcut_import_disabled">İçe aktarma kullanılamıyor</string>
+    <string name="shortcut_qr_short">QR</string>
+    <string name="shortcut_qr_long">QR tara veya oluştur, barkod oku</string>
+    <string name="shortcut_qr_disabled">QR aracı kullanılamıyor</string>
+    <string name="shortcut_library_short">Kitaplık</string>
+    <string name="shortcut_library_long">Kitaplığını aç</string>
+    <string name="shortcut_library_disabled">Kitaplık kullanılamıyor</string>
+    <string name="widget_actions_label">Scanly işlemleri</string>
+    <string name="widget_actions_description">Tara, İçe aktar, QR ve Kitaplık\'a hızlı erişim.</string>
+    <string name="widget_scan_label">Scanly Tara</string>
+    <string name="widget_scan_description">Yeni bir belge taraması başlatın.</string>
+    <string name="widget_qr_label">Scanly QR</string>
+    <string name="widget_qr_description">QR tarama ve oluşturma aracını açın.</string>
+    <string name="widget_action_scan">Tara</string>
+    <string name="widget_action_import">İçe aktar</string>
+    <string name="widget_action_qr">QR</string>
+    <string name="widget_action_library">Kitaplık</string>
+    <!-- DocumentPresentationFormatter -->
+    <string name="document_presentation_formatter_imported">"İçe aktarılan %1$s"</string>
+    <string name="document_presentation_formatter_folder">"Klasör %1$s"</string>
+    <string name="document_presentation_formatter_new_folder">"Yeni klasör %1$s"</string>
+    <string name="document_presentation_formatter_scan">"Tarama %1$s"</string>
+    <string name="document_presentation_formatter_document">"Belge %1$s"</string>
+    <!-- ImageImportSupport -->
+    <string name="image_import_only_images_can_be_added">"Tek seferde en fazla %1$s görsel eklenebilir."</string>
+    <string name="image_import_skipped_files_that_couldn_t">"Açılamayan %1$s dosya atlandı."</string>
+    <string name="image_import_skipped_1_file_that_couldn">Açılamayan 1 dosya atlandı.</string>
+    <string name="image_import_imported_images">"%1$s görsel içe aktarıldı."</string>
+    <string name="image_import_imported_1_image">1 görsel içe aktarıldı.</string>
+    <!-- ZoomableImageDialog -->
+    <string name="zoomable_image_image_unavailable">Görsel kullanılamıyor</string>
+    <string name="zoomable_image_reset_zoom">Yakınlaştırmayı sıfırla</string>
+    <string name="zoomable_image_back">Geri</string>
+    <string name="zoomable_image_close">Kapat</string>
+    <!-- LibraryOperationCoordinator -->
+    <string name="library_operation_coordinator_library_maintenance_is_in_progress">Kitaplık bakımı sürüyor.</string>
+    <!-- DefaultDocumentRepository -->
+    <string name="default_document_repository_could_not_remove_empty_documents">Boş belgeler kaldırılamadı.</string>
+    <string name="default_document_repository_could_not_clear_old_deleted">Eski silinmiş belgeler temizlenemedi.</string>
+    <string name="default_document_repository_could_not_empty_recently_deleted">Son silinenler boşaltılamadı.</string>
+    <string name="default_document_repository_could_not_restore_the_document">Belge geri yüklenemedi.</string>
+    <string name="default_document_repository_could_not_move_the_document">Belge Son silinenler\'e taşınamadı.</string>
+    <!-- DefaultDocumentExportRepository -->
+    <string name="default_document_export_repository_could_not_prepare_group_zip">Klasör ZIP olarak paylaşım için hazırlanamadı.</string>
+    <string name="default_document_export_repository_could_not_prepare_group_pdf">Klasör PDF olarak paylaşım için hazırlanamadı.</string>
+    <string name="default_document_export_repository_could_not_export_group_as">Klasör ZIP olarak dışa aktarılamadı.</string>
+    <string name="default_document_export_repository_could_not_export_group_as_2">Klasör PDF olarak dışa aktarılamadı.</string>
+    <string name="default_document_export_repository_could_not_prepare_images_for">Görseller paylaşım için hazırlanamadı.</string>
+    <string name="default_document_export_repository_could_not_export_images">Görseller dışa aktarılamadı.</string>
+    <string name="default_document_export_repository_could_not_prepare_pdf_share">PDF paylaşım için hazırlanamadı.</string>
+    <string name="default_document_export_repository_could_not_export_pdf">PDF dışa aktarılamadı.</string>
+    <!-- DefaultGroupRepository -->
+    <string name="default_group_repository_could_not_clear_old_deleted">Eski silinmiş klasörler temizlenemedi.</string>
+    <string name="default_group_repository_could_not_delete_the_folders">Klasörler silinemedi.</string>
+    <string name="default_group_repository_could_not_delete_the_folder">Klasör silinemedi.</string>
+    <string name="default_group_repository_could_not_restore_the_folder">Klasör geri yüklenemedi.</string>
+    <string name="default_group_repository_could_not_move_the_folder">Klasör Son silinenler\'e taşınamadı.</string>
+    <!-- DefaultPageRepository -->
+    <string name="default_page_repository_applied_to_of_pages_save">"%2$s sayfadan %1$s tanesine uygulandı. Kalanlar için yeniden kaydedin."</string>
+    <string name="default_page_repository_could_not_clear_old_deleted">Eski silinmiş sayfalar temizlenemedi.</string>
+    <string name="default_page_repository_could_not_delete_the_pages">Sayfalar silinemedi.</string>
+    <string name="default_page_repository_could_not_delete_the_page">Sayfa silinemedi.</string>
+    <string name="default_page_repository_could_not_restore_the_page">Sayfa geri yüklenemedi.</string>
+    <!-- DefaultPdfToolkitRepository -->
+    <string name="default_pdf_toolkit_repository_incorrect_pdf_password">PDF şifresi yanlış.</string>
+    <string name="default_pdf_toolkit_repository_this_pdf_is_not_stored">Bu PDF Scanly içinde kayıtlı değil.</string>
+    <string name="default_pdf_toolkit_repository_the_scanly_document_could_not">Scanly belgesi PDF olarak hazırlanamadı.</string>
+    <string name="default_pdf_toolkit_repository_could_not_prepare_share">Paylaşım hazırlanamadı.</string>
+    <string name="default_pdf_toolkit_repository_could_not_read_this_page">Bu sayfa okunamadı.</string>
+    <string name="default_pdf_toolkit_repository_failed_to_encode_page">Sayfa %1$s kodlanamadı.</string>
+    <string name="default_pdf_toolkit_repository_could_not_save_the_images">Görseller kaydedilemedi.</string>
+    <string name="default_pdf_toolkit_repository_page">"%1$s – sayfa %2$s.%3$s"</string>
+    <string name="default_pdf_toolkit_repository_could_not_estimate_the_image">Görsel boyutu tahmin edilemedi.</string>
+    <string name="default_pdf_toolkit_repository_could_not_open_this_pdf">Bu PDF açılamadı.</string>
+    <string name="default_pdf_toolkit_repository_could_not_render_pdf_page">PDF sayfası oluşturulamadı.</string>
+    <string name="default_pdf_toolkit_repository_could_not_sign_this_pdf">Bu PDF imzalanamadı.</string>
+    <string name="default_pdf_toolkit_repository_could_not_open_this_pdf_2">Bu PDF imzalamak için açılamadı.</string>
+    <string name="default_pdf_toolkit_repository_could_not_update_watermark_preview">Filigran önizlemesi güncellenemedi.</string>
+    <string name="default_pdf_toolkit_repository_could_not_add_watermark">Filigran eklenemedi.</string>
+    <string name="default_pdf_toolkit_repository_could_not_remove_pdf_password">PDF şifresi kaldırılamadı.</string>
+    <string name="default_pdf_toolkit_repository_could_not_password_protect_pdf">PDF şifreyle korunamadı.</string>
+    <string name="default_pdf_toolkit_repository_could_not_compress_pdf">PDF sıkıştırılamadı.</string>
+    <string name="default_pdf_toolkit_repository_this_pdf_is_already_well">Bu PDF zaten iyi optimize edilmiş. Sıkıştırmak boyutunu küçültmez.</string>
+    <string name="default_pdf_toolkit_repository_page_is_too_large_to">"Sayfa %1$s bu cihazda sıkıştırılamayacak kadar büyük. En küçük kaliteyi deneyin."</string>
+    <string name="default_pdf_toolkit_repository_could_not_merge_pdfs">PDF\'ler birleştirilemedi.</string>
+    <string name="default_pdf_toolkit_repository_one_of_the_pdfs">PDF\'lerden biri</string>
+    <string name="default_pdf_toolkit_repository_could_not_open_pdf">PDF açılamadı.</string>
+    <!-- PdfSignatureStamper -->
+    <string name="pdf_signature_stamper_text_and_dates_support_latin">Metin ve tarihlerde Latin, Yunan ve Kiril harfleri, rakamlar ve simgeler kullanılabilir.</string>
+    <!-- PdfWatermarkStamper -->
+    <string name="pdf_watermark_stamper_watermarks_support_latin_greek_and">Filigranlarda Latin, Yunan ve Kiril harfleri, rakamlar ve simgeler kullanılabilir. Metni Latin harfleriyle yazmayı deneyin.</string>
+    <!-- DefaultQrCodeRepository -->
+    <string name="default_qr_code_repository_could_not_save_qr_code">QR kod kaydedilemedi.</string>
+    <string name="default_qr_code_repository_could_not_generate_qr_code">QR kod oluşturulamadı.</string>
+    <!-- DefaultPageMarkupRepository -->
+    <string name="default_page_markup_repository_could_not_save_the_signed">İmzalı sayfalar kaydedilemedi.</string>
+    <string name="default_page_markup_repository_could_not_load_signatures_for">Bu belgenin imzaları yüklenemedi.</string>
+    <!-- DefaultSignatureRepository -->
+    <string name="default_signature_repository_could_not_save_the_image">Görsel kaydedilemedi.</string>
+    <string name="default_signature_repository_could_not_prepare_the_image">Görsel hazırlanamadı.</string>
+    <string name="default_signature_repository_could_not_update_the_signature">İmza güncellenemedi.</string>
+    <string name="default_signature_repository_could_not_delete_the_signature">İmza silinemedi.</string>
+    <string name="default_signature_repository_could_not_read_this_image">Bu görsel okunamadı.</string>
+    <string name="default_signature_repository_could_not_save_the_signature">İmza kaydedilemedi.</string>
+    <!-- PageMarkupStore -->
+    <string name="page_markup_store_could_not_save_the_signed">İmzalı sayfa kaydedilemedi.</string>
+    <!-- DefaultPageTextRepository -->
+    <string name="default_page_text_repository_could_not_queue_pages_to">Sayfalar yeniden okunmak üzere sıraya alınamadı.</string>
+    <string name="default_page_text_repository_could_not_update_the_text">Metin dizini güncellenemedi.</string>
+    <string name="default_page_text_repository_could_not_save_your_changes">Değişiklikleriniz kaydedilemedi.</string>
+    <string name="default_page_text_repository_could_not_read_text_from">Bu sayfadaki metin okunamadı.</string>
+    <string name="default_page_text_repository_could_not_read_text_from_2">Bu belgedeki metin okunamadı.</string>
+    <!-- DefaultPlayInAppUpdateCoordinator -->
+    <string name="default_play_in_app_update_coordinator_could_not_check_google_play">Google Play\'de güncelleme olup olmadığı kontrol edilemedi.</string>
+    <string name="default_play_in_app_update_coordinator_google_play_could_not_check">Google Play güncellemeleri kontrol edemedi.</string>
+    <!-- PlayStoreAppUpdateRepository -->
+    <string name="play_store_app_update_repository_update_available">Güncelleme var</string>
+    <string name="play_store_app_update_repository_latest">En son</string>
+    <!-- PdfExportOptions -->
+    <string name="pdf_export_options_use_no_more_than_characters">"En fazla %1$s karakter kullanın."</string>
+    <string name="pdf_export_options_use_at_least_characters">"En az %1$s karakter kullanın."</string>
+    <string name="pdf_export_options_enter_a_pdf_password">Bir PDF şifresi girin.</string>
+    <!-- QrPayload -->
+    <string name="qr_payload_text_characters">"Metin · %1$s karakter"</string>
+    <string name="qr_payload_phone_number">Telefon numarası</string>
+    <string name="qr_payload_email">E-posta</string>
+    <string name="qr_payload_contact_card">Kişi kartı</string>
+    <string name="qr_payload_wi_fi">"Wi-Fi · %1$s"</string>
+    <string name="qr_payload_upi">"UPI · %1$s"</string>
+    <string name="qr_payload_link_not_secure_http">Bağlantı · güvenli değil (http)</string>
+    <string name="qr_payload_link_https">Bağlantı · https</string>
+    <string name="qr_payload_empty_text">Boş metin</string>
+    <string name="qr_payload_contact">Kişi</string>
+    <string name="qr_payload_wi_fi_network">Wi-Fi ağı</string>
+    <string name="qr_payload_pay">"Öde: %1$s"</string>
+    <string name="qr_payload_text">Metin</string>
+    <string name="qr_payload_phone">Telefon</string>
+    <string name="qr_payload_wi_fi_2">Wi-Fi</string>
+    <string name="qr_payload_upi_payment">UPI ödemesi</string>
+    <string name="qr_payload_link">Bağlantı</string>
+    <!-- DetectDocumentCornersUseCase -->
+    <string name="detect_document_corners_use_case_document_detection_failed">Belge algılanamadı.</string>
+    <string name="detect_document_corners_use_case_could_not_detect_a_document">Bu görselde belge algılanamadı.</string>
+    <!-- ImportImagesUseCase -->
+    <string name="import_images_use_case_none_of_the_selected_files">Seçilen dosyaların hiçbiri görsel olarak açılamadı.</string>
+    <string name="import_images_use_case_the_selected_file_couldn_t">Seçilen dosya görsel olarak açılamadı.</string>
+    <string name="import_images_use_case_saving_page">Sayfa kaydediliyor</string>
+    <string name="import_images_use_case_detecting_document">Belge algılanıyor</string>
+    <string name="import_images_use_case_preparing_page">Sayfa hazırlanıyor</string>
+    <!-- TrashUseCases -->
+    <string name="trash_use_cases_page">"Sayfa %1$s"</string>
+    <!-- ImportPdfToLibraryUseCase -->
+    <string name="import_pdf_to_library_use_case_could_not_add_this_pdf">Bu PDF kitaplığınıza eklenemedi.</string>
+    <string name="import_pdf_to_library_use_case_choose_at_least_one_page">En az bir sayfa seçin.</string>
+    <!-- CameraCaptureChrome -->
+    <string name="camera_capture_chrome_done">Bitti</string>
+    <string name="camera_capture_chrome_done_review_pages">"Bitti, %1$s sayfayı incele"</string>
+    <string name="camera_capture_chrome_done_review_1_page">Bitti, 1 sayfayı incele</string>
+    <string name="camera_capture_chrome_turn_auto_capture_on">Otomatik çekimi aç</string>
+    <string name="camera_capture_chrome_turn_auto_capture_off">Otomatik çekimi kapat</string>
+    <!-- CaptureStabilityTracker -->
+    <string name="capture_stability_tracker_saving_page">Sayfa kaydediliyor…</string>
+    <string name="capture_stability_tracker_capturing_page">Sayfa çekiliyor…</string>
+    <string name="capture_stability_tracker_hold_steady">Sabit tutun.</string>
+    <string name="capture_stability_tracker_capturing_now">Şimdi çekiliyor.</string>
+    <string name="capture_stability_tracker_hold_steady_to_auto_capture">Otomatik çekim için sabit tutun.</string>
+    <string name="capture_stability_tracker_hold_position_auto_capture_is">Konumu koruyun. Otomatik çekim kısa bir ara veriyor.</string>
+    <string name="capture_stability_tracker_move_to_the_next_page">Otomatik çekim yeniden hazır olmadan sonraki sayfaya geçin.</string>
+    <string name="capture_stability_tracker_point_your_camera_at_a">Kameranızı belgenin tamamına doğrultun.</string>
+    <string name="capture_stability_tracker_document_detected_tap_capture_whenever">Belge algılandı. Hazır olduğunuzda çekime dokunun.</string>
+    <string name="capture_stability_tracker_auto_capture_is_off_use">Otomatik çekim kapalı. Hazır olduğunuzda deklanşöre basın.</string>
+    <!-- PipCameraComponents -->
+    <string name="pip_camera_not_now">Şimdi değil</string>
+    <string name="pip_camera_allow_camera_access">Kamera erişimine izin ver</string>
+    <string name="pip_camera_open_settings">Ayarlar\'ı aç</string>
+    <string name="pip_camera_photos_stay_on_your_device">Fotoğraflar siz dışa aktarana veya paylaşana kadar cihazınızda kalır</string>
+    <string name="pip_camera_camera_active_only_while_scanning">Kamera yalnızca tarama sırasında etkin</string>
+    <string name="pip_camera_live_preview_with_edge_detection">Kenar algılamalı canlı önizleme</string>
+    <string name="pip_camera_come_back_here_and_pip">Buraya dönün, Pip hazır olacak</string>
+    <string name="pip_camera_settings_permissions_camera_allow">Ayarlar › İzinler › Kamera › İzin ver</string>
+    <string name="pip_camera_scanly_needs_your_camera_to">Scanly, belge sayfalarını çekip düzleştirmek için kameranıza ihtiyaç duyar.</string>
+    <string name="pip_camera_camera_permission_is_blocked_for">Scanly için kamera izni engellenmiş. Belge taramak için Ayarlar\'ı açın, İzinler\'e dokunun ve Kamera\'yı açın.</string>
+    <string name="pip_camera_camera_access_needed">Kamera erişimi gerekli</string>
+    <string name="pip_camera_show_me_the_whole_page">bana sayfanın tamamını göster, dört köşesiyle.</string>
+    <string name="pip_camera_hold_it_almost_there">bekle… az kaldı.</string>
+    <string name="pip_camera_hold_it">"bekle… %1$s"</string>
+    <string name="pip_camera_ooh_edges_hold_still_a">ooo, kenarlar! bir saniye kıpırdama…</string>
+    <string name="pip_camera_auto_capture_is_off_tap">otomatik çekim kapalı. hazır olunca deklanşöre bas.</string>
+    <string name="pip_camera_found_the_edges_tap_the">kenarları buldum. istediğin zaman deklanşöre bas.</string>
+    <string name="pip_camera_got_it_on_to_the">tamamdır! sıradaki sayfaya geçelim.</string>
+    <string name="pip_camera_snap_saving_that_page">çat! sayfayı kaydediyorum…</string>
+    <string name="pip_camera_it_s_all_fuzzy_tap">her şey bulanık. odaklamak için sayfaya dokun.</string>
+    <string name="pip_camera_bit_dark_in_here_more">burası biraz karanlık. biraz ışık mı, yoksa flaş mı deneyelim?</string>
+    <string name="pip_camera_everything_s_dark_is_something">her yer karanlık. lensin önünde bir şey mi var?</string>
+    <!-- ScanSessionScreen -->
+    <string name="scan_session_camera_couldn_t_start_close">Kamera başlatılamadı. Kamerayı kullanan diğer uygulamaları kapatıp tekrar deneyin.</string>
+    <string name="scan_session_camera_couldn_t_start_leave">Kamera başlatılamadı. Bu ekrandan çıkıp yeniden açın.</string>
+    <string name="scan_session_capture">Çek</string>
+    <string name="scan_session_replace_page">Sayfayı değiştir</string>
+    <string name="scan_session_show_grid">Izgarayı göster</string>
+    <string name="scan_session_hide_grid">Izgarayı gizle</string>
+    <string name="scan_session_turn_flash_on">Flaşı aç</string>
+    <string name="scan_session_turn_flash_off">Flaşı kapat</string>
+    <string name="scan_session_close_camera">Kamerayı kapat</string>
+    <string name="scan_session_no_captures">Çekim yok</string>
+    <string name="scan_session_open_a_valid_document_first">Önce geçerli bir belge açın.</string>
+    <string name="scan_session_document_missing">Belge bulunamadı</string>
+    <string name="scan_session_camera_is_not_ready_yet">Kamera henüz hazır değil.</string>
+    <!-- ScanSessionViewModel -->
+    <string name="scan_session_checking_document">Belge kontrol ediliyor…</string>
+    <string name="scan_session_point_your_camera_at_a">Kameranızı gerçek bir belgeye doğrultun.</string>
+    <string name="scan_session_screen_detected_point_at_a">Ekran algılandı. Gerçek bir belgeye doğrultun.</string>
+    <string name="scan_session_page_edges_are_ambiguous_hold">Sayfa kenarları net değil. Sabit tutun veya yaklaşın.</string>
+    <string name="scan_session_two_pages_are_visible_move">İki sayfa görünüyor. Yaklaşıp tek sayfayı kadraja alın.</string>
+    <string name="scan_session_page_saved">"Sayfa %1$s kaydedildi."</string>
+    <string name="scan_session_auto_captured_page">Sayfa %1$s otomatik çekildi.</string>
+    <string name="scan_session_document_not_found">Belge bulunamadı.</string>
+    <string name="scan_session_capture_failed_reposition_the_document">Çekim başarısız oldu. Belgeyi yeniden konumlandırıp tekrar deneyin.</string>
+    <string name="scan_session_page_not_saved_reposition_the">Sayfa kaydedilmedi. Belgeyi yeniden konumlandırıp tekrar deneyin.</string>
+    <string name="scan_session_live_detection_is_unavailable_manual">Canlı algılama kullanılamıyor. Manuel çekim yine de çalışır.</string>
+    <string name="scan_session_point_your_camera_at_a_2">Kameranızı bir belgeye doğrultun.</string>
+    <!-- ExportShareComponents -->
+    <string name="export_share_passwords_match">Şifreler eşleşiyor.</string>
+    <string name="export_share_confirm_password">Şifreyi onayla</string>
+    <string name="export_share_4_64_characters_send_it">4–64 karakter. Şifreyi PDF\'den ayrı olarak gönderin.</string>
+    <string name="export_share_show_password">Şifreyi göster</string>
+    <string name="export_share_hide_password">Şifreyi gizle</string>
+    <string name="export_share_pdf_password">PDF şifresi</string>
+    <string name="export_share_off">Kapalı</string>
+    <string name="export_share_a_password_will_be_required">PDF\'yi açmak için şifre gerekecek.</string>
+    <string name="export_share_password_protection">Şifre koruması</string>
+    <string name="export_share_cancel">İptal</string>
+    <string name="export_share_add_white_space_around_the">Taranan sayfanın çevresine boşluk ekler.</string>
+    <string name="export_share_margins">Kenar boşlukları</string>
+    <string name="export_share_fixed_sizes_use_their_real">Sabit boyutlar gerçek baskı ölçülerini kullanır.</string>
+    <string name="export_share_page_size">Sayfa boyutu</string>
+    <string name="export_share_auto_follows_each_scanned_page">Otomatik, her taranan sayfaya uyar.</string>
+    <string name="export_share_orientation">Yön</string>
+    <string name="export_share_add_the_page_index_to">PDF alt bilgisine sayfa numarası ekler.</string>
+    <string name="export_share_page_numbers">Sayfa numaraları</string>
+    <string name="export_share_choose_how_every_page_is">Her sayfanın nasıl oluşturulacağını seçin.</string>
+    <string name="export_share_passwords_do_not_match">Şifreler eşleşmiyor.</string>
+    <string name="export_share_confirm_the_password">Şifreyi onaylayın.</string>
+    <string name="export_share_pdf_options">PDF seçenekleri</string>
+    <!-- FabComponents -->
+    <string name="fab_open_add_menu">Ekleme menüsünü aç</string>
+    <string name="fab_close_menu">Menüyü kapat</string>
+    <string name="fab_new_document">Yeni belge</string>
+    <string name="fab_new_folder">Yeni klasör</string>
+    <!-- LibraryCardPresentation -->
+    <string name="library_card_presentation_remove_from_folder">Klasörden çıkar</string>
+    <string name="library_card_presentation_move_to_folder">Klasöre taşı</string>
+    <string name="library_card_presentation_rename">Yeniden adlandır</string>
+    <string name="library_card_presentation_delete">Sil</string>
+    <string name="library_card_presentation_1_page">1 sayfa</string>
+    <string name="library_card_presentation_1_document">1 belge</string>
+    <string name="library_card_presentation_yesterday">Dün</string>
+    <string name="library_card_presentation_today">Bugün</string>
+    <!-- LibraryFolderShelf -->
+    <string name="library_folder_shelf_all_folders">Tüm klasörler</string>
+    <string name="library_folder_shelf_view_all">Tümünü göster</string>
+    <string name="library_folder_shelf_organise_scans">Taramaları düzenle</string>
+    <string name="library_folder_shelf_new_folder">Yeni klasör</string>
+    <!-- SharedComponents -->
+    <string name="shared_please_wait">Lütfen bekleyin</string>
+    <string name="shared_working_on_your_photos">Fotoğraflarınız işleniyor…</string>
+    <string name="shared_importing_images">Görseller içe aktarılıyor</string>
+    <string name="shared_more_options">Diğer seçenekler</string>
+    <string name="shared_selected">Seçili</string>
+    <string name="shared_create_new_folder">Yeni klasör oluştur</string>
+    <string name="shared_create_move">Oluştur ve taşı</string>
+    <string name="shared_new_folder_name">Yeni klasör adı</string>
+    <string name="shared_no_folder">Klasör yok</string>
+    <string name="shared_folder_name">Klasör adı</string>
+    <string name="shared_create">Oluştur</string>
+    <string name="shared_suggest_name">Ad öner</string>
+    <string name="shared_title">Başlık</string>
+    <string name="shared_clear_name">Adı temizle</string>
+    <string name="shared_confirm">Onayla</string>
+    <string name="shared_scanly">Scanly</string>
+    <!-- DocumentDetailScreen -->
+    <string name="document_detail_delete_page">Sayfayı sil</string>
+    <string name="document_detail_share_page">Sayfayı paylaş</string>
+    <string name="document_detail_sign_document">Belgeyi imzala</string>
+    <string name="document_detail_extract_text">Metni çıkar</string>
+    <string name="document_detail_retake_page">Sayfayı yeniden çek</string>
+    <string name="document_detail_edit_page">Sayfayı düzenle</string>
+    <string name="document_detail_edit">Düzenle</string>
+    <string name="document_detail_share">"Paylaş: %1$s"</string>
+    <string name="document_detail_review">İncele</string>
+    <string name="document_detail_ready">Hazır</string>
+    <string name="document_detail_new">Yeni</string>
+    <string name="document_detail_captured">Çekildi</string>
+    <string name="document_detail_add_page">Sayfa ekle</string>
+    <string name="document_detail_scan_or_import">Tarayın veya içe aktarın</string>
+    <string name="document_detail_add_page_scan_or_import">Sayfa ekle. Tarayın veya içe aktarın.</string>
+    <string name="document_detail_share_2">Paylaş</string>
+    <string name="document_detail_retake">Yeniden çek</string>
+    <string name="document_detail_open_zoom_view">Yakınlaştırma görünümünü aç</string>
+    <string name="document_detail_page_of">"Sayfa %1$s / %2$s"</string>
+    <string name="document_detail_import_images">Görselleri içe aktar</string>
+    <string name="document_detail_scan_a_page">Sayfa tara</string>
+    <string name="document_detail_scan_a_page_or_import">"Bu belgeye başlamak için bir sayfa tarayın veya en fazla %1$s görsel içe aktarın."</string>
+    <string name="document_detail_no_pages_yet">Henüz sayfa yok</string>
+    <string name="document_detail_return_to_the_library_and">Kitaplığa dönüp başka bir belge açın.</string>
+    <string name="document_detail_document_not_found">Belge bulunamadı</string>
+    <string name="document_detail_select_a_page_to_preview">Önizlemek için bir sayfa seçin</string>
+    <string name="document_detail_tap_to_review_long_press">İncelemek için dokunun. Sıralamak için basılı tutup sürükleyin.</string>
+    <string name="document_detail_long_press_and_drag_to">Sıralamak için basılı tutup sürükleyin</string>
+    <string name="document_detail_pages">Sayfalar</string>
+    <string name="document_detail_use_scan_or_import_to">İlk sayfanızı eklemek için Tara veya İçe aktar\'ı kullanın.</string>
+    <string name="document_detail_please_wait_while_the_file">Dosya hazırlanırken lütfen bekleyin.</string>
+    <string name="document_detail_share_pages">Sayfaları paylaş</string>
+    <string name="document_detail_save_images_zip">Görselleri ZIP olarak kaydet</string>
+    <string name="document_detail_share_pdf">PDF paylaş</string>
+    <string name="document_detail_save_pdf">PDF kaydet</string>
+    <string name="document_detail_export_share">Dışa aktar ve paylaş</string>
+    <string name="document_detail_pick_up_to_images_from">"Dosyalarınızdan en fazla %1$s görsel seçin"</string>
+    <string name="document_detail_choose_images">Görsel seç</string>
+    <string name="document_detail_open_the_camera_to_scan">Yeni bir sayfa taramak için kamerayı açın</string>
+    <string name="document_detail_capture_a_new_scan_or">"Yeni bir tarama yapın veya galerinizden en fazla %1$s görsel seçin."</string>
+    <string name="document_detail_delete_document">Belgeyi sil</string>
+    <string name="document_detail_rename_document">Belgeyi yeniden adlandır</string>
+    <string name="document_detail_document_options">Belge seçenekleri</string>
+    <string name="document_detail_working_on_your_photos">Fotoğraflarınız işleniyor</string>
+    <string name="document_detail_preparing_export">Dışa aktarma hazırlanıyor</string>
+    <string name="document_detail_generate">Oluştur</string>
+    <string name="document_detail_delete_document_2">Belge silinsin mi?</string>
+    <string name="document_detail_save">Kaydet</string>
+    <string name="document_detail_document">Belge</string>
+    <!-- DocumentDetailViewModel -->
+    <string name="document_detail_document_renamed">Belge yeniden adlandırıldı.</string>
+    <string name="document_detail_starting_import">İçe aktarma başlatılıyor</string>
+    <string name="document_detail_page_image_is_not_available">Sayfa görseli henüz hazır değil.</string>
+    <string name="document_detail_preparing_pages">Sayfalar hazırlanıyor</string>
+    <string name="document_detail_saved_to">"%1$s kaydedildi · %2$s"</string>
+    <string name="document_detail_preparing_and_saving_zip">ZIP hazırlanıp kaydediliyor</string>
+    <string name="document_detail_preparing_pdf">PDF hazırlanıyor</string>
+    <string name="document_detail_generating_and_saving_pdf">PDF oluşturulup kaydediliyor</string>
+    <string name="document_detail_reordered_pages">Sayfalar yeniden sıralandı.</string>
+    <string name="document_detail_moved_to_folder">Klasöre taşındı</string>
+    <string name="document_detail_moved_to">"Taşındı: %1$s"</string>
+    <string name="document_detail_removed_from_folder">Klasörden çıkarıldı</string>
+    <!-- FilterCustomizeScreen -->
+    <string name="filter_customize_faded_text">Soluk metin</string>
+    <string name="filter_customize_whiteboard">Beyaz tahta</string>
+    <string name="filter_customize_grayscale">Gri tonlama</string>
+    <string name="filter_customize_screen">Ekran</string>
+    <string name="filter_customize_vivid">Canlı</string>
+    <string name="filter_customize_natural">Doğal</string>
+    <string name="filter_customize_magic_color">Sihirli renk</string>
+    <string name="filter_customize_auto">Otomatik</string>
+    <string name="filter_customize_original">Orijinal</string>
+    <string name="filter_customize_intensity">Yoğunluk</string>
+    <string name="filter_customize_sharpness">Keskinlik</string>
+    <string name="filter_customize_saturation">Doygunluk</string>
+    <string name="filter_customize_contrast">Kontrast</string>
+    <string name="filter_customize_brightness">Parlaklık</string>
+    <string name="filter_customize_fine_tune_on_this_page">"Bu sayfada %1$s filtresine ince ayar yapın. Yalnızca filtreyi görmek için Karşılaştır\'a basılı tutun."</string>
+    <string name="filter_customize_customize_filter">Filtreyi özelleştir</string>
+    <string name="filter_customize_adjusted">Ayarlanmış</string>
+    <string name="filter_customize_filter_only">Yalnızca filtre</string>
+    <string name="filter_customize_filter_adjustment_preview">Filtre ayarı önizlemesi</string>
+    <string name="filter_customize_selected_filter_without_adjustments">Ayarsız seçili filtre</string>
+    <string name="filter_customize_loading_preview">Önizleme yükleniyor…</string>
+    <string name="filter_customize_hold_to_compare_with_filter">Yalnızca filtreyle karşılaştırmak için basılı tutun</string>
+    <string name="filter_customize_reset_adjustments">Ayarları sıfırla</string>
+    <string name="filter_customize_adjust">Ayarla</string>
+    <string name="filter_customize_compare">Karşılaştır</string>
+    <!-- FilterPickerScreen -->
+    <string name="filter_picker_selected_filter">Seçili filtre</string>
+    <string name="filter_picker_filter_thumbnail">"%1$s filtresi küçük resmi"</string>
+    <string name="filter_picker_analyzing_the_page_to_tune">Her filtreyi ayarlamak için sayfa analiz ediliyor.</string>
+    <string name="filter_picker_filter_only_crop_rotation_and">Yalnızca filtre. Kırpma, döndürme ve ayarlar her sayfada ayrı kalır.</string>
+    <string name="filter_picker_apply_filter_to_all_pages">Filtreyi tüm sayfalara uygula</string>
+    <string name="filter_picker_tap_a_preset_to_update">Canlı önizlemeyi güncellemek için bir hazır ayara dokunun. İşiniz bitince düzenleyiciden kaydedin.</string>
+    <string name="filter_picker_filters">Filtreler</string>
+    <string name="filter_picker_filter_preview">"%1$s filtresi önizlemesi"</string>
+    <!-- PageCropScreen -->
+    <string name="page_crop_page_crop_preview">Sayfa kırpma önizlemesi</string>
+    <string name="page_crop_detecting">Algılanıyor</string>
+    <string name="page_crop_reset">Sıfırla</string>
+    <string name="page_crop_ai_detect">AI ile algıla</string>
+    <string name="page_crop_right">Sağa</string>
+    <string name="page_crop_left">Sola</string>
+    <string name="page_crop_apply_crop">Kırpmayı uygula</string>
+    <string name="page_crop_detecting_document">Belge algılanıyor…</string>
+    <string name="page_crop_keep_editing">Düzenlemeye devam et</string>
+    <string name="page_crop_discard">Sil</string>
+    <string name="page_crop_your_crop_changes_have_not">Kırpma değişiklikleriniz uygulanmadı.</string>
+    <string name="page_crop_discard_changes">Değişiklikler silinsin mi?</string>
+    <string name="page_crop_full_frame_corners">Tam kare köşeler</string>
+    <string name="page_crop_reset_crop">Kırpmayı sıfırla</string>
+    <string name="page_crop_rotate_right">Sağa döndür</string>
+    <string name="page_crop_rotate_left">Sola döndür</string>
+    <string name="page_crop_find_the_document_corners">Belge köşelerini bul</string>
+    <string name="page_crop_detecting_2">Algılanıyor…</string>
+    <string name="page_crop_detect_edges_rotate_then_drag">Kenarları algılayın, döndürün, ardından tutamaçları sürükleyin. Uygulamak için Bitti\'ye dokunun.</string>
+    <string name="page_crop_crop_tools">Kırpma araçları</string>
+    <string name="page_crop_page_not_found">Sayfa bulunamadı.</string>
+    <string name="page_crop_crop">Kırp</string>
+    <string name="page_crop_processing">İşleniyor</string>
+    <!-- PageCropViewModel -->
+    <string name="page_crop_crop_updated">Kırpma güncellendi.</string>
+    <string name="page_crop_document_detected">Belge algılandı.</string>
+    <string name="page_crop_raw_image_is_not_available">Algılama için ham görsel yok.</string>
+    <!-- PageEditorScreen -->
+    <string name="page_editor_please_wait_while_scanly_adapts">Scanly filtreyi uyarlayıp tüm belgeyi güncellerken lütfen bekleyin.</string>
+    <string name="page_editor_processing_image_data_for_all">Tüm sayfaların görsel verileri işleniyor</string>
+    <string name="page_editor_page_editor_preview">Sayfa düzenleyici önizlemesi</string>
+    <string name="page_editor_your_edits_to_this_page">Bu sayfadaki düzenlemeleriniz kaydedilmedi.</string>
+    <string name="page_editor_remove_from_document">Belgeden kaldır</string>
+    <string name="page_editor_capture_this_page_again">Bu sayfayı yeniden çek</string>
+    <string name="page_editor_brightness_contrast_more">Parlaklık, kontrast ve dahası</string>
+    <string name="page_editor_ai_detect_rotate_handles">AI ile algılama, döndürme, tutamaçlar</string>
+    <string name="page_editor_crop_filter_and_adjust_this">Bu sayfayı kırpın, filtre uygulayın ve ayarlayın. Bitti ile kaydedin.</string>
+    <string name="page_editor_edit_tools">Düzenleme araçları</string>
+    <string name="page_editor_editor">Düzenleyici</string>
+    <!-- PageEditorViewModel -->
+    <string name="page_editor_page_updated">Sayfa güncellendi.</string>
+    <string name="page_editor_filter_applied_to_all_pages">Filtre tüm sayfalara uygulandı.</string>
+    <!-- HomePip -->
+    <string name="home_pip_hide_today_s_tip">Günün ipucunu gizle</string>
+    <!-- HomeRatingPrompt -->
+    <string name="home_rating_prompt_rate_scanly_opens_google_play">Scanly\'yi puanla, Google Play açılır</string>
+    <string name="home_rating_prompt_rate_on_google_play">Google Play\'de puanla</string>
+    <string name="home_rating_prompt_scanly_is_free_private_and">Scanly ücretsiz, gizliliğe saygılı ve reklamsız. Size zaman kazandırıyorsa Google Play\'de kısa bir puan çok işimize yarar.</string>
+    <string name="home_rating_prompt_rate_scanly">Scanly\'yi puanla</string>
+    <!-- HomeScreen -->
+    <string name="home_search_names_and_text_in">Adlarda ve sayfa metninde ara</string>
+    <string name="home_start_scanning">Taramaya başla</string>
+    <string name="home_scan_your_first_page_and">İlk sayfanızı tarayın, ihtiyaç duyduğunuzda burada hazır olsun.</string>
+    <string name="home_no_documents_yet">Henüz belge yok</string>
+    <string name="home_loading_your_documents">Belgeleriniz yükleniyor</string>
+    <string name="home_folder">Klasör</string>
+    <string name="home_import">İçe aktar</string>
+    <string name="home_scan">Tara</string>
+    <string name="home_save_it_now">Şimdi kaydet</string>
+    <string name="home_save_it_now_find_it">Bugün kaydet,\nyarın kolayca bul.</string>
+    <string name="home_still_scanning">Hâlâ tarıyor musunuz?</string>
+    <string name="home_wrap_up_and_digitize_your">Günü toparla,\ndijitale aktar.</string>
+    <string name="home_good_evening">İyi akşamlar,</string>
+    <string name="home_let_s_capture_some_documents">Haydi birkaç\nbelge tarayalım.</string>
+    <string name="home_good_afternoon">İyi günler,</string>
+    <string name="home_what_are_we_scanning_today">Bugün neyi\ntarıyoruz?</string>
+    <string name="home_good_morning">Günaydın,</string>
+    <string name="home_see_all">Tümünü gör</string>
+    <string name="home_recent_documents">Son belgeler</string>
+    <string name="home_recent_folders">Son klasörler</string>
+    <string name="home_new_scan">Yeni tarama</string>
+    <!-- FolderDeleteDialog -->
+    <string name="folder_delete_both_go_to_recently_deleted">"İkisi de %1$s boyunca Son silinenler\'de kalır"</string>
+    <string name="folder_delete_delete_folder_and_documents">Klasörü ve belgeleri sil</string>
+    <string name="folder_delete_keep_the_in_your_library">"Kitaplığınızda kalacak: %1$s"</string>
+    <string name="folder_delete_delete_folder_only">Yalnızca klasörü sil</string>
+    <string name="folder_delete_delete_folder">Klasör silinsin mi?</string>
+    <!-- GroupDetailScreen -->
+    <string name="group_detail_not_selected">Seçili değil</string>
+    <string name="group_detail_add_documents">"%1$s belge ekle"</string>
+    <string name="group_detail_add_1_document">1 belge ekle</string>
+    <string name="group_detail_add_selected">Seçilenleri ekle</string>
+    <string name="group_detail_documents_already_in_folders_won">Zaten bir klasörde olan belgeler burada görünmez. Bunun yerine yeni bir belge oluşturun.</string>
+    <string name="group_detail_no_loose_documents">Klasörsüz belge yok</string>
+    <string name="group_detail_select_all">Tümünü seç</string>
+    <string name="group_detail_clear">Temizle</string>
+    <string name="group_detail_select_one_or_more_documents">Bir veya daha fazla belge seçin</string>
+    <string name="group_detail_nothing_available_to_move">Taşınacak bir şey yok</string>
+    <string name="group_detail_move_existing">Mevcut belgeleri taşı</string>
+    <string name="group_detail_starts_empty_inside_this_folder">Bu klasörde boş olarak başlar</string>
+    <string name="group_detail_create_new_document">Yeni belge oluştur</string>
+    <string name="group_detail_create_a_new_document_or">"Yeni bir belge oluşturun veya bu klasörün dışındaki %1$s arasından seçin."</string>
+    <string name="group_detail_create_a_new_document_or_2">Yeni bir belge oluşturun veya henüz klasörde olmayan belgeleri taşıyın.</string>
+    <string name="group_detail_add_documents_to_folder">Klasöre belge ekle</string>
+    <string name="group_detail_add_documents_2">Belge ekle</string>
+    <string name="group_detail_add_a_document_here_to">İlgili taramaları bir arada tutmak için buraya belge ekleyin.</string>
+    <string name="group_detail_this_folder_is_empty">Bu klasör boş</string>
+    <string name="group_detail_share_pdfs_as_zip">PDF\'leri ZIP olarak paylaş</string>
+    <string name="group_detail_save_pdfs_as_zip">PDF\'leri ZIP olarak kaydet</string>
+    <string name="group_detail_separate_pdfs_one_pdf_per">Ayrı PDF\'ler · her belge için bir PDF, tek ZIP içinde</string>
+    <string name="group_detail_share_merged_pdf">Birleştirilmiş PDF\'yi paylaş</string>
+    <string name="group_detail_save_merged_pdf">Birleştirilmiş PDF\'yi kaydet</string>
+    <string name="group_detail_single_pdf_merged_into_one">"Tek PDF · %1$s tek dosyada birleştirilir"</string>
+    <string name="group_detail_new_document">Yeni belge</string>
+    <string name="group_detail_remove">Çıkar</string>
+    <string name="group_detail_will_be_moved_out_of">\"%1$s\" bu klasörden çıkarılacak.</string>
+    <string name="group_detail_remove_from_folder">Klasörden çıkarılsın mı?</string>
+    <string name="group_detail_rename_folder">Klasörü yeniden adlandır</string>
+    <string name="group_detail_delete_folder">Klasörü sil</string>
+    <string name="group_detail_export_and_share">Dışa aktar ve paylaş</string>
+    <!-- GroupDetailViewModel -->
+    <string name="group_detail_generating_pdf_of">"PDF oluşturuluyor: %1$s / %2$s…"</string>
+    <string name="group_detail_generating_page_of">"Sayfa oluşturuluyor: %1$s / %2$s…"</string>
+    <string name="group_detail_document_removed_from_folder">Belge klasörden çıkarıldı.</string>
+    <string name="group_detail_added_documents_to_folder">"Klasöre %1$s belge eklendi."</string>
+    <string name="group_detail_added_1_document_to_folder">Klasöre 1 belge eklendi.</string>
+    <string name="group_detail_added_of_documents">"%2$s belgeden %1$s tanesi eklendi. %3$s"</string>
+    <string name="group_detail_folder_renamed">Klasör yeniden adlandırıldı.</string>
+    <!-- LibraryScreen -->
+    <string name="library_create_a_folder_to_stay">Düzenli kalmak için bir klasör oluşturun veya bir belge ekleyip taramaya başlayın.</string>
+    <string name="library_your_library_is_ready">Kitaplığınız hazır</string>
+    <string name="library_save_to">Kaydetme konumu</string>
+    <string name="library_choose_how_are_ordered">"%1$s için sıralama düzenini seçin."</string>
+    <string name="library_sort_library">Kitaplığı sırala</string>
+    <string name="library_folders_and_documents">klasörler ve belgeler</string>
+    <string name="library_create_a_document_then_scan">Bir belge oluşturun, ardından sayfaları tarayın veya galerinizden içe aktarın.</string>
+    <string name="library_create_a_folder_to_keep">İlgili belgeleri kolayca bulmak için bir klasör oluşturun.</string>
+    <string name="library_no_folders_yet">Henüz klasör yok</string>
+    <string name="library_list_view">Liste görünümü</string>
+    <string name="library_grid_view">Izgara görünümü</string>
+    <string name="library_folders">Klasörler</string>
+    <string name="library_back_to_library">Kitaplığa dön</string>
+    <string name="library_documents">Belgeler</string>
+    <string name="library_search_library">Kitaplıkta ara</string>
+    <string name="library_library">Kitaplık</string>
+    <!-- LibrarySearchScreen -->
+    <string name="library_search_remove_from_recent_searches">"Son aramalardan kaldır: %1$s"</string>
+    <string name="library_search_search_again">Yeniden ara</string>
+    <string name="library_search_text_is_read_on_this">Metin bu cihazda okunur. Sayfalarınız cihazdan hiç çıkmaz.</string>
+    <string name="library_search_some_pages_are_still_being">Bazı sayfalar hâlâ okunuyor, eşleşmeler birazdan görünebilir.</string>
+    <string name="library_search_search_for_instead">Bunun yerine “%1$s” için ara</string>
+    <string name="library_search_nothing_matches_try_fewer_words">“%1$s” ile eşleşen bir şey yok. Daha az kelime deneyin veya yazımı kontrol edin.</string>
+    <string name="library_search_no_results_found">Sonuç bulunamadı</string>
+    <string name="library_search_rent_or_lease_finds_pages">“kira OR sözleşme” ikisinden birini içeren sayfaları bulur</string>
+    <string name="library_search_either_word">Kelimelerden biri</string>
+    <string name="library_search_lease_draft_skips_anything_that">“sözleşme -taslak” taslak geçenleri atlar</string>
+    <string name="library_search_leave_a_word_out">Bir kelimeyi hariç tut</string>
+    <string name="library_search_you_ll_get_the_closest">Taramalarınızdaki en yakın kelime bulunur</string>
+    <string name="library_search_small_typos_are_fine">Küçük yazım hataları sorun değil</string>
+    <string name="library_search_security_deposit_in_that_order">“güvenlik depozitosu”, bu sırayla</string>
+    <string name="library_search_use_quotes_for_a_phrase">İfade için tırnak kullanın</string>
+    <string name="library_search_lea_finds_lease_and_leasing">“kira” kiralık ve kiracı kelimelerini de bulur</string>
+    <string name="library_search_type_part_of_a_word">Kelimenin bir kısmını yazın</string>
+    <string name="library_search_search_tips">Arama ipuçları</string>
+    <string name="library_search_browse_by_type">Türe göre göz at</string>
+    <string name="library_search_recent">Son aramalar</string>
+    <string name="library_search_folder">"Klasör · "</string>
+    <string name="library_search_matched">Eşleşen: “%1$s”</string>
+    <string name="library_search_scanned_as">Taranan metin: “%1$s”</string>
+    <string name="library_search_show_page_text">Sayfa metnini göster</string>
+    <string name="library_search_show_fewer_pages">Daha az sayfa göster</string>
+    <string name="library_search_open_document">Belgeyi aç</string>
+    <string name="library_search_similar_words">"Benzer kelimeler: "</string>
+    <string name="library_search_close_matches">Yakın eşleşmeler</string>
+    <string name="library_search_searching_text_in_pages">Sayfalardaki metin aranıyor…</string>
+    <string name="library_search_by_name">" · adda %1$s eşleşme"</string>
+    <string name="library_search_complete_to">"Tamamla: "</string>
+    <string name="library_search_filters_on">"Filtreler, %1$s etkin"</string>
+    <string name="library_search_filters">"Filtreler · %1$s"</string>
+    <string name="library_search_matching_names">Eşleşen adlar</string>
+    <string name="library_search_found_in_pages">Sayfalarda bulunanlar</string>
+    <string name="library_search_clear_search">Aramayı temizle</string>
+    <!-- RecentlyDeletedScreen -->
+    <string name="recently_deleted_page_of_will_be_deleted">"\"%2$s\" belgesindeki sayfa %1$s kalıcı olarak silinecek. Bu işlem geri alınamaz."</string>
+    <string name="recently_deleted_and_its_pages_will_be">\"%1$s\" ve sayfaları kalıcı olarak silinecek. Bu işlem geri alınamaz.</string>
+    <string name="recently_deleted_and_the_documents_that_were">\"%1$s\" ve içindeki belgeler kalıcı olarak silinecek. Bu işlem geri alınamaz.</string>
+    <string name="recently_deleted_its_documents_stay_in_your">" İçindeki belgeler Kitaplığınızda kalır."</string>
+    <string name="recently_deleted_the_folder_will_be_deleted">\"%1$s\" klasörü kalıcı olarak silinecek. Bu işlem geri alınamaz.</string>
+    <string name="recently_deleted_page_of">"\"%2$s\" · sayfa %1$s"</string>
+    <string name="recently_deleted_days_left">"%1$s gün kaldı"</string>
+    <string name="recently_deleted_1_day_left">1 gün kaldı</string>
+    <string name="recently_deleted_last_day">Son gün</string>
+    <string name="recently_deleted_from">Kaynak: \"%1$s\"</string>
+    <string name="recently_deleted_no_documents">Belge yok</string>
+    <string name="recently_deleted_folder_only_documents_kept_in">"Yalnızca klasör · %1$s belge Kitaplıkta kaldı"</string>
+    <string name="recently_deleted_folder_only_1_document_kept">Yalnızca klasör · 1 belge Kitaplıkta kaldı</string>
+    <string name="recently_deleted_restore">Geri yükle</string>
+    <string name="recently_deleted_delete_forever">Kalıcı olarak sil</string>
+    <string name="recently_deleted_select">Seç</string>
+    <string name="recently_deleted_delete_forever_2">"Kalıcı olarak sil: %1$s"</string>
+    <string name="recently_deleted_restore_2">"Geri yükle: %1$s"</string>
+    <string name="recently_deleted_show_options">Seçenekleri göster</string>
+    <string name="recently_deleted_the_selected_items_will_be">"Seçili %1$s öğe kalıcı olarak silinecek. Bu işlem geri alınamaz."</string>
+    <string name="recently_deleted_delete_items_forever">"%1$s öğe kalıcı olarak silinsin mi?"</string>
+    <string name="recently_deleted_delete_1_item_forever">1 öğe kalıcı olarak silinsin mi?</string>
+    <string name="recently_deleted_delete_forever_3">Kalıcı olarak silinsin mi?</string>
+    <string name="recently_deleted_delete_all">Tümünü sil</string>
+    <string name="recently_deleted_all_items_will_be_deleted">"%1$s öğenin tümü kalıcı olarak silinecek. Bu işlem geri alınamaz."</string>
+    <string name="recently_deleted_this_item_will_be_deleted">Bu öğe kalıcı olarak silinecek. Bu işlem geri alınamaz.</string>
+    <string name="recently_deleted_empty_recently_deleted">Son silinenler boşaltılsın mı?</string>
+    <string name="recently_deleted_deleted_pages_stay_here_for">Silinen sayfalar %1$s, belgeler ve klasörler %2$s boyunca burada kalır; böylece onları geri getirebilirsiniz.</string>
+    <string name="recently_deleted_nothing_here">Burada bir şey yok</string>
+    <string name="recently_deleted_nothing_in_the_bin_deleted">çöp kutusu bomboş. silinenler burada birkaç gün bekler.</string>
+    <string name="recently_deleted_empty">Boşalt</string>
+    <string name="recently_deleted_select_none">Hiçbirini seçme</string>
+    <string name="recently_deleted_clear_selection">Seçimi temizle</string>
+    <string name="recently_deleted_recently_deleted">Son silinenler</string>
+    <!-- RecentlyDeletedViewModel -->
+    <string name="recently_deleted_page_restored_to">"Sayfa %1$s, \"%2$s\" belgesine geri yüklendi"</string>
+    <string name="recently_deleted_document_restored">Belge geri yüklendi</string>
+    <string name="recently_deleted_folder_restored">Klasör geri yüklendi</string>
+    <string name="recently_deleted_recently_deleted_is_empty">Son silinenler boş</string>
+    <string name="recently_deleted_deleted_permanently">Kalıcı olarak silindi</string>
+    <!-- SearchFiltersSheet -->
+    <string name="search_filters_apply">Uygula</string>
+    <string name="search_filters_remove_filter">"Filtreyi kaldır: %1$s"</string>
+    <string name="search_filters_in">"%1$s klasöründe"</string>
+    <string name="search_filters_not_in_a_folder">Klasörde değil</string>
+    <string name="search_filters_sort_by">Sıralama ölçütü</string>
+    <string name="search_filters_any_folder">Tüm klasörler</string>
+    <string name="search_filters_date_modified">Değiştirilme tarihi</string>
+    <string name="search_filters_any_type">Tüm türler</string>
+    <string name="search_filters_type">Tür</string>
+    <!-- TrashCopy -->
+    <string name="trash_copy_page_moves_to_recently_deleted">"Sayfa %1$s Son silinenler\'e taşınır. %2$s boyunca geri yükleyebilirsiniz."</string>
+    <string name="trash_copy_and_its_documents_move_to">"\"%1$s\" ve içindeki %2$s belge Son silinenler\'e taşınır. %3$s boyunca geri yükleyebilirsiniz."</string>
+    <string name="trash_copy_and_the_document_in_it">\"%1$s\" ve içindeki belge Son silinenler\'e taşınır. %2$s boyunca geri yükleyebilirsiniz.</string>
+    <string name="trash_copy_moves_to_recently_deleted_you">\"%1$s\" Son silinenler\'e taşınır. %2$s boyunca geri yükleyebilirsiniz.</string>
+    <string name="trash_copy_1_day">1 gün</string>
+    <!-- TrashUndoSnackbar -->
+    <string name="trash_undo_snackbar_moved_to_recently_deleted">\"%1$s\" Son silinenler\'e taşındı</string>
+    <string name="trash_undo_snackbar_moved_to_recently_deleted_2">"%1$s Son silinenler\'e taşındı"</string>
+    <string name="trash_undo_snackbar_undo">Geri al</string>
+    <!-- OnboardingFlow -->
+    <string name="onboarding_flow_enable_camera">Kamerayı etkinleştir</string>
+    <string name="onboarding_flow_enable_the_camera_to_scan">Kâğıt taramak için kamerayı etkinleştirin. Kamera olmadan da görsel içe aktarabilirsiniz.</string>
+    <string name="onboarding_flow_open_settings_tap_permissions_and">Ayarlar\'ı açın, İzinler\'e dokunun ve Kamera\'ya izin verin. Kamera olmadan da görsel içe aktarabilirsiniz.</string>
+    <string name="onboarding_flow_ready_for_your_first_scan">İlk taramaya hazır mısınız?</string>
+    <string name="onboarding_flow_camera_access_is_turned_off">Kamera erişimi kapalı</string>
+    <!-- OnboardingScreen -->
+    <string name="onboarding_no_account_no_cloud_upload">Hesap yok. Buluta yükleme yok.</string>
+    <string name="onboarding_continue">Devam</string>
+    <string name="onboarding_get_started">Başlayın</string>
+    <string name="onboarding_page_of_3">"%1$s, sayfa %2$s / 3"</string>
+    <string name="onboarding_page_of_3_2">"Sayfa %1$s / 3"</string>
+    <string name="onboarding_skip">Atla</string>
+    <string name="onboarding_scanly">Scanly.</string>
+    <string name="onboarding_previous_page">Önceki sayfa</string>
+    <string name="onboarding_feature_edge_detection">Otomatik kenar algılama</string>
+    <string name="onboarding_feature_crop_straighten">Sayfaları kırpın ve düzleştirin</string>
+    <string name="onboarding_feature_filters">Sihirli renk, Beyaz tahta ve dahası</string>
+    <string name="onboarding_feature_ocr">Cihaz üzerinde metin tanıma</string>
+    <string name="onboarding_feature_search">Taramalarınızda kelime arayın</string>
+    <string name="onboarding_feature_copy_text">Her sayfadan metin kopyalayın</string>
+    <string name="onboarding_feature_multipage_pdf">Çok sayfalı PDF\'ler</string>
+    <string name="onboarding_feature_password">Paylaşmadan önce şifreyle koruyun</string>
+    <string name="onboarding_feature_sign">Belgeleri imzalayın</string>
+    <string name="onboarding_assurance_offline">Tamamen çevrimdışı çalışır.</string>
+    <string name="onboarding_assurance_on_device">Metniniz bu cihazdan hiç çıkmaz.</string>
+    <!-- Pip -->
+    <string name="pip_poke_pip_scanly_s_helper">Scanly\'nin yardımcısı Pip\'i dürt</string>
+    <!-- PipBubble -->
+    <string name="pip_bubble_dismiss">Kapat</string>
+    <!-- PipLines -->
+    <string name="pip_lines_all_set_pages_nice_and">"hazır! %1$s sayfa, dümdüz ve tertemiz."</string>
+    <string name="pip_lines_all_set_1_page_nice">hazır! 1 sayfa, dümdüz ve tertemiz.</string>
+    <string name="pip_lines_ready_when_you_are">sen hazırsan ben de hazırım.</string>
+    <string name="pip_lines_i_looked_on_every_page">her sayfaya baktım. hiçbir yerde “%1$s” yok.</string>
+    <!-- FeaturePlaceholderScreen -->
+    <string name="feature_placeholder_planned_for">Planlanan sürüm: %1$s.</string>
+    <!-- PageImagePreviewScreen -->
+    <string name="page_image_preview_sign">İmzala</string>
+    <string name="page_image_preview_delete_page">Sayfa silinsin mi?</string>
+    <!-- PageImagePreviewViewModel -->
+    <string name="page_image_preview_scanly_page">"Scanly sayfa %1$s"</string>
+    <!-- LegalDocumentScreen -->
+    <string name="legal_document_open_in_browser">Tarayıcıda aç</string>
+    <string name="legal_document_retry">Tekrar dene</string>
+    <string name="legal_document_check_your_internet_connection_and">İnternet bağlantınızı kontrol edip tekrar deneyin.</string>
+    <string name="legal_document_couldn_t_be_loaded">"%1$s yüklenemedi"</string>
+    <!-- ModelBenchmarkScreen -->
+    <string name="model_benchmark_pipeline_s_1f_ms" formatted="false">İşlem hattı: %s · %.1f ms</string>
+    <string name="model_benchmark_total_1f_ms" formatted="false">toplam %.1f ms</string>
+    <string name="model_benchmark_pre_0f_inf_0f_post" formatted="false">ön %.0f · çıkarım %.0f · son %.0f</string>
+    <string name="model_benchmark_not_detected">Algılanmadı</string>
+    <string name="model_benchmark_detected_conf_0f" formatted="false">Algılandı · güven %%%.0f</string>
+    <string name="model_benchmark_none">Yok</string>
+    <string name="model_benchmark_quad">Dörtgen</string>
+    <string name="model_benchmark_error">Hata</string>
+    <string name="model_benchmark_no_preview">Önizleme yok</string>
+    <string name="model_benchmark_detection_preview">"%1$s algılama önizlemesi"</string>
+    <string name="model_benchmark_avg_1f_p50_1f_p95" formatted="false">ort. %.1f · P50 %.1f · P95 %.1f ms · algılanan %d/%d · başarısız %d</string>
+    <string name="model_benchmark_avg_1f_p95_1f_ms" formatted="false">ort. %.1f · P95 %.1f ms · kabul edilen %d/%d</string>
+    <string name="model_benchmark_document_gate">Belge kontrolü</string>
+    <string name="model_benchmark_aggregate">Toplam</string>
+    <string name="model_benchmark_images_processed">"%1$s / %2$s görsel işlendi"</string>
+    <string name="model_benchmark_choose_images_and_run">Görsel seç ve çalıştır</string>
+    <string name="model_benchmark_benchmark_running">Karşılaştırma çalışıyor…</string>
+    <string name="model_benchmark_select_more_photos_to_measure">Kapı gecikmesini, köşe algılamayı, çokgen katmanlarını ve tüm işlem hattının süresini ölçmek için daha fazla fotoğraf seçin.</string>
+    <string name="model_benchmark_run_another_pass">Bir tur daha çalıştır</string>
+    <string name="model_benchmark_images_stay_on_this_device">Görseller bu cihazda kalır. Hiçbir şey yüklenmez.</string>
+    <string name="model_benchmark_choose_real_documents_or_rectangular">Gerçek belgeler veya dikdörtgen nesneler seçin. Scanly her algılayıcının süresini ölçüp algılanan kenarları gösterir.</string>
+    <string name="model_benchmark_compare_detectors_on_your_photos">Algılayıcıları kendi fotoğraflarınızda karşılaştırın</string>
+    <string name="model_benchmark_model_benchmark">Model karşılaştırması</string>
+    <string name="model_benchmark_image">Görsel</string>
+    <string name="model_benchmark_model_failed">Model başarısız oldu</string>
+    <string name="model_benchmark_could_not_decode_image">Görselin kodu çözülemedi</string>
+    <!-- PipSettingsScreen -->
+    <string name="pip_settings_on">"Açık · "</string>
+    <string name="pip_settings_on_2">Açık</string>
+    <string name="pip_settings_napping">Uyuyor</string>
+    <string name="pip_settings_napping_screens_show_plain_text">Uyuyor · ekranlarda düz metin gösterilir</string>
+    <string name="pip_settings_on_around_the_app">Uygulamanın her yerinde açık</string>
+    <string name="pip_settings_show_pip">Pip\'i göster</string>
+    <string name="pip_settings_scanly_s_little_helper_pip">Scanly\'nin küçük yardımcısı. Pip boş ekranlarda, kamerada ve bir şey hazır olduğunda belirir, kısa bir şey söyler ve kenara çekilir.</string>
+    <string name="pip_settings_pip">Pip</string>
+    <string name="pip_settings_hi_this_is_where_you">selam! sana ne kadar yardım edeceğimi burada seçiyorsun.</string>
+    <string name="pip_settings_i_ll_keep_still_still">kıpırdamayacağım. ama yine de buradayım.</string>
+    <string name="pip_settings_okay_i_ll_nap_switch">tamam, biraz kestireyim. beni istediğin zaman yeniden aç.</string>
+    <string name="pip_settings_pip_lives_on_this_phone">Pip bu telefonda yaşar ve belgelerinize asla bakmaz. Söylediği her şey Scanly\'nin içinde yerleşiktir.</string>
+    <string name="pip_settings_blinks_talks_and_hops_pip">Göz kırpar, konuşur ve zıplar. Sistem animasyonları kapalıyken Pip hareketsiz kalır.</string>
+    <string name="pip_settings_animate_pip">Pip\'i hareketlendir</string>
+    <string name="pip_settings_motion">Hareket</string>
+    <string name="pip_settings_a_happy_hello_when_a">Bir belge paylaşılmaya hazır olduğunda neşeli bir merhaba.</string>
+    <string name="pip_settings_cheer_on_exports">Dışa aktarmaları kutla</string>
+    <string name="pip_settings_pip_helps_you_frame_pages">Pip sayfaları kadraja almanıza yardım eder. Kapalıyken düz kılavuz gösterilir.</string>
+    <string name="pip_settings_camera_coaching">Kamera rehberliği</string>
+    <string name="pip_settings_one_short_tip_a_day">Selamlamanın altında günde bir kısa ipucu.</string>
+    <string name="pip_settings_tips_on_home">Ana sayfada ipuçları</string>
+    <string name="pip_settings_where_pip_helps">Pip\'in yardım ettiği yerler</string>
+    <!-- SettingsComponents -->
+    <string name="settings_pages_were_read_with_another">"%1$s sayfa başka bir motorla okundu. Arka planda %2$s ile yeniden okuyun."</string>
+    <string name="settings_1_page_was_read_with">"1 sayfa başka bir motorla okundu. Arka planda %1$s ile yeniden okuyun."</string>
+    <string name="settings_re_read_existing_pages">Mevcut sayfaları yeniden oku</string>
+    <string name="settings_indra_ocr_paused_it_stopped">Indra OCR duraklatıldı. Beklenmedik şekilde iki kez durduğu için sayfalar ML Kit ile okunuyor. Yeniden denemek için Indra OCR\'yi tekrar seçin.</string>
+    <string name="settings_ml_kit">ML Kit</string>
+    <string name="settings_indra_ocr">Indra OCR</string>
+    <string name="settings_rate_scanly_on_google_play">Scanly\'yi Google Play\'de puanla</string>
+    <string name="settings_it_s_free_private_and">Ücretsiz, gizliliğe saygılı ve reklamsız. Google Play\'de kısa bir puan, başkalarının da onu bulmasına yardımcı olur.</string>
+    <string name="settings_enjoying_scanly">Scanly\'yi beğendiniz mi?</string>
+    <string name="settings_dark">Koyu</string>
+    <string name="settings_light">Açık</string>
+    <string name="settings_system">Sistem</string>
+    <string name="settings_tap_to_check">"Kontrol etmek için dokunun: %1$s"</string>
+    <string name="settings_you_are_on_latest_is">Kullandığınız sürüm: %1$s. En son sürüm: %2$s.</string>
+    <string name="settings_scanly_is_available_on">"Scanly %1$s şurada kullanıma sunuldu: %2$s."</string>
+    <string name="settings_checking">Kontrol ediliyor: %1$s...</string>
+    <string name="settings_check_for_updates">Güncellemeleri kontrol et</string>
+    <string name="settings_by_jeevaprakash_g">geliştiren: jeevaprakash g</string>
+    <string name="settings_version_unavailable">Sürüm bilgisi yok</string>
+    <string name="settings_pick_the_detector_that_fits">Bu cihaza ve çalışma şeklinize uyan algılayıcıyı seçin.</string>
+    <string name="settings_choose">"Seç: %1$s"</string>
+    <string name="settings_highest_accuracy_maximum_compatibility">En yüksek doğruluk · en geniş uyumluluk</string>
+    <string name="settings_higher_accuracy_best_after_capture">Daha yüksek doğruluk · çekimden sonrası için ideal</string>
+    <string name="settings_balanced_speed_and_accuracy">Dengeli hız ve doğruluk</string>
+    <string name="settings_fastest_ideal_for_live_camera">En hızlı · canlı kamera önizlemesi için ideal</string>
+    <!-- SettingsDetailScreens -->
+    <string name="settings_detail_screens_open_source">Açık kaynak</string>
+    <string name="settings_detail_screens_try_a_different_word_or">Farklı bir kelime deneyin veya bir kategoriye göz atın.</string>
+    <string name="settings_detail_screens_no_answers_for">“%1$s” için yanıt yok.</string>
+    <string name="settings_detail_screens_no_answers_in_this_category">Bu kategoride yanıt yok.</string>
+    <string name="settings_detail_screens_all">Tümü</string>
+    <string name="settings_detail_screens_search_help">Yardımda ara</string>
+    <string name="settings_detail_screens_help_faq">Yardım ve SSS</string>
+    <!-- SettingsHubSubScreens -->
+    <string name="settings_hub_sub_screens_terms_conditions">Hükümler ve koşullar</string>
+    <string name="settings_hub_sub_screens_privacy_policy">Gizlilik politikası</string>
+    <string name="settings_hub_sub_screens_legal">Yasal</string>
+    <string name="settings_hub_sub_screens_project_website">Proje web sitesi</string>
+    <string name="settings_hub_sub_screens_contact_support">Destekle iletişime geç</string>
+    <string name="settings_hub_sub_screens_help">Yardım</string>
+    <string name="settings_hub_sub_screens_about">Hakkında</string>
+    <string name="settings_hub_sub_screens_open_the_qr_tool">QR aracını açar</string>
+    <string name="settings_hub_sub_screens_qr_widget">QR widget\'ı</string>
+    <string name="settings_hub_sub_screens_start_a_new_document_scan">Yeni bir belge taraması başlatır</string>
+    <string name="settings_hub_sub_screens_scan_widget">Tarama widget\'ı</string>
+    <string name="settings_hub_sub_screens_scan_import_qr_library">Tara · İçe aktar · QR · Kitaplık</string>
+    <string name="settings_hub_sub_screens_actions_bar">İşlem çubuğu</string>
+    <string name="settings_hub_sub_screens_home_screen">Ana ekran</string>
+    <string name="settings_hub_sub_screens_widgets">Widget\'lar</string>
+    <string name="settings_hub_sub_screens_long_press_home_screen_widgets">Ana ekrana basılı tutun → Widget\'lar → Scanly</string>
+    <string name="settings_hub_sub_screens_tap_to_add_a_widget">Ana ekranınıza widget eklemek için dokunun</string>
+    <string name="settings_hub_sub_screens_could_not_open_the_add">Widget ekleme penceresi açılamadı.</string>
+    <string name="settings_hub_sub_screens_your_launcher_doesn_t_support">Başlatıcınız uygulamadan widget eklemeyi desteklemiyor. Ana ekrana basılı tutun ve Widget\'lar bölümünden Scanly\'yi seçin.</string>
+    <string name="settings_hub_sub_screens_compare_all_models_on_local">Tüm modelleri cihazdaki görsellerle karşılaştırın</string>
+    <string name="settings_hub_sub_screens_tools">Araçlar</string>
+    <string name="settings_hub_sub_screens_reject_screens_and_non_documents">Kenar algılamadan önce ekranları ve belge olmayanları ayıklar</string>
+    <string name="settings_hub_sub_screens_physical_document_gate">Gerçek belge kontrolü</string>
+    <string name="settings_hub_sub_screens_capture_quality">Çekim kalitesi</string>
+    <string name="settings_hub_sub_screens_used_after_camera_or_gallery">Kamera veya galeri çekiminden sonra kullanılır</string>
+    <string name="settings_hub_sub_screens_selected_automatically_for_higher_accuracy">Daha yüksek doğruluk için otomatik seçilir</string>
+    <string name="settings_hub_sub_screens_post_processing_model">Son işleme modeli</string>
+    <string name="settings_hub_sub_screens_used_while_the_camera_preview">Kamera önizlemesi çalışırken kullanılır</string>
+    <string name="settings_hub_sub_screens_selected_automatically_for_responsive_preview">Akıcı önizleme için otomatik seçilir</string>
+    <string name="settings_hub_sub_screens_live_preview_model">Canlı önizleme modeli</string>
+    <string name="settings_hub_sub_screens_choose_the_best_models_for">Bu cihaz için en iyi modelleri seçer</string>
+    <string name="settings_hub_sub_screens_live_processing">"Canlı: %1$s · İşleme: %2$s"</string>
+    <string name="settings_hub_sub_screens_testing_model_speed_on_this">Bu cihazda model hızı test ediliyor…</string>
+    <string name="settings_hub_sub_screens_automatic_model_selection">Otomatik model seçimi</string>
+    <string name="settings_hub_sub_screens_models">Modeller</string>
+    <string name="settings_hub_sub_screens_document_detection">Belge algılama</string>
+    <string name="settings_hub_sub_screens_true_black_surfaces_saves_battery">Tam siyah yüzeyler · AMOLED ekranlarda pil tasarrufu sağlar</string>
+    <string name="settings_hub_sub_screens_takes_effect_in_dark_theme">Koyu temada geçerlidir · AMOLED ekranlarda pil tasarrufu sağlar</string>
+    <string name="settings_hub_sub_screens_pure_black">Tam siyah</string>
+    <string name="settings_hub_sub_screens_theme">Tema</string>
+    <string name="settings_hub_sub_screens_appearance">Görünüm</string>
+    <!-- SettingsScreen -->
+    <string name="settings_preferences_and_app_info">Tercihler ve uygulama bilgileri</string>
+    <string name="settings_scanly">"Scanly %1$s"</string>
+    <string name="settings_settings">Ayarlar</string>
+    <string name="settings_version_updates_and_legal">Sürüm, güncellemeler ve yasal bilgiler</string>
+    <string name="settings_leave_a_rating_on_google">Google Play\'de puan verin</string>
+    <string name="settings_more">Diğer</string>
+    <string name="settings_actions_scan_and_qr">İşlemler, Tarama ve QR</string>
+    <string name="settings_text_recognition">Metin tanıma</string>
+    <string name="settings_intelligence">Akıllı özellikler</string>
+    <string name="settings_pages_kept_documents_and_folders">"Sayfalar %1$s, belgeler ve klasörler %2$s saklanır"</string>
+    <string name="settings_storage">Depolama</string>
+    <string name="settings_pip_your_helper">Yardımcınız Pip</string>
+    <string name="settings_preferences">Tercihler</string>
+    <string name="settings_save_location_cleanup">Kayıt konumu ve temizlik</string>
+    <string name="settings_indra_ocr_100_languages_experimental">Indra OCR · 100+ dil (deneysel)</string>
+    <string name="settings_ml_kit_latin_script_languages">ML Kit · Latin alfabeli diller</string>
+    <string name="settings_gate_off">"%1$s · Kontrol kapalı"</string>
+    <string name="settings_gate_on">"%1$s · Kontrol açık"</string>
+    <string name="settings_manual_models">Manuel modeller</string>
+    <string name="settings_automatic_models">Otomatik modeller</string>
+    <string name="settings_calibrating">Ayarlanıyor…</string>
+    <string name="settings_pure_black">" · Tam siyah"</string>
+    <string name="settings_thanks_for_supporting_scanly">Scanly\'yi desteklediğiniz için teşekkürler</string>
+    <!-- SettingsTextRecognitionScreen -->
+    <string name="settings_text_recognition_weights_openrail_m_code_apache">Ağırlıklar: OpenRAIL-M · Kod: Apache-2.0</string>
+    <string name="settings_text_recognition_visit_datalab_to">datalab.to\'yu ziyaret et</string>
+    <string name="settings_text_recognition_a_big_thank_you_to">Indra OCR\'yi geliştirdiği ve Scanly\'nin onu doğrudan telefonunuzda çalıştırmasına izin verdiği için Datalab\'e çok teşekkürler. Scanly\'nin 100\'den fazla dili okuyabilmesi bu sayede.</string>
+    <string name="settings_text_recognition_datalab">Datalab</string>
+    <string name="settings_text_recognition_indra_ocr_by">INDRA OCR GELİŞTİRİCİSİ</string>
+    <string name="settings_text_recognition_datalab_logo">Datalab logosu</string>
+    <string name="settings_text_recognition_latin_script_only_pages_in">Yalnızca Latin alfabesi. Hintçe, Tamilce, Arapça veya Çince gibi başka alfabelerdeki sayfalar boş ya da bozuk çıkar. Bunlar için Indra OCR\'ye geçin.</string>
+    <string name="settings_text_recognition_5_script_families_read_in">Tek geçişte 5 alfabe ailesi. Her satır doğru tanıyıcıya yönlendirilir, böylece birden çok dil içeren sayfalar da sorunsuz okunur.</string>
+    <string name="settings_text_recognition_reads_100_languages_across_many">Hintçe, Tamilce, Arapça, Çince ve Japonca dahil birçok alfabede 100\'den fazla dili okur. ML Kit\'ten daha yavaştır.</string>
+    <string name="settings_text_recognition_experimental">Deneysel</string>
+    <string name="settings_text_recognition_google_s_fast_on_device">Google\'ın cihaz üzerinde çalışan hızlı tanıyıcısı. İngilizce, İspanyolca ve Fransızca gibi Latin alfabeli diller için en iyisi.</string>
+    <string name="settings_text_recognition_default">Varsayılan</string>
+    <string name="settings_text_recognition_if_a_page_s_text">Bir sayfanın metni boş veya bozuk görünüyorsa muhtemelen ML Kit\'in okuyamadığı bir alfabededir. Indra OCR\'ye geçin, ardından Mevcut sayfaları yeniden oku\'yu kullanın.</string>
+    <string name="settings_text_recognition_tip">İpucu</string>
+    <string name="settings_text_recognition_switching_engines_only_affects_new">Motor değiştirmek yalnızca yeni okumaları etkiler. Mevcut sayfalar bu ekrandan yeniden okunabilir; kendi düzelttiğiniz metin asla değiştirilmez.</string>
+    <string name="settings_text_recognition_your_edits_are_kept">Düzenlemeleriniz korunur</string>
+    <string name="settings_text_recognition_if_indra_ocr_can_t">Indra OCR bir sayfayı okuyamazsa, çok uzun sürerse veya durursa sayfayı ML Kit okur.</string>
+    <string name="settings_text_recognition_ml_kit_is_the_safety">ML Kit yedekte bekler</string>
+    <string name="settings_text_recognition_both_engines_run_on_the">İki motor da cihazda çalışır. Sayfalar okunmak için asla yüklenmez.</string>
+    <string name="settings_text_recognition_stays_on_your_phone">Telefonunuzda kalır</string>
+    <string name="settings_text_recognition_ml_kit_is_the_default">Varsayılan motor ML Kit\'tir. İngilizce, İspanyolca, Fransızca ve Almanca gibi Latin alfabeli dillerde hızlı ve çok doğrudur.\n\nIndra OCR ise geri kalan her şey içindir. Hintçe, Tamilce, Bengalce, Arapça, Urduca, Çince, Japonca, Korece ve Tayca dahil 100\'den fazla dili okur ve birden çok dil içeren sayfaları da işler. Deneysel ve daha yavaştır; bu nedenle sayfaların aranabilir hale gelmesi daha uzun sürer.</string>
+    <string name="settings_text_recognition_choosing_an_engine">Motor seçimi</string>
+    <string name="settings_text_recognition_after_you_scan_scanly_reads">Taramadan sonra Scanly her sayfadaki kelimeleri okur. Bu metin sayesinde kitaplığınızda sayfaların içeriğine göre arama yapabilir, taramadaki metni kopyalayabilir, paylaşabilir ve dışa aktarabilirsiniz.</string>
+    <string name="settings_text_recognition_what_it_does">Ne işe yarar?</string>
+    <string name="settings_text_recognition_also_called_ocr">OCR olarak da bilinir</string>
+    <string name="settings_text_recognition_re_read">Yeniden oku</string>
+    <string name="settings_text_recognition_runs_in_the_background_while">Piliniz azalmadığı sürece arka planda çalışır. Kendi düzenlediğiniz metin korunur.</string>
+    <string name="settings_text_recognition_on_device_text_recognition_v2">Cihaz üzerinde metin tanıma v2</string>
+    <string name="settings_text_recognition_google_ml_kit">Google ML Kit</string>
+    <string name="settings_text_recognition_credits">Emeği geçenler</string>
+    <string name="settings_text_recognition_supported_languages">Desteklenen diller</string>
+    <string name="settings_text_recognition_engine">Motor</string>
+    <string name="settings_text_recognition_about_text_recognition">Metin tanıma hakkında</string>
+    <!-- SettingsViewModel -->
+    <string name="settings_save_location_reset_to_downloads">Kayıt konumu Downloads/Scanly olarak sıfırlandı.</string>
+    <string name="settings_save_location_updated">Kayıt konumu güncellendi.</string>
+    <string name="settings_reading_pages_again_in_the">"%1$s sayfa arka planda yeniden okunuyor."</string>
+    <string name="settings_reading_1_page_again_in">1 sayfa arka planda yeniden okunuyor.</string>
+    <string name="settings_no_pages_to_read_again">Yeniden okunacak sayfa yok.</string>
+    <string name="settings_could_not_update_the_text">Metin tanıma motoru güncellenemedi.</string>
+    <string name="settings_could_not_update_the_physical">Gerçek belge kontrolü güncellenemedi.</string>
+    <string name="settings_could_not_update_automatic_model">Otomatik model seçimi güncellenemedi.</string>
+    <string name="settings_could_not_update_the_post">Son işleme modeli güncellenemedi.</string>
+    <string name="settings_could_not_update_the_live">Canlı önizleme modeli güncellenemedi.</string>
+    <string name="settings_could_not_update_pure_black">Tam siyah tema güncellenemedi.</string>
+    <string name="settings_removed_empty_folders">"%1$s boş klasör kaldırıldı."</string>
+    <string name="settings_removed_1_empty_folder">1 boş klasör kaldırıldı.</string>
+    <string name="settings_no_empty_folders_found">Boş klasör bulunamadı.</string>
+    <string name="settings_removed_empty_documents">"%1$s boş belge kaldırıldı."</string>
+    <string name="settings_removed_1_empty_document">1 boş belge kaldırıldı.</string>
+    <string name="settings_no_empty_documents_found">Boş belge bulunamadı.</string>
+    <string name="settings_freed">"%1$s yer açıldı"</string>
+    <string name="settings_all_data_cleared">Tüm veriler temizlendi.</string>
+    <!-- StorageScreen -->
+    <string name="storage_temporary_exports">Geçici dışa aktarmalar</string>
+    <string name="storage_database_search_index">Veritabanı ve arama dizini</string>
+    <string name="storage_library_files">Kitaplık dosyaları</string>
+    <string name="storage_scanly_is_using">Scanly\'nin kullandığı alan</string>
+    <string name="storage_calculating">Hesaplanıyor…</string>
+    <string name="storage_change">Değiştir</string>
+    <string name="storage_exports_save_to">Dışa aktarmaların kaydedildiği yer</string>
+    <string name="storage_this_permanently_deletes_all_documents">Bu işlem, bu cihazdaki tüm belgeleri, klasörleri, sayfaları ve geçici dışa aktarmaları kalıcı olarak siler. Dışa aktarma klasörünüze daha önce kaydettiğiniz dosyalar korunur.</string>
+    <string name="storage_clear_all_data">Tüm veriler temizlensin mi?</string>
+    <string name="storage_deletes_every_folder_group_that">Hiç belge içermeyen tüm klasörleri (grupları) siler. İçinde belge olan klasörler korunur.</string>
+    <string name="storage_remove_empty_folders">Boş klasörler kaldırılsın mı?</string>
+    <string name="storage_deletes_every_document_that_has">Yarım kalan çekimler dahil sayfası olmayan tüm belgeleri siler ve kapladıkları alanı boşaltır. Sayfası olan belgeler korunur.</string>
+    <string name="storage_remove_empty_documents">Boş belgeler kaldırılsın mı?</string>
+    <string name="storage_deletes_every_document_folder_and">Bu cihazdaki tüm belgeleri, klasörleri ve sayfaları siler</string>
+    <string name="storage_clear_all_data_2">Tüm verileri temizle</string>
+    <string name="storage_danger_zone">Tehlikeli bölge</string>
+    <string name="storage_folders_with_no_documents">Belge içermeyen klasörler</string>
+    <string name="storage_remove_empty_folders_2">Boş klasörleri kaldır</string>
+    <string name="storage_documents_with_no_pages">Sayfası olmayan belgeler</string>
+    <string name="storage_remove_empty_documents_2">Boş belgeleri kaldır</string>
+    <string name="storage_restore_deleted_folders_documents_and">Silinen klasörleri, belgeleri ve sayfaları geri yükleyin</string>
+    <string name="storage_tidy_up">Toparla</string>
+    <string name="storage_use_default_folder">Varsayılan klasörü kullan</string>
+    <string name="storage_pdfs_and_images_you_export">Dışa aktardığınız PDF\'ler ve görseller buraya kaydedilir.</string>
+    <string name="storage_save_location">Kayıt konumu</string>
+    <string name="storage_could_not_use_the_selected">Seçilen klasör kullanılamadı.</string>
+    <string name="storage_selected_folder">Seçilen klasör</string>
+    <!-- ScannedPagePickerSheet -->
+    <string name="scanned_page_picker_no_pages_in_this_document">Bu belgede kullanılabilecek sayfa yok.</string>
+    <string name="scanned_page_picker_back_to_documents">Belgelere dön</string>
+    <string name="scanned_page_picker_no_scanned_documents_yet_scan">Henüz taranmış belge yok. Scanly\'de bir sayfa tarayın, burada görünsün.</string>
+    <string name="scanned_page_picker_scanned_pages">Taranan sayfalar</string>
+    <!-- SignatureCreateScreen -->
+    <string name="signature_create_choose_another">Başkasını seç</string>
+    <string name="signature_create_bolder">Daha koyu</string>
+    <string name="signature_create_fainter">Daha açık</string>
+    <string name="signature_create_ink_sensitivity">Mürekkep hassasiyeti</string>
+    <string name="signature_create_extracted_signature_preview">Çıkarılan imza önizlemesi</string>
+    <string name="signature_create_scanly_removes_the_paper_background">Scanly kâğıt arka planını kaldırır ve yalnızca mürekkebi bırakır.</string>
+    <string name="signature_create_use_a_page_you_scanned">Scanly\'de taradığınız bir sayfayı kullanın</string>
+    <string name="signature_create_scanned_page">Taranan sayfa</string>
+    <string name="signature_create_jpg_or_png_from_your">Telefonunuzdan JPG veya PNG</string>
+    <string name="signature_create_files">Dosyalar</string>
+    <string name="signature_create_pick_a_photo_of_your">İmzanızın fotoğrafını seçin</string>
+    <string name="signature_create_photos">Fotoğraflar</string>
+    <string name="signature_create_choose_where_your_signature_is">İmzanızın nerede olduğunu seçin</string>
+    <string name="signature_create_choose_where_your_initials_are">Parafınızın nerede olduğunu seçin</string>
+    <string name="signature_create_pen">Kalem</string>
+    <string name="signature_create_upload">Yükle</string>
+    <string name="signature_create_draw">Çiz</string>
+    <string name="signature_create_save_signature">İmzayı kaydet</string>
+    <string name="signature_create_save_initials">Parafı kaydet</string>
+    <string name="signature_create_sign_above_the_line">Çizginin üstüne imzalayın</string>
+    <string name="signature_create_write_your_initials_above_the">Parafınızı çizginin üstüne atın</string>
+    <string name="signature_create_new_signature">Yeni imza</string>
+    <string name="signature_create_new_initials">Yeni paraf</string>
+    <!-- SignatureCreateViewModel -->
+    <string name="signature_create_choose_a_photo_of_your">Önce imzanızın fotoğrafını seçin.</string>
+    <string name="signature_create_still_reading_the_photo_try">Fotoğraf hâlâ okunuyor. Birazdan tekrar deneyin.</string>
+    <string name="signature_create_draw_your_signature_first">Önce imzanızı çizin.</string>
+    <!-- SignaturePad -->
+    <string name="signature_pad_draw_here">Buraya çizin</string>
+    <!-- DocumentSignScreen -->
+    <string name="document_sign_stamping_signatures">İmzalar ekleniyor…</string>
+    <!-- DocumentSignViewModel -->
+    <string name="document_sign_saved_signatures_couldn_t_be">Kayıtlı imzalar yüklenemedi, bu yüzden bu belge şu anda imzalanamıyor.</string>
+    <!-- SignEditorScreen -->
+    <string name="sign_editor_next_page">Sonraki sayfa</string>
+    <string name="sign_editor_add_text">Metin ekle</string>
+    <string name="sign_editor_edit_date">Tarihi düzenle</string>
+    <string name="sign_editor_tap_checkbox_again_for_another">Başka bir kutu için Onay kutusu\'na yeniden dokunun · işaretlemek veya kaldırmak için araç çubuğunu kullanın</string>
+    <string name="sign_editor_tap_text_again_for_another">Başka bir satır için Metin\'e yeniden dokunun · düzenlemek için metne iki kez dokunun</string>
+    <string name="sign_editor_tap_date_again_for_another">Başka bir damga için Tarih\'e yeniden dokunun · düzenlemek için tarihe iki kez dokunun</string>
+    <string name="sign_editor_manage">Yönet</string>
+    <string name="sign_editor_your_signatures">İmzalarınız</string>
+    <string name="sign_editor_signatures_and_marks_you_added">Bu belgeye eklediğiniz veya değiştirdiğiniz imzalar ve işaretler korunmayacak.</string>
+    <!-- SignMarkLayer -->
+    <string name="sign_mark_layer_duplicate">Çoğalt</string>
+    <string name="sign_mark_layer_tick">İşaretle</string>
+    <string name="sign_mark_layer_untick">İşareti kaldır</string>
+    <!-- SignatureManageScreen -->
+    <string name="signature_manage_added">"%1$s · Eklenme: %2$s"</string>
+    <string name="signature_manage_from_a_photo">Fotoğraftan</string>
+    <string name="signature_manage_drawn">Çizilmiş</string>
+    <string name="signature_manage_pages_you_ve_already_signed">Daha önce imzaladığınız sayfalarda olduğu gibi kalır</string>
+    <string name="signature_manage_place_it_on_a_pdf">Bir PDF\'ye veya Scanly belgesine yerleştirin</string>
+    <string name="signature_manage_sign_a_pdf">PDF imzala</string>
+    <string name="signature_manage_use_first_when_signing">İmzalarken önce bunu kullan</string>
+    <string name="signature_manage_shared_and_saved_as_a">Şeffaf PNG olarak paylaşılır ve kaydedilir; belgeler, formlar ve e-postalar için hazırdır.</string>
+    <string name="signature_manage_save_to_phone">Telefona kaydet</string>
+    <string name="signature_manage_ink_colour">Mürekkep rengi</string>
+    <string name="signature_manage_in_ink">"%1$s, mürekkep: %2$s"</string>
+    <string name="signature_manage_used_first">Önce kullanılır</string>
+    <string name="signature_manage_used_first_2">, önce kullanılır</string>
+    <string name="signature_manage_pages_you_ve_already_signed_2">Daha önce imzaladığınız sayfalarda olduğu gibi kalır.</string>
+    <string name="signature_manage_initials">Paraflar</string>
+    <string name="signature_manage_signatures">İmzalar</string>
+    <string name="signature_manage_signatures_stay_on_this_phone">İmzalar bu telefonda kalır. Bir imza çizin veya imzanızın fotoğrafını yükleyin.</string>
+    <string name="signature_manage_tap_one_to_share_save">Paylaşmak, kaydetmek veya sıralamak için birine dokunun</string>
+    <!-- SignatureManageViewModel -->
+    <string name="signature_manage_saved_to">"Kaydedildi: %1$s"</string>
+    <string name="signature_manage_will_be_offered_first_when">"İmzalarken ilk önce şu önerilecek: %1$s"</string>
+    <!-- PageTextScreen -->
+    <string name="page_text_share_text">Metni paylaş</string>
+    <string name="page_text_scan_or_import_a_page">Bir sayfa tarayın veya içe aktarın, metni burada görünsün.</string>
+    <string name="page_text_this_document_has_no_pages">Bu belgede henüz sayfa yok</string>
+    <string name="page_text_reading_text">Metin okunuyor</string>
+    <string name="page_text_copy_page">Sayfayı kopyala</string>
+    <string name="page_text_save_changes">Değişiklikleri kaydet</string>
+    <string name="page_text_copy">Kopyala</string>
+    <string name="page_text_tap_an_outlined_area_to">Yalnızca o kısmı kopyalamak için çerçeveli bir alana dokunun.</string>
+    <string name="page_text_regions_are_hidden_because_this">Bu sayfa, metni okunduktan sonra değiştiği için bölgeler gizlendi.</string>
+    <string name="page_text_page_image_with_text_regions">"%1$s metin bölgesi içeren sayfa görseli"</string>
+    <string name="page_text_read_with_indra_ocr_experimental">Indra OCR ile okundu (deneysel)</string>
+    <string name="page_text_read_with_ml_kit_indra">ML Kit ile okundu (Indra OCR bu sayfayı okuyamadı)</string>
+    <string name="page_text_edited">Düzenlendi</string>
+    <string name="page_text_read_again">Yeniden oku</string>
+    <string name="page_text_photos_and_handwriting_may_not">Fotoğraflarda ve el yazısında okunabilir basılı metin olmayabilir. Daha net ve iyi aydınlatılmış bir tarama genellikle işe yarar.</string>
+    <string name="page_text_no_text_found_on_this">Bu sayfada metin bulunamadı</string>
+    <string name="page_text_read_this_page">Bu sayfayı oku</string>
+    <string name="page_text_scanly_reads_page_text_on">Scanly sayfa metnini bu cihazda okur.</string>
+    <string name="page_text_text_not_read_yet">Metin henüz okunmadı</string>
+    <string name="page_text_try_again">Tekrar dene</string>
+    <string name="page_text_couldn_t_read_this_page">Bu sayfa okunamadı</string>
+    <string name="page_text_your_corrections_are_used_for">Düzeltmeleriniz kopyalama, paylaşma ve aramada kullanılır.</string>
+    <string name="page_text_this_page_changed_after_its">Bu sayfa, metni okunduktan sonra değişti.</string>
+    <string name="page_text_stop_highlighting">Vurgulamayı durdur</string>
+    <string name="page_text_on_this_page">"Bu sayfada: %1$s"</string>
+    <string name="page_text_not_on_this_page">bu sayfada yok</string>
+    <string name="page_text_reading_text_2">Metin okunuyor…</string>
+    <string name="page_text_reading_page_of">"Sayfa okunuyor: %1$s / %2$s…"</string>
+    <string name="page_text_page">"%1$s — sayfa %2$s"</string>
+    <string name="page_text_read_all_pages_again">Tüm sayfaları yeniden oku</string>
+    <string name="page_text_restore_original_text">Orijinal metni geri yükle</string>
+    <string name="page_text_share_all_pages">Tüm sayfaları paylaş</string>
+    <string name="page_text_all_pages">tüm sayfalar</string>
+    <string name="page_text_copy_all_pages">Tüm sayfaları kopyala</string>
+    <string name="page_text_extracted_text">Çıkarılan metin</string>
+    <string name="page_text_copied">"Kopyalandı: %1$s"</string>
+    <!-- PageTextViewModel -->
+    <string name="page_text_original_text_restored">Orijinal metin geri yüklendi</string>
+    <string name="page_text_changes_saved_search_uses_your">Değişiklikler kaydedildi. Arama, düzenlemelerinizi kullanır.</string>
+    <string name="page_text_page_text_read_again">Sayfa metni yeniden okundu</string>
+    <!-- ToolKit -->
+    <string name="tool_kit_file_name">Dosya adı</string>
+    <!-- ToolsScreen -->
+    <string name="tools_everything_runs_offline_on_this">Her şey bu telefonda, çevrimdışı çalışır</string>
+    <string name="tools_utilities">Yardımcı araçlar</string>
+    <!-- PdfCompressScreen -->
+    <string name="pdf_compress_recommended">Önerilen</string>
+    <string name="pdf_compress_compress_this_pdf_again_with">Bu PDF\'yi farklı bir ayarla yeniden sıkıştırın</string>
+    <string name="pdf_compress_try_another_quality">Başka bir kalite dene</string>
+    <string name="pdf_compress_after">Sonra</string>
+    <string name="pdf_compress_before">Önce</string>
+    <string name="pdf_compress_quality">Kalite</string>
+    <string name="pdf_compress_this_quality_didn_t_make">Bu kalite dosyayı küçültmedi. Başka bir tane deneyin.</string>
+    <string name="pdf_compress_compressed">Sıkıştırıldı</string>
+    <string name="pdf_compress_already_compact">Zaten küçük</string>
+    <string name="pdf_compress_saved">%%%1$s küçüldü</string>
+    <string name="pdf_compress_compressing">Sıkıştırılıyor…</string>
+    <string name="pdf_compress_compress">Sıkıştır</string>
+    <string name="pdf_compress_pages_are_re_encoded_as">Sayfalar görsel olarak yeniden kodlanır; bu nedenle PDF\'deki metin artık seçilemez veya aranamaz.</string>
+    <string name="pdf_compress_unlock">Kilidi aç</string>
+    <string name="pdf_compress_enter_the_password">Şifreyi girin</string>
+    <string name="pdf_compress_compressed_pdf">Sıkıştırılmış PDF</string>
+    <string name="pdf_compress_step_1_of_3_choose">Adım 1 / 3 · Dosya seçin</string>
+    <string name="pdf_compress_shrink_a_pdf_for_email">E-posta veya yükleme sınırları için PDF\'yi küçültün.</string>
+    <string name="pdf_compress_compress_pdf">PDF sıkıştır</string>
+    <!-- PdfCompressViewModel -->
+    <string name="pdf_compress_compressing_pdf">PDF sıkıştırılıyor…</string>
+    <string name="pdf_compress_choose_a_pdf_first">Önce bir PDF seçin.</string>
+    <!-- PdfFilePicker -->
+    <string name="pdf_file_picker_days_ago">"%1$s gün önce"</string>
+    <string name="pdf_file_picker_selected_position">"Seçildi, sıra %1$s"</string>
+    <string name="pdf_file_picker_empty_scans_are_hidden">"%1$s boş tarama gizlendi"</string>
+    <string name="pdf_file_picker_1_empty_scan_is_hidden">1 boş tarama gizlendi</string>
+    <string name="pdf_file_picker_no_match">"\"%2$s\" ile eşleşen %1$s yok."</string>
+    <string name="pdf_file_picker_sorted_by">"Sıralama: %1$s"</string>
+    <string name="pdf_file_picker_in_scanly">"Scanly\'de · %1$s"</string>
+    <string name="pdf_file_picker_search_your">"Ara: %1$s"</string>
+    <string name="pdf_file_picker_your_scans_have_no_pages">Taramalarınızda henüz sayfa yok. Telefon depolamasından bir PDF seçin.</string>
+    <string name="pdf_file_picker_no_scans_yet_pick_a">Henüz tarama yok. Telefon depolamasından bir PDF seçin veya önce bir belge tarayın.</string>
+    <string name="pdf_file_picker_pdfs">PDF\'ler</string>
+    <string name="pdf_file_picker_downloads_drive_and_other_apps">İndirilenler, Drive ve diğer uygulamalar</string>
+    <string name="pdf_file_picker_phone_storage">Telefon depolaması</string>
+    <!-- PdfImportScreen -->
+    <string name="pdf_import_add_pages">"%1$s sayfa ekle"</string>
+    <string name="pdf_import_add_1_page">1 sayfa ekle</string>
+    <string name="pdf_import_add_to_library">Kitaplığa ekle</string>
+    <string name="pdf_import_another_pdf">Başka bir PDF</string>
+    <string name="pdf_import_crop_filter_sign_or_search">"%1$s · %2$s. Her tarama gibi kırpabilir, filtre uygulayabilir, imzalayabilir veya içinde arama yapabilirsiniz."</string>
+    <string name="pdf_import_added_to_your_library">Kitaplığınıza eklendi</string>
+    <string name="pdf_import_step_3_of_3_done">Adım 3 / 3 · Bitti</string>
+    <string name="pdf_import_adding_to_library">Kitaplığa ekleniyor…</string>
+    <string name="pdf_import_look">Göz at</string>
+    <string name="pdf_import_your_pdf_file_stays_as">PDF dosyanız olduğu gibi kalır; Scanly kendi kopyasını saklar</string>
+    <string name="pdf_import_tap_a_page_or_long">Bir sayfaya dokunun veya birkaç sayfa için basılı tutup sürükleyin.</string>
+    <string name="pdf_import_step_2_of_3_pages">Adım 2 / 3 · Sayfalar ve ad</string>
+    <string name="pdf_import_name_this_document">Bu belgeyi adlandırın</string>
+    <string name="pdf_import_document_name">Belge adı</string>
+    <string name="pdf_import_turn_a_pdf_into_a">Bir PDF\'yi düzenleyebileceğiniz, imzalayabileceğiniz ve içinde arama yapabileceğiniz bir Scanly belgesine dönüştürün.</string>
+    <string name="pdf_import_add_pdf_to_library">PDF\'yi kitaplığa ekle</string>
+    <!-- PdfImportViewModel -->
+    <string name="pdf_import_give_the_document_a_name">Belgeye bir ad verin.</string>
+    <string name="pdf_import_imported_pdf">İçe aktarılan PDF</string>
+    <!-- PdfMergeScreen -->
+    <string name="pdf_merge_1_file">1 dosya</string>
+    <string name="pdf_merge_your_original_files_are_unchanged">Orijinal dosyalarınız değişmez</string>
+    <string name="pdf_merge_combined_into_one_pdf">"%1$s tek PDF\'de birleştirildi"</string>
+    <string name="pdf_merge_merged">Birleştirildi</string>
+    <string name="pdf_merge_kept_unchanged">Korundu, değişmedi</string>
+    <string name="pdf_merge_original_files">Orijinal dosyalar</string>
+    <string name="pdf_merge_size">Boyut</string>
+    <string name="pdf_merge_remove">"Kaldır: %1$s"</string>
+    <string name="pdf_merge_move_down">"Aşağı taşı: %1$s"</string>
+    <string name="pdf_merge_move_up">"Yukarı taşı: %1$s"</string>
+    <string name="pdf_merge_pdf_from_scanly">Scanly\'den PDF</string>
+    <string name="pdf_merge_pdf_from_phone">Telefondan PDF</string>
+    <string name="pdf_merge_page_count_unknown">Sayfa sayısı bilinmiyor</string>
+    <string name="pdf_merge_merge_pdfs">PDF birleştir</string>
+    <string name="pdf_merge_merge_files">"%1$s dosyayı birleştir"</string>
+    <string name="pdf_merge_add_more">Daha fazla ekle</string>
+    <string name="pdf_merge_merge_order">"Birleştirme sırası · %1$s"</string>
+    <string name="pdf_merge_files_are_joined_from_top">Dosyalar yukarıdan aşağıya birleştirilir.</string>
+    <string name="pdf_merge_order_name">Sıra ve ad</string>
+    <string name="pdf_merge_step_2_of_3_order">Adım 2 / 3 · Sıra ve ad</string>
+    <string name="pdf_merge_in_total">"Toplam %1$s"</string>
+    <string name="pdf_merge_from_phone">"Telefondan: %1$s"</string>
+    <string name="pdf_merge_next">İleri</string>
+    <string name="pdf_merge_next_files">"İleri · %1$s dosya"</string>
+    <string name="pdf_merge_pick_at_least_2_files">En az 2 dosya seçin</string>
+    <string name="pdf_merge_step_1_of_3_pick">Adım 1 / 3 · Dosyaları seçin</string>
+    <string name="pdf_merge_pick_files_in_the_order">Dosyaları istediğiniz sırayla seçin.</string>
+    <string name="pdf_merge_merged_pdf">Birleştirilmiş PDF</string>
+    <string name="pdf_merge_merging">Birleştiriliyor…</string>
+    <!-- PdfMergeViewModel -->
+    <string name="pdf_merge_add_at_least_two_pdfs">Birleştirmek için en az iki PDF ekleyin.</string>
+    <!-- PdfPasswordScreen -->
+    <string name="pdf_password_file">Dosya</string>
+    <string name="pdf_password_allowed">İzin verildi</string>
+    <string name="pdf_password_restricted">Kısıtlı</string>
+    <string name="pdf_password_editing">Düzenleme</string>
+    <string name="pdf_password_no_password">Şifre yok</string>
+    <string name="pdf_password_aes_256_password">AES-256 şifre</string>
+    <string name="pdf_password_protection">Koruma</string>
+    <string name="pdf_password_a_short_phrase_you_ll">Hatırlayacağınız kısa bir ifade, rastgele harflerden daha iyidir.</string>
+    <string name="pdf_password_doesn_t_match_yet">Henüz eşleşmiyor</string>
+    <string name="pdf_password_passwords_match">Şifreler eşleşiyor</string>
+    <string name="pdf_password_remove_password">Şifreyi kaldır</string>
+    <string name="pdf_password_the_unlocked_copy_opens_for">Kilidi açılan kopya, ona sahip herkes tarafından açılabilir. Scanly yalnızca bildiğiniz şifreleri kaldırır.</string>
+    <string name="pdf_password_bank_and_portal_pdfs_often">Banka ve portal PDF\'lerinde genellikle doğum tarihiniz veya müşteri numaranız kullanılır.</string>
+    <string name="pdf_password_password_for_this_pdf">Bu PDF\'nin şifresi</string>
+    <string name="pdf_password_current_password">Mevcut şifre</string>
+    <string name="pdf_password_locked_pdf">Kilitli PDF</string>
+    <string name="pdf_password_lock_pdf">PDF\'yi kilitle</string>
+    <string name="pdf_password_scanly_can_t_recover_this">Scanly bu şifreyi kurtaramaz. Unutursanız PDF açılamaz.</string>
+    <string name="pdf_password_others_can_open_and_print">Başkaları açıp yazdırabilir ancak düzenleyemez veya metin kopyalayamaz</string>
+    <string name="pdf_password_restrict_editing">Düzenlemeyi kısıtla</string>
+    <string name="pdf_password_type_it_again">Yeniden yazın</string>
+    <string name="pdf_password_at_least_characters">"En az %1$s karakter"</string>
+    <string name="pdf_password_new_password">Yeni şifre</string>
+    <string name="pdf_password_add_password">Şifre ekle</string>
+    <string name="pdf_password_checking_the_file">Dosya kontrol ediliyor…</string>
+    <string name="pdf_password_unlocked_pdf">Kilidi açılmış PDF</string>
+    <string name="pdf_password_protected_pdf">Korumalı PDF</string>
+    <string name="pdf_password_it_now_opens_without_a">Artık şifresiz açılıyor.</string>
+    <string name="pdf_password_anyone_opening_it_will_need">Açmak isteyen herkesin şifreye ihtiyacı olacak.</string>
+    <string name="pdf_password_password_removed">Şifre kaldırıldı</string>
+    <string name="pdf_password_pdf_locked">PDF kilitlendi</string>
+    <string name="pdf_password_unlocking">Kilit açılıyor…</string>
+    <string name="pdf_password_locking">Kilitleniyor…</string>
+    <string name="pdf_password_lock_a_pdf_or_remove">Bir PDF\'yi kilitleyin veya bildiğiniz bir şifreyi kaldırın.</string>
+    <!-- PdfPasswordViewModel -->
+    <string name="pdf_password_unlocking_pdf">PDF\'nin kilidi açılıyor…</string>
+    <string name="pdf_password_enter_the_current_password">Mevcut şifreyi girin.</string>
+    <string name="pdf_password_locking_pdf">PDF kilitleniyor…</string>
+    <string name="pdf_password_use_to_characters_for_the">"Şifre için %1$s–%2$s karakter kullanın."</string>
+    <!-- PdfReaderMenu -->
+    <string name="pdf_reader_menu_open_another_pdf">Başka bir PDF aç</string>
+    <string name="pdf_reader_menu_all_pages">Tüm sayfalar</string>
+    <!-- PdfReaderPresentation -->
+    <string name="pdf_reader_presentation_0_of_0">0 / 0</string>
+    <string name="pdf_reader_presentation_paged">Sayfa sayfa</string>
+    <string name="pdf_reader_presentation_continuous">Kesintisiz</string>
+    <!-- PdfReaderScreen -->
+    <string name="pdf_reader_tap_a_page_to_jump">Bir sayfaya gitmek için dokunun</string>
+    <string name="pdf_reader_loading_page">Sayfa %1$s yükleniyor…</string>
+    <string name="pdf_reader_loading_page_2">Sayfa yükleniyor…</string>
+    <string name="pdf_reader_choose_another_pdf">Başka bir PDF seç</string>
+    <string name="pdf_reader_password">Şifre</string>
+    <string name="pdf_reader_this_pdf_is_password_protected">Bu PDF şifreyle korunuyor. %1$s dosyasını okumak için şifreyi girin.</string>
+    <string name="pdf_reader_unlock_pdf">PDF\'nin kilidini aç</string>
+    <string name="pdf_reader_choose_a_file">Dosya seç</string>
+    <string name="pdf_reader_open_any_pdf_from_scanly">Scanly\'deki veya telefonunuzdaki herhangi bir PDF\'yi açın.</string>
+    <string name="pdf_reader_read_a_pdf">PDF oku</string>
+    <!-- PdfSignScreen -->
+    <string name="pdf_sign_1_mark">1 işaret</string>
+    <string name="pdf_sign_the_signed_copy_is_saved">İmzalı kopya şifresiz kaydedilir.</string>
+    <string name="pdf_sign_this_pdf_is_locked">Bu PDF kilitli</string>
+    <string name="pdf_sign_back_to_the_editor">Düzenleyiciye dön</string>
+    <string name="pdf_sign_edit_signatures">İmzaları düzenle</string>
+    <string name="pdf_sign_signed_pdf">İmzalı PDF</string>
+    <string name="pdf_sign_saved_as">Kayıt adı</string>
+    <string name="pdf_sign_marks_placed">Yerleştirilen işaretler</string>
+    <string name="pdf_sign_pages_signed">İmzalanan sayfalar</string>
+    <string name="pdf_sign_signed">İmzalandı</string>
+    <string name="pdf_sign_placing_signatures_on_each_page">İmzalar her sayfaya yerleştiriliyor…</string>
+    <string name="pdf_sign_signing_your_pdf">PDF\'niz imzalanıyor</string>
+    <string name="pdf_sign_pdf_jpg_or_png_from">İndirilenler, Drive ve diğer uygulamalardan PDF, JPG veya PNG</string>
+    <string name="pdf_sign_step_1_of_3_choose">Adım 1 / 3 · Seçin</string>
+    <string name="pdf_sign_choose_a_pdf_or_an">İmzalamak için bir PDF veya görsel seçin</string>
+    <string name="pdf_sign_sign_pdf">PDF imzala</string>
+    <!-- PdfSignViewModel -->
+    <string name="pdf_sign_signing">İmzalanıyor…</string>
+    <string name="pdf_sign_place_a_signature_first">Önce bir imza yerleştirin.</string>
+    <string name="pdf_sign_open_a_pdf_first">Önce bir PDF açın.</string>
+    <!-- PdfToImagesPresentation -->
+    <string name="pdf_to_images_presentation_page">"Sayfa %1$s · %2$s"</string>
+    <string name="pdf_to_images_presentation_share_all">"Tümünü paylaş · %1$s"</string>
+    <string name="pdf_to_images_presentation_share_image">Görseli paylaş</string>
+    <string name="pdf_to_images_presentation_in_all">"Toplam %1$s"</string>
+    <string name="pdf_to_images_presentation_of_pages">"%2$s sayfadan %1$s"</string>
+    <string name="pdf_to_images_presentation_all_pages">"Tüm sayfalar · %1$s"</string>
+    <string name="pdf_to_images_presentation_export">"%1$s dışa aktar"</string>
+    <string name="pdf_to_images_presentation_choose_pages_to_export">Dışa aktarılacak sayfaları seçin</string>
+    <string name="pdf_to_images_presentation_1_image">1 görsel</string>
+    <string name="pdf_to_images_presentation_1f_gb" formatted="false">%.1f GB</string>
+    <string name="pdf_to_images_presentation_1f_mb" formatted="false">%.1f MB</string>
+    <string name="pdf_to_images_presentation_kb">"%1$s KB"</string>
+    <string name="pdf_to_images_presentation_0_kb">0 KB</string>
+    <!-- PdfToImagesScreen -->
+    <string name="pdf_to_images_of_selected">"%1$s / %2$s seçildi"</string>
+    <string name="pdf_to_images_tap_images_or_long_press">Yalnızca bazılarını paylaşmak için görsellere dokunun veya basılı tutup sürükleyin.</string>
+    <string name="pdf_to_images_open_gallery">Galeriyi aç</string>
+    <string name="pdf_to_images_pick_a_different_file">Farklı bir dosya seç</string>
+    <string name="pdf_to_images_png_or_print_size">PNG veya baskı boyutu</string>
+    <string name="pdf_to_images_export_again">Yeniden dışa aktar</string>
+    <string name="pdf_to_images_saving_images">Görseller kaydediliyor…</string>
+    <string name="pdf_to_images_each">tanesi ~%1$s</string>
+    <string name="pdf_to_images_resolution">Çözünürlük</string>
+    <string name="pdf_to_images_format">Biçim</string>
+    <string name="pdf_to_images_deselect_all">Tüm seçimleri kaldır</string>
+    <string name="pdf_to_images_this_pdf_is_password_protected">Bu PDF şifreyle korunuyor. Sayfaları görmek için şifresini girin.</string>
+    <string name="pdf_to_images_images_show_up_in_your">Görseller hemen galerinizde görünür</string>
+    <string name="pdf_to_images_pdf_to_jpg">PDF\'den JPG\'ye</string>
+    <string name="pdf_to_images_step_2_of_3_pages">Adım 2 / 3 · Sayfalar ve biçim</string>
+    <string name="pdf_to_images_no_gallery_app_found_the">Galeri uygulaması bulunamadı. Görseller Pictures/Scanly klasöründe.</string>
+    <string name="pdf_to_images_turn_pages_into_images_for">Sayfaları sohbetler, sunumlar veya galeriniz için görsellere dönüştürün.</string>
+    <!-- PdfToolDone -->
+    <string name="pdf_tool_done_open_pdf">PDF\'yi aç</string>
+    <string name="pdf_tool_done_open_the_finished_pdf">Hazır PDF\'yi açın</string>
+    <string name="pdf_tool_done_your_original_file_is_unchanged">Orijinal dosyanız değişmedi</string>
+    <!-- PdfToolPresentation -->
+    <string name="pdf_tool_presentation_files_merge_in_this_order">Dosyalar bu sırayla birleştirilir. Belge ilk PDF ile başlar.</string>
+    <string name="pdf_tool_presentation_add_at_least_one_more">Birleştirmek için en az bir PDF daha ekleyin.</string>
+    <string name="pdf_tool_presentation_opacity">Opaklık %%%1$s</string>
+    <string name="pdf_tool_presentation_one_large_stamp_sized_to">Sayfanın büyük kısmını kaplayan tek bir büyük damga.</string>
+    <string name="pdf_tool_presentation_repeats_across_the_full_page">Kenarlar dahil tüm sayfa boyunca tekrarlanır.</string>
+    <string name="pdf_tool_presentation_protect_pdf">PDF\'yi koru</string>
+    <string name="pdf_tool_presentation_saved">"%1$s → %2$s  ·  %%%3$s küçüldü"</string>
+    <string name="pdf_tool_presentation_unlocked">Kilidi açıldı</string>
+    <string name="pdf_tool_presentation_protected">Korumalı</string>
+    <string name="pdf_tool_presentation_pdfs">"%1$s PDF"</string>
+    <string name="pdf_tool_presentation_1_pdf">1 PDF</string>
+    <string name="pdf_tool_presentation_no_files">Dosya yok</string>
+    <!-- PdfToolShared -->
+    <string name="pdf_tool_shared_scanly_pdf">Scanly PDF</string>
+    <!-- PdfToolViewModels -->
+    <string name="pdf_tool_view_models_saving">Kaydediliyor…</string>
+    <!-- PdfWatermarkScreen -->
+    <string name="pdf_watermark_the_page">Sayfaya</string>
+    <string name="pdf_watermark_first_page_only">Yalnızca ilk sayfa</string>
+    <string name="pdf_watermark_apply_to">Uygulanacak yer</string>
+    <string name="pdf_watermark_colour">Renk</string>
+    <string name="pdf_watermark_opacity">Opaklık</string>
+    <string name="pdf_watermark_large">Büyük</string>
+    <string name="pdf_watermark_medium">Orta</string>
+    <string name="pdf_watermark_small">Küçük</string>
+    <string name="pdf_watermark_horizontal">Yatay</string>
+    <string name="pdf_watermark_diagonal">Çapraz</string>
+    <string name="pdf_watermark_single">Tek</string>
+    <string name="pdf_watermark_tiled">Döşeme</string>
+    <string name="pdf_watermark_style">Stil</string>
+    <string name="pdf_watermark_stamps">Damga: \"%1$s\"</string>
+    <string name="pdf_watermark_add_date">Tarih ekle</string>
+    <string name="pdf_watermark_presets">Hazır ayarlar</string>
+    <string name="pdf_watermark_the_watermarked_copy_is_saved">Filigranlı kopya şifresiz kaydedilir. Şifre aracıyla yeniden kilitleyebilirsiniz.</string>
+    <string name="pdf_watermark_live_preview_of_the_saved">Kaydedilecek dosyanın canlı önizlemesi</string>
+    <string name="pdf_watermark_page_1">Sayfa 1</string>
+    <string name="pdf_watermark_preview_of_page_1_with">Filigranlı sayfa 1 önizlemesi</string>
+    <string name="pdf_watermark_apply_watermark">Filigranı uygula</string>
+    <string name="pdf_watermark_apply_to_pages">"%1$s sayfaya uygula"</string>
+    <string name="pdf_watermark_apply_to_page">Sayfaya uygula</string>
+    <string name="pdf_watermark_apply_to_first_page">İlk sayfaya uygula</string>
+    <string name="pdf_watermark_unlock_the_pdf_first">Önce PDF\'nin kilidini açın</string>
+    <string name="pdf_watermark_watermark">Filigran</string>
+    <string name="pdf_watermark_edit_stamp">Damgayı düzenle</string>
+    <string name="pdf_watermark_watermarked_pdf">Filigranlı PDF</string>
+    <string name="pdf_watermark_kept_unstamped">Korundu, damgasız</string>
+    <string name="pdf_watermark_stamp">Damga</string>
+    <string name="pdf_watermark_on_every_page_tap_the">Her sayfada. Kontrol etmek için sayfaya dokunun.</string>
+    <string name="pdf_watermark_on_all_pages_tap_the">"%1$s sayfanın tümünde. Kontrol etmek için sayfaya dokunun."</string>
+    <string name="pdf_watermark_on_both_pages_tap_the">İki sayfada da. Kontrol etmek için sayfaya dokunun.</string>
+    <string name="pdf_watermark_on_the_page_tap_it">Sayfada. Kontrol etmek için dokunun.</string>
+    <string name="pdf_watermark_on_the_first_page_tap">İlk sayfada. Kontrol etmek için sayfaya dokunun.</string>
+    <string name="pdf_watermark_watermark_added">Filigran eklendi</string>
+    <string name="pdf_watermark_stamping_every_page">Her sayfa damgalanıyor</string>
+    <string name="pdf_watermark_stamping">"Damgalanıyor: %1$s"</string>
+    <string name="pdf_watermark_stamping_the_first_page">İlk sayfa damgalanıyor</string>
+    <string name="pdf_watermark_adding_watermark">Filigran ekleniyor…</string>
+    <string name="pdf_watermark_stamp_text_like_confidential_or">GİZLİ veya \"Yalnızca KYC işlemleri için\" gibi metinler damgalayın.</string>
+    <!-- PdfWatermarkViewModel -->
+    <string name="pdf_watermark_kyc_copy">KYC kopyası</string>
+    <string name="pdf_watermark_enter_watermark_text">Filigran metnini girin.</string>
+    <!-- QrActions -->
+    <string name="qr_actions_qr_text">QR metni</string>
+    <string name="qr_actions_no_app_can_search_the">Web\'de arama yapabilecek uygulama yok</string>
+    <string name="qr_actions_no_email_app_is_set">Bu telefonda kurulu e-posta uygulaması yok</string>
+    <string name="qr_actions_no_phone_app_can_open">Bu numarayı açabilecek telefon uygulaması yok</string>
+    <string name="qr_actions_no_contacts_app_can_save">Bunu kaydedebilecek kişiler uygulaması yok</string>
+    <string name="qr_actions_pick_in_wi_fi_settings">Wi-Fi ayarlarında \"%1$s\" ağını seçin</string>
+    <string name="qr_actions_password_copied_pick_the_network">Şifre kopyalandı. Ağı seçin</string>
+    <string name="qr_actions_wi_fi_settings_can_t">Wi-Fi ayarları açılamıyor</string>
+    <string name="qr_actions_wi_fi_password">Wi-Fi şifresi</string>
+    <string name="qr_actions_wi_fi_settings_can_t_2">Wi-Fi ayarları bu ağı ekleyemiyor</string>
+    <string name="qr_actions_no_upi_app_can_open">Bu kodu açabilecek UPI uygulaması yok</string>
+    <string name="qr_actions_pay_with">Şununla öde</string>
+    <string name="qr_actions_no_app_can_open_this">Bu bağlantıyı açabilecek uygulama yok</string>
+    <string name="qr_actions_not_a_web_link">Web bağlantısı değil</string>
+    <string name="qr_actions_nothing_can_receive_this_text">Bu metni alabilecek uygulama yok</string>
+    <string name="qr_actions_share_qr_code">QR kodu paylaş</string>
+    <string name="qr_actions_copied_to_clipboard">Panoya kopyalandı</string>
+    <!-- QrCreateScreen -->
+    <string name="qr_create_full_name">Ad soyad</string>
+    <string name="qr_create_name">Ad</string>
+    <string name="qr_create_leave_the_amount_empty_so">Müşterilerin borçlarını kendileri girebilmesi için tutarı boş bırakın.</string>
+    <string name="qr_create_enter_an_amount_above_zero">Sıfırdan büyük bir tutar girin</string>
+    <string name="qr_create_any">₹ Serbest</string>
+    <string name="qr_create_amount_optional">Tutar · isteğe bağlı</string>
+    <string name="qr_create_shop_name">Mağaza adı</string>
+    <string name="qr_create_payee_name">Alıcı adı</string>
+    <string name="qr_create_name_bank">ad@banka</string>
+    <string name="qr_create_upi_id">UPI kimliği</string>
+    <string name="qr_create_security">Güvenlik</string>
+    <string name="qr_create_network_password">Ağ şifresi</string>
+    <string name="qr_create_network_name">Ağ adı</string>
+    <string name="qr_create_characters">"%1$s / %2$s karakter"</string>
+    <string name="qr_create_anything_up_to_characters">"En fazla %1$s karakterlik herhangi bir metin"</string>
+    <string name="qr_create_web_address">Web adresi</string>
+    <string name="qr_create_qr_code_preview">QR kod önizlemesi</string>
+    <string name="qr_create_saved_to_qr_history_png">QR geçmişine kaydedildi · PNG, 1024 px</string>
+    <string name="qr_create_save_image">Görseli kaydet</string>
+    <string name="qr_create_only_dark_colours_so_every">Her kameranın kodu okuyabilmesi için yalnızca koyu renkler.</string>
+    <string name="qr_create_shown_under_the_code">Kodun altında gösterilir</string>
+    <string name="qr_create_caption_under_the_code_optional">Kodun altındaki açıklama · isteğe bağlı</string>
+    <string name="qr_create_create_qr">QR oluştur</string>
+    <!-- QrHistoryScreen -->
+    <string name="qr_history_created">Oluşturulanlar</string>
+    <string name="qr_history_scanned">Taranlar</string>
+    <string name="qr_history_clear_history">Geçmişi temizle</string>
+    <string name="qr_history_every_scanned_and_created_code">Taranan ve oluşturulan tüm kodlar bu telefondan kaldırılır. Bu işlem geri alınamaz.</string>
+    <string name="qr_history_clear_qr_history">QR geçmişi temizlensin mi?</string>
+    <string name="qr_history_clear_history_2">Geçmişi temizle…</string>
+    <string name="qr_history_history_stays_on_this_phone">Geçmiş bu telefonda kalır.</string>
+    <string name="qr_history_try_another_search_or_filter">Başka bir arama veya filtre deneyin.</string>
+    <string name="qr_history_no_matches">Eşleşme yok</string>
+    <string name="qr_history_scanned_and_created_codes_are">Taranan ve oluşturulan kodlar burada saklanır.</string>
+    <string name="qr_history_no_codes_yet">Henüz kod yok</string>
+    <string name="qr_history_search_links_networks_names">Bağlantı, ağ, ad arayın</string>
+    <string name="qr_history_qr_history">QR geçmişi</string>
+    <!-- QrResultScreen -->
+    <string name="qr_result_show_raw_content">Ham içeriği göster</string>
+    <string name="qr_result_hide_raw_content">Ham içeriği gizle</string>
+    <string name="qr_result_raw_content">Ham içerik</string>
+    <string name="qr_result_organisation">Kuruluş</string>
+    <string name="qr_result_wi_fi_settings_can_t">Wi-Fi ayarları WEP ağları ekleyemediği için şifre kopyalanır ve ayarlar açılır.</string>
+    <string name="qr_result_not_in_the_code">Kodda yok</string>
+    <string name="qr_result_network">Ağ</string>
+    <string name="qr_result_scanly_doesn_t_make_payments">Scanly ödeme yapmaz. Ödemeden önce UPI uygulamanızda alıcı adını doğrulayın.</string>
+    <string name="qr_result_not_set_you_ll_enter">Belirtilmemiş. UPI uygulamanızda gireceksiniz.</string>
+    <string name="qr_result_amount">Tutar</string>
+    <string name="qr_result_payee">Alıcı</string>
+    <string name="qr_result_this_link_isn_t_encrypted">Bu bağlantı şifrelenmemiş (http). Açmadan önce alan adının beklediğiniz adres olduğunu kontrol edin.</string>
+    <string name="qr_result_check_the_domain_is_the">Açmadan önce alan adının beklediğiniz adres olduğunu kontrol edin.</string>
+    <string name="qr_result_full_address">Tam adres</string>
+    <string name="qr_result_number">Numara</string>
+    <string name="qr_result_subject">Konu</string>
+    <string name="qr_result_address">Adres</string>
+    <string name="qr_result_search_the_web">Web\'de ara</string>
+    <string name="qr_result_copy_number">Numarayı kopyala</string>
+    <string name="qr_result_email_address">E-posta adresi</string>
+    <string name="qr_result_copy_address">Adresi kopyala</string>
+    <string name="qr_result_call">Ara</string>
+    <string name="qr_result_copy_network_name">Ağ adını kopyala</string>
+    <string name="qr_result_copy_password">Şifreyi kopyala</string>
+    <string name="qr_result_copy_upi_id">UPI kimliğini kopyala</string>
+    <string name="qr_result_copy_link">Bağlantıyı kopyala</string>
+    <string name="qr_result_delete_from_history">Geçmişten sil</string>
+    <string name="qr_result_saved_to_history">" · Geçmiş\'e kaydedildi"</string>
+    <!-- QrScanScreen -->
+    <string name="qr_scan_captured_qr_code">Yakalanan QR kod</string>
+    <string name="qr_scan_history">Geçmiş</string>
+    <string name="qr_scan_from_photo">Fotoğraftan</string>
+    <string name="qr_scan_scan_again">Yeniden tara</string>
+    <string name="qr_scan_qr_code">QR kod</string>
+    <string name="qr_scan_details">Ayrıntılar</string>
+    <string name="qr_scan_allow_camera">Kameraya izin ver</string>
+    <string name="qr_scan_open_settings">Ayarları aç</string>
+    <string name="qr_scan_the_camera_is_used_only">Kamera yalnızca bu ekran açıkken kullanılır. \"Fotoğraftan\" seçeneği kamerasız da çalışır.</string>
+    <string name="qr_scan_open_settings_tap_permissions_and">Ayarlar\'ı açın, İzinler\'e dokunun ve Scanly için Kamera\'yı açın.</string>
+    <string name="qr_scan_allow_camera_to_scan">Taramak için kameraya izin verin</string>
+    <string name="qr_scan_camera_permission_is_blocked">Kamera izni engellenmiş</string>
+    <string name="qr_scan_torch_on_off">Feneri aç/kapat</string>
+    <string name="qr_scan_scan_qr_barcode">QR ve barkod tara</string>
+    <string name="qr_scan_point_at_a_qr_code">Bir QR koda veya barkoda doğrultun</string>
+    <string name="qr_scan_code_found_hold_steady">Kod bulundu · sabit tutun</string>
+    <string name="qr_scan_reading_photo">Fotoğraf okunuyor…</string>
+    <string name="qr_scan_the_camera_isn_t_available">Kamera şu anda kullanılamıyor. Bunun yerine \"Fotoğraftan\" seçeneğini deneyin.</string>
+    <!-- QrToolPresentation -->
+    <string name="qr_tool_presentation_h_ago">"%1$s sa önce"</string>
+    <string name="qr_tool_presentation_min_ago">"%1$s dk önce"</string>
+    <string name="qr_tool_presentation_just_now">az önce</string>
+    <string name="qr_tool_presentation_some_text">bir metin</string>
+    <string name="qr_tool_presentation_a_phone_number">bir telefon numarası</string>
+    <string name="qr_tool_presentation_an_email_address">bir e-posta adresi</string>
+    <string name="qr_tool_presentation_a_contact">bir kişi</string>
+    <string name="qr_tool_presentation_a_wi_fi_network">bir Wi-Fi ağı</string>
+    <string name="qr_tool_presentation_a_upi_payment">bir UPI ödemesi</string>
+    <string name="qr_tool_presentation_a_link">bir bağlantı</string>
+    <string name="qr_tool_presentation_found">"Bulundu: "</string>
+    <string name="qr_tool_presentation_generating_preview">Önizleme oluşturuluyor…</string>
+    <string name="qr_tool_presentation_preview_appears_as_you_type">Önizleme siz yazdıkça görünür</string>
+    <string name="qr_tool_presentation_copy_to_the_clipboard">Panoya kopyala</string>
+    <string name="qr_tool_presentation_open_in_a_browser_or">Tarayıcıda açın veya kopyalayın</string>
+    <!-- QrToolViewModel -->
+    <string name="qr_tool_qr_history_cleared">QR geçmişi temizlendi</string>
+    <string name="qr_tool_add_the_details_first">Önce ayrıntıları ekleyin</string>
+    <string name="qr_tool_no_qr_code_found_in">"Bu fotoğrafta QR kodu bulunamadı"</string>
+    <!-- ImageTextScreen -->
+    <string name="image_text_photos_are_saved_as_a">"Fotoğraflar yeni bir belge olarak kaydedilir, böylece metinlerinde daha sonra arama yapabilirsiniz."</string>
+    <string name="image_text_your_scans_have_no_pages">"Taramalarınızda henüz sayfa yok. Metinlerini okumak için fotoğrafları seçin."</string>
+    <string name="image_text_no_scans_yet_pick_photos">"Henüz tarama yok. Metinlerini okumak için fotoğrafları seçin."</string>
+    <string name="image_text_1_scan">"1 tarama"</string>
+    <string name="image_text_up_to_from_your_gallery">"Galerinizden veya dosyalarınızdan %1$s'ye kadar"</string>
+    <string name="image_text_copy_text_from_photos_or">"Fotoğraflardan veya taramalardan metin kopyalayın. Metin bu telefonda okunuyor."</string>
+    <string name="image_text_image_to_text">"Resimden metne"</string>
+    <!-- AppUpdateDialog -->
+    <string name="app_update_published">"Yayınlandı %1$s"</string>
+    <string name="app_update_current">"Güncel"</string>
+    <string name="app_update_update">"Güncelleme"</string>
+    <string name="app_update_what_s_new">"Yenilikler"</string>
+    <!-- AppUpdateViewModel -->
+    <string name="app_update_scanly_is_up_to_date">"Scanly güncel. %1$s'desiniz."</string>
+    <string name="app_update_could_not_check_for_updates">"Güncellemeler için %1$s kontrol edilemedi."</string>
+    <!-- FlexibleUpdateSnackbar -->
+    <string name="flexible_update_snackbar_restart">"Yeniden başlat"</string>
+    <string name="flexible_update_snackbar_update_downloaded_restart_scanly_to">"Güncelleme indirildi. Yüklemeyi tamamlamak için Scanly'yi yeniden başlatın."</string>
+    <!-- ReleaseMarkdown -->
+    <string name="release_markdown_no_release_notes_were_provided">"Bu sürüm için herhangi bir sürüm notu sağlanmamıştır."</string>
+    <!-- ScanlyNavHost -->
+    <string name="scanly_nav_host_up_to_images">"%1$s'ye kadar görseller"</string>
+    <string name="scanly_nav_host_import_from_gallery">"Galeriden içe aktar"</string>
+    <string name="scanly_nav_host_capture_pages_now">"Sayfaları şimdi yakalayın"</string>
+    <string name="scanly_nav_host_scan_with_camera">"Kamerayla tarayın"</string>
+    <string name="scanly_nav_host_add_a_document">"Belge ekleyin"</string>
+    <!-- pdf_page_orientation -->
+    <string name="pdf_page_orientation_portrait">"Dikey"</string>
+    <string name="pdf_page_orientation_landscape">"Yatay"</string>
+    <!-- pdf_page_size -->
+    <string name="pdf_page_size_auto_fit">"Otomatik uyum"</string>
+    <string name="pdf_page_size_a3">"A3"</string>
+    <string name="pdf_page_size_a4">"A4"</string>
+    <string name="pdf_page_size_a5">"A5"</string>
+    <string name="pdf_page_size_b4">"B4"</string>
+    <string name="pdf_page_size_b5">"B5"</string>
+    <string name="pdf_page_size_letter">"Letter"</string>
+    <string name="pdf_page_size_tabloid">"Tabloid"</string>
+    <string name="pdf_page_size_executive">"Executive"</string>
+    <string name="pdf_page_size_postcard">"Kartpostal"</string>
+    <string name="pdf_page_size_american_foolscap">"Amerikan saçmalığı"</string>
+    <string name="pdf_page_size_european_foolscap">"Avrupa aptallığı"</string>
+    <!-- pdf_page_margin -->
+    <string name="pdf_page_margin_no_margin">"Marj yok"</string>
+    <string name="pdf_page_margin_big">"Büyük"</string>
+    <!-- pdf_page_number -->
+    <string name="pdf_page_number_center">"Merkez"</string>
+    <!-- pdf_image_format -->
+    <string name="pdf_image_format_smaller_files_best_for_photos">"Daha küçük dosyalar, fotoğraflar ve paylaşım için en iyisidir"</string>
+    <string name="pdf_image_format_crisper_text_files_about_3">"Daha net metin, dosyalar yaklaşık 3× daha büyük"</string>
+    <!-- pdf_image_resolution -->
+    <string name="pdf_image_resolution_for_sharing">"Paylaşmak için"</string>
+    <string name="pdf_image_resolution_1240_px_wide_sharp_on">"Telefonlarda ve WhatsApp'ta 1240 piksel genişliğinde · keskin"</string>
+    <string name="pdf_image_resolution_for_printing">"Yazdırmak için"</string>
+    <string name="pdf_image_resolution_2480_px_wide_300_dpi">"2480 piksel genişliğinde · A4 üzerinde 300 dpi"</string>
+    <!-- pdf_compress_quality -->
+    <string name="pdf_compress_quality_high_quality">"Yüksek kalite"</string>
+    <string name="pdf_compress_quality_best_clarity_less_compression">"En iyi netlik · daha az sıkıştırma"</string>
+    <string name="pdf_compress_quality_balanced">"Dengeli"</string>
+    <string name="pdf_compress_quality_good_balance_of_size_and">"Boyut ve netlik arasında iyi bir denge"</string>
+    <string name="pdf_compress_quality_smallest">"En küçük"</string>
+    <string name="pdf_compress_quality_maximum_compression_softer_detail">"Maksimum sıkıştırma · daha yumuşak ayrıntı"</string>
+    <!-- watermark_color -->
+    <string name="watermark_color_grey">"Gri"</string>
+    <string name="watermark_color_red">"Kırmızı"</string>
+    <string name="watermark_color_blue">"Mavi"</string>
+    <string name="watermark_color_teal">"Deniz mavisi"</string>
+    <!-- signature_kind -->
+    <string name="signature_kind_signature">"İmza"</string>
+    <!-- sign_ink -->
+    <string name="sign_ink_navy">"Lacivert"</string>
+    <string name="sign_ink_black">"Siyah"</string>
+    <!-- date_filter -->
+    <string name="date_filter_any_time">"Her zaman"</string>
+    <string name="date_filter_last_7_days">"Son 7 gün"</string>
+    <string name="date_filter_last_30_days">"Son 30 gün"</string>
+    <string name="date_filter_this_year">"Bu yıl"</string>
+    <string name="date_filter_custom_range">"Özel aralık"</string>
+    <!-- search_sort -->
+    <string name="search_sort_best_match">"En iyi eşleşme"</string>
+    <string name="search_sort_newest">"En Yeni"</string>
+    <string name="search_sort_oldest">"En eski"</string>
+    <string name="search_sort_name_a_z">"Ad A–Z"</string>
+    <!-- search_scope -->
+    <string name="search_scope_everywhere">"Her yerde"</string>
+    <string name="search_scope_names">"İsimler"</string>
+    <string name="search_scope_text_in_pages">"Sayfalardaki metin"</string>
+    <!-- app_update_channel -->
+    <string name="app_update_channel_github">"GitHub"</string>
+    <string name="app_update_channel_google_play">"Google Play"</string>
+    <!-- document_kind -->
+    <string name="document_kind_invoice">"Fatura"</string>
+    <string name="document_kind_receipt">"Makbuz"</string>
+    <string name="document_kind_contract">"Sözleşme"</string>
+    <string name="document_kind_statement">"Banka ekstresi"</string>
+    <string name="document_kind_certificate">"Sertifika"</string>
+    <string name="document_kind_id_document">"Kimlik belgesi"</string>
+    <string name="document_kind_form">"Biçim"</string>
+    <string name="document_kind_r_sum">"Özgeçmiş"</string>
+    <!-- document_corner_model -->
+    <string name="document_corner_model_lite">"Hafif"</string>
+    <string name="document_corner_model_standard">"Standart"</string>
+    <string name="document_corner_model_high">"Yüksek"</string>
+    <string name="document_corner_model_accurate">"Doğru"</string>
+    <!-- document_title_format -->
+    <string name="document_title_format_scan_with_date_and_time">"Tarih ve saatle tarayın"</string>
+    <string name="document_title_format_scan_date_time">"Tarama · tarih ve saat"</string>
+    <string name="document_title_format_document_with_date_and_time">"Tarih ve saati içeren belge"</string>
+    <string name="document_title_format_document_date_time">"Belge · tarih ve saat"</string>
+    <string name="document_title_format_scan_with_date">"Tarihle tarayın"</string>
+    <string name="document_title_format_scan_date">"Tarama · tarih"</string>
+    <string name="document_title_format_scan_with_iso_date">"ISO tarihiyle tarayın"</string>
+    <string name="document_title_format_scan_yyyy_mm_dd">"Tarama · YYYY-MM-DD"</string>
+    <!-- group_title_format -->
+    <string name="group_title_format_folder_with_date_and_time">"Tarih ve saati içeren klasör"</string>
+    <string name="group_title_format_folder_date_time">"Klasör · tarih ve saat"</string>
+    <string name="group_title_format_new_folder_with_date_and">"Tarih ve saati içeren yeni klasör"</string>
+    <string name="group_title_format_new_folder_date_time">"Yeni klasör · tarih ve saat"</string>
+    <string name="group_title_format_folder_with_date">"Tarih içeren klasör"</string>
+    <string name="group_title_format_folder_date">"Klasör · tarih"</string>
+    <string name="group_title_format_folder_with_iso_date">"ISO tarihini içeren klasör"</string>
+    <string name="group_title_format_folder_yyyy_mm_dd">"Klasör · YYYY-MM-DD"</string>
+    <!-- wifi_security -->
+    <string name="wifi_security_wpa_wpa2">"WPA/WPA2"</string>
+    <string name="wifi_security_wep">"WEP"</string>
+    <string name="wifi_security_open">"Güvenlik yok"</string>
+    <!-- qr_create_type -->
+    <string name="qr_create_type_upi">"UPI"</string>
+    <!-- pdf_import_look -->
+    <string name="pdf_import_look_keep_as_is">"Olduğu gibi tutun"</string>
+    <string name="pdf_import_look_pages_look_exactly_like_the">"Sayfalar tam olarak PDF'ye benziyor"</string>
+    <string name="pdf_import_look_enhance">"Geliştirin"</string>
+    <string name="pdf_import_look_even_out_scanned_pages_and">"Taranan sayfaları eşitleyin ve metni keskinleştirin"</string>
+    <!-- capture_scene_issue -->
+    <string name="capture_scene_issue_lens_may_be_covered_clear">"Lens kapalı olabilir. Açığa çıkarın ve tekrar deneyin."</string>
+    <string name="capture_scene_issue_too_dark_add_light_or">"Çok karanlık. Işık ekleyin veya flaşı açın."</string>
+    <string name="capture_scene_issue_image_looks_blurry_clean_the">"Görüntü bulanık görünüyor. Odaklanmak için merceği temizleyin veya dokunun."</string>
+    <!-- group_export_action -->
+    <string name="group_export_action_merged_pdf_options">"Birleştirilmiş PDF seçenekleri"</string>
+    <string name="group_export_action_separate_pdfs_options">"Ayrı PDF dosya seçenekleri"</string>
+    <!-- library_sort_option -->
+    <string name="library_sort_option_last_modified">"Son değiştirilme tarihi"</string>
+    <string name="library_sort_option_latest_changes_first">"Önce en son değişiklikler"</string>
+    <string name="library_sort_option_oldest_updated">"En eski güncellendi"</string>
+    <string name="library_sort_option_earliest_changes_first">"Önce en erken değişiklikler"</string>
+    <string name="library_sort_option_alphabetical_order">"Alfabetik sıra"</string>
+    <string name="library_sort_option_name_z_a">"Z–A'yı adlandırın"</string>
+    <string name="library_sort_option_reverse_alphabetical_order">"Ters alfabetik sıra"</string>
+    <string name="library_sort_option_newest_created">"En yeni oluşturulan"</string>
+    <string name="library_sort_option_recently_added_first">"Son zamanlarda ilk eklenen"</string>
+    <string name="library_sort_option_oldest_created">"En eski oluşturulan"</string>
+    <string name="library_sort_option_earliest_added_first">"En erken eklenen ilk önce eklendi"</string>
+    <!-- signature_pen_width -->
+    <string name="signature_pen_width_fine">"İnce"</string>
+    <string name="signature_pen_width_bold">"Kalın"</string>
+    <!-- onboarding_page -->
+    <string name="onboarding_page_capture">"YAKALAMA"</string>
+    <string name="onboarding_page_paper_to_polished">"Kağıttan net taramalara."</string>
+    <string name="onboarding_page_capture_straighten_and_clean_up">"Sayfalarınızı yakalayın, düzeltin ve temizleyin."</string>
+    <string name="onboarding_page_find">"BUL"</string>
+    <string name="onboarding_page_find_more_than_files">"Dosyaların içindeki sözcükleri bulun."</string>
+    <string name="onboarding_page_recognize_text_on_your_device">"Cihazınızdaki metni tanıyın. Taramalarınızın içinde arama yapın."</string>
+    <string name="onboarding_page_share">"PAYLAŞ"</string>
+    <string name="onboarding_page_ready_when_you_are">"Siz hazır olduğunuzda hazır."</string>
+    <string name="onboarding_page_keep_pages_together_share_a">"Sayfaları bir arada tutun. Birkaç dokunuşla temiz bir PDF paylaşın."</string>
+    <!-- pdf_reader_tool -->
+    <string name="pdf_reader_tool_merge_with_other_pdfs">"Diğer PDF dosyalarıyla birleştirin"</string>
+    <string name="pdf_reader_tool_password_protect">"Şifre koruması"</string>
+    <string name="pdf_reader_tool_add_watermark">"Filigran ekleyin"</string>
+    <string name="pdf_reader_tool_save_pages_as_images">"Sayfaları resim olarak kaydedin"</string>
+    <string name="pdf_reader_tool_add_to_scanly_library">"Scanly kitaplığına ekleyin"</string>
+    <!-- pdf_picker_sort -->
+    <string name="pdf_picker_sort_most_pages">"Çoğu sayfa"</string>
+    <!-- qr_ink_color -->
+    <string name="qr_ink_color_ink">"Mürekkep"</string>
+    <string name="qr_ink_color_maroon">"Bordo"</string>
+    <!-- qr_primary_action -->
+    <string name="qr_primary_action_pay_with_a_upi_app">"UPI uygulamasıyla ödeme yapın"</string>
+    <string name="qr_primary_action_pay">"Ödeme"</string>
+    <string name="qr_primary_action_join_this_network">"Bu ağa katılın"</string>
+    <string name="qr_primary_action_join">"Katılın"</string>
+    <string name="qr_primary_action_save_to_contacts">"Kişilere kaydet"</string>
+    <string name="qr_primary_action_send_email">"E-posta gönder"</string>
+    <string name="qr_primary_action_call_this_number">"Bu numarayı arayın"</string>
+    <string name="qr_primary_action_copy_text">"Metni kopyala"</string>
+    <!-- qr_history_section -->
+    <string name="qr_history_section_earlier">"Daha önce"</string>
+    <!-- sign_tool -->
+    <string name="sign_tool_date">"Tarih"</string>
+    <string name="sign_tool_checkbox">"Onay Kutusu"</string>
+    <!-- scanly_destination -->
+    <string name="scanly_destination_home">"Ana sayfa"</string>
+    <string name="scanly_destination_camera">"Kamera"</string>
+    <!-- settings_text_recognition -->
+    <string name="settings_text_recognition_and_more">"ve daha fazlası"</string>
+    <string name="settings_text_recognition_romanian">"Romen"</string>
+    <string name="settings_text_recognition_czech">"Çek"</string>
+    <string name="settings_text_recognition_swedish">"İsveççe"</string>
+    <string name="settings_text_recognition_swahili">"Svahili"</string>
+    <string name="settings_text_recognition_filipino">"Filipinli"</string>
+    <string name="settings_text_recognition_vietnamese">"Vietnamca"</string>
+    <string name="settings_text_recognition_malay">"Malayca"</string>
+    <string name="settings_text_recognition_indonesian">"Endonezya dili"</string>
+    <string name="settings_text_recognition_turkish">"Türkçe"</string>
+    <string name="settings_text_recognition_polish">"Lehçe"</string>
+    <string name="settings_text_recognition_dutch">"Hollandalı"</string>
+    <string name="settings_text_recognition_portuguese">"Portekizce"</string>
+    <string name="settings_text_recognition_italian">"İtalyan"</string>
+    <string name="settings_text_recognition_german">"Almanca"</string>
+    <string name="settings_text_recognition_french">"Fransızca"</string>
+    <string name="settings_text_recognition_spanish">"İspanyolca"</string>
+    <string name="settings_text_recognition_english">"İngilizce"</string>
+    <string name="settings_text_recognition_latin">"Latin alfabesi"</string>
+    <string name="settings_text_recognition_amharic">"Amharca"</string>
+    <string name="settings_text_recognition_georgian">"Gürcü"</string>
+    <string name="settings_text_recognition_armenian">"Ermeni"</string>
+    <string name="settings_text_recognition_burmese">"Birmanya"</string>
+    <string name="settings_text_recognition_khmer">"Khmer"</string>
+    <string name="settings_text_recognition_lao">"Lao"</string>
+    <string name="settings_text_recognition_thai">"Tay"</string>
+    <string name="settings_text_recognition_southeast_asia_more">"Güneydoğu Asya ve daha fazlası"</string>
+    <string name="settings_text_recognition_hebrew">"İbranice"</string>
+    <string name="settings_text_recognition_urdu">"Urduca"</string>
+    <string name="settings_text_recognition_persian">"Farsça"</string>
+    <string name="settings_text_recognition_arabic">"Arapça"</string>
+    <string name="settings_text_recognition_right_to_left">"Sağdan sola"</string>
+    <string name="settings_text_recognition_korean">"Korece"</string>
+    <string name="settings_text_recognition_japanese">"Japonca"</string>
+    <string name="settings_text_recognition_chinese">"Çince"</string>
+    <string name="settings_text_recognition_east_asian">"Doğu Asya"</string>
+    <string name="settings_text_recognition_sinhala">"Sinhala"</string>
+    <string name="settings_text_recognition_odia">"Odia"</string>
+    <string name="settings_text_recognition_punjabi">"Pencap"</string>
+    <string name="settings_text_recognition_gujarati">"Guceratça"</string>
+    <string name="settings_text_recognition_malayalam">"Malayalamca"</string>
+    <string name="settings_text_recognition_kannada">"Kannadaca"</string>
+    <string name="settings_text_recognition_telugu">"Teluguca"</string>
+    <string name="settings_text_recognition_tamil">"Tamilce"</string>
+    <string name="settings_text_recognition_bengali">"Bengalce"</string>
+    <string name="settings_text_recognition_nepali">"Nepalce"</string>
+    <string name="settings_text_recognition_marathi">"Marathi"</string>
+    <string name="settings_text_recognition_hindi">"Hintçe"</string>
+    <string name="settings_text_recognition_indian_scripts">"Hint alfabeleri"</string>
+    <string name="settings_text_recognition_greek">"Yunanca"</string>
+    <string name="settings_text_recognition_serbian">"Sırpça"</string>
+    <string name="settings_text_recognition_bulgarian">"Bulgarca"</string>
+    <string name="settings_text_recognition_ukrainian">"Ukraynaca"</string>
+    <string name="settings_text_recognition_russian">"Rusça"</string>
+    <string name="settings_text_recognition_latin_cyrillic_greek">"Latince, Kiril ve Yunanca"</string>
+    <!-- tools_catalog -->
+    <string name="tools_catalog_camera_with_edge_detection">"Kenar algılamalı kamera"</string>
+    <string name="tools_catalog_scan_a_document">"Bir belgeyi tarayın"</string>
+    <string name="tools_catalog_pdf_to_editable_scan">"Düzenlenebilir taramaya PDF"</string>
+    <string name="tools_catalog_open_any_pdf">"Herhangi bir PDF'yi açın"</string>
+    <string name="tools_catalog_read_pdf">"PDF'yi okuyun"</string>
+    <string name="tools_catalog_stamp_text">"Metin filigranı"</string>
+    <string name="tools_catalog_lock_or_unlock">"Kilitleyin veya kilidini açın"</string>
+    <string name="tools_catalog_pages_as_images">"Resim olarak sayfalar"</string>
+    <string name="tools_catalog_make_it_smaller">"Daha küçük yapın"</string>
+    <string name="tools_catalog_combine_files">"Dosyaları birleştirin"</string>
+    <string name="tools_catalog_merge">"Birleştirme"</string>
+    <string name="tools_catalog_sign_any_pdf">"Herhangi bir PDF'yi imzalayın"</string>
+    <string name="tools_catalog_from_gallery">"Galeriden"</string>
+    <string name="tools_catalog_images_to_pdf">"PDF'ye Görüntüler"</string>
+    <string name="tools_catalog_create_manage">"Oluşturun ve yönetin"</string>
+    <string name="tools_catalog_my_signatures">"İmzalarım"</string>
+    <string name="tools_catalog_photos_scans">"Fotoğraflar ve taramalar"</string>
+    <string name="tools_catalog_scan_or_create">"Tarayın veya oluşturun"</string>
+    <string name="tools_catalog_qr_barcode">"QR ve barkod"</string>
+    <!-- pip_lines -->
+    <string name="pip_lines_tip_folders_keep_related_scans">"ipucu: klasörler ilgili taramaları bir arada tutar. makbuz için birini deneyin."</string>
+    <string name="pip_lines_tip_turn_on_the_grid">"ipucu: Sayfaları hizalamak için kameradaki ızgarayı açın."</string>
+    <string name="pip_lines_tip_add_a_scanly_widget">"ipucu: tek dokunuşla taramalar için ana ekranınıza bir Scanly widget'ı ekleyin."</string>
+    <string name="pip_lines_tip_the_tools_tab_can">"ipucu: Araçlar sekmesi PDF'yi birleştirebilir, sıkıştırabilir ve imzalayabilir."</string>
+    <string name="pip_lines_tip_open_a_document_s">"ipucu: Bir belgenin metnini açarak içindekileri kopyalayın veya paylaşın."</string>
+    <string name="pip_lines_tip_long_press_a_page">"ipucu: Bir sayfaya uzun basın ve yeniden sıralamak için sürükleyin."</string>
+    <string name="pip_lines_tip_search_finds_words_inside">"ipucu: arama, taramalarınızın içindeki sözcükleri bulur, yalnızca adlarını değil."</string>
+    <string name="pip_lines_okay_okay_i_felt_that">"tamam tamam, bunu hissettim."</string>
+    <string name="pip_lines_still_free_still_no_account">"Her zaman ücretsiz. Hesaba gerek yok. Reklam yok."</string>
+    <string name="pip_lines_i_m_open_source_you">"Kaynak kodum açık. Her satırını okuyabilirsiniz."</string>
+    <string name="pip_lines_your_original_photos_are_kept">"Orijinal fotoğraflarınız saklanır, böylece düzenlemeler her zaman geri alınabilir."</string>
+    <string name="pip_lines_i_live_on_your_phone">"Telefonunuzda çalışıyorum. Taramalarınız hiçbir zaman bir sunucuya gitmez."</string>
+    <string name="pip_lines_hey_that_tickles">"merhaba! bu gıdıklıyor."</string>
+    <!-- pdf_watermark -->
+    <string name="pdf_watermark_for_kyc_use_only">"Yalnızca KYC kullanımı içindir"</string>
+    <!-- document_presentation_formatter -->
+    <string name="document_presentation_formatter_untitled_document">"Başlıksız belge"</string>
+    <string name="document_presentation_formatter_untitled_folder">"Başlıksız klasör"</string>
+    <!-- default_pdf_toolkit_repository -->
+    <string name="default_pdf_toolkit_repository_this_pdf_is_password_protected">"Bu PDF şifre korumalıdır."</string>
+    <string name="default_pdf_toolkit_repository_this_pdf_is_too_large">"Bu PDF, bu cihazda işlenemeyecek kadar büyük."</string>
+    <!-- document_cover_art_factory -->
+    <string name="document_cover_art_factory_scanned_document">"Taranan belge"</string>
+    <!-- document_sign -->
+    <string name="document_sign_some_pages_are_still_processing">"Bazı sayfalar halen işleniyor ve henüz imzalanamıyor."</string>
+    <!-- pip_lines -->
+    <string name="pip_lines_hi_i_m_pip_point">"Merhaba, ben Pip! Bana bir sayfa göster, ben de senin için taramayı düzelteyim."</string>
+    <string name="pip_lines_one_last_thing_can_i">"Son bir şey! Kamerayı kullanabilir miyim? Yalnızca tarama yaparken açıktır."</string>
+    <string name="pip_lines_nothing_here_yet_let_s">"Burada henüz bir şey yok. gelin ilk sayfanızı birlikte tarayalım."</string>
+    <string name="pip_lines_a_clean_shelf_start_a">"Temiz bir raf! Bir klasör başlatın veya içindeki bir şeyi tarayın."</string>
+    <string name="pip_lines_no_folders_yet_they_re">"Henüz klasör yok. Makbuzları, faturaları ve okul evraklarını düzenlemek için bunları kullanın."</string>
+    <string name="pip_lines_no_documents_yet_i_m">"Henüz belge yok. sen hazır olduğunda ben de hazırım."</string>
+    <string name="pip_lines_this_folder_is_waiting_for">"bu klasör ilk belgesini bekliyor."</string>
+    <string name="pip_lines_no_pages_yet_point_me">"henüz sayfa yok. bana bir kağıt göster!"</string>
+    <string name="pip_lines_no_pages_means_no_words">"sayfa yok, henüz kelime yok demektir."</string>
+    <string name="pip_lines_pick_a_few_photos_and">"Birkaç fotoğraf seçin ve dedektörlerin ne kadar hızlı çalıştığını görelim!"</string>
+    <string name="pip_lines_hmm_i_don_t_have">"hmm, buna verecek bir cevabım yok."</string>
+    <string name="pip_lines_no_codes_yet_scan_or">"Henüz kod yok. tarayın veya bir tane yapın, burada tutacağım."</string>
+    <string name="pip_lines_nothing_matches_that_try_another">"hiçbir şey buna uymuyor. başka bir kelime deneyebilir misin?"</string>
+    <string name="pip_lines_i_m_still_reading_some">"Hala bazı sayfaları okuyorum. maçlar bir saniye içinde ortaya çıkabilir."</string>
+    <string name="pip_lines_i_can_t_see_a">"Henüz hiçbir şey göremiyorum. kamerayı ödünç alabilir miyim?"</string>
+    <string name="pip_lines_the_camera_is_switched_off">"Scanly için kamera kapatılmıştır. ayarlara hızlı bir gezi onu düzeltir."</string>
+    <string name="pip_lines_lend_me_the_camera_and">"kamerayı bana ödünç ver, ben de senin için kodu okuyayım."</string>
+    <string name="pip_lines_huh_that_document_wandered_off">"Hmm, bu belge eksik gibi görünüyor."</string>
+    <!-- pdf_page_size -->
+    <string name="pdf_page_size_match_each_scan">"Taranan her sayfanın boyutunu sığdırın"</string>
+    <string name="pdf_page_size_29_7_42_0_cm">"29,7 × 42,0 cm"</string>
+    <string name="pdf_page_size_21_0_29_7_cm">"21,0 × 29,7 cm"</string>
+    <string name="pdf_page_size_14_8_21_0_cm">"14,8 × 21,0 cm"</string>
+    <string name="pdf_page_size_25_0_35_3_cm">"25,0 × 35,3 cm"</string>
+    <string name="pdf_page_size_17_6_25_0_cm">"17,6 × 25,0 cm"</string>
+    <string name="pdf_page_size_21_6_27_9_cm">"21,6 × 27,9 cm"</string>
+    <string name="pdf_page_size_27_9_43_2_cm">"27,9 × 43,2 cm"</string>
+    <string name="pdf_page_size_21_6_35_6_cm">"21,6 × 35,6 cm"</string>
+    <string name="pdf_page_size_18_4_26_7_cm">"18,4 × 26,7 cm"</string>
+    <string name="pdf_page_size_10_0_14_8_cm">"10,0 × 14,8 cm"</string>
+    <string name="pdf_page_size_21_6_33_0_cm">"21,6 × 33,0 cm"</string>
+    <string name="pdf_page_size_22_9_33_0_cm">"22,9 × 33,0 cm"</string>
+    <!-- PageTextScreen view modes -->
+    <string name="page_text_text">"Metin"</string>
+    <string name="page_text_on_page">"Sayfada"</string>
+    <!-- Shared counts -->
+    <plurals name="common_documents">
+        <item quantity="one">"%d belge"</item>
+        <item quantity="other">"%d belge"</item>
+    </plurals>
+    <plurals name="common_pages">
+        <item quantity="one">"%d sayfa"</item>
+        <item quantity="other">"%d sayfa"</item>
+    </plurals>
+    <plurals name="common_folders">
+        <item quantity="one">"%d klasör"</item>
+        <item quantity="other">"%d klasör"</item>
+    </plurals>
+    <plurals name="common_matches">
+        <item quantity="one">"%d eşleşme"</item>
+        <item quantity="other">"%d eşleşme"</item>
+    </plurals>
+    <plurals name="common_words">
+        <item quantity="one">"%d kelime"</item>
+        <item quantity="other">"%d kelime"</item>
+    </plurals>
+    <string name="common_two_parts">"%1$s · %2$s"</string>
+    <!-- Library search -->
+    <plurals name="library_search_in_documents">
+        <item quantity="one">", %d belgede"</item>
+        <item quantity="other">", %d belgede"</item>
+    </plurals>
+    <plurals name="library_search_no_exact_matches">
+        <item quantity="one">"Tam eşleşme yok · benzer kelimeler içeren %d belge"</item>
+        <item quantity="other">"Tam eşleşme yok · benzer kelimeler içeren %d belge"</item>
+    </plurals>
+    <plurals name="library_search_show_more_pages">
+        <item quantity="one">"%d sayfada daha eşleşmeleri göster"</item>
+        <item quantity="other">"%d sayfada daha eşleşmeleri göster"</item>
+    </plurals>
+    <plurals name="library_search_still_reading">
+        <item quantity="one">"%d sayfadaki metin okunuyor. Yeni eşleşmeler burada görünecek."</item>
+        <item quantity="other">"%d sayfadaki metin okunuyor. Yeni eşleşmeler burada görünecek."</item>
+    </plurals>
+    <string name="library_search_matches_in_documents">"%1$s, %2$s'de"</string>
+    <plurals name="search_filters_show_results">
+        <item quantity="one">"%d sonucu göster"</item>
+        <item quantity="other">"%d sonucu göster"</item>
+    </plurals>
+    <!-- Settings -->
+    <plurals name="settings_reading_text_pages_left">
+        <item quantity="one">"Metin okunuyor… %d sayfa kaldı"</item>
+        <item quantity="other">"Metin okunuyor… %d sayfa kaldı"</item>
+    </plurals>
+    <plurals name="settings_text_recognition_reread_pages">
+        <item quantity="one">"%d sayfa yeniden okunsun mu?"</item>
+        <item quantity="other">"%d sayfa yeniden okunsun mu?"</item>
+    </plurals>
+    <string name="settings_could_not_calibrate_models">"Bu cihazdaki belge modelleri kalibre edilemedi."</string>
+    <!-- Recently deleted -->
+    <string name="recently_deleted_long_press_for_options">"Daha fazla seçenek için bir öğeye uzun basın."</string>
+    <string name="recently_deleted_retention_note">"​​%1$s için sayfalar, %2$s için belgeler ve klasörler tutulur. Bundan sonra kalıcı olarak silinirler."</string>
+    <plurals name="recently_deleted_restored_items">
+        <item quantity="one">"%d öğe geri yüklendi"</item>
+        <item quantity="other">"%d öğe geri yüklendi"</item>
+    </plurals>
+    <plurals name="recently_deleted_restored_some_items">
+        <item quantity="one">"%3$d öğeden %2$d tanesi geri yüklendi. %4$s"</item>
+        <item quantity="other">"%3$d öğeden %2$d tanesi geri yüklendi. %4$s"</item>
+    </plurals>
+    <plurals name="recently_deleted_deleted_items">
+        <item quantity="one">"%d öğe kalıcı olarak silindi"</item>
+        <item quantity="other">"%d öğe kalıcı olarak silindi"</item>
+    </plurals>
+    <plurals name="recently_deleted_deleted_some_items">
+        <item quantity="one">"%3$d öğeden %2$d tanesi kalıcı olarak silindi. %4$s"</item>
+        <item quantity="other">"%3$d öğeden %2$d tanesi kalıcı olarak silindi. %4$s"</item>
+    </plurals>
+    <!-- %1$s = folder name, %2$d = number of documents in it. -->
+    <plurals name="folder_delete_what_should_happen">
+        <item quantity="one">"“%1$s” klasöründe %2$d belge var. Bu belgeye ne yapılsın?"</item>
+        <item quantity="other">"“%1$s” klasöründe %2$d belge var. Bu belgelere ne yapılsın?"</item>
+    </plurals>
+    <!-- PDF tools -->
+    <string name="pdf_compress_first_page_of">"%1$s'nin ilk sayfası"</string>
+    <string name="pdf_compress_the_pdf">"PDF"</string>
+    <string name="pdf_password_strength_too_short">"Çok kısa"</string>
+    <string name="pdf_password_strength_too_long">"Çok uzun"</string>
+    <string name="pdf_password_strength_weak">"Zayıf"</string>
+    <string name="pdf_password_strength_fair">"Orta"</string>
+    <string name="pdf_password_strength_strong">"Güçlü"</string>
+    <string name="model_benchmark_gate_prefix">"Belge kontrolü: %1$s"</string>
+    <string name="model_benchmark_unavailable">"Kullanılamaz"</string>
+    <!-- Error messages shown in snackbars and dialogs -->
+    <string name="error_document_not_found">"Belge bulunamadı."</string>
+    <string name="error_group_not_found">"Grup bulunamadı."</string>
+    <string name="error_no_documents_in_group">"Grupta belge yok."</string>
+    <string name="error_no_pages_available_to_export">"Dışa aktarılacak sayfa yok."</string>
+    <string name="error_could_not_create_export_directory">"Dışa aktarma dizini oluşturulamadı."</string>
+    <string name="error_could_not_replace_existing_pdf">"Mevcut PDF değiştirilemedi."</string>
+    <string name="error_folder_not_found">"Klasör bulunamadı."</string>
+    <string name="error_this_page_is_already_in_recently_deleted">"Bu sayfa zaten Yakın zamanda silinmiş durumda."</string>
+    <string name="error_only_pages_in_recently_deleted_can_be">"Yalnızca Yakın zamanda silinen sayfalar kalıcı olarak silinebilir."</string>
+    <string name="error_page_not_found">"Sayfa bulunamadı."</string>
+    <string name="error_page_not_found_in_document_order">"Belge sırasına göre sayfa bulunamadı."</string>
+    <string name="error_select_at_least_two_pdfs_to_merge">"Birleştirilecek en az iki PDF dosyası seçin."</string>
+    <string name="error_pdf_has_no_pages">"PDF'nin sayfası yok."</string>
+    <string name="error_password_must_be_4_64_characters">"Şifre 4–64 karakterden oluşmalıdır."</string>
+    <string name="error_enter_the_current_pdf_password">"Geçerli PDF şifresini girin."</string>
+    <string name="error_enter_watermark_text">"Filigran metnini girin."</string>
+    <string name="error_this_pdf_has_no_pages">"Bu PDF'nin sayfası yok."</string>
+    <string name="error_preview_size_is_invalid">"Önizleme boyutu geçersiz."</string>
+    <string name="error_place_a_signature_or_another_mark_first">"Önce bir imza veya başka bir işaret koyun."</string>
+    <string name="error_a_mark_is_on_a_missing_page">"Eksik sayfada bir işaret var."</string>
+    <string name="error_could_not_prepare_this_pdf">"Bu PDF hazırlanamadı."</string>
+    <string name="error_page_is_out_of_range">"Sayfa aralık dışında."</string>
+    <string name="error_choose_at_least_one_page">"En az bir sayfa seçin."</string>
+    <string name="error_failed_to_encode_page_image">"Sayfa görüntüsü kodlanamadı."</string>
+    <string name="error_export_file_is_missing">"Dışa aktarma dosyası eksik."</string>
+    <string name="error_the_preview_pdf_is_missing">"PDF önizlemesi eksik."</string>
+    <string name="error_could_not_read_selected_pdf">"Seçilen PDF okunamadı."</string>
+    <string name="error_not_enough_memory_to_compress_this_pdf">"Bu PDF'yi sıkıştırmak için yeterli bellek yok. En küçük kaliteyi veya daha kısa bir dosyayı deneyin."</string>
+    <string name="error_a_text_box_is_empty_type_something">"Bir metin kutusu boş. Bir şey yazın veya silin."</string>
+    <string name="error_a_signature_image_is_missing_remove_it">"İmza resmi eksik. Çıkarın ve tekrar yerleştirin."</string>
+    <string name="error_some_characters_cant_be_drawn_remove_emoji">"Bazı karakterler çizilemez. Emojiyi veya olağandışı sembolleri kaldırın."</string>
+    <string name="error_some_characters_in_the_watermark_cant_be">"Filigrandaki bazı karakterler çizilemez. Emojiyi veya olağandışı sembolleri kaldırın."</string>
+    <string name="error_enter_something_to_encode">"Kodlanacak bir şey girin."</string>
+    <string name="error_could_not_write_qr_image">"QR görüntüsü yazılamadı."</string>
+    <string name="error_a_signature_image_is_missing_place_it">"İmza resmi eksik. Tekrar yerleştirin."</string>
+    <string name="error_the_signature_is_empty">"İmza boş."</string>
+    <string name="error_could_not_save_the_signature">"İmza kaydedilemedi."</string>
+    <string name="error_could_not_prepare_the_image">"Görsel hazırlanamadı."</string>
+    <string name="error_could_not_create_signature_storage">"İmza deposu oluşturulamadı."</string>
+    <string name="error_no_signature_found_in_this_image_try">"Bu resimde imza bulunamadı. Açık renkli kağıda koyu mürekkebi deneyin."</string>
+    <string name="error_this_signature_no_longer_exists">"Bu imza artık mevcut değil."</string>
+    <string name="error_the_signature_image_could_not_be_read">"İmza görseli okunamadı."</string>
+    <string name="error_a_signature_image_is_missing_open_sign">"Bir imza görseli eksik. İmzalama aracını açıp imzayı yeniden yerleştirin."</string>
+    <string name="error_this_page_is_still_processing_try_again">"Bu sayfa hâlâ işleniyor. Birazdan tekrar deneyin."</string>
+    <string name="error_could_not_read_the_page_image">"Sayfa görüntüsü okunamadı."</string>
+    <string name="error_invalid_page_image_path">"​​Geçersiz sayfa resim yolu."</string>
+    <string name="error_the_exported_file_is_unavailable">"Dışa aktarılan dosya kullanılamıyor."</string>
+    <string name="error_the_exported_image_is_unavailable">"Dışa aktarılan görüntü kullanılamıyor."</string>
+    <string name="error_the_selected_save_folder_is_no_longer">"Seçilen kaydetme klasörü artık mevcut değil. Ayarlar'da tekrar seçin."</string>
+    <string name="error_this_page_no_longer_exists">"Bu sayfa artık mevcut değil."</string>
+    <string name="error_read_this_pages_text_first">"Önce bu sayfanın metnini okuyun."</string>
+    <string name="error_page_image_could_not_be_read">"Sayfa resmi okunamadı."</string>
+    <string name="error_opencv_could_not_be_initialized">"OpenCV başlatılamadı."</string>
+    <string name="error_no_images_selected">"Hiçbir resim seçilmedi."</string>
+    <string name="error_could_not_write_imported_image">"İçe aktarılan görüntü yazılamadı."</string>
+    <string name="error_imported_image_file_is_empty">"İçe aktarılan görüntü dosyası boş."</string>
+    <string name="error_image_decode_failed">"Görüntünün kodu çözülemedi"</string>
+    <!-- Language settings -->
+    <string name="settings_language">"Dil"</string>
+    <string name="settings_language_system_default">"Sistem varsayılanı"</string>
+    <string name="settings_language_follow_phone">"Telefon dili"</string>
+    <string name="settings_language_uses_phone_language">"Telefon dili: %1$s"</string>
+    <string name="settings_language_app_language">"Uygulama dili"</string>
+    <string name="settings_language_note">"Belge adları, tanınan sayfa metinleri ve açtığınız PDF dosyaları kendi dillerinde kalır."</string>
+    <!-- Manifest -->
+    <string name="intent_open_in_scanly">"Scanly'de açın"</string>
+    <!-- Library date sections -->
+    <string name="library_section_previous_7_days">"Önceki 7 gün"</string>
+    <!-- Month and year as a section title, e.g. "December 2025". %1$s = month name, %2$d = year. -->
+    <string name="library_section_month_year">"%1$s %2$d"</string>
+    <!-- Camera -->
+    <string name="scan_session_capture_failed">"Yakalama başarısız oldu."</string>
+    <!-- Signature kinds as whole phrases (Signature vs Initials) -->
+    <string name="sign_kind_add_signature">"İmza ekleyin"</string>
+    <string name="sign_kind_add_initials">"Baş harfleri ekleyin"</string>
+    <string name="sign_kind_delete_signature">"İmzayı silin"</string>
+    <string name="sign_kind_delete_initials">"Baş harfleri silin"</string>
+    <string name="sign_kind_delete_signature_question">"İmza silinsin mi?"</string>
+    <string name="sign_kind_delete_initials_question">"Baş harfler silinsin mi?"</string>
+    <string name="sign_kind_open_signature_options">"İmza seçeneklerini açın"</string>
+    <string name="sign_kind_open_initials_options">"Baş harfleri seçeneklerini açın"</string>
+    <string name="sign_kind_saved_signature">"Kayıtlı imza"</string>
+    <string name="sign_kind_saved_initials">"Kaydedilen baş harfler"</string>
+    <string name="sign_kind_show_signature_first">"Bu imzayı diğerlerinden önce gösterin"</string>
+    <string name="sign_kind_show_initials_first">"Bu baş harfleri diğerlerinden önce gösterin"</string>
+    <!-- Watermark -->
+    <!-- Watermark presets are stamped into PDFs with a Latin/Cyrillic font. In languages written in
+         another script (Indic, CJK, Thai), keep these in English so the stamp can be drawn. -->
+    <string name="pdf_watermark_preset_confidential">"GİZLİ"</string>
+    <string name="pdf_watermark_preset_draft">"TASLAK"</string>
+    <string name="pdf_watermark_preset_copy">"KOPYA"</string>
+    <string name="pdf_watermark_opacity_percent">"%1$d%%"</string>
+    <!-- Localized counts and progress (no English-only plural branches). -->
+    <plurals name="common_days">
+        <item quantity="one">"%d gün"</item>
+        <item quantity="other">"%d gün"</item>
+    </plurals>
+    <plurals name="common_files">
+        <item quantity="one">"%d dosya"</item>
+        <item quantity="other">"%d dosya"</item>
+    </plurals>
+    <plurals name="common_images">
+        <item quantity="one">"%d görsel"</item>
+        <item quantity="other">"%d görsel"</item>
+    </plurals>
+    <plurals name="common_marks">
+        <item quantity="one">"%d işaret"</item>
+        <item quantity="other">"%d işaret"</item>
+    </plurals>
+    <plurals name="common_scans">
+        <item quantity="one">"%d tarama"</item>
+        <item quantity="other">"%d tarama"</item>
+    </plurals>
+    <plurals name="common_topics">
+        <item quantity="one">"%d konu"</item>
+        <item quantity="other">"%d konu"</item>
+    </plurals>
+    <plurals name="common_libraries">
+        <item quantity="one">"%d kitaplık"</item>
+        <item quantity="other">"%d kitaplık"</item>
+    </plurals>
+    <plurals name="common_selected">
+        <item quantity="one">"%d seçili"</item>
+        <item quantity="other">"%d seçili"</item>
+    </plurals>
+    <plurals name="pdf_to_images_saved_count">
+        <item quantity="one">"%d görsel kaydedildi"</item>
+        <item quantity="other">"%d görsel kaydedildi"</item>
+    </plurals>
+    <plurals name="pdf_to_images_export_count">
+        <item quantity="one">"%d görseli dışa aktar"</item>
+        <item quantity="other">"%d görseli dışa aktar"</item>
+    </plurals>
+    <string name="common_current_of_total">"%1$d / %2$d"</string>
+    <!-- Error fallbacks found in the final extraction audit. -->
+    <string name="error_failed_to_import_images">"Resimler içe aktarılamadı."</string>
+    <string name="error_could_not_calculate_storage_usage">"Depolama alanı kullanımı hesaplanamadı."</string>
+    <string name="error_could_not_clear_app_data">"Uygulama verileri temizlenemedi."</string>
+    <string name="error_could_not_clear_temporary_exports">"Geçici dışa aktarmalar temizlenemedi."</string>
+    <string name="error_could_not_remove_old_backup_files">"Eski yedekleme dosyaları kaldırılamadı."</string>
+    <string name="error_could_not_create_the_document">"Belge oluşturulamadı."</string>
+    <string name="error_could_not_rename_the_document">"Belge yeniden adlandırılamadı."</string>
+    <string name="error_could_not_delete_the_document">"Belge silinemedi."</string>
+    <string name="error_could_not_create_the_group">"Grup oluşturulamadı."</string>
+    <string name="error_could_not_rename_the_group">"Grup yeniden adlandırılamadı."</string>
+    <string name="error_could_not_delete_the_group">"Grup silinemedi."</string>
+    <string name="error_could_not_remove_empty_folders">"Boş klasörler kaldırılamadı."</string>
+    <string name="error_could_not_update_document_group">"Belge grubu güncellenemedi."</string>
+    <string name="error_could_not_prepare_page_capture">"Sayfa yakalama hazırlanamadı."</string>
+    <string name="error_could_not_prepare_page_replacement">"Sayfa değişimi hazırlanamadı."</string>
+    <string name="error_could_not_save_the_captured_page">"Yakalanan sayfa kaydedilemedi."</string>
+    <string name="error_could_not_reorder_the_page">"Sayfa yeniden sıralanamadı."</string>
+    <string name="error_could_not_save_page_edits">"Sayfa düzenlemeleri kaydedilemedi."</string>
+    <string name="error_could_not_update_text_recognition_engine">"Metin tanıma motoru güncellenemedi."</string>
+    <string name="error_could_not_update_theme_mode">"Tema modu güncellenemedi."</string>
+    <string name="error_could_not_finish_onboarding">"Katılım tamamlanamadı."</string>
+    <string name="error_could_not_load_settings_content">"Ayarlar içeriği yüklenemedi."</string>
+    <string name="error_could_not_update_the_save_location">"Kaydetme konumu güncellenemedi."</string>
+    <string name="error_could_not_update_model_selection">"Model seçimi güncellenemedi."</string>
+    <string name="error_could_not_update_document_detection_settings">"Belge algılama ayarları güncellenemedi."</string>
+    <string name="error_could_not_save_the_exported_file">"Dışa aktarılan dosya kaydedilemedi."</string>
+    <string name="error_could_not_store_update_prompt_state">"Güncelleme istemi durumu saklanamadı."</string>
+    <string name="error_could_not_check_github_releases">"GitHub sürümleri kontrol edilemedi."</string>
+</resources>

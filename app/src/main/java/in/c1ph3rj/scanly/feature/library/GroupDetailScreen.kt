@@ -1,5 +1,6 @@
 package `in`.c1ph3rj.scanly.feature.library
 
+import `in`.c1ph3rj.scanly.core.common.appPluralString
 import `in`.c1ph3rj.scanly.feature.components.LibraryCardStyle
 import `in`.c1ph3rj.scanly.feature.components.ScanlyModalBottomSheet
 import `in`.c1ph3rj.scanly.feature.components.rememberScanlySheetState
@@ -103,6 +104,11 @@ import `in`.c1ph3rj.scanly.feature.components.FullScreenLoader
 import `in`.c1ph3rj.scanly.feature.components.PdfOptionsSheet
 import `in`.c1ph3rj.scanly.feature.components.ScanlyExtendedFab
 import kotlinx.coroutines.flow.collectLatest
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
+import androidx.compose.ui.res.stringResource
+import androidx.annotation.StringRes
+import androidx.compose.ui.res.pluralStringResource
 
 // Route argument key — must match ScanlyNavHost composable declaration
 const val GROUP_ID_ARG = "groupId"
@@ -185,25 +191,25 @@ private fun GroupDetailScreen(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             ScanlyDetailTopBar(
-                title = group?.title ?: "Folder",
+                title = group?.title ?: stringResource(R.string.home_folder),
                 onNavigateUp = onNavigateUp,
                 actions = {
                     IconButton(
                         onClick = { showExportSheet = true },
                         enabled = hasDocuments,
                     ) {
-                        Icon(Icons.Filled.IosShare, contentDescription = "Export and share")
+                        Icon(Icons.Filled.IosShare, contentDescription = stringResource(R.string.group_detail_export_and_share))
                     }
                     Box {
                         IconButton(onClick = { showMenu = true }) {
-                            Icon(Icons.Filled.MoreVert, contentDescription = "More options")
+                            Icon(Icons.Filled.MoreVert, contentDescription = stringResource(R.string.shared_more_options))
                         }
                         DropdownMenu(
                             expanded = showMenu,
                             onDismissRequest = { showMenu = false },
                         ) {
                             DropdownMenuItem(
-                                text = { Text("Rename folder") },
+                                text = { Text(stringResource(R.string.group_detail_rename_folder)) },
                                 leadingIcon = { Icon(Icons.Filled.Edit, contentDescription = null) },
                                 onClick = {
                                     showMenu = false
@@ -213,7 +219,7 @@ private fun GroupDetailScreen(
                             DropdownMenuItem(
                                 text = {
                                     Text(
-                                        "Delete folder",
+                                        stringResource(R.string.group_detail_delete_folder),
                                         color = MaterialTheme.colorScheme.error,
                                     )
                                 },
@@ -295,7 +301,7 @@ private fun GroupDetailScreen(
                                         onOpen = { onOpenDocument(document.id) },
                                         onDelete = { removeTarget = document },
                                         showRename = false,
-                                        deleteContentDescription = "Remove from folder",
+                                        deleteContentDescription = stringResource(R.string.library_card_presentation_remove_from_folder),
                                         deleteIsRemoveFromFolder = true,
                                         style = LibraryCardStyle.Preview,
                                         modifier = Modifier.weight(1f),
@@ -324,7 +330,7 @@ private fun GroupDetailScreen(
                                     onOpen = { onOpenDocument(document.id) },
                                     onDelete = { removeTarget = document },
                                     showRename = false,
-                                    deleteContentDescription = "Remove from folder",
+                                    deleteContentDescription = stringResource(R.string.library_card_presentation_remove_from_folder),
                                     deleteIsRemoveFromFolder = true,
                                     style = LibraryCardStyle.PreviewList,
                                 )
@@ -353,7 +359,7 @@ private fun GroupDetailScreen(
             // Hidden while exporting: it sat on top of the progress bar's Cancel button.
             if (uiState.exportProgress == null) {
                 ScanlyExtendedFab(
-                    text = "Add documents",
+                    text = stringResource(R.string.group_detail_add_documents_2),
                     onClick = { showAddSheet = true },
                     modifier = Modifier
                         .align(Alignment.BottomEnd)
@@ -369,9 +375,9 @@ private fun GroupDetailScreen(
     // Dialogs
     if (showRenameDialog) {
         GroupNameDialog(
-            title = "Rename folder",
+            title = stringResource(R.string.group_detail_rename_folder),
             initialValue = group?.title.orEmpty(),
-            confirmLabel = "Save",
+            confirmLabel = stringResource(R.string.document_detail_save),
             onDismiss = { showRenameDialog = false },
             onConfirm = { newTitle ->
                 showRenameDialog = false
@@ -394,14 +400,14 @@ private fun GroupDetailScreen(
 
     removeTarget?.let { doc ->
         ScanlyConfirmDialog(
-            title = "Remove from folder?",
-            text = "\"${doc.title}\" will be moved out of this folder.",
+            title = stringResource(R.string.group_detail_remove_from_folder),
+            text = stringResource(R.string.group_detail_will_be_moved_out_of, doc.title),
             onDismiss = { removeTarget = null },
             onConfirm = {
                 removeTarget = null
                 onRemoveDocument(doc.id)
             },
-            confirmLabel = "Remove",
+            confirmLabel = stringResource(R.string.group_detail_remove),
         )
     }
 
@@ -423,9 +429,9 @@ private fun GroupDetailScreen(
 
     if (showCreateDialog) {
         DocumentTitleDialog(
-            title = "New document",
+            title = stringResource(R.string.group_detail_new_document),
             initialValue = "",
-            confirmLabel = "Create",
+            confirmLabel = stringResource(R.string.shared_create),
             onDismiss = { showCreateDialog = false },
             onConfirm = { newTitle ->
                 if (showCreateDialog) {
@@ -452,7 +458,7 @@ private fun GroupDetailScreen(
     pendingExportAction?.let { action ->
         PdfOptionsSheet(
             options = pdfOptions,
-            confirmLabel = if (action.isShare) "Share" else "Save",
+            confirmLabel = if (action.isShare) stringResource(R.string.document_detail_share_2) else stringResource(R.string.document_detail_save),
             titleText = action.optionsTitle,
             onDismiss = { pendingExportAction = null },
             onOptionsChanged = { updated -> pdfOptions = updated },
@@ -473,12 +479,15 @@ private fun GroupDetailScreen(
 
 private enum class GroupExportAction(
     val isShare: Boolean,
-    val optionsTitle: String,
+    @param:StringRes val optionsTitleRes: Int,
 ) {
-    SAVE_MERGED(isShare = false, optionsTitle = "Merged PDF options"),
-    SHARE_MERGED(isShare = true, optionsTitle = "Merged PDF options"),
-    SAVE_ZIPPED(isShare = false, optionsTitle = "Separate PDFs options"),
-    SHARE_ZIPPED(isShare = true, optionsTitle = "Separate PDFs options"),
+    SAVE_MERGED(isShare = false, optionsTitleRes = R.string.group_export_action_merged_pdf_options),
+    SHARE_MERGED(isShare = true, optionsTitleRes = R.string.group_export_action_merged_pdf_options),
+    SAVE_ZIPPED(isShare = false, optionsTitleRes = R.string.group_export_action_separate_pdfs_options),
+    SHARE_ZIPPED(isShare = true, optionsTitleRes = R.string.group_export_action_separate_pdfs_options),
+    ;
+
+    val optionsTitle: String get() = appString(optionsTitleRes)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -489,7 +498,7 @@ private fun GroupExportShareSheet(
     onSelectAction: (GroupExportAction) -> Unit,
 ) {
     val sheetState = rememberScanlySheetState()
-    val docLabel = if (documentCount == 1) "1 document" else "$documentCount documents"
+    val docLabel = pluralStringResource(R.plurals.common_documents, documentCount, documentCount)
 
     ScanlyModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -498,39 +507,39 @@ private fun GroupExportShareSheet(
     ) {
         ScanlySheetContent {
             Text(
-                text = "Export & share",
+                text = stringResource(R.string.document_detail_export_share),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.SemiBold,
             )
 
             GroupExportSectionLabel(
-                text = "Single PDF · $docLabel merged into one file",
+                text = stringResource(R.string.group_detail_single_pdf_merged_into_one, docLabel),
             )
             ExportActionRow(
                 icon = Icons.Filled.PictureAsPdf,
-                title = "Save merged PDF",
+                title = stringResource(R.string.group_detail_save_merged_pdf),
                 enabled = true,
                 onClick = { onSelectAction(GroupExportAction.SAVE_MERGED) },
             )
             ExportActionRow(
                 icon = Icons.Filled.Share,
-                title = "Share merged PDF",
+                title = stringResource(R.string.group_detail_share_merged_pdf),
                 enabled = true,
                 onClick = { onSelectAction(GroupExportAction.SHARE_MERGED) },
             )
 
             GroupExportSectionLabel(
-                text = "Separate PDFs · one PDF per document, bundled in a ZIP",
+                text = stringResource(R.string.group_detail_separate_pdfs_one_pdf_per),
             )
             ExportActionRow(
                 icon = Icons.Filled.FolderZip,
-                title = "Save PDFs as ZIP",
+                title = stringResource(R.string.group_detail_save_pdfs_as_zip),
                 enabled = true,
                 onClick = { onSelectAction(GroupExportAction.SAVE_ZIPPED) },
             )
             ExportActionRow(
                 icon = Icons.Filled.Share,
-                title = "Share PDFs as ZIP",
+                title = stringResource(R.string.group_detail_share_pdfs_as_zip),
                 enabled = true,
                 onClick = { onSelectAction(GroupExportAction.SHARE_ZIPPED) },
             )
@@ -576,7 +585,7 @@ private fun shareGroupArtifact(
         }
     }
     context.startActivity(
-        android.content.Intent.createChooser(shareIntent, "Share ${artifact.title}"),
+        android.content.Intent.createChooser(shareIntent, appString(R.string.document_detail_share, artifact.title)),
     )
 }
 
@@ -584,11 +593,11 @@ private fun shareGroupArtifact(
 private fun GroupStatsHeader(documentCount: Int, totalPageCount: Int) {
     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         MetricChip(
-            label = "$documentCount ${if (documentCount == 1) "document" else "documents"}",
+            label = pluralStringResource(R.plurals.common_documents, documentCount, documentCount),
             icon = Icons.Filled.FolderOpen,
         )
         MetricChip(
-            label = "$totalPageCount ${if (totalPageCount == 1) "page" else "pages"}",
+            label = pluralStringResource(R.plurals.common_pages, totalPageCount, totalPageCount),
             icon = Icons.Filled.FileOpen,
         )
     }
@@ -599,9 +608,9 @@ private fun EmptyGroupCard(onAddDocument: () -> Unit) {
     `in`.c1ph3rj.scanly.feature.components.PipEmptyState(
         pipLine = `in`.c1ph3rj.scanly.feature.pip.PipLines.FOLDER_EMPTY,
         pipMood = `in`.c1ph3rj.scanly.feature.pip.PipMood.IDLE,
-        title = "This folder is empty",
-        description = "Add a document here to keep related scans together.",
-        actionLabel = "Add documents",
+        title = stringResource(R.string.group_detail_this_folder_is_empty),
+        description = stringResource(R.string.group_detail_add_a_document_here_to),
+        actionLabel = stringResource(R.string.group_detail_add_documents_2),
         onAction = onAddDocument,
         actionIcon = Icons.Filled.Add,
         compact = true,
@@ -636,7 +645,7 @@ private fun ExportProgressBar(
                     color = MaterialTheme.colorScheme.onSurface,
                 )
                 TextButton(onClick = onCancel) {
-                    Text("Cancel", color = MaterialTheme.colorScheme.error)
+                    Text(stringResource(R.string.export_share_cancel), color = MaterialTheme.colorScheme.error)
                 }
             }
             LinearProgressIndicator(
@@ -692,15 +701,15 @@ private fun AddDocumentSheet(
                 verticalArrangement = Arrangement.spacedBy(4.dp),
             ) {
                 Text(
-                    text = "Add documents to folder",
+                    text = stringResource(R.string.group_detail_add_documents_to_folder),
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.SemiBold,
                 )
                 Text(
                     text = if (availableCount == 0) {
-                        "Create a new document, or move ones that are not in a folder yet."
+                        stringResource(R.string.group_detail_create_a_new_document_or_2)
                     } else {
-                        "Create a new document, or pick from $availableCount outside this folder."
+                        stringResource(R.string.group_detail_create_a_new_document_or, availableCount)
                     },
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -742,13 +751,13 @@ private fun AddDocumentSheet(
                     }
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
-                            text = "Create new document",
+                            text = stringResource(R.string.group_detail_create_new_document),
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.SemiBold,
                             color = MaterialTheme.colorScheme.onSurface,
                         )
                         Text(
-                            text = "Starts empty inside this folder",
+                            text = stringResource(R.string.group_detail_starts_empty_inside_this_folder),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
@@ -768,15 +777,15 @@ private fun AddDocumentSheet(
             ) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = "Move existing",
+                        text = stringResource(R.string.group_detail_move_existing),
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.SemiBold,
                     )
                     Text(
                         text = if (availableCount == 0) {
-                            "Nothing available to move"
+                            stringResource(R.string.group_detail_nothing_available_to_move)
                         } else {
-                            "Select one or more documents"
+                            stringResource(R.string.group_detail_select_one_or_more_documents)
                         },
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -792,7 +801,7 @@ private fun AddDocumentSheet(
                             }
                         },
                     ) {
-                        Text(if (allSelected) "Clear" else "Select all")
+                        Text(if (allSelected) stringResource(R.string.group_detail_clear) else stringResource(R.string.group_detail_select_all))
                     }
                 }
             }
@@ -820,13 +829,13 @@ private fun AddDocumentSheet(
                             modifier = Modifier.size(36.dp),
                         )
                         Text(
-                            text = "No loose documents",
+                            text = stringResource(R.string.group_detail_no_loose_documents),
                             style = MaterialTheme.typography.titleSmall,
                             fontWeight = FontWeight.SemiBold,
                             textAlign = TextAlign.Center,
                         )
                         Text(
-                            text = "Documents already in folders won’t appear here. Create a new one instead.",
+                            text = stringResource(R.string.group_detail_documents_already_in_folders_won),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             textAlign = TextAlign.Center,
@@ -921,7 +930,7 @@ private fun AddDocumentSheet(
                         onClick = onDismiss,
                         modifier = Modifier.weight(1f),
                     ) {
-                        Text("Cancel")
+                        Text(stringResource(R.string.export_share_cancel))
                     }
                     Button(
                         onClick = { onAdd(selectedIds) },
@@ -930,9 +939,9 @@ private fun AddDocumentSheet(
                     ) {
                         Text(
                             text = when (selectedCount) {
-                                0 -> "Add selected"
-                                1 -> "Add 1 document"
-                                else -> "Add $selectedCount documents"
+                                0 -> stringResource(R.string.group_detail_add_selected)
+                                1 -> stringResource(R.string.group_detail_add_1_document)
+                                else -> stringResource(R.string.group_detail_add_documents, selectedCount)
                             },
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
@@ -956,9 +965,8 @@ private fun AddDocumentPickerRow(
     // Names alone are often near-identical ("Scan 20-Oct…"), so pair the cover with when it was last edited.
     val meta = remember(document.pageCount, document.updatedAtMillis) {
         val pages = when (document.pageCount) {
-            0 -> "No pages yet"
-            1 -> "1 page"
-            else -> "${document.pageCount} pages"
+            0 -> appString(R.string.document_detail_no_pages_yet)
+            else -> appPluralString(R.plurals.common_pages, document.pageCount, document.pageCount)
         }
         val time = android.text.format.DateFormat.getTimeFormat(context)
             .format(java.util.Date(document.updatedAtMillis))
@@ -1036,7 +1044,7 @@ private fun AddDocumentPickerRow(
                 } else {
                     Icons.Outlined.Circle
                 },
-                contentDescription = if (isSelected) "Selected" else "Not selected",
+                contentDescription = if (isSelected) stringResource(R.string.shared_selected) else stringResource(R.string.group_detail_not_selected),
                 tint = if (isSelected) {
                     selectedAccent
                 } else {

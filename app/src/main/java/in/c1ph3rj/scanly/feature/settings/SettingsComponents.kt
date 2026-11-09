@@ -75,6 +75,10 @@ import `in`.c1ph3rj.scanly.feature.components.ScanlyAppLogo
 import `in`.c1ph3rj.scanly.feature.update.AppUpdateUiState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.pluralStringResource
 
 internal val SettingsRowPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp)
 private val ModelChipShape = RoundedCornerShape(20.dp)
@@ -86,10 +90,10 @@ internal fun Modifier.settingsRowSurface(onClick: (() -> Unit)? = null): Modifie
 
 private val DocumentCornerModel.description: String
     get() = when (this) {
-        DocumentCornerModel.LITE -> "Fastest · ideal for live camera preview"
-        DocumentCornerModel.STANDARD -> "Balanced speed and accuracy"
-        DocumentCornerModel.HIGH -> "Higher accuracy · best after capture"
-        DocumentCornerModel.ACCURATE -> "Highest accuracy · maximum compatibility"
+        DocumentCornerModel.LITE -> appString(R.string.settings_fastest_ideal_for_live_camera)
+        DocumentCornerModel.STANDARD -> appString(R.string.settings_balanced_speed_and_accuracy)
+        DocumentCornerModel.HIGH -> appString(R.string.settings_higher_accuracy_best_after_capture)
+        DocumentCornerModel.ACCURATE -> appString(R.string.settings_highest_accuracy_maximum_compatibility)
     }
 
 @Composable
@@ -103,7 +107,7 @@ internal fun SettingsGroup(
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Text(
-            text = title.uppercase(),
+            text = title.uppercase(androidx.compose.ui.platform.LocalConfiguration.current.locales[0]),
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.primary,
             fontWeight = FontWeight.SemiBold,
@@ -448,7 +452,7 @@ internal fun ModelSelector(
             if (enabled) {
                 Icon(
                     imageVector = Icons.Filled.ExpandMore,
-                    contentDescription = "Choose $title",
+                    contentDescription = stringResource(R.string.settings_choose, title),
                     tint = chipContent,
                     modifier = Modifier.size(18.dp),
                 )
@@ -499,7 +503,7 @@ private fun ModelPickerSheet(
                 modifier = Modifier.padding(bottom = 4.dp),
             )
             Text(
-                text = "Pick the detector that fits this device and workflow.",
+                text = stringResource(R.string.settings_pick_the_detector_that_fits),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(bottom = 12.dp),
@@ -615,96 +619,6 @@ private fun ModelPickerOption(
 }
 
 @Composable
-internal fun OcrEngineSelector(
-    selected: OcrEngine,
-    onSelected: (OcrEngine) -> Unit,
-) {
-    val options = listOf(
-        Triple(
-            OcrEngine.ML_KIT,
-            "ML Kit",
-            "Google's on-device Latin text recognizer. Recommended.",
-        ),
-        Triple(
-            OcrEngine.INDRA,
-            "Indra OCR",
-            "Experimental multi-script on-device OCR (Latin, CJK, Arabic/Hebrew, Indic and more). " +
-                "Slower than ML Kit. If it can't read a page, ML Kit reads it instead.",
-        ),
-    )
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .selectableGroup(),
-    ) {
-        options.forEachIndexed { index, (engine, title, subtitle) ->
-            val isSelected = engine == selected
-            val titleColor = if (isSelected) {
-                MaterialTheme.colorScheme.primary
-            } else {
-                MaterialTheme.colorScheme.onSurface
-            }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .selectable(
-                        selected = isSelected,
-                        onClick = { onSelected(engine) },
-                        role = Role.RadioButton,
-                    )
-                    .padding(SettingsRowPadding),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(14.dp),
-            ) {
-                Column(
-                    modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(2.dp),
-                ) {
-                    Text(
-                        text = title,
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Medium,
-                        color = titleColor,
-                    )
-                    Text(
-                        text = subtitle,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
-                Box(
-                    modifier = Modifier
-                        .size(28.dp)
-                        .clip(CircleShape)
-                        .background(
-                            if (isSelected) {
-                                MaterialTheme.colorScheme.primary
-                            } else {
-                                MaterialTheme.colorScheme.surfaceContainerHighest
-                            },
-                        ),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    if (isSelected) {
-                        Icon(
-                            imageVector = Icons.Filled.Check,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onPrimary,
-                            modifier = Modifier.size(16.dp),
-                        )
-                    }
-                }
-            }
-            if (index < options.lastIndex) {
-                HorizontalDivider(
-                    color = MaterialTheme.colorScheme.outlineVariant,
-                )
-            }
-        }
-    }
-}
-
-@Composable
 internal fun AboutHero(
     versionLabel: String?,
     onOpenPortfolio: () -> Unit,
@@ -720,17 +634,17 @@ internal fun AboutHero(
         ScanlyAppLogo(size = 48.dp)
         Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
             Text(
-                text = "Scanly",
+                text = stringResource(R.string.shared_scanly),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.SemiBold,
             )
             Text(
-                text = versionLabel ?: "Version unavailable",
+                text = versionLabel ?: stringResource(R.string.settings_version_unavailable),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             Text(
-                text = "by jeevaprakash g",
+                text = stringResource(R.string.settings_by_jeevaprakash_g),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.clickable(onClick = onOpenPortfolio),
@@ -749,21 +663,21 @@ internal fun SettingsUpdateRow(
     val sourceLabel = appUpdateUiState.channel.sourceLabel
     val updateAvailable = checkResult?.updateAvailable == true
     val title = if (updateAvailable) {
-        "Update available"
+        stringResource(R.string.play_store_app_update_repository_update_available)
     } else {
-        "Check for updates"
+        stringResource(R.string.settings_check_for_updates)
     }
     val subtitle = when {
-        appUpdateUiState.isChecking -> "Checking $sourceLabel..."
+        appUpdateUiState.isChecking -> stringResource(R.string.settings_checking, sourceLabel)
         updateAvailable -> {
-            "Scanly ${checkResult!!.latestRelease.tagName} is available on $sourceLabel."
+            stringResource(R.string.settings_scanly_is_available_on, checkResult!!.latestRelease.tagName, sourceLabel)
         }
 
         checkResult != null -> {
-            "You are on ${formatVersionLabel(checkResult.installedVersionName)}. Latest is ${checkResult.latestRelease.tagName}."
+            stringResource(R.string.settings_you_are_on_latest_is, formatVersionLabel(checkResult.installedVersionName), checkResult.latestRelease.tagName)
         }
 
-        else -> "Tap to check $sourceLabel"
+        else -> stringResource(R.string.settings_tap_to_check, sourceLabel)
     }
     val titleColor = if (updateAvailable) {
         MaterialTheme.colorScheme.primary
@@ -830,9 +744,9 @@ internal fun formatVersionLabel(versionName: String): String =
     }
 
 internal fun ThemeMode.settingsLabel(): String = when (this) {
-    ThemeMode.SYSTEM -> "System"
-    ThemeMode.LIGHT -> "Light"
-    ThemeMode.DARK -> "Dark"
+    ThemeMode.SYSTEM -> appString(R.string.settings_system)
+    ThemeMode.LIGHT -> appString(R.string.settings_light)
+    ThemeMode.DARK -> appString(R.string.settings_dark)
 }
 
 private val RatingStarGold = Color(0xFFF5B400)
@@ -872,12 +786,12 @@ internal fun RateScanlyCard(
                     verticalArrangement = Arrangement.spacedBy(4.dp),
                 ) {
                     Text(
-                        text = "Enjoying Scanly?",
+                        text = stringResource(R.string.settings_enjoying_scanly),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.SemiBold,
                     )
                     Text(
-                        text = "It's free, private and ad-free. A quick rating on Google Play helps others find it.",
+                        text = stringResource(R.string.settings_it_s_free_private_and),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -885,7 +799,7 @@ internal fun RateScanlyCard(
                 IconButton(onClick = onDismiss) {
                     Icon(
                         imageVector = Icons.Filled.Close,
-                        contentDescription = "Dismiss",
+                        contentDescription = stringResource(R.string.pip_bubble_dismiss),
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.size(20.dp),
                     )
@@ -897,7 +811,7 @@ internal fun RateScanlyCard(
             Row(
                 modifier = Modifier.semantics(mergeDescendants = true) {
                     role = Role.Button
-                    contentDescription = "Rate Scanly on Google Play"
+                    contentDescription = appString(R.string.settings_rate_scanly_on_google_play)
                 },
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
@@ -943,7 +857,7 @@ internal fun OcrEngineStatusRows(
     uiState: SettingsUiState,
     onRereadClick: () -> Unit,
 ) {
-    val engineName = if (uiState.ocrEngine == OcrEngine.INDRA) "Indra OCR" else "ML Kit"
+    val engineName = if (uiState.ocrEngine == OcrEngine.INDRA) stringResource(R.string.settings_indra_ocr) else stringResource(R.string.settings_ml_kit)
     if (uiState.ocrEngine == OcrEngine.INDRA && uiState.indraSuspended) {
         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
         Row(
@@ -958,8 +872,7 @@ internal fun OcrEngineStatusRows(
                 modifier = Modifier.size(22.dp),
             )
             Text(
-                text = "Indra OCR paused — it stopped unexpectedly twice, so pages are being read " +
-                    "with ML Kit. Select Indra OCR again to retry.",
+                text = stringResource(R.string.settings_indra_ocr_paused_it_stopped),
                 modifier = Modifier.weight(1f),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -972,12 +885,11 @@ internal fun OcrEngineStatusRows(
         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
         SettingsActionRow(
             icon = Icons.Filled.Refresh,
-            title = "Re-read existing pages",
+            title = stringResource(R.string.settings_re_read_existing_pages),
             subtitle = when {
-                reading -> "Reading text… ${uiState.indexPendingPages} " +
-                    "${if (uiState.indexPendingPages == 1) "page" else "pages"} left"
-                count == 1 -> "1 page was read with another engine. Re-read it with $engineName in the background."
-                else -> "$count pages were read with another engine. Re-read them with $engineName in the background."
+                reading -> pluralStringResource(R.plurals.settings_reading_text_pages_left, uiState.indexPendingPages, uiState.indexPendingPages)
+                count == 1 -> stringResource(R.string.settings_1_page_was_read_with, engineName)
+                else -> stringResource(R.string.settings_pages_were_read_with_another, count, engineName)
             },
             enabled = !reading,
             isBusy = reading,

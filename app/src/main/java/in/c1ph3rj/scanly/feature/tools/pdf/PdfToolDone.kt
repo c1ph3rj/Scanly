@@ -43,6 +43,8 @@ import `in`.c1ph3rj.scanly.feature.tools.ToolPaperPage
 import `in`.c1ph3rj.scanly.feature.tools.ToolPrimaryButton
 import `in`.c1ph3rj.scanly.feature.tools.ToolSecondaryButton
 import `in`.c1ph3rj.scanly.feature.tools.ToolTopBar
+import `in`.c1ph3rj.scanly.R
+import androidx.compose.ui.res.stringResource
 
 /**
  * Shared "Step 3 of 3 · Done" screen for PDF tools (design: CompressDone, MergeDone,
@@ -66,10 +68,10 @@ fun PdfToolDoneScreen(
     onSave: () -> Unit,
     onShare: () -> Unit,
     modifier: Modifier = Modifier,
-    stepText: String? = "Step 3 of 3 · Done",
+    stepText: String? = stringResource(R.string.pdf_import_step_3_of_3_done),
     isSaving: Boolean = false,
     savedDestinationLabel: String? = null,
-    footnote: String = "Your original file is unchanged",
+    footnote: String = stringResource(R.string.pdf_tool_done_your_original_file_is_unchanged),
     previewOverlay: @Composable BoxScope.() -> Unit = {},
     previewBadge: (@Composable BoxScope.() -> Unit)? = null,
     headerExtra: (@Composable ColumnScope.() -> Unit)? = null,
@@ -87,7 +89,7 @@ fun PdfToolDoneScreen(
             onBack = onClose,
             stepText = stepText,
             backIcon = Icons.Outlined.Close,
-            backContentDescription = "Close",
+            backContentDescription = stringResource(R.string.zoomable_image_close),
             centerStep = true,
         )
         val previewCard: @Composable () -> Unit = {
@@ -96,10 +98,10 @@ fun PdfToolDoneScreen(
                     bitmap = preview,
                     loading = preview == null,
                     elevation = 10.dp,
-                    contentDescription = "Open the finished PDF",
+                    contentDescription = stringResource(R.string.pdf_tool_done_open_the_finished_pdf),
                     modifier = Modifier
                         .width(if (split) 200.dp else 128.dp)
-                        .clickable(role = Role.Button, onClickLabel = "Open PDF", onClick = onOpenPreview),
+                        .clickable(role = Role.Button, onClickLabel = stringResource(R.string.pdf_tool_done_open_pdf), onClick = onOpenPreview),
                     overlay = previewOverlay,
                 )
                 previewBadge?.invoke(this)
@@ -178,21 +180,21 @@ fun PdfToolDoneScreen(
         ToolBottomBar {
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                 ToolSecondaryButton(
-                    text = "Save to phone",
+                    text = stringResource(R.string.signature_manage_save_to_phone),
                     icon = Icons.Outlined.FileDownload,
                     onClick = onSave,
                     loading = isSaving,
                     modifier = Modifier.weight(1f),
                 )
                 ToolPrimaryButton(
-                    text = "Share",
+                    text = stringResource(R.string.document_detail_share_2),
                     icon = Icons.Outlined.Share,
                     onClick = onShare,
                     modifier = Modifier.weight(1f),
                 )
             }
             Text(
-                text = savedDestinationLabel?.let { "Saved to $it" } ?: footnote,
+                text = savedDestinationLabel?.let { stringResource(R.string.signature_manage_saved_to, it) } ?: footnote,
                 style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.5.sp),
                 color = if (savedDestinationLabel != null) {
                     MaterialTheme.colorScheme.primary

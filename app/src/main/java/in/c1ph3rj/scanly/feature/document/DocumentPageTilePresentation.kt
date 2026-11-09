@@ -1,5 +1,8 @@
 package `in`.c1ph3rj.scanly.feature.document
 
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
+
 /**
  * Document-detail page tile geometry and labels. Kept as pure functions so
  * tests can assert portrait paper tiles (not 1:1 thumbs) without Compose.
@@ -18,5 +21,5 @@ fun formatDocumentPageNumberLabel(pageIndex: Int, pageCount: Int): String {
 
 fun formatDocumentPageIndexLabel(pageIndex: Int, pageCount: Int): String {
     val number = formatDocumentPageNumberLabel(pageIndex, pageCount)
-    return "Page $number"
+    return appString(R.string.trash_use_cases_page, number)
 }

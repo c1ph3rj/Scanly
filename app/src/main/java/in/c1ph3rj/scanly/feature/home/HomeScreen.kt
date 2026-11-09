@@ -52,6 +52,9 @@ import `in`.c1ph3rj.scanly.feature.pip.PipViewModel
 import androidx.compose.ui.unit.Dp
 import androidx.activity.compose.BackHandler
 import kotlinx.coroutines.flow.collectLatest
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun HomeRoute(
@@ -344,7 +347,7 @@ fun HomeScreen(
                 ScanlyImportProgressOverlay(
                     current = uiState.importCurrent,
                     total = uiState.importTotal,
-                    stageLabel = uiState.importStageLabel.ifBlank { "Working on your photos" },
+                    stageLabel = uiState.importStageLabel.ifBlank { stringResource(R.string.document_detail_working_on_your_photos) },
                 )
             }
         }
@@ -352,9 +355,9 @@ fun HomeScreen(
 
     if (createDialogVisible && !uiState.isImporting) {
         DocumentTitleDialog(
-            title = "New scan",
+            title = stringResource(R.string.home_new_scan),
             initialValue = "",
-            confirmLabel = "Create",
+            confirmLabel = stringResource(R.string.shared_create),
             onDismiss = { createDialogVisible = false },
             onConfirm = { value ->
                 createDialogVisible = false
@@ -367,7 +370,7 @@ fun HomeScreen(
 
     if (createFolderDialogVisible && !uiState.isImporting) {
         GroupNameDialog(
-            title = "New folder",
+            title = stringResource(R.string.library_folder_shelf_new_folder),
             initialValue = "",
             onDismiss = { createFolderDialogVisible = false },
             onConfirm = { title ->
@@ -415,8 +418,8 @@ private fun LazyListScope.homeRecents(
     if (uiState.recentGroups.isNotEmpty()) {
         item(key = "groups_header", contentType = "section_header") {
             LibrarySectionHeader(
-                title = "Recent folders",
-                actionLabel = "See all",
+                title = appString(R.string.home_recent_folders),
+                actionLabel = appString(R.string.home_see_all),
                 onAction = onSeeAllFolders,
                 modifier = inset,
             )
@@ -463,8 +466,8 @@ private fun LazyListScope.homeRecents(
     if (uiState.recentDocuments.isNotEmpty()) {
         item(key = "files_header", contentType = "section_header") {
             LibrarySectionHeader(
-                title = "Recent documents",
-                actionLabel = "See all",
+                title = appString(R.string.home_recent_documents),
+                actionLabel = appString(R.string.home_see_all),
                 onAction = onNavigateToLibrary,
                 modifier = inset.padding(bottom = 4.dp),
             )
@@ -588,24 +591,24 @@ private data class HomeGreeting(
 
 private fun greetingForHour(hour: Int): HomeGreeting = when (hour) {
     in 5..11 -> HomeGreeting(
-        salutation = "Good morning,",
-        headline = "What are we\nscanning today?",
+        salutation = appString(R.string.home_good_morning),
+        headline = appString(R.string.home_what_are_we_scanning_today),
         highlight = "scanning",
     )
     in 12..16 -> HomeGreeting(
-        salutation = "Good afternoon,",
-        headline = "Let's capture\nsome documents.",
+        salutation = appString(R.string.home_good_afternoon),
+        headline = appString(R.string.home_let_s_capture_some_documents),
         highlight = "documents",
     )
     in 17..20 -> HomeGreeting(
-        salutation = "Good evening,",
-        headline = "Wrap up and\ndigitize your day.",
+        salutation = appString(R.string.home_good_evening),
+        headline = appString(R.string.home_wrap_up_and_digitize_your),
         highlight = "digitize",
     )
     else -> HomeGreeting(
-        salutation = "Still scanning?",
-        headline = "Save it now,\nfind it tomorrow.",
-        highlight = "Save it now",
+        salutation = appString(R.string.home_still_scanning),
+        headline = appString(R.string.home_save_it_now_find_it),
+        highlight = appString(R.string.home_save_it_now),
     )
 }
 
@@ -623,11 +626,12 @@ fun QuickActionsRow(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = horizontalPadding),
+            .padding(horizontal = horizontalPadding)
+            .height(IntrinsicSize.Min),
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         QuickActionCard(
-            title = "Scan",
+            title = stringResource(R.string.home_scan),
             icon = Icons.Outlined.CameraAlt,
             onClick = onScan,
             accentContainerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -636,7 +640,7 @@ fun QuickActionsRow(
             modifier = Modifier.weight(1f)
         )
         QuickActionCard(
-            title = "Import",
+            title = stringResource(R.string.home_import),
             icon = Icons.Outlined.PhotoLibrary,
             onClick = onImport,
             enabled = importEnabled,
@@ -646,7 +650,7 @@ fun QuickActionsRow(
             modifier = Modifier.weight(1f)
         )
         QuickActionCard(
-            title = "Folder",
+            title = stringResource(R.string.home_folder),
             icon = Icons.Outlined.CreateNewFolder,
             onClick = onNewFolder,
             accentContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
@@ -692,7 +696,7 @@ fun QuickActionCard(
     Surface(
         onClick = onClick,
         enabled = enabled,
-        modifier = if (wide) modifier.height(80.dp) else modifier.aspectRatio(1f),
+        modifier = modifier.heightIn(min = if (wide) 80.dp else 120.dp).fillMaxHeight(),
         color = if (enabled) {
             MaterialTheme.colorScheme.surfaceContainer
         } else {
@@ -717,7 +721,8 @@ fun QuickActionCard(
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold,
                     color = resolvedContentColor,
-                    maxLines = 1,
+                    maxLines = 2,
+                    textAlign = TextAlign.Center,
                 )
             }
         } else {
@@ -732,9 +737,11 @@ fun QuickActionCard(
                 Spacer(modifier = Modifier.height(9.dp))
                 Text(
                     text = title,
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.SemiBold,
-                    color = resolvedContentColor
+                    color = resolvedContentColor,
+                    maxLines = 2,
+                    textAlign = TextAlign.Center,
                 )
             }
         }
@@ -761,7 +768,7 @@ private fun HomeLoadingSkeleton(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .semantics { contentDescription = "Loading your documents" },
+            .semantics { contentDescription = appString(R.string.home_loading_your_documents) },
     ) {
         SkeletonSectionHeader(progress, inset)
         // Not user-scrollable: the scroll container only lets tiles run off the edge like the real row.
@@ -854,9 +861,9 @@ private fun EmptyHomeCard(
     PipEmptyState(
         pipLine = `in`.c1ph3rj.scanly.feature.pip.PipLines.HOME_EMPTY,
         pipMood = `in`.c1ph3rj.scanly.feature.pip.PipMood.IDLE,
-        title = "No documents yet",
-        description = "Scan your first page and it will be ready here whenever you need it.",
-        actionLabel = "Start scanning",
+        title = stringResource(R.string.home_no_documents_yet),
+        description = stringResource(R.string.home_scan_your_first_page_and),
+        actionLabel = stringResource(R.string.home_start_scanning),
         onAction = onCreateDocument,
         actionIcon = Icons.Outlined.CameraAlt,
         modifier = modifier,
@@ -877,7 +884,7 @@ private fun HomeSearchPill(
         modifier = modifier
             .fillMaxWidth()
             .height(52.dp)
-            .semantics { contentDescription = "Search names and text in pages" },
+            .semantics { contentDescription = appString(R.string.home_search_names_and_text_in) },
         shape = androidx.compose.foundation.shape.RoundedCornerShape(26.dp),
         color = MaterialTheme.colorScheme.surfaceContainer,
         border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
@@ -893,7 +900,7 @@ private fun HomeSearchPill(
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             Text(
-                text = "Search names and text in pages",
+                text = stringResource(R.string.home_search_names_and_text_in),
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,

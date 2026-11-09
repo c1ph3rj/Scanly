@@ -1,0 +1,1967 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="shortcut_scan_short">Quét</string>
+    <string name="shortcut_scan_long">Bắt đầu quét mới</string>
+    <string name="shortcut_scan_disabled">Không thể quét</string>
+    <string name="shortcut_import_short">Nhập</string>
+    <string name="shortcut_import_long">Nhập ảnh</string>
+    <string name="shortcut_import_disabled">Không thể nhập</string>
+    <string name="shortcut_qr_short">QR</string>
+    <string name="shortcut_qr_long">Quét hoặc tạo mã QR, đọc mã vạch</string>
+    <string name="shortcut_qr_disabled">Công cụ QR không dùng được</string>
+    <string name="shortcut_library_short">Thư viện</string>
+    <string name="shortcut_library_long">Mở thư viện của bạn</string>
+    <string name="shortcut_library_disabled">Thư viện không dùng được</string>
+    <string name="widget_actions_label">Thao tác Scanly</string>
+    <string name="widget_actions_description">Truy cập nhanh Quét, Nhập, QR và Thư viện.</string>
+    <string name="widget_scan_label">Quét bằng Scanly</string>
+    <string name="widget_scan_description">Bắt đầu quét tài liệu mới.</string>
+    <string name="widget_qr_label">QR Scanly</string>
+    <string name="widget_qr_description">Mở công cụ quét và tạo mã QR.</string>
+    <string name="widget_action_scan">Quét</string>
+    <string name="widget_action_import">Nhập</string>
+    <string name="widget_action_qr">QR</string>
+    <string name="widget_action_library">Thư viện</string>
+    <!-- DocumentPresentationFormatter -->
+    <string name="document_presentation_formatter_imported">"Đã nhập %1$s"</string>
+    <string name="document_presentation_formatter_folder">"Thư mục %1$s"</string>
+    <string name="document_presentation_formatter_new_folder">"Thư mục mới %1$s"</string>
+    <string name="document_presentation_formatter_scan">"Bản quét %1$s"</string>
+    <string name="document_presentation_formatter_document">"Tài liệu %1$s"</string>
+    <!-- ImageImportSupport -->
+    <string name="image_import_only_images_can_be_added">"Mỗi lần chỉ thêm được %1$s ảnh."</string>
+    <string name="image_import_skipped_files_that_couldn_t">"Đã bỏ qua %1$s tệp không mở được."</string>
+    <string name="image_import_skipped_1_file_that_couldn">Đã bỏ qua 1 tệp không mở được.</string>
+    <string name="image_import_imported_images">"Đã nhập %1$s ảnh."</string>
+    <string name="image_import_imported_1_image">Đã nhập 1 ảnh.</string>
+    <!-- ZoomableImageDialog -->
+    <string name="zoomable_image_image_unavailable">Không có ảnh</string>
+    <string name="zoomable_image_reset_zoom">Đặt lại thu phóng</string>
+    <string name="zoomable_image_back">Quay lại</string>
+    <string name="zoomable_image_close">Đóng</string>
+    <!-- LibraryOperationCoordinator -->
+    <string name="library_operation_coordinator_library_maintenance_is_in_progress">Đang bảo trì thư viện.</string>
+    <!-- DefaultDocumentRepository -->
+    <string name="default_document_repository_could_not_remove_empty_documents">Không thể xóa các tài liệu trống.</string>
+    <string name="default_document_repository_could_not_clear_old_deleted">Không thể dọn các tài liệu đã xóa cũ.</string>
+    <string name="default_document_repository_could_not_empty_recently_deleted">Không thể dọn sạch mục Đã xóa gần đây.</string>
+    <string name="default_document_repository_could_not_restore_the_document">Không thể khôi phục tài liệu.</string>
+    <string name="default_document_repository_could_not_move_the_document">Không thể chuyển tài liệu vào mục Đã xóa gần đây.</string>
+    <!-- DefaultDocumentExportRepository -->
+    <string name="default_document_export_repository_could_not_prepare_group_zip">Không thể chuẩn bị tệp ZIP của thư mục để chia sẻ.</string>
+    <string name="default_document_export_repository_could_not_prepare_group_pdf">Không thể chuẩn bị tệp PDF của thư mục để chia sẻ.</string>
+    <string name="default_document_export_repository_could_not_export_group_as">Không thể xuất thư mục dưới dạng ZIP.</string>
+    <string name="default_document_export_repository_could_not_export_group_as_2">Không thể xuất thư mục dưới dạng PDF.</string>
+    <string name="default_document_export_repository_could_not_prepare_images_for">Không thể chuẩn bị ảnh để chia sẻ.</string>
+    <string name="default_document_export_repository_could_not_export_images">Không thể xuất ảnh.</string>
+    <string name="default_document_export_repository_could_not_prepare_pdf_share">Không thể chuẩn bị PDF để chia sẻ.</string>
+    <string name="default_document_export_repository_could_not_export_pdf">Không thể xuất PDF.</string>
+    <!-- DefaultGroupRepository -->
+    <string name="default_group_repository_could_not_clear_old_deleted">Không thể dọn các thư mục đã xóa cũ.</string>
+    <string name="default_group_repository_could_not_delete_the_folders">Không thể xóa các thư mục.</string>
+    <string name="default_group_repository_could_not_delete_the_folder">Không thể xóa thư mục.</string>
+    <string name="default_group_repository_could_not_restore_the_folder">Không thể khôi phục thư mục.</string>
+    <string name="default_group_repository_could_not_move_the_folder">Không thể chuyển thư mục vào mục Đã xóa gần đây.</string>
+    <!-- DefaultPageRepository -->
+    <string name="default_page_repository_applied_to_of_pages_save">"Đã áp dụng cho %1$s/%2$s trang. Hãy lưu lại để thử tiếp các trang còn lại."</string>
+    <string name="default_page_repository_could_not_clear_old_deleted">Không thể dọn các trang đã xóa cũ.</string>
+    <string name="default_page_repository_could_not_delete_the_pages">Không thể xóa các trang.</string>
+    <string name="default_page_repository_could_not_delete_the_page">Không thể xóa trang.</string>
+    <string name="default_page_repository_could_not_restore_the_page">Không thể khôi phục trang.</string>
+    <!-- DefaultPdfToolkitRepository -->
+    <string name="default_pdf_toolkit_repository_incorrect_pdf_password">Mật khẩu PDF không đúng.</string>
+    <string name="default_pdf_toolkit_repository_this_pdf_is_not_stored">PDF này không được lưu trong Scanly.</string>
+    <string name="default_pdf_toolkit_repository_the_scanly_document_could_not">Không thể chuyển tài liệu Scanly thành PDF.</string>
+    <string name="default_pdf_toolkit_repository_could_not_prepare_share">Không thể chuẩn bị để chia sẻ.</string>
+    <string name="default_pdf_toolkit_repository_could_not_read_this_page">Không thể đọc trang này.</string>
+    <string name="default_pdf_toolkit_repository_failed_to_encode_page">Không thể mã hóa trang %1$s.</string>
+    <string name="default_pdf_toolkit_repository_could_not_save_the_images">Không thể lưu ảnh.</string>
+    <string name="default_pdf_toolkit_repository_page">"%1$s – trang %2$s.%3$s"</string>
+    <string name="default_pdf_toolkit_repository_could_not_estimate_the_image">Không thể ước tính kích thước ảnh.</string>
+    <string name="default_pdf_toolkit_repository_could_not_open_this_pdf">Không thể mở PDF này.</string>
+    <string name="default_pdf_toolkit_repository_could_not_render_pdf_page">Không thể hiển thị trang PDF.</string>
+    <string name="default_pdf_toolkit_repository_could_not_sign_this_pdf">Không thể ký PDF này.</string>
+    <string name="default_pdf_toolkit_repository_could_not_open_this_pdf_2">Không thể mở PDF này để ký.</string>
+    <string name="default_pdf_toolkit_repository_could_not_update_watermark_preview">Không thể cập nhật bản xem trước hình mờ.</string>
+    <string name="default_pdf_toolkit_repository_could_not_add_watermark">Không thể thêm hình mờ.</string>
+    <string name="default_pdf_toolkit_repository_could_not_remove_pdf_password">Không thể gỡ mật khẩu PDF.</string>
+    <string name="default_pdf_toolkit_repository_could_not_password_protect_pdf">Không thể đặt mật khẩu cho PDF.</string>
+    <string name="default_pdf_toolkit_repository_could_not_compress_pdf">Không thể nén PDF.</string>
+    <string name="default_pdf_toolkit_repository_this_pdf_is_already_well">PDF này đã được tối ưu tốt. Nén thêm cũng không giúp tệp nhỏ hơn.</string>
+    <string name="default_pdf_toolkit_repository_page_is_too_large_to">"Trang %1$s quá lớn để nén trên thiết bị này. Hãy thử chất lượng Nhỏ nhất."</string>
+    <string name="default_pdf_toolkit_repository_could_not_merge_pdfs">Không thể gộp PDF.</string>
+    <string name="default_pdf_toolkit_repository_one_of_the_pdfs">Một trong các PDF</string>
+    <string name="default_pdf_toolkit_repository_could_not_open_pdf">Không thể mở PDF.</string>
+    <!-- PdfSignatureStamper -->
+    <string name="pdf_signature_stamper_text_and_dates_support_latin">Văn bản và ngày hỗ trợ chữ Latinh, Hy Lạp, Kirin, chữ số và ký hiệu.</string>
+    <!-- PdfWatermarkStamper -->
+    <string name="pdf_watermark_stamper_watermarks_support_latin_greek_and">Hình mờ hỗ trợ chữ Latinh, Hy Lạp, Kirin, chữ số và ký hiệu. Hãy thử nhập văn bản bằng tiếng Anh.</string>
+    <!-- DefaultQrCodeRepository -->
+    <string name="default_qr_code_repository_could_not_save_qr_code">Không thể lưu mã QR.</string>
+    <string name="default_qr_code_repository_could_not_generate_qr_code">Không thể tạo mã QR.</string>
+    <!-- DefaultPageMarkupRepository -->
+    <string name="default_page_markup_repository_could_not_save_the_signed">Không thể lưu các trang đã ký.</string>
+    <string name="default_page_markup_repository_could_not_load_signatures_for">Không thể tải chữ ký cho tài liệu này.</string>
+    <!-- DefaultSignatureRepository -->
+    <string name="default_signature_repository_could_not_save_the_image">Không thể lưu ảnh.</string>
+    <string name="default_signature_repository_could_not_prepare_the_image">Không thể chuẩn bị ảnh.</string>
+    <string name="default_signature_repository_could_not_update_the_signature">Không thể cập nhật chữ ký.</string>
+    <string name="default_signature_repository_could_not_delete_the_signature">Không thể xóa chữ ký.</string>
+    <string name="default_signature_repository_could_not_read_this_image">Không thể đọc ảnh này.</string>
+    <string name="default_signature_repository_could_not_save_the_signature">Không thể lưu chữ ký.</string>
+    <!-- PageMarkupStore -->
+    <string name="page_markup_store_could_not_save_the_signed">Không thể lưu trang đã ký.</string>
+    <!-- DefaultPageTextRepository -->
+    <string name="default_page_text_repository_could_not_queue_pages_to">Không thể xếp hàng các trang để đọc lại.</string>
+    <string name="default_page_text_repository_could_not_update_the_text">Không thể cập nhật chỉ mục văn bản.</string>
+    <string name="default_page_text_repository_could_not_save_your_changes">Không thể lưu thay đổi của bạn.</string>
+    <string name="default_page_text_repository_could_not_read_text_from">Không thể đọc văn bản từ trang này.</string>
+    <string name="default_page_text_repository_could_not_read_text_from_2">Không thể đọc văn bản từ tài liệu này.</string>
+    <!-- DefaultPlayInAppUpdateCoordinator -->
+    <string name="default_play_in_app_update_coordinator_could_not_check_google_play">Không thể kiểm tra bản cập nhật trên Google Play.</string>
+    <string name="default_play_in_app_update_coordinator_google_play_could_not_check">Google Play không thể kiểm tra bản cập nhật.</string>
+    <!-- PlayStoreAppUpdateRepository -->
+    <string name="play_store_app_update_repository_update_available">Đã có bản cập nhật</string>
+    <string name="play_store_app_update_repository_latest">Mới nhất</string>
+    <!-- PdfExportOptions -->
+    <string name="pdf_export_options_use_no_more_than_characters">"Dùng tối đa %1$s ký tự."</string>
+    <string name="pdf_export_options_use_at_least_characters">"Dùng ít nhất %1$s ký tự."</string>
+    <string name="pdf_export_options_enter_a_pdf_password">Nhập mật khẩu PDF.</string>
+    <!-- QrPayload -->
+    <string name="qr_payload_text_characters">"Văn bản · %1$s ký tự"</string>
+    <string name="qr_payload_phone_number">Số điện thoại</string>
+    <string name="qr_payload_email">Email</string>
+    <string name="qr_payload_contact_card">Danh thiếp</string>
+    <string name="qr_payload_wi_fi">"Wi-Fi · %1$s"</string>
+    <string name="qr_payload_upi">"UPI · %1$s"</string>
+    <string name="qr_payload_link_not_secure_http">Đường liên kết · không an toàn (http)</string>
+    <string name="qr_payload_link_https">Đường liên kết · https</string>
+    <string name="qr_payload_empty_text">Văn bản trống</string>
+    <string name="qr_payload_contact">Liên hệ</string>
+    <string name="qr_payload_wi_fi_network">Mạng Wi-Fi</string>
+    <string name="qr_payload_pay">"Thanh toán cho %1$s"</string>
+    <string name="qr_payload_text">Văn bản</string>
+    <string name="qr_payload_phone">Điện thoại</string>
+    <string name="qr_payload_wi_fi_2">Wi-Fi</string>
+    <string name="qr_payload_upi_payment">Thanh toán UPI</string>
+    <string name="qr_payload_link">Đường liên kết</string>
+    <!-- DetectDocumentCornersUseCase -->
+    <string name="detect_document_corners_use_case_document_detection_failed">Không phát hiện được tài liệu.</string>
+    <string name="detect_document_corners_use_case_could_not_detect_a_document">Không tìm thấy tài liệu nào trong ảnh này.</string>
+    <!-- ImportImagesUseCase -->
+    <string name="import_images_use_case_none_of_the_selected_files">Không tệp nào đã chọn mở được dưới dạng ảnh.</string>
+    <string name="import_images_use_case_the_selected_file_couldn_t">Không thể mở tệp đã chọn dưới dạng ảnh.</string>
+    <string name="import_images_use_case_saving_page">Đang lưu trang</string>
+    <string name="import_images_use_case_detecting_document">Đang phát hiện tài liệu</string>
+    <string name="import_images_use_case_preparing_page">Đang chuẩn bị trang</string>
+    <!-- TrashUseCases -->
+    <string name="trash_use_cases_page">"Trang %1$s"</string>
+    <!-- ImportPdfToLibraryUseCase -->
+    <string name="import_pdf_to_library_use_case_could_not_add_this_pdf">Không thể thêm PDF này vào thư viện.</string>
+    <string name="import_pdf_to_library_use_case_choose_at_least_one_page">Hãy chọn ít nhất một trang.</string>
+    <!-- CameraCaptureChrome -->
+    <string name="camera_capture_chrome_done">Xong</string>
+    <string name="camera_capture_chrome_done_review_pages">"Xong, xem lại %1$s trang"</string>
+    <string name="camera_capture_chrome_done_review_1_page">Xong, xem lại 1 trang</string>
+    <string name="camera_capture_chrome_turn_auto_capture_on">Bật tự động chụp</string>
+    <string name="camera_capture_chrome_turn_auto_capture_off">Tắt tự động chụp</string>
+    <!-- CaptureStabilityTracker -->
+    <string name="capture_stability_tracker_saving_page">Đang lưu trang…</string>
+    <string name="capture_stability_tracker_capturing_page">Đang chụp trang…</string>
+    <string name="capture_stability_tracker_hold_steady">Giữ yên máy.</string>
+    <string name="capture_stability_tracker_capturing_now">Đang chụp.</string>
+    <string name="capture_stability_tracker_hold_steady_to_auto_capture">Giữ yên máy để tự động chụp.</string>
+    <string name="capture_stability_tracker_hold_position_auto_capture_is">Giữ nguyên vị trí. Tự động chụp đang tạm nghỉ.</string>
+    <string name="capture_stability_tracker_move_to_the_next_page">Chuyển sang trang tiếp theo trước khi tự động chụp sẵn sàng lại.</string>
+    <string name="capture_stability_tracker_point_your_camera_at_a">Hướng camera vào toàn bộ tài liệu.</string>
+    <string name="capture_stability_tracker_document_detected_tap_capture_whenever">Đã phát hiện tài liệu. Nhấn chụp khi bạn sẵn sàng.</string>
+    <string name="capture_stability_tracker_auto_capture_is_off_use">Tự động chụp đang tắt. Hãy nhấn nút chụp khi sẵn sàng.</string>
+    <!-- PipCameraComponents -->
+    <string name="pip_camera_not_now">Để sau</string>
+    <string name="pip_camera_allow_camera_access">Cho phép truy cập camera</string>
+    <string name="pip_camera_open_settings">Mở Cài đặt</string>
+    <string name="pip_camera_photos_stay_on_your_device">Ảnh chỉ nằm trên thiết bị cho đến khi bạn xuất hoặc chia sẻ</string>
+    <string name="pip_camera_camera_active_only_while_scanning">Camera chỉ bật khi đang quét</string>
+    <string name="pip_camera_live_preview_with_edge_detection">Xem trực tiếp, tự phát hiện mép giấy</string>
+    <string name="pip_camera_come_back_here_and_pip">Quay lại đây là Pip sẵn sàng ngay</string>
+    <string name="pip_camera_settings_permissions_camera_allow">Cài đặt › Quyền › Camera › Cho phép</string>
+    <string name="pip_camera_scanly_needs_your_camera_to">Scanly cần dùng camera để chụp và làm thẳng các trang tài liệu.</string>
+    <string name="pip_camera_camera_permission_is_blocked_for">Scanly đang bị chặn quyền dùng camera. Hãy mở Cài đặt, nhấn Quyền rồi bật Camera để quét tài liệu.</string>
+    <string name="pip_camera_camera_access_needed">Cần quyền truy cập camera</string>
+    <string name="pip_camera_show_me_the_whole_page">cho mình xem cả trang nhé, đủ bốn góc.</string>
+    <string name="pip_camera_hold_it_almost_there">giữ yên… sắp được rồi.</string>
+    <string name="pip_camera_hold_it">"giữ yên… %1$s"</string>
+    <string name="pip_camera_ooh_edges_hold_still_a">ồ, thấy mép rồi! giữ yên chút nhé…</string>
+    <string name="pip_camera_auto_capture_is_off_tap">tự động chụp đang tắt. sẵn sàng thì nhấn nút chụp nhé.</string>
+    <string name="pip_camera_found_the_edges_tap_the">thấy mép rồi. nhấn nút chụp lúc nào cũng được.</string>
+    <string name="pip_camera_got_it_on_to_the">xong! sang trang tiếp nào.</string>
+    <string name="pip_camera_snap_saving_that_page">tách! đang lưu trang đó…</string>
+    <string name="pip_camera_it_s_all_fuzzy_tap">mờ quá. nhấn vào trang để lấy nét nhé.</string>
+    <string name="pip_camera_bit_dark_in_here_more">hơi tối đấy. thêm chút ánh sáng, hoặc thử bật đèn flash?</string>
+    <string name="pip_camera_everything_s_dark_is_something">tối thui. có gì che ống kính không?</string>
+    <!-- ScanSessionScreen -->
+    <string name="scan_session_camera_couldn_t_start_close">Không khởi động được camera. Hãy đóng các ứng dụng khác đang dùng camera rồi thử lại.</string>
+    <string name="scan_session_camera_couldn_t_start_leave">Không khởi động được camera. Hãy thoát màn hình này rồi mở lại.</string>
+    <string name="scan_session_capture">Chụp</string>
+    <string name="scan_session_replace_page">Thay trang</string>
+    <string name="scan_session_show_grid">Hiện lưới</string>
+    <string name="scan_session_hide_grid">Ẩn lưới</string>
+    <string name="scan_session_turn_flash_on">Bật đèn flash</string>
+    <string name="scan_session_turn_flash_off">Tắt đèn flash</string>
+    <string name="scan_session_close_camera">Đóng camera</string>
+    <string name="scan_session_no_captures">Chưa chụp trang nào</string>
+    <string name="scan_session_open_a_valid_document_first">Hãy mở một tài liệu hợp lệ trước.</string>
+    <string name="scan_session_document_missing">Không có tài liệu</string>
+    <string name="scan_session_camera_is_not_ready_yet">Camera chưa sẵn sàng.</string>
+    <!-- ScanSessionViewModel -->
+    <string name="scan_session_checking_document">Đang kiểm tra tài liệu…</string>
+    <string name="scan_session_point_your_camera_at_a">Hướng camera vào một tài liệu giấy.</string>
+    <string name="scan_session_screen_detected_point_at_a">Phát hiện màn hình. Hãy hướng vào tài liệu giấy.</string>
+    <string name="scan_session_page_edges_are_ambiguous_hold">Mép trang chưa rõ. Giữ yên máy hoặc lại gần hơn.</string>
+    <string name="scan_session_two_pages_are_visible_move">Đang thấy hai trang. Lại gần hơn và chỉ lấy một trang.</string>
+    <string name="scan_session_page_saved">"Đã lưu trang %1$s."</string>
+    <string name="scan_session_auto_captured_page">Đã tự động chụp trang %1$s.</string>
+    <string name="scan_session_document_not_found">Không tìm thấy tài liệu.</string>
+    <string name="scan_session_capture_failed_reposition_the_document">Chụp không thành công. Đặt lại tài liệu rồi thử lại.</string>
+    <string name="scan_session_page_not_saved_reposition_the">Chưa lưu được trang. Đặt lại tài liệu rồi thử lại.</string>
+    <string name="scan_session_live_detection_is_unavailable_manual">Không dùng được tính năng phát hiện trực tiếp. Bạn vẫn có thể chụp thủ công.</string>
+    <string name="scan_session_point_your_camera_at_a_2">Hướng camera vào tài liệu.</string>
+    <!-- ExportShareComponents -->
+    <string name="export_share_passwords_match">Mật khẩu khớp.</string>
+    <string name="export_share_confirm_password">Xác nhận mật khẩu</string>
+    <string name="export_share_4_64_characters_send_it">4–64 ký tự. Hãy gửi mật khẩu riêng, không kèm PDF.</string>
+    <string name="export_share_show_password">Hiện mật khẩu</string>
+    <string name="export_share_hide_password">Ẩn mật khẩu</string>
+    <string name="export_share_pdf_password">Mật khẩu PDF</string>
+    <string name="export_share_off">Tắt</string>
+    <string name="export_share_a_password_will_be_required">Cần nhập mật khẩu để mở PDF.</string>
+    <string name="export_share_password_protection">Bảo vệ bằng mật khẩu</string>
+    <string name="export_share_cancel">Hủy</string>
+    <string name="export_share_add_white_space_around_the">Thêm khoảng trắng quanh trang quét.</string>
+    <string name="export_share_margins">Lề</string>
+    <string name="export_share_fixed_sizes_use_their_real">Khổ cố định dùng đúng kích thước in thực tế.</string>
+    <string name="export_share_page_size">Khổ giấy</string>
+    <string name="export_share_auto_follows_each_scanned_page">Tự động theo kích thước từng trang quét.</string>
+    <string name="export_share_orientation">Hướng giấy</string>
+    <string name="export_share_add_the_page_index_to">Thêm số trang vào chân trang PDF.</string>
+    <string name="export_share_page_numbers">Số trang</string>
+    <string name="export_share_choose_how_every_page_is">Chọn cách tạo từng trang.</string>
+    <string name="export_share_passwords_do_not_match">Mật khẩu không khớp.</string>
+    <string name="export_share_confirm_the_password">Hãy xác nhận mật khẩu.</string>
+    <string name="export_share_pdf_options">Tùy chọn PDF</string>
+    <!-- FabComponents -->
+    <string name="fab_open_add_menu">Mở menu thêm</string>
+    <string name="fab_close_menu">Đóng menu</string>
+    <string name="fab_new_document">Tài liệu mới</string>
+    <string name="fab_new_folder">Thư mục mới</string>
+    <!-- LibraryCardPresentation -->
+    <string name="library_card_presentation_remove_from_folder">Xóa khỏi thư mục</string>
+    <string name="library_card_presentation_move_to_folder">Chuyển vào thư mục</string>
+    <string name="library_card_presentation_rename">Đổi tên</string>
+    <string name="library_card_presentation_delete">Xóa</string>
+    <string name="library_card_presentation_1_page">1 trang</string>
+    <string name="library_card_presentation_1_document">1 tài liệu</string>
+    <string name="library_card_presentation_yesterday">Hôm qua</string>
+    <string name="library_card_presentation_today">Hôm nay</string>
+    <!-- LibraryFolderShelf -->
+    <string name="library_folder_shelf_all_folders">Tất cả thư mục</string>
+    <string name="library_folder_shelf_view_all">Xem tất cả</string>
+    <string name="library_folder_shelf_organise_scans">Sắp xếp bản quét</string>
+    <string name="library_folder_shelf_new_folder">Thư mục mới</string>
+    <!-- SharedComponents -->
+    <string name="shared_please_wait">Vui lòng chờ</string>
+    <string name="shared_working_on_your_photos">Đang xử lý ảnh của bạn…</string>
+    <string name="shared_importing_images">Đang nhập ảnh</string>
+    <string name="shared_more_options">Tùy chọn khác</string>
+    <string name="shared_selected">Đã chọn</string>
+    <string name="shared_create_new_folder">Tạo thư mục mới</string>
+    <string name="shared_create_move">Tạo và chuyển</string>
+    <string name="shared_new_folder_name">Tên thư mục mới</string>
+    <string name="shared_no_folder">Không có thư mục</string>
+    <string name="shared_folder_name">Tên thư mục</string>
+    <string name="shared_create">Tạo</string>
+    <string name="shared_suggest_name">Gợi ý tên</string>
+    <string name="shared_title">Tiêu đề</string>
+    <string name="shared_clear_name">Xóa tên</string>
+    <string name="shared_confirm">Xác nhận</string>
+    <string name="shared_scanly">Scanly</string>
+    <!-- DocumentDetailScreen -->
+    <string name="document_detail_delete_page">Xóa trang</string>
+    <string name="document_detail_share_page">Chia sẻ trang</string>
+    <string name="document_detail_sign_document">Ký tài liệu</string>
+    <string name="document_detail_extract_text">Trích xuất văn bản</string>
+    <string name="document_detail_retake_page">Chụp lại trang</string>
+    <string name="document_detail_edit_page">Chỉnh sửa trang</string>
+    <string name="document_detail_edit">Chỉnh sửa</string>
+    <string name="document_detail_share">"Chia sẻ %1$s"</string>
+    <string name="document_detail_review">Xem lại</string>
+    <string name="document_detail_ready">Sẵn sàng</string>
+    <string name="document_detail_new">Mới</string>
+    <string name="document_detail_captured">Đã chụp</string>
+    <string name="document_detail_add_page">Thêm trang</string>
+    <string name="document_detail_scan_or_import">Quét hoặc nhập</string>
+    <string name="document_detail_add_page_scan_or_import">Thêm trang. Quét hoặc nhập.</string>
+    <string name="document_detail_share_2">Chia sẻ</string>
+    <string name="document_detail_retake">Chụp lại</string>
+    <string name="document_detail_open_zoom_view">Mở chế độ phóng to</string>
+    <string name="document_detail_page_of">"Trang %1$s/%2$s"</string>
+    <string name="document_detail_import_images">Nhập ảnh</string>
+    <string name="document_detail_scan_a_page">Quét một trang</string>
+    <string name="document_detail_scan_a_page_or_import">"Quét một trang hoặc nhập tối đa %1$s ảnh để bắt đầu tài liệu này."</string>
+    <string name="document_detail_no_pages_yet">Chưa có trang nào</string>
+    <string name="document_detail_return_to_the_library_and">Quay lại thư viện và mở tài liệu khác.</string>
+    <string name="document_detail_document_not_found">Không tìm thấy tài liệu</string>
+    <string name="document_detail_select_a_page_to_preview">Chọn một trang để xem trước</string>
+    <string name="document_detail_tap_to_review_long_press">Nhấn để xem lại. Nhấn giữ và kéo để sắp xếp lại.</string>
+    <string name="document_detail_long_press_and_drag_to">Nhấn giữ và kéo để sắp xếp lại</string>
+    <string name="document_detail_pages">Trang</string>
+    <string name="document_detail_use_scan_or_import_to">Dùng Quét hoặc Nhập để thêm trang đầu tiên.</string>
+    <string name="document_detail_please_wait_while_the_file">Vui lòng chờ trong khi tệp đang được chuẩn bị.</string>
+    <string name="document_detail_share_pages">Chia sẻ trang</string>
+    <string name="document_detail_save_images_zip">Lưu ảnh dạng ZIP</string>
+    <string name="document_detail_share_pdf">Chia sẻ PDF</string>
+    <string name="document_detail_save_pdf">Lưu PDF</string>
+    <string name="document_detail_export_share">Xuất và chia sẻ</string>
+    <string name="document_detail_pick_up_to_images_from">"Chọn tối đa %1$s ảnh từ tệp của bạn"</string>
+    <string name="document_detail_choose_images">Chọn ảnh</string>
+    <string name="document_detail_open_the_camera_to_scan">Mở camera để quét trang mới</string>
+    <string name="document_detail_capture_a_new_scan_or">"Chụp bản quét mới hoặc chọn tối đa %1$s ảnh từ thư viện ảnh."</string>
+    <string name="document_detail_delete_document">Xóa tài liệu</string>
+    <string name="document_detail_rename_document">Đổi tên tài liệu</string>
+    <string name="document_detail_document_options">Tùy chọn tài liệu</string>
+    <string name="document_detail_working_on_your_photos">Đang xử lý ảnh của bạn</string>
+    <string name="document_detail_preparing_export">Đang chuẩn bị xuất</string>
+    <string name="document_detail_generate">Tạo</string>
+    <string name="document_detail_delete_document_2">Xóa tài liệu?</string>
+    <string name="document_detail_save">Lưu</string>
+    <string name="document_detail_document">Tài liệu</string>
+    <!-- DocumentDetailViewModel -->
+    <string name="document_detail_document_renamed">Đã đổi tên tài liệu.</string>
+    <string name="document_detail_starting_import">Đang bắt đầu nhập</string>
+    <string name="document_detail_page_image_is_not_available">Ảnh trang chưa sẵn sàng.</string>
+    <string name="document_detail_preparing_pages">Đang chuẩn bị trang</string>
+    <string name="document_detail_saved_to">"Đã lưu %1$s vào %2$s"</string>
+    <string name="document_detail_preparing_and_saving_zip">Đang chuẩn bị và lưu ZIP</string>
+    <string name="document_detail_preparing_pdf">Đang chuẩn bị PDF</string>
+    <string name="document_detail_generating_and_saving_pdf">Đang tạo và lưu PDF</string>
+    <string name="document_detail_reordered_pages">Đã sắp xếp lại các trang.</string>
+    <string name="document_detail_moved_to_folder">Đã chuyển vào thư mục</string>
+    <string name="document_detail_moved_to">"Đã chuyển vào %1$s"</string>
+    <string name="document_detail_removed_from_folder">Đã xóa khỏi thư mục</string>
+    <!-- FilterCustomizeScreen -->
+    <string name="filter_customize_faded_text">Chữ mờ</string>
+    <string name="filter_customize_whiteboard">Bảng trắng</string>
+    <string name="filter_customize_grayscale">Thang xám</string>
+    <string name="filter_customize_screen">Màn hình</string>
+    <string name="filter_customize_vivid">Sống động</string>
+    <string name="filter_customize_natural">Tự nhiên</string>
+    <string name="filter_customize_magic_color">Màu kỳ diệu</string>
+    <string name="filter_customize_auto">Tự động</string>
+    <string name="filter_customize_original">Gốc</string>
+    <string name="filter_customize_intensity">Cường độ</string>
+    <string name="filter_customize_sharpness">Độ sắc nét</string>
+    <string name="filter_customize_saturation">Độ bão hòa</string>
+    <string name="filter_customize_contrast">Độ tương phản</string>
+    <string name="filter_customize_brightness">Độ sáng</string>
+    <string name="filter_customize_fine_tune_on_this_page">"Tinh chỉnh %1$s trên trang này. Giữ Đối chiếu để xem riêng bộ lọc."</string>
+    <string name="filter_customize_customize_filter">Tùy chỉnh bộ lọc</string>
+    <string name="filter_customize_adjusted">Đã điều chỉnh</string>
+    <string name="filter_customize_filter_only">Chỉ bộ lọc</string>
+    <string name="filter_customize_filter_adjustment_preview">Xem trước điều chỉnh bộ lọc</string>
+    <string name="filter_customize_selected_filter_without_adjustments">Bộ lọc đã chọn, chưa điều chỉnh</string>
+    <string name="filter_customize_loading_preview">Đang tải bản xem trước…</string>
+    <string name="filter_customize_hold_to_compare_with_filter">Giữ để đối chiếu với bản chỉ có bộ lọc</string>
+    <string name="filter_customize_reset_adjustments">Đặt lại điều chỉnh</string>
+    <string name="filter_customize_adjust">Điều chỉnh</string>
+    <string name="filter_customize_compare">Đối chiếu</string>
+    <!-- FilterPickerScreen -->
+    <string name="filter_picker_selected_filter">Bộ lọc đã chọn</string>
+    <string name="filter_picker_filter_thumbnail">"Hình thu nhỏ bộ lọc %1$s"</string>
+    <string name="filter_picker_analyzing_the_page_to_tune">Đang phân tích trang để tinh chỉnh từng bộ lọc.</string>
+    <string name="filter_picker_filter_only_crop_rotation_and">Chỉ áp dụng bộ lọc. Cắt, xoay và điều chỉnh vẫn giữ riêng cho từng trang.</string>
+    <string name="filter_picker_apply_filter_to_all_pages">Áp dụng bộ lọc cho mọi trang</string>
+    <string name="filter_picker_tap_a_preset_to_update">Nhấn vào một kiểu để cập nhật bản xem trực tiếp. Lưu trong trình chỉnh sửa khi xong.</string>
+    <string name="filter_picker_filters">Bộ lọc</string>
+    <string name="filter_picker_filter_preview">"Xem trước bộ lọc %1$s"</string>
+    <!-- PageCropScreen -->
+    <string name="page_crop_page_crop_preview">Xem trước vùng cắt trang</string>
+    <string name="page_crop_detecting">Đang phát hiện</string>
+    <string name="page_crop_reset">Đặt lại</string>
+    <string name="page_crop_ai_detect">Phát hiện bằng AI</string>
+    <string name="page_crop_right">Phải</string>
+    <string name="page_crop_left">Trái</string>
+    <string name="page_crop_apply_crop">Áp dụng vùng cắt</string>
+    <string name="page_crop_detecting_document">Đang phát hiện tài liệu…</string>
+    <string name="page_crop_keep_editing">Tiếp tục chỉnh sửa</string>
+    <string name="page_crop_discard">Hủy bỏ</string>
+    <string name="page_crop_your_crop_changes_have_not">Thay đổi vùng cắt của bạn chưa được áp dụng.</string>
+    <string name="page_crop_discard_changes">Hủy bỏ thay đổi?</string>
+    <string name="page_crop_full_frame_corners">Góc toàn khung</string>
+    <string name="page_crop_reset_crop">Đặt lại vùng cắt</string>
+    <string name="page_crop_rotate_right">Xoay phải</string>
+    <string name="page_crop_rotate_left">Xoay trái</string>
+    <string name="page_crop_find_the_document_corners">Tìm các góc tài liệu</string>
+    <string name="page_crop_detecting_2">Đang phát hiện…</string>
+    <string name="page_crop_detect_edges_rotate_then_drag">Phát hiện mép, xoay rồi kéo các điểm điều khiển. Nhấn Xong để áp dụng.</string>
+    <string name="page_crop_crop_tools">Công cụ cắt</string>
+    <string name="page_crop_page_not_found">Không tìm thấy trang.</string>
+    <string name="page_crop_crop">Cắt</string>
+    <string name="page_crop_processing">Đang xử lý</string>
+    <!-- PageCropViewModel -->
+    <string name="page_crop_crop_updated">Đã cập nhật vùng cắt.</string>
+    <string name="page_crop_document_detected">Đã phát hiện tài liệu.</string>
+    <string name="page_crop_raw_image_is_not_available">Không có ảnh gốc để phát hiện.</string>
+    <!-- PageEditorScreen -->
+    <string name="page_editor_please_wait_while_scanly_adapts">Vui lòng chờ trong khi Scanly điều chỉnh bộ lọc và cập nhật toàn bộ tài liệu.</string>
+    <string name="page_editor_processing_image_data_for_all">Đang xử lý dữ liệu ảnh cho mọi trang</string>
+    <string name="page_editor_page_editor_preview">Xem trước trình chỉnh sửa trang</string>
+    <string name="page_editor_your_edits_to_this_page">Các chỉnh sửa trên trang này chưa được lưu.</string>
+    <string name="page_editor_remove_from_document">Xóa khỏi tài liệu</string>
+    <string name="page_editor_capture_this_page_again">Chụp lại trang này</string>
+    <string name="page_editor_brightness_contrast_more">Độ sáng, tương phản và hơn thế</string>
+    <string name="page_editor_ai_detect_rotate_handles">Phát hiện bằng AI, xoay, điểm điều khiển</string>
+    <string name="page_editor_crop_filter_and_adjust_this">Cắt, lọc và điều chỉnh trang này. Nhấn Xong để lưu.</string>
+    <string name="page_editor_edit_tools">Công cụ chỉnh sửa</string>
+    <string name="page_editor_editor">Trình chỉnh sửa</string>
+    <!-- PageEditorViewModel -->
+    <string name="page_editor_page_updated">Đã cập nhật trang.</string>
+    <string name="page_editor_filter_applied_to_all_pages">Đã áp dụng bộ lọc cho mọi trang.</string>
+    <!-- HomePip -->
+    <string name="home_pip_hide_today_s_tip">Ẩn mẹo hôm nay</string>
+    <!-- HomeRatingPrompt -->
+    <string name="home_rating_prompt_rate_scanly_opens_google_play">Đánh giá Scanly, mở Google Play</string>
+    <string name="home_rating_prompt_rate_on_google_play">Đánh giá trên Google Play</string>
+    <string name="home_rating_prompt_scanly_is_free_private_and">Scanly miễn phí, riêng tư và không có quảng cáo. Nếu ứng dụng giúp bạn tiết kiệm thời gian, một lượt đánh giá nhanh trên Google Play sẽ giúp ích rất nhiều.</string>
+    <string name="home_rating_prompt_rate_scanly">Đánh giá Scanly</string>
+    <!-- HomeScreen -->
+    <string name="home_search_names_and_text_in">Tìm theo tên và văn bản trong trang</string>
+    <string name="home_start_scanning">Bắt đầu quét</string>
+    <string name="home_scan_your_first_page_and">Quét trang đầu tiên, tài liệu sẽ luôn sẵn ở đây mỗi khi bạn cần.</string>
+    <string name="home_no_documents_yet">Chưa có tài liệu nào</string>
+    <string name="home_loading_your_documents">Đang tải tài liệu của bạn</string>
+    <string name="home_folder">Thư mục</string>
+    <string name="home_import">Nhập</string>
+    <string name="home_scan">Quét</string>
+    <string name="home_save_it_now">Lưu ngay</string>
+    <string name="home_save_it_now_find_it">Lưu hôm nay,\ntìm lại ngày mai.</string>
+    <string name="home_still_scanning">Vẫn đang quét?</string>
+    <string name="home_wrap_up_and_digitize_your">Khép lại ngày dài,\nsố hóa mọi giấy tờ.</string>
+    <string name="home_good_evening">Chào buổi tối,</string>
+    <string name="home_let_s_capture_some_documents">Cùng chụp\nvài tài liệu nhé.</string>
+    <string name="home_good_afternoon">Chào buổi chiều,</string>
+    <string name="home_what_are_we_scanning_today">Hôm nay mình\nquét gì đây?</string>
+    <string name="home_good_morning">Chào buổi sáng,</string>
+    <string name="home_see_all">Xem tất cả</string>
+    <string name="home_recent_documents">Tài liệu gần đây</string>
+    <string name="home_recent_folders">Thư mục gần đây</string>
+    <string name="home_new_scan">Quét mới</string>
+    <!-- FolderDeleteDialog -->
+    <string name="folder_delete_both_go_to_recently_deleted">"Cả hai sẽ vào mục Đã xóa gần đây trong %1$s"</string>
+    <string name="folder_delete_delete_folder_and_documents">Xóa thư mục và tài liệu</string>
+    <string name="folder_delete_keep_the_in_your_library">"Giữ %1$s trong Thư viện"</string>
+    <string name="folder_delete_delete_folder_only">Chỉ xóa thư mục</string>
+    <string name="folder_delete_delete_folder">Xóa thư mục?</string>
+    <!-- GroupDetailScreen -->
+    <string name="group_detail_not_selected">Chưa chọn</string>
+    <string name="group_detail_add_documents">"Thêm %1$s tài liệu"</string>
+    <string name="group_detail_add_1_document">Thêm 1 tài liệu</string>
+    <string name="group_detail_add_selected">Thêm mục đã chọn</string>
+    <string name="group_detail_documents_already_in_folders_won">Tài liệu đã nằm trong thư mục khác sẽ không hiện ở đây. Hãy tạo tài liệu mới.</string>
+    <string name="group_detail_no_loose_documents">Không có tài liệu nào ngoài thư mục</string>
+    <string name="group_detail_select_all">Chọn tất cả</string>
+    <string name="group_detail_clear">Xóa lựa chọn</string>
+    <string name="group_detail_select_one_or_more_documents">Chọn một hoặc nhiều tài liệu</string>
+    <string name="group_detail_nothing_available_to_move">Không có gì để chuyển</string>
+    <string name="group_detail_move_existing">Chuyển tài liệu có sẵn</string>
+    <string name="group_detail_starts_empty_inside_this_folder">Tạo trống trong thư mục này</string>
+    <string name="group_detail_create_new_document">Tạo tài liệu mới</string>
+    <string name="group_detail_create_a_new_document_or">"Tạo tài liệu mới hoặc chọn từ %1$s bên ngoài thư mục này."</string>
+    <string name="group_detail_create_a_new_document_or_2">Tạo tài liệu mới hoặc chuyển các tài liệu chưa nằm trong thư mục nào.</string>
+    <string name="group_detail_add_documents_to_folder">Thêm tài liệu vào thư mục</string>
+    <string name="group_detail_add_documents_2">Thêm tài liệu</string>
+    <string name="group_detail_add_a_document_here_to">Thêm tài liệu vào đây để gom các bản quét liên quan lại với nhau.</string>
+    <string name="group_detail_this_folder_is_empty">Thư mục này trống</string>
+    <string name="group_detail_share_pdfs_as_zip">Chia sẻ các PDF dạng ZIP</string>
+    <string name="group_detail_save_pdfs_as_zip">Lưu các PDF dạng ZIP</string>
+    <string name="group_detail_separate_pdfs_one_pdf_per">PDF riêng · mỗi tài liệu một PDF, gói trong tệp ZIP</string>
+    <string name="group_detail_share_merged_pdf">Chia sẻ PDF đã gộp</string>
+    <string name="group_detail_save_merged_pdf">Lưu PDF đã gộp</string>
+    <string name="group_detail_single_pdf_merged_into_one">"Một PDF · gộp %1$s thành một tệp"</string>
+    <string name="group_detail_new_document">Tài liệu mới</string>
+    <string name="group_detail_remove">Xóa</string>
+    <string name="group_detail_will_be_moved_out_of">\"%1$s\" sẽ được chuyển ra khỏi thư mục này.</string>
+    <string name="group_detail_remove_from_folder">Xóa khỏi thư mục?</string>
+    <string name="group_detail_rename_folder">Đổi tên thư mục</string>
+    <string name="group_detail_delete_folder">Xóa thư mục</string>
+    <string name="group_detail_export_and_share">Xuất và chia sẻ</string>
+    <!-- GroupDetailViewModel -->
+    <string name="group_detail_generating_pdf_of">"Đang tạo PDF %1$s/%2$s…"</string>
+    <string name="group_detail_generating_page_of">"Đang tạo trang %1$s/%2$s…"</string>
+    <string name="group_detail_document_removed_from_folder">Đã xóa tài liệu khỏi thư mục.</string>
+    <string name="group_detail_added_documents_to_folder">"Đã thêm %1$s tài liệu vào thư mục."</string>
+    <string name="group_detail_added_1_document_to_folder">Đã thêm 1 tài liệu vào thư mục.</string>
+    <string name="group_detail_added_of_documents">"Đã thêm %1$s/%2$s tài liệu. %3$s"</string>
+    <string name="group_detail_folder_renamed">Đã đổi tên thư mục.</string>
+    <!-- LibraryScreen -->
+    <string name="library_create_a_folder_to_stay">Tạo thư mục để sắp xếp gọn gàng, hoặc thêm tài liệu và bắt đầu chụp.</string>
+    <string name="library_your_library_is_ready">Thư viện của bạn đã sẵn sàng</string>
+    <string name="library_save_to">Lưu vào</string>
+    <string name="library_choose_how_are_ordered">"Chọn cách sắp xếp %1$s."</string>
+    <string name="library_sort_library">Sắp xếp thư viện</string>
+    <string name="library_folders_and_documents">thư mục và tài liệu</string>
+    <string name="library_create_a_document_then_scan">Tạo tài liệu, rồi quét trang hoặc nhập từ thư viện ảnh.</string>
+    <string name="library_create_a_folder_to_keep">Tạo thư mục để dễ tìm các tài liệu liên quan.</string>
+    <string name="library_no_folders_yet">Chưa có thư mục nào</string>
+    <string name="library_list_view">Dạng danh sách</string>
+    <string name="library_grid_view">Dạng lưới</string>
+    <string name="library_folders">Thư mục</string>
+    <string name="library_back_to_library">Quay lại thư viện</string>
+    <string name="library_documents">Tài liệu</string>
+    <string name="library_search_library">Tìm trong thư viện</string>
+    <string name="library_library">Thư viện</string>
+    <!-- LibrarySearchScreen -->
+    <string name="library_search_remove_from_recent_searches">"Xóa %1$s khỏi tìm kiếm gần đây"</string>
+    <string name="library_search_search_again">Tìm lại</string>
+    <string name="library_search_text_is_read_on_this">Văn bản được đọc ngay trên thiết bị này. Trang của bạn không bao giờ rời khỏi máy.</string>
+    <string name="library_search_some_pages_are_still_being">Một số trang vẫn đang được đọc, kết quả có thể xuất hiện sau ít phút.</string>
+    <string name="library_search_search_for_instead">Tìm “%1$s”</string>
+    <string name="library_search_nothing_matches_try_fewer_words">Không có kết quả cho “%1$s”. Hãy thử ít từ hơn hoặc kiểm tra chính tả.</string>
+    <string name="library_search_no_results_found">Không tìm thấy kết quả</string>
+    <string name="library_search_rent_or_lease_finds_pages">“thuê OR mướn” tìm trang có một trong hai từ</string>
+    <string name="library_search_either_word">Một trong hai từ</string>
+    <string name="library_search_lease_draft_skips_anything_that">“hợp đồng -nháp” bỏ qua mọi thứ có chữ nháp</string>
+    <string name="library_search_leave_a_word_out">Loại trừ một từ</string>
+    <string name="library_search_you_ll_get_the_closest">Bạn sẽ nhận được từ gần nhất trong các bản quét</string>
+    <string name="library_search_small_typos_are_fine">Gõ sai một chút cũng không sao</string>
+    <string name="library_search_security_deposit_in_that_order">“tiền đặt cọc”, đúng thứ tự đó</string>
+    <string name="library_search_use_quotes_for_a_phrase">Dùng dấu ngoặc kép cho cụm từ</string>
+    <string name="library_search_lea_finds_lease_and_leasing">“hợp” tìm được hợp đồng và hợp lệ</string>
+    <string name="library_search_type_part_of_a_word">Gõ một phần của từ</string>
+    <string name="library_search_search_tips">Mẹo tìm kiếm</string>
+    <string name="library_search_browse_by_type">Duyệt theo loại</string>
+    <string name="library_search_recent">Gần đây</string>
+    <string name="library_search_folder">"Thư mục · "</string>
+    <string name="library_search_matched">Khớp với “%1$s”</string>
+    <string name="library_search_scanned_as">Quét được là “%1$s”</string>
+    <string name="library_search_show_page_text">Hiện văn bản trên trang</string>
+    <string name="library_search_show_fewer_pages">Hiện ít trang hơn</string>
+    <string name="library_search_open_document">Mở tài liệu</string>
+    <string name="library_search_similar_words">"Từ tương tự: "</string>
+    <string name="library_search_close_matches">Kết quả gần đúng</string>
+    <string name="library_search_searching_text_in_pages">Đang tìm văn bản trong trang…</string>
+    <string name="library_search_by_name">" · %1$s theo tên"</string>
+    <string name="library_search_complete_to">"Hoàn thành thành "</string>
+    <string name="library_search_filters_on">"Bộ lọc, đang bật %1$s"</string>
+    <string name="library_search_filters">"Bộ lọc · %1$s"</string>
+    <string name="library_search_matching_names">Tên khớp</string>
+    <string name="library_search_found_in_pages">Tìm thấy trong trang</string>
+    <string name="library_search_clear_search">Xóa nội dung tìm kiếm</string>
+    <!-- RecentlyDeletedScreen -->
+    <string name="recently_deleted_page_of_will_be_deleted">"Trang %1$s của \"%2$s\" sẽ bị xóa vĩnh viễn. Bạn không thể hoàn tác thao tác này."</string>
+    <string name="recently_deleted_and_its_pages_will_be">\"%1$s\" và các trang của tài liệu sẽ bị xóa vĩnh viễn. Bạn không thể hoàn tác thao tác này.</string>
+    <string name="recently_deleted_and_the_documents_that_were">\"%1$s\" và các tài liệu trong đó sẽ bị xóa vĩnh viễn. Bạn không thể hoàn tác thao tác này.</string>
+    <string name="recently_deleted_its_documents_stay_in_your">" Các tài liệu bên trong vẫn nằm trong Thư viện."</string>
+    <string name="recently_deleted_the_folder_will_be_deleted">Thư mục \"%1$s\" sẽ bị xóa vĩnh viễn. Bạn không thể hoàn tác thao tác này.</string>
+    <string name="recently_deleted_page_of">"trang %1$s của \"%2$s\""</string>
+    <string name="recently_deleted_days_left">"Còn %1$s ngày"</string>
+    <string name="recently_deleted_1_day_left">Còn 1 ngày</string>
+    <string name="recently_deleted_last_day">Ngày cuối cùng</string>
+    <string name="recently_deleted_from">Từ \"%1$s\"</string>
+    <string name="recently_deleted_no_documents">Không có tài liệu</string>
+    <string name="recently_deleted_folder_only_documents_kept_in">"Chỉ thư mục · giữ %1$s tài liệu trong Thư viện"</string>
+    <string name="recently_deleted_folder_only_1_document_kept">Chỉ thư mục · giữ 1 tài liệu trong Thư viện</string>
+    <string name="recently_deleted_restore">Khôi phục</string>
+    <string name="recently_deleted_delete_forever">Xóa vĩnh viễn</string>
+    <string name="recently_deleted_select">Chọn</string>
+    <string name="recently_deleted_delete_forever_2">"Xóa vĩnh viễn %1$s"</string>
+    <string name="recently_deleted_restore_2">"Khôi phục %1$s"</string>
+    <string name="recently_deleted_show_options">Hiện tùy chọn</string>
+    <string name="recently_deleted_the_selected_items_will_be">"%1$s mục đã chọn sẽ bị xóa vĩnh viễn. Bạn không thể hoàn tác thao tác này."</string>
+    <string name="recently_deleted_delete_items_forever">"Xóa vĩnh viễn %1$s mục?"</string>
+    <string name="recently_deleted_delete_1_item_forever">Xóa vĩnh viễn 1 mục?</string>
+    <string name="recently_deleted_delete_forever_3">Xóa vĩnh viễn?</string>
+    <string name="recently_deleted_delete_all">Xóa tất cả</string>
+    <string name="recently_deleted_all_items_will_be_deleted">"Toàn bộ %1$s mục sẽ bị xóa vĩnh viễn. Bạn không thể hoàn tác thao tác này."</string>
+    <string name="recently_deleted_this_item_will_be_deleted">Mục này sẽ bị xóa vĩnh viễn. Bạn không thể hoàn tác thao tác này.</string>
+    <string name="recently_deleted_empty_recently_deleted">Dọn sạch mục Đã xóa gần đây?</string>
+    <string name="recently_deleted_deleted_pages_stay_here_for">Trang đã xóa được giữ ở đây %1$s, còn tài liệu và thư mục được giữ %2$s, để bạn có thể khôi phục.</string>
+    <string name="recently_deleted_nothing_here">Không có gì ở đây</string>
+    <string name="recently_deleted_nothing_in_the_bin_deleted">thùng rác trống trơn. những gì bạn xóa sẽ chờ ở đây vài ngày.</string>
+    <string name="recently_deleted_empty">Dọn sạch</string>
+    <string name="recently_deleted_select_none">Bỏ chọn tất cả</string>
+    <string name="recently_deleted_clear_selection">Xóa lựa chọn</string>
+    <string name="recently_deleted_recently_deleted">Đã xóa gần đây</string>
+    <!-- RecentlyDeletedViewModel -->
+    <string name="recently_deleted_page_restored_to">"Đã khôi phục trang %1$s vào \"%2$s\""</string>
+    <string name="recently_deleted_document_restored">Đã khôi phục tài liệu</string>
+    <string name="recently_deleted_folder_restored">Đã khôi phục thư mục</string>
+    <string name="recently_deleted_recently_deleted_is_empty">Mục Đã xóa gần đây trống</string>
+    <string name="recently_deleted_deleted_permanently">Đã xóa vĩnh viễn</string>
+    <!-- SearchFiltersSheet -->
+    <string name="search_filters_apply">Áp dụng</string>
+    <string name="search_filters_remove_filter">"Xóa bộ lọc: %1$s"</string>
+    <string name="search_filters_in">"Trong %1$s"</string>
+    <string name="search_filters_not_in_a_folder">Không nằm trong thư mục</string>
+    <string name="search_filters_sort_by">Sắp xếp theo</string>
+    <string name="search_filters_any_folder">Mọi thư mục</string>
+    <string name="search_filters_date_modified">Ngày sửa đổi</string>
+    <string name="search_filters_any_type">Mọi loại</string>
+    <string name="search_filters_type">Loại</string>
+    <!-- TrashCopy -->
+    <string name="trash_copy_page_moves_to_recently_deleted">"Trang %1$s sẽ chuyển vào mục Đã xóa gần đây. Bạn có thể khôi phục trong %2$s."</string>
+    <string name="trash_copy_and_its_documents_move_to">"\"%1$s\" và %2$s tài liệu bên trong sẽ chuyển vào mục Đã xóa gần đây. Bạn có thể khôi phục trong %3$s."</string>
+    <string name="trash_copy_and_the_document_in_it">\"%1$s\" và tài liệu bên trong sẽ chuyển vào mục Đã xóa gần đây. Bạn có thể khôi phục trong %2$s.</string>
+    <string name="trash_copy_moves_to_recently_deleted_you">\"%1$s\" sẽ chuyển vào mục Đã xóa gần đây. Bạn có thể khôi phục trong %2$s.</string>
+    <string name="trash_copy_1_day">1 ngày</string>
+    <!-- TrashUndoSnackbar -->
+    <string name="trash_undo_snackbar_moved_to_recently_deleted">Đã chuyển \"%1$s\" vào mục Đã xóa gần đây</string>
+    <string name="trash_undo_snackbar_moved_to_recently_deleted_2">"Đã chuyển %1$s vào mục Đã xóa gần đây"</string>
+    <string name="trash_undo_snackbar_undo">Hủy</string>
+    <!-- OnboardingFlow -->
+    <string name="onboarding_flow_enable_camera">Bật camera</string>
+    <string name="onboarding_flow_enable_the_camera_to_scan">Bật camera để quét giấy tờ. Bạn vẫn có thể nhập ảnh mà không cần camera.</string>
+    <string name="onboarding_flow_open_settings_tap_permissions_and">Mở Cài đặt, nhấn Quyền rồi cho phép Camera. Bạn vẫn có thể nhập ảnh mà không cần camera.</string>
+    <string name="onboarding_flow_ready_for_your_first_scan">Sẵn sàng quét lần đầu chưa?</string>
+    <string name="onboarding_flow_camera_access_is_turned_off">Quyền truy cập camera đang tắt</string>
+    <!-- OnboardingScreen -->
+    <string name="onboarding_no_account_no_cloud_upload">Không cần tài khoản. Không tải lên đám mây.</string>
+    <string name="onboarding_continue">Tiếp tục</string>
+    <string name="onboarding_get_started">Bắt đầu</string>
+    <string name="onboarding_page_of_3">"%1$s, trang %2$s/3"</string>
+    <string name="onboarding_page_of_3_2">"Trang %1$s/3"</string>
+    <string name="onboarding_skip">Bỏ qua</string>
+    <string name="onboarding_scanly">Scanly.</string>
+    <string name="onboarding_previous_page">Trang trước</string>
+    <string name="onboarding_feature_edge_detection">Tự động phát hiện mép giấy</string>
+    <string name="onboarding_feature_crop_straighten">Cắt và làm thẳng trang</string>
+    <string name="onboarding_feature_filters">Màu kỳ diệu, Bảng trắng và nhiều bộ lọc khác</string>
+    <string name="onboarding_feature_ocr">Nhận dạng văn bản ngay trên thiết bị</string>
+    <string name="onboarding_feature_search">Tìm từ trong mọi bản quét</string>
+    <string name="onboarding_feature_copy_text">Sao chép văn bản từ mọi trang</string>
+    <string name="onboarding_feature_multipage_pdf">PDF nhiều trang</string>
+    <string name="onboarding_feature_password">Đặt mật khẩu trước khi chia sẻ</string>
+    <string name="onboarding_feature_sign">Ký tài liệu</string>
+    <string name="onboarding_assurance_offline">Hoạt động hoàn toàn ngoại tuyến.</string>
+    <string name="onboarding_assurance_on_device">Văn bản của bạn không bao giờ rời khỏi thiết bị này.</string>
+    <!-- Pip -->
+    <string name="pip_poke_pip_scanly_s_helper">Chọc Pip, trợ thủ của Scanly</string>
+    <!-- PipBubble -->
+    <string name="pip_bubble_dismiss">Đóng</string>
+    <!-- PipLines -->
+    <string name="pip_lines_all_set_pages_nice_and">"xong rồi! %1$s trang, thẳng thớm đẹp đẽ."</string>
+    <string name="pip_lines_all_set_1_page_nice">xong rồi! 1 trang, thẳng thớm đẹp đẽ.</string>
+    <string name="pip_lines_ready_when_you_are">bạn sẵn sàng là mình sẵn sàng.</string>
+    <string name="pip_lines_i_looked_on_every_page">mình đã xem hết các trang. không thấy “%1$s” đâu cả.</string>
+    <!-- FeaturePlaceholderScreen -->
+    <string name="feature_placeholder_planned_for">Dự kiến có trong %1$s.</string>
+    <!-- PageImagePreviewScreen -->
+    <string name="page_image_preview_sign">Ký</string>
+    <string name="page_image_preview_delete_page">Xóa trang?</string>
+    <!-- PageImagePreviewViewModel -->
+    <string name="page_image_preview_scanly_page">"Trang Scanly %1$s"</string>
+    <!-- LegalDocumentScreen -->
+    <string name="legal_document_open_in_browser">Mở trong trình duyệt</string>
+    <string name="legal_document_retry">Thử lại</string>
+    <string name="legal_document_check_your_internet_connection_and">Hãy kiểm tra kết nối Internet rồi thử lại.</string>
+    <string name="legal_document_couldn_t_be_loaded">"Không tải được %1$s"</string>
+    <!-- ModelBenchmarkScreen -->
+    <string name="model_benchmark_pipeline_s_1f_ms" formatted="false">Quy trình: %s · %.1f ms</string>
+    <string name="model_benchmark_total_1f_ms" formatted="false">tổng %.1f ms</string>
+    <string name="model_benchmark_pre_0f_inf_0f_post" formatted="false">trước %.0f · suy luận %.0f · sau %.0f</string>
+    <string name="model_benchmark_not_detected">Không phát hiện</string>
+    <string name="model_benchmark_detected_conf_0f" formatted="false">Đã phát hiện · độ tin cậy %.0f%%</string>
+    <string name="model_benchmark_none">Không có</string>
+    <string name="model_benchmark_quad">Tứ giác</string>
+    <string name="model_benchmark_error">Lỗi</string>
+    <string name="model_benchmark_no_preview">Không có bản xem trước</string>
+    <string name="model_benchmark_detection_preview">"Xem trước phát hiện của %1$s"</string>
+    <string name="model_benchmark_avg_1f_p50_1f_p95" formatted="false">TB %.1f · P50 %.1f · P95 %.1f ms · phát hiện %d/%d · lỗi %d</string>
+    <string name="model_benchmark_avg_1f_p95_1f_ms" formatted="false">TB %.1f · P95 %.1f ms · chấp nhận %d/%d</string>
+    <string name="model_benchmark_document_gate">Bộ lọc tài liệu</string>
+    <string name="model_benchmark_aggregate">Tổng hợp</string>
+    <string name="model_benchmark_images_processed">"Đã xử lý %1$s/%2$s ảnh"</string>
+    <string name="model_benchmark_choose_images_and_run">Chọn ảnh và chạy</string>
+    <string name="model_benchmark_benchmark_running">Đang chạy đo hiệu năng…</string>
+    <string name="model_benchmark_select_more_photos_to_measure">Chọn thêm ảnh để đo độ trễ bộ lọc, khả năng phát hiện góc, lớp phủ đa giác và thời gian toàn quy trình.</string>
+    <string name="model_benchmark_run_another_pass">Chạy thêm lượt nữa</string>
+    <string name="model_benchmark_images_stay_on_this_device">Ảnh chỉ nằm trên thiết bị này. Không có gì được tải lên.</string>
+    <string name="model_benchmark_choose_real_documents_or_rectangular">Chọn tài liệu thật hoặc vật hình chữ nhật. Scanly sẽ đo thời gian của từng bộ phát hiện và hiện các mép tìm được.</string>
+    <string name="model_benchmark_compare_detectors_on_your_photos">So sánh các bộ phát hiện trên ảnh của bạn</string>
+    <string name="model_benchmark_model_benchmark">Đo hiệu năng mô hình</string>
+    <string name="model_benchmark_image">Ảnh</string>
+    <string name="model_benchmark_model_failed">Mô hình bị lỗi</string>
+    <string name="model_benchmark_could_not_decode_image">Không thể giải mã ảnh</string>
+    <!-- PipSettingsScreen -->
+    <string name="pip_settings_on">"Bật · "</string>
+    <string name="pip_settings_on_2">Bật</string>
+    <string name="pip_settings_napping">Đang ngủ</string>
+    <string name="pip_settings_napping_screens_show_plain_text">Đang ngủ · màn hình chỉ hiện chữ</string>
+    <string name="pip_settings_on_around_the_app">Có mặt khắp ứng dụng</string>
+    <string name="pip_settings_show_pip">Hiện Pip</string>
+    <string name="pip_settings_scanly_s_little_helper_pip">Trợ thủ nhỏ của Scanly. Pip xuất hiện ở màn hình trống, trong camera và khi có gì đó sẵn sàng, nói một câu ngắn rồi lặng lẽ tránh sang bên.</string>
+    <string name="pip_settings_pip">Pip</string>
+    <string name="pip_settings_hi_this_is_where_you">chào bạn! đây là nơi bạn chọn mình giúp nhiều hay ít.</string>
+    <string name="pip_settings_i_ll_keep_still_still">mình sẽ đứng yên. nhưng vẫn ở đây nhé.</string>
+    <string name="pip_settings_okay_i_ll_nap_switch">được rồi, mình đi ngủ đây. bật lại mình lúc nào cũng được.</string>
+    <string name="pip_settings_pip_lives_on_this_phone">Pip sống trên điện thoại này và không bao giờ xem tài liệu của bạn. Mọi câu Pip nói đều có sẵn trong Scanly.</string>
+    <string name="pip_settings_blinks_talks_and_hops_pip">Chớp mắt, trò chuyện và nhảy nhót. Pip sẽ đứng yên khi ảnh động hệ thống bị tắt.</string>
+    <string name="pip_settings_animate_pip">Ảnh động cho Pip</string>
+    <string name="pip_settings_motion">Chuyển động</string>
+    <string name="pip_settings_a_happy_hello_when_a">Một lời chào vui vẻ khi tài liệu đã sẵn sàng để chia sẻ.</string>
+    <string name="pip_settings_cheer_on_exports">Cổ vũ khi xuất</string>
+    <string name="pip_settings_pip_helps_you_frame_pages">Pip giúp bạn căn khung trang. Khi tắt sẽ chỉ hiện hướng dẫn đơn giản.</string>
+    <string name="pip_settings_camera_coaching">Hướng dẫn khi chụp</string>
+    <string name="pip_settings_one_short_tip_a_day">Mỗi ngày một mẹo ngắn dưới lời chào.</string>
+    <string name="pip_settings_tips_on_home">Mẹo trên Trang chủ</string>
+    <string name="pip_settings_where_pip_helps">Nơi Pip hỗ trợ</string>
+    <!-- SettingsComponents -->
+    <string name="settings_pages_were_read_with_another">"%1$s trang đã được đọc bằng công cụ khác. Đọc lại các trang này bằng %2$s trong nền."</string>
+    <string name="settings_1_page_was_read_with">"1 trang đã được đọc bằng công cụ khác. Đọc lại trang này bằng %1$s trong nền."</string>
+    <string name="settings_re_read_existing_pages">Đọc lại các trang hiện có</string>
+    <string name="settings_indra_ocr_paused_it_stopped">Indra OCR đã tạm dừng vì bị dừng đột ngột hai lần, nên các trang đang được đọc bằng ML Kit. Hãy chọn lại Indra OCR để thử lại.</string>
+    <string name="settings_ml_kit">ML Kit</string>
+    <string name="settings_indra_ocr">Indra OCR</string>
+    <string name="settings_rate_scanly_on_google_play">Đánh giá Scanly trên Google Play</string>
+    <string name="settings_it_s_free_private_and">Ứng dụng miễn phí, riêng tư và không có quảng cáo. Một lượt đánh giá nhanh trên Google Play sẽ giúp người khác tìm thấy Scanly.</string>
+    <string name="settings_enjoying_scanly">Bạn thích Scanly chứ?</string>
+    <string name="settings_dark">Tối</string>
+    <string name="settings_light">Sáng</string>
+    <string name="settings_system">Theo hệ thống</string>
+    <string name="settings_tap_to_check">"Nhấn để kiểm tra %1$s"</string>
+    <string name="settings_you_are_on_latest_is">Bạn đang dùng %1$s. Bản mới nhất là %2$s.</string>
+    <string name="settings_scanly_is_available_on">"Scanly %1$s đã có trên %2$s."</string>
+    <string name="settings_checking">Đang kiểm tra %1$s...</string>
+    <string name="settings_check_for_updates">Kiểm tra bản cập nhật</string>
+    <string name="settings_by_jeevaprakash_g">của jeevaprakash g</string>
+    <string name="settings_version_unavailable">Không có thông tin phiên bản</string>
+    <string name="settings_pick_the_detector_that_fits">Chọn bộ phát hiện phù hợp với thiết bị và cách bạn làm việc.</string>
+    <string name="settings_choose">"Chọn %1$s"</string>
+    <string name="settings_highest_accuracy_maximum_compatibility">Chính xác nhất · tương thích tối đa</string>
+    <string name="settings_higher_accuracy_best_after_capture">Chính xác hơn · tốt nhất sau khi chụp</string>
+    <string name="settings_balanced_speed_and_accuracy">Cân bằng tốc độ và độ chính xác</string>
+    <string name="settings_fastest_ideal_for_live_camera">Nhanh nhất · lý tưởng khi xem trực tiếp</string>
+    <!-- SettingsDetailScreens -->
+    <string name="settings_detail_screens_open_source">Nguồn mở</string>
+    <string name="settings_detail_screens_try_a_different_word_or">Hãy thử từ khác hoặc duyệt theo danh mục.</string>
+    <string name="settings_detail_screens_no_answers_for">Không có câu trả lời cho “%1$s”.</string>
+    <string name="settings_detail_screens_no_answers_in_this_category">Danh mục này chưa có câu trả lời.</string>
+    <string name="settings_detail_screens_all">Tất cả</string>
+    <string name="settings_detail_screens_search_help">Tìm trong trợ giúp</string>
+    <string name="settings_detail_screens_help_faq">Trợ giúp và câu hỏi thường gặp</string>
+    <!-- SettingsHubSubScreens -->
+    <string name="settings_hub_sub_screens_terms_conditions">Điều khoản và điều kiện</string>
+    <string name="settings_hub_sub_screens_privacy_policy">Chính sách quyền riêng tư</string>
+    <string name="settings_hub_sub_screens_legal">Pháp lý</string>
+    <string name="settings_hub_sub_screens_project_website">Trang web dự án</string>
+    <string name="settings_hub_sub_screens_contact_support">Liên hệ hỗ trợ</string>
+    <string name="settings_hub_sub_screens_help">Trợ giúp</string>
+    <string name="settings_hub_sub_screens_about">Giới thiệu</string>
+    <string name="settings_hub_sub_screens_open_the_qr_tool">Mở công cụ QR</string>
+    <string name="settings_hub_sub_screens_qr_widget">Tiện ích QR</string>
+    <string name="settings_hub_sub_screens_start_a_new_document_scan">Bắt đầu quét tài liệu mới</string>
+    <string name="settings_hub_sub_screens_scan_widget">Tiện ích Quét</string>
+    <string name="settings_hub_sub_screens_scan_import_qr_library">Quét · Nhập · QR · Thư viện</string>
+    <string name="settings_hub_sub_screens_actions_bar">Thanh thao tác</string>
+    <string name="settings_hub_sub_screens_home_screen">Màn hình chính</string>
+    <string name="settings_hub_sub_screens_widgets">Tiện ích</string>
+    <string name="settings_hub_sub_screens_long_press_home_screen_widgets">Nhấn giữ màn hình chính → Tiện ích → Scanly</string>
+    <string name="settings_hub_sub_screens_tap_to_add_a_widget">Nhấn để thêm tiện ích vào màn hình chính</string>
+    <string name="settings_hub_sub_screens_could_not_open_the_add">Không mở được hộp thoại thêm tiện ích.</string>
+    <string name="settings_hub_sub_screens_your_launcher_doesn_t_support">Trình chạy của bạn không hỗ trợ thêm tiện ích từ ứng dụng. Hãy nhấn giữ màn hình chính và chọn Scanly trong mục Tiện ích.</string>
+    <string name="settings_hub_sub_screens_compare_all_models_on_local">So sánh mọi mô hình trên ảnh trong máy</string>
+    <string name="settings_hub_sub_screens_tools">Công cụ</string>
+    <string name="settings_hub_sub_screens_reject_screens_and_non_documents">Loại bỏ màn hình và vật không phải tài liệu trước khi phát hiện mép</string>
+    <string name="settings_hub_sub_screens_physical_document_gate">Bộ lọc tài liệu giấy</string>
+    <string name="settings_hub_sub_screens_capture_quality">Chất lượng chụp</string>
+    <string name="settings_hub_sub_screens_used_after_camera_or_gallery">Dùng sau khi chụp bằng camera hoặc nhập từ thư viện ảnh</string>
+    <string name="settings_hub_sub_screens_selected_automatically_for_higher_accuracy">Tự động chọn để chính xác hơn</string>
+    <string name="settings_hub_sub_screens_post_processing_model">Mô hình hậu xử lý</string>
+    <string name="settings_hub_sub_screens_used_while_the_camera_preview">Dùng trong lúc camera đang xem trực tiếp</string>
+    <string name="settings_hub_sub_screens_selected_automatically_for_responsive_preview">Tự động chọn để xem trực tiếp mượt hơn</string>
+    <string name="settings_hub_sub_screens_live_preview_model">Mô hình xem trực tiếp</string>
+    <string name="settings_hub_sub_screens_choose_the_best_models_for">Chọn mô hình tốt nhất cho thiết bị này</string>
+    <string name="settings_hub_sub_screens_live_processing">"Trực tiếp: %1$s · Xử lý: %2$s"</string>
+    <string name="settings_hub_sub_screens_testing_model_speed_on_this">Đang thử tốc độ mô hình trên thiết bị này…</string>
+    <string name="settings_hub_sub_screens_automatic_model_selection">Tự động chọn mô hình</string>
+    <string name="settings_hub_sub_screens_models">Mô hình</string>
+    <string name="settings_hub_sub_screens_document_detection">Phát hiện tài liệu</string>
+    <string name="settings_hub_sub_screens_true_black_surfaces_saves_battery">Nền đen tuyền · tiết kiệm pin trên màn hình AMOLED</string>
+    <string name="settings_hub_sub_screens_takes_effect_in_dark_theme">Có hiệu lực ở giao diện tối · tiết kiệm pin trên màn hình AMOLED</string>
+    <string name="settings_hub_sub_screens_pure_black">Đen tuyền</string>
+    <string name="settings_hub_sub_screens_theme">Giao diện</string>
+    <string name="settings_hub_sub_screens_appearance">Hình thức</string>
+    <!-- SettingsScreen -->
+    <string name="settings_preferences_and_app_info">Lựa chọn ưu tiên và thông tin ứng dụng</string>
+    <string name="settings_scanly">"Scanly %1$s"</string>
+    <string name="settings_settings">Cài đặt</string>
+    <string name="settings_version_updates_and_legal">Phiên bản, bản cập nhật và pháp lý</string>
+    <string name="settings_leave_a_rating_on_google">Để lại đánh giá trên Google Play</string>
+    <string name="settings_more">Khác</string>
+    <string name="settings_actions_scan_and_qr">Thao tác, Quét và QR</string>
+    <string name="settings_text_recognition">Nhận dạng văn bản</string>
+    <string name="settings_intelligence">Trí tuệ</string>
+    <string name="settings_pages_kept_documents_and_folders">"Giữ trang %1$s, tài liệu và thư mục %2$s"</string>
+    <string name="settings_storage">Bộ nhớ</string>
+    <string name="settings_pip_your_helper">Pip, trợ thủ của bạn</string>
+    <string name="settings_preferences">Lựa chọn ưu tiên</string>
+    <string name="settings_save_location_cleanup">Vị trí lưu và dọn dẹp</string>
+    <string name="settings_indra_ocr_100_languages_experimental">Indra OCR · hơn 100 ngôn ngữ (thử nghiệm)</string>
+    <string name="settings_ml_kit_latin_script_languages">ML Kit · ngôn ngữ dùng chữ Latinh</string>
+    <string name="settings_gate_off">"%1$s · Tắt bộ lọc"</string>
+    <string name="settings_gate_on">"%1$s · Bật bộ lọc"</string>
+    <string name="settings_manual_models">Chọn mô hình thủ công</string>
+    <string name="settings_automatic_models">Tự động chọn mô hình</string>
+    <string name="settings_calibrating">Đang hiệu chỉnh…</string>
+    <string name="settings_pure_black">" · Đen tuyền"</string>
+    <string name="settings_thanks_for_supporting_scanly">Cảm ơn bạn đã ủng hộ Scanly</string>
+    <!-- SettingsTextRecognitionScreen -->
+    <string name="settings_text_recognition_weights_openrail_m_code_apache">Trọng số: OpenRAIL-M · Mã nguồn: Apache-2.0</string>
+    <string name="settings_text_recognition_visit_datalab_to">Truy cập datalab.to</string>
+    <string name="settings_text_recognition_a_big_thank_you_to">Xin chân thành cảm ơn Datalab đã xây dựng Indra OCR và cho phép Scanly chạy ngay trên điện thoại của bạn. Nhờ vậy Scanly đọc được hơn 100 ngôn ngữ.</string>
+    <string name="settings_text_recognition_datalab">Datalab</string>
+    <string name="settings_text_recognition_indra_ocr_by">INDRA OCR CỦA</string>
+    <string name="settings_text_recognition_datalab_logo">Biểu trưng Datalab</string>
+    <string name="settings_text_recognition_latin_script_only_pages_in">Chỉ hỗ trợ chữ Latinh. Trang dùng hệ chữ khác như tiếng Hindi, Tamil, Ả Rập hay Trung Quốc sẽ bị trống hoặc lỗi chữ. Hãy chuyển sang Indra OCR cho các trang đó.</string>
+    <string name="settings_text_recognition_5_script_families_read_in">5 nhóm hệ chữ, đọc trong một lượt. Mỗi dòng được chuyển đến đúng bộ nhận dạng, nên trang có nhiều ngôn ngữ cũng đọc được.</string>
+    <string name="settings_text_recognition_reads_100_languages_across_many">Đọc hơn 100 ngôn ngữ thuộc nhiều hệ chữ, gồm tiếng Hindi, Tamil, Ả Rập, Trung Quốc và Nhật Bản. Chậm hơn ML Kit.</string>
+    <string name="settings_text_recognition_experimental">Thử nghiệm</string>
+    <string name="settings_text_recognition_google_s_fast_on_device">Bộ nhận dạng nhanh ngay trên thiết bị của Google. Tốt nhất cho các ngôn ngữ dùng chữ Latinh như tiếng Anh, Tây Ban Nha và Pháp.</string>
+    <string name="settings_text_recognition_default">Mặc định</string>
+    <string name="settings_text_recognition_if_a_page_s_text">Nếu văn bản của trang bị trống hoặc lỗi chữ, có thể trang dùng hệ chữ mà ML Kit không đọc được. Hãy chuyển sang Indra OCR, rồi dùng Đọc lại các trang hiện có.</string>
+    <string name="settings_text_recognition_tip">Mẹo</string>
+    <string name="settings_text_recognition_switching_engines_only_affects_new">Việc đổi công cụ chỉ áp dụng cho các lượt đọc mới. Bạn có thể đọc lại các trang hiện có từ màn hình này, và văn bản bạn đã tự sửa sẽ không bao giờ bị thay thế.</string>
+    <string name="settings_text_recognition_your_edits_are_kept">Chỉnh sửa của bạn được giữ nguyên</string>
+    <string name="settings_text_recognition_if_indra_ocr_can_t">Nếu Indra OCR không đọc được trang, mất quá nhiều thời gian hoặc bị dừng, ML Kit sẽ đọc thay.</string>
+    <string name="settings_text_recognition_ml_kit_is_the_safety">ML Kit luôn làm phương án dự phòng</string>
+    <string name="settings_text_recognition_both_engines_run_on_the">Cả hai công cụ đều chạy trên thiết bị. Trang không bao giờ bị tải lên để đọc.</string>
+    <string name="settings_text_recognition_stays_on_your_phone">Chỉ nằm trên điện thoại của bạn</string>
+    <string name="settings_text_recognition_ml_kit_is_the_default">ML Kit là công cụ mặc định. Công cụ này nhanh và rất chính xác với các ngôn ngữ dùng chữ Latinh như tiếng Anh, Tây Ban Nha, Pháp và Đức.\n\nIndra OCR dành cho các ngôn ngữ còn lại. Công cụ này đọc được hơn 100 ngôn ngữ, gồm tiếng Hindi, Tamil, Bengal, Ả Rập, Urdu, Trung Quốc, Nhật Bản, Hàn Quốc và Thái, đồng thời xử lý được trang có nhiều ngôn ngữ. Đây là tính năng thử nghiệm và chậm hơn, nên trang sẽ mất nhiều thời gian hơn để tìm kiếm được.</string>
+    <string name="settings_text_recognition_choosing_an_engine">Chọn công cụ</string>
+    <string name="settings_text_recognition_after_you_scan_scanly_reads">Sau khi bạn quét, Scanly sẽ đọc chữ trên từng trang. Nhờ văn bản đó, bạn có thể tìm trong thư viện theo nội dung trang, sao chép hoặc chia sẻ văn bản từ bản quét và xuất văn bản.</string>
+    <string name="settings_text_recognition_what_it_does">Tính năng này làm gì</string>
+    <string name="settings_text_recognition_also_called_ocr">Còn gọi là OCR</string>
+    <string name="settings_text_recognition_re_read">Đọc lại</string>
+    <string name="settings_text_recognition_runs_in_the_background_while">Chạy trong nền khi pin không yếu. Văn bản bạn đã tự sửa sẽ được giữ nguyên.</string>
+    <string name="settings_text_recognition_on_device_text_recognition_v2">Nhận dạng văn bản trên thiết bị v2</string>
+    <string name="settings_text_recognition_google_ml_kit">Google ML Kit</string>
+    <string name="settings_text_recognition_credits">Ghi công</string>
+    <string name="settings_text_recognition_supported_languages">Ngôn ngữ được hỗ trợ</string>
+    <string name="settings_text_recognition_engine">Công cụ</string>
+    <string name="settings_text_recognition_about_text_recognition">Giới thiệu về nhận dạng văn bản</string>
+    <!-- SettingsViewModel -->
+    <string name="settings_save_location_reset_to_downloads">Đã đặt lại vị trí lưu về Downloads/Scanly.</string>
+    <string name="settings_save_location_updated">Đã cập nhật vị trí lưu.</string>
+    <string name="settings_reading_pages_again_in_the">"Đang đọc lại %1$s trang trong nền."</string>
+    <string name="settings_reading_1_page_again_in">Đang đọc lại 1 trang trong nền.</string>
+    <string name="settings_no_pages_to_read_again">Không có trang nào cần đọc lại.</string>
+    <string name="settings_could_not_update_the_text">Không thể cập nhật công cụ nhận dạng văn bản.</string>
+    <string name="settings_could_not_update_the_physical">Không thể cập nhật bộ lọc tài liệu giấy.</string>
+    <string name="settings_could_not_update_automatic_model">Không thể cập nhật chế độ tự động chọn mô hình.</string>
+    <string name="settings_could_not_update_the_post">Không thể cập nhật mô hình hậu xử lý.</string>
+    <string name="settings_could_not_update_the_live">Không thể cập nhật mô hình xem trực tiếp.</string>
+    <string name="settings_could_not_update_pure_black">Không thể cập nhật giao diện đen tuyền.</string>
+    <string name="settings_removed_empty_folders">"Đã xóa %1$s thư mục trống."</string>
+    <string name="settings_removed_1_empty_folder">Đã xóa 1 thư mục trống.</string>
+    <string name="settings_no_empty_folders_found">Không tìm thấy thư mục trống nào.</string>
+    <string name="settings_removed_empty_documents">"Đã xóa %1$s tài liệu trống."</string>
+    <string name="settings_removed_1_empty_document">Đã xóa 1 tài liệu trống.</string>
+    <string name="settings_no_empty_documents_found">Không tìm thấy tài liệu trống nào.</string>
+    <string name="settings_freed">"Đã giải phóng %1$s"</string>
+    <string name="settings_all_data_cleared">Đã xóa toàn bộ dữ liệu.</string>
+    <!-- StorageScreen -->
+    <string name="storage_temporary_exports">Tệp xuất tạm thời</string>
+    <string name="storage_database_search_index">Cơ sở dữ liệu và chỉ mục tìm kiếm</string>
+    <string name="storage_library_files">Tệp thư viện</string>
+    <string name="storage_scanly_is_using">Scanly đang dùng</string>
+    <string name="storage_calculating">Đang tính…</string>
+    <string name="storage_change">Thay đổi</string>
+    <string name="storage_exports_save_to">Tệp xuất được lưu vào</string>
+    <string name="storage_this_permanently_deletes_all_documents">Thao tác này sẽ xóa vĩnh viễn mọi tài liệu, thư mục, trang và tệp xuất tạm thời trên thiết bị này. Các tệp bạn đã lưu vào thư mục xuất vẫn được giữ lại.</string>
+    <string name="storage_clear_all_data">Xóa toàn bộ dữ liệu?</string>
+    <string name="storage_deletes_every_folder_group_that">Xóa mọi thư mục (nhóm) không chứa tài liệu nào. Thư mục còn tài liệu sẽ được giữ lại.</string>
+    <string name="storage_remove_empty_folders">Xóa thư mục trống?</string>
+    <string name="storage_deletes_every_document_that_has">Xóa mọi tài liệu không có trang nào, kể cả các lượt chụp bỏ dở, và giải phóng bộ nhớ của chúng. Tài liệu còn trang sẽ được giữ lại.</string>
+    <string name="storage_remove_empty_documents">Xóa tài liệu trống?</string>
+    <string name="storage_deletes_every_document_folder_and">Xóa mọi tài liệu, thư mục và trang trên thiết bị này</string>
+    <string name="storage_clear_all_data_2">Xóa toàn bộ dữ liệu</string>
+    <string name="storage_danger_zone">Vùng nguy hiểm</string>
+    <string name="storage_folders_with_no_documents">Thư mục không có tài liệu</string>
+    <string name="storage_remove_empty_folders_2">Xóa thư mục trống</string>
+    <string name="storage_documents_with_no_pages">Tài liệu không có trang</string>
+    <string name="storage_remove_empty_documents_2">Xóa tài liệu trống</string>
+    <string name="storage_restore_deleted_folders_documents_and">Khôi phục thư mục, tài liệu và trang đã xóa</string>
+    <string name="storage_tidy_up">Dọn dẹp</string>
+    <string name="storage_use_default_folder">Dùng thư mục mặc định</string>
+    <string name="storage_pdfs_and_images_you_export">PDF và ảnh bạn xuất sẽ được lưu ở đây.</string>
+    <string name="storage_save_location">Vị trí lưu</string>
+    <string name="storage_could_not_use_the_selected">Không thể dùng thư mục đã chọn.</string>
+    <string name="storage_selected_folder">Thư mục đã chọn</string>
+    <!-- ScannedPagePickerSheet -->
+    <string name="scanned_page_picker_no_pages_in_this_document">Không có trang nào trong tài liệu này dùng được.</string>
+    <string name="scanned_page_picker_back_to_documents">Quay lại danh sách tài liệu</string>
+    <string name="scanned_page_picker_no_scanned_documents_yet_scan">Chưa có tài liệu quét nào. Hãy quét một trang trong Scanly, trang đó sẽ xuất hiện ở đây.</string>
+    <string name="scanned_page_picker_scanned_pages">Trang đã quét</string>
+    <!-- SignatureCreateScreen -->
+    <string name="signature_create_choose_another">Chọn ảnh khác</string>
+    <string name="signature_create_bolder">Đậm hơn</string>
+    <string name="signature_create_fainter">Nhạt hơn</string>
+    <string name="signature_create_ink_sensitivity">Độ nhạy mực</string>
+    <string name="signature_create_extracted_signature_preview">Xem trước chữ ký đã tách</string>
+    <string name="signature_create_scanly_removes_the_paper_background">Scanly sẽ xóa nền giấy và chỉ giữ lại nét mực.</string>
+    <string name="signature_create_use_a_page_you_scanned">Dùng trang bạn đã quét trong Scanly</string>
+    <string name="signature_create_scanned_page">Trang đã quét</string>
+    <string name="signature_create_jpg_or_png_from_your">JPG hoặc PNG trong điện thoại</string>
+    <string name="signature_create_files">Tệp</string>
+    <string name="signature_create_pick_a_photo_of_your">Chọn ảnh chụp chữ ký của bạn</string>
+    <string name="signature_create_photos">Ảnh</string>
+    <string name="signature_create_choose_where_your_signature_is">Chọn vị trí chữ ký của bạn</string>
+    <string name="signature_create_choose_where_your_initials_are">Chọn vị trí chữ ký tắt của bạn</string>
+    <string name="signature_create_pen">Bút</string>
+    <string name="signature_create_upload">Tải lên</string>
+    <string name="signature_create_draw">Vẽ</string>
+    <string name="signature_create_save_signature">Lưu chữ ký</string>
+    <string name="signature_create_save_initials">Lưu chữ ký tắt</string>
+    <string name="signature_create_sign_above_the_line">Ký phía trên đường kẻ</string>
+    <string name="signature_create_write_your_initials_above_the">Viết chữ ký tắt phía trên đường kẻ</string>
+    <string name="signature_create_new_signature">Chữ ký mới</string>
+    <string name="signature_create_new_initials">Chữ ký tắt mới</string>
+    <!-- SignatureCreateViewModel -->
+    <string name="signature_create_choose_a_photo_of_your">Hãy chọn ảnh chụp chữ ký của bạn trước.</string>
+    <string name="signature_create_still_reading_the_photo_try">Vẫn đang đọc ảnh. Hãy thử lại sau giây lát.</string>
+    <string name="signature_create_draw_your_signature_first">Hãy vẽ chữ ký của bạn trước.</string>
+    <!-- SignaturePad -->
+    <string name="signature_pad_draw_here">Vẽ ở đây</string>
+    <!-- DocumentSignScreen -->
+    <string name="document_sign_stamping_signatures">Đang đóng chữ ký…</string>
+    <!-- DocumentSignViewModel -->
+    <string name="document_sign_saved_signatures_couldn_t_be">Không tải được chữ ký đã lưu, nên hiện chưa thể ký tài liệu này.</string>
+    <!-- SignEditorScreen -->
+    <string name="sign_editor_next_page">Trang tiếp theo</string>
+    <string name="sign_editor_add_text">Thêm văn bản</string>
+    <string name="sign_editor_edit_date">Sửa ngày</string>
+    <string name="sign_editor_tap_checkbox_again_for_another">Nhấn Hộp đánh dấu lần nữa để thêm ô · dùng thanh công cụ để đánh dấu hoặc bỏ đánh dấu</string>
+    <string name="sign_editor_tap_text_again_for_another">Nhấn Văn bản lần nữa để thêm dòng · nhấn đúp vào văn bản để sửa</string>
+    <string name="sign_editor_tap_date_again_for_another">Nhấn Ngày lần nữa để thêm dấu ngày · nhấn đúp vào ngày để sửa</string>
+    <string name="sign_editor_manage">Quản lý</string>
+    <string name="sign_editor_your_signatures">Chữ ký của bạn</string>
+    <string name="sign_editor_signatures_and_marks_you_added">Các chữ ký và dấu bạn đã thêm hoặc thay đổi trên tài liệu này sẽ không được giữ lại.</string>
+    <!-- SignMarkLayer -->
+    <string name="sign_mark_layer_duplicate">Nhân bản</string>
+    <string name="sign_mark_layer_tick">Đánh dấu</string>
+    <string name="sign_mark_layer_untick">Bỏ đánh dấu</string>
+    <!-- SignatureManageScreen -->
+    <string name="signature_manage_added">"%1$s · Đã thêm %2$s"</string>
+    <string name="signature_manage_from_a_photo">Từ ảnh</string>
+    <string name="signature_manage_drawn">Vẽ tay</string>
+    <string name="signature_manage_pages_you_ve_already_signed">Các trang bạn đã ký vẫn giữ chữ ký này</string>
+    <string name="signature_manage_place_it_on_a_pdf">Đặt lên PDF hoặc tài liệu Scanly</string>
+    <string name="signature_manage_sign_a_pdf">Ký PDF</string>
+    <string name="signature_manage_use_first_when_signing">Dùng trước tiên khi ký</string>
+    <string name="signature_manage_shared_and_saved_as_a">Được chia sẻ và lưu dưới dạng PNG trong suốt, sẵn sàng cho tài liệu, biểu mẫu và email.</string>
+    <string name="signature_manage_save_to_phone">Lưu vào điện thoại</string>
+    <string name="signature_manage_ink_colour">Màu mực</string>
+    <string name="signature_manage_in_ink">"%1$s, mực: %2$s"</string>
+    <string name="signature_manage_used_first">Dùng trước tiên</string>
+    <string name="signature_manage_used_first_2">, dùng trước tiên</string>
+    <string name="signature_manage_pages_you_ve_already_signed_2">Các trang bạn đã ký vẫn giữ chữ ký này.</string>
+    <string name="signature_manage_initials">Chữ ký tắt</string>
+    <string name="signature_manage_signatures">Chữ ký</string>
+    <string name="signature_manage_signatures_stay_on_this_phone">Chữ ký chỉ lưu trên điện thoại này. Hãy vẽ chữ ký hoặc tải lên ảnh chụp chữ ký của bạn.</string>
+    <string name="signature_manage_tap_one_to_share_save">Nhấn vào một chữ ký để chia sẻ, lưu hoặc sắp xếp lại</string>
+    <!-- SignatureManageViewModel -->
+    <string name="signature_manage_saved_to">"Đã lưu vào %1$s"</string>
+    <string name="signature_manage_will_be_offered_first_when">"%1$s sẽ được đề xuất trước tiên khi ký"</string>
+    <!-- PageTextScreen -->
+    <string name="page_text_share_text">Chia sẻ văn bản</string>
+    <string name="page_text_scan_or_import_a_page">Quét hoặc nhập một trang, văn bản của trang sẽ xuất hiện ở đây.</string>
+    <string name="page_text_this_document_has_no_pages">Tài liệu này chưa có trang nào</string>
+    <string name="page_text_reading_text">Đang đọc văn bản</string>
+    <string name="page_text_copy_page">Sao chép trang</string>
+    <string name="page_text_save_changes">Lưu thay đổi</string>
+    <string name="page_text_copy">Sao chép</string>
+    <string name="page_text_tap_an_outlined_area_to">Nhấn vào một vùng có viền để chỉ sao chép phần đó.</string>
+    <string name="page_text_regions_are_hidden_because_this">Các vùng bị ẩn vì trang này đã thay đổi sau khi được đọc văn bản.</string>
+    <string name="page_text_page_image_with_text_regions">"Ảnh trang có %1$s vùng văn bản"</string>
+    <string name="page_text_read_with_indra_ocr_experimental">Đọc bằng Indra OCR (thử nghiệm)</string>
+    <string name="page_text_read_with_ml_kit_indra">Đọc bằng ML Kit (Indra OCR không đọc được trang này)</string>
+    <string name="page_text_edited">Đã sửa</string>
+    <string name="page_text_read_again">Đọc lại</string>
+    <string name="page_text_photos_and_handwriting_may_not">Ảnh chụp và chữ viết tay có thể không chứa chữ in đọc được. Bản quét rõ nét, đủ sáng thường sẽ giúp ích.</string>
+    <string name="page_text_no_text_found_on_this">Không tìm thấy văn bản trên trang này</string>
+    <string name="page_text_read_this_page">Đọc trang này</string>
+    <string name="page_text_scanly_reads_page_text_on">Scanly đọc văn bản trên trang ngay trên thiết bị này.</string>
+    <string name="page_text_text_not_read_yet">Chưa đọc văn bản</string>
+    <string name="page_text_try_again">Thử lại</string>
+    <string name="page_text_couldn_t_read_this_page">Không đọc được trang này</string>
+    <string name="page_text_your_corrections_are_used_for">Các chỉnh sửa của bạn sẽ được dùng khi sao chép, chia sẻ và tìm kiếm.</string>
+    <string name="page_text_this_page_changed_after_its">Trang này đã thay đổi sau khi được đọc văn bản.</string>
+    <string name="page_text_stop_highlighting">Tắt đánh dấu</string>
+    <string name="page_text_on_this_page">"%1$s trên trang này"</string>
+    <string name="page_text_not_on_this_page">không có trên trang này</string>
+    <string name="page_text_reading_text_2">Đang đọc văn bản…</string>
+    <string name="page_text_reading_page_of">"Đang đọc trang %1$s/%2$s…"</string>
+    <string name="page_text_page">"%1$s — trang %2$s"</string>
+    <string name="page_text_read_all_pages_again">Đọc lại mọi trang</string>
+    <string name="page_text_restore_original_text">Khôi phục văn bản gốc</string>
+    <string name="page_text_share_all_pages">Chia sẻ mọi trang</string>
+    <string name="page_text_all_pages">mọi trang</string>
+    <string name="page_text_copy_all_pages">Sao chép mọi trang</string>
+    <string name="page_text_extracted_text">Văn bản trích xuất</string>
+    <string name="page_text_copied">"Đã sao chép %1$s"</string>
+    <!-- PageTextViewModel -->
+    <string name="page_text_original_text_restored">Đã khôi phục văn bản gốc</string>
+    <string name="page_text_changes_saved_search_uses_your">Đã lưu thay đổi. Tìm kiếm sẽ dùng nội dung bạn đã sửa.</string>
+    <string name="page_text_page_text_read_again">Đã đọc lại văn bản trên trang</string>
+    <!-- ToolKit -->
+    <string name="tool_kit_file_name">Tên tệp</string>
+    <!-- ToolsScreen -->
+    <string name="tools_everything_runs_offline_on_this">Mọi thứ chạy ngoại tuyến, ngay trên điện thoại này</string>
+    <string name="tools_utilities">Tiện ích</string>
+    <!-- PdfCompressScreen -->
+    <string name="pdf_compress_recommended">Đề xuất</string>
+    <string name="pdf_compress_compress_this_pdf_again_with">Nén lại PDF này với tùy chọn khác</string>
+    <string name="pdf_compress_try_another_quality">Thử mức chất lượng khác</string>
+    <string name="pdf_compress_after">Sau</string>
+    <string name="pdf_compress_before">Trước</string>
+    <string name="pdf_compress_quality">Chất lượng</string>
+    <string name="pdf_compress_this_quality_didn_t_make">Mức chất lượng này không làm tệp nhỏ hơn. Hãy thử mức khác.</string>
+    <string name="pdf_compress_compressed">Đã nén</string>
+    <string name="pdf_compress_already_compact">Đã đủ gọn</string>
+    <string name="pdf_compress_saved">Giảm %1$s%%</string>
+    <string name="pdf_compress_compressing">Đang nén…</string>
+    <string name="pdf_compress_compress">Nén</string>
+    <string name="pdf_compress_pages_are_re_encoded_as">Các trang được mã hóa lại thành ảnh, nên văn bản trong PDF sẽ không còn chọn hay tìm kiếm được.</string>
+    <string name="pdf_compress_unlock">Mở khóa</string>
+    <string name="pdf_compress_enter_the_password">Nhập mật khẩu</string>
+    <string name="pdf_compress_compressed_pdf">PDF đã nén</string>
+    <string name="pdf_compress_step_1_of_3_choose">Bước 1/3 · Chọn tệp</string>
+    <string name="pdf_compress_shrink_a_pdf_for_email">Thu nhỏ PDF để vừa giới hạn email hoặc tải lên.</string>
+    <string name="pdf_compress_compress_pdf">Nén PDF</string>
+    <!-- PdfCompressViewModel -->
+    <string name="pdf_compress_compressing_pdf">Đang nén PDF…</string>
+    <string name="pdf_compress_choose_a_pdf_first">Hãy chọn một PDF trước.</string>
+    <!-- PdfFilePicker -->
+    <string name="pdf_file_picker_days_ago">"%1$s ngày trước"</string>
+    <string name="pdf_file_picker_selected_position">"Đã chọn, vị trí %1$s"</string>
+    <string name="pdf_file_picker_empty_scans_are_hidden">"Đã ẩn %1$s bản quét trống"</string>
+    <string name="pdf_file_picker_1_empty_scan_is_hidden">Đã ẩn 1 bản quét trống</string>
+    <string name="pdf_file_picker_no_match">"Không có %1$s nào khớp với \"%2$s\"."</string>
+    <string name="pdf_file_picker_sorted_by">"Sắp xếp theo %1$s"</string>
+    <string name="pdf_file_picker_in_scanly">"Trong Scanly · %1$s"</string>
+    <string name="pdf_file_picker_search_your">"Tìm trong %1$s của bạn"</string>
+    <string name="pdf_file_picker_your_scans_have_no_pages">Các bản quét của bạn chưa có trang nào. Hãy chọn PDF từ bộ nhớ điện thoại.</string>
+    <string name="pdf_file_picker_no_scans_yet_pick_a">Chưa có bản quét nào. Hãy chọn PDF từ bộ nhớ điện thoại hoặc quét trước.</string>
+    <string name="pdf_file_picker_pdfs">PDF</string>
+    <string name="pdf_file_picker_downloads_drive_and_other_apps">Tệp đã tải xuống, Drive và các ứng dụng khác</string>
+    <string name="pdf_file_picker_phone_storage">Bộ nhớ điện thoại</string>
+    <!-- PdfImportScreen -->
+    <string name="pdf_import_add_pages">"Thêm %1$s trang"</string>
+    <string name="pdf_import_add_1_page">Thêm 1 trang</string>
+    <string name="pdf_import_add_to_library">Thêm vào thư viện</string>
+    <string name="pdf_import_another_pdf">PDF khác</string>
+    <string name="pdf_import_crop_filter_sign_or_search">"%1$s · %2$s. Cắt, lọc, ký hoặc tìm kiếm như mọi bản quét khác."</string>
+    <string name="pdf_import_added_to_your_library">Đã thêm vào thư viện</string>
+    <string name="pdf_import_step_3_of_3_done">Bước 3/3 · Xong</string>
+    <string name="pdf_import_adding_to_library">Đang thêm vào thư viện…</string>
+    <string name="pdf_import_look">Xem</string>
+    <string name="pdf_import_your_pdf_file_stays_as">Tệp PDF của bạn được giữ nguyên; Scanly lưu một bản sao riêng</string>
+    <string name="pdf_import_tap_a_page_or_long">Nhấn vào một trang, hoặc nhấn giữ và kéo qua nhiều trang.</string>
+    <string name="pdf_import_step_2_of_3_pages">Bước 2/3 · Trang và tên</string>
+    <string name="pdf_import_name_this_document">Đặt tên cho tài liệu này</string>
+    <string name="pdf_import_document_name">Tên tài liệu</string>
+    <string name="pdf_import_turn_a_pdf_into_a">Biến PDF thành tài liệu Scanly mà bạn có thể chỉnh sửa, ký và tìm kiếm.</string>
+    <string name="pdf_import_add_pdf_to_library">Thêm PDF vào thư viện</string>
+    <!-- PdfImportViewModel -->
+    <string name="pdf_import_give_the_document_a_name">Hãy đặt tên cho tài liệu.</string>
+    <string name="pdf_import_imported_pdf">PDF đã nhập</string>
+    <!-- PdfMergeScreen -->
+    <string name="pdf_merge_1_file">1 tệp</string>
+    <string name="pdf_merge_your_original_files_are_unchanged">Các tệp gốc của bạn được giữ nguyên</string>
+    <string name="pdf_merge_combined_into_one_pdf">"Đã gộp %1$s thành một PDF"</string>
+    <string name="pdf_merge_merged">Đã gộp</string>
+    <string name="pdf_merge_kept_unchanged">Giữ nguyên</string>
+    <string name="pdf_merge_original_files">Tệp gốc</string>
+    <string name="pdf_merge_size">Kích thước</string>
+    <string name="pdf_merge_remove">"Xóa %1$s"</string>
+    <string name="pdf_merge_move_down">"Chuyển %1$s xuống"</string>
+    <string name="pdf_merge_move_up">"Chuyển %1$s lên"</string>
+    <string name="pdf_merge_pdf_from_scanly">PDF từ Scanly</string>
+    <string name="pdf_merge_pdf_from_phone">PDF từ điện thoại</string>
+    <string name="pdf_merge_page_count_unknown">Không rõ số trang</string>
+    <string name="pdf_merge_merge_pdfs">Gộp PDF</string>
+    <string name="pdf_merge_merge_files">"Gộp %1$s tệp"</string>
+    <string name="pdf_merge_add_more">Thêm tệp</string>
+    <string name="pdf_merge_merge_order">"Thứ tự gộp · %1$s"</string>
+    <string name="pdf_merge_files_are_joined_from_top">Các tệp được nối từ trên xuống dưới.</string>
+    <string name="pdf_merge_order_name">Thứ tự và tên</string>
+    <string name="pdf_merge_step_2_of_3_order">Bước 2/3 · Thứ tự và tên</string>
+    <string name="pdf_merge_in_total">"Tổng cộng %1$s"</string>
+    <string name="pdf_merge_from_phone">"Từ điện thoại: %1$s"</string>
+    <string name="pdf_merge_next">Tiếp</string>
+    <string name="pdf_merge_next_files">"Tiếp · %1$s tệp"</string>
+    <string name="pdf_merge_pick_at_least_2_files">Chọn ít nhất 2 tệp</string>
+    <string name="pdf_merge_step_1_of_3_pick">Bước 1/3 · Chọn tệp</string>
+    <string name="pdf_merge_pick_files_in_the_order">Chọn tệp theo thứ tự bạn muốn.</string>
+    <string name="pdf_merge_merged_pdf">PDF đã gộp</string>
+    <string name="pdf_merge_merging">Đang gộp…</string>
+    <!-- PdfMergeViewModel -->
+    <string name="pdf_merge_add_at_least_two_pdfs">Hãy thêm ít nhất hai PDF để gộp.</string>
+    <!-- PdfPasswordScreen -->
+    <string name="pdf_password_file">Tệp</string>
+    <string name="pdf_password_allowed">Được phép</string>
+    <string name="pdf_password_restricted">Bị hạn chế</string>
+    <string name="pdf_password_editing">Chỉnh sửa</string>
+    <string name="pdf_password_no_password">Không có mật khẩu</string>
+    <string name="pdf_password_aes_256_password">Mật khẩu AES-256</string>
+    <string name="pdf_password_protection">Bảo vệ</string>
+    <string name="pdf_password_a_short_phrase_you_ll">Một cụm từ ngắn dễ nhớ tốt hơn các chữ cái ngẫu nhiên.</string>
+    <string name="pdf_password_doesn_t_match_yet">Chưa khớp</string>
+    <string name="pdf_password_passwords_match">Mật khẩu khớp</string>
+    <string name="pdf_password_remove_password">Gỡ mật khẩu</string>
+    <string name="pdf_password_the_unlocked_copy_opens_for">Bản sao đã mở khóa sẽ mở được với bất kỳ ai có tệp. Scanly chỉ gỡ mật khẩu mà bạn đã biết.</string>
+    <string name="pdf_password_bank_and_portal_pdfs_often">PDF từ ngân hàng và cổng thông tin thường dùng ngày sinh hoặc mã khách hàng của bạn.</string>
+    <string name="pdf_password_password_for_this_pdf">Mật khẩu cho PDF này</string>
+    <string name="pdf_password_current_password">Mật khẩu hiện tại</string>
+    <string name="pdf_password_locked_pdf">PDF bị khóa</string>
+    <string name="pdf_password_lock_pdf">Khóa PDF</string>
+    <string name="pdf_password_scanly_can_t_recover_this">Scanly không thể khôi phục mật khẩu này. Nếu bạn quên, PDF sẽ không mở được.</string>
+    <string name="pdf_password_others_can_open_and_print">Người khác có thể mở và in, nhưng không thể chỉnh sửa hay sao chép văn bản</string>
+    <string name="pdf_password_restrict_editing">Hạn chế chỉnh sửa</string>
+    <string name="pdf_password_type_it_again">Nhập lại</string>
+    <string name="pdf_password_at_least_characters">"Ít nhất %1$s ký tự"</string>
+    <string name="pdf_password_new_password">Mật khẩu mới</string>
+    <string name="pdf_password_add_password">Thêm mật khẩu</string>
+    <string name="pdf_password_checking_the_file">Đang kiểm tra tệp…</string>
+    <string name="pdf_password_unlocked_pdf">PDF đã mở khóa</string>
+    <string name="pdf_password_protected_pdf">PDF được bảo vệ</string>
+    <string name="pdf_password_it_now_opens_without_a">Giờ đây tệp mở được mà không cần mật khẩu.</string>
+    <string name="pdf_password_anyone_opening_it_will_need">Bất kỳ ai mở tệp đều cần mật khẩu.</string>
+    <string name="pdf_password_password_removed">Đã gỡ mật khẩu</string>
+    <string name="pdf_password_pdf_locked">Đã khóa PDF</string>
+    <string name="pdf_password_unlocking">Đang mở khóa…</string>
+    <string name="pdf_password_locking">Đang khóa…</string>
+    <string name="pdf_password_lock_a_pdf_or_remove">Khóa PDF hoặc gỡ mật khẩu mà bạn biết.</string>
+    <!-- PdfPasswordViewModel -->
+    <string name="pdf_password_unlocking_pdf">Đang mở khóa PDF…</string>
+    <string name="pdf_password_enter_the_current_password">Nhập mật khẩu hiện tại.</string>
+    <string name="pdf_password_locking_pdf">Đang khóa PDF…</string>
+    <string name="pdf_password_use_to_characters_for_the">"Mật khẩu cần có từ %1$s đến %2$s ký tự."</string>
+    <!-- PdfReaderMenu -->
+    <string name="pdf_reader_menu_open_another_pdf">Mở PDF khác</string>
+    <string name="pdf_reader_menu_all_pages">Mọi trang</string>
+    <!-- PdfReaderPresentation -->
+    <string name="pdf_reader_presentation_0_of_0">0/0</string>
+    <string name="pdf_reader_presentation_paged">Từng trang</string>
+    <string name="pdf_reader_presentation_continuous">Cuộn liên tục</string>
+    <!-- PdfReaderScreen -->
+    <string name="pdf_reader_tap_a_page_to_jump">Nhấn vào một trang để chuyển đến</string>
+    <string name="pdf_reader_loading_page">Đang tải trang %1$s…</string>
+    <string name="pdf_reader_loading_page_2">Đang tải trang…</string>
+    <string name="pdf_reader_choose_another_pdf">Chọn PDF khác</string>
+    <string name="pdf_reader_password">Mật khẩu</string>
+    <string name="pdf_reader_this_pdf_is_password_protected">PDF này được bảo vệ bằng mật khẩu. Nhập mật khẩu để đọc %1$s.</string>
+    <string name="pdf_reader_unlock_pdf">Mở khóa PDF</string>
+    <string name="pdf_reader_choose_a_file">Chọn tệp</string>
+    <string name="pdf_reader_open_any_pdf_from_scanly">Mở bất kỳ PDF nào từ Scanly hoặc điện thoại.</string>
+    <string name="pdf_reader_read_a_pdf">Đọc PDF</string>
+    <!-- PdfSignScreen -->
+    <string name="pdf_sign_1_mark">1 dấu</string>
+    <string name="pdf_sign_the_signed_copy_is_saved">Bản đã ký được lưu mà không có mật khẩu.</string>
+    <string name="pdf_sign_this_pdf_is_locked">PDF này đang bị khóa</string>
+    <string name="pdf_sign_back_to_the_editor">Quay lại trình chỉnh sửa</string>
+    <string name="pdf_sign_edit_signatures">Sửa chữ ký</string>
+    <string name="pdf_sign_signed_pdf">PDF đã ký</string>
+    <string name="pdf_sign_saved_as">Đã lưu thành</string>
+    <string name="pdf_sign_marks_placed">Số dấu đã đặt</string>
+    <string name="pdf_sign_pages_signed">Số trang đã ký</string>
+    <string name="pdf_sign_signed">Đã ký</string>
+    <string name="pdf_sign_placing_signatures_on_each_page">Đang đặt chữ ký lên từng trang…</string>
+    <string name="pdf_sign_signing_your_pdf">Đang ký PDF của bạn</string>
+    <string name="pdf_sign_pdf_jpg_or_png_from">PDF, JPG hoặc PNG từ Tệp đã tải xuống, Drive và các ứng dụng khác</string>
+    <string name="pdf_sign_step_1_of_3_choose">Bước 1/3 · Chọn</string>
+    <string name="pdf_sign_choose_a_pdf_or_an">Chọn PDF hoặc ảnh để ký</string>
+    <string name="pdf_sign_sign_pdf">Ký PDF</string>
+    <!-- PdfSignViewModel -->
+    <string name="pdf_sign_signing">Đang ký…</string>
+    <string name="pdf_sign_place_a_signature_first">Hãy đặt chữ ký trước.</string>
+    <string name="pdf_sign_open_a_pdf_first">Hãy mở một PDF trước.</string>
+    <!-- PdfToImagesPresentation -->
+    <string name="pdf_to_images_presentation_page">"Trang %1$s · %2$s"</string>
+    <string name="pdf_to_images_presentation_share_all">"Chia sẻ cả %1$s"</string>
+    <string name="pdf_to_images_presentation_share_image">Chia sẻ ảnh</string>
+    <string name="pdf_to_images_presentation_in_all">"Tổng cộng %1$s"</string>
+    <string name="pdf_to_images_presentation_of_pages">"%1$s/%2$s trang"</string>
+    <string name="pdf_to_images_presentation_all_pages">"Cả %1$s trang"</string>
+    <string name="pdf_to_images_presentation_export">"Xuất %1$s"</string>
+    <string name="pdf_to_images_presentation_choose_pages_to_export">Chọn trang để xuất</string>
+    <string name="pdf_to_images_presentation_1_image">1 ảnh</string>
+    <string name="pdf_to_images_presentation_1f_gb" formatted="false">%.1f GB</string>
+    <string name="pdf_to_images_presentation_1f_mb" formatted="false">%.1f MB</string>
+    <string name="pdf_to_images_presentation_kb">"%1$s KB"</string>
+    <string name="pdf_to_images_presentation_0_kb">0 KB</string>
+    <!-- PdfToImagesScreen -->
+    <string name="pdf_to_images_of_selected">"Đã chọn %1$s/%2$s"</string>
+    <string name="pdf_to_images_tap_images_or_long_press">Nhấn vào ảnh, hoặc nhấn giữ và kéo, để chỉ chia sẻ một số ảnh.</string>
+    <string name="pdf_to_images_open_gallery">Mở thư viện ảnh</string>
+    <string name="pdf_to_images_pick_a_different_file">Chọn tệp khác</string>
+    <string name="pdf_to_images_png_or_print_size">PNG hoặc kích thước in</string>
+    <string name="pdf_to_images_export_again">Xuất lại</string>
+    <string name="pdf_to_images_saving_images">Đang lưu ảnh…</string>
+    <string name="pdf_to_images_each">Khoảng %1$s mỗi ảnh</string>
+    <string name="pdf_to_images_resolution">Độ phân giải</string>
+    <string name="pdf_to_images_format">Định dạng</string>
+    <string name="pdf_to_images_deselect_all">Bỏ chọn tất cả</string>
+    <string name="pdf_to_images_this_pdf_is_password_protected">PDF này được bảo vệ bằng mật khẩu. Nhập mật khẩu để xem các trang.</string>
+    <string name="pdf_to_images_images_show_up_in_your">Ảnh sẽ xuất hiện ngay trong thư viện ảnh</string>
+    <string name="pdf_to_images_pdf_to_jpg">PDF sang JPG</string>
+    <string name="pdf_to_images_step_2_of_3_pages">Bước 2/3 · Trang và định dạng</string>
+    <string name="pdf_to_images_no_gallery_app_found_the">Không tìm thấy ứng dụng thư viện ảnh. Ảnh nằm trong Pictures/Scanly.</string>
+    <string name="pdf_to_images_turn_pages_into_images_for">Chuyển trang thành ảnh để gửi qua tin nhắn, chèn vào trang trình bày hoặc lưu vào thư viện ảnh.</string>
+    <!-- PdfToolDone -->
+    <string name="pdf_tool_done_open_pdf">Mở PDF</string>
+    <string name="pdf_tool_done_open_the_finished_pdf">Mở PDF đã hoàn tất</string>
+    <string name="pdf_tool_done_your_original_file_is_unchanged">Tệp gốc của bạn được giữ nguyên</string>
+    <!-- PdfToolPresentation -->
+    <string name="pdf_tool_presentation_files_merge_in_this_order">Các tệp được gộp theo thứ tự này. PDF đầu tiên sẽ mở đầu tài liệu.</string>
+    <string name="pdf_tool_presentation_add_at_least_one_more">Hãy thêm ít nhất một PDF nữa để gộp.</string>
+    <string name="pdf_tool_presentation_opacity">Độ mờ đục %1$s%%</string>
+    <string name="pdf_tool_presentation_one_large_stamp_sized_to">Một dấu lớn phủ gần kín trang.</string>
+    <string name="pdf_tool_presentation_repeats_across_the_full_page">Lặp lại trên toàn trang, kể cả các mép.</string>
+    <string name="pdf_tool_presentation_protect_pdf">Bảo vệ PDF</string>
+    <string name="pdf_tool_presentation_saved">"%1$s → %2$s  ·  giảm %3$s%%"</string>
+    <string name="pdf_tool_presentation_unlocked">Đã mở khóa</string>
+    <string name="pdf_tool_presentation_protected">Được bảo vệ</string>
+    <string name="pdf_tool_presentation_pdfs">"%1$s PDF"</string>
+    <string name="pdf_tool_presentation_1_pdf">1 PDF</string>
+    <string name="pdf_tool_presentation_no_files">Không có tệp</string>
+    <!-- PdfToolShared -->
+    <string name="pdf_tool_shared_scanly_pdf">PDF Scanly</string>
+    <!-- PdfToolViewModels -->
+    <string name="pdf_tool_view_models_saving">Đang lưu…</string>
+    <!-- PdfWatermarkScreen -->
+    <string name="pdf_watermark_the_page">Trang này</string>
+    <string name="pdf_watermark_first_page_only">Chỉ trang đầu</string>
+    <string name="pdf_watermark_apply_to">Áp dụng cho</string>
+    <string name="pdf_watermark_colour">Màu</string>
+    <string name="pdf_watermark_opacity">Độ mờ đục</string>
+    <string name="pdf_watermark_large">Lớn</string>
+    <string name="pdf_watermark_medium">Vừa</string>
+    <string name="pdf_watermark_small">Nhỏ</string>
+    <string name="pdf_watermark_horizontal">Ngang</string>
+    <string name="pdf_watermark_diagonal">Chéo</string>
+    <string name="pdf_watermark_single">Một dấu</string>
+    <string name="pdf_watermark_tiled">Lặp kín trang</string>
+    <string name="pdf_watermark_style">Kiểu</string>
+    <string name="pdf_watermark_stamps">Đóng dấu \"%1$s\"</string>
+    <string name="pdf_watermark_add_date">Thêm ngày</string>
+    <string name="pdf_watermark_presets">Mẫu có sẵn</string>
+    <string name="pdf_watermark_the_watermarked_copy_is_saved">Bản có hình mờ được lưu mà không có mật khẩu. Bạn có thể khóa lại bằng công cụ Mật khẩu.</string>
+    <string name="pdf_watermark_live_preview_of_the_saved">Xem trước trực tiếp tệp sẽ lưu</string>
+    <string name="pdf_watermark_page_1">Trang 1</string>
+    <string name="pdf_watermark_preview_of_page_1_with">Xem trước trang 1 có hình mờ</string>
+    <string name="pdf_watermark_apply_watermark">Áp dụng hình mờ</string>
+    <string name="pdf_watermark_apply_to_pages">"Áp dụng cho %1$s trang"</string>
+    <string name="pdf_watermark_apply_to_page">Áp dụng cho trang</string>
+    <string name="pdf_watermark_apply_to_first_page">Áp dụng cho trang đầu</string>
+    <string name="pdf_watermark_unlock_the_pdf_first">Hãy mở khóa PDF trước</string>
+    <string name="pdf_watermark_watermark">Hình mờ</string>
+    <string name="pdf_watermark_edit_stamp">Sửa dấu</string>
+    <string name="pdf_watermark_watermarked_pdf">PDF có hình mờ</string>
+    <string name="pdf_watermark_kept_unstamped">Giữ nguyên, không đóng dấu</string>
+    <string name="pdf_watermark_stamp">Dấu</string>
+    <string name="pdf_watermark_on_every_page_tap_the">Trên mọi trang. Nhấn vào trang để kiểm tra.</string>
+    <string name="pdf_watermark_on_all_pages_tap_the">"Trên cả %1$s trang. Nhấn vào trang để kiểm tra."</string>
+    <string name="pdf_watermark_on_both_pages_tap_the">Trên cả hai trang. Nhấn vào trang để kiểm tra.</string>
+    <string name="pdf_watermark_on_the_page_tap_it">Trên trang. Nhấn vào để kiểm tra.</string>
+    <string name="pdf_watermark_on_the_first_page_tap">Trên trang đầu. Nhấn vào trang để kiểm tra.</string>
+    <string name="pdf_watermark_watermark_added">Đã thêm hình mờ</string>
+    <string name="pdf_watermark_stamping_every_page">Đang đóng dấu mọi trang</string>
+    <string name="pdf_watermark_stamping">"Đang đóng dấu %1$s"</string>
+    <string name="pdf_watermark_stamping_the_first_page">Đang đóng dấu trang đầu</string>
+    <string name="pdf_watermark_adding_watermark">Đang thêm hình mờ…</string>
+    <string name="pdf_watermark_stamp_text_like_confidential_or">Đóng dấu chữ như MẬT hoặc \"Chỉ dùng cho mục đích KYC\".</string>
+    <!-- PdfWatermarkViewModel -->
+    <string name="pdf_watermark_kyc_copy">Bản sao KYC</string>
+    <string name="pdf_watermark_enter_watermark_text">Nhập nội dung hình mờ.</string>
+    <!-- QrActions -->
+    <string name="qr_actions_qr_text">Văn bản QR</string>
+    <string name="qr_actions_no_app_can_search_the">Không có ứng dụng nào tìm kiếm trên web được</string>
+    <string name="qr_actions_no_email_app_is_set">Chưa thiết lập ứng dụng email nào trên điện thoại này</string>
+    <string name="qr_actions_no_phone_app_can_open">Không có ứng dụng điện thoại nào mở được số này</string>
+    <string name="qr_actions_no_contacts_app_can_save">Không có ứng dụng danh bạ nào lưu được liên hệ này</string>
+    <string name="qr_actions_pick_in_wi_fi_settings">Chọn \"%1$s\" trong phần cài đặt Wi-Fi</string>
+    <string name="qr_actions_password_copied_pick_the_network">Đã sao chép mật khẩu — hãy chọn mạng</string>
+    <string name="qr_actions_wi_fi_settings_can_t">Không mở được phần cài đặt Wi-Fi</string>
+    <string name="qr_actions_wi_fi_password">Mật khẩu Wi-Fi</string>
+    <string name="qr_actions_wi_fi_settings_can_t_2">Phần cài đặt Wi-Fi không thêm được mạng này</string>
+    <string name="qr_actions_no_upi_app_can_open">Không có ứng dụng UPI nào mở được mã này</string>
+    <string name="qr_actions_pay_with">Thanh toán bằng</string>
+    <string name="qr_actions_no_app_can_open_this">Không có ứng dụng nào mở được đường liên kết này</string>
+    <string name="qr_actions_not_a_web_link">Không phải đường liên kết web</string>
+    <string name="qr_actions_nothing_can_receive_this_text">Không ứng dụng nào nhận được văn bản này</string>
+    <string name="qr_actions_share_qr_code">Chia sẻ mã QR</string>
+    <string name="qr_actions_copied_to_clipboard">Đã sao chép vào bảng nhớ tạm</string>
+    <!-- QrCreateScreen -->
+    <string name="qr_create_full_name">Họ và tên</string>
+    <string name="qr_create_name">Tên</string>
+    <string name="qr_create_leave_the_amount_empty_so">Để trống số tiền để khách tự nhập số cần trả.</string>
+    <string name="qr_create_enter_an_amount_above_zero">Nhập số tiền lớn hơn 0</string>
+    <string name="qr_create_any">₹ Tùy ý</string>
+    <string name="qr_create_amount_optional">Số tiền · không bắt buộc</string>
+    <string name="qr_create_shop_name">Tên cửa hàng</string>
+    <string name="qr_create_payee_name">Tên người nhận</string>
+    <string name="qr_create_name_bank">ten@nganhang</string>
+    <string name="qr_create_upi_id">ID UPI</string>
+    <string name="qr_create_security">Bảo mật</string>
+    <string name="qr_create_network_password">Mật khẩu mạng</string>
+    <string name="qr_create_network_name">Tên mạng</string>
+    <string name="qr_create_characters">"%1$s/%2$s ký tự"</string>
+    <string name="qr_create_anything_up_to_characters">"Nội dung bất kỳ, tối đa %1$s ký tự"</string>
+    <string name="qr_create_web_address">Địa chỉ web</string>
+    <string name="qr_create_qr_code_preview">Xem trước mã QR</string>
+    <string name="qr_create_saved_to_qr_history_png">Đã lưu vào lịch sử QR · PNG, 1024 px</string>
+    <string name="qr_create_save_image">Lưu ảnh</string>
+    <string name="qr_create_only_dark_colours_so_every">Chỉ dùng màu tối để mọi camera đều đọc được mã.</string>
+    <string name="qr_create_shown_under_the_code">Hiện bên dưới mã</string>
+    <string name="qr_create_caption_under_the_code_optional">Chú thích dưới mã · không bắt buộc</string>
+    <string name="qr_create_create_qr">Tạo mã QR</string>
+    <!-- QrHistoryScreen -->
+    <string name="qr_history_created">Đã tạo</string>
+    <string name="qr_history_scanned">Đã quét</string>
+    <string name="qr_history_clear_history">Xóa lịch sử</string>
+    <string name="qr_history_every_scanned_and_created_code">Mọi mã đã quét và đã tạo sẽ bị xóa khỏi điện thoại này. Bạn không thể hoàn tác thao tác này.</string>
+    <string name="qr_history_clear_qr_history">Xóa lịch sử QR?</string>
+    <string name="qr_history_clear_history_2">Xóa lịch sử…</string>
+    <string name="qr_history_history_stays_on_this_phone">Lịch sử chỉ lưu trên điện thoại này.</string>
+    <string name="qr_history_try_another_search_or_filter">Hãy thử từ khóa hoặc bộ lọc khác.</string>
+    <string name="qr_history_no_matches">Không có kết quả phù hợp</string>
+    <string name="qr_history_scanned_and_created_codes_are">Các mã đã quét và đã tạo được lưu ở đây.</string>
+    <string name="qr_history_no_codes_yet">Chưa có mã nào</string>
+    <string name="qr_history_search_links_networks_names">Tìm đường liên kết, mạng, tên</string>
+    <string name="qr_history_qr_history">Lịch sử QR</string>
+    <!-- QrResultScreen -->
+    <string name="qr_result_show_raw_content">Hiện nội dung thô</string>
+    <string name="qr_result_hide_raw_content">Ẩn nội dung thô</string>
+    <string name="qr_result_raw_content">Nội dung thô</string>
+    <string name="qr_result_organisation">Tổ chức</string>
+    <string name="qr_result_wi_fi_settings_can_t">Phần cài đặt Wi-Fi không thêm được mạng WEP, nên mật khẩu đã được sao chép và phần cài đặt sẽ mở ra.</string>
+    <string name="qr_result_not_in_the_code">Không có trong mã</string>
+    <string name="qr_result_network">Mạng</string>
+    <string name="qr_result_scanly_doesn_t_make_payments">Scanly không thực hiện thanh toán. Hãy xác nhận tên người nhận trong ứng dụng UPI trước khi trả tiền.</string>
+    <string name="qr_result_not_set_you_ll_enter">Chưa đặt. Bạn sẽ nhập trong ứng dụng UPI.</string>
+    <string name="qr_result_amount">Số tiền</string>
+    <string name="qr_result_payee">Người nhận</string>
+    <string name="qr_result_this_link_isn_t_encrypted">Đường liên kết này không được mã hóa (http). Hãy kiểm tra đúng tên miền bạn mong đợi trước khi mở.</string>
+    <string name="qr_result_check_the_domain_is_the">Hãy kiểm tra đúng tên miền bạn mong đợi trước khi mở.</string>
+    <string name="qr_result_full_address">Địa chỉ đầy đủ</string>
+    <string name="qr_result_number">Số</string>
+    <string name="qr_result_subject">Tiêu đề</string>
+    <string name="qr_result_address">Địa chỉ</string>
+    <string name="qr_result_search_the_web">Tìm kiếm trên web</string>
+    <string name="qr_result_copy_number">Sao chép số</string>
+    <string name="qr_result_email_address">Địa chỉ email</string>
+    <string name="qr_result_copy_address">Sao chép địa chỉ</string>
+    <string name="qr_result_call">Gọi</string>
+    <string name="qr_result_copy_network_name">Sao chép tên mạng</string>
+    <string name="qr_result_copy_password">Sao chép mật khẩu</string>
+    <string name="qr_result_copy_upi_id">Sao chép ID UPI</string>
+    <string name="qr_result_copy_link">Sao chép đường liên kết</string>
+    <string name="qr_result_delete_from_history">Xóa khỏi lịch sử</string>
+    <string name="qr_result_saved_to_history">" · đã lưu vào Lịch sử"</string>
+    <!-- QrScanScreen -->
+    <string name="qr_scan_captured_qr_code">Mã QR đã chụp</string>
+    <string name="qr_scan_history">Lịch sử</string>
+    <string name="qr_scan_from_photo">Từ ảnh</string>
+    <string name="qr_scan_scan_again">Quét lại</string>
+    <string name="qr_scan_qr_code">Mã QR</string>
+    <string name="qr_scan_details">Chi tiết</string>
+    <string name="qr_scan_allow_camera">Cho phép camera</string>
+    <string name="qr_scan_open_settings">Mở Cài đặt</string>
+    <string name="qr_scan_the_camera_is_used_only">Camera chỉ được dùng khi màn hình này đang mở. \"Từ ảnh\" vẫn hoạt động mà không cần camera.</string>
+    <string name="qr_scan_open_settings_tap_permissions_and">Mở Cài đặt, nhấn Quyền rồi bật Camera cho Scanly.</string>
+    <string name="qr_scan_allow_camera_to_scan">Cho phép camera để quét</string>
+    <string name="qr_scan_camera_permission_is_blocked">Quyền dùng camera đang bị chặn</string>
+    <string name="qr_scan_torch_on_off">Bật/tắt đèn pin</string>
+    <string name="qr_scan_scan_qr_barcode">Quét mã QR và mã vạch</string>
+    <string name="qr_scan_point_at_a_qr_code">Hướng vào mã QR hoặc mã vạch</string>
+    <string name="qr_scan_code_found_hold_steady">Đã thấy mã · giữ yên máy</string>
+    <string name="qr_scan_reading_photo">Đang đọc ảnh…</string>
+    <string name="qr_scan_the_camera_isn_t_available">Camera hiện không dùng được. Hãy thử \"Từ ảnh\".</string>
+    <!-- QrToolPresentation -->
+    <string name="qr_tool_presentation_h_ago">"%1$s giờ trước"</string>
+    <string name="qr_tool_presentation_min_ago">"%1$s phút trước"</string>
+    <string name="qr_tool_presentation_just_now">vừa xong</string>
+    <string name="qr_tool_presentation_some_text">một đoạn văn bản</string>
+    <string name="qr_tool_presentation_a_phone_number">một số điện thoại</string>
+    <string name="qr_tool_presentation_an_email_address">một địa chỉ email</string>
+    <string name="qr_tool_presentation_a_contact">một liên hệ</string>
+    <string name="qr_tool_presentation_a_wi_fi_network">một mạng Wi-Fi</string>
+    <string name="qr_tool_presentation_a_upi_payment">một khoản thanh toán UPI</string>
+    <string name="qr_tool_presentation_a_link">một đường liên kết</string>
+    <string name="qr_tool_presentation_found">"Đã tìm thấy "</string>
+    <string name="qr_tool_presentation_generating_preview">Đang tạo bản xem trước…</string>
+    <string name="qr_tool_presentation_preview_appears_as_you_type">Bản xem trước sẽ hiện khi bạn nhập</string>
+    <string name="qr_tool_presentation_copy_to_the_clipboard">Sao chép vào bảng nhớ tạm</string>
+    <string name="qr_tool_presentation_open_in_a_browser_or">Mở trong trình duyệt hoặc sao chép</string>
+    <!-- QrToolViewModel -->
+    <string name="qr_tool_qr_history_cleared">Đã xóa lịch sử QR</string>
+    <string name="qr_tool_add_the_details_first">Hãy thêm thông tin trước</string>
+    <string name="qr_tool_no_qr_code_found_in">Không tìm thấy mã QR trong ảnh đó</string>
+    <!-- ImageTextScreen -->
+    <string name="image_text_photos_are_saved_as_a">Ảnh được lưu thành tài liệu mới để sau này bạn có thể tìm văn bản trong đó.</string>
+    <string name="image_text_your_scans_have_no_pages">Các bản quét của bạn chưa có trang nào. Hãy chọn ảnh để đọc văn bản.</string>
+    <string name="image_text_no_scans_yet_pick_photos">Chưa có bản quét nào. Hãy chọn ảnh để đọc văn bản.</string>
+    <string name="image_text_1_scan">1 bản quét</string>
+    <string name="image_text_up_to_from_your_gallery">"Tối đa %1$s từ thư viện ảnh hoặc tệp"</string>
+    <string name="image_text_copy_text_from_photos_or">Sao chép văn bản từ ảnh hoặc bản quét. Văn bản được đọc ngay trên điện thoại này.</string>
+    <string name="image_text_image_to_text">Ảnh sang văn bản</string>
+    <!-- AppUpdateDialog -->
+    <string name="app_update_published">"Phát hành %1$s"</string>
+    <string name="app_update_current">Hiện tại</string>
+    <string name="app_update_update">Cập nhật</string>
+    <string name="app_update_what_s_new">Có gì mới</string>
+    <!-- AppUpdateViewModel -->
+    <string name="app_update_scanly_is_up_to_date">Scanly đã được cập nhật. Bạn đang dùng %1$s.</string>
+    <string name="app_update_could_not_check_for_updates">"Không thể kiểm tra bản cập nhật trên %1$s."</string>
+    <!-- FlexibleUpdateSnackbar -->
+    <string name="flexible_update_snackbar_restart">Khởi động lại</string>
+    <string name="flexible_update_snackbar_update_downloaded_restart_scanly_to">Đã tải xong bản cập nhật. Khởi động lại Scanly để hoàn tất cài đặt.</string>
+    <!-- ReleaseMarkdown -->
+    <string name="release_markdown_no_release_notes_were_provided">Phiên bản này không có ghi chú phát hành.</string>
+    <!-- ScanlyNavHost -->
+    <string name="scanly_nav_host_up_to_images">"Tối đa %1$s ảnh"</string>
+    <string name="scanly_nav_host_import_from_gallery">Nhập từ thư viện ảnh</string>
+    <string name="scanly_nav_host_capture_pages_now">Chụp trang ngay</string>
+    <string name="scanly_nav_host_scan_with_camera">Quét bằng camera</string>
+    <string name="scanly_nav_host_add_a_document">Thêm tài liệu</string>
+    <!-- pdf_page_orientation -->
+    <string name="pdf_page_orientation_portrait">Dọc</string>
+    <string name="pdf_page_orientation_landscape">Ngang</string>
+    <!-- pdf_page_size -->
+    <string name="pdf_page_size_auto_fit">Tự động vừa khít</string>
+    <string name="pdf_page_size_a3">A3</string>
+    <string name="pdf_page_size_a4">A4</string>
+    <string name="pdf_page_size_a5">A5</string>
+    <string name="pdf_page_size_b4">B4</string>
+    <string name="pdf_page_size_b5">B5</string>
+    <string name="pdf_page_size_letter">Letter</string>
+    <string name="pdf_page_size_tabloid">Tabloid</string>
+    <string name="pdf_page_size_executive">Executive</string>
+    <string name="pdf_page_size_postcard">Bưu thiếp</string>
+    <string name="pdf_page_size_american_foolscap">Foolscap Mỹ</string>
+    <string name="pdf_page_size_european_foolscap">Foolscap châu Âu</string>
+    <!-- pdf_page_margin -->
+    <string name="pdf_page_margin_no_margin">Không có lề</string>
+    <string name="pdf_page_margin_big">Lớn</string>
+    <!-- pdf_page_number -->
+    <string name="pdf_page_number_center">Giữa</string>
+    <!-- pdf_image_format -->
+    <string name="pdf_image_format_smaller_files_best_for_photos">Tệp nhỏ hơn, tốt nhất cho ảnh chụp và chia sẻ</string>
+    <string name="pdf_image_format_crisper_text_files_about_3">Chữ sắc nét hơn, tệp lớn hơn khoảng 3×</string>
+    <!-- pdf_image_resolution -->
+    <string name="pdf_image_resolution_for_sharing">Để chia sẻ</string>
+    <string name="pdf_image_resolution_1240_px_wide_sharp_on">Rộng 1240 px · nét trên điện thoại và WhatsApp</string>
+    <string name="pdf_image_resolution_for_printing">Để in</string>
+    <string name="pdf_image_resolution_2480_px_wide_300_dpi">Rộng 2480 px · 300 dpi trên khổ A4</string>
+    <!-- pdf_compress_quality -->
+    <string name="pdf_compress_quality_high_quality">Chất lượng cao</string>
+    <string name="pdf_compress_quality_best_clarity_less_compression">Rõ nét nhất · nén ít hơn</string>
+    <string name="pdf_compress_quality_balanced">Cân bằng</string>
+    <string name="pdf_compress_quality_good_balance_of_size_and">Cân bằng tốt giữa kích thước và độ rõ nét</string>
+    <string name="pdf_compress_quality_smallest">Nhỏ nhất</string>
+    <string name="pdf_compress_quality_maximum_compression_softer_detail">Nén tối đa · chi tiết kém sắc nét hơn</string>
+    <!-- watermark_color -->
+    <string name="watermark_color_grey">Xám</string>
+    <string name="watermark_color_red">Đỏ</string>
+    <string name="watermark_color_blue">Xanh dương</string>
+    <string name="watermark_color_teal">Xanh mòng két</string>
+    <!-- signature_kind -->
+    <string name="signature_kind_signature">Chữ ký</string>
+    <!-- sign_ink -->
+    <string name="sign_ink_navy">Xanh than</string>
+    <string name="sign_ink_black">Đen</string>
+    <!-- date_filter -->
+    <string name="date_filter_any_time">Mọi lúc</string>
+    <string name="date_filter_last_7_days">7 ngày qua</string>
+    <string name="date_filter_last_30_days">30 ngày qua</string>
+    <string name="date_filter_this_year">Năm nay</string>
+    <string name="date_filter_custom_range">Khoảng tùy chỉnh</string>
+    <!-- search_sort -->
+    <string name="search_sort_best_match">Phù hợp nhất</string>
+    <string name="search_sort_newest">Mới nhất</string>
+    <string name="search_sort_oldest">Cũ nhất</string>
+    <string name="search_sort_name_a_z">Tên A–Z</string>
+    <!-- search_scope -->
+    <string name="search_scope_everywhere">Mọi nơi</string>
+    <string name="search_scope_names">Tên</string>
+    <string name="search_scope_text_in_pages">Văn bản trong trang</string>
+    <!-- app_update_channel -->
+    <string name="app_update_channel_github">GitHub</string>
+    <string name="app_update_channel_google_play">Google Play</string>
+    <!-- document_kind -->
+    <string name="document_kind_invoice">Hóa đơn</string>
+    <string name="document_kind_receipt">Biên lai</string>
+    <string name="document_kind_contract">Hợp đồng</string>
+    <string name="document_kind_statement">Sao kê</string>
+    <string name="document_kind_certificate">Chứng chỉ</string>
+    <string name="document_kind_id_document">Giấy tờ tùy thân</string>
+    <string name="document_kind_form">Biểu mẫu</string>
+    <string name="document_kind_r_sum">Sơ yếu lý lịch</string>
+    <!-- document_corner_model -->
+    <string name="document_corner_model_lite">Nhẹ</string>
+    <string name="document_corner_model_standard">Tiêu chuẩn</string>
+    <string name="document_corner_model_high">Cao</string>
+    <string name="document_corner_model_accurate">Chính xác</string>
+    <!-- document_title_format -->
+    <string name="document_title_format_scan_with_date_and_time">Bản quét kèm ngày và giờ</string>
+    <string name="document_title_format_scan_date_time">Bản quét · ngày và giờ</string>
+    <string name="document_title_format_document_with_date_and_time">Tài liệu kèm ngày và giờ</string>
+    <string name="document_title_format_document_date_time">Tài liệu · ngày và giờ</string>
+    <string name="document_title_format_scan_with_date">Bản quét kèm ngày</string>
+    <string name="document_title_format_scan_date">Bản quét · ngày</string>
+    <string name="document_title_format_scan_with_iso_date">Bản quét kèm ngày ISO</string>
+    <string name="document_title_format_scan_yyyy_mm_dd">Bản quét · YYYY-MM-DD</string>
+    <!-- group_title_format -->
+    <string name="group_title_format_folder_with_date_and_time">Thư mục kèm ngày và giờ</string>
+    <string name="group_title_format_folder_date_time">Thư mục · ngày và giờ</string>
+    <string name="group_title_format_new_folder_with_date_and">Thư mục mới kèm ngày và giờ</string>
+    <string name="group_title_format_new_folder_date_time">Thư mục mới · ngày và giờ</string>
+    <string name="group_title_format_folder_with_date">Thư mục kèm ngày</string>
+    <string name="group_title_format_folder_date">Thư mục · ngày</string>
+    <string name="group_title_format_folder_with_iso_date">Thư mục kèm ngày ISO</string>
+    <string name="group_title_format_folder_yyyy_mm_dd">Thư mục · YYYY-MM-DD</string>
+    <!-- wifi_security -->
+    <string name="wifi_security_wpa_wpa2">WPA/WPA2</string>
+    <string name="wifi_security_wep">WEP</string>
+    <string name="wifi_security_open">Mở</string>
+    <!-- qr_create_type -->
+    <string name="qr_create_type_upi">UPI</string>
+    <!-- pdf_import_look -->
+    <string name="pdf_import_look_keep_as_is">Giữ nguyên</string>
+    <string name="pdf_import_look_pages_look_exactly_like_the">Trang giống hệt bản PDF</string>
+    <string name="pdf_import_look_enhance">Cải thiện</string>
+    <string name="pdf_import_look_even_out_scanned_pages_and">Làm đều các trang quét và làm nét chữ</string>
+    <!-- capture_scene_issue -->
+    <string name="capture_scene_issue_lens_may_be_covered_clear">Ống kính có thể bị che. Hãy bỏ vật che rồi thử lại.</string>
+    <string name="capture_scene_issue_too_dark_add_light_or">Quá tối. Hãy thêm ánh sáng hoặc bật đèn flash.</string>
+    <string name="capture_scene_issue_image_looks_blurry_clean_the">Ảnh bị mờ. Hãy lau ống kính hoặc nhấn để lấy nét.</string>
+    <!-- group_export_action -->
+    <string name="group_export_action_merged_pdf_options">Tùy chọn PDF đã gộp</string>
+    <string name="group_export_action_separate_pdfs_options">Tùy chọn PDF riêng</string>
+    <!-- library_sort_option -->
+    <string name="library_sort_option_last_modified">Sửa đổi gần nhất</string>
+    <string name="library_sort_option_latest_changes_first">Thay đổi mới nhất trước</string>
+    <string name="library_sort_option_oldest_updated">Cập nhật lâu nhất</string>
+    <string name="library_sort_option_earliest_changes_first">Thay đổi cũ nhất trước</string>
+    <string name="library_sort_option_alphabetical_order">Thứ tự bảng chữ cái</string>
+    <string name="library_sort_option_name_z_a">Tên Z–A</string>
+    <string name="library_sort_option_reverse_alphabetical_order">Thứ tự bảng chữ cái đảo ngược</string>
+    <string name="library_sort_option_newest_created">Tạo mới nhất</string>
+    <string name="library_sort_option_recently_added_first">Thêm gần đây nhất trước</string>
+    <string name="library_sort_option_oldest_created">Tạo lâu nhất</string>
+    <string name="library_sort_option_earliest_added_first">Thêm sớm nhất trước</string>
+    <!-- signature_pen_width -->
+    <string name="signature_pen_width_fine">Mảnh</string>
+    <string name="signature_pen_width_bold">Đậm</string>
+    <!-- onboarding_page -->
+    <string name="onboarding_page_capture">CHỤP</string>
+    <string name="onboarding_page_paper_to_polished">Từ giấy thành bản đẹp.</string>
+    <string name="onboarding_page_capture_straighten_and_clean_up">Chụp, làm thẳng và làm sạch các trang của bạn.</string>
+    <string name="onboarding_page_find">TÌM</string>
+    <string name="onboarding_page_find_more_than_files">Tìm sâu hơn cả tên tệp.</string>
+    <string name="onboarding_page_recognize_text_on_your_device">Nhận dạng văn bản ngay trên thiết bị. Tìm kiếm bên trong bản quét.</string>
+    <string name="onboarding_page_share">CHIA SẺ</string>
+    <string name="onboarding_page_ready_when_you_are">Sẵn sàng khi bạn cần.</string>
+    <string name="onboarding_page_keep_pages_together_share_a">Gom các trang lại với nhau. Chia sẻ PDF gọn gàng chỉ với vài lần nhấn.</string>
+    <!-- pdf_reader_tool -->
+    <string name="pdf_reader_tool_merge_with_other_pdfs">Gộp với PDF khác</string>
+    <string name="pdf_reader_tool_password_protect">Đặt mật khẩu</string>
+    <string name="pdf_reader_tool_add_watermark">Thêm hình mờ</string>
+    <string name="pdf_reader_tool_save_pages_as_images">Lưu trang thành ảnh</string>
+    <string name="pdf_reader_tool_add_to_scanly_library">Thêm vào thư viện Scanly</string>
+    <!-- pdf_picker_sort -->
+    <string name="pdf_picker_sort_most_pages">Nhiều trang nhất</string>
+    <!-- qr_ink_color -->
+    <string name="qr_ink_color_ink">Mực</string>
+    <string name="qr_ink_color_maroon">Đỏ sẫm</string>
+    <!-- qr_primary_action -->
+    <string name="qr_primary_action_pay_with_a_upi_app">Thanh toán bằng ứng dụng UPI</string>
+    <string name="qr_primary_action_pay">Thanh toán</string>
+    <string name="qr_primary_action_join_this_network">Kết nối mạng này</string>
+    <string name="qr_primary_action_join">Kết nối</string>
+    <string name="qr_primary_action_save_to_contacts">Lưu vào danh bạ</string>
+    <string name="qr_primary_action_send_email">Gửi email</string>
+    <string name="qr_primary_action_call_this_number">Gọi số này</string>
+    <string name="qr_primary_action_copy_text">Sao chép văn bản</string>
+    <!-- qr_history_section -->
+    <string name="qr_history_section_earlier">Trước đó</string>
+    <!-- sign_tool -->
+    <string name="sign_tool_date">Ngày</string>
+    <string name="sign_tool_checkbox">Hộp đánh dấu</string>
+    <!-- scanly_destination -->
+    <string name="scanly_destination_home">Trang chủ</string>
+    <string name="scanly_destination_camera">Camera</string>
+    <!-- settings_text_recognition -->
+    <string name="settings_text_recognition_and_more">và nhiều ngôn ngữ khác</string>
+    <string name="settings_text_recognition_romanian">Tiếng Romania</string>
+    <string name="settings_text_recognition_czech">Tiếng Séc</string>
+    <string name="settings_text_recognition_swedish">Tiếng Thụy Điển</string>
+    <string name="settings_text_recognition_swahili">Tiếng Swahili</string>
+    <string name="settings_text_recognition_filipino">Tiếng Philippines</string>
+    <string name="settings_text_recognition_vietnamese">Tiếng Việt</string>
+    <string name="settings_text_recognition_malay">Tiếng Mã Lai</string>
+    <string name="settings_text_recognition_indonesian">Tiếng Indonesia</string>
+    <string name="settings_text_recognition_turkish">Tiếng Thổ Nhĩ Kỳ</string>
+    <string name="settings_text_recognition_polish">Tiếng Ba Lan</string>
+    <string name="settings_text_recognition_dutch">Tiếng Hà Lan</string>
+    <string name="settings_text_recognition_portuguese">Tiếng Bồ Đào Nha</string>
+    <string name="settings_text_recognition_italian">Tiếng Ý</string>
+    <string name="settings_text_recognition_german">Tiếng Đức</string>
+    <string name="settings_text_recognition_french">Tiếng Pháp</string>
+    <string name="settings_text_recognition_spanish">Tiếng Tây Ban Nha</string>
+    <string name="settings_text_recognition_english">Tiếng Anh</string>
+    <string name="settings_text_recognition_latin">Latinh</string>
+    <string name="settings_text_recognition_amharic">Tiếng Amharic</string>
+    <string name="settings_text_recognition_georgian">Tiếng Georgia</string>
+    <string name="settings_text_recognition_armenian">Tiếng Armenia</string>
+    <string name="settings_text_recognition_burmese">Tiếng Miến Điện</string>
+    <string name="settings_text_recognition_khmer">Tiếng Khmer</string>
+    <string name="settings_text_recognition_lao">Tiếng Lào</string>
+    <string name="settings_text_recognition_thai">Tiếng Thái</string>
+    <string name="settings_text_recognition_southeast_asia_more">Đông Nam Á và các khu vực khác</string>
+    <string name="settings_text_recognition_hebrew">Tiếng Do Thái</string>
+    <string name="settings_text_recognition_urdu">Tiếng Urdu</string>
+    <string name="settings_text_recognition_persian">Tiếng Ba Tư</string>
+    <string name="settings_text_recognition_arabic">Tiếng Ả Rập</string>
+    <string name="settings_text_recognition_right_to_left">Viết từ phải sang trái</string>
+    <string name="settings_text_recognition_korean">Tiếng Hàn</string>
+    <string name="settings_text_recognition_japanese">Tiếng Nhật</string>
+    <string name="settings_text_recognition_chinese">Tiếng Trung</string>
+    <string name="settings_text_recognition_east_asian">Đông Á</string>
+    <string name="settings_text_recognition_sinhala">Tiếng Sinhala</string>
+    <string name="settings_text_recognition_odia">Tiếng Odia</string>
+    <string name="settings_text_recognition_punjabi">Tiếng Punjab</string>
+    <string name="settings_text_recognition_gujarati">Tiếng Gujarat</string>
+    <string name="settings_text_recognition_malayalam">Tiếng Malayalam</string>
+    <string name="settings_text_recognition_kannada">Tiếng Kannada</string>
+    <string name="settings_text_recognition_telugu">Tiếng Telugu</string>
+    <string name="settings_text_recognition_tamil">Tiếng Tamil</string>
+    <string name="settings_text_recognition_bengali">Tiếng Bengal</string>
+    <string name="settings_text_recognition_nepali">Tiếng Nepal</string>
+    <string name="settings_text_recognition_marathi">Tiếng Marathi</string>
+    <string name="settings_text_recognition_hindi">Tiếng Hindi</string>
+    <string name="settings_text_recognition_indian_scripts">Hệ chữ Ấn Độ</string>
+    <string name="settings_text_recognition_greek">Tiếng Hy Lạp</string>
+    <string name="settings_text_recognition_serbian">Tiếng Serbia</string>
+    <string name="settings_text_recognition_bulgarian">Tiếng Bulgaria</string>
+    <string name="settings_text_recognition_ukrainian">Tiếng Ukraina</string>
+    <string name="settings_text_recognition_russian">Tiếng Nga</string>
+    <string name="settings_text_recognition_latin_cyrillic_greek">Latinh, Kirin và Hy Lạp</string>
+    <!-- tools_catalog -->
+    <string name="tools_catalog_camera_with_edge_detection">Camera tự phát hiện mép giấy</string>
+    <string name="tools_catalog_scan_a_document">Quét tài liệu</string>
+    <string name="tools_catalog_pdf_to_editable_scan">PDF thành bản quét chỉnh sửa được</string>
+    <string name="tools_catalog_open_any_pdf">Mở PDF bất kỳ</string>
+    <string name="tools_catalog_read_pdf">Đọc PDF</string>
+    <string name="tools_catalog_stamp_text">Đóng dấu chữ</string>
+    <string name="tools_catalog_lock_or_unlock">Khóa hoặc mở khóa</string>
+    <string name="tools_catalog_pages_as_images">Trang thành ảnh</string>
+    <string name="tools_catalog_make_it_smaller">Thu nhỏ tệp</string>
+    <string name="tools_catalog_combine_files">Gộp nhiều tệp</string>
+    <string name="tools_catalog_merge">Gộp</string>
+    <string name="tools_catalog_sign_any_pdf">Ký PDF bất kỳ</string>
+    <string name="tools_catalog_from_gallery">Từ thư viện ảnh</string>
+    <string name="tools_catalog_images_to_pdf">Ảnh sang PDF</string>
+    <string name="tools_catalog_create_manage">Tạo và quản lý</string>
+    <string name="tools_catalog_my_signatures">Chữ ký của tôi</string>
+    <string name="tools_catalog_photos_scans">Ảnh và bản quét</string>
+    <string name="tools_catalog_scan_or_create">Quét hoặc tạo</string>
+    <string name="tools_catalog_qr_barcode">QR và mã vạch</string>
+    <!-- pip_lines -->
+    <string name="pip_lines_tip_folders_keep_related_scans">mẹo: thư mục giúp gom các bản quét liên quan. thử tạo một thư mục cho biên lai nhé.</string>
+    <string name="pip_lines_tip_turn_on_the_grid">mẹo: bật lưới trong camera để căn trang thẳng hàng.</string>
+    <string name="pip_lines_tip_add_a_scanly_widget">mẹo: thêm tiện ích scanly vào màn hình chính để quét chỉ với một lần nhấn.</string>
+    <string name="pip_lines_tip_the_tools_tab_can">mẹo: thẻ công cụ có thể gộp, nén và ký pdf.</string>
+    <string name="pip_lines_tip_open_a_document_s">mẹo: mở phần văn bản của tài liệu để sao chép hoặc chia sẻ nội dung.</string>
+    <string name="pip_lines_tip_long_press_a_page">mẹo: nhấn giữ một trang rồi kéo để sắp xếp lại.</string>
+    <string name="pip_lines_tip_search_finds_words_inside">mẹo: tìm kiếm thấy cả chữ bên trong bản quét, không chỉ tên tệp.</string>
+    <string name="pip_lines_okay_okay_i_felt_that">rồi rồi, mình cảm nhận được cú đó.</string>
+    <string name="pip_lines_still_free_still_no_account">vẫn miễn phí. vẫn không cần tài khoản. vẫn không quảng cáo.</string>
+    <string name="pip_lines_i_m_open_source_you">mình là mã nguồn mở. bạn đọc được từng dòng của mình đấy.</string>
+    <string name="pip_lines_your_original_photos_are_kept">ảnh gốc của bạn luôn được giữ, nên mọi chỉnh sửa đều hoàn tác được.</string>
+    <string name="pip_lines_i_live_on_your_phone">mình sống trên điện thoại của bạn. chẳng có máy chủ nào để gọi về.</string>
+    <string name="pip_lines_hey_that_tickles">ơ! nhột quá.</string>
+    <!-- pdf_watermark -->
+    <string name="pdf_watermark_for_kyc_use_only">Chỉ dùng cho mục đích KYC</string>
+    <!-- document_presentation_formatter -->
+    <string name="document_presentation_formatter_untitled_document">Tài liệu chưa đặt tên</string>
+    <string name="document_presentation_formatter_untitled_folder">Thư mục chưa đặt tên</string>
+    <!-- default_pdf_toolkit_repository -->
+    <string name="default_pdf_toolkit_repository_this_pdf_is_password_protected">PDF này được bảo vệ bằng mật khẩu.</string>
+    <string name="default_pdf_toolkit_repository_this_pdf_is_too_large">PDF này quá lớn để xử lý trên thiết bị này.</string>
+    <!-- document_cover_art_factory -->
+    <string name="document_cover_art_factory_scanned_document">Tài liệu đã quét</string>
+    <!-- document_sign -->
+    <string name="document_sign_some_pages_are_still_processing">Một số trang vẫn đang được xử lý nên chưa ký được.</string>
+    <!-- pip_lines -->
+    <string name="pip_lines_hi_i_m_pip_point">chào, mình là pip! hướng mình vào trang nào, mình sẽ làm thẳng giúp bạn.</string>
+    <string name="pip_lines_one_last_thing_can_i">chuyện cuối thôi! cho mình mượn camera nhé? camera chỉ bật khi bạn quét.</string>
+    <string name="pip_lines_nothing_here_yet_let_s">chưa có gì ở đây. cùng quét trang đầu tiên nào.</string>
+    <string name="pip_lines_a_clean_shelf_start_a">kệ trống trơn! tạo một thư mục, hoặc quét gì đó vào đây.</string>
+    <string name="pip_lines_no_folders_yet_they_re">chưa có thư mục nào. rất hợp để cất biên lai, hóa đơn và đồ học tập.</string>
+    <string name="pip_lines_no_documents_yet_i_m">chưa có tài liệu nào. bạn sẵn sàng là mình sẵn sàng.</string>
+    <string name="pip_lines_this_folder_is_waiting_for">thư mục này đang chờ tài liệu đầu tiên.</string>
+    <string name="pip_lines_no_pages_yet_point_me">chưa có trang nào. hướng mình vào tờ giấy nào đó đi!</string>
+    <string name="pip_lines_no_pages_means_no_words">chưa có trang thì chưa có chữ.</string>
+    <string name="pip_lines_pick_a_few_photos_and">chọn vài tấm ảnh, mình sẽ cho các bộ phát hiện thi chạy.</string>
+    <string name="pip_lines_hmm_i_don_t_have">hừm, câu này mình chưa có lời đáp.</string>
+    <string name="pip_lines_no_codes_yet_scan_or">chưa có mã nào. quét hoặc tạo một mã, mình sẽ cất ở đây.</string>
+    <string name="pip_lines_nothing_matches_that_try_another">không có gì khớp cả. thử từ khác nhé?</string>
+    <string name="pip_lines_i_m_still_reading_some">mình vẫn đang đọc vài trang. kết quả có thể hiện ra ngay thôi.</string>
+    <string name="pip_lines_i_can_t_see_a">mình chưa thấy gì cả. cho mình mượn camera nhé?</string>
+    <string name="pip_lines_the_camera_is_switched_off">camera đang bị tắt với scanly. ghé cài đặt một chút là xong.</string>
+    <string name="pip_lines_lend_me_the_camera_and">cho mình mượn camera, mình sẽ đọc mã giúp bạn.</string>
+    <string name="pip_lines_huh_that_document_wandered_off">ơ, tài liệu đó đi lạc đâu mất rồi.</string>
+    <!-- pdf_page_size -->
+    <string name="pdf_page_size_match_each_scan">Theo từng bản quét</string>
+    <string name="pdf_page_size_29_7_42_0_cm">29.7 × 42.0 cm</string>
+    <string name="pdf_page_size_21_0_29_7_cm">21.0 × 29.7 cm</string>
+    <string name="pdf_page_size_14_8_21_0_cm">14.8 × 21.0 cm</string>
+    <string name="pdf_page_size_25_0_35_3_cm">25.0 × 35.3 cm</string>
+    <string name="pdf_page_size_17_6_25_0_cm">17.6 × 25.0 cm</string>
+    <string name="pdf_page_size_21_6_27_9_cm">21.6 × 27.9 cm</string>
+    <string name="pdf_page_size_27_9_43_2_cm">27.9 × 43.2 cm</string>
+    <string name="pdf_page_size_21_6_35_6_cm">21.6 × 35.6 cm</string>
+    <string name="pdf_page_size_18_4_26_7_cm">18.4 × 26.7 cm</string>
+    <string name="pdf_page_size_10_0_14_8_cm">10.0 × 14.8 cm</string>
+    <string name="pdf_page_size_21_6_33_0_cm">21.6 × 33.0 cm</string>
+    <string name="pdf_page_size_22_9_33_0_cm">22.9 × 33.0 cm</string>
+    <!-- PageTextScreen view modes -->
+    <string name="page_text_text">Văn bản</string>
+    <string name="page_text_on_page">Trên trang</string>
+    <!-- Shared counts -->
+    <plurals name="common_documents">
+        <item quantity="other">%d tài liệu</item>
+    </plurals>
+    <plurals name="common_pages">
+        <item quantity="other">%d trang</item>
+    </plurals>
+    <plurals name="common_folders">
+        <item quantity="other">%d thư mục</item>
+    </plurals>
+    <plurals name="common_matches">
+        <item quantity="other">%d kết quả khớp</item>
+    </plurals>
+    <plurals name="common_words">
+        <item quantity="other">%d từ</item>
+    </plurals>
+    <string name="common_two_parts">%1$s · %2$s</string>
+    <!-- Library search -->
+    <plurals name="library_search_in_documents">
+        <item quantity="other">", trong %d tài liệu"</item>
+    </plurals>
+    <plurals name="library_search_no_exact_matches">
+        <item quantity="other">Không có kết quả khớp chính xác · %d tài liệu có từ tương tự</item>
+    </plurals>
+    <plurals name="library_search_show_more_pages">
+        <item quantity="other">Hiện kết quả trên %d trang nữa</item>
+    </plurals>
+    <plurals name="library_search_still_reading">
+        <item quantity="other">Vẫn đang đọc văn bản trong %d trang. Kết quả mới sẽ xuất hiện ở đây.</item>
+    </plurals>
+    <string name="library_search_matches_in_documents">%1$s trong %2$s</string>
+    <plurals name="search_filters_show_results">
+        <item quantity="other">Hiện %d kết quả</item>
+    </plurals>
+    <!-- Settings -->
+    <plurals name="settings_reading_text_pages_left">
+        <item quantity="other">Đang đọc văn bản… còn %d trang</item>
+    </plurals>
+    <plurals name="settings_text_recognition_reread_pages">
+        <item quantity="other">Đọc lại %d trang?</item>
+    </plurals>
+    <string name="settings_could_not_calibrate_models">Không thể hiệu chỉnh mô hình tài liệu trên thiết bị này.</string>
+    <!-- Recently deleted -->
+    <string name="recently_deleted_long_press_for_options">Nhấn giữ một mục để xem thêm tùy chọn.</string>
+    <string name="recently_deleted_retention_note">Trang được giữ %1$s, tài liệu và thư mục được giữ %2$s. Sau đó chúng sẽ bị xóa vĩnh viễn.</string>
+    <plurals name="recently_deleted_restored_items">
+        <item quantity="other">Đã khôi phục %d mục</item>
+    </plurals>
+    <plurals name="recently_deleted_restored_some_items">
+        <item quantity="other">Đã khôi phục %2$d/%3$d mục. %4$s</item>
+    </plurals>
+    <plurals name="recently_deleted_deleted_items">
+        <item quantity="other">Đã xóa vĩnh viễn %d mục</item>
+    </plurals>
+    <plurals name="recently_deleted_deleted_some_items">
+        <item quantity="other">Đã xóa vĩnh viễn %2$d/%3$d mục. %4$s</item>
+    </plurals>
+    <!-- %1$s = folder name, %2$d = number of documents in it. -->
+    <plurals name="folder_delete_what_should_happen">
+        <item quantity="other">\"%1$s\" có %2$d tài liệu. Bạn muốn xử lý tài liệu thế nào?</item>
+    </plurals>
+    <!-- PDF tools -->
+    <string name="pdf_compress_first_page_of">Trang đầu của %1$s</string>
+    <string name="pdf_compress_the_pdf">PDF</string>
+    <string name="pdf_password_strength_too_short">Quá ngắn</string>
+    <string name="pdf_password_strength_too_long">Quá dài</string>
+    <string name="pdf_password_strength_weak">Yếu</string>
+    <string name="pdf_password_strength_fair">Trung bình</string>
+    <string name="pdf_password_strength_strong">Mạnh</string>
+    <string name="model_benchmark_gate_prefix">Bộ lọc: %1$s</string>
+    <string name="model_benchmark_unavailable">Không có</string>
+    <!-- Error messages shown in snackbars and dialogs -->
+    <string name="error_document_not_found">Không tìm thấy tài liệu.</string>
+    <string name="error_group_not_found">Không tìm thấy nhóm.</string>
+    <string name="error_no_documents_in_group">Nhóm không có tài liệu nào.</string>
+    <string name="error_no_pages_available_to_export">Không có trang nào để xuất.</string>
+    <string name="error_could_not_create_export_directory">Không thể tạo thư mục xuất.</string>
+    <string name="error_could_not_replace_existing_pdf">Không thể thay thế PDF hiện có.</string>
+    <string name="error_folder_not_found">Không tìm thấy thư mục.</string>
+    <string name="error_this_page_is_already_in_recently_deleted">Trang này đã nằm trong mục Đã xóa gần đây.</string>
+    <string name="error_only_pages_in_recently_deleted_can_be">Chỉ có thể xóa vĩnh viễn các trang trong mục Đã xóa gần đây.</string>
+    <string name="error_page_not_found">Không tìm thấy trang.</string>
+    <string name="error_page_not_found_in_document_order">Không tìm thấy trang trong thứ tự của tài liệu.</string>
+    <string name="error_select_at_least_two_pdfs_to_merge">Hãy chọn ít nhất hai PDF để gộp.</string>
+    <string name="error_pdf_has_no_pages">PDF không có trang nào.</string>
+    <string name="error_password_must_be_4_64_characters">Mật khẩu phải có 4–64 ký tự.</string>
+    <string name="error_enter_the_current_pdf_password">Nhập mật khẩu PDF hiện tại.</string>
+    <string name="error_enter_watermark_text">Nhập nội dung hình mờ.</string>
+    <string name="error_this_pdf_has_no_pages">PDF này không có trang nào.</string>
+    <string name="error_preview_size_is_invalid">Kích thước bản xem trước không hợp lệ.</string>
+    <string name="error_place_a_signature_or_another_mark_first">Hãy đặt chữ ký hoặc dấu khác trước.</string>
+    <string name="error_a_mark_is_on_a_missing_page">Có một dấu nằm trên trang không còn tồn tại.</string>
+    <string name="error_could_not_prepare_this_pdf">Không thể chuẩn bị PDF này.</string>
+    <string name="error_page_is_out_of_range">Trang nằm ngoài phạm vi.</string>
+    <string name="error_choose_at_least_one_page">Hãy chọn ít nhất một trang.</string>
+    <string name="error_failed_to_encode_page_image">Không thể mã hóa ảnh trang.</string>
+    <string name="error_export_file_is_missing">Không tìm thấy tệp xuất.</string>
+    <string name="error_the_preview_pdf_is_missing">Không tìm thấy PDF xem trước.</string>
+    <string name="error_could_not_read_selected_pdf">Không thể đọc PDF đã chọn.</string>
+    <string name="error_not_enough_memory_to_compress_this_pdf">Không đủ bộ nhớ để nén PDF này. Hãy thử chất lượng Nhỏ nhất hoặc một tệp ngắn hơn.</string>
+    <string name="error_a_text_box_is_empty_type_something">Có một hộp văn bản đang trống. Hãy nhập nội dung hoặc xóa hộp đó.</string>
+    <string name="error_a_signature_image_is_missing_remove_it">Thiếu một ảnh chữ ký. Hãy xóa rồi đặt lại.</string>
+    <string name="error_some_characters_cant_be_drawn_remove_emoji">Không thể vẽ một số ký tự. Hãy xóa biểu tượng cảm xúc hoặc ký hiệu lạ.</string>
+    <string name="error_some_characters_in_the_watermark_cant_be">Không thể vẽ một số ký tự trong hình mờ. Hãy xóa biểu tượng cảm xúc hoặc ký hiệu lạ.</string>
+    <string name="error_enter_something_to_encode">Hãy nhập nội dung để mã hóa.</string>
+    <string name="error_could_not_write_qr_image">Không thể ghi ảnh QR.</string>
+    <string name="error_a_signature_image_is_missing_place_it">Thiếu một ảnh chữ ký. Hãy đặt lại.</string>
+    <string name="error_the_signature_is_empty">Chữ ký đang trống.</string>
+    <string name="error_could_not_save_the_signature">Không thể lưu chữ ký.</string>
+    <string name="error_could_not_prepare_the_image">Không thể chuẩn bị ảnh.</string>
+    <string name="error_could_not_create_signature_storage">Không thể tạo nơi lưu chữ ký.</string>
+    <string name="error_no_signature_found_in_this_image_try">Không tìm thấy chữ ký trong ảnh này. Hãy thử mực đậm trên giấy sáng màu.</string>
+    <string name="error_this_signature_no_longer_exists">Chữ ký này không còn tồn tại.</string>
+    <string name="error_the_signature_image_could_not_be_read">Không thể đọc ảnh chữ ký.</string>
+    <string name="error_a_signature_image_is_missing_open_sign">Thiếu một ảnh chữ ký. Hãy mở Ký và đặt lại.</string>
+    <string name="error_this_page_is_still_processing_try_again">Trang này vẫn đang được xử lý. Hãy thử lại sau giây lát.</string>
+    <string name="error_could_not_read_the_page_image">Không thể đọc ảnh trang.</string>
+    <string name="error_invalid_page_image_path">Đường dẫn ảnh trang không hợp lệ.</string>
+    <string name="error_the_exported_file_is_unavailable">Tệp đã xuất không còn khả dụng.</string>
+    <string name="error_the_exported_image_is_unavailable">Ảnh đã xuất không còn khả dụng.</string>
+    <string name="error_the_selected_save_folder_is_no_longer">Thư mục lưu đã chọn không còn khả dụng. Hãy chọn lại trong Cài đặt.</string>
+    <string name="error_this_page_no_longer_exists">Trang này không còn tồn tại.</string>
+    <string name="error_read_this_pages_text_first">Hãy đọc văn bản của trang này trước.</string>
+    <string name="error_page_image_could_not_be_read">Không thể đọc ảnh trang.</string>
+    <string name="error_opencv_could_not_be_initialized">Không thể khởi chạy OpenCV.</string>
+    <string name="error_no_images_selected">Chưa chọn ảnh nào.</string>
+    <string name="error_could_not_write_imported_image">Không thể ghi ảnh đã nhập.</string>
+    <string name="error_imported_image_file_is_empty">Tệp ảnh đã nhập bị trống.</string>
+    <string name="error_image_decode_failed">Không giải mã được ảnh</string>
+    <!-- Language settings -->
+    <string name="settings_language">Ngôn ngữ</string>
+    <string name="settings_language_system_default">Mặc định của hệ thống</string>
+    <string name="settings_language_follow_phone">Ngôn ngữ của điện thoại</string>
+    <string name="settings_language_uses_phone_language">"Theo điện thoại: %1$s"</string>
+    <string name="settings_language_app_language">Ngôn ngữ ứng dụng</string>
+    <string name="settings_language_note">Tên tài liệu, văn bản nhận dạng trên trang và các PDF bạn mở vẫn giữ nguyên ngôn ngữ của chúng.</string>
+    <!-- Manifest -->
+    <string name="intent_open_in_scanly">Mở trong Scanly</string>
+    <!-- Library date sections -->
+    <string name="library_section_previous_7_days">7 ngày trước</string>
+    <!-- Month and year as a section title, e.g. "December 2025". %1$s = month name, %2$d = year. -->
+    <string name="library_section_month_year">"%1$s năm %2$d"</string>
+    <!-- Camera -->
+    <string name="scan_session_capture_failed">Chụp không thành công.</string>
+    <!-- Signature kinds as whole phrases (Signature vs Initials) -->
+    <string name="sign_kind_add_signature">Thêm chữ ký</string>
+    <string name="sign_kind_add_initials">Thêm chữ ký tắt</string>
+    <string name="sign_kind_delete_signature">Xóa chữ ký</string>
+    <string name="sign_kind_delete_initials">Xóa chữ ký tắt</string>
+    <string name="sign_kind_delete_signature_question">Xóa chữ ký?</string>
+    <string name="sign_kind_delete_initials_question">Xóa chữ ký tắt?</string>
+    <string name="sign_kind_open_signature_options">Mở tùy chọn chữ ký</string>
+    <string name="sign_kind_open_initials_options">Mở tùy chọn chữ ký tắt</string>
+    <string name="sign_kind_saved_signature">Chữ ký đã lưu</string>
+    <string name="sign_kind_saved_initials">Chữ ký tắt đã lưu</string>
+    <string name="sign_kind_show_signature_first">Hiện chữ ký này trước các chữ ký khác</string>
+    <string name="sign_kind_show_initials_first">Hiện chữ ký tắt này trước các chữ ký tắt khác</string>
+    <!-- Watermark -->
+    <!-- Watermark presets are stamped into PDFs with a Latin/Cyrillic font. In languages written in
+         another script (Indic, CJK, Thai), keep these in English so the stamp can be drawn. -->
+    <string name="pdf_watermark_preset_confidential">MẬT</string>
+    <string name="pdf_watermark_preset_draft">BẢN NHÁP</string>
+    <string name="pdf_watermark_preset_copy">BẢN SAO</string>
+    <string name="pdf_watermark_opacity_percent">"%1$d%%"</string>
+    <!-- Localized counts and progress (no English-only plural branches). -->
+    <plurals name="common_days">
+        <item quantity="other">"%d ngày"</item>
+    </plurals>
+    <plurals name="common_files">
+        <item quantity="other">"%d tệp"</item>
+    </plurals>
+    <plurals name="common_images">
+        <item quantity="other">"%d ảnh"</item>
+    </plurals>
+    <plurals name="common_marks">
+        <item quantity="other">"%d dấu"</item>
+    </plurals>
+    <plurals name="common_scans">
+        <item quantity="other">"%d bản quét"</item>
+    </plurals>
+    <plurals name="common_topics">
+        <item quantity="other">"%d chủ đề"</item>
+    </plurals>
+    <plurals name="common_libraries">
+        <item quantity="other">"%d thư viện"</item>
+    </plurals>
+    <plurals name="common_selected">
+        <item quantity="other">"Đã chọn %d"</item>
+    </plurals>
+    <plurals name="pdf_to_images_saved_count">
+        <item quantity="other">"Đã lưu %d ảnh"</item>
+    </plurals>
+    <plurals name="pdf_to_images_export_count">
+        <item quantity="other">"Xuất %d ảnh"</item>
+    </plurals>
+    <string name="common_current_of_total">"%1$d trên %2$d"</string>
+    <!-- Error fallbacks found in the final extraction audit. -->
+    <string name="error_failed_to_import_images">"Không thể nhập hình ảnh."</string>
+    <string name="error_could_not_calculate_storage_usage">"Không thể tính toán mức sử dụng bộ nhớ."</string>
+    <string name="error_could_not_clear_app_data">"Không thể xóa dữ liệu ứng dụng."</string>
+    <string name="error_could_not_clear_temporary_exports">"Không thể thông quan hàng tạm xuất."</string>
+    <string name="error_could_not_remove_old_backup_files">"Không thể xóa các tập tin sao lưu cũ."</string>
+    <string name="error_could_not_create_the_document">"Không thể tạo tài liệu."</string>
+    <string name="error_could_not_rename_the_document">"Không thể đổi tên tài liệu."</string>
+    <string name="error_could_not_delete_the_document">"Không thể xóa tài liệu."</string>
+    <string name="error_could_not_create_the_group">"Không thể tạo nhóm."</string>
+    <string name="error_could_not_rename_the_group">"Không thể đổi tên nhóm."</string>
+    <string name="error_could_not_delete_the_group">"Không thể xóa nhóm."</string>
+    <string name="error_could_not_remove_empty_folders">"Không thể xóa các thư mục trống."</string>
+    <string name="error_could_not_update_document_group">"Không thể cập nhật nhóm tài liệu."</string>
+    <string name="error_could_not_prepare_page_capture">"Không thể chuẩn bị chụp trang."</string>
+    <string name="error_could_not_prepare_page_replacement">"Không thể chuẩn bị thay thế trang."</string>
+    <string name="error_could_not_save_the_captured_page">"Không thể lưu trang đã chụp."</string>
+    <string name="error_could_not_reorder_the_page">"Không thể sắp xếp lại trang."</string>
+    <string name="error_could_not_save_page_edits">"Không thể lưu các chỉnh sửa trang."</string>
+    <string name="error_could_not_update_text_recognition_engine">"Không thể cập nhật công cụ nhận dạng văn bản."</string>
+    <string name="error_could_not_update_theme_mode">"Không thể cập nhật chế độ chủ đề."</string>
+    <string name="error_could_not_finish_onboarding">"Không thể hoàn tất quá trình giới thiệu."</string>
+    <string name="error_could_not_load_settings_content">"Không thể tải nội dung cài đặt."</string>
+    <string name="error_could_not_update_the_save_location">"Không thể cập nhật vị trí lưu."</string>
+    <string name="error_could_not_update_model_selection">"Không thể cập nhật lựa chọn kiểu máy."</string>
+    <string name="error_could_not_update_document_detection_settings">"Không thể cập nhật cài đặt phát hiện tài liệu."</string>
+    <string name="error_could_not_save_the_exported_file">"Không thể lưu tệp đã xuất."</string>
+    <string name="error_could_not_store_update_prompt_state">"Không thể lưu trữ trạng thái nhắc cập nhật."</string>
+    <string name="error_could_not_check_github_releases">"Không thể kiểm tra các bản phát hành GitHub."</string>
+</resources>

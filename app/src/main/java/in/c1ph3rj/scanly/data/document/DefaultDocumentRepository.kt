@@ -23,6 +23,8 @@ import java.io.File
 import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
 
 @Singleton
 class DefaultDocumentRepository @Inject constructor(
@@ -105,7 +107,7 @@ class DefaultDocumentRepository @Inject constructor(
                     runCatching { documentStorageManager.deleteDocumentStorage(documentId) }
                     ScanlyResult.Failure(
                         ScanlyError(
-                            message = throwable.message ?: "Could not create the document.",
+                            message = throwable.message ?: appString(R.string.error_could_not_create_the_document),
                             cause = throwable,
                         ),
                     )
@@ -132,7 +134,7 @@ class DefaultDocumentRepository @Inject constructor(
 
         runCatching {
             val existingDocument = documentDao.getDocument(documentId)
-                ?: error("Document not found.")
+                ?: error(appString(R.string.error_document_not_found))
             val updatedCoverThumbnail = resolveDocumentPreviewPath(
                 firstPage = scanPageDao.getPages(documentId).firstOrNull(),
             ) ?: documentStorageManager.refreshDocumentCover(
@@ -153,7 +155,7 @@ class DefaultDocumentRepository @Inject constructor(
             onFailure = { throwable ->
                 ScanlyResult.Failure(
                     ScanlyError(
-                        message = throwable.message ?: "Could not rename the document.",
+                        message = throwable.message ?: appString(R.string.error_could_not_rename_the_document),
                         cause = throwable,
                     ),
                 )
@@ -175,7 +177,7 @@ class DefaultDocumentRepository @Inject constructor(
                 onFailure = { throwable ->
                     ScanlyResult.Failure(
                         ScanlyError(
-                            message = throwable.message ?: "Could not delete the document.",
+                            message = throwable.message ?: appString(R.string.error_could_not_delete_the_document),
                             cause = throwable,
                         ),
                     )
@@ -185,10 +187,10 @@ class DefaultDocumentRepository @Inject constructor(
         }
 
     override suspend fun moveDocumentToTrash(documentId: String): ScanlyResult<Unit> =
-        setDeletedAt(documentId, System.currentTimeMillis(), "Could not move the document to Recently deleted.")
+        setDeletedAt(documentId, System.currentTimeMillis(), appString(R.string.default_document_repository_could_not_move_the_document))
 
     override suspend fun restoreDocument(documentId: String): ScanlyResult<Unit> =
-        setDeletedAt(documentId, null, "Could not restore the document.")
+        setDeletedAt(documentId, null, appString(R.string.default_document_repository_could_not_restore_the_document))
 
     private suspend fun setDeletedAt(
         documentId: String,
@@ -197,7 +199,7 @@ class DefaultDocumentRepository @Inject constructor(
     ): ScanlyResult<Unit> = withContext(dispatchers.io) {
         operationCoordinator.withMutation {
             runCatching {
-                val document = checkNotNull(documentDao.getDocument(documentId)) { "Document not found." }
+                val document = checkNotNull(documentDao.getDocument(documentId)) { appString(R.string.error_document_not_found) }
                 database.withTransaction {
                     documentDao.setDeletedAt(documentId, deletedAtMillis)
                     // Back from the bin while its folder is still there: it returns outside the folder.
@@ -225,12 +227,12 @@ class DefaultDocumentRepository @Inject constructor(
         }
 
     override suspend fun emptyTrash(): ScanlyResult<Int> =
-        deleteDocumentsPermanently("Could not empty Recently deleted.") {
+        deleteDocumentsPermanently(appString(R.string.default_document_repository_could_not_empty_recently_deleted)) {
             documentDao.getTrashedDocumentIds()
         }
 
     override suspend fun purgeTrashDeletedBefore(cutoffMillis: Long): ScanlyResult<Int> =
-        deleteDocumentsPermanently("Could not clear old deleted documents.") {
+        deleteDocumentsPermanently(appString(R.string.default_document_repository_could_not_clear_old_deleted)) {
             documentDao.getTrashedDocumentIdsBefore(cutoffMillis)
         }
 
@@ -279,7 +281,7 @@ class DefaultDocumentRepository @Inject constructor(
                         ScanlyResult.Failure(
                             ScanlyError(
                                 message = throwable.message
-                                    ?: "Could not remove empty documents.",
+                                    ?: appString(R.string.default_document_repository_could_not_remove_empty_documents),
                                 cause = throwable,
                             ),
                         )

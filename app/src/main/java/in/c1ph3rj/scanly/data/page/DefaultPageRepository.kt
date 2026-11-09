@@ -32,6 +32,8 @@ import java.io.File
 import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
 
 @Singleton
 class DefaultPageRepository @Inject constructor(
@@ -62,7 +64,7 @@ class DefaultPageRepository @Inject constructor(
             operationCoordinator.withMutation {
             runCatching {
                 val document = documentDao.getDocument(documentId)
-                    ?: error("Document not found.")
+                    ?: error(appString(R.string.error_document_not_found))
                 val nextPageIndex = scanPageDao.countPages(documentId)
                 val storageDraft = storageManager.createPageCaptureDraft(
                     documentId = document.id,
@@ -83,7 +85,7 @@ class DefaultPageRepository @Inject constructor(
                 onFailure = { throwable ->
                     ScanlyResult.Failure(
                         ScanlyError(
-                            message = throwable.message ?: "Could not prepare page capture.",
+                            message = throwable.message ?: appString(R.string.error_could_not_prepare_page_capture),
                             cause = throwable,
                         ),
                     )
@@ -97,9 +99,9 @@ class DefaultPageRepository @Inject constructor(
             operationCoordinator.withMutation {
             runCatching {
                 val page = scanPageDao.getPage(pageId)
-                    ?: error("Page not found.")
+                    ?: error(appString(R.string.error_page_not_found))
                 val anchorPath = page.rawImagePath ?: page.processedImagePath ?: page.thumbnailPath
-                    ?: error("No existing file path found for page $pageId.")
+                    ?: error(appString(R.string.error_page_not_found))
                 PageCaptureDraft(
                     pageId = page.id,
                     documentId = page.documentId,
@@ -114,7 +116,7 @@ class DefaultPageRepository @Inject constructor(
                 onFailure = { throwable ->
                     ScanlyResult.Failure(
                         ScanlyError(
-                            message = throwable.message ?: "Could not prepare page replacement.",
+                            message = throwable.message ?: appString(R.string.error_could_not_prepare_page_replacement),
                             cause = throwable,
                         ),
                     )
@@ -139,12 +141,12 @@ class DefaultPageRepository @Inject constructor(
                 withContext(NonCancellable) { operationCoordinator.withMutation {
                     runCatchingCancellable {
                         val document = documentDao.getDocument(draft.documentId)
-                            ?: error("Document not found.")
+                            ?: error(appString(R.string.error_document_not_found))
                         val existingPage = scanPageDao.getPage(draft.pageId)
                         val rawFile = File(draft.rawImagePath)
                         uncommittedRawFile = if (existingPage == null) rawFile else null
                         if (!rawFile.exists() || rawFile.length() <= 0L) {
-                            error("Capture file missing at ${draft.rawImagePath}.")
+                            error(appString(R.string.error_could_not_read_the_page_image))
                         }
 
                         val timestamp = System.currentTimeMillis()
@@ -241,7 +243,7 @@ class DefaultPageRepository @Inject constructor(
                         onFailure = { throwable ->
                             ScanlyResult.Failure(
                                 ScanlyError(
-                                    message = throwable.message ?: "Could not save the captured page.",
+                                    message = throwable.message ?: appString(R.string.error_could_not_save_the_captured_page),
                                     cause = throwable,
                                 ),
                             )
@@ -264,9 +266,9 @@ class DefaultPageRepository @Inject constructor(
         operationCoordinator.withMutation {
         runCatching {
             val page = scanPageDao.getPage(pageId)
-                ?: error("Page not found.")
+                ?: error(appString(R.string.error_page_not_found))
             val document = documentDao.getDocument(page.documentId)
-                ?: error("Document not found.")
+                ?: error(appString(R.string.error_document_not_found))
             val pages = scanPageDao.getPages(page.documentId)
             if (pages.isEmpty()) {
                 return@runCatching
@@ -274,7 +276,7 @@ class DefaultPageRepository @Inject constructor(
 
             val currentIndex = pages.indexOfFirst { it.id == pageId }
             if (currentIndex == -1) {
-                error("Page not found in document order.")
+                error(appString(R.string.error_page_not_found_in_document_order))
             }
             val clampedTargetIndex = targetIndex.coerceIn(0, pages.lastIndex)
             if (clampedTargetIndex == currentIndex) {
@@ -310,7 +312,7 @@ class DefaultPageRepository @Inject constructor(
             onFailure = { throwable ->
                 ScanlyResult.Failure(
                     ScanlyError(
-                        message = throwable.message ?: "Could not reorder the page.",
+                        message = throwable.message ?: appString(R.string.error_could_not_reorder_the_page),
                         cause = throwable,
                     ),
                 )
@@ -324,9 +326,9 @@ class DefaultPageRepository @Inject constructor(
             operationCoordinator.withMutation {
             runCatching {
                 val page = scanPageDao.getPage(pageId)
-                    ?: error("Page not found.")
+                    ?: error(appString(R.string.error_page_not_found))
                 val document = documentDao.getDocument(page.documentId)
-                    ?: error("Document not found.")
+                    ?: error(appString(R.string.error_document_not_found))
                 val timestamp = System.currentTimeMillis()
                 // The markup row cascades with the page; read it first to clean up its files.
                 val markup = markupStore.markupFor(pageId)
@@ -348,7 +350,7 @@ class DefaultPageRepository @Inject constructor(
                 onFailure = { throwable ->
                     ScanlyResult.Failure(
                         ScanlyError(
-                            message = throwable.message ?: "Could not delete the page.",
+                            message = throwable.message ?: appString(R.string.default_page_repository_could_not_delete_the_page),
                             cause = throwable,
                         ),
                     )
@@ -358,10 +360,10 @@ class DefaultPageRepository @Inject constructor(
         }
 
     override suspend fun movePageToTrash(pageId: String): ScanlyResult<Unit> =
-        mutatePages("Could not delete the page.") {
-            val page = scanPageDao.getPage(pageId) ?: error("Page not found.")
-            check(page.deletedAtMillis == null) { "This page is already in Recently deleted." }
-            val document = documentDao.getDocument(page.documentId) ?: error("Document not found.")
+        mutatePages(appString(R.string.default_page_repository_could_not_delete_the_page)) {
+            val page = scanPageDao.getPage(pageId) ?: error(appString(R.string.error_page_not_found))
+            check(page.deletedAtMillis == null) { appString(R.string.error_this_page_is_already_in_recently_deleted) }
+            val document = documentDao.getDocument(page.documentId) ?: error(appString(R.string.error_document_not_found))
             val timestamp = System.currentTimeMillis()
             database.withTransaction {
                 // Park below every other index so the unique (document, index) pair stays free.
@@ -376,10 +378,10 @@ class DefaultPageRepository @Inject constructor(
         }
 
     override suspend fun restorePage(pageId: String): ScanlyResult<Unit> =
-        mutatePages("Could not restore the page.") {
-            val page = scanPageDao.getPage(pageId) ?: error("Page not found.")
+        mutatePages(appString(R.string.default_page_repository_could_not_restore_the_page)) {
+            val page = scanPageDao.getPage(pageId) ?: error(appString(R.string.error_page_not_found))
             if (page.deletedAtMillis == null) return@mutatePages
-            val document = documentDao.getDocument(page.documentId) ?: error("Document not found.")
+            val document = documentDao.getDocument(page.documentId) ?: error(appString(R.string.error_document_not_found))
             val timestamp = System.currentTimeMillis()
             database.withTransaction {
                 val livePages = scanPageDao.getPages(document.id)
@@ -408,17 +410,17 @@ class DefaultPageRepository @Inject constructor(
         }
 
     override suspend fun deletePageForever(pageId: String): ScanlyResult<Unit> =
-        mutatePages("Could not delete the page.") {
+        mutatePages(appString(R.string.default_page_repository_could_not_delete_the_page)) {
             val page = scanPageDao.getPage(pageId) ?: return@mutatePages
-            check(page.deletedAtMillis != null) { "Only pages in Recently deleted can be deleted forever." }
+            check(page.deletedAtMillis != null) { appString(R.string.error_only_pages_in_recently_deleted_can_be) }
             deleteTrashedPages(listOf(page))
         }
 
     override suspend fun emptyTrashedPages(): ScanlyResult<Int> =
-        mutatePages("Could not delete the pages.") { deleteTrashedPages(scanPageDao.getTrashedPages()) }
+        mutatePages(appString(R.string.default_page_repository_could_not_delete_the_pages)) { deleteTrashedPages(scanPageDao.getTrashedPages()) }
 
     override suspend fun purgeTrashedPagesBefore(cutoffMillis: Long): ScanlyResult<Int> =
-        mutatePages("Could not clear old deleted pages.") {
+        mutatePages(appString(R.string.default_page_repository_could_not_clear_old_deleted)) {
             deleteTrashedPages(scanPageDao.getTrashedPagesBefore(cutoffMillis))
         }
 
@@ -473,9 +475,9 @@ class DefaultPageRepository @Inject constructor(
         operationCoordinator.withMutation {
         runCatching {
             val page = scanPageDao.getPage(pageId)
-                ?: error("Page not found.")
+                ?: error(appString(R.string.error_page_not_found))
             val document = documentDao.getDocument(page.documentId)
-                ?: error("Document not found.")
+                ?: error(appString(R.string.error_document_not_found))
             val timestamp = System.currentTimeMillis()
             val sanitizedAdjustments = filterAdjustments.sanitized()
             val updatedDocument = if (applyFilterToAllPages) {
@@ -542,15 +544,14 @@ class DefaultPageRepository @Inject constructor(
                 }
             }
             check(failedPageCount == 0) {
-                "Applied to ${pagesToUpdate.size - failedPageCount} of ${pagesToUpdate.size} pages. " +
-                    "Save again to retry the rest."
+                appString(R.string.default_page_repository_applied_to_of_pages_save, pagesToUpdate.size - failedPageCount, pagesToUpdate.size)
             }
         }.fold(
             onSuccess = { ScanlyResult.Success(Unit) },
             onFailure = { throwable ->
                 ScanlyResult.Failure(
                     ScanlyError(
-                        message = throwable.message ?: "Could not save page edits.",
+                        message = throwable.message ?: appString(R.string.error_could_not_save_page_edits),
                         cause = throwable,
                     ),
                 )
@@ -610,7 +611,7 @@ class DefaultPageRepository @Inject constructor(
         updatedAtMillis: Long,
         detectDocumentWhenCropQuadMissing: Boolean,
     ): ScanPageEntity {
-        val rawImagePath = rawImagePath ?: error("Raw image missing for page $id.")
+        val rawImagePath = rawImagePath ?: error(appString(R.string.error_could_not_read_the_page_image))
         val resolvedProcessedImagePath = processedImagePath
             ?: deriveSiblingAssetPath(
                 rawImagePath = rawImagePath,
@@ -734,11 +735,11 @@ class DefaultPageRepository @Inject constructor(
         targetDirectoryName: String,
     ): String {
         val rawFile = File(rawImagePath)
-        val rawDirectory = rawFile.parentFile ?: error("Invalid raw image path: $rawImagePath")
-        val documentRoot = rawDirectory.parentFile ?: error("Could not resolve document root for $rawImagePath")
+        val rawDirectory = rawFile.parentFile ?: error(appString(R.string.error_invalid_page_image_path))
+        val documentRoot = rawDirectory.parentFile ?: error(appString(R.string.error_invalid_page_image_path))
         val targetDirectory = File(documentRoot, targetDirectoryName)
         if (!targetDirectory.exists() && !targetDirectory.mkdirs()) {
-            error("Could not create ${targetDirectory.absolutePath}.")
+            error(appString(R.string.error_could_not_save_page_edits))
         }
         return File(targetDirectory, rawFile.name).absolutePath
     }

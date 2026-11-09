@@ -1,5 +1,7 @@
 package `in`.c1ph3rj.scanly.data.processing
 
+import `in`.c1ph3rj.scanly.core.common.appString
+import `in`.c1ph3rj.scanly.R
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
@@ -74,7 +76,7 @@ class DefaultPageImageProcessor @Inject constructor(
         val exifRotationDegrees = ExifInterface(rawImagePath).rotationDegrees
         val userRotationDegrees = normalizeRotationDegrees(rotationDegrees)
         val decodedBitmap = decodeForProcessing(rawImagePath)
-            ?: error("Could not decode captured image at $rawImagePath.")
+            ?: error(appString(R.string.error_could_not_read_the_page_image))
         val orientedBitmap = rotateBitmapIfNeeded(decodedBitmap, exifRotationDegrees)
         if (orientedBitmap !== decodedBitmap) {
             decodedBitmap.recycle()
@@ -332,7 +334,7 @@ class DefaultPageImageProcessor @Inject constructor(
                     outputStream.flush()
                 }
             }
-            check(compressed) { "Could not encode image to $outputPath." }
+            check(compressed) { appString(R.string.default_signature_repository_could_not_save_the_image) }
             if (!tempFile.renameTo(outputFile)) {
                 tempFile.copyTo(outputFile, overwrite = true)
             }

@@ -64,6 +64,7 @@ app/src/main/java/in/c1ph3rj/scanly/
 - ML model assets under `app/src/main/assets/models/`: corner variants (Lite/Standard/High/Accurate) + `scanly_document_gate_float16.tflite` (keep `noCompress += "tflite"`).
 - Document detection prefs in DataStore: live/post models, automatic selection, document gate; pure black theme is separate (`pure_black_enabled`).
 - Gallery import limit: 50 images via the system image picker (`ImageImportSupport`, `GetMultipleContents` so gallery apps appear; do not switch back to `OpenMultipleDocuments`, which hides them).
+- UI text lives in `res/values/strings.xml` (plus `values-<lang>/` translations for the 25 languages in `AppLanguage`). Never hard-code user-visible text: use `stringResource` in composables and `appString`/`appPluralString` elsewhere, and add every new string to all translations (lint fails on missing ones). Use whole-sentence strings with positional placeholders instead of splicing words together. The in-app language is applied by `AppLocales` (LocaleManager on Android 13+, a wrapped context on 10–12).
 - Export saves go to `Downloads/Scanly` by default; custom SAF trees persist via DataStore (`export_tree_uri`, `export_tree_label`).
 
 ## Navigation Quick Reference
@@ -82,7 +83,7 @@ Typed routes (real flows):
 - `library/search` — name + page-text search
 - `library/trash` — Recently deleted (folders, documents, pages; opened from Settings; purged on app start and on open)
 - `document/{documentId}/text?page={page}&query={query}` — extracted text (Text / On page views)
-- `settings/appearance`, `settings/pip`, `settings/detection`, `settings/widgets`, `settings/about`, `settings/faq`, `settings/licenses`, `settings/storage`, `settings/model-benchmark` — settings hub sub-screens
+- `settings/appearance`, `settings/language`, `settings/pip`, `settings/detection`, `settings/widgets`, `settings/about`, `settings/faq`, `settings/licenses`, `settings/storage`, `settings/model-benchmark` — settings hub sub-screens
 - `tools/qr` — QR scan + generate
 - `tools/text` — Image to text (photos → new document → `document/{documentId}/text`)
 - `tools/pdf/reader`, `tools/pdf/merge`, `tools/pdf/compress`, `tools/pdf/to-images`, `tools/pdf/password`, `tools/pdf/watermark`, `tools/pdf/sign`, `tools/pdf/import` — PDF toolkit (tool routes take an optional `?source=` so the reader can hand over its open file; see `PdfToolSourceArgument.kt`)

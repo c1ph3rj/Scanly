@@ -45,6 +45,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import javax.inject.Inject
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
 
 data class PdfToolUiState(
     val sources: List<PdfToolSource> = emptyList(),
@@ -106,7 +108,7 @@ fun sanitizePdfBaseName(raw: String): String =
 
 /** "Lease agreement.pdf" → "Lease agreement – watermarked". */
 fun suggestPdfOutputName(source: PdfToolSource?, suffix: String): String {
-    val base = source?.label()?.let(::sanitizePdfBaseName).orEmpty().ifBlank { "Scanly PDF" }
+    val base = source?.label()?.let(::sanitizePdfBaseName).orEmpty().ifBlank { appString(R.string.pdf_tool_shared_scanly_pdf) }
     return if (suffix.isBlank()) base else "$base – $suffix"
 }
 
@@ -240,12 +242,12 @@ abstract class BasePdfToolViewModel(
         if (_uiState.value.isProcessing) return
         val artifact = _uiState.value.namedResult() ?: return
         // Set before launching so a double tap cannot start a second save.
-        _uiState.update { it.copy(isProcessing = true, progressMessage = "Saving…") }
+        _uiState.update { it.copy(isProcessing = true, progressMessage = appString(R.string.pdf_tool_view_models_saving)) }
         viewModelScope.launch {
             when (val result = saveExportArtifactUseCase(artifact)) {
                 is ScanlyResult.Success -> {
                     _uiState.update { it.copy(savedDestinationLabel = result.value.destinationLabel) }
-                    emitMessage("Saved ${result.value.fileName} to ${result.value.destinationLabel}")
+                    emitMessage(appString(R.string.document_detail_saved_to, result.value.fileName, result.value.destinationLabel))
                 }
                 is ScanlyResult.Failure -> emitMessage(result.error.message)
             }

@@ -61,6 +61,9 @@ import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import `in`.c1ph3rj.scanly.domain.model.PageFilterAdjustments
 import `in`.c1ph3rj.scanly.domain.model.PageFilterPreset
 import `in`.c1ph3rj.scanly.domain.model.ScanPage
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
+import androidx.compose.ui.res.stringResource
 
 /**
  * Full-screen filter picker with a large live preview so users can see how each
@@ -349,7 +352,7 @@ private fun FilterPickerTopBar(
         ) {
             ChromeIconButton(
                 icon = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = "Back",
+                contentDescription = stringResource(R.string.zoomable_image_back),
                 onClick = onNavigateUp,
                 containerColor = colorScheme.surfaceContainerHighest,
                 contentColor = colorScheme.onSurface,
@@ -361,7 +364,7 @@ private fun FilterPickerTopBar(
             )
             ChromeIconButton(
                 icon = Icons.Filled.Check,
-                contentDescription = "Done",
+                contentDescription = stringResource(R.string.camera_capture_chrome_done),
                 onClick = onDone,
                 containerColor = colorScheme.primary,
                 contentColor = colorScheme.onPrimary,
@@ -388,11 +391,11 @@ private fun FilterLivePreviewPane(
             contentAlignment = Alignment.Center,
         ) {
             if (previewBitmap == null) {
-                Text(text = "Loading preview…", color = Color.White)
+                Text(text = stringResource(R.string.filter_customize_loading_preview), color = Color.White)
             } else {
                 Image(
                     bitmap = previewBitmap,
-                    contentDescription = "${selectedFilter.toDisplayLabel()} filter preview",
+                    contentDescription = stringResource(R.string.filter_picker_filter_preview, selectedFilter.toDisplayLabel()),
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Fit,
                 )
@@ -450,13 +453,13 @@ private fun FilterControlsPane(
                 verticalArrangement = Arrangement.spacedBy(4.dp),
             ) {
                 Text(
-                    text = "Filters",
+                    text = stringResource(R.string.filter_picker_filters),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold,
                     color = colorScheme.onSurface,
                 )
                 Text(
-                    text = "Tap a preset to update the live preview. Save from the editor when finished.",
+                    text = stringResource(R.string.filter_picker_tap_a_preset_to_update),
                     style = MaterialTheme.typography.bodySmall,
                     color = colorScheme.onSurfaceVariant,
                 )
@@ -534,12 +537,12 @@ private fun FilterScopeOption(
                 verticalArrangement = Arrangement.spacedBy(4.dp),
             ) {
                 Text(
-                    text = "Apply Filter To All Pages",
+                    text = stringResource(R.string.filter_picker_apply_filter_to_all_pages),
                     color = colorScheme.onSurface,
                     style = MaterialTheme.typography.labelLarge,
                 )
                 Text(
-                    text = "Filter only. Crop, rotation, and adjust stay per page.",
+                    text = stringResource(R.string.filter_picker_filter_only_crop_rotation_and),
                     color = colorScheme.onSurfaceVariant,
                     style = MaterialTheme.typography.bodySmall,
                 )
@@ -620,7 +623,7 @@ private fun FilterSelector(
                         strokeWidth = 2.dp,
                     )
                     Text(
-                        text = "Analyzing the page to tune each filter.",
+                        text = stringResource(R.string.filter_picker_analyzing_the_page_to_tune),
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         style = MaterialTheme.typography.labelLarge,
                     )
@@ -718,7 +721,7 @@ private fun FilterItem(
                 } else {
                     Image(
                         bitmap = preview,
-                        contentDescription = "${filter.toDisplayLabel()} filter thumbnail",
+                        contentDescription = stringResource(R.string.filter_picker_filter_thumbnail, filter.toDisplayLabel()),
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop,
                     )
@@ -753,7 +756,7 @@ private fun FilterItem(
                 ) {
                     Icon(
                         imageVector = Icons.Filled.Check,
-                        contentDescription = "Selected filter",
+                        contentDescription = stringResource(R.string.filter_picker_selected_filter),
                         tint = colorScheme.onPrimary,
                         modifier = Modifier.size(16.dp),
                     )
@@ -764,16 +767,16 @@ private fun FilterItem(
 }
 
 private fun PageFilterPreset.toDisplayLabel(): String = when (this) {
-    PageFilterPreset.ORIGINAL -> "Original"
-    PageFilterPreset.AUTO -> "Auto"
-    PageFilterPreset.MAGIC_COLOR -> "Magic Color"
-    PageFilterPreset.NATURAL_COLOR -> "Natural"
-    PageFilterPreset.VIVID_COLOR -> "Vivid"
-    PageFilterPreset.SCREEN -> "Screen"
-    PageFilterPreset.GRAYSCALE -> "Grayscale"
+    PageFilterPreset.ORIGINAL -> appString(R.string.filter_customize_original)
+    PageFilterPreset.AUTO -> appString(R.string.filter_customize_auto)
+    PageFilterPreset.MAGIC_COLOR -> appString(R.string.filter_customize_magic_color)
+    PageFilterPreset.NATURAL_COLOR -> appString(R.string.filter_customize_natural)
+    PageFilterPreset.VIVID_COLOR -> appString(R.string.filter_customize_vivid)
+    PageFilterPreset.SCREEN -> appString(R.string.filter_customize_screen)
+    PageFilterPreset.GRAYSCALE -> appString(R.string.filter_customize_grayscale)
     PageFilterPreset.BLACK_AND_WHITE -> "B&W"
-    PageFilterPreset.WHITEBOARD -> "Whiteboard"
-    PageFilterPreset.FADED -> "Faded Text"
+    PageFilterPreset.WHITEBOARD -> appString(R.string.filter_customize_whiteboard)
+    PageFilterPreset.FADED -> appString(R.string.filter_customize_faded_text)
 }
 
 private fun PageFilterPreset.shortLabel(): String = when (this) {

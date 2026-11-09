@@ -25,6 +25,8 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
 
 data class PageCropUiState(
     val page: ScanPage? = null,
@@ -133,7 +135,7 @@ class PageCropViewModel @Inject constructor(
         val rawImagePath = page.rawImagePath
         if (rawImagePath.isNullOrBlank()) {
             viewModelScope.launch {
-                _events.send(PageCropEvent.ShowMessage("Raw image is not available for detection."))
+                _events.send(PageCropEvent.ShowMessage(appString(R.string.page_crop_raw_image_is_not_available)))
             }
             return
         }
@@ -155,7 +157,7 @@ class PageCropViewModel @Inject constructor(
                             hasUnsavedChanges = true,
                         )
                     }
-                    _events.send(PageCropEvent.ShowMessage("Document detected."))
+                    _events.send(PageCropEvent.ShowMessage(appString(R.string.page_crop_document_detected)))
                 }
 
                 is ScanlyResult.Failure -> {
@@ -191,7 +193,7 @@ class PageCropViewModel @Inject constructor(
                             hasUnsavedChanges = false,
                         )
                     }
-                    _events.send(PageCropEvent.ShowMessage("Crop updated."))
+                    _events.send(PageCropEvent.ShowMessage(appString(R.string.page_crop_crop_updated)))
                     _events.send(PageCropEvent.Saved)
                 }
 

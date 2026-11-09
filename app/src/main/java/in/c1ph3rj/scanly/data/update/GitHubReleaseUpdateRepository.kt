@@ -1,5 +1,7 @@
 package `in`.c1ph3rj.scanly.data.update
 
+import `in`.c1ph3rj.scanly.core.common.appString
+import `in`.c1ph3rj.scanly.R
 import `in`.c1ph3rj.scanly.core.common.ScanlyDispatchers
 import `in`.c1ph3rj.scanly.core.common.ScanlyError
 import `in`.c1ph3rj.scanly.core.common.ScanlyResult
@@ -28,7 +30,7 @@ class GitHubReleaseUpdateRepository @Inject constructor(
                 onFailure = { throwable ->
                     ScanlyResult.Failure(
                         ScanlyError(
-                            message = throwable.message ?: "Could not check GitHub releases.",
+                            message = throwable.message ?: appString(R.string.error_could_not_check_github_releases),
                             cause = throwable,
                         ),
                     )

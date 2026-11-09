@@ -44,6 +44,9 @@ import androidx.compose.ui.unit.sp
 import `in`.c1ph3rj.scanly.core.editing.InkPoint
 import `in`.c1ph3rj.scanly.core.editing.InkStroke
 import `in`.c1ph3rj.scanly.core.editing.InkStrokeBuilder
+import `in`.c1ph3rj.scanly.R
+import androidx.compose.ui.res.stringResource
+import `in`.c1ph3rj.scanly.core.common.appString
 
 /** Height of the signing baseline as a fraction of the pad height. */
 private const val BaselineFraction = 0.7f
@@ -96,7 +99,7 @@ fun SignaturePad(
     onUndo: () -> Unit,
     onClear: () -> Unit,
     modifier: Modifier = Modifier,
-    caption: String = "Sign above the line",
+    caption: String = stringResource(R.string.signature_create_sign_above_the_line),
 ) {
     val livePoints = remember { mutableStateListOf<InkPoint>() }
     var liveIsStylus by remember { mutableStateOf(false) }
@@ -203,7 +206,7 @@ fun SignaturePad(
                 hintPaint.textSize = 14.sp.toPx()
                 val hintY = size.height * HintFraction - (hintPaint.ascent() + hintPaint.descent()) / 2f
                 drawContext.canvas.nativeCanvas.drawText(
-                    "Draw here",
+                    appString(R.string.signature_pad_draw_here),
                     size.width / 2f,
                     hintY,
                     hintPaint,
@@ -223,8 +226,8 @@ fun SignaturePad(
                     .padding(PadButtonInset),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                PadIconButton(icon = Icons.AutoMirrored.Outlined.Undo, label = "Undo", onClick = onUndo)
-                PadIconButton(icon = Icons.Outlined.Delete, label = "Clear", onClick = onClear)
+                PadIconButton(icon = Icons.AutoMirrored.Outlined.Undo, label = stringResource(R.string.trash_undo_snackbar_undo), onClick = onUndo)
+                PadIconButton(icon = Icons.Outlined.Delete, label = stringResource(R.string.group_detail_clear), onClick = onClear)
             }
         }
     }

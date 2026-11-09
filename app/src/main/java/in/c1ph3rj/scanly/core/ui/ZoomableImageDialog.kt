@@ -66,6 +66,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
 import kotlin.math.min
+import `in`.c1ph3rj.scanly.R
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun ZoomableImageDialog(
@@ -99,7 +101,7 @@ fun ZoomableImageDialog(
             imagePath = imagePath,
             title = title,
             onNavigateUp = onDismiss,
-            closeContentDescription = "Close",
+            closeContentDescription = stringResource(R.string.zoomable_image_close),
         )
     }
 }
@@ -111,7 +113,7 @@ fun ZoomableImageViewer(
     onNavigateUp: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
     state: ZoomableImageState = rememberZoomableImageState(imagePath),
-    closeContentDescription: String = "Back",
+    closeContentDescription: String = stringResource(R.string.zoomable_image_back),
     allowParentHorizontalGestures: Boolean = false,
     showTopBar: Boolean = true,
     showZoomBadge: Boolean = true,
@@ -126,7 +128,7 @@ fun ZoomableImageViewer(
         if (zoomActive) {
             ChromeIconButton(
                 icon = Icons.Filled.FitScreen,
-                contentDescription = "Reset zoom",
+                contentDescription = stringResource(R.string.zoomable_image_reset_zoom),
                 onClick = onResetZoom,
                 containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
                 contentColor = MaterialTheme.colorScheme.onSurface,
@@ -178,7 +180,7 @@ fun ZoomableImageViewer(
                         contentAlignment = Alignment.Center,
                     ) {
                         Text(
-                            text = "Image unavailable",
+                            text = stringResource(R.string.zoomable_image_image_unavailable),
                             style = MaterialTheme.typography.titleMedium,
                             color = MaterialTheme.colorScheme.onBackground,
                         )

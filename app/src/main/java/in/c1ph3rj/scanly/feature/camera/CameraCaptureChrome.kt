@@ -30,6 +30,9 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import `in`.c1ph3rj.scanly.R
+import androidx.compose.ui.res.stringResource
+import `in`.c1ph3rj.scanly.core.common.appString
 
 /** Bright brand teal: reads on the black camera chrome in both app themes. */
 internal val CameraAccent = Color(0xFF2DD4BF)
@@ -51,7 +54,7 @@ internal fun AutoCapturePill(
         modifier = modifier
             .heightIn(min = 48.dp)
             .semantics {
-                contentDescription = if (enabled) "Turn auto-capture off" else "Turn auto-capture on"
+                contentDescription = if (enabled) appString(R.string.camera_capture_chrome_turn_auto_capture_off) else appString(R.string.camera_capture_chrome_turn_auto_capture_on)
             },
         shape = CircleShape,
         color = Color.Transparent,
@@ -100,7 +103,7 @@ internal fun CaptureDoneButton(
         enter = fadeIn(tween(180)) + scaleIn(tween(220), initialScale = 0.8f),
         exit = fadeOut(tween(120)) + scaleOut(tween(120), targetScale = 0.8f),
     ) {
-        val label = if (pageCount == 1) "Done, review 1 page" else "Done, review $pageCount pages"
+        val label = if (pageCount == 1) stringResource(R.string.camera_capture_chrome_done_review_1_page) else stringResource(R.string.camera_capture_chrome_done_review_pages, pageCount)
         Surface(
             onClick = onClick,
             enabled = enabled,
@@ -124,7 +127,7 @@ internal fun CaptureDoneButton(
                 ) {
                     Icon(Icons.Filled.Check, contentDescription = null, modifier = Modifier.size(22.dp))
                     Text(
-                        text = "Done",
+                        text = stringResource(R.string.camera_capture_chrome_done),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                     )

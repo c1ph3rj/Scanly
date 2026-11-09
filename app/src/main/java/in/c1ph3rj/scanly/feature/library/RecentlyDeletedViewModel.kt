@@ -26,6 +26,10 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
+import `in`.c1ph3rj.scanly.core.common.appPluralString
+import androidx.annotation.PluralsRes
 
 /** One row in Recently deleted and how long it has left before it is removed for good. */
 data class RecentlyDeletedRow(
@@ -104,7 +108,7 @@ class RecentlyDeletedViewModel @Inject constructor(
 
     fun deleteForever(row: RecentlyDeletedRow) = runForRow(row) {
         when (val result = deleteTrashedItemForeverUseCase(row.item.kind, row.item.id)) {
-            is ScanlyResult.Success -> emit("Deleted permanently")
+            is ScanlyResult.Success -> emit(appString(R.string.recently_deleted_deleted_permanently))
             is ScanlyResult.Failure -> emit(result.error.message)
         }
     }
@@ -115,7 +119,7 @@ class RecentlyDeletedViewModel @Inject constructor(
         val outcome = runEach(rows.sortedBy { it.item.kind.restoreOrder() }) { row ->
             restoreTrashedItemUseCase(row.item.kind, row.item.id)
         }
-        emit(outcome.message(verb = "Restored"))
+        emit(outcome.message(R.plurals.recently_deleted_restored_items, R.plurals.recently_deleted_restored_some_items))
     }
 
     /** Permanently deletes every row in [rows]; one message sums up the result. */
@@ -124,7 +128,7 @@ class RecentlyDeletedViewModel @Inject constructor(
         val outcome = runEach(rows.sortedByDescending { it.item.kind.restoreOrder() }) { row ->
             deleteTrashedItemForeverUseCase(row.item.kind, row.item.id)
         }
-        emit(outcome.message(verb = "Deleted", suffix = " permanently"))
+        emit(outcome.message(R.plurals.recently_deleted_deleted_items, R.plurals.recently_deleted_deleted_some_items))
     }
 
     fun emptyAll() {
@@ -132,7 +136,7 @@ class RecentlyDeletedViewModel @Inject constructor(
         viewModelScope.launch {
             busy.update { it.copy(emptying = true) }
             when (val result = emptyRecentlyDeletedUseCase()) {
-                is ScanlyResult.Success -> emit("Recently deleted is empty")
+                is ScanlyResult.Success -> emit(appString(R.string.recently_deleted_recently_deleted_is_empty))
                 is ScanlyResult.Failure -> emit(result.error.message)
             }
             busy.update { it.copy(emptying = false) }
@@ -140,9 +144,9 @@ class RecentlyDeletedViewModel @Inject constructor(
     }
 
     private fun restoredMessage(item: TrashedItem): String = when (item) {
-        is TrashedFolder -> "Folder restored"
-        is TrashedDocument -> "Document restored"
-        is TrashedPage -> "Page ${item.pageNumber} restored to \"${item.documentTitle}\""
+        is TrashedFolder -> appString(R.string.recently_deleted_folder_restored)
+        is TrashedDocument -> appString(R.string.recently_deleted_document_restored)
+        is TrashedPage -> appString(R.string.recently_deleted_page_restored_to, item.pageNumber, item.documentTitle)
     }
 
     private fun runForRow(row: RecentlyDeletedRow, block: suspend () -> Unit) {
@@ -191,14 +195,12 @@ class RecentlyDeletedViewModel @Inject constructor(
 
     private data class BatchOutcome(val total: Int, val succeeded: Int, val firstError: String?) {
         /** "Restored 3 items", or "Restored 2 of 3 items. <first error>" when some failed. */
-        fun message(verb: String, suffix: String = ""): String {
-            val noun = if (total == 1) "item" else "items"
-            return if (firstError == null) {
-                "$verb $total $noun$suffix"
+        fun message(@PluralsRes done: Int, @PluralsRes partial: Int): String =
+            if (firstError == null) {
+                appPluralString(done, total, total)
             } else {
-                "$verb $succeeded of $total $noun$suffix. $firstError"
+                appPluralString(partial, total, succeeded, total, firstError)
             }
-        }
     }
 
     private data class BusyState(
@@ -215,6 +217,9 @@ private fun TrashKind.restoreOrder(): Int = when (this) {
 }
 
 /** Retention line shown under the bin's title. */
-val recentlyDeletedRetentionNote: String =
-    "Pages are kept for ${TrashKind.PAGE.retentionLabel()}, documents and folders for " +
-        "${TrashKind.DOCUMENT.retentionLabel()}. After that they are deleted permanently."
+val recentlyDeletedRetentionNote: String
+    get() = appString(
+        R.string.recently_deleted_retention_note,
+        TrashKind.PAGE.retentionLabel(),
+        TrashKind.DOCUMENT.retentionLabel(),
+    )

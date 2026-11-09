@@ -47,6 +47,8 @@ import java.io.File
 import java.text.Normalizer
 import javax.inject.Inject
 import javax.inject.Singleton
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
 
 @Singleton
 class DefaultPageTextRepository @Inject constructor(
@@ -94,7 +96,7 @@ class DefaultPageTextRepository @Inject constructor(
         force: Boolean,
         onProgress: (done: Int, total: Int) -> Unit,
     ): ScanlyResult<Unit> = withContext(dispatchers.io) {
-        resultOf("Could not read text from this document.") {
+        resultOf(appString(R.string.default_page_text_repository_could_not_read_text_from_2)) {
             val pages = if (force) {
                 dao.getDocumentPageSources(documentId)
             } else {
@@ -110,8 +112,8 @@ class DefaultPageTextRepository @Inject constructor(
 
     override suspend fun recognizePage(pageId: String, force: Boolean): ScanlyResult<Unit> =
         withContext(dispatchers.io) {
-            resultOf("Could not read text from this page.") {
-                val source = dao.getPageSource(pageId) ?: error("This page no longer exists.")
+            resultOf(appString(R.string.default_page_text_repository_could_not_read_text_from)) {
+                val source = dao.getPageSource(pageId) ?: error(appString(R.string.error_this_page_no_longer_exists))
                 recognizeSource(source, force)
                 Unit
             }
@@ -119,7 +121,7 @@ class DefaultPageTextRepository @Inject constructor(
 
     override suspend fun recognizePendingPages(limit: Int): ScanlyResult<Int> =
         withContext(dispatchers.io) {
-            resultOf("Could not update the text index.") {
+            resultOf(appString(R.string.default_page_text_repository_could_not_update_the_text)) {
                 val pages = dao.getPendingPages(limit)
                 pages.count { page -> recognizeSource(page, force = false) }
             }
@@ -127,9 +129,9 @@ class DefaultPageTextRepository @Inject constructor(
 
     override suspend fun updateUserText(pageId: String, text: String?): ScanlyResult<Unit> =
         withContext(dispatchers.io) {
-            resultOf("Could not save your changes.") {
+            resultOf(appString(R.string.default_page_text_repository_could_not_save_your_changes)) {
                 recognitionMutex.withLock {
-                    val existing = dao.getPageText(pageId) ?: error("Read this page's text first.")
+                    val existing = dao.getPageText(pageId) ?: error(appString(R.string.error_read_this_pages_text_first))
                     val userText = text?.takeIf { it != existing.recognizedText }
                     val searchText = indexable(userText ?: existing.recognizedText)
                     vocabularyCache.clear()
@@ -366,7 +368,7 @@ class DefaultPageTextRepository @Inject constructor(
 
     override suspend fun refreshDerivedText(limit: Int): ScanlyResult<Int> =
         withContext(dispatchers.io) {
-            resultOf("Could not update the text index.") {
+            resultOf(appString(R.string.default_page_text_repository_could_not_update_the_text)) {
                 recognitionMutex.withLock {
                     val rows = dao.getRowsWithDerivedVersionBelow(SearchTextDeriver.VERSION, limit)
                     rows.forEach { row ->
@@ -394,7 +396,7 @@ class DefaultPageTextRepository @Inject constructor(
 
     override suspend fun rereadPagesNotReadWith(engine: OcrEngine): ScanlyResult<Int> =
         withContext(dispatchers.io) {
-            resultOf("Could not queue pages to be read again.") {
+            resultOf(appString(R.string.default_page_text_repository_could_not_queue_pages_to)) {
                 // Stale rows go through the normal indexer, which keeps the user's own edits.
                 val marked = dao.markPagesNotReadWithStale(engine.name)
                 scheduler.enqueue()

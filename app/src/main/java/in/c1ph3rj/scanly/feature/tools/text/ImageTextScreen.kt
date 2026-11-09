@@ -1,5 +1,6 @@
 package `in`.c1ph3rj.scanly.feature.tools.text
 
+import `in`.c1ph3rj.scanly.core.common.appPluralString
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -29,6 +30,9 @@ import `in`.c1ph3rj.scanly.feature.components.ScanlyImportProgressOverlay
 import `in`.c1ph3rj.scanly.feature.tools.ToolNote
 import `in`.c1ph3rj.scanly.feature.tools.pdf.PdfFilePickerScreen
 import kotlinx.coroutines.flow.collectLatest
+import `in`.c1ph3rj.scanly.R
+import androidx.compose.ui.res.stringResource
+import `in`.c1ph3rj.scanly.core.common.appString
 
 /**
  * "Image to text": choose photos or a Scanly scan, then read its text in the Extracted text
@@ -72,22 +76,22 @@ fun ImageTextRoute(
     ) {
         Column(modifier = Modifier.widthIn(max = 640.dp).fillMaxSize()) {
             PdfFilePickerScreen(
-                title = "Image to text",
-                subtitle = "Copy text from photos or scans. Text is read on this phone.",
+                title = stringResource(R.string.image_text_image_to_text),
+                subtitle = stringResource(R.string.image_text_copy_text_from_photos_or),
                 stepText = null,
                 documents = documents,
                 onBack = onNavigateUp,
                 onPickDevice = { if (!uiState.isImporting) photoPicker.launch(ImageImportSupport.createPickRequest()) },
                 onPickLibrary = { document -> onOpenText(document.id, false) },
-                deviceTitle = "Photos",
-                deviceSubtitle = "Up to ${ImageImportSupport.MAX_IMAGES_PER_IMPORT} from your gallery or files",
+                deviceTitle = stringResource(R.string.signature_create_photos),
+                deviceSubtitle = stringResource(R.string.image_text_up_to_from_your_gallery, ImageImportSupport.MAX_IMAGES_PER_IMPORT),
                 deviceIcon = Icons.Outlined.PhotoLibrary,
                 itemNoun = "scans",
-                countLabel = { count -> if (count == 1) "1 scan" else "$count scans" },
-                emptyLibraryHint = "No scans yet. Pick photos to read their text.",
-                noPagesHint = "Your scans have no pages yet. Pick photos to read their text.",
+                countLabel = { count -> appPluralString(R.plurals.common_scans, count, count) },
+                emptyLibraryHint = stringResource(R.string.image_text_no_scans_yet_pick_photos),
+                noPagesHint = stringResource(R.string.image_text_your_scans_have_no_pages),
                 headerExtra = {
-                    ToolNote(text = "Photos are saved as a new document, so you can search their text later.")
+                    ToolNote(text = stringResource(R.string.image_text_photos_are_saved_as_a))
                 },
             )
         }
@@ -101,7 +105,7 @@ fun ImageTextRoute(
             ScanlyImportProgressOverlay(
                 current = uiState.importCurrent,
                 total = uiState.importTotal,
-                stageLabel = uiState.importStageLabel.ifBlank { "Working on your photos" },
+                stageLabel = uiState.importStageLabel.ifBlank { stringResource(R.string.document_detail_working_on_your_photos) },
             )
         }
     }

@@ -1,5 +1,6 @@
 package `in`.c1ph3rj.scanly.feature.tools.pdf
 
+import `in`.c1ph3rj.scanly.core.common.appPluralString
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -67,6 +68,9 @@ import `in`.c1ph3rj.scanly.feature.tools.ToolTextAction
 import `in`.c1ph3rj.scanly.feature.tools.ToolTopBar
 import `in`.c1ph3rj.scanly.feature.tools.ToolWorkingState
 import kotlinx.coroutines.flow.collectLatest
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
+import androidx.compose.ui.res.stringResource
 
 /** Steps of the merge flow. Working and Done are derived from [PdfToolUiState], not requested. */
 private enum class MergeStep { Pick, Order, Working, Done }
@@ -146,7 +150,7 @@ fun PdfMergeRoute(
             )
             MergeStep.Working -> MergeStepFrame {
                 ToolWorkingState(
-                    title = "Merging…",
+                    title = stringResource(R.string.pdf_merge_merging),
                     caption = filesLabel(uiState.sources.size),
                 )
             }
@@ -157,7 +161,7 @@ fun PdfMergeRoute(
                 onOutputNameChange = viewModel::setOutputName,
                 onSave = viewModel::saveResult,
                 onShare = {
-                    viewModel.prepareNamedShare { shareExportArtifact(context, it, "Merged PDF") }
+                    viewModel.prepareNamedShare { shareExportArtifact(context, it, appString(R.string.pdf_merge_merged_pdf)) }
                 },
             )
         }
@@ -193,9 +197,9 @@ private fun MergePickStep(
     }
     MergeStepFrame {
         PdfFilePickerScreen(
-            title = "Merge PDFs",
-            subtitle = "Pick files in the order you want them.",
-            stepText = "Step 1 of 3 · Pick files",
+            title = stringResource(R.string.pdf_merge_merge_pdfs),
+            subtitle = stringResource(R.string.pdf_merge_pick_files_in_the_order),
+            stepText = stringResource(R.string.pdf_merge_step_1_of_3_pick),
             documents = uiState.libraryDocuments,
             onBack = onBack,
             onPickDevice = onPickDevice,
@@ -205,7 +209,7 @@ private fun MergePickStep(
             bottomBar = {
                 if (selectedCount < 2) {
                     Text(
-                        text = "Pick at least 2 files",
+                        text = stringResource(R.string.pdf_merge_pick_at_least_2_files),
                         style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.5.sp),
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         textAlign = TextAlign.Center,
@@ -213,7 +217,7 @@ private fun MergePickStep(
                     )
                 }
                 ToolPrimaryButton(
-                    text = if (selectedCount >= 2) "Next · $selectedCount files" else "Next",
+                    text = if (selectedCount >= 2) stringResource(R.string.pdf_merge_next_files, selectedCount) else stringResource(R.string.pdf_merge_next),
                     onClick = onNext,
                     enabled = selectedCount >= 2,
                 )
@@ -239,7 +243,7 @@ private fun DeviceFileRows(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(
-                        text = "From phone: ${file.displayName}",
+                        text = stringResource(R.string.pdf_merge_from_phone, file.displayName),
                         modifier = Modifier.weight(1f),
                         style = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp),
                         fontWeight = FontWeight.SemiBold,
@@ -249,7 +253,7 @@ private fun DeviceFileRows(
                     IconButton(onClick = { onRemove(index) }, modifier = Modifier.size(48.dp)) {
                         Icon(
                             Icons.Filled.Close,
-                            contentDescription = "Remove ${file.displayName}",
+                            contentDescription = stringResource(R.string.pdf_merge_remove, file.displayName),
                             tint = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
@@ -272,10 +276,10 @@ private fun MergeOrderStep(
     val sources = uiState.sources
     val count = sources.size
     val totalPages = mergedPageTotal(sources, uiState.libraryDocuments)
-    val totalLine = totalPages?.let { "${formatPdfPageCount(it)} in total" } ?: filesLabel(count)
+    val totalLine = totalPages?.let { stringResource(R.string.pdf_merge_in_total, formatPdfPageCount(it)) } ?: filesLabel(count)
     MergeStepFrame {
         Column(Modifier.fillMaxSize()) {
-            ToolTopBar(onBack = onBack, stepText = "Step 2 of 3 · Order & name")
+            ToolTopBar(onBack = onBack, stepText = stringResource(R.string.pdf_merge_step_2_of_3_order))
             Column(
                 modifier = Modifier
                     .weight(1f)
@@ -284,17 +288,17 @@ private fun MergeOrderStep(
                     .padding(start = 20.dp, end = 20.dp, top = 2.dp, bottom = 20.dp),
                 verticalArrangement = Arrangement.spacedBy(18.dp),
             ) {
-                ToolLargeTitle(title = "Order & name", subtitle = "Files are joined from top to bottom.")
+                ToolLargeTitle(title = stringResource(R.string.pdf_merge_order_name), subtitle = stringResource(R.string.pdf_merge_files_are_joined_from_top))
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         ToolSectionLabel(
-                            text = "Merge order · ${filesLabel(count)}",
+                            text = stringResource(R.string.pdf_merge_merge_order, filesLabel(count)),
                             modifier = Modifier.weight(1f),
                         )
-                        ToolTextAction(label = "Add more", onClick = onAddMore)
+                        ToolTextAction(label = stringResource(R.string.pdf_merge_add_more), onClick = onAddMore)
                     }
                     sources.forEachIndexed { index, source ->
                         MergeOrderRow(
@@ -320,7 +324,7 @@ private fun MergeOrderStep(
             }
             ToolBottomBar {
                 ToolPrimaryButton(
-                    text = if (count >= 2) "Merge $count files" else "Merge PDFs",
+                    text = if (count >= 2) stringResource(R.string.pdf_merge_merge_files, count) else stringResource(R.string.pdf_merge_merge_pdfs),
                     onClick = onMerge,
                     enabled = count >= 2 && !uiState.isProcessing,
                     icon = Icons.AutoMirrored.Filled.MergeType,
@@ -343,9 +347,9 @@ private fun MergeOrderRow(
     val name = source.label()
     val meta = when (source) {
         is PdfToolSource.LibraryDocument ->
-            document?.let { formatPdfPageCount(it.pageCount) } ?: "Page count unknown"
-        is PdfToolSource.DeviceUri -> "PDF from phone"
-        is PdfToolSource.AppFile -> "PDF from Scanly"
+            document?.let { formatPdfPageCount(it.pageCount) } ?: stringResource(R.string.pdf_merge_page_count_unknown)
+        is PdfToolSource.DeviceUri -> stringResource(R.string.pdf_merge_pdf_from_phone)
+        is PdfToolSource.AppFile -> stringResource(R.string.pdf_merge_pdf_from_scanly)
     }
     ToolCard(modifier = Modifier.fillMaxWidth()) {
         Row(
@@ -396,17 +400,17 @@ private fun MergeOrderRow(
                 enabled = index > 0,
                 modifier = Modifier.size(48.dp),
             ) {
-                Icon(Icons.Filled.KeyboardArrowUp, contentDescription = "Move $name up")
+                Icon(Icons.Filled.KeyboardArrowUp, contentDescription = stringResource(R.string.pdf_merge_move_up, name))
             }
             IconButton(
                 onClick = onMoveDown,
                 enabled = index < count - 1,
                 modifier = Modifier.size(48.dp),
             ) {
-                Icon(Icons.Filled.KeyboardArrowDown, contentDescription = "Move $name down")
+                Icon(Icons.Filled.KeyboardArrowDown, contentDescription = stringResource(R.string.pdf_merge_move_down, name))
             }
             IconButton(onClick = onRemove, modifier = Modifier.size(48.dp)) {
-                Icon(Icons.Filled.Close, contentDescription = "Remove $name")
+                Icon(Icons.Filled.Close, contentDescription = stringResource(R.string.pdf_merge_remove, name))
             }
         }
     }
@@ -445,16 +449,16 @@ private fun MergeDoneStep(
     val count = uiState.sources.size
     val totalPages = mergedPageTotal(uiState.sources, uiState.libraryDocuments)
     val details = buildList {
-        add(ToolDetailRow("Files", count.toString()))
-        if (totalPages != null) add(ToolDetailRow("Pages", formatPdfPageCount(totalPages)))
-        uiState.resultSizeBytes?.let { add(ToolDetailRow("Size", StorageFormatter.formatBytes(it))) }
-        add(ToolDetailRow("Original files", "Kept, unchanged"))
+        add(ToolDetailRow(stringResource(R.string.signature_create_files), count.toString()))
+        if (totalPages != null) add(ToolDetailRow(stringResource(R.string.document_detail_pages), formatPdfPageCount(totalPages)))
+        uiState.resultSizeBytes?.let { add(ToolDetailRow(stringResource(R.string.pdf_merge_size), StorageFormatter.formatBytes(it))) }
+        add(ToolDetailRow(stringResource(R.string.pdf_merge_original_files), stringResource(R.string.pdf_merge_kept_unchanged)))
     }
     // The result can split into preview | details on wide windows, so give it the wide frame.
     MergeStepFrame(wide = true) {
         PdfToolDoneScreen(
-            title = "Merged",
-            subtitle = "${filesLabel(count)} combined into one PDF",
+            title = stringResource(R.string.pdf_merge_merged),
+            subtitle = stringResource(R.string.pdf_merge_combined_into_one_pdf, filesLabel(count)),
             preview = uiState.resultPreview,
             outputName = uiState.outputName,
             onOutputNameChange = onOutputNameChange,
@@ -465,7 +469,7 @@ private fun MergeDoneStep(
             onShare = onShare,
             isSaving = uiState.isProcessing && uiState.result != null,
             savedDestinationLabel = uiState.savedDestinationLabel,
-            footnote = "Your original files are unchanged",
+            footnote = stringResource(R.string.pdf_merge_your_original_files_are_unchanged),
         )
     }
 }
@@ -481,7 +485,7 @@ private fun mergedPageTotal(sources: List<PdfToolSource>, documents: List<ScanDo
     return if (counts.any { it == null }) null else counts.filterNotNull().sum()
 }
 
-private fun filesLabel(count: Int): String = if (count == 1) "1 file" else "$count files"
+private fun filesLabel(count: Int): String = appPluralString(R.plurals.common_files, count, count)
 
 /** Key the picker uses to find a row's merge position. Device files never match a Scanly row. */
 private fun PdfToolSource.pickerKey(): String = when (this) {

@@ -8,14 +8,14 @@ import `in`.c1ph3rj.scanly.domain.model.SignatureKind
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import `in`.c1ph3rj.scanly.core.common.formatStampDate
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.UUID
 import kotlin.math.abs
 
 /** "13 Oct 2026". */
-fun formatSignDate(millis: Long = System.currentTimeMillis()): String =
-    SimpleDateFormat("d MMM yyyy", Locale.ENGLISH).format(java.util.Date(millis))
+fun formatSignDate(millis: Long = System.currentTimeMillis()): String = formatStampDate(millis)
 
 /**
  * Owns the shared sign editor state. Hosts supply pages, signatures and marks, and forward

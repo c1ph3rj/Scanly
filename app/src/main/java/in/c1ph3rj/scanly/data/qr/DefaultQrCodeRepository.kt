@@ -21,6 +21,8 @@ import java.io.File
 import java.io.FileOutputStream
 import javax.inject.Inject
 import javax.inject.Singleton
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
 
 @Singleton
 class DefaultQrCodeRepository @Inject constructor(
@@ -34,9 +36,9 @@ class DefaultQrCodeRepository @Inject constructor(
         inkArgb: Long,
     ): ScanlyResult<Bitmap> = withContext(dispatchers.default) {
         runCatching {
-            require(content.isNotBlank()) { "Enter something to encode." }
+            require(content.isNotBlank()) { appString(R.string.error_enter_something_to_encode) }
             encodeQr(content.trim(), sizePx.coerceIn(256, 2048), inkArgb.toInt())
-        }.toScanlyResult("Could not generate QR code.")
+        }.toScanlyResult(appString(R.string.default_qr_code_repository_could_not_generate_qr_code))
     }
 
     override suspend fun saveQrPng(
@@ -46,7 +48,7 @@ class DefaultQrCodeRepository @Inject constructor(
         caption: String?,
     ): ScanlyResult<ExportArtifact> = withContext(dispatchers.io) {
         runCatching {
-            require(content.isNotBlank()) { "Enter something to encode." }
+            require(content.isNotBlank()) { appString(R.string.error_enter_something_to_encode) }
             val code = encodeQr(content.trim(), sizePx.coerceIn(256, 2048), inkArgb.toInt())
             val label = caption?.trim()?.takeIf { it.isNotEmpty() }
             val image = if (label == null) code else withCaption(code, label, inkArgb.toInt())
@@ -68,7 +70,7 @@ class DefaultQrCodeRepository @Inject constructor(
             try {
                 FileOutputStream(file).use { out ->
                     if (!image.compress(Bitmap.CompressFormat.PNG, 100, out)) {
-                        error("Could not write QR image.")
+                        error(appString(R.string.error_could_not_write_qr_image))
                     }
                 }
             } finally {
@@ -80,7 +82,7 @@ class DefaultQrCodeRepository @Inject constructor(
                 fileName = file.name,
                 mimeType = "image/png",
             )
-        }.toScanlyResult("Could not save QR code.")
+        }.toScanlyResult(appString(R.string.default_qr_code_repository_could_not_save_qr_code))
     }
 
     private fun encodeQr(content: String, sizePx: Int, ink: Int): Bitmap {

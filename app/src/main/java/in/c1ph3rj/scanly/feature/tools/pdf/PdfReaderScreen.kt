@@ -131,6 +131,9 @@ import `in`.c1ph3rj.scanly.feature.tools.ToolTokens
 import `in`.c1ph3rj.scanly.feature.tools.ToolTopBar
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
+import androidx.compose.ui.res.stringResource
 
 private const val PDF_MIME_TYPE = "application/pdf"
 
@@ -212,9 +215,9 @@ fun PdfReaderRoute(
         if (pickerVisible) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
                 PdfFilePickerScreen(
-                    title = "Read a PDF",
-                    subtitle = "Open any PDF from Scanly or your phone.",
-                    stepText = "Choose a file",
+                    title = stringResource(R.string.pdf_reader_read_a_pdf),
+                    subtitle = stringResource(R.string.pdf_reader_open_any_pdf_from_scanly),
+                    stepText = stringResource(R.string.pdf_reader_choose_a_file),
                     documents = uiState.libraryDocuments,
                     onBack = onBack,
                     onPickDevice = { devicePicker.launch(arrayOf(PDF_MIME_TYPE)) },
@@ -233,7 +236,7 @@ fun PdfReaderRoute(
                 PdfReaderPhase.Empty -> Unit
                 PdfReaderPhase.Opening -> PdfReaderOpeningState(onBack = onBack)
                 PdfReaderPhase.Locked -> PdfReaderPasswordOverlay(
-                    title = uiState.documentTitle.ifBlank { "Protected PDF" },
+                    title = uiState.documentTitle.ifBlank { stringResource(R.string.pdf_password_protected_pdf) },
                     password = uiState.passwordDraft,
                     error = uiState.passwordError,
                     onPasswordChange = viewModel::setPasswordDraft,
@@ -323,10 +326,10 @@ private fun PdfReaderPasswordOverlay(
                     accent = true,
                 )
                 ToolLargeTitle(
-                    title = "Unlock PDF",
-                    subtitle = "This PDF is password protected. Enter the password to read $title.",
+                    title = stringResource(R.string.pdf_reader_unlock_pdf),
+                    subtitle = stringResource(R.string.pdf_reader_this_pdf_is_password_protected, title),
                 )
-                ToolFieldLabel("Password")
+                ToolFieldLabel(stringResource(R.string.pdf_reader_password))
                 ToolTextField(
                     value = password,
                     onValueChange = onPasswordChange,
@@ -341,7 +344,7 @@ private fun PdfReaderPasswordOverlay(
                         IconButton(onClick = { showPassword = !showPassword }) {
                             Icon(
                                 imageVector = if (showPassword) Icons.Filled.VisibilityOff else Icons.Filled.Visibility,
-                                contentDescription = if (showPassword) "Hide password" else "Show password",
+                                contentDescription = if (showPassword) stringResource(R.string.export_share_hide_password) else stringResource(R.string.export_share_show_password),
                                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
                         }
@@ -349,12 +352,12 @@ private fun PdfReaderPasswordOverlay(
                     supportingText = error?.let { { Text(it, color = MaterialTheme.colorScheme.error) } },
                 )
                 ToolPrimaryButton(
-                    text = "Unlock",
+                    text = stringResource(R.string.pdf_compress_unlock),
                     onClick = onUnlock,
                     enabled = password.isNotBlank(),
                 )
                 ToolTextAction(
-                    label = "Choose another PDF",
+                    label = stringResource(R.string.pdf_reader_choose_another_pdf),
                     onClick = onChooseAnother,
                     modifier = Modifier.align(Alignment.CenterHorizontally),
                 )
@@ -448,7 +451,7 @@ private fun PdfReaderViewer(
                                     CircularProgressIndicator(color = ReaderChromeText)
                                 } else {
                                     Text(
-                                        "Loading page…",
+                                        stringResource(R.string.pdf_reader_loading_page_2),
                                         color = ReaderChromeMuted,
                                     )
                                 }
@@ -693,7 +696,7 @@ private fun PdfReaderContinuousViewer(
                 val imageBitmap = remember(bitmap) { bitmap.asImageBitmap() }
                 Image(
                     bitmap = imageBitmap,
-                    contentDescription = "Page ${pageIndex + 1}",
+                    contentDescription = stringResource(R.string.trash_use_cases_page, pageIndex + 1),
                     contentScale = ContentScale.Fit,
                     filterQuality = FilterQuality.High,
                     modifier = pageModifier
@@ -711,7 +714,7 @@ private fun PdfReaderContinuousViewer(
                         CircularProgressIndicator(color = ReaderChromeText)
                     } else {
                         Text(
-                            "Loading page ${pageIndex + 1}…",
+                            stringResource(R.string.pdf_reader_loading_page, pageIndex + 1),
                             color = ReaderChromeMuted,
                         )
                     }
@@ -751,7 +754,7 @@ private fun ReaderTopBar(
         IconButton(onClick = onBack, modifier = Modifier.size(48.dp)) {
             Icon(
                 Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = "Back",
+                contentDescription = stringResource(R.string.zoomable_image_back),
                 tint = ReaderChromeText,
             )
         }
@@ -812,7 +815,7 @@ private fun ReaderBottomChrome(
             ) {
                 ReaderBottomAction(
                     icon = Icons.Filled.GridView,
-                    label = "Pages",
+                    label = stringResource(R.string.document_detail_pages),
                     onClick = onOpenPages,
                     modifier = Modifier.weight(1f),
                 )
@@ -825,7 +828,7 @@ private fun ReaderBottomChrome(
                 if (zoomActive) {
                     ReaderBottomAction(
                         icon = Icons.Filled.FitScreen,
-                        label = "Reset zoom",
+                        label = stringResource(R.string.zoomable_image_reset_zoom),
                         onClick = onResetZoom,
                         modifier = Modifier.weight(1f),
                     )
@@ -833,7 +836,7 @@ private fun ReaderBottomChrome(
                 if (canShare) {
                     ReaderBottomAction(
                         icon = Icons.Filled.Share,
-                        label = "Share",
+                        label = stringResource(R.string.document_detail_share_2),
                         onClick = onShare,
                         modifier = Modifier.weight(1f),
                     )
@@ -930,12 +933,12 @@ private fun PdfReaderPagesSheet(
         ) {
             Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                 Text(
-                    text = "Pages",
+                    text = stringResource(R.string.document_detail_pages),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold,
                 )
                 Text(
-                    text = "Tap a page to jump to it",
+                    text = stringResource(R.string.pdf_reader_tap_a_page_to_jump),
                     style = MaterialTheme.typography.bodySmall,
                     color = ReaderChromeMuted,
                 )
@@ -986,7 +989,7 @@ private fun ReaderPageThumbnail(
         ToolPaperPage(
             bitmap = thumbnail,
             loading = loading,
-            contentDescription = "Page $pageNumber",
+            contentDescription = stringResource(R.string.trash_use_cases_page, pageNumber),
             elevation = 2.dp,
             modifier = Modifier
                 .fillMaxWidth()
@@ -1030,7 +1033,7 @@ private fun sharePdfSource(context: Context, source: PdfToolSource) {
                 clipData = ClipData.newUri(context.contentResolver, source.displayName, uri)
                 addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             }
-            context.startActivity(Intent.createChooser(intent, "Share ${source.displayName}"))
+            context.startActivity(Intent.createChooser(intent, appString(R.string.document_detail_share, source.displayName)))
         }
         is PdfToolSource.LibraryDocument -> Unit
     }

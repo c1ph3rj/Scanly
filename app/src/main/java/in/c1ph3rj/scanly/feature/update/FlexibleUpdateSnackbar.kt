@@ -9,6 +9,9 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import `in`.c1ph3rj.scanly.R
+import androidx.compose.ui.res.stringResource
+import `in`.c1ph3rj.scanly.core.common.appString
 
 @Composable
 fun FlexibleUpdateSnackbarHost(
@@ -25,8 +28,8 @@ fun FlexibleUpdateSnackbarHost(
         }
 
         val result = hostState.showSnackbar(
-            message = "Update downloaded. Restart Scanly to finish installing.",
-            actionLabel = "Restart",
+            message = appString(R.string.flexible_update_snackbar_update_downloaded_restart_scanly_to),
+            actionLabel = appString(R.string.flexible_update_snackbar_restart),
         )
         if (result == SnackbarResult.ActionPerformed) {
             onRestartNow()

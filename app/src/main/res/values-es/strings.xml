@@ -1,0 +1,2021 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="shortcut_scan_short">Escanear</string>
+    <string name="shortcut_scan_long">Iniciar un nuevo escaneo</string>
+    <string name="shortcut_scan_disabled">Escaneo no disponible</string>
+    <string name="shortcut_import_short">Importar</string>
+    <string name="shortcut_import_long">Importar fotos</string>
+    <string name="shortcut_import_disabled">Importación no disponible</string>
+    <string name="shortcut_qr_short">QR</string>
+    <string name="shortcut_qr_long">Escanear o crear QR y leer códigos de barras</string>
+    <string name="shortcut_qr_disabled">Herramienta QR no disponible</string>
+    <string name="shortcut_library_short">Biblioteca</string>
+    <string name="shortcut_library_long">Abrir tu biblioteca</string>
+    <string name="shortcut_library_disabled">Biblioteca no disponible</string>
+    <string name="widget_actions_label">Acciones de Scanly</string>
+    <string name="widget_actions_description">Acceso rápido a Escanear, Importar, QR y Biblioteca.</string>
+    <string name="widget_scan_label">Escanear con Scanly</string>
+    <string name="widget_scan_description">Inicia un nuevo escaneo de documento.</string>
+    <string name="widget_qr_label">QR de Scanly</string>
+    <string name="widget_qr_description">Abre la herramienta para escanear y generar QR.</string>
+    <string name="widget_action_scan">Escanear</string>
+    <string name="widget_action_import">Importar</string>
+    <string name="widget_action_qr">QR</string>
+    <string name="widget_action_library">Biblioteca</string>
+    <!-- DocumentPresentationFormatter -->
+    <string name="document_presentation_formatter_imported">"Importado %1$s"</string>
+    <string name="document_presentation_formatter_folder">"Carpeta %1$s"</string>
+    <string name="document_presentation_formatter_new_folder">"Nueva carpeta %1$s"</string>
+    <string name="document_presentation_formatter_scan">"Escaneo %1$s"</string>
+    <string name="document_presentation_formatter_document">"Documento %1$s"</string>
+    <!-- ImageImportSupport -->
+    <string name="image_import_only_images_can_be_added">"Solo puedes añadir %1$s imágenes a la vez."</string>
+    <string name="image_import_skipped_files_that_couldn_t">"Se omitieron %1$s archivos que no se pudieron abrir."</string>
+    <string name="image_import_skipped_1_file_that_couldn">Se omitió 1 archivo que no se pudo abrir.</string>
+    <string name="image_import_imported_images">"Se importaron %1$s imágenes."</string>
+    <string name="image_import_imported_1_image">Se importó 1 imagen.</string>
+    <!-- ZoomableImageDialog -->
+    <string name="zoomable_image_image_unavailable">Imagen no disponible</string>
+    <string name="zoomable_image_reset_zoom">Restablecer zoom</string>
+    <string name="zoomable_image_back">Atrás</string>
+    <string name="zoomable_image_close">Cerrar</string>
+    <!-- LibraryOperationCoordinator -->
+    <string name="library_operation_coordinator_library_maintenance_is_in_progress">Se está realizando el mantenimiento de la biblioteca.</string>
+    <!-- DefaultDocumentRepository -->
+    <string name="default_document_repository_could_not_remove_empty_documents">No se pudieron quitar los documentos vacíos.</string>
+    <string name="default_document_repository_could_not_clear_old_deleted">No se pudieron borrar los documentos eliminados antiguos.</string>
+    <string name="default_document_repository_could_not_empty_recently_deleted">No se pudo vaciar Eliminados recientemente.</string>
+    <string name="default_document_repository_could_not_restore_the_document">No se pudo restaurar el documento.</string>
+    <string name="default_document_repository_could_not_move_the_document">No se pudo mover el documento a Eliminados recientemente.</string>
+    <!-- DefaultDocumentExportRepository -->
+    <string name="default_document_export_repository_could_not_prepare_group_zip">No se pudo preparar el ZIP de la carpeta para compartir.</string>
+    <string name="default_document_export_repository_could_not_prepare_group_pdf">No se pudo preparar el PDF de la carpeta para compartir.</string>
+    <string name="default_document_export_repository_could_not_export_group_as">No se pudo exportar la carpeta como ZIP.</string>
+    <string name="default_document_export_repository_could_not_export_group_as_2">No se pudo exportar la carpeta como PDF.</string>
+    <string name="default_document_export_repository_could_not_prepare_images_for">No se pudieron preparar las imágenes para compartir.</string>
+    <string name="default_document_export_repository_could_not_export_images">No se pudieron exportar las imágenes.</string>
+    <string name="default_document_export_repository_could_not_prepare_pdf_share">No se pudo preparar el PDF para compartir.</string>
+    <string name="default_document_export_repository_could_not_export_pdf">No se pudo exportar el PDF.</string>
+    <!-- DefaultGroupRepository -->
+    <string name="default_group_repository_could_not_clear_old_deleted">No se pudieron borrar las carpetas eliminadas antiguas.</string>
+    <string name="default_group_repository_could_not_delete_the_folders">No se pudieron eliminar las carpetas.</string>
+    <string name="default_group_repository_could_not_delete_the_folder">No se pudo eliminar la carpeta.</string>
+    <string name="default_group_repository_could_not_restore_the_folder">No se pudo restaurar la carpeta.</string>
+    <string name="default_group_repository_could_not_move_the_folder">No se pudo mover la carpeta a Eliminados recientemente.</string>
+    <!-- DefaultPageRepository -->
+    <string name="default_page_repository_applied_to_of_pages_save">"Se aplicó a %1$s de %2$s páginas. Vuelve a guardar para reintentar el resto."</string>
+    <string name="default_page_repository_could_not_clear_old_deleted">No se pudieron borrar las páginas eliminadas antiguas.</string>
+    <string name="default_page_repository_could_not_delete_the_pages">No se pudieron eliminar las páginas.</string>
+    <string name="default_page_repository_could_not_delete_the_page">No se pudo eliminar la página.</string>
+    <string name="default_page_repository_could_not_restore_the_page">No se pudo restaurar la página.</string>
+    <!-- DefaultPdfToolkitRepository -->
+    <string name="default_pdf_toolkit_repository_incorrect_pdf_password">La contraseña del PDF es incorrecta.</string>
+    <string name="default_pdf_toolkit_repository_this_pdf_is_not_stored">Este PDF no está guardado en Scanly.</string>
+    <string name="default_pdf_toolkit_repository_the_scanly_document_could_not">No se pudo preparar el documento de Scanly como PDF.</string>
+    <string name="default_pdf_toolkit_repository_could_not_prepare_share">No se pudo preparar para compartir.</string>
+    <string name="default_pdf_toolkit_repository_could_not_read_this_page">No se pudo leer esta página.</string>
+    <string name="default_pdf_toolkit_repository_failed_to_encode_page">No se pudo codificar la página %1$s.</string>
+    <string name="default_pdf_toolkit_repository_could_not_save_the_images">No se pudieron guardar las imágenes.</string>
+    <string name="default_pdf_toolkit_repository_page">"%1$s – página %2$s.%3$s"</string>
+    <string name="default_pdf_toolkit_repository_could_not_estimate_the_image">No se pudo calcular el tamaño de la imagen.</string>
+    <string name="default_pdf_toolkit_repository_could_not_open_this_pdf">No se pudo abrir este PDF.</string>
+    <string name="default_pdf_toolkit_repository_could_not_render_pdf_page">No se pudo mostrar la página del PDF.</string>
+    <string name="default_pdf_toolkit_repository_could_not_sign_this_pdf">No se pudo firmar este PDF.</string>
+    <string name="default_pdf_toolkit_repository_could_not_open_this_pdf_2">No se pudo abrir este PDF para firmarlo.</string>
+    <string name="default_pdf_toolkit_repository_could_not_update_watermark_preview">No se pudo actualizar la vista previa de la marca de agua.</string>
+    <string name="default_pdf_toolkit_repository_could_not_add_watermark">No se pudo añadir la marca de agua.</string>
+    <string name="default_pdf_toolkit_repository_could_not_remove_pdf_password">No se pudo quitar la contraseña del PDF.</string>
+    <string name="default_pdf_toolkit_repository_could_not_password_protect_pdf">No se pudo proteger el PDF con contraseña.</string>
+    <string name="default_pdf_toolkit_repository_could_not_compress_pdf">No se pudo comprimir el PDF.</string>
+    <string name="default_pdf_toolkit_repository_this_pdf_is_already_well">Este PDF ya está bien optimizado. Comprimirlo no reduciría su tamaño.</string>
+    <string name="default_pdf_toolkit_repository_page_is_too_large_to">"La página %1$s es demasiado grande para comprimirla en este dispositivo. Prueba con la calidad Mínima."</string>
+    <string name="default_pdf_toolkit_repository_could_not_merge_pdfs">No se pudieron combinar los PDF.</string>
+    <string name="default_pdf_toolkit_repository_one_of_the_pdfs">Uno de los PDF</string>
+    <string name="default_pdf_toolkit_repository_could_not_open_pdf">No se pudo abrir el PDF.</string>
+    <!-- PdfSignatureStamper -->
+    <string name="pdf_signature_stamper_text_and_dates_support_latin">Los textos y las fechas admiten caracteres latinos, griegos y cirílicos, dígitos y símbolos.</string>
+    <!-- PdfWatermarkStamper -->
+    <string name="pdf_watermark_stamper_watermarks_support_latin_greek_and">Las marcas de agua admiten caracteres latinos, griegos y cirílicos, dígitos y símbolos. Prueba a escribir el texto en inglés.</string>
+    <!-- DefaultQrCodeRepository -->
+    <string name="default_qr_code_repository_could_not_save_qr_code">No se pudo guardar el código QR.</string>
+    <string name="default_qr_code_repository_could_not_generate_qr_code">No se pudo generar el código QR.</string>
+    <!-- DefaultPageMarkupRepository -->
+    <string name="default_page_markup_repository_could_not_save_the_signed">No se pudieron guardar las páginas firmadas.</string>
+    <string name="default_page_markup_repository_could_not_load_signatures_for">No se pudieron cargar las firmas de este documento.</string>
+    <!-- DefaultSignatureRepository -->
+    <string name="default_signature_repository_could_not_save_the_image">No se pudo guardar la imagen.</string>
+    <string name="default_signature_repository_could_not_prepare_the_image">No se pudo preparar la imagen.</string>
+    <string name="default_signature_repository_could_not_update_the_signature">No se pudo actualizar la firma.</string>
+    <string name="default_signature_repository_could_not_delete_the_signature">No se pudo eliminar la firma.</string>
+    <string name="default_signature_repository_could_not_read_this_image">No se pudo leer esta imagen.</string>
+    <string name="default_signature_repository_could_not_save_the_signature">No se pudo guardar la firma.</string>
+    <!-- PageMarkupStore -->
+    <string name="page_markup_store_could_not_save_the_signed">No se pudo guardar la página firmada.</string>
+    <!-- DefaultPageTextRepository -->
+    <string name="default_page_text_repository_could_not_queue_pages_to">No se pudieron poner en cola las páginas para volver a leerlas.</string>
+    <string name="default_page_text_repository_could_not_update_the_text">No se pudo actualizar el índice de texto.</string>
+    <string name="default_page_text_repository_could_not_save_your_changes">No se pudieron guardar los cambios.</string>
+    <string name="default_page_text_repository_could_not_read_text_from">No se pudo leer el texto de esta página.</string>
+    <string name="default_page_text_repository_could_not_read_text_from_2">No se pudo leer el texto de este documento.</string>
+    <!-- DefaultPlayInAppUpdateCoordinator -->
+    <string name="default_play_in_app_update_coordinator_could_not_check_google_play">No se pudo buscar actualizaciones en Google Play.</string>
+    <string name="default_play_in_app_update_coordinator_google_play_could_not_check">Google Play no pudo buscar actualizaciones.</string>
+    <!-- PlayStoreAppUpdateRepository -->
+    <string name="play_store_app_update_repository_update_available">Actualización disponible</string>
+    <string name="play_store_app_update_repository_latest">Última versión</string>
+    <!-- PdfExportOptions -->
+    <string name="pdf_export_options_use_no_more_than_characters">"Usa %1$s caracteres como máximo."</string>
+    <string name="pdf_export_options_use_at_least_characters">"Usa al menos %1$s caracteres."</string>
+    <string name="pdf_export_options_enter_a_pdf_password">Introduce una contraseña para el PDF.</string>
+    <!-- QrPayload -->
+    <string name="qr_payload_text_characters">"Texto · %1$s caracteres"</string>
+    <string name="qr_payload_phone_number">Número de teléfono</string>
+    <string name="qr_payload_email">Correo electrónico</string>
+    <string name="qr_payload_contact_card">Tarjeta de contacto</string>
+    <string name="qr_payload_wi_fi">"Wi-Fi · %1$s"</string>
+    <string name="qr_payload_upi">"UPI · %1$s"</string>
+    <string name="qr_payload_link_not_secure_http">Enlace · no seguro (http)</string>
+    <string name="qr_payload_link_https">Enlace · https</string>
+    <string name="qr_payload_empty_text">Texto vacío</string>
+    <string name="qr_payload_contact">Contacto</string>
+    <string name="qr_payload_wi_fi_network">Red Wi-Fi</string>
+    <string name="qr_payload_pay">"Pagar a %1$s"</string>
+    <string name="qr_payload_text">Texto</string>
+    <string name="qr_payload_phone">Teléfono</string>
+    <string name="qr_payload_wi_fi_2">Wi-Fi</string>
+    <string name="qr_payload_upi_payment">Pago UPI</string>
+    <string name="qr_payload_link">Enlace</string>
+    <!-- DetectDocumentCornersUseCase -->
+    <string name="detect_document_corners_use_case_document_detection_failed">No se pudo detectar el documento.</string>
+    <string name="detect_document_corners_use_case_could_not_detect_a_document">No se detectó ningún documento en esta imagen.</string>
+    <!-- ImportImagesUseCase -->
+    <string name="import_images_use_case_none_of_the_selected_files">Ninguno de los archivos seleccionados se pudo abrir como imagen.</string>
+    <string name="import_images_use_case_the_selected_file_couldn_t">El archivo seleccionado no se pudo abrir como imagen.</string>
+    <string name="import_images_use_case_saving_page">Guardando página</string>
+    <string name="import_images_use_case_detecting_document">Detectando documento</string>
+    <string name="import_images_use_case_preparing_page">Preparando página</string>
+    <!-- TrashUseCases -->
+    <string name="trash_use_cases_page">"Página %1$s"</string>
+    <!-- ImportPdfToLibraryUseCase -->
+    <string name="import_pdf_to_library_use_case_could_not_add_this_pdf">No se pudo añadir este PDF a tu biblioteca.</string>
+    <string name="import_pdf_to_library_use_case_choose_at_least_one_page">Elige al menos una página.</string>
+    <!-- CameraCaptureChrome -->
+    <string name="camera_capture_chrome_done">Listo</string>
+    <string name="camera_capture_chrome_done_review_pages">"Listo, revisar %1$s páginas"</string>
+    <string name="camera_capture_chrome_done_review_1_page">Listo, revisar 1 página</string>
+    <string name="camera_capture_chrome_turn_auto_capture_on">Activar captura automática</string>
+    <string name="camera_capture_chrome_turn_auto_capture_off">Desactivar captura automática</string>
+    <!-- CaptureStabilityTracker -->
+    <string name="capture_stability_tracker_saving_page">Guardando página…</string>
+    <string name="capture_stability_tracker_capturing_page">Capturando página…</string>
+    <string name="capture_stability_tracker_hold_steady">No te muevas.</string>
+    <string name="capture_stability_tracker_capturing_now">Capturando…</string>
+    <string name="capture_stability_tracker_hold_steady_to_auto_capture">No te muevas para capturar automáticamente.</string>
+    <string name="capture_stability_tracker_hold_position_auto_capture_is">Mantén la posición. La captura automática se está preparando.</string>
+    <string name="capture_stability_tracker_move_to_the_next_page">Pasa a la página siguiente antes de que se reactive la captura automática.</string>
+    <string name="capture_stability_tracker_point_your_camera_at_a">Apunta la cámara a un documento completo.</string>
+    <string name="capture_stability_tracker_document_detected_tap_capture_whenever">Documento detectado. Toca Capturar cuando quieras.</string>
+    <string name="capture_stability_tracker_auto_capture_is_off_use">La captura automática está desactivada. Usa el disparador cuando quieras.</string>
+    <!-- PipCameraComponents -->
+    <string name="pip_camera_not_now">Ahora no</string>
+    <string name="pip_camera_allow_camera_access">Permitir acceso a la cámara</string>
+    <string name="pip_camera_open_settings">Abrir Ajustes</string>
+    <string name="pip_camera_photos_stay_on_your_device">Las fotos se quedan en tu dispositivo hasta que las exportes o compartas</string>
+    <string name="pip_camera_camera_active_only_while_scanning">La cámara solo está activa mientras escaneas</string>
+    <string name="pip_camera_live_preview_with_edge_detection">Vista previa en directo con detección de bordes</string>
+    <string name="pip_camera_come_back_here_and_pip">Vuelve aquí y Pip estará listo</string>
+    <string name="pip_camera_settings_permissions_camera_allow">Ajustes › Permisos › Cámara › Permitir</string>
+    <string name="pip_camera_scanly_needs_your_camera_to">Scanly necesita la cámara para capturar y enderezar las páginas de tus documentos.</string>
+    <string name="pip_camera_camera_permission_is_blocked_for">El permiso de cámara está bloqueado para Scanly. Abre Ajustes, toca Permisos y activa Cámara para escanear documentos.</string>
+    <string name="pip_camera_camera_access_needed">Se necesita acceso a la cámara</string>
+    <string name="pip_camera_show_me_the_whole_page">enséñame la página entera, con sus cuatro esquinas.</string>
+    <string name="pip_camera_hold_it_almost_there">quieto… ya casi está.</string>
+    <string name="pip_camera_hold_it">"quieto… %1$s"</string>
+    <string name="pip_camera_ooh_edges_hold_still_a">¡oh, bordes! no te muevas un segundo…</string>
+    <string name="pip_camera_auto_capture_is_off_tap">la captura automática está desactivada. toca el disparador cuando quieras.</string>
+    <string name="pip_camera_found_the_edges_tap_the">¡encontré los bordes! toca el disparador cuando quieras.</string>
+    <string name="pip_camera_got_it_on_to_the">¡listo! vamos con la siguiente página.</string>
+    <string name="pip_camera_snap_saving_that_page">¡clic! guardando la página…</string>
+    <string name="pip_camera_it_s_all_fuzzy_tap">todo se ve borroso. toca la página para enfocar.</string>
+    <string name="pip_camera_bit_dark_in_here_more">está un poco oscuro. ¿más luz o pruebas el flash?</string>
+    <string name="pip_camera_everything_s_dark_is_something">todo está oscuro. ¿hay algo tapando la lente?</string>
+    <!-- ScanSessionScreen -->
+    <string name="scan_session_camera_couldn_t_start_close">No se pudo iniciar la cámara. Cierra otras apps que la estén usando y vuelve a intentarlo.</string>
+    <string name="scan_session_camera_couldn_t_start_leave">No se pudo iniciar la cámara. Sal de esta pantalla y vuelve a abrirla.</string>
+    <string name="scan_session_capture">Capturar</string>
+    <string name="scan_session_replace_page">Reemplazar página</string>
+    <string name="scan_session_show_grid">Mostrar cuadrícula</string>
+    <string name="scan_session_hide_grid">Ocultar cuadrícula</string>
+    <string name="scan_session_turn_flash_on">Activar flash</string>
+    <string name="scan_session_turn_flash_off">Desactivar flash</string>
+    <string name="scan_session_close_camera">Cerrar cámara</string>
+    <string name="scan_session_no_captures">No hay capturas</string>
+    <string name="scan_session_open_a_valid_document_first">Primero abre un documento válido.</string>
+    <string name="scan_session_document_missing">Falta el documento</string>
+    <string name="scan_session_camera_is_not_ready_yet">La cámara aún no está lista.</string>
+    <!-- ScanSessionViewModel -->
+    <string name="scan_session_checking_document">Comprobando documento…</string>
+    <string name="scan_session_point_your_camera_at_a">Apunta la cámara a un documento físico.</string>
+    <string name="scan_session_screen_detected_point_at_a">Se detectó una pantalla. Apunta a un documento físico.</string>
+    <string name="scan_session_page_edges_are_ambiguous_hold">Los bordes de la página no están claros. No te muevas o acércate más.</string>
+    <string name="scan_session_two_pages_are_visible_move">Se ven dos páginas. Acércate y encuadra solo una.</string>
+    <string name="scan_session_page_saved">"Página %1$s guardada."</string>
+    <string name="scan_session_auto_captured_page">Página %1$s capturada automáticamente.</string>
+    <string name="scan_session_document_not_found">No se encontró el documento.</string>
+    <string name="scan_session_capture_failed_reposition_the_document">No se pudo capturar. Recoloca el documento y vuelve a intentarlo.</string>
+    <string name="scan_session_page_not_saved_reposition_the">No se guardó la página. Recoloca el documento y vuelve a intentarlo.</string>
+    <string name="scan_session_live_detection_is_unavailable_manual">La detección en directo no está disponible. La captura manual sigue funcionando.</string>
+    <string name="scan_session_point_your_camera_at_a_2">Apunta la cámara a un documento.</string>
+    <!-- ExportShareComponents -->
+    <string name="export_share_passwords_match">Las contraseñas coinciden.</string>
+    <string name="export_share_confirm_password">Confirmar contraseña</string>
+    <string name="export_share_4_64_characters_send_it">De 4 a 64 caracteres. Envíala por separado del PDF.</string>
+    <string name="export_share_show_password">Mostrar contraseña</string>
+    <string name="export_share_hide_password">Ocultar contraseña</string>
+    <string name="export_share_pdf_password">Contraseña del PDF</string>
+    <string name="export_share_off">Desactivado</string>
+    <string name="export_share_a_password_will_be_required">Se pedirá una contraseña para abrir el PDF.</string>
+    <string name="export_share_password_protection">Protección con contraseña</string>
+    <string name="export_share_cancel">Cancelar</string>
+    <string name="export_share_add_white_space_around_the">Añade espacio en blanco alrededor de la página escaneada.</string>
+    <string name="export_share_margins">Márgenes</string>
+    <string name="export_share_fixed_sizes_use_their_real">Los tamaños fijos usan sus dimensiones reales de impresión.</string>
+    <string name="export_share_page_size">Tamaño de página</string>
+    <string name="export_share_auto_follows_each_scanned_page">Automático se ajusta a cada página escaneada.</string>
+    <string name="export_share_orientation">Orientación</string>
+    <string name="export_share_add_the_page_index_to">Añade el número de página al pie del PDF.</string>
+    <string name="export_share_page_numbers">Números de página</string>
+    <string name="export_share_choose_how_every_page_is">Elige cómo se genera cada página.</string>
+    <string name="export_share_passwords_do_not_match">Las contraseñas no coinciden.</string>
+    <string name="export_share_confirm_the_password">Confirma la contraseña.</string>
+    <string name="export_share_pdf_options">Opciones de PDF</string>
+    <!-- FabComponents -->
+    <string name="fab_open_add_menu">Abrir menú para añadir</string>
+    <string name="fab_close_menu">Cerrar menú</string>
+    <string name="fab_new_document">Nuevo documento</string>
+    <string name="fab_new_folder">Nueva carpeta</string>
+    <!-- LibraryCardPresentation -->
+    <string name="library_card_presentation_remove_from_folder">Quitar de la carpeta</string>
+    <string name="library_card_presentation_move_to_folder">Mover a carpeta</string>
+    <string name="library_card_presentation_rename">Cambiar nombre</string>
+    <string name="library_card_presentation_delete">Eliminar</string>
+    <string name="library_card_presentation_1_page">1 página</string>
+    <string name="library_card_presentation_1_document">1 documento</string>
+    <string name="library_card_presentation_yesterday">Ayer</string>
+    <string name="library_card_presentation_today">Hoy</string>
+    <!-- LibraryFolderShelf -->
+    <string name="library_folder_shelf_all_folders">Todas las carpetas</string>
+    <string name="library_folder_shelf_view_all">Ver todo</string>
+    <string name="library_folder_shelf_organise_scans">Organiza tus escaneos</string>
+    <string name="library_folder_shelf_new_folder">Nueva carpeta</string>
+    <!-- SharedComponents -->
+    <string name="shared_please_wait">Espera un momento</string>
+    <string name="shared_working_on_your_photos">Procesando tus fotos…</string>
+    <string name="shared_importing_images">Importando imágenes</string>
+    <string name="shared_more_options">Más opciones</string>
+    <string name="shared_selected">Seleccionado</string>
+    <string name="shared_create_new_folder">Crear carpeta</string>
+    <string name="shared_create_move">Crear y mover</string>
+    <string name="shared_new_folder_name">Nombre de la nueva carpeta</string>
+    <string name="shared_no_folder">Sin carpeta</string>
+    <string name="shared_folder_name">Nombre de la carpeta</string>
+    <string name="shared_create">Crear</string>
+    <string name="shared_suggest_name">Sugerir nombre</string>
+    <string name="shared_title">Título</string>
+    <string name="shared_clear_name">Borrar nombre</string>
+    <string name="shared_confirm">Confirmar</string>
+    <string name="shared_scanly">Scanly</string>
+    <!-- DocumentDetailScreen -->
+    <string name="document_detail_delete_page">Eliminar página</string>
+    <string name="document_detail_share_page">Compartir página</string>
+    <string name="document_detail_sign_document">Firmar documento</string>
+    <string name="document_detail_extract_text">Extraer texto</string>
+    <string name="document_detail_retake_page">Repetir página</string>
+    <string name="document_detail_edit_page">Editar página</string>
+    <string name="document_detail_edit">Editar</string>
+    <string name="document_detail_share">"Compartir %1$s"</string>
+    <string name="document_detail_review">Revisar</string>
+    <string name="document_detail_ready">Listo</string>
+    <string name="document_detail_new">Nuevo</string>
+    <string name="document_detail_captured">Capturado</string>
+    <string name="document_detail_add_page">Añadir página</string>
+    <string name="document_detail_scan_or_import">Escanea o importa</string>
+    <string name="document_detail_add_page_scan_or_import">Añadir página. Escanea o importa.</string>
+    <string name="document_detail_share_2">Compartir</string>
+    <string name="document_detail_retake">Repetir</string>
+    <string name="document_detail_open_zoom_view">Abrir vista ampliada</string>
+    <string name="document_detail_page_of">"Página %1$s de %2$s"</string>
+    <string name="document_detail_import_images">Importar imágenes</string>
+    <string name="document_detail_scan_a_page">Escanear una página</string>
+    <string name="document_detail_scan_a_page_or_import">"Escanea una página o importa hasta %1$s imágenes para empezar este documento."</string>
+    <string name="document_detail_no_pages_yet">Aún no hay páginas</string>
+    <string name="document_detail_return_to_the_library_and">Vuelve a la biblioteca y abre otro.</string>
+    <string name="document_detail_document_not_found">No se encontró el documento</string>
+    <string name="document_detail_select_a_page_to_preview">Selecciona una página para verla</string>
+    <string name="document_detail_tap_to_review_long_press">Toca para revisar. Mantén pulsado y arrastra para reordenar.</string>
+    <string name="document_detail_long_press_and_drag_to">Mantén pulsado y arrastra para reordenar</string>
+    <string name="document_detail_pages">Páginas</string>
+    <string name="document_detail_use_scan_or_import_to">Usa Escanear o Importar para añadir tu primera página.</string>
+    <string name="document_detail_please_wait_while_the_file">Espera mientras se prepara el archivo.</string>
+    <string name="document_detail_share_pages">Compartir páginas</string>
+    <string name="document_detail_save_images_zip">Guardar imágenes en ZIP</string>
+    <string name="document_detail_share_pdf">Compartir PDF</string>
+    <string name="document_detail_save_pdf">Guardar PDF</string>
+    <string name="document_detail_export_share">Exportar y compartir</string>
+    <string name="document_detail_pick_up_to_images_from">"Elige hasta %1$s imágenes de tus archivos"</string>
+    <string name="document_detail_choose_images">Elegir imágenes</string>
+    <string name="document_detail_open_the_camera_to_scan">Abre la cámara para escanear una página nueva</string>
+    <string name="document_detail_capture_a_new_scan_or">"Haz un nuevo escaneo o elige hasta %1$s imágenes de tu galería."</string>
+    <string name="document_detail_delete_document">Eliminar documento</string>
+    <string name="document_detail_rename_document">Cambiar nombre del documento</string>
+    <string name="document_detail_document_options">Opciones del documento</string>
+    <string name="document_detail_working_on_your_photos">Procesando tus fotos</string>
+    <string name="document_detail_preparing_export">Preparando exportación</string>
+    <string name="document_detail_generate">Generar</string>
+    <string name="document_detail_delete_document_2">¿Eliminar documento?</string>
+    <string name="document_detail_save">Guardar</string>
+    <string name="document_detail_document">Documento</string>
+    <!-- DocumentDetailViewModel -->
+    <string name="document_detail_document_renamed">Se cambió el nombre del documento.</string>
+    <string name="document_detail_starting_import">Iniciando importación</string>
+    <string name="document_detail_page_image_is_not_available">La imagen de la página aún no está disponible.</string>
+    <string name="document_detail_preparing_pages">Preparando páginas</string>
+    <string name="document_detail_saved_to">"%1$s guardado en %2$s"</string>
+    <string name="document_detail_preparing_and_saving_zip">Preparando y guardando ZIP</string>
+    <string name="document_detail_preparing_pdf">Preparando PDF</string>
+    <string name="document_detail_generating_and_saving_pdf">Generando y guardando PDF</string>
+    <string name="document_detail_reordered_pages">Páginas reordenadas.</string>
+    <string name="document_detail_moved_to_folder">Movido a la carpeta</string>
+    <string name="document_detail_moved_to">"Movido a %1$s"</string>
+    <string name="document_detail_removed_from_folder">Quitado de la carpeta</string>
+    <!-- FilterCustomizeScreen -->
+    <string name="filter_customize_faded_text">Texto tenue</string>
+    <string name="filter_customize_whiteboard">Pizarra blanca</string>
+    <string name="filter_customize_grayscale">Escala de grises</string>
+    <string name="filter_customize_screen">Pantalla</string>
+    <string name="filter_customize_vivid">Intenso</string>
+    <string name="filter_customize_natural">Natural</string>
+    <string name="filter_customize_magic_color">Color mágico</string>
+    <string name="filter_customize_auto">Automático</string>
+    <string name="filter_customize_original">Original</string>
+    <string name="filter_customize_intensity">Intensidad</string>
+    <string name="filter_customize_sharpness">Nitidez</string>
+    <string name="filter_customize_saturation">Saturación</string>
+    <string name="filter_customize_contrast">Contraste</string>
+    <string name="filter_customize_brightness">Brillo</string>
+    <string name="filter_customize_fine_tune_on_this_page">"Ajusta %1$s en esta página. Mantén pulsado Comparar para ver solo el filtro."</string>
+    <string name="filter_customize_customize_filter">Personalizar filtro</string>
+    <string name="filter_customize_adjusted">Ajustado</string>
+    <string name="filter_customize_filter_only">Solo filtro</string>
+    <string name="filter_customize_filter_adjustment_preview">Vista previa del ajuste del filtro</string>
+    <string name="filter_customize_selected_filter_without_adjustments">Filtro seleccionado sin ajustes</string>
+    <string name="filter_customize_loading_preview">Cargando vista previa…</string>
+    <string name="filter_customize_hold_to_compare_with_filter">Mantén pulsado para comparar con el filtro solo</string>
+    <string name="filter_customize_reset_adjustments">Restablecer ajustes</string>
+    <string name="filter_customize_adjust">Ajustar</string>
+    <string name="filter_customize_compare">Comparar</string>
+    <!-- FilterPickerScreen -->
+    <string name="filter_picker_selected_filter">Filtro seleccionado</string>
+    <string name="filter_picker_filter_thumbnail">"Miniatura del filtro %1$s"</string>
+    <string name="filter_picker_analyzing_the_page_to_tune">Analizando la página para ajustar cada filtro.</string>
+    <string name="filter_picker_filter_only_crop_rotation_and">Solo el filtro. El recorte, el giro y los ajustes se mantienen por página.</string>
+    <string name="filter_picker_apply_filter_to_all_pages">Aplicar filtro a todas las páginas</string>
+    <string name="filter_picker_tap_a_preset_to_update">Toca un estilo para actualizar la vista previa. Guarda desde el editor cuando termines.</string>
+    <string name="filter_picker_filters">Filtros</string>
+    <string name="filter_picker_filter_preview">"Vista previa del filtro %1$s"</string>
+    <!-- PageCropScreen -->
+    <string name="page_crop_page_crop_preview">Vista previa del recorte</string>
+    <string name="page_crop_detecting">Detectando</string>
+    <string name="page_crop_reset">Restablecer</string>
+    <string name="page_crop_ai_detect">Detectar con IA</string>
+    <string name="page_crop_right">Derecha</string>
+    <string name="page_crop_left">Izquierda</string>
+    <string name="page_crop_apply_crop">Aplicar recorte</string>
+    <string name="page_crop_detecting_document">Detectando documento…</string>
+    <string name="page_crop_keep_editing">Seguir editando</string>
+    <string name="page_crop_discard">Descartar</string>
+    <string name="page_crop_your_crop_changes_have_not">Los cambios del recorte no se han aplicado.</string>
+    <string name="page_crop_discard_changes">¿Descartar cambios?</string>
+    <string name="page_crop_full_frame_corners">Esquinas de imagen completa</string>
+    <string name="page_crop_reset_crop">Restablecer recorte</string>
+    <string name="page_crop_rotate_right">Girar a la derecha</string>
+    <string name="page_crop_rotate_left">Girar a la izquierda</string>
+    <string name="page_crop_find_the_document_corners">Buscar las esquinas del documento</string>
+    <string name="page_crop_detecting_2">Detectando…</string>
+    <string name="page_crop_detect_edges_rotate_then_drag">Detecta los bordes, gira y arrastra los controles. Toca Listo para aplicar.</string>
+    <string name="page_crop_crop_tools">Herramientas de recorte</string>
+    <string name="page_crop_page_not_found">No se encontró la página.</string>
+    <string name="page_crop_crop">Recortar</string>
+    <string name="page_crop_processing">Procesando</string>
+    <!-- PageCropViewModel -->
+    <string name="page_crop_crop_updated">Recorte actualizado.</string>
+    <string name="page_crop_document_detected">Documento detectado.</string>
+    <string name="page_crop_raw_image_is_not_available">La imagen original no está disponible para la detección.</string>
+    <!-- PageEditorScreen -->
+    <string name="page_editor_please_wait_while_scanly_adapts">Espera mientras Scanly adapta el filtro y actualiza todo el documento.</string>
+    <string name="page_editor_processing_image_data_for_all">Procesando las imágenes de todas las páginas</string>
+    <string name="page_editor_page_editor_preview">Vista previa del editor de páginas</string>
+    <string name="page_editor_your_edits_to_this_page">Los cambios en esta página no se han guardado.</string>
+    <string name="page_editor_remove_from_document">Quitar del documento</string>
+    <string name="page_editor_capture_this_page_again">Volver a capturar esta página</string>
+    <string name="page_editor_brightness_contrast_more">Brillo, contraste y más</string>
+    <string name="page_editor_ai_detect_rotate_handles">Detectar con IA, girar, controles</string>
+    <string name="page_editor_crop_filter_and_adjust_this">Recorta, aplica filtros y ajusta esta página. Guarda con Listo.</string>
+    <string name="page_editor_edit_tools">Herramientas de edición</string>
+    <string name="page_editor_editor">Editor</string>
+    <!-- PageEditorViewModel -->
+    <string name="page_editor_page_updated">Página actualizada.</string>
+    <string name="page_editor_filter_applied_to_all_pages">Filtro aplicado a todas las páginas.</string>
+    <!-- HomePip -->
+    <string name="home_pip_hide_today_s_tip">Ocultar el consejo de hoy</string>
+    <!-- HomeRatingPrompt -->
+    <string name="home_rating_prompt_rate_scanly_opens_google_play">Valorar Scanly, abre Google Play</string>
+    <string name="home_rating_prompt_rate_on_google_play">Valorar en Google Play</string>
+    <string name="home_rating_prompt_scanly_is_free_private_and">Scanly es gratis, privado y sin anuncios. Si te ahorra tiempo, una valoración rápida en Google Play nos ayuda muchísimo.</string>
+    <string name="home_rating_prompt_rate_scanly">Valorar Scanly</string>
+    <!-- HomeScreen -->
+    <string name="home_search_names_and_text_in">Busca nombres y texto en las páginas</string>
+    <string name="home_start_scanning">Empezar a escanear</string>
+    <string name="home_scan_your_first_page_and">Escanea tu primera página y la tendrás aquí siempre que la necesites.</string>
+    <string name="home_no_documents_yet">Aún no hay documentos</string>
+    <string name="home_loading_your_documents">Cargando tus documentos</string>
+    <string name="home_folder">Carpeta</string>
+    <string name="home_import">Importar</string>
+    <string name="home_scan">Escanear</string>
+    <string name="home_save_it_now">Guárdalo ahora</string>
+    <string name="home_save_it_now_find_it">Guárdalo hoy,\nencuéntralo mañana.</string>
+    <string name="home_still_scanning">¿Sigues escaneando?</string>
+    <string name="home_wrap_up_and_digitize_your">Cierra el día\ny digitalízalo.</string>
+    <string name="home_good_evening">Buenas noches,</string>
+    <string name="home_let_s_capture_some_documents">Vamos a capturar\nalgunos documentos.</string>
+    <string name="home_good_afternoon">Buenas tardes,</string>
+    <string name="home_what_are_we_scanning_today">¿Qué escaneamos\nhoy?</string>
+    <string name="home_good_morning">Buenos días,</string>
+    <string name="home_see_all">Ver todo</string>
+    <string name="home_recent_documents">Documentos recientes</string>
+    <string name="home_recent_folders">Carpetas recientes</string>
+    <string name="home_new_scan">Nuevo escaneo</string>
+    <!-- FolderDeleteDialog -->
+    <string name="folder_delete_both_go_to_recently_deleted">"Ambos se guardan en Eliminados recientemente durante %1$s"</string>
+    <string name="folder_delete_delete_folder_and_documents">Eliminar carpeta y documentos</string>
+    <string name="folder_delete_keep_the_in_your_library">"Conserva los %1$s en tu biblioteca"</string>
+    <string name="folder_delete_delete_folder_only">Eliminar solo la carpeta</string>
+    <string name="folder_delete_delete_folder">¿Eliminar carpeta?</string>
+    <!-- GroupDetailScreen -->
+    <string name="group_detail_not_selected">No seleccionado</string>
+    <string name="group_detail_add_documents">"Añadir %1$s documentos"</string>
+    <string name="group_detail_add_1_document">Añadir 1 documento</string>
+    <string name="group_detail_add_selected">Añadir seleccionados</string>
+    <string name="group_detail_documents_already_in_folders_won">Los documentos que ya están en carpetas no aparecen aquí. Crea uno nuevo.</string>
+    <string name="group_detail_no_loose_documents">No hay documentos sueltos</string>
+    <string name="group_detail_select_all">Seleccionar todo</string>
+    <string name="group_detail_clear">Borrar</string>
+    <string name="group_detail_select_one_or_more_documents">Selecciona uno o más documentos</string>
+    <string name="group_detail_nothing_available_to_move">No hay nada que mover</string>
+    <string name="group_detail_move_existing">Mover existentes</string>
+    <string name="group_detail_starts_empty_inside_this_folder">Empieza vacío dentro de esta carpeta</string>
+    <string name="group_detail_create_new_document">Crear documento</string>
+    <string name="group_detail_create_a_new_document_or">"Crea un documento nuevo o elige entre los %1$s que están fuera de esta carpeta."</string>
+    <string name="group_detail_create_a_new_document_or_2">Crea un documento nuevo o mueve los que aún no están en una carpeta.</string>
+    <string name="group_detail_add_documents_to_folder">Añadir documentos a la carpeta</string>
+    <string name="group_detail_add_documents_2">Añadir documentos</string>
+    <string name="group_detail_add_a_document_here_to">Añade aquí un documento para tener juntos los escaneos relacionados.</string>
+    <string name="group_detail_this_folder_is_empty">Esta carpeta está vacía</string>
+    <string name="group_detail_share_pdfs_as_zip">Compartir PDF en ZIP</string>
+    <string name="group_detail_save_pdfs_as_zip">Guardar PDF en ZIP</string>
+    <string name="group_detail_separate_pdfs_one_pdf_per">PDF separados · un PDF por documento, agrupados en un ZIP</string>
+    <string name="group_detail_share_merged_pdf">Compartir PDF combinado</string>
+    <string name="group_detail_save_merged_pdf">Guardar PDF combinado</string>
+    <string name="group_detail_single_pdf_merged_into_one">"Un solo PDF · %1$s combinados en un archivo"</string>
+    <string name="group_detail_new_document">Nuevo documento</string>
+    <string name="group_detail_remove">Quitar</string>
+    <string name="group_detail_will_be_moved_out_of">\"%1$s\" se sacará de esta carpeta.</string>
+    <string name="group_detail_remove_from_folder">¿Quitar de la carpeta?</string>
+    <string name="group_detail_rename_folder">Cambiar nombre de la carpeta</string>
+    <string name="group_detail_delete_folder">Eliminar carpeta</string>
+    <string name="group_detail_export_and_share">Exportar y compartir</string>
+    <!-- GroupDetailViewModel -->
+    <string name="group_detail_generating_pdf_of">"Generando PDF %1$s de %2$s…"</string>
+    <string name="group_detail_generating_page_of">"Generando página %1$s de %2$s…"</string>
+    <string name="group_detail_document_removed_from_folder">Documento quitado de la carpeta.</string>
+    <string name="group_detail_added_documents_to_folder">"Se añadieron %1$s documentos a la carpeta."</string>
+    <string name="group_detail_added_1_document_to_folder">Se añadió 1 documento a la carpeta.</string>
+    <string name="group_detail_added_of_documents">"Se añadieron %1$s de %2$s documentos. %3$s"</string>
+    <string name="group_detail_folder_renamed">Se cambió el nombre de la carpeta.</string>
+    <!-- LibraryScreen -->
+    <string name="library_create_a_folder_to_stay">Crea una carpeta para mantener el orden o añade un documento y empieza a capturar.</string>
+    <string name="library_your_library_is_ready">Tu biblioteca está lista</string>
+    <string name="library_save_to">Guardar en</string>
+    <string name="library_choose_how_are_ordered">"Elige cómo se ordenan las %1$s."</string>
+    <string name="library_sort_library">Ordenar biblioteca</string>
+    <string name="library_folders_and_documents">carpetas y documentos</string>
+    <string name="library_create_a_document_then_scan">Crea un documento y luego escanea páginas o impórtalas de tu galería.</string>
+    <string name="library_create_a_folder_to_keep">Crea una carpeta para encontrar fácilmente los documentos relacionados.</string>
+    <string name="library_no_folders_yet">Aún no hay carpetas</string>
+    <string name="library_list_view">Vista de lista</string>
+    <string name="library_grid_view">Vista de cuadrícula</string>
+    <string name="library_folders">Carpetas</string>
+    <string name="library_back_to_library">Volver a la biblioteca</string>
+    <string name="library_documents">Documentos</string>
+    <string name="library_search_library">Buscar en la biblioteca</string>
+    <string name="library_library">Biblioteca</string>
+    <!-- LibrarySearchScreen -->
+    <string name="library_search_remove_from_recent_searches">"Quitar %1$s de las búsquedas recientes"</string>
+    <string name="library_search_search_again">Volver a buscar</string>
+    <string name="library_search_text_is_read_on_this">El texto se lee en este dispositivo. Tus páginas nunca salen de él.</string>
+    <string name="library_search_some_pages_are_still_being">Aún se están leyendo algunas páginas, así que pronto podrían aparecer más resultados.</string>
+    <string name="library_search_search_for_instead">Buscar “%1$s” en su lugar</string>
+    <string name="library_search_nothing_matches_try_fewer_words">No hay resultados para “%1$s”. Prueba con menos palabras o revisa la ortografía.</string>
+    <string name="library_search_no_results_found">No se encontraron resultados</string>
+    <string name="library_search_rent_or_lease_finds_pages">“alquiler OR contrato” encuentra páginas con una u otra</string>
+    <string name="library_search_either_word">Cualquiera de las palabras</string>
+    <string name="library_search_lease_draft_skips_anything_that">“contrato -borrador” omite todo lo que mencione borrador</string>
+    <string name="library_search_leave_a_word_out">Excluir una palabra</string>
+    <string name="library_search_you_ll_get_the_closest">Verás la palabra más parecida de tus escaneos</string>
+    <string name="library_search_small_typos_are_fine">No pasa nada por pequeñas erratas</string>
+    <string name="library_search_security_deposit_in_that_order">“depósito de garantía”, en ese orden</string>
+    <string name="library_search_use_quotes_for_a_phrase">Usa comillas para buscar una frase</string>
+    <string name="library_search_lea_finds_lease_and_leasing">“contra” encuentra contrato y contratación</string>
+    <string name="library_search_type_part_of_a_word">Escribe parte de una palabra</string>
+    <string name="library_search_search_tips">Consejos de búsqueda</string>
+    <string name="library_search_browse_by_type">Explorar por tipo</string>
+    <string name="library_search_recent">Recientes</string>
+    <string name="library_search_folder">"Carpeta · "</string>
+    <string name="library_search_matched">Coincide con “%1$s”</string>
+    <string name="library_search_scanned_as">Leído como “%1$s”</string>
+    <string name="library_search_show_page_text">Mostrar texto de la página</string>
+    <string name="library_search_show_fewer_pages">Mostrar menos páginas</string>
+    <string name="library_search_open_document">Abrir documento</string>
+    <string name="library_search_similar_words">"Palabras similares: "</string>
+    <string name="library_search_close_matches">Coincidencias aproximadas</string>
+    <string name="library_search_searching_text_in_pages">Buscando texto en las páginas…</string>
+    <string name="library_search_by_name">" · %1$s por nombre"</string>
+    <string name="library_search_complete_to">"Completar como "</string>
+    <string name="library_search_filters_on">"Filtros, %1$s activos"</string>
+    <string name="library_search_filters">"Filtros · %1$s"</string>
+    <string name="library_search_matching_names">Nombres coincidentes</string>
+    <string name="library_search_found_in_pages">Encontrado en páginas</string>
+    <string name="library_search_clear_search">Borrar búsqueda</string>
+    <!-- RecentlyDeletedScreen -->
+    <string name="recently_deleted_page_of_will_be_deleted">"La página %1$s de \"%2$s\" se eliminará definitivamente. Esta acción no se puede deshacer."</string>
+    <string name="recently_deleted_and_its_pages_will_be">\"%1$s\" y sus páginas se eliminarán definitivamente. Esta acción no se puede deshacer.</string>
+    <string name="recently_deleted_and_the_documents_that_were">\"%1$s\" y los documentos que contenía se eliminarán definitivamente. Esta acción no se puede deshacer.</string>
+    <string name="recently_deleted_its_documents_stay_in_your">" Sus documentos se quedan en tu biblioteca."</string>
+    <string name="recently_deleted_the_folder_will_be_deleted">La carpeta \"%1$s\" se eliminará definitivamente. Esta acción no se puede deshacer.</string>
+    <string name="recently_deleted_page_of">"página %1$s de \"%2$s\""</string>
+    <string name="recently_deleted_days_left">"Quedan %1$s días"</string>
+    <string name="recently_deleted_1_day_left">Queda 1 día</string>
+    <string name="recently_deleted_last_day">Último día</string>
+    <string name="recently_deleted_from">De \"%1$s\"</string>
+    <string name="recently_deleted_no_documents">Sin documentos</string>
+    <string name="recently_deleted_folder_only_documents_kept_in">"Solo la carpeta · %1$s documentos se quedan en la biblioteca"</string>
+    <string name="recently_deleted_folder_only_1_document_kept">Solo la carpeta · 1 documento se queda en la biblioteca</string>
+    <string name="recently_deleted_restore">Restaurar</string>
+    <string name="recently_deleted_delete_forever">Eliminar definitivamente</string>
+    <string name="recently_deleted_select">Seleccionar</string>
+    <string name="recently_deleted_delete_forever_2">"Eliminar %1$s definitivamente"</string>
+    <string name="recently_deleted_restore_2">"Restaurar %1$s"</string>
+    <string name="recently_deleted_show_options">Mostrar opciones</string>
+    <string name="recently_deleted_the_selected_items_will_be">"Los %1$s elementos seleccionados se eliminarán definitivamente. Esta acción no se puede deshacer."</string>
+    <string name="recently_deleted_delete_items_forever">"¿Eliminar %1$s elementos definitivamente?"</string>
+    <string name="recently_deleted_delete_1_item_forever">¿Eliminar 1 elemento definitivamente?</string>
+    <string name="recently_deleted_delete_forever_3">¿Eliminar definitivamente?</string>
+    <string name="recently_deleted_delete_all">Eliminar todo</string>
+    <string name="recently_deleted_all_items_will_be_deleted">"Los %1$s elementos se eliminarán definitivamente. Esta acción no se puede deshacer."</string>
+    <string name="recently_deleted_this_item_will_be_deleted">Este elemento se eliminará definitivamente. Esta acción no se puede deshacer.</string>
+    <string name="recently_deleted_empty_recently_deleted">¿Vaciar Eliminados recientemente?</string>
+    <string name="recently_deleted_deleted_pages_stay_here_for">Las páginas eliminadas se quedan aquí %1$s, y los documentos y las carpetas %2$s, para que puedas recuperarlos.</string>
+    <string name="recently_deleted_nothing_here">No hay nada</string>
+    <string name="recently_deleted_nothing_in_the_bin_deleted">la papelera está vacía. lo que eliminas espera aquí unos días.</string>
+    <string name="recently_deleted_empty">Vaciar</string>
+    <string name="recently_deleted_select_none">No seleccionar nada</string>
+    <string name="recently_deleted_clear_selection">Borrar selección</string>
+    <string name="recently_deleted_recently_deleted">Eliminados recientemente</string>
+    <!-- RecentlyDeletedViewModel -->
+    <string name="recently_deleted_page_restored_to">"Página %1$s restaurada en \"%2$s\""</string>
+    <string name="recently_deleted_document_restored">Documento restaurado</string>
+    <string name="recently_deleted_folder_restored">Carpeta restaurada</string>
+    <string name="recently_deleted_recently_deleted_is_empty">Eliminados recientemente está vacío</string>
+    <string name="recently_deleted_deleted_permanently">Eliminado definitivamente</string>
+    <!-- SearchFiltersSheet -->
+    <string name="search_filters_apply">Aplicar</string>
+    <string name="search_filters_remove_filter">"Quitar filtro: %1$s"</string>
+    <string name="search_filters_in">"En %1$s"</string>
+    <string name="search_filters_not_in_a_folder">Fuera de carpetas</string>
+    <string name="search_filters_sort_by">Ordenar por</string>
+    <string name="search_filters_any_folder">Cualquier carpeta</string>
+    <string name="search_filters_date_modified">Fecha de modificación</string>
+    <string name="search_filters_any_type">Cualquier tipo</string>
+    <string name="search_filters_type">Tipo</string>
+    <!-- TrashCopy -->
+    <string name="trash_copy_page_moves_to_recently_deleted">"La página %1$s se moverá a Eliminados recientemente. Podrás restaurarla durante %2$s."</string>
+    <string name="trash_copy_and_its_documents_move_to">"\"%1$s\" y sus %2$s documentos se moverán a Eliminados recientemente. Podrás restaurarlos durante %3$s."</string>
+    <string name="trash_copy_and_the_document_in_it">\"%1$s\" y el documento que contiene se moverán a Eliminados recientemente. Podrás restaurarlos durante %2$s.</string>
+    <string name="trash_copy_moves_to_recently_deleted_you">\"%1$s\" se moverá a Eliminados recientemente. Podrás restaurarlo durante %2$s.</string>
+    <string name="trash_copy_1_day">1 día</string>
+    <!-- TrashUndoSnackbar -->
+    <string name="trash_undo_snackbar_moved_to_recently_deleted">\"%1$s\" se movió a Eliminados recientemente</string>
+    <string name="trash_undo_snackbar_moved_to_recently_deleted_2">"%1$s movidos a Eliminados recientemente"</string>
+    <string name="trash_undo_snackbar_undo">Deshacer</string>
+    <!-- OnboardingFlow -->
+    <string name="onboarding_flow_enable_camera">Activar cámara</string>
+    <string name="onboarding_flow_enable_the_camera_to_scan">Activa la cámara para escanear papel. Aun sin ella, puedes importar imágenes.</string>
+    <string name="onboarding_flow_open_settings_tap_permissions_and">Abre Ajustes, toca Permisos y permite el acceso a Cámara. Aun sin ella, puedes importar imágenes.</string>
+    <string name="onboarding_flow_ready_for_your_first_scan">¿Listo para tu primer escaneo?</string>
+    <string name="onboarding_flow_camera_access_is_turned_off">El acceso a la cámara está desactivado</string>
+    <!-- OnboardingScreen -->
+    <string name="onboarding_no_account_no_cloud_upload">Sin cuenta. Sin subir nada a la nube.</string>
+    <string name="onboarding_continue">Continuar</string>
+    <string name="onboarding_get_started">Empezar</string>
+    <string name="onboarding_page_of_3">"%1$s, página %2$s de 3"</string>
+    <string name="onboarding_page_of_3_2">"Página %1$s de 3"</string>
+    <string name="onboarding_skip">Omitir</string>
+    <string name="onboarding_scanly">Scanly.</string>
+    <string name="onboarding_previous_page">Página anterior</string>
+    <string name="onboarding_feature_edge_detection">Detección automática de bordes</string>
+    <string name="onboarding_feature_crop_straighten">Recorta y endereza páginas</string>
+    <string name="onboarding_feature_filters">Color mágico, Pizarra blanca y más</string>
+    <string name="onboarding_feature_ocr">Reconocimiento de texto en el dispositivo</string>
+    <string name="onboarding_feature_search">Busca palabras en todos tus escaneos</string>
+    <string name="onboarding_feature_copy_text">Copia el texto de cualquier página</string>
+    <string name="onboarding_feature_multipage_pdf">PDF de varias páginas</string>
+    <string name="onboarding_feature_password">Protege con contraseña antes de compartir</string>
+    <string name="onboarding_feature_sign">Firma documentos</string>
+    <string name="onboarding_assurance_offline">Funciona totalmente sin conexión.</string>
+    <string name="onboarding_assurance_on_device">Tu texto nunca sale de este dispositivo.</string>
+    <!-- Pip -->
+    <string name="pip_poke_pip_scanly_s_helper">Toca a Pip, el ayudante de Scanly</string>
+    <!-- PipBubble -->
+    <string name="pip_bubble_dismiss">Cerrar</string>
+    <!-- PipLines -->
+    <string name="pip_lines_all_set_pages_nice_and">"¡todo listo! %1$s páginas, bien rectas."</string>
+    <string name="pip_lines_all_set_1_page_nice">¡todo listo! 1 página, bien recta.</string>
+    <string name="pip_lines_ready_when_you_are">cuando quieras, empezamos.</string>
+    <string name="pip_lines_i_looked_on_every_page">he mirado en todas las páginas. ni rastro de “%1$s”.</string>
+    <!-- FeaturePlaceholderScreen -->
+    <string name="feature_placeholder_planned_for">Previsto para %1$s.</string>
+    <!-- PageImagePreviewScreen -->
+    <string name="page_image_preview_sign">Firmar</string>
+    <string name="page_image_preview_delete_page">¿Eliminar página?</string>
+    <!-- PageImagePreviewViewModel -->
+    <string name="page_image_preview_scanly_page">"Página %1$s de Scanly"</string>
+    <!-- LegalDocumentScreen -->
+    <string name="legal_document_open_in_browser">Abrir en el navegador</string>
+    <string name="legal_document_retry">Reintentar</string>
+    <string name="legal_document_check_your_internet_connection_and">Comprueba tu conexión a Internet y vuelve a intentarlo.</string>
+    <string name="legal_document_couldn_t_be_loaded">"No se pudo cargar %1$s"</string>
+    <!-- ModelBenchmarkScreen -->
+    <string name="model_benchmark_pipeline_s_1f_ms" formatted="false">Proceso: %s · %.1f ms</string>
+    <string name="model_benchmark_total_1f_ms" formatted="false">total %.1f ms</string>
+    <string name="model_benchmark_pre_0f_inf_0f_post" formatted="false">pre %.0f · inf %.0f · post %.0f</string>
+    <string name="model_benchmark_not_detected">No detectado</string>
+    <string name="model_benchmark_detected_conf_0f" formatted="false">Detectado · conf. %.0f%%</string>
+    <string name="model_benchmark_none">Ninguno</string>
+    <string name="model_benchmark_quad">Cuadrilátero</string>
+    <string name="model_benchmark_error">Error</string>
+    <string name="model_benchmark_no_preview">Sin vista previa</string>
+    <string name="model_benchmark_detection_preview">"Vista previa de detección de %1$s"</string>
+    <string name="model_benchmark_avg_1f_p50_1f_p95" formatted="false">media %.1f · P50 %.1f · P95 %.1f ms · detectados %d/%d · fallidos %d</string>
+    <string name="model_benchmark_avg_1f_p95_1f_ms" formatted="false">media %.1f · P95 %.1f ms · aceptados %d/%d</string>
+    <string name="model_benchmark_document_gate">Filtro de documentos</string>
+    <string name="model_benchmark_aggregate">Total</string>
+    <string name="model_benchmark_images_processed">"%1$s / %2$s imágenes procesadas"</string>
+    <string name="model_benchmark_choose_images_and_run">Elegir imágenes y ejecutar</string>
+    <string name="model_benchmark_benchmark_running">Ejecutando prueba…</string>
+    <string name="model_benchmark_select_more_photos_to_measure">Selecciona más fotos para medir la latencia del filtro, la detección de esquinas, los polígonos superpuestos y el tiempo del proceso completo.</string>
+    <string name="model_benchmark_run_another_pass">Ejecutar otra pasada</string>
+    <string name="model_benchmark_images_stay_on_this_device">Las imágenes se quedan en este dispositivo. No se sube nada.</string>
+    <string name="model_benchmark_choose_real_documents_or_rectangular">Elige documentos reales u objetos rectangulares. Scanly medirá el tiempo de cada detector y mostrará los bordes detectados.</string>
+    <string name="model_benchmark_compare_detectors_on_your_photos">Compara detectores con tus fotos</string>
+    <string name="model_benchmark_model_benchmark">Prueba de modelos</string>
+    <string name="model_benchmark_image">Imagen</string>
+    <string name="model_benchmark_model_failed">Error del modelo</string>
+    <string name="model_benchmark_could_not_decode_image">No se pudo decodificar la imagen</string>
+    <!-- PipSettingsScreen -->
+    <string name="pip_settings_on">"Activado · "</string>
+    <string name="pip_settings_on_2">Activado</string>
+    <string name="pip_settings_napping">Durmiendo</string>
+    <string name="pip_settings_napping_screens_show_plain_text">Durmiendo · las pantallas muestran texto normal</string>
+    <string name="pip_settings_on_around_the_app">Activado en toda la app</string>
+    <string name="pip_settings_show_pip">Mostrar a Pip</string>
+    <string name="pip_settings_scanly_s_little_helper_pip">El pequeño ayudante de Scanly. Pip aparece en pantallas vacías, en la cámara y cuando algo está listo, dice algo breve y se aparta.</string>
+    <string name="pip_settings_pip">Pip</string>
+    <string name="pip_settings_hi_this_is_where_you">¡hola! aquí eliges cuánto te ayudo.</string>
+    <string name="pip_settings_i_ll_keep_still_still">me quedaré quieto. pero sigo aquí.</string>
+    <string name="pip_settings_okay_i_ll_nap_switch">vale, me echo una siesta. actívame cuando quieras.</string>
+    <string name="pip_settings_pip_lives_on_this_phone">Pip vive en este teléfono y nunca mira tus documentos. Todo lo que dice viene incluido en Scanly.</string>
+    <string name="pip_settings_blinks_talks_and_hops_pip">Parpadea, habla y salta. Pip se queda quieto cuando las animaciones del sistema están desactivadas.</string>
+    <string name="pip_settings_animate_pip">Animar a Pip</string>
+    <string name="pip_settings_motion">Movimiento</string>
+    <string name="pip_settings_a_happy_hello_when_a">Un alegre saludo cuando un documento está listo para compartir.</string>
+    <string name="pip_settings_cheer_on_exports">Celebrar exportaciones</string>
+    <string name="pip_settings_pip_helps_you_frame_pages">Pip te ayuda a encuadrar las páginas. Si lo desactivas, verás la guía normal.</string>
+    <string name="pip_settings_camera_coaching">Ayuda con la cámara</string>
+    <string name="pip_settings_one_short_tip_a_day">Un consejo breve al día debajo del saludo.</string>
+    <string name="pip_settings_tips_on_home">Consejos en Inicio</string>
+    <string name="pip_settings_where_pip_helps">Dónde ayuda Pip</string>
+    <!-- SettingsComponents -->
+    <string name="settings_pages_were_read_with_another">"%1$s páginas se leyeron con otro motor. Vuelve a leerlas con %2$s en segundo plano."</string>
+    <string name="settings_1_page_was_read_with">"1 página se leyó con otro motor. Vuelve a leerla con %1$s en segundo plano."</string>
+    <string name="settings_re_read_existing_pages">Volver a leer páginas existentes</string>
+    <string name="settings_indra_ocr_paused_it_stopped">Indra OCR está en pausa: se detuvo inesperadamente dos veces, así que las páginas se leen con ML Kit. Vuelve a seleccionar Indra OCR para reintentarlo.</string>
+    <string name="settings_ml_kit">ML Kit</string>
+    <string name="settings_indra_ocr">Indra OCR</string>
+    <string name="settings_rate_scanly_on_google_play">Valorar Scanly en Google Play</string>
+    <string name="settings_it_s_free_private_and">Es gratis, privado y sin anuncios. Una valoración rápida en Google Play ayuda a que otros lo encuentren.</string>
+    <string name="settings_enjoying_scanly">¿Te gusta Scanly?</string>
+    <string name="settings_dark">Oscuro</string>
+    <string name="settings_light">Claro</string>
+    <string name="settings_system">Sistema</string>
+    <string name="settings_tap_to_check">"Toca para consultar %1$s"</string>
+    <string name="settings_you_are_on_latest_is">Tienes la versión %1$s. La más reciente es %2$s.</string>
+    <string name="settings_scanly_is_available_on">"Scanly %1$s está disponible en %2$s."</string>
+    <string name="settings_checking">Consultando %1$s...</string>
+    <string name="settings_check_for_updates">Buscar actualizaciones</string>
+    <string name="settings_by_jeevaprakash_g">por jeevaprakash g</string>
+    <string name="settings_version_unavailable">Versión no disponible</string>
+    <string name="settings_pick_the_detector_that_fits">Elige el detector que mejor se adapte a este dispositivo y a tu forma de trabajar.</string>
+    <string name="settings_choose">"Elegir %1$s"</string>
+    <string name="settings_highest_accuracy_maximum_compatibility">Máxima precisión · máxima compatibilidad</string>
+    <string name="settings_higher_accuracy_best_after_capture">Más precisión · ideal después de capturar</string>
+    <string name="settings_balanced_speed_and_accuracy">Equilibrio entre velocidad y precisión</string>
+    <string name="settings_fastest_ideal_for_live_camera">El más rápido · ideal para la vista previa de la cámara</string>
+    <!-- SettingsDetailScreens -->
+    <string name="settings_detail_screens_open_source">Código abierto</string>
+    <string name="settings_detail_screens_try_a_different_word_or">Prueba con otra palabra o explora una categoría.</string>
+    <string name="settings_detail_screens_no_answers_for">No hay respuestas para “%1$s”.</string>
+    <string name="settings_detail_screens_no_answers_in_this_category">No hay respuestas en esta categoría.</string>
+    <string name="settings_detail_screens_all">Todo</string>
+    <string name="settings_detail_screens_search_help">Buscar en la ayuda</string>
+    <string name="settings_detail_screens_help_faq">Ayuda y preguntas frecuentes</string>
+    <!-- SettingsHubSubScreens -->
+    <string name="settings_hub_sub_screens_terms_conditions">Términos y condiciones</string>
+    <string name="settings_hub_sub_screens_privacy_policy">Política de privacidad</string>
+    <string name="settings_hub_sub_screens_legal">Información legal</string>
+    <string name="settings_hub_sub_screens_project_website">Web del proyecto</string>
+    <string name="settings_hub_sub_screens_contact_support">Contactar con el soporte</string>
+    <string name="settings_hub_sub_screens_help">Ayuda</string>
+    <string name="settings_hub_sub_screens_about">Información</string>
+    <string name="settings_hub_sub_screens_open_the_qr_tool">Abre la herramienta QR</string>
+    <string name="settings_hub_sub_screens_qr_widget">Widget de QR</string>
+    <string name="settings_hub_sub_screens_start_a_new_document_scan">Inicia un nuevo escaneo de documento</string>
+    <string name="settings_hub_sub_screens_scan_widget">Widget de escaneo</string>
+    <string name="settings_hub_sub_screens_scan_import_qr_library">Escanear · Importar · QR · Biblioteca</string>
+    <string name="settings_hub_sub_screens_actions_bar">Barra de acciones</string>
+    <string name="settings_hub_sub_screens_home_screen">Pantalla de inicio</string>
+    <string name="settings_hub_sub_screens_widgets">Widgets</string>
+    <string name="settings_hub_sub_screens_long_press_home_screen_widgets">Mantén pulsada la pantalla de inicio → Widgets → Scanly</string>
+    <string name="settings_hub_sub_screens_tap_to_add_a_widget">Toca para añadir un widget a la pantalla de inicio</string>
+    <string name="settings_hub_sub_screens_could_not_open_the_add">No se pudo abrir el cuadro para añadir widgets.</string>
+    <string name="settings_hub_sub_screens_your_launcher_doesn_t_support">Tu launcher no permite añadir widgets desde la app. Mantén pulsada la pantalla de inicio y elige Scanly en Widgets.</string>
+    <string name="settings_hub_sub_screens_compare_all_models_on_local">Compara todos los modelos con imágenes locales</string>
+    <string name="settings_hub_sub_screens_tools">Herramientas</string>
+    <string name="settings_hub_sub_screens_reject_screens_and_non_documents">Descarta pantallas y objetos que no son documentos antes de detectar los bordes</string>
+    <string name="settings_hub_sub_screens_physical_document_gate">Filtro de documentos físicos</string>
+    <string name="settings_hub_sub_screens_capture_quality">Calidad de captura</string>
+    <string name="settings_hub_sub_screens_used_after_camera_or_gallery">Se usa después de capturar con la cámara o importar de la galería</string>
+    <string name="settings_hub_sub_screens_selected_automatically_for_higher_accuracy">Seleccionado automáticamente para mayor precisión</string>
+    <string name="settings_hub_sub_screens_post_processing_model">Modelo de posprocesamiento</string>
+    <string name="settings_hub_sub_screens_used_while_the_camera_preview">Se usa mientras la vista previa de la cámara está activa</string>
+    <string name="settings_hub_sub_screens_selected_automatically_for_responsive_preview">Seleccionado automáticamente para una vista previa fluida</string>
+    <string name="settings_hub_sub_screens_live_preview_model">Modelo de vista previa en directo</string>
+    <string name="settings_hub_sub_screens_choose_the_best_models_for">Elige los mejores modelos para este dispositivo</string>
+    <string name="settings_hub_sub_screens_live_processing">"En directo: %1$s · Procesamiento: %2$s"</string>
+    <string name="settings_hub_sub_screens_testing_model_speed_on_this">Probando la velocidad de los modelos en este dispositivo…</string>
+    <string name="settings_hub_sub_screens_automatic_model_selection">Selección automática de modelos</string>
+    <string name="settings_hub_sub_screens_models">Modelos</string>
+    <string name="settings_hub_sub_screens_document_detection">Detección de documentos</string>
+    <string name="settings_hub_sub_screens_true_black_surfaces_saves_battery">Fondos negros puros · ahorra batería en pantallas AMOLED</string>
+    <string name="settings_hub_sub_screens_takes_effect_in_dark_theme">Se aplica en el tema oscuro · ahorra batería en pantallas AMOLED</string>
+    <string name="settings_hub_sub_screens_pure_black">Negro puro</string>
+    <string name="settings_hub_sub_screens_theme">Tema</string>
+    <string name="settings_hub_sub_screens_appearance">Aspecto</string>
+    <!-- SettingsScreen -->
+    <string name="settings_preferences_and_app_info">Preferencias e información de la app</string>
+    <string name="settings_scanly">"Scanly %1$s"</string>
+    <string name="settings_settings">Ajustes</string>
+    <string name="settings_version_updates_and_legal">Versión, actualizaciones e información legal</string>
+    <string name="settings_leave_a_rating_on_google">Deja una valoración en Google Play</string>
+    <string name="settings_more">Más</string>
+    <string name="settings_actions_scan_and_qr">Acciones, Escanear y QR</string>
+    <string name="settings_text_recognition">Reconocimiento de texto</string>
+    <string name="settings_intelligence">Inteligencia</string>
+    <string name="settings_pages_kept_documents_and_folders">"Páginas: %1$s; documentos y carpetas: %2$s"</string>
+    <string name="settings_storage">Almacenamiento</string>
+    <string name="settings_pip_your_helper">Pip, tu ayudante</string>
+    <string name="settings_preferences">Preferencias</string>
+    <string name="settings_save_location_cleanup">Ubicación y limpieza</string>
+    <string name="settings_indra_ocr_100_languages_experimental">Indra OCR · más de 100 idiomas (experimental)</string>
+    <string name="settings_ml_kit_latin_script_languages">ML Kit · idiomas con alfabeto latino</string>
+    <string name="settings_gate_off">"%1$s · Filtro desactivado"</string>
+    <string name="settings_gate_on">"%1$s · Filtro activado"</string>
+    <string name="settings_manual_models">Modelos manuales</string>
+    <string name="settings_automatic_models">Modelos automáticos</string>
+    <string name="settings_calibrating">Calibrando…</string>
+    <string name="settings_pure_black">" · Negro puro"</string>
+    <string name="settings_thanks_for_supporting_scanly">Gracias por apoyar Scanly</string>
+    <!-- SettingsTextRecognitionScreen -->
+    <string name="settings_text_recognition_weights_openrail_m_code_apache">Pesos: OpenRAIL-M · Código: Apache-2.0</string>
+    <string name="settings_text_recognition_visit_datalab_to">Visitar datalab.to</string>
+    <string name="settings_text_recognition_a_big_thank_you_to">Muchas gracias a Datalab por crear Indra OCR y permitir que Scanly lo ejecute directamente en tu teléfono. Gracias a ello, Scanly puede leer más de 100 idiomas.</string>
+    <string name="settings_text_recognition_datalab">Datalab</string>
+    <string name="settings_text_recognition_indra_ocr_by">INDRA OCR DE</string>
+    <string name="settings_text_recognition_datalab_logo">Logotipo de Datalab</string>
+    <string name="settings_text_recognition_latin_script_only_pages_in">Solo alfabeto latino. Las páginas en otros sistemas de escritura, como hindi, tamil, árabe o chino, salen vacías o con texto ilegible. Para esas, cambia a Indra OCR.</string>
+    <string name="settings_text_recognition_5_script_families_read_in">5 familias de escritura en una sola pasada. Cada línea va al reconocedor adecuado, así que también funcionan las páginas que mezclan idiomas.</string>
+    <string name="settings_text_recognition_reads_100_languages_across_many">Lee más de 100 idiomas en muchos sistemas de escritura, como hindi, tamil, árabe, chino y japonés. Es más lento que ML Kit.</string>
+    <string name="settings_text_recognition_experimental">Experimental</string>
+    <string name="settings_text_recognition_google_s_fast_on_device">El reconocedor rápido de Google que funciona en el dispositivo. Ideal para idiomas con alfabeto latino, como inglés, español y francés.</string>
+    <string name="settings_text_recognition_default">Predeterminado</string>
+    <string name="settings_text_recognition_if_a_page_s_text">Si el texto de una página aparece vacío o ilegible, probablemente esté en una escritura que ML Kit no puede leer. Cambia a Indra OCR y usa Volver a leer páginas existentes.</string>
+    <string name="settings_text_recognition_tip">Consejo</string>
+    <string name="settings_text_recognition_switching_engines_only_affects_new">Cambiar de motor solo afecta a las lecturas nuevas. Puedes volver a leer las páginas que ya tienes desde esta pantalla, y el texto que hayas corregido tú nunca se reemplaza.</string>
+    <string name="settings_text_recognition_your_edits_are_kept">Se conservan tus cambios</string>
+    <string name="settings_text_recognition_if_indra_ocr_can_t">Si Indra OCR no puede leer una página, tarda demasiado o se detiene, ML Kit la lee en su lugar.</string>
+    <string name="settings_text_recognition_ml_kit_is_the_safety">ML Kit siempre te respalda</string>
+    <string name="settings_text_recognition_both_engines_run_on_the">Los dos motores funcionan en el dispositivo. Las páginas nunca se suben para leerlas.</string>
+    <string name="settings_text_recognition_stays_on_your_phone">Todo se queda en tu teléfono</string>
+    <string name="settings_text_recognition_ml_kit_is_the_default">ML Kit es el motor predeterminado. Es rápido y muy preciso con idiomas de alfabeto latino, como inglés, español, francés y alemán.\n\nIndra OCR sirve para todo lo demás. Lee más de 100 idiomas, como hindi, tamil, bengalí, árabe, urdu, chino, japonés, coreano y tailandés, y admite páginas que mezclan idiomas. Es experimental y más lento, así que las páginas tardan más en poder buscarse.</string>
+    <string name="settings_text_recognition_choosing_an_engine">Cómo elegir un motor</string>
+    <string name="settings_text_recognition_after_you_scan_scanly_reads">Después de escanear, Scanly lee las palabras de cada página. Gracias a ese texto, puedes buscar en tu biblioteca por lo que dice una página, copiar o compartir el texto de un escaneo y exportarlo.</string>
+    <string name="settings_text_recognition_what_it_does">Qué hace</string>
+    <string name="settings_text_recognition_also_called_ocr">También llamado OCR</string>
+    <string name="settings_text_recognition_re_read">Volver a leer</string>
+    <string name="settings_text_recognition_runs_in_the_background_while">Se ejecuta en segundo plano mientras la batería no esté baja. Se conserva el texto que hayas editado tú.</string>
+    <string name="settings_text_recognition_on_device_text_recognition_v2">Reconocimiento de texto en el dispositivo v2</string>
+    <string name="settings_text_recognition_google_ml_kit">Google ML Kit</string>
+    <string name="settings_text_recognition_credits">Créditos</string>
+    <string name="settings_text_recognition_supported_languages">Idiomas compatibles</string>
+    <string name="settings_text_recognition_engine">Motor</string>
+    <string name="settings_text_recognition_about_text_recognition">Acerca del reconocimiento de texto</string>
+    <!-- SettingsViewModel -->
+    <string name="settings_save_location_reset_to_downloads">Se ha restablecido la ubicación de guardado a Downloads/Scanly.</string>
+    <string name="settings_save_location_updated">Ubicación de guardado actualizada.</string>
+    <string name="settings_reading_pages_again_in_the">"Volviendo a leer %1$s páginas en segundo plano."</string>
+    <string name="settings_reading_1_page_again_in">Volviendo a leer 1 página en segundo plano.</string>
+    <string name="settings_no_pages_to_read_again">No hay páginas que volver a leer.</string>
+    <string name="settings_could_not_update_the_text">No se pudo cambiar el motor de reconocimiento de texto.</string>
+    <string name="settings_could_not_update_the_physical">No se pudo actualizar el filtro de documentos físicos.</string>
+    <string name="settings_could_not_update_automatic_model">No se pudo actualizar la selección automática de modelos.</string>
+    <string name="settings_could_not_update_the_post">No se pudo actualizar el modelo de posprocesamiento.</string>
+    <string name="settings_could_not_update_the_live">No se pudo actualizar el modelo de vista previa en directo.</string>
+    <string name="settings_could_not_update_pure_black">No se pudo actualizar el tema negro puro.</string>
+    <string name="settings_removed_empty_folders">"Se quitaron %1$s carpetas vacías."</string>
+    <string name="settings_removed_1_empty_folder">Se quitó 1 carpeta vacía.</string>
+    <string name="settings_no_empty_folders_found">No se encontraron carpetas vacías.</string>
+    <string name="settings_removed_empty_documents">"Se quitaron %1$s documentos vacíos."</string>
+    <string name="settings_removed_1_empty_document">Se quitó 1 documento vacío.</string>
+    <string name="settings_no_empty_documents_found">No se encontraron documentos vacíos.</string>
+    <string name="settings_freed">"Se liberaron %1$s"</string>
+    <string name="settings_all_data_cleared">Se borraron todos los datos.</string>
+    <!-- StorageScreen -->
+    <string name="storage_temporary_exports">Exportaciones temporales</string>
+    <string name="storage_database_search_index">Base de datos e índice de búsqueda</string>
+    <string name="storage_library_files">Archivos de la biblioteca</string>
+    <string name="storage_scanly_is_using">Scanly está usando</string>
+    <string name="storage_calculating">Calculando…</string>
+    <string name="storage_change">Cambiar</string>
+    <string name="storage_exports_save_to">Las exportaciones se guardan en</string>
+    <string name="storage_this_permanently_deletes_all_documents">Se eliminarán definitivamente todos los documentos, carpetas, páginas y exportaciones temporales de este dispositivo. Se conservarán los archivos que ya hayas guardado en tu carpeta de exportación.</string>
+    <string name="storage_clear_all_data">¿Borrar todos los datos?</string>
+    <string name="storage_deletes_every_folder_group_that">Elimina todas las carpetas (grupos) que no tienen documentos. Las carpetas que aún tienen documentos se conservan.</string>
+    <string name="storage_remove_empty_folders">¿Quitar carpetas vacías?</string>
+    <string name="storage_deletes_every_document_that_has">Elimina todos los documentos sin páginas, incluidas las capturas abandonadas, y libera su espacio local. Los documentos que aún tienen páginas se conservan.</string>
+    <string name="storage_remove_empty_documents">¿Quitar documentos vacíos?</string>
+    <string name="storage_deletes_every_document_folder_and">Elimina todos los documentos, carpetas y páginas de este dispositivo</string>
+    <string name="storage_clear_all_data_2">Borrar todos los datos</string>
+    <string name="storage_danger_zone">Zona de peligro</string>
+    <string name="storage_folders_with_no_documents">Carpetas sin documentos</string>
+    <string name="storage_remove_empty_folders_2">Quitar carpetas vacías</string>
+    <string name="storage_documents_with_no_pages">Documentos sin páginas</string>
+    <string name="storage_remove_empty_documents_2">Quitar documentos vacíos</string>
+    <string name="storage_restore_deleted_folders_documents_and">Restaura carpetas, documentos y páginas eliminados</string>
+    <string name="storage_tidy_up">Limpieza</string>
+    <string name="storage_use_default_folder">Usar carpeta predeterminada</string>
+    <string name="storage_pdfs_and_images_you_export">Los PDF y las imágenes que exportes se guardan aquí.</string>
+    <string name="storage_save_location">Ubicación de guardado</string>
+    <string name="storage_could_not_use_the_selected">No se pudo usar la carpeta seleccionada.</string>
+    <string name="storage_selected_folder">Carpeta seleccionada</string>
+    <!-- ScannedPagePickerSheet -->
+    <string name="scanned_page_picker_no_pages_in_this_document">No se puede usar ninguna página de este documento.</string>
+    <string name="scanned_page_picker_back_to_documents">Volver a documentos</string>
+    <string name="scanned_page_picker_no_scanned_documents_yet_scan">Aún no hay documentos escaneados. Escanea una página en Scanly y aparecerá aquí.</string>
+    <string name="scanned_page_picker_scanned_pages">Páginas escaneadas</string>
+    <!-- SignatureCreateScreen -->
+    <string name="signature_create_choose_another">Elegir otra</string>
+    <string name="signature_create_bolder">Más intensa</string>
+    <string name="signature_create_fainter">Más suave</string>
+    <string name="signature_create_ink_sensitivity">Sensibilidad de la tinta</string>
+    <string name="signature_create_extracted_signature_preview">Vista previa de la firma extraída</string>
+    <string name="signature_create_scanly_removes_the_paper_background">Scanly quita el fondo del papel y conserva solo la tinta.</string>
+    <string name="signature_create_use_a_page_you_scanned">Usa una página que hayas escaneado en Scanly</string>
+    <string name="signature_create_scanned_page">Página escaneada</string>
+    <string name="signature_create_jpg_or_png_from_your">JPG o PNG de tu teléfono</string>
+    <string name="signature_create_files">Archivos</string>
+    <string name="signature_create_pick_a_photo_of_your">Elige una foto de tu firma</string>
+    <string name="signature_create_photos">Fotos</string>
+    <string name="signature_create_choose_where_your_signature_is">Elige dónde está tu firma</string>
+    <string name="signature_create_choose_where_your_initials_are">Elige dónde están tus iniciales</string>
+    <string name="signature_create_pen">Bolígrafo</string>
+    <string name="signature_create_upload">Subir</string>
+    <string name="signature_create_draw">Dibujar</string>
+    <string name="signature_create_save_signature">Guardar firma</string>
+    <string name="signature_create_save_initials">Guardar iniciales</string>
+    <string name="signature_create_sign_above_the_line">Firma encima de la línea</string>
+    <string name="signature_create_write_your_initials_above_the">Escribe tus iniciales encima de la línea</string>
+    <string name="signature_create_new_signature">Nueva firma</string>
+    <string name="signature_create_new_initials">Nuevas iniciales</string>
+    <!-- SignatureCreateViewModel -->
+    <string name="signature_create_choose_a_photo_of_your">Primero elige una foto de tu firma.</string>
+    <string name="signature_create_still_reading_the_photo_try">Aún se está leyendo la foto. Vuelve a intentarlo en un momento.</string>
+    <string name="signature_create_draw_your_signature_first">Primero dibuja tu firma.</string>
+    <!-- SignaturePad -->
+    <string name="signature_pad_draw_here">Dibuja aquí</string>
+    <!-- DocumentSignScreen -->
+    <string name="document_sign_stamping_signatures">Insertando firmas…</string>
+    <!-- DocumentSignViewModel -->
+    <string name="document_sign_saved_signatures_couldn_t_be">No se pudieron cargar las firmas guardadas, así que ahora no se puede firmar este documento.</string>
+    <!-- SignEditorScreen -->
+    <string name="sign_editor_next_page">Página siguiente</string>
+    <string name="sign_editor_add_text">Añadir texto</string>
+    <string name="sign_editor_edit_date">Editar fecha</string>
+    <string name="sign_editor_tap_checkbox_again_for_another">Vuelve a tocar Casilla para añadir otra · usa la barra de herramientas para marcarla o desmarcarla</string>
+    <string name="sign_editor_tap_text_again_for_another">Vuelve a tocar Texto para añadir otra línea · toca dos veces un texto para editarlo</string>
+    <string name="sign_editor_tap_date_again_for_another">Vuelve a tocar Fecha para añadir otra · toca dos veces una fecha para editarla</string>
+    <string name="sign_editor_manage">Gestionar</string>
+    <string name="sign_editor_your_signatures">Tus firmas</string>
+    <string name="sign_editor_signatures_and_marks_you_added">No se conservarán las firmas y marcas que hayas añadido o cambiado en este documento.</string>
+    <!-- SignMarkLayer -->
+    <string name="sign_mark_layer_duplicate">Duplicar</string>
+    <string name="sign_mark_layer_tick">Marcar</string>
+    <string name="sign_mark_layer_untick">Desmarcar</string>
+    <!-- SignatureManageScreen -->
+    <string name="signature_manage_added">"%1$s · Añadida el %2$s"</string>
+    <string name="signature_manage_from_a_photo">Desde una foto</string>
+    <string name="signature_manage_drawn">Dibujada</string>
+    <string name="signature_manage_pages_you_ve_already_signed">Las páginas que ya firmaste la conservan</string>
+    <string name="signature_manage_place_it_on_a_pdf">Colócala en un PDF o en un documento de Scanly</string>
+    <string name="signature_manage_sign_a_pdf">Firmar un PDF</string>
+    <string name="signature_manage_use_first_when_signing">Usar primero al firmar</string>
+    <string name="signature_manage_shared_and_saved_as_a">Se comparte y guarda como PNG transparente, lista para documentos, formularios y correos.</string>
+    <string name="signature_manage_save_to_phone">Guardar en el teléfono</string>
+    <string name="signature_manage_ink_colour">Color de la tinta</string>
+    <string name="signature_manage_in_ink">"%1$s, tinta: %2$s"</string>
+    <string name="signature_manage_used_first">Se usa primero</string>
+    <string name="signature_manage_used_first_2">, se usa primero</string>
+    <string name="signature_manage_pages_you_ve_already_signed_2">Las páginas que ya firmaste la conservan.</string>
+    <string name="signature_manage_initials">Iniciales</string>
+    <string name="signature_manage_signatures">Firmas</string>
+    <string name="signature_manage_signatures_stay_on_this_phone">Las firmas se quedan en este teléfono. Dibuja una o sube una foto de tu firma.</string>
+    <string name="signature_manage_tap_one_to_share_save">Toca una para compartirla, guardarla o reordenarla</string>
+    <!-- SignatureManageViewModel -->
+    <string name="signature_manage_saved_to">"Guardada en %1$s"</string>
+    <string name="signature_manage_will_be_offered_first_when">"%1$s se ofrecerá primero al firmar"</string>
+    <!-- PageTextScreen -->
+    <string name="page_text_share_text">Compartir texto</string>
+    <string name="page_text_scan_or_import_a_page">Escanea o importa una página y su texto aparecerá aquí.</string>
+    <string name="page_text_this_document_has_no_pages">Este documento aún no tiene páginas</string>
+    <string name="page_text_reading_text">Leyendo texto</string>
+    <string name="page_text_copy_page">Copiar página</string>
+    <string name="page_text_save_changes">Guardar cambios</string>
+    <string name="page_text_copy">Copiar</string>
+    <string name="page_text_tap_an_outlined_area_to">Toca una zona marcada para copiar solo esa parte.</string>
+    <string name="page_text_regions_are_hidden_because_this">Las zonas están ocultas porque la página cambió después de leer su texto.</string>
+    <string name="page_text_page_image_with_text_regions">"Imagen de la página con %1$s zonas de texto"</string>
+    <string name="page_text_read_with_indra_ocr_experimental">Leído con Indra OCR (experimental)</string>
+    <string name="page_text_read_with_ml_kit_indra">Leído con ML Kit (Indra OCR no pudo leer esta página)</string>
+    <string name="page_text_edited">Editado</string>
+    <string name="page_text_read_again">Volver a leer</string>
+    <string name="page_text_photos_and_handwriting_may_not">Puede que las fotos y la escritura a mano no contengan texto impreso legible. Un escaneo más nítido y bien iluminado suele ayudar.</string>
+    <string name="page_text_no_text_found_on_this">No se encontró texto en esta página</string>
+    <string name="page_text_read_this_page">Leer esta página</string>
+    <string name="page_text_scanly_reads_page_text_on">Scanly lee el texto de las páginas en este dispositivo.</string>
+    <string name="page_text_text_not_read_yet">El texto aún no se ha leído</string>
+    <string name="page_text_try_again">Reintentar</string>
+    <string name="page_text_couldn_t_read_this_page">No se pudo leer esta página</string>
+    <string name="page_text_your_corrections_are_used_for">Tus correcciones se usan al copiar, compartir y buscar.</string>
+    <string name="page_text_this_page_changed_after_its">Esta página cambió después de leer su texto.</string>
+    <string name="page_text_stop_highlighting">Dejar de resaltar</string>
+    <string name="page_text_on_this_page">"%1$s en esta página"</string>
+    <string name="page_text_not_on_this_page">no está en esta página</string>
+    <string name="page_text_reading_text_2">Leyendo texto…</string>
+    <string name="page_text_reading_page_of">"Leyendo página %1$s de %2$s…"</string>
+    <string name="page_text_page">"%1$s — página %2$s"</string>
+    <string name="page_text_read_all_pages_again">Volver a leer todas las páginas</string>
+    <string name="page_text_restore_original_text">Restaurar texto original</string>
+    <string name="page_text_share_all_pages">Compartir todas las páginas</string>
+    <string name="page_text_all_pages">todas las páginas</string>
+    <string name="page_text_copy_all_pages">Copiar todas las páginas</string>
+    <string name="page_text_extracted_text">Texto extraído</string>
+    <string name="page_text_copied">"Copiado: %1$s"</string>
+    <!-- PageTextViewModel -->
+    <string name="page_text_original_text_restored">Texto original restaurado</string>
+    <string name="page_text_changes_saved_search_uses_your">Cambios guardados. La búsqueda usa tus correcciones.</string>
+    <string name="page_text_page_text_read_again">Se volvió a leer el texto de la página</string>
+    <!-- ToolKit -->
+    <string name="tool_kit_file_name">Nombre del archivo</string>
+    <!-- ToolsScreen -->
+    <string name="tools_everything_runs_offline_on_this">Todo funciona sin conexión, en este teléfono</string>
+    <string name="tools_utilities">Utilidades</string>
+    <!-- PdfCompressScreen -->
+    <string name="pdf_compress_recommended">Recomendado</string>
+    <string name="pdf_compress_compress_this_pdf_again_with">Vuelve a comprimir este PDF con otro ajuste</string>
+    <string name="pdf_compress_try_another_quality">Probar otra calidad</string>
+    <string name="pdf_compress_after">Después</string>
+    <string name="pdf_compress_before">Antes</string>
+    <string name="pdf_compress_quality">Calidad</string>
+    <string name="pdf_compress_this_quality_didn_t_make">Con esta calidad, el archivo no es más pequeño. Prueba con otra.</string>
+    <string name="pdf_compress_compressed">Comprimido</string>
+    <string name="pdf_compress_already_compact">Ya es compacto</string>
+    <string name="pdf_compress_saved">Ahorro del %1$s%%</string>
+    <string name="pdf_compress_compressing">Comprimiendo…</string>
+    <string name="pdf_compress_compress">Comprimir</string>
+    <string name="pdf_compress_pages_are_re_encoded_as">Las páginas se vuelven a codificar como imágenes, así que el texto del PDF ya no se podrá seleccionar ni buscar.</string>
+    <string name="pdf_compress_unlock">Desbloquear</string>
+    <string name="pdf_compress_enter_the_password">Introduce la contraseña</string>
+    <string name="pdf_compress_compressed_pdf">PDF comprimido</string>
+    <string name="pdf_compress_step_1_of_3_choose">Paso 1 de 3 · Elige un archivo</string>
+    <string name="pdf_compress_shrink_a_pdf_for_email">Reduce un PDF para enviarlo por correo o cumplir límites de subida.</string>
+    <string name="pdf_compress_compress_pdf">Comprimir PDF</string>
+    <!-- PdfCompressViewModel -->
+    <string name="pdf_compress_compressing_pdf">Comprimiendo PDF…</string>
+    <string name="pdf_compress_choose_a_pdf_first">Primero elige un PDF.</string>
+    <!-- PdfFilePicker -->
+    <string name="pdf_file_picker_days_ago">"Hace %1$s días"</string>
+    <string name="pdf_file_picker_selected_position">"Seleccionado, posición %1$s"</string>
+    <string name="pdf_file_picker_empty_scans_are_hidden">"%1$s escaneos vacíos ocultos"</string>
+    <string name="pdf_file_picker_1_empty_scan_is_hidden">1 escaneo vacío oculto</string>
+    <string name="pdf_file_picker_no_match">"No hay %1$s que coincidan con \"%2$s\"."</string>
+    <string name="pdf_file_picker_sorted_by">"Ordenado por %1$s"</string>
+    <string name="pdf_file_picker_in_scanly">"En Scanly · %1$s"</string>
+    <string name="pdf_file_picker_search_your">"Buscar en tus %1$s"</string>
+    <string name="pdf_file_picker_your_scans_have_no_pages">Tus escaneos aún no tienen páginas. Elige un PDF del almacenamiento del teléfono.</string>
+    <string name="pdf_file_picker_no_scans_yet_pick_a">Aún no hay escaneos. Elige un PDF del almacenamiento del teléfono o escanea uno primero.</string>
+    <string name="pdf_file_picker_pdfs">PDF</string>
+    <string name="pdf_file_picker_downloads_drive_and_other_apps">Descargas, Drive y otras apps</string>
+    <string name="pdf_file_picker_phone_storage">Almacenamiento del teléfono</string>
+    <!-- PdfImportScreen -->
+    <string name="pdf_import_add_pages">"Añadir %1$s páginas"</string>
+    <string name="pdf_import_add_1_page">Añadir 1 página</string>
+    <string name="pdf_import_add_to_library">Añadir a la biblioteca</string>
+    <string name="pdf_import_another_pdf">Otro PDF</string>
+    <string name="pdf_import_crop_filter_sign_or_search">"%1$s · %2$s. Recórtalo, aplica filtros, fírmalo o busca en él como en cualquier escaneo."</string>
+    <string name="pdf_import_added_to_your_library">Añadido a tu biblioteca</string>
+    <string name="pdf_import_step_3_of_3_done">Paso 3 de 3 · Listo</string>
+    <string name="pdf_import_adding_to_library">Añadiendo a la biblioteca…</string>
+    <string name="pdf_import_look">Aspecto</string>
+    <string name="pdf_import_your_pdf_file_stays_as">Tu archivo PDF no cambia; Scanly guarda su propia copia</string>
+    <string name="pdf_import_tap_a_page_or_long">Toca una página o mantén pulsado y arrastra para elegir varias.</string>
+    <string name="pdf_import_step_2_of_3_pages">Paso 2 de 3 · Páginas y nombre</string>
+    <string name="pdf_import_name_this_document">Ponle nombre al documento</string>
+    <string name="pdf_import_document_name">Nombre del documento</string>
+    <string name="pdf_import_turn_a_pdf_into_a">Convierte un PDF en un documento de Scanly que puedes editar, firmar y buscar.</string>
+    <string name="pdf_import_add_pdf_to_library">Añadir PDF a la biblioteca</string>
+    <!-- PdfImportViewModel -->
+    <string name="pdf_import_give_the_document_a_name">Ponle un nombre al documento.</string>
+    <string name="pdf_import_imported_pdf">PDF importado</string>
+    <!-- PdfMergeScreen -->
+    <string name="pdf_merge_1_file">1 archivo</string>
+    <string name="pdf_merge_your_original_files_are_unchanged">Tus archivos originales no cambian</string>
+    <string name="pdf_merge_combined_into_one_pdf">"%1$s combinados en un PDF"</string>
+    <string name="pdf_merge_merged">Combinado</string>
+    <string name="pdf_merge_kept_unchanged">Conservados sin cambios</string>
+    <string name="pdf_merge_original_files">Archivos originales</string>
+    <string name="pdf_merge_size">Tamaño</string>
+    <string name="pdf_merge_remove">"Quitar %1$s"</string>
+    <string name="pdf_merge_move_down">"Bajar %1$s"</string>
+    <string name="pdf_merge_move_up">"Subir %1$s"</string>
+    <string name="pdf_merge_pdf_from_scanly">PDF de Scanly</string>
+    <string name="pdf_merge_pdf_from_phone">PDF del teléfono</string>
+    <string name="pdf_merge_page_count_unknown">Número de páginas desconocido</string>
+    <string name="pdf_merge_merge_pdfs">Combinar PDF</string>
+    <string name="pdf_merge_merge_files">"Combinar %1$s archivos"</string>
+    <string name="pdf_merge_add_more">Añadir más</string>
+    <string name="pdf_merge_merge_order">"Orden · %1$s"</string>
+    <string name="pdf_merge_files_are_joined_from_top">Los archivos se unen de arriba abajo.</string>
+    <string name="pdf_merge_order_name">Orden y nombre</string>
+    <string name="pdf_merge_step_2_of_3_order">Paso 2 de 3 · Orden y nombre</string>
+    <string name="pdf_merge_in_total">"%1$s en total"</string>
+    <string name="pdf_merge_from_phone">"Del teléfono: %1$s"</string>
+    <string name="pdf_merge_next">Siguiente</string>
+    <string name="pdf_merge_next_files">"Siguiente · %1$s archivos"</string>
+    <string name="pdf_merge_pick_at_least_2_files">Elige al menos 2 archivos</string>
+    <string name="pdf_merge_step_1_of_3_pick">Paso 1 de 3 · Elige archivos</string>
+    <string name="pdf_merge_pick_files_in_the_order">Elige los archivos en el orden que quieras.</string>
+    <string name="pdf_merge_merged_pdf">PDF combinado</string>
+    <string name="pdf_merge_merging">Combinando…</string>
+    <!-- PdfMergeViewModel -->
+    <string name="pdf_merge_add_at_least_two_pdfs">Añade al menos dos PDF para combinarlos.</string>
+    <!-- PdfPasswordScreen -->
+    <string name="pdf_password_file">Archivo</string>
+    <string name="pdf_password_allowed">Permitido</string>
+    <string name="pdf_password_restricted">Restringido</string>
+    <string name="pdf_password_editing">Edición</string>
+    <string name="pdf_password_no_password">Sin contraseña</string>
+    <string name="pdf_password_aes_256_password">Contraseña AES-256</string>
+    <string name="pdf_password_protection">Protección</string>
+    <string name="pdf_password_a_short_phrase_you_ll">Una frase corta que recuerdes es mejor que letras al azar.</string>
+    <string name="pdf_password_doesn_t_match_yet">Aún no coincide</string>
+    <string name="pdf_password_passwords_match">Las contraseñas coinciden</string>
+    <string name="pdf_password_remove_password">Quitar contraseña</string>
+    <string name="pdf_password_the_unlocked_copy_opens_for">Cualquiera que tenga la copia desbloqueada podrá abrirla. Scanly solo quita contraseñas que ya conoces.</string>
+    <string name="pdf_password_bank_and_portal_pdfs_often">Los PDF de bancos y portales suelen usar tu fecha de nacimiento o tu número de cliente.</string>
+    <string name="pdf_password_password_for_this_pdf">Contraseña de este PDF</string>
+    <string name="pdf_password_current_password">Contraseña actual</string>
+    <string name="pdf_password_locked_pdf">PDF bloqueado</string>
+    <string name="pdf_password_lock_pdf">Bloquear PDF</string>
+    <string name="pdf_password_scanly_can_t_recover_this">Scanly no puede recuperar esta contraseña. Si la olvidas, no podrás abrir el PDF.</string>
+    <string name="pdf_password_others_can_open_and_print">Otros pueden abrirlo e imprimirlo, pero no editarlo ni copiar el texto</string>
+    <string name="pdf_password_restrict_editing">Restringir la edición</string>
+    <string name="pdf_password_type_it_again">Vuelve a escribirla</string>
+    <string name="pdf_password_at_least_characters">"Al menos %1$s caracteres"</string>
+    <string name="pdf_password_new_password">Nueva contraseña</string>
+    <string name="pdf_password_add_password">Añadir contraseña</string>
+    <string name="pdf_password_checking_the_file">Comprobando el archivo…</string>
+    <string name="pdf_password_unlocked_pdf">PDF desbloqueado</string>
+    <string name="pdf_password_protected_pdf">PDF protegido</string>
+    <string name="pdf_password_it_now_opens_without_a">Ahora se abre sin contraseña.</string>
+    <string name="pdf_password_anyone_opening_it_will_need">Para abrirlo, se necesitará la contraseña.</string>
+    <string name="pdf_password_password_removed">Contraseña quitada</string>
+    <string name="pdf_password_pdf_locked">PDF bloqueado</string>
+    <string name="pdf_password_unlocking">Desbloqueando…</string>
+    <string name="pdf_password_locking">Bloqueando…</string>
+    <string name="pdf_password_lock_a_pdf_or_remove">Bloquea un PDF o quita una contraseña que conozcas.</string>
+    <!-- PdfPasswordViewModel -->
+    <string name="pdf_password_unlocking_pdf">Desbloqueando PDF…</string>
+    <string name="pdf_password_enter_the_current_password">Introduce la contraseña actual.</string>
+    <string name="pdf_password_locking_pdf">Bloqueando PDF…</string>
+    <string name="pdf_password_use_to_characters_for_the">"Usa entre %1$s y %2$s caracteres para la contraseña."</string>
+    <!-- PdfReaderMenu -->
+    <string name="pdf_reader_menu_open_another_pdf">Abrir otro PDF</string>
+    <string name="pdf_reader_menu_all_pages">Todas las páginas</string>
+    <!-- PdfReaderPresentation -->
+    <string name="pdf_reader_presentation_0_of_0">0 de 0</string>
+    <string name="pdf_reader_presentation_paged">Por páginas</string>
+    <string name="pdf_reader_presentation_continuous">Continuo</string>
+    <!-- PdfReaderScreen -->
+    <string name="pdf_reader_tap_a_page_to_jump">Toca una página para ir a ella</string>
+    <string name="pdf_reader_loading_page">Cargando página %1$s…</string>
+    <string name="pdf_reader_loading_page_2">Cargando página…</string>
+    <string name="pdf_reader_choose_another_pdf">Elegir otro PDF</string>
+    <string name="pdf_reader_password">Contraseña</string>
+    <string name="pdf_reader_this_pdf_is_password_protected">Este PDF está protegido con contraseña. Introdúcela para leer %1$s.</string>
+    <string name="pdf_reader_unlock_pdf">Desbloquear PDF</string>
+    <string name="pdf_reader_choose_a_file">Elegir un archivo</string>
+    <string name="pdf_reader_open_any_pdf_from_scanly">Abre cualquier PDF de Scanly o de tu teléfono.</string>
+    <string name="pdf_reader_read_a_pdf">Leer un PDF</string>
+    <!-- PdfSignScreen -->
+    <string name="pdf_sign_1_mark">1 marca</string>
+    <string name="pdf_sign_the_signed_copy_is_saved">La copia firmada se guarda sin contraseña.</string>
+    <string name="pdf_sign_this_pdf_is_locked">Este PDF está bloqueado</string>
+    <string name="pdf_sign_back_to_the_editor">Volver al editor</string>
+    <string name="pdf_sign_edit_signatures">Editar firmas</string>
+    <string name="pdf_sign_signed_pdf">PDF firmado</string>
+    <string name="pdf_sign_saved_as">Guardado como</string>
+    <string name="pdf_sign_marks_placed">Marcas colocadas</string>
+    <string name="pdf_sign_pages_signed">Páginas firmadas</string>
+    <string name="pdf_sign_signed">Firmado</string>
+    <string name="pdf_sign_placing_signatures_on_each_page">Colocando las firmas en cada página…</string>
+    <string name="pdf_sign_signing_your_pdf">Firmando tu PDF</string>
+    <string name="pdf_sign_pdf_jpg_or_png_from">PDF, JPG o PNG de Descargas, Drive y otras apps</string>
+    <string name="pdf_sign_step_1_of_3_choose">Paso 1 de 3 · Elige</string>
+    <string name="pdf_sign_choose_a_pdf_or_an">Elige un PDF o una imagen para firmar</string>
+    <string name="pdf_sign_sign_pdf">Firmar PDF</string>
+    <!-- PdfSignViewModel -->
+    <string name="pdf_sign_signing">Firmando…</string>
+    <string name="pdf_sign_place_a_signature_first">Primero coloca una firma.</string>
+    <string name="pdf_sign_open_a_pdf_first">Primero abre un PDF.</string>
+    <!-- PdfToImagesPresentation -->
+    <string name="pdf_to_images_presentation_page">"Página %1$s · %2$s"</string>
+    <string name="pdf_to_images_presentation_share_all">"Compartir las %1$s"</string>
+    <string name="pdf_to_images_presentation_share_image">Compartir imagen</string>
+    <string name="pdf_to_images_presentation_in_all">"%1$s en total"</string>
+    <string name="pdf_to_images_presentation_of_pages">"%1$s de %2$s páginas"</string>
+    <string name="pdf_to_images_presentation_all_pages">"Las %1$s páginas"</string>
+    <string name="pdf_to_images_presentation_export">"Exportar %1$s"</string>
+    <string name="pdf_to_images_presentation_choose_pages_to_export">Elige las páginas que quieres exportar</string>
+    <string name="pdf_to_images_presentation_1_image">1 imagen</string>
+    <string name="pdf_to_images_presentation_1f_gb" formatted="false">%.1f GB</string>
+    <string name="pdf_to_images_presentation_1f_mb" formatted="false">%.1f MB</string>
+    <string name="pdf_to_images_presentation_kb">"%1$s KB"</string>
+    <string name="pdf_to_images_presentation_0_kb">0 KB</string>
+    <!-- PdfToImagesScreen -->
+    <string name="pdf_to_images_of_selected">"%1$s de %2$s seleccionadas"</string>
+    <string name="pdf_to_images_tap_images_or_long_press">Toca imágenes o mantén pulsado y arrastra para compartir solo algunas.</string>
+    <string name="pdf_to_images_open_gallery">Abrir galería</string>
+    <string name="pdf_to_images_pick_a_different_file">Elegir otro archivo</string>
+    <string name="pdf_to_images_png_or_print_size">PNG o tamaño de impresión</string>
+    <string name="pdf_to_images_export_again">Volver a exportar</string>
+    <string name="pdf_to_images_saving_images">Guardando imágenes…</string>
+    <string name="pdf_to_images_each">~%1$s cada una</string>
+    <string name="pdf_to_images_resolution">Resolución</string>
+    <string name="pdf_to_images_format">Formato</string>
+    <string name="pdf_to_images_deselect_all">Deseleccionar todo</string>
+    <string name="pdf_to_images_this_pdf_is_password_protected">Este PDF está protegido con contraseña. Introdúcela para ver las páginas.</string>
+    <string name="pdf_to_images_images_show_up_in_your">Las imágenes aparecen al momento en tu galería</string>
+    <string name="pdf_to_images_pdf_to_jpg">PDF a JPG</string>
+    <string name="pdf_to_images_step_2_of_3_pages">Paso 2 de 3 · Páginas y formato</string>
+    <string name="pdf_to_images_no_gallery_app_found_the">No se encontró ninguna app de galería. Las imágenes están en Pictures/Scanly.</string>
+    <string name="pdf_to_images_turn_pages_into_images_for">Convierte páginas en imágenes para chats, presentaciones o tu galería.</string>
+    <!-- PdfToolDone -->
+    <string name="pdf_tool_done_open_pdf">Abrir PDF</string>
+    <string name="pdf_tool_done_open_the_finished_pdf">Abre el PDF terminado</string>
+    <string name="pdf_tool_done_your_original_file_is_unchanged">Tu archivo original no cambia</string>
+    <!-- PdfToolPresentation -->
+    <string name="pdf_tool_presentation_files_merge_in_this_order">Los archivos se combinan en este orden. El primer PDF abre el documento.</string>
+    <string name="pdf_tool_presentation_add_at_least_one_more">Añade al menos otro PDF para combinarlos.</string>
+    <string name="pdf_tool_presentation_opacity">Opacidad %1$s%%</string>
+    <string name="pdf_tool_presentation_one_large_stamp_sized_to">Un solo sello grande que ocupa casi toda la página.</string>
+    <string name="pdf_tool_presentation_repeats_across_the_full_page">Se repite por toda la página, incluidos los bordes.</string>
+    <string name="pdf_tool_presentation_protect_pdf">Proteger PDF</string>
+    <string name="pdf_tool_presentation_saved">"%1$s → %2$s  ·  ahorro del %3$s%%"</string>
+    <string name="pdf_tool_presentation_unlocked">Desbloqueado</string>
+    <string name="pdf_tool_presentation_protected">Protegido</string>
+    <string name="pdf_tool_presentation_pdfs">"%1$s PDF"</string>
+    <string name="pdf_tool_presentation_1_pdf">1 PDF</string>
+    <string name="pdf_tool_presentation_no_files">Sin archivos</string>
+    <!-- PdfToolShared -->
+    <string name="pdf_tool_shared_scanly_pdf">PDF de Scanly</string>
+    <!-- PdfToolViewModels -->
+    <string name="pdf_tool_view_models_saving">Guardando…</string>
+    <!-- PdfWatermarkScreen -->
+    <string name="pdf_watermark_the_page">La página</string>
+    <string name="pdf_watermark_first_page_only">Solo la primera página</string>
+    <string name="pdf_watermark_apply_to">Aplicar a</string>
+    <string name="pdf_watermark_colour">Color</string>
+    <string name="pdf_watermark_opacity">Opacidad</string>
+    <string name="pdf_watermark_large">Grande</string>
+    <string name="pdf_watermark_medium">Mediano</string>
+    <string name="pdf_watermark_small">Pequeño</string>
+    <string name="pdf_watermark_horizontal">Horizontal</string>
+    <string name="pdf_watermark_diagonal">Diagonal</string>
+    <string name="pdf_watermark_single">Único</string>
+    <string name="pdf_watermark_tiled">En mosaico</string>
+    <string name="pdf_watermark_style">Estilo</string>
+    <string name="pdf_watermark_stamps">Estampa \"%1$s\"</string>
+    <string name="pdf_watermark_add_date">Añadir fecha</string>
+    <string name="pdf_watermark_presets">Predefinidos</string>
+    <string name="pdf_watermark_the_watermarked_copy_is_saved">La copia con marca de agua se guarda sin contraseña. Puedes volver a bloquearla con la herramienta Contraseña.</string>
+    <string name="pdf_watermark_live_preview_of_the_saved">Vista previa en directo del archivo guardado</string>
+    <string name="pdf_watermark_page_1">Página 1</string>
+    <string name="pdf_watermark_preview_of_page_1_with">Vista previa de la página 1 con la marca de agua</string>
+    <string name="pdf_watermark_apply_watermark">Aplicar marca de agua</string>
+    <string name="pdf_watermark_apply_to_pages">"Aplicar a %1$s páginas"</string>
+    <string name="pdf_watermark_apply_to_page">Aplicar a la página</string>
+    <string name="pdf_watermark_apply_to_first_page">Aplicar a la primera página</string>
+    <string name="pdf_watermark_unlock_the_pdf_first">Primero desbloquea el PDF</string>
+    <string name="pdf_watermark_watermark">Marca de agua</string>
+    <string name="pdf_watermark_edit_stamp">Editar sello</string>
+    <string name="pdf_watermark_watermarked_pdf">PDF con marca de agua</string>
+    <string name="pdf_watermark_kept_unstamped">Conservado sin sello</string>
+    <string name="pdf_watermark_stamp">Sello</string>
+    <string name="pdf_watermark_on_every_page_tap_the">En todas las páginas. Toca la página para revisarla.</string>
+    <string name="pdf_watermark_on_all_pages_tap_the">"En las %1$s páginas. Toca la página para revisarla."</string>
+    <string name="pdf_watermark_on_both_pages_tap_the">En las dos páginas. Toca la página para revisarla.</string>
+    <string name="pdf_watermark_on_the_page_tap_it">En la página. Tócala para revisarla.</string>
+    <string name="pdf_watermark_on_the_first_page_tap">En la primera página. Toca la página para revisarla.</string>
+    <string name="pdf_watermark_watermark_added">Marca de agua añadida</string>
+    <string name="pdf_watermark_stamping_every_page">Estampando todas las páginas</string>
+    <string name="pdf_watermark_stamping">"Estampando %1$s"</string>
+    <string name="pdf_watermark_stamping_the_first_page">Estampando la primera página</string>
+    <string name="pdf_watermark_adding_watermark">Añadiendo marca de agua…</string>
+    <string name="pdf_watermark_stamp_text_like_confidential_or">Estampa textos como CONFIDENCIAL o \"Solo para uso KYC\".</string>
+    <!-- PdfWatermarkViewModel -->
+    <string name="pdf_watermark_kyc_copy">Copia KYC</string>
+    <string name="pdf_watermark_enter_watermark_text">Introduce el texto de la marca de agua.</string>
+    <!-- QrActions -->
+    <string name="qr_actions_qr_text">Texto del QR</string>
+    <string name="qr_actions_no_app_can_search_the">No hay ninguna app para buscar en la Web</string>
+    <string name="qr_actions_no_email_app_is_set">No hay ninguna app de correo configurada en este teléfono</string>
+    <string name="qr_actions_no_phone_app_can_open">Ninguna app de teléfono puede abrir este número</string>
+    <string name="qr_actions_no_contacts_app_can_save">Ninguna app de contactos puede guardarlo</string>
+    <string name="qr_actions_pick_in_wi_fi_settings">Elige \"%1$s\" en los ajustes de Wi-Fi</string>
+    <string name="qr_actions_password_copied_pick_the_network">Contraseña copiada: elige la red</string>
+    <string name="qr_actions_wi_fi_settings_can_t">No se pueden abrir los ajustes de Wi-Fi</string>
+    <string name="qr_actions_wi_fi_password">Contraseña de la Wi-Fi</string>
+    <string name="qr_actions_wi_fi_settings_can_t_2">Los ajustes de Wi-Fi no pueden añadir esta red</string>
+    <string name="qr_actions_no_upi_app_can_open">Ninguna app de UPI puede abrir este código</string>
+    <string name="qr_actions_pay_with">Pagar con</string>
+    <string name="qr_actions_no_app_can_open_this">Ninguna app puede abrir este enlace</string>
+    <string name="qr_actions_not_a_web_link">No es un enlace web</string>
+    <string name="qr_actions_nothing_can_receive_this_text">Ninguna app puede recibir este texto</string>
+    <string name="qr_actions_share_qr_code">Compartir código QR</string>
+    <string name="qr_actions_copied_to_clipboard">Copiado en el portapapeles</string>
+    <!-- QrCreateScreen -->
+    <string name="qr_create_full_name">Nombre completo</string>
+    <string name="qr_create_name">Nombre</string>
+    <string name="qr_create_leave_the_amount_empty_so">Deja el importe vacío para que los clientes introduzcan lo que deben.</string>
+    <string name="qr_create_enter_an_amount_above_zero">Introduce un importe mayor que cero</string>
+    <string name="qr_create_any">₹ Cualquiera</string>
+    <string name="qr_create_amount_optional">Importe · opcional</string>
+    <string name="qr_create_shop_name">Nombre de la tienda</string>
+    <string name="qr_create_payee_name">Nombre del beneficiario</string>
+    <string name="qr_create_name_bank">nombre@banco</string>
+    <string name="qr_create_upi_id">ID de UPI</string>
+    <string name="qr_create_security">Seguridad</string>
+    <string name="qr_create_network_password">Contraseña de la red</string>
+    <string name="qr_create_network_name">Nombre de la red</string>
+    <string name="qr_create_characters">"%1$s / %2$s caracteres"</string>
+    <string name="qr_create_anything_up_to_characters">"Lo que quieras, hasta %1$s caracteres"</string>
+    <string name="qr_create_web_address">Dirección web</string>
+    <string name="qr_create_qr_code_preview">Vista previa del código QR</string>
+    <string name="qr_create_saved_to_qr_history_png">Guardado en el historial de QR · PNG, 1024 px</string>
+    <string name="qr_create_save_image">Guardar imagen</string>
+    <string name="qr_create_only_dark_colours_so_every">Solo colores oscuros, para que cualquier cámara pueda leer el código.</string>
+    <string name="qr_create_shown_under_the_code">Se muestra debajo del código</string>
+    <string name="qr_create_caption_under_the_code_optional">Texto debajo del código · opcional</string>
+    <string name="qr_create_create_qr">Crear QR</string>
+    <!-- QrHistoryScreen -->
+    <string name="qr_history_created">Creados</string>
+    <string name="qr_history_scanned">Escaneados</string>
+    <string name="qr_history_clear_history">Borrar historial</string>
+    <string name="qr_history_every_scanned_and_created_code">Se quitarán de este teléfono todos los códigos escaneados y creados. Esta acción no se puede deshacer.</string>
+    <string name="qr_history_clear_qr_history">¿Borrar historial de QR?</string>
+    <string name="qr_history_clear_history_2">Borrar historial…</string>
+    <string name="qr_history_history_stays_on_this_phone">El historial se queda en este teléfono.</string>
+    <string name="qr_history_try_another_search_or_filter">Prueba con otra búsqueda u otro filtro.</string>
+    <string name="qr_history_no_matches">No hay coincidencias</string>
+    <string name="qr_history_scanned_and_created_codes_are">Aquí se guardan los códigos escaneados y creados.</string>
+    <string name="qr_history_no_codes_yet">Aún no hay códigos</string>
+    <string name="qr_history_search_links_networks_names">Busca enlaces, redes, nombres</string>
+    <string name="qr_history_qr_history">Historial de QR</string>
+    <!-- QrResultScreen -->
+    <string name="qr_result_show_raw_content">Mostrar contenido sin formato</string>
+    <string name="qr_result_hide_raw_content">Ocultar contenido sin formato</string>
+    <string name="qr_result_raw_content">Contenido sin formato</string>
+    <string name="qr_result_organisation">Organización</string>
+    <string name="qr_result_wi_fi_settings_can_t">Los ajustes de Wi-Fi no pueden añadir redes WEP, así que se copia la contraseña y se abren los ajustes.</string>
+    <string name="qr_result_not_in_the_code">No incluido en el código</string>
+    <string name="qr_result_network">Red</string>
+    <string name="qr_result_scanly_doesn_t_make_payments">Scanly no hace pagos. Confirma el nombre del beneficiario en tu app de UPI antes de pagar.</string>
+    <string name="qr_result_not_set_you_ll_enter">Sin indicar. Lo introducirás en tu app de UPI.</string>
+    <string name="qr_result_amount">Importe</string>
+    <string name="qr_result_payee">Beneficiario</string>
+    <string name="qr_result_this_link_isn_t_encrypted">Este enlace no está cifrado (http). Comprueba que el dominio es el que esperas antes de abrirlo.</string>
+    <string name="qr_result_check_the_domain_is_the">Comprueba que el dominio es el que esperas antes de abrirlo.</string>
+    <string name="qr_result_full_address">Dirección completa</string>
+    <string name="qr_result_number">Número</string>
+    <string name="qr_result_subject">Asunto</string>
+    <string name="qr_result_address">Dirección</string>
+    <string name="qr_result_search_the_web">Buscar en la Web</string>
+    <string name="qr_result_copy_number">Copiar número</string>
+    <string name="qr_result_email_address">Dirección de correo</string>
+    <string name="qr_result_copy_address">Copiar dirección</string>
+    <string name="qr_result_call">Llamar</string>
+    <string name="qr_result_copy_network_name">Copiar nombre de la red</string>
+    <string name="qr_result_copy_password">Copiar contraseña</string>
+    <string name="qr_result_copy_upi_id">Copiar ID de UPI</string>
+    <string name="qr_result_copy_link">Copiar enlace</string>
+    <string name="qr_result_delete_from_history">Eliminar del historial</string>
+    <string name="qr_result_saved_to_history">" · guardado en el historial"</string>
+    <!-- QrScanScreen -->
+    <string name="qr_scan_captured_qr_code">Código QR capturado</string>
+    <string name="qr_scan_history">Historial</string>
+    <string name="qr_scan_from_photo">Desde una foto</string>
+    <string name="qr_scan_scan_again">Volver a escanear</string>
+    <string name="qr_scan_qr_code">Código QR</string>
+    <string name="qr_scan_details">Detalles</string>
+    <string name="qr_scan_allow_camera">Permitir cámara</string>
+    <string name="qr_scan_open_settings">Abrir ajustes</string>
+    <string name="qr_scan_the_camera_is_used_only">La cámara solo se usa mientras esta pantalla está abierta. \"Desde una foto\" funciona sin ella.</string>
+    <string name="qr_scan_open_settings_tap_permissions_and">Abre Ajustes, toca Permisos y activa Cámara para Scanly.</string>
+    <string name="qr_scan_allow_camera_to_scan">Permite el acceso a la cámara para escanear</string>
+    <string name="qr_scan_camera_permission_is_blocked">El permiso de cámara está bloqueado</string>
+    <string name="qr_scan_torch_on_off">Activar o desactivar linterna</string>
+    <string name="qr_scan_scan_qr_barcode">Escanear QR y códigos de barras</string>
+    <string name="qr_scan_point_at_a_qr_code">Apunta a un código QR o de barras</string>
+    <string name="qr_scan_code_found_hold_steady">Código encontrado · no te muevas</string>
+    <string name="qr_scan_reading_photo">Leyendo foto…</string>
+    <string name="qr_scan_the_camera_isn_t_available">La cámara no está disponible ahora. Prueba con \"Desde una foto\".</string>
+    <!-- QrToolPresentation -->
+    <string name="qr_tool_presentation_h_ago">"Hace %1$s h"</string>
+    <string name="qr_tool_presentation_min_ago">"Hace %1$s min"</string>
+    <string name="qr_tool_presentation_just_now">ahora mismo</string>
+    <string name="qr_tool_presentation_some_text">un texto</string>
+    <string name="qr_tool_presentation_a_phone_number">un número de teléfono</string>
+    <string name="qr_tool_presentation_an_email_address">una dirección de correo</string>
+    <string name="qr_tool_presentation_a_contact">un contacto</string>
+    <string name="qr_tool_presentation_a_wi_fi_network">una red Wi-Fi</string>
+    <string name="qr_tool_presentation_a_upi_payment">un pago UPI</string>
+    <string name="qr_tool_presentation_a_link">un enlace</string>
+    <string name="qr_tool_presentation_found">"Se encontró "</string>
+    <string name="qr_tool_presentation_generating_preview">Generando vista previa…</string>
+    <string name="qr_tool_presentation_preview_appears_as_you_type">La vista previa aparece mientras escribes</string>
+    <string name="qr_tool_presentation_copy_to_the_clipboard">Copiar en el portapapeles</string>
+    <string name="qr_tool_presentation_open_in_a_browser_or">Abrir en un navegador o copiar</string>
+    <!-- QrToolViewModel -->
+    <string name="qr_tool_qr_history_cleared">Historial de QR borrado</string>
+    <string name="qr_tool_add_the_details_first">Primero añade los datos</string>
+    <string name="qr_tool_no_qr_code_found_in">No se encontró ningún código QR en esa foto</string>
+    <!-- ImageTextScreen -->
+    <string name="image_text_photos_are_saved_as_a">Las fotos se guardan como un documento nuevo para que puedas buscar su texto más tarde.</string>
+    <string name="image_text_your_scans_have_no_pages">Tus escaneos aún no tienen páginas. Elige fotos para leer su texto.</string>
+    <string name="image_text_no_scans_yet_pick_photos">Aún no hay escaneos. Elige fotos para leer su texto.</string>
+    <string name="image_text_1_scan">1 escaneo</string>
+    <string name="image_text_up_to_from_your_gallery">"Hasta %1$s de tu galería o tus archivos"</string>
+    <string name="image_text_copy_text_from_photos_or">Copia texto de fotos o escaneos. El texto se lee en este teléfono.</string>
+    <string name="image_text_image_to_text">Imagen a texto</string>
+    <!-- AppUpdateDialog -->
+    <string name="app_update_published">"Publicada el %1$s"</string>
+    <string name="app_update_current">Actual</string>
+    <string name="app_update_update">Actualizar</string>
+    <string name="app_update_what_s_new">Novedades</string>
+    <!-- AppUpdateViewModel -->
+    <string name="app_update_scanly_is_up_to_date">Scanly está actualizado. Tienes la versión %1$s.</string>
+    <string name="app_update_could_not_check_for_updates">"No se pudo buscar actualizaciones en %1$s."</string>
+    <!-- FlexibleUpdateSnackbar -->
+    <string name="flexible_update_snackbar_restart">Reiniciar</string>
+    <string name="flexible_update_snackbar_update_downloaded_restart_scanly_to">Actualización descargada. Reinicia Scanly para terminar de instalarla.</string>
+    <!-- ReleaseMarkdown -->
+    <string name="release_markdown_no_release_notes_were_provided">Esta versión no incluye notas de la versión.</string>
+    <!-- ScanlyNavHost -->
+    <string name="scanly_nav_host_up_to_images">"Hasta %1$s imágenes"</string>
+    <string name="scanly_nav_host_import_from_gallery">Importar de la galería</string>
+    <string name="scanly_nav_host_capture_pages_now">Captura páginas ahora</string>
+    <string name="scanly_nav_host_scan_with_camera">Escanear con la cámara</string>
+    <string name="scanly_nav_host_add_a_document">Añadir un documento</string>
+    <!-- pdf_page_orientation -->
+    <string name="pdf_page_orientation_portrait">Vertical</string>
+    <string name="pdf_page_orientation_landscape">Horizontal</string>
+    <!-- pdf_page_size -->
+    <string name="pdf_page_size_auto_fit">Ajuste automático</string>
+    <string name="pdf_page_size_a3">A3</string>
+    <string name="pdf_page_size_a4">A4</string>
+    <string name="pdf_page_size_a5">A5</string>
+    <string name="pdf_page_size_b4">B4</string>
+    <string name="pdf_page_size_b5">B5</string>
+    <string name="pdf_page_size_letter">Carta</string>
+    <string name="pdf_page_size_tabloid">Tabloide</string>
+    <string name="pdf_page_size_executive">Ejecutivo</string>
+    <string name="pdf_page_size_postcard">Postal</string>
+    <string name="pdf_page_size_american_foolscap">Folio americano</string>
+    <string name="pdf_page_size_european_foolscap">Folio europeo</string>
+    <!-- pdf_page_margin -->
+    <string name="pdf_page_margin_no_margin">Sin margen</string>
+    <string name="pdf_page_margin_big">Grande</string>
+    <!-- pdf_page_number -->
+    <string name="pdf_page_number_center">Centro</string>
+    <!-- pdf_image_format -->
+    <string name="pdf_image_format_smaller_files_best_for_photos">Archivos más pequeños, ideal para fotos y compartir</string>
+    <string name="pdf_image_format_crisper_text_files_about_3">Texto más nítido, archivos unas 3× más grandes</string>
+    <!-- pdf_image_resolution -->
+    <string name="pdf_image_resolution_for_sharing">Para compartir</string>
+    <string name="pdf_image_resolution_1240_px_wide_sharp_on">1240 px de ancho · nítido en teléfonos y WhatsApp</string>
+    <string name="pdf_image_resolution_for_printing">Para imprimir</string>
+    <string name="pdf_image_resolution_2480_px_wide_300_dpi">2480 px de ancho · 300 ppp en A4</string>
+    <!-- pdf_compress_quality -->
+    <string name="pdf_compress_quality_high_quality">Alta calidad</string>
+    <string name="pdf_compress_quality_best_clarity_less_compression">Máxima nitidez · menos compresión</string>
+    <string name="pdf_compress_quality_balanced">Equilibrada</string>
+    <string name="pdf_compress_quality_good_balance_of_size_and">Buen equilibrio entre tamaño y nitidez</string>
+    <string name="pdf_compress_quality_smallest">Mínima</string>
+    <string name="pdf_compress_quality_maximum_compression_softer_detail">Máxima compresión · menos detalle</string>
+    <!-- watermark_color -->
+    <string name="watermark_color_grey">Gris</string>
+    <string name="watermark_color_red">Rojo</string>
+    <string name="watermark_color_blue">Azul</string>
+    <string name="watermark_color_teal">Verde azulado</string>
+    <!-- signature_kind -->
+    <string name="signature_kind_signature">Firma</string>
+    <!-- sign_ink -->
+    <string name="sign_ink_navy">Azul marino</string>
+    <string name="sign_ink_black">Negro</string>
+    <!-- date_filter -->
+    <string name="date_filter_any_time">Cualquier fecha</string>
+    <string name="date_filter_last_7_days">Últimos 7 días</string>
+    <string name="date_filter_last_30_days">Últimos 30 días</string>
+    <string name="date_filter_this_year">Este año</string>
+    <string name="date_filter_custom_range">Periodo personalizado</string>
+    <!-- search_sort -->
+    <string name="search_sort_best_match">Más relevantes</string>
+    <string name="search_sort_newest">Más recientes</string>
+    <string name="search_sort_oldest">Más antiguos</string>
+    <string name="search_sort_name_a_z">Nombre A–Z</string>
+    <!-- search_scope -->
+    <string name="search_scope_everywhere">En todo</string>
+    <string name="search_scope_names">Nombres</string>
+    <string name="search_scope_text_in_pages">Texto de las páginas</string>
+    <!-- app_update_channel -->
+    <string name="app_update_channel_github">GitHub</string>
+    <string name="app_update_channel_google_play">Google Play</string>
+    <!-- document_kind -->
+    <string name="document_kind_invoice">Factura</string>
+    <string name="document_kind_receipt">Recibo</string>
+    <string name="document_kind_contract">Contrato</string>
+    <string name="document_kind_statement">Extracto</string>
+    <string name="document_kind_certificate">Certificado</string>
+    <string name="document_kind_id_document">Documento de identidad</string>
+    <string name="document_kind_form">Formulario</string>
+    <string name="document_kind_r_sum">Currículum</string>
+    <!-- document_corner_model -->
+    <string name="document_corner_model_lite">Ligero</string>
+    <string name="document_corner_model_standard">Estándar</string>
+    <string name="document_corner_model_high">Alto</string>
+    <string name="document_corner_model_accurate">Preciso</string>
+    <!-- document_title_format -->
+    <string name="document_title_format_scan_with_date_and_time">Escaneo con fecha y hora</string>
+    <string name="document_title_format_scan_date_time">Escaneo · fecha y hora</string>
+    <string name="document_title_format_document_with_date_and_time">Documento con fecha y hora</string>
+    <string name="document_title_format_document_date_time">Documento · fecha y hora</string>
+    <string name="document_title_format_scan_with_date">Escaneo con fecha</string>
+    <string name="document_title_format_scan_date">Escaneo · fecha</string>
+    <string name="document_title_format_scan_with_iso_date">Escaneo con fecha ISO</string>
+    <string name="document_title_format_scan_yyyy_mm_dd">Escaneo · AAAA-MM-DD</string>
+    <!-- group_title_format -->
+    <string name="group_title_format_folder_with_date_and_time">Carpeta con fecha y hora</string>
+    <string name="group_title_format_folder_date_time">Carpeta · fecha y hora</string>
+    <string name="group_title_format_new_folder_with_date_and">Nueva carpeta con fecha y hora</string>
+    <string name="group_title_format_new_folder_date_time">Nueva carpeta · fecha y hora</string>
+    <string name="group_title_format_folder_with_date">Carpeta con fecha</string>
+    <string name="group_title_format_folder_date">Carpeta · fecha</string>
+    <string name="group_title_format_folder_with_iso_date">Carpeta con fecha ISO</string>
+    <string name="group_title_format_folder_yyyy_mm_dd">Carpeta · AAAA-MM-DD</string>
+    <!-- wifi_security -->
+    <string name="wifi_security_wpa_wpa2">WPA/WPA2</string>
+    <string name="wifi_security_wep">WEP</string>
+    <string name="wifi_security_open">Abierta</string>
+    <!-- qr_create_type -->
+    <string name="qr_create_type_upi">UPI</string>
+    <!-- pdf_import_look -->
+    <string name="pdf_import_look_keep_as_is">Dejar como está</string>
+    <string name="pdf_import_look_pages_look_exactly_like_the">Las páginas se ven exactamente como en el PDF</string>
+    <string name="pdf_import_look_enhance">Mejorar</string>
+    <string name="pdf_import_look_even_out_scanned_pages_and">Uniformiza las páginas escaneadas y hace el texto más nítido</string>
+    <!-- capture_scene_issue -->
+    <string name="capture_scene_issue_lens_may_be_covered_clear">Puede que la lente esté tapada. Despéjala y vuelve a intentarlo.</string>
+    <string name="capture_scene_issue_too_dark_add_light_or">Está demasiado oscuro. Añade luz o activa el flash.</string>
+    <string name="capture_scene_issue_image_looks_blurry_clean_the">La imagen se ve borrosa. Limpia la lente o toca para enfocar.</string>
+    <!-- group_export_action -->
+    <string name="group_export_action_merged_pdf_options">Opciones del PDF combinado</string>
+    <string name="group_export_action_separate_pdfs_options">Opciones de PDF separados</string>
+    <!-- library_sort_option -->
+    <string name="library_sort_option_last_modified">Última modificación</string>
+    <string name="library_sort_option_latest_changes_first">Cambios más recientes primero</string>
+    <string name="library_sort_option_oldest_updated">Actualización más antigua</string>
+    <string name="library_sort_option_earliest_changes_first">Cambios más antiguos primero</string>
+    <string name="library_sort_option_alphabetical_order">Orden alfabético</string>
+    <string name="library_sort_option_name_z_a">Nombre Z–A</string>
+    <string name="library_sort_option_reverse_alphabetical_order">Orden alfabético inverso</string>
+    <string name="library_sort_option_newest_created">Creación más reciente</string>
+    <string name="library_sort_option_recently_added_first">Añadidos recientemente primero</string>
+    <string name="library_sort_option_oldest_created">Creación más antigua</string>
+    <string name="library_sort_option_earliest_added_first">Añadidos hace más tiempo primero</string>
+    <!-- signature_pen_width -->
+    <string name="signature_pen_width_fine">Fino</string>
+    <string name="signature_pen_width_bold">Grueso</string>
+    <!-- onboarding_page -->
+    <string name="onboarding_page_capture">CAPTURA</string>
+    <string name="onboarding_page_paper_to_polished">Del papel a la perfección.</string>
+    <string name="onboarding_page_capture_straighten_and_clean_up">Captura, endereza y limpia tus páginas.</string>
+    <string name="onboarding_page_find">BUSCA</string>
+    <string name="onboarding_page_find_more_than_files">Encuentra más que archivos.</string>
+    <string name="onboarding_page_recognize_text_on_your_device">Reconoce texto en tu dispositivo. Busca dentro de tus escaneos.</string>
+    <string name="onboarding_page_share">COMPARTE</string>
+    <string name="onboarding_page_ready_when_you_are">Listo cuando lo necesites.</string>
+    <string name="onboarding_page_keep_pages_together_share_a">Mantén tus páginas juntas. Comparte un PDF limpio en pocos toques.</string>
+    <!-- pdf_reader_tool -->
+    <string name="pdf_reader_tool_merge_with_other_pdfs">Combinar con otros PDF</string>
+    <string name="pdf_reader_tool_password_protect">Proteger con contraseña</string>
+    <string name="pdf_reader_tool_add_watermark">Añadir marca de agua</string>
+    <string name="pdf_reader_tool_save_pages_as_images">Guardar páginas como imágenes</string>
+    <string name="pdf_reader_tool_add_to_scanly_library">Añadir a la biblioteca de Scanly</string>
+    <!-- pdf_picker_sort -->
+    <string name="pdf_picker_sort_most_pages">Más páginas</string>
+    <!-- qr_ink_color -->
+    <string name="qr_ink_color_ink">Tinta</string>
+    <string name="qr_ink_color_maroon">Granate</string>
+    <!-- qr_primary_action -->
+    <string name="qr_primary_action_pay_with_a_upi_app">Pagar con una app de UPI</string>
+    <string name="qr_primary_action_pay">Pagar</string>
+    <string name="qr_primary_action_join_this_network">Conectarse a esta red</string>
+    <string name="qr_primary_action_join">Conectarse</string>
+    <string name="qr_primary_action_save_to_contacts">Guardar en contactos</string>
+    <string name="qr_primary_action_send_email">Enviar correo</string>
+    <string name="qr_primary_action_call_this_number">Llamar a este número</string>
+    <string name="qr_primary_action_copy_text">Copiar texto</string>
+    <!-- qr_history_section -->
+    <string name="qr_history_section_earlier">Anteriores</string>
+    <!-- sign_tool -->
+    <string name="sign_tool_date">Fecha</string>
+    <string name="sign_tool_checkbox">Casilla</string>
+    <!-- scanly_destination -->
+    <string name="scanly_destination_home">Inicio</string>
+    <string name="scanly_destination_camera">Cámara</string>
+    <!-- settings_text_recognition -->
+    <string name="settings_text_recognition_and_more">y más</string>
+    <string name="settings_text_recognition_romanian">Rumano</string>
+    <string name="settings_text_recognition_czech">Checo</string>
+    <string name="settings_text_recognition_swedish">Sueco</string>
+    <string name="settings_text_recognition_swahili">Suajili</string>
+    <string name="settings_text_recognition_filipino">Filipino</string>
+    <string name="settings_text_recognition_vietnamese">Vietnamita</string>
+    <string name="settings_text_recognition_malay">Malayo</string>
+    <string name="settings_text_recognition_indonesian">Indonesio</string>
+    <string name="settings_text_recognition_turkish">Turco</string>
+    <string name="settings_text_recognition_polish">Polaco</string>
+    <string name="settings_text_recognition_dutch">Neerlandés</string>
+    <string name="settings_text_recognition_portuguese">Portugués</string>
+    <string name="settings_text_recognition_italian">Italiano</string>
+    <string name="settings_text_recognition_german">Alemán</string>
+    <string name="settings_text_recognition_french">Francés</string>
+    <string name="settings_text_recognition_spanish">Español</string>
+    <string name="settings_text_recognition_english">Inglés</string>
+    <string name="settings_text_recognition_latin">Latino</string>
+    <string name="settings_text_recognition_amharic">Amárico</string>
+    <string name="settings_text_recognition_georgian">Georgiano</string>
+    <string name="settings_text_recognition_armenian">Armenio</string>
+    <string name="settings_text_recognition_burmese">Birmano</string>
+    <string name="settings_text_recognition_khmer">Jemer</string>
+    <string name="settings_text_recognition_lao">Lao</string>
+    <string name="settings_text_recognition_thai">Tailandés</string>
+    <string name="settings_text_recognition_southeast_asia_more">Sudeste asiático y más</string>
+    <string name="settings_text_recognition_hebrew">Hebreo</string>
+    <string name="settings_text_recognition_urdu">Urdu</string>
+    <string name="settings_text_recognition_persian">Persa</string>
+    <string name="settings_text_recognition_arabic">Árabe</string>
+    <string name="settings_text_recognition_right_to_left">De derecha a izquierda</string>
+    <string name="settings_text_recognition_korean">Coreano</string>
+    <string name="settings_text_recognition_japanese">Japonés</string>
+    <string name="settings_text_recognition_chinese">Chino</string>
+    <string name="settings_text_recognition_east_asian">Asia oriental</string>
+    <string name="settings_text_recognition_sinhala">Cingalés</string>
+    <string name="settings_text_recognition_odia">Oriya</string>
+    <string name="settings_text_recognition_punjabi">Panyabí</string>
+    <string name="settings_text_recognition_gujarati">Guyaratí</string>
+    <string name="settings_text_recognition_malayalam">Malayalam</string>
+    <string name="settings_text_recognition_kannada">Canarés</string>
+    <string name="settings_text_recognition_telugu">Telugu</string>
+    <string name="settings_text_recognition_tamil">Tamil</string>
+    <string name="settings_text_recognition_bengali">Bengalí</string>
+    <string name="settings_text_recognition_nepali">Nepalí</string>
+    <string name="settings_text_recognition_marathi">Maratí</string>
+    <string name="settings_text_recognition_hindi">Hindi</string>
+    <string name="settings_text_recognition_indian_scripts">Escrituras de la India</string>
+    <string name="settings_text_recognition_greek">Griego</string>
+    <string name="settings_text_recognition_serbian">Serbio</string>
+    <string name="settings_text_recognition_bulgarian">Búlgaro</string>
+    <string name="settings_text_recognition_ukrainian">Ucraniano</string>
+    <string name="settings_text_recognition_russian">Ruso</string>
+    <string name="settings_text_recognition_latin_cyrillic_greek">Latino, cirílico y griego</string>
+    <!-- tools_catalog -->
+    <string name="tools_catalog_camera_with_edge_detection">Cámara con detección de bordes</string>
+    <string name="tools_catalog_scan_a_document">Escanear un documento</string>
+    <string name="tools_catalog_pdf_to_editable_scan">PDF a escaneo editable</string>
+    <string name="tools_catalog_open_any_pdf">Abre cualquier PDF</string>
+    <string name="tools_catalog_read_pdf">Leer PDF</string>
+    <string name="tools_catalog_stamp_text">Estampa texto</string>
+    <string name="tools_catalog_lock_or_unlock">Bloquea o desbloquea</string>
+    <string name="tools_catalog_pages_as_images">Páginas como imágenes</string>
+    <string name="tools_catalog_make_it_smaller">Reduce su tamaño</string>
+    <string name="tools_catalog_combine_files">Une archivos</string>
+    <string name="tools_catalog_merge">Combinar</string>
+    <string name="tools_catalog_sign_any_pdf">Firma cualquier PDF</string>
+    <string name="tools_catalog_from_gallery">Desde la galería</string>
+    <string name="tools_catalog_images_to_pdf">Imágenes a PDF</string>
+    <string name="tools_catalog_create_manage">Crea y gestiona</string>
+    <string name="tools_catalog_my_signatures">Mis firmas</string>
+    <string name="tools_catalog_photos_scans">Fotos y escaneos</string>
+    <string name="tools_catalog_scan_or_create">Escanea o crea</string>
+    <string name="tools_catalog_qr_barcode">QR y códigos de barras</string>
+    <!-- pip_lines -->
+    <string name="pip_lines_tip_folders_keep_related_scans">consejo: las carpetas mantienen juntos los escaneos relacionados. prueba con una para recibos.</string>
+    <string name="pip_lines_tip_turn_on_the_grid">consejo: activa la cuadrícula en la cámara para alinear las páginas.</string>
+    <string name="pip_lines_tip_add_a_scanly_widget">consejo: añade un widget de Scanly a la pantalla de inicio para escanear con un toque.</string>
+    <string name="pip_lines_tip_the_tools_tab_can">consejo: en la pestaña herramientas puedes combinar, comprimir y firmar PDF.</string>
+    <string name="pip_lines_tip_open_a_document_s">consejo: abre el texto de un documento para copiar o compartir lo que dice.</string>
+    <string name="pip_lines_tip_long_press_a_page">consejo: mantén pulsada una página y arrástrala para reordenarla.</string>
+    <string name="pip_lines_tip_search_finds_words_inside">consejo: la búsqueda encuentra palabras dentro de tus escaneos, no solo en sus nombres.</string>
+    <string name="pip_lines_okay_okay_i_felt_that">vale, vale, esa la he notado.</string>
+    <string name="pip_lines_still_free_still_no_account">sigo siendo gratis. sin cuenta. sin anuncios.</string>
+    <string name="pip_lines_i_m_open_source_you">soy de código abierto. puedes leer cada línea de mí.</string>
+    <string name="pip_lines_your_original_photos_are_kept">tus fotos originales se conservan, así que siempre puedes deshacer los cambios.</string>
+    <string name="pip_lines_i_live_on_your_phone">vivo en tu teléfono. no tengo servidores a los que llamar.</string>
+    <string name="pip_lines_hey_that_tickles">¡eh! eso me hace cosquillas.</string>
+    <!-- pdf_watermark -->
+    <string name="pdf_watermark_for_kyc_use_only">Solo para uso KYC</string>
+    <!-- document_presentation_formatter -->
+    <string name="document_presentation_formatter_untitled_document">Documento sin título</string>
+    <string name="document_presentation_formatter_untitled_folder">Carpeta sin título</string>
+    <!-- default_pdf_toolkit_repository -->
+    <string name="default_pdf_toolkit_repository_this_pdf_is_password_protected">Este PDF está protegido con contraseña.</string>
+    <string name="default_pdf_toolkit_repository_this_pdf_is_too_large">Este PDF es demasiado grande para procesarlo en este dispositivo.</string>
+    <!-- document_cover_art_factory -->
+    <string name="document_cover_art_factory_scanned_document">Documento escaneado</string>
+    <!-- document_sign -->
+    <string name="document_sign_some_pages_are_still_processing">Algunas páginas aún se están procesando y todavía no se pueden firmar.</string>
+    <!-- pip_lines -->
+    <string name="pip_lines_hi_i_m_pip_point">¡hola, soy Pip! apúntame a cualquier página y te la enderezo.</string>
+    <string name="pip_lines_one_last_thing_can_i">¡una última cosa! ¿me prestas la cámara? solo se activa mientras escaneas.</string>
+    <string name="pip_lines_nothing_here_yet_let_s">aún no hay nada. escaneemos juntos tu primera página.</string>
+    <string name="pip_lines_a_clean_shelf_start_a">¡estantería despejada! crea una carpeta o escanea algo.</string>
+    <string name="pip_lines_no_folders_yet_they_re">aún no hay carpetas. son geniales para recibos, facturas y cosas del cole.</string>
+    <string name="pip_lines_no_documents_yet_i_m">aún no hay documentos. yo estoy listo cuando quieras.</string>
+    <string name="pip_lines_this_folder_is_waiting_for">esta carpeta espera su primer documento.</string>
+    <string name="pip_lines_no_pages_yet_point_me">aún no hay páginas. ¡apúntame a algún papel!</string>
+    <string name="pip_lines_no_pages_means_no_words">sin páginas, aún no hay palabras.</string>
+    <string name="pip_lines_pick_a_few_photos_and">elige unas fotos y pondré a competir a los detectores.</string>
+    <string name="pip_lines_hmm_i_don_t_have">mmm, no tengo respuesta para eso.</string>
+    <string name="pip_lines_no_codes_yet_scan_or">aún no hay códigos. escanea o crea uno y lo guardaré aquí.</string>
+    <string name="pip_lines_nothing_matches_that_try_another">no hay coincidencias. ¿pruebas con otra palabra?</string>
+    <string name="pip_lines_i_m_still_reading_some">aún estoy leyendo algunas páginas. puede que salgan resultados en un momento.</string>
+    <string name="pip_lines_i_can_t_see_a">aún no veo nada. ¿me prestas la cámara?</string>
+    <string name="pip_lines_the_camera_is_switched_off">la cámara está desactivada para Scanly. una visita rápida a ajustes lo soluciona.</string>
+    <string name="pip_lines_lend_me_the_camera_and">préstame la cámara y te leo el código.</string>
+    <string name="pip_lines_huh_that_document_wandered_off">vaya, ese documento se ha escapado.</string>
+    <!-- pdf_page_size -->
+    <string name="pdf_page_size_match_each_scan">Igual que cada escaneo</string>
+    <string name="pdf_page_size_29_7_42_0_cm">29.7 × 42.0 cm</string>
+    <string name="pdf_page_size_21_0_29_7_cm">21.0 × 29.7 cm</string>
+    <string name="pdf_page_size_14_8_21_0_cm">14.8 × 21.0 cm</string>
+    <string name="pdf_page_size_25_0_35_3_cm">25.0 × 35.3 cm</string>
+    <string name="pdf_page_size_17_6_25_0_cm">17.6 × 25.0 cm</string>
+    <string name="pdf_page_size_21_6_27_9_cm">21.6 × 27.9 cm</string>
+    <string name="pdf_page_size_27_9_43_2_cm">27.9 × 43.2 cm</string>
+    <string name="pdf_page_size_21_6_35_6_cm">21.6 × 35.6 cm</string>
+    <string name="pdf_page_size_18_4_26_7_cm">18.4 × 26.7 cm</string>
+    <string name="pdf_page_size_10_0_14_8_cm">10.0 × 14.8 cm</string>
+    <string name="pdf_page_size_21_6_33_0_cm">21.6 × 33.0 cm</string>
+    <string name="pdf_page_size_22_9_33_0_cm">22.9 × 33.0 cm</string>
+    <!-- PageTextScreen view modes -->
+    <string name="page_text_text">Texto</string>
+    <string name="page_text_on_page">En la página</string>
+    <!-- Shared counts -->
+    <plurals name="common_documents">
+        <item quantity="one">%d documento</item>
+        <item quantity="many">%d documentos</item>
+        <item quantity="other">%d documentos</item>
+    </plurals>
+    <plurals name="common_pages">
+        <item quantity="one">%d página</item>
+        <item quantity="many">%d páginas</item>
+        <item quantity="other">%d páginas</item>
+    </plurals>
+    <plurals name="common_folders">
+        <item quantity="one">%d carpeta</item>
+        <item quantity="many">%d carpetas</item>
+        <item quantity="other">%d carpetas</item>
+    </plurals>
+    <plurals name="common_matches">
+        <item quantity="one">%d coincidencia</item>
+        <item quantity="many">%d coincidencias</item>
+        <item quantity="other">%d coincidencias</item>
+    </plurals>
+    <plurals name="common_words">
+        <item quantity="one">%d palabra</item>
+        <item quantity="many">%d palabras</item>
+        <item quantity="other">%d palabras</item>
+    </plurals>
+    <string name="common_two_parts">%1$s · %2$s</string>
+    <!-- Library search -->
+    <plurals name="library_search_in_documents">
+        <item quantity="one">", en %d documento"</item>
+        <item quantity="many">", en %d documentos"</item>
+        <item quantity="other">", en %d documentos"</item>
+    </plurals>
+    <plurals name="library_search_no_exact_matches">
+        <item quantity="one">No hay coincidencias exactas · %d documento con palabras similares</item>
+        <item quantity="many">No hay coincidencias exactas · %d documentos con palabras similares</item>
+        <item quantity="other">No hay coincidencias exactas · %d documentos con palabras similares</item>
+    </plurals>
+    <plurals name="library_search_show_more_pages">
+        <item quantity="one">Mostrar coincidencias en %d página más</item>
+        <item quantity="many">Mostrar coincidencias en %d páginas más</item>
+        <item quantity="other">Mostrar coincidencias en %d páginas más</item>
+    </plurals>
+    <plurals name="library_search_still_reading">
+        <item quantity="one">Aún se está leyendo el texto de %d página. Las nuevas coincidencias aparecerán aquí.</item>
+        <item quantity="many">Aún se está leyendo el texto de %d páginas. Las nuevas coincidencias aparecerán aquí.</item>
+        <item quantity="other">Aún se está leyendo el texto de %d páginas. Las nuevas coincidencias aparecerán aquí.</item>
+    </plurals>
+    <string name="library_search_matches_in_documents">%1$s en %2$s</string>
+    <plurals name="search_filters_show_results">
+        <item quantity="one">Mostrar %d resultado</item>
+        <item quantity="many">Mostrar %d resultados</item>
+        <item quantity="other">Mostrar %d resultados</item>
+    </plurals>
+    <!-- Settings -->
+    <plurals name="settings_reading_text_pages_left">
+        <item quantity="one">Leyendo texto… queda %d página</item>
+        <item quantity="many">Leyendo texto… quedan %d páginas</item>
+        <item quantity="other">Leyendo texto… quedan %d páginas</item>
+    </plurals>
+    <plurals name="settings_text_recognition_reread_pages">
+        <item quantity="one">¿Volver a leer %d página?</item>
+        <item quantity="many">¿Volver a leer %d páginas?</item>
+        <item quantity="other">¿Volver a leer %d páginas?</item>
+    </plurals>
+    <string name="settings_could_not_calibrate_models">No se pudieron calibrar los modelos de documentos en este dispositivo.</string>
+    <!-- Recently deleted -->
+    <string name="recently_deleted_long_press_for_options">Mantén pulsado un elemento para ver más opciones.</string>
+    <string name="recently_deleted_retention_note">Las páginas se conservan %1$s, y los documentos y las carpetas %2$s. Después, se eliminan definitivamente.</string>
+    <plurals name="recently_deleted_restored_items">
+        <item quantity="one">Se restauró %d elemento</item>
+        <item quantity="many">Se restauraron %d elementos</item>
+        <item quantity="other">Se restauraron %d elementos</item>
+    </plurals>
+    <plurals name="recently_deleted_restored_some_items">
+        <item quantity="one">Se restauró %2$d de %3$d elemento. %4$s</item>
+        <item quantity="many">Se restauraron %2$d de %3$d elementos. %4$s</item>
+        <item quantity="other">Se restauraron %2$d de %3$d elementos. %4$s</item>
+    </plurals>
+    <plurals name="recently_deleted_deleted_items">
+        <item quantity="one">Se eliminó %d elemento definitivamente</item>
+        <item quantity="many">Se eliminaron %d elementos definitivamente</item>
+        <item quantity="other">Se eliminaron %d elementos definitivamente</item>
+    </plurals>
+    <plurals name="recently_deleted_deleted_some_items">
+        <item quantity="one">Se eliminó %2$d de %3$d elemento definitivamente. %4$s</item>
+        <item quantity="many">Se eliminaron %2$d de %3$d elementos definitivamente. %4$s</item>
+        <item quantity="other">Se eliminaron %2$d de %3$d elementos definitivamente. %4$s</item>
+    </plurals>
+    <!-- %1$s = folder name, %2$d = number of documents in it. -->
+    <plurals name="folder_delete_what_should_happen">
+        <item quantity="one">\"%1$s\" tiene %2$d documento. ¿Qué quieres hacer con él?</item>
+        <item quantity="many">\"%1$s\" tiene %2$d documentos. ¿Qué quieres hacer con ellos?</item>
+        <item quantity="other">\"%1$s\" tiene %2$d documentos. ¿Qué quieres hacer con ellos?</item>
+    </plurals>
+    <!-- PDF tools -->
+    <string name="pdf_compress_first_page_of">Primera página de %1$s</string>
+    <string name="pdf_compress_the_pdf">el PDF</string>
+    <string name="pdf_password_strength_too_short">Demasiado corta</string>
+    <string name="pdf_password_strength_too_long">Demasiado larga</string>
+    <string name="pdf_password_strength_weak">Débil</string>
+    <string name="pdf_password_strength_fair">Aceptable</string>
+    <string name="pdf_password_strength_strong">Segura</string>
+    <string name="model_benchmark_gate_prefix">Filtro: %1$s</string>
+    <string name="model_benchmark_unavailable">No disponible</string>
+    <!-- Error messages shown in snackbars and dialogs -->
+    <string name="error_document_not_found">No se encontró el documento.</string>
+    <string name="error_group_not_found">No se encontró el grupo.</string>
+    <string name="error_no_documents_in_group">No hay documentos en el grupo.</string>
+    <string name="error_no_pages_available_to_export">No hay páginas para exportar.</string>
+    <string name="error_could_not_create_export_directory">No se pudo crear la carpeta de exportación.</string>
+    <string name="error_could_not_replace_existing_pdf">No se pudo reemplazar el PDF existente.</string>
+    <string name="error_folder_not_found">No se encontró la carpeta.</string>
+    <string name="error_this_page_is_already_in_recently_deleted">Esta página ya está en Eliminados recientemente.</string>
+    <string name="error_only_pages_in_recently_deleted_can_be">Solo se pueden eliminar definitivamente las páginas que están en Eliminados recientemente.</string>
+    <string name="error_page_not_found">No se encontró la página.</string>
+    <string name="error_page_not_found_in_document_order">No se encontró la página en el orden del documento.</string>
+    <string name="error_select_at_least_two_pdfs_to_merge">Selecciona al menos dos PDF para combinarlos.</string>
+    <string name="error_pdf_has_no_pages">El PDF no tiene páginas.</string>
+    <string name="error_password_must_be_4_64_characters">La contraseña debe tener entre 4 y 64 caracteres.</string>
+    <string name="error_enter_the_current_pdf_password">Introduce la contraseña actual del PDF.</string>
+    <string name="error_enter_watermark_text">Introduce el texto de la marca de agua.</string>
+    <string name="error_this_pdf_has_no_pages">Este PDF no tiene páginas.</string>
+    <string name="error_preview_size_is_invalid">El tamaño de la vista previa no es válido.</string>
+    <string name="error_place_a_signature_or_another_mark_first">Primero coloca una firma u otra marca.</string>
+    <string name="error_a_mark_is_on_a_missing_page">Hay una marca en una página que no existe.</string>
+    <string name="error_could_not_prepare_this_pdf">No se pudo preparar este PDF.</string>
+    <string name="error_page_is_out_of_range">La página está fuera de rango.</string>
+    <string name="error_choose_at_least_one_page">Elige al menos una página.</string>
+    <string name="error_failed_to_encode_page_image">No se pudo codificar la imagen de la página.</string>
+    <string name="error_export_file_is_missing">Falta el archivo exportado.</string>
+    <string name="error_the_preview_pdf_is_missing">Falta el PDF de vista previa.</string>
+    <string name="error_could_not_read_selected_pdf">No se pudo leer el PDF seleccionado.</string>
+    <string name="error_not_enough_memory_to_compress_this_pdf">No hay suficiente memoria para comprimir este PDF. Prueba con la calidad Mínima o con un archivo más corto.</string>
+    <string name="error_a_text_box_is_empty_type_something">Hay un cuadro de texto vacío. Escribe algo o elimínalo.</string>
+    <string name="error_a_signature_image_is_missing_remove_it">Falta la imagen de una firma. Quítala y vuelve a colocarla.</string>
+    <string name="error_some_characters_cant_be_drawn_remove_emoji">Algunos caracteres no se pueden dibujar. Quita los emojis o los símbolos poco comunes.</string>
+    <string name="error_some_characters_in_the_watermark_cant_be">Algunos caracteres de la marca de agua no se pueden dibujar. Quita los emojis o los símbolos poco comunes.</string>
+    <string name="error_enter_something_to_encode">Introduce algo para codificar.</string>
+    <string name="error_could_not_write_qr_image">No se pudo guardar la imagen del QR.</string>
+    <string name="error_a_signature_image_is_missing_place_it">Falta la imagen de una firma. Vuelve a colocarla.</string>
+    <string name="error_the_signature_is_empty">La firma está vacía.</string>
+    <string name="error_could_not_save_the_signature">No se pudo guardar la firma.</string>
+    <string name="error_could_not_prepare_the_image">No se pudo preparar la imagen.</string>
+    <string name="error_could_not_create_signature_storage">No se pudo crear el almacenamiento de firmas.</string>
+    <string name="error_no_signature_found_in_this_image_try">No se encontró ninguna firma en esta imagen. Prueba con tinta oscura sobre papel claro.</string>
+    <string name="error_this_signature_no_longer_exists">Esta firma ya no existe.</string>
+    <string name="error_the_signature_image_could_not_be_read">No se pudo leer la imagen de la firma.</string>
+    <string name="error_a_signature_image_is_missing_open_sign">Falta la imagen de una firma. Abre Firmar y vuelve a colocarla.</string>
+    <string name="error_this_page_is_still_processing_try_again">Esta página aún se está procesando. Vuelve a intentarlo en un momento.</string>
+    <string name="error_could_not_read_the_page_image">No se pudo leer la imagen de la página.</string>
+    <string name="error_invalid_page_image_path">La ruta de la imagen de la página no es válida.</string>
+    <string name="error_the_exported_file_is_unavailable">El archivo exportado no está disponible.</string>
+    <string name="error_the_exported_image_is_unavailable">La imagen exportada no está disponible.</string>
+    <string name="error_the_selected_save_folder_is_no_longer">La carpeta de guardado seleccionada ya no está disponible. Vuelve a elegirla en Ajustes.</string>
+    <string name="error_this_page_no_longer_exists">Esta página ya no existe.</string>
+    <string name="error_read_this_pages_text_first">Primero lee el texto de esta página.</string>
+    <string name="error_page_image_could_not_be_read">No se pudo leer la imagen de la página.</string>
+    <string name="error_opencv_could_not_be_initialized">No se pudo inicializar OpenCV.</string>
+    <string name="error_no_images_selected">No se seleccionó ninguna imagen.</string>
+    <string name="error_could_not_write_imported_image">No se pudo guardar la imagen importada.</string>
+    <string name="error_imported_image_file_is_empty">El archivo de imagen importado está vacío.</string>
+    <string name="error_image_decode_failed">No se pudo decodificar la imagen</string>
+    <!-- Language settings -->
+    <string name="settings_language">Idioma</string>
+    <string name="settings_language_system_default">Predeterminado del sistema</string>
+    <string name="settings_language_follow_phone">Idioma del teléfono</string>
+    <string name="settings_language_uses_phone_language">"Igual que tu teléfono: %1$s"</string>
+    <string name="settings_language_app_language">Idioma de la app</string>
+    <string name="settings_language_note">Los nombres de tus documentos, el texto reconocido de las páginas y los PDF que abras se mantienen en su idioma original.</string>
+    <!-- Manifest -->
+    <string name="intent_open_in_scanly">Abrir en Scanly</string>
+    <!-- Library date sections -->
+    <string name="library_section_previous_7_days">Últimos 7 días</string>
+    <!-- Month and year as a section title, e.g. "December 2025". %1$s = month name, %2$d = year. -->
+    <string name="library_section_month_year">"%1$s de %2$d"</string>
+    <!-- Camera -->
+    <string name="scan_session_capture_failed">No se pudo capturar.</string>
+    <!-- Signature kinds as whole phrases (Signature vs Initials) -->
+    <string name="sign_kind_add_signature">Añadir firma</string>
+    <string name="sign_kind_add_initials">Añadir iniciales</string>
+    <string name="sign_kind_delete_signature">Eliminar firma</string>
+    <string name="sign_kind_delete_initials">Eliminar iniciales</string>
+    <string name="sign_kind_delete_signature_question">¿Eliminar firma?</string>
+    <string name="sign_kind_delete_initials_question">¿Eliminar iniciales?</string>
+    <string name="sign_kind_open_signature_options">Abrir opciones de la firma</string>
+    <string name="sign_kind_open_initials_options">Abrir opciones de las iniciales</string>
+    <string name="sign_kind_saved_signature">Firma guardada</string>
+    <string name="sign_kind_saved_initials">Iniciales guardadas</string>
+    <string name="sign_kind_show_signature_first">Mostrar esta firma antes que las demás</string>
+    <string name="sign_kind_show_initials_first">Mostrar estas iniciales antes que las demás</string>
+    <!-- Watermark -->
+    <!-- Watermark presets are stamped into PDFs with a Latin/Cyrillic font. In languages written in
+         another script (Indic, CJK, Thai), keep these in English so the stamp can be drawn. -->
+    <string name="pdf_watermark_preset_confidential">CONFIDENCIAL</string>
+    <string name="pdf_watermark_preset_draft">BORRADOR</string>
+    <string name="pdf_watermark_preset_copy">COPIA</string>
+    <string name="pdf_watermark_opacity_percent">"%1$d%%"</string>
+    <!-- Localized counts and progress (no English-only plural branches). -->
+    <plurals name="common_days">
+        <item quantity="one">"%d día"</item>
+        <item quantity="many">"%d días"</item>
+        <item quantity="other">"%d días"</item>
+    </plurals>
+    <plurals name="common_files">
+        <item quantity="one">"%d archivo"</item>
+        <item quantity="many">"%d archivos"</item>
+        <item quantity="other">"%d archivos"</item>
+    </plurals>
+    <plurals name="common_images">
+        <item quantity="one">"%d imagen"</item>
+        <item quantity="many">"%d imágenes"</item>
+        <item quantity="other">"%d imágenes"</item>
+    </plurals>
+    <plurals name="common_marks">
+        <item quantity="one">"%d marca"</item>
+        <item quantity="many">"%d marcas"</item>
+        <item quantity="other">"%d marcas"</item>
+    </plurals>
+    <plurals name="common_scans">
+        <item quantity="one">"%d escaneo"</item>
+        <item quantity="many">"%d escaneos"</item>
+        <item quantity="other">"%d escaneos"</item>
+    </plurals>
+    <plurals name="common_topics">
+        <item quantity="one">"%d tema"</item>
+        <item quantity="many">"%d temas"</item>
+        <item quantity="other">"%d temas"</item>
+    </plurals>
+    <plurals name="common_libraries">
+        <item quantity="one">"%d biblioteca"</item>
+        <item quantity="many">"%d bibliotecas"</item>
+        <item quantity="other">"%d bibliotecas"</item>
+    </plurals>
+    <plurals name="common_selected">
+        <item quantity="one">"%d seleccionado"</item>
+        <item quantity="many">"%d seleccionados"</item>
+        <item quantity="other">"%d seleccionados"</item>
+    </plurals>
+    <plurals name="pdf_to_images_saved_count">
+        <item quantity="one">"%d imagen guardada"</item>
+        <item quantity="many">"%d imágenes guardadas"</item>
+        <item quantity="other">"%d imágenes guardadas"</item>
+    </plurals>
+    <plurals name="pdf_to_images_export_count">
+        <item quantity="one">"Exportar %d imagen"</item>
+        <item quantity="many">"Exportar %d imágenes"</item>
+        <item quantity="other">"Exportar %d imágenes"</item>
+    </plurals>
+    <string name="common_current_of_total">"%1$d de %2$d"</string>
+    <!-- Error fallbacks found in the final extraction audit. -->
+    <string name="error_failed_to_import_images">"No se pudieron importar imágenes."</string>
+    <string name="error_could_not_calculate_storage_usage">"No se pudo calcular el uso de almacenamiento."</string>
+    <string name="error_could_not_clear_app_data">"No se pudieron borrar los datos de la aplicación."</string>
+    <string name="error_could_not_clear_temporary_exports">"No se pudieron liquidar las exportaciones temporales."</string>
+    <string name="error_could_not_remove_old_backup_files">"No se pudieron eliminar los archivos de copia de seguridad antiguos."</string>
+    <string name="error_could_not_create_the_document">"No se pudo crear el documento."</string>
+    <string name="error_could_not_rename_the_document">"No se pudo cambiar el nombre del documento."</string>
+    <string name="error_could_not_delete_the_document">"No se pudo eliminar el documento."</string>
+    <string name="error_could_not_create_the_group">"No se pudo crear el grupo."</string>
+    <string name="error_could_not_rename_the_group">"No se pudo cambiar el nombre del grupo."</string>
+    <string name="error_could_not_delete_the_group">"No se pudo eliminar el grupo."</string>
+    <string name="error_could_not_remove_empty_folders">"No se pudieron eliminar las carpetas vacías."</string>
+    <string name="error_could_not_update_document_group">"No se pudo actualizar el grupo de documentos."</string>
+    <string name="error_could_not_prepare_page_capture">"No se pudo preparar la captura de página."</string>
+    <string name="error_could_not_prepare_page_replacement">"No se pudo preparar el reemplazo de la página."</string>
+    <string name="error_could_not_save_the_captured_page">"No se pudo guardar la página capturada."</string>
+    <string name="error_could_not_reorder_the_page">"No se pudo reordenar la página."</string>
+    <string name="error_could_not_save_page_edits">"No se pudieron guardar las ediciones de la página."</string>
+    <string name="error_could_not_update_text_recognition_engine">"No se pudo actualizar el motor de reconocimiento de texto."</string>
+    <string name="error_could_not_update_theme_mode">"No se pudo actualizar el modo de tema."</string>
+    <string name="error_could_not_finish_onboarding">"No se pudo finalizar la incorporación."</string>
+    <string name="error_could_not_load_settings_content">"No se pudo cargar el contenido de la configuración."</string>
+    <string name="error_could_not_update_the_save_location">"No se pudo actualizar la ubicación para guardar."</string>
+    <string name="error_could_not_update_model_selection">"No se pudo actualizar la selección del modelo."</string>
+    <string name="error_could_not_update_document_detection_settings">"No se pudo actualizar la configuración de detección de documentos."</string>
+    <string name="error_could_not_save_the_exported_file">"No se pudo guardar el archivo exportado."</string>
+    <string name="error_could_not_store_update_prompt_state">"No se pudo almacenar el estado del mensaje de actualización."</string>
+    <string name="error_could_not_check_github_releases">"No se pudieron verificar las versiones de GitHub."</string>
+</resources>

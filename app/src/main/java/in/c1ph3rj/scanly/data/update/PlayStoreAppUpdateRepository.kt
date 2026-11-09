@@ -14,6 +14,8 @@ import `in`.c1ph3rj.scanly.domain.repository.AppUpdateRepository
 import `in`.c1ph3rj.scanly.domain.repository.PlayInAppUpdateCoordinator
 import javax.inject.Inject
 import javax.inject.Singleton
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
 
 @Singleton
 class PlayStoreAppUpdateRepository @Inject constructor(
@@ -66,8 +68,8 @@ class PlayStoreAppUpdateRepository @Inject constructor(
     }
 
     private fun fallbackPlayRelease(): AppRelease = AppRelease(
-        tagName = "Latest",
-        title = "Update available",
+        tagName = appString(R.string.play_store_app_update_repository_latest),
+        title = appString(R.string.play_store_app_update_repository_update_available),
         bodyMarkdown = """
             A new version of Scanly is available on Google Play.
 

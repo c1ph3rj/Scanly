@@ -29,8 +29,10 @@ import `in`.c1ph3rj.scanly.feature.settings.LegalDocumentType
 import `in`.c1ph3rj.scanly.feature.settings.ModelBenchmarkRoute
 import `in`.c1ph3rj.scanly.feature.settings.SettingsAboutRoute
 import `in`.c1ph3rj.scanly.feature.settings.SettingsAppearanceRoute
+import `in`.c1ph3rj.scanly.feature.settings.SettingsLanguageRoute
 import `in`.c1ph3rj.scanly.feature.settings.SettingsPipRoute
 import `in`.c1ph3rj.scanly.feature.settings.SettingsDetectionRoute
+import `in`.c1ph3rj.scanly.feature.settings.SettingsTextRecognitionRoute
 import `in`.c1ph3rj.scanly.feature.settings.SettingsFaqRoute
 import `in`.c1ph3rj.scanly.feature.settings.SettingsLicensesRoute
 import `in`.c1ph3rj.scanly.feature.settings.SettingsRoute
@@ -69,6 +71,10 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -139,6 +145,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
+import `in`.c1ph3rj.scanly.R
+import androidx.compose.ui.res.stringResource
+import `in`.c1ph3rj.scanly.core.common.appString
 
 private data class BottomNavItem(
     val route: String,
@@ -146,25 +155,25 @@ private data class BottomNavItem(
     val icon: ImageVector,
 )
 
-private val bottomNavItems = listOf(
+private val bottomNavItems get() = listOf(
     BottomNavItem(
         route = ScanlyDestination.Home.route,
-        label = "Home",
+        label = appString(R.string.scanly_destination_home),
         icon = Icons.Outlined.Home,
     ),
     BottomNavItem(
         route = ScanlyDestination.Library.route,
-        label = "Library",
+        label = appString(R.string.library_library),
         icon = Icons.Outlined.Folder,
     ),
     BottomNavItem(
         route = ScanlyDestination.Tools.route,
-        label = "Tools",
+        label = appString(R.string.settings_hub_sub_screens_tools),
         icon = Icons.Outlined.GridView,
     ),
     BottomNavItem(
         route = ScanlyDestination.Settings.route,
-        label = "Settings",
+        label = appString(R.string.settings_settings),
         icon = Icons.Outlined.Settings,
     ),
 )
@@ -280,6 +289,11 @@ private fun ScanlyNavigationBar(
     currentRoute: String?,
     onNavigate: (String) -> Unit,
 ) {
+    val labelLineHeight = MaterialTheme.typography.labelSmall.lineHeight
+    val navHeight = maxOf(
+        CompactNavBarHeight,
+        with(LocalDensity.current) { labelLineHeight.toDp() * 2 } + 36.dp,
+    )
     var chooserVisible by rememberSaveable { mutableStateOf(false) }
     val barColor = MaterialTheme.colorScheme.surfaceContainer
     val dividerColor = MaterialTheme.colorScheme.outlineVariant
@@ -300,18 +314,18 @@ private fun ScanlyNavigationBar(
                 modifier = Modifier
                     .fillMaxWidth()
                     .navigationBarsPadding()
-                    .height(CompactNavBarHeight)
+                    .height(navHeight)
                     .selectableGroup(),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 bottomNavItems.forEachIndexed { index, item ->
                     if (index == bottomNavItems.size / 2) {
                         Box(
-                            modifier = Modifier.weight(1f).height(CompactNavBarHeight),
+                            modifier = Modifier.weight(1f).height(navHeight),
                             contentAlignment = Alignment.BottomCenter,
                         ) {
                             Text(
-                                text = "Scan",
+                                text = stringResource(R.string.home_scan),
                                 style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 modifier = Modifier
@@ -323,6 +337,7 @@ private fun ScanlyNavigationBar(
                     val selected = currentRoute == item.route
                     CompactNavItem(
                         item = item,
+                        height = navHeight,
                         selected = selected,
                         onClick = { if (!selected) onNavigate(item.route) },
                         modifier = Modifier.weight(1f),
@@ -345,6 +360,7 @@ private fun ScanlyNavigationBar(
 @Composable
 private fun CompactNavItem(
     item: BottomNavItem,
+    height: Dp,
     selected: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -353,7 +369,7 @@ private fun CompactNavItem(
     val tint = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
     Column(
         modifier = modifier
-            .height(CompactNavBarHeight)
+            .height(height)
             .selectable(
                 selected = selected,
                 interactionSource = interactionSource,
@@ -377,7 +393,13 @@ private fun CompactNavItem(
             Icon(item.icon, contentDescription = null, tint = tint, modifier = Modifier.size(22.dp))
         }
         Spacer(Modifier.height(2.dp))
-        Text(item.label, style = MaterialTheme.typography.labelSmall, color = tint, maxLines = 1)
+        Text(
+            item.label,
+            style = MaterialTheme.typography.labelSmall,
+            color = tint,
+            maxLines = 2,
+            textAlign = TextAlign.Center,
+        )
     }
 }
 
@@ -392,7 +414,7 @@ private fun CaptureButton(
         modifier = modifier
             .size(CaptureButtonSize)
             .testTag(ScanlyTestTags.NAV_SCAN)
-            .semantics { contentDescription = "Scan or import" },
+            .semantics { contentDescription = appString(R.string.document_detail_scan_or_import) },
         shape = CircleShape,
         color = MaterialTheme.colorScheme.primary,
         contentColor = MaterialTheme.colorScheme.onPrimary,
@@ -422,15 +444,15 @@ private fun CaptureChooserSheet(onDismiss: () -> Unit) {
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Text(
-                "Add a document",
+                stringResource(R.string.scanly_nav_host_add_a_document),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold,
                 modifier = Modifier.padding(start = 4.dp, bottom = 4.dp),
             )
             CaptureChoiceRow(
                 icon = Icons.Outlined.DocumentScanner,
-                title = "Scan with camera",
-                subtitle = "Capture pages now",
+                title = stringResource(R.string.scanly_nav_host_scan_with_camera),
+                subtitle = stringResource(R.string.scanly_nav_host_capture_pages_now),
                 onClick = {
                     onDismiss()
                     actions.onScan()
@@ -438,8 +460,8 @@ private fun CaptureChooserSheet(onDismiss: () -> Unit) {
             )
             CaptureChoiceRow(
                 icon = Icons.Outlined.PhotoLibrary,
-                title = "Import from gallery",
-                subtitle = "Up to ${ImageImportSupport.MAX_IMAGES_PER_IMPORT} images",
+                title = stringResource(R.string.scanly_nav_host_import_from_gallery),
+                subtitle = stringResource(R.string.scanly_nav_host_up_to_images, ImageImportSupport.MAX_IMAGES_PER_IMPORT),
                 onClick = {
                     onDismiss()
                     actions.onImport()
@@ -547,7 +569,7 @@ private fun ScanlyNavigationRail(
             modifier = Modifier
                 .size(if (compact) 48.dp else 56.dp)
                 .testTag(ScanlyTestTags.NAV_SCAN)
-                .semantics { contentDescription = "Scan or import" },
+                .semantics { contentDescription = appString(R.string.document_detail_scan_or_import) },
             shape = RoundedCornerShape(16.dp),
             color = MaterialTheme.colorScheme.primary,
             contentColor = MaterialTheme.colorScheme.onPrimary,
@@ -559,7 +581,7 @@ private fun ScanlyNavigationRail(
         }
         if (!compact) {
             Text(
-                text = "Scan",
+                text = stringResource(R.string.home_scan),
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier
@@ -597,7 +619,7 @@ private fun RailNavItem(
     Column(
         modifier = Modifier
             .width(RailWidth)
-            .height(if (compact) 52.dp else 60.dp)
+            .heightIn(min = if (compact) 68.dp else 76.dp)
             .selectable(
                 selected = selected,
                 interactionSource = interactionSource,
@@ -625,7 +647,8 @@ private fun RailNavItem(
             style = MaterialTheme.typography.labelMedium,
             fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal,
             color = tint,
-            maxLines = 1,
+            maxLines = 2,
+            textAlign = TextAlign.Center,
         )
     }
 }
@@ -915,7 +938,7 @@ private fun ScanlyNavHostContent(
                 initialSource = filePath.takeIf(String::isNotBlank)?.let {
                     PdfToolSource.AppFile(
                         filePath = it,
-                        displayName = fileName.ifBlank { "Scanly PDF" },
+                        displayName = fileName.ifBlank { stringResource(R.string.pdf_tool_shared_scanly_pdf) },
                     )
                 },
             )
@@ -1135,7 +1158,11 @@ private fun ScanlyNavHostContent(
                     onOpenStorage = { navController.navigateSingleTop(SettingsStorageDestination.route) },
                     onOpenRecentlyDeleted = { navController.navigateSingleTop(LibraryTrashDestination.route) },
                     onOpenAppearance = { navController.navigateSingleTop(SettingsAppearanceDestination.route) },
+                    onOpenLanguage = { navController.navigateSingleTop(SettingsLanguageDestination.route) },
                     onOpenDetection = { navController.navigateSingleTop(SettingsDetectionDestination.route) },
+                    onOpenTextRecognition = {
+                        navController.navigateSingleTop(SettingsTextRecognitionDestination.route)
+                    },
                     onOpenWidgets = { navController.navigateSingleTop(SettingsWidgetsDestination.route) },
                     onOpenAbout = { navController.navigateSingleTop(SettingsAboutDestination.route) },
                     onOpenPip = { navController.navigateSingleTop(SettingsPipDestination.route) },
@@ -1156,6 +1183,15 @@ private fun ScanlyNavHostContent(
                 onNavigateUp = navController::navigateUp,
                 parentEntry = parentEntry,
             )
+        }
+        composable(
+            route = SettingsLanguageDestination.route,
+            enterTransition = { detailPushEnter() },
+            exitTransition = { detailPushExit() },
+            popEnterTransition = { detailPopEnter() },
+            popExitTransition = { detailPopExit() },
+        ) {
+            SettingsLanguageRoute(onNavigateUp = navController::navigateUp)
         }
         composable(
             route = SettingsPipDestination.route,
@@ -1181,6 +1217,21 @@ private fun ScanlyNavHostContent(
                 onOpenModelBenchmark = {
                     navController.navigateSingleTop(SettingsModelBenchmarkDestination.route)
                 },
+                parentEntry = parentEntry,
+            )
+        }
+        composable(
+            route = SettingsTextRecognitionDestination.route,
+            enterTransition = { detailPushEnter() },
+            exitTransition = { detailPushExit() },
+            popEnterTransition = { detailPopEnter() },
+            popExitTransition = { detailPopExit() },
+        ) {
+            val parentEntry = remember(it) {
+                navController.getBackStackEntry(ScanlyDestination.Settings.route)
+            }
+            SettingsTextRecognitionRoute(
+                onNavigateUp = navController::navigateUp,
                 parentEntry = parentEntry,
             )
         }

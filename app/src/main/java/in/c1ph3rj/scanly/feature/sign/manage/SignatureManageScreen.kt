@@ -83,6 +83,9 @@ import `in`.c1ph3rj.scanly.feature.tools.ToolSecondaryButton
 import `in`.c1ph3rj.scanly.feature.tools.pdf.sharePreparedFiles
 import java.text.DateFormat
 import java.util.Date
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
+import androidx.compose.ui.res.stringResource
 
 private val SignatureAspectRatio = 2.2f
 private val InitialsAspectRatio = 1.4f
@@ -199,9 +202,9 @@ fun SignatureManageScreen(
         // Centred column on tablets, matching the other tool screens.
         Column(modifier = Modifier.widthIn(max = 720.dp).fillMaxSize()) {
             ToolCompactHeader(
-                title = "Your signatures",
+                title = stringResource(R.string.sign_editor_your_signatures),
                 onBack = onNavigateUp,
-                subtitle = if (signatures.isEmpty()) null else "Tap one to share, save or reorder",
+                subtitle = if (signatures.isEmpty()) null else stringResource(R.string.signature_manage_tap_one_to_share_save),
             )
             LazyVerticalGrid(
                 columns = GridCells.Adaptive(minSize = MarkCardMinSize),
@@ -213,12 +216,12 @@ fun SignatureManageScreen(
                 if (signatures.isEmpty()) {
                     item(key = "empty-note", span = { GridItemSpan(maxLineSpan) }) {
                         ToolNote(
-                            text = "Signatures stay on this phone. Draw one or upload a photo of your signature.",
+                            text = stringResource(R.string.signature_manage_signatures_stay_on_this_phone),
                         )
                     }
                 }
                 markSection(
-                    title = "Signatures",
+                    title = appString(R.string.signature_manage_signatures),
                     kind = SignatureKind.SIGNATURE,
                     marks = drawnSignatures,
                     aspectRatio = SignatureAspectRatio,
@@ -227,7 +230,7 @@ fun SignatureManageScreen(
                     onRequestDelete = { pendingDeleteId = it.id },
                 )
                 markSection(
-                    title = "Initials",
+                    title = appString(R.string.signature_manage_initials),
                     kind = SignatureKind.INITIALS,
                     marks = initials,
                     aspectRatio = InitialsAspectRatio,
@@ -275,11 +278,10 @@ fun SignatureManageScreen(
     }
 
     pendingDelete?.let { mark ->
-        val noun = mark.kind.label.lowercase()
         AlertDialog(
             onDismissRequest = { pendingDeleteId = null },
-            title = { Text("Delete $noun?") },
-            text = { Text("Pages you've already signed keep it.") },
+            title = { Text(mark.kind.deleteQuestion) },
+            text = { Text(stringResource(R.string.signature_manage_pages_you_ve_already_signed_2)) },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -287,12 +289,12 @@ fun SignatureManageScreen(
                         onDelete(mark.id)
                     },
                 ) {
-                    Text("Delete", color = MaterialTheme.colorScheme.error)
+                    Text(stringResource(R.string.library_card_presentation_delete), color = MaterialTheme.colorScheme.error)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { pendingDeleteId = null }) {
-                    Text("Cancel")
+                    Text(stringResource(R.string.export_share_cancel))
                 }
             },
         )
@@ -341,7 +343,7 @@ private fun SavedMarkCard(
     onDelete: () -> Unit,
 ) {
     val shape = RoundedCornerShape(CardCorner)
-    val noun = signature.kind.label.lowercase()
+    val kind = signature.kind
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -349,7 +351,7 @@ private fun SavedMarkCard(
             .clip(shape)
             .background(Color.White)
             .border(1.dp, MaterialTheme.colorScheme.outlineVariant, shape)
-            .clickable(role = Role.Button, onClickLabel = "Open $noun options", onClick = onOpen),
+            .clickable(role = Role.Button, onClickLabel = kind.openOptionsLabel, onClick = onOpen),
     ) {
         SavedSignatureImage(
             imagePath = signature.imagePath,
@@ -357,7 +359,7 @@ private fun SavedMarkCard(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(12.dp),
-            contentDescription = "Saved $noun" + if (usedFirst) ", used first" else "",
+            contentDescription = kind.savedLabel + if (usedFirst) stringResource(R.string.signature_manage_used_first_2) else "",
         )
         if (usedFirst) {
             Surface(
@@ -368,7 +370,7 @@ private fun SavedMarkCard(
                 color = UsedFirstBadgeColor,
             ) {
                 Text(
-                    text = "Used first",
+                    text = stringResource(R.string.signature_manage_used_first),
                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
                     style = MaterialTheme.typography.labelSmall,
                     color = UsedFirstBadgeTextColor,
@@ -385,7 +387,7 @@ private fun SavedMarkCard(
         ) {
             Icon(
                 imageVector = Icons.Outlined.Delete,
-                contentDescription = "Delete $noun",
+                contentDescription = kind.deleteLabel,
                 tint = DeleteIconColor,
                 modifier = Modifier.size(20.dp),
             )
@@ -401,7 +403,7 @@ private fun AddMarkTile(
     onClick: () -> Unit,
 ) {
     val outline = MaterialTheme.colorScheme.outline
-    val label = "Add ${kind.label.lowercase()}"
+    val label = kind.addLabel
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -455,7 +457,7 @@ private fun SavedMarkSheet(
 ) {
     var inkValue by rememberSaveable(signature.id) { mutableStateOf(SignInk.Default.storageValue) }
     val ink = SignInk.fromStorage(inkValue)
-    val noun = signature.kind.label.lowercase()
+    val kind = signature.kind
     val shape = RoundedCornerShape(CardCorner)
 
     ScanlyModalBottomSheet(
@@ -489,10 +491,10 @@ private fun SavedMarkSheet(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(20.dp),
-                    contentDescription = "${signature.kind.label} in ${ink.label.lowercase()} ink",
+                    contentDescription = stringResource(R.string.signature_manage_in_ink, signature.kind.label, ink.label),
                 )
             }
-            ToolFieldLabel("Ink colour")
+            ToolFieldLabel(stringResource(R.string.signature_manage_ink_colour))
             Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                 SignInk.entries.forEach { option ->
                     ToolColorSwatch(
@@ -505,14 +507,14 @@ private fun SavedMarkSheet(
             }
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                 ToolPrimaryButton(
-                    text = "Share",
+                    text = stringResource(R.string.document_detail_share_2),
                     onClick = { onShare(ink) },
                     modifier = Modifier.weight(1f),
                     enabled = !busy,
                     icon = Icons.Outlined.Share,
                 )
                 ToolSecondaryButton(
-                    text = "Save to phone",
+                    text = stringResource(R.string.signature_manage_save_to_phone),
                     onClick = { onSaveToPhone(ink) },
                     modifier = Modifier.weight(1f),
                     enabled = !busy,
@@ -520,32 +522,32 @@ private fun SavedMarkSheet(
                 )
             }
             Text(
-                text = "Shared and saved as a transparent PNG, ready for documents, forms and emails.",
+                text = stringResource(R.string.signature_manage_shared_and_saved_as_a),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             if (!isFirst) {
                 ExportActionRow(
                     icon = Icons.Outlined.VerticalAlignTop,
-                    title = "Use first when signing",
+                    title = stringResource(R.string.signature_manage_use_first_when_signing),
                     enabled = true,
                     onClick = onMoveToFront,
-                    description = "Show this $noun before the others",
+                    description = kind.showFirstLabel,
                 )
             }
             ExportActionRow(
                 icon = Icons.Outlined.Draw,
-                title = "Sign a PDF",
+                title = stringResource(R.string.signature_manage_sign_a_pdf),
                 enabled = true,
                 onClick = onSignPdf,
-                description = "Place it on a PDF or a Scanly document",
+                description = stringResource(R.string.signature_manage_place_it_on_a_pdf),
             )
             ExportActionRow(
                 icon = Icons.Outlined.Delete,
-                title = "Delete $noun",
+                title = kind.deleteLabel,
                 enabled = true,
                 onClick = onDelete,
-                description = "Pages you've already signed keep it",
+                description = stringResource(R.string.signature_manage_pages_you_ve_already_signed),
             )
         }
     }
@@ -554,9 +556,9 @@ private fun SavedMarkSheet(
 /** "Drawn · Added 3 Oct 2026": how the mark was made and when. */
 private fun savedMarkMeta(signature: SavedSignature): String {
     val source = when (signature.source) {
-        SignatureSource.DRAWN -> "Drawn"
-        SignatureSource.IMPORTED -> "From a photo"
+        SignatureSource.DRAWN -> appString(R.string.signature_manage_drawn)
+        SignatureSource.IMPORTED -> appString(R.string.signature_manage_from_a_photo)
     }
     val date = DateFormat.getDateInstance(DateFormat.MEDIUM).format(Date(signature.createdAtMillis))
-    return "$source · Added $date"
+    return appString(R.string.signature_manage_added, source, date)
 }

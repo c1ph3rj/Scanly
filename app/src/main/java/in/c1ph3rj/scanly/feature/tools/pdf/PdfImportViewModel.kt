@@ -30,6 +30,8 @@ import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
 
 data class PdfImportUiState(
     val source: PdfToolSource? = null,
@@ -96,7 +98,7 @@ class PdfImportViewModel @Inject constructor(
                 pageCount = 0,
                 selectedPages = emptySet(),
                 thumbnails = emptyMap(),
-                title = sanitizePdfBaseName(source.label()).ifBlank { "Imported PDF" },
+                title = sanitizePdfBaseName(source.label()).ifBlank { appString(R.string.pdf_import_imported_pdf) },
                 result = null,
             )
         }
@@ -204,8 +206,8 @@ class PdfImportViewModel @Inject constructor(
         val copy = workingCopy ?: return
         val state = _uiState.value
         if (!state.canImport) {
-            if (state.selectedPages.isEmpty()) emitMessage("Choose at least one page.")
-            else if (state.title.isBlank()) emitMessage("Give the document a name.")
+            if (state.selectedPages.isEmpty()) emitMessage(appString(R.string.import_pdf_to_library_use_case_choose_at_least_one_page))
+            else if (state.title.isBlank()) emitMessage(appString(R.string.pdf_import_give_the_document_a_name))
             return
         }
         val pages = state.sortedSelection

@@ -23,6 +23,8 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
 
 data class PageEditorUiState(
     val page: ScanPage? = null,
@@ -166,9 +168,9 @@ class PageEditorViewModel @Inject constructor(
                     _events.send(
                         PageEditorEvent.ShowMessage(
                             if (snapshot.applyFilterToAllPages) {
-                                "Filter applied to all pages."
+                                appString(R.string.page_editor_filter_applied_to_all_pages)
                             } else {
-                                "Page updated."
+                                appString(R.string.page_editor_page_updated)
                             },
                         ),
                     )

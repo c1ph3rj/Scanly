@@ -1,5 +1,9 @@
 package `in`.c1ph3rj.scanly.domain.model
 
+import androidx.annotation.StringRes
+import `in`.c1ph3rj.scanly.core.common.appString
+import `in`.c1ph3rj.scanly.R
+
 data class AppRelease(
     val tagName: String,
     val title: String,
@@ -16,11 +20,14 @@ data class AppReleaseAsset(
 )
 
 enum class AppUpdateChannel(
-    val sourceLabel: String,
+    @param:StringRes val sourceLabelRes: Int,
 ) {
-    GITHUB("GitHub"),
-    PLAY_STORE("Google Play"),
+    GITHUB(R.string.app_update_channel_github),
+    PLAY_STORE(R.string.app_update_channel_google_play),
     ;
+
+    val sourceLabel: String get() = appString(sourceLabelRes)
+
 
     companion object {
         fun fromBuildConfig(value: String): AppUpdateChannel = when (value) {

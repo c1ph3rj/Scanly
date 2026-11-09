@@ -40,6 +40,8 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
 
 data class DocumentDetailUiState(
     val document: ScanDocument? = null,
@@ -156,7 +158,7 @@ class DocumentDetailViewModel @Inject constructor(
                 is ScanlyResult.Success -> {
                     when (val moveResult = setDocumentGroupUseCase(documentId, createResult.value)) {
                         is ScanlyResult.Success -> _events.send(
-                            DocumentDetailEvent.ShowMessage("Moved to $name"),
+                            DocumentDetailEvent.ShowMessage(appString(R.string.document_detail_moved_to, name)),
                         )
 
                         is ScanlyResult.Failure -> _events.send(
@@ -174,10 +176,10 @@ class DocumentDetailViewModel @Inject constructor(
 
     private fun moveConfirmationMessage(groupId: String?): String {
         if (groupId == null) {
-            return "Removed from folder"
+            return appString(R.string.document_detail_removed_from_folder)
         }
         val folderName = _uiState.value.availableGroups.firstOrNull { it.id == groupId }?.title
-        return if (folderName != null) "Moved to $folderName" else "Moved to folder"
+        return if (folderName != null) appString(R.string.document_detail_moved_to, folderName) else appString(R.string.document_detail_moved_to_folder)
     }
 
     fun selectPage(pageId: String) {
@@ -193,7 +195,7 @@ class DocumentDetailViewModel @Inject constructor(
         if (page.pageIndex == clampedTargetIndex) return
         _uiState.update { current -> current.copy(selectedPageId = pageId) }
         mutateSelectedPage(
-            successMessage = "Reordered pages.",
+            successMessage = appString(R.string.document_detail_reordered_pages),
         ) {
             movePageUseCase(
                 pageId = pageId,
@@ -211,7 +213,7 @@ class DocumentDetailViewModel @Inject constructor(
 
     fun exportPdf(options: PdfExportOptions) {
         runExportAction(
-            progressMessage = "Generating and saving PDF",
+            progressMessage = appString(R.string.document_detail_generating_and_saving_pdf),
             action = {
                 when (val generated = exportDocumentPdfUseCase(documentId, options)) {
                     is ScanlyResult.Success -> saveExportArtifactUseCase(generated.value)
@@ -220,7 +222,7 @@ class DocumentDetailViewModel @Inject constructor(
             },
             onSuccess = { saved ->
                 DocumentDetailEvent.ShowMessage(
-                    "Saved ${saved.fileName} to ${saved.destinationLabel}",
+                    appString(R.string.document_detail_saved_to, saved.fileName, saved.destinationLabel),
                 )
             },
         )
@@ -228,7 +230,7 @@ class DocumentDetailViewModel @Inject constructor(
 
     fun sharePdf(options: PdfExportOptions) {
         runExportAction(
-            progressMessage = "Preparing PDF",
+            progressMessage = appString(R.string.document_detail_preparing_pdf),
             action = { prepareDocumentPdfShareUseCase(documentId, options) },
             onSuccess = DocumentDetailEvent::ShareFiles,
         )
@@ -236,7 +238,7 @@ class DocumentDetailViewModel @Inject constructor(
 
     fun exportImageArchive() {
         runExportAction(
-            progressMessage = "Preparing and saving ZIP",
+            progressMessage = appString(R.string.document_detail_preparing_and_saving_zip),
             action = {
                 when (val generated = exportDocumentImageArchiveUseCase(documentId)) {
                     is ScanlyResult.Success -> saveExportArtifactUseCase(generated.value)
@@ -245,7 +247,7 @@ class DocumentDetailViewModel @Inject constructor(
             },
             onSuccess = { saved ->
                 DocumentDetailEvent.ShowMessage(
-                    "Saved ${saved.fileName} to ${saved.destinationLabel}",
+                    appString(R.string.document_detail_saved_to, saved.fileName, saved.destinationLabel),
                 )
             },
         )
@@ -253,7 +255,7 @@ class DocumentDetailViewModel @Inject constructor(
 
     fun shareImages() {
         runExportAction(
-            progressMessage = "Preparing pages",
+            progressMessage = appString(R.string.document_detail_preparing_pages),
             action = { prepareDocumentImageShareUseCase(documentId) },
             onSuccess = DocumentDetailEvent::ShareFiles,
         )
@@ -268,7 +270,7 @@ class DocumentDetailViewModel @Inject constructor(
 
         viewModelScope.launch {
             if (imagePath == null) {
-                _events.send(DocumentDetailEvent.ShowMessage("Page image is not available yet."))
+                _events.send(DocumentDetailEvent.ShowMessage(appString(R.string.document_detail_page_image_is_not_available)))
                 return@launch
             }
 
@@ -296,7 +298,7 @@ class DocumentDetailViewModel @Inject constructor(
                     isImporting = true,
                     importCurrent = 0,
                     importTotal = cappedSelection.items.size,
-                    importStageLabel = "Starting import",
+                    importStageLabel = appString(R.string.document_detail_starting_import),
                 )
             }
             try {
@@ -348,7 +350,7 @@ class DocumentDetailViewModel @Inject constructor(
         viewModelScope.launch {
             when (val result = renameDocumentUseCase(documentId, title)) {
                 is ScanlyResult.Success -> {
-                    _events.send(DocumentDetailEvent.ShowMessage("Document renamed."))
+                    _events.send(DocumentDetailEvent.ShowMessage(appString(R.string.document_detail_document_renamed)))
                 }
 
                 is ScanlyResult.Failure -> {
@@ -360,7 +362,7 @@ class DocumentDetailViewModel @Inject constructor(
 
     fun deleteDocument() {
         viewModelScope.launch {
-            val title = _uiState.value.document?.title ?: "Document"
+            val title = _uiState.value.document?.title ?: appString(R.string.document_detail_document)
             when (val result = moveDocumentToTrashUseCase(documentId, title)) {
                 is ScanlyResult.Success -> _events.send(DocumentDetailEvent.DocumentDeleted)
                 is ScanlyResult.Failure -> {

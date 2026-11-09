@@ -29,6 +29,8 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
 
 /*
  * Device side of the QR flow: intents, clipboard and ML Kit decoding. Every action returns
@@ -48,7 +50,7 @@ private fun Context.launchQr(intent: Intent, failure: String): String? =
 fun copyQrText(context: Context, label: String, text: String): String {
     val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager
     clipboard?.setPrimaryClip(ClipData.newPlainText(label, text))
-    return "Copied to clipboard"
+    return appString(R.string.qr_actions_copied_to_clipboard)
 }
 
 /** Opens the system share sheet with [text]. */
@@ -57,17 +59,17 @@ fun shareQrText(context: Context, text: String): String? {
         .setType("text/plain")
         .putExtra(Intent.EXTRA_TEXT, text)
     return context.launchQr(
-        intent = Intent.createChooser(send, "Share QR code"),
-        failure = "Nothing can receive this text",
+        intent = Intent.createChooser(send, appString(R.string.qr_actions_share_qr_code)),
+        failure = appString(R.string.qr_actions_nothing_can_receive_this_text),
     )
 }
 
 /** Opens an http(s) link in the browser. Other schemes are refused. */
 fun openQrWebLink(context: Context, url: String): String? {
-    val target = qrWebLinkToOpen(url) ?: return "Not a web link"
+    val target = qrWebLinkToOpen(url) ?: return appString(R.string.qr_actions_not_a_web_link)
     val uri = Uri.parse(target)
-    if (!qrUriIsOpenableWebLink(uri.scheme)) return "Not a web link"
-    return context.launchQr(Intent(Intent.ACTION_VIEW, uri), "No app can open this link")
+    if (!qrUriIsOpenableWebLink(uri.scheme)) return appString(R.string.qr_actions_not_a_web_link)
+    return context.launchQr(Intent(Intent.ACTION_VIEW, uri), appString(R.string.qr_actions_no_app_can_open_this))
 }
 
 /**
@@ -77,8 +79,8 @@ fun openQrWebLink(context: Context, url: String): String? {
 fun payWithUpi(context: Context, raw: String): String? {
     val view = Intent(Intent.ACTION_VIEW, Uri.parse(raw))
     return context.launchQr(
-        intent = Intent.createChooser(view, "Pay with"),
-        failure = "No UPI app can open this code",
+        intent = Intent.createChooser(view, appString(R.string.qr_actions_pay_with)),
+        failure = appString(R.string.qr_actions_no_upi_app_can_open),
     )
 }
 
@@ -94,19 +96,19 @@ fun joinQrWifi(context: Context, wifi: QrPayload.Wifi): String? {
                 Settings.EXTRA_WIFI_NETWORK_LIST,
                 arrayListOf(suggestion),
             )
-            return context.launchQr(add, "Wi-Fi settings can't add this network")
+            return context.launchQr(add, appString(R.string.qr_actions_wi_fi_settings_can_t_2))
         }
     }
     val password = wifi.password
-    if (password != null) copyQrText(context, "Wi-Fi password", password)
+    if (password != null) copyQrText(context, appString(R.string.qr_actions_wi_fi_password), password)
     val failure = context.launchQr(
         intent = Intent(Settings.ACTION_WIFI_SETTINGS),
-        failure = "Wi-Fi settings can't be opened",
+        failure = appString(R.string.qr_actions_wi_fi_settings_can_t),
     )
     return failure ?: if (password != null) {
-        "Password copied — pick the network"
+        appString(R.string.qr_actions_password_copied_pick_the_network)
     } else {
-        "Pick \"${wifi.ssid}\" in Wi-Fi settings"
+        appString(R.string.qr_actions_pick_in_wi_fi_settings, wifi.ssid)
     }
 }
 
@@ -133,26 +135,26 @@ fun saveQrContact(context: Context, contact: QrPayload.Contact): String? {
         contact.email?.let { putExtra(ContactsContract.Intents.Insert.EMAIL, it) }
         contact.organization?.let { putExtra(ContactsContract.Intents.Insert.COMPANY, it) }
     }
-    return context.launchQr(insert, "No contacts app can save this")
+    return context.launchQr(insert, appString(R.string.qr_actions_no_contacts_app_can_save))
 }
 
 /** Opens the dialer with [number]. The call is placed by the user, not by Scanly. */
 fun dialQrNumber(context: Context, number: String): String? =
     context.launchQr(
         intent = Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", number, null)),
-        failure = "No phone app can open this number",
+        failure = appString(R.string.qr_actions_no_phone_app_can_open),
     )
 
 fun composeQrEmail(context: Context, email: QrPayload.Email): String? {
     val compose = Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", email.address, null)).apply {
         email.subject?.let { putExtra(Intent.EXTRA_SUBJECT, it) }
     }
-    return context.launchQr(compose, "No email app is set up on this phone")
+    return context.launchQr(compose, appString(R.string.qr_actions_no_email_app_is_set))
 }
 
 fun webSearchQr(context: Context, query: String): String? {
     val search = Intent(Intent.ACTION_WEB_SEARCH).putExtra(SearchManager.QUERY, query)
-    return context.launchQr(search, "No app can search the web")
+    return context.launchQr(search, appString(R.string.qr_actions_no_app_can_search_the))
 }
 
 /** Runs the main action for [payload]. */
@@ -163,7 +165,7 @@ fun runQrPrimaryAction(context: Context, payload: QrPayload): String? = when (pa
     is QrPayload.Contact -> saveQrContact(context, payload)
     is QrPayload.Email -> composeQrEmail(context, payload)
     is QrPayload.Phone -> dialQrNumber(context, payload.number)
-    is QrPayload.Text -> copyQrText(context, "QR text", payload.raw)
+    is QrPayload.Text -> copyQrText(context, appString(R.string.qr_actions_qr_text), payload.raw)
 }
 
 /** Scanner for QR and the other common 1D/2D formats. Null if ML Kit cannot start. */

@@ -32,6 +32,8 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
 
 data class HomeUiState(
     val recentGroups: List<DocumentGroup> = emptyList(),
@@ -173,7 +175,7 @@ class HomeViewModel @Inject constructor(
                 active = true,
                 current = 0,
                 total = total,
-                stageLabel = "Starting import",
+                stageLabel = appString(R.string.document_detail_starting_import),
             )
             try {
                 when (val createResult = createDocumentUseCase.createImported()) {

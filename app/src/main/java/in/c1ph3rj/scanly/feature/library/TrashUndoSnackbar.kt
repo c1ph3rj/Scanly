@@ -23,6 +23,9 @@ import `in`.c1ph3rj.scanly.domain.usecase.RestoreTrashedItemUseCase
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
+import androidx.compose.ui.res.stringResource
 
 @HiltViewModel
 class TrashUndoViewModel @Inject constructor(
@@ -56,7 +59,7 @@ fun TrashUndoSnackbarHost(
             launch {
                 val result = hostState.showSnackbar(
                     message = notice.snackbarMessage(),
-                    actionLabel = "Undo",
+                    actionLabel = appString(R.string.trash_undo_snackbar_undo),
                     duration = SnackbarDuration.Long,
                 )
                 if (result == SnackbarResult.ActionPerformed) {
@@ -89,6 +92,6 @@ fun TrashUndoSnackbarHost(
 }
 
 private fun TrashNotice.snackbarMessage(): String = when (kind) {
-    TrashKind.PAGE -> "$label moved to Recently deleted"
-    TrashKind.DOCUMENT, TrashKind.FOLDER -> "\"$label\" moved to Recently deleted"
+    TrashKind.PAGE -> appString(R.string.trash_undo_snackbar_moved_to_recently_deleted_2, label)
+    TrashKind.DOCUMENT, TrashKind.FOLDER -> appString(R.string.trash_undo_snackbar_moved_to_recently_deleted, label)
 }

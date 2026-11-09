@@ -1,5 +1,7 @@
 package `in`.c1ph3rj.scanly.feature.library
 
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
 import java.time.Instant
 import java.time.LocalDate
@@ -73,15 +75,17 @@ private fun bucketFor(
     val effective = if (date.isAfter(today)) today else date
     val daysAgo = ChronoUnit.DAYS.between(effective, today)
     return when {
-        daysAgo == 0L -> LibrarySectionBucket(key = "today", title = "Today")
-        daysAgo == 1L -> LibrarySectionBucket(key = "yesterday", title = "Yesterday")
-        daysAgo in 2L..7L -> LibrarySectionBucket(key = "week", title = "Previous 7 days")
+        daysAgo == 0L -> LibrarySectionBucket(key = "today", title = appString(R.string.library_card_presentation_today))
+        daysAgo == 1L -> LibrarySectionBucket(key = "yesterday", title = appString(R.string.library_card_presentation_yesterday))
+        daysAgo in 2L..7L -> LibrarySectionBucket(key = "week", title = appString(R.string.library_section_previous_7_days))
         else -> {
-            val monthName = effective.month.getDisplayName(TextStyle.FULL, locale)
+            // Standalone form: "Март", not the genitive "марта" used inside full dates.
+            val monthName = effective.month.getDisplayName(TextStyle.FULL_STANDALONE, locale)
+                .replaceFirstChar { it.titlecase(locale) }
             val title = if (effective.year == today.year) {
                 monthName
             } else {
-                "$monthName ${effective.year}"
+                appString(R.string.library_section_month_year, monthName, effective.year)
             }
             LibrarySectionBucket(
                 key = "month-%04d-%02d".format(Locale.ROOT, effective.year, effective.monthValue),

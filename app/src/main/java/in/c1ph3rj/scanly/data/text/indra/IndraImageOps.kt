@@ -15,6 +15,8 @@ import kotlin.math.abs
 import kotlin.math.ceil
 import kotlin.math.max
 import kotlin.math.roundToInt
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
 
 /** Pixel work for the Indra pipeline. All images are CV_8UC1 grayscale unless noted. */
 internal object IndraImageOps {
@@ -29,7 +31,7 @@ internal object IndraImageOps {
         if (initialized) return
         synchronized(this) {
             if (initialized) return
-            check(OpenCVLoader.initLocal()) { "OpenCV could not be initialized." }
+            check(OpenCVLoader.initLocal()) { appString(R.string.error_opencv_could_not_be_initialized) }
             initialized = true
         }
     }

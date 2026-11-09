@@ -1,0 +1,1967 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="shortcut_scan_short">スキャン</string>
+    <string name="shortcut_scan_long">新しくスキャン</string>
+    <string name="shortcut_scan_disabled">スキャンは利用できません</string>
+    <string name="shortcut_import_short">インポート</string>
+    <string name="shortcut_import_long">写真をインポート</string>
+    <string name="shortcut_import_disabled">インポートは利用できません</string>
+    <string name="shortcut_qr_short">QR</string>
+    <string name="shortcut_qr_long">QR のスキャン・作成、バーコードの読み取り</string>
+    <string name="shortcut_qr_disabled">QR ツールは利用できません</string>
+    <string name="shortcut_library_short">ライブラリ</string>
+    <string name="shortcut_library_long">ライブラリを開く</string>
+    <string name="shortcut_library_disabled">ライブラリは利用できません</string>
+    <string name="widget_actions_label">Scanly アクション</string>
+    <string name="widget_actions_description">スキャン、インポート、QR、ライブラリにすばやくアクセスできます。</string>
+    <string name="widget_scan_label">Scanly スキャン</string>
+    <string name="widget_scan_description">ドキュメントを新しくスキャンします。</string>
+    <string name="widget_qr_label">Scanly QR</string>
+    <string name="widget_qr_description">QR のスキャン・作成ツールを開きます。</string>
+    <string name="widget_action_scan">スキャン</string>
+    <string name="widget_action_import">インポート</string>
+    <string name="widget_action_qr">QR</string>
+    <string name="widget_action_library">ライブラリ</string>
+    <!-- DocumentPresentationFormatter -->
+    <string name="document_presentation_formatter_imported">"インポート %1$s"</string>
+    <string name="document_presentation_formatter_folder">"フォルダ %1$s"</string>
+    <string name="document_presentation_formatter_new_folder">"新しいフォルダ %1$s"</string>
+    <string name="document_presentation_formatter_scan">"スキャン %1$s"</string>
+    <string name="document_presentation_formatter_document">"ドキュメント %1$s"</string>
+    <!-- ImageImportSupport -->
+    <string name="image_import_only_images_can_be_added">"一度に追加できる画像は %1$s 枚までです。"</string>
+    <string name="image_import_skipped_files_that_couldn_t">"開けなかった %1$s 個のファイルをスキップしました。"</string>
+    <string name="image_import_skipped_1_file_that_couldn">開けなかった 1 個のファイルをスキップしました。</string>
+    <string name="image_import_imported_images">"%1$s 枚の画像をインポートしました。"</string>
+    <string name="image_import_imported_1_image">1 枚の画像をインポートしました。</string>
+    <!-- ZoomableImageDialog -->
+    <string name="zoomable_image_image_unavailable">画像を表示できません</string>
+    <string name="zoomable_image_reset_zoom">ズームをリセット</string>
+    <string name="zoomable_image_back">戻る</string>
+    <string name="zoomable_image_close">閉じる</string>
+    <!-- LibraryOperationCoordinator -->
+    <string name="library_operation_coordinator_library_maintenance_is_in_progress">ライブラリを整理しています。</string>
+    <!-- DefaultDocumentRepository -->
+    <string name="default_document_repository_could_not_remove_empty_documents">空のドキュメントを削除できませんでした。</string>
+    <string name="default_document_repository_could_not_clear_old_deleted">削除済みの古いドキュメントを消去できませんでした。</string>
+    <string name="default_document_repository_could_not_empty_recently_deleted">「最近削除した項目」を空にできませんでした。</string>
+    <string name="default_document_repository_could_not_restore_the_document">ドキュメントを復元できませんでした。</string>
+    <string name="default_document_repository_could_not_move_the_document">ドキュメントを「最近削除した項目」に移動できませんでした。</string>
+    <!-- DefaultDocumentExportRepository -->
+    <string name="default_document_export_repository_could_not_prepare_group_zip">フォルダの ZIP を共有用に準備できませんでした。</string>
+    <string name="default_document_export_repository_could_not_prepare_group_pdf">フォルダの PDF を共有用に準備できませんでした。</string>
+    <string name="default_document_export_repository_could_not_export_group_as">フォルダを ZIP としてエクスポートできませんでした。</string>
+    <string name="default_document_export_repository_could_not_export_group_as_2">フォルダを PDF としてエクスポートできませんでした。</string>
+    <string name="default_document_export_repository_could_not_prepare_images_for">画像を共有用に準備できませんでした。</string>
+    <string name="default_document_export_repository_could_not_export_images">画像をエクスポートできませんでした。</string>
+    <string name="default_document_export_repository_could_not_prepare_pdf_share">PDF を共有用に準備できませんでした。</string>
+    <string name="default_document_export_repository_could_not_export_pdf">PDF をエクスポートできませんでした。</string>
+    <!-- DefaultGroupRepository -->
+    <string name="default_group_repository_could_not_clear_old_deleted">削除済みの古いフォルダを消去できませんでした。</string>
+    <string name="default_group_repository_could_not_delete_the_folders">フォルダを削除できませんでした。</string>
+    <string name="default_group_repository_could_not_delete_the_folder">フォルダを削除できませんでした。</string>
+    <string name="default_group_repository_could_not_restore_the_folder">フォルダを復元できませんでした。</string>
+    <string name="default_group_repository_could_not_move_the_folder">フォルダを「最近削除した項目」に移動できませんでした。</string>
+    <!-- DefaultPageRepository -->
+    <string name="default_page_repository_applied_to_of_pages_save">"%2$s ページ中 %1$s ページに適用しました。残りのページは、もう一度保存すると再試行されます。"</string>
+    <string name="default_page_repository_could_not_clear_old_deleted">削除済みの古いページを消去できませんでした。</string>
+    <string name="default_page_repository_could_not_delete_the_pages">ページを削除できませんでした。</string>
+    <string name="default_page_repository_could_not_delete_the_page">ページを削除できませんでした。</string>
+    <string name="default_page_repository_could_not_restore_the_page">ページを復元できませんでした。</string>
+    <!-- DefaultPdfToolkitRepository -->
+    <string name="default_pdf_toolkit_repository_incorrect_pdf_password">PDF のパスワードが正しくありません。</string>
+    <string name="default_pdf_toolkit_repository_this_pdf_is_not_stored">この PDF は Scanly に保存されていません。</string>
+    <string name="default_pdf_toolkit_repository_the_scanly_document_could_not">Scanly のドキュメントを PDF として準備できませんでした。</string>
+    <string name="default_pdf_toolkit_repository_could_not_prepare_share">共有の準備ができませんでした。</string>
+    <string name="default_pdf_toolkit_repository_could_not_read_this_page">このページを読み込めませんでした。</string>
+    <string name="default_pdf_toolkit_repository_failed_to_encode_page">%1$s ページ目をエンコードできませんでした。</string>
+    <string name="default_pdf_toolkit_repository_could_not_save_the_images">画像を保存できませんでした。</string>
+    <string name="default_pdf_toolkit_repository_page">"%1$s – %2$s ページ.%3$s"</string>
+    <string name="default_pdf_toolkit_repository_could_not_estimate_the_image">画像サイズを見積もれませんでした。</string>
+    <string name="default_pdf_toolkit_repository_could_not_open_this_pdf">この PDF を開けませんでした。</string>
+    <string name="default_pdf_toolkit_repository_could_not_render_pdf_page">PDF のページを表示できませんでした。</string>
+    <string name="default_pdf_toolkit_repository_could_not_sign_this_pdf">この PDF に署名できませんでした。</string>
+    <string name="default_pdf_toolkit_repository_could_not_open_this_pdf_2">署名のためにこの PDF を開けませんでした。</string>
+    <string name="default_pdf_toolkit_repository_could_not_update_watermark_preview">透かしのプレビューを更新できませんでした。</string>
+    <string name="default_pdf_toolkit_repository_could_not_add_watermark">透かしを追加できませんでした。</string>
+    <string name="default_pdf_toolkit_repository_could_not_remove_pdf_password">PDF のパスワードを解除できませんでした。</string>
+    <string name="default_pdf_toolkit_repository_could_not_password_protect_pdf">PDF をパスワードで保護できませんでした。</string>
+    <string name="default_pdf_toolkit_repository_could_not_compress_pdf">PDF を圧縮できませんでした。</string>
+    <string name="default_pdf_toolkit_repository_this_pdf_is_already_well">この PDF はすでに十分に最適化されています。圧縮してもサイズは小さくなりません。</string>
+    <string name="default_pdf_toolkit_repository_page_is_too_large_to">"%1$s ページ目はサイズが大きすぎるため、このデバイスでは圧縮できません。画質を「最小」にしてお試しください。"</string>
+    <string name="default_pdf_toolkit_repository_could_not_merge_pdfs">PDF を結合できませんでした。</string>
+    <string name="default_pdf_toolkit_repository_one_of_the_pdfs">いずれかの PDF</string>
+    <string name="default_pdf_toolkit_repository_could_not_open_pdf">PDF を開けませんでした。</string>
+    <!-- PdfSignatureStamper -->
+    <string name="pdf_signature_stamper_text_and_dates_support_latin">テキストと日付に使えるのは、ラテン文字、ギリシャ文字、キリル文字、数字、記号です。</string>
+    <!-- PdfWatermarkStamper -->
+    <string name="pdf_watermark_stamper_watermarks_support_latin_greek_and">透かしに使えるのは、ラテン文字、ギリシャ文字、キリル文字、数字、記号です。英語のテキストでお試しください。</string>
+    <!-- DefaultQrCodeRepository -->
+    <string name="default_qr_code_repository_could_not_save_qr_code">QR コードを保存できませんでした。</string>
+    <string name="default_qr_code_repository_could_not_generate_qr_code">QR コードを作成できませんでした。</string>
+    <!-- DefaultPageMarkupRepository -->
+    <string name="default_page_markup_repository_could_not_save_the_signed">署名したページを保存できませんでした。</string>
+    <string name="default_page_markup_repository_could_not_load_signatures_for">このドキュメントの署名を読み込めませんでした。</string>
+    <!-- DefaultSignatureRepository -->
+    <string name="default_signature_repository_could_not_save_the_image">画像を保存できませんでした。</string>
+    <string name="default_signature_repository_could_not_prepare_the_image">画像を準備できませんでした。</string>
+    <string name="default_signature_repository_could_not_update_the_signature">署名を更新できませんでした。</string>
+    <string name="default_signature_repository_could_not_delete_the_signature">署名を削除できませんでした。</string>
+    <string name="default_signature_repository_could_not_read_this_image">この画像を読み込めませんでした。</string>
+    <string name="default_signature_repository_could_not_save_the_signature">署名を保存できませんでした。</string>
+    <!-- PageMarkupStore -->
+    <string name="page_markup_store_could_not_save_the_signed">署名したページを保存できませんでした。</string>
+    <!-- DefaultPageTextRepository -->
+    <string name="default_page_text_repository_could_not_queue_pages_to">ページの再読み取りを予約できませんでした。</string>
+    <string name="default_page_text_repository_could_not_update_the_text">テキストのインデックスを更新できませんでした。</string>
+    <string name="default_page_text_repository_could_not_save_your_changes">変更を保存できませんでした。</string>
+    <string name="default_page_text_repository_could_not_read_text_from">このページのテキストを読み取れませんでした。</string>
+    <string name="default_page_text_repository_could_not_read_text_from_2">このドキュメントのテキストを読み取れませんでした。</string>
+    <!-- DefaultPlayInAppUpdateCoordinator -->
+    <string name="default_play_in_app_update_coordinator_could_not_check_google_play">Google Play でアップデートを確認できませんでした。</string>
+    <string name="default_play_in_app_update_coordinator_google_play_could_not_check">Google Play がアップデートを確認できませんでした。</string>
+    <!-- PlayStoreAppUpdateRepository -->
+    <string name="play_store_app_update_repository_update_available">アップデートがあります</string>
+    <string name="play_store_app_update_repository_latest">最新</string>
+    <!-- PdfExportOptions -->
+    <string name="pdf_export_options_use_no_more_than_characters">"%1$s 文字以内で入力してください。"</string>
+    <string name="pdf_export_options_use_at_least_characters">"%1$s 文字以上で入力してください。"</string>
+    <string name="pdf_export_options_enter_a_pdf_password">PDF のパスワードを入力してください。</string>
+    <!-- QrPayload -->
+    <string name="qr_payload_text_characters">"テキスト · %1$s 文字"</string>
+    <string name="qr_payload_phone_number">電話番号</string>
+    <string name="qr_payload_email">メール</string>
+    <string name="qr_payload_contact_card">連絡先カード</string>
+    <string name="qr_payload_wi_fi">"Wi-Fi · %1$s"</string>
+    <string name="qr_payload_upi">"UPI · %1$s"</string>
+    <string name="qr_payload_link_not_secure_http">リンク · 保護されていない通信（http）</string>
+    <string name="qr_payload_link_https">リンク · https</string>
+    <string name="qr_payload_empty_text">空のテキスト</string>
+    <string name="qr_payload_contact">連絡先</string>
+    <string name="qr_payload_wi_fi_network">Wi-Fi ネットワーク</string>
+    <string name="qr_payload_pay">"%1$s に支払う"</string>
+    <string name="qr_payload_text">テキスト</string>
+    <string name="qr_payload_phone">電話</string>
+    <string name="qr_payload_wi_fi_2">Wi-Fi</string>
+    <string name="qr_payload_upi_payment">UPI 支払い</string>
+    <string name="qr_payload_link">リンク</string>
+    <!-- DetectDocumentCornersUseCase -->
+    <string name="detect_document_corners_use_case_document_detection_failed">ドキュメントを検出できませんでした。</string>
+    <string name="detect_document_corners_use_case_could_not_detect_a_document">この画像からドキュメントを検出できませんでした。</string>
+    <!-- ImportImagesUseCase -->
+    <string name="import_images_use_case_none_of_the_selected_files">選択したファイルはいずれも画像として開けませんでした。</string>
+    <string name="import_images_use_case_the_selected_file_couldn_t">選択したファイルを画像として開けませんでした。</string>
+    <string name="import_images_use_case_saving_page">ページを保存しています</string>
+    <string name="import_images_use_case_detecting_document">ドキュメントを検出しています</string>
+    <string name="import_images_use_case_preparing_page">ページを準備しています</string>
+    <!-- TrashUseCases -->
+    <string name="trash_use_cases_page">"%1$s ページ"</string>
+    <!-- ImportPdfToLibraryUseCase -->
+    <string name="import_pdf_to_library_use_case_could_not_add_this_pdf">この PDF をライブラリに追加できませんでした。</string>
+    <string name="import_pdf_to_library_use_case_choose_at_least_one_page">1 ページ以上選択してください。</string>
+    <!-- CameraCaptureChrome -->
+    <string name="camera_capture_chrome_done">完了</string>
+    <string name="camera_capture_chrome_done_review_pages">"完了、%1$s ページを確認"</string>
+    <string name="camera_capture_chrome_done_review_1_page">完了、1 ページを確認</string>
+    <string name="camera_capture_chrome_turn_auto_capture_on">自動撮影をオンにする</string>
+    <string name="camera_capture_chrome_turn_auto_capture_off">自動撮影をオフにする</string>
+    <!-- CaptureStabilityTracker -->
+    <string name="capture_stability_tracker_saving_page">ページを保存しています…</string>
+    <string name="capture_stability_tracker_capturing_page">ページを撮影しています…</string>
+    <string name="capture_stability_tracker_hold_steady">そのまま動かさないでください。</string>
+    <string name="capture_stability_tracker_capturing_now">撮影しています。</string>
+    <string name="capture_stability_tracker_hold_steady_to_auto_capture">動かさずに構えると自動で撮影します。</string>
+    <string name="capture_stability_tracker_hold_position_auto_capture_is">そのままお待ちください。自動撮影の準備中です。</string>
+    <string name="capture_stability_tracker_move_to_the_next_page">自動撮影が再開する前に、次のページに移ってください。</string>
+    <string name="capture_stability_tracker_point_your_camera_at_a">ドキュメント全体にカメラを向けてください。</string>
+    <string name="capture_stability_tracker_document_detected_tap_capture_whenever">ドキュメントを検出しました。準備ができたら撮影ボタンをタップしてください。</string>
+    <string name="capture_stability_tracker_auto_capture_is_off_use">自動撮影はオフです。準備ができたらシャッターを押してください。</string>
+    <!-- PipCameraComponents -->
+    <string name="pip_camera_not_now">後で</string>
+    <string name="pip_camera_allow_camera_access">カメラへのアクセスを許可</string>
+    <string name="pip_camera_open_settings">設定を開く</string>
+    <string name="pip_camera_photos_stay_on_your_device">写真はエクスポートや共有をするまでデバイス内に保存されます</string>
+    <string name="pip_camera_camera_active_only_while_scanning">カメラはスキャン中のみ使用します</string>
+    <string name="pip_camera_live_preview_with_edge_detection">輪郭を検出しながらライブ表示</string>
+    <string name="pip_camera_come_back_here_and_pip">ここに戻れば Pip が準備して待っています</string>
+    <string name="pip_camera_settings_permissions_camera_allow">設定 › 権限 › カメラ › 許可</string>
+    <string name="pip_camera_scanly_needs_your_camera_to">Scanly でドキュメントのページを撮影してまっすぐに補正するには、カメラが必要です。</string>
+    <string name="pip_camera_camera_permission_is_blocked_for">Scanly のカメラ権限がブロックされています。ドキュメントをスキャンするには、設定を開いて［権限］をタップし、カメラをオンにしてください。</string>
+    <string name="pip_camera_camera_access_needed">カメラへのアクセスが必要です</string>
+    <string name="pip_camera_show_me_the_whole_page">ページ全体を見せてね。四隅ぜんぶだよ。</string>
+    <string name="pip_camera_hold_it_almost_there">そのまま… もうちょっと。</string>
+    <string name="pip_camera_hold_it">"そのまま… %1$s"</string>
+    <string name="pip_camera_ooh_edges_hold_still_a">おっ、輪郭が見えた！ ちょっとだけ動かないでね…</string>
+    <string name="pip_camera_auto_capture_is_off_tap">自動撮影はオフだよ。準備ができたらシャッターを押してね。</string>
+    <string name="pip_camera_found_the_edges_tap_the">輪郭が見つかったよ。いつでもシャッターを押してね。</string>
+    <string name="pip_camera_got_it_on_to_the">撮れた！ 次のページへどうぞ。</string>
+    <string name="pip_camera_snap_saving_that_page">パシャ！ ページを保存中…</string>
+    <string name="pip_camera_it_s_all_fuzzy_tap">ぼやけてるよ。ページをタップしてピントを合わせてね。</string>
+    <string name="pip_camera_bit_dark_in_here_more">ちょっと暗いかも。明るくするか、フラッシュを使ってみて。</string>
+    <string name="pip_camera_everything_s_dark_is_something">真っ暗だよ。レンズが何かでふさがってない？</string>
+    <!-- ScanSessionScreen -->
+    <string name="scan_session_camera_couldn_t_start_close">カメラを起動できませんでした。カメラを使用している他のアプリを閉じて、もう一度お試しください。</string>
+    <string name="scan_session_camera_couldn_t_start_leave">カメラを起動できませんでした。この画面をいったん閉じて、もう一度開いてください。</string>
+    <string name="scan_session_capture">撮影</string>
+    <string name="scan_session_replace_page">ページを置き換え</string>
+    <string name="scan_session_show_grid">グリッドを表示</string>
+    <string name="scan_session_hide_grid">グリッドを非表示</string>
+    <string name="scan_session_turn_flash_on">フラッシュをオンにする</string>
+    <string name="scan_session_turn_flash_off">フラッシュをオフにする</string>
+    <string name="scan_session_close_camera">カメラを閉じる</string>
+    <string name="scan_session_no_captures">撮影したページはありません</string>
+    <string name="scan_session_open_a_valid_document_first">先に有効なドキュメントを開いてください。</string>
+    <string name="scan_session_document_missing">ドキュメントがありません</string>
+    <string name="scan_session_camera_is_not_ready_yet">カメラの準備ができていません。</string>
+    <!-- ScanSessionViewModel -->
+    <string name="scan_session_checking_document">ドキュメントを確認しています…</string>
+    <string name="scan_session_point_your_camera_at_a">紙のドキュメントにカメラを向けてください。</string>
+    <string name="scan_session_screen_detected_point_at_a">画面が検出されました。紙のドキュメントに向けてください。</string>
+    <string name="scan_session_page_edges_are_ambiguous_hold">ページの輪郭がはっきりしません。動かさずに構えるか、近づいてください。</string>
+    <string name="scan_session_two_pages_are_visible_move">2 ページが写っています。近づいて 1 ページだけ写るようにしてください。</string>
+    <string name="scan_session_page_saved">"%1$s ページ目を保存しました。"</string>
+    <string name="scan_session_auto_captured_page">%1$s ページ目を自動撮影しました。</string>
+    <string name="scan_session_document_not_found">ドキュメントが見つかりません。</string>
+    <string name="scan_session_capture_failed_reposition_the_document">撮影できませんでした。ドキュメントの位置を調整して、もう一度お試しください。</string>
+    <string name="scan_session_page_not_saved_reposition_the">ページを保存できませんでした。ドキュメントの位置を調整して、もう一度お試しください。</string>
+    <string name="scan_session_live_detection_is_unavailable_manual">リアルタイム検出は利用できません。手動での撮影は引き続き可能です。</string>
+    <string name="scan_session_point_your_camera_at_a_2">ドキュメントにカメラを向けてください。</string>
+    <!-- ExportShareComponents -->
+    <string name="export_share_passwords_match">パスワードが一致しています。</string>
+    <string name="export_share_confirm_password">パスワードの確認</string>
+    <string name="export_share_4_64_characters_send_it">4–64 文字。PDF とは別に送ってください。</string>
+    <string name="export_share_show_password">パスワードを表示</string>
+    <string name="export_share_hide_password">パスワードを非表示</string>
+    <string name="export_share_pdf_password">PDF のパスワード</string>
+    <string name="export_share_off">オフ</string>
+    <string name="export_share_a_password_will_be_required">PDF を開くときにパスワードが必要になります。</string>
+    <string name="export_share_password_protection">パスワード保護</string>
+    <string name="export_share_cancel">キャンセル</string>
+    <string name="export_share_add_white_space_around_the">スキャンしたページの周りに余白を追加します。</string>
+    <string name="export_share_margins">余白</string>
+    <string name="export_share_fixed_sizes_use_their_real">固定サイズでは実際の印刷サイズを使用します。</string>
+    <string name="export_share_page_size">ページサイズ</string>
+    <string name="export_share_auto_follows_each_scanned_page">自動では各スキャンページのサイズに合わせます。</string>
+    <string name="export_share_orientation">向き</string>
+    <string name="export_share_add_the_page_index_to">PDF のフッターにページ番号を追加します。</string>
+    <string name="export_share_page_numbers">ページ番号</string>
+    <string name="export_share_choose_how_every_page_is">各ページの生成方法を選択します。</string>
+    <string name="export_share_passwords_do_not_match">パスワードが一致しません。</string>
+    <string name="export_share_confirm_the_password">パスワードを確認してください。</string>
+    <string name="export_share_pdf_options">PDF オプション</string>
+    <!-- FabComponents -->
+    <string name="fab_open_add_menu">追加メニューを開く</string>
+    <string name="fab_close_menu">メニューを閉じる</string>
+    <string name="fab_new_document">新しいドキュメント</string>
+    <string name="fab_new_folder">新しいフォルダ</string>
+    <!-- LibraryCardPresentation -->
+    <string name="library_card_presentation_remove_from_folder">フォルダから外す</string>
+    <string name="library_card_presentation_move_to_folder">フォルダに移動</string>
+    <string name="library_card_presentation_rename">名前を変更</string>
+    <string name="library_card_presentation_delete">削除</string>
+    <string name="library_card_presentation_1_page">1 ページ</string>
+    <string name="library_card_presentation_1_document">1 件のドキュメント</string>
+    <string name="library_card_presentation_yesterday">昨日</string>
+    <string name="library_card_presentation_today">今日</string>
+    <!-- LibraryFolderShelf -->
+    <string name="library_folder_shelf_all_folders">すべてのフォルダ</string>
+    <string name="library_folder_shelf_view_all">すべて表示</string>
+    <string name="library_folder_shelf_organise_scans">スキャンを整理</string>
+    <string name="library_folder_shelf_new_folder">新しいフォルダ</string>
+    <!-- SharedComponents -->
+    <string name="shared_please_wait">お待ちください</string>
+    <string name="shared_working_on_your_photos">写真を処理しています…</string>
+    <string name="shared_importing_images">画像をインポートしています</string>
+    <string name="shared_more_options">その他のオプション</string>
+    <string name="shared_selected">選択済み</string>
+    <string name="shared_create_new_folder">新しいフォルダを作成</string>
+    <string name="shared_create_move">作成して移動</string>
+    <string name="shared_new_folder_name">新しいフォルダの名前</string>
+    <string name="shared_no_folder">フォルダなし</string>
+    <string name="shared_folder_name">フォルダ名</string>
+    <string name="shared_create">作成</string>
+    <string name="shared_suggest_name">名前を提案</string>
+    <string name="shared_title">タイトル</string>
+    <string name="shared_clear_name">名前を消去</string>
+    <string name="shared_confirm">確認</string>
+    <string name="shared_scanly">Scanly</string>
+    <!-- DocumentDetailScreen -->
+    <string name="document_detail_delete_page">ページを削除</string>
+    <string name="document_detail_share_page">ページを共有</string>
+    <string name="document_detail_sign_document">ドキュメントに署名</string>
+    <string name="document_detail_extract_text">テキストを抽出</string>
+    <string name="document_detail_retake_page">ページを撮り直す</string>
+    <string name="document_detail_edit_page">ページを編集</string>
+    <string name="document_detail_edit">編集</string>
+    <string name="document_detail_share">"%1$s を共有"</string>
+    <string name="document_detail_review">確認</string>
+    <string name="document_detail_ready">完了</string>
+    <string name="document_detail_new">新規</string>
+    <string name="document_detail_captured">撮影済み</string>
+    <string name="document_detail_add_page">ページを追加</string>
+    <string name="document_detail_scan_or_import">スキャンまたはインポート</string>
+    <string name="document_detail_add_page_scan_or_import">ページを追加。スキャンまたはインポートします。</string>
+    <string name="document_detail_share_2">共有</string>
+    <string name="document_detail_retake">撮り直す</string>
+    <string name="document_detail_open_zoom_view">拡大表示を開く</string>
+    <string name="document_detail_page_of">"%1$s / %2$s ページ"</string>
+    <string name="document_detail_import_images">画像をインポート</string>
+    <string name="document_detail_scan_a_page">ページをスキャン</string>
+    <string name="document_detail_scan_a_page_or_import">"ページをスキャンするか、最大 %1$s 枚の画像をインポートして、このドキュメントを始めましょう。"</string>
+    <string name="document_detail_no_pages_yet">ページはまだありません</string>
+    <string name="document_detail_return_to_the_library_and">ライブラリに戻って、別のドキュメントを開いてください。</string>
+    <string name="document_detail_document_not_found">ドキュメントが見つかりません</string>
+    <string name="document_detail_select_a_page_to_preview">プレビューするページを選択</string>
+    <string name="document_detail_tap_to_review_long_press">タップで確認、長押ししてドラッグで並べ替えできます。</string>
+    <string name="document_detail_long_press_and_drag_to">長押ししてドラッグで並べ替え</string>
+    <string name="document_detail_pages">ページ</string>
+    <string name="document_detail_use_scan_or_import_to">［スキャン］または［インポート］で最初のページを追加しましょう。</string>
+    <string name="document_detail_please_wait_while_the_file">ファイルを準備しています。しばらくお待ちください。</string>
+    <string name="document_detail_share_pages">ページを共有</string>
+    <string name="document_detail_save_images_zip">画像を ZIP で保存</string>
+    <string name="document_detail_share_pdf">PDF を共有</string>
+    <string name="document_detail_save_pdf">PDF を保存</string>
+    <string name="document_detail_export_share">エクスポートと共有</string>
+    <string name="document_detail_pick_up_to_images_from">"ファイルから最大 %1$s 枚の画像を選択"</string>
+    <string name="document_detail_choose_images">画像を選択</string>
+    <string name="document_detail_open_the_camera_to_scan">カメラを開いて新しいページをスキャン</string>
+    <string name="document_detail_capture_a_new_scan_or">"新しくスキャンするか、ギャラリーから最大 %1$s 枚の画像を選択します。"</string>
+    <string name="document_detail_delete_document">ドキュメントを削除</string>
+    <string name="document_detail_rename_document">ドキュメント名を変更</string>
+    <string name="document_detail_document_options">ドキュメントのオプション</string>
+    <string name="document_detail_working_on_your_photos">写真を処理しています</string>
+    <string name="document_detail_preparing_export">エクスポートを準備しています</string>
+    <string name="document_detail_generate">生成</string>
+    <string name="document_detail_delete_document_2">ドキュメントを削除しますか？</string>
+    <string name="document_detail_save">保存</string>
+    <string name="document_detail_document">ドキュメント</string>
+    <!-- DocumentDetailViewModel -->
+    <string name="document_detail_document_renamed">ドキュメント名を変更しました。</string>
+    <string name="document_detail_starting_import">インポートを開始しています</string>
+    <string name="document_detail_page_image_is_not_available">ページの画像はまだ利用できません。</string>
+    <string name="document_detail_preparing_pages">ページを準備しています</string>
+    <string name="document_detail_saved_to">"%1$s を %2$s に保存しました"</string>
+    <string name="document_detail_preparing_and_saving_zip">ZIP を準備して保存しています</string>
+    <string name="document_detail_preparing_pdf">PDF を準備しています</string>
+    <string name="document_detail_generating_and_saving_pdf">PDF を生成して保存しています</string>
+    <string name="document_detail_reordered_pages">ページを並べ替えました。</string>
+    <string name="document_detail_moved_to_folder">フォルダに移動しました</string>
+    <string name="document_detail_moved_to">"%1$s に移動しました"</string>
+    <string name="document_detail_removed_from_folder">フォルダから外しました</string>
+    <!-- FilterCustomizeScreen -->
+    <string name="filter_customize_faded_text">薄い文字</string>
+    <string name="filter_customize_whiteboard">ホワイトボード</string>
+    <string name="filter_customize_grayscale">グレースケール</string>
+    <string name="filter_customize_screen">画面</string>
+    <string name="filter_customize_vivid">鮮やか</string>
+    <string name="filter_customize_natural">ナチュラル</string>
+    <string name="filter_customize_magic_color">マジックカラー</string>
+    <string name="filter_customize_auto">自動</string>
+    <string name="filter_customize_original">オリジナル</string>
+    <string name="filter_customize_intensity">強さ</string>
+    <string name="filter_customize_sharpness">シャープネス</string>
+    <string name="filter_customize_saturation">彩度</string>
+    <string name="filter_customize_contrast">コントラスト</string>
+    <string name="filter_customize_brightness">明るさ</string>
+    <string name="filter_customize_fine_tune_on_this_page">"このページの %1$s を微調整します。［比較］を長押しすると、フィルタのみの状態をプレビューできます。"</string>
+    <string name="filter_customize_customize_filter">フィルタをカスタマイズ</string>
+    <string name="filter_customize_adjusted">調整後</string>
+    <string name="filter_customize_filter_only">フィルタのみ</string>
+    <string name="filter_customize_filter_adjustment_preview">フィルタ調整のプレビュー</string>
+    <string name="filter_customize_selected_filter_without_adjustments">調整なしの選択中のフィルタ</string>
+    <string name="filter_customize_loading_preview">プレビューを読み込んでいます…</string>
+    <string name="filter_customize_hold_to_compare_with_filter">長押しでフィルタのみと比較</string>
+    <string name="filter_customize_reset_adjustments">調整をリセット</string>
+    <string name="filter_customize_adjust">調整</string>
+    <string name="filter_customize_compare">比較</string>
+    <!-- FilterPickerScreen -->
+    <string name="filter_picker_selected_filter">選択中のフィルタ</string>
+    <string name="filter_picker_filter_thumbnail">"%1$s フィルタのサムネイル"</string>
+    <string name="filter_picker_analyzing_the_page_to_tune">ページを分析して各フィルタを調整しています。</string>
+    <string name="filter_picker_filter_only_crop_rotation_and">フィルタのみ適用されます。切り抜き、回転、調整はページごとに保持されます。</string>
+    <string name="filter_picker_apply_filter_to_all_pages">すべてのページにフィルタを適用</string>
+    <string name="filter_picker_tap_a_preset_to_update">プリセットをタップするとライブプレビューが更新されます。終わったらエディタで保存してください。</string>
+    <string name="filter_picker_filters">フィルタ</string>
+    <string name="filter_picker_filter_preview">"%1$s フィルタのプレビュー"</string>
+    <!-- PageCropScreen -->
+    <string name="page_crop_page_crop_preview">ページの切り抜きプレビュー</string>
+    <string name="page_crop_detecting">検出中</string>
+    <string name="page_crop_reset">リセット</string>
+    <string name="page_crop_ai_detect">AI 検出</string>
+    <string name="page_crop_right">右</string>
+    <string name="page_crop_left">左</string>
+    <string name="page_crop_apply_crop">切り抜きを適用</string>
+    <string name="page_crop_detecting_document">ドキュメントを検出しています…</string>
+    <string name="page_crop_keep_editing">編集を続ける</string>
+    <string name="page_crop_discard">破棄</string>
+    <string name="page_crop_your_crop_changes_have_not">切り抜きの変更はまだ適用されていません。</string>
+    <string name="page_crop_discard_changes">変更を破棄しますか？</string>
+    <string name="page_crop_full_frame_corners">フレーム全体の四隅</string>
+    <string name="page_crop_reset_crop">切り抜きをリセット</string>
+    <string name="page_crop_rotate_right">右に回転</string>
+    <string name="page_crop_rotate_left">左に回転</string>
+    <string name="page_crop_find_the_document_corners">ドキュメントの四隅を検出</string>
+    <string name="page_crop_detecting_2">検出しています…</string>
+    <string name="page_crop_detect_edges_rotate_then_drag">輪郭を検出して回転し、ハンドルをドラッグします。［完了］をタップすると適用されます。</string>
+    <string name="page_crop_crop_tools">切り抜きツール</string>
+    <string name="page_crop_page_not_found">ページが見つかりません。</string>
+    <string name="page_crop_crop">切り抜き</string>
+    <string name="page_crop_processing">処理中</string>
+    <!-- PageCropViewModel -->
+    <string name="page_crop_crop_updated">切り抜きを更新しました。</string>
+    <string name="page_crop_document_detected">ドキュメントを検出しました。</string>
+    <string name="page_crop_raw_image_is_not_available">検出に使う元の画像がありません。</string>
+    <!-- PageEditorScreen -->
+    <string name="page_editor_please_wait_while_scanly_adapts">Scanly がフィルタを調整してドキュメント全体を更新しています。しばらくお待ちください。</string>
+    <string name="page_editor_processing_image_data_for_all">すべてのページの画像データを処理しています</string>
+    <string name="page_editor_page_editor_preview">ページエディタのプレビュー</string>
+    <string name="page_editor_your_edits_to_this_page">このページの編集内容は保存されていません。</string>
+    <string name="page_editor_remove_from_document">ドキュメントから削除</string>
+    <string name="page_editor_capture_this_page_again">このページを撮り直す</string>
+    <string name="page_editor_brightness_contrast_more">明るさ、コントラストなど</string>
+    <string name="page_editor_ai_detect_rotate_handles">AI 検出、回転、ハンドル</string>
+    <string name="page_editor_crop_filter_and_adjust_this">このページの切り抜き、フィルタ、調整を行います。［完了］で保存します。</string>
+    <string name="page_editor_edit_tools">編集ツール</string>
+    <string name="page_editor_editor">エディタ</string>
+    <!-- PageEditorViewModel -->
+    <string name="page_editor_page_updated">ページを更新しました。</string>
+    <string name="page_editor_filter_applied_to_all_pages">すべてのページにフィルタを適用しました。</string>
+    <!-- HomePip -->
+    <string name="home_pip_hide_today_s_tip">今日のヒントを非表示</string>
+    <!-- HomeRatingPrompt -->
+    <string name="home_rating_prompt_rate_scanly_opens_google_play">Scanly を評価（Google Play が開きます）</string>
+    <string name="home_rating_prompt_rate_on_google_play">Google Play で評価</string>
+    <string name="home_rating_prompt_scanly_is_free_private_and">Scanly は無料で、プライバシーを守り、広告もありません。お役に立てているなら、Google Play で評価していただけると励みになります。</string>
+    <string name="home_rating_prompt_rate_scanly">Scanly を評価</string>
+    <!-- HomeScreen -->
+    <string name="home_search_names_and_text_in">名前とページ内のテキストを検索</string>
+    <string name="home_start_scanning">スキャンを開始</string>
+    <string name="home_scan_your_first_page_and">最初のページをスキャンしましょう。必要なときにいつでもここから開けます。</string>
+    <string name="home_no_documents_yet">ドキュメントはまだありません</string>
+    <string name="home_loading_your_documents">ドキュメントを読み込んでいます</string>
+    <string name="home_folder">フォルダ</string>
+    <string name="home_import">インポート</string>
+    <string name="home_scan">スキャン</string>
+    <string name="home_save_it_now">今すぐ保存</string>
+    <string name="home_save_it_now_find_it">今日保存して、\n明日すぐ見つかる。</string>
+    <string name="home_still_scanning">まだスキャン中？</string>
+    <string name="home_wrap_up_and_digitize_your">今日の書類を\nデジタルで締めくくろう。</string>
+    <string name="home_good_evening">こんばんは、</string>
+    <string name="home_let_s_capture_some_documents">さあ、書類を\nスキャンしましょう。</string>
+    <string name="home_good_afternoon">こんにちは、</string>
+    <string name="home_what_are_we_scanning_today">今日は何を\nスキャンしますか？</string>
+    <string name="home_good_morning">おはようございます、</string>
+    <string name="home_see_all">すべて表示</string>
+    <string name="home_recent_documents">最近のドキュメント</string>
+    <string name="home_recent_folders">最近のフォルダ</string>
+    <string name="home_new_scan">新しくスキャン</string>
+    <!-- FolderDeleteDialog -->
+    <string name="folder_delete_both_go_to_recently_deleted">"どちらも「最近削除した項目」に %1$s 保管されます"</string>
+    <string name="folder_delete_delete_folder_and_documents">フォルダとドキュメントを削除</string>
+    <string name="folder_delete_keep_the_in_your_library">"%1$s はライブラリに残ります"</string>
+    <string name="folder_delete_delete_folder_only">フォルダのみ削除</string>
+    <string name="folder_delete_delete_folder">フォルダを削除しますか？</string>
+    <!-- GroupDetailScreen -->
+    <string name="group_detail_not_selected">未選択</string>
+    <string name="group_detail_add_documents">"%1$s 件のドキュメントを追加"</string>
+    <string name="group_detail_add_1_document">1 件のドキュメントを追加</string>
+    <string name="group_detail_add_selected">選択したものを追加</string>
+    <string name="group_detail_documents_already_in_folders_won">すでにフォルダに入っているドキュメントはここに表示されません。代わりに新しく作成してください。</string>
+    <string name="group_detail_no_loose_documents">フォルダ外のドキュメントはありません</string>
+    <string name="group_detail_select_all">すべて選択</string>
+    <string name="group_detail_clear">クリア</string>
+    <string name="group_detail_select_one_or_more_documents">ドキュメントを 1 件以上選択してください</string>
+    <string name="group_detail_nothing_available_to_move">移動できるものはありません</string>
+    <string name="group_detail_move_existing">既存のものを移動</string>
+    <string name="group_detail_starts_empty_inside_this_folder">このフォルダ内に空の状態で作成されます</string>
+    <string name="group_detail_create_new_document">新しいドキュメントを作成</string>
+    <string name="group_detail_create_a_new_document_or">"新しいドキュメントを作成するか、このフォルダ外の %1$s から選択してください。"</string>
+    <string name="group_detail_create_a_new_document_or_2">新しいドキュメントを作成するか、まだフォルダに入っていないドキュメントを移動してください。</string>
+    <string name="group_detail_add_documents_to_folder">フォルダにドキュメントを追加</string>
+    <string name="group_detail_add_documents_2">ドキュメントを追加</string>
+    <string name="group_detail_add_a_document_here_to">ここにドキュメントを追加すると、関連するスキャンをまとめておけます。</string>
+    <string name="group_detail_this_folder_is_empty">このフォルダは空です</string>
+    <string name="group_detail_share_pdfs_as_zip">PDF を ZIP で共有</string>
+    <string name="group_detail_save_pdfs_as_zip">PDF を ZIP で保存</string>
+    <string name="group_detail_separate_pdfs_one_pdf_per">個別の PDF · ドキュメントごとに 1 つの PDF を ZIP にまとめます</string>
+    <string name="group_detail_share_merged_pdf">結合した PDF を共有</string>
+    <string name="group_detail_save_merged_pdf">結合した PDF を保存</string>
+    <string name="group_detail_single_pdf_merged_into_one">"単一の PDF · %1$s を 1 つのファイルに結合します"</string>
+    <string name="group_detail_new_document">新しいドキュメント</string>
+    <string name="group_detail_remove">外す</string>
+    <string name="group_detail_will_be_moved_out_of">「%1$s」をこのフォルダから外します。</string>
+    <string name="group_detail_remove_from_folder">フォルダから外しますか？</string>
+    <string name="group_detail_rename_folder">フォルダ名を変更</string>
+    <string name="group_detail_delete_folder">フォルダを削除</string>
+    <string name="group_detail_export_and_share">エクスポートと共有</string>
+    <!-- GroupDetailViewModel -->
+    <string name="group_detail_generating_pdf_of">"PDF を生成しています（%1$s / %2$s）…"</string>
+    <string name="group_detail_generating_page_of">"ページを生成しています（%1$s / %2$s）…"</string>
+    <string name="group_detail_document_removed_from_folder">ドキュメントをフォルダから外しました。</string>
+    <string name="group_detail_added_documents_to_folder">"%1$s 件のドキュメントをフォルダに追加しました。"</string>
+    <string name="group_detail_added_1_document_to_folder">1 件のドキュメントをフォルダに追加しました。</string>
+    <string name="group_detail_added_of_documents">"%2$s 件中 %1$s 件のドキュメントを追加しました。%3$s"</string>
+    <string name="group_detail_folder_renamed">フォルダ名を変更しました。</string>
+    <!-- LibraryScreen -->
+    <string name="library_create_a_folder_to_stay">フォルダを作成して整理するか、ドキュメントを追加して撮影を始めましょう。</string>
+    <string name="library_your_library_is_ready">ライブラリの準備ができました</string>
+    <string name="library_save_to">保存先</string>
+    <string name="library_choose_how_are_ordered">"%1$s の並び順を選択します。"</string>
+    <string name="library_sort_library">ライブラリを並べ替え</string>
+    <string name="library_folders_and_documents">フォルダとドキュメント</string>
+    <string name="library_create_a_document_then_scan">ドキュメントを作成して、ページをスキャンするか、ギャラリーからインポートしましょう。</string>
+    <string name="library_create_a_folder_to_keep">フォルダを作成すると、関連するドキュメントを見つけやすくなります。</string>
+    <string name="library_no_folders_yet">フォルダはまだありません</string>
+    <string name="library_list_view">リスト表示</string>
+    <string name="library_grid_view">グリッド表示</string>
+    <string name="library_folders">フォルダ</string>
+    <string name="library_back_to_library">ライブラリに戻る</string>
+    <string name="library_documents">ドキュメント</string>
+    <string name="library_search_library">ライブラリを検索</string>
+    <string name="library_library">ライブラリ</string>
+    <!-- LibrarySearchScreen -->
+    <string name="library_search_remove_from_recent_searches">"最近の検索から %1$s を削除"</string>
+    <string name="library_search_search_again">もう一度検索</string>
+    <string name="library_search_text_is_read_on_this">テキストはこのデバイス上で読み取られます。ページが外部に送信されることはありません。</string>
+    <string name="library_search_some_pages_are_still_being">まだ読み取り中のページがあるため、まもなく一致する結果が表示される場合があります。</string>
+    <string name="library_search_search_for_instead">代わりに「%1$s」を検索</string>
+    <string name="library_search_nothing_matches_try_fewer_words">「%1$s」に一致する結果はありません。語数を減らすか、スペルを確認してください。</string>
+    <string name="library_search_no_results_found">結果が見つかりません</string>
+    <string name="library_search_rent_or_lease_finds_pages">「家賃 OR 賃貸」でどちらかを含むページを検索</string>
+    <string name="library_search_either_word">いずれかの語</string>
+    <string name="library_search_lease_draft_skips_anything_that">「賃貸 -下書き」で「下書き」を含むものを除外</string>
+    <string name="library_search_leave_a_word_out">語を除外</string>
+    <string name="library_search_you_ll_get_the_closest">スキャン内の最も近い語が見つかります</string>
+    <string name="library_search_small_typos_are_fine">多少の入力ミスは OK</string>
+    <string name="library_search_security_deposit_in_that_order">\"敷金 返還\" でこの順番どおりに検索</string>
+    <string name="library_search_use_quotes_for_a_phrase">フレーズは引用符で囲む</string>
+    <string name="library_search_lea_finds_lease_and_leasing">「賃貸」で「賃貸借」や「賃貸契約」も検索</string>
+    <string name="library_search_type_part_of_a_word">語の一部を入力</string>
+    <string name="library_search_search_tips">検索のヒント</string>
+    <string name="library_search_browse_by_type">種類で探す</string>
+    <string name="library_search_recent">最近</string>
+    <string name="library_search_folder">"フォルダ · "</string>
+    <string name="library_search_matched">「%1$s」に一致</string>
+    <string name="library_search_scanned_as">「%1$s」として読み取り</string>
+    <string name="library_search_show_page_text">ページのテキストを表示</string>
+    <string name="library_search_show_fewer_pages">表示するページを減らす</string>
+    <string name="library_search_open_document">ドキュメントを開く</string>
+    <string name="library_search_similar_words">"類似の語: "</string>
+    <string name="library_search_close_matches">近い候補</string>
+    <string name="library_search_searching_text_in_pages">ページ内のテキストを検索しています…</string>
+    <string name="library_search_by_name">" · 名前で %1$s 件"</string>
+    <string name="library_search_complete_to">"入力候補: "</string>
+    <string name="library_search_filters_on">"フィルタ、%1$s 個適用中"</string>
+    <string name="library_search_filters">"フィルタ · %1$s"</string>
+    <string name="library_search_matching_names">名前が一致</string>
+    <string name="library_search_found_in_pages">ページ内で見つかりました</string>
+    <string name="library_search_clear_search">検索をクリア</string>
+    <!-- RecentlyDeletedScreen -->
+    <string name="recently_deleted_page_of_will_be_deleted">"「%2$s」の %1$s ページ目を完全に削除します。この操作は元に戻せません。"</string>
+    <string name="recently_deleted_and_its_pages_will_be">「%1$s」とそのページを完全に削除します。この操作は元に戻せません。</string>
+    <string name="recently_deleted_and_the_documents_that_were">「%1$s」とその中のドキュメントを完全に削除します。この操作は元に戻せません。</string>
+    <string name="recently_deleted_its_documents_stay_in_your">"中のドキュメントはライブラリに残ります。"</string>
+    <string name="recently_deleted_the_folder_will_be_deleted">フォルダ「%1$s」を完全に削除します。この操作は元に戻せません。</string>
+    <string name="recently_deleted_page_of">"「%2$s」の %1$s ページ目"</string>
+    <string name="recently_deleted_days_left">"残り %1$s 日"</string>
+    <string name="recently_deleted_1_day_left">残り 1 日</string>
+    <string name="recently_deleted_last_day">最終日</string>
+    <string name="recently_deleted_from">「%1$s」から</string>
+    <string name="recently_deleted_no_documents">ドキュメントなし</string>
+    <string name="recently_deleted_folder_only_documents_kept_in">"フォルダのみ · %1$s 件のドキュメントはライブラリに保持"</string>
+    <string name="recently_deleted_folder_only_1_document_kept">フォルダのみ · 1 件のドキュメントはライブラリに保持</string>
+    <string name="recently_deleted_restore">復元</string>
+    <string name="recently_deleted_delete_forever">完全に削除</string>
+    <string name="recently_deleted_select">選択</string>
+    <string name="recently_deleted_delete_forever_2">"%1$s を完全に削除"</string>
+    <string name="recently_deleted_restore_2">"%1$s を復元"</string>
+    <string name="recently_deleted_show_options">オプションを表示</string>
+    <string name="recently_deleted_the_selected_items_will_be">"選択した %1$s 個のアイテムを完全に削除します。この操作は元に戻せません。"</string>
+    <string name="recently_deleted_delete_items_forever">"%1$s 個のアイテムを完全に削除しますか？"</string>
+    <string name="recently_deleted_delete_1_item_forever">1 個のアイテムを完全に削除しますか？</string>
+    <string name="recently_deleted_delete_forever_3">完全に削除しますか？</string>
+    <string name="recently_deleted_delete_all">すべて削除</string>
+    <string name="recently_deleted_all_items_will_be_deleted">"%1$s 個のアイテムをすべて完全に削除します。この操作は元に戻せません。"</string>
+    <string name="recently_deleted_this_item_will_be_deleted">このアイテムを完全に削除します。この操作は元に戻せません。</string>
+    <string name="recently_deleted_empty_recently_deleted">「最近削除した項目」を空にしますか？</string>
+    <string name="recently_deleted_deleted_pages_stay_here_for">削除したページは %1$s、ドキュメントとフォルダは %2$s ここに保管されるので、元に戻せます。</string>
+    <string name="recently_deleted_nothing_here">何もありません</string>
+    <string name="recently_deleted_nothing_in_the_bin_deleted">ゴミ箱は空っぽだよ。削除したものは数日間ここで待ってるよ。</string>
+    <string name="recently_deleted_empty">空にする</string>
+    <string name="recently_deleted_select_none">選択を解除</string>
+    <string name="recently_deleted_clear_selection">選択をクリア</string>
+    <string name="recently_deleted_recently_deleted">最近削除した項目</string>
+    <!-- RecentlyDeletedViewModel -->
+    <string name="recently_deleted_page_restored_to">"%1$s ページ目を「%2$s」に復元しました"</string>
+    <string name="recently_deleted_document_restored">ドキュメントを復元しました</string>
+    <string name="recently_deleted_folder_restored">フォルダを復元しました</string>
+    <string name="recently_deleted_recently_deleted_is_empty">「最近削除した項目」は空です</string>
+    <string name="recently_deleted_deleted_permanently">完全に削除しました</string>
+    <!-- SearchFiltersSheet -->
+    <string name="search_filters_apply">適用</string>
+    <string name="search_filters_remove_filter">"フィルタを削除: %1$s"</string>
+    <string name="search_filters_in">"%1$s 内"</string>
+    <string name="search_filters_not_in_a_folder">フォルダ外</string>
+    <string name="search_filters_sort_by">並べ替え</string>
+    <string name="search_filters_any_folder">すべてのフォルダ</string>
+    <string name="search_filters_date_modified">更新日</string>
+    <string name="search_filters_any_type">すべての種類</string>
+    <string name="search_filters_type">種類</string>
+    <!-- TrashCopy -->
+    <string name="trash_copy_page_moves_to_recently_deleted">"%1$s ページ目は「最近削除した項目」に移動します。%2$s 以内なら復元できます。"</string>
+    <string name="trash_copy_and_its_documents_move_to">"「%1$s」と中の %2$s 件のドキュメントは「最近削除した項目」に移動します。%3$s 以内なら復元できます。"</string>
+    <string name="trash_copy_and_the_document_in_it">「%1$s」と中のドキュメントは「最近削除した項目」に移動します。%2$s 以内なら復元できます。</string>
+    <string name="trash_copy_moves_to_recently_deleted_you">「%1$s」は「最近削除した項目」に移動します。%2$s 以内なら復元できます。</string>
+    <string name="trash_copy_1_day">1 日</string>
+    <!-- TrashUndoSnackbar -->
+    <string name="trash_undo_snackbar_moved_to_recently_deleted">「%1$s」を「最近削除した項目」に移動しました</string>
+    <string name="trash_undo_snackbar_moved_to_recently_deleted_2">"%1$s を「最近削除した項目」に移動しました"</string>
+    <string name="trash_undo_snackbar_undo">元に戻す</string>
+    <!-- OnboardingFlow -->
+    <string name="onboarding_flow_enable_camera">カメラを有効にする</string>
+    <string name="onboarding_flow_enable_the_camera_to_scan">紙をスキャンするにはカメラを有効にしてください。カメラなしでも画像のインポートは可能です。</string>
+    <string name="onboarding_flow_open_settings_tap_permissions_and">設定を開いて［権限］をタップし、カメラを許可してください。カメラなしでも画像のインポートは可能です。</string>
+    <string name="onboarding_flow_ready_for_your_first_scan">最初のスキャンを始めましょうか？</string>
+    <string name="onboarding_flow_camera_access_is_turned_off">カメラへのアクセスがオフになっています</string>
+    <!-- OnboardingScreen -->
+    <string name="onboarding_no_account_no_cloud_upload">アカウント不要。クラウドへのアップロードもなし。</string>
+    <string name="onboarding_continue">続行</string>
+    <string name="onboarding_get_started">始める</string>
+    <string name="onboarding_page_of_3">"%1$s、3 ページ中 %2$s ページ目"</string>
+    <string name="onboarding_page_of_3_2">"3 ページ中 %1$s ページ目"</string>
+    <string name="onboarding_skip">スキップ</string>
+    <string name="onboarding_scanly">Scanly</string>
+    <string name="onboarding_previous_page">前のページ</string>
+    <string name="onboarding_feature_edge_detection">輪郭を自動検出</string>
+    <string name="onboarding_feature_crop_straighten">ページを切り抜いてまっすぐに補正</string>
+    <string name="onboarding_feature_filters">マジックカラー、ホワイトボードなど</string>
+    <string name="onboarding_feature_ocr">デバイス上での文字認識</string>
+    <string name="onboarding_feature_search">スキャン全体から語句を検索</string>
+    <string name="onboarding_feature_copy_text">どのページからもテキストをコピー</string>
+    <string name="onboarding_feature_multipage_pdf">複数ページの PDF</string>
+    <string name="onboarding_feature_password">共有前にパスワードで保護</string>
+    <string name="onboarding_feature_sign">ドキュメントに署名</string>
+    <string name="onboarding_assurance_offline">完全にオフラインで動作します。</string>
+    <string name="onboarding_assurance_on_device">テキストがこのデバイスの外に出ることはありません。</string>
+    <!-- Pip -->
+    <string name="pip_poke_pip_scanly_s_helper">Scanly のお手伝い役、Pip をつつく</string>
+    <!-- PipBubble -->
+    <string name="pip_bubble_dismiss">閉じる</string>
+    <!-- PipLines -->
+    <string name="pip_lines_all_set_pages_nice_and">"できた！ %1$s ページ、まっすぐきれいだよ。"</string>
+    <string name="pip_lines_all_set_1_page_nice">できた！ 1 ページ、まっすぐきれいだよ。</string>
+    <string name="pip_lines_ready_when_you_are">いつでも準備OKだよ。</string>
+    <string name="pip_lines_i_looked_on_every_page">全部のページを見たけど、「%1$s」はどこにもなかったよ。</string>
+    <!-- FeaturePlaceholderScreen -->
+    <string name="feature_placeholder_planned_for">%1$s で対応予定です。</string>
+    <!-- PageImagePreviewScreen -->
+    <string name="page_image_preview_sign">署名</string>
+    <string name="page_image_preview_delete_page">ページを削除しますか？</string>
+    <!-- PageImagePreviewViewModel -->
+    <string name="page_image_preview_scanly_page">"Scanly ページ %1$s"</string>
+    <!-- LegalDocumentScreen -->
+    <string name="legal_document_open_in_browser">ブラウザで開く</string>
+    <string name="legal_document_retry">再試行</string>
+    <string name="legal_document_check_your_internet_connection_and">インターネット接続を確認して、もう一度お試しください。</string>
+    <string name="legal_document_couldn_t_be_loaded">"%1$s を読み込めませんでした"</string>
+    <!-- ModelBenchmarkScreen -->
+    <string name="model_benchmark_pipeline_s_1f_ms" formatted="false">パイプライン: %s · %.1f ms</string>
+    <string name="model_benchmark_total_1f_ms" formatted="false">合計 %.1f ms</string>
+    <string name="model_benchmark_pre_0f_inf_0f_post" formatted="false">前処理 %.0f · 推論 %.0f · 後処理 %.0f</string>
+    <string name="model_benchmark_not_detected">未検出</string>
+    <string name="model_benchmark_detected_conf_0f" formatted="false">検出 · 信頼度 %.0f%%</string>
+    <string name="model_benchmark_none">なし</string>
+    <string name="model_benchmark_quad">四角形</string>
+    <string name="model_benchmark_error">エラー</string>
+    <string name="model_benchmark_no_preview">プレビューなし</string>
+    <string name="model_benchmark_detection_preview">"%1$s の検出プレビュー"</string>
+    <string name="model_benchmark_avg_1f_p50_1f_p95" formatted="false">平均 %.1f · P50 %.1f · P95 %.1f ms · 検出 %d/%d · 失敗 %d</string>
+    <string name="model_benchmark_avg_1f_p95_1f_ms" formatted="false">平均 %.1f · P95 %.1f ms · 承認 %d/%d</string>
+    <string name="model_benchmark_document_gate">ドキュメントゲート</string>
+    <string name="model_benchmark_aggregate">集計</string>
+    <string name="model_benchmark_images_processed">"%1$s / %2$s 枚の画像を処理済み"</string>
+    <string name="model_benchmark_choose_images_and_run">画像を選んで実行</string>
+    <string name="model_benchmark_benchmark_running">ベンチマークを実行しています…</string>
+    <string name="model_benchmark_select_more_photos_to_measure">さらに写真を選択して、ゲートの遅延、四隅の検出、ポリゴンのオーバーレイ、パイプライン全体の所要時間を測定します。</string>
+    <string name="model_benchmark_run_another_pass">もう一度実行</string>
+    <string name="model_benchmark_images_stay_on_this_device">画像はこのデバイス内に保存され、アップロードされることはありません。</string>
+    <string name="model_benchmark_choose_real_documents_or_rectangular">実際のドキュメントや長方形の物体を選択してください。Scanly が各検出器の所要時間を測定し、検出した輪郭を表示します。</string>
+    <string name="model_benchmark_compare_detectors_on_your_photos">写真で検出器を比較</string>
+    <string name="model_benchmark_model_benchmark">モデルのベンチマーク</string>
+    <string name="model_benchmark_image">画像</string>
+    <string name="model_benchmark_model_failed">モデルでエラーが発生しました</string>
+    <string name="model_benchmark_could_not_decode_image">画像をデコードできませんでした</string>
+    <!-- PipSettingsScreen -->
+    <string name="pip_settings_on">"オン · "</string>
+    <string name="pip_settings_on_2">オン</string>
+    <string name="pip_settings_napping">お昼寝中</string>
+    <string name="pip_settings_napping_screens_show_plain_text">お昼寝中 · 画面にはテキストのみ表示</string>
+    <string name="pip_settings_on_around_the_app">アプリ全体でオン</string>
+    <string name="pip_settings_show_pip">Pip を表示</string>
+    <string name="pip_settings_scanly_s_little_helper_pip">Scanly の小さなお手伝い役です。Pip は空の画面やカメラ、何かの準備ができたときに現れて、ひとことだけ話したら、すぐに引っ込みます。</string>
+    <string name="pip_settings_pip">Pip</string>
+    <string name="pip_settings_hi_this_is_where_you">やあ！ ここでボクのお手伝いの量を決められるよ。</string>
+    <string name="pip_settings_i_ll_keep_still_still">じっとしてるね。でも、ちゃんとここにいるよ。</string>
+    <string name="pip_settings_okay_i_ll_nap_switch">わかった、お昼寝するね。いつでもまたオンにしてね。</string>
+    <string name="pip_settings_pip_lives_on_this_phone">Pip はこのスマートフォンの中にいて、ドキュメントを見ることはありません。Pip のセリフはすべて Scanly に組み込まれています。</string>
+    <string name="pip_settings_blinks_talks_and_hops_pip">まばたきしたり、話したり、跳ねたりします。システムのアニメーションがオフのときは、Pip は動きません。</string>
+    <string name="pip_settings_animate_pip">Pip のアニメーション</string>
+    <string name="pip_settings_motion">動き</string>
+    <string name="pip_settings_a_happy_hello_when_a">ドキュメントを共有できるようになったら、うれしそうにあいさつします。</string>
+    <string name="pip_settings_cheer_on_exports">エクスポートを応援</string>
+    <string name="pip_settings_pip_helps_you_frame_pages">Pip がページの写し方をサポートします。オフにすると通常のガイドを表示します。</string>
+    <string name="pip_settings_camera_coaching">カメラのアドバイス</string>
+    <string name="pip_settings_one_short_tip_a_day">あいさつの下に、1 日 1 つ短いヒントを表示します。</string>
+    <string name="pip_settings_tips_on_home">ホームのヒント</string>
+    <string name="pip_settings_where_pip_helps">Pip が手伝う場面</string>
+    <!-- SettingsComponents -->
+    <string name="settings_pages_were_read_with_another">"%1$s ページが別のエンジンで読み取られています。バックグラウンドで %2$s を使って再読み取りします。"</string>
+    <string name="settings_1_page_was_read_with">"1 ページが別のエンジンで読み取られています。バックグラウンドで %1$s を使って再読み取りします。"</string>
+    <string name="settings_re_read_existing_pages">既存のページを再読み取り</string>
+    <string name="settings_indra_ocr_paused_it_stopped">Indra OCR を一時停止しました。予期せず 2 回停止したため、ML Kit でページを読み取っています。再試行するには、もう一度 Indra OCR を選択してください。</string>
+    <string name="settings_ml_kit">ML Kit</string>
+    <string name="settings_indra_ocr">Indra OCR</string>
+    <string name="settings_rate_scanly_on_google_play">Google Play で Scanly を評価</string>
+    <string name="settings_it_s_free_private_and">無料で、プライバシーを守り、広告もありません。Google Play で評価していただくと、ほかの人にも見つけてもらいやすくなります。</string>
+    <string name="settings_enjoying_scanly">Scanly を気に入っていただけましたか？</string>
+    <string name="settings_dark">ダーク</string>
+    <string name="settings_light">ライト</string>
+    <string name="settings_system">システム</string>
+    <string name="settings_tap_to_check">"タップして %1$s を確認"</string>
+    <string name="settings_you_are_on_latest_is">現在のバージョンは %1$s です。最新は %2$s です。</string>
+    <string name="settings_scanly_is_available_on">"Scanly %1$s が %2$s で入手できます。"</string>
+    <string name="settings_checking">%1$s を確認しています...</string>
+    <string name="settings_check_for_updates">アップデートを確認</string>
+    <string name="settings_by_jeevaprakash_g">開発: jeevaprakash g</string>
+    <string name="settings_version_unavailable">バージョン情報を取得できません</string>
+    <string name="settings_pick_the_detector_that_fits">このデバイスと使い方に合った検出器を選択してください。</string>
+    <string name="settings_choose">"%1$s を選択"</string>
+    <string name="settings_highest_accuracy_maximum_compatibility">最高精度 · 互換性が最も高い</string>
+    <string name="settings_higher_accuracy_best_after_capture">高精度 · 撮影後の処理に最適</string>
+    <string name="settings_balanced_speed_and_accuracy">速度と精度のバランス</string>
+    <string name="settings_fastest_ideal_for_live_camera">最速 · カメラのライブプレビューに最適</string>
+    <!-- SettingsDetailScreens -->
+    <string name="settings_detail_screens_open_source">オープンソース</string>
+    <string name="settings_detail_screens_try_a_different_word_or">別の語句で検索するか、カテゴリから探してください。</string>
+    <string name="settings_detail_screens_no_answers_for">「%1$s」に関する回答はありません。</string>
+    <string name="settings_detail_screens_no_answers_in_this_category">このカテゴリに回答はありません。</string>
+    <string name="settings_detail_screens_all">すべて</string>
+    <string name="settings_detail_screens_search_help">ヘルプを検索</string>
+    <string name="settings_detail_screens_help_faq">ヘルプとよくある質問</string>
+    <!-- SettingsHubSubScreens -->
+    <string name="settings_hub_sub_screens_terms_conditions">利用規約</string>
+    <string name="settings_hub_sub_screens_privacy_policy">プライバシー ポリシー</string>
+    <string name="settings_hub_sub_screens_legal">法的情報</string>
+    <string name="settings_hub_sub_screens_project_website">プロジェクトのウェブサイト</string>
+    <string name="settings_hub_sub_screens_contact_support">サポートに問い合わせる</string>
+    <string name="settings_hub_sub_screens_help">ヘルプ</string>
+    <string name="settings_hub_sub_screens_about">アプリについて</string>
+    <string name="settings_hub_sub_screens_open_the_qr_tool">QR ツールを開く</string>
+    <string name="settings_hub_sub_screens_qr_widget">QR ウィジェット</string>
+    <string name="settings_hub_sub_screens_start_a_new_document_scan">ドキュメントを新しくスキャン</string>
+    <string name="settings_hub_sub_screens_scan_widget">スキャン ウィジェット</string>
+    <string name="settings_hub_sub_screens_scan_import_qr_library">スキャン · インポート · QR · ライブラリ</string>
+    <string name="settings_hub_sub_screens_actions_bar">アクションバー</string>
+    <string name="settings_hub_sub_screens_home_screen">ホーム画面</string>
+    <string name="settings_hub_sub_screens_widgets">ウィジェット</string>
+    <string name="settings_hub_sub_screens_long_press_home_screen_widgets">ホーム画面を長押し → ウィジェット → Scanly</string>
+    <string name="settings_hub_sub_screens_tap_to_add_a_widget">タップしてホーム画面にウィジェットを追加</string>
+    <string name="settings_hub_sub_screens_could_not_open_the_add">ウィジェットの追加画面を開けませんでした。</string>
+    <string name="settings_hub_sub_screens_your_launcher_doesn_t_support">お使いのランチャーは、アプリからのウィジェット追加に対応していません。ホーム画面を長押しして、ウィジェットから Scanly を選択してください。</string>
+    <string name="settings_hub_sub_screens_compare_all_models_on_local">端末内の画像ですべてのモデルを比較</string>
+    <string name="settings_hub_sub_screens_tools">ツール</string>
+    <string name="settings_hub_sub_screens_reject_screens_and_non_documents">輪郭検出の前に、画面やドキュメント以外のものを除外します</string>
+    <string name="settings_hub_sub_screens_physical_document_gate">紙のドキュメント判定</string>
+    <string name="settings_hub_sub_screens_capture_quality">撮影品質</string>
+    <string name="settings_hub_sub_screens_used_after_camera_or_gallery">カメラやギャラリーから取り込んだ後に使用</string>
+    <string name="settings_hub_sub_screens_selected_automatically_for_higher_accuracy">精度を高めるため自動で選択</string>
+    <string name="settings_hub_sub_screens_post_processing_model">後処理モデル</string>
+    <string name="settings_hub_sub_screens_used_while_the_camera_preview">カメラのプレビュー中に使用</string>
+    <string name="settings_hub_sub_screens_selected_automatically_for_responsive_preview">プレビューをスムーズにするため自動で選択</string>
+    <string name="settings_hub_sub_screens_live_preview_model">ライブプレビューのモデル</string>
+    <string name="settings_hub_sub_screens_choose_the_best_models_for">このデバイスに最適なモデルを選択</string>
+    <string name="settings_hub_sub_screens_live_processing">"ライブ: %1$s · 処理: %2$s"</string>
+    <string name="settings_hub_sub_screens_testing_model_speed_on_this">このデバイスでモデルの速度をテストしています…</string>
+    <string name="settings_hub_sub_screens_automatic_model_selection">モデルの自動選択</string>
+    <string name="settings_hub_sub_screens_models">モデル</string>
+    <string name="settings_hub_sub_screens_document_detection">ドキュメント検出</string>
+    <string name="settings_hub_sub_screens_true_black_surfaces_saves_battery">背景を完全な黒に · AMOLED 画面で電池を節約</string>
+    <string name="settings_hub_sub_screens_takes_effect_in_dark_theme">ダークテーマで有効 · AMOLED 画面で電池を節約</string>
+    <string name="settings_hub_sub_screens_pure_black">ピュアブラック</string>
+    <string name="settings_hub_sub_screens_theme">テーマ</string>
+    <string name="settings_hub_sub_screens_appearance">表示</string>
+    <!-- SettingsScreen -->
+    <string name="settings_preferences_and_app_info">各種設定とアプリ情報</string>
+    <string name="settings_scanly">"Scanly %1$s"</string>
+    <string name="settings_settings">設定</string>
+    <string name="settings_version_updates_and_legal">バージョン、アップデート、法的情報</string>
+    <string name="settings_leave_a_rating_on_google">Google Play で評価する</string>
+    <string name="settings_more">その他</string>
+    <string name="settings_actions_scan_and_qr">アクション、スキャン、QR</string>
+    <string name="settings_text_recognition">文字認識</string>
+    <string name="settings_intelligence">インテリジェンス</string>
+    <string name="settings_pages_kept_documents_and_folders">"ページは %1$s、ドキュメントとフォルダは %2$s 保管"</string>
+    <string name="settings_storage">ストレージ</string>
+    <string name="settings_pip_your_helper">お手伝い役の Pip</string>
+    <string name="settings_preferences">各種設定</string>
+    <string name="settings_save_location_cleanup">保存先とクリーンアップ</string>
+    <string name="settings_indra_ocr_100_languages_experimental">Indra OCR · 100 以上の言語（試験運用版）</string>
+    <string name="settings_ml_kit_latin_script_languages">ML Kit · ラテン文字の言語</string>
+    <string name="settings_gate_off">"%1$s · 判定オフ"</string>
+    <string name="settings_gate_on">"%1$s · 判定オン"</string>
+    <string name="settings_manual_models">手動モデル</string>
+    <string name="settings_automatic_models">自動モデル</string>
+    <string name="settings_calibrating">調整しています…</string>
+    <string name="settings_pure_black">" · ピュアブラック"</string>
+    <string name="settings_thanks_for_supporting_scanly">Scanly を応援していただきありがとうございます</string>
+    <!-- SettingsTextRecognitionScreen -->
+    <string name="settings_text_recognition_weights_openrail_m_code_apache">重み: OpenRAIL-M · コード: Apache-2.0</string>
+    <string name="settings_text_recognition_visit_datalab_to">datalab.to にアクセス</string>
+    <string name="settings_text_recognition_a_big_thank_you_to">Indra OCR を開発し、Scanly がスマートフォン上で直接実行できるようにしてくれた Datalab に心から感謝します。Scanly が 100 以上の言語を読み取れるのはそのおかげです。</string>
+    <string name="settings_text_recognition_datalab">Datalab</string>
+    <string name="settings_text_recognition_indra_ocr_by">Indra OCR の提供元</string>
+    <string name="settings_text_recognition_datalab_logo">Datalab のロゴ</string>
+    <string name="settings_text_recognition_latin_script_only_pages_in">ラテン文字のみに対応しています。ヒンディー語、タミル語、アラビア語、中国語など、他の文字のページは空になるか、文字化けします。その場合は Indra OCR に切り替えてください。</string>
+    <string name="settings_text_recognition_5_script_families_read_in">5 つの文字体系を一度に読み取ります。各行が適切な認識エンジンに振り分けられるので、複数の言語が混在するページにも対応できます。</string>
+    <string name="settings_text_recognition_reads_100_languages_across_many">ヒンディー語、タミル語、アラビア語、中国語、日本語など、さまざまな文字の 100 以上の言語を読み取ります。ML Kit より低速です。</string>
+    <string name="settings_text_recognition_experimental">試験運用版</string>
+    <string name="settings_text_recognition_google_s_fast_on_device">Google の高速なデバイス上の認識エンジンです。英語、スペイン語、フランス語などのラテン文字の言語に最適です。</string>
+    <string name="settings_text_recognition_default">デフォルト</string>
+    <string name="settings_text_recognition_if_a_page_s_text">ページのテキストが空だったり文字化けしたりする場合は、ML Kit が読み取れない文字で書かれている可能性があります。Indra OCR に切り替えてから、［既存のページを再読み取り］を使用してください。</string>
+    <string name="settings_text_recognition_tip">ヒント</string>
+    <string name="settings_text_recognition_switching_engines_only_affects_new">エンジンの切り替えは、新しい読み取りにのみ適用されます。既存のページはこの画面から再読み取りでき、ご自身で修正したテキストが置き換えられることはありません。</string>
+    <string name="settings_text_recognition_your_edits_are_kept">編集内容は保持されます</string>
+    <string name="settings_text_recognition_if_indra_ocr_can_t">Indra OCR でページを読み取れない場合や、時間がかかりすぎる場合、停止した場合は、代わりに ML Kit が読み取ります。</string>
+    <string name="settings_text_recognition_ml_kit_is_the_safety">ML Kit がバックアップ</string>
+    <string name="settings_text_recognition_both_engines_run_on_the">どちらのエンジンもデバイス上で動作します。読み取りのためにページがアップロードされることはありません。</string>
+    <string name="settings_text_recognition_stays_on_your_phone">スマートフォンの外に出ません</string>
+    <string name="settings_text_recognition_ml_kit_is_the_default">デフォルトは ML Kit です。高速で、英語、スペイン語、フランス語、ドイツ語などのラテン文字の言語を高い精度で読み取れます。\n\nそれ以外の言語には Indra OCR を使います。ヒンディー語、タミル語、ベンガル語、アラビア語、ウルドゥー語、中国語、日本語、韓国語、タイ語など 100 以上の言語を読み取り、複数の言語が混在するページにも対応します。試験運用版で処理が遅いため、ページが検索できるようになるまで時間がかかります。</string>
+    <string name="settings_text_recognition_choosing_an_engine">エンジンの選び方</string>
+    <string name="settings_text_recognition_after_you_scan_scanly_reads">スキャンすると、Scanly が各ページの文字を読み取ります。このテキストによって、ページの内容でライブラリを検索したり、スキャンからテキストをコピー・共有したり、エクスポートしたりできます。</string>
+    <string name="settings_text_recognition_what_it_does">できること</string>
+    <string name="settings_text_recognition_also_called_ocr">OCR とも呼ばれます</string>
+    <string name="settings_text_recognition_re_read">再読み取り</string>
+    <string name="settings_text_recognition_runs_in_the_background_while">電池残量が少なくないときに、バックグラウンドで実行されます。ご自身で編集したテキストは保持されます。</string>
+    <string name="settings_text_recognition_on_device_text_recognition_v2">デバイス上の文字認識 v2</string>
+    <string name="settings_text_recognition_google_ml_kit">Google ML Kit</string>
+    <string name="settings_text_recognition_credits">クレジット</string>
+    <string name="settings_text_recognition_supported_languages">対応言語</string>
+    <string name="settings_text_recognition_engine">エンジン</string>
+    <string name="settings_text_recognition_about_text_recognition">文字認識について</string>
+    <!-- SettingsViewModel -->
+    <string name="settings_save_location_reset_to_downloads">保存先を Downloads/Scanly にリセットしました。</string>
+    <string name="settings_save_location_updated">保存先を更新しました。</string>
+    <string name="settings_reading_pages_again_in_the">"バックグラウンドで %1$s ページを再読み取りしています。"</string>
+    <string name="settings_reading_1_page_again_in">バックグラウンドで 1 ページを再読み取りしています。</string>
+    <string name="settings_no_pages_to_read_again">再読み取りするページはありません。</string>
+    <string name="settings_could_not_update_the_text">文字認識エンジンを更新できませんでした。</string>
+    <string name="settings_could_not_update_the_physical">紙のドキュメント判定を更新できませんでした。</string>
+    <string name="settings_could_not_update_automatic_model">モデルの自動選択を更新できませんでした。</string>
+    <string name="settings_could_not_update_the_post">後処理モデルを更新できませんでした。</string>
+    <string name="settings_could_not_update_the_live">ライブプレビューのモデルを更新できませんでした。</string>
+    <string name="settings_could_not_update_pure_black">ピュアブラック テーマを更新できませんでした。</string>
+    <string name="settings_removed_empty_folders">"空のフォルダを %1$s 個削除しました。"</string>
+    <string name="settings_removed_1_empty_folder">空のフォルダを 1 個削除しました。</string>
+    <string name="settings_no_empty_folders_found">空のフォルダはありません。</string>
+    <string name="settings_removed_empty_documents">"空のドキュメントを %1$s 件削除しました。"</string>
+    <string name="settings_removed_1_empty_document">空のドキュメントを 1 件削除しました。</string>
+    <string name="settings_no_empty_documents_found">空のドキュメントはありません。</string>
+    <string name="settings_freed">"%1$s を解放しました"</string>
+    <string name="settings_all_data_cleared">すべてのデータを消去しました。</string>
+    <!-- StorageScreen -->
+    <string name="storage_temporary_exports">一時エクスポート</string>
+    <string name="storage_database_search_index">データベースと検索インデックス</string>
+    <string name="storage_library_files">ライブラリのファイル</string>
+    <string name="storage_scanly_is_using">Scanly の使用量</string>
+    <string name="storage_calculating">計算しています…</string>
+    <string name="storage_change">変更</string>
+    <string name="storage_exports_save_to">エクスポートの保存先</string>
+    <string name="storage_this_permanently_deletes_all_documents">このデバイス上のすべてのドキュメント、フォルダ、ページ、一時エクスポートが完全に削除されます。エクスポート先のフォルダに保存済みのファイルは残ります。</string>
+    <string name="storage_clear_all_data">すべてのデータを消去しますか？</string>
+    <string name="storage_deletes_every_folder_group_that">ドキュメントが入っていないフォルダ（グループ）をすべて削除します。ドキュメントが入っているフォルダは残ります。</string>
+    <string name="storage_remove_empty_folders">空のフォルダを削除しますか？</string>
+    <string name="storage_deletes_every_document_that_has">途中で中断した撮影も含め、ページのないドキュメントをすべて削除して、端末内のストレージを解放します。ページのあるドキュメントは残ります。</string>
+    <string name="storage_remove_empty_documents">空のドキュメントを削除しますか？</string>
+    <string name="storage_deletes_every_document_folder_and">このデバイス上のすべてのドキュメント、フォルダ、ページを削除します</string>
+    <string name="storage_clear_all_data_2">すべてのデータを消去</string>
+    <string name="storage_danger_zone">危険な操作</string>
+    <string name="storage_folders_with_no_documents">ドキュメントのないフォルダ</string>
+    <string name="storage_remove_empty_folders_2">空のフォルダを削除</string>
+    <string name="storage_documents_with_no_pages">ページのないドキュメント</string>
+    <string name="storage_remove_empty_documents_2">空のドキュメントを削除</string>
+    <string name="storage_restore_deleted_folders_documents_and">削除したフォルダ、ドキュメント、ページを復元</string>
+    <string name="storage_tidy_up">整理</string>
+    <string name="storage_use_default_folder">デフォルトのフォルダを使用</string>
+    <string name="storage_pdfs_and_images_you_export">エクスポートした PDF と画像はここに保存されます。</string>
+    <string name="storage_save_location">保存先</string>
+    <string name="storage_could_not_use_the_selected">選択したフォルダを使用できませんでした。</string>
+    <string name="storage_selected_folder">選択したフォルダ</string>
+    <!-- ScannedPagePickerSheet -->
+    <string name="scanned_page_picker_no_pages_in_this_document">このドキュメントには使用できるページがありません。</string>
+    <string name="scanned_page_picker_back_to_documents">ドキュメントに戻る</string>
+    <string name="scanned_page_picker_no_scanned_documents_yet_scan">スキャンしたドキュメントはまだありません。Scanly でページをスキャンすると、ここに表示されます。</string>
+    <string name="scanned_page_picker_scanned_pages">スキャンしたページ</string>
+    <!-- SignatureCreateScreen -->
+    <string name="signature_create_choose_another">別の画像を選択</string>
+    <string name="signature_create_bolder">濃く</string>
+    <string name="signature_create_fainter">薄く</string>
+    <string name="signature_create_ink_sensitivity">インクの感度</string>
+    <string name="signature_create_extracted_signature_preview">抽出した署名のプレビュー</string>
+    <string name="signature_create_scanly_removes_the_paper_background">Scanly が紙の背景を取り除き、インクだけを残します。</string>
+    <string name="signature_create_use_a_page_you_scanned">Scanly でスキャンしたページを使用</string>
+    <string name="signature_create_scanned_page">スキャンしたページ</string>
+    <string name="signature_create_jpg_or_png_from_your">スマートフォン内の JPG または PNG</string>
+    <string name="signature_create_files">ファイル</string>
+    <string name="signature_create_pick_a_photo_of_your">署名の写真を選択</string>
+    <string name="signature_create_photos">フォト</string>
+    <string name="signature_create_choose_where_your_signature_is">署名がある範囲を選択してください</string>
+    <string name="signature_create_choose_where_your_initials_are">イニシャルがある範囲を選択してください</string>
+    <string name="signature_create_pen">ペン</string>
+    <string name="signature_create_upload">アップロード</string>
+    <string name="signature_create_draw">手書き</string>
+    <string name="signature_create_save_signature">署名を保存</string>
+    <string name="signature_create_save_initials">イニシャルを保存</string>
+    <string name="signature_create_sign_above_the_line">線の上に署名してください</string>
+    <string name="signature_create_write_your_initials_above_the">線の上にイニシャルを書いてください</string>
+    <string name="signature_create_new_signature">新しい署名</string>
+    <string name="signature_create_new_initials">新しいイニシャル</string>
+    <!-- SignatureCreateViewModel -->
+    <string name="signature_create_choose_a_photo_of_your">先に署名の写真を選択してください。</string>
+    <string name="signature_create_still_reading_the_photo_try">写真を読み込んでいます。しばらくしてからもう一度お試しください。</string>
+    <string name="signature_create_draw_your_signature_first">先に署名を書いてください。</string>
+    <!-- SignaturePad -->
+    <string name="signature_pad_draw_here">ここに書いてください</string>
+    <!-- DocumentSignScreen -->
+    <string name="document_sign_stamping_signatures">署名を配置しています…</string>
+    <!-- DocumentSignViewModel -->
+    <string name="document_sign_saved_signatures_couldn_t_be">保存済みの署名を読み込めなかったため、現在このドキュメントに署名できません。</string>
+    <!-- SignEditorScreen -->
+    <string name="sign_editor_next_page">次のページ</string>
+    <string name="sign_editor_add_text">テキストを追加</string>
+    <string name="sign_editor_edit_date">日付を編集</string>
+    <string name="sign_editor_tap_checkbox_again_for_another">もう一度［チェックボックス］をタップすると別のボックスを追加 · ツールバーでチェックの切り替え</string>
+    <string name="sign_editor_tap_text_again_for_another">もう一度［テキスト］をタップすると別の行を追加 · テキストをダブルタップして編集</string>
+    <string name="sign_editor_tap_date_again_for_another">もう一度［日付］をタップすると別の日付を追加 · 日付をダブルタップして編集</string>
+    <string name="sign_editor_manage">管理</string>
+    <string name="sign_editor_your_signatures">保存した署名</string>
+    <string name="sign_editor_signatures_and_marks_you_added">このドキュメントで追加・変更した署名やマークは保持されません。</string>
+    <!-- SignMarkLayer -->
+    <string name="sign_mark_layer_duplicate">複製</string>
+    <string name="sign_mark_layer_tick">チェックを付ける</string>
+    <string name="sign_mark_layer_untick">チェックを外す</string>
+    <!-- SignatureManageScreen -->
+    <string name="signature_manage_added">"%1$s · %2$s に追加"</string>
+    <string name="signature_manage_from_a_photo">写真から作成</string>
+    <string name="signature_manage_drawn">手書き</string>
+    <string name="signature_manage_pages_you_ve_already_signed">署名済みのページはそのまま残ります</string>
+    <string name="signature_manage_place_it_on_a_pdf">PDF や Scanly のドキュメントに配置</string>
+    <string name="signature_manage_sign_a_pdf">PDF に署名</string>
+    <string name="signature_manage_use_first_when_signing">署名時に優先して使用</string>
+    <string name="signature_manage_shared_and_saved_as_a">透過 PNG として共有・保存されるので、ドキュメント、フォーム、メールにすぐ使えます。</string>
+    <string name="signature_manage_save_to_phone">端末に保存</string>
+    <string name="signature_manage_ink_colour">インクの色</string>
+    <string name="signature_manage_in_ink">"%1$s、インク: %2$s"</string>
+    <string name="signature_manage_used_first">優先使用</string>
+    <string name="signature_manage_used_first_2">、優先使用</string>
+    <string name="signature_manage_pages_you_ve_already_signed_2">署名済みのページはそのまま残ります。</string>
+    <string name="signature_manage_initials">イニシャル</string>
+    <string name="signature_manage_signatures">署名</string>
+    <string name="signature_manage_signatures_stay_on_this_phone">署名はこのスマートフォン内に保存されます。手書きするか、署名の写真をアップロードしてください。</string>
+    <string name="signature_manage_tap_one_to_share_save">タップして共有、保存、並べ替え</string>
+    <!-- SignatureManageViewModel -->
+    <string name="signature_manage_saved_to">"%1$s に保存しました"</string>
+    <string name="signature_manage_will_be_offered_first_when">"署名時に %1$s が優先して表示されます"</string>
+    <!-- PageTextScreen -->
+    <string name="page_text_share_text">テキストを共有</string>
+    <string name="page_text_scan_or_import_a_page">ページをスキャンまたはインポートすると、そのテキストがここに表示されます。</string>
+    <string name="page_text_this_document_has_no_pages">このドキュメントにはまだページがありません</string>
+    <string name="page_text_reading_text">テキストを読み取っています</string>
+    <string name="page_text_copy_page">ページをコピー</string>
+    <string name="page_text_save_changes">変更を保存</string>
+    <string name="page_text_copy">コピー</string>
+    <string name="page_text_tap_an_outlined_area_to">枠で囲まれた部分をタップすると、その部分だけコピーできます。</string>
+    <string name="page_text_regions_are_hidden_because_this">テキストを読み取った後にページが変更されたため、範囲は表示されません。</string>
+    <string name="page_text_page_image_with_text_regions">"%1$s 個のテキスト範囲があるページ画像"</string>
+    <string name="page_text_read_with_indra_ocr_experimental">Indra OCR（試験運用版）で読み取り</string>
+    <string name="page_text_read_with_ml_kit_indra">ML Kit で読み取り（Indra OCR では読み取れませんでした）</string>
+    <string name="page_text_edited">編集済み</string>
+    <string name="page_text_read_again">再読み取り</string>
+    <string name="page_text_photos_and_handwriting_may_not">写真や手書きには、読み取れる印字テキストが含まれていない場合があります。明るい場所で、ピントを合わせてスキャンすると改善することがあります。</string>
+    <string name="page_text_no_text_found_on_this">このページにテキストは見つかりませんでした</string>
+    <string name="page_text_read_this_page">このページを読み取る</string>
+    <string name="page_text_scanly_reads_page_text_on">Scanly はページのテキストをこのデバイス上で読み取ります。</string>
+    <string name="page_text_text_not_read_yet">テキストはまだ読み取られていません</string>
+    <string name="page_text_try_again">再試行</string>
+    <string name="page_text_couldn_t_read_this_page">このページを読み取れませんでした</string>
+    <string name="page_text_your_corrections_are_used_for">修正した内容は、コピー、共有、検索に使用されます。</string>
+    <string name="page_text_this_page_changed_after_its">テキストを読み取った後にこのページが変更されました。</string>
+    <string name="page_text_stop_highlighting">ハイライトを解除</string>
+    <string name="page_text_on_this_page">"このページに %1$s"</string>
+    <string name="page_text_not_on_this_page">このページにはありません</string>
+    <string name="page_text_reading_text_2">テキストを読み取っています…</string>
+    <string name="page_text_reading_page_of">"ページを読み取っています（%1$s / %2$s）…"</string>
+    <string name="page_text_page">"%1$s — %2$s ページ"</string>
+    <string name="page_text_read_all_pages_again">すべてのページを再読み取り</string>
+    <string name="page_text_restore_original_text">元のテキストに戻す</string>
+    <string name="page_text_share_all_pages">すべてのページを共有</string>
+    <string name="page_text_all_pages">すべてのページ</string>
+    <string name="page_text_copy_all_pages">すべてのページをコピー</string>
+    <string name="page_text_extracted_text">抽出したテキスト</string>
+    <string name="page_text_copied">"%1$s をコピーしました"</string>
+    <!-- PageTextViewModel -->
+    <string name="page_text_original_text_restored">元のテキストに戻しました</string>
+    <string name="page_text_changes_saved_search_uses_your">変更を保存しました。検索には編集後のテキストが使われます。</string>
+    <string name="page_text_page_text_read_again">ページのテキストを再読み取りしました</string>
+    <!-- ToolKit -->
+    <string name="tool_kit_file_name">ファイル名</string>
+    <!-- ToolsScreen -->
+    <string name="tools_everything_runs_offline_on_this">すべてこのスマートフォン上でオフラインで動作します</string>
+    <string name="tools_utilities">ユーティリティ</string>
+    <!-- PdfCompressScreen -->
+    <string name="pdf_compress_recommended">おすすめ</string>
+    <string name="pdf_compress_compress_this_pdf_again_with">別の設定でこの PDF をもう一度圧縮</string>
+    <string name="pdf_compress_try_another_quality">別の画質を試す</string>
+    <string name="pdf_compress_after">圧縮後</string>
+    <string name="pdf_compress_before">圧縮前</string>
+    <string name="pdf_compress_quality">画質</string>
+    <string name="pdf_compress_this_quality_didn_t_make">この画質ではファイルが小さくなりませんでした。別の画質をお試しください。</string>
+    <string name="pdf_compress_compressed">圧縮しました</string>
+    <string name="pdf_compress_already_compact">すでに十分小さいサイズです</string>
+    <string name="pdf_compress_saved">%1$s%% 削減</string>
+    <string name="pdf_compress_compressing">圧縮しています…</string>
+    <string name="pdf_compress_compress">圧縮</string>
+    <string name="pdf_compress_pages_are_re_encoded_as">ページは画像として再エンコードされるため、PDF 内のテキストは選択や検索ができなくなります。</string>
+    <string name="pdf_compress_unlock">ロック解除</string>
+    <string name="pdf_compress_enter_the_password">パスワードを入力</string>
+    <string name="pdf_compress_compressed_pdf">圧縮した PDF</string>
+    <string name="pdf_compress_step_1_of_3_choose">ステップ 1/3 · ファイルを選択</string>
+    <string name="pdf_compress_shrink_a_pdf_for_email">メールやアップロードのサイズ制限に合わせて PDF を小さくします。</string>
+    <string name="pdf_compress_compress_pdf">PDF を圧縮</string>
+    <!-- PdfCompressViewModel -->
+    <string name="pdf_compress_compressing_pdf">PDF を圧縮しています…</string>
+    <string name="pdf_compress_choose_a_pdf_first">先に PDF を選択してください。</string>
+    <!-- PdfFilePicker -->
+    <string name="pdf_file_picker_days_ago">"%1$s 日前"</string>
+    <string name="pdf_file_picker_selected_position">"選択済み、%1$s 番目"</string>
+    <string name="pdf_file_picker_empty_scans_are_hidden">"空のスキャン %1$s 件を非表示にしています"</string>
+    <string name="pdf_file_picker_1_empty_scan_is_hidden">空のスキャン 1 件を非表示にしています</string>
+    <string name="pdf_file_picker_no_match">"「%2$s」に一致する %1$s はありません。"</string>
+    <string name="pdf_file_picker_sorted_by">"並べ替え: %1$s"</string>
+    <string name="pdf_file_picker_in_scanly">"Scanly 内 · %1$s"</string>
+    <string name="pdf_file_picker_search_your">"%1$s を検索"</string>
+    <string name="pdf_file_picker_your_scans_have_no_pages">スキャンにはまだページがありません。スマートフォンのストレージから PDF を選択してください。</string>
+    <string name="pdf_file_picker_no_scans_yet_pick_a">スキャンはまだありません。スマートフォンのストレージから PDF を選択するか、先にスキャンしてください。</string>
+    <string name="pdf_file_picker_pdfs">PDF</string>
+    <string name="pdf_file_picker_downloads_drive_and_other_apps">ダウンロード、ドライブ、その他のアプリ</string>
+    <string name="pdf_file_picker_phone_storage">スマートフォンのストレージ</string>
+    <!-- PdfImportScreen -->
+    <string name="pdf_import_add_pages">"%1$s ページを追加"</string>
+    <string name="pdf_import_add_1_page">1 ページを追加</string>
+    <string name="pdf_import_add_to_library">ライブラリに追加</string>
+    <string name="pdf_import_another_pdf">別の PDF</string>
+    <string name="pdf_import_crop_filter_sign_or_search">"%1$s · %2$s。他のスキャンと同じように、切り抜き、フィルタ、署名、検索ができます。"</string>
+    <string name="pdf_import_added_to_your_library">ライブラリに追加しました</string>
+    <string name="pdf_import_step_3_of_3_done">ステップ 3/3 · 完了</string>
+    <string name="pdf_import_adding_to_library">ライブラリに追加しています…</string>
+    <string name="pdf_import_look">見た目</string>
+    <string name="pdf_import_your_pdf_file_stays_as">元の PDF ファイルはそのまま残り、Scanly は独自のコピーを保持します</string>
+    <string name="pdf_import_tap_a_page_or_long">ページをタップするか、長押ししてドラッグで複数選択します。</string>
+    <string name="pdf_import_step_2_of_3_pages">ステップ 2/3 · ページと名前</string>
+    <string name="pdf_import_name_this_document">ドキュメントの名前を付ける</string>
+    <string name="pdf_import_document_name">ドキュメント名</string>
+    <string name="pdf_import_turn_a_pdf_into_a">PDF を、編集・署名・検索ができる Scanly のドキュメントに変換します。</string>
+    <string name="pdf_import_add_pdf_to_library">PDF をライブラリに追加</string>
+    <!-- PdfImportViewModel -->
+    <string name="pdf_import_give_the_document_a_name">ドキュメントに名前を付けてください。</string>
+    <string name="pdf_import_imported_pdf">インポートした PDF</string>
+    <!-- PdfMergeScreen -->
+    <string name="pdf_merge_1_file">1 個のファイル</string>
+    <string name="pdf_merge_your_original_files_are_unchanged">元のファイルは変更されません</string>
+    <string name="pdf_merge_combined_into_one_pdf">"%1$s を 1 つの PDF に結合しました"</string>
+    <string name="pdf_merge_merged">結合済み</string>
+    <string name="pdf_merge_kept_unchanged">変更なしで保持</string>
+    <string name="pdf_merge_original_files">元のファイル</string>
+    <string name="pdf_merge_size">サイズ</string>
+    <string name="pdf_merge_remove">"%1$s を削除"</string>
+    <string name="pdf_merge_move_down">"%1$s を下に移動"</string>
+    <string name="pdf_merge_move_up">"%1$s を上に移動"</string>
+    <string name="pdf_merge_pdf_from_scanly">Scanly の PDF</string>
+    <string name="pdf_merge_pdf_from_phone">スマートフォンの PDF</string>
+    <string name="pdf_merge_page_count_unknown">ページ数不明</string>
+    <string name="pdf_merge_merge_pdfs">PDF を結合</string>
+    <string name="pdf_merge_merge_files">"%1$s 個のファイルを結合"</string>
+    <string name="pdf_merge_add_more">さらに追加</string>
+    <string name="pdf_merge_merge_order">"結合する順番 · %1$s"</string>
+    <string name="pdf_merge_files_are_joined_from_top">ファイルは上から順に結合されます。</string>
+    <string name="pdf_merge_order_name">順番と名前</string>
+    <string name="pdf_merge_step_2_of_3_order">ステップ 2/3 · 順番と名前</string>
+    <string name="pdf_merge_in_total">"合計 %1$s"</string>
+    <string name="pdf_merge_from_phone">"スマートフォンから: %1$s"</string>
+    <string name="pdf_merge_next">次へ</string>
+    <string name="pdf_merge_next_files">"次へ · %1$s 個のファイル"</string>
+    <string name="pdf_merge_pick_at_least_2_files">2 個以上のファイルを選択してください</string>
+    <string name="pdf_merge_step_1_of_3_pick">ステップ 1/3 · ファイルを選択</string>
+    <string name="pdf_merge_pick_files_in_the_order">結合したい順番でファイルを選択してください。</string>
+    <string name="pdf_merge_merged_pdf">結合した PDF</string>
+    <string name="pdf_merge_merging">結合しています…</string>
+    <!-- PdfMergeViewModel -->
+    <string name="pdf_merge_add_at_least_two_pdfs">結合するには PDF を 2 つ以上追加してください。</string>
+    <!-- PdfPasswordScreen -->
+    <string name="pdf_password_file">ファイル</string>
+    <string name="pdf_password_allowed">許可</string>
+    <string name="pdf_password_restricted">制限</string>
+    <string name="pdf_password_editing">編集</string>
+    <string name="pdf_password_no_password">パスワードなし</string>
+    <string name="pdf_password_aes_256_password">AES-256 パスワード</string>
+    <string name="pdf_password_protection">保護</string>
+    <string name="pdf_password_a_short_phrase_you_ll">ランダムな文字列より、覚えやすい短いフレーズがおすすめです。</string>
+    <string name="pdf_password_doesn_t_match_yet">まだ一致していません</string>
+    <string name="pdf_password_passwords_match">パスワードが一致しています</string>
+    <string name="pdf_password_remove_password">パスワードを解除</string>
+    <string name="pdf_password_the_unlocked_copy_opens_for">ロックを解除したコピーは、持っている人なら誰でも開けます。Scanly で解除できるのは、すでにわかっているパスワードのみです。</string>
+    <string name="pdf_password_bank_and_portal_pdfs_often">銀行やポータルサイトの PDF では、生年月日やお客様番号がパスワードになっていることがよくあります。</string>
+    <string name="pdf_password_password_for_this_pdf">この PDF のパスワード</string>
+    <string name="pdf_password_current_password">現在のパスワード</string>
+    <string name="pdf_password_locked_pdf">ロックされた PDF</string>
+    <string name="pdf_password_lock_pdf">PDF をロック</string>
+    <string name="pdf_password_scanly_can_t_recover_this">Scanly ではこのパスワードを復元できません。忘れてしまうと PDF を開けなくなります。</string>
+    <string name="pdf_password_others_can_open_and_print">他の人は開いたり印刷したりできますが、編集やテキストのコピーはできません</string>
+    <string name="pdf_password_restrict_editing">編集を制限</string>
+    <string name="pdf_password_type_it_again">もう一度入力</string>
+    <string name="pdf_password_at_least_characters">"%1$s 文字以上"</string>
+    <string name="pdf_password_new_password">新しいパスワード</string>
+    <string name="pdf_password_add_password">パスワードを追加</string>
+    <string name="pdf_password_checking_the_file">ファイルを確認しています…</string>
+    <string name="pdf_password_unlocked_pdf">ロックを解除した PDF</string>
+    <string name="pdf_password_protected_pdf">保護された PDF</string>
+    <string name="pdf_password_it_now_opens_without_a">パスワードなしで開けるようになりました。</string>
+    <string name="pdf_password_anyone_opening_it_will_need">開くにはパスワードが必要です。</string>
+    <string name="pdf_password_password_removed">パスワードを解除しました</string>
+    <string name="pdf_password_pdf_locked">PDF をロックしました</string>
+    <string name="pdf_password_unlocking">ロックを解除しています…</string>
+    <string name="pdf_password_locking">ロックしています…</string>
+    <string name="pdf_password_lock_a_pdf_or_remove">PDF をロックしたり、わかっているパスワードを解除したりできます。</string>
+    <!-- PdfPasswordViewModel -->
+    <string name="pdf_password_unlocking_pdf">PDF のロックを解除しています…</string>
+    <string name="pdf_password_enter_the_current_password">現在のパスワードを入力してください。</string>
+    <string name="pdf_password_locking_pdf">PDF をロックしています…</string>
+    <string name="pdf_password_use_to_characters_for_the">"パスワードは %1$s～%2$s 文字で入力してください。"</string>
+    <!-- PdfReaderMenu -->
+    <string name="pdf_reader_menu_open_another_pdf">別の PDF を開く</string>
+    <string name="pdf_reader_menu_all_pages">すべてのページ</string>
+    <!-- PdfReaderPresentation -->
+    <string name="pdf_reader_presentation_0_of_0">0 / 0</string>
+    <string name="pdf_reader_presentation_paged">ページ単位</string>
+    <string name="pdf_reader_presentation_continuous">連続</string>
+    <!-- PdfReaderScreen -->
+    <string name="pdf_reader_tap_a_page_to_jump">ページをタップして移動</string>
+    <string name="pdf_reader_loading_page">%1$s ページ目を読み込んでいます…</string>
+    <string name="pdf_reader_loading_page_2">ページを読み込んでいます…</string>
+    <string name="pdf_reader_choose_another_pdf">別の PDF を選択</string>
+    <string name="pdf_reader_password">パスワード</string>
+    <string name="pdf_reader_this_pdf_is_password_protected">この PDF はパスワードで保護されています。%1$s を表示するにはパスワードを入力してください。</string>
+    <string name="pdf_reader_unlock_pdf">PDF のロックを解除</string>
+    <string name="pdf_reader_choose_a_file">ファイルを選択</string>
+    <string name="pdf_reader_open_any_pdf_from_scanly">Scanly やスマートフォン内の PDF を開けます。</string>
+    <string name="pdf_reader_read_a_pdf">PDF を読む</string>
+    <!-- PdfSignScreen -->
+    <string name="pdf_sign_1_mark">1 個のマーク</string>
+    <string name="pdf_sign_the_signed_copy_is_saved">署名したコピーはパスワードなしで保存されます。</string>
+    <string name="pdf_sign_this_pdf_is_locked">この PDF はロックされています</string>
+    <string name="pdf_sign_back_to_the_editor">エディタに戻る</string>
+    <string name="pdf_sign_edit_signatures">署名を編集</string>
+    <string name="pdf_sign_signed_pdf">署名済みの PDF</string>
+    <string name="pdf_sign_saved_as">保存先のファイル名</string>
+    <string name="pdf_sign_marks_placed">配置したマーク</string>
+    <string name="pdf_sign_pages_signed">署名したページ</string>
+    <string name="pdf_sign_signed">署名済み</string>
+    <string name="pdf_sign_placing_signatures_on_each_page">"各ページに署名を入れる…"</string>
+    <string name="pdf_sign_signing_your_pdf">"PDF に署名する"</string>
+    <string name="pdf_sign_pdf_jpg_or_png_from">"ダウンロード、ドライブ、その他のアプリからの PDF、JPG、または PNG"</string>
+    <string name="pdf_sign_step_1_of_3_choose">"ステップ 1/3 · を選択します"</string>
+    <string name="pdf_sign_choose_a_pdf_or_an">"署名する PDF または画像を選択します"</string>
+    <string name="pdf_sign_sign_pdf">"PDFに署名する"</string>
+    <!-- PdfSignViewModel -->
+    <string name="pdf_sign_signing">"…に署名する"</string>
+    <string name="pdf_sign_place_a_signature_first">"最初に署名を入れます。"</string>
+    <string name="pdf_sign_open_a_pdf_first">"まず PDF を開きます。"</string>
+    <!-- PdfToImagesPresentation -->
+    <string name="pdf_to_images_presentation_page">"ページ %1$s · %2$s"</string>
+    <string name="pdf_to_images_presentation_share_all">"%1$sをすべて共有する"</string>
+    <string name="pdf_to_images_presentation_share_image">"画像を共有する"</string>
+    <string name="pdf_to_images_presentation_in_all">"全部で%1$s"</string>
+    <string name="pdf_to_images_presentation_of_pages">"%1$s/%2$sページ"</string>
+    <string name="pdf_to_images_presentation_all_pages">"%1$sのすべてのページ"</string>
+    <string name="pdf_to_images_presentation_export">"%1$sをエクスポートする"</string>
+    <string name="pdf_to_images_presentation_choose_pages_to_export">"エクスポートするページの選択"</string>
+    <string name="pdf_to_images_presentation_1_image">"画像1枚"</string>
+    <string name="pdf_to_images_presentation_1f_gb" formatted="false">"%.1f GB"</string>
+    <string name="pdf_to_images_presentation_1f_mb" formatted="false">"%.1f MB"</string>
+    <string name="pdf_to_images_presentation_kb">"%1$s KB"</string>
+    <string name="pdf_to_images_presentation_0_kb">"0 KB"</string>
+    <!-- PdfToImagesScreen -->
+    <string name="pdf_to_images_of_selected">"%1$s または %2$s が選択されました"</string>
+    <string name="pdf_to_images_tap_images_or_long_press">"一部の画像のみを共有するには、画像をタップするか、長押ししてドラッグします。"</string>
+    <string name="pdf_to_images_open_gallery">"ギャラリーを開く"</string>
+    <string name="pdf_to_images_pick_a_different_file">"別のファイルを選択します"</string>
+    <string name="pdf_to_images_png_or_print_size">"PNG または印刷サイズ"</string>
+    <string name="pdf_to_images_export_again">"再度エクスポートする"</string>
+    <string name="pdf_to_images_saving_images">"画像の保存…"</string>
+    <string name="pdf_to_images_each">"～%1$s各"</string>
+    <string name="pdf_to_images_resolution">"解決策"</string>
+    <string name="pdf_to_images_format">"フォーマット"</string>
+    <string name="pdf_to_images_deselect_all">"すべての選択を解除します"</string>
+    <string name="pdf_to_images_this_pdf_is_password_protected">"この PDF はパスワードで保護されています。ページを表示するには、パスワードを入力してください。"</string>
+    <string name="pdf_to_images_images_show_up_in_your">"画像はすぐにギャラリーに表示されます"</string>
+    <string name="pdf_to_images_pdf_to_jpg">"PDFからJPG"</string>
+    <string name="pdf_to_images_step_2_of_3_pages">"ステップ 2/3 · ページとフォーマット"</string>
+    <string name="pdf_to_images_no_gallery_app_found_the">"ギャラリー アプリが見つかりません。画像はPictures/Scanlyにあります。"</string>
+    <string name="pdf_to_images_turn_pages_into_images_for">"ページをチャット、スライド、ギャラリー用の画像に変換します。"</string>
+    <!-- PdfToolDone -->
+    <string name="pdf_tool_done_open_pdf">"PDFを開く"</string>
+    <string name="pdf_tool_done_open_the_finished_pdf">"完成したPDFを開く"</string>
+    <string name="pdf_tool_done_your_original_file_is_unchanged">"元のファイルは変更されていません"</string>
+    <!-- PdfToolPresentation -->
+    <string name="pdf_tool_presentation_files_merge_in_this_order">"ファイルはこの順序でマージされます。最初の PDF がドキュメントを開始します。"</string>
+    <string name="pdf_tool_presentation_add_at_least_one_more">"少なくとも 1 つ以上の PDF を追加して結合します。"</string>
+    <string name="pdf_tool_presentation_opacity">"不透明度 %1$s%%"</string>
+    <string name="pdf_tool_presentation_one_large_stamp_sized_to">"ページを占めるサイズの大きなスタンプ 1 つ。"</string>
+    <string name="pdf_tool_presentation_repeats_across_the_full_page">"端を含むページ全体にわたって繰り返します。"</string>
+    <string name="pdf_tool_presentation_protect_pdf">"PDFを守る"</string>
+    <string name="pdf_tool_presentation_saved">"%1$s → %2$s · %3$s%% を保存しました"</string>
+    <string name="pdf_tool_presentation_unlocked">"ロック解除"</string>
+    <string name="pdf_tool_presentation_protected">"保護されています"</string>
+    <string name="pdf_tool_presentation_pdfs">"%1$s PDF ファイル"</string>
+    <string name="pdf_tool_presentation_1_pdf">"1 PDF"</string>
+    <string name="pdf_tool_presentation_no_files">"ファイルがありません"</string>
+    <!-- PdfToolShared -->
+    <string name="pdf_tool_shared_scanly_pdf">"Scanly PDF"</string>
+    <!-- PdfToolViewModels -->
+    <string name="pdf_tool_view_models_saving">"保存…"</string>
+    <!-- PdfWatermarkScreen -->
+    <string name="pdf_watermark_the_page">"ページ"</string>
+    <string name="pdf_watermark_first_page_only">"最初のページのみ"</string>
+    <string name="pdf_watermark_apply_to">"申請先"</string>
+    <string name="pdf_watermark_colour">"色"</string>
+    <string name="pdf_watermark_opacity">"不透明度"</string>
+    <string name="pdf_watermark_large">"大"</string>
+    <string name="pdf_watermark_medium">"ミディアム"</string>
+    <string name="pdf_watermark_small">"小"</string>
+    <string name="pdf_watermark_horizontal">"水平方向"</string>
+    <string name="pdf_watermark_diagonal">"斜め"</string>
+    <string name="pdf_watermark_single">"シングル"</string>
+    <string name="pdf_watermark_tiled">"タイル張り"</string>
+    <string name="pdf_watermark_style">"スタイル"</string>
+    <string name="pdf_watermark_stamps">"スタンプ「%1$s」"</string>
+    <string name="pdf_watermark_add_date">"日付を追加する"</string>
+    <string name="pdf_watermark_presets">"プリセット"</string>
+    <string name="pdf_watermark_the_watermarked_copy_is_saved">"透かし入りのコピーはパスワードなしで保存されます。パスワードツールを使用して再度ロックできます。"</string>
+    <string name="pdf_watermark_live_preview_of_the_saved">"保存されたファイルのライブプレビュー"</string>
+    <string name="pdf_watermark_page_1">"ページ 1"</string>
+    <string name="pdf_watermark_preview_of_page_1_with">"透かしを入れたページ 1 のプレビュー"</string>
+    <string name="pdf_watermark_apply_watermark">"ウォーターマークを適用する"</string>
+    <string name="pdf_watermark_apply_to_pages">"%1$sページに適用"</string>
+    <string name="pdf_watermark_apply_to_page">"ページへお申込みください"</string>
+    <string name="pdf_watermark_apply_to_first_page">"最初のページに適用"</string>
+    <string name="pdf_watermark_unlock_the_pdf_first">"最初にPDFのロックを解除します"</string>
+    <string name="pdf_watermark_watermark">"透かし"</string>
+    <string name="pdf_watermark_edit_stamp">"スタンプの編集"</string>
+    <string name="pdf_watermark_watermarked_pdf">"透かし入り PDF"</string>
+    <string name="pdf_watermark_kept_unstamped">"保管、スタンプなし"</string>
+    <string name="pdf_watermark_stamp">"スタンプ"</string>
+    <string name="pdf_watermark_on_every_page_tap_the">"すべてのページに。ページをタップしてご確認ください。"</string>
+    <string name="pdf_watermark_on_all_pages_tap_the">"%1$s のすべてのページ。ページをタップしてご確認ください。"</string>
+    <string name="pdf_watermark_on_both_pages_tap_the">"両方のページにあります。ページをタップしてご確認ください。"</string>
+    <string name="pdf_watermark_on_the_page_tap_it">"ページ上。タップして確認してください。"</string>
+    <string name="pdf_watermark_on_the_first_page_tap">"最初のページ。ページをタップしてご確認ください。"</string>
+    <string name="pdf_watermark_watermark_added">"ウォーターマーク追加"</string>
+    <string name="pdf_watermark_stamping_every_page">"各ページにスタンプを押す"</string>
+    <string name="pdf_watermark_stamping">"%1$sのスタンピング"</string>
+    <string name="pdf_watermark_stamping_the_first_page">"最初のページにスタンプを押す"</string>
+    <string name="pdf_watermark_adding_watermark">"ウォーターマークの追加…"</string>
+    <string name="pdf_watermark_stamp_text_like_confidential_or">"機密または「KYC 使用のみ」などのテキストをスタンプします。"</string>
+    <!-- PdfWatermarkViewModel -->
+    <string name="pdf_watermark_kyc_copy">"KYCコピー"</string>
+    <string name="pdf_watermark_enter_watermark_text">"透かしテキストを入力します。"</string>
+    <!-- QrActions -->
+    <string name="qr_actions_qr_text">"QR テキスト"</string>
+    <string name="qr_actions_no_app_can_search_the">"ウェブを検索できるアプリはない"</string>
+    <string name="qr_actions_no_email_app_is_set">"この電話には電子メール アプリが設定されていません"</string>
+    <string name="qr_actions_no_phone_app_can_open">"この番号を開くことができる電話アプリはありません"</string>
+    <string name="qr_actions_no_contacts_app_can_save">"これを保存できる連絡先アプリはありません"</string>
+    <string name="qr_actions_pick_in_wi_fi_settings">"Wi-Fi設定で「%1$s」を選択します"</string>
+    <string name="qr_actions_password_copied_pick_the_network">"パスワードをコピーしました - ネットワークを選択します"</string>
+    <string name="qr_actions_wi_fi_settings_can_t">"Wi-Fi設定を開けません"</string>
+    <string name="qr_actions_wi_fi_password">"Wi-Fiパスワード"</string>
+    <string name="qr_actions_wi_fi_settings_can_t_2">"Wi-Fi 設定ではこのネットワークを追加できません"</string>
+    <string name="qr_actions_no_upi_app_can_open">"このコードを開くことができる UPI アプリはありません"</string>
+    <string name="qr_actions_pay_with">"支払い方法"</string>
+    <string name="qr_actions_no_app_can_open_this">"このリンクを開けるアプリはありません"</string>
+    <string name="qr_actions_not_a_web_link">"ウェブリンクではありません"</string>
+    <string name="qr_actions_nothing_can_receive_this_text">"このテキストを受信できるものはありません"</string>
+    <string name="qr_actions_share_qr_code">"QR コードを共有する"</string>
+    <string name="qr_actions_copied_to_clipboard">"クリップボードにコピーされました"</string>
+    <!-- QrCreateScreen -->
+    <string name="qr_create_full_name">"フルネーム"</string>
+    <string name="qr_create_name">"名前"</string>
+    <string name="qr_create_leave_the_amount_empty_so">"顧客が借りている金額を入力できるように、金額は空のままにしておきます。"</string>
+    <string name="qr_create_enter_an_amount_above_zero">"ゼロより大きい金額を入力してください"</string>
+    <string name="qr_create_any">"₹ どれでも"</string>
+    <string name="qr_create_amount_optional">"金額·はオプション"</string>
+    <string name="qr_create_shop_name">"店名"</string>
+    <string name="qr_create_payee_name">"受取人名"</string>
+    <string name="qr_create_name_bank">"名前@銀行"</string>
+    <string name="qr_create_upi_id">"UPI ID"</string>
+    <string name="qr_create_security">"セキュリティ"</string>
+    <string name="qr_create_network_password">"ネットワークパスワード"</string>
+    <string name="qr_create_network_name">"ネットワーク名"</string>
+    <string name="qr_create_characters">"%1$s / %2$s 文字"</string>
+    <string name="qr_create_anything_up_to_characters">"%1$s 文字まで"</string>
+    <string name="qr_create_web_address">"ウェブアドレス"</string>
+    <string name="qr_create_qr_code_preview">"QR コードプレビュー"</string>
+    <string name="qr_create_saved_to_qr_history_png">"QR 履歴に保存されました · PNG、1024 ピクセル"</string>
+    <string name="qr_create_save_image">"画像の保存"</string>
+    <string name="qr_create_only_dark_colours_so_every">"暗い色のみなので、どのカメラでもコードを読み取ることができます。"</string>
+    <string name="qr_create_shown_under_the_code">"コードの下に表示"</string>
+    <string name="qr_create_caption_under_the_code_optional">"コード·の下のキャプションはオプションです"</string>
+    <string name="qr_create_create_qr">"QRの作成"</string>
+    <!-- QrHistoryScreen -->
+    <string name="qr_history_created">"作成済み"</string>
+    <string name="qr_history_scanned">"スキャン済み"</string>
+    <string name="qr_history_clear_history">"履歴をクリアする"</string>
+    <string name="qr_history_every_scanned_and_created_code">"スキャンおよび作成されたすべてのコードはこの電話から削除されます。これを元に戻すことはできません。"</string>
+    <string name="qr_history_clear_qr_history">"QRの履歴をクリアしますか?"</string>
+    <string name="qr_history_clear_history_2">"履歴をクリア…"</string>
+    <string name="qr_history_history_stays_on_this_phone">"この電話には履歴が残ります。"</string>
+    <string name="qr_history_try_another_search_or_filter">"別の検索またはフィルタを試してください。"</string>
+    <string name="qr_history_no_matches">"一致しない"</string>
+    <string name="qr_history_scanned_and_created_codes_are">"スキャンして作成したコードはここに保管されます。"</string>
+    <string name="qr_history_no_codes_yet">"コードはまだありません"</string>
+    <string name="qr_history_search_links_networks_names">"リンク、ネットワーク、名前を検索する"</string>
+    <string name="qr_history_qr_history">"QRの歴史"</string>
+    <!-- QrResultScreen -->
+    <string name="qr_result_show_raw_content">"生のコンテンツを表示する"</string>
+    <string name="qr_result_hide_raw_content">"生のコンテンツを非表示にする"</string>
+    <string name="qr_result_raw_content">"生のコンテンツ"</string>
+    <string name="qr_result_organisation">"組織"</string>
+    <string name="qr_result_wi_fi_settings_can_t">"Wi-Fi 設定では WEP ネットワークを追加できないため、パスワードがコピーされて設定が開きます。"</string>
+    <string name="qr_result_not_in_the_code">"コードに含まれていない"</string>
+    <string name="qr_result_network">"ネットワーク"</string>
+    <string name="qr_result_scanly_doesn_t_make_payments">"Scanly は支払いを行いません。支払う前に UPI アプリで受取人名を確認してください。"</string>
+    <string name="qr_result_not_set_you_ll_enter">"未設定。 UPI アプリに入力します。"</string>
+    <string name="qr_result_amount">"金額"</string>
+    <string name="qr_result_payee">"受取人"</string>
+    <string name="qr_result_this_link_isn_t_encrypted">"このリンクは暗号化されていません (http)。開く前に、ドメインが期待するものであることを確認してください。"</string>
+    <string name="qr_result_check_the_domain_is_the">"開く前に、ドメインが期待どおりのものであることを確認します。"</string>
+    <string name="qr_result_full_address">"完全な住所"</string>
+    <string name="qr_result_number">"数字"</string>
+    <string name="qr_result_subject">"件名"</string>
+    <string name="qr_result_address">"住所"</string>
+    <string name="qr_result_search_the_web">"ウェブを検索する"</string>
+    <string name="qr_result_copy_number">"コピー番号"</string>
+    <string name="qr_result_email_address">"メールアドレス"</string>
+    <string name="qr_result_copy_address">"アドレスをコピーする"</string>
+    <string name="qr_result_call">"電話をかける"</string>
+    <string name="qr_result_copy_network_name">"ネットワーク名のコピー"</string>
+    <string name="qr_result_copy_password">"パスワードをコピーする"</string>
+    <string name="qr_result_copy_upi_id">"UPI ID をコピーする"</string>
+    <string name="qr_result_copy_link">"リンクをコピーする"</string>
+    <string name="qr_result_delete_from_history">"履歴から削除"</string>
+    <string name="qr_result_saved_to_history">" · が履歴に保存されました"</string>
+    <!-- QrScanScreen -->
+    <string name="qr_scan_captured_qr_code">"キャプチャされた QR コード"</string>
+    <string name="qr_scan_history">"歴史"</string>
+    <string name="qr_scan_from_photo">"写真より"</string>
+    <string name="qr_scan_scan_again">"再度スキャンします"</string>
+    <string name="qr_scan_qr_code">"QRコード"</string>
+    <string name="qr_scan_details">"詳細"</string>
+    <string name="qr_scan_allow_camera">"カメラを許可する"</string>
+    <string name="qr_scan_open_settings">"設定を開く"</string>
+    <string name="qr_scan_the_camera_is_used_only">"カメラはこの画面が開いている間のみ使用されます。 「写真から」はそれがなくても機能します。"</string>
+    <string name="qr_scan_open_settings_tap_permissions_and">"[設定] を開き、[権限] をタップして、Scanly のカメラをオンにします。"</string>
+    <string name="qr_scan_allow_camera_to_scan">"カメラのスキャンを許可する"</string>
+    <string name="qr_scan_camera_permission_is_blocked">"カメラの許可がブロックされています"</string>
+    <string name="qr_scan_torch_on_off">"トーチのオン/オフ"</string>
+    <string name="qr_scan_scan_qr_barcode">"QR とバーコードをスキャンします"</string>
+    <string name="qr_scan_point_at_a_qr_code">"QR コードまたはバーコードをポイントします"</string>
+    <string name="qr_scan_code_found_hold_steady">"コードが見つかりました · は安定したままです"</string>
+    <string name="qr_scan_reading_photo">"写真…を読む"</string>
+    <string name="qr_scan_the_camera_isn_t_available">"カメラは現在使用できません。代わりに「写真から」をお試しください。"</string>
+    <!-- QrToolPresentation -->
+    <string name="qr_tool_presentation_h_ago">"%1$s 1時間前"</string>
+    <string name="qr_tool_presentation_min_ago">"%1$s 分前"</string>
+    <string name="qr_tool_presentation_just_now">"たった今"</string>
+    <string name="qr_tool_presentation_some_text">"いくつかのテキスト"</string>
+    <string name="qr_tool_presentation_a_phone_number">"電話番号"</string>
+    <string name="qr_tool_presentation_an_email_address">"メールアドレス"</string>
+    <string name="qr_tool_presentation_a_contact">"連絡先"</string>
+    <string name="qr_tool_presentation_a_wi_fi_network">"Wi-Fiネットワーク"</string>
+    <string name="qr_tool_presentation_a_upi_payment">"UPI支払い"</string>
+    <string name="qr_tool_presentation_a_link">"リンク"</string>
+    <string name="qr_tool_presentation_found">"見つかった "</string>
+    <string name="qr_tool_presentation_generating_preview">"プレビュー…の生成"</string>
+    <string name="qr_tool_presentation_preview_appears_as_you_type">"入力するとプレビューが表示されます"</string>
+    <string name="qr_tool_presentation_copy_to_the_clipboard">"クリップボードにコピーする"</string>
+    <string name="qr_tool_presentation_open_in_a_browser_or">"ブラウザで開くかコピーする"</string>
+    <!-- QrToolViewModel -->
+    <string name="qr_tool_qr_history_cleared">"QR 履歴がクリアされました"</string>
+    <string name="qr_tool_add_the_details_first">"最初に詳細を追加します"</string>
+    <string name="qr_tool_no_qr_code_found_in">"その写真にはQRコードは見つかりませんでした"</string>
+    <!-- ImageTextScreen -->
+    <string name="image_text_photos_are_saved_as_a">"写真は新しいドキュメントとして保存されるため、後でテキストを検索できます。"</string>
+    <string name="image_text_your_scans_have_no_pages">"スキャンにはまだページがありません。写真を選択してテキストを読んでください。"</string>
+    <string name="image_text_no_scans_yet_pick_photos">"まだスキャンがありません。写真を選択してテキストを読んでください。"</string>
+    <string name="image_text_1_scan">"1スキャン"</string>
+    <string name="image_text_up_to_from_your_gallery">"ギャラリーまたはファイルから最大 %1$s"</string>
+    <string name="image_text_copy_text_from_photos_or">"写真またはスキャンからテキストをコピーします。テキストはこの電話で読まれます。"</string>
+    <string name="image_text_image_to_text">"画像をテキストに変換"</string>
+    <!-- AppUpdateDialog -->
+    <string name="app_update_published">"%1$s を公開"</string>
+    <string name="app_update_current">"現在"</string>
+    <string name="app_update_update">"アップデート"</string>
+    <string name="app_update_what_s_new">"新機能"</string>
+    <!-- AppUpdateViewModel -->
+    <string name="app_update_scanly_is_up_to_date">"Scanly は最新です。あなたは%1$sを使用しています。"</string>
+    <string name="app_update_could_not_check_for_updates">"%1$s のアップデートをチェックできませんでした。"</string>
+    <!-- FlexibleUpdateSnackbar -->
+    <string name="flexible_update_snackbar_restart">"再起動"</string>
+    <string name="flexible_update_snackbar_update_downloaded_restart_scanly_to">"アップデートをダウンロードします。 Scanly を再起動してインストールを完了します。"</string>
+    <!-- ReleaseMarkdown -->
+    <string name="release_markdown_no_release_notes_were_provided">"このバージョンにはリリース ノートが提供されていません。"</string>
+    <!-- ScanlyNavHost -->
+    <string name="scanly_nav_host_up_to_images">"最大 %1$s 画像"</string>
+    <string name="scanly_nav_host_import_from_gallery">"ギャラリーからインポート"</string>
+    <string name="scanly_nav_host_capture_pages_now">"今すぐページをキャプチャします"</string>
+    <string name="scanly_nav_host_scan_with_camera">"カメラでスキャン"</string>
+    <string name="scanly_nav_host_add_a_document">"ドキュメントを追加する"</string>
+    <!-- pdf_page_orientation -->
+    <string name="pdf_page_orientation_portrait">"縦向き"</string>
+    <string name="pdf_page_orientation_landscape">"横向き"</string>
+    <!-- pdf_page_size -->
+    <string name="pdf_page_size_auto_fit">"自動フィット"</string>
+    <string name="pdf_page_size_a3">"A3"</string>
+    <string name="pdf_page_size_a4">"A4"</string>
+    <string name="pdf_page_size_a5">"A5"</string>
+    <string name="pdf_page_size_b4">"B4"</string>
+    <string name="pdf_page_size_b5">"B5"</string>
+    <string name="pdf_page_size_letter">"レター"</string>
+    <string name="pdf_page_size_tabloid">"タブロイド紙"</string>
+    <string name="pdf_page_size_executive">"エグゼクティブ"</string>
+    <string name="pdf_page_size_postcard">"ポストカード"</string>
+    <string name="pdf_page_size_american_foolscap">"アメリカン・フールスキャップ"</string>
+    <string name="pdf_page_size_european_foolscap">"ヨーロッパのフールスキャップ"</string>
+    <!-- pdf_page_margin -->
+    <string name="pdf_page_margin_no_margin">"余白なし"</string>
+    <string name="pdf_page_margin_big">"ビッグ"</string>
+    <!-- pdf_page_number -->
+    <string name="pdf_page_number_center">"センター"</string>
+    <!-- pdf_image_format -->
+    <string name="pdf_image_format_smaller_files_best_for_photos">"ファイルが小さく、写真や共有に最適"</string>
+    <string name="pdf_image_format_crisper_text_files_about_3">"鮮明なテキスト、約 3× のファイルサイズ"</string>
+    <!-- pdf_image_resolution -->
+    <string name="pdf_image_resolution_for_sharing">"共有用"</string>
+    <string name="pdf_image_resolution_1240_px_wide_sharp_on">"携帯電話と WhatsApp で幅 1240 ピクセルの · シャープ"</string>
+    <string name="pdf_image_resolution_for_printing">"印刷用"</string>
+    <string name="pdf_image_resolution_2480_px_wide_300_dpi">"2480 ピクセル幅 · 300 dpi (A4)"</string>
+    <!-- pdf_compress_quality -->
+    <string name="pdf_compress_quality_high_quality">"高品質"</string>
+    <string name="pdf_compress_quality_best_clarity_less_compression">"最高の明瞭さ · 低圧縮"</string>
+    <string name="pdf_compress_quality_balanced">"バランスのとれた"</string>
+    <string name="pdf_compress_quality_good_balance_of_size_and">"サイズと透明度のバランスが良い"</string>
+    <string name="pdf_compress_quality_smallest">"最小"</string>
+    <string name="pdf_compress_quality_maximum_compression_softer_detail">"最大圧縮率 · よりソフトなディテール"</string>
+    <!-- watermark_color -->
+    <string name="watermark_color_grey">"グレー"</string>
+    <string name="watermark_color_red">"レッド"</string>
+    <string name="watermark_color_blue">"ブルー"</string>
+    <string name="watermark_color_teal">"ティール"</string>
+    <!-- signature_kind -->
+    <string name="signature_kind_signature">"署名"</string>
+    <!-- sign_ink -->
+    <string name="sign_ink_navy">"濃紺"</string>
+    <string name="sign_ink_black">"ブラック"</string>
+    <!-- date_filter -->
+    <string name="date_filter_any_time">"いつでも"</string>
+    <string name="date_filter_last_7_days">"過去7日間"</string>
+    <string name="date_filter_last_30_days">"過去 30 日間"</string>
+    <string name="date_filter_this_year">"今年"</string>
+    <string name="date_filter_custom_range">"カスタム範囲"</string>
+    <!-- search_sort -->
+    <string name="search_sort_best_match">"ベストマッチ"</string>
+    <string name="search_sort_newest">"最新"</string>
+    <string name="search_sort_oldest">"最古"</string>
+    <string name="search_sort_name_a_z">"名前A–Z"</string>
+    <!-- search_scope -->
+    <string name="search_scope_everywhere">"どこでも"</string>
+    <string name="search_scope_names">"名前"</string>
+    <string name="search_scope_text_in_pages">"ページ内のテキスト"</string>
+    <!-- app_update_channel -->
+    <string name="app_update_channel_github">"GitHub"</string>
+    <string name="app_update_channel_google_play">"Google Play"</string>
+    <!-- document_kind -->
+    <string name="document_kind_invoice">"請求書"</string>
+    <string name="document_kind_receipt">"領収書"</string>
+    <string name="document_kind_contract">"契約"</string>
+    <string name="document_kind_statement">"銀行取引明細書"</string>
+    <string name="document_kind_certificate">"証明書"</string>
+    <string name="document_kind_id_document">"身分証明書"</string>
+    <string name="document_kind_form">"フォーム"</string>
+    <string name="document_kind_r_sum">"履歴書"</string>
+    <!-- document_corner_model -->
+    <string name="document_corner_model_lite">"ライト"</string>
+    <string name="document_corner_model_standard">"スタンダード"</string>
+    <string name="document_corner_model_high">"ハイ"</string>
+    <string name="document_corner_model_accurate">"正確"</string>
+    <!-- document_title_format -->
+    <string name="document_title_format_scan_with_date_and_time">"日付と時刻を付けてスキャンする"</string>
+    <string name="document_title_format_scan_date_time">"スキャン · 日時"</string>
+    <string name="document_title_format_document_with_date_and_time">"日付と時刻が記載された文書"</string>
+    <string name="document_title_format_document_date_time">"ドキュメント · 日時"</string>
+    <string name="document_title_format_scan_with_date">"日付付きスキャン"</string>
+    <string name="document_title_format_scan_date">"スキャン · 日付"</string>
+    <string name="document_title_format_scan_with_iso_date">"ISO 日付を使用してスキャン"</string>
+    <string name="document_title_format_scan_yyyy_mm_dd">"スキャン · YYYY-MM-DD"</string>
+    <!-- group_title_format -->
+    <string name="group_title_format_folder_with_date_and_time">"日付と時刻が入ったフォルダー"</string>
+    <string name="group_title_format_folder_date_time">"フォルダ · 日時"</string>
+    <string name="group_title_format_new_folder_with_date_and">"日付と時刻を含む新しいフォルダー"</string>
+    <string name="group_title_format_new_folder_date_time">"新しいフォルダ · 日時"</string>
+    <string name="group_title_format_folder_with_date">"日付入りフォルダー"</string>
+    <string name="group_title_format_folder_date">"フォルダ · 日付"</string>
+    <string name="group_title_format_folder_with_iso_date">"ISO 日付のフォルダー"</string>
+    <string name="group_title_format_folder_yyyy_mm_dd">"フォルダ · YYYY-MM-DD"</string>
+    <!-- wifi_security -->
+    <string name="wifi_security_wpa_wpa2">"WPA/WPA2"</string>
+    <string name="wifi_security_wep">"WEP"</string>
+    <string name="wifi_security_open">"暗号化なし"</string>
+    <!-- qr_create_type -->
+    <string name="qr_create_type_upi">"UPI"</string>
+    <!-- pdf_import_look -->
+    <string name="pdf_import_look_keep_as_is">"そのままにしておく"</string>
+    <string name="pdf_import_look_pages_look_exactly_like_the">"ページは PDF とまったく同じように見えます"</string>
+    <string name="pdf_import_look_enhance">"強化"</string>
+    <string name="pdf_import_look_even_out_scanned_pages_and">"スキャンしたページを均等にし、テキストを鮮明にする"</string>
+    <!-- capture_scene_issue -->
+    <string name="capture_scene_issue_lens_may_be_covered_clear">"レンズが覆われている可能性があります。それを外して、もう一度試してください。"</string>
+    <string name="capture_scene_issue_too_dark_add_light_or">"暗すぎます。ライトを追加するか、フラッシュをオンにします。"</string>
+    <string name="capture_scene_issue_image_looks_blurry_clean_the">"画像がぼやけて見える。レンズを掃除するか、タップして焦点を合わせます。"</string>
+    <!-- group_export_action -->
+    <string name="group_export_action_merged_pdf_options">"PDF オプションの統合"</string>
+    <string name="group_export_action_separate_pdfs_options">"PDF ファイルの分割オプション"</string>
+    <!-- library_sort_option -->
+    <string name="library_sort_option_last_modified">"最終更新日"</string>
+    <string name="library_sort_option_latest_changes_first">"最新の変更を最初に表示"</string>
+    <string name="library_sort_option_oldest_updated">"最も古い更新"</string>
+    <string name="library_sort_option_earliest_changes_first">"初期の変更を最初に行う"</string>
+    <string name="library_sort_option_alphabetical_order">"アルファベット順"</string>
+    <string name="library_sort_option_name_z_a">"名前Z–A"</string>
+    <string name="library_sort_option_reverse_alphabetical_order">"アルファベット順を逆にする"</string>
+    <string name="library_sort_option_newest_created">"新しく作成されたもの"</string>
+    <string name="library_sort_option_recently_added_first">"最近追加されたものが最初"</string>
+    <string name="library_sort_option_oldest_created">"作成された中で最も古いもの"</string>
+    <string name="library_sort_option_earliest_added_first">"古いものから順に追加"</string>
+    <!-- signature_pen_width -->
+    <string name="signature_pen_width_fine">"細い"</string>
+    <string name="signature_pen_width_bold">"太い"</string>
+    <!-- onboarding_page -->
+    <string name="onboarding_page_capture">"キャプチャー"</string>
+    <string name="onboarding_page_paper_to_polished">"紙の書類を、きれいなスキャンに。"</string>
+    <string name="onboarding_page_capture_straighten_and_clean_up">"ページをキャプチャし、まっすぐにし、クリーンアップします。"</string>
+    <string name="onboarding_page_find">"探す"</string>
+    <string name="onboarding_page_find_more_than_files">"スキャンの中の言葉も検索。"</string>
+    <string name="onboarding_page_recognize_text_on_your_device">"デバイス上のテキストを認識します。スキャン内を検索します。"</string>
+    <string name="onboarding_page_share">"シェアする"</string>
+    <string name="onboarding_page_ready_when_you_are">"必要なときに、すぐ共有。"</string>
+    <string name="onboarding_page_keep_pages_together_share_a">"ページをまとめて保管します。数回タップするだけで、クリーンな PDF を共有できます。"</string>
+    <!-- pdf_reader_tool -->
+    <string name="pdf_reader_tool_merge_with_other_pdfs">"他のPDFファイルとマージします"</string>
+    <string name="pdf_reader_tool_password_protect">"パスワード保護"</string>
+    <string name="pdf_reader_tool_add_watermark">"透かしを追加する"</string>
+    <string name="pdf_reader_tool_save_pages_as_images">"ページを画像として保存する"</string>
+    <string name="pdf_reader_tool_add_to_scanly_library">"Scanly ライブラリに追加"</string>
+    <!-- pdf_picker_sort -->
+    <string name="pdf_picker_sort_most_pages">"ほとんどのページ"</string>
+    <!-- qr_ink_color -->
+    <string name="qr_ink_color_ink">"インク"</string>
+    <string name="qr_ink_color_maroon">"マルーン"</string>
+    <!-- qr_primary_action -->
+    <string name="qr_primary_action_pay_with_a_upi_app">"UPI アプリで支払う"</string>
+    <string name="qr_primary_action_pay">"支払う"</string>
+    <string name="qr_primary_action_join_this_network">"このネットワークに参加してください"</string>
+    <string name="qr_primary_action_join">"参加する"</string>
+    <string name="qr_primary_action_save_to_contacts">"連絡先に保存"</string>
+    <string name="qr_primary_action_send_email">"メールを送信する"</string>
+    <string name="qr_primary_action_call_this_number">"この番号に電話してください"</string>
+    <string name="qr_primary_action_copy_text">"テキストをコピーする"</string>
+    <!-- qr_history_section -->
+    <string name="qr_history_section_earlier">"もっと前に"</string>
+    <!-- sign_tool -->
+    <string name="sign_tool_date">"日付"</string>
+    <string name="sign_tool_checkbox">"チェックボックス"</string>
+    <!-- scanly_destination -->
+    <string name="scanly_destination_home">"ホーム"</string>
+    <string name="scanly_destination_camera">"カメラ"</string>
+    <!-- settings_text_recognition -->
+    <string name="settings_text_recognition_and_more">"その他"</string>
+    <string name="settings_text_recognition_romanian">"ルーマニア語"</string>
+    <string name="settings_text_recognition_czech">"チェコ語"</string>
+    <string name="settings_text_recognition_swedish">"スウェーデン語"</string>
+    <string name="settings_text_recognition_swahili">"スワヒリ語"</string>
+    <string name="settings_text_recognition_filipino">"フィリピン人"</string>
+    <string name="settings_text_recognition_vietnamese">"ベトナム語"</string>
+    <string name="settings_text_recognition_malay">"マレー語"</string>
+    <string name="settings_text_recognition_indonesian">"インドネシア語"</string>
+    <string name="settings_text_recognition_turkish">"トルコ語"</string>
+    <string name="settings_text_recognition_polish">"ポーランド語"</string>
+    <string name="settings_text_recognition_dutch">"オランダ語"</string>
+    <string name="settings_text_recognition_portuguese">"ポルトガル語"</string>
+    <string name="settings_text_recognition_italian">"イタリア語"</string>
+    <string name="settings_text_recognition_german">"ドイツ語"</string>
+    <string name="settings_text_recognition_french">"フランス語"</string>
+    <string name="settings_text_recognition_spanish">"スペイン語"</string>
+    <string name="settings_text_recognition_english">"英語"</string>
+    <string name="settings_text_recognition_latin">"ラテン文字"</string>
+    <string name="settings_text_recognition_amharic">"アムハラ語"</string>
+    <string name="settings_text_recognition_georgian">"グルジア語"</string>
+    <string name="settings_text_recognition_armenian">"アルメニア人"</string>
+    <string name="settings_text_recognition_burmese">"ビルマ語"</string>
+    <string name="settings_text_recognition_khmer">"クメール語"</string>
+    <string name="settings_text_recognition_lao">"ラオ語"</string>
+    <string name="settings_text_recognition_thai">"タイ語"</string>
+    <string name="settings_text_recognition_southeast_asia_more">"東南アジアなど"</string>
+    <string name="settings_text_recognition_hebrew">"ヘブライ語"</string>
+    <string name="settings_text_recognition_urdu">"ウルドゥー語"</string>
+    <string name="settings_text_recognition_persian">"ペルシャ語"</string>
+    <string name="settings_text_recognition_arabic">"アラビア語"</string>
+    <string name="settings_text_recognition_right_to_left">"右から左へ"</string>
+    <string name="settings_text_recognition_korean">"韓国語"</string>
+    <string name="settings_text_recognition_japanese">"日本語"</string>
+    <string name="settings_text_recognition_chinese">"中国語"</string>
+    <string name="settings_text_recognition_east_asian">"東アジア"</string>
+    <string name="settings_text_recognition_sinhala">"シンハラ語"</string>
+    <string name="settings_text_recognition_odia">"オディア"</string>
+    <string name="settings_text_recognition_punjabi">"パンジャブ語"</string>
+    <string name="settings_text_recognition_gujarati">"グジャラート語"</string>
+    <string name="settings_text_recognition_malayalam">"マラヤーラム語"</string>
+    <string name="settings_text_recognition_kannada">"カンナダ語"</string>
+    <string name="settings_text_recognition_telugu">"テルグ語"</string>
+    <string name="settings_text_recognition_tamil">"タミル語"</string>
+    <string name="settings_text_recognition_bengali">"ベンガル語"</string>
+    <string name="settings_text_recognition_nepali">"ネパール語"</string>
+    <string name="settings_text_recognition_marathi">"マラーティー語"</string>
+    <string name="settings_text_recognition_hindi">"ヒンディー語"</string>
+    <string name="settings_text_recognition_indian_scripts">"インド文字"</string>
+    <string name="settings_text_recognition_greek">"ギリシャ語"</string>
+    <string name="settings_text_recognition_serbian">"セルビア語"</string>
+    <string name="settings_text_recognition_bulgarian">"ブルガリア語"</string>
+    <string name="settings_text_recognition_ukrainian">"ウクライナ語"</string>
+    <string name="settings_text_recognition_russian">"ロシア語"</string>
+    <string name="settings_text_recognition_latin_cyrillic_greek">"ラテン語、キリル文字、ギリシャ語"</string>
+    <!-- tools_catalog -->
+    <string name="tools_catalog_camera_with_edge_detection">"エッジ検出機能付きカメラ"</string>
+    <string name="tools_catalog_scan_a_document">"文書をスキャンする"</string>
+    <string name="tools_catalog_pdf_to_editable_scan">"PDF から編集可能なスキャンへ"</string>
+    <string name="tools_catalog_open_any_pdf">"PDF を開きます"</string>
+    <string name="tools_catalog_read_pdf">"PDFを読む"</string>
+    <string name="tools_catalog_stamp_text">"テキストの透かし"</string>
+    <string name="tools_catalog_lock_or_unlock">"ロックまたはロック解除"</string>
+    <string name="tools_catalog_pages_as_images">"画像としてのページ"</string>
+    <string name="tools_catalog_make_it_smaller">"小さくする"</string>
+    <string name="tools_catalog_combine_files">"ファイルを結合する"</string>
+    <string name="tools_catalog_merge">"結合"</string>
+    <string name="tools_catalog_sign_any_pdf">"PDF に署名する"</string>
+    <string name="tools_catalog_from_gallery">"ギャラリーより"</string>
+    <string name="tools_catalog_images_to_pdf">"画像をPDFに"</string>
+    <string name="tools_catalog_create_manage">"作成と管理"</string>
+    <string name="tools_catalog_my_signatures">"私の署名"</string>
+    <string name="tools_catalog_photos_scans">"写真とスキャン"</string>
+    <string name="tools_catalog_scan_or_create">"スキャンまたは作成"</string>
+    <string name="tools_catalog_qr_barcode">"QR とバーコード"</string>
+    <!-- pip_lines -->
+    <string name="pip_lines_tip_folders_keep_related_scans">"ヒント: フォルダーには、関連するスキャンがまとめて保存されます。領収書用に試してみてください。"</string>
+    <string name="pip_lines_tip_turn_on_the_grid">"ヒント: ページを整列させるには、カメラのグリッドをオンにします。"</string>
+    <string name="pip_lines_tip_add_a_scanly_widget">"ヒント: ワンタップでスキャンできるように、ホーム画面に Scanly ウィジェットを追加します。"</string>
+    <string name="pip_lines_tip_the_tools_tab_can">"ヒント: [ツール] タブでは、PDF をマージ、圧縮、署名できます。"</string>
+    <string name="pip_lines_tip_open_a_document_s">"ヒント: 文書のテキストを開いて、内容をコピーまたは共有します。"</string>
+    <string name="pip_lines_tip_long_press_a_page">"ヒント: ページを長押ししてドラッグし、順序を変更します。"</string>
+    <string name="pip_lines_tip_search_finds_words_inside">"ヒント: 検索では、名前だけでなく、スキャン内の単語も検索されます。"</string>
+    <string name="pip_lines_okay_okay_i_felt_that">"分かった、分かった、私はそれを感じた。"</string>
+    <string name="pip_lines_still_free_still_no_account">"いつでも無料。アカウントは必要ありません。広告はありません。"</string>
+    <string name="pip_lines_i_m_open_source_you">"私のソースコードは公開されています。どの行も読むことができます。"</string>
+    <string name="pip_lines_your_original_photos_are_kept">"元の写真は保持されるため、いつでも編集を元に戻すことができます。"</string>
+    <string name="pip_lines_i_live_on_your_phone">"私はあなたの電話で仕事をしています。スキャンがサーバーに送信されることはありません。"</string>
+    <string name="pip_lines_hey_that_tickles">"やあ！それはくすぐったいです。"</string>
+    <!-- pdf_watermark -->
+    <string name="pdf_watermark_for_kyc_use_only">For KYC use only</string>
+    <!-- document_presentation_formatter -->
+    <string name="document_presentation_formatter_untitled_document">"無題の文書"</string>
+    <string name="document_presentation_formatter_untitled_folder">"無題のフォルダー"</string>
+    <!-- default_pdf_toolkit_repository -->
+    <string name="default_pdf_toolkit_repository_this_pdf_is_password_protected">"この PDF はパスワードで保護されています。"</string>
+    <string name="default_pdf_toolkit_repository_this_pdf_is_too_large">"この PDF は大きすぎるため、このデバイスで処理できません。"</string>
+    <!-- document_cover_art_factory -->
+    <string name="document_cover_art_factory_scanned_document">"スキャンした文書"</string>
+    <!-- document_sign -->
+    <string name="document_sign_some_pages_are_still_processing">"一部のページはまだ処理中であり、まだ署名できません。"</string>
+    <!-- pip_lines -->
+    <string name="pip_lines_hi_i_m_pip_point">"こんにちは、Pipです！ページを見せてください。スキャンした内容を修正します。"</string>
+    <string name="pip_lines_one_last_thing_can_i">"最後にもう一つ！カメラを使ってもいいですか？スキャン中のみオンになります。"</string>
+    <string name="pip_lines_nothing_here_yet_let_s">"ここにはまだ何もありません。一緒に最初のページをスキャンしましょう。"</string>
+    <string name="pip_lines_a_clean_shelf_start_a">"きれいな棚！フォルダーを開始するか、フォルダー内の何かをスキャンします。"</string>
+    <string name="pip_lines_no_folders_yet_they_re">"まだフォルダーがありません。領収書、請求書、学校の書類の整理に使用します。"</string>
+    <string name="pip_lines_no_documents_yet_i_m">"まだ書類がありません。いつでも準備はできています。"</string>
+    <string name="pip_lines_this_folder_is_waiting_for">"このフォルダーは最初のドキュメントを待っています。"</string>
+    <string name="pip_lines_no_pages_yet_point_me">"まだページがありません。紙を指さしてください！"</string>
+    <string name="pip_lines_no_pages_means_no_words">"ページがないということは、まだ単語がないことを意味します。"</string>
+    <string name="pip_lines_pick_a_few_photos_and">"写真をいくつか選んで、検出器がどれだけ速く機能するかを見てみましょう。"</string>
+    <string name="pip_lines_hmm_i_don_t_have">"うーん、それについては答えがありません。"</string>
+    <string name="pip_lines_no_codes_yet_scan_or">"コードはまだありません。スキャンするか作成して、ここに保管します。"</string>
+    <string name="pip_lines_nothing_matches_that_try_another">"これに一致するものはありません。別の言葉を試してみますか？"</string>
+    <string name="pip_lines_i_m_still_reading_some">"まだ何ページか読んでいます。試合はすぐに見つかるかもしれません。"</string>
+    <string name="pip_lines_i_can_t_see_a">"まだ何も見えません。カメラを借りてもいいですか？"</string>
+    <string name="pip_lines_the_camera_is_switched_off">"Scanly ではカメラの電源がオフになります。設定に簡単にアクセスすると問題が解決します。"</string>
+    <string name="pip_lines_lend_me_the_camera_and">"カメラを貸してください。コードを読み上げます。"</string>
+    <string name="pip_lines_huh_that_document_wandered_off">"うーん、その書類はないようです。"</string>
+    <!-- pdf_page_size -->
+    <string name="pdf_page_size_match_each_scan">"スキャンした各ページのサイズに合わせる"</string>
+    <string name="pdf_page_size_29_7_42_0_cm">"29.7 × 42.0cm"</string>
+    <string name="pdf_page_size_21_0_29_7_cm">"21.0 × 29.7cm"</string>
+    <string name="pdf_page_size_14_8_21_0_cm">"14.8 × 21.0cm"</string>
+    <string name="pdf_page_size_25_0_35_3_cm">"25.0 × 35.3cm"</string>
+    <string name="pdf_page_size_17_6_25_0_cm">"17.6 × 25.0cm"</string>
+    <string name="pdf_page_size_21_6_27_9_cm">"21.6 × 27.9cm"</string>
+    <string name="pdf_page_size_27_9_43_2_cm">"27.9 × 43.2cm"</string>
+    <string name="pdf_page_size_21_6_35_6_cm">"21.6 × 35.6cm"</string>
+    <string name="pdf_page_size_18_4_26_7_cm">"18.4 × 26.7cm"</string>
+    <string name="pdf_page_size_10_0_14_8_cm">"10.0 × 14.8cm"</string>
+    <string name="pdf_page_size_21_6_33_0_cm">"21.6 × 33.0cm"</string>
+    <string name="pdf_page_size_22_9_33_0_cm">"22.9 × 33.0cm"</string>
+    <!-- PageTextScreen view modes -->
+    <string name="page_text_text">"テキスト"</string>
+    <string name="page_text_on_page">"ページ上"</string>
+    <!-- Shared counts -->
+    <plurals name="common_documents">
+        <item quantity="other">"ドキュメント %d 件"</item>
+    </plurals>
+    <plurals name="common_pages">
+        <item quantity="other">"%d ページ"</item>
+    </plurals>
+    <plurals name="common_folders">
+        <item quantity="other">"フォルダ %d 個"</item>
+    </plurals>
+    <plurals name="common_matches">
+        <item quantity="other">"%d 件の一致"</item>
+    </plurals>
+    <plurals name="common_words">
+        <item quantity="other">"%d 語"</item>
+    </plurals>
+    <string name="common_two_parts">"%1$s · %2$s"</string>
+    <!-- Library search -->
+    <plurals name="library_search_in_documents">
+        <item quantity="other">"（%d 件のドキュメント内）"</item>
+    </plurals>
+    <plurals name="library_search_no_exact_matches">
+        <item quantity="other">"完全一致なし · 類似する単語を含むドキュメント %d 件"</item>
+    </plurals>
+    <plurals name="library_search_show_more_pages">
+        <item quantity="other">"さらに %d ページの一致を表示"</item>
+    </plurals>
+    <plurals name="library_search_still_reading">
+        <item quantity="other">"残り %d ページのテキストを読み取り中です。新しい一致はここに表示されます。"</item>
+    </plurals>
+    <string name="library_search_matches_in_documents">"%1$sの%2$s"</string>
+    <plurals name="search_filters_show_results">
+        <item quantity="other">"%d 件の結果を表示"</item>
+    </plurals>
+    <!-- Settings -->
+    <plurals name="settings_reading_text_pages_left">
+        <item quantity="other">"テキストを読み取り中…残り %d ページ"</item>
+    </plurals>
+    <plurals name="settings_text_recognition_reread_pages">
+        <item quantity="other">"%d ページを再読み取りしますか？"</item>
+    </plurals>
+    <string name="settings_could_not_calibrate_models">"このデバイスではドキュメント モデルを調整できませんでした。"</string>
+    <!-- Recently deleted -->
+    <string name="recently_deleted_long_press_for_options">"項目を長押しすると、その他のオプションが表示されます。"</string>
+    <string name="recently_deleted_retention_note">"ページは %1$s に、ドキュメントとフォルダーは %2$s に保持されます。その後、それらは完全に削除されます。"</string>
+    <plurals name="recently_deleted_restored_items">
+        <item quantity="other">"%d 件を復元しました"</item>
+    </plurals>
+    <plurals name="recently_deleted_restored_some_items">
+        <item quantity="other">"%3$d 件中 %2$d 件を復元しました。%4$s"</item>
+    </plurals>
+    <plurals name="recently_deleted_deleted_items">
+        <item quantity="other">"%d 件を完全に削除しました"</item>
+    </plurals>
+    <plurals name="recently_deleted_deleted_some_items">
+        <item quantity="other">"%3$d 件中 %2$d 件を完全に削除しました。%4$s"</item>
+    </plurals>
+    <!-- %1$s = folder name, %2$d = number of documents in it. -->
+    <plurals name="folder_delete_what_should_happen">
+        <item quantity="other">"「%1$s」には %2$d 件のドキュメントがあります。どのように処理しますか？"</item>
+    </plurals>
+    <!-- PDF tools -->
+    <string name="pdf_compress_first_page_of">"%1$sの最初のページ"</string>
+    <string name="pdf_compress_the_pdf">"PDF"</string>
+    <string name="pdf_password_strength_too_short">"短すぎる"</string>
+    <string name="pdf_password_strength_too_long">"長すぎる"</string>
+    <string name="pdf_password_strength_weak">"弱い"</string>
+    <string name="pdf_password_strength_fair">"普通"</string>
+    <string name="pdf_password_strength_strong">"強い"</string>
+    <string name="model_benchmark_gate_prefix">"書類判定: %1$s"</string>
+    <string name="model_benchmark_unavailable">"利用不可"</string>
+    <!-- Error messages shown in snackbars and dialogs -->
+    <string name="error_document_not_found">"ドキュメントが見つかりません。"</string>
+    <string name="error_group_not_found">"グループが見つかりません。"</string>
+    <string name="error_no_documents_in_group">"グループ内に文書がありません。"</string>
+    <string name="error_no_pages_available_to_export">"エクスポートできるページがありません。"</string>
+    <string name="error_could_not_create_export_directory">"エクスポート ディレクトリを作成できませんでした。"</string>
+    <string name="error_could_not_replace_existing_pdf">"既存の PDF を置き換えることができませんでした。"</string>
+    <string name="error_folder_not_found">"フォルダーが見つかりません。"</string>
+    <string name="error_this_page_is_already_in_recently_deleted">"このページはすでに最近削除されました。"</string>
+    <string name="error_only_pages_in_recently_deleted_can_be">"永久に削除できるのは、「最近削除したページ」内のページのみです。"</string>
+    <string name="error_page_not_found">"ページが見つかりません。"</string>
+    <string name="error_page_not_found_in_document_order">"ドキュメントの順序でページが見つかりません。"</string>
+    <string name="error_select_at_least_two_pdfs_to_merge">"結合する PDF ファイルを少なくとも 2 つ選択します。"</string>
+    <string name="error_pdf_has_no_pages">"PDF にはページがありません。"</string>
+    <string name="error_password_must_be_4_64_characters">"パスワードは 4–64 文字である必要があります。"</string>
+    <string name="error_enter_the_current_pdf_password">"現在の PDF パスワードを入力します。"</string>
+    <string name="error_enter_watermark_text">"透かしテキストを入力します。"</string>
+    <string name="error_this_pdf_has_no_pages">"この PDF にはページがありません。"</string>
+    <string name="error_preview_size_is_invalid">"プレビュー サイズが無効です。"</string>
+    <string name="error_place_a_signature_or_another_mark_first">"最初に署名またはその他のマークを付けます。"</string>
+    <string name="error_a_mark_is_on_a_missing_page">"欠落ページにマークがあります。"</string>
+    <string name="error_could_not_prepare_this_pdf">"このPDFを準備できませんでした。"</string>
+    <string name="error_page_is_out_of_range">"ページが範囲外です。"</string>
+    <string name="error_choose_at_least_one_page">"1 ページ以上選択してください。"</string>
+    <string name="error_failed_to_encode_page_image">"ページ画像のエンコードに失敗しました。"</string>
+    <string name="error_export_file_is_missing">"エクスポート ファイルがありません。"</string>
+    <string name="error_the_preview_pdf_is_missing">"プレビュー PDF がありません。"</string>
+    <string name="error_could_not_read_selected_pdf">"選択した PDF を読み取れませんでした。"</string>
+    <string name="error_not_enough_memory_to_compress_this_pdf">"この PDF を圧縮するにはメモリが不足しています。最小品質または短いファイルをお試しください。"</string>
+    <string name="error_a_text_box_is_empty_type_something">"テキスト ボックスは空です。何かを入力するか、削除します。"</string>
+    <string name="error_a_signature_image_is_missing_remove_it">"署名画像がありません。取り外して再度取り付けてください。"</string>
+    <string name="error_some_characters_cant_be_drawn_remove_emoji">"一部のキャラクターは描画できません。絵文字や珍しい記号を削除します。"</string>
+    <string name="error_some_characters_in_the_watermark_cant_be">"ウォーターマーク内の一部の文字は描画できません。絵文字や珍しい記号を削除します。"</string>
+    <string name="error_enter_something_to_encode">"エンコードするものを入力します。"</string>
+    <string name="error_could_not_write_qr_image">"QR イメージを書き込めませんでした。"</string>
+    <string name="error_a_signature_image_is_missing_place_it">"署名画像がありません。もう一度置きます。"</string>
+    <string name="error_the_signature_is_empty">"署名が空です。"</string>
+    <string name="error_could_not_save_the_signature">"署名を保存できませんでした。"</string>
+    <string name="error_could_not_prepare_the_image">"画像を準備できませんでした。"</string>
+    <string name="error_could_not_create_signature_storage">"署名ストレージを作成できませんでした。"</string>
+    <string name="error_no_signature_found_in_this_image_try">"この画像には署名が見つかりません。明るい紙に濃いインクを試してください。"</string>
+    <string name="error_this_signature_no_longer_exists">"この署名はもう存在しません。"</string>
+    <string name="error_the_signature_image_could_not_be_read">"署名画像を読み取れませんでした。"</string>
+    <string name="error_a_signature_image_is_missing_open_sign">"署名の画像がありません。署名ツールを開いて、もう一度配置してください。"</string>
+    <string name="error_this_page_is_still_processing_try_again">"このページはまだ処理中です。しばらくしてからもう一度試してください。"</string>
+    <string name="error_could_not_read_the_page_image">"ページ画像を読み取れませんでした。"</string>
+    <string name="error_invalid_page_image_path">"ページ画像パスが無効です。"</string>
+    <string name="error_the_exported_file_is_unavailable">"エクスポートされたファイルは使用できません。"</string>
+    <string name="error_the_exported_image_is_unavailable">"エクスポートされた画像は利用できません。"</string>
+    <string name="error_the_selected_save_folder_is_no_longer">"選択した保存フォルダーは使用できなくなりました。 [設定] でもう一度選択します。"</string>
+    <string name="error_this_page_no_longer_exists">"このページはもう存在しません。"</string>
+    <string name="error_read_this_pages_text_first">"まずこのページの本文をお読みください。"</string>
+    <string name="error_page_image_could_not_be_read">"ページ画像を読み取れませんでした。"</string>
+    <string name="error_opencv_could_not_be_initialized">"OpenCV を初期化できませんでした。"</string>
+    <string name="error_no_images_selected">"画像が選択されていません。"</string>
+    <string name="error_could_not_write_imported_image">"インポートされたイメージを書き込めませんでした。"</string>
+    <string name="error_imported_image_file_is_empty">"インポートされた画像ファイルは空です。"</string>
+    <string name="error_image_decode_failed">"画像のデコードに失敗しました"</string>
+    <!-- Language settings -->
+    <string name="settings_language">"言語"</string>
+    <string name="settings_language_system_default">"システムのデフォルト"</string>
+    <string name="settings_language_follow_phone">"端末の言語"</string>
+    <string name="settings_language_uses_phone_language">"端末と同じ言語: %1$s"</string>
+    <string name="settings_language_app_language">"アプリ言語"</string>
+    <string name="settings_language_note">"ドキュメント名、読み取ったテキスト、開いた PDF の言語は変わりません。"</string>
+    <!-- Manifest -->
+    <string name="intent_open_in_scanly">"Scanlyで開く"</string>
+    <!-- Library date sections -->
+    <string name="library_section_previous_7_days">"過去7日間"</string>
+    <!-- Month and year as a section title, e.g. "December 2025". %1$s = month name, %2$d = year. -->
+    <string name="library_section_month_year">"%2$d年%1$s"</string>
+    <!-- Camera -->
+    <string name="scan_session_capture_failed">"キャプチャに失敗しました。"</string>
+    <!-- Signature kinds as whole phrases (Signature vs Initials) -->
+    <string name="sign_kind_add_signature">"署名を追加する"</string>
+    <string name="sign_kind_add_initials">"イニシャルを追加する"</string>
+    <string name="sign_kind_delete_signature">"署名の削除"</string>
+    <string name="sign_kind_delete_initials">"イニシャルを削除する"</string>
+    <string name="sign_kind_delete_signature_question">"署名を削除しますか?"</string>
+    <string name="sign_kind_delete_initials_question">"イニシャルを削除しますか?"</string>
+    <string name="sign_kind_open_signature_options">"署名オプションを開く"</string>
+    <string name="sign_kind_open_initials_options">"イニシャルオプションを開く"</string>
+    <string name="sign_kind_saved_signature">"保存された署名"</string>
+    <string name="sign_kind_saved_initials">"保存されたイニシャル"</string>
+    <string name="sign_kind_show_signature_first">"この署名を他の署名より先に表示します"</string>
+    <string name="sign_kind_show_initials_first">"これらのイニシャルを他のイニシャルより先に表示します"</string>
+    <!-- Watermark -->
+    <!-- Watermark presets are stamped into PDFs with a Latin/Cyrillic font. In languages written in
+         another script (Indic, CJK, Thai), keep these in English so the stamp can be drawn. -->
+    <string name="pdf_watermark_preset_confidential">CONFIDENTIAL</string>
+    <string name="pdf_watermark_preset_draft">DRAFT</string>
+    <string name="pdf_watermark_preset_copy">COPY</string>
+    <string name="pdf_watermark_opacity_percent">"%1$d%%"</string>
+    <!-- Localized counts and progress (no English-only plural branches). -->
+    <plurals name="common_days">
+        <item quantity="other">"%d 日"</item>
+    </plurals>
+    <plurals name="common_files">
+        <item quantity="other">"ファイル %d 個"</item>
+    </plurals>
+    <plurals name="common_images">
+        <item quantity="other">"画像 %d 枚"</item>
+    </plurals>
+    <plurals name="common_marks">
+        <item quantity="other">"マーク %d 個"</item>
+    </plurals>
+    <plurals name="common_scans">
+        <item quantity="other">"スキャン %d 件"</item>
+    </plurals>
+    <plurals name="common_topics">
+        <item quantity="other">"%d 件のトピック"</item>
+    </plurals>
+    <plurals name="common_libraries">
+        <item quantity="other">"%d 個のライブラリ"</item>
+    </plurals>
+    <plurals name="common_selected">
+        <item quantity="other">"%d 件選択中"</item>
+    </plurals>
+    <plurals name="pdf_to_images_saved_count">
+        <item quantity="other">"画像 %d 枚を保存しました"</item>
+    </plurals>
+    <plurals name="pdf_to_images_export_count">
+        <item quantity="other">"画像 %d 枚をエクスポート"</item>
+    </plurals>
+    <string name="common_current_of_total">"%2$d 件中 %1$d 件"</string>
+    <!-- Error fallbacks found in the final extraction audit. -->
+    <string name="error_failed_to_import_images">"画像のインポートに失敗しました。"</string>
+    <string name="error_could_not_calculate_storage_usage">"ストレージ使用量を計算できませんでした。"</string>
+    <string name="error_could_not_clear_app_data">"アプリデータを消去できませんでした。"</string>
+    <string name="error_could_not_clear_temporary_exports">"一時エクスポートをクリアできませんでした。"</string>
+    <string name="error_could_not_remove_old_backup_files">"古いバックアップ ファイルを削除できませんでした。"</string>
+    <string name="error_could_not_create_the_document">"ドキュメントを作成できませんでした。"</string>
+    <string name="error_could_not_rename_the_document">"ドキュメントの名前を変更できませんでした。"</string>
+    <string name="error_could_not_delete_the_document">"文書を削除できませんでした。"</string>
+    <string name="error_could_not_create_the_group">"グループを作成できませんでした。"</string>
+    <string name="error_could_not_rename_the_group">"グループの名前を変更できませんでした。"</string>
+    <string name="error_could_not_delete_the_group">"グループを削除できませんでした。"</string>
+    <string name="error_could_not_remove_empty_folders">"空のフォルダーを削除できませんでした。"</string>
+    <string name="error_could_not_update_document_group">"ドキュメントグループを更新できませんでした。"</string>
+    <string name="error_could_not_prepare_page_capture">"ページ キャプチャを準備できませんでした。"</string>
+    <string name="error_could_not_prepare_page_replacement">"ページ置換を準備できませんでした。"</string>
+    <string name="error_could_not_save_the_captured_page">"キャプチャしたページを保存できませんでした。"</string>
+    <string name="error_could_not_reorder_the_page">"ページを並べ替えることができませんでした。"</string>
+    <string name="error_could_not_save_page_edits">"ページ編集を保存できませんでした。"</string>
+    <string name="error_could_not_update_text_recognition_engine">"テキスト認識エンジンを更新できませんでした。"</string>
+    <string name="error_could_not_update_theme_mode">"テーマ モードを更新できませんでした。"</string>
+    <string name="error_could_not_finish_onboarding">"オンボーディングを完了できませんでした。"</string>
+    <string name="error_could_not_load_settings_content">"設定内容を読み込めませんでした。"</string>
+    <string name="error_could_not_update_the_save_location">"保存場所を更新できませんでした。"</string>
+    <string name="error_could_not_update_model_selection">"モデルの選択を更新できませんでした。"</string>
+    <string name="error_could_not_update_document_detection_settings">"ドキュメント検出設定を更新できませんでした。"</string>
+    <string name="error_could_not_save_the_exported_file">"エクスポートされたファイルを保存できませんでした。"</string>
+    <string name="error_could_not_store_update_prompt_state">"更新プロンプトの状態を保存できませんでした。"</string>
+    <string name="error_could_not_check_github_releases">"GitHub リリースを確認できませんでした。"</string>
+</resources>

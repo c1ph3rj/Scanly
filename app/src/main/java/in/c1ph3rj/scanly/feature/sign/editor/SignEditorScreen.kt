@@ -83,6 +83,8 @@ import `in`.c1ph3rj.scanly.domain.model.SignatureKind
 import `in`.c1ph3rj.scanly.domain.model.textContent
 import `in`.c1ph3rj.scanly.feature.sign.manage.SavedSignatureImage
 import kotlinx.coroutines.flow.distinctUntilChanged
+import `in`.c1ph3rj.scanly.R
+import androidx.compose.ui.res.stringResource
 
 /** Gap between the editor edges and the page sheet. */
 private val PageMargin = 16.dp
@@ -132,7 +134,7 @@ fun SignEditorScreen(
     onManageSignatures: () -> Unit,
     onCreateSignature: (SignatureKind) -> Unit,
     modifier: Modifier = Modifier,
-    title: String = "Sign",
+    title: String = stringResource(R.string.page_image_preview_sign),
     doneEnabled: Boolean = true,
 ) {
     val pageCount = state.pages.size
@@ -180,8 +182,8 @@ fun SignEditorScreen(
     if (confirmDiscard) {
         AlertDialog(
             onDismissRequest = { confirmDiscard = false },
-            title = { Text("Discard changes?") },
-            text = { Text("Signatures and marks you added or changed on this document won't be kept.") },
+            title = { Text(stringResource(R.string.page_crop_discard_changes)) },
+            text = { Text(stringResource(R.string.sign_editor_signatures_and_marks_you_added)) },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -189,11 +191,11 @@ fun SignEditorScreen(
                         onCancel()
                     },
                 ) {
-                    Text("Discard", color = MaterialTheme.colorScheme.error)
+                    Text(stringResource(R.string.page_crop_discard), color = MaterialTheme.colorScheme.error)
                 }
             },
             dismissButton = {
-                TextButton(onClick = { confirmDiscard = false }) { Text("Keep editing") }
+                TextButton(onClick = { confirmDiscard = false }) { Text(stringResource(R.string.page_crop_keep_editing)) }
             },
         )
     }
@@ -252,7 +254,7 @@ fun SignEditorScreen(
     ) {
         SignTopBar(
             title = title,
-            subtitle = if (pageCount == 0) "" else "Page ${state.currentPage + 1} of $pageCount",
+            subtitle = if (pageCount == 0) "" else stringResource(R.string.document_detail_page_of, state.currentPage + 1, pageCount),
             onCancel = requestCancel,
             onDone = onDone,
             doneEnabled = doneEnabled,
@@ -314,7 +316,7 @@ private fun SignTopBar(
     ) {
         TextButton(onClick = onCancel) {
             Text(
-                text = "Cancel",
+                text = stringResource(R.string.export_share_cancel),
                 style = MaterialTheme.typography.labelLarge,
                 fontWeight = FontWeight.SemiBold,
             )
@@ -343,7 +345,7 @@ private fun SignTopBar(
             contentPadding = PaddingValues(horizontal = 18.dp, vertical = 8.dp),
         ) {
             Text(
-                text = "Done",
+                text = stringResource(R.string.camera_capture_chrome_done),
                 style = MaterialTheme.typography.labelLarge,
                 fontWeight = FontWeight.SemiBold,
             )
@@ -384,7 +386,7 @@ private fun SignPageSheet(
             if (bitmap != null && !bitmap.isRecycled) {
                 Image(
                     bitmap = bitmap.asImageBitmap(),
-                    contentDescription = "Page ${pageIndex + 1}",
+                    contentDescription = stringResource(R.string.trash_use_cases_page, pageIndex + 1),
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.FillBounds,
                 )
@@ -450,14 +452,14 @@ private fun SignBottomPanel(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    text = "Your signatures",
+                    text = stringResource(R.string.sign_editor_your_signatures),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.weight(1f),
                 )
                 TextButton(onClick = onManageSignatures) {
                     Text(
-                        text = "Manage",
+                        text = stringResource(R.string.sign_editor_manage),
                         style = MaterialTheme.typography.labelLarge,
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.primary,
@@ -573,7 +575,7 @@ private fun AddSavedItemCard(
 ) {
     val accent = MaterialTheme.colorScheme.primary
     val outline = MaterialTheme.colorScheme.outline
-    val label = "Add ${kind.label.lowercase()}"
+    val label = kind.addLabel
     Box(
         modifier = Modifier
             .width(width)
@@ -622,9 +624,9 @@ private fun AddSavedItemCard(
 @Composable
 private fun ToolHint(tool: SignTool) {
     val hint = when (tool) {
-        SignTool.Date -> "Tap Date again for another stamp · double-tap a date to edit it"
-        SignTool.Text -> "Tap Text again for another line · double-tap text to edit it"
-        SignTool.Checkbox -> "Tap Checkbox again for another box · use the toolbar to tick or untick"
+        SignTool.Date -> stringResource(R.string.sign_editor_tap_date_again_for_another)
+        SignTool.Text -> stringResource(R.string.sign_editor_tap_text_again_for_another)
+        SignTool.Checkbox -> stringResource(R.string.sign_editor_tap_checkbox_again_for_another)
         SignTool.Signature, SignTool.Initials -> ""
     }
     Box(
@@ -695,7 +697,7 @@ private fun SignTextEditDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(if (mark is SignMark.Date) "Edit date" else "Add text") },
+        title = { Text(if (mark is SignMark.Date) stringResource(R.string.sign_editor_edit_date) else stringResource(R.string.sign_editor_add_text)) },
         text = {
             OutlinedTextField(
                 value = draft,
@@ -707,10 +709,10 @@ private fun SignTextEditDialog(
             )
         },
         confirmButton = {
-            TextButton(onClick = { onConfirm(draft) }) { Text("Done") }
+            TextButton(onClick = { onConfirm(draft) }) { Text(stringResource(R.string.camera_capture_chrome_done)) }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) { Text("Cancel") }
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.export_share_cancel)) }
         },
     )
 }
@@ -734,7 +736,7 @@ private fun PageSwitcher(
             IconButton(onClick = { onChange(current - 1) }, enabled = current > 0) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-                    contentDescription = "Previous page",
+                    contentDescription = stringResource(R.string.onboarding_previous_page),
                     tint = MaterialTheme.colorScheme.inverseOnSurface.copy(alpha = if (current > 0) 1f else 0.35f),
                 )
             }
@@ -746,7 +748,7 @@ private fun PageSwitcher(
             IconButton(onClick = { onChange(current + 1) }, enabled = current < count - 1) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                    contentDescription = "Next page",
+                    contentDescription = stringResource(R.string.sign_editor_next_page),
                     tint = MaterialTheme.colorScheme.inverseOnSurface.copy(alpha = if (current < count - 1) 1f else 0.35f),
                 )
             }

@@ -30,6 +30,9 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
+import androidx.annotation.StringRes
 
 enum class LibraryTab {
     All,
@@ -38,15 +41,19 @@ enum class LibraryTab {
 }
 
 enum class LibrarySortOption(
-    val title: String,
-    val description: String,
+    @param:StringRes val titleRes: Int,
+    @param:StringRes val descriptionRes: Int,
 ) {
-    RecentlyUpdated("Last modified", "Latest changes first"),
-    OldestUpdated("Oldest updated", "Earliest changes first"),
-    NameAscending("Name A–Z", "Alphabetical order"),
-    NameDescending("Name Z–A", "Reverse alphabetical order"),
-    NewestCreated("Newest created", "Recently added first"),
-    OldestCreated("Oldest created", "Earliest added first"),
+    RecentlyUpdated(R.string.library_sort_option_last_modified, R.string.library_sort_option_latest_changes_first),
+    OldestUpdated(R.string.library_sort_option_oldest_updated, R.string.library_sort_option_earliest_changes_first),
+    NameAscending(R.string.search_sort_name_a_z, R.string.library_sort_option_alphabetical_order),
+    NameDescending(R.string.library_sort_option_name_z_a, R.string.library_sort_option_reverse_alphabetical_order),
+    NewestCreated(R.string.library_sort_option_newest_created, R.string.library_sort_option_recently_added_first),
+    OldestCreated(R.string.library_sort_option_oldest_created, R.string.library_sort_option_earliest_added_first),
+    ;
+
+    val title: String get() = appString(titleRes)
+    val description: String get() = appString(descriptionRes)
 }
 
 data class LibraryUiState(
@@ -259,7 +266,7 @@ class LibraryViewModel @Inject constructor(
 
     fun deleteDocument(documentId: String) {
         viewModelScope.launch {
-            val title = uiState.value.allDocuments.firstOrNull { it.id == documentId }?.title ?: "Document"
+            val title = uiState.value.allDocuments.firstOrNull { it.id == documentId }?.title ?: appString(R.string.document_detail_document)
             when (val result = moveDocumentToTrashUseCase(documentId, title)) {
                 is ScanlyResult.Success -> Unit
                 is ScanlyResult.Failure -> _events.emit(LibraryEvent.ShowMessage(result.error.message))
@@ -293,7 +300,7 @@ class LibraryViewModel @Inject constructor(
 
     fun deleteGroup(groupId: String, includeDocuments: Boolean) {
         viewModelScope.launch {
-            val title = uiState.value.groups.firstOrNull { it.id == groupId }?.title ?: "Folder"
+            val title = uiState.value.groups.firstOrNull { it.id == groupId }?.title ?: appString(R.string.home_folder)
             when (val result = moveGroupToTrashUseCase(groupId, title, includeDocuments)) {
                 is ScanlyResult.Success -> Unit
                 is ScanlyResult.Failure -> _events.emit(LibraryEvent.ShowMessage(result.error.message))
@@ -318,7 +325,7 @@ class LibraryViewModel @Inject constructor(
             when (val createResult = createGroupUseCase(name)) {
                 is ScanlyResult.Success -> {
                     when (val moveResult = setDocumentGroupUseCase(documentId, createResult.value)) {
-                        is ScanlyResult.Success -> _events.emit(LibraryEvent.ShowMessage("Moved to $name"))
+                        is ScanlyResult.Success -> _events.emit(LibraryEvent.ShowMessage(appString(R.string.document_detail_moved_to, name)))
                         is ScanlyResult.Failure -> _events.emit(LibraryEvent.ShowMessage(moveResult.error.message))
                     }
                 }
@@ -330,9 +337,9 @@ class LibraryViewModel @Inject constructor(
 
     private fun moveConfirmationMessage(groupId: String?): String {
         if (groupId == null) {
-            return "Removed from folder"
+            return appString(R.string.document_detail_removed_from_folder)
         }
         val folderName = uiState.value.groups.firstOrNull { it.id == groupId }?.title
-        return if (folderName != null) "Moved to $folderName" else "Moved to folder"
+        return if (folderName != null) appString(R.string.document_detail_moved_to, folderName) else appString(R.string.document_detail_moved_to_folder)
     }
 }

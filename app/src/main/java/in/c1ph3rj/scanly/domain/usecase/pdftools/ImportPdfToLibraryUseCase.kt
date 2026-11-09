@@ -12,15 +12,22 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
+import androidx.annotation.StringRes
 
 /** How imported PDF pages look in the library. */
 enum class PdfImportLook(
-    val label: String,
-    val description: String,
+    @param:StringRes val labelRes: Int,
+    @param:StringRes val descriptionRes: Int,
     internal val filterPreset: PageFilterPreset,
 ) {
-    ORIGINAL("Keep as is", "Pages look exactly like the PDF", PageFilterPreset.ORIGINAL),
-    ENHANCE("Enhance", "Even out scanned pages and sharpen text", PageFilterPreset.AUTO),
+    ORIGINAL(R.string.pdf_import_look_keep_as_is, R.string.pdf_import_look_pages_look_exactly_like_the, PageFilterPreset.ORIGINAL),
+    ENHANCE(R.string.pdf_import_look_enhance, R.string.pdf_import_look_even_out_scanned_pages_and, PageFilterPreset.AUTO),
+    ;
+
+    val label: String get() = appString(labelRes)
+    val description: String get() = appString(descriptionRes)
 }
 
 /** A PDF that now lives in the library as an editable Scanly document. */
@@ -49,7 +56,7 @@ class ImportPdfToLibraryUseCase @Inject constructor(
         look: PdfImportLook,
         onProgress: suspend (done: Int, total: Int) -> Unit = { _, _ -> },
     ): ScanlyResult<PdfLibraryImport> {
-        if (pageIndexes.isEmpty()) return failure("Choose at least one page.")
+        if (pageIndexes.isEmpty()) return failure(appString(R.string.import_pdf_to_library_use_case_choose_at_least_one_page))
         val documentId = when (val created = documentRepository.createDocument(title)) {
             is ScanlyResult.Success -> created.value
             is ScanlyResult.Failure -> return created
@@ -72,7 +79,7 @@ class ImportPdfToLibraryUseCase @Inject constructor(
             throw cancelled
         } catch (error: Throwable) {
             discard(documentId)
-            failure(error.message ?: "Could not add this PDF to your library.", error)
+            failure(error.message ?: appString(R.string.import_pdf_to_library_use_case_could_not_add_this_pdf), error)
         }
     }
 

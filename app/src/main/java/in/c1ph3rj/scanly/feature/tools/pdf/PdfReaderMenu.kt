@@ -31,16 +31,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import `in`.c1ph3rj.scanly.R
+import androidx.compose.ui.res.stringResource
+import androidx.annotation.StringRes
+import `in`.c1ph3rj.scanly.core.common.appString
 
 /** PDF tools the reader can hand its open file to. Back from the tool returns to the reader. */
-enum class PdfReaderTool(val label: String, val icon: ImageVector) {
-    SIGN("Sign", Icons.Outlined.Draw),
-    COMPRESS("Compress", Icons.Outlined.Compress),
-    MERGE("Merge with other PDFs", Icons.AutoMirrored.Outlined.MergeType),
-    PASSWORD("Password protect", Icons.Outlined.Lock),
-    WATERMARK("Add watermark", Icons.Outlined.WaterDrop),
-    TO_IMAGES("Save pages as images", Icons.Outlined.Image),
-    IMPORT("Add to Scanly library", Icons.Outlined.LibraryAdd),
+enum class PdfReaderTool(@param:StringRes val labelRes: Int, val icon: ImageVector) {
+    SIGN(R.string.page_image_preview_sign, Icons.Outlined.Draw),
+    COMPRESS(R.string.pdf_compress_compress, Icons.Outlined.Compress),
+    MERGE(R.string.pdf_reader_tool_merge_with_other_pdfs, Icons.AutoMirrored.Outlined.MergeType),
+    PASSWORD(R.string.pdf_reader_tool_password_protect, Icons.Outlined.Lock),
+    WATERMARK(R.string.pdf_reader_tool_add_watermark, Icons.Outlined.WaterDrop),
+    TO_IMAGES(R.string.pdf_reader_tool_save_pages_as_images, Icons.Outlined.Image),
+    IMPORT(R.string.pdf_reader_tool_add_to_scanly_library, Icons.Outlined.LibraryAdd),
+    ;
+
+    val label: String get() = appString(labelRes)
 }
 
 /** The reader's ⋮ menu: share, jump to pages, the PDF tools, and opening another file. */
@@ -57,7 +64,7 @@ internal fun PdfReaderOverflowMenu(
     var expanded by remember { mutableStateOf(false) }
     Box(modifier = modifier) {
         IconButton(onClick = { expanded = true }, modifier = Modifier.size(48.dp)) {
-            Icon(Icons.Filled.MoreVert, contentDescription = "More options", tint = iconTint)
+            Icon(Icons.Filled.MoreVert, contentDescription = stringResource(R.string.shared_more_options), tint = iconTint)
         }
         DropdownMenu(
             expanded = expanded,
@@ -69,15 +76,15 @@ internal fun PdfReaderOverflowMenu(
                 action()
             }
             if (canShare) {
-                MenuRow("Share", Icons.Outlined.Share, pick(onShare))
+                MenuRow(stringResource(R.string.document_detail_share_2), Icons.Outlined.Share, pick(onShare))
             }
-            MenuRow("All pages", Icons.Outlined.GridView, pick(onOpenPages))
+            MenuRow(stringResource(R.string.pdf_reader_menu_all_pages), Icons.Outlined.GridView, pick(onOpenPages))
             HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
             PdfReaderTool.entries.forEach { tool ->
                 MenuRow(tool.label, tool.icon, pick { onOpenTool(tool) })
             }
             HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
-            MenuRow("Open another PDF", Icons.Outlined.FileOpen, pick(onOpenAnother))
+            MenuRow(stringResource(R.string.pdf_reader_menu_open_another_pdf), Icons.Outlined.FileOpen, pick(onOpenAnother))
         }
     }
 }

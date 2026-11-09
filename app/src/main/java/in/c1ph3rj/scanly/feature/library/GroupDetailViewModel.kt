@@ -35,6 +35,8 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
 
 data class GroupDetailUiState(
     val group: DocumentGroup? = null,
@@ -110,7 +112,7 @@ class GroupDetailViewModel @Inject constructor(
     fun renameGroup(title: String) {
         viewModelScope.launch {
             when (val result = renameGroupUseCase(groupId, title)) {
-                is ScanlyResult.Success -> _events.emit(GroupDetailEvent.ShowMessage("Folder renamed."))
+                is ScanlyResult.Success -> _events.emit(GroupDetailEvent.ShowMessage(appString(R.string.group_detail_folder_renamed)))
                 is ScanlyResult.Failure -> _events.emit(GroupDetailEvent.ShowMessage(result.error.message))
             }
         }
@@ -120,7 +122,7 @@ class GroupDetailViewModel @Inject constructor(
         if (isDeleting) return
         isDeleting = true
         viewModelScope.launch {
-            val title = uiState.value.group?.title ?: "Folder"
+            val title = uiState.value.group?.title ?: appString(R.string.home_folder)
             when (val result = moveGroupToTrashUseCase(groupId, title, includeDocuments)) {
                 // Stay latched on success: the folder is gone and the screen is about to close.
                 is ScanlyResult.Success -> _events.emit(GroupDetailEvent.GroupDeleted)
@@ -168,13 +170,13 @@ class GroupDetailViewModel @Inject constructor(
                 lastError != null ->
                     _events.emit(
                         GroupDetailEvent.ShowMessage(
-                            "Added $successCount of ${documentIds.size} documents. $lastError",
+                            appString(R.string.group_detail_added_of_documents, successCount, documentIds.size, lastError),
                         ),
                     )
                 successCount == 1 ->
-                    _events.emit(GroupDetailEvent.ShowMessage("Added 1 document to folder."))
+                    _events.emit(GroupDetailEvent.ShowMessage(appString(R.string.group_detail_added_1_document_to_folder)))
                 successCount > 1 ->
-                    _events.emit(GroupDetailEvent.ShowMessage("Added $successCount documents to folder."))
+                    _events.emit(GroupDetailEvent.ShowMessage(appString(R.string.group_detail_added_documents_to_folder, successCount)))
             }
         }
     }
@@ -183,7 +185,7 @@ class GroupDetailViewModel @Inject constructor(
         viewModelScope.launch {
             when (val result = setDocumentGroupUseCase(documentId, null)) {
                 is ScanlyResult.Success ->
-                    _events.emit(GroupDetailEvent.ShowMessage("Document removed from folder."))
+                    _events.emit(GroupDetailEvent.ShowMessage(appString(R.string.group_detail_document_removed_from_folder)))
                 is ScanlyResult.Failure ->
                     _events.emit(GroupDetailEvent.ShowMessage(result.error.message))
             }
@@ -193,7 +195,7 @@ class GroupDetailViewModel @Inject constructor(
     /** Save all documents merged into one PDF. */
     fun saveMergedPdf(options: PdfExportOptions = PdfExportOptions()) {
         runGroupExport(
-            progressLabel = { current, total -> "Generating page $current of $total…" },
+            progressLabel = { current, total -> appString(R.string.group_detail_generating_page_of, current, total) },
             action = { onProgress ->
                 when (val generated = exportGroupPdfUseCase(groupId, options, onProgress)) {
                     is ScanlyResult.Success -> saveExportArtifactUseCase(generated.value)
@@ -203,7 +205,7 @@ class GroupDetailViewModel @Inject constructor(
             onSuccess = { saved ->
                 _events.emit(
                     GroupDetailEvent.ShowMessage(
-                        "Saved ${saved.fileName} to ${saved.destinationLabel}",
+                        appString(R.string.document_detail_saved_to, saved.fileName, saved.destinationLabel),
                     ),
                 )
             },
@@ -213,7 +215,7 @@ class GroupDetailViewModel @Inject constructor(
     /** Share all documents merged into one PDF. */
     fun shareMergedPdf(options: PdfExportOptions = PdfExportOptions()) {
         runGroupExport(
-            progressLabel = { current, total -> "Generating page $current of $total…" },
+            progressLabel = { current, total -> appString(R.string.group_detail_generating_page_of, current, total) },
             action = { onProgress -> prepareGroupPdfShareUseCase(groupId, options, onProgress) },
             onSuccess = { artifact -> _events.emit(GroupDetailEvent.ShareFiles(artifact)) },
         )
@@ -222,7 +224,7 @@ class GroupDetailViewModel @Inject constructor(
     /** Save each document as its own PDF, bundled in a ZIP. */
     fun saveZippedPdfs(options: PdfExportOptions = PdfExportOptions()) {
         runGroupExport(
-            progressLabel = { current, total -> "Generating PDF $current of $total…" },
+            progressLabel = { current, total -> appString(R.string.group_detail_generating_pdf_of, current, total) },
             action = { onProgress ->
                 when (val generated = exportGroupZippedPdfsUseCase(groupId, options, onProgress)) {
                     is ScanlyResult.Success -> saveExportArtifactUseCase(generated.value)
@@ -232,7 +234,7 @@ class GroupDetailViewModel @Inject constructor(
             onSuccess = { saved ->
                 _events.emit(
                     GroupDetailEvent.ShowMessage(
-                        "Saved ${saved.fileName} to ${saved.destinationLabel}",
+                        appString(R.string.document_detail_saved_to, saved.fileName, saved.destinationLabel),
                     ),
                 )
             },
@@ -242,7 +244,7 @@ class GroupDetailViewModel @Inject constructor(
     /** Share each document as its own PDF, bundled in a ZIP. */
     fun shareZippedPdfs(options: PdfExportOptions = PdfExportOptions()) {
         runGroupExport(
-            progressLabel = { current, total -> "Generating PDF $current of $total…" },
+            progressLabel = { current, total -> appString(R.string.group_detail_generating_pdf_of, current, total) },
             action = { onProgress -> prepareGroupZippedPdfsShareUseCase(groupId, options, onProgress) },
             onSuccess = { artifact -> _events.emit(GroupDetailEvent.ShareFiles(artifact)) },
         )

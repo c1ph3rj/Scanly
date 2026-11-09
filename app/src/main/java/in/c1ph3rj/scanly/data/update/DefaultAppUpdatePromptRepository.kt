@@ -1,5 +1,7 @@
 package `in`.c1ph3rj.scanly.data.update
 
+import `in`.c1ph3rj.scanly.core.common.appString
+import `in`.c1ph3rj.scanly.R
 import android.content.Context
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.longPreferencesKey
@@ -40,7 +42,7 @@ class DefaultAppUpdatePromptRepository @Inject constructor(
                 onFailure = { throwable ->
                     ScanlyResult.Failure(
                         ScanlyError(
-                            message = throwable.message ?: "Could not store update prompt state.",
+                            message = throwable.message ?: appString(R.string.error_could_not_store_update_prompt_state),
                             cause = throwable,
                         ),
                     )

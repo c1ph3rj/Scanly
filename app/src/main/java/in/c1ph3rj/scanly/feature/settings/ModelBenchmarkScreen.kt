@@ -82,6 +82,9 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.math.max
 import kotlin.math.min
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
+import androidx.compose.ui.res.stringResource
 
 data class BenchmarkMeasurement(
     val imageName: String,
@@ -142,7 +145,7 @@ class ModelBenchmarkViewModel @Inject constructor(
                                     inferenceMs = 0.0,
                                     postprocessingMs = 0.0,
                                     totalMs = 0.0,
-                                    error = "Could not decode image",
+                                    error = appString(R.string.model_benchmark_could_not_decode_image),
                                 )
                             },
                         )
@@ -200,7 +203,7 @@ class ModelBenchmarkViewModel @Inject constructor(
                                     inferenceMs = 0.0,
                                     postprocessingMs = 0.0,
                                     totalMs = 0.0,
-                                    error = error.message ?: "Model failed",
+                                    error = error.message ?: appString(R.string.model_benchmark_model_failed),
                                     preview = runCatching {
                                         renderPreviewWithQuad(bitmap, quad = null, detected = false)
                                     }.getOrNull(),
@@ -232,7 +235,7 @@ class ModelBenchmarkViewModel @Inject constructor(
     private fun displayName(uri: Uri): String =
         context.contentResolver.query(uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)
             ?.use { cursor -> if (cursor.moveToFirst()) cursor.getString(0) else null }
-            ?: uri.lastPathSegment.orEmpty().ifBlank { "Image" }
+            ?: uri.lastPathSegment.orEmpty().ifBlank { appString(R.string.model_benchmark_image) }
 
     private fun decodeOriented(uri: Uri): Bitmap {
         val bytes = context.contentResolver.openInputStream(uri)?.use { it.readBytes() }
@@ -249,7 +252,7 @@ class ModelBenchmarkViewModel @Inject constructor(
                 inSampleSize = sample
                 inPreferredConfig = Bitmap.Config.ARGB_8888
             },
-        ) ?: error("Image decode failed")
+        ) ?: error(appString(R.string.error_image_decode_failed))
         val rotation = ExifInterface(bytes.inputStream()).rotationDegrees
         if (rotation == 0) return source
         return Bitmap.createBitmap(
@@ -366,13 +369,13 @@ fun ModelBenchmarkRoute(
             TopAppBar(
                 title = {
                     Text(
-                        text = "Model benchmark",
+                        text = stringResource(R.string.model_benchmark_model_benchmark),
                         fontWeight = FontWeight.SemiBold,
                     )
                 },
                 navigationIcon = {
                     IconButton(onClick = onNavigateUp) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.zoomable_image_back))
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -433,15 +436,15 @@ private fun BenchmarkEmptyState(
         `in`.c1ph3rj.scanly.feature.components.PipEmptyState(
             pipLine = `in`.c1ph3rj.scanly.feature.pip.PipLines.BENCHMARK_EMPTY,
             pipMood = `in`.c1ph3rj.scanly.feature.pip.PipMood.WOW,
-            title = "Compare detectors on your photos",
-            description = "Choose real documents or rectangular objects. Scanly will time every detector and show the detected edges.",
-            actionLabel = "Choose images and run",
+            title = stringResource(R.string.model_benchmark_compare_detectors_on_your_photos),
+            description = stringResource(R.string.model_benchmark_choose_real_documents_or_rectangular),
+            actionLabel = stringResource(R.string.model_benchmark_choose_images_and_run),
             onAction = onChooseImages,
             actionIcon = Icons.Filled.ImageSearch,
             compact = true,
         )
         Text(
-            text = "Images stay on this device. Nothing is uploaded.",
+            text = stringResource(R.string.model_benchmark_images_stay_on_this_device),
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center,
@@ -468,12 +471,12 @@ private fun BenchmarkActionCard(
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Text(
-                text = "Run another pass",
+                text = stringResource(R.string.model_benchmark_run_another_pass),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold,
             )
             Text(
-                text = "Select more photos to measure gate latency, corner detection, polygon overlays, and full-pipeline timing.",
+                text = stringResource(R.string.model_benchmark_select_more_photos_to_measure),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -483,7 +486,7 @@ private fun BenchmarkActionCard(
                 modifier = Modifier.fillMaxWidth(),
                 shape = MaterialTheme.shapes.large,
             ) {
-                Text(if (running) "Benchmark running…" else "Choose images and run")
+                Text(if (running) stringResource(R.string.model_benchmark_benchmark_running) else stringResource(R.string.model_benchmark_choose_images_and_run))
             }
             if (running) {
                 Row(
@@ -495,7 +498,7 @@ private fun BenchmarkActionCard(
                         strokeWidth = 2.dp,
                     )
                     Text(
-                        text = "$completedImages / $totalImages images processed",
+                        text = stringResource(R.string.model_benchmark_images_processed, completedImages, totalImages),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -519,15 +522,15 @@ private fun BenchmarkSummary(items: List<BenchmarkMeasurement>) {
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Text(
-                text = "Aggregate",
+                text = stringResource(R.string.model_benchmark_aggregate),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold,
             )
             val gateValues = items.distinctBy { it.imageName }.filter { it.gateClass != null }
             val gateTimes = gateValues.map { it.gateTotalMs }.sorted()
             SummaryMetricRow(
-                label = "Document gate",
-                value = "avg %.1f · P95 %.1f ms · accepted %d/%d".format(
+                label = stringResource(R.string.model_benchmark_document_gate),
+                value = stringResource(R.string.model_benchmark_avg_1f_p95_1f_ms).format(
                     gateTimes.average().takeIf { !it.isNaN() } ?: 0.0,
                     percentile(gateTimes, 0.95),
                     gateValues.count { it.gateAccepted },
@@ -540,7 +543,7 @@ private fun BenchmarkSummary(items: List<BenchmarkMeasurement>) {
                 val average = times.average().takeIf { !it.isNaN() } ?: 0.0
                 SummaryMetricRow(
                     label = model.displayName,
-                    value = "avg %.1f · P50 %.1f · P95 %.1f ms · detected %d/%d · failed %d".format(
+                    value = stringResource(R.string.model_benchmark_avg_1f_p50_1f_p95).format(
                         average,
                         percentile(times, 0.50),
                         percentile(times, 0.95),
@@ -608,8 +611,10 @@ private fun ImageBenchmarkSection(
                 )
                 if (gateSample != null) {
                     Text(
-                        text = "Gate: ${gateSample.gateClass?.displayName ?: "Unavailable"} · " +
-                            "physical %.0f%% · %.1f ms · %s".format(
+                        text = stringResource(
+                            R.string.model_benchmark_gate_prefix,
+                            gateSample.gateClass?.displayName ?: stringResource(R.string.model_benchmark_unavailable),
+                        ) + " · " + "physical %.0f%% · %.1f ms · %s".format(
                                 gateSample.gatePhysicalProbability * 100,
                                 gateSample.gateTotalMs,
                                 if (gateSample.gateAccepted) "accepted" else "rejected",
@@ -691,13 +696,13 @@ private fun ModelPreviewCard(
                 if (preview != null) {
                     Image(
                         bitmap = preview.asImageBitmap(),
-                        contentDescription = "${item.model.displayName} detection preview",
+                        contentDescription = stringResource(R.string.model_benchmark_detection_preview, item.model.displayName),
                         contentScale = ContentScale.Fit,
                         modifier = Modifier.fillMaxSize(),
                     )
                 } else {
                     Text(
-                        text = "No preview",
+                        text = stringResource(R.string.model_benchmark_no_preview),
                         style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -715,9 +720,9 @@ private fun ModelPreviewCard(
                 ) {
                     Text(
                         text = when {
-                            item.error != null -> "Error"
-                            item.detected -> "Quad"
-                            else -> "None"
+                            item.error != null -> stringResource(R.string.model_benchmark_error)
+                            item.detected -> stringResource(R.string.model_benchmark_quad)
+                            else -> stringResource(R.string.model_benchmark_none)
                         },
                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp),
                         style = MaterialTheme.typography.labelSmall,
@@ -742,9 +747,9 @@ private fun ModelPreviewCard(
             } else {
                 Text(
                     text = if (item.detected) {
-                        "Detected · conf %.0f%%".format(item.confidence * 100)
+                        stringResource(R.string.model_benchmark_detected_conf_0f).format(item.confidence * 100)
                     } else {
-                        "Not detected"
+                        stringResource(R.string.model_benchmark_not_detected)
                     },
                     style = MaterialTheme.typography.bodySmall,
                     fontWeight = FontWeight.Medium,
@@ -755,7 +760,7 @@ private fun ModelPreviewCard(
                     },
                 )
                 Text(
-                    text = "pre %.0f · inf %.0f · post %.0f".format(
+                    text = stringResource(R.string.model_benchmark_pre_0f_inf_0f_post).format(
                         item.preprocessingMs,
                         item.inferenceMs,
                         item.postprocessingMs,
@@ -764,12 +769,12 @@ private fun ModelPreviewCard(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 Text(
-                    text = "total %.1f ms".format(item.totalMs),
+                    text = stringResource(R.string.model_benchmark_total_1f_ms).format(item.totalMs),
                     style = MaterialTheme.typography.labelMedium,
                     fontWeight = FontWeight.SemiBold,
                 )
                 Text(
-                    text = "Pipeline: %s · %.1f ms".format(
+                    text = stringResource(R.string.model_benchmark_pipeline_s_1f_ms).format(
                         if (item.pipelineDetected) "accepted" else "rejected",
                         item.pipelineTotalMs,
                     ),

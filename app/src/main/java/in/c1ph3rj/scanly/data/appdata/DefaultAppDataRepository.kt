@@ -1,5 +1,7 @@
 package `in`.c1ph3rj.scanly.data.appdata
 
+import `in`.c1ph3rj.scanly.core.common.appString
+import `in`.c1ph3rj.scanly.R
 import android.content.Context
 import androidx.room.withTransaction
 import androidx.work.WorkManager
@@ -47,7 +49,7 @@ class DefaultAppDataRepository @Inject constructor(
                 onFailure = { throwable ->
                     ScanlyResult.Failure(
                         ScanlyError(
-                            message = throwable.message ?: "Could not calculate storage usage.",
+                            message = throwable.message ?: appString(R.string.error_could_not_calculate_storage_usage),
                             cause = throwable,
                         ),
                     )
@@ -83,7 +85,7 @@ class DefaultAppDataRepository @Inject constructor(
                     onFailure = { throwable ->
                         ScanlyResult.Failure(
                             ScanlyError(
-                                message = throwable.message ?: "Could not clear app data.",
+                                message = throwable.message ?: appString(R.string.error_could_not_clear_app_data),
                                 cause = throwable,
                             ),
                         )
@@ -112,7 +114,7 @@ class DefaultAppDataRepository @Inject constructor(
                 onFailure = { throwable ->
                     ScanlyResult.Failure(
                         ScanlyError(
-                            message = throwable.message ?: "Could not clear temporary exports.",
+                            message = throwable.message ?: appString(R.string.error_could_not_clear_temporary_exports),
                             cause = throwable,
                         ),
                     )
@@ -137,7 +139,7 @@ class DefaultAppDataRepository @Inject constructor(
                 onFailure = { throwable ->
                     ScanlyResult.Failure(
                         ScanlyError(
-                            message = throwable.message ?: "Could not remove old backup files.",
+                            message = throwable.message ?: appString(R.string.error_could_not_remove_old_backup_files),
                             cause = throwable,
                         ),
                     )

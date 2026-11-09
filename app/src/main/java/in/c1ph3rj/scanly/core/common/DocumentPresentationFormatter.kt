@@ -6,10 +6,12 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
 
 object DocumentPresentationFormatter {
-    private const val untitledDocument = "Untitled document"
-    private const val untitledFolder = "Untitled folder"
+    private val untitledDocument: String get() = appString(R.string.document_presentation_formatter_untitled_document)
+    private val untitledFolder: String get() = appString(R.string.document_presentation_formatter_untitled_folder)
     private const val untitledFileStem = "scanly_document"
 
     fun normalizeTitle(rawTitle: String): String {
@@ -52,7 +54,7 @@ object DocumentPresentationFormatter {
                     DateFormat.SHORT,
                     locale,
                 ).format(date)
-                "Scan $dateTime"
+                appString(R.string.document_presentation_formatter_scan, dateTime)
             }
 
             DocumentTitleFormat.DocumentDateTime -> {
@@ -61,17 +63,17 @@ object DocumentPresentationFormatter {
                     DateFormat.SHORT,
                     locale,
                 ).format(date)
-                "Document $dateTime"
+                appString(R.string.document_presentation_formatter_document, dateTime)
             }
 
             DocumentTitleFormat.ScanDate -> {
                 val shortDate = DateFormat.getDateInstance(DateFormat.SHORT, locale).format(date)
-                "Scan $shortDate"
+                appString(R.string.document_presentation_formatter_scan, shortDate)
             }
 
             DocumentTitleFormat.ScanIsoDate -> {
                 val isoDate = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(date)
-                "Scan $isoDate"
+                appString(R.string.document_presentation_formatter_scan, isoDate)
             }
         }
     }
@@ -98,7 +100,7 @@ object DocumentPresentationFormatter {
                     DateFormat.SHORT,
                     locale,
                 ).format(date)
-                "Folder $dateTime"
+                appString(R.string.document_presentation_formatter_folder, dateTime)
             }
 
             GroupTitleFormat.NewFolderDateTime -> {
@@ -107,17 +109,17 @@ object DocumentPresentationFormatter {
                     DateFormat.SHORT,
                     locale,
                 ).format(date)
-                "New folder $dateTime"
+                appString(R.string.document_presentation_formatter_new_folder, dateTime)
             }
 
             GroupTitleFormat.FolderDate -> {
                 val shortDate = DateFormat.getDateInstance(DateFormat.SHORT, locale).format(date)
-                "Folder $shortDate"
+                appString(R.string.document_presentation_formatter_folder, shortDate)
             }
 
             GroupTitleFormat.FolderIsoDate -> {
                 val isoDate = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(date)
-                "Folder $isoDate"
+                appString(R.string.document_presentation_formatter_folder, isoDate)
             }
         }
     }
@@ -179,7 +181,7 @@ object DocumentPresentationFormatter {
             DateFormat.SHORT,
             Locale.getDefault(),
         ).format(Date(atMillis))
-        return "Imported $dateTime"
+        return appString(R.string.document_presentation_formatter_imported, dateTime)
     }
 
     fun safeFileStem(title: String): String {

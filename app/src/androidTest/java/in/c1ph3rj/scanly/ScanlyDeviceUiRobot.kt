@@ -62,14 +62,19 @@ internal fun ComposeTestRule.awaitText(text: String, timeoutMs: Long = DEFAULT_T
 
 internal fun ComposeTestRule.completeOnboardingIfNeeded() {
     waitUntil(DEFAULT_TIMEOUT_MS) {
-        hasTag(ScanlyTestTags.ONBOARDING_GET_STARTED) ||
+        hasTag("onboarding_skip") ||
+            hasTag(ScanlyTestTags.ONBOARDING_GET_STARTED) ||
             hasTag(ScanlyTestTags.HOME_SCREEN) ||
             hasTag(ScanlyTestTags.NAV_HOME)
+    }
+    if (hasTag("onboarding_skip")) {
+        onNodeWithTag("onboarding_skip").performClick()
+        awaitTag(ScanlyTestTags.ONBOARDING_GET_STARTED)
     }
     if (hasTag(ScanlyTestTags.ONBOARDING_GET_STARTED)) {
         onNodeWithTag(ScanlyTestTags.ONBOARDING_GET_STARTED).performClick()
     }
-    // The camera step only shows when the camera is not granted yet; skip it if it does.
+    // Camera permission is an optional sheet, and is absent when already granted.
     waitForIdle()
     if (hasTag("onboarding_camera_later")) {
         onNodeWithTag("onboarding_camera_later").performClick()

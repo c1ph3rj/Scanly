@@ -19,6 +19,8 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
 
 @Singleton
 class DefaultPageMarkupRepository @Inject constructor(
@@ -42,7 +44,7 @@ class DefaultPageMarkupRepository @Inject constructor(
                         updatedAtMillis = row.updatedAtMillis,
                     )
                 }
-            }.toScanlyResult("Could not load signatures for this document.")
+            }.toScanlyResult(appString(R.string.default_page_markup_repository_could_not_load_signatures_for))
         }
 
     override suspend fun saveDocumentMarkups(
@@ -51,7 +53,7 @@ class DefaultPageMarkupRepository @Inject constructor(
     ): ScanlyResult<Unit> = withContext(dispatchers.io) {
         operationCoordinator.withMutation {
             runCatchingCancellable {
-                val document = documentDao.getDocument(documentId) ?: error("Document not found.")
+                val document = documentDao.getDocument(documentId) ?: error(appString(R.string.error_document_not_found))
                 val pages = scanPageDao.getPages(documentId).associateBy { it.id }
                 val timestamp = System.currentTimeMillis()
                 // Fail before touching any page, so a stale signature never leaves a half-saved document.
@@ -61,7 +63,7 @@ class DefaultPageMarkupRepository @Inject constructor(
                     marks.filterIsInstance<SignMark.Image>()
                         .filterNot { mark -> PageMarkupStore.isOwnedMarkupImage(mark.imagePath) }
                         .forEach { mark ->
-                            require(File(mark.imagePath).isFile) { "A signature image is missing. Place it again." }
+                            require(File(mark.imagePath).isFile) { appString(R.string.error_a_signature_image_is_missing_place_it) }
                         }
                 }
                 val changedPages = mutableListOf<ScanPageEntity>()
@@ -82,7 +84,7 @@ class DefaultPageMarkupRepository @Inject constructor(
                         }
                     }
                 }
-            }.toScanlyResult("Could not save the signed pages.")
+            }.toScanlyResult(appString(R.string.default_page_markup_repository_could_not_save_the_signed))
         }
     }
 

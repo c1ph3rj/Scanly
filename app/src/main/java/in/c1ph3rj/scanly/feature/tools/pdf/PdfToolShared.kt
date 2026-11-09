@@ -11,6 +11,8 @@ import `in`.c1ph3rj.scanly.domain.model.ExportArtifact
 import `in`.c1ph3rj.scanly.domain.model.PdfToolSource
 import `in`.c1ph3rj.scanly.domain.model.ShareArtifact
 import java.io.File
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
 
 @Composable
 fun rememberSinglePdfPicker(onPicked: (Uri) -> Unit) =
@@ -24,7 +26,7 @@ fun rememberMultiPdfPicker(onPicked: (List<Uri>) -> Unit) =
         if (uris.isNotEmpty()) onPicked(uris)
     }
 
-fun shareExportArtifact(context: Context, artifact: ExportArtifact, title: String = "Scanly PDF") {
+fun shareExportArtifact(context: Context, artifact: ExportArtifact, title: String = appString(R.string.pdf_tool_shared_scanly_pdf)) {
     sharePreparedFiles(
         context = context,
         artifact = ShareArtifact(
@@ -58,7 +60,7 @@ fun sharePreparedFiles(context: Context, artifact: ShareArtifact) {
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
     }
-    context.startActivity(Intent.createChooser(shareIntent, "Share ${artifact.title}"))
+    context.startActivity(Intent.createChooser(shareIntent, appString(R.string.document_detail_share, artifact.title)))
 }
 
 fun uriDisplayName(context: Context, uri: Uri): String {

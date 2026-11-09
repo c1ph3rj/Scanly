@@ -1,5 +1,7 @@
 package `in`.c1ph3rj.scanly.data.settings
 
+import `in`.c1ph3rj.scanly.core.common.appString
+import `in`.c1ph3rj.scanly.R
 import android.content.Context
 import android.os.Build
 import android.content.Intent
@@ -98,7 +100,7 @@ class DefaultSettingsRepository @Inject constructor(
                 onSuccess = { ScanlyResult.Success(Unit) },
                 onFailure = { throwable ->
                     ScanlyResult.Failure(
-                        ScanlyError(throwable.message ?: "Could not update text recognition engine.", throwable),
+                        ScanlyError(throwable.message ?: appString(R.string.error_could_not_update_text_recognition_engine), throwable),
                     )
                 },
             )
@@ -145,7 +147,7 @@ class DefaultSettingsRepository @Inject constructor(
                 onFailure = { throwable ->
                     ScanlyResult.Failure(
                         ScanlyError(
-                            message = throwable.message ?: "Could not update theme mode.",
+                            message = throwable.message ?: appString(R.string.error_could_not_update_theme_mode),
                             cause = throwable,
                         ),
                     )
@@ -177,7 +179,7 @@ class DefaultSettingsRepository @Inject constructor(
                 onFailure = { throwable ->
                     ScanlyResult.Failure(
                         ScanlyError(
-                            message = throwable.message ?: "Could not finish onboarding.",
+                            message = throwable.message ?: appString(R.string.error_could_not_finish_onboarding),
                             cause = throwable,
                         ),
                     )
@@ -199,7 +201,7 @@ class DefaultSettingsRepository @Inject constructor(
                 onFailure = { throwable ->
                     ScanlyResult.Failure(
                         ScanlyError(
-                            message = throwable.message ?: "Could not load settings content.",
+                            message = throwable.message ?: appString(R.string.error_could_not_load_settings_content),
                             cause = throwable,
                         ),
                     )
@@ -285,7 +287,7 @@ class DefaultSettingsRepository @Inject constructor(
             onFailure = { throwable ->
                 ScanlyResult.Failure(
                     ScanlyError(
-                        message = throwable.message ?: "Could not update the save location.",
+                        message = throwable.message ?: appString(R.string.error_could_not_update_the_save_location),
                         cause = throwable,
                     ),
                 )
@@ -302,7 +304,7 @@ class DefaultSettingsRepository @Inject constructor(
         }.fold(
             onSuccess = { ScanlyResult.Success(Unit) },
             onFailure = { throwable ->
-                ScanlyResult.Failure(ScanlyError(throwable.message ?: "Could not update model selection.", throwable))
+                ScanlyResult.Failure(ScanlyError(throwable.message ?: appString(R.string.error_could_not_update_model_selection), throwable))
             },
         )
     }
@@ -316,7 +318,7 @@ class DefaultSettingsRepository @Inject constructor(
         }.fold(
             onSuccess = { ScanlyResult.Success(Unit) },
             onFailure = { throwable ->
-                ScanlyResult.Failure(ScanlyError(throwable.message ?: "Could not update document detection settings.", throwable))
+                ScanlyResult.Failure(ScanlyError(throwable.message ?: appString(R.string.error_could_not_update_document_detection_settings), throwable))
             },
         )
     }

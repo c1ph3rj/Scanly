@@ -29,6 +29,8 @@ import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
 import kotlin.math.abs
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
 
 /** One-shot events for the document sign screen. */
 sealed interface DocumentSignEvent {
@@ -129,7 +131,7 @@ class DocumentSignViewModel @Inject constructor(
             if (!markupsLoaded) {
                 _events.send(
                     DocumentSignEvent.Message(
-                        "Saved signatures couldn't be loaded, so this document can't be signed right now.",
+                        appString(R.string.document_sign_saved_signatures_couldn_t_be),
                     ),
                 )
                 return@launch
@@ -235,7 +237,7 @@ class DocumentSignViewModel @Inject constructor(
         const val PageBitmapMaxEdge = 1400
         const val KeptPageRadius = 2
         const val FallbackPageAspect = 0.707f
-        const val UnprocessedPagesMessage = "Some pages are still processing and can't be signed yet."
+        val UnprocessedPagesMessage: String get() = appString(R.string.document_sign_some_pages_are_still_processing)
     }
 }
 

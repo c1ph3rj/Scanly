@@ -64,12 +64,19 @@ import `in`.c1ph3rj.scanly.feature.tools.ToolSearchField
 import `in`.c1ph3rj.scanly.feature.tools.ToolSectionLabel
 import `in`.c1ph3rj.scanly.feature.tools.ToolTokens
 import `in`.c1ph3rj.scanly.feature.tools.ToolTopBar
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
+import androidx.compose.ui.res.stringResource
+import androidx.annotation.StringRes
 
 /** Library ordering offered by the picker's sort pill. */
-enum class PdfPickerSort(val label: String) {
-    Recent("Recent"),
-    Name("Name"),
-    MostPages("Most pages"),
+enum class PdfPickerSort(@param:StringRes val labelRes: Int) {
+    Recent(R.string.library_search_recent),
+    Name(R.string.qr_create_name),
+    MostPages(R.string.pdf_picker_sort_most_pages),
+    ;
+
+    val label: String get() = appString(labelRes)
 }
 
 /**
@@ -94,13 +101,13 @@ fun PdfFilePickerScreen(
     onPickDevice: () -> Unit,
     onPickLibrary: (ScanDocument) -> Unit,
     modifier: Modifier = Modifier,
-    deviceTitle: String = "Phone storage",
-    deviceSubtitle: String = "Downloads, Drive and other apps",
+    deviceTitle: String = stringResource(R.string.pdf_file_picker_phone_storage),
+    deviceSubtitle: String = stringResource(R.string.pdf_file_picker_downloads_drive_and_other_apps),
     deviceIcon: ImageVector = Icons.Outlined.PhoneAndroid,
-    itemNoun: String = "PDFs",
+    itemNoun: String = stringResource(R.string.pdf_file_picker_pdfs),
     countLabel: (Int) -> String = ::formatMergeFileCount,
-    emptyLibraryHint: String = "No scans yet. Pick a PDF from phone storage, or scan one first.",
-    noPagesHint: String = "Your scans have no pages yet. Pick a PDF from phone storage.",
+    emptyLibraryHint: String = stringResource(R.string.pdf_file_picker_no_scans_yet_pick_a),
+    noPagesHint: String = stringResource(R.string.pdf_file_picker_your_scans_have_no_pages),
     selectedOrder: List<String>? = null,
     defaultSort: PdfPickerSort = PdfPickerSort.Recent,
     rowMeta: (ScanDocument) -> String = ::defaultPdfPickerMeta,
@@ -145,7 +152,7 @@ fun PdfFilePickerScreen(
                         ToolSearchField(
                             value = query,
                             onValueChange = { query = it },
-                            placeholder = "Search your $itemNoun",
+                            placeholder = stringResource(R.string.pdf_file_picker_search_your, itemNoun),
                         )
                     }
                     headerExtra?.invoke(this)
@@ -206,7 +213,7 @@ fun PdfFilePickerScreen(
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             ToolSectionLabel(
-                                text = "In Scanly · ${countLabel(usable.size)}",
+                                text = stringResource(R.string.pdf_file_picker_in_scanly, countLabel(usable.size)),
                                 modifier = Modifier.weight(1f),
                             )
                             Surface(
@@ -219,7 +226,7 @@ fun PdfFilePickerScreen(
                                 border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
                                 modifier = Modifier
                                     .heightIn(min = 36.dp)
-                                    .semantics { stateDescription = "Sorted by ${sort.label}" },
+                                    .semantics { stateDescription = appString(R.string.pdf_file_picker_sorted_by, sort.label) },
                             ) {
                                 Row(
                                     modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
@@ -251,9 +258,9 @@ fun PdfFilePickerScreen(
                     val footer = when {
                         usable.isEmpty() && hiddenEmpty == 0 -> emptyLibraryHint
                         usable.isEmpty() -> noPagesHint
-                        visible.isEmpty() -> "No $itemNoun match \"${query.trim()}\"."
-                        hiddenEmpty == 1 -> "1 empty scan is hidden"
-                        hiddenEmpty > 1 -> "$hiddenEmpty empty scans are hidden"
+                        visible.isEmpty() -> stringResource(R.string.pdf_file_picker_no_match, itemNoun, query.trim())
+                        hiddenEmpty == 1 -> stringResource(R.string.pdf_file_picker_1_empty_scan_is_hidden)
+                        hiddenEmpty > 1 -> stringResource(R.string.pdf_file_picker_empty_scans_are_hidden, hiddenEmpty)
                         else -> null
                     }
                     if (footer != null) {
@@ -293,7 +300,7 @@ private fun PdfPickerRow(
             .fillMaxWidth()
             .semantics {
                 if (multiSelect) {
-                    stateDescription = if (selected) "Selected, position ${selectedPosition!! + 1}" else "Not selected"
+                    stateDescription = if (selected) appString(R.string.pdf_file_picker_selected_position, selectedPosition!! + 1) else appString(R.string.group_detail_not_selected)
                 }
             },
     ) {
@@ -417,10 +424,10 @@ fun defaultPdfPickerMeta(document: ScanDocument): String =
 fun formatPdfRelativeTime(millis: Long, now: Long = System.currentTimeMillis()): String {
     if (millis <= 0L) return ""
     return when {
-        DateUtils.isToday(millis) -> "Today"
-        DateUtils.isToday(millis + DateUtils.DAY_IN_MILLIS) -> "Yesterday"
+        DateUtils.isToday(millis) -> appString(R.string.library_card_presentation_today)
+        DateUtils.isToday(millis + DateUtils.DAY_IN_MILLIS) -> appString(R.string.library_card_presentation_yesterday)
         now - millis < 7 * DateUtils.DAY_IN_MILLIS ->
-            "${((now - millis) / DateUtils.DAY_IN_MILLIS).coerceAtLeast(2)} days ago"
+            appString(R.string.pdf_file_picker_days_ago, ((now - millis) / DateUtils.DAY_IN_MILLIS).coerceAtLeast(2))
         else -> java.text.SimpleDateFormat("d MMM", java.util.Locale.getDefault()).format(java.util.Date(millis))
     }
 }

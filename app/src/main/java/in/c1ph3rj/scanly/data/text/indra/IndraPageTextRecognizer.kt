@@ -23,6 +23,8 @@ import org.opencv.core.Mat
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
 
 /**
  * On-device OCR using the LiteRT port of datalab-to/indra-ocr: orientation and skew, line
@@ -91,7 +93,7 @@ class IndraPageTextRecognizer @Inject constructor(
         fun Mat.track(): Mat = also { tracked += it }
         try {
             val bitmap = decodeForRecognition(imagePath)
-                ?: throw IllegalStateException("Page image could not be read.")
+                ?: throw IllegalStateException(appString(R.string.error_page_image_could_not_be_read))
             var gray = try {
                 IndraImageOps.grayFromBitmap(bitmap)
             } finally {

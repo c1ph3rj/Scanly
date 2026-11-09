@@ -13,6 +13,8 @@ import `in`.c1ph3rj.scanly.domain.trash.TrashPolicy
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import javax.inject.Inject
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
 
 /** Moves a document to Recently deleted and offers Undo app-wide. */
 class MoveDocumentToTrashUseCase @Inject constructor(
@@ -52,7 +54,7 @@ class MovePageToTrashUseCase @Inject constructor(
     suspend operator fun invoke(pageId: String, pageNumber: Int): ScanlyResult<Unit> =
         repository.movePageToTrash(pageId).also { result ->
             if (result is ScanlyResult.Success) {
-                trashEvents.notifyTrashed(TrashNotice(TrashKind.PAGE, pageId, "Page $pageNumber"))
+                trashEvents.notifyTrashed(TrashNotice(TrashKind.PAGE, pageId, appString(R.string.trash_use_cases_page, pageNumber)))
             }
         }
 }

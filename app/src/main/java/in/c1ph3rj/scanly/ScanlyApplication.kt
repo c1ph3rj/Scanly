@@ -4,6 +4,8 @@ import android.app.Application
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import dagger.hilt.android.HiltAndroidApp
+import `in`.c1ph3rj.scanly.core.common.AppLocales
+import `in`.c1ph3rj.scanly.core.common.AppStrings
 import `in`.c1ph3rj.scanly.data.text.IcuRomanizer
 import `in`.c1ph3rj.scanly.data.text.TextIndexScheduler
 import `in`.c1ph3rj.scanly.domain.search.SearchTextDeriver
@@ -22,6 +24,9 @@ class ScanlyApplication : Application(), Configuration.Provider {
 
     override fun onCreate() {
         super.onCreate()
+        // First, so repositories, workers and widgets can resolve localized text.
+        AppLocales.applyDefaultLocale(this)
+        AppStrings.init(this)
         // Before the indexer runs, so derived text gets English-spelling keys from the start.
         SearchTextDeriver.romanizer = IcuRomanizer()
         // Keeps page text (and therefore search) caught up with every capture and edit.

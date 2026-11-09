@@ -68,6 +68,9 @@ import `in`.c1ph3rj.scanly.feature.components.ScanlyConfirmDialog
 import `in`.c1ph3rj.scanly.feature.components.ScanlyDetailScaffold
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import `in`.c1ph3rj.scanly.R
+import androidx.compose.ui.res.stringResource
+import `in`.c1ph3rj.scanly.core.common.appString
 
 @Composable
 fun SettingsStorageRoute(
@@ -92,12 +95,12 @@ fun SettingsStorageRoute(
                 )
                 viewModel.setExportDestination(
                     uriString = uri.toString(),
-                    displayName = queryDocumentName(context.contentResolver, uri) ?: "Selected folder",
+                    displayName = queryDocumentName(context.contentResolver, uri) ?: appString(R.string.storage_selected_folder),
                 )
             }.onFailure {
                 scope.launch {
                     snackbarHostState.showSnackbar(
-                        it.message ?: "Could not use the selected folder.",
+                        it.message ?: appString(R.string.storage_could_not_use_the_selected),
                     )
                 }
             }
@@ -152,7 +155,7 @@ private fun SettingsStorageScreen(
     val folderBusy = cleanupBusy || uiState.isClearingExportCache
 
     ScanlyDetailScaffold(
-        title = "Storage",
+        title = stringResource(R.string.settings_storage),
         onNavigateUp = onNavigateUp,
         snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { innerPadding ->
@@ -174,14 +177,14 @@ private fun SettingsStorageScreen(
             }
 
             item("location") {
-                SettingsGroup(title = "Save location") {
+                SettingsGroup(title = stringResource(R.string.storage_save_location)) {
                     SaveLocationRow(
                         label = uiState.exportDestination.exportLabel,
                         enabled = !folderBusy,
                         onClick = onChangeFolder,
                     )
                     Text(
-                        text = "PDFs and images you export are saved here.",
+                        text = stringResource(R.string.storage_pdfs_and_images_you_export),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 12.dp),
@@ -192,7 +195,7 @@ private fun SettingsStorageScreen(
                         )
                         SettingsActionRow(
                             icon = Icons.Outlined.Restore,
-                            title = "Use default folder",
+                            title = stringResource(R.string.storage_use_default_folder),
                             subtitle = "Downloads/Scanly",
                             enabled = !folderBusy,
                             isBusy = false,
@@ -203,27 +206,27 @@ private fun SettingsStorageScreen(
             }
 
             item("tidy") {
-                SettingsGroup(title = "Tidy up") {
+                SettingsGroup(title = stringResource(R.string.storage_tidy_up)) {
                     SettingsActionRow(
                         icon = Icons.Outlined.RestoreFromTrash,
-                        title = "Recently deleted",
-                        subtitle = "Restore deleted folders, documents and pages",
+                        title = stringResource(R.string.recently_deleted_recently_deleted),
+                        subtitle = stringResource(R.string.storage_restore_deleted_folders_documents_and),
                         enabled = true,
                         isBusy = false,
                         onClick = onOpenRecentlyDeleted,
                     )
                     SettingsActionRow(
                         icon = Icons.Filled.Description,
-                        title = "Remove empty documents",
-                        subtitle = "Documents with no pages",
+                        title = stringResource(R.string.storage_remove_empty_documents_2),
+                        subtitle = stringResource(R.string.storage_documents_with_no_pages),
                         enabled = !cleanupBusy,
                         isBusy = uiState.isCleaningEmptyDocuments,
                         onClick = { showEmptyDocumentsWarning = true },
                     )
                     SettingsActionRow(
                         icon = Icons.Filled.FolderOff,
-                        title = "Remove empty folders",
-                        subtitle = "Folders with no documents",
+                        title = stringResource(R.string.storage_remove_empty_folders_2),
+                        subtitle = stringResource(R.string.storage_folders_with_no_documents),
                         enabled = !cleanupBusy,
                         isBusy = uiState.isCleaningEmptyFolders,
                         onClick = { showEmptyFoldersWarning = true },
@@ -232,7 +235,7 @@ private fun SettingsStorageScreen(
             }
 
             item("danger") {
-                SettingsGroup(title = "Danger zone") {
+                SettingsGroup(title = stringResource(R.string.storage_danger_zone)) {
                     Row(
                         modifier = Modifier.settingsRowSurface(
                             onClick = if (cleanupBusy) null else ({ showClearWarning = true }),
@@ -251,13 +254,13 @@ private fun SettingsStorageScreen(
                             verticalArrangement = Arrangement.spacedBy(2.dp),
                         ) {
                             Text(
-                                text = "Clear all data",
+                                text = stringResource(R.string.storage_clear_all_data_2),
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.Medium,
                                 color = MaterialTheme.colorScheme.error,
                             )
                             Text(
-                                text = "Deletes every document, folder and page on this device",
+                                text = stringResource(R.string.storage_deletes_every_document_folder_and),
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
@@ -276,10 +279,9 @@ private fun SettingsStorageScreen(
 
     if (showEmptyDocumentsWarning) {
         ScanlyConfirmDialog(
-            title = "Remove empty documents?",
-            text = "Deletes every document that has no pages, including abandoned captures, " +
-                "and frees their local storage. Documents that still have pages are kept.",
-            confirmLabel = "Remove",
+            title = stringResource(R.string.storage_remove_empty_documents),
+            text = stringResource(R.string.storage_deletes_every_document_that_has),
+            confirmLabel = stringResource(R.string.group_detail_remove),
             confirmDestructive = true,
             onDismiss = { showEmptyDocumentsWarning = false },
             onConfirm = {
@@ -293,10 +295,9 @@ private fun SettingsStorageScreen(
 
     if (showEmptyFoldersWarning) {
         ScanlyConfirmDialog(
-            title = "Remove empty folders?",
-            text = "Deletes every folder (group) that contains no documents. " +
-                "Folders that still have documents are kept.",
-            confirmLabel = "Remove",
+            title = stringResource(R.string.storage_remove_empty_folders),
+            text = stringResource(R.string.storage_deletes_every_folder_group_that),
+            confirmLabel = stringResource(R.string.group_detail_remove),
             confirmDestructive = true,
             onDismiss = { showEmptyFoldersWarning = false },
             onConfirm = {
@@ -310,10 +311,9 @@ private fun SettingsStorageScreen(
 
     if (showClearWarning) {
         ScanlyConfirmDialog(
-            title = "Clear all data?",
-            text = "This permanently deletes all documents, folders, pages and temporary exports on this " +
-                "device. Files you already saved to your export folder are kept.",
-            confirmLabel = "Delete",
+            title = stringResource(R.string.storage_clear_all_data),
+            text = stringResource(R.string.storage_this_permanently_deletes_all_documents),
+            confirmLabel = stringResource(R.string.library_card_presentation_delete),
             confirmDestructive = true,
             onDismiss = { showClearWarning = false },
             onConfirm = {
@@ -360,7 +360,7 @@ private fun SaveLocationRow(
             verticalArrangement = Arrangement.spacedBy(2.dp),
         ) {
             Text(
-                text = "Exports save to",
+                text = stringResource(R.string.storage_exports_save_to),
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -373,7 +373,7 @@ private fun SaveLocationRow(
             )
         }
         TextButton(onClick = onClick, enabled = enabled) {
-            Text("Change")
+            Text(stringResource(R.string.storage_change))
         }
     }
 }
@@ -408,7 +408,7 @@ private fun LoadingUsageContent() {
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         Text(
-            text = "Calculating…",
+            text = stringResource(R.string.storage_calculating),
             style = MaterialTheme.typography.labelLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
@@ -428,7 +428,7 @@ private fun UsageContent(
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Text(
-                text = "Scanly is using",
+                text = stringResource(R.string.storage_scanly_is_using),
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -455,17 +455,17 @@ private fun UsageContent(
 
         Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
             StorageLegendRow(
-                label = "Library files",
+                label = stringResource(R.string.storage_library_files),
                 bytes = usage.documentsBytes,
                 color = libraryColor,
             )
             StorageLegendRow(
-                label = "Database & search index",
+                label = stringResource(R.string.storage_database_search_index),
                 bytes = usage.databaseBytes,
                 color = indexColor,
             )
             StorageLegendRow(
-                label = "Temporary exports",
+                label = stringResource(R.string.storage_temporary_exports),
                 bytes = usage.exportCacheBytes,
                 color = exportsColor,
                 trailing = if (usage.exportCacheBytes > 0L) {
@@ -477,7 +477,7 @@ private fun UsageContent(
                             )
                         } else {
                             TextButton(onClick = onClearExportCache) {
-                                Text("Clear")
+                                Text(stringResource(R.string.group_detail_clear))
                             }
                         }
                     }

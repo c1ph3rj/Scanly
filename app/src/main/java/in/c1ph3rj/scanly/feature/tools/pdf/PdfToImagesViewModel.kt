@@ -36,6 +36,8 @@ import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
 
 data class PdfToImagesUiState(
     val libraryDocuments: List<ScanDocument> = emptyList(),
@@ -258,7 +260,7 @@ class PdfToImagesViewModel @Inject constructor(
         if (state.isExporting) return
         val pages = state.sortedSelection
         if (pages.isEmpty()) {
-            emitMessage("Choose at least one page.")
+            emitMessage(appString(R.string.import_pdf_to_library_use_case_choose_at_least_one_page))
             return
         }
         val baseName = sanitizePdfBaseName(state.source?.label().orEmpty()).ifBlank { "Scanly" }

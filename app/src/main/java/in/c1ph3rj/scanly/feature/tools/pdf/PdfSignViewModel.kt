@@ -33,6 +33,8 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 import kotlin.math.abs
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
 
 /**
  * State and actions for the Sign PDF tool.
@@ -157,17 +159,17 @@ class PdfSignViewModel @Inject constructor(
     fun run() {
         val session = _session.value
         if (session == null) {
-            emitMessage("Open a PDF first.")
+            emitMessage(appString(R.string.pdf_sign_open_a_pdf_first))
             return
         }
         val marks = editor.marks()
         if (marks.isEmpty()) {
-            emitMessage("Place a signature first.")
+            emitMessage(appString(R.string.pdf_sign_place_a_signature_first))
             return
         }
         val source = _uiState.value.sources.firstOrNull()
         runProcess(
-            message = "Signing…",
+            message = appString(R.string.pdf_sign_signing),
             outputName = suggestPdfOutputName(source, "signed"),
         ) {
             signPdfUseCase(session, marks)

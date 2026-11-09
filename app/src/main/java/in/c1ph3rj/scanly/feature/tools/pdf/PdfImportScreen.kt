@@ -70,6 +70,9 @@ import `in`.c1ph3rj.scanly.feature.tools.ToolTokens
 import `in`.c1ph3rj.scanly.feature.tools.ToolTopBar
 import `in`.c1ph3rj.scanly.feature.tools.ToolWorkingState
 import kotlinx.coroutines.flow.collectLatest
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
+import androidx.compose.ui.res.stringResource
 
 /** The screens of Add to library, in order: Choose a file, Pages and options, Adding, Done. */
 private enum class PdfImportStep { Pick, Pages, Working, Done }
@@ -154,9 +157,9 @@ fun PdfImportRoute(
             when (step) {
                 // Library documents are already in Scanly, so only files on the phone are offered.
                 PdfImportStep.Pick -> PdfFilePickerScreen(
-                    title = "Add PDF to library",
-                    subtitle = "Turn a PDF into a Scanly document you can edit, sign and search.",
-                    stepText = "Step 1 of 3 · Choose a file",
+                    title = stringResource(R.string.pdf_import_add_pdf_to_library),
+                    subtitle = stringResource(R.string.pdf_import_turn_a_pdf_into_a),
+                    stepText = stringResource(R.string.pdf_compress_step_1_of_3_choose),
                     documents = emptyList(),
                     onBack = onPickerBack,
                     onPickDevice = { devicePicker.launch(arrayOf("application/pdf")) },
@@ -225,11 +228,11 @@ private fun ColumnScope.PagesStep(
             modifier = Modifier.padding(top = 8.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
-            ToolFieldLabel(text = "Document name")
+            ToolFieldLabel(text = stringResource(R.string.pdf_import_document_name))
             ToolTextField(
                 value = uiState.title,
                 onValueChange = onTitleChange,
-                placeholder = "Name this document",
+                placeholder = stringResource(R.string.pdf_import_name_this_document),
                 isError = uiState.title.isBlank(),
                 keyboardOptions = KeyboardOptions(
                     capitalization = KeyboardCapitalization.Sentences,
@@ -239,7 +242,7 @@ private fun ColumnScope.PagesStep(
         }
     }
 
-    ToolTopBar(onBack = onBack, stepText = "Step 2 of 3 · Pages and name")
+    ToolTopBar(onBack = onBack, stepText = stringResource(R.string.pdf_import_step_2_of_3_pages))
     // Wide landscape: pages on the start side, the settings beside them instead of below.
     val split = rememberToolSplitLayout() && uiState.isReady && !uiState.needsPassword
     val grid: @Composable (Modifier) -> Unit = { gridModifier ->
@@ -267,7 +270,7 @@ private fun ColumnScope.PagesStep(
         ) {
             fullWidth("title") {
                 Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                    ToolLargeTitle(title = "Add to library")
+                    ToolLargeTitle(title = stringResource(R.string.pdf_import_add_to_library))
                     FileSummaryLine(
                         name = uiState.source?.label().orEmpty(),
                         pageCount = uiState.pageCount,
@@ -316,7 +319,7 @@ private fun ColumnScope.PagesStep(
                                 )
                             }
                             if (uiState.pageCount > 2) {
-                                GridHint(text = "Tap a page, or long-press and drag across several.")
+                                GridHint(text = stringResource(R.string.pdf_import_tap_a_page_or_long))
                             }
                         }
                     }
@@ -326,7 +329,7 @@ private fun ColumnScope.PagesStep(
                             bitmap = uiState.thumbnails[index],
                             label = (index + 1).toString(),
                             selected = index in uiState.selectedPages,
-                            contentDescription = "Page ${index + 1}",
+                            contentDescription = stringResource(R.string.trash_use_cases_page, index + 1),
                             onToggle = { onTogglePage(index) },
                         )
                     }
@@ -361,7 +364,7 @@ private fun ColumnScope.PagesStep(
             icon = Icons.Outlined.LibraryAdd,
         )
         Text(
-            text = "Your PDF file stays as it is; Scanly keeps its own copy",
+            text = stringResource(R.string.pdf_import_your_pdf_file_stays_as),
             style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.5.sp),
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center,
@@ -376,7 +379,7 @@ private fun LookSection(selected: PdfImportLook, onSelected: (PdfImportLook) -> 
         modifier = Modifier.padding(top = 12.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
-        ToolFieldLabel(text = "Look")
+        ToolFieldLabel(text = stringResource(R.string.pdf_import_look))
         Row(
             modifier = Modifier.fillMaxWidth().selectableGroup(),
             horizontalArrangement = Arrangement.spacedBy(10.dp),
@@ -424,8 +427,8 @@ private fun WorkingStep(uiState: PdfImportUiState) {
         pages.getOrNull(i)?.let { uiState.thumbnails[it] }
     }
     ToolWorkingState(
-        title = "Adding to library…",
-        caption = "${(uiState.importedCount + 1).coerceAtMost(total)} of $total",
+        title = stringResource(R.string.pdf_import_adding_to_library),
+        caption = stringResource(R.string.common_current_of_total, (uiState.importedCount + 1).coerceAtMost(total), total),
         progress = uiState.importedCount.toFloat() / total,
         preview = {
             Column(
@@ -439,7 +442,7 @@ private fun WorkingStep(uiState: PdfImportUiState) {
                 )
                 if (currentPage != null) {
                     Text(
-                        text = "Page ${currentPage + 1}",
+                        text = stringResource(R.string.trash_use_cases_page, currentPage + 1),
                         style = MaterialTheme.typography.labelLarge.copy(fontSize = 13.sp),
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -463,9 +466,9 @@ private fun ColumnScope.DoneStep(
 
     ToolTopBar(
         onBack = onClose,
-        stepText = "Step 3 of 3 · Done",
+        stepText = stringResource(R.string.pdf_import_step_3_of_3_done),
         backIcon = Icons.Outlined.Close,
-        backContentDescription = "Close",
+        backContentDescription = stringResource(R.string.zoomable_image_close),
         centerStep = true,
     )
     val firstPage = uiState.importPages.firstOrNull()
@@ -477,9 +480,8 @@ private fun ColumnScope.DoneStep(
         verticalArrangement = Arrangement.spacedBy(24.dp),
     ) {
         ToolLargeTitle(
-            title = "Added to your library",
-            subtitle = "${uiState.title.trim()} · ${formatPdfPageCount(result.pageCount)}. " +
-                "Crop, filter, sign or search it like any scan.",
+            title = stringResource(R.string.pdf_import_added_to_your_library),
+            subtitle = stringResource(R.string.pdf_import_crop_filter_sign_or_search, uiState.title.trim(), formatPdfPageCount(result.pageCount)),
         )
         Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
             val cover = firstPage?.let { uiState.thumbnails[it] }
@@ -494,13 +496,13 @@ private fun ColumnScope.DoneStep(
     ToolBottomBar {
         Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             ToolSecondaryButton(
-                text = "Another PDF",
+                text = stringResource(R.string.pdf_import_another_pdf),
                 onClick = onImportAnother,
                 icon = Icons.Outlined.PictureAsPdf,
                 modifier = Modifier.weight(1f),
             )
             ToolPrimaryButton(
-                text = "Open document",
+                text = stringResource(R.string.library_search_open_document),
                 onClick = onOpenDocument,
                 icon = Icons.Outlined.Description,
                 modifier = Modifier.weight(1f),
@@ -511,7 +513,7 @@ private fun ColumnScope.DoneStep(
 
 /** "Add 12 pages", "Add 1 page", or "Add to library" when nothing is picked yet. */
 internal fun formatPdfImportButtonLabel(selectedCount: Int): String = when (selectedCount) {
-    0 -> "Add to library"
-    1 -> "Add 1 page"
-    else -> "Add $selectedCount pages"
+    0 -> appString(R.string.pdf_import_add_to_library)
+    1 -> appString(R.string.pdf_import_add_1_page)
+    else -> appString(R.string.pdf_import_add_pages, selectedCount)
 }

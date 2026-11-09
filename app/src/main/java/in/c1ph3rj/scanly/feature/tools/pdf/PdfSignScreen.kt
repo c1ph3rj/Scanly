@@ -1,5 +1,6 @@
 package `in`.c1ph3rj.scanly.feature.tools.pdf
 
+import `in`.c1ph3rj.scanly.core.common.appPluralString
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -48,6 +49,9 @@ import `in`.c1ph3rj.scanly.feature.tools.ToolTextAction
 import `in`.c1ph3rj.scanly.feature.tools.ToolTextField
 import `in`.c1ph3rj.scanly.feature.tools.ToolWorkingState
 import kotlinx.coroutines.flow.collectLatest
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
+import androidx.compose.ui.res.stringResource
 
 private enum class SignStep { Pick, Unlock, Edit, Working, Done }
 
@@ -129,13 +133,13 @@ fun PdfSignRoute(
     ) {
         when (step) {
             SignStep.Pick -> PdfFilePickerScreen(
-                title = "Sign PDF",
-                subtitle = "Choose a PDF or an image to sign",
-                stepText = "Step 1 of 3 · Choose",
+                title = stringResource(R.string.pdf_sign_sign_pdf),
+                subtitle = stringResource(R.string.pdf_sign_choose_a_pdf_or_an),
+                stepText = stringResource(R.string.pdf_sign_step_1_of_3_choose),
                 documents = uiState.libraryDocuments,
                 onBack = onPickerBack,
                 onPickDevice = { devicePicker.launch(SignableMimeTypes) },
-                deviceSubtitle = "PDF, JPG or PNG from Downloads, Drive and other apps",
+                deviceSubtitle = stringResource(R.string.pdf_sign_pdf_jpg_or_png_from),
                 onPickLibrary = { document ->
                     returnToEditorOnPickerBack = false
                     viewModel.setSources(listOf(PdfToolSource.LibraryDocument(document.id, document.title)))
@@ -165,43 +169,43 @@ fun PdfSignRoute(
                     onManageSignatures = onManageSignatures,
                     onCreateSignature = onCreateSignature,
                     modifier = Modifier.fillMaxSize(),
-                    title = "Sign",
+                    title = stringResource(R.string.page_image_preview_sign),
                     doneEnabled = editorState.marks.isNotEmpty(),
                 )
             }
             SignStep.Working -> ToolWorkingState(
-                title = "Signing your PDF",
-                caption = "Placing signatures on each page…",
+                title = stringResource(R.string.pdf_sign_signing_your_pdf),
+                caption = stringResource(R.string.pdf_sign_placing_signatures_on_each_page),
                 progress = null,
             )
             SignStep.Done -> {
                 val markCount = editorState.marks.size
                 val pageCount = editorState.marks.map { it.pageIndex }.distinct().size
                 PdfToolDoneScreen(
-                    title = "Signed",
+                    title = stringResource(R.string.pdf_sign_signed),
                     subtitle = signSummary(markCount = markCount, pageCount = pageCount),
                     preview = uiState.resultPreview,
                     outputName = uiState.outputName,
                     onOutputNameChange = viewModel::setOutputName,
                     details = listOf(
-                        ToolDetailRow("Pages signed", formatPdfPageCount(pageCount)),
-                        ToolDetailRow("Marks placed", markCount.toString()),
-                        ToolDetailRow("Saved as", "PDF"),
+                        ToolDetailRow(stringResource(R.string.pdf_sign_pages_signed), formatPdfPageCount(pageCount)),
+                        ToolDetailRow(stringResource(R.string.pdf_sign_marks_placed), markCount.toString()),
+                        ToolDetailRow(stringResource(R.string.pdf_sign_saved_as), "PDF"),
                     ),
                     onClose = onNavigateUp,
                     onOpenPreview = { uiState.namedResult()?.let(onPreviewPdf) },
                     onSave = viewModel::saveResult,
                     onShare = {
-                        viewModel.prepareNamedShare { shareExportArtifact(context, it, "Signed PDF") }
+                        viewModel.prepareNamedShare { shareExportArtifact(context, it, appString(R.string.pdf_sign_signed_pdf)) }
                     },
                     isSaving = uiState.isProcessing,
                     savedDestinationLabel = uiState.savedDestinationLabel,
-                    stepText = "Step 3 of 3 · Done",
+                    stepText = stringResource(R.string.pdf_import_step_3_of_3_done),
                     extraContent = {
                         ToolShortcutTile(
                             icon = Icons.Outlined.Edit,
-                            title = "Edit signatures",
-                            caption = "Back to the editor",
+                            title = stringResource(R.string.pdf_sign_edit_signatures),
+                            caption = stringResource(R.string.pdf_sign_back_to_the_editor),
                             onClick = {
                                 viewModel.editAgain()
                                 editing = true
@@ -234,7 +238,7 @@ private fun SignUnlockStep(
             .imePadding(),
     ) {
         ToolCompactHeader(
-            title = "Sign",
+            title = stringResource(R.string.page_image_preview_sign),
             subtitle = uiState.sources.firstOrNull()?.label(),
             onBack = onBack,
         )
@@ -246,20 +250,20 @@ private fun SignUnlockStep(
                 .padding(horizontal = 20.dp, vertical = 16.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
-            ToolFieldLabel("This PDF is locked")
+            ToolFieldLabel(stringResource(R.string.pdf_sign_this_pdf_is_locked))
             ToolTextField(
                 value = uiState.currentPassword,
                 onValueChange = viewModel::setCurrentPassword,
-                placeholder = "PDF password",
+                placeholder = stringResource(R.string.export_share_pdf_password),
                 visualTransformation = PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                trailingIcon = { ToolTextAction(label = "Unlock", onClick = viewModel::unlock) },
+                trailingIcon = { ToolTextAction(label = stringResource(R.string.pdf_compress_unlock), onClick = viewModel::unlock) },
             )
-            ToolNote("The signed copy is saved without the password.")
+            ToolNote(stringResource(R.string.pdf_sign_the_signed_copy_is_saved))
         }
         ToolBottomBar {
             ToolPrimaryButton(
-                text = "Unlock",
+                text = stringResource(R.string.pdf_compress_unlock),
                 onClick = viewModel::unlock,
                 enabled = uiState.currentPassword.isNotBlank(),
             )
@@ -267,10 +271,10 @@ private fun SignUnlockStep(
     }
 }
 
-/** "3 marks on 2 pages", the summary line on the Done screen. */
+/** "3 marks · 2 pages", the summary line on the Done screen. */
 private fun signSummary(markCount: Int, pageCount: Int): String {
-    val marks = if (markCount == 1) "1 mark" else "$markCount marks"
-    return "$marks on ${formatPdfPageCount(pageCount)}"
+    val marks = appPluralString(R.plurals.common_marks, markCount, markCount)
+    return appString(R.string.common_two_parts, marks, formatPdfPageCount(pageCount))
 }
 
 /** What the Sign tool can open from phone storage: PDFs and common images (signed as a PDF). */

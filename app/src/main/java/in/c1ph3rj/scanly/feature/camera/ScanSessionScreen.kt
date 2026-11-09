@@ -111,6 +111,9 @@ import java.io.File
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
+import `in`.c1ph3rj.scanly.R
+import androidx.compose.ui.res.stringResource
+import `in`.c1ph3rj.scanly.core.common.appString
 
 object ScanSessionDestination {
     const val documentIdArgument = "documentId"
@@ -203,7 +206,7 @@ fun ScanSessionRoute(
                     val currentImageCapture = imageCapture
                     val currentPreviewView = previewView
                     if (!hasCameraPermission || currentImageCapture == null || currentPreviewView == null) {
-                        viewModel.onCaptureFailed("Camera is not ready yet.")
+                        viewModel.onCaptureFailed(appString(R.string.scan_session_camera_is_not_ready_yet))
                     } else {
                         capturePage(
                             draft = event.draft,
@@ -321,9 +324,9 @@ fun ScanSessionScreen(
                     .fillMaxSize()
                     .padding(innerPadding)
                     .padding(20.dp),
-                title = "Document missing",
-                body = "Open a valid document first.",
-                actionLabel = "Back",
+                title = stringResource(R.string.scan_session_document_missing),
+                body = stringResource(R.string.scan_session_open_a_valid_document_first),
+                actionLabel = stringResource(R.string.zoomable_image_back),
                 onAction = onNavigateUp,
             )
         } else if (!hasCameraPermission) {
@@ -523,7 +526,7 @@ private fun CameraLeftRail(
             )
             ChromeIconButton(
                 icon = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = "Back",
+                contentDescription = stringResource(R.string.zoomable_image_back),
                 onClick = onNavigateUp,
                 enabled = navigationEnabled,
                 containerColor = Color.Transparent,
@@ -779,7 +782,7 @@ private fun RecentCaptureStack(
                     modifier = Modifier.size(22.dp),
                 )
                 Text(
-                    text = "No captures",
+                    text = stringResource(R.string.scan_session_no_captures),
                     style = MaterialTheme.typography.labelSmall,
                     color = Color.White.copy(alpha = 0.58f),
                     maxLines = 1,
@@ -848,7 +851,7 @@ private fun CameraTopBar(
     ) {
         ChromeIconButton(
             icon = Icons.Filled.Close,
-            contentDescription = "Close camera",
+            contentDescription = stringResource(R.string.scan_session_close_camera),
             onClick = onNavigateUp,
             enabled = navigationEnabled,
             containerColor = Color.Transparent,
@@ -881,7 +884,7 @@ private fun CaptureControlStrip(
     val controls: @Composable () -> Unit = {
         TopControlButton(
             icon = if (torchEnabled) Icons.Filled.FlashOn else Icons.Filled.FlashOff,
-            label = if (torchEnabled) "Turn flash off" else "Turn flash on",
+            label = if (torchEnabled) stringResource(R.string.scan_session_turn_flash_off) else stringResource(R.string.scan_session_turn_flash_on),
             active = torchEnabled,
             enabled = torchAvailable,
             onClick = onTorchToggle,
@@ -892,7 +895,7 @@ private fun CaptureControlStrip(
         )
         TopControlButton(
             icon = Icons.Filled.Grid3x3,
-            label = if (gridEnabled) "Hide grid" else "Show grid",
+            label = if (gridEnabled) stringResource(R.string.scan_session_hide_grid) else stringResource(R.string.scan_session_show_grid),
             active = gridEnabled,
             onClick = onGridToggle,
         )
@@ -966,7 +969,7 @@ private fun CaptureButton(
         enabled = !busy,
         modifier = modifier
             .size(86.dp)
-            .semantics { contentDescription = if (replacement) "Replace page" else "Capture" },
+            .semantics { contentDescription = if (replacement) appString(R.string.scan_session_replace_page) else appString(R.string.scan_session_capture) },
         shape = CircleShape,
         color = Color.Transparent,
         border = BorderStroke(3.dp, colorScheme.primary),
@@ -1164,11 +1167,11 @@ private fun CameraPreview(
                             // doOnLayout fires once; retry shortly instead of leaving a black preview.
                             currentPreviewView.postDelayed(this, CameraBindRetryDelayMillis)
                         } else {
-                            cameraError = "Camera couldn't start. Leave this screen and open it again."
+                            cameraError = appString(R.string.scan_session_camera_couldn_t_start_leave)
                         }
                     } catch (error: Exception) {
                         Log.w(CameraPreviewTag, "Could not start the camera.", error)
-                        cameraError = "Camera couldn't start. Close other apps using the camera and try again."
+                        cameraError = appString(R.string.scan_session_camera_couldn_t_start_close)
                     }
                 }
             }
@@ -1470,7 +1473,7 @@ private fun capturePage(
             }
 
             override fun onError(exception: ImageCaptureException) {
-                onFailure(exception.message ?: "Capture failed.")
+                onFailure(exception.message ?: appString(R.string.scan_session_capture_failed))
             }
         },
     )

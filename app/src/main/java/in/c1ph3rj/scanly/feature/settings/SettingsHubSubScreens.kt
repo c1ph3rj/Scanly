@@ -1,5 +1,6 @@
 package `in`.c1ph3rj.scanly.feature.settings
 
+import androidx.compose.ui.res.pluralStringResource
 import android.content.ActivityNotFoundException
 
 import androidx.compose.foundation.layout.Arrangement
@@ -36,15 +37,16 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavBackStackEntry
 import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import `in`.c1ph3rj.scanly.domain.model.DocumentCornerModel
-import `in`.c1ph3rj.scanly.domain.model.OcrEngine
 import `in`.c1ph3rj.scanly.domain.model.ThemeMode
-import `in`.c1ph3rj.scanly.feature.components.ScanlyConfirmDialog
 import `in`.c1ph3rj.scanly.feature.components.ScanlyDetailScaffold
 import `in`.c1ph3rj.scanly.feature.update.AppUpdateUiState
 import `in`.c1ph3rj.scanly.feature.widget.ScanlyWidgetSupport
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.rememberCoroutineScope
+import `in`.c1ph3rj.scanly.R
+import androidx.compose.ui.res.stringResource
+import `in`.c1ph3rj.scanly.core.common.appString
 
 internal const val DEVELOPER_PORTFOLIO_URL = "https://c1ph3rj.in"
 internal const val PROJECT_WEBSITE_URL = "https://www.usescanly.co.in"
@@ -76,7 +78,7 @@ fun SettingsAppearanceScreen(
 ) {
     val window = rememberWindowSizeInfo()
     ScanlyDetailScaffold(
-        title = "Appearance",
+        title = stringResource(R.string.settings_hub_sub_screens_appearance),
         onNavigateUp = onNavigateUp,
     ) { innerPadding ->
         LazyColumn(
@@ -90,18 +92,18 @@ fun SettingsAppearanceScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             item("theme") {
-                SettingsGroup(title = "Theme") {
+                SettingsGroup(title = stringResource(R.string.settings_hub_sub_screens_theme)) {
                     ThemeModeSelector(
                         selectedMode = themeMode,
                         onThemeModeSelected = onThemeModeSelected,
                     )
                     HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
                     SettingsToggleRow(
-                        title = "Pure black",
+                        title = stringResource(R.string.settings_hub_sub_screens_pure_black),
                         subtitle = if (themeMode == ThemeMode.LIGHT) {
-                            "Takes effect in dark theme · saves battery on AMOLED screens"
+                            stringResource(R.string.settings_hub_sub_screens_takes_effect_in_dark_theme)
                         } else {
-                            "True black surfaces · saves battery on AMOLED screens"
+                            stringResource(R.string.settings_hub_sub_screens_true_black_surfaces_saves_battery)
                         },
                         checked = pureBlackEnabled,
                         onCheckedChange = onPureBlackEnabledChanged,
@@ -138,10 +140,6 @@ fun SettingsDetectionRoute(
         onPostProcessingModelSelected = viewModel::setPostProcessingModel,
         onAutomaticModelSelectionChanged = viewModel::setAutomaticModelSelection,
         onDocumentGateEnabledChanged = viewModel::setDocumentGateEnabled,
-        onOcrEngineSelected = viewModel::setOcrEngine,
-        onRereadClick = viewModel::requestReread,
-        onRereadConfirm = viewModel::confirmReread,
-        onRereadDismiss = viewModel::dismissRereadPrompt,
         onOpenModelBenchmark = onOpenModelBenchmark,
     )
 }
@@ -155,15 +153,11 @@ fun SettingsDetectionScreen(
     onPostProcessingModelSelected: (DocumentCornerModel) -> Unit,
     onAutomaticModelSelectionChanged: (Boolean) -> Unit,
     onDocumentGateEnabledChanged: (Boolean) -> Unit,
-    onOcrEngineSelected: (OcrEngine) -> Unit,
-    onRereadClick: () -> Unit,
-    onRereadConfirm: () -> Unit,
-    onRereadDismiss: () -> Unit,
     onOpenModelBenchmark: () -> Unit,
 ) {
     val window = rememberWindowSizeInfo()
     ScanlyDetailScaffold(
-        title = "Document detection",
+        title = stringResource(R.string.settings_hub_sub_screens_document_detection),
         onNavigateUp = onNavigateUp,
         snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { innerPadding ->
@@ -178,27 +172,26 @@ fun SettingsDetectionScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             item("models") {
-                SettingsGroup(title = "Models") {
+                SettingsGroup(title = stringResource(R.string.settings_hub_sub_screens_models)) {
                     SettingsToggleRow(
-                        title = "Automatic model selection",
+                        title = stringResource(R.string.settings_hub_sub_screens_automatic_model_selection),
                         subtitle = when {
-                            uiState.isCalibratingModels -> "Testing model speed on this device…"
+                            uiState.isCalibratingModels -> stringResource(R.string.settings_hub_sub_screens_testing_model_speed_on_this)
                             uiState.automaticLiveModel != null &&
                                 uiState.automaticPostProcessingModel != null ->
-                                "Live: ${uiState.automaticLiveModel.displayName} · " +
-                                    "Processing: ${uiState.automaticPostProcessingModel.displayName}"
-                            else -> "Choose the best models for this device"
+                                stringResource(R.string.settings_hub_sub_screens_live_processing, uiState.automaticLiveModel.displayName, uiState.automaticPostProcessingModel.displayName)
+                            else -> stringResource(R.string.settings_hub_sub_screens_choose_the_best_models_for)
                         },
                         checked = uiState.automaticModelSelectionEnabled,
                         onCheckedChange = onAutomaticModelSelectionChanged,
                     )
                     HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
                     ModelSelector(
-                        title = "Live preview model",
+                        title = stringResource(R.string.settings_hub_sub_screens_live_preview_model),
                         subtitle = if (uiState.automaticModelSelectionEnabled) {
-                            "Selected automatically for responsive preview"
+                            stringResource(R.string.settings_hub_sub_screens_selected_automatically_for_responsive_preview)
                         } else {
-                            "Used while the camera preview is running"
+                            stringResource(R.string.settings_hub_sub_screens_used_while_the_camera_preview)
                         },
                         selected = uiState.automaticLiveModel ?: uiState.liveDetectionModel,
                         enabled = !uiState.automaticModelSelectionEnabled,
@@ -206,11 +199,11 @@ fun SettingsDetectionScreen(
                     )
                     HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
                     ModelSelector(
-                        title = "Post-processing model",
+                        title = stringResource(R.string.settings_hub_sub_screens_post_processing_model),
                         subtitle = if (uiState.automaticModelSelectionEnabled) {
-                            "Selected automatically for higher accuracy"
+                            stringResource(R.string.settings_hub_sub_screens_selected_automatically_for_higher_accuracy)
                         } else {
-                            "Used after camera or gallery capture"
+                            stringResource(R.string.settings_hub_sub_screens_used_after_camera_or_gallery)
                         },
                         selected = uiState.automaticPostProcessingModel
                             ?: uiState.postProcessingModel,
@@ -220,50 +213,26 @@ fun SettingsDetectionScreen(
                 }
             }
             item("gate") {
-                SettingsGroup(title = "Capture quality") {
+                SettingsGroup(title = stringResource(R.string.settings_hub_sub_screens_capture_quality)) {
                     SettingsToggleRow(
-                        title = "Physical-document gate",
-                        subtitle = "Reject screens and non-documents before edge detection",
+                        title = stringResource(R.string.settings_hub_sub_screens_physical_document_gate),
+                        subtitle = stringResource(R.string.settings_hub_sub_screens_reject_screens_and_non_documents),
                         checked = uiState.documentGateEnabled,
                         onCheckedChange = onDocumentGateEnabledChanged,
                     )
                 }
             }
-            item("ocr") {
-                SettingsGroup(title = "Text recognition (experimental)") {
-                    OcrEngineSelector(
-                        selected = uiState.ocrEngine,
-                        onSelected = onOcrEngineSelected,
-                    )
-                    OcrEngineStatusRows(
-                        uiState = uiState,
-                        onRereadClick = onRereadClick,
-                    )
-                }
-            }
             item("tools") {
-                SettingsGroup(title = "Tools") {
+                SettingsGroup(title = stringResource(R.string.settings_hub_sub_screens_tools)) {
                     SettingsNavigationRow(
                         icon = Icons.Filled.Speed,
-                        title = "Model benchmark",
-                        subtitle = "Compare all models on local images",
+                        title = stringResource(R.string.model_benchmark_model_benchmark),
+                        subtitle = stringResource(R.string.settings_hub_sub_screens_compare_all_models_on_local),
                         onClick = onOpenModelBenchmark,
                     )
                 }
             }
         }
-    }
-
-    if (uiState.showRereadPrompt && uiState.pagesNotReadWithSelectedEngine > 0) {
-        val count = uiState.pagesNotReadWithSelectedEngine
-        ScanlyConfirmDialog(
-            title = "Re-read $count ${if (count == 1) "page" else "pages"}?",
-            text = "Runs in the background while your battery isn't low. " +
-                "Text you edited yourself is kept.",
-            confirmLabel = "Re-read",
-            onDismiss = onRereadDismiss,
-            onConfirm = onRereadConfirm,
-        )
     }
 }
 
@@ -291,12 +260,11 @@ fun SettingsWidgetsRoute(
             ScanlyWidgetSupport.PinResult.Requested -> Unit
             ScanlyWidgetSupport.PinResult.Unsupported -> scope.launch {
                 snackbarHostState.showSnackbar(
-                    "Your launcher doesn’t support adding widgets from the app. " +
-                        "Long-press the home screen and pick Scanly from Widgets.",
+                    appString(R.string.settings_hub_sub_screens_your_launcher_doesn_t_support),
                 )
             }
             ScanlyWidgetSupport.PinResult.Failed -> scope.launch {
-                snackbarHostState.showSnackbar("Could not open the add-widget dialog.")
+                snackbarHostState.showSnackbar(appString(R.string.settings_hub_sub_screens_could_not_open_the_add))
             }
         }
     }
@@ -322,12 +290,12 @@ fun SettingsWidgetsScreen(
 ) {
     val window = rememberWindowSizeInfo()
     val hint = if (pinWidgetsSupported) {
-        "Tap to add a widget to your home screen"
+        stringResource(R.string.settings_hub_sub_screens_tap_to_add_a_widget)
     } else {
-        "Long-press home screen → Widgets → Scanly"
+        stringResource(R.string.settings_hub_sub_screens_long_press_home_screen_widgets)
     }
     ScanlyDetailScaffold(
-        title = "Widgets",
+        title = stringResource(R.string.settings_hub_sub_screens_widgets),
         onNavigateUp = onNavigateUp,
         snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { innerPadding ->
@@ -342,25 +310,25 @@ fun SettingsWidgetsScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             item("widgets") {
-                SettingsGroup(title = "Home screen") {
+                SettingsGroup(title = stringResource(R.string.settings_hub_sub_screens_home_screen)) {
                     SettingsNavigationRow(
                         icon = Icons.Filled.Widgets,
-                        title = "Actions bar",
-                        subtitle = "Scan · Import · QR · Library",
+                        title = stringResource(R.string.settings_hub_sub_screens_actions_bar),
+                        subtitle = stringResource(R.string.settings_hub_sub_screens_scan_import_qr_library),
                         onClick = onAddActionsWidget,
                     )
                     HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
                     SettingsNavigationRow(
                         icon = Icons.Filled.DocumentScanner,
-                        title = "Scan widget",
-                        subtitle = "Start a new document scan",
+                        title = stringResource(R.string.settings_hub_sub_screens_scan_widget),
+                        subtitle = stringResource(R.string.settings_hub_sub_screens_start_a_new_document_scan),
                         onClick = onAddScanWidget,
                     )
                     HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
                     SettingsNavigationRow(
                         icon = Icons.Filled.QrCode2,
-                        title = "QR widget",
-                        subtitle = "Open the QR tool",
+                        title = stringResource(R.string.settings_hub_sub_screens_qr_widget),
+                        subtitle = stringResource(R.string.settings_hub_sub_screens_open_the_qr_tool),
                         onClick = onAddQrWidget,
                     )
                 }
@@ -432,7 +400,7 @@ fun SettingsAboutScreen(
 ) {
     val window = rememberWindowSizeInfo()
     ScanlyDetailScaffold(
-        title = "About",
+        title = stringResource(R.string.settings_hub_sub_screens_about),
         onNavigateUp = onNavigateUp,
     ) { innerPadding ->
         LazyColumn(
@@ -446,7 +414,7 @@ fun SettingsAboutScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             item("app") {
-                SettingsGroup(title = "Scanly") {
+                SettingsGroup(title = stringResource(R.string.shared_scanly)) {
                     AboutHero(
                         versionLabel = versionLabel,
                         onOpenPortfolio = onOpenPortfolio,
@@ -459,48 +427,48 @@ fun SettingsAboutScreen(
                 }
             }
             item("help") {
-                SettingsGroup(title = "Help") {
+                SettingsGroup(title = stringResource(R.string.settings_hub_sub_screens_help)) {
                     if (faqCount > 0) {
                         SettingsNavigationRow(
                             icon = Icons.AutoMirrored.Filled.HelpOutline,
-                            title = "Help & FAQ",
-                            subtitle = "$faqCount topics",
+                            title = stringResource(R.string.settings_detail_screens_help_faq),
+                            subtitle = pluralStringResource(R.plurals.common_topics, faqCount, faqCount),
                             onClick = onOpenFaqs,
                         )
                         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
                     }
                     SettingsLinkRow(
                         icon = Icons.Filled.Email,
-                        title = "Contact support",
+                        title = stringResource(R.string.settings_hub_sub_screens_contact_support),
                         onClick = onContactSupport,
                     )
                     HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
                     SettingsLinkRow(
                         icon = Icons.Filled.Public,
-                        title = "Project website",
+                        title = stringResource(R.string.settings_hub_sub_screens_project_website),
                         onClick = onOpenWebsite,
                     )
                 }
             }
             item("legal") {
-                SettingsGroup(title = "Legal") {
+                SettingsGroup(title = stringResource(R.string.settings_hub_sub_screens_legal)) {
                     SettingsNavigationRow(
                         icon = Icons.Filled.Policy,
-                        title = "Privacy Policy",
+                        title = stringResource(R.string.settings_hub_sub_screens_privacy_policy),
                         onClick = { onOpenLegalDocument(LegalDocumentType.Privacy) },
                     )
                     HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
                     SettingsNavigationRow(
                         icon = Icons.Filled.Gavel,
-                        title = "Terms & Conditions",
+                        title = stringResource(R.string.settings_hub_sub_screens_terms_conditions),
                         onClick = { onOpenLegalDocument(LegalDocumentType.Terms) },
                     )
                     if (licenseCount > 0) {
                         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
                         SettingsNavigationRow(
                             icon = Icons.Filled.Code,
-                            title = "Open source",
-                            subtitle = "$licenseCount libraries",
+                            title = stringResource(R.string.settings_detail_screens_open_source),
+                            subtitle = pluralStringResource(R.plurals.common_libraries, licenseCount, licenseCount),
                             onClick = onOpenLicenses,
                         )
                     }

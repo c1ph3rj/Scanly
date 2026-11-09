@@ -21,6 +21,8 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
 
 data class PageImagePreviewUiState(
     val pages: List<ScanPage> = emptyList(),
@@ -111,7 +113,7 @@ class PageImagePreviewViewModel @Inject constructor(
 
         viewModelScope.launch {
             if (imagePath == null) {
-                _events.send(PageImagePreviewEvent.ShowMessage("Page image is not available yet."))
+                _events.send(PageImagePreviewEvent.ShowMessage(appString(R.string.document_detail_page_image_is_not_available)))
                 return@launch
             }
 
@@ -119,7 +121,7 @@ class PageImagePreviewViewModel @Inject constructor(
                 PageImagePreviewEvent.ShareFiles(
                     ShareArtifact(
                         mimeType = PageImageMimeType,
-                        title = "Scanly page ${page.pageIndex + 1}",
+                        title = appString(R.string.page_image_preview_scanly_page, page.pageIndex + 1),
                         filePaths = listOf(imagePath),
                     ),
                 ),

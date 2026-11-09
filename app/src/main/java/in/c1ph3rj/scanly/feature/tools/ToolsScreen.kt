@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.widthIn
@@ -54,6 +56,8 @@ import `in`.c1ph3rj.scanly.domain.model.DocumentTitleFormat
 import `in`.c1ph3rj.scanly.feature.components.DocumentTitleDialog
 import `in`.c1ph3rj.scanly.feature.components.ScanlyImportProgressOverlay
 import kotlinx.coroutines.flow.collectLatest
+import `in`.c1ph3rj.scanly.R
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun ToolsRoute(
@@ -159,14 +163,14 @@ fun ToolsScreen(
                             modifier = Modifier.width(startPaneWidth),
                             verticalArrangement = Arrangement.spacedBy(20.dp),
                         ) {
-                            ToolsSection(label = "Scan") {
+                            ToolsSection(label = stringResource(R.string.home_scan)) {
                                 ToolsScanHero(
                                     tool = scanTools.first(),
                                     tall = richCards,
                                     onClick = { onTool(scanTools.first()) },
                                 )
                             }
-                            ToolsSection(label = "Utilities") {
+                            ToolsSection(label = stringResource(R.string.tools_utilities)) {
                                 ToolsTileGrid(tools = utilityTools, columns = 1, enabled = { true }, onClick = onTool)
                             }
                         }
@@ -203,7 +207,7 @@ fun ToolsScreen(
                     verticalArrangement = Arrangement.spacedBy(20.dp),
                 ) {
                     ToolsHeader()
-                    ToolsSection(label = "Scan") {
+                    ToolsSection(label = stringResource(R.string.home_scan)) {
                         if (isCompactWidth) {
                             ToolsTileGrid(tools = scanTools, columns = 1, enabled = { true }, onClick = onTool)
                         } else {
@@ -223,7 +227,7 @@ fun ToolsScreen(
                             rich = richCards,
                         )
                     }
-                    ToolsSection(label = "Utilities") {
+                    ToolsSection(label = stringResource(R.string.tools_utilities)) {
                         ToolsTileGrid(
                             tools = utilityTools,
                             columns = gridColumns,
@@ -239,7 +243,7 @@ fun ToolsScreen(
                 ScanlyImportProgressOverlay(
                     current = uiState.importCurrent,
                     total = uiState.importTotal,
-                    stageLabel = uiState.importStageLabel.ifBlank { "Working on your photos" },
+                    stageLabel = uiState.importStageLabel.ifBlank { stringResource(R.string.document_detail_working_on_your_photos) },
                 )
             }
         }
@@ -247,9 +251,9 @@ fun ToolsScreen(
 
     if (createDialogVisible && !uiState.isImporting) {
         DocumentTitleDialog(
-            title = "New scan",
+            title = stringResource(R.string.home_new_scan),
             initialValue = "",
-            confirmLabel = "Scan",
+            confirmLabel = stringResource(R.string.home_scan),
             onDismiss = { createDialogVisible = false },
             onConfirm = { value ->
                 createDialogVisible = false
@@ -286,7 +290,7 @@ private fun ToolsHeader() {
         verticalArrangement = Arrangement.spacedBy(3.dp),
     ) {
         Text(
-            text = "Tools",
+            text = stringResource(R.string.settings_hub_sub_screens_tools),
             style = MaterialTheme.typography.headlineMedium.copy(
                 fontSize = 28.sp,
                 lineHeight = 34.sp,
@@ -297,7 +301,7 @@ private fun ToolsHeader() {
             modifier = Modifier.semantics { heading() },
         )
         Text(
-            text = "Everything runs offline, on this phone",
+            text = stringResource(R.string.tools_everything_runs_offline_on_this),
             style = MaterialTheme.typography.bodyMedium.copy(fontSize = 13.sp),
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
@@ -331,7 +335,7 @@ private fun ToolsTileGrid(
     val gap = if (rich) 12.dp else 10.dp
     Column(verticalArrangement = Arrangement.spacedBy(gap)) {
         tools.chunked(columns.coerceAtLeast(1)).forEach { rowTools ->
-            Row(horizontalArrangement = Arrangement.spacedBy(gap)) {
+            Row(modifier = Modifier.height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(gap)) {
                 rowTools.forEach { tool ->
                     if (rich) {
                         ToolsFeatureCard(
@@ -355,7 +359,7 @@ private fun ToolsTileGrid(
     }
 }
 
-/** 64dp hub tile: 38dp icon well, 14.5sp title and 12sp caption. */
+/** Hub tile grows with translated titles and keeps both rows aligned. */
 @Composable
 private fun ToolsHubTile(
     tool: ToolItem,
@@ -365,14 +369,15 @@ private fun ToolsHubTile(
 ) {
     ToolCard(
         modifier = modifier
-            .height(64.dp)
+            .heightIn(min = 80.dp)
+            .fillMaxHeight()
             .alpha(if (enabled) 1f else 0.5f),
         onClick = if (enabled) onClick else null,
     ) {
         Row(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 12.dp),
+                .padding(horizontal = 12.dp, vertical = 10.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
@@ -383,15 +388,13 @@ private fun ToolsHubTile(
             ) {
                 Text(
                     text = tool.title,
-                    style = MaterialTheme.typography.titleSmall.copy(fontSize = 14.5.sp, lineHeight = 18.sp),
+                    style = MaterialTheme.typography.titleSmall.copy(fontSize = 14.5.sp, lineHeight = 22.sp),
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onSurface,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
                 )
                 Text(
                     text = tool.caption,
-                    style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp, lineHeight = 16.sp),
+                    style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp, lineHeight = 18.sp),
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
@@ -413,7 +416,8 @@ private fun ToolsFeatureCard(
 ) {
     ToolCard(
         modifier = modifier
-            .height(128.dp)
+            .heightIn(min = 144.dp)
+            .fillMaxHeight()
             .alpha(if (enabled) 1f else 0.5f),
         onClick = if (enabled) onClick else null,
     ) {
@@ -423,14 +427,12 @@ private fun ToolsFeatureCard(
                 .padding(16.dp),
         ) {
             ToolIconWell(icon = tool.icon, accent = tool.accent, size = 48.dp, iconSize = 24.dp)
-            Spacer(Modifier.weight(1f))
+            Spacer(Modifier.height(12.dp))
             Text(
                 text = tool.title,
                 style = MaterialTheme.typography.titleMedium.copy(fontSize = 16.sp, lineHeight = 20.sp),
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onSurface,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
             )
             Text(
                 text = tool.caption,

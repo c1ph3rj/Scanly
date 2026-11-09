@@ -2,6 +2,8 @@ package `in`.c1ph3rj.scanly.feature.tools.pdf
 
 import `in`.c1ph3rj.scanly.core.ui.ZoomableImageState
 import `in`.c1ph3rj.scanly.domain.model.PdfToolSource
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
 
 fun clampPdfReaderPageIndex(index: Int, pageCount: Int): Int {
     if (pageCount <= 0) return 0
@@ -17,7 +19,7 @@ fun formatPdfReaderPageCounter(currentIndex: Int, pageCount: Int): String {
 
 /** The Layout action is labelled with the mode it will switch to. */
 fun pdfReaderLayoutActionLabel(current: PdfReaderLayout): String =
-    if (current == PdfReaderLayout.Paged) "Continuous" else "Paged"
+    if (current == PdfReaderLayout.Paged) appString(R.string.pdf_reader_presentation_continuous) else appString(R.string.pdf_reader_presentation_paged)
 
 /** Library documents live inside Scanly, so there is no file to hand to another app. */
 fun pdfReaderCanShare(source: PdfToolSource?): Boolean =
@@ -33,9 +35,9 @@ fun togglePdfReaderLayout(current: PdfReaderLayout): PdfReaderLayout =
 fun togglePdfReaderChrome(visible: Boolean): Boolean = !visible
 
 fun formatPdfReaderPageLabel(currentIndex: Int, pageCount: Int): String {
-    if (pageCount <= 0) return "0 of 0"
+    if (pageCount <= 0) return appString(R.string.pdf_reader_presentation_0_of_0)
     val current = clampPdfReaderPageIndex(currentIndex, pageCount) + 1
-    return "$current of $pageCount"
+    return appString(R.string.common_current_of_total, current, pageCount)
 }
 
 /**

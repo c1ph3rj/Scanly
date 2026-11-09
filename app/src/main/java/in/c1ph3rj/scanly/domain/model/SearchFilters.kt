@@ -4,15 +4,21 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZoneOffset
+import androidx.annotation.StringRes
+import `in`.c1ph3rj.scanly.core.common.appString
+import `in`.c1ph3rj.scanly.R
 
 /** When a document was last changed. */
-enum class DateFilter(val label: String) {
-    ANY("Any time"),
-    TODAY("Today"),
-    LAST_7_DAYS("Last 7 days"),
-    LAST_30_DAYS("Last 30 days"),
-    THIS_YEAR("This year"),
-    CUSTOM("Custom range"),
+enum class DateFilter(@param:StringRes val labelRes: Int) {
+    ANY(R.string.date_filter_any_time),
+    TODAY(R.string.library_card_presentation_today),
+    LAST_7_DAYS(R.string.date_filter_last_7_days),
+    LAST_30_DAYS(R.string.date_filter_last_30_days),
+    THIS_YEAR(R.string.date_filter_this_year),
+    CUSTOM(R.string.date_filter_custom_range),
+    ;
+
+    val label: String get() = appString(labelRes)
 }
 
 /** Which folder documents must be in. */
@@ -25,11 +31,14 @@ sealed interface FolderFilter {
     data class In(val groupId: String) : FolderFilter
 }
 
-enum class SearchSort(val label: String) {
-    BEST_MATCH("Best match"),
-    NEWEST("Newest"),
-    OLDEST("Oldest"),
-    NAME("Name A–Z"),
+enum class SearchSort(@param:StringRes val labelRes: Int) {
+    BEST_MATCH(R.string.search_sort_best_match),
+    NEWEST(R.string.search_sort_newest),
+    OLDEST(R.string.search_sort_oldest),
+    NAME(R.string.search_sort_name_a_z),
+    ;
+
+    val label: String get() = appString(labelRes)
 }
 
 /**

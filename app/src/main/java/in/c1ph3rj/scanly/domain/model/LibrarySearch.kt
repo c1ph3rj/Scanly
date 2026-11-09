@@ -1,6 +1,9 @@
 package `in`.c1ph3rj.scanly.domain.model
 
 import kotlin.math.ln
+import androidx.annotation.StringRes
+import `in`.c1ph3rj.scanly.core.common.appString
+import `in`.c1ph3rj.scanly.R
 
 /** Text plus the character ranges to emphasise. */
 data class HighlightedText(
@@ -15,10 +18,13 @@ data class HighlightedText(
         }
 }
 
-enum class SearchScope(val label: String) {
-    EVERYWHERE("Everywhere"),
-    NAMES("Names"),
-    TEXT("Text in pages"),
+enum class SearchScope(@param:StringRes val labelRes: Int) {
+    EVERYWHERE(R.string.search_scope_everywhere),
+    NAMES(R.string.search_scope_names),
+    TEXT(R.string.search_scope_text_in_pages),
+    ;
+
+    val label: String get() = appString(labelRes)
 }
 
 /** How closely a page's words match what the user typed, best first. */

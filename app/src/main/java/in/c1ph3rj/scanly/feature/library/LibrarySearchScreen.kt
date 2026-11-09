@@ -127,6 +127,11 @@ import `in`.c1ph3rj.scanly.feature.components.formatGroupCardMeta
 import `in`.c1ph3rj.scanly.feature.components.toRelativeDate
 import `in`.c1ph3rj.scanly.feature.text.matchHighlightStyle
 import `in`.c1ph3rj.scanly.feature.text.toAnnotatedString
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
+import androidx.compose.ui.res.stringResource
+import `in`.c1ph3rj.scanly.core.common.appPluralString
+import androidx.compose.ui.res.pluralStringResource
 
 @Composable
 fun LibrarySearchBar(
@@ -136,7 +141,7 @@ fun LibrarySearchBar(
     modifier: Modifier = Modifier,
     inputModifier: Modifier = Modifier,
     onSearch: () -> Unit = {},
-    placeholder: String = "Search names and text in pages",
+    placeholder: String = stringResource(R.string.home_search_names_and_text_in),
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
@@ -203,7 +208,7 @@ fun LibrarySearchBar(
                 )
             }
             if (query.isNotEmpty()) {
-                LibraryIconButton(onClear, Icons.Filled.Clear, "Clear search")
+                LibraryIconButton(onClear, Icons.Filled.Clear, stringResource(R.string.library_search_clear_search))
             }
         }
     }
@@ -321,7 +326,7 @@ fun LibrarySearchScreen(
                             .padding(start = 4.dp, end = window.horizontalPadding, top = 8.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        LibraryIconButton(onBack, Icons.AutoMirrored.Filled.ArrowBack, "Back")
+                        LibraryIconButton(onBack, Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.zoomable_image_back))
                         Spacer(Modifier.width(4.dp))
                         LibrarySearchBar(
                             query = query,
@@ -413,7 +418,7 @@ fun LibrarySearchScreen(
                         }
                         if (results.textMatches.isNotEmpty() && results.nameMatches.isNotEmpty()) {
                             item(key = "text_heading") {
-                                ResultSectionTitle("Found in pages", Modifier.animateItem())
+                                ResultSectionTitle(stringResource(R.string.library_search_found_in_pages), Modifier.animateItem())
                             }
                         }
                         results.textMatches.forEach { result ->
@@ -433,8 +438,8 @@ fun LibrarySearchScreen(
                                 ResultSectionTitle(
                                     when {
                                         uiState.isBrowsing -> browseTitle(uiState.filters)
-                                        results.textMatches.isEmpty() -> "Documents"
-                                        else -> "Matching names"
+                                        results.textMatches.isEmpty() -> stringResource(R.string.library_documents)
+                                        else -> stringResource(R.string.library_search_matching_names)
                                     },
                                     Modifier.animateItem().padding(top = if (results.textMatches.isEmpty()) 0.dp else 8.dp),
                                 )
@@ -470,7 +475,7 @@ fun LibrarySearchScreen(
                         }
                         if (results.folders.isNotEmpty()) {
                             item(key = "folder_heading") {
-                                ResultSectionTitle("Folders", Modifier.animateItem().padding(top = 8.dp))
+                                ResultSectionTitle(stringResource(R.string.library_folders), Modifier.animateItem().padding(top = 8.dp))
                             }
                             itemsIndexed(results.folders, key = { _, folder -> "folder_${folder.group.id}" }) { index, folder ->
                                 LibraryListItem(
@@ -532,11 +537,11 @@ private fun SearchFilterRow(
         FilterChip(
             selected = active > 0,
             onClick = onOpenFilters,
-            label = { Text(if (active > 0) "Filters · $active" else "Filters") },
+            label = { Text(if (active > 0) stringResource(R.string.library_search_filters, active) else stringResource(R.string.filter_picker_filters)) },
             leadingIcon = { Icon(Icons.Outlined.Tune, contentDescription = null, Modifier.size(18.dp)) },
             shape = CircleShape,
             modifier = Modifier.semantics {
-                contentDescription = if (active > 0) "Filters, $active on" else "Filters"
+                contentDescription = if (active > 0) appString(R.string.library_search_filters_on, active) else appString(R.string.filter_picker_filters)
             },
         )
         ActiveFilterChips(filters = filters, folders = folders, onFiltersChange = onFiltersChange)
@@ -571,8 +576,8 @@ private fun CompletionRow(
                 shape = CircleShape,
                 modifier = Modifier.semantics {
                     contentDescription = buildString {
-                        append("Complete to ").append(completion.word)
-                        if (count != null) append(", in $count ${if (count == 1) "document" else "documents"}")
+                        append(appString(R.string.library_search_complete_to)).append(completion.word)
+                        if (count != null) append(appPluralString(R.plurals.library_search_in_documents, count, count))
                     }
                 },
             )
@@ -583,7 +588,7 @@ private fun CompletionRow(
 /** Heading for browsing without a query: the type's plural when only a type is chosen. */
 private fun browseTitle(filters: SearchFilters): String {
     val onlyKind = filters.kind != null && !filters.copy(kind = null).narrows
-    return if (onlyKind) filters.kind!!.pluralLabel() else "Documents"
+    return if (onlyKind) filters.kind!!.pluralLabel() else appString(R.string.library_documents)
 }
 
 @Composable
@@ -594,16 +599,20 @@ private fun ResultSummary(uiState: LibrarySearchUiState, modifier: Modifier = Mo
         results.totalTextMatches > 0 -> {
             val matches = results.totalTextMatches
             val inDocs = results.textMatches.size
-            "$matches ${if (matches == 1) "match" else "matches"} in $inDocs ${if (inDocs == 1) "document" else "documents"}" +
-                if (results.nameMatches.isNotEmpty()) " · ${results.nameMatches.size} by name" else ""
+            stringResource(
+                R.string.library_search_matches_in_documents,
+                pluralStringResource(R.plurals.common_matches, matches, matches),
+                pluralStringResource(R.plurals.common_documents, inDocs, inDocs),
+            ) +
+                if (results.nameMatches.isNotEmpty()) stringResource(R.string.library_search_by_name, results.nameMatches.size) else ""
         }
         results.textMatches.isEmpty() && results.nameMatches.isEmpty() && results.closeMatches.isNotEmpty() -> {
             val close = results.closeMatches.size
-            "No exact matches · $close ${if (close == 1) "document" else "documents"} with similar words"
+            pluralStringResource(R.plurals.library_search_no_exact_matches, close, close)
         }
-        documents > 0 -> "$documents ${if (documents == 1) "document" else "documents"}"
-        results.folders.isNotEmpty() -> "${results.folders.size} ${if (results.folders.size == 1) "folder" else "folders"}"
-        else -> "Searching text in pages…"
+        documents > 0 -> pluralStringResource(R.plurals.common_documents, documents, documents)
+        results.folders.isNotEmpty() -> pluralStringResource(R.plurals.common_folders, results.folders.size, results.folders.size)
+        else -> stringResource(R.string.library_search_searching_text_in_pages)
     }
     Text(
         text = text,
@@ -619,10 +628,10 @@ private fun ResultSummary(uiState: LibrarySearchUiState, modifier: Modifier = Mo
 @Composable
 private fun CloseMatchesHeading(closeTerms: List<String>, modifier: Modifier = Modifier) {
     Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(2.dp)) {
-        ResultSectionTitle("Close matches")
+        ResultSectionTitle(stringResource(R.string.library_search_close_matches))
         if (closeTerms.isNotEmpty()) {
             Text(
-                text = "Similar words: " + closeTerms.joinToString(", ") { "“$it”" },
+                text = stringResource(R.string.library_search_similar_words) + closeTerms.joinToString(", ") { "“$it”" },
                 modifier = Modifier.padding(horizontal = 4.dp),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -666,7 +675,7 @@ private fun TextResultCard(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable(role = Role.Button, onClickLabel = "Open document", onClick = onOpenDocument)
+                    .clickable(role = Role.Button, onClickLabel = stringResource(R.string.library_search_open_document), onClick = onOpenDocument)
                     .padding(start = 16.dp, end = 12.dp, top = 14.dp, bottom = 14.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(14.dp),
@@ -709,9 +718,9 @@ private fun TextResultCard(
                 ) {
                     Text(
                         if (expanded) {
-                            "Show fewer pages"
+                            stringResource(R.string.library_search_show_fewer_pages)
                         } else {
-                            "Show matches on $hiddenPages more ${if (hiddenPages == 1) "page" else "pages"}"
+                            pluralStringResource(R.plurals.library_search_show_more_pages, hiddenPages, hiddenPages)
                         },
                         fontWeight = FontWeight.SemiBold,
                     )
@@ -727,12 +736,12 @@ private fun SnippetRow(hit: PageTextHit, onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(role = Role.Button, onClickLabel = "Show page text", onClick = onClick)
+            .clickable(role = Role.Button, onClickLabel = stringResource(R.string.library_search_show_page_text), onClick = onClick)
             .padding(horizontal = 16.dp, vertical = 10.dp),
         horizontalArrangement = Arrangement.spacedBy(14.dp),
     ) {
         Text(
-            text = "Page ${hit.pageIndex + 1}",
+            text = stringResource(R.string.trash_use_cases_page, hit.pageIndex + 1),
             modifier = Modifier.width(52.dp).padding(top = 2.dp),
             style = MaterialTheme.typography.labelMedium,
             fontWeight = FontWeight.SemiBold,
@@ -748,8 +757,8 @@ private fun SnippetRow(hit: PageTextHit, onClick: () -> Unit) {
             // Say why a page without the typed word showed up.
             val matched = hit.snippet.highlightedParts.firstOrNull()
             val reason = when (hit.tier) {
-                MatchTier.OCR_VARIANT -> matched?.let { "Scanned as “$it”" }
-                MatchTier.TRANSLITERATED -> matched?.let { "Matched “$it”" }
+                MatchTier.OCR_VARIANT -> matched?.let { stringResource(R.string.library_search_scanned_as, it) }
+                MatchTier.TRANSLITERATED -> matched?.let { stringResource(R.string.library_search_matched, it) }
                 else -> null
             }
             if (reason != null) {
@@ -838,7 +847,7 @@ private fun FolderResultRow(
                 overflow = TextOverflow.Ellipsis,
             )
             Text(
-                text = "Folder · " + formatGroupCardMeta(folder.group.documentCount, folder.group.totalPageCount),
+                text = stringResource(R.string.library_search_folder) + formatGroupCardMeta(folder.group.documentCount, folder.group.totalPageCount),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,
@@ -867,8 +876,7 @@ private fun IndexingNotice(pendingPages: Int, modifier: Modifier = Modifier) {
         ) {
             CircularProgressIndicator(modifier = Modifier.size(18.dp), strokeWidth = 2.dp)
             Text(
-                text = "Still reading text in $pendingPages ${if (pendingPages == 1) "page" else "pages"}. " +
-                    "New matches will appear here.",
+                text = pluralStringResource(R.plurals.library_search_still_reading, pendingPages, pendingPages),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSecondaryContainer,
             )
@@ -895,8 +903,8 @@ private fun SearchLanding(
     ) {
         if (uiState.recentSearches.isNotEmpty()) {
             LandingSection(
-                title = "Recent",
-                action = { TextButton(onClick = onClearRecent) { Text("Clear") } },
+                title = stringResource(R.string.library_search_recent),
+                action = { TextButton(onClick = onClearRecent) { Text(stringResource(R.string.group_detail_clear)) } },
             ) {
                 FlowRow(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -914,7 +922,7 @@ private fun SearchLanding(
         }
 
         if (uiState.kindCounts.isNotEmpty()) {
-            LandingSection(title = "Browse by type") {
+            LandingSection(title = stringResource(R.string.library_search_browse_by_type)) {
                 FlowRow(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -934,17 +942,17 @@ private fun SearchLanding(
         }
 
         if (uiState.hasLibrary) {
-            LandingSection(title = "Search tips") {
+            LandingSection(title = stringResource(R.string.library_search_search_tips)) {
                 Surface(
                     shape = RoundedCornerShape(20.dp),
                     color = MaterialTheme.colorScheme.surfaceContainer,
                 ) {
                     Column(Modifier.padding(vertical = 6.dp)) {
-                        SearchTip(Icons.Outlined.ShortText, "Type part of a word", "“lea” finds lease and leasing")
-                        SearchTip(Icons.Outlined.FormatQuote, "Use quotes for a phrase", "“security deposit”, in that order")
-                        SearchTip(Icons.Outlined.Spellcheck, "Small typos are fine", "You’ll get the closest word from your scans")
-                        SearchTip(Icons.Outlined.Block, "Leave a word out", "“lease -draft” skips anything that mentions draft")
-                        SearchTip(Icons.Outlined.AltRoute, "Either word", "“rent OR lease” finds pages with one or the other")
+                        SearchTip(Icons.Outlined.ShortText, stringResource(R.string.library_search_type_part_of_a_word), stringResource(R.string.library_search_lea_finds_lease_and_leasing))
+                        SearchTip(Icons.Outlined.FormatQuote, stringResource(R.string.library_search_use_quotes_for_a_phrase), stringResource(R.string.library_search_security_deposit_in_that_order))
+                        SearchTip(Icons.Outlined.Spellcheck, stringResource(R.string.library_search_small_typos_are_fine), stringResource(R.string.library_search_you_ll_get_the_closest))
+                        SearchTip(Icons.Outlined.Block, stringResource(R.string.library_search_leave_a_word_out), stringResource(R.string.library_search_lease_draft_skips_anything_that))
+                        SearchTip(Icons.Outlined.AltRoute, stringResource(R.string.library_search_either_word), stringResource(R.string.library_search_rent_or_lease_finds_pages))
                     }
                 }
             }
@@ -1048,12 +1056,12 @@ fun NoResultsCard(
                 )
             }
             Text(
-                text = "No results found",
+                text = stringResource(R.string.library_search_no_results_found),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.SemiBold,
             )
             Text(
-                text = "Nothing matches “${query.trim()}”. Try fewer words or check the spelling.",
+                text = stringResource(R.string.library_search_nothing_matches_try_fewer_words, query.trim()),
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center,
@@ -1063,12 +1071,12 @@ fun NoResultsCard(
                     onClick = { onApplySuggestion(suggestion) },
                     modifier = Modifier.padding(top = 8.dp),
                 ) {
-                    Text("Search for “$suggestion” instead")
+                    Text(stringResource(R.string.library_search_search_for_instead, suggestion))
                 }
             }
             if (stillReading) {
                 Text(
-                    text = "Some pages are still being read, so matches may appear shortly.",
+                    text = stringResource(R.string.library_search_some_pages_are_still_being),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center,
@@ -1093,7 +1101,7 @@ private fun PrivacyFootnote(modifier: Modifier = Modifier) {
         )
         Spacer(Modifier.width(8.dp))
         Text(
-            text = "Text is read on this device. Your pages never leave it.",
+            text = stringResource(R.string.library_search_text_is_read_on_this),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
@@ -1104,8 +1112,8 @@ private fun resultMeta(result: DocumentSearchResult): String = listOfNotNull(
     result.kind?.label,
     result.folderTitle,
     when {
-        result.textMatchCount > 0 -> "${result.textMatchCount} ${if (result.textMatchCount == 1) "match" else "matches"}"
-        else -> "${result.document.pageCount} ${if (result.document.pageCount == 1) "page" else "pages"}"
+        result.textMatchCount > 0 -> appPluralString(R.plurals.common_matches, result.textMatchCount, result.textMatchCount)
+        else -> appPluralString(R.plurals.common_pages, result.document.pageCount, result.document.pageCount)
     },
     result.document.updatedAtMillis.toRelativeDate().takeIf { result.textMatchCount == 0 },
 ).joinToString(" · ")
@@ -1135,7 +1143,7 @@ private fun RecentSearchPill(
                 modifier = Modifier
                     .fillMaxHeight()
                     .clip(RoundedCornerShape(topStart = 22.dp, bottomStart = 22.dp))
-                    .clickable(role = Role.Button, onClickLabel = "Search again", onClick = onSearch)
+                    .clickable(role = Role.Button, onClickLabel = stringResource(R.string.library_search_search_again), onClick = onSearch)
                     .padding(start = 14.dp, end = 6.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -1164,7 +1172,7 @@ private fun RecentSearchPill(
             ) {
                 Icon(
                     Icons.Filled.Close,
-                    contentDescription = "Remove $text from recent searches",
+                    contentDescription = stringResource(R.string.library_search_remove_from_recent_searches, text),
                     modifier = Modifier.size(18.dp),
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 )

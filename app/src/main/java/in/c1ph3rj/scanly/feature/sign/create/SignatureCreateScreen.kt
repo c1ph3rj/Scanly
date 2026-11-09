@@ -86,6 +86,9 @@ import `in`.c1ph3rj.scanly.feature.tools.ToolTextAction
 import `in`.c1ph3rj.scanly.feature.tools.ToolCard
 import kotlin.math.ceil
 import kotlinx.coroutines.flow.collect
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
+import androidx.compose.ui.res.stringResource
 
 /** Pad width / height in portrait; the same for signatures and initials. */
 private const val PadAspectRatio = 1.3f
@@ -238,7 +241,7 @@ fun SignatureCreateScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             ToolCompactHeader(
-                title = if (isInitials) "New initials" else "New signature",
+                title = if (isInitials) stringResource(R.string.signature_create_new_initials) else stringResource(R.string.signature_create_new_signature),
                 onBack = onBack,
             )
             Column(
@@ -281,7 +284,7 @@ fun SignatureCreateScreen(
                         uiState = uiState,
                         inkColor = inkColor,
                         style = style,
-                        caption = if (isInitials) "Write your initials above the line" else "Sign above the line",
+                        caption = if (isInitials) stringResource(R.string.signature_create_write_your_initials_above_the) else stringResource(R.string.signature_create_sign_above_the_line),
                         onStrokeFinished = onStrokeFinished,
                         onUndo = onUndo,
                         onClear = onClear,
@@ -301,7 +304,7 @@ fun SignatureCreateScreen(
             }
             ToolBottomBar {
                 ToolPrimaryButton(
-                    text = if (isInitials) "Save initials" else "Save signature",
+                    text = if (isInitials) stringResource(R.string.signature_create_save_initials) else stringResource(R.string.signature_create_save_signature),
                     onClick = {
                         val mask = if (uiState.mode == SignatureCreateMode.Draw) {
                             renderInkMask(uiState.strokes, style)
@@ -338,8 +341,8 @@ fun SignatureCreateScreen(
 private val MaxContentWidth = 720.dp
 
 private fun SignatureCreateMode.tabLabel(): String = when (this) {
-    SignatureCreateMode.Draw -> "Draw"
-    SignatureCreateMode.Upload -> "Upload"
+    SignatureCreateMode.Draw -> appString(R.string.signature_create_draw)
+    SignatureCreateMode.Upload -> appString(R.string.signature_create_upload)
 }
 
 private fun SignatureCreateMode.tabIcon(): ImageVector = when (this) {
@@ -399,7 +402,7 @@ private fun PenWidthRow(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        ToolFieldLabel(text = "Pen", muted = true, modifier = Modifier.padding(end = 4.dp))
+        ToolFieldLabel(text = stringResource(R.string.signature_create_pen), muted = true, modifier = Modifier.padding(end = 4.dp))
         SignaturePenWidth.entries.forEach { width ->
             PenChip(
                 width = width,
@@ -479,27 +482,27 @@ private fun SignatureUploadArea(
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             ToolFieldLabel(
-                text = if (isInitials) "Choose where your initials are" else "Choose where your signature is",
+                text = if (isInitials) stringResource(R.string.signature_create_choose_where_your_initials_are) else stringResource(R.string.signature_create_choose_where_your_signature_is),
             )
             SignatureSourceRow(
                 icon = Icons.Outlined.PhotoLibrary,
-                title = "Photos",
-                caption = "Pick a photo of your signature",
+                title = stringResource(R.string.signature_create_photos),
+                caption = stringResource(R.string.signature_create_pick_a_photo_of_your),
                 onClick = onChoosePhoto,
             )
             SignatureSourceRow(
                 icon = Icons.Outlined.FolderOpen,
-                title = "Files",
-                caption = "JPG or PNG from your phone",
+                title = stringResource(R.string.signature_create_files),
+                caption = stringResource(R.string.signature_create_jpg_or_png_from_your),
                 onClick = onChooseFile,
             )
             SignatureSourceRow(
                 icon = Icons.Outlined.DocumentScanner,
-                title = "Scanned page",
-                caption = "Use a page you scanned in Scanly",
+                title = stringResource(R.string.signature_create_scanned_page),
+                caption = stringResource(R.string.signature_create_use_a_page_you_scanned),
                 onClick = onOpenScanned,
             )
-            ToolNote(text = "Scanly removes the paper background and keeps just the ink.")
+            ToolNote(text = stringResource(R.string.signature_create_scanly_removes_the_paper_background))
         }
     } else {
         Column(
@@ -519,7 +522,7 @@ private fun SignatureUploadArea(
                 if (preview != null && !preview.isRecycled) {
                     Image(
                         bitmap = preview.asImageBitmap(),
-                        contentDescription = "Extracted signature preview",
+                        contentDescription = stringResource(R.string.signature_create_extracted_signature_preview),
                         modifier = Modifier.fillMaxSize().padding(24.dp),
                         contentScale = ContentScale.Fit,
                         colorFilter = ColorFilter.tint(inkColor),
@@ -536,7 +539,7 @@ private fun SignatureUploadArea(
                 ToolNote(text = error, warning = true)
             }
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                ToolFieldLabel("Ink sensitivity")
+                ToolFieldLabel(stringResource(R.string.signature_create_ink_sensitivity))
                 Slider(
                     value = uiState.sensitivity,
                     onValueChange = onSensitivityChange,
@@ -548,19 +551,19 @@ private fun SignatureUploadArea(
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     Text(
-                        text = "Fainter",
+                        text = stringResource(R.string.signature_create_fainter),
                         style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                     Text(
-                        text = "Bolder",
+                        text = stringResource(R.string.signature_create_bolder),
                         style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
             }
             ToolTextAction(
-                label = "Choose another",
+                label = stringResource(R.string.signature_create_choose_another),
                 onClick = onClearUpload,
                 icon = Icons.Outlined.Image,
                 modifier = Modifier.align(Alignment.CenterHorizontally),

@@ -32,6 +32,8 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
 
 /** Nav seed for the route: `scan` opens the scanner, `generate` opens Create. */
 enum class QrToolMode {
@@ -221,7 +223,7 @@ class QrToolViewModel @Inject constructor(
             val raw = decodeQrFromPhoto(appContext, uri)
             _uiState.update { it.copy(isReadingPhoto = false) }
             if (raw == null) {
-                emitMessage("No QR code found in that photo")
+                emitMessage(appString(R.string.qr_tool_no_qr_code_found_in))
             } else {
                 onCodeFound(raw)
             }
@@ -272,7 +274,7 @@ class QrToolViewModel @Inject constructor(
     fun saveCreatedCode() {
         val draft = _uiState.value.draft
         val payload = qrCreatePayload(draft) ?: run {
-            emitMessage("Add the details first")
+            emitMessage(appString(R.string.qr_tool_add_the_details_first))
             return
         }
         viewModelScope.launch {
@@ -282,7 +284,7 @@ class QrToolViewModel @Inject constructor(
                     runCatching { addQrHistoryEntryUseCase(payload, QrOrigin.Created) }
                     when (val exported = saveExportArtifactUseCase(rendered.value)) {
                         is ScanlyResult.Success -> emitMessage(
-                            "Saved ${exported.value.fileName} to ${exported.value.destinationLabel}",
+                            appString(R.string.document_detail_saved_to, exported.value.fileName, exported.value.destinationLabel),
                         )
                         is ScanlyResult.Failure -> emitMessage(exported.error.message)
                     }
@@ -297,7 +299,7 @@ class QrToolViewModel @Inject constructor(
     fun shareCreatedCode(onReady: (ExportArtifact) -> Unit) {
         val draft = _uiState.value.draft
         val payload = qrCreatePayload(draft) ?: run {
-            emitMessage("Add the details first")
+            emitMessage(appString(R.string.qr_tool_add_the_details_first))
             return
         }
         viewModelScope.launch {
@@ -352,7 +354,7 @@ class QrToolViewModel @Inject constructor(
     fun clearHistory() {
         viewModelScope.launch {
             clearQrHistoryUseCase()
-            emitMessage("QR history cleared")
+            emitMessage(appString(R.string.qr_tool_qr_history_cleared))
         }
     }
 

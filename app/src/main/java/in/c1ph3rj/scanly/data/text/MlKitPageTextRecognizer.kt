@@ -24,6 +24,8 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
 
 /**
  * One recognized page. [engine] is the engine that produced it; [requestedEngine] and
@@ -51,7 +53,7 @@ class MlKitPageTextRecognizer @Inject constructor() : PageTextRecognizer {
 
     override suspend fun recognize(imagePath: String): RecognizedPage = mutex.withLock {
         val bitmap = decodeForRecognition(imagePath)
-            ?: throw IllegalStateException("Page image could not be read.")
+            ?: throw IllegalStateException(appString(R.string.error_page_image_could_not_be_read))
         try {
             val rotation = exifRotation(imagePath)
             val result = client().process(InputImage.fromBitmap(bitmap, rotation)).await()

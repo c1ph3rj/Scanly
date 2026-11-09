@@ -1,0 +1,1994 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="shortcut_scan_short">സ്കാൻ</string>
+    <string name="shortcut_scan_long">പുതിയ സ്കാൻ ആരംഭിക്കുക</string>
+    <string name="shortcut_scan_disabled">സ്കാനിംഗ് ലഭ്യമല്ല</string>
+    <string name="shortcut_import_short">ഇമ്പോർട്ട്</string>
+    <string name="shortcut_import_long">ഫോട്ടോകൾ ഇമ്പോർട്ട് ചെയ്യുക</string>
+    <string name="shortcut_import_disabled">ഇമ്പോർട്ട് ലഭ്യമല്ല</string>
+    <string name="shortcut_qr_short">QR</string>
+    <string name="shortcut_qr_long">QR സ്കാൻ ചെയ്യുക, സൃഷ്ടിക്കുക, ബാർകോഡ് വായിക്കുക</string>
+    <string name="shortcut_qr_disabled">QR ടൂൾ ലഭ്യമല്ല</string>
+    <string name="shortcut_library_short">ലൈബ്രറി</string>
+    <string name="shortcut_library_long">നിങ്ങളുടെ ലൈബ്രറി തുറക്കുക</string>
+    <string name="shortcut_library_disabled">ലൈബ്രറി ലഭ്യമല്ല</string>
+    <string name="widget_actions_label">Scanly കുറുക്കുവഴികൾ</string>
+    <string name="widget_actions_description">സ്കാൻ, ഇമ്പോർട്ട്, QR, ലൈബ്രറി എന്നിവ വേഗത്തിൽ തുറക്കാം.</string>
+    <string name="widget_scan_label">Scanly സ്കാൻ</string>
+    <string name="widget_scan_description">പുതിയൊരു ഡോക്യുമെന്റ് സ്കാൻ ആരംഭിക്കുക.</string>
+    <string name="widget_qr_label">Scanly QR</string>
+    <string name="widget_qr_description">QR സ്കാൻ ചെയ്യാനും സൃഷ്ടിക്കാനുമുള്ള ടൂൾ തുറക്കുക.</string>
+    <string name="widget_action_scan">സ്കാൻ</string>
+    <string name="widget_action_import">ഇമ്പോർട്ട്</string>
+    <string name="widget_action_qr">QR</string>
+    <string name="widget_action_library">ലൈബ്രറി</string>
+    <!-- DocumentPresentationFormatter -->
+    <string name="document_presentation_formatter_imported">"ഇമ്പോർട്ട് ചെയ്തത് %1$s"</string>
+    <string name="document_presentation_formatter_folder">"ഫോൾഡർ %1$s"</string>
+    <string name="document_presentation_formatter_new_folder">"പുതിയ ഫോൾഡർ %1$s"</string>
+    <string name="document_presentation_formatter_scan">"സ്കാൻ %1$s"</string>
+    <string name="document_presentation_formatter_document">"ഡോക്യുമെന്റ് %1$s"</string>
+    <!-- ImageImportSupport -->
+    <string name="image_import_only_images_can_be_added">"ഒരു സമയം %1$s ചിത്രങ്ങൾ മാത്രമേ ചേർക്കാനാകൂ."</string>
+    <string name="image_import_skipped_files_that_couldn_t">"തുറക്കാനാകാത്ത %1$s ഫയലുകൾ ഒഴിവാക്കി."</string>
+    <string name="image_import_skipped_1_file_that_couldn">തുറക്കാനാകാത്ത 1 ഫയൽ ഒഴിവാക്കി.</string>
+    <string name="image_import_imported_images">"%1$s ചിത്രങ്ങൾ ഇമ്പോർട്ട് ചെയ്തു."</string>
+    <string name="image_import_imported_1_image">1 ചിത്രം ഇമ്പോർട്ട് ചെയ്തു.</string>
+    <!-- ZoomableImageDialog -->
+    <string name="zoomable_image_image_unavailable">ചിത്രം ലഭ്യമല്ല</string>
+    <string name="zoomable_image_reset_zoom">സൂം റീസെറ്റ് ചെയ്യുക</string>
+    <string name="zoomable_image_back">മടങ്ങുക</string>
+    <string name="zoomable_image_close">അടയ്ക്കുക</string>
+    <!-- LibraryOperationCoordinator -->
+    <string name="library_operation_coordinator_library_maintenance_is_in_progress">ലൈബ്രറി പരിപാലനം നടക്കുന്നു.</string>
+    <!-- DefaultDocumentRepository -->
+    <string name="default_document_repository_could_not_remove_empty_documents">ശൂന്യമായ ഡോക്യുമെന്റുകൾ നീക്കം ചെയ്യാനായില്ല.</string>
+    <string name="default_document_repository_could_not_clear_old_deleted">ഇല്ലാതാക്കിയ പഴയ ഡോക്യുമെന്റുകൾ മായ്ക്കാനായില്ല.</string>
+    <string name="default_document_repository_could_not_empty_recently_deleted">അടുത്തിടെ ഇല്ലാതാക്കിയവ ശൂന്യമാക്കാനായില്ല.</string>
+    <string name="default_document_repository_could_not_restore_the_document">ഡോക്യുമെന്റ് പുനഃസ്ഥാപിക്കാനായില്ല.</string>
+    <string name="default_document_repository_could_not_move_the_document">ഡോക്യുമെന്റ് അടുത്തിടെ ഇല്ലാതാക്കിയവയിലേക്ക് നീക്കാനായില്ല.</string>
+    <!-- DefaultDocumentExportRepository -->
+    <string name="default_document_export_repository_could_not_prepare_group_zip">പങ്കിടാൻ ഫോൾഡറിന്റെ ZIP തയ്യാറാക്കാനായില്ല.</string>
+    <string name="default_document_export_repository_could_not_prepare_group_pdf">പങ്കിടാൻ ഫോൾഡറിന്റെ PDF തയ്യാറാക്കാനായില്ല.</string>
+    <string name="default_document_export_repository_could_not_export_group_as">ഫോൾഡർ ZIP ആയി എക്സ്പോർട്ട് ചെയ്യാനായില്ല.</string>
+    <string name="default_document_export_repository_could_not_export_group_as_2">ഫോൾഡർ PDF ആയി എക്സ്പോർട്ട് ചെയ്യാനായില്ല.</string>
+    <string name="default_document_export_repository_could_not_prepare_images_for">പങ്കിടാൻ ചിത്രങ്ങൾ തയ്യാറാക്കാനായില്ല.</string>
+    <string name="default_document_export_repository_could_not_export_images">ചിത്രങ്ങൾ എക്സ്പോർട്ട് ചെയ്യാനായില്ല.</string>
+    <string name="default_document_export_repository_could_not_prepare_pdf_share">പങ്കിടാൻ PDF തയ്യാറാക്കാനായില്ല.</string>
+    <string name="default_document_export_repository_could_not_export_pdf">PDF എക്സ്പോർട്ട് ചെയ്യാനായില്ല.</string>
+    <!-- DefaultGroupRepository -->
+    <string name="default_group_repository_could_not_clear_old_deleted">ഇല്ലാതാക്കിയ പഴയ ഫോൾഡറുകൾ മായ്ക്കാനായില്ല.</string>
+    <string name="default_group_repository_could_not_delete_the_folders">ഫോൾഡറുകൾ ഇല്ലാതാക്കാനായില്ല.</string>
+    <string name="default_group_repository_could_not_delete_the_folder">ഫോൾഡർ ഇല്ലാതാക്കാനായില്ല.</string>
+    <string name="default_group_repository_could_not_restore_the_folder">ഫോൾഡർ പുനഃസ്ഥാപിക്കാനായില്ല.</string>
+    <string name="default_group_repository_could_not_move_the_folder">ഫോൾഡർ അടുത്തിടെ ഇല്ലാതാക്കിയവയിലേക്ക് നീക്കാനായില്ല.</string>
+    <!-- DefaultPageRepository -->
+    <string name="default_page_repository_applied_to_of_pages_save">"%2$s പേജുകളിൽ %1$s എണ്ണത്തിൽ പ്രയോഗിച്ചു. ബാക്കിയുള്ളവയ്ക്കായി വീണ്ടും സംരക്ഷിക്കുക."</string>
+    <string name="default_page_repository_could_not_clear_old_deleted">ഇല്ലാതാക്കിയ പഴയ പേജുകൾ മായ്ക്കാനായില്ല.</string>
+    <string name="default_page_repository_could_not_delete_the_pages">പേജുകൾ ഇല്ലാതാക്കാനായില്ല.</string>
+    <string name="default_page_repository_could_not_delete_the_page">പേജ് ഇല്ലാതാക്കാനായില്ല.</string>
+    <string name="default_page_repository_could_not_restore_the_page">പേജ് പുനഃസ്ഥാപിക്കാനായില്ല.</string>
+    <!-- DefaultPdfToolkitRepository -->
+    <string name="default_pdf_toolkit_repository_incorrect_pdf_password">PDF പാസ്‌വേഡ് തെറ്റാണ്.</string>
+    <string name="default_pdf_toolkit_repository_this_pdf_is_not_stored">ഈ PDF, Scanly-യിൽ സംഭരിച്ചിട്ടില്ല.</string>
+    <string name="default_pdf_toolkit_repository_the_scanly_document_could_not">Scanly ഡോക്യുമെന്റ് PDF ആയി തയ്യാറാക്കാനായില്ല.</string>
+    <string name="default_pdf_toolkit_repository_could_not_prepare_share">പങ്കിടാൻ തയ്യാറാക്കാനായില്ല.</string>
+    <string name="default_pdf_toolkit_repository_could_not_read_this_page">ഈ പേജ് വായിക്കാനായില്ല.</string>
+    <string name="default_pdf_toolkit_repository_failed_to_encode_page">പേജ് %1$s എൻകോഡ് ചെയ്യാനായില്ല.</string>
+    <string name="default_pdf_toolkit_repository_could_not_save_the_images">ചിത്രങ്ങൾ സംരക്ഷിക്കാനായില്ല.</string>
+    <string name="default_pdf_toolkit_repository_page">"%1$s – പേജ് %2$s.%3$s"</string>
+    <string name="default_pdf_toolkit_repository_could_not_estimate_the_image">ചിത്രത്തിന്റെ വലുപ്പം കണക്കാക്കാനായില്ല.</string>
+    <string name="default_pdf_toolkit_repository_could_not_open_this_pdf">ഈ PDF തുറക്കാനായില്ല.</string>
+    <string name="default_pdf_toolkit_repository_could_not_render_pdf_page">PDF പേജ് കാണിക്കാനായില്ല.</string>
+    <string name="default_pdf_toolkit_repository_could_not_sign_this_pdf">ഈ PDF ഒപ്പിടാനായില്ല.</string>
+    <string name="default_pdf_toolkit_repository_could_not_open_this_pdf_2">ഒപ്പിടാനായി ഈ PDF തുറക്കാനായില്ല.</string>
+    <string name="default_pdf_toolkit_repository_could_not_update_watermark_preview">വാട്ടർമാർക്ക് പ്രിവ്യൂ അപ്ഡേറ്റ് ചെയ്യാനായില്ല.</string>
+    <string name="default_pdf_toolkit_repository_could_not_add_watermark">വാട്ടർമാർക്ക് ചേർക്കാനായില്ല.</string>
+    <string name="default_pdf_toolkit_repository_could_not_remove_pdf_password">PDF പാസ്‌വേഡ് നീക്കം ചെയ്യാനായില്ല.</string>
+    <string name="default_pdf_toolkit_repository_could_not_password_protect_pdf">PDF-ന് പാസ്‌വേഡ് സംരക്ഷണം നൽകാനായില്ല.</string>
+    <string name="default_pdf_toolkit_repository_could_not_compress_pdf">PDF കംപ്രസ് ചെയ്യാനായില്ല.</string>
+    <string name="default_pdf_toolkit_repository_this_pdf_is_already_well">ഈ PDF ഇതിനകം നന്നായി ഒപ്റ്റിമൈസ് ചെയ്തതാണ്. കംപ്രസ് ചെയ്താലും വലുപ്പം കുറയില്ല.</string>
+    <string name="default_pdf_toolkit_repository_page_is_too_large_to">"പേജ് %1$s ഈ ഉപകരണത്തിൽ കംപ്രസ് ചെയ്യാനാകാത്തത്ര വലുതാണ്. ഏറ്റവും ചെറുത് എന്ന ക്വാളിറ്റി പരീക്ഷിക്കുക."</string>
+    <string name="default_pdf_toolkit_repository_could_not_merge_pdfs">PDF-കൾ ലയിപ്പിക്കാനായില്ല.</string>
+    <string name="default_pdf_toolkit_repository_one_of_the_pdfs">PDF-കളിൽ ഒന്ന്</string>
+    <string name="default_pdf_toolkit_repository_could_not_open_pdf">PDF തുറക്കാനായില്ല.</string>
+    <!-- PdfSignatureStamper -->
+    <string name="pdf_signature_stamper_text_and_dates_support_latin">ടെക്സ്റ്റിലും തീയതികളിലും ലാറ്റിൻ, ഗ്രീക്ക്, സിറിലിക് അക്ഷരങ്ങൾ, അക്കങ്ങൾ, ചിഹ്നങ്ങൾ എന്നിവ മാത്രമേ ഉപയോഗിക്കാനാകൂ.</string>
+    <!-- PdfWatermarkStamper -->
+    <string name="pdf_watermark_stamper_watermarks_support_latin_greek_and">വാട്ടർമാർക്കുകളിൽ ലാറ്റിൻ, ഗ്രീക്ക്, സിറിലിക് അക്ഷരങ്ങൾ, അക്കങ്ങൾ, ചിഹ്നങ്ങൾ എന്നിവ മാത്രമേ ഉപയോഗിക്കാനാകൂ. ടെക്സ്റ്റ് ഇംഗ്ലീഷിൽ നൽകി നോക്കൂ.</string>
+    <!-- DefaultQrCodeRepository -->
+    <string name="default_qr_code_repository_could_not_save_qr_code">QR കോഡ് സംരക്ഷിക്കാനായില്ല.</string>
+    <string name="default_qr_code_repository_could_not_generate_qr_code">QR കോഡ് സൃഷ്ടിക്കാനായില്ല.</string>
+    <!-- DefaultPageMarkupRepository -->
+    <string name="default_page_markup_repository_could_not_save_the_signed">ഒപ്പിട്ട പേജുകൾ സംരക്ഷിക്കാനായില്ല.</string>
+    <string name="default_page_markup_repository_could_not_load_signatures_for">ഈ ഡോക്യുമെന്റിലെ ഒപ്പുകൾ ലോഡ് ചെയ്യാനായില്ല.</string>
+    <!-- DefaultSignatureRepository -->
+    <string name="default_signature_repository_could_not_save_the_image">ചിത്രം സംരക്ഷിക്കാനായില്ല.</string>
+    <string name="default_signature_repository_could_not_prepare_the_image">ചിത്രം തയ്യാറാക്കാനായില്ല.</string>
+    <string name="default_signature_repository_could_not_update_the_signature">ഒപ്പ് അപ്ഡേറ്റ് ചെയ്യാനായില്ല.</string>
+    <string name="default_signature_repository_could_not_delete_the_signature">ഒപ്പ് ഇല്ലാതാക്കാനായില്ല.</string>
+    <string name="default_signature_repository_could_not_read_this_image">ഈ ചിത്രം വായിക്കാനായില്ല.</string>
+    <string name="default_signature_repository_could_not_save_the_signature">ഒപ്പ് സംരക്ഷിക്കാനായില്ല.</string>
+    <!-- PageMarkupStore -->
+    <string name="page_markup_store_could_not_save_the_signed">ഒപ്പിട്ട പേജ് സംരക്ഷിക്കാനായില്ല.</string>
+    <!-- DefaultPageTextRepository -->
+    <string name="default_page_text_repository_could_not_queue_pages_to">പേജുകൾ വീണ്ടും വായിക്കാനായി ക്യൂവിൽ ചേർക്കാനായില്ല.</string>
+    <string name="default_page_text_repository_could_not_update_the_text">ടെക്സ്റ്റ് സൂചിക അപ്ഡേറ്റ് ചെയ്യാനായില്ല.</string>
+    <string name="default_page_text_repository_could_not_save_your_changes">നിങ്ങളുടെ മാറ്റങ്ങൾ സംരക്ഷിക്കാനായില്ല.</string>
+    <string name="default_page_text_repository_could_not_read_text_from">ഈ പേജിൽ നിന്ന് ടെക്സ്റ്റ് വായിക്കാനായില്ല.</string>
+    <string name="default_page_text_repository_could_not_read_text_from_2">ഈ ഡോക്യുമെന്റിൽ നിന്ന് ടെക്സ്റ്റ് വായിക്കാനായില്ല.</string>
+    <!-- DefaultPlayInAppUpdateCoordinator -->
+    <string name="default_play_in_app_update_coordinator_could_not_check_google_play">അപ്ഡേറ്റുകൾക്കായി Google Play പരിശോധിക്കാനായില്ല.</string>
+    <string name="default_play_in_app_update_coordinator_google_play_could_not_check">Google Play-ക്ക് അപ്ഡേറ്റുകൾ പരിശോധിക്കാനായില്ല.</string>
+    <!-- PlayStoreAppUpdateRepository -->
+    <string name="play_store_app_update_repository_update_available">അപ്ഡേറ്റ് ലഭ്യമാണ്</string>
+    <string name="play_store_app_update_repository_latest">ഏറ്റവും പുതിയത്</string>
+    <!-- PdfExportOptions -->
+    <string name="pdf_export_options_use_no_more_than_characters">"പരമാവധി %1$s പ്രതീകങ്ങൾ ഉപയോഗിക്കുക."</string>
+    <string name="pdf_export_options_use_at_least_characters">"കുറഞ്ഞത് %1$s പ്രതീകങ്ങൾ ഉപയോഗിക്കുക."</string>
+    <string name="pdf_export_options_enter_a_pdf_password">ഒരു PDF പാസ്‌വേഡ് നൽകുക.</string>
+    <!-- QrPayload -->
+    <string name="qr_payload_text_characters">"ടെക്സ്റ്റ് · %1$s പ്രതീകങ്ങൾ"</string>
+    <string name="qr_payload_phone_number">ഫോൺ നമ്പർ</string>
+    <string name="qr_payload_email">ഇമെയിൽ</string>
+    <string name="qr_payload_contact_card">കോൺടാക്റ്റ് കാർഡ്</string>
+    <string name="qr_payload_wi_fi">"Wi-Fi · %1$s"</string>
+    <string name="qr_payload_upi">"UPI · %1$s"</string>
+    <string name="qr_payload_link_not_secure_http">ലിങ്ക് · സുരക്ഷിതമല്ല (http)</string>
+    <string name="qr_payload_link_https">ലിങ്ക് · https</string>
+    <string name="qr_payload_empty_text">ശൂന്യമായ ടെക്സ്റ്റ്</string>
+    <string name="qr_payload_contact">കോൺടാക്റ്റ്</string>
+    <string name="qr_payload_wi_fi_network">Wi-Fi നെറ്റ്‌വർക്ക്</string>
+    <string name="qr_payload_pay">"%1$s-ന് പണമടയ്ക്കുക"</string>
+    <string name="qr_payload_text">ടെക്സ്റ്റ്</string>
+    <string name="qr_payload_phone">ഫോൺ</string>
+    <string name="qr_payload_wi_fi_2">Wi-Fi</string>
+    <string name="qr_payload_upi_payment">UPI പേയ്‌മെന്റ്</string>
+    <string name="qr_payload_link">ലിങ്ക്</string>
+    <!-- DetectDocumentCornersUseCase -->
+    <string name="detect_document_corners_use_case_document_detection_failed">ഡോക്യുമെന്റ് കണ്ടെത്താനായില്ല.</string>
+    <string name="detect_document_corners_use_case_could_not_detect_a_document">ഈ ചിത്രത്തിൽ ഡോക്യുമെന്റൊന്നും കണ്ടെത്താനായില്ല.</string>
+    <!-- ImportImagesUseCase -->
+    <string name="import_images_use_case_none_of_the_selected_files">തിരഞ്ഞെടുത്ത ഫയലുകളൊന്നും ചിത്രങ്ങളായി തുറക്കാനായില്ല.</string>
+    <string name="import_images_use_case_the_selected_file_couldn_t">തിരഞ്ഞെടുത്ത ഫയൽ ചിത്രമായി തുറക്കാനായില്ല.</string>
+    <string name="import_images_use_case_saving_page">പേജ് സംരക്ഷിക്കുന്നു</string>
+    <string name="import_images_use_case_detecting_document">ഡോക്യുമെന്റ് കണ്ടെത്തുന്നു</string>
+    <string name="import_images_use_case_preparing_page">പേജ് തയ്യാറാക്കുന്നു</string>
+    <!-- TrashUseCases -->
+    <string name="trash_use_cases_page">"പേജ് %1$s"</string>
+    <!-- ImportPdfToLibraryUseCase -->
+    <string name="import_pdf_to_library_use_case_could_not_add_this_pdf">ഈ PDF നിങ്ങളുടെ ലൈബ്രറിയിലേക്ക് ചേർക്കാനായില്ല.</string>
+    <string name="import_pdf_to_library_use_case_choose_at_least_one_page">കുറഞ്ഞത് ഒരു പേജ് തിരഞ്ഞെടുക്കുക.</string>
+    <!-- CameraCaptureChrome -->
+    <string name="camera_capture_chrome_done">പൂർത്തിയായി</string>
+    <string name="camera_capture_chrome_done_review_pages">"പൂർത്തിയായി, %1$s പേജുകൾ പരിശോധിക്കുക"</string>
+    <string name="camera_capture_chrome_done_review_1_page">പൂർത്തിയായി, 1 പേജ് പരിശോധിക്കുക</string>
+    <string name="camera_capture_chrome_turn_auto_capture_on">ഓട്ടോ ക്യാപ്‌ചർ ഓണാക്കുക</string>
+    <string name="camera_capture_chrome_turn_auto_capture_off">ഓട്ടോ ക്യാപ്‌ചർ ഓഫാക്കുക</string>
+    <!-- CaptureStabilityTracker -->
+    <string name="capture_stability_tracker_saving_page">പേജ് സംരക്ഷിക്കുന്നു…</string>
+    <string name="capture_stability_tracker_capturing_page">പേജ് ക്യാപ്‌ചർ ചെയ്യുന്നു…</string>
+    <string name="capture_stability_tracker_hold_steady">അനക്കാതെ പിടിക്കുക.</string>
+    <string name="capture_stability_tracker_capturing_now">ഇപ്പോൾ ക്യാപ്‌ചർ ചെയ്യുന്നു.</string>
+    <string name="capture_stability_tracker_hold_steady_to_auto_capture">ഓട്ടോ ക്യാപ്‌ചറിനായി അനക്കാതെ പിടിക്കുക.</string>
+    <string name="capture_stability_tracker_hold_position_auto_capture_is">അതേ സ്ഥാനത്ത് പിടിക്കുക. ഓട്ടോ ക്യാപ്‌ചർ അൽപ്പനേരം കാത്തിരിക്കുന്നു.</string>
+    <string name="capture_stability_tracker_move_to_the_next_page">ഓട്ടോ ക്യാപ്‌ചർ വീണ്ടും സജ്ജമാകും മുമ്പ് അടുത്ത പേജിലേക്ക് നീങ്ങുക.</string>
+    <string name="capture_stability_tracker_point_your_camera_at_a">ക്യാമറ ഒരു ഡോക്യുമെന്റിലേക്ക് മുഴുവനായി ചൂണ്ടുക.</string>
+    <string name="capture_stability_tracker_document_detected_tap_capture_whenever">ഡോക്യുമെന്റ് കണ്ടെത്തി. തയ്യാറാകുമ്പോൾ ക്യാപ്‌ചർ ടാപ്പ് ചെയ്യുക.</string>
+    <string name="capture_stability_tracker_auto_capture_is_off_use">ഓട്ടോ ക്യാപ്‌ചർ ഓഫാണ്. തയ്യാറാകുമ്പോൾ ഷട്ടർ ഉപയോഗിക്കുക.</string>
+    <!-- PipCameraComponents -->
+    <string name="pip_camera_not_now">ഇപ്പോൾ വേണ്ട</string>
+    <string name="pip_camera_allow_camera_access">ക്യാമറ ആക്‌സസ് അനുവദിക്കുക</string>
+    <string name="pip_camera_open_settings">ക്രമീകരണം തുറക്കുക</string>
+    <string name="pip_camera_photos_stay_on_your_device">നിങ്ങൾ എക്സ്പോർട്ട് ചെയ്യുകയോ പങ്കിടുകയോ ചെയ്യുന്നതുവരെ ഫോട്ടോകൾ ഉപകരണത്തിൽ തന്നെ തുടരും</string>
+    <string name="pip_camera_camera_active_only_while_scanning">സ്കാൻ ചെയ്യുമ്പോൾ മാത്രമേ ക്യാമറ പ്രവർത്തിക്കൂ</string>
+    <string name="pip_camera_live_preview_with_edge_detection">അരികുകൾ കണ്ടെത്തുന്ന തത്സമയ പ്രിവ്യൂ</string>
+    <string name="pip_camera_come_back_here_and_pip">ഇവിടേക്ക് തിരിച്ചുവരൂ, Pip തയ്യാറായിരിക്കും</string>
+    <string name="pip_camera_settings_permissions_camera_allow">ക്രമീകരണം › അനുമതികൾ › ക്യാമറ › അനുവദിക്കുക</string>
+    <string name="pip_camera_scanly_needs_your_camera_to">ഡോക്യുമെന്റ് പേജുകൾ ക്യാപ്‌ചർ ചെയ്യാനും നേരെയാക്കാനും Scanly-ക്ക് ക്യാമറ ആവശ്യമാണ്.</string>
+    <string name="pip_camera_camera_permission_is_blocked_for">Scanly-ക്കുള്ള ക്യാമറ അനുമതി ബ്ലോക്ക് ചെയ്തിരിക്കുന്നു. ഡോക്യുമെന്റുകൾ സ്കാൻ ചെയ്യാൻ ക്രമീകരണം തുറന്ന്, അനുമതികൾ ടാപ്പ് ചെയ്ത്, ക്യാമറ ഓണാക്കുക.</string>
+    <string name="pip_camera_camera_access_needed">ക്യാമറ ആക്‌സസ് ആവശ്യമാണ്</string>
+    <string name="pip_camera_show_me_the_whole_page">നാല് മൂലകളും ഉൾപ്പെടെ പേജ് മുഴുവനായി കാണിക്കൂ.</string>
+    <string name="pip_camera_hold_it_almost_there">അങ്ങനെ തന്നെ… ഏതാണ്ട് ആയി.</string>
+    <string name="pip_camera_hold_it">"അങ്ങനെ തന്നെ… %1$s"</string>
+    <string name="pip_camera_ooh_edges_hold_still_a">ആഹാ, അരികുകൾ കിട്ടി! ഒരു നിമിഷം അനക്കല്ലേ…</string>
+    <string name="pip_camera_auto_capture_is_off_tap">ഓട്ടോ ക്യാപ്‌ചർ ഓഫാണ്. തയ്യാറാകുമ്പോൾ ഷട്ടർ ടാപ്പ് ചെയ്യൂ.</string>
+    <string name="pip_camera_found_the_edges_tap_the">അരികുകൾ കിട്ടി. എപ്പോൾ വേണമെങ്കിലും ഷട്ടർ ടാപ്പ് ചെയ്യൂ.</string>
+    <string name="pip_camera_got_it_on_to_the">കിട്ടി! ഇനി അടുത്ത പേജ്.</string>
+    <string name="pip_camera_snap_saving_that_page">ക്ലിക്ക്! ആ പേജ് സംരക്ഷിക്കുന്നു…</string>
+    <string name="pip_camera_it_s_all_fuzzy_tap">ആകെ മങ്ങിയിരിക്കുന്നു. ഫോക്കസ് ചെയ്യാൻ പേജിൽ ടാപ്പ് ചെയ്യൂ.</string>
+    <string name="pip_camera_bit_dark_in_here_more">ഇവിടെ അൽപ്പം ഇരുട്ടാണ്. കൂടുതൽ വെളിച്ചം വേണോ, അതോ ഫ്ലാഷ് നോക്കണോ?</string>
+    <string name="pip_camera_everything_s_dark_is_something">ആകെ ഇരുട്ടാണ്. ലെൻസിന് മുകളിൽ എന്തെങ്കിലും ഉണ്ടോ?</string>
+    <!-- ScanSessionScreen -->
+    <string name="scan_session_camera_couldn_t_start_close">ക്യാമറ ആരംഭിക്കാനായില്ല. ക്യാമറ ഉപയോഗിക്കുന്ന മറ്റ് ആപ്പുകൾ അടച്ച് വീണ്ടും ശ്രമിക്കുക.</string>
+    <string name="scan_session_camera_couldn_t_start_leave">ക്യാമറ ആരംഭിക്കാനായില്ല. ഈ സ്ക്രീനിൽ നിന്ന് പുറത്തുകടന്ന് വീണ്ടും തുറക്കുക.</string>
+    <string name="scan_session_capture">ക്യാപ്‌ചർ</string>
+    <string name="scan_session_replace_page">പേജ് മാറ്റുക</string>
+    <string name="scan_session_show_grid">ഗ്രിഡ് കാണിക്കുക</string>
+    <string name="scan_session_hide_grid">ഗ്രിഡ് മറയ്ക്കുക</string>
+    <string name="scan_session_turn_flash_on">ഫ്ലാഷ് ഓണാക്കുക</string>
+    <string name="scan_session_turn_flash_off">ഫ്ലാഷ് ഓഫാക്കുക</string>
+    <string name="scan_session_close_camera">ക്യാമറ അടയ്ക്കുക</string>
+    <string name="scan_session_no_captures">ക്യാപ്‌ചറുകളൊന്നുമില്ല</string>
+    <string name="scan_session_open_a_valid_document_first">ആദ്യം സാധുവായ ഒരു ഡോക്യുമെന്റ് തുറക്കുക.</string>
+    <string name="scan_session_document_missing">ഡോക്യുമെന്റ് കാണുന്നില്ല</string>
+    <string name="scan_session_camera_is_not_ready_yet">ക്യാമറ ഇതുവരെ തയ്യാറായിട്ടില്ല.</string>
+    <!-- ScanSessionViewModel -->
+    <string name="scan_session_checking_document">ഡോക്യുമെന്റ് പരിശോധിക്കുന്നു…</string>
+    <string name="scan_session_point_your_camera_at_a">ക്യാമറ ഒരു യഥാർത്ഥ പേപ്പർ ഡോക്യുമെന്റിലേക്ക് ചൂണ്ടുക.</string>
+    <string name="scan_session_screen_detected_point_at_a">സ്ക്രീൻ കണ്ടെത്തി. ഒരു യഥാർത്ഥ പേപ്പർ ഡോക്യുമെന്റിലേക്ക് ചൂണ്ടുക.</string>
+    <string name="scan_session_page_edges_are_ambiguous_hold">പേജിന്റെ അരികുകൾ വ്യക്തമല്ല. അനക്കാതെ പിടിക്കുക അല്ലെങ്കിൽ അടുത്തേക്ക് നീങ്ങുക.</string>
+    <string name="scan_session_two_pages_are_visible_move">രണ്ട് പേജുകൾ കാണുന്നു. അടുത്തേക്ക് നീങ്ങി ഒരു പേജ് മാത്രം ഫ്രെയിമിലാക്കുക.</string>
+    <string name="scan_session_page_saved">"പേജ് %1$s സംരക്ഷിച്ചു."</string>
+    <string name="scan_session_auto_captured_page">പേജ് %1$s ഓട്ടോ ക്യാപ്‌ചർ ചെയ്തു.</string>
+    <string name="scan_session_document_not_found">ഡോക്യുമെന്റ് കണ്ടെത്തിയില്ല.</string>
+    <string name="scan_session_capture_failed_reposition_the_document">ക്യാപ്‌ചർ പരാജയപ്പെട്ടു. ഡോക്യുമെന്റ് ശരിയായി വെച്ച് വീണ്ടും ശ്രമിക്കുക.</string>
+    <string name="scan_session_page_not_saved_reposition_the">പേജ് സംരക്ഷിച്ചില്ല. ഡോക്യുമെന്റ് ശരിയായി വെച്ച് വീണ്ടും ശ്രമിക്കുക.</string>
+    <string name="scan_session_live_detection_is_unavailable_manual">തത്സമയ കണ്ടെത്തൽ ലഭ്യമല്ല. മാനുവൽ ക്യാപ്‌ചർ ഇപ്പോഴും പ്രവർത്തിക്കും.</string>
+    <string name="scan_session_point_your_camera_at_a_2">ക്യാമറ ഒരു ഡോക്യുമെന്റിലേക്ക് ചൂണ്ടുക.</string>
+    <!-- ExportShareComponents -->
+    <string name="export_share_passwords_match">പാസ്‌വേഡുകൾ പൊരുത്തപ്പെടുന്നു.</string>
+    <string name="export_share_confirm_password">പാസ്‌വേഡ് സ്ഥിരീകരിക്കുക</string>
+    <string name="export_share_4_64_characters_send_it">4–64 പ്രതീകങ്ങൾ. ഇത് PDF-ൽ നിന്ന് വേറിട്ട് അയയ്ക്കുക.</string>
+    <string name="export_share_show_password">പാസ്‌വേഡ് കാണിക്കുക</string>
+    <string name="export_share_hide_password">പാസ്‌വേഡ് മറയ്ക്കുക</string>
+    <string name="export_share_pdf_password">PDF പാസ്‌വേഡ്</string>
+    <string name="export_share_off">ഓഫ്</string>
+    <string name="export_share_a_password_will_be_required">PDF തുറക്കാൻ പാസ്‌വേഡ് ആവശ്യമായി വരും.</string>
+    <string name="export_share_password_protection">പാസ്‌വേഡ് സംരക്ഷണം</string>
+    <string name="export_share_cancel">റദ്ദാക്കുക</string>
+    <string name="export_share_add_white_space_around_the">സ്കാൻ ചെയ്ത പേജിന് ചുറ്റും വെളുത്ത ഇടം ചേർക്കുക.</string>
+    <string name="export_share_margins">മാർജിനുകൾ</string>
+    <string name="export_share_fixed_sizes_use_their_real">നിശ്ചിത വലുപ്പങ്ങൾ യഥാർത്ഥ പ്രിന്റ് അളവുകൾ ഉപയോഗിക്കുന്നു.</string>
+    <string name="export_share_page_size">പേജ് വലുപ്പം</string>
+    <string name="export_share_auto_follows_each_scanned_page">ഓട്ടോ എന്നത് ഓരോ സ്കാൻ ചെയ്ത പേജിന്റെയും വലുപ്പം പിന്തുടരും.</string>
+    <string name="export_share_orientation">ഓറിയന്റേഷൻ</string>
+    <string name="export_share_add_the_page_index_to">PDF ഫൂട്ടറിൽ പേജ് നമ്പർ ചേർക്കുക.</string>
+    <string name="export_share_page_numbers">പേജ് നമ്പറുകൾ</string>
+    <string name="export_share_choose_how_every_page_is">"ഓരോ പേജും എങ്ങനെ സൃഷ്ടിക്കപ്പെടുന്നുവെന്ന് തിരഞ്ഞെടുക്കുക."</string>
+    <string name="export_share_passwords_do_not_match">"പാസ്‌വേഡുകൾ പൊരുത്തപ്പെടുന്നില്ല."</string>
+    <string name="export_share_confirm_the_password">"പാസ്വേഡ് സ്ഥിരീകരിക്കുക."</string>
+    <string name="export_share_pdf_options">"PDF ഓപ്ഷനുകൾ"</string>
+    <!-- FabComponents -->
+    <string name="fab_open_add_menu">"ആഡ് മെനു തുറക്കുക"</string>
+    <string name="fab_close_menu">"മെനു അടയ്ക്കുക"</string>
+    <string name="fab_new_document">"പുതിയ പ്രമാണം"</string>
+    <string name="fab_new_folder">"പുതിയ ഫോൾഡർ"</string>
+    <!-- LibraryCardPresentation -->
+    <string name="library_card_presentation_remove_from_folder">"ഫോൾഡറിൽ നിന്ന് നീക്കം ചെയ്യുക"</string>
+    <string name="library_card_presentation_move_to_folder">"ഫോൾഡറിലേക്ക് നീക്കുക"</string>
+    <string name="library_card_presentation_rename">"പേരുമാറ്റുക"</string>
+    <string name="library_card_presentation_delete">"ഇല്ലാതാക്കുക"</string>
+    <string name="library_card_presentation_1_page">"1 പേജ്"</string>
+    <string name="library_card_presentation_1_document">"1 പ്രമാണം"</string>
+    <string name="library_card_presentation_yesterday">"ഇന്നലെ"</string>
+    <string name="library_card_presentation_today">"ഇന്ന്"</string>
+    <!-- LibraryFolderShelf -->
+    <string name="library_folder_shelf_all_folders">"എല്ലാ ഫോൾഡറുകളും"</string>
+    <string name="library_folder_shelf_view_all">"എല്ലാം കാണുക"</string>
+    <string name="library_folder_shelf_organise_scans">"സ്കാനുകൾ സംഘടിപ്പിക്കുക"</string>
+    <string name="library_folder_shelf_new_folder">"പുതിയ ഫോൾഡർ"</string>
+    <!-- SharedComponents -->
+    <string name="shared_please_wait">"ദയവായി കാത്തിരിക്കുക"</string>
+    <string name="shared_working_on_your_photos">"നിങ്ങളുടെ ഫോട്ടോകളിൽ പ്രവർത്തിക്കുന്നു…"</string>
+    <string name="shared_importing_images">"ഇമേജുകൾ ഇറക്കുമതി ചെയ്യുന്നു"</string>
+    <string name="shared_more_options">"കൂടുതൽ ഓപ്ഷനുകൾ"</string>
+    <string name="shared_selected">"തിരഞ്ഞെടുത്തു"</string>
+    <string name="shared_create_new_folder">"പുതിയ ഫോൾഡർ സൃഷ്ടിക്കുക"</string>
+    <string name="shared_create_move">"സൃഷ്‌ടിക്കുകയും നീക്കുകയും ചെയ്യുക"</string>
+    <string name="shared_new_folder_name">"പുതിയ ഫോൾഡർ നാമം"</string>
+    <string name="shared_no_folder">"ഫോൾഡർ ഇല്ല"</string>
+    <string name="shared_folder_name">"ഫോൾഡറിൻ്റെ പേര്"</string>
+    <string name="shared_create">"സൃഷ്ടിക്കുക"</string>
+    <string name="shared_suggest_name">"പേര് നിർദ്ദേശിക്കുക"</string>
+    <string name="shared_title">"തലക്കെട്ട്"</string>
+    <string name="shared_clear_name">"പേര് മായ്ക്കുക"</string>
+    <string name="shared_confirm">"സ്ഥിരീകരിക്കുക"</string>
+    <string name="shared_scanly">"Scanly"</string>
+    <!-- DocumentDetailScreen -->
+    <string name="document_detail_delete_page">"പേജ് ഇല്ലാതാക്കുക"</string>
+    <string name="document_detail_share_page">"പേജ് പങ്കിടുക"</string>
+    <string name="document_detail_sign_document">"പ്രമാണത്തിൽ ഒപ്പിടുക"</string>
+    <string name="document_detail_extract_text">"ടെക്സ്റ്റ് എക്സ്ട്രാക്റ്റ് ചെയ്യുക"</string>
+    <string name="document_detail_retake_page">"പേജ് വീണ്ടും എടുക്കുക"</string>
+    <string name="document_detail_edit_page">"പേജ് എഡിറ്റ് ചെയ്യുക"</string>
+    <string name="document_detail_edit">"എഡിറ്റ്"</string>
+    <string name="document_detail_share">"%1$s പങ്കിടുക"</string>
+    <string name="document_detail_review">"അവലോകനം"</string>
+    <string name="document_detail_ready">"തയ്യാറാണ്"</string>
+    <string name="document_detail_new">"പുതിയത്"</string>
+    <string name="document_detail_captured">"പിടിച്ചെടുത്തു"</string>
+    <string name="document_detail_add_page">"പേജ് ചേർക്കുക"</string>
+    <string name="document_detail_scan_or_import">"സ്കാൻ ചെയ്യുക അല്ലെങ്കിൽ ഇറക്കുമതി ചെയ്യുക"</string>
+    <string name="document_detail_add_page_scan_or_import">"പേജ് ചേർക്കുക. സ്കാൻ ചെയ്യുക അല്ലെങ്കിൽ ഇറക്കുമതി ചെയ്യുക."</string>
+    <string name="document_detail_share_2">"പങ്കിടുക"</string>
+    <string name="document_detail_retake">"വീണ്ടും എടുക്കുക"</string>
+    <string name="document_detail_open_zoom_view">"സൂം കാഴ്ച തുറക്കുക"</string>
+    <string name="document_detail_page_of">"%2$s-ൻ്റെ %1$s പേജ്"</string>
+    <string name="document_detail_import_images">"ഇമേജുകൾ ഇറക്കുമതി ചെയ്യുക"</string>
+    <string name="document_detail_scan_a_page">"ഒരു പേജ് സ്കാൻ ചെയ്യുക"</string>
+    <string name="document_detail_scan_a_page_or_import">"ഈ പ്രമാണം ആരംഭിക്കുന്നതിന് ഒരു പേജ് സ്കാൻ ചെയ്യുക അല്ലെങ്കിൽ %1$s ചിത്രങ്ങൾ വരെ ഇറക്കുമതി ചെയ്യുക."</string>
+    <string name="document_detail_no_pages_yet">"ഇതുവരെ പേജുകളൊന്നുമില്ല"</string>
+    <string name="document_detail_return_to_the_library_and">"ലൈബ്രറിയിലേക്ക് മടങ്ങുക, മറ്റൊന്ന് തുറക്കുക."</string>
+    <string name="document_detail_document_not_found">"പ്രമാണം കണ്ടെത്തിയില്ല"</string>
+    <string name="document_detail_select_a_page_to_preview">"പ്രിവ്യൂ ചെയ്യാൻ ഒരു പേജ് തിരഞ്ഞെടുക്കുക"</string>
+    <string name="document_detail_tap_to_review_long_press">"അവലോകനം ചെയ്യാൻ ടാപ്പ് ചെയ്യുക. പുനഃക്രമീകരിക്കാൻ ദീർഘനേരം അമർത്തി വലിച്ചിടുക."</string>
+    <string name="document_detail_long_press_and_drag_to">"പുനഃക്രമീകരിക്കാൻ ദീർഘനേരം അമർത്തി വലിച്ചിടുക"</string>
+    <string name="document_detail_pages">"പേജുകൾ"</string>
+    <string name="document_detail_use_scan_or_import_to">"നിങ്ങളുടെ ആദ്യ പേജ് ചേർക്കാൻ സ്കാൻ അല്ലെങ്കിൽ ഇംപോർട്ട് ഉപയോഗിക്കുക."</string>
+    <string name="document_detail_please_wait_while_the_file">"ഫയൽ തയ്യാറാക്കുന്നത് വരെ ദയവായി കാത്തിരിക്കുക."</string>
+    <string name="document_detail_share_pages">"പേജുകൾ പങ്കിടുക"</string>
+    <string name="document_detail_save_images_zip">"ZIP ചിത്രങ്ങൾ സംരക്ഷിക്കുക"</string>
+    <string name="document_detail_share_pdf">"PDF പങ്കിടുക"</string>
+    <string name="document_detail_save_pdf">"PDF സംരക്ഷിക്കുക"</string>
+    <string name="document_detail_export_share">"കയറ്റുമതി &amp; പങ്കിടുക"</string>
+    <string name="document_detail_pick_up_to_images_from">"നിങ്ങളുടെ ഫയലുകളിൽ നിന്ന് %1$s ചിത്രങ്ങൾ വരെ എടുക്കുക"</string>
+    <string name="document_detail_choose_images">"ചിത്രങ്ങൾ തിരഞ്ഞെടുക്കുക"</string>
+    <string name="document_detail_open_the_camera_to_scan">"ഒരു പുതിയ പേജ് സ്കാൻ ചെയ്യാൻ ക്യാമറ തുറക്കുക"</string>
+    <string name="document_detail_capture_a_new_scan_or">"ഒരു പുതിയ സ്കാൻ ക്യാപ്‌ചർ ചെയ്യുക അല്ലെങ്കിൽ നിങ്ങളുടെ ഗാലറിയിൽ നിന്ന് %1$s ചിത്രങ്ങൾ വരെ തിരഞ്ഞെടുക്കുക."</string>
+    <string name="document_detail_delete_document">"പ്രമാണം ഇല്ലാതാക്കുക"</string>
+    <string name="document_detail_rename_document">"പ്രമാണത്തിൻ്റെ പേരുമാറ്റുക"</string>
+    <string name="document_detail_document_options">"പ്രമാണ ഓപ്ഷനുകൾ"</string>
+    <string name="document_detail_working_on_your_photos">"നിങ്ങളുടെ ഫോട്ടോകളിൽ പ്രവർത്തിക്കുന്നു"</string>
+    <string name="document_detail_preparing_export">"കയറ്റുമതി തയ്യാറാക്കുന്നു"</string>
+    <string name="document_detail_generate">"സൃഷ്ടിക്കുക"</string>
+    <string name="document_detail_delete_document_2">"പ്രമാണം ഇല്ലാതാക്കണോ?"</string>
+    <string name="document_detail_save">"സംരക്ഷിക്കുക"</string>
+    <string name="document_detail_document">"പ്രമാണം"</string>
+    <!-- DocumentDetailViewModel -->
+    <string name="document_detail_document_renamed">"പ്രമാണം പുനർനാമകരണം ചെയ്തു."</string>
+    <string name="document_detail_starting_import">"ഇറക്കുമതി ആരംഭിക്കുന്നു"</string>
+    <string name="document_detail_page_image_is_not_available">"പേജ് ചിത്രം ഇതുവരെ ലഭ്യമല്ല."</string>
+    <string name="document_detail_preparing_pages">"പേജുകൾ തയ്യാറാക്കുന്നു"</string>
+    <string name="document_detail_saved_to">"%1$s മുതൽ %2$s വരെ സംരക്ഷിച്ചു"</string>
+    <string name="document_detail_preparing_and_saving_zip">"ZIP തയ്യാറാക്കുകയും സംരക്ഷിക്കുകയും ചെയ്യുന്നു"</string>
+    <string name="document_detail_preparing_pdf">"PDF തയ്യാറാക്കുന്നു"</string>
+    <string name="document_detail_generating_and_saving_pdf">"PDF സൃഷ്ടിക്കുകയും സംരക്ഷിക്കുകയും ചെയ്യുന്നു"</string>
+    <string name="document_detail_reordered_pages">"പുനഃക്രമീകരിച്ച പേജുകൾ."</string>
+    <string name="document_detail_moved_to_folder">"ഫോൾഡറിലേക്ക് നീക്കി"</string>
+    <string name="document_detail_moved_to">"%1$s-ലേക്ക് മാറ്റി"</string>
+    <string name="document_detail_removed_from_folder">"ഫോൾഡറിൽ നിന്ന് നീക്കം ചെയ്തു"</string>
+    <!-- FilterCustomizeScreen -->
+    <string name="filter_customize_faded_text">"മങ്ങിയ വാചകം"</string>
+    <string name="filter_customize_whiteboard">"വൈറ്റ്ബോർഡ്"</string>
+    <string name="filter_customize_grayscale">"ഗ്രേസ്കെയിൽ"</string>
+    <string name="filter_customize_screen">"സ്ക്രീൻ"</string>
+    <string name="filter_customize_vivid">"വിവിഡ്"</string>
+    <string name="filter_customize_natural">"സ്വാഭാവികം"</string>
+    <string name="filter_customize_magic_color">"മാന്ത്രിക നിറം"</string>
+    <string name="filter_customize_auto">"ഓട്ടോ"</string>
+    <string name="filter_customize_original">"ഒറിജിനൽ"</string>
+    <string name="filter_customize_intensity">"തീവ്രത"</string>
+    <string name="filter_customize_sharpness">"മൂർച്ച"</string>
+    <string name="filter_customize_saturation">"സാച്ചുറേഷൻ"</string>
+    <string name="filter_customize_contrast">"കോൺട്രാസ്റ്റ്"</string>
+    <string name="filter_customize_brightness">"തെളിച്ചം"</string>
+    <string name="filter_customize_fine_tune_on_this_page">"ഈ പേജിൽ %1$s ഫൈൻ-ട്യൂൺ ചെയ്യുക. ഫിൽട്ടർ മാത്രം പ്രിവ്യൂ ചെയ്യാൻ താരതമ്യം പിടിക്കുക."</string>
+    <string name="filter_customize_customize_filter">"ഫിൽട്ടർ ഇഷ്ടാനുസൃതമാക്കുക"</string>
+    <string name="filter_customize_adjusted">"ക്രമീകരിച്ചു"</string>
+    <string name="filter_customize_filter_only">"ഫിൽട്ടർ മാത്രം"</string>
+    <string name="filter_customize_filter_adjustment_preview">"ഫിൽട്ടർ ക്രമീകരിക്കൽ പ്രിവ്യൂ"</string>
+    <string name="filter_customize_selected_filter_without_adjustments">"ക്രമീകരണങ്ങളില്ലാതെ തിരഞ്ഞെടുത്ത ഫിൽട്ടർ"</string>
+    <string name="filter_customize_loading_preview">"പ്രിവ്യൂ ലോഡുചെയ്യുന്നു…"</string>
+    <string name="filter_customize_hold_to_compare_with_filter">"ഫിൽട്ടറുമായി മാത്രം താരതമ്യം ചെയ്യാൻ പിടിക്കുക"</string>
+    <string name="filter_customize_reset_adjustments">"ക്രമീകരണങ്ങൾ പുനഃസജ്ജമാക്കുക"</string>
+    <string name="filter_customize_adjust">"ക്രമീകരിക്കുക"</string>
+    <string name="filter_customize_compare">"താരതമ്യം ചെയ്യുക"</string>
+    <!-- FilterPickerScreen -->
+    <string name="filter_picker_selected_filter">"തിരഞ്ഞെടുത്ത ഫിൽട്ടർ"</string>
+    <string name="filter_picker_filter_thumbnail">"%1$s ഫിൽട്ടർ ലഘുചിത്രം"</string>
+    <string name="filter_picker_analyzing_the_page_to_tune">"ഓരോ ഫിൽട്ടറും ട്യൂൺ ചെയ്യാൻ പേജ് വിശകലനം ചെയ്യുന്നു."</string>
+    <string name="filter_picker_filter_only_crop_rotation_and">"ഫിൽട്ടർ മാത്രം. ഓരോ പേജിലും ക്രോപ്പ് ചെയ്യുക, റൊട്ടേഷൻ ചെയ്യുക, താമസം ക്രമീകരിക്കുക."</string>
+    <string name="filter_picker_apply_filter_to_all_pages">"എല്ലാ പേജുകളിലേക്കും ഫിൽട്ടർ പ്രയോഗിക്കുക"</string>
+    <string name="filter_picker_tap_a_preset_to_update">"തത്സമയ പ്രിവ്യൂ അപ്ഡേറ്റ് ചെയ്യാൻ ഒരു പ്രീസെറ്റ് ടാപ്പ് ചെയ്യുക. പൂർത്തിയാകുമ്പോൾ എഡിറ്ററിൽ നിന്ന് സംരക്ഷിക്കുക."</string>
+    <string name="filter_picker_filters">"ഫിൽട്ടറുകൾ"</string>
+    <string name="filter_picker_filter_preview">"%1$s ഫിൽട്ടർ പ്രിവ്യൂ"</string>
+    <!-- PageCropScreen -->
+    <string name="page_crop_page_crop_preview">"പേജ് ക്രോപ്പ് പ്രിവ്യൂ"</string>
+    <string name="page_crop_detecting">"കണ്ടെത്തൽ"</string>
+    <string name="page_crop_reset">"പുനഃസജ്ജമാക്കുക"</string>
+    <string name="page_crop_ai_detect">"AI കണ്ടെത്തൽ"</string>
+    <string name="page_crop_right">"ശരിയാണ്"</string>
+    <string name="page_crop_left">"ഇടത്"</string>
+    <string name="page_crop_apply_crop">"വിള പ്രയോഗിക്കുക"</string>
+    <string name="page_crop_detecting_document">"ഡോക്യുമെൻ്റ് … കണ്ടെത്തുന്നു"</string>
+    <string name="page_crop_keep_editing">"എഡിറ്റിംഗ് തുടരുക"</string>
+    <string name="page_crop_discard">"ഉപേക്ഷിക്കുക"</string>
+    <string name="page_crop_your_crop_changes_have_not">"നിങ്ങളുടെ വിള മാറ്റങ്ങൾ പ്രയോഗിച്ചിട്ടില്ല."</string>
+    <string name="page_crop_discard_changes">"​​മാറ്റങ്ങൾ നിരസിക്കുക?"</string>
+    <string name="page_crop_full_frame_corners">"പൂർണ്ണ ഫ്രെയിം കോണുകൾ"</string>
+    <string name="page_crop_reset_crop">"ക്രോപ്പ് റീസെറ്റ് ചെയ്യുക"</string>
+    <string name="page_crop_rotate_right">"വലത്തേക്ക് തിരിക്കുക"</string>
+    <string name="page_crop_rotate_left">"ഇടത്തേക്ക് തിരിക്കുക"</string>
+    <string name="page_crop_find_the_document_corners">"പ്രമാണത്തിൻ്റെ മൂലകൾ കണ്ടെത്തുക"</string>
+    <string name="page_crop_detecting_2">"കണ്ടുപിടിക്കൽ…"</string>
+    <string name="page_crop_detect_edges_rotate_then_drag">"അരികുകൾ കണ്ടെത്തുക, തിരിക്കുക, തുടർന്ന് ഹാൻഡിലുകൾ വലിച്ചിടുക. പ്രയോഗിക്കാൻ പൂർത്തിയായി ടാപ്പ് ചെയ്യുക."</string>
+    <string name="page_crop_crop_tools">"വിള ഉപകരണങ്ങൾ"</string>
+    <string name="page_crop_page_not_found">"പേജ് കണ്ടെത്തിയില്ല."</string>
+    <string name="page_crop_crop">"വിള"</string>
+    <string name="page_crop_processing">"പ്രോസസ്സിംഗ്"</string>
+    <!-- PageCropViewModel -->
+    <string name="page_crop_crop_updated">"ക്രോപ്പ് അപ്ഡേറ്റ് ചെയ്തു."</string>
+    <string name="page_crop_document_detected">"പ്രമാണം കണ്ടെത്തി."</string>
+    <string name="page_crop_raw_image_is_not_available">"കണ്ടെത്തുന്നതിന് റോ ചിത്രം ലഭ്യമല്ല."</string>
+    <!-- PageEditorScreen -->
+    <string name="page_editor_please_wait_while_scanly_adapts">"Scanly ഫിൽട്ടർ അഡാപ്റ്റുചെയ്യുകയും മുഴുവൻ പ്രമാണവും അപ്‌ഡേറ്റ് ചെയ്യുകയും ചെയ്യുമ്പോൾ ദയവായി കാത്തിരിക്കുക."</string>
+    <string name="page_editor_processing_image_data_for_all">"എല്ലാ പേജുകൾക്കുമുള്ള ഇമേജ് ഡാറ്റ പ്രോസസ്സ് ചെയ്യുന്നു"</string>
+    <string name="page_editor_page_editor_preview">"പേജ് എഡിറ്റർ പ്രിവ്യൂ"</string>
+    <string name="page_editor_your_edits_to_this_page">"ഈ പേജിലേക്കുള്ള നിങ്ങളുടെ തിരുത്തലുകൾ സംരക്ഷിച്ചിട്ടില്ല."</string>
+    <string name="page_editor_remove_from_document">"പ്രമാണത്തിൽ നിന്ന് നീക്കം ചെയ്യുക"</string>
+    <string name="page_editor_capture_this_page_again">"ഈ പേജ് വീണ്ടും ക്യാപ്‌ചർ ചെയ്യുക"</string>
+    <string name="page_editor_brightness_contrast_more">"തെളിച്ചം, ദൃശ്യതീവ്രത, കൂടുതൽ"</string>
+    <string name="page_editor_ai_detect_rotate_handles">"AI കണ്ടുപിടിക്കുക, തിരിക്കുക, കൈകാര്യം ചെയ്യുക"</string>
+    <string name="page_editor_crop_filter_and_adjust_this">"ഈ പേജ് ക്രോപ്പ് ചെയ്യുക, ഫിൽട്ടർ ചെയ്യുക, ക്രമീകരിക്കുക. പൂർത്തിയായി ഉപയോഗിച്ച് സംരക്ഷിക്കുക."</string>
+    <string name="page_editor_edit_tools">"ഉപകരണങ്ങൾ എഡിറ്റ് ചെയ്യുക"</string>
+    <string name="page_editor_editor">"എഡിറ്റർ"</string>
+    <!-- PageEditorViewModel -->
+    <string name="page_editor_page_updated">"പേജ് അപ്ഡേറ്റ് ചെയ്തു."</string>
+    <string name="page_editor_filter_applied_to_all_pages">"എല്ലാ പേജുകളിലും ഫിൽട്ടർ പ്രയോഗിച്ചു."</string>
+    <!-- HomePip -->
+    <string name="home_pip_hide_today_s_tip">"ഇന്നത്തെ ടിപ്പ് മറയ്ക്കുക"</string>
+    <!-- HomeRatingPrompt -->
+    <string name="home_rating_prompt_rate_scanly_opens_google_play">"റേറ്റ് Scanly, Google Play തുറക്കുന്നു"</string>
+    <string name="home_rating_prompt_rate_on_google_play">"Google Play-ൽ നിരക്ക്"</string>
+    <string name="home_rating_prompt_scanly_is_free_private_and">"Scanly സൗജന്യവും സ്വകാര്യവും പരസ്യരഹിതവുമാണ്. ഇത് നിങ്ങളുടെ സമയം ലാഭിക്കുകയാണെങ്കിൽ, Google Play-ലെ ദ്രുത റേറ്റിംഗ് ശരിക്കും സഹായിക്കുന്നു."</string>
+    <string name="home_rating_prompt_rate_scanly">"റേറ്റ് Scanly"</string>
+    <!-- HomeScreen -->
+    <string name="home_search_names_and_text_in">"പേജുകളിൽ പേരുകളും വാചകങ്ങളും തിരയുക"</string>
+    <string name="home_start_scanning">"സ്കാനിംഗ് ആരംഭിക്കുക"</string>
+    <string name="home_scan_your_first_page_and">"നിങ്ങളുടെ ആദ്യ പേജ് സ്കാൻ ചെയ്യുക, നിങ്ങൾക്ക് ആവശ്യമുള്ളപ്പോഴെല്ലാം അത് ഇവിടെ തയ്യാറാകും."</string>
+    <string name="home_no_documents_yet">"ഇതുവരെ രേഖകളൊന്നുമില്ല"</string>
+    <string name="home_loading_your_documents">"നിങ്ങളുടെ പ്രമാണങ്ങൾ ലോഡ് ചെയ്യുന്നു"</string>
+    <string name="home_folder">"ഫോൾഡർ"</string>
+    <string name="home_import">"ഇമ്പോർട്ട്"</string>
+    <string name="home_scan">"സ്കാൻ"</string>
+    <string name="home_save_it_now">"ഇപ്പോൾ സേവ് ചെയ്യുക"</string>
+    <string name="home_save_it_now_find_it">"ഇപ്പോൾ സംരക്ഷിക്കുക, \nനാളെ കണ്ടെത്തുക."</string>
+    <string name="home_still_scanning">"ഇപ്പോഴും സ്കാൻ ചെയ്യുന്നുണ്ടോ?"</string>
+    <string name="home_wrap_up_and_digitize_your">"പൊതിഞ്ഞ് \n നിങ്ങളുടെ ദിവസം ഡിജിറ്റൈസ് ചെയ്യുക."</string>
+    <string name="home_good_evening">"ശുഭ സായാഹ്നം,"</string>
+    <string name="home_let_s_capture_some_documents">"നമുക്ക് \nചില പ്രമാണങ്ങൾ പിടിച്ചെടുക്കാം."</string>
+    <string name="home_good_afternoon">"ഗുഡ് ആഫ്റ്റർനൂൺ,"</string>
+    <string name="home_what_are_we_scanning_today">"ഇന്ന് എന്ത്\nസ്കാൻ ചെയ്യാം?"</string>
+    <string name="home_good_morning">"സുപ്രഭാതം,"</string>
+    <string name="home_see_all">"എല്ലാം കാണുക"</string>
+    <string name="home_recent_documents">"സമീപകാല രേഖകൾ"</string>
+    <string name="home_recent_folders">"സമീപകാല ഫോൾഡറുകൾ"</string>
+    <string name="home_new_scan">"പുതിയ സ്കാൻ"</string>
+    <!-- FolderDeleteDialog -->
+    <string name="folder_delete_both_go_to_recently_deleted">"രണ്ടും %1$s എന്നതിനായി അടുത്തിടെ ഇല്ലാതാക്കിയതിലേക്ക് പോകുന്നു"</string>
+    <string name="folder_delete_delete_folder_and_documents">"ഫോൾഡറും പ്രമാണങ്ങളും ഇല്ലാതാക്കുക"</string>
+    <string name="folder_delete_keep_the_in_your_library">"%1$s നിങ്ങളുടെ ലൈബ്രറിയിൽ സൂക്ഷിക്കുക"</string>
+    <string name="folder_delete_delete_folder_only">"ഫോൾഡർ മാത്രം ഇല്ലാതാക്കുക"</string>
+    <string name="folder_delete_delete_folder">"ഫോൾഡർ ഇല്ലാതാക്കണോ?"</string>
+    <!-- GroupDetailScreen -->
+    <string name="group_detail_not_selected">"തിരഞ്ഞെടുത്തിട്ടില്ല"</string>
+    <string name="group_detail_add_documents">"%1$s പ്രമാണങ്ങൾ ചേർക്കുക"</string>
+    <string name="group_detail_add_1_document">"ഒരു പ്രമാണം ചേർക്കുക"</string>
+    <string name="group_detail_add_selected">"തിരഞ്ഞെടുത്തത് ചേർക്കുക"</string>
+    <string name="group_detail_documents_already_in_folders_won">"ഫോൾഡറിലുള്ള ഡോക്യുമെൻ്റുകൾ ഇവിടെ ദൃശ്യമാകില്ല. പകരം പുതിയൊരെണ്ണം സൃഷ്‌ടിക്കുക."</string>
+    <string name="group_detail_no_loose_documents">"അയഞ്ഞ രേഖകളില്ല"</string>
+    <string name="group_detail_select_all">"എല്ലാം തിരഞ്ഞെടുക്കുക"</string>
+    <string name="group_detail_clear">"വ്യക്തം"</string>
+    <string name="group_detail_select_one_or_more_documents">"ഒന്നോ അതിലധികമോ പ്രമാണങ്ങൾ തിരഞ്ഞെടുക്കുക"</string>
+    <string name="group_detail_nothing_available_to_move">"നീക്കാൻ ഒന്നും ലഭ്യമല്ല"</string>
+    <string name="group_detail_move_existing">"നിലവിലുള്ള നീക്കുക"</string>
+    <string name="group_detail_starts_empty_inside_this_folder">"ഈ ഫോൾഡറിനുള്ളിൽ ശൂന്യമായി ആരംഭിക്കുന്നു"</string>
+    <string name="group_detail_create_new_document">"പുതിയ പ്രമാണം സൃഷ്ടിക്കുക"</string>
+    <string name="group_detail_create_a_new_document_or">"ഒരു പുതിയ പ്രമാണം സൃഷ്‌ടിക്കുക, അല്ലെങ്കിൽ ഈ ഫോൾഡറിന് പുറത്തുള്ള %1$s-ൽ നിന്ന് തിരഞ്ഞെടുക്കുക."</string>
+    <string name="group_detail_create_a_new_document_or_2">"ഒരു പുതിയ പ്രമാണം സൃഷ്ടിക്കുക, അല്ലെങ്കിൽ ഇതുവരെ ഒരു ഫോൾഡറിൽ ഇല്ലാത്തവ നീക്കുക."</string>
+    <string name="group_detail_add_documents_to_folder">"ഫോൾഡറിലേക്ക് പ്രമാണങ്ങൾ ചേർക്കുക"</string>
+    <string name="group_detail_add_documents_2">"പ്രമാണങ്ങൾ ചേർക്കുക"</string>
+    <string name="group_detail_add_a_document_here_to">"ബന്ധപ്പെട്ട സ്കാനുകൾ ഒരുമിച്ച് സൂക്ഷിക്കാൻ ഇവിടെ ഒരു ഡോക്യുമെൻ്റ് ചേർക്കുക."</string>
+    <string name="group_detail_this_folder_is_empty">"ഈ ഫോൾഡർ ശൂന്യമാണ്"</string>
+    <string name="group_detail_share_pdfs_as_zip">"PDF ഫയലുകൾ ZIP ആയി പങ്കിടുക"</string>
+    <string name="group_detail_save_pdfs_as_zip">"PDF ഫയലുകൾ ZIP ആയി സംരക്ഷിക്കുക"</string>
+    <string name="group_detail_separate_pdfs_one_pdf_per">"പ്രത്യേക PDF ഫയലുകൾ · ഓരോ ഡോക്യുമെൻ്റിനും ഒരു PDF, ഒരു ZIP-ൽ ബണ്ടിൽ ചെയ്‌തിരിക്കുന്നു"</string>
+    <string name="group_detail_share_merged_pdf">"ഷെയർ ലയിപ്പിച്ച PDF"</string>
+    <string name="group_detail_save_merged_pdf">"ലയിപ്പിച്ച PDF സംരക്ഷിക്കുക"</string>
+    <string name="group_detail_single_pdf_merged_into_one">"സിംഗിൾ PDF · %1$s ഒരു ഫയലിലേക്ക് ലയിപ്പിച്ചു"</string>
+    <string name="group_detail_new_document">"പുതിയ പ്രമാണം"</string>
+    <string name="group_detail_remove">"നീക്കം ചെയ്യുക"</string>
+    <string name="group_detail_will_be_moved_out_of">"\"%1$s\" ഈ ഫോൾഡറിൽ നിന്ന് നീക്കും."</string>
+    <string name="group_detail_remove_from_folder">"ഫോൾഡറിൽ നിന്ന് നീക്കം ചെയ്യണോ?"</string>
+    <string name="group_detail_rename_folder">"ഫോൾഡറിൻ്റെ പേരുമാറ്റുക"</string>
+    <string name="group_detail_delete_folder">"ഫോൾഡർ ഇല്ലാതാക്കുക"</string>
+    <string name="group_detail_export_and_share">"കയറ്റുമതി ചെയ്യുക, പങ്കിടുക"</string>
+    <!-- GroupDetailViewModel -->
+    <string name="group_detail_generating_pdf_of">"PDF %1$s-ൻ്റെ %2$s… സൃഷ്ടിക്കുന്നു"</string>
+    <string name="group_detail_generating_page_of">"%2$s…-ൻ്റെ %1$s പേജ് സൃഷ്ടിക്കുന്നു"</string>
+    <string name="group_detail_document_removed_from_folder">"ഫോൾഡറിൽ നിന്ന് പ്രമാണം നീക്കം ചെയ്തു."</string>
+    <string name="group_detail_added_documents_to_folder">"%1$s ഡോക്യുമെൻ്റുകൾ ഫോൾഡറിലേക്ക് ചേർത്തു."</string>
+    <string name="group_detail_added_1_document_to_folder">"ഫോൾഡറിലേക്ക് 1 ഡോക്യുമെൻ്റ് ചേർത്തു."</string>
+    <string name="group_detail_added_of_documents">"%2$s ഡോക്യുമെൻ്റുകളുടെ %1$s ചേർത്തു. %3$s"</string>
+    <string name="group_detail_folder_renamed">"ഫോൾഡർ പുനർനാമകരണം ചെയ്തു."</string>
+    <!-- LibraryScreen -->
+    <string name="library_create_a_folder_to_stay">"സംഘടിതമായി തുടരുന്നതിന് ഒരു ഫോൾഡർ സൃഷ്‌ടിക്കുക, അല്ലെങ്കിൽ ഒരു ഡോക്യുമെൻ്റ് ചേർത്ത് ക്യാപ്‌ചർ ചെയ്യാൻ ആരംഭിക്കുക."</string>
+    <string name="library_your_library_is_ready">"നിങ്ങളുടെ ലൈബ്രറി തയ്യാറാണ്"</string>
+    <string name="library_save_to">"ഇതിലേക്ക് സംരക്ഷിക്കുക"</string>
+    <string name="library_choose_how_are_ordered">"%1$s എങ്ങനെ ഓർഡർ ചെയ്യണമെന്ന് തിരഞ്ഞെടുക്കുക."</string>
+    <string name="library_sort_library">"ലൈബ്രറി അടുക്കുക"</string>
+    <string name="library_folders_and_documents">"ഫോൾഡറുകളും പ്രമാണങ്ങളും"</string>
+    <string name="library_create_a_document_then_scan">"ഒരു പ്രമാണം സൃഷ്‌ടിക്കുക, തുടർന്ന് പേജുകൾ സ്കാൻ ചെയ്യുക അല്ലെങ്കിൽ നിങ്ങളുടെ ഗാലറിയിൽ നിന്ന് ഇറക്കുമതി ചെയ്യുക."</string>
+    <string name="library_create_a_folder_to_keep">"ബന്ധപ്പെട്ട ഡോക്യുമെൻ്റുകൾ എളുപ്പത്തിൽ കണ്ടെത്താൻ ഒരു ഫോൾഡർ സൃഷ്ടിക്കുക."</string>
+    <string name="library_no_folders_yet">"ഇതുവരെ ഫോൾഡറുകളൊന്നുമില്ല"</string>
+    <string name="library_list_view">"ലിസ്റ്റ് കാഴ്ച"</string>
+    <string name="library_grid_view">"ഗ്രിഡ് കാഴ്ച"</string>
+    <string name="library_folders">"ഫോൾഡറുകൾ"</string>
+    <string name="library_back_to_library">"ലൈബ്രറിയിലേക്ക് മടങ്ങുക"</string>
+    <string name="library_documents">"പ്രമാണങ്ങൾ"</string>
+    <string name="library_search_library">"തിരയൽ ലൈബ്രറി"</string>
+    <string name="library_library">"ലൈബ്രറി"</string>
+    <!-- LibrarySearchScreen -->
+    <string name="library_search_remove_from_recent_searches">"സമീപകാല തിരയലുകളിൽ നിന്ന് %1$s നീക്കം ചെയ്യുക"</string>
+    <string name="library_search_search_again">"വീണ്ടും തിരയുക"</string>
+    <string name="library_search_text_is_read_on_this">"ഈ ഉപകരണത്തിൽ വാചകം വായിക്കുന്നു. നിങ്ങളുടെ പേജുകൾ ഒരിക്കലും അത് ഉപേക്ഷിക്കുന്നില്ല."</string>
+    <string name="library_search_some_pages_are_still_being">"ചില പേജുകൾ ഇപ്പോഴും വായിക്കുന്നു, അതിനാൽ പൊരുത്തങ്ങൾ ഉടൻ ദൃശ്യമായേക്കാം."</string>
+    <string name="library_search_search_for_instead">"പകരം \"%1$s\" എന്നതിനായി തിരയുക"</string>
+    <string name="library_search_nothing_matches_try_fewer_words">"ഒന്നും \"%1$s\" പൊരുത്തപ്പെടുന്നില്ല. കുറച്ച് വാക്കുകൾ പരീക്ഷിക്കുക അല്ലെങ്കിൽ അക്ഷരവിന്യാസം പരിശോധിക്കുക."</string>
+    <string name="library_search_no_results_found">"ഫലങ്ങളൊന്നും കണ്ടെത്തിയില്ല"</string>
+    <string name="library_search_rent_or_lease_finds_pages">"\"വാടക OR പാട്ടത്തിന്\" ഒന്നോ മറ്റോ ഉള്ള പേജുകൾ കണ്ടെത്തുന്നു"</string>
+    <string name="library_search_either_word">"ഒന്നുകിൽ വാക്ക്"</string>
+    <string name="library_search_lease_draft_skips_anything_that">"\"ലീസ് -ഡ്രാഫ്റ്റ്\" ഡ്രാഫ്റ്റിനെ പരാമർശിക്കുന്ന എന്തും ഒഴിവാക്കുന്നു"</string>
+    <string name="library_search_leave_a_word_out">"ഒരു വാക്ക് വിടുക"</string>
+    <string name="library_search_you_ll_get_the_closest">"നിങ്ങളുടെ സ്കാനുകളിൽ നിന്ന് നിങ്ങൾക്ക് ഏറ്റവും അടുത്ത വാക്ക് ലഭിക്കും"</string>
+    <string name="library_search_small_typos_are_fine">"ചെറിയ അക്ഷരത്തെറ്റുകൾ കൊള്ളാം"</string>
+    <string name="library_search_security_deposit_in_that_order">"\"സെക്യൂരിറ്റി ഡെപ്പോസിറ്റ്\", ആ ക്രമത്തിൽ"</string>
+    <string name="library_search_use_quotes_for_a_phrase">"ഒരു വാക്യത്തിനായി ഉദ്ധരണികൾ ഉപയോഗിക്കുക"</string>
+    <string name="library_search_lea_finds_lease_and_leasing">"\"ലീ\" പാട്ടവും പാട്ടവും കണ്ടെത്തുന്നു"</string>
+    <string name="library_search_type_part_of_a_word">"ഒരു വാക്കിൻ്റെ ഭാഗം ടൈപ്പ് ചെയ്യുക"</string>
+    <string name="library_search_search_tips">"തിരയൽ നുറുങ്ങുകൾ"</string>
+    <string name="library_search_browse_by_type">"തരം അനുസരിച്ച് ബ്രൗസ് ചെയ്യുക"</string>
+    <string name="library_search_recent">"സമീപകാല"</string>
+    <string name="library_search_folder">"· ഫോൾഡർ "</string>
+    <string name="library_search_matched">"\"%1$s\" പൊരുത്തപ്പെടുന്നു"</string>
+    <string name="library_search_scanned_as">"\"%1$s\" ആയി സ്കാൻ ചെയ്തു"</string>
+    <string name="library_search_show_page_text">"പേജ് ടെക്സ്റ്റ് കാണിക്കുക"</string>
+    <string name="library_search_show_fewer_pages">"കുറച്ച് പേജുകൾ കാണിക്കുക"</string>
+    <string name="library_search_open_document">"പ്രമാണം തുറക്കുക"</string>
+    <string name="library_search_similar_words">"സമാനമായ വാക്കുകൾ: "</string>
+    <string name="library_search_close_matches">"മത്സരങ്ങൾ അടയ്ക്കുക"</string>
+    <string name="library_search_searching_text_in_pages">"പേജുകളിൽ വാചകം തിരയുന്നു…"</string>
+    <string name="library_search_by_name">" · %1$s പേര് പ്രകാരം"</string>
+    <string name="library_search_complete_to">"പൂർത്തിയാക്കുക "</string>
+    <string name="library_search_filters_on">"ഫിൽട്ടറുകൾ, %1$s ഓൺ"</string>
+    <string name="library_search_filters">"ഫിൽട്ടറുകൾ · %1$s"</string>
+    <string name="library_search_matching_names">"പൊരുത്തപ്പെടുന്ന പേരുകൾ"</string>
+    <string name="library_search_found_in_pages">"പേജുകളിൽ കണ്ടെത്തി"</string>
+    <string name="library_search_clear_search">"തിരയൽ അന്വേഷണം മായ്‌ക്കുക"</string>
+    <!-- RecentlyDeletedScreen -->
+    <string name="recently_deleted_page_of_will_be_deleted">"\"%2$s\" എന്നതിൻ്റെ %1$s പേജ് ശാശ്വതമായി ഇല്ലാതാക്കപ്പെടും. ഇത് പഴയപടിയാക്കാനാകില്ല."</string>
+    <string name="recently_deleted_and_its_pages_will_be">"​​\"%1$s\" എന്നതും അതിൻ്റെ പേജുകളും ശാശ്വതമായി ഇല്ലാതാക്കപ്പെടും. ഇത് പഴയപടിയാക്കാനാകില്ല."</string>
+    <string name="recently_deleted_and_the_documents_that_were">"\"%1$s\" എന്നതും അതിൽ ഉണ്ടായിരുന്ന പ്രമാണങ്ങളും ശാശ്വതമായി ഇല്ലാതാക്കപ്പെടും. ഇത് പഴയപടിയാക്കാനാകില്ല."</string>
+    <string name="recently_deleted_its_documents_stay_in_your">" അതിൻ്റെ രേഖകൾ നിങ്ങളുടെ ലൈബ്രറിയിൽ നിലനിൽക്കും."</string>
+    <string name="recently_deleted_the_folder_will_be_deleted">"\"%1$s\" എന്ന ഫോൾഡർ ശാശ്വതമായി ഇല്ലാതാക്കപ്പെടും. ഇത് പഴയപടിയാക്കാനാകില്ല."</string>
+    <string name="recently_deleted_page_of">"\"%2$s\" എന്നതിൻ്റെ %1$s പേജ്"</string>
+    <string name="recently_deleted_days_left">"%1$s ദിവസങ്ങൾ ശേഷിക്കുന്നു"</string>
+    <string name="recently_deleted_1_day_left">"1 ദിവസം ശേഷിക്കുന്നു"</string>
+    <string name="recently_deleted_last_day">"കഴിഞ്ഞ ദിവസം"</string>
+    <string name="recently_deleted_from">"\"%1$s\"-ൽ നിന്ന്"</string>
+    <string name="recently_deleted_no_documents">"രേഖകളില്ല"</string>
+    <string name="recently_deleted_folder_only_documents_kept_in">"ലൈബ്രറിയിൽ സൂക്ഷിച്ചിരിക്കുന്ന · %1$s പ്രമാണങ്ങൾ മാത്രം ഫോൾഡർ ചെയ്യുക"</string>
+    <string name="recently_deleted_folder_only_1_document_kept">"ലൈബ്രറിയിൽ സൂക്ഷിച്ചിരിക്കുന്ന · 1 ഡോക്യുമെൻ്റ് മാത്രം ഫോൾഡർ ചെയ്യുക"</string>
+    <string name="recently_deleted_restore">"പുനഃസ്ഥാപിക്കുക"</string>
+    <string name="recently_deleted_delete_forever">"എന്നെന്നേക്കുമായി ഇല്ലാതാക്കുക"</string>
+    <string name="recently_deleted_select">"തിരഞ്ഞെടുക്കുക"</string>
+    <string name="recently_deleted_delete_forever_2">"%1$s എന്നെന്നേക്കുമായി ഇല്ലാതാക്കുക"</string>
+    <string name="recently_deleted_restore_2">"%1$s പുനഃസ്ഥാപിക്കുക"</string>
+    <string name="recently_deleted_show_options">"ഓപ്ഷനുകൾ കാണിക്കുക"</string>
+    <string name="recently_deleted_the_selected_items_will_be">"%1$s തിരഞ്ഞെടുത്ത ഇനങ്ങൾ ശാശ്വതമായി ഇല്ലാതാക്കപ്പെടും. ഇത് പഴയപടിയാക്കാനാകില്ല."</string>
+    <string name="recently_deleted_delete_items_forever">"%1$s ഇനങ്ങൾ എന്നെന്നേക്കുമായി ഇല്ലാതാക്കണോ?"</string>
+    <string name="recently_deleted_delete_1_item_forever">"1 ഇനം ശാശ്വതമായി ഇല്ലാതാക്കണോ?"</string>
+    <string name="recently_deleted_delete_forever_3">"എന്നെന്നേക്കുമായി ഇല്ലാതാക്കണോ?"</string>
+    <string name="recently_deleted_delete_all">"എല്ലാം ഇല്ലാതാക്കുക"</string>
+    <string name="recently_deleted_all_items_will_be_deleted">"എല്ലാ %1$s ഇനങ്ങളും ശാശ്വതമായി ഇല്ലാതാക്കപ്പെടും. ഇത് പഴയപടിയാക്കാനാകില്ല."</string>
+    <string name="recently_deleted_this_item_will_be_deleted">"ഈ ഇനം ശാശ്വതമായി ഇല്ലാതാക്കപ്പെടും. ഇത് പഴയപടിയാക്കാനാകില്ല."</string>
+    <string name="recently_deleted_empty_recently_deleted">"ശൂന്യമായത് അടുത്തിടെ ഇല്ലാതാക്കിയിട്ടുണ്ടോ?"</string>
+    <string name="recently_deleted_deleted_pages_stay_here_for">"ഇല്ലാതാക്കിയ പേജുകൾ %1$s-നും ഡോക്യുമെൻ്റുകളും ഫോൾഡറുകളും %2$s-നും ഇവിടെ നിലനിൽക്കും, അതിനാൽ നിങ്ങൾക്ക് അവ തിരികെ കൊണ്ടുവരാനാകും."</string>
+    <string name="recently_deleted_nothing_here">"ഇവിടെ ഒന്നുമില്ല"</string>
+    <string name="recently_deleted_nothing_in_the_bin_deleted">"ബിന്നിൽ ഒന്നുമില്ല. ഇല്ലാതാക്കിയ കാര്യങ്ങൾ കുറച്ച് ദിവസത്തേക്ക് ഇവിടെ കാത്തിരിക്കുക."</string>
+    <string name="recently_deleted_empty">"ശൂന്യം"</string>
+    <string name="recently_deleted_select_none">"ഒന്നും തിരഞ്ഞെടുക്കുക"</string>
+    <string name="recently_deleted_clear_selection">"തിരഞ്ഞെടുപ്പ് മായ്‌ക്കുക"</string>
+    <string name="recently_deleted_recently_deleted">"അടുത്തിടെ ഇല്ലാതാക്കിയത്"</string>
+    <!-- RecentlyDeletedViewModel -->
+    <string name="recently_deleted_page_restored_to">"പേജ് %1$s \"%2$s\" ലേക്ക് പുനഃസ്ഥാപിച്ചു"</string>
+    <string name="recently_deleted_document_restored">"പ്രമാണം പുനഃസ്ഥാപിച്ചു"</string>
+    <string name="recently_deleted_folder_restored">"ഫോൾഡർ പുനഃസ്ഥാപിച്ചു"</string>
+    <string name="recently_deleted_recently_deleted_is_empty">"അടുത്തിടെ ഇല്ലാതാക്കിയത് ശൂന്യമാണ്"</string>
+    <string name="recently_deleted_deleted_permanently">"ശാശ്വതമായി ഇല്ലാതാക്കി"</string>
+    <!-- SearchFiltersSheet -->
+    <string name="search_filters_apply">"പ്രയോഗിക്കുക"</string>
+    <string name="search_filters_remove_filter">"ഫിൽട്ടർ നീക്കം ചെയ്യുക: %1$s"</string>
+    <string name="search_filters_in">"%1$s-ൽ"</string>
+    <string name="search_filters_not_in_a_folder">"ഒരു ഫോൾഡറിലല്ല"</string>
+    <string name="search_filters_sort_by">"അടുക്കുക"</string>
+    <string name="search_filters_any_folder">"ഏതെങ്കിലും ഫോൾഡർ"</string>
+    <string name="search_filters_date_modified">"തീയതി പരിഷ്കരിച്ചു"</string>
+    <string name="search_filters_any_type">"ഏത് തരം"</string>
+    <string name="search_filters_type">"ടൈപ്പ് ചെയ്യുക"</string>
+    <!-- TrashCopy -->
+    <string name="trash_copy_page_moves_to_recently_deleted">"പേജ് %1$s അടുത്തിടെ ഇല്ലാതാക്കിയതിലേക്ക് നീങ്ങുന്നു. നിങ്ങൾക്ക് ഇത് %2$s-നായി പുനഃസ്ഥാപിക്കാം."</string>
+    <string name="trash_copy_and_its_documents_move_to">"\"%1$s\" ഉം അതിൻ്റെ %2$s പ്രമാണങ്ങളും അടുത്തിടെ ഇല്ലാതാക്കിയതിലേക്ക് നീങ്ങുന്നു. %3$s-നായി നിങ്ങൾക്ക് അവ പുനഃസ്ഥാപിക്കാം."</string>
+    <string name="trash_copy_and_the_document_in_it">"\"%1$s\" എന്നതും അതിലെ പ്രമാണവും അടുത്തിടെ ഇല്ലാതാക്കിയതിലേക്ക് നീങ്ങുന്നു. %2$s-നായി നിങ്ങൾക്ക് അവ പുനഃസ്ഥാപിക്കാം."</string>
+    <string name="trash_copy_moves_to_recently_deleted_you">"\"%1$s\" അടുത്തിടെ ഇല്ലാതാക്കിയതിലേക്ക് നീങ്ങുന്നു. നിങ്ങൾക്ക് ഇത് %2$s-നായി പുനഃസ്ഥാപിക്കാം."</string>
+    <string name="trash_copy_1_day">"1 ദിവസം"</string>
+    <!-- TrashUndoSnackbar -->
+    <string name="trash_undo_snackbar_moved_to_recently_deleted">"\"%1$s\" അടുത്തിടെ ഇല്ലാതാക്കിയതിലേക്ക് നീക്കി"</string>
+    <string name="trash_undo_snackbar_moved_to_recently_deleted_2">"%1$s അടുത്തിടെ ഇല്ലാതാക്കിയതിലേക്ക് നീക്കി"</string>
+    <string name="trash_undo_snackbar_undo">"പഴയപടിയാക്കുക"</string>
+    <!-- OnboardingFlow -->
+    <string name="onboarding_flow_enable_camera">"ക്യാമറ പ്രവർത്തനക്ഷമമാക്കുക"</string>
+    <string name="onboarding_flow_enable_the_camera_to_scan">"പേപ്പർ സ്കാൻ ചെയ്യാൻ ക്യാമറ പ്രവർത്തനക്ഷമമാക്കുക. ഇത് കൂടാതെ നിങ്ങൾക്ക് ഇപ്പോഴും ചിത്രങ്ങൾ ഇറക്കുമതി ചെയ്യാൻ കഴിയും."</string>
+    <string name="onboarding_flow_open_settings_tap_permissions_and">"ക്രമീകരണങ്ങൾ തുറക്കുക, അനുമതികൾ ടാപ്പ് ചെയ്യുക, ക്യാമറ അനുവദിക്കുക. ഇത് കൂടാതെ നിങ്ങൾക്ക് ഇപ്പോഴും ചിത്രങ്ങൾ ഇറക്കുമതി ചെയ്യാൻ കഴിയും."</string>
+    <string name="onboarding_flow_ready_for_your_first_scan">"നിങ്ങളുടെ ആദ്യ സ്കാനിന് തയ്യാറാണോ?"</string>
+    <string name="onboarding_flow_camera_access_is_turned_off">"ക്യാമറ ആക്സസ് ഓഫാക്കി"</string>
+    <!-- OnboardingScreen -->
+    <string name="onboarding_no_account_no_cloud_upload">"അക്കൗണ്ട് ഇല്ല. ക്ലൗഡ് അപ്‌ലോഡ് ഇല്ല."</string>
+    <string name="onboarding_continue">"തുടരുക"</string>
+    <string name="onboarding_get_started">"ആരംഭിക്കുക"</string>
+    <string name="onboarding_page_of_3">"%1$s, പേജ് %2$s / 3"</string>
+    <string name="onboarding_page_of_3_2">"പേജ് %1$s / 3"</string>
+    <string name="onboarding_skip">"ഒഴിവാക്കുക"</string>
+    <string name="onboarding_scanly">"Scanly."</string>
+    <string name="onboarding_previous_page">"മുൻ പേജ്"</string>
+    <string name="onboarding_feature_edge_detection">"യാന്ത്രിക എഡ്ജ് കണ്ടെത്തൽ"</string>
+    <string name="onboarding_feature_crop_straighten">"പേജുകൾ മുറിച്ച് നേരെയാക്കുക"</string>
+    <string name="onboarding_feature_filters">"മാജിക് കളർ, വൈറ്റ്ബോർഡ് എന്നിവയും അതിലേറെയും"</string>
+    <string name="onboarding_feature_ocr">"ഉപകരണത്തിലെ ടെക്സ്റ്റ് തിരിച്ചറിയൽ"</string>
+    <string name="onboarding_feature_search">"നിങ്ങളുടെ സ്കാനുകളിലുടനീളം വാക്കുകൾ തിരയുക"</string>
+    <string name="onboarding_feature_copy_text">"ഏത് പേജിൽ നിന്നും വാചകം പകർത്തുക"</string>
+    <string name="onboarding_feature_multipage_pdf">"മൾട്ടി-പേജ് PDF ഫയലുകൾ"</string>
+    <string name="onboarding_feature_password">"പങ്കിടുന്നതിന് മുമ്പ് പാസ്‌വേഡ് പരിരക്ഷിക്കുക"</string>
+    <string name="onboarding_feature_sign">"പ്രമാണങ്ങളിൽ ഒപ്പിടുക"</string>
+    <string name="onboarding_assurance_offline">"പൂർണ്ണമായും ഓഫ്‌ലൈനായി പ്രവർത്തിക്കുന്നു."</string>
+    <string name="onboarding_assurance_on_device">"നിങ്ങളുടെ വാചകം ഒരിക്കലും ഈ ഉപകരണത്തിൽ നിന്ന് പുറത്തുപോകില്ല."</string>
+    <!-- Pip -->
+    <string name="pip_poke_pip_scanly_s_helper">"പോക്ക് Pip, Scanly ൻ്റെ സഹായി"</string>
+    <!-- PipBubble -->
+    <string name="pip_bubble_dismiss">"പിരിച്ചുവിടുക"</string>
+    <!-- PipLines -->
+    <string name="pip_lines_all_set_pages_nice_and">"എല്ലാം സജ്ജമാണ്! %1$s പേജുകൾ, മനോഹരവും നേരായതുമാണ്."</string>
+    <string name="pip_lines_all_set_1_page_nice">"എല്ലാം സജ്ജമാണ്! 1 പേജ്, നല്ലതും നേരായതുമാണ്."</string>
+    <string name="pip_lines_ready_when_you_are">"നിങ്ങൾ ആയിരിക്കുമ്പോൾ തയ്യാറാണ്."</string>
+    <string name="pip_lines_i_looked_on_every_page">"ഞാൻ എല്ലാ പേജിലും നോക്കി. എവിടെയും \"%1$s\" ഇല്ല."</string>
+    <!-- FeaturePlaceholderScreen -->
+    <string name="feature_placeholder_planned_for">"%1$s-നായി ആസൂത്രണം ചെയ്തിട്ടുണ്ട്."</string>
+    <!-- PageImagePreviewScreen -->
+    <string name="page_image_preview_sign">"ഒപ്പിടുക"</string>
+    <string name="page_image_preview_delete_page">"പേജ് ഇല്ലാതാക്കണോ?"</string>
+    <!-- PageImagePreviewViewModel -->
+    <string name="page_image_preview_scanly_page">"Scanly പേജ് %1$s"</string>
+    <!-- LegalDocumentScreen -->
+    <string name="legal_document_open_in_browser">"ബ്രൗസറിൽ തുറക്കുക"</string>
+    <string name="legal_document_retry">"വീണ്ടും ശ്രമിക്കുക"</string>
+    <string name="legal_document_check_your_internet_connection_and">"നിങ്ങളുടെ ഇൻ്റർനെറ്റ് കണക്ഷൻ പരിശോധിച്ച് വീണ്ടും ശ്രമിക്കുക."</string>
+    <string name="legal_document_couldn_t_be_loaded">"%1$s ലോഡ് ചെയ്യാൻ കഴിഞ്ഞില്ല"</string>
+    <!-- ModelBenchmarkScreen -->
+    <string name="model_benchmark_pipeline_s_1f_ms" formatted="false">"പൈപ്പ്ലൈൻ: %s · %.1f ms"</string>
+    <string name="model_benchmark_total_1f_ms" formatted="false">"ആകെ %.1f ms"</string>
+    <string name="model_benchmark_pre_0f_inf_0f_post" formatted="false">"പ്രീ %.0f · inf %.0f · പോസ്റ്റ് %.0f"</string>
+    <string name="model_benchmark_not_detected">"കണ്ടെത്തിയില്ല"</string>
+    <string name="model_benchmark_detected_conf_0f" formatted="false">"· conf %.0f%% കണ്ടെത്തി"</string>
+    <string name="model_benchmark_none">"ഒന്നുമില്ല"</string>
+    <string name="model_benchmark_quad">"ക്വാഡ്"</string>
+    <string name="model_benchmark_error">"പിശക്"</string>
+    <string name="model_benchmark_no_preview">"പ്രിവ്യൂ ഇല്ല"</string>
+    <string name="model_benchmark_detection_preview">"%1$s കണ്ടെത്തൽ പ്രിവ്യൂ"</string>
+    <string name="model_benchmark_avg_1f_p50_1f_p95" formatted="false">"ശരാശരി %.1f · P50 %.1f · P95 %.1f ms · കണ്ടെത്തി %d/%d · പരാജയപ്പെട്ടു %d"</string>
+    <string name="model_benchmark_avg_1f_p95_1f_ms" formatted="false">"ശരാശരി %.1f · P95 %.1f ms · സ്വീകരിച്ചു %d/%d"</string>
+    <string name="model_benchmark_document_gate">"ഡോക്യുമെൻ്റ് ഗേറ്റ്"</string>
+    <string name="model_benchmark_aggregate">"മൊത്തം"</string>
+    <string name="model_benchmark_images_processed">"%1$s / %2$s ചിത്രങ്ങൾ പ്രോസസ്സ് ചെയ്തു"</string>
+    <string name="model_benchmark_choose_images_and_run">"ഇമേജുകൾ തിരഞ്ഞെടുത്ത് പ്രവർത്തിപ്പിക്കുക"</string>
+    <string name="model_benchmark_benchmark_running">"ബെഞ്ച്മാർക്ക് റണ്ണിംഗ്…"</string>
+    <string name="model_benchmark_select_more_photos_to_measure">"ഗേറ്റ് ലേറ്റൻസി, കോർണർ ഡിറ്റക്ഷൻ, പോളിഗോൺ ഓവർലേകൾ, ഫുൾ പൈപ്പ് ലൈൻ ടൈമിംഗ് എന്നിവ അളക്കാൻ കൂടുതൽ ഫോട്ടോകൾ തിരഞ്ഞെടുക്കുക."</string>
+    <string name="model_benchmark_run_another_pass">"മറ്റൊരു പാസ് പ്രവർത്തിപ്പിക്കുക"</string>
+    <string name="model_benchmark_images_stay_on_this_device">"ഈ ഉപകരണത്തിൽ ചിത്രങ്ങൾ നിലനിൽക്കും. ഒന്നും അപ്‌ലോഡ് ചെയ്തിട്ടില്ല."</string>
+    <string name="model_benchmark_choose_real_documents_or_rectangular">"യഥാർത്ഥ പ്രമാണങ്ങൾ അല്ലെങ്കിൽ ചതുരാകൃതിയിലുള്ള വസ്തുക്കൾ തിരഞ്ഞെടുക്കുക. Scanly ഓരോ ഡിറ്റക്ടറിനും സമയം നൽകുകയും കണ്ടെത്തിയ അരികുകൾ കാണിക്കുകയും ചെയ്യും."</string>
+    <string name="model_benchmark_compare_detectors_on_your_photos">"നിങ്ങളുടെ ഫോട്ടോകളിലെ ഡിറ്റക്ടറുകൾ താരതമ്യം ചെയ്യുക"</string>
+    <string name="model_benchmark_model_benchmark">"മോഡൽ ബെഞ്ച്മാർക്ക്"</string>
+    <string name="model_benchmark_image">"ചിത്രം"</string>
+    <string name="model_benchmark_model_failed">"മോഡൽ പരാജയപ്പെട്ടു"</string>
+    <string name="model_benchmark_could_not_decode_image">"ചിത്രം ഡീകോഡ് ചെയ്യാനായില്ല"</string>
+    <!-- PipSettingsScreen -->
+    <string name="pip_settings_on">"·-ൽ "</string>
+    <string name="pip_settings_on_2">"ഓൺ"</string>
+    <string name="pip_settings_napping">"ഉറക്കം"</string>
+    <string name="pip_settings_napping_screens_show_plain_text">"Napping · സ്ക്രീനുകൾ പ്ലെയിൻ ടെക്സ്റ്റ് കാണിക്കുന്നു"</string>
+    <string name="pip_settings_on_around_the_app">"ആപ്പിന് ചുറ്റും"</string>
+    <string name="pip_settings_show_pip">"Pip കാണിക്കുക"</string>
+    <string name="pip_settings_scanly_s_little_helper_pip">"Scanly-ൻ്റെ ചെറിയ സഹായി. Pip ശൂന്യമായ സ്‌ക്രീനുകളിലും ക്യാമറയിലും തെളിയുന്നു, എന്തെങ്കിലും തയ്യാറാകുമ്പോൾ, ഒരു ചെറിയ കാര്യം പറഞ്ഞു, തുടർന്ന് വഴിയിൽ നിന്ന് പുറത്തുകടക്കുന്നു."</string>
+    <string name="pip_settings_pip">"Pip"</string>
+    <string name="pip_settings_hi_this_is_where_you">"ഹായ്! ഞാൻ എത്രത്തോളം സഹായിക്കുമെന്ന് നിങ്ങൾ തിരഞ്ഞെടുക്കുന്നത് ഇവിടെയാണ്."</string>
+    <string name="pip_settings_i_ll_keep_still_still">"ഞാൻ നിശ്ചലമായി നിൽക്കും. എങ്കിലും ഇവിടെ ഇപ്പോഴും."</string>
+    <string name="pip_settings_okay_i_ll_nap_switch">"ശരി, ഞാൻ ഉറങ്ങാം. എപ്പോൾ വേണമെങ്കിലും എന്നെ വീണ്ടും ഓണാക്കുക."</string>
+    <string name="pip_settings_pip_lives_on_this_phone">"Pip ഈ ഫോണിൽ താമസിക്കുന്നു, നിങ്ങളുടെ ഡോക്യുമെൻ്റുകൾ ഒരിക്കലും നോക്കില്ല. അത് പറയുന്നതെല്ലാം Scanly-ൽ നിർമ്മിച്ചിരിക്കുന്നു."</string>
+    <string name="pip_settings_blinks_talks_and_hops_pip">"ബ്ലിങ്ക്സ്, ടോക്കുകൾ, ഹോപ്സ്. സിസ്റ്റം ആനിമേഷനുകൾ ഓഫായിരിക്കുമ്പോൾ Pip നിശ്ചലമായിരിക്കും."</string>
+    <string name="pip_settings_animate_pip">"Pip ആനിമേറ്റ് ചെയ്യുക"</string>
+    <string name="pip_settings_motion">"ചലനം"</string>
+    <string name="pip_settings_a_happy_hello_when_a">"ഒരു ഡോക്യുമെൻ്റ് പങ്കിടാൻ തയ്യാറാകുമ്പോൾ സന്തോഷകരമായ ഹലോ."</string>
+    <string name="pip_settings_cheer_on_exports">"കയറ്റുമതിയിൽ സന്തോഷിക്കുക"</string>
+    <string name="pip_settings_pip_helps_you_frame_pages">"പേജുകൾ ഫ്രെയിം ചെയ്യാൻ Pip നിങ്ങളെ സഹായിക്കുന്നു. ഓഫ് പ്ലെയിൻ ഗൈഡ് കാണിക്കുന്നു."</string>
+    <string name="pip_settings_camera_coaching">"ക്യാമറ കോച്ചിംഗ്"</string>
+    <string name="pip_settings_one_short_tip_a_day">"ആശംസയ്ക്ക് കീഴിൽ ഒരു ദിവസം ഒരു ചെറിയ ടിപ്പ്."</string>
+    <string name="pip_settings_tips_on_home">"വീട്ടിലെ നുറുങ്ങുകൾ"</string>
+    <string name="pip_settings_where_pip_helps">"Pip എവിടെ സഹായിക്കുന്നു"</string>
+    <!-- SettingsComponents -->
+    <string name="settings_pages_were_read_with_another">"മറ്റൊരു എഞ്ചിൻ ഉപയോഗിച്ച് %1$s പേജുകൾ വായിച്ചു. പശ്ചാത്തലത്തിൽ %2$s ഉപയോഗിച്ച് അവ വീണ്ടും വായിക്കുക."</string>
+    <string name="settings_1_page_was_read_with">"മറ്റൊരു എഞ്ചിൻ ഉപയോഗിച്ച് 1 പേജ് വായിച്ചു. പശ്ചാത്തലത്തിൽ %1$s ഉപയോഗിച്ച് ഇത് വീണ്ടും വായിക്കുക."</string>
+    <string name="settings_re_read_existing_pages">"നിലവിലുള്ള പേജുകൾ വീണ്ടും വായിക്കുക"</string>
+    <string name="settings_indra_ocr_paused_it_stopped">"Indra OCR താൽക്കാലികമായി നിർത്തി - ഇത് രണ്ട് തവണ അപ്രതീക്ഷിതമായി നിർത്തി, അതിനാൽ ML Kit ഉപയോഗിച്ച് പേജുകൾ വായിക്കുന്നു. വീണ്ടും ശ്രമിക്കാൻ Indra OCR വീണ്ടും തിരഞ്ഞെടുക്കുക."</string>
+    <string name="settings_ml_kit">"ML Kit"</string>
+    <string name="settings_indra_ocr">"Indra OCR"</string>
+    <string name="settings_rate_scanly_on_google_play">"Google Play-ൽ Scanly റേറ്റ് ചെയ്യുക"</string>
+    <string name="settings_it_s_free_private_and">"ഇത് സൗജന്യവും സ്വകാര്യവും പരസ്യരഹിതവുമാണ്. Google Play-ലെ ദ്രുത റേറ്റിംഗ് മറ്റുള്ളവരെ അത് കണ്ടെത്താൻ സഹായിക്കുന്നു."</string>
+    <string name="settings_enjoying_scanly">"Scanly ആസ്വദിക്കുകയാണോ?"</string>
+    <string name="settings_dark">"ഇരുട്ട്"</string>
+    <string name="settings_light">"വെളിച്ചം"</string>
+    <string name="settings_system">"സിസ്റ്റം"</string>
+    <string name="settings_tap_to_check">"%1$s പരിശോധിക്കാൻ ടാപ്പ് ചെയ്യുക"</string>
+    <string name="settings_you_are_on_latest_is">"നിങ്ങൾ %1$s-ലാണ്. ഏറ്റവും പുതിയത് %2$s ആണ്."</string>
+    <string name="settings_scanly_is_available_on">"Scanly %1$s %2$s-ൽ ലഭ്യമാണ്."</string>
+    <string name="settings_checking">"%1$s പരിശോധിക്കുന്നു..."</string>
+    <string name="settings_check_for_updates">"അപ്ഡേറ്റുകൾക്കായി പരിശോധിക്കുക"</string>
+    <string name="settings_by_jeevaprakash_g">"ജീവപ്രകാശ് ജി"</string>
+    <string name="settings_version_unavailable">"പതിപ്പ് ലഭ്യമല്ല"</string>
+    <string name="settings_pick_the_detector_that_fits">"ഈ ഉപകരണത്തിനും വർക്ക്ഫ്ലോയ്ക്കും അനുയോജ്യമായ ഡിറ്റക്ടർ തിരഞ്ഞെടുക്കുക."</string>
+    <string name="settings_choose">"%1$s തിരഞ്ഞെടുക്കുക"</string>
+    <string name="settings_highest_accuracy_maximum_compatibility">"ഏറ്റവും ഉയർന്ന കൃത്യത · പരമാവധി അനുയോജ്യത"</string>
+    <string name="settings_higher_accuracy_best_after_capture">"ഉയർന്ന കൃത്യത · ക്യാപ്‌ചറിന് ശേഷം മികച്ചതാണ്"</string>
+    <string name="settings_balanced_speed_and_accuracy">"സമതുലിതമായ വേഗതയും കൃത്യതയും"</string>
+    <string name="settings_fastest_ideal_for_live_camera">"തത്സമയ ക്യാമറ പ്രിവ്യൂവിന് ഏറ്റവും വേഗതയേറിയ · അനുയോജ്യമാണ്"</string>
+    <!-- SettingsDetailScreens -->
+    <string name="settings_detail_screens_open_source">"ഓപ്പൺ സോഴ്സ്"</string>
+    <string name="settings_detail_screens_try_a_different_word_or">"മറ്റൊരു വാക്ക് പരീക്ഷിക്കുക, അല്ലെങ്കിൽ ഒരു വിഭാഗം ബ്രൗസ് ചെയ്യുക."</string>
+    <string name="settings_detail_screens_no_answers_for">"\"%1$s\" എന്നതിന് ഉത്തരങ്ങളൊന്നുമില്ല."</string>
+    <string name="settings_detail_screens_no_answers_in_this_category">"ഈ വിഭാഗത്തിൽ ഉത്തരങ്ങളൊന്നുമില്ല."</string>
+    <string name="settings_detail_screens_all">"എല്ലാം"</string>
+    <string name="settings_detail_screens_search_help">"തിരയൽ സഹായം"</string>
+    <string name="settings_detail_screens_help_faq">"സഹായവും പതിവുചോദ്യങ്ങളും"</string>
+    <!-- SettingsHubSubScreens -->
+    <string name="settings_hub_sub_screens_terms_conditions">"നിബന്ധനകളും വ്യവസ്ഥകളും"</string>
+    <string name="settings_hub_sub_screens_privacy_policy">"സ്വകാര്യതാ നയം"</string>
+    <string name="settings_hub_sub_screens_legal">"നിയമപരമായ"</string>
+    <string name="settings_hub_sub_screens_project_website">"പദ്ധതി വെബ്സൈറ്റ്"</string>
+    <string name="settings_hub_sub_screens_contact_support">"പിന്തുണയുമായി ബന്ധപ്പെടുക"</string>
+    <string name="settings_hub_sub_screens_help">"സഹായം"</string>
+    <string name="settings_hub_sub_screens_about">"ഏകദേശം"</string>
+    <string name="settings_hub_sub_screens_open_the_qr_tool">"QR ടൂൾ തുറക്കുക"</string>
+    <string name="settings_hub_sub_screens_qr_widget">"QR വിജറ്റ്"</string>
+    <string name="settings_hub_sub_screens_start_a_new_document_scan">"ഒരു പുതിയ ഡോക്യുമെൻ്റ് സ്കാൻ ആരംഭിക്കുക"</string>
+    <string name="settings_hub_sub_screens_scan_widget">"വിജറ്റ് സ്കാൻ ചെയ്യുക"</string>
+    <string name="settings_hub_sub_screens_scan_import_qr_library">"· ഇറക്കുമതി · QR · ലൈബ്രറി സ്കാൻ ചെയ്യുക"</string>
+    <string name="settings_hub_sub_screens_actions_bar">"പ്രവർത്തനങ്ങളുടെ ബാർ"</string>
+    <string name="settings_hub_sub_screens_home_screen">"ഹോം സ്ക്രീൻ"</string>
+    <string name="settings_hub_sub_screens_widgets">"വിഡ്ജറ്റുകൾ"</string>
+    <string name="settings_hub_sub_screens_long_press_home_screen_widgets">"ഹോം സ്‌ക്രീൻ ദീർഘനേരം അമർത്തുക → വിജറ്റുകൾ → Scanly"</string>
+    <string name="settings_hub_sub_screens_tap_to_add_a_widget">"നിങ്ങളുടെ ഹോം സ്ക്രീനിലേക്ക് ഒരു വിജറ്റ് ചേർക്കാൻ ടാപ്പ് ചെയ്യുക"</string>
+    <string name="settings_hub_sub_screens_could_not_open_the_add">"ആഡ്-വിജറ്റ് ഡയലോഗ് തുറക്കാൻ കഴിഞ്ഞില്ല."</string>
+    <string name="settings_hub_sub_screens_your_launcher_doesn_t_support">"ആപ്പിൽ നിന്ന് വിജറ്റുകൾ ചേർക്കുന്നതിനെ നിങ്ങളുടെ ലോഞ്ചർ പിന്തുണയ്ക്കുന്നില്ല. ഹോം സ്‌ക്രീനിൽ ദീർഘനേരം അമർത്തി വിജറ്റുകളിൽ നിന്ന് Scanly തിരഞ്ഞെടുക്കുക."</string>
+    <string name="settings_hub_sub_screens_compare_all_models_on_local">"പ്രാദേശിക ചിത്രങ്ങളിലെ എല്ലാ മോഡലുകളും താരതമ്യം ചെയ്യുക"</string>
+    <string name="settings_hub_sub_screens_tools">"ഉപകരണങ്ങൾ"</string>
+    <string name="settings_hub_sub_screens_reject_screens_and_non_documents">"എഡ്ജ് കണ്ടെത്തുന്നതിന് മുമ്പ് സ്ക്രീനുകളും നോൺ ഡോക്യുമെൻ്റുകളും നിരസിക്കുക"</string>
+    <string name="settings_hub_sub_screens_physical_document_gate">"ഫിസിക്കൽ ഡോക്യുമെൻ്റ് ഗേറ്റ്"</string>
+    <string name="settings_hub_sub_screens_capture_quality">"ക്യാപ്‌ചർ ക്വാളിറ്റി"</string>
+    <string name="settings_hub_sub_screens_used_after_camera_or_gallery">"ക്യാമറ അല്ലെങ്കിൽ ഗാലറി ക്യാപ്‌ചറിന് ശേഷം ഉപയോഗിക്കുന്നു"</string>
+    <string name="settings_hub_sub_screens_selected_automatically_for_higher_accuracy">"ഉയർന്ന കൃത്യതയ്ക്കായി സ്വയമേവ തിരഞ്ഞെടുത്തു"</string>
+    <string name="settings_hub_sub_screens_post_processing_model">"പോസ്റ്റ്-പ്രോസസ്സിംഗ് മോഡൽ"</string>
+    <string name="settings_hub_sub_screens_used_while_the_camera_preview">"ക്യാമറ പ്രിവ്യൂ പ്രവർത്തിക്കുമ്പോൾ ഉപയോഗിക്കുന്നു"</string>
+    <string name="settings_hub_sub_screens_selected_automatically_for_responsive_preview">"പ്രതികരിക്കുന്ന പ്രിവ്യൂവിനായി സ്വയമേവ തിരഞ്ഞെടുത്തു"</string>
+    <string name="settings_hub_sub_screens_live_preview_model">"തത്സമയ പ്രിവ്യൂ മോഡൽ"</string>
+    <string name="settings_hub_sub_screens_choose_the_best_models_for">"ഈ ഉപകരണത്തിന് ഏറ്റവും മികച്ച മോഡലുകൾ തിരഞ്ഞെടുക്കുക"</string>
+    <string name="settings_hub_sub_screens_live_processing">"തത്സമയം: %1$s · പ്രോസസ്സിംഗ്: %2$s"</string>
+    <string name="settings_hub_sub_screens_testing_model_speed_on_this">"ഈ ഉപകരണത്തിൽ മോഡൽ വേഗത പരിശോധിക്കുന്നു…"</string>
+    <string name="settings_hub_sub_screens_automatic_model_selection">"ഓട്ടോമാറ്റിക് മോഡൽ തിരഞ്ഞെടുക്കൽ"</string>
+    <string name="settings_hub_sub_screens_models">"മോഡലുകൾ"</string>
+    <string name="settings_hub_sub_screens_document_detection">"പ്രമാണം കണ്ടെത്തൽ"</string>
+    <string name="settings_hub_sub_screens_true_black_surfaces_saves_battery">"യഥാർത്ഥ കറുത്ത പ്രതലങ്ങൾ · AMOLED സ്ക്രീനുകളിൽ ബാറ്ററി ലാഭിക്കുന്നു"</string>
+    <string name="settings_hub_sub_screens_takes_effect_in_dark_theme">"ഡാർക്ക് തീമിൽ പ്രാബല്യത്തിൽ വരും · AMOLED സ്ക്രീനുകളിൽ ബാറ്ററി ലാഭിക്കുന്നു"</string>
+    <string name="settings_hub_sub_screens_pure_black">"ശുദ്ധമായ കറുപ്പ്"</string>
+    <string name="settings_hub_sub_screens_theme">"തീം"</string>
+    <string name="settings_hub_sub_screens_appearance">"രൂപഭാവം"</string>
+    <!-- SettingsScreen -->
+    <string name="settings_preferences_and_app_info">"മുൻഗണനകളും ആപ്പ് വിവരങ്ങളും"</string>
+    <string name="settings_scanly">"Scanly %1$s"</string>
+    <string name="settings_settings">"ക്രമീകരണങ്ങൾ"</string>
+    <string name="settings_version_updates_and_legal">"പതിപ്പ്, അപ്ഡേറ്റുകൾ, നിയമപരമായ"</string>
+    <string name="settings_leave_a_rating_on_google">"Google Play-ൽ ഒരു റേറ്റിംഗ് നൽകുക"</string>
+    <string name="settings_more">"കൂടുതൽ"</string>
+    <string name="settings_actions_scan_and_qr">"പ്രവർത്തനങ്ങൾ, സ്കാൻ, QR"</string>
+    <string name="settings_text_recognition">"ടെക്സ്റ്റ് തിരിച്ചറിയൽ"</string>
+    <string name="settings_intelligence">"ഇൻ്റലിജൻസ്"</string>
+    <string name="settings_pages_kept_documents_and_folders">"%1$s സൂക്ഷിച്ചിരിക്കുന്ന പേജുകൾ, പ്രമാണങ്ങളും ഫോൾഡറുകളും %2$s"</string>
+    <string name="settings_storage">"സംഭരണം"</string>
+    <string name="settings_pip_your_helper">"Pip, നിങ്ങളുടെ സഹായി"</string>
+    <string name="settings_preferences">"മുൻഗണനകൾ"</string>
+    <string name="settings_save_location_cleanup">"സ്ഥലവും വൃത്തിയാക്കലും സംരക്ഷിക്കുക"</string>
+    <string name="settings_indra_ocr_100_languages_experimental">"Indra OCR · 100+ ഭാഷകൾ (പരീക്ഷണാത്മകം)"</string>
+    <string name="settings_ml_kit_latin_script_languages">"ML Kit · ലാറ്റിൻ-ലിപി ഭാഷകൾ"</string>
+    <string name="settings_gate_off">"%1$s · ഗേറ്റ് ഓഫ്"</string>
+    <string name="settings_gate_on">"%1$s · ഗേറ്റ് ഓൺ"</string>
+    <string name="settings_manual_models">"മാനുവൽ മോഡലുകൾ"</string>
+    <string name="settings_automatic_models">"ഓട്ടോമാറ്റിക് മോഡലുകൾ"</string>
+    <string name="settings_calibrating">"കാലിബ്രേറ്റിംഗ്…"</string>
+    <string name="settings_pure_black">" · ശുദ്ധമായ കറുപ്പ്"</string>
+    <string name="settings_thanks_for_supporting_scanly">"Scanly പിന്തുണച്ചതിന് നന്ദി"</string>
+    <!-- SettingsTextRecognitionScreen -->
+    <string name="settings_text_recognition_weights_openrail_m_code_apache">"ഭാരം: OpenRAIL-M · കോഡ്: Apache-2.0"</string>
+    <string name="settings_text_recognition_visit_datalab_to">"datalab.to സന്ദർശിക്കുക"</string>
+    <string name="settings_text_recognition_a_big_thank_you_to">"Indra OCR നിർമ്മിക്കുന്നതിനും നിങ്ങളുടെ ഫോണിൽ തന്നെ Scanly പ്രവർത്തിപ്പിക്കുന്നതിനും ഡാറ്റാലാബിന് വലിയ നന്ദി. അതുകൊണ്ടാണ് Scanly-ന് 100+ ഭാഷകൾ വായിക്കാൻ കഴിയുന്നത്."</string>
+    <string name="settings_text_recognition_datalab">"ഡാറ്റാലാബ്"</string>
+    <string name="settings_text_recognition_indra_ocr_by">"INDRA OCR BY"</string>
+    <string name="settings_text_recognition_datalab_logo">"ഡാറ്റാലാബ് ലോഗോ"</string>
+    <string name="settings_text_recognition_latin_script_only_pages_in">"ലാറ്റിൻ ലിപി മാത്രം. ഹിന്ദി, തമിഴ്, അറബി അല്ലെങ്കിൽ ചൈനീസ് പോലുള്ള മറ്റ് സ്ക്രിപ്റ്റുകളിലെ പേജുകൾ ശൂന്യമായോ അലങ്കോലമായോ പുറത്തുവരുന്നു. അവർക്കായി Indra OCR-ലേക്ക് മാറുക."</string>
+    <string name="settings_text_recognition_5_script_families_read_in">"5 സ്ക്രിപ്റ്റ് ഫാമിലികൾ, ഒരു പാസിൽ വായിച്ചു. ഓരോ വരിയും ശരിയായ തിരിച്ചറിയലിലേക്ക് നയിക്കുന്നു, അതിനാൽ ഭാഷകൾ കലർത്തുന്ന പേജുകളും പ്രവർത്തിക്കുന്നു."</string>
+    <string name="settings_text_recognition_reads_100_languages_across_many">"ഹിന്ദി, തമിഴ്, അറബിക്, ചൈനീസ്, ജാപ്പനീസ് എന്നിവയുൾപ്പെടെ നിരവധി സ്ക്രിപ്റ്റുകളിലുടനീളം 100+ ഭാഷകൾ വായിക്കുന്നു. ML Kit-നേക്കാൾ വേഗത കുറവാണ്."</string>
+    <string name="settings_text_recognition_experimental">"പരീക്ഷണാത്മകം"</string>
+    <string name="settings_text_recognition_google_s_fast_on_device">"Google-ൻ്റെ വേഗതയേറിയ ഉപകരണ തിരിച്ചറിയൽ. ഇംഗ്ലീഷ്, സ്പാനിഷ്, ഫ്രഞ്ച് തുടങ്ങിയ ലാറ്റിൻ-ലിപി ഭാഷകൾക്ക് മികച്ചത്."</string>
+    <string name="settings_text_recognition_default">"സ്ഥിരസ്ഥിതി"</string>
+    <string name="settings_text_recognition_if_a_page_s_text">"ഒരു പേജിൻ്റെ ടെക്‌സ്‌റ്റ് ശൂന്യമോ അലങ്കോലമോ ആണെന്ന് തോന്നുന്നുവെങ്കിൽ, അത് ML Kit വായിക്കാൻ കഴിയാത്ത സ്‌ക്രിപ്റ്റിലായിരിക്കാം. Indra OCR-ലേക്ക് മാറുക, തുടർന്ന് നിലവിലുള്ള പേജുകൾ വീണ്ടും വായിക്കുക."</string>
+    <string name="settings_text_recognition_tip">"നുറുങ്ങ്"</string>
+    <string name="settings_text_recognition_switching_engines_only_affects_new">"എഞ്ചിനുകൾ മാറുന്നത് പുതിയ വായനകളെ മാത്രമേ ബാധിക്കുകയുള്ളൂ. നിങ്ങൾക്ക് ഇതിനകം ഉള്ള പേജുകൾ ഈ സ്ക്രീനിൽ നിന്ന് വീണ്ടും വായിക്കാൻ കഴിയും, നിങ്ങൾ സ്വയം തിരുത്തിയ വാചകം ഒരിക്കലും മാറ്റിസ്ഥാപിക്കില്ല."</string>
+    <string name="settings_text_recognition_your_edits_are_kept">"നിങ്ങളുടെ എഡിറ്റുകൾ സൂക്ഷിച്ചിരിക്കുന്നു"</string>
+    <string name="settings_text_recognition_if_indra_ocr_can_t">"Indra OCR-ന് ഒരു പേജ് വായിക്കാൻ കഴിയുന്നില്ലെങ്കിൽ, കൂടുതൽ സമയമെടുക്കുന്നു അല്ലെങ്കിൽ നിർത്തുന്നുവെങ്കിൽ, പകരം ML Kit അത് വായിക്കുന്നു."</string>
+    <string name="settings_text_recognition_ml_kit_is_the_safety">"ML Kit സുരക്ഷാ വലയാണ്"</string>
+    <string name="settings_text_recognition_both_engines_run_on_the">"രണ്ട് എഞ്ചിനുകളും ഉപകരണത്തിൽ പ്രവർത്തിക്കുന്നു. പേജുകൾ വായിക്കാൻ ഒരിക്കലും അപ്‌ലോഡ് ചെയ്യുന്നില്ല."</string>
+    <string name="settings_text_recognition_stays_on_your_phone">"നിങ്ങളുടെ ഫോണിൽ തുടരുന്നു"</string>
+    <string name="settings_text_recognition_ml_kit_is_the_default">"ML കിറ്റാണ് ഡിഫോൾട്ട്. ഇംഗ്ലീഷ്, സ്പാനിഷ്, ഫ്രഞ്ച്, ജർമ്മൻ തുടങ്ങിയ ലാറ്റിൻ-ലിപി ഭാഷകൾക്ക് ഇത് വേഗതയേറിയതും വളരെ കൃത്യവുമാണ്.\n\nമറ്റെല്ലാത്തിനും Indra OCR ആണ്. ഇത് ഹിന്ദി, തമിഴ്, ബംഗാളി, അറബിക്, ഉറുദു, ചൈനീസ്, ജാപ്പനീസ്, കൊറിയൻ, തായ് എന്നിവയുൾപ്പെടെ 100+ ഭാഷകൾ വായിക്കുന്നു, കൂടാതെ ഭാഷകൾ മിശ്രണം ചെയ്യുന്ന പേജുകൾ കൈകാര്യം ചെയ്യുന്നു. ഇത് പരീക്ഷണാത്മകവും വേഗത കുറഞ്ഞതുമാണ്, അതിനാൽ പേജുകൾ തിരയാൻ കൂടുതൽ സമയമെടുക്കും."</string>
+    <string name="settings_text_recognition_choosing_an_engine">"ഒരു എഞ്ചിൻ തിരഞ്ഞെടുക്കൽ"</string>
+    <string name="settings_text_recognition_after_you_scan_scanly_reads">"നിങ്ങൾ സ്കാൻ ചെയ്ത ശേഷം, ഓരോ പേജിലെയും വാക്കുകൾ Scanly വായിക്കുന്നു. ഒരു പേജ് പറയുന്നത് അനുസരിച്ച് നിങ്ങളുടെ ലൈബ്രറി തിരയാനും സ്‌കാനിൽ നിന്ന് ടെക്‌സ്‌റ്റ് പകർത്താനും പങ്കിടാനും കയറ്റുമതി ചെയ്യാനും നിങ്ങളെ അനുവദിക്കുന്നത് ആ വാചകമാണ്."</string>
+    <string name="settings_text_recognition_what_it_does">"അത് എന്താണ് ചെയ്യുന്നത്"</string>
+    <string name="settings_text_recognition_also_called_ocr">"OCR എന്നും വിളിക്കുന്നു"</string>
+    <string name="settings_text_recognition_re_read">"വീണ്ടും വായിക്കുക"</string>
+    <string name="settings_text_recognition_runs_in_the_background_while">"നിങ്ങളുടെ ബാറ്ററി കുറയാത്ത സമയത്ത് പശ്ചാത്തലത്തിൽ പ്രവർത്തിക്കുന്നു. നിങ്ങൾ സ്വയം എഡിറ്റ് ചെയ്ത വാചകം സൂക്ഷിച്ചിരിക്കുന്നു."</string>
+    <string name="settings_text_recognition_on_device_text_recognition_v2">"ഉപകരണത്തിലെ ടെക്സ്റ്റ് തിരിച്ചറിയൽ v2"</string>
+    <string name="settings_text_recognition_google_ml_kit">"Google ML Kit"</string>
+    <string name="settings_text_recognition_credits">"ക്രെഡിറ്റുകൾ"</string>
+    <string name="settings_text_recognition_supported_languages">"പിന്തുണയ്ക്കുന്ന ഭാഷകൾ"</string>
+    <string name="settings_text_recognition_engine">"എഞ്ചിൻ"</string>
+    <string name="settings_text_recognition_about_text_recognition">"ടെക്സ്റ്റ് തിരിച്ചറിയലിനെക്കുറിച്ച്"</string>
+    <!-- SettingsViewModel -->
+    <string name="settings_save_location_reset_to_downloads">"Downloads/Scanly-ലേക്ക് ലൊക്കേഷൻ റീസെറ്റ് സംരക്ഷിക്കുക."</string>
+    <string name="settings_save_location_updated">"ലൊക്കേഷൻ സംരക്ഷിക്കുക അപ്ഡേറ്റ് ചെയ്തു."</string>
+    <string name="settings_reading_pages_again_in_the">"പശ്ചാത്തലത്തിൽ വീണ്ടും %1$s പേജുകൾ വായിക്കുന്നു."</string>
+    <string name="settings_reading_1_page_again_in">"പശ്ചാത്തലത്തിൽ 1 പേജ് വീണ്ടും വായിക്കുന്നു."</string>
+    <string name="settings_no_pages_to_read_again">"വീണ്ടും വായിക്കാൻ പേജുകളില്ല."</string>
+    <string name="settings_could_not_update_the_text">"ടെക്സ്റ്റ് തിരിച്ചറിയൽ എഞ്ചിൻ അപ്ഡേറ്റ് ചെയ്യാനായില്ല."</string>
+    <string name="settings_could_not_update_the_physical">"ഫിസിക്കൽ ഡോക്യുമെൻ്റ് ഗേറ്റ് അപ്ഡേറ്റ് ചെയ്യാൻ കഴിഞ്ഞില്ല."</string>
+    <string name="settings_could_not_update_automatic_model">"സ്വയമേവയുള്ള മോഡൽ തിരഞ്ഞെടുക്കൽ അപ്ഡേറ്റ് ചെയ്യാനായില്ല."</string>
+    <string name="settings_could_not_update_the_post">"പോസ്റ്റ്-പ്രോസസ്സിംഗ് മോഡൽ അപ്ഡേറ്റ് ചെയ്യാനായില്ല."</string>
+    <string name="settings_could_not_update_the_live">"തത്സമയ പ്രിവ്യൂ മോഡൽ അപ്ഡേറ്റ് ചെയ്യാനായില്ല."</string>
+    <string name="settings_could_not_update_pure_black">"ശുദ്ധമായ ബ്ലാക്ക് തീം അപ്ഡേറ്റ് ചെയ്യാനായില്ല."</string>
+    <string name="settings_removed_empty_folders">"%1$s ശൂന്യമായ ഫോൾഡറുകൾ നീക്കം ചെയ്തു."</string>
+    <string name="settings_removed_1_empty_folder">"ഒരു ശൂന്യമായ ഫോൾഡർ നീക്കം ചെയ്തു."</string>
+    <string name="settings_no_empty_folders_found">"ശൂന്യമായ ഫോൾഡറുകളൊന്നും കണ്ടെത്തിയില്ല."</string>
+    <string name="settings_removed_empty_documents">"%1$s ശൂന്യമായ പ്രമാണങ്ങൾ നീക്കം ചെയ്തു."</string>
+    <string name="settings_removed_1_empty_document">"ഒരു ശൂന്യ പ്രമാണം നീക്കം ചെയ്തു."</string>
+    <string name="settings_no_empty_documents_found">"ശൂന്യമായ രേഖകളൊന്നും കണ്ടെത്തിയില്ല."</string>
+    <string name="settings_freed">"ഫ്രീഡ് %1$s"</string>
+    <string name="settings_all_data_cleared">"എല്ലാ ഡാറ്റയും മായ്‌ച്ചു."</string>
+    <!-- StorageScreen -->
+    <string name="storage_temporary_exports">"താൽക്കാലിക കയറ്റുമതി"</string>
+    <string name="storage_database_search_index">"ഡാറ്റാബേസ് &amp; തിരയൽ സൂചിക"</string>
+    <string name="storage_library_files">"ലൈബ്രറി ഫയലുകൾ"</string>
+    <string name="storage_scanly_is_using">"Scanly ഉപയോഗിക്കുന്നു"</string>
+    <string name="storage_calculating">"… കണക്കാക്കുന്നു"</string>
+    <string name="storage_change">"മാറ്റം"</string>
+    <string name="storage_exports_save_to">"കയറ്റുമതി സംരക്ഷിക്കുന്നു"</string>
+    <string name="storage_this_permanently_deletes_all_documents">"ഇത് ഈ ഉപകരണത്തിലെ എല്ലാ പ്രമാണങ്ങളും ഫോൾഡറുകളും പേജുകളും താൽക്കാലിക കയറ്റുമതികളും ശാശ്വതമായി ഇല്ലാതാക്കുന്നു. നിങ്ങളുടെ എക്‌സ്‌പോർട്ട് ഫോൾഡറിലേക്ക് നിങ്ങൾ ഇതിനകം സംരക്ഷിച്ച ഫയലുകൾ സൂക്ഷിച്ചിരിക്കുന്നു."</string>
+    <string name="storage_clear_all_data">"എല്ലാ ഡാറ്റയും മായ്‌ക്കണോ?"</string>
+    <string name="storage_deletes_every_folder_group_that">"ഡോക്യുമെൻ്റുകളില്ലാത്ത എല്ലാ ഫോൾഡറും (ഗ്രൂപ്പ്) ഇല്ലാതാക്കുന്നു. ഇപ്പോഴും രേഖകളുള്ള ഫോൾഡറുകൾ സൂക്ഷിച്ചിരിക്കുന്നു."</string>
+    <string name="storage_remove_empty_folders">"ശൂന്യമായ ഫോൾഡറുകൾ നീക്കം ചെയ്യണോ?"</string>
+    <string name="storage_deletes_every_document_that_has">"ഉപേക്ഷിക്കപ്പെട്ട ക്യാപ്‌ചറുകൾ ഉൾപ്പെടെ പേജുകളില്ലാത്ത എല്ലാ പ്രമാണങ്ങളും ഇല്ലാതാക്കുകയും അവയുടെ പ്രാദേശിക സംഭരണം സ്വതന്ത്രമാക്കുകയും ചെയ്യുന്നു. ഇപ്പോഴും പേജുകളുള്ള രേഖകൾ സൂക്ഷിച്ചിരിക്കുന്നു."</string>
+    <string name="storage_remove_empty_documents">"ശൂന്യമായ പ്രമാണങ്ങൾ നീക്കം ചെയ്യണോ?"</string>
+    <string name="storage_deletes_every_document_folder_and">"ഈ ഉപകരണത്തിലെ എല്ലാ പ്രമാണങ്ങളും ഫോൾഡറും പേജും ഇല്ലാതാക്കുന്നു"</string>
+    <string name="storage_clear_all_data_2">"എല്ലാ ഡാറ്റയും മായ്‌ക്കുക"</string>
+    <string name="storage_danger_zone">"അപകട മേഖല"</string>
+    <string name="storage_folders_with_no_documents">"രേഖകളില്ലാത്ത ഫോൾഡറുകൾ"</string>
+    <string name="storage_remove_empty_folders_2">"ശൂന്യമായ ഫോൾഡറുകൾ നീക്കം ചെയ്യുക"</string>
+    <string name="storage_documents_with_no_pages">"പേജുകളില്ലാത്ത പ്രമാണങ്ങൾ"</string>
+    <string name="storage_remove_empty_documents_2">"ശൂന്യമായ പ്രമാണങ്ങൾ നീക്കം ചെയ്യുക"</string>
+    <string name="storage_restore_deleted_folders_documents_and">"ഇല്ലാതാക്കിയ ഫോൾഡറുകൾ, പ്രമാണങ്ങൾ, പേജുകൾ എന്നിവ പുനഃസ്ഥാപിക്കുക"</string>
+    <string name="storage_tidy_up">"വൃത്തിയാക്കുക"</string>
+    <string name="storage_use_default_folder">"ഡിഫോൾട്ട് ഫോൾഡർ ഉപയോഗിക്കുക"</string>
+    <string name="storage_pdfs_and_images_you_export">"നിങ്ങൾ എക്‌സ്‌പോർട്ട് ചെയ്യുന്ന PDF ഫയലുകളും ചിത്രങ്ങളും ഇവിടെ സംരക്ഷിച്ചിരിക്കുന്നു."</string>
+    <string name="storage_save_location">"ലൊക്കേഷൻ സംരക്ഷിക്കുക"</string>
+    <string name="storage_could_not_use_the_selected">"തിരഞ്ഞെടുത്ത ഫോൾഡർ ഉപയോഗിക്കാൻ കഴിഞ്ഞില്ല."</string>
+    <string name="storage_selected_folder">"തിരഞ്ഞെടുത്ത ഫോൾഡർ"</string>
+    <!-- ScannedPagePickerSheet -->
+    <string name="scanned_page_picker_no_pages_in_this_document">"ഈ പ്രമാണത്തിലെ പേജുകളൊന്നും ഉപയോഗിക്കാൻ കഴിയില്ല."</string>
+    <string name="scanned_page_picker_back_to_documents">"രേഖകളിലേക്ക് മടങ്ങുക"</string>
+    <string name="scanned_page_picker_no_scanned_documents_yet_scan">"ഇതുവരെ സ്കാൻ ചെയ്ത രേഖകളൊന്നുമില്ല. Scanly-ൽ ഒരു പേജ് സ്കാൻ ചെയ്യുക, അത് ഇവിടെ കാണിക്കും."</string>
+    <string name="scanned_page_picker_scanned_pages">"സ്കാൻ ചെയ്ത പേജുകൾ"</string>
+    <!-- SignatureCreateScreen -->
+    <string name="signature_create_choose_another">"മറ്റൊന്ന് തിരഞ്ഞെടുക്കുക"</string>
+    <string name="signature_create_bolder">"ബോൾഡർ"</string>
+    <string name="signature_create_fainter">"തളർച്ച"</string>
+    <string name="signature_create_ink_sensitivity">"മഷി സംവേദനക്ഷമത"</string>
+    <string name="signature_create_extracted_signature_preview">"ഒപ്പ് പ്രിവ്യൂ എക്‌സ്‌ട്രാക്‌റ്റ് ചെയ്‌തു"</string>
+    <string name="signature_create_scanly_removes_the_paper_background">"Scanly പേപ്പർ പശ്ചാത്തലം നീക്കം ചെയ്യുകയും മഷി മാത്രം സൂക്ഷിക്കുകയും ചെയ്യുന്നു."</string>
+    <string name="signature_create_use_a_page_you_scanned">"Scanly-ൽ നിങ്ങൾ സ്കാൻ ചെയ്ത ഒരു പേജ് ഉപയോഗിക്കുക"</string>
+    <string name="signature_create_scanned_page">"സ്കാൻ ചെയ്ത പേജ്"</string>
+    <string name="signature_create_jpg_or_png_from_your">"നിങ്ങളുടെ ഫോണിൽ നിന്ന് JPG അല്ലെങ്കിൽ PNG"</string>
+    <string name="signature_create_files">"ഫയലുകൾ"</string>
+    <string name="signature_create_pick_a_photo_of_your">"നിങ്ങളുടെ ഒപ്പിൻ്റെ ഒരു ഫോട്ടോ തിരഞ്ഞെടുക്കുക"</string>
+    <string name="signature_create_photos">"ഫോട്ടോകൾ"</string>
+    <string name="signature_create_choose_where_your_signature_is">"നിങ്ങളുടെ ഒപ്പ് എവിടെയാണെന്ന് തിരഞ്ഞെടുക്കുക"</string>
+    <string name="signature_create_choose_where_your_initials_are">"നിങ്ങളുടെ ഇനീഷ്യലുകൾ എവിടെയാണെന്ന് തിരഞ്ഞെടുക്കുക"</string>
+    <string name="signature_create_pen">"പേന"</string>
+    <string name="signature_create_upload">"അപ്‌ലോഡ് ചെയ്യുക"</string>
+    <string name="signature_create_draw">"വരയ്ക്കുക"</string>
+    <string name="signature_create_save_signature">"ഒപ്പ് സംരക്ഷിക്കുക"</string>
+    <string name="signature_create_save_initials">"ഇനീഷ്യലുകൾ സംരക്ഷിക്കുക"</string>
+    <string name="signature_create_sign_above_the_line">"വരിയുടെ മുകളിൽ ഒപ്പിടുക"</string>
+    <string name="signature_create_write_your_initials_above_the">"വരിയുടെ മുകളിൽ നിങ്ങളുടെ ഇനീഷ്യലുകൾ എഴുതുക"</string>
+    <string name="signature_create_new_signature">"പുതിയ ഒപ്പ്"</string>
+    <string name="signature_create_new_initials">"പുതിയ ഇനീഷ്യലുകൾ"</string>
+    <!-- SignatureCreateViewModel -->
+    <string name="signature_create_choose_a_photo_of_your">"ആദ്യം നിങ്ങളുടെ ഒപ്പിൻ്റെ ഒരു ഫോട്ടോ തിരഞ്ഞെടുക്കുക."</string>
+    <string name="signature_create_still_reading_the_photo_try">"ഇപ്പോഴും ഫോട്ടോ വായിക്കുന്നു. ഒരു നിമിഷത്തിനുള്ളിൽ വീണ്ടും ശ്രമിക്കുക."</string>
+    <string name="signature_create_draw_your_signature_first">"ആദ്യം നിങ്ങളുടെ ഒപ്പ് വരയ്ക്കുക."</string>
+    <!-- SignaturePad -->
+    <string name="signature_pad_draw_here">"ഇവിടെ വരയ്ക്കുക"</string>
+    <!-- DocumentSignScreen -->
+    <string name="document_sign_stamping_signatures">"സ്റ്റാമ്പിംഗ് ഒപ്പുകൾ…"</string>
+    <!-- DocumentSignViewModel -->
+    <string name="document_sign_saved_signatures_couldn_t_be">"സംരക്ഷിച്ച ഒപ്പുകൾ ലോഡുചെയ്യാൻ കഴിഞ്ഞില്ല, അതിനാൽ ഈ പ്രമാണത്തിൽ ഇപ്പോൾ ഒപ്പിടാൻ കഴിയില്ല."</string>
+    <!-- SignEditorScreen -->
+    <string name="sign_editor_next_page">"അടുത്ത പേജ്"</string>
+    <string name="sign_editor_add_text">"ടെക്സ്റ്റ് ചേർക്കുക"</string>
+    <string name="sign_editor_edit_date">"തീയതി എഡിറ്റ് ചെയ്യുക"</string>
+    <string name="sign_editor_tap_checkbox_again_for_another">"മറ്റൊരു ബോക്‌സിനായി വീണ്ടും ചെക്ക്ബോക്‌സിൽ ടാപ്പ് ചെയ്യുക · ടിക്ക് ചെയ്യാനോ അൺടിക്ക് ചെയ്യാനോ ടൂൾബാർ ഉപയോഗിക്കുക"</string>
+    <string name="sign_editor_tap_text_again_for_another">"മറ്റൊരു വരി · ടെക്‌സ്‌റ്റ് എഡിറ്റ് ചെയ്യാൻ രണ്ടുതവണ ടാപ്പ് ചെയ്യുക"</string>
+    <string name="sign_editor_tap_date_again_for_another">"· മറ്റൊരു സ്റ്റാമ്പിനായി തീയതി വീണ്ടും ടാപ്പ് ചെയ്യുക, അത് എഡിറ്റ് ചെയ്യാൻ ഒരു തീയതിയിൽ ഡബിൾ ടാപ്പ് ചെയ്യുക"</string>
+    <string name="sign_editor_manage">"കൈകാര്യം ചെയ്യുക"</string>
+    <string name="sign_editor_your_signatures">"നിങ്ങളുടെ ഒപ്പുകൾ"</string>
+    <string name="sign_editor_signatures_and_marks_you_added">"ഈ പ്രമാണത്തിൽ നിങ്ങൾ ചേർത്തതോ മാറ്റിയതോ ആയ ഒപ്പുകളും അടയാളങ്ങളും സൂക്ഷിക്കില്ല."</string>
+    <!-- SignMarkLayer -->
+    <string name="sign_mark_layer_duplicate">"തനിപ്പകർപ്പ്"</string>
+    <string name="sign_mark_layer_tick">"ടിക്ക് ചെയ്യുക"</string>
+    <string name="sign_mark_layer_untick">"അൺടിക്ക് ചെയ്യുക"</string>
+    <!-- SignatureManageScreen -->
+    <string name="signature_manage_added">"%1$s · ചേർത്തു %2$s"</string>
+    <string name="signature_manage_from_a_photo">"ഒരു ഫോട്ടോയിൽ നിന്ന്"</string>
+    <string name="signature_manage_drawn">"വരച്ചു"</string>
+    <string name="signature_manage_pages_you_ve_already_signed">"നിങ്ങൾ ഇതിനകം ഒപ്പിട്ട പേജുകൾ അത് സൂക്ഷിക്കുക"</string>
+    <string name="signature_manage_place_it_on_a_pdf">"ഇത് ഒരു PDF അല്ലെങ്കിൽ Scanly ഡോക്യുമെൻ്റിൽ സ്ഥാപിക്കുക"</string>
+    <string name="signature_manage_sign_a_pdf">"ഒരു PDF ഒപ്പിടുക"</string>
+    <string name="signature_manage_use_first_when_signing">"ഒപ്പിടുമ്പോൾ ആദ്യം ഉപയോഗിക്കുക"</string>
+    <string name="signature_manage_shared_and_saved_as_a">"ഡോക്യുമെൻ്റുകൾക്കും ഫോമുകൾക്കും ഇമെയിലുകൾക്കും തയ്യാറാണ്, സുതാര്യമായ PNG ആയി പങ്കിടുകയും സംരക്ഷിക്കുകയും ചെയ്യുന്നു."</string>
+    <string name="signature_manage_save_to_phone">"ഫോണിലേക്ക് സംരക്ഷിക്കുക"</string>
+    <string name="signature_manage_ink_colour">"മഷി നിറം"</string>
+    <string name="signature_manage_in_ink">"%1$s, മഷി: %2$s"</string>
+    <string name="signature_manage_used_first">"ആദ്യം ഉപയോഗിച്ചത്"</string>
+    <string name="signature_manage_used_first_2">", ആദ്യം ഉപയോഗിച്ചത്"</string>
+    <string name="signature_manage_pages_you_ve_already_signed_2">"നിങ്ങൾ ഇതിനകം ഒപ്പിട്ട പേജുകൾ അത് സൂക്ഷിക്കുക."</string>
+    <string name="signature_manage_initials">"ഇനിഷ്യലുകൾ"</string>
+    <string name="signature_manage_signatures">"ഒപ്പുകൾ"</string>
+    <string name="signature_manage_signatures_stay_on_this_phone">"ഈ ഫോണിൽ ഒപ്പുകൾ നിലനിൽക്കും. ഒന്ന് വരയ്ക്കുക അല്ലെങ്കിൽ നിങ്ങളുടെ ഒപ്പിൻ്റെ ഒരു ഫോട്ടോ അപ്‌ലോഡ് ചെയ്യുക."</string>
+    <string name="signature_manage_tap_one_to_share_save">"പങ്കിടാനോ സംരക്ഷിക്കാനോ പുനഃക്രമീകരിക്കാനോ ഒന്നിൽ ടാപ്പ് ചെയ്യുക"</string>
+    <!-- SignatureManageViewModel -->
+    <string name="signature_manage_saved_to">"%1$s-ലേക്ക് സംരക്ഷിച്ചു"</string>
+    <string name="signature_manage_will_be_offered_first_when">"സൈൻ ചെയ്യുമ്പോൾ %1$s ആദ്യം ഓഫർ ചെയ്യും"</string>
+    <!-- PageTextScreen -->
+    <string name="page_text_share_text">"ടെക്സ്റ്റ് പങ്കിടുക"</string>
+    <string name="page_text_scan_or_import_a_page">"ഒരു പേജ് സ്കാൻ ചെയ്യുക അല്ലെങ്കിൽ ഇറക്കുമതി ചെയ്യുക, അതിൻ്റെ ടെക്സ്റ്റ് ഇവിടെ ദൃശ്യമാകും."</string>
+    <string name="page_text_this_document_has_no_pages">"ഈ പ്രമാണത്തിന് ഇതുവരെ പേജുകളൊന്നുമില്ല"</string>
+    <string name="page_text_reading_text">"വാചകം വായിക്കുന്നു"</string>
+    <string name="page_text_copy_page">"പേജ് പകർത്തുക"</string>
+    <string name="page_text_save_changes">"മാറ്റങ്ങൾ സംരക്ഷിക്കുക"</string>
+    <string name="page_text_copy">"പകർത്തുക"</string>
+    <string name="page_text_tap_an_outlined_area_to">"ആ ഭാഗം മാത്രം പകർത്താൻ ഒരു ഔട്ട്‌ലൈൻ ചെയ്ത ഏരിയയിൽ ടാപ്പ് ചെയ്യുക."</string>
+    <string name="page_text_regions_are_hidden_because_this">"ഈ പേജ് അതിൻ്റെ ടെക്സ്റ്റ് വായിച്ചതിനുശേഷം മാറിയതിനാൽ പ്രദേശങ്ങൾ മറച്ചിരിക്കുന്നു."</string>
+    <string name="page_text_page_image_with_text_regions">"%1$s ടെക്സ്റ്റ് മേഖലകളുള്ള പേജ് ചിത്രം"</string>
+    <string name="page_text_read_with_indra_ocr_experimental">"Indra OCR ഉപയോഗിച്ച് വായിക്കുക (പരീക്ഷണാത്മകം)"</string>
+    <string name="page_text_read_with_ml_kit_indra">"ML Kit ഉപയോഗിച്ച് വായിക്കുക (Indra OCR ഈ പേജ് വായിക്കാൻ കഴിഞ്ഞില്ല)"</string>
+    <string name="page_text_edited">"എഡിറ്റുചെയ്തത്"</string>
+    <string name="page_text_read_again">"വീണ്ടും വായിക്കുക"</string>
+    <string name="page_text_photos_and_handwriting_may_not">"ഫോട്ടോകളിലും കൈയക്ഷരത്തിലും വായിക്കാനാകുന്ന അച്ചടിച്ച വാചകം അടങ്ങിയിരിക്കണമെന്നില്ല. മൂർച്ചയുള്ളതും നന്നായി പ്രകാശമുള്ളതുമായ സ്കാൻ സാധാരണയായി സഹായിക്കുന്നു."</string>
+    <string name="page_text_no_text_found_on_this">"ഈ പേജിൽ ഒരു വാചകവും കണ്ടെത്തിയില്ല"</string>
+    <string name="page_text_read_this_page">"ഈ പേജ് വായിക്കുക"</string>
+    <string name="page_text_scanly_reads_page_text_on">"Scanly ഈ ഉപകരണത്തിൽ പേജ് ടെക്സ്റ്റ് വായിക്കുന്നു."</string>
+    <string name="page_text_text_not_read_yet">"വാചകം ഇതുവരെ വായിച്ചിട്ടില്ല"</string>
+    <string name="page_text_try_again">"വീണ്ടും ശ്രമിക്കുക"</string>
+    <string name="page_text_couldn_t_read_this_page">"ഈ പേജ് വായിക്കാൻ കഴിഞ്ഞില്ല"</string>
+    <string name="page_text_your_corrections_are_used_for">"നിങ്ങളുടെ തിരുത്തലുകൾ പകർത്താനും പങ്കിടാനും തിരയാനും ഉപയോഗിക്കുന്നു."</string>
+    <string name="page_text_this_page_changed_after_its">"ഈ പേജ് അതിൻ്റെ ടെക്സ്റ്റ് വായിച്ചതിനുശേഷം മാറി."</string>
+    <string name="page_text_stop_highlighting">"ഹൈലൈറ്റ് ചെയ്യുന്നത് നിർത്തുക"</string>
+    <string name="page_text_on_this_page">"ഈ പേജിൽ %1$s"</string>
+    <string name="page_text_not_on_this_page">"ഈ പേജിൽ ഇല്ല"</string>
+    <string name="page_text_reading_text_2">"ടെക്സ്റ്റ് … വായിക്കുന്നു"</string>
+    <string name="page_text_reading_page_of">"%2$s…-ൻ്റെ %1$s പേജ് വായിക്കുന്നു"</string>
+    <string name="page_text_page">"%1$s - പേജ് %2$s"</string>
+    <string name="page_text_read_all_pages_again">"എല്ലാ പേജുകളും വീണ്ടും വായിക്കുക"</string>
+    <string name="page_text_restore_original_text">"യഥാർത്ഥ വാചകം പുനഃസ്ഥാപിക്കുക"</string>
+    <string name="page_text_share_all_pages">"എല്ലാ പേജുകളും പങ്കിടുക"</string>
+    <string name="page_text_all_pages">"എല്ലാ പേജുകളും"</string>
+    <string name="page_text_copy_all_pages">"എല്ലാ പേജുകളും പകർത്തുക"</string>
+    <string name="page_text_extracted_text">"എക്‌സ്‌ട്രാക്‌റ്റ് ചെയ്‌ത വാചകം"</string>
+    <string name="page_text_copied">"%1$s പകർത്തി"</string>
+    <!-- PageTextViewModel -->
+    <string name="page_text_original_text_restored">"യഥാർത്ഥ വാചകം പുനഃസ്ഥാപിച്ചു"</string>
+    <string name="page_text_changes_saved_search_uses_your">"മാറ്റങ്ങൾ സംരക്ഷിച്ചു. തിരയൽ നിങ്ങളുടെ എഡിറ്റുകൾ ഉപയോഗിക്കുന്നു."</string>
+    <string name="page_text_page_text_read_again">"പേജ് ടെക്സ്റ്റ് വീണ്ടും വായിക്കുക"</string>
+    <!-- ToolKit -->
+    <string name="tool_kit_file_name">"ഫയലിൻ്റെ പേര്"</string>
+    <!-- ToolsScreen -->
+    <string name="tools_everything_runs_offline_on_this">"ഈ ഫോണിൽ എല്ലാം ഓഫ്‌ലൈനിൽ പ്രവർത്തിക്കുന്നു"</string>
+    <string name="tools_utilities">"യൂട്ടിലിറ്റികൾ"</string>
+    <!-- PdfCompressScreen -->
+    <string name="pdf_compress_recommended">"ശുപാർശ ചെയ്തത്"</string>
+    <string name="pdf_compress_compress_this_pdf_again_with">"മറ്റൊരു ക്രമീകരണം ഉപയോഗിച്ച് ഈ PDF വീണ്ടും കംപ്രസ് ചെയ്യുക"</string>
+    <string name="pdf_compress_try_another_quality">"മറ്റൊരു ഗുണനിലവാരം പരീക്ഷിക്കുക"</string>
+    <string name="pdf_compress_after">"ശേഷം"</string>
+    <string name="pdf_compress_before">"മുമ്പ്"</string>
+    <string name="pdf_compress_quality">"ഗുണനിലവാരം"</string>
+    <string name="pdf_compress_this_quality_didn_t_make">"ഈ ഗുണനിലവാരം ഫയലിനെ ചെറുതാക്കിയില്ല. മറ്റൊന്ന് പരീക്ഷിക്കുക."</string>
+    <string name="pdf_compress_compressed">"കംപ്രസ് ചെയ്തു"</string>
+    <string name="pdf_compress_already_compact">"ഇതിനകം ഒതുക്കമുള്ളത്"</string>
+    <string name="pdf_compress_saved">"സംരക്ഷിച്ച %1$s%%"</string>
+    <string name="pdf_compress_compressing">"കംപ്രസ് ചെയ്യുന്നു…"</string>
+    <string name="pdf_compress_compress">"കംപ്രസ് ചെയ്യുക"</string>
+    <string name="pdf_compress_pages_are_re_encoded_as">"പേജുകൾ ചിത്രങ്ങളായി വീണ്ടും എൻകോഡ് ചെയ്‌തിരിക്കുന്നു, അതിനാൽ PDF ലെ ടെക്‌സ്‌റ്റ് ഇനി തിരഞ്ഞെടുക്കാനോ തിരയാനോ കഴിയില്ല."</string>
+    <string name="pdf_compress_unlock">"അൺലോക്ക് ചെയ്യുക"</string>
+    <string name="pdf_compress_enter_the_password">"പാസ്വേഡ് നൽകുക"</string>
+    <string name="pdf_compress_compressed_pdf">"കംപ്രസ് ചെയ്ത PDF"</string>
+    <string name="pdf_compress_step_1_of_3_choose">"ഘട്ടം 1 / 3 · ഒരു ഫയൽ തിരഞ്ഞെടുക്കുക"</string>
+    <string name="pdf_compress_shrink_a_pdf_for_email">"ഇമെയിൽ അല്ലെങ്കിൽ അപ്‌ലോഡ് പരിധികൾക്കായി ഒരു PDF ചുരുക്കുക."</string>
+    <string name="pdf_compress_compress_pdf">"PDF കംപ്രസ് ചെയ്യുക"</string>
+    <!-- PdfCompressViewModel -->
+    <string name="pdf_compress_compressing_pdf">"PDF… കംപ്രസ് ചെയ്യുന്നു"</string>
+    <string name="pdf_compress_choose_a_pdf_first">"ആദ്യം ഒരു PDF തിരഞ്ഞെടുക്കുക."</string>
+    <!-- PdfFilePicker -->
+    <string name="pdf_file_picker_days_ago">"%1$s ദിവസം മുമ്പ്"</string>
+    <string name="pdf_file_picker_selected_position">"തിരഞ്ഞെടുത്തു, സ്ഥാനം %1$s"</string>
+    <string name="pdf_file_picker_empty_scans_are_hidden">"%1$s ശൂന്യമായ സ്കാനുകൾ മറച്ചിരിക്കുന്നു"</string>
+    <string name="pdf_file_picker_1_empty_scan_is_hidden">"ഒരു ശൂന്യമായ സ്കാൻ മറച്ചിരിക്കുന്നു"</string>
+    <string name="pdf_file_picker_no_match">"%1$s \"%2$s\" പൊരുത്തപ്പെടുന്നില്ല."</string>
+    <string name="pdf_file_picker_sorted_by">"%1$s പ്രകാരം അടുക്കിയത്"</string>
+    <string name="pdf_file_picker_in_scanly">"Scanly · %1$s-ൽ"</string>
+    <string name="pdf_file_picker_search_your">"നിങ്ങളുടെ %1$s തിരയുക"</string>
+    <string name="pdf_file_picker_your_scans_have_no_pages">"നിങ്ങളുടെ സ്കാനുകൾക്ക് ഇതുവരെ പേജുകളൊന്നുമില്ല. ഫോൺ സ്റ്റോറേജിൽ നിന്ന് PDF തിരഞ്ഞെടുക്കുക."</string>
+    <string name="pdf_file_picker_no_scans_yet_pick_a">"ഇതുവരെ സ്കാനുകളൊന്നുമില്ല. ഫോൺ സ്റ്റോറേജിൽ നിന്ന് PDF തിരഞ്ഞെടുക്കുക, അല്ലെങ്കിൽ ആദ്യം ഒന്ന് സ്കാൻ ചെയ്യുക."</string>
+    <string name="pdf_file_picker_pdfs">"PDF ഫയലുകൾ"</string>
+    <string name="pdf_file_picker_downloads_drive_and_other_apps">"ഡൗൺലോഡുകൾ, ഡ്രൈവ്, മറ്റ് ആപ്പുകൾ"</string>
+    <string name="pdf_file_picker_phone_storage">"ഫോൺ സംഭരണം"</string>
+    <!-- PdfImportScreen -->
+    <string name="pdf_import_add_pages">"%1$s പേജുകൾ ചേർക്കുക"</string>
+    <string name="pdf_import_add_1_page">"1 പേജ് ചേർക്കുക"</string>
+    <string name="pdf_import_add_to_library">"ലൈബ്രറിയിലേക്ക് ചേർക്കുക"</string>
+    <string name="pdf_import_another_pdf">"മറ്റൊരു PDF"</string>
+    <string name="pdf_import_crop_filter_sign_or_search">"%1$s · %2$s. ഏതെങ്കിലും സ്കാൻ പോലെ ഇത് ക്രോപ്പ് ചെയ്യുക, ഫിൽട്ടർ ചെയ്യുക, ഒപ്പിടുക അല്ലെങ്കിൽ തിരയുക."</string>
+    <string name="pdf_import_added_to_your_library">"നിങ്ങളുടെ ലൈബ്രറിയിലേക്ക് ചേർത്തു"</string>
+    <string name="pdf_import_step_3_of_3_done">"ഘട്ടം 3 / · ചെയ്തു"</string>
+    <string name="pdf_import_adding_to_library">"ലൈബ്രറിയിലേക്ക് ചേർക്കുന്നു…"</string>
+    <string name="pdf_import_look">"നോക്കൂ"</string>
+    <string name="pdf_import_your_pdf_file_stays_as">"നിങ്ങളുടെ PDF ഫയൽ അതേപടി നിലനിൽക്കും; Scanly അതിൻ്റെ സ്വന്തം പകർപ്പ് സൂക്ഷിക്കുന്നു"</string>
+    <string name="pdf_import_tap_a_page_or_long">"ഒരു പേജിൽ ടാപ്പ് ചെയ്യുക, അല്ലെങ്കിൽ ദീർഘനേരം അമർത്തി പലതിലും വലിച്ചിടുക."</string>
+    <string name="pdf_import_step_2_of_3_pages">"3 · പേജുകളുടെ ഘട്ടം 2, പേരും പേരും"</string>
+    <string name="pdf_import_name_this_document">"ഈ പ്രമാണത്തിന് പേര് നൽകുക"</string>
+    <string name="pdf_import_document_name">"പ്രമാണത്തിൻ്റെ പേര്"</string>
+    <string name="pdf_import_turn_a_pdf_into_a">"നിങ്ങൾക്ക് എഡിറ്റുചെയ്യാനും ഒപ്പിടാനും തിരയാനും കഴിയുന്ന PDF ഒരു Scanly പ്രമാണമാക്കി മാറ്റുക."</string>
+    <string name="pdf_import_add_pdf_to_library">"ലൈബ്രറിയിലേക്ക് PDF ചേർക്കുക"</string>
+    <!-- PdfImportViewModel -->
+    <string name="pdf_import_give_the_document_a_name">"പ്രമാണത്തിന് ഒരു പേര് നൽകുക."</string>
+    <string name="pdf_import_imported_pdf">"ഇറക്കുമതി ചെയ്ത PDF"</string>
+    <!-- PdfMergeScreen -->
+    <string name="pdf_merge_1_file">"1 ഫയൽ"</string>
+    <string name="pdf_merge_your_original_files_are_unchanged">"നിങ്ങളുടെ യഥാർത്ഥ ഫയലുകൾക്ക് മാറ്റമില്ല"</string>
+    <string name="pdf_merge_combined_into_one_pdf">"%1$s ഒരു PDF ആയി സംയോജിപ്പിക്കുന്നു"</string>
+    <string name="pdf_merge_merged">"ലയിപ്പിച്ചു"</string>
+    <string name="pdf_merge_kept_unchanged">"സൂക്ഷിച്ചു, മാറ്റമില്ലാതെ"</string>
+    <string name="pdf_merge_original_files">"യഥാർത്ഥ ഫയലുകൾ"</string>
+    <string name="pdf_merge_size">"വലിപ്പം"</string>
+    <string name="pdf_merge_remove">"%1$s നീക്കം ചെയ്യുക"</string>
+    <string name="pdf_merge_move_down">"%1$s താഴേക്ക് നീക്കുക"</string>
+    <string name="pdf_merge_move_up">"%1$s മുകളിലേക്ക് നീക്കുക"</string>
+    <string name="pdf_merge_pdf_from_scanly">"Scanly-ൽ നിന്ന് PDF"</string>
+    <string name="pdf_merge_pdf_from_phone">"ഫോണിൽ നിന്ന് PDF"</string>
+    <string name="pdf_merge_page_count_unknown">"പേജുകളുടെ എണ്ണം അജ്ഞാതമാണ്"</string>
+    <string name="pdf_merge_merge_pdfs">"PDF ഫയലുകൾ ലയിപ്പിക്കുക"</string>
+    <string name="pdf_merge_merge_files">"%1$s ഫയലുകൾ ലയിപ്പിക്കുക"</string>
+    <string name="pdf_merge_add_more">"കൂടുതൽ ചേർക്കുക"</string>
+    <string name="pdf_merge_merge_order">"ഓർഡർ · %1$s ലയിപ്പിക്കുക"</string>
+    <string name="pdf_merge_files_are_joined_from_top">"ഫയലുകൾ മുകളിൽ നിന്ന് താഴേക്ക് ജോയിൻ ചെയ്യുന്നു."</string>
+    <string name="pdf_merge_order_name">"ഓർഡറും പേരും"</string>
+    <string name="pdf_merge_step_2_of_3_order">"ഘട്ടം 2 / 3 · ഓർഡറും പേരും"</string>
+    <string name="pdf_merge_in_total">"ആകെ %1$s"</string>
+    <string name="pdf_merge_from_phone">"ഫോണിൽ നിന്ന്: %1$s"</string>
+    <string name="pdf_merge_next">"അടുത്തത്"</string>
+    <string name="pdf_merge_next_files">"അടുത്ത · %1$s ഫയലുകൾ"</string>
+    <string name="pdf_merge_pick_at_least_2_files">"കുറഞ്ഞത് 2 ഫയലുകളെങ്കിലും തിരഞ്ഞെടുക്കുക"</string>
+    <string name="pdf_merge_step_1_of_3_pick">"ഘട്ടം 1 / 3 · ഫയലുകൾ തിരഞ്ഞെടുക്കുക"</string>
+    <string name="pdf_merge_pick_files_in_the_order">"നിങ്ങൾക്ക് ആവശ്യമുള്ള ക്രമത്തിൽ ഫയലുകൾ തിരഞ്ഞെടുക്കുക."</string>
+    <string name="pdf_merge_merged_pdf">"ലയിപ്പിച്ച PDF"</string>
+    <string name="pdf_merge_merging">"Merging…"</string>
+    <!-- PdfMergeViewModel -->
+    <string name="pdf_merge_add_at_least_two_pdfs">"ലയിപ്പിക്കാൻ കുറഞ്ഞത് രണ്ട് PDF ഫയലുകളെങ്കിലും ചേർക്കുക."</string>
+    <!-- PdfPasswordScreen -->
+    <string name="pdf_password_file">"ഫയൽ"</string>
+    <string name="pdf_password_allowed">"അനുവദിച്ചിരിക്കുന്നു"</string>
+    <string name="pdf_password_restricted">"നിയന്ത്രിത"</string>
+    <string name="pdf_password_editing">"എഡിറ്റിംഗ്"</string>
+    <string name="pdf_password_no_password">"പാസ്‌വേഡ് ഇല്ല"</string>
+    <string name="pdf_password_aes_256_password">"AES-256 പാസ്‌വേഡ്"</string>
+    <string name="pdf_password_protection">"സംരക്ഷണം"</string>
+    <string name="pdf_password_a_short_phrase_you_ll">"നിങ്ങൾ ഓർക്കുന്ന ഒരു ചെറിയ വാചകം ക്രമരഹിതമായ അക്ഷരങ്ങളെ തോൽപ്പിക്കുന്നു."</string>
+    <string name="pdf_password_doesn_t_match_yet">"ഇതുവരെ പൊരുത്തപ്പെടുന്നില്ല"</string>
+    <string name="pdf_password_passwords_match">"പാസ്‌വേഡുകൾ പൊരുത്തപ്പെടുന്നു"</string>
+    <string name="pdf_password_remove_password">"പാസ്‌വേഡ് നീക്കം ചെയ്യുക"</string>
+    <string name="pdf_password_the_unlocked_copy_opens_for">"അൺലോക്ക് ചെയ്ത പകർപ്പ് അത് കൈവശമുള്ള ആർക്കും തുറക്കുന്നു. Scanly നിങ്ങൾക്ക് ഇതിനകം അറിയാവുന്ന പാസ്‌വേഡുകൾ മാത്രമേ നീക്കംചെയ്യൂ."</string>
+    <string name="pdf_password_bank_and_portal_pdfs_often">"ബാങ്കും പോർട്ടലും PDF ഫയലുകൾ പലപ്പോഴും നിങ്ങളുടെ ജനനത്തീയതിയോ ഉപഭോക്തൃ ഐഡിയോ ഉപയോഗിക്കുന്നു."</string>
+    <string name="pdf_password_password_for_this_pdf">"ഈ PDF-നുള്ള പാസ്‌വേഡ്"</string>
+    <string name="pdf_password_current_password">"നിലവിലെ പാസ്‌വേഡ്"</string>
+    <string name="pdf_password_locked_pdf">"പൂട്ടിയ PDF"</string>
+    <string name="pdf_password_lock_pdf">"PDF ലോക്ക് ചെയ്യുക"</string>
+    <string name="pdf_password_scanly_can_t_recover_this">"Scanly-ന് ഈ പാസ്‌വേഡ് വീണ്ടെടുക്കാൻ കഴിയില്ല. നിങ്ങൾ അത് മറന്നാൽ, PDF തുറക്കാൻ കഴിയില്ല."</string>
+    <string name="pdf_password_others_can_open_and_print">"മറ്റുള്ളവർക്ക് തുറക്കാനും പ്രിൻ്റ് ചെയ്യാനും കഴിയും, പക്ഷേ വാചകം എഡിറ്റ് ചെയ്യാനോ പകർത്താനോ കഴിയില്ല"</string>
+    <string name="pdf_password_restrict_editing">"എഡിറ്റിംഗ് നിയന്ത്രിക്കുക"</string>
+    <string name="pdf_password_type_it_again">"വീണ്ടും ടൈപ്പ് ചെയ്യുക"</string>
+    <string name="pdf_password_at_least_characters">"കുറഞ്ഞത് %1$s പ്രതീകങ്ങളെങ്കിലും"</string>
+    <string name="pdf_password_new_password">"പുതിയ പാസ്‌വേഡ്"</string>
+    <string name="pdf_password_add_password">"പാസ്‌വേഡ് ചേർക്കുക"</string>
+    <string name="pdf_password_checking_the_file">"ഫയൽ … പരിശോധിക്കുന്നു"</string>
+    <string name="pdf_password_unlocked_pdf">"അൺലോക്ക് ചെയ്ത PDF"</string>
+    <string name="pdf_password_protected_pdf">"സംരക്ഷിത PDF"</string>
+    <string name="pdf_password_it_now_opens_without_a">"ഇത് ഇപ്പോൾ പാസ്‌വേഡ് ഇല്ലാതെ തുറക്കുന്നു."</string>
+    <string name="pdf_password_anyone_opening_it_will_need">"​​ഇത് തുറക്കുന്ന ആർക്കും പാസ്‌വേഡ് ആവശ്യമാണ്."</string>
+    <string name="pdf_password_password_removed">"പാസ്‌വേഡ് നീക്കം ചെയ്തു"</string>
+    <string name="pdf_password_pdf_locked">"PDF ലോക്ക് ചെയ്തു"</string>
+    <string name="pdf_password_unlocking">"അൺലോക്കിംഗ്…"</string>
+    <string name="pdf_password_locking">"ലോക്കിംഗ്…"</string>
+    <string name="pdf_password_lock_a_pdf_or_remove">"ഒരു PDF ലോക്ക് ചെയ്യുക അല്ലെങ്കിൽ നിങ്ങൾക്കറിയാവുന്ന ഒരു പാസ്‌വേഡ് നീക്കം ചെയ്യുക."</string>
+    <!-- PdfPasswordViewModel -->
+    <string name="pdf_password_unlocking_pdf">"PDF… അൺലോക്ക് ചെയ്യുന്നു"</string>
+    <string name="pdf_password_enter_the_current_password">"നിലവിലെ പാസ്‌വേഡ് നൽകുക."</string>
+    <string name="pdf_password_locking_pdf">"ലോക്കിംഗ് PDF…"</string>
+    <string name="pdf_password_use_to_characters_for_the">"പാസ്‌വേഡിനായി %1$s മുതൽ %2$s വരെയുള്ള പ്രതീകങ്ങൾ ഉപയോഗിക്കുക."</string>
+    <!-- PdfReaderMenu -->
+    <string name="pdf_reader_menu_open_another_pdf">"മറ്റൊരു PDF തുറക്കുക"</string>
+    <string name="pdf_reader_menu_all_pages">"എല്ലാ പേജുകളും"</string>
+    <!-- PdfReaderPresentation -->
+    <string name="pdf_reader_presentation_0_of_0">"0-ൽ 0"</string>
+    <string name="pdf_reader_presentation_paged">"പേജ്"</string>
+    <string name="pdf_reader_presentation_continuous">"തുടർച്ചയായി"</string>
+    <!-- PdfReaderScreen -->
+    <string name="pdf_reader_tap_a_page_to_jump">"അതിലേക്ക് പോകാൻ ഒരു പേജ് ടാപ്പ് ചെയ്യുക"</string>
+    <string name="pdf_reader_loading_page">"%1$s… പേജ് ലോഡുചെയ്യുന്നു"</string>
+    <string name="pdf_reader_loading_page_2">"പേജ് ലോഡുചെയ്യുന്നു…"</string>
+    <string name="pdf_reader_choose_another_pdf">"മറ്റൊരു PDF തിരഞ്ഞെടുക്കുക"</string>
+    <string name="pdf_reader_password">"പാസ്വേഡ്"</string>
+    <string name="pdf_reader_this_pdf_is_password_protected">"ഈ PDF പാസ്‌വേഡ് പരിരക്ഷിതമാണ്. %1$s വായിക്കാൻ പാസ്‌വേഡ് നൽകുക."</string>
+    <string name="pdf_reader_unlock_pdf">"PDF അൺലോക്ക് ചെയ്യുക"</string>
+    <string name="pdf_reader_choose_a_file">"ഒരു ഫയൽ തിരഞ്ഞെടുക്കുക"</string>
+    <string name="pdf_reader_open_any_pdf_from_scanly">"Scanly അല്ലെങ്കിൽ നിങ്ങളുടെ ഫോണിൽ നിന്ന് ഏതെങ്കിലും PDF തുറക്കുക."</string>
+    <string name="pdf_reader_read_a_pdf">"ഒരു PDF വായിക്കുക"</string>
+    <!-- PdfSignScreen -->
+    <string name="pdf_sign_1_mark">"1 മാർക്ക്"</string>
+    <string name="pdf_sign_the_signed_copy_is_saved">"ഒപ്പിട്ട പകർപ്പ് പാസ്‌വേഡ് ഇല്ലാതെ സംരക്ഷിക്കപ്പെടുന്നു."</string>
+    <string name="pdf_sign_this_pdf_is_locked">"ഈ PDF ലോക്ക് ചെയ്‌തിരിക്കുന്നു"</string>
+    <string name="pdf_sign_back_to_the_editor">"എഡിറ്ററിലേക്ക് മടങ്ങുക"</string>
+    <string name="pdf_sign_edit_signatures">"ഒപ്പുകൾ എഡിറ്റ് ചെയ്യുക"</string>
+    <string name="pdf_sign_signed_pdf">"PDF ഒപ്പിട്ടു"</string>
+    <string name="pdf_sign_saved_as">"ആയി സംരക്ഷിച്ചു"</string>
+    <string name="pdf_sign_marks_placed">"മാർക്ക് സ്ഥാപിച്ചു"</string>
+    <string name="pdf_sign_pages_signed">"പേജുകൾ ഒപ്പിട്ടു"</string>
+    <string name="pdf_sign_signed">"ഒപ്പിട്ടു"</string>
+    <string name="pdf_sign_placing_signatures_on_each_page">"ഓരോ പേജിലും ഒപ്പ് ഇടുന്നു…"</string>
+    <string name="pdf_sign_signing_your_pdf">"നിങ്ങളുടെ PDF ഒപ്പിടുന്നു"</string>
+    <string name="pdf_sign_pdf_jpg_or_png_from">"ഡൗൺലോഡുകൾ, ഡ്രൈവ്, മറ്റ് ആപ്പുകൾ എന്നിവയിൽ നിന്ന് PDF, JPG അല്ലെങ്കിൽ PNG"</string>
+    <string name="pdf_sign_step_1_of_3_choose">"ഘട്ടം 1 / 3 · തിരഞ്ഞെടുക്കുക"</string>
+    <string name="pdf_sign_choose_a_pdf_or_an">"ഒപ്പിടാൻ PDF അല്ലെങ്കിൽ ഒരു ചിത്രം തിരഞ്ഞെടുക്കുക"</string>
+    <string name="pdf_sign_sign_pdf">"സൈൻ PDF"</string>
+    <!-- PdfSignViewModel -->
+    <string name="pdf_sign_signing">"സൈനിംഗ്…"</string>
+    <string name="pdf_sign_place_a_signature_first">"ആദ്യം ഒരു ഒപ്പ് വയ്ക്കുക."</string>
+    <string name="pdf_sign_open_a_pdf_first">"ആദ്യം ഒരു PDF തുറക്കുക."</string>
+    <!-- PdfToImagesPresentation -->
+    <string name="pdf_to_images_presentation_page">"പേജ് %1$s · %2$s"</string>
+    <string name="pdf_to_images_presentation_share_all">"എല്ലാ %1$s-ഉം പങ്കിടുക"</string>
+    <string name="pdf_to_images_presentation_share_image">"ചിത്രം പങ്കിടുക"</string>
+    <string name="pdf_to_images_presentation_in_all">"എല്ലാത്തിലും %1$s"</string>
+    <string name="pdf_to_images_presentation_of_pages">"%2$s പേജുകളുടെ %1$s"</string>
+    <string name="pdf_to_images_presentation_all_pages">"എല്ലാ %1$s പേജുകളും"</string>
+    <string name="pdf_to_images_presentation_export">"കയറ്റുമതി %1$s"</string>
+    <string name="pdf_to_images_presentation_choose_pages_to_export">"കയറ്റുമതി ചെയ്യാൻ പേജുകൾ തിരഞ്ഞെടുക്കുക"</string>
+    <string name="pdf_to_images_presentation_1_image">"1 ചിത്രം"</string>
+    <string name="pdf_to_images_presentation_1f_gb" formatted="false">"%.1f GB"</string>
+    <string name="pdf_to_images_presentation_1f_mb" formatted="false">"%.1f MB"</string>
+    <string name="pdf_to_images_presentation_kb">"%1$s KB"</string>
+    <string name="pdf_to_images_presentation_0_kb">"0 KB"</string>
+    <!-- PdfToImagesScreen -->
+    <string name="pdf_to_images_of_selected">"%2$s-ൻ്റെ %1$s തിരഞ്ഞെടുത്തു"</string>
+    <string name="pdf_to_images_tap_images_or_long_press">"ചിലത് മാത്രം പങ്കിടാൻ ചിത്രങ്ങൾ ടാപ്പ് ചെയ്യുക, അല്ലെങ്കിൽ ദീർഘനേരം അമർത്തി വലിച്ചിടുക."</string>
+    <string name="pdf_to_images_open_gallery">"ഗാലറി തുറക്കുക"</string>
+    <string name="pdf_to_images_pick_a_different_file">"മറ്റൊരു ഫയൽ തിരഞ്ഞെടുക്കുക"</string>
+    <string name="pdf_to_images_png_or_print_size">"PNG അല്ലെങ്കിൽ പ്രിൻ്റ് വലുപ്പം"</string>
+    <string name="pdf_to_images_export_again">"വീണ്ടും കയറ്റുമതി ചെയ്യുക"</string>
+    <string name="pdf_to_images_saving_images">"ഇമേജുകൾ സംരക്ഷിക്കുന്നു…"</string>
+    <string name="pdf_to_images_each">"~%1$s ഓരോന്നും"</string>
+    <string name="pdf_to_images_resolution">"റെസല്യൂഷൻ"</string>
+    <string name="pdf_to_images_format">"ഫോർമാറ്റ്"</string>
+    <string name="pdf_to_images_deselect_all">"എല്ലാം തിരഞ്ഞെടുത്തത് മാറ്റുക"</string>
+    <string name="pdf_to_images_this_pdf_is_password_protected">"ഈ PDF പാസ്‌വേഡ് പരിരക്ഷിതമാണ്. പേജുകൾ കാണുന്നതിന് അതിൻ്റെ പാസ്‌വേഡ് നൽകുക."</string>
+    <string name="pdf_to_images_images_show_up_in_your">"ചിത്രങ്ങൾ ഉടൻ തന്നെ നിങ്ങളുടെ ഗാലറിയിൽ ദൃശ്യമാകും"</string>
+    <string name="pdf_to_images_pdf_to_jpg">"PDF മുതൽ JPG വരെ"</string>
+    <string name="pdf_to_images_step_2_of_3_pages">"ഘട്ടം 2 ൻ്റെ 3 · പേജുകളും ഫോർമാറ്റും"</string>
+    <string name="pdf_to_images_no_gallery_app_found_the">"ഗാലറി ആപ്പൊന്നും കണ്ടെത്തിയില്ല. ചിത്രങ്ങൾ Pictures/Scanly എന്നതിലാണ്."</string>
+    <string name="pdf_to_images_turn_pages_into_images_for">"​​ചാറ്റുകൾക്കോ ​​സ്ലൈഡുകൾക്കോ ​​നിങ്ങളുടെ ഗാലറിക്കോ വേണ്ടി പേജുകളെ ചിത്രങ്ങളാക്കി മാറ്റുക."</string>
+    <!-- PdfToolDone -->
+    <string name="pdf_tool_done_open_pdf">"PDF തുറക്കുക"</string>
+    <string name="pdf_tool_done_open_the_finished_pdf">"പൂർത്തിയായ PDF തുറക്കുക"</string>
+    <string name="pdf_tool_done_your_original_file_is_unchanged">"നിങ്ങളുടെ യഥാർത്ഥ ഫയൽ മാറ്റമില്ല"</string>
+    <!-- PdfToolPresentation -->
+    <string name="pdf_tool_presentation_files_merge_in_this_order">"ഫയലുകൾ ഈ ക്രമത്തിൽ ലയിക്കുന്നു. ആദ്യത്തെ PDF പ്രമാണം ആരംഭിക്കുന്നു."</string>
+    <string name="pdf_tool_presentation_add_at_least_one_more">"സംയോജിപ്പിക്കാൻ കുറഞ്ഞത് ഒരു PDF എങ്കിലും ചേർക്കുക."</string>
+    <string name="pdf_tool_presentation_opacity">"അതാര്യത %1$s%%"</string>
+    <string name="pdf_tool_presentation_one_large_stamp_sized_to">"പേജിൽ ആധിപത്യം സ്ഥാപിക്കാൻ വലിപ്പമുള്ള ഒരു വലിയ സ്റ്റാമ്പ്."</string>
+    <string name="pdf_tool_presentation_repeats_across_the_full_page">"അരികുകൾ ഉൾപ്പെടെ മുഴുവൻ പേജിലുടനീളം ആവർത്തിക്കുന്നു."</string>
+    <string name="pdf_tool_presentation_protect_pdf">"PDF പരിരക്ഷിക്കുക"</string>
+    <string name="pdf_tool_presentation_saved">"%1$s → %2$s · സംരക്ഷിച്ചു %3$s%%"</string>
+    <string name="pdf_tool_presentation_unlocked">"അൺലോക്ക് ചെയ്തു"</string>
+    <string name="pdf_tool_presentation_protected">"സംരക്ഷിത"</string>
+    <string name="pdf_tool_presentation_pdfs">"%1$s PDF ഫയലുകൾ"</string>
+    <string name="pdf_tool_presentation_1_pdf">"1 PDF"</string>
+    <string name="pdf_tool_presentation_no_files">"ഫയലുകളൊന്നുമില്ല"</string>
+    <!-- PdfToolShared -->
+    <string name="pdf_tool_shared_scanly_pdf">"Scanly PDF"</string>
+    <!-- PdfToolViewModels -->
+    <string name="pdf_tool_view_models_saving">"Saving…"</string>
+    <!-- PdfWatermarkScreen -->
+    <string name="pdf_watermark_the_page">"പേജ്"</string>
+    <string name="pdf_watermark_first_page_only">"ആദ്യ പേജ് മാത്രം"</string>
+    <string name="pdf_watermark_apply_to">"അപേക്ഷിക്കുക"</string>
+    <string name="pdf_watermark_colour">"നിറം"</string>
+    <string name="pdf_watermark_opacity">"അതാര്യത"</string>
+    <string name="pdf_watermark_large">"വലുത്"</string>
+    <string name="pdf_watermark_medium">"ഇടത്തരം"</string>
+    <string name="pdf_watermark_small">"ചെറുത്"</string>
+    <string name="pdf_watermark_horizontal">"തിരശ്ചീനമായി"</string>
+    <string name="pdf_watermark_diagonal">"ഡയഗണൽ"</string>
+    <string name="pdf_watermark_single">"സിംഗിൾ"</string>
+    <string name="pdf_watermark_tiled">"ടൈൽഡ്"</string>
+    <string name="pdf_watermark_style">"ശൈലി"</string>
+    <string name="pdf_watermark_stamps">"\"%1$s\" സ്റ്റാമ്പുകൾ"</string>
+    <string name="pdf_watermark_add_date">"തീയതി ചേർക്കുക"</string>
+    <string name="pdf_watermark_presets">"പ്രീസെറ്റുകൾ"</string>
+    <string name="pdf_watermark_the_watermarked_copy_is_saved">"വാട്ടർമാർക്ക് ചെയ്ത പകർപ്പ് പാസ്‌വേഡ് ഇല്ലാതെ സേവ് ചെയ്യപ്പെടുന്നു. പാസ്‌വേഡ് ടൂൾ ഉപയോഗിച്ച് നിങ്ങൾക്ക് ഇത് വീണ്ടും ലോക്ക് ചെയ്യാം."</string>
+    <string name="pdf_watermark_live_preview_of_the_saved">"സംരക്ഷിച്ച ഫയലിൻ്റെ തത്സമയ പ്രിവ്യൂ"</string>
+    <string name="pdf_watermark_page_1">"പേജ് 1"</string>
+    <string name="pdf_watermark_preview_of_page_1_with">"വാട്ടർമാർക്ക് ഉപയോഗിച്ച് പേജ് 1 ൻ്റെ പ്രിവ്യൂ"</string>
+    <string name="pdf_watermark_apply_watermark">"വാട്ടർമാർക്ക് പ്രയോഗിക്കുക"</string>
+    <string name="pdf_watermark_apply_to_pages">"%1$s പേജുകളിലേക്ക് പ്രയോഗിക്കുക"</string>
+    <string name="pdf_watermark_apply_to_page">"പേജിലേക്ക് പ്രയോഗിക്കുക"</string>
+    <string name="pdf_watermark_apply_to_first_page">"ആദ്യ പേജിലേക്ക് അപേക്ഷിക്കുക"</string>
+    <string name="pdf_watermark_unlock_the_pdf_first">"ആദ്യം PDF അൺലോക്ക് ചെയ്യുക"</string>
+    <string name="pdf_watermark_watermark">"വാട്ടർമാർക്ക്"</string>
+    <string name="pdf_watermark_edit_stamp">"സ്റ്റാമ്പ് എഡിറ്റ് ചെയ്യുക"</string>
+    <string name="pdf_watermark_watermarked_pdf">"വാട്ടർമാർക്ക് ചെയ്ത PDF"</string>
+    <string name="pdf_watermark_kept_unstamped">"സൂക്ഷിച്ചു, സ്റ്റാമ്പ് ചെയ്യാത്ത"</string>
+    <string name="pdf_watermark_stamp">"സ്റ്റാമ്പ്"</string>
+    <string name="pdf_watermark_on_every_page_tap_the">"എല്ലാ പേജിലും. അത് പരിശോധിക്കാൻ പേജിൽ ടാപ്പ് ചെയ്യുക."</string>
+    <string name="pdf_watermark_on_all_pages_tap_the">"എല്ലാ %1$s പേജുകളിലും. അത് പരിശോധിക്കാൻ പേജിൽ ടാപ്പ് ചെയ്യുക."</string>
+    <string name="pdf_watermark_on_both_pages_tap_the">"രണ്ട് പേജുകളിലും. അത് പരിശോധിക്കാൻ പേജിൽ ടാപ്പ് ചെയ്യുക."</string>
+    <string name="pdf_watermark_on_the_page_tap_it">"പേജിൽ. പരിശോധിക്കാൻ അതിൽ ടാപ്പ് ചെയ്യുക."</string>
+    <string name="pdf_watermark_on_the_first_page_tap">"ആദ്യ പേജിൽ. അത് പരിശോധിക്കാൻ പേജിൽ ടാപ്പ് ചെയ്യുക."</string>
+    <string name="pdf_watermark_watermark_added">"വാട്ടർമാർക്ക് ചേർത്തു"</string>
+    <string name="pdf_watermark_stamping_every_page">"ഓരോ പേജും സ്റ്റാമ്പ് ചെയ്യുന്നു"</string>
+    <string name="pdf_watermark_stamping">"%1$s സ്റ്റാമ്പിംഗ്"</string>
+    <string name="pdf_watermark_stamping_the_first_page">"ആദ്യ പേജ് സ്റ്റാമ്പ് ചെയ്യുന്നു"</string>
+    <string name="pdf_watermark_adding_watermark">"വാട്ടർമാർക്ക്… ചേർക്കുന്നു"</string>
+    <string name="pdf_watermark_stamp_text_like_confidential_or">"രഹസ്യാത്മകം അല്ലെങ്കിൽ \"KYC ഉപയോഗത്തിന് മാത്രം\" പോലുള്ള സ്റ്റാമ്പ് ടെക്‌സ്‌റ്റ്."</string>
+    <!-- PdfWatermarkViewModel -->
+    <string name="pdf_watermark_kyc_copy">"KYC കോപ്പി"</string>
+    <string name="pdf_watermark_enter_watermark_text">"വാട്ടർമാർക്ക് ടെക്സ്റ്റ് നൽകുക."</string>
+    <!-- QrActions -->
+    <string name="qr_actions_qr_text">"QR ടെക്സ്റ്റ്"</string>
+    <string name="qr_actions_no_app_can_search_the">"ഒരു ആപ്പിനും വെബിൽ തിരയാൻ കഴിയില്ല"</string>
+    <string name="qr_actions_no_email_app_is_set">"ഈ ഫോണിൽ ഇമെയിൽ ആപ്പൊന്നും സജ്ജീകരിച്ചിട്ടില്ല"</string>
+    <string name="qr_actions_no_phone_app_can_open">"ഒരു ഫോൺ ആപ്പിനും ഈ നമ്പർ തുറക്കാൻ കഴിയില്ല"</string>
+    <string name="qr_actions_no_contacts_app_can_save">"ഒരു കോൺടാക്റ്റ് ആപ്പിനും ഇത് സംരക്ഷിക്കാൻ കഴിയില്ല"</string>
+    <string name="qr_actions_pick_in_wi_fi_settings">"Wi-Fi ക്രമീകരണങ്ങളിൽ \"%1$s\" തിരഞ്ഞെടുക്കുക"</string>
+    <string name="qr_actions_password_copied_pick_the_network">"പാസ്‌വേഡ് പകർത്തി - നെറ്റ്‌വർക്ക് തിരഞ്ഞെടുക്കുക"</string>
+    <string name="qr_actions_wi_fi_settings_can_t">"Wi-Fi ക്രമീകരണങ്ങൾ തുറക്കാൻ കഴിയില്ല"</string>
+    <string name="qr_actions_wi_fi_password">"Wi-Fi പാസ്‌വേഡ്"</string>
+    <string name="qr_actions_wi_fi_settings_can_t_2">"Wi-Fi ക്രമീകരണങ്ങൾക്ക് ഈ നെറ്റ്‌വർക്ക് ചേർക്കാൻ കഴിയില്ല"</string>
+    <string name="qr_actions_no_upi_app_can_open">"ഒരു UPI ആപ്പിനും ഈ കോഡ് തുറക്കാൻ കഴിയില്ല"</string>
+    <string name="qr_actions_pay_with">"കൂടെ പണമടയ്ക്കുക"</string>
+    <string name="qr_actions_no_app_can_open_this">"ഒരു ആപ്പിനും ഈ ലിങ്ക് തുറക്കാൻ കഴിയില്ല"</string>
+    <string name="qr_actions_not_a_web_link">"ഒരു വെബ് ലിങ്ക് അല്ല"</string>
+    <string name="qr_actions_nothing_can_receive_this_text">"ഈ വാചകം ഒന്നും സ്വീകരിക്കാൻ കഴിയില്ല"</string>
+    <string name="qr_actions_share_qr_code">"QR കോഡ് പങ്കിടുക"</string>
+    <string name="qr_actions_copied_to_clipboard">"ക്ലിപ്പ്ബോർഡിലേക്ക് പകർത്തി"</string>
+    <!-- QrCreateScreen -->
+    <string name="qr_create_full_name">"മുഴുവൻ പേര്"</string>
+    <string name="qr_create_name">"പേര്"</string>
+    <string name="qr_create_leave_the_amount_empty_so">"തുക ശൂന്യമായി വിടുക, അതുവഴി ഉപഭോക്താക്കൾക്ക് കടപ്പെട്ടിരിക്കുന്നത് നൽകാനാകും."</string>
+    <string name="qr_create_enter_an_amount_above_zero">"പൂജ്യത്തിന് മുകളിലുള്ള തുക നൽകുക"</string>
+    <string name="qr_create_any">"₹ ഏതെങ്കിലും"</string>
+    <string name="qr_create_amount_optional">"തുക · ഓപ്ഷണൽ"</string>
+    <string name="qr_create_shop_name">"കടയുടെ പേര്"</string>
+    <string name="qr_create_payee_name">"പണം സ്വീകരിക്കുന്നയാളുടെ പേര്"</string>
+    <string name="qr_create_name_bank">"name@bank"</string>
+    <string name="qr_create_upi_id">"UPI ഐഡി"</string>
+    <string name="qr_create_security">"സുരക്ഷ"</string>
+    <string name="qr_create_network_password">"നെറ്റ്‌വർക്ക് പാസ്‌വേഡ്"</string>
+    <string name="qr_create_network_name">"നെറ്റ്‌വർക്കിൻ്റെ പേര്"</string>
+    <string name="qr_create_characters">"%1$s / %2$s പ്രതീകങ്ങൾ"</string>
+    <string name="qr_create_anything_up_to_characters">"%1$s പ്രതീകങ്ങൾ വരെയുള്ള എന്തും"</string>
+    <string name="qr_create_web_address">"വെബ് വിലാസം"</string>
+    <string name="qr_create_qr_code_preview">"QR കോഡ് പ്രിവ്യൂ"</string>
+    <string name="qr_create_saved_to_qr_history_png">"QR ചരിത്രത്തിലേക്ക് സംരക്ഷിച്ചു · PNG, 1024 px"</string>
+    <string name="qr_create_save_image">"ചിത്രം സംരക്ഷിക്കുക"</string>
+    <string name="qr_create_only_dark_colours_so_every">"ഇരുണ്ട നിറങ്ങൾ മാത്രം, അതിനാൽ എല്ലാ ക്യാമറകൾക്കും കോഡ് വായിക്കാനാകും."</string>
+    <string name="qr_create_shown_under_the_code">"കോഡിന് കീഴിൽ കാണിച്ചിരിക്കുന്നു"</string>
+    <string name="qr_create_caption_under_the_code_optional">"· കോഡിന് കീഴിലുള്ള അടിക്കുറിപ്പ് ഓപ്ഷണൽ"</string>
+    <string name="qr_create_create_qr">"QR സൃഷ്ടിക്കുക"</string>
+    <!-- QrHistoryScreen -->
+    <string name="qr_history_created">"സൃഷ്ടിച്ചത്"</string>
+    <string name="qr_history_scanned">"സ്കാൻ ചെയ്തു"</string>
+    <string name="qr_history_clear_history">"ചരിത്രം മായ്‌ക്കുക"</string>
+    <string name="qr_history_every_scanned_and_created_code">"സ്‌കാൻ ചെയ്‌തതും സൃഷ്‌ടിച്ചതുമായ എല്ലാ കോഡുകളും ഈ ഫോണിൽ നിന്ന് നീക്കം ചെയ്യപ്പെടും. ഇത് പഴയപടിയാക്കാനാകില്ല."</string>
+    <string name="qr_history_clear_qr_history">"QR ചരിത്രം മായ്‌ക്കുക?"</string>
+    <string name="qr_history_clear_history_2">"ചരിത്രം മായ്‌ക്കുക…"</string>
+    <string name="qr_history_history_stays_on_this_phone">"ഈ ഫോണിൽ ചരിത്രം നിലനിൽക്കും."</string>
+    <string name="qr_history_try_another_search_or_filter">"മറ്റൊരു തിരയൽ അല്ലെങ്കിൽ ഫിൽട്ടർ പരീക്ഷിക്കുക."</string>
+    <string name="qr_history_no_matches">"പൊരുത്തമില്ല"</string>
+    <string name="qr_history_scanned_and_created_codes_are">"സ്കാൻ ചെയ്തതും സൃഷ്ടിച്ചതുമായ കോഡുകൾ ഇവിടെ സൂക്ഷിച്ചിരിക്കുന്നു."</string>
+    <string name="qr_history_no_codes_yet">"ഇതുവരെ കോഡുകളൊന്നുമില്ല"</string>
+    <string name="qr_history_search_links_networks_names">"ലിങ്കുകൾ, നെറ്റ്‌വർക്കുകൾ, പേരുകൾ എന്നിവ തിരയുക"</string>
+    <string name="qr_history_qr_history">"QR ചരിത്രം"</string>
+    <!-- QrResultScreen -->
+    <string name="qr_result_show_raw_content">"അസംസ്കൃത ഉള്ളടക്കം കാണിക്കുക"</string>
+    <string name="qr_result_hide_raw_content">"അസംസ്കൃത ഉള്ളടക്കം മറയ്ക്കുക"</string>
+    <string name="qr_result_raw_content">"അസംസ്കൃത ഉള്ളടക്കം"</string>
+    <string name="qr_result_organisation">"സംഘടന"</string>
+    <string name="qr_result_wi_fi_settings_can_t">"Wi-Fi ക്രമീകരണങ്ങൾക്ക് WEP നെറ്റ്‌വർക്കുകൾ ചേർക്കാൻ കഴിയില്ല, അതിനാൽ പാസ്‌വേഡ് പകർത്തി ക്രമീകരണങ്ങൾ തുറക്കുന്നു."</string>
+    <string name="qr_result_not_in_the_code">"കോഡിൽ ഇല്ല"</string>
+    <string name="qr_result_network">"നെറ്റ്‌വർക്ക്"</string>
+    <string name="qr_result_scanly_doesn_t_make_payments">"Scanly പേയ്‌മെൻ്റുകൾ നടത്തുന്നില്ല. പണമടയ്ക്കുന്നതിന് മുമ്പ് നിങ്ങളുടെ യുപിഐ ആപ്പിൽ പണം സ്വീകരിക്കുന്നയാളുടെ പേര് സ്ഥിരീകരിക്കുക."</string>
+    <string name="qr_result_not_set_you_ll_enter">"സജ്ജമാക്കിയിട്ടില്ല. നിങ്ങൾ അത് നിങ്ങളുടെ യുപിഐ ആപ്പിൽ നൽകും."</string>
+    <string name="qr_result_amount">"തുക"</string>
+    <string name="qr_result_payee">"പണമടയ്ക്കുന്നയാൾ"</string>
+    <string name="qr_result_this_link_isn_t_encrypted">"ഈ ലിങ്ക് എൻക്രിപ്റ്റ് ചെയ്തിട്ടില്ല (http). തുറക്കുന്നതിന് മുമ്പ് നിങ്ങൾ പ്രതീക്ഷിക്കുന്ന ഡൊമെയ്ൻ പരിശോധിക്കുക."</string>
+    <string name="qr_result_check_the_domain_is_the">"തുറക്കുന്നതിന് മുമ്പ് നിങ്ങൾ പ്രതീക്ഷിക്കുന്ന ഡൊമെയ്ൻ പരിശോധിക്കുക."</string>
+    <string name="qr_result_full_address">"മുഴുവൻ വിലാസം"</string>
+    <string name="qr_result_number">"നമ്പർ"</string>
+    <string name="qr_result_subject">"വിഷയം"</string>
+    <string name="qr_result_address">"വിലാസം"</string>
+    <string name="qr_result_search_the_web">"വെബിൽ തിരയുക"</string>
+    <string name="qr_result_copy_number">"നമ്പർ പകർത്തുക"</string>
+    <string name="qr_result_email_address">"ഇമെയിൽ വിലാസം"</string>
+    <string name="qr_result_copy_address">"വിലാസം പകർത്തുക"</string>
+    <string name="qr_result_call">"വിളിക്കുക"</string>
+    <string name="qr_result_copy_network_name">"നെറ്റ്‌വർക്കിൻ്റെ പേര് പകർത്തുക"</string>
+    <string name="qr_result_copy_password">"പാസ്‌വേഡ് പകർത്തുക"</string>
+    <string name="qr_result_copy_upi_id">"UPI ഐഡി പകർത്തുക"</string>
+    <string name="qr_result_copy_link">"ലിങ്ക് പകർത്തുക"</string>
+    <string name="qr_result_delete_from_history">"ചരിത്രത്തിൽ നിന്ന് ഇല്ലാതാക്കുക"</string>
+    <string name="qr_result_saved_to_history">" · ചരിത്രത്തിലേക്ക് സംരക്ഷിച്ചു"</string>
+    <!-- QrScanScreen -->
+    <string name="qr_scan_captured_qr_code">"QR കോഡ് പിടിച്ചെടുത്തു"</string>
+    <string name="qr_scan_history">"ചരിത്രം"</string>
+    <string name="qr_scan_from_photo">"ഫോട്ടോയിൽ നിന്ന്"</string>
+    <string name="qr_scan_scan_again">"വീണ്ടും സ്കാൻ ചെയ്യുക"</string>
+    <string name="qr_scan_qr_code">"QR കോഡ്"</string>
+    <string name="qr_scan_details">"വിശദാംശങ്ങൾ"</string>
+    <string name="qr_scan_allow_camera">"ക്യാമറ അനുവദിക്കുക"</string>
+    <string name="qr_scan_open_settings">"ക്രമീകരണങ്ങൾ തുറക്കുക"</string>
+    <string name="qr_scan_the_camera_is_used_only">"ഈ സ്‌ക്രീൻ തുറന്നിരിക്കുമ്പോൾ മാത്രമേ ക്യാമറ ഉപയോഗിക്കൂ. \"ഫോട്ടോയിൽ നിന്ന്\" ഇത് കൂടാതെ പ്രവർത്തിക്കുന്നു."</string>
+    <string name="qr_scan_open_settings_tap_permissions_and">"ക്രമീകരണങ്ങൾ തുറക്കുക, അനുമതികൾ ടാപ്പ് ചെയ്യുക, Scanly-നായി ക്യാമറ ഓണാക്കുക."</string>
+    <string name="qr_scan_allow_camera_to_scan">"ക്യാമറ സ്കാൻ ചെയ്യാൻ അനുവദിക്കുക"</string>
+    <string name="qr_scan_camera_permission_is_blocked">"ക്യാമറ അനുമതി തടഞ്ഞു"</string>
+    <string name="qr_scan_torch_on_off">"ടോർച്ച് ഓൺ/ഓഫ്"</string>
+    <string name="qr_scan_scan_qr_barcode">"QR &amp; ബാർകോഡ് സ്കാൻ ചെയ്യുക"</string>
+    <string name="qr_scan_point_at_a_qr_code">"QR കോഡ് അല്ലെങ്കിൽ ബാർകോഡ് പോയിൻ്റ് ചെയ്യുക"</string>
+    <string name="qr_scan_code_found_hold_steady">"കോഡ് · സ്ഥിരമായി നിലനിർത്തുന്നതായി കണ്ടെത്തി"</string>
+    <string name="qr_scan_reading_photo">"ഫോട്ടോ… വായിക്കുന്നു"</string>
+    <string name="qr_scan_the_camera_isn_t_available">"ക്യാമറ ഇപ്പോൾ ലഭ്യമല്ല. പകരം \"ഫോട്ടോയിൽ നിന്ന്\" പരീക്ഷിക്കുക."</string>
+    <!-- QrToolPresentation -->
+    <string name="qr_tool_presentation_h_ago">"%1$s മണിക്കൂർ മുമ്പ്"</string>
+    <string name="qr_tool_presentation_min_ago">"%1$s മിനിറ്റ് മുമ്പ്"</string>
+    <string name="qr_tool_presentation_just_now">"ഇപ്പോൾ"</string>
+    <string name="qr_tool_presentation_some_text">"ചില വാചകം"</string>
+    <string name="qr_tool_presentation_a_phone_number">"ഒരു ഫോൺ നമ്പർ"</string>
+    <string name="qr_tool_presentation_an_email_address">"ഒരു ഇമെയിൽ വിലാസം"</string>
+    <string name="qr_tool_presentation_a_contact">"ഒരു കോൺടാക്റ്റ്"</string>
+    <string name="qr_tool_presentation_a_wi_fi_network">"ഒരു Wi-Fi നെറ്റ്‌വർക്ക്"</string>
+    <string name="qr_tool_presentation_a_upi_payment">"ഒരു യുപിഐ പേയ്മെൻ്റ്"</string>
+    <string name="qr_tool_presentation_a_link">"ഒരു ലിങ്ക്"</string>
+    <string name="qr_tool_presentation_found">"കണ്ടെത്തി "</string>
+    <string name="qr_tool_presentation_generating_preview">"പ്രിവ്യൂ സൃഷ്ടിക്കുന്നു…"</string>
+    <string name="qr_tool_presentation_preview_appears_as_you_type">"നിങ്ങൾ ടൈപ്പ് ചെയ്യുമ്പോൾ പ്രിവ്യൂ ദൃശ്യമാകുന്നു"</string>
+    <string name="qr_tool_presentation_copy_to_the_clipboard">"ക്ലിപ്പ്ബോർഡിലേക്ക് പകർത്തുക"</string>
+    <string name="qr_tool_presentation_open_in_a_browser_or">"ഒരു ബ്രൗസറിൽ തുറക്കുക അല്ലെങ്കിൽ പകർത്തുക"</string>
+    <!-- QrToolViewModel -->
+    <string name="qr_tool_qr_history_cleared">"QR ചരിത്രം മായ്‌ച്ചു"</string>
+    <string name="qr_tool_add_the_details_first">"ആദ്യം വിശദാംശങ്ങൾ ചേർക്കുക"</string>
+    <string name="qr_tool_no_qr_code_found_in">"ആ ഫോട്ടോയിൽ QR കോഡൊന്നും കണ്ടെത്തിയില്ല"</string>
+    <!-- ImageTextScreen -->
+    <string name="image_text_photos_are_saved_as_a">"ഫോട്ടോകൾ ഒരു പുതിയ ഡോക്യുമെൻ്റായി സംരക്ഷിച്ചിരിക്കുന്നു, അതിനാൽ നിങ്ങൾക്ക് അവയുടെ വാചകം പിന്നീട് തിരയാനാകും."</string>
+    <string name="image_text_your_scans_have_no_pages">"നിങ്ങളുടെ സ്കാനുകൾക്ക് ഇതുവരെ പേജുകളൊന്നുമില്ല. അവരുടെ വാചകം വായിക്കാൻ ഫോട്ടോകൾ തിരഞ്ഞെടുക്കുക."</string>
+    <string name="image_text_no_scans_yet_pick_photos">"ഇതുവരെ സ്കാനുകളൊന്നുമില്ല. അവരുടെ വാചകം വായിക്കാൻ ഫോട്ടോകൾ തിരഞ്ഞെടുക്കുക."</string>
+    <string name="image_text_1_scan">"1 സ്കാൻ"</string>
+    <string name="image_text_up_to_from_your_gallery">"നിങ്ങളുടെ ഗാലറിയിൽ നിന്നോ ഫയലുകളിൽ നിന്നോ %1$s വരെ"</string>
+    <string name="image_text_copy_text_from_photos_or">"ഫോട്ടോകളിൽ നിന്നോ സ്കാനുകളിൽ നിന്നോ വാചകം പകർത്തുക. ഈ ഫോണിൽ വാചകം വായിക്കുന്നു."</string>
+    <string name="image_text_image_to_text">"ചിത്രം മുതൽ ടെക്സ്റ്റ് വരെ"</string>
+    <!-- AppUpdateDialog -->
+    <string name="app_update_published">"പ്രസിദ്ധീകരിച്ച %1$s"</string>
+    <string name="app_update_current">"നിലവിലെ"</string>
+    <string name="app_update_update">"അപ്ഡേറ്റ്"</string>
+    <string name="app_update_what_s_new">"എന്താണ് പുതിയത്"</string>
+    <!-- AppUpdateViewModel -->
+    <string name="app_update_scanly_is_up_to_date">"Scanly കാലികമാണ്. നിങ്ങൾ %1$s-ലാണ്."</string>
+    <string name="app_update_could_not_check_for_updates">"അപ്‌ഡേറ്റുകൾക്കായി %1$s പരിശോധിക്കാൻ കഴിഞ്ഞില്ല."</string>
+    <!-- FlexibleUpdateSnackbar -->
+    <string name="flexible_update_snackbar_restart">"പുനരാരംഭിക്കുക"</string>
+    <string name="flexible_update_snackbar_update_downloaded_restart_scanly_to">"അപ്ഡേറ്റ് ഡൗൺലോഡ് ചെയ്തു. ഇൻസ്റ്റാൾ ചെയ്യുന്നത് പൂർത്തിയാക്കാൻ Scanly പുനരാരംഭിക്കുക."</string>
+    <!-- ReleaseMarkdown -->
+    <string name="release_markdown_no_release_notes_were_provided">"ഈ പതിപ്പിന് റിലീസ് കുറിപ്പുകളൊന്നും നൽകിയിട്ടില്ല."</string>
+    <!-- ScanlyNavHost -->
+    <string name="scanly_nav_host_up_to_images">"%1$s ചിത്രങ്ങൾ വരെ"</string>
+    <string name="scanly_nav_host_import_from_gallery">"ഗാലറിയിൽ നിന്ന് ഇറക്കുമതി ചെയ്യുക"</string>
+    <string name="scanly_nav_host_capture_pages_now">"ഇപ്പോൾ പേജുകൾ ക്യാപ്ചർ ചെയ്യുക"</string>
+    <string name="scanly_nav_host_scan_with_camera">"ക്യാമറ ഉപയോഗിച്ച് സ്കാൻ ചെയ്യുക"</string>
+    <string name="scanly_nav_host_add_a_document">"ഒരു പ്രമാണം ചേർക്കുക"</string>
+    <!-- pdf_page_orientation -->
+    <string name="pdf_page_orientation_portrait">"ലംബമായ"</string>
+    <string name="pdf_page_orientation_landscape">"തിരശ്ചീനമായി"</string>
+    <!-- pdf_page_size -->
+    <string name="pdf_page_size_auto_fit">"ഓട്ടോ ഫിറ്റ്"</string>
+    <string name="pdf_page_size_a3">"A3"</string>
+    <string name="pdf_page_size_a4">"A4"</string>
+    <string name="pdf_page_size_a5">"A5"</string>
+    <string name="pdf_page_size_b4">"B4"</string>
+    <string name="pdf_page_size_b5">"B5"</string>
+    <string name="pdf_page_size_letter">"കത്ത്"</string>
+    <string name="pdf_page_size_tabloid">"ടാബ്ലോയിഡ്"</string>
+    <string name="pdf_page_size_executive">"എക്സിക്യൂട്ടീവ്"</string>
+    <string name="pdf_page_size_postcard">"പോസ്റ്റ്കാർഡ്"</string>
+    <string name="pdf_page_size_american_foolscap">"അമേരിക്കൻ ഫൂൾസ്‌കാപ്പ്"</string>
+    <string name="pdf_page_size_european_foolscap">"യൂറോപ്യൻ ഫൂൾസ്‌കാപ്പ്"</string>
+    <!-- pdf_page_margin -->
+    <string name="pdf_page_margin_no_margin">"മാർജിൻ ഇല്ല"</string>
+    <string name="pdf_page_margin_big">"വലുത്"</string>
+    <!-- pdf_page_number -->
+    <string name="pdf_page_number_center">"കേന്ദ്രം"</string>
+    <!-- pdf_image_format -->
+    <string name="pdf_image_format_smaller_files_best_for_photos">"ചെറിയ ഫയലുകൾ, ഫോട്ടോകൾക്കും പങ്കിടലിനും മികച്ചത്"</string>
+    <string name="pdf_image_format_crisper_text_files_about_3">"ക്രിസ്‌പർ ടെക്‌സ്‌റ്റ്, 3× വലുപ്പമുള്ള ഫയലുകൾ"</string>
+    <!-- pdf_image_resolution -->
+    <string name="pdf_image_resolution_for_sharing">"പങ്കിടലിനായി"</string>
+    <string name="pdf_image_resolution_1240_px_wide_sharp_on">"ഫോണുകളിലും വാട്ട്‌സ്ആപ്പിലും 1240 px വീതിയുള്ള · ഷാർപ്പ്"</string>
+    <string name="pdf_image_resolution_for_printing">"അച്ചടിക്കുന്നതിന്"</string>
+    <string name="pdf_image_resolution_2480_px_wide_300_dpi">"A4-ൽ 2480 px വീതി · 300 dpi"</string>
+    <!-- pdf_compress_quality -->
+    <string name="pdf_compress_quality_high_quality">"ഉയർന്ന നിലവാരം"</string>
+    <string name="pdf_compress_quality_best_clarity_less_compression">"മികച്ച വ്യക്തത · കുറവ് കംപ്രഷൻ"</string>
+    <string name="pdf_compress_quality_balanced">"സമതുലിതമായ"</string>
+    <string name="pdf_compress_quality_good_balance_of_size_and">"വലിപ്പവും വ്യക്തതയും നല്ല ബാലൻസ്"</string>
+    <string name="pdf_compress_quality_smallest">"ഏറ്റവും ചെറുത്"</string>
+    <string name="pdf_compress_quality_maximum_compression_softer_detail">"പരമാവധി കംപ്രഷൻ · മൃദുവായ വിശദാംശങ്ങൾ"</string>
+    <!-- watermark_color -->
+    <string name="watermark_color_grey">"ഗ്രേ"</string>
+    <string name="watermark_color_red">"ചുവപ്പ്"</string>
+    <string name="watermark_color_blue">"നീല"</string>
+    <string name="watermark_color_teal">"ടീൽ"</string>
+    <!-- signature_kind -->
+    <string name="signature_kind_signature">"ഒപ്പ്"</string>
+    <!-- sign_ink -->
+    <string name="sign_ink_navy">"കടും നീല"</string>
+    <string name="sign_ink_black">"കറുപ്പ്"</string>
+    <!-- date_filter -->
+    <string name="date_filter_any_time">"ഏത് സമയത്തും"</string>
+    <string name="date_filter_last_7_days">"കഴിഞ്ഞ 7 ദിവസം"</string>
+    <string name="date_filter_last_30_days">"കഴിഞ്ഞ 30 ദിവസം"</string>
+    <string name="date_filter_this_year">"ഈ വർഷം"</string>
+    <string name="date_filter_custom_range">"ഇഷ്‌ടാനുസൃത ശ്രേണി"</string>
+    <!-- search_sort -->
+    <string name="search_sort_best_match">"മികച്ച മത്സരം"</string>
+    <string name="search_sort_newest">"ഏറ്റവും പുതിയത്"</string>
+    <string name="search_sort_oldest">"ഏറ്റവും പഴയത്"</string>
+    <string name="search_sort_name_a_z">"പേര് A–Z"</string>
+    <!-- search_scope -->
+    <string name="search_scope_everywhere">"എല്ലായിടത്തും"</string>
+    <string name="search_scope_names">"പേരുകൾ"</string>
+    <string name="search_scope_text_in_pages">"പേജുകളിൽ വാചകം"</string>
+    <!-- app_update_channel -->
+    <string name="app_update_channel_github">"GitHub"</string>
+    <string name="app_update_channel_google_play">"Google Play"</string>
+    <!-- document_kind -->
+    <string name="document_kind_invoice">"ഇൻവോയ്സ്"</string>
+    <string name="document_kind_receipt">"രസീത്"</string>
+    <string name="document_kind_contract">"കരാർ"</string>
+    <string name="document_kind_statement">"ബാങ്ക് സ്റ്റേറ്റ്മെൻ്റ്"</string>
+    <string name="document_kind_certificate">"സർട്ടിഫിക്കറ്റ്"</string>
+    <string name="document_kind_id_document">"ഐഡി പ്രമാണം"</string>
+    <string name="document_kind_form">"ഫോം"</string>
+    <string name="document_kind_r_sum">"റെസ്യൂമെ"</string>
+    <!-- document_corner_model -->
+    <string name="document_corner_model_lite">"ലൈറ്റ്"</string>
+    <string name="document_corner_model_standard">"സ്റ്റാൻഡേർഡ്"</string>
+    <string name="document_corner_model_high">"ഉയർന്നത്"</string>
+    <string name="document_corner_model_accurate">"കൃത്യത"</string>
+    <!-- document_title_format -->
+    <string name="document_title_format_scan_with_date_and_time">"തീയതിയും സമയവും ഉപയോഗിച്ച് സ്കാൻ ചെയ്യുക"</string>
+    <string name="document_title_format_scan_date_time">"സ്കാൻ · തീയതിയും സമയവും"</string>
+    <string name="document_title_format_document_with_date_and_time">"തീയതിയും സമയവും ഉള്ള പ്രമാണം"</string>
+    <string name="document_title_format_document_date_time">"പ്രമാണം · തീയതിയും സമയവും"</string>
+    <string name="document_title_format_scan_with_date">"തീയതി ഉപയോഗിച്ച് സ്കാൻ ചെയ്യുക"</string>
+    <string name="document_title_format_scan_date">"സ്കാൻ · തീയതി"</string>
+    <string name="document_title_format_scan_with_iso_date">"ISO തീയതി ഉപയോഗിച്ച് സ്കാൻ ചെയ്യുക"</string>
+    <string name="document_title_format_scan_yyyy_mm_dd">"സ്കാൻ · YYYY-MM-DD"</string>
+    <!-- group_title_format -->
+    <string name="group_title_format_folder_with_date_and_time">"തീയതിയും സമയവും ഉള്ള ഫോൾഡർ"</string>
+    <string name="group_title_format_folder_date_time">"ഫോൾഡർ · തീയതിയും സമയവും"</string>
+    <string name="group_title_format_new_folder_with_date_and">"തീയതിയും സമയവും ഉള്ള പുതിയ ഫോൾഡർ"</string>
+    <string name="group_title_format_new_folder_date_time">"പുതിയ ഫോൾഡർ · തീയതിയും സമയവും"</string>
+    <string name="group_title_format_folder_with_date">"തീയതിയുള്ള ഫോൾഡർ"</string>
+    <string name="group_title_format_folder_date">"ഫോൾഡർ · തീയതി"</string>
+    <string name="group_title_format_folder_with_iso_date">"ISO തീയതിയുള്ള ഫോൾഡർ"</string>
+    <string name="group_title_format_folder_yyyy_mm_dd">"ഫോൾഡർ · YYYY-MM-DD"</string>
+    <!-- wifi_security -->
+    <string name="wifi_security_wpa_wpa2">"WPA/WPA2"</string>
+    <string name="wifi_security_wep">"WEP"</string>
+    <string name="wifi_security_open">"സുരക്ഷയില്ല"</string>
+    <!-- qr_create_type -->
+    <string name="qr_create_type_upi">"യുപിഐ"</string>
+    <!-- pdf_import_look -->
+    <string name="pdf_import_look_keep_as_is">"അതുപോലെ സൂക്ഷിക്കുക"</string>
+    <string name="pdf_import_look_pages_look_exactly_like_the">"പേജുകൾ കൃത്യമായി PDF പോലെ കാണപ്പെടുന്നു"</string>
+    <string name="pdf_import_look_enhance">"മെച്ചപ്പെടുത്തുക"</string>
+    <string name="pdf_import_look_even_out_scanned_pages_and">"സ്‌കാൻ ചെയ്‌ത പേജുകൾ തുല്യമാക്കി ടെക്‌സ്‌റ്റ് മൂർച്ച കൂട്ടുക"</string>
+    <!-- capture_scene_issue -->
+    <string name="capture_scene_issue_lens_may_be_covered_clear">"ലെൻസ് മൂടിയിരിക്കാം. അത് തുറന്ന് വീണ്ടും ശ്രമിക്കുക."</string>
+    <string name="capture_scene_issue_too_dark_add_light_or">"വളരെ ഇരുണ്ട്. ലൈറ്റ് ചേർക്കുക അല്ലെങ്കിൽ ഫ്ലാഷ് ഓണാക്കുക."</string>
+    <string name="capture_scene_issue_image_looks_blurry_clean_the">"ചിത്രം മങ്ങിയതായി തോന്നുന്നു. ലെൻസ് വൃത്തിയാക്കുക അല്ലെങ്കിൽ ഫോക്കസ് ചെയ്യാൻ ടാപ്പ് ചെയ്യുക."</string>
+    <!-- group_export_action -->
+    <string name="group_export_action_merged_pdf_options">"ലയിപ്പിച്ച PDF ഓപ്ഷനുകൾ"</string>
+    <string name="group_export_action_separate_pdfs_options">"PDF ഫയലുകളുടെ ഓപ്ഷനുകൾ വേർതിരിക്കുക"</string>
+    <!-- library_sort_option -->
+    <string name="library_sort_option_last_modified">"അവസാനം പരിഷ്ക്കരിച്ചത്"</string>
+    <string name="library_sort_option_latest_changes_first">"ഏറ്റവും പുതിയ മാറ്റങ്ങൾ ആദ്യം"</string>
+    <string name="library_sort_option_oldest_updated">"ഏറ്റവും പഴയത് അപ്ഡേറ്റ് ചെയ്തു"</string>
+    <string name="library_sort_option_earliest_changes_first">"ആദ്യകാല മാറ്റങ്ങൾ ആദ്യം"</string>
+    <string name="library_sort_option_alphabetical_order">"അക്ഷരമാലാ ക്രമം"</string>
+    <string name="library_sort_option_name_z_a">"പേര് Z–A"</string>
+    <string name="library_sort_option_reverse_alphabetical_order">"വിപരീത അക്ഷരമാലാ ക്രമം"</string>
+    <string name="library_sort_option_newest_created">"ഏറ്റവും പുതിയത് സൃഷ്ടിച്ചത്"</string>
+    <string name="library_sort_option_recently_added_first">"അടുത്തിടെ ആദ്യം ചേർത്തത്"</string>
+    <string name="library_sort_option_oldest_created">"ഏറ്റവും പഴയത് സൃഷ്ടിച്ചത്"</string>
+    <string name="library_sort_option_earliest_added_first">"നേരത്തെ ചേർത്തത് ആദ്യം"</string>
+    <!-- signature_pen_width -->
+    <string name="signature_pen_width_fine">"നേർത്ത"</string>
+    <string name="signature_pen_width_bold">"കട്ടിയുള്ള"</string>
+    <!-- onboarding_page -->
+    <string name="onboarding_page_capture">"ക്യാപ്ചർ"</string>
+    <string name="onboarding_page_paper_to_polished">"കടലാസിൽ നിന്ന് തെളിമയുള്ള സ്കാൻ."</string>
+    <string name="onboarding_page_capture_straighten_and_clean_up">"നിങ്ങളുടെ പേജുകൾ ക്യാപ്ചർ ചെയ്യുക, നേരെയാക്കുക, വൃത്തിയാക്കുക."</string>
+    <string name="onboarding_page_find">"കണ്ടെത്തുക"</string>
+    <string name="onboarding_page_find_more_than_files">"സ്കാനുകൾക്കുള്ളിലും തിരയാം."</string>
+    <string name="onboarding_page_recognize_text_on_your_device">"നിങ്ങളുടെ ഉപകരണത്തിലെ വാചകം തിരിച്ചറിയുക. നിങ്ങളുടെ സ്കാനുകൾക്കുള്ളിൽ തിരയുക."</string>
+    <string name="onboarding_page_share">"ഷെയർ ചെയ്യുക"</string>
+    <string name="onboarding_page_ready_when_you_are">"നിങ്ങൾ തയ്യാറാകുമ്പോൾ ഞാനും തയ്യാർ."</string>
+    <string name="onboarding_page_keep_pages_together_share_a">"പേജുകൾ ഒരുമിച്ച് സൂക്ഷിക്കുക. കുറച്ച് ടാപ്പുകളിൽ വൃത്തിയുള്ള PDF പങ്കിടുക."</string>
+    <!-- pdf_reader_tool -->
+    <string name="pdf_reader_tool_merge_with_other_pdfs">"മറ്റ് PDF ഫയലുകളുമായി ലയിപ്പിക്കുക"</string>
+    <string name="pdf_reader_tool_password_protect">"പാസ്‌വേഡ് പരിരക്ഷണം"</string>
+    <string name="pdf_reader_tool_add_watermark">"വാട്ടർമാർക്ക് ചേർക്കുക"</string>
+    <string name="pdf_reader_tool_save_pages_as_images">"പേജുകൾ ചിത്രങ്ങളായി സംരക്ഷിക്കുക"</string>
+    <string name="pdf_reader_tool_add_to_scanly_library">"Scanly ലൈബ്രറിയിലേക്ക് ചേർക്കുക"</string>
+    <!-- pdf_picker_sort -->
+    <string name="pdf_picker_sort_most_pages">"മിക്ക പേജുകളും"</string>
+    <!-- qr_ink_color -->
+    <string name="qr_ink_color_ink">"മഷി"</string>
+    <string name="qr_ink_color_maroon">"മെറൂൺ"</string>
+    <!-- qr_primary_action -->
+    <string name="qr_primary_action_pay_with_a_upi_app">"UPI ആപ്പ് ഉപയോഗിച്ച് പണമടയ്ക്കുക"</string>
+    <string name="qr_primary_action_pay">"പണം നൽകുക"</string>
+    <string name="qr_primary_action_join_this_network">"ഈ നെറ്റ്‌വർക്കിൽ ചേരുക"</string>
+    <string name="qr_primary_action_join">"ചേരുക"</string>
+    <string name="qr_primary_action_save_to_contacts">"കോൺടാക്റ്റുകളിലേക്ക് സംരക്ഷിക്കുക"</string>
+    <string name="qr_primary_action_send_email">"ഇമെയിൽ അയയ്ക്കുക"</string>
+    <string name="qr_primary_action_call_this_number">"ഈ നമ്പറിൽ വിളിക്കുക"</string>
+    <string name="qr_primary_action_copy_text">"വാചകം പകർത്തുക"</string>
+    <!-- qr_history_section -->
+    <string name="qr_history_section_earlier">"നേരത്തെ"</string>
+    <!-- sign_tool -->
+    <string name="sign_tool_date">"തീയതി"</string>
+    <string name="sign_tool_checkbox">"ചെക്ക്ബോക്സ്"</string>
+    <!-- scanly_destination -->
+    <string name="scanly_destination_home">"ഹോം"</string>
+    <string name="scanly_destination_camera">"ക്യാമറ"</string>
+    <!-- settings_text_recognition -->
+    <string name="settings_text_recognition_and_more">"അതിലധികവും"</string>
+    <string name="settings_text_recognition_romanian">"റൊമാനിയൻ"</string>
+    <string name="settings_text_recognition_czech">"ചെക്ക്"</string>
+    <string name="settings_text_recognition_swedish">"സ്വീഡിഷ്"</string>
+    <string name="settings_text_recognition_swahili">"സ്വാഹിലി"</string>
+    <string name="settings_text_recognition_filipino">"ഫിലിപ്പിനോ"</string>
+    <string name="settings_text_recognition_vietnamese">"വിയറ്റ്നാമീസ്"</string>
+    <string name="settings_text_recognition_malay">"മലായ്"</string>
+    <string name="settings_text_recognition_indonesian">"ഇന്തോനേഷ്യൻ"</string>
+    <string name="settings_text_recognition_turkish">"ടർക്കിഷ്"</string>
+    <string name="settings_text_recognition_polish">"പോളിഷ്"</string>
+    <string name="settings_text_recognition_dutch">"ഡച്ച്"</string>
+    <string name="settings_text_recognition_portuguese">"പോർച്ചുഗീസ്"</string>
+    <string name="settings_text_recognition_italian">"ഇറ്റാലിയൻ"</string>
+    <string name="settings_text_recognition_german">"ജർമ്മൻ"</string>
+    <string name="settings_text_recognition_french">"ഫ്രഞ്ച്"</string>
+    <string name="settings_text_recognition_spanish">"സ്പാനിഷ്"</string>
+    <string name="settings_text_recognition_english">"ഇംഗ്ലീഷ്"</string>
+    <string name="settings_text_recognition_latin">"ലാറ്റിൻ ലിപി"</string>
+    <string name="settings_text_recognition_amharic">"അംഹാരിക്"</string>
+    <string name="settings_text_recognition_georgian">"ജോർജിയൻ"</string>
+    <string name="settings_text_recognition_armenian">"അർമേനിയൻ"</string>
+    <string name="settings_text_recognition_burmese">"ബർമീസ്"</string>
+    <string name="settings_text_recognition_khmer">"ഖെമർ"</string>
+    <string name="settings_text_recognition_lao">"ലാവോ"</string>
+    <string name="settings_text_recognition_thai">"തായ്"</string>
+    <string name="settings_text_recognition_southeast_asia_more">"തെക്കുകിഴക്കൻ ഏഷ്യയും മറ്റും"</string>
+    <string name="settings_text_recognition_hebrew">"ഹീബ്രു"</string>
+    <string name="settings_text_recognition_urdu">"ഉറുദു"</string>
+    <string name="settings_text_recognition_persian">"പേർഷ്യൻ"</string>
+    <string name="settings_text_recognition_arabic">"അറബിക്"</string>
+    <string name="settings_text_recognition_right_to_left">"വലത്തുനിന്ന് ഇടത്തേക്ക്"</string>
+    <string name="settings_text_recognition_korean">"കൊറിയൻ"</string>
+    <string name="settings_text_recognition_japanese">"ജാപ്പനീസ്"</string>
+    <string name="settings_text_recognition_chinese">"ചൈനീസ്"</string>
+    <string name="settings_text_recognition_east_asian">"കിഴക്കൻ ഏഷ്യൻ"</string>
+    <string name="settings_text_recognition_sinhala">"സിംഹള"</string>
+    <string name="settings_text_recognition_odia">"ഒഡിയ"</string>
+    <string name="settings_text_recognition_punjabi">"പഞ്ചാബി"</string>
+    <string name="settings_text_recognition_gujarati">"ഗുജറാത്തി"</string>
+    <string name="settings_text_recognition_malayalam">"മലയാളം"</string>
+    <string name="settings_text_recognition_kannada">"കന്നഡ"</string>
+    <string name="settings_text_recognition_telugu">"തെലുങ്ക്"</string>
+    <string name="settings_text_recognition_tamil">"തമിഴ്"</string>
+    <string name="settings_text_recognition_bengali">"ബംഗാളി"</string>
+    <string name="settings_text_recognition_nepali">"നേപ്പാളി"</string>
+    <string name="settings_text_recognition_marathi">"മറാത്തി"</string>
+    <string name="settings_text_recognition_hindi">"ഹിന്ദി"</string>
+    <string name="settings_text_recognition_indian_scripts">"ഇന്ത്യൻ ലിപികൾ"</string>
+    <string name="settings_text_recognition_greek">"ഗ്രീക്ക്"</string>
+    <string name="settings_text_recognition_serbian">"സെർബിയൻ"</string>
+    <string name="settings_text_recognition_bulgarian">"ബൾഗേറിയൻ"</string>
+    <string name="settings_text_recognition_ukrainian">"ഉക്രേനിയൻ"</string>
+    <string name="settings_text_recognition_russian">"റഷ്യൻ"</string>
+    <string name="settings_text_recognition_latin_cyrillic_greek">"ലാറ്റിൻ, സിറിലിക് &amp; ഗ്രീക്ക്"</string>
+    <!-- tools_catalog -->
+    <string name="tools_catalog_camera_with_edge_detection">"എഡ്ജ് ഡിറ്റക്ഷൻ ഉള്ള ക്യാമറ"</string>
+    <string name="tools_catalog_scan_a_document">"പ്രമാണം സ്കാൻ ചെയ്യുക"</string>
+    <string name="tools_catalog_pdf_to_editable_scan">"എഡിറ്റ് ചെയ്യാവുന്ന സ്കാൻ ചെയ്യാൻ PDF"</string>
+    <string name="tools_catalog_open_any_pdf">"ഏതെങ്കിലും PDF തുറക്കുക"</string>
+    <string name="tools_catalog_read_pdf">"PDF വായിക്കുക"</string>
+    <string name="tools_catalog_stamp_text">"ടെക്സ്റ്റ് വാട്ടർമാർക്ക്"</string>
+    <string name="tools_catalog_lock_or_unlock">"ലോക്ക് അല്ലെങ്കിൽ അൺലോക്ക്"</string>
+    <string name="tools_catalog_pages_as_images">"ചിത്രങ്ങളായി പേജുകൾ"</string>
+    <string name="tools_catalog_make_it_smaller">"അതിനെ ചെറുതാക്കുക"</string>
+    <string name="tools_catalog_combine_files">"ഫയലുകൾ സംയോജിപ്പിക്കുക"</string>
+    <string name="tools_catalog_merge">"ലയിപ്പിക്കുക"</string>
+    <string name="tools_catalog_sign_any_pdf">"ഏതെങ്കിലും PDF സൈൻ ചെയ്യുക"</string>
+    <string name="tools_catalog_from_gallery">"ഗാലറിയിൽ നിന്ന്"</string>
+    <string name="tools_catalog_images_to_pdf">"ചിത്രങ്ങൾ → PDF"</string>
+    <string name="tools_catalog_create_manage">"സൃഷ്‌ടിക്കുകയും നിയന്ത്രിക്കുകയും ചെയ്യുക"</string>
+    <string name="tools_catalog_my_signatures">"എൻ്റെ ഒപ്പുകൾ"</string>
+    <string name="tools_catalog_photos_scans">"ഫോട്ടോകളും സ്കാനുകളും"</string>
+    <string name="tools_catalog_scan_or_create">"സ്കാൻ ചെയ്യുക അല്ലെങ്കിൽ സൃഷ്ടിക്കുക"</string>
+    <string name="tools_catalog_qr_barcode">"QR &amp; ബാർകോഡ്"</string>
+    <!-- pip_lines -->
+    <string name="pip_lines_tip_folders_keep_related_scans">"നുറുങ്ങ്: ഫോൾഡറുകൾ ബന്ധപ്പെട്ട സ്കാനുകൾ ഒരുമിച്ച് സൂക്ഷിക്കുന്നു. രസീതുകൾക്കായി ഒന്ന് ശ്രമിക്കുക."</string>
+    <string name="pip_lines_tip_turn_on_the_grid">"നുറുങ്ങ്: പേജുകൾ ലൈൻ അപ്പ് ചെയ്യാൻ ക്യാമറയിലെ ഗ്രിഡ് ഓണാക്കുക."</string>
+    <string name="pip_lines_tip_add_a_scanly_widget">"നുറുങ്ങ്: ഒറ്റ-ടാപ്പ് സ്കാനുകൾക്കായി നിങ്ങളുടെ ഹോം സ്ക്രീനിലേക്ക് Scanly വിജറ്റ് ചേർക്കുക."</string>
+    <string name="pip_lines_tip_the_tools_tab_can">"നുറുങ്ങ്: ടൂൾസ് ടാബിന് PDF ലയിപ്പിക്കാനും കംപ്രസ് ചെയ്യാനും ഒപ്പിടാനും കഴിയും."</string>
+    <string name="pip_lines_tip_open_a_document_s">"നുറുങ്ങ്: ഒരു ഡോക്യുമെൻ്റിൻ്റെ ടെക്‌സ്‌റ്റ് അതിൽ പറയുന്ന കാര്യങ്ങൾ പകർത്താനോ പങ്കിടാനോ തുറക്കുക."</string>
+    <string name="pip_lines_tip_long_press_a_page">"നുറുങ്ങ്: ഒരു പേജ് ദീർഘനേരം അമർത്തി പുനഃക്രമീകരിക്കാൻ അത് വലിച്ചിടുക."</string>
+    <string name="pip_lines_tip_search_finds_words_inside">"നുറുങ്ങ്: തിരയൽ നിങ്ങളുടെ സ്കാനുകൾക്കുള്ളിൽ വാക്കുകൾ കണ്ടെത്തുന്നു, അവയുടെ പേരുകൾ മാത്രമല്ല."</string>
+    <string name="pip_lines_okay_okay_i_felt_that">"ശരി ശരി, എനിക്ക് അത് തോന്നി."</string>
+    <string name="pip_lines_still_free_still_no_account">"എപ്പോഴും സൗജന്യം. അക്കൗണ്ട് ആവശ്യമില്ല. പരസ്യങ്ങളില്ല."</string>
+    <string name="pip_lines_i_m_open_source_you">"എൻ്റെ സോഴ്സ് കോഡ് തുറന്നിരിക്കുന്നു. അതിലെ ഓരോ വരിയും വായിക്കാം."</string>
+    <string name="pip_lines_your_original_photos_are_kept">"നിങ്ങളുടെ യഥാർത്ഥ ഫോട്ടോകൾ സൂക്ഷിച്ചിരിക്കുന്നു, അതിനാൽ എഡിറ്റുകൾ എല്ലായ്പ്പോഴും പഴയപടിയാക്കാനാകും."</string>
+    <string name="pip_lines_i_live_on_your_phone">"ഞാൻ നിങ്ങളുടെ ഫോണിൽ പ്രവർത്തിക്കുന്നു. നിങ്ങളുടെ സ്കാനുകൾ ഒരിക്കലും ഒരു സെർവറിലേക്ക് പോകുന്നില്ല."</string>
+    <string name="pip_lines_hey_that_tickles">"ഹേയ്! എന്ന് ഇക്കിളിപ്പെടുത്തുന്നു."</string>
+    <!-- pdf_watermark -->
+    <string name="pdf_watermark_for_kyc_use_only">For KYC use only</string>
+    <!-- document_presentation_formatter -->
+    <string name="document_presentation_formatter_untitled_document">"ശീർഷകമില്ലാത്ത പ്രമാണം"</string>
+    <string name="document_presentation_formatter_untitled_folder">"പേരില്ലാത്ത ഫോൾഡർ"</string>
+    <!-- default_pdf_toolkit_repository -->
+    <string name="default_pdf_toolkit_repository_this_pdf_is_password_protected">"ഈ PDF പാസ്‌വേഡ് പരിരക്ഷിതമാണ്."</string>
+    <string name="default_pdf_toolkit_repository_this_pdf_is_too_large">"ഈ PDF ഈ ഉപകരണത്തിൽ പ്രോസസ്സ് ചെയ്യാൻ വളരെ വലുതാണ്."</string>
+    <!-- document_cover_art_factory -->
+    <string name="document_cover_art_factory_scanned_document">"സ്കാൻ ചെയ്ത പ്രമാണം"</string>
+    <!-- document_sign -->
+    <string name="document_sign_some_pages_are_still_processing">"ചില പേജുകൾ ഇപ്പോഴും പ്രോസസ്സ് ചെയ്യുന്നു, ഇനിയും ഒപ്പിടാൻ കഴിയില്ല."</string>
+    <!-- pip_lines -->
+    <string name="pip_lines_hi_i_m_pip_point">"ഹായ്, ഞാൻ Pip ആണ്! എന്നെ ഒരു പേജ് കാണിക്കൂ, ഞാൻ നിങ്ങൾക്കായി സ്കാൻ നേരെയാക്കാം."</string>
+    <string name="pip_lines_one_last_thing_can_i">"അവസാനമായി ഒരു കാര്യം! എനിക്ക് ക്യാമറ ഉപയോഗിക്കാമോ? നിങ്ങൾ സ്കാൻ ചെയ്യുമ്പോൾ മാത്രമേ ഇത് ഓണായിരിക്കൂ."</string>
+    <string name="pip_lines_nothing_here_yet_let_s">"ഇവിടെ ഇതുവരെ ഒന്നുമില്ല. നമുക്ക് നിങ്ങളുടെ ആദ്യ പേജ് ഒരുമിച്ച് സ്കാൻ ചെയ്യാം."</string>
+    <string name="pip_lines_a_clean_shelf_start_a">"ഒരു വൃത്തിയുള്ള ഷെൽഫ്! ഒരു ഫോൾഡർ ആരംഭിക്കുക, അല്ലെങ്കിൽ എന്തെങ്കിലും സ്കാൻ ചെയ്യുക."</string>
+    <string name="pip_lines_no_folders_yet_they_re">"ഇതുവരെ ഫോൾഡറുകളൊന്നുമില്ല. രസീതുകൾ, ബില്ലുകൾ, സ്കൂൾ പേപ്പറുകൾ എന്നിവ സംഘടിപ്പിക്കാൻ അവ ഉപയോഗിക്കുക."</string>
+    <string name="pip_lines_no_documents_yet_i_m">"ഇതുവരെ രേഖകളൊന്നുമില്ല. നിങ്ങൾ ആയിരിക്കുമ്പോൾ ഞാൻ തയ്യാറാണ്."</string>
+    <string name="pip_lines_this_folder_is_waiting_for">"ഈ ഫോൾഡർ അതിൻ്റെ ആദ്യ പ്രമാണത്തിനായി കാത്തിരിക്കുന്നു."</string>
+    <string name="pip_lines_no_pages_yet_point_me">"ഇതുവരെ പേജുകളൊന്നുമില്ല. എന്നെ കുറച്ച് പേപ്പറിലേക്ക് ചൂണ്ടിക്കാണിക്കുക!"</string>
+    <string name="pip_lines_no_pages_means_no_words">"പേജുകളില്ല എന്നതിനർത്ഥം ഇതുവരെ വാക്കുകളില്ല എന്നാണ്."</string>
+    <string name="pip_lines_pick_a_few_photos_and">"കുറച്ച് ഫോട്ടോകൾ തിരഞ്ഞെടുക്കുക, ഡിറ്റക്ടറുകൾ എത്ര വേഗത്തിൽ പ്രവർത്തിക്കുന്നുവെന്ന് നോക്കാം!"</string>
+    <string name="pip_lines_hmm_i_don_t_have">"ഹും, അതിനുള്ള ഉത്തരമില്ല."</string>
+    <string name="pip_lines_no_codes_yet_scan_or">"ഇതുവരെ കോഡുകളൊന്നുമില്ല. സ്കാൻ ചെയ്യുക അല്ലെങ്കിൽ ഒരെണ്ണം ഉണ്ടാക്കുക, ഞാൻ അത് ഇവിടെ സൂക്ഷിക്കാം."</string>
+    <string name="pip_lines_nothing_matches_that_try_another">"ഒന്നും പൊരുത്തപ്പെടുന്നില്ല. മറ്റൊരു വാക്ക് ശ്രമിക്കണോ?"</string>
+    <string name="pip_lines_i_m_still_reading_some">"ഞാൻ ഇപ്പോഴും ചില പേജുകൾ വായിക്കുന്നു. ഒരു സെക്കൻഡിനുള്ളിൽ മത്സരങ്ങൾ നടന്നേക്കാം."</string>
+    <string name="pip_lines_i_can_t_see_a">"എനിക്ക് ഇതുവരെ ഒന്നും കാണാൻ കഴിയുന്നില്ല. എനിക്ക് ക്യാമറ കടം വാങ്ങാമോ?"</string>
+    <string name="pip_lines_the_camera_is_switched_off">"Scanly-ന് ക്യാമറ സ്വിച്ച് ഓഫ് ചെയ്തിരിക്കുന്നു. ക്രമീകരണങ്ങളിലേക്കുള്ള ഒരു പെട്ടെന്നുള്ള യാത്ര അത് പരിഹരിക്കുന്നു."</string>
+    <string name="pip_lines_lend_me_the_camera_and">"​​എനിക്ക് ക്യാമറ കടം തരൂ, ഞാൻ നിങ്ങൾക്കുള്ള കോഡ് വായിക്കാം."</string>
+    <string name="pip_lines_huh_that_document_wandered_off">"ഹും, ആ ഡോക്യുമെൻ്റ് നഷ്‌ടമായതായി തോന്നുന്നു."</string>
+    <!-- pdf_page_size -->
+    <string name="pdf_page_size_match_each_scan">"സ്‌കാൻ ചെയ്‌ത ഓരോ പേജിൻ്റെയും വലുപ്പം ക്രമീകരിക്കുക"</string>
+    <string name="pdf_page_size_29_7_42_0_cm">"29.7 × 42.0 സെ.മീ"</string>
+    <string name="pdf_page_size_21_0_29_7_cm">"21.0 × 29.7 സെ.മീ"</string>
+    <string name="pdf_page_size_14_8_21_0_cm">"14.8 × 21.0 സെ.മീ"</string>
+    <string name="pdf_page_size_25_0_35_3_cm">"25.0 × 35.3 സെ.മീ"</string>
+    <string name="pdf_page_size_17_6_25_0_cm">"17.6 × 25.0 സെ.മീ"</string>
+    <string name="pdf_page_size_21_6_27_9_cm">"21.6 × 27.9 സെ.മീ"</string>
+    <string name="pdf_page_size_27_9_43_2_cm">"27.9 × 43.2 സെ.മീ"</string>
+    <string name="pdf_page_size_21_6_35_6_cm">"21.6 × 35.6 സെ.മീ"</string>
+    <string name="pdf_page_size_18_4_26_7_cm">"18.4 × 26.7 സെ.മീ"</string>
+    <string name="pdf_page_size_10_0_14_8_cm">"10.0 × 14.8 സെ.മീ"</string>
+    <string name="pdf_page_size_21_6_33_0_cm">"21.6 × 33.0 സെ.മീ"</string>
+    <string name="pdf_page_size_22_9_33_0_cm">"22.9 × 33.0 സെ.മീ"</string>
+    <!-- PageTextScreen view modes -->
+    <string name="page_text_text">"ടെക്സ്റ്റ്"</string>
+    <string name="page_text_on_page">"പേജിൽ"</string>
+    <!-- Shared counts -->
+    <plurals name="common_documents">
+        <item quantity="one">"%d പ്രമാണം"</item>
+        <item quantity="other">"%d പ്രമാണങ്ങൾ"</item>
+    </plurals>
+    <plurals name="common_pages">
+        <item quantity="one">"%d പേജ്"</item>
+        <item quantity="other">"%d പേജുകൾ"</item>
+    </plurals>
+    <plurals name="common_folders">
+        <item quantity="one">"%d ഫോൾഡർ"</item>
+        <item quantity="other">"%d ഫോൾഡറുകൾ"</item>
+    </plurals>
+    <plurals name="common_matches">
+        <item quantity="one">"%d പൊരുത്തം"</item>
+        <item quantity="other">"%d പൊരുത്തങ്ങൾ"</item>
+    </plurals>
+    <plurals name="common_words">
+        <item quantity="one">"%d വാക്ക്"</item>
+        <item quantity="other">"%d വാക്കുകൾ"</item>
+    </plurals>
+    <string name="common_two_parts">"%1$s · %2$s"</string>
+    <!-- Library search -->
+    <plurals name="library_search_in_documents">
+        <item quantity="one">", %d പ്രമാണത്തിൽ"</item>
+        <item quantity="other">", %d പ്രമാണങ്ങളിൽ"</item>
+    </plurals>
+    <plurals name="library_search_no_exact_matches">
+        <item quantity="one">"കൃത്യമായ പൊരുത്തങ്ങളില്ല · സമാന വാക്കുകളുള്ള %d പ്രമാണം"</item>
+        <item quantity="other">"കൃത്യമായ പൊരുത്തങ്ങളില്ല · സമാന വാക്കുകളുള്ള %d പ്രമാണങ്ങൾ"</item>
+    </plurals>
+    <plurals name="library_search_show_more_pages">
+        <item quantity="one">"കൂടുതൽ %d പേജിലെ പൊരുത്തങ്ങൾ കാണിക്കുക"</item>
+        <item quantity="other">"കൂടുതൽ %d പേജുകളിലെ പൊരുത്തങ്ങൾ കാണിക്കുക"</item>
+    </plurals>
+    <plurals name="library_search_still_reading">
+        <item quantity="one">"%d പേജിലെ ടെക്സ്റ്റ് വായിക്കുന്നു. പുതിയ പൊരുത്തങ്ങൾ ഇവിടെ കാണാം."</item>
+        <item quantity="other">"%d പേജുകളിലെ ടെക്സ്റ്റ് വായിക്കുന്നു. പുതിയ പൊരുത്തങ്ങൾ ഇവിടെ കാണാം."</item>
+    </plurals>
+    <string name="library_search_matches_in_documents">"%2$s-ൽ %1$s"</string>
+    <plurals name="search_filters_show_results">
+        <item quantity="one">"%d ഫലം കാണിക്കുക"</item>
+        <item quantity="other">"%d ഫലങ്ങൾ കാണിക്കുക"</item>
+    </plurals>
+    <!-- Settings -->
+    <plurals name="settings_reading_text_pages_left">
+        <item quantity="one">"ടെക്സ്റ്റ് വായിക്കുന്നു… ഇനി %d പേജ്"</item>
+        <item quantity="other">"ടെക്സ്റ്റ് വായിക്കുന്നു… ഇനി %d പേജുകൾ"</item>
+    </plurals>
+    <plurals name="settings_text_recognition_reread_pages">
+        <item quantity="one">"%d പേജ് വീണ്ടും വായിക്കണോ?"</item>
+        <item quantity="other">"%d പേജുകൾ വീണ്ടും വായിക്കണോ?"</item>
+    </plurals>
+    <string name="settings_could_not_calibrate_models">"ഈ ഉപകരണത്തിൽ ഡോക്യുമെൻ്റ് മോഡലുകൾ കാലിബ്രേറ്റ് ചെയ്യാൻ കഴിഞ്ഞില്ല."</string>
+    <!-- Recently deleted -->
+    <string name="recently_deleted_long_press_for_options">"കൂടുതൽ ഓപ്ഷനുകൾക്കായി ഒരു ഇനം ദീർഘനേരം അമർത്തുക."</string>
+    <string name="recently_deleted_retention_note">"%1$s എന്നതിനായി പേജുകൾ സൂക്ഷിച്ചിരിക്കുന്നു, %2$s നായുള്ള ഡോക്യുമെൻ്റുകളും ഫോൾഡറുകളും. അതിനുശേഷം അവ ശാശ്വതമായി ഇല്ലാതാക്കപ്പെടും."</string>
+    <plurals name="recently_deleted_restored_items">
+        <item quantity="one">"%d ഇനം പുനഃസ്ഥാപിച്ചു"</item>
+        <item quantity="other">"%d ഇനങ്ങൾ പുനഃസ്ഥാപിച്ചു"</item>
+    </plurals>
+    <plurals name="recently_deleted_restored_some_items">
+        <item quantity="one">"%3$d ഇനങ്ങളിൽ %2$d പുനഃസ്ഥാപിച്ചു. %4$s"</item>
+        <item quantity="other">"%3$d ഇനങ്ങളിൽ %2$d പുനഃസ്ഥാപിച്ചു. %4$s"</item>
+    </plurals>
+    <plurals name="recently_deleted_deleted_items">
+        <item quantity="one">"%d ഇനം ശാശ്വതമായി ഇല്ലാതാക്കി"</item>
+        <item quantity="other">"%d ഇനങ്ങൾ ശാശ്വതമായി ഇല്ലാതാക്കി"</item>
+    </plurals>
+    <plurals name="recently_deleted_deleted_some_items">
+        <item quantity="one">"%3$d ഇനങ്ങളിൽ %2$d ശാശ്വതമായി ഇല്ലാതാക്കി. %4$s"</item>
+        <item quantity="other">"%3$d ഇനങ്ങളിൽ %2$d ശാശ്വതമായി ഇല്ലാതാക്കി. %4$s"</item>
+    </plurals>
+    <!-- %1$s = folder name, %2$d = number of documents in it. -->
+    <plurals name="folder_delete_what_should_happen">
+        <item quantity="one">"“%1$s” എന്ന ഫോൾഡറിൽ %2$d പ്രമാണമുണ്ട്. അത് എന്ത് ചെയ്യണം?"</item>
+        <item quantity="other">"“%1$s” എന്ന ഫോൾഡറിൽ %2$d പ്രമാണങ്ങളുണ്ട്. അവ എന്ത് ചെയ്യണം?"</item>
+    </plurals>
+    <!-- PDF tools -->
+    <string name="pdf_compress_first_page_of">"%1$s-ൻ്റെ ആദ്യ പേജ്"</string>
+    <string name="pdf_compress_the_pdf">"PDF"</string>
+    <string name="pdf_password_strength_too_short">"വളരെ ചെറുത്"</string>
+    <string name="pdf_password_strength_too_long">"വളരെ ദൈർഘ്യമേറിയതാണ്"</string>
+    <string name="pdf_password_strength_weak">"ദുർബലമായ"</string>
+    <string name="pdf_password_strength_fair">"ഇടത്തരം"</string>
+    <string name="pdf_password_strength_strong">"ശക്തൻ"</string>
+    <string name="model_benchmark_gate_prefix">"പ്രമാണ പരിശോധന: %1$s"</string>
+    <string name="model_benchmark_unavailable">"ലഭ്യമല്ല"</string>
+    <!-- Error messages shown in snackbars and dialogs -->
+    <string name="error_document_not_found">"ഡോക്യുമെന്റ് കണ്ടെത്തിയില്ല."</string>
+    <string name="error_group_not_found">"ഗ്രൂപ്പ് കണ്ടെത്തിയില്ല."</string>
+    <string name="error_no_documents_in_group">"ഗ്രൂപ്പിൽ രേഖകളൊന്നുമില്ല."</string>
+    <string name="error_no_pages_available_to_export">"കയറ്റുമതി ചെയ്യാൻ പേജുകളൊന്നും ലഭ്യമല്ല."</string>
+    <string name="error_could_not_create_export_directory">"എക്‌സ്‌പോർട്ട് ഡയറക്‌ടറി സൃഷ്‌ടിക്കാനായില്ല."</string>
+    <string name="error_could_not_replace_existing_pdf">"നിലവിലുള്ള PDF മാറ്റിസ്ഥാപിക്കാനായില്ല."</string>
+    <string name="error_folder_not_found">"ഫോൾഡർ കണ്ടെത്തിയില്ല."</string>
+    <string name="error_this_page_is_already_in_recently_deleted">"ഈ പേജ് ഇതിനകം അടുത്തിടെ ഇല്ലാതാക്കിയതിൽ ഉണ്ട്."</string>
+    <string name="error_only_pages_in_recently_deleted_can_be">"അടുത്തിടെ ഇല്ലാതാക്കിയ പേജുകൾ മാത്രമേ ശാശ്വതമായി ഇല്ലാതാക്കാൻ കഴിയൂ."</string>
+    <string name="error_page_not_found">"പേജ് കണ്ടെത്തിയില്ല."</string>
+    <string name="error_page_not_found_in_document_order">"പ്രമാണ ക്രമത്തിൽ പേജ് കണ്ടെത്തിയില്ല."</string>
+    <string name="error_select_at_least_two_pdfs_to_merge">"ലയിപ്പിക്കാൻ കുറഞ്ഞത് രണ്ട് PDF ഫയലുകളെങ്കിലും തിരഞ്ഞെടുക്കുക."</string>
+    <string name="error_pdf_has_no_pages">"PDF-ന് പേജുകളൊന്നുമില്ല."</string>
+    <string name="error_password_must_be_4_64_characters">"പാസ്‌വേഡ് 4–64 പ്രതീകങ്ങൾ ആയിരിക്കണം."</string>
+    <string name="error_enter_the_current_pdf_password">"നിലവിലെ PDF പാസ്‌വേഡ് നൽകുക."</string>
+    <string name="error_enter_watermark_text">"വാട്ടർമാർക്ക് ടെക്സ്റ്റ് നൽകുക."</string>
+    <string name="error_this_pdf_has_no_pages">"ഈ PDF-ന് പേജുകളൊന്നുമില്ല."</string>
+    <string name="error_preview_size_is_invalid">"പ്രിവ്യൂ വലുപ്പം അസാധുവാണ്."</string>
+    <string name="error_place_a_signature_or_another_mark_first">"ആദ്യം ഒരു ഒപ്പോ മറ്റൊരു അടയാളമോ ഇടുക."</string>
+    <string name="error_a_mark_is_on_a_missing_page">"നഷ്ടപ്പെട്ട പേജിൽ ഒരു അടയാളം ഉണ്ട്."</string>
+    <string name="error_could_not_prepare_this_pdf">"ഈ PDF തയ്യാറാക്കാൻ കഴിഞ്ഞില്ല."</string>
+    <string name="error_page_is_out_of_range">"പേജ് പരിധിക്ക് പുറത്താണ്."</string>
+    <string name="error_choose_at_least_one_page">"കുറഞ്ഞത് ഒരു പേജ് തിരഞ്ഞെടുക്കുക."</string>
+    <string name="error_failed_to_encode_page_image">"പേജ് ചിത്രം എൻകോഡ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു."</string>
+    <string name="error_export_file_is_missing">"എക്‌സ്‌പോർട്ട് ഫയൽ കാണുന്നില്ല."</string>
+    <string name="error_the_preview_pdf_is_missing">"PDF പ്രിവ്യൂ കാണുന്നില്ല."</string>
+    <string name="error_could_not_read_selected_pdf">"തിരഞ്ഞെടുത്ത PDF വായിക്കാൻ കഴിഞ്ഞില്ല."</string>
+    <string name="error_not_enough_memory_to_compress_this_pdf">"ഈ PDF കംപ്രസ് ചെയ്യാൻ മതിയായ മെമ്മറിയില്ല. ഏറ്റവും ചെറിയ നിലവാരം അല്ലെങ്കിൽ ഒരു ചെറിയ ഫയൽ പരീക്ഷിക്കുക."</string>
+    <string name="error_a_text_box_is_empty_type_something">"ഒരു ടെക്സ്റ്റ് ബോക്സ് ശൂന്യമാണ്. എന്തെങ്കിലും ടൈപ്പ് ചെയ്യുക അല്ലെങ്കിൽ ഇല്ലാതാക്കുക."</string>
+    <string name="error_a_signature_image_is_missing_remove_it">"ഒരു ഒപ്പ് ചിത്രം കാണുന്നില്ല. അത് നീക്കം ചെയ്ത് വീണ്ടും വയ്ക്കുക."</string>
+    <string name="error_some_characters_cant_be_drawn_remove_emoji">"ചില പ്രതീകങ്ങൾ വരയ്ക്കാൻ കഴിയില്ല. ഇമോജിയോ അസാധാരണ ചിഹ്നങ്ങളോ നീക്കം ചെയ്യുക."</string>
+    <string name="error_some_characters_in_the_watermark_cant_be">"വാട്ടർമാർക്കിലെ ചില പ്രതീകങ്ങൾ വരയ്ക്കാൻ കഴിയില്ല. ഇമോജിയോ അസാധാരണ ചിഹ്നങ്ങളോ നീക്കം ചെയ്യുക."</string>
+    <string name="error_enter_something_to_encode">"എൻകോഡ് ചെയ്യാൻ എന്തെങ്കിലും നൽകുക."</string>
+    <string name="error_could_not_write_qr_image">"QR ചിത്രം എഴുതാൻ കഴിഞ്ഞില്ല."</string>
+    <string name="error_a_signature_image_is_missing_place_it">"ഒരു ഒപ്പ് ചിത്രം കാണുന്നില്ല. വീണ്ടും വയ്ക്കുക."</string>
+    <string name="error_the_signature_is_empty">"ഒപ്പ് ശൂന്യമാണ്."</string>
+    <string name="error_could_not_save_the_signature">"ഒപ്പ് സംരക്ഷിക്കാനായില്ല."</string>
+    <string name="error_could_not_prepare_the_image">"ചിത്രം തയ്യാറാക്കാനായില്ല."</string>
+    <string name="error_could_not_create_signature_storage">"സിഗ്നേച്ചർ സ്റ്റോറേജ് സൃഷ്ടിക്കാൻ കഴിഞ്ഞില്ല."</string>
+    <string name="error_no_signature_found_in_this_image_try">"ഈ ചിത്രത്തിൽ ഒപ്പൊന്നും കണ്ടെത്തിയില്ല. ലൈറ്റ് പേപ്പറിൽ ഇരുണ്ട മഷി പരീക്ഷിക്കുക."</string>
+    <string name="error_this_signature_no_longer_exists">"ഈ ഒപ്പ് ഇനി നിലവിലില്ല."</string>
+    <string name="error_the_signature_image_could_not_be_read">"ഒപ്പ് ചിത്രം വായിക്കാൻ കഴിഞ്ഞില്ല."</string>
+    <string name="error_a_signature_image_is_missing_open_sign">"ഒപ്പിന്റെ ചിത്രം കാണാനില്ല. ഒപ്പിടാനുള്ള ടൂൾ തുറന്ന് അത് വീണ്ടും ചേർക്കുക."</string>
+    <string name="error_this_page_is_still_processing_try_again">"ഈ പേജ് ഇപ്പോഴും പ്രോസസ്സ് ചെയ്യുന്നു. ഒരു നിമിഷത്തിനുള്ളിൽ വീണ്ടും ശ്രമിക്കുക."</string>
+    <string name="error_could_not_read_the_page_image">"പേജ് ചിത്രം വായിക്കാൻ കഴിഞ്ഞില്ല."</string>
+    <string name="error_invalid_page_image_path">"അസാധുവായ പേജ് ഇമേജ് പാത്ത്."</string>
+    <string name="error_the_exported_file_is_unavailable">"കയറ്റുമതി ചെയ്ത ഫയൽ ലഭ്യമല്ല."</string>
+    <string name="error_the_exported_image_is_unavailable">"കയറ്റുമതി ചെയ്ത ചിത്രം ലഭ്യമല്ല."</string>
+    <string name="error_the_selected_save_folder_is_no_longer">"തിരഞ്ഞെടുത്ത സേവ് ഫോൾഡർ ഇനി ലഭ്യമല്ല. ക്രമീകരണങ്ങളിൽ ഇത് വീണ്ടും തിരഞ്ഞെടുക്കുക."</string>
+    <string name="error_this_page_no_longer_exists">"ഈ പേജ് നിലവിലില്ല."</string>
+    <string name="error_read_this_pages_text_first">"ആദ്യം ഈ പേജിൻ്റെ വാചകം വായിക്കുക."</string>
+    <string name="error_page_image_could_not_be_read">"പേജ് ചിത്രം വായിക്കാൻ കഴിഞ്ഞില്ല."</string>
+    <string name="error_opencv_could_not_be_initialized">"OpenCV ആരംഭിക്കാൻ കഴിഞ്ഞില്ല."</string>
+    <string name="error_no_images_selected">"ചിത്രങ്ങളൊന്നും തിരഞ്ഞെടുത്തിട്ടില്ല."</string>
+    <string name="error_could_not_write_imported_image">"ഇറക്കുമതി ചെയ്ത ചിത്രം എഴുതാൻ കഴിഞ്ഞില്ല."</string>
+    <string name="error_imported_image_file_is_empty">"ഇറക്കുമതി ചെയ്ത ഇമേജ് ഫയൽ ശൂന്യമാണ്."</string>
+    <string name="error_image_decode_failed">"ഇമേജ് ഡീകോഡ് പരാജയപ്പെട്ടു"</string>
+    <!-- Language settings -->
+    <string name="settings_language">"ഭാഷ"</string>
+    <string name="settings_language_system_default">"സിസ്റ്റം ഡിഫോൾട്ട്"</string>
+    <string name="settings_language_follow_phone">"ഫോണിന്റെ ഭാഷ"</string>
+    <string name="settings_language_uses_phone_language">"ഫോണിന്റെ ഭാഷ: %1$s"</string>
+    <string name="settings_language_app_language">"ആപ്പ് ഭാഷ"</string>
+    <string name="settings_language_note">"പ്രമാണങ്ങളുടെ പേരുകൾ, പേജുകളിൽ നിന്ന് തിരിച്ചറിഞ്ഞ ടെക്സ്റ്റ്, നിങ്ങൾ തുറക്കുന്ന PDF ഫയലുകൾ എന്നിവ അവയുടെ യഥാർഥ ഭാഷയിൽ തന്നെ തുടരും."</string>
+    <!-- Manifest -->
+    <string name="intent_open_in_scanly">"Scanly-ൽ തുറക്കുക"</string>
+    <!-- Library date sections -->
+    <string name="library_section_previous_7_days">"മുമ്പത്തെ 7 ദിവസം"</string>
+    <!-- Month and year as a section title, e.g. "December 2025". %1$s = month name, %2$d = year. -->
+    <string name="library_section_month_year">"%1$s %2$d"</string>
+    <!-- Camera -->
+    <string name="scan_session_capture_failed">"ക്യാപ്ചർ പരാജയപ്പെട്ടു."</string>
+    <!-- Signature kinds as whole phrases (Signature vs Initials) -->
+    <string name="sign_kind_add_signature">"ഒപ്പ് ചേർക്കുക"</string>
+    <string name="sign_kind_add_initials">"ഇനീഷ്യലുകൾ ചേർക്കുക"</string>
+    <string name="sign_kind_delete_signature">"ഒപ്പ് ഇല്ലാതാക്കുക"</string>
+    <string name="sign_kind_delete_initials">"ഇനീഷ്യലുകൾ ഇല്ലാതാക്കുക"</string>
+    <string name="sign_kind_delete_signature_question">"ഒപ്പ് ഇല്ലാതാക്കണോ?"</string>
+    <string name="sign_kind_delete_initials_question">"ഇനിഷ്യലുകൾ ഇല്ലാതാക്കണോ?"</string>
+    <string name="sign_kind_open_signature_options">"ഒപ്പ് ഓപ്ഷനുകൾ തുറക്കുക"</string>
+    <string name="sign_kind_open_initials_options">"ഇനിഷ്യൽ ഓപ്ഷനുകൾ തുറക്കുക"</string>
+    <string name="sign_kind_saved_signature">"സംരക്ഷിച്ച ഒപ്പ്"</string>
+    <string name="sign_kind_saved_initials">"സംരക്ഷിച്ച ഇനീഷ്യലുകൾ"</string>
+    <string name="sign_kind_show_signature_first">"മറ്റുള്ളവരുടെ മുമ്പിൽ ഈ ഒപ്പ് കാണിക്കുക"</string>
+    <string name="sign_kind_show_initials_first">"ഈ ഇനീഷ്യലുകൾ മറ്റുള്ളവർക്ക് മുമ്പ് കാണിക്കുക"</string>
+    <!-- Watermark -->
+    <!-- Watermark presets are stamped into PDFs with a Latin/Cyrillic font. In languages written in
+         another script (Indic, CJK, Thai), keep these in English so the stamp can be drawn. -->
+    <string name="pdf_watermark_preset_confidential">CONFIDENTIAL</string>
+    <string name="pdf_watermark_preset_draft">DRAFT</string>
+    <string name="pdf_watermark_preset_copy">COPY</string>
+    <string name="pdf_watermark_opacity_percent">"%1$d%%"</string>
+    <!-- Localized counts and progress (no English-only plural branches). -->
+    <plurals name="common_days">
+        <item quantity="one">"%d ദിവസം"</item>
+        <item quantity="other">"%d ദിവസങ്ങൾ"</item>
+    </plurals>
+    <plurals name="common_files">
+        <item quantity="one">"%d ഫയൽ"</item>
+        <item quantity="other">"%d ഫയലുകൾ"</item>
+    </plurals>
+    <plurals name="common_images">
+        <item quantity="one">"%d ചിത്രം"</item>
+        <item quantity="other">"%d ചിത്രങ്ങൾ"</item>
+    </plurals>
+    <plurals name="common_marks">
+        <item quantity="one">"%d അടയാളം"</item>
+        <item quantity="other">"%d അടയാളങ്ങൾ"</item>
+    </plurals>
+    <plurals name="common_scans">
+        <item quantity="one">"%d സ്കാൻ"</item>
+        <item quantity="other">"%d സ്കാനുകൾ"</item>
+    </plurals>
+    <plurals name="common_topics">
+        <item quantity="one">"%d വിഷയം"</item>
+        <item quantity="other">"%d വിഷയങ്ങൾ"</item>
+    </plurals>
+    <plurals name="common_libraries">
+        <item quantity="one">"%d ലൈബ്രറി"</item>
+        <item quantity="other">"%d ലൈബ്രറികൾ"</item>
+    </plurals>
+    <plurals name="common_selected">
+        <item quantity="one">"%d തിരഞ്ഞെടുത്തു"</item>
+        <item quantity="other">"%d തിരഞ്ഞെടുത്തു"</item>
+    </plurals>
+    <plurals name="pdf_to_images_saved_count">
+        <item quantity="one">"%d ചിത്രം സംരക്ഷിച്ചു"</item>
+        <item quantity="other">"%d ചിത്രങ്ങൾ സംരക്ഷിച്ചു"</item>
+    </plurals>
+    <plurals name="pdf_to_images_export_count">
+        <item quantity="one">"%d ചിത്രം എക്‌സ്‌പോർട്ട് ചെയ്യുക"</item>
+        <item quantity="other">"%d ചിത്രങ്ങൾ എക്‌സ്‌പോർട്ട് ചെയ്യുക"</item>
+    </plurals>
+    <string name="common_current_of_total">"%2$d ൽ %1$d"</string>
+    <!-- Error fallbacks found in the final extraction audit. -->
+    <string name="error_failed_to_import_images">"ചിത്രങ്ങൾ ഇറക്കുമതി ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു."</string>
+    <string name="error_could_not_calculate_storage_usage">"സംഭരണ ​​ഉപയോഗം കണക്കാക്കാൻ കഴിഞ്ഞില്ല."</string>
+    <string name="error_could_not_clear_app_data">"ആപ്പ് ഡാറ്റ മായ്‌ക്കാനായില്ല."</string>
+    <string name="error_could_not_clear_temporary_exports">"താൽക്കാലിക കയറ്റുമതി മായ്‌ക്കാനായില്ല."</string>
+    <string name="error_could_not_remove_old_backup_files">"പഴയ ബാക്കപ്പ് ഫയലുകൾ നീക്കം ചെയ്യാനായില്ല."</string>
+    <string name="error_could_not_create_the_document">"പ്രമാണം സൃഷ്ടിക്കാൻ കഴിഞ്ഞില്ല."</string>
+    <string name="error_could_not_rename_the_document">"പ്രമാണത്തിൻ്റെ പേരുമാറ്റാൻ കഴിഞ്ഞില്ല."</string>
+    <string name="error_could_not_delete_the_document">"പ്രമാണം ഇല്ലാതാക്കാൻ കഴിഞ്ഞില്ല."</string>
+    <string name="error_could_not_create_the_group">"ഗ്രൂപ്പ് സൃഷ്ടിക്കാൻ കഴിഞ്ഞില്ല."</string>
+    <string name="error_could_not_rename_the_group">"ഗ്രൂപ്പിൻ്റെ പേരുമാറ്റാൻ കഴിഞ്ഞില്ല."</string>
+    <string name="error_could_not_delete_the_group">"ഗ്രൂപ്പ് ഇല്ലാതാക്കാൻ കഴിഞ്ഞില്ല."</string>
+    <string name="error_could_not_remove_empty_folders">"ശൂന്യമായ ഫോൾഡറുകൾ നീക്കം ചെയ്യാനായില്ല."</string>
+    <string name="error_could_not_update_document_group">"ഡോക്യുമെൻ്റ് ഗ്രൂപ്പ് അപ്ഡേറ്റ് ചെയ്യാനായില്ല."</string>
+    <string name="error_could_not_prepare_page_capture">"പേജ് ക്യാപ്‌ചർ തയ്യാറാക്കാൻ കഴിഞ്ഞില്ല."</string>
+    <string name="error_could_not_prepare_page_replacement">"പേജ് മാറ്റിസ്ഥാപിക്കൽ തയ്യാറാക്കാൻ കഴിഞ്ഞില്ല."</string>
+    <string name="error_could_not_save_the_captured_page">"പിടിച്ചെടുത്ത പേജ് സംരക്ഷിക്കാൻ കഴിഞ്ഞില്ല."</string>
+    <string name="error_could_not_reorder_the_page">"പേജ് പുനഃക്രമീകരിക്കാൻ കഴിഞ്ഞില്ല."</string>
+    <string name="error_could_not_save_page_edits">"പേജ് എഡിറ്റുകൾ സംരക്ഷിക്കാൻ കഴിഞ്ഞില്ല."</string>
+    <string name="error_could_not_update_text_recognition_engine">"ടെക്സ്റ്റ് തിരിച്ചറിയൽ എഞ്ചിൻ അപ്ഡേറ്റ് ചെയ്യാനായില്ല."</string>
+    <string name="error_could_not_update_theme_mode">"തീം മോഡ് അപ്ഡേറ്റ് ചെയ്യാനായില്ല."</string>
+    <string name="error_could_not_finish_onboarding">"ഓൺബോർഡിംഗ് പൂർത്തിയാക്കാൻ കഴിഞ്ഞില്ല."</string>
+    <string name="error_could_not_load_settings_content">"ക്രമീകരണ ഉള്ളടക്കം ലോഡ് ചെയ്യാനായില്ല."</string>
+    <string name="error_could_not_update_the_save_location">"സേവ് ലൊക്കേഷൻ അപ്ഡേറ്റ് ചെയ്യാനായില്ല."</string>
+    <string name="error_could_not_update_model_selection">"മോഡൽ തിരഞ്ഞെടുക്കൽ അപ്ഡേറ്റ് ചെയ്യാനായില്ല."</string>
+    <string name="error_could_not_update_document_detection_settings">"ഡോക്യുമെൻ്റ് കണ്ടെത്തൽ ക്രമീകരണങ്ങൾ അപ്ഡേറ്റ് ചെയ്യാനായില്ല."</string>
+    <string name="error_could_not_save_the_exported_file">"കയറ്റുമതി ചെയ്ത ഫയൽ സംരക്ഷിക്കാൻ കഴിഞ്ഞില്ല."</string>
+    <string name="error_could_not_store_update_prompt_state">"അപ്ഡേറ്റ് പ്രോംപ്റ്റ് അവസ്ഥ സംഭരിക്കാൻ കഴിഞ്ഞില്ല."</string>
+    <string name="error_could_not_check_github_releases">"GitHub റിലീസുകൾ പരിശോധിക്കാൻ കഴിഞ്ഞില്ല."</string>
+</resources>

@@ -22,6 +22,8 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
 
 data class ImageTextUiState(
     val isImporting: Boolean = false,
@@ -70,7 +72,7 @@ class ImageTextViewModel @Inject constructor(
                     isImporting = true,
                     importCurrent = 0,
                     importTotal = cappedSelection.items.size,
-                    importStageLabel = "Starting import",
+                    importStageLabel = appString(R.string.document_detail_starting_import),
                 )
             }
             try {

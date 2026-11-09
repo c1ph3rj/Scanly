@@ -75,6 +75,10 @@ import `in`.c1ph3rj.scanly.feature.tools.ToolTokens
 import `in`.c1ph3rj.scanly.feature.tools.ToolWorkingState
 import `in`.c1ph3rj.scanly.feature.tools.toolWarningColors
 import kotlinx.coroutines.flow.collectLatest
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
+import androidx.compose.ui.res.stringResource
+import androidx.annotation.StringRes
 
 /** Paper stays white in both themes, so the ink drawn on it is fixed as well. */
 private val PaperInk = Color(0xFF59636A)
@@ -150,9 +154,9 @@ fun PdfPasswordRoute(
         when (step) {
             PasswordStep.Pick -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
                 PdfFilePickerScreen(
-                    title = "PDF password",
-                    subtitle = "Lock a PDF, or remove a password you know.",
-                    stepText = "Step 1 of 3 · Choose a file",
+                    title = stringResource(R.string.export_share_pdf_password),
+                    subtitle = stringResource(R.string.pdf_password_lock_a_pdf_or_remove),
+                    stepText = stringResource(R.string.pdf_compress_step_1_of_3_choose),
                     documents = uiState.libraryDocuments,
                     onBack = onNavigateUp,
                     onPickDevice = { devicePicker.launch(arrayOf("application/pdf")) },
@@ -189,18 +193,18 @@ fun PdfPasswordRoute(
             )
             PasswordStep.Working -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
                 ToolWorkingState(
-                    title = if (isProtect) "Locking…" else "Unlocking…",
+                    title = if (isProtect) stringResource(R.string.pdf_password_locking) else stringResource(R.string.pdf_password_unlocking),
                     caption = fileName,
                     modifier = Modifier.widthIn(max = MaxStepWidth).fillMaxSize(),
                 )
             }
             PasswordStep.Done -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
                 PdfToolDoneScreen(
-                    title = if (isProtect) "PDF locked" else "Password removed",
+                    title = if (isProtect) stringResource(R.string.pdf_password_pdf_locked) else stringResource(R.string.pdf_password_password_removed),
                     subtitle = if (isProtect) {
-                        "Anyone opening it will need the password."
+                        stringResource(R.string.pdf_password_anyone_opening_it_will_need)
                     } else {
-                        "It now opens without a password."
+                        stringResource(R.string.pdf_password_it_now_opens_without_a)
                     },
                     preview = uiState.resultPreview,
                     outputName = uiState.outputName,
@@ -214,7 +218,7 @@ fun PdfPasswordRoute(
                             shareExportArtifact(
                                 context,
                                 artifact,
-                                if (isProtect) "Protected PDF" else "Unlocked PDF",
+                                if (isProtect) appString(R.string.pdf_password_protected_pdf) else appString(R.string.pdf_password_unlocked_pdf),
                             )
                         }
                     },
@@ -241,7 +245,7 @@ private fun InspectingStep(
     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
         Column(Modifier.widthIn(max = MaxStepWidth).fillMaxSize()) {
             ToolCompactHeader(
-                title = "PDF password",
+                title = stringResource(R.string.export_share_pdf_password),
                 subtitle = subtitle.ifBlank { null },
                 onBack = onBack,
             )
@@ -252,7 +256,7 @@ private fun InspectingStep(
             ) {
                 CircularProgressIndicator(modifier = Modifier.size(28.dp), strokeWidth = 2.dp)
                 Text(
-                    text = "Checking the file…",
+                    text = stringResource(R.string.pdf_password_checking_the_file),
                     modifier = Modifier.padding(top = 12.dp),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -283,10 +287,10 @@ private fun SetPasswordStep(
     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
         Column(Modifier.widthIn(max = MaxStepWidth).fillMaxSize()) {
             ToolCompactHeader(
-                title = "Add password",
+                title = stringResource(R.string.pdf_password_add_password),
                 subtitle = subtitle.ifBlank { null },
                 onBack = onChangeFile,
-                actionLabel = "Change",
+                actionLabel = stringResource(R.string.storage_change),
                 onAction = onChangeFile,
             )
             Column(
@@ -298,11 +302,11 @@ private fun SetPasswordStep(
                 verticalArrangement = Arrangement.spacedBy(18.dp),
             ) {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    ToolFieldLabel("New password")
+                    ToolFieldLabel(stringResource(R.string.pdf_password_new_password))
                     ToolTextField(
                         value = password,
                         onValueChange = onPasswordChange,
-                        placeholder = "At least $PDF_PASSWORD_MIN_LENGTH characters",
+                        placeholder = stringResource(R.string.pdf_password_at_least_characters, PDF_PASSWORD_MIN_LENGTH),
                         visualTransformation = if (showPassword) {
                             VisualTransformation.None
                         } else {
@@ -322,11 +326,11 @@ private fun SetPasswordStep(
                     )
                 }
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    ToolFieldLabel("Confirm password")
+                    ToolFieldLabel(stringResource(R.string.export_share_confirm_password))
                     ToolTextField(
                         value = confirmPassword,
                         onValueChange = onConfirmPasswordChange,
-                        placeholder = "Type it again",
+                        placeholder = stringResource(R.string.pdf_password_type_it_again),
                         visualTransformation = if (showConfirm) {
                             VisualTransformation.None
                         } else {
@@ -367,12 +371,12 @@ private fun SetPasswordStep(
                             verticalArrangement = Arrangement.spacedBy(2.dp),
                         ) {
                             Text(
-                                text = "Restrict editing",
+                                text = stringResource(R.string.pdf_password_restrict_editing),
                                 style = MaterialTheme.typography.bodyLarge,
                                 fontWeight = FontWeight.Medium,
                             )
                             Text(
-                                text = "Others can open and print, but not edit or copy text",
+                                text = stringResource(R.string.pdf_password_others_can_open_and_print),
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
@@ -381,14 +385,14 @@ private fun SetPasswordStep(
                     }
                 }
                 ToolNote(
-                    text = "Scanly can't recover this password. If you forget it, the PDF can't be opened.",
+                    text = stringResource(R.string.pdf_password_scanly_can_t_recover_this),
                     icon = Icons.Filled.Warning,
                     warning = true,
                 )
             }
             ToolBottomBar {
                 ToolPrimaryButton(
-                    text = "Lock PDF",
+                    text = stringResource(R.string.pdf_password_lock_pdf),
                     onClick = onLock,
                     enabled = lengthOk && matches,
                     icon = Icons.Filled.Lock,
@@ -412,10 +416,10 @@ private fun UnlockPasswordStep(
     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
         Column(Modifier.widthIn(max = MaxStepWidth).fillMaxSize()) {
             ToolCompactHeader(
-                title = "Remove password",
+                title = stringResource(R.string.pdf_password_remove_password),
                 subtitle = subtitle.ifBlank { null },
                 onBack = onChangeFile,
-                actionLabel = "Change",
+                actionLabel = stringResource(R.string.storage_change),
                 onAction = onChangeFile,
             )
             Column(
@@ -433,7 +437,7 @@ private fun UnlockPasswordStep(
                         overlay = {
                             Icon(
                                 imageVector = Icons.Filled.Lock,
-                                contentDescription = "Locked PDF",
+                                contentDescription = stringResource(R.string.pdf_password_locked_pdf),
                                 tint = PaperInk,
                                 modifier = Modifier.size(36.dp),
                             )
@@ -441,11 +445,11 @@ private fun UnlockPasswordStep(
                     )
                 }
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    ToolFieldLabel("Current password")
+                    ToolFieldLabel(stringResource(R.string.pdf_password_current_password))
                     ToolTextField(
                         value = password,
                         onValueChange = onPasswordChange,
-                        placeholder = "Password for this PDF",
+                        placeholder = stringResource(R.string.pdf_password_password_for_this_pdf),
                         isError = error != null,
                         visualTransformation = if (showPassword) {
                             VisualTransformation.None
@@ -467,7 +471,7 @@ private fun UnlockPasswordStep(
                         } else {
                             {
                                 Text(
-                                    text = "Bank and portal PDFs often use your date of birth or customer ID.",
+                                    text = stringResource(R.string.pdf_password_bank_and_portal_pdfs_often),
                                     style = MaterialTheme.typography.bodySmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 )
@@ -476,12 +480,12 @@ private fun UnlockPasswordStep(
                     )
                 }
                 ToolNote(
-                    text = "The unlocked copy opens for anyone who has it. Scanly only removes passwords you already know.",
+                    text = stringResource(R.string.pdf_password_the_unlocked_copy_opens_for),
                 )
             }
             ToolBottomBar {
                 ToolPrimaryButton(
-                    text = "Remove password",
+                    text = stringResource(R.string.pdf_password_remove_password),
                     onClick = onRemove,
                     enabled = password.isNotBlank(),
                     icon = Icons.Filled.LockOpen,
@@ -499,7 +503,7 @@ private fun PasswordVisibilityToggle(
     IconButton(onClick = onToggle) {
         Icon(
             imageVector = if (visible) Icons.Filled.VisibilityOff else Icons.Filled.Visibility,
-            contentDescription = if (visible) "Hide password" else "Show password",
+            contentDescription = if (visible) stringResource(R.string.export_share_hide_password) else stringResource(R.string.export_share_show_password),
             tint = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
@@ -530,7 +534,7 @@ private fun PasswordMatchLine(matches: Boolean) {
             )
         }
         Text(
-            text = if (matches) "Passwords match" else "Doesn't match yet",
+            text = if (matches) stringResource(R.string.pdf_password_passwords_match) else stringResource(R.string.pdf_password_doesn_t_match_yet),
             style = MaterialTheme.typography.bodySmall,
             fontWeight = FontWeight.Medium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -584,7 +588,7 @@ private fun PasswordStrengthMeter(strength: PdfPasswordStrength) {
             )
         }
         Text(
-            text = "A short phrase you'll remember beats random letters.",
+            text = stringResource(R.string.pdf_password_a_short_phrase_you_ll),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
@@ -614,26 +618,29 @@ private fun passwordResultDetails(
     restrictEditing: Boolean,
 ): List<ToolDetailRow> = buildList {
     val isProtect = state.passwordMode == PdfPasswordMode.Protect
-    add(ToolDetailRow("Protection", if (isProtect) "AES-256 password" else "No password"))
+    add(ToolDetailRow(appString(R.string.pdf_password_protection), if (isProtect) appString(R.string.pdf_password_aes_256_password) else appString(R.string.pdf_password_no_password)))
     if (isProtect) {
-        add(ToolDetailRow("Editing", if (restrictEditing) "Restricted" else "Allowed"))
+        add(ToolDetailRow(appString(R.string.pdf_password_editing), if (restrictEditing) appString(R.string.pdf_password_restricted) else appString(R.string.pdf_password_allowed)))
     }
     val file = listOfNotNull(
         state.info?.pageCount?.takeIf { it > 0 }?.let(::formatPdfPageCount),
         state.resultSizeBytes?.let { StorageFormatter.formatBytes(it) },
     ).joinToString(" · ")
-    if (file.isNotEmpty()) add(ToolDetailRow("File", file))
-    add(ToolDetailRow("Original", "Kept, unchanged"))
+    if (file.isNotEmpty()) add(ToolDetailRow(appString(R.string.pdf_password_file), file))
+    add(ToolDetailRow(appString(R.string.filter_customize_original), appString(R.string.pdf_merge_kept_unchanged)))
 }
 
 /** Strength levels for the New password meter. Length follows the backend's 4-64 rule. */
-internal enum class PdfPasswordStrength(val label: String?, val filledSegments: Int) {
+internal enum class PdfPasswordStrength(@param:StringRes val labelRes: Int?, val filledSegments: Int) {
     Empty(null, 0),
-    TooShort("Too short", 1),
-    TooLong("Too long", 4),
-    Weak("Weak", 1),
-    Fair("Fair", 2),
-    Strong("Strong", 4),
+    TooShort(R.string.pdf_password_strength_too_short, 1),
+    TooLong(R.string.pdf_password_strength_too_long, 4),
+    Weak(R.string.pdf_password_strength_weak, 1),
+    Fair(R.string.pdf_password_strength_fair, 2),
+    Strong(R.string.pdf_password_strength_strong, 4),
+    ;
+
+    val label: String? get() = labelRes?.let { appString(it) }
 }
 
 /** Scores a new password: length (8, 12), mixed case, and digits or symbols. */

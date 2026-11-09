@@ -11,6 +11,8 @@ import com.tom_roush.pdfbox.util.Matrix
 import `in`.c1ph3rj.scanly.domain.model.WatermarkOptions
 import kotlin.math.cos
 import kotlin.math.sin
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
 
 /**
  * Draws a text watermark onto PDF pages.
@@ -97,14 +99,13 @@ internal class PdfWatermarkStamper private constructor(
          */
         fun create(document: PDDocument, options: WatermarkOptions): PdfWatermarkStamper {
             val text = normalizeWatermarkText(options.text)
-            require(text.isNotEmpty()) { "Enter watermark text." }
+            require(text.isNotEmpty()) { appString(R.string.error_enter_watermark_text) }
             require(!needsComplexShaping(text)) {
-                "Watermarks support Latin, Greek and Cyrillic text, digits and symbols. " +
-                    "Try the text in English."
+                appString(R.string.pdf_watermark_stamper_watermarks_support_latin_greek_and)
             }
             val font = PdfFontResolver.resolve(document, text, PDType1Font.HELVETICA_BOLD, PdfFontResolver.BoldCandidates)
                 ?: throw IllegalArgumentException(
-                    "Some characters in the watermark can't be drawn. Remove emoji or unusual symbols.",
+                    appString(R.string.error_some_characters_in_the_watermark_cant_be),
                 )
             return PdfWatermarkStamper(font, text, options)
         }

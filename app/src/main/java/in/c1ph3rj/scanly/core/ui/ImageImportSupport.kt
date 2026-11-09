@@ -1,6 +1,8 @@
 package `in`.c1ph3rj.scanly.core.ui
 
 import androidx.activity.result.contract.ActivityResultContracts
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
 
 object ImageImportSupport {
     /**
@@ -35,17 +37,17 @@ object ImageImportSupport {
 
     fun importResultMessage(importedCount: Int, truncated: Boolean, skippedCount: Int = 0): String {
         val parts = mutableListOf(
-            if (importedCount == 1) "Imported 1 image." else "Imported $importedCount images.",
+            if (importedCount == 1) appString(R.string.image_import_imported_1_image) else appString(R.string.image_import_imported_images, importedCount),
         )
         if (skippedCount > 0) {
             parts += if (skippedCount == 1) {
-                "Skipped 1 file that couldn't be opened."
+                appString(R.string.image_import_skipped_1_file_that_couldn)
             } else {
-                "Skipped $skippedCount files that couldn't be opened."
+                appString(R.string.image_import_skipped_files_that_couldn_t, skippedCount)
             }
         }
         if (truncated) {
-            parts += "Only $MAX_IMAGES_PER_IMPORT images can be added at a time."
+            parts += appString(R.string.image_import_only_images_can_be_added, MAX_IMAGES_PER_IMPORT)
         }
         return parts.joinToString(" ")
     }

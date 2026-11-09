@@ -23,6 +23,8 @@ import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import `in`.c1ph3rj.scanly.R
+import androidx.compose.ui.res.stringResource
 
 /** Which edge of the bubble the tail sits on — always the side Pip is on. */
 enum class PipBubbleTail {
@@ -49,7 +51,7 @@ fun PipBubble(
     textAlign: TextAlign = TextAlign.Start,
     /** Shows a close button inside the bubble. */
     onDismiss: (() -> Unit)? = null,
-    dismissLabel: String = "Dismiss",
+    dismissLabel: String = stringResource(R.string.pip_bubble_dismiss),
 ) {
     val dark = MaterialTheme.colorScheme.background.luminance() < 0.5f
     val outline = if (dark) PipColors.Paper else PipColors.Ink

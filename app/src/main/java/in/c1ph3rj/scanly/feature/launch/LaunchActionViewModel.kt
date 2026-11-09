@@ -21,6 +21,8 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
 
 data class LaunchImportProgress(
     val active: Boolean = false,
@@ -89,7 +91,7 @@ class LaunchActionViewModel @Inject constructor(
                 active = true,
                 current = 0,
                 total = total,
-                stageLabel = "Starting import",
+                stageLabel = appString(R.string.document_detail_starting_import),
             )
             try {
                 when (val createResult = createDocumentUseCase.createImported()) {

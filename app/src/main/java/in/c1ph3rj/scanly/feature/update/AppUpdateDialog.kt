@@ -35,9 +35,12 @@ import `in`.c1ph3rj.scanly.feature.components.ScanlyFormDialogShell
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
+import `in`.c1ph3rj.scanly.R
+import androidx.compose.ui.res.stringResource
 
-private val releaseDateFormatter: DateTimeFormatter =
-    DateTimeFormatter.ofPattern("MMM d, yyyy", Locale.US)
+/** Built per call so the date follows the app language. */
+private val releaseDateFormatter: DateTimeFormatter
+    get() = DateTimeFormatter.ofLocalizedDate(java.time.format.FormatStyle.MEDIUM).withLocale(Locale.getDefault())
 
 @Composable
 fun AppUpdateDialog(
@@ -80,7 +83,7 @@ fun AppUpdateDialog(
                 verticalArrangement = Arrangement.spacedBy(2.dp),
             ) {
                 Text(
-                    text = "Update available",
+                    text = stringResource(R.string.play_store_app_update_repository_update_available),
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -102,7 +105,7 @@ fun AppUpdateDialog(
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Text(
-                text = "What's new",
+                text = stringResource(R.string.app_update_what_s_new),
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.SemiBold,
             )
@@ -140,14 +143,14 @@ fun AppUpdateDialog(
                     contentDescription = null,
                 )
                 Text(
-                    text = "Update",
+                    text = stringResource(R.string.app_update_update),
                     modifier = Modifier.padding(start = 8.dp),
                 )
             }
             TextButton(
                 onClick = onDismiss,
             ) {
-                Text(text = "Not now")
+                Text(text = stringResource(R.string.pip_camera_not_now))
             }
         }
     }
@@ -175,7 +178,7 @@ private fun ReleaseSummary(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 VersionColumn(
-                    label = "Current",
+                    label = stringResource(R.string.app_update_current),
                     value = versionLabel(currentVersion),
                     modifier = Modifier.weight(1f),
                 )
@@ -186,14 +189,14 @@ private fun ReleaseSummary(
                     modifier = Modifier.padding(horizontal = 12.dp),
                 )
                 VersionColumn(
-                    label = "Latest",
+                    label = stringResource(R.string.play_store_app_update_repository_latest),
                     value = release.tagName,
                     modifier = Modifier.weight(1f),
                     alignEnd = true,
                 )
             }
 
-            val publishedLabel = release.publishedDateLabel()?.let { "Published $it" }
+            val publishedLabel = release.publishedDateLabel()?.let { stringResource(R.string.app_update_published, it) }
             if (publishedLabel != null) {
                 HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
                 Text(
@@ -219,7 +222,7 @@ private fun VersionColumn(
         verticalArrangement = Arrangement.spacedBy(2.dp),
     ) {
         Text(
-            text = label.uppercase(),
+            text = label.uppercase(androidx.compose.ui.platform.LocalConfiguration.current.locales[0]),
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )

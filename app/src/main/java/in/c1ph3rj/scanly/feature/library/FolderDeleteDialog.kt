@@ -27,6 +27,9 @@ import androidx.compose.ui.unit.dp
 import `in`.c1ph3rj.scanly.domain.trash.TrashKind
 import `in`.c1ph3rj.scanly.feature.components.ScanlyConfirmDialog
 import `in`.c1ph3rj.scanly.feature.components.ScanlyFormDialogShell
+import `in`.c1ph3rj.scanly.R
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.pluralStringResource
 
 /**
  * Asks what deleting a folder should do with its documents: delete them with it, keep them in
@@ -44,46 +47,45 @@ fun FolderDeleteDialog(
 ) {
     if (documentCount == 0) {
         ScanlyConfirmDialog(
-            title = "Delete folder?",
+            title = stringResource(R.string.folder_delete_delete_folder),
             text = TrashCopy.folder(title, documentCount = 0),
             onDismiss = onDismiss,
             onConfirm = { onDelete(true) },
-            confirmLabel = "Delete",
+            confirmLabel = stringResource(R.string.library_card_presentation_delete),
             confirmDestructive = true,
         )
         return
     }
-    val documents = if (documentCount == 1) "1 document" else "$documentCount documents"
-    val them = if (documentCount == 1) "it" else "them"
+    val documents = pluralStringResource(R.plurals.common_documents, documentCount, documentCount)
     ScanlyFormDialogShell(onDismiss = onDismiss) {
         Text(
-            text = "Delete folder?",
+            text = stringResource(R.string.folder_delete_delete_folder),
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.SemiBold,
         )
         Text(
-            text = "\"$title\" has $documents. What should happen to $them?",
+            text = pluralStringResource(R.plurals.folder_delete_what_should_happen, documentCount, title, documentCount),
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
         Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
             FolderDeleteOption(
                 icon = Icons.AutoMirrored.Outlined.DriveFileMove,
-                title = "Delete folder only",
-                subtitle = "Keep the $documents in your Library",
+                title = stringResource(R.string.folder_delete_delete_folder_only),
+                subtitle = stringResource(R.string.folder_delete_keep_the_in_your_library, documents),
                 onClick = { onDelete(false) },
             )
             FolderDeleteOption(
                 icon = Icons.Outlined.DeleteForever,
-                title = "Delete folder and documents",
-                subtitle = "Both go to Recently deleted for ${TrashKind.FOLDER.retentionLabel()}",
+                title = stringResource(R.string.folder_delete_delete_folder_and_documents),
+                subtitle = stringResource(R.string.folder_delete_both_go_to_recently_deleted, TrashKind.FOLDER.retentionLabel()),
                 destructive = true,
                 onClick = { onDelete(true) },
             )
         }
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
             TextButton(onClick = onDismiss) {
-                Text("Cancel")
+                Text(stringResource(R.string.export_share_cancel))
             }
         }
     }

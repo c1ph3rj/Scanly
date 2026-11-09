@@ -46,6 +46,9 @@ import `in`.c1ph3rj.scanly.feature.rating.launchRating
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import `in`.c1ph3rj.scanly.R
+import androidx.compose.ui.res.stringResource
+import `in`.c1ph3rj.scanly.core.common.appString
 
 private const val RATING_PROMPT_DELAY_MILLIS = 1_500L
 private const val RATING_STAR_COUNT = 5
@@ -116,14 +119,13 @@ private fun RatingPromptContent(
     ) {
         AnimatedRatingStars(onRate = onRate)
         Text(
-            text = "Rate Scanly",
+            text = stringResource(R.string.home_rating_prompt_rate_scanly),
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.SemiBold,
             modifier = Modifier.padding(top = 4.dp),
         )
         Text(
-            text = "Scanly is free, private and ad-free. If it saves you time, a quick rating on " +
-                "Google Play really helps.",
+            text = stringResource(R.string.home_rating_prompt_scanly_is_free_private_and),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center,
@@ -134,10 +136,10 @@ private fun RatingPromptContent(
                 .fillMaxWidth()
                 .padding(top = 8.dp),
         ) {
-            Text("Rate on Google Play")
+            Text(stringResource(R.string.home_rating_prompt_rate_on_google_play))
         }
         TextButton(onClick = onNotNow) {
-            Text("Not now")
+            Text(stringResource(R.string.pip_camera_not_now))
         }
     }
 }
@@ -164,7 +166,7 @@ private fun AnimatedRatingStars(onRate: () -> Unit) {
             .defaultMinSize(minHeight = 48.dp)
             .clickable(role = Role.Button, onClick = onRate)
             .semantics(mergeDescendants = true) {
-                contentDescription = "Rate Scanly, opens Google Play"
+                contentDescription = appString(R.string.home_rating_prompt_rate_scanly_opens_google_play)
             },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(6.dp),

@@ -22,6 +22,9 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import `in`.c1ph3rj.scanly.feature.tools.pdf.shareExportArtifact
 import kotlinx.coroutines.flow.collectLatest
+import `in`.c1ph3rj.scanly.R
+import androidx.compose.ui.res.stringResource
+import `in`.c1ph3rj.scanly.core.common.appString
 
 /**
  * QR tool: Scan (the default when opened from Tools), Create and History, with the result
@@ -92,7 +95,7 @@ fun QrToolRoute(
                 onSave = viewModel::saveCreatedCode,
                 onShare = {
                     viewModel.shareCreatedCode { artifact ->
-                        shareExportArtifact(context, artifact, "QR code")
+                        shareExportArtifact(context, artifact, appString(R.string.qr_scan_qr_code))
                     }
                 },
             )

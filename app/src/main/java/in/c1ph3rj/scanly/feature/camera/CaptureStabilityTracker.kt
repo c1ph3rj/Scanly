@@ -4,6 +4,8 @@ import `in`.c1ph3rj.scanly.core.ml.CornerDetectionResult
 import `in`.c1ph3rj.scanly.core.ml.DocumentCornerQuad
 import `in`.c1ph3rj.scanly.core.ml.DocumentQuadPolicy
 import `in`.c1ph3rj.scanly.domain.model.DocumentCornerModel
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
 
 enum class AutoCapturePhase {
     OFF,
@@ -20,7 +22,7 @@ data class LiveDetectionUiState(
     val autoCaptureEnabled: Boolean = true,
     val isGridEnabled: Boolean = true,
     val phase: AutoCapturePhase = AutoCapturePhase.SEARCHING,
-    val statusMessage: String = "Point your camera at a document.",
+    val statusMessage: String = appString(R.string.scan_session_point_your_camera_at_a_2),
     val countdownValue: Int? = null,
     val sceneIssue: CaptureSceneIssue? = null,
     val model: DocumentCornerModel = DocumentCornerModel.ACCURATE,
@@ -89,9 +91,9 @@ class CaptureStabilityTracker(
             return StabilityEvaluation(
                 phase = AutoCapturePhase.OFF,
                 statusMessage = if (candidateQuad == null) {
-                    "Auto-capture is off. Use the shutter when ready."
+                    appString(R.string.capture_stability_tracker_auto_capture_is_off_use)
                 } else {
-                    "Document detected. Tap capture whenever you are ready."
+                    appString(R.string.capture_stability_tracker_document_detected_tap_capture_whenever)
                 },
                 countdownValue = null,
                 shouldAutoCapture = false,
@@ -105,7 +107,7 @@ class CaptureStabilityTracker(
             }
             return StabilityEvaluation(
                 phase = AutoCapturePhase.SEARCHING,
-                statusMessage = "Point your camera at a full document.",
+                statusMessage = appString(R.string.capture_stability_tracker_point_your_camera_at_a),
                 countdownValue = null,
                 shouldAutoCapture = false,
             )
@@ -117,7 +119,7 @@ class CaptureStabilityTracker(
                 resetStableWindow()
                 return StabilityEvaluation(
                     phase = AutoCapturePhase.COOLDOWN,
-                    statusMessage = "Move to the next page before auto-capture re-arms.",
+                    statusMessage = appString(R.string.capture_stability_tracker_move_to_the_next_page),
                     countdownValue = null,
                     shouldAutoCapture = false,
                 )
@@ -129,7 +131,7 @@ class CaptureStabilityTracker(
             resetStableWindow()
             return StabilityEvaluation(
                 phase = AutoCapturePhase.COOLDOWN,
-                statusMessage = "Hold position. Auto-capture is cooling down.",
+                statusMessage = appString(R.string.capture_stability_tracker_hold_position_auto_capture_is),
                 countdownValue = null,
                 shouldAutoCapture = false,
             )
@@ -147,7 +149,7 @@ class CaptureStabilityTracker(
             stableSinceMillis = nowMillis
             return StabilityEvaluation(
                 phase = AutoCapturePhase.HOLD_STEADY,
-                statusMessage = "Hold steady to auto-capture.",
+                statusMessage = appString(R.string.capture_stability_tracker_hold_steady_to_auto_capture),
                 countdownValue = null,
                 shouldAutoCapture = false,
             )
@@ -157,7 +159,7 @@ class CaptureStabilityTracker(
         if (stableDuration >= minStableDurationMillis) {
             return StabilityEvaluation(
                 phase = AutoCapturePhase.COUNTDOWN,
-                statusMessage = "Capturing now.",
+                statusMessage = appString(R.string.capture_stability_tracker_capturing_now),
                 countdownValue = 1,
                 shouldAutoCapture = true,
             )
@@ -170,7 +172,7 @@ class CaptureStabilityTracker(
         }
         return StabilityEvaluation(
             phase = AutoCapturePhase.COUNTDOWN,
-            statusMessage = "Hold steady.",
+            statusMessage = appString(R.string.capture_stability_tracker_hold_steady),
             countdownValue = countdownValue,
             shouldAutoCapture = false,
         )
@@ -185,7 +187,7 @@ class CaptureStabilityTracker(
 
     fun capturingState(autoCaptureEnabled: Boolean): StabilityEvaluation = StabilityEvaluation(
         phase = AutoCapturePhase.CAPTURING,
-        statusMessage = if (autoCaptureEnabled) "Capturing page…" else "Saving page…",
+        statusMessage = if (autoCaptureEnabled) appString(R.string.capture_stability_tracker_capturing_page) else appString(R.string.capture_stability_tracker_saving_page),
         countdownValue = null,
         shouldAutoCapture = false,
     )

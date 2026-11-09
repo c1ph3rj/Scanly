@@ -1,0 +1,1994 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="shortcut_scan_short">Scannen</string>
+    <string name="shortcut_scan_long">Nieuwe scan starten</string>
+    <string name="shortcut_scan_disabled">Scannen niet beschikbaar</string>
+    <string name="shortcut_import_short">Importeren</string>
+    <string name="shortcut_import_long">Foto\'s importeren</string>
+    <string name="shortcut_import_disabled">Importeren niet beschikbaar</string>
+    <string name="shortcut_qr_short">QR</string>
+    <string name="shortcut_qr_long">QR scannen of maken, barcodes lezen</string>
+    <string name="shortcut_qr_disabled">QR-tool niet beschikbaar</string>
+    <string name="shortcut_library_short">Bibliotheek</string>
+    <string name="shortcut_library_long">Je bibliotheek openen</string>
+    <string name="shortcut_library_disabled">Bibliotheek niet beschikbaar</string>
+    <string name="widget_actions_label">Scanly-acties</string>
+    <string name="widget_actions_description">Snel naar Scannen, Importeren, QR en Bibliotheek.</string>
+    <string name="widget_scan_label">Scanly Scannen</string>
+    <string name="widget_scan_description">Start een nieuwe documentscan.</string>
+    <string name="widget_qr_label">Scanly QR</string>
+    <string name="widget_qr_description">Open de tool om QR-codes te scannen en te maken.</string>
+    <string name="widget_action_scan">Scannen</string>
+    <string name="widget_action_import">Importeren</string>
+    <string name="widget_action_qr">QR</string>
+    <string name="widget_action_library">Bibliotheek</string>
+    <!-- DocumentPresentationFormatter -->
+    <string name="document_presentation_formatter_imported">"Import %1$s"</string>
+    <string name="document_presentation_formatter_folder">"Map %1$s"</string>
+    <string name="document_presentation_formatter_new_folder">"Nieuwe map %1$s"</string>
+    <string name="document_presentation_formatter_scan">"Scan %1$s"</string>
+    <string name="document_presentation_formatter_document">"Document %1$s"</string>
+    <!-- ImageImportSupport -->
+    <string name="image_import_only_images_can_be_added">"Je kunt maximaal %1$s afbeeldingen tegelijk toevoegen."</string>
+    <string name="image_import_skipped_files_that_couldn_t">"%1$s bestanden overgeslagen die niet konden worden geopend."</string>
+    <string name="image_import_skipped_1_file_that_couldn">1 bestand overgeslagen dat niet kon worden geopend.</string>
+    <string name="image_import_imported_images">"%1$s afbeeldingen geïmporteerd."</string>
+    <string name="image_import_imported_1_image">1 afbeelding geïmporteerd.</string>
+    <!-- ZoomableImageDialog -->
+    <string name="zoomable_image_image_unavailable">Afbeelding niet beschikbaar</string>
+    <string name="zoomable_image_reset_zoom">Zoom resetten</string>
+    <string name="zoomable_image_back">Terug</string>
+    <string name="zoomable_image_close">Sluiten</string>
+    <!-- LibraryOperationCoordinator -->
+    <string name="library_operation_coordinator_library_maintenance_is_in_progress">Bezig met onderhoud van de bibliotheek.</string>
+    <!-- DefaultDocumentRepository -->
+    <string name="default_document_repository_could_not_remove_empty_documents">Kan lege documenten niet verwijderen.</string>
+    <string name="default_document_repository_could_not_clear_old_deleted">Kan oude verwijderde documenten niet opruimen.</string>
+    <string name="default_document_repository_could_not_empty_recently_deleted">Kan Recent verwijderd niet leegmaken.</string>
+    <string name="default_document_repository_could_not_restore_the_document">Kan het document niet herstellen.</string>
+    <string name="default_document_repository_could_not_move_the_document">Kan het document niet naar Recent verwijderd verplaatsen.</string>
+    <!-- DefaultDocumentExportRepository -->
+    <string name="default_document_export_repository_could_not_prepare_group_zip">Kan ZIP van de map niet voorbereiden om te delen.</string>
+    <string name="default_document_export_repository_could_not_prepare_group_pdf">Kan PDF van de map niet voorbereiden om te delen.</string>
+    <string name="default_document_export_repository_could_not_export_group_as">Kan de map niet als ZIP exporteren.</string>
+    <string name="default_document_export_repository_could_not_export_group_as_2">Kan de map niet als PDF exporteren.</string>
+    <string name="default_document_export_repository_could_not_prepare_images_for">Kan afbeeldingen niet voorbereiden om te delen.</string>
+    <string name="default_document_export_repository_could_not_export_images">Kan afbeeldingen niet exporteren.</string>
+    <string name="default_document_export_repository_could_not_prepare_pdf_share">Kan PDF niet voorbereiden om te delen.</string>
+    <string name="default_document_export_repository_could_not_export_pdf">Kan PDF niet exporteren.</string>
+    <!-- DefaultGroupRepository -->
+    <string name="default_group_repository_could_not_clear_old_deleted">Kan oude verwijderde mappen niet opruimen.</string>
+    <string name="default_group_repository_could_not_delete_the_folders">Kan de mappen niet verwijderen.</string>
+    <string name="default_group_repository_could_not_delete_the_folder">Kan de map niet verwijderen.</string>
+    <string name="default_group_repository_could_not_restore_the_folder">Kan de map niet herstellen.</string>
+    <string name="default_group_repository_could_not_move_the_folder">Kan de map niet naar Recent verwijderd verplaatsen.</string>
+    <!-- DefaultPageRepository -->
+    <string name="default_page_repository_applied_to_of_pages_save">"Toegepast op %1$s van %2$s pagina's. Sla opnieuw op om de rest te proberen."</string>
+    <string name="default_page_repository_could_not_clear_old_deleted">Kan oude verwijderde pagina\'s niet opruimen.</string>
+    <string name="default_page_repository_could_not_delete_the_pages">Kan de pagina\'s niet verwijderen.</string>
+    <string name="default_page_repository_could_not_delete_the_page">Kan de pagina niet verwijderen.</string>
+    <string name="default_page_repository_could_not_restore_the_page">Kan de pagina niet herstellen.</string>
+    <!-- DefaultPdfToolkitRepository -->
+    <string name="default_pdf_toolkit_repository_incorrect_pdf_password">Onjuist PDF-wachtwoord.</string>
+    <string name="default_pdf_toolkit_repository_this_pdf_is_not_stored">Deze PDF staat niet in Scanly.</string>
+    <string name="default_pdf_toolkit_repository_the_scanly_document_could_not">Kan het Scanly-document niet als PDF voorbereiden.</string>
+    <string name="default_pdf_toolkit_repository_could_not_prepare_share">Kan delen niet voorbereiden.</string>
+    <string name="default_pdf_toolkit_repository_could_not_read_this_page">Kan deze pagina niet lezen.</string>
+    <string name="default_pdf_toolkit_repository_failed_to_encode_page">Kan pagina %1$s niet coderen.</string>
+    <string name="default_pdf_toolkit_repository_could_not_save_the_images">Kan de afbeeldingen niet opslaan.</string>
+    <string name="default_pdf_toolkit_repository_page">"%1$s – pagina %2$s.%3$s"</string>
+    <string name="default_pdf_toolkit_repository_could_not_estimate_the_image">Kan de afbeeldingsgrootte niet inschatten.</string>
+    <string name="default_pdf_toolkit_repository_could_not_open_this_pdf">Kan deze PDF niet openen.</string>
+    <string name="default_pdf_toolkit_repository_could_not_render_pdf_page">Kan PDF-pagina niet weergeven.</string>
+    <string name="default_pdf_toolkit_repository_could_not_sign_this_pdf">Kan deze PDF niet ondertekenen.</string>
+    <string name="default_pdf_toolkit_repository_could_not_open_this_pdf_2">Kan deze PDF niet openen om te ondertekenen.</string>
+    <string name="default_pdf_toolkit_repository_could_not_update_watermark_preview">Kan voorbeeld van watermerk niet bijwerken.</string>
+    <string name="default_pdf_toolkit_repository_could_not_add_watermark">Kan watermerk niet toevoegen.</string>
+    <string name="default_pdf_toolkit_repository_could_not_remove_pdf_password">Kan PDF-wachtwoord niet verwijderen.</string>
+    <string name="default_pdf_toolkit_repository_could_not_password_protect_pdf">Kan PDF niet met een wachtwoord beveiligen.</string>
+    <string name="default_pdf_toolkit_repository_could_not_compress_pdf">Kan PDF niet comprimeren.</string>
+    <string name="default_pdf_toolkit_repository_this_pdf_is_already_well">Deze PDF is al goed geoptimaliseerd. Comprimeren maakt hem niet kleiner.</string>
+    <string name="default_pdf_toolkit_repository_page_is_too_large_to">"Pagina %1$s is te groot om op dit apparaat te comprimeren. Probeer de kwaliteit Kleinst."</string>
+    <string name="default_pdf_toolkit_repository_could_not_merge_pdfs">Kan PDF\'s niet samenvoegen.</string>
+    <string name="default_pdf_toolkit_repository_one_of_the_pdfs">Een van de PDF\'s</string>
+    <string name="default_pdf_toolkit_repository_could_not_open_pdf">Kan PDF niet openen.</string>
+    <!-- PdfSignatureStamper -->
+    <string name="pdf_signature_stamper_text_and_dates_support_latin">Tekst en datums ondersteunen Latijnse, Griekse en Cyrillische tekst, cijfers en symbolen.</string>
+    <!-- PdfWatermarkStamper -->
+    <string name="pdf_watermark_stamper_watermarks_support_latin_greek_and">Watermerken ondersteunen Latijnse, Griekse en Cyrillische tekst, cijfers en symbolen. Probeer de tekst in het Engels.</string>
+    <!-- DefaultQrCodeRepository -->
+    <string name="default_qr_code_repository_could_not_save_qr_code">Kan QR-code niet opslaan.</string>
+    <string name="default_qr_code_repository_could_not_generate_qr_code">Kan QR-code niet maken.</string>
+    <!-- DefaultPageMarkupRepository -->
+    <string name="default_page_markup_repository_could_not_save_the_signed">Kan de ondertekende pagina\'s niet opslaan.</string>
+    <string name="default_page_markup_repository_could_not_load_signatures_for">Kan handtekeningen voor dit document niet laden.</string>
+    <!-- DefaultSignatureRepository -->
+    <string name="default_signature_repository_could_not_save_the_image">Kan de afbeelding niet opslaan.</string>
+    <string name="default_signature_repository_could_not_prepare_the_image">Kan de afbeelding niet voorbereiden.</string>
+    <string name="default_signature_repository_could_not_update_the_signature">Kan de handtekening niet bijwerken.</string>
+    <string name="default_signature_repository_could_not_delete_the_signature">Kan de handtekening niet verwijderen.</string>
+    <string name="default_signature_repository_could_not_read_this_image">Kan deze afbeelding niet lezen.</string>
+    <string name="default_signature_repository_could_not_save_the_signature">Kan de handtekening niet opslaan.</string>
+    <!-- PageMarkupStore -->
+    <string name="page_markup_store_could_not_save_the_signed">Kan de ondertekende pagina niet opslaan.</string>
+    <!-- DefaultPageTextRepository -->
+    <string name="default_page_text_repository_could_not_queue_pages_to">Kan pagina\'s niet in de wachtrij zetten om opnieuw te lezen.</string>
+    <string name="default_page_text_repository_could_not_update_the_text">Kan de tekstindex niet bijwerken.</string>
+    <string name="default_page_text_repository_could_not_save_your_changes">Kan je wijzigingen niet opslaan.</string>
+    <string name="default_page_text_repository_could_not_read_text_from">Kan geen tekst van deze pagina lezen.</string>
+    <string name="default_page_text_repository_could_not_read_text_from_2">Kan geen tekst uit dit document lezen.</string>
+    <!-- DefaultPlayInAppUpdateCoordinator -->
+    <string name="default_play_in_app_update_coordinator_could_not_check_google_play">Kan niet via Google Play op updates controleren.</string>
+    <string name="default_play_in_app_update_coordinator_google_play_could_not_check">Google Play kan niet op updates controleren.</string>
+    <!-- PlayStoreAppUpdateRepository -->
+    <string name="play_store_app_update_repository_update_available">Update beschikbaar</string>
+    <string name="play_store_app_update_repository_latest">Nieuwste</string>
+    <!-- PdfExportOptions -->
+    <string name="pdf_export_options_use_no_more_than_characters">"Gebruik maximaal %1$s tekens."</string>
+    <string name="pdf_export_options_use_at_least_characters">"Gebruik minstens %1$s tekens."</string>
+    <string name="pdf_export_options_enter_a_pdf_password">Voer een PDF-wachtwoord in.</string>
+    <!-- QrPayload -->
+    <string name="qr_payload_text_characters">"Tekst · %1$s tekens"</string>
+    <string name="qr_payload_phone_number">Telefoonnummer</string>
+    <string name="qr_payload_email">E-mail</string>
+    <string name="qr_payload_contact_card">Contactkaart</string>
+    <string name="qr_payload_wi_fi">"Wi-Fi · %1$s"</string>
+    <string name="qr_payload_upi">"UPI · %1$s"</string>
+    <string name="qr_payload_link_not_secure_http">Link · niet beveiligd (http)</string>
+    <string name="qr_payload_link_https">Link · https</string>
+    <string name="qr_payload_empty_text">Lege tekst</string>
+    <string name="qr_payload_contact">Contact</string>
+    <string name="qr_payload_wi_fi_network">Wi-Fi-netwerk</string>
+    <string name="qr_payload_pay">"%1$s betalen"</string>
+    <string name="qr_payload_text">Tekst</string>
+    <string name="qr_payload_phone">Telefoon</string>
+    <string name="qr_payload_wi_fi_2">Wi-Fi</string>
+    <string name="qr_payload_upi_payment">UPI-betaling</string>
+    <string name="qr_payload_link">Link</string>
+    <!-- DetectDocumentCornersUseCase -->
+    <string name="detect_document_corners_use_case_document_detection_failed">Documentdetectie mislukt.</string>
+    <string name="detect_document_corners_use_case_could_not_detect_a_document">Geen document gevonden in deze afbeelding.</string>
+    <!-- ImportImagesUseCase -->
+    <string name="import_images_use_case_none_of_the_selected_files">Geen van de geselecteerde bestanden kon als afbeelding worden geopend.</string>
+    <string name="import_images_use_case_the_selected_file_couldn_t">Het geselecteerde bestand kan niet als afbeelding worden geopend.</string>
+    <string name="import_images_use_case_saving_page">Pagina opslaan</string>
+    <string name="import_images_use_case_detecting_document">Document detecteren</string>
+    <string name="import_images_use_case_preparing_page">Pagina voorbereiden</string>
+    <!-- TrashUseCases -->
+    <string name="trash_use_cases_page">"Pagina %1$s"</string>
+    <!-- ImportPdfToLibraryUseCase -->
+    <string name="import_pdf_to_library_use_case_could_not_add_this_pdf">Kan deze PDF niet aan je bibliotheek toevoegen.</string>
+    <string name="import_pdf_to_library_use_case_choose_at_least_one_page">Kies minstens één pagina.</string>
+    <!-- CameraCaptureChrome -->
+    <string name="camera_capture_chrome_done">Klaar</string>
+    <string name="camera_capture_chrome_done_review_pages">"Klaar, %1$s pagina's bekijken"</string>
+    <string name="camera_capture_chrome_done_review_1_page">Klaar, 1 pagina bekijken</string>
+    <string name="camera_capture_chrome_turn_auto_capture_on">Automatisch vastleggen aanzetten</string>
+    <string name="camera_capture_chrome_turn_auto_capture_off">Automatisch vastleggen uitzetten</string>
+    <!-- CaptureStabilityTracker -->
+    <string name="capture_stability_tracker_saving_page">Pagina opslaan…</string>
+    <string name="capture_stability_tracker_capturing_page">Pagina vastleggen…</string>
+    <string name="capture_stability_tracker_hold_steady">Stilhouden.</string>
+    <string name="capture_stability_tracker_capturing_now">Wordt nu vastgelegd.</string>
+    <string name="capture_stability_tracker_hold_steady_to_auto_capture">Houd stil om automatisch vast te leggen.</string>
+    <string name="capture_stability_tracker_hold_position_auto_capture_is">Blijf stilhouden. Automatisch vastleggen wacht even.</string>
+    <string name="capture_stability_tracker_move_to_the_next_page">Ga naar de volgende pagina voordat automatisch vastleggen weer actief wordt.</string>
+    <string name="capture_stability_tracker_point_your_camera_at_a">Richt je camera op een volledig document.</string>
+    <string name="capture_stability_tracker_document_detected_tap_capture_whenever">Document gevonden. Tik op Vastleggen wanneer je klaar bent.</string>
+    <string name="capture_stability_tracker_auto_capture_is_off_use">Automatisch vastleggen staat uit. Gebruik de sluiterknop als je klaar bent.</string>
+    <!-- PipCameraComponents -->
+    <string name="pip_camera_not_now">Niet nu</string>
+    <string name="pip_camera_allow_camera_access">Cameratoegang toestaan</string>
+    <string name="pip_camera_open_settings">Instellingen openen</string>
+    <string name="pip_camera_photos_stay_on_your_device">Foto\'s blijven op je apparaat totdat je ze exporteert of deelt</string>
+    <string name="pip_camera_camera_active_only_while_scanning">Camera alleen actief tijdens het scannen</string>
+    <string name="pip_camera_live_preview_with_edge_detection">Live voorbeeld met randdetectie</string>
+    <string name="pip_camera_come_back_here_and_pip">Kom hier terug en Pip staat klaar</string>
+    <string name="pip_camera_settings_permissions_camera_allow">Instellingen › Rechten › Camera › Toestaan</string>
+    <string name="pip_camera_scanly_needs_your_camera_to">Scanly heeft je camera nodig om documentpagina\'s vast te leggen en recht te zetten.</string>
+    <string name="pip_camera_camera_permission_is_blocked_for">Cameratoegang is geblokkeerd voor Scanly. Open Instellingen, tik op Rechten en zet Camera aan om documenten te scannen.</string>
+    <string name="pip_camera_camera_access_needed">Cameratoegang nodig</string>
+    <string name="pip_camera_show_me_the_whole_page">laat me de hele pagina zien, alle vier de hoeken.</string>
+    <string name="pip_camera_hold_it_almost_there">stilhouden… bijna.</string>
+    <string name="pip_camera_hold_it">"stilhouden… %1$s"</string>
+    <string name="pip_camera_ooh_edges_hold_still_a">ooh, randen! even stilhouden…</string>
+    <string name="pip_camera_auto_capture_is_off_tap">automatisch vastleggen staat uit. tik op de sluiter als je klaar bent.</string>
+    <string name="pip_camera_found_the_edges_tap_the">randen gevonden. tik op de sluiter wanneer je wilt.</string>
+    <string name="pip_camera_got_it_on_to_the">hebbes! door naar de volgende pagina.</string>
+    <string name="pip_camera_snap_saving_that_page">klik! pagina wordt opgeslagen…</string>
+    <string name="pip_camera_it_s_all_fuzzy_tap">alles is wazig. tik op de pagina om scherp te stellen.</string>
+    <string name="pip_camera_bit_dark_in_here_more">beetje donker hier. meer licht, of de flitser proberen?</string>
+    <string name="pip_camera_everything_s_dark_is_something">alles is donker. zit er iets voor de lens?</string>
+    <!-- ScanSessionScreen -->
+    <string name="scan_session_camera_couldn_t_start_close">Camera kan niet starten. Sluit andere apps die de camera gebruiken en probeer het opnieuw.</string>
+    <string name="scan_session_camera_couldn_t_start_leave">Camera kan niet starten. Verlaat dit scherm en open het opnieuw.</string>
+    <string name="scan_session_capture">Vastleggen</string>
+    <string name="scan_session_replace_page">Pagina vervangen</string>
+    <string name="scan_session_show_grid">Raster tonen</string>
+    <string name="scan_session_hide_grid">Raster verbergen</string>
+    <string name="scan_session_turn_flash_on">Flitser aanzetten</string>
+    <string name="scan_session_turn_flash_off">Flitser uitzetten</string>
+    <string name="scan_session_close_camera">Camera sluiten</string>
+    <string name="scan_session_no_captures">Geen opnamen</string>
+    <string name="scan_session_open_a_valid_document_first">Open eerst een geldig document.</string>
+    <string name="scan_session_document_missing">Document ontbreekt</string>
+    <string name="scan_session_camera_is_not_ready_yet">Camera is nog niet klaar.</string>
+    <!-- ScanSessionViewModel -->
+    <string name="scan_session_checking_document">Document controleren…</string>
+    <string name="scan_session_point_your_camera_at_a">Richt je camera op een fysiek document.</string>
+    <string name="scan_session_screen_detected_point_at_a">Scherm gedetecteerd. Richt op een fysiek document.</string>
+    <string name="scan_session_page_edges_are_ambiguous_hold">Paginaranden zijn onduidelijk. Houd stil of kom dichterbij.</string>
+    <string name="scan_session_two_pages_are_visible_move">Er zijn twee pagina\'s zichtbaar. Kom dichterbij en kader één pagina in.</string>
+    <string name="scan_session_page_saved">"Pagina %1$s opgeslagen."</string>
+    <string name="scan_session_auto_captured_page">Pagina %1$s automatisch vastgelegd.</string>
+    <string name="scan_session_document_not_found">Document niet gevonden.</string>
+    <string name="scan_session_capture_failed_reposition_the_document">Vastleggen mislukt. Leg het document anders neer en probeer het opnieuw.</string>
+    <string name="scan_session_page_not_saved_reposition_the">Pagina niet opgeslagen. Leg het document anders neer en probeer het opnieuw.</string>
+    <string name="scan_session_live_detection_is_unavailable_manual">Live detectie is niet beschikbaar. Handmatig vastleggen werkt nog wel.</string>
+    <string name="scan_session_point_your_camera_at_a_2">Richt je camera op een document.</string>
+    <!-- ExportShareComponents -->
+    <string name="export_share_passwords_match">Wachtwoorden komen overeen.</string>
+    <string name="export_share_confirm_password">Wachtwoord bevestigen</string>
+    <string name="export_share_4_64_characters_send_it">4–64 tekens. Stuur het apart van de PDF.</string>
+    <string name="export_share_show_password">Wachtwoord tonen</string>
+    <string name="export_share_hide_password">Wachtwoord verbergen</string>
+    <string name="export_share_pdf_password">PDF-wachtwoord</string>
+    <string name="export_share_off">Uit</string>
+    <string name="export_share_a_password_will_be_required">Er is een wachtwoord nodig om de PDF te openen.</string>
+    <string name="export_share_password_protection">Wachtwoordbeveiliging</string>
+    <string name="export_share_cancel">Annuleren</string>
+    <string name="export_share_add_white_space_around_the">Voeg witruimte toe rond de gescande pagina.</string>
+    <string name="export_share_margins">Marges</string>
+    <string name="export_share_fixed_sizes_use_their_real">Vaste formaten gebruiken hun echte afdrukmaten.</string>
+    <string name="export_share_page_size">Paginaformaat</string>
+    <string name="export_share_auto_follows_each_scanned_page">Automatisch volgt elke gescande pagina.</string>
+    <string name="export_share_orientation">Stand</string>
+    <string name="export_share_add_the_page_index_to">Zet het paginanummer in de voettekst van de PDF.</string>
+    <string name="export_share_page_numbers">Paginanummers</string>
+    <string name="export_share_choose_how_every_page_is">Kies hoe elke pagina wordt gemaakt.</string>
+    <string name="export_share_passwords_do_not_match">Wachtwoorden komen niet overeen.</string>
+    <string name="export_share_confirm_the_password">Bevestig het wachtwoord.</string>
+    <string name="export_share_pdf_options">PDF-opties</string>
+    <!-- FabComponents -->
+    <string name="fab_open_add_menu">Menu Toevoegen openen</string>
+    <string name="fab_close_menu">Menu sluiten</string>
+    <string name="fab_new_document">Nieuw document</string>
+    <string name="fab_new_folder">Nieuwe map</string>
+    <!-- LibraryCardPresentation -->
+    <string name="library_card_presentation_remove_from_folder">Uit map verwijderen</string>
+    <string name="library_card_presentation_move_to_folder">Naar map verplaatsen</string>
+    <string name="library_card_presentation_rename">Naam wijzigen</string>
+    <string name="library_card_presentation_delete">Verwijderen</string>
+    <string name="library_card_presentation_1_page">1 pagina</string>
+    <string name="library_card_presentation_1_document">1 document</string>
+    <string name="library_card_presentation_yesterday">Gisteren</string>
+    <string name="library_card_presentation_today">Vandaag</string>
+    <!-- LibraryFolderShelf -->
+    <string name="library_folder_shelf_all_folders">Alle mappen</string>
+    <string name="library_folder_shelf_view_all">Alles bekijken</string>
+    <string name="library_folder_shelf_organise_scans">Scans ordenen</string>
+    <string name="library_folder_shelf_new_folder">Nieuwe map</string>
+    <!-- SharedComponents -->
+    <string name="shared_please_wait">Even geduld</string>
+    <string name="shared_working_on_your_photos">Bezig met je foto\'s…</string>
+    <string name="shared_importing_images">Afbeeldingen importeren</string>
+    <string name="shared_more_options">Meer opties</string>
+    <string name="shared_selected">Geselecteerd</string>
+    <string name="shared_create_new_folder">Nieuwe map maken</string>
+    <string name="shared_create_move">Maken en verplaatsen</string>
+    <string name="shared_new_folder_name">Naam nieuwe map</string>
+    <string name="shared_no_folder">Geen map</string>
+    <string name="shared_folder_name">Mapnaam</string>
+    <string name="shared_create">Maken</string>
+    <string name="shared_suggest_name">Naam voorstellen</string>
+    <string name="shared_title">Titel</string>
+    <string name="shared_clear_name">Naam wissen</string>
+    <string name="shared_confirm">Bevestigen</string>
+    <string name="shared_scanly">Scanly</string>
+    <!-- DocumentDetailScreen -->
+    <string name="document_detail_delete_page">Pagina verwijderen</string>
+    <string name="document_detail_share_page">Pagina delen</string>
+    <string name="document_detail_sign_document">Document ondertekenen</string>
+    <string name="document_detail_extract_text">Tekst extraheren</string>
+    <string name="document_detail_retake_page">Pagina opnieuw maken</string>
+    <string name="document_detail_edit_page">Pagina bewerken</string>
+    <string name="document_detail_edit">Bewerken</string>
+    <string name="document_detail_share">"%1$s delen"</string>
+    <string name="document_detail_review">Bekijken</string>
+    <string name="document_detail_ready">Klaar</string>
+    <string name="document_detail_new">Nieuw</string>
+    <string name="document_detail_captured">Vastgelegd</string>
+    <string name="document_detail_add_page">Pagina toevoegen</string>
+    <string name="document_detail_scan_or_import">Scannen of importeren</string>
+    <string name="document_detail_add_page_scan_or_import">Pagina toevoegen. Scannen of importeren.</string>
+    <string name="document_detail_share_2">Delen</string>
+    <string name="document_detail_retake">Opnieuw maken</string>
+    <string name="document_detail_open_zoom_view">Zoomweergave openen</string>
+    <string name="document_detail_page_of">"Pagina %1$s van %2$s"</string>
+    <string name="document_detail_import_images">Afbeeldingen importeren</string>
+    <string name="document_detail_scan_a_page">Pagina scannen</string>
+    <string name="document_detail_scan_a_page_or_import">"Scan een pagina of importeer maximaal %1$s afbeeldingen om dit document te beginnen."</string>
+    <string name="document_detail_no_pages_yet">Nog geen pagina\'s</string>
+    <string name="document_detail_return_to_the_library_and">Ga terug naar de bibliotheek en open een ander document.</string>
+    <string name="document_detail_document_not_found">Document niet gevonden</string>
+    <string name="document_detail_select_a_page_to_preview">Selecteer een pagina voor een voorbeeld</string>
+    <string name="document_detail_tap_to_review_long_press">Tik om te bekijken. Houd ingedrukt en sleep om de volgorde te wijzigen.</string>
+    <string name="document_detail_long_press_and_drag_to">Houd ingedrukt en sleep om de volgorde te wijzigen</string>
+    <string name="document_detail_pages">Pagina\'s</string>
+    <string name="document_detail_use_scan_or_import_to">Gebruik Scannen of Importeren om je eerste pagina toe te voegen.</string>
+    <string name="document_detail_please_wait_while_the_file">Even geduld, het bestand wordt voorbereid.</string>
+    <string name="document_detail_share_pages">Pagina\'s delen</string>
+    <string name="document_detail_save_images_zip">Afbeeldingen als ZIP opslaan</string>
+    <string name="document_detail_share_pdf">PDF delen</string>
+    <string name="document_detail_save_pdf">PDF opslaan</string>
+    <string name="document_detail_export_share">Exporteren en delen</string>
+    <string name="document_detail_pick_up_to_images_from">"Kies maximaal %1$s afbeeldingen uit je bestanden"</string>
+    <string name="document_detail_choose_images">Afbeeldingen kiezen</string>
+    <string name="document_detail_open_the_camera_to_scan">Open de camera om een nieuwe pagina te scannen</string>
+    <string name="document_detail_capture_a_new_scan_or">"Maak een nieuwe scan of kies maximaal %1$s afbeeldingen uit je galerij."</string>
+    <string name="document_detail_delete_document">Document verwijderen</string>
+    <string name="document_detail_rename_document">Naam document wijzigen</string>
+    <string name="document_detail_document_options">Documentopties</string>
+    <string name="document_detail_working_on_your_photos">Bezig met je foto\'s</string>
+    <string name="document_detail_preparing_export">Export voorbereiden</string>
+    <string name="document_detail_generate">Maken</string>
+    <string name="document_detail_delete_document_2">Document verwijderen?</string>
+    <string name="document_detail_save">Opslaan</string>
+    <string name="document_detail_document">Document</string>
+    <!-- DocumentDetailViewModel -->
+    <string name="document_detail_document_renamed">Naam van document gewijzigd.</string>
+    <string name="document_detail_starting_import">Import starten</string>
+    <string name="document_detail_page_image_is_not_available">Pagina-afbeelding is nog niet beschikbaar.</string>
+    <string name="document_detail_preparing_pages">Pagina\'s voorbereiden</string>
+    <string name="document_detail_saved_to">"%1$s opgeslagen in %2$s"</string>
+    <string name="document_detail_preparing_and_saving_zip">ZIP voorbereiden en opslaan</string>
+    <string name="document_detail_preparing_pdf">PDF voorbereiden</string>
+    <string name="document_detail_generating_and_saving_pdf">PDF maken en opslaan</string>
+    <string name="document_detail_reordered_pages">Volgorde van pagina\'s gewijzigd.</string>
+    <string name="document_detail_moved_to_folder">Naar map verplaatst</string>
+    <string name="document_detail_moved_to">"Verplaatst naar %1$s"</string>
+    <string name="document_detail_removed_from_folder">Uit map verwijderd</string>
+    <!-- FilterCustomizeScreen -->
+    <string name="filter_customize_faded_text">Vervaagde tekst</string>
+    <string name="filter_customize_whiteboard">Whiteboard</string>
+    <string name="filter_customize_grayscale">Grijstinten</string>
+    <string name="filter_customize_screen">Scherm</string>
+    <string name="filter_customize_vivid">Levendig</string>
+    <string name="filter_customize_natural">Natuurlijk</string>
+    <string name="filter_customize_magic_color">Magische kleur</string>
+    <string name="filter_customize_auto">Auto</string>
+    <string name="filter_customize_original">Origineel</string>
+    <string name="filter_customize_intensity">Intensiteit</string>
+    <string name="filter_customize_sharpness">Scherpte</string>
+    <string name="filter_customize_saturation">Verzadiging</string>
+    <string name="filter_customize_contrast">Contrast</string>
+    <string name="filter_customize_brightness">Helderheid</string>
+    <string name="filter_customize_fine_tune_on_this_page">"Stel %1$s nauwkeurig af op deze pagina. Houd Vergelijken ingedrukt om alleen het filter te zien."</string>
+    <string name="filter_customize_customize_filter">Filter aanpassen</string>
+    <string name="filter_customize_adjusted">Aangepast</string>
+    <string name="filter_customize_filter_only">Alleen filter</string>
+    <string name="filter_customize_filter_adjustment_preview">Voorbeeld van filteraanpassing</string>
+    <string name="filter_customize_selected_filter_without_adjustments">Gekozen filter zonder aanpassingen</string>
+    <string name="filter_customize_loading_preview">Voorbeeld laden…</string>
+    <string name="filter_customize_hold_to_compare_with_filter">Houd ingedrukt om te vergelijken met alleen het filter</string>
+    <string name="filter_customize_reset_adjustments">Aanpassingen resetten</string>
+    <string name="filter_customize_adjust">Aanpassen</string>
+    <string name="filter_customize_compare">Vergelijken</string>
+    <!-- FilterPickerScreen -->
+    <string name="filter_picker_selected_filter">Gekozen filter</string>
+    <string name="filter_picker_filter_thumbnail">"Miniatuur van filter %1$s"</string>
+    <string name="filter_picker_analyzing_the_page_to_tune">De pagina wordt geanalyseerd om elk filter af te stemmen.</string>
+    <string name="filter_picker_filter_only_crop_rotation_and">Alleen het filter. Bijsnijden, draaien en aanpassingen blijven per pagina.</string>
+    <string name="filter_picker_apply_filter_to_all_pages">Filter toepassen op alle pagina\'s</string>
+    <string name="filter_picker_tap_a_preset_to_update">Tik op een voorinstelling om het live voorbeeld bij te werken. Sla op in de editor als je klaar bent.</string>
+    <string name="filter_picker_filters">Filters</string>
+    <string name="filter_picker_filter_preview">"Voorbeeld van filter %1$s"</string>
+    <!-- PageCropScreen -->
+    <string name="page_crop_page_crop_preview">Voorbeeld van bijsnijden</string>
+    <string name="page_crop_detecting">Detecteren</string>
+    <string name="page_crop_reset">Resetten</string>
+    <string name="page_crop_ai_detect">AI-detectie</string>
+    <string name="page_crop_right">Rechts</string>
+    <string name="page_crop_left">Links</string>
+    <string name="page_crop_apply_crop">Bijsnijden toepassen</string>
+    <string name="page_crop_detecting_document">Document detecteren…</string>
+    <string name="page_crop_keep_editing">Verder bewerken</string>
+    <string name="page_crop_discard">Weggooien</string>
+    <string name="page_crop_your_crop_changes_have_not">Je wijzigingen in het bijsnijden zijn niet toegepast.</string>
+    <string name="page_crop_discard_changes">Wijzigingen weggooien?</string>
+    <string name="page_crop_full_frame_corners">Hoeken van volledig beeld</string>
+    <string name="page_crop_reset_crop">Bijsnijden resetten</string>
+    <string name="page_crop_rotate_right">Rechtsom draaien</string>
+    <string name="page_crop_rotate_left">Linksom draaien</string>
+    <string name="page_crop_find_the_document_corners">Hoeken van document zoeken</string>
+    <string name="page_crop_detecting_2">Detecteren…</string>
+    <string name="page_crop_detect_edges_rotate_then_drag">Detecteer randen, draai en sleep dan de grepen. Tik op Klaar om toe te passen.</string>
+    <string name="page_crop_crop_tools">Bijsnijdtools</string>
+    <string name="page_crop_page_not_found">Pagina niet gevonden.</string>
+    <string name="page_crop_crop">Bijsnijden</string>
+    <string name="page_crop_processing">Verwerken</string>
+    <!-- PageCropViewModel -->
+    <string name="page_crop_crop_updated">Bijsnijden bijgewerkt.</string>
+    <string name="page_crop_document_detected">Document gevonden.</string>
+    <string name="page_crop_raw_image_is_not_available">Originele afbeelding is niet beschikbaar voor detectie.</string>
+    <!-- PageEditorScreen -->
+    <string name="page_editor_please_wait_while_scanly_adapts">Even geduld. Scanly past het filter aan en werkt het hele document bij.</string>
+    <string name="page_editor_processing_image_data_for_all">Afbeeldingen van alle pagina\'s verwerken</string>
+    <string name="page_editor_page_editor_preview">Voorbeeld van pagina-editor</string>
+    <string name="page_editor_your_edits_to_this_page">Je wijzigingen op deze pagina zijn niet opgeslagen.</string>
+    <string name="page_editor_remove_from_document">Uit document verwijderen</string>
+    <string name="page_editor_capture_this_page_again">Deze pagina opnieuw vastleggen</string>
+    <string name="page_editor_brightness_contrast_more">Helderheid, contrast en meer</string>
+    <string name="page_editor_ai_detect_rotate_handles">AI-detectie, draaien, grepen</string>
+    <string name="page_editor_crop_filter_and_adjust_this">Snijd bij, kies een filter en pas deze pagina aan. Sla op met Klaar.</string>
+    <string name="page_editor_edit_tools">Bewerkingstools</string>
+    <string name="page_editor_editor">Editor</string>
+    <!-- PageEditorViewModel -->
+    <string name="page_editor_page_updated">Pagina bijgewerkt.</string>
+    <string name="page_editor_filter_applied_to_all_pages">Filter toegepast op alle pagina\'s.</string>
+    <!-- HomePip -->
+    <string name="home_pip_hide_today_s_tip">Tip van vandaag verbergen</string>
+    <!-- HomeRatingPrompt -->
+    <string name="home_rating_prompt_rate_scanly_opens_google_play">Beoordeel Scanly, opent Google Play</string>
+    <string name="home_rating_prompt_rate_on_google_play">Beoordelen op Google Play</string>
+    <string name="home_rating_prompt_scanly_is_free_private_and">Scanly is gratis, privé en zonder advertenties. Bespaart het je tijd? Een korte beoordeling op Google Play helpt echt.</string>
+    <string name="home_rating_prompt_rate_scanly">Scanly beoordelen</string>
+    <!-- HomeScreen -->
+    <string name="home_search_names_and_text_in">Zoek in namen en paginatekst</string>
+    <string name="home_start_scanning">Beginnen met scannen</string>
+    <string name="home_scan_your_first_page_and">Scan je eerste pagina en je vindt hem hier terug wanneer je hem nodig hebt.</string>
+    <string name="home_no_documents_yet">Nog geen documenten</string>
+    <string name="home_loading_your_documents">Je documenten laden</string>
+    <string name="home_folder">Map</string>
+    <string name="home_import">Importeren</string>
+    <string name="home_scan">Scannen</string>
+    <string name="home_save_it_now">Nu opslaan</string>
+    <string name="home_save_it_now_find_it">Vandaag bewaren,\nmorgen terugvinden.</string>
+    <string name="home_still_scanning">Nog aan het scannen?</string>
+    <string name="home_wrap_up_and_digitize_your">Rond af en\ndigitaliseer je dag.</string>
+    <string name="home_good_evening">Goedenavond,</string>
+    <string name="home_let_s_capture_some_documents">Tijd om wat\ndocumenten te scannen.</string>
+    <string name="home_good_afternoon">Goedemiddag,</string>
+    <string name="home_what_are_we_scanning_today">Wat gaan we\nvandaag scannen?</string>
+    <string name="home_good_morning">Goedemorgen,</string>
+    <string name="home_see_all">Alles bekijken</string>
+    <string name="home_recent_documents">Recente documenten</string>
+    <string name="home_recent_folders">Recente mappen</string>
+    <string name="home_new_scan">Nieuwe scan</string>
+    <!-- FolderDeleteDialog -->
+    <string name="folder_delete_both_go_to_recently_deleted">"Beide blijven %1$s in Recent verwijderd"</string>
+    <string name="folder_delete_delete_folder_and_documents">Map en documenten verwijderen</string>
+    <string name="folder_delete_keep_the_in_your_library">"De %1$s blijven in je bibliotheek"</string>
+    <string name="folder_delete_delete_folder_only">Alleen map verwijderen</string>
+    <string name="folder_delete_delete_folder">Map verwijderen?</string>
+    <!-- GroupDetailScreen -->
+    <string name="group_detail_not_selected">Niet geselecteerd</string>
+    <string name="group_detail_add_documents">"%1$s documenten toevoegen"</string>
+    <string name="group_detail_add_1_document">1 document toevoegen</string>
+    <string name="group_detail_add_selected">Selectie toevoegen</string>
+    <string name="group_detail_documents_already_in_folders_won">Documenten die al in een map staan, zie je hier niet. Maak in plaats daarvan een nieuw document.</string>
+    <string name="group_detail_no_loose_documents">Geen losse documenten</string>
+    <string name="group_detail_select_all">Alles selecteren</string>
+    <string name="group_detail_clear">Wissen</string>
+    <string name="group_detail_select_one_or_more_documents">Selecteer een of meer documenten</string>
+    <string name="group_detail_nothing_available_to_move">Niets om te verplaatsen</string>
+    <string name="group_detail_move_existing">Bestaande verplaatsen</string>
+    <string name="group_detail_starts_empty_inside_this_folder">Begint leeg in deze map</string>
+    <string name="group_detail_create_new_document">Nieuw document maken</string>
+    <string name="group_detail_create_a_new_document_or">"Maak een nieuw document of kies uit %1$s buiten deze map."</string>
+    <string name="group_detail_create_a_new_document_or_2">Maak een nieuw document of verplaats documenten die nog niet in een map staan.</string>
+    <string name="group_detail_add_documents_to_folder">Documenten aan map toevoegen</string>
+    <string name="group_detail_add_documents_2">Documenten toevoegen</string>
+    <string name="group_detail_add_a_document_here_to">Voeg hier een document toe om bij elkaar horende scans samen te houden.</string>
+    <string name="group_detail_this_folder_is_empty">Deze map is leeg</string>
+    <string name="group_detail_share_pdfs_as_zip">PDF\'s delen als ZIP</string>
+    <string name="group_detail_save_pdfs_as_zip">PDF\'s opslaan als ZIP</string>
+    <string name="group_detail_separate_pdfs_one_pdf_per">Losse PDF\'s · één PDF per document, gebundeld in een ZIP</string>
+    <string name="group_detail_share_merged_pdf">Samengevoegde PDF delen</string>
+    <string name="group_detail_save_merged_pdf">Samengevoegde PDF opslaan</string>
+    <string name="group_detail_single_pdf_merged_into_one">"Eén PDF · %1$s samengevoegd tot één bestand"</string>
+    <string name="group_detail_new_document">Nieuw document</string>
+    <string name="group_detail_remove">Verwijderen</string>
+    <string name="group_detail_will_be_moved_out_of">\"%1$s\" wordt uit deze map gehaald.</string>
+    <string name="group_detail_remove_from_folder">Uit map verwijderen?</string>
+    <string name="group_detail_rename_folder">Naam map wijzigen</string>
+    <string name="group_detail_delete_folder">Map verwijderen</string>
+    <string name="group_detail_export_and_share">Exporteren en delen</string>
+    <!-- GroupDetailViewModel -->
+    <string name="group_detail_generating_pdf_of">"PDF %1$s van %2$s maken…"</string>
+    <string name="group_detail_generating_page_of">"Pagina %1$s van %2$s maken…"</string>
+    <string name="group_detail_document_removed_from_folder">Document uit map verwijderd.</string>
+    <string name="group_detail_added_documents_to_folder">"%1$s documenten aan map toegevoegd."</string>
+    <string name="group_detail_added_1_document_to_folder">1 document aan map toegevoegd.</string>
+    <string name="group_detail_added_of_documents">"%1$s van %2$s documenten toegevoegd. %3$s"</string>
+    <string name="group_detail_folder_renamed">Naam van map gewijzigd.</string>
+    <!-- LibraryScreen -->
+    <string name="library_create_a_folder_to_stay">Maak een map om alles overzichtelijk te houden, of voeg een document toe en begin met scannen.</string>
+    <string name="library_your_library_is_ready">Je bibliotheek staat klaar</string>
+    <string name="library_save_to">Opslaan in</string>
+    <string name="library_choose_how_are_ordered">"Kies hoe %1$s worden gesorteerd."</string>
+    <string name="library_sort_library">Bibliotheek sorteren</string>
+    <string name="library_folders_and_documents">mappen en documenten</string>
+    <string name="library_create_a_document_then_scan">Maak een document en scan dan pagina\'s of importeer ze uit je galerij.</string>
+    <string name="library_create_a_folder_to_keep">Maak een map zodat je bij elkaar horende documenten makkelijk terugvindt.</string>
+    <string name="library_no_folders_yet">Nog geen mappen</string>
+    <string name="library_list_view">Lijstweergave</string>
+    <string name="library_grid_view">Rasterweergave</string>
+    <string name="library_folders">Mappen</string>
+    <string name="library_back_to_library">Terug naar bibliotheek</string>
+    <string name="library_documents">Documenten</string>
+    <string name="library_search_library">Zoeken in bibliotheek</string>
+    <string name="library_library">Bibliotheek</string>
+    <!-- LibrarySearchScreen -->
+    <string name="library_search_remove_from_recent_searches">"%1$s verwijderen uit recente zoekopdrachten"</string>
+    <string name="library_search_search_again">Opnieuw zoeken</string>
+    <string name="library_search_text_is_read_on_this">Tekst wordt op dit apparaat gelezen. Je pagina\'s verlaten het nooit.</string>
+    <string name="library_search_some_pages_are_still_being">Sommige pagina\'s worden nog gelezen, dus er kunnen zo meer resultaten verschijnen.</string>
+    <string name="library_search_search_for_instead">In plaats daarvan zoeken naar “%1$s”</string>
+    <string name="library_search_nothing_matches_try_fewer_words">Niets gevonden voor “%1$s”. Probeer minder woorden of controleer de spelling.</string>
+    <string name="library_search_no_results_found">Geen resultaten gevonden</string>
+    <string name="library_search_rent_or_lease_finds_pages">“huur OR lease” vindt pagina\'s met het ene of het andere woord</string>
+    <string name="library_search_either_word">Een van beide woorden</string>
+    <string name="library_search_lease_draft_skips_anything_that">“huur -concept” slaat alles over waarin concept staat</string>
+    <string name="library_search_leave_a_word_out">Een woord uitsluiten</string>
+    <string name="library_search_you_ll_get_the_closest">Je krijgt het woord uit je scans dat er het meest op lijkt</string>
+    <string name="library_search_small_typos_are_fine">Kleine typefouten zijn geen probleem</string>
+    <string name="library_search_security_deposit_in_that_order">“huur betalen”, in die volgorde</string>
+    <string name="library_search_use_quotes_for_a_phrase">Gebruik aanhalingstekens voor een woordgroep</string>
+    <string name="library_search_lea_finds_lease_and_leasing">“huur” vindt huur en huurder</string>
+    <string name="library_search_type_part_of_a_word">Typ een deel van een woord</string>
+    <string name="library_search_search_tips">Zoektips</string>
+    <string name="library_search_browse_by_type">Bladeren op type</string>
+    <string name="library_search_recent">Recent</string>
+    <string name="library_search_folder">"Map · "</string>
+    <string name="library_search_matched">Overeenkomst met “%1$s”</string>
+    <string name="library_search_scanned_as">Gescand als “%1$s”</string>
+    <string name="library_search_show_page_text">Paginatekst tonen</string>
+    <string name="library_search_show_fewer_pages">Minder pagina\'s tonen</string>
+    <string name="library_search_open_document">Document openen</string>
+    <string name="library_search_similar_words">"Vergelijkbare woorden: "</string>
+    <string name="library_search_close_matches">Bijna-overeenkomsten</string>
+    <string name="library_search_searching_text_in_pages">Zoeken in paginatekst…</string>
+    <string name="library_search_by_name">" · %1$s op naam"</string>
+    <string name="library_search_complete_to">"Aanvullen tot "</string>
+    <string name="library_search_filters_on">"Filters, %1$s actief"</string>
+    <string name="library_search_filters">"Filters · %1$s"</string>
+    <string name="library_search_matching_names">Overeenkomende namen</string>
+    <string name="library_search_found_in_pages">Gevonden in pagina\'s</string>
+    <string name="library_search_clear_search">Zoekopdracht wissen</string>
+    <!-- RecentlyDeletedScreen -->
+    <string name="recently_deleted_page_of_will_be_deleted">"Pagina %1$s van \"%2$s\" wordt definitief verwijderd. Dit kan niet ongedaan worden gemaakt."</string>
+    <string name="recently_deleted_and_its_pages_will_be">\"%1$s\" en de bijbehorende pagina\'s worden definitief verwijderd. Dit kan niet ongedaan worden gemaakt.</string>
+    <string name="recently_deleted_and_the_documents_that_were">\"%1$s\" en de documenten die erin stonden worden definitief verwijderd. Dit kan niet ongedaan worden gemaakt.</string>
+    <string name="recently_deleted_its_documents_stay_in_your">" De documenten blijven in je bibliotheek."</string>
+    <string name="recently_deleted_the_folder_will_be_deleted">De map \"%1$s\" wordt definitief verwijderd. Dit kan niet ongedaan worden gemaakt.</string>
+    <string name="recently_deleted_page_of">"pagina %1$s van \"%2$s\""</string>
+    <string name="recently_deleted_days_left">"Nog %1$s dagen"</string>
+    <string name="recently_deleted_1_day_left">Nog 1 dag</string>
+    <string name="recently_deleted_last_day">Laatste dag</string>
+    <string name="recently_deleted_from">Uit \"%1$s\"</string>
+    <string name="recently_deleted_no_documents">Geen documenten</string>
+    <string name="recently_deleted_folder_only_documents_kept_in">"Alleen map · %1$s documenten blijven in bibliotheek"</string>
+    <string name="recently_deleted_folder_only_1_document_kept">Alleen map · 1 document blijft in bibliotheek</string>
+    <string name="recently_deleted_restore">Herstellen</string>
+    <string name="recently_deleted_delete_forever">Definitief verwijderen</string>
+    <string name="recently_deleted_select">Selecteren</string>
+    <string name="recently_deleted_delete_forever_2">"%1$s definitief verwijderen"</string>
+    <string name="recently_deleted_restore_2">"%1$s herstellen"</string>
+    <string name="recently_deleted_show_options">Opties tonen</string>
+    <string name="recently_deleted_the_selected_items_will_be">"De %1$s geselecteerde items worden definitief verwijderd. Dit kan niet ongedaan worden gemaakt."</string>
+    <string name="recently_deleted_delete_items_forever">"%1$s items definitief verwijderen?"</string>
+    <string name="recently_deleted_delete_1_item_forever">1 item definitief verwijderen?</string>
+    <string name="recently_deleted_delete_forever_3">Definitief verwijderen?</string>
+    <string name="recently_deleted_delete_all">Alles verwijderen</string>
+    <string name="recently_deleted_all_items_will_be_deleted">"Alle %1$s items worden definitief verwijderd. Dit kan niet ongedaan worden gemaakt."</string>
+    <string name="recently_deleted_this_item_will_be_deleted">Dit item wordt definitief verwijderd. Dit kan niet ongedaan worden gemaakt.</string>
+    <string name="recently_deleted_empty_recently_deleted">Recent verwijderd leegmaken?</string>
+    <string name="recently_deleted_deleted_pages_stay_here_for">Verwijderde pagina\'s blijven hier %1$s staan, documenten en mappen %2$s, zodat je ze kunt terugzetten.</string>
+    <string name="recently_deleted_nothing_here">Niets te zien</string>
+    <string name="recently_deleted_nothing_in_the_bin_deleted">de prullenbak is leeg. verwijderde dingen wachten hier een paar dagen.</string>
+    <string name="recently_deleted_empty">Leegmaken</string>
+    <string name="recently_deleted_select_none">Niets selecteren</string>
+    <string name="recently_deleted_clear_selection">Selectie wissen</string>
+    <string name="recently_deleted_recently_deleted">Recent verwijderd</string>
+    <!-- RecentlyDeletedViewModel -->
+    <string name="recently_deleted_page_restored_to">"Pagina %1$s hersteld in \"%2$s\""</string>
+    <string name="recently_deleted_document_restored">Document hersteld</string>
+    <string name="recently_deleted_folder_restored">Map hersteld</string>
+    <string name="recently_deleted_recently_deleted_is_empty">Recent verwijderd is leeg</string>
+    <string name="recently_deleted_deleted_permanently">Definitief verwijderd</string>
+    <!-- SearchFiltersSheet -->
+    <string name="search_filters_apply">Toepassen</string>
+    <string name="search_filters_remove_filter">"Filter verwijderen: %1$s"</string>
+    <string name="search_filters_in">"In %1$s"</string>
+    <string name="search_filters_not_in_a_folder">Niet in een map</string>
+    <string name="search_filters_sort_by">Sorteren op</string>
+    <string name="search_filters_any_folder">Elke map</string>
+    <string name="search_filters_date_modified">Datum gewijzigd</string>
+    <string name="search_filters_any_type">Elk type</string>
+    <string name="search_filters_type">Type</string>
+    <!-- TrashCopy -->
+    <string name="trash_copy_page_moves_to_recently_deleted">"Pagina %1$s gaat naar Recent verwijderd. Je kunt hem %2$s lang herstellen."</string>
+    <string name="trash_copy_and_its_documents_move_to">"\"%1$s\" en de %2$s documenten erin gaan naar Recent verwijderd. Je kunt ze %3$s lang herstellen."</string>
+    <string name="trash_copy_and_the_document_in_it">\"%1$s\" en het document erin gaan naar Recent verwijderd. Je kunt ze %2$s lang herstellen.</string>
+    <string name="trash_copy_moves_to_recently_deleted_you">\"%1$s\" gaat naar Recent verwijderd. Je kunt het %2$s lang herstellen.</string>
+    <string name="trash_copy_1_day">1 dag</string>
+    <!-- TrashUndoSnackbar -->
+    <string name="trash_undo_snackbar_moved_to_recently_deleted">\"%1$s\" verplaatst naar Recent verwijderd</string>
+    <string name="trash_undo_snackbar_moved_to_recently_deleted_2">"%1$s verplaatst naar Recent verwijderd"</string>
+    <string name="trash_undo_snackbar_undo">Ongedaan maken</string>
+    <!-- OnboardingFlow -->
+    <string name="onboarding_flow_enable_camera">Camera aanzetten</string>
+    <string name="onboarding_flow_enable_the_camera_to_scan">Zet de camera aan om papier te scannen. Je kunt ook zonder camera afbeeldingen importeren.</string>
+    <string name="onboarding_flow_open_settings_tap_permissions_and">Open Instellingen, tik op Rechten en sta Camera toe. Je kunt ook zonder camera afbeeldingen importeren.</string>
+    <string name="onboarding_flow_ready_for_your_first_scan">Klaar voor je eerste scan?</string>
+    <string name="onboarding_flow_camera_access_is_turned_off">Cameratoegang staat uit</string>
+    <!-- OnboardingScreen -->
+    <string name="onboarding_no_account_no_cloud_upload">Geen account. Geen upload naar de cloud.</string>
+    <string name="onboarding_continue">Doorgaan</string>
+    <string name="onboarding_get_started">Aan de slag</string>
+    <string name="onboarding_page_of_3">"%1$s, pagina %2$s van 3"</string>
+    <string name="onboarding_page_of_3_2">"Pagina %1$s van 3"</string>
+    <string name="onboarding_skip">Overslaan</string>
+    <string name="onboarding_scanly">Scanly.</string>
+    <string name="onboarding_previous_page">Vorige pagina</string>
+    <string name="onboarding_feature_edge_detection">Automatische randdetectie</string>
+    <string name="onboarding_feature_crop_straighten">Pagina\'s bijsnijden en rechtzetten</string>
+    <string name="onboarding_feature_filters">Magische kleur, Whiteboard en meer</string>
+    <string name="onboarding_feature_ocr">Tekstherkenning op je apparaat</string>
+    <string name="onboarding_feature_search">Zoek woorden in al je scans</string>
+    <string name="onboarding_feature_copy_text">Kopieer tekst van elke pagina</string>
+    <string name="onboarding_feature_multipage_pdf">PDF\'s met meerdere pagina\'s</string>
+    <string name="onboarding_feature_password">Beveilig met een wachtwoord voordat je deelt</string>
+    <string name="onboarding_feature_sign">Documenten ondertekenen</string>
+    <string name="onboarding_assurance_offline">Werkt volledig offline.</string>
+    <string name="onboarding_assurance_on_device">Je tekst verlaat dit apparaat nooit.</string>
+    <!-- Pip -->
+    <string name="pip_poke_pip_scanly_s_helper">Por Pip, de helper van Scanly</string>
+    <!-- PipBubble -->
+    <string name="pip_bubble_dismiss">Sluiten</string>
+    <!-- PipLines -->
+    <string name="pip_lines_all_set_pages_nice_and">"klaar! %1$s pagina\'s, mooi recht."</string>
+    <string name="pip_lines_all_set_1_page_nice">klaar! 1 pagina, mooi recht.</string>
+    <string name="pip_lines_ready_when_you_are">klaar wanneer jij het bent.</string>
+    <string name="pip_lines_i_looked_on_every_page">ik heb op elke pagina gekeken. nergens “%1$s”.</string>
+    <!-- FeaturePlaceholderScreen -->
+    <string name="feature_placeholder_planned_for">Gepland voor %1$s.</string>
+    <!-- PageImagePreviewScreen -->
+    <string name="page_image_preview_sign">Ondertekenen</string>
+    <string name="page_image_preview_delete_page">Pagina verwijderen?</string>
+    <!-- PageImagePreviewViewModel -->
+    <string name="page_image_preview_scanly_page">"Scanly-pagina %1$s"</string>
+    <!-- LegalDocumentScreen -->
+    <string name="legal_document_open_in_browser">Openen in browser</string>
+    <string name="legal_document_retry">Opnieuw proberen</string>
+    <string name="legal_document_check_your_internet_connection_and">Controleer je internetverbinding en probeer het opnieuw.</string>
+    <string name="legal_document_couldn_t_be_loaded">"%1$s kan niet worden geladen"</string>
+    <!-- ModelBenchmarkScreen -->
+    <string name="model_benchmark_pipeline_s_1f_ms" formatted="false">Pipeline: %s · %.1f ms</string>
+    <string name="model_benchmark_total_1f_ms" formatted="false">totaal %.1f ms</string>
+    <string name="model_benchmark_pre_0f_inf_0f_post" formatted="false">voor %.0f · inf %.0f · na %.0f</string>
+    <string name="model_benchmark_not_detected">Niet gedetecteerd</string>
+    <string name="model_benchmark_detected_conf_0f" formatted="false">Gedetecteerd · zekerheid %.0f%%</string>
+    <string name="model_benchmark_none">Geen</string>
+    <string name="model_benchmark_quad">Vierhoek</string>
+    <string name="model_benchmark_error">Fout</string>
+    <string name="model_benchmark_no_preview">Geen voorbeeld</string>
+    <string name="model_benchmark_detection_preview">"Detectievoorbeeld %1$s"</string>
+    <string name="model_benchmark_avg_1f_p50_1f_p95" formatted="false">gem. %.1f · P50 %.1f · P95 %.1f ms · gedetecteerd %d/%d · mislukt %d</string>
+    <string name="model_benchmark_avg_1f_p95_1f_ms" formatted="false">gem. %.1f · P95 %.1f ms · geaccepteerd %d/%d</string>
+    <string name="model_benchmark_document_gate">Documentcontrole</string>
+    <string name="model_benchmark_aggregate">Totaal</string>
+    <string name="model_benchmark_images_processed">"%1$s / %2$s afbeeldingen verwerkt"</string>
+    <string name="model_benchmark_choose_images_and_run">Afbeeldingen kiezen en starten</string>
+    <string name="model_benchmark_benchmark_running">Benchmark loopt…</string>
+    <string name="model_benchmark_select_more_photos_to_measure">Selecteer meer foto\'s om de snelheid van de documentcontrole, hoekdetectie, polygoonoverlays en de volledige pipeline te meten.</string>
+    <string name="model_benchmark_run_another_pass">Nog een ronde starten</string>
+    <string name="model_benchmark_images_stay_on_this_device">Afbeeldingen blijven op dit apparaat. Er wordt niets geüpload.</string>
+    <string name="model_benchmark_choose_real_documents_or_rectangular">Kies echte documenten of rechthoekige voorwerpen. Scanly meet de tijd van elke detector en toont de gevonden randen.</string>
+    <string name="model_benchmark_compare_detectors_on_your_photos">Vergelijk detectors op je foto\'s</string>
+    <string name="model_benchmark_model_benchmark">Modelbenchmark</string>
+    <string name="model_benchmark_image">Afbeelding</string>
+    <string name="model_benchmark_model_failed">Model mislukt</string>
+    <string name="model_benchmark_could_not_decode_image">Kan afbeelding niet decoderen</string>
+    <!-- PipSettingsScreen -->
+    <string name="pip_settings_on">"Aan · "</string>
+    <string name="pip_settings_on_2">Aan</string>
+    <string name="pip_settings_napping">Dutje</string>
+    <string name="pip_settings_napping_screens_show_plain_text">Doet een dutje · schermen tonen gewone tekst</string>
+    <string name="pip_settings_on_around_the_app">Aan in de hele app</string>
+    <string name="pip_settings_show_pip">Pip tonen</string>
+    <string name="pip_settings_scanly_s_little_helper_pip">De kleine helper van Scanly. Pip verschijnt op lege schermen, in de camera en als er iets klaar is, zegt iets korts en gaat dan weer opzij.</string>
+    <string name="pip_settings_pip">Pip</string>
+    <string name="pip_settings_hi_this_is_where_you">hoi! hier kies je hoeveel ik help.</string>
+    <string name="pip_settings_i_ll_keep_still_still">ik blijf stil zitten. maar ik ben er nog.</string>
+    <string name="pip_settings_okay_i_ll_nap_switch">oké, ik ga een dutje doen. zet me maar weer aan wanneer je wilt.</string>
+    <string name="pip_settings_pip_lives_on_this_phone">Pip woont op deze telefoon en kijkt nooit naar je documenten. Alles wat Pip zegt, zit al in Scanly.</string>
+    <string name="pip_settings_blinks_talks_and_hops_pip">Knippert, praat en huppelt. Pip blijft stil als systeemanimaties uitstaan.</string>
+    <string name="pip_settings_animate_pip">Pip animeren</string>
+    <string name="pip_settings_motion">Beweging</string>
+    <string name="pip_settings_a_happy_hello_when_a">Een vrolijke groet als een document klaar is om te delen.</string>
+    <string name="pip_settings_cheer_on_exports">Juichen bij exports</string>
+    <string name="pip_settings_pip_helps_you_frame_pages">Pip helpt je pagina\'s in beeld te krijgen. Uit toont de gewone hulplijnen.</string>
+    <string name="pip_settings_camera_coaching">Camerahulp</string>
+    <string name="pip_settings_one_short_tip_a_day">Eén korte tip per dag onder de begroeting.</string>
+    <string name="pip_settings_tips_on_home">Tips op Start</string>
+    <string name="pip_settings_where_pip_helps">Waar Pip helpt</string>
+    <!-- SettingsComponents -->
+    <string name="settings_pages_were_read_with_another">"%1$s pagina\'s zijn met een andere engine gelezen. Lees ze op de achtergrond opnieuw met %2$s."</string>
+    <string name="settings_1_page_was_read_with">"1 pagina is met een andere engine gelezen. Lees hem op de achtergrond opnieuw met %1$s."</string>
+    <string name="settings_re_read_existing_pages">Bestaande pagina\'s opnieuw lezen</string>
+    <string name="settings_indra_ocr_paused_it_stopped">Indra OCR is gepauzeerd. Het is twee keer onverwacht gestopt, dus pagina\'s worden met ML Kit gelezen. Selecteer Indra OCR opnieuw om het nog eens te proberen.</string>
+    <string name="settings_ml_kit">ML Kit</string>
+    <string name="settings_indra_ocr">Indra OCR</string>
+    <string name="settings_rate_scanly_on_google_play">Scanly beoordelen op Google Play</string>
+    <string name="settings_it_s_free_private_and">Het is gratis, privé en zonder advertenties. Met een korte beoordeling op Google Play vinden anderen het ook.</string>
+    <string name="settings_enjoying_scanly">Vind je Scanly handig?</string>
+    <string name="settings_dark">Donker</string>
+    <string name="settings_light">Licht</string>
+    <string name="settings_system">Systeem</string>
+    <string name="settings_tap_to_check">"Tik om %1$s te controleren"</string>
+    <string name="settings_you_are_on_latest_is">Je gebruikt %1$s. Nieuwste is %2$s.</string>
+    <string name="settings_scanly_is_available_on">"Scanly %1$s is beschikbaar op %2$s."</string>
+    <string name="settings_checking">%1$s controleren...</string>
+    <string name="settings_check_for_updates">Controleren op updates</string>
+    <string name="settings_by_jeevaprakash_g">door jeevaprakash g</string>
+    <string name="settings_version_unavailable">Versie niet beschikbaar</string>
+    <string name="settings_pick_the_detector_that_fits">Kies de detector die past bij dit apparaat en je manier van werken.</string>
+    <string name="settings_choose">"%1$s kiezen"</string>
+    <string name="settings_highest_accuracy_maximum_compatibility">Hoogste nauwkeurigheid · maximale compatibiliteit</string>
+    <string name="settings_higher_accuracy_best_after_capture">Hogere nauwkeurigheid · best na het vastleggen</string>
+    <string name="settings_balanced_speed_and_accuracy">Evenwicht tussen snelheid en nauwkeurigheid</string>
+    <string name="settings_fastest_ideal_for_live_camera">Snelst · ideaal voor live cameravoorbeeld</string>
+    <!-- SettingsDetailScreens -->
+    <string name="settings_detail_screens_open_source">Open source</string>
+    <string name="settings_detail_screens_try_a_different_word_or">Probeer een ander woord of blader door een categorie.</string>
+    <string name="settings_detail_screens_no_answers_for">Geen antwoorden voor “%1$s”.</string>
+    <string name="settings_detail_screens_no_answers_in_this_category">Geen antwoorden in deze categorie.</string>
+    <string name="settings_detail_screens_all">Alle</string>
+    <string name="settings_detail_screens_search_help">Zoeken in Help</string>
+    <string name="settings_detail_screens_help_faq">Help en veelgestelde vragen</string>
+    <!-- SettingsHubSubScreens -->
+    <string name="settings_hub_sub_screens_terms_conditions">Algemene voorwaarden</string>
+    <string name="settings_hub_sub_screens_privacy_policy">Privacybeleid</string>
+    <string name="settings_hub_sub_screens_legal">Juridisch</string>
+    <string name="settings_hub_sub_screens_project_website">Projectwebsite</string>
+    <string name="settings_hub_sub_screens_contact_support">Contact opnemen met support</string>
+    <string name="settings_hub_sub_screens_help">Help</string>
+    <string name="settings_hub_sub_screens_about">Over</string>
+    <string name="settings_hub_sub_screens_open_the_qr_tool">De QR-tool openen</string>
+    <string name="settings_hub_sub_screens_qr_widget">QR-widget</string>
+    <string name="settings_hub_sub_screens_start_a_new_document_scan">Een nieuwe documentscan starten</string>
+    <string name="settings_hub_sub_screens_scan_widget">Scanwidget</string>
+    <string name="settings_hub_sub_screens_scan_import_qr_library">Scannen · Importeren · QR · Bibliotheek</string>
+    <string name="settings_hub_sub_screens_actions_bar">Actiebalk</string>
+    <string name="settings_hub_sub_screens_home_screen">Startscherm</string>
+    <string name="settings_hub_sub_screens_widgets">Widgets</string>
+    <string name="settings_hub_sub_screens_long_press_home_screen_widgets">Houd het startscherm ingedrukt → Widgets → Scanly</string>
+    <string name="settings_hub_sub_screens_tap_to_add_a_widget">Tik om een widget aan je startscherm toe te voegen</string>
+    <string name="settings_hub_sub_screens_could_not_open_the_add">Kan het venster voor widgets toevoegen niet openen.</string>
+    <string name="settings_hub_sub_screens_your_launcher_doesn_t_support">Je launcher ondersteunt het toevoegen van widgets vanuit de app niet. Houd het startscherm ingedrukt en kies Scanly bij Widgets.</string>
+    <string name="settings_hub_sub_screens_compare_all_models_on_local">Vergelijk alle modellen op lokale afbeeldingen</string>
+    <string name="settings_hub_sub_screens_tools">Tools</string>
+    <string name="settings_hub_sub_screens_reject_screens_and_non_documents">Weiger schermen en niet-documenten vóór de randdetectie</string>
+    <string name="settings_hub_sub_screens_physical_document_gate">Controle op fysiek document</string>
+    <string name="settings_hub_sub_screens_capture_quality">Opnamekwaliteit</string>
+    <string name="settings_hub_sub_screens_used_after_camera_or_gallery">Gebruikt na opname met camera of uit galerij</string>
+    <string name="settings_hub_sub_screens_selected_automatically_for_higher_accuracy">Automatisch gekozen voor hogere nauwkeurigheid</string>
+    <string name="settings_hub_sub_screens_post_processing_model">Model voor nabewerking</string>
+    <string name="settings_hub_sub_screens_used_while_the_camera_preview">Gebruikt terwijl het cameravoorbeeld actief is</string>
+    <string name="settings_hub_sub_screens_selected_automatically_for_responsive_preview">Automatisch gekozen voor een vlot voorbeeld</string>
+    <string name="settings_hub_sub_screens_live_preview_model">Model voor live voorbeeld</string>
+    <string name="settings_hub_sub_screens_choose_the_best_models_for">Kies de beste modellen voor dit apparaat</string>
+    <string name="settings_hub_sub_screens_live_processing">"Live: %1$s · Verwerking: %2$s"</string>
+    <string name="settings_hub_sub_screens_testing_model_speed_on_this">Snelheid van modellen testen op dit apparaat…</string>
+    <string name="settings_hub_sub_screens_automatic_model_selection">Automatische modelkeuze</string>
+    <string name="settings_hub_sub_screens_models">Modellen</string>
+    <string name="settings_hub_sub_screens_document_detection">Documentdetectie</string>
+    <string name="settings_hub_sub_screens_true_black_surfaces_saves_battery">Echt zwarte vlakken · bespaart batterij op AMOLED-schermen</string>
+    <string name="settings_hub_sub_screens_takes_effect_in_dark_theme">Werkt in donker thema · bespaart batterij op AMOLED-schermen</string>
+    <string name="settings_hub_sub_screens_pure_black">Puur zwart</string>
+    <string name="settings_hub_sub_screens_theme">Thema</string>
+    <string name="settings_hub_sub_screens_appearance">Weergave</string>
+    <!-- SettingsScreen -->
+    <string name="settings_preferences_and_app_info">Voorkeuren en app-info</string>
+    <string name="settings_scanly">"Scanly %1$s"</string>
+    <string name="settings_settings">Instellingen</string>
+    <string name="settings_version_updates_and_legal">Versie, updates en juridische info</string>
+    <string name="settings_leave_a_rating_on_google">Laat een beoordeling achter op Google Play</string>
+    <string name="settings_more">Meer</string>
+    <string name="settings_actions_scan_and_qr">Acties, Scannen en QR</string>
+    <string name="settings_text_recognition">Tekstherkenning</string>
+    <string name="settings_intelligence">Intelligentie</string>
+    <string name="settings_pages_kept_documents_and_folders">"Pagina\'s %1$s bewaard, documenten en mappen %2$s"</string>
+    <string name="settings_storage">Opslag</string>
+    <string name="settings_pip_your_helper">Pip, je helper</string>
+    <string name="settings_preferences">Voorkeuren</string>
+    <string name="settings_save_location_cleanup">Opslaglocatie en opruimen</string>
+    <string name="settings_indra_ocr_100_languages_experimental">Indra OCR · 100+ talen (experimenteel)</string>
+    <string name="settings_ml_kit_latin_script_languages">ML Kit · talen met Latijns schrift</string>
+    <string name="settings_gate_off">"%1$s · Controle uit"</string>
+    <string name="settings_gate_on">"%1$s · Controle aan"</string>
+    <string name="settings_manual_models">Handmatige modellen</string>
+    <string name="settings_automatic_models">Automatische modellen</string>
+    <string name="settings_calibrating">Kalibreren…</string>
+    <string name="settings_pure_black">" · Puur zwart"</string>
+    <string name="settings_thanks_for_supporting_scanly">Bedankt voor je steun aan Scanly</string>
+    <!-- SettingsTextRecognitionScreen -->
+    <string name="settings_text_recognition_weights_openrail_m_code_apache">Gewichten: OpenRAIL-M · Code: Apache-2.0</string>
+    <string name="settings_text_recognition_visit_datalab_to">Ga naar datalab.to</string>
+    <string name="settings_text_recognition_a_big_thank_you_to">Hartelijk dank aan Datalab voor het bouwen van Indra OCR en omdat Scanly het direct op je telefoon mag draaien. Daardoor kan Scanly 100+ talen lezen.</string>
+    <string name="settings_text_recognition_datalab">Datalab</string>
+    <string name="settings_text_recognition_indra_ocr_by">INDRA OCR DOOR</string>
+    <string name="settings_text_recognition_datalab_logo">Logo van Datalab</string>
+    <string name="settings_text_recognition_latin_script_only_pages_in">Alleen Latijns schrift. Pagina\'s in andere schriften, zoals Hindi, Tamil, Arabisch of Chinees, komen leeg of onleesbaar terug. Schakel daarvoor over naar Indra OCR.</string>
+    <string name="settings_text_recognition_5_script_families_read_in">5 schriftfamilies, in één keer gelezen. Elke regel gaat naar de juiste herkenner, dus pagina\'s met gemengde talen werken ook.</string>
+    <string name="settings_text_recognition_reads_100_languages_across_many">Leest 100+ talen in allerlei schriften, waaronder Hindi, Tamil, Arabisch, Chinees en Japans. Trager dan ML Kit.</string>
+    <string name="settings_text_recognition_experimental">Experimenteel</string>
+    <string name="settings_text_recognition_google_s_fast_on_device">De snelle herkenner van Google op je apparaat. Het best voor talen met Latijns schrift, zoals Engels, Spaans en Frans.</string>
+    <string name="settings_text_recognition_default">Standaard</string>
+    <string name="settings_text_recognition_if_a_page_s_text">Is de tekst van een pagina leeg of onleesbaar? Dan staat hij waarschijnlijk in een schrift dat ML Kit niet kan lezen. Schakel over naar Indra OCR en gebruik dan Bestaande pagina\'s opnieuw lezen.</string>
+    <string name="settings_text_recognition_tip">Tip</string>
+    <string name="settings_text_recognition_switching_engines_only_affects_new">Een andere engine kiezen geldt alleen voor nieuwe pagina\'s. Bestaande pagina\'s kun je vanaf dit scherm opnieuw laten lezen, en tekst die je zelf hebt verbeterd, wordt nooit vervangen.</string>
+    <string name="settings_text_recognition_your_edits_are_kept">Je bewerkingen blijven bewaard</string>
+    <string name="settings_text_recognition_if_indra_ocr_can_t">Als Indra OCR een pagina niet kan lezen, te lang bezig is of stopt, leest ML Kit hem in plaats daarvan.</string>
+    <string name="settings_text_recognition_ml_kit_is_the_safety">ML Kit is het vangnet</string>
+    <string name="settings_text_recognition_both_engines_run_on_the">Beide engines draaien op het apparaat. Pagina\'s worden nooit geüpload om ze te lezen.</string>
+    <string name="settings_text_recognition_stays_on_your_phone">Blijft op je telefoon</string>
+    <string name="settings_text_recognition_ml_kit_is_the_default">ML Kit is de standaard. Het is snel en zeer nauwkeurig voor talen met Latijns schrift, zoals Engels, Spaans, Frans en Duits.\n\nIndra OCR is voor al het andere. Het leest 100+ talen, waaronder Hindi, Tamil, Bengaals, Arabisch, Urdu, Chinees, Japans, Koreaans en Thai, en kan pagina\'s met gemengde talen aan. Het is experimenteel en trager, dus het duurt langer voordat pagina\'s doorzoekbaar zijn.</string>
+    <string name="settings_text_recognition_choosing_an_engine">Een engine kiezen</string>
+    <string name="settings_text_recognition_after_you_scan_scanly_reads">Na het scannen leest Scanly de woorden op elke pagina. Met die tekst kun je je bibliotheek doorzoeken op wat er op een pagina staat, tekst uit een scan kopiëren of delen, en hem exporteren.</string>
+    <string name="settings_text_recognition_what_it_does">Wat het doet</string>
+    <string name="settings_text_recognition_also_called_ocr">Ook wel OCR genoemd</string>
+    <string name="settings_text_recognition_re_read">Opnieuw lezen</string>
+    <string name="settings_text_recognition_runs_in_the_background_while">Draait op de achtergrond zolang je batterij niet bijna leeg is. Tekst die je zelf hebt bewerkt, blijft bewaard.</string>
+    <string name="settings_text_recognition_on_device_text_recognition_v2">Tekstherkenning op het apparaat v2</string>
+    <string name="settings_text_recognition_google_ml_kit">Google ML Kit</string>
+    <string name="settings_text_recognition_credits">Credits</string>
+    <string name="settings_text_recognition_supported_languages">Ondersteunde talen</string>
+    <string name="settings_text_recognition_engine">Engine</string>
+    <string name="settings_text_recognition_about_text_recognition">Over tekstherkenning</string>
+    <!-- SettingsViewModel -->
+    <string name="settings_save_location_reset_to_downloads">Opslaglocatie teruggezet naar Downloads/Scanly.</string>
+    <string name="settings_save_location_updated">Opslaglocatie bijgewerkt.</string>
+    <string name="settings_reading_pages_again_in_the">"%1$s pagina\'s worden op de achtergrond opnieuw gelezen."</string>
+    <string name="settings_reading_1_page_again_in">1 pagina wordt op de achtergrond opnieuw gelezen.</string>
+    <string name="settings_no_pages_to_read_again">Geen pagina\'s om opnieuw te lezen.</string>
+    <string name="settings_could_not_update_the_text">Kan de engine voor tekstherkenning niet bijwerken.</string>
+    <string name="settings_could_not_update_the_physical">Kan de controle op fysieke documenten niet bijwerken.</string>
+    <string name="settings_could_not_update_automatic_model">Kan automatische modelkeuze niet bijwerken.</string>
+    <string name="settings_could_not_update_the_post">Kan het model voor nabewerking niet bijwerken.</string>
+    <string name="settings_could_not_update_the_live">Kan het model voor live voorbeeld niet bijwerken.</string>
+    <string name="settings_could_not_update_pure_black">Kan het thema Puur zwart niet bijwerken.</string>
+    <string name="settings_removed_empty_folders">"%1$s lege mappen verwijderd."</string>
+    <string name="settings_removed_1_empty_folder">1 lege map verwijderd.</string>
+    <string name="settings_no_empty_folders_found">Geen lege mappen gevonden.</string>
+    <string name="settings_removed_empty_documents">"%1$s lege documenten verwijderd."</string>
+    <string name="settings_removed_1_empty_document">1 leeg document verwijderd.</string>
+    <string name="settings_no_empty_documents_found">Geen lege documenten gevonden.</string>
+    <string name="settings_freed">"%1$s vrijgemaakt"</string>
+    <string name="settings_all_data_cleared">Alle gegevens gewist.</string>
+    <!-- StorageScreen -->
+    <string name="storage_temporary_exports">Tijdelijke exports</string>
+    <string name="storage_database_search_index">Database en zoekindex</string>
+    <string name="storage_library_files">Bibliotheekbestanden</string>
+    <string name="storage_scanly_is_using">Scanly gebruikt</string>
+    <string name="storage_calculating">Berekenen…</string>
+    <string name="storage_change">Wijzigen</string>
+    <string name="storage_exports_save_to">Exports worden opgeslagen in</string>
+    <string name="storage_this_permanently_deletes_all_documents">Hiermee worden alle documenten, mappen, pagina\'s en tijdelijke exports op dit apparaat definitief verwijderd. Bestanden die je al in je exportmap hebt opgeslagen, blijven bewaard.</string>
+    <string name="storage_clear_all_data">Alle gegevens wissen?</string>
+    <string name="storage_deletes_every_folder_group_that">Verwijdert alle mappen zonder documenten. Mappen met documenten blijven bewaard.</string>
+    <string name="storage_remove_empty_folders">Lege mappen verwijderen?</string>
+    <string name="storage_deletes_every_document_that_has">Verwijdert alle documenten zonder pagina\'s, ook afgebroken opnamen, en maakt de lokale opslag vrij. Documenten met pagina\'s blijven bewaard.</string>
+    <string name="storage_remove_empty_documents">Lege documenten verwijderen?</string>
+    <string name="storage_deletes_every_document_folder_and">Verwijdert alle documenten, mappen en pagina\'s op dit apparaat</string>
+    <string name="storage_clear_all_data_2">Alle gegevens wissen</string>
+    <string name="storage_danger_zone">Gevarenzone</string>
+    <string name="storage_folders_with_no_documents">Mappen zonder documenten</string>
+    <string name="storage_remove_empty_folders_2">Lege mappen verwijderen</string>
+    <string name="storage_documents_with_no_pages">Documenten zonder pagina\'s</string>
+    <string name="storage_remove_empty_documents_2">Lege documenten verwijderen</string>
+    <string name="storage_restore_deleted_folders_documents_and">Verwijderde mappen, documenten en pagina\'s herstellen</string>
+    <string name="storage_tidy_up">Opruimen</string>
+    <string name="storage_use_default_folder">Standaardmap gebruiken</string>
+    <string name="storage_pdfs_and_images_you_export">PDF\'s en afbeeldingen die je exporteert, worden hier opgeslagen.</string>
+    <string name="storage_save_location">Opslaglocatie</string>
+    <string name="storage_could_not_use_the_selected">Kan de gekozen map niet gebruiken.</string>
+    <string name="storage_selected_folder">Gekozen map</string>
+    <!-- ScannedPagePickerSheet -->
+    <string name="scanned_page_picker_no_pages_in_this_document">Geen bruikbare pagina\'s in dit document.</string>
+    <string name="scanned_page_picker_back_to_documents">Terug naar documenten</string>
+    <string name="scanned_page_picker_no_scanned_documents_yet_scan">Nog geen gescande documenten. Scan een pagina in Scanly en hij verschijnt hier.</string>
+    <string name="scanned_page_picker_scanned_pages">Gescande pagina\'s</string>
+    <!-- SignatureCreateScreen -->
+    <string name="signature_create_choose_another">Andere kiezen</string>
+    <string name="signature_create_bolder">Dikker</string>
+    <string name="signature_create_fainter">Lichter</string>
+    <string name="signature_create_ink_sensitivity">Inktgevoeligheid</string>
+    <string name="signature_create_extracted_signature_preview">Voorbeeld van uitgeknipte handtekening</string>
+    <string name="signature_create_scanly_removes_the_paper_background">Scanly verwijdert de papierachtergrond en houdt alleen de inkt over.</string>
+    <string name="signature_create_use_a_page_you_scanned">Gebruik een pagina die je in Scanly hebt gescand</string>
+    <string name="signature_create_scanned_page">Gescande pagina</string>
+    <string name="signature_create_jpg_or_png_from_your">JPG of PNG van je telefoon</string>
+    <string name="signature_create_files">Bestanden</string>
+    <string name="signature_create_pick_a_photo_of_your">Kies een foto van je handtekening</string>
+    <string name="signature_create_photos">Foto\'s</string>
+    <string name="signature_create_choose_where_your_signature_is">Kies waar je handtekening staat</string>
+    <string name="signature_create_choose_where_your_initials_are">Kies waar je initialen staan</string>
+    <string name="signature_create_pen">Pen</string>
+    <string name="signature_create_upload">Uploaden</string>
+    <string name="signature_create_draw">Tekenen</string>
+    <string name="signature_create_save_signature">Handtekening opslaan</string>
+    <string name="signature_create_save_initials">Initialen opslaan</string>
+    <string name="signature_create_sign_above_the_line">Teken boven de lijn</string>
+    <string name="signature_create_write_your_initials_above_the">Schrijf je initialen boven de lijn</string>
+    <string name="signature_create_new_signature">Nieuwe handtekening</string>
+    <string name="signature_create_new_initials">Nieuwe initialen</string>
+    <!-- SignatureCreateViewModel -->
+    <string name="signature_create_choose_a_photo_of_your">Kies eerst een foto van je handtekening.</string>
+    <string name="signature_create_still_reading_the_photo_try">De foto wordt nog gelezen. Probeer het zo opnieuw.</string>
+    <string name="signature_create_draw_your_signature_first">Teken eerst je handtekening.</string>
+    <!-- SignaturePad -->
+    <string name="signature_pad_draw_here">Teken hier</string>
+    <!-- DocumentSignScreen -->
+    <string name="document_sign_stamping_signatures">Handtekeningen plaatsen…</string>
+    <!-- DocumentSignViewModel -->
+    <string name="document_sign_saved_signatures_couldn_t_be">Opgeslagen handtekeningen kunnen niet worden geladen, dus dit document kan nu niet worden ondertekend.</string>
+    <!-- SignEditorScreen -->
+    <string name="sign_editor_next_page">Volgende pagina</string>
+    <string name="sign_editor_add_text">Tekst toevoegen</string>
+    <string name="sign_editor_edit_date">Datum bewerken</string>
+    <string name="sign_editor_tap_checkbox_again_for_another">Tik nogmaals op Selectievakje voor een extra vakje · gebruik de werkbalk om aan of uit te vinken</string>
+    <string name="sign_editor_tap_text_again_for_another">Tik nogmaals op Tekst voor een extra regel · dubbeltik op tekst om die te bewerken</string>
+    <string name="sign_editor_tap_date_again_for_another">Tik nogmaals op Datum voor een extra datum · dubbeltik op een datum om die te bewerken</string>
+    <string name="sign_editor_manage">Beheren</string>
+    <string name="sign_editor_your_signatures">Je handtekeningen</string>
+    <string name="sign_editor_signatures_and_marks_you_added">Handtekeningen en markeringen die je in dit document hebt toegevoegd of gewijzigd, worden niet bewaard.</string>
+    <!-- SignMarkLayer -->
+    <string name="sign_mark_layer_duplicate">Dupliceren</string>
+    <string name="sign_mark_layer_tick">Aanvinken</string>
+    <string name="sign_mark_layer_untick">Uitvinken</string>
+    <!-- SignatureManageScreen -->
+    <string name="signature_manage_added">"%1$s · Toegevoegd op %2$s"</string>
+    <string name="signature_manage_from_a_photo">Van een foto</string>
+    <string name="signature_manage_drawn">Getekend</string>
+    <string name="signature_manage_pages_you_ve_already_signed">Pagina\'s die je al hebt ondertekend, houden hem</string>
+    <string name="signature_manage_place_it_on_a_pdf">Plaats hem op een PDF of een Scanly-document</string>
+    <string name="signature_manage_sign_a_pdf">PDF ondertekenen</string>
+    <string name="signature_manage_use_first_when_signing">Als eerste gebruiken bij ondertekenen</string>
+    <string name="signature_manage_shared_and_saved_as_a">Gedeeld en opgeslagen als transparante PNG, klaar voor documenten, formulieren en e-mails.</string>
+    <string name="signature_manage_save_to_phone">Opslaan op telefoon</string>
+    <string name="signature_manage_ink_colour">Inktkleur</string>
+    <string name="signature_manage_in_ink">"%1$s, inkt: %2$s"</string>
+    <string name="signature_manage_used_first">Als eerste gebruikt</string>
+    <string name="signature_manage_used_first_2">, als eerste gebruikt</string>
+    <string name="signature_manage_pages_you_ve_already_signed_2">Pagina\'s die je al hebt ondertekend, houden hem.</string>
+    <string name="signature_manage_initials">Initialen</string>
+    <string name="signature_manage_signatures">Handtekeningen</string>
+    <string name="signature_manage_signatures_stay_on_this_phone">Handtekeningen blijven op deze telefoon. Teken er een of upload een foto van je handtekening.</string>
+    <string name="signature_manage_tap_one_to_share_save">Tik erop om te delen, op te slaan of de volgorde te wijzigen</string>
+    <!-- SignatureManageViewModel -->
+    <string name="signature_manage_saved_to">"Opgeslagen in %1$s"</string>
+    <string name="signature_manage_will_be_offered_first_when">"%1$s wordt als eerste aangeboden bij ondertekenen"</string>
+    <!-- PageTextScreen -->
+    <string name="page_text_share_text">Tekst delen</string>
+    <string name="page_text_scan_or_import_a_page">Scan of importeer een pagina en de tekst verschijnt hier.</string>
+    <string name="page_text_this_document_has_no_pages">Dit document heeft nog geen pagina\'s</string>
+    <string name="page_text_reading_text">Tekst lezen</string>
+    <string name="page_text_copy_page">Pagina kopiëren</string>
+    <string name="page_text_save_changes">Wijzigingen opslaan</string>
+    <string name="page_text_copy">Kopiëren</string>
+    <string name="page_text_tap_an_outlined_area_to">Tik op een omlijnd gebied om alleen dat deel te kopiëren.</string>
+    <string name="page_text_regions_are_hidden_because_this">Gebieden zijn verborgen omdat deze pagina is gewijzigd nadat de tekst is gelezen.</string>
+    <string name="page_text_page_image_with_text_regions">"Pagina-afbeelding met %1$s tekstgebieden"</string>
+    <string name="page_text_read_with_indra_ocr_experimental">Gelezen met Indra OCR (experimenteel)</string>
+    <string name="page_text_read_with_ml_kit_indra">Gelezen met ML Kit (Indra OCR kon deze pagina niet lezen)</string>
+    <string name="page_text_edited">Bewerkt</string>
+    <string name="page_text_read_again">Opnieuw lezen</string>
+    <string name="page_text_photos_and_handwriting_may_not">Foto\'s en handschrift bevatten mogelijk geen leesbare gedrukte tekst. Een scherpere, goed belichte scan helpt meestal.</string>
+    <string name="page_text_no_text_found_on_this">Geen tekst gevonden op deze pagina</string>
+    <string name="page_text_read_this_page">Deze pagina lezen</string>
+    <string name="page_text_scanly_reads_page_text_on">Scanly leest paginatekst op dit apparaat.</string>
+    <string name="page_text_text_not_read_yet">Tekst nog niet gelezen</string>
+    <string name="page_text_try_again">Opnieuw proberen</string>
+    <string name="page_text_couldn_t_read_this_page">Kan deze pagina niet lezen</string>
+    <string name="page_text_your_corrections_are_used_for">Je verbeteringen worden gebruikt bij kopiëren, delen en zoeken.</string>
+    <string name="page_text_this_page_changed_after_its">Deze pagina is gewijzigd nadat de tekst is gelezen.</string>
+    <string name="page_text_stop_highlighting">Markeren stoppen</string>
+    <string name="page_text_on_this_page">"%1$s op deze pagina"</string>
+    <string name="page_text_not_on_this_page">niet op deze pagina</string>
+    <string name="page_text_reading_text_2">Tekst lezen…</string>
+    <string name="page_text_reading_page_of">"Pagina %1$s van %2$s lezen…"</string>
+    <string name="page_text_page">"%1$s — pagina %2$s"</string>
+    <string name="page_text_read_all_pages_again">Alle pagina\'s opnieuw lezen</string>
+    <string name="page_text_restore_original_text">Oorspronkelijke tekst herstellen</string>
+    <string name="page_text_share_all_pages">Alle pagina\'s delen</string>
+    <string name="page_text_all_pages">alle pagina\'s</string>
+    <string name="page_text_copy_all_pages">Alle pagina\'s kopiëren</string>
+    <string name="page_text_extracted_text">Geëxtraheerde tekst</string>
+    <string name="page_text_copied">"%1$s gekopieerd"</string>
+    <!-- PageTextViewModel -->
+    <string name="page_text_original_text_restored">Oorspronkelijke tekst hersteld</string>
+    <string name="page_text_changes_saved_search_uses_your">Wijzigingen opgeslagen. Zoeken gebruikt je bewerkingen.</string>
+    <string name="page_text_page_text_read_again">Paginatekst opnieuw gelezen</string>
+    <!-- ToolKit -->
+    <string name="tool_kit_file_name">Bestandsnaam</string>
+    <!-- ToolsScreen -->
+    <string name="tools_everything_runs_offline_on_this">Alles werkt offline, op deze telefoon</string>
+    <string name="tools_utilities">Hulpmiddelen</string>
+    <!-- PdfCompressScreen -->
+    <string name="pdf_compress_recommended">Aanbevolen</string>
+    <string name="pdf_compress_compress_this_pdf_again_with">Comprimeer deze PDF opnieuw met een andere instelling</string>
+    <string name="pdf_compress_try_another_quality">Andere kwaliteit proberen</string>
+    <string name="pdf_compress_after">Na</string>
+    <string name="pdf_compress_before">Voor</string>
+    <string name="pdf_compress_quality">Kwaliteit</string>
+    <string name="pdf_compress_this_quality_didn_t_make">Met deze kwaliteit werd het bestand niet kleiner. Probeer een andere.</string>
+    <string name="pdf_compress_compressed">Gecomprimeerd</string>
+    <string name="pdf_compress_already_compact">Al compact</string>
+    <string name="pdf_compress_saved">%1$s%% bespaard</string>
+    <string name="pdf_compress_compressing">Comprimeren…</string>
+    <string name="pdf_compress_compress">Comprimeren</string>
+    <string name="pdf_compress_pages_are_re_encoded_as">Pagina\'s worden opnieuw als afbeeldingen opgeslagen, dus tekst in de PDF kan niet meer worden geselecteerd of doorzocht.</string>
+    <string name="pdf_compress_unlock">Ontgrendelen</string>
+    <string name="pdf_compress_enter_the_password">Voer het wachtwoord in</string>
+    <string name="pdf_compress_compressed_pdf">Gecomprimeerde PDF</string>
+    <string name="pdf_compress_step_1_of_3_choose">Stap 1 van 3 · Kies een bestand</string>
+    <string name="pdf_compress_shrink_a_pdf_for_email">Maak een PDF kleiner voor e-mail of uploadlimieten.</string>
+    <string name="pdf_compress_compress_pdf">PDF comprimeren</string>
+    <!-- PdfCompressViewModel -->
+    <string name="pdf_compress_compressing_pdf">PDF comprimeren…</string>
+    <string name="pdf_compress_choose_a_pdf_first">Kies eerst een PDF.</string>
+    <!-- PdfFilePicker -->
+    <string name="pdf_file_picker_days_ago">"%1$s dagen geleden"</string>
+    <string name="pdf_file_picker_selected_position">"Geselecteerd, positie %1$s"</string>
+    <string name="pdf_file_picker_empty_scans_are_hidden">"%1$s lege scans zijn verborgen"</string>
+    <string name="pdf_file_picker_1_empty_scan_is_hidden">1 lege scan is verborgen</string>
+    <string name="pdf_file_picker_no_match">"Geen %1$s gevonden voor \"%2$s\"."</string>
+    <string name="pdf_file_picker_sorted_by">"Gesorteerd op %1$s"</string>
+    <string name="pdf_file_picker_in_scanly">"In Scanly · %1$s"</string>
+    <string name="pdf_file_picker_search_your">"Zoeken in je %1$s"</string>
+    <string name="pdf_file_picker_your_scans_have_no_pages">Je scans hebben nog geen pagina\'s. Kies een PDF uit de telefoonopslag.</string>
+    <string name="pdf_file_picker_no_scans_yet_pick_a">Nog geen scans. Kies een PDF uit de telefoonopslag of scan eerst iets.</string>
+    <string name="pdf_file_picker_pdfs">PDF\'s</string>
+    <string name="pdf_file_picker_downloads_drive_and_other_apps">Downloads, Drive en andere apps</string>
+    <string name="pdf_file_picker_phone_storage">Telefoonopslag</string>
+    <!-- PdfImportScreen -->
+    <string name="pdf_import_add_pages">"%1$s pagina\'s toevoegen"</string>
+    <string name="pdf_import_add_1_page">1 pagina toevoegen</string>
+    <string name="pdf_import_add_to_library">Aan bibliotheek toevoegen</string>
+    <string name="pdf_import_another_pdf">Andere PDF</string>
+    <string name="pdf_import_crop_filter_sign_or_search">"%1$s · %2$s. Bijsnijden, filteren, ondertekenen of doorzoeken, net als elke scan."</string>
+    <string name="pdf_import_added_to_your_library">Toegevoegd aan je bibliotheek</string>
+    <string name="pdf_import_step_3_of_3_done">Stap 3 van 3 · Klaar</string>
+    <string name="pdf_import_adding_to_library">Toevoegen aan bibliotheek…</string>
+    <string name="pdf_import_look">Bekijken</string>
+    <string name="pdf_import_your_pdf_file_stays_as">Je PDF-bestand blijft zoals het is; Scanly maakt een eigen kopie</string>
+    <string name="pdf_import_tap_a_page_or_long">Tik op een pagina, of houd ingedrukt en sleep over meerdere pagina\'s.</string>
+    <string name="pdf_import_step_2_of_3_pages">Stap 2 van 3 · Pagina\'s en naam</string>
+    <string name="pdf_import_name_this_document">Geef dit document een naam</string>
+    <string name="pdf_import_document_name">Documentnaam</string>
+    <string name="pdf_import_turn_a_pdf_into_a">Maak van een PDF een Scanly-document dat je kunt bewerken, ondertekenen en doorzoeken.</string>
+    <string name="pdf_import_add_pdf_to_library">PDF aan bibliotheek toevoegen</string>
+    <!-- PdfImportViewModel -->
+    <string name="pdf_import_give_the_document_a_name">Geef het document een naam.</string>
+    <string name="pdf_import_imported_pdf">Geïmporteerde PDF</string>
+    <!-- PdfMergeScreen -->
+    <string name="pdf_merge_1_file">1 bestand</string>
+    <string name="pdf_merge_your_original_files_are_unchanged">Je originele bestanden blijven ongewijzigd</string>
+    <string name="pdf_merge_combined_into_one_pdf">"%1$s samengevoegd tot één PDF"</string>
+    <string name="pdf_merge_merged">Samengevoegd</string>
+    <string name="pdf_merge_kept_unchanged">Bewaard, ongewijzigd</string>
+    <string name="pdf_merge_original_files">Originele bestanden</string>
+    <string name="pdf_merge_size">Grootte</string>
+    <string name="pdf_merge_remove">"%1$s verwijderen"</string>
+    <string name="pdf_merge_move_down">"%1$s omlaag verplaatsen"</string>
+    <string name="pdf_merge_move_up">"%1$s omhoog verplaatsen"</string>
+    <string name="pdf_merge_pdf_from_scanly">PDF uit Scanly</string>
+    <string name="pdf_merge_pdf_from_phone">PDF van telefoon</string>
+    <string name="pdf_merge_page_count_unknown">Aantal pagina\'s onbekend</string>
+    <string name="pdf_merge_merge_pdfs">PDF\'s samenvoegen</string>
+    <string name="pdf_merge_merge_files">"%1$s bestanden samenvoegen"</string>
+    <string name="pdf_merge_add_more">Meer toevoegen</string>
+    <string name="pdf_merge_merge_order">"Volgorde · %1$s"</string>
+    <string name="pdf_merge_files_are_joined_from_top">Bestanden worden van boven naar beneden samengevoegd.</string>
+    <string name="pdf_merge_order_name">Volgorde en naam</string>
+    <string name="pdf_merge_step_2_of_3_order">Stap 2 van 3 · Volgorde en naam</string>
+    <string name="pdf_merge_in_total">"%1$s in totaal"</string>
+    <string name="pdf_merge_from_phone">"Van telefoon: %1$s"</string>
+    <string name="pdf_merge_next">Volgende</string>
+    <string name="pdf_merge_next_files">"Volgende · %1$s bestanden"</string>
+    <string name="pdf_merge_pick_at_least_2_files">Kies minstens 2 bestanden</string>
+    <string name="pdf_merge_step_1_of_3_pick">Stap 1 van 3 · Bestanden kiezen</string>
+    <string name="pdf_merge_pick_files_in_the_order">Kies bestanden in de gewenste volgorde.</string>
+    <string name="pdf_merge_merged_pdf">Samengevoegde PDF</string>
+    <string name="pdf_merge_merging">Samenvoegen…</string>
+    <!-- PdfMergeViewModel -->
+    <string name="pdf_merge_add_at_least_two_pdfs">Voeg minstens twee PDF\'s toe om samen te voegen.</string>
+    <!-- PdfPasswordScreen -->
+    <string name="pdf_password_file">Bestand</string>
+    <string name="pdf_password_allowed">Toegestaan</string>
+    <string name="pdf_password_restricted">Beperkt</string>
+    <string name="pdf_password_editing">Bewerken</string>
+    <string name="pdf_password_no_password">Geen wachtwoord</string>
+    <string name="pdf_password_aes_256_password">AES-256-wachtwoord</string>
+    <string name="pdf_password_protection">Beveiliging</string>
+    <string name="pdf_password_a_short_phrase_you_ll">Een korte zin die je onthoudt, is beter dan willekeurige letters.</string>
+    <string name="pdf_password_doesn_t_match_yet">Komt nog niet overeen</string>
+    <string name="pdf_password_passwords_match">Wachtwoorden komen overeen</string>
+    <string name="pdf_password_remove_password">Wachtwoord verwijderen</string>
+    <string name="pdf_password_the_unlocked_copy_opens_for">De ontgrendelde kopie kan door iedereen worden geopend die hem heeft. Scanly verwijdert alleen wachtwoorden die je al weet.</string>
+    <string name="pdf_password_bank_and_portal_pdfs_often">PDF\'s van banken en portalen gebruiken vaak je geboortedatum of klantnummer.</string>
+    <string name="pdf_password_password_for_this_pdf">Wachtwoord voor deze PDF</string>
+    <string name="pdf_password_current_password">Huidig wachtwoord</string>
+    <string name="pdf_password_locked_pdf">Vergrendelde PDF</string>
+    <string name="pdf_password_lock_pdf">PDF vergrendelen</string>
+    <string name="pdf_password_scanly_can_t_recover_this">Scanly kan dit wachtwoord niet herstellen. Als je het vergeet, kan de PDF niet meer worden geopend.</string>
+    <string name="pdf_password_others_can_open_and_print">Anderen kunnen openen en afdrukken, maar geen tekst bewerken of kopiëren</string>
+    <string name="pdf_password_restrict_editing">Bewerken beperken</string>
+    <string name="pdf_password_type_it_again">Typ het opnieuw</string>
+    <string name="pdf_password_at_least_characters">"Minstens %1$s tekens"</string>
+    <string name="pdf_password_new_password">Nieuw wachtwoord</string>
+    <string name="pdf_password_add_password">Wachtwoord toevoegen</string>
+    <string name="pdf_password_checking_the_file">Bestand controleren…</string>
+    <string name="pdf_password_unlocked_pdf">Ontgrendelde PDF</string>
+    <string name="pdf_password_protected_pdf">Beveiligde PDF</string>
+    <string name="pdf_password_it_now_opens_without_a">Hij opent nu zonder wachtwoord.</string>
+    <string name="pdf_password_anyone_opening_it_will_need">Iedereen die hem opent, heeft het wachtwoord nodig.</string>
+    <string name="pdf_password_password_removed">Wachtwoord verwijderd</string>
+    <string name="pdf_password_pdf_locked">PDF vergrendeld</string>
+    <string name="pdf_password_unlocking">Ontgrendelen…</string>
+    <string name="pdf_password_locking">Vergrendelen…</string>
+    <string name="pdf_password_lock_a_pdf_or_remove">Vergrendel een PDF of verwijder een wachtwoord dat je weet.</string>
+    <!-- PdfPasswordViewModel -->
+    <string name="pdf_password_unlocking_pdf">PDF ontgrendelen…</string>
+    <string name="pdf_password_enter_the_current_password">Voer het huidige wachtwoord in.</string>
+    <string name="pdf_password_locking_pdf">PDF vergrendelen…</string>
+    <string name="pdf_password_use_to_characters_for_the">"Gebruik %1$s tot %2$s tekens voor het wachtwoord."</string>
+    <!-- PdfReaderMenu -->
+    <string name="pdf_reader_menu_open_another_pdf">Andere PDF openen</string>
+    <string name="pdf_reader_menu_all_pages">Alle pagina\'s</string>
+    <!-- PdfReaderPresentation -->
+    <string name="pdf_reader_presentation_0_of_0">0 van 0</string>
+    <string name="pdf_reader_presentation_paged">Per pagina</string>
+    <string name="pdf_reader_presentation_continuous">Doorlopend</string>
+    <!-- PdfReaderScreen -->
+    <string name="pdf_reader_tap_a_page_to_jump">Tik op een pagina om ernaartoe te gaan</string>
+    <string name="pdf_reader_loading_page">Pagina %1$s laden…</string>
+    <string name="pdf_reader_loading_page_2">Pagina laden…</string>
+    <string name="pdf_reader_choose_another_pdf">Andere PDF kiezen</string>
+    <string name="pdf_reader_password">Wachtwoord</string>
+    <string name="pdf_reader_this_pdf_is_password_protected">Deze PDF is beveiligd met een wachtwoord. Voer het wachtwoord in om %1$s te lezen.</string>
+    <string name="pdf_reader_unlock_pdf">PDF ontgrendelen</string>
+    <string name="pdf_reader_choose_a_file">Kies een bestand</string>
+    <string name="pdf_reader_open_any_pdf_from_scanly">Open een PDF uit Scanly of van je telefoon.</string>
+    <string name="pdf_reader_read_a_pdf">PDF lezen</string>
+    <!-- PdfSignScreen -->
+    <string name="pdf_sign_1_mark">1 markering</string>
+    <string name="pdf_sign_the_signed_copy_is_saved">De ondertekende kopie wordt zonder wachtwoord opgeslagen.</string>
+    <string name="pdf_sign_this_pdf_is_locked">Deze PDF is vergrendeld</string>
+    <string name="pdf_sign_back_to_the_editor">Terug naar de editor</string>
+    <string name="pdf_sign_edit_signatures">Handtekeningen bewerken</string>
+    <string name="pdf_sign_signed_pdf">Ondertekende PDF</string>
+    <string name="pdf_sign_saved_as">Opgeslagen als</string>
+    <string name="pdf_sign_marks_placed">Geplaatste markeringen</string>
+    <string name="pdf_sign_pages_signed">Ondertekende pagina\'s</string>
+    <string name="pdf_sign_signed">Ondertekend</string>
+    <string name="pdf_sign_placing_signatures_on_each_page">Handtekeningen op elke pagina plaatsen…</string>
+    <string name="pdf_sign_signing_your_pdf">Je PDF ondertekenen</string>
+    <string name="pdf_sign_pdf_jpg_or_png_from">PDF, JPG of PNG uit Downloads, Drive en andere apps</string>
+    <string name="pdf_sign_step_1_of_3_choose">Stap 1 van 3 · Kiezen</string>
+    <string name="pdf_sign_choose_a_pdf_or_an">Kies een PDF of afbeelding om te ondertekenen</string>
+    <string name="pdf_sign_sign_pdf">PDF ondertekenen</string>
+    <!-- PdfSignViewModel -->
+    <string name="pdf_sign_signing">Ondertekenen…</string>
+    <string name="pdf_sign_place_a_signature_first">Plaats eerst een handtekening.</string>
+    <string name="pdf_sign_open_a_pdf_first">Open eerst een PDF.</string>
+    <!-- PdfToImagesPresentation -->
+    <string name="pdf_to_images_presentation_page">"Pagina %1$s · %2$s"</string>
+    <string name="pdf_to_images_presentation_share_all">"Alle %1$s delen"</string>
+    <string name="pdf_to_images_presentation_share_image">Afbeelding delen</string>
+    <string name="pdf_to_images_presentation_in_all">"%1$s in totaal"</string>
+    <string name="pdf_to_images_presentation_of_pages">"%1$s van %2$s pagina\'s"</string>
+    <string name="pdf_to_images_presentation_all_pages">"Alle %1$s pagina\'s"</string>
+    <string name="pdf_to_images_presentation_export">"%1$s exporteren"</string>
+    <string name="pdf_to_images_presentation_choose_pages_to_export">Kies pagina\'s om te exporteren</string>
+    <string name="pdf_to_images_presentation_1_image">1 afbeelding</string>
+    <string name="pdf_to_images_presentation_1f_gb" formatted="false">%.1f GB</string>
+    <string name="pdf_to_images_presentation_1f_mb" formatted="false">%.1f MB</string>
+    <string name="pdf_to_images_presentation_kb">"%1$s KB"</string>
+    <string name="pdf_to_images_presentation_0_kb">0 KB</string>
+    <!-- PdfToImagesScreen -->
+    <string name="pdf_to_images_of_selected">"%1$s van %2$s geselecteerd"</string>
+    <string name="pdf_to_images_tap_images_or_long_press">Tik op afbeeldingen, of houd ingedrukt en sleep, om er maar een paar te delen.</string>
+    <string name="pdf_to_images_open_gallery">Galerij openen</string>
+    <string name="pdf_to_images_pick_a_different_file">Ander bestand kiezen</string>
+    <string name="pdf_to_images_png_or_print_size">PNG of afdrukformaat</string>
+    <string name="pdf_to_images_export_again">Opnieuw exporteren</string>
+    <string name="pdf_to_images_saving_images">Afbeeldingen opslaan…</string>
+    <string name="pdf_to_images_each">~%1$s per stuk</string>
+    <string name="pdf_to_images_resolution">Resolutie</string>
+    <string name="pdf_to_images_format">Indeling</string>
+    <string name="pdf_to_images_deselect_all">Alles deselecteren</string>
+    <string name="pdf_to_images_this_pdf_is_password_protected">Deze PDF is beveiligd met een wachtwoord. Voer het wachtwoord in om de pagina\'s te zien.</string>
+    <string name="pdf_to_images_images_show_up_in_your">Afbeeldingen verschijnen meteen in je galerij</string>
+    <string name="pdf_to_images_pdf_to_jpg">PDF naar JPG</string>
+    <string name="pdf_to_images_step_2_of_3_pages">Stap 2 van 3 · Pagina\'s en indeling</string>
+    <string name="pdf_to_images_no_gallery_app_found_the">Geen galerij-app gevonden. De afbeeldingen staan in Pictures/Scanly.</string>
+    <string name="pdf_to_images_turn_pages_into_images_for">Maak van pagina\'s afbeeldingen voor chats, presentaties of je galerij.</string>
+    <!-- PdfToolDone -->
+    <string name="pdf_tool_done_open_pdf">PDF openen</string>
+    <string name="pdf_tool_done_open_the_finished_pdf">De voltooide PDF openen</string>
+    <string name="pdf_tool_done_your_original_file_is_unchanged">Je originele bestand blijft ongewijzigd</string>
+    <!-- PdfToolPresentation -->
+    <string name="pdf_tool_presentation_files_merge_in_this_order">Bestanden worden in deze volgorde samengevoegd. De eerste PDF begint het document.</string>
+    <string name="pdf_tool_presentation_add_at_least_one_more">Voeg minstens nog één PDF toe om samen te voegen.</string>
+    <string name="pdf_tool_presentation_opacity">Dekking %1$s%%</string>
+    <string name="pdf_tool_presentation_one_large_stamp_sized_to">Eén grote stempel die de pagina domineert.</string>
+    <string name="pdf_tool_presentation_repeats_across_the_full_page">Herhaalt zich over de hele pagina, ook langs de randen.</string>
+    <string name="pdf_tool_presentation_protect_pdf">PDF beveiligen</string>
+    <string name="pdf_tool_presentation_saved">"%1$s → %2$s  ·  %3$s%% bespaard"</string>
+    <string name="pdf_tool_presentation_unlocked">Ontgrendeld</string>
+    <string name="pdf_tool_presentation_protected">Beveiligd</string>
+    <string name="pdf_tool_presentation_pdfs">"%1$s PDF\'s"</string>
+    <string name="pdf_tool_presentation_1_pdf">1 PDF</string>
+    <string name="pdf_tool_presentation_no_files">Geen bestanden</string>
+    <!-- PdfToolShared -->
+    <string name="pdf_tool_shared_scanly_pdf">Scanly-PDF</string>
+    <!-- PdfToolViewModels -->
+    <string name="pdf_tool_view_models_saving">Opslaan…</string>
+    <!-- PdfWatermarkScreen -->
+    <string name="pdf_watermark_the_page">De pagina</string>
+    <string name="pdf_watermark_first_page_only">Alleen eerste pagina</string>
+    <string name="pdf_watermark_apply_to">Toepassen op</string>
+    <string name="pdf_watermark_colour">Kleur</string>
+    <string name="pdf_watermark_opacity">Dekking</string>
+    <string name="pdf_watermark_large">Groot</string>
+    <string name="pdf_watermark_medium">Middel</string>
+    <string name="pdf_watermark_small">Klein</string>
+    <string name="pdf_watermark_horizontal">Horizontaal</string>
+    <string name="pdf_watermark_diagonal">Diagonaal</string>
+    <string name="pdf_watermark_single">Enkel</string>
+    <string name="pdf_watermark_tiled">Herhaald</string>
+    <string name="pdf_watermark_style">Stijl</string>
+    <string name="pdf_watermark_stamps">Stempelt \"%1$s\"</string>
+    <string name="pdf_watermark_add_date">Datum toevoegen</string>
+    <string name="pdf_watermark_presets">Voorinstellingen</string>
+    <string name="pdf_watermark_the_watermarked_copy_is_saved">De kopie met watermerk wordt zonder wachtwoord opgeslagen. Je kunt hem opnieuw vergrendelen met de wachtwoordtool.</string>
+    <string name="pdf_watermark_live_preview_of_the_saved">Live voorbeeld van het opgeslagen bestand</string>
+    <string name="pdf_watermark_page_1">Pagina 1</string>
+    <string name="pdf_watermark_preview_of_page_1_with">Voorbeeld van pagina 1 met het watermerk</string>
+    <string name="pdf_watermark_apply_watermark">Watermerk toepassen</string>
+    <string name="pdf_watermark_apply_to_pages">"Toepassen op %1$s pagina\'s"</string>
+    <string name="pdf_watermark_apply_to_page">Toepassen op pagina</string>
+    <string name="pdf_watermark_apply_to_first_page">Toepassen op eerste pagina</string>
+    <string name="pdf_watermark_unlock_the_pdf_first">Ontgrendel eerst de PDF</string>
+    <string name="pdf_watermark_watermark">Watermerk</string>
+    <string name="pdf_watermark_edit_stamp">Stempel bewerken</string>
+    <string name="pdf_watermark_watermarked_pdf">PDF met watermerk</string>
+    <string name="pdf_watermark_kept_unstamped">Bewaard, zonder stempel</string>
+    <string name="pdf_watermark_stamp">Stempel</string>
+    <string name="pdf_watermark_on_every_page_tap_the">Op elke pagina. Tik op de pagina om te controleren.</string>
+    <string name="pdf_watermark_on_all_pages_tap_the">"Op alle %1$s pagina\'s. Tik op de pagina om te controleren."</string>
+    <string name="pdf_watermark_on_both_pages_tap_the">Op beide pagina\'s. Tik op de pagina om te controleren.</string>
+    <string name="pdf_watermark_on_the_page_tap_it">Op de pagina. Tik erop om te controleren.</string>
+    <string name="pdf_watermark_on_the_first_page_tap">Op de eerste pagina. Tik op de pagina om te controleren.</string>
+    <string name="pdf_watermark_watermark_added">Watermerk toegevoegd</string>
+    <string name="pdf_watermark_stamping_every_page">Elke pagina stempelen</string>
+    <string name="pdf_watermark_stamping">"%1$s stempelen"</string>
+    <string name="pdf_watermark_stamping_the_first_page">Eerste pagina stempelen</string>
+    <string name="pdf_watermark_adding_watermark">Watermerk toevoegen…</string>
+    <string name="pdf_watermark_stamp_text_like_confidential_or">Stempel tekst zoals VERTROUWELIJK of \"Alleen voor KYC-gebruik\".</string>
+    <!-- PdfWatermarkViewModel -->
+    <string name="pdf_watermark_kyc_copy">KYC-kopie</string>
+    <string name="pdf_watermark_enter_watermark_text">Voer de tekst voor het watermerk in.</string>
+    <!-- QrActions -->
+    <string name="qr_actions_qr_text">QR-tekst</string>
+    <string name="qr_actions_no_app_can_search_the">Geen app kan op het web zoeken</string>
+    <string name="qr_actions_no_email_app_is_set">Er is geen e-mailapp ingesteld op deze telefoon</string>
+    <string name="qr_actions_no_phone_app_can_open">Geen telefoonapp kan dit nummer openen</string>
+    <string name="qr_actions_no_contacts_app_can_save">Geen contacten-app kan dit opslaan</string>
+    <string name="qr_actions_pick_in_wi_fi_settings">Kies \"%1$s\" in de wifi-instellingen</string>
+    <string name="qr_actions_password_copied_pick_the_network">Wachtwoord gekopieerd, kies het netwerk</string>
+    <string name="qr_actions_wi_fi_settings_can_t">Wifi-instellingen kunnen niet worden geopend</string>
+    <string name="qr_actions_wi_fi_password">Wi-Fi-wachtwoord</string>
+    <string name="qr_actions_wi_fi_settings_can_t_2">Wifi-instellingen kunnen dit netwerk niet toevoegen</string>
+    <string name="qr_actions_no_upi_app_can_open">Geen UPI-app kan deze code openen</string>
+    <string name="qr_actions_pay_with">Betalen met</string>
+    <string name="qr_actions_no_app_can_open_this">Geen app kan deze link openen</string>
+    <string name="qr_actions_not_a_web_link">Geen weblink</string>
+    <string name="qr_actions_nothing_can_receive_this_text">Geen app kan deze tekst ontvangen</string>
+    <string name="qr_actions_share_qr_code">QR-code delen</string>
+    <string name="qr_actions_copied_to_clipboard">Gekopieerd naar klembord</string>
+    <!-- QrCreateScreen -->
+    <string name="qr_create_full_name">Volledige naam</string>
+    <string name="qr_create_name">Naam</string>
+    <string name="qr_create_leave_the_amount_empty_so">Laat het bedrag leeg zodat klanten zelf invullen wat ze moeten betalen.</string>
+    <string name="qr_create_enter_an_amount_above_zero">Voer een bedrag hoger dan nul in</string>
+    <string name="qr_create_any">₹ Willekeurig</string>
+    <string name="qr_create_amount_optional">Bedrag · optioneel</string>
+    <string name="qr_create_shop_name">Winkelnaam</string>
+    <string name="qr_create_payee_name">Naam ontvanger</string>
+    <string name="qr_create_name_bank">naam@bank</string>
+    <string name="qr_create_upi_id">UPI-ID</string>
+    <string name="qr_create_security">Beveiliging</string>
+    <string name="qr_create_network_password">Netwerkwachtwoord</string>
+    <string name="qr_create_network_name">Netwerknaam</string>
+    <string name="qr_create_characters">"%1$s / %2$s tekens"</string>
+    <string name="qr_create_anything_up_to_characters">"Alles tot %1$s tekens"</string>
+    <string name="qr_create_web_address">Webadres</string>
+    <string name="qr_create_qr_code_preview">Voorbeeld van QR-code</string>
+    <string name="qr_create_saved_to_qr_history_png">Opgeslagen in QR-geschiedenis · PNG, 1024 px</string>
+    <string name="qr_create_save_image">Afbeelding opslaan</string>
+    <string name="qr_create_only_dark_colours_so_every">Alleen donkere kleuren, zodat elke camera de code kan lezen.</string>
+    <string name="qr_create_shown_under_the_code">Getoond onder de code</string>
+    <string name="qr_create_caption_under_the_code_optional">Bijschrift onder de code · optioneel</string>
+    <string name="qr_create_create_qr">QR maken</string>
+    <!-- QrHistoryScreen -->
+    <string name="qr_history_created">Gemaakt</string>
+    <string name="qr_history_scanned">Gescand</string>
+    <string name="qr_history_clear_history">Geschiedenis wissen</string>
+    <string name="qr_history_every_scanned_and_created_code">Alle gescande en gemaakte codes worden van deze telefoon verwijderd. Dit kan niet ongedaan worden gemaakt.</string>
+    <string name="qr_history_clear_qr_history">QR-geschiedenis wissen?</string>
+    <string name="qr_history_clear_history_2">Geschiedenis wissen…</string>
+    <string name="qr_history_history_stays_on_this_phone">De geschiedenis blijft op deze telefoon.</string>
+    <string name="qr_history_try_another_search_or_filter">Probeer een andere zoekopdracht of filter.</string>
+    <string name="qr_history_no_matches">Geen resultaten</string>
+    <string name="qr_history_scanned_and_created_codes_are">Gescande en gemaakte codes worden hier bewaard.</string>
+    <string name="qr_history_no_codes_yet">Nog geen codes</string>
+    <string name="qr_history_search_links_networks_names">Zoek in links, netwerken, namen</string>
+    <string name="qr_history_qr_history">QR-geschiedenis</string>
+    <!-- QrResultScreen -->
+    <string name="qr_result_show_raw_content">Ruwe inhoud tonen</string>
+    <string name="qr_result_hide_raw_content">Ruwe inhoud verbergen</string>
+    <string name="qr_result_raw_content">Ruwe inhoud</string>
+    <string name="qr_result_organisation">Organisatie</string>
+    <string name="qr_result_wi_fi_settings_can_t">Wifi-instellingen kunnen geen WEP-netwerken toevoegen, dus het wachtwoord wordt gekopieerd en de instellingen worden geopend.</string>
+    <string name="qr_result_not_in_the_code">Niet in de code</string>
+    <string name="qr_result_network">Netwerk</string>
+    <string name="qr_result_scanly_doesn_t_make_payments">Scanly doet geen betalingen. Controleer de naam van de ontvanger in je UPI-app voordat je betaalt.</string>
+    <string name="qr_result_not_set_you_ll_enter">Niet ingesteld. Je vult het in je UPI-app in.</string>
+    <string name="qr_result_amount">Bedrag</string>
+    <string name="qr_result_payee">Ontvanger</string>
+    <string name="qr_result_this_link_isn_t_encrypted">Deze link is niet versleuteld (http). Controleer of het domein klopt voordat je hem opent.</string>
+    <string name="qr_result_check_the_domain_is_the">Controleer of het domein klopt voordat je hem opent.</string>
+    <string name="qr_result_full_address">Volledig adres</string>
+    <string name="qr_result_number">Nummer</string>
+    <string name="qr_result_subject">Onderwerp</string>
+    <string name="qr_result_address">Adres</string>
+    <string name="qr_result_search_the_web">Zoeken op het web</string>
+    <string name="qr_result_copy_number">Nummer kopiëren</string>
+    <string name="qr_result_email_address">E-mailadres</string>
+    <string name="qr_result_copy_address">Adres kopiëren</string>
+    <string name="qr_result_call">Bellen</string>
+    <string name="qr_result_copy_network_name">Netwerknaam kopiëren</string>
+    <string name="qr_result_copy_password">Wachtwoord kopiëren</string>
+    <string name="qr_result_copy_upi_id">UPI-ID kopiëren</string>
+    <string name="qr_result_copy_link">Link kopiëren</string>
+    <string name="qr_result_delete_from_history">Verwijderen uit geschiedenis</string>
+    <string name="qr_result_saved_to_history">" · opgeslagen in Geschiedenis"</string>
+    <!-- QrScanScreen -->
+    <string name="qr_scan_captured_qr_code">Vastgelegde QR-code</string>
+    <string name="qr_scan_history">Geschiedenis</string>
+    <string name="qr_scan_from_photo">Van foto</string>
+    <string name="qr_scan_scan_again">Opnieuw scannen</string>
+    <string name="qr_scan_qr_code">QR-code</string>
+    <string name="qr_scan_details">Details</string>
+    <string name="qr_scan_allow_camera">Camera toestaan</string>
+    <string name="qr_scan_open_settings">Instellingen openen</string>
+    <string name="qr_scan_the_camera_is_used_only">De camera wordt alleen gebruikt zolang dit scherm open is. \"Van foto\" werkt zonder camera.</string>
+    <string name="qr_scan_open_settings_tap_permissions_and">Open Instellingen, tik op Rechten en zet Camera aan voor Scanly.</string>
+    <string name="qr_scan_allow_camera_to_scan">Sta de camera toe om te scannen</string>
+    <string name="qr_scan_camera_permission_is_blocked">Cameratoegang is geblokkeerd</string>
+    <string name="qr_scan_torch_on_off">Zaklamp aan/uit</string>
+    <string name="qr_scan_scan_qr_barcode">QR en barcode scannen</string>
+    <string name="qr_scan_point_at_a_qr_code">Richt op een QR-code of barcode</string>
+    <string name="qr_scan_code_found_hold_steady">Code gevonden · houd stil</string>
+    <string name="qr_scan_reading_photo">Foto lezen…</string>
+    <string name="qr_scan_the_camera_isn_t_available">De camera is nu niet beschikbaar. Probeer in plaats daarvan \"Van foto\".</string>
+    <!-- QrToolPresentation -->
+    <string name="qr_tool_presentation_h_ago">"%1$s u geleden"</string>
+    <string name="qr_tool_presentation_min_ago">"%1$s min geleden"</string>
+    <string name="qr_tool_presentation_just_now">zojuist</string>
+    <string name="qr_tool_presentation_some_text">wat tekst</string>
+    <string name="qr_tool_presentation_a_phone_number">een telefoonnummer</string>
+    <string name="qr_tool_presentation_an_email_address">een e-mailadres</string>
+    <string name="qr_tool_presentation_a_contact">een contact</string>
+    <string name="qr_tool_presentation_a_wi_fi_network">een Wi-Fi-netwerk</string>
+    <string name="qr_tool_presentation_a_upi_payment">een UPI-betaling</string>
+    <string name="qr_tool_presentation_a_link">een link</string>
+    <string name="qr_tool_presentation_found">"Gevonden: "</string>
+    <string name="qr_tool_presentation_generating_preview">Voorbeeld maken…</string>
+    <string name="qr_tool_presentation_preview_appears_as_you_type">Het voorbeeld verschijnt terwijl je typt</string>
+    <string name="qr_tool_presentation_copy_to_the_clipboard">Kopiëren naar klembord</string>
+    <string name="qr_tool_presentation_open_in_a_browser_or">Openen in een browser of kopiëren</string>
+    <!-- QrToolViewModel -->
+    <string name="qr_tool_qr_history_cleared">QR-geschiedenis gewist</string>
+    <string name="qr_tool_add_the_details_first">Vul eerst de gegevens in</string>
+    <string name="qr_tool_no_qr_code_found_in">Geen QR-code gevonden in die foto</string>
+    <!-- ImageTextScreen -->
+    <string name="image_text_photos_are_saved_as_a">Foto\'s worden als nieuw document opgeslagen, zodat je later in de tekst kunt zoeken.</string>
+    <string name="image_text_your_scans_have_no_pages">Je scans hebben nog geen pagina\'s. Kies foto\'s om de tekst te lezen.</string>
+    <string name="image_text_no_scans_yet_pick_photos">Nog geen scans. Kies foto\'s om de tekst te lezen.</string>
+    <string name="image_text_1_scan">1 scan</string>
+    <string name="image_text_up_to_from_your_gallery">"Maximaal %1$s uit je galerij of bestanden"</string>
+    <string name="image_text_copy_text_from_photos_or">Kopieer tekst uit foto\'s of scans. De tekst wordt op deze telefoon gelezen.</string>
+    <string name="image_text_image_to_text">Afbeelding naar tekst</string>
+    <!-- AppUpdateDialog -->
+    <string name="app_update_published">"Gepubliceerd op %1$s"</string>
+    <string name="app_update_current">Huidige</string>
+    <string name="app_update_update">Updaten</string>
+    <string name="app_update_what_s_new">Wat is er nieuw</string>
+    <!-- AppUpdateViewModel -->
+    <string name="app_update_scanly_is_up_to_date">Scanly is up-to-date. Je gebruikt %1$s.</string>
+    <string name="app_update_could_not_check_for_updates">"Kan niet via %1$s op updates controleren."</string>
+    <!-- FlexibleUpdateSnackbar -->
+    <string name="flexible_update_snackbar_restart">Opnieuw starten</string>
+    <string name="flexible_update_snackbar_update_downloaded_restart_scanly_to">Update gedownload. Start Scanly opnieuw om de installatie te voltooien.</string>
+    <!-- ReleaseMarkdown -->
+    <string name="release_markdown_no_release_notes_were_provided">Er zijn geen releaseopmerkingen voor deze versie.</string>
+    <!-- ScanlyNavHost -->
+    <string name="scanly_nav_host_up_to_images">"Maximaal %1$s afbeeldingen"</string>
+    <string name="scanly_nav_host_import_from_gallery">Importeren uit galerij</string>
+    <string name="scanly_nav_host_capture_pages_now">Nu pagina\'s vastleggen</string>
+    <string name="scanly_nav_host_scan_with_camera">Scannen met camera</string>
+    <string name="scanly_nav_host_add_a_document">Document toevoegen</string>
+    <!-- pdf_page_orientation -->
+    <string name="pdf_page_orientation_portrait">Staand</string>
+    <string name="pdf_page_orientation_landscape">Liggend</string>
+    <!-- pdf_page_size -->
+    <string name="pdf_page_size_auto_fit">Automatisch passend</string>
+    <string name="pdf_page_size_a3">A3</string>
+    <string name="pdf_page_size_a4">A4</string>
+    <string name="pdf_page_size_a5">A5</string>
+    <string name="pdf_page_size_b4">B4</string>
+    <string name="pdf_page_size_b5">B5</string>
+    <string name="pdf_page_size_letter">Letter</string>
+    <string name="pdf_page_size_tabloid">Tabloid</string>
+    <string name="pdf_page_size_executive">Executive</string>
+    <string name="pdf_page_size_postcard">Briefkaart</string>
+    <string name="pdf_page_size_american_foolscap">Amerikaans folio</string>
+    <string name="pdf_page_size_european_foolscap">Europees folio</string>
+    <!-- pdf_page_margin -->
+    <string name="pdf_page_margin_no_margin">Geen marge</string>
+    <string name="pdf_page_margin_big">Groot</string>
+    <!-- pdf_page_number -->
+    <string name="pdf_page_number_center">Midden</string>
+    <!-- pdf_image_format -->
+    <string name="pdf_image_format_smaller_files_best_for_photos">Kleinere bestanden, het best voor foto\'s en delen</string>
+    <string name="pdf_image_format_crisper_text_files_about_3">Scherpere tekst, bestanden ongeveer 3× groter</string>
+    <!-- pdf_image_resolution -->
+    <string name="pdf_image_resolution_for_sharing">Om te delen</string>
+    <string name="pdf_image_resolution_1240_px_wide_sharp_on">1240 px breed · scherp op telefoons en in WhatsApp</string>
+    <string name="pdf_image_resolution_for_printing">Om af te drukken</string>
+    <string name="pdf_image_resolution_2480_px_wide_300_dpi">2480 px breed · 300 dpi op A4</string>
+    <!-- pdf_compress_quality -->
+    <string name="pdf_compress_quality_high_quality">Hoge kwaliteit</string>
+    <string name="pdf_compress_quality_best_clarity_less_compression">Scherpst · minder compressie</string>
+    <string name="pdf_compress_quality_balanced">Gebalanceerd</string>
+    <string name="pdf_compress_quality_good_balance_of_size_and">Goede balans tussen grootte en scherpte</string>
+    <string name="pdf_compress_quality_smallest">Kleinst</string>
+    <string name="pdf_compress_quality_maximum_compression_softer_detail">Maximale compressie · zachtere details</string>
+    <!-- watermark_color -->
+    <string name="watermark_color_grey">Grijs</string>
+    <string name="watermark_color_red">Rood</string>
+    <string name="watermark_color_blue">Blauw</string>
+    <string name="watermark_color_teal">Groenblauw</string>
+    <!-- signature_kind -->
+    <string name="signature_kind_signature">Handtekening</string>
+    <!-- sign_ink -->
+    <string name="sign_ink_navy">Marineblauw</string>
+    <string name="sign_ink_black">Zwart</string>
+    <!-- date_filter -->
+    <string name="date_filter_any_time">Altijd</string>
+    <string name="date_filter_last_7_days">Afgelopen 7 dagen</string>
+    <string name="date_filter_last_30_days">Afgelopen 30 dagen</string>
+    <string name="date_filter_this_year">Dit jaar</string>
+    <string name="date_filter_custom_range">Aangepaste periode</string>
+    <!-- search_sort -->
+    <string name="search_sort_best_match">Beste overeenkomst</string>
+    <string name="search_sort_newest">Nieuwste</string>
+    <string name="search_sort_oldest">Oudste</string>
+    <string name="search_sort_name_a_z">Naam A–Z</string>
+    <!-- search_scope -->
+    <string name="search_scope_everywhere">Overal</string>
+    <string name="search_scope_names">Namen</string>
+    <string name="search_scope_text_in_pages">Paginatekst</string>
+    <!-- app_update_channel -->
+    <string name="app_update_channel_github">GitHub</string>
+    <string name="app_update_channel_google_play">Google Play</string>
+    <!-- document_kind -->
+    <string name="document_kind_invoice">Factuur</string>
+    <string name="document_kind_receipt">Bon</string>
+    <string name="document_kind_contract">Contract</string>
+    <string name="document_kind_statement">Afschrift</string>
+    <string name="document_kind_certificate">Certificaat</string>
+    <string name="document_kind_id_document">Identiteitsbewijs</string>
+    <string name="document_kind_form">Formulier</string>
+    <string name="document_kind_r_sum">Cv</string>
+    <!-- document_corner_model -->
+    <string name="document_corner_model_lite">Lite</string>
+    <string name="document_corner_model_standard">Standaard</string>
+    <string name="document_corner_model_high">Hoog</string>
+    <string name="document_corner_model_accurate">Nauwkeurig</string>
+    <!-- document_title_format -->
+    <string name="document_title_format_scan_with_date_and_time">Scan met datum en tijd</string>
+    <string name="document_title_format_scan_date_time">Scan · datum en tijd</string>
+    <string name="document_title_format_document_with_date_and_time">Document met datum en tijd</string>
+    <string name="document_title_format_document_date_time">Document · datum en tijd</string>
+    <string name="document_title_format_scan_with_date">Scan met datum</string>
+    <string name="document_title_format_scan_date">Scan · datum</string>
+    <string name="document_title_format_scan_with_iso_date">Scan met ISO-datum</string>
+    <string name="document_title_format_scan_yyyy_mm_dd">Scan · JJJJ-MM-DD</string>
+    <!-- group_title_format -->
+    <string name="group_title_format_folder_with_date_and_time">Map met datum en tijd</string>
+    <string name="group_title_format_folder_date_time">Map · datum en tijd</string>
+    <string name="group_title_format_new_folder_with_date_and">Nieuwe map met datum en tijd</string>
+    <string name="group_title_format_new_folder_date_time">Nieuwe map · datum en tijd</string>
+    <string name="group_title_format_folder_with_date">Map met datum</string>
+    <string name="group_title_format_folder_date">Map · datum</string>
+    <string name="group_title_format_folder_with_iso_date">Map met ISO-datum</string>
+    <string name="group_title_format_folder_yyyy_mm_dd">Map · JJJJ-MM-DD</string>
+    <!-- wifi_security -->
+    <string name="wifi_security_wpa_wpa2">WPA/WPA2</string>
+    <string name="wifi_security_wep">WEP</string>
+    <string name="wifi_security_open">Open</string>
+    <!-- qr_create_type -->
+    <string name="qr_create_type_upi">UPI</string>
+    <!-- pdf_import_look -->
+    <string name="pdf_import_look_keep_as_is">Zo laten</string>
+    <string name="pdf_import_look_pages_look_exactly_like_the">Pagina\'s zien er precies zo uit als in de PDF</string>
+    <string name="pdf_import_look_enhance">Verbeteren</string>
+    <string name="pdf_import_look_even_out_scanned_pages_and">Maak gescande pagina\'s egaler en tekst scherper</string>
+    <!-- capture_scene_issue -->
+    <string name="capture_scene_issue_lens_may_be_covered_clear">De lens is mogelijk bedekt. Maak hem vrij en probeer het opnieuw.</string>
+    <string name="capture_scene_issue_too_dark_add_light_or">Te donker. Zorg voor meer licht of zet de flitser aan.</string>
+    <string name="capture_scene_issue_image_looks_blurry_clean_the">Afbeelding is wazig. Maak de lens schoon of tik om scherp te stellen.</string>
+    <!-- group_export_action -->
+    <string name="group_export_action_merged_pdf_options">Opties voor samengevoegde PDF</string>
+    <string name="group_export_action_separate_pdfs_options">Opties voor losse PDF\'s</string>
+    <!-- library_sort_option -->
+    <string name="library_sort_option_last_modified">Laatst gewijzigd</string>
+    <string name="library_sort_option_latest_changes_first">Nieuwste wijzigingen eerst</string>
+    <string name="library_sort_option_oldest_updated">Langst niet gewijzigd</string>
+    <string name="library_sort_option_earliest_changes_first">Oudste wijzigingen eerst</string>
+    <string name="library_sort_option_alphabetical_order">Alfabetische volgorde</string>
+    <string name="library_sort_option_name_z_a">Naam Z–A</string>
+    <string name="library_sort_option_reverse_alphabetical_order">Omgekeerde alfabetische volgorde</string>
+    <string name="library_sort_option_newest_created">Nieuwst gemaakt</string>
+    <string name="library_sort_option_recently_added_first">Recent toegevoegd eerst</string>
+    <string name="library_sort_option_oldest_created">Oudst gemaakt</string>
+    <string name="library_sort_option_earliest_added_first">Eerst toegevoegd eerst</string>
+    <!-- signature_pen_width -->
+    <string name="signature_pen_width_fine">Dun</string>
+    <string name="signature_pen_width_bold">Dik</string>
+    <!-- onboarding_page -->
+    <string name="onboarding_page_capture">VASTLEGGEN</string>
+    <string name="onboarding_page_paper_to_polished">Van papier naar perfect.</string>
+    <string name="onboarding_page_capture_straighten_and_clean_up">Leg je pagina\'s vast, zet ze recht en maak ze netjes.</string>
+    <string name="onboarding_page_find">VINDEN</string>
+    <string name="onboarding_page_find_more_than_files">Vind meer dan bestanden.</string>
+    <string name="onboarding_page_recognize_text_on_your_device">Herken tekst op je apparaat. Zoek in je scans.</string>
+    <string name="onboarding_page_share">DELEN</string>
+    <string name="onboarding_page_ready_when_you_are">Klaar wanneer jij het bent.</string>
+    <string name="onboarding_page_keep_pages_together_share_a">Houd pagina\'s bij elkaar. Deel een nette PDF met een paar tikken.</string>
+    <!-- pdf_reader_tool -->
+    <string name="pdf_reader_tool_merge_with_other_pdfs">Samenvoegen met andere PDF\'s</string>
+    <string name="pdf_reader_tool_password_protect">Beveiligen met wachtwoord</string>
+    <string name="pdf_reader_tool_add_watermark">Watermerk toevoegen</string>
+    <string name="pdf_reader_tool_save_pages_as_images">Pagina\'s opslaan als afbeeldingen</string>
+    <string name="pdf_reader_tool_add_to_scanly_library">Toevoegen aan Scanly-bibliotheek</string>
+    <!-- pdf_picker_sort -->
+    <string name="pdf_picker_sort_most_pages">Meeste pagina\'s</string>
+    <!-- qr_ink_color -->
+    <string name="qr_ink_color_ink">Inkt</string>
+    <string name="qr_ink_color_maroon">Bordeauxrood</string>
+    <!-- qr_primary_action -->
+    <string name="qr_primary_action_pay_with_a_upi_app">Betalen met een UPI-app</string>
+    <string name="qr_primary_action_pay">Betalen</string>
+    <string name="qr_primary_action_join_this_network">Verbinden met dit netwerk</string>
+    <string name="qr_primary_action_join">Verbinden</string>
+    <string name="qr_primary_action_save_to_contacts">Opslaan in contacten</string>
+    <string name="qr_primary_action_send_email">E-mail sturen</string>
+    <string name="qr_primary_action_call_this_number">Dit nummer bellen</string>
+    <string name="qr_primary_action_copy_text">Tekst kopiëren</string>
+    <!-- qr_history_section -->
+    <string name="qr_history_section_earlier">Eerder</string>
+    <!-- sign_tool -->
+    <string name="sign_tool_date">Datum</string>
+    <string name="sign_tool_checkbox">Selectievakje</string>
+    <!-- scanly_destination -->
+    <string name="scanly_destination_home">Start</string>
+    <string name="scanly_destination_camera">Camera</string>
+    <!-- settings_text_recognition -->
+    <string name="settings_text_recognition_and_more">en meer</string>
+    <string name="settings_text_recognition_romanian">Roemeens</string>
+    <string name="settings_text_recognition_czech">Tsjechisch</string>
+    <string name="settings_text_recognition_swedish">Zweeds</string>
+    <string name="settings_text_recognition_swahili">Swahili</string>
+    <string name="settings_text_recognition_filipino">Filipijns</string>
+    <string name="settings_text_recognition_vietnamese">Vietnamees</string>
+    <string name="settings_text_recognition_malay">Maleis</string>
+    <string name="settings_text_recognition_indonesian">Indonesisch</string>
+    <string name="settings_text_recognition_turkish">Turks</string>
+    <string name="settings_text_recognition_polish">Pools</string>
+    <string name="settings_text_recognition_dutch">Nederlands</string>
+    <string name="settings_text_recognition_portuguese">Portugees</string>
+    <string name="settings_text_recognition_italian">Italiaans</string>
+    <string name="settings_text_recognition_german">Duits</string>
+    <string name="settings_text_recognition_french">Frans</string>
+    <string name="settings_text_recognition_spanish">Spaans</string>
+    <string name="settings_text_recognition_english">Engels</string>
+    <string name="settings_text_recognition_latin">Latijn</string>
+    <string name="settings_text_recognition_amharic">Amhaars</string>
+    <string name="settings_text_recognition_georgian">Georgisch</string>
+    <string name="settings_text_recognition_armenian">Armeens</string>
+    <string name="settings_text_recognition_burmese">Birmaans</string>
+    <string name="settings_text_recognition_khmer">Khmer</string>
+    <string name="settings_text_recognition_lao">Laotiaans</string>
+    <string name="settings_text_recognition_thai">Thai</string>
+    <string name="settings_text_recognition_southeast_asia_more">Zuidoost-Azië en meer</string>
+    <string name="settings_text_recognition_hebrew">Hebreeuws</string>
+    <string name="settings_text_recognition_urdu">Urdu</string>
+    <string name="settings_text_recognition_persian">Perzisch</string>
+    <string name="settings_text_recognition_arabic">Arabisch</string>
+    <string name="settings_text_recognition_right_to_left">Van rechts naar links</string>
+    <string name="settings_text_recognition_korean">Koreaans</string>
+    <string name="settings_text_recognition_japanese">Japans</string>
+    <string name="settings_text_recognition_chinese">Chinees</string>
+    <string name="settings_text_recognition_east_asian">Oost-Aziatisch</string>
+    <string name="settings_text_recognition_sinhala">Singalees</string>
+    <string name="settings_text_recognition_odia">Odia</string>
+    <string name="settings_text_recognition_punjabi">Punjabi</string>
+    <string name="settings_text_recognition_gujarati">Gujarati</string>
+    <string name="settings_text_recognition_malayalam">Malayalam</string>
+    <string name="settings_text_recognition_kannada">Kannada</string>
+    <string name="settings_text_recognition_telugu">Telugu</string>
+    <string name="settings_text_recognition_tamil">Tamil</string>
+    <string name="settings_text_recognition_bengali">Bengaals</string>
+    <string name="settings_text_recognition_nepali">Nepalees</string>
+    <string name="settings_text_recognition_marathi">Marathi</string>
+    <string name="settings_text_recognition_hindi">Hindi</string>
+    <string name="settings_text_recognition_indian_scripts">Indiase schriften</string>
+    <string name="settings_text_recognition_greek">Grieks</string>
+    <string name="settings_text_recognition_serbian">Servisch</string>
+    <string name="settings_text_recognition_bulgarian">Bulgaars</string>
+    <string name="settings_text_recognition_ukrainian">Oekraïens</string>
+    <string name="settings_text_recognition_russian">Russisch</string>
+    <string name="settings_text_recognition_latin_cyrillic_greek">Latijns, Cyrillisch en Grieks</string>
+    <!-- tools_catalog -->
+    <string name="tools_catalog_camera_with_edge_detection">Camera met randdetectie</string>
+    <string name="tools_catalog_scan_a_document">Document scannen</string>
+    <string name="tools_catalog_pdf_to_editable_scan">PDF naar bewerkbare scan</string>
+    <string name="tools_catalog_open_any_pdf">Elke PDF openen</string>
+    <string name="tools_catalog_read_pdf">PDF lezen</string>
+    <string name="tools_catalog_stamp_text">Tekst stempelen</string>
+    <string name="tools_catalog_lock_or_unlock">Vergrendelen of ontgrendelen</string>
+    <string name="tools_catalog_pages_as_images">Pagina\'s als afbeeldingen</string>
+    <string name="tools_catalog_make_it_smaller">Kleiner maken</string>
+    <string name="tools_catalog_combine_files">Bestanden combineren</string>
+    <string name="tools_catalog_merge">Samenvoegen</string>
+    <string name="tools_catalog_sign_any_pdf">Elke PDF ondertekenen</string>
+    <string name="tools_catalog_from_gallery">Uit galerij</string>
+    <string name="tools_catalog_images_to_pdf">Afbeeldingen naar PDF</string>
+    <string name="tools_catalog_create_manage">Maken en beheren</string>
+    <string name="tools_catalog_my_signatures">Mijn handtekeningen</string>
+    <string name="tools_catalog_photos_scans">Foto\'s en scans</string>
+    <string name="tools_catalog_scan_or_create">Scannen of maken</string>
+    <string name="tools_catalog_qr_barcode">QR en barcode</string>
+    <!-- pip_lines -->
+    <string name="pip_lines_tip_folders_keep_related_scans">tip: met mappen houd je bij elkaar horende scans samen. probeer er een voor bonnetjes.</string>
+    <string name="pip_lines_tip_turn_on_the_grid">tip: zet het raster aan in de camera om pagina\'s recht te leggen.</string>
+    <string name="pip_lines_tip_add_a_scanly_widget">tip: zet een scanly-widget op je startscherm en scan met één tik.</string>
+    <string name="pip_lines_tip_the_tools_tab_can">tip: op het tabblad tools kun je pdf\'s samenvoegen, comprimeren en ondertekenen.</string>
+    <string name="pip_lines_tip_open_a_document_s">tip: open de tekst van een document om te kopiëren of te delen wat erin staat.</string>
+    <string name="pip_lines_tip_long_press_a_page">tip: houd een pagina ingedrukt en sleep om de volgorde te wijzigen.</string>
+    <string name="pip_lines_tip_search_finds_words_inside">tip: zoeken vindt woorden in je scans, niet alleen in de namen.</string>
+    <string name="pip_lines_okay_okay_i_felt_that">oké oké, die voelde ik.</string>
+    <string name="pip_lines_still_free_still_no_account">nog steeds gratis. nog steeds geen account. nog steeds geen advertenties.</string>
+    <string name="pip_lines_i_m_open_source_you">ik ben open source. je kunt elke regel van me lezen.</string>
+    <string name="pip_lines_your_original_photos_are_kept">je originele foto\'s blijven bewaard, dus bewerkingen kun je altijd ongedaan maken.</string>
+    <string name="pip_lines_i_live_on_your_phone">ik woon op je telefoon. geen servers om naar huis te bellen.</string>
+    <string name="pip_lines_hey_that_tickles">hé! dat kietelt.</string>
+    <!-- pdf_watermark -->
+    <string name="pdf_watermark_for_kyc_use_only">Alleen voor KYC-gebruik</string>
+    <!-- document_presentation_formatter -->
+    <string name="document_presentation_formatter_untitled_document">Naamloos document</string>
+    <string name="document_presentation_formatter_untitled_folder">Naamloze map</string>
+    <!-- default_pdf_toolkit_repository -->
+    <string name="default_pdf_toolkit_repository_this_pdf_is_password_protected">Deze PDF is beveiligd met een wachtwoord.</string>
+    <string name="default_pdf_toolkit_repository_this_pdf_is_too_large">Deze PDF is te groot om op dit apparaat te verwerken.</string>
+    <!-- document_cover_art_factory -->
+    <string name="document_cover_art_factory_scanned_document">Gescand document</string>
+    <!-- document_sign -->
+    <string name="document_sign_some_pages_are_still_processing">Sommige pagina\'s worden nog verwerkt en kunnen nog niet worden ondertekend.</string>
+    <!-- pip_lines -->
+    <string name="pip_lines_hi_i_m_pip_point">hoi, ik ben pip! richt me op een pagina en ik zet hem voor je recht.</string>
+    <string name="pip_lines_one_last_thing_can_i">nog één ding! mag ik de camera even lenen? hij staat alleen aan als je scant.</string>
+    <string name="pip_lines_nothing_here_yet_let_s">hier is nog niks. laten we samen je eerste pagina scannen.</string>
+    <string name="pip_lines_a_clean_shelf_start_a">een lege plank! maak een map of scan iets in.</string>
+    <string name="pip_lines_no_folders_yet_they_re">nog geen mappen. superhandig voor bonnetjes, rekeningen en schoolspullen.</string>
+    <string name="pip_lines_no_documents_yet_i_m">nog geen documenten. ik ben er klaar voor als jij het bent.</string>
+    <string name="pip_lines_this_folder_is_waiting_for">deze map wacht op zijn eerste document.</string>
+    <string name="pip_lines_no_pages_yet_point_me">nog geen pagina\'s. richt me op wat papier!</string>
+    <string name="pip_lines_no_pages_means_no_words">geen pagina\'s betekent nog geen woorden.</string>
+    <string name="pip_lines_pick_a_few_photos_and">kies een paar foto\'s en ik laat de detectors tegen elkaar racen.</string>
+    <string name="pip_lines_hmm_i_don_t_have">hmm, daar heb ik geen antwoord op.</string>
+    <string name="pip_lines_no_codes_yet_scan_or">nog geen codes. scan of maak er een en ik bewaar hem hier.</string>
+    <string name="pip_lines_nothing_matches_that_try_another">niks gevonden. een ander woord proberen?</string>
+    <string name="pip_lines_i_m_still_reading_some">ik lees nog een paar pagina\'s. er kunnen zo nog resultaten opduiken.</string>
+    <string name="pip_lines_i_can_t_see_a">ik zie nog helemaal niks. mag ik de camera lenen?</string>
+    <string name="pip_lines_the_camera_is_switched_off">de camera staat uit voor scanly. een snel uitstapje naar instellingen lost het op.</string>
+    <string name="pip_lines_lend_me_the_camera_and">leen me de camera en ik lees de code voor je.</string>
+    <string name="pip_lines_huh_that_document_wandered_off">hè, dat document is ervandoor.</string>
+    <!-- pdf_page_size -->
+    <string name="pdf_page_size_match_each_scan">Gelijk aan elke scan</string>
+    <string name="pdf_page_size_29_7_42_0_cm">29,7 × 42,0 cm</string>
+    <string name="pdf_page_size_21_0_29_7_cm">21,0 × 29,7 cm</string>
+    <string name="pdf_page_size_14_8_21_0_cm">14,8 × 21,0 cm</string>
+    <string name="pdf_page_size_25_0_35_3_cm">25,0 × 35,3 cm</string>
+    <string name="pdf_page_size_17_6_25_0_cm">17,6 × 25,0 cm</string>
+    <string name="pdf_page_size_21_6_27_9_cm">21,6 × 27,9 cm</string>
+    <string name="pdf_page_size_27_9_43_2_cm">27,9 × 43,2 cm</string>
+    <string name="pdf_page_size_21_6_35_6_cm">21,6 × 35,6 cm</string>
+    <string name="pdf_page_size_18_4_26_7_cm">18,4 × 26,7 cm</string>
+    <string name="pdf_page_size_10_0_14_8_cm">10,0 × 14,8 cm</string>
+    <string name="pdf_page_size_21_6_33_0_cm">21,6 × 33,0 cm</string>
+    <string name="pdf_page_size_22_9_33_0_cm">22,9 × 33,0 cm</string>
+    <!-- PageTextScreen view modes -->
+    <string name="page_text_text">Tekst</string>
+    <string name="page_text_on_page">Op pagina</string>
+    <!-- Shared counts -->
+    <plurals name="common_documents">
+        <item quantity="one">%d document</item>
+        <item quantity="other">%d documenten</item>
+    </plurals>
+    <plurals name="common_pages">
+        <item quantity="one">%d pagina</item>
+        <item quantity="other">%d pagina\'s</item>
+    </plurals>
+    <plurals name="common_folders">
+        <item quantity="one">%d map</item>
+        <item quantity="other">%d mappen</item>
+    </plurals>
+    <plurals name="common_matches">
+        <item quantity="one">%d resultaat</item>
+        <item quantity="other">%d resultaten</item>
+    </plurals>
+    <plurals name="common_words">
+        <item quantity="one">%d woord</item>
+        <item quantity="other">%d woorden</item>
+    </plurals>
+    <string name="common_two_parts">%1$s · %2$s</string>
+    <!-- Library search -->
+    <plurals name="library_search_in_documents">
+        <item quantity="one">", in %d document"</item>
+        <item quantity="other">", in %d documenten"</item>
+    </plurals>
+    <plurals name="library_search_no_exact_matches">
+        <item quantity="one">Geen exacte resultaten · %d document met vergelijkbare woorden</item>
+        <item quantity="other">Geen exacte resultaten · %d documenten met vergelijkbare woorden</item>
+    </plurals>
+    <plurals name="library_search_show_more_pages">
+        <item quantity="one">Resultaten op nog %d pagina tonen</item>
+        <item quantity="other">Resultaten op nog %d pagina\'s tonen</item>
+    </plurals>
+    <plurals name="library_search_still_reading">
+        <item quantity="one">Tekst in %d pagina wordt nog gelezen. Nieuwe resultaten verschijnen hier.</item>
+        <item quantity="other">Tekst in %d pagina\'s wordt nog gelezen. Nieuwe resultaten verschijnen hier.</item>
+    </plurals>
+    <string name="library_search_matches_in_documents">%1$s in %2$s</string>
+    <plurals name="search_filters_show_results">
+        <item quantity="one">%d resultaat tonen</item>
+        <item quantity="other">%d resultaten tonen</item>
+    </plurals>
+    <!-- Settings -->
+    <plurals name="settings_reading_text_pages_left">
+        <item quantity="one">Tekst lezen… nog %d pagina</item>
+        <item quantity="other">Tekst lezen… nog %d pagina\'s</item>
+    </plurals>
+    <plurals name="settings_text_recognition_reread_pages">
+        <item quantity="one">%d pagina opnieuw lezen?</item>
+        <item quantity="other">%d pagina\'s opnieuw lezen?</item>
+    </plurals>
+    <string name="settings_could_not_calibrate_models">Kan documentmodellen op dit apparaat niet kalibreren.</string>
+    <!-- Recently deleted -->
+    <string name="recently_deleted_long_press_for_options">Houd een item ingedrukt voor meer opties.</string>
+    <string name="recently_deleted_retention_note">Pagina\'s worden %1$s bewaard, documenten en mappen %2$s. Daarna worden ze definitief verwijderd.</string>
+    <plurals name="recently_deleted_restored_items">
+        <item quantity="one">%d item hersteld</item>
+        <item quantity="other">%d items hersteld</item>
+    </plurals>
+    <plurals name="recently_deleted_restored_some_items">
+        <item quantity="one">%2$d van %3$d item hersteld. %4$s</item>
+        <item quantity="other">%2$d van %3$d items hersteld. %4$s</item>
+    </plurals>
+    <plurals name="recently_deleted_deleted_items">
+        <item quantity="one">%d item definitief verwijderd</item>
+        <item quantity="other">%d items definitief verwijderd</item>
+    </plurals>
+    <plurals name="recently_deleted_deleted_some_items">
+        <item quantity="one">%2$d van %3$d item definitief verwijderd. %4$s</item>
+        <item quantity="other">%2$d van %3$d items definitief verwijderd. %4$s</item>
+    </plurals>
+    <!-- %1$s = folder name, %2$d = number of documents in it. -->
+    <plurals name="folder_delete_what_should_happen">
+        <item quantity="one">\"%1$s\" bevat %2$d document. Wat moet ermee gebeuren?</item>
+        <item quantity="other">\"%1$s\" bevat %2$d documenten. Wat moet ermee gebeuren?</item>
+    </plurals>
+    <!-- PDF tools -->
+    <string name="pdf_compress_first_page_of">Eerste pagina van %1$s</string>
+    <string name="pdf_compress_the_pdf">de PDF</string>
+    <string name="pdf_password_strength_too_short">Te kort</string>
+    <string name="pdf_password_strength_too_long">Te lang</string>
+    <string name="pdf_password_strength_weak">Zwak</string>
+    <string name="pdf_password_strength_fair">Redelijk</string>
+    <string name="pdf_password_strength_strong">Sterk</string>
+    <string name="model_benchmark_gate_prefix">Controle: %1$s</string>
+    <string name="model_benchmark_unavailable">Niet beschikbaar</string>
+    <!-- Error messages shown in snackbars and dialogs -->
+    <string name="error_document_not_found">Document niet gevonden.</string>
+    <string name="error_group_not_found">Map niet gevonden.</string>
+    <string name="error_no_documents_in_group">Geen documenten in map.</string>
+    <string name="error_no_pages_available_to_export">Geen pagina\'s om te exporteren.</string>
+    <string name="error_could_not_create_export_directory">Kan exportmap niet maken.</string>
+    <string name="error_could_not_replace_existing_pdf">Kan bestaande PDF niet vervangen.</string>
+    <string name="error_folder_not_found">Map niet gevonden.</string>
+    <string name="error_this_page_is_already_in_recently_deleted">Deze pagina staat al in Recent verwijderd.</string>
+    <string name="error_only_pages_in_recently_deleted_can_be">Alleen pagina\'s in Recent verwijderd kunnen definitief worden verwijderd.</string>
+    <string name="error_page_not_found">Pagina niet gevonden.</string>
+    <string name="error_page_not_found_in_document_order">Pagina niet gevonden in de documentvolgorde.</string>
+    <string name="error_select_at_least_two_pdfs_to_merge">Selecteer minstens twee PDF\'s om samen te voegen.</string>
+    <string name="error_pdf_has_no_pages">PDF heeft geen pagina\'s.</string>
+    <string name="error_password_must_be_4_64_characters">Wachtwoord moet 4–64 tekens lang zijn.</string>
+    <string name="error_enter_the_current_pdf_password">Voer het huidige PDF-wachtwoord in.</string>
+    <string name="error_enter_watermark_text">Voer de tekst voor het watermerk in.</string>
+    <string name="error_this_pdf_has_no_pages">Deze PDF heeft geen pagina\'s.</string>
+    <string name="error_preview_size_is_invalid">Voorbeeldformaat is ongeldig.</string>
+    <string name="error_place_a_signature_or_another_mark_first">Plaats eerst een handtekening of andere markering.</string>
+    <string name="error_a_mark_is_on_a_missing_page">Er staat een markering op een ontbrekende pagina.</string>
+    <string name="error_could_not_prepare_this_pdf">Kan deze PDF niet voorbereiden.</string>
+    <string name="error_page_is_out_of_range">Pagina valt buiten het bereik.</string>
+    <string name="error_choose_at_least_one_page">Kies minstens één pagina.</string>
+    <string name="error_failed_to_encode_page_image">Kan pagina-afbeelding niet coderen.</string>
+    <string name="error_export_file_is_missing">Exportbestand ontbreekt.</string>
+    <string name="error_the_preview_pdf_is_missing">De voorbeeld-PDF ontbreekt.</string>
+    <string name="error_could_not_read_selected_pdf">Kan gekozen PDF niet lezen.</string>
+    <string name="error_not_enough_memory_to_compress_this_pdf">Niet genoeg geheugen om deze PDF te comprimeren. Probeer de kwaliteit Kleinst of een korter bestand.</string>
+    <string name="error_a_text_box_is_empty_type_something">Een tekstvak is leeg. Typ iets of verwijder het.</string>
+    <string name="error_a_signature_image_is_missing_remove_it">Er ontbreekt een handtekeningafbeelding. Verwijder hem en plaats hem opnieuw.</string>
+    <string name="error_some_characters_cant_be_drawn_remove_emoji">Sommige tekens kunnen niet worden weergegeven. Verwijder emoji of ongebruikelijke symbolen.</string>
+    <string name="error_some_characters_in_the_watermark_cant_be">Sommige tekens in het watermerk kunnen niet worden weergegeven. Verwijder emoji of ongebruikelijke symbolen.</string>
+    <string name="error_enter_something_to_encode">Voer iets in om te coderen.</string>
+    <string name="error_could_not_write_qr_image">Kan QR-afbeelding niet opslaan.</string>
+    <string name="error_a_signature_image_is_missing_place_it">Er ontbreekt een handtekeningafbeelding. Plaats hem opnieuw.</string>
+    <string name="error_the_signature_is_empty">De handtekening is leeg.</string>
+    <string name="error_could_not_save_the_signature">Kan de handtekening niet opslaan.</string>
+    <string name="error_could_not_prepare_the_image">Kan de afbeelding niet voorbereiden.</string>
+    <string name="error_could_not_create_signature_storage">Kan opslag voor handtekeningen niet maken.</string>
+    <string name="error_no_signature_found_in_this_image_try">Geen handtekening gevonden in deze afbeelding. Probeer donkere inkt op licht papier.</string>
+    <string name="error_this_signature_no_longer_exists">Deze handtekening bestaat niet meer.</string>
+    <string name="error_the_signature_image_could_not_be_read">De handtekeningafbeelding kan niet worden gelezen.</string>
+    <string name="error_a_signature_image_is_missing_open_sign">Er ontbreekt een handtekeningafbeelding. Open Ondertekenen en plaats hem opnieuw.</string>
+    <string name="error_this_page_is_still_processing_try_again">Deze pagina wordt nog verwerkt. Probeer het zo opnieuw.</string>
+    <string name="error_could_not_read_the_page_image">Kan de pagina-afbeelding niet lezen.</string>
+    <string name="error_invalid_page_image_path">Ongeldig pad naar pagina-afbeelding.</string>
+    <string name="error_the_exported_file_is_unavailable">Het geëxporteerde bestand is niet beschikbaar.</string>
+    <string name="error_the_exported_image_is_unavailable">De geëxporteerde afbeelding is niet beschikbaar.</string>
+    <string name="error_the_selected_save_folder_is_no_longer">De gekozen opslagmap is niet meer beschikbaar. Kies hem opnieuw in Instellingen.</string>
+    <string name="error_this_page_no_longer_exists">Deze pagina bestaat niet meer.</string>
+    <string name="error_read_this_pages_text_first">Lees eerst de tekst van deze pagina.</string>
+    <string name="error_page_image_could_not_be_read">Pagina-afbeelding kan niet worden gelezen.</string>
+    <string name="error_opencv_could_not_be_initialized">OpenCV kan niet worden gestart.</string>
+    <string name="error_no_images_selected">Geen afbeeldingen geselecteerd.</string>
+    <string name="error_could_not_write_imported_image">Kan geïmporteerde afbeelding niet opslaan.</string>
+    <string name="error_imported_image_file_is_empty">Geïmporteerd afbeeldingsbestand is leeg.</string>
+    <string name="error_image_decode_failed">Afbeelding decoderen mislukt</string>
+    <!-- Language settings -->
+    <string name="settings_language">Taal</string>
+    <string name="settings_language_system_default">Systeemstandaard</string>
+    <string name="settings_language_follow_phone">Taal van telefoon</string>
+    <string name="settings_language_uses_phone_language">"Gelijk aan je telefoon: %1$s"</string>
+    <string name="settings_language_app_language">App-taal</string>
+    <string name="settings_language_note">Je documentnamen, herkende paginatekst en de PDF\'s die je opent, blijven in hun eigen taal.</string>
+    <!-- Manifest -->
+    <string name="intent_open_in_scanly">Openen in Scanly</string>
+    <!-- Library date sections -->
+    <string name="library_section_previous_7_days">Afgelopen 7 dagen</string>
+    <!-- Month and year as a section title, e.g. "December 2025". %1$s = month name, %2$d = year. -->
+    <string name="library_section_month_year">"%1$s %2$d"</string>
+    <!-- Camera -->
+    <string name="scan_session_capture_failed">Vastleggen mislukt.</string>
+    <!-- Signature kinds as whole phrases (Signature vs Initials) -->
+    <string name="sign_kind_add_signature">Handtekening toevoegen</string>
+    <string name="sign_kind_add_initials">Initialen toevoegen</string>
+    <string name="sign_kind_delete_signature">Handtekening verwijderen</string>
+    <string name="sign_kind_delete_initials">Initialen verwijderen</string>
+    <string name="sign_kind_delete_signature_question">Handtekening verwijderen?</string>
+    <string name="sign_kind_delete_initials_question">Initialen verwijderen?</string>
+    <string name="sign_kind_open_signature_options">Opties voor handtekening openen</string>
+    <string name="sign_kind_open_initials_options">Opties voor initialen openen</string>
+    <string name="sign_kind_saved_signature">Opgeslagen handtekening</string>
+    <string name="sign_kind_saved_initials">Opgeslagen initialen</string>
+    <string name="sign_kind_show_signature_first">Deze handtekening vóór de andere tonen</string>
+    <string name="sign_kind_show_initials_first">Deze initialen vóór de andere tonen</string>
+    <!-- Watermark -->
+    <!-- Watermark presets are stamped into PDFs with a Latin/Cyrillic font. In languages written in
+         another script (Indic, CJK, Thai), keep these in English so the stamp can be drawn. -->
+    <string name="pdf_watermark_preset_confidential">VERTROUWELIJK</string>
+    <string name="pdf_watermark_preset_draft">CONCEPT</string>
+    <string name="pdf_watermark_preset_copy">KOPIE</string>
+    <string name="pdf_watermark_opacity_percent">"%1$d%%"</string>
+    <!-- Localized counts and progress (no English-only plural branches). -->
+    <plurals name="common_days">
+        <item quantity="one">"%d dag"</item>
+        <item quantity="other">"%d dagen"</item>
+    </plurals>
+    <plurals name="common_files">
+        <item quantity="one">"%d bestand"</item>
+        <item quantity="other">"%d bestanden"</item>
+    </plurals>
+    <plurals name="common_images">
+        <item quantity="one">"%d afbeelding"</item>
+        <item quantity="other">"%d afbeeldingen"</item>
+    </plurals>
+    <plurals name="common_marks">
+        <item quantity="one">"%d markering"</item>
+        <item quantity="other">"%d markeringen"</item>
+    </plurals>
+    <plurals name="common_scans">
+        <item quantity="one">"%d scan"</item>
+        <item quantity="other">"%d scans"</item>
+    </plurals>
+    <plurals name="common_topics">
+        <item quantity="one">"%d onderwerp"</item>
+        <item quantity="other">"%d onderwerpen"</item>
+    </plurals>
+    <plurals name="common_libraries">
+        <item quantity="one">"%d bibliotheek"</item>
+        <item quantity="other">"%d bibliotheken"</item>
+    </plurals>
+    <plurals name="common_selected">
+        <item quantity="one">"%d geselecteerd"</item>
+        <item quantity="other">"%d geselecteerd"</item>
+    </plurals>
+    <plurals name="pdf_to_images_saved_count">
+        <item quantity="one">"%d afbeelding opgeslagen"</item>
+        <item quantity="other">"%d afbeeldingen opgeslagen"</item>
+    </plurals>
+    <plurals name="pdf_to_images_export_count">
+        <item quantity="one">"%d afbeelding exporteren"</item>
+        <item quantity="other">"%d afbeeldingen exporteren"</item>
+    </plurals>
+    <string name="common_current_of_total">"%1$d van %2$d"</string>
+    <!-- Error fallbacks found in the final extraction audit. -->
+    <string name="error_failed_to_import_images">"Kan afbeeldingen niet importeren."</string>
+    <string name="error_could_not_calculate_storage_usage">"Kan het opslaggebruik niet berekenen."</string>
+    <string name="error_could_not_clear_app_data">"Kan app-gegevens niet wissen."</string>
+    <string name="error_could_not_clear_temporary_exports">"Kon tijdelijke exporten niet afhandelen."</string>
+    <string name="error_could_not_remove_old_backup_files">"Kon oude back-upbestanden niet verwijderen."</string>
+    <string name="error_could_not_create_the_document">"Kan het document niet maken."</string>
+    <string name="error_could_not_rename_the_document">"Kan de naam van het document niet wijzigen."</string>
+    <string name="error_could_not_delete_the_document">"Kan het document niet verwijderen."</string>
+    <string name="error_could_not_create_the_group">"Kon de groep niet aanmaken."</string>
+    <string name="error_could_not_rename_the_group">"Kan de naam van de groep niet wijzigen."</string>
+    <string name="error_could_not_delete_the_group">"Kon de groep niet verwijderen."</string>
+    <string name="error_could_not_remove_empty_folders">"Kon lege mappen niet verwijderen."</string>
+    <string name="error_could_not_update_document_group">"Kon de documentgroep niet bijwerken."</string>
+    <string name="error_could_not_prepare_page_capture">"Kan het vastleggen van de pagina niet voorbereiden."</string>
+    <string name="error_could_not_prepare_page_replacement">"Kan paginavervanging niet voorbereiden."</string>
+    <string name="error_could_not_save_the_captured_page">"Kon de vastgelegde pagina niet opslaan."</string>
+    <string name="error_could_not_reorder_the_page">"Kan de pagina niet opnieuw ordenen."</string>
+    <string name="error_could_not_save_page_edits">"Kon paginabewerkingen niet opslaan."</string>
+    <string name="error_could_not_update_text_recognition_engine">"Kan de tekstherkenningsengine niet updaten."</string>
+    <string name="error_could_not_update_theme_mode">"Kon de themamodus niet updaten."</string>
+    <string name="error_could_not_finish_onboarding">"Kon de onboarding niet voltooien."</string>
+    <string name="error_could_not_load_settings_content">"Kon de inhoud van de instellingen niet laden."</string>
+    <string name="error_could_not_update_the_save_location">"Kon de opslaglocatie niet bijwerken."</string>
+    <string name="error_could_not_update_model_selection">"Kan de modelselectie niet bijwerken."</string>
+    <string name="error_could_not_update_document_detection_settings">"Kan de documentdetectie-instellingen niet bijwerken."</string>
+    <string name="error_could_not_save_the_exported_file">"Kan het geëxporteerde bestand niet opslaan."</string>
+    <string name="error_could_not_store_update_prompt_state">"Kan updatepromptstatus niet opslaan."</string>
+    <string name="error_could_not_check_github_releases">"Kon GitHub-releases niet controleren."</string>
+</resources>

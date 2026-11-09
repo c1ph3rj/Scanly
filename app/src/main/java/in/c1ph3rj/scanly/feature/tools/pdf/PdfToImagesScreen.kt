@@ -1,5 +1,6 @@
 package `in`.c1ph3rj.scanly.feature.tools.pdf
 
+import `in`.c1ph3rj.scanly.core.common.appPluralString
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.graphics.Bitmap
@@ -110,6 +111,9 @@ import `in`.c1ph3rj.scanly.feature.tools.ToolTokens
 import `in`.c1ph3rj.scanly.feature.tools.ToolTopBar
 import `in`.c1ph3rj.scanly.feature.tools.ToolWorkingState
 import kotlinx.coroutines.flow.collectLatest
+import `in`.c1ph3rj.scanly.R
+import androidx.compose.ui.res.stringResource
+import `in`.c1ph3rj.scanly.core.common.appString
 
 /** The screens of PDF to JPG, in order: Choose a file, Pages and format, Saving, Done. */
 private enum class PdfToImagesStep { Pick, Pages, Working, Done }
@@ -192,9 +196,9 @@ fun PdfToImagesRoute(onNavigateUp: () -> Unit, initialSource: PdfToolSource? = n
         Column(modifier = Modifier.widthIn(max = if (split) ToolSplitMaxWidth else ToolColumnMaxWidth).fillMaxSize()) {
             when (step) {
                 PdfToImagesStep.Pick -> PdfFilePickerScreen(
-                    title = "PDF to JPG",
-                    subtitle = "Turn pages into images for chats, slides or your gallery.",
-                    stepText = "Step 1 of 3 · Choose a file",
+                    title = stringResource(R.string.pdf_to_images_pdf_to_jpg),
+                    subtitle = stringResource(R.string.pdf_to_images_turn_pages_into_images_for),
+                    stepText = stringResource(R.string.pdf_compress_step_1_of_3_choose),
                     documents = uiState.libraryDocuments,
                     onBack = onPickerBack,
                     onPickDevice = { devicePicker.launch(arrayOf("application/pdf")) },
@@ -239,7 +243,7 @@ fun PdfToImagesRoute(onNavigateUp: () -> Unit, initialSource: PdfToolSource? = n
                         try {
                             context.startActivity(intent)
                         } catch (_: ActivityNotFoundException) {
-                            viewModel.showMessage("No gallery app found. The images are in Pictures/Scanly.")
+                            viewModel.showMessage(appString(R.string.pdf_to_images_no_gallery_app_found_the))
                         }
                     },
                     onShare = {
@@ -250,7 +254,7 @@ fun PdfToImagesRoute(onNavigateUp: () -> Unit, initialSource: PdfToolSource? = n
                                 context = context,
                                 artifact = ShareArtifact(
                                     mimeType = format.mimeType,
-                                    title = if (targets.size == 1) "Image" else "${targets.size} images",
+                                    title = appPluralString(R.plurals.common_images, targets.size, targets.size),
                                     filePaths = targets.map(PdfPageImage::filePath),
                                 ),
                             )
@@ -301,7 +305,7 @@ private fun ColumnScope.PagesStep(
         }
     }
 
-    ToolTopBar(onBack = onBack, stepText = "Step 2 of 3 · Pages and format")
+    ToolTopBar(onBack = onBack, stepText = stringResource(R.string.pdf_to_images_step_2_of_3_pages))
     // Wide landscape: pages on the start side, the settings beside them instead of below.
     val split = rememberToolSplitLayout() && uiState.isReady && !uiState.needsPassword
     val grid: @Composable (Modifier) -> Unit = { gridModifier ->
@@ -329,7 +333,7 @@ private fun ColumnScope.PagesStep(
         ) {
             fullWidth("title") {
                 Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                    ToolLargeTitle(title = "PDF to JPG")
+                    ToolLargeTitle(title = stringResource(R.string.pdf_to_images_pdf_to_jpg))
                     FileSummaryLine(
                         name = name,
                         pageCount = uiState.pageCount,
@@ -375,7 +379,7 @@ private fun ColumnScope.PagesStep(
                                 )
                             }
                             if (uiState.pageCount > 2) {
-                                GridHint(text = "Tap a page, or long-press and drag across several.")
+                                GridHint(text = stringResource(R.string.pdf_import_tap_a_page_or_long))
                             }
                         }
                     }
@@ -385,7 +389,7 @@ private fun ColumnScope.PagesStep(
                             bitmap = uiState.thumbnails[index],
                             label = (index + 1).toString(),
                             selected = index in uiState.selectedPages,
-                            contentDescription = "Page ${index + 1}",
+                            contentDescription = stringResource(R.string.trash_use_cases_page, index + 1),
                             onToggle = { onTogglePage(index) },
                         )
                     }
@@ -414,7 +418,7 @@ private fun ColumnScope.PagesStep(
             icon = Icons.Outlined.Image,
         )
         Text(
-            text = "Images show up in your gallery right away",
+            text = stringResource(R.string.pdf_to_images_images_show_up_in_your),
             style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.5.sp),
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center,
@@ -439,7 +443,7 @@ internal fun FileSummaryLine(name: String, pageCount: Int, onChange: () -> Unit)
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier.weight(1f, fill = false),
         )
-        ToolTextAction(label = "Change", onClick = onChange)
+        ToolTextAction(label = stringResource(R.string.storage_change), onClick = onChange)
     }
 }
 
@@ -455,25 +459,25 @@ internal fun PasswordPanel(
         modifier = Modifier.padding(top = 12.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
-        ToolNote(text = "This PDF is password protected. Enter its password to see the pages.")
-        ToolFieldLabel(text = "PDF password")
+        ToolNote(text = stringResource(R.string.pdf_to_images_this_pdf_is_password_protected))
+        ToolFieldLabel(text = stringResource(R.string.export_share_pdf_password))
         ToolTextField(
             value = password,
             onValueChange = onPasswordChange,
-            placeholder = "Enter the password",
+            placeholder = stringResource(R.string.pdf_compress_enter_the_password),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
             trailingIcon = {
                 IconButton(onClick = { showPassword = !showPassword }) {
                     Icon(
                         imageVector = if (showPassword) Icons.Outlined.VisibilityOff else Icons.Outlined.Visibility,
-                        contentDescription = if (showPassword) "Hide password" else "Show password",
+                        contentDescription = if (showPassword) stringResource(R.string.export_share_hide_password) else stringResource(R.string.export_share_show_password),
                     )
                 }
             },
         )
         ToolSecondaryButton(
-            text = "Unlock",
+            text = stringResource(R.string.pdf_compress_unlock),
             onClick = onUnlock,
             enabled = password.isNotBlank(),
             loading = busy,
@@ -495,7 +499,7 @@ internal fun SelectAllAction(
 ) {
     val allSelected = totalCount > 0 && selectedCount == totalCount
     ToolTextAction(
-        label = if (allSelected) "Deselect all" else "Select all",
+        label = if (allSelected) stringResource(R.string.pdf_to_images_deselect_all) else stringResource(R.string.group_detail_select_all),
         onClick = if (allSelected) onSelectNone else onSelectAll,
         icon = when {
             allSelected -> Icons.Outlined.CheckBox
@@ -601,7 +605,7 @@ private fun FormatSection(selected: PdfImageFormat, onSelected: (PdfImageFormat)
         modifier = Modifier.padding(top = 12.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
-        ToolFieldLabel(text = "Format")
+        ToolFieldLabel(text = stringResource(R.string.pdf_to_images_format))
         Row(
             modifier = Modifier.fillMaxWidth().selectableGroup(),
             horizontalArrangement = Arrangement.spacedBy(10.dp),
@@ -647,7 +651,7 @@ private fun ResolutionSection(
         modifier = Modifier.padding(top = 8.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
-        ToolFieldLabel(text = "Resolution")
+        ToolFieldLabel(text = stringResource(R.string.pdf_to_images_resolution))
         ToolCard(modifier = Modifier.fillMaxWidth().selectableGroup()) {
             Column {
                 PdfImageResolution.entries.forEachIndexed { index, resolution ->
@@ -697,7 +701,7 @@ private fun ResolutionRow(
             )
         }
         Text(
-            text = estimateBytes?.let { "~${formatImageBytes(it)} each" } ?: "…",
+            text = estimateBytes?.let { stringResource(R.string.pdf_to_images_each, formatImageBytes(it)) } ?: "…",
             style = MaterialTheme.typography.labelMedium.copy(fontSize = 12.5.sp),
             fontWeight = FontWeight.SemiBold,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -734,9 +738,9 @@ private fun WorkingStep(uiState: PdfToImagesUiState) {
         pages.getOrNull(i)?.let { uiState.thumbnails[it] }
     }
     ToolWorkingState(
-        title = "Saving images…",
+        title = stringResource(R.string.pdf_to_images_saving_images),
         caption = listOf(
-            "${(uiState.exportedCount + 1).coerceAtMost(total)} of $total",
+            stringResource(R.string.common_current_of_total, (uiState.exportedCount + 1).coerceAtMost(total), total),
             uiState.options.format.label,
             "${uiState.options.resolution.widthPx} px",
         ).joinToString(" · "),
@@ -753,7 +757,7 @@ private fun WorkingStep(uiState: PdfToImagesUiState) {
                 )
                 if (currentPage != null) {
                     Text(
-                        text = "Page ${currentPage + 1}",
+                        text = stringResource(R.string.trash_use_cases_page, currentPage + 1),
                         style = MaterialTheme.typography.labelLarge.copy(fontSize = 13.sp),
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -782,9 +786,9 @@ private fun ColumnScope.DoneStep(
 
     ToolTopBar(
         onBack = onClose,
-        stepText = "Step 3 of 3 · Done",
+        stepText = stringResource(R.string.pdf_import_step_3_of_3_done),
         backIcon = Icons.Outlined.Close,
-        backContentDescription = "Close",
+        backContentDescription = stringResource(R.string.zoomable_image_close),
         centerStep = true,
     )
     val imageCount = export.images.size
@@ -863,15 +867,15 @@ private fun ColumnScope.DoneStep(
             ) {
                 ToolShortcutTile(
                     icon = Icons.Outlined.Tune,
-                    title = "Export again",
-                    caption = "PNG or print size",
+                    title = stringResource(R.string.pdf_to_images_export_again),
+                    caption = stringResource(R.string.pdf_to_images_png_or_print_size),
                     onClick = onExportAgain,
                     modifier = Modifier.weight(1f).fillMaxHeight(),
                 )
                 ToolShortcutTile(
                     icon = Icons.Outlined.PictureAsPdf,
-                    title = "Another PDF",
-                    caption = "Pick a different file",
+                    title = stringResource(R.string.pdf_import_another_pdf),
+                    caption = stringResource(R.string.pdf_to_images_pick_a_different_file),
                     onClick = onConvertAnother,
                     modifier = Modifier.weight(1f).fillMaxHeight(),
                 )
@@ -882,7 +886,7 @@ private fun ColumnScope.DoneStep(
     ToolBottomBar {
         Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             ToolSecondaryButton(
-                text = "Open gallery",
+                text = stringResource(R.string.pdf_to_images_open_gallery),
                 onClick = onOpenGallery,
                 icon = Icons.Outlined.PhotoLibrary,
                 modifier = Modifier.weight(1f),
@@ -909,9 +913,9 @@ private fun ShareSelectionLine(selectedCount: Int, totalCount: Int, onClear: () 
     ) {
         Text(
             text = if (selectedCount == 0) {
-                "Tap images, or long-press and drag, to share only some."
+                stringResource(R.string.pdf_to_images_tap_images_or_long_press)
             } else {
-                "$selectedCount of $totalCount selected"
+                stringResource(R.string.pdf_to_images_of_selected, selectedCount, totalCount)
             },
             style = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp),
             fontWeight = if (selectedCount == 0) FontWeight.Normal else FontWeight.SemiBold,
@@ -922,7 +926,7 @@ private fun ShareSelectionLine(selectedCount: Int, totalCount: Int, onClear: () 
             },
             modifier = Modifier.weight(1f),
         )
-        if (selectedCount > 0) ToolTextAction(label = "Clear", onClick = onClear)
+        if (selectedCount > 0) ToolTextAction(label = stringResource(R.string.group_detail_clear), onClick = onClear)
     }
 }
 

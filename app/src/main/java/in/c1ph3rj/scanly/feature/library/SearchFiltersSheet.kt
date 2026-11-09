@@ -50,6 +50,10 @@ import java.time.Instant
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.util.Locale
+import `in`.c1ph3rj.scanly.R
+import androidx.compose.ui.res.stringResource
+import `in`.c1ph3rj.scanly.core.common.appString
+import androidx.compose.ui.res.pluralStringResource
 
 /**
  * Type, date, folder and sort for search, in one sheet. Choices apply as they are tapped, so the
@@ -78,14 +82,14 @@ fun SearchFiltersSheet(
             verticalArrangement = Arrangement.spacedBy(20.dp),
         ) {
             Text(
-                "Filters",
+                stringResource(R.string.filter_picker_filters),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.SemiBold,
                 modifier = Modifier.semantics { heading() },
             )
             if (availableKinds.isNotEmpty()) {
-                FilterSection("Type") {
-                    SheetChip("Any type", filters.kind == null) { onFiltersChange(filters.copy(kind = null)) }
+                FilterSection(stringResource(R.string.search_filters_type)) {
+                    SheetChip(stringResource(R.string.search_filters_any_type), filters.kind == null) { onFiltersChange(filters.copy(kind = null)) }
                     availableKinds.forEach { kind ->
                         val count = kindCounts[kind]
                         SheetChip(if (count != null) "${kind.label} · $count" else kind.label, filters.kind == kind) {
@@ -94,7 +98,7 @@ fun SearchFiltersSheet(
                     }
                 }
             }
-            FilterSection("Date modified") {
+            FilterSection(stringResource(R.string.search_filters_date_modified)) {
                 DateFilter.entries.forEach { option ->
                     val label = if (option == DateFilter.CUSTOM) customRangeLabel(filters) ?: option.label else option.label
                     SheetChip(label, filters.date == option) {
@@ -103,11 +107,11 @@ fun SearchFiltersSheet(
                 }
             }
             if (folders.isNotEmpty()) {
-                FilterSection("Folder") {
-                    SheetChip("Any folder", filters.folder == FolderFilter.Any) {
+                FilterSection(stringResource(R.string.home_folder)) {
+                    SheetChip(stringResource(R.string.search_filters_any_folder), filters.folder == FolderFilter.Any) {
                         onFiltersChange(filters.copy(folder = FolderFilter.Any))
                     }
-                    SheetChip("Not in a folder", filters.folder == FolderFilter.None) {
+                    SheetChip(stringResource(R.string.search_filters_not_in_a_folder), filters.folder == FolderFilter.None) {
                         onFiltersChange(filters.copy(folder = FolderFilter.None))
                     }
                     folders.forEach { group ->
@@ -117,7 +121,7 @@ fun SearchFiltersSheet(
                     }
                 }
             }
-            FilterSection("Sort by") {
+            FilterSection(stringResource(R.string.search_filters_sort_by)) {
                 SearchSort.entries.forEach { option ->
                     SheetChip(option.label, filters.sort == option) { onFiltersChange(filters.copy(sort = option)) }
                 }
@@ -127,15 +131,15 @@ fun SearchFiltersSheet(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 TextButton(onClick = { onFiltersChange(SearchFilters()) }, enabled = filters.activeCount > 0) {
-                    Text("Reset")
+                    Text(stringResource(R.string.page_crop_reset))
                 }
                 Spacer(Modifier.weight(1f))
                 Button(onClick = onDismiss) {
                     Text(
                         if (showsResults) {
-                            "Show $resultCount ${if (resultCount == 1) "result" else "results"}"
+                            pluralStringResource(R.plurals.search_filters_show_results, resultCount, resultCount)
                         } else {
-                            "Done"
+                            stringResource(R.string.camera_capture_chrome_done)
                         },
                     )
                 }
@@ -175,9 +179,9 @@ fun ActiveFilterChips(
     }
     when (val folder = filters.folder) {
         FolderFilter.Any -> Unit
-        FolderFilter.None -> RemovableChip("Not in a folder") { onFiltersChange(filters.copy(folder = FolderFilter.Any)) }
+        FolderFilter.None -> RemovableChip(stringResource(R.string.search_filters_not_in_a_folder)) { onFiltersChange(filters.copy(folder = FolderFilter.Any)) }
         is FolderFilter.In -> folders.firstOrNull { it.id == folder.groupId }?.let { group ->
-            RemovableChip("In ${group.title}") { onFiltersChange(filters.copy(folder = FolderFilter.Any)) }
+            RemovableChip(stringResource(R.string.search_filters_in, group.title)) { onFiltersChange(filters.copy(folder = FolderFilter.Any)) }
         }
     }
     if (filters.sort != SearchSort.BEST_MATCH) {
@@ -193,7 +197,7 @@ private fun RemovableChip(label: String, onRemove: () -> Unit) {
         label = { Text(label, maxLines = 1) },
         trailingIcon = { Icon(Icons.Filled.Close, contentDescription = null, Modifier.size(InputChipDefaults.IconSize)) },
         shape = CircleShape,
-        modifier = Modifier.semantics { contentDescription = "Remove filter: $label" },
+        modifier = Modifier.semantics { contentDescription = appString(R.string.search_filters_remove_filter, label) },
     )
 }
 
@@ -242,9 +246,9 @@ private fun CustomRangeDialog(filters: SearchFilters, onPick: (start: Long, end:
             TextButton(
                 onClick = { state.selectedStartDateMillis?.let { onPick(it, state.selectedEndDateMillis) } },
                 enabled = state.selectedStartDateMillis != null,
-            ) { Text("Apply") }
+            ) { Text(stringResource(R.string.search_filters_apply)) }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancel") } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.export_share_cancel)) } },
     ) {
         DateRangePicker(state = state, modifier = Modifier.weight(1f))
     }

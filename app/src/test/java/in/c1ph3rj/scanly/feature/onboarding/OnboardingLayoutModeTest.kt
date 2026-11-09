@@ -1,65 +1,26 @@
 package `in`.c1ph3rj.scanly.feature.onboarding
 
-import `in`.c1ph3rj.scanly.core.ui.WindowWidthClass
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class OnboardingLayoutModeTest {
     @Test
-    fun compactWidth_usesMobileLayoutInEitherOrientation() {
-        assertEquals(
-            OnboardingLayoutMode.COMPACT,
-            resolveOnboardingLayoutMode(
-                widthClass = WindowWidthClass.Compact,
-                isLandscape = false,
-            ),
-        )
-        assertEquals(
-            OnboardingLayoutMode.COMPACT,
-            resolveOnboardingLayoutMode(
-                widthClass = WindowWidthClass.Compact,
-                isLandscape = true,
-            ),
-        )
+    fun smallAndSplitWindows_stackContent() {
+        assertEquals(OnboardingLayoutMode.COMPACT, resolveOnboardingLayoutMode(320f, 480f))
+        assertEquals(OnboardingLayoutMode.COMPACT, resolveOnboardingLayoutMode(599f, 900f))
+        assertEquals(OnboardingLayoutMode.COMPACT, resolveOnboardingLayoutMode(420f, 320f))
     }
 
     @Test
-    fun mediumPortrait_usesCenteredTabletLayout() {
-        assertEquals(
-            OnboardingLayoutMode.MEDIUM,
-            resolveOnboardingLayoutMode(
-                widthClass = WindowWidthClass.Medium,
-                isLandscape = false,
-            ),
-        )
+    fun tabletPortrait_centersContent() {
+        assertEquals(OnboardingLayoutMode.MEDIUM, resolveOnboardingLayoutMode(600f, 960f))
+        assertEquals(OnboardingLayoutMode.MEDIUM, resolveOnboardingLayoutMode(839f, 1280f))
     }
 
     @Test
-    fun mediumLandscape_usesWideLayout() {
-        assertEquals(
-            OnboardingLayoutMode.WIDE,
-            resolveOnboardingLayoutMode(
-                widthClass = WindowWidthClass.Medium,
-                isLandscape = true,
-            ),
-        )
-    }
-
-    @Test
-    fun expandedWidth_alwaysUsesWideLayout() {
-        assertEquals(
-            OnboardingLayoutMode.WIDE,
-            resolveOnboardingLayoutMode(
-                widthClass = WindowWidthClass.Expanded,
-                isLandscape = false,
-            ),
-        )
-        assertEquals(
-            OnboardingLayoutMode.WIDE,
-            resolveOnboardingLayoutMode(
-                widthClass = WindowWidthClass.Expanded,
-                isLandscape = true,
-            ),
-        )
+    fun phoneLandscapeAndExpandedWindows_useTwoPanes() {
+        assertEquals(OnboardingLayoutMode.WIDE, resolveOnboardingLayoutMode(640f, 360f))
+        assertEquals(OnboardingLayoutMode.WIDE, resolveOnboardingLayoutMode(840f, 1280f))
+        assertEquals(OnboardingLayoutMode.WIDE, resolveOnboardingLayoutMode(1280f, 800f))
     }
 }

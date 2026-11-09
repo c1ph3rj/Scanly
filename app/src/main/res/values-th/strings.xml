@@ -1,0 +1,1967 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="shortcut_scan_short">สแกน</string>
+    <string name="shortcut_scan_long">เริ่มสแกนใหม่</string>
+    <string name="shortcut_scan_disabled">สแกนไม่ได้ในขณะนี้</string>
+    <string name="shortcut_import_short">นำเข้า</string>
+    <string name="shortcut_import_long">นำเข้ารูปภาพ</string>
+    <string name="shortcut_import_disabled">นำเข้าไม่ได้ในขณะนี้</string>
+    <string name="shortcut_qr_short">QR</string>
+    <string name="shortcut_qr_long">สแกนหรือสร้าง QR อ่านบาร์โค้ด</string>
+    <string name="shortcut_qr_disabled">เครื่องมือ QR ใช้ไม่ได้ในขณะนี้</string>
+    <string name="shortcut_library_short">คลัง</string>
+    <string name="shortcut_library_long">เปิดคลังของคุณ</string>
+    <string name="shortcut_library_disabled">คลังใช้ไม่ได้ในขณะนี้</string>
+    <string name="widget_actions_label">การดำเนินการ Scanly</string>
+    <string name="widget_actions_description">เข้าถึงสแกน นำเข้า QR และคลังได้อย่างรวดเร็ว</string>
+    <string name="widget_scan_label">สแกนด้วย Scanly</string>
+    <string name="widget_scan_description">เริ่มสแกนเอกสารใหม่</string>
+    <string name="widget_qr_label">Scanly QR</string>
+    <string name="widget_qr_description">เปิดเครื่องมือสแกนและสร้าง QR</string>
+    <string name="widget_action_scan">สแกน</string>
+    <string name="widget_action_import">นำเข้า</string>
+    <string name="widget_action_qr">QR</string>
+    <string name="widget_action_library">คลัง</string>
+    <!-- DocumentPresentationFormatter -->
+    <string name="document_presentation_formatter_imported">นำเข้า %1$s</string>
+    <string name="document_presentation_formatter_folder">โฟลเดอร์ %1$s</string>
+    <string name="document_presentation_formatter_new_folder">โฟลเดอร์ใหม่ %1$s</string>
+    <string name="document_presentation_formatter_scan">สแกน %1$s</string>
+    <string name="document_presentation_formatter_document">เอกสาร %1$s</string>
+    <!-- ImageImportSupport -->
+    <string name="image_import_only_images_can_be_added">เพิ่มรูปภาพได้ครั้งละไม่เกิน %1$s รูป</string>
+    <string name="image_import_skipped_files_that_couldn_t">ข้ามไฟล์ที่เปิดไม่ได้ %1$s ไฟล์</string>
+    <string name="image_import_skipped_1_file_that_couldn">ข้ามไฟล์ที่เปิดไม่ได้ 1 ไฟล์</string>
+    <string name="image_import_imported_images">นำเข้ารูปภาพแล้ว %1$s รูป</string>
+    <string name="image_import_imported_1_image">นำเข้ารูปภาพแล้ว 1 รูป</string>
+    <!-- ZoomableImageDialog -->
+    <string name="zoomable_image_image_unavailable">ไม่มีรูปภาพ</string>
+    <string name="zoomable_image_reset_zoom">รีเซ็ตการซูม</string>
+    <string name="zoomable_image_back">กลับ</string>
+    <string name="zoomable_image_close">ปิด</string>
+    <!-- LibraryOperationCoordinator -->
+    <string name="library_operation_coordinator_library_maintenance_is_in_progress">กำลังจัดระเบียบคลัง</string>
+    <!-- DefaultDocumentRepository -->
+    <string name="default_document_repository_could_not_remove_empty_documents">นำเอกสารเปล่าออกไม่ได้</string>
+    <string name="default_document_repository_could_not_clear_old_deleted">ล้างเอกสารเก่าที่ลบไปแล้วไม่ได้</string>
+    <string name="default_document_repository_could_not_empty_recently_deleted">ล้างรายการที่ลบล่าสุดไม่ได้</string>
+    <string name="default_document_repository_could_not_restore_the_document">กู้คืนเอกสารไม่ได้</string>
+    <string name="default_document_repository_could_not_move_the_document">ย้ายเอกสารไปที่ลบล่าสุดไม่ได้</string>
+    <!-- DefaultDocumentExportRepository -->
+    <string name="default_document_export_repository_could_not_prepare_group_zip">เตรียมไฟล์ ZIP ของกลุ่มเพื่อแชร์ไม่ได้</string>
+    <string name="default_document_export_repository_could_not_prepare_group_pdf">เตรียมไฟล์ PDF ของกลุ่มเพื่อแชร์ไม่ได้</string>
+    <string name="default_document_export_repository_could_not_export_group_as">ส่งออกกลุ่มเป็น ZIP ไม่ได้</string>
+    <string name="default_document_export_repository_could_not_export_group_as_2">ส่งออกกลุ่มเป็น PDF ไม่ได้</string>
+    <string name="default_document_export_repository_could_not_prepare_images_for">เตรียมรูปภาพเพื่อแชร์ไม่ได้</string>
+    <string name="default_document_export_repository_could_not_export_images">ส่งออกรูปภาพไม่ได้</string>
+    <string name="default_document_export_repository_could_not_prepare_pdf_share">เตรียม PDF เพื่อแชร์ไม่ได้</string>
+    <string name="default_document_export_repository_could_not_export_pdf">ส่งออก PDF ไม่ได้</string>
+    <!-- DefaultGroupRepository -->
+    <string name="default_group_repository_could_not_clear_old_deleted">ล้างโฟลเดอร์เก่าที่ลบไปแล้วไม่ได้</string>
+    <string name="default_group_repository_could_not_delete_the_folders">ลบโฟลเดอร์ไม่ได้</string>
+    <string name="default_group_repository_could_not_delete_the_folder">ลบโฟลเดอร์นี้ไม่ได้</string>
+    <string name="default_group_repository_could_not_restore_the_folder">กู้คืนโฟลเดอร์ไม่ได้</string>
+    <string name="default_group_repository_could_not_move_the_folder">ย้ายโฟลเดอร์ไปที่ลบล่าสุดไม่ได้</string>
+    <!-- DefaultPageRepository -->
+    <string name="default_page_repository_applied_to_of_pages_save">ใช้กับ %1$s จาก %2$s หน้าแล้ว บันทึกอีกครั้งเพื่อลองหน้าที่เหลือ</string>
+    <string name="default_page_repository_could_not_clear_old_deleted">ล้างหน้าเก่าที่ลบไปแล้วไม่ได้</string>
+    <string name="default_page_repository_could_not_delete_the_pages">ลบหน้าไม่ได้</string>
+    <string name="default_page_repository_could_not_delete_the_page">ลบหน้านี้ไม่ได้</string>
+    <string name="default_page_repository_could_not_restore_the_page">กู้คืนหน้าไม่ได้</string>
+    <!-- DefaultPdfToolkitRepository -->
+    <string name="default_pdf_toolkit_repository_incorrect_pdf_password">รหัสผ่าน PDF ไม่ถูกต้อง</string>
+    <string name="default_pdf_toolkit_repository_this_pdf_is_not_stored">PDF นี้ไม่ได้จัดเก็บไว้ใน Scanly</string>
+    <string name="default_pdf_toolkit_repository_the_scanly_document_could_not">เตรียมเอกสาร Scanly เป็น PDF ไม่ได้</string>
+    <string name="default_pdf_toolkit_repository_could_not_prepare_share">เตรียมการแชร์ไม่ได้</string>
+    <string name="default_pdf_toolkit_repository_could_not_read_this_page">อ่านหน้านี้ไม่ได้</string>
+    <string name="default_pdf_toolkit_repository_failed_to_encode_page">เข้ารหัสหน้า %1$s ไม่สำเร็จ</string>
+    <string name="default_pdf_toolkit_repository_could_not_save_the_images">บันทึกรูปภาพไม่ได้</string>
+    <string name="default_pdf_toolkit_repository_page">%1$s – หน้า %2$s.%3$s</string>
+    <string name="default_pdf_toolkit_repository_could_not_estimate_the_image">ประเมินขนาดรูปภาพไม่ได้</string>
+    <string name="default_pdf_toolkit_repository_could_not_open_this_pdf">เปิด PDF นี้ไม่ได้</string>
+    <string name="default_pdf_toolkit_repository_could_not_render_pdf_page">แสดงหน้า PDF ไม่ได้</string>
+    <string name="default_pdf_toolkit_repository_could_not_sign_this_pdf">ลงนาม PDF นี้ไม่ได้</string>
+    <string name="default_pdf_toolkit_repository_could_not_open_this_pdf_2">เปิด PDF นี้เพื่อลงนามไม่ได้</string>
+    <string name="default_pdf_toolkit_repository_could_not_update_watermark_preview">อัปเดตตัวอย่างลายน้ำไม่ได้</string>
+    <string name="default_pdf_toolkit_repository_could_not_add_watermark">เพิ่มลายน้ำไม่ได้</string>
+    <string name="default_pdf_toolkit_repository_could_not_remove_pdf_password">นำรหัสผ่าน PDF ออกไม่ได้</string>
+    <string name="default_pdf_toolkit_repository_could_not_password_protect_pdf">ตั้งรหัสผ่านให้ PDF ไม่ได้</string>
+    <string name="default_pdf_toolkit_repository_could_not_compress_pdf">บีบอัด PDF ไม่ได้</string>
+    <string name="default_pdf_toolkit_repository_this_pdf_is_already_well">PDF นี้มีขนาดเหมาะสมอยู่แล้ว การบีบอัดจะไม่ทำให้ไฟล์เล็กลง</string>
+    <string name="default_pdf_toolkit_repository_page_is_too_large_to">หน้า %1$s ใหญ่เกินกว่าจะบีบอัดบนอุปกรณ์นี้ได้ ลองใช้คุณภาพ \"เล็กที่สุด\"</string>
+    <string name="default_pdf_toolkit_repository_could_not_merge_pdfs">รวม PDF ไม่ได้</string>
+    <string name="default_pdf_toolkit_repository_one_of_the_pdfs">PDF ไฟล์หนึ่ง</string>
+    <string name="default_pdf_toolkit_repository_could_not_open_pdf">เปิด PDF ไม่ได้</string>
+    <!-- PdfSignatureStamper -->
+    <string name="pdf_signature_stamper_text_and_dates_support_latin">ข้อความและวันที่รองรับอักษรละติน กรีก และซีริลลิก รวมถึงตัวเลขและสัญลักษณ์</string>
+    <!-- PdfWatermarkStamper -->
+    <string name="pdf_watermark_stamper_watermarks_support_latin_greek_and">ลายน้ำรองรับอักษรละติน กรีก และซีริลลิก รวมถึงตัวเลขและสัญลักษณ์ ลองพิมพ์ข้อความเป็นภาษาอังกฤษ</string>
+    <!-- DefaultQrCodeRepository -->
+    <string name="default_qr_code_repository_could_not_save_qr_code">บันทึก QR โค้ดไม่ได้</string>
+    <string name="default_qr_code_repository_could_not_generate_qr_code">สร้าง QR โค้ดไม่ได้</string>
+    <!-- DefaultPageMarkupRepository -->
+    <string name="default_page_markup_repository_could_not_save_the_signed">บันทึกหน้าที่ลงนามแล้วไม่ได้</string>
+    <string name="default_page_markup_repository_could_not_load_signatures_for">โหลดลายเซ็นของเอกสารนี้ไม่ได้</string>
+    <!-- DefaultSignatureRepository -->
+    <string name="default_signature_repository_could_not_save_the_image">บันทึกรูปภาพไม่ได้</string>
+    <string name="default_signature_repository_could_not_prepare_the_image">เตรียมรูปภาพไม่ได้</string>
+    <string name="default_signature_repository_could_not_update_the_signature">อัปเดตลายเซ็นไม่ได้</string>
+    <string name="default_signature_repository_could_not_delete_the_signature">ลบลายเซ็นไม่ได้</string>
+    <string name="default_signature_repository_could_not_read_this_image">อ่านรูปภาพนี้ไม่ได้</string>
+    <string name="default_signature_repository_could_not_save_the_signature">บันทึกลายเซ็นไม่ได้</string>
+    <!-- PageMarkupStore -->
+    <string name="page_markup_store_could_not_save_the_signed">บันทึกหน้าที่ลงนามแล้วไม่ได้</string>
+    <!-- DefaultPageTextRepository -->
+    <string name="default_page_text_repository_could_not_queue_pages_to">เพิ่มหน้าลงคิวเพื่ออ่านอีกครั้งไม่ได้</string>
+    <string name="default_page_text_repository_could_not_update_the_text">อัปเดตดัชนีข้อความไม่ได้</string>
+    <string name="default_page_text_repository_could_not_save_your_changes">บันทึกการเปลี่ยนแปลงไม่ได้</string>
+    <string name="default_page_text_repository_could_not_read_text_from">อ่านข้อความจากหน้านี้ไม่ได้</string>
+    <string name="default_page_text_repository_could_not_read_text_from_2">อ่านข้อความจากเอกสารนี้ไม่ได้</string>
+    <!-- DefaultPlayInAppUpdateCoordinator -->
+    <string name="default_play_in_app_update_coordinator_could_not_check_google_play">ตรวจหาอัปเดตจาก Google Play ไม่ได้</string>
+    <string name="default_play_in_app_update_coordinator_google_play_could_not_check">Google Play ตรวจหาอัปเดตไม่ได้</string>
+    <!-- PlayStoreAppUpdateRepository -->
+    <string name="play_store_app_update_repository_update_available">มีอัปเดต</string>
+    <string name="play_store_app_update_repository_latest">ล่าสุด</string>
+    <!-- PdfExportOptions -->
+    <string name="pdf_export_options_use_no_more_than_characters">ใช้ไม่เกิน %1$s อักขระ</string>
+    <string name="pdf_export_options_use_at_least_characters">ใช้อย่างน้อย %1$s อักขระ</string>
+    <string name="pdf_export_options_enter_a_pdf_password">ป้อนรหัสผ่าน PDF</string>
+    <!-- QrPayload -->
+    <string name="qr_payload_text_characters">ข้อความ · %1$s อักขระ</string>
+    <string name="qr_payload_phone_number">หมายเลขโทรศัพท์</string>
+    <string name="qr_payload_email">อีเมล</string>
+    <string name="qr_payload_contact_card">นามบัตรรายชื่อติดต่อ</string>
+    <string name="qr_payload_wi_fi">Wi-Fi · %1$s</string>
+    <string name="qr_payload_upi">UPI · %1$s</string>
+    <string name="qr_payload_link_not_secure_http">ลิงก์ · ไม่ปลอดภัย (http)</string>
+    <string name="qr_payload_link_https">ลิงก์ · https</string>
+    <string name="qr_payload_empty_text">ข้อความว่าง</string>
+    <string name="qr_payload_contact">รายชื่อติดต่อ</string>
+    <string name="qr_payload_wi_fi_network">เครือข่าย Wi-Fi</string>
+    <string name="qr_payload_pay">ชำระเงินให้ %1$s</string>
+    <string name="qr_payload_text">ข้อความ</string>
+    <string name="qr_payload_phone">โทรศัพท์</string>
+    <string name="qr_payload_wi_fi_2">Wi-Fi</string>
+    <string name="qr_payload_upi_payment">การชำระเงิน UPI</string>
+    <string name="qr_payload_link">ลิงก์</string>
+    <!-- DetectDocumentCornersUseCase -->
+    <string name="detect_document_corners_use_case_document_detection_failed">ตรวจหาเอกสารไม่สำเร็จ</string>
+    <string name="detect_document_corners_use_case_could_not_detect_a_document">ไม่พบเอกสารในรูปภาพนี้</string>
+    <!-- ImportImagesUseCase -->
+    <string name="import_images_use_case_none_of_the_selected_files">ไม่มีไฟล์ที่เลือกไฟล์ใดเปิดเป็นรูปภาพได้</string>
+    <string name="import_images_use_case_the_selected_file_couldn_t">เปิดไฟล์ที่เลือกเป็นรูปภาพไม่ได้</string>
+    <string name="import_images_use_case_saving_page">กำลังบันทึกหน้า</string>
+    <string name="import_images_use_case_detecting_document">กำลังตรวจหาเอกสาร</string>
+    <string name="import_images_use_case_preparing_page">กำลังเตรียมหน้า</string>
+    <!-- TrashUseCases -->
+    <string name="trash_use_cases_page">หน้า %1$s</string>
+    <!-- ImportPdfToLibraryUseCase -->
+    <string name="import_pdf_to_library_use_case_could_not_add_this_pdf">เพิ่ม PDF นี้ลงในคลังไม่ได้</string>
+    <string name="import_pdf_to_library_use_case_choose_at_least_one_page">เลือกอย่างน้อย 1 หน้า</string>
+    <!-- CameraCaptureChrome -->
+    <string name="camera_capture_chrome_done">เสร็จสิ้น</string>
+    <string name="camera_capture_chrome_done_review_pages">เสร็จสิ้น ตรวจดู %1$s หน้า</string>
+    <string name="camera_capture_chrome_done_review_1_page">เสร็จสิ้น ตรวจดู 1 หน้า</string>
+    <string name="camera_capture_chrome_turn_auto_capture_on">เปิดการถ่ายอัตโนมัติ</string>
+    <string name="camera_capture_chrome_turn_auto_capture_off">ปิดการถ่ายอัตโนมัติ</string>
+    <!-- CaptureStabilityTracker -->
+    <string name="capture_stability_tracker_saving_page">กำลังบันทึกหน้า…</string>
+    <string name="capture_stability_tracker_capturing_page">กำลังถ่ายหน้า…</string>
+    <string name="capture_stability_tracker_hold_steady">ถือให้นิ่ง</string>
+    <string name="capture_stability_tracker_capturing_now">กำลังถ่าย</string>
+    <string name="capture_stability_tracker_hold_steady_to_auto_capture">ถือให้นิ่งเพื่อถ่ายอัตโนมัติ</string>
+    <string name="capture_stability_tracker_hold_position_auto_capture_is">ถือไว้ที่เดิม การถ่ายอัตโนมัติกำลังพักสักครู่</string>
+    <string name="capture_stability_tracker_move_to_the_next_page">เลื่อนไปหน้าถัดไปก่อนที่การถ่ายอัตโนมัติจะพร้อมอีกครั้ง</string>
+    <string name="capture_stability_tracker_point_your_camera_at_a">เล็งกล้องให้เห็นเอกสารทั้งแผ่น</string>
+    <string name="capture_stability_tracker_document_detected_tap_capture_whenever">พบเอกสารแล้ว แตะถ่ายได้ทุกเมื่อที่พร้อม</string>
+    <string name="capture_stability_tracker_auto_capture_is_off_use">การถ่ายอัตโนมัติปิดอยู่ กดชัตเตอร์เมื่อพร้อม</string>
+    <!-- PipCameraComponents -->
+    <string name="pip_camera_not_now">ไว้ทีหลัง</string>
+    <string name="pip_camera_allow_camera_access">อนุญาตให้เข้าถึงกล้อง</string>
+    <string name="pip_camera_open_settings">เปิดการตั้งค่า</string>
+    <string name="pip_camera_photos_stay_on_your_device">รูปภาพจะอยู่ในอุปกรณ์ของคุณจนกว่าคุณจะส่งออกหรือแชร์</string>
+    <string name="pip_camera_camera_active_only_while_scanning">กล้องทำงานเฉพาะตอนสแกน</string>
+    <string name="pip_camera_live_preview_with_edge_detection">ดูตัวอย่างสดพร้อมตรวจจับขอบ</string>
+    <string name="pip_camera_come_back_here_and_pip">กลับมาที่นี่ แล้ว Pip จะพร้อมช่วยเลย</string>
+    <string name="pip_camera_settings_permissions_camera_allow">การตั้งค่า › สิทธิ์ › กล้อง › อนุญาต</string>
+    <string name="pip_camera_scanly_needs_your_camera_to">Scanly ต้องใช้กล้องเพื่อถ่ายและปรับหน้าเอกสารให้ตรง</string>
+    <string name="pip_camera_camera_permission_is_blocked_for">สิทธิ์เข้าถึงกล้องของ Scanly ถูกบล็อกอยู่ เปิดการตั้งค่า แตะสิทธิ์ แล้วเปิดกล้องเพื่อสแกนเอกสาร</string>
+    <string name="pip_camera_camera_access_needed">ต้องเข้าถึงกล้อง</string>
+    <string name="pip_camera_show_me_the_whole_page">ขอดูทั้งหน้าเลย ให้เห็นครบทั้งสี่มุมนะ</string>
+    <string name="pip_camera_hold_it_almost_there">นิ่งไว้… ใกล้แล้ว</string>
+    <string name="pip_camera_hold_it">นิ่งไว้… %1$s</string>
+    <string name="pip_camera_ooh_edges_hold_still_a">โอ้ เจอขอบแล้ว! นิ่งไว้แป๊บนึงนะ…</string>
+    <string name="pip_camera_auto_capture_is_off_tap">ถ่ายอัตโนมัติปิดอยู่ พร้อมเมื่อไหร่ก็แตะชัตเตอร์เลย</string>
+    <string name="pip_camera_found_the_edges_tap_the">เจอขอบแล้ว แตะชัตเตอร์ได้ตามสบาย</string>
+    <string name="pip_camera_got_it_on_to_the">ได้แล้ว! ไปหน้าต่อไปกัน</string>
+    <string name="pip_camera_snap_saving_that_page">แชะ! กำลังบันทึกหน้านั้น…</string>
+    <string name="pip_camera_it_s_all_fuzzy_tap">ภาพเบลอไปหมดเลย แตะที่หน้าเพื่อโฟกัสนะ</string>
+    <string name="pip_camera_bit_dark_in_here_more">มืดไปหน่อยนะ เพิ่มแสงหรือลองเปิดแฟลชดีไหม</string>
+    <string name="pip_camera_everything_s_dark_is_something">มืดสนิทเลย มีอะไรบังเลนส์อยู่หรือเปล่า</string>
+    <!-- ScanSessionScreen -->
+    <string name="scan_session_camera_couldn_t_start_close">เปิดกล้องไม่ได้ ปิดแอปอื่นที่ใช้กล้องอยู่แล้วลองอีกครั้ง</string>
+    <string name="scan_session_camera_couldn_t_start_leave">เปิดกล้องไม่ได้ ออกจากหน้าจอนี้แล้วเปิดใหม่อีกครั้ง</string>
+    <string name="scan_session_capture">ถ่าย</string>
+    <string name="scan_session_replace_page">แทนที่หน้า</string>
+    <string name="scan_session_show_grid">แสดงเส้นตาราง</string>
+    <string name="scan_session_hide_grid">ซ่อนเส้นตาราง</string>
+    <string name="scan_session_turn_flash_on">เปิดแฟลช</string>
+    <string name="scan_session_turn_flash_off">ปิดแฟลช</string>
+    <string name="scan_session_close_camera">ปิดกล้อง</string>
+    <string name="scan_session_no_captures">ยังไม่มีภาพถ่าย</string>
+    <string name="scan_session_open_a_valid_document_first">เปิดเอกสารที่ถูกต้องก่อน</string>
+    <string name="scan_session_document_missing">ไม่พบเอกสาร</string>
+    <string name="scan_session_camera_is_not_ready_yet">กล้องยังไม่พร้อม</string>
+    <!-- ScanSessionViewModel -->
+    <string name="scan_session_checking_document">กำลังตรวจสอบเอกสาร…</string>
+    <string name="scan_session_point_your_camera_at_a">เล็งกล้องไปที่เอกสารจริง</string>
+    <string name="scan_session_screen_detected_point_at_a">ตรวจพบหน้าจอ เล็งไปที่เอกสารจริง</string>
+    <string name="scan_session_page_edges_are_ambiguous_hold">ขอบหน้าไม่ชัดเจน ถือให้นิ่งหรือขยับเข้าไปใกล้ขึ้น</string>
+    <string name="scan_session_two_pages_are_visible_move">เห็นสองหน้า ขยับเข้าใกล้ขึ้นแล้วจัดให้อยู่ในกรอบหน้าเดียว</string>
+    <string name="scan_session_page_saved">บันทึกหน้า %1$s แล้ว</string>
+    <string name="scan_session_auto_captured_page">ถ่ายหน้า %1$s อัตโนมัติแล้ว</string>
+    <string name="scan_session_document_not_found">ไม่พบเอกสาร</string>
+    <string name="scan_session_capture_failed_reposition_the_document">ถ่ายไม่สำเร็จ จัดตำแหน่งเอกสารใหม่แล้วลองอีกครั้ง</string>
+    <string name="scan_session_page_not_saved_reposition_the">ไม่ได้บันทึกหน้า จัดตำแหน่งเอกสารใหม่แล้วลองอีกครั้ง</string>
+    <string name="scan_session_live_detection_is_unavailable_manual">การตรวจจับแบบสดใช้ไม่ได้ แต่ยังถ่ายเองได้ตามปกติ</string>
+    <string name="scan_session_point_your_camera_at_a_2">เล็งกล้องไปที่เอกสาร</string>
+    <!-- ExportShareComponents -->
+    <string name="export_share_passwords_match">รหัสผ่านตรงกัน</string>
+    <string name="export_share_confirm_password">ยืนยันรหัสผ่าน</string>
+    <string name="export_share_4_64_characters_send_it">4–64 อักขระ ส่งรหัสผ่านแยกจาก PDF</string>
+    <string name="export_share_show_password">แสดงรหัสผ่าน</string>
+    <string name="export_share_hide_password">ซ่อนรหัสผ่าน</string>
+    <string name="export_share_pdf_password">รหัสผ่าน PDF</string>
+    <string name="export_share_off">ปิด</string>
+    <string name="export_share_a_password_will_be_required">ต้องใช้รหัสผ่านเพื่อเปิด PDF</string>
+    <string name="export_share_password_protection">การป้องกันด้วยรหัสผ่าน</string>
+    <string name="export_share_cancel">ยกเลิก</string>
+    <string name="export_share_add_white_space_around_the">เพิ่มขอบว่างรอบหน้าที่สแกน</string>
+    <string name="export_share_margins">ระยะขอบ</string>
+    <string name="export_share_fixed_sizes_use_their_real">ขนาดคงที่จะใช้ขนาดพิมพ์จริง</string>
+    <string name="export_share_page_size">ขนาดหน้า</string>
+    <string name="export_share_auto_follows_each_scanned_page">อัตโนมัติจะใช้ขนาดตามแต่ละหน้าที่สแกน</string>
+    <string name="export_share_orientation">การวางแนว</string>
+    <string name="export_share_add_the_page_index_to">เพิ่มเลขหน้าที่ส่วนท้ายของ PDF</string>
+    <string name="export_share_page_numbers">เลขหน้า</string>
+    <string name="export_share_choose_how_every_page_is">เลือกวิธีสร้างแต่ละหน้า</string>
+    <string name="export_share_passwords_do_not_match">รหัสผ่านไม่ตรงกัน</string>
+    <string name="export_share_confirm_the_password">ยืนยันรหัสผ่าน</string>
+    <string name="export_share_pdf_options">ตัวเลือก PDF</string>
+    <!-- FabComponents -->
+    <string name="fab_open_add_menu">เปิดเมนูเพิ่ม</string>
+    <string name="fab_close_menu">ปิดเมนู</string>
+    <string name="fab_new_document">เอกสารใหม่</string>
+    <string name="fab_new_folder">โฟลเดอร์ใหม่</string>
+    <!-- LibraryCardPresentation -->
+    <string name="library_card_presentation_remove_from_folder">นำออกจากโฟลเดอร์</string>
+    <string name="library_card_presentation_move_to_folder">ย้ายไปยังโฟลเดอร์</string>
+    <string name="library_card_presentation_rename">เปลี่ยนชื่อ</string>
+    <string name="library_card_presentation_delete">ลบ</string>
+    <string name="library_card_presentation_1_page">1 หน้า</string>
+    <string name="library_card_presentation_1_document">เอกสาร 1 รายการ</string>
+    <string name="library_card_presentation_yesterday">เมื่อวาน</string>
+    <string name="library_card_presentation_today">วันนี้</string>
+    <!-- LibraryFolderShelf -->
+    <string name="library_folder_shelf_all_folders">โฟลเดอร์ทั้งหมด</string>
+    <string name="library_folder_shelf_view_all">ดูทั้งหมด</string>
+    <string name="library_folder_shelf_organise_scans">จัดระเบียบภาพสแกน</string>
+    <string name="library_folder_shelf_new_folder">โฟลเดอร์ใหม่</string>
+    <!-- SharedComponents -->
+    <string name="shared_please_wait">โปรดรอสักครู่</string>
+    <string name="shared_working_on_your_photos">กำลังจัดการรูปภาพของคุณ…</string>
+    <string name="shared_importing_images">กำลังนำเข้ารูปภาพ</string>
+    <string name="shared_more_options">ตัวเลือกเพิ่มเติม</string>
+    <string name="shared_selected">เลือกแล้ว</string>
+    <string name="shared_create_new_folder">สร้างโฟลเดอร์ใหม่</string>
+    <string name="shared_create_move">สร้างและย้าย</string>
+    <string name="shared_new_folder_name">ชื่อโฟลเดอร์ใหม่</string>
+    <string name="shared_no_folder">ไม่มีโฟลเดอร์</string>
+    <string name="shared_folder_name">ชื่อโฟลเดอร์</string>
+    <string name="shared_create">สร้าง</string>
+    <string name="shared_suggest_name">แนะนำชื่อ</string>
+    <string name="shared_title">ชื่อ</string>
+    <string name="shared_clear_name">ล้างชื่อ</string>
+    <string name="shared_confirm">ยืนยัน</string>
+    <string name="shared_scanly">Scanly</string>
+    <!-- DocumentDetailScreen -->
+    <string name="document_detail_delete_page">ลบหน้า</string>
+    <string name="document_detail_share_page">แชร์หน้า</string>
+    <string name="document_detail_sign_document">ลงนามเอกสาร</string>
+    <string name="document_detail_extract_text">ดึงข้อความ</string>
+    <string name="document_detail_retake_page">ถ่ายหน้าใหม่</string>
+    <string name="document_detail_edit_page">แก้ไขหน้า</string>
+    <string name="document_detail_edit">แก้ไข</string>
+    <string name="document_detail_share">แชร์ %1$s</string>
+    <string name="document_detail_review">ตรวจดู</string>
+    <string name="document_detail_ready">พร้อมแล้ว</string>
+    <string name="document_detail_new">ใหม่</string>
+    <string name="document_detail_captured">ถ่ายแล้ว</string>
+    <string name="document_detail_add_page">เพิ่มหน้า</string>
+    <string name="document_detail_scan_or_import">สแกนหรือนำเข้า</string>
+    <string name="document_detail_add_page_scan_or_import">เพิ่มหน้า สแกนหรือนำเข้า</string>
+    <string name="document_detail_share_2">แชร์</string>
+    <string name="document_detail_retake">ถ่ายใหม่</string>
+    <string name="document_detail_open_zoom_view">เปิดมุมมองซูม</string>
+    <string name="document_detail_page_of">หน้า %1$s จาก %2$s</string>
+    <string name="document_detail_import_images">นำเข้ารูปภาพ</string>
+    <string name="document_detail_scan_a_page">สแกนหน้า</string>
+    <string name="document_detail_scan_a_page_or_import">สแกนหน้าหรือนำเข้ารูปภาพได้สูงสุด %1$s รูปเพื่อเริ่มเอกสารนี้</string>
+    <string name="document_detail_no_pages_yet">ยังไม่มีหน้า</string>
+    <string name="document_detail_return_to_the_library_and">กลับไปที่คลังแล้วเปิดเอกสารอื่น</string>
+    <string name="document_detail_document_not_found">ไม่พบเอกสาร</string>
+    <string name="document_detail_select_a_page_to_preview">เลือกหน้าเพื่อดูตัวอย่าง</string>
+    <string name="document_detail_tap_to_review_long_press">แตะเพื่อตรวจดู กดค้างแล้วลากเพื่อจัดลำดับใหม่</string>
+    <string name="document_detail_long_press_and_drag_to">กดค้างแล้วลากเพื่อจัดลำดับใหม่</string>
+    <string name="document_detail_pages">หน้า</string>
+    <string name="document_detail_use_scan_or_import_to">ใช้สแกนหรือนำเข้าเพื่อเพิ่มหน้าแรก</string>
+    <string name="document_detail_please_wait_while_the_file">โปรดรอสักครู่ขณะเตรียมไฟล์</string>
+    <string name="document_detail_share_pages">แชร์หน้า</string>
+    <string name="document_detail_save_images_zip">บันทึกรูปภาพเป็น ZIP</string>
+    <string name="document_detail_share_pdf">แชร์ PDF</string>
+    <string name="document_detail_save_pdf">บันทึก PDF</string>
+    <string name="document_detail_export_share">ส่งออกและแชร์</string>
+    <string name="document_detail_pick_up_to_images_from">เลือกรูปภาพจากไฟล์ได้สูงสุด %1$s รูป</string>
+    <string name="document_detail_choose_images">เลือกรูปภาพ</string>
+    <string name="document_detail_open_the_camera_to_scan">เปิดกล้องเพื่อสแกนหน้าใหม่</string>
+    <string name="document_detail_capture_a_new_scan_or">สแกนใหม่หรือเลือกรูปภาพจากแกลเลอรีได้สูงสุด %1$s รูป</string>
+    <string name="document_detail_delete_document">ลบเอกสาร</string>
+    <string name="document_detail_rename_document">เปลี่ยนชื่อเอกสาร</string>
+    <string name="document_detail_document_options">ตัวเลือกเอกสาร</string>
+    <string name="document_detail_working_on_your_photos">กำลังจัดการรูปภาพของคุณ</string>
+    <string name="document_detail_preparing_export">กำลังเตรียมส่งออก</string>
+    <string name="document_detail_generate">สร้าง</string>
+    <string name="document_detail_delete_document_2">ลบเอกสารไหม</string>
+    <string name="document_detail_save">บันทึก</string>
+    <string name="document_detail_document">เอกสาร</string>
+    <!-- DocumentDetailViewModel -->
+    <string name="document_detail_document_renamed">เปลี่ยนชื่อเอกสารแล้ว</string>
+    <string name="document_detail_starting_import">กำลังเริ่มนำเข้า</string>
+    <string name="document_detail_page_image_is_not_available">รูปภาพของหน้ายังไม่พร้อม</string>
+    <string name="document_detail_preparing_pages">กำลังเตรียมหน้า</string>
+    <string name="document_detail_saved_to">บันทึก %1$s ไปที่ %2$s แล้ว</string>
+    <string name="document_detail_preparing_and_saving_zip">กำลังเตรียมและบันทึก ZIP</string>
+    <string name="document_detail_preparing_pdf">กำลังเตรียม PDF</string>
+    <string name="document_detail_generating_and_saving_pdf">กำลังสร้างและบันทึก PDF</string>
+    <string name="document_detail_reordered_pages">จัดลำดับหน้าใหม่แล้ว</string>
+    <string name="document_detail_moved_to_folder">ย้ายไปยังโฟลเดอร์แล้ว</string>
+    <string name="document_detail_moved_to">ย้ายไปที่ %1$s แล้ว</string>
+    <string name="document_detail_removed_from_folder">นำออกจากโฟลเดอร์แล้ว</string>
+    <!-- FilterCustomizeScreen -->
+    <string name="filter_customize_faded_text">ข้อความจาง</string>
+    <string name="filter_customize_whiteboard">ไวท์บอร์ด</string>
+    <string name="filter_customize_grayscale">โทนสีเทา</string>
+    <string name="filter_customize_screen">หน้าจอ</string>
+    <string name="filter_customize_vivid">สดใส</string>
+    <string name="filter_customize_natural">ธรรมชาติ</string>
+    <string name="filter_customize_magic_color">สีเมจิก</string>
+    <string name="filter_customize_auto">อัตโนมัติ</string>
+    <string name="filter_customize_original">ต้นฉบับ</string>
+    <string name="filter_customize_intensity">ความเข้ม</string>
+    <string name="filter_customize_sharpness">ความคมชัด</string>
+    <string name="filter_customize_saturation">ความอิ่มตัวของสี</string>
+    <string name="filter_customize_contrast">คอนทราสต์</string>
+    <string name="filter_customize_brightness">ความสว่าง</string>
+    <string name="filter_customize_fine_tune_on_this_page">ปรับ %1$s อย่างละเอียดในหน้านี้ กดค้างที่เปรียบเทียบเพื่อดูเฉพาะฟิลเตอร์</string>
+    <string name="filter_customize_customize_filter">ปรับแต่งฟิลเตอร์</string>
+    <string name="filter_customize_adjusted">ปรับแล้ว</string>
+    <string name="filter_customize_filter_only">เฉพาะฟิลเตอร์</string>
+    <string name="filter_customize_filter_adjustment_preview">ตัวอย่างการปรับฟิลเตอร์</string>
+    <string name="filter_customize_selected_filter_without_adjustments">ฟิลเตอร์ที่เลือกโดยไม่มีการปรับ</string>
+    <string name="filter_customize_loading_preview">กำลังโหลดตัวอย่าง…</string>
+    <string name="filter_customize_hold_to_compare_with_filter">กดค้างเพื่อเปรียบเทียบกับฟิลเตอร์อย่างเดียว</string>
+    <string name="filter_customize_reset_adjustments">รีเซ็ตการปรับ</string>
+    <string name="filter_customize_adjust">ปรับ</string>
+    <string name="filter_customize_compare">เปรียบเทียบ</string>
+    <!-- FilterPickerScreen -->
+    <string name="filter_picker_selected_filter">ฟิลเตอร์ที่เลือก</string>
+    <string name="filter_picker_filter_thumbnail">ภาพขนาดย่อของฟิลเตอร์ %1$s</string>
+    <string name="filter_picker_analyzing_the_page_to_tune">กำลังวิเคราะห์หน้าเพื่อปรับแต่ละฟิลเตอร์</string>
+    <string name="filter_picker_filter_only_crop_rotation_and">ใช้เฉพาะฟิลเตอร์ การครอบตัด การหมุน และการปรับจะแยกตามแต่ละหน้า</string>
+    <string name="filter_picker_apply_filter_to_all_pages">ใช้ฟิลเตอร์กับทุกหน้า</string>
+    <string name="filter_picker_tap_a_preset_to_update">แตะค่าที่กำหนดไว้เพื่ออัปเดตตัวอย่างสด เมื่อเสร็จแล้วให้บันทึกจากเครื่องมือแก้ไข</string>
+    <string name="filter_picker_filters">ฟิลเตอร์</string>
+    <string name="filter_picker_filter_preview">ตัวอย่างฟิลเตอร์ %1$s</string>
+    <!-- PageCropScreen -->
+    <string name="page_crop_page_crop_preview">ตัวอย่างการครอบตัดหน้า</string>
+    <string name="page_crop_detecting">กำลังตรวจหา</string>
+    <string name="page_crop_reset">รีเซ็ต</string>
+    <string name="page_crop_ai_detect">ตรวจหาด้วย AI</string>
+    <string name="page_crop_right">ขวา</string>
+    <string name="page_crop_left">ซ้าย</string>
+    <string name="page_crop_apply_crop">ใช้การครอบตัด</string>
+    <string name="page_crop_detecting_document">กำลังตรวจหาเอกสาร…</string>
+    <string name="page_crop_keep_editing">แก้ไขต่อ</string>
+    <string name="page_crop_discard">ทิ้ง</string>
+    <string name="page_crop_your_crop_changes_have_not">ยังไม่ได้ใช้การเปลี่ยนแปลงการครอบตัด</string>
+    <string name="page_crop_discard_changes">ทิ้งการเปลี่ยนแปลงไหม</string>
+    <string name="page_crop_full_frame_corners">มุมเต็มกรอบ</string>
+    <string name="page_crop_reset_crop">รีเซ็ตการครอบตัด</string>
+    <string name="page_crop_rotate_right">หมุนขวา</string>
+    <string name="page_crop_rotate_left">หมุนซ้าย</string>
+    <string name="page_crop_find_the_document_corners">หามุมของเอกสาร</string>
+    <string name="page_crop_detecting_2">กำลังตรวจหา…</string>
+    <string name="page_crop_detect_edges_rotate_then_drag">ตรวจหาขอบ หมุน แล้วลากจุดจับ แตะเสร็จสิ้นเพื่อใช้</string>
+    <string name="page_crop_crop_tools">เครื่องมือครอบตัด</string>
+    <string name="page_crop_page_not_found">ไม่พบหน้า</string>
+    <string name="page_crop_crop">ครอบตัด</string>
+    <string name="page_crop_processing">กำลังประมวลผล</string>
+    <!-- PageCropViewModel -->
+    <string name="page_crop_crop_updated">อัปเดตการครอบตัดแล้ว</string>
+    <string name="page_crop_document_detected">พบเอกสารแล้ว</string>
+    <string name="page_crop_raw_image_is_not_available">ไม่มีรูปภาพต้นฉบับสำหรับการตรวจหา</string>
+    <!-- PageEditorScreen -->
+    <string name="page_editor_please_wait_while_scanly_adapts">โปรดรอสักครู่ Scanly กำลังปรับฟิลเตอร์และอัปเดตทั้งเอกสาร</string>
+    <string name="page_editor_processing_image_data_for_all">กำลังประมวลผลรูปภาพของทุกหน้า</string>
+    <string name="page_editor_page_editor_preview">ตัวอย่างการแก้ไขหน้า</string>
+    <string name="page_editor_your_edits_to_this_page">ยังไม่ได้บันทึกการแก้ไขหน้านี้</string>
+    <string name="page_editor_remove_from_document">นำออกจากเอกสาร</string>
+    <string name="page_editor_capture_this_page_again">ถ่ายหน้านี้ใหม่</string>
+    <string name="page_editor_brightness_contrast_more">ความสว่าง คอนทราสต์ และอื่นๆ</string>
+    <string name="page_editor_ai_detect_rotate_handles">ตรวจหาด้วย AI หมุน จุดจับ</string>
+    <string name="page_editor_crop_filter_and_adjust_this">ครอบตัด ใส่ฟิลเตอร์ และปรับหน้านี้ แตะเสร็จสิ้นเพื่อบันทึก</string>
+    <string name="page_editor_edit_tools">เครื่องมือแก้ไข</string>
+    <string name="page_editor_editor">เครื่องมือแก้ไข</string>
+    <!-- PageEditorViewModel -->
+    <string name="page_editor_page_updated">อัปเดตหน้าแล้ว</string>
+    <string name="page_editor_filter_applied_to_all_pages">ใช้ฟิลเตอร์กับทุกหน้าแล้ว</string>
+    <!-- HomePip -->
+    <string name="home_pip_hide_today_s_tip">ซ่อนเคล็ดลับวันนี้</string>
+    <!-- HomeRatingPrompt -->
+    <string name="home_rating_prompt_rate_scanly_opens_google_play">ให้คะแนน Scanly เปิด Google Play</string>
+    <string name="home_rating_prompt_rate_on_google_play">ให้คะแนนใน Google Play</string>
+    <string name="home_rating_prompt_scanly_is_free_private_and">Scanly ใช้ฟรี เป็นส่วนตัว และไม่มีโฆษณา ถ้าช่วยประหยัดเวลาให้คุณได้ การให้คะแนนสั้นๆ ใน Google Play จะช่วยเราได้มาก</string>
+    <string name="home_rating_prompt_rate_scanly">ให้คะแนน Scanly</string>
+    <!-- HomeScreen -->
+    <string name="home_search_names_and_text_in">ค้นหาชื่อและข้อความในหน้า</string>
+    <string name="home_start_scanning">เริ่มสแกน</string>
+    <string name="home_scan_your_first_page_and">สแกนหน้าแรก แล้วเอกสารจะรออยู่ที่นี่ทุกครั้งที่คุณต้องการ</string>
+    <string name="home_no_documents_yet">ยังไม่มีเอกสาร</string>
+    <string name="home_loading_your_documents">กำลังโหลดเอกสารของคุณ</string>
+    <string name="home_folder">โฟลเดอร์</string>
+    <string name="home_import">นำเข้า</string>
+    <string name="home_scan">สแกน</string>
+    <string name="home_save_it_now">บันทึกไว้เลย</string>
+    <string name="home_save_it_now_find_it">บันทึกวันนี้\nหาเจอได้พรุ่งนี้</string>
+    <string name="home_still_scanning">ยังสแกนอยู่ไหม</string>
+    <string name="home_wrap_up_and_digitize_your">ปิดท้ายวัน\nเก็บทุกอย่างเป็นดิจิทัล</string>
+    <string name="home_good_evening">สวัสดีตอนเย็น</string>
+    <string name="home_let_s_capture_some_documents">มาสแกน\nเอกสารกันเถอะ</string>
+    <string name="home_good_afternoon">สวัสดีตอนบ่าย</string>
+    <string name="home_what_are_we_scanning_today">วันนี้เรา\nจะสแกนอะไรกันดี</string>
+    <string name="home_good_morning">สวัสดีตอนเช้า</string>
+    <string name="home_see_all">ดูทั้งหมด</string>
+    <string name="home_recent_documents">เอกสารล่าสุด</string>
+    <string name="home_recent_folders">โฟลเดอร์ล่าสุด</string>
+    <string name="home_new_scan">สแกนใหม่</string>
+    <!-- FolderDeleteDialog -->
+    <string name="folder_delete_both_go_to_recently_deleted">ทั้งสองอย่างจะอยู่ในที่ลบล่าสุดเป็นเวลา %1$s</string>
+    <string name="folder_delete_delete_folder_and_documents">ลบโฟลเดอร์และเอกสาร</string>
+    <string name="folder_delete_keep_the_in_your_library">เก็บ %1$s ไว้ในคลัง</string>
+    <string name="folder_delete_delete_folder_only">ลบเฉพาะโฟลเดอร์</string>
+    <string name="folder_delete_delete_folder">ลบโฟลเดอร์ไหม</string>
+    <!-- GroupDetailScreen -->
+    <string name="group_detail_not_selected">ไม่ได้เลือก</string>
+    <string name="group_detail_add_documents">เพิ่มเอกสาร %1$s รายการ</string>
+    <string name="group_detail_add_1_document">เพิ่มเอกสาร 1 รายการ</string>
+    <string name="group_detail_add_selected">เพิ่มรายการที่เลือก</string>
+    <string name="group_detail_documents_already_in_folders_won">เอกสารที่อยู่ในโฟลเดอร์อื่นแล้วจะไม่แสดงที่นี่ สร้างเอกสารใหม่แทน</string>
+    <string name="group_detail_no_loose_documents">ไม่มีเอกสารที่อยู่นอกโฟลเดอร์</string>
+    <string name="group_detail_select_all">เลือกทั้งหมด</string>
+    <string name="group_detail_clear">ล้าง</string>
+    <string name="group_detail_select_one_or_more_documents">เลือกเอกสารอย่างน้อย 1 รายการ</string>
+    <string name="group_detail_nothing_available_to_move">ไม่มีรายการที่ย้ายได้</string>
+    <string name="group_detail_move_existing">ย้ายเอกสารที่มีอยู่</string>
+    <string name="group_detail_starts_empty_inside_this_folder">เริ่มเป็นเอกสารเปล่าในโฟลเดอร์นี้</string>
+    <string name="group_detail_create_new_document">สร้างเอกสารใหม่</string>
+    <string name="group_detail_create_a_new_document_or">สร้างเอกสารใหม่ หรือเลือกจาก %1$s ที่อยู่นอกโฟลเดอร์นี้</string>
+    <string name="group_detail_create_a_new_document_or_2">สร้างเอกสารใหม่ หรือย้ายเอกสารที่ยังไม่ได้อยู่ในโฟลเดอร์</string>
+    <string name="group_detail_add_documents_to_folder">เพิ่มเอกสารลงในโฟลเดอร์</string>
+    <string name="group_detail_add_documents_2">เพิ่มเอกสาร</string>
+    <string name="group_detail_add_a_document_here_to">เพิ่มเอกสารที่นี่เพื่อเก็บภาพสแกนที่เกี่ยวข้องไว้ด้วยกัน</string>
+    <string name="group_detail_this_folder_is_empty">โฟลเดอร์นี้ว่างเปล่า</string>
+    <string name="group_detail_share_pdfs_as_zip">แชร์ PDF เป็น ZIP</string>
+    <string name="group_detail_save_pdfs_as_zip">บันทึก PDF เป็น ZIP</string>
+    <string name="group_detail_separate_pdfs_one_pdf_per">PDF แยกไฟล์ · เอกสารละ 1 PDF รวมไว้ใน ZIP</string>
+    <string name="group_detail_share_merged_pdf">แชร์ PDF ที่รวมแล้ว</string>
+    <string name="group_detail_save_merged_pdf">บันทึก PDF ที่รวมแล้ว</string>
+    <string name="group_detail_single_pdf_merged_into_one">PDF ไฟล์เดียว · รวม %1$s เป็นไฟล์เดียว</string>
+    <string name="group_detail_new_document">เอกสารใหม่</string>
+    <string name="group_detail_remove">นำออก</string>
+    <string name="group_detail_will_be_moved_out_of">\"%1$s\" จะถูกย้ายออกจากโฟลเดอร์นี้</string>
+    <string name="group_detail_remove_from_folder">นำออกจากโฟลเดอร์ไหม</string>
+    <string name="group_detail_rename_folder">เปลี่ยนชื่อโฟลเดอร์</string>
+    <string name="group_detail_delete_folder">ลบโฟลเดอร์</string>
+    <string name="group_detail_export_and_share">ส่งออกและแชร์</string>
+    <!-- GroupDetailViewModel -->
+    <string name="group_detail_generating_pdf_of">กำลังสร้าง PDF %1$s จาก %2$s…</string>
+    <string name="group_detail_generating_page_of">กำลังสร้างหน้า %1$s จาก %2$s…</string>
+    <string name="group_detail_document_removed_from_folder">นำเอกสารออกจากโฟลเดอร์แล้ว</string>
+    <string name="group_detail_added_documents_to_folder">เพิ่มเอกสาร %1$s รายการลงในโฟลเดอร์แล้ว</string>
+    <string name="group_detail_added_1_document_to_folder">เพิ่มเอกสาร 1 รายการลงในโฟลเดอร์แล้ว</string>
+    <string name="group_detail_added_of_documents">เพิ่มเอกสารแล้ว %1$s จาก %2$s รายการ %3$s</string>
+    <string name="group_detail_folder_renamed">เปลี่ยนชื่อโฟลเดอร์แล้ว</string>
+    <!-- LibraryScreen -->
+    <string name="library_create_a_folder_to_stay">สร้างโฟลเดอร์เพื่อจัดระเบียบ หรือเพิ่มเอกสารแล้วเริ่มสแกนได้เลย</string>
+    <string name="library_your_library_is_ready">คลังของคุณพร้อมแล้ว</string>
+    <string name="library_save_to">บันทึกไปที่</string>
+    <string name="library_choose_how_are_ordered">เลือกวิธีเรียงลำดับ%1$s</string>
+    <string name="library_sort_library">จัดเรียงคลัง</string>
+    <string name="library_folders_and_documents">โฟลเดอร์และเอกสาร</string>
+    <string name="library_create_a_document_then_scan">สร้างเอกสาร แล้วสแกนหน้าหรือนำเข้าจากแกลเลอรี</string>
+    <string name="library_create_a_folder_to_keep">สร้างโฟลเดอร์เพื่อให้หาเอกสารที่เกี่ยวข้องได้ง่าย</string>
+    <string name="library_no_folders_yet">ยังไม่มีโฟลเดอร์</string>
+    <string name="library_list_view">มุมมองรายการ</string>
+    <string name="library_grid_view">มุมมองตาราง</string>
+    <string name="library_folders">โฟลเดอร์</string>
+    <string name="library_back_to_library">กลับไปที่คลัง</string>
+    <string name="library_documents">เอกสาร</string>
+    <string name="library_search_library">ค้นหาในคลัง</string>
+    <string name="library_library">คลัง</string>
+    <!-- LibrarySearchScreen -->
+    <string name="library_search_remove_from_recent_searches">นำ %1$s ออกจากการค้นหาล่าสุด</string>
+    <string name="library_search_search_again">ค้นหาอีกครั้ง</string>
+    <string name="library_search_text_is_read_on_this">ระบบอ่านข้อความในอุปกรณ์นี้ หน้าเอกสารของคุณจะไม่ถูกส่งออกไปไหน</string>
+    <string name="library_search_some_pages_are_still_being">บางหน้ายังอ่านไม่เสร็จ ผลลัพธ์อาจปรากฏในอีกสักครู่</string>
+    <string name="library_search_search_for_instead">ค้นหา “%1$s” แทน</string>
+    <string name="library_search_nothing_matches_try_fewer_words">ไม่พบรายการที่ตรงกับ “%1$s” ลองใช้คำน้อยลงหรือตรวจตัวสะกด</string>
+    <string name="library_search_no_results_found">ไม่พบผลลัพธ์</string>
+    <string name="library_search_rent_or_lease_finds_pages">“เช่า OR ซื้อ” จะพบหน้าที่มีคำใดคำหนึ่ง</string>
+    <string name="library_search_either_word">คำใดคำหนึ่ง</string>
+    <string name="library_search_lease_draft_skips_anything_that">“สัญญา -ฉบับร่าง” จะข้ามทุกอย่างที่มีคำว่าฉบับร่าง</string>
+    <string name="library_search_leave_a_word_out">ไม่รวมคำ</string>
+    <string name="library_search_you_ll_get_the_closest">คุณจะได้คำที่ใกล้เคียงที่สุดจากภาพสแกนของคุณ</string>
+    <string name="library_search_small_typos_are_fine">พิมพ์ผิดเล็กน้อยไม่เป็นไร</string>
+    <string name="library_search_security_deposit_in_that_order">“เงินมัดจำ ค่าเช่า” ตามลำดับนั้น</string>
+    <string name="library_search_use_quotes_for_a_phrase">ใส่เครื่องหมายคำพูดเพื่อค้นหาวลี</string>
+    <string name="library_search_lea_finds_lease_and_leasing">“สัญ” จะพบ สัญญา และ สัญญาณ</string>
+    <string name="library_search_type_part_of_a_word">พิมพ์แค่บางส่วนของคำ</string>
+    <string name="library_search_search_tips">เคล็ดลับการค้นหา</string>
+    <string name="library_search_browse_by_type">เรียกดูตามประเภท</string>
+    <string name="library_search_recent">ล่าสุด</string>
+    <string name="library_search_folder">"โฟลเดอร์ · "</string>
+    <string name="library_search_matched">ตรงกับ “%1$s”</string>
+    <string name="library_search_scanned_as">สแกนได้เป็น “%1$s”</string>
+    <string name="library_search_show_page_text">แสดงข้อความในหน้า</string>
+    <string name="library_search_show_fewer_pages">แสดงหน้าน้อยลง</string>
+    <string name="library_search_open_document">เปิดเอกสาร</string>
+    <string name="library_search_similar_words">"คำที่คล้ายกัน: "</string>
+    <string name="library_search_close_matches">ผลลัพธ์ที่ใกล้เคียง</string>
+    <string name="library_search_searching_text_in_pages">กำลังค้นหาข้อความในหน้า…</string>
+    <string name="library_search_by_name">" · %1$s จากชื่อ"</string>
+    <string name="library_search_complete_to">"เติมเป็น "</string>
+    <string name="library_search_filters_on">ตัวกรอง เปิดอยู่ %1$s รายการ</string>
+    <string name="library_search_filters">ตัวกรอง · %1$s</string>
+    <string name="library_search_matching_names">ชื่อที่ตรงกัน</string>
+    <string name="library_search_found_in_pages">พบในหน้า</string>
+    <string name="library_search_clear_search">ล้างการค้นหา</string>
+    <!-- RecentlyDeletedScreen -->
+    <string name="recently_deleted_page_of_will_be_deleted">หน้า %1$s ของ \"%2$s\" จะถูกลบอย่างถาวร และไม่สามารถเลิกทำได้</string>
+    <string name="recently_deleted_and_its_pages_will_be">\"%1$s\" และหน้าทั้งหมดในเอกสารจะถูกลบอย่างถาวร และไม่สามารถเลิกทำได้</string>
+    <string name="recently_deleted_and_the_documents_that_were">\"%1$s\" และเอกสารที่อยู่ในโฟลเดอร์จะถูกลบอย่างถาวร และไม่สามารถเลิกทำได้</string>
+    <string name="recently_deleted_its_documents_stay_in_your">" เอกสารในโฟลเดอร์จะยังอยู่ในคลัง"</string>
+    <string name="recently_deleted_the_folder_will_be_deleted">โฟลเดอร์ \"%1$s\" จะถูกลบอย่างถาวร และไม่สามารถเลิกทำได้</string>
+    <string name="recently_deleted_page_of">หน้า %1$s ของ \"%2$s\"</string>
+    <string name="recently_deleted_days_left">เหลือ %1$s วัน</string>
+    <string name="recently_deleted_1_day_left">เหลือ 1 วัน</string>
+    <string name="recently_deleted_last_day">วันสุดท้าย</string>
+    <string name="recently_deleted_from">จาก \"%1$s\"</string>
+    <string name="recently_deleted_no_documents">ไม่มีเอกสาร</string>
+    <string name="recently_deleted_folder_only_documents_kept_in">เฉพาะโฟลเดอร์ · เก็บเอกสาร %1$s รายการไว้ในคลัง</string>
+    <string name="recently_deleted_folder_only_1_document_kept">เฉพาะโฟลเดอร์ · เก็บเอกสาร 1 รายการไว้ในคลัง</string>
+    <string name="recently_deleted_restore">กู้คืน</string>
+    <string name="recently_deleted_delete_forever">ลบถาวร</string>
+    <string name="recently_deleted_select">เลือก</string>
+    <string name="recently_deleted_delete_forever_2">ลบ %1$s ถาวร</string>
+    <string name="recently_deleted_restore_2">กู้คืน %1$s</string>
+    <string name="recently_deleted_show_options">แสดงตัวเลือก</string>
+    <string name="recently_deleted_the_selected_items_will_be">รายการที่เลือก %1$s รายการจะถูกลบอย่างถาวร และไม่สามารถเลิกทำได้</string>
+    <string name="recently_deleted_delete_items_forever">ลบ %1$s รายการถาวรไหม</string>
+    <string name="recently_deleted_delete_1_item_forever">ลบ 1 รายการถาวรไหม</string>
+    <string name="recently_deleted_delete_forever_3">ลบถาวรไหม</string>
+    <string name="recently_deleted_delete_all">ลบทั้งหมด</string>
+    <string name="recently_deleted_all_items_will_be_deleted">รายการทั้งหมด %1$s รายการจะถูกลบอย่างถาวร และไม่สามารถเลิกทำได้</string>
+    <string name="recently_deleted_this_item_will_be_deleted">รายการนี้จะถูกลบอย่างถาวร และไม่สามารถเลิกทำได้</string>
+    <string name="recently_deleted_empty_recently_deleted">ล้างรายการที่ลบล่าสุดไหม</string>
+    <string name="recently_deleted_deleted_pages_stay_here_for">หน้าที่ลบจะอยู่ที่นี่ %1$s ส่วนเอกสารและโฟลเดอร์จะอยู่ %2$s คุณจึงกู้คืนได้</string>
+    <string name="recently_deleted_nothing_here">ไม่มีรายการ</string>
+    <string name="recently_deleted_nothing_in_the_bin_deleted">ถังขยะว่างเปล่า ของที่ลบจะรออยู่ที่นี่สักสองสามวันนะ</string>
+    <string name="recently_deleted_empty">ล้าง</string>
+    <string name="recently_deleted_select_none">ไม่เลือกเลย</string>
+    <string name="recently_deleted_clear_selection">ล้างรายการที่เลือก</string>
+    <string name="recently_deleted_recently_deleted">ที่ลบล่าสุด</string>
+    <!-- RecentlyDeletedViewModel -->
+    <string name="recently_deleted_page_restored_to">กู้คืนหน้า %1$s ไปที่ \"%2$s\" แล้ว</string>
+    <string name="recently_deleted_document_restored">กู้คืนเอกสารแล้ว</string>
+    <string name="recently_deleted_folder_restored">กู้คืนโฟลเดอร์แล้ว</string>
+    <string name="recently_deleted_recently_deleted_is_empty">ไม่มีรายการที่ลบล่าสุด</string>
+    <string name="recently_deleted_deleted_permanently">ลบอย่างถาวรแล้ว</string>
+    <!-- SearchFiltersSheet -->
+    <string name="search_filters_apply">ใช้</string>
+    <string name="search_filters_remove_filter">นำตัวกรองออก: %1$s</string>
+    <string name="search_filters_in">ใน %1$s</string>
+    <string name="search_filters_not_in_a_folder">ไม่ได้อยู่ในโฟลเดอร์</string>
+    <string name="search_filters_sort_by">จัดเรียงตาม</string>
+    <string name="search_filters_any_folder">ทุกโฟลเดอร์</string>
+    <string name="search_filters_date_modified">วันที่แก้ไข</string>
+    <string name="search_filters_any_type">ทุกประเภท</string>
+    <string name="search_filters_type">ประเภท</string>
+    <!-- TrashCopy -->
+    <string name="trash_copy_page_moves_to_recently_deleted">หน้า %1$s จะย้ายไปที่ลบล่าสุด คุณกู้คืนได้ภายใน %2$s</string>
+    <string name="trash_copy_and_its_documents_move_to">\"%1$s\" และเอกสาร %2$s รายการในโฟลเดอร์จะย้ายไปที่ลบล่าสุด คุณกู้คืนได้ภายใน %3$s</string>
+    <string name="trash_copy_and_the_document_in_it">\"%1$s\" และเอกสารในโฟลเดอร์จะย้ายไปที่ลบล่าสุด คุณกู้คืนได้ภายใน %2$s</string>
+    <string name="trash_copy_moves_to_recently_deleted_you">\"%1$s\" จะย้ายไปที่ลบล่าสุด คุณกู้คืนได้ภายใน %2$s</string>
+    <string name="trash_copy_1_day">1 วัน</string>
+    <!-- TrashUndoSnackbar -->
+    <string name="trash_undo_snackbar_moved_to_recently_deleted">ย้าย \"%1$s\" ไปที่ลบล่าสุดแล้ว</string>
+    <string name="trash_undo_snackbar_moved_to_recently_deleted_2">ย้าย %1$s ไปที่ลบล่าสุดแล้ว</string>
+    <string name="trash_undo_snackbar_undo">เลิกทำ</string>
+    <!-- OnboardingFlow -->
+    <string name="onboarding_flow_enable_camera">เปิดใช้กล้อง</string>
+    <string name="onboarding_flow_enable_the_camera_to_scan">เปิดใช้กล้องเพื่อสแกนเอกสารกระดาษ หากไม่เปิด คุณยังนำเข้ารูปภาพได้</string>
+    <string name="onboarding_flow_open_settings_tap_permissions_and">เปิดการตั้งค่า แตะสิทธิ์ แล้วอนุญาตกล้อง หากไม่อนุญาต คุณยังนำเข้ารูปภาพได้</string>
+    <string name="onboarding_flow_ready_for_your_first_scan">พร้อมสแกนครั้งแรกหรือยัง</string>
+    <string name="onboarding_flow_camera_access_is_turned_off">การเข้าถึงกล้องปิดอยู่</string>
+    <!-- OnboardingScreen -->
+    <string name="onboarding_no_account_no_cloud_upload">ไม่ต้องมีบัญชี ไม่อัปโหลดขึ้นคลาวด์</string>
+    <string name="onboarding_continue">ต่อไป</string>
+    <string name="onboarding_get_started">เริ่มต้นใช้งาน</string>
+    <string name="onboarding_page_of_3">%1$s หน้า %2$s จาก 3</string>
+    <string name="onboarding_page_of_3_2">หน้า %1$s จาก 3</string>
+    <string name="onboarding_skip">ข้าม</string>
+    <string name="onboarding_scanly">Scanly</string>
+    <string name="onboarding_previous_page">หน้าก่อนหน้า</string>
+    <string name="onboarding_feature_edge_detection">ตรวจจับขอบอัตโนมัติ</string>
+    <string name="onboarding_feature_crop_straighten">ครอบตัดและปรับหน้าให้ตรง</string>
+    <string name="onboarding_feature_filters">สีเมจิก ไวท์บอร์ด และอื่นๆ</string>
+    <string name="onboarding_feature_ocr">จดจำข้อความในอุปกรณ์</string>
+    <string name="onboarding_feature_search">ค้นหาคำในภาพสแกนทั้งหมด</string>
+    <string name="onboarding_feature_copy_text">คัดลอกข้อความจากหน้าใดก็ได้</string>
+    <string name="onboarding_feature_multipage_pdf">PDF หลายหน้า</string>
+    <string name="onboarding_feature_password">ตั้งรหัสผ่านก่อนแชร์</string>
+    <string name="onboarding_feature_sign">ลงนามเอกสาร</string>
+    <string name="onboarding_assurance_offline">ใช้งานแบบออฟไลน์ได้เต็มรูปแบบ</string>
+    <string name="onboarding_assurance_on_device">ข้อความของคุณจะไม่ออกจากอุปกรณ์นี้</string>
+    <!-- Pip -->
+    <string name="pip_poke_pip_scanly_s_helper">จิ้ม Pip ผู้ช่วยของ Scanly</string>
+    <!-- PipBubble -->
+    <string name="pip_bubble_dismiss">ปิด</string>
+    <!-- PipLines -->
+    <string name="pip_lines_all_set_pages_nice_and">เรียบร้อย! %1$s หน้า ตรงเป๊ะสวยงาม</string>
+    <string name="pip_lines_all_set_1_page_nice">เรียบร้อย! 1 หน้า ตรงเป๊ะสวยงาม</string>
+    <string name="pip_lines_ready_when_you_are">พร้อมเมื่อคุณพร้อมเลย</string>
+    <string name="pip_lines_i_looked_on_every_page">ดูครบทุกหน้าแล้ว ไม่เจอ “%1$s” เลยนะ</string>
+    <!-- FeaturePlaceholderScreen -->
+    <string name="feature_placeholder_planned_for">วางแผนไว้สำหรับ %1$s</string>
+    <!-- PageImagePreviewScreen -->
+    <string name="page_image_preview_sign">ลงนาม</string>
+    <string name="page_image_preview_delete_page">ลบหน้าไหม</string>
+    <!-- PageImagePreviewViewModel -->
+    <string name="page_image_preview_scanly_page">หน้า Scanly %1$s</string>
+    <!-- LegalDocumentScreen -->
+    <string name="legal_document_open_in_browser">เปิดในเบราว์เซอร์</string>
+    <string name="legal_document_retry">ลองอีกครั้ง</string>
+    <string name="legal_document_check_your_internet_connection_and">ตรวจสอบการเชื่อมต่ออินเทอร์เน็ตแล้วลองอีกครั้ง</string>
+    <string name="legal_document_couldn_t_be_loaded">โหลด %1$s ไม่ได้</string>
+    <!-- ModelBenchmarkScreen -->
+    <string name="model_benchmark_pipeline_s_1f_ms" formatted="false">ไปป์ไลน์: %s · %.1f ms</string>
+    <string name="model_benchmark_total_1f_ms" formatted="false">รวม %.1f ms</string>
+    <string name="model_benchmark_pre_0f_inf_0f_post" formatted="false">ก่อน %.0f · อนุมาน %.0f · หลัง %.0f</string>
+    <string name="model_benchmark_not_detected">ตรวจไม่พบ</string>
+    <string name="model_benchmark_detected_conf_0f" formatted="false">ตรวจพบ · ความมั่นใจ %.0f%%</string>
+    <string name="model_benchmark_none">ไม่มี</string>
+    <string name="model_benchmark_quad">สี่เหลี่ยม</string>
+    <string name="model_benchmark_error">ข้อผิดพลาด</string>
+    <string name="model_benchmark_no_preview">ไม่มีตัวอย่าง</string>
+    <string name="model_benchmark_detection_preview">ตัวอย่างการตรวจจับของ %1$s</string>
+    <string name="model_benchmark_avg_1f_p50_1f_p95" formatted="false">เฉลี่ย %.1f · P50 %.1f · P95 %.1f ms · ตรวจพบ %d/%d · ล้มเหลว %d</string>
+    <string name="model_benchmark_avg_1f_p95_1f_ms" formatted="false">เฉลี่ย %.1f · P95 %.1f ms · ผ่าน %d/%d</string>
+    <string name="model_benchmark_document_gate">ตัวคัดกรองเอกสาร</string>
+    <string name="model_benchmark_aggregate">ภาพรวม</string>
+    <string name="model_benchmark_images_processed">ประมวลผลรูปภาพแล้ว %1$s / %2$s รูป</string>
+    <string name="model_benchmark_choose_images_and_run">เลือกรูปภาพแล้วเริ่มทดสอบ</string>
+    <string name="model_benchmark_benchmark_running">กำลังทดสอบประสิทธิภาพ…</string>
+    <string name="model_benchmark_select_more_photos_to_measure">เลือกรูปภาพเพิ่มเพื่อวัดเวลาแฝงของตัวคัดกรอง การตรวจจับมุม การซ้อนรูปหลายเหลี่ยม และเวลาของไปป์ไลน์ทั้งหมด</string>
+    <string name="model_benchmark_run_another_pass">ทดสอบอีกรอบ</string>
+    <string name="model_benchmark_images_stay_on_this_device">รูปภาพจะอยู่ในอุปกรณ์นี้ ไม่มีการอัปโหลดใดๆ</string>
+    <string name="model_benchmark_choose_real_documents_or_rectangular">เลือกเอกสารจริงหรือวัตถุทรงสี่เหลี่ยม Scanly จะจับเวลาตัวตรวจจับทุกตัวและแสดงขอบที่ตรวจพบ</string>
+    <string name="model_benchmark_compare_detectors_on_your_photos">เปรียบเทียบตัวตรวจจับกับรูปภาพของคุณ</string>
+    <string name="model_benchmark_model_benchmark">ทดสอบประสิทธิภาพโมเดล</string>
+    <string name="model_benchmark_image">รูปภาพ</string>
+    <string name="model_benchmark_model_failed">โมเดลทำงานล้มเหลว</string>
+    <string name="model_benchmark_could_not_decode_image">ถอดรหัสรูปภาพไม่ได้</string>
+    <!-- PipSettingsScreen -->
+    <string name="pip_settings_on">"เปิด · "</string>
+    <string name="pip_settings_on_2">เปิด</string>
+    <string name="pip_settings_napping">งีบอยู่</string>
+    <string name="pip_settings_napping_screens_show_plain_text">งีบอยู่ · หน้าจอจะแสดงข้อความธรรมดา</string>
+    <string name="pip_settings_on_around_the_app">เปิดทั่วทั้งแอป</string>
+    <string name="pip_settings_show_pip">แสดง Pip</string>
+    <string name="pip_settings_scanly_s_little_helper_pip">ผู้ช่วยตัวน้อยของ Scanly Pip จะโผล่มาในหน้าจอที่ว่างเปล่า ในกล้อง และเมื่อมีอะไรพร้อมแล้ว พูดสั้นๆ หนึ่งประโยค แล้วก็หลบไป</string>
+    <string name="pip_settings_pip">Pip</string>
+    <string name="pip_settings_hi_this_is_where_you">หวัดดี! ตรงนี้คุณเลือกได้ว่าจะให้ช่วยมากแค่ไหน</string>
+    <string name="pip_settings_i_ll_keep_still_still">จะอยู่นิ่งๆ นะ แต่ยังอยู่ตรงนี้เสมอ</string>
+    <string name="pip_settings_okay_i_ll_nap_switch">โอเค ขอไปงีบก่อนนะ เปิดเรียกได้ทุกเมื่อเลย</string>
+    <string name="pip_settings_pip_lives_on_this_phone">Pip อยู่ในโทรศัพท์เครื่องนี้และไม่เคยดูเอกสารของคุณ ทุกอย่างที่ Pip พูดมีอยู่ใน Scanly อยู่แล้ว</string>
+    <string name="pip_settings_blinks_talks_and_hops_pip">กะพริบตา พูด และกระโดด Pip จะอยู่นิ่งเมื่อปิดภาพเคลื่อนไหวของระบบ</string>
+    <string name="pip_settings_animate_pip">ให้ Pip เคลื่อนไหว</string>
+    <string name="pip_settings_motion">การเคลื่อนไหว</string>
+    <string name="pip_settings_a_happy_hello_when_a">ทักทายอย่างร่าเริงเมื่อเอกสารพร้อมแชร์</string>
+    <string name="pip_settings_cheer_on_exports">เชียร์เมื่อส่งออก</string>
+    <string name="pip_settings_pip_helps_you_frame_pages">Pip ช่วยจัดหน้าให้อยู่ในกรอบ หากปิดจะแสดงเส้นนำทางแบบธรรมดา</string>
+    <string name="pip_settings_camera_coaching">คำแนะนำขณะถ่าย</string>
+    <string name="pip_settings_one_short_tip_a_day">เคล็ดลับสั้นๆ วันละหนึ่งข้อใต้คำทักทาย</string>
+    <string name="pip_settings_tips_on_home">เคล็ดลับในหน้าแรก</string>
+    <string name="pip_settings_where_pip_helps">จุดที่ Pip ช่วย</string>
+    <!-- SettingsComponents -->
+    <string name="settings_pages_were_read_with_another">มี %1$s หน้าที่อ่านด้วยเครื่องมืออื่น อ่านใหม่ด้วย %2$s ในเบื้องหลัง</string>
+    <string name="settings_1_page_was_read_with">มี 1 หน้าที่อ่านด้วยเครื่องมืออื่น อ่านใหม่ด้วย %1$s ในเบื้องหลัง</string>
+    <string name="settings_re_read_existing_pages">อ่านหน้าที่มีอยู่ใหม่</string>
+    <string name="settings_indra_ocr_paused_it_stopped">Indra OCR หยุดชั่วคราว เนื่องจากหยุดทำงานกะทันหันสองครั้ง จึงใช้ ML Kit อ่านหน้าแทน เลือก Indra OCR อีกครั้งเพื่อลองใหม่</string>
+    <string name="settings_ml_kit">ML Kit</string>
+    <string name="settings_indra_ocr">Indra OCR</string>
+    <string name="settings_rate_scanly_on_google_play">ให้คะแนน Scanly ใน Google Play</string>
+    <string name="settings_it_s_free_private_and">ใช้ฟรี เป็นส่วนตัว และไม่มีโฆษณา การให้คะแนนสั้นๆ ใน Google Play ช่วยให้คนอื่นค้นพบแอปนี้</string>
+    <string name="settings_enjoying_scanly">ชอบ Scanly ไหม</string>
+    <string name="settings_dark">มืด</string>
+    <string name="settings_light">สว่าง</string>
+    <string name="settings_system">ตามระบบ</string>
+    <string name="settings_tap_to_check">แตะเพื่อตรวจสอบ %1$s</string>
+    <string name="settings_you_are_on_latest_is">คุณใช้เวอร์ชัน %1$s เวอร์ชันล่าสุดคือ %2$s</string>
+    <string name="settings_scanly_is_available_on">Scanly %1$s พร้อมให้ดาวน์โหลดใน %2$s แล้ว</string>
+    <string name="settings_checking">กำลังตรวจสอบ %1$s…</string>
+    <string name="settings_check_for_updates">ตรวจหาอัปเดต</string>
+    <string name="settings_by_jeevaprakash_g">โดย jeevaprakash g</string>
+    <string name="settings_version_unavailable">ไม่มีข้อมูลเวอร์ชัน</string>
+    <string name="settings_pick_the_detector_that_fits">เลือกตัวตรวจจับที่เหมาะกับอุปกรณ์และการใช้งานของคุณ</string>
+    <string name="settings_choose">เลือก %1$s</string>
+    <string name="settings_highest_accuracy_maximum_compatibility">แม่นยำที่สุด · รองรับได้กว้างที่สุด</string>
+    <string name="settings_higher_accuracy_best_after_capture">แม่นยำกว่า · เหมาะกับหลังถ่าย</string>
+    <string name="settings_balanced_speed_and_accuracy">สมดุลระหว่างความเร็วและความแม่นยำ</string>
+    <string name="settings_fastest_ideal_for_live_camera">เร็วที่สุด · เหมาะกับการดูตัวอย่างกล้องแบบสด</string>
+    <!-- SettingsDetailScreens -->
+    <string name="settings_detail_screens_open_source">โอเพนซอร์ส</string>
+    <string name="settings_detail_screens_try_a_different_word_or">ลองใช้คำอื่น หรือเรียกดูตามหมวดหมู่</string>
+    <string name="settings_detail_screens_no_answers_for">ไม่มีคำตอบสำหรับ “%1$s”</string>
+    <string name="settings_detail_screens_no_answers_in_this_category">ไม่มีคำตอบในหมวดหมู่นี้</string>
+    <string name="settings_detail_screens_all">ทั้งหมด</string>
+    <string name="settings_detail_screens_search_help">ค้นหาความช่วยเหลือ</string>
+    <string name="settings_detail_screens_help_faq">ความช่วยเหลือและคำถามที่พบบ่อย</string>
+    <!-- SettingsHubSubScreens -->
+    <string name="settings_hub_sub_screens_terms_conditions">ข้อกำหนดและเงื่อนไข</string>
+    <string name="settings_hub_sub_screens_privacy_policy">นโยบายความเป็นส่วนตัว</string>
+    <string name="settings_hub_sub_screens_legal">ข้อมูลทางกฎหมาย</string>
+    <string name="settings_hub_sub_screens_project_website">เว็บไซต์โปรเจ็กต์</string>
+    <string name="settings_hub_sub_screens_contact_support">ติดต่อฝ่ายสนับสนุน</string>
+    <string name="settings_hub_sub_screens_help">ความช่วยเหลือ</string>
+    <string name="settings_hub_sub_screens_about">เกี่ยวกับ</string>
+    <string name="settings_hub_sub_screens_open_the_qr_tool">เปิดเครื่องมือ QR</string>
+    <string name="settings_hub_sub_screens_qr_widget">วิดเจ็ต QR</string>
+    <string name="settings_hub_sub_screens_start_a_new_document_scan">เริ่มสแกนเอกสารใหม่</string>
+    <string name="settings_hub_sub_screens_scan_widget">วิดเจ็ตสแกน</string>
+    <string name="settings_hub_sub_screens_scan_import_qr_library">สแกน · นำเข้า · QR · คลัง</string>
+    <string name="settings_hub_sub_screens_actions_bar">แถบการดำเนินการ</string>
+    <string name="settings_hub_sub_screens_home_screen">หน้าจอหลัก</string>
+    <string name="settings_hub_sub_screens_widgets">วิดเจ็ต</string>
+    <string name="settings_hub_sub_screens_long_press_home_screen_widgets">กดค้างที่หน้าจอหลัก → วิดเจ็ต → Scanly</string>
+    <string name="settings_hub_sub_screens_tap_to_add_a_widget">แตะเพื่อเพิ่มวิดเจ็ตลงในหน้าจอหลัก</string>
+    <string name="settings_hub_sub_screens_could_not_open_the_add">เปิดกล่องโต้ตอบเพิ่มวิดเจ็ตไม่ได้</string>
+    <string name="settings_hub_sub_screens_your_launcher_doesn_t_support">ตัวเรียกใช้งานของคุณไม่รองรับการเพิ่มวิดเจ็ตจากแอป กดค้างที่หน้าจอหลักแล้วเลือก Scanly จากวิดเจ็ต</string>
+    <string name="settings_hub_sub_screens_compare_all_models_on_local">เปรียบเทียบทุกโมเดลด้วยรูปภาพในเครื่อง</string>
+    <string name="settings_hub_sub_screens_tools">เครื่องมือ</string>
+    <string name="settings_hub_sub_screens_reject_screens_and_non_documents">ปฏิเสธหน้าจอและสิ่งที่ไม่ใช่เอกสารก่อนตรวจจับขอบ</string>
+    <string name="settings_hub_sub_screens_physical_document_gate">ตัวคัดกรองเอกสารจริง</string>
+    <string name="settings_hub_sub_screens_capture_quality">คุณภาพการถ่าย</string>
+    <string name="settings_hub_sub_screens_used_after_camera_or_gallery">ใช้หลังถ่ายจากกล้องหรือเลือกจากแกลเลอรี</string>
+    <string name="settings_hub_sub_screens_selected_automatically_for_higher_accuracy">เลือกให้อัตโนมัติเพื่อความแม่นยำที่สูงขึ้น</string>
+    <string name="settings_hub_sub_screens_post_processing_model">โมเดลประมวลผลภายหลัง</string>
+    <string name="settings_hub_sub_screens_used_while_the_camera_preview">ใช้ขณะที่ตัวอย่างกล้องทำงานอยู่</string>
+    <string name="settings_hub_sub_screens_selected_automatically_for_responsive_preview">เลือกให้อัตโนมัติเพื่อให้ตัวอย่างตอบสนองได้ไว</string>
+    <string name="settings_hub_sub_screens_live_preview_model">โมเดลตัวอย่างแบบสด</string>
+    <string name="settings_hub_sub_screens_choose_the_best_models_for">เลือกโมเดลที่ดีที่สุดสำหรับอุปกรณ์นี้</string>
+    <string name="settings_hub_sub_screens_live_processing">สด: %1$s · ประมวลผล: %2$s</string>
+    <string name="settings_hub_sub_screens_testing_model_speed_on_this">กำลังทดสอบความเร็วโมเดลบนอุปกรณ์นี้…</string>
+    <string name="settings_hub_sub_screens_automatic_model_selection">เลือกโมเดลอัตโนมัติ</string>
+    <string name="settings_hub_sub_screens_models">โมเดล</string>
+    <string name="settings_hub_sub_screens_document_detection">การตรวจจับเอกสาร</string>
+    <string name="settings_hub_sub_screens_true_black_surfaces_saves_battery">พื้นหลังดำสนิท · ประหยัดแบตเตอรี่บนหน้าจอ AMOLED</string>
+    <string name="settings_hub_sub_screens_takes_effect_in_dark_theme">มีผลในธีมมืด · ประหยัดแบตเตอรี่บนหน้าจอ AMOLED</string>
+    <string name="settings_hub_sub_screens_pure_black">ดำสนิท</string>
+    <string name="settings_hub_sub_screens_theme">ธีม</string>
+    <string name="settings_hub_sub_screens_appearance">ลักษณะที่ปรากฏ</string>
+    <!-- SettingsScreen -->
+    <string name="settings_preferences_and_app_info">ค่ากำหนดและข้อมูลแอป</string>
+    <string name="settings_scanly">Scanly %1$s</string>
+    <string name="settings_settings">การตั้งค่า</string>
+    <string name="settings_version_updates_and_legal">เวอร์ชัน อัปเดต และข้อมูลทางกฎหมาย</string>
+    <string name="settings_leave_a_rating_on_google">ให้คะแนนใน Google Play</string>
+    <string name="settings_more">เพิ่มเติม</string>
+    <string name="settings_actions_scan_and_qr">การดำเนินการ สแกน และ QR</string>
+    <string name="settings_text_recognition">การจดจำข้อความ</string>
+    <string name="settings_intelligence">ระบบอัจฉริยะ</string>
+    <string name="settings_pages_kept_documents_and_folders">เก็บหน้าไว้ %1$s เอกสารและโฟลเดอร์ %2$s</string>
+    <string name="settings_storage">พื้นที่เก็บข้อมูล</string>
+    <string name="settings_pip_your_helper">Pip ผู้ช่วยของคุณ</string>
+    <string name="settings_preferences">ค่ากำหนด</string>
+    <string name="settings_save_location_cleanup">ตำแหน่งบันทึกและการล้างข้อมูล</string>
+    <string name="settings_indra_ocr_100_languages_experimental">Indra OCR · มากกว่า 100 ภาษา (ทดลอง)</string>
+    <string name="settings_ml_kit_latin_script_languages">ML Kit · ภาษาที่ใช้อักษรละติน</string>
+    <string name="settings_gate_off">%1$s · ปิดตัวคัดกรอง</string>
+    <string name="settings_gate_on">%1$s · เปิดตัวคัดกรอง</string>
+    <string name="settings_manual_models">เลือกโมเดลเอง</string>
+    <string name="settings_automatic_models">โมเดลอัตโนมัติ</string>
+    <string name="settings_calibrating">กำลังปรับเทียบ…</string>
+    <string name="settings_pure_black">" · ดำสนิท"</string>
+    <string name="settings_thanks_for_supporting_scanly">ขอบคุณที่สนับสนุน Scanly</string>
+    <!-- SettingsTextRecognitionScreen -->
+    <string name="settings_text_recognition_weights_openrail_m_code_apache">น้ำหนักโมเดล: OpenRAIL-M · โค้ด: Apache-2.0</string>
+    <string name="settings_text_recognition_visit_datalab_to">ไปที่ datalab.to</string>
+    <string name="settings_text_recognition_a_big_thank_you_to">ขอขอบคุณ Datalab อย่างยิ่งที่สร้าง Indra OCR และให้ Scanly ใช้งานบนโทรศัพท์ของคุณได้โดยตรง นี่คือเหตุผลที่ Scanly อ่านได้มากกว่า 100 ภาษา</string>
+    <string name="settings_text_recognition_datalab">Datalab</string>
+    <string name="settings_text_recognition_indra_ocr_by">INDRA OCR โดย</string>
+    <string name="settings_text_recognition_datalab_logo">โลโก้ Datalab</string>
+    <string name="settings_text_recognition_latin_script_only_pages_in">อักษรละตินเท่านั้น หน้าที่ใช้อักษรอื่น เช่น ฮินดี ทมิฬ อาหรับ หรือจีน จะออกมาว่างเปล่าหรืออ่านไม่ออก ให้เปลี่ยนไปใช้ Indra OCR สำหรับหน้าเหล่านั้น</string>
+    <string name="settings_text_recognition_5_script_families_read_in">อักษร 5 ตระกูล อ่านในรอบเดียว แต่ละบรรทัดจะส่งไปยังตัวจดจำที่เหมาะสม หน้าที่มีหลายภาษาปนกันจึงใช้ได้ด้วย</string>
+    <string name="settings_text_recognition_reads_100_languages_across_many">อ่านได้มากกว่า 100 ภาษาในอักษรหลายระบบ รวมถึงฮินดี ทมิฬ อาหรับ จีน และญี่ปุ่น ทำงานช้ากว่า ML Kit</string>
+    <string name="settings_text_recognition_experimental">ทดลอง</string>
+    <string name="settings_text_recognition_google_s_fast_on_device">ตัวจดจำในอุปกรณ์ที่รวดเร็วของ Google เหมาะที่สุดกับภาษาที่ใช้อักษรละติน เช่น อังกฤษ สเปน และฝรั่งเศส</string>
+    <string name="settings_text_recognition_default">ค่าเริ่มต้น</string>
+    <string name="settings_text_recognition_if_a_page_s_text">หากข้อความของหน้าดูว่างเปล่าหรืออ่านไม่ออก อาจเป็นอักษรที่ ML Kit อ่านไม่ได้ ให้เปลี่ยนไปใช้ Indra OCR แล้วใช้อ่านหน้าที่มีอยู่ใหม่</string>
+    <string name="settings_text_recognition_tip">เคล็ดลับ</string>
+    <string name="settings_text_recognition_switching_engines_only_affects_new">การเปลี่ยนเครื่องมือมีผลกับการอ่านครั้งใหม่เท่านั้น หน้าที่มีอยู่แล้วอ่านใหม่ได้จากหน้าจอนี้ และข้อความที่คุณแก้ไขเองจะไม่ถูกแทนที่</string>
+    <string name="settings_text_recognition_your_edits_are_kept">การแก้ไขของคุณจะยังอยู่</string>
+    <string name="settings_text_recognition_if_indra_ocr_can_t">หาก Indra OCR อ่านหน้าไม่ได้ ใช้เวลานานเกินไป หรือหยุดทำงาน ML Kit จะอ่านแทน</string>
+    <string name="settings_text_recognition_ml_kit_is_the_safety">ML Kit คอยรองรับเสมอ</string>
+    <string name="settings_text_recognition_both_engines_run_on_the">ทั้งสองเครื่องมือทำงานในอุปกรณ์ ไม่มีการอัปโหลดหน้าเพื่ออ่าน</string>
+    <string name="settings_text_recognition_stays_on_your_phone">อยู่ในโทรศัพท์ของคุณ</string>
+    <string name="settings_text_recognition_ml_kit_is_the_default">ML Kit เป็นค่าเริ่มต้น ทำงานเร็วและแม่นยำมากกับภาษาที่ใช้อักษรละติน เช่น อังกฤษ สเปน ฝรั่งเศส และเยอรมัน\n\nIndra OCR ใช้สำหรับภาษาอื่นๆ ทั้งหมด อ่านได้มากกว่า 100 ภาษา รวมถึงฮินดี ทมิฬ เบงกาลี อาหรับ อูรดู จีน ญี่ปุ่น เกาหลี และไทย ทั้งยังรองรับหน้าที่มีหลายภาษาปนกัน แต่ยังอยู่ในขั้นทดลองและทำงานช้ากว่า หน้าจึงใช้เวลานานขึ้นกว่าจะค้นหาได้</string>
+    <string name="settings_text_recognition_choosing_an_engine">การเลือกเครื่องมือ</string>
+    <string name="settings_text_recognition_after_you_scan_scanly_reads">หลังจากสแกน Scanly จะอ่านคำในแต่ละหน้า ข้อความนั้นช่วยให้คุณค้นหาในคลังจากเนื้อหาในหน้า คัดลอกหรือแชร์ข้อความจากภาพสแกน และส่งออกได้</string>
+    <string name="settings_text_recognition_what_it_does">ทำอะไรได้บ้าง</string>
+    <string name="settings_text_recognition_also_called_ocr">หรือเรียกว่า OCR</string>
+    <string name="settings_text_recognition_re_read">อ่านใหม่</string>
+    <string name="settings_text_recognition_runs_in_the_background_while">ทำงานในเบื้องหลังขณะที่แบตเตอรี่ไม่ต่ำ ข้อความที่คุณแก้ไขเองจะยังอยู่</string>
+    <string name="settings_text_recognition_on_device_text_recognition_v2">การจดจำข้อความในอุปกรณ์ v2</string>
+    <string name="settings_text_recognition_google_ml_kit">Google ML Kit</string>
+    <string name="settings_text_recognition_credits">เครดิต</string>
+    <string name="settings_text_recognition_supported_languages">ภาษาที่รองรับ</string>
+    <string name="settings_text_recognition_engine">เครื่องมืออ่านข้อความ</string>
+    <string name="settings_text_recognition_about_text_recognition">เกี่ยวกับการจดจำข้อความ</string>
+    <!-- SettingsViewModel -->
+    <string name="settings_save_location_reset_to_downloads">รีเซ็ตตำแหน่งบันทึกเป็น Downloads/Scanly แล้ว</string>
+    <string name="settings_save_location_updated">อัปเดตตำแหน่งบันทึกแล้ว</string>
+    <string name="settings_reading_pages_again_in_the">กำลังอ่าน %1$s หน้าใหม่ในเบื้องหลัง</string>
+    <string name="settings_reading_1_page_again_in">กำลังอ่าน 1 หน้าใหม่ในเบื้องหลัง</string>
+    <string name="settings_no_pages_to_read_again">ไม่มีหน้าที่ต้องอ่านใหม่</string>
+    <string name="settings_could_not_update_the_text">อัปเดตเครื่องมือจดจำข้อความไม่ได้</string>
+    <string name="settings_could_not_update_the_physical">อัปเดตตัวคัดกรองเอกสารจริงไม่ได้</string>
+    <string name="settings_could_not_update_automatic_model">อัปเดตการเลือกโมเดลอัตโนมัติไม่ได้</string>
+    <string name="settings_could_not_update_the_post">อัปเดตโมเดลประมวลผลภายหลังไม่ได้</string>
+    <string name="settings_could_not_update_the_live">อัปเดตโมเดลตัวอย่างแบบสดไม่ได้</string>
+    <string name="settings_could_not_update_pure_black">อัปเดตธีมดำสนิทไม่ได้</string>
+    <string name="settings_removed_empty_folders">นำโฟลเดอร์ว่างออกแล้ว %1$s โฟลเดอร์</string>
+    <string name="settings_removed_1_empty_folder">นำโฟลเดอร์ว่างออกแล้ว 1 โฟลเดอร์</string>
+    <string name="settings_no_empty_folders_found">ไม่พบโฟลเดอร์ว่าง</string>
+    <string name="settings_removed_empty_documents">นำเอกสารเปล่าออกแล้ว %1$s รายการ</string>
+    <string name="settings_removed_1_empty_document">นำเอกสารเปล่าออกแล้ว 1 รายการ</string>
+    <string name="settings_no_empty_documents_found">ไม่พบเอกสารเปล่า</string>
+    <string name="settings_freed">เพิ่มพื้นที่ว่างแล้ว %1$s</string>
+    <string name="settings_all_data_cleared">ล้างข้อมูลทั้งหมดแล้ว</string>
+    <!-- StorageScreen -->
+    <string name="storage_temporary_exports">ไฟล์ส่งออกชั่วคราว</string>
+    <string name="storage_database_search_index">ฐานข้อมูลและดัชนีการค้นหา</string>
+    <string name="storage_library_files">ไฟล์ในคลัง</string>
+    <string name="storage_scanly_is_using">Scanly ใช้พื้นที่อยู่</string>
+    <string name="storage_calculating">กำลังคำนวณ…</string>
+    <string name="storage_change">เปลี่ยน</string>
+    <string name="storage_exports_save_to">บันทึกไฟล์ส่งออกไปที่</string>
+    <string name="storage_this_permanently_deletes_all_documents">การดำเนินการนี้จะลบเอกสาร โฟลเดอร์ หน้า และไฟล์ส่งออกชั่วคราวทั้งหมดในอุปกรณ์นี้อย่างถาวร ไฟล์ที่คุณบันทึกไว้ในโฟลเดอร์ส่งออกแล้วจะยังอยู่</string>
+    <string name="storage_clear_all_data">ล้างข้อมูลทั้งหมดไหม</string>
+    <string name="storage_deletes_every_folder_group_that">ลบโฟลเดอร์ (กลุ่ม) ทุกโฟลเดอร์ที่ไม่มีเอกสาร โฟลเดอร์ที่ยังมีเอกสารจะยังอยู่</string>
+    <string name="storage_remove_empty_folders">นำโฟลเดอร์ว่างออกไหม</string>
+    <string name="storage_deletes_every_document_that_has">ลบเอกสารทุกรายการที่ไม่มีหน้า รวมถึงการถ่ายที่ทิ้งค้างไว้ และเพิ่มพื้นที่ว่างในเครื่อง เอกสารที่ยังมีหน้าจะยังอยู่</string>
+    <string name="storage_remove_empty_documents">นำเอกสารเปล่าออกไหม</string>
+    <string name="storage_deletes_every_document_folder_and">ลบเอกสาร โฟลเดอร์ และหน้าทั้งหมดในอุปกรณ์นี้</string>
+    <string name="storage_clear_all_data_2">ล้างข้อมูลทั้งหมด</string>
+    <string name="storage_danger_zone">โซนอันตราย</string>
+    <string name="storage_folders_with_no_documents">โฟลเดอร์ที่ไม่มีเอกสาร</string>
+    <string name="storage_remove_empty_folders_2">นำโฟลเดอร์ว่างออก</string>
+    <string name="storage_documents_with_no_pages">เอกสารที่ไม่มีหน้า</string>
+    <string name="storage_remove_empty_documents_2">นำเอกสารเปล่าออก</string>
+    <string name="storage_restore_deleted_folders_documents_and">กู้คืนโฟลเดอร์ เอกสาร และหน้าที่ลบไป</string>
+    <string name="storage_tidy_up">จัดระเบียบ</string>
+    <string name="storage_use_default_folder">ใช้โฟลเดอร์เริ่มต้น</string>
+    <string name="storage_pdfs_and_images_you_export">PDF และรูปภาพที่คุณส่งออกจะบันทึกไว้ที่นี่</string>
+    <string name="storage_save_location">ตำแหน่งบันทึก</string>
+    <string name="storage_could_not_use_the_selected">ใช้โฟลเดอร์ที่เลือกไม่ได้</string>
+    <string name="storage_selected_folder">โฟลเดอร์ที่เลือก</string>
+    <!-- ScannedPagePickerSheet -->
+    <string name="scanned_page_picker_no_pages_in_this_document">ไม่มีหน้าในเอกสารนี้ที่ใช้ได้</string>
+    <string name="scanned_page_picker_back_to_documents">กลับไปที่เอกสาร</string>
+    <string name="scanned_page_picker_no_scanned_documents_yet_scan">ยังไม่มีเอกสารที่สแกน สแกนหน้าใน Scanly แล้วจะแสดงที่นี่</string>
+    <string name="scanned_page_picker_scanned_pages">หน้าที่สแกน</string>
+    <!-- SignatureCreateScreen -->
+    <string name="signature_create_choose_another">เลือกรูปอื่น</string>
+    <string name="signature_create_bolder">เข้มขึ้น</string>
+    <string name="signature_create_fainter">จางลง</string>
+    <string name="signature_create_ink_sensitivity">ความไวของหมึก</string>
+    <string name="signature_create_extracted_signature_preview">ตัวอย่างลายเซ็นที่ดึงออกมา</string>
+    <string name="signature_create_scanly_removes_the_paper_background">Scanly จะลบพื้นหลังกระดาษออกและเก็บไว้เฉพาะหมึก</string>
+    <string name="signature_create_use_a_page_you_scanned">ใช้หน้าที่คุณสแกนใน Scanly</string>
+    <string name="signature_create_scanned_page">หน้าที่สแกน</string>
+    <string name="signature_create_jpg_or_png_from_your">JPG หรือ PNG จากโทรศัพท์ของคุณ</string>
+    <string name="signature_create_files">ไฟล์</string>
+    <string name="signature_create_pick_a_photo_of_your">เลือกรูปภาพลายเซ็นของคุณ</string>
+    <string name="signature_create_photos">รูปภาพ</string>
+    <string name="signature_create_choose_where_your_signature_is">เลือกตำแหน่งลายเซ็นของคุณ</string>
+    <string name="signature_create_choose_where_your_initials_are">เลือกตำแหน่งชื่อย่อของคุณ</string>
+    <string name="signature_create_pen">ปากกา</string>
+    <string name="signature_create_upload">อัปโหลด</string>
+    <string name="signature_create_draw">วาด</string>
+    <string name="signature_create_save_signature">บันทึกลายเซ็น</string>
+    <string name="signature_create_save_initials">บันทึกชื่อย่อ</string>
+    <string name="signature_create_sign_above_the_line">เซ็นชื่อเหนือเส้น</string>
+    <string name="signature_create_write_your_initials_above_the">เขียนชื่อย่อเหนือเส้น</string>
+    <string name="signature_create_new_signature">ลายเซ็นใหม่</string>
+    <string name="signature_create_new_initials">ชื่อย่อใหม่</string>
+    <!-- SignatureCreateViewModel -->
+    <string name="signature_create_choose_a_photo_of_your">เลือกรูปภาพลายเซ็นของคุณก่อน</string>
+    <string name="signature_create_still_reading_the_photo_try">ยังอ่านรูปภาพอยู่ ลองอีกครั้งในอีกสักครู่</string>
+    <string name="signature_create_draw_your_signature_first">วาดลายเซ็นของคุณก่อน</string>
+    <!-- SignaturePad -->
+    <string name="signature_pad_draw_here">วาดที่นี่</string>
+    <!-- DocumentSignScreen -->
+    <string name="document_sign_stamping_signatures">กำลังประทับลายเซ็น…</string>
+    <!-- DocumentSignViewModel -->
+    <string name="document_sign_saved_signatures_couldn_t_be">โหลดลายเซ็นที่บันทึกไว้ไม่ได้ จึงยังลงนามเอกสารนี้ไม่ได้ในตอนนี้</string>
+    <!-- SignEditorScreen -->
+    <string name="sign_editor_next_page">หน้าถัดไป</string>
+    <string name="sign_editor_add_text">เพิ่มข้อความ</string>
+    <string name="sign_editor_edit_date">แก้ไขวันที่</string>
+    <string name="sign_editor_tap_checkbox_again_for_another">แตะช่องทำเครื่องหมายอีกครั้งเพื่อเพิ่มช่องใหม่ · ใช้แถบเครื่องมือเพื่อทำเครื่องหมายหรือยกเลิก</string>
+    <string name="sign_editor_tap_text_again_for_another">"แตะข้อความอีกครั้งสำหรับบรรทัดอื่น · แตะสองครั้งข้อความเพื่อแก้ไข"</string>
+    <string name="sign_editor_tap_date_again_for_another">"แตะวันที่อีกครั้งเพื่อประทับตราอื่น · แตะสองครั้งที่วันที่เพื่อแก้ไข"</string>
+    <string name="sign_editor_manage">"จัดการ"</string>
+    <string name="sign_editor_your_signatures">"ลายเซ็นของคุณ"</string>
+    <string name="sign_editor_signatures_and_marks_you_added">"ลายเซ็นและเครื่องหมายที่คุณเพิ่มหรือเปลี่ยนแปลงในเอกสารนี้จะไม่ถูกเก็บไว้"</string>
+    <!-- SignMarkLayer -->
+    <string name="sign_mark_layer_duplicate">"ทำซ้ำ"</string>
+    <string name="sign_mark_layer_tick">"ติ๊ก"</string>
+    <string name="sign_mark_layer_untick">"ยกเลิกการเลือก"</string>
+    <!-- SignatureManageScreen -->
+    <string name="signature_manage_added">"%1$s · เพิ่ม %2$s"</string>
+    <string name="signature_manage_from_a_photo">"จากภาพถ่าย"</string>
+    <string name="signature_manage_drawn">"วาดแล้ว"</string>
+    <string name="signature_manage_pages_you_ve_already_signed">"เพจที่คุณเซ็นชื่อแล้วให้เก็บไว้"</string>
+    <string name="signature_manage_place_it_on_a_pdf">"วางลงบนเอกสาร PDF หรือ Scanly"</string>
+    <string name="signature_manage_sign_a_pdf">"ลงนามใน PDF"</string>
+    <string name="signature_manage_use_first_when_signing">"ใช้ก่อนเมื่อลงนาม"</string>
+    <string name="signature_manage_shared_and_saved_as_a">"แบ่งปันและบันทึกเป็น PNG แบบโปร่งใส พร้อมสำหรับเอกสาร แบบฟอร์ม และอีเมล"</string>
+    <string name="signature_manage_save_to_phone">"บันทึกลงในโทรศัพท์"</string>
+    <string name="signature_manage_ink_colour">"สีหมึก"</string>
+    <string name="signature_manage_in_ink">"%1$s หมึก: %2$s"</string>
+    <string name="signature_manage_used_first">"ใช้ก่อน"</string>
+    <string name="signature_manage_used_first_2">"ใช้ก่อน"</string>
+    <string name="signature_manage_pages_you_ve_already_signed_2">"เพจที่คุณเซ็นชื่อแล้วให้เก็บไว้"</string>
+    <string name="signature_manage_initials">"ชื่อย่อ"</string>
+    <string name="signature_manage_signatures">"ลายเซ็น"</string>
+    <string name="signature_manage_signatures_stay_on_this_phone">"ลายเซ็นจะยังคงอยู่ในโทรศัพท์เครื่องนี้ วาดหนึ่งหรืออัปโหลดรูปถ่ายลายเซ็นของคุณ"</string>
+    <string name="signature_manage_tap_one_to_share_save">"แตะรายการใดรายการหนึ่งเพื่อแชร์ บันทึก หรือจัดลำดับใหม่"</string>
+    <!-- SignatureManageViewModel -->
+    <string name="signature_manage_saved_to">"บันทึกไปที่ %1$s"</string>
+    <string name="signature_manage_will_be_offered_first_when">"%1$s จะถูกเสนอก่อนเมื่อลงนาม"</string>
+    <!-- PageTextScreen -->
+    <string name="page_text_share_text">"แบ่งปันข้อความ"</string>
+    <string name="page_text_scan_or_import_a_page">"สแกนหรือนำเข้าเพจ แล้วข้อความจะปรากฏที่นี่"</string>
+    <string name="page_text_this_document_has_no_pages">"เอกสารนี้ยังไม่มีหน้า"</string>
+    <string name="page_text_reading_text">"การอ่านข้อความ"</string>
+    <string name="page_text_copy_page">"คัดลอกหน้า"</string>
+    <string name="page_text_save_changes">"บันทึกการเปลี่ยนแปลง"</string>
+    <string name="page_text_copy">"คัดลอก"</string>
+    <string name="page_text_tap_an_outlined_area_to">"แตะพื้นที่ที่มีเค้าร่างเพื่อคัดลอกเฉพาะส่วนนั้น"</string>
+    <string name="page_text_regions_are_hidden_because_this">"ภูมิภาคถูกซ่อนไว้เนื่องจากหน้านี้เปลี่ยนไปหลังจากอ่านข้อความแล้ว"</string>
+    <string name="page_text_page_image_with_text_regions">"รูปภาพหน้าพร้อมขอบเขตข้อความ %1$s"</string>
+    <string name="page_text_read_with_indra_ocr_experimental">"อ่านด้วย Indra OCR (ทดลอง)"</string>
+    <string name="page_text_read_with_ml_kit_indra">"อ่านด้วย ML Kit (Indra OCR ไม่สามารถอ่านหน้านี้ได้)"</string>
+    <string name="page_text_edited">"แก้ไข"</string>
+    <string name="page_text_read_again">"อ่านอีกครั้ง"</string>
+    <string name="page_text_photos_and_handwriting_may_not">"ภาพถ่ายและลายมือต้องไม่มีข้อความที่พิมพ์ให้อ่านได้ การสแกนที่คมชัดกว่าและมีแสงสว่างเพียงพอมักจะช่วยได้"</string>
+    <string name="page_text_no_text_found_on_this">"ไม่พบข้อความในหน้านี้"</string>
+    <string name="page_text_read_this_page">"อ่านหน้านี้"</string>
+    <string name="page_text_scanly_reads_page_text_on">"Scanly อ่านข้อความหน้าบนอุปกรณ์นี้"</string>
+    <string name="page_text_text_not_read_yet">"ข้อความที่ยังไม่ได้อ่าน"</string>
+    <string name="page_text_try_again">"ลองอีกครั้ง"</string>
+    <string name="page_text_couldn_t_read_this_page">"ไม่สามารถอ่านหน้านี้ได้"</string>
+    <string name="page_text_your_corrections_are_used_for">"การแก้ไขของคุณใช้สำหรับการคัดลอก แบ่งปัน และค้นหา"</string>
+    <string name="page_text_this_page_changed_after_its">"หน้านี้เปลี่ยนไปหลังจากอ่านข้อความแล้ว"</string>
+    <string name="page_text_stop_highlighting">"หยุดไฮไลท์"</string>
+    <string name="page_text_on_this_page">"%1$s ในหน้านี้"</string>
+    <string name="page_text_not_on_this_page">"ไม่อยู่ในเพจนี้"</string>
+    <string name="page_text_reading_text_2">"การอ่านข้อความ…"</string>
+    <string name="page_text_reading_page_of">"การอ่านหน้า %1$s ของ %2$s…"</string>
+    <string name="page_text_page">"%1$s — หน้า %2$s"</string>
+    <string name="page_text_read_all_pages_again">"อ่านทุกหน้าอีกครั้ง"</string>
+    <string name="page_text_restore_original_text">"กู้คืนข้อความต้นฉบับ"</string>
+    <string name="page_text_share_all_pages">"แชร์ทุกหน้า"</string>
+    <string name="page_text_all_pages">"ทุกหน้า"</string>
+    <string name="page_text_copy_all_pages">"คัดลอกทุกหน้า"</string>
+    <string name="page_text_extracted_text">"ข้อความที่แยกออกมา"</string>
+    <string name="page_text_copied">"คัดลอก %1$s แล้ว"</string>
+    <!-- PageTextViewModel -->
+    <string name="page_text_original_text_restored">"กู้คืนข้อความต้นฉบับแล้ว"</string>
+    <string name="page_text_changes_saved_search_uses_your">"บันทึกการเปลี่ยนแปลงแล้ว การค้นหาใช้การแก้ไขของคุณ"</string>
+    <string name="page_text_page_text_read_again">"ข้อความหน้าอ่านอีกครั้ง"</string>
+    <!-- ToolKit -->
+    <string name="tool_kit_file_name">"ชื่อไฟล์"</string>
+    <!-- ToolsScreen -->
+    <string name="tools_everything_runs_offline_on_this">"ทุกอย่างทำงานแบบออฟไลน์บนโทรศัพท์เครื่องนี้"</string>
+    <string name="tools_utilities">"สาธารณูปโภค"</string>
+    <!-- PdfCompressScreen -->
+    <string name="pdf_compress_recommended">"แนะนำ"</string>
+    <string name="pdf_compress_compress_this_pdf_again_with">"บีบอัด PDF นี้อีกครั้งด้วยการตั้งค่าอื่น"</string>
+    <string name="pdf_compress_try_another_quality">"ลองคุณภาพอื่น"</string>
+    <string name="pdf_compress_after">"หลังจากนั้น"</string>
+    <string name="pdf_compress_before">"ก่อน"</string>
+    <string name="pdf_compress_quality">"คุณภาพ"</string>
+    <string name="pdf_compress_this_quality_didn_t_make">"คุณภาพนี้ไม่ได้ทำให้ไฟล์เล็กลง ลองอันอื่น"</string>
+    <string name="pdf_compress_compressed">"บีบอัด"</string>
+    <string name="pdf_compress_already_compact">"กะทัดรัดแล้ว"</string>
+    <string name="pdf_compress_saved">"บันทึก %1$s%% แล้ว"</string>
+    <string name="pdf_compress_compressing">"การบีบอัด…"</string>
+    <string name="pdf_compress_compress">"บีบอัด"</string>
+    <string name="pdf_compress_pages_are_re_encoded_as">"หน้าจะถูกเข้ารหัสใหม่เป็นรูปภาพ ดังนั้นข้อความใน PDF จึงไม่สามารถเลือกหรือค้นหาได้อีกต่อไป"</string>
+    <string name="pdf_compress_unlock">"ปลดล็อค"</string>
+    <string name="pdf_compress_enter_the_password">"ป้อนรหัสผ่าน"</string>
+    <string name="pdf_compress_compressed_pdf">"บีบอัด PDF"</string>
+    <string name="pdf_compress_step_1_of_3_choose">"ขั้นตอนที่ 1 จาก 3 · เลือกไฟล์"</string>
+    <string name="pdf_compress_shrink_a_pdf_for_email">"ลดขนาด PDF สำหรับอีเมลหรือขีดจำกัดการอัปโหลด"</string>
+    <string name="pdf_compress_compress_pdf">"บีบอัด PDF"</string>
+    <!-- PdfCompressViewModel -->
+    <string name="pdf_compress_compressing_pdf">"การบีบอัด PDF…"</string>
+    <string name="pdf_compress_choose_a_pdf_first">"เลือก PDF ก่อน"</string>
+    <!-- PdfFilePicker -->
+    <string name="pdf_file_picker_days_ago">"%1$s วันที่ผ่านมา"</string>
+    <string name="pdf_file_picker_selected_position">"เลือกแล้ว ตำแหน่ง %1$s"</string>
+    <string name="pdf_file_picker_empty_scans_are_hidden">"สแกนเปล่า %1$s ถูกซ่อนอยู่"</string>
+    <string name="pdf_file_picker_1_empty_scan_is_hidden">"สแกนว่าง 1 รายการถูกซ่อนอยู่"</string>
+    <string name="pdf_file_picker_no_match">"ไม่มี %1$s ที่ตรงกับ \"%2$s\""</string>
+    <string name="pdf_file_picker_sorted_by">"จัดเรียงตาม %1$s"</string>
+    <string name="pdf_file_picker_in_scanly">"ใน Scanly · %1$s"</string>
+    <string name="pdf_file_picker_search_your">"ค้นหา %1$s ของคุณ"</string>
+    <string name="pdf_file_picker_your_scans_have_no_pages">"การสแกนของคุณยังไม่มีหน้า เลือก PDF จากที่จัดเก็บข้อมูลในโทรศัพท์"</string>
+    <string name="pdf_file_picker_no_scans_yet_pick_a">"ยังไม่มีการสแกน เลือก PDF จากพื้นที่เก็บข้อมูลในโทรศัพท์ หรือสแกนก่อน"</string>
+    <string name="pdf_file_picker_pdfs">"ไฟล์ PDF"</string>
+    <string name="pdf_file_picker_downloads_drive_and_other_apps">"ดาวน์โหลด ไดรฟ์ และแอปอื่นๆ"</string>
+    <string name="pdf_file_picker_phone_storage">"ที่เก็บข้อมูลโทรศัพท์"</string>
+    <!-- PdfImportScreen -->
+    <string name="pdf_import_add_pages">"เพิ่มหน้า %1$s"</string>
+    <string name="pdf_import_add_1_page">"เพิ่ม 1 หน้า"</string>
+    <string name="pdf_import_add_to_library">"เพิ่มลงในห้องสมุด"</string>
+    <string name="pdf_import_another_pdf">"PDF อีกคัน"</string>
+    <string name="pdf_import_crop_filter_sign_or_search">"%1$s · %2$s. ครอบตัด กรอง เซ็นชื่อ หรือค้นหาเหมือนกับการสแกนใดๆ"</string>
+    <string name="pdf_import_added_to_your_library">"เพิ่มลงในห้องสมุดของคุณแล้ว"</string>
+    <string name="pdf_import_step_3_of_3_done">"ขั้นตอนที่ 3 จาก 3 · เสร็จสิ้น"</string>
+    <string name="pdf_import_adding_to_library">"การเพิ่มไปยังไลบรารี่…"</string>
+    <string name="pdf_import_look">"ดูสิ"</string>
+    <string name="pdf_import_your_pdf_file_stays_as">"ไฟล์ PDF ของคุณยังคงอยู่เหมือนเดิม Scanly เก็บสำเนาของตัวเองไว้"</string>
+    <string name="pdf_import_tap_a_page_or_long">"แตะที่หน้าหรือกดแบบยาวแล้วลากไปหลายหน้า"</string>
+    <string name="pdf_import_step_2_of_3_pages">"ขั้นตอนที่ 2 จาก 3 หน้าและชื่อ ·"</string>
+    <string name="pdf_import_name_this_document">"ตั้งชื่อเอกสารนี้"</string>
+    <string name="pdf_import_document_name">"ชื่อเอกสาร"</string>
+    <string name="pdf_import_turn_a_pdf_into_a">"เปลี่ยน PDF ให้เป็นเอกสาร Scanly ที่คุณสามารถแก้ไข ลงนาม และค้นหาได้"</string>
+    <string name="pdf_import_add_pdf_to_library">"เพิ่ม PDF ลงในไลบรารี"</string>
+    <!-- PdfImportViewModel -->
+    <string name="pdf_import_give_the_document_a_name">"ตั้งชื่อเอกสาร"</string>
+    <string name="pdf_import_imported_pdf">"นำเข้า PDF"</string>
+    <!-- PdfMergeScreen -->
+    <string name="pdf_merge_1_file">"1 ไฟล์"</string>
+    <string name="pdf_merge_your_original_files_are_unchanged">"ไฟล์ต้นฉบับของคุณไม่เปลี่ยนแปลง"</string>
+    <string name="pdf_merge_combined_into_one_pdf">"%1$s รวมเป็นหนึ่ง PDF"</string>
+    <string name="pdf_merge_merged">"รวมเข้าด้วยกัน"</string>
+    <string name="pdf_merge_kept_unchanged">"เก็บไว้ไม่เปลี่ยนแปลง"</string>
+    <string name="pdf_merge_original_files">"ไฟล์ต้นฉบับ"</string>
+    <string name="pdf_merge_size">"ขนาด"</string>
+    <string name="pdf_merge_remove">"ลบ %1$s ออก"</string>
+    <string name="pdf_merge_move_down">"เลื่อน %1$s ลง"</string>
+    <string name="pdf_merge_move_up">"เลื่อน %1$s ขึ้น"</string>
+    <string name="pdf_merge_pdf_from_scanly">"PDF จาก Scanly"</string>
+    <string name="pdf_merge_pdf_from_phone">"PDF จากโทรศัพท์"</string>
+    <string name="pdf_merge_page_count_unknown">"ไม่ทราบจำนวนหน้า"</string>
+    <string name="pdf_merge_merge_pdfs">"รวมไฟล์ PDF"</string>
+    <string name="pdf_merge_merge_files">"รวมไฟล์ %1$s"</string>
+    <string name="pdf_merge_add_more">"เพิ่มมากขึ้น"</string>
+    <string name="pdf_merge_merge_order">"รวมคำสั่ง · %1$s"</string>
+    <string name="pdf_merge_files_are_joined_from_top">"ไฟล์จะถูกรวมจากบนลงล่าง"</string>
+    <string name="pdf_merge_order_name">"สั่งซื้อและชื่อ"</string>
+    <string name="pdf_merge_step_2_of_3_order">"ขั้นตอนที่ 2 จาก 3 · เรียงลำดับและตั้งชื่อ"</string>
+    <string name="pdf_merge_in_total">"รวม %1$s"</string>
+    <string name="pdf_merge_from_phone">"จากโทรศัพท์: %1$s"</string>
+    <string name="pdf_merge_next">"ถัดไป"</string>
+    <string name="pdf_merge_next_files">"ไฟล์ · %1$s ถัดไป"</string>
+    <string name="pdf_merge_pick_at_least_2_files">"เลือกอย่างน้อย 2 ไฟล์"</string>
+    <string name="pdf_merge_step_1_of_3_pick">"ขั้นตอนที่ 1 จาก 3 · เลือกไฟล์"</string>
+    <string name="pdf_merge_pick_files_in_the_order">"เลือกไฟล์ตามลำดับที่คุณต้องการ"</string>
+    <string name="pdf_merge_merged_pdf">"รวม PDF แล้ว"</string>
+    <string name="pdf_merge_merging">"การรวม…"</string>
+    <!-- PdfMergeViewModel -->
+    <string name="pdf_merge_add_at_least_two_pdfs">"เพิ่มไฟล์ PDF อย่างน้อยสองไฟล์เพื่อรวม"</string>
+    <!-- PdfPasswordScreen -->
+    <string name="pdf_password_file">"ไฟล์"</string>
+    <string name="pdf_password_allowed">"อนุญาต"</string>
+    <string name="pdf_password_restricted">"ถูกจำกัด"</string>
+    <string name="pdf_password_editing">"การแก้ไข"</string>
+    <string name="pdf_password_no_password">"ไม่มีรหัสผ่าน"</string>
+    <string name="pdf_password_aes_256_password">"รหัสผ่าน AES-256"</string>
+    <string name="pdf_password_protection">"การคุ้มครอง"</string>
+    <string name="pdf_password_a_short_phrase_you_ll">"วลีสั้นๆ ที่คุณจำได้มีมากกว่าตัวอักษรแบบสุ่ม"</string>
+    <string name="pdf_password_doesn_t_match_yet">"ยังไม่ตรงกัน"</string>
+    <string name="pdf_password_passwords_match">"รหัสผ่านตรงกัน"</string>
+    <string name="pdf_password_remove_password">"ลบรหัสผ่าน"</string>
+    <string name="pdf_password_the_unlocked_copy_opens_for">"สำเนาที่ปลดล็อคจะเปิดให้ใครก็ตามที่มี Scanly จะลบเฉพาะรหัสผ่านที่คุณทราบอยู่แล้วเท่านั้น"</string>
+    <string name="pdf_password_bank_and_portal_pdfs_often">"ไฟล์ PDF ของธนาคารและพอร์ทัลมักใช้วันเกิดหรือรหัสลูกค้าของคุณ"</string>
+    <string name="pdf_password_password_for_this_pdf">"รหัสผ่านสำหรับ PDF นี้"</string>
+    <string name="pdf_password_current_password">"รหัสผ่านปัจจุบัน"</string>
+    <string name="pdf_password_locked_pdf">"ล็อค PDF แล้ว"</string>
+    <string name="pdf_password_lock_pdf">"ล็อค PDF"</string>
+    <string name="pdf_password_scanly_can_t_recover_this">"Scanly ไม่สามารถกู้คืนรหัสผ่านนี้ได้ หากลืม PDF จะไม่สามารถเปิดได้"</string>
+    <string name="pdf_password_others_can_open_and_print">"ผู้อื่นสามารถเปิดและพิมพ์ได้ แต่ไม่สามารถแก้ไขหรือคัดลอกข้อความได้"</string>
+    <string name="pdf_password_restrict_editing">"จำกัดการแก้ไข"</string>
+    <string name="pdf_password_type_it_again">"พิมพ์อีกครั้ง"</string>
+    <string name="pdf_password_at_least_characters">"อักขระอย่างน้อย %1$s"</string>
+    <string name="pdf_password_new_password">"รหัสผ่านใหม่"</string>
+    <string name="pdf_password_add_password">"เพิ่มรหัสผ่าน"</string>
+    <string name="pdf_password_checking_the_file">"ตรวจสอบไฟล์…"</string>
+    <string name="pdf_password_unlocked_pdf">"ปลดล็อค PDF แล้ว"</string>
+    <string name="pdf_password_protected_pdf">"ป้องกัน PDF"</string>
+    <string name="pdf_password_it_now_opens_without_a">"ตอนนี้เปิดขึ้นโดยไม่ต้องใช้รหัสผ่าน"</string>
+    <string name="pdf_password_anyone_opening_it_will_need">"​​ใครก็ตามที่เปิดจะต้องใช้รหัสผ่าน"</string>
+    <string name="pdf_password_password_removed">"ลบรหัสผ่านแล้ว"</string>
+    <string name="pdf_password_pdf_locked">"PDF ล็อคอยู่"</string>
+    <string name="pdf_password_unlocking">"การปลดล็อค…"</string>
+    <string name="pdf_password_locking">"การล็อค…"</string>
+    <string name="pdf_password_lock_a_pdf_or_remove">"ล็อค PDF หรือลบรหัสผ่านที่คุณทราบ"</string>
+    <!-- PdfPasswordViewModel -->
+    <string name="pdf_password_unlocking_pdf">"การปลดล็อค PDF…"</string>
+    <string name="pdf_password_enter_the_current_password">"ป้อนรหัสผ่านปัจจุบัน"</string>
+    <string name="pdf_password_locking_pdf">"การล็อค PDF…"</string>
+    <string name="pdf_password_use_to_characters_for_the">"ใช้อักขระ %1$s ถึง %2$s เป็นรหัสผ่าน"</string>
+    <!-- PdfReaderMenu -->
+    <string name="pdf_reader_menu_open_another_pdf">"เปิด PDF อีกอัน"</string>
+    <string name="pdf_reader_menu_all_pages">"ทุกหน้า"</string>
+    <!-- PdfReaderPresentation -->
+    <string name="pdf_reader_presentation_0_of_0">"0 จาก 0"</string>
+    <string name="pdf_reader_presentation_paged">"เพจ"</string>
+    <string name="pdf_reader_presentation_continuous">"ต่อเนื่อง"</string>
+    <!-- PdfReaderScreen -->
+    <string name="pdf_reader_tap_a_page_to_jump">"แตะที่หน้าเพื่อข้ามไปยังหน้านั้น"</string>
+    <string name="pdf_reader_loading_page">"กำลังโหลดหน้า %1$s…"</string>
+    <string name="pdf_reader_loading_page_2">"กำลังโหลดหน้า…"</string>
+    <string name="pdf_reader_choose_another_pdf">"เลือก PDF อื่น"</string>
+    <string name="pdf_reader_password">"รหัสผ่าน"</string>
+    <string name="pdf_reader_this_pdf_is_password_protected">"PDF นี้ได้รับการป้องกันด้วยรหัสผ่าน ใส่รหัสผ่านเพื่ออ่าน %1$s"</string>
+    <string name="pdf_reader_unlock_pdf">"ปลดล็อค PDF"</string>
+    <string name="pdf_reader_choose_a_file">"เลือกไฟล์"</string>
+    <string name="pdf_reader_open_any_pdf_from_scanly">"เปิด PDF จาก Scanly หรือโทรศัพท์ของคุณ"</string>
+    <string name="pdf_reader_read_a_pdf">"อ่าน PDF"</string>
+    <!-- PdfSignScreen -->
+    <string name="pdf_sign_1_mark">"1 คะแนน"</string>
+    <string name="pdf_sign_the_signed_copy_is_saved">"สำเนาที่ลงนามจะถูกบันทึกโดยไม่ต้องใช้รหัสผ่าน"</string>
+    <string name="pdf_sign_this_pdf_is_locked">"PDF นี้ถูกล็อค"</string>
+    <string name="pdf_sign_back_to_the_editor">"กลับไปที่ตัวแก้ไข"</string>
+    <string name="pdf_sign_edit_signatures">"แก้ไขลายเซ็น"</string>
+    <string name="pdf_sign_signed_pdf">"ลงนาม PDF"</string>
+    <string name="pdf_sign_saved_as">"บันทึกเป็น"</string>
+    <string name="pdf_sign_marks_placed">"ทำเครื่องหมายไว้"</string>
+    <string name="pdf_sign_pages_signed">"ลงนามหน้าแล้ว"</string>
+    <string name="pdf_sign_signed">"ลงนามแล้ว"</string>
+    <string name="pdf_sign_placing_signatures_on_each_page">"การใส่ลายเซ็นในแต่ละหน้า…"</string>
+    <string name="pdf_sign_signing_your_pdf">"ลงนาม PDF ของคุณ"</string>
+    <string name="pdf_sign_pdf_jpg_or_png_from">"PDF, JPG หรือ PNG จากการดาวน์โหลด ไดรฟ์ และแอปอื่นๆ"</string>
+    <string name="pdf_sign_step_1_of_3_choose">"ขั้นตอนที่ 1 จาก 3 · เลือก"</string>
+    <string name="pdf_sign_choose_a_pdf_or_an">"เลือก PDF หรือรูปภาพที่จะลงนาม"</string>
+    <string name="pdf_sign_sign_pdf">"ลงชื่อ PDF"</string>
+    <!-- PdfSignViewModel -->
+    <string name="pdf_sign_signing">"การลงนาม…"</string>
+    <string name="pdf_sign_place_a_signature_first">"ลงลายเซ็นก่อน"</string>
+    <string name="pdf_sign_open_a_pdf_first">"เปิด PDF ก่อน"</string>
+    <!-- PdfToImagesPresentation -->
+    <string name="pdf_to_images_presentation_page">"หน้า %1$s · %2$s"</string>
+    <string name="pdf_to_images_presentation_share_all">"แชร์ %1$s ทั้งหมด"</string>
+    <string name="pdf_to_images_presentation_share_image">"แชร์รูปภาพ"</string>
+    <string name="pdf_to_images_presentation_in_all">"%1$s ทั้งหมด"</string>
+    <string name="pdf_to_images_presentation_of_pages">"%1$s ของหน้า %2$s"</string>
+    <string name="pdf_to_images_presentation_all_pages">"หน้า %1$s ทั้งหมด"</string>
+    <string name="pdf_to_images_presentation_export">"ส่งออก %1$s"</string>
+    <string name="pdf_to_images_presentation_choose_pages_to_export">"เลือกหน้าที่จะส่งออก"</string>
+    <string name="pdf_to_images_presentation_1_image">"1 ภาพ"</string>
+    <string name="pdf_to_images_presentation_1f_gb" formatted="false">"%.1f GB"</string>
+    <string name="pdf_to_images_presentation_1f_mb" formatted="false">"%.1f MB"</string>
+    <string name="pdf_to_images_presentation_kb">"%1$s KB"</string>
+    <string name="pdf_to_images_presentation_0_kb">"0 KB"</string>
+    <!-- PdfToImagesScreen -->
+    <string name="pdf_to_images_of_selected">"เลือก %1$s ของ %2$s แล้ว"</string>
+    <string name="pdf_to_images_tap_images_or_long_press">"แตะรูปภาพ หรือกดค้างแล้วลาก เพื่อแชร์เพียงบางส่วนเท่านั้น"</string>
+    <string name="pdf_to_images_open_gallery">"เปิดแกลเลอรี"</string>
+    <string name="pdf_to_images_pick_a_different_file">"เลือกไฟล์อื่น"</string>
+    <string name="pdf_to_images_png_or_print_size">"PNG หรือขนาดการพิมพ์"</string>
+    <string name="pdf_to_images_export_again">"ส่งออกอีกครั้ง"</string>
+    <string name="pdf_to_images_saving_images">"บันทึกภาพ…"</string>
+    <string name="pdf_to_images_each">"ตัวละ ~%1$s"</string>
+    <string name="pdf_to_images_resolution">"ความละเอียด"</string>
+    <string name="pdf_to_images_format">"รูปแบบ"</string>
+    <string name="pdf_to_images_deselect_all">"ยกเลิกการเลือกทั้งหมด"</string>
+    <string name="pdf_to_images_this_pdf_is_password_protected">"PDF นี้ได้รับการป้องกันด้วยรหัสผ่าน ป้อนรหัสผ่านเพื่อดูหน้าต่างๆ"</string>
+    <string name="pdf_to_images_images_show_up_in_your">"รูปภาพจะปรากฏในแกลเลอรีของคุณทันที"</string>
+    <string name="pdf_to_images_pdf_to_jpg">"PDF ถึง JPG"</string>
+    <string name="pdf_to_images_step_2_of_3_pages">"ขั้นตอนที่ 2 จาก 3 · หน้าและรูปแบบ"</string>
+    <string name="pdf_to_images_no_gallery_app_found_the">"ไม่พบแอปแกลเลอรี รูปภาพอยู่ในรูปภาพ/Scanly"</string>
+    <string name="pdf_to_images_turn_pages_into_images_for">"เปลี่ยนหน้าต่างๆ ให้เป็นรูปภาพสำหรับแชท สไลด์ หรือแกลเลอรีของคุณ"</string>
+    <!-- PdfToolDone -->
+    <string name="pdf_tool_done_open_pdf">"เปิด PDF"</string>
+    <string name="pdf_tool_done_open_the_finished_pdf">"เปิด PDF ที่เสร็จแล้ว"</string>
+    <string name="pdf_tool_done_your_original_file_is_unchanged">"ไฟล์ต้นฉบับของคุณไม่เปลี่ยนแปลง"</string>
+    <!-- PdfToolPresentation -->
+    <string name="pdf_tool_presentation_files_merge_in_this_order">"ไฟล์รวมตามลำดับนี้ PDF ตัวแรกเริ่มเอกสาร"</string>
+    <string name="pdf_tool_presentation_add_at_least_one_more">"เพิ่ม PDF อย่างน้อยหนึ่งรายการเพื่อรวมเข้าด้วยกัน"</string>
+    <string name="pdf_tool_presentation_opacity">"ความทึบ %1$s%%"</string>
+    <string name="pdf_tool_presentation_one_large_stamp_sized_to">"ตราประทับขนาดใหญ่หนึ่งดวงเพื่อครองหน้ากระดาษ"</string>
+    <string name="pdf_tool_presentation_repeats_across_the_full_page">"ทำซ้ำทั่วทั้งหน้ารวมทั้งขอบด้วย"</string>
+    <string name="pdf_tool_presentation_protect_pdf">"ป้องกัน PDF"</string>
+    <string name="pdf_tool_presentation_saved">"%1$s → %2$s · บันทึก %3$s%% แล้ว"</string>
+    <string name="pdf_tool_presentation_unlocked">"ปลดล็อคแล้ว"</string>
+    <string name="pdf_tool_presentation_protected">"ได้รับการคุ้มครอง"</string>
+    <string name="pdf_tool_presentation_pdfs">"ไฟล์ %1$s PDF"</string>
+    <string name="pdf_tool_presentation_1_pdf">"1 PDF"</string>
+    <string name="pdf_tool_presentation_no_files">"ไม่มีไฟล์"</string>
+    <!-- PdfToolShared -->
+    <string name="pdf_tool_shared_scanly_pdf">"Scanly PDF"</string>
+    <!-- PdfToolViewModels -->
+    <string name="pdf_tool_view_models_saving">"ออมทรัพย์…"</string>
+    <!-- PdfWatermarkScreen -->
+    <string name="pdf_watermark_the_page">"หน้า"</string>
+    <string name="pdf_watermark_first_page_only">"หน้าแรกเท่านั้น"</string>
+    <string name="pdf_watermark_apply_to">"นำไปใช้กับ"</string>
+    <string name="pdf_watermark_colour">"สี"</string>
+    <string name="pdf_watermark_opacity">"ความทึบ"</string>
+    <string name="pdf_watermark_large">"ใหญ่"</string>
+    <string name="pdf_watermark_medium">"ปานกลาง"</string>
+    <string name="pdf_watermark_small">"เล็ก"</string>
+    <string name="pdf_watermark_horizontal">"แนวนอน"</string>
+    <string name="pdf_watermark_diagonal">"เส้นทแยงมุม"</string>
+    <string name="pdf_watermark_single">"โสด"</string>
+    <string name="pdf_watermark_tiled">"ปูกระเบื้อง"</string>
+    <string name="pdf_watermark_style">"สไตล์"</string>
+    <string name="pdf_watermark_stamps">"แสตมป์ \"%1$s\""</string>
+    <string name="pdf_watermark_add_date">"เพิ่มวันที่"</string>
+    <string name="pdf_watermark_presets">"ค่าที่ตั้งไว้ล่วงหน้า"</string>
+    <string name="pdf_watermark_the_watermarked_copy_is_saved">"สำเนาลายน้ำจะถูกบันทึกโดยไม่ต้องใช้รหัสผ่าน คุณสามารถล็อคอีกครั้งด้วยเครื่องมือรหัสผ่าน"</string>
+    <string name="pdf_watermark_live_preview_of_the_saved">"ดูตัวอย่างไฟล์ที่บันทึกไว้แบบสด"</string>
+    <string name="pdf_watermark_page_1">"หน้า 1"</string>
+    <string name="pdf_watermark_preview_of_page_1_with">"ดูตัวอย่างหน้าที่ 1 พร้อมลายน้ำ"</string>
+    <string name="pdf_watermark_apply_watermark">"ใช้ลายน้ำ"</string>
+    <string name="pdf_watermark_apply_to_pages">"นำไปใช้กับหน้า %1$s"</string>
+    <string name="pdf_watermark_apply_to_page">"สมัครที่เพจ"</string>
+    <string name="pdf_watermark_apply_to_first_page">"นำไปใช้กับหน้าแรก"</string>
+    <string name="pdf_watermark_unlock_the_pdf_first">"ปลดล็อค PDF ก่อน"</string>
+    <string name="pdf_watermark_watermark">"ลายน้ำ"</string>
+    <string name="pdf_watermark_edit_stamp">"แก้ไขตราประทับ"</string>
+    <string name="pdf_watermark_watermarked_pdf">"ลายน้ำ PDF"</string>
+    <string name="pdf_watermark_kept_unstamped">"เก็บไว้ ไม่มีการประทับตรา"</string>
+    <string name="pdf_watermark_stamp">"แสตมป์"</string>
+    <string name="pdf_watermark_on_every_page_tap_the">"ในทุกหน้า แตะหน้าเพื่อตรวจสอบ"</string>
+    <string name="pdf_watermark_on_all_pages_tap_the">"ในหน้า %1$s ทั้งหมด แตะหน้าเพื่อตรวจสอบ"</string>
+    <string name="pdf_watermark_on_both_pages_tap_the">"ทั้งสองหน้า. แตะหน้าเพื่อตรวจสอบ"</string>
+    <string name="pdf_watermark_on_the_page_tap_it">"บนหน้า. แตะเพื่อตรวจสอบ"</string>
+    <string name="pdf_watermark_on_the_first_page_tap">"ในหน้าแรก. แตะหน้าเพื่อตรวจสอบ"</string>
+    <string name="pdf_watermark_watermark_added">"เพิ่มลายน้ำ"</string>
+    <string name="pdf_watermark_stamping_every_page">"ประทับตราทุกหน้า"</string>
+    <string name="pdf_watermark_stamping">"การตอก %1$s"</string>
+    <string name="pdf_watermark_stamping_the_first_page">"การประทับตราหน้าแรก"</string>
+    <string name="pdf_watermark_adding_watermark">"การเพิ่มลายน้ำ…"</string>
+    <string name="pdf_watermark_stamp_text_like_confidential_or">"ประทับตราข้อความ เช่น ข้อมูลลับ หรือ \"สำหรับการใช้ KYC เท่านั้น\""</string>
+    <!-- PdfWatermarkViewModel -->
+    <string name="pdf_watermark_kyc_copy">"สำเนา KYC"</string>
+    <string name="pdf_watermark_enter_watermark_text">"ป้อนข้อความลายน้ำ"</string>
+    <!-- QrActions -->
+    <string name="qr_actions_qr_text">"ข้อความ QR"</string>
+    <string name="qr_actions_no_app_can_search_the">"ไม่มีแอปใดสามารถค้นหาเว็บได้"</string>
+    <string name="qr_actions_no_email_app_is_set">"ไม่มีการตั้งค่าแอปอีเมลบนโทรศัพท์นี้"</string>
+    <string name="qr_actions_no_phone_app_can_open">"ไม่มีแอปโทรศัพท์ใดที่สามารถเปิดหมายเลขนี้ได้"</string>
+    <string name="qr_actions_no_contacts_app_can_save">"ไม่มีแอปผู้ติดต่อใดที่สามารถบันทึกสิ่งนี้ได้"</string>
+    <string name="qr_actions_pick_in_wi_fi_settings">"เลือก \"%1$s\" ในการตั้งค่า Wi-Fi"</string>
+    <string name="qr_actions_password_copied_pick_the_network">"คัดลอกรหัสผ่าน — เลือกเครือข่าย"</string>
+    <string name="qr_actions_wi_fi_settings_can_t">"ไม่สามารถเปิดการตั้งค่า Wi-Fi ได้"</string>
+    <string name="qr_actions_wi_fi_password">"รหัสผ่าน Wi-Fi"</string>
+    <string name="qr_actions_wi_fi_settings_can_t_2">"การตั้งค่า Wi-Fi ไม่สามารถเพิ่มเครือข่ายนี้ได้"</string>
+    <string name="qr_actions_no_upi_app_can_open">"ไม่มีแอป UPI ที่สามารถเปิดรหัสนี้ได้"</string>
+    <string name="qr_actions_pay_with">"ชำระเงินด้วย"</string>
+    <string name="qr_actions_no_app_can_open_this">"ไม่มีแอปใดสามารถเปิดลิงก์นี้ได้"</string>
+    <string name="qr_actions_not_a_web_link">"ไม่ใช่เว็บลิงค์"</string>
+    <string name="qr_actions_nothing_can_receive_this_text">"ไม่มีสิ่งใดสามารถรับข้อความนี้ได้"</string>
+    <string name="qr_actions_share_qr_code">"แชร์รหัส QR"</string>
+    <string name="qr_actions_copied_to_clipboard">"คัดลอกไปยังคลิปบอร์ด"</string>
+    <!-- QrCreateScreen -->
+    <string name="qr_create_full_name">"ชื่อเต็ม"</string>
+    <string name="qr_create_name">"ชื่อ"</string>
+    <string name="qr_create_leave_the_amount_empty_so">"ปล่อยจำนวนเงินว่างไว้เพื่อให้ลูกค้าป้อนจำนวนเงินที่เป็นหนี้ได้"</string>
+    <string name="qr_create_enter_an_amount_above_zero">"ป้อนจำนวนเงินที่สูงกว่าศูนย์"</string>
+    <string name="qr_create_any">"₹ อะไรก็ได้"</string>
+    <string name="qr_create_amount_optional">"จำนวน · เป็นตัวเลือก"</string>
+    <string name="qr_create_shop_name">"ชื่อร้าน"</string>
+    <string name="qr_create_payee_name">"ชื่อผู้รับเงิน"</string>
+    <string name="qr_create_name_bank">"ชื่อ@ธนาคาร"</string>
+    <string name="qr_create_upi_id">"รหัส UPI"</string>
+    <string name="qr_create_security">"ความปลอดภัย"</string>
+    <string name="qr_create_network_password">"รหัสผ่านเครือข่าย"</string>
+    <string name="qr_create_network_name">"ชื่อเครือข่าย"</string>
+    <string name="qr_create_characters">"อักขระ %1$s / %2$s"</string>
+    <string name="qr_create_anything_up_to_characters">"อะไรก็ได้ที่มีอักขระไม่เกิน %1$s"</string>
+    <string name="qr_create_web_address">"ที่อยู่เว็บ"</string>
+    <string name="qr_create_qr_code_preview">"การแสดงตัวอย่างโค้ด QR"</string>
+    <string name="qr_create_saved_to_qr_history_png">"บันทึกลงในประวัติ QR · PNG, 1024 พิกเซล"</string>
+    <string name="qr_create_save_image">"บันทึกภาพ"</string>
+    <string name="qr_create_only_dark_colours_so_every">"เฉพาะสีเข้ม กล้องทุกตัวจึงสามารถอ่านโค้ดได้"</string>
+    <string name="qr_create_shown_under_the_code">"แสดงใต้รหัส"</string>
+    <string name="qr_create_caption_under_the_code_optional">"คำบรรยายใต้รหัส · เป็นทางเลือก"</string>
+    <string name="qr_create_create_qr">"สร้าง QR"</string>
+    <!-- QrHistoryScreen -->
+    <string name="qr_history_created">"สร้างแล้ว"</string>
+    <string name="qr_history_scanned">"สแกนแล้ว"</string>
+    <string name="qr_history_clear_history">"ล้างประวัติ"</string>
+    <string name="qr_history_every_scanned_and_created_code">"รหัสที่สแกนและสร้างทั้งหมดจะถูกลบออกจากโทรศัพท์นี้ การดำเนินการนี้ไม่สามารถยกเลิกได้"</string>
+    <string name="qr_history_clear_qr_history">"ล้างประวัติ QR หรือไม่?"</string>
+    <string name="qr_history_clear_history_2">"ล้างประวัติ…"</string>
+    <string name="qr_history_history_stays_on_this_phone">"ประวัติยังคงอยู่ในโทรศัพท์เครื่องนี้"</string>
+    <string name="qr_history_try_another_search_or_filter">"ลองค้นหาหรือกรองอื่น"</string>
+    <string name="qr_history_no_matches">"ไม่มีการแข่งขัน"</string>
+    <string name="qr_history_scanned_and_created_codes_are">"รหัสที่สแกนและสร้างจะถูกเก็บไว้ที่นี่"</string>
+    <string name="qr_history_no_codes_yet">"ยังไม่มีรหัส"</string>
+    <string name="qr_history_search_links_networks_names">"ค้นหาลิงค์ เครือข่าย ชื่อ"</string>
+    <string name="qr_history_qr_history">"ประวัติ QR"</string>
+    <!-- QrResultScreen -->
+    <string name="qr_result_show_raw_content">"แสดงเนื้อหาดิบ"</string>
+    <string name="qr_result_hide_raw_content">"ซ่อนเนื้อหาดิบ"</string>
+    <string name="qr_result_raw_content">"เนื้อหาดิบ"</string>
+    <string name="qr_result_organisation">"องค์กร"</string>
+    <string name="qr_result_wi_fi_settings_can_t">"การตั้งค่า Wi-Fi ไม่สามารถเพิ่มเครือข่าย WEP ได้ ดังนั้นรหัสผ่านจึงถูกคัดลอกและเปิดการตั้งค่า"</string>
+    <string name="qr_result_not_in_the_code">"ไม่อยู่ในรหัส"</string>
+    <string name="qr_result_network">"เครือข่าย"</string>
+    <string name="qr_result_scanly_doesn_t_make_payments">"Scanly ไม่ชำระเงิน ยืนยันชื่อผู้รับเงินในแอป UPI ของคุณก่อนชำระเงิน"</string>
+    <string name="qr_result_not_set_you_ll_enter">"ไม่ได้ตั้งค่า คุณจะต้องป้อนลงในแอป UPI ของคุณ"</string>
+    <string name="qr_result_amount">"จำนวนเงิน"</string>
+    <string name="qr_result_payee">"ผู้รับเงิน"</string>
+    <string name="qr_result_this_link_isn_t_encrypted">"ลิงค์นี้ไม่ได้เข้ารหัส (http) ตรวจสอบว่าโดเมนเป็นโดเมนที่คุณคาดหวังก่อนเปิด"</string>
+    <string name="qr_result_check_the_domain_is_the">"ตรวจสอบว่าโดเมนเป็นโดเมนที่คุณคาดหวังก่อนเปิด"</string>
+    <string name="qr_result_full_address">"ที่อยู่แบบเต็ม"</string>
+    <string name="qr_result_number">"หมายเลข"</string>
+    <string name="qr_result_subject">"เรื่อง"</string>
+    <string name="qr_result_address">"ที่อยู่"</string>
+    <string name="qr_result_search_the_web">"ค้นหาเว็บ"</string>
+    <string name="qr_result_copy_number">"คัดลอกหมายเลข"</string>
+    <string name="qr_result_email_address">"ที่อยู่อีเมล"</string>
+    <string name="qr_result_copy_address">"คัดลอกที่อยู่"</string>
+    <string name="qr_result_call">"โทร"</string>
+    <string name="qr_result_copy_network_name">"คัดลอกชื่อเครือข่าย"</string>
+    <string name="qr_result_copy_password">"คัดลอกรหัสผ่าน"</string>
+    <string name="qr_result_copy_upi_id">"คัดลอกรหัส UPI"</string>
+    <string name="qr_result_copy_link">"คัดลอกลิงก์"</string>
+    <string name="qr_result_delete_from_history">"ลบออกจากประวัติ"</string>
+    <string name="qr_result_saved_to_history">" · บันทึกลงในประวัติแล้ว"</string>
+    <!-- QrScanScreen -->
+    <string name="qr_scan_captured_qr_code">"รหัส QR ที่บันทึกไว้"</string>
+    <string name="qr_scan_history">"ประวัติศาสตร์"</string>
+    <string name="qr_scan_from_photo">"จากรูปถ่าย"</string>
+    <string name="qr_scan_scan_again">"สแกนอีกครั้ง"</string>
+    <string name="qr_scan_qr_code">"รหัส QR"</string>
+    <string name="qr_scan_details">"รายละเอียด"</string>
+    <string name="qr_scan_allow_camera">"อนุญาตกล้อง"</string>
+    <string name="qr_scan_open_settings">"เปิดการตั้งค่า"</string>
+    <string name="qr_scan_the_camera_is_used_only">"กล้องจะใช้เฉพาะในขณะที่หน้าจอนี้เปิดอยู่เท่านั้น \"จากภาพถ่าย\" ทำงานได้โดยไม่ต้องมีมัน"</string>
+    <string name="qr_scan_open_settings_tap_permissions_and">"เปิดการตั้งค่า แตะการอนุญาต และเปิดกล้องสำหรับ Scanly"</string>
+    <string name="qr_scan_allow_camera_to_scan">"อนุญาตให้กล้องสแกน"</string>
+    <string name="qr_scan_camera_permission_is_blocked">"การอนุญาตกล้องถูกบล็อก"</string>
+    <string name="qr_scan_torch_on_off">"เปิด/ปิดคบเพลิง"</string>
+    <string name="qr_scan_scan_qr_barcode">"สแกน QR และบาร์โค้ด"</string>
+    <string name="qr_scan_point_at_a_qr_code">"ชี้ไปที่รหัส QR หรือบาร์โค้ด"</string>
+    <string name="qr_scan_code_found_hold_steady">"รหัสที่พบ · คงที่"</string>
+    <string name="qr_scan_reading_photo">"กำลังอ่านรูปภาพ…"</string>
+    <string name="qr_scan_the_camera_isn_t_available">"กล้องไม่สามารถใช้งานได้ในขณะนี้ ลองใช้ \"จากรูปภาพ\" แทน"</string>
+    <!-- QrToolPresentation -->
+    <string name="qr_tool_presentation_h_ago">"%1$s ชมแล้ว"</string>
+    <string name="qr_tool_presentation_min_ago">"%1$s นาทีที่แล้ว"</string>
+    <string name="qr_tool_presentation_just_now">"เมื่อกี้นี้"</string>
+    <string name="qr_tool_presentation_some_text">"ข้อความบางส่วน"</string>
+    <string name="qr_tool_presentation_a_phone_number">"หมายเลขโทรศัพท์"</string>
+    <string name="qr_tool_presentation_an_email_address">"ที่อยู่อีเมล"</string>
+    <string name="qr_tool_presentation_a_contact">"การติดต่อ"</string>
+    <string name="qr_tool_presentation_a_wi_fi_network">"เครือข่าย Wi-Fi"</string>
+    <string name="qr_tool_presentation_a_upi_payment">"การชำระเงิน UPI"</string>
+    <string name="qr_tool_presentation_a_link">"ลิงค์"</string>
+    <string name="qr_tool_presentation_found">"พบ "</string>
+    <string name="qr_tool_presentation_generating_preview">"กำลังสร้างตัวอย่าง…"</string>
+    <string name="qr_tool_presentation_preview_appears_as_you_type">"การแสดงตัวอย่างจะปรากฏขึ้นขณะที่คุณพิมพ์"</string>
+    <string name="qr_tool_presentation_copy_to_the_clipboard">"คัดลอกไปยังคลิปบอร์ด"</string>
+    <string name="qr_tool_presentation_open_in_a_browser_or">"เปิดในเบราว์เซอร์หรือคัดลอก"</string>
+    <!-- QrToolViewModel -->
+    <string name="qr_tool_qr_history_cleared">"ล้างประวัติ QR แล้ว"</string>
+    <string name="qr_tool_add_the_details_first">"เพิ่มรายละเอียดก่อน"</string>
+    <string name="qr_tool_no_qr_code_found_in">"ไม่พบรหัส QR ในรูปภาพนั้น"</string>
+    <!-- ImageTextScreen -->
+    <string name="image_text_photos_are_saved_as_a">"รูปภาพจะถูกบันทึกเป็นเอกสารใหม่ เพื่อให้คุณสามารถค้นหาข้อความได้ในภายหลัง"</string>
+    <string name="image_text_your_scans_have_no_pages">"การสแกนของคุณยังไม่มีหน้า เลือกรูปภาพเพื่ออ่านข้อความ"</string>
+    <string name="image_text_no_scans_yet_pick_photos">"ยังไม่มีการสแกน เลือกรูปภาพเพื่ออ่านข้อความ"</string>
+    <string name="image_text_1_scan">"สแกน 1 ครั้ง"</string>
+    <string name="image_text_up_to_from_your_gallery">"สูงสุด %1$s จากแกลเลอรีหรือไฟล์ของคุณ"</string>
+    <string name="image_text_copy_text_from_photos_or">"คัดลอกข้อความจากรูปภาพหรือสแกน ข้อความถูกอ่านบนโทรศัพท์นี้"</string>
+    <string name="image_text_image_to_text">"รูปภาพเป็นข้อความ"</string>
+    <!-- AppUpdateDialog -->
+    <string name="app_update_published">"เผยแพร่ %1$s"</string>
+    <string name="app_update_current">"ปัจจุบัน"</string>
+    <string name="app_update_update">"อัปเดต"</string>
+    <string name="app_update_what_s_new">"มีอะไรใหม่"</string>
+    <!-- AppUpdateViewModel -->
+    <string name="app_update_scanly_is_up_to_date">"Scanly เป็นรุ่นล่าสุดแล้ว คุณอยู่ที่ %1$s"</string>
+    <string name="app_update_could_not_check_for_updates">"ไม่สามารถตรวจสอบการอัปเดต %1$s ได้"</string>
+    <!-- FlexibleUpdateSnackbar -->
+    <string name="flexible_update_snackbar_restart">"รีสตาร์ท"</string>
+    <string name="flexible_update_snackbar_update_downloaded_restart_scanly_to">"ดาวน์โหลดอัปเดตแล้ว รีสตาร์ท Scanly เพื่อสิ้นสุดการติดตั้ง"</string>
+    <!-- ReleaseMarkdown -->
+    <string name="release_markdown_no_release_notes_were_provided">"ไม่มีบันทึกประจำรุ่นสำหรับเวอร์ชันนี้"</string>
+    <!-- ScanlyNavHost -->
+    <string name="scanly_nav_host_up_to_images">"ภาพสูงสุด %1$s"</string>
+    <string name="scanly_nav_host_import_from_gallery">"นำเข้าจากแกลเลอรี"</string>
+    <string name="scanly_nav_host_capture_pages_now">"จับภาพหน้าทันที"</string>
+    <string name="scanly_nav_host_scan_with_camera">"สแกนด้วยกล้อง"</string>
+    <string name="scanly_nav_host_add_a_document">"เพิ่มเอกสาร"</string>
+    <!-- pdf_page_orientation -->
+    <string name="pdf_page_orientation_portrait">"แนวตั้ง"</string>
+    <string name="pdf_page_orientation_landscape">"แนวนอน"</string>
+    <!-- pdf_page_size -->
+    <string name="pdf_page_size_auto_fit">"พอดีอัตโนมัติ"</string>
+    <string name="pdf_page_size_a3">"ก3"</string>
+    <string name="pdf_page_size_a4">"A4"</string>
+    <string name="pdf_page_size_a5">"ก5"</string>
+    <string name="pdf_page_size_b4">"B4"</string>
+    <string name="pdf_page_size_b5">"B5"</string>
+    <string name="pdf_page_size_letter">"จดหมาย"</string>
+    <string name="pdf_page_size_tabloid">"แท็บลอยด์"</string>
+    <string name="pdf_page_size_executive">"ผู้บริหาร"</string>
+    <string name="pdf_page_size_postcard">"โปสการ์ด"</string>
+    <string name="pdf_page_size_american_foolscap">"คนโง่เขลาแบบอเมริกัน"</string>
+    <string name="pdf_page_size_european_foolscap">"ความโง่เขลาของชาวยุโรป"</string>
+    <!-- pdf_page_margin -->
+    <string name="pdf_page_margin_no_margin">"ไม่มีส่วนต่าง"</string>
+    <string name="pdf_page_margin_big">"ใหญ่"</string>
+    <!-- pdf_page_number -->
+    <string name="pdf_page_number_center">"เซ็นเตอร์"</string>
+    <!-- pdf_image_format -->
+    <string name="pdf_image_format_smaller_files_best_for_photos">"ไฟล์ขนาดเล็ก เหมาะที่สุดสำหรับภาพถ่ายและการแชร์"</string>
+    <string name="pdf_image_format_crisper_text_files_about_3">"ข้อความคมชัด ไฟล์ใหญ่กว่า 3×"</string>
+    <!-- pdf_image_resolution -->
+    <string name="pdf_image_resolution_for_sharing">"สำหรับการแบ่งปัน"</string>
+    <string name="pdf_image_resolution_1240_px_wide_sharp_on">"· กว้าง 1240 px คมชัดบนโทรศัพท์และ WhatsApp"</string>
+    <string name="pdf_image_resolution_for_printing">"สำหรับการพิมพ์"</string>
+    <string name="pdf_image_resolution_2480_px_wide_300_dpi">"กว้าง 2480 พิกเซล · 300 dpi บน A4"</string>
+    <!-- pdf_compress_quality -->
+    <string name="pdf_compress_quality_high_quality">"คุณภาพสูง"</string>
+    <string name="pdf_compress_quality_best_clarity_less_compression">"ความคมชัดดีที่สุด · การบีบอัดน้อยกว่า"</string>
+    <string name="pdf_compress_quality_balanced">"สมดุล"</string>
+    <string name="pdf_compress_quality_good_balance_of_size_and">"สมดุลระหว่างขนาดและความชัดเจน"</string>
+    <string name="pdf_compress_quality_smallest">"เล็กที่สุด"</string>
+    <string name="pdf_compress_quality_maximum_compression_softer_detail">"การบีบอัดสูงสุด · รายละเอียดนุ่มนวลขึ้น"</string>
+    <!-- watermark_color -->
+    <string name="watermark_color_grey">"สีเทา"</string>
+    <string name="watermark_color_red">"แดง"</string>
+    <string name="watermark_color_blue">"สีฟ้า"</string>
+    <string name="watermark_color_teal">"นกเป็ดน้ำ"</string>
+    <!-- signature_kind -->
+    <string name="signature_kind_signature">"ลายเซ็น"</string>
+    <!-- sign_ink -->
+    <string name="sign_ink_navy">"สีน้ำเงินเข้ม"</string>
+    <string name="sign_ink_black">"สีดำ"</string>
+    <!-- date_filter -->
+    <string name="date_filter_any_time">"เมื่อไหร่ก็ได้"</string>
+    <string name="date_filter_last_7_days">"7 วันสุดท้าย"</string>
+    <string name="date_filter_last_30_days">"30 วันที่ผ่านมา"</string>
+    <string name="date_filter_this_year">"ปีนี้"</string>
+    <string name="date_filter_custom_range">"ช่วงที่กำหนดเอง"</string>
+    <!-- search_sort -->
+    <string name="search_sort_best_match">"คู่ที่ดีที่สุด"</string>
+    <string name="search_sort_newest">"ใหม่ล่าสุด"</string>
+    <string name="search_sort_oldest">"เก่าแก่ที่สุด"</string>
+    <string name="search_sort_name_a_z">"ชื่อ A–Z"</string>
+    <!-- search_scope -->
+    <string name="search_scope_everywhere">"ทุกที่"</string>
+    <string name="search_scope_names">"ชื่อ"</string>
+    <string name="search_scope_text_in_pages">"ข้อความในหน้า"</string>
+    <!-- app_update_channel -->
+    <string name="app_update_channel_github">"GitHub"</string>
+    <string name="app_update_channel_google_play">"Google Play"</string>
+    <!-- document_kind -->
+    <string name="document_kind_invoice">"ใบแจ้งหนี้"</string>
+    <string name="document_kind_receipt">"ใบเสร็จรับเงิน"</string>
+    <string name="document_kind_contract">"สัญญา"</string>
+    <string name="document_kind_statement">"ใบแจ้งยอดธนาคาร"</string>
+    <string name="document_kind_certificate">"ใบรับรอง"</string>
+    <string name="document_kind_id_document">"เอกสารประจำตัว"</string>
+    <string name="document_kind_form">"แบบฟอร์ม"</string>
+    <string name="document_kind_r_sum">"ประวัติย่อ"</string>
+    <!-- document_corner_model -->
+    <string name="document_corner_model_lite">"ย่อ"</string>
+    <string name="document_corner_model_standard">"มาตรฐาน"</string>
+    <string name="document_corner_model_high">"สูง"</string>
+    <string name="document_corner_model_accurate">"แม่น"</string>
+    <!-- document_title_format -->
+    <string name="document_title_format_scan_with_date_and_time">"สแกนด้วยวันที่และเวลา"</string>
+    <string name="document_title_format_scan_date_time">"สแกน · วันที่และเวลา"</string>
+    <string name="document_title_format_document_with_date_and_time">"เอกสารพร้อมวันที่และเวลา"</string>
+    <string name="document_title_format_document_date_time">"เอกสาร · วันที่และเวลา"</string>
+    <string name="document_title_format_scan_with_date">"สแกนด้วยวันที่"</string>
+    <string name="document_title_format_scan_date">"สแกน · วันที่"</string>
+    <string name="document_title_format_scan_with_iso_date">"สแกนด้วยวันที่ ISO"</string>
+    <string name="document_title_format_scan_yyyy_mm_dd">"สแกน · YYYY-MM-DD"</string>
+    <!-- group_title_format -->
+    <string name="group_title_format_folder_with_date_and_time">"โฟลเดอร์พร้อมวันที่และเวลา"</string>
+    <string name="group_title_format_folder_date_time">"โฟลเดอร์ · วันที่และเวลา"</string>
+    <string name="group_title_format_new_folder_with_date_and">"โฟลเดอร์ใหม่พร้อมวันที่และเวลา"</string>
+    <string name="group_title_format_new_folder_date_time">"โฟลเดอร์ใหม่ · วันที่และเวลา"</string>
+    <string name="group_title_format_folder_with_date">"โฟลเดอร์พร้อมวันที่"</string>
+    <string name="group_title_format_folder_date">"โฟลเดอร์ · วันที่"</string>
+    <string name="group_title_format_folder_with_iso_date">"โฟลเดอร์ที่มีวันที่ ISO"</string>
+    <string name="group_title_format_folder_yyyy_mm_dd">"โฟลเดอร์ · YYYY-MM-DD"</string>
+    <!-- wifi_security -->
+    <string name="wifi_security_wpa_wpa2">"WPA/WPA2"</string>
+    <string name="wifi_security_wep">"WEP"</string>
+    <string name="wifi_security_open">"ไม่มีการรักษาความปลอดภัย"</string>
+    <!-- qr_create_type -->
+    <string name="qr_create_type_upi">"ยูพีไอ"</string>
+    <!-- pdf_import_look -->
+    <string name="pdf_import_look_keep_as_is">"เก็บไว้เหมือนเดิม"</string>
+    <string name="pdf_import_look_pages_look_exactly_like_the">"หน้ามีลักษณะเหมือนกับ PDF ทุกประการ"</string>
+    <string name="pdf_import_look_enhance">"ปรับปรุง"</string>
+    <string name="pdf_import_look_even_out_scanned_pages_and">"ปรับหน้าที่สแกนให้เท่ากันและทำให้ข้อความคมชัดขึ้น"</string>
+    <!-- capture_scene_issue -->
+    <string name="capture_scene_issue_lens_may_be_covered_clear">"เลนส์อาจถูกบังไว้ ค้นพบมันแล้วลองอีกครั้ง"</string>
+    <string name="capture_scene_issue_too_dark_add_light_or">"มืดเกินไป เพิ่มแสงหรือเปิดแฟลช"</string>
+    <string name="capture_scene_issue_image_looks_blurry_clean_the">"ภาพดูพร่ามัว. ทำความสะอาดเลนส์หรือแตะเพื่อโฟกัส"</string>
+    <!-- group_export_action -->
+    <string name="group_export_action_merged_pdf_options">"รวมตัวเลือก PDF"</string>
+    <string name="group_export_action_separate_pdfs_options">"แยกตัวเลือกไฟล์ PDF"</string>
+    <!-- library_sort_option -->
+    <string name="library_sort_option_last_modified">"แก้ไขล่าสุด"</string>
+    <string name="library_sort_option_latest_changes_first">"การเปลี่ยนแปลงล่าสุดก่อน"</string>
+    <string name="library_sort_option_oldest_updated">"อัปเดตเก่าที่สุด"</string>
+    <string name="library_sort_option_earliest_changes_first">"การเปลี่ยนแปลงเร็วที่สุดก่อน"</string>
+    <string name="library_sort_option_alphabetical_order">"ลำดับตัวอักษร"</string>
+    <string name="library_sort_option_name_z_a">"ชื่อ Z–A"</string>
+    <string name="library_sort_option_reverse_alphabetical_order">"ลำดับตัวอักษรกลับกัน"</string>
+    <string name="library_sort_option_newest_created">"สร้างใหม่ล่าสุด"</string>
+    <string name="library_sort_option_recently_added_first">"เพิ่มล่าสุดก่อน"</string>
+    <string name="library_sort_option_oldest_created">"สร้างที่เก่าแก่ที่สุด"</string>
+    <string name="library_sort_option_earliest_added_first">"เพิ่มเร็วที่สุดก่อน"</string>
+    <!-- signature_pen_width -->
+    <string name="signature_pen_width_fine">"บาง"</string>
+    <string name="signature_pen_width_bold">"หนา"</string>
+    <!-- onboarding_page -->
+    <string name="onboarding_page_capture">"การจับภาพ"</string>
+    <string name="onboarding_page_paper_to_polished">"จากกระดาษสู่สแกนที่คมชัด"</string>
+    <string name="onboarding_page_capture_straighten_and_clean_up">"จับภาพ ปรับให้ตรง และทำความสะอาดหน้าเว็บของคุณ"</string>
+    <string name="onboarding_page_find">"ค้นหา"</string>
+    <string name="onboarding_page_find_more_than_files">"ค้นหาคำในงานสแกนได้ด้วย"</string>
+    <string name="onboarding_page_recognize_text_on_your_device">"จดจำข้อความบนอุปกรณ์ของคุณ ค้นหาภายในการสแกนของคุณ"</string>
+    <string name="onboarding_page_share">"แบ่งปัน"</string>
+    <string name="onboarding_page_ready_when_you_are">"พร้อมแชร์เมื่อคุณต้องการ"</string>
+    <string name="onboarding_page_keep_pages_together_share_a">"เก็บหน้าไว้ด้วยกัน แบ่งปัน PDF ที่สะอาดตาด้วยการแตะไม่กี่ครั้ง"</string>
+    <!-- pdf_reader_tool -->
+    <string name="pdf_reader_tool_merge_with_other_pdfs">"รวมเข้ากับไฟล์ PDF อื่น ๆ"</string>
+    <string name="pdf_reader_tool_password_protect">"การป้องกันด้วยรหัสผ่าน"</string>
+    <string name="pdf_reader_tool_add_watermark">"เพิ่มลายน้ำ"</string>
+    <string name="pdf_reader_tool_save_pages_as_images">"บันทึกหน้าเป็นรูปภาพ"</string>
+    <string name="pdf_reader_tool_add_to_scanly_library">"เพิ่มไปยังไลบรารี Scanly"</string>
+    <!-- pdf_picker_sort -->
+    <string name="pdf_picker_sort_most_pages">"มีเพจมากที่สุด"</string>
+    <!-- qr_ink_color -->
+    <string name="qr_ink_color_ink">"หมึก"</string>
+    <string name="qr_ink_color_maroon">"มารูน"</string>
+    <!-- qr_primary_action -->
+    <string name="qr_primary_action_pay_with_a_upi_app">"ชำระเงินด้วยแอป UPI"</string>
+    <string name="qr_primary_action_pay">"ชำระเงิน"</string>
+    <string name="qr_primary_action_join_this_network">"เข้าร่วมเครือข่ายนี้"</string>
+    <string name="qr_primary_action_join">"เข้าร่วม"</string>
+    <string name="qr_primary_action_save_to_contacts">"บันทึกลงในรายชื่อติดต่อ"</string>
+    <string name="qr_primary_action_send_email">"ส่งอีเมล"</string>
+    <string name="qr_primary_action_call_this_number">"โทรไปที่หมายเลขนี้"</string>
+    <string name="qr_primary_action_copy_text">"คัดลอกข้อความ"</string>
+    <!-- qr_history_section -->
+    <string name="qr_history_section_earlier">"ก่อนหน้านี้"</string>
+    <!-- sign_tool -->
+    <string name="sign_tool_date">"วันที่"</string>
+    <string name="sign_tool_checkbox">"ช่องทำเครื่องหมาย"</string>
+    <!-- scanly_destination -->
+    <string name="scanly_destination_home">"หน้าแรก"</string>
+    <string name="scanly_destination_camera">"กล้อง"</string>
+    <!-- settings_text_recognition -->
+    <string name="settings_text_recognition_and_more">"และอื่นๆ"</string>
+    <string name="settings_text_recognition_romanian">"โรมาเนีย"</string>
+    <string name="settings_text_recognition_czech">"เช็ก"</string>
+    <string name="settings_text_recognition_swedish">"ภาษาสวีเดน"</string>
+    <string name="settings_text_recognition_swahili">"สวาฮีลี"</string>
+    <string name="settings_text_recognition_filipino">"ฟิลิปปินส์"</string>
+    <string name="settings_text_recognition_vietnamese">"ภาษาเวียดนาม"</string>
+    <string name="settings_text_recognition_malay">"มาเลย์"</string>
+    <string name="settings_text_recognition_indonesian">"ชาวอินโดนีเซีย"</string>
+    <string name="settings_text_recognition_turkish">"ตุรกี"</string>
+    <string name="settings_text_recognition_polish">"โปแลนด์"</string>
+    <string name="settings_text_recognition_dutch">"ดัตช์"</string>
+    <string name="settings_text_recognition_portuguese">"ภาษาโปรตุเกส"</string>
+    <string name="settings_text_recognition_italian">"อิตาลี"</string>
+    <string name="settings_text_recognition_german">"เยอรมัน"</string>
+    <string name="settings_text_recognition_french">"ฝรั่งเศส"</string>
+    <string name="settings_text_recognition_spanish">"สเปน"</string>
+    <string name="settings_text_recognition_english">"ภาษาอังกฤษ"</string>
+    <string name="settings_text_recognition_latin">"อักษรละติน"</string>
+    <string name="settings_text_recognition_amharic">"อัมฮาริก"</string>
+    <string name="settings_text_recognition_georgian">"จอร์เจีย"</string>
+    <string name="settings_text_recognition_armenian">"อาร์เมเนีย"</string>
+    <string name="settings_text_recognition_burmese">"พม่า"</string>
+    <string name="settings_text_recognition_khmer">"เขมร"</string>
+    <string name="settings_text_recognition_lao">"ลาว"</string>
+    <string name="settings_text_recognition_thai">"ไทย"</string>
+    <string name="settings_text_recognition_southeast_asia_more">"เอเชียตะวันออกเฉียงใต้ และอื่นๆ"</string>
+    <string name="settings_text_recognition_hebrew">"ภาษาฮีบรู"</string>
+    <string name="settings_text_recognition_urdu">"ภาษาอูรดู"</string>
+    <string name="settings_text_recognition_persian">"เปอร์เซีย"</string>
+    <string name="settings_text_recognition_arabic">"ภาษาอาหรับ"</string>
+    <string name="settings_text_recognition_right_to_left">"จากขวาไปซ้าย"</string>
+    <string name="settings_text_recognition_korean">"เกาหลี"</string>
+    <string name="settings_text_recognition_japanese">"ภาษาญี่ปุ่น"</string>
+    <string name="settings_text_recognition_chinese">"จีน"</string>
+    <string name="settings_text_recognition_east_asian">"เอเชียตะวันออก"</string>
+    <string name="settings_text_recognition_sinhala">"สิงหล"</string>
+    <string name="settings_text_recognition_odia">"โอเดีย"</string>
+    <string name="settings_text_recognition_punjabi">"ปัญจาบ"</string>
+    <string name="settings_text_recognition_gujarati">"คุชราต"</string>
+    <string name="settings_text_recognition_malayalam">"มาลายาลัม"</string>
+    <string name="settings_text_recognition_kannada">"กันนาดา"</string>
+    <string name="settings_text_recognition_telugu">"เตลูกู"</string>
+    <string name="settings_text_recognition_tamil">"ทมิฬ"</string>
+    <string name="settings_text_recognition_bengali">"เบงกาลี"</string>
+    <string name="settings_text_recognition_nepali">"เนปาล"</string>
+    <string name="settings_text_recognition_marathi">"มราฐี"</string>
+    <string name="settings_text_recognition_hindi">"ฮินดี"</string>
+    <string name="settings_text_recognition_indian_scripts">"อักษรอินเดีย"</string>
+    <string name="settings_text_recognition_greek">"กรีก"</string>
+    <string name="settings_text_recognition_serbian">"เซอร์เบีย"</string>
+    <string name="settings_text_recognition_bulgarian">"บัลแกเรีย"</string>
+    <string name="settings_text_recognition_ukrainian">"ยูเครน"</string>
+    <string name="settings_text_recognition_russian">"รัสเซีย"</string>
+    <string name="settings_text_recognition_latin_cyrillic_greek">"ละติน ซีริลลิก และกรีก"</string>
+    <!-- tools_catalog -->
+    <string name="tools_catalog_camera_with_edge_detection">"กล้องพร้อมการตรวจจับขอบ"</string>
+    <string name="tools_catalog_scan_a_document">"สแกนเอกสาร"</string>
+    <string name="tools_catalog_pdf_to_editable_scan">"PDF สำหรับการสแกนที่แก้ไขได้"</string>
+    <string name="tools_catalog_open_any_pdf">"เปิด PDF ตัวใดก็ได้"</string>
+    <string name="tools_catalog_read_pdf">"อ่าน PDF"</string>
+    <string name="tools_catalog_stamp_text">"ลายน้ำข้อความ"</string>
+    <string name="tools_catalog_lock_or_unlock">"ล็อคหรือปลดล็อค"</string>
+    <string name="tools_catalog_pages_as_images">"หน้าเป็นรูปภาพ"</string>
+    <string name="tools_catalog_make_it_smaller">"ทำให้มันเล็กลง"</string>
+    <string name="tools_catalog_combine_files">"รวมไฟล์"</string>
+    <string name="tools_catalog_merge">"ผสาน"</string>
+    <string name="tools_catalog_sign_any_pdf">"ลงชื่อ PDF ใดๆ"</string>
+    <string name="tools_catalog_from_gallery">"จากแกลเลอรี"</string>
+    <string name="tools_catalog_images_to_pdf">"รูปภาพไปยัง PDF"</string>
+    <string name="tools_catalog_create_manage">"สร้างและจัดการ"</string>
+    <string name="tools_catalog_my_signatures">"ลายเซ็นของฉัน"</string>
+    <string name="tools_catalog_photos_scans">"ภาพถ่ายและการสแกน"</string>
+    <string name="tools_catalog_scan_or_create">"สแกนหรือสร้าง"</string>
+    <string name="tools_catalog_qr_barcode">"QR และบาร์โค้ด"</string>
+    <!-- pip_lines -->
+    <string name="pip_lines_tip_folders_keep_related_scans">"เคล็ดลับ: โฟลเดอร์จะเก็บการสแกนที่เกี่ยวข้องไว้ด้วยกัน ลองใช้ใบเสร็จรับเงิน"</string>
+    <string name="pip_lines_tip_turn_on_the_grid">"เคล็ดลับ: เปิดตารางในกล้องเพื่อจัดเรียงเพจขึ้น"</string>
+    <string name="pip_lines_tip_add_a_scanly_widget">"เคล็ดลับ: เพิ่มวิดเจ็ต Scanly ลงในหน้าจอหลักของคุณเพื่อสแกนด้วยการแตะเพียงครั้งเดียว"</string>
+    <string name="pip_lines_tip_the_tools_tab_can">"เคล็ดลับ: แท็บเครื่องมือสามารถผสาน บีบอัด และลงนาม PDF ได้"</string>
+    <string name="pip_lines_tip_open_a_document_s">"เคล็ดลับ: เปิดข้อความในเอกสารเพื่อคัดลอกหรือแชร์ข้อความ"</string>
+    <string name="pip_lines_tip_long_press_a_page">"เคล็ดลับ: กดหน้าค้างไว้แล้วลากเพื่อเรียงลำดับใหม่"</string>
+    <string name="pip_lines_tip_search_finds_words_inside">"เคล็ดลับ: การค้นหาจะค้นหาคำในการสแกนของคุณ ไม่ใช่แค่ชื่อเท่านั้น"</string>
+    <string name="pip_lines_okay_okay_i_felt_that">"โอเค โอเค ฉันรู้สึกแบบนั้น"</string>
+    <string name="pip_lines_still_free_still_no_account">"ฟรีเสมอ ไม่จำเป็นต้องมีบัญชี ไม่มีโฆษณา"</string>
+    <string name="pip_lines_i_m_open_source_you">"ซอร์สโค้ดของฉันเปิดอยู่ คุณสามารถอ่านมันได้ทุกบรรทัด"</string>
+    <string name="pip_lines_your_original_photos_are_kept">"รูปภาพต้นฉบับของคุณจะถูกเก็บไว้ ดังนั้นการแก้ไขจึงสามารถยกเลิกได้ตลอดเวลา"</string>
+    <string name="pip_lines_i_live_on_your_phone">"ฉันทำงานบนโทรศัพท์ของคุณ การสแกนของคุณไม่เคยไปที่เซิร์ฟเวอร์"</string>
+    <string name="pip_lines_hey_that_tickles">"เฮ้! นั่นจั๊กจี้"</string>
+    <!-- pdf_watermark -->
+    <string name="pdf_watermark_for_kyc_use_only">For KYC use only</string>
+    <!-- document_presentation_formatter -->
+    <string name="document_presentation_formatter_untitled_document">"เอกสารที่ไม่มีชื่อ"</string>
+    <string name="document_presentation_formatter_untitled_folder">"โฟลเดอร์ที่ไม่มีชื่อ"</string>
+    <!-- default_pdf_toolkit_repository -->
+    <string name="default_pdf_toolkit_repository_this_pdf_is_password_protected">"PDF นี้ได้รับการป้องกันด้วยรหัสผ่าน"</string>
+    <string name="default_pdf_toolkit_repository_this_pdf_is_too_large">"PDF นี้ใหญ่เกินกว่าจะประมวลผลบนอุปกรณ์นี้ได้"</string>
+    <!-- document_cover_art_factory -->
+    <string name="document_cover_art_factory_scanned_document">"เอกสารที่สแกน"</string>
+    <!-- document_sign -->
+    <string name="document_sign_some_pages_are_still_processing">"บางหน้ายังอยู่ระหว่างการประมวลผลและยังไม่สามารถลงนามได้"</string>
+    <!-- pip_lines -->
+    <string name="pip_lines_hi_i_m_pip_point">"สวัสดี ฉันชื่อ Pip! แสดงหน้าเว็บให้ฉันดู แล้วฉันจะปรับการสแกนให้ตรง"</string>
+    <string name="pip_lines_one_last_thing_can_i">"สิ่งสุดท้าย! ฉันขอใช้กล้องได้ไหม โดยจะเปิดเฉพาะในขณะที่คุณสแกนเท่านั้น"</string>
+    <string name="pip_lines_nothing_here_yet_let_s">"ยังไม่มีอะไรที่นี่. มาสแกนหน้าแรกของคุณด้วยกัน"</string>
+    <string name="pip_lines_a_clean_shelf_start_a">"ชั้นวางสะอาด! เริ่มโฟลเดอร์หรือสแกนบางอย่างใน"</string>
+    <string name="pip_lines_no_folders_yet_they_re">"ยังไม่มีโฟลเดอร์ ใช้เพื่อจัดระเบียบใบเสร็จรับเงิน ใบแจ้งหนี้ และเอกสารของโรงเรียน"</string>
+    <string name="pip_lines_no_documents_yet_i_m">"ยังไม่มีเอกสาร. ฉันพร้อมเมื่อคุณพร้อม"</string>
+    <string name="pip_lines_this_folder_is_waiting_for">"โฟลเดอร์นี้กำลังรอเอกสารแรก"</string>
+    <string name="pip_lines_no_pages_yet_point_me">"ยังไม่มีหน้า. ชี้กระดาษให้ฉันหน่อยสิ!"</string>
+    <string name="pip_lines_no_pages_means_no_words">"ยังไม่มีหน้าเอกสาร ก็ยังไม่มีข้อความให้อ่าน"</string>
+    <string name="pip_lines_pick_a_few_photos_and">"เลือกรูปถ่ายแล้วมาดูกันว่าเครื่องตรวจจับทำงานเร็วแค่ไหน!"</string>
+    <string name="pip_lines_hmm_i_don_t_have">"อืม ฉันไม่มีคำตอบสำหรับข้อนั้น"</string>
+    <string name="pip_lines_no_codes_yet_scan_or">"ยังไม่มีรหัส. สแกนหรือสร้างอันหนึ่งแล้วฉันจะเก็บไว้ที่นี่"</string>
+    <string name="pip_lines_nothing_matches_that_try_another">"ไม่มีอะไรตรงกับสิ่งนั้นเลย ลองคำอื่นดูไหม?"</string>
+    <string name="pip_lines_i_m_still_reading_some">"​​ฉันยังคงอ่านบางหน้าอยู่ การแข่งขันอาจปรากฏขึ้นในไม่กี่วินาที"</string>
+    <string name="pip_lines_i_can_t_see_a">"ฉันยังมองไม่เห็นสิ่งใดเลย ฉันขอยืมกล้องได้ไหม?"</string>
+    <string name="pip_lines_the_camera_is_switched_off">"กล้องสำหรับ Scanly ปิดอยู่ การเดินทางไปยังการตั้งค่าอย่างรวดเร็วช่วยแก้ไขได้"</string>
+    <string name="pip_lines_lend_me_the_camera_and">"ให้ฉันยืมกล้องแล้วฉันจะอ่านโค้ดให้คุณ"</string>
+    <string name="pip_lines_huh_that_document_wandered_off">"อืม เอกสารนั้นดูเหมือนจะหายไป"</string>
+    <!-- pdf_page_size -->
+    <string name="pdf_page_size_match_each_scan">"ปรับให้พอดีกับขนาดของหน้าที่สแกนแต่ละหน้า"</string>
+    <string name="pdf_page_size_29_7_42_0_cm">"29.7 × 42.0 ซม"</string>
+    <string name="pdf_page_size_21_0_29_7_cm">"21.0 × 29.7 ซม"</string>
+    <string name="pdf_page_size_14_8_21_0_cm">"14.8 × 21.0 ซม"</string>
+    <string name="pdf_page_size_25_0_35_3_cm">"25.0 × 35.3 ซม"</string>
+    <string name="pdf_page_size_17_6_25_0_cm">"17.6 × 25.0 ซม"</string>
+    <string name="pdf_page_size_21_6_27_9_cm">"21.6 × 27.9 ซม"</string>
+    <string name="pdf_page_size_27_9_43_2_cm">"27.9 × 43.2 ซม"</string>
+    <string name="pdf_page_size_21_6_35_6_cm">"21.6 × 35.6 ซม"</string>
+    <string name="pdf_page_size_18_4_26_7_cm">"18.4 × 26.7 ซม"</string>
+    <string name="pdf_page_size_10_0_14_8_cm">"10.0 × 14.8 ซม"</string>
+    <string name="pdf_page_size_21_6_33_0_cm">"21.6 × 33.0 ซม"</string>
+    <string name="pdf_page_size_22_9_33_0_cm">"22.9 × 33.0 ซม"</string>
+    <!-- PageTextScreen view modes -->
+    <string name="page_text_text">"ข้อความ"</string>
+    <string name="page_text_on_page">"บนหน้า"</string>
+    <!-- Shared counts -->
+    <plurals name="common_documents">
+        <item quantity="other">"%d เอกสาร"</item>
+    </plurals>
+    <plurals name="common_pages">
+        <item quantity="other">"%d หน้า"</item>
+    </plurals>
+    <plurals name="common_folders">
+        <item quantity="other">"%d โฟลเดอร์"</item>
+    </plurals>
+    <plurals name="common_matches">
+        <item quantity="other">"%d รายการที่ตรงกัน"</item>
+    </plurals>
+    <plurals name="common_words">
+        <item quantity="other">"%d คำ"</item>
+    </plurals>
+    <string name="common_two_parts">"%1$s · %2$s"</string>
+    <!-- Library search -->
+    <plurals name="library_search_in_documents">
+        <item quantity="other">" ใน %d เอกสาร"</item>
+    </plurals>
+    <plurals name="library_search_no_exact_matches">
+        <item quantity="other">"ไม่พบคำที่ตรงกันทั้งหมด · %d เอกสารมีคำที่คล้ายกัน"</item>
+    </plurals>
+    <plurals name="library_search_show_more_pages">
+        <item quantity="other">"แสดงรายการที่ตรงกันในอีก %d หน้า"</item>
+    </plurals>
+    <plurals name="library_search_still_reading">
+        <item quantity="other">"กำลังอ่านข้อความใน %d หน้า รายการที่ตรงกันใหม่จะแสดงที่นี่"</item>
+    </plurals>
+    <string name="library_search_matches_in_documents">"%1$s ใน %2$s"</string>
+    <plurals name="search_filters_show_results">
+        <item quantity="other">"แสดง %d ผลลัพธ์"</item>
+    </plurals>
+    <!-- Settings -->
+    <plurals name="settings_reading_text_pages_left">
+        <item quantity="other">"กำลังอ่านข้อความ…เหลือ %d หน้า"</item>
+    </plurals>
+    <plurals name="settings_text_recognition_reread_pages">
+        <item quantity="other">"อ่านข้อความใน %d หน้าอีกครั้งไหม"</item>
+    </plurals>
+    <string name="settings_could_not_calibrate_models">"ไม่สามารถปรับเทียบโมเดลเอกสารบนอุปกรณ์นี้ได้"</string>
+    <!-- Recently deleted -->
+    <string name="recently_deleted_long_press_for_options">"กดรายการค้างไว้เพื่อดูตัวเลือกเพิ่มเติม"</string>
+    <string name="recently_deleted_retention_note">"หน้าจะถูกเก็บไว้สำหรับ %1$s เอกสารและโฟลเดอร์สำหรับ %2$s หลังจากนั้นจะถูกลบออกอย่างถาวร"</string>
+    <plurals name="recently_deleted_restored_items">
+        <item quantity="other">"กู้คืนแล้ว %d รายการ"</item>
+    </plurals>
+    <plurals name="recently_deleted_restored_some_items">
+        <item quantity="other">"กู้คืนแล้ว %2$d จาก %3$d รายการ %4$s"</item>
+    </plurals>
+    <plurals name="recently_deleted_deleted_items">
+        <item quantity="other">"ลบถาวรแล้ว %d รายการ"</item>
+    </plurals>
+    <plurals name="recently_deleted_deleted_some_items">
+        <item quantity="other">"ลบถาวรแล้ว %2$d จาก %3$d รายการ %4$s"</item>
+    </plurals>
+    <!-- %1$s = folder name, %2$d = number of documents in it. -->
+    <plurals name="folder_delete_what_should_happen">
+        <item quantity="other">"“%1$s” มี %2$d เอกสาร ต้องการจัดการอย่างไร"</item>
+    </plurals>
+    <!-- PDF tools -->
+    <string name="pdf_compress_first_page_of">"หน้าแรกของ %1$s"</string>
+    <string name="pdf_compress_the_pdf">"PDF"</string>
+    <string name="pdf_password_strength_too_short">"สั้นเกินไป"</string>
+    <string name="pdf_password_strength_too_long">"ยาวเกินไป"</string>
+    <string name="pdf_password_strength_weak">"อ่อนแอ"</string>
+    <string name="pdf_password_strength_fair">"ปานกลาง"</string>
+    <string name="pdf_password_strength_strong">"แข็งแกร่ง"</string>
+    <string name="model_benchmark_gate_prefix">"ตรวจสอบเอกสาร: %1$s"</string>
+    <string name="model_benchmark_unavailable">"ไม่ว่าง"</string>
+    <!-- Error messages shown in snackbars and dialogs -->
+    <string name="error_document_not_found">"ไม่พบเอกสาร"</string>
+    <string name="error_group_not_found">"ไม่พบกลุ่ม."</string>
+    <string name="error_no_documents_in_group">"ไม่มีเอกสารในกลุ่ม"</string>
+    <string name="error_no_pages_available_to_export">"ไม่มีหน้าที่สามารถส่งออกได้"</string>
+    <string name="error_could_not_create_export_directory">"ไม่สามารถสร้างไดเรกทอรีส่งออกได้"</string>
+    <string name="error_could_not_replace_existing_pdf">"ไม่สามารถแทนที่ PDF ที่มีอยู่ได้"</string>
+    <string name="error_folder_not_found">"ไม่พบโฟลเดอร์"</string>
+    <string name="error_this_page_is_already_in_recently_deleted">"หน้านี้อยู่ใน ลบล่าสุด แล้ว"</string>
+    <string name="error_only_pages_in_recently_deleted_can_be">"เฉพาะเพจใน ลบล่าสุด เท่านั้นที่สามารถลบทิ้งถาวรได้"</string>
+    <string name="error_page_not_found">"ไม่พบหน้า"</string>
+    <string name="error_page_not_found_in_document_order">"ไม่พบหน้าในลำดับเอกสาร"</string>
+    <string name="error_select_at_least_two_pdfs_to_merge">"เลือกไฟล์ PDF อย่างน้อยสองไฟล์ที่จะรวม"</string>
+    <string name="error_pdf_has_no_pages">"PDF ไม่มีหน้า"</string>
+    <string name="error_password_must_be_4_64_characters">"รหัสผ่านต้องเป็น 4–64 ตัวอักษร"</string>
+    <string name="error_enter_the_current_pdf_password">"ป้อนรหัสผ่าน PDF ปัจจุบัน"</string>
+    <string name="error_enter_watermark_text">"ป้อนข้อความลายน้ำ"</string>
+    <string name="error_this_pdf_has_no_pages">"PDF นี้ไม่มีหน้า"</string>
+    <string name="error_preview_size_is_invalid">"ขนาดตัวอย่างไม่ถูกต้อง"</string>
+    <string name="error_place_a_signature_or_another_mark_first">"ลงลายมือชื่อหรือเครื่องหมายอื่นก่อน"</string>
+    <string name="error_a_mark_is_on_a_missing_page">"มีเครื่องหมายอยู่บนหน้าที่หายไป"</string>
+    <string name="error_could_not_prepare_this_pdf">"ไม่สามารถเตรียม PDF นี้ได้"</string>
+    <string name="error_page_is_out_of_range">"เพจอยู่นอกขอบเขต"</string>
+    <string name="error_choose_at_least_one_page">"เลือกอย่างน้อย 1 หน้า"</string>
+    <string name="error_failed_to_encode_page_image">"ไม่สามารถเข้ารหัสรูปภาพหน้าได้"</string>
+    <string name="error_export_file_is_missing">"ไฟล์ส่งออกหายไป"</string>
+    <string name="error_the_preview_pdf_is_missing">"การแสดงตัวอย่าง PDF หายไป"</string>
+    <string name="error_could_not_read_selected_pdf">"ไม่สามารถอ่าน PDF ที่เลือกได้"</string>
+    <string name="error_not_enough_memory_to_compress_this_pdf">"หน่วยความจำไม่เพียงพอที่จะบีบอัด PDF นี้ ลองใช้คุณภาพที่เล็กที่สุดหรือไฟล์ที่สั้นลง"</string>
+    <string name="error_a_text_box_is_empty_type_something">"กล่องข้อความว่างเปล่า พิมพ์บางอย่างหรือลบออก"</string>
+    <string name="error_a_signature_image_is_missing_remove_it">"ไม่มีรูปภาพลายเซ็น ถอดออกแล้ววางใหม่อีกครั้ง"</string>
+    <string name="error_some_characters_cant_be_drawn_remove_emoji">"ไม่สามารถวาดตัวละครบางตัวได้ ลบอิโมจิหรือสัญลักษณ์ที่ผิดปกติ"</string>
+    <string name="error_some_characters_in_the_watermark_cant_be">"ไม่สามารถวาดอักขระบางตัวในลายน้ำได้ ลบอิโมจิหรือสัญลักษณ์ที่ผิดปกติ"</string>
+    <string name="error_enter_something_to_encode">"ป้อนบางสิ่งที่จะเข้ารหัส"</string>
+    <string name="error_could_not_write_qr_image">"ไม่สามารถเขียนอิมเมจ QR ได้"</string>
+    <string name="error_a_signature_image_is_missing_place_it">"ไม่มีรูปภาพลายเซ็น วางอีกครั้ง"</string>
+    <string name="error_the_signature_is_empty">"ลายเซ็นว่างเปล่า"</string>
+    <string name="error_could_not_save_the_signature">"บันทึกลายเซ็นไม่ได้"</string>
+    <string name="error_could_not_prepare_the_image">"เตรียมรูปภาพไม่ได้"</string>
+    <string name="error_could_not_create_signature_storage">"ไม่สามารถสร้างที่เก็บข้อมูลลายเซ็นได้"</string>
+    <string name="error_no_signature_found_in_this_image_try">"ไม่พบลายเซ็นในภาพนี้ ลองใช้หมึกสีเข้มบนกระดาษสีอ่อน"</string>
+    <string name="error_this_signature_no_longer_exists">"ลายเซ็นนี้ไม่มีอยู่แล้ว"</string>
+    <string name="error_the_signature_image_could_not_be_read">"ไม่สามารถอ่านภาพลายเซ็นได้"</string>
+    <string name="error_a_signature_image_is_missing_open_sign">"ไม่พบรูปภาพลายเซ็น เปิดเครื่องมือลงนามแล้ววางลายเซ็นอีกครั้ง"</string>
+    <string name="error_this_page_is_still_processing_try_again">"หน้านี้ยังคงประมวลผลอยู่ โปรดลองอีกครั้งในอีกสักครู่"</string>
+    <string name="error_could_not_read_the_page_image">"ไม่สามารถอ่านภาพหน้าได้"</string>
+    <string name="error_invalid_page_image_path">"เส้นทางรูปภาพของเพจไม่ถูกต้อง"</string>
+    <string name="error_the_exported_file_is_unavailable">"ไฟล์ที่ส่งออกไม่พร้อมใช้งาน"</string>
+    <string name="error_the_exported_image_is_unavailable">"รูปภาพที่ส่งออกไม่พร้อมใช้งาน"</string>
+    <string name="error_the_selected_save_folder_is_no_longer">"โฟลเดอร์บันทึกที่เลือกไม่สามารถใช้งานได้อีกต่อไป เลือกอีกครั้งในการตั้งค่า"</string>
+    <string name="error_this_page_no_longer_exists">"หน้านี้ไม่มีอยู่แล้ว"</string>
+    <string name="error_read_this_pages_text_first">"อ่านข้อความของหน้านี้ก่อน"</string>
+    <string name="error_page_image_could_not_be_read">"ไม่สามารถอ่านรูปภาพหน้าได้"</string>
+    <string name="error_opencv_could_not_be_initialized">"ไม่สามารถเตรียมใช้งาน OpenCV ได้"</string>
+    <string name="error_no_images_selected">"ไม่ได้เลือกภาพ"</string>
+    <string name="error_could_not_write_imported_image">"ไม่สามารถเขียนภาพที่นำเข้าได้"</string>
+    <string name="error_imported_image_file_is_empty">"ไฟล์รูปภาพที่นำเข้าว่างเปล่า"</string>
+    <string name="error_image_decode_failed">"การถอดรหัสรูปภาพล้มเหลว"</string>
+    <!-- Language settings -->
+    <string name="settings_language">"ภาษา"</string>
+    <string name="settings_language_system_default">"ค่าเริ่มต้นของระบบ"</string>
+    <string name="settings_language_follow_phone">"ภาษาของโทรศัพท์"</string>
+    <string name="settings_language_uses_phone_language">"ใช้ภาษาเดียวกับโทรศัพท์: %1$s"</string>
+    <string name="settings_language_app_language">"ภาษาของแอป"</string>
+    <string name="settings_language_note">"ชื่อเอกสาร ข้อความที่อ่านจากหน้าเอกสาร และ PDF ที่เปิดจะยังคงเป็นภาษาเดิม"</string>
+    <!-- Manifest -->
+    <string name="intent_open_in_scanly">"เปิดใน Scanly"</string>
+    <!-- Library date sections -->
+    <string name="library_section_previous_7_days">"7 วันก่อนหน้า"</string>
+    <!-- Month and year as a section title, e.g. "December 2025". %1$s = month name, %2$d = year. -->
+    <string name="library_section_month_year">"%1$s %2$d"</string>
+    <!-- Camera -->
+    <string name="scan_session_capture_failed">"การจับภาพล้มเหลว"</string>
+    <!-- Signature kinds as whole phrases (Signature vs Initials) -->
+    <string name="sign_kind_add_signature">"เพิ่มลายเซ็น"</string>
+    <string name="sign_kind_add_initials">"เพิ่มชื่อย่อ"</string>
+    <string name="sign_kind_delete_signature">"ลบลายเซ็น"</string>
+    <string name="sign_kind_delete_initials">"ลบชื่อย่อ"</string>
+    <string name="sign_kind_delete_signature_question">"ลบลายเซ็น?"</string>
+    <string name="sign_kind_delete_initials_question">"ลบชื่อย่อ?"</string>
+    <string name="sign_kind_open_signature_options">"เปิดตัวเลือกลายเซ็น"</string>
+    <string name="sign_kind_open_initials_options">"เปิดตัวเลือกชื่อย่อ"</string>
+    <string name="sign_kind_saved_signature">"ลายเซ็นที่บันทึกไว้"</string>
+    <string name="sign_kind_saved_initials">"ชื่อย่อที่บันทึกไว้"</string>
+    <string name="sign_kind_show_signature_first">"แสดงลายเซ็นนี้ก่อนผู้อื่น"</string>
+    <string name="sign_kind_show_initials_first">"แสดงชื่อย่อเหล่านี้ก่อนชื่อย่ออื่นๆ"</string>
+    <!-- Watermark -->
+    <!-- Watermark presets are stamped into PDFs with a Latin/Cyrillic font. In languages written in
+         another script (Indic, CJK, Thai), keep these in English so the stamp can be drawn. -->
+    <string name="pdf_watermark_preset_confidential">CONFIDENTIAL</string>
+    <string name="pdf_watermark_preset_draft">DRAFT</string>
+    <string name="pdf_watermark_preset_copy">COPY</string>
+    <string name="pdf_watermark_opacity_percent">"%1$d%%"</string>
+    <!-- Localized counts and progress (no English-only plural branches). -->
+    <plurals name="common_days">
+        <item quantity="other">"%d วัน"</item>
+    </plurals>
+    <plurals name="common_files">
+        <item quantity="other">"%d ไฟล์"</item>
+    </plurals>
+    <plurals name="common_images">
+        <item quantity="other">"%d รูปภาพ"</item>
+    </plurals>
+    <plurals name="common_marks">
+        <item quantity="other">"%d เครื่องหมาย"</item>
+    </plurals>
+    <plurals name="common_scans">
+        <item quantity="other">"%d งานสแกน"</item>
+    </plurals>
+    <plurals name="common_topics">
+        <item quantity="other">"%d หัวข้อ"</item>
+    </plurals>
+    <plurals name="common_libraries">
+        <item quantity="other">"%d ไลบรารี"</item>
+    </plurals>
+    <plurals name="common_selected">
+        <item quantity="other">"เลือกแล้ว %d รายการ"</item>
+    </plurals>
+    <plurals name="pdf_to_images_saved_count">
+        <item quantity="other">"บันทึกแล้ว %d รูปภาพ"</item>
+    </plurals>
+    <plurals name="pdf_to_images_export_count">
+        <item quantity="other">"ส่งออก %d รูปภาพ"</item>
+    </plurals>
+    <string name="common_current_of_total">"%1$d จาก %2$d"</string>
+    <!-- Error fallbacks found in the final extraction audit. -->
+    <string name="error_failed_to_import_images">"ไม่สามารถนำเข้ารูปภาพได้"</string>
+    <string name="error_could_not_calculate_storage_usage">"ไม่สามารถคำนวณการใช้พื้นที่เก็บข้อมูลได้"</string>
+    <string name="error_could_not_clear_app_data">"ไม่สามารถล้างข้อมูลแอปได้"</string>
+    <string name="error_could_not_clear_temporary_exports">"ไม่สามารถเคลียร์การส่งออกชั่วคราวได้"</string>
+    <string name="error_could_not_remove_old_backup_files">"ไม่สามารถลบไฟล์สำรองข้อมูลเก่าได้"</string>
+    <string name="error_could_not_create_the_document">"ไม่สามารถสร้างเอกสารได้"</string>
+    <string name="error_could_not_rename_the_document">"ไม่สามารถเปลี่ยนชื่อเอกสารได้"</string>
+    <string name="error_could_not_delete_the_document">"ไม่สามารถลบเอกสารได้"</string>
+    <string name="error_could_not_create_the_group">"ไม่สามารถสร้างกลุ่มได้"</string>
+    <string name="error_could_not_rename_the_group">"ไม่สามารถเปลี่ยนชื่อกลุ่มได้"</string>
+    <string name="error_could_not_delete_the_group">"ไม่สามารถลบกลุ่มได้"</string>
+    <string name="error_could_not_remove_empty_folders">"ไม่สามารถลบโฟลเดอร์ว่างได้"</string>
+    <string name="error_could_not_update_document_group">"ไม่สามารถอัปเดตกลุ่มเอกสารได้"</string>
+    <string name="error_could_not_prepare_page_capture">"ไม่สามารถเตรียมการจับภาพหน้าได้"</string>
+    <string name="error_could_not_prepare_page_replacement">"ไม่สามารถเตรียมการเปลี่ยนหน้าได้"</string>
+    <string name="error_could_not_save_the_captured_page">"ไม่สามารถบันทึกหน้าที่บันทึกได้"</string>
+    <string name="error_could_not_reorder_the_page">"ไม่สามารถเรียงลำดับหน้าใหม่ได้"</string>
+    <string name="error_could_not_save_page_edits">"ไม่สามารถบันทึกการแก้ไขหน้าได้"</string>
+    <string name="error_could_not_update_text_recognition_engine">"ไม่สามารถอัปเดตเอ็นจิ้นการรู้จำข้อความได้"</string>
+    <string name="error_could_not_update_theme_mode">"ไม่สามารถอัปเดตโหมดธีมได้"</string>
+    <string name="error_could_not_finish_onboarding">"ไม่สามารถเริ่มต้นใช้งานให้เสร็จสิ้นได้"</string>
+    <string name="error_could_not_load_settings_content">"ไม่สามารถโหลดเนื้อหาการตั้งค่าได้"</string>
+    <string name="error_could_not_update_the_save_location">"ไม่สามารถอัปเดตตำแหน่งที่บันทึกได้"</string>
+    <string name="error_could_not_update_model_selection">"ไม่สามารถอัปเดตการเลือกรุ่นได้"</string>
+    <string name="error_could_not_update_document_detection_settings">"ไม่สามารถอัปเดตการตั้งค่าการตรวจจับเอกสารได้"</string>
+    <string name="error_could_not_save_the_exported_file">"ไม่สามารถบันทึกไฟล์ที่ส่งออกได้"</string>
+    <string name="error_could_not_store_update_prompt_state">"ไม่สามารถจัดเก็บสถานะพร้อมท์การอัพเดตได้"</string>
+    <string name="error_could_not_check_github_releases">"ไม่สามารถตรวจสอบการเผยแพร่ GitHub ได้"</string>
+</resources>

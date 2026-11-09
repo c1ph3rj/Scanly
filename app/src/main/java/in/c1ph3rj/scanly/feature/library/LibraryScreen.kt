@@ -77,6 +77,10 @@ import `in`.c1ph3rj.scanly.domain.model.GroupTitleFormat
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
 import `in`.c1ph3rj.scanly.feature.components.*
 import kotlinx.coroutines.flow.collectLatest
+import `in`.c1ph3rj.scanly.R
+import androidx.compose.ui.res.stringResource
+import `in`.c1ph3rj.scanly.core.common.appString
+import androidx.compose.ui.res.pluralStringResource
 
 @Composable
 fun LibraryRoute(
@@ -261,9 +265,9 @@ fun LibraryScreen(
                                 )
                             } else {
                                 LibrarySectionHeader(
-                                    title = "Folders",
+                                    title = stringResource(R.string.library_folders),
                                     count = visibleGroups.size,
-                                    actionLabel = if (visibleGroups.isNotEmpty()) "See all" else null,
+                                    actionLabel = if (visibleGroups.isNotEmpty()) stringResource(R.string.home_see_all) else null,
                                     onAction = { onTabSelected(LibraryTab.Folders) },
                                     modifier = inset,
                                 )
@@ -496,7 +500,7 @@ fun LibraryScreen(
 
     if (createGroupDialogVisible) {
         GroupNameDialog(
-            title = "New folder",
+            title = stringResource(R.string.library_folder_shelf_new_folder),
             initialValue = "",
             onDismiss = { createGroupDialogVisible = false },
             onConfirm = { title ->
@@ -512,9 +516,9 @@ fun LibraryScreen(
 
     renameDocTarget?.let { doc ->
         DocumentTitleDialog(
-            title = "Rename document",
+            title = stringResource(R.string.document_detail_rename_document),
             initialValue = doc.title,
-            confirmLabel = "Save",
+            confirmLabel = stringResource(R.string.document_detail_save),
             onDismiss = { renameDocTarget = null },
             onConfirm = { value ->
                 renameDocTarget = null
@@ -525,9 +529,9 @@ fun LibraryScreen(
 
     deleteDocTarget?.let { doc ->
         ScanlyConfirmDialog(
-            title = "Delete document?",
+            title = stringResource(R.string.document_detail_delete_document_2),
             text = TrashCopy.document(doc.title),
-            confirmLabel = "Delete",
+            confirmLabel = stringResource(R.string.library_card_presentation_delete),
             onDismiss = { deleteDocTarget = null },
             onConfirm = {
                 deleteDocTarget = null
@@ -539,9 +543,9 @@ fun LibraryScreen(
 
     renameGroupTarget?.let { group ->
         GroupNameDialog(
-            title = "Rename folder",
+            title = stringResource(R.string.group_detail_rename_folder),
             initialValue = group.title,
-            confirmLabel = "Save",
+            confirmLabel = stringResource(R.string.document_detail_save),
             onDismiss = { renameGroupTarget = null },
             onConfirm = { value ->
                 renameGroupTarget = null
@@ -620,14 +624,17 @@ private fun LibraryHeader(
         verticalArrangement = Arrangement.spacedBy(2.dp),
     ) {
         Text(
-            text = "Library",
+            text = stringResource(R.string.library_library),
             style = if (compact) MaterialTheme.typography.headlineSmall else MaterialTheme.typography.headlineMedium,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.semantics { heading() },
         )
         Text(
-            "$documentCount ${if (documentCount == 1) "document" else "documents"} · " +
-                "$pageCount ${if (pageCount == 1) "page" else "pages"}",
+            stringResource(
+                R.string.common_two_parts,
+                pluralStringResource(R.plurals.common_documents, documentCount, documentCount),
+                pluralStringResource(R.plurals.common_pages, pageCount, pageCount),
+            ),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
@@ -645,7 +652,7 @@ private fun LibrarySearchLauncher(
         modifier = modifier
             .fillMaxWidth()
             .testTag(ScanlyTestTags.LIBRARY_SEARCH)
-            .semantics { contentDescription = "Search library" },
+            .semantics { contentDescription = appString(R.string.library_search_library) },
         shape = RoundedCornerShape(26.dp),
         // Same card-style pill as Home's search, so both entry points look identical.
         color = MaterialTheme.colorScheme.surfaceContainer,
@@ -659,7 +666,7 @@ private fun LibrarySearchLauncher(
         ) {
             Icon(Icons.Filled.Search, contentDescription = null, modifier = Modifier.size(22.dp))
             Text(
-                "Search names and text in pages",
+                stringResource(R.string.home_search_names_and_text_in),
                 style = MaterialTheme.typography.bodyLarge,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
@@ -678,7 +685,7 @@ private fun LibraryDocumentsHeader(
     modifier: Modifier = Modifier,
 ) {
     Row(modifier = modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-        LibrarySectionTitle("Documents", documentCount, modifier = Modifier.weight(1f))
+        LibrarySectionTitle(stringResource(R.string.library_documents), documentCount, modifier = Modifier.weight(1f))
         LibrarySortButton(sortOption, onSort)
         Spacer(Modifier.width(4.dp))
         LibraryLayoutToggle(gridLayout, onLayoutChange)
@@ -701,10 +708,10 @@ private fun LibraryFoldersExpandedHeader(
         LibraryIconButton(
             onBack,
             Icons.AutoMirrored.Filled.ArrowBack,
-            "Back to library",
+            stringResource(R.string.library_back_to_library),
             modifier = Modifier.offset(x = (-12).dp),
         )
-        LibrarySectionTitle("Folders", folderCount, modifier = Modifier.weight(1f).offset(x = (-8).dp))
+        LibrarySectionTitle(stringResource(R.string.library_folders), folderCount, modifier = Modifier.weight(1f).offset(x = (-8).dp))
         LibrarySortButton(sortOption, onSort)
     }
 }
@@ -716,7 +723,7 @@ private fun LibrarySortButton(sortOption: LibrarySortOption, onClick: () -> Unit
         shape = RoundedCornerShape(20.dp),
         color = Color.Transparent,
         contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-        modifier = Modifier.semantics { contentDescription = "Sort library" },
+        modifier = Modifier.semantics { contentDescription = appString(R.string.library_sort_library) },
     ) {
         Row(
             modifier = Modifier.heightIn(min = 48.dp).padding(horizontal = 10.dp),
@@ -773,7 +780,7 @@ private fun LibraryLayoutToggle(gridLayout: Boolean, onLayoutChange: (Boolean) -
                 ) {
                     Icon(
                         if (grid) Icons.Outlined.GridView else Icons.AutoMirrored.Outlined.List,
-                        if (grid) "Grid view" else "List view",
+                        if (grid) stringResource(R.string.library_grid_view) else stringResource(R.string.library_list_view),
                         modifier = Modifier.size(20.dp),
                         tint = if (selected) {
                             MaterialTheme.colorScheme.onPrimaryContainer
@@ -798,13 +805,13 @@ private fun EmptyLibraryTabCard(
         pipLine = if (isFolders) PipLines.LIBRARY_NO_FOLDERS else PipLines.LIBRARY_NO_DOCUMENTS,
         pipMood = PipMood.IDLE,
         pipLook = if (isFolders) PipLook.RIGHT else PipLook.AHEAD,
-        title = if (isFolders) "No folders yet" else "No documents yet",
+        title = if (isFolders) stringResource(R.string.library_no_folders_yet) else stringResource(R.string.home_no_documents_yet),
         description = if (isFolders) {
-            "Create a folder to keep related documents easy to find."
+            stringResource(R.string.library_create_a_folder_to_keep)
         } else {
-            "Create a document, then scan pages or import them from your gallery."
+            stringResource(R.string.library_create_a_document_then_scan)
         },
-        actionLabel = if (isFolders) "New folder" else "New document",
+        actionLabel = if (isFolders) stringResource(R.string.library_folder_shelf_new_folder) else stringResource(R.string.group_detail_new_document),
         onAction = if (isFolders) onCreateGroup else onCreateDocument,
         actionIcon = if (isFolders) Icons.Outlined.CreateNewFolder else Icons.Outlined.Add,
     )
@@ -819,7 +826,7 @@ private fun LibrarySortSheet(
     onDismiss: () -> Unit,
 ) {
     val scope = when (selectedTab) {
-        LibraryTab.All -> "folders and documents"
+        LibraryTab.All -> stringResource(R.string.library_folders_and_documents)
         LibraryTab.Folders -> "folders"
         LibraryTab.Documents -> "documents"
     }
@@ -836,12 +843,12 @@ private fun LibrarySortSheet(
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Text(
-                text = "Sort library",
+                text = stringResource(R.string.library_sort_library),
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.SemiBold,
             )
             Text(
-                text = "Choose how $scope are ordered.",
+                text = stringResource(R.string.library_choose_how_are_ordered, scope),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(bottom = 8.dp),
@@ -979,14 +986,14 @@ fun NewDocumentDialog(
 
     ScanlyFormDialogShell(onDismiss = onDismiss) {
         Text(
-            text = "New document",
+            text = stringResource(R.string.group_detail_new_document),
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.SemiBold,
         )
         NameTextField(
             value = title,
             onValueChange = { title = it },
-            label = "Title",
+            label = stringResource(R.string.shared_title),
             isLoading = isFillingName,
             onKeyboardDone = confirm,
         )
@@ -1002,12 +1009,12 @@ fun NewDocumentDialog(
         if (groups.isNotEmpty()) {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(
-                    text = "Save to",
+                    text = stringResource(R.string.library_save_to),
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 DestinationRow(
-                    label = "No folder",
+                    label = stringResource(R.string.shared_no_folder),
                     icon = Icons.Filled.FolderOff,
                     selected = selectedGroupId == null,
                     onClick = { selectedGroupId = null },
@@ -1035,12 +1042,12 @@ fun NewDocumentDialog(
             horizontalArrangement = Arrangement.End,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            TextButton(onClick = onDismiss) { Text("Cancel") }
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.export_share_cancel)) }
             Spacer(Modifier.width(8.dp))
             TextButton(
                 onClick = confirm,
                 enabled = title.isNotBlank() && !isFillingName,
-            ) { Text("Create") }
+            ) { Text(stringResource(R.string.shared_create)) }
         }
     }
 }
@@ -1114,7 +1121,7 @@ private fun DestinationRow(
                 if (selected) {
                     Icon(
                         imageVector = Icons.Filled.Check,
-                        contentDescription = "Selected",
+                        contentDescription = stringResource(R.string.shared_selected),
                         tint = selectedAccentColor,
                     )
                 }
@@ -1131,12 +1138,12 @@ fun EmptyLibraryCard(
     PipEmptyState(
         pipLine = PipLines.LIBRARY_EMPTY,
         pipMood = PipMood.HAPPY,
-        title = "Your library is ready",
-        description = "Create a folder to stay organised, or add a document and start capturing.",
-        actionLabel = "New folder",
+        title = stringResource(R.string.library_your_library_is_ready),
+        description = stringResource(R.string.library_create_a_folder_to_stay),
+        actionLabel = stringResource(R.string.library_folder_shelf_new_folder),
         onAction = onCreateGroup,
         actionIcon = Icons.Outlined.CreateNewFolder,
-        secondaryActionLabel = "New document",
+        secondaryActionLabel = stringResource(R.string.group_detail_new_document),
         onSecondaryAction = onCreateDocument,
     )
 }

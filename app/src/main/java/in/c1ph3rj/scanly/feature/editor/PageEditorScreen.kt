@@ -65,6 +65,9 @@ import `in`.c1ph3rj.scanly.domain.model.PageFilterPreset
 import `in`.c1ph3rj.scanly.domain.model.ScanPage
 import `in`.c1ph3rj.scanly.feature.components.ScanlyConfirmDialog
 import kotlinx.coroutines.flow.collectLatest
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun PageEditorRoute(
@@ -145,9 +148,9 @@ fun PageEditorScreen(
     }
     val showBulkApplyLoader = uiState.isSaving && uiState.applyFilterToAllPages
     val statusLabel = when {
-        showBulkApplyLoader -> "Processing"
-        uiState.isSaving -> "Processing"
-        else -> "Editor"
+        showBulkApplyLoader -> stringResource(R.string.page_crop_processing)
+        uiState.isSaving -> stringResource(R.string.page_crop_processing)
+        else -> stringResource(R.string.page_editor_editor)
     }
 
     if (filtersVisible && uiState.page != null && uiState.cropQuad != null) {
@@ -207,7 +210,7 @@ fun PageEditorScreen(
                     contentAlignment = Alignment.Center,
                 ) {
                     Text(
-                        text = "Page not found.",
+                        text = stringResource(R.string.page_crop_page_not_found),
                         color = MaterialTheme.colorScheme.onBackground,
                         style = MaterialTheme.typography.titleLarge,
                     )
@@ -244,25 +247,25 @@ fun PageEditorScreen(
                             )
                         }
                         EditorToolPanel(
-                            title = "Edit tools",
-                            subtitle = "Crop, filter, and adjust this page. Save with Done.",
+                            title = stringResource(R.string.page_editor_edit_tools),
+                            subtitle = stringResource(R.string.page_editor_crop_filter_and_adjust_this),
                             modifier = Modifier
                                 .weight(twoPane.controlsWeight)
                                 .fillMaxHeight()
                                 .widthIn(max = twoPane.controlsMaxWidth),
                         ) {
-                            EditorSideBadge(text = "Page ${uiState.page.pageIndex + 1}")
+                            EditorSideBadge(text = stringResource(R.string.trash_use_cases_page, uiState.page.pageIndex + 1))
                             Spacer(modifier = Modifier.height(4.dp))
                             EditorRailAction(
                                 icon = Icons.Filled.Crop,
-                                label = "Crop",
-                                subtitle = "AI detect, rotate, handles",
+                                label = stringResource(R.string.page_crop_crop),
+                                subtitle = stringResource(R.string.page_editor_ai_detect_rotate_handles),
                                 onClick = onOpenCrop,
                                 enabled = !uiState.isSaving,
                             )
                             EditorRailAction(
                                 icon = Icons.Filled.Tune,
-                                label = "Filters",
+                                label = stringResource(R.string.filter_picker_filters),
                                 subtitle = uiState.selectedFilter.toEditorLabel(),
                                 onClick = { filtersVisible = true },
                                 enabled = !uiState.isSaving,
@@ -270,26 +273,26 @@ fun PageEditorScreen(
                             EditorRailAction(
                                 icon = Icons.Filled.Tonality,
                                 label = if (uiState.filterAdjustments.isDefault) {
-                                    "Adjust"
+                                    stringResource(R.string.filter_customize_adjust)
                                 } else {
-                                    "Adjusted"
+                                    stringResource(R.string.filter_customize_adjusted)
                                 },
-                                subtitle = "Brightness, contrast, more",
+                                subtitle = stringResource(R.string.page_editor_brightness_contrast_more),
                                 onClick = { customizeVisible = true },
                                 enabled = !uiState.isSaving,
                                 emphasized = !uiState.filterAdjustments.isDefault,
                             )
                             EditorRailAction(
                                 icon = Icons.Filled.Refresh,
-                                label = "Retake",
-                                subtitle = "Capture this page again",
+                                label = stringResource(R.string.document_detail_retake),
+                                subtitle = stringResource(R.string.page_editor_capture_this_page_again),
                                 onClick = onRetakePage,
                                 enabled = !uiState.isSaving,
                             )
                             EditorRailAction(
                                 icon = Icons.Filled.DeleteOutline,
-                                label = "Delete page",
-                                subtitle = "Remove from document",
+                                label = stringResource(R.string.document_detail_delete_page),
+                                subtitle = stringResource(R.string.page_editor_remove_from_document),
                                 onClick = { deleteDialogVisible = true },
                                 enabled = !uiState.isSaving,
                                 destructive = true,
@@ -350,10 +353,10 @@ fun PageEditorScreen(
 
     if (discardDialogVisible) {
         ScanlyConfirmDialog(
-            title = "Discard changes?",
-            text = "Your edits to this page have not been saved.",
-            confirmLabel = "Discard",
-            dismissLabel = "Keep editing",
+            title = stringResource(R.string.page_crop_discard_changes),
+            text = stringResource(R.string.page_editor_your_edits_to_this_page),
+            confirmLabel = stringResource(R.string.page_crop_discard),
+            dismissLabel = stringResource(R.string.page_crop_keep_editing),
             onDismiss = { discardDialogVisible = false },
             onConfirm = {
                 discardDialogVisible = false
@@ -365,9 +368,9 @@ fun PageEditorScreen(
 
     if (deleteDialogVisible && uiState.page != null) {
         ScanlyConfirmDialog(
-            title = "Delete page",
+            title = stringResource(R.string.document_detail_delete_page),
             text = TrashCopy.page(uiState.page.pageIndex + 1),
-            confirmLabel = "Delete",
+            confirmLabel = stringResource(R.string.library_card_presentation_delete),
             onDismiss = { deleteDialogVisible = false },
             onConfirm = {
                 deleteDialogVisible = false
@@ -397,7 +400,7 @@ private fun EditorTopBar(
     ) {
         ChromeIconButton(
             icon = Icons.AutoMirrored.Filled.ArrowBack,
-            contentDescription = "Back",
+            contentDescription = stringResource(R.string.zoomable_image_back),
             onClick = onNavigateUp,
             enabled = !isSaving,
             containerColor = colorScheme.surfaceContainerHighest,
@@ -410,7 +413,7 @@ private fun EditorTopBar(
         )
         ChromeIconButton(
             icon = Icons.Filled.Check,
-            contentDescription = "Done",
+            contentDescription = stringResource(R.string.camera_capture_chrome_done),
             onClick = onSave,
             enabled = !isSaving,
             containerColor = colorScheme.primary,
@@ -443,13 +446,13 @@ private fun PageEditorPreview(
     ) {
         if (previewBitmap == null) {
             Text(
-                text = "Loading preview…",
+                text = stringResource(R.string.filter_customize_loading_preview),
                 color = Color.White,
             )
         } else {
             Image(
                 bitmap = previewBitmap!!,
-                contentDescription = "Page editor preview",
+                contentDescription = stringResource(R.string.page_editor_page_editor_preview),
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Fit,
             )
@@ -488,12 +491,12 @@ private fun BulkFilterApplyOverlay() {
                     trackColor = colorScheme.surfaceContainerHighest,
                 )
                 Text(
-                    text = "Processing image data for all pages",
+                    text = stringResource(R.string.page_editor_processing_image_data_for_all),
                     color = colorScheme.onSurface,
                     style = MaterialTheme.typography.titleMedium,
                 )
                 Text(
-                    text = "Please wait while Scanly adapts the filter and updates the whole document.",
+                    text = stringResource(R.string.page_editor_please_wait_while_scanly_adapts),
                     color = colorScheme.onSurfaceVariant,
                     style = MaterialTheme.typography.bodyMedium,
                 )
@@ -512,7 +515,7 @@ private fun EditorPageBadge(
             shape = CircleShape,
         ) {
             Text(
-                text = "Page ${pageIndex + 1}",
+                text = stringResource(R.string.trash_use_cases_page, pageIndex + 1),
                 modifier = Modifier.padding(horizontal = 18.dp, vertical = 8.dp),
                 color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.labelLarge,
@@ -540,25 +543,25 @@ private fun EditorActionRow(
         contentPadding = PaddingValues(horizontal = 2.dp),
     ) {
         item {
-            EditorActionButton(label = "Crop", icon = Icons.Filled.Crop, onClick = onOpenCrop, enabled = enabled)
+            EditorActionButton(label = stringResource(R.string.page_crop_crop), icon = Icons.Filled.Crop, onClick = onOpenCrop, enabled = enabled)
         }
         item {
-            EditorActionButton(label = "Filters", icon = Icons.Filled.Tune, onClick = onOpenFilters, enabled = enabled)
+            EditorActionButton(label = stringResource(R.string.filter_picker_filters), icon = Icons.Filled.Tune, onClick = onOpenFilters, enabled = enabled)
         }
         item {
             EditorActionButton(
-                label = if (customizeActive) "Adjusted" else "Adjust",
+                label = if (customizeActive) stringResource(R.string.filter_customize_adjusted) else stringResource(R.string.filter_customize_adjust),
                 icon = Icons.Filled.Tonality,
                 onClick = onOpenCustomize,
                 enabled = enabled,
             )
         }
         item {
-            EditorActionButton(label = "Retake", icon = Icons.Filled.Refresh, onClick = onRetake, enabled = enabled)
+            EditorActionButton(label = stringResource(R.string.document_detail_retake), icon = Icons.Filled.Refresh, onClick = onRetake, enabled = enabled)
         }
         item {
             EditorActionButton(
-                label = "Delete",
+                label = stringResource(R.string.library_card_presentation_delete),
                 icon = Icons.Filled.DeleteOutline,
                 onClick = onDelete,
                 enabled = enabled,
@@ -607,14 +610,14 @@ private fun EditorActionButton(
 }
 
 private fun PageFilterPreset.toEditorLabel(): String = when (this) {
-    PageFilterPreset.ORIGINAL -> "Original"
-    PageFilterPreset.AUTO -> "Auto"
-    PageFilterPreset.MAGIC_COLOR -> "Magic Color"
-    PageFilterPreset.NATURAL_COLOR -> "Natural"
-    PageFilterPreset.VIVID_COLOR -> "Vivid"
-    PageFilterPreset.SCREEN -> "Screen"
-    PageFilterPreset.GRAYSCALE -> "Grayscale"
+    PageFilterPreset.ORIGINAL -> appString(R.string.filter_customize_original)
+    PageFilterPreset.AUTO -> appString(R.string.filter_customize_auto)
+    PageFilterPreset.MAGIC_COLOR -> appString(R.string.filter_customize_magic_color)
+    PageFilterPreset.NATURAL_COLOR -> appString(R.string.filter_customize_natural)
+    PageFilterPreset.VIVID_COLOR -> appString(R.string.filter_customize_vivid)
+    PageFilterPreset.SCREEN -> appString(R.string.filter_customize_screen)
+    PageFilterPreset.GRAYSCALE -> appString(R.string.filter_customize_grayscale)
     PageFilterPreset.BLACK_AND_WHITE -> "B&W"
-    PageFilterPreset.WHITEBOARD -> "Whiteboard"
-    PageFilterPreset.FADED -> "Faded Text"
+    PageFilterPreset.WHITEBOARD -> appString(R.string.filter_customize_whiteboard)
+    PageFilterPreset.FADED -> appString(R.string.filter_customize_faded_text)
 }

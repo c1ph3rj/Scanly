@@ -22,6 +22,8 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
 
 sealed interface SignatureManageEvent {
     data class ShowMessage(val message: String) : SignatureManageEvent
@@ -71,7 +73,7 @@ class SignatureManageViewModel @Inject constructor(
     fun moveToFront(signature: SavedSignature) {
         viewModelScope.launch {
             val message = when (val result = moveSignatureToFrontUseCase(signature.id)) {
-                is ScanlyResult.Success -> "${signature.kind.label} will be offered first when signing"
+                is ScanlyResult.Success -> appString(R.string.signature_manage_will_be_offered_first_when, signature.kind.label)
                 is ScanlyResult.Failure -> result.error.message
             }
             messages.send(SignatureManageEvent.ShowMessage(message))
@@ -92,7 +94,7 @@ class SignatureManageViewModel @Inject constructor(
         when (val result = saveSignatureToGalleryUseCase(signature.id, ink)) {
             is ScanlyResult.Success -> {
                 recordPositiveMomentUseCase()
-                SignatureManageEvent.ShowMessage("Saved to ${result.value.destinationLabel}")
+                SignatureManageEvent.ShowMessage(appString(R.string.signature_manage_saved_to, result.value.destinationLabel))
             }
             is ScanlyResult.Failure -> SignatureManageEvent.ShowMessage(result.error.message)
         }

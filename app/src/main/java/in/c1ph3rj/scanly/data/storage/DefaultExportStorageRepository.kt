@@ -1,5 +1,7 @@
 package `in`.c1ph3rj.scanly.data.storage
 
+import `in`.c1ph3rj.scanly.core.common.appString
+import `in`.c1ph3rj.scanly.R
 import `in`.c1ph3rj.scanly.core.common.ScanlyDispatchers
 import `in`.c1ph3rj.scanly.core.common.ScanlyError
 import `in`.c1ph3rj.scanly.core.common.ScanlyResult
@@ -29,7 +31,7 @@ class DefaultExportStorageRepository @Inject constructor(
                 onFailure = { throwable ->
                     ScanlyResult.Failure(
                         ScanlyError(
-                            message = throwable.message ?: "Could not save the exported file.",
+                            message = throwable.message ?: appString(R.string.error_could_not_save_the_exported_file),
                             cause = throwable,
                         ),
                     )

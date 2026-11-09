@@ -54,6 +54,8 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
 
 data class SettingsUiState(
     val themeMode: ThemeMode = ThemeMode.SYSTEM,
@@ -174,7 +176,7 @@ class SettingsViewModel @Inject constructor(
                         }
                         .onFailure {
                             _uiState.update { it.copy(isCalibratingModels = false) }
-                            _events.emit(SettingsEvent.ShowMessage("Could not calibrate document models on this device."))
+                            _events.emit(SettingsEvent.ShowMessage(appString(R.string.settings_could_not_calibrate_models)))
                         }
                 }
             }
@@ -274,7 +276,7 @@ class SettingsViewModel @Inject constructor(
             when (val result = clearAllAppDataUseCase()) {
                 is `in`.c1ph3rj.scanly.core.common.ScanlyResult.Success -> {
                     _uiState.update { current -> current.copy(isClearingData = false) }
-                    _events.emit(SettingsEvent.ShowMessage("All data cleared."))
+                    _events.emit(SettingsEvent.ShowMessage(appString(R.string.settings_all_data_cleared)))
                     loadStorageUsage()
                 }
 
@@ -295,7 +297,7 @@ class SettingsViewModel @Inject constructor(
                 is `in`.c1ph3rj.scanly.core.common.ScanlyResult.Success -> {
                     _uiState.update { it.copy(isClearingExportCache = false) }
                     _events.emit(
-                        SettingsEvent.ShowMessage("Freed ${StorageFormatter.formatBytes(freedBytes)}"),
+                        SettingsEvent.ShowMessage(appString(R.string.settings_freed, StorageFormatter.formatBytes(freedBytes))),
                     )
                     loadStorageUsage()
                 }
@@ -319,9 +321,9 @@ class SettingsViewModel @Inject constructor(
                     _events.emit(
                         SettingsEvent.ShowMessage(
                             when (count) {
-                                0 -> "No empty documents found."
-                                1 -> "Removed 1 empty document."
-                                else -> "Removed $count empty documents."
+                                0 -> appString(R.string.settings_no_empty_documents_found)
+                                1 -> appString(R.string.settings_removed_1_empty_document)
+                                else -> appString(R.string.settings_removed_empty_documents, count)
                             },
                         ),
                     )
@@ -347,9 +349,9 @@ class SettingsViewModel @Inject constructor(
                     _events.emit(
                         SettingsEvent.ShowMessage(
                             when (count) {
-                                0 -> "No empty folders found."
-                                1 -> "Removed 1 empty folder."
-                                else -> "Removed $count empty folders."
+                                0 -> appString(R.string.settings_no_empty_folders_found)
+                                1 -> appString(R.string.settings_removed_1_empty_folder)
+                                else -> appString(R.string.settings_removed_empty_folders, count)
                             },
                         ),
                     )
@@ -399,7 +401,7 @@ class SettingsViewModel @Inject constructor(
     fun setPureBlackEnabled(enabled: Boolean) {
         viewModelScope.launch {
             if (setPureBlackEnabledUseCase(enabled) is `in`.c1ph3rj.scanly.core.common.ScanlyResult.Failure) {
-                _events.emit(SettingsEvent.ShowMessage("Could not update pure black theme."))
+                _events.emit(SettingsEvent.ShowMessage(appString(R.string.settings_could_not_update_pure_black)))
             }
         }
     }
@@ -408,7 +410,7 @@ class SettingsViewModel @Inject constructor(
         if (_uiState.value.automaticModelSelectionEnabled) return
         viewModelScope.launch {
             if (setLiveDetectionModelUseCase(model) is `in`.c1ph3rj.scanly.core.common.ScanlyResult.Failure) {
-                _events.emit(SettingsEvent.ShowMessage("Could not update the live preview model."))
+                _events.emit(SettingsEvent.ShowMessage(appString(R.string.settings_could_not_update_the_live)))
             }
         }
     }
@@ -417,7 +419,7 @@ class SettingsViewModel @Inject constructor(
         if (_uiState.value.automaticModelSelectionEnabled) return
         viewModelScope.launch {
             if (setPostProcessingModelUseCase(model) is `in`.c1ph3rj.scanly.core.common.ScanlyResult.Failure) {
-                _events.emit(SettingsEvent.ShowMessage("Could not update the post-processing model."))
+                _events.emit(SettingsEvent.ShowMessage(appString(R.string.settings_could_not_update_the_post)))
             }
         }
     }
@@ -425,7 +427,7 @@ class SettingsViewModel @Inject constructor(
     fun setAutomaticModelSelection(enabled: Boolean) {
         viewModelScope.launch {
             if (setAutomaticModelSelectionUseCase(enabled) is `in`.c1ph3rj.scanly.core.common.ScanlyResult.Failure) {
-                _events.emit(SettingsEvent.ShowMessage("Could not update automatic model selection."))
+                _events.emit(SettingsEvent.ShowMessage(appString(R.string.settings_could_not_update_automatic_model)))
             }
         }
     }
@@ -433,7 +435,7 @@ class SettingsViewModel @Inject constructor(
     fun setDocumentGateEnabled(enabled: Boolean) {
         viewModelScope.launch {
             if (setDocumentGateEnabledUseCase(enabled) is `in`.c1ph3rj.scanly.core.common.ScanlyResult.Failure) {
-                _events.emit(SettingsEvent.ShowMessage("Could not update the physical-document gate."))
+                _events.emit(SettingsEvent.ShowMessage(appString(R.string.settings_could_not_update_the_physical)))
             }
         }
     }
@@ -448,7 +450,7 @@ class SettingsViewModel @Inject constructor(
             promptAfterSwitchTo = engine
             if (setOcrEngineUseCase(engine) is `in`.c1ph3rj.scanly.core.common.ScanlyResult.Failure) {
                 promptAfterSwitchTo = null
-                _events.emit(SettingsEvent.ShowMessage("Could not update the text recognition engine."))
+                _events.emit(SettingsEvent.ShowMessage(appString(R.string.settings_could_not_update_the_text)))
             }
         }
     }
@@ -473,9 +475,9 @@ class SettingsViewModel @Inject constructor(
                     _events.emit(
                         SettingsEvent.ShowMessage(
                             when (count) {
-                                0 -> "No pages to read again."
-                                1 -> "Reading 1 page again in the background."
-                                else -> "Reading $count pages again in the background."
+                                0 -> appString(R.string.settings_no_pages_to_read_again)
+                                1 -> appString(R.string.settings_reading_1_page_again_in)
+                                else -> appString(R.string.settings_reading_pages_again_in_the, count)
                             },
                         ),
                     )
@@ -494,7 +496,7 @@ class SettingsViewModel @Inject constructor(
                 ExportDestination.CustomTree(uriString, displayName),
             )) {
                 is `in`.c1ph3rj.scanly.core.common.ScanlyResult.Success -> {
-                    _events.emit(SettingsEvent.ShowMessage("Save location updated."))
+                    _events.emit(SettingsEvent.ShowMessage(appString(R.string.settings_save_location_updated)))
                 }
                 is `in`.c1ph3rj.scanly.core.common.ScanlyResult.Failure -> {
                     _events.emit(SettingsEvent.ShowMessage(result.error.message))
@@ -519,7 +521,7 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch {
             when (val result = resetExportDestinationUseCase()) {
                 is `in`.c1ph3rj.scanly.core.common.ScanlyResult.Success -> {
-                    _events.emit(SettingsEvent.ShowMessage("Save location reset to Downloads/Scanly."))
+                    _events.emit(SettingsEvent.ShowMessage(appString(R.string.settings_save_location_reset_to_downloads)))
                 }
                 is `in`.c1ph3rj.scanly.core.common.ScanlyResult.Failure -> {
                     _events.emit(SettingsEvent.ShowMessage(result.error.message))

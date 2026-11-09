@@ -28,6 +28,9 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 import kotlin.math.floor
 import kotlin.random.Random
+import `in`.c1ph3rj.scanly.R
+import androidx.compose.ui.res.stringResource
+import `in`.c1ph3rj.scanly.core.common.appString
 
 /** Pip's paper palette. It stays paper-on-ink in every theme so it reads as the same character. */
 internal object PipColors {
@@ -103,7 +106,7 @@ fun Pip(
 
     val semanticsModifier = when {
         onPoke != null -> Modifier.semantics {
-            this.contentDescription = contentDescription ?: "Poke Pip, Scanly's helper"
+            this.contentDescription = contentDescription ?: appString(R.string.pip_poke_pip_scanly_s_helper)
         }
         contentDescription != null -> Modifier.clearAndSetSemantics {
             this.contentDescription = contentDescription

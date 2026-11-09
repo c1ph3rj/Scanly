@@ -1,5 +1,9 @@
 package `in`.c1ph3rj.scanly.domain.model
 
+import androidx.annotation.StringRes
+import `in`.c1ph3rj.scanly.core.common.appString
+import `in`.c1ph3rj.scanly.R
+
 /**
  * On-device document corner models, ordered from fastest to highest accuracy.
  *
@@ -10,13 +14,16 @@ package `in`.c1ph3rj.scanly.domain.model
  */
 enum class DocumentCornerModel(
     val storageValue: String,
-    val displayName: String,
+    @param:StringRes val displayNameRes: Int,
 ) {
-    LITE("lite", "Lite"),
-    STANDARD("standard", "Standard"),
-    HIGH("accurate", "High"),
-    ACCURATE("legacy", "Accurate"),
+    LITE("lite", R.string.document_corner_model_lite),
+    STANDARD("standard", R.string.document_corner_model_standard),
+    HIGH("accurate", R.string.document_corner_model_high),
+    ACCURATE("legacy", R.string.document_corner_model_accurate),
     ;
+
+    val displayName: String get() = appString(displayNameRes)
+
 
     companion object {
         fun fromStorage(value: String?): DocumentCornerModel =

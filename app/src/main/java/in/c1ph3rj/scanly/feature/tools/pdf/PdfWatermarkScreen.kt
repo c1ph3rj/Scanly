@@ -83,6 +83,9 @@ import `in`.c1ph3rj.scanly.feature.tools.ToolTextField
 import `in`.c1ph3rj.scanly.feature.tools.ToolWorkingState
 import `in`.c1ph3rj.scanly.feature.tools.toolWarningColors
 import kotlinx.coroutines.flow.collectLatest
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
+import androidx.compose.ui.res.stringResource
 
 private enum class WatermarkStep { Pick, Edit, Working, Done }
 
@@ -160,9 +163,9 @@ fun PdfWatermarkRoute(
     ) {
         when (step) {
             WatermarkStep.Pick -> PdfFilePickerScreen(
-                title = "Watermark",
-                subtitle = "Stamp text like CONFIDENTIAL or \"For KYC use only\".",
-                stepText = "Step 1 of 3 · Choose a file",
+                title = stringResource(R.string.pdf_watermark_watermark),
+                subtitle = stringResource(R.string.pdf_watermark_stamp_text_like_confidential_or),
+                stepText = stringResource(R.string.pdf_compress_step_1_of_3_choose),
                 documents = uiState.libraryDocuments,
                 onBack = onPickerBack,
                 onPickDevice = { devicePicker.launch(arrayOf("application/pdf")) },
@@ -189,11 +192,11 @@ fun PdfWatermarkRoute(
                 viewModel = viewModel,
             )
             WatermarkStep.Working -> ToolWorkingState(
-                title = "Adding watermark…",
+                title = stringResource(R.string.pdf_watermark_adding_watermark),
                 caption = when {
-                    uiState.watermarkPageRange == WatermarkPageRange.FIRST_PAGE -> "Stamping the first page"
-                    pageCount != null -> "Stamping ${formatPdfPageCount(pageCount)}"
-                    else -> "Stamping every page"
+                    uiState.watermarkPageRange == WatermarkPageRange.FIRST_PAGE -> stringResource(R.string.pdf_watermark_stamping_the_first_page)
+                    pageCount != null -> stringResource(R.string.pdf_watermark_stamping, formatPdfPageCount(pageCount))
+                    else -> stringResource(R.string.pdf_watermark_stamping_every_page)
                 },
                 preview = {
                     ToolPaperPage(
@@ -203,37 +206,37 @@ fun PdfWatermarkRoute(
                 },
             )
             WatermarkStep.Done -> PdfToolDoneScreen(
-                title = "Watermark added",
+                title = stringResource(R.string.pdf_watermark_watermark_added),
                 subtitle = when {
                     uiState.watermarkPageRange == WatermarkPageRange.FIRST_PAGE ->
-                        "On the first page. Tap the page to check it."
-                    pageCount == 1 -> "On the page. Tap it to check."
-                    pageCount == 2 -> "On both pages. Tap the page to check it."
-                    pageCount != null -> "On all $pageCount pages. Tap the page to check it."
-                    else -> "On every page. Tap the page to check it."
+                        stringResource(R.string.pdf_watermark_on_the_first_page_tap)
+                    pageCount == 1 -> stringResource(R.string.pdf_watermark_on_the_page_tap_it)
+                    pageCount == 2 -> stringResource(R.string.pdf_watermark_on_both_pages_tap_the)
+                    pageCount != null -> stringResource(R.string.pdf_watermark_on_all_pages_tap_the, pageCount)
+                    else -> stringResource(R.string.pdf_watermark_on_every_page_tap_the)
                 },
                 preview = uiState.resultPreview,
                 outputName = uiState.outputName,
                 onOutputNameChange = viewModel::setOutputName,
                 details = listOf(
-                    ToolDetailRow("Stamp", uiState.watermarkLabel()),
-                    ToolDetailRow("Style", uiState.watermarkStyleSummary()),
-                    ToolDetailRow("Pages", applyToLabel(uiState.watermarkPageRange, pageCount, short = true)),
-                    ToolDetailRow("Original", "Kept, unstamped"),
+                    ToolDetailRow(stringResource(R.string.pdf_watermark_stamp), uiState.watermarkLabel()),
+                    ToolDetailRow(stringResource(R.string.pdf_watermark_style), uiState.watermarkStyleSummary()),
+                    ToolDetailRow(stringResource(R.string.document_detail_pages), applyToLabel(uiState.watermarkPageRange, pageCount, short = true)),
+                    ToolDetailRow(stringResource(R.string.filter_customize_original), stringResource(R.string.pdf_watermark_kept_unstamped)),
                 ),
                 onClose = onNavigateUp,
                 onOpenPreview = { uiState.namedResult()?.let(onPreviewPdf) },
                 onSave = viewModel::saveResult,
                 onShare = {
-                    viewModel.prepareNamedShare { shareExportArtifact(context, it, "Watermarked PDF") }
+                    viewModel.prepareNamedShare { shareExportArtifact(context, it, appString(R.string.pdf_watermark_watermarked_pdf)) }
                 },
                 isSaving = uiState.isProcessing,
                 savedDestinationLabel = uiState.savedDestinationLabel,
                 extraContent = {
                     ToolShortcutTile(
                         icon = Icons.Outlined.Edit,
-                        title = "Edit stamp",
-                        caption = "Back to the editor",
+                        title = stringResource(R.string.pdf_watermark_edit_stamp),
+                        caption = stringResource(R.string.pdf_sign_back_to_the_editor),
                         onClick = {
                             viewModel.editAgain()
                             editing = true
@@ -272,10 +275,10 @@ private fun WatermarkEditor(
             .imePadding(),
     ) {
         ToolCompactHeader(
-            title = "Watermark",
+            title = stringResource(R.string.pdf_watermark_watermark),
             subtitle = listOfNotNull(source?.label(), pageCount?.let(::formatPdfPageCount)).joinToString(" · "),
             onBack = onBack,
-            actionLabel = "Change",
+            actionLabel = stringResource(R.string.storage_change),
             onAction = onChange,
         )
         if (windowSizeInfo.useToolTwoPaneLayout) {
@@ -326,11 +329,11 @@ private fun WatermarkEditor(
         ToolBottomBar {
             ToolPrimaryButton(
                 text = when {
-                    locked -> "Unlock the PDF first"
-                    uiState.watermarkPageRange == WatermarkPageRange.FIRST_PAGE -> "Apply to first page"
-                    pageCount == 1 -> "Apply to page"
-                    pageCount != null -> "Apply to $pageCount pages"
-                    else -> "Apply watermark"
+                    locked -> stringResource(R.string.pdf_watermark_unlock_the_pdf_first)
+                    uiState.watermarkPageRange == WatermarkPageRange.FIRST_PAGE -> stringResource(R.string.pdf_watermark_apply_to_first_page)
+                    pageCount == 1 -> stringResource(R.string.pdf_watermark_apply_to_page)
+                    pageCount != null -> stringResource(R.string.pdf_watermark_apply_to_pages, pageCount)
+                    else -> stringResource(R.string.pdf_watermark_apply_watermark)
                 },
                 onClick = viewModel::run,
                 enabled = canApply,
@@ -367,7 +370,7 @@ private fun WatermarkPreviewPanel(
                     overlay = {
                         androidx.compose.material3.Icon(
                             Icons.Outlined.Lock,
-                            contentDescription = "Locked PDF",
+                            contentDescription = stringResource(R.string.pdf_password_locked_pdf),
                             tint = Color(0xFF6B757C),
                             modifier = Modifier.size(28.dp),
                         )
@@ -377,7 +380,7 @@ private fun WatermarkPreviewPanel(
                 ToolPaperPage(
                     bitmap = uiState.watermarkPreview,
                     loading = uiState.watermarkPreview == null || uiState.isWatermarkPreviewLoading,
-                    contentDescription = "Preview of page 1 with the watermark",
+                    contentDescription = stringResource(R.string.pdf_watermark_preview_of_page_1_with),
                     modifier = Modifier.fillMaxHeight(),
                 )
             }
@@ -408,14 +411,14 @@ private fun WatermarkPreviewPanel(
                         .padding(horizontal = 10.dp, vertical = 4.dp),
                 ) {
                     Text(
-                        text = if (pageCount != null) "1 / $pageCount" else "Page 1",
+                        text = if (pageCount != null) "1 / $pageCount" else stringResource(R.string.pdf_watermark_page_1),
                         style = MaterialTheme.typography.labelMedium.copy(fontSize = 12.sp),
                         fontWeight = FontWeight.SemiBold,
                         fontFamily = FontFamily.Monospace,
                     )
                 }
                 Text(
-                    text = "Live preview of the saved file",
+                    text = stringResource(R.string.pdf_watermark_live_preview_of_the_saved),
                     style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -440,22 +443,22 @@ private fun WatermarkControls(
     ) {
         if (uiState.needsPassword) {
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                ToolFieldLabel("This PDF is locked")
+                ToolFieldLabel(stringResource(R.string.pdf_sign_this_pdf_is_locked))
                 ToolTextField(
                     value = uiState.currentPassword,
                     onValueChange = viewModel::setCurrentPassword,
-                    placeholder = "PDF password",
+                    placeholder = stringResource(R.string.export_share_pdf_password),
                     visualTransformation = PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                    trailingIcon = { ToolTextAction(label = "Unlock", onClick = viewModel::unlock) },
+                    trailingIcon = { ToolTextAction(label = stringResource(R.string.pdf_compress_unlock), onClick = viewModel::unlock) },
                 )
-                ToolNote("The watermarked copy is saved without the password. You can lock it again with the Password tool.")
+                ToolNote(stringResource(R.string.pdf_watermark_the_watermarked_copy_is_saved))
             }
         }
 
         // Text + presets.
         Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-            ToolFieldLabel("Text")
+            ToolFieldLabel(stringResource(R.string.qr_payload_text))
             ToolTextField(
                 value = uiState.watermarkText,
                 onValueChange = viewModel::setWatermarkText,
@@ -469,7 +472,7 @@ private fun WatermarkControls(
             FlowRow(
                 horizontalArrangement = Arrangement.spacedBy(6.dp),
                 verticalArrangement = Arrangement.spacedBy(6.dp),
-                modifier = Modifier.semantics { contentDescription = "Presets" },
+                modifier = Modifier.semantics { contentDescription = appString(R.string.pdf_watermark_presets) },
             ) {
                 WatermarkPresets.forEach { preset ->
                     ToolChoiceChip(
@@ -479,7 +482,7 @@ private fun WatermarkControls(
                     )
                 }
                 ToolChoiceChip(
-                    label = "Add date",
+                    label = stringResource(R.string.pdf_watermark_add_date),
                     selected = uiState.watermarkAddDate,
                     onClick = viewModel::toggleDate,
                     leadingIcon = Icons.Outlined.CalendarToday,
@@ -487,7 +490,7 @@ private fun WatermarkControls(
             }
             if (uiState.watermarkAddDate) {
                 Text(
-                    text = "Stamps \"${uiState.watermarkLabel()}\"",
+                    text = stringResource(R.string.pdf_watermark_stamps, uiState.watermarkLabel()),
                     style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.5.sp),
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -496,20 +499,20 @@ private fun WatermarkControls(
 
         // Style block: layout + angle, size, opacity, colour.
         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            ToolFieldLabel("Style")
+            ToolFieldLabel(stringResource(R.string.pdf_watermark_style))
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 ToolSegmented(
                     options = listOf(WatermarkLayout.REPEATED, WatermarkLayout.CENTERED),
                     selected = uiState.watermarkLayout,
                     onSelect = viewModel::setLayout,
-                    label = { if (it == WatermarkLayout.REPEATED) "Tiled" else "Single" },
+                    label = { if (it == WatermarkLayout.REPEATED) appString(R.string.pdf_watermark_tiled) else appString(R.string.pdf_watermark_single) },
                     modifier = Modifier.weight(1f),
                 )
                 ToolSegmented(
                     options = listOf(WatermarkOrientation.DIAGONAL, WatermarkOrientation.HORIZONTAL),
                     selected = uiState.watermarkOrientation,
                     onSelect = viewModel::setOrientation,
-                    label = { if (it == WatermarkOrientation.DIAGONAL) "Diagonal" else "Horizontal" },
+                    label = { if (it == WatermarkOrientation.DIAGONAL) appString(R.string.pdf_watermark_diagonal) else appString(R.string.pdf_watermark_horizontal) },
                     icon = {
                         if (it == WatermarkOrientation.DIAGONAL) {
                             Icons.Outlined.TextRotationAngleup
@@ -523,11 +526,11 @@ private fun WatermarkControls(
             }
             val sizes = WatermarkSize.entries
             SliderRow(
-                label = "Size",
+                label = stringResource(R.string.pdf_merge_size),
                 valueText = when (uiState.watermarkSize) {
-                    WatermarkSize.SMALL -> "Small"
-                    WatermarkSize.MEDIUM -> "Medium"
-                    WatermarkSize.LARGE -> "Large"
+                    WatermarkSize.SMALL -> stringResource(R.string.pdf_watermark_small)
+                    WatermarkSize.MEDIUM -> stringResource(R.string.pdf_watermark_medium)
+                    WatermarkSize.LARGE -> stringResource(R.string.pdf_watermark_large)
                 },
                 value = sizes.indexOf(uiState.watermarkSize).toFloat(),
                 onValueChange = { viewModel.setSize(sizes[it.toInt().coerceIn(0, sizes.lastIndex)]) },
@@ -535,7 +538,7 @@ private fun WatermarkControls(
                 steps = sizes.size - 2,
             )
             SliderRow(
-                label = "Opacity",
+                label = stringResource(R.string.pdf_watermark_opacity),
                 valueText = "${(uiState.watermarkOpacity * 100f).toInt()}%",
                 value = uiState.watermarkOpacity,
                 onValueChange = { viewModel.setOpacity((it * 50f).toInt() / 50f) },
@@ -544,7 +547,7 @@ private fun WatermarkControls(
             )
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 Text(
-                    text = "Colour",
+                    text = stringResource(R.string.pdf_watermark_colour),
                     style = MaterialTheme.typography.bodyMedium.copy(fontSize = 13.5.sp),
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.width(64.dp),
@@ -563,7 +566,7 @@ private fun WatermarkControls(
         }
 
         Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-            ToolFieldLabel("Apply to")
+            ToolFieldLabel(stringResource(R.string.pdf_watermark_apply_to))
             ToolSegmented(
                 options = listOf(WatermarkPageRange.ALL_PAGES, WatermarkPageRange.FIRST_PAGE),
                 selected = uiState.watermarkPageRange,
@@ -616,10 +619,10 @@ private fun SliderRow(
 }
 
 private fun applyToLabel(range: WatermarkPageRange, pageCount: Int?, short: Boolean): String = when (range) {
-    WatermarkPageRange.FIRST_PAGE -> "First page only"
+    WatermarkPageRange.FIRST_PAGE -> appString(R.string.pdf_watermark_first_page_only)
     WatermarkPageRange.ALL_PAGES -> when {
-        pageCount == null -> "All pages"
-        pageCount == 1 -> "The page"
-        else -> "All $pageCount pages"
+        pageCount == null -> appString(R.string.pdf_reader_menu_all_pages)
+        pageCount == 1 -> appString(R.string.pdf_watermark_the_page)
+        else -> appString(R.string.pdf_to_images_presentation_all_pages, pageCount)
     }
 }

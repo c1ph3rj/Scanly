@@ -1,5 +1,6 @@
 package `in`.c1ph3rj.scanly
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -41,6 +42,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
+import `in`.c1ph3rj.scanly.core.common.AppLocales
 import `in`.c1ph3rj.scanly.feature.tools.pdf.IncomingPdf
 import `in`.c1ph3rj.scanly.navigation.ToolsPdfReaderDestination
 import kotlinx.coroutines.flow.first
@@ -79,6 +81,11 @@ class MainActivity : ComponentActivity() {
         extraBufferCapacity = 1,
         onBufferOverflow = BufferOverflow.DROP_OLDEST,
     )
+
+    /** Android 10–12: applies the in-app language (13+ handle it in the platform). */
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(AppLocales.wrap(newBase))
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -120,6 +127,7 @@ private fun ScanlyApp(
     val isDarkTheme = themeMode.resolveDarkTheme(systemDark)
     val navController = rememberNavController()
     val context = androidx.compose.ui.platform.LocalContext.current
+    val resources = androidx.compose.ui.platform.LocalResources.current
     val uriHandler = androidx.compose.ui.platform.LocalUriHandler.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val activity = context as ComponentActivity
@@ -162,7 +170,11 @@ private fun ScanlyApp(
         }
         pendingPdfUri = null
         if (copied == null) {
-            android.widget.Toast.makeText(context, "Couldn't open that PDF.", android.widget.Toast.LENGTH_LONG).show()
+            android.widget.Toast.makeText(
+                context,
+                resources.getString(R.string.default_pdf_toolkit_repository_could_not_open_this_pdf),
+                android.widget.Toast.LENGTH_LONG,
+            ).show()
             return@LaunchedEffect
         }
         // The nav graph is set when the NavHost first composes; wait for it.
@@ -187,7 +199,7 @@ private fun ScanlyApp(
                     } catch (_: android.content.ActivityNotFoundException) {
                         android.widget.Toast.makeText(
                             context,
-                            "No app found to open this link.",
+                            resources.getString(R.string.qr_actions_no_app_can_open_this),
                             android.widget.Toast.LENGTH_LONG,
                         ).show()
                     }

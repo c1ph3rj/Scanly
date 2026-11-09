@@ -72,6 +72,9 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import java.io.File
+import `in`.c1ph3rj.scanly.R
+import `in`.c1ph3rj.scanly.core.common.appString
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun PageImagePreviewRoute(
@@ -155,7 +158,7 @@ fun PageImagePreviewScreen(
             contentAlignment = Alignment.Center,
         ) {
             Text(
-                text = "Page not found.",
+                text = stringResource(R.string.page_crop_page_not_found),
                 color = MaterialTheme.colorScheme.onBackground,
                 style = MaterialTheme.typography.titleLarge,
             )
@@ -239,14 +242,14 @@ fun PageImagePreviewScreen(
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         ChromeIconButton(
                             icon = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back",
+                            contentDescription = stringResource(R.string.zoomable_image_back),
                             onClick = onNavigateUp,
                             containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
                             contentColor = MaterialTheme.colorScheme.onSurface,
                         )
                         Spacer(modifier = Modifier.width(12.dp))
                         MetricChip(
-                            label = "Page ${visiblePage.pageIndex + 1} of ${pages.size}",
+                            label = stringResource(R.string.document_detail_page_of, visiblePage.pageIndex + 1, pages.size),
                             containerColor = Color.Black.copy(alpha = 0.42f),
                             contentColor = Color.White,
                             border = BorderStroke(1.dp, Color.White.copy(alpha = 0.12f)),
@@ -256,7 +259,7 @@ fun PageImagePreviewScreen(
                     if (visibleZoomState?.isZoomActive == true) {
                         PreviewActionButton(
                             icon = Icons.Filled.FitScreen,
-                            contentDescription = "Reset zoom",
+                            contentDescription = stringResource(R.string.zoomable_image_reset_zoom),
                             onClick = visibleZoomState::reset,
                         )
                     }
@@ -287,9 +290,9 @@ fun PageImagePreviewScreen(
 
     deleteTarget?.let { target ->
         ScanlyConfirmDialog(
-            title = "Delete page?",
+            title = stringResource(R.string.page_image_preview_delete_page),
             text = TrashCopy.page(target.pageIndex + 1),
-            confirmLabel = "Delete",
+            confirmLabel = stringResource(R.string.library_card_presentation_delete),
             confirmDestructive = true,
             onDismiss = { deleteTarget = null },
             onConfirm = {
@@ -313,11 +316,11 @@ private fun PreviewBottomActionBar(
     onDelete: () -> Unit,
 ) {
     val actions: List<PreviewDockAction> = listOf(
-        PreviewDockAction(Icons.Filled.IosShare, "Share", onShare),
-        PreviewDockAction(Icons.Filled.Edit, "Edit", onEdit),
-        PreviewDockAction(Icons.Filled.Draw, "Sign", onSign),
-        PreviewDockAction(Icons.Filled.Refresh, "Retake", onRetake),
-        PreviewDockAction(Icons.Filled.DeleteOutline, "Delete", onDelete, destructive = true),
+        PreviewDockAction(Icons.Filled.IosShare, stringResource(R.string.document_detail_share_2), onShare),
+        PreviewDockAction(Icons.Filled.Edit, stringResource(R.string.document_detail_edit), onEdit),
+        PreviewDockAction(Icons.Filled.Draw, stringResource(R.string.page_image_preview_sign), onSign),
+        PreviewDockAction(Icons.Filled.Refresh, stringResource(R.string.document_detail_retake), onRetake),
+        PreviewDockAction(Icons.Filled.DeleteOutline, stringResource(R.string.library_card_presentation_delete), onDelete, destructive = true),
     )
     // A floating dock: phone-wide on phones, a compact centred bar on tablets rather than five
     // actions spread across the whole screen; a vertical dock on short landscape windows.
@@ -476,7 +479,7 @@ private fun sharePreparedFiles(
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
     }
-    context.startActivity(Intent.createChooser(shareIntent, "Share ${artifact.title}"))
+    context.startActivity(Intent.createChooser(shareIntent, appString(R.string.document_detail_share, artifact.title)))
 }
 
 private fun Context.exportUriFor(path: String): Uri = FileProvider.getUriForFile(

@@ -79,6 +79,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowCompat
+import `in`.c1ph3rj.scanly.R
+import androidx.compose.ui.res.stringResource
 
 /*
  * Shared building blocks for the redesigned Tools flows (PDF tools + QR).
@@ -141,7 +143,7 @@ fun ToolTopBar(
     modifier: Modifier = Modifier,
     stepText: String? = null,
     backIcon: ImageVector = Icons.AutoMirrored.Filled.ArrowBack,
-    backContentDescription: String = "Back",
+    backContentDescription: String = stringResource(R.string.zoomable_image_back),
     centerStep: Boolean = false,
     trailing: @Composable RowScope.() -> Unit = {},
 ) {
@@ -227,7 +229,7 @@ fun ToolCompactHeader(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         IconButton(onClick = onBack, modifier = Modifier.size(48.dp)) {
-            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.zoomable_image_back))
         }
         Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(1.dp)) {
             Text(
@@ -294,7 +296,7 @@ fun ToolSectionLabel(
     modifier: Modifier = Modifier,
 ) {
     Text(
-        text = text.uppercase(),
+        text = text.uppercase(androidx.compose.ui.platform.LocalConfiguration.current.locales[0]),
         style = MaterialTheme.typography.labelMedium.copy(fontSize = 12.sp, letterSpacing = 0.8.sp),
         fontWeight = FontWeight.SemiBold,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -835,7 +837,7 @@ fun ToolSearchField(
                 IconButton(onClick = { onValueChange("") }) {
                     Icon(
                         Icons.Outlined.Close,
-                        contentDescription = "Clear search",
+                        contentDescription = stringResource(R.string.library_search_clear_search),
                     )
                 }
             }
@@ -861,7 +863,7 @@ fun ToolFileNameField(
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     extension: String = ".pdf",
-    label: String = "File name",
+    label: String = stringResource(R.string.tool_kit_file_name),
 ) {
     Column(modifier = modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         ToolFieldLabel(label, muted = true)

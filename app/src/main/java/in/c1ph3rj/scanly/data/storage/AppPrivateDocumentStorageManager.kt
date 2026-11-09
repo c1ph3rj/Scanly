@@ -1,5 +1,7 @@
 package `in`.c1ph3rj.scanly.data.storage
 
+import `in`.c1ph3rj.scanly.core.common.appString
+import `in`.c1ph3rj.scanly.R
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -80,12 +82,12 @@ class AppPrivateDocumentStorageManager @Inject constructor(
     ): PageThumbnailResult = withContext(dispatchers.io) {
         val rawFile = File(rawImagePath)
         if (!rawFile.exists() || rawFile.length() <= 0L) {
-            error("Captured image missing at $rawImagePath.")
+            error(appString(R.string.error_could_not_read_the_page_image))
         }
 
         val rotationDegrees = ExifInterface(rawImagePath).rotationDegrees
         val bitmap = decodeSampledBitmap(rawImagePath, THUMBNAIL_MAX_DIMENSION, THUMBNAIL_MAX_DIMENSION)
-            ?: error("Could not decode captured image at $rawImagePath.")
+            ?: error(appString(R.string.error_could_not_read_the_page_image))
         val outputFile = File(thumbnailPath)
         var rotatedBitmap = bitmap
         try {
@@ -122,7 +124,7 @@ class AppPrivateDocumentStorageManager @Inject constructor(
 
     private fun ensureDirectory(directory: File): File {
         if (!directory.exists() && !directory.mkdirs()) {
-            error("Could not create ${directory.absolutePath}.")
+            error(appString(R.string.error_could_not_save_the_captured_page))
         }
         return directory
     }
@@ -156,7 +158,7 @@ class AppPrivateDocumentStorageManager @Inject constructor(
                     outputStream.flush()
                 }
             }
-            check(compressed) { "Could not encode image to ${outputFile.absolutePath}." }
+            check(compressed) { appString(R.string.default_signature_repository_could_not_save_the_image) }
             if (!tempFile.renameTo(outputFile)) {
                 tempFile.copyTo(outputFile, overwrite = true)
             }

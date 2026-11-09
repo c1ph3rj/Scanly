@@ -25,6 +25,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import `in`.c1ph3rj.scanly.R
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun ReleaseMarkdown(
@@ -42,7 +44,7 @@ fun ReleaseMarkdown(
     ) {
         if (blocks.isEmpty()) {
             Text(
-                text = "No release notes were provided for this version.",
+                text = stringResource(R.string.release_markdown_no_release_notes_were_provided),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )

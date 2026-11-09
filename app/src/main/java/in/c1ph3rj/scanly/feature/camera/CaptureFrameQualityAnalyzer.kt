@@ -3,11 +3,17 @@ package `in`.c1ph3rj.scanly.feature.camera
 import `in`.c1ph3rj.scanly.core.ml.DetectionFrame
 import kotlin.math.abs
 import kotlin.math.sqrt
+import androidx.annotation.StringRes
+import `in`.c1ph3rj.scanly.core.common.appString
+import `in`.c1ph3rj.scanly.R
 
-enum class CaptureSceneIssue(val guidance: String) {
-    LENS_BLOCKED("Lens may be covered. Clear it and try again."),
-    TOO_DARK("Too dark. Add light or turn on the flash."),
-    BLURRY("Image looks blurry. Clean the lens or tap to focus."),
+enum class CaptureSceneIssue(@param:StringRes val guidanceRes: Int) {
+    LENS_BLOCKED(R.string.capture_scene_issue_lens_may_be_covered_clear),
+    TOO_DARK(R.string.capture_scene_issue_too_dark_add_light_or),
+    BLURRY(R.string.capture_scene_issue_image_looks_blurry_clean_the),
+    ;
+
+    val guidance: String get() = appString(guidanceRes)
 }
 
 data class CaptureFrameQuality(
