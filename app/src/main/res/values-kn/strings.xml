@@ -626,23 +626,13 @@
     <!-- OnboardingScreen -->
     <string name="onboarding_no_account_no_cloud_upload">ಖಾತೆ ಬೇಕಿಲ್ಲ. ಕ್ಲೌಡ್ ಅಪ್‌ಲೋಡ್ ಇಲ್ಲ.</string>
     <string name="onboarding_continue">ಮುಂದುವರಿಸಿ</string>
-    <string name="onboarding_get_started">ಪ್ರಾರಂಭಿಸಿ</string>
+    <string name="onboarding_get_started">ನನ್ನ ಮೊದಲ ಪುಟವನ್ನು ಸ್ಕ್ಯಾನ್ ಮಾಡಿ</string>
     <string name="onboarding_page_of_3">"%1$s, ಪುಟ %2$s / 3"</string>
     <string name="onboarding_page_of_3_2">"ಪುಟ %1$s / 3"</string>
     <string name="onboarding_skip">ಸ್ಕಿಪ್ ಮಾಡಿ</string>
     <string name="onboarding_scanly">Scanly.</string>
     <string name="onboarding_previous_page">ಹಿಂದಿನ ಪುಟ</string>
-    <string name="onboarding_feature_edge_detection">ಸ್ವಯಂಚಾಲಿತ ಅಂಚು ಪತ್ತೆ</string>
-    <string name="onboarding_feature_crop_straighten">ಪುಟಗಳನ್ನು ಕ್ರಾಪ್ ಮಾಡಿ, ನೇರಗೊಳಿಸಿ</string>
-    <string name="onboarding_feature_filters">ಮ್ಯಾಜಿಕ್ ಬಣ್ಣ, ವೈಟ್‌ಬೋರ್ಡ್ ಮತ್ತು ಇನ್ನಷ್ಟು</string>
-    <string name="onboarding_feature_ocr">ಸಾಧನದಲ್ಲೇ ಪಠ್ಯ ಗುರುತಿಸುವಿಕೆ</string>
-    <string name="onboarding_feature_search">ನಿಮ್ಮ ಎಲ್ಲಾ ಸ್ಕ್ಯಾನ್‌ಗಳಲ್ಲಿ ಪದಗಳನ್ನು ಹುಡುಕಿ</string>
-    <string name="onboarding_feature_copy_text">ಯಾವುದೇ ಪುಟದಿಂದ ಪಠ್ಯ ನಕಲಿಸಿ</string>
-    <string name="onboarding_feature_multipage_pdf">ಬಹು-ಪುಟದ PDF ಗಳು</string>
-    <string name="onboarding_feature_password">ಹಂಚಿಕೊಳ್ಳುವ ಮೊದಲು ಪಾಸ್‌ವರ್ಡ್ ರಕ್ಷಣೆ</string>
-    <string name="onboarding_feature_sign">ಡಾಕ್ಯುಮೆಂಟ್‌ಗಳಿಗೆ ಸಹಿ ಮಾಡಿ</string>
-    <string name="onboarding_assurance_offline">ಸಂಪೂರ್ಣವಾಗಿ ಆಫ್‌ಲೈನ್‌ನಲ್ಲಿ ಕೆಲಸ ಮಾಡುತ್ತದೆ.</string>
-    <string name="onboarding_assurance_on_device">ನಿಮ್ಮ ಪಠ್ಯ ಎಂದಿಗೂ ಈ ಸಾಧನದಿಂದ ಹೊರಹೋಗುವುದಿಲ್ಲ.</string>
+    <string name="onboarding_assurance_offline">ನಿಮ್ಮ ಸಾಧನದಲ್ಲೇ ಪ್ರಕ್ರಿಯೆಗೊಳ್ಳುತ್ತದೆ.</string>
     <!-- Pip -->
     <string name="pip_poke_pip_scanly_s_helper">Scanly ಸಹಾಯಕ Pip ಅನ್ನು ತಟ್ಟಿ</string>
     <!-- PipBubble -->
@@ -1565,14 +1555,14 @@
     <string name="signature_pen_width_bold">"ದಪ್ಪ"</string>
     <!-- onboarding_page -->
     <string name="onboarding_page_capture">"ಕ್ಯಾಪ್ಚರ್"</string>
-    <string name="onboarding_page_paper_to_polished">"ಕಾಗದದಿಂದ ಸ್ಪಷ್ಟ ಸ್ಕ್ಯಾನ್‌ಗೆ."</string>
-    <string name="onboarding_page_capture_straighten_and_clean_up">"ನಿಮ್ಮ ಪುಟಗಳನ್ನು ಸೆರೆಹಿಡಿಯಿರಿ, ನೇರಗೊಳಿಸಿ ಮತ್ತು ಸ್ವಚ್ಛಗೊಳಿಸಿ."</string>
+    <string name="onboarding_page_paper_to_polished">ಕಾಗದ, ಅಚ್ಚುಕಟ್ಟಾಗಿ.</string>
+    <string name="onboarding_page_capture_straighten_and_clean_up">ಪುಟವನ್ನು ನೇರಗೊಳಿಸಿ. ವಿವರಗಳನ್ನು ಉಳಿಸಿ.</string>
     <string name="onboarding_page_find">"ಹುಡುಕಿ"</string>
-    <string name="onboarding_page_find_more_than_files">"ಸ್ಕ್ಯಾನ್‌ಗಳ ಒಳಗೂ ಹುಡುಕಿ."</string>
-    <string name="onboarding_page_recognize_text_on_your_device">"ನಿಮ್ಮ ಸಾಧನದಲ್ಲಿ ಪಠ್ಯವನ್ನು ಗುರುತಿಸಿ. ನಿಮ್ಮ ಸ್ಕ್ಯಾನ್‌ಗಳಲ್ಲಿ ಹುಡುಕಿ."</string>
-    <string name="onboarding_page_share">"ಹಂಚಿಕೊಳ್ಳಿ"</string>
-    <string name="onboarding_page_ready_when_you_are">"ನೀವು ಸಿದ್ಧವಾದಾಗ ನಾನೂ ಸಿದ್ಧ."</string>
-    <string name="onboarding_page_keep_pages_together_share_a">"ಪುಟಗಳನ್ನು ಒಟ್ಟಿಗೆ ಇರಿಸಿ. ಕೆಲವು ಟ್ಯಾಪ್‌ಗಳಲ್ಲಿ ಕ್ಲೀನ್ PDF ಅನ್ನು ಹಂಚಿಕೊಳ್ಳಿ."</string>
+    <string name="onboarding_page_find_more_than_files">ಪದ ಹುಡುಕಿ. ಪುಟ ಪಡೆಯಿರಿ.</string>
+    <string name="onboarding_page_recognize_text_on_your_device">ನಿಮ್ಮ ಸ್ಕ್ಯಾನ್‌ಗಳ ಒಳಗಿನ ಪಠ್ಯದಲ್ಲಿ ಹುಡುಕಿ.</string>
+    <string name="onboarding_page_share">ಮುಗಿಸಿ</string>
+    <string name="onboarding_page_ready_when_you_are">ಕಳುಹಿಸಲು ಸಿದ್ಧ.</string>
+    <string name="onboarding_page_keep_pages_together_share_a">ಸ್ಪಷ್ಟ PDFಗೆ ಸಹಿ ಮಾಡಿ, ರಕ್ಷಿಸಿ ಮತ್ತು ಹಂಚಿಕೊಳ್ಳಿ.</string>
     <!-- pdf_reader_tool -->
     <string name="pdf_reader_tool_merge_with_other_pdfs">"ಇತರ PDF ಫೈಲ್‌ಗಳೊಂದಿಗೆ ವಿಲೀನಗೊಳಿಸಿ"</string>
     <string name="pdf_reader_tool_password_protect">"ಪಾಸ್ವರ್ಡ್ ರಕ್ಷಣೆ"</string>
@@ -1991,4 +1981,8 @@
     <string name="error_could_not_save_the_exported_file">"ರಫ್ತು ಮಾಡಿದ ಫೈಲ್ ಅನ್ನು ಉಳಿಸಲಾಗಲಿಲ್ಲ."</string>
     <string name="error_could_not_store_update_prompt_state">"ಅಪ್‌ಡೇಟ್ ಪ್ರಾಂಪ್ಟ್ ಸ್ಥಿತಿಯನ್ನು ಸಂಗ್ರಹಿಸಲಾಗಲಿಲ್ಲ."</string>
     <string name="error_could_not_check_github_releases">"GitHub ಬಿಡುಗಡೆಗಳನ್ನು ಪರಿಶೀಲಿಸಲಾಗಲಿಲ್ಲ."</string>
+    <string name="onboarding_demo_result">%1$s · ಪುಟ %2$s</string>
+    <string name="onboarding_demo_found">ಪುಟದ ಪಠ್ಯದಲ್ಲಿ ಕಂಡುಬಂದಿದೆ</string>
+    <string name="onboarding_demo_protected">ಪಾಸ್‌ವರ್ಡ್‌ನಿಂದ ರಕ್ಷಿಸಲಾಗಿದೆ</string>
+    <string name="onboarding_chapter_number">%1$02d %2$s</string>
 </resources>

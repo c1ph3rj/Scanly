@@ -626,23 +626,13 @@
     <!-- OnboardingScreen -->
     <string name="onboarding_no_account_no_cloud_upload">అకౌంట్ అవసరం లేదు. క్లౌడ్ అప్‌లోడ్ లేదు.</string>
     <string name="onboarding_continue">కొనసాగించండి</string>
-    <string name="onboarding_get_started">ప్రారంభించండి</string>
+    <string name="onboarding_get_started">నా మొదటి పేజీని స్కాన్ చేయి</string>
     <string name="onboarding_page_of_3">"%1$s, పేజీ %2$s / 3"</string>
     <string name="onboarding_page_of_3_2">"పేజీ %1$s / 3"</string>
     <string name="onboarding_skip">దాటవేయండి</string>
     <string name="onboarding_scanly">Scanly.</string>
     <string name="onboarding_previous_page">మునుపటి పేజీ</string>
-    <string name="onboarding_feature_edge_detection">ఆటోమేటిక్ అంచుల గుర్తింపు</string>
-    <string name="onboarding_feature_crop_straighten">పేజీలను కత్తిరించి సరిచేయండి</string>
-    <string name="onboarding_feature_filters">మ్యాజిక్ కలర్, వైట్‌బోర్డ్, ఇంకా మరిన్ని</string>
-    <string name="onboarding_feature_ocr">పరికరంలోనే టెక్స్ట్ గుర్తింపు</string>
-    <string name="onboarding_feature_search">మీ స్కాన్‌లన్నింటిలో పదాలను వెతకండి</string>
-    <string name="onboarding_feature_copy_text">ఏ పేజీ నుండైనా టెక్స్ట్‌ను కాపీ చేయండి</string>
-    <string name="onboarding_feature_multipage_pdf">అనేక పేజీల PDFలు</string>
-    <string name="onboarding_feature_password">షేర్ చేసే ముందు పాస్‌వర్డ్ రక్షణ</string>
-    <string name="onboarding_feature_sign">డాక్యుమెంట్‌లపై సంతకం చేయండి</string>
-    <string name="onboarding_assurance_offline">పూర్తిగా ఆఫ్‌లైన్‌లో పనిచేస్తుంది.</string>
-    <string name="onboarding_assurance_on_device">మీ టెక్స్ట్ ఈ పరికరం నుండి ఎప్పటికీ బయటకు వెళ్లదు.</string>
+    <string name="onboarding_assurance_offline">మీ పరికరంలోనే ప్రాసెస్ అవుతుంది.</string>
     <!-- Pip -->
     <string name="pip_poke_pip_scanly_s_helper">Scanly సహాయకుడు Pipని తట్టండి</string>
     <!-- PipBubble -->
@@ -1565,14 +1555,14 @@
     <string name="signature_pen_width_bold">"మందపాటి"</string>
     <!-- onboarding_page -->
     <string name="onboarding_page_capture">"క్యాప్చర్"</string>
-    <string name="onboarding_page_paper_to_polished">"కాగితం నుంచి స్పష్టమైన స్కాన్‌కు."</string>
-    <string name="onboarding_page_capture_straighten_and_clean_up">"మీ పేజీలను క్యాప్చర్ చేయండి, నిఠారుగా చేయండి మరియు శుభ్రం చేయండి."</string>
+    <string name="onboarding_page_paper_to_polished">కాగితం, మరింత చక్కగా.</string>
+    <string name="onboarding_page_capture_straighten_and_clean_up">పేజీని సరిచేయండి. వివరాలను కాపాడండి.</string>
     <string name="onboarding_page_find">"కనుగొనండి"</string>
-    <string name="onboarding_page_find_more_than_files">"స్కాన్‌లలోని పదాలనూ వెతకండి."</string>
-    <string name="onboarding_page_recognize_text_on_your_device">"మీ పరికరంలో వచనాన్ని గుర్తించండి. మీ స్కాన్‌లలో శోధించండి."</string>
-    <string name="onboarding_page_share">"షేర్ చేయండి"</string>
-    <string name="onboarding_page_ready_when_you_are">"మీరు సిద్ధమైతే నేనూ సిద్ధమే."</string>
-    <string name="onboarding_page_keep_pages_together_share_a">"పేజీలను కలిపి ఉంచండి. కొన్ని ట్యాప్‌లలో శుభ్రమైన PDFని షేర్ చేయండి."</string>
+    <string name="onboarding_page_find_more_than_files">పదాన్ని వెతకండి. పేజీని కనుగొనండి.</string>
+    <string name="onboarding_page_recognize_text_on_your_device">మీ స్కాన్‌లలోని వచనంలో వెతకండి.</string>
+    <string name="onboarding_page_share">పూర్తి</string>
+    <string name="onboarding_page_ready_when_you_are">పంపడానికి సిద్ధం.</string>
+    <string name="onboarding_page_keep_pages_together_share_a">స్పష్టమైన PDFపై సంతకం చేసి, రక్షించి, షేర్ చేయండి.</string>
     <!-- pdf_reader_tool -->
     <string name="pdf_reader_tool_merge_with_other_pdfs">"ఇతర PDF ఫైల్‌లతో విలీనం చేయండి"</string>
     <string name="pdf_reader_tool_password_protect">"పాస్‌వర్డ్ రక్షణ"</string>
@@ -1991,4 +1981,8 @@
     <string name="error_could_not_save_the_exported_file">"ఎగుమతి చేసిన ఫైల్‌ను సేవ్ చేయడం సాధ్యపడలేదు."</string>
     <string name="error_could_not_store_update_prompt_state">"అప్‌డేట్ ప్రాంప్ట్ స్థితిని నిల్వ చేయడం సాధ్యపడలేదు."</string>
     <string name="error_could_not_check_github_releases">"GitHub విడుదలలను తనిఖీ చేయడం సాధ్యపడలేదు."</string>
+    <string name="onboarding_demo_result">%1$s · పేజీ %2$s</string>
+    <string name="onboarding_demo_found">పేజీ వచనంలో కనుగొనబడింది</string>
+    <string name="onboarding_demo_protected">పాస్‌వర్డ్‌తో రక్షించబడింది</string>
+    <string name="onboarding_chapter_number">%1$02d %2$s</string>
 </resources>

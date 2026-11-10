@@ -53,6 +53,7 @@ fun OnboardingFlow(
     onComplete: () -> Unit,
     onDismissError: () -> Unit,
     modifier: Modifier = Modifier,
+    onStartScan: () -> Unit = onComplete,
 ) {
     val context = LocalContext.current
     var showPermission by rememberSaveable { mutableStateOf(false) }
@@ -64,7 +65,7 @@ fun OnboardingFlow(
     OnboardingScreen(
         uiState = uiState,
         onComplete = {
-            if (CameraPermissionSupport.isGranted(context)) finish() else showPermission = true
+            if (CameraPermissionSupport.isGranted(context)) onStartScan() else showPermission = true
         },
         onDismissError = onDismissError,
         modifier = modifier,
@@ -75,12 +76,17 @@ fun OnboardingFlow(
         OnboardingCameraPermissionSheet(
             onDismiss = { showPermission = false },
             onDone = finish,
+            onCameraReady = { showPermission = false; onStartScan() },
         )
     }
 }
 
 @Composable
-private fun OnboardingCameraPermissionSheet(onDismiss: () -> Unit, onDone: () -> Unit) {
+private fun OnboardingCameraPermissionSheet(
+    onDismiss: () -> Unit,
+    onDone: () -> Unit,
+    onCameraReady: () -> Unit,
+) {
     val context = LocalContext.current
     var openedSettings by rememberSaveable { mutableStateOf(false) }
     var requestInFlight by rememberSaveable { mutableStateOf(false) }
@@ -92,11 +98,12 @@ private fun OnboardingCameraPermissionSheet(onDismiss: () -> Unit, onDone: () ->
         )
     }
     val currentOnDone by rememberUpdatedState(onDone)
-    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
+    val currentOnCameraReady by rememberUpdatedState(onCameraReady)
+    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
         CameraPermissionSupport.markRequested(context)
         requestInFlight = false
         // A denial is a valid choice. Camera and QR screens offer another chance when needed.
-        currentOnDone()
+        if (granted) currentOnCameraReady() else currentOnDone()
     }
 
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -104,7 +111,7 @@ private fun OnboardingCameraPermissionSheet(onDismiss: () -> Unit, onDone: () ->
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_RESUME) {
                 if (openedSettings && CameraPermissionSupport.isGranted(context)) {
-                    currentOnDone()
+                    currentOnCameraReady()
                 } else {
                     openedSettings = false
                     blocked = CameraPermissionSupport.shouldOpenSettings(
@@ -124,7 +131,7 @@ private fun OnboardingCameraPermissionSheet(onDismiss: () -> Unit, onDone: () ->
         onLater = onDone,
         onAllow = {
             if (CameraPermissionSupport.isGranted(context)) {
-                onDone()
+                onCameraReady()
             } else if (blocked) {
                 openedSettings = true
                 CameraPermissionSupport.openAppSettings(context)

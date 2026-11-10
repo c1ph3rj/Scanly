@@ -80,6 +80,14 @@ internal fun ComposeTestRule.completeOnboardingIfNeeded() {
         onNodeWithTag("onboarding_camera_later").performClick()
     }
     dismissBlockingSystemDialogs()
+    // With permission already granted, the new first-run CTA opens the scanner.
+    waitUntil(DEFAULT_TIMEOUT_MS) {
+        hasTag(ScanlyTestTags.HOME_SCREEN) || hasTag(ScanlyTestTags.NAV_HOME) ||
+            onAllNodesWithContentDescription("Close camera").fetchSemanticsNodes().isNotEmpty()
+    }
+    if (onAllNodesWithContentDescription("Close camera").fetchSemanticsNodes().isNotEmpty()) {
+        onNodeWithContentDescription("Close camera").performClick()
+    }
     waitUntil(DEFAULT_TIMEOUT_MS) {
         hasTag(ScanlyTestTags.HOME_SCREEN) || hasTag(ScanlyTestTags.NAV_HOME)
     }

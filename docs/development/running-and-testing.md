@@ -34,7 +34,7 @@ Open this folder in Android Studio (File → Open). Let Gradle sync. The only An
 2. Plug in a phone with USB debugging, or start an emulator (API 29+).
 3. Run `app` (green play). Entry point is `MainActivity`.
 
-First launch shows three **onboarding** pages. Swipe or tap **Continue**, or **Skip** to the last page, then tap **Get started**. If camera access is missing, an optional bottom sheet offers **Enable camera** or **Not now**, then continues to Home (Scan / Import / Folder). Later launches skip onboarding.
+First launch shows three **Paper Atelier onboarding** pages. Swipe or tap **Continue**, or **Skip** to the last page, then tap **Scan my first page**. With camera access granted this opens a new scan session. Otherwise an optional bottom sheet offers **Enable camera** or **Not now**: granting access opens scanning, while Not now or denial continues to Home (Scan / Import / Folder). Later launches skip onboarding. The final introduction page has no import-photo button.
 
 ### Command line (install debug APK)
 

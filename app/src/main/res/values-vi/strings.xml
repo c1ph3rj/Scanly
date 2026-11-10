@@ -626,23 +626,13 @@
     <!-- OnboardingScreen -->
     <string name="onboarding_no_account_no_cloud_upload">Không cần tài khoản. Không tải lên đám mây.</string>
     <string name="onboarding_continue">Tiếp tục</string>
-    <string name="onboarding_get_started">Bắt đầu</string>
+    <string name="onboarding_get_started">Quét trang đầu tiên</string>
     <string name="onboarding_page_of_3">"%1$s, trang %2$s/3"</string>
     <string name="onboarding_page_of_3_2">"Trang %1$s/3"</string>
     <string name="onboarding_skip">Bỏ qua</string>
     <string name="onboarding_scanly">Scanly.</string>
     <string name="onboarding_previous_page">Trang trước</string>
-    <string name="onboarding_feature_edge_detection">Tự động phát hiện mép giấy</string>
-    <string name="onboarding_feature_crop_straighten">Cắt và làm thẳng trang</string>
-    <string name="onboarding_feature_filters">Màu kỳ diệu, Bảng trắng và nhiều bộ lọc khác</string>
-    <string name="onboarding_feature_ocr">Nhận dạng văn bản ngay trên thiết bị</string>
-    <string name="onboarding_feature_search">Tìm từ trong mọi bản quét</string>
-    <string name="onboarding_feature_copy_text">Sao chép văn bản từ mọi trang</string>
-    <string name="onboarding_feature_multipage_pdf">PDF nhiều trang</string>
-    <string name="onboarding_feature_password">Đặt mật khẩu trước khi chia sẻ</string>
-    <string name="onboarding_feature_sign">Ký tài liệu</string>
-    <string name="onboarding_assurance_offline">Hoạt động hoàn toàn ngoại tuyến.</string>
-    <string name="onboarding_assurance_on_device">Văn bản của bạn không bao giờ rời khỏi thiết bị này.</string>
+    <string name="onboarding_assurance_offline">Xử lý trên thiết bị của bạn.</string>
     <!-- Pip -->
     <string name="pip_poke_pip_scanly_s_helper">Chọc Pip, trợ thủ của Scanly</string>
     <!-- PipBubble -->
@@ -1565,14 +1555,14 @@
     <string name="signature_pen_width_bold">Đậm</string>
     <!-- onboarding_page -->
     <string name="onboarding_page_capture">CHỤP</string>
-    <string name="onboarding_page_paper_to_polished">Từ giấy thành bản đẹp.</string>
-    <string name="onboarding_page_capture_straighten_and_clean_up">Chụp, làm thẳng và làm sạch các trang của bạn.</string>
+    <string name="onboarding_page_paper_to_polished">Trang giấy, hoàn thiện.</string>
+    <string name="onboarding_page_capture_straighten_and_clean_up">Căn thẳng trang. Giữ mọi chi tiết.</string>
     <string name="onboarding_page_find">TÌM</string>
-    <string name="onboarding_page_find_more_than_files">Tìm sâu hơn cả tên tệp.</string>
-    <string name="onboarding_page_recognize_text_on_your_device">Nhận dạng văn bản ngay trên thiết bị. Tìm kiếm bên trong bản quét.</string>
-    <string name="onboarding_page_share">CHIA SẺ</string>
-    <string name="onboarding_page_ready_when_you_are">Sẵn sàng khi bạn cần.</string>
-    <string name="onboarding_page_keep_pages_together_share_a">Gom các trang lại với nhau. Chia sẻ PDF gọn gàng chỉ với vài lần nhấn.</string>
+    <string name="onboarding_page_find_more_than_files">Tìm từ. Tìm trang.</string>
+    <string name="onboarding_page_recognize_text_on_your_device">Tìm trong nội dung văn bản của bản quét.</string>
+    <string name="onboarding_page_share">HOÀN TẤT</string>
+    <string name="onboarding_page_ready_when_you_are">Sẵn sàng để gửi.</string>
+    <string name="onboarding_page_keep_pages_together_share_a">Ký, bảo vệ và chia sẻ PDF rõ nét.</string>
     <!-- pdf_reader_tool -->
     <string name="pdf_reader_tool_merge_with_other_pdfs">Gộp với PDF khác</string>
     <string name="pdf_reader_tool_password_protect">Đặt mật khẩu</string>
@@ -1964,4 +1954,8 @@
     <string name="error_could_not_save_the_exported_file">"Không thể lưu tệp đã xuất."</string>
     <string name="error_could_not_store_update_prompt_state">"Không thể lưu trữ trạng thái nhắc cập nhật."</string>
     <string name="error_could_not_check_github_releases">"Không thể kiểm tra các bản phát hành GitHub."</string>
+    <string name="onboarding_demo_result">%1$s · Trang %2$s</string>
+    <string name="onboarding_demo_found">Tìm thấy trong văn bản trang</string>
+    <string name="onboarding_demo_protected">Được bảo vệ bằng mật khẩu</string>
+    <string name="onboarding_chapter_number">%1$02d %2$s</string>
 </resources>

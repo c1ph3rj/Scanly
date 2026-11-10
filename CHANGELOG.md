@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Changed
+
+- **Paper Atelier onboarding** — warm paper imagery, editorial headings and a live Pip guide introduce capture, on-device text search and finished PDFs. The search example uses one non-interactive preview. Clipped artwork, preloaded images and eased page transitions keep navigation consistent; 48 dp pagination targets support keyboard navigation with circular focus feedback. Layouts adapt to large text, landscape, tablets and dark/AMOLED themes. **Scan my first page** opens scanning after camera access is granted; **Not now** or denial continues to Home. Incoming PDF and shortcut destinations keep priority. The final page has no import-photo button. Retired illustrations and unused onboarding translations have been removed.
+
 ### Added
 
 - **Feedback email return** asks whether you sent the email only after a successful email-flow launch and return. **Yes, sent** clears and closes the form; **Not yet** or dismissing the question keeps the draft. Scanly does not automatically mark feedback as sent or detect email delivery.

@@ -626,23 +626,13 @@
     <!-- OnboardingScreen -->
     <string name="onboarding_no_account_no_cloud_upload">Hesap yok. Buluta yükleme yok.</string>
     <string name="onboarding_continue">Devam</string>
-    <string name="onboarding_get_started">Başlayın</string>
+    <string name="onboarding_get_started">İlk sayfamı tara</string>
     <string name="onboarding_page_of_3">"%1$s, sayfa %2$s / 3"</string>
     <string name="onboarding_page_of_3_2">"Sayfa %1$s / 3"</string>
     <string name="onboarding_skip">Atla</string>
     <string name="onboarding_scanly">Scanly.</string>
     <string name="onboarding_previous_page">Önceki sayfa</string>
-    <string name="onboarding_feature_edge_detection">Otomatik kenar algılama</string>
-    <string name="onboarding_feature_crop_straighten">Sayfaları kırpın ve düzleştirin</string>
-    <string name="onboarding_feature_filters">Sihirli renk, Beyaz tahta ve dahası</string>
-    <string name="onboarding_feature_ocr">Cihaz üzerinde metin tanıma</string>
-    <string name="onboarding_feature_search">Taramalarınızda kelime arayın</string>
-    <string name="onboarding_feature_copy_text">Her sayfadan metin kopyalayın</string>
-    <string name="onboarding_feature_multipage_pdf">Çok sayfalı PDF\'ler</string>
-    <string name="onboarding_feature_password">Paylaşmadan önce şifreyle koruyun</string>
-    <string name="onboarding_feature_sign">Belgeleri imzalayın</string>
-    <string name="onboarding_assurance_offline">Tamamen çevrimdışı çalışır.</string>
-    <string name="onboarding_assurance_on_device">Metniniz bu cihazdan hiç çıkmaz.</string>
+    <string name="onboarding_assurance_offline">Cihazında işlenir.</string>
     <!-- Pip -->
     <string name="pip_poke_pip_scanly_s_helper">Scanly\'nin yardımcısı Pip\'i dürt</string>
     <!-- PipBubble -->
@@ -1565,14 +1555,14 @@
     <string name="signature_pen_width_bold">"Kalın"</string>
     <!-- onboarding_page -->
     <string name="onboarding_page_capture">"YAKALAMA"</string>
-    <string name="onboarding_page_paper_to_polished">"Kağıttan net taramalara."</string>
-    <string name="onboarding_page_capture_straighten_and_clean_up">"Sayfalarınızı yakalayın, düzeltin ve temizleyin."</string>
+    <string name="onboarding_page_paper_to_polished">Kâğıt, kusursuz hâliyle.</string>
+    <string name="onboarding_page_capture_straighten_and_clean_up">Sayfayı düzelt. Ayrıntıları koru.</string>
     <string name="onboarding_page_find">"BUL"</string>
-    <string name="onboarding_page_find_more_than_files">"Dosyaların içindeki sözcükleri bulun."</string>
-    <string name="onboarding_page_recognize_text_on_your_device">"Cihazınızdaki metni tanıyın. Taramalarınızın içinde arama yapın."</string>
-    <string name="onboarding_page_share">"PAYLAŞ"</string>
-    <string name="onboarding_page_ready_when_you_are">"Siz hazır olduğunuzda hazır."</string>
-    <string name="onboarding_page_keep_pages_together_share_a">"Sayfaları bir arada tutun. Birkaç dokunuşla temiz bir PDF paylaşın."</string>
+    <string name="onboarding_page_find_more_than_files">Kelimeyi bul. Sayfayı bul.</string>
+    <string name="onboarding_page_recognize_text_on_your_device">Taramalarının içindeki metinde ara.</string>
+    <string name="onboarding_page_share">TAMAMLA</string>
+    <string name="onboarding_page_ready_when_you_are">Göndermeye hazır.</string>
+    <string name="onboarding_page_keep_pages_together_share_a">Net bir PDF imzala, koru ve paylaş.</string>
     <!-- pdf_reader_tool -->
     <string name="pdf_reader_tool_merge_with_other_pdfs">"Diğer PDF dosyalarıyla birleştirin"</string>
     <string name="pdf_reader_tool_password_protect">"Şifre koruması"</string>
@@ -1991,4 +1981,8 @@
     <string name="error_could_not_save_the_exported_file">"Dışa aktarılan dosya kaydedilemedi."</string>
     <string name="error_could_not_store_update_prompt_state">"Güncelleme istemi durumu saklanamadı."</string>
     <string name="error_could_not_check_github_releases">"GitHub sürümleri kontrol edilemedi."</string>
+    <string name="onboarding_demo_result">%1$s · Sayfa %2$s</string>
+    <string name="onboarding_demo_found">Sayfa metninde bulundu</string>
+    <string name="onboarding_demo_protected">Parola korumalı</string>
+    <string name="onboarding_chapter_number">%1$02d %2$s</string>
 </resources>

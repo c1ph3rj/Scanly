@@ -626,23 +626,13 @@
     <!-- OnboardingScreen -->
     <string name="onboarding_no_account_no_cloud_upload">无需账号，不会上传到云端。</string>
     <string name="onboarding_continue">继续</string>
-    <string name="onboarding_get_started">开始使用</string>
+    <string name="onboarding_get_started">扫描我的第一页</string>
     <string name="onboarding_page_of_3">"%1$s，第 %2$s 页，共 3 页"</string>
     <string name="onboarding_page_of_3_2">"第 %1$s 页，共 3 页"</string>
     <string name="onboarding_skip">跳过</string>
     <string name="onboarding_scanly">Scanly。</string>
     <string name="onboarding_previous_page">上一页</string>
-    <string name="onboarding_feature_edge_detection">自动检测边缘</string>
-    <string name="onboarding_feature_crop_straighten">裁剪并矫正页面</string>
-    <string name="onboarding_feature_filters">魔法色彩、白板等滤镜</string>
-    <string name="onboarding_feature_ocr">设备端文字识别</string>
-    <string name="onboarding_feature_search">在所有扫描件中搜索文字</string>
-    <string name="onboarding_feature_copy_text">从任意页面复制文字</string>
-    <string name="onboarding_feature_multipage_pdf">多页 PDF</string>
-    <string name="onboarding_feature_password">分享前设置密码保护</string>
-    <string name="onboarding_feature_sign">签署文档</string>
-    <string name="onboarding_assurance_offline">完全离线可用。</string>
-    <string name="onboarding_assurance_on_device">你的文字绝不会离开此设备。</string>
+    <string name="onboarding_assurance_offline">在你的设备上处理。</string>
     <!-- Pip -->
     <string name="pip_poke_pip_scanly_s_helper">戳一戳 Scanly 的小助手 Pip</string>
     <!-- PipBubble -->
@@ -1565,14 +1555,14 @@
     <string name="signature_pen_width_bold">"厚"</string>
     <!-- onboarding_page -->
     <string name="onboarding_page_capture">"捕捉"</string>
-    <string name="onboarding_page_paper_to_polished">"纸质文档，清晰扫描。"</string>
-    <string name="onboarding_page_capture_straighten_and_clean_up">"捕获、拉直和清理页面。"</string>
+    <string name="onboarding_page_paper_to_polished">纸张，更加出色。</string>
+    <string name="onboarding_page_capture_straighten_and_clean_up">摆正页面，保留细节。</string>
     <string name="onboarding_page_find">"查找"</string>
-    <string name="onboarding_page_find_more_than_files">"扫描件里的文字也能搜。"</string>
-    <string name="onboarding_page_recognize_text_on_your_device">"识别设备上的文本。在扫描件中进行搜索。"</string>
-    <string name="onboarding_page_share">"分享"</string>
-    <string name="onboarding_page_ready_when_you_are">"随时准备，轻松分享。"</string>
-    <string name="onboarding_page_keep_pages_together_share_a">"将页面放在一起。只需轻按几下即可共享干净的 PDF。"</string>
+    <string name="onboarding_page_find_more_than_files">找到词语，找到页面。</string>
+    <string name="onboarding_page_recognize_text_on_your_device">搜索扫描件中的文字。</string>
+    <string name="onboarding_page_share">完成</string>
+    <string name="onboarding_page_ready_when_you_are">准备好发送。</string>
+    <string name="onboarding_page_keep_pages_together_share_a">签名、保护并分享清晰的 PDF。</string>
     <!-- pdf_reader_tool -->
     <string name="pdf_reader_tool_merge_with_other_pdfs">"与其他PDF文件合并"</string>
     <string name="pdf_reader_tool_password_protect">"密码保护"</string>
@@ -1964,4 +1954,8 @@
     <string name="error_could_not_save_the_exported_file">"无法保存导出的文件。"</string>
     <string name="error_could_not_store_update_prompt_state">"无法存储更新提示状态。"</string>
     <string name="error_could_not_check_github_releases">"无法检查 GitHub 版本。"</string>
+    <string name="onboarding_demo_result">%1$s · 第 %2$s 页</string>
+    <string name="onboarding_demo_found">在页面文字中找到</string>
+    <string name="onboarding_demo_protected">已设置密码保护</string>
+    <string name="onboarding_chapter_number">%1$02d %2$s</string>
 </resources>

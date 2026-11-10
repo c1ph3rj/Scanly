@@ -626,23 +626,13 @@
     <!-- OnboardingScreen -->
     <string name="onboarding_no_account_no_cloud_upload">कोई खाता नहीं. क्लाउड पर कोई अपलोड नहीं.</string>
     <string name="onboarding_continue">जारी रखें</string>
-    <string name="onboarding_get_started">शुरू करें</string>
+    <string name="onboarding_get_started">मेरा पहला पेज स्कैन करें</string>
     <string name="onboarding_page_of_3">"%1$s, पेज %2$s / 3"</string>
     <string name="onboarding_page_of_3_2">"पेज %1$s / 3"</string>
     <string name="onboarding_skip">छोड़ें</string>
     <string name="onboarding_scanly">Scanly.</string>
     <string name="onboarding_previous_page">पिछला पेज</string>
-    <string name="onboarding_feature_edge_detection">किनारों की अपने-आप पहचान</string>
-    <string name="onboarding_feature_crop_straighten">पेज काटें और सीधे करें</string>
-    <string name="onboarding_feature_filters">मैजिक कलर, व्हाइटबोर्ड और भी बहुत कुछ</string>
-    <string name="onboarding_feature_ocr">डिवाइस पर ही टेक्स्ट की पहचान</string>
-    <string name="onboarding_feature_search">अपने सभी स्कैन में शब्द खोजें</string>
-    <string name="onboarding_feature_copy_text">किसी भी पेज से टेक्स्ट कॉपी करें</string>
-    <string name="onboarding_feature_multipage_pdf">कई पेज वाली PDF</string>
-    <string name="onboarding_feature_password">शेयर करने से पहले पासवर्ड लगाएं</string>
-    <string name="onboarding_feature_sign">दस्तावेज़ों पर हस्ताक्षर करें</string>
-    <string name="onboarding_assurance_offline">पूरी तरह ऑफ़लाइन काम करता है.</string>
-    <string name="onboarding_assurance_on_device">आपका टेक्स्ट कभी इस डिवाइस से बाहर नहीं जाता.</string>
+    <string name="onboarding_assurance_offline">आपके डिवाइस पर प्रोसेस होता है।</string>
     <!-- Pip -->
     <string name="pip_poke_pip_scanly_s_helper">Scanly के मददगार Pip को छुएं</string>
     <!-- PipBubble -->
@@ -1565,14 +1555,14 @@
     <string name="signature_pen_width_bold">"मोटा"</string>
     <!-- onboarding_page -->
     <string name="onboarding_page_capture">"कब्जा"</string>
-    <string name="onboarding_page_paper_to_polished">"कागज़ से साफ़ स्कैन तक।"</string>
-    <string name="onboarding_page_capture_straighten_and_clean_up">"अपने पृष्ठों को कैप्चर करें, सीधा करें और साफ करें।"</string>
+    <string name="onboarding_page_paper_to_polished">कागज़, बेहतर रूप में।</string>
+    <string name="onboarding_page_capture_straighten_and_clean_up">पेज सीधा करें। हर बारीकी सहेजें।</string>
     <string name="onboarding_page_find">"खोजें"</string>
-    <string name="onboarding_page_find_more_than_files">"अपने स्कैन के अंदर भी खोजें।"</string>
-    <string name="onboarding_page_recognize_text_on_your_device">"अपने डिवाइस पर टेक्स्ट को पहचानें। अपने स्कैन के अंदर खोजें."</string>
-    <string name="onboarding_page_share">"साझा करें"</string>
-    <string name="onboarding_page_ready_when_you_are">"जब चाहें, तैयार।"</string>
-    <string name="onboarding_page_keep_pages_together_share_a">"पन्ने एक साथ रखें. कुछ ही टैप में एक साफ़ PDF साझा करें।"</string>
+    <string name="onboarding_page_find_more_than_files">शब्द ढूँढें। पेज पाएँ।</string>
+    <string name="onboarding_page_recognize_text_on_your_device">अपने स्कैन के अंदर के टेक्स्ट में खोजें।</string>
+    <string name="onboarding_page_share">पूरा करें</string>
+    <string name="onboarding_page_ready_when_you_are">भेजने के लिए तैयार।</string>
+    <string name="onboarding_page_keep_pages_together_share_a">साफ़ PDF पर हस्ताक्षर करें, सुरक्षित करें और शेयर करें।</string>
     <!-- pdf_reader_tool -->
     <string name="pdf_reader_tool_merge_with_other_pdfs">"अन्य PDF फ़ाइलों के साथ मर्ज करें"</string>
     <string name="pdf_reader_tool_password_protect">"पासवर्ड सुरक्षा"</string>
@@ -1991,4 +1981,8 @@
     <string name="error_could_not_save_the_exported_file">"निर्यात की गई फ़ाइल सहेजी नहीं जा सकी."</string>
     <string name="error_could_not_store_update_prompt_state">"अद्यतन शीघ्र स्थिति को संग्रहित नहीं किया जा सका।"</string>
     <string name="error_could_not_check_github_releases">"GitHub रिलीज़ की जाँच नहीं की जा सकी."</string>
+    <string name="onboarding_demo_result">%1$s · पेज %2$s</string>
+    <string name="onboarding_demo_found">पेज के टेक्स्ट में मिला</string>
+    <string name="onboarding_demo_protected">पासवर्ड से सुरक्षित</string>
+    <string name="onboarding_chapter_number">%1$02d %2$s</string>
 </resources>

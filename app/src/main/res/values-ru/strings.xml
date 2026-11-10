@@ -626,23 +626,13 @@
     <!-- OnboardingScreen -->
     <string name="onboarding_no_account_no_cloud_upload">"Нет аккаунта. Нет загрузки в облако."</string>
     <string name="onboarding_continue">"Продолжить"</string>
-    <string name="onboarding_get_started">"Начать"</string>
+    <string name="onboarding_get_started">Сканировать первую страницу</string>
     <string name="onboarding_page_of_3">"%1$s, страница %2$s из 3."</string>
     <string name="onboarding_page_of_3_2">"Страница %1$s из 3"</string>
     <string name="onboarding_skip">"Пропустить"</string>
     <string name="onboarding_scanly">"Scanly."</string>
     <string name="onboarding_previous_page">"Предыдущая страница"</string>
-    <string name="onboarding_feature_edge_detection">"Автоматическое обнаружение края"</string>
-    <string name="onboarding_feature_crop_straighten">"Обрезайте и выпрямляйте страницы."</string>
-    <string name="onboarding_feature_filters">"Волшебный цвет, доска и многое другое."</string>
-    <string name="onboarding_feature_ocr">"Распознавание текста на устройстве"</string>
-    <string name="onboarding_feature_search">"Ищите слова по вашим сканам."</string>
-    <string name="onboarding_feature_copy_text">"Копирование текста с любой страницы"</string>
-    <string name="onboarding_feature_multipage_pdf">"Многостраничные файлы PDF."</string>
-    <string name="onboarding_feature_password">"Защитите паролем перед отправкой"</string>
-    <string name="onboarding_feature_sign">"Подписывать документы"</string>
-    <string name="onboarding_assurance_offline">"Работает полностью в автономном режиме."</string>
-    <string name="onboarding_assurance_on_device">"Ваше сообщение никогда не покидает это устройство."</string>
+    <string name="onboarding_assurance_offline">Обрабатывается на вашем устройстве.</string>
     <!-- Pip -->
     <string name="pip_poke_pip_scanly_s_helper">"Poke Pip, помощник Scanly."</string>
     <!-- PipBubble -->
@@ -1565,14 +1555,14 @@
     <string name="signature_pen_width_bold">"Толстый"</string>
     <!-- onboarding_page -->
     <string name="onboarding_page_capture">"ЗАХВАТ"</string>
-    <string name="onboarding_page_paper_to_polished">"Из бумаги — в чёткий скан."</string>
-    <string name="onboarding_page_capture_straighten_and_clean_up">"Снимайте, выпрямляйте и очищайте страницы."</string>
+    <string name="onboarding_page_paper_to_polished">Бумага в лучшем виде.</string>
+    <string name="onboarding_page_capture_straighten_and_clean_up">Выровняйте страницу. Сохраните детали.</string>
     <string name="onboarding_page_find">"НАЙТИ"</string>
-    <string name="onboarding_page_find_more_than_files">"Ищите слова внутри сканов."</string>
-    <string name="onboarding_page_recognize_text_on_your_device">"Распознавайте текст на вашем устройстве. Ищите внутри своих сканов."</string>
-    <string name="onboarding_page_share">"ПОДЕЛИТЬСЯ"</string>
-    <string name="onboarding_page_ready_when_you_are">"Всё готово, когда нужно."</string>
-    <string name="onboarding_page_keep_pages_together_share_a">"Держите страницы вместе. Поделитесь чистым PDF в несколько нажатий."</string>
+    <string name="onboarding_page_find_more_than_files">Найдите слово. Найдите страницу.</string>
+    <string name="onboarding_page_recognize_text_on_your_device">Ищите в тексте своих сканов.</string>
+    <string name="onboarding_page_share">ГОТОВО</string>
+    <string name="onboarding_page_ready_when_you_are">Готово к отправке.</string>
+    <string name="onboarding_page_keep_pages_together_share_a">Подпишите, защитите и отправьте чёткий PDF.</string>
     <!-- pdf_reader_tool -->
     <string name="pdf_reader_tool_merge_with_other_pdfs">"Объединить с другими файлами PDF."</string>
     <string name="pdf_reader_tool_password_protect">"Защита паролем"</string>
@@ -2045,4 +2035,8 @@
     <string name="error_could_not_save_the_exported_file">"Не удалось сохранить экспортированный файл."</string>
     <string name="error_could_not_store_update_prompt_state">"Не удалось сохранить состояние запроса на обновление."</string>
     <string name="error_could_not_check_github_releases">"Не удалось проверить выпуски GitHub."</string>
+    <string name="onboarding_demo_result">%1$s · Страница %2$s</string>
+    <string name="onboarding_demo_found">Найдено в тексте страницы</string>
+    <string name="onboarding_demo_protected">Защищено паролем</string>
+    <string name="onboarding_chapter_number">%1$02d %2$s</string>
 </resources>

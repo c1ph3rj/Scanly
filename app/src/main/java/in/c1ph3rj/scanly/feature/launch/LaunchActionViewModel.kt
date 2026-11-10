@@ -146,6 +146,11 @@ class LaunchActionViewModel @Inject constructor(
         enqueue(ScanlyLaunchAction.Scan)
     }
 
+    /** First-run CTA must not replace a shortcut already waiting behind onboarding. */
+    fun requestOnboardingScan() {
+        if (pendingAction == null) enqueue(ScanlyLaunchAction.Scan)
+    }
+
     /** In-app Import (bottom bar): same as the launcher shortcut — opens the photo picker. */
     fun requestImport() {
         enqueue(ScanlyLaunchAction.Import)

@@ -142,6 +142,7 @@ private fun ScanlyApp(
 
     var pendingPdfUri by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf<String?>(null) }
     var coldStartPdfHandled by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf(false) }
+    var startFirstScan by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(launchActionViewModel, coldStartIntent) {
         launchActionViewModel.onColdStartIntent(coldStartIntent)
@@ -304,7 +305,14 @@ private fun ScanlyApp(
 
                             OnboardingStatus.REQUIRED -> OnboardingFlow(
                                 uiState = onboardingUiState,
-                                onComplete = onboardingViewModel::completeOnboarding,
+                                onComplete = {
+                                    startFirstScan = false
+                                    onboardingViewModel.completeOnboarding()
+                                },
+                                onStartScan = {
+                                    startFirstScan = pendingPdfUri == null
+                                    onboardingViewModel.completeOnboarding()
+                                },
                                 onDismissError = onboardingViewModel::dismissError,
                             )
 
@@ -342,6 +350,11 @@ private fun ScanlyApp(
                                         }
                                     }
                                     yield()
+                                    if (startFirstScan) {
+                                        startFirstScan = false
+                                        // Explicit incoming files/shortcut destinations retain priority.
+                                        if (pendingPdfUri == null) launchActionViewModel.requestOnboardingScan()
+                                    }
                                     launchActionViewModel.onAppReady()
                                 }
                             }

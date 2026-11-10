@@ -31,7 +31,7 @@ class ScanlyDeviceUiTest {
     }
 
     @Test
-    fun onboardingCompletesThenHomeIdentifyingUiIsVisible() {
+    fun onboardingFirstScanCanReturnToHome() {
         composeRule.completeOnboardingIfNeeded()
         composeRule.onNodeWithTag(ScanlyTestTags.HOME_SCREEN).assertIsDisplayed()
         composeRule.onNodeWithText("Import").assertIsDisplayed()
@@ -42,9 +42,8 @@ class ScanlyDeviceUiTest {
     @Test
     fun libraryDestinationShowsIdentifyingUi() {
         composeRule.openDestination(ScanlyTestTags.NAV_LIBRARY, ScanlyTestTags.LIBRARY_SCREEN)
-        // The suite clears app data, so the library opens on its empty state.
-        composeRule.onNodeWithText("Your library is ready").assertIsDisplayed()
-        composeRule.onNodeWithText("New folder").assertIsDisplayed()
+        // A granted first-run scan can leave an empty document after closing the camera.
+        composeRule.onNodeWithTag(ScanlyTestTags.LIBRARY_SEARCH).assertIsDisplayed()
         composeRule.onNodeWithTag(ScanlyTestTags.LIBRARY_SEARCH).performClick()
         composeRule.awaitTag(ScanlyTestTags.SEARCH_SCREEN)
         composeRule.waitUntil(20_000) { composeRule.onNodeWithTag(ScanlyTestTags.SEARCH_INPUT).isDisplayed() }

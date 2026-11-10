@@ -626,23 +626,13 @@
     <!-- OnboardingScreen -->
     <string name="onboarding_no_account_no_cloud_upload">"કોઈ ખાતું નથી. કોઈ ક્લાઉડ અપલોડ નથી."</string>
     <string name="onboarding_continue">"ચાલુ રાખો"</string>
-    <string name="onboarding_get_started">"પ્રારંભ કરો"</string>
+    <string name="onboarding_get_started">મારું પહેલું પાનું સ્કૅન કરો</string>
     <string name="onboarding_page_of_3">"%1$s, 3 નું %2$s પૃષ્ઠ"</string>
     <string name="onboarding_page_of_3_2">"પેજ %1$s ઓફ 3"</string>
     <string name="onboarding_skip">"અવગણો"</string>
     <string name="onboarding_scanly">"Scanly."</string>
     <string name="onboarding_previous_page">"પાછલું પૃષ્ઠ"</string>
-    <string name="onboarding_feature_edge_detection">"ઓટોમેટિક એજ ડિટેક્શન"</string>
-    <string name="onboarding_feature_crop_straighten">"પૃષ્ઠોને કાપો અને સીધા કરો"</string>
-    <string name="onboarding_feature_filters">"મેજિક કલર, વ્હાઇટબોર્ડ અને વધુ"</string>
-    <string name="onboarding_feature_ocr">"ઓન-ડિવાઈસ ટેક્સ્ટ ઓળખ"</string>
-    <string name="onboarding_feature_search">"તમારા સ્કેન પર શબ્દો શોધો"</string>
-    <string name="onboarding_feature_copy_text">"કોઈપણ પૃષ્ઠમાંથી ટેક્સ્ટની નકલ કરો"</string>
-    <string name="onboarding_feature_multipage_pdf">"મલ્ટી-પેજ PDF ફાઇલો"</string>
-    <string name="onboarding_feature_password">"શેર કરતા પહેલા પાસવર્ડ-સુરક્ષિત કરો"</string>
-    <string name="onboarding_feature_sign">"દસ્તાવેજો પર સહી કરો"</string>
-    <string name="onboarding_assurance_offline">"સંપૂર્ણપણે ઑફલાઇન કામ કરે છે."</string>
-    <string name="onboarding_assurance_on_device">"તમારું લખાણ આ ઉપકરણને ક્યારેય છોડતું નથી."</string>
+    <string name="onboarding_assurance_offline">તમારા ઉપકરણ પર જ પ્રક્રિયા થાય છે.</string>
     <!-- Pip -->
     <string name="pip_poke_pip_scanly_s_helper">"પોક Pip, Scanly નો હેલ્પર"</string>
     <!-- PipBubble -->
@@ -1565,14 +1555,14 @@
     <string name="signature_pen_width_bold">"જાડા"</string>
     <!-- onboarding_page -->
     <string name="onboarding_page_capture">"કેપ્ચર"</string>
-    <string name="onboarding_page_paper_to_polished">"કાગળમાંથી સ્પષ્ટ સ્કૅન."</string>
-    <string name="onboarding_page_capture_straighten_and_clean_up">"તમારા પૃષ્ઠોને કેપ્ચર કરો, સીધા કરો અને સાફ કરો."</string>
+    <string name="onboarding_page_paper_to_polished">કાગળ, વધુ સુઘડ.</string>
+    <string name="onboarding_page_capture_straighten_and_clean_up">પાનું સીધું કરો. વિગતો જાળવો.</string>
     <string name="onboarding_page_find">"શોધો"</string>
-    <string name="onboarding_page_find_more_than_files">"સ્કૅનની અંદર પણ શોધો."</string>
-    <string name="onboarding_page_recognize_text_on_your_device">"તમારા ઉપકરણ પર ટેક્સ્ટને ઓળખો. તમારા સ્કેન અંદર શોધો."</string>
-    <string name="onboarding_page_share">"શેર કરો"</string>
-    <string name="onboarding_page_ready_when_you_are">"તમે તૈયાર, તો હું પણ તૈયાર."</string>
-    <string name="onboarding_page_keep_pages_together_share_a">"પૃષ્ઠોને સાથે રાખો. થોડા ટૅપમાં સ્વચ્છ PDF શેર કરો."</string>
+    <string name="onboarding_page_find_more_than_files">શબ્દ શોધો. પાનું મેળવો.</string>
+    <string name="onboarding_page_recognize_text_on_your_device">તમારા સ્કૅનની અંદરના લખાણમાં શોધો.</string>
+    <string name="onboarding_page_share">પૂર્ણ કરો</string>
+    <string name="onboarding_page_ready_when_you_are">મોકલવા માટે તૈયાર.</string>
+    <string name="onboarding_page_keep_pages_together_share_a">સ્વચ્છ PDF પર સહી કરો, સુરક્ષિત કરો અને શેર કરો.</string>
     <!-- pdf_reader_tool -->
     <string name="pdf_reader_tool_merge_with_other_pdfs">"અન્ય PDF ફાઇલો સાથે મર્જ કરો"</string>
     <string name="pdf_reader_tool_password_protect">"પાસવર્ડ રક્ષણ"</string>
@@ -1991,4 +1981,8 @@
     <string name="error_could_not_save_the_exported_file">"નિકાસ કરેલી ફાઇલ સાચવી શકાઈ નથી."</string>
     <string name="error_could_not_store_update_prompt_state">"અપડેટ પ્રોમ્પ્ટ સ્ટેટ સ્ટોર કરી શકાયું નથી."</string>
     <string name="error_could_not_check_github_releases">"GitHub પ્રકાશનો તપાસી શક્યા નથી."</string>
+    <string name="onboarding_demo_result">%1$s · પાનું %2$s</string>
+    <string name="onboarding_demo_found">પાનાના લખાણમાં મળ્યું</string>
+    <string name="onboarding_demo_protected">પાસવર્ડથી સુરક્ષિત</string>
+    <string name="onboarding_chapter_number">%1$02d %2$s</string>
 </resources>

@@ -10,21 +10,34 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asAndroidBitmap
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.InputMode
+import androidx.compose.ui.input.InputModeManager
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalInputModeManager
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
+import androidx.compose.ui.test.assertIsFocused
+import androidx.compose.ui.test.assertIsSelected
+import androidx.compose.ui.test.hasAnyDescendant
+import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.captureToImage
 import androidx.compose.ui.test.junit4.StateRestorationTester
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performKeyInput
+import androidx.compose.ui.test.performSemanticsAction
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipeLeft
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.semantics.SemanticsActions
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
 import `in`.c1ph3rj.scanly.ui.theme.ScanlyTheme
@@ -36,6 +49,7 @@ import java.io.File
 /** Isolated Compose fixtures. Run on a large emulator; no library/preferences are reset. */
 class OnboardingScreenTest {
     @get:Rule val composeRule = createComposeRule()
+    private lateinit var inputMode: InputModeManager
 
     private fun show(
         width: Int = 390,
@@ -47,6 +61,7 @@ class OnboardingScreenTest {
         onComplete: () -> Unit = {},
     ) {
         composeRule.setContent {
+            inputMode = LocalInputModeManager.current
             CompositionLocalProvider(LocalDensity provides Density(1f, fontScale)) {
                 ScanlyTheme(darkTheme = dark, pureBlack = pureBlack) {
                     // These are content-only viewports, centered inside the large host window.
@@ -63,6 +78,9 @@ class OnboardingScreenTest {
     }
 
     private fun capture(name: String, tag: String = "onboarding_screen") {
+        if (tag == "onboarding_screen") composeRule.waitUntil(10_000) {
+            composeRule.onAllNodesWithTag("onboarding_paper").fetchSemanticsNodes().isNotEmpty()
+        }
         composeRule.waitForIdle()
         val bitmap = composeRule.onNodeWithTag(tag).captureToImage().asAndroidBitmap()
         val context = InstrumentationRegistry.getInstrumentation().targetContext
@@ -81,17 +99,19 @@ class OnboardingScreenTest {
     @Test fun threePages_continueBackAndComplete() {
         var completions = 0
         show(onComplete = { completions++ })
-        composeRule.onNodeWithText("Paper to polished.").assertIsDisplayed()
+        composeRule.onNodeWithText("Paper,\nperfected.").assertIsDisplayed()
         capture("phone-capture")
         composeRule.onNodeWithTag("onboarding_continue").performClick()
-        composeRule.onNodeWithText("Find more than files.").assertIsDisplayed()
+        composeRule.onNodeWithText("Find the word.\nFind the page.").assertIsDisplayed()
         capture("phone-find")
         composeRule.onNodeWithTag("onboarding_back").performClick()
-        composeRule.onNodeWithText("Paper to polished.").assertIsDisplayed()
+        composeRule.onNodeWithText("Paper,\nperfected.").assertIsDisplayed()
         composeRule.onNodeWithTag("onboarding_dot_2").performClick()
-        composeRule.onNodeWithText("Ready when you are.").assertIsDisplayed()
+        composeRule.onNodeWithText("Make it ready\nto send.").assertIsDisplayed()
         composeRule.onNodeWithText("No account. No cloud upload.").assertIsDisplayed()
         capture("phone-share")
+        composeRule.onNodeWithText("Scan my first page").assertIsDisplayed()
+        composeRule.onNodeWithText("Import a photo").assertDoesNotExist()
         assertEquals(0, completions)
         composeRule.onNodeWithTag("onboarding_get_started").performClick()
         composeRule.runOnIdle { assertEquals(1, completions) }
@@ -101,9 +121,62 @@ class OnboardingScreenTest {
         var completions = 0
         show(onComplete = { completions++ })
         composeRule.onNodeWithTag("onboarding_pager").performTouchInput { swipeLeft() }
-        composeRule.onNodeWithText("Find more than files.").assertIsDisplayed()
+        composeRule.onNodeWithText("Find the word.\nFind the page.").assertIsDisplayed()
         skip()
         composeRule.runOnIdle { assertEquals(0, completions) }
+    }
+
+    @Test fun searchPreviewIsIllustrativeWithoutCopyOrClickActions() {
+        show()
+        composeRule.onNodeWithTag("onboarding_continue").performClick()
+        composeRule.onNodeWithTag("onboarding_search_preview")
+            .assert(hasAnyDescendant(hasClickAction()).not())
+        composeRule.onNodeWithTag("onboarding_copy_sample").assertDoesNotExist()
+        composeRule.onNodeWithText("Copy text").assertDoesNotExist()
+    }
+
+    @Test fun darkDots_keepKeyboardFocusAndNavigateWithoutSquareIndication() {
+        show(dark = true)
+        composeRule.onNodeWithTag("onboarding_continue").performClick()
+        composeRule.runOnIdle { inputMode.requestInputMode(InputMode.Keyboard) }
+        composeRule.onNodeWithTag("onboarding_dot_0")
+            .performSemanticsAction(SemanticsActions.RequestFocus) { it() }.assertIsFocused()
+        capture("dark-find-focused")
+        composeRule.onNodeWithTag("onboarding_dot_0").performKeyInput { keyDown(Key.Enter); keyUp(Key.Enter) }
+        composeRule.onNodeWithTag("onboarding_dot_0").assertIsSelected().assertIsFocused()
+        composeRule.onNodeWithText("Paper,\nperfected.").assertIsDisplayed()
+    }
+
+    @Test fun lightDots_showCircularFocusOnAnUnselectedPage() {
+        show()
+        composeRule.runOnIdle { inputMode.requestInputMode(InputMode.Keyboard) }
+        composeRule.onNodeWithTag("onboarding_dot_1")
+            .performSemanticsAction(SemanticsActions.RequestFocus) { it() }.assertIsFocused()
+        capture("light-dots-focused")
+        composeRule.onNodeWithTag("onboarding_dot_0").assertIsSelected()
+    }
+
+    @Test fun darkSearchPreview_isOneContainedSurface() {
+        show(dark = true)
+        composeRule.onNodeWithTag("onboarding_continue").performClick()
+        composeRule.onNodeWithTag("onboarding_search_preview").assertIsDisplayed()
+        capture("dark-find")
+    }
+
+    @Test fun searchPreview_largeTextKeepsTheResultAndNavigationReachable() {
+        show(width = 320, height = 568, fontScale = 2f)
+        composeRule.onNodeWithTag("onboarding_continue").performClick()
+        composeRule.onNodeWithText("Found in page text").performScrollTo().assertIsDisplayed()
+        composeRule.onNodeWithTag("onboarding_continue").assertIsDisplayed().assertIsEnabled()
+        capture("large-text-find-scrolled")
+    }
+
+    @Test fun landscapeSearchPreview_scrollsInsideItsPane() {
+        show(width = 740, height = 360)
+        composeRule.onNodeWithTag("onboarding_continue").performClick()
+        composeRule.onNodeWithText("Found in page text").performScrollTo().assertIsDisplayed()
+        composeRule.onNodeWithTag("onboarding_continue").assertIsDisplayed().assertIsEnabled()
+        capture("landscape-find-scrolled")
     }
 
     @Test fun pageSurvivesSavedStateRestoration() {
@@ -116,7 +189,7 @@ class OnboardingScreenTest {
         skip()
         restoration.emulateSavedInstanceStateRestore()
         composeRule.onNodeWithTag("onboarding_get_started").assertIsDisplayed()
-        composeRule.onNodeWithText("Ready when you are.").assertIsDisplayed()
+        composeRule.onNodeWithText("Make it ready\nto send.").assertIsDisplayed()
     }
 
     @Test fun savingDisablesNavigationAndCompletion() {
@@ -124,6 +197,17 @@ class OnboardingScreenTest {
         composeRule.onNodeWithTag("onboarding_continue").assertIsNotEnabled()
         composeRule.onNodeWithTag("onboarding_skip").assertIsNotEnabled()
         composeRule.onNodeWithTag("onboarding_dot_2").assertIsNotEnabled()
+    }
+
+    @Test fun completedStateDisablesActionsDuringExitTransition() {
+        val state = mutableStateOf(OnboardingUiState(status = OnboardingStatus.REQUIRED))
+        composeRule.setContent {
+            ScanlyTheme { OnboardingScreen(state.value, {}, {}) }
+        }
+        skip()
+        composeRule.runOnIdle { state.value = state.value.copy(status = OnboardingStatus.COMPLETE) }
+        composeRule.onNodeWithTag("onboarding_get_started").assertIsNotEnabled()
+        composeRule.onNodeWithTag("onboarding_back").assertIsNotEnabled()
     }
 
     @Test fun smallPhone_actionsRemainVisibleAndCopyScrolls() {
@@ -147,7 +231,7 @@ class OnboardingScreenTest {
     @Test fun tabletLandscape_usesTwoPanes() {
         show(width = 1280, height = 800)
         composeRule.onNodeWithTag("onboarding_layout_wide").assertExists()
-        composeRule.onNodeWithText("Paper to polished.").assertIsDisplayed()
+        composeRule.onNodeWithText("Paper,\nperfected.").assertIsDisplayed()
         capture("tablet-landscape")
     }
 
@@ -155,7 +239,7 @@ class OnboardingScreenTest {
         show(width = 640, height = 360)
         composeRule.onNodeWithTag("onboarding_layout_wide").assertExists()
         composeRule.onNodeWithTag("onboarding_continue").assertIsDisplayed()
-        composeRule.onNodeWithText("Paper to polished.").performScrollTo().assertIsDisplayed()
+        composeRule.onNodeWithText("Paper,\nperfected.").performScrollTo().assertIsDisplayed()
         capture("phone-landscape")
         skip()
         composeRule.onNodeWithText("No account. No cloud upload.").performScrollTo().assertIsDisplayed()
@@ -165,7 +249,7 @@ class OnboardingScreenTest {
     @Test fun narrowSplitWindowAndLargeText_canFinish() {
         show(width = 320, height = 568, fontScale = 2f)
         composeRule.onNodeWithTag("onboarding_continue").assertIsDisplayed()
-        composeRule.onNodeWithText("Paper to polished.").performScrollTo().assertIsDisplayed()
+        composeRule.onNodeWithText("Paper,\nperfected.").performScrollTo().assertIsDisplayed()
         capture("large-text-capture")
         skip()
         composeRule.onNodeWithText("No account. No cloud upload.").performScrollTo().assertIsDisplayed()
@@ -213,7 +297,7 @@ class OnboardingScreenTest {
         composeRule.onNodeWithTag("onboarding_get_started").assertIsDisplayed()
         composeRule.runOnIdle { bounds.value = 800 to 1280 }
         composeRule.onNodeWithTag("onboarding_layout_medium").assertExists()
-        composeRule.onNodeWithText("Ready when you are.").assertIsDisplayed()
+        composeRule.onNodeWithText("Make it ready\nto send.").assertIsDisplayed()
         capture("resized-tablet-share")
     }
 
@@ -283,6 +367,9 @@ class OnboardingScreenTest {
         composeRule.onNodeWithTag("onboarding_permission_sheet").assertIsDisplayed()
         UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).pressBack()
         composeRule.waitForIdle()
+        composeRule.waitUntil(5_000) {
+            composeRule.onAllNodesWithTag("onboarding_permission_sheet").fetchSemanticsNodes().isEmpty()
+        }
         composeRule.onNodeWithTag("onboarding_permission_sheet").assertDoesNotExist()
         composeRule.onNodeWithTag("onboarding_get_started").assertIsDisplayed()
         composeRule.runOnIdle { assertEquals(0, completions) }

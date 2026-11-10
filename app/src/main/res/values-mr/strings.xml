@@ -626,23 +626,13 @@
     <!-- OnboardingScreen -->
     <string name="onboarding_no_account_no_cloud_upload">खाते नाही. क्लाउडवर अपलोड नाही.</string>
     <string name="onboarding_continue">पुढे सुरू ठेवा</string>
-    <string name="onboarding_get_started">सुरुवात करा</string>
+    <string name="onboarding_get_started">माझे पहिले पान स्कॅन करा</string>
     <string name="onboarding_page_of_3">%1$s, 3 पैकी पेज %2$s</string>
     <string name="onboarding_page_of_3_2">3 पैकी पेज %1$s</string>
     <string name="onboarding_skip">वगळा</string>
     <string name="onboarding_scanly">Scanly.</string>
     <string name="onboarding_previous_page">मागील पेज</string>
-    <string name="onboarding_feature_edge_detection">कडा आपोआप ओळखणे</string>
-    <string name="onboarding_feature_crop_straighten">पेज क्रॉप करून सरळ करा</string>
-    <string name="onboarding_feature_filters">मॅजिक कलर, व्हाइटबोर्ड आणि बरेच काही</string>
-    <string name="onboarding_feature_ocr">डिव्हाइसवरच मजकूर ओळख</string>
-    <string name="onboarding_feature_search">तुमच्या सर्व स्कॅनमध्ये शब्द शोधा</string>
-    <string name="onboarding_feature_copy_text">कोणत्याही पेजवरील मजकूर कॉपी करा</string>
-    <string name="onboarding_feature_multipage_pdf">अनेक पेजच्या PDF</string>
-    <string name="onboarding_feature_password">शेअर करण्यापूर्वी पासवर्ड लावा</string>
-    <string name="onboarding_feature_sign">दस्तऐवजांवर स्वाक्षरी करा</string>
-    <string name="onboarding_assurance_offline">पूर्णपणे ऑफलाइन चालते.</string>
-    <string name="onboarding_assurance_on_device">तुमचा मजकूर हे डिव्हाइस कधीही सोडत नाही.</string>
+    <string name="onboarding_assurance_offline">तुमच्या डिव्हाइसवरच प्रक्रिया होते.</string>
     <!-- Pip -->
     <string name="pip_poke_pip_scanly_s_helper">Scanly चा मदतनीस Pip ला टॅप करा</string>
     <!-- PipBubble -->
@@ -1565,14 +1555,14 @@
     <string name="signature_pen_width_bold">"जाड"</string>
     <!-- onboarding_page -->
     <string name="onboarding_page_capture">"कॅप्चर"</string>
-    <string name="onboarding_page_paper_to_polished">"कागदापासून स्पष्ट स्कॅनपर्यंत."</string>
-    <string name="onboarding_page_capture_straighten_and_clean_up">"तुमची पृष्ठे कॅप्चर करा, सरळ करा आणि साफ करा."</string>
+    <string name="onboarding_page_paper_to_polished">कागद, अधिक सुबक.</string>
+    <string name="onboarding_page_capture_straighten_and_clean_up">पान सरळ करा. बारकावे जपा.</string>
     <string name="onboarding_page_find">"शोधा"</string>
-    <string name="onboarding_page_find_more_than_files">"स्कॅनमधील शब्दही शोधा."</string>
-    <string name="onboarding_page_recognize_text_on_your_device">"तुमच्या डिव्हाइसवरील मजकूर ओळखा. तुमच्या स्कॅनमध्ये शोधा."</string>
-    <string name="onboarding_page_share">"शेअर करा"</string>
-    <string name="onboarding_page_ready_when_you_are">"तुम्ही तयार, तर मीही तयार."</string>
-    <string name="onboarding_page_keep_pages_together_share_a">"पाने एकत्र ठेवा. काही टॅपमध्ये स्वच्छ PDF शेअर करा."</string>
+    <string name="onboarding_page_find_more_than_files">शब्द शोधा. पान मिळवा.</string>
+    <string name="onboarding_page_recognize_text_on_your_device">तुमच्या स्कॅनमधील मजकुरात शोधा.</string>
+    <string name="onboarding_page_share">पूर्ण करा</string>
+    <string name="onboarding_page_ready_when_you_are">पाठवण्यासाठी तयार.</string>
+    <string name="onboarding_page_keep_pages_together_share_a">स्वच्छ PDF वर स्वाक्षरी करा, सुरक्षित करा आणि शेअर करा.</string>
     <!-- pdf_reader_tool -->
     <string name="pdf_reader_tool_merge_with_other_pdfs">"इतर PDF फाइल्ससह विलीन करा"</string>
     <string name="pdf_reader_tool_password_protect">"पासवर्ड संरक्षण"</string>
@@ -1991,4 +1981,8 @@
     <string name="error_could_not_save_the_exported_file">"निर्यात केलेली फाइल जतन करू शकलो नाही."</string>
     <string name="error_could_not_store_update_prompt_state">"अद्यतन प्रॉम्प्ट स्थिती संचयित करू शकलो नाही."</string>
     <string name="error_could_not_check_github_releases">"GitHub रिलीझ तपासू शकलो नाही."</string>
+    <string name="onboarding_demo_result">%1$s · पान %2$s</string>
+    <string name="onboarding_demo_found">पानाच्या मजकुरात सापडले</string>
+    <string name="onboarding_demo_protected">पासवर्डने सुरक्षित</string>
+    <string name="onboarding_chapter_number">%1$02d %2$s</string>
 </resources>

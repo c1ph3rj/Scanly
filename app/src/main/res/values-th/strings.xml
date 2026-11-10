@@ -626,23 +626,13 @@
     <!-- OnboardingScreen -->
     <string name="onboarding_no_account_no_cloud_upload">ไม่ต้องมีบัญชี ไม่อัปโหลดขึ้นคลาวด์</string>
     <string name="onboarding_continue">ต่อไป</string>
-    <string name="onboarding_get_started">เริ่มต้นใช้งาน</string>
+    <string name="onboarding_get_started">สแกนหน้าแรกของฉัน</string>
     <string name="onboarding_page_of_3">%1$s หน้า %2$s จาก 3</string>
     <string name="onboarding_page_of_3_2">หน้า %1$s จาก 3</string>
     <string name="onboarding_skip">ข้าม</string>
     <string name="onboarding_scanly">Scanly</string>
     <string name="onboarding_previous_page">หน้าก่อนหน้า</string>
-    <string name="onboarding_feature_edge_detection">ตรวจจับขอบอัตโนมัติ</string>
-    <string name="onboarding_feature_crop_straighten">ครอบตัดและปรับหน้าให้ตรง</string>
-    <string name="onboarding_feature_filters">สีเมจิก ไวท์บอร์ด และอื่นๆ</string>
-    <string name="onboarding_feature_ocr">จดจำข้อความในอุปกรณ์</string>
-    <string name="onboarding_feature_search">ค้นหาคำในภาพสแกนทั้งหมด</string>
-    <string name="onboarding_feature_copy_text">คัดลอกข้อความจากหน้าใดก็ได้</string>
-    <string name="onboarding_feature_multipage_pdf">PDF หลายหน้า</string>
-    <string name="onboarding_feature_password">ตั้งรหัสผ่านก่อนแชร์</string>
-    <string name="onboarding_feature_sign">ลงนามเอกสาร</string>
-    <string name="onboarding_assurance_offline">ใช้งานแบบออฟไลน์ได้เต็มรูปแบบ</string>
-    <string name="onboarding_assurance_on_device">ข้อความของคุณจะไม่ออกจากอุปกรณ์นี้</string>
+    <string name="onboarding_assurance_offline">ประมวลผลบนอุปกรณ์ของคุณ</string>
     <!-- Pip -->
     <string name="pip_poke_pip_scanly_s_helper">จิ้ม Pip ผู้ช่วยของ Scanly</string>
     <!-- PipBubble -->
@@ -1565,14 +1555,14 @@
     <string name="signature_pen_width_bold">"หนา"</string>
     <!-- onboarding_page -->
     <string name="onboarding_page_capture">"การจับภาพ"</string>
-    <string name="onboarding_page_paper_to_polished">"จากกระดาษสู่สแกนที่คมชัด"</string>
-    <string name="onboarding_page_capture_straighten_and_clean_up">"จับภาพ ปรับให้ตรง และทำความสะอาดหน้าเว็บของคุณ"</string>
+    <string name="onboarding_page_paper_to_polished">กระดาษที่ดูดีกว่าเดิม</string>
+    <string name="onboarding_page_capture_straighten_and_clean_up">ปรับหน้าให้ตรง เก็บทุกรายละเอียด</string>
     <string name="onboarding_page_find">"ค้นหา"</string>
-    <string name="onboarding_page_find_more_than_files">"ค้นหาคำในงานสแกนได้ด้วย"</string>
-    <string name="onboarding_page_recognize_text_on_your_device">"จดจำข้อความบนอุปกรณ์ของคุณ ค้นหาภายในการสแกนของคุณ"</string>
-    <string name="onboarding_page_share">"แบ่งปัน"</string>
-    <string name="onboarding_page_ready_when_you_are">"พร้อมแชร์เมื่อคุณต้องการ"</string>
-    <string name="onboarding_page_keep_pages_together_share_a">"เก็บหน้าไว้ด้วยกัน แบ่งปัน PDF ที่สะอาดตาด้วยการแตะไม่กี่ครั้ง"</string>
+    <string name="onboarding_page_find_more_than_files">ค้นหาคำ พบหน้าที่ต้องการ</string>
+    <string name="onboarding_page_recognize_text_on_your_device">ค้นหาข้อความภายในงานสแกนของคุณ</string>
+    <string name="onboarding_page_share">เสร็จสิ้น</string>
+    <string name="onboarding_page_ready_when_you_are">พร้อมส่งต่อ</string>
+    <string name="onboarding_page_keep_pages_together_share_a">เซ็น ป้องกัน และแชร์ PDF ที่คมชัด</string>
     <!-- pdf_reader_tool -->
     <string name="pdf_reader_tool_merge_with_other_pdfs">"รวมเข้ากับไฟล์ PDF อื่น ๆ"</string>
     <string name="pdf_reader_tool_password_protect">"การป้องกันด้วยรหัสผ่าน"</string>
@@ -1964,4 +1954,8 @@
     <string name="error_could_not_save_the_exported_file">"ไม่สามารถบันทึกไฟล์ที่ส่งออกได้"</string>
     <string name="error_could_not_store_update_prompt_state">"ไม่สามารถจัดเก็บสถานะพร้อมท์การอัพเดตได้"</string>
     <string name="error_could_not_check_github_releases">"ไม่สามารถตรวจสอบการเผยแพร่ GitHub ได้"</string>
+    <string name="onboarding_demo_result">%1$s · หน้า %2$s</string>
+    <string name="onboarding_demo_found">พบในข้อความบนหน้า</string>
+    <string name="onboarding_demo_protected">ป้องกันด้วยรหัสผ่าน</string>
+    <string name="onboarding_chapter_number">%1$02d %2$s</string>
 </resources>

@@ -626,23 +626,13 @@
     <!-- OnboardingScreen -->
     <string name="onboarding_no_account_no_cloud_upload">Geen account. Geen upload naar de cloud.</string>
     <string name="onboarding_continue">Doorgaan</string>
-    <string name="onboarding_get_started">Aan de slag</string>
+    <string name="onboarding_get_started">Mijn eerste pagina scannen</string>
     <string name="onboarding_page_of_3">"%1$s, pagina %2$s van 3"</string>
     <string name="onboarding_page_of_3_2">"Pagina %1$s van 3"</string>
     <string name="onboarding_skip">Overslaan</string>
     <string name="onboarding_scanly">Scanly.</string>
     <string name="onboarding_previous_page">Vorige pagina</string>
-    <string name="onboarding_feature_edge_detection">Automatische randdetectie</string>
-    <string name="onboarding_feature_crop_straighten">Pagina\'s bijsnijden en rechtzetten</string>
-    <string name="onboarding_feature_filters">Magische kleur, Whiteboard en meer</string>
-    <string name="onboarding_feature_ocr">Tekstherkenning op je apparaat</string>
-    <string name="onboarding_feature_search">Zoek woorden in al je scans</string>
-    <string name="onboarding_feature_copy_text">Kopieer tekst van elke pagina</string>
-    <string name="onboarding_feature_multipage_pdf">PDF\'s met meerdere pagina\'s</string>
-    <string name="onboarding_feature_password">Beveilig met een wachtwoord voordat je deelt</string>
-    <string name="onboarding_feature_sign">Documenten ondertekenen</string>
-    <string name="onboarding_assurance_offline">Werkt volledig offline.</string>
-    <string name="onboarding_assurance_on_device">Je tekst verlaat dit apparaat nooit.</string>
+    <string name="onboarding_assurance_offline">Verwerkt op je apparaat.</string>
     <!-- Pip -->
     <string name="pip_poke_pip_scanly_s_helper">Por Pip, de helper van Scanly</string>
     <!-- PipBubble -->
@@ -1565,14 +1555,14 @@
     <string name="signature_pen_width_bold">Dik</string>
     <!-- onboarding_page -->
     <string name="onboarding_page_capture">VASTLEGGEN</string>
-    <string name="onboarding_page_paper_to_polished">Van papier naar perfect.</string>
-    <string name="onboarding_page_capture_straighten_and_clean_up">Leg je pagina\'s vast, zet ze recht en maak ze netjes.</string>
+    <string name="onboarding_page_paper_to_polished">Papier, geperfectioneerd.</string>
+    <string name="onboarding_page_capture_straighten_and_clean_up">Zet de pagina recht. Behoud de details.</string>
     <string name="onboarding_page_find">VINDEN</string>
-    <string name="onboarding_page_find_more_than_files">Vind meer dan bestanden.</string>
-    <string name="onboarding_page_recognize_text_on_your_device">Herken tekst op je apparaat. Zoek in je scans.</string>
-    <string name="onboarding_page_share">DELEN</string>
-    <string name="onboarding_page_ready_when_you_are">Klaar wanneer jij het bent.</string>
-    <string name="onboarding_page_keep_pages_together_share_a">Houd pagina\'s bij elkaar. Deel een nette PDF met een paar tikken.</string>
+    <string name="onboarding_page_find_more_than_files">Vind het woord. Vind de pagina.</string>
+    <string name="onboarding_page_recognize_text_on_your_device">Zoek in de tekst van je scans.</string>
+    <string name="onboarding_page_share">AFRONDEN</string>
+    <string name="onboarding_page_ready_when_you_are">Klaar om te versturen.</string>
+    <string name="onboarding_page_keep_pages_together_share_a">Onderteken, beveilig en deel een nette PDF.</string>
     <!-- pdf_reader_tool -->
     <string name="pdf_reader_tool_merge_with_other_pdfs">Samenvoegen met andere PDF\'s</string>
     <string name="pdf_reader_tool_password_protect">Beveiligen met wachtwoord</string>
@@ -1991,4 +1981,8 @@
     <string name="error_could_not_save_the_exported_file">"Kan het geëxporteerde bestand niet opslaan."</string>
     <string name="error_could_not_store_update_prompt_state">"Kan updatepromptstatus niet opslaan."</string>
     <string name="error_could_not_check_github_releases">"Kon GitHub-releases niet controleren."</string>
+    <string name="onboarding_demo_result">%1$s · Pagina %2$s</string>
+    <string name="onboarding_demo_found">Gevonden in paginatekst</string>
+    <string name="onboarding_demo_protected">Beveiligd met wachtwoord</string>
+    <string name="onboarding_chapter_number">%1$02d %2$s</string>
 </resources>

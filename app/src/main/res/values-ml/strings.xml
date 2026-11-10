@@ -626,23 +626,13 @@
     <!-- OnboardingScreen -->
     <string name="onboarding_no_account_no_cloud_upload">"അക്കൗണ്ട് ഇല്ല. ക്ലൗഡ് അപ്‌ലോഡ് ഇല്ല."</string>
     <string name="onboarding_continue">"തുടരുക"</string>
-    <string name="onboarding_get_started">"ആരംഭിക്കുക"</string>
+    <string name="onboarding_get_started">എന്റെ ആദ്യ പേജ് സ്കാൻ ചെയ്യുക</string>
     <string name="onboarding_page_of_3">"%1$s, പേജ് %2$s / 3"</string>
     <string name="onboarding_page_of_3_2">"പേജ് %1$s / 3"</string>
     <string name="onboarding_skip">"ഒഴിവാക്കുക"</string>
     <string name="onboarding_scanly">"Scanly."</string>
     <string name="onboarding_previous_page">"മുൻ പേജ്"</string>
-    <string name="onboarding_feature_edge_detection">"യാന്ത്രിക എഡ്ജ് കണ്ടെത്തൽ"</string>
-    <string name="onboarding_feature_crop_straighten">"പേജുകൾ മുറിച്ച് നേരെയാക്കുക"</string>
-    <string name="onboarding_feature_filters">"മാജിക് കളർ, വൈറ്റ്ബോർഡ് എന്നിവയും അതിലേറെയും"</string>
-    <string name="onboarding_feature_ocr">"ഉപകരണത്തിലെ ടെക്സ്റ്റ് തിരിച്ചറിയൽ"</string>
-    <string name="onboarding_feature_search">"നിങ്ങളുടെ സ്കാനുകളിലുടനീളം വാക്കുകൾ തിരയുക"</string>
-    <string name="onboarding_feature_copy_text">"ഏത് പേജിൽ നിന്നും വാചകം പകർത്തുക"</string>
-    <string name="onboarding_feature_multipage_pdf">"മൾട്ടി-പേജ് PDF ഫയലുകൾ"</string>
-    <string name="onboarding_feature_password">"പങ്കിടുന്നതിന് മുമ്പ് പാസ്‌വേഡ് പരിരക്ഷിക്കുക"</string>
-    <string name="onboarding_feature_sign">"പ്രമാണങ്ങളിൽ ഒപ്പിടുക"</string>
-    <string name="onboarding_assurance_offline">"പൂർണ്ണമായും ഓഫ്‌ലൈനായി പ്രവർത്തിക്കുന്നു."</string>
-    <string name="onboarding_assurance_on_device">"നിങ്ങളുടെ വാചകം ഒരിക്കലും ഈ ഉപകരണത്തിൽ നിന്ന് പുറത്തുപോകില്ല."</string>
+    <string name="onboarding_assurance_offline">നിങ്ങളുടെ ഉപകരണത്തിൽ തന്നെ പ്രോസസ് ചെയ്യുന്നു.</string>
     <!-- Pip -->
     <string name="pip_poke_pip_scanly_s_helper">"പോക്ക് Pip, Scanly ൻ്റെ സഹായി"</string>
     <!-- PipBubble -->
@@ -1565,14 +1555,14 @@
     <string name="signature_pen_width_bold">"കട്ടിയുള്ള"</string>
     <!-- onboarding_page -->
     <string name="onboarding_page_capture">"ക്യാപ്ചർ"</string>
-    <string name="onboarding_page_paper_to_polished">"കടലാസിൽ നിന്ന് തെളിമയുള്ള സ്കാൻ."</string>
-    <string name="onboarding_page_capture_straighten_and_clean_up">"നിങ്ങളുടെ പേജുകൾ ക്യാപ്ചർ ചെയ്യുക, നേരെയാക്കുക, വൃത്തിയാക്കുക."</string>
+    <string name="onboarding_page_paper_to_polished">പേപ്പർ, മികവോടെ.</string>
+    <string name="onboarding_page_capture_straighten_and_clean_up">പേജ് നേരെയാക്കൂ. വിശദാംശങ്ങൾ നിലനിർത്തൂ.</string>
     <string name="onboarding_page_find">"കണ്ടെത്തുക"</string>
-    <string name="onboarding_page_find_more_than_files">"സ്കാനുകൾക്കുള്ളിലും തിരയാം."</string>
-    <string name="onboarding_page_recognize_text_on_your_device">"നിങ്ങളുടെ ഉപകരണത്തിലെ വാചകം തിരിച്ചറിയുക. നിങ്ങളുടെ സ്കാനുകൾക്കുള്ളിൽ തിരയുക."</string>
-    <string name="onboarding_page_share">"ഷെയർ ചെയ്യുക"</string>
-    <string name="onboarding_page_ready_when_you_are">"നിങ്ങൾ തയ്യാറാകുമ്പോൾ ഞാനും തയ്യാർ."</string>
-    <string name="onboarding_page_keep_pages_together_share_a">"പേജുകൾ ഒരുമിച്ച് സൂക്ഷിക്കുക. കുറച്ച് ടാപ്പുകളിൽ വൃത്തിയുള്ള PDF പങ്കിടുക."</string>
+    <string name="onboarding_page_find_more_than_files">വാക്ക് തിരയൂ. പേജ് കണ്ടെത്തൂ.</string>
+    <string name="onboarding_page_recognize_text_on_your_device">നിങ്ങളുടെ സ്കാനുകളിലെ ടെക്സ്റ്റിൽ തിരയൂ.</string>
+    <string name="onboarding_page_share">പൂർത്തിയാക്കൂ</string>
+    <string name="onboarding_page_ready_when_you_are">അയയ്ക്കാൻ തയ്യാർ.</string>
+    <string name="onboarding_page_keep_pages_together_share_a">വ്യക്തമായ PDF-ൽ ഒപ്പിട്ട്, സംരക്ഷിച്ച് പങ്കിടൂ.</string>
     <!-- pdf_reader_tool -->
     <string name="pdf_reader_tool_merge_with_other_pdfs">"മറ്റ് PDF ഫയലുകളുമായി ലയിപ്പിക്കുക"</string>
     <string name="pdf_reader_tool_password_protect">"പാസ്‌വേഡ് പരിരക്ഷണം"</string>
@@ -1991,4 +1981,8 @@
     <string name="error_could_not_save_the_exported_file">"കയറ്റുമതി ചെയ്ത ഫയൽ സംരക്ഷിക്കാൻ കഴിഞ്ഞില്ല."</string>
     <string name="error_could_not_store_update_prompt_state">"അപ്ഡേറ്റ് പ്രോംപ്റ്റ് അവസ്ഥ സംഭരിക്കാൻ കഴിഞ്ഞില്ല."</string>
     <string name="error_could_not_check_github_releases">"GitHub റിലീസുകൾ പരിശോധിക്കാൻ കഴിഞ്ഞില്ല."</string>
+    <string name="onboarding_demo_result">%1$s · പേജ് %2$s</string>
+    <string name="onboarding_demo_found">പേജിലെ ടെക്സ്റ്റിൽ കണ്ടെത്തി</string>
+    <string name="onboarding_demo_protected">പാസ്‌വേഡ് ഉപയോഗിച്ച് സംരക്ഷിച്ചു</string>
+    <string name="onboarding_chapter_number">%1$02d %2$s</string>
 </resources>

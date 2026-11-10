@@ -626,23 +626,13 @@
     <!-- OnboardingScreen -->
     <string name="onboarding_no_account_no_cloud_upload">계정도, 클라우드 업로드도 필요 없어요.</string>
     <string name="onboarding_continue">계속</string>
-    <string name="onboarding_get_started">시작하기</string>
+    <string name="onboarding_get_started">첫 페이지 스캔하기</string>
     <string name="onboarding_page_of_3">"%1$s, %2$s/3페이지"</string>
     <string name="onboarding_page_of_3_2">"%1$s/3페이지"</string>
     <string name="onboarding_skip">건너뛰기</string>
     <string name="onboarding_scanly">Scanly.</string>
     <string name="onboarding_previous_page">이전 페이지</string>
-    <string name="onboarding_feature_edge_detection">가장자리 자동 감지</string>
-    <string name="onboarding_feature_crop_straighten">페이지 자르기 및 반듯하게 펴기</string>
-    <string name="onboarding_feature_filters">매직 컬러, 화이트보드 등</string>
-    <string name="onboarding_feature_ocr">기기 내 텍스트 인식</string>
-    <string name="onboarding_feature_search">모든 스캔에서 단어 검색</string>
-    <string name="onboarding_feature_copy_text">어떤 페이지에서든 텍스트 복사</string>
-    <string name="onboarding_feature_multipage_pdf">여러 페이지 PDF</string>
-    <string name="onboarding_feature_password">공유 전에 비밀번호로 보호</string>
-    <string name="onboarding_feature_sign">문서에 서명</string>
-    <string name="onboarding_assurance_offline">완전히 오프라인으로 작동해요.</string>
-    <string name="onboarding_assurance_on_device">텍스트가 이 기기 밖으로 나가지 않아요.</string>
+    <string name="onboarding_assurance_offline">기기에서 처리됩니다.</string>
     <!-- Pip -->
     <string name="pip_poke_pip_scanly_s_helper">Scanly 도우미 Pip 콕 찌르기</string>
     <!-- PipBubble -->
@@ -1565,14 +1555,14 @@
     <string name="signature_pen_width_bold">"굵은 선"</string>
     <!-- onboarding_page -->
     <string name="onboarding_page_capture">"캡처"</string>
-    <string name="onboarding_page_paper_to_polished">"종이 문서를 깔끔한 스캔으로."</string>
-    <string name="onboarding_page_capture_straighten_and_clean_up">"페이지를 캡처하고 정리하고 정리하세요."</string>
+    <string name="onboarding_page_paper_to_polished">종이를 더 깔끔하게.</string>
+    <string name="onboarding_page_capture_straighten_and_clean_up">페이지를 바로잡고 세부 내용을 살리세요.</string>
     <string name="onboarding_page_find">"찾기"</string>
-    <string name="onboarding_page_find_more_than_files">"스캔 속 단어도 찾아보세요."</string>
-    <string name="onboarding_page_recognize_text_on_your_device">"장치의 텍스트를 인식합니다. 스캔 내부를 검색하세요."</string>
-    <string name="onboarding_page_share">"공유"</string>
-    <string name="onboarding_page_ready_when_you_are">"필요할 때 바로 공유해요."</string>
-    <string name="onboarding_page_keep_pages_together_share_a">"페이지를 함께 보관하십시오. 몇 번의 탭만으로 깨끗한 PDF를 공유하세요."</string>
+    <string name="onboarding_page_find_more_than_files">단어로 페이지를 찾으세요.</string>
+    <string name="onboarding_page_recognize_text_on_your_device">스캔한 페이지 안의 텍스트를 검색하세요.</string>
+    <string name="onboarding_page_share">마무리</string>
+    <string name="onboarding_page_ready_when_you_are">보낼 준비 완료.</string>
+    <string name="onboarding_page_keep_pages_together_share_a">깔끔한 PDF에 서명하고 보호하고 공유하세요.</string>
     <!-- pdf_reader_tool -->
     <string name="pdf_reader_tool_merge_with_other_pdfs">"다른 PDF 파일과 병합"</string>
     <string name="pdf_reader_tool_password_protect">"비밀번호 보호"</string>
@@ -1964,4 +1954,8 @@
     <string name="error_could_not_save_the_exported_file">"내보낸 파일을 저장할 수 없습니다."</string>
     <string name="error_could_not_store_update_prompt_state">"업데이트 프롬프트 상태를 저장할 수 없습니다."</string>
     <string name="error_could_not_check_github_releases">"GitHub 릴리스를 확인할 수 없습니다."</string>
+    <string name="onboarding_demo_result">%1$s · %2$s페이지</string>
+    <string name="onboarding_demo_found">페이지 텍스트에서 찾음</string>
+    <string name="onboarding_demo_protected">비밀번호로 보호됨</string>
+    <string name="onboarding_chapter_number">%1$02d %2$s</string>
 </resources>

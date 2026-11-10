@@ -626,23 +626,13 @@
     <!-- OnboardingScreen -->
     <string name="onboarding_no_account_no_cloud_upload">கணக்கு தேவையில்லை. கிளவுடில் பதிவேற்றம் இல்லை.</string>
     <string name="onboarding_continue">தொடர்க</string>
-    <string name="onboarding_get_started">தொடங்கு</string>
+    <string name="onboarding_get_started">எனது முதல் பக்கத்தை ஸ்கேன் செய்</string>
     <string name="onboarding_page_of_3">"%1$s, பக்கம் %2$s / 3"</string>
     <string name="onboarding_page_of_3_2">"பக்கம் %1$s / 3"</string>
     <string name="onboarding_skip">தவிர்</string>
     <string name="onboarding_scanly">Scanly.</string>
     <string name="onboarding_previous_page">முந்தைய பக்கம்</string>
-    <string name="onboarding_feature_edge_detection">தானியங்கு விளிம்பு கண்டறிதல்</string>
-    <string name="onboarding_feature_crop_straighten">பக்கங்களைச் செதுக்கி நேராக்கலாம்</string>
-    <string name="onboarding_feature_filters">மேஜிக் கலர், வைட்போர்டு மற்றும் பல</string>
-    <string name="onboarding_feature_ocr">சாதனத்திலேயே உரை அறிதல்</string>
-    <string name="onboarding_feature_search">உங்கள் ஸ்கேன்கள் முழுவதும் சொற்களைத் தேடலாம்</string>
-    <string name="onboarding_feature_copy_text">எந்தப் பக்கத்திலிருந்தும் உரையை நகலெடுக்கலாம்</string>
-    <string name="onboarding_feature_multipage_pdf">பல பக்க PDF-கள்</string>
-    <string name="onboarding_feature_password">பகிரும் முன் கடவுச்சொல் பாதுகாப்பு</string>
-    <string name="onboarding_feature_sign">ஆவணங்களில் கையொப்பமிடலாம்</string>
-    <string name="onboarding_assurance_offline">முழுமையாக ஆஃப்லைனில் இயங்கும்.</string>
-    <string name="onboarding_assurance_on_device">உங்கள் உரை இந்தச் சாதனத்தை விட்டு வெளியேறாது.</string>
+    <string name="onboarding_assurance_offline">உங்கள் சாதனத்திலேயே செயலாக்கப்படும்.</string>
     <!-- Pip -->
     <string name="pip_poke_pip_scanly_s_helper">Scanly-இன் உதவியாளர் Pip-ஐத் தொடுங்கள்</string>
     <!-- PipBubble -->
@@ -1565,14 +1555,14 @@
     <string name="signature_pen_width_bold">"தடித்த"</string>
     <!-- onboarding_page -->
     <string name="onboarding_page_capture">"பிடிப்பு"</string>
-    <string name="onboarding_page_paper_to_polished">"காகிதத்திலிருந்து தெளிவான ஸ்கேன்."</string>
-    <string name="onboarding_page_capture_straighten_and_clean_up">"உங்கள் பக்கங்களைப் பிடிக்கவும், நேராக்கவும் மற்றும் சுத்தம் செய்யவும்."</string>
+    <string name="onboarding_page_paper_to_polished">காகிதம், நேர்த்தியாக.</string>
+    <string name="onboarding_page_capture_straighten_and_clean_up">பக்கத்தை நேராக்குங்கள். விவரங்களைப் பாதுகாத்திடுங்கள்.</string>
     <string name="onboarding_page_find">"கண்டுபிடி"</string>
-    <string name="onboarding_page_find_more_than_files">"ஸ்கேனின் உள்ளேயும் தேடுங்கள்."</string>
-    <string name="onboarding_page_recognize_text_on_your_device">"உங்கள் சாதனத்தில் உள்ள உரையை அங்கீகரிக்கவும். உங்கள் ஸ்கேன்களில் தேடவும்."</string>
-    <string name="onboarding_page_share">"பகிரவும்"</string>
-    <string name="onboarding_page_ready_when_you_are">"நீங்கள் தயாரானால் நானும் தயார்."</string>
-    <string name="onboarding_page_keep_pages_together_share_a">"பக்கங்களை ஒன்றாக வைத்திருங்கள். ஒரு சில தட்டுகளில் சுத்தமான PDF ஐப் பகிரவும்."</string>
+    <string name="onboarding_page_find_more_than_files">சொல்லைத் தேடுங்கள். பக்கத்தைக் கண்டறியுங்கள்.</string>
+    <string name="onboarding_page_recognize_text_on_your_device">உங்கள் ஸ்கேன்களில் உள்ள உரையில் தேடுங்கள்.</string>
+    <string name="onboarding_page_share">நிறைவு</string>
+    <string name="onboarding_page_ready_when_you_are">அனுப்பத் தயார்.</string>
+    <string name="onboarding_page_keep_pages_together_share_a">தெளிவான PDF-இல் கையொப்பமிட்டு, பாதுகாத்துப் பகிருங்கள்.</string>
     <!-- pdf_reader_tool -->
     <string name="pdf_reader_tool_merge_with_other_pdfs">"மற்ற PDF கோப்புகளுடன் இணைக்கவும்"</string>
     <string name="pdf_reader_tool_password_protect">"கடவுச்சொல் பாதுகாப்பு"</string>
@@ -1991,4 +1981,8 @@
     <string name="error_could_not_save_the_exported_file">"ஏற்றுமதி செய்யப்பட்ட கோப்பைச் சேமிக்க முடியவில்லை."</string>
     <string name="error_could_not_store_update_prompt_state">"புதுப்பிப்பு உடனடி நிலையைச் சேமிக்க முடியவில்லை."</string>
     <string name="error_could_not_check_github_releases">"GitHub வெளியீடுகளைச் சரிபார்க்க முடியவில்லை."</string>
+    <string name="onboarding_demo_result">%1$s · பக்கம் %2$s</string>
+    <string name="onboarding_demo_found">பக்க உரையில் கிடைத்தது</string>
+    <string name="onboarding_demo_protected">கடவுச்சொல் பாதுகாப்புடன்</string>
+    <string name="onboarding_chapter_number">%1$02d %2$s</string>
 </resources>

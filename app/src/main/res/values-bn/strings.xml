@@ -626,23 +626,13 @@
     <!-- OnboardingScreen -->
     <string name="onboarding_no_account_no_cloud_upload">অ্যাকাউন্ট লাগে না। ক্লাউডে আপলোড হয় না।</string>
     <string name="onboarding_continue">চালিয়ে যান</string>
-    <string name="onboarding_get_started">শুরু করুন</string>
+    <string name="onboarding_get_started">আমার প্রথম পৃষ্ঠা স্ক্যান করুন</string>
     <string name="onboarding_page_of_3">"%1$s, পৃষ্ঠা %2$s/3"</string>
     <string name="onboarding_page_of_3_2">"পৃষ্ঠা %1$s/3"</string>
     <string name="onboarding_skip">এড়িয়ে যান</string>
     <string name="onboarding_scanly">Scanly.</string>
     <string name="onboarding_previous_page">আগের পৃষ্ঠা</string>
-    <string name="onboarding_feature_edge_detection">কিনারা নিজে থেকেই শনাক্ত হয়</string>
-    <string name="onboarding_feature_crop_straighten">পৃষ্ঠা ক্রপ করে সোজা করুন</string>
-    <string name="onboarding_feature_filters">ম্যাজিক কালার, হোয়াইটবোর্ড ও আরও অনেক কিছু</string>
-    <string name="onboarding_feature_ocr">ডিভাইসেই টেক্সট শনাক্তকরণ</string>
-    <string name="onboarding_feature_search">সব স্ক্যানে শব্দ সার্চ করুন</string>
-    <string name="onboarding_feature_copy_text">যেকোনো পৃষ্ঠা থেকে টেক্সট কপি করুন</string>
-    <string name="onboarding_feature_multipage_pdf">একাধিক পৃষ্ঠার PDF</string>
-    <string name="onboarding_feature_password">শেয়ারের আগে পাসওয়ার্ড দিয়ে সুরক্ষিত করুন</string>
-    <string name="onboarding_feature_sign">ডকুমেন্টে স্বাক্ষর করুন</string>
-    <string name="onboarding_assurance_offline">পুরোপুরি অফলাইনে কাজ করে।</string>
-    <string name="onboarding_assurance_on_device">আপনার টেক্সট কখনও এই ডিভাইসের বাইরে যায় না।</string>
+    <string name="onboarding_assurance_offline">আপনার ডিভাইসেই প্রক্রিয়াকরণ হয়।</string>
     <!-- Pip -->
     <string name="pip_poke_pip_scanly_s_helper">Scanly-র সহকারী Pip-কে খোঁচা দিন</string>
     <!-- PipBubble -->
@@ -1565,14 +1555,14 @@
     <string name="signature_pen_width_bold">"পুরু"</string>
     <!-- onboarding_page -->
     <string name="onboarding_page_capture">"ক্যাপচার"</string>
-    <string name="onboarding_page_paper_to_polished">"কাগজ থেকে পরিষ্কার স্ক্যান।"</string>
-    <string name="onboarding_page_capture_straighten_and_clean_up">"আপনার পৃষ্ঠাগুলি ক্যাপচার করুন, সোজা করুন এবং পরিষ্কার করুন।"</string>
+    <string name="onboarding_page_paper_to_polished">কাগজ, পরিপাটি করে।</string>
+    <string name="onboarding_page_capture_straighten_and_clean_up">পৃষ্ঠা সোজা করুন। খুঁটিনাটি বজায় রাখুন।</string>
     <string name="onboarding_page_find">"খুঁজুন"</string>
-    <string name="onboarding_page_find_more_than_files">"স্ক্যানের ভিতরেও খুঁজুন।"</string>
-    <string name="onboarding_page_recognize_text_on_your_device">"আপনার ডিভাইসে পাঠ্য শনাক্ত করুন। আপনার স্ক্যান ভিতরে অনুসন্ধান করুন."</string>
-    <string name="onboarding_page_share">"শেয়ার করুন"</string>
-    <string name="onboarding_page_ready_when_you_are">"আপনি প্রস্তুত হলেই তৈরি।"</string>
-    <string name="onboarding_page_keep_pages_together_share_a">"পৃষ্ঠাগুলি একসাথে রাখুন। কয়েকটি ট্যাপে একটি পরিষ্কার PDF শেয়ার করুন।"</string>
+    <string name="onboarding_page_find_more_than_files">শব্দ খুঁজুন। পৃষ্ঠা পান।</string>
+    <string name="onboarding_page_recognize_text_on_your_device">আপনার স্ক্যানের ভেতরের লেখায় খুঁজুন।</string>
+    <string name="onboarding_page_share">শেষ করুন</string>
+    <string name="onboarding_page_ready_when_you_are">পাঠানোর জন্য প্রস্তুত।</string>
+    <string name="onboarding_page_keep_pages_together_share_a">পরিষ্কার PDF-এ স্বাক্ষর করুন, সুরক্ষিত করুন ও শেয়ার করুন।</string>
     <!-- pdf_reader_tool -->
     <string name="pdf_reader_tool_merge_with_other_pdfs">"অন্যান্য PDF ফাইলের সাথে মার্জ করুন"</string>
     <string name="pdf_reader_tool_password_protect">"পাসওয়ার্ড সুরক্ষা"</string>
@@ -1991,4 +1981,8 @@
     <string name="error_could_not_save_the_exported_file">"এক্সপোর্ট করা ফাইলটি সেভ করা যায়নি।"</string>
     <string name="error_could_not_store_update_prompt_state">"আপডেট প্রম্পট অবস্থা সংরক্ষণ করা যায়নি।"</string>
     <string name="error_could_not_check_github_releases">"GitHub রিলিজ চেক করা যায়নি।"</string>
+    <string name="onboarding_demo_result">%1$s · পৃষ্ঠা %2$s</string>
+    <string name="onboarding_demo_found">পৃষ্ঠার লেখায় পাওয়া গেছে</string>
+    <string name="onboarding_demo_protected">পাসওয়ার্ড দিয়ে সুরক্ষিত</string>
+    <string name="onboarding_chapter_number">%1$02d %2$s</string>
 </resources>

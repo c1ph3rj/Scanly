@@ -626,23 +626,13 @@
     <!-- OnboardingScreen -->
     <string name="onboarding_no_account_no_cloud_upload">Kein Konto. Kein Cloud-Upload.</string>
     <string name="onboarding_continue">Weiter</string>
-    <string name="onboarding_get_started">Los geht’s</string>
+    <string name="onboarding_get_started">Meine erste Seite scannen</string>
     <string name="onboarding_page_of_3">"%1$s, Seite %2$s von 3"</string>
     <string name="onboarding_page_of_3_2">"Seite %1$s von 3"</string>
     <string name="onboarding_skip">Überspringen</string>
     <string name="onboarding_scanly">Scanly.</string>
     <string name="onboarding_previous_page">Vorherige Seite</string>
-    <string name="onboarding_feature_edge_detection">Automatische Kantenerkennung</string>
-    <string name="onboarding_feature_crop_straighten">Seiten zuschneiden und begradigen</string>
-    <string name="onboarding_feature_filters">Magic Color, Whiteboard und mehr</string>
-    <string name="onboarding_feature_ocr">Texterkennung auf dem Gerät</string>
-    <string name="onboarding_feature_search">Wörter in all deinen Scans suchen</string>
-    <string name="onboarding_feature_copy_text">Text von jeder Seite kopieren</string>
-    <string name="onboarding_feature_multipage_pdf">Mehrseitige PDFs</string>
-    <string name="onboarding_feature_password">Vor dem Teilen mit Passwort schützen</string>
-    <string name="onboarding_feature_sign">Dokumente unterschreiben</string>
-    <string name="onboarding_assurance_offline">Funktioniert komplett offline.</string>
-    <string name="onboarding_assurance_on_device">Dein Text verlässt nie dieses Gerät.</string>
+    <string name="onboarding_assurance_offline">Auf deinem Gerät verarbeitet.</string>
     <!-- Pip -->
     <string name="pip_poke_pip_scanly_s_helper">Pip anstupsen, den Helfer von Scanly</string>
     <!-- PipBubble -->
@@ -1565,14 +1555,14 @@
     <string name="signature_pen_width_bold">"Dick"</string>
     <!-- onboarding_page -->
     <string name="onboarding_page_capture">"AUFNEHMEN"</string>
-    <string name="onboarding_page_paper_to_polished">"Papier wird zum klaren Scan."</string>
-    <string name="onboarding_page_capture_straighten_and_clean_up">"Seiten aufnehmen, begradigen und aufbereiten."</string>
+    <string name="onboarding_page_paper_to_polished">Papier, perfektioniert.</string>
+    <string name="onboarding_page_capture_straighten_and_clean_up">Begradige die Seite. Bewahre die Details.</string>
     <string name="onboarding_page_find">"FINDEN"</string>
-    <string name="onboarding_page_find_more_than_files">"Finde Wörter in deinen Scans."</string>
-    <string name="onboarding_page_recognize_text_on_your_device">"Text direkt auf deinem Gerät erkennen. Durchsuche deine Scans."</string>
-    <string name="onboarding_page_share">"TEILEN"</string>
-    <string name="onboarding_page_ready_when_you_are">"Bereit, wenn du es bist."</string>
-    <string name="onboarding_page_keep_pages_together_share_a">"Alle Seiten zusammenhalten. Teile mit wenigen Tipps eine saubere PDF-Datei."</string>
+    <string name="onboarding_page_find_more_than_files">Finde das Wort. Finde die Seite.</string>
+    <string name="onboarding_page_recognize_text_on_your_device">Durchsuche den Text deiner Scans.</string>
+    <string name="onboarding_page_share">ABSCHLUSS</string>
+    <string name="onboarding_page_ready_when_you_are">Bereit zum Senden.</string>
+    <string name="onboarding_page_keep_pages_together_share_a">Unterschreibe, schütze und teile ein sauberes PDF.</string>
     <!-- pdf_reader_tool -->
     <string name="pdf_reader_tool_merge_with_other_pdfs">"Mit anderen PDF-Dateien zusammenführen"</string>
     <string name="pdf_reader_tool_password_protect">"Passwortschutz"</string>
@@ -1991,4 +1981,8 @@
     <string name="error_could_not_save_the_exported_file">"Die exportierte Datei konnte nicht gespeichert werden."</string>
     <string name="error_could_not_store_update_prompt_state">"Der Status der Aktualisierungsaufforderung konnte nicht gespeichert werden."</string>
     <string name="error_could_not_check_github_releases">"GitHub-Versionen konnten nicht überprüft werden."</string>
+    <string name="onboarding_demo_result">%1$s · Seite %2$s</string>
+    <string name="onboarding_demo_found">Im Seitentext gefunden</string>
+    <string name="onboarding_demo_protected">Passwortgeschützt</string>
+    <string name="onboarding_chapter_number">%1$02d %2$s</string>
 </resources>

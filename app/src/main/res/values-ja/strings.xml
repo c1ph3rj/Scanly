@@ -626,23 +626,13 @@
     <!-- OnboardingScreen -->
     <string name="onboarding_no_account_no_cloud_upload">アカウント不要。クラウドへのアップロードもなし。</string>
     <string name="onboarding_continue">続行</string>
-    <string name="onboarding_get_started">始める</string>
+    <string name="onboarding_get_started">最初のページをスキャン</string>
     <string name="onboarding_page_of_3">"%1$s、3 ページ中 %2$s ページ目"</string>
     <string name="onboarding_page_of_3_2">"3 ページ中 %1$s ページ目"</string>
     <string name="onboarding_skip">スキップ</string>
     <string name="onboarding_scanly">Scanly</string>
     <string name="onboarding_previous_page">前のページ</string>
-    <string name="onboarding_feature_edge_detection">輪郭を自動検出</string>
-    <string name="onboarding_feature_crop_straighten">ページを切り抜いてまっすぐに補正</string>
-    <string name="onboarding_feature_filters">マジックカラー、ホワイトボードなど</string>
-    <string name="onboarding_feature_ocr">デバイス上での文字認識</string>
-    <string name="onboarding_feature_search">スキャン全体から語句を検索</string>
-    <string name="onboarding_feature_copy_text">どのページからもテキストをコピー</string>
-    <string name="onboarding_feature_multipage_pdf">複数ページの PDF</string>
-    <string name="onboarding_feature_password">共有前にパスワードで保護</string>
-    <string name="onboarding_feature_sign">ドキュメントに署名</string>
-    <string name="onboarding_assurance_offline">完全にオフラインで動作します。</string>
-    <string name="onboarding_assurance_on_device">テキストがこのデバイスの外に出ることはありません。</string>
+    <string name="onboarding_assurance_offline">お使いの端末で処理します。</string>
     <!-- Pip -->
     <string name="pip_poke_pip_scanly_s_helper">Scanly のお手伝い役、Pip をつつく</string>
     <!-- PipBubble -->
@@ -1565,14 +1555,14 @@
     <string name="signature_pen_width_bold">"太い"</string>
     <!-- onboarding_page -->
     <string name="onboarding_page_capture">"キャプチャー"</string>
-    <string name="onboarding_page_paper_to_polished">"紙の書類を、きれいなスキャンに。"</string>
-    <string name="onboarding_page_capture_straighten_and_clean_up">"ページをキャプチャし、まっすぐにし、クリーンアップします。"</string>
+    <string name="onboarding_page_paper_to_polished">紙を、もっと美しく。</string>
+    <string name="onboarding_page_capture_straighten_and_clean_up">ページをまっすぐに。細部まで鮮明に。</string>
     <string name="onboarding_page_find">"探す"</string>
-    <string name="onboarding_page_find_more_than_files">"スキャンの中の言葉も検索。"</string>
-    <string name="onboarding_page_recognize_text_on_your_device">"デバイス上のテキストを認識します。スキャン内を検索します。"</string>
-    <string name="onboarding_page_share">"シェアする"</string>
-    <string name="onboarding_page_ready_when_you_are">"必要なときに、すぐ共有。"</string>
-    <string name="onboarding_page_keep_pages_together_share_a">"ページをまとめて保管します。数回タップするだけで、クリーンな PDF を共有できます。"</string>
+    <string name="onboarding_page_find_more_than_files">言葉から、ページへ。</string>
+    <string name="onboarding_page_recognize_text_on_your_device">スキャン内のテキストを検索できます。</string>
+    <string name="onboarding_page_share">仕上げ</string>
+    <string name="onboarding_page_ready_when_you_are">送信の準備を。</string>
+    <string name="onboarding_page_keep_pages_together_share_a">鮮明なPDFに署名し、保護して共有。</string>
     <!-- pdf_reader_tool -->
     <string name="pdf_reader_tool_merge_with_other_pdfs">"他のPDFファイルとマージします"</string>
     <string name="pdf_reader_tool_password_protect">"パスワード保護"</string>
@@ -1964,4 +1954,8 @@
     <string name="error_could_not_save_the_exported_file">"エクスポートされたファイルを保存できませんでした。"</string>
     <string name="error_could_not_store_update_prompt_state">"更新プロンプトの状態を保存できませんでした。"</string>
     <string name="error_could_not_check_github_releases">"GitHub リリースを確認できませんでした。"</string>
+    <string name="onboarding_demo_result">%1$s · %2$sページ</string>
+    <string name="onboarding_demo_found">ページ内のテキストで見つかりました</string>
+    <string name="onboarding_demo_protected">パスワード保護済み</string>
+    <string name="onboarding_chapter_number">%1$02d %2$s</string>
 </resources>

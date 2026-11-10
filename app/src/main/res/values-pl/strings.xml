@@ -626,23 +626,13 @@
     <!-- OnboardingScreen -->
     <string name="onboarding_no_account_no_cloud_upload">Bez konta. Bez przesyłania do chmury.</string>
     <string name="onboarding_continue">Dalej</string>
-    <string name="onboarding_get_started">Zaczynamy</string>
+    <string name="onboarding_get_started">Zeskanuj pierwszą stronę</string>
     <string name="onboarding_page_of_3">"%1$s, strona %2$s z 3"</string>
     <string name="onboarding_page_of_3_2">"Strona %1$s z 3"</string>
     <string name="onboarding_skip">Pomiń</string>
     <string name="onboarding_scanly">Scanly.</string>
     <string name="onboarding_previous_page">Poprzednia strona</string>
-    <string name="onboarding_feature_edge_detection">Automatyczne wykrywanie krawędzi</string>
-    <string name="onboarding_feature_crop_straighten">Przycinanie i prostowanie stron</string>
-    <string name="onboarding_feature_filters">Magiczny kolor, Tablica i inne</string>
-    <string name="onboarding_feature_ocr">Rozpoznawanie tekstu na urządzeniu</string>
-    <string name="onboarding_feature_search">Wyszukiwanie słów we wszystkich skanach</string>
-    <string name="onboarding_feature_copy_text">Kopiowanie tekstu z dowolnej strony</string>
-    <string name="onboarding_feature_multipage_pdf">Wielostronicowe pliki PDF</string>
-    <string name="onboarding_feature_password">Ochrona hasłem przed udostępnieniem</string>
-    <string name="onboarding_feature_sign">Podpisywanie dokumentów</string>
-    <string name="onboarding_assurance_offline">Działa w pełni offline.</string>
-    <string name="onboarding_assurance_on_device">Twój tekst nigdy nie opuszcza tego urządzenia.</string>
+    <string name="onboarding_assurance_offline">Przetwarzane na Twoim urządzeniu.</string>
     <!-- Pip -->
     <string name="pip_poke_pip_scanly_s_helper">Szturchnij Pipa, pomocnika Scanly</string>
     <!-- PipBubble -->
@@ -1565,14 +1555,14 @@
     <string name="signature_pen_width_bold">"Gruby"</string>
     <!-- onboarding_page -->
     <string name="onboarding_page_capture">"PRZECHWYTAJ"</string>
-    <string name="onboarding_page_paper_to_polished">"Z papieru do wyraźnego skanu."</string>
-    <string name="onboarding_page_capture_straighten_and_clean_up">"Przechwytuj, prostuj i porządkuj swoje strony."</string>
+    <string name="onboarding_page_paper_to_polished">Papier, udoskonalony.</string>
+    <string name="onboarding_page_capture_straighten_and_clean_up">Wyprostuj stronę. Zachowaj szczegóły.</string>
     <string name="onboarding_page_find">"ZNAJDŹ"</string>
-    <string name="onboarding_page_find_more_than_files">"Znajdź słowa w swoich skanach."</string>
-    <string name="onboarding_page_recognize_text_on_your_device">"Rozpoznaj tekst na swoim urządzeniu. Szukaj w swoich skanach."</string>
-    <string name="onboarding_page_share">"UDOSTĘPNIJ"</string>
-    <string name="onboarding_page_ready_when_you_are">"Gotowe, gdy potrzebujesz."</string>
-    <string name="onboarding_page_keep_pages_together_share_a">"Trzymaj strony razem. Udostępnij czysty PDF za pomocą kilku dotknięć."</string>
+    <string name="onboarding_page_find_more_than_files">Znajdź słowo. Znajdź stronę.</string>
+    <string name="onboarding_page_recognize_text_on_your_device">Szukaj w tekście swoich skanów.</string>
+    <string name="onboarding_page_share">GOTOWE</string>
+    <string name="onboarding_page_ready_when_you_are">Gotowe do wysłania.</string>
+    <string name="onboarding_page_keep_pages_together_share_a">Podpisz, zabezpiecz i udostępnij czytelny PDF.</string>
     <!-- pdf_reader_tool -->
     <string name="pdf_reader_tool_merge_with_other_pdfs">"Połącz z innymi plikami PDF"</string>
     <string name="pdf_reader_tool_password_protect">"Ochrona hasłem"</string>
@@ -2045,4 +2035,8 @@
     <string name="error_could_not_save_the_exported_file">"Nie można zapisać wyeksportowanego pliku."</string>
     <string name="error_could_not_store_update_prompt_state">"Nie można zapisać stanu monitu o aktualizację."</string>
     <string name="error_could_not_check_github_releases">"Nie można sprawdzić wydań GitHub."</string>
+    <string name="onboarding_demo_result">%1$s · Strona %2$s</string>
+    <string name="onboarding_demo_found">Znaleziono w tekście strony</string>
+    <string name="onboarding_demo_protected">Chronione hasłem</string>
+    <string name="onboarding_chapter_number">%1$02d %2$s</string>
 </resources>

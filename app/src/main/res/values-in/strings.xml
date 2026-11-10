@@ -626,23 +626,13 @@
     <!-- OnboardingScreen -->
     <string name="onboarding_no_account_no_cloud_upload">Tanpa akun. Tanpa upload ke cloud.</string>
     <string name="onboarding_continue">Lanjutkan</string>
-    <string name="onboarding_get_started">Mulai</string>
+    <string name="onboarding_get_started">Pindai halaman pertama saya</string>
     <string name="onboarding_page_of_3">"%1$s, halaman %2$s dari 3"</string>
     <string name="onboarding_page_of_3_2">"Halaman %1$s dari 3"</string>
     <string name="onboarding_skip">Lewati</string>
     <string name="onboarding_scanly">Scanly.</string>
     <string name="onboarding_previous_page">Halaman sebelumnya</string>
-    <string name="onboarding_feature_edge_detection">Deteksi tepi otomatis</string>
-    <string name="onboarding_feature_crop_straighten">Pangkas dan luruskan halaman</string>
-    <string name="onboarding_feature_filters">Warna ajaib, Papan tulis, dan lainnya</string>
-    <string name="onboarding_feature_ocr">Pengenalan teks di perangkat</string>
-    <string name="onboarding_feature_search">Telusuri kata di semua pindaian</string>
-    <string name="onboarding_feature_copy_text">Salin teks dari halaman mana pun</string>
-    <string name="onboarding_feature_multipage_pdf">PDF multi-halaman</string>
-    <string name="onboarding_feature_password">Lindungi dengan sandi sebelum dibagikan</string>
-    <string name="onboarding_feature_sign">Tanda tangani dokumen</string>
-    <string name="onboarding_assurance_offline">Berfungsi sepenuhnya offline.</string>
-    <string name="onboarding_assurance_on_device">Teks Anda tidak pernah keluar dari perangkat ini.</string>
+    <string name="onboarding_assurance_offline">Diproses di perangkat Anda.</string>
     <!-- Pip -->
     <string name="pip_poke_pip_scanly_s_helper">Colek Pip, asisten Scanly</string>
     <!-- PipBubble -->
@@ -1565,14 +1555,14 @@
     <string name="signature_pen_width_bold">Tebal</string>
     <!-- onboarding_page -->
     <string name="onboarding_page_capture">PINDAI</string>
-    <string name="onboarding_page_paper_to_polished">Dari kertas jadi rapi.</string>
-    <string name="onboarding_page_capture_straighten_and_clean_up">Ambil, luruskan, dan rapikan halaman Anda.</string>
+    <string name="onboarding_page_paper_to_polished">Kertas, disempurnakan.</string>
+    <string name="onboarding_page_capture_straighten_and_clean_up">Luruskan halaman. Pertahankan detailnya.</string>
     <string name="onboarding_page_find">TEMUKAN</string>
-    <string name="onboarding_page_find_more_than_files">Temukan lebih dari sekadar file.</string>
-    <string name="onboarding_page_recognize_text_on_your_device">Kenali teks di perangkat Anda. Telusuri isi pindaian.</string>
-    <string name="onboarding_page_share">BAGIKAN</string>
-    <string name="onboarding_page_ready_when_you_are">Siap kapan pun Anda siap.</string>
-    <string name="onboarding_page_keep_pages_together_share_a">Satukan halaman. Bagikan PDF yang rapi dengan beberapa ketukan.</string>
+    <string name="onboarding_page_find_more_than_files">Temukan kata. Temukan halaman.</string>
+    <string name="onboarding_page_recognize_text_on_your_device">Cari teks di dalam pindaian Anda.</string>
+    <string name="onboarding_page_share">SELESAI</string>
+    <string name="onboarding_page_ready_when_you_are">Siap dikirim.</string>
+    <string name="onboarding_page_keep_pages_together_share_a">Tanda tangani, lindungi, dan bagikan PDF yang rapi.</string>
     <!-- pdf_reader_tool -->
     <string name="pdf_reader_tool_merge_with_other_pdfs">Gabungkan dengan PDF lain</string>
     <string name="pdf_reader_tool_password_protect">Lindungi dengan sandi</string>
@@ -1964,4 +1954,8 @@
     <string name="error_could_not_save_the_exported_file">"Tidak dapat menyimpan file yang diekspor."</string>
     <string name="error_could_not_store_update_prompt_state">"Tidak dapat menyimpan status prompt pembaruan."</string>
     <string name="error_could_not_check_github_releases">"Tidak dapat memeriksa rilis GitHub."</string>
+    <string name="onboarding_demo_result">%1$s · Halaman %2$s</string>
+    <string name="onboarding_demo_found">Ditemukan dalam teks halaman</string>
+    <string name="onboarding_demo_protected">Dilindungi sandi</string>
+    <string name="onboarding_chapter_number">%1$02d %2$s</string>
 </resources>

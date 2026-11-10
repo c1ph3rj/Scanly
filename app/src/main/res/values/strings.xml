@@ -690,23 +690,13 @@
     <!-- OnboardingScreen -->
     <string name="onboarding_no_account_no_cloud_upload">No account. No cloud upload.</string>
     <string name="onboarding_continue">Continue</string>
-    <string name="onboarding_get_started">Get started</string>
+    <string name="onboarding_get_started">Scan my first page</string>
     <string name="onboarding_page_of_3">"%1$s, page %2$s of 3"</string>
     <string name="onboarding_page_of_3_2">"Page %1$s of 3"</string>
     <string name="onboarding_skip">Skip</string>
     <string name="onboarding_scanly">Scanly.</string>
     <string name="onboarding_previous_page">Previous page</string>
-    <string name="onboarding_feature_edge_detection">Automatic edge detection</string>
-    <string name="onboarding_feature_crop_straighten">Crop and straighten pages</string>
-    <string name="onboarding_feature_filters">Magic Color, Whiteboard and more</string>
-    <string name="onboarding_feature_ocr">On-device text recognition</string>
-    <string name="onboarding_feature_search">Search words across your scans</string>
-    <string name="onboarding_feature_copy_text">Copy text from any page</string>
-    <string name="onboarding_feature_multipage_pdf">Multi-page PDFs</string>
-    <string name="onboarding_feature_password">Password-protect before sharing</string>
-    <string name="onboarding_feature_sign">Sign documents</string>
-    <string name="onboarding_assurance_offline">Works fully offline.</string>
-    <string name="onboarding_assurance_on_device">Your text never leaves this device.</string>
+    <string name="onboarding_assurance_offline">Processed on your device.</string>
 
     <!-- Pip -->
     <string name="pip_poke_pip_scanly_s_helper">Poke Pip, Scanly\'s helper</string>
@@ -1720,14 +1710,14 @@
 
     <!-- onboarding_page -->
     <string name="onboarding_page_capture">CAPTURE</string>
-    <string name="onboarding_page_paper_to_polished">Paper to polished.</string>
-    <string name="onboarding_page_capture_straighten_and_clean_up">Capture, straighten, and clean up your pages.</string>
+    <string name="onboarding_page_paper_to_polished">Paper,\nperfected.</string>
+    <string name="onboarding_page_capture_straighten_and_clean_up">Straighten the page. Keep the details.</string>
     <string name="onboarding_page_find">FIND</string>
-    <string name="onboarding_page_find_more_than_files">Find more than files.</string>
-    <string name="onboarding_page_recognize_text_on_your_device">Recognize text on your device. Search inside your scans.</string>
-    <string name="onboarding_page_share">SHARE</string>
-    <string name="onboarding_page_ready_when_you_are">Ready when you are.</string>
-    <string name="onboarding_page_keep_pages_together_share_a">Keep pages together. Share a clean PDF in a few taps.</string>
+    <string name="onboarding_page_find_more_than_files">Find the word.\nFind the page.</string>
+    <string name="onboarding_page_recognize_text_on_your_device">Search the text inside your scans.</string>
+    <string name="onboarding_page_share">FINISH</string>
+    <string name="onboarding_page_ready_when_you_are">Make it ready\nto send.</string>
+    <string name="onboarding_page_keep_pages_together_share_a">Sign, protect and share a clean PDF.</string>
 
     <!-- pdf_reader_tool -->
     <string name="pdf_reader_tool_merge_with_other_pdfs">Merge with other PDFs</string>
@@ -2175,4 +2165,11 @@
     <string name="error_could_not_save_the_exported_file">"Could not save the exported file."</string>
     <string name="error_could_not_store_update_prompt_state">"Could not store update prompt state."</string>
     <string name="error_could_not_check_github_releases">"Could not check GitHub releases."</string>
+    <string name="onboarding_demo_result">%1$s · Page %2$s</string>
+    <string name="onboarding_demo_found">Found in page text</string>
+    <string name="onboarding_demo_protected">Password protected</string>
+    <string name="onboarding_chapter_number">%1$02d %2$s</string>
+    <string name="onboarding_demo_document" translatable="false">Rental agreement</string>
+    <string name="onboarding_demo_filename" translatable="false">Rental agreement.pdf</string>
+    <string name="onboarding_demo_query" translatable="false">deposit</string>
 </resources>
