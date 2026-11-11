@@ -2172,4 +2172,110 @@
     <string name="onboarding_demo_document" translatable="false">Rental agreement</string>
     <string name="onboarding_demo_filename" translatable="false">Rental agreement.pdf</string>
     <string name="onboarding_demo_query" translatable="false">deposit</string>
+    <!-- Split PDF -->
+    <string name="tools_catalog_split">"Split"</string>
+    <string name="tools_catalog_cut_into_parts">"Cut into parts"</string>
+    <string name="pdf_reader_tool_split_into_parts">"Split into parts"</string>
+    <string name="pdf_split_title">"Split PDF"</string>
+    <string name="pdf_split_subtitle">"Cut one PDF into smaller PDFs"</string>
+    <string name="pdf_split_step_2">"Step 2 of 3 · Where to split"</string>
+    <string name="pdf_split_mode_custom">"Custom"</string>
+    <string name="pdf_split_mode_every_n">"Every N pages"</string>
+    <string name="pdf_split_mode_extract">"Extract"</string>
+    <string name="pdf_split_ranges_label">"Type ranges, or edit the cards below"</string>
+    <string name="pdf_split_ranges_placeholder">"e.g. 1-3, 6-8"</string>
+    <string name="pdf_split_ranges_hint">"Separate ranges with commas, like 1-3, 6-8"</string>
+    <string name="pdf_split_ranges_error">"Use page numbers and dashes, like 1-3, 6-8"</string>
+    <string name="pdf_split_range_title">"Range %d"</string>
+    <string name="pdf_split_range_from">"From page"</string>
+    <string name="pdf_split_range_to">"to"</string>
+    <string name="pdf_split_remove_range">"Remove range %d"</string>
+    <string name="pdf_split_range_error">"Use pages 1 to %d, with the first page before the last."</string>
+    <string name="pdf_split_add_range">"Add range"</string>
+    <string name="pdf_split_pages_included">"Pages included"</string>
+    <string name="pdf_split_not_included">"Not in any range, so not saved: %s"</string>
+    <string name="pdf_split_merge_ranges">"Merge all ranges into one PDF"</string>
+    <string name="pdf_split_merge_ranges_caption">"Off: each range is its own PDF"</string>
+    <string name="pdf_split_pages_in_each">"Pages in each PDF"</string>
+    <string name="pdf_split_fewer_pages">"Fewer pages in each PDF"</string>
+    <string name="pdf_split_more_pages">"More pages in each PDF"</string>
+    <string name="pdf_split_last_shorter">"The last one has %s"</string>
+    <string name="pdf_split_one_per_page">"One PDF per page"</string>
+    <string name="pdf_split_you_get">"You\'ll get %s"</string>
+    <string name="pdf_split_more_parts">"+ %d more"</string>
+    <string name="pdf_split_pdf_title">"PDF %d"</string>
+    <string name="pdf_split_pages_label">"Pages"</string>
+    <string name="pdf_split_save_as">"Save as"</string>
+    <string name="pdf_split_one_pdf">"One PDF"</string>
+    <string name="pdf_split_one_pdf_caption">"All picked pages together"</string>
+    <string name="pdf_split_separate_pdfs">"Separate PDFs"</string>
+    <string name="pdf_split_separate_caption">"One file per page"</string>
+    <string name="pdf_split_keep_rest_caption">"As one more PDF"</string>
+    <string name="pdf_split_extract_button">"Extract %1$s · %2$s"</string>
+    <string name="pdf_split_create_one">"Create 1 PDF · %s"</string>
+    <string name="pdf_split_choose_pages">"Choose pages to extract"</string>
+    <string name="pdf_split_fix_ranges">"Fix the ranges to continue"</string>
+    <string name="pdf_split_single_page">"This PDF has only one page, so there\'s nothing to split."</string>
+    <string name="pdf_split_splitting">"Splitting…"</string>
+    <string name="pdf_split_writing_part">"Writing part %1$d of %2$d"</string>
+    <string name="pdf_split_from_file">"From %1$s · %2$s"</string>
+    <string name="pdf_split_tap_to_rename">"Tap a name to rename"</string>
+    <string name="pdf_split_open_part">"Open %s"</string>
+    <string name="pdf_split_one_zip">"One ZIP"</string>
+    <string name="pdf_split_save_all">"Save all"</string>
+    <string name="pdf_split_share_all">"Share all"</string>
+    <string name="pdf_split_output_pages">"%1$s – pages %2$s"</string>
+    <string name="pdf_split_output_page">"%1$s – page %2$d"</string>
+    <string name="pdf_split_pages_meta">"Pages %1$s · %2$s"</string>
+    <string name="pdf_split_page_meta">"Page %1$d · %2$s"</string>
+    <string name="pdf_split_no_password">"The new PDFs have no password."</string>
+    <string name="pdf_split_could_not_split">"Could not split this PDF."</string>
+    <plurals name="pdf_split_pdf_count">
+        <item quantity="one">"%d PDF"</item>
+        <item quantity="other">"%d PDFs"</item>
+    </plurals>
+    <plurals name="pdf_split_split_into">
+        <item quantity="one">"Split into %d PDF"</item>
+        <item quantity="other">"Split into %d PDFs"</item>
+    </plurals>
+    <plurals name="pdf_split_keep_rest">
+        <item quantity="one">"Also save the other %d page"</item>
+        <item quantity="other">"Also save the other %d pages"</item>
+    </plurals>
+    <plurals name="pdf_split_saved">
+        <item quantity="one">"Saved %1$d PDF to %2$s"</item>
+        <item quantity="other">"Saved %1$d PDFs to %2$s"</item>
+    </plurals>
+    <plurals name="pdf_split_range_count">
+        <item quantity="one">"%d range"</item>
+        <item quantity="other">"%d ranges"</item>
+    </plurals>
+    <!-- Split a document into documents -->
+    <string name="document_split_part_title" translatable="false">"%1$s (%2$d)"</string>
+    <string name="document_split_title">"Split into documents"</string>
+    <string name="document_split_pages_cuts">"%1$s · %2$s"</string>
+    <string name="document_split_every_page">"Every page"</string>
+    <string name="document_split_clear">"Clear"</string>
+    <string name="document_split_hint">"Tap the gap between two pages to cut there."</string>
+    <string name="document_split_cut_after">"Cut after page %d"</string>
+    <string name="document_split_remove_cut">"Remove the cut after page %d"</string>
+    <string name="document_split_part_label">"Part %1$d · pages %2$s"</string>
+    <string name="document_split_part_label_single">"Part %1$d · page %2$d"</string>
+    <string name="document_split_destination_title">"New documents go to"</string>
+    <string name="document_split_destination_folder">"The same folder as the original"</string>
+    <string name="document_split_destination_library">"Your Library, outside folders"</string>
+    <string name="document_split_keep_original">"Keep the original"</string>
+    <string name="document_split_keep_original_caption">"Off moves it to Recently deleted"</string>
+    <string name="document_split_note">"Page text, signatures and edits go with each page."</string>
+    <string name="document_split_add_cut">"Add a cut to split"</string>
+    <string name="document_split_failed">"Could not split this document."</string>
+    <string name="document_menu_split_into_pdfs">"Split into PDFs"</string>
+    <plurals name="document_split_cut_count">
+        <item quantity="one">"%d cut"</item>
+        <item quantity="other">"%d cuts"</item>
+    </plurals>
+    <plurals name="document_split_create">
+        <item quantity="one">"Create %d document"</item>
+        <item quantity="other">"Create %d documents"</item>
+    </plurals>
 </resources>

@@ -1958,4 +1958,102 @@
     <string name="onboarding_demo_found">在页面文字中找到</string>
     <string name="onboarding_demo_protected">已设置密码保护</string>
     <string name="onboarding_chapter_number">%1$02d %2$s</string>
+    <!-- Split PDF -->
+    <string name="tools_catalog_split">"拆分"</string>
+    <string name="tools_catalog_cut_into_parts">"拆成多份"</string>
+    <string name="pdf_reader_tool_split_into_parts">"拆分为多份"</string>
+    <string name="pdf_split_title">"拆分 PDF"</string>
+    <string name="pdf_split_subtitle">"将一个 PDF 拆成多个较小的 PDF"</string>
+    <string name="pdf_split_step_2">"第 2 步，共 3 步 · 拆分位置"</string>
+    <string name="pdf_split_mode_custom">"自定义"</string>
+    <string name="pdf_split_mode_every_n">"每 N 页"</string>
+    <string name="pdf_split_mode_extract">"提取"</string>
+    <string name="pdf_split_ranges_label">"输入范围，或编辑下方卡片"</string>
+    <string name="pdf_split_ranges_placeholder">"例如 1-3, 6-8"</string>
+    <string name="pdf_split_ranges_hint">"用逗号分隔范围，例如 1-3, 6-8"</string>
+    <string name="pdf_split_ranges_error">"请使用页码和连字符，例如 1-3, 6-8"</string>
+    <string name="pdf_split_range_title">"范围 %d"</string>
+    <string name="pdf_split_range_from">"起始页"</string>
+    <string name="pdf_split_range_to">"至"</string>
+    <string name="pdf_split_remove_range">"删除范围 %d"</string>
+    <string name="pdf_split_range_error">"请使用第 1 至 %d 页，且起始页在结束页之前。"</string>
+    <string name="pdf_split_add_range">"添加范围"</string>
+    <string name="pdf_split_pages_included">"包含的页面"</string>
+    <string name="pdf_split_not_included">"不在任何范围内，因此不会保存：%s"</string>
+    <string name="pdf_split_merge_ranges">"将所有范围合并为一个 PDF"</string>
+    <string name="pdf_split_merge_ranges_caption">"关闭：每个范围各为一个 PDF"</string>
+    <string name="pdf_split_pages_in_each">"每个 PDF 的页数"</string>
+    <string name="pdf_split_fewer_pages">"减少每个 PDF 的页数"</string>
+    <string name="pdf_split_more_pages">"增加每个 PDF 的页数"</string>
+    <string name="pdf_split_last_shorter">"最后一个有 %s"</string>
+    <string name="pdf_split_one_per_page">"每页一个 PDF"</string>
+    <string name="pdf_split_you_get">"将得到 %s"</string>
+    <string name="pdf_split_more_parts">"还有 %d 个"</string>
+    <string name="pdf_split_pdf_title">"PDF %d"</string>
+    <string name="pdf_split_pages_label">"页面"</string>
+    <string name="pdf_split_save_as">"保存为"</string>
+    <string name="pdf_split_one_pdf">"一个 PDF"</string>
+    <string name="pdf_split_one_pdf_caption">"所选页面合在一起"</string>
+    <string name="pdf_split_separate_pdfs">"单独的 PDF"</string>
+    <string name="pdf_split_separate_caption">"每页一个文件"</string>
+    <string name="pdf_split_keep_rest_caption">"作为另一个 PDF"</string>
+    <string name="pdf_split_extract_button">"提取 %1$s · %2$s"</string>
+    <string name="pdf_split_create_one">"创建 1 个 PDF · %s"</string>
+    <string name="pdf_split_choose_pages">"选择要提取的页面"</string>
+    <string name="pdf_split_fix_ranges">"请修正范围后继续"</string>
+    <string name="pdf_split_single_page">"此 PDF 只有一页，无需拆分。"</string>
+    <string name="pdf_split_splitting">"正在拆分…"</string>
+    <string name="pdf_split_writing_part">"正在写入第 %1$d 份，共 %2$d 份"</string>
+    <string name="pdf_split_from_file">"来自 %1$s · %2$s"</string>
+    <string name="pdf_split_tap_to_rename">"点按名称可重命名"</string>
+    <string name="pdf_split_open_part">"打开 %s"</string>
+    <string name="pdf_split_one_zip">"一个 ZIP"</string>
+    <string name="pdf_split_save_all">"全部保存"</string>
+    <string name="pdf_split_share_all">"全部分享"</string>
+    <string name="pdf_split_output_pages">"%1$s – 第 %2$s 页"</string>
+    <string name="pdf_split_output_page">"%1$s – 第 %2$d 页"</string>
+    <string name="pdf_split_pages_meta">"第 %1$s 页 · %2$s"</string>
+    <string name="pdf_split_page_meta">"第 %1$d 页 · %2$s"</string>
+    <string name="pdf_split_no_password">"新的 PDF 没有密码。"</string>
+    <string name="pdf_split_could_not_split">"无法拆分此 PDF。"</string>
+    <plurals name="pdf_split_pdf_count">
+        <item quantity="other">"%d 个 PDF"</item>
+    </plurals>
+    <plurals name="pdf_split_split_into">
+        <item quantity="other">"拆分为 %d 个 PDF"</item>
+    </plurals>
+    <plurals name="pdf_split_keep_rest">
+        <item quantity="other">"同时保存其余 %d 页"</item>
+    </plurals>
+    <plurals name="pdf_split_saved">
+        <item quantity="other">"已将 %1$d 个 PDF 保存到 %2$s"</item>
+    </plurals>
+    <plurals name="pdf_split_range_count">
+        <item quantity="other">"%d 个范围"</item>
+    </plurals>
+    <!-- Split a document into documents -->
+    <string name="document_split_title">"拆分为多个文档"</string>
+    <string name="document_split_pages_cuts">"%1$s · %2$s"</string>
+    <string name="document_split_every_page">"每一页"</string>
+    <string name="document_split_clear">"清除"</string>
+    <string name="document_split_hint">"点按两页之间的空隙即可在此处拆分。"</string>
+    <string name="document_split_cut_after">"在第 %d 页后拆分"</string>
+    <string name="document_split_remove_cut">"取消第 %d 页后的拆分"</string>
+    <string name="document_split_part_label">"第 %1$d 部分 · 第 %2$s 页"</string>
+    <string name="document_split_part_label_single">"第 %1$d 部分 · 第 %2$d 页"</string>
+    <string name="document_split_destination_title">"新文档保存到"</string>
+    <string name="document_split_destination_folder">"与原文档相同的文件夹"</string>
+    <string name="document_split_destination_library">"你的资料库（文件夹之外）"</string>
+    <string name="document_split_keep_original">"保留原文档"</string>
+    <string name="document_split_keep_original_caption">"关闭：原文档将移至“最近删除”"</string>
+    <string name="document_split_note">"文字、签名和编辑内容会随页面一起移动。"</string>
+    <string name="document_split_add_cut">"添加拆分位置以拆分"</string>
+    <string name="document_split_failed">"无法拆分此文档。"</string>
+    <string name="document_menu_split_into_pdfs">"拆分为多个 PDF"</string>
+    <plurals name="document_split_cut_count">
+        <item quantity="other">"%d 处拆分"</item>
+    </plurals>
+    <plurals name="document_split_create">
+        <item quantity="other">"创建 %d 个文档"</item>
+    </plurals>
 </resources>

@@ -79,6 +79,12 @@ From **document detail**:
 - Open a page to review it; edit, retake, share, and delete live on that review chrome — not as buttons on every tile.
 - Rename or delete the document from the header overflow. The current name is filled in; tap clear to type a new one.
 
+### Split a document into several
+
+From the header overflow, choose **Split into documents**. Tap the gap between two pages to cut there (tap again to remove the cut), or use **Every page** / **Clear**. The colours and the "You'll get" list show which pages land in each new document. **Create** makes one document per part in the same folder, named after the original with (1), (2)…; page text, signatures and edits come along. Turn off **Keep the original** to move the original to Recently deleted afterwards.
+
+The same overflow also opens the PDF tools — Compress, Merge, Split into PDFs, Password, Watermark and Save pages as images — with this document already chosen.
+
 ## Organizing with groups
 
 ### Create a folder
@@ -265,6 +271,7 @@ Open the **Tools** tab for QR and offline PDF utilities. Pick a PDF from the dev
 | QR | **Scan** a code (copy or open a link) or **Create** one from a URL or message |
 | Reader | Read a PDF with the full title, page n of m, page-by-page or continuous scroll, pinch-zoom, and tap to hide the bars. The ⋮ menu shares the file, jumps to **All pages**, opens it in any PDF tool below (Back returns to the reader), or opens another PDF |
 | Merge | Add two or more PDFs in listed order, then combine them |
+| Split | Cut one PDF into several: custom page ranges, every N pages, or extract chosen pages |
 | Compress | Choose High / Balanced / Smallest quality, then reduce file size |
 | Password | **Protect** or **Remove** an open password |
 | Watermark | Stamp text with layout, size, pages, orientation, and opacity |

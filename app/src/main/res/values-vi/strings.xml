@@ -1958,4 +1958,102 @@
     <string name="onboarding_demo_found">Tìm thấy trong văn bản trang</string>
     <string name="onboarding_demo_protected">Được bảo vệ bằng mật khẩu</string>
     <string name="onboarding_chapter_number">%1$02d %2$s</string>
+    <!-- Split PDF -->
+    <string name="tools_catalog_split">"Tách"</string>
+    <string name="tools_catalog_cut_into_parts">"Cắt thành nhiều phần"</string>
+    <string name="pdf_reader_tool_split_into_parts">"Tách thành nhiều phần"</string>
+    <string name="pdf_split_title">"Tách PDF"</string>
+    <string name="pdf_split_subtitle">"Cắt một PDF thành các PDF nhỏ hơn"</string>
+    <string name="pdf_split_step_2">"Bước 2/3 · Chỗ tách"</string>
+    <string name="pdf_split_mode_custom">"Tùy chỉnh"</string>
+    <string name="pdf_split_mode_every_n">"Mỗi N trang"</string>
+    <string name="pdf_split_mode_extract">"Trích xuất"</string>
+    <string name="pdf_split_ranges_label">"Nhập khoảng trang hoặc sửa các thẻ bên dưới"</string>
+    <string name="pdf_split_ranges_placeholder">"vd: 1-3, 6-8"</string>
+    <string name="pdf_split_ranges_hint">"Phân tách các khoảng bằng dấu phẩy, vd: 1-3, 6-8"</string>
+    <string name="pdf_split_ranges_error">"Dùng số trang và dấu gạch, vd: 1-3, 6-8"</string>
+    <string name="pdf_split_range_title">"Khoảng %d"</string>
+    <string name="pdf_split_range_from">"Từ trang"</string>
+    <string name="pdf_split_range_to">"đến"</string>
+    <string name="pdf_split_remove_range">"Xóa khoảng %d"</string>
+    <string name="pdf_split_range_error">"Dùng trang 1 đến %d, trang đầu trước trang cuối."</string>
+    <string name="pdf_split_add_range">"Thêm khoảng"</string>
+    <string name="pdf_split_pages_included">"Trang được bao gồm"</string>
+    <string name="pdf_split_not_included">"Không thuộc khoảng nào nên sẽ không được lưu: %s"</string>
+    <string name="pdf_split_merge_ranges">"Gộp tất cả khoảng thành một PDF"</string>
+    <string name="pdf_split_merge_ranges_caption">"Tắt: mỗi khoảng là một PDF riêng"</string>
+    <string name="pdf_split_pages_in_each">"Số trang mỗi PDF"</string>
+    <string name="pdf_split_fewer_pages">"Ít trang hơn mỗi PDF"</string>
+    <string name="pdf_split_more_pages">"Nhiều trang hơn mỗi PDF"</string>
+    <string name="pdf_split_last_shorter">"PDF cuối có %s"</string>
+    <string name="pdf_split_one_per_page">"Mỗi trang một PDF"</string>
+    <string name="pdf_split_you_get">"Bạn sẽ có %s"</string>
+    <string name="pdf_split_more_parts">"+ %d nữa"</string>
+    <string name="pdf_split_pdf_title">"PDF %d"</string>
+    <string name="pdf_split_pages_label">"Trang"</string>
+    <string name="pdf_split_save_as">"Lưu dưới dạng"</string>
+    <string name="pdf_split_one_pdf">"Một PDF"</string>
+    <string name="pdf_split_one_pdf_caption">"Tất cả trang đã chọn gộp lại"</string>
+    <string name="pdf_split_separate_pdfs">"Các PDF riêng"</string>
+    <string name="pdf_split_separate_caption">"Mỗi trang một tệp"</string>
+    <string name="pdf_split_keep_rest_caption">"Thành thêm một PDF"</string>
+    <string name="pdf_split_extract_button">"Trích xuất %1$s · %2$s"</string>
+    <string name="pdf_split_create_one">"Tạo 1 PDF · %s"</string>
+    <string name="pdf_split_choose_pages">"Chọn trang để trích xuất"</string>
+    <string name="pdf_split_fix_ranges">"Sửa các khoảng để tiếp tục"</string>
+    <string name="pdf_split_single_page">"PDF này chỉ có một trang nên không có gì để tách."</string>
+    <string name="pdf_split_splitting">"Đang tách…"</string>
+    <string name="pdf_split_writing_part">"Đang ghi phần %1$d/%2$d"</string>
+    <string name="pdf_split_from_file">"Từ %1$s · %2$s"</string>
+    <string name="pdf_split_tap_to_rename">"Nhấn vào tên để đổi tên"</string>
+    <string name="pdf_split_open_part">"Mở %s"</string>
+    <string name="pdf_split_one_zip">"Một tệp ZIP"</string>
+    <string name="pdf_split_save_all">"Lưu tất cả"</string>
+    <string name="pdf_split_share_all">"Chia sẻ tất cả"</string>
+    <string name="pdf_split_output_pages">"%1$s – trang %2$s"</string>
+    <string name="pdf_split_output_page">"%1$s – trang %2$d"</string>
+    <string name="pdf_split_pages_meta">"Trang %1$s · %2$s"</string>
+    <string name="pdf_split_page_meta">"Trang %1$d · %2$s"</string>
+    <string name="pdf_split_no_password">"Các PDF mới không có mật khẩu."</string>
+    <string name="pdf_split_could_not_split">"Không thể tách PDF này."</string>
+    <plurals name="pdf_split_pdf_count">
+        <item quantity="other">"%d PDF"</item>
+    </plurals>
+    <plurals name="pdf_split_split_into">
+        <item quantity="other">"Tách thành %d PDF"</item>
+    </plurals>
+    <plurals name="pdf_split_keep_rest">
+        <item quantity="other">"Lưu cả %d trang còn lại"</item>
+    </plurals>
+    <plurals name="pdf_split_saved">
+        <item quantity="other">"Đã lưu %1$d PDF vào %2$s"</item>
+    </plurals>
+    <plurals name="pdf_split_range_count">
+        <item quantity="other">"%d khoảng"</item>
+    </plurals>
+    <!-- Split a document into documents -->
+    <string name="document_split_title">"Tách thành nhiều tài liệu"</string>
+    <string name="document_split_pages_cuts">"%1$s · %2$s"</string>
+    <string name="document_split_every_page">"Mỗi trang"</string>
+    <string name="document_split_clear">"Xóa"</string>
+    <string name="document_split_hint">"Nhấn vào khoảng trống giữa hai trang để cắt tại đó."</string>
+    <string name="document_split_cut_after">"Cắt sau trang %d"</string>
+    <string name="document_split_remove_cut">"Bỏ vết cắt sau trang %d"</string>
+    <string name="document_split_part_label">"Phần %1$d · trang %2$s"</string>
+    <string name="document_split_part_label_single">"Phần %1$d · trang %2$d"</string>
+    <string name="document_split_destination_title">"Tài liệu mới sẽ ở"</string>
+    <string name="document_split_destination_folder">"Cùng thư mục với bản gốc"</string>
+    <string name="document_split_destination_library">"Thư viện của bạn, ngoài thư mục"</string>
+    <string name="document_split_keep_original">"Giữ bản gốc"</string>
+    <string name="document_split_keep_original_caption">"Tắt: bản gốc chuyển vào Đã xóa gần đây"</string>
+    <string name="document_split_note">"Văn bản, chữ ký và chỉnh sửa đi cùng từng trang."</string>
+    <string name="document_split_add_cut">"Thêm một vết cắt để tách"</string>
+    <string name="document_split_failed">"Không thể tách tài liệu này."</string>
+    <string name="document_menu_split_into_pdfs">"Tách thành nhiều PDF"</string>
+    <plurals name="document_split_cut_count">
+        <item quantity="other">"%d vết cắt"</item>
+    </plurals>
+    <plurals name="document_split_create">
+        <item quantity="other">"Tạo %d tài liệu"</item>
+    </plurals>
 </resources>

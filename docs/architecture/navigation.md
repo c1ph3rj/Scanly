@@ -1,6 +1,6 @@
 ﻿# Navigation
 
-All routes and user flows in Scanly **v1.0.20**.
+All routes and user flows in Scanly **v1.0.21**.
 
 Navigation is implemented with **Navigation Compose** in `ScanlyNavHost.kt`. Route helpers follow the `*Destination` object pattern with `routePattern` and `route()` factory functions.
 
@@ -63,12 +63,14 @@ These top-level routes still exist but show `FeaturePlaceholderScreen` — they 
 | `tools/text` | `ToolsImageTextDestination` | Image to text: pick photos (imported as a new document, then replaced by its text screen) or a scan → `document/{documentId}/text` |
 | `tools/pdf/reader?filePath={filePath}&fileName={fileName}` | `ToolsPdfReaderDestination` | PDF reader; optional app-owned result file opens directly |
 | `tools/pdf/merge?source={source}` | `ToolsPdfMergeDestination` | PDF merge |
+| `tools/pdf/split?source={source}` | `ToolsPdfSplitDestination` | PDF split |
 | `tools/pdf/compress?source={source}` | `ToolsPdfCompressDestination` | PDF compress |
 | `tools/pdf/password?source={source}` | `ToolsPdfPasswordDestination` | PDF password protect/remove |
 | `tools/pdf/watermark?source={source}` | `ToolsPdfWatermarkDestination` | PDF text watermark |
 | `tools/pdf/to-images?source={source}` | `ToolsPdfToImagesDestination` | PDF to JPG/PNG images saved to `Pictures/Scanly` |
 | `tools/pdf/sign?source={source}` | `ToolsPdfSignDestination` | Sign a device or Scanly library PDF, then save or share the signed copy |
 | `document/{documentId}/sign?page={page}` | `DocumentSignDestination` | Place editable marks on Scanly pages in place |
+| `document/{documentId}/split` | `DocumentSplitDestination` | Split a document into new documents |
 | `signatures/manage` | `SignatureManageDestination` | Manage saved signatures and initials |
 | `signatures/create?kind={kind}` | `SignatureCreateDestination` | Draw or import a reusable signature or initials |
 

@@ -1,6 +1,6 @@
 ﻿# Testing
 
-Test coverage and how to run tests in Scanly **v1.0.20**.
+Test coverage and how to run tests in Scanly **v1.0.21**.
 
 ## Running tests
 
@@ -27,13 +27,13 @@ Test coverage and how to run tests in Scanly **v1.0.20**.
 | UI / layout | `AdaptiveLayoutTest`, `PreviewImageSizerTest`, `ZoomableImageStateTest`, `OnboardingLayoutModeTest` |
 | Formatting | `StorageFormatterTest`, `DocumentPresentationFormatterTest`, `DocumentPreviewPathResolverTest` |
 | Domain models | `DocumentCornerModelTest`, `ExportDestinationTest`, `PageFilterPresetTest`, `PdfExportOptionsTest` |
-| Feature logic | `LibraryUiStateTest`, `DocumentDetailSelectionResolverTest`, `PageImagePreviewSelectionResolverTest`, `SuggestDocumentTitleUseCaseTest`, `ScanlyLaunchActionTest`, `LibraryCardPresentationTest`, `DocumentPageTilePresentationTest` |
+| Feature logic | `LibraryUiStateTest`, `DocumentDetailSelectionResolverTest`, `PageImagePreviewSelectionResolverTest`, `SuggestDocumentTitleUseCaseTest`, `DocumentSplitPartsTest`, `ScanlyLaunchActionTest`, `LibraryCardPresentationTest`, `DocumentPageTilePresentationTest` |
 | Page text search | `LibrarySearchRankerTest`, `NameMatcherTest`, `RecentSearchesTest`, `SearchQueryTest`, `SnippetParserTest`, `SpellingSuggesterTest`, `DocumentKindClassifierTest`, `TextReflowTest` |
 | Signing | `InkStrokeBuilderTest`, `SignGeometryTest`, `SignMarkCodecTest`, `SignEditorControllerTest`, `SignOverlayGeometryTest` |
 | Flow / use case | `DocumentLibraryFlowTest`, `ScanSessionAndPageEditFlowTest`, `ExportAndClearDataFlowTest`, `ToolsSettingsAndLaunchActionFlowTest` |
 | Updates | `AppUpdateDialogCooldownTest`, `ReleaseMarkdownParserTest`, `AppVersionComparatorTest`, `GitHubAppUpdateRepositoryTest`, `PlayInAppUpdatePolicyTest` |
 | Export | `PdfPageLayoutResolverTest` |
-| Tools presentation | `PdfReaderPresentationTest`, `PdfToolPresentationTest`, `QrToolPresentationTest` |
+| Tools presentation | `PdfReaderPresentationTest`, `PdfToolPresentationTest`, `QrToolPresentationTest`, `PdfSplitPlanTest` (split range parsing, every-N and extract plans) |
 | Navigation | `PdfToolSourceArgumentTest` (PDF tool `source` argument encode/decode) |
 
 ### Placement convention

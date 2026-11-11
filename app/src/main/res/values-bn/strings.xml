@@ -1985,4 +1985,109 @@
     <string name="onboarding_demo_found">পৃষ্ঠার লেখায় পাওয়া গেছে</string>
     <string name="onboarding_demo_protected">পাসওয়ার্ড দিয়ে সুরক্ষিত</string>
     <string name="onboarding_chapter_number">%1$02d %2$s</string>
+    <!-- Split PDF -->
+    <string name="tools_catalog_split">"ভাগ করুন"</string>
+    <string name="tools_catalog_cut_into_parts">"অংশে কাটুন"</string>
+    <string name="pdf_reader_tool_split_into_parts">"অংশে ভাগ করুন"</string>
+    <string name="pdf_split_title">"PDF ভাগ করুন"</string>
+    <string name="pdf_split_subtitle">"একটি PDF-কে ছোট ছোট PDF-এ কাটুন"</string>
+    <string name="pdf_split_step_2">"ধাপ 2/3 · কোথায় ভাগ করবেন"</string>
+    <string name="pdf_split_mode_custom">"কাস্টম"</string>
+    <string name="pdf_split_mode_every_n">"প্রতি N পৃষ্ঠায়"</string>
+    <string name="pdf_split_mode_extract">"বের করুন"</string>
+    <string name="pdf_split_ranges_label">"রেঞ্জ লিখুন বা নিচের কার্ড সম্পাদনা করুন"</string>
+    <string name="pdf_split_ranges_placeholder">"যেমন 1-3, 6-8"</string>
+    <string name="pdf_split_ranges_hint">"কমা দিয়ে রেঞ্জ আলাদা করুন, যেমন 1-3, 6-8"</string>
+    <string name="pdf_split_ranges_error">"পৃষ্ঠা নম্বর ও ড্যাশ ব্যবহার করুন, যেমন 1-3, 6-8"</string>
+    <string name="pdf_split_range_title">"রেঞ্জ %d"</string>
+    <string name="pdf_split_range_from">"পৃষ্ঠা থেকে"</string>
+    <string name="pdf_split_range_to">"পর্যন্ত"</string>
+    <string name="pdf_split_remove_range">"রেঞ্জ %d সরান"</string>
+    <string name="pdf_split_range_error">"1 থেকে %d পৃষ্ঠা ব্যবহার করুন, প্রথম পৃষ্ঠা শেষের আগে থাকবে।"</string>
+    <string name="pdf_split_add_range">"রেঞ্জ যোগ করুন"</string>
+    <string name="pdf_split_pages_included">"অন্তর্ভুক্ত পৃষ্ঠা"</string>
+    <string name="pdf_split_not_included">"কোনো রেঞ্জে নেই, তাই সেভ হবে না: %s"</string>
+    <string name="pdf_split_merge_ranges">"সব রেঞ্জ এক PDF-এ মেলান"</string>
+    <string name="pdf_split_merge_ranges_caption">"বন্ধ: প্রতিটি রেঞ্জ আলাদা PDF"</string>
+    <string name="pdf_split_pages_in_each">"প্রতি PDF-এ পৃষ্ঠা"</string>
+    <string name="pdf_split_fewer_pages">"প্রতি PDF-এ কম পৃষ্ঠা"</string>
+    <string name="pdf_split_more_pages">"প্রতি PDF-এ বেশি পৃষ্ঠা"</string>
+    <string name="pdf_split_last_shorter">"শেষটিতে %s আছে"</string>
+    <string name="pdf_split_one_per_page">"প্রতি পৃষ্ঠায় একটি PDF"</string>
+    <string name="pdf_split_you_get">"আপনি পাবেন %s"</string>
+    <string name="pdf_split_more_parts">"+ আরও %d"</string>
+    <string name="pdf_split_pdf_title">"PDF %d"</string>
+    <string name="pdf_split_pages_label">"পৃষ্ঠা"</string>
+    <string name="pdf_split_save_as">"এভাবে সেভ করুন"</string>
+    <string name="pdf_split_one_pdf">"একটি PDF"</string>
+    <string name="pdf_split_one_pdf_caption">"বাছাই করা সব পৃষ্ঠা একসাথে"</string>
+    <string name="pdf_split_separate_pdfs">"আলাদা PDF"</string>
+    <string name="pdf_split_separate_caption">"প্রতি পৃষ্ঠায় একটি ফাইল"</string>
+    <string name="pdf_split_keep_rest_caption">"আরেকটি PDF হিসেবে"</string>
+    <string name="pdf_split_extract_button">"%1$s বের করুন · %2$s"</string>
+    <string name="pdf_split_create_one">"1টি PDF তৈরি করুন · %s"</string>
+    <string name="pdf_split_choose_pages">"বের করার পৃষ্ঠা বাছুন"</string>
+    <string name="pdf_split_fix_ranges">"চালিয়ে যেতে রেঞ্জ ঠিক করুন"</string>
+    <string name="pdf_split_single_page">"এই PDF-এ মাত্র একটি পৃষ্ঠা, তাই ভাগ করার কিছু নেই।"</string>
+    <string name="pdf_split_splitting">"ভাগ করা হচ্ছে…"</string>
+    <string name="pdf_split_writing_part">"%2$d-এর মধ্যে অংশ %1$d লেখা হচ্ছে"</string>
+    <string name="pdf_split_from_file">"%1$s থেকে · %2$s"</string>
+    <string name="pdf_split_tap_to_rename">"নাম বদলাতে নামে ট্যাপ করুন"</string>
+    <string name="pdf_split_open_part">"%s খুলুন"</string>
+    <string name="pdf_split_one_zip">"একটি ZIP"</string>
+    <string name="pdf_split_save_all">"সব সেভ করুন"</string>
+    <string name="pdf_split_share_all">"সব শেয়ার করুন"</string>
+    <string name="pdf_split_output_pages">"%1$s – পৃষ্ঠা %2$s"</string>
+    <string name="pdf_split_output_page">"%1$s – পৃষ্ঠা %2$d"</string>
+    <string name="pdf_split_pages_meta">"পৃষ্ঠা %1$s · %2$s"</string>
+    <string name="pdf_split_page_meta">"পৃষ্ঠা %1$d · %2$s"</string>
+    <string name="pdf_split_no_password">"নতুন PDF-গুলোর কোনো পাসওয়ার্ড নেই।"</string>
+    <string name="pdf_split_could_not_split">"এই PDF ভাগ করা যায়নি।"</string>
+    <plurals name="pdf_split_pdf_count">
+        <item quantity="one">"%dটি PDF"</item>
+        <item quantity="other">"%dটি PDF"</item>
+    </plurals>
+    <plurals name="pdf_split_split_into">
+        <item quantity="one">"%dটি PDF-এ ভাগ করুন"</item>
+        <item quantity="other">"%dটি PDF-এ ভাগ করুন"</item>
+    </plurals>
+    <plurals name="pdf_split_keep_rest">
+        <item quantity="one">"বাকি %dটি পৃষ্ঠাও সেভ করুন"</item>
+        <item quantity="other">"বাকি %dটি পৃষ্ঠাও সেভ করুন"</item>
+    </plurals>
+    <plurals name="pdf_split_saved">
+        <item quantity="one">"%1$dটি PDF %2$s-এ সেভ হয়েছে"</item>
+        <item quantity="other">"%1$dটি PDF %2$s-এ সেভ হয়েছে"</item>
+    </plurals>
+    <plurals name="pdf_split_range_count">
+        <item quantity="one">"%dটি রেঞ্জ"</item>
+        <item quantity="other">"%dটি রেঞ্জ"</item>
+    </plurals>
+    <!-- Split a document into documents -->
+    <string name="document_split_title">"একাধিক ডকুমেন্টে ভাগ করুন"</string>
+    <string name="document_split_pages_cuts">"%1$s · %2$s"</string>
+    <string name="document_split_every_page">"প্রতিটি পৃষ্ঠা"</string>
+    <string name="document_split_clear">"মুছুন"</string>
+    <string name="document_split_hint">"সেখানে কাটতে দুটি পৃষ্ঠার মাঝের ফাঁকে ট্যাপ করুন।"</string>
+    <string name="document_split_cut_after">"পৃষ্ঠা %d-এর পরে কাটুন"</string>
+    <string name="document_split_remove_cut">"পৃষ্ঠা %d-এর পরের কাট সরান"</string>
+    <string name="document_split_part_label">"অংশ %1$d · পৃষ্ঠা %2$s"</string>
+    <string name="document_split_part_label_single">"অংশ %1$d · পৃষ্ঠা %2$d"</string>
+    <string name="document_split_destination_title">"নতুন ডকুমেন্ট যাবে"</string>
+    <string name="document_split_destination_folder">"মূলটির একই ফোল্ডারে"</string>
+    <string name="document_split_destination_library">"আপনার লাইব্রেরিতে, ফোল্ডারের বাইরে"</string>
+    <string name="document_split_keep_original">"মূল ডকুমেন্ট রাখুন"</string>
+    <string name="document_split_keep_original_caption">"বন্ধ: এটি সম্প্রতি মোছা-তে যাবে"</string>
+    <string name="document_split_note">"পৃষ্ঠার লেখা, স্বাক্ষর ও সম্পাদনা প্রতিটি পৃষ্ঠার সাথে যায়।"</string>
+    <string name="document_split_add_cut">"ভাগ করতে একটি কাট যোগ করুন"</string>
+    <string name="document_split_failed">"এই ডকুমেন্ট ভাগ করা যায়নি।"</string>
+    <string name="document_menu_split_into_pdfs">"একাধিক PDF-এ ভাগ করুন"</string>
+    <plurals name="document_split_cut_count">
+        <item quantity="one">"%dটি কাট"</item>
+        <item quantity="other">"%dটি কাট"</item>
+    </plurals>
+    <plurals name="document_split_create">
+        <item quantity="one">"%dটি ডকুমেন্ট তৈরি করুন"</item>
+        <item quantity="other">"%dটি ডকুমেন্ট তৈরি করুন"</item>
+    </plurals>
 </resources>

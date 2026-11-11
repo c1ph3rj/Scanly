@@ -6,12 +6,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [1.0.21] - 2026-11-11
+
 ### Changed
 
+- **Tools hub illustrations** — every tool tile now shows a small picture of what it does, in its own colour, instead of a plain grey icon: photos becoming a PDF, two pages joining for Merge, a page cut in two for Split, a page squeezed from both sides for Compress, a padlocked page for Password, a stamped page for Watermark, and so on. On phones and tablets the tiles are cards with the picture above the title, and the Scan card shows a page inside detection corners. Short (landscape phone) windows keep compact row tiles with a smaller picture. Pictures follow the light, dark and pure black themes.
 - **Paper Atelier onboarding** — warm paper imagery, editorial headings and a live Pip guide introduce capture, on-device text search and finished PDFs. The search example uses one non-interactive preview. Clipped artwork, preloaded images and eased page transitions keep navigation consistent; 48 dp pagination targets support keyboard navigation with circular focus feedback. Layouts adapt to large text, landscape, tablets and dark/AMOLED themes. **Scan my first page** opens scanning after camera access is granted; **Not now** or denial continues to Home. Incoming PDF and shortcut destinations keep priority. The final page has no import-photo button. Retired illustrations and unused onboarding translations have been removed.
 
 ### Added
 
+- **Split into documents** — in a document's ⋮ menu, tap the gaps between pages to cut, then create one new document per part in the same folder (or the Library when the original has no folder), named "<title> (1)", "(2)"…. Page images, page text (still searchable) and signature layers are copied with each page. **Keep the original** is on by default; turned off, the original goes to Recently deleted, so it can be restored for 7 days.
+- **PDF tools from a document** — a document's ⋮ menu now also offers Compress, Merge with other PDFs, Split into PDFs, Password protect, Add watermark and Save pages as images, each opening with that document already chosen (Back returns to the document).
+- **Split PDF** — a new tool in **Tools › PDF** and in the PDF reader's ⋮ menu (**Split into parts**) cuts one PDF into smaller PDFs, three ways: **Custom** (type ranges like `1-3, 6-8` or edit range cards; pages left out of every range are struck through so nothing is dropped by accident; optionally merge all ranges into one PDF), **Every N pages** (one −/+ control with a preview of every part; the shorter last part is flagged) and **Extract** (tap, drag or type pages; save them as one PDF or one PDF per page, and optionally the remaining pages as one more). Each part is named after its pages and can be renamed, opened, saved (as separate PDFs or one ZIP) or shared. Password-protected PDFs unlock once; the parts are written without a password. The original file is never changed.
 - **Feedback email return** asks whether you sent the email only after a successful email-flow launch and return. **Yes, sent** clears and closes the form; **Not yet** or dismissing the question keeps the draft. Scanly does not automatically mark feedback as sent or detect email delivery.
 - **Send feedback** in Settings (also About → Contact support): choose Suggestion, Issue or Other, add a subject and message, and optionally attach up to **5 images**. Images are prepared on the phone at **1 MB each / 5 MB total**, using lossless PNG when it fits and resized JPEG copies otherwise. Originals are preserved. Previews, removal, prepared sizes, progress and error recovery sit in a cleaner form with a fixed **Continue to email** action. The email draft goes to `info@c1ph3rj.in` and includes the app and Android version. Text and prepared attachments survive rotation; **Copy text** is available for webmail. No location metadata is copied into prepared images.
 
@@ -19,6 +25,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - **Feedback image picker** now opens Android’s photo picker with only the remaining attachment slots available, switching to single-image selection when one slot remains. Scanly also enforces the five-image cap if a device’s fallback picker cannot limit selection.
 - **Rate Scanly** now opens Google Play with a reviews-section hint and falls back to the browser, rather than using the quota-limited in-app review dialog from an explicit button. A failed hand-off shows an error and does not mark the app as rated. Opening the store no longer shows a message implying a review was submitted. Google Play controls the final screen and whether the account can write a review.
+
+### Technical
+
+- Version `1.0.21` (version code `21`). Room schema stays **12**; no migration.
+- New routes `tools/pdf/split?source=` (`ToolsPdfSplitDestination`, `PdfSplitScreen` / `PdfSplitViewModel`, plans in `PdfSplitPlan`) and `document/{documentId}/split` (`DocumentSplitDestination`, `DocumentSplitScreen` / `DocumentSplitViewModel`). `PdfToolkitRepository` gains PDF splitting; `DocumentSplitRepository` / `SplitDocumentUseCase` copy page files, `page_texts` and `page_markups` into new documents and never edit the original.
+- Tool tile pictures are drawn in Compose (`ToolIllustrations.kt`). Pure-JVM tests in `PdfSplitPlanTest` and `DocumentSplitPartsTest`.
 
 ## [1.0.20] - 2026-11-09
 
@@ -432,6 +444,7 @@ Compared to **1.0.9** (`master`): Tools workspace, multi-model detection, captur
 - PDF export and image archive export/share.
 - Settings with theme mode, FAQs, licenses, and support links.
 
+[1.0.21]: https://github.com/c1ph3rj/Scanly/compare/v1.0.20...v1.0.21
 [1.0.16]: https://github.com/c1ph3rj/Scanly/compare/v1.0.14...v1.0.16
 [1.0.14]: https://github.com/c1ph3rj/Scanly/compare/v1.0.13...v1.0.14
 [1.0.13]: https://github.com/c1ph3rj/Scanly/compare/v1.0.11...v1.0.13

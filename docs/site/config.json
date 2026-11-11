@@ -1,10 +1,10 @@
 ﻿{
   "schemaVersion": 1,
-  "lastUpdated": "2026-11-09",
+  "lastUpdated": "2026-11-11",
   "release": {
-    "stableVersion": "v1.0.20",
+    "stableVersion": "v1.0.21",
     "developmentLabel": "What's new",
-    "developmentUrl": "https://github.com/c1ph3rj/Scanly/blob/master/docs/release-notes/v1.0.20.md",
+    "developmentUrl": "https://github.com/c1ph3rj/Scanly/blob/master/docs/release-notes/v1.0.21.md",
     "releasesUrl": "https://play.google.com/store/apps/details?id=in.c1ph3rj.scanly"
   },
   "screenshots": {
@@ -101,41 +101,33 @@
     ]
   },
   "development": {
-    "eyebrow": "What's new in v1.0.20",
-    "title": "25 languages, Indra OCR, safer deletes.",
-    "description": "Use Scanly in your language, read more scripts on-device with Indra OCR, and undo deletes with Recently deleted — all on your device.",
+    "eyebrow": "What's new in v1.0.21",
+    "title": "Split PDFs and documents, your way.",
+    "description": "Cut a PDF into parts, split a scanned document into new ones, and reach every PDF tool straight from a document — all on your device.",
     "items": [
       {
-        "title": "Scanly in 25 languages",
-        "body": "Follow your phone's language or pick one in Settings; the screen updates instantly, and dates and sizes follow your choice."
+        "title": "Split PDF",
+        "body": "Custom ranges, every N pages, or extract the pages you pick. Rename, open, save or share each part; the original is never changed."
       },
       {
-        "title": "Indra OCR (experimental)",
-        "body": "A second on-device text engine that reads Indian scripts, Cyrillic, Greek, Chinese, Japanese, Korean, Arabic and more, with ML Kit as fallback."
+        "title": "Split into documents",
+        "body": "Tap the gaps between pages to cut. Each part becomes a new document with its page text and signatures; keep the original or send it to Recently deleted."
       },
       {
-        "title": "Recently deleted",
-        "body": "Deleted pages stay for 2 days and documents and folders for 7, with Undo right after every delete."
+        "title": "PDF tools from a document",
+        "body": "Compress, Merge, Split, Password, Watermark and Save as images open from a document's ⋮ menu with that document already chosen."
       },
       {
-        "title": "Smarter search",
-        "body": "Filters and sort, word suggestions, -word and OR, English spellings that find Indic text, and matches despite typos or OCR misreads."
+        "title": "Illustrated Tools",
+        "body": "Every tool tile shows a small picture of what it does, in light, dark and pure black themes."
       },
       {
-        "title": "Add PDF to library",
-        "body": "Turn any PDF on your phone into a Scanly document you can crop, filter, sign, search and export."
+        "title": "A warmer first run",
+        "body": "Paper Atelier onboarding introduces capture, on-device text search and finished PDFs with a live Pip guide."
       },
       {
-        "title": "Image to text",
-        "body": "Pick photos or a scan and read, copy or share its text, recognised on this phone."
-      },
-      {
-        "title": "Built for big screens",
-        "body": "A new first-run introduction, plus layouts for tablets, foldables, landscape and split screen."
-      },
-      {
-        "title": "Smaller and more private",
-        "body": "A slimmer OpenCV build makes the app smaller, and scans are no longer copied to Google Drive backup."
+        "title": "Send feedback",
+        "body": "Share a suggestion or issue from Settings with up to 5 images, prepared on your phone before your email app opens."
       }
     ]
   },

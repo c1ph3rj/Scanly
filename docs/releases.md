@@ -6,19 +6,32 @@ Version policy and release history for Scanly.
 
 | Field | Value |
 | --- | --- |
-| Version name | `1.0.20` |
-| Version code | `20` |
+| Version name | `1.0.21` |
+| Version code | `21` |
 | Application ID | `in.c1ph3rj.scanly` |
 | Room schema | `12` |
 | Min SDK | 29 (Android 10) |
 | Target / compile SDK | compile 37 / target 36 |
-| Release date | 2026-11-09 |
+| Release date | 2026-11-11 |
 
 Canonical source: `versionCode` and `versionName` in `app/build.gradle.kts`.
 
 The version shown in Settings reads `versionName` via `DefaultSettingsRepository`.
 
 ### Release highlights
+
+Version **1.0.21** (relative to `1.0.20`):
+
+- Split PDF: **Custom** ranges (with an optional merge into one PDF), **Every N pages**, or **Extract** pages; parts can be renamed, opened, saved as PDFs or one ZIP, or shared
+- Split a document into new documents; page images, text and signature layers are copied, and the original is kept unless you choose otherwise (then it goes to Recently deleted)
+- A document's ⋮ menu opens Compress, Merge, Split, Password, Watermark and Save pages as images with that document already chosen
+- Tools hub tiles show a small coloured picture of each tool
+- Paper Atelier onboarding with a live Pip guide
+- Send feedback from Settings with up to 5 prepared image attachments
+- Rate Scanly opens Google Play reliably; feedback image picker respects the remaining slots
+- Room schema unchanged (12)
+
+The compact GitHub release description used by the in-app update dialog is available in [release-notes/v1.0.21.md](release-notes/v1.0.21.md).
 
 Version **1.0.20** (relative to `1.0.18`):
 
@@ -76,6 +89,15 @@ The compact GitHub release description used by the in-app update dialog is avail
 - Keep [VERSION.md](../VERSION.md) aligned with Gradle values.
 
 ## Recent releases
+
+### 1.0.21 (code 21) — 2026-11-11
+
+- Split PDF tool (custom ranges, every N pages, extract)
+- Split a document into new documents
+- PDF tools from a document's ⋮ menu
+- Illustrated Tools hub tiles; Paper Atelier onboarding
+- Send feedback with image attachments; Rate Scanly fix
+- Schema 12 (unchanged)
 
 ### 1.0.20 (code 20) — 2026-11-09
 
@@ -181,6 +203,10 @@ Major feature release:
 Full details: [CHANGELOG.md](../CHANGELOG.md)
 
 ## Upgrade notes
+
+### From 1.0.20 to 1.0.21 (schema 12)
+
+- No database changes and no manual migration steps.
 
 ### From 1.0.18 to 1.0.20 (schema 12)
 

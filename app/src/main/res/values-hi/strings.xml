@@ -1985,4 +1985,109 @@
     <string name="onboarding_demo_found">पेज के टेक्स्ट में मिला</string>
     <string name="onboarding_demo_protected">पासवर्ड से सुरक्षित</string>
     <string name="onboarding_chapter_number">%1$02d %2$s</string>
+    <!-- Split PDF -->
+    <string name="tools_catalog_split">"बाँटें"</string>
+    <string name="tools_catalog_cut_into_parts">"हिस्सों में काटें"</string>
+    <string name="pdf_reader_tool_split_into_parts">"हिस्सों में बाँटें"</string>
+    <string name="pdf_split_title">"PDF बाँटें"</string>
+    <string name="pdf_split_subtitle">"एक PDF को छोटी PDF फ़ाइलों में काटें"</string>
+    <string name="pdf_split_step_2">"चरण 2/3 · कहाँ बाँटना है"</string>
+    <string name="pdf_split_mode_custom">"कस्टम"</string>
+    <string name="pdf_split_mode_every_n">"हर N पेज"</string>
+    <string name="pdf_split_mode_extract">"निकालें"</string>
+    <string name="pdf_split_ranges_label">"रेंज लिखें या नीचे के कार्ड बदलें"</string>
+    <string name="pdf_split_ranges_placeholder">"जैसे 1-3, 6-8"</string>
+    <string name="pdf_split_ranges_hint">"रेंज को कॉमा से अलग करें, जैसे 1-3, 6-8"</string>
+    <string name="pdf_split_ranges_error">"पेज नंबर और डैश का इस्तेमाल करें, जैसे 1-3, 6-8"</string>
+    <string name="pdf_split_range_title">"रेंज %d"</string>
+    <string name="pdf_split_range_from">"पेज से"</string>
+    <string name="pdf_split_range_to">"तक"</string>
+    <string name="pdf_split_remove_range">"रेंज %d हटाएँ"</string>
+    <string name="pdf_split_range_error">"1 से %d तक के पेज लें, पहला पेज आख़िरी से पहले हो।"</string>
+    <string name="pdf_split_add_range">"रेंज जोड़ें"</string>
+    <string name="pdf_split_pages_included">"शामिल पेज"</string>
+    <string name="pdf_split_not_included">"किसी रेंज में नहीं, इसलिए सेव नहीं होंगे: %s"</string>
+    <string name="pdf_split_merge_ranges">"सभी रेंज को एक PDF में जोड़ें"</string>
+    <string name="pdf_split_merge_ranges_caption">"बंद: हर रेंज की अलग PDF"</string>
+    <string name="pdf_split_pages_in_each">"हर PDF में पेज"</string>
+    <string name="pdf_split_fewer_pages">"हर PDF में कम पेज"</string>
+    <string name="pdf_split_more_pages">"हर PDF में ज़्यादा पेज"</string>
+    <string name="pdf_split_last_shorter">"आख़िरी में %s हैं"</string>
+    <string name="pdf_split_one_per_page">"हर पेज की एक PDF"</string>
+    <string name="pdf_split_you_get">"आपको %s मिलेंगी"</string>
+    <string name="pdf_split_more_parts">"+ %d और"</string>
+    <string name="pdf_split_pdf_title">"PDF %d"</string>
+    <string name="pdf_split_pages_label">"पेज"</string>
+    <string name="pdf_split_save_as">"इस रूप में सेव करें"</string>
+    <string name="pdf_split_one_pdf">"एक PDF"</string>
+    <string name="pdf_split_one_pdf_caption">"चुने गए सभी पेज एक साथ"</string>
+    <string name="pdf_split_separate_pdfs">"अलग-अलग PDF"</string>
+    <string name="pdf_split_separate_caption">"हर पेज की एक फ़ाइल"</string>
+    <string name="pdf_split_keep_rest_caption">"एक और PDF के रूप में"</string>
+    <string name="pdf_split_extract_button">"%1$s निकालें · %2$s"</string>
+    <string name="pdf_split_create_one">"1 PDF बनाएँ · %s"</string>
+    <string name="pdf_split_choose_pages">"निकालने के लिए पेज चुनें"</string>
+    <string name="pdf_split_fix_ranges">"आगे बढ़ने के लिए रेंज ठीक करें"</string>
+    <string name="pdf_split_single_page">"इस PDF में सिर्फ़ एक पेज है, इसलिए बाँटने को कुछ नहीं है।"</string>
+    <string name="pdf_split_splitting">"बाँटा जा रहा है…"</string>
+    <string name="pdf_split_writing_part">"%2$d में से हिस्सा %1$d लिखा जा रहा है"</string>
+    <string name="pdf_split_from_file">"%1$s से · %2$s"</string>
+    <string name="pdf_split_tap_to_rename">"नाम बदलने के लिए नाम पर टैप करें"</string>
+    <string name="pdf_split_open_part">"%s खोलें"</string>
+    <string name="pdf_split_one_zip">"एक ZIP"</string>
+    <string name="pdf_split_save_all">"सभी सेव करें"</string>
+    <string name="pdf_split_share_all">"सभी शेयर करें"</string>
+    <string name="pdf_split_output_pages">"%1$s – पेज %2$s"</string>
+    <string name="pdf_split_output_page">"%1$s – पेज %2$d"</string>
+    <string name="pdf_split_pages_meta">"पेज %1$s · %2$s"</string>
+    <string name="pdf_split_page_meta">"पेज %1$d · %2$s"</string>
+    <string name="pdf_split_no_password">"नई PDF फ़ाइलों पर पासवर्ड नहीं है।"</string>
+    <string name="pdf_split_could_not_split">"यह PDF बाँटी नहीं जा सकी।"</string>
+    <plurals name="pdf_split_pdf_count">
+        <item quantity="one">"%d PDF"</item>
+        <item quantity="other">"%d PDF"</item>
+    </plurals>
+    <plurals name="pdf_split_split_into">
+        <item quantity="one">"%d PDF में बाँटें"</item>
+        <item quantity="other">"%d PDF में बाँटें"</item>
+    </plurals>
+    <plurals name="pdf_split_keep_rest">
+        <item quantity="one">"बाकी %d पेज भी सेव करें"</item>
+        <item quantity="other">"बाकी %d पेज भी सेव करें"</item>
+    </plurals>
+    <plurals name="pdf_split_saved">
+        <item quantity="one">"%1$d PDF %2$s में सेव की गई"</item>
+        <item quantity="other">"%1$d PDF %2$s में सेव की गईं"</item>
+    </plurals>
+    <plurals name="pdf_split_range_count">
+        <item quantity="one">"%d रेंज"</item>
+        <item quantity="other">"%d रेंज"</item>
+    </plurals>
+    <!-- Split a document into documents -->
+    <string name="document_split_title">"कई दस्तावेज़ों में बाँटें"</string>
+    <string name="document_split_pages_cuts">"%1$s · %2$s"</string>
+    <string name="document_split_every_page">"हर पेज"</string>
+    <string name="document_split_clear">"साफ़ करें"</string>
+    <string name="document_split_hint">"दो पेज के बीच की जगह पर टैप करके वहाँ काटें।"</string>
+    <string name="document_split_cut_after">"पेज %d के बाद काटें"</string>
+    <string name="document_split_remove_cut">"पेज %d के बाद का कट हटाएँ"</string>
+    <string name="document_split_part_label">"हिस्सा %1$d · पेज %2$s"</string>
+    <string name="document_split_part_label_single">"हिस्सा %1$d · पेज %2$d"</string>
+    <string name="document_split_destination_title">"नए दस्तावेज़ यहाँ जाएँगे"</string>
+    <string name="document_split_destination_folder">"मूल वाले ही फ़ोल्डर में"</string>
+    <string name="document_split_destination_library">"आपकी लाइब्रेरी में, फ़ोल्डर से बाहर"</string>
+    <string name="document_split_keep_original">"मूल दस्तावेज़ रखें"</string>
+    <string name="document_split_keep_original_caption">"बंद: यह हाल ही में हटाए गए में चला जाएगा"</string>
+    <string name="document_split_note">"पेज का टेक्स्ट, हस्ताक्षर और बदलाव हर पेज के साथ जाते हैं।"</string>
+    <string name="document_split_add_cut">"बाँटने के लिए एक कट जोड़ें"</string>
+    <string name="document_split_failed">"यह दस्तावेज़ बाँटा नहीं जा सका।"</string>
+    <string name="document_menu_split_into_pdfs">"कई PDF में बाँटें"</string>
+    <plurals name="document_split_cut_count">
+        <item quantity="one">"%d कट"</item>
+        <item quantity="other">"%d कट"</item>
+    </plurals>
+    <plurals name="document_split_create">
+        <item quantity="one">"%d दस्तावेज़ बनाएँ"</item>
+        <item quantity="other">"%d दस्तावेज़ बनाएँ"</item>
+    </plurals>
 </resources>

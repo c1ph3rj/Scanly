@@ -234,6 +234,33 @@ class InMemoryPdfToolkitRepository(
         return ScanlyResult.Success(Unit)
     }
 
+    var lastSplitOutputs: List<List<Int>> = emptyList()
+        private set
+
+    override suspend fun splitPages(
+        copy: PdfWorkingCopy,
+        outputs: List<List<Int>>,
+        onProgress: suspend (done: Int, total: Int) -> Unit,
+    ): ScanlyResult<List<ExportArtifact>> {
+        lastSplitOutputs = outputs
+        if (outputs.isEmpty() || outputs.any { it.isEmpty() }) {
+            return ScanlyResult.Failure(ScanlyError(message = "Could not split this PDF."))
+        }
+        val artifacts = outputs.mapIndexed { index, pages ->
+            onProgress(index, outputs.size)
+            writeArtifact("split_${index + 1}.pdf", "application/pdf", "SPLIT ${pages.joinToString(",")}")
+        }
+        onProgress(outputs.size, outputs.size)
+        return ScanlyResult.Success(artifacts)
+    }
+
+    override suspend fun zipFiles(
+        files: List<ExportArtifact>,
+        zipBaseName: String,
+    ): ScanlyResult<ExportArtifact> = runLibraryResult("Could not zip files.") {
+        writeArtifact("$zipBaseName.zip", "application/zip", "ZIP ${files.joinToString { it.fileName }}")
+    }
+
     override suspend fun prepareShare(artifact: ExportArtifact): ScanlyResult<List<String>> =
         runLibraryResult("Could not prepare share.") {
             listOf(artifact.filePath)

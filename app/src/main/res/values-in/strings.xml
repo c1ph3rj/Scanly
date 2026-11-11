@@ -1958,4 +1958,102 @@
     <string name="onboarding_demo_found">Ditemukan dalam teks halaman</string>
     <string name="onboarding_demo_protected">Dilindungi sandi</string>
     <string name="onboarding_chapter_number">%1$02d %2$s</string>
+    <!-- Split PDF -->
+    <string name="tools_catalog_split">"Pisahkan"</string>
+    <string name="tools_catalog_cut_into_parts">"Potong jadi beberapa bagian"</string>
+    <string name="pdf_reader_tool_split_into_parts">"Pisahkan jadi beberapa bagian"</string>
+    <string name="pdf_split_title">"Pisahkan PDF"</string>
+    <string name="pdf_split_subtitle">"Potong satu PDF menjadi PDF yang lebih kecil"</string>
+    <string name="pdf_split_step_2">"Langkah 2 dari 3 · Tempat memisah"</string>
+    <string name="pdf_split_mode_custom">"Kustom"</string>
+    <string name="pdf_split_mode_every_n">"Setiap N halaman"</string>
+    <string name="pdf_split_mode_extract">"Ekstrak"</string>
+    <string name="pdf_split_ranges_label">"Ketik rentang, atau edit kartu di bawah"</string>
+    <string name="pdf_split_ranges_placeholder">"mis. 1-3, 6-8"</string>
+    <string name="pdf_split_ranges_hint">"Pisahkan rentang dengan koma, mis. 1-3, 6-8"</string>
+    <string name="pdf_split_ranges_error">"Gunakan nomor halaman dan tanda hubung, mis. 1-3, 6-8"</string>
+    <string name="pdf_split_range_title">"Rentang %d"</string>
+    <string name="pdf_split_range_from">"Dari halaman"</string>
+    <string name="pdf_split_range_to">"sampai"</string>
+    <string name="pdf_split_remove_range">"Hapus rentang %d"</string>
+    <string name="pdf_split_range_error">"Gunakan halaman 1 sampai %d, halaman pertama sebelum yang terakhir."</string>
+    <string name="pdf_split_add_range">"Tambah rentang"</string>
+    <string name="pdf_split_pages_included">"Halaman yang disertakan"</string>
+    <string name="pdf_split_not_included">"Tidak ada di rentang mana pun, jadi tidak disimpan: %s"</string>
+    <string name="pdf_split_merge_ranges">"Gabungkan semua rentang jadi satu PDF"</string>
+    <string name="pdf_split_merge_ranges_caption">"Nonaktif: tiap rentang jadi PDF sendiri"</string>
+    <string name="pdf_split_pages_in_each">"Halaman per PDF"</string>
+    <string name="pdf_split_fewer_pages">"Lebih sedikit halaman per PDF"</string>
+    <string name="pdf_split_more_pages">"Lebih banyak halaman per PDF"</string>
+    <string name="pdf_split_last_shorter">"Yang terakhir berisi %s"</string>
+    <string name="pdf_split_one_per_page">"Satu PDF per halaman"</string>
+    <string name="pdf_split_you_get">"Anda akan mendapat %s"</string>
+    <string name="pdf_split_more_parts">"+ %d lagi"</string>
+    <string name="pdf_split_pdf_title">"PDF %d"</string>
+    <string name="pdf_split_pages_label">"Halaman"</string>
+    <string name="pdf_split_save_as">"Simpan sebagai"</string>
+    <string name="pdf_split_one_pdf">"Satu PDF"</string>
+    <string name="pdf_split_one_pdf_caption">"Semua halaman terpilih jadi satu"</string>
+    <string name="pdf_split_separate_pdfs">"PDF terpisah"</string>
+    <string name="pdf_split_separate_caption">"Satu file per halaman"</string>
+    <string name="pdf_split_keep_rest_caption">"Sebagai satu PDF lagi"</string>
+    <string name="pdf_split_extract_button">"Ekstrak %1$s · %2$s"</string>
+    <string name="pdf_split_create_one">"Buat 1 PDF · %s"</string>
+    <string name="pdf_split_choose_pages">"Pilih halaman untuk diekstrak"</string>
+    <string name="pdf_split_fix_ranges">"Perbaiki rentang untuk melanjutkan"</string>
+    <string name="pdf_split_single_page">"PDF ini hanya punya satu halaman, jadi tidak ada yang bisa dipisahkan."</string>
+    <string name="pdf_split_splitting">"Memisahkan…"</string>
+    <string name="pdf_split_writing_part">"Menulis bagian %1$d dari %2$d"</string>
+    <string name="pdf_split_from_file">"Dari %1$s · %2$s"</string>
+    <string name="pdf_split_tap_to_rename">"Ketuk nama untuk mengganti nama"</string>
+    <string name="pdf_split_open_part">"Buka %s"</string>
+    <string name="pdf_split_one_zip">"Satu ZIP"</string>
+    <string name="pdf_split_save_all">"Simpan semua"</string>
+    <string name="pdf_split_share_all">"Bagikan semua"</string>
+    <string name="pdf_split_output_pages">"%1$s – halaman %2$s"</string>
+    <string name="pdf_split_output_page">"%1$s – halaman %2$d"</string>
+    <string name="pdf_split_pages_meta">"Halaman %1$s · %2$s"</string>
+    <string name="pdf_split_page_meta">"Halaman %1$d · %2$s"</string>
+    <string name="pdf_split_no_password">"PDF baru tidak memiliki sandi."</string>
+    <string name="pdf_split_could_not_split">"Tidak dapat memisahkan PDF ini."</string>
+    <plurals name="pdf_split_pdf_count">
+        <item quantity="other">"%d PDF"</item>
+    </plurals>
+    <plurals name="pdf_split_split_into">
+        <item quantity="other">"Pisahkan jadi %d PDF"</item>
+    </plurals>
+    <plurals name="pdf_split_keep_rest">
+        <item quantity="other">"Simpan juga %d halaman lainnya"</item>
+    </plurals>
+    <plurals name="pdf_split_saved">
+        <item quantity="other">"%1$d PDF disimpan ke %2$s"</item>
+    </plurals>
+    <plurals name="pdf_split_range_count">
+        <item quantity="other">"%d rentang"</item>
+    </plurals>
+    <!-- Split a document into documents -->
+    <string name="document_split_title">"Pisahkan jadi beberapa dokumen"</string>
+    <string name="document_split_pages_cuts">"%1$s · %2$s"</string>
+    <string name="document_split_every_page">"Setiap halaman"</string>
+    <string name="document_split_clear">"Hapus"</string>
+    <string name="document_split_hint">"Ketuk celah di antara dua halaman untuk memotong di sana."</string>
+    <string name="document_split_cut_after">"Potong setelah halaman %d"</string>
+    <string name="document_split_remove_cut">"Hapus potongan setelah halaman %d"</string>
+    <string name="document_split_part_label">"Bagian %1$d · halaman %2$s"</string>
+    <string name="document_split_part_label_single">"Bagian %1$d · halaman %2$d"</string>
+    <string name="document_split_destination_title">"Dokumen baru masuk ke"</string>
+    <string name="document_split_destination_folder">"Folder yang sama dengan aslinya"</string>
+    <string name="document_split_destination_library">"Pustaka Anda, di luar folder"</string>
+    <string name="document_split_keep_original">"Simpan aslinya"</string>
+    <string name="document_split_keep_original_caption">"Nonaktif: dipindahkan ke Baru dihapus"</string>
+    <string name="document_split_note">"Teks, tanda tangan, dan editan ikut di setiap halaman."</string>
+    <string name="document_split_add_cut">"Tambahkan potongan untuk memisahkan"</string>
+    <string name="document_split_failed">"Tidak dapat memisahkan dokumen ini."</string>
+    <string name="document_menu_split_into_pdfs">"Pisahkan jadi beberapa PDF"</string>
+    <plurals name="document_split_cut_count">
+        <item quantity="other">"%d potongan"</item>
+    </plurals>
+    <plurals name="document_split_create">
+        <item quantity="other">"Buat %d dokumen"</item>
+    </plurals>
 </resources>

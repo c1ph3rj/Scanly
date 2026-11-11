@@ -1,6 +1,6 @@
 ﻿# Features
 
-Complete inventory of Scanly features as of **v1.0.20**.
+Complete inventory of Scanly features as of **v1.0.21**.
 
 ## Home dashboard
 
@@ -91,8 +91,9 @@ Operate on **device PDFs** (system document picker) or **Scanly library document
 
 | Tool | Behavior |
 | --- | --- |
-| Reader | Real file name, one page counter, paged or continuous, pinch-zoom, tap to hide chrome, **Pages** grid to jump, Share; password unlock when required. The ⋮ menu hands the open file straight to Sign, Compress, Merge, Password, Watermark, or PDF to images (Back returns to the reader), or opens another PDF |
+| Reader | Real file name, one page counter, paged or continuous, pinch-zoom, tap to hide chrome, **Pages** grid to jump, Share; password unlock when required. The ⋮ menu hands the open file straight to Sign, Compress, Merge, Split, Password, Watermark, or PDF to images (Back returns to the reader), or opens another PDF |
 | Merge | Multi-select in tap order, then reorder (move up / down), see page totals, and name the output before merging |
+| Split | Pick one PDF, then **Custom** ranges (typed `1-3, 6-8` or range cards, with a "Pages included" strip and an optional merge into one PDF), **Every N pages** (−/+ with a preview of each part) or **Extract** (pick or type pages; one PDF or one per page, optionally the rest as another). Done lists every part to rename, open, save (separate PDFs or one ZIP) or share |
 | Compress | High / Balanced / Smallest quality via page re-encode; result shows the saving and before/after sizes, with "Try another quality" |
 | Password | Unlocked files open **Add password** (strength meter, live match check, optional **Restrict editing**); locked files open **Remove password**. AES-256 |
 | Watermark | Live preview from the production engine pinned above the controls; presets (CONFIDENTIAL, DRAFT, COPY, For KYC use only) and optional date; Tiled or Single; diagonal or horizontal; size and opacity sliders; Grey / Red / Blue / Teal; all pages or first page. Stamps follow page rotation, single stamps always fit the page, and tiles run in even rows along the stamp angle |
@@ -121,6 +122,8 @@ Operate on **device PDFs** (system document picker) or **Scanly library document
 - **Reorder** pages by long-press and drag when more than one page exists
 - **Delete** individual pages from review
 - **Rename** document (does not affect first-page thumbnail — v1.0.9 fix)
+- **Split into documents** (⋮): tap the gaps between pages to cut; each part becomes a new document in the same folder with copies of its page images, text and signature layers. **Keep the original** (on by default) or send it to Recently deleted
+- **PDF tools** (⋮): Compress, Merge with other PDFs, Split into PDFs, Password protect, Add watermark, Save pages as images — each opens with this document already picked
 - **Assign to group** or remove from group (with inline new-folder creation)
 - Add more pages via scan session or gallery import
 - Open page preview for full-screen review

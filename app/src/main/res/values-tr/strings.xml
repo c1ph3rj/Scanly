@@ -1985,4 +1985,109 @@
     <string name="onboarding_demo_found">Sayfa metninde bulundu</string>
     <string name="onboarding_demo_protected">Parola korumalı</string>
     <string name="onboarding_chapter_number">%1$02d %2$s</string>
+    <!-- Split PDF -->
+    <string name="tools_catalog_split">"Böl"</string>
+    <string name="tools_catalog_cut_into_parts">"Parçalara ayır"</string>
+    <string name="pdf_reader_tool_split_into_parts">"Parçalara böl"</string>
+    <string name="pdf_split_title">"PDF böl"</string>
+    <string name="pdf_split_subtitle">"Bir PDF\'yi daha küçük PDF\'lere ayırın"</string>
+    <string name="pdf_split_step_2">"Adım 2 / 3 · Nereden bölünecek"</string>
+    <string name="pdf_split_mode_custom">"Özel"</string>
+    <string name="pdf_split_mode_every_n">"Her N sayfada"</string>
+    <string name="pdf_split_mode_extract">"Ayıkla"</string>
+    <string name="pdf_split_ranges_label">"Aralık yazın veya aşağıdaki kartları düzenleyin"</string>
+    <string name="pdf_split_ranges_placeholder">"ör. 1-3, 6-8"</string>
+    <string name="pdf_split_ranges_hint">"Aralıkları virgülle ayırın, ör. 1-3, 6-8"</string>
+    <string name="pdf_split_ranges_error">"Sayfa numaraları ve tire kullanın, ör. 1-3, 6-8"</string>
+    <string name="pdf_split_range_title">"Aralık %d"</string>
+    <string name="pdf_split_range_from">"Başlangıç sayfası"</string>
+    <string name="pdf_split_range_to">"bitiş"</string>
+    <string name="pdf_split_remove_range">"%d. aralığı kaldır"</string>
+    <string name="pdf_split_range_error">"1 ile %d arasındaki sayfaları kullanın, ilk sayfa sondan önce gelmeli."</string>
+    <string name="pdf_split_add_range">"Aralık ekle"</string>
+    <string name="pdf_split_pages_included">"Dahil edilen sayfalar"</string>
+    <string name="pdf_split_not_included">"Hiçbir aralıkta değil, bu yüzden kaydedilmeyecek: %s"</string>
+    <string name="pdf_split_merge_ranges">"Tüm aralıkları tek PDF\'de birleştir"</string>
+    <string name="pdf_split_merge_ranges_caption">"Kapalı: her aralık ayrı bir PDF olur"</string>
+    <string name="pdf_split_pages_in_each">"PDF başına sayfa"</string>
+    <string name="pdf_split_fewer_pages">"PDF başına daha az sayfa"</string>
+    <string name="pdf_split_more_pages">"PDF başına daha fazla sayfa"</string>
+    <string name="pdf_split_last_shorter">"Sonuncusunda %s var"</string>
+    <string name="pdf_split_one_per_page">"Sayfa başına bir PDF"</string>
+    <string name="pdf_split_you_get">"%s elde edeceksiniz"</string>
+    <string name="pdf_split_more_parts">"+ %d tane daha"</string>
+    <string name="pdf_split_pdf_title">"PDF %d"</string>
+    <string name="pdf_split_pages_label">"Sayfalar"</string>
+    <string name="pdf_split_save_as">"Kaydetme biçimi"</string>
+    <string name="pdf_split_one_pdf">"Tek PDF"</string>
+    <string name="pdf_split_one_pdf_caption">"Seçilen tüm sayfalar birlikte"</string>
+    <string name="pdf_split_separate_pdfs">"Ayrı PDF\'ler"</string>
+    <string name="pdf_split_separate_caption">"Sayfa başına bir dosya"</string>
+    <string name="pdf_split_keep_rest_caption">"Bir PDF daha olarak"</string>
+    <string name="pdf_split_extract_button">"%1$s ayıkla · %2$s"</string>
+    <string name="pdf_split_create_one">"1 PDF oluştur · %s"</string>
+    <string name="pdf_split_choose_pages">"Ayıklanacak sayfaları seçin"</string>
+    <string name="pdf_split_fix_ranges">"Devam etmek için aralıkları düzeltin"</string>
+    <string name="pdf_split_single_page">"Bu PDF\'de yalnızca bir sayfa var, bölünecek bir şey yok."</string>
+    <string name="pdf_split_splitting">"Bölünüyor…"</string>
+    <string name="pdf_split_writing_part">"%2$d parçadan %1$d. yazılıyor"</string>
+    <string name="pdf_split_from_file">"Kaynak: %1$s · %2$s"</string>
+    <string name="pdf_split_tap_to_rename">"Yeniden adlandırmak için bir ada dokunun"</string>
+    <string name="pdf_split_open_part">"%s aç"</string>
+    <string name="pdf_split_one_zip">"Tek ZIP"</string>
+    <string name="pdf_split_save_all">"Tümünü kaydet"</string>
+    <string name="pdf_split_share_all">"Tümünü paylaş"</string>
+    <string name="pdf_split_output_pages">"%1$s – sayfa %2$s"</string>
+    <string name="pdf_split_output_page">"%1$s – sayfa %2$d"</string>
+    <string name="pdf_split_pages_meta">"Sayfa %1$s · %2$s"</string>
+    <string name="pdf_split_page_meta">"Sayfa %1$d · %2$s"</string>
+    <string name="pdf_split_no_password">"Yeni PDF\'lerin parolası yok."</string>
+    <string name="pdf_split_could_not_split">"Bu PDF bölünemedi."</string>
+    <plurals name="pdf_split_pdf_count">
+        <item quantity="one">"%d PDF"</item>
+        <item quantity="other">"%d PDF"</item>
+    </plurals>
+    <plurals name="pdf_split_split_into">
+        <item quantity="one">"%d PDF\'ye böl"</item>
+        <item quantity="other">"%d PDF\'ye böl"</item>
+    </plurals>
+    <plurals name="pdf_split_keep_rest">
+        <item quantity="one">"Kalan %d sayfayı da kaydet"</item>
+        <item quantity="other">"Kalan %d sayfayı da kaydet"</item>
+    </plurals>
+    <plurals name="pdf_split_saved">
+        <item quantity="one">"%1$d PDF %2$s konumuna kaydedildi"</item>
+        <item quantity="other">"%1$d PDF %2$s konumuna kaydedildi"</item>
+    </plurals>
+    <plurals name="pdf_split_range_count">
+        <item quantity="one">"%d aralık"</item>
+        <item quantity="other">"%d aralık"</item>
+    </plurals>
+    <!-- Split a document into documents -->
+    <string name="document_split_title">"Belgelere böl"</string>
+    <string name="document_split_pages_cuts">"%1$s · %2$s"</string>
+    <string name="document_split_every_page">"Her sayfa"</string>
+    <string name="document_split_clear">"Temizle"</string>
+    <string name="document_split_hint">"Oradan kesmek için iki sayfa arasındaki boşluğa dokunun."</string>
+    <string name="document_split_cut_after">"%d. sayfadan sonra kes"</string>
+    <string name="document_split_remove_cut">"%d. sayfadan sonraki kesimi kaldır"</string>
+    <string name="document_split_part_label">"Bölüm %1$d · sayfa %2$s"</string>
+    <string name="document_split_part_label_single">"Bölüm %1$d · sayfa %2$d"</string>
+    <string name="document_split_destination_title">"Yeni belgelerin yeri"</string>
+    <string name="document_split_destination_folder">"Orijinalle aynı klasör"</string>
+    <string name="document_split_destination_library">"Kitaplığınız, klasörlerin dışında"</string>
+    <string name="document_split_keep_original">"Orijinali sakla"</string>
+    <string name="document_split_keep_original_caption">"Kapalı: Son silinenlere taşınır"</string>
+    <string name="document_split_note">"Metin, imzalar ve düzenlemeler her sayfayla birlikte gider."</string>
+    <string name="document_split_add_cut">"Bölmek için bir kesim ekleyin"</string>
+    <string name="document_split_failed">"Bu belge bölünemedi."</string>
+    <string name="document_menu_split_into_pdfs">"PDF\'lere böl"</string>
+    <plurals name="document_split_cut_count">
+        <item quantity="one">"%d kesim"</item>
+        <item quantity="other">"%d kesim"</item>
+    </plurals>
+    <plurals name="document_split_create">
+        <item quantity="one">"%d belge oluştur"</item>
+        <item quantity="other">"%d belge oluştur"</item>
+    </plurals>
 </resources>

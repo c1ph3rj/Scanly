@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
@@ -112,9 +113,9 @@ fun ToolsScreen(
     var createDialogVisible by rememberSaveable { mutableStateOf(false) }
     val windowSizeInfo = rememberWindowSizeInfo()
     val isCompactWidth = windowSizeInfo.widthClass == WindowWidthClass.Compact
-    // Taller cards (icon, title, caption stacked) wherever there is room; short windows keep the
-    // 64 dp row tiles so everything stays above the fold.
-    val richCards = !isCompactWidth && !windowSizeInfo.isHeightConstrained
+    // Illustrated cards (picture over title and caption) wherever there is room; short windows
+    // keep the compact row tiles so everything stays above the fold.
+    val richCards = !windowSizeInfo.isHeightConstrained
     val onTool: (ToolItem) -> Unit = { tool ->
         onHubTool(tool, onScan = { createDialogVisible = true }, onImport = onImport, onOpenTool = onOpenTool)
     }
@@ -208,7 +209,7 @@ fun ToolsScreen(
                 ) {
                     ToolsHeader()
                     ToolsSection(label = stringResource(R.string.home_scan)) {
-                        if (isCompactWidth) {
+                        if (!richCards) {
                             ToolsTileGrid(tools = scanTools, columns = 1, enabled = { true }, onClick = onTool)
                         } else {
                             ToolsScanHero(
@@ -369,7 +370,7 @@ private fun ToolsHubTile(
 ) {
     ToolCard(
         modifier = modifier
-            .heightIn(min = 80.dp)
+            .heightIn(min = 76.dp)
             .fillMaxHeight()
             .alpha(if (enabled) 1f else 0.5f),
         onClick = if (enabled) onClick else null,
@@ -377,11 +378,11 @@ private fun ToolsHubTile(
         Row(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 12.dp, vertical = 10.dp),
+                .padding(horizontal = 10.dp, vertical = 10.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            ToolIconWell(icon = tool.icon, accent = tool.accent)
+            ToolArtStage(id = tool.id, modifier = Modifier.size(width = 64.dp, height = 52.dp))
             Column(
                 modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.spacedBy(1.dp),
@@ -406,7 +407,10 @@ private fun ToolsHubTile(
 
 private val ToolsPaneSpacing = 28.dp
 
-/** Tablet tool card: 48 dp icon well over a title and caption, in an even-height grid. */
+/**
+ * Illustrated tool card: a tinted banner showing what the tool does, then the title and caption.
+ * Used on phones and tablets; cards in a row share one height.
+ */
 @Composable
 private fun ToolsFeatureCard(
     tool: ToolItem,
@@ -416,7 +420,6 @@ private fun ToolsFeatureCard(
 ) {
     ToolCard(
         modifier = modifier
-            .heightIn(min = 144.dp)
             .fillMaxHeight()
             .alpha(if (enabled) 1f else 0.5f),
         onClick = if (enabled) onClick else null,
@@ -424,23 +427,33 @@ private fun ToolsFeatureCard(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp),
+                .padding(8.dp),
         ) {
-            ToolIconWell(icon = tool.icon, accent = tool.accent, size = 48.dp, iconSize = 24.dp)
-            Spacer(Modifier.height(12.dp))
-            Text(
-                text = tool.title,
-                style = MaterialTheme.typography.titleMedium.copy(fontSize = 16.sp, lineHeight = 20.sp),
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onSurface,
+            ToolArtStage(
+                id = tool.id,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(76.dp),
+                cornerRadius = 10.dp,
             )
-            Text(
-                text = tool.caption,
-                style = MaterialTheme.typography.bodySmall.copy(fontSize = 13.sp, lineHeight = 17.sp),
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
+            Column(
+                modifier = Modifier.padding(start = 6.dp, end = 6.dp, top = 10.dp, bottom = 6.dp),
+                verticalArrangement = Arrangement.spacedBy(1.dp),
+            ) {
+                Text(
+                    text = tool.title,
+                    style = MaterialTheme.typography.titleSmall.copy(fontSize = 15.sp, lineHeight = 20.sp),
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+                Text(
+                    text = tool.caption,
+                    style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.5.sp, lineHeight = 17.sp),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
         }
     }
 }
@@ -484,14 +497,18 @@ private fun ToolsScanHero(
     ToolCard(
         modifier = Modifier
             .fillMaxWidth()
-            .height(if (tall) 160.dp else 88.dp),
+            .height(if (tall) 184.dp else 104.dp),
         onClick = onClick,
         color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.45f),
     ) {
         if (tall) {
-            Column(modifier = Modifier.fillMaxSize().padding(18.dp)) {
+            Column(modifier = Modifier.fillMaxSize().padding(14.dp)) {
                 Row(verticalAlignment = Alignment.Top) {
-                    ToolIconWell(icon = tool.icon, accent = true, size = 56.dp, iconSize = 28.dp)
+                    ToolArtStage(
+                        id = tool.id,
+                        modifier = Modifier.size(width = 112.dp, height = 84.dp),
+                        cornerRadius = 14.dp,
+                    )
                     Spacer(Modifier.weight(1f))
                     arrow()
                 }
@@ -503,11 +520,15 @@ private fun ToolsScanHero(
             Row(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 18.dp),
+                    .padding(horizontal = 12.dp),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                horizontalArrangement = Arrangement.spacedBy(14.dp),
             ) {
-                ToolIconWell(icon = tool.icon, accent = true, size = 52.dp, iconSize = 26.dp)
+                ToolArtStage(
+                    id = tool.id,
+                    modifier = Modifier.size(width = 104.dp, height = 80.dp),
+                    cornerRadius = 14.dp,
+                )
                 Column(
                     modifier = Modifier.weight(1f),
                     verticalArrangement = Arrangement.spacedBy(2.dp),

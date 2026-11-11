@@ -2012,4 +2012,116 @@
     <string name="onboarding_demo_found">Encontrado en el texto</string>
     <string name="onboarding_demo_protected">Protegido con contraseña</string>
     <string name="onboarding_chapter_number">%1$02d %2$s</string>
+    <!-- Split PDF -->
+    <string name="tools_catalog_split">"Dividir"</string>
+    <string name="tools_catalog_cut_into_parts">"Cortar en partes"</string>
+    <string name="pdf_reader_tool_split_into_parts">"Dividir en partes"</string>
+    <string name="pdf_split_title">"Dividir PDF"</string>
+    <string name="pdf_split_subtitle">"Corta un PDF en PDF más pequeños"</string>
+    <string name="pdf_split_step_2">"Paso 2 de 3 · Dónde dividir"</string>
+    <string name="pdf_split_mode_custom">"Personalizado"</string>
+    <string name="pdf_split_mode_every_n">"Cada N páginas"</string>
+    <string name="pdf_split_mode_extract">"Extraer"</string>
+    <string name="pdf_split_ranges_label">"Escribe rangos o edita las tarjetas de abajo"</string>
+    <string name="pdf_split_ranges_placeholder">"p. ej. 1-3, 6-8"</string>
+    <string name="pdf_split_ranges_hint">"Separa los rangos con comas, p. ej. 1-3, 6-8"</string>
+    <string name="pdf_split_ranges_error">"Usa números de página y guiones, p. ej. 1-3, 6-8"</string>
+    <string name="pdf_split_range_title">"Rango %d"</string>
+    <string name="pdf_split_range_from">"Desde la página"</string>
+    <string name="pdf_split_range_to">"hasta"</string>
+    <string name="pdf_split_remove_range">"Quitar rango %d"</string>
+    <string name="pdf_split_range_error">"Usa páginas de 1 a %d, con la primera antes de la última."</string>
+    <string name="pdf_split_add_range">"Añadir rango"</string>
+    <string name="pdf_split_pages_included">"Páginas incluidas"</string>
+    <string name="pdf_split_not_included">"No están en ningún rango, así que no se guardan: %s"</string>
+    <string name="pdf_split_merge_ranges">"Combinar todos los rangos en un PDF"</string>
+    <string name="pdf_split_merge_ranges_caption">"Desactivado: cada rango es su propio PDF"</string>
+    <string name="pdf_split_pages_in_each">"Páginas por PDF"</string>
+    <string name="pdf_split_fewer_pages">"Menos páginas por PDF"</string>
+    <string name="pdf_split_more_pages">"Más páginas por PDF"</string>
+    <string name="pdf_split_last_shorter">"El último tiene %s"</string>
+    <string name="pdf_split_one_per_page">"Un PDF por página"</string>
+    <string name="pdf_split_you_get">"Obtendrás %s"</string>
+    <string name="pdf_split_more_parts">"+ %d más"</string>
+    <string name="pdf_split_pdf_title">"PDF %d"</string>
+    <string name="pdf_split_pages_label">"Páginas"</string>
+    <string name="pdf_split_save_as">"Guardar como"</string>
+    <string name="pdf_split_one_pdf">"Un PDF"</string>
+    <string name="pdf_split_one_pdf_caption">"Todas las páginas elegidas juntas"</string>
+    <string name="pdf_split_separate_pdfs">"PDF separados"</string>
+    <string name="pdf_split_separate_caption">"Un archivo por página"</string>
+    <string name="pdf_split_keep_rest_caption">"Como un PDF más"</string>
+    <string name="pdf_split_extract_button">"Extraer %1$s · %2$s"</string>
+    <string name="pdf_split_create_one">"Crear 1 PDF · %s"</string>
+    <string name="pdf_split_choose_pages">"Elige páginas para extraer"</string>
+    <string name="pdf_split_fix_ranges">"Corrige los rangos para continuar"</string>
+    <string name="pdf_split_single_page">"Este PDF solo tiene una página, así que no hay nada que dividir."</string>
+    <string name="pdf_split_splitting">"Dividiendo…"</string>
+    <string name="pdf_split_writing_part">"Escribiendo la parte %1$d de %2$d"</string>
+    <string name="pdf_split_from_file">"De %1$s · %2$s"</string>
+    <string name="pdf_split_tap_to_rename">"Toca un nombre para cambiarlo"</string>
+    <string name="pdf_split_open_part">"Abrir %s"</string>
+    <string name="pdf_split_one_zip">"Un ZIP"</string>
+    <string name="pdf_split_save_all">"Guardar todo"</string>
+    <string name="pdf_split_share_all">"Compartir todo"</string>
+    <string name="pdf_split_output_pages">"%1$s – páginas %2$s"</string>
+    <string name="pdf_split_output_page">"%1$s – página %2$d"</string>
+    <string name="pdf_split_pages_meta">"Páginas %1$s · %2$s"</string>
+    <string name="pdf_split_page_meta">"Página %1$d · %2$s"</string>
+    <string name="pdf_split_no_password">"Los nuevos PDF no tienen contraseña."</string>
+    <string name="pdf_split_could_not_split">"No se pudo dividir este PDF."</string>
+    <plurals name="pdf_split_pdf_count">
+        <item quantity="one">"%d PDF"</item>
+        <item quantity="many">"%d PDF"</item>
+        <item quantity="other">"%d PDF"</item>
+    </plurals>
+    <plurals name="pdf_split_split_into">
+        <item quantity="one">"Dividir en %d PDF"</item>
+        <item quantity="many">"Dividir en %d PDF"</item>
+        <item quantity="other">"Dividir en %d PDF"</item>
+    </plurals>
+    <plurals name="pdf_split_keep_rest">
+        <item quantity="one">"Guardar también la otra página (%d)"</item>
+        <item quantity="many">"Guardar también las otras %d páginas"</item>
+        <item quantity="other">"Guardar también las otras %d páginas"</item>
+    </plurals>
+    <plurals name="pdf_split_saved">
+        <item quantity="one">"%1$d PDF guardado en %2$s"</item>
+        <item quantity="many">"%1$d PDF guardados en %2$s"</item>
+        <item quantity="other">"%1$d PDF guardados en %2$s"</item>
+    </plurals>
+    <plurals name="pdf_split_range_count">
+        <item quantity="one">"%d rango"</item>
+        <item quantity="many">"%d rangos"</item>
+        <item quantity="other">"%d rangos"</item>
+    </plurals>
+    <!-- Split a document into documents -->
+    <string name="document_split_title">"Dividir en documentos"</string>
+    <string name="document_split_pages_cuts">"%1$s · %2$s"</string>
+    <string name="document_split_every_page">"Cada página"</string>
+    <string name="document_split_clear">"Borrar"</string>
+    <string name="document_split_hint">"Toca el espacio entre dos páginas para cortar ahí."</string>
+    <string name="document_split_cut_after">"Cortar después de la página %d"</string>
+    <string name="document_split_remove_cut">"Quitar el corte después de la página %d"</string>
+    <string name="document_split_part_label">"Parte %1$d · páginas %2$s"</string>
+    <string name="document_split_part_label_single">"Parte %1$d · página %2$d"</string>
+    <string name="document_split_destination_title">"Los nuevos documentos van a"</string>
+    <string name="document_split_destination_folder">"La misma carpeta que el original"</string>
+    <string name="document_split_destination_library">"Tu biblioteca, fuera de carpetas"</string>
+    <string name="document_split_keep_original">"Conservar el original"</string>
+    <string name="document_split_keep_original_caption">"Desactivado: pasa a Eliminados recientemente"</string>
+    <string name="document_split_note">"El texto, las firmas y las ediciones van con cada página."</string>
+    <string name="document_split_add_cut">"Añade un corte para dividir"</string>
+    <string name="document_split_failed">"No se pudo dividir este documento."</string>
+    <string name="document_menu_split_into_pdfs">"Dividir en PDF"</string>
+    <plurals name="document_split_cut_count">
+        <item quantity="one">"%d corte"</item>
+        <item quantity="many">"%d cortes"</item>
+        <item quantity="other">"%d cortes"</item>
+    </plurals>
+    <plurals name="document_split_create">
+        <item quantity="one">"Crear %d documento"</item>
+        <item quantity="many">"Crear %d documentos"</item>
+        <item quantity="other">"Crear %d documentos"</item>
+    </plurals>
 </resources>

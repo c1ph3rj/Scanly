@@ -8,7 +8,7 @@ Guidance for AI coding agents working in the Scanly repository.
 
 - Single-module Android app (`:app`) using Kotlin + Jetpack Compose + Material 3.
 - Package: `in.c1ph3rj.scanly` — escape `in` as ``package `in`.c1ph3rj.scanly``.
-- Current version: `1.0.20` (version code `20`) — see `app/build.gradle.kts`, [VERSION.md](VERSION.md).
+- Current version: `1.0.21` (version code `21`) — see `app/build.gradle.kts`, [VERSION.md](VERSION.md).
 - Entry point: `MainActivity.kt` → onboarding gate → `ScanlyNavHost`.
 - Offline-first document scanner: camera capture, page editing, local persistence, PDF/image export, on-device page text (OCR) and full-text search.
 
@@ -86,7 +86,8 @@ Typed routes (real flows):
 - `settings/appearance`, `settings/language`, `settings/pip`, `settings/detection`, `settings/widgets`, `settings/about`, `settings/faq`, `settings/licenses`, `settings/storage`, `settings/model-benchmark` — settings hub sub-screens
 - `tools/qr` — QR scan + generate
 - `tools/text` — Image to text (photos → new document → `document/{documentId}/text`)
-- `tools/pdf/reader`, `tools/pdf/merge`, `tools/pdf/compress`, `tools/pdf/to-images`, `tools/pdf/password`, `tools/pdf/watermark`, `tools/pdf/sign`, `tools/pdf/import` — PDF toolkit (tool routes take an optional `?source=` so the reader can hand over its open file; see `PdfToolSourceArgument.kt`)
+- `tools/pdf/reader`, `tools/pdf/merge`, `tools/pdf/split`, `tools/pdf/compress`, `tools/pdf/to-images`, `tools/pdf/password`, `tools/pdf/watermark`, `tools/pdf/sign`, `tools/pdf/import` — PDF toolkit (tool routes take an optional `?source=` so the reader can hand over its open file; see `PdfToolSourceArgument.kt`)
+- `document/{documentId}/split` — split a document into new documents (copies page files, `page_texts`, `page_markups`; never edits the original; "don't keep" = Recently deleted)
 - `document/{documentId}/sign?page={page}` — sign a scan in place (marks composited into `processed/`, clean image kept as `processed/page_NNN.base.jpg`, layer data in `page_markups`)
 - `signatures/manage`, `signatures/create?kind={kind}` — saved signatures (`files/signatures/{id}/ink.png`, black ink alpha masks)
 

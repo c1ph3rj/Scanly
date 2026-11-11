@@ -44,6 +44,9 @@ import `in`.c1ph3rj.scanly.feature.settings.SettingsWidgetsRoute
 import `in`.c1ph3rj.scanly.feature.tools.ToolsRoute
 import `in`.c1ph3rj.scanly.feature.tools.pdf.PdfCompressRoute
 import `in`.c1ph3rj.scanly.feature.tools.pdf.PdfMergeRoute
+import `in`.c1ph3rj.scanly.feature.tools.pdf.PdfSplitRoute
+import `in`.c1ph3rj.scanly.feature.document.DocumentSplitDestination
+import `in`.c1ph3rj.scanly.feature.document.DocumentSplitRoute
 import `in`.c1ph3rj.scanly.feature.tools.pdf.PdfPasswordRoute
 import `in`.c1ph3rj.scanly.feature.tools.pdf.PdfReaderRoute
 import `in`.c1ph3rj.scanly.feature.tools.pdf.PdfReaderTool
@@ -925,16 +928,7 @@ private fun ScanlyNavHostContent(
             PdfReaderRoute(
                 onNavigateUp = navController::navigateUp,
                 onOpenTool = { tool, source ->
-                    val toolRoute = when (tool) {
-                        PdfReaderTool.SIGN -> ToolsPdfSignDestination.route
-                        PdfReaderTool.COMPRESS -> ToolsPdfCompressDestination.route
-                        PdfReaderTool.MERGE -> ToolsPdfMergeDestination.route
-                        PdfReaderTool.PASSWORD -> ToolsPdfPasswordDestination.route
-                        PdfReaderTool.WATERMARK -> ToolsPdfWatermarkDestination.route
-                        PdfReaderTool.TO_IMAGES -> ToolsPdfToImagesDestination.route
-                        PdfReaderTool.IMPORT -> ToolsPdfImportDestination.route
-                    }
-                    navController.navigateSingleTop(pdfToolRoute(toolRoute, source))
+                    navController.navigateSingleTop(pdfToolRoute(pdfReaderToolRoute(tool), source))
                 },
                 initialSource = filePath.takeIf(String::isNotBlank)?.let {
                     PdfToolSource.AppFile(
@@ -953,6 +947,24 @@ private fun ScanlyNavHostContent(
             popExitTransition = { detailPopExit() },
         ) {
             PdfMergeRoute(
+                initialSource = it.pdfToolSource(),
+                onNavigateUp = navController::navigateUp,
+                onPreviewPdf = { artifact ->
+                    navController.navigateSingleTop(
+                        ToolsPdfReaderDestination.route(artifact.filePath, artifact.fileName),
+                    )
+                },
+            )
+        }
+        composable(
+            route = pdfToolRoutePattern(ToolsPdfSplitDestination.route),
+            arguments = listOf(pdfToolSourceNavArgument()),
+            enterTransition = { detailPushEnter() },
+            exitTransition = { detailPushExit() },
+            popEnterTransition = { detailPopEnter() },
+            popExitTransition = { detailPopExit() },
+        ) {
+            PdfSplitRoute(
                 initialSource = it.pdfToolSource(),
                 onNavigateUp = navController::navigateUp,
                 onPreviewPdf = { artifact ->
@@ -1388,6 +1400,37 @@ private fun ScanlyNavHostContent(
                 onReplacePage = { pageId ->
                     navController.navigateSingleTop(ScanSessionDestination.route(documentId, replacePageId = pageId))
                 },
+                onSplitDocument = {
+                    navController.navigateSingleTop(DocumentSplitDestination.route(documentId))
+                },
+                onOpenTool = { tool, source ->
+                    navController.navigateSingleTop(pdfToolRoute(pdfReaderToolRoute(tool), source))
+                },
+            )
+        }
+        composable(
+            route = DocumentSplitDestination.routePattern,
+            arguments = listOf(
+                navArgument(DocumentSplitDestination.documentIdArgument) { type = NavType.StringType },
+            ),
+            enterTransition = { detailPushEnter() },
+            exitTransition = { detailPushExit() },
+            popEnterTransition = { detailPopEnter() },
+            popExitTransition = { detailPopExit() },
+        ) {
+            DocumentSplitRoute(
+                onNavigateUp = navController::navigateUp,
+                onDone = { groupId, originalKept ->
+                    // Show the new documents where they live. The split screen always leaves the
+                    // stack; the original's screen too when it went to Recently deleted.
+                    navController.popBackStack()
+                    if (!originalKept) navController.popBackStack()
+                    if (groupId != null) {
+                        navController.navigateSingleTop(GroupDetailDestination.route(groupId))
+                    } else {
+                        navigateToTopLevel(navController, ScanlyDestination.Library.route)
+                    }
+                },
             )
         }
         composable(
@@ -1584,3 +1627,15 @@ private fun AnimatedContentTransitionScope<NavBackStackEntry>.detailPopExit(): E
         ),
         targetOffset = { fullDistance -> fullDistance / NavMotionDistanceDivisor },
     )
+
+/** The tool screen a PDF reader (or document) menu entry opens. */
+private fun pdfReaderToolRoute(tool: PdfReaderTool): String = when (tool) {
+    PdfReaderTool.SIGN -> ToolsPdfSignDestination.route
+    PdfReaderTool.COMPRESS -> ToolsPdfCompressDestination.route
+    PdfReaderTool.MERGE -> ToolsPdfMergeDestination.route
+    PdfReaderTool.SPLIT -> ToolsPdfSplitDestination.route
+    PdfReaderTool.PASSWORD -> ToolsPdfPasswordDestination.route
+    PdfReaderTool.WATERMARK -> ToolsPdfWatermarkDestination.route
+    PdfReaderTool.TO_IMAGES -> ToolsPdfToImagesDestination.route
+    PdfReaderTool.IMPORT -> ToolsPdfImportDestination.route
+}

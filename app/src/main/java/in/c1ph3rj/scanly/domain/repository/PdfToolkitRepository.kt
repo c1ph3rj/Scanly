@@ -121,6 +121,22 @@ interface PdfToolkitRepository {
         targetPath: String,
     ): ScanlyResult<Unit>
 
+    /**
+     * Writes one new PDF per entry of [outputs], each holding those page indexes of [copy] in
+     * that order (a page may appear in several outputs). [onProgress] reports PDFs finished.
+     */
+    suspend fun splitPages(
+        copy: PdfWorkingCopy,
+        outputs: List<List<Int>>,
+        onProgress: suspend (done: Int, total: Int) -> Unit = { _, _ -> },
+    ): ScanlyResult<List<ExportArtifact>>
+
+    /** Bundles [files] into one ZIP named "[zipBaseName].zip"; entries use each file's name. */
+    suspend fun zipFiles(
+        files: List<ExportArtifact>,
+        zipBaseName: String,
+    ): ScanlyResult<ExportArtifact>
+
     /** Copies a tool result into a shareable path set and returns absolute paths. */
     suspend fun prepareShare(artifact: ExportArtifact): ScanlyResult<List<String>>
 }

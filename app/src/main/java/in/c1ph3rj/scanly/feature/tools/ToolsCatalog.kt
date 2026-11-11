@@ -1,6 +1,7 @@
 package `in`.c1ph3rj.scanly.feature.tools
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.CallSplit
 import androidx.compose.material.icons.automirrored.outlined.MenuBook
 import androidx.compose.material.icons.automirrored.outlined.MergeType
 import androidx.compose.material.icons.outlined.Compress
@@ -23,6 +24,7 @@ import `in`.c1ph3rj.scanly.navigation.ToolsPdfMergeDestination
 import `in`.c1ph3rj.scanly.navigation.ToolsPdfPasswordDestination
 import `in`.c1ph3rj.scanly.navigation.ToolsPdfReaderDestination
 import `in`.c1ph3rj.scanly.navigation.ToolsPdfSignDestination
+import `in`.c1ph3rj.scanly.navigation.ToolsPdfSplitDestination
 import `in`.c1ph3rj.scanly.navigation.ToolsPdfToImagesDestination
 import `in`.c1ph3rj.scanly.navigation.ToolsPdfWatermarkDestination
 import `in`.c1ph3rj.scanly.navigation.ToolsQrDestination
@@ -37,6 +39,7 @@ enum class ToolActionId {
     ImageText,
     Signatures,
     PdfMerge,
+    PdfSplit,
     PdfCompress,
     PdfToImages,
     PdfPassword,
@@ -72,8 +75,15 @@ val scanTools: List<ToolItem> get() = listOf(
     ),
 )
 
-/** "PDF": gallery import plus PDF tools. */
+/** "PDF": Add to library first, then gallery import and the PDF tools. */
 val pdfTools: List<ToolItem> get() = listOf(
+    ToolItem(
+        id = ToolActionId.PdfImport,
+        title = appString(R.string.pdf_import_add_to_library),
+        caption = appString(R.string.tools_catalog_pdf_to_editable_scan),
+        icon = Icons.Outlined.LibraryAdd,
+        route = ToolsPdfImportDestination.route,
+    ),
     ToolItem(
         id = ToolActionId.Import,
         title = appString(R.string.tools_catalog_images_to_pdf),
@@ -93,6 +103,13 @@ val pdfTools: List<ToolItem> get() = listOf(
         caption = appString(R.string.tools_catalog_combine_files),
         icon = Icons.AutoMirrored.Outlined.MergeType,
         route = ToolsPdfMergeDestination.route,
+    ),
+    ToolItem(
+        id = ToolActionId.PdfSplit,
+        title = appString(R.string.tools_catalog_split),
+        caption = appString(R.string.tools_catalog_cut_into_parts),
+        icon = Icons.AutoMirrored.Outlined.CallSplit,
+        route = ToolsPdfSplitDestination.route,
     ),
     ToolItem(
         id = ToolActionId.PdfCompress,
@@ -128,13 +145,6 @@ val pdfTools: List<ToolItem> get() = listOf(
         caption = appString(R.string.tools_catalog_open_any_pdf),
         icon = Icons.AutoMirrored.Outlined.MenuBook,
         route = ToolsPdfReaderDestination.route,
-    ),
-    ToolItem(
-        id = ToolActionId.PdfImport,
-        title = appString(R.string.pdf_import_add_to_library),
-        caption = appString(R.string.tools_catalog_pdf_to_editable_scan),
-        icon = Icons.Outlined.LibraryAdd,
-        route = ToolsPdfImportDestination.route,
     ),
 )
 

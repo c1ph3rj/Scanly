@@ -1985,4 +1985,109 @@
     <string name="onboarding_demo_found">ಪುಟದ ಪಠ್ಯದಲ್ಲಿ ಕಂಡುಬಂದಿದೆ</string>
     <string name="onboarding_demo_protected">ಪಾಸ್‌ವರ್ಡ್‌ನಿಂದ ರಕ್ಷಿಸಲಾಗಿದೆ</string>
     <string name="onboarding_chapter_number">%1$02d %2$s</string>
+    <!-- Split PDF -->
+    <string name="tools_catalog_split">"ವಿಭಜಿಸಿ"</string>
+    <string name="tools_catalog_cut_into_parts">"ಭಾಗಗಳಾಗಿ ಕತ್ತರಿಸಿ"</string>
+    <string name="pdf_reader_tool_split_into_parts">"ಭಾಗಗಳಾಗಿ ವಿಭಜಿಸಿ"</string>
+    <string name="pdf_split_title">"PDF ವಿಭಜಿಸಿ"</string>
+    <string name="pdf_split_subtitle">"ಒಂದು PDF ಅನ್ನು ಚಿಕ್ಕ PDF ಗಳಾಗಿ ಕತ್ತರಿಸಿ"</string>
+    <string name="pdf_split_step_2">"ಹಂತ 2/3 · ಎಲ್ಲಿ ವಿಭಜಿಸಬೇಕು"</string>
+    <string name="pdf_split_mode_custom">"ಕಸ್ಟಮ್"</string>
+    <string name="pdf_split_mode_every_n">"ಪ್ರತಿ N ಪುಟಗಳಿಗೆ"</string>
+    <string name="pdf_split_mode_extract">"ಹೊರತೆಗೆಯಿರಿ"</string>
+    <string name="pdf_split_ranges_label">"ಶ್ರೇಣಿಗಳನ್ನು ಟೈಪ್ ಮಾಡಿ ಅಥವಾ ಕೆಳಗಿನ ಕಾರ್ಡ್‌ಗಳನ್ನು ಸಂಪಾದಿಸಿ"</string>
+    <string name="pdf_split_ranges_placeholder">"ಉದಾ. 1-3, 6-8"</string>
+    <string name="pdf_split_ranges_hint">"ಶ್ರೇಣಿಗಳನ್ನು ಅಲ್ಪವಿರಾಮದಿಂದ ಬೇರ್ಪಡಿಸಿ, ಉದಾ. 1-3, 6-8"</string>
+    <string name="pdf_split_ranges_error">"ಪುಟ ಸಂಖ್ಯೆಗಳು ಮತ್ತು ಡ್ಯಾಶ್ ಬಳಸಿ, ಉದಾ. 1-3, 6-8"</string>
+    <string name="pdf_split_range_title">"ಶ್ರೇಣಿ %d"</string>
+    <string name="pdf_split_range_from">"ಪುಟದಿಂದ"</string>
+    <string name="pdf_split_range_to">"ವರೆಗೆ"</string>
+    <string name="pdf_split_remove_range">"ಶ್ರೇಣಿ %d ತೆಗೆದುಹಾಕಿ"</string>
+    <string name="pdf_split_range_error">"1 ರಿಂದ %d ವರೆಗಿನ ಪುಟಗಳನ್ನು ಬಳಸಿ, ಮೊದಲ ಪುಟ ಕೊನೆಯದಕ್ಕಿಂತ ಮೊದಲು ಇರಲಿ."</string>
+    <string name="pdf_split_add_range">"ಶ್ರೇಣಿ ಸೇರಿಸಿ"</string>
+    <string name="pdf_split_pages_included">"ಸೇರಿಸಿದ ಪುಟಗಳು"</string>
+    <string name="pdf_split_not_included">"ಯಾವ ಶ್ರೇಣಿಯಲ್ಲೂ ಇಲ್ಲ, ಆದ್ದರಿಂದ ಉಳಿಸಲಾಗುವುದಿಲ್ಲ: %s"</string>
+    <string name="pdf_split_merge_ranges">"ಎಲ್ಲಾ ಶ್ರೇಣಿಗಳನ್ನು ಒಂದೇ PDF ಆಗಿ ವಿಲೀನಗೊಳಿಸಿ"</string>
+    <string name="pdf_split_merge_ranges_caption">"ಆಫ್: ಪ್ರತಿ ಶ್ರೇಣಿ ಪ್ರತ್ಯೇಕ PDF"</string>
+    <string name="pdf_split_pages_in_each">"ಪ್ರತಿ PDF ನಲ್ಲಿ ಪುಟಗಳು"</string>
+    <string name="pdf_split_fewer_pages">"ಪ್ರತಿ PDF ನಲ್ಲಿ ಕಡಿಮೆ ಪುಟಗಳು"</string>
+    <string name="pdf_split_more_pages">"ಪ್ರತಿ PDF ನಲ್ಲಿ ಹೆಚ್ಚು ಪುಟಗಳು"</string>
+    <string name="pdf_split_last_shorter">"ಕೊನೆಯದರಲ್ಲಿ %s ಇವೆ"</string>
+    <string name="pdf_split_one_per_page">"ಪ್ರತಿ ಪುಟಕ್ಕೆ ಒಂದು PDF"</string>
+    <string name="pdf_split_you_get">"ನಿಮಗೆ %s ಸಿಗುತ್ತವೆ"</string>
+    <string name="pdf_split_more_parts">"+ ಇನ್ನೂ %d"</string>
+    <string name="pdf_split_pdf_title">"PDF %d"</string>
+    <string name="pdf_split_pages_label">"ಪುಟಗಳು"</string>
+    <string name="pdf_split_save_as">"ಹೀಗೆ ಉಳಿಸಿ"</string>
+    <string name="pdf_split_one_pdf">"ಒಂದು PDF"</string>
+    <string name="pdf_split_one_pdf_caption">"ಆಯ್ಕೆ ಮಾಡಿದ ಎಲ್ಲಾ ಪುಟಗಳು ಒಟ್ಟಿಗೆ"</string>
+    <string name="pdf_split_separate_pdfs">"ಪ್ರತ್ಯೇಕ PDF ಗಳು"</string>
+    <string name="pdf_split_separate_caption">"ಪ್ರತಿ ಪುಟಕ್ಕೆ ಒಂದು ಫೈಲ್"</string>
+    <string name="pdf_split_keep_rest_caption">"ಇನ್ನೊಂದು PDF ಆಗಿ"</string>
+    <string name="pdf_split_extract_button">"%1$s ಹೊರತೆಗೆಯಿರಿ · %2$s"</string>
+    <string name="pdf_split_create_one">"1 PDF ರಚಿಸಿ · %s"</string>
+    <string name="pdf_split_choose_pages">"ಹೊರತೆಗೆಯಲು ಪುಟಗಳನ್ನು ಆಯ್ಕೆಮಾಡಿ"</string>
+    <string name="pdf_split_fix_ranges">"ಮುಂದುವರಿಯಲು ಶ್ರೇಣಿಗಳನ್ನು ಸರಿಪಡಿಸಿ"</string>
+    <string name="pdf_split_single_page">"ಈ PDF ನಲ್ಲಿ ಒಂದೇ ಪುಟವಿದೆ, ಆದ್ದರಿಂದ ವಿಭಜಿಸಲು ಏನೂ ಇಲ್ಲ."</string>
+    <string name="pdf_split_splitting">"ವಿಭಜಿಸಲಾಗುತ್ತಿದೆ…"</string>
+    <string name="pdf_split_writing_part">"%2$d ರಲ್ಲಿ ಭಾಗ %1$d ಬರೆಯಲಾಗುತ್ತಿದೆ"</string>
+    <string name="pdf_split_from_file">"%1$s ನಿಂದ · %2$s"</string>
+    <string name="pdf_split_tap_to_rename">"ಮರುಹೆಸರಿಸಲು ಹೆಸರನ್ನು ಟ್ಯಾಪ್ ಮಾಡಿ"</string>
+    <string name="pdf_split_open_part">"%s ತೆರೆಯಿರಿ"</string>
+    <string name="pdf_split_one_zip">"ಒಂದು ZIP"</string>
+    <string name="pdf_split_save_all">"ಎಲ್ಲವನ್ನೂ ಉಳಿಸಿ"</string>
+    <string name="pdf_split_share_all">"ಎಲ್ಲವನ್ನೂ ಹಂಚಿಕೊಳ್ಳಿ"</string>
+    <string name="pdf_split_output_pages">"%1$s – ಪುಟಗಳು %2$s"</string>
+    <string name="pdf_split_output_page">"%1$s – ಪುಟ %2$d"</string>
+    <string name="pdf_split_pages_meta">"ಪುಟಗಳು %1$s · %2$s"</string>
+    <string name="pdf_split_page_meta">"ಪುಟ %1$d · %2$s"</string>
+    <string name="pdf_split_no_password">"ಹೊಸ PDF ಗಳಿಗೆ ಪಾಸ್‌ವರ್ಡ್ ಇಲ್ಲ."</string>
+    <string name="pdf_split_could_not_split">"ಈ PDF ಅನ್ನು ವಿಭಜಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ."</string>
+    <plurals name="pdf_split_pdf_count">
+        <item quantity="one">"%d PDF"</item>
+        <item quantity="other">"%d PDF ಗಳು"</item>
+    </plurals>
+    <plurals name="pdf_split_split_into">
+        <item quantity="one">"%d PDF ಆಗಿ ವಿಭಜಿಸಿ"</item>
+        <item quantity="other">"%d PDF ಗಳಾಗಿ ವಿಭಜಿಸಿ"</item>
+    </plurals>
+    <plurals name="pdf_split_keep_rest">
+        <item quantity="one">"ಉಳಿದ %d ಪುಟವನ್ನೂ ಉಳಿಸಿ"</item>
+        <item quantity="other">"ಉಳಿದ %d ಪುಟಗಳನ್ನೂ ಉಳಿಸಿ"</item>
+    </plurals>
+    <plurals name="pdf_split_saved">
+        <item quantity="one">"%1$d PDF ಅನ್ನು %2$s ನಲ್ಲಿ ಉಳಿಸಲಾಗಿದೆ"</item>
+        <item quantity="other">"%1$d PDF ಗಳನ್ನು %2$s ನಲ್ಲಿ ಉಳಿಸಲಾಗಿದೆ"</item>
+    </plurals>
+    <plurals name="pdf_split_range_count">
+        <item quantity="one">"%d ಶ್ರೇಣಿ"</item>
+        <item quantity="other">"%d ಶ್ರೇಣಿಗಳು"</item>
+    </plurals>
+    <!-- Split a document into documents -->
+    <string name="document_split_title">"ಹಲವು ಡಾಕ್ಯುಮೆಂಟ್‌ಗಳಾಗಿ ವಿಭಜಿಸಿ"</string>
+    <string name="document_split_pages_cuts">"%1$s · %2$s"</string>
+    <string name="document_split_every_page">"ಪ್ರತಿ ಪುಟ"</string>
+    <string name="document_split_clear">"ತೆರವುಗೊಳಿಸಿ"</string>
+    <string name="document_split_hint">"ಅಲ್ಲಿ ಕತ್ತರಿಸಲು ಎರಡು ಪುಟಗಳ ನಡುವಿನ ಅಂತರವನ್ನು ಟ್ಯಾಪ್ ಮಾಡಿ."</string>
+    <string name="document_split_cut_after">"ಪುಟ %d ನಂತರ ಕತ್ತರಿಸಿ"</string>
+    <string name="document_split_remove_cut">"ಪುಟ %d ನಂತರದ ಕಟ್ ತೆಗೆದುಹಾಕಿ"</string>
+    <string name="document_split_part_label">"ಭಾಗ %1$d · ಪುಟಗಳು %2$s"</string>
+    <string name="document_split_part_label_single">"ಭಾಗ %1$d · ಪುಟ %2$d"</string>
+    <string name="document_split_destination_title">"ಹೊಸ ಡಾಕ್ಯುಮೆಂಟ್‌ಗಳು ಹೋಗುವುದು"</string>
+    <string name="document_split_destination_folder">"ಮೂಲದ ಅದೇ ಫೋಲ್ಡರ್"</string>
+    <string name="document_split_destination_library">"ನಿಮ್ಮ ಲೈಬ್ರರಿ, ಫೋಲ್ಡರ್‌ಗಳ ಹೊರಗೆ"</string>
+    <string name="document_split_keep_original">"ಮೂಲವನ್ನು ಇರಿಸಿ"</string>
+    <string name="document_split_keep_original_caption">"ಆಫ್: ಇದು ಇತ್ತೀಚೆಗೆ ಅಳಿಸಿದವುಗಳಿಗೆ ಹೋಗುತ್ತದೆ"</string>
+    <string name="document_split_note">"ಪುಟದ ಪಠ್ಯ, ಸಹಿಗಳು ಮತ್ತು ಸಂಪಾದನೆಗಳು ಪ್ರತಿ ಪುಟದೊಂದಿಗೆ ಹೋಗುತ್ತವೆ."</string>
+    <string name="document_split_add_cut">"ವಿಭಜಿಸಲು ಕಟ್ ಸೇರಿಸಿ"</string>
+    <string name="document_split_failed">"ಈ ಡಾಕ್ಯುಮೆಂಟ್ ಅನ್ನು ವಿಭಜಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ."</string>
+    <string name="document_menu_split_into_pdfs">"ಹಲವು PDF ಗಳಾಗಿ ವಿಭಜಿಸಿ"</string>
+    <plurals name="document_split_cut_count">
+        <item quantity="one">"%d ಕಟ್"</item>
+        <item quantity="other">"%d ಕಟ್‌ಗಳು"</item>
+    </plurals>
+    <plurals name="document_split_create">
+        <item quantity="one">"%d ಡಾಕ್ಯುಮೆಂಟ್ ರಚಿಸಿ"</item>
+        <item quantity="other">"%d ಡಾಕ್ಯುಮೆಂಟ್‌ಗಳನ್ನು ರಚಿಸಿ"</item>
+    </plurals>
 </resources>

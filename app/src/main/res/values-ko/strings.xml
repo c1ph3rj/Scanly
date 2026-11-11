@@ -1958,4 +1958,102 @@
     <string name="onboarding_demo_found">페이지 텍스트에서 찾음</string>
     <string name="onboarding_demo_protected">비밀번호로 보호됨</string>
     <string name="onboarding_chapter_number">%1$02d %2$s</string>
+    <!-- Split PDF -->
+    <string name="tools_catalog_split">"분할"</string>
+    <string name="tools_catalog_cut_into_parts">"여러 부분으로 나누기"</string>
+    <string name="pdf_reader_tool_split_into_parts">"여러 부분으로 분할"</string>
+    <string name="pdf_split_title">"PDF 분할"</string>
+    <string name="pdf_split_subtitle">"PDF 하나를 더 작은 PDF로 나눕니다"</string>
+    <string name="pdf_split_step_2">"2/3단계 · 분할 위치"</string>
+    <string name="pdf_split_mode_custom">"사용자 지정"</string>
+    <string name="pdf_split_mode_every_n">"N페이지마다"</string>
+    <string name="pdf_split_mode_extract">"추출"</string>
+    <string name="pdf_split_ranges_label">"범위를 입력하거나 아래 카드를 편집하세요"</string>
+    <string name="pdf_split_ranges_placeholder">"예: 1-3, 6-8"</string>
+    <string name="pdf_split_ranges_hint">"범위는 쉼표로 구분하세요(예: 1-3, 6-8)"</string>
+    <string name="pdf_split_ranges_error">"페이지 번호와 하이픈을 사용하세요(예: 1-3, 6-8)"</string>
+    <string name="pdf_split_range_title">"범위 %d"</string>
+    <string name="pdf_split_range_from">"시작 페이지"</string>
+    <string name="pdf_split_range_to">"~"</string>
+    <string name="pdf_split_remove_range">"범위 %d 삭제"</string>
+    <string name="pdf_split_range_error">"1~%d 페이지를 사용하고, 첫 페이지가 마지막 페이지보다 앞에 오게 하세요."</string>
+    <string name="pdf_split_add_range">"범위 추가"</string>
+    <string name="pdf_split_pages_included">"포함된 페이지"</string>
+    <string name="pdf_split_not_included">"어떤 범위에도 없어 저장되지 않음: %s"</string>
+    <string name="pdf_split_merge_ranges">"모든 범위를 PDF 하나로 병합"</string>
+    <string name="pdf_split_merge_ranges_caption">"끄기: 범위마다 별도의 PDF"</string>
+    <string name="pdf_split_pages_in_each">"PDF당 페이지 수"</string>
+    <string name="pdf_split_fewer_pages">"PDF당 페이지 줄이기"</string>
+    <string name="pdf_split_more_pages">"PDF당 페이지 늘리기"</string>
+    <string name="pdf_split_last_shorter">"마지막 PDF는 %s"</string>
+    <string name="pdf_split_one_per_page">"페이지마다 PDF 하나"</string>
+    <string name="pdf_split_you_get">"%s이(가) 만들어집니다"</string>
+    <string name="pdf_split_more_parts">"외 %d개"</string>
+    <string name="pdf_split_pdf_title">"PDF %d"</string>
+    <string name="pdf_split_pages_label">"페이지"</string>
+    <string name="pdf_split_save_as">"저장 형식"</string>
+    <string name="pdf_split_one_pdf">"PDF 하나"</string>
+    <string name="pdf_split_one_pdf_caption">"선택한 페이지를 모두 함께"</string>
+    <string name="pdf_split_separate_pdfs">"개별 PDF"</string>
+    <string name="pdf_split_separate_caption">"페이지당 파일 하나"</string>
+    <string name="pdf_split_keep_rest_caption">"PDF 하나 더 만들기"</string>
+    <string name="pdf_split_extract_button">"%1$s 추출 · %2$s"</string>
+    <string name="pdf_split_create_one">"PDF 1개 만들기 · %s"</string>
+    <string name="pdf_split_choose_pages">"추출할 페이지 선택"</string>
+    <string name="pdf_split_fix_ranges">"계속하려면 범위를 수정하세요"</string>
+    <string name="pdf_split_single_page">"이 PDF는 한 페이지뿐이라 분할할 수 없습니다."</string>
+    <string name="pdf_split_splitting">"분할 중…"</string>
+    <string name="pdf_split_writing_part">"%2$d개 중 %1$d번째 부분 쓰는 중"</string>
+    <string name="pdf_split_from_file">"%1$s · %2$s에서"</string>
+    <string name="pdf_split_tap_to_rename">"이름을 탭하여 변경"</string>
+    <string name="pdf_split_open_part">"%s 열기"</string>
+    <string name="pdf_split_one_zip">"ZIP 하나"</string>
+    <string name="pdf_split_save_all">"모두 저장"</string>
+    <string name="pdf_split_share_all">"모두 공유"</string>
+    <string name="pdf_split_output_pages">"%1$s – %2$s페이지"</string>
+    <string name="pdf_split_output_page">"%1$s – %2$d페이지"</string>
+    <string name="pdf_split_pages_meta">"%1$s페이지 · %2$s"</string>
+    <string name="pdf_split_page_meta">"%1$d페이지 · %2$s"</string>
+    <string name="pdf_split_no_password">"새 PDF에는 비밀번호가 없습니다."</string>
+    <string name="pdf_split_could_not_split">"이 PDF를 분할할 수 없습니다."</string>
+    <plurals name="pdf_split_pdf_count">
+        <item quantity="other">"PDF %d개"</item>
+    </plurals>
+    <plurals name="pdf_split_split_into">
+        <item quantity="other">"PDF %d개로 분할"</item>
+    </plurals>
+    <plurals name="pdf_split_keep_rest">
+        <item quantity="other">"나머지 %d페이지도 저장"</item>
+    </plurals>
+    <plurals name="pdf_split_saved">
+        <item quantity="other">"PDF %1$d개를 %2$s에 저장함"</item>
+    </plurals>
+    <plurals name="pdf_split_range_count">
+        <item quantity="other">"범위 %d개"</item>
+    </plurals>
+    <!-- Split a document into documents -->
+    <string name="document_split_title">"여러 문서로 분할"</string>
+    <string name="document_split_pages_cuts">"%1$s · %2$s"</string>
+    <string name="document_split_every_page">"모든 페이지"</string>
+    <string name="document_split_clear">"지우기"</string>
+    <string name="document_split_hint">"두 페이지 사이의 틈을 탭하면 그곳에서 나눕니다."</string>
+    <string name="document_split_cut_after">"%d페이지 뒤에서 자르기"</string>
+    <string name="document_split_remove_cut">"%d페이지 뒤의 자르기 제거"</string>
+    <string name="document_split_part_label">"파트 %1$d · %2$s페이지"</string>
+    <string name="document_split_part_label_single">"파트 %1$d · %2$d페이지"</string>
+    <string name="document_split_destination_title">"새 문서 저장 위치"</string>
+    <string name="document_split_destination_folder">"원본과 같은 폴더"</string>
+    <string name="document_split_destination_library">"라이브러리(폴더 밖)"</string>
+    <string name="document_split_keep_original">"원본 유지"</string>
+    <string name="document_split_keep_original_caption">"끄기: 최근 삭제된 항목으로 이동"</string>
+    <string name="document_split_note">"텍스트, 서명, 편집 내용은 각 페이지와 함께 이동합니다."</string>
+    <string name="document_split_add_cut">"분할하려면 자르기 위치를 추가하세요"</string>
+    <string name="document_split_failed">"이 문서를 분할할 수 없습니다."</string>
+    <string name="document_menu_split_into_pdfs">"여러 PDF로 분할"</string>
+    <plurals name="document_split_cut_count">
+        <item quantity="other">"자르기 %d개"</item>
+    </plurals>
+    <plurals name="document_split_create">
+        <item quantity="other">"문서 %d개 만들기"</item>
+    </plurals>
 </resources>

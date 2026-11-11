@@ -1958,4 +1958,102 @@
     <string name="onboarding_demo_found">พบในข้อความบนหน้า</string>
     <string name="onboarding_demo_protected">ป้องกันด้วยรหัสผ่าน</string>
     <string name="onboarding_chapter_number">%1$02d %2$s</string>
+    <!-- Split PDF -->
+    <string name="tools_catalog_split">"แยก"</string>
+    <string name="tools_catalog_cut_into_parts">"ตัดเป็นส่วนๆ"</string>
+    <string name="pdf_reader_tool_split_into_parts">"แยกเป็นส่วนๆ"</string>
+    <string name="pdf_split_title">"แยก PDF"</string>
+    <string name="pdf_split_subtitle">"ตัด PDF หนึ่งไฟล์เป็น PDF ที่เล็กลง"</string>
+    <string name="pdf_split_step_2">"ขั้นที่ 2 จาก 3 · จุดที่จะแยก"</string>
+    <string name="pdf_split_mode_custom">"กำหนดเอง"</string>
+    <string name="pdf_split_mode_every_n">"ทุก N หน้า"</string>
+    <string name="pdf_split_mode_extract">"ดึงหน้า"</string>
+    <string name="pdf_split_ranges_label">"พิมพ์ช่วงหน้า หรือแก้ไขการ์ดด้านล่าง"</string>
+    <string name="pdf_split_ranges_placeholder">"เช่น 1-3, 6-8"</string>
+    <string name="pdf_split_ranges_hint">"คั่นช่วงด้วยจุลภาค เช่น 1-3, 6-8"</string>
+    <string name="pdf_split_ranges_error">"ใช้เลขหน้าและขีด เช่น 1-3, 6-8"</string>
+    <string name="pdf_split_range_title">"ช่วงที่ %d"</string>
+    <string name="pdf_split_range_from">"จากหน้า"</string>
+    <string name="pdf_split_range_to">"ถึง"</string>
+    <string name="pdf_split_remove_range">"ลบช่วงที่ %d"</string>
+    <string name="pdf_split_range_error">"ใช้หน้า 1 ถึง %d โดยหน้าแรกต้องมาก่อนหน้าสุดท้าย"</string>
+    <string name="pdf_split_add_range">"เพิ่มช่วง"</string>
+    <string name="pdf_split_pages_included">"หน้าที่รวมอยู่"</string>
+    <string name="pdf_split_not_included">"ไม่อยู่ในช่วงใด จึงจะไม่ถูกบันทึก: %s"</string>
+    <string name="pdf_split_merge_ranges">"รวมทุกช่วงเป็น PDF เดียว"</string>
+    <string name="pdf_split_merge_ranges_caption">"ปิด: แต่ละช่วงเป็น PDF แยก"</string>
+    <string name="pdf_split_pages_in_each">"จำนวนหน้าต่อ PDF"</string>
+    <string name="pdf_split_fewer_pages">"ลดจำนวนหน้าต่อ PDF"</string>
+    <string name="pdf_split_more_pages">"เพิ่มจำนวนหน้าต่อ PDF"</string>
+    <string name="pdf_split_last_shorter">"ไฟล์สุดท้ายมี %s"</string>
+    <string name="pdf_split_one_per_page">"หนึ่ง PDF ต่อหน้า"</string>
+    <string name="pdf_split_you_get">"คุณจะได้ %s"</string>
+    <string name="pdf_split_more_parts">"+ อีก %d"</string>
+    <string name="pdf_split_pdf_title">"PDF %d"</string>
+    <string name="pdf_split_pages_label">"หน้า"</string>
+    <string name="pdf_split_save_as">"บันทึกเป็น"</string>
+    <string name="pdf_split_one_pdf">"PDF เดียว"</string>
+    <string name="pdf_split_one_pdf_caption">"หน้าที่เลือกทั้งหมดรวมกัน"</string>
+    <string name="pdf_split_separate_pdfs">"PDF แยกกัน"</string>
+    <string name="pdf_split_separate_caption">"หนึ่งไฟล์ต่อหน้า"</string>
+    <string name="pdf_split_keep_rest_caption">"เป็น PDF อีกหนึ่งไฟล์"</string>
+    <string name="pdf_split_extract_button">"ดึง %1$s · %2$s"</string>
+    <string name="pdf_split_create_one">"สร้าง 1 PDF · %s"</string>
+    <string name="pdf_split_choose_pages">"เลือกหน้าที่จะดึง"</string>
+    <string name="pdf_split_fix_ranges">"แก้ไขช่วงเพื่อดำเนินการต่อ"</string>
+    <string name="pdf_split_single_page">"PDF นี้มีเพียงหน้าเดียว จึงไม่มีอะไรให้แยก"</string>
+    <string name="pdf_split_splitting">"กำลังแยก…"</string>
+    <string name="pdf_split_writing_part">"กำลังเขียนส่วนที่ %1$d จาก %2$d"</string>
+    <string name="pdf_split_from_file">"จาก %1$s · %2$s"</string>
+    <string name="pdf_split_tap_to_rename">"แตะชื่อเพื่อเปลี่ยนชื่อ"</string>
+    <string name="pdf_split_open_part">"เปิด %s"</string>
+    <string name="pdf_split_one_zip">"ZIP เดียว"</string>
+    <string name="pdf_split_save_all">"บันทึกทั้งหมด"</string>
+    <string name="pdf_split_share_all">"แชร์ทั้งหมด"</string>
+    <string name="pdf_split_output_pages">"%1$s – หน้า %2$s"</string>
+    <string name="pdf_split_output_page">"%1$s – หน้า %2$d"</string>
+    <string name="pdf_split_pages_meta">"หน้า %1$s · %2$s"</string>
+    <string name="pdf_split_page_meta">"หน้า %1$d · %2$s"</string>
+    <string name="pdf_split_no_password">"PDF ใหม่ไม่มีรหัสผ่าน"</string>
+    <string name="pdf_split_could_not_split">"ไม่สามารถแยก PDF นี้ได้"</string>
+    <plurals name="pdf_split_pdf_count">
+        <item quantity="other">"%d PDF"</item>
+    </plurals>
+    <plurals name="pdf_split_split_into">
+        <item quantity="other">"แยกเป็น %d PDF"</item>
+    </plurals>
+    <plurals name="pdf_split_keep_rest">
+        <item quantity="other">"บันทึกอีก %d หน้าที่เหลือด้วย"</item>
+    </plurals>
+    <plurals name="pdf_split_saved">
+        <item quantity="other">"บันทึก %1$d PDF ไปที่ %2$s แล้ว"</item>
+    </plurals>
+    <plurals name="pdf_split_range_count">
+        <item quantity="other">"%d ช่วง"</item>
+    </plurals>
+    <!-- Split a document into documents -->
+    <string name="document_split_title">"แยกเป็นหลายเอกสาร"</string>
+    <string name="document_split_pages_cuts">"%1$s · %2$s"</string>
+    <string name="document_split_every_page">"ทุกหน้า"</string>
+    <string name="document_split_clear">"ล้าง"</string>
+    <string name="document_split_hint">"แตะช่องว่างระหว่างสองหน้าเพื่อตัดตรงนั้น"</string>
+    <string name="document_split_cut_after">"ตัดหลังหน้า %d"</string>
+    <string name="document_split_remove_cut">"เอาจุดตัดหลังหน้า %d ออก"</string>
+    <string name="document_split_part_label">"ส่วนที่ %1$d · หน้า %2$s"</string>
+    <string name="document_split_part_label_single">"ส่วนที่ %1$d · หน้า %2$d"</string>
+    <string name="document_split_destination_title">"เอกสารใหม่จะอยู่ใน"</string>
+    <string name="document_split_destination_folder">"โฟลเดอร์เดียวกับต้นฉบับ"</string>
+    <string name="document_split_destination_library">"คลังของคุณ นอกโฟลเดอร์"</string>
+    <string name="document_split_keep_original">"เก็บต้นฉบับไว้"</string>
+    <string name="document_split_keep_original_caption">"ปิด: ต้นฉบับจะย้ายไปที่ลบล่าสุด"</string>
+    <string name="document_split_note">"ข้อความ ลายเซ็น และการแก้ไขจะติดไปกับแต่ละหน้า"</string>
+    <string name="document_split_add_cut">"เพิ่มจุดตัดเพื่อแยก"</string>
+    <string name="document_split_failed">"ไม่สามารถแยกเอกสารนี้ได้"</string>
+    <string name="document_menu_split_into_pdfs">"แยกเป็นหลาย PDF"</string>
+    <plurals name="document_split_cut_count">
+        <item quantity="other">"%d จุดตัด"</item>
+    </plurals>
+    <plurals name="document_split_create">
+        <item quantity="other">"สร้าง %d เอกสาร"</item>
+    </plurals>
 </resources>

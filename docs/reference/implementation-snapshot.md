@@ -1,12 +1,12 @@
 ﻿# Implementation Snapshot
 
-One-page technical summary of Scanly **v1.0.20**. For detail see the full docs index at [../README.md](../README.md).
+One-page technical summary of Scanly **v1.0.21**. For detail see the full docs index at [../README.md](../README.md).
 
 ## Release
 
 | Field | Value |
 | --- | --- |
-| Version | `1.0.20` (code `20`) |
+| Version | `1.0.21` (code `21`) |
 | Room schema | `12` (`MIGRATION_7_8`–`MIGRATION_9_10` Recently deleted; `MIGRATION_10_11` OCR engine provenance; `MIGRATION_11_12` derived search text) |
 | Release date | `2026-11-09` |
 | Min SDK | 29 |
@@ -28,7 +28,7 @@ ScanlyApplication (WorkManager + Hilt)
 
 ## Features (summary)
 
-Home (shimmer loading) · Pip helper with camera coaching and daily tips · Library and folder management · on-device OCR, extracted-text views, and full-text search · Tools (QR, PDF toolkit incl. PDF to images; reader hands its file to any tool) · Open PDFs from other apps · Sign PDFs and scanned pages, with reusable signatures · Camera scan + document gate + multi-model detection · Gallery import · Page preview/editor/crop/filter/adjust · Groups · PDF/ZIP export with save destination · Storage cleanup (library backup/restore retired) · Document detection settings + model benchmark · Pure black theme · Onboarding · Home widgets + launcher quick actions · GitHub/Play update channels
+Home (shimmer loading) · Pip helper with camera coaching and daily tips · Library and folder management · on-device OCR, extracted-text views, and full-text search · Tools (QR, PDF toolkit incl. Split PDF and PDF to images; reader hands its file to any tool) · Open PDFs from other apps · Sign PDFs and scanned pages, with reusable signatures · Camera scan + document gate + multi-model detection · Gallery import · Page preview/editor/crop/filter/adjust · Split a document into new documents · Groups · PDF/ZIP export with save destination · Storage cleanup (library backup/restore retired) · Document detection settings + model benchmark · Pure black theme · Onboarding · Home widgets + launcher quick actions · GitHub/Play update channels
 
 ## Data
 
