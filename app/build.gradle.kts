@@ -95,6 +95,12 @@ android {
         debug {
             isMinifyEnabled = false
             buildConfigField("String", "UPDATE_CHANNEL", "\"github\"")
+            // x86_64 emulators: without native x86_64 libraries LiteRT runs under ARM translation
+            // (Berberis) and segfaults on its first inference (e.g. the automatic model benchmark
+            // when Settings opens). Debug only, so release APK sizes are unchanged.
+            ndk {
+                abiFilters += "x86_64"
+            }
         }
 
         release {
@@ -185,7 +191,12 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.exifinterface)
     if (slimOpenCvAar.exists()) {
-        implementation(files(slimOpenCvAar))
+        // Debug uses the full Maven AAR (same API and results) because the slim AAR is ARM-only
+        // and debug builds also target x86_64 emulators; release variants ship the slim one.
+        debugImplementation(libs.opencv)
+        releaseImplementation(files(slimOpenCvAar))
+        "githubReleaseImplementation"(files(slimOpenCvAar))
+        "playStoreReleaseImplementation"(files(slimOpenCvAar))
     } else {
         implementation(libs.opencv)
     }
