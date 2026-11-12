@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 
+- **Tools artwork** — tactile 2.5D illustrations sit in rounded outlined icon areas with transparent interiors and more space around each icon. Merge shows two documents joining; Split shows one document becoming two. Transparent artwork keeps the same materials in light, dark and pure black themes.
 - **Tools hub order** — PDF tools now sit in pairs that read as one idea per row: Add to library · Read PDF, Images to PDF · PDF to JPG, Merge · Split, Compress · Password, Sign · Watermark.
 - **Tool illustrations** — every page drawn in the tool pictures now has true A4 proportions (no more stretched or squat pages), and **Add to library** shows a PDF going into a folder with a "+" badge.
 

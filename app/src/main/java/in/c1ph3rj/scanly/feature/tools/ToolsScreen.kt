@@ -408,7 +408,7 @@ private fun ToolsHubTile(
 private val ToolsPaneSpacing = 28.dp
 
 /**
- * Illustrated tool card: a tinted banner showing what the tool does, then the title and caption.
+ * Illustrated tool card: inset tactile artwork, then the title and caption on one neutral surface.
  * Used on phones and tablets; cards in a row share one height.
  */
 @Composable
@@ -433,8 +433,7 @@ private fun ToolsFeatureCard(
                 id = tool.id,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(76.dp),
-                cornerRadius = 10.dp,
+                    .height(84.dp),
             )
             Column(
                 modifier = Modifier.padding(start = 6.dp, end = 6.dp, top = 10.dp, bottom = 6.dp),
@@ -499,7 +498,7 @@ private fun ToolsScanHero(
             .fillMaxWidth()
             .height(if (tall) 184.dp else 104.dp),
         onClick = onClick,
-        color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.45f),
+        color = MaterialTheme.colorScheme.surface,
     ) {
         if (tall) {
             Column(modifier = Modifier.fillMaxSize().padding(14.dp)) {
@@ -507,7 +506,6 @@ private fun ToolsScanHero(
                     ToolArtStage(
                         id = tool.id,
                         modifier = Modifier.size(width = 112.dp, height = 84.dp),
-                        cornerRadius = 14.dp,
                     )
                     Spacer(Modifier.weight(1f))
                     arrow()
@@ -527,7 +525,6 @@ private fun ToolsScanHero(
                 ToolArtStage(
                     id = tool.id,
                     modifier = Modifier.size(width = 104.dp, height = 80.dp),
-                    cornerRadius = 14.dp,
                 )
                 Column(
                     modifier = Modifier.weight(1f),

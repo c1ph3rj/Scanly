@@ -27,3 +27,34 @@ The three retired `onboarding_*.png` illustrations and ten unused onboarding str
 Post-cleanup verification passed: debug app and test APK builds, Android lint, 627 JVM tests, and resource-reference/localization checks. All remaining onboarding strings are referenced and present across the 25 language files. The earlier 26 UI checks cover the unchanged screen behavior; no new UI behavior was introduced by this cleanup.
 
 final result: passed
+
+# Tools tactile artwork QA — 2026-11-12
+
+The approved target is `../design/tools-icon-concepts-2026-11-12/04-soft-studio-untinted.png`, with the user's requested smaller artwork, extra breathing room and rounded icon-area borders with transparent interiors. This pass covers the existing Android Tools hub, rather than a new prototype.
+
+## Findings and resolution
+
+- The first integration removed the icon-area outline along with the tint. Restored a 1 dp rounded outline around every icon stage, retaining a transparent interior. The post-fix native captures confirm the correction in light, dark and pure-black themes.
+- No remaining P0/P1/P2 issue in the scoped portrait icon implementation. Original tool ordering, native labels, captions, card actions and bottom navigation are preserved.
+
+## Fidelity surfaces
+
+- **Typography and copy:** existing native type sizes, weights, localized tool names and captions are preserved. Text remains accessible through the existing semantics; decorative images add no duplicate accessibility announcements. No labels are baked into the artwork.
+- **Spacing:** the feature-card icon stage is 84 dp tall, with art using 78% of its height plus normalized transparent margins. The 8 dp card inset and 10 dp gap before the title leave visible air around the smaller illustrations. The wider Merge/Split compositions remain fully contained.
+- **Color:** icon containers draw only a theme-aware outline, with no background or glow. Their interiors show the parent card's neutral surface. The Scan hero is neutral too. Existing selected navigation colors remain unchanged.
+- **Images:** fourteen individually generated, transparent tactile illustrations match the selected materials and action metaphors. Lossless WebP resources share 512 x 384 art boards and total 1,033,910 bytes. White documents and colored arrows are legible on all three themes; the enlarged comparisons show clean edges and the correct two-to-one Merge / one-to-two Split directions.
+- **Layout and behavior:** the phone grid remains two columns and utilities retain the same card sizes. The real app's Tools navigation and QR tile visibility pass. The isolated screen also verifies Merge/Split route callbacks under all three themes.
+
+## Evidence
+
+`../design/tools-icon-concepts-2026-11-12/implemented/` contains nine current emulator screen captures (`light`, `dark`, `amoled`, each with top/document/more states), the actual application shell (`native-top.png`, `native-more.png`), a four-view `tools-preview.png`, and `reference-comparison.png` with source and rendered views in the same image. `document-actions-comparison.png` enlarges matching Merge/Split rows at equal widths to inspect arrows, spacing, transparent edges and outlines. The deliberate size/spacing and border changes follow the user's corrections; the generated board's OS-free presentation is not app-owned device chrome to recreate.
+
+## Verification and limits
+
+- Debug app and instrumented-test APK builds passed after restoring the outlines.
+- Two targeted Android tests passed after the correction: the three-theme artwork/action fixture and the real application Tools navigation check. App data was retained during installation; direct instrumentation did not clear package data.
+- All fourteen resource files have RGBA transparency, 512 x 384 dimensions and fully transparent corner pixels. `git diff --check` passed.
+- Final `:app:lintDebug` passed with zero errors. The build and lint tasks completed successfully after the outline correction; existing Gradle/dependency and test-API deprecation warnings are non-blocking.
+- The new captures are from the existing 1080 x 2400 emulator at density 420, not a physical phone. No physical-device or new release claim is made. Broad onboarding/JVM results above belong to the earlier onboarding work, and were not rerun for this artwork change.
+
+final result: passed
