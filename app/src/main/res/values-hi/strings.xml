@@ -2090,4 +2090,13 @@
         <item quantity="one">"%d दस्तावेज़ बनाएँ"</item>
         <item quantity="other">"%d दस्तावेज़ बनाएँ"</item>
     </plurals>
+    <string name="pdf_peek_preview">"प्रीव्यू"</string>
+    <string name="pdf_peek_preview_file">"%1$s का प्रीव्यू"</string>
+    <string name="pdf_peek_read_only">"सिर्फ़ प्रीव्यू · कुछ नहीं बदलता"</string>
+    <string name="pdf_peek_page_of">"पेज %1$d / %2$d"</string>
+    <string name="pdf_peek_opening">"प्रीव्यू खुल रहा है…"</string>
+    <string name="pdf_peek_locked">"इस PDF पर पासवर्ड है। प्रीव्यू देखने के लिए पहले अनलॉक करें।"</string>
+    <string name="pdf_peek_could_not_open">"प्रीव्यू के लिए यह PDF नहीं खुल सकी।"</string>
+    <string name="pdf_peek_close">"प्रीव्यू बंद करें"</string>
+    <string name="pdf_peek_tap_hint">"प्रीव्यू देखने के लिए किसी फ़ाइल पर टैप करें"</string>
 </resources>

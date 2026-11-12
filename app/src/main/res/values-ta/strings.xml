@@ -2090,4 +2090,13 @@
         <item quantity="one">"%d ஆவணத்தை உருவாக்கு"</item>
         <item quantity="other">"%d ஆவணங்களை உருவாக்கு"</item>
     </plurals>
+    <string name="pdf_peek_preview">"முன்னோட்டம்"</string>
+    <string name="pdf_peek_preview_file">"%1$s முன்னோட்டம்"</string>
+    <string name="pdf_peek_read_only">"முன்னோட்டம் மட்டும் · எதுவும் மாறாது"</string>
+    <string name="pdf_peek_page_of">"பக்கம் %1$d / %2$d"</string>
+    <string name="pdf_peek_opening">"முன்னோட்டம் திறக்கிறது…"</string>
+    <string name="pdf_peek_locked">"இந்த PDF-க்கு கடவுச்சொல் உள்ளது. முன்னோட்டம் பார்க்க முதலில் திறக்கவும்."</string>
+    <string name="pdf_peek_could_not_open">"முன்னோட்டத்திற்கு இந்த PDF-ஐத் திறக்க முடியவில்லை."</string>
+    <string name="pdf_peek_close">"முன்னோட்டத்தை மூடு"</string>
+    <string name="pdf_peek_tap_hint">"முன்னோட்டம் பார்க்க ஒரு கோப்பைத் தட்டவும்"</string>
 </resources>

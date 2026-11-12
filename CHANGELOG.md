@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Added
+
+- **Preview a PDF inside a tool** — a **Preview** button (eye icon), placed with the chosen file (in its file card, or under the first-page picture in Compress), opens the file full screen, read-only, without leaving the tool: page by page with "Page 3 of 12" labels and a floating page counter. Closing it returns to exactly where you were; choices, typed ranges and selections are untouched. Available in **Split** (see the pages before choosing where to cut), **Compress** (also by tapping the first page), **Add password**, **PDF to JPG** and **Add to library**. In **Merge**, tap any file in the order list to preview it (an eye badge marks it). Password-protected files show a clear "unlock it first" message instead of an error.
+
+### Changed
+
+- **Tools hub order** — PDF tools now sit in pairs that read as one idea per row: Add to library · Read PDF, Images to PDF · PDF to JPG, Merge · Split, Compress · Password, Sign · Watermark.
+- **Tool illustrations** — every page drawn in the tool pictures now has true A4 proportions (no more stretched or squat pages), and **Add to library** shows a PDF going into a folder with a "+" badge.
+
 ## [1.0.21] - 2026-11-11
 
 ### Changed

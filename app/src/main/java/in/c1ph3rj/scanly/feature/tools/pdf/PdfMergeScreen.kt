@@ -40,6 +40,9 @@ import androidx.compose.ui.Alignment
 import `in`.c1ph3rj.scanly.feature.tools.ToolSplitMaxWidth
 import `in`.c1ph3rj.scanly.feature.tools.ToolColumnMaxWidth
 import androidx.compose.ui.Modifier
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
@@ -277,6 +280,10 @@ private fun MergeOrderStep(
     val count = sources.size
     val totalPages = mergedPageTotal(sources, uiState.libraryDocuments)
     val totalLine = totalPages?.let { stringResource(R.string.pdf_merge_in_total, formatPdfPageCount(it)) } ?: filesLabel(count)
+    var previewIndex by rememberSaveable { mutableStateOf<Int?>(null) }
+    previewIndex?.let { sources.getOrNull(it) }?.let { previewSource ->
+        PdfPeekDialog(source = previewSource, password = null, onDismiss = { previewIndex = null })
+    }
     MergeStepFrame {
         Column(Modifier.fillMaxSize()) {
             ToolTopBar(onBack = onBack, stepText = stringResource(R.string.pdf_merge_step_2_of_3_order))
@@ -300,6 +307,11 @@ private fun MergeOrderStep(
                         )
                         ToolTextAction(label = stringResource(R.string.pdf_merge_add_more), onClick = onAddMore)
                     }
+                    Text(
+                        text = stringResource(R.string.pdf_peek_tap_hint),
+                        style = MaterialTheme.typography.bodySmall.copy(fontSize = 13.sp),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
                     sources.forEachIndexed { index, source ->
                         MergeOrderRow(
                             index = index,
@@ -308,6 +320,7 @@ private fun MergeOrderStep(
                             document = (source as? PdfToolSource.LibraryDocument)?.let { ref ->
                                 uiState.libraryDocuments.firstOrNull { it.id == ref.documentId }
                             },
+                            onPreview = { previewIndex = index },
                             onMoveUp = { onMove(index, index - 1) },
                             onMoveDown = { onMove(index, index + 1) },
                             onRemove = { onRemove(index) },
@@ -340,6 +353,7 @@ private fun MergeOrderRow(
     count: Int,
     source: PdfToolSource,
     document: ScanDocument?,
+    onPreview: () -> Unit,
     onMoveUp: () -> Unit,
     onMoveDown: () -> Unit,
     onRemove: () -> Unit,
@@ -359,11 +373,38 @@ private fun MergeOrderRow(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(10.dp),
         ) {
+            // Thumbnail and name together open the read-only preview.
+            val previewLabel = stringResource(R.string.pdf_peek_preview_file, name)
+            Row(
+                modifier = Modifier
+                    .weight(1f)
+                    // No clip here: the order number and eye badges sit outside the thumbnail.
+                    .clickable(onClickLabel = previewLabel, onClick = onPreview)
+                    .padding(vertical = 4.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+            ) {
             Box {
                 if (document != null) {
                     PdfPaperThumbnail(document = document, width = 44.dp)
                 } else {
                     PaperPlaceholder(width = 44.dp)
+                }
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .offset(x = 6.dp, y = 6.dp)
+                        .size(22.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.secondaryContainer),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Icon(
+                        Icons.Outlined.Visibility,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                        modifier = Modifier.size(13.dp),
+                    )
                 }
                 ToolBadge(
                     modifier = Modifier
@@ -394,6 +435,7 @@ private fun MergeOrderRow(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
+            }
             }
             IconButton(
                 onClick = onMoveUp,

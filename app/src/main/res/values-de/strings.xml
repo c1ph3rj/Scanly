@@ -2090,4 +2090,13 @@
         <item quantity="one">"%d Dokument erstellen"</item>
         <item quantity="other">"%d Dokumente erstellen"</item>
     </plurals>
+    <string name="pdf_peek_preview">"Vorschau"</string>
+    <string name="pdf_peek_preview_file">"Vorschau von %1$s"</string>
+    <string name="pdf_peek_read_only">"Nur Vorschau · nichts wird geändert"</string>
+    <string name="pdf_peek_page_of">"Seite %1$d von %2$d"</string>
+    <string name="pdf_peek_opening">"Vorschau wird geöffnet…"</string>
+    <string name="pdf_peek_locked">"Diese PDF hat ein Passwort. Entsperre sie zuerst, um sie anzusehen."</string>
+    <string name="pdf_peek_could_not_open">"Diese PDF konnte nicht für die Vorschau geöffnet werden."</string>
+    <string name="pdf_peek_close">"Vorschau schließen"</string>
+    <string name="pdf_peek_tap_hint">"Tippe auf eine Datei für die Vorschau"</string>
 </resources>

@@ -2056,4 +2056,13 @@
     <plurals name="document_split_create">
         <item quantity="other">"Buat %d dokumen"</item>
     </plurals>
+    <string name="pdf_peek_preview">"Pratinjau"</string>
+    <string name="pdf_peek_preview_file">"Pratinjau %1$s"</string>
+    <string name="pdf_peek_read_only">"Hanya pratinjau · tidak ada yang berubah"</string>
+    <string name="pdf_peek_page_of">"Halaman %1$d dari %2$d"</string>
+    <string name="pdf_peek_opening">"Membuka pratinjau…"</string>
+    <string name="pdf_peek_locked">"PDF ini memiliki kata sandi. Buka kuncinya dulu untuk melihatnya."</string>
+    <string name="pdf_peek_could_not_open">"PDF ini tidak dapat dibuka untuk pratinjau."</string>
+    <string name="pdf_peek_close">"Tutup pratinjau"</string>
+    <string name="pdf_peek_tap_hint">"Ketuk file untuk melihat pratinjaunya"</string>
 </resources>

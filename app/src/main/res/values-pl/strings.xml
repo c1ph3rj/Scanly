@@ -2158,4 +2158,13 @@
         <item quantity="many">"Utwórz %d dokumentów"</item>
         <item quantity="other">"Utwórz %d dokumentu"</item>
     </plurals>
+    <string name="pdf_peek_preview">"Podgląd"</string>
+    <string name="pdf_peek_preview_file">"Podgląd: %1$s"</string>
+    <string name="pdf_peek_read_only">"Tylko podgląd · nic się nie zmienia"</string>
+    <string name="pdf_peek_page_of">"Strona %1$d z %2$d"</string>
+    <string name="pdf_peek_opening">"Otwieranie podglądu…"</string>
+    <string name="pdf_peek_locked">"Ten PDF ma hasło. Najpierw go odblokuj, aby zobaczyć podgląd."</string>
+    <string name="pdf_peek_could_not_open">"Nie udało się otworzyć tego PDF do podglądu."</string>
+    <string name="pdf_peek_close">"Zamknij podgląd"</string>
+    <string name="pdf_peek_tap_hint">"Dotknij pliku, aby zobaczyć podgląd"</string>
 </resources>

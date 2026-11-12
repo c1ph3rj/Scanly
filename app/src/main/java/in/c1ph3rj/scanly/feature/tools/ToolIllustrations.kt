@@ -144,6 +144,9 @@ fun ToolArtStage(
     }
 }
 
+/** Height / width of an A4 sheet. */
+private const val A4_RATIO = 1.414f
+
 /** Draws on a 64 x 48 unit board; [u] is one unit in pixels. */
 private class ToolArt(
     private val scope: DrawScope,
@@ -176,17 +179,21 @@ private class ToolArt(
     // Building blocks
     // -----------------------------------------------------------------------------------------
 
-    /** A sheet of paper with a folded corner and [lines] rows of grey "text". */
+    /**
+     * A sheet of A4 paper [h] units tall (width follows the 1 : 1.414 ratio, so every page in
+     * every picture has the same shape) with a folded corner and [lines] rows of grey "text".
+     * Returns the page width so callers can place things beside it.
+     */
     private fun page(
         x: Float,
         y: Float,
-        w: Float,
         h: Float,
         lines: Int = 0,
         lineColor: Color = c.line,
         badge: Boolean = false,
-    ) = with(scope) {
-        val f = minOf(w, h) * 0.3f
+    ): Float = with(scope) {
+        val w = h / A4_RATIO
+        val f = w * 0.3f
         val body = Path().apply {
             moveTo(x * u, y * u)
             lineTo((x + w - f) * u, y * u)
@@ -209,14 +216,16 @@ private class ToolArt(
             // A "PDF" label strip: a filled tab on the page's top-left.
             drawRoundRect(c.accent, o(x + w * 0.16f, y + h * 0.16f), s(w * 0.4f, 3.2f), r(1.2f))
         }
-        val first = y + h * (if (badge) 0.42f else 0.3f)
-        val gap = (h * 0.62f) / (lines + 1).coerceAtLeast(3)
+        // Fixed rhythm: rows sit a set fraction of the page apart, never squeezed to fit.
+        val first = y + h * (if (badge) 0.4f else 0.32f)
+        val gap = h * 0.13f
         for (i in 0 until lines) {
             val ly = first + i * gap
-            if (ly > y + h - 3f) break
-            val end = if (i == lines - 1 && lines > 1) 0.6f else 0.82f
-            drawLine(lineColor, o(x + w * 0.18f, ly), o(x + w * end, ly), strokeWidth = 1.5f * u, cap = StrokeCap.Round)
+            if (ly > y + h * 0.88f) break
+            val end = if (i == lines - 1 && lines > 1) 0.58f else 0.8f
+            drawLine(lineColor, o(x + w * 0.18f, ly), o(x + w * end, ly), strokeWidth = 1.4f * u, cap = StrokeCap.Round)
         }
+        w
     }
 
     /** A photo: framed card with a sun and hills. */
@@ -293,8 +302,8 @@ private class ToolArt(
 
     /** Camera framing: a page inside detection corners with a scan line sweeping over it. */
     private fun scan() = with(scope) {
-        page(23f, 9f, 18f, 29f, lines = 4)
-        brackets(16f, 3f, 48f, 45f, arm = 6f, color = c.accent, width = 2.4f)
+        page(22.1f, 10f, 28f, lines = 4)
+        brackets(16f, 4f, 48f, 44f, arm = 6f, color = c.accent, width = 2.4f)
         drawRect(c.accentSoft, o(19f, 18f), s(26f, 8f))
         drawLine(c.accent, o(18.5f, 26f), o(45.5f, 26f), strokeWidth = 1.8f * u, cap = StrokeCap.Round)
     }
@@ -303,13 +312,13 @@ private class ToolArt(
     private fun imagesToPdf() = with(scope) {
         rotate(-10f, pivot = o(16f, 20f)) { photo(5f, 11f, 21f, 16f) }
         photo(9f, 21f, 21f, 16f)
-        arrow(33f, 39f, 24f)
-        page(42f, 9f, 18f, 29f, lines = 3, badge = true)
+        arrow(33f, 38.5f, 24f)
+        page(40.5f, 9f, 30f, lines = 3, badge = true)
     }
 
     /** A page with a signature on the line and a pen. */
     private fun sign() = with(scope) {
-        page(14f, 4f, 30f, 40f, lines = 3)
+        page(14.5f, 4f, 40f, lines = 3)
         drawLine(c.line, o(18f, 38f), o(40f, 38f), strokeWidth = 1.2f * u, cap = StrokeCap.Round)
         squiggle(18f, 29f, 20f, 8f)
         // Pen
@@ -319,71 +328,71 @@ private class ToolArt(
 
     /** Two pages flow into one. */
     private fun merge() = with(scope) {
-        page(3f, 3f, 15f, 19f, lines = 2)
-        page(3f, 26f, 15f, 19f, lines = 2)
+        page(4f, 3f, 19f, lines = 2)
+        page(4f, 26f, 19f, lines = 2)
         val top = Path().apply {
-            moveTo(20.5f * u, 12.5f * u)
-            cubicTo(28f * u, 12.5f * u, 27f * u, 24f * u, 35f * u, 24f * u)
+            moveTo(20f * u, 12.5f * u)
+            cubicTo(27f * u, 12.5f * u, 26f * u, 24f * u, 33f * u, 24f * u)
         }
         val bottom = Path().apply {
-            moveTo(20.5f * u, 35.5f * u)
-            cubicTo(28f * u, 35.5f * u, 27f * u, 24f * u, 35f * u, 24f * u)
+            moveTo(20f * u, 35.5f * u)
+            cubicTo(27f * u, 35.5f * u, 26f * u, 24f * u, 33f * u, 24f * u)
         }
         drawPath(top, c.accent, style = stroke(2f))
         drawPath(bottom, c.accent, style = stroke(2f))
-        arrowHead(36f, 24f, 0f)
-        page(40f, 6f, 21f, 36f, lines = 5)
+        arrowHead(34f, 24f, 0f)
+        page(37f, 6f, 36f, lines = 5)
     }
 
     /** One page cut into two. */
     private fun split() = with(scope) {
-        page(3f, 6f, 21f, 36f, lines = 5)
+        page(2f, 6f, 36f, lines = 5)
         drawLine(
             c.accent,
-            o(1.5f, 24f),
-            o(25.5f, 24f),
+            o(0.5f, 24f),
+            o(29f, 24f),
             strokeWidth = 1.8f * u,
             cap = StrokeCap.Round,
             pathEffect = PathEffect.dashPathEffect(floatArrayOf(2.6f * u, 2.4f * u)),
         )
         val top = Path().apply {
-            moveTo(28f * u, 24f * u)
-            cubicTo(35f * u, 24f * u, 34f * u, 12.5f * u, 41f * u, 12.5f * u)
+            moveTo(31f * u, 24f * u)
+            cubicTo(37f * u, 24f * u, 36f * u, 12.5f * u, 43f * u, 12.5f * u)
         }
         val bottom = Path().apply {
-            moveTo(28f * u, 24f * u)
-            cubicTo(35f * u, 24f * u, 34f * u, 35.5f * u, 41f * u, 35.5f * u)
+            moveTo(31f * u, 24f * u)
+            cubicTo(37f * u, 24f * u, 36f * u, 35.5f * u, 43f * u, 35.5f * u)
         }
         drawPath(top, c.accent, style = stroke(2f))
         drawPath(bottom, c.accent, style = stroke(2f))
-        arrowHead(42f, 12.5f, 0f)
-        arrowHead(42f, 35.5f, 0f)
-        page(46f, 3f, 15f, 19f, lines = 2)
-        page(46f, 26f, 15f, 19f, lines = 2)
+        arrowHead(44f, 12.5f, 0f)
+        arrowHead(44f, 35.5f, 0f)
+        page(47f, 3f, 19f, lines = 2)
+        page(47f, 26f, 19f, lines = 2)
     }
 
     /** A page squeezed from both sides. */
     private fun compress() = with(scope) {
-        page(23f, 8f, 18f, 31f, lines = 4)
-        // Left arrow pointing in, with an end stop.
+        page(21.4f, 9f, 30f, lines = 4)
+        // Arrows pressing in from both sides, each with an end stop.
         drawLine(c.accent, o(5f, 17f), o(5f, 31f), strokeWidth = 2f * u, cap = StrokeCap.Round)
-        arrow(7f, 18.5f, 24f)
+        arrow(7f, 17.5f, 24f)
         drawLine(c.accent, o(59f, 17f), o(59f, 31f), strokeWidth = 2f * u, cap = StrokeCap.Round)
-        drawLine(c.accent, o(57f, 24f), o(45.5f, 24f), strokeWidth = 2f * u, cap = StrokeCap.Round)
-        arrowHead(45.5f, 24f, 180f)
+        drawLine(c.accent, o(57f, 24f), o(46.5f, 24f), strokeWidth = 2f * u, cap = StrokeCap.Round)
+        arrowHead(46.5f, 24f, 180f)
     }
 
     /** A page becomes pictures. */
     private fun pdfToImages() = with(scope) {
-        page(4f, 8f, 20f, 31f, lines = 4, badge = true)
-        arrow(27f, 33f, 24f)
+        page(4f, 9f, 30f, lines = 4, badge = true)
+        arrow(28f, 33.5f, 24f)
         photo(40f, 9f, 20f, 16f)
         photo(36f, 18f, 21f, 17f)
     }
 
     /** A page with a padlock. */
     private fun password() = with(scope) {
-        page(12f, 4f, 28f, 40f, lines = 5)
+        page(11.5f, 4f, 40f, lines = 5)
         drawArc(
             color = c.accent,
             startAngle = 180f,
@@ -402,7 +411,7 @@ private class ToolArt(
 
     /** A page with a diagonal stamp across it. */
     private fun watermark() = with(scope) {
-        page(16f, 4f, 32f, 40f, lines = 5)
+        page(17.9f, 4f, 40f, lines = 5)
         rotate(-30f, pivot = o(32f, 25f)) {
             drawRoundRect(c.accentSoft, o(19f, 20.5f), s(26f, 9f), r(2f))
             drawRoundRect(c.accent, o(19f, 20.5f), s(26f, 9f), r(2f), style = stroke(1.4f))
@@ -457,15 +466,25 @@ private class ToolArt(
         drawPath(ribbon, c.accent)
     }
 
-    /** A page dropping into a folder. */
+    /** A PDF page filed into the library: page, arrow, then the page inside an open folder. */
     private fun addToLibrary() = with(scope) {
-        val back = c.accent.copy(alpha = 0.45f)
-        drawRoundRect(back, o(8f, 9f), s(18f, 9f), r(2.5f))
-        drawRoundRect(back, o(8f, 13f), s(48f, 31f), r(3f))
-        page(19f, 3f, 26f, 30f, lines = 3)
-        drawRoundRect(c.accent, o(6f, 22f), s(52f, 23f), r(3.5f))
-        drawLine(c.paper, o(32f, 28.5f), o(32f, 38.5f), strokeWidth = 2.6f * u, cap = StrokeCap.Round)
-        drawLine(c.paper, o(27f, 33.5f), o(37f, 33.5f), strokeWidth = 2.6f * u, cap = StrokeCap.Round)
+        page(3f, 11f, 27f, lines = 3, badge = true)
+        arrow(25.5f, 31f, 24.5f)
+        // Folder back with its tab, in a light shade of the hue.
+        val back = lerp(c.paper, c.accent, 0.35f)
+        drawRoundRect(back, o(34f, 8f), s(11f, 6f), r(1.6f))
+        drawRoundRect(back, o(34f, 11f), s(28f, 33f), r(2.4f))
+        // The filed page standing in the folder.
+        page(39.5f, 13f, 25f, lines = 2)
+        // Folder front.
+        drawRoundRect(c.accent, o(34f, 26f), s(28f, 18f), r(2.4f))
+        // "Added" badge.
+        val bx = 59.4f
+        val by = 41.6f
+        drawCircle(c.paper, radius = 4.3f * u, center = o(bx, by))
+        drawCircle(c.accent, radius = 4.3f * u, center = o(bx, by), style = stroke(1.4f))
+        drawLine(c.accent, o(bx, by - 2.2f), o(bx, by + 2.2f), strokeWidth = 1.6f * u, cap = StrokeCap.Round)
+        drawLine(c.accent, o(bx - 2.2f, by), o(bx + 2.2f, by), strokeWidth = 1.6f * u, cap = StrokeCap.Round)
     }
 
     /** A QR code inside scanner corners. */
@@ -499,8 +518,8 @@ private class ToolArt(
         arrow(30f, 36f, 23f)
         val x = 39f
         val y = 7f
-        val w = 22f
-        val h = 33f
+        val h = 32f
+        val w = h / A4_RATIO
         drawRoundRect(c.paper, o(x, y), s(w, h), r(2.5f))
         drawRoundRect(c.edge, o(x, y), s(w, h), r(2.5f), style = stroke(1.1f))
         // "T" glyph

@@ -2056,4 +2056,13 @@
     <plurals name="document_split_create">
         <item quantity="other">"创建 %d 个文档"</item>
     </plurals>
+    <string name="pdf_peek_preview">"预览"</string>
+    <string name="pdf_peek_preview_file">"预览 %1$s"</string>
+    <string name="pdf_peek_read_only">"仅预览 · 不会做任何更改"</string>
+    <string name="pdf_peek_page_of">"第 %1$d 页，共 %2$d 页"</string>
+    <string name="pdf_peek_opening">"正在打开预览…"</string>
+    <string name="pdf_peek_locked">"此 PDF 设有密码。请先解锁再预览。"</string>
+    <string name="pdf_peek_could_not_open">"无法打开此 PDF 进行预览。"</string>
+    <string name="pdf_peek_close">"关闭预览"</string>
+    <string name="pdf_peek_tap_hint">"点按文件即可预览"</string>
 </resources>

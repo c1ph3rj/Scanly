@@ -2056,4 +2056,13 @@
     <plurals name="document_split_create">
         <item quantity="other">"문서 %d개 만들기"</item>
     </plurals>
+    <string name="pdf_peek_preview">"미리보기"</string>
+    <string name="pdf_peek_preview_file">"%1$s 미리보기"</string>
+    <string name="pdf_peek_read_only">"미리보기 전용 · 아무것도 바뀌지 않음"</string>
+    <string name="pdf_peek_page_of">"%2$d페이지 중 %1$d페이지"</string>
+    <string name="pdf_peek_opening">"미리보기 여는 중…"</string>
+    <string name="pdf_peek_locked">"이 PDF에는 비밀번호가 있습니다. 미리 보려면 먼저 잠금을 해제하세요."</string>
+    <string name="pdf_peek_could_not_open">"이 PDF를 미리보기로 열 수 없습니다."</string>
+    <string name="pdf_peek_close">"미리보기 닫기"</string>
+    <string name="pdf_peek_tap_hint">"파일을 탭하면 미리 볼 수 있어요"</string>
 </resources>

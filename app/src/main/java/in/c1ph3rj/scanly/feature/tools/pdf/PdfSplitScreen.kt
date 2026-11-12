@@ -250,7 +250,16 @@ private fun ColumnScope.RangesStep(
     val extract = uiState.mode == PdfSplitMode.Extract && uiState.isReady && pageCount >= 2
     val plan = uiState.plan
 
+    var showPreview by rememberSaveable { mutableStateOf(false) }
     ToolTopBar(onBack = onBack, stepText = stringResource(R.string.pdf_split_step_2))
+    val previewSource = uiState.source
+    if (showPreview && previewSource != null) {
+        PdfPeekDialog(
+            source = previewSource,
+            password = uiState.password.takeIf { uiState.wasLocked },
+            onDismiss = { showPreview = false },
+        )
+    }
     LazyVerticalGrid(
         columns = GridCells.Adaptive(PageCellMinWidth),
         state = gridState,
@@ -284,7 +293,12 @@ private fun ColumnScope.RangesStep(
         fullWidth("title") {
             Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                 ToolLargeTitle(title = stringResource(R.string.pdf_split_title))
-                FileSummaryLine(name = uiState.source?.label().orEmpty(), pageCount = pageCount, onChange = onChange)
+                FileSummaryLine(
+                    name = uiState.source?.label().orEmpty(),
+                    pageCount = pageCount,
+                    onChange = onChange,
+                    onPreview = if (uiState.isReady && pageCount > 0) ({ showPreview = true }) else null,
+                )
             }
         }
         when {

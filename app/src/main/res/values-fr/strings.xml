@@ -2124,4 +2124,13 @@
         <item quantity="many">"Créer %d documents"</item>
         <item quantity="other">"Créer %d documents"</item>
     </plurals>
+    <string name="pdf_peek_preview">"Aperçu"</string>
+    <string name="pdf_peek_preview_file">"Aperçu de %1$s"</string>
+    <string name="pdf_peek_read_only">"Aperçu seulement · rien n\'est modifié"</string>
+    <string name="pdf_peek_page_of">"Page %1$d sur %2$d"</string>
+    <string name="pdf_peek_opening">"Ouverture de l\'aperçu…"</string>
+    <string name="pdf_peek_locked">"Ce PDF a un mot de passe. Déverrouillez-le d\'abord pour l\'afficher."</string>
+    <string name="pdf_peek_could_not_open">"Impossible d\'ouvrir ce PDF pour l\'aperçu."</string>
+    <string name="pdf_peek_close">"Fermer l\'aperçu"</string>
+    <string name="pdf_peek_tap_hint">"Touchez un fichier pour l\'afficher"</string>
 </resources>

@@ -2090,4 +2090,13 @@
         <item quantity="one">"%dটি ডকুমেন্ট তৈরি করুন"</item>
         <item quantity="other">"%dটি ডকুমেন্ট তৈরি করুন"</item>
     </plurals>
+    <string name="pdf_peek_preview">"প্রিভিউ"</string>
+    <string name="pdf_peek_preview_file">"%1$s প্রিভিউ করুন"</string>
+    <string name="pdf_peek_read_only">"শুধু প্রিভিউ · কিছুই বদলাবে না"</string>
+    <string name="pdf_peek_page_of">"পৃষ্ঠা %1$d / %2$d"</string>
+    <string name="pdf_peek_opening">"প্রিভিউ খোলা হচ্ছে…"</string>
+    <string name="pdf_peek_locked">"এই PDF-এ পাসওয়ার্ড আছে। প্রিভিউ দেখতে আগে আনলক করুন।"</string>
+    <string name="pdf_peek_could_not_open">"প্রিভিউর জন্য এই PDF খোলা যায়নি।"</string>
+    <string name="pdf_peek_close">"প্রিভিউ বন্ধ করুন"</string>
+    <string name="pdf_peek_tap_hint">"প্রিভিউ দেখতে একটি ফাইলে ট্যাপ করুন"</string>
 </resources>

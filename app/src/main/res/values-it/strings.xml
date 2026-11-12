@@ -2124,4 +2124,13 @@
         <item quantity="many">"Crea %d documenti"</item>
         <item quantity="other">"Crea %d documenti"</item>
     </plurals>
+    <string name="pdf_peek_preview">"Anteprima"</string>
+    <string name="pdf_peek_preview_file">"Anteprima di %1$s"</string>
+    <string name="pdf_peek_read_only">"Solo anteprima · non cambia nulla"</string>
+    <string name="pdf_peek_page_of">"Pagina %1$d di %2$d"</string>
+    <string name="pdf_peek_opening">"Apertura anteprima…"</string>
+    <string name="pdf_peek_locked">"Questo PDF ha una password. Sbloccalo prima per vederlo."</string>
+    <string name="pdf_peek_could_not_open">"Impossibile aprire questo PDF per l\'anteprima."</string>
+    <string name="pdf_peek_close">"Chiudi anteprima"</string>
+    <string name="pdf_peek_tap_hint">"Tocca un file per vederne l\'anteprima"</string>
 </resources>

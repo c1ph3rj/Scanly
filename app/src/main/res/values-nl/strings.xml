@@ -2090,4 +2090,13 @@
         <item quantity="one">"%d document maken"</item>
         <item quantity="other">"%d documenten maken"</item>
     </plurals>
+    <string name="pdf_peek_preview">"Voorbeeld"</string>
+    <string name="pdf_peek_preview_file">"Voorbeeld van %1$s"</string>
+    <string name="pdf_peek_read_only">"Alleen voorbeeld · er verandert niets"</string>
+    <string name="pdf_peek_page_of">"Pagina %1$d van %2$d"</string>
+    <string name="pdf_peek_opening">"Voorbeeld openen…"</string>
+    <string name="pdf_peek_locked">"Deze pdf heeft een wachtwoord. Ontgrendel hem eerst om hem te bekijken."</string>
+    <string name="pdf_peek_could_not_open">"Kan deze pdf niet openen voor een voorbeeld."</string>
+    <string name="pdf_peek_close">"Voorbeeld sluiten"</string>
+    <string name="pdf_peek_tap_hint">"Tik op een bestand voor een voorbeeld"</string>
 </resources>

@@ -2056,4 +2056,13 @@
     <plurals name="document_split_create">
         <item quantity="other">"Tạo %d tài liệu"</item>
     </plurals>
+    <string name="pdf_peek_preview">"Xem trước"</string>
+    <string name="pdf_peek_preview_file">"Xem trước %1$s"</string>
+    <string name="pdf_peek_read_only">"Chỉ xem trước · không thay đổi gì"</string>
+    <string name="pdf_peek_page_of">"Trang %1$d / %2$d"</string>
+    <string name="pdf_peek_opening">"Đang mở bản xem trước…"</string>
+    <string name="pdf_peek_locked">"PDF này có mật khẩu. Hãy mở khóa trước để xem."</string>
+    <string name="pdf_peek_could_not_open">"Không mở được PDF này để xem trước."</string>
+    <string name="pdf_peek_close">"Đóng xem trước"</string>
+    <string name="pdf_peek_tap_hint">"Chạm vào tệp để xem trước"</string>
 </resources>

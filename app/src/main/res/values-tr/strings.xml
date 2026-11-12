@@ -2090,4 +2090,13 @@
         <item quantity="one">"%d belge oluştur"</item>
         <item quantity="other">"%d belge oluştur"</item>
     </plurals>
+    <string name="pdf_peek_preview">"Önizleme"</string>
+    <string name="pdf_peek_preview_file">"%1$s önizlemesi"</string>
+    <string name="pdf_peek_read_only">"Yalnızca önizleme · hiçbir şey değişmez"</string>
+    <string name="pdf_peek_page_of">"Sayfa %1$d / %2$d"</string>
+    <string name="pdf_peek_opening">"Önizleme açılıyor…"</string>
+    <string name="pdf_peek_locked">"Bu PDF\'nin şifresi var. Önizlemek için önce kilidini açın."</string>
+    <string name="pdf_peek_could_not_open">"Bu PDF önizleme için açılamadı."</string>
+    <string name="pdf_peek_close">"Önizlemeyi kapat"</string>
+    <string name="pdf_peek_tap_hint">"Önizlemek için bir dosyaya dokunun"</string>
 </resources>

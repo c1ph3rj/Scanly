@@ -2090,4 +2090,13 @@
         <item quantity="one">"%d દસ્તાવેજ બનાવો"</item>
         <item quantity="other">"%d દસ્તાવેજો બનાવો"</item>
     </plurals>
+    <string name="pdf_peek_preview">"પ્રિવ્યૂ"</string>
+    <string name="pdf_peek_preview_file">"%1$s નું પ્રિવ્યૂ"</string>
+    <string name="pdf_peek_read_only">"ફક્ત પ્રિવ્યૂ · કંઈ બદલાતું નથી"</string>
+    <string name="pdf_peek_page_of">"પેજ %1$d / %2$d"</string>
+    <string name="pdf_peek_opening">"પ્રિવ્યૂ ખુલી રહ્યું છે…"</string>
+    <string name="pdf_peek_locked">"આ PDF પર પાસવર્ડ છે. પ્રિવ્યૂ માટે પહેલા અનલૉક કરો."</string>
+    <string name="pdf_peek_could_not_open">"પ્રિવ્યૂ માટે આ PDF ખોલી શકાઈ નથી."</string>
+    <string name="pdf_peek_close">"પ્રિવ્યૂ બંધ કરો"</string>
+    <string name="pdf_peek_tap_hint">"પ્રિવ્યૂ માટે ફાઇલ પર ટૅપ કરો"</string>
 </resources>

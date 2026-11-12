@@ -242,7 +242,21 @@ private fun ColumnScope.PagesStep(
         }
     }
 
+    var showPreview by rememberSaveable { mutableStateOf(false) }
+    val previewSource = uiState.source
+    if (showPreview && previewSource != null) {
+        PdfPeekDialog(
+            source = previewSource,
+            password = uiState.password.ifBlank { null },
+            onDismiss = { showPreview = false },
+        )
+    }
     ToolTopBar(onBack = onBack, stepText = stringResource(R.string.pdf_import_step_2_of_3_pages))
+    val onPreview: (() -> Unit)? = if (previewSource != null && uiState.isReady && !uiState.needsPassword) {
+        { showPreview = true }
+    } else {
+        null
+    }
     // Wide landscape: pages on the start side, the settings beside them instead of below.
     val split = rememberToolSplitLayout() && uiState.isReady && !uiState.needsPassword
     val grid: @Composable (Modifier) -> Unit = { gridModifier ->
@@ -275,6 +289,7 @@ private fun ColumnScope.PagesStep(
                         name = uiState.source?.label().orEmpty(),
                         pageCount = uiState.pageCount,
                         onChange = onChange,
+                        onPreview = onPreview,
                     )
                 }
             }

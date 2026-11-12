@@ -2124,4 +2124,13 @@
         <item quantity="many">"Crear %d documentos"</item>
         <item quantity="other">"Crear %d documentos"</item>
     </plurals>
+    <string name="pdf_peek_preview">"Vista previa"</string>
+    <string name="pdf_peek_preview_file">"Vista previa de %1$s"</string>
+    <string name="pdf_peek_read_only">"Solo vista previa · no cambia nada"</string>
+    <string name="pdf_peek_page_of">"Página %1$d de %2$d"</string>
+    <string name="pdf_peek_opening">"Abriendo vista previa…"</string>
+    <string name="pdf_peek_locked">"Este PDF tiene contraseña. Desbloquéalo primero para verlo."</string>
+    <string name="pdf_peek_could_not_open">"No se pudo abrir este PDF para la vista previa."</string>
+    <string name="pdf_peek_close">"Cerrar vista previa"</string>
+    <string name="pdf_peek_tap_hint">"Toca un archivo para verlo"</string>
 </resources>

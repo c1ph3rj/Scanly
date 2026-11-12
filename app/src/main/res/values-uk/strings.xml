@@ -2158,4 +2158,13 @@
         <item quantity="many">"Створити %d документів"</item>
         <item quantity="other">"Створити %d документа"</item>
     </plurals>
+    <string name="pdf_peek_preview">"Перегляд"</string>
+    <string name="pdf_peek_preview_file">"Перегляд: %1$s"</string>
+    <string name="pdf_peek_read_only">"Лише перегляд · нічого не змінюється"</string>
+    <string name="pdf_peek_page_of">"Сторінка %1$d з %2$d"</string>
+    <string name="pdf_peek_opening">"Відкриваємо перегляд…"</string>
+    <string name="pdf_peek_locked">"Цей PDF має пароль. Спершу розблокуйте його, щоб переглянути."</string>
+    <string name="pdf_peek_could_not_open">"Не вдалося відкрити цей PDF для перегляду."</string>
+    <string name="pdf_peek_close">"Закрити перегляд"</string>
+    <string name="pdf_peek_tap_hint">"Торкніться файлу, щоб переглянути його"</string>
 </resources>

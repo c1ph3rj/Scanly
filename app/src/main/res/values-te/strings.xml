@@ -2090,4 +2090,13 @@
         <item quantity="one">"%d పత్రాన్ని సృష్టించు"</item>
         <item quantity="other">"%d పత్రాలను సృష్టించు"</item>
     </plurals>
+    <string name="pdf_peek_preview">"ప్రివ్యూ"</string>
+    <string name="pdf_peek_preview_file">"%1$s ప్రివ్యూ"</string>
+    <string name="pdf_peek_read_only">"ప్రివ్యూ మాత్రమే · ఏదీ మారదు"</string>
+    <string name="pdf_peek_page_of">"పేజీ %1$d / %2$d"</string>
+    <string name="pdf_peek_opening">"ప్రివ్యూ తెరుస్తోంది…"</string>
+    <string name="pdf_peek_locked">"ఈ PDF కి పాస్‌వర్డ్ ఉంది. ప్రివ్యూ చూడటానికి ముందుగా అన్‌లాక్ చేయండి."</string>
+    <string name="pdf_peek_could_not_open">"ప్రివ్యూ కోసం ఈ PDF ని తెరవలేకపోయాం."</string>
+    <string name="pdf_peek_close">"ప్రివ్యూ మూసివేయండి"</string>
+    <string name="pdf_peek_tap_hint">"ప్రివ్యూ కోసం ఫైల్‌ను ట్యాప్ చేయండి"</string>
 </resources>

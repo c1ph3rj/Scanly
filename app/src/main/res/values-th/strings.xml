@@ -2056,4 +2056,13 @@
     <plurals name="document_split_create">
         <item quantity="other">"สร้าง %d เอกสาร"</item>
     </plurals>
+    <string name="pdf_peek_preview">"ตัวอย่าง"</string>
+    <string name="pdf_peek_preview_file">"ดูตัวอย่าง %1$s"</string>
+    <string name="pdf_peek_read_only">"ดูตัวอย่างเท่านั้น · ไม่มีอะไรเปลี่ยน"</string>
+    <string name="pdf_peek_page_of">"หน้า %1$d จาก %2$d"</string>
+    <string name="pdf_peek_opening">"กำลังเปิดตัวอย่าง…"</string>
+    <string name="pdf_peek_locked">"PDF นี้มีรหัสผ่าน ปลดล็อกก่อนเพื่อดูตัวอย่าง"</string>
+    <string name="pdf_peek_could_not_open">"เปิด PDF นี้เพื่อดูตัวอย่างไม่ได้"</string>
+    <string name="pdf_peek_close">"ปิดตัวอย่าง"</string>
+    <string name="pdf_peek_tap_hint">"แตะไฟล์เพื่อดูตัวอย่าง"</string>
 </resources>

@@ -2056,4 +2056,13 @@
     <plurals name="document_split_create">
         <item quantity="other">"%d 個のドキュメントを作成"</item>
     </plurals>
+    <string name="pdf_peek_preview">"プレビュー"</string>
+    <string name="pdf_peek_preview_file">"%1$s をプレビュー"</string>
+    <string name="pdf_peek_read_only">"プレビューのみ · 何も変更されません"</string>
+    <string name="pdf_peek_page_of">"%2$d ページ中 %1$d ページ"</string>
+    <string name="pdf_peek_opening">"プレビューを開いています…"</string>
+    <string name="pdf_peek_locked">"この PDF にはパスワードがあります。プレビューするには先にロックを解除してください。"</string>
+    <string name="pdf_peek_could_not_open">"この PDF をプレビュー用に開けませんでした。"</string>
+    <string name="pdf_peek_close">"プレビューを閉じる"</string>
+    <string name="pdf_peek_tap_hint">"ファイルをタップしてプレビュー"</string>
 </resources>

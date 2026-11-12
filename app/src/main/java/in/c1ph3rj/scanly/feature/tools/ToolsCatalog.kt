@@ -75,7 +75,11 @@ val scanTools: List<ToolItem> get() = listOf(
     ),
 )
 
-/** "PDF": Add to library first, then gallery import and the PDF tools. */
+/**
+ * "PDF", in pairs that read as one idea per row of the two-column grid: open (Add to library,
+ * Read), convert (Images to PDF, PDF to JPG), combine or cut (Merge, Split), shrink and protect
+ * (Compress, Password), mark up (Sign, Watermark).
+ */
 val pdfTools: List<ToolItem> get() = listOf(
     ToolItem(
         id = ToolActionId.PdfImport,
@@ -85,17 +89,24 @@ val pdfTools: List<ToolItem> get() = listOf(
         route = ToolsPdfImportDestination.route,
     ),
     ToolItem(
+        id = ToolActionId.PdfReader,
+        title = appString(R.string.tools_catalog_read_pdf),
+        caption = appString(R.string.tools_catalog_open_any_pdf),
+        icon = Icons.AutoMirrored.Outlined.MenuBook,
+        route = ToolsPdfReaderDestination.route,
+    ),
+    ToolItem(
         id = ToolActionId.Import,
         title = appString(R.string.tools_catalog_images_to_pdf),
         caption = appString(R.string.tools_catalog_from_gallery),
         icon = Icons.Outlined.PhotoLibrary,
     ),
     ToolItem(
-        id = ToolActionId.PdfSign,
-        title = appString(R.string.page_image_preview_sign),
-        caption = appString(R.string.tools_catalog_sign_any_pdf),
-        icon = Icons.Outlined.Draw,
-        route = ToolsPdfSignDestination.route,
+        id = ToolActionId.PdfToImages,
+        title = appString(R.string.pdf_to_images_pdf_to_jpg),
+        caption = appString(R.string.tools_catalog_pages_as_images),
+        icon = Icons.Outlined.Image,
+        route = ToolsPdfToImagesDestination.route,
     ),
     ToolItem(
         id = ToolActionId.PdfMerge,
@@ -119,13 +130,6 @@ val pdfTools: List<ToolItem> get() = listOf(
         route = ToolsPdfCompressDestination.route,
     ),
     ToolItem(
-        id = ToolActionId.PdfToImages,
-        title = appString(R.string.pdf_to_images_pdf_to_jpg),
-        caption = appString(R.string.tools_catalog_pages_as_images),
-        icon = Icons.Outlined.Image,
-        route = ToolsPdfToImagesDestination.route,
-    ),
-    ToolItem(
         id = ToolActionId.PdfPassword,
         title = appString(R.string.pdf_reader_password),
         caption = appString(R.string.tools_catalog_lock_or_unlock),
@@ -133,18 +137,18 @@ val pdfTools: List<ToolItem> get() = listOf(
         route = ToolsPdfPasswordDestination.route,
     ),
     ToolItem(
+        id = ToolActionId.PdfSign,
+        title = appString(R.string.page_image_preview_sign),
+        caption = appString(R.string.tools_catalog_sign_any_pdf),
+        icon = Icons.Outlined.Draw,
+        route = ToolsPdfSignDestination.route,
+    ),
+    ToolItem(
         id = ToolActionId.PdfWatermark,
         title = appString(R.string.pdf_watermark_watermark),
         caption = appString(R.string.tools_catalog_stamp_text),
         icon = Icons.Outlined.WaterDrop,
         route = ToolsPdfWatermarkDestination.route,
-    ),
-    ToolItem(
-        id = ToolActionId.PdfReader,
-        title = appString(R.string.tools_catalog_read_pdf),
-        caption = appString(R.string.tools_catalog_open_any_pdf),
-        icon = Icons.AutoMirrored.Outlined.MenuBook,
-        route = ToolsPdfReaderDestination.route,
     ),
 )
 

@@ -2090,4 +2090,13 @@
         <item quantity="one">"%d ഡോക്യുമെന്റ് സൃഷ്‌ടിക്കുക"</item>
         <item quantity="other">"%d ഡോക്യുമെന്റുകൾ സൃഷ്‌ടിക്കുക"</item>
     </plurals>
+    <string name="pdf_peek_preview">"പ്രിവ്യൂ"</string>
+    <string name="pdf_peek_preview_file">"%1$s പ്രിവ്യൂ ചെയ്യുക"</string>
+    <string name="pdf_peek_read_only">"പ്രിവ്യൂ മാത്രം · ഒന്നും മാറില്ല"</string>
+    <string name="pdf_peek_page_of">"പേജ് %1$d / %2$d"</string>
+    <string name="pdf_peek_opening">"പ്രിവ്യൂ തുറക്കുന്നു…"</string>
+    <string name="pdf_peek_locked">"ഈ PDF-ന് പാസ്‌വേഡ് ഉണ്ട്. പ്രിവ്യൂ കാണാൻ ആദ്യം അൺലോക്ക് ചെയ്യുക."</string>
+    <string name="pdf_peek_could_not_open">"പ്രിവ്യൂവിനായി ഈ PDF തുറക്കാനായില്ല."</string>
+    <string name="pdf_peek_close">"പ്രിവ്യൂ അടയ്ക്കുക"</string>
+    <string name="pdf_peek_tap_hint">"പ്രിവ്യൂ കാണാൻ ഒരു ഫയലിൽ ടാപ്പ് ചെയ്യുക"</string>
 </resources>

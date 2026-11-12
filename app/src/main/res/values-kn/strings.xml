@@ -2090,4 +2090,13 @@
         <item quantity="one">"%d ಡಾಕ್ಯುಮೆಂಟ್ ರಚಿಸಿ"</item>
         <item quantity="other">"%d ಡಾಕ್ಯುಮೆಂಟ್‌ಗಳನ್ನು ರಚಿಸಿ"</item>
     </plurals>
+    <string name="pdf_peek_preview">"ಪೂರ್ವವೀಕ್ಷಣೆ"</string>
+    <string name="pdf_peek_preview_file">"%1$s ಪೂರ್ವವೀಕ್ಷಿಸಿ"</string>
+    <string name="pdf_peek_read_only">"ಪೂರ್ವವೀಕ್ಷಣೆ ಮಾತ್ರ · ಏನೂ ಬದಲಾಗುವುದಿಲ್ಲ"</string>
+    <string name="pdf_peek_page_of">"ಪುಟ %1$d / %2$d"</string>
+    <string name="pdf_peek_opening">"ಪೂರ್ವವೀಕ್ಷಣೆ ತೆರೆಯುತ್ತಿದೆ…"</string>
+    <string name="pdf_peek_locked">"ಈ PDF ಗೆ ಪಾಸ್‌ವರ್ಡ್ ಇದೆ. ಪೂರ್ವವೀಕ್ಷಿಸಲು ಮೊದಲು ಅನ್‌ಲಾಕ್ ಮಾಡಿ."</string>
+    <string name="pdf_peek_could_not_open">"ಪೂರ್ವವೀಕ್ಷಣೆಗಾಗಿ ಈ PDF ತೆರೆಯಲಾಗಲಿಲ್ಲ."</string>
+    <string name="pdf_peek_close">"ಪೂರ್ವವೀಕ್ಷಣೆ ಮುಚ್ಚಿ"</string>
+    <string name="pdf_peek_tap_hint">"ಪೂರ್ವವೀಕ್ಷಿಸಲು ಫೈಲ್ ಅನ್ನು ಟ್ಯಾಪ್ ಮಾಡಿ"</string>
 </resources>

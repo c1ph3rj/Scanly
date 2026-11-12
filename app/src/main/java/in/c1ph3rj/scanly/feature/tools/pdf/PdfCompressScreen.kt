@@ -1,5 +1,6 @@
 package `in`.c1ph3rj.scanly.feature.tools.pdf
 
+import androidx.compose.foundation.clickable
 import android.graphics.Bitmap
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
@@ -49,6 +50,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import `in`.c1ph3rj.scanly.feature.tools.ToolSecondaryButton
 import `in`.c1ph3rj.scanly.feature.tools.rememberToolSplitLayout
 import `in`.c1ph3rj.scanly.feature.tools.ToolSplitPanes
 import `in`.c1ph3rj.scanly.feature.tools.ToolSplitMaxWidth
@@ -241,6 +243,15 @@ private fun ColumnScope.CompressOptionsStep(
     val locked = uiState.needsPassword || uiState.info?.isEncrypted == true
     var showPassword by rememberSaveable { mutableStateOf(false) }
 
+    var showPreview by rememberSaveable { mutableStateOf(false) }
+    val previewSource = uiState.sources.firstOrNull()
+    if (showPreview && previewSource != null) {
+        PdfPeekDialog(
+            source = previewSource,
+            password = uiState.currentPassword.ifBlank { null },
+            onDismiss = { showPreview = false },
+        )
+    }
     ToolCompactHeader(
         title = stringResource(R.string.pdf_compress_compress),
         onBack = onChange,
@@ -249,7 +260,13 @@ private fun ColumnScope.CompressOptionsStep(
         onAction = onChange,
     )
     val split = rememberToolSplitLayout()
-    val preview: @Composable (Modifier) -> Unit = { previewModifier ->
+    // The first page, with a "Preview" button right under it that opens every page.
+    val preview: @Composable (Modifier, Modifier) -> Unit = { previewModifier, pageModifier ->
+        Column(
+            modifier = previewModifier,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
         ToolPaperPage(
             bitmap = uiState.sourcePagePreview,
             loading = uiState.isSourcePagePreviewLoading,
@@ -257,8 +274,20 @@ private fun ColumnScope.CompressOptionsStep(
                 R.string.pdf_compress_first_page_of,
                 name.ifBlank { stringResource(R.string.pdf_compress_the_pdf) },
             ),
-            modifier = previewModifier,
+            modifier = pageModifier.clickable(
+                enabled = previewSource != null,
+                onClickLabel = stringResource(R.string.pdf_peek_preview),
+                onClick = { showPreview = true },
+            ),
         )
+        if (previewSource != null) {
+            ToolSecondaryButton(
+                text = stringResource(R.string.pdf_peek_preview),
+                onClick = { showPreview = true },
+                icon = Icons.Outlined.Visibility,
+            )
+        }
+        }
     }
     val settings: @Composable ColumnScope.() -> Unit = {
         if (locked) {
@@ -323,8 +352,8 @@ private fun ColumnScope.CompressOptionsStep(
                 preview(
                     Modifier
                         .align(Alignment.Center)
-                        .padding(24.dp)
-                        .widthIn(max = 320.dp),
+                        .padding(24.dp),
+                    Modifier.widthIn(max = 320.dp),
                 )
             },
             end = settings,
@@ -341,10 +370,9 @@ private fun ColumnScope.CompressOptionsStep(
             verticalArrangement = Arrangement.spacedBy(20.dp),
         ) {
             preview(
-                Modifier
-                    .align(Alignment.CenterHorizontally)
-                    // Smaller thumbnail on short windows so the quality choices show without scrolling.
-                    .width(if (rememberWindowSizeInfo().isHeightConstrained) 72.dp else 120.dp),
+                Modifier.align(Alignment.CenterHorizontally),
+                // Smaller thumbnail on short windows so the quality choices show without scrolling.
+                Modifier.width(if (rememberWindowSizeInfo().isHeightConstrained) 72.dp else 120.dp),
             )
             settings()
         }

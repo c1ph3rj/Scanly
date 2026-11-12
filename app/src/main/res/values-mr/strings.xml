@@ -2090,4 +2090,13 @@
         <item quantity="one">"%d दस्तऐवज तयार करा"</item>
         <item quantity="other">"%d दस्तऐवज तयार करा"</item>
     </plurals>
+    <string name="pdf_peek_preview">"प्रिव्ह्यू"</string>
+    <string name="pdf_peek_preview_file">"%1$s चा प्रिव्ह्यू"</string>
+    <string name="pdf_peek_read_only">"फक्त प्रिव्ह्यू · काहीही बदलत नाही"</string>
+    <string name="pdf_peek_page_of">"पान %1$d / %2$d"</string>
+    <string name="pdf_peek_opening">"प्रिव्ह्यू उघडत आहे…"</string>
+    <string name="pdf_peek_locked">"या PDF ला पासवर्ड आहे. प्रिव्ह्यू पाहण्यासाठी आधी अनलॉक करा."</string>
+    <string name="pdf_peek_could_not_open">"प्रिव्ह्यूसाठी ही PDF उघडता आली नाही."</string>
+    <string name="pdf_peek_close">"प्रिव्ह्यू बंद करा"</string>
+    <string name="pdf_peek_tap_hint">"प्रिव्ह्यूसाठी फाइलवर टॅप करा"</string>
 </resources>

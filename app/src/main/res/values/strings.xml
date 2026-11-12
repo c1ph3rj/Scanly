@@ -2278,4 +2278,13 @@
         <item quantity="one">"Create %d document"</item>
         <item quantity="other">"Create %d documents"</item>
     </plurals>
+    <string name="pdf_peek_preview">"Preview"</string>
+    <string name="pdf_peek_preview_file">"Preview %1$s"</string>
+    <string name="pdf_peek_read_only">"Preview only · nothing changes"</string>
+    <string name="pdf_peek_page_of">"Page %1$d of %2$d"</string>
+    <string name="pdf_peek_opening">"Opening preview…"</string>
+    <string name="pdf_peek_locked">"This PDF has a password. Unlock it first to preview it."</string>
+    <string name="pdf_peek_could_not_open">"Couldn't open this PDF to preview it."</string>
+    <string name="pdf_peek_close">"Close preview"</string>
+    <string name="pdf_peek_tap_hint">"Tap a file to preview it"</string>
 </resources>
