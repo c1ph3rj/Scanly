@@ -107,9 +107,6 @@ android {
             isDebuggable = false
             isMinifyEnabled = true
             isShrinkResources = true
-            installation {
-                enableBaselineProfile = false
-            }
             if (hasReleaseSigning) {
                 signingConfig = signingConfigs.getByName("release")
             }
@@ -129,6 +126,28 @@ android {
             initWith(getByName("release"))
             buildConfigField("String", "UPDATE_CHANNEL", "\"playStore\"")
             matchingFallbacks += listOf("release")
+        }
+
+        // What :baselineprofile installs and drives: the GitHub release build, optimised by R8
+        // like a real release but with readable names (a baseline profile lists classes and
+        // methods by name), measurable from adb, debug-signed, and runnable on x86_64 emulators.
+        // Never distributed. See baselineprofile/README.md.
+        create("benchmark") {
+            initWith(getByName("githubRelease"))
+            signingConfig = signingConfigs.getByName("debug")
+            isProfileable = true
+            proguardFiles("benchmark-rules.pro")
+            matchingFallbacks += listOf("release")
+            ndk {
+                abiFilters += "x86_64"
+            }
+        }
+    }
+    sourceSets {
+        // Same update bindings as the GitHub release it mirrors.
+        getByName("benchmark") {
+            java.srcDir("src/githubRelease/java")
+            kotlin.srcDir("src/githubRelease/java")
         }
     }
     compileOptions {
@@ -194,6 +213,8 @@ dependencies {
         // Debug uses the full Maven AAR (same API and results) because the slim AAR is ARM-only
         // and debug builds also target x86_64 emulators; release variants ship the slim one.
         debugImplementation(libs.opencv)
+        // Full AAR here too: the slim one has no x86_64 libraries for emulators.
+        "benchmarkImplementation"(libs.opencv)
         releaseImplementation(files(slimOpenCvAar))
         "githubReleaseImplementation"(files(slimOpenCvAar))
         "playStoreReleaseImplementation"(files(slimOpenCvAar))
@@ -213,6 +234,8 @@ dependencies {
     implementation(libs.mlkit.text.recognition)
     implementation(libs.zxing.core)
     implementation(libs.androidx.webkit)
+    // Applies the bundled baseline profile on installs that do not come from Play (GitHub APKs).
+    implementation(libs.androidx.profileinstaller)
     implementation(libs.androidx.work.runtime)
     implementation(libs.androidx.hilt.work)
     ksp(libs.androidx.room.compiler)

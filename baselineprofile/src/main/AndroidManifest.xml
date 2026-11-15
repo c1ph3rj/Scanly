@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Macrobenchmark looks the target app up by package name. -->
+    <queries>
+        <package android:name="in.c1ph3rj.scanly" />
+    </queries>
+
+</manifest>

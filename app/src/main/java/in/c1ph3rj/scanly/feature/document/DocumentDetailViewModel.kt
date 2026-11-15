@@ -36,6 +36,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -102,36 +103,29 @@ class DocumentDetailViewModel @Inject constructor(
     val events: Flow<DocumentDetailEvent> = _events.receiveAsFlow()
 
     init {
+        // One combined update, so the screen goes from loading to complete in a single
+        // recomposition instead of filling in piece by piece while its enter transition runs.
         viewModelScope.launch {
-            observeDocumentUseCase(documentId).collectLatest { document ->
-                _uiState.update { current ->
-                    current.copy(
-                        document = document,
-                        missingDocument = document == null,
-                    )
-                }
-            }
-        }
-
-        viewModelScope.launch {
-            observeDocumentPagesUseCase(documentId).collectLatest { pages ->
-                _uiState.update { current ->
-                    current.copy(
-                        pages = pages,
-                        isLoading = false,
-                        selectedPageId = resolveSelectedPageId(
-                            currentSelectedPageId = current.selectedPageId,
+            combine(
+                observeDocumentUseCase(documentId),
+                observeDocumentPagesUseCase(documentId),
+                observeGroupsUseCase(),
+            ) { document, pages, groups -> Triple(document, pages, groups) }
+                .collectLatest { (document, pages, groups) ->
+                    _uiState.update { current ->
+                        current.copy(
+                            document = document,
+                            missingDocument = document == null,
                             pages = pages,
-                        ),
-                    )
+                            isLoading = false,
+                            selectedPageId = resolveSelectedPageId(
+                                currentSelectedPageId = current.selectedPageId,
+                                pages = pages,
+                            ),
+                            availableGroups = groups,
+                        )
+                    }
                 }
-            }
-        }
-
-        viewModelScope.launch {
-            observeGroupsUseCase().collectLatest { groups ->
-                _uiState.update { current -> current.copy(availableGroups = groups) }
-            }
         }
     }
 

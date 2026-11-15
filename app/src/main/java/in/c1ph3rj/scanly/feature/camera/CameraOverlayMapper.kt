@@ -74,3 +74,18 @@ internal fun DocumentCornerQuad.mapToPreview(
         )
     }
 }
+
+/**
+ * True when every corner lies inside the visible viewport crop (what the preview shows and the
+ * saved photo is cropped to), at least [margin] (fraction of the crop) away from its edges.
+ * An invalid frame cannot be checked and returns false.
+ */
+internal fun DocumentCornerQuad.isWithinVisibleRegion(
+    frame: DetectionOverlayFrame,
+    margin: Float,
+): Boolean {
+    val mapped = mapToPreview(frame)
+    if (mapped.size < 4) return false
+    val range = margin..(1f - margin)
+    return mapped.all { point -> point.x in range && point.y in range }
+}

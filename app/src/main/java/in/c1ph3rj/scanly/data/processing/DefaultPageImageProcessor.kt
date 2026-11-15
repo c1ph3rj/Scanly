@@ -242,12 +242,13 @@ class DefaultPageImageProcessor @Inject constructor(
         }.getOrNull()
         if (resolved != null) return resolved
 
-        // Same path the benchmark visualizes: raw model corners.
+        // Same path the benchmark visualizes: raw model corners. Still readiness already accepts
+        // border-touching corners, so anything it rejects (slivers, tiny boxes) is not a page.
         val raw = runCatching {
             documentCornerDetector.detect(bitmap, selectedModel, reproducible = true).quad
         }.getOrNull()
-        return raw?.takeIf(DocumentQuadPolicy::isStillProcessReady)
-            ?: raw?.takeIf { it.isValid() && it.isConvex() }
+        val frameAspectRatio = bitmap.width.toFloat() / bitmap.height
+        return raw?.takeIf { DocumentQuadPolicy.isStillProcessReady(it, frameAspectRatio) }
     }
 
     private fun decodeForProcessing(path: String): Bitmap? {

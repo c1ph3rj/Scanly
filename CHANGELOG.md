@@ -12,9 +12,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 
+- **Smoother screen changes** — opening a document, folder, tool or settings page no longer blinks to an empty background first: the new screen glides in from the side across the full width while the one you were on drifts away underneath it, and Back plays the same movement in reverse, so a back swipe drags the screen off under your finger. The movement is spring-driven — it settles without a hard stop and picks up from where it is if you go Back mid-way. The camera rises from the bottom and drops back down when closed. The bottom bar now moves with its tab instead of popping out and resizing the page, switching tabs is a short cross-fade instead of a hard cut, and Search opens with the same motion as every other screen.
+- **Screens arrive ready** — document and folder covers appear at once when you return to a list instead of flashing a coloured placeholder first, a document opens complete rather than showing a brief spinner, and the Tools and Settings tabs open without a hitch (tool pictures load in the background; the model speed test and storage total in Settings start a moment after the screen is shown).
 - **Tools artwork** — tactile 2.5D illustrations sit in rounded outlined icon areas with transparent interiors and more space around each icon. Merge shows two documents joining; Split shows one document becoming two. Transparent artwork keeps the same materials in light, dark and pure black themes.
 - **Tools hub order** — PDF tools now sit in pairs that read as one idea per row: Add to library · Read PDF, Images to PDF · PDF to JPG, Merge · Split, Compress · Password, Sign · Watermark.
 - **Tool illustrations** — every page drawn in the tool pictures now has true A4 proportions (no more stretched or squat pages), and **Add to library** shows a PDF going into a folder with a "+" badge.
+
+### Fixed
+
+- **Auto-capture no longer takes the same page twice** — after a page is captured, Scanly waits until the page has actually moved or been taken away before capturing again. Previously, holding the phone still could save a duplicate a few seconds later.
+- **Steadier outline and countdown** — one missed frame no longer makes the outline blink or restarts the "hold steady" countdown, and a brief dip in the physical-document check no longer drops the outline.
+- **ID cards and other wide documents in the live camera** — the outline now appears for landscape cards held in a portrait phone; the shape check was measuring them as wider than they are.
+- **"Image looks blurry" on clean pages** — blank or lightly printed pages are no longer reported as blurry (which blocked auto-capture); the check now looks at how sharp the edges are instead of how much is printed on the page.
+- **Auto-capture with the Accurate model** — a detected page now counts down and captures instead of staying on "Point your camera at a document".
+- **Tighter outline** — when the detected outline overshoots onto the desk, it is pulled back to the paper edge. Open books: the gutter between two pages is found wherever it falls, and a table line or picture border is no longer mistaken for one.
+- **Cut-off pages** — a page that is partly outside the visible camera view no longer triggers auto-capture.
+- **Imports** — a photo whose page reaches the image border is cropped normally, and a tiny or sliver-shaped detection is no longer used to crop an imported image.
 
 ## [1.0.21] - 2026-11-11
 

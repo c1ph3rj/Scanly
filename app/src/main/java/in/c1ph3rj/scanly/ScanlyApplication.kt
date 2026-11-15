@@ -10,6 +10,7 @@ import `in`.c1ph3rj.scanly.data.text.IcuRomanizer
 import `in`.c1ph3rj.scanly.data.text.TextIndexScheduler
 import `in`.c1ph3rj.scanly.domain.search.SearchTextDeriver
 import `in`.c1ph3rj.scanly.domain.usecase.PurgeExpiredTrashUseCase
+import `in`.c1ph3rj.scanly.feature.tools.ToolArtCache
 import `in`.c1ph3rj.scanly.feature.widget.ScanlyWidgetSupport
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -40,6 +41,12 @@ class ScanlyApplication : Application(), Configuration.Provider {
         get() = Configuration.Builder()
             .setWorkerFactory(workerFactory)
             .build()
+
+    override fun onTrimMemory(level: Int) {
+        super.onTrimMemory(level)
+        // The UI is no longer visible: let go of decoded tool pictures; they reload on demand.
+        if (level >= TRIM_MEMORY_UI_HIDDEN) ToolArtCache.clear()
+    }
 
     override fun onConfigurationChanged(newConfig: android.content.res.Configuration) {
         super.onConfigurationChanged(newConfig)

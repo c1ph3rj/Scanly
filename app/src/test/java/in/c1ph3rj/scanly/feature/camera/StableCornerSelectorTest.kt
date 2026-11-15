@@ -5,8 +5,10 @@ import `in`.c1ph3rj.scanly.core.ml.DocumentCornerQuad
 import `in`.c1ph3rj.scanly.core.ml.NormalizedPoint
 import `in`.c1ph3rj.scanly.domain.model.DocumentCornerModel
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class StableCornerSelectorTest {
@@ -36,12 +38,89 @@ class StableCornerSelectorTest {
         assertEquals(DocumentCornerModel.HIGH, replacement.model)
     }
 
-    private fun result(quad: DocumentCornerQuad, model: DocumentCornerModel) = CornerDetectionResult(
+    @Test
+    fun shortDetectionGapKeepsTrackedQuadButMarksItHeld() {
+        val selector = StableCornerSelector()
+        val paper = paperQuad()
+        selector.select(result(paper, DocumentCornerModel.HIGH))
+        assertTrue(selector.selectTracked(result(paper, DocumentCornerModel.HIGH)).isFresh)
+
+        val firstMiss = selector.selectTracked(missing())
+        val secondMiss = selector.selectTracked(missing())
+        val resumed = selector.selectTracked(result(paper.shifted(0.004f), DocumentCornerModel.HIGH))
+
+        assertNotNull(firstMiss.result.quad)
+        assertFalse(firstMiss.isFresh)
+        assertNotNull(secondMiss.result.quad)
+        assertFalse(secondMiss.isFresh)
+        // Tracking resumes without a new confirmation.
+        assertNotNull(resumed.result.quad)
+        assertTrue(resumed.isFresh)
+    }
+
+    @Test
+    fun trackedQuadClearsAfterMissLimitAndNeedsReconfirmation() {
+        val selector = StableCornerSelector()
+        val paper = paperQuad()
+        selector.select(result(paper, DocumentCornerModel.HIGH))
+        selector.select(result(paper, DocumentCornerModel.HIGH))
+
+        selector.select(missing())
+        selector.select(missing())
+        val cleared = selector.selectTracked(missing())
+        val reappeared = selector.selectTracked(result(paper, DocumentCornerModel.HIGH))
+
+        assertNull(cleared.result.quad)
+        assertFalse(cleared.isFresh)
+        assertNull(reappeared.result.quad)
+    }
+
+    @Test
+    fun pendingSwitchAfterGapIsNeverShown() {
+        val selector = StableCornerSelector()
+        val paper = paperQuad()
+        selector.select(result(paper, DocumentCornerModel.HIGH))
+        selector.select(result(paper, DocumentCornerModel.HIGH))
+        selector.select(missing())
+
+        val jump = selector.selectTracked(result(mixedEdgeQuad(), DocumentCornerModel.STANDARD))
+
+        assertNull(jump.result.quad)
+        assertFalse(jump.isFresh)
+    }
+
+    @Test
+    fun captureReadinessUsesFrameAspectRatio() {
+        val narrow = DocumentCornerQuad(
+            NormalizedPoint(0.35f, 0.1f),
+            NormalizedPoint(0.65f, 0.1f),
+            NormalizedPoint(0.65f, 0.9f),
+            NormalizedPoint(0.35f, 0.9f),
+        )
+        val square = StableCornerSelector()
+        val portrait = StableCornerSelector()
+
+        square.select(result(narrow, DocumentCornerModel.HIGH, aspect = 1f))
+        portrait.select(result(narrow, DocumentCornerModel.HIGH, aspect = 0.5f))
+
+        assertNotNull(square.select(result(narrow, DocumentCornerModel.HIGH, aspect = 1f)).quad)
+        assertNull(portrait.select(result(narrow, DocumentCornerModel.HIGH, aspect = 0.5f)).quad)
+    }
+
+    private fun missing() = CornerDetectionResult(
+        quad = null,
+        confidence = 0f,
+        inferenceTimeMillis = 10L,
+        modelName = "test",
+    )
+
+    private fun result(quad: DocumentCornerQuad, model: DocumentCornerModel, aspect: Float = 1f) = CornerDetectionResult(
         quad = quad,
         confidence = 0.99f,
         inferenceTimeMillis = 10L,
         modelName = "test",
         model = model,
+        frameAspectRatio = aspect,
     )
 
     private fun paperQuad() = DocumentCornerQuad(

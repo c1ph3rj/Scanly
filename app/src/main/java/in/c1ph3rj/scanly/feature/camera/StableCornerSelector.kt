@@ -5,7 +5,24 @@ import `in`.c1ph3rj.scanly.core.ml.DocumentCornerQuad
 import `in`.c1ph3rj.scanly.core.ml.DocumentQuadPolicy
 import `in`.c1ph3rj.scanly.core.ml.NormalizedPoint
 
+/**
+ * Result of one [StableCornerSelector.selectTracked] call.
+ *
+ * @property isFresh true when [result]'s quad was confirmed by this frame's detection; false when it
+ *   is the previously tracked quad held through a short detection gap (or there is no quad). A held
+ *   quad may be drawn but must never trigger auto-capture on its own.
+ */
+data class TrackedCornerSelection(
+    val result: CornerDetectionResult,
+    val isFresh: Boolean,
+)
+
 class StableCornerSelector(
+    /**
+     * Consecutive invalid/missing frames after which the tracked quad is dropped. Below it the last
+     * quad keeps being returned so one missed detection does not blink the outline (~375 ms at 8 fps).
+     */
+    private val missingFramesBeforeClear: Int = 3,
     private val initialConfirmationFrames: Int = 2,
     private val normalSwitchFrames: Int = 3,
     private val superiorSwitchFrames: Int = 2,
@@ -19,15 +36,25 @@ class StableCornerSelector(
     private var pendingFrames: Int = 0
     private var missingFrames: Int = 0
 
-    fun select(candidate: CornerDetectionResult): CornerDetectionResult {
+    fun select(candidate: CornerDetectionResult): CornerDetectionResult = selectTracked(candidate).result
+
+    fun selectTracked(candidate: CornerDetectionResult): TrackedCornerSelection {
         val validCandidate = candidate.takeIf { result ->
-            result.quad?.let(DocumentQuadPolicy::isCaptureReady) == true
+            result.quad?.let { quad -> DocumentQuadPolicy.isCaptureReady(quad, result.frameAspectRatio) } == true
         }
         if (validCandidate == null) {
             missingFrames += 1
             resetPending()
-            if (missingFrames >= MISSING_FRAMES_BEFORE_CLEAR) current = null
-            return candidate.copy(quad = null)
+            if (missingFrames >= missingFramesBeforeClear) current = null
+            // Grace: keep showing the tracked quad (stale, so never fresh) for a short gap.
+            val held = current ?: return TrackedCornerSelection(candidate.copy(quad = null), isFresh = false)
+            return TrackedCornerSelection(
+                held.copy(
+                    inferenceTimeMillis = candidate.inferenceTimeMillis,
+                    timing = candidate.timing,
+                ),
+                isFresh = false,
+            )
         }
         missingFrames = 0
 
@@ -35,7 +62,8 @@ class StableCornerSelector(
         if (active == null) {
             updatePending(validCandidate)
             if (pendingFrames >= initialConfirmationFrames) promotePending()
-            return validCandidate.copy(quad = current?.quad)
+            val confirmed = current?.quad
+            return TrackedCornerSelection(validCandidate.copy(quad = confirmed), isFresh = confirmed != null)
         }
 
         val activeQuad = checkNotNull(active.quad)
@@ -43,7 +71,7 @@ class StableCornerSelector(
         if (candidateQuad.maxCornerDistance(activeQuad) <= trackingDistance) {
             current = validCandidate.copy(quad = activeQuad.interpolate(candidateQuad, smoothingFactor))
             resetPending()
-            return checkNotNull(current)
+            return TrackedCornerSelection(checkNotNull(current), isFresh = true)
         }
 
         updatePending(validCandidate)
@@ -53,12 +81,12 @@ class StableCornerSelector(
         val requiredFrames = if (isSuperior) superiorSwitchFrames else normalSwitchFrames
         if (pendingFrames >= requiredFrames) {
             promotePending()
-            return checkNotNull(current)
+            return TrackedCornerSelection(checkNotNull(current), isFresh = true)
         }
 
         // Never feed an unconfirmed location into the overlay or auto-capture.
         // The current candidate remains cached and can resume on the next close frame.
-        return validCandidate.copy(quad = null)
+        return TrackedCornerSelection(validCandidate.copy(quad = null), isFresh = false)
     }
 
     fun reset() {
@@ -105,8 +133,4 @@ class StableCornerSelector(
             x = x + ((other.x - x) * fraction),
             y = y + ((other.y - y) * fraction),
         )
-
-    private companion object {
-        const val MISSING_FRAMES_BEFORE_CLEAR = 2
-    }
 }

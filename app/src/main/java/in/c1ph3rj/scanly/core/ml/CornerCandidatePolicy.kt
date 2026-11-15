@@ -15,23 +15,26 @@ object CornerCandidatePolicy {
         // High is the verification model itself — no second pass needed.
         if (result.model == DocumentCornerModel.HIGH) return false
         val quad = result.quad ?: return true
+        val aspect = result.frameAspectRatio
         // Still-process path: if the quad is already usable for import/warp, skip the
         // expensive High pass that used to null-out good ID/RC-card detections.
         if (readiness == QuadReadiness.STILL_PROCESS &&
-            DocumentQuadPolicy.isReady(quad, readiness)
+            DocumentQuadPolicy.isReady(quad, readiness, aspect)
         ) {
-            return DocumentQuadPolicy.qualityScore(quad) < STILL_AMBIGUOUS_QUALITY_THRESHOLD
+            return DocumentQuadPolicy.qualityScore(quad, aspect) < STILL_AMBIGUOUS_QUALITY_THRESHOLD
         }
-        return !DocumentQuadPolicy.isCaptureReady(quad) ||
-            DocumentQuadPolicy.qualityScore(quad) < AMBIGUOUS_QUALITY_THRESHOLD
+        return !DocumentQuadPolicy.isCaptureReady(quad, aspect) ||
+            DocumentQuadPolicy.qualityScore(quad, aspect) < AMBIGUOUS_QUALITY_THRESHOLD
     }
 
     fun choosePreferred(
         primary: CornerDetectionResult,
         accurate: CornerDetectionResult,
     ): CornerDetectionResult {
-        val primaryReady = primary.quad?.let(DocumentQuadPolicy::isCaptureReady) == true
-        val accurateReady = accurate.quad?.let(DocumentQuadPolicy::isCaptureReady) == true
+        val primaryReady = primary.quad
+            ?.let { DocumentQuadPolicy.isCaptureReady(it, primary.frameAspectRatio) } == true
+        val accurateReady = accurate.quad
+            ?.let { DocumentQuadPolicy.isCaptureReady(it, accurate.frameAspectRatio) } == true
         if (!primaryReady) return accurate.takeIf { accurateReady } ?: primary.copy(quad = null)
         if (!accurateReady) return primary
         return if (
