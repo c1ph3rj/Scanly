@@ -1,6 +1,7 @@
 package `in`.c1ph3rj.scanly.feature.tools
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.CallSplit
 import androidx.compose.material.icons.automirrored.outlined.MenuBook
 import androidx.compose.material.icons.automirrored.outlined.MergeType
 import androidx.compose.material.icons.outlined.Compress
@@ -23,6 +24,7 @@ import `in`.c1ph3rj.scanly.navigation.ToolsPdfMergeDestination
 import `in`.c1ph3rj.scanly.navigation.ToolsPdfPasswordDestination
 import `in`.c1ph3rj.scanly.navigation.ToolsPdfReaderDestination
 import `in`.c1ph3rj.scanly.navigation.ToolsPdfSignDestination
+import `in`.c1ph3rj.scanly.navigation.ToolsPdfSplitDestination
 import `in`.c1ph3rj.scanly.navigation.ToolsPdfToImagesDestination
 import `in`.c1ph3rj.scanly.navigation.ToolsPdfWatermarkDestination
 import `in`.c1ph3rj.scanly.navigation.ToolsQrDestination
@@ -37,6 +39,7 @@ enum class ToolActionId {
     ImageText,
     Signatures,
     PdfMerge,
+    PdfSplit,
     PdfCompress,
     PdfToImages,
     PdfPassword,
@@ -72,55 +75,18 @@ val scanTools: List<ToolItem> get() = listOf(
     ),
 )
 
-/** "PDF": gallery import plus PDF tools. */
+/**
+ * "PDF", in pairs that read as one idea per row of the two-column grid: open (Add to library,
+ * Read), convert (Images to PDF, PDF to JPG), combine or cut (Merge, Split), shrink and protect
+ * (Compress, Password), mark up (Sign, Watermark).
+ */
 val pdfTools: List<ToolItem> get() = listOf(
     ToolItem(
-        id = ToolActionId.Import,
-        title = appString(R.string.tools_catalog_images_to_pdf),
-        caption = appString(R.string.tools_catalog_from_gallery),
-        icon = Icons.Outlined.PhotoLibrary,
-    ),
-    ToolItem(
-        id = ToolActionId.PdfSign,
-        title = appString(R.string.page_image_preview_sign),
-        caption = appString(R.string.tools_catalog_sign_any_pdf),
-        icon = Icons.Outlined.Draw,
-        route = ToolsPdfSignDestination.route,
-    ),
-    ToolItem(
-        id = ToolActionId.PdfMerge,
-        title = appString(R.string.tools_catalog_merge),
-        caption = appString(R.string.tools_catalog_combine_files),
-        icon = Icons.AutoMirrored.Outlined.MergeType,
-        route = ToolsPdfMergeDestination.route,
-    ),
-    ToolItem(
-        id = ToolActionId.PdfCompress,
-        title = appString(R.string.pdf_compress_compress),
-        caption = appString(R.string.tools_catalog_make_it_smaller),
-        icon = Icons.Outlined.Compress,
-        route = ToolsPdfCompressDestination.route,
-    ),
-    ToolItem(
-        id = ToolActionId.PdfToImages,
-        title = appString(R.string.pdf_to_images_pdf_to_jpg),
-        caption = appString(R.string.tools_catalog_pages_as_images),
-        icon = Icons.Outlined.Image,
-        route = ToolsPdfToImagesDestination.route,
-    ),
-    ToolItem(
-        id = ToolActionId.PdfPassword,
-        title = appString(R.string.pdf_reader_password),
-        caption = appString(R.string.tools_catalog_lock_or_unlock),
-        icon = Icons.Outlined.Lock,
-        route = ToolsPdfPasswordDestination.route,
-    ),
-    ToolItem(
-        id = ToolActionId.PdfWatermark,
-        title = appString(R.string.pdf_watermark_watermark),
-        caption = appString(R.string.tools_catalog_stamp_text),
-        icon = Icons.Outlined.WaterDrop,
-        route = ToolsPdfWatermarkDestination.route,
+        id = ToolActionId.PdfImport,
+        title = appString(R.string.pdf_import_add_to_library),
+        caption = appString(R.string.tools_catalog_pdf_to_editable_scan),
+        icon = Icons.Outlined.LibraryAdd,
+        route = ToolsPdfImportDestination.route,
     ),
     ToolItem(
         id = ToolActionId.PdfReader,
@@ -130,11 +96,59 @@ val pdfTools: List<ToolItem> get() = listOf(
         route = ToolsPdfReaderDestination.route,
     ),
     ToolItem(
-        id = ToolActionId.PdfImport,
-        title = appString(R.string.pdf_import_add_to_library),
-        caption = appString(R.string.tools_catalog_pdf_to_editable_scan),
-        icon = Icons.Outlined.LibraryAdd,
-        route = ToolsPdfImportDestination.route,
+        id = ToolActionId.Import,
+        title = appString(R.string.tools_catalog_images_to_pdf),
+        caption = appString(R.string.tools_catalog_from_gallery),
+        icon = Icons.Outlined.PhotoLibrary,
+    ),
+    ToolItem(
+        id = ToolActionId.PdfToImages,
+        title = appString(R.string.pdf_to_images_pdf_to_jpg),
+        caption = appString(R.string.tools_catalog_pages_as_images),
+        icon = Icons.Outlined.Image,
+        route = ToolsPdfToImagesDestination.route,
+    ),
+    ToolItem(
+        id = ToolActionId.PdfMerge,
+        title = appString(R.string.tools_catalog_merge),
+        caption = appString(R.string.tools_catalog_combine_files),
+        icon = Icons.AutoMirrored.Outlined.MergeType,
+        route = ToolsPdfMergeDestination.route,
+    ),
+    ToolItem(
+        id = ToolActionId.PdfSplit,
+        title = appString(R.string.tools_catalog_split),
+        caption = appString(R.string.tools_catalog_cut_into_parts),
+        icon = Icons.AutoMirrored.Outlined.CallSplit,
+        route = ToolsPdfSplitDestination.route,
+    ),
+    ToolItem(
+        id = ToolActionId.PdfCompress,
+        title = appString(R.string.pdf_compress_compress),
+        caption = appString(R.string.tools_catalog_make_it_smaller),
+        icon = Icons.Outlined.Compress,
+        route = ToolsPdfCompressDestination.route,
+    ),
+    ToolItem(
+        id = ToolActionId.PdfPassword,
+        title = appString(R.string.pdf_reader_password),
+        caption = appString(R.string.tools_catalog_lock_or_unlock),
+        icon = Icons.Outlined.Lock,
+        route = ToolsPdfPasswordDestination.route,
+    ),
+    ToolItem(
+        id = ToolActionId.PdfSign,
+        title = appString(R.string.page_image_preview_sign),
+        caption = appString(R.string.tools_catalog_sign_any_pdf),
+        icon = Icons.Outlined.Draw,
+        route = ToolsPdfSignDestination.route,
+    ),
+    ToolItem(
+        id = ToolActionId.PdfWatermark,
+        title = appString(R.string.pdf_watermark_watermark),
+        caption = appString(R.string.tools_catalog_stamp_text),
+        icon = Icons.Outlined.WaterDrop,
+        route = ToolsPdfWatermarkDestination.route,
     ),
 )
 

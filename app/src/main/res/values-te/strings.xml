@@ -626,23 +626,13 @@
     <!-- OnboardingScreen -->
     <string name="onboarding_no_account_no_cloud_upload">అకౌంట్ అవసరం లేదు. క్లౌడ్ అప్‌లోడ్ లేదు.</string>
     <string name="onboarding_continue">కొనసాగించండి</string>
-    <string name="onboarding_get_started">ప్రారంభించండి</string>
+    <string name="onboarding_get_started">"నా మొదటి పేజీని స్కాన్ చేయండి"</string>
     <string name="onboarding_page_of_3">"%1$s, పేజీ %2$s / 3"</string>
     <string name="onboarding_page_of_3_2">"పేజీ %1$s / 3"</string>
     <string name="onboarding_skip">దాటవేయండి</string>
     <string name="onboarding_scanly">Scanly.</string>
     <string name="onboarding_previous_page">మునుపటి పేజీ</string>
-    <string name="onboarding_feature_edge_detection">ఆటోమేటిక్ అంచుల గుర్తింపు</string>
-    <string name="onboarding_feature_crop_straighten">పేజీలను కత్తిరించి సరిచేయండి</string>
-    <string name="onboarding_feature_filters">మ్యాజిక్ కలర్, వైట్‌బోర్డ్, ఇంకా మరిన్ని</string>
-    <string name="onboarding_feature_ocr">పరికరంలోనే టెక్స్ట్ గుర్తింపు</string>
-    <string name="onboarding_feature_search">మీ స్కాన్‌లన్నింటిలో పదాలను వెతకండి</string>
-    <string name="onboarding_feature_copy_text">ఏ పేజీ నుండైనా టెక్స్ట్‌ను కాపీ చేయండి</string>
-    <string name="onboarding_feature_multipage_pdf">అనేక పేజీల PDFలు</string>
-    <string name="onboarding_feature_password">షేర్ చేసే ముందు పాస్‌వర్డ్ రక్షణ</string>
-    <string name="onboarding_feature_sign">డాక్యుమెంట్‌లపై సంతకం చేయండి</string>
-    <string name="onboarding_assurance_offline">పూర్తిగా ఆఫ్‌లైన్‌లో పనిచేస్తుంది.</string>
-    <string name="onboarding_assurance_on_device">మీ టెక్స్ట్ ఈ పరికరం నుండి ఎప్పటికీ బయటకు వెళ్లదు.</string>
+    <string name="onboarding_assurance_offline">మీ పరికరంలోనే ప్రాసెస్ అవుతుంది.</string>
     <!-- Pip -->
     <string name="pip_poke_pip_scanly_s_helper">Scanly సహాయకుడు Pipని తట్టండి</string>
     <!-- PipBubble -->
@@ -827,7 +817,7 @@
     <string name="settings_text_recognition_experimental">ప్రయోగాత్మకం</string>
     <string name="settings_text_recognition_google_s_fast_on_device">Google అందించే వేగవంతమైన ఆన్-డివైజ్ రికగ్నైజర్. ఇంగ్లీష్, స్పానిష్, ఫ్రెంచ్ వంటి లాటిన్ లిపి భాషలకు ఉత్తమం.</string>
     <string name="settings_text_recognition_default">డిఫాల్ట్</string>
-    <string name="settings_text_recognition_if_a_page_s_text">పేజీ టెక్స్ట్ ఖాళీగా లేదా గజిబిజిగా కనిపిస్తే, అది బహుశా ML Kit చదవలేని లిపిలో ఉంది. Indra OCRకు మారి, ఆపై ఉన్న పేజీలను మళ్లీ చదవండిని ఉపయోగించండి.</string>
+    <string name="settings_text_recognition_if_a_page_s_text">"పేజీ టెక్స్ట్ ఖాళీగా లేదా గజిబిజిగా కనిపిస్తే, అది బహుశా ML Kit చదవలేని లిపిలో ఉంది. Indra OCRకు మారి, ఆపై “ఉన్న పేజీలను మళ్లీ చదవండి”ని ఉపయోగించండి."</string>
     <string name="settings_text_recognition_tip">చిట్కా</string>
     <string name="settings_text_recognition_switching_engines_only_affects_new">ఇంజిన్ మార్చడం కొత్తగా చదివే పేజీలకు మాత్రమే వర్తిస్తుంది. ఇప్పటికే ఉన్న పేజీలను ఈ స్క్రీన్ నుండి మళ్లీ చదవవచ్చు, మీరు స్వయంగా సరిచేసిన టెక్స్ట్ ఎప్పటికీ మార్చబడదు.</string>
     <string name="settings_text_recognition_your_edits_are_kept">మీ మార్పులు అలాగే ఉంటాయి</string>
@@ -1063,7 +1053,7 @@
     <string name="pdf_import_added_to_your_library">మీ లైబ్రరీకి జోడించబడింది</string>
     <string name="pdf_import_step_3_of_3_done">దశ 3 / 3 · పూర్తయింది</string>
     <string name="pdf_import_adding_to_library">లైబ్రరీకి జోడిస్తోంది…</string>
-    <string name="pdf_import_look">చూడండి</string>
+    <string name="pdf_import_look">"రూపం"</string>
     <string name="pdf_import_your_pdf_file_stays_as">మీ PDF ఫైల్ అలాగే ఉంటుంది; Scanly తన సొంత కాపీని ఉంచుకుంటుంది</string>
     <string name="pdf_import_tap_a_page_or_long">పేజీని నొక్కండి, లేదా నొక్కి పట్టుకుని అనేక పేజీల మీదుగా లాగండి.</string>
     <string name="pdf_import_step_2_of_3_pages">దశ 2 / 3 · పేజీలు, పేరు</string>
@@ -1542,7 +1532,7 @@
     <string name="pdf_import_look_enhance">"మెరుగుపరచండి"</string>
     <string name="pdf_import_look_even_out_scanned_pages_and">"స్కాన్ చేసిన పేజీలను సరి చేయండి మరియు వచనాన్ని పదును పెట్టండి"</string>
     <!-- capture_scene_issue -->
-    <string name="capture_scene_issue_lens_may_be_covered_clear">"లెన్స్ కప్పబడి ఉండవచ్చు. దాన్ని వెలికితీసి మళ్లీ ప్రయత్నించండి."</string>
+    <string name="capture_scene_issue_lens_may_be_covered_clear">"లెన్స్ కప్పబడి ఉండవచ్చు. దాన్ని శుభ్రం చేసి మళ్లీ ప్రయత్నించండి."</string>
     <string name="capture_scene_issue_too_dark_add_light_or">"చాలా చీకటి. కాంతిని జోడించండి లేదా ఫ్లాష్‌ని ఆన్ చేయండి."</string>
     <string name="capture_scene_issue_image_looks_blurry_clean_the">"చిత్రం అస్పష్టంగా కనిపిస్తోంది. లెన్స్‌ను క్లీన్ చేయండి లేదా ఫోకస్ చేయడానికి నొక్కండి."</string>
     <!-- group_export_action -->
@@ -1565,14 +1555,14 @@
     <string name="signature_pen_width_bold">"మందపాటి"</string>
     <!-- onboarding_page -->
     <string name="onboarding_page_capture">"క్యాప్చర్"</string>
-    <string name="onboarding_page_paper_to_polished">"కాగితం నుంచి స్పష్టమైన స్కాన్‌కు."</string>
-    <string name="onboarding_page_capture_straighten_and_clean_up">"మీ పేజీలను క్యాప్చర్ చేయండి, నిఠారుగా చేయండి మరియు శుభ్రం చేయండి."</string>
+    <string name="onboarding_page_paper_to_polished">"కాగితం,\nమరింత చక్కగా."</string>
+    <string name="onboarding_page_capture_straighten_and_clean_up">పేజీని స్కాన్ చేసి, అంచులను సరిచేసి, రంగును సర్దుబాటు చేయండి. స్కాన్‌ను సేవ్ చేసే ముందు వివరాలు స్పష్టంగా ఉన్నాయో చూడండి.</string>
     <string name="onboarding_page_find">"కనుగొనండి"</string>
-    <string name="onboarding_page_find_more_than_files">"స్కాన్‌లలోని పదాలనూ వెతకండి."</string>
-    <string name="onboarding_page_recognize_text_on_your_device">"మీ పరికరంలో వచనాన్ని గుర్తించండి. మీ స్కాన్‌లలో శోధించండి."</string>
-    <string name="onboarding_page_share">"షేర్ చేయండి"</string>
-    <string name="onboarding_page_ready_when_you_are">"మీరు సిద్ధమైతే నేనూ సిద్ధమే."</string>
-    <string name="onboarding_page_keep_pages_together_share_a">"పేజీలను కలిపి ఉంచండి. కొన్ని ట్యాప్‌లలో శుభ్రమైన PDFని షేర్ చేయండి."</string>
+    <string name="onboarding_page_find_more_than_files">"పదాన్ని వెతకండి.\nపేజీని కనుగొనండి."</string>
+    <string name="onboarding_page_recognize_text_on_your_device">మీ పరికరంలోనే వచనాన్ని గుర్తించి, స్కాన్‌లలోని పదాలను వెతకండి. ప్రతి పత్రాన్ని మళ్లీ చదవకుండానే కావలసిన పేజీని కనుగొనండి.</string>
+    <string name="onboarding_page_share">పూర్తి</string>
+    <string name="onboarding_page_ready_when_you_are">"దీన్ని సిద్ధం చేయండి\nపంపడానికి."</string>
+    <string name="onboarding_page_keep_pages_together_share_a">మీ పేజీలను ఒకే PDFలో ఉంచండి. అవసరమైతే సంతకం లేదా పాస్‌వర్డ్ జోడించి, కొన్ని ట్యాప్‌లతో సిద్ధమైన పత్రాన్ని షేర్ చేయండి.</string>
     <!-- pdf_reader_tool -->
     <string name="pdf_reader_tool_merge_with_other_pdfs">"ఇతర PDF ఫైల్‌లతో విలీనం చేయండి"</string>
     <string name="pdf_reader_tool_password_protect">"పాస్‌వర్డ్ రక్షణ"</string>
@@ -1690,7 +1680,7 @@
     <string name="pip_lines_i_m_open_source_you">"నా సోర్స్ కోడ్ తెరిచి ఉంది. మీరు దానిలోని ప్రతి పంక్తిని చదవగలరు."</string>
     <string name="pip_lines_your_original_photos_are_kept">"మీ అసలు ఫోటోలు ఉంచబడ్డాయి, కాబట్టి సవరణలు ఎల్లప్పుడూ రద్దు చేయబడతాయి."</string>
     <string name="pip_lines_i_live_on_your_phone">"నేను మీ ఫోన్‌లో పని చేస్తున్నాను. మీ స్కాన్‌లు సర్వర్‌కి వెళ్లవు."</string>
-    <string name="pip_lines_hey_that_tickles">"హే! అని చక్కిలిగింతలు పెట్టింది."</string>
+    <string name="pip_lines_hey_that_tickles">"హే! చక్కిలిగింతగా ఉంది."</string>
     <!-- pdf_watermark -->
     <string name="pdf_watermark_for_kyc_use_only">For KYC use only</string>
     <!-- document_presentation_formatter -->
@@ -1717,7 +1707,7 @@
     <string name="pip_lines_hmm_i_don_t_have">"అయ్యో, దానికి నా దగ్గర సమాధానం లేదు."</string>
     <string name="pip_lines_no_codes_yet_scan_or">"ఇంకా కోడ్‌లు లేవు. స్కాన్ చేయండి లేదా ఒకటి చేయండి మరియు నేను దానిని ఇక్కడ ఉంచుతాను."</string>
     <string name="pip_lines_nothing_matches_that_try_another">"దానికి ఏదీ సరిపోలలేదు. మరొక పదాన్ని ప్రయత్నించాలా?"</string>
-    <string name="pip_lines_i_m_still_reading_some">"నేను ఇంకా కొన్ని పేజీలు చదువుతున్నాను. ఒక సెకనులో మ్యాచ్‌లు మారవచ్చు."</string>
+    <string name="pip_lines_i_m_still_reading_some">"నేను ఇంకా కొన్ని పేజీలు చదువుతున్నాను. ఒక సెకనులో మ్యాచ్‌లు కనిపించవచ్చు."</string>
     <string name="pip_lines_i_can_t_see_a">"నేను ఇంకా ఏమీ చూడలేకపోతున్నాను. నేను కెమెరాను అరువు తీసుకోవచ్చా?"</string>
     <string name="pip_lines_the_camera_is_switched_off">"Scanly కోసం కెమెరా స్విచ్ ఆఫ్ చేయబడింది. సెట్టింగ్‌లకు శీఘ్ర పర్యటన దాన్ని పరిష్కరిస్తుంది."</string>
     <string name="pip_lines_lend_me_the_camera_and">"నాకు కెమెరా అప్పుగా ఇవ్వండి మరియు నేను మీ కోసం కోడ్‌ని చదువుతాను."</string>
@@ -1908,11 +1898,11 @@
     <string name="sign_kind_delete_signature_question">"సంతకాన్ని తొలగించాలా?"</string>
     <string name="sign_kind_delete_initials_question">"మొదటి అక్షరాలను తొలగించాలా?"</string>
     <string name="sign_kind_open_signature_options">"సంతకం ఎంపికలను తెరవండి"</string>
-    <string name="sign_kind_open_initials_options">"ప్రారంభ అక్షరాల ఎంపికలను తెరవండి"</string>
+    <string name="sign_kind_open_initials_options">"మొదటి అక్షరాల ఎంపికలను తెరవండి"</string>
     <string name="sign_kind_saved_signature">"సేవ్ చేయబడిన సంతకం"</string>
     <string name="sign_kind_saved_initials">"సేవ్ చేయబడిన మొదటి అక్షరాలు"</string>
     <string name="sign_kind_show_signature_first">"ఈ సంతకాన్ని ఇతరుల ముందు చూపండి"</string>
-    <string name="sign_kind_show_initials_first">"ఈ ఇనిషియల్స్‌ని ఇతరుల ముందు చూపండి"</string>
+    <string name="sign_kind_show_initials_first">"ఈ మొదటి అక్షరాలను ఇతరుల ముందు చూపండి"</string>
     <!-- Watermark -->
     <!-- Watermark presets are stamped into PDFs with a Latin/Cyrillic font. In languages written in
          another script (Indic, CJK, Thai), keep these in English so the stamp can be drawn. -->
@@ -1950,7 +1940,7 @@
         <item quantity="other">"%d లైబ్రరీలు"</item>
     </plurals>
     <plurals name="common_selected">
-        <item quantity="one">"%d ఎంచుకోబడ్డాయి"</item>
+        <item quantity="one">"%d ఎంచుకోబడింది"</item>
         <item quantity="other">"%d ఎంచుకోబడ్డాయి"</item>
     </plurals>
     <plurals name="pdf_to_images_saved_count">
@@ -1972,7 +1962,7 @@
     <string name="error_could_not_rename_the_document">"పత్రం పేరు మార్చడం సాధ్యపడలేదు."</string>
     <string name="error_could_not_delete_the_document">"పత్రాన్ని తొలగించడం సాధ్యపడలేదు."</string>
     <string name="error_could_not_create_the_group">"సమూహాన్ని సృష్టించడం సాధ్యపడలేదు."</string>
-    <string name="error_could_not_rename_the_group">"గుంపు పేరు మార్చడం సాధ్యపడలేదు."</string>
+    <string name="error_could_not_rename_the_group">"సమూహం పేరు మార్చడం సాధ్యపడలేదు."</string>
     <string name="error_could_not_delete_the_group">"సమూహాన్ని తొలగించడం సాధ్యపడలేదు."</string>
     <string name="error_could_not_remove_empty_folders">"ఖాళీ ఫోల్డర్‌లను తీసివేయడం సాధ్యపడలేదు."</string>
     <string name="error_could_not_update_document_group">"పత్ర సమూహాన్ని నవీకరించడం సాధ్యపడలేదు."</string>
@@ -1991,4 +1981,122 @@
     <string name="error_could_not_save_the_exported_file">"ఎగుమతి చేసిన ఫైల్‌ను సేవ్ చేయడం సాధ్యపడలేదు."</string>
     <string name="error_could_not_store_update_prompt_state">"అప్‌డేట్ ప్రాంప్ట్ స్థితిని నిల్వ చేయడం సాధ్యపడలేదు."</string>
     <string name="error_could_not_check_github_releases">"GitHub విడుదలలను తనిఖీ చేయడం సాధ్యపడలేదు."</string>
+    <string name="onboarding_chapter_number">%1$02d %2$s</string>
+    <!-- Split PDF -->
+    <string name="tools_catalog_split">"విభజించు"</string>
+    <string name="tools_catalog_cut_into_parts">"భాగాలుగా కత్తిరించు"</string>
+    <string name="pdf_reader_tool_split_into_parts">"భాగాలుగా విభజించు"</string>
+    <string name="pdf_split_title">"PDF విభజించు"</string>
+    <string name="pdf_split_subtitle">"ఒక PDF ని చిన్న PDF లుగా కత్తిరించండి"</string>
+    <string name="pdf_split_step_2">"దశ 2/3 · ఎక్కడ విభజించాలి"</string>
+    <string name="pdf_split_mode_custom">"అనుకూలం"</string>
+    <string name="pdf_split_mode_every_n">"ప్రతి N పేజీలకు"</string>
+    <string name="pdf_split_mode_extract">"వెలికితీయి"</string>
+    <string name="pdf_split_ranges_label">"పరిధులను టైప్ చేయండి లేదా దిగువ కార్డులను సవరించండి"</string>
+    <string name="pdf_split_ranges_placeholder">"ఉదా. 1-3, 6-8"</string>
+    <string name="pdf_split_ranges_hint">"పరిధులను కామాలతో వేరు చేయండి, ఉదా. 1-3, 6-8"</string>
+    <string name="pdf_split_ranges_error">"పేజీ సంఖ్యలు, డాష్‌లను వాడండి, ఉదా. 1-3, 6-8"</string>
+    <string name="pdf_split_range_title">"పరిధి %d"</string>
+    <string name="pdf_split_range_from">"పేజీ నుండి"</string>
+    <string name="pdf_split_range_to">"వరకు"</string>
+    <string name="pdf_split_remove_range">"పరిధి %d తీసివేయి"</string>
+    <string name="pdf_split_range_error">"1 నుండి %d వరకు పేజీలను వాడండి, మొదటి పేజీ చివరి దానికంటే ముందు ఉండాలి."</string>
+    <string name="pdf_split_add_range">"పరిధిని జోడించు"</string>
+    <string name="pdf_split_pages_included">"చేర్చిన పేజీలు"</string>
+    <string name="pdf_split_not_included">"ఏ పరిధిలోనూ లేవు, కాబట్టి సేవ్ కావు: %s"</string>
+    <string name="pdf_split_merge_ranges">"అన్ని పరిధులను ఒకే PDF గా కలుపు"</string>
+    <string name="pdf_split_merge_ranges_caption">"ఆఫ్: ప్రతి పరిధి వేరే PDF"</string>
+    <string name="pdf_split_pages_in_each">"ప్రతి PDF లో పేజీలు"</string>
+    <string name="pdf_split_fewer_pages">"ప్రతి PDF లో తక్కువ పేజీలు"</string>
+    <string name="pdf_split_more_pages">"ప్రతి PDF లో ఎక్కువ పేజీలు"</string>
+    <string name="pdf_split_last_shorter">"చివరిదానిలో %s ఉన్నాయి"</string>
+    <string name="pdf_split_one_per_page">"ప్రతి పేజీకి ఒక PDF"</string>
+    <string name="pdf_split_you_get">"మీకు %s వస్తాయి"</string>
+    <string name="pdf_split_more_parts">"+ మరో %d"</string>
+    <string name="pdf_split_pdf_title">"PDF %d"</string>
+    <string name="pdf_split_pages_label">"పేజీలు"</string>
+    <string name="pdf_split_save_as">"ఇలా సేవ్ చేయి"</string>
+    <string name="pdf_split_one_pdf">"ఒక PDF"</string>
+    <string name="pdf_split_one_pdf_caption">"ఎంచుకున్న పేజీలన్నీ కలిపి"</string>
+    <string name="pdf_split_separate_pdfs">"వేర్వేరు PDF లు"</string>
+    <string name="pdf_split_separate_caption">"ప్రతి పేజీకి ఒక ఫైల్"</string>
+    <string name="pdf_split_keep_rest_caption">"మరో PDF గా"</string>
+    <string name="pdf_split_extract_button">"%1$s వెలికితీయి · %2$s"</string>
+    <string name="pdf_split_create_one">"1 PDF సృష్టించు · %s"</string>
+    <string name="pdf_split_choose_pages">"వెలికితీయాల్సిన పేజీలను ఎంచుకోండి"</string>
+    <string name="pdf_split_fix_ranges">"కొనసాగడానికి పరిధులను సరిచేయండి"</string>
+    <string name="pdf_split_single_page">"ఈ PDF లో ఒకే పేజీ ఉంది, కాబట్టి విభజించడానికి ఏమీ లేదు."</string>
+    <string name="pdf_split_splitting">"విభజిస్తోంది…"</string>
+    <string name="pdf_split_writing_part">"%2$d లో భాగం %1$d రాస్తోంది"</string>
+    <string name="pdf_split_from_file">"%1$s నుండి · %2$s"</string>
+    <string name="pdf_split_tap_to_rename">"పేరు మార్చడానికి పేరుపై నొక్కండి"</string>
+    <string name="pdf_split_open_part">"%s తెరువు"</string>
+    <string name="pdf_split_one_zip">"ఒక ZIP"</string>
+    <string name="pdf_split_save_all">"అన్నీ సేవ్ చేయి"</string>
+    <string name="pdf_split_share_all">"అన్నీ షేర్ చేయి"</string>
+    <string name="pdf_split_output_pages">"%1$s – పేజీలు %2$s"</string>
+    <string name="pdf_split_output_page">"%1$s – పేజీ %2$d"</string>
+    <string name="pdf_split_pages_meta">"పేజీలు %1$s · %2$s"</string>
+    <string name="pdf_split_page_meta">"పేజీ %1$d · %2$s"</string>
+    <string name="pdf_split_no_password">"కొత్త PDF లకు పాస్‌వర్డ్ లేదు."</string>
+    <string name="pdf_split_could_not_split">"ఈ PDF ని విభజించలేకపోయాం."</string>
+    <plurals name="pdf_split_pdf_count">
+        <item quantity="one">"%d PDF"</item>
+        <item quantity="other">"%d PDF లు"</item>
+    </plurals>
+    <plurals name="pdf_split_split_into">
+        <item quantity="one">"%d PDF గా విభజించు"</item>
+        <item quantity="other">"%d PDF లుగా విభజించు"</item>
+    </plurals>
+    <plurals name="pdf_split_keep_rest">
+        <item quantity="one">"మిగిలిన %d పేజీని కూడా సేవ్ చేయి"</item>
+        <item quantity="other">"మిగిలిన %d పేజీలను కూడా సేవ్ చేయి"</item>
+    </plurals>
+    <plurals name="pdf_split_saved">
+        <item quantity="one">"%1$d PDF %2$s లో సేవ్ అయింది"</item>
+        <item quantity="other">"%1$d PDF లు %2$s లో సేవ్ అయ్యాయి"</item>
+    </plurals>
+    <plurals name="pdf_split_range_count">
+        <item quantity="one">"%d పరిధి"</item>
+        <item quantity="other">"%d పరిధులు"</item>
+    </plurals>
+    <!-- Split a document into documents -->
+    <string name="document_split_title">"అనేక పత్రాలుగా విభజించు"</string>
+    <string name="document_split_pages_cuts">"%1$s · %2$s"</string>
+    <string name="document_split_every_page">"ప్రతి పేజీ"</string>
+    <string name="document_split_clear">"క్లియర్ చేయి"</string>
+    <string name="document_split_hint">"అక్కడ కత్తిరించడానికి రెండు పేజీల మధ్య ఖాళీపై నొక్కండి."</string>
+    <string name="document_split_cut_after">"పేజీ %d తర్వాత కత్తిరించు"</string>
+    <string name="document_split_remove_cut">"పేజీ %d తర్వాతి కట్‌ను తీసివేయి"</string>
+    <string name="document_split_part_label">"భాగం %1$d · పేజీలు %2$s"</string>
+    <string name="document_split_part_label_single">"భాగం %1$d · పేజీ %2$d"</string>
+    <string name="document_split_destination_title">"కొత్త పత్రాలు వెళ్లే చోటు"</string>
+    <string name="document_split_destination_folder">"మూల పత్రం ఉన్న అదే ఫోల్డర్"</string>
+    <string name="document_split_destination_library">"మీ లైబ్రరీ, ఫోల్డర్‌ల బయట"</string>
+    <string name="document_split_keep_original">"మూల పత్రాన్ని ఉంచు"</string>
+    <string name="document_split_keep_original_caption">"ఆఫ్: ఇది ఇటీవల తొలగించినవికి వెళ్తుంది"</string>
+    <string name="document_split_note">"పేజీ వచనం, సంతకాలు, సవరణలు ప్రతి పేజీతో పాటు వెళ్తాయి."</string>
+    <string name="document_split_add_cut">"విభజించడానికి కట్ జోడించండి"</string>
+    <string name="document_split_failed">"ఈ పత్రాన్ని విభజించలేకపోయాం."</string>
+    <string name="document_menu_split_into_pdfs">"అనేక PDF లుగా విభజించు"</string>
+    <plurals name="document_split_cut_count">
+        <item quantity="one">"%d కట్"</item>
+        <item quantity="other">"%d కట్‌లు"</item>
+    </plurals>
+    <plurals name="document_split_create">
+        <item quantity="one">"%d పత్రాన్ని సృష్టించు"</item>
+        <item quantity="other">"%d పత్రాలను సృష్టించు"</item>
+    </plurals>
+    <string name="pdf_peek_preview">"ప్రివ్యూ"</string>
+    <string name="pdf_peek_preview_file">"%1$s ప్రివ్యూ"</string>
+    <string name="pdf_peek_read_only">"ప్రివ్యూ మాత్రమే · ఏదీ మారదు"</string>
+    <string name="pdf_peek_page_of">"పేజీ %1$d / %2$d"</string>
+    <string name="pdf_peek_opening">"ప్రివ్యూ తెరుస్తోంది…"</string>
+    <string name="pdf_peek_locked">"ఈ PDF కి పాస్‌వర్డ్ ఉంది. ప్రివ్యూ చూడటానికి ముందుగా అన్‌లాక్ చేయండి."</string>
+    <string name="pdf_peek_could_not_open">"ప్రివ్యూ కోసం ఈ PDF ని తెరవలేకపోయాం."</string>
+    <string name="pdf_peek_close">"ప్రివ్యూ మూసివేయండి"</string>
+    <string name="pdf_peek_tap_hint">"ప్రివ్యూ కోసం ఫైల్‌ను ట్యాప్ చేయండి"</string>
+    <string name="welcome_greeting">స్వాగతం</string>
+    <string name="welcome_tagline">కాగితాలను స్పష్టమైన, వెతకగలిగే PDFలుగా మార్చండి.</string>
+    <string name="welcome_no_language_match">“%1$s”కి సరిపోలే భాష లేదు</string>
 </resources>

@@ -1,5 +1,6 @@
 package `in`.c1ph3rj.scanly.feature.camera
 
+import android.os.SystemClock
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -40,6 +41,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 import `in`.c1ph3rj.scanly.R
 import `in`.c1ph3rj.scanly.core.common.appString
@@ -103,6 +105,8 @@ class ScanSessionViewModel @Inject constructor(
      * Dispatchers.Default while settings changes and captures reset them on the main thread.
      */
     private val trackerLock = Any()
+    /** Bumped on every selector reset; a frame analyzed under an older value is discarded. */
+    private val trackerGeneration = AtomicInteger(0)
     @Volatile
     private var liveModel: DocumentCornerModel = DocumentCornerModel.ACCURATE
     @Volatile
@@ -134,18 +138,22 @@ class ScanSessionViewModel @Inject constructor(
                     manualModel
                 }
                 liveModel = model
-                stabilityTracker.reset()
+                // Keep cooldown + captured-page guard: a settings change must not re-capture the page.
+                stabilityTracker.resetTracking()
                 resetFrameTrackers()
                 _uiState.update { current ->
-                    current.copy(liveDetection = current.liveDetection.copy(model = model))
+                    current.copy(liveDetection = current.liveDetection.copy(model = model, quad = null))
                 }
             }
         }
         viewModelScope.launch {
             observeDocumentGateEnabledUseCase().collectLatest { enabled ->
                 documentGateEnabled = enabled
-                stabilityTracker.reset()
+                stabilityTracker.resetTracking()
                 resetFrameTrackers()
+                _uiState.update { current ->
+                    current.copy(liveDetection = current.liveDetection.copy(quad = null))
+                }
             }
         }
         viewModelScope.launch {
@@ -231,6 +239,7 @@ class ScanSessionViewModel @Inject constructor(
             return false
         }
 
+        val generation = trackerGeneration.get()
         viewModelScope.launch {
             try {
                 val analysis = runCatching {
@@ -265,12 +274,20 @@ class ScanSessionViewModel @Inject constructor(
                                     ),
                                 )
                             }
-                            val detection = synchronized(trackerLock) {
-                                stableCornerSelector.select(cornerResolution.result)
-                            }
+                            // A reset (capture start, settings change) while this frame was in
+                            // flight makes it stale: do not feed it into the fresh selector.
+                            val selection = synchronized(trackerLock) {
+                                if (trackerGeneration.get() != generation) {
+                                    null
+                                } else {
+                                    stableCornerSelector.selectTracked(cornerResolution.result)
+                                }
+                            } ?: return@withContext null
+                            val detection = selection.result
                             val quality = CaptureFrameQualityAnalyzer.analyze(frame)
                             FrameAnalysis(
                                 detection = detection,
+                                isFreshDetection = selection.isFresh,
                                 gate = gate,
                                 gateAccepted = gateAccepted,
                                 sceneIssue = quality.sceneIssue(hasDocumentCandidate = detection.quad != null),
@@ -281,7 +298,9 @@ class ScanSessionViewModel @Inject constructor(
                         }
                     }
                 }.getOrElse {
-                    synchronized(trackerLock) { stableCornerSelector.reset() }
+                    if (isStaleFrame(generation)) return@launch
+                    resetCornerSelector()
+                    stabilityTracker.resetTracking()
                     _uiState.update { current ->
                         current.copy(
                             liveDetection = current.liveDetection.copy(
@@ -296,22 +315,31 @@ class ScanSessionViewModel @Inject constructor(
                     }
                     return@launch
                 }
+                // Dropped when a reset happened meanwhile, or a capture started: writing it would
+                // overwrite the CAPTURING state and show a pre-capture quad.
+                if (analysis == null || isStaleFrame(generation)) return@launch
                 val detectionResult = analysis.detection
                 val sceneIssue = analysis.sceneIssue
+                val overlayFrame = frame.toDetectionOverlayFrame()
+                // Detection sees the whole frame; the user (and the saved crop) only sees the viewport.
+                val quadWithinVisibleRegion = detectionResult.quad
+                    ?.isWithinVisibleRegion(overlayFrame, VISIBLE_REGION_MARGIN) == true
 
                 val autoCaptureEnabled = _uiState.value.liveDetection.autoCaptureEnabled
                 val evaluation = stabilityTracker.evaluate(
                     result = detectionResult,
                     autoCaptureEnabled = autoCaptureEnabled,
-                    nowMillis = System.currentTimeMillis(),
+                    nowMillis = monotonicNowMillis(),
                     sceneIssue = sceneIssue,
+                    isFreshDetection = analysis.isFreshDetection,
+                    quadWithinVisibleRegion = quadWithinVisibleRegion,
                 )
 
                 _uiState.update { current ->
                     current.copy(
                         liveDetection = current.liveDetection.copy(
                             quad = detectionResult.quad,
-                            overlayFrame = frame.toDetectionOverlayFrame(),
+                            overlayFrame = overlayFrame,
                             sceneIssue = sceneIssue,
                             phase = evaluation.phase,
                             statusMessage = gateGuidance(analysis) ?: evaluation.statusMessage,
@@ -348,7 +376,7 @@ class ScanSessionViewModel @Inject constructor(
                     capturedPageId = result.value
                     stabilityTracker.onCaptureCommitted(
                         quad = pendingCaptureQuad,
-                        nowMillis = System.currentTimeMillis(),
+                        nowMillis = monotonicNowMillis(),
                     )
                     completionEvent = replacementCompletionEvent(
                         draft = draft,
@@ -424,7 +452,7 @@ class ScanSessionViewModel @Inject constructor(
 
         pendingCaptureTrigger = trigger
         pendingCaptureQuad = _uiState.value.liveDetection.quad
-        synchronized(trackerLock) { stableCornerSelector.reset() }
+        resetCornerSelector()
         val autoCaptureEnabled = _uiState.value.liveDetection.autoCaptureEnabled
         val captureState = stabilityTracker.capturingState(autoCaptureEnabled)
         _uiState.update { current ->
@@ -470,14 +498,27 @@ class ScanSessionViewModel @Inject constructor(
     private fun applyFailureCooldown() {
         stabilityTracker.onCaptureCommitted(
             quad = pendingCaptureQuad,
-            nowMillis = System.currentTimeMillis(),
+            nowMillis = monotonicNowMillis(),
         )
     }
 
     private fun resetFrameTrackers() = synchronized(trackerLock) {
+        trackerGeneration.incrementAndGet()
         gateStabilityTracker.reset()
         stableCornerSelector.reset()
     }
+
+    /** Resets the selector and invalidates frames already in flight, so no stale quad reappears. */
+    private fun resetCornerSelector() = synchronized(trackerLock) {
+        trackerGeneration.incrementAndGet()
+        stableCornerSelector.reset()
+    }
+
+    private fun isStaleFrame(generation: Int): Boolean =
+        trackerGeneration.get() != generation || _uiState.value.captureInProgress
+
+    /** Durations and cooldowns must not jump with wall-clock adjustments. */
+    private fun monotonicNowMillis(): Long = SystemClock.elapsedRealtime()
 
     private fun emitMessage(message: String) {
         viewModelScope.launch {
@@ -495,8 +536,12 @@ class ScanSessionViewModel @Inject constructor(
 
 }
 
+/** Corner inset (fraction of the visible crop) a quad needs before it may arm auto-capture. */
+private const val VISIBLE_REGION_MARGIN = 0.01f
+
 private data class FrameAnalysis(
     val detection: CornerDetectionResult,
+    val isFreshDetection: Boolean,
     val gate: DocumentGateResult?,
     val gateAccepted: Boolean,
     val sceneIssue: CaptureSceneIssue?,

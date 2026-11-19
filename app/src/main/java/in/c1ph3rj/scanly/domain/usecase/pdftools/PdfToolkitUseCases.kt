@@ -165,3 +165,22 @@ class ExportPdfPagesAsImagesUseCase @Inject constructor(
     ): ScanlyResult<PdfImageExport> =
         repository.exportPagesAsImages(copy, pageIndexes, options, baseName, onProgress)
 }
+
+class SplitPdfPagesUseCase @Inject constructor(
+    private val repository: PdfToolkitRepository,
+) {
+    suspend operator fun invoke(
+        copy: PdfWorkingCopy,
+        outputs: List<List<Int>>,
+        onProgress: suspend (done: Int, total: Int) -> Unit = { _, _ -> },
+    ): ScanlyResult<List<ExportArtifact>> = repository.splitPages(copy, outputs, onProgress)
+}
+
+class ZipPdfToolFilesUseCase @Inject constructor(
+    private val repository: PdfToolkitRepository,
+) {
+    suspend operator fun invoke(
+        files: List<ExportArtifact>,
+        zipBaseName: String,
+    ): ScanlyResult<ExportArtifact> = repository.zipFiles(files, zipBaseName)
+}

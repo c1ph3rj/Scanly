@@ -1,5 +1,7 @@
 package `in`.c1ph3rj.scanly.feature.tools.pdf
 
+import androidx.compose.material.icons.outlined.Visibility
+import `in`.c1ph3rj.scanly.feature.tools.ToolSecondaryButton
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -173,6 +175,7 @@ fun PdfPasswordRoute(
                 onBack = backFromFile,
             )
             PasswordStep.Set -> SetPasswordStep(
+                source = uiState.sources.firstOrNull(),
                 subtitle = fileSubtitle,
                 password = uiState.password,
                 confirmPassword = uiState.confirmPassword,
@@ -268,6 +271,7 @@ private fun InspectingStep(
 
 @Composable
 private fun SetPasswordStep(
+    source: PdfToolSource?,
     subtitle: String,
     password: String,
     confirmPassword: String,
@@ -280,6 +284,10 @@ private fun SetPasswordStep(
 ) {
     var showPassword by rememberSaveable { mutableStateOf(false) }
     var showConfirm by rememberSaveable { mutableStateOf(false) }
+    var showPreview by rememberSaveable { mutableStateOf(false) }
+    if (showPreview && source != null) {
+        PdfPeekDialog(source = source, password = null, onDismiss = { showPreview = false })
+    }
     val strength = pdfPasswordStrength(password)
     val lengthOk = password.length in PDF_PASSWORD_MIN_LENGTH..PDF_PASSWORD_MAX_LENGTH
     val matches = password.isNotEmpty() && password == confirmPassword
@@ -301,6 +309,15 @@ private fun SetPasswordStep(
                     .padding(horizontal = ToolTokens.ScreenPadding, vertical = 8.dp),
                 verticalArrangement = Arrangement.spacedBy(18.dp),
             ) {
+                // Check it is the right file before locking it.
+                if (source != null) {
+                    ToolSecondaryButton(
+                        text = stringResource(R.string.pdf_peek_preview),
+                        onClick = { showPreview = true },
+                        icon = Icons.Outlined.Visibility,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                }
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     ToolFieldLabel(stringResource(R.string.pdf_password_new_password))
                     ToolTextField(

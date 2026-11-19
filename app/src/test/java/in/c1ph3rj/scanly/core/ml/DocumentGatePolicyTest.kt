@@ -20,6 +20,15 @@ class DocumentGatePolicyTest {
         assertFalse(result.acceptsPhysicalDocument(0.40f))
     }
 
+    @Test
+    fun liveExitThreshold_isBelowEntryThresholdAndKeepsSoftFrames() {
+        assertTrue(DocumentGatePolicy.LIVE_EXIT_THRESHOLD < DocumentGatePolicy.LIVE_THRESHOLD)
+
+        val soft = result(physical = 0.80f, screen = 0.12f, neither = 0.08f)
+        assertFalse(soft.acceptsPhysicalDocument(DocumentGatePolicy.LIVE_THRESHOLD))
+        assertTrue(soft.acceptsPhysicalDocument(DocumentGatePolicy.LIVE_EXIT_THRESHOLD))
+    }
+
     private fun result(physical: Float, screen: Float, neither: Float) = DocumentGateResult(
         probabilities = mapOf(
             DocumentGateClass.PHYSICAL_DOCUMENT to physical,

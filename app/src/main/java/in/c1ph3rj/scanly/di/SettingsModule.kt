@@ -13,6 +13,12 @@ import javax.inject.Singleton
 abstract class SettingsModule {
     @Binds
     @Singleton
+    abstract fun bindFeedbackAttachmentRepository(
+        repository: `in`.c1ph3rj.scanly.data.settings.DefaultFeedbackAttachmentRepository,
+    ): `in`.c1ph3rj.scanly.domain.repository.FeedbackAttachmentRepository
+
+    @Binds
+    @Singleton
     abstract fun bindSettingsRepository(
         repository: DefaultSettingsRepository,
     ): SettingsRepository

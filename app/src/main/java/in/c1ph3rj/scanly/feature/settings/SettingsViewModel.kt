@@ -48,6 +48,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
@@ -164,6 +165,9 @@ class SettingsViewModel @Inject constructor(
                     )
                 }
                 if (enabled) {
+                    // The first run benchmarks three models on every core. Started with the
+                    // screen, it competed with the frames that draw Settings for the first time.
+                    delay(OPENING_SETTLE_MILLIS)
                     runCatching { automaticDocumentModelSelector.selection() }
                         .onSuccess { selection ->
                             _uiState.update {
@@ -242,7 +246,11 @@ class SettingsViewModel @Inject constructor(
             }
         }
         refresh()
-        loadStorageUsage()
+        // Walks every stored file; nothing on the first frames needs the total.
+        viewModelScope.launch {
+            delay(OPENING_SETTLE_MILLIS)
+            loadStorageUsage()
+        }
     }
 
     fun loadStorageUsage() {
@@ -530,3 +538,6 @@ class SettingsViewModel @Inject constructor(
         }
     }
 }
+
+/** How long Settings waits after opening before starting work its first frames do not need. */
+private const val OPENING_SETTLE_MILLIS = 700L

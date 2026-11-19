@@ -215,8 +215,8 @@
     <string name="scan_session_camera_is_not_ready_yet">கேமரா இன்னும் தயாராகவில்லை.</string>
     <!-- ScanSessionViewModel -->
     <string name="scan_session_checking_document">ஆவணத்தைச் சரிபார்க்கிறது…</string>
-    <string name="scan_session_point_your_camera_at_a">அச்சிட்ட ஆவணத்தை நோக்கிக் கேமராவைக் காட்டவும்.</string>
-    <string name="scan_session_screen_detected_point_at_a">திரை கண்டறியப்பட்டது. அச்சிட்ட ஆவணத்தை நோக்கிக் காட்டவும்.</string>
+    <string name="scan_session_point_your_camera_at_a">"காகித ஆவணத்தை நோக்கிக் கேமராவைக் காட்டவும்."</string>
+    <string name="scan_session_screen_detected_point_at_a">"திரை கண்டறியப்பட்டது. காகித ஆவணத்தை நோக்கிக் காட்டவும்."</string>
     <string name="scan_session_page_edges_are_ambiguous_hold">பக்க விளிம்புகள் தெளிவாக இல்லை. அசையாமல் பிடிக்கவும் அல்லது அருகே கொண்டுசெல்லவும்.</string>
     <string name="scan_session_two_pages_are_visible_move">இரண்டு பக்கங்கள் தெரிகின்றன. அருகே சென்று ஒரு பக்கத்தை மட்டும் சட்டகத்தில் கொண்டுவாருங்கள்.</string>
     <string name="scan_session_page_saved">"பக்கம் %1$s சேமிக்கப்பட்டது."</string>
@@ -445,7 +445,7 @@
     <string name="home_save_it_now">இப்போதே சேமியுங்கள்</string>
     <string name="home_save_it_now_find_it">இன்று சேமியுங்கள்,\nநாளை கண்டுபிடியுங்கள்.</string>
     <string name="home_still_scanning">இன்னும் ஸ்கேன் செய்கிறீர்களா?</string>
-    <string name="home_wrap_up_and_digitize_your">இன்றைய வேலையை\nடிஜிட்டலாக முடியுங்கள்.</string>
+    <string name="home_wrap_up_and_digitize_your">"இன்றைய வேலையை\nடிஜிட்டலாக்கி முடியுங்கள்."</string>
     <string name="home_good_evening">மாலை வணக்கம்,</string>
     <string name="home_let_s_capture_some_documents">வாருங்கள், சில\nஆவணங்களைப் படமெடுப்போம்.</string>
     <string name="home_good_afternoon">மதிய வணக்கம்,</string>
@@ -588,7 +588,7 @@
     <string name="recently_deleted_nothing_here">இங்கே எதுவுமில்லை</string>
     <string name="recently_deleted_nothing_in_the_bin_deleted">குப்பைத்தொட்டியில் எதுவுமில்லை. நீக்கியவை சில நாட்கள் இங்கே காத்திருக்கும்.</string>
     <string name="recently_deleted_empty">காலியாக்கு</string>
-    <string name="recently_deleted_select_none">எதையும் தேர்ந்தெடுக்காதே</string>
+    <string name="recently_deleted_select_none">"அனைத்தையும் தேர்வுநீக்கு"</string>
     <string name="recently_deleted_clear_selection">தேர்வை அழி</string>
     <string name="recently_deleted_recently_deleted">சமீபத்தில் நீக்கியவை</string>
     <!-- RecentlyDeletedViewModel -->
@@ -626,23 +626,13 @@
     <!-- OnboardingScreen -->
     <string name="onboarding_no_account_no_cloud_upload">கணக்கு தேவையில்லை. கிளவுடில் பதிவேற்றம் இல்லை.</string>
     <string name="onboarding_continue">தொடர்க</string>
-    <string name="onboarding_get_started">தொடங்கு</string>
+    <string name="onboarding_get_started">எனது முதல் பக்கத்தை ஸ்கேன் செய்</string>
     <string name="onboarding_page_of_3">"%1$s, பக்கம் %2$s / 3"</string>
     <string name="onboarding_page_of_3_2">"பக்கம் %1$s / 3"</string>
     <string name="onboarding_skip">தவிர்</string>
     <string name="onboarding_scanly">Scanly.</string>
     <string name="onboarding_previous_page">முந்தைய பக்கம்</string>
-    <string name="onboarding_feature_edge_detection">தானியங்கு விளிம்பு கண்டறிதல்</string>
-    <string name="onboarding_feature_crop_straighten">பக்கங்களைச் செதுக்கி நேராக்கலாம்</string>
-    <string name="onboarding_feature_filters">மேஜிக் கலர், வைட்போர்டு மற்றும் பல</string>
-    <string name="onboarding_feature_ocr">சாதனத்திலேயே உரை அறிதல்</string>
-    <string name="onboarding_feature_search">உங்கள் ஸ்கேன்கள் முழுவதும் சொற்களைத் தேடலாம்</string>
-    <string name="onboarding_feature_copy_text">எந்தப் பக்கத்திலிருந்தும் உரையை நகலெடுக்கலாம்</string>
-    <string name="onboarding_feature_multipage_pdf">பல பக்க PDF-கள்</string>
-    <string name="onboarding_feature_password">பகிரும் முன் கடவுச்சொல் பாதுகாப்பு</string>
-    <string name="onboarding_feature_sign">ஆவணங்களில் கையொப்பமிடலாம்</string>
-    <string name="onboarding_assurance_offline">முழுமையாக ஆஃப்லைனில் இயங்கும்.</string>
-    <string name="onboarding_assurance_on_device">உங்கள் உரை இந்தச் சாதனத்தை விட்டு வெளியேறாது.</string>
+    <string name="onboarding_assurance_offline">உங்கள் சாதனத்திலேயே செயலாக்கப்படும்.</string>
     <!-- Pip -->
     <string name="pip_poke_pip_scanly_s_helper">Scanly-இன் உதவியாளர் Pip-ஐத் தொடுங்கள்</string>
     <!-- PipBubble -->
@@ -1448,8 +1438,8 @@
     <string name="pdf_page_size_tabloid">"டேப்ளாய்ட்"</string>
     <string name="pdf_page_size_executive">"நிர்வாகி"</string>
     <string name="pdf_page_size_postcard">"அஞ்சல் அட்டை"</string>
-    <string name="pdf_page_size_american_foolscap">"அமெரிக்க முட்டாள்கள்"</string>
-    <string name="pdf_page_size_european_foolscap">"ஐரோப்பிய முட்டாள்கள்"</string>
+    <string name="pdf_page_size_american_foolscap">"அமெரிக்க ஃபூல்ஸ்கேப்"</string>
+    <string name="pdf_page_size_european_foolscap">"ஐரோப்பிய ஃபூல்ஸ்கேப்"</string>
     <!-- pdf_page_margin -->
     <string name="pdf_page_margin_no_margin">"விளிம்பு இல்லை"</string>
     <string name="pdf_page_margin_big">"பெரியது"</string>
@@ -1542,7 +1532,7 @@
     <string name="pdf_import_look_enhance">"மேம்படுத்து"</string>
     <string name="pdf_import_look_even_out_scanned_pages_and">"ஸ்கேன் செய்யப்பட்ட பக்கங்களை சமன் செய்து உரையைக் கூர்மைப்படுத்தவும்"</string>
     <!-- capture_scene_issue -->
-    <string name="capture_scene_issue_lens_may_be_covered_clear">"லென்ஸ் மூடப்பட்டிருக்கலாம். அதைக் கண்டுபிடித்து மீண்டும் முயற்சிக்கவும்."</string>
+    <string name="capture_scene_issue_lens_may_be_covered_clear">"லென்ஸ் மூடப்பட்டிருக்கலாம். அதைத் துடைத்துவிட்டு மீண்டும் முயற்சிக்கவும்."</string>
     <string name="capture_scene_issue_too_dark_add_light_or">"மிகவும் இருள். ஒளியைச் சேர்க்கவும் அல்லது ஃபிளாஷை இயக்கவும்."</string>
     <string name="capture_scene_issue_image_looks_blurry_clean_the">"படம் மங்கலாகத் தெரிகிறது. லென்ஸை சுத்தம் செய்யவும் அல்லது கவனம் செலுத்த தட்டவும்."</string>
     <!-- group_export_action -->
@@ -1565,14 +1555,14 @@
     <string name="signature_pen_width_bold">"தடித்த"</string>
     <!-- onboarding_page -->
     <string name="onboarding_page_capture">"பிடிப்பு"</string>
-    <string name="onboarding_page_paper_to_polished">"காகிதத்திலிருந்து தெளிவான ஸ்கேன்."</string>
-    <string name="onboarding_page_capture_straighten_and_clean_up">"உங்கள் பக்கங்களைப் பிடிக்கவும், நேராக்கவும் மற்றும் சுத்தம் செய்யவும்."</string>
+    <string name="onboarding_page_paper_to_polished">காகிதம், நேர்த்தியாக.</string>
+    <string name="onboarding_page_capture_straighten_and_clean_up">பக்கத்தை ஸ்கேன் செய்து, ஓரங்களை நேராக்கி, நிறத்தைச் சரிசெய்யுங்கள். ஸ்கேனைச் சேமிக்கும் முன் விவரங்கள் தெளிவாக இருப்பதை உறுதிசெய்யுங்கள்.</string>
     <string name="onboarding_page_find">"கண்டுபிடி"</string>
-    <string name="onboarding_page_find_more_than_files">"ஸ்கேனின் உள்ளேயும் தேடுங்கள்."</string>
-    <string name="onboarding_page_recognize_text_on_your_device">"உங்கள் சாதனத்தில் உள்ள உரையை அங்கீகரிக்கவும். உங்கள் ஸ்கேன்களில் தேடவும்."</string>
-    <string name="onboarding_page_share">"பகிரவும்"</string>
-    <string name="onboarding_page_ready_when_you_are">"நீங்கள் தயாரானால் நானும் தயார்."</string>
-    <string name="onboarding_page_keep_pages_together_share_a">"பக்கங்களை ஒன்றாக வைத்திருங்கள். ஒரு சில தட்டுகளில் சுத்தமான PDF ஐப் பகிரவும்."</string>
+    <string name="onboarding_page_find_more_than_files">சொல்லைத் தேடுங்கள். பக்கத்தைக் கண்டறியுங்கள்.</string>
+    <string name="onboarding_page_recognize_text_on_your_device">உங்கள் சாதனத்திலேயே எழுத்துகளை அறிந்து, ஸ்கேன்களில் உள்ள சொற்களைத் தேடுங்கள். ஒவ்வொரு ஆவணத்தையும் மீண்டும் படிக்காமல் தேவையான பக்கத்தைக் கண்டறியுங்கள்.</string>
+    <string name="onboarding_page_share">நிறைவு</string>
+    <string name="onboarding_page_ready_when_you_are">அனுப்பத் தயார்.</string>
+    <string name="onboarding_page_keep_pages_together_share_a">உங்கள் பக்கங்களை ஒரே PDF ஆகச் சேருங்கள். தேவைப்பட்டால் கையொப்பம் அல்லது கடவுச்சொல் சேர்த்து, சில தட்டல்களில் தயாரான ஆவணத்தைப் பகிருங்கள்.</string>
     <!-- pdf_reader_tool -->
     <string name="pdf_reader_tool_merge_with_other_pdfs">"மற்ற PDF கோப்புகளுடன் இணைக்கவும்"</string>
     <string name="pdf_reader_tool_password_protect">"கடவுச்சொல் பாதுகாப்பு"</string>
@@ -1607,7 +1597,7 @@
     <string name="settings_text_recognition_czech">"செக்"</string>
     <string name="settings_text_recognition_swedish">"ஸ்வீடிஷ்"</string>
     <string name="settings_text_recognition_swahili">"சுவாஹிலி"</string>
-    <string name="settings_text_recognition_filipino">"பிலிப்பைன்ஸ்"</string>
+    <string name="settings_text_recognition_filipino">"பிலிப்பினோ"</string>
     <string name="settings_text_recognition_vietnamese">"வியட்நாமியர்"</string>
     <string name="settings_text_recognition_malay">"மலாய்"</string>
     <string name="settings_text_recognition_indonesian">"இந்தோனேஷியன்"</string>
@@ -1704,20 +1694,20 @@
     <!-- document_sign -->
     <string name="document_sign_some_pages_are_still_processing">"சில பக்கங்கள் இன்னும் செயலாக்கத்தில் உள்ளன, இன்னும் கையொப்பமிட முடியவில்லை."</string>
     <!-- pip_lines -->
-    <string name="pip_lines_hi_i_m_pip_point">"வணக்கம், நான் Pip! எனக்கு ஒரு பக்கத்தைக் காட்டுங்கள், உங்களுக்காக ஸ்கேன் செய்து தருகிறேன்."</string>
+    <string name="pip_lines_hi_i_m_pip_point">"வணக்கம், நான் Pip! எனக்கு ஒரு பக்கத்தைக் காட்டுங்கள், உங்களுக்காக நேராக்கித் தருகிறேன்."</string>
     <string name="pip_lines_one_last_thing_can_i">"கடைசியாக ஒன்று! நான் கேமராவைப் பயன்படுத்தலாமா? நீங்கள் ஸ்கேன் செய்யும் போது மட்டுமே இது இயக்கப்படும்."</string>
     <string name="pip_lines_nothing_here_yet_let_s">"இங்கு இன்னும் எதுவும் இல்லை. உங்கள் முதல் பக்கத்தை ஒன்றாக ஸ்கேன் செய்வோம்."</string>
     <string name="pip_lines_a_clean_shelf_start_a">"சுத்தமான அலமாரி! ஒரு கோப்புறையைத் தொடங்கவும் அல்லது எதையாவது ஸ்கேன் செய்யவும்."</string>
     <string name="pip_lines_no_folders_yet_they_re">"இதுவரை கோப்புறைகள் இல்லை. ரசீதுகள், பில்கள் மற்றும் பள்ளி ஆவணங்களை ஒழுங்கமைக்க அவற்றைப் பயன்படுத்தவும்."</string>
     <string name="pip_lines_no_documents_yet_i_m">"​​இதுவரை ஆவணங்கள் இல்லை. நீங்கள் இருக்கும்போது நான் தயாராக இருக்கிறேன்."</string>
     <string name="pip_lines_this_folder_is_waiting_for">"இந்த கோப்புறை அதன் முதல் ஆவணத்திற்காக காத்திருக்கிறது."</string>
-    <string name="pip_lines_no_pages_yet_point_me">"இன்னும் பக்கங்கள் இல்லை. ஏதாவது காகிதத்தில் சுட்டி!"</string>
+    <string name="pip_lines_no_pages_yet_point_me">"இன்னும் பக்கங்கள் இல்லை. ஏதாவது காகிதத்தைக் காட்டுங்கள்!"</string>
     <string name="pip_lines_no_pages_means_no_words">"பக்கங்கள் இல்லை என்றால் இன்னும் வார்த்தைகள் இல்லை."</string>
     <string name="pip_lines_pick_a_few_photos_and">"சில புகைப்படங்களைத் தேர்ந்தெடுத்து, டிடெக்டர்கள் எவ்வளவு வேகமாக வேலை செய்கின்றன என்பதைப் பார்ப்போம்!"</string>
     <string name="pip_lines_hmm_i_don_t_have">"ம்ம்ம், அதற்கான பதில் என்னிடம் இல்லை."</string>
     <string name="pip_lines_no_codes_yet_scan_or">"இதுவரை குறியீடுகள் இல்லை. ஸ்கேன் செய்யவும் அல்லது ஒன்றை உருவாக்கவும், நான் அதை இங்கே வைத்திருப்பேன்."</string>
     <string name="pip_lines_nothing_matches_that_try_another">"எதுவும் பொருந்தவில்லை. வேறு வார்த்தை முயற்சிக்கவா?"</string>
-    <string name="pip_lines_i_m_still_reading_some">"நான் இன்னும் சில பக்கங்களைப் படித்து வருகிறேன். போட்டிகள் ஒரு நொடியில் முடியும்."</string>
+    <string name="pip_lines_i_m_still_reading_some">"நான் இன்னும் சில பக்கங்களைப் படித்து வருகிறேன். பொருத்தங்கள் ஒரு நொடியில் தோன்றலாம்."</string>
     <string name="pip_lines_i_can_t_see_a">"என்னால் இன்னும் எதையும் பார்க்க முடியவில்லை. நான் கேமராவை கடன் வாங்கலாமா?"</string>
     <string name="pip_lines_the_camera_is_switched_off">"Scanly க்கு கேமரா அணைக்கப்பட்டுள்ளது. அமைப்புகளுக்கான விரைவான பயணம் அதை சரிசெய்கிறது."</string>
     <string name="pip_lines_lend_me_the_camera_and">"எனக்கு கேமராவைக் கொடுங்கள், உங்களுக்கான குறியீட்டைப் படிக்கிறேன்."</string>
@@ -1801,7 +1791,7 @@
         <item quantity="other">"%d உருப்படிகள் மீட்டெடுக்கப்பட்டன"</item>
     </plurals>
     <plurals name="recently_deleted_restored_some_items">
-        <item quantity="one">"%3$d உருப்படிகளில் %2$d மீட்டெடுக்கப்பட்டன. %4$s"</item>
+        <item quantity="one">"%3$d உருப்படியில் %2$d மீட்டெடுக்கப்பட்டது. %4$s"</item>
         <item quantity="other">"%3$d உருப்படிகளில் %2$d மீட்டெடுக்கப்பட்டன. %4$s"</item>
     </plurals>
     <plurals name="recently_deleted_deleted_items">
@@ -1809,7 +1799,7 @@
         <item quantity="other">"%d உருப்படிகள் நிரந்தரமாக நீக்கப்பட்டன"</item>
     </plurals>
     <plurals name="recently_deleted_deleted_some_items">
-        <item quantity="one">"%3$d உருப்படிகளில் %2$d நிரந்தரமாக நீக்கப்பட்டன. %4$s"</item>
+        <item quantity="one">"%3$d உருப்படியில் %2$d நிரந்தரமாக நீக்கப்பட்டது. %4$s"</item>
         <item quantity="other">"%3$d உருப்படிகளில் %2$d நிரந்தரமாக நீக்கப்பட்டன. %4$s"</item>
     </plurals>
     <!-- %1$s = folder name, %2$d = number of documents in it. -->
@@ -1825,7 +1815,7 @@
     <string name="pdf_password_strength_weak">"பலவீனமான"</string>
     <string name="pdf_password_strength_fair">"நடுத்தர"</string>
     <string name="pdf_password_strength_strong">"வலுவான"</string>
-    <string name="model_benchmark_gate_prefix">"ஆவணச் சோதனை: %1$s"</string>
+    <string name="model_benchmark_gate_prefix">"வாசல்: %1$s"</string>
     <string name="model_benchmark_unavailable">"கிடைக்கவில்லை"</string>
     <!-- Error messages shown in snackbars and dialogs -->
     <string name="error_document_not_found">"ஆவணம் கிடைக்கவில்லை."</string>
@@ -1835,7 +1825,7 @@
     <string name="error_could_not_create_export_directory">"ஏற்றுமதி கோப்பகத்தை உருவாக்க முடியவில்லை."</string>
     <string name="error_could_not_replace_existing_pdf">"ஏற்கனவே உள்ள PDF ஐ மாற்ற முடியவில்லை."</string>
     <string name="error_folder_not_found">"கோப்புறை கிடைக்கவில்லை."</string>
-    <string name="error_this_page_is_already_in_recently_deleted">"இந்தப் பக்கம் ஏற்கனவே சமீபத்தில் நீக்கப்பட்டது என்பதில் உள்ளது."</string>
+    <string name="error_this_page_is_already_in_recently_deleted">"இந்தப் பக்கம் ஏற்கனவே சமீபத்தில் நீக்கப்பட்டவற்றில் உள்ளது."</string>
     <string name="error_only_pages_in_recently_deleted_can_be">"சமீபத்தில் நீக்கப்பட்ட பக்கங்களை மட்டுமே நிரந்தரமாக நீக்க முடியும்."</string>
     <string name="error_page_not_found">"பக்கம் கிடைக்கவில்லை."</string>
     <string name="error_page_not_found_in_document_order">"ஆவண வரிசையில் பக்கம் இல்லை."</string>
@@ -1946,11 +1936,11 @@
         <item quantity="other">"%d தலைப்புகள்"</item>
     </plurals>
     <plurals name="common_libraries">
-        <item quantity="one">"%d நிரலகம்"</item>
-        <item quantity="other">"%d நிரலகங்கள்"</item>
+        <item quantity="one">"%d நூலகம்"</item>
+        <item quantity="other">"%d நூலகங்கள்"</item>
     </plurals>
     <plurals name="common_selected">
-        <item quantity="one">"%d தேர்ந்தெடுக்கப்பட்டன"</item>
+        <item quantity="one">"%d தேர்ந்தெடுக்கப்பட்டது"</item>
         <item quantity="other">"%d தேர்ந்தெடுக்கப்பட்டன"</item>
     </plurals>
     <plurals name="pdf_to_images_saved_count">
@@ -1989,6 +1979,124 @@
     <string name="error_could_not_update_model_selection">"மாதிரித் தேர்வைப் புதுப்பிக்க முடியவில்லை."</string>
     <string name="error_could_not_update_document_detection_settings">"ஆவணக் கண்டறிதல் அமைப்புகளைப் புதுப்பிக்க முடியவில்லை."</string>
     <string name="error_could_not_save_the_exported_file">"ஏற்றுமதி செய்யப்பட்ட கோப்பைச் சேமிக்க முடியவில்லை."</string>
-    <string name="error_could_not_store_update_prompt_state">"புதுப்பிப்பு உடனடி நிலையைச் சேமிக்க முடியவில்லை."</string>
+    <string name="error_could_not_store_update_prompt_state">"புதுப்பிப்பு நினைவூட்டல் நிலையைச் சேமிக்க முடியவில்லை."</string>
     <string name="error_could_not_check_github_releases">"GitHub வெளியீடுகளைச் சரிபார்க்க முடியவில்லை."</string>
+    <string name="onboarding_chapter_number">%1$02d %2$s</string>
+    <!-- Split PDF -->
+    <string name="tools_catalog_split">"பிரி"</string>
+    <string name="tools_catalog_cut_into_parts">"பகுதிகளாக வெட்டு"</string>
+    <string name="pdf_reader_tool_split_into_parts">"பகுதிகளாகப் பிரி"</string>
+    <string name="pdf_split_title">"PDF-ஐப் பிரி"</string>
+    <string name="pdf_split_subtitle">"ஒரு PDF-ஐச் சிறிய PDF-களாக வெட்டவும்"</string>
+    <string name="pdf_split_step_2">"படி 2/3 · எங்கே பிரிப்பது"</string>
+    <string name="pdf_split_mode_custom">"தனிப்பயன்"</string>
+    <string name="pdf_split_mode_every_n">"ஒவ்வொரு N பக்கமும்"</string>
+    <string name="pdf_split_mode_extract">"பிரித்தெடு"</string>
+    <string name="pdf_split_ranges_label">"வரம்புகளை உள்ளிடவும் அல்லது கீழே உள்ள அட்டைகளைத் திருத்தவும்"</string>
+    <string name="pdf_split_ranges_placeholder">"எ.கா. 1-3, 6-8"</string>
+    <string name="pdf_split_ranges_hint">"வரம்புகளைக் காற்புள்ளியால் பிரிக்கவும், எ.கா. 1-3, 6-8"</string>
+    <string name="pdf_split_ranges_error">"பக்க எண்களையும் கோடுகளையும் பயன்படுத்தவும், எ.கா. 1-3, 6-8"</string>
+    <string name="pdf_split_range_title">"வரம்பு %d"</string>
+    <string name="pdf_split_range_from">"பக்கம்"</string>
+    <string name="pdf_split_range_to">"முதல்"</string>
+    <string name="pdf_split_remove_range">"வரம்பு %d-ஐ அகற்று"</string>
+    <string name="pdf_split_range_error">"1 முதல் %d வரையான பக்கங்களைப் பயன்படுத்தவும்; முதல் பக்கம் கடைசிக்கு முன் இருக்க வேண்டும்."</string>
+    <string name="pdf_split_add_range">"வரம்பைச் சேர்"</string>
+    <string name="pdf_split_pages_included">"சேர்க்கப்பட்ட பக்கங்கள்"</string>
+    <string name="pdf_split_not_included">"எந்த வரம்பிலும் இல்லை, எனவே சேமிக்கப்படாது: %s"</string>
+    <string name="pdf_split_merge_ranges">"எல்லா வரம்புகளையும் ஒரே PDF-ஆக இணை"</string>
+    <string name="pdf_split_merge_ranges_caption">"முடக்கம்: ஒவ்வொரு வரம்பும் தனி PDF"</string>
+    <string name="pdf_split_pages_in_each">"ஒவ்வொரு PDF-இலும் பக்கங்கள்"</string>
+    <string name="pdf_split_fewer_pages">"ஒவ்வொரு PDF-இலும் குறைவான பக்கங்கள்"</string>
+    <string name="pdf_split_more_pages">"ஒவ்வொரு PDF-இலும் அதிக பக்கங்கள்"</string>
+    <string name="pdf_split_last_shorter">"கடைசியில் %s உள்ளன"</string>
+    <string name="pdf_split_one_per_page">"ஒரு பக்கத்திற்கு ஒரு PDF"</string>
+    <string name="pdf_split_you_get">"உங்களுக்கு %s கிடைக்கும்"</string>
+    <string name="pdf_split_more_parts">"+ மேலும் %d"</string>
+    <string name="pdf_split_pdf_title">"PDF %d"</string>
+    <string name="pdf_split_pages_label">"பக்கங்கள்"</string>
+    <string name="pdf_split_save_as">"இவ்வாறு சேமி"</string>
+    <string name="pdf_split_one_pdf">"ஒரு PDF"</string>
+    <string name="pdf_split_one_pdf_caption">"தேர்ந்தெடுத்த எல்லாப் பக்கங்களும் ஒன்றாக"</string>
+    <string name="pdf_split_separate_pdfs">"தனித்தனி PDF-கள்"</string>
+    <string name="pdf_split_separate_caption">"ஒரு பக்கத்திற்கு ஒரு கோப்பு"</string>
+    <string name="pdf_split_keep_rest_caption">"இன்னொரு PDF-ஆக"</string>
+    <string name="pdf_split_extract_button">"%1$s பிரித்தெடு · %2$s"</string>
+    <string name="pdf_split_create_one">"1 PDF உருவாக்கு · %s"</string>
+    <string name="pdf_split_choose_pages">"பிரித்தெடுக்க வேண்டிய பக்கங்களைத் தேர்ந்தெடுக்கவும்"</string>
+    <string name="pdf_split_fix_ranges">"தொடர வரம்புகளைச் சரிசெய்யவும்"</string>
+    <string name="pdf_split_single_page">"இந்த PDF-இல் ஒரே ஒரு பக்கம் மட்டுமே உள்ளது, பிரிக்க எதுவுமில்லை."</string>
+    <string name="pdf_split_splitting">"பிரிக்கிறது…"</string>
+    <string name="pdf_split_writing_part">"%2$d-இல் பகுதி %1$d எழுதப்படுகிறது"</string>
+    <string name="pdf_split_from_file">"%1$s-இலிருந்து · %2$s"</string>
+    <string name="pdf_split_tap_to_rename">"பெயரை மாற்ற அதைத் தட்டவும்"</string>
+    <string name="pdf_split_open_part">"%s-ஐத் திற"</string>
+    <string name="pdf_split_one_zip">"ஒரு ZIP"</string>
+    <string name="pdf_split_save_all">"அனைத்தையும் சேமி"</string>
+    <string name="pdf_split_share_all">"அனைத்தையும் பகிர்"</string>
+    <string name="pdf_split_output_pages">"%1$s – பக்கங்கள் %2$s"</string>
+    <string name="pdf_split_output_page">"%1$s – பக்கம் %2$d"</string>
+    <string name="pdf_split_pages_meta">"பக்கங்கள் %1$s · %2$s"</string>
+    <string name="pdf_split_page_meta">"பக்கம் %1$d · %2$s"</string>
+    <string name="pdf_split_no_password">"புதிய PDF-களுக்குக் கடவுச்சொல் இல்லை."</string>
+    <string name="pdf_split_could_not_split">"இந்த PDF-ஐப் பிரிக்க முடியவில்லை."</string>
+    <plurals name="pdf_split_pdf_count">
+        <item quantity="one">"%d PDF"</item>
+        <item quantity="other">"%d PDF-கள்"</item>
+    </plurals>
+    <plurals name="pdf_split_split_into">
+        <item quantity="one">"%d PDF-ஆகப் பிரி"</item>
+        <item quantity="other">"%d PDF-களாகப் பிரி"</item>
+    </plurals>
+    <plurals name="pdf_split_keep_rest">
+        <item quantity="one">"மீதமுள்ள %d பக்கத்தையும் சேமி"</item>
+        <item quantity="other">"மீதமுள்ள %d பக்கங்களையும் சேமி"</item>
+    </plurals>
+    <plurals name="pdf_split_saved">
+        <item quantity="one">"%1$d PDF %2$s-இல் சேமிக்கப்பட்டது"</item>
+        <item quantity="other">"%1$d PDF-கள் %2$s-இல் சேமிக்கப்பட்டன"</item>
+    </plurals>
+    <plurals name="pdf_split_range_count">
+        <item quantity="one">"%d வரம்பு"</item>
+        <item quantity="other">"%d வரம்புகள்"</item>
+    </plurals>
+    <!-- Split a document into documents -->
+    <string name="document_split_title">"பல ஆவணங்களாகப் பிரி"</string>
+    <string name="document_split_pages_cuts">"%1$s · %2$s"</string>
+    <string name="document_split_every_page">"ஒவ்வொரு பக்கமும்"</string>
+    <string name="document_split_clear">"அழி"</string>
+    <string name="document_split_hint">"அங்கே வெட்ட இரண்டு பக்கங்களுக்கு இடையிலான இடைவெளியைத் தட்டவும்."</string>
+    <string name="document_split_cut_after">"பக்கம் %d-க்குப் பின் வெட்டு"</string>
+    <string name="document_split_remove_cut">"பக்கம் %d-க்குப் பின் உள்ள வெட்டை அகற்று"</string>
+    <string name="document_split_part_label">"பகுதி %1$d · பக்கங்கள் %2$s"</string>
+    <string name="document_split_part_label_single">"பகுதி %1$d · பக்கம் %2$d"</string>
+    <string name="document_split_destination_title">"புதிய ஆவணங்கள் செல்லும் இடம்"</string>
+    <string name="document_split_destination_folder">"மூல ஆவணம் உள்ள அதே கோப்புறை"</string>
+    <string name="document_split_destination_library">"உங்கள் நூலகம், கோப்புறைகளுக்கு வெளியே"</string>
+    <string name="document_split_keep_original">"மூல ஆவணத்தை வைத்திரு"</string>
+    <string name="document_split_keep_original_caption">"முடக்கம்: அது சமீபத்தில் நீக்கியவைக்குச் செல்லும்"</string>
+    <string name="document_split_note">"பக்க உரை, கையொப்பங்கள், திருத்தங்கள் ஒவ்வொரு பக்கத்துடனும் செல்லும்."</string>
+    <string name="document_split_add_cut">"பிரிக்க ஒரு வெட்டைச் சேர்க்கவும்"</string>
+    <string name="document_split_failed">"இந்த ஆவணத்தைப் பிரிக்க முடியவில்லை."</string>
+    <string name="document_menu_split_into_pdfs">"பல PDF-களாகப் பிரி"</string>
+    <plurals name="document_split_cut_count">
+        <item quantity="one">"%d வெட்டு"</item>
+        <item quantity="other">"%d வெட்டுகள்"</item>
+    </plurals>
+    <plurals name="document_split_create">
+        <item quantity="one">"%d ஆவணத்தை உருவாக்கு"</item>
+        <item quantity="other">"%d ஆவணங்களை உருவாக்கு"</item>
+    </plurals>
+    <string name="pdf_peek_preview">"முன்னோட்டம்"</string>
+    <string name="pdf_peek_preview_file">"%1$s முன்னோட்டம்"</string>
+    <string name="pdf_peek_read_only">"முன்னோட்டம் மட்டும் · எதுவும் மாறாது"</string>
+    <string name="pdf_peek_page_of">"பக்கம் %1$d / %2$d"</string>
+    <string name="pdf_peek_opening">"முன்னோட்டம் திறக்கிறது…"</string>
+    <string name="pdf_peek_locked">"இந்த PDF-க்கு கடவுச்சொல் உள்ளது. முன்னோட்டம் பார்க்க முதலில் திறக்கவும்."</string>
+    <string name="pdf_peek_could_not_open">"முன்னோட்டத்திற்கு இந்த PDF-ஐத் திறக்க முடியவில்லை."</string>
+    <string name="pdf_peek_close">"முன்னோட்டத்தை மூடு"</string>
+    <string name="pdf_peek_tap_hint">"முன்னோட்டம் பார்க்க ஒரு கோப்பைத் தட்டவும்"</string>
+    <string name="welcome_greeting">வரவேற்கிறோம்</string>
+    <string name="welcome_tagline">காகிதங்களைத் தெளிவான, தேடக்கூடிய PDF-களாக மாற்றுங்கள்.</string>
+    <string name="welcome_no_language_match">“%1$s” உடன் பொருந்தும் மொழி இல்லை</string>
 </resources>

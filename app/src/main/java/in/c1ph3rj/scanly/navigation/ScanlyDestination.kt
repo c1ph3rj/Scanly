@@ -101,6 +101,11 @@ object ToolsPdfMergeDestination {
     const val route = "tools/pdf/merge"
 }
 
+/** Cuts one PDF into several: custom ranges, every N pages, or extracted pages. */
+object ToolsPdfSplitDestination {
+    const val route = "tools/pdf/split"
+}
+
 object ToolsPdfCompressDestination {
     const val route = "tools/pdf/compress"
 }
@@ -191,6 +196,10 @@ object SettingsTextRecognitionDestination {
 
 object SettingsWidgetsDestination {
     const val route = "settings/widgets"
+}
+
+object SettingsFeedbackDestination {
+    const val route = "settings/feedback"
 }
 
 object SettingsAboutDestination {

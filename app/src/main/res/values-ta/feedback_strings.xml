@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feedback_title">கருத்து அனுப்பு</string>
+    <string name="feedback_summary">பரிந்துரைகள், சிக்கல்கள் அல்லது வேறு எதுவும்</string>
+    <string name="feedback_description">மின்னஞ்சல் மூலம் உருவாக்குநரிடம் உங்கள் கருத்தைப் பகிருங்கள்.</string>
+    <string name="feedback_type">வகை</string>
+    <string name="feedback_suggestion">பரிந்துரை</string>
+    <string name="feedback_issue">சிக்கல்</string>
+    <string name="feedback_other">மற்றவை</string>
+    <string name="feedback_subject">தலைப்பு (விருப்பத்தேர்வு)</string>
+    <string name="feedback_message">செய்தி</string>
+    <string name="feedback_character_count">%1$d / %2$d எழுத்துகள்</string>
+    <string name="feedback_email_note">மின்னஞ்சல் செயலியில் சரிபார்த்து அனுப்புங்கள். செயலி மற்றும் Android பதிப்புகள் சேர்க்கப்படும்.</string>
+    <string name="feedback_send">மின்னஞ்சலுக்குச் செல்</string>
+    <string name="feedback_copy">உரையை நகலெடு</string>
+    <string name="feedback_no_email">மின்னஞ்சல் செயலி இல்லை. வரைவை நகலெடுத்து இணைய மின்னஞ்சலில் அனுப்புங்கள்.</string>
+    <string name="feedback_copied">வரைவு நகலெடுக்கப்பட்டது</string>
+    <string name="feedback_app_details">Scanly %1$s (%2$d) · Android %3$s</string>
+    <string name="rating_unavailable">Google Play அல்லது உலாவியைத் திறக்க முடியவில்லை. மீண்டும் முயலுங்கள்.</string>
+    <string name="feedback_attachments_title">படங்கள் (விருப்பத்தேர்வு)</string>
+    <string name="feedback_attachment_limits">அதிகபட்சம் %1$d படங்கள். ஒவ்வொரு படமும் %2$s அல்லது அதற்குக் குறைவாக மாற்றப்படும் (மொத்தம் %3$s).</string>
+    <string name="feedback_add_images">படங்களைச் சேர்</string>
+    <string name="feedback_preparing_images">படங்கள் தயாராகின்றன…</string>
+    <string name="feedback_attachment_summary">%1$d / %2$d படங்கள் · மொத்தம் %3$s</string>
+    <string name="feedback_image_label">படம் %1$d</string>
+    <string name="feedback_remove_image">படம் %1$d-ஐ நீக்கு</string>
+    <string name="feedback_image_limit">அதிகபட்சம் %1$d படங்களை இணைக்கலாம்.</string>
+    <string name="feedback_image_failed">சில படங்களைச் சேர்க்க முடியவில்லை. 40 MB வரையிலான படிக்கக்கூடிய படங்களைத் தேர்ந்தெடுங்கள்.</string>
+    <string name="feedback_missing_images">ஒரு படம் இப்போது கிடைக்கவில்லை. அதை நீக்கி மீண்டும் சேருங்கள்.</string>
+    <string name="feedback_copy_images_note">உரை நகலெடுக்கப்பட்டது. மின்னஞ்சல் செயலியில் படங்களைத் தனியாக இணைக்கவும்.</string>
+    <string name="feedback_close_preview">முன்னோட்டத்தை மூடு</string>
+    <string name="feedback_sent_title">உங்கள் கருத்தை அனுப்பிவிட்டீர்களா?</string>
+    <string name="feedback_sent_message">மின்னஞ்சலை அனுப்பிவிட்டால், இந்தப் படிவத்தைக் காலி செய்து மூடலாம். அனுப்பவில்லை என்றால், பிறகு தொடர உங்கள் வரைவை வைத்திருக்கலாம்.</string>
+    <string name="feedback_sent_yes">ஆம், அனுப்பிவிட்டேன்</string>
+    <string name="feedback_sent_not_yet">இன்னும் இல்லை</string>
+</resources>

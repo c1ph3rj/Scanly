@@ -140,6 +140,10 @@ import `in`.c1ph3rj.scanly.domain.model.previewImagePath
 import `in`.c1ph3rj.scanly.domain.model.ScanPage
 import `in`.c1ph3rj.scanly.domain.model.ShareArtifact
 import `in`.c1ph3rj.scanly.feature.components.CachedThumbnail
+import `in`.c1ph3rj.scanly.feature.tools.pdf.PdfReaderTool
+import `in`.c1ph3rj.scanly.domain.model.PdfToolSource
+import androidx.compose.material.icons.outlined.ContentCut
+import androidx.compose.material3.HorizontalDivider
 import `in`.c1ph3rj.scanly.feature.components.PagePreview
 import `in`.c1ph3rj.scanly.feature.components.ScanlyImportProgressOverlay
 import `in`.c1ph3rj.scanly.core.ui.PreviewDisplaySize
@@ -162,6 +166,16 @@ import kotlin.math.roundToInt
 import `in`.c1ph3rj.scanly.R
 import `in`.c1ph3rj.scanly.core.common.appString
 import androidx.compose.ui.res.stringResource
+
+/** PDF tools offered in a document's ⋮ menu, in reader order. */
+private val DocumentMenuTools = listOf(
+    PdfReaderTool.COMPRESS,
+    PdfReaderTool.MERGE,
+    PdfReaderTool.SPLIT,
+    PdfReaderTool.PASSWORD,
+    PdfReaderTool.WATERMARK,
+    PdfReaderTool.TO_IMAGES,
+)
 
 object DocumentDestination {
     const val documentIdArgument = "documentId"
@@ -188,6 +202,8 @@ fun DocumentDetailRoute(
     onReplacePage: (String) -> Unit,
     onOpenText: (pageIndex: Int) -> Unit = {},
     onOpenSign: (pageIndex: Int) -> Unit = {},
+    onSplitDocument: () -> Unit = {},
+    onOpenTool: (PdfReaderTool, PdfToolSource) -> Unit = { _, _ -> },
     viewModel: DocumentDetailViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -227,6 +243,8 @@ fun DocumentDetailRoute(
         onReplacePage = onReplacePage,
         onOpenText = onOpenText,
         onOpenSign = onOpenSign,
+        onSplitDocument = onSplitDocument,
+        onOpenTool = onOpenTool,
         onSelectPage = viewModel::selectPage,
         onMovePage = viewModel::movePage,
         onDeleteSelectedPage = viewModel::deleteSelectedPage,
@@ -271,6 +289,8 @@ fun DocumentDetailScreen(
     onDeleteDocument: () -> Unit,
     onOpenText: (pageIndex: Int) -> Unit = {},
     onOpenSign: (pageIndex: Int) -> Unit = {},
+    onSplitDocument: () -> Unit = {},
+    onOpenTool: (PdfReaderTool, PdfToolSource) -> Unit = { _, _ -> },
 ) {
     val windowSizeInfo = rememberWindowSizeInfo()
     // Pages list beside a live preview whenever a landscape window has the width for it,
@@ -458,6 +478,11 @@ fun DocumentDetailScreen(
                 onOpenText = { onOpenText(selectedPage?.pageIndex ?: 0) },
                 textEnabled = uiState.pages.isNotEmpty(),
                 onOpenSign = { onOpenSign(selectedPage?.pageIndex ?: 0) },
+                splitEnabled = uiState.pages.size >= 2,
+                onSplitDocument = onSplitDocument,
+                onOpenTool = { tool ->
+                    document?.let { onOpenTool(tool, PdfToolSource.LibraryDocument(it.id, it.title)) }
+                },
             )
         }
     ) { innerPadding ->
@@ -875,6 +900,9 @@ private fun ReviewTopBar(
     onOpenText: () -> Unit,
     textEnabled: Boolean,
     onOpenSign: () -> Unit,
+    splitEnabled: Boolean,
+    onSplitDocument: () -> Unit,
+    onOpenTool: (PdfReaderTool) -> Unit,
 ) {
     var showMenu by remember { mutableStateOf(false) }
 
@@ -964,6 +992,39 @@ private fun ReviewTopBar(
                                 onOpenText()
                             },
                         )
+                        HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
+                        DropdownMenuItem(
+                            text = { Text(stringResource(R.string.document_split_title)) },
+                            leadingIcon = {
+                                Icon(Icons.Outlined.ContentCut, contentDescription = null)
+                            },
+                            enabled = splitEnabled,
+                            onClick = {
+                                showMenu = false
+                                onSplitDocument()
+                            },
+                        )
+                        // The PDF tools that take a library document (Sign and Extract text are above).
+                        DocumentMenuTools.forEach { tool ->
+                            DropdownMenuItem(
+                                text = {
+                                    Text(
+                                        if (tool == PdfReaderTool.SPLIT) {
+                                            stringResource(R.string.document_menu_split_into_pdfs)
+                                        } else {
+                                            stringResource(tool.labelRes)
+                                        },
+                                    )
+                                },
+                                leadingIcon = { Icon(tool.icon, contentDescription = null) },
+                                enabled = exportEnabled,
+                                onClick = {
+                                    showMenu = false
+                                    onOpenTool(tool)
+                                },
+                            )
+                        }
+                        HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
                         DropdownMenuItem(
                             text = { Text(stringResource(R.string.document_detail_rename_document)) },
                             leadingIcon = {

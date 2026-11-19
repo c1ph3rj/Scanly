@@ -62,10 +62,15 @@ internal fun ComposeTestRule.awaitText(text: String, timeoutMs: Long = DEFAULT_T
 
 internal fun ComposeTestRule.completeOnboardingIfNeeded() {
     waitUntil(DEFAULT_TIMEOUT_MS) {
-        hasTag("onboarding_skip") ||
+        hasTag("welcome_continue") ||
+            hasTag("onboarding_skip") ||
             hasTag(ScanlyTestTags.ONBOARDING_GET_STARTED) ||
             hasTag(ScanlyTestTags.HOME_SCREEN) ||
             hasTag(ScanlyTestTags.NAV_HOME)
+    }
+    if (hasTag("welcome_continue")) {
+        onNodeWithTag("welcome_continue").performClick()
+        awaitTag("onboarding_skip")
     }
     if (hasTag("onboarding_skip")) {
         onNodeWithTag("onboarding_skip").performClick()
@@ -80,6 +85,14 @@ internal fun ComposeTestRule.completeOnboardingIfNeeded() {
         onNodeWithTag("onboarding_camera_later").performClick()
     }
     dismissBlockingSystemDialogs()
+    // With permission already granted, the new first-run CTA opens the scanner.
+    waitUntil(DEFAULT_TIMEOUT_MS) {
+        hasTag(ScanlyTestTags.HOME_SCREEN) || hasTag(ScanlyTestTags.NAV_HOME) ||
+            onAllNodesWithContentDescription("Close camera").fetchSemanticsNodes().isNotEmpty()
+    }
+    if (onAllNodesWithContentDescription("Close camera").fetchSemanticsNodes().isNotEmpty()) {
+        onNodeWithContentDescription("Close camera").performClick()
+    }
     waitUntil(DEFAULT_TIMEOUT_MS) {
         hasTag(ScanlyTestTags.HOME_SCREEN) || hasTag(ScanlyTestTags.NAV_HOME)
     }

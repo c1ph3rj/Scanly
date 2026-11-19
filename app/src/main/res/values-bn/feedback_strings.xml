@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feedback_title">মতামত পাঠান</string>
+    <string name="feedback_summary">পরামর্শ, সমস্যা বা অন্য যেকোনো কথা</string>
+    <string name="feedback_description">ইমেলের মাধ্যমে ডেভেলপারকে আপনার মতামত জানান।</string>
+    <string name="feedback_type">ধরন</string>
+    <string name="feedback_suggestion">পরামর্শ</string>
+    <string name="feedback_issue">সমস্যা</string>
+    <string name="feedback_other">অন্যান্য</string>
+    <string name="feedback_subject">বিষয় (ঐচ্ছিক)</string>
+    <string name="feedback_message">বার্তা</string>
+    <string name="feedback_character_count">%1$d / %2$d অক্ষর</string>
+    <string name="feedback_email_note">ইমেল অ্যাপে যাচাই করে পাঠান। অ্যাপ ও Android-এর সংস্করণ অন্তর্ভুক্ত থাকবে।</string>
+    <string name="feedback_send">ইমেলে এগিয়ে যান</string>
+    <string name="feedback_copy">টেক্সট কপি করুন</string>
+    <string name="feedback_no_email">কোনো ইমেল অ্যাপ নেই। খসড়া কপি করে ওয়েবমেল থেকে পাঠান।</string>
+    <string name="feedback_copied">খসড়া কপি হয়েছে</string>
+    <string name="feedback_app_details">Scanly %1$s (%2$d) · Android %3$s</string>
+    <string name="rating_unavailable">Google Play বা ব্রাউজার খোলা যায়নি। আবার চেষ্টা করুন।</string>
+    <string name="feedback_attachments_title">ছবি (ঐচ্ছিক)</string>
+    <string name="feedback_attachment_limits">সর্বোচ্চ %1$dটি ছবি। প্রতিটি %2$s বা কমে প্রস্তুত হবে (মোট %3$s)।</string>
+    <string name="feedback_add_images">ছবি যোগ করুন</string>
+    <string name="feedback_preparing_images">ছবি প্রস্তুত হচ্ছে…</string>
+    <string name="feedback_attachment_summary">%1$d / %2$dটি ছবি · মোট %3$s</string>
+    <string name="feedback_image_label">ছবি %1$d</string>
+    <string name="feedback_remove_image">ছবি %1$d সরান</string>
+    <string name="feedback_image_limit">সর্বোচ্চ %1$dটি ছবি সংযুক্ত করতে পারবেন।</string>
+    <string name="feedback_image_failed">কিছু ছবি যোগ করা যায়নি। 40 MB পর্যন্ত পাঠযোগ্য ছবি ব্যবহার করুন।</string>
+    <string name="feedback_missing_images">একটি ছবি আর উপলভ্য নেই। সরিয়ে আবার যোগ করুন।</string>
+    <string name="feedback_copy_images_note">টেক্সট কপি হয়েছে। ইমেল অ্যাপে ছবি আলাদাভাবে সংযুক্ত করুন।</string>
+    <string name="feedback_close_preview">প্রিভিউ বন্ধ করুন</string>
+    <string name="feedback_sent_title">আপনার মতামত কি পাঠিয়েছেন?</string>
+    <string name="feedback_sent_message">ইমেল পাঠিয়ে থাকলে আমরা এই ফর্মটি খালি করে বন্ধ করতে পারি। না পাঠিয়ে থাকলে পরে চালিয়ে যেতে খসড়াটি রাখুন।</string>
+    <string name="feedback_sent_yes">হ্যাঁ, পাঠিয়েছি</string>
+    <string name="feedback_sent_not_yet">এখনও নয়</string>
+</resources>

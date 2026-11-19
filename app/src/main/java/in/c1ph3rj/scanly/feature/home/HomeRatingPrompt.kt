@@ -39,9 +39,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import `in`.c1ph3rj.scanly.feature.camera.CameraPermissionSupport
 import `in`.c1ph3rj.scanly.feature.components.ScanlyModalBottomSheet
-import `in`.c1ph3rj.scanly.feature.rating.currentRatingChannel
+import android.widget.Toast
 import `in`.c1ph3rj.scanly.feature.rating.launchRating
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
@@ -63,7 +62,6 @@ private const val RATING_STAR_START_SCALE = 0.6f
 @Composable
 fun HomeRatingPromptHost(viewModel: HomeViewModel) {
     val context = LocalContext.current
-    val scope = rememberCoroutineScope()
     val promptEligible by viewModel.showRatingPrompt.collectAsStateWithLifecycle()
     var sheetVisible by rememberSaveable { mutableStateOf(false) }
 
@@ -76,8 +74,6 @@ fun HomeRatingPromptHost(viewModel: HomeViewModel) {
     }
 
     if (sheetVisible) {
-        val activity = remember(context) { CameraPermissionSupport.findActivity(context) }
-        val channel = remember { currentRatingChannel() }
         val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
         ScanlyModalBottomSheet(
@@ -90,9 +86,10 @@ fun HomeRatingPromptHost(viewModel: HomeViewModel) {
             RatingPromptContent(
                 onRate = {
                     sheetVisible = false
-                    viewModel.onRatingPromptRated()
-                    if (activity != null) {
-                        scope.launch { launchRating(activity, channel) }
+                    if (launchRating(context)) {
+                        viewModel.onRatingPromptRated()
+                    } else {
+                        Toast.makeText(context, appString(R.string.rating_unavailable), Toast.LENGTH_LONG).show()
                     }
                 },
                 onNotNow = {

@@ -39,5 +39,11 @@ interface DocumentGateDetector {
 
 object DocumentGatePolicy {
     const val LIVE_THRESHOLD = 0.90f
+
+    /**
+     * Once the live gate has accepted a document, frames stay accepted down to this physical
+     * probability (hysteresis), so one noisy frame does not drop the outline and restart the hold.
+     */
+    const val LIVE_EXIT_THRESHOLD = 0.70f
     const val POST_PROCESSING_THRESHOLD = 0.95f
 }

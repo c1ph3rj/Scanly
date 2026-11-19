@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.CallSplit
 import androidx.compose.material.icons.automirrored.outlined.MergeType
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.outlined.Compress
@@ -41,6 +42,7 @@ enum class PdfReaderTool(@param:StringRes val labelRes: Int, val icon: ImageVect
     SIGN(R.string.page_image_preview_sign, Icons.Outlined.Draw),
     COMPRESS(R.string.pdf_compress_compress, Icons.Outlined.Compress),
     MERGE(R.string.pdf_reader_tool_merge_with_other_pdfs, Icons.AutoMirrored.Outlined.MergeType),
+    SPLIT(R.string.pdf_reader_tool_split_into_parts, Icons.AutoMirrored.Outlined.CallSplit),
     PASSWORD(R.string.pdf_reader_tool_password_protect, Icons.Outlined.Lock),
     WATERMARK(R.string.pdf_reader_tool_add_watermark, Icons.Outlined.WaterDrop),
     TO_IMAGES(R.string.pdf_reader_tool_save_pages_as_images, Icons.Outlined.Image),

@@ -353,6 +353,7 @@ fun SettingsAboutRoute(
     onOpenLegalDocument: (LegalDocumentType) -> Unit,
     onOpenFaqs: () -> Unit,
     onOpenLicenses: () -> Unit,
+    onOpenFeedback: () -> Unit,
     parentEntry: NavBackStackEntry,
     viewModel: SettingsViewModel = hiltViewModel(parentEntry),
 ) {
@@ -370,7 +371,7 @@ fun SettingsAboutRoute(
         onOpenLegalDocument = onOpenLegalDocument,
         onOpenLicenses = onOpenLicenses,
         onOpenWebsite = { uriHandler.openUriSafely(PROJECT_WEBSITE_URL) },
-        onContactSupport = { uriHandler.openUriSafely("mailto:$SUPPORT_EMAIL") },
+        onContactSupport = onOpenFeedback,
     )
 }
 

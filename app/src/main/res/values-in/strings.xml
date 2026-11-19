@@ -626,23 +626,13 @@
     <!-- OnboardingScreen -->
     <string name="onboarding_no_account_no_cloud_upload">Tanpa akun. Tanpa upload ke cloud.</string>
     <string name="onboarding_continue">Lanjutkan</string>
-    <string name="onboarding_get_started">Mulai</string>
+    <string name="onboarding_get_started">Pindai halaman pertama saya</string>
     <string name="onboarding_page_of_3">"%1$s, halaman %2$s dari 3"</string>
     <string name="onboarding_page_of_3_2">"Halaman %1$s dari 3"</string>
     <string name="onboarding_skip">Lewati</string>
     <string name="onboarding_scanly">Scanly.</string>
     <string name="onboarding_previous_page">Halaman sebelumnya</string>
-    <string name="onboarding_feature_edge_detection">Deteksi tepi otomatis</string>
-    <string name="onboarding_feature_crop_straighten">Pangkas dan luruskan halaman</string>
-    <string name="onboarding_feature_filters">Warna ajaib, Papan tulis, dan lainnya</string>
-    <string name="onboarding_feature_ocr">Pengenalan teks di perangkat</string>
-    <string name="onboarding_feature_search">Telusuri kata di semua pindaian</string>
-    <string name="onboarding_feature_copy_text">Salin teks dari halaman mana pun</string>
-    <string name="onboarding_feature_multipage_pdf">PDF multi-halaman</string>
-    <string name="onboarding_feature_password">Lindungi dengan sandi sebelum dibagikan</string>
-    <string name="onboarding_feature_sign">Tanda tangani dokumen</string>
-    <string name="onboarding_assurance_offline">Berfungsi sepenuhnya offline.</string>
-    <string name="onboarding_assurance_on_device">Teks Anda tidak pernah keluar dari perangkat ini.</string>
+    <string name="onboarding_assurance_offline">Diproses di perangkat Anda.</string>
     <!-- Pip -->
     <string name="pip_poke_pip_scanly_s_helper">Colek Pip, asisten Scanly</string>
     <!-- PipBubble -->
@@ -811,7 +801,7 @@
     <string name="settings_gate_on">"%1$s · Gerbang aktif"</string>
     <string name="settings_manual_models">Model manual</string>
     <string name="settings_automatic_models">Model otomatis</string>
-    <string name="settings_calibrating">Mengkalibrasi…</string>
+    <string name="settings_calibrating">"Mengalibrasi…"</string>
     <string name="settings_pure_black">" · Hitam pekat"</string>
     <string name="settings_thanks_for_supporting_scanly">Terima kasih telah mendukung Scanly</string>
     <!-- SettingsTextRecognitionScreen -->
@@ -1063,7 +1053,7 @@
     <string name="pdf_import_added_to_your_library">Ditambahkan ke koleksi Anda</string>
     <string name="pdf_import_step_3_of_3_done">Langkah 3 dari 3 · Selesai</string>
     <string name="pdf_import_adding_to_library">Menambahkan ke koleksi…</string>
-    <string name="pdf_import_look">Lihat</string>
+    <string name="pdf_import_look">"Tampilan"</string>
     <string name="pdf_import_your_pdf_file_stays_as">File PDF Anda tetap seperti semula; Scanly menyimpan salinannya sendiri</string>
     <string name="pdf_import_tap_a_page_or_long">Ketuk halaman, atau tekan lama dan tarik untuk memilih beberapa.</string>
     <string name="pdf_import_step_2_of_3_pages">Langkah 2 dari 3 · Halaman dan nama</string>
@@ -1565,14 +1555,14 @@
     <string name="signature_pen_width_bold">Tebal</string>
     <!-- onboarding_page -->
     <string name="onboarding_page_capture">PINDAI</string>
-    <string name="onboarding_page_paper_to_polished">Dari kertas jadi rapi.</string>
-    <string name="onboarding_page_capture_straighten_and_clean_up">Ambil, luruskan, dan rapikan halaman Anda.</string>
+    <string name="onboarding_page_paper_to_polished">"Kertas,\ndisempurnakan."</string>
+    <string name="onboarding_page_capture_straighten_and_clean_up">Pindai halaman, luruskan tepinya, dan sesuaikan warnanya. Pastikan detailnya jelas sebelum menyimpan pindaian.</string>
     <string name="onboarding_page_find">TEMUKAN</string>
-    <string name="onboarding_page_find_more_than_files">Temukan lebih dari sekadar file.</string>
-    <string name="onboarding_page_recognize_text_on_your_device">Kenali teks di perangkat Anda. Telusuri isi pindaian.</string>
-    <string name="onboarding_page_share">BAGIKAN</string>
-    <string name="onboarding_page_ready_when_you_are">Siap kapan pun Anda siap.</string>
-    <string name="onboarding_page_keep_pages_together_share_a">Satukan halaman. Bagikan PDF yang rapi dengan beberapa ketukan.</string>
+    <string name="onboarding_page_find_more_than_files">"Temukan kata.\nTemukan halaman."</string>
+    <string name="onboarding_page_recognize_text_on_your_device">Kenali teks di perangkat Anda, lalu cari kata dalam pindaian. Temukan halaman yang dibutuhkan tanpa membaca ulang setiap dokumen.</string>
+    <string name="onboarding_page_share">SELESAI</string>
+    <string name="onboarding_page_ready_when_you_are">"Siap\ndikirim."</string>
+    <string name="onboarding_page_keep_pages_together_share_a">Gabungkan halaman dalam satu PDF. Tambahkan tanda tangan atau kata sandi bila perlu, lalu bagikan dokumen dengan beberapa ketukan.</string>
     <!-- pdf_reader_tool -->
     <string name="pdf_reader_tool_merge_with_other_pdfs">Gabungkan dengan PDF lain</string>
     <string name="pdf_reader_tool_password_protect">Lindungi dengan sandi</string>
@@ -1923,7 +1913,7 @@
         <item quantity="other">"%d topik"</item>
     </plurals>
     <plurals name="common_libraries">
-        <item quantity="other">"%d library"</item>
+        <item quantity="other">"%d koleksi"</item>
     </plurals>
     <plurals name="common_selected">
         <item quantity="other">"%d dipilih"</item>
@@ -1939,7 +1929,7 @@
     <string name="error_failed_to_import_images">"Gagal mengimpor gambar."</string>
     <string name="error_could_not_calculate_storage_usage">"Tidak dapat menghitung penggunaan penyimpanan."</string>
     <string name="error_could_not_clear_app_data">"Tidak dapat menghapus data aplikasi."</string>
-    <string name="error_could_not_clear_temporary_exports">"Tidak dapat menyelesaikan ekspor sementara."</string>
+    <string name="error_could_not_clear_temporary_exports">"Tidak dapat menghapus ekspor sementara."</string>
     <string name="error_could_not_remove_old_backup_files">"Tidak dapat menghapus file cadangan lama."</string>
     <string name="error_could_not_create_the_document">"Tidak dapat membuat dokumen."</string>
     <string name="error_could_not_rename_the_document">"Tidak dapat mengganti nama dokumen."</string>
@@ -1964,4 +1954,115 @@
     <string name="error_could_not_save_the_exported_file">"Tidak dapat menyimpan file yang diekspor."</string>
     <string name="error_could_not_store_update_prompt_state">"Tidak dapat menyimpan status prompt pembaruan."</string>
     <string name="error_could_not_check_github_releases">"Tidak dapat memeriksa rilis GitHub."</string>
+    <string name="onboarding_chapter_number">%1$02d %2$s</string>
+    <!-- Split PDF -->
+    <string name="tools_catalog_split">"Pisahkan"</string>
+    <string name="tools_catalog_cut_into_parts">"Potong jadi beberapa bagian"</string>
+    <string name="pdf_reader_tool_split_into_parts">"Pisahkan jadi beberapa bagian"</string>
+    <string name="pdf_split_title">"Pisahkan PDF"</string>
+    <string name="pdf_split_subtitle">"Potong satu PDF menjadi PDF yang lebih kecil"</string>
+    <string name="pdf_split_step_2">"Langkah 2 dari 3 · Tempat memisah"</string>
+    <string name="pdf_split_mode_custom">"Kustom"</string>
+    <string name="pdf_split_mode_every_n">"Setiap N halaman"</string>
+    <string name="pdf_split_mode_extract">"Ekstrak"</string>
+    <string name="pdf_split_ranges_label">"Ketik rentang, atau edit kartu di bawah"</string>
+    <string name="pdf_split_ranges_placeholder">"mis. 1-3, 6-8"</string>
+    <string name="pdf_split_ranges_hint">"Pisahkan rentang dengan koma, mis. 1-3, 6-8"</string>
+    <string name="pdf_split_ranges_error">"Gunakan nomor halaman dan tanda hubung, mis. 1-3, 6-8"</string>
+    <string name="pdf_split_range_title">"Rentang %d"</string>
+    <string name="pdf_split_range_from">"Dari halaman"</string>
+    <string name="pdf_split_range_to">"sampai"</string>
+    <string name="pdf_split_remove_range">"Hapus rentang %d"</string>
+    <string name="pdf_split_range_error">"Gunakan halaman 1 sampai %d, halaman pertama sebelum yang terakhir."</string>
+    <string name="pdf_split_add_range">"Tambah rentang"</string>
+    <string name="pdf_split_pages_included">"Halaman yang disertakan"</string>
+    <string name="pdf_split_not_included">"Tidak ada di rentang mana pun, jadi tidak disimpan: %s"</string>
+    <string name="pdf_split_merge_ranges">"Gabungkan semua rentang jadi satu PDF"</string>
+    <string name="pdf_split_merge_ranges_caption">"Nonaktif: tiap rentang jadi PDF sendiri"</string>
+    <string name="pdf_split_pages_in_each">"Halaman per PDF"</string>
+    <string name="pdf_split_fewer_pages">"Lebih sedikit halaman per PDF"</string>
+    <string name="pdf_split_more_pages">"Lebih banyak halaman per PDF"</string>
+    <string name="pdf_split_last_shorter">"Yang terakhir berisi %s"</string>
+    <string name="pdf_split_one_per_page">"Satu PDF per halaman"</string>
+    <string name="pdf_split_you_get">"Anda akan mendapat %s"</string>
+    <string name="pdf_split_more_parts">"+ %d lagi"</string>
+    <string name="pdf_split_pdf_title">"PDF %d"</string>
+    <string name="pdf_split_pages_label">"Halaman"</string>
+    <string name="pdf_split_save_as">"Simpan sebagai"</string>
+    <string name="pdf_split_one_pdf">"Satu PDF"</string>
+    <string name="pdf_split_one_pdf_caption">"Semua halaman terpilih jadi satu"</string>
+    <string name="pdf_split_separate_pdfs">"PDF terpisah"</string>
+    <string name="pdf_split_separate_caption">"Satu file per halaman"</string>
+    <string name="pdf_split_keep_rest_caption">"Sebagai satu PDF lagi"</string>
+    <string name="pdf_split_extract_button">"Ekstrak %1$s · %2$s"</string>
+    <string name="pdf_split_create_one">"Buat 1 PDF · %s"</string>
+    <string name="pdf_split_choose_pages">"Pilih halaman untuk diekstrak"</string>
+    <string name="pdf_split_fix_ranges">"Perbaiki rentang untuk melanjutkan"</string>
+    <string name="pdf_split_single_page">"PDF ini hanya punya satu halaman, jadi tidak ada yang bisa dipisahkan."</string>
+    <string name="pdf_split_splitting">"Memisahkan…"</string>
+    <string name="pdf_split_writing_part">"Menulis bagian %1$d dari %2$d"</string>
+    <string name="pdf_split_from_file">"Dari %1$s · %2$s"</string>
+    <string name="pdf_split_tap_to_rename">"Ketuk nama untuk mengganti nama"</string>
+    <string name="pdf_split_open_part">"Buka %s"</string>
+    <string name="pdf_split_one_zip">"Satu ZIP"</string>
+    <string name="pdf_split_save_all">"Simpan semua"</string>
+    <string name="pdf_split_share_all">"Bagikan semua"</string>
+    <string name="pdf_split_output_pages">"%1$s – halaman %2$s"</string>
+    <string name="pdf_split_output_page">"%1$s – halaman %2$d"</string>
+    <string name="pdf_split_pages_meta">"Halaman %1$s · %2$s"</string>
+    <string name="pdf_split_page_meta">"Halaman %1$d · %2$s"</string>
+    <string name="pdf_split_no_password">"PDF baru tidak memiliki sandi."</string>
+    <string name="pdf_split_could_not_split">"Tidak dapat memisahkan PDF ini."</string>
+    <plurals name="pdf_split_pdf_count">
+        <item quantity="other">"%d PDF"</item>
+    </plurals>
+    <plurals name="pdf_split_split_into">
+        <item quantity="other">"Pisahkan jadi %d PDF"</item>
+    </plurals>
+    <plurals name="pdf_split_keep_rest">
+        <item quantity="other">"Simpan juga %d halaman lainnya"</item>
+    </plurals>
+    <plurals name="pdf_split_saved">
+        <item quantity="other">"%1$d PDF disimpan ke %2$s"</item>
+    </plurals>
+    <plurals name="pdf_split_range_count">
+        <item quantity="other">"%d rentang"</item>
+    </plurals>
+    <!-- Split a document into documents -->
+    <string name="document_split_title">"Pisahkan jadi beberapa dokumen"</string>
+    <string name="document_split_pages_cuts">"%1$s · %2$s"</string>
+    <string name="document_split_every_page">"Setiap halaman"</string>
+    <string name="document_split_clear">"Hapus"</string>
+    <string name="document_split_hint">"Ketuk celah di antara dua halaman untuk memotong di sana."</string>
+    <string name="document_split_cut_after">"Potong setelah halaman %d"</string>
+    <string name="document_split_remove_cut">"Hapus potongan setelah halaman %d"</string>
+    <string name="document_split_part_label">"Bagian %1$d · halaman %2$s"</string>
+    <string name="document_split_part_label_single">"Bagian %1$d · halaman %2$d"</string>
+    <string name="document_split_destination_title">"Dokumen baru masuk ke"</string>
+    <string name="document_split_destination_folder">"Folder yang sama dengan aslinya"</string>
+    <string name="document_split_destination_library">"Koleksi Anda, di luar folder"</string>
+    <string name="document_split_keep_original">"Simpan aslinya"</string>
+    <string name="document_split_keep_original_caption">"Nonaktif: dipindahkan ke Baru dihapus"</string>
+    <string name="document_split_note">"Teks, tanda tangan, dan editan ikut di setiap halaman."</string>
+    <string name="document_split_add_cut">"Tambahkan potongan untuk memisahkan"</string>
+    <string name="document_split_failed">"Tidak dapat memisahkan dokumen ini."</string>
+    <string name="document_menu_split_into_pdfs">"Pisahkan jadi beberapa PDF"</string>
+    <plurals name="document_split_cut_count">
+        <item quantity="other">"%d potongan"</item>
+    </plurals>
+    <plurals name="document_split_create">
+        <item quantity="other">"Buat %d dokumen"</item>
+    </plurals>
+    <string name="pdf_peek_preview">"Pratinjau"</string>
+    <string name="pdf_peek_preview_file">"Pratinjau %1$s"</string>
+    <string name="pdf_peek_read_only">"Hanya pratinjau · tidak ada yang berubah"</string>
+    <string name="pdf_peek_page_of">"Halaman %1$d dari %2$d"</string>
+    <string name="pdf_peek_opening">"Membuka pratinjau…"</string>
+    <string name="pdf_peek_locked">"PDF ini memiliki kata sandi. Buka kuncinya dulu untuk melihatnya."</string>
+    <string name="pdf_peek_could_not_open">"PDF ini tidak dapat dibuka untuk pratinjau."</string>
+    <string name="pdf_peek_close">"Tutup pratinjau"</string>
+    <string name="pdf_peek_tap_hint">"Ketuk file untuk melihat pratinjaunya"</string>
+    <string name="welcome_greeting">Selamat datang</string>
+    <string name="welcome_tagline">Ubah kertas menjadi PDF yang rapi dan bisa dicari.</string>
+    <string name="welcome_no_language_match">Tidak ada bahasa yang cocok dengan “%1$s”</string>
 </resources>

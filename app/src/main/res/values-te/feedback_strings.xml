@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feedback_title">అభిప్రాయం పంపండి</string>
+    <string name="feedback_summary">సూచనలు, సమస్యలు లేదా మరేదైనా</string>
+    <string name="feedback_description">ఇమెయిల్ ద్వారా డెవలపర్‌తో మీ అభిప్రాయం పంచుకోండి.</string>
+    <string name="feedback_type">రకం</string>
+    <string name="feedback_suggestion">సూచన</string>
+    <string name="feedback_issue">సమస్య</string>
+    <string name="feedback_other">ఇతర</string>
+    <string name="feedback_subject">విషయం (ఐచ్ఛికం)</string>
+    <string name="feedback_message">సందేశం</string>
+    <string name="feedback_character_count">%1$d / %2$d అక్షరాలు</string>
+    <string name="feedback_email_note">ఇమెయిల్ యాప్‌లో తనిఖీ చేసి పంపండి. యాప్, Android వెర్షన్‌లు చేర్చబడతాయి.</string>
+    <string name="feedback_send">ఇమెయిల్‌కు కొనసాగండి</string>
+    <string name="feedback_copy">టెక్స్ట్ కాపీ చేయండి</string>
+    <string name="feedback_no_email">ఇమెయిల్ యాప్ అందుబాటులో లేదు. చిత్తుప్రతిని కాపీ చేసి వెబ్‌మెయిల్ ద్వారా పంపండి.</string>
+    <string name="feedback_copied">చిత్తుప్రతి కాపీ అయింది</string>
+    <string name="feedback_app_details">Scanly %1$s (%2$d) · Android %3$s</string>
+    <string name="rating_unavailable">Google Play లేదా బ్రౌజర్ తెరవలేకపోయాము. మళ్లీ ప్రయత్నించండి.</string>
+    <string name="feedback_attachments_title">చిత్రాలు (ఐచ్ఛికం)</string>
+    <string name="feedback_attachment_limits">గరిష్ఠంగా %1$d చిత్రాలు. ఒక్కొక్కటి %2$s లేదా తక్కువకు మార్చబడుతుంది (మొత్తం %3$s).</string>
+    <string name="feedback_add_images">చిత్రాలు జోడించండి</string>
+    <string name="feedback_preparing_images">చిత్రాలు సిద్ధమవుతున్నాయి…</string>
+    <string name="feedback_attachment_summary">%1$d / %2$d చిత్రాలు · మొత్తం %3$s</string>
+    <string name="feedback_image_label">చిత్రం %1$d</string>
+    <string name="feedback_remove_image">చిత్రం %1$d తీసివేయండి</string>
+    <string name="feedback_image_limit">గరిష్ఠంగా %1$d చిత్రాలు జోడించవచ్చు.</string>
+    <string name="feedback_image_failed">కొన్ని చిత్రాలు జోడించలేకపోయాము. 40 MB వరకు చదవగలిగే చిత్రాలు వాడండి.</string>
+    <string name="feedback_missing_images">ఒక చిత్రం ఇక అందుబాటులో లేదు. తీసివేసి మళ్లీ జోడించండి.</string>
+    <string name="feedback_copy_images_note">టెక్స్ట్ కాపీ అయింది. ఇమెయిల్ యాప్‌లో చిత్రాలు విడిగా జోడించండి.</string>
+    <string name="feedback_close_preview">ముందస్తు వీక్షణ మూసివేయండి</string>
+    <string name="feedback_sent_title">మీ అభిప్రాయం పంపారా?</string>
+    <string name="feedback_sent_message">ఇమెయిల్ పంపి ఉంటే, ఈ ఫారమ్‌ను ఖాళీ చేసి మూసివేయవచ్చు. లేకపోతే తర్వాత కొనసాగించడానికి చిత్తుప్రతిని ఉంచండి.</string>
+    <string name="feedback_sent_yes">అవును, పంపాను</string>
+    <string name="feedback_sent_not_yet">ఇంకా లేదు</string>
+</resources>

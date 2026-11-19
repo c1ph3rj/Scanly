@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feedback_title">Geri bildirim gönder</string>
+    <string name="feedback_summary">Öneriler, sorunlar veya başka bir konu</string>
+    <string name="feedback_description">Düşüncelerinizi geliştiriciyle e-posta yoluyla paylaşın.</string>
+    <string name="feedback_type">Tür</string>
+    <string name="feedback_suggestion">Öneri</string>
+    <string name="feedback_issue">Sorun</string>
+    <string name="feedback_other">Diğer</string>
+    <string name="feedback_subject">Konu (isteğe bağlı)</string>
+    <string name="feedback_message">Mesaj</string>
+    <string name="feedback_character_count">%1$d / %2$d karakter</string>
+    <string name="feedback_email_note">E-posta uygulamanızda inceleyip gönderin. Uygulama ve Android sürümleri eklenir.</string>
+    <string name="feedback_send">E-postaya devam et</string>
+    <string name="feedback_copy">Metni kopyala</string>
+    <string name="feedback_no_email">E-posta uygulaması yok. Taslağı kopyalayıp web postanızdan gönderin.</string>
+    <string name="feedback_copied">Taslak kopyalandı</string>
+    <string name="feedback_app_details">Scanly %1$s (%2$d) · Android %3$s</string>
+    <string name="rating_unavailable">Google Play veya tarayıcı açılamadı. Tekrar deneyin.</string>
+    <string name="feedback_attachments_title">Görseller (isteğe bağlı)</string>
+    <string name="feedback_attachment_limits">En fazla %1$d görsel. Her biri en çok %2$s olacak şekilde optimize edilir (toplam %3$s).</string>
+    <string name="feedback_add_images">Görsel ekle</string>
+    <string name="feedback_preparing_images">Görseller hazırlanıyor…</string>
+    <string name="feedback_attachment_summary">%1$d / %2$d görsel · toplam %3$s</string>
+    <string name="feedback_image_label">Görsel %1$d</string>
+    <string name="feedback_remove_image">Görsel %1$d kaldır</string>
+    <string name="feedback_image_limit">En fazla %1$d görsel ekleyebilirsiniz.</string>
+    <string name="feedback_image_failed">Bazı görseller eklenemedi. 40 MB’a kadar okunabilir görseller kullanın.</string>
+    <string name="feedback_missing_images">Bir görsel artık kullanılamıyor. Kaldırıp yeniden ekleyin.</string>
+    <string name="feedback_copy_images_note">Metin kopyalandı. Görselleri e-posta uygulamanızda ayrıca ekleyin.</string>
+    <string name="feedback_close_preview">Önizlemeyi kapat</string>
+    <string name="feedback_sent_title">Geri bildiriminizi gönderdiniz mi?</string>
+    <string name="feedback_sent_message">E-postayı gönderdiyseniz bu formu temizleyip kapatabiliriz. Göndermediyseniz daha sonra devam etmek için taslağınızı saklayın.</string>
+    <string name="feedback_sent_yes">Evet, gönderdim</string>
+    <string name="feedback_sent_not_yet">Henüz değil</string>
+</resources>

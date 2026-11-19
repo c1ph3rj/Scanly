@@ -47,6 +47,8 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
 import java.util.UUID
+import java.util.zip.ZipEntry
+import java.util.zip.ZipOutputStream
 import kotlin.coroutines.coroutineContext
 import kotlin.math.sqrt
 import javax.inject.Inject
@@ -749,6 +751,85 @@ class DefaultPdfToolkitRepository @Inject constructor(
         require(ok) { appString(R.string.error_failed_to_encode_page_image) }
     }
 
+    override suspend fun splitPages(
+        copy: PdfWorkingCopy,
+        outputs: List<List<Int>>,
+        onProgress: suspend (done: Int, total: Int) -> Unit,
+    ): ScanlyResult<List<ExportArtifact>> = withContext(dispatchers.io) {
+        runCatching {
+            require(outputs.isNotEmpty() && outputs.none { it.isEmpty() }) {
+                appString(R.string.pdf_split_could_not_split)
+            }
+            ensurePdfBox()
+            val stamp = System.currentTimeMillis()
+            val written = mutableListOf<File>()
+            try {
+                // The working copy is already decrypted, so it opens without a password.
+                openDocument(File(copy.file.filePath), null).use { source ->
+                    outputs.forEachIndexed { index, pages ->
+                        coroutineContext.ensureActive()
+                        onProgress(index, outputs.size)
+                        val output = File(toolsDir(), "split_${stamp}_${index + 1}.pdf")
+                        written += output
+                        PDDocument().use { part ->
+                            pages.forEach { pageIndex ->
+                                require(pageIndex in 0 until source.numberOfPages) {
+                                    appString(R.string.pdf_split_could_not_split)
+                                }
+                                part.importPage(source.getPage(pageIndex))
+                            }
+                            // importPage shares the source's page streams, so the source stays
+                            // open until every part is saved.
+                            part.save(output)
+                        }
+                    }
+                    onProgress(outputs.size, outputs.size)
+                }
+                written.map(::artifact)
+            } catch (error: Throwable) {
+                written.forEach(File::delete)
+                throw error
+            }
+        }.toScanlyResult(appString(R.string.pdf_split_could_not_split))
+    }
+
+    override suspend fun zipFiles(
+        files: List<ExportArtifact>,
+        zipBaseName: String,
+    ): ScanlyResult<ExportArtifact> = withContext(dispatchers.io) {
+        runCatching {
+            require(files.isNotEmpty()) { appString(R.string.pdf_split_could_not_split) }
+            // Own folder so the ZIP can carry the user's name without clashing with other runs.
+            val dir = File(toolsDir(), "zip_${UUID.randomUUID()}").apply { mkdirs() }
+            val zip = File(dir, "${zipBaseName.ifBlank { "Scanly" }}.zip")
+            zip.deleteOnFailure {
+                ZipOutputStream(FileOutputStream(zip)).use { out ->
+                    val used = mutableSetOf<String>()
+                    files.forEach { file ->
+                        val entry = uniqueEntryName(file.fileName, used)
+                        out.putNextEntry(ZipEntry(entry))
+                        File(file.filePath).inputStream().use { it.copyTo(out) }
+                        out.closeEntry()
+                    }
+                }
+            }
+            ExportArtifact(filePath = zip.absolutePath, fileName = zip.name, mimeType = ZipMimeType)
+        }.toScanlyResult(appString(R.string.pdf_split_could_not_split))
+    }
+
+    /** "Part.pdf" → "Part (2).pdf" when the name is already in [used]; records the result. */
+    private fun uniqueEntryName(name: String, used: MutableSet<String>): String {
+        val stem = name.substringBeforeLast('.', name)
+        val extension = name.substringAfterLast('.', "").let { if (it.isEmpty()) "" else ".$it" }
+        var candidate = name
+        var counter = 2
+        while (!used.add(candidate.lowercase())) {
+            candidate = "$stem ($counter)$extension"
+            counter++
+        }
+        return candidate
+    }
+
     override suspend fun prepareShare(artifact: ExportArtifact): ScanlyResult<List<String>> =
         withContext(dispatchers.io) {
             runCatching {
@@ -1008,6 +1089,7 @@ class DefaultPdfToolkitRepository @Inject constructor(
 
     private companion object {
         const val PdfMimeType = "application/pdf"
+        const val ZipMimeType = "application/zip"
         val PasswordProtectedMessage: String get() = appString(R.string.default_pdf_toolkit_repository_this_pdf_is_password_protected)
         val TooLargeMessage: String get() = appString(R.string.default_pdf_toolkit_repository_this_pdf_is_too_large)
         /** In-memory scratch budget for PDFBox before it spills to a temp file. */

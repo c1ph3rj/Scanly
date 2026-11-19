@@ -290,7 +290,7 @@
     <string name="document_detail_share_page">Pagina delen</string>
     <string name="document_detail_sign_document">Document ondertekenen</string>
     <string name="document_detail_extract_text">Tekst extraheren</string>
-    <string name="document_detail_retake_page">Pagina opnieuw maken</string>
+    <string name="document_detail_retake_page">"Pagina opnieuw vastleggen"</string>
     <string name="document_detail_edit_page">Pagina bewerken</string>
     <string name="document_detail_edit">Bewerken</string>
     <string name="document_detail_share">"%1$s delen"</string>
@@ -302,7 +302,7 @@
     <string name="document_detail_scan_or_import">Scannen of importeren</string>
     <string name="document_detail_add_page_scan_or_import">Pagina toevoegen. Scannen of importeren.</string>
     <string name="document_detail_share_2">Delen</string>
-    <string name="document_detail_retake">Opnieuw maken</string>
+    <string name="document_detail_retake">"Opnieuw vastleggen"</string>
     <string name="document_detail_open_zoom_view">Zoomweergave openen</string>
     <string name="document_detail_page_of">"Pagina %1$s van %2$s"</string>
     <string name="document_detail_import_images">Afbeeldingen importeren</string>
@@ -527,7 +527,7 @@
     <string name="library_search_search_for_instead">In plaats daarvan zoeken naar “%1$s”</string>
     <string name="library_search_nothing_matches_try_fewer_words">Niets gevonden voor “%1$s”. Probeer minder woorden of controleer de spelling.</string>
     <string name="library_search_no_results_found">Geen resultaten gevonden</string>
-    <string name="library_search_rent_or_lease_finds_pages">“huur OR lease” vindt pagina\'s met het ene of het andere woord</string>
+    <string name="library_search_rent_or_lease_finds_pages">"“huur OR verhuur” vindt pagina\'s met het ene of het andere woord"</string>
     <string name="library_search_either_word">Een van beide woorden</string>
     <string name="library_search_lease_draft_skips_anything_that">“huur -concept” slaat alles over waarin concept staat</string>
     <string name="library_search_leave_a_word_out">Een woord uitsluiten</string>
@@ -626,23 +626,13 @@
     <!-- OnboardingScreen -->
     <string name="onboarding_no_account_no_cloud_upload">Geen account. Geen upload naar de cloud.</string>
     <string name="onboarding_continue">Doorgaan</string>
-    <string name="onboarding_get_started">Aan de slag</string>
+    <string name="onboarding_get_started">Mijn eerste pagina scannen</string>
     <string name="onboarding_page_of_3">"%1$s, pagina %2$s van 3"</string>
     <string name="onboarding_page_of_3_2">"Pagina %1$s van 3"</string>
     <string name="onboarding_skip">Overslaan</string>
     <string name="onboarding_scanly">Scanly.</string>
     <string name="onboarding_previous_page">Vorige pagina</string>
-    <string name="onboarding_feature_edge_detection">Automatische randdetectie</string>
-    <string name="onboarding_feature_crop_straighten">Pagina\'s bijsnijden en rechtzetten</string>
-    <string name="onboarding_feature_filters">Magische kleur, Whiteboard en meer</string>
-    <string name="onboarding_feature_ocr">Tekstherkenning op je apparaat</string>
-    <string name="onboarding_feature_search">Zoek woorden in al je scans</string>
-    <string name="onboarding_feature_copy_text">Kopieer tekst van elke pagina</string>
-    <string name="onboarding_feature_multipage_pdf">PDF\'s met meerdere pagina\'s</string>
-    <string name="onboarding_feature_password">Beveilig met een wachtwoord voordat je deelt</string>
-    <string name="onboarding_feature_sign">Documenten ondertekenen</string>
-    <string name="onboarding_assurance_offline">Werkt volledig offline.</string>
-    <string name="onboarding_assurance_on_device">Je tekst verlaat dit apparaat nooit.</string>
+    <string name="onboarding_assurance_offline">Verwerkt op je apparaat.</string>
     <!-- Pip -->
     <string name="pip_poke_pip_scanly_s_helper">Por Pip, de helper van Scanly</string>
     <!-- PipBubble -->
@@ -1063,7 +1053,7 @@
     <string name="pdf_import_added_to_your_library">Toegevoegd aan je bibliotheek</string>
     <string name="pdf_import_step_3_of_3_done">Stap 3 van 3 · Klaar</string>
     <string name="pdf_import_adding_to_library">Toevoegen aan bibliotheek…</string>
-    <string name="pdf_import_look">Bekijken</string>
+    <string name="pdf_import_look">"Uiterlijk"</string>
     <string name="pdf_import_your_pdf_file_stays_as">Je PDF-bestand blijft zoals het is; Scanly maakt een eigen kopie</string>
     <string name="pdf_import_tap_a_page_or_long">Tik op een pagina, of houd ingedrukt en sleep over meerdere pagina\'s.</string>
     <string name="pdf_import_step_2_of_3_pages">Stap 2 van 3 · Pagina\'s en naam</string>
@@ -1252,7 +1242,7 @@
     <string name="pdf_watermark_single">Enkel</string>
     <string name="pdf_watermark_tiled">Herhaald</string>
     <string name="pdf_watermark_style">Stijl</string>
-    <string name="pdf_watermark_stamps">Stempelt \"%1$s\"</string>
+    <string name="pdf_watermark_stamps">"Stempel \"%1$s\""</string>
     <string name="pdf_watermark_add_date">Datum toevoegen</string>
     <string name="pdf_watermark_presets">Voorinstellingen</string>
     <string name="pdf_watermark_the_watermarked_copy_is_saved">De kopie met watermerk wordt zonder wachtwoord opgeslagen. Je kunt hem opnieuw vergrendelen met de wachtwoordtool.</string>
@@ -1559,20 +1549,20 @@
     <string name="library_sort_option_newest_created">Nieuwst gemaakt</string>
     <string name="library_sort_option_recently_added_first">Recent toegevoegd eerst</string>
     <string name="library_sort_option_oldest_created">Oudst gemaakt</string>
-    <string name="library_sort_option_earliest_added_first">Eerst toegevoegd eerst</string>
+    <string name="library_sort_option_earliest_added_first">"Oudst toegevoegd eerst"</string>
     <!-- signature_pen_width -->
     <string name="signature_pen_width_fine">Dun</string>
     <string name="signature_pen_width_bold">Dik</string>
     <!-- onboarding_page -->
     <string name="onboarding_page_capture">VASTLEGGEN</string>
-    <string name="onboarding_page_paper_to_polished">Van papier naar perfect.</string>
-    <string name="onboarding_page_capture_straighten_and_clean_up">Leg je pagina\'s vast, zet ze recht en maak ze netjes.</string>
+    <string name="onboarding_page_paper_to_polished">"Papier,\ngeperfectioneerd."</string>
+    <string name="onboarding_page_capture_straighten_and_clean_up">Leg een pagina vast, maak de randen recht en pas de kleur aan. Zorg dat de details duidelijk zijn voordat je de scan opslaat.</string>
     <string name="onboarding_page_find">VINDEN</string>
-    <string name="onboarding_page_find_more_than_files">Vind meer dan bestanden.</string>
-    <string name="onboarding_page_recognize_text_on_your_device">Herken tekst op je apparaat. Zoek in je scans.</string>
-    <string name="onboarding_page_share">DELEN</string>
-    <string name="onboarding_page_ready_when_you_are">Klaar wanneer jij het bent.</string>
-    <string name="onboarding_page_keep_pages_together_share_a">Houd pagina\'s bij elkaar. Deel een nette PDF met een paar tikken.</string>
+    <string name="onboarding_page_find_more_than_files">"Vind het woord.\nVind de pagina."</string>
+    <string name="onboarding_page_recognize_text_on_your_device">Herken tekst op je apparaat en zoek woorden in je scans. Vind de juiste pagina zonder elk document opnieuw te lezen.</string>
+    <string name="onboarding_page_share">AFRONDEN</string>
+    <string name="onboarding_page_ready_when_you_are">"Maak het klaar\nom te versturen."</string>
+    <string name="onboarding_page_keep_pages_together_share_a">Bundel je pagina’s in één PDF. Voeg zo nodig een handtekening of wachtwoord toe en deel het document met een paar tikken.</string>
     <!-- pdf_reader_tool -->
     <string name="pdf_reader_tool_merge_with_other_pdfs">Samenvoegen met andere PDF\'s</string>
     <string name="pdf_reader_tool_password_protect">Beveiligen met wachtwoord</string>
@@ -1966,16 +1956,16 @@
     <string name="error_failed_to_import_images">"Kan afbeeldingen niet importeren."</string>
     <string name="error_could_not_calculate_storage_usage">"Kan het opslaggebruik niet berekenen."</string>
     <string name="error_could_not_clear_app_data">"Kan app-gegevens niet wissen."</string>
-    <string name="error_could_not_clear_temporary_exports">"Kon tijdelijke exporten niet afhandelen."</string>
+    <string name="error_could_not_clear_temporary_exports">"Kon tijdelijke exports niet wissen."</string>
     <string name="error_could_not_remove_old_backup_files">"Kon oude back-upbestanden niet verwijderen."</string>
     <string name="error_could_not_create_the_document">"Kan het document niet maken."</string>
     <string name="error_could_not_rename_the_document">"Kan de naam van het document niet wijzigen."</string>
     <string name="error_could_not_delete_the_document">"Kan het document niet verwijderen."</string>
-    <string name="error_could_not_create_the_group">"Kon de groep niet aanmaken."</string>
-    <string name="error_could_not_rename_the_group">"Kan de naam van de groep niet wijzigen."</string>
-    <string name="error_could_not_delete_the_group">"Kon de groep niet verwijderen."</string>
+    <string name="error_could_not_create_the_group">"Kon de map niet aanmaken."</string>
+    <string name="error_could_not_rename_the_group">"Kan de naam van de map niet wijzigen."</string>
+    <string name="error_could_not_delete_the_group">"Kon de map niet verwijderen."</string>
     <string name="error_could_not_remove_empty_folders">"Kon lege mappen niet verwijderen."</string>
-    <string name="error_could_not_update_document_group">"Kon de documentgroep niet bijwerken."</string>
+    <string name="error_could_not_update_document_group">"Kon de map van het document niet bijwerken."</string>
     <string name="error_could_not_prepare_page_capture">"Kan het vastleggen van de pagina niet voorbereiden."</string>
     <string name="error_could_not_prepare_page_replacement">"Kan paginavervanging niet voorbereiden."</string>
     <string name="error_could_not_save_the_captured_page">"Kon de vastgelegde pagina niet opslaan."</string>
@@ -1991,4 +1981,122 @@
     <string name="error_could_not_save_the_exported_file">"Kan het geëxporteerde bestand niet opslaan."</string>
     <string name="error_could_not_store_update_prompt_state">"Kan updatepromptstatus niet opslaan."</string>
     <string name="error_could_not_check_github_releases">"Kon GitHub-releases niet controleren."</string>
+    <string name="onboarding_chapter_number">%1$02d %2$s</string>
+    <!-- Split PDF -->
+    <string name="tools_catalog_split">"Splitsen"</string>
+    <string name="tools_catalog_cut_into_parts">"In delen knippen"</string>
+    <string name="pdf_reader_tool_split_into_parts">"Splitsen in delen"</string>
+    <string name="pdf_split_title">"PDF splitsen"</string>
+    <string name="pdf_split_subtitle">"Knip één pdf in kleinere pdf\'s"</string>
+    <string name="pdf_split_step_2">"Stap 2 van 3 · Waar splitsen"</string>
+    <string name="pdf_split_mode_custom">"Aangepast"</string>
+    <string name="pdf_split_mode_every_n">"Elke N pagina\'s"</string>
+    <string name="pdf_split_mode_extract">"Extraheren"</string>
+    <string name="pdf_split_ranges_label">"Typ bereiken of bewerk de kaarten hieronder"</string>
+    <string name="pdf_split_ranges_placeholder">"bijv. 1-3, 6-8"</string>
+    <string name="pdf_split_ranges_hint">"Scheid bereiken met komma\'s, bijv. 1-3, 6-8"</string>
+    <string name="pdf_split_ranges_error">"Gebruik paginanummers en streepjes, bijv. 1-3, 6-8"</string>
+    <string name="pdf_split_range_title">"Bereik %d"</string>
+    <string name="pdf_split_range_from">"Van pagina"</string>
+    <string name="pdf_split_range_to">"tot"</string>
+    <string name="pdf_split_remove_range">"Bereik %d verwijderen"</string>
+    <string name="pdf_split_range_error">"Gebruik pagina 1 tot %d, met de eerste pagina vóór de laatste."</string>
+    <string name="pdf_split_add_range">"Bereik toevoegen"</string>
+    <string name="pdf_split_pages_included">"Opgenomen pagina\'s"</string>
+    <string name="pdf_split_not_included">"In geen enkel bereik, dus niet opgeslagen: %s"</string>
+    <string name="pdf_split_merge_ranges">"Alle bereiken samenvoegen tot één pdf"</string>
+    <string name="pdf_split_merge_ranges_caption">"Uit: elk bereik wordt een eigen pdf"</string>
+    <string name="pdf_split_pages_in_each">"Pagina\'s per pdf"</string>
+    <string name="pdf_split_fewer_pages">"Minder pagina\'s per pdf"</string>
+    <string name="pdf_split_more_pages">"Meer pagina\'s per pdf"</string>
+    <string name="pdf_split_last_shorter">"De laatste heeft %s"</string>
+    <string name="pdf_split_one_per_page">"Eén pdf per pagina"</string>
+    <string name="pdf_split_you_get">"Je krijgt %s"</string>
+    <string name="pdf_split_more_parts">"+ nog %d"</string>
+    <string name="pdf_split_pdf_title">"PDF %d"</string>
+    <string name="pdf_split_pages_label">"Pagina\'s"</string>
+    <string name="pdf_split_save_as">"Opslaan als"</string>
+    <string name="pdf_split_one_pdf">"Eén pdf"</string>
+    <string name="pdf_split_one_pdf_caption">"Alle gekozen pagina\'s samen"</string>
+    <string name="pdf_split_separate_pdfs">"Losse pdf\'s"</string>
+    <string name="pdf_split_separate_caption">"Eén bestand per pagina"</string>
+    <string name="pdf_split_keep_rest_caption">"Als nog een pdf"</string>
+    <string name="pdf_split_extract_button">"%1$s extraheren · %2$s"</string>
+    <string name="pdf_split_create_one">"1 pdf maken · %s"</string>
+    <string name="pdf_split_choose_pages">"Kies pagina\'s om te extraheren"</string>
+    <string name="pdf_split_fix_ranges">"Corrigeer de bereiken om door te gaan"</string>
+    <string name="pdf_split_single_page">"Deze pdf heeft maar één pagina, dus er valt niets te splitsen."</string>
+    <string name="pdf_split_splitting">"Splitsen…"</string>
+    <string name="pdf_split_writing_part">"Deel %1$d van %2$d wordt geschreven"</string>
+    <string name="pdf_split_from_file">"Uit %1$s · %2$s"</string>
+    <string name="pdf_split_tap_to_rename">"Tik op een naam om te hernoemen"</string>
+    <string name="pdf_split_open_part">"%s openen"</string>
+    <string name="pdf_split_one_zip">"Eén zip"</string>
+    <string name="pdf_split_save_all">"Alles opslaan"</string>
+    <string name="pdf_split_share_all">"Alles delen"</string>
+    <string name="pdf_split_output_pages">"%1$s – pagina\'s %2$s"</string>
+    <string name="pdf_split_output_page">"%1$s – pagina %2$d"</string>
+    <string name="pdf_split_pages_meta">"Pagina\'s %1$s · %2$s"</string>
+    <string name="pdf_split_page_meta">"Pagina %1$d · %2$s"</string>
+    <string name="pdf_split_no_password">"De nieuwe pdf\'s hebben geen wachtwoord."</string>
+    <string name="pdf_split_could_not_split">"Kan deze pdf niet splitsen."</string>
+    <plurals name="pdf_split_pdf_count">
+        <item quantity="one">"%d pdf"</item>
+        <item quantity="other">"%d pdf\'s"</item>
+    </plurals>
+    <plurals name="pdf_split_split_into">
+        <item quantity="one">"Splitsen in %d pdf"</item>
+        <item quantity="other">"Splitsen in %d pdf\'s"</item>
+    </plurals>
+    <plurals name="pdf_split_keep_rest">
+        <item quantity="one">"Ook de andere pagina opslaan (%d)"</item>
+        <item quantity="other">"Ook de andere %d pagina\'s opslaan"</item>
+    </plurals>
+    <plurals name="pdf_split_saved">
+        <item quantity="one">"%1$d pdf opgeslagen in %2$s"</item>
+        <item quantity="other">"%1$d pdf\'s opgeslagen in %2$s"</item>
+    </plurals>
+    <plurals name="pdf_split_range_count">
+        <item quantity="one">"%d bereik"</item>
+        <item quantity="other">"%d bereiken"</item>
+    </plurals>
+    <!-- Split a document into documents -->
+    <string name="document_split_title">"Splitsen in documenten"</string>
+    <string name="document_split_pages_cuts">"%1$s · %2$s"</string>
+    <string name="document_split_every_page">"Elke pagina"</string>
+    <string name="document_split_clear">"Wissen"</string>
+    <string name="document_split_hint">"Tik op de ruimte tussen twee pagina\'s om daar te knippen."</string>
+    <string name="document_split_cut_after">"Knippen na pagina %d"</string>
+    <string name="document_split_remove_cut">"Knip na pagina %d verwijderen"</string>
+    <string name="document_split_part_label">"Deel %1$d · pagina\'s %2$s"</string>
+    <string name="document_split_part_label_single">"Deel %1$d · pagina %2$d"</string>
+    <string name="document_split_destination_title">"Nieuwe documenten komen in"</string>
+    <string name="document_split_destination_folder">"Dezelfde map als het origineel"</string>
+    <string name="document_split_destination_library">"Je bibliotheek, buiten mappen"</string>
+    <string name="document_split_keep_original">"Origineel bewaren"</string>
+    <string name="document_split_keep_original_caption">"Uit: het gaat naar Recent verwijderd"</string>
+    <string name="document_split_note">"Tekst, handtekeningen en bewerkingen gaan mee met elke pagina."</string>
+    <string name="document_split_add_cut">"Voeg een knip toe om te splitsen"</string>
+    <string name="document_split_failed">"Kan dit document niet splitsen."</string>
+    <string name="document_menu_split_into_pdfs">"Splitsen in pdf\'s"</string>
+    <plurals name="document_split_cut_count">
+        <item quantity="one">"%d knip"</item>
+        <item quantity="other">"%d knippen"</item>
+    </plurals>
+    <plurals name="document_split_create">
+        <item quantity="one">"%d document maken"</item>
+        <item quantity="other">"%d documenten maken"</item>
+    </plurals>
+    <string name="pdf_peek_preview">"Voorbeeld"</string>
+    <string name="pdf_peek_preview_file">"Voorbeeld van %1$s"</string>
+    <string name="pdf_peek_read_only">"Alleen voorbeeld · er verandert niets"</string>
+    <string name="pdf_peek_page_of">"Pagina %1$d van %2$d"</string>
+    <string name="pdf_peek_opening">"Voorbeeld openen…"</string>
+    <string name="pdf_peek_locked">"Deze pdf heeft een wachtwoord. Ontgrendel hem eerst om hem te bekijken."</string>
+    <string name="pdf_peek_could_not_open">"Kan deze pdf niet openen voor een voorbeeld."</string>
+    <string name="pdf_peek_close">"Voorbeeld sluiten"</string>
+    <string name="pdf_peek_tap_hint">"Tik op een bestand voor een voorbeeld"</string>
+    <string name="welcome_greeting">Welkom</string>
+    <string name="welcome_tagline">Maak van papier nette, doorzoekbare pdf’s.</string>
+    <string name="welcome_no_language_match">Geen taal gevonden voor ‘%1$s’</string>
 </resources>

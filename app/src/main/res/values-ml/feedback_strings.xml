@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feedback_title">അഭിപ്രായം അയയ്ക്കുക</string>
+    <string name="feedback_summary">നിർദ്ദേശങ്ങൾ, പ്രശ്നങ്ങൾ അല്ലെങ്കിൽ മറ്റെന്തും</string>
+    <string name="feedback_description">ഇമെയിൽ വഴി ഡെവലപ്പറുമായി അഭിപ്രായം പങ്കിടുക.</string>
+    <string name="feedback_type">തരം</string>
+    <string name="feedback_suggestion">നിർദ്ദേശം</string>
+    <string name="feedback_issue">പ്രശ്നം</string>
+    <string name="feedback_other">മറ്റുള്ളവ</string>
+    <string name="feedback_subject">വിഷയം (നിർബന്ധമില്ല)</string>
+    <string name="feedback_message">സന്ദേശം</string>
+    <string name="feedback_character_count">%1$d / %2$d അക്ഷരങ്ങൾ</string>
+    <string name="feedback_email_note">ഇമെയിൽ ആപ്പിൽ പരിശോധിച്ച് അയയ്ക്കുക. ആപ്പിന്റെയും Android-ന്റെയും പതിപ്പുകൾ ഉൾപ്പെടും.</string>
+    <string name="feedback_send">ഇമെയിലിലേക്ക് തുടരുക</string>
+    <string name="feedback_copy">ടെക്സ്റ്റ് പകർത്തുക</string>
+    <string name="feedback_no_email">ഇമെയിൽ ആപ്പ് ലഭ്യമല്ല. കരട് പകർത്തി വെബ്മെയിൽ വഴി അയയ്ക്കുക.</string>
+    <string name="feedback_copied">കരട് പകർത്തി</string>
+    <string name="feedback_app_details">Scanly %1$s (%2$d) · Android %3$s</string>
+    <string name="rating_unavailable">Google Play അല്ലെങ്കിൽ ബ്രൗസർ തുറക്കാനായില്ല. വീണ്ടും ശ്രമിക്കുക.</string>
+    <string name="feedback_attachments_title">ചിത്രങ്ങൾ (നിർബന്ധമില്ല)</string>
+    <string name="feedback_attachment_limits">പരമാവധി %1$d ചിത്രങ്ങൾ. ഓരോന്നും %2$s അല്ലെങ്കിൽ അതിൽ കുറവായി ക്രമീകരിക്കും (ആകെ %3$s).</string>
+    <string name="feedback_add_images">ചിത്രങ്ങൾ ചേർക്കുക</string>
+    <string name="feedback_preparing_images">ചിത്രങ്ങൾ തയ്യാറാക്കുന്നു…</string>
+    <string name="feedback_attachment_summary">%1$d / %2$d ചിത്രങ്ങൾ · ആകെ %3$s</string>
+    <string name="feedback_image_label">ചിത്രം %1$d</string>
+    <string name="feedback_remove_image">ചിത്രം %1$d നീക്കുക</string>
+    <string name="feedback_image_limit">പരമാവധി %1$d ചിത്രങ്ങൾ ചേർക്കാം.</string>
+    <string name="feedback_image_failed">ചില ചിത്രങ്ങൾ ചേർക്കാനായില്ല. 40 MB വരെയുള്ള വായിക്കാവുന്ന ചിത്രങ്ങൾ ഉപയോഗിക്കുക.</string>
+    <string name="feedback_missing_images">ഒരു ചിത്രം ഇനി ലഭ്യമല്ല. നീക്കം ചെയ്ത് വീണ്ടും ചേർക്കുക.</string>
+    <string name="feedback_copy_images_note">ടെക്സ്റ്റ് പകർത്തി. ഇമെയിൽ ആപ്പിൽ ചിത്രങ്ങൾ പ്രത്യേകം ചേർക്കുക.</string>
+    <string name="feedback_close_preview">പ്രിവ്യൂ അടയ്ക്കുക</string>
+    <string name="feedback_sent_title">അഭിപ്രായം അയച്ചോ?</string>
+    <string name="feedback_sent_message">ഇമെയിൽ അയച്ചിട്ടുണ്ടെങ്കിൽ ഈ ഫോം ശൂന്യമാക്കി അടയ്ക്കാം. ഇല്ലെങ്കിൽ പിന്നീട് തുടരാൻ കരട് സൂക്ഷിക്കുക.</string>
+    <string name="feedback_sent_yes">അതെ, അയച്ചു</string>
+    <string name="feedback_sent_not_yet">ഇതുവരെ ഇല്ല</string>
+</resources>

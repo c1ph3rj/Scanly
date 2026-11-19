@@ -10,6 +10,11 @@ and the app's results and speed stay the same.
 | `libopencv_java5.so` armeabi-v7a | 22.3 MB | 9.3 MB |
 | GitHub release APK (both ABIs) | 146.2 MB | 113.9 MB |
 
+The slim library is ARM-only, so it is used by the release variants only. **Debug builds use the
+full Maven AAR** and also package `x86_64`, so the app runs natively on x86_64 emulators: with
+ARM-only native libraries, Android translates them (Berberis) and LiteRT segfaults on its first
+inference, e.g. the automatic model benchmark that runs when Settings opens.
+
 ## What is in it
 
 - **Modules:** `core`, `imgproc`, `geometry` (`imgproc` needs it, and Indra calls

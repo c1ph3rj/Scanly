@@ -111,6 +111,7 @@ class LiteRtDocumentCornerDetector @Inject constructor(
             modelName = runtime.modelContract.assetPath.substringAfterLast('/'),
             model = runtime.model,
             timing = timing,
+            frameAspectRatio = bitmap.frameAspectRatio,
         )
     }
 

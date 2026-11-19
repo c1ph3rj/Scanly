@@ -41,6 +41,11 @@ data class CornerDetectionResult(
         inferenceNanos = inferenceTimeMillis * 1_000_000,
         totalNanos = inferenceTimeMillis * 1_000_000,
     ),
+    /**
+     * Width / height of the image [quad] is normalized against (0.75 for a 480x640 frame).
+     * Pass it to [DocumentQuadPolicy] so geometry is judged in pixel-proportional space.
+     */
+    val frameAspectRatio: Float = 1f,
 )
 
 data class CornerDetectionTiming(

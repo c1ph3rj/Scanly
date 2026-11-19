@@ -1,6 +1,6 @@
 ﻿# Navigation
 
-All routes and user flows in Scanly **v1.0.20**.
+All routes and user flows in Scanly **v1.0.21**.
 
 Navigation is implemented with **Navigation Compose** in `ScanlyNavHost.kt`. Route helpers follow the `*Destination` object pattern with `routePattern` and `route()` factory functions.
 
@@ -63,12 +63,14 @@ These top-level routes still exist but show `FeaturePlaceholderScreen` — they 
 | `tools/text` | `ToolsImageTextDestination` | Image to text: pick photos (imported as a new document, then replaced by its text screen) or a scan → `document/{documentId}/text` |
 | `tools/pdf/reader?filePath={filePath}&fileName={fileName}` | `ToolsPdfReaderDestination` | PDF reader; optional app-owned result file opens directly |
 | `tools/pdf/merge?source={source}` | `ToolsPdfMergeDestination` | PDF merge |
+| `tools/pdf/split?source={source}` | `ToolsPdfSplitDestination` | PDF split |
 | `tools/pdf/compress?source={source}` | `ToolsPdfCompressDestination` | PDF compress |
 | `tools/pdf/password?source={source}` | `ToolsPdfPasswordDestination` | PDF password protect/remove |
 | `tools/pdf/watermark?source={source}` | `ToolsPdfWatermarkDestination` | PDF text watermark |
 | `tools/pdf/to-images?source={source}` | `ToolsPdfToImagesDestination` | PDF to JPG/PNG images saved to `Pictures/Scanly` |
 | `tools/pdf/sign?source={source}` | `ToolsPdfSignDestination` | Sign a device or Scanly library PDF, then save or share the signed copy |
 | `document/{documentId}/sign?page={page}` | `DocumentSignDestination` | Place editable marks on Scanly pages in place |
+| `document/{documentId}/split` | `DocumentSplitDestination` | Split a document into new documents |
 | `signatures/manage` | `SignatureManageDestination` | Manage saved signatures and initials |
 | `signatures/create?kind={kind}` | `SignatureCreateDestination` | Draw or import a reusable signature or initials |
 
@@ -133,7 +135,7 @@ Widget or quick action (Scan)
 ```
 Launch
   └─► Onboarding required?
-        ├─ Yes → OnboardingFlow (Capture → Find → Share → optional camera sheet) → complete → Home
+        ├─ Yes → OnboardingFlow (Welcome + language → Capture → Find → Share → optional camera sheet) → complete → Home
         └─ No  → Home
               └─► (background) update check if cooldown expired
 ```
@@ -235,12 +237,16 @@ settings
 | State | UI |
 | --- | --- |
 | `LOADING` | Blank / loading |
-| `REQUIRED` | `OnboardingFlow`: three-page `OnboardingScreen`, then optional camera-permission bottom sheet |
+| `REQUIRED` | `OnboardingFlow`: `WelcomeScreen` (logo, summary, app language), then three-page `OnboardingScreen`, then optional camera-permission bottom sheet |
 | `COMPLETE` | `ScanlyNavHost` |
 
 Automatic update checks run on `ON_START` only when onboarding is `COMPLETE`.
 
-The pager retains its page across recreation and adapts to its available bounds, including split screen. Below 600 dp it stacks the illustration and copy; portrait windows from 600–839 dp center that stack; wider or medium landscape windows use two panes. The main action and page controls stay outside the scrollable content. Skip moves to Share without completing onboarding. Get started completes immediately when camera access is already granted; otherwise it opens a modal sheet over Share. Enable camera launches the system request, while Not now completes without requesting access. Dismissing the sheet returns to Share. Permanent denial offers Settings, and returning after granting there completes onboarding. A denied system request also continues, with camera access handled again when scanning is attempted.
+The welcome screen comes first on a fresh install. It shows the launcher logo, a one-line summary and the app language list (Phone language plus the 25 `AppLanguage` entries, searchable by native, current-language or English name). A pick calls `AppLocales.setLanguage` immediately, so the screen and the introduction re-render in that language. Below 600 dp it is one column with the list filling the remaining height; at 600 dp and wider, or in short landscape windows, the summary and the list sit side by side. Continue is always outside the scrolling list. Back from the first introduction page returns to it.
+
+The onboarding pager retains its page across recreation and adapts to available bounds, including split screen. Below 600 dp, the approved mint, teal and peach document illustrations sit above localized headings and expanded descriptions. Portrait windows from 600–839 dp center that stack; wider or medium landscape windows use two panes. Main actions and page controls stay outside the scrollable content. Transparent WebP illustrations decode in the background, while native layers animate the capture scan line and search-word reveal. Illustration entrances and page transitions respect the existing motion preference and disabled system animations; off-screen scenes stop animating. Skip moves to Finish without completing onboarding. **Scan my first page** completes onboarding and queues scanning when camera access is granted; otherwise it opens a modal permission sheet. Enable camera launches the system request; granting it starts scanning, while Not now or denial completes to Home. Dismissing the sheet returns to Finish. Permanent denial offers Settings, and returning after granting starts scanning. Existing incoming PDF and shortcut destinations retain priority. The final introduction page has no import-photo button. The illustrative sample search term stays in English; all surrounding UI descriptions are localized in the 25 supported languages.
+
+The capture beam scales with the artwork, follows the illustrated phone angle and casts a short light trail clipped to the page. The onboarding search example is decorative, with a search strip and matching highlighted word over the document illustration. The query is centred in the area after the magnifier, aligned to the bar angle, with font padding removed; both sample words scale with the illustration. It has no input, clipboard action or accessibility focus targets. Each pager page clips its artwork so layer motion stays within that page. Pagination uses 48 dp selectable targets with a small circular focus ring and press halo; focus remains attached while the pager settles.
 
 ## Related docs
 

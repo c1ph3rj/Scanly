@@ -626,23 +626,13 @@
     <!-- OnboardingScreen -->
     <string name="onboarding_no_account_no_cloud_upload">Sem conta. Sem envio para a nuvem.</string>
     <string name="onboarding_continue">Continuar</string>
-    <string name="onboarding_get_started">Começar</string>
+    <string name="onboarding_get_started">Digitalizar minha primeira página</string>
     <string name="onboarding_page_of_3">"%1$s, página %2$s de 3"</string>
     <string name="onboarding_page_of_3_2">"Página %1$s de 3"</string>
     <string name="onboarding_skip">Pular</string>
     <string name="onboarding_scanly">Scanly.</string>
     <string name="onboarding_previous_page">Página anterior</string>
-    <string name="onboarding_feature_edge_detection">Detecção automática de bordas</string>
-    <string name="onboarding_feature_crop_straighten">Corte e endireite páginas</string>
-    <string name="onboarding_feature_filters">Cor mágica, Quadro branco e mais</string>
-    <string name="onboarding_feature_ocr">Reconhecimento de texto no dispositivo</string>
-    <string name="onboarding_feature_search">Pesquise palavras nas suas digitalizações</string>
-    <string name="onboarding_feature_copy_text">Copie o texto de qualquer página</string>
-    <string name="onboarding_feature_multipage_pdf">PDFs com várias páginas</string>
-    <string name="onboarding_feature_password">Proteja com senha antes de compartilhar</string>
-    <string name="onboarding_feature_sign">Assine documentos</string>
-    <string name="onboarding_assurance_offline">Funciona totalmente off-line.</string>
-    <string name="onboarding_assurance_on_device">Seu texto nunca sai deste dispositivo.</string>
+    <string name="onboarding_assurance_offline">Processado no seu dispositivo.</string>
     <!-- Pip -->
     <string name="pip_poke_pip_scanly_s_helper">Cutucar o Pip, o ajudante do Scanly</string>
     <!-- PipBubble -->
@@ -1063,7 +1053,7 @@
     <string name="pdf_import_added_to_your_library">Adicionado à sua biblioteca</string>
     <string name="pdf_import_step_3_of_3_done">Etapa 3 de 3 · Concluído</string>
     <string name="pdf_import_adding_to_library">Adicionando à biblioteca…</string>
-    <string name="pdf_import_look">Ver</string>
+    <string name="pdf_import_look">"Aparência"</string>
     <string name="pdf_import_your_pdf_file_stays_as">Seu arquivo PDF continua como está; o Scanly guarda uma cópia própria</string>
     <string name="pdf_import_tap_a_page_or_long">Toque em uma página ou mantenha pressionado e arraste por várias.</string>
     <string name="pdf_import_step_2_of_3_pages">Etapa 2 de 3 · Páginas e nome</string>
@@ -1565,14 +1555,14 @@
     <string name="signature_pen_width_bold">Grossa</string>
     <!-- onboarding_page -->
     <string name="onboarding_page_capture">CAPTURE</string>
-    <string name="onboarding_page_paper_to_polished">Do papel ao impecável.</string>
-    <string name="onboarding_page_capture_straighten_and_clean_up">Capture, endireite e limpe suas páginas.</string>
+    <string name="onboarding_page_paper_to_polished">"Papel,\naperfeiçoado."</string>
+    <string name="onboarding_page_capture_straighten_and_clean_up">Capture uma página, endireite as bordas e ajuste a cor. Mantenha os detalhes nítidos antes de salvar a digitalização.</string>
     <string name="onboarding_page_find">ENCONTRE</string>
-    <string name="onboarding_page_find_more_than_files">Encontre mais que arquivos.</string>
-    <string name="onboarding_page_recognize_text_on_your_device">Reconheça texto no dispositivo. Pesquise dentro das suas digitalizações.</string>
-    <string name="onboarding_page_share">COMPARTILHE</string>
-    <string name="onboarding_page_ready_when_you_are">Pronto quando você quiser.</string>
-    <string name="onboarding_page_keep_pages_together_share_a">Mantenha as páginas juntas. Compartilhe um PDF limpo em poucos toques.</string>
+    <string name="onboarding_page_find_more_than_files">"Encontre a palavra.\nEncontre a página."</string>
+    <string name="onboarding_page_recognize_text_on_your_device">Reconheça o texto no seu dispositivo e pesquise palavras nas digitalizações. Encontre a página que precisa sem reler cada documento.</string>
+    <string name="onboarding_page_share">FINALIZAR</string>
+    <string name="onboarding_page_ready_when_you_are">"Deixe pronto\npara enviar."</string>
+    <string name="onboarding_page_keep_pages_together_share_a">Reúna suas páginas em um PDF. Adicione uma assinatura ou senha quando precisar e compartilhe o documento com poucos toques.</string>
     <!-- pdf_reader_tool -->
     <string name="pdf_reader_tool_merge_with_other_pdfs">Juntar com outros PDFs</string>
     <string name="pdf_reader_tool_password_protect">Proteger com senha</string>
@@ -2009,8 +1999,8 @@
     <string name="error_could_not_reorder_the_page">"Não foi possível reordenar a página."</string>
     <string name="error_could_not_save_page_edits">"Não foi possível salvar as edições da página."</string>
     <string name="error_could_not_update_text_recognition_engine">"Não foi possível atualizar o mecanismo de reconhecimento de texto."</string>
-    <string name="error_could_not_update_theme_mode">"Não foi possível atualizar o modo tema."</string>
-    <string name="error_could_not_finish_onboarding">"Não foi possível concluir a integração."</string>
+    <string name="error_could_not_update_theme_mode">"Não foi possível atualizar o modo do tema."</string>
+    <string name="error_could_not_finish_onboarding">"Não foi possível concluir a configuração inicial."</string>
     <string name="error_could_not_load_settings_content">"Não foi possível carregar o conteúdo das configurações."</string>
     <string name="error_could_not_update_the_save_location">"Não foi possível atualizar o local de salvamento."</string>
     <string name="error_could_not_update_model_selection">"Não foi possível atualizar a seleção do modelo."</string>
@@ -2018,4 +2008,129 @@
     <string name="error_could_not_save_the_exported_file">"Não foi possível salvar o arquivo exportado."</string>
     <string name="error_could_not_store_update_prompt_state">"Não foi possível armazenar o estado do prompt de atualização."</string>
     <string name="error_could_not_check_github_releases">"Não foi possível verificar as versões do GitHub."</string>
+    <string name="onboarding_chapter_number">%1$02d %2$s</string>
+    <!-- Split PDF -->
+    <string name="tools_catalog_split">"Dividir"</string>
+    <string name="tools_catalog_cut_into_parts">"Cortar em partes"</string>
+    <string name="pdf_reader_tool_split_into_parts">"Dividir em partes"</string>
+    <string name="pdf_split_title">"Dividir PDF"</string>
+    <string name="pdf_split_subtitle">"Corte um PDF em PDFs menores"</string>
+    <string name="pdf_split_step_2">"Etapa 2 de 3 · Onde dividir"</string>
+    <string name="pdf_split_mode_custom">"Personalizado"</string>
+    <string name="pdf_split_mode_every_n">"A cada N páginas"</string>
+    <string name="pdf_split_mode_extract">"Extrair"</string>
+    <string name="pdf_split_ranges_label">"Digite intervalos ou edite os cartões abaixo"</string>
+    <string name="pdf_split_ranges_placeholder">"ex.: 1-3, 6-8"</string>
+    <string name="pdf_split_ranges_hint">"Separe os intervalos com vírgulas, ex.: 1-3, 6-8"</string>
+    <string name="pdf_split_ranges_error">"Use números de página e hifens, ex.: 1-3, 6-8"</string>
+    <string name="pdf_split_range_title">"Intervalo %d"</string>
+    <string name="pdf_split_range_from">"Da página"</string>
+    <string name="pdf_split_range_to">"até"</string>
+    <string name="pdf_split_remove_range">"Remover intervalo %d"</string>
+    <string name="pdf_split_range_error">"Use páginas de 1 a %d, com a primeira antes da última."</string>
+    <string name="pdf_split_add_range">"Adicionar intervalo"</string>
+    <string name="pdf_split_pages_included">"Páginas incluídas"</string>
+    <string name="pdf_split_not_included">"Fora de qualquer intervalo, então não serão salvas: %s"</string>
+    <string name="pdf_split_merge_ranges">"Juntar todos os intervalos em um PDF"</string>
+    <string name="pdf_split_merge_ranges_caption">"Desativado: cada intervalo vira um PDF"</string>
+    <string name="pdf_split_pages_in_each">"Páginas por PDF"</string>
+    <string name="pdf_split_fewer_pages">"Menos páginas por PDF"</string>
+    <string name="pdf_split_more_pages">"Mais páginas por PDF"</string>
+    <string name="pdf_split_last_shorter">"O último tem %s"</string>
+    <string name="pdf_split_one_per_page">"Um PDF por página"</string>
+    <string name="pdf_split_you_get">"Você terá %s"</string>
+    <string name="pdf_split_more_parts">"+ %d a mais"</string>
+    <string name="pdf_split_pdf_title">"PDF %d"</string>
+    <string name="pdf_split_pages_label">"Páginas"</string>
+    <string name="pdf_split_save_as">"Salvar como"</string>
+    <string name="pdf_split_one_pdf">"Um PDF"</string>
+    <string name="pdf_split_one_pdf_caption">"Todas as páginas escolhidas juntas"</string>
+    <string name="pdf_split_separate_pdfs">"PDFs separados"</string>
+    <string name="pdf_split_separate_caption">"Um arquivo por página"</string>
+    <string name="pdf_split_keep_rest_caption">"Como mais um PDF"</string>
+    <string name="pdf_split_extract_button">"Extrair %1$s · %2$s"</string>
+    <string name="pdf_split_create_one">"Criar 1 PDF · %s"</string>
+    <string name="pdf_split_choose_pages">"Escolha as páginas para extrair"</string>
+    <string name="pdf_split_fix_ranges">"Corrija os intervalos para continuar"</string>
+    <string name="pdf_split_single_page">"Este PDF tem só uma página, então não há o que dividir."</string>
+    <string name="pdf_split_splitting">"Dividindo…"</string>
+    <string name="pdf_split_writing_part">"Gravando parte %1$d de %2$d"</string>
+    <string name="pdf_split_from_file">"De %1$s · %2$s"</string>
+    <string name="pdf_split_tap_to_rename">"Toque em um nome para renomear"</string>
+    <string name="pdf_split_open_part">"Abrir %s"</string>
+    <string name="pdf_split_one_zip">"Um ZIP"</string>
+    <string name="pdf_split_save_all">"Salvar tudo"</string>
+    <string name="pdf_split_share_all">"Compartilhar tudo"</string>
+    <string name="pdf_split_output_pages">"%1$s – páginas %2$s"</string>
+    <string name="pdf_split_output_page">"%1$s – página %2$d"</string>
+    <string name="pdf_split_pages_meta">"Páginas %1$s · %2$s"</string>
+    <string name="pdf_split_page_meta">"Página %1$d · %2$s"</string>
+    <string name="pdf_split_no_password">"Os novos PDFs não têm senha."</string>
+    <string name="pdf_split_could_not_split">"Não foi possível dividir este PDF."</string>
+    <plurals name="pdf_split_pdf_count">
+        <item quantity="one">"%d PDF"</item>
+        <item quantity="many">"%d PDFs"</item>
+        <item quantity="other">"%d PDFs"</item>
+    </plurals>
+    <plurals name="pdf_split_split_into">
+        <item quantity="one">"Dividir em %d PDF"</item>
+        <item quantity="many">"Dividir em %d PDFs"</item>
+        <item quantity="other">"Dividir em %d PDFs"</item>
+    </plurals>
+    <plurals name="pdf_split_keep_rest">
+        <item quantity="one">"Salvar também a outra página (%d)"</item>
+        <item quantity="many">"Salvar também as outras %d páginas"</item>
+        <item quantity="other">"Salvar também as outras %d páginas"</item>
+    </plurals>
+    <plurals name="pdf_split_saved">
+        <item quantity="one">"%1$d PDF salvo em %2$s"</item>
+        <item quantity="many">"%1$d PDFs salvos em %2$s"</item>
+        <item quantity="other">"%1$d PDFs salvos em %2$s"</item>
+    </plurals>
+    <plurals name="pdf_split_range_count">
+        <item quantity="one">"%d intervalo"</item>
+        <item quantity="many">"%d intervalos"</item>
+        <item quantity="other">"%d intervalos"</item>
+    </plurals>
+    <!-- Split a document into documents -->
+    <string name="document_split_title">"Dividir em documentos"</string>
+    <string name="document_split_pages_cuts">"%1$s · %2$s"</string>
+    <string name="document_split_every_page">"Cada página"</string>
+    <string name="document_split_clear">"Limpar"</string>
+    <string name="document_split_hint">"Toque no espaço entre duas páginas para cortar ali."</string>
+    <string name="document_split_cut_after">"Cortar após a página %d"</string>
+    <string name="document_split_remove_cut">"Remover o corte após a página %d"</string>
+    <string name="document_split_part_label">"Parte %1$d · páginas %2$s"</string>
+    <string name="document_split_part_label_single">"Parte %1$d · página %2$d"</string>
+    <string name="document_split_destination_title">"Os novos documentos vão para"</string>
+    <string name="document_split_destination_folder">"A mesma pasta do original"</string>
+    <string name="document_split_destination_library">"Sua biblioteca, fora de pastas"</string>
+    <string name="document_split_keep_original">"Manter o original"</string>
+    <string name="document_split_keep_original_caption">"Desativado: vai para Excluídos recentemente"</string>
+    <string name="document_split_note">"O texto, as assinaturas e as edições acompanham cada página."</string>
+    <string name="document_split_add_cut">"Adicione um corte para dividir"</string>
+    <string name="document_split_failed">"Não foi possível dividir este documento."</string>
+    <string name="document_menu_split_into_pdfs">"Dividir em PDFs"</string>
+    <plurals name="document_split_cut_count">
+        <item quantity="one">"%d corte"</item>
+        <item quantity="many">"%d cortes"</item>
+        <item quantity="other">"%d cortes"</item>
+    </plurals>
+    <plurals name="document_split_create">
+        <item quantity="one">"Criar %d documento"</item>
+        <item quantity="many">"Criar %d documentos"</item>
+        <item quantity="other">"Criar %d documentos"</item>
+    </plurals>
+    <string name="pdf_peek_preview">"Visualizar"</string>
+    <string name="pdf_peek_preview_file">"Visualizar %1$s"</string>
+    <string name="pdf_peek_read_only">"Só visualização · nada muda"</string>
+    <string name="pdf_peek_page_of">"Página %1$d de %2$d"</string>
+    <string name="pdf_peek_opening">"Abrindo visualização…"</string>
+    <string name="pdf_peek_locked">"Este PDF tem senha. Desbloqueie primeiro para visualizar."</string>
+    <string name="pdf_peek_could_not_open">"Não foi possível abrir este PDF para visualização."</string>
+    <string name="pdf_peek_close">"Fechar visualização"</string>
+    <string name="pdf_peek_tap_hint">"Toque em um arquivo para visualizar"</string>
+    <string name="welcome_greeting">Boas-vindas</string>
+    <string name="welcome_tagline">Transforme papel em PDFs nítidos e pesquisáveis.</string>
+    <string name="welcome_no_language_match">Nenhum idioma corresponde a “%1$s”</string>
 </resources>

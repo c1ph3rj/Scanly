@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feedback_title">Feedback senden</string>
+    <string name="feedback_summary">Vorschläge, Probleme oder andere Anliegen</string>
+    <string name="feedback_description">Teile dem Entwickler deine Gedanken per E-Mail mit.</string>
+    <string name="feedback_type">Art</string>
+    <string name="feedback_suggestion">Vorschlag</string>
+    <string name="feedback_issue">Problem</string>
+    <string name="feedback_other">Sonstiges</string>
+    <string name="feedback_subject">Betreff (optional)</string>
+    <string name="feedback_message">Nachricht</string>
+    <string name="feedback_character_count">%1$d / %2$d Zeichen</string>
+    <string name="feedback_email_note">Prüfe und sende die E-Mail in deiner E-Mail-App. App- und Android-Version sind enthalten.</string>
+    <string name="feedback_send">Weiter zur E-Mail</string>
+    <string name="feedback_copy">Text kopieren</string>
+    <string name="feedback_no_email">Keine E-Mail-App verfügbar. Kopiere den Entwurf und sende ihn über Webmail.</string>
+    <string name="feedback_copied">Entwurf kopiert</string>
+    <string name="feedback_app_details">Scanly %1$s (%2$d) · Android %3$s</string>
+    <string name="rating_unavailable">Google Play oder ein Browser konnte nicht geöffnet werden. Versuche es erneut.</string>
+    <string name="feedback_attachments_title">Bilder (optional)</string>
+    <string name="feedback_attachment_limits">Bis zu %1$d Bilder. Jedes wird auf höchstens %2$s optimiert (%3$s insgesamt).</string>
+    <string name="feedback_add_images">Bilder hinzufügen</string>
+    <string name="feedback_preparing_images">Bilder werden vorbereitet…</string>
+    <string name="feedback_attachment_summary">%1$d von %2$d Bildern · %3$s insgesamt</string>
+    <string name="feedback_image_label">Bild %1$d</string>
+    <string name="feedback_remove_image">Bild %1$d entfernen</string>
+    <string name="feedback_image_limit">Du kannst bis zu %1$d Bilder anhängen.</string>
+    <string name="feedback_image_failed">Einige Bilder konnten nicht hinzugefügt werden. Verwende lesbare Bilder bis 40 MB.</string>
+    <string name="feedback_missing_images">Ein Bild ist nicht mehr verfügbar. Entferne es und füge es erneut hinzu.</string>
+    <string name="feedback_copy_images_note">Text kopiert. Hänge die Bilder separat in deiner E-Mail-App an.</string>
+    <string name="feedback_close_preview">Vorschau schließen</string>
+    <string name="feedback_sent_title">Hast du dein Feedback gesendet?</string>
+    <string name="feedback_sent_message">Wenn du die E-Mail gesendet hast, können wir dieses Formular leeren und schließen. Andernfalls behalte deinen Entwurf, um später fortzufahren.</string>
+    <string name="feedback_sent_yes">Ja, gesendet</string>
+    <string name="feedback_sent_not_yet">Noch nicht</string>
+</resources>

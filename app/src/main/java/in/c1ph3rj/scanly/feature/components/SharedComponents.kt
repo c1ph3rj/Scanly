@@ -203,19 +203,34 @@ fun CachedThumbnail(
         ).thumbnailCache()
     }
     var containerSize by remember { mutableStateOf(IntSize.Zero) }
+    // 0 until the first layout pass. Decoding at a guessed size before then meant most
+    // thumbnails were decoded twice (the guess, then the measured size) and both were cached.
     val targetPx = remember(containerSize, displaySize, density) {
-        PreviewImageSizer.targetPxForContainer(
-            widthPx = containerSize.width,
-            heightPx = containerSize.height,
-            size = displaySize,
-            density = density,
-        )
-    }
-    val cachedImage = remember(thumbnailPath, targetPx, contentRevision) {
-        thumbnailPath?.let { path ->
-            cache.getIfCached(path, targetPx, contentRevision)?.asImageBitmap()
+        if (containerSize == IntSize.Zero) {
+            0
+        } else {
+            PreviewImageSizer.targetPxForContainer(
+                widthPx = containerSize.width,
+                heightPx = containerSize.height,
+                size = displaySize,
+                density = density,
+            )
         }
     }
+    // First frame: whatever an earlier screen decoded for this image, so returning to a list
+    // draws its thumbnails at once instead of a frame of placeholders.
+    val cachedImage = remember(thumbnailPath, targetPx, contentRevision) {
+        thumbnailPath?.let { path ->
+            if (targetPx > 0) {
+                cache.getIfCached(path, targetPx, contentRevision)
+                    ?: cache.getLastDecoded(path, contentRevision)
+            } else {
+                cache.getLastDecoded(path, contentRevision)
+            }?.asImageBitmap()
+        }
+    }
+    // True once this image has been looked for and was not there (missing or unreadable file).
+    var decodeFailed by remember(thumbnailPath, contentRevision) { mutableStateOf(false) }
 
     val imageBitmap by produceState<ImageBitmap?>(
         initialValue = cachedImage,
@@ -228,14 +243,24 @@ fun CachedThumbnail(
             value = null
             return@produceState
         }
+        if (targetPx == 0) {
+            value = cachedImage
+            return@produceState
+        }
         cache.getIfCached(path, targetPx, contentRevision)?.let { bitmap ->
             value = bitmap.asImageBitmap()
             return@produceState
         }
-        value = withContext(Dispatchers.IO) {
+        if (cachedImage != null) value = cachedImage
+        val decoded = withContext(Dispatchers.IO) {
             cache.decode(path, targetPx, contentRevision)?.asImageBitmap()
         }
+        value = decoded
+        decodeFailed = decoded == null
     }
+    // The tinted placeholder is for items that have no picture. One that is still loading keeps
+    // the neutral tile colour, so the image arriving does not also change the tile's colour.
+    val showPlaceholder = imageBitmap == null && (thumbnailPath == null || decodeFailed)
 
     Surface(
         modifier = modifier.onSizeChanged { size ->
@@ -243,10 +268,10 @@ fun CachedThumbnail(
                 containerSize = size
             }
         },
-        color = containerColor ?: if (imageBitmap != null) {
-            MaterialTheme.colorScheme.surfaceContainerHighest
-        } else {
+        color = containerColor ?: if (showPlaceholder) {
             MaterialTheme.colorScheme.primaryContainer
+        } else {
+            MaterialTheme.colorScheme.surfaceContainerHighest
         },
         shape = shape,
     ) {
@@ -257,9 +282,10 @@ fun CachedThumbnail(
                 modifier = Modifier.fillMaxSize(),
                 contentScale = contentScale,
                 alignment = alignment,
-                filterQuality = FilterQuality.High,
+                // Bitmaps are decoded close to display size; bicubic sampling buys nothing here.
+                filterQuality = FilterQuality.Medium,
             )
-        } else {
+        } else if (showPlaceholder) {
             Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
                 if (placeholderIcon != null) {
                     placeholderIcon()
@@ -1768,15 +1794,26 @@ private fun LibraryCardOverflowMenu(
 
 @Composable
 fun FullScreenLoader(modifier: Modifier = Modifier) {
+    // Local data normally arrives within a frame or two. Showing the spinner straight away made
+    // it flash in the middle of every screen transition, so it only appears for real waits.
+    var spinnerVisible by remember { mutableStateOf(false) }
+    androidx.compose.runtime.LaunchedEffect(Unit) {
+        kotlinx.coroutines.delay(FullScreenLoaderDelayMillis)
+        spinnerVisible = true
+    }
     Box(
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center,
     ) {
-        androidx.compose.material3.CircularProgressIndicator(
-            color = MaterialTheme.colorScheme.primary,
-        )
+        if (spinnerVisible) {
+            androidx.compose.material3.CircularProgressIndicator(
+                color = MaterialTheme.colorScheme.primary,
+            )
+        }
     }
 }
+
+private const val FullScreenLoaderDelayMillis = 250L
 
 /**
  * Modal blocking loader with a **fixed card size** so changing progress text never

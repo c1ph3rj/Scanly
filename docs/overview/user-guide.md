@@ -4,9 +4,10 @@ How end users interact with Scanly. This describes app behavior, not implementat
 
 ## First launch
 
-1. App opens to three illustrated **onboarding** pages with Pip: **Capture**, **Find**, and **Share**. Swipe, tap **Continue**, or use the page dots. **Skip** takes you to the last page; Back returns to the previous one.
-2. Tap **Get started** on the last page. If the camera is not allowed yet, a bottom sheet offers **Enable camera** or **Not now**. Only Enable camera opens Android's permission prompt. Not now continues without camera access; closing the sheet returns to the last page. If camera access is blocked, the sheet offers **Open Settings**. The sheet is skipped when the camera is already allowed.
-3. You land on **Home**. On later launches, onboarding is skipped.
+1. App opens on the **welcome screen**: the Scanly logo, a short summary and the app language. **Phone language** is selected; tap any of the 25 languages to switch the whole app straight away, or search for one by name (for example "Tamil" or "தமிழ்"). Tap **Continue**.
+2. Three illustrated **introduction** pages follow: **Capture**, **Find**, and **Finish**. Swipe, tap **Continue**, or use the page dots. **Skip** takes you to the last page; Back returns to the previous one, and Back on the first page returns to the welcome screen.
+3. Tap **Scan my first page** on the last page. If the camera is not allowed yet, a bottom sheet offers **Enable camera** or **Not now**. Only Enable camera opens Android's permission prompt. Not now continues without camera access; closing the sheet returns to the last page. If camera access is blocked, the sheet offers **Open Settings**. The sheet is skipped when the camera is already allowed.
+4. You land on **Home**. On later launches, onboarding is skipped. The language can be changed later in **Settings › Language**.
 
 While Home loads your library, shimmering placeholders stand in for folders and documents.
 
@@ -78,6 +79,12 @@ From **document detail**:
 - Long-press and drag a page tile to reorder when the document has more than one page.
 - Open a page to review it; edit, retake, share, and delete live on that review chrome — not as buttons on every tile.
 - Rename or delete the document from the header overflow. The current name is filled in; tap clear to type a new one.
+
+### Split a document into several
+
+From the header overflow, choose **Split into documents**. Tap the gap between two pages to cut there (tap again to remove the cut), or use **Every page** / **Clear**. The colours and the "You'll get" list show which pages land in each new document. **Create** makes one document per part in the same folder, named after the original with (1), (2)…; page text, signatures and edits come along. Turn off **Keep the original** to move the original to Recently deleted afterwards.
+
+The same overflow also opens the PDF tools — Compress, Merge, Split into PDFs, Password, Watermark and Save pages as images — with this document already chosen.
 
 ## Organizing with groups
 
@@ -218,6 +225,14 @@ Library backup and restore are not available in v1.0.18.
 
 Open **Settings → FAQs** or **Settings → Open-source licenses** for bundled support content.
 
+### Send feedback and rate Scanly
+
+Open **Settings → Send feedback** (or **About → Contact support**) to share a suggestion, report an issue or write anything else. Choose a type, optionally add a subject, and enter your message. **Add images** opens Android’s photo picker for screenshots or photos, which you can preview and remove individually. The picker allows only the remaining attachment slots, switching to single-image selection when one slot remains. If a device’s fallback picker cannot limit selection, Scanly keeps only enough selected images to stay within five. You can attach **up to 5 images, with 1 MB per prepared image and 5 MB total**. Scanly automatically resizes large images (up to 2048 pixels on the longest edge) and compresses copies on the phone. Small screenshots use lossless PNG when they fit; larger images use JPEG. Original images are preserved, orientation is applied, and location metadata is omitted. Source images over 40 MB or unreadable images are skipped with a message.
+
+**Continue to email** opens a compatible email app with the recipient (`info@c1ph3rj.in`), subject, message and prepared attachments. Review and send it there. The draft includes the app and Android version. The size budget keeps attachments compact; your email provider can apply its own limits. Rotating the phone keeps your text and prepared attachments. After the email flow opens successfully and you return, Scanly asks **Did you send your feedback?** Choose **Yes, sent** to clear the form and close it, or **Not yet** to keep your draft. Dismissing the question also preserves the draft. The question is not shown after a failed launch. Scanly cannot detect email delivery and never marks feedback as sent automatically. If a cached image is unavailable, remove it and add it again. If no compatible email app is available, use **Copy text**, paste into webmail, and attach the images separately.
+
+**Rate Scanly** opens Google Play with a hint to show reviews, with a browser fallback. Play controls the destination and whether you can write a review; the app cannot force its review dialog to appear or detect a submitted rating. A failed hand-off does not mark the app as rated.
+
 ### Check for updates
 
 Manually checks the update channel built into the installed app. GitHub builds compare against the latest GitHub release and open its release page. Play Store builds use the Google Play in-app update flow.
@@ -257,6 +272,7 @@ Open the **Tools** tab for QR and offline PDF utilities. Pick a PDF from the dev
 | QR | **Scan** a code (copy or open a link) or **Create** one from a URL or message |
 | Reader | Read a PDF with the full title, page n of m, page-by-page or continuous scroll, pinch-zoom, and tap to hide the bars. The ⋮ menu shares the file, jumps to **All pages**, opens it in any PDF tool below (Back returns to the reader), or opens another PDF |
 | Merge | Add two or more PDFs in listed order, then combine them |
+| Split | Cut one PDF into several: custom page ranges, every N pages, or extract chosen pages |
 | Compress | Choose High / Balanced / Smallest quality, then reduce file size |
 | Password | **Protect** or **Remove** an open password |
 | Watermark | Stamp text with layout, size, pages, orientation, and opacity |

@@ -290,24 +290,24 @@
     <string name="document_detail_share_page">"Поделиться страницей"</string>
     <string name="document_detail_sign_document">"Подписать документ"</string>
     <string name="document_detail_extract_text">"Извлечь текст"</string>
-    <string name="document_detail_retake_page">"Пересдать страницу"</string>
+    <string name="document_detail_retake_page">"Переснять страницу"</string>
     <string name="document_detail_edit_page">"Редактировать страницу"</string>
     <string name="document_detail_edit">"Редактировать"</string>
     <string name="document_detail_share">"Поделиться %1$s"</string>
     <string name="document_detail_review">"Обзор"</string>
     <string name="document_detail_ready">"Готово"</string>
     <string name="document_detail_new">"Новый"</string>
-    <string name="document_detail_captured">"В плену"</string>
+    <string name="document_detail_captured">"Снято"</string>
     <string name="document_detail_add_page">"Добавить страницу"</string>
     <string name="document_detail_scan_or_import">"Сканируйте или импортируйте"</string>
     <string name="document_detail_add_page_scan_or_import">"Добавить страницу. Сканируйте или импортируйте."</string>
     <string name="document_detail_share_2">"Поделиться"</string>
-    <string name="document_detail_retake">"Пересдать"</string>
+    <string name="document_detail_retake">"Переснять"</string>
     <string name="document_detail_open_zoom_view">"Открыть масштабирование"</string>
     <string name="document_detail_page_of">"Страница %1$s из %2$s"</string>
     <string name="document_detail_import_images">"Импорт изображений"</string>
     <string name="document_detail_scan_a_page">"Сканируйте страницу"</string>
-    <string name="document_detail_scan_a_page_or_import">"Отсканируйте страницу или импортируйте изображения размером до %1$s, чтобы начать работу над этим документом."</string>
+    <string name="document_detail_scan_a_page_or_import">"Отсканируйте страницу или импортируйте до %1$s изображений, чтобы начать работу над этим документом."</string>
     <string name="document_detail_no_pages_yet">"Пока нет страниц"</string>
     <string name="document_detail_return_to_the_library_and">"Вернитесь в библиотеку и откройте еще одну."</string>
     <string name="document_detail_document_not_found">"Документ не найден"</string>
@@ -378,7 +378,7 @@
     <string name="filter_picker_selected_filter">"Выбранный фильтр"</string>
     <string name="filter_picker_filter_thumbnail">"Миниатюра фильтра %1$s"</string>
     <string name="filter_picker_analyzing_the_page_to_tune">"Анализ страницы для настройки каждого фильтра."</string>
-    <string name="filter_picker_filter_only_crop_rotation_and">"Только фильтр. Обрезка, поворот и настройка пребывания на странице."</string>
+    <string name="filter_picker_filter_only_crop_rotation_and">"Только фильтр. Обрезка, поворот и настройки сохраняются для каждой страницы отдельно."</string>
     <string name="filter_picker_apply_filter_to_all_pages">"Применить фильтр ко всем страницам"</string>
     <string name="filter_picker_tap_a_preset_to_update">"Нажмите на предустановку, чтобы обновить предварительный просмотр в реальном времени. Сохраните из редактора, когда закончите."</string>
     <string name="filter_picker_filters">"Фильтры"</string>
@@ -388,13 +388,13 @@
     <string name="page_crop_detecting">"Обнаружение"</string>
     <string name="page_crop_reset">"Сброс"</string>
     <string name="page_crop_ai_detect">"Обнаружение ИИ"</string>
-    <string name="page_crop_right">"Верно"</string>
-    <string name="page_crop_left">"Левый"</string>
+    <string name="page_crop_right">"Справа"</string>
+    <string name="page_crop_left">"Слева"</string>
     <string name="page_crop_apply_crop">"Примените обрезку"</string>
     <string name="page_crop_detecting_document">"Обнаружение документа…"</string>
     <string name="page_crop_keep_editing">"Продолжайте редактировать"</string>
     <string name="page_crop_discard">"Выбросить"</string>
-    <string name="page_crop_your_crop_changes_have_not">"Изменения урожая не были применены."</string>
+    <string name="page_crop_your_crop_changes_have_not">"Изменения обрезки не были применены."</string>
     <string name="page_crop_discard_changes">"​​Отменить изменения?"</string>
     <string name="page_crop_full_frame_corners">"Полнокадровые углы"</string>
     <string name="page_crop_reset_crop">"Сбросить обрезку"</string>
@@ -408,7 +408,7 @@
     <string name="page_crop_crop">"Обрезка"</string>
     <string name="page_crop_processing">"Обработка"</string>
     <!-- PageCropViewModel -->
-    <string name="page_crop_crop_updated">"Кроп обновлен."</string>
+    <string name="page_crop_crop_updated">"Обрезка обновлена."</string>
     <string name="page_crop_document_detected">"Документ обнаружен."</string>
     <string name="page_crop_raw_image_is_not_available">"Необработанное изображение недоступно для обнаружения."</string>
     <!-- PageEditorScreen -->
@@ -419,7 +419,7 @@
     <string name="page_editor_remove_from_document">"Удалить из документа"</string>
     <string name="page_editor_capture_this_page_again">"Сфотографируйте эту страницу еще раз."</string>
     <string name="page_editor_brightness_contrast_more">"Яркость, контрастность и многое другое."</string>
-    <string name="page_editor_ai_detect_rotate_handles">"ИИ обнаруживает, вращает, обрабатывает"</string>
+    <string name="page_editor_ai_detect_rotate_handles">"Обнаружение ИИ, поворот, маркеры"</string>
     <string name="page_editor_crop_filter_and_adjust_this">"Обрежьте, отфильтруйте и отредактируйте эту страницу. Сохраните с помощью «Готово»."</string>
     <string name="page_editor_edit_tools">"Инструменты редактирования"</string>
     <string name="page_editor_editor">"Редактор"</string>
@@ -429,10 +429,10 @@
     <!-- HomePip -->
     <string name="home_pip_hide_today_s_tip">"Скрыть сегодняшнюю подсказку"</string>
     <!-- HomeRatingPrompt -->
-    <string name="home_rating_prompt_rate_scanly_opens_google_play">"Ставка Scanly, открывается Google Play"</string>
-    <string name="home_rating_prompt_rate_on_google_play">"Ставка на Google Play"</string>
+    <string name="home_rating_prompt_rate_scanly_opens_google_play">"Оценить Scanly, откроется Google Play"</string>
+    <string name="home_rating_prompt_rate_on_google_play">"Оценить в Google Play"</string>
     <string name="home_rating_prompt_scanly_is_free_private_and">"Scanly является бесплатным, конфиденциальным и без рекламы. Если это сэкономит ваше время, вам действительно поможет быстрый рейтинг Google Play."</string>
-    <string name="home_rating_prompt_rate_scanly">"Ставьте Scanly"</string>
+    <string name="home_rating_prompt_rate_scanly">"Оцените Scanly"</string>
     <!-- HomeScreen -->
     <string name="home_search_names_and_text_in">"Поиск названий и текста на страницах."</string>
     <string name="home_start_scanning">"Начать сканирование"</string>
@@ -463,11 +463,11 @@
     <string name="folder_delete_delete_folder">"Удалить папку?"</string>
     <!-- GroupDetailScreen -->
     <string name="group_detail_not_selected">"Не выбрано"</string>
-    <string name="group_detail_add_documents">"Добавьте документы %1$s."</string>
+    <string name="group_detail_add_documents">"Добавить документов: %1$s"</string>
     <string name="group_detail_add_1_document">"Добавить 1 документ"</string>
     <string name="group_detail_add_selected">"Добавить выбранное"</string>
     <string name="group_detail_documents_already_in_folders_won">"Документы, уже находящиеся в папках, здесь не появятся. Вместо этого создайте новый."</string>
-    <string name="group_detail_no_loose_documents">"Никаких незакрепленных документов"</string>
+    <string name="group_detail_no_loose_documents">"Нет документов вне папок"</string>
     <string name="group_detail_select_all">"Выбрать все"</string>
     <string name="group_detail_clear">"Очистить"</string>
     <string name="group_detail_select_one_or_more_documents">"Выберите один или несколько документов."</string>
@@ -483,8 +483,8 @@
     <string name="group_detail_this_folder_is_empty">"Эта папка пуста"</string>
     <string name="group_detail_share_pdfs_as_zip">"Поделитесь файлами PDF как ZIP."</string>
     <string name="group_detail_save_pdfs_as_zip">"Сохраните файлы PDF как ZIP."</string>
-    <string name="group_detail_separate_pdfs_one_pdf_per">"Отдельные файлы PDF ·, по одному PDF на документ, объединенные в ZIP."</string>
-    <string name="group_detail_share_merged_pdf">"Доля объединена PDF"</string>
+    <string name="group_detail_separate_pdfs_one_pdf_per">"Отдельные PDF · по одному PDF на документ, упакованные в ZIP."</string>
+    <string name="group_detail_share_merged_pdf">"Поделиться объединённым PDF"</string>
     <string name="group_detail_save_merged_pdf">"Сохранить объединенный PDF"</string>
     <string name="group_detail_single_pdf_merged_into_one">"Одиночный PDF · %1$s объединен в один файл"</string>
     <string name="group_detail_new_document">"Новый документ"</string>
@@ -506,7 +506,7 @@
     <string name="library_create_a_folder_to_stay">"Создайте папку, чтобы сохранять порядок, или добавьте документ и начните съемку."</string>
     <string name="library_your_library_is_ready">"Ваша библиотека готова."</string>
     <string name="library_save_to">"Сохранить в"</string>
-    <string name="library_choose_how_are_ordered">"Выберите способ заказа %1$s."</string>
+    <string name="library_choose_how_are_ordered">"Выберите порядок сортировки для: %1$s."</string>
     <string name="library_sort_library">"Сортировка библиотеки"</string>
     <string name="library_folders_and_documents">"папки и документы"</string>
     <string name="library_create_a_document_then_scan">"Создайте документ, затем отсканируйте страницы или импортируйте их из галереи."</string>
@@ -527,30 +527,30 @@
     <string name="library_search_search_for_instead">"Вместо этого найдите «%1$s»."</string>
     <string name="library_search_nothing_matches_try_fewer_words">"Ничего не соответствует «%1$s». Попробуйте использовать меньше слов или проверьте правописание."</string>
     <string name="library_search_no_results_found">"Результатов не найдено"</string>
-    <string name="library_search_rent_or_lease_finds_pages">"«аренда OR аренда» находит страницы с тем или иным"</string>
+    <string name="library_search_rent_or_lease_finds_pages">"«аренда OR лизинг» находит страницы, в которых есть любое из слов."</string>
     <string name="library_search_either_word">"Любое слово"</string>
-    <string name="library_search_lease_draft_skips_anything_that">"«Lease-draft» пропускает все, что упоминает проект."</string>
+    <string name="library_search_lease_draft_skips_anything_that">"«аренда -черновик» пропускает все, что упоминает черновик."</string>
     <string name="library_search_leave_a_word_out">"Пропустите слово"</string>
     <string name="library_search_you_ll_get_the_closest">"Благодаря сканированию вы получите самое близкое слово."</string>
     <string name="library_search_small_typos_are_fine">"Небольшие опечатки — это нормально."</string>
-    <string name="library_search_security_deposit_in_that_order">"«залог», именно в таком порядке"</string>
+    <string name="library_search_security_deposit_in_that_order">"«гарантийный залог», именно в таком порядке"</string>
     <string name="library_search_use_quotes_for_a_phrase">"Используйте кавычки для фразы"</string>
-    <string name="library_search_lea_finds_lease_and_leasing">"«леа» означает аренду и лизинг."</string>
+    <string name="library_search_lea_finds_lease_and_leasing">"«аренд» находит «аренда» и «арендовать»."</string>
     <string name="library_search_type_part_of_a_word">"Введите часть слова"</string>
     <string name="library_search_search_tips">"Советы по поиску"</string>
     <string name="library_search_browse_by_type">"Просмотр по типу"</string>
     <string name="library_search_recent">"Недавние"</string>
     <string name="library_search_folder">"Папка · "</string>
     <string name="library_search_matched">"Соответствует «%1$s»"</string>
-    <string name="library_search_scanned_as">"Сканируется как «%1$s»."</string>
+    <string name="library_search_scanned_as">"Распознано как «%1$s»."</string>
     <string name="library_search_show_page_text">"Показать текст страницы"</string>
     <string name="library_search_show_fewer_pages">"Показывать меньше страниц"</string>
     <string name="library_search_open_document">"Открыть документ"</string>
     <string name="library_search_similar_words">"Похожие слова: "</string>
-    <string name="library_search_close_matches">"Близкие матчи"</string>
+    <string name="library_search_close_matches">"Близкие совпадения"</string>
     <string name="library_search_searching_text_in_pages">"Поиск текста на страницах…"</string>
     <string name="library_search_by_name">" · %1$s по имени"</string>
-    <string name="library_search_complete_to">"Завершить до "</string>
+    <string name="library_search_complete_to">"Дополнить до"</string>
     <string name="library_search_filters_on">"Фильтры %1$s вкл."</string>
     <string name="library_search_filters">"Фильтры · %1$s"</string>
     <string name="library_search_matching_names">"Соответствующие имена"</string>
@@ -568,7 +568,7 @@
     <string name="recently_deleted_last_day">"Последний день"</string>
     <string name="recently_deleted_from">"Из \"%1$s\""</string>
     <string name="recently_deleted_no_documents">"Никаких документов"</string>
-    <string name="recently_deleted_folder_only_documents_kept_in">"Только папка · %1$s Документы хранятся в библиотеке."</string>
+    <string name="recently_deleted_folder_only_documents_kept_in">"Только папка · документов в библиотеке: %1$s."</string>
     <string name="recently_deleted_folder_only_1_document_kept">"Только папка · В библиотеке хранится 1 документ."</string>
     <string name="recently_deleted_restore">"Восстановить"</string>
     <string name="recently_deleted_delete_forever">"Удалить навсегда"</string>
@@ -583,22 +583,22 @@
     <string name="recently_deleted_delete_all">"Удалить все"</string>
     <string name="recently_deleted_all_items_will_be_deleted">"Все элементы %1$s будут удалены навсегда. Это невозможно отменить."</string>
     <string name="recently_deleted_this_item_will_be_deleted">"Этот элемент будет удален навсегда. Это невозможно отменить."</string>
-    <string name="recently_deleted_empty_recently_deleted">"Пусто Недавно удалили?"</string>
+    <string name="recently_deleted_empty_recently_deleted">"Очистить «Недавно удалённые»?"</string>
     <string name="recently_deleted_deleted_pages_stay_here_for">"Удаленные страницы остаются здесь для %1$s, а документы и папки для %2$s, поэтому вы можете вернуть их обратно."</string>
     <string name="recently_deleted_nothing_here">"Здесь ничего нет"</string>
-    <string name="recently_deleted_nothing_in_the_bin_deleted">"В мусорном ведре ничего. удаленные вещи подождите здесь несколько дней."</string>
+    <string name="recently_deleted_nothing_in_the_bin_deleted">"в корзине пусто. удалённые вещи хранятся здесь несколько дней."</string>
     <string name="recently_deleted_empty">"Пустой"</string>
-    <string name="recently_deleted_select_none">"Выберите «Нет»"</string>
+    <string name="recently_deleted_select_none">"Снять выделение"</string>
     <string name="recently_deleted_clear_selection">"Очистить выбор"</string>
-    <string name="recently_deleted_recently_deleted">"Недавно удалено"</string>
+    <string name="recently_deleted_recently_deleted">"Недавно удалённые"</string>
     <!-- RecentlyDeletedViewModel -->
     <string name="recently_deleted_page_restored_to">"Страница %1$s восстановлена до «%2$s»."</string>
     <string name="recently_deleted_document_restored">"Документ восстановлен."</string>
     <string name="recently_deleted_folder_restored">"Папка восстановлена."</string>
-    <string name="recently_deleted_recently_deleted_is_empty">"Недавно удаленное пусто"</string>
+    <string name="recently_deleted_recently_deleted_is_empty">"Раздел «Недавно удаленные» пуст."</string>
     <string name="recently_deleted_deleted_permanently">"Удалено навсегда"</string>
     <!-- SearchFiltersSheet -->
-    <string name="search_filters_apply">"Подать заявку"</string>
+    <string name="search_filters_apply">"Применить"</string>
     <string name="search_filters_remove_filter">"Снимите фильтр: %1$s."</string>
     <string name="search_filters_in">"В %1$s"</string>
     <string name="search_filters_not_in_a_folder">"Не в папке"</string>
@@ -606,7 +606,7 @@
     <string name="search_filters_any_folder">"Любая папка"</string>
     <string name="search_filters_date_modified">"Дата изменения"</string>
     <string name="search_filters_any_type">"Любой тип"</string>
-    <string name="search_filters_type">"Введите"</string>
+    <string name="search_filters_type">"Тип"</string>
     <!-- TrashCopy -->
     <string name="trash_copy_page_moves_to_recently_deleted">"Страница %1$s перемещается в раздел «Недавно удаленные». Восстановить его можно для %2$s."</string>
     <string name="trash_copy_and_its_documents_move_to">"«%1$s» и его документы %2$s перемещаются в раздел «Недавно удаленные». Вы можете восстановить их для %3$s."</string>
@@ -626,27 +626,17 @@
     <!-- OnboardingScreen -->
     <string name="onboarding_no_account_no_cloud_upload">"Нет аккаунта. Нет загрузки в облако."</string>
     <string name="onboarding_continue">"Продолжить"</string>
-    <string name="onboarding_get_started">"Начать"</string>
+    <string name="onboarding_get_started">Сканировать первую страницу</string>
     <string name="onboarding_page_of_3">"%1$s, страница %2$s из 3."</string>
     <string name="onboarding_page_of_3_2">"Страница %1$s из 3"</string>
     <string name="onboarding_skip">"Пропустить"</string>
     <string name="onboarding_scanly">"Scanly."</string>
     <string name="onboarding_previous_page">"Предыдущая страница"</string>
-    <string name="onboarding_feature_edge_detection">"Автоматическое обнаружение края"</string>
-    <string name="onboarding_feature_crop_straighten">"Обрезайте и выпрямляйте страницы."</string>
-    <string name="onboarding_feature_filters">"Волшебный цвет, доска и многое другое."</string>
-    <string name="onboarding_feature_ocr">"Распознавание текста на устройстве"</string>
-    <string name="onboarding_feature_search">"Ищите слова по вашим сканам."</string>
-    <string name="onboarding_feature_copy_text">"Копирование текста с любой страницы"</string>
-    <string name="onboarding_feature_multipage_pdf">"Многостраничные файлы PDF."</string>
-    <string name="onboarding_feature_password">"Защитите паролем перед отправкой"</string>
-    <string name="onboarding_feature_sign">"Подписывать документы"</string>
-    <string name="onboarding_assurance_offline">"Работает полностью в автономном режиме."</string>
-    <string name="onboarding_assurance_on_device">"Ваше сообщение никогда не покидает это устройство."</string>
+    <string name="onboarding_assurance_offline">Обрабатывается на вашем устройстве.</string>
     <!-- Pip -->
     <string name="pip_poke_pip_scanly_s_helper">"Poke Pip, помощник Scanly."</string>
     <!-- PipBubble -->
-    <string name="pip_bubble_dismiss">"Уволить"</string>
+    <string name="pip_bubble_dismiss">"Скрыть"</string>
     <!-- PipLines -->
     <string name="pip_lines_all_set_pages_nice_and">"Все готово! Страницы %1$s, красивые и прямые."</string>
     <string name="pip_lines_all_set_1_page_nice">"Все готово! 1 страница, красиво и четко."</string>
@@ -667,11 +657,11 @@
     <!-- ModelBenchmarkScreen -->
     <string name="model_benchmark_pipeline_s_1f_ms" formatted="false">"Конвейер: %s · %.1f мс."</string>
     <string name="model_benchmark_total_1f_ms" formatted="false">"всего %.1f мс"</string>
-    <string name="model_benchmark_pre_0f_inf_0f_post" formatted="false">"до %.0f · инфа %.0f · пост %.0f"</string>
+    <string name="model_benchmark_pre_0f_inf_0f_post" formatted="false">"до %.0f · вывод %.0f · пост %.0f"</string>
     <string name="model_benchmark_not_detected">"Не обнаружено"</string>
     <string name="model_benchmark_detected_conf_0f" formatted="false">"Обнаружен · conf %.0f%%"</string>
     <string name="model_benchmark_none">"Нет"</string>
-    <string name="model_benchmark_quad">"Квадроцикл"</string>
+    <string name="model_benchmark_quad">"Четырёхугольник"</string>
     <string name="model_benchmark_error">"Ошибка"</string>
     <string name="model_benchmark_no_preview">"Нет предварительного просмотра"</string>
     <string name="model_benchmark_detection_preview">"Предварительный просмотр обнаружения %1$s"</string>
@@ -685,7 +675,7 @@
     <string name="model_benchmark_select_more_photos_to_measure">"Выберите больше фотографий, чтобы измерить задержку ворот, обнаружение углов, наложение полигонов и синхронизацию всего конвейера."</string>
     <string name="model_benchmark_run_another_pass">"Запустите еще один проход"</string>
     <string name="model_benchmark_images_stay_on_this_device">"Изображения остаются на этом устройстве. Ничего не загружается."</string>
-    <string name="model_benchmark_choose_real_documents_or_rectangular">"Выбирайте настоящие документы или прямоугольные объекты. Scanly будет измерять время каждого детектора и показывать обнаруженные фронты."</string>
+    <string name="model_benchmark_choose_real_documents_or_rectangular">"Выбирайте настоящие документы или прямоугольные объекты. Scanly будет измерять время каждого детектора и показывать обнаруженные края."</string>
     <string name="model_benchmark_compare_detectors_on_your_photos">"Сравните детекторы на своих фотографиях"</string>
     <string name="model_benchmark_model_benchmark">"Модельный тест"</string>
     <string name="model_benchmark_image">"Изображение"</string>
@@ -707,16 +697,16 @@
     <string name="pip_settings_blinks_talks_and_hops_pip">"Мигает, говорит и прыгает. Pip остается неподвижным, когда системная анимация отключена."</string>
     <string name="pip_settings_animate_pip">"Анимация Pip"</string>
     <string name="pip_settings_motion">"Движение"</string>
-    <string name="pip_settings_a_happy_hello_when_a">"Приветствуем, когда документ готов к публикации."</string>
+    <string name="pip_settings_a_happy_hello_when_a">"Приветствуем, когда документ готов к отправке."</string>
     <string name="pip_settings_cheer_on_exports">"Поддержите экспорт"</string>
     <string name="pip_settings_pip_helps_you_frame_pages">"Pip помогает компоновать страницы. Выкл. показывает простую направляющую."</string>
     <string name="pip_settings_camera_coaching">"Обучение работе с камерой"</string>
     <string name="pip_settings_one_short_tip_a_day">"Одна короткая подсказка в день под приветствием."</string>
-    <string name="pip_settings_tips_on_home">"Советы по дому"</string>
+    <string name="pip_settings_tips_on_home">"Советы на главном экране"</string>
     <string name="pip_settings_where_pip_helps">"Где помогает Pip"</string>
     <!-- SettingsComponents -->
     <string name="settings_pages_were_read_with_another">"Страницы %1$s читались другим движком. Перечитайте их с %2$s в фоновом режиме."</string>
-    <string name="settings_1_page_was_read_with">"1 страница была прочитана на другом движке. Перечитайте его с %1$s в фоновом режиме."</string>
+    <string name="settings_1_page_was_read_with">"1 страница была прочитана на другом движке. Перечитайте её с %1$s в фоновом режиме."</string>
     <string name="settings_re_read_existing_pages">"Перечитайте существующие страницы."</string>
     <string name="settings_indra_ocr_paused_it_stopped">"Indra OCR поставлен на паузу — дважды неожиданно останавливался, значит страницы читаются с помощью ML Kit. Чтобы повторить попытку, выберите Indra OCR еще раз."</string>
     <string name="settings_ml_kit">"ML Kit"</string>
@@ -725,7 +715,7 @@
     <string name="settings_it_s_free_private_and">"Это бесплатно, конфиденциально и без рекламы. Быстрый рейтинг Google Play поможет другим найти его."</string>
     <string name="settings_enjoying_scanly">"Нравится Scanly?"</string>
     <string name="settings_dark">"Темный"</string>
-    <string name="settings_light">"Свет"</string>
+    <string name="settings_light">"Светлая"</string>
     <string name="settings_system">"Система"</string>
     <string name="settings_tap_to_check">"Нажмите, чтобы проверить %1$s."</string>
     <string name="settings_you_are_on_latest_is">"Вы находитесь на %1$s. Последний — %2$s."</string>
@@ -736,10 +726,10 @@
     <string name="settings_version_unavailable">"Версия недоступна."</string>
     <string name="settings_pick_the_detector_that_fits">"Выберите детектор, соответствующий данному устройству и рабочему процессу."</string>
     <string name="settings_choose">"Выберите %1$s."</string>
-    <string name="settings_highest_accuracy_maximum_compatibility">"Высочайшая точность, максимальная совместимость с ·."</string>
+    <string name="settings_highest_accuracy_maximum_compatibility">"Высочайшая точность · максимальная совместимость"</string>
     <string name="settings_higher_accuracy_best_after_capture">"Более высокая точность · лучше всего после захвата."</string>
     <string name="settings_balanced_speed_and_accuracy">"Сбалансированная скорость и точность."</string>
-    <string name="settings_fastest_ideal_for_live_camera">"Самый быстрый ·, идеально подходящий для предварительного просмотра с камеры в реальном времени."</string>
+    <string name="settings_fastest_ideal_for_live_camera">"Самый быстрый · идеально подходит для предпросмотра с камеры в реальном времени."</string>
     <!-- SettingsDetailScreens -->
     <string name="settings_detail_screens_open_source">"Открытый исходный код"</string>
     <string name="settings_detail_screens_try_a_different_word_or">"Попробуйте другое слово или просмотрите категорию."</string>
@@ -780,7 +770,7 @@
     <string name="settings_hub_sub_screens_selected_automatically_for_responsive_preview">"Выбирается автоматически для адаптивного предварительного просмотра."</string>
     <string name="settings_hub_sub_screens_live_preview_model">"Модель предварительного просмотра в реальном времени"</string>
     <string name="settings_hub_sub_screens_choose_the_best_models_for">"Выбирайте лучшие модели для этого устройства."</string>
-    <string name="settings_hub_sub_screens_live_processing">"В прямом эфире: %1$s · Обработка: %2$s"</string>
+    <string name="settings_hub_sub_screens_live_processing">"В реальном времени: %1$s · Обработка: %2$s"</string>
     <string name="settings_hub_sub_screens_testing_model_speed_on_this">"Тестирование скорости модели на этом устройстве …"</string>
     <string name="settings_hub_sub_screens_automatic_model_selection">"Автоматический выбор модели."</string>
     <string name="settings_hub_sub_screens_models">"Модели"</string>
@@ -815,11 +805,11 @@
     <string name="settings_pure_black">" · Чистый черный"</string>
     <string name="settings_thanks_for_supporting_scanly">"Спасибо за поддержку Scanly."</string>
     <!-- SettingsTextRecognitionScreen -->
-    <string name="settings_text_recognition_weights_openrail_m_code_apache">"Вес: OpenRAIL-M · Код: Apache-2.0"</string>
+    <string name="settings_text_recognition_weights_openrail_m_code_apache">"Веса: OpenRAIL-M · Код: Apache-2.0"</string>
     <string name="settings_text_recognition_visit_datalab_to">"Посетите datalab.to."</string>
     <string name="settings_text_recognition_a_big_thank_you_to">"Большое спасибо Datalab за создание Indra OCR и разрешение Scanly запускать его прямо на вашем телефоне. Вот почему Scanly может читать более чем на 100 языках."</string>
     <string name="settings_text_recognition_datalab">"Даталаб"</string>
-    <string name="settings_text_recognition_indra_ocr_by">"INDRA OCR BY"</string>
+    <string name="settings_text_recognition_indra_ocr_by">"Indra OCR от"</string>
     <string name="settings_text_recognition_datalab_logo">"Логотип Даталаба"</string>
     <string name="settings_text_recognition_latin_script_only_pages_in">"Только латиница. Страницы, написанные другими алфавитами, например хинди, тамильским, арабским или китайским, отображаются пустыми или искаженными. Для этого переключитесь на Indra OCR."</string>
     <string name="settings_text_recognition_5_script_families_read_in">"5 семейств сценариев, читаются за один проход. Каждая строка направляется к нужному распознавателю, поэтому страницы на разных языках тоже работают."</string>
@@ -849,13 +839,13 @@
     <string name="settings_text_recognition_engine">"Двигатель"</string>
     <string name="settings_text_recognition_about_text_recognition">"О распознавании текста"</string>
     <!-- SettingsViewModel -->
-    <string name="settings_save_location_reset_to_downloads">"Сохраните сброс местоположения в Downloads/Scanly."</string>
+    <string name="settings_save_location_reset_to_downloads">"Место сохранения сброшено на Downloads/Scanly."</string>
     <string name="settings_save_location_updated">"Обновлено место сохранения."</string>
-    <string name="settings_reading_pages_again_in_the">"Снова чтение страниц %1$s в фоновом режиме."</string>
-    <string name="settings_reading_1_page_again_in">"Снова чтение 1 страницы в фоновом режиме."</string>
+    <string name="settings_reading_pages_again_in_the">"Повторное чтение страниц: %1$s в фоновом режиме."</string>
+    <string name="settings_reading_1_page_again_in">"Повторное чтение 1 страницы в фоновом режиме."</string>
     <string name="settings_no_pages_to_read_again">"Нет страниц, которые можно было бы прочитать снова."</string>
     <string name="settings_could_not_update_the_text">"Не удалось обновить механизм распознавания текста."</string>
-    <string name="settings_could_not_update_the_physical">"Не удалось обновить шлюз физического документа."</string>
+    <string name="settings_could_not_update_the_physical">"Не удалось обновить ворота физического документа."</string>
     <string name="settings_could_not_update_automatic_model">"Не удалось обновить автоматический выбор модели."</string>
     <string name="settings_could_not_update_the_post">"Не удалось обновить модель постобработки."</string>
     <string name="settings_could_not_update_the_live">"Не удалось обновить модель предварительного просмотра в реальном времени."</string>
@@ -866,10 +856,10 @@
     <string name="settings_removed_empty_documents">"Удалены пустые документы %1$s."</string>
     <string name="settings_removed_1_empty_document">"Удален 1 пустой документ."</string>
     <string name="settings_no_empty_documents_found">"Пустых документов не обнаружено."</string>
-    <string name="settings_freed">"Фрид %1$s"</string>
+    <string name="settings_freed">"Освобождено %1$s"</string>
     <string name="settings_all_data_cleared">"Все данные удалены."</string>
     <!-- StorageScreen -->
-    <string name="storage_temporary_exports">"Временный вывоз"</string>
+    <string name="storage_temporary_exports">"Временный экспорт"</string>
     <string name="storage_database_search_index">"База данных и поисковый индекс"</string>
     <string name="storage_library_files">"Библиотечные файлы"</string>
     <string name="storage_scanly_is_using">"Scanly использует"</string>
@@ -918,7 +908,7 @@
     <string name="signature_create_choose_where_your_initials_are">"Выберите, где будут ваши инициалы."</string>
     <string name="signature_create_pen">"Ручка"</string>
     <string name="signature_create_upload">"Загрузить"</string>
-    <string name="signature_create_draw">"Ничья"</string>
+    <string name="signature_create_draw">"Нарисовать"</string>
     <string name="signature_create_save_signature">"Сохранить подпись"</string>
     <string name="signature_create_save_initials">"Сохраните инициалы"</string>
     <string name="signature_create_sign_above_the_line">"Подпишите над чертой"</string>
@@ -991,9 +981,9 @@
     <string name="page_text_read_this_page">"Прочтите эту страницу."</string>
     <string name="page_text_scanly_reads_page_text_on">"Scanly читает текст страницы на этом устройстве."</string>
     <string name="page_text_text_not_read_yet">"Текст еще не прочитан"</string>
-    <string name="page_text_try_again">"Попробуй еще раз"</string>
-    <string name="page_text_couldn_t_read_this_page">"Не смог прочитать эту страницу."</string>
-    <string name="page_text_your_corrections_are_used_for">"Ваши исправления используются для копирования, обмена и поиска."</string>
+    <string name="page_text_try_again">"Повторите попытку"</string>
+    <string name="page_text_couldn_t_read_this_page">"Не удалось прочитать эту страницу."</string>
+    <string name="page_text_your_corrections_are_used_for">"Ваши исправления используются для копирования, отправки и поиска."</string>
     <string name="page_text_this_page_changed_after_its">"Эта страница изменилась после прочтения ее текста."</string>
     <string name="page_text_stop_highlighting">"Перестаньте выделять"</string>
     <string name="page_text_on_this_page">"%1$s на этой странице"</string>
@@ -1041,7 +1031,7 @@
     <string name="pdf_compress_compressing_pdf">"Сжатие PDF…"</string>
     <string name="pdf_compress_choose_a_pdf_first">"Сначала выберите PDF."</string>
     <!-- PdfFilePicker -->
-    <string name="pdf_file_picker_days_ago">"%1$s дней назад"</string>
+    <string name="pdf_file_picker_days_ago">"%1$s дн. назад"</string>
     <string name="pdf_file_picker_selected_position">"Выбрано, позиция %1$s."</string>
     <string name="pdf_file_picker_empty_scans_are_hidden">"Пустые сканы %1$s скрыты."</string>
     <string name="pdf_file_picker_1_empty_scan_is_hidden">"1 пустой скан скрыт."</string>
@@ -1063,7 +1053,7 @@
     <string name="pdf_import_added_to_your_library">"Добавлен в вашу библиотеку."</string>
     <string name="pdf_import_step_3_of_3_done">"Шаг 3 из 3 · Готово"</string>
     <string name="pdf_import_adding_to_library">"Добавление в библиотеку …"</string>
-    <string name="pdf_import_look">"Смотри"</string>
+    <string name="pdf_import_look">"Вид"</string>
     <string name="pdf_import_your_pdf_file_stays_as">"Ваш файл PDF останется без изменений; Scanly сохраняет свою копию."</string>
     <string name="pdf_import_tap_a_page_or_long">"Коснитесь страницы или нажмите и удерживайте несколько страниц и перетащите их."</string>
     <string name="pdf_import_step_2_of_3_pages">"Шаг 2 из 3 · Страницы и название"</string>
@@ -1091,14 +1081,14 @@
     <string name="pdf_merge_merge_pdfs">"Объедините файлы PDF."</string>
     <string name="pdf_merge_merge_files">"Объедините файлы %1$s."</string>
     <string name="pdf_merge_add_more">"Добавьте больше"</string>
-    <string name="pdf_merge_merge_order">"Объединить заказ · %1$s"</string>
+    <string name="pdf_merge_merge_order">"Порядок объединения · %1$s"</string>
     <string name="pdf_merge_files_are_joined_from_top">"Файлы соединяются сверху вниз."</string>
     <string name="pdf_merge_order_name">"Порядок и название"</string>
     <string name="pdf_merge_step_2_of_3_order">"Шаг 2 из 3 · Порядок и название"</string>
     <string name="pdf_merge_in_total">"Всего %1$s"</string>
     <string name="pdf_merge_from_phone">"С телефона: %1$s."</string>
     <string name="pdf_merge_next">"Далее"</string>
-    <string name="pdf_merge_next_files">"Следующие файлы · %1$s"</string>
+    <string name="pdf_merge_next_files">"Далее · файлов: %1$s"</string>
     <string name="pdf_merge_pick_at_least_2_files">"Выберите минимум 2 файла."</string>
     <string name="pdf_merge_step_1_of_3_pick">"Шаг 1 из 3 · Выбор файлов"</string>
     <string name="pdf_merge_pick_files_in_the_order">"Выбирайте файлы в том порядке, в котором вы хотите."</string>
@@ -1110,7 +1100,7 @@
     <string name="pdf_password_file">"Файл"</string>
     <string name="pdf_password_allowed">"Разрешено"</string>
     <string name="pdf_password_restricted">"Ограничено"</string>
-    <string name="pdf_password_editing">"Монтаж"</string>
+    <string name="pdf_password_editing">"Редактирование"</string>
     <string name="pdf_password_no_password">"Нет пароля"</string>
     <string name="pdf_password_aes_256_password">"Пароль AES-256."</string>
     <string name="pdf_password_protection">"Защита"</string>
@@ -1122,8 +1112,8 @@
     <string name="pdf_password_bank_and_portal_pdfs_often">"В файлах PDF банка и портала часто используется ваша дата рождения или идентификатор клиента."</string>
     <string name="pdf_password_password_for_this_pdf">"Пароль для этого PDF"</string>
     <string name="pdf_password_current_password">"Текущий пароль"</string>
-    <string name="pdf_password_locked_pdf">"Заблокировано PDF"</string>
-    <string name="pdf_password_lock_pdf">"Замок PDF"</string>
+    <string name="pdf_password_locked_pdf">"Заблокированный PDF"</string>
+    <string name="pdf_password_lock_pdf">"Заблокировать PDF"</string>
     <string name="pdf_password_scanly_can_t_recover_this">"Scanly не может восстановить этот пароль. Если вы забудете об этом, PDF невозможно будет открыть."</string>
     <string name="pdf_password_others_can_open_and_print">"Другие могут открывать и печатать, но не редактировать и копировать текст."</string>
     <string name="pdf_password_restrict_editing">"Ограничить редактирование"</string>
@@ -1132,7 +1122,7 @@
     <string name="pdf_password_new_password">"Новый пароль"</string>
     <string name="pdf_password_add_password">"Добавить пароль"</string>
     <string name="pdf_password_checking_the_file">"Проверка файла …"</string>
-    <string name="pdf_password_unlocked_pdf">"Разблокирован PDF"</string>
+    <string name="pdf_password_unlocked_pdf">"Разблокированный PDF"</string>
     <string name="pdf_password_protected_pdf">"Защищенный PDF"</string>
     <string name="pdf_password_it_now_opens_without_a">"Теперь открывается без пароля."</string>
     <string name="pdf_password_anyone_opening_it_will_need">"Любому, кто откроет его, понадобится пароль."</string>
@@ -1165,12 +1155,12 @@
     <string name="pdf_reader_open_any_pdf_from_scanly">"Откройте любой PDF с Scanly или с телефона."</string>
     <string name="pdf_reader_read_a_pdf">"Читать PDF"</string>
     <!-- PdfSignScreen -->
-    <string name="pdf_sign_1_mark">"1 балл"</string>
+    <string name="pdf_sign_1_mark">"1 отметка"</string>
     <string name="pdf_sign_the_signed_copy_is_saved">"Подписанная копия сохраняется без пароля."</string>
     <string name="pdf_sign_this_pdf_is_locked">"Этот PDF заблокирован."</string>
     <string name="pdf_sign_back_to_the_editor">"Вернуться в редактор"</string>
     <string name="pdf_sign_edit_signatures">"Редактировать подписи"</string>
-    <string name="pdf_sign_signed_pdf">"Подпись PDF."</string>
+    <string name="pdf_sign_signed_pdf">"Подписанный PDF"</string>
     <string name="pdf_sign_saved_as">"Сохранено как"</string>
     <string name="pdf_sign_marks_placed">"Ставятся отметки"</string>
     <string name="pdf_sign_pages_signed">"Страницы подписаны"</string>
@@ -1190,25 +1180,25 @@
     <string name="pdf_to_images_presentation_share_all">"Поделитесь всеми %1$s"</string>
     <string name="pdf_to_images_presentation_share_image">"Поделиться изображением"</string>
     <string name="pdf_to_images_presentation_in_all">"%1$s всего"</string>
-    <string name="pdf_to_images_presentation_of_pages">"%1$s страниц %2$s"</string>
+    <string name="pdf_to_images_presentation_of_pages">"%1$s из %2$s страниц"</string>
     <string name="pdf_to_images_presentation_all_pages">"Все страницы %1$s"</string>
     <string name="pdf_to_images_presentation_export">"Экспорт %1$s"</string>
     <string name="pdf_to_images_presentation_choose_pages_to_export">"Выберите страницы для экспорта."</string>
     <string name="pdf_to_images_presentation_1_image">"1 изображение"</string>
-    <string name="pdf_to_images_presentation_1f_gb" formatted="false">"%.1f GB"</string>
-    <string name="pdf_to_images_presentation_1f_mb" formatted="false">"%.1f MB"</string>
-    <string name="pdf_to_images_presentation_kb">"%1$s KB"</string>
-    <string name="pdf_to_images_presentation_0_kb">"0 KB"</string>
+    <string name="pdf_to_images_presentation_1f_gb" formatted="false">"%.1f ГБ"</string>
+    <string name="pdf_to_images_presentation_1f_mb" formatted="false">"%.1f МБ"</string>
+    <string name="pdf_to_images_presentation_kb">"%1$s КБ"</string>
+    <string name="pdf_to_images_presentation_0_kb">"0 КБ"</string>
     <!-- PdfToImagesScreen -->
     <string name="pdf_to_images_of_selected">"Выбран %1$s из %2$s."</string>
     <string name="pdf_to_images_tap_images_or_long_press">"Коснитесь изображений или нажмите и удерживайте их, чтобы перетащить, чтобы поделиться только некоторыми."</string>
-    <string name="pdf_to_images_open_gallery">"Открытая галерея"</string>
+    <string name="pdf_to_images_open_gallery">"Открыть галерею"</string>
     <string name="pdf_to_images_pick_a_different_file">"Выберите другой файл"</string>
     <string name="pdf_to_images_png_or_print_size">"PNG или размер печати"</string>
     <string name="pdf_to_images_export_again">"Экспортируйте снова"</string>
     <string name="pdf_to_images_saving_images">"Сохранение изображений …"</string>
     <string name="pdf_to_images_each">"~%1$s каждый"</string>
-    <string name="pdf_to_images_resolution">"Резолюция"</string>
+    <string name="pdf_to_images_resolution">"Разрешение"</string>
     <string name="pdf_to_images_format">"Формат"</string>
     <string name="pdf_to_images_deselect_all">"Отменить выбор всех"</string>
     <string name="pdf_to_images_this_pdf_is_password_protected">"Этот PDF защищен паролем. Введите его пароль, чтобы увидеть страницы."</string>
@@ -1225,7 +1215,7 @@
     <string name="pdf_tool_presentation_files_merge_in_this_order">"Файлы объединяются в таком порядке. Первый PDF запускает документ."</string>
     <string name="pdf_tool_presentation_add_at_least_one_more">"Добавьте для объединения хотя бы еще один PDF."</string>
     <string name="pdf_tool_presentation_opacity">"Непрозрачность %1$s%%"</string>
-    <string name="pdf_tool_presentation_one_large_stamp_sized_to">"Одна большая марка, занимающая всю страницу."</string>
+    <string name="pdf_tool_presentation_one_large_stamp_sized_to">"Один большой штамп, занимающий всю страницу."</string>
     <string name="pdf_tool_presentation_repeats_across_the_full_page">"Повторяется по всей странице, включая края."</string>
     <string name="pdf_tool_presentation_protect_pdf">"Защитите PDF"</string>
     <string name="pdf_tool_presentation_saved">"%1$s → %2$s · сохранено %3$s%%"</string>
@@ -1241,7 +1231,7 @@
     <!-- PdfWatermarkScreen -->
     <string name="pdf_watermark_the_page">"Страница"</string>
     <string name="pdf_watermark_first_page_only">"Только первая страница"</string>
-    <string name="pdf_watermark_apply_to">"Подать заявку на"</string>
+    <string name="pdf_watermark_apply_to">"Применить к"</string>
     <string name="pdf_watermark_colour">"Цвет"</string>
     <string name="pdf_watermark_opacity">"Непрозрачность"</string>
     <string name="pdf_watermark_large">"Большой"</string>
@@ -1249,10 +1239,10 @@
     <string name="pdf_watermark_small">"Маленький"</string>
     <string name="pdf_watermark_horizontal">"Горизонтальный"</string>
     <string name="pdf_watermark_diagonal">"Диагональ"</string>
-    <string name="pdf_watermark_single">"Одинокий"</string>
+    <string name="pdf_watermark_single">"Одиночный"</string>
     <string name="pdf_watermark_tiled">"Плиточный"</string>
     <string name="pdf_watermark_style">"Стиль"</string>
-    <string name="pdf_watermark_stamps">"Марки «%1$s»."</string>
+    <string name="pdf_watermark_stamps">"Штампы «%1$s»"</string>
     <string name="pdf_watermark_add_date">"Добавить дату"</string>
     <string name="pdf_watermark_presets">"Пресеты"</string>
     <string name="pdf_watermark_the_watermarked_copy_is_saved">"Копия с водяным знаком сохраняется без пароля. Её можно снова защитить инструментом «Пароль»."</string>
@@ -1311,7 +1301,7 @@
     <string name="qr_create_shop_name">"Название магазина"</string>
     <string name="qr_create_payee_name">"Имя получателя платежа"</string>
     <string name="qr_create_name_bank">"имя@банк"</string>
-    <string name="qr_create_upi_id">"Идентификатор УПИ"</string>
+    <string name="qr_create_upi_id">"Идентификатор UPI"</string>
     <string name="qr_create_security">"Безопасность"</string>
     <string name="qr_create_network_password">"Сетевой пароль"</string>
     <string name="qr_create_network_name">"Имя сети"</string>
@@ -1340,12 +1330,12 @@
     <string name="qr_history_search_links_networks_names">"Поиск ссылок, сетей, названий"</string>
     <string name="qr_history_qr_history">"История QR"</string>
     <!-- QrResultScreen -->
-    <string name="qr_result_show_raw_content">"Показывайте необработанный контент"</string>
+    <string name="qr_result_show_raw_content">"Показать необработанный контент"</string>
     <string name="qr_result_hide_raw_content">"Скрыть необработанный контент"</string>
     <string name="qr_result_raw_content">"Необработанный контент"</string>
     <string name="qr_result_organisation">"Организация"</string>
     <string name="qr_result_wi_fi_settings_can_t">"В настройках Wi-Fi нельзя добавлять сети WEP, поэтому пароль копируется и настройки открываются."</string>
-    <string name="qr_result_not_in_the_code">"Не в кодексе"</string>
+    <string name="qr_result_not_in_the_code">"Нет в коде"</string>
     <string name="qr_result_network">"Сеть"</string>
     <string name="qr_result_scanly_doesn_t_make_payments">"Scanly не осуществляет выплаты. Перед оплатой подтвердите имя получателя платежа в приложении UPI."</string>
     <string name="qr_result_not_set_you_ll_enter">"Не установлено. Вы введете его в свое приложение UPI."</string>
@@ -1381,12 +1371,12 @@
     <string name="qr_scan_open_settings_tap_permissions_and">"Откройте «Настройки», нажмите «Разрешения» и включите камеру для Scanly."</string>
     <string name="qr_scan_allow_camera_to_scan">"Разрешить камере сканировать"</string>
     <string name="qr_scan_camera_permission_is_blocked">"Разрешение камеры заблокировано."</string>
-    <string name="qr_scan_torch_on_off">"Факел вкл/выкл"</string>
+    <string name="qr_scan_torch_on_off">"Фонарик вкл/выкл"</string>
     <string name="qr_scan_scan_qr_barcode">"Сканируйте QR и штрих-код."</string>
     <string name="qr_scan_point_at_a_qr_code">"Укажите на код или штрих-код QR."</string>
-    <string name="qr_scan_code_found_hold_steady">"Найден код ·. Держите устойчивым."</string>
+    <string name="qr_scan_code_found_hold_steady">"Код найден · держите устройство неподвижно."</string>
     <string name="qr_scan_reading_photo">"Чтение фото…"</string>
-    <string name="qr_scan_the_camera_isn_t_available">"Камера сейчас недоступна. Вместо этого попробуйте «Из фотографии»."</string>
+    <string name="qr_scan_the_camera_isn_t_available">"Камера сейчас недоступна. Вместо этого попробуйте «Из фото»."</string>
     <!-- QrToolPresentation -->
     <string name="qr_tool_presentation_h_ago">"%1$s ч. назад"</string>
     <string name="qr_tool_presentation_min_ago">"%1$s мин назад"</string>
@@ -1398,7 +1388,7 @@
     <string name="qr_tool_presentation_a_wi_fi_network">"сеть Wi-Fi"</string>
     <string name="qr_tool_presentation_a_upi_payment">"платеж UPI"</string>
     <string name="qr_tool_presentation_a_link">"ссылка"</string>
-    <string name="qr_tool_presentation_found">"Найден "</string>
+    <string name="qr_tool_presentation_found">"Найдено:"</string>
     <string name="qr_tool_presentation_generating_preview">"Создание предварительного просмотра …"</string>
     <string name="qr_tool_presentation_preview_appears_as_you_type">"Предварительный просмотр появляется по мере ввода"</string>
     <string name="qr_tool_presentation_copy_to_the_clipboard">"Копировать в буфер обмена."</string>
@@ -1411,7 +1401,7 @@
     <string name="image_text_photos_are_saved_as_a">"Фотографии сохраняются как новый документ, поэтому вы можете искать их текст позже."</string>
     <string name="image_text_your_scans_have_no_pages">"В ваших сканах пока нет страниц. Выбирайте фотографии, чтобы прочитать их текст."</string>
     <string name="image_text_no_scans_yet_pick_photos">"Сканов пока нет. Выбирайте фотографии, чтобы прочитать их текст."</string>
-    <string name="image_text_1_scan">"1 сканирование"</string>
+    <string name="image_text_1_scan">"1 скан"</string>
     <string name="image_text_up_to_from_your_gallery">"До %1$s из вашей галереи или файлов."</string>
     <string name="image_text_copy_text_from_photos_or">"Скопируйте текст с фотографий или сканов. Текст читается на этом телефоне."</string>
     <string name="image_text_image_to_text">"Изображение в текст"</string>
@@ -1424,7 +1414,7 @@
     <string name="app_update_scanly_is_up_to_date">"Scanly обновлен. Вы находитесь на %1$s."</string>
     <string name="app_update_could_not_check_for_updates">"Не удалось проверить %1$s на наличие обновлений."</string>
     <!-- FlexibleUpdateSnackbar -->
-    <string name="flexible_update_snackbar_restart">"Перезагрузить"</string>
+    <string name="flexible_update_snackbar_restart">"Перезапустить"</string>
     <string name="flexible_update_snackbar_update_downloaded_restart_scanly_to">"Обновление скачано. Перезапустите Scanly, чтобы завершить установку."</string>
     <!-- ReleaseMarkdown -->
     <string name="release_markdown_no_release_notes_were_provided">"Для этой версии не предоставлено никаких примечаний к выпуску."</string>
@@ -1448,10 +1438,10 @@
     <string name="pdf_page_size_tabloid">"Таблоид"</string>
     <string name="pdf_page_size_executive">"Исполнительный"</string>
     <string name="pdf_page_size_postcard">"Открытка"</string>
-    <string name="pdf_page_size_american_foolscap">"Американский дурачок"</string>
-    <string name="pdf_page_size_european_foolscap">"Европейский дурачок"</string>
+    <string name="pdf_page_size_american_foolscap">"Американский фулскап"</string>
+    <string name="pdf_page_size_european_foolscap">"Европейский фулскап"</string>
     <!-- pdf_page_margin -->
-    <string name="pdf_page_margin_no_margin">"Без маржи"</string>
+    <string name="pdf_page_margin_no_margin">"Без полей"</string>
     <string name="pdf_page_margin_big">"Большой"</string>
     <!-- pdf_page_number -->
     <string name="pdf_page_number_center">"Центр"</string>
@@ -1465,11 +1455,11 @@
     <string name="pdf_image_resolution_2480_px_wide_300_dpi">"Ширина 2480 пикселей · 300 dpi, формат A4"</string>
     <!-- pdf_compress_quality -->
     <string name="pdf_compress_quality_high_quality">"Высокое качество"</string>
-    <string name="pdf_compress_quality_best_clarity_less_compression">"Лучшая четкость ·, меньше сжатия."</string>
+    <string name="pdf_compress_quality_best_clarity_less_compression">"Лучшая четкость · меньше сжатия"</string>
     <string name="pdf_compress_quality_balanced">"Сбалансированный"</string>
     <string name="pdf_compress_quality_good_balance_of_size_and">"Хороший баланс размера и четкости."</string>
     <string name="pdf_compress_quality_smallest">"Самый маленький"</string>
-    <string name="pdf_compress_quality_maximum_compression_softer_detail">"Максимальное сжатие ·, более мягкие детали."</string>
+    <string name="pdf_compress_quality_maximum_compression_softer_detail">"Максимальное сжатие · более мягкие детали"</string>
     <!-- watermark_color -->
     <string name="watermark_color_grey">"Серый"</string>
     <string name="watermark_color_red">"Красный"</string>
@@ -1487,7 +1477,7 @@
     <string name="date_filter_this_year">"В этом году"</string>
     <string name="date_filter_custom_range">"Пользовательский диапазон"</string>
     <!-- search_sort -->
-    <string name="search_sort_best_match">"Лучший матч"</string>
+    <string name="search_sort_best_match">"Лучшее совпадение"</string>
     <string name="search_sort_newest">"Новейший"</string>
     <string name="search_sort_oldest">"Самый старый"</string>
     <string name="search_sort_name_a_z">"Имя A–Z"</string>
@@ -1535,14 +1525,14 @@
     <string name="wifi_security_wep">"WEP"</string>
     <string name="wifi_security_open">"Без защиты"</string>
     <!-- qr_create_type -->
-    <string name="qr_create_type_upi">"УПИ"</string>
+    <string name="qr_create_type_upi">"UPI"</string>
     <!-- pdf_import_look -->
     <string name="pdf_import_look_keep_as_is">"Оставьте как есть"</string>
     <string name="pdf_import_look_pages_look_exactly_like_the">"Страницы выглядят точно так же, как на PDF."</string>
     <string name="pdf_import_look_enhance">"Улучшить"</string>
     <string name="pdf_import_look_even_out_scanned_pages_and">"Выравнивание отсканированных страниц и повышение резкости текста"</string>
     <!-- capture_scene_issue -->
-    <string name="capture_scene_issue_lens_may_be_covered_clear">"Возможно, линза закрыта. Откройте его и попробуйте еще раз."</string>
+    <string name="capture_scene_issue_lens_may_be_covered_clear">"Возможно, объектив закрыт. Очистите его и попробуйте еще раз."</string>
     <string name="capture_scene_issue_too_dark_add_light_or">"Слишком темно. Добавьте свет или включите вспышку."</string>
     <string name="capture_scene_issue_image_looks_blurry_clean_the">"Изображение выглядит размытым. Очистите объектив или коснитесь экрана, чтобы сфокусироваться."</string>
     <!-- group_export_action -->
@@ -1565,14 +1555,14 @@
     <string name="signature_pen_width_bold">"Толстый"</string>
     <!-- onboarding_page -->
     <string name="onboarding_page_capture">"ЗАХВАТ"</string>
-    <string name="onboarding_page_paper_to_polished">"Из бумаги — в чёткий скан."</string>
-    <string name="onboarding_page_capture_straighten_and_clean_up">"Снимайте, выпрямляйте и очищайте страницы."</string>
+    <string name="onboarding_page_paper_to_polished">"Бумага\nв лучшем виде."</string>
+    <string name="onboarding_page_capture_straighten_and_clean_up">Снимите страницу, выровняйте края и настройте цвет. Проверьте чёткость деталей перед сохранением скана.</string>
     <string name="onboarding_page_find">"НАЙТИ"</string>
-    <string name="onboarding_page_find_more_than_files">"Ищите слова внутри сканов."</string>
-    <string name="onboarding_page_recognize_text_on_your_device">"Распознавайте текст на вашем устройстве. Ищите внутри своих сканов."</string>
-    <string name="onboarding_page_share">"ПОДЕЛИТЬСЯ"</string>
-    <string name="onboarding_page_ready_when_you_are">"Всё готово, когда нужно."</string>
-    <string name="onboarding_page_keep_pages_together_share_a">"Держите страницы вместе. Поделитесь чистым PDF в несколько нажатий."</string>
+    <string name="onboarding_page_find_more_than_files">"Найдите слово.\nНайдите страницу."</string>
+    <string name="onboarding_page_recognize_text_on_your_device">Распознавайте текст на устройстве и ищите слова в сканах. Находите нужную страницу, не перечитывая каждый документ.</string>
+    <string name="onboarding_page_share">ГОТОВО</string>
+    <string name="onboarding_page_ready_when_you_are">"Подготовьте\nк отправке."</string>
+    <string name="onboarding_page_keep_pages_together_share_a">Объедините страницы в один PDF. При необходимости добавьте подпись или пароль и поделитесь готовым документом в несколько касаний.</string>
     <!-- pdf_reader_tool -->
     <string name="pdf_reader_tool_merge_with_other_pdfs">"Объединить с другими файлами PDF."</string>
     <string name="pdf_reader_tool_password_protect">"Защита паролем"</string>
@@ -1607,7 +1597,7 @@
     <string name="settings_text_recognition_czech">"Чешский"</string>
     <string name="settings_text_recognition_swedish">"Шведский"</string>
     <string name="settings_text_recognition_swahili">"Суахили"</string>
-    <string name="settings_text_recognition_filipino">"Филиппинец"</string>
+    <string name="settings_text_recognition_filipino">"Филиппинский"</string>
     <string name="settings_text_recognition_vietnamese">"Вьетнамский"</string>
     <string name="settings_text_recognition_malay">"Малайский"</string>
     <string name="settings_text_recognition_indonesian">"Индонезийский"</string>
@@ -1619,7 +1609,7 @@
     <string name="settings_text_recognition_german">"Немецкий"</string>
     <string name="settings_text_recognition_french">"Французский"</string>
     <string name="settings_text_recognition_spanish">"Испанский"</string>
-    <string name="settings_text_recognition_english">"английский"</string>
+    <string name="settings_text_recognition_english">"Английский"</string>
     <string name="settings_text_recognition_latin">"Латиница"</string>
     <string name="settings_text_recognition_amharic">"Амхарский"</string>
     <string name="settings_text_recognition_georgian">"Грузинский"</string>
@@ -1632,7 +1622,7 @@
     <string name="settings_text_recognition_hebrew">"Иврит"</string>
     <string name="settings_text_recognition_urdu">"Урду"</string>
     <string name="settings_text_recognition_persian">"Персидский"</string>
-    <string name="settings_text_recognition_arabic">"арабский"</string>
+    <string name="settings_text_recognition_arabic">"Арабский"</string>
     <string name="settings_text_recognition_right_to_left">"Справа налево"</string>
     <string name="settings_text_recognition_korean">"Корейский"</string>
     <string name="settings_text_recognition_japanese">"Японский"</string>
@@ -1689,7 +1679,7 @@
     <string name="pip_lines_still_free_still_no_account">"Всегда бесплатно. Никакой учетной записи не требуется. Никакой рекламы."</string>
     <string name="pip_lines_i_m_open_source_you">"Мой исходный код открыт. Вы можете прочитать каждую его строчку."</string>
     <string name="pip_lines_your_original_photos_are_kept">"Исходные фотографии сохраняются, поэтому изменения всегда можно отменить."</string>
-    <string name="pip_lines_i_live_on_your_phone">"Я работаю на твоем телефоне. Ваши сканы никогда не попадают на сервер."</string>
+    <string name="pip_lines_i_live_on_your_phone">"Я работаю на твоем телефоне. Твои сканы никогда не попадают на сервер."</string>
     <string name="pip_lines_hey_that_tickles">"эй! это щекочет."</string>
     <!-- pdf_watermark -->
     <string name="pdf_watermark_for_kyc_use_only">"Используйте только для KYC."</string>
@@ -1705,7 +1695,7 @@
     <string name="document_sign_some_pages_are_still_processing">"Некоторые страницы все еще обрабатываются и еще не могут быть подписаны."</string>
     <!-- pip_lines -->
     <string name="pip_lines_hi_i_m_pip_point">"Привет, я Pip! Покажите мне страницу, и я исправлю для вас скан."</string>
-    <string name="pip_lines_one_last_thing_can_i">"И последнее! Могу ли я воспользоваться камерой? Он включен только во время сканирования."</string>
+    <string name="pip_lines_one_last_thing_can_i">"И последнее! Могу ли я воспользоваться камерой? Она включена только во время сканирования."</string>
     <string name="pip_lines_nothing_here_yet_let_s">"Здесь пока ничего нет. давай вместе отсканируем твою первую страницу."</string>
     <string name="pip_lines_a_clean_shelf_start_a">"чистая полка! создайте папку или отсканируйте что-нибудь."</string>
     <string name="pip_lines_no_folders_yet_they_re">"Папок пока нет. Используйте их для систематизации квитанций, счетов и школьных бумаг."</string>
@@ -1721,9 +1711,9 @@
     <string name="pip_lines_i_can_t_see_a">"Я пока ничего не вижу. могу я одолжить камеру?"</string>
     <string name="pip_lines_the_camera_is_switched_off">"у Scanly камера выключена. быстрый переход к настройкам исправляет это."</string>
     <string name="pip_lines_lend_me_the_camera_and">"одолжи мне камеру, и я прочитаю тебе код."</string>
-    <string name="pip_lines_huh_that_document_wandered_off">"Hmm, that document seems to be missing."</string>
+    <string name="pip_lines_huh_that_document_wandered_off">"Хм, этот документ куда-то делся."</string>
     <!-- pdf_page_size -->
-    <string name="pdf_page_size_match_each_scan">"Fit the size of each scanned page"</string>
+    <string name="pdf_page_size_match_each_scan">"По размеру каждого скана"</string>
     <string name="pdf_page_size_29_7_42_0_cm">"29,7 × 42,0 см"</string>
     <string name="pdf_page_size_21_0_29_7_cm">"21,0 × 29,7 см"</string>
     <string name="pdf_page_size_14_8_21_0_cm">"14,8 × 21,0 см"</string>
@@ -1855,7 +1845,7 @@
     <string name="pdf_compress_first_page_of">"Первая страница %1$s."</string>
     <string name="pdf_compress_the_pdf">"PDF"</string>
     <string name="pdf_password_strength_too_short">"Слишком короткий"</string>
-    <string name="pdf_password_strength_too_long">"Слишком долго"</string>
+    <string name="pdf_password_strength_too_long">"Слишком длинный"</string>
     <string name="pdf_password_strength_weak">"Слабый"</string>
     <string name="pdf_password_strength_fair">"Средний"</string>
     <string name="pdf_password_strength_strong">"Сильный"</string>
@@ -1873,7 +1863,7 @@
     <string name="error_only_pages_in_recently_deleted_can_be">"Только страницы из категории «Недавно удаленные» можно удалить навсегда."</string>
     <string name="error_page_not_found">"Страница не найдена."</string>
     <string name="error_page_not_found_in_document_order">"Страница не найдена в порядке документов."</string>
-    <string name="error_select_at_least_two_pdfs_to_merge">"Select at least two PDF files to merge."</string>
+    <string name="error_select_at_least_two_pdfs_to_merge">"Выберите хотя бы два файла PDF для объединения."</string>
     <string name="error_pdf_has_no_pages">"PDF не имеет страниц."</string>
     <string name="error_password_must_be_4_64_characters">"Пароль должен состоять из 4–64 символов."</string>
     <string name="error_enter_the_current_pdf_password">"Введите текущий пароль PDF."</string>
@@ -1889,10 +1879,10 @@
     <string name="error_export_file_is_missing">"Файл экспорта отсутствует."</string>
     <string name="error_the_preview_pdf_is_missing">"Отсутствует превью PDF."</string>
     <string name="error_could_not_read_selected_pdf">"Не удалось прочитать выбранный PDF."</string>
-    <string name="error_not_enough_memory_to_compress_this_pdf">"Недостаточно памяти для сжатия этого PDF. Попробуйте наименьшее качество или более короткий файл."</string>
+    <string name="error_not_enough_memory_to_compress_this_pdf">"Недостаточно памяти для сжатия этого PDF. Попробуйте качество «Самый маленький» или более короткий файл."</string>
     <string name="error_a_text_box_is_empty_type_something">"Текстовое поле пусто. Введите что-нибудь или удалите это."</string>
     <string name="error_a_signature_image_is_missing_remove_it">"Отсутствует изображение подписи. Удалите его и поместите снова."</string>
-    <string name="error_some_characters_cant_be_drawn_remove_emoji">"Некоторые персонажи невозможно нарисовать. Удалите эмодзи или необычные символы."</string>
+    <string name="error_some_characters_cant_be_drawn_remove_emoji">"Некоторые символы невозможно отобразить. Удалите эмодзи или необычные знаки."</string>
     <string name="error_some_characters_in_the_watermark_cant_be">"Некоторые символы в водяном знаке невозможно нарисовать. Удалите эмодзи или необычные символы."</string>
     <string name="error_enter_something_to_encode">"Введите что-нибудь для кодирования."</string>
     <string name="error_could_not_write_qr_image">"Не удалось записать образ QR."</string>
@@ -1910,7 +1900,7 @@
     <string name="error_invalid_page_image_path">"Неверный путь к изображению страницы."</string>
     <string name="error_the_exported_file_is_unavailable">"Экспортированный файл недоступен."</string>
     <string name="error_the_exported_image_is_unavailable">"Экспортированное изображение недоступно."</string>
-    <string name="error_the_selected_save_folder_is_no_longer">"Выбранная папка сохранения больше не доступна. Выберите его еще раз в настройках."</string>
+    <string name="error_the_selected_save_folder_is_no_longer">"Выбранная папка сохранения больше не доступна. Выберите её еще раз в настройках."</string>
     <string name="error_this_page_no_longer_exists">"​​Эта страница больше не существует."</string>
     <string name="error_read_this_pages_text_first">"Сначала прочитайте текст этой страницы."</string>
     <string name="error_page_image_could_not_be_read">"Изображение страницы не может быть прочитано."</string>
@@ -2037,7 +2027,7 @@
     <string name="error_could_not_save_page_edits">"Не удалось сохранить изменения страницы."</string>
     <string name="error_could_not_update_text_recognition_engine">"Не удалось обновить механизм распознавания текста."</string>
     <string name="error_could_not_update_theme_mode">"Не удалось обновить режим темы."</string>
-    <string name="error_could_not_finish_onboarding">"Не удалось завершить регистрацию."</string>
+    <string name="error_could_not_finish_onboarding">"Не удалось завершить настройку."</string>
     <string name="error_could_not_load_settings_content">"Не удалось загрузить содержимое настроек."</string>
     <string name="error_could_not_update_the_save_location">"Не удалось обновить место сохранения."</string>
     <string name="error_could_not_update_model_selection">"Не удалось обновить выбор модели."</string>
@@ -2045,4 +2035,136 @@
     <string name="error_could_not_save_the_exported_file">"Не удалось сохранить экспортированный файл."</string>
     <string name="error_could_not_store_update_prompt_state">"Не удалось сохранить состояние запроса на обновление."</string>
     <string name="error_could_not_check_github_releases">"Не удалось проверить выпуски GitHub."</string>
+    <string name="onboarding_chapter_number">%1$02d %2$s</string>
+    <!-- Split PDF -->
+    <string name="tools_catalog_split">"Разделить"</string>
+    <string name="tools_catalog_cut_into_parts">"Разрезать на части"</string>
+    <string name="pdf_reader_tool_split_into_parts">"Разделить на части"</string>
+    <string name="pdf_split_title">"Разделить PDF"</string>
+    <string name="pdf_split_subtitle">"Разрежьте один PDF на несколько файлов"</string>
+    <string name="pdf_split_step_2">"Шаг 2 из 3 · Где разделить"</string>
+    <string name="pdf_split_mode_custom">"Свои"</string>
+    <string name="pdf_split_mode_every_n">"Каждые N стр."</string>
+    <string name="pdf_split_mode_extract">"Извлечь"</string>
+    <string name="pdf_split_ranges_label">"Введите диапазоны или измените карточки ниже"</string>
+    <string name="pdf_split_ranges_placeholder">"напр. 1-3, 6-8"</string>
+    <string name="pdf_split_ranges_hint">"Разделяйте диапазоны запятыми, напр. 1-3, 6-8"</string>
+    <string name="pdf_split_ranges_error">"Используйте номера страниц и дефисы, напр. 1-3, 6-8"</string>
+    <string name="pdf_split_range_title">"Диапазон %d"</string>
+    <string name="pdf_split_range_from">"Со страницы"</string>
+    <string name="pdf_split_range_to">"по"</string>
+    <string name="pdf_split_remove_range">"Удалить диапазон %d"</string>
+    <string name="pdf_split_range_error">"Укажите страницы от 1 до %d, первая — раньше последней."</string>
+    <string name="pdf_split_add_range">"Добавить диапазон"</string>
+    <string name="pdf_split_pages_included">"Включённые страницы"</string>
+    <string name="pdf_split_not_included">"Не входят ни в один диапазон и не сохранятся: %s"</string>
+    <string name="pdf_split_merge_ranges">"Объединить все диапазоны в один PDF"</string>
+    <string name="pdf_split_merge_ranges_caption">"Выкл.: каждый диапазон — отдельный PDF"</string>
+    <string name="pdf_split_pages_in_each">"Страниц в каждом PDF"</string>
+    <string name="pdf_split_fewer_pages">"Меньше страниц в каждом PDF"</string>
+    <string name="pdf_split_more_pages">"Больше страниц в каждом PDF"</string>
+    <string name="pdf_split_last_shorter">"В последнем %s"</string>
+    <string name="pdf_split_one_per_page">"Один PDF на страницу"</string>
+    <string name="pdf_split_you_get">"Получится %s"</string>
+    <string name="pdf_split_more_parts">"+ ещё %d"</string>
+    <string name="pdf_split_pdf_title">"PDF %d"</string>
+    <string name="pdf_split_pages_label">"Страницы"</string>
+    <string name="pdf_split_save_as">"Сохранить как"</string>
+    <string name="pdf_split_one_pdf">"Один PDF"</string>
+    <string name="pdf_split_one_pdf_caption">"Все выбранные страницы вместе"</string>
+    <string name="pdf_split_separate_pdfs">"Отдельные PDF"</string>
+    <string name="pdf_split_separate_caption">"Один файл на страницу"</string>
+    <string name="pdf_split_keep_rest_caption">"Как ещё один PDF"</string>
+    <string name="pdf_split_extract_button">"Извлечь %1$s · %2$s"</string>
+    <string name="pdf_split_create_one">"Создать 1 PDF · %s"</string>
+    <string name="pdf_split_choose_pages">"Выберите страницы для извлечения"</string>
+    <string name="pdf_split_fix_ranges">"Исправьте диапазоны, чтобы продолжить"</string>
+    <string name="pdf_split_single_page">"В этом PDF всего одна страница — делить нечего."</string>
+    <string name="pdf_split_splitting">"Разделение…"</string>
+    <string name="pdf_split_writing_part">"Запись части %1$d из %2$d"</string>
+    <string name="pdf_split_from_file">"Из %1$s · %2$s"</string>
+    <string name="pdf_split_tap_to_rename">"Нажмите на название, чтобы переименовать"</string>
+    <string name="pdf_split_open_part">"Открыть %s"</string>
+    <string name="pdf_split_one_zip">"Один ZIP"</string>
+    <string name="pdf_split_save_all">"Сохранить все"</string>
+    <string name="pdf_split_share_all">"Поделиться всеми"</string>
+    <string name="pdf_split_output_pages">"%1$s – страницы %2$s"</string>
+    <string name="pdf_split_output_page">"%1$s – страница %2$d"</string>
+    <string name="pdf_split_pages_meta">"Страницы %1$s · %2$s"</string>
+    <string name="pdf_split_page_meta">"Страница %1$d · %2$s"</string>
+    <string name="pdf_split_no_password">"У новых PDF нет пароля."</string>
+    <string name="pdf_split_could_not_split">"Не удалось разделить этот PDF."</string>
+    <plurals name="pdf_split_pdf_count">
+        <item quantity="one">"%d PDF"</item>
+        <item quantity="few">"%d PDF"</item>
+        <item quantity="many">"%d PDF"</item>
+        <item quantity="other">"%d PDF"</item>
+    </plurals>
+    <plurals name="pdf_split_split_into">
+        <item quantity="one">"Разделить на %d PDF"</item>
+        <item quantity="few">"Разделить на %d PDF"</item>
+        <item quantity="many">"Разделить на %d PDF"</item>
+        <item quantity="other">"Разделить на %d PDF"</item>
+    </plurals>
+    <plurals name="pdf_split_keep_rest">
+        <item quantity="one">"Сохранить и остальную %d страницу"</item>
+        <item quantity="few">"Сохранить и остальные %d страницы"</item>
+        <item quantity="many">"Сохранить и остальные %d страниц"</item>
+        <item quantity="other">"Сохранить и остальные %d страницы"</item>
+    </plurals>
+    <plurals name="pdf_split_saved">
+        <item quantity="one">"Сохранён %1$d PDF в %2$s"</item>
+        <item quantity="few">"Сохранено %1$d PDF в %2$s"</item>
+        <item quantity="many">"Сохранено %1$d PDF в %2$s"</item>
+        <item quantity="other">"Сохранено %1$d PDF в %2$s"</item>
+    </plurals>
+    <plurals name="pdf_split_range_count">
+        <item quantity="one">"%d диапазон"</item>
+        <item quantity="few">"%d диапазона"</item>
+        <item quantity="many">"%d диапазонов"</item>
+        <item quantity="other">"%d диапазона"</item>
+    </plurals>
+    <!-- Split a document into documents -->
+    <string name="document_split_title">"Разделить на документы"</string>
+    <string name="document_split_pages_cuts">"%1$s · %2$s"</string>
+    <string name="document_split_every_page">"Каждая страница"</string>
+    <string name="document_split_clear">"Очистить"</string>
+    <string name="document_split_hint">"Нажмите на промежуток между страницами, чтобы разрезать там."</string>
+    <string name="document_split_cut_after">"Разрезать после страницы %d"</string>
+    <string name="document_split_remove_cut">"Убрать разрез после страницы %d"</string>
+    <string name="document_split_part_label">"Часть %1$d · страницы %2$s"</string>
+    <string name="document_split_part_label_single">"Часть %1$d · страница %2$d"</string>
+    <string name="document_split_destination_title">"Новые документы попадут в"</string>
+    <string name="document_split_destination_folder">"Ту же папку, что и оригинал"</string>
+    <string name="document_split_destination_library">"Вашу библиотеку, вне папок"</string>
+    <string name="document_split_keep_original">"Сохранить оригинал"</string>
+    <string name="document_split_keep_original_caption">"Выкл.: он попадёт в «Недавно удалённые»"</string>
+    <string name="document_split_note">"Текст, подписи и правки переносятся вместе со страницами."</string>
+    <string name="document_split_add_cut">"Добавьте разрез, чтобы разделить"</string>
+    <string name="document_split_failed">"Не удалось разделить этот документ."</string>
+    <string name="document_menu_split_into_pdfs">"Разделить на PDF"</string>
+    <plurals name="document_split_cut_count">
+        <item quantity="one">"%d разрез"</item>
+        <item quantity="few">"%d разреза"</item>
+        <item quantity="many">"%d разрезов"</item>
+        <item quantity="other">"%d разреза"</item>
+    </plurals>
+    <plurals name="document_split_create">
+        <item quantity="one">"Создать %d документ"</item>
+        <item quantity="few">"Создать %d документа"</item>
+        <item quantity="many">"Создать %d документов"</item>
+        <item quantity="other">"Создать %d документа"</item>
+    </plurals>
+    <string name="pdf_peek_preview">"Просмотр"</string>
+    <string name="pdf_peek_preview_file">"Просмотр: %1$s"</string>
+    <string name="pdf_peek_read_only">"Только просмотр · ничего не меняется"</string>
+    <string name="pdf_peek_page_of">"Страница %1$d из %2$d"</string>
+    <string name="pdf_peek_opening">"Открываем просмотр…"</string>
+    <string name="pdf_peek_locked">"У этого PDF есть пароль. Сначала разблокируйте его, чтобы посмотреть."</string>
+    <string name="pdf_peek_could_not_open">"Не удалось открыть этот PDF для просмотра."</string>
+    <string name="pdf_peek_close">"Закрыть просмотр"</string>
+    <string name="pdf_peek_tap_hint">"Нажмите на файл, чтобы посмотреть его"</string>
+    <string name="welcome_greeting">Добро пожаловать</string>
+    <string name="welcome_tagline">"Превращайте бумагу в чёткие PDF с поиском по тексту."</string>
+    <string name="welcome_no_language_match">Нет языков по запросу «%1$s»</string>
 </resources>

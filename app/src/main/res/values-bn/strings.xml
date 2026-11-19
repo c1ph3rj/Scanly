@@ -402,7 +402,7 @@
     <string name="page_crop_rotate_left">বাঁদিকে ঘোরান</string>
     <string name="page_crop_find_the_document_corners">ডকুমেন্টের কোণ খুঁজুন</string>
     <string name="page_crop_detecting_2">শনাক্ত করা হচ্ছে…</string>
-    <string name="page_crop_detect_edges_rotate_then_drag">কিনারা শনাক্ত করুন, ঘোরান, তারপর হ্যান্ডেল টেনে ঠিক করুন। প্রয়োগ করতে হয়ে গেছে-তে ট্যাপ করুন।</string>
+    <string name="page_crop_detect_edges_rotate_then_drag">"কিনারা শনাক্ত করুন, ঘোরান, তারপর হ্যান্ডেল টেনে ঠিক করুন। প্রয়োগ করতে “হয়ে গেছে”-তে ট্যাপ করুন।"</string>
     <string name="page_crop_crop_tools">ক্রপ টুল</string>
     <string name="page_crop_page_not_found">পৃষ্ঠা পাওয়া যায়নি।</string>
     <string name="page_crop_crop">ক্রপ</string>
@@ -469,7 +469,7 @@
     <string name="group_detail_documents_already_in_folders_won">যেসব ডকুমেন্ট আগে থেকেই ফোল্ডারে আছে, সেগুলি এখানে দেখাবে না। তার বদলে নতুন একটি তৈরি করুন।</string>
     <string name="group_detail_no_loose_documents">ফোল্ডারের বাইরে কোনো ডকুমেন্ট নেই</string>
     <string name="group_detail_select_all">সব বেছে নিন</string>
-    <string name="group_detail_clear">মুছুন</string>
+    <string name="group_detail_clear">"বাছাই বাতিল"</string>
     <string name="group_detail_select_one_or_more_documents">এক বা একাধিক ডকুমেন্ট বেছে নিন</string>
     <string name="group_detail_nothing_available_to_move">সরানোর মতো কিছু নেই</string>
     <string name="group_detail_move_existing">আগের ডকুমেন্ট সরান</string>
@@ -588,8 +588,8 @@
     <string name="recently_deleted_nothing_here">এখানে কিছু নেই</string>
     <string name="recently_deleted_nothing_in_the_bin_deleted">বিন একদম খালি। মুছে ফেলা জিনিস কয়েক দিন এখানে অপেক্ষা করে।</string>
     <string name="recently_deleted_empty">খালি করুন</string>
-    <string name="recently_deleted_select_none">কিছুই বেছে নেবেন না</string>
-    <string name="recently_deleted_clear_selection">বেছে নেওয়া মুছুন</string>
+    <string name="recently_deleted_select_none">"সব বাছাই বাতিল"</string>
+    <string name="recently_deleted_clear_selection">"বাছাই বাতিল করুন"</string>
     <string name="recently_deleted_recently_deleted">সম্প্রতি মুছে ফেলা</string>
     <!-- RecentlyDeletedViewModel -->
     <string name="recently_deleted_page_restored_to">"পৃষ্ঠা %1$s \"%2$s\"-এ ফিরিয়ে আনা হয়েছে"</string>
@@ -626,23 +626,13 @@
     <!-- OnboardingScreen -->
     <string name="onboarding_no_account_no_cloud_upload">অ্যাকাউন্ট লাগে না। ক্লাউডে আপলোড হয় না।</string>
     <string name="onboarding_continue">চালিয়ে যান</string>
-    <string name="onboarding_get_started">শুরু করুন</string>
+    <string name="onboarding_get_started">আমার প্রথম পৃষ্ঠা স্ক্যান করুন</string>
     <string name="onboarding_page_of_3">"%1$s, পৃষ্ঠা %2$s/3"</string>
     <string name="onboarding_page_of_3_2">"পৃষ্ঠা %1$s/3"</string>
     <string name="onboarding_skip">এড়িয়ে যান</string>
     <string name="onboarding_scanly">Scanly.</string>
     <string name="onboarding_previous_page">আগের পৃষ্ঠা</string>
-    <string name="onboarding_feature_edge_detection">কিনারা নিজে থেকেই শনাক্ত হয়</string>
-    <string name="onboarding_feature_crop_straighten">পৃষ্ঠা ক্রপ করে সোজা করুন</string>
-    <string name="onboarding_feature_filters">ম্যাজিক কালার, হোয়াইটবোর্ড ও আরও অনেক কিছু</string>
-    <string name="onboarding_feature_ocr">ডিভাইসেই টেক্সট শনাক্তকরণ</string>
-    <string name="onboarding_feature_search">সব স্ক্যানে শব্দ সার্চ করুন</string>
-    <string name="onboarding_feature_copy_text">যেকোনো পৃষ্ঠা থেকে টেক্সট কপি করুন</string>
-    <string name="onboarding_feature_multipage_pdf">একাধিক পৃষ্ঠার PDF</string>
-    <string name="onboarding_feature_password">শেয়ারের আগে পাসওয়ার্ড দিয়ে সুরক্ষিত করুন</string>
-    <string name="onboarding_feature_sign">ডকুমেন্টে স্বাক্ষর করুন</string>
-    <string name="onboarding_assurance_offline">পুরোপুরি অফলাইনে কাজ করে।</string>
-    <string name="onboarding_assurance_on_device">আপনার টেক্সট কখনও এই ডিভাইসের বাইরে যায় না।</string>
+    <string name="onboarding_assurance_offline">আপনার ডিভাইসেই প্রক্রিয়াকরণ হয়।</string>
     <!-- Pip -->
     <string name="pip_poke_pip_scanly_s_helper">Scanly-র সহকারী Pip-কে খোঁচা দিন</string>
     <!-- PipBubble -->
@@ -1239,7 +1229,7 @@
     <!-- PdfToolViewModels -->
     <string name="pdf_tool_view_models_saving">সেভ করা হচ্ছে…</string>
     <!-- PdfWatermarkScreen -->
-    <string name="pdf_watermark_the_page">পৃষ্ঠাটিতে</string>
+    <string name="pdf_watermark_the_page">"এই পৃষ্ঠা"</string>
     <string name="pdf_watermark_first_page_only">শুধু প্রথম পৃষ্ঠা</string>
     <string name="pdf_watermark_apply_to">যেখানে প্রয়োগ হবে</string>
     <string name="pdf_watermark_colour">রঙ</string>
@@ -1540,14 +1530,14 @@
     <string name="pdf_import_look_keep_as_is">"যেমন আছে তেমনি রাখুন"</string>
     <string name="pdf_import_look_pages_look_exactly_like_the">"পৃষ্ঠাগুলি দেখতে হুবহু PDF এর মতো৷"</string>
     <string name="pdf_import_look_enhance">"উন্নত করুন"</string>
-    <string name="pdf_import_look_even_out_scanned_pages_and">"এমনকি স্ক্যান করা পৃষ্ঠাগুলি এবং টেক্সট তীক্ষ্ণ করুন"</string>
+    <string name="pdf_import_look_even_out_scanned_pages_and">"স্ক্যান করা পৃষ্ঠার উজ্জ্বলতা সমান করুন এবং টেক্সট তীক্ষ্ণ করুন।"</string>
     <!-- capture_scene_issue -->
-    <string name="capture_scene_issue_lens_may_be_covered_clear">"লেন্স আবৃত হতে পারে. এটি উন্মোচন এবং আবার চেষ্টা করুন."</string>
+    <string name="capture_scene_issue_lens_may_be_covered_clear">"লেন্স ঢাকা থাকতে পারে। এটি পরিষ্কার করে আবার চেষ্টা করুন।"</string>
     <string name="capture_scene_issue_too_dark_add_light_or">"খুব অন্ধকার। আলো যোগ করুন বা ফ্ল্যাশ চালু করুন।"</string>
     <string name="capture_scene_issue_image_looks_blurry_clean_the">"ছবি ঝাপসা দেখায়। লেন্স পরিষ্কার করুন বা ফোকাস করতে আলতো চাপুন।"</string>
     <!-- group_export_action -->
     <string name="group_export_action_merged_pdf_options">"একত্রিত PDF বিকল্পগুলি"</string>
-    <string name="group_export_action_separate_pdfs_options">"PDF ফাইলের বিকল্পগুলি আলাদা করুন৷"</string>
+    <string name="group_export_action_separate_pdfs_options">"আলাদা PDF-এর বিকল্পগুলি"</string>
     <!-- library_sort_option -->
     <string name="library_sort_option_last_modified">"সর্বশেষ সংশোধিত"</string>
     <string name="library_sort_option_latest_changes_first">"প্রথমে সর্বশেষ পরিবর্তন"</string>
@@ -1559,20 +1549,20 @@
     <string name="library_sort_option_newest_created">"নতুন তৈরি"</string>
     <string name="library_sort_option_recently_added_first">"সম্প্রতি প্রথম যোগ করা হয়েছে"</string>
     <string name="library_sort_option_oldest_created">"প্রাচীনতম তৈরি"</string>
-    <string name="library_sort_option_earliest_added_first">"প্রথম প্রথম যোগ করা হয়েছে"</string>
+    <string name="library_sort_option_earliest_added_first">"সবচেয়ে আগে যোগ করা প্রথমে"</string>
     <!-- signature_pen_width -->
     <string name="signature_pen_width_fine">"পাতলা"</string>
     <string name="signature_pen_width_bold">"পুরু"</string>
     <!-- onboarding_page -->
     <string name="onboarding_page_capture">"ক্যাপচার"</string>
-    <string name="onboarding_page_paper_to_polished">"কাগজ থেকে পরিষ্কার স্ক্যান।"</string>
-    <string name="onboarding_page_capture_straighten_and_clean_up">"আপনার পৃষ্ঠাগুলি ক্যাপচার করুন, সোজা করুন এবং পরিষ্কার করুন।"</string>
+    <string name="onboarding_page_paper_to_polished">"কাগজ,\nপরিপাটি করে।"</string>
+    <string name="onboarding_page_capture_straighten_and_clean_up">একটি পৃষ্ঠা স্ক্যান করুন, প্রান্ত সোজা করুন এবং রং ঠিক করুন। স্ক্যান সংরক্ষণের আগে বিবরণ স্পষ্ট রাখুন।</string>
     <string name="onboarding_page_find">"খুঁজুন"</string>
-    <string name="onboarding_page_find_more_than_files">"স্ক্যানের ভিতরেও খুঁজুন।"</string>
-    <string name="onboarding_page_recognize_text_on_your_device">"আপনার ডিভাইসে পাঠ্য শনাক্ত করুন। আপনার স্ক্যান ভিতরে অনুসন্ধান করুন."</string>
-    <string name="onboarding_page_share">"শেয়ার করুন"</string>
-    <string name="onboarding_page_ready_when_you_are">"আপনি প্রস্তুত হলেই তৈরি।"</string>
-    <string name="onboarding_page_keep_pages_together_share_a">"পৃষ্ঠাগুলি একসাথে রাখুন। কয়েকটি ট্যাপে একটি পরিষ্কার PDF শেয়ার করুন।"</string>
+    <string name="onboarding_page_find_more_than_files">"শব্দ খুঁজুন।\nপৃষ্ঠা খুঁজুন।"</string>
+    <string name="onboarding_page_recognize_text_on_your_device">আপনার ডিভাইসেই লেখা শনাক্ত করুন, তারপর স্ক্যানের ভেতরের শব্দ খুঁজুন। প্রতিটি নথি আবার না পড়েই প্রয়োজনীয় পৃষ্ঠা খুঁজে নিন।</string>
+    <string name="onboarding_page_share">শেষ করুন</string>
+    <string name="onboarding_page_ready_when_you_are">"পাঠানোর জন্য\nপ্রস্তুত করুন।"</string>
+    <string name="onboarding_page_keep_pages_together_share_a">আপনার পৃষ্ঠাগুলি একটি PDF-এ রাখুন। প্রয়োজনে স্বাক্ষর বা পাসওয়ার্ড যোগ করুন, তারপর কয়েকটি ট্যাপেই নথি শেয়ার করুন।</string>
     <!-- pdf_reader_tool -->
     <string name="pdf_reader_tool_merge_with_other_pdfs">"অন্যান্য PDF ফাইলের সাথে মার্জ করুন"</string>
     <string name="pdf_reader_tool_password_protect">"পাসওয়ার্ড সুরক্ষা"</string>
@@ -1678,7 +1668,7 @@
     <string name="tools_catalog_scan_or_create">"স্ক্যান বা তৈরি করুন"</string>
     <string name="tools_catalog_qr_barcode">"QR এবং বারকোড"</string>
     <!-- pip_lines -->
-    <string name="pip_lines_tip_folders_keep_related_scans">"টিপ: ফোল্ডারগুলি সম্পর্কিত স্ক্যানগুলিকে একসাথে রাখে। রসিদ জন্য একটি চেষ্টা করুন."</string>
+    <string name="pip_lines_tip_folders_keep_related_scans">"টিপ: ফোল্ডারগুলি সম্পর্কিত স্ক্যানগুলিকে একসাথে রাখে। রসিদের জন্য একটি চেষ্টা করুন।"</string>
     <string name="pip_lines_tip_turn_on_the_grid">"টিপ: পৃষ্ঠাগুলি সারিবদ্ধ করতে ক্যামেরায় গ্রিড চালু করুন।"</string>
     <string name="pip_lines_tip_add_a_scanly_widget">"টিপ: এক-ট্যাপ স্ক্যানের জন্য আপনার হোম স্ক্রিনে একটি Scanly উইজেট যোগ করুন।"</string>
     <string name="pip_lines_tip_the_tools_tab_can">"টিপ: টুলস ট্যাব PDF একত্রিত করতে, সংকুচিত করতে এবং সাইন করতে পারে।"</string>
@@ -1690,7 +1680,7 @@
     <string name="pip_lines_i_m_open_source_you">"আমার সোর্স কোড খোলা আছে. আপনি এটির প্রতিটি লাইন পড়তে পারেন।"</string>
     <string name="pip_lines_your_original_photos_are_kept">"আপনার আসল ফটোগুলি রাখা হয়, তাই সম্পাদনাগুলি সর্বদা পূর্বাবস্থায় ফিরে যেতে পারে৷"</string>
     <string name="pip_lines_i_live_on_your_phone">"আমি আপনার ফোনে কাজ করি। আপনার স্ক্যানগুলি কখনই সার্ভারে যায় না।"</string>
-    <string name="pip_lines_hey_that_tickles">"আরে! যে সুড়সুড়ি"</string>
+    <string name="pip_lines_hey_that_tickles">"আরে! সুড়সুড়ি লাগছে।"</string>
     <!-- pdf_watermark -->
     <string name="pdf_watermark_for_kyc_use_only">For KYC use only</string>
     <!-- document_presentation_formatter -->
@@ -1716,8 +1706,8 @@
     <string name="pip_lines_pick_a_few_photos_and">"কিছু ফটো বাছাই করুন এবং দেখা যাক ডিটেক্টরগুলি কত দ্রুত কাজ করে!"</string>
     <string name="pip_lines_hmm_i_don_t_have">"হুম, আমার কাছে এর কোনো উত্তর নেই।"</string>
     <string name="pip_lines_no_codes_yet_scan_or">"এখনও কোন কোড নেই. স্ক্যান করুন বা একটি তৈরি করুন এবং আমি এটি এখানে রাখব।"</string>
-    <string name="pip_lines_nothing_matches_that_try_another">"কিছুই যে মেলে না. অন্য শব্দ চেষ্টা?"</string>
-    <string name="pip_lines_i_m_still_reading_some">"আমি এখনও কিছু পৃষ্ঠা পড়ছি। ম্যাচগুলি এক সেকেন্ডের মধ্যে চালু হতে পারে।"</string>
+    <string name="pip_lines_nothing_matches_that_try_another">"কিছুই মেলেনি। অন্য শব্দ দিয়ে চেষ্টা করবেন?"</string>
+    <string name="pip_lines_i_m_still_reading_some">"আমি এখনও কিছু পৃষ্ঠা পড়ছি। একটু পরেই মিল দেখা যেতে পারে।"</string>
     <string name="pip_lines_i_can_t_see_a">"আমি এখনও একটি জিনিস দেখতে পাচ্ছি না. আমি কি ক্যামেরা ধার করতে পারি?"</string>
     <string name="pip_lines_the_camera_is_switched_off">"Scanly এর জন্য ক্যামেরা বন্ধ করা হয়েছে৷ সেটিংসে একটি দ্রুত ট্রিপ এটিকে ঠিক করে।"</string>
     <string name="pip_lines_lend_me_the_camera_and">"আমাকে ক্যামেরা ধার দিন এবং আমি আপনার জন্য কোডটি পড়ব।"</string>
@@ -1778,7 +1768,7 @@
         <item quantity="one">"%dটি পৃষ্ঠার লেখা পড়া হচ্ছে। নতুন মিল এখানে দেখা যাবে।"</item>
         <item quantity="other">"%dটি পৃষ্ঠার লেখা পড়া হচ্ছে। নতুন মিল এখানে দেখা যাবে।"</item>
     </plurals>
-    <string name="library_search_matches_in_documents">"%1$s মধ্যে %2$s"</string>
+    <string name="library_search_matches_in_documents">"%2$s-এর মধ্যে %1$s"</string>
     <plurals name="search_filters_show_results">
         <item quantity="one">"%dটি ফলাফল দেখান"</item>
         <item quantity="other">"%dটি ফলাফল দেখান"</item>
@@ -1795,7 +1785,7 @@
     <string name="settings_could_not_calibrate_models">"এই ডিভাইসে নথির মডেলগুলি ক্যালিব্রেট করা যায়নি৷"</string>
     <!-- Recently deleted -->
     <string name="recently_deleted_long_press_for_options">"আরও বিকল্পের জন্য একটি আইটেম দীর্ঘক্ষণ প্রেস করুন।"</string>
-    <string name="recently_deleted_retention_note">"%1$s, %2$s এর জন্য নথি এবং ফোল্ডারগুলির জন্য পৃষ্ঠাগুলি রাখা হয়৷ এর পরে তারা স্থায়ীভাবে মুছে ফেলা হয়।"</string>
+    <string name="recently_deleted_retention_note">"পৃষ্ঠাগুলি %1$s, নথি ও ফোল্ডারগুলি %2$s পর্যন্ত রাখা হয়। এরপর সেগুলি স্থায়ীভাবে মুছে ফেলা হয়।"</string>
     <plurals name="recently_deleted_restored_items">
         <item quantity="one">"%dটি আইটেম ফিরিয়ে আনা হয়েছে"</item>
         <item quantity="other">"%dটি আইটেম ফিরিয়ে আনা হয়েছে"</item>
@@ -1828,7 +1818,7 @@
     <string name="model_benchmark_gate_prefix">"নথি যাচাই: %1$s"</string>
     <string name="model_benchmark_unavailable">"অনুপলব্ধ"</string>
     <!-- Error messages shown in snackbars and dialogs -->
-    <string name="error_document_not_found">"ডকুমেন্ট পাওয়া যায়নি।"</string>
+    <string name="error_document_not_found">"নথি পাওয়া যায়নি।"</string>
     <string name="error_group_not_found">"গ্রুপ পাওয়া যায়নি."</string>
     <string name="error_no_documents_in_group">"গ্রুপে কোন নথি নেই।"</string>
     <string name="error_no_pages_available_to_export">"রপ্তানির জন্য কোন পৃষ্ঠা উপলব্ধ নেই।"</string>
@@ -1991,4 +1981,122 @@
     <string name="error_could_not_save_the_exported_file">"এক্সপোর্ট করা ফাইলটি সেভ করা যায়নি।"</string>
     <string name="error_could_not_store_update_prompt_state">"আপডেট প্রম্পট অবস্থা সংরক্ষণ করা যায়নি।"</string>
     <string name="error_could_not_check_github_releases">"GitHub রিলিজ চেক করা যায়নি।"</string>
+    <string name="onboarding_chapter_number">%1$02d %2$s</string>
+    <!-- Split PDF -->
+    <string name="tools_catalog_split">"ভাগ করুন"</string>
+    <string name="tools_catalog_cut_into_parts">"অংশে কাটুন"</string>
+    <string name="pdf_reader_tool_split_into_parts">"অংশে ভাগ করুন"</string>
+    <string name="pdf_split_title">"PDF ভাগ করুন"</string>
+    <string name="pdf_split_subtitle">"একটি PDF-কে ছোট ছোট PDF-এ কাটুন"</string>
+    <string name="pdf_split_step_2">"ধাপ 2/3 · কোথায় ভাগ করবেন"</string>
+    <string name="pdf_split_mode_custom">"কাস্টম"</string>
+    <string name="pdf_split_mode_every_n">"প্রতি N পৃষ্ঠায়"</string>
+    <string name="pdf_split_mode_extract">"বের করুন"</string>
+    <string name="pdf_split_ranges_label">"রেঞ্জ লিখুন বা নিচের কার্ড সম্পাদনা করুন"</string>
+    <string name="pdf_split_ranges_placeholder">"যেমন 1-3, 6-8"</string>
+    <string name="pdf_split_ranges_hint">"কমা দিয়ে রেঞ্জ আলাদা করুন, যেমন 1-3, 6-8"</string>
+    <string name="pdf_split_ranges_error">"পৃষ্ঠা নম্বর ও ড্যাশ ব্যবহার করুন, যেমন 1-3, 6-8"</string>
+    <string name="pdf_split_range_title">"রেঞ্জ %d"</string>
+    <string name="pdf_split_range_from">"পৃষ্ঠা থেকে"</string>
+    <string name="pdf_split_range_to">"পর্যন্ত"</string>
+    <string name="pdf_split_remove_range">"রেঞ্জ %d সরান"</string>
+    <string name="pdf_split_range_error">"1 থেকে %d পৃষ্ঠা ব্যবহার করুন, প্রথম পৃষ্ঠা শেষের আগে থাকবে।"</string>
+    <string name="pdf_split_add_range">"রেঞ্জ যোগ করুন"</string>
+    <string name="pdf_split_pages_included">"অন্তর্ভুক্ত পৃষ্ঠা"</string>
+    <string name="pdf_split_not_included">"কোনো রেঞ্জে নেই, তাই সেভ হবে না: %s"</string>
+    <string name="pdf_split_merge_ranges">"সব রেঞ্জ এক PDF-এ মেলান"</string>
+    <string name="pdf_split_merge_ranges_caption">"বন্ধ: প্রতিটি রেঞ্জ আলাদা PDF"</string>
+    <string name="pdf_split_pages_in_each">"প্রতি PDF-এ পৃষ্ঠা"</string>
+    <string name="pdf_split_fewer_pages">"প্রতি PDF-এ কম পৃষ্ঠা"</string>
+    <string name="pdf_split_more_pages">"প্রতি PDF-এ বেশি পৃষ্ঠা"</string>
+    <string name="pdf_split_last_shorter">"শেষটিতে %s আছে"</string>
+    <string name="pdf_split_one_per_page">"প্রতি পৃষ্ঠায় একটি PDF"</string>
+    <string name="pdf_split_you_get">"আপনি পাবেন %s"</string>
+    <string name="pdf_split_more_parts">"+ আরও %d"</string>
+    <string name="pdf_split_pdf_title">"PDF %d"</string>
+    <string name="pdf_split_pages_label">"পৃষ্ঠা"</string>
+    <string name="pdf_split_save_as">"এভাবে সেভ করুন"</string>
+    <string name="pdf_split_one_pdf">"একটি PDF"</string>
+    <string name="pdf_split_one_pdf_caption">"বাছাই করা সব পৃষ্ঠা একসাথে"</string>
+    <string name="pdf_split_separate_pdfs">"আলাদা PDF"</string>
+    <string name="pdf_split_separate_caption">"প্রতি পৃষ্ঠায় একটি ফাইল"</string>
+    <string name="pdf_split_keep_rest_caption">"আরেকটি PDF হিসেবে"</string>
+    <string name="pdf_split_extract_button">"%1$s বের করুন · %2$s"</string>
+    <string name="pdf_split_create_one">"1টি PDF তৈরি করুন · %s"</string>
+    <string name="pdf_split_choose_pages">"বের করার পৃষ্ঠা বাছুন"</string>
+    <string name="pdf_split_fix_ranges">"চালিয়ে যেতে রেঞ্জ ঠিক করুন"</string>
+    <string name="pdf_split_single_page">"এই PDF-এ মাত্র একটি পৃষ্ঠা, তাই ভাগ করার কিছু নেই।"</string>
+    <string name="pdf_split_splitting">"ভাগ করা হচ্ছে…"</string>
+    <string name="pdf_split_writing_part">"%2$d-এর মধ্যে অংশ %1$d লেখা হচ্ছে"</string>
+    <string name="pdf_split_from_file">"%1$s থেকে · %2$s"</string>
+    <string name="pdf_split_tap_to_rename">"নাম বদলাতে নামে ট্যাপ করুন"</string>
+    <string name="pdf_split_open_part">"%s খুলুন"</string>
+    <string name="pdf_split_one_zip">"একটি ZIP"</string>
+    <string name="pdf_split_save_all">"সব সেভ করুন"</string>
+    <string name="pdf_split_share_all">"সব শেয়ার করুন"</string>
+    <string name="pdf_split_output_pages">"%1$s – পৃষ্ঠা %2$s"</string>
+    <string name="pdf_split_output_page">"%1$s – পৃষ্ঠা %2$d"</string>
+    <string name="pdf_split_pages_meta">"পৃষ্ঠা %1$s · %2$s"</string>
+    <string name="pdf_split_page_meta">"পৃষ্ঠা %1$d · %2$s"</string>
+    <string name="pdf_split_no_password">"নতুন PDF-গুলোর কোনো পাসওয়ার্ড নেই।"</string>
+    <string name="pdf_split_could_not_split">"এই PDF ভাগ করা যায়নি।"</string>
+    <plurals name="pdf_split_pdf_count">
+        <item quantity="one">"%dটি PDF"</item>
+        <item quantity="other">"%dটি PDF"</item>
+    </plurals>
+    <plurals name="pdf_split_split_into">
+        <item quantity="one">"%dটি PDF-এ ভাগ করুন"</item>
+        <item quantity="other">"%dটি PDF-এ ভাগ করুন"</item>
+    </plurals>
+    <plurals name="pdf_split_keep_rest">
+        <item quantity="one">"বাকি %dটি পৃষ্ঠাও সেভ করুন"</item>
+        <item quantity="other">"বাকি %dটি পৃষ্ঠাও সেভ করুন"</item>
+    </plurals>
+    <plurals name="pdf_split_saved">
+        <item quantity="one">"%1$dটি PDF %2$s-এ সেভ হয়েছে"</item>
+        <item quantity="other">"%1$dটি PDF %2$s-এ সেভ হয়েছে"</item>
+    </plurals>
+    <plurals name="pdf_split_range_count">
+        <item quantity="one">"%dটি রেঞ্জ"</item>
+        <item quantity="other">"%dটি রেঞ্জ"</item>
+    </plurals>
+    <!-- Split a document into documents -->
+    <string name="document_split_title">"একাধিক নথিতে ভাগ করুন"</string>
+    <string name="document_split_pages_cuts">"%1$s · %2$s"</string>
+    <string name="document_split_every_page">"প্রতিটি পৃষ্ঠা"</string>
+    <string name="document_split_clear">"মুছুন"</string>
+    <string name="document_split_hint">"সেখানে কাটতে দুটি পৃষ্ঠার মাঝের ফাঁকে ট্যাপ করুন।"</string>
+    <string name="document_split_cut_after">"পৃষ্ঠা %d-এর পরে কাটুন"</string>
+    <string name="document_split_remove_cut">"পৃষ্ঠা %d-এর পরের কাট সরান"</string>
+    <string name="document_split_part_label">"অংশ %1$d · পৃষ্ঠা %2$s"</string>
+    <string name="document_split_part_label_single">"অংশ %1$d · পৃষ্ঠা %2$d"</string>
+    <string name="document_split_destination_title">"নতুন নথি যাবে"</string>
+    <string name="document_split_destination_folder">"মূলটির একই ফোল্ডারে"</string>
+    <string name="document_split_destination_library">"আপনার লাইব্রেরিতে, ফোল্ডারের বাইরে"</string>
+    <string name="document_split_keep_original">"মূল নথি রাখুন"</string>
+    <string name="document_split_keep_original_caption">"বন্ধ: এটি সম্প্রতি মুছে ফেলা আইটেমে যাবে"</string>
+    <string name="document_split_note">"পৃষ্ঠার লেখা, স্বাক্ষর ও সম্পাদনা প্রতিটি পৃষ্ঠার সাথে যায়।"</string>
+    <string name="document_split_add_cut">"ভাগ করতে একটি কাট যোগ করুন"</string>
+    <string name="document_split_failed">"এই নথি ভাগ করা যায়নি।"</string>
+    <string name="document_menu_split_into_pdfs">"একাধিক PDF-এ ভাগ করুন"</string>
+    <plurals name="document_split_cut_count">
+        <item quantity="one">"%dটি কাট"</item>
+        <item quantity="other">"%dটি কাট"</item>
+    </plurals>
+    <plurals name="document_split_create">
+        <item quantity="one">"%dটি নথি তৈরি করুন"</item>
+        <item quantity="other">"%dটি নথি তৈরি করুন"</item>
+    </plurals>
+    <string name="pdf_peek_preview">"প্রিভিউ"</string>
+    <string name="pdf_peek_preview_file">"%1$s প্রিভিউ করুন"</string>
+    <string name="pdf_peek_read_only">"শুধু প্রিভিউ · কিছুই বদলাবে না"</string>
+    <string name="pdf_peek_page_of">"পৃষ্ঠা %1$d / %2$d"</string>
+    <string name="pdf_peek_opening">"প্রিভিউ খোলা হচ্ছে…"</string>
+    <string name="pdf_peek_locked">"এই PDF-এ পাসওয়ার্ড আছে। প্রিভিউ দেখতে আগে আনলক করুন।"</string>
+    <string name="pdf_peek_could_not_open">"প্রিভিউর জন্য এই PDF খোলা যায়নি।"</string>
+    <string name="pdf_peek_close">"প্রিভিউ বন্ধ করুন"</string>
+    <string name="pdf_peek_tap_hint">"প্রিভিউ দেখতে একটি ফাইলে ট্যাপ করুন"</string>
+    <string name="welcome_greeting">স্বাগতম</string>
+    <string name="welcome_tagline">কাগজকে পরিষ্কার, খোঁজা যায় এমন PDF-এ বদলে নিন।</string>
+    <string name="welcome_no_language_match">“%1$s”-এর সাথে মেলে এমন কোনো ভাষা নেই</string>
 </resources>

@@ -1,22 +1,23 @@
 ﻿# Screens and ViewModels
 
-Every feature screen in Scanly **v1.0.20** and its responsibilities.
+Every feature screen in Scanly **v1.0.21** and its responsibilities.
 
 ## Screen inventory
 
 | Feature | Screen | ViewModel | Route | Primary responsibilities |
 | --- | --- | --- | --- | --- |
-| Onboarding | `OnboardingScreen` | `OnboardingViewModel` | (gate in MainActivity) | First-run intro, then a camera-permission step when the camera is not yet allowed; persist completion |
+| Onboarding | `WelcomeScreen`, `OnboardingScreen` (in `OnboardingFlow`) | `OnboardingViewModel` | (gate in MainActivity) | Welcome screen with app language choice, three-page intro, then a camera-permission step when the camera is not yet allowed; persist completion |
 | Home | `HomeScreen` | `HomeViewModel` | `home` | Recent folders and documents (shimmer placeholders until the first load), scan/import/folder, suggest names, daily Pip tip, library shortcut |
 | Widgets / shortcuts | (system chrome) | `LaunchActionViewModel` | via `MainActivity` intents | Scan, Import, QR, Library redirects |
 | Library | `LibraryScreen` | `LibraryViewModel` | `library` | Paper cards, overflow/long-press actions, search, filter pills, sort, CRUD, suggest names |
 | Library search | `LibrarySearchScreen` | `LibrarySearchViewModel` | `library/search` | Search names and page text, recent searches, type filters, ranked excerpts |
 | Extracted text | `PageTextScreen` | `PageTextViewModel` | `document/{documentId}/text` | Read or correct recognized text; copy/share; show text regions on the scan |
-| Tools hub | `ToolsScreen` | `ToolsViewModel` | `tools` | Scan / PDF / Utilities groups; Utilities: QR & barcode (opens straight into scanning), Image to text, My signatures |
+| Tools hub | `ToolsScreen` | `ToolsViewModel` | `tools` | Scan / PDF / Utilities groups; inset transparent 2.5D tool artwork inside rounded outlines without tinted fills (`ToolIllustrations.kt`, `tools_art_*.webp`), including document-based Merge / Split; Utilities: QR & barcode (opens straight into scanning), Image to text, My signatures |
 | Image to text | `ImageTextRoute` (reuses `PdfFilePickerScreen`) | `ImageTextViewModel` | `tools/text` | Photos → new document → Extracted text; scans open their Extracted text directly |
 | QR tool | `QrToolScreen` (+ `QrScanScreen`, `QrResultScreen`, `QrCreateScreen`, `QrHistoryScreen`) | `QrToolViewModel` | `tools/qr` | Scan with torch and photo import, typed results, Create types with caption and ink, on-phone history |
 | PDF reader | `PdfReaderRoute` | `PdfReaderViewModel` | `tools/pdf/reader` | Picker step, dark reader with one page counter, hideable chrome, Pages grid, Layout; ⋮ menu (`PdfReaderOverflowMenu`) with Share, All pages, hand-off to each PDF tool, Open another PDF; also the target of Open in Scanly |
 | PDF merge | `PdfMergeRoute` | `PdfMergeViewModel` | `tools/pdf/merge` | Multi-select picker → order & name → done |
+| PDF split | `PdfSplitRoute` | `PdfSplitViewModel` | `tools/pdf/split` | Single picker → where to split (Custom / Every N / Extract, plan in `PdfSplitPlan.kt`) → working → done (rename, save as PDFs or ZIP, share) |
 | PDF compress | `PdfCompressRoute` | `PdfCompressViewModel` | `tools/pdf/compress` | Picker → quality → working → done with saving and before/after |
 | PDF password | `PdfPasswordRoute` | `PdfPasswordViewModel` | `tools/pdf/password` | Picker → Add password (strength, restrict editing) or Remove password, chosen by the file → done |
 | PDF watermark | `PdfWatermarkRoute` | `PdfWatermarkViewModel` | `tools/pdf/watermark` | Picker → editor with pinned live preview (presets, date, style, colour, pages) → done |
@@ -26,7 +27,8 @@ Every feature screen in Scanly **v1.0.20** and its responsibilities.
 | Saved signatures | `SignatureManageRoute` | `SignatureManageViewModel` | `signatures/manage` | Review and delete saved signatures or initials |
 | Create signature | `SignatureCreateRoute` | `SignatureCreateViewModel` | `signatures/create?kind={kind}` | Draw a signature/initials or extract ink from an imported photo |
 | Group detail | `GroupDetailScreen` | `GroupDetailViewModel` | `group/{groupId}` | Membership (Add documents sheet with cover thumbnails and edited dates), rename, delete, group export, create doc in group |
-| Document detail | `DocumentDetailScreen` | `DocumentDetailViewModel` | `document/{documentId}` | Portrait page tiles, tap-to-review, long-press reorder, rename, import, export/save, move to group |
+| Document detail | `DocumentDetailScreen` | `DocumentDetailViewModel` | `document/{documentId}` | Portrait page tiles, tap-to-review, long-press reorder, rename, import, export/save, move to group; ⋮ also opens Split into documents and the PDF tools with this document as `?source=` |
+| Split into documents | `DocumentSplitRoute` | `DocumentSplitViewModel` | `document/{documentId}/split` | Cut grid → `SplitDocumentUseCase` → `DocumentSplitRepository` copies pages, `page_texts` and `page_markups` into new documents; optional move of the original to Recently deleted |
 | Scan session | `ScanSessionScreen` | `ScanSessionViewModel` | `camera/session/{docId}` | Camera permission (ask first), CameraX, gate + multi-model overlay, stability, auto-capture, finalize |
 | Page preview | `PageImagePreviewScreen` | `PageImagePreviewViewModel` | `preview/page/{pageId}` | Image-only paging, zoom, share/edit/retake/delete overflow |
 | Page editor | `PageEditorScreen` | `PageEditorViewModel` | `editor/page/{pageId}` | Opens filter/adjust/crop; retake, delete |

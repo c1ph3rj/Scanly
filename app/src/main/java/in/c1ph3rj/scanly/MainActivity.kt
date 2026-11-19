@@ -34,7 +34,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -86,8 +89,12 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         // Rebind home-screen widgets with the current device UI mode so icons
-        // and labels stay visible after theme changes and process restarts.
-        ScanlyWidgetSupport.refreshAll(this)
+        // and labels stay visible after theme changes and process restarts. Off the main
+        // thread: it is several calls to the widget service, and the first frame is waiting.
+        val appContext = applicationContext
+        lifecycleScope.launch(kotlinx.coroutines.Dispatchers.Default) {
+            ScanlyWidgetSupport.refreshAll(appContext)
+        }
         setContent {
             AppLocaleProvider {
                 ScanlyApp(
@@ -142,6 +149,7 @@ private fun ScanlyApp(
 
     var pendingPdfUri by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf<String?>(null) }
     var coldStartPdfHandled by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf(false) }
+    var startFirstScan by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(launchActionViewModel, coldStartIntent) {
         launchActionViewModel.onColdStartIntent(coldStartIntent)
@@ -266,6 +274,9 @@ private fun ScanlyApp(
             pureBlack = pureBlackEnabled,
         ) {
             Scaffold(
+                // Lets UiAutomator (baseline profile generation, benchmarks) find composables
+                // by their test tags.
+                modifier = Modifier.semantics { testTagsAsResourceId = true },
                 snackbarHost = {
                     FlexibleUpdateSnackbarHost(
                         hostState = flexibleUpdateSnackbarHostState,
@@ -304,7 +315,14 @@ private fun ScanlyApp(
 
                             OnboardingStatus.REQUIRED -> OnboardingFlow(
                                 uiState = onboardingUiState,
-                                onComplete = onboardingViewModel::completeOnboarding,
+                                onComplete = {
+                                    startFirstScan = false
+                                    onboardingViewModel.completeOnboarding()
+                                },
+                                onStartScan = {
+                                    startFirstScan = pendingPdfUri == null
+                                    onboardingViewModel.completeOnboarding()
+                                },
                                 onDismissError = onboardingViewModel::dismissError,
                             )
 
@@ -342,6 +360,11 @@ private fun ScanlyApp(
                                         }
                                     }
                                     yield()
+                                    if (startFirstScan) {
+                                        startFirstScan = false
+                                        // Explicit incoming files/shortcut destinations retain priority.
+                                        if (pendingPdfUri == null) launchActionViewModel.requestOnboardingScan()
+                                    }
                                     launchActionViewModel.onAppReady()
                                 }
                             }

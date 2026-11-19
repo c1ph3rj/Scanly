@@ -47,6 +47,8 @@ class BookAwareCornerResolver @Inject constructor(
     ): CornerResolution {
         // Saved pages must come out the same on every import; live frames favour speed.
         val reproducible = readiness == QuadReadiness.STILL_PROCESS
+        // One luma read per frame, shared by the gutter analysis and the tightener of both models.
+        val frame = FrameContext(bitmap)
         val primaryRaw = runCatching { detector.detect(bitmap, selectedModel, reproducible) }
             .recoverCatching { error ->
                 // Fall back to Accurate (YOLO-pose) for maximum compatibility.
@@ -54,7 +56,7 @@ class BookAwareCornerResolver @Inject constructor(
                 detector.detect(bitmap, DocumentCornerModel.ACCURATE, reproducible)
             }
             .getOrThrow()
-        val primary = prepareCandidate(bitmap, primaryRaw, readiness)
+        val primary = prepareCandidate(frame, primaryRaw, readiness)
         val needsVerification = primary.refinement?.kind?.let { it != BookPageRefinementKind.NONE } == true ||
             primary.refinement?.evidence?.hasPossibleGutter() == true ||
             CornerCandidatePolicy.needsAccurateVerification(primary.result, readiness)
@@ -65,7 +67,7 @@ class BookAwareCornerResolver @Inject constructor(
 
         val highRaw = runCatching { detector.detect(bitmap, DocumentCornerModel.HIGH, reproducible) }
             .getOrNull() ?: return primary.toResolution()
-        val high = prepareCandidate(bitmap, highRaw, readiness)
+        val high = prepareCandidate(frame, highRaw, readiness)
         val combinedTiming = primaryRaw.timing + highRaw.timing
         val chosen = choose(primary, high, readiness)
         return chosen.copy(
@@ -77,11 +79,14 @@ class BookAwareCornerResolver @Inject constructor(
     }
 
     private fun prepareCandidate(
-        bitmap: Bitmap,
-        raw: CornerDetectionResult,
+        frame: FrameContext,
+        detected: CornerDetectionResult,
         readiness: QuadReadiness,
     ): Candidate {
-        val readyQuad = raw.quad?.takeIf { DocumentQuadPolicy.isReady(it, readiness) }
+        // The resolver owns the bitmap, so its aspect is authoritative for every copy below.
+        val aspect = frame.aspectRatio
+        val raw = detected.copy(frameAspectRatio = aspect)
+        val readyQuad = raw.quad?.takeIf { DocumentQuadPolicy.isReady(it, readiness, aspect) }
             ?: return Candidate(raw.copy(quad = null), null)
 
         // Offline import/capture finalize should match Model Benchmark: trust model corners.
@@ -90,15 +95,15 @@ class BookAwareCornerResolver @Inject constructor(
             return Candidate(raw.copy(quad = readyQuad), refinement = null)
         }
 
-        val refinement = BookPageQuadAnalyzer.analyze(bitmap, readyQuad)
+        val refinement = BookPageQuadAnalyzer.analyze(frame.grid, readyQuad, aspect)
         val refinedQuad = refinement.quad ?: return Candidate(raw.copy(quad = null), refinement)
         // Snap oversize model boxes inward onto stronger page edges (keyboard/desk overshoot).
         val tightened = DocumentQuadTightener.refine(
-            bitmap = bitmap,
+            grid = frame.grid,
             quad = refinedQuad,
             boundarySupport = refinement.evidence.boundarySupport,
-        ).takeIf { DocumentQuadPolicy.isReady(it, readiness) }
-            ?: refinedQuad.takeIf { DocumentQuadPolicy.isReady(it, readiness) }
+        ).takeIf { DocumentQuadPolicy.isReady(it, readiness, aspect) }
+            ?: refinedQuad.takeIf { DocumentQuadPolicy.isReady(it, readiness, aspect) }
         return Candidate(
             result = raw.copy(quad = tightened),
             refinement = refinement,
@@ -173,6 +178,12 @@ class BookAwareCornerResolver @Inject constructor(
     private fun BookPageVisualEvidence.hasPossibleGutter(): Boolean =
         strongestInteriorSupport >= POSSIBLE_GUTTER_SUPPORT &&
             strongestInteriorSupport >= medianInteriorSupport + POSSIBLE_GUTTER_PROMINENCE
+
+    /** Per-frame data; the luma grid is only read when the live path needs it. */
+    private class FrameContext(bitmap: Bitmap) {
+        val aspectRatio: Float = bitmap.frameAspectRatio
+        val grid: LumaGrid by lazy(LazyThreadSafetyMode.NONE) { bitmap.toLumaGrid() }
+    }
 
     private data class Candidate(
         val result: CornerDetectionResult,

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feedback_title">发送反馈</string>
+    <string name="feedback_summary">建议、问题或任何其他想法</string>
+    <string name="feedback_description">通过电子邮件向开发者分享您的想法。</string>
+    <string name="feedback_type">类型</string>
+    <string name="feedback_suggestion">建议</string>
+    <string name="feedback_issue">问题</string>
+    <string name="feedback_other">其他</string>
+    <string name="feedback_subject">主题（可选）</string>
+    <string name="feedback_message">消息</string>
+    <string name="feedback_character_count">%1$d / %2$d 个字符</string>
+    <string name="feedback_email_note">在邮件应用中检查并发送。包含应用和 Android 版本。</string>
+    <string name="feedback_send">继续到邮件</string>
+    <string name="feedback_copy">复制文字</string>
+    <string name="feedback_no_email">没有可用的邮件应用。请复制草稿并通过网页邮箱发送。</string>
+    <string name="feedback_copied">草稿已复制</string>
+    <string name="feedback_app_details">Scanly %1$s (%2$d) · Android %3$s</string>
+    <string name="rating_unavailable">无法打开 Google Play 或浏览器。请重试。</string>
+    <string name="feedback_attachments_title">图片（可选）</string>
+    <string name="feedback_attachment_limits">最多 %1$d 张图片。每张优化至 %2$s 或更小（总计 %3$s）。</string>
+    <string name="feedback_add_images">添加图片</string>
+    <string name="feedback_preparing_images">正在准备图片…</string>
+    <string name="feedback_attachment_summary">%1$d / %2$d 张图片 · 共 %3$s</string>
+    <string name="feedback_image_label">图片 %1$d</string>
+    <string name="feedback_remove_image">移除图片 %1$d</string>
+    <string name="feedback_image_limit">最多可附加 %1$d 张图片。</string>
+    <string name="feedback_image_failed">部分图片无法添加。请使用不超过 40 MB 的可读取图片。</string>
+    <string name="feedback_missing_images">一张图片已不可用。请移除后重新添加。</string>
+    <string name="feedback_copy_images_note">文字已复制。请在邮件应用中单独附加图片。</string>
+    <string name="feedback_close_preview">关闭预览</string>
+    <string name="feedback_sent_title">您发送反馈了吗？</string>
+    <string name="feedback_sent_message">如果您已发送邮件，我们可以清空并关闭此表单。如果还没有，请保留草稿，以便稍后继续。</string>
+    <string name="feedback_sent_yes">是的，已发送</string>
+    <string name="feedback_sent_not_yet">还没有</string>
+</resources>

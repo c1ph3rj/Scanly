@@ -1,5 +1,6 @@
 package `in`.c1ph3rj.scanly.feature.tools.pdf
 
+import androidx.compose.material.icons.outlined.SwapHoriz
 import `in`.c1ph3rj.scanly.core.common.appPluralString
 import android.content.ActivityNotFoundException
 import android.content.Intent
@@ -305,7 +306,21 @@ private fun ColumnScope.PagesStep(
         }
     }
 
+    var showPreview by rememberSaveable { mutableStateOf(false) }
+    val previewSource = uiState.source
+    if (showPreview && previewSource != null) {
+        PdfPeekDialog(
+            source = previewSource,
+            password = uiState.password.ifBlank { null },
+            onDismiss = { showPreview = false },
+        )
+    }
     ToolTopBar(onBack = onBack, stepText = stringResource(R.string.pdf_to_images_step_2_of_3_pages))
+    val onPreview: (() -> Unit)? = if (previewSource != null && uiState.isReady && !uiState.needsPassword) {
+        { showPreview = true }
+    } else {
+        null
+    }
     // Wide landscape: pages on the start side, the settings beside them instead of below.
     val split = rememberToolSplitLayout() && uiState.isReady && !uiState.needsPassword
     val grid: @Composable (Modifier) -> Unit = { gridModifier ->
@@ -338,6 +353,7 @@ private fun ColumnScope.PagesStep(
                         name = name,
                         pageCount = uiState.pageCount,
                         onChange = onChange,
+                        onPreview = onPreview,
                     )
                 }
             }
@@ -427,23 +443,102 @@ private fun ColumnScope.PagesStep(
     }
 }
 
-/** "Lease agreement · 6 pages · Change" — the name ellipsizes, "Change" always fits. */
+/**
+ * The chosen file in one row: a PDF mark, the name and page count, then two round icon buttons,
+ * Preview (eye) and Change (swap). [onPreview] is null until the file is ready to show, which
+ * dims the eye instead of moving things around.
+ */
 @Composable
-internal fun FileSummaryLine(name: String, pageCount: Int, onChange: () -> Unit) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        val meta = listOfNotNull(
-            name.takeIf { it.isNotBlank() },
-            pageCount.takeIf { it > 0 }?.let(::formatPdfPageCount),
-        ).joinToString(" · ")
-        Text(
-            text = if (meta.isBlank()) "" else "$meta ·",
-            style = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp),
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.weight(1f, fill = false),
-        )
-        ToolTextAction(label = stringResource(R.string.storage_change), onClick = onChange)
+internal fun FileSummaryLine(
+    name: String,
+    pageCount: Int,
+    onChange: () -> Unit,
+    onPreview: (() -> Unit)? = null,
+) {
+    ToolCard(modifier = Modifier.fillMaxWidth().padding(top = 8.dp)) {
+        Row(
+            modifier = Modifier.padding(start = 12.dp, end = 6.dp, top = 8.dp, bottom = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.55f)),
+                contentAlignment = Alignment.Center,
+            ) {
+                Icon(
+                    Icons.Outlined.PictureAsPdf,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.size(22.dp),
+                )
+            }
+            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(1.dp)) {
+                Text(
+                    text = name,
+                    style = MaterialTheme.typography.titleSmall.copy(fontSize = 15.sp),
+                    fontWeight = FontWeight.SemiBold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+                if (pageCount > 0) {
+                    Text(
+                        text = formatPdfPageCount(pageCount),
+                        style = MaterialTheme.typography.bodySmall.copy(fontSize = 13.sp),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            }
+            // Own row with no extra spacing: the circles sit ~8 dp apart (the 48 dp touch
+            // targets' padding), close enough to read as one pair.
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                FileRoundIconButton(
+                    icon = Icons.Outlined.Visibility,
+                    contentDescription = stringResource(R.string.pdf_peek_preview_file, name),
+                    onClick = { onPreview?.invoke() },
+                    enabled = onPreview != null,
+                    emphasized = true,
+                )
+                FileRoundIconButton(
+                    icon = Icons.Outlined.SwapHoriz,
+                    contentDescription = stringResource(R.string.storage_change),
+                    onClick = onChange,
+                )
+            }
+        }
+    }
+}
+
+/** 40 dp round icon button (48 dp touch target) for the file row. */
+@Composable
+private fun FileRoundIconButton(
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    contentDescription: String,
+    onClick: () -> Unit,
+    enabled: Boolean = true,
+    emphasized: Boolean = false,
+) {
+    IconButton(onClick = onClick, enabled = enabled, modifier = Modifier.size(48.dp)) {
+        Box(
+            modifier = Modifier
+                .size(40.dp)
+                .clip(CircleShape)
+                .background(
+                    if (emphasized) MaterialTheme.colorScheme.secondaryContainer
+                    else MaterialTheme.colorScheme.surfaceContainerHigh,
+                ),
+            contentAlignment = Alignment.Center,
+        ) {
+            Icon(
+                icon,
+                contentDescription = contentDescription,
+                tint = if (emphasized) MaterialTheme.colorScheme.onSecondaryContainer
+                else MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.size(20.dp).alpha(if (enabled) 1f else 0.4f),
+            )
+        }
     }
 }
 

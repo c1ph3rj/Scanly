@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feedback_title">Надіслати відгук</string>
+    <string name="feedback_summary">Пропозиції, проблеми чи інші питання</string>
+    <string name="feedback_description">Напишіть розробнику електронною поштою.</string>
+    <string name="feedback_type">Тип</string>
+    <string name="feedback_suggestion">Пропозиція</string>
+    <string name="feedback_issue">Проблема</string>
+    <string name="feedback_other">Інше</string>
+    <string name="feedback_subject">Тема (необов’язково)</string>
+    <string name="feedback_message">Повідомлення</string>
+    <string name="feedback_character_count">%1$d / %2$d символів</string>
+    <string name="feedback_email_note">Перевірте й надішліть у поштовому застосунку. Версії застосунку та Android включено.</string>
+    <string name="feedback_send">Перейти до пошти</string>
+    <string name="feedback_copy">Копіювати текст</string>
+    <string name="feedback_no_email">Немає поштового застосунку. Скопіюйте чернетку й надішліть через вебпошту.</string>
+    <string name="feedback_copied">Чернетку скопійовано</string>
+    <string name="feedback_app_details">Scanly %1$s (%2$d) · Android %3$s</string>
+    <string name="rating_unavailable">Не вдалося відкрити Google Play або браузер. Спробуйте знову.</string>
+    <string name="feedback_attachments_title">Зображення (необов’язково)</string>
+    <string name="feedback_attachment_limits">До %1$d зображень. Кожне оптимізується до %2$s або менше (%3$s загалом).</string>
+    <string name="feedback_add_images">Додати зображення</string>
+    <string name="feedback_preparing_images">Підготовка зображень…</string>
+    <string name="feedback_attachment_summary">%1$d із %2$d зображень · %3$s загалом</string>
+    <string name="feedback_image_label">Зображення %1$d</string>
+    <string name="feedback_remove_image">Видалити зображення %1$d</string>
+    <string name="feedback_image_limit">Можна прикріпити до %1$d зображень.</string>
+    <string name="feedback_image_failed">Деякі зображення не вдалося додати. Використовуйте читабельні зображення до 40 МБ.</string>
+    <string name="feedback_missing_images">Зображення більше недоступне. Видаліть його й додайте знову.</string>
+    <string name="feedback_copy_images_note">Текст скопійовано. Прикріпіть зображення окремо в поштовому застосунку.</string>
+    <string name="feedback_close_preview">Закрити перегляд</string>
+    <string name="feedback_sent_title">Ви надіслали відгук?</string>
+    <string name="feedback_sent_message">Якщо ви надіслали лист, ми можемо очистити й закрити цю форму. Якщо ні, збережіть чернетку, щоб продовжити пізніше.</string>
+    <string name="feedback_sent_yes">Так, надіслано</string>
+    <string name="feedback_sent_not_yet">Ще ні</string>
+</resources>
