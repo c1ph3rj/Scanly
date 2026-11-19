@@ -527,7 +527,7 @@
     <string name="library_search_search_for_instead">ค้นหา “%1$s” แทน</string>
     <string name="library_search_nothing_matches_try_fewer_words">ไม่พบรายการที่ตรงกับ “%1$s” ลองใช้คำน้อยลงหรือตรวจตัวสะกด</string>
     <string name="library_search_no_results_found">ไม่พบผลลัพธ์</string>
-    <string name="library_search_rent_or_lease_finds_pages">“เช่า OR ซื้อ” จะพบหน้าที่มีคำใดคำหนึ่ง</string>
+    <string name="library_search_rent_or_lease_finds_pages">"“เช่า OR สัญญาเช่า” จะพบหน้าที่มีคำใดคำหนึ่ง"</string>
     <string name="library_search_either_word">คำใดคำหนึ่ง</string>
     <string name="library_search_lease_draft_skips_anything_that">“สัญญา -ฉบับร่าง” จะข้ามทุกอย่างที่มีคำว่าฉบับร่าง</string>
     <string name="library_search_leave_a_word_out">ไม่รวมคำ</string>
@@ -943,7 +943,7 @@
     <string name="signature_manage_added">"%1$s · เพิ่ม %2$s"</string>
     <string name="signature_manage_from_a_photo">"จากภาพถ่าย"</string>
     <string name="signature_manage_drawn">"วาดแล้ว"</string>
-    <string name="signature_manage_pages_you_ve_already_signed">"เพจที่คุณเซ็นชื่อแล้วให้เก็บไว้"</string>
+    <string name="signature_manage_pages_you_ve_already_signed">"หน้าที่คุณเซ็นชื่อแล้วให้เก็บไว้"</string>
     <string name="signature_manage_place_it_on_a_pdf">"วางลงบนเอกสาร PDF หรือ Scanly"</string>
     <string name="signature_manage_sign_a_pdf">"ลงนามใน PDF"</string>
     <string name="signature_manage_use_first_when_signing">"ใช้ก่อนเมื่อลงนาม"</string>
@@ -953,7 +953,7 @@
     <string name="signature_manage_in_ink">"%1$s หมึก: %2$s"</string>
     <string name="signature_manage_used_first">"ใช้ก่อน"</string>
     <string name="signature_manage_used_first_2">"ใช้ก่อน"</string>
-    <string name="signature_manage_pages_you_ve_already_signed_2">"เพจที่คุณเซ็นชื่อแล้วให้เก็บไว้"</string>
+    <string name="signature_manage_pages_you_ve_already_signed_2">"หน้าที่คุณเซ็นชื่อแล้วให้เก็บไว้"</string>
     <string name="signature_manage_initials">"ชื่อย่อ"</string>
     <string name="signature_manage_signatures">"ลายเซ็น"</string>
     <string name="signature_manage_signatures_stay_on_this_phone">"ลายเซ็นจะยังคงอยู่ในโทรศัพท์เครื่องนี้ วาดหนึ่งหรืออัปโหลดรูปถ่ายลายเซ็นของคุณ"</string>
@@ -963,7 +963,7 @@
     <string name="signature_manage_will_be_offered_first_when">"%1$s จะถูกเสนอก่อนเมื่อลงนาม"</string>
     <!-- PageTextScreen -->
     <string name="page_text_share_text">"แบ่งปันข้อความ"</string>
-    <string name="page_text_scan_or_import_a_page">"สแกนหรือนำเข้าเพจ แล้วข้อความจะปรากฏที่นี่"</string>
+    <string name="page_text_scan_or_import_a_page">"สแกนหรือนำเข้าหน้า แล้วข้อความจะปรากฏที่นี่"</string>
     <string name="page_text_this_document_has_no_pages">"เอกสารนี้ยังไม่มีหน้า"</string>
     <string name="page_text_reading_text">"การอ่านข้อความ"</string>
     <string name="page_text_copy_page">"คัดลอกหน้า"</string>
@@ -987,7 +987,7 @@
     <string name="page_text_this_page_changed_after_its">"หน้านี้เปลี่ยนไปหลังจากอ่านข้อความแล้ว"</string>
     <string name="page_text_stop_highlighting">"หยุดไฮไลท์"</string>
     <string name="page_text_on_this_page">"%1$s ในหน้านี้"</string>
-    <string name="page_text_not_on_this_page">"ไม่อยู่ในเพจนี้"</string>
+    <string name="page_text_not_on_this_page">"ไม่อยู่ในหน้านี้"</string>
     <string name="page_text_reading_text_2">"การอ่านข้อความ…"</string>
     <string name="page_text_reading_page_of">"การอ่านหน้า %1$s ของ %2$s…"</string>
     <string name="page_text_page">"%1$s — หน้า %2$s"</string>
@@ -1006,7 +1006,7 @@
     <string name="tool_kit_file_name">"ชื่อไฟล์"</string>
     <!-- ToolsScreen -->
     <string name="tools_everything_runs_offline_on_this">"ทุกอย่างทำงานแบบออฟไลน์บนโทรศัพท์เครื่องนี้"</string>
-    <string name="tools_utilities">"สาธารณูปโภค"</string>
+    <string name="tools_utilities">"ยูทิลิตี้"</string>
     <!-- PdfCompressScreen -->
     <string name="pdf_compress_recommended">"แนะนำ"</string>
     <string name="pdf_compress_compress_this_pdf_again_with">"บีบอัด PDF นี้อีกครั้งด้วยการตั้งค่าอื่น"</string>
@@ -1045,22 +1045,22 @@
     <string name="pdf_file_picker_downloads_drive_and_other_apps">"ดาวน์โหลด ไดรฟ์ และแอปอื่นๆ"</string>
     <string name="pdf_file_picker_phone_storage">"ที่เก็บข้อมูลโทรศัพท์"</string>
     <!-- PdfImportScreen -->
-    <string name="pdf_import_add_pages">"เพิ่มหน้า %1$s"</string>
+    <string name="pdf_import_add_pages">"เพิ่ม %1$s หน้า"</string>
     <string name="pdf_import_add_1_page">"เพิ่ม 1 หน้า"</string>
-    <string name="pdf_import_add_to_library">"เพิ่มลงในห้องสมุด"</string>
-    <string name="pdf_import_another_pdf">"PDF อีกคัน"</string>
+    <string name="pdf_import_add_to_library">"เพิ่มลงในคลัง"</string>
+    <string name="pdf_import_another_pdf">"PDF อีกอัน"</string>
     <string name="pdf_import_crop_filter_sign_or_search">"%1$s · %2$s. ครอบตัด กรอง เซ็นชื่อ หรือค้นหาเหมือนกับการสแกนใดๆ"</string>
-    <string name="pdf_import_added_to_your_library">"เพิ่มลงในห้องสมุดของคุณแล้ว"</string>
+    <string name="pdf_import_added_to_your_library">"เพิ่มลงในคลังของคุณแล้ว"</string>
     <string name="pdf_import_step_3_of_3_done">"ขั้นตอนที่ 3 จาก 3 · เสร็จสิ้น"</string>
-    <string name="pdf_import_adding_to_library">"การเพิ่มไปยังไลบรารี่…"</string>
+    <string name="pdf_import_adding_to_library">"การเพิ่มลงในคลัง…"</string>
     <string name="pdf_import_look">"ดูสิ"</string>
     <string name="pdf_import_your_pdf_file_stays_as">"ไฟล์ PDF ของคุณยังคงอยู่เหมือนเดิม Scanly เก็บสำเนาของตัวเองไว้"</string>
     <string name="pdf_import_tap_a_page_or_long">"แตะที่หน้าหรือกดแบบยาวแล้วลากไปหลายหน้า"</string>
-    <string name="pdf_import_step_2_of_3_pages">"ขั้นตอนที่ 2 จาก 3 หน้าและชื่อ ·"</string>
+    <string name="pdf_import_step_2_of_3_pages">"ขั้นตอนที่ 2 จาก 3 · หน้าและชื่อ"</string>
     <string name="pdf_import_name_this_document">"ตั้งชื่อเอกสารนี้"</string>
     <string name="pdf_import_document_name">"ชื่อเอกสาร"</string>
     <string name="pdf_import_turn_a_pdf_into_a">"เปลี่ยน PDF ให้เป็นเอกสาร Scanly ที่คุณสามารถแก้ไข ลงนาม และค้นหาได้"</string>
-    <string name="pdf_import_add_pdf_to_library">"เพิ่ม PDF ลงในไลบรารี"</string>
+    <string name="pdf_import_add_pdf_to_library">"เพิ่ม PDF ลงในคลัง"</string>
     <!-- PdfImportViewModel -->
     <string name="pdf_import_give_the_document_a_name">"ตั้งชื่อเอกสาร"</string>
     <string name="pdf_import_imported_pdf">"นำเข้า PDF"</string>
@@ -1081,14 +1081,14 @@
     <string name="pdf_merge_merge_pdfs">"รวมไฟล์ PDF"</string>
     <string name="pdf_merge_merge_files">"รวมไฟล์ %1$s"</string>
     <string name="pdf_merge_add_more">"เพิ่มมากขึ้น"</string>
-    <string name="pdf_merge_merge_order">"รวมคำสั่ง · %1$s"</string>
+    <string name="pdf_merge_merge_order">"ลำดับการรวม · %1$s"</string>
     <string name="pdf_merge_files_are_joined_from_top">"ไฟล์จะถูกรวมจากบนลงล่าง"</string>
-    <string name="pdf_merge_order_name">"สั่งซื้อและชื่อ"</string>
+    <string name="pdf_merge_order_name">"ลำดับและชื่อ"</string>
     <string name="pdf_merge_step_2_of_3_order">"ขั้นตอนที่ 2 จาก 3 · เรียงลำดับและตั้งชื่อ"</string>
     <string name="pdf_merge_in_total">"รวม %1$s"</string>
     <string name="pdf_merge_from_phone">"จากโทรศัพท์: %1$s"</string>
     <string name="pdf_merge_next">"ถัดไป"</string>
-    <string name="pdf_merge_next_files">"ไฟล์ · %1$s ถัดไป"</string>
+    <string name="pdf_merge_next_files">"ถัดไป · %1$s ไฟล์"</string>
     <string name="pdf_merge_pick_at_least_2_files">"เลือกอย่างน้อย 2 ไฟล์"</string>
     <string name="pdf_merge_step_1_of_3_pick">"ขั้นตอนที่ 1 จาก 3 · เลือกไฟล์"</string>
     <string name="pdf_merge_pick_files_in_the_order">"เลือกไฟล์ตามลำดับที่คุณต้องการ"</string>
@@ -1141,7 +1141,7 @@
     <string name="pdf_reader_menu_all_pages">"ทุกหน้า"</string>
     <!-- PdfReaderPresentation -->
     <string name="pdf_reader_presentation_0_of_0">"0 จาก 0"</string>
-    <string name="pdf_reader_presentation_paged">"เพจ"</string>
+    <string name="pdf_reader_presentation_paged">"แบ่งหน้า"</string>
     <string name="pdf_reader_presentation_continuous">"ต่อเนื่อง"</string>
     <!-- PdfReaderScreen -->
     <string name="pdf_reader_tap_a_page_to_jump">"แตะที่หน้าเพื่อข้ามไปยังหน้านั้น"</string>
@@ -1155,7 +1155,7 @@
     <string name="pdf_reader_open_any_pdf_from_scanly">"เปิด PDF จาก Scanly หรือโทรศัพท์ของคุณ"</string>
     <string name="pdf_reader_read_a_pdf">"อ่าน PDF"</string>
     <!-- PdfSignScreen -->
-    <string name="pdf_sign_1_mark">"1 คะแนน"</string>
+    <string name="pdf_sign_1_mark">"1 เครื่องหมาย"</string>
     <string name="pdf_sign_the_signed_copy_is_saved">"สำเนาที่ลงนามจะถูกบันทึกโดยไม่ต้องใช้รหัสผ่าน"</string>
     <string name="pdf_sign_this_pdf_is_locked">"PDF นี้ถูกล็อค"</string>
     <string name="pdf_sign_back_to_the_editor">"กลับไปที่ตัวแก้ไข"</string>
@@ -1180,8 +1180,8 @@
     <string name="pdf_to_images_presentation_share_all">"แชร์ %1$s ทั้งหมด"</string>
     <string name="pdf_to_images_presentation_share_image">"แชร์รูปภาพ"</string>
     <string name="pdf_to_images_presentation_in_all">"%1$s ทั้งหมด"</string>
-    <string name="pdf_to_images_presentation_of_pages">"%1$s ของหน้า %2$s"</string>
-    <string name="pdf_to_images_presentation_all_pages">"หน้า %1$s ทั้งหมด"</string>
+    <string name="pdf_to_images_presentation_of_pages">"%1$s จาก %2$s หน้า"</string>
+    <string name="pdf_to_images_presentation_all_pages">"%1$s หน้าทั้งหมด"</string>
     <string name="pdf_to_images_presentation_export">"ส่งออก %1$s"</string>
     <string name="pdf_to_images_presentation_choose_pages_to_export">"เลือกหน้าที่จะส่งออก"</string>
     <string name="pdf_to_images_presentation_1_image">"1 ภาพ"</string>
@@ -1227,7 +1227,7 @@
     <!-- PdfToolShared -->
     <string name="pdf_tool_shared_scanly_pdf">"Scanly PDF"</string>
     <!-- PdfToolViewModels -->
-    <string name="pdf_tool_view_models_saving">"ออมทรัพย์…"</string>
+    <string name="pdf_tool_view_models_saving">"กำลังบันทึก…"</string>
     <!-- PdfWatermarkScreen -->
     <string name="pdf_watermark_the_page">"หน้า"</string>
     <string name="pdf_watermark_first_page_only">"หน้าแรกเท่านั้น"</string>
@@ -1239,7 +1239,7 @@
     <string name="pdf_watermark_small">"เล็ก"</string>
     <string name="pdf_watermark_horizontal">"แนวนอน"</string>
     <string name="pdf_watermark_diagonal">"เส้นทแยงมุม"</string>
-    <string name="pdf_watermark_single">"โสด"</string>
+    <string name="pdf_watermark_single">"เดี่ยว"</string>
     <string name="pdf_watermark_tiled">"ปูกระเบื้อง"</string>
     <string name="pdf_watermark_style">"สไตล์"</string>
     <string name="pdf_watermark_stamps">"แสตมป์ \"%1$s\""</string>
@@ -1250,8 +1250,8 @@
     <string name="pdf_watermark_page_1">"หน้า 1"</string>
     <string name="pdf_watermark_preview_of_page_1_with">"ดูตัวอย่างหน้าที่ 1 พร้อมลายน้ำ"</string>
     <string name="pdf_watermark_apply_watermark">"ใช้ลายน้ำ"</string>
-    <string name="pdf_watermark_apply_to_pages">"นำไปใช้กับหน้า %1$s"</string>
-    <string name="pdf_watermark_apply_to_page">"สมัครที่เพจ"</string>
+    <string name="pdf_watermark_apply_to_pages">"นำไปใช้กับ %1$s หน้า"</string>
+    <string name="pdf_watermark_apply_to_page">"นำไปใช้กับหน้า"</string>
     <string name="pdf_watermark_apply_to_first_page">"นำไปใช้กับหน้าแรก"</string>
     <string name="pdf_watermark_unlock_the_pdf_first">"ปลดล็อค PDF ก่อน"</string>
     <string name="pdf_watermark_watermark">"ลายน้ำ"</string>
@@ -1260,13 +1260,13 @@
     <string name="pdf_watermark_kept_unstamped">"เก็บไว้ ไม่มีการประทับตรา"</string>
     <string name="pdf_watermark_stamp">"แสตมป์"</string>
     <string name="pdf_watermark_on_every_page_tap_the">"ในทุกหน้า แตะหน้าเพื่อตรวจสอบ"</string>
-    <string name="pdf_watermark_on_all_pages_tap_the">"ในหน้า %1$s ทั้งหมด แตะหน้าเพื่อตรวจสอบ"</string>
+    <string name="pdf_watermark_on_all_pages_tap_the">"ในทั้ง %1$s หน้า. แตะหน้าเพื่อตรวจสอบ"</string>
     <string name="pdf_watermark_on_both_pages_tap_the">"ทั้งสองหน้า. แตะหน้าเพื่อตรวจสอบ"</string>
     <string name="pdf_watermark_on_the_page_tap_it">"บนหน้า. แตะเพื่อตรวจสอบ"</string>
     <string name="pdf_watermark_on_the_first_page_tap">"ในหน้าแรก. แตะหน้าเพื่อตรวจสอบ"</string>
     <string name="pdf_watermark_watermark_added">"เพิ่มลายน้ำ"</string>
     <string name="pdf_watermark_stamping_every_page">"ประทับตราทุกหน้า"</string>
-    <string name="pdf_watermark_stamping">"การตอก %1$s"</string>
+    <string name="pdf_watermark_stamping">"การประทับตรา %1$s"</string>
     <string name="pdf_watermark_stamping_the_first_page">"การประทับตราหน้าแรก"</string>
     <string name="pdf_watermark_adding_watermark">"การเพิ่มลายน้ำ…"</string>
     <string name="pdf_watermark_stamp_text_like_confidential_or">"ประทับตราข้อความ เช่น ข้อมูลลับ หรือ \"สำหรับการใช้ KYC เท่านั้น\""</string>
@@ -1324,7 +1324,7 @@
     <string name="qr_history_clear_history_2">"ล้างประวัติ…"</string>
     <string name="qr_history_history_stays_on_this_phone">"ประวัติยังคงอยู่ในโทรศัพท์เครื่องนี้"</string>
     <string name="qr_history_try_another_search_or_filter">"ลองค้นหาหรือกรองอื่น"</string>
-    <string name="qr_history_no_matches">"ไม่มีการแข่งขัน"</string>
+    <string name="qr_history_no_matches">"ไม่พบรายการที่ตรงกัน"</string>
     <string name="qr_history_scanned_and_created_codes_are">"รหัสที่สแกนและสร้างจะถูกเก็บไว้ที่นี่"</string>
     <string name="qr_history_no_codes_yet">"ยังไม่มีรหัส"</string>
     <string name="qr_history_search_links_networks_names">"ค้นหาลิงค์ เครือข่าย ชื่อ"</string>
@@ -1359,26 +1359,26 @@
     <string name="qr_result_delete_from_history">"ลบออกจากประวัติ"</string>
     <string name="qr_result_saved_to_history">" · บันทึกลงในประวัติแล้ว"</string>
     <!-- QrScanScreen -->
-    <string name="qr_scan_captured_qr_code">"รหัส QR ที่บันทึกไว้"</string>
-    <string name="qr_scan_history">"ประวัติศาสตร์"</string>
+    <string name="qr_scan_captured_qr_code">"รหัส QR ที่จับภาพได้"</string>
+    <string name="qr_scan_history">"ประวัติ"</string>
     <string name="qr_scan_from_photo">"จากรูปถ่าย"</string>
     <string name="qr_scan_scan_again">"สแกนอีกครั้ง"</string>
     <string name="qr_scan_qr_code">"รหัส QR"</string>
     <string name="qr_scan_details">"รายละเอียด"</string>
     <string name="qr_scan_allow_camera">"อนุญาตกล้อง"</string>
     <string name="qr_scan_open_settings">"เปิดการตั้งค่า"</string>
-    <string name="qr_scan_the_camera_is_used_only">"กล้องจะใช้เฉพาะในขณะที่หน้าจอนี้เปิดอยู่เท่านั้น \"จากภาพถ่าย\" ทำงานได้โดยไม่ต้องมีมัน"</string>
+    <string name="qr_scan_the_camera_is_used_only">"กล้องจะใช้เฉพาะในขณะที่หน้าจอนี้เปิดอยู่เท่านั้น \"จากรูปถ่าย\" ทำงานได้โดยไม่ต้องมีมัน"</string>
     <string name="qr_scan_open_settings_tap_permissions_and">"เปิดการตั้งค่า แตะการอนุญาต และเปิดกล้องสำหรับ Scanly"</string>
     <string name="qr_scan_allow_camera_to_scan">"อนุญาตให้กล้องสแกน"</string>
     <string name="qr_scan_camera_permission_is_blocked">"การอนุญาตกล้องถูกบล็อก"</string>
-    <string name="qr_scan_torch_on_off">"เปิด/ปิดคบเพลิง"</string>
+    <string name="qr_scan_torch_on_off">"เปิด/ปิดไฟฉาย"</string>
     <string name="qr_scan_scan_qr_barcode">"สแกน QR และบาร์โค้ด"</string>
     <string name="qr_scan_point_at_a_qr_code">"ชี้ไปที่รหัส QR หรือบาร์โค้ด"</string>
     <string name="qr_scan_code_found_hold_steady">"รหัสที่พบ · คงที่"</string>
     <string name="qr_scan_reading_photo">"กำลังอ่านรูปภาพ…"</string>
-    <string name="qr_scan_the_camera_isn_t_available">"กล้องไม่สามารถใช้งานได้ในขณะนี้ ลองใช้ \"จากรูปภาพ\" แทน"</string>
+    <string name="qr_scan_the_camera_isn_t_available">"กล้องไม่สามารถใช้งานได้ในขณะนี้ ลองใช้ \"จากรูปถ่าย\" แทน"</string>
     <!-- QrToolPresentation -->
-    <string name="qr_tool_presentation_h_ago">"%1$s ชมแล้ว"</string>
+    <string name="qr_tool_presentation_h_ago">"%1$s ชั่วโมงที่แล้ว"</string>
     <string name="qr_tool_presentation_min_ago">"%1$s นาทีที่แล้ว"</string>
     <string name="qr_tool_presentation_just_now">"เมื่อกี้นี้"</string>
     <string name="qr_tool_presentation_some_text">"ข้อความบางส่วน"</string>
@@ -1429,19 +1429,19 @@
     <string name="pdf_page_orientation_landscape">"แนวนอน"</string>
     <!-- pdf_page_size -->
     <string name="pdf_page_size_auto_fit">"พอดีอัตโนมัติ"</string>
-    <string name="pdf_page_size_a3">"ก3"</string>
+    <string name="pdf_page_size_a3">"A3"</string>
     <string name="pdf_page_size_a4">"A4"</string>
-    <string name="pdf_page_size_a5">"ก5"</string>
+    <string name="pdf_page_size_a5">"A5"</string>
     <string name="pdf_page_size_b4">"B4"</string>
     <string name="pdf_page_size_b5">"B5"</string>
     <string name="pdf_page_size_letter">"จดหมาย"</string>
     <string name="pdf_page_size_tabloid">"แท็บลอยด์"</string>
     <string name="pdf_page_size_executive">"ผู้บริหาร"</string>
     <string name="pdf_page_size_postcard">"โปสการ์ด"</string>
-    <string name="pdf_page_size_american_foolscap">"คนโง่เขลาแบบอเมริกัน"</string>
-    <string name="pdf_page_size_european_foolscap">"ความโง่เขลาของชาวยุโรป"</string>
+    <string name="pdf_page_size_american_foolscap">"ฟูลสแคปแบบอเมริกัน"</string>
+    <string name="pdf_page_size_european_foolscap">"ฟูลสแคปแบบยุโรป"</string>
     <!-- pdf_page_margin -->
-    <string name="pdf_page_margin_no_margin">"ไม่มีส่วนต่าง"</string>
+    <string name="pdf_page_margin_no_margin">"ไม่มีระยะขอบ"</string>
     <string name="pdf_page_margin_big">"ใหญ่"</string>
     <!-- pdf_page_number -->
     <string name="pdf_page_number_center">"เซ็นเตอร์"</string>
@@ -1464,7 +1464,7 @@
     <string name="watermark_color_grey">"สีเทา"</string>
     <string name="watermark_color_red">"แดง"</string>
     <string name="watermark_color_blue">"สีฟ้า"</string>
-    <string name="watermark_color_teal">"นกเป็ดน้ำ"</string>
+    <string name="watermark_color_teal">"เขียวอมฟ้า"</string>
     <!-- signature_kind -->
     <string name="signature_kind_signature">"ลายเซ็น"</string>
     <!-- sign_ink -->
@@ -1472,12 +1472,12 @@
     <string name="sign_ink_black">"สีดำ"</string>
     <!-- date_filter -->
     <string name="date_filter_any_time">"เมื่อไหร่ก็ได้"</string>
-    <string name="date_filter_last_7_days">"7 วันสุดท้าย"</string>
+    <string name="date_filter_last_7_days">"7 วันที่ผ่านมา"</string>
     <string name="date_filter_last_30_days">"30 วันที่ผ่านมา"</string>
     <string name="date_filter_this_year">"ปีนี้"</string>
     <string name="date_filter_custom_range">"ช่วงที่กำหนดเอง"</string>
     <!-- search_sort -->
-    <string name="search_sort_best_match">"คู่ที่ดีที่สุด"</string>
+    <string name="search_sort_best_match">"ตรงที่สุด"</string>
     <string name="search_sort_newest">"ใหม่ล่าสุด"</string>
     <string name="search_sort_oldest">"เก่าแก่ที่สุด"</string>
     <string name="search_sort_name_a_z">"ชื่อ A–Z"</string>
@@ -1532,7 +1532,7 @@
     <string name="pdf_import_look_enhance">"ปรับปรุง"</string>
     <string name="pdf_import_look_even_out_scanned_pages_and">"ปรับหน้าที่สแกนให้เท่ากันและทำให้ข้อความคมชัดขึ้น"</string>
     <!-- capture_scene_issue -->
-    <string name="capture_scene_issue_lens_may_be_covered_clear">"เลนส์อาจถูกบังไว้ ค้นพบมันแล้วลองอีกครั้ง"</string>
+    <string name="capture_scene_issue_lens_may_be_covered_clear">"เลนส์อาจถูกบัง เช็ดเลนส์ให้สะอาดแล้วลองอีกครั้ง"</string>
     <string name="capture_scene_issue_too_dark_add_light_or">"มืดเกินไป เพิ่มแสงหรือเปิดแฟลช"</string>
     <string name="capture_scene_issue_image_looks_blurry_clean_the">"ภาพดูพร่ามัว. ทำความสะอาดเลนส์หรือแตะเพื่อโฟกัส"</string>
     <!-- group_export_action -->
@@ -1555,14 +1555,14 @@
     <string name="signature_pen_width_bold">"หนา"</string>
     <!-- onboarding_page -->
     <string name="onboarding_page_capture">"การจับภาพ"</string>
-    <string name="onboarding_page_paper_to_polished">กระดาษที่ดูดีกว่าเดิม</string>
-    <string name="onboarding_page_capture_straighten_and_clean_up">ปรับหน้าให้ตรง เก็บทุกรายละเอียด</string>
+    <string name="onboarding_page_paper_to_polished">"กระดาษ\nที่ดูดีกว่าเดิม"</string>
+    <string name="onboarding_page_capture_straighten_and_clean_up">สแกนหน้าเอกสาร จัดขอบให้ตรง และปรับสี ตรวจสอบรายละเอียดให้ชัดเจนก่อนบันทึกสแกน</string>
     <string name="onboarding_page_find">"ค้นหา"</string>
-    <string name="onboarding_page_find_more_than_files">ค้นหาคำ พบหน้าที่ต้องการ</string>
-    <string name="onboarding_page_recognize_text_on_your_device">ค้นหาข้อความภายในงานสแกนของคุณ</string>
+    <string name="onboarding_page_find_more_than_files">"ค้นหาคำ\nพบหน้าที่ต้องการ"</string>
+    <string name="onboarding_page_recognize_text_on_your_device">จดจำข้อความบนอุปกรณ์ แล้วค้นหาคำในสแกน ค้นหาหน้าที่ต้องการโดยไม่ต้องอ่านเอกสารทุกฉบับซ้ำ</string>
     <string name="onboarding_page_share">เสร็จสิ้น</string>
-    <string name="onboarding_page_ready_when_you_are">พร้อมส่งต่อ</string>
-    <string name="onboarding_page_keep_pages_together_share_a">เซ็น ป้องกัน และแชร์ PDF ที่คมชัด</string>
+    <string name="onboarding_page_ready_when_you_are">"พร้อม\nที่จะส่งต่อ"</string>
+    <string name="onboarding_page_keep_pages_together_share_a">รวมหน้าต่าง ๆ ไว้ใน PDF เดียว เพิ่มลายเซ็นหรือรหัสผ่านเมื่อจำเป็น แล้วแชร์เอกสารที่เสร็จแล้วด้วยการแตะไม่กี่ครั้ง</string>
     <!-- pdf_reader_tool -->
     <string name="pdf_reader_tool_merge_with_other_pdfs">"รวมเข้ากับไฟล์ PDF อื่น ๆ"</string>
     <string name="pdf_reader_tool_password_protect">"การป้องกันด้วยรหัสผ่าน"</string>
@@ -1570,7 +1570,7 @@
     <string name="pdf_reader_tool_save_pages_as_images">"บันทึกหน้าเป็นรูปภาพ"</string>
     <string name="pdf_reader_tool_add_to_scanly_library">"เพิ่มไปยังไลบรารี Scanly"</string>
     <!-- pdf_picker_sort -->
-    <string name="pdf_picker_sort_most_pages">"มีเพจมากที่สุด"</string>
+    <string name="pdf_picker_sort_most_pages">"มีหน้ามากที่สุด"</string>
     <!-- qr_ink_color -->
     <string name="qr_ink_color_ink">"หมึก"</string>
     <string name="qr_ink_color_maroon">"มารูน"</string>
@@ -1597,10 +1597,10 @@
     <string name="settings_text_recognition_czech">"เช็ก"</string>
     <string name="settings_text_recognition_swedish">"ภาษาสวีเดน"</string>
     <string name="settings_text_recognition_swahili">"สวาฮีลี"</string>
-    <string name="settings_text_recognition_filipino">"ฟิลิปปินส์"</string>
+    <string name="settings_text_recognition_filipino">"ฟิลิปิโน"</string>
     <string name="settings_text_recognition_vietnamese">"ภาษาเวียดนาม"</string>
     <string name="settings_text_recognition_malay">"มาเลย์"</string>
-    <string name="settings_text_recognition_indonesian">"ชาวอินโดนีเซีย"</string>
+    <string name="settings_text_recognition_indonesian">"ภาษาอินโดนีเซีย"</string>
     <string name="settings_text_recognition_turkish">"ตุรกี"</string>
     <string name="settings_text_recognition_polish">"โปแลนด์"</string>
     <string name="settings_text_recognition_dutch">"ดัตช์"</string>
@@ -1669,7 +1669,7 @@
     <string name="tools_catalog_qr_barcode">"QR และบาร์โค้ด"</string>
     <!-- pip_lines -->
     <string name="pip_lines_tip_folders_keep_related_scans">"เคล็ดลับ: โฟลเดอร์จะเก็บการสแกนที่เกี่ยวข้องไว้ด้วยกัน ลองใช้ใบเสร็จรับเงิน"</string>
-    <string name="pip_lines_tip_turn_on_the_grid">"เคล็ดลับ: เปิดตารางในกล้องเพื่อจัดเรียงเพจขึ้น"</string>
+    <string name="pip_lines_tip_turn_on_the_grid">"เคล็ดลับ: เปิดตารางในกล้องเพื่อจัดหน้าให้ตรง"</string>
     <string name="pip_lines_tip_add_a_scanly_widget">"เคล็ดลับ: เพิ่มวิดเจ็ต Scanly ลงในหน้าจอหลักของคุณเพื่อสแกนด้วยการแตะเพียงครั้งเดียว"</string>
     <string name="pip_lines_tip_the_tools_tab_can">"เคล็ดลับ: แท็บเครื่องมือสามารถผสาน บีบอัด และลงนาม PDF ได้"</string>
     <string name="pip_lines_tip_open_a_document_s">"เคล็ดลับ: เปิดข้อความในเอกสารเพื่อคัดลอกหรือแชร์ข้อความ"</string>
@@ -1694,10 +1694,10 @@
     <!-- document_sign -->
     <string name="document_sign_some_pages_are_still_processing">"บางหน้ายังอยู่ระหว่างการประมวลผลและยังไม่สามารถลงนามได้"</string>
     <!-- pip_lines -->
-    <string name="pip_lines_hi_i_m_pip_point">"สวัสดี ฉันชื่อ Pip! แสดงหน้าเว็บให้ฉันดู แล้วฉันจะปรับการสแกนให้ตรง"</string>
+    <string name="pip_lines_hi_i_m_pip_point">"สวัสดี ฉันชื่อ Pip! ชี้ไปที่หน้าไหนก็ได้ แล้วฉันจะปรับให้ตรงให้คุณ"</string>
     <string name="pip_lines_one_last_thing_can_i">"สิ่งสุดท้าย! ฉันขอใช้กล้องได้ไหม โดยจะเปิดเฉพาะในขณะที่คุณสแกนเท่านั้น"</string>
     <string name="pip_lines_nothing_here_yet_let_s">"ยังไม่มีอะไรที่นี่. มาสแกนหน้าแรกของคุณด้วยกัน"</string>
-    <string name="pip_lines_a_clean_shelf_start_a">"ชั้นวางสะอาด! เริ่มโฟลเดอร์หรือสแกนบางอย่างใน"</string>
+    <string name="pip_lines_a_clean_shelf_start_a">"ชั้นวางว่างเปล่า! เริ่มโฟลเดอร์ใหม่ หรือสแกนอะไรสักอย่างเข้ามา"</string>
     <string name="pip_lines_no_folders_yet_they_re">"ยังไม่มีโฟลเดอร์ ใช้เพื่อจัดระเบียบใบเสร็จรับเงิน ใบแจ้งหนี้ และเอกสารของโรงเรียน"</string>
     <string name="pip_lines_no_documents_yet_i_m">"ยังไม่มีเอกสาร. ฉันพร้อมเมื่อคุณพร้อม"</string>
     <string name="pip_lines_this_folder_is_waiting_for">"โฟลเดอร์นี้กำลังรอเอกสารแรก"</string>
@@ -1707,7 +1707,7 @@
     <string name="pip_lines_hmm_i_don_t_have">"อืม ฉันไม่มีคำตอบสำหรับข้อนั้น"</string>
     <string name="pip_lines_no_codes_yet_scan_or">"ยังไม่มีรหัส. สแกนหรือสร้างอันหนึ่งแล้วฉันจะเก็บไว้ที่นี่"</string>
     <string name="pip_lines_nothing_matches_that_try_another">"ไม่มีอะไรตรงกับสิ่งนั้นเลย ลองคำอื่นดูไหม?"</string>
-    <string name="pip_lines_i_m_still_reading_some">"​​ฉันยังคงอ่านบางหน้าอยู่ การแข่งขันอาจปรากฏขึ้นในไม่กี่วินาที"</string>
+    <string name="pip_lines_i_m_still_reading_some">"ฉันยังคงอ่านบางหน้าอยู่ รายการที่ตรงกันอาจปรากฏขึ้นในไม่กี่วินาที"</string>
     <string name="pip_lines_i_can_t_see_a">"ฉันยังมองไม่เห็นสิ่งใดเลย ฉันขอยืมกล้องได้ไหม?"</string>
     <string name="pip_lines_the_camera_is_switched_off">"กล้องสำหรับ Scanly ปิดอยู่ การเดินทางไปยังการตั้งค่าอย่างรวดเร็วช่วยแก้ไขได้"</string>
     <string name="pip_lines_lend_me_the_camera_and">"ให้ฉันยืมกล้องแล้วฉันจะอ่านโค้ดให้คุณ"</string>
@@ -1809,7 +1809,7 @@
     <string name="error_could_not_replace_existing_pdf">"ไม่สามารถแทนที่ PDF ที่มีอยู่ได้"</string>
     <string name="error_folder_not_found">"ไม่พบโฟลเดอร์"</string>
     <string name="error_this_page_is_already_in_recently_deleted">"หน้านี้อยู่ใน ลบล่าสุด แล้ว"</string>
-    <string name="error_only_pages_in_recently_deleted_can_be">"เฉพาะเพจใน ลบล่าสุด เท่านั้นที่สามารถลบทิ้งถาวรได้"</string>
+    <string name="error_only_pages_in_recently_deleted_can_be">"เฉพาะหน้าใน ลบล่าสุด เท่านั้นที่สามารถลบทิ้งถาวรได้"</string>
     <string name="error_page_not_found">"ไม่พบหน้า"</string>
     <string name="error_page_not_found_in_document_order">"ไม่พบหน้าในลำดับเอกสาร"</string>
     <string name="error_select_at_least_two_pdfs_to_merge">"เลือกไฟล์ PDF อย่างน้อยสองไฟล์ที่จะรวม"</string>
@@ -1822,7 +1822,7 @@
     <string name="error_place_a_signature_or_another_mark_first">"ลงลายมือชื่อหรือเครื่องหมายอื่นก่อน"</string>
     <string name="error_a_mark_is_on_a_missing_page">"มีเครื่องหมายอยู่บนหน้าที่หายไป"</string>
     <string name="error_could_not_prepare_this_pdf">"ไม่สามารถเตรียม PDF นี้ได้"</string>
-    <string name="error_page_is_out_of_range">"เพจอยู่นอกขอบเขต"</string>
+    <string name="error_page_is_out_of_range">"หน้าอยู่นอกขอบเขต"</string>
     <string name="error_choose_at_least_one_page">"เลือกอย่างน้อย 1 หน้า"</string>
     <string name="error_failed_to_encode_page_image">"ไม่สามารถเข้ารหัสรูปภาพหน้าได้"</string>
     <string name="error_export_file_is_missing">"ไฟล์ส่งออกหายไป"</string>
@@ -1846,7 +1846,7 @@
     <string name="error_a_signature_image_is_missing_open_sign">"ไม่พบรูปภาพลายเซ็น เปิดเครื่องมือลงนามแล้ววางลายเซ็นอีกครั้ง"</string>
     <string name="error_this_page_is_still_processing_try_again">"หน้านี้ยังคงประมวลผลอยู่ โปรดลองอีกครั้งในอีกสักครู่"</string>
     <string name="error_could_not_read_the_page_image">"ไม่สามารถอ่านภาพหน้าได้"</string>
-    <string name="error_invalid_page_image_path">"เส้นทางรูปภาพของเพจไม่ถูกต้อง"</string>
+    <string name="error_invalid_page_image_path">"เส้นทางรูปภาพของหน้าไม่ถูกต้อง"</string>
     <string name="error_the_exported_file_is_unavailable">"ไฟล์ที่ส่งออกไม่พร้อมใช้งาน"</string>
     <string name="error_the_exported_image_is_unavailable">"รูปภาพที่ส่งออกไม่พร้อมใช้งาน"</string>
     <string name="error_the_selected_save_folder_is_no_longer">"โฟลเดอร์บันทึกที่เลือกไม่สามารถใช้งานได้อีกต่อไป เลือกอีกครั้งในการตั้งค่า"</string>
@@ -1954,9 +1954,6 @@
     <string name="error_could_not_save_the_exported_file">"ไม่สามารถบันทึกไฟล์ที่ส่งออกได้"</string>
     <string name="error_could_not_store_update_prompt_state">"ไม่สามารถจัดเก็บสถานะพร้อมท์การอัพเดตได้"</string>
     <string name="error_could_not_check_github_releases">"ไม่สามารถตรวจสอบการเผยแพร่ GitHub ได้"</string>
-    <string name="onboarding_demo_result">%1$s · หน้า %2$s</string>
-    <string name="onboarding_demo_found">พบในข้อความบนหน้า</string>
-    <string name="onboarding_demo_protected">ป้องกันด้วยรหัสผ่าน</string>
     <string name="onboarding_chapter_number">%1$02d %2$s</string>
     <!-- Split PDF -->
     <string name="tools_catalog_split">"แยก"</string>
@@ -2065,4 +2062,7 @@
     <string name="pdf_peek_could_not_open">"เปิด PDF นี้เพื่อดูตัวอย่างไม่ได้"</string>
     <string name="pdf_peek_close">"ปิดตัวอย่าง"</string>
     <string name="pdf_peek_tap_hint">"แตะไฟล์เพื่อดูตัวอย่าง"</string>
+    <string name="welcome_greeting">ยินดีต้อนรับ</string>
+    <string name="welcome_tagline">เปลี่ยนเอกสารกระดาษเป็น PDF ที่คมชัดและค้นหาได้</string>
+    <string name="welcome_no_language_match">ไม่มีภาษาที่ตรงกับ “%1$s”</string>
 </resources>

@@ -4,9 +4,10 @@ How end users interact with Scanly. This describes app behavior, not implementat
 
 ## First launch
 
-1. App opens to three illustrated **onboarding** pages with Pip: **Capture**, **Find**, and **Share**. Swipe, tap **Continue**, or use the page dots. **Skip** takes you to the last page; Back returns to the previous one.
-2. Tap **Get started** on the last page. If the camera is not allowed yet, a bottom sheet offers **Enable camera** or **Not now**. Only Enable camera opens Android's permission prompt. Not now continues without camera access; closing the sheet returns to the last page. If camera access is blocked, the sheet offers **Open Settings**. The sheet is skipped when the camera is already allowed.
-3. You land on **Home**. On later launches, onboarding is skipped.
+1. App opens on the **welcome screen**: the Scanly logo, a short summary and the app language. **Phone language** is selected; tap any of the 25 languages to switch the whole app straight away, or search for one by name (for example "Tamil" or "தமிழ்"). Tap **Continue**.
+2. Three illustrated **introduction** pages follow: **Capture**, **Find**, and **Finish**. Swipe, tap **Continue**, or use the page dots. **Skip** takes you to the last page; Back returns to the previous one, and Back on the first page returns to the welcome screen.
+3. Tap **Scan my first page** on the last page. If the camera is not allowed yet, a bottom sheet offers **Enable camera** or **Not now**. Only Enable camera opens Android's permission prompt. Not now continues without camera access; closing the sheet returns to the last page. If camera access is blocked, the sheet offers **Open Settings**. The sheet is skipped when the camera is already allowed.
+4. You land on **Home**. On later launches, onboarding is skipped. The language can be changed later in **Settings › Language**.
 
 While Home loads your library, shimmering placeholders stand in for folders and documents.
 

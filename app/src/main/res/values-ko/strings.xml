@@ -393,9 +393,9 @@
     <string name="page_crop_apply_crop">자르기 적용</string>
     <string name="page_crop_detecting_document">문서 감지 중…</string>
     <string name="page_crop_keep_editing">계속 편집</string>
-    <string name="page_crop_discard">삭제</string>
+    <string name="page_crop_discard">"버리기"</string>
     <string name="page_crop_your_crop_changes_have_not">자르기 변경사항이 적용되지 않았어요.</string>
-    <string name="page_crop_discard_changes">변경사항을 삭제할까요?</string>
+    <string name="page_crop_discard_changes">"변경사항을 버릴까요?"</string>
     <string name="page_crop_full_frame_corners">전체 화면 모서리</string>
     <string name="page_crop_reset_crop">자르기 초기화</string>
     <string name="page_crop_rotate_right">오른쪽으로 회전</string>
@@ -565,7 +565,7 @@
     <string name="recently_deleted_page_of">"\"%2$s\" 문서의 %1$s페이지"</string>
     <string name="recently_deleted_days_left">"%1$s일 남음"</string>
     <string name="recently_deleted_1_day_left">1일 남음</string>
-    <string name="recently_deleted_last_day">오늘 삭제됨</string>
+    <string name="recently_deleted_last_day">"오늘이 마지막 날"</string>
     <string name="recently_deleted_from">원래 위치: \"%1$s\"</string>
     <string name="recently_deleted_no_documents">문서 없음</string>
     <string name="recently_deleted_folder_only_documents_kept_in">"폴더만 · 문서 %1$s개는 라이브러리에 유지"</string>
@@ -632,7 +632,7 @@
     <string name="onboarding_skip">건너뛰기</string>
     <string name="onboarding_scanly">Scanly.</string>
     <string name="onboarding_previous_page">이전 페이지</string>
-    <string name="onboarding_assurance_offline">기기에서 처리됩니다.</string>
+    <string name="onboarding_assurance_offline">"기기에서 처리돼요."</string>
     <!-- Pip -->
     <string name="pip_poke_pip_scanly_s_helper">Scanly 도우미 Pip 콕 찌르기</string>
     <!-- PipBubble -->
@@ -1174,7 +1174,7 @@
     <!-- PdfSignViewModel -->
     <string name="pdf_sign_signing">"서명…"</string>
     <string name="pdf_sign_place_a_signature_first">"먼저 서명을 하세요."</string>
-    <string name="pdf_sign_open_a_pdf_first">"먼저 PDF를 엽니다."</string>
+    <string name="pdf_sign_open_a_pdf_first">"먼저 PDF를 여세요."</string>
     <!-- PdfToImagesPresentation -->
     <string name="pdf_to_images_presentation_page">"페이지 %1$s · %2$s"</string>
     <string name="pdf_to_images_presentation_share_all">"모든 %1$s 공유"</string>
@@ -1192,19 +1192,19 @@
     <!-- PdfToImagesScreen -->
     <string name="pdf_to_images_of_selected">"%2$s의 %1$s가 선택되었습니다."</string>
     <string name="pdf_to_images_tap_images_or_long_press">"이미지를 탭하거나 길게 누르고 드래그하여 일부만 공유하세요."</string>
-    <string name="pdf_to_images_open_gallery">"오픈갤러리"</string>
+    <string name="pdf_to_images_open_gallery">"갤러리 열기"</string>
     <string name="pdf_to_images_pick_a_different_file">"다른 파일을 선택하세요"</string>
     <string name="pdf_to_images_png_or_print_size">"PNG 또는 인쇄 크기"</string>
     <string name="pdf_to_images_export_again">"다시 내보내기"</string>
     <string name="pdf_to_images_saving_images">"이미지 저장…"</string>
-    <string name="pdf_to_images_each">"~%1$s 각"</string>
-    <string name="pdf_to_images_resolution">"결의"</string>
+    <string name="pdf_to_images_each">"개당 ~%1$s"</string>
+    <string name="pdf_to_images_resolution">"해상도"</string>
     <string name="pdf_to_images_format">"형식"</string>
     <string name="pdf_to_images_deselect_all">"모두 선택 취소"</string>
     <string name="pdf_to_images_this_pdf_is_password_protected">"이 PDF는 비밀번호로 보호되어 있습니다. 페이지를 보려면 비밀번호를 입력하세요."</string>
     <string name="pdf_to_images_images_show_up_in_your">"이미지가 갤러리에 바로 표시됩니다."</string>
-    <string name="pdf_to_images_pdf_to_jpg">"PDF ~ JPG"</string>
-    <string name="pdf_to_images_step_2_of_3_pages">"· 페이지 3개 중 2단계 및 형식"</string>
+    <string name="pdf_to_images_pdf_to_jpg">"PDF → JPG"</string>
+    <string name="pdf_to_images_step_2_of_3_pages">"2/3단계 · 페이지 및 형식"</string>
     <string name="pdf_to_images_no_gallery_app_found_the">"갤러리 앱을 찾을 수 없습니다. 이미지는 Pictures/Scanly에 있습니다."</string>
     <string name="pdf_to_images_turn_pages_into_images_for">"페이지를 채팅, 슬라이드 또는 갤러리용 이미지로 변환하세요."</string>
     <!-- PdfToolDone -->
@@ -1218,7 +1218,7 @@
     <string name="pdf_tool_presentation_one_large_stamp_sized_to">"페이지를 가득 채울 만큼 큰 우표 1개."</string>
     <string name="pdf_tool_presentation_repeats_across_the_full_page">"가장자리를 포함하여 전체 페이지에 걸쳐 반복됩니다."</string>
     <string name="pdf_tool_presentation_protect_pdf">"PDF 보호"</string>
-    <string name="pdf_tool_presentation_saved">"%1$s → %2$s ·가 %3$s%%를 저장했습니다."</string>
+    <string name="pdf_tool_presentation_saved">"%1$s → %2$s · %3$s%% 절감"</string>
     <string name="pdf_tool_presentation_unlocked">"잠금 해제"</string>
     <string name="pdf_tool_presentation_protected">"보호됨"</string>
     <string name="pdf_tool_presentation_pdfs">"%1$s PDF 파일"</string>
@@ -1231,7 +1231,7 @@
     <!-- PdfWatermarkScreen -->
     <string name="pdf_watermark_the_page">"페이지"</string>
     <string name="pdf_watermark_first_page_only">"첫 페이지만"</string>
-    <string name="pdf_watermark_apply_to">"신청하다"</string>
+    <string name="pdf_watermark_apply_to">"적용 대상"</string>
     <string name="pdf_watermark_colour">"색상"</string>
     <string name="pdf_watermark_opacity">"불투명도"</string>
     <string name="pdf_watermark_large">"대형"</string>
@@ -1242,7 +1242,7 @@
     <string name="pdf_watermark_single">"싱글"</string>
     <string name="pdf_watermark_tiled">"타일"</string>
     <string name="pdf_watermark_style">"스타일"</string>
-    <string name="pdf_watermark_stamps">"우표 \"%1$s\""</string>
+    <string name="pdf_watermark_stamps">"스탬프 \"%1$s\""</string>
     <string name="pdf_watermark_add_date">"날짜 추가"</string>
     <string name="pdf_watermark_presets">"프리셋"</string>
     <string name="pdf_watermark_the_watermarked_copy_is_saved">"워터마크가 있는 사본은 비밀번호 없이 저장됩니다. 비밀번호 도구를 사용하여 다시 잠글 수 있습니다."</string>
@@ -1288,7 +1288,7 @@
     <string name="qr_actions_pay_with">"결제 수단"</string>
     <string name="qr_actions_no_app_can_open_this">"어떤 앱도 이 링크를 열 수 없습니다"</string>
     <string name="qr_actions_not_a_web_link">"웹 링크가 아님"</string>
-    <string name="qr_actions_nothing_can_receive_this_text">"이 문자는 아무것도 받을 수 없습니다."</string>
+    <string name="qr_actions_nothing_can_receive_this_text">"이 텍스트를 받을 수 있는 앱이 없습니다."</string>
     <string name="qr_actions_share_qr_code">"QR 코드 공유"</string>
     <string name="qr_actions_copied_to_clipboard">"클립보드에 복사됨"</string>
     <!-- QrCreateScreen -->
@@ -1297,7 +1297,7 @@
     <string name="qr_create_leave_the_amount_empty_so">"고객이 지불해야 할 금액을 입력할 수 있도록 금액을 비워 두십시오."</string>
     <string name="qr_create_enter_an_amount_above_zero">"0보다 큰 금액을 입력하세요"</string>
     <string name="qr_create_any">"₹ 모두"</string>
-    <string name="qr_create_amount_optional">"선택 금액 ·"</string>
+    <string name="qr_create_amount_optional">"금액 · 선택 사항"</string>
     <string name="qr_create_shop_name">"가게 이름"</string>
     <string name="qr_create_payee_name">"수취인 이름"</string>
     <string name="qr_create_name_bank">"이름@은행"</string>
@@ -1313,7 +1313,7 @@
     <string name="qr_create_save_image">"이미지 저장"</string>
     <string name="qr_create_only_dark_colours_so_every">"어두운 색상만 사용하면 모든 카메라에서 코드를 읽을 수 있습니다."</string>
     <string name="qr_create_shown_under_the_code">"코드 아래에 표시됨"</string>
-    <string name="qr_create_caption_under_the_code_optional">"· 코드 아래 캡션 선택 사항"</string>
+    <string name="qr_create_caption_under_the_code_optional">"코드 아래 캡션 · 선택 사항"</string>
     <string name="qr_create_create_qr">"QR 생성"</string>
     <!-- QrHistoryScreen -->
     <string name="qr_history_created">"생성됨"</string>
@@ -1328,7 +1328,7 @@
     <string name="qr_history_scanned_and_created_codes_are">"스캔하고 생성한 코드는 여기에 보관됩니다."</string>
     <string name="qr_history_no_codes_yet">"아직 코드가 없습니다"</string>
     <string name="qr_history_search_links_networks_names">"링크, 네트워크, 이름 검색"</string>
-    <string name="qr_history_qr_history">"QR 역사"</string>
+    <string name="qr_history_qr_history">"QR 기록"</string>
     <!-- QrResultScreen -->
     <string name="qr_result_show_raw_content">"원시 콘텐츠 표시"</string>
     <string name="qr_result_hide_raw_content">"원시 콘텐츠 숨기기"</string>
@@ -1357,10 +1357,10 @@
     <string name="qr_result_copy_upi_id">"UPI ID 복사"</string>
     <string name="qr_result_copy_link">"링크 복사"</string>
     <string name="qr_result_delete_from_history">"기록에서 삭제"</string>
-    <string name="qr_result_saved_to_history">" ·가 기록에 저장되었습니다."</string>
+    <string name="qr_result_saved_to_history">"· 기록에 저장됨"</string>
     <!-- QrScanScreen -->
     <string name="qr_scan_captured_qr_code">"캡처된 QR 코드"</string>
-    <string name="qr_scan_history">"역사"</string>
+    <string name="qr_scan_history">"기록"</string>
     <string name="qr_scan_from_photo">"사진에서"</string>
     <string name="qr_scan_scan_again">"다시 스캔"</string>
     <string name="qr_scan_qr_code">"QR 코드"</string>
@@ -1374,7 +1374,7 @@
     <string name="qr_scan_torch_on_off">"토치 온/오프"</string>
     <string name="qr_scan_scan_qr_barcode">"QR 및 바코드 스캔"</string>
     <string name="qr_scan_point_at_a_qr_code">"QR 코드 또는 바코드를 가리킵니다."</string>
-    <string name="qr_scan_code_found_hold_steady">"·가 안정적으로 유지되는 코드 발견"</string>
+    <string name="qr_scan_code_found_hold_steady">"코드 찾음 · 카메라를 고정하세요"</string>
     <string name="qr_scan_reading_photo">"사진 읽기…"</string>
     <string name="qr_scan_the_camera_isn_t_available">"지금은 카메라를 사용할 수 없습니다. 대신 '사진에서'를 시도해 보세요."</string>
     <!-- QrToolPresentation -->
@@ -1389,7 +1389,7 @@
     <string name="qr_tool_presentation_a_upi_payment">"UPI 지불"</string>
     <string name="qr_tool_presentation_a_link">"링크"</string>
     <string name="qr_tool_presentation_found">"발견 "</string>
-    <string name="qr_tool_presentation_generating_preview">"미리보기… 생성"</string>
+    <string name="qr_tool_presentation_generating_preview">"미리보기 생성 중…"</string>
     <string name="qr_tool_presentation_preview_appears_as_you_type">"입력하는 동안 미리보기가 나타납니다."</string>
     <string name="qr_tool_presentation_copy_to_the_clipboard">"클립보드에 복사"</string>
     <string name="qr_tool_presentation_open_in_a_browser_or">"브라우저에서 열거나 복사하세요."</string>
@@ -1401,17 +1401,17 @@
     <string name="image_text_photos_are_saved_as_a">"사진은 새 문서로 저장되므로 나중에 텍스트를 검색할 수 있습니다."</string>
     <string name="image_text_your_scans_have_no_pages">"스캔에 아직 페이지가 없습니다. 텍스트를 읽을 사진을 선택하세요."</string>
     <string name="image_text_no_scans_yet_pick_photos">"아직 스캔이 없습니다. 텍스트를 읽을 사진을 선택하세요."</string>
-    <string name="image_text_1_scan">"1스캔"</string>
+    <string name="image_text_1_scan">"스캔 1개"</string>
     <string name="image_text_up_to_from_your_gallery">"갤러리 또는 파일에서 최대 %1$s까지"</string>
     <string name="image_text_copy_text_from_photos_or">"사진이나 스캔에서 텍스트를 복사합니다. 이 휴대전화에서 문자를 읽습니다."</string>
     <string name="image_text_image_to_text">"이미지를 텍스트로"</string>
     <!-- AppUpdateDialog -->
-    <string name="app_update_published">"%1$s 출판"</string>
+    <string name="app_update_published">"%1$s 게시됨"</string>
     <string name="app_update_current">"현재"</string>
     <string name="app_update_update">"업데이트"</string>
     <string name="app_update_what_s_new">"새로운 소식"</string>
     <!-- AppUpdateViewModel -->
-    <string name="app_update_scanly_is_up_to_date">"Scanly가 최신 버전입니다. 당신은 %1$s에 있습니다."</string>
+    <string name="app_update_scanly_is_up_to_date">"Scanly가 최신 버전입니다. 현재 버전은 %1$s입니다."</string>
     <string name="app_update_could_not_check_for_updates">"%1$s의 업데이트를 확인할 수 없습니다."</string>
     <!-- FlexibleUpdateSnackbar -->
     <string name="flexible_update_snackbar_restart">"다시 시작"</string>
@@ -1436,21 +1436,21 @@
     <string name="pdf_page_size_b5">"B5"</string>
     <string name="pdf_page_size_letter">"레터"</string>
     <string name="pdf_page_size_tabloid">"타블로이드"</string>
-    <string name="pdf_page_size_executive">"임원"</string>
+    <string name="pdf_page_size_executive">"이그제큐티브"</string>
     <string name="pdf_page_size_postcard">"엽서"</string>
     <string name="pdf_page_size_american_foolscap">"아메리칸 풀스캡"</string>
-    <string name="pdf_page_size_european_foolscap">"유럽 바보"</string>
+    <string name="pdf_page_size_european_foolscap">"유럽 풀스캡"</string>
     <!-- pdf_page_margin -->
-    <string name="pdf_page_margin_no_margin">"마진 없음"</string>
-    <string name="pdf_page_margin_big">"빅"</string>
+    <string name="pdf_page_margin_no_margin">"여백 없음"</string>
+    <string name="pdf_page_margin_big">"넓음"</string>
     <!-- pdf_page_number -->
     <string name="pdf_page_number_center">"센터"</string>
     <!-- pdf_image_format -->
     <string name="pdf_image_format_smaller_files_best_for_photos">"더 작은 파일, 사진 및 공유에 가장 적합"</string>
-    <string name="pdf_image_format_crisper_text_files_about_3">"더 선명한 텍스트, 3×에 대한 파일이 더 커짐"</string>
+    <string name="pdf_image_format_crisper_text_files_about_3">"더 선명한 텍스트, 파일 크기 약 3배"</string>
     <!-- pdf_image_resolution -->
     <string name="pdf_image_resolution_for_sharing">"공유를 위해"</string>
-    <string name="pdf_image_resolution_1240_px_wide_sharp_on">"휴대폰 및 WhatsApp에서 선명한 1240픽셀 너비의 ·"</string>
+    <string name="pdf_image_resolution_1240_px_wide_sharp_on">"1240픽셀 너비 · 휴대폰 및 WhatsApp에서 선명함"</string>
     <string name="pdf_image_resolution_for_printing">"인쇄용"</string>
     <string name="pdf_image_resolution_2480_px_wide_300_dpi">"A4에 2480픽셀 너비 · 300dpi"</string>
     <!-- pdf_compress_quality -->
@@ -1501,7 +1501,7 @@
     <string name="document_corner_model_lite">"라이트"</string>
     <string name="document_corner_model_standard">"표준"</string>
     <string name="document_corner_model_high">"높음"</string>
-    <string name="document_corner_model_accurate">"정확하다"</string>
+    <string name="document_corner_model_accurate">"정확함"</string>
     <!-- document_title_format -->
     <string name="document_title_format_scan_with_date_and_time">"날짜와 시간으로 스캔"</string>
     <string name="document_title_format_scan_date_time">"스캔 · 날짜 및 시간"</string>
@@ -1532,11 +1532,11 @@
     <string name="pdf_import_look_enhance">"강화"</string>
     <string name="pdf_import_look_even_out_scanned_pages_and">"스캔한 페이지를 고르게 하고 텍스트를 선명하게 합니다."</string>
     <!-- capture_scene_issue -->
-    <string name="capture_scene_issue_lens_may_be_covered_clear">"렌즈가 가려져 있을 수 있습니다. 그것을 발견하고 다시 시도하십시오."</string>
-    <string name="capture_scene_issue_too_dark_add_light_or">"너무 어둡다. 조명을 추가하거나 플래시를 켜세요."</string>
+    <string name="capture_scene_issue_lens_may_be_covered_clear">"렌즈가 가려져 있을 수 있어요. 렌즈를 닦고 다시 시도하세요."</string>
+    <string name="capture_scene_issue_too_dark_add_light_or">"너무 어두워요. 조명을 추가하거나 플래시를 켜세요."</string>
     <string name="capture_scene_issue_image_looks_blurry_clean_the">"이미지가 흐릿하게 보입니다. 렌즈를 청소하거나 탭하여 초점을 맞추세요."</string>
     <!-- group_export_action -->
-    <string name="group_export_action_merged_pdf_options">"PDF 옵션 병합"</string>
+    <string name="group_export_action_merged_pdf_options">"병합 PDF 옵션"</string>
     <string name="group_export_action_separate_pdfs_options">"별도의 PDF 파일 옵션"</string>
     <!-- library_sort_option -->
     <string name="library_sort_option_last_modified">"최종 수정"</string>
@@ -1555,14 +1555,14 @@
     <string name="signature_pen_width_bold">"굵은 선"</string>
     <!-- onboarding_page -->
     <string name="onboarding_page_capture">"캡처"</string>
-    <string name="onboarding_page_paper_to_polished">종이를 더 깔끔하게.</string>
-    <string name="onboarding_page_capture_straighten_and_clean_up">페이지를 바로잡고 세부 내용을 살리세요.</string>
+    <string name="onboarding_page_paper_to_polished">"종이,\n더 깔끔하게."</string>
+    <string name="onboarding_page_capture_straighten_and_clean_up">페이지를 촬영하고 가장자리를 바로잡은 뒤 색상을 조정하세요. 세부 내용이 선명한지 확인하고 스캔을 저장하세요.</string>
     <string name="onboarding_page_find">"찾기"</string>
-    <string name="onboarding_page_find_more_than_files">단어로 페이지를 찾으세요.</string>
-    <string name="onboarding_page_recognize_text_on_your_device">스캔한 페이지 안의 텍스트를 검색하세요.</string>
+    <string name="onboarding_page_find_more_than_files">"단어를 찾으세요.\n페이지를 찾으세요."</string>
+    <string name="onboarding_page_recognize_text_on_your_device">기기에서 텍스트를 인식한 뒤 스캔 속 단어를 검색하세요. 문서를 모두 다시 읽지 않고도 필요한 페이지를 찾을 수 있습니다.</string>
     <string name="onboarding_page_share">마무리</string>
-    <string name="onboarding_page_ready_when_you_are">보낼 준비 완료.</string>
-    <string name="onboarding_page_keep_pages_together_share_a">깔끔한 PDF에 서명하고 보호하고 공유하세요.</string>
+    <string name="onboarding_page_ready_when_you_are">"보낼 준비를\n마치세요."</string>
+    <string name="onboarding_page_keep_pages_together_share_a">여러 페이지를 하나의 PDF로 모으세요. 필요하면 서명이나 비밀번호를 추가하고 몇 번의 탭으로 완성된 문서를 공유하세요.</string>
     <!-- pdf_reader_tool -->
     <string name="pdf_reader_tool_merge_with_other_pdfs">"다른 PDF 파일과 병합"</string>
     <string name="pdf_reader_tool_password_protect">"비밀번호 보호"</string>
@@ -1577,11 +1577,11 @@
     <!-- qr_primary_action -->
     <string name="qr_primary_action_pay_with_a_upi_app">"UPI 앱으로 결제"</string>
     <string name="qr_primary_action_pay">"지불"</string>
-    <string name="qr_primary_action_join_this_network">"이 네트워크에 가입하세요"</string>
-    <string name="qr_primary_action_join">"가입"</string>
+    <string name="qr_primary_action_join_this_network">"이 네트워크에 연결하세요"</string>
+    <string name="qr_primary_action_join">"연결"</string>
     <string name="qr_primary_action_save_to_contacts">"연락처에 저장"</string>
     <string name="qr_primary_action_send_email">"이메일 보내기"</string>
-    <string name="qr_primary_action_call_this_number">"이 번호로 전화해"</string>
+    <string name="qr_primary_action_call_this_number">"이 번호로 전화하기"</string>
     <string name="qr_primary_action_copy_text">"텍스트 복사"</string>
     <!-- qr_history_section -->
     <string name="qr_history_section_earlier">"이전"</string>
@@ -1597,31 +1597,31 @@
     <string name="settings_text_recognition_czech">"체코어"</string>
     <string name="settings_text_recognition_swedish">"스웨덴어"</string>
     <string name="settings_text_recognition_swahili">"스와힐리어"</string>
-    <string name="settings_text_recognition_filipino">"필리핀 사람"</string>
-    <string name="settings_text_recognition_vietnamese">"베트남인"</string>
-    <string name="settings_text_recognition_malay">"말레이 사람"</string>
+    <string name="settings_text_recognition_filipino">"필리핀어"</string>
+    <string name="settings_text_recognition_vietnamese">"베트남어"</string>
+    <string name="settings_text_recognition_malay">"말레이어"</string>
     <string name="settings_text_recognition_indonesian">"인도네시아어"</string>
     <string name="settings_text_recognition_turkish">"터키어"</string>
     <string name="settings_text_recognition_polish">"폴란드어"</string>
-    <string name="settings_text_recognition_dutch">"네덜란드 사람"</string>
+    <string name="settings_text_recognition_dutch">"네덜란드어"</string>
     <string name="settings_text_recognition_portuguese">"포르투갈어"</string>
     <string name="settings_text_recognition_italian">"이탈리아어"</string>
-    <string name="settings_text_recognition_german">"독일인"</string>
+    <string name="settings_text_recognition_german">"독일어"</string>
     <string name="settings_text_recognition_french">"프랑스어"</string>
     <string name="settings_text_recognition_spanish">"스페인어"</string>
     <string name="settings_text_recognition_english">"영어"</string>
     <string name="settings_text_recognition_latin">"라틴 문자"</string>
     <string name="settings_text_recognition_amharic">"암하라어"</string>
     <string name="settings_text_recognition_georgian">"그루지야어"</string>
-    <string name="settings_text_recognition_armenian">"아르메니아 사람"</string>
-    <string name="settings_text_recognition_burmese">"버마인"</string>
+    <string name="settings_text_recognition_armenian">"아르메니아어"</string>
+    <string name="settings_text_recognition_burmese">"버마어"</string>
     <string name="settings_text_recognition_khmer">"크메르어"</string>
-    <string name="settings_text_recognition_lao">"라오스"</string>
+    <string name="settings_text_recognition_lao">"라오어"</string>
     <string name="settings_text_recognition_thai">"태국어"</string>
     <string name="settings_text_recognition_southeast_asia_more">"동남아시아 등"</string>
     <string name="settings_text_recognition_hebrew">"히브리어"</string>
     <string name="settings_text_recognition_urdu">"우르두어"</string>
-    <string name="settings_text_recognition_persian">"페르시아인"</string>
+    <string name="settings_text_recognition_persian">"페르시아어"</string>
     <string name="settings_text_recognition_arabic">"아랍어"</string>
     <string name="settings_text_recognition_right_to_left">"오른쪽에서 왼쪽으로"</string>
     <string name="settings_text_recognition_korean">"한국어"</string>
@@ -1637,7 +1637,7 @@
     <string name="settings_text_recognition_telugu">"텔루구어"</string>
     <string name="settings_text_recognition_tamil">"타밀어"</string>
     <string name="settings_text_recognition_bengali">"벵골어"</string>
-    <string name="settings_text_recognition_nepali">"네팔인"</string>
+    <string name="settings_text_recognition_nepali">"네팔어"</string>
     <string name="settings_text_recognition_marathi">"마라티어"</string>
     <string name="settings_text_recognition_hindi">"힌디어"</string>
     <string name="settings_text_recognition_indian_scripts">"인도 문자"</string>
@@ -1650,16 +1650,16 @@
     <!-- tools_catalog -->
     <string name="tools_catalog_camera_with_edge_detection">"가장자리 감지 기능이 있는 카메라"</string>
     <string name="tools_catalog_scan_a_document">"문서 스캔"</string>
-    <string name="tools_catalog_pdf_to_editable_scan">"편집 가능한 스캔에 대한 PDF"</string>
-    <string name="tools_catalog_open_any_pdf">"PDF를 엽니다."</string>
+    <string name="tools_catalog_pdf_to_editable_scan">"PDF를 편집 가능한 스캔으로"</string>
+    <string name="tools_catalog_open_any_pdf">"PDF 열기"</string>
     <string name="tools_catalog_read_pdf">"PDF 읽기"</string>
     <string name="tools_catalog_stamp_text">"텍스트 워터마크"</string>
     <string name="tools_catalog_lock_or_unlock">"잠금 또는 잠금 해제"</string>
-    <string name="tools_catalog_pages_as_images">"이미지로서의 페이지"</string>
-    <string name="tools_catalog_make_it_smaller">"작게 만들어라"</string>
+    <string name="tools_catalog_pages_as_images">"페이지를 이미지로"</string>
+    <string name="tools_catalog_make_it_smaller">"용량 줄이기"</string>
     <string name="tools_catalog_combine_files">"파일 결합"</string>
     <string name="tools_catalog_merge">"병합"</string>
-    <string name="tools_catalog_sign_any_pdf">"PDF에 서명하세요."</string>
+    <string name="tools_catalog_sign_any_pdf">"PDF 서명"</string>
     <string name="tools_catalog_from_gallery">"갤러리에서"</string>
     <string name="tools_catalog_images_to_pdf">"이미지를 PDF로"</string>
     <string name="tools_catalog_create_manage">"생성 및 관리"</string>
@@ -1679,7 +1679,7 @@
     <string name="pip_lines_still_free_still_no_account">"항상 무료입니다. 계정이 필요하지 않습니다. 광고가 없습니다."</string>
     <string name="pip_lines_i_m_open_source_you">"내 소스 코드가 공개되었습니다. 모든 줄을 읽을 수 있습니다."</string>
     <string name="pip_lines_your_original_photos_are_kept">"원본 사진은 보관되므로 편집 내용은 언제든지 취소할 수 있습니다."</string>
-    <string name="pip_lines_i_live_on_your_phone">"나는 당신의 전화로 일합니다. 귀하의 스캔은 결코 서버로 이동하지 않습니다."</string>
+    <string name="pip_lines_i_live_on_your_phone">"나는 휴대전화 안에 살아요. 연결할 서버가 없어요."</string>
     <string name="pip_lines_hey_that_tickles">"야! 간지러워요."</string>
     <!-- pdf_watermark -->
     <string name="pdf_watermark_for_kyc_use_only">For KYC use only</string>
@@ -1929,7 +1929,7 @@
     <string name="error_failed_to_import_images">"이미지 가져오기에 실패했습니다."</string>
     <string name="error_could_not_calculate_storage_usage">"스토리지 사용량을 계산할 수 없습니다."</string>
     <string name="error_could_not_clear_app_data">"앱 데이터를 지울 수 없습니다."</string>
-    <string name="error_could_not_clear_temporary_exports">"임시 내보내기를 취소할 수 없습니다."</string>
+    <string name="error_could_not_clear_temporary_exports">"임시 내보내기를 지울 수 없습니다."</string>
     <string name="error_could_not_remove_old_backup_files">"오래된 백업 파일을 제거할 수 없습니다."</string>
     <string name="error_could_not_create_the_document">"문서를 생성할 수 없습니다."</string>
     <string name="error_could_not_rename_the_document">"문서 이름을 바꿀 수 없습니다."</string>
@@ -1948,15 +1948,12 @@
     <string name="error_could_not_update_theme_mode">"테마 모드를 업데이트할 수 없습니다."</string>
     <string name="error_could_not_finish_onboarding">"온보딩을 완료할 수 없습니다."</string>
     <string name="error_could_not_load_settings_content">"설정 내용을 로드할 수 없습니다."</string>
-    <string name="error_could_not_update_the_save_location">"저장 위치를 ​​업데이트할 수 없습니다."</string>
+    <string name="error_could_not_update_the_save_location">"저장 위치를 업데이트할 수 없습니다."</string>
     <string name="error_could_not_update_model_selection">"모델 선택을 업데이트할 수 없습니다."</string>
     <string name="error_could_not_update_document_detection_settings">"문서 감지 설정을 업데이트할 수 없습니다."</string>
     <string name="error_could_not_save_the_exported_file">"내보낸 파일을 저장할 수 없습니다."</string>
     <string name="error_could_not_store_update_prompt_state">"업데이트 프롬프트 상태를 저장할 수 없습니다."</string>
     <string name="error_could_not_check_github_releases">"GitHub 릴리스를 확인할 수 없습니다."</string>
-    <string name="onboarding_demo_result">%1$s · %2$s페이지</string>
-    <string name="onboarding_demo_found">페이지 텍스트에서 찾음</string>
-    <string name="onboarding_demo_protected">비밀번호로 보호됨</string>
     <string name="onboarding_chapter_number">%1$02d %2$s</string>
     <!-- Split PDF -->
     <string name="tools_catalog_split">"분할"</string>
@@ -2065,4 +2062,7 @@
     <string name="pdf_peek_could_not_open">"이 PDF를 미리보기로 열 수 없습니다."</string>
     <string name="pdf_peek_close">"미리보기 닫기"</string>
     <string name="pdf_peek_tap_hint">"파일을 탭하면 미리 볼 수 있어요"</string>
+    <string name="welcome_greeting">환영합니다</string>
+    <string name="welcome_tagline">종이 문서를 깔끔하고 검색 가능한 PDF로 바꿔 보세요.</string>
+    <string name="welcome_no_language_match">‘%1$s’와(과) 일치하는 언어가 없습니다</string>
 </resources>

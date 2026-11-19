@@ -30,7 +30,7 @@ The version shown in **Settings** is read from `versionName` in `app/build.gradl
 
 ### 1.0.21 (version code 21)
 
-Split PDF (custom ranges, every N pages, or extract pages), Split a document into new documents, PDF tools straight from a document's ⋮ menu, illustrated Tools hub tiles, the Paper Atelier onboarding, Send feedback with image attachments, and a Rate Scanly fix. Room schema stays 12. See [CHANGELOG.md](CHANGELOG.md) for full details.
+A first-run welcome screen with app language choice, Split PDF (custom ranges, every N pages, or extract pages), Split a document into new documents, PDF preview inside tools, PDF tools straight from a document's ⋮ menu, illustrated Tools hub tiles, new introduction artwork, smoother screen transitions, steadier auto-capture without duplicate pages, Send feedback with image attachments, a Rate Scanly fix, and 861 translation corrections. Room schema stays 12. See [CHANGELOG.md](CHANGELOG.md) for full details.
 
 ### 1.0.20 (version code 20)
 

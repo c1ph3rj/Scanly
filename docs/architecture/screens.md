@@ -6,7 +6,7 @@ Every feature screen in Scanly **v1.0.21** and its responsibilities.
 
 | Feature | Screen | ViewModel | Route | Primary responsibilities |
 | --- | --- | --- | --- | --- |
-| Onboarding | `OnboardingScreen` | `OnboardingViewModel` | (gate in MainActivity) | First-run intro, then a camera-permission step when the camera is not yet allowed; persist completion |
+| Onboarding | `WelcomeScreen`, `OnboardingScreen` (in `OnboardingFlow`) | `OnboardingViewModel` | (gate in MainActivity) | Welcome screen with app language choice, three-page intro, then a camera-permission step when the camera is not yet allowed; persist completion |
 | Home | `HomeScreen` | `HomeViewModel` | `home` | Recent folders and documents (shimmer placeholders until the first load), scan/import/folder, suggest names, daily Pip tip, library shortcut |
 | Widgets / shortcuts | (system chrome) | `LaunchActionViewModel` | via `MainActivity` intents | Scan, Import, QR, Library redirects |
 | Library | `LibraryScreen` | `LibraryViewModel` | `library` | Paper cards, overflow/long-press actions, search, filter pills, sort, CRUD, suggest names |

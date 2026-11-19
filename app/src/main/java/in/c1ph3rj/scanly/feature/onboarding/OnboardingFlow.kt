@@ -1,6 +1,7 @@
 package `in`.c1ph3rj.scanly.feature.onboarding
 
 import android.Manifest
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
@@ -58,10 +59,20 @@ fun OnboardingFlow(
 ) {
     val context = LocalContext.current
     var showPermission by rememberSaveable { mutableStateOf(false) }
+    // Welcome (logo, summary, app language) comes first; Back from the intro returns to it.
+    var welcomeDone by rememberSaveable { mutableStateOf(false) }
     val finish = {
         showPermission = false
         onComplete()
     }
+
+    if (!welcomeDone) {
+        WelcomeRoute(onContinue = { welcomeDone = true }, modifier = modifier)
+        return
+    }
+
+    // Registered before OnboardingScreen, so its own page-back handler still wins on pages 2–3.
+    BackHandler(enabled = !showPermission) { welcomeDone = false }
 
     OnboardingScreen(
         uiState = uiState,

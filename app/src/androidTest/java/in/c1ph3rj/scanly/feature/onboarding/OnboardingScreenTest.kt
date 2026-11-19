@@ -79,7 +79,8 @@ class OnboardingScreenTest {
 
     private fun capture(name: String, tag: String = "onboarding_screen") {
         if (tag == "onboarding_screen") composeRule.waitUntil(10_000) {
-            composeRule.onAllNodesWithTag("onboarding_paper").fetchSemanticsNodes().isNotEmpty()
+            composeRule.onAllNodesWithTag("onboarding_illustration_ready", useUnmergedTree = true)
+                .fetchSemanticsNodes().isNotEmpty()
         }
         composeRule.waitForIdle()
         val bitmap = composeRule.onNodeWithTag(tag).captureToImage().asAndroidBitmap()
@@ -163,10 +164,10 @@ class OnboardingScreenTest {
         capture("dark-find")
     }
 
-    @Test fun searchPreview_largeTextKeepsTheResultAndNavigationReachable() {
+    @Test fun searchPreview_largeTextKeepsTheDescriptionAndNavigationReachable() {
         show(width = 320, height = 568, fontScale = 2f)
         composeRule.onNodeWithTag("onboarding_continue").performClick()
-        composeRule.onNodeWithText("Found in page text").performScrollTo().assertIsDisplayed()
+        composeRule.onNodeWithText("Recognise text on your device, then search the words inside your scans. Find the page you need without reading every document again.").performScrollTo().assertIsDisplayed()
         composeRule.onNodeWithTag("onboarding_continue").assertIsDisplayed().assertIsEnabled()
         capture("large-text-find-scrolled")
     }
@@ -174,7 +175,7 @@ class OnboardingScreenTest {
     @Test fun landscapeSearchPreview_scrollsInsideItsPane() {
         show(width = 740, height = 360)
         composeRule.onNodeWithTag("onboarding_continue").performClick()
-        composeRule.onNodeWithText("Found in page text").performScrollTo().assertIsDisplayed()
+        composeRule.onNodeWithText("Recognise text on your device, then search the words inside your scans. Find the page you need without reading every document again.").performScrollTo().assertIsDisplayed()
         composeRule.onNodeWithTag("onboarding_continue").assertIsDisplayed().assertIsEnabled()
         capture("landscape-find-scrolled")
     }
@@ -268,6 +269,22 @@ class OnboardingScreenTest {
         capture("amoled-capture")
     }
 
+    @Test fun captureAnimation_settlesAndKeepsNavigationAvailable() {
+        composeRule.mainClock.autoAdvance = false
+        show()
+        composeRule.mainClock.advanceTimeBy(900)
+        capture("motion-capture-mid")
+        composeRule.onNodeWithTag("onboarding_continue").assertIsDisplayed().assertIsEnabled()
+        composeRule.mainClock.advanceTimeBy(2_000)
+        capture("motion-capture-settled")
+        val settled = composeRule.onNodeWithTag("onboarding_screen").captureToImage().asAndroidBitmap()
+        composeRule.mainClock.advanceTimeBy(500)
+        val later = composeRule.onNodeWithTag("onboarding_screen").captureToImage().asAndroidBitmap()
+        org.junit.Assert.assertTrue("The illustration must stop animating after arrival", settled.sameAs(later))
+        settled.recycle()
+        later.recycle()
+    }
+
     @Test fun largeTextLandscape_keepsPrimaryActionVisible() {
         show(width = 740, height = 360, fontScale = 2f)
         skip()
@@ -347,6 +364,7 @@ class OnboardingScreenTest {
                 OnboardingFlow(OnboardingUiState(status = OnboardingStatus.REQUIRED), { completions++ }, {})
             }
         }
+        composeRule.onNodeWithTag("welcome_continue").performClick()
         skip()
         composeRule.onNodeWithTag("onboarding_get_started").performClick()
         composeRule.onNodeWithTag("onboarding_permission_sheet").assertIsDisplayed()
@@ -362,6 +380,7 @@ class OnboardingScreenTest {
                 OnboardingFlow(OnboardingUiState(status = OnboardingStatus.REQUIRED), { completions++ }, {})
             }
         }
+        composeRule.onNodeWithTag("welcome_continue").performClick()
         skip()
         composeRule.onNodeWithTag("onboarding_get_started").performClick()
         composeRule.onNodeWithTag("onboarding_permission_sheet").assertIsDisplayed()

@@ -46,7 +46,7 @@
     <string name="default_document_repository_could_not_clear_old_deleted">जुने हटवलेले दस्तऐवज साफ करता आले नाहीत.</string>
     <string name="default_document_repository_could_not_empty_recently_deleted">अलीकडे हटवलेले रिकामे करता आले नाही.</string>
     <string name="default_document_repository_could_not_restore_the_document">दस्तऐवज रिस्टोअर करता आला नाही.</string>
-    <string name="default_document_repository_could_not_move_the_document">दस्तऐवज अलीकडे हटवलेलेमध्ये हलवता आला नाही.</string>
+    <string name="default_document_repository_could_not_move_the_document">"दस्तऐवज अलीकडे हटवलेल्यांमध्ये हलवता आला नाही."</string>
     <!-- DefaultDocumentExportRepository -->
     <string name="default_document_export_repository_could_not_prepare_group_zip">ग्रुपची ZIP शेअर करण्यासाठी तयार करता आली नाही.</string>
     <string name="default_document_export_repository_could_not_prepare_group_pdf">ग्रुपची PDF शेअर करण्यासाठी तयार करता आली नाही.</string>
@@ -61,7 +61,7 @@
     <string name="default_group_repository_could_not_delete_the_folders">फोल्डर हटवता आले नाहीत.</string>
     <string name="default_group_repository_could_not_delete_the_folder">फोल्डर हटवता आले नाही.</string>
     <string name="default_group_repository_could_not_restore_the_folder">फोल्डर रिस्टोअर करता आले नाही.</string>
-    <string name="default_group_repository_could_not_move_the_folder">फोल्डर अलीकडे हटवलेलेमध्ये हलवता आले नाही.</string>
+    <string name="default_group_repository_could_not_move_the_folder">"फोल्डर अलीकडे हटवलेल्यांमध्ये हलवता आले नाही."</string>
     <!-- DefaultPageRepository -->
     <string name="default_page_repository_applied_to_of_pages_save">%2$s पैकी %1$s पेजवर लागू केले. उरलेल्यांसाठी पुन्हा सेव्ह करा.</string>
     <string name="default_page_repository_could_not_clear_old_deleted">जुनी हटवलेली पेज साफ करता आली नाहीत.</string>
@@ -353,7 +353,7 @@
     <string name="filter_customize_whiteboard">व्हाइटबोर्ड</string>
     <string name="filter_customize_grayscale">ग्रेस्केल</string>
     <string name="filter_customize_screen">स्क्रीन</string>
-    <string name="filter_customize_vivid">गडद रंग</string>
+    <string name="filter_customize_vivid">"तेजस्वी रंग"</string>
     <string name="filter_customize_natural">नैसर्गिक</string>
     <string name="filter_customize_magic_color">मॅजिक कलर</string>
     <string name="filter_customize_auto">ऑटो</string>
@@ -456,7 +456,7 @@
     <string name="home_recent_folders">अलीकडील फोल्डर</string>
     <string name="home_new_scan">नवीन स्कॅन</string>
     <!-- FolderDeleteDialog -->
-    <string name="folder_delete_both_go_to_recently_deleted">दोन्ही %1$s साठी अलीकडे हटवलेले मध्ये जातात</string>
+    <string name="folder_delete_both_go_to_recently_deleted">"दोन्ही %1$s साठी अलीकडे हटवलेल्यांमध्ये जातात"</string>
     <string name="folder_delete_delete_folder_and_documents">फोल्डर आणि दस्तऐवज हटवा</string>
     <string name="folder_delete_keep_the_in_your_library">%1$s तुमच्या लायब्ररीत ठेवा</string>
     <string name="folder_delete_delete_folder_only">फक्त फोल्डर हटवा</string>
@@ -608,14 +608,14 @@
     <string name="search_filters_any_type">कोणताही प्रकार</string>
     <string name="search_filters_type">प्रकार</string>
     <!-- TrashCopy -->
-    <string name="trash_copy_page_moves_to_recently_deleted">पेज %1$s अलीकडे हटवलेले मध्ये जाईल. तुम्ही ते %2$s पर्यंत रिस्टोअर करू शकता.</string>
-    <string name="trash_copy_and_its_documents_move_to">\"%1$s\" आणि त्यातील %2$s दस्तऐवज अलीकडे हटवलेले मध्ये जातील. तुम्ही ते %3$s पर्यंत रिस्टोअर करू शकता.</string>
-    <string name="trash_copy_and_the_document_in_it">\"%1$s\" आणि त्यातील दस्तऐवज अलीकडे हटवलेले मध्ये जातील. तुम्ही ते %2$s पर्यंत रिस्टोअर करू शकता.</string>
-    <string name="trash_copy_moves_to_recently_deleted_you">\"%1$s\" अलीकडे हटवलेले मध्ये जाईल. तुम्ही ते %2$s पर्यंत रिस्टोअर करू शकता.</string>
+    <string name="trash_copy_page_moves_to_recently_deleted">"पेज %1$s अलीकडे हटवलेल्यांमध्ये जाईल. तुम्ही ते %2$s पर्यंत रिस्टोअर करू शकता."</string>
+    <string name="trash_copy_and_its_documents_move_to">"\"%1$s\" आणि त्यातील %2$s दस्तऐवज अलीकडे हटवलेल्यांमध्ये जातील. तुम्ही ते %3$s पर्यंत रिस्टोअर करू शकता."</string>
+    <string name="trash_copy_and_the_document_in_it">"\"%1$s\" आणि त्यातील दस्तऐवज अलीकडे हटवलेल्यांमध्ये जातील. तुम्ही ते %2$s पर्यंत रिस्टोअर करू शकता."</string>
+    <string name="trash_copy_moves_to_recently_deleted_you">"\"%1$s\" अलीकडे हटवलेल्यांमध्ये जाईल. तुम्ही ते %2$s पर्यंत रिस्टोअर करू शकता."</string>
     <string name="trash_copy_1_day">1 दिवस</string>
     <!-- TrashUndoSnackbar -->
-    <string name="trash_undo_snackbar_moved_to_recently_deleted">\"%1$s\" अलीकडे हटवलेले मध्ये हलवले</string>
-    <string name="trash_undo_snackbar_moved_to_recently_deleted_2">%1$s अलीकडे हटवलेले मध्ये हलवले</string>
+    <string name="trash_undo_snackbar_moved_to_recently_deleted">"\"%1$s\" अलीकडे हटवलेल्यांमध्ये हलवले"</string>
+    <string name="trash_undo_snackbar_moved_to_recently_deleted_2">"%1$s अलीकडे हटवलेल्यांमध्ये हलवले"</string>
     <string name="trash_undo_snackbar_undo">पूर्ववत करा</string>
     <!-- OnboardingFlow -->
     <string name="onboarding_flow_enable_camera">कॅमेरा सुरू करा</string>
@@ -626,7 +626,7 @@
     <!-- OnboardingScreen -->
     <string name="onboarding_no_account_no_cloud_upload">खाते नाही. क्लाउडवर अपलोड नाही.</string>
     <string name="onboarding_continue">पुढे सुरू ठेवा</string>
-    <string name="onboarding_get_started">माझे पहिले पान स्कॅन करा</string>
+    <string name="onboarding_get_started">"माझे पहिले पेज स्कॅन करा"</string>
     <string name="onboarding_page_of_3">%1$s, 3 पैकी पेज %2$s</string>
     <string name="onboarding_page_of_3_2">3 पैकी पेज %1$s</string>
     <string name="onboarding_skip">वगळा</string>
@@ -940,7 +940,7 @@
     <string name="sign_mark_layer_tick">खूण करा</string>
     <string name="sign_mark_layer_untick">खूण काढा</string>
     <!-- SignatureManageScreen -->
-    <string name="signature_manage_added">%1$s · %2$s ला जोडली</string>
+    <string name="signature_manage_added">"%1$s · %2$s रोजी जोडली"</string>
     <string name="signature_manage_from_a_photo">फोटोमधून</string>
     <string name="signature_manage_drawn">काढलेली</string>
     <string name="signature_manage_pages_you_ve_already_signed">आधीच स्वाक्षरी केलेल्या पेजवर ती तशीच राहते</string>
@@ -1404,7 +1404,7 @@
     <string name="image_text_1_scan">"1 स्कॅन"</string>
     <string name="image_text_up_to_from_your_gallery">"तुमच्या गॅलरी किंवा फाइल्समधून %1$s पर्यंत"</string>
     <string name="image_text_copy_text_from_photos_or">"फोटो किंवा स्कॅनमधून मजकूर कॉपी करा. या फोनवर मजकूर वाचला जातो."</string>
-    <string name="image_text_image_to_text">"मजकूरासाठी प्रतिमा"</string>
+    <string name="image_text_image_to_text">"प्रतिमेतून मजकूर"</string>
     <!-- AppUpdateDialog -->
     <string name="app_update_published">"%1$s प्रकाशित"</string>
     <string name="app_update_current">"वर्तमान"</string>
@@ -1419,7 +1419,7 @@
     <!-- ReleaseMarkdown -->
     <string name="release_markdown_no_release_notes_were_provided">"या आवृत्तीसाठी कोणत्याही रिलीझ नोट्स प्रदान केल्या नाहीत."</string>
     <!-- ScanlyNavHost -->
-    <string name="scanly_nav_host_up_to_images">"%1$s प्रतिमा"</string>
+    <string name="scanly_nav_host_up_to_images">"%1$s प्रतिमांपर्यंत"</string>
     <string name="scanly_nav_host_import_from_gallery">"गॅलरीमधून आयात करा"</string>
     <string name="scanly_nav_host_capture_pages_now">"आता पृष्ठे कॅप्चर करा"</string>
     <string name="scanly_nav_host_scan_with_camera">"कॅमेरा सह स्कॅन करा"</string>
@@ -1532,7 +1532,7 @@
     <string name="pdf_import_look_enhance">"वर्धित करा"</string>
     <string name="pdf_import_look_even_out_scanned_pages_and">"अगदी स्कॅन केलेली पृष्ठे आणि मजकूर तीक्ष्ण करा"</string>
     <!-- capture_scene_issue -->
-    <string name="capture_scene_issue_lens_may_be_covered_clear">"लेन्स झाकलेले असू शकते. ते उघड करा आणि पुन्हा प्रयत्न करा."</string>
+    <string name="capture_scene_issue_lens_may_be_covered_clear">"लेन्स झाकलेली असू शकते. ती स्वच्छ करा आणि पुन्हा प्रयत्न करा."</string>
     <string name="capture_scene_issue_too_dark_add_light_or">"खूप गडद. प्रकाश जोडा किंवा फ्लॅश चालू करा."</string>
     <string name="capture_scene_issue_image_looks_blurry_clean_the">"प्रतिमा अस्पष्ट दिसते. लेन्स साफ करा किंवा फोकस करण्यासाठी टॅप करा."</string>
     <!-- group_export_action -->
@@ -1555,14 +1555,14 @@
     <string name="signature_pen_width_bold">"जाड"</string>
     <!-- onboarding_page -->
     <string name="onboarding_page_capture">"कॅप्चर"</string>
-    <string name="onboarding_page_paper_to_polished">कागद, अधिक सुबक.</string>
-    <string name="onboarding_page_capture_straighten_and_clean_up">पान सरळ करा. बारकावे जपा.</string>
+    <string name="onboarding_page_paper_to_polished">"कागद,\nअधिक सुबक."</string>
+    <string name="onboarding_page_capture_straighten_and_clean_up">पान स्कॅन करा, कडा सरळ करा आणि रंग जुळवा. स्कॅन जतन करण्यापूर्वी तपशील स्पष्ट असल्याची खात्री करा.</string>
     <string name="onboarding_page_find">"शोधा"</string>
-    <string name="onboarding_page_find_more_than_files">शब्द शोधा. पान मिळवा.</string>
-    <string name="onboarding_page_recognize_text_on_your_device">तुमच्या स्कॅनमधील मजकुरात शोधा.</string>
+    <string name="onboarding_page_find_more_than_files">"शब्द शोधा.\nपान मिळवा."</string>
+    <string name="onboarding_page_recognize_text_on_your_device">तुमच्या डिव्हाइसवर मजकूर ओळखा, नंतर स्कॅनमधील शब्द शोधा. प्रत्येक दस्तऐवज पुन्हा न वाचता हवे ते पान शोधा.</string>
     <string name="onboarding_page_share">पूर्ण करा</string>
-    <string name="onboarding_page_ready_when_you_are">पाठवण्यासाठी तयार.</string>
-    <string name="onboarding_page_keep_pages_together_share_a">स्वच्छ PDF वर स्वाक्षरी करा, सुरक्षित करा आणि शेअर करा.</string>
+    <string name="onboarding_page_ready_when_you_are">"पाठवण्यासाठी\nतयार करा."</string>
+    <string name="onboarding_page_keep_pages_together_share_a">तुमची पाने एका PDF मध्ये ठेवा. गरजेनुसार स्वाक्षरी किंवा पासवर्ड जोडा आणि काही टॅपमध्ये तयार दस्तऐवज शेअर करा.</string>
     <!-- pdf_reader_tool -->
     <string name="pdf_reader_tool_merge_with_other_pdfs">"इतर PDF फाइल्ससह विलीन करा"</string>
     <string name="pdf_reader_tool_password_protect">"पासवर्ड संरक्षण"</string>
@@ -1661,7 +1661,7 @@
     <string name="tools_catalog_merge">"विलीन करा"</string>
     <string name="tools_catalog_sign_any_pdf">"कोणत्याही PDF वर स्वाक्षरी करा"</string>
     <string name="tools_catalog_from_gallery">"गॅलरीमधून"</string>
-    <string name="tools_catalog_images_to_pdf">"PDF साठी प्रतिमा"</string>
+    <string name="tools_catalog_images_to_pdf">"प्रतिमा PDF मध्ये"</string>
     <string name="tools_catalog_create_manage">"तयार करा आणि व्यवस्थापित करा"</string>
     <string name="tools_catalog_my_signatures">"माझ्या स्वाक्षऱ्या"</string>
     <string name="tools_catalog_photos_scans">"फोटो आणि स्कॅन"</string>
@@ -1680,7 +1680,7 @@
     <string name="pip_lines_i_m_open_source_you">"माझा सोर्स कोड खुला आहे. त्याची प्रत्येक ओळ तुम्ही वाचू शकता."</string>
     <string name="pip_lines_your_original_photos_are_kept">"तुमचे मूळ फोटो ठेवले आहेत, त्यामुळे संपादने नेहमी पूर्ववत केली जाऊ शकतात."</string>
     <string name="pip_lines_i_live_on_your_phone">"मी तुमच्या फोनवर काम करतो. तुमचे स्कॅन कधीही सर्व्हरवर जात नाहीत."</string>
-    <string name="pip_lines_hey_that_tickles">"अहो! की गुदगुल्या."</string>
+    <string name="pip_lines_hey_that_tickles">"अहो! गुदगुल्या होत आहेत!"</string>
     <!-- pdf_watermark -->
     <string name="pdf_watermark_for_kyc_use_only">For KYC use only</string>
     <!-- document_presentation_formatter -->
@@ -1981,9 +1981,6 @@
     <string name="error_could_not_save_the_exported_file">"निर्यात केलेली फाइल जतन करू शकलो नाही."</string>
     <string name="error_could_not_store_update_prompt_state">"अद्यतन प्रॉम्प्ट स्थिती संचयित करू शकलो नाही."</string>
     <string name="error_could_not_check_github_releases">"GitHub रिलीझ तपासू शकलो नाही."</string>
-    <string name="onboarding_demo_result">%1$s · पान %2$s</string>
-    <string name="onboarding_demo_found">पानाच्या मजकुरात सापडले</string>
-    <string name="onboarding_demo_protected">पासवर्डने सुरक्षित</string>
     <string name="onboarding_chapter_number">%1$02d %2$s</string>
     <!-- Split PDF -->
     <string name="tools_catalog_split">"विभाजित करा"</string>
@@ -2099,4 +2096,7 @@
     <string name="pdf_peek_could_not_open">"प्रिव्ह्यूसाठी ही PDF उघडता आली नाही."</string>
     <string name="pdf_peek_close">"प्रिव्ह्यू बंद करा"</string>
     <string name="pdf_peek_tap_hint">"प्रिव्ह्यूसाठी फाइलवर टॅप करा"</string>
+    <string name="welcome_greeting">स्वागत आहे</string>
+    <string name="welcome_tagline">कागदांचे स्वच्छ, शोधता येणाऱ्या PDF मध्ये रूपांतर करा.</string>
+    <string name="welcome_no_language_match">“%1$s” शी जुळणारी भाषा नाही</string>
 </resources>

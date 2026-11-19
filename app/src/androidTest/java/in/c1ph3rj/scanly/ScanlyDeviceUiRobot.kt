@@ -62,10 +62,15 @@ internal fun ComposeTestRule.awaitText(text: String, timeoutMs: Long = DEFAULT_T
 
 internal fun ComposeTestRule.completeOnboardingIfNeeded() {
     waitUntil(DEFAULT_TIMEOUT_MS) {
-        hasTag("onboarding_skip") ||
+        hasTag("welcome_continue") ||
+            hasTag("onboarding_skip") ||
             hasTag(ScanlyTestTags.ONBOARDING_GET_STARTED) ||
             hasTag(ScanlyTestTags.HOME_SCREEN) ||
             hasTag(ScanlyTestTags.NAV_HOME)
+    }
+    if (hasTag("welcome_continue")) {
+        onNodeWithTag("welcome_continue").performClick()
+        awaitTag("onboarding_skip")
     }
     if (hasTag("onboarding_skip")) {
         onNodeWithTag("onboarding_skip").performClick()

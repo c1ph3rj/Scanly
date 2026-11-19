@@ -469,7 +469,7 @@
     <string name="group_detail_documents_already_in_folders_won">"I documenti già in una cartella non compaiono qui. Creane uno nuovo."</string>
     <string name="group_detail_no_loose_documents">"Nessun documento fuori dalle cartelle"</string>
     <string name="group_detail_select_all">"Seleziona tutto"</string>
-    <string name="group_detail_clear">"Cancella"</string>
+    <string name="group_detail_clear">"Deseleziona"</string>
     <string name="group_detail_select_one_or_more_documents">"Seleziona uno o più documenti"</string>
     <string name="group_detail_nothing_available_to_move">"Niente da spostare"</string>
     <string name="group_detail_move_existing">"Sposta esistenti"</string>
@@ -1555,14 +1555,14 @@
     <string name="signature_pen_width_bold">"Spesso"</string>
     <!-- onboarding_page -->
     <string name="onboarding_page_capture">"ACQUISISCI"</string>
-    <string name="onboarding_page_paper_to_polished">Carta, perfezionata.</string>
-    <string name="onboarding_page_capture_straighten_and_clean_up">Raddrizza la pagina. Conserva i dettagli.</string>
+    <string name="onboarding_page_paper_to_polished">"Carta,\nperfezionata."</string>
+    <string name="onboarding_page_capture_straighten_and_clean_up">Acquisisci una pagina, raddrizza i bordi e regola il colore. Mantieni nitidi i dettagli prima di salvare la scansione.</string>
     <string name="onboarding_page_find">"TROVA"</string>
-    <string name="onboarding_page_find_more_than_files">Trova la parola. Trova la pagina.</string>
-    <string name="onboarding_page_recognize_text_on_your_device">Cerca nel testo delle tue scansioni.</string>
+    <string name="onboarding_page_find_more_than_files">"Trova la parola.\nTrova la pagina."</string>
+    <string name="onboarding_page_recognize_text_on_your_device">Riconosci il testo sul dispositivo e cerca le parole nelle scansioni. Trova la pagina che ti serve senza rileggere ogni documento.</string>
     <string name="onboarding_page_share">CONCLUDI</string>
-    <string name="onboarding_page_ready_when_you_are">Pronto da inviare.</string>
-    <string name="onboarding_page_keep_pages_together_share_a">Firma, proteggi e condividi un PDF nitido.</string>
+    <string name="onboarding_page_ready_when_you_are">"Pronto\nda inviare."</string>
+    <string name="onboarding_page_keep_pages_together_share_a">Riunisci le pagine in un PDF. Aggiungi una firma o una password quando serve, poi condividi il documento con pochi tocchi.</string>
     <!-- pdf_reader_tool -->
     <string name="pdf_reader_tool_merge_with_other_pdfs">"Unisci ad altri PDF"</string>
     <string name="pdf_reader_tool_password_protect">"Proteggi con password"</string>
@@ -1944,9 +1944,9 @@
         <item quantity="other">"%d immagini"</item>
     </plurals>
     <plurals name="common_marks">
-        <item quantity="one">"%d annotazione"</item>
+        <item quantity="one">"%d segno"</item>
         <item quantity="many">"%d annotazioni"</item>
-        <item quantity="other">"%d annotazioni"</item>
+        <item quantity="other">"%d segni"</item>
     </plurals>
     <plurals name="common_scans">
         <item quantity="one">"%d scansione"</item>
@@ -1983,7 +1983,7 @@
     <string name="error_failed_to_import_images">"Impossibile importare le immagini."</string>
     <string name="error_could_not_calculate_storage_usage">"Impossibile calcolare l'utilizzo dello spazio di archiviazione."</string>
     <string name="error_could_not_clear_app_data">"Impossibile cancellare i dati dell'app."</string>
-    <string name="error_could_not_clear_temporary_exports">"Impossibile autorizzare le esportazioni temporanee."</string>
+    <string name="error_could_not_clear_temporary_exports">"Impossibile cancellare le esportazioni temporanee."</string>
     <string name="error_could_not_remove_old_backup_files">"Impossibile rimuovere i vecchi file di backup."</string>
     <string name="error_could_not_create_the_document">"Impossibile creare il documento."</string>
     <string name="error_could_not_rename_the_document">"Impossibile rinominare il documento."</string>
@@ -2008,9 +2008,6 @@
     <string name="error_could_not_save_the_exported_file">"Impossibile salvare il file esportato."</string>
     <string name="error_could_not_store_update_prompt_state">"Impossibile memorizzare lo stato della richiesta di aggiornamento."</string>
     <string name="error_could_not_check_github_releases">"Impossibile controllare le versioni di GitHub."</string>
-    <string name="onboarding_demo_result">%1$s · Pagina %2$s</string>
-    <string name="onboarding_demo_found">Trovato nel testo della pagina</string>
-    <string name="onboarding_demo_protected">Protetto da password</string>
     <string name="onboarding_chapter_number">%1$02d %2$s</string>
     <!-- Split PDF -->
     <string name="tools_catalog_split">"Dividi"</string>
@@ -2018,7 +2015,7 @@
     <string name="pdf_reader_tool_split_into_parts">"Dividi in parti"</string>
     <string name="pdf_split_title">"Dividi PDF"</string>
     <string name="pdf_split_subtitle">"Taglia un PDF in PDF più piccoli"</string>
-    <string name="pdf_split_step_2">"Passo 2 di 3 · Dove dividere"</string>
+    <string name="pdf_split_step_2">"Passaggio 2 di 3 · Dove dividere"</string>
     <string name="pdf_split_mode_custom">"Personalizzato"</string>
     <string name="pdf_split_mode_every_n">"Ogni N pagine"</string>
     <string name="pdf_split_mode_extract">"Estrai"</string>
@@ -2030,7 +2027,7 @@
     <string name="pdf_split_range_from">"Dalla pagina"</string>
     <string name="pdf_split_range_to">"a"</string>
     <string name="pdf_split_remove_range">"Rimuovi intervallo %d"</string>
-    <string name="pdf_split_range_error">"Usa pagine da 1 a %d, con la prima prima dell\'ultima."</string>
+    <string name="pdf_split_range_error">"Usa pagine da 1 a %d, con la prima pagina prima dell\'ultima."</string>
     <string name="pdf_split_add_range">"Aggiungi intervallo"</string>
     <string name="pdf_split_pages_included">"Pagine incluse"</string>
     <string name="pdf_split_not_included">"In nessun intervallo, quindi non salvate: %s"</string>
@@ -2133,4 +2130,7 @@
     <string name="pdf_peek_could_not_open">"Impossibile aprire questo PDF per l\'anteprima."</string>
     <string name="pdf_peek_close">"Chiudi anteprima"</string>
     <string name="pdf_peek_tap_hint">"Tocca un file per vederne l\'anteprima"</string>
+    <string name="welcome_greeting">Ti diamo il benvenuto</string>
+    <string name="welcome_tagline">Trasforma la carta in PDF nitidi e ricercabili.</string>
+    <string name="welcome_no_language_match">Nessuna lingua corrisponde a “%1$s”</string>
 </resources>
