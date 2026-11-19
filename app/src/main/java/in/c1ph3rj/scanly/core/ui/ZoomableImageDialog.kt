@@ -77,8 +77,13 @@ fun ZoomableImageDialog(
 ) {
     Dialog(
         onDismissRequest = onDismiss,
+        // Edge-to-edge dialog: Compose lays the window out behind transparent system bars,
+        // and the viewer pads itself with statusBarsPadding()/navigationBarsPadding().
+        // Do not set Window.statusBarColor/navigationBarColor here — both are deprecated
+        // on Android 15 and flagged by Play.
         properties = DialogProperties(
             usePlatformDefaultWidth = false,
+            decorFitsSystemWindows = false,
         ),
     ) {
         val view = LocalView.current
@@ -86,10 +91,6 @@ fun ZoomableImageDialog(
         DisposableEffect(view, isLightBackground) {
             val window = (view.parent as? DialogWindowProvider)?.window
             if (window != null) {
-                WindowCompat.setDecorFitsSystemWindows(window, false)
-                window.statusBarColor = android.graphics.Color.TRANSPARENT
-                window.navigationBarColor = android.graphics.Color.TRANSPARENT
-                
                 val controller = WindowCompat.getInsetsController(window, view)
                 controller.isAppearanceLightStatusBars = isLightBackground
                 controller.isAppearanceLightNavigationBars = isLightBackground
