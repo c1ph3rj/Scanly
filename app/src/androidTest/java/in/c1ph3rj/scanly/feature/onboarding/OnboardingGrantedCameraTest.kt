@@ -32,6 +32,7 @@ class OnboardingGrantedCameraTest {
                 )
             }
         }
+        composeRule.onNodeWithTag("welcome_continue").performClick()
         composeRule.onNodeWithTag("onboarding_skip").performClick()
         composeRule.onNodeWithText("Scan my first page").performClick()
         composeRule.runOnIdle {

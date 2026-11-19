@@ -1,6 +1,6 @@
 ﻿{
   "schemaVersion": 1,
-  "lastUpdated": "2026-11-11",
+  "lastUpdated": "2026-11-19",
   "release": {
     "stableVersion": "v1.0.21",
     "developmentLabel": "What's new",
@@ -102,9 +102,13 @@
   },
   "development": {
     "eyebrow": "What's new in v1.0.21",
-    "title": "Split PDFs and documents, your way.",
-    "description": "Cut a PDF into parts, split a scanned document into new ones, and reach every PDF tool straight from a document — all on your device.",
+    "title": "Your language first. Then split, preview and scan.",
+    "description": "Pick Scanly’s language on the very first screen, cut PDFs and scanned documents into parts, preview files inside tools, and capture pages with steadier auto-capture — all on your device.",
     "items": [
+      {
+        "title": "Welcome in your language",
+        "body": "The first screen shows the Scanly logo and lets you choose from 25 languages or keep your phone’s. Search by a language’s own name or its English name."
+      },
       {
         "title": "Split PDF",
         "body": "Custom ranges, every N pages, or extract the pages you pick. Rename, open, save or share each part; the original is never changed."
@@ -114,20 +118,16 @@
         "body": "Tap the gaps between pages to cut. Each part becomes a new document with its page text and signatures; keep the original or send it to Recently deleted."
       },
       {
-        "title": "PDF tools from a document",
-        "body": "Compress, Merge, Split, Password, Watermark and Save as images open from a document's ⋮ menu with that document already chosen."
+        "title": "Preview inside tools",
+        "body": "Open the chosen PDF full screen from Split, Compress, Password, PDF to JPG, Add to library or Merge, then return exactly where you were."
       },
       {
-        "title": "Illustrated Tools",
-        "body": "Every tool tile shows a small picture of what it does, in light, dark and pure black themes."
+        "title": "Steadier auto-capture",
+        "body": "No more duplicate pages, a steadier outline and countdown, ID cards detected, and tighter edges on pages and open books."
       },
       {
-        "title": "A warmer first run",
-        "body": "Paper Atelier onboarding introduces capture, on-device text search and finished PDFs with a live Pip guide."
-      },
-      {
-        "title": "Send feedback",
-        "body": "Share a suggestion or issue from Settings with up to 5 images, prepared on your phone before your email app opens."
+        "title": "Smoother everywhere",
+        "body": "Screens glide in and out, documents open complete, and every tool tile shows a small picture of what it does."
       }
     ]
   },

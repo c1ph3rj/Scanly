@@ -626,7 +626,7 @@
     <!-- OnboardingScreen -->
     <string name="onboarding_no_account_no_cloud_upload">అకౌంట్ అవసరం లేదు. క్లౌడ్ అప్‌లోడ్ లేదు.</string>
     <string name="onboarding_continue">కొనసాగించండి</string>
-    <string name="onboarding_get_started">నా మొదటి పేజీని స్కాన్ చేయి</string>
+    <string name="onboarding_get_started">"నా మొదటి పేజీని స్కాన్ చేయండి"</string>
     <string name="onboarding_page_of_3">"%1$s, పేజీ %2$s / 3"</string>
     <string name="onboarding_page_of_3_2">"పేజీ %1$s / 3"</string>
     <string name="onboarding_skip">దాటవేయండి</string>
@@ -817,7 +817,7 @@
     <string name="settings_text_recognition_experimental">ప్రయోగాత్మకం</string>
     <string name="settings_text_recognition_google_s_fast_on_device">Google అందించే వేగవంతమైన ఆన్-డివైజ్ రికగ్నైజర్. ఇంగ్లీష్, స్పానిష్, ఫ్రెంచ్ వంటి లాటిన్ లిపి భాషలకు ఉత్తమం.</string>
     <string name="settings_text_recognition_default">డిఫాల్ట్</string>
-    <string name="settings_text_recognition_if_a_page_s_text">పేజీ టెక్స్ట్ ఖాళీగా లేదా గజిబిజిగా కనిపిస్తే, అది బహుశా ML Kit చదవలేని లిపిలో ఉంది. Indra OCRకు మారి, ఆపై ఉన్న పేజీలను మళ్లీ చదవండిని ఉపయోగించండి.</string>
+    <string name="settings_text_recognition_if_a_page_s_text">"పేజీ టెక్స్ట్ ఖాళీగా లేదా గజిబిజిగా కనిపిస్తే, అది బహుశా ML Kit చదవలేని లిపిలో ఉంది. Indra OCRకు మారి, ఆపై “ఉన్న పేజీలను మళ్లీ చదవండి”ని ఉపయోగించండి."</string>
     <string name="settings_text_recognition_tip">చిట్కా</string>
     <string name="settings_text_recognition_switching_engines_only_affects_new">ఇంజిన్ మార్చడం కొత్తగా చదివే పేజీలకు మాత్రమే వర్తిస్తుంది. ఇప్పటికే ఉన్న పేజీలను ఈ స్క్రీన్ నుండి మళ్లీ చదవవచ్చు, మీరు స్వయంగా సరిచేసిన టెక్స్ట్ ఎప్పటికీ మార్చబడదు.</string>
     <string name="settings_text_recognition_your_edits_are_kept">మీ మార్పులు అలాగే ఉంటాయి</string>
@@ -1053,7 +1053,7 @@
     <string name="pdf_import_added_to_your_library">మీ లైబ్రరీకి జోడించబడింది</string>
     <string name="pdf_import_step_3_of_3_done">దశ 3 / 3 · పూర్తయింది</string>
     <string name="pdf_import_adding_to_library">లైబ్రరీకి జోడిస్తోంది…</string>
-    <string name="pdf_import_look">చూడండి</string>
+    <string name="pdf_import_look">"రూపం"</string>
     <string name="pdf_import_your_pdf_file_stays_as">మీ PDF ఫైల్ అలాగే ఉంటుంది; Scanly తన సొంత కాపీని ఉంచుకుంటుంది</string>
     <string name="pdf_import_tap_a_page_or_long">పేజీని నొక్కండి, లేదా నొక్కి పట్టుకుని అనేక పేజీల మీదుగా లాగండి.</string>
     <string name="pdf_import_step_2_of_3_pages">దశ 2 / 3 · పేజీలు, పేరు</string>
@@ -1532,7 +1532,7 @@
     <string name="pdf_import_look_enhance">"మెరుగుపరచండి"</string>
     <string name="pdf_import_look_even_out_scanned_pages_and">"స్కాన్ చేసిన పేజీలను సరి చేయండి మరియు వచనాన్ని పదును పెట్టండి"</string>
     <!-- capture_scene_issue -->
-    <string name="capture_scene_issue_lens_may_be_covered_clear">"లెన్స్ కప్పబడి ఉండవచ్చు. దాన్ని వెలికితీసి మళ్లీ ప్రయత్నించండి."</string>
+    <string name="capture_scene_issue_lens_may_be_covered_clear">"లెన్స్ కప్పబడి ఉండవచ్చు. దాన్ని శుభ్రం చేసి మళ్లీ ప్రయత్నించండి."</string>
     <string name="capture_scene_issue_too_dark_add_light_or">"చాలా చీకటి. కాంతిని జోడించండి లేదా ఫ్లాష్‌ని ఆన్ చేయండి."</string>
     <string name="capture_scene_issue_image_looks_blurry_clean_the">"చిత్రం అస్పష్టంగా కనిపిస్తోంది. లెన్స్‌ను క్లీన్ చేయండి లేదా ఫోకస్ చేయడానికి నొక్కండి."</string>
     <!-- group_export_action -->
@@ -1555,14 +1555,14 @@
     <string name="signature_pen_width_bold">"మందపాటి"</string>
     <!-- onboarding_page -->
     <string name="onboarding_page_capture">"క్యాప్చర్"</string>
-    <string name="onboarding_page_paper_to_polished">కాగితం, మరింత చక్కగా.</string>
-    <string name="onboarding_page_capture_straighten_and_clean_up">పేజీని సరిచేయండి. వివరాలను కాపాడండి.</string>
+    <string name="onboarding_page_paper_to_polished">"కాగితం,\nమరింత చక్కగా."</string>
+    <string name="onboarding_page_capture_straighten_and_clean_up">పేజీని స్కాన్ చేసి, అంచులను సరిచేసి, రంగును సర్దుబాటు చేయండి. స్కాన్‌ను సేవ్ చేసే ముందు వివరాలు స్పష్టంగా ఉన్నాయో చూడండి.</string>
     <string name="onboarding_page_find">"కనుగొనండి"</string>
-    <string name="onboarding_page_find_more_than_files">పదాన్ని వెతకండి. పేజీని కనుగొనండి.</string>
-    <string name="onboarding_page_recognize_text_on_your_device">మీ స్కాన్‌లలోని వచనంలో వెతకండి.</string>
+    <string name="onboarding_page_find_more_than_files">"పదాన్ని వెతకండి.\nపేజీని కనుగొనండి."</string>
+    <string name="onboarding_page_recognize_text_on_your_device">మీ పరికరంలోనే వచనాన్ని గుర్తించి, స్కాన్‌లలోని పదాలను వెతకండి. ప్రతి పత్రాన్ని మళ్లీ చదవకుండానే కావలసిన పేజీని కనుగొనండి.</string>
     <string name="onboarding_page_share">పూర్తి</string>
-    <string name="onboarding_page_ready_when_you_are">పంపడానికి సిద్ధం.</string>
-    <string name="onboarding_page_keep_pages_together_share_a">స్పష్టమైన PDFపై సంతకం చేసి, రక్షించి, షేర్ చేయండి.</string>
+    <string name="onboarding_page_ready_when_you_are">"దీన్ని సిద్ధం చేయండి\nపంపడానికి."</string>
+    <string name="onboarding_page_keep_pages_together_share_a">మీ పేజీలను ఒకే PDFలో ఉంచండి. అవసరమైతే సంతకం లేదా పాస్‌వర్డ్ జోడించి, కొన్ని ట్యాప్‌లతో సిద్ధమైన పత్రాన్ని షేర్ చేయండి.</string>
     <!-- pdf_reader_tool -->
     <string name="pdf_reader_tool_merge_with_other_pdfs">"ఇతర PDF ఫైల్‌లతో విలీనం చేయండి"</string>
     <string name="pdf_reader_tool_password_protect">"పాస్‌వర్డ్ రక్షణ"</string>
@@ -1680,7 +1680,7 @@
     <string name="pip_lines_i_m_open_source_you">"నా సోర్స్ కోడ్ తెరిచి ఉంది. మీరు దానిలోని ప్రతి పంక్తిని చదవగలరు."</string>
     <string name="pip_lines_your_original_photos_are_kept">"మీ అసలు ఫోటోలు ఉంచబడ్డాయి, కాబట్టి సవరణలు ఎల్లప్పుడూ రద్దు చేయబడతాయి."</string>
     <string name="pip_lines_i_live_on_your_phone">"నేను మీ ఫోన్‌లో పని చేస్తున్నాను. మీ స్కాన్‌లు సర్వర్‌కి వెళ్లవు."</string>
-    <string name="pip_lines_hey_that_tickles">"హే! అని చక్కిలిగింతలు పెట్టింది."</string>
+    <string name="pip_lines_hey_that_tickles">"హే! చక్కిలిగింతగా ఉంది."</string>
     <!-- pdf_watermark -->
     <string name="pdf_watermark_for_kyc_use_only">For KYC use only</string>
     <!-- document_presentation_formatter -->
@@ -1707,7 +1707,7 @@
     <string name="pip_lines_hmm_i_don_t_have">"అయ్యో, దానికి నా దగ్గర సమాధానం లేదు."</string>
     <string name="pip_lines_no_codes_yet_scan_or">"ఇంకా కోడ్‌లు లేవు. స్కాన్ చేయండి లేదా ఒకటి చేయండి మరియు నేను దానిని ఇక్కడ ఉంచుతాను."</string>
     <string name="pip_lines_nothing_matches_that_try_another">"దానికి ఏదీ సరిపోలలేదు. మరొక పదాన్ని ప్రయత్నించాలా?"</string>
-    <string name="pip_lines_i_m_still_reading_some">"నేను ఇంకా కొన్ని పేజీలు చదువుతున్నాను. ఒక సెకనులో మ్యాచ్‌లు మారవచ్చు."</string>
+    <string name="pip_lines_i_m_still_reading_some">"నేను ఇంకా కొన్ని పేజీలు చదువుతున్నాను. ఒక సెకనులో మ్యాచ్‌లు కనిపించవచ్చు."</string>
     <string name="pip_lines_i_can_t_see_a">"నేను ఇంకా ఏమీ చూడలేకపోతున్నాను. నేను కెమెరాను అరువు తీసుకోవచ్చా?"</string>
     <string name="pip_lines_the_camera_is_switched_off">"Scanly కోసం కెమెరా స్విచ్ ఆఫ్ చేయబడింది. సెట్టింగ్‌లకు శీఘ్ర పర్యటన దాన్ని పరిష్కరిస్తుంది."</string>
     <string name="pip_lines_lend_me_the_camera_and">"నాకు కెమెరా అప్పుగా ఇవ్వండి మరియు నేను మీ కోసం కోడ్‌ని చదువుతాను."</string>
@@ -1898,11 +1898,11 @@
     <string name="sign_kind_delete_signature_question">"సంతకాన్ని తొలగించాలా?"</string>
     <string name="sign_kind_delete_initials_question">"మొదటి అక్షరాలను తొలగించాలా?"</string>
     <string name="sign_kind_open_signature_options">"సంతకం ఎంపికలను తెరవండి"</string>
-    <string name="sign_kind_open_initials_options">"ప్రారంభ అక్షరాల ఎంపికలను తెరవండి"</string>
+    <string name="sign_kind_open_initials_options">"మొదటి అక్షరాల ఎంపికలను తెరవండి"</string>
     <string name="sign_kind_saved_signature">"సేవ్ చేయబడిన సంతకం"</string>
     <string name="sign_kind_saved_initials">"సేవ్ చేయబడిన మొదటి అక్షరాలు"</string>
     <string name="sign_kind_show_signature_first">"ఈ సంతకాన్ని ఇతరుల ముందు చూపండి"</string>
-    <string name="sign_kind_show_initials_first">"ఈ ఇనిషియల్స్‌ని ఇతరుల ముందు చూపండి"</string>
+    <string name="sign_kind_show_initials_first">"ఈ మొదటి అక్షరాలను ఇతరుల ముందు చూపండి"</string>
     <!-- Watermark -->
     <!-- Watermark presets are stamped into PDFs with a Latin/Cyrillic font. In languages written in
          another script (Indic, CJK, Thai), keep these in English so the stamp can be drawn. -->
@@ -1940,7 +1940,7 @@
         <item quantity="other">"%d లైబ్రరీలు"</item>
     </plurals>
     <plurals name="common_selected">
-        <item quantity="one">"%d ఎంచుకోబడ్డాయి"</item>
+        <item quantity="one">"%d ఎంచుకోబడింది"</item>
         <item quantity="other">"%d ఎంచుకోబడ్డాయి"</item>
     </plurals>
     <plurals name="pdf_to_images_saved_count">
@@ -1962,7 +1962,7 @@
     <string name="error_could_not_rename_the_document">"పత్రం పేరు మార్చడం సాధ్యపడలేదు."</string>
     <string name="error_could_not_delete_the_document">"పత్రాన్ని తొలగించడం సాధ్యపడలేదు."</string>
     <string name="error_could_not_create_the_group">"సమూహాన్ని సృష్టించడం సాధ్యపడలేదు."</string>
-    <string name="error_could_not_rename_the_group">"గుంపు పేరు మార్చడం సాధ్యపడలేదు."</string>
+    <string name="error_could_not_rename_the_group">"సమూహం పేరు మార్చడం సాధ్యపడలేదు."</string>
     <string name="error_could_not_delete_the_group">"సమూహాన్ని తొలగించడం సాధ్యపడలేదు."</string>
     <string name="error_could_not_remove_empty_folders">"ఖాళీ ఫోల్డర్‌లను తీసివేయడం సాధ్యపడలేదు."</string>
     <string name="error_could_not_update_document_group">"పత్ర సమూహాన్ని నవీకరించడం సాధ్యపడలేదు."</string>
@@ -1981,9 +1981,6 @@
     <string name="error_could_not_save_the_exported_file">"ఎగుమతి చేసిన ఫైల్‌ను సేవ్ చేయడం సాధ్యపడలేదు."</string>
     <string name="error_could_not_store_update_prompt_state">"అప్‌డేట్ ప్రాంప్ట్ స్థితిని నిల్వ చేయడం సాధ్యపడలేదు."</string>
     <string name="error_could_not_check_github_releases">"GitHub విడుదలలను తనిఖీ చేయడం సాధ్యపడలేదు."</string>
-    <string name="onboarding_demo_result">%1$s · పేజీ %2$s</string>
-    <string name="onboarding_demo_found">పేజీ వచనంలో కనుగొనబడింది</string>
-    <string name="onboarding_demo_protected">పాస్‌వర్డ్‌తో రక్షించబడింది</string>
     <string name="onboarding_chapter_number">%1$02d %2$s</string>
     <!-- Split PDF -->
     <string name="tools_catalog_split">"విభజించు"</string>
@@ -2099,4 +2096,7 @@
     <string name="pdf_peek_could_not_open">"ప్రివ్యూ కోసం ఈ PDF ని తెరవలేకపోయాం."</string>
     <string name="pdf_peek_close">"ప్రివ్యూ మూసివేయండి"</string>
     <string name="pdf_peek_tap_hint">"ప్రివ్యూ కోసం ఫైల్‌ను ట్యాప్ చేయండి"</string>
+    <string name="welcome_greeting">స్వాగతం</string>
+    <string name="welcome_tagline">కాగితాలను స్పష్టమైన, వెతకగలిగే PDFలుగా మార్చండి.</string>
+    <string name="welcome_no_language_match">“%1$s”కి సరిపోలే భాష లేదు</string>
 </resources>

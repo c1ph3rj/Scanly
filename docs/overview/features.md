@@ -198,7 +198,8 @@ Library backup and restore were removed in v1.0.18.
 
 ## Onboarding
 
-- First-run intro screen shown once
+- **Welcome screen** — the first screen on a fresh install: Scanly logo, a one-line summary and the app language. **Phone language** is selected by default; picking one of the 25 languages switches the app at once. Search matches a language's own name, its name in the current language or its English name. Phones use one column; landscape phones, foldables and tablets show the summary beside the list
+- Three-page introduction (Capture, Find, Finish) with teal, mint and peach document artwork, a scan beam and a search-word reveal; Back from the first page returns to the welcome screen
 - **Camera step** — on a fresh install, **Get started** leads to a short step that asks for the camera with context; skipped when the camera is already allowed, and **Maybe later** always continues
 - Completion flag persisted in DataStore
 - Automatic update checks deferred until onboarding is complete

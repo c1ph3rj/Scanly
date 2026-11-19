@@ -24,7 +24,7 @@ Test coverage and how to run tests in Scanly **v1.0.21**.
 | ML / geometry | `DocumentCornerQuadTest`, `DocumentQuadPolicyTest`, `DocumentGatePolicyTest`, `CornerRegressionDecoderTest`, `BookPageQuadAnalyzerTest`, `AutomaticDocumentModelSelectionPolicyTest`, `PerspectiveQuadMathTest`, `CropQuadEditorTest` |
 | Processing | `AdaptivePageFilterTuningTest`, `PageFilterPresetTest`, `PageFilterAdjustmentsTest` |
 | Camera | `CaptureStabilityTrackerTest`, `DocumentGateStabilityTrackerTest`, `StableCornerSelectorTest`, `CaptureFrameQualityAnalyzerTest`, `CameraOverlayMapperTest`, `CameraPermissionSupportTest`, `ScanSessionScreenTest` |
-| UI / layout | `AdaptiveLayoutTest`, `PreviewImageSizerTest`, `ZoomableImageStateTest`, `OnboardingLayoutModeTest` |
+| UI / layout | `AdaptiveLayoutTest`, `PreviewImageSizerTest`, `ZoomableImageStateTest`, `OnboardingLayoutModeTest`, `WelcomeLanguageMatchTest` (welcome-screen language search) |
 | Formatting | `StorageFormatterTest`, `DocumentPresentationFormatterTest`, `DocumentPreviewPathResolverTest` |
 | Domain models | `DocumentCornerModelTest`, `ExportDestinationTest`, `PageFilterPresetTest`, `PdfExportOptionsTest` |
 | Feature logic | `LibraryUiStateTest`, `DocumentDetailSelectionResolverTest`, `PageImagePreviewSelectionResolverTest`, `SuggestDocumentTitleUseCaseTest`, `DocumentSplitPartsTest`, `ScanlyLaunchActionTest`, `LibraryCardPresentationTest`, `DocumentPageTilePresentationTest` |
@@ -50,6 +50,7 @@ app/src/test/java/in/c1ph3rj/scanly/{matching/package}/YourTest.kt
 | --- | --- |
 | `ScanlyDeviceUiTest.kt` | Real `MainActivity`: onboarding → Home, Library / Tools / Settings chrome, QR generate preview |
 | `ScanlyDeviceUiRobot.kt` | Shared Compose/UiAutomator helpers for the device UI suite |
+| `WelcomeScreenTest.kt` | Welcome screen: logo and phone-language default, language pick and search, one- and two-pane layouts at phone, small-phone, landscape and tablet sizes, flow order and Back |
 | `OnboardingScreenTest.kt` | Compose UI test for onboarding screen |
 | `OpenCvPageFilterProcessorTest.kt` | Device-side OpenCV filter engine checks (flatten, color marks, preview/save parity) |
 | `ExampleInstrumentedTest.kt` | Package name smoke test |

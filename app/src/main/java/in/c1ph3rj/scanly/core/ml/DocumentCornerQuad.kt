@@ -70,11 +70,19 @@ data class DocumentCornerQuad(
             hypot(first.x - second.x, first.y - second.y)
         }
 
-    fun estimatedAspectRatio(): Float {
-        val topWidth = distance(topLeft, topRight)
-        val bottomWidth = distance(bottomLeft, bottomRight)
-        val leftHeight = distance(topLeft, bottomLeft)
-        val rightHeight = distance(topRight, bottomRight)
+    /**
+     * Width / height of the page as it appears in the image.
+     *
+     * @param frameAspectRatio width / height of the image the corners are normalized against;
+     *   x is scaled by it so lengths are proportional to pixels (a 1.586 ID card in a 480x640
+     *   frame measures 1.586, not 2.11). Non-positive or non-finite values are treated as 1.
+     */
+    fun estimatedAspectRatio(frameAspectRatio: Float = 1f): Float {
+        val xScale = sanitizeFrameAspectRatio(frameAspectRatio)
+        val topWidth = distance(topLeft, topRight, xScale)
+        val bottomWidth = distance(bottomLeft, bottomRight, xScale)
+        val leftHeight = distance(topLeft, bottomLeft, xScale)
+        val rightHeight = distance(topRight, bottomRight, xScale)
         val averageWidth = (topWidth + bottomWidth) / 2f
         val averageHeight = (leftHeight + rightHeight) / 2f
         if (averageHeight == 0f) {
@@ -100,8 +108,8 @@ data class DocumentCornerQuad(
         return (deltaX * deltaX) + (deltaY * deltaY)
     }
 
-    private fun distance(first: NormalizedPoint, second: NormalizedPoint): Float =
-        hypot(first.x - second.x, first.y - second.y)
+    private fun distance(first: NormalizedPoint, second: NormalizedPoint, xScale: Float): Float =
+        hypot((first.x - second.x) * xScale, first.y - second.y)
 
     companion object {
         const val EXPECTED_POINT_COUNT = 4

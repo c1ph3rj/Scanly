@@ -1053,7 +1053,7 @@
     <string name="pdf_import_added_to_your_library">Adicionado à sua biblioteca</string>
     <string name="pdf_import_step_3_of_3_done">Etapa 3 de 3 · Concluído</string>
     <string name="pdf_import_adding_to_library">Adicionando à biblioteca…</string>
-    <string name="pdf_import_look">Ver</string>
+    <string name="pdf_import_look">"Aparência"</string>
     <string name="pdf_import_your_pdf_file_stays_as">Seu arquivo PDF continua como está; o Scanly guarda uma cópia própria</string>
     <string name="pdf_import_tap_a_page_or_long">Toque em uma página ou mantenha pressionado e arraste por várias.</string>
     <string name="pdf_import_step_2_of_3_pages">Etapa 2 de 3 · Páginas e nome</string>
@@ -1555,14 +1555,14 @@
     <string name="signature_pen_width_bold">Grossa</string>
     <!-- onboarding_page -->
     <string name="onboarding_page_capture">CAPTURE</string>
-    <string name="onboarding_page_paper_to_polished">Papel, aperfeiçoado.</string>
-    <string name="onboarding_page_capture_straighten_and_clean_up">Endireite a página. Preserve os detalhes.</string>
+    <string name="onboarding_page_paper_to_polished">"Papel,\naperfeiçoado."</string>
+    <string name="onboarding_page_capture_straighten_and_clean_up">Capture uma página, endireite as bordas e ajuste a cor. Mantenha os detalhes nítidos antes de salvar a digitalização.</string>
     <string name="onboarding_page_find">ENCONTRE</string>
-    <string name="onboarding_page_find_more_than_files">Encontre a palavra. Encontre a página.</string>
-    <string name="onboarding_page_recognize_text_on_your_device">Pesquise no texto das suas digitalizações.</string>
+    <string name="onboarding_page_find_more_than_files">"Encontre a palavra.\nEncontre a página."</string>
+    <string name="onboarding_page_recognize_text_on_your_device">Reconheça o texto no seu dispositivo e pesquise palavras nas digitalizações. Encontre a página que precisa sem reler cada documento.</string>
     <string name="onboarding_page_share">FINALIZAR</string>
-    <string name="onboarding_page_ready_when_you_are">Pronto para enviar.</string>
-    <string name="onboarding_page_keep_pages_together_share_a">Assine, proteja e compartilhe um PDF limpo.</string>
+    <string name="onboarding_page_ready_when_you_are">"Deixe pronto\npara enviar."</string>
+    <string name="onboarding_page_keep_pages_together_share_a">Reúna suas páginas em um PDF. Adicione uma assinatura ou senha quando precisar e compartilhe o documento com poucos toques.</string>
     <!-- pdf_reader_tool -->
     <string name="pdf_reader_tool_merge_with_other_pdfs">Juntar com outros PDFs</string>
     <string name="pdf_reader_tool_password_protect">Proteger com senha</string>
@@ -1999,8 +1999,8 @@
     <string name="error_could_not_reorder_the_page">"Não foi possível reordenar a página."</string>
     <string name="error_could_not_save_page_edits">"Não foi possível salvar as edições da página."</string>
     <string name="error_could_not_update_text_recognition_engine">"Não foi possível atualizar o mecanismo de reconhecimento de texto."</string>
-    <string name="error_could_not_update_theme_mode">"Não foi possível atualizar o modo tema."</string>
-    <string name="error_could_not_finish_onboarding">"Não foi possível concluir a integração."</string>
+    <string name="error_could_not_update_theme_mode">"Não foi possível atualizar o modo do tema."</string>
+    <string name="error_could_not_finish_onboarding">"Não foi possível concluir a configuração inicial."</string>
     <string name="error_could_not_load_settings_content">"Não foi possível carregar o conteúdo das configurações."</string>
     <string name="error_could_not_update_the_save_location">"Não foi possível atualizar o local de salvamento."</string>
     <string name="error_could_not_update_model_selection">"Não foi possível atualizar a seleção do modelo."</string>
@@ -2008,9 +2008,6 @@
     <string name="error_could_not_save_the_exported_file">"Não foi possível salvar o arquivo exportado."</string>
     <string name="error_could_not_store_update_prompt_state">"Não foi possível armazenar o estado do prompt de atualização."</string>
     <string name="error_could_not_check_github_releases">"Não foi possível verificar as versões do GitHub."</string>
-    <string name="onboarding_demo_result">%1$s · Página %2$s</string>
-    <string name="onboarding_demo_found">Encontrado no texto</string>
-    <string name="onboarding_demo_protected">Protegido por senha</string>
     <string name="onboarding_chapter_number">%1$02d %2$s</string>
     <!-- Split PDF -->
     <string name="tools_catalog_split">"Dividir"</string>
@@ -2133,4 +2130,7 @@
     <string name="pdf_peek_could_not_open">"Não foi possível abrir este PDF para visualização."</string>
     <string name="pdf_peek_close">"Fechar visualização"</string>
     <string name="pdf_peek_tap_hint">"Toque em um arquivo para visualizar"</string>
+    <string name="welcome_greeting">Boas-vindas</string>
+    <string name="welcome_tagline">Transforme papel em PDFs nítidos e pesquisáveis.</string>
+    <string name="welcome_no_language_match">Nenhum idioma corresponde a “%1$s”</string>
 </resources>

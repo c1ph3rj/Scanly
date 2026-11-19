@@ -35,6 +35,23 @@ class ThumbnailCache @Inject constructor() {
         override fun sizeOf(key: String, value: Bitmap): Int = value.byteCount / 1024
     }
 
+    /** Decode size last used for each image revision, so a first frame can reuse it. */
+    private val lastTargetPx = LruCache<String, Int>(1_024)
+
+    /**
+     * Returns the bitmap last decoded for this image at any size, without touching disk.
+     *
+     * A thumbnail does not know its exact decode size until it has been measured. This lets its
+     * first frame draw what an earlier screen already decoded instead of a placeholder. Needs a
+     * [contentRevision] from the caller: resolving one from the file would read disk on the
+     * main thread.
+     */
+    fun getLastDecoded(path: String, contentRevision: Long): Bitmap? {
+        if (contentRevision <= 0L) return null
+        val targetPx = lastTargetPx.get(revisionKey(path, contentRevision)) ?: return null
+        return cache.get(cacheKey(path, targetPx, contentRevision))
+    }
+
     /** Returns a bitmap already in the LRU cache without touching disk. */
     fun getIfCached(
         path: String,
@@ -55,6 +72,7 @@ class ThumbnailCache @Inject constructor() {
         cache.get(key)?.let { return it }
         val sampled = decodeSampled(path, targetPx) ?: return null
         cache.put(key, sampled)
+        if (contentRevision > 0L) lastTargetPx.put(revisionKey(path, contentRevision), targetPx)
         return sampled
     }
 
@@ -66,7 +84,10 @@ class ThumbnailCache @Inject constructor() {
 
     fun clearAll() {
         cache.evictAll()
+        lastTargetPx.evictAll()
     }
+
+    private fun revisionKey(path: String, contentRevision: Long): String = "$path#$contentRevision"
 
     private fun cacheKey(path: String, targetPx: Int, contentRevision: Long): String {
         val revision = contentRevision.takeIf { it > 0L } ?: fileRevision(path)

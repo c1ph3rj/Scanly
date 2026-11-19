@@ -13,7 +13,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
+import android.content.res.Resources
+import android.graphics.ImageDecoder
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.produceState
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalResources
+import java.util.concurrent.ConcurrentHashMap
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import `in`.c1ph3rj.scanly.R
@@ -40,15 +49,51 @@ fun ToolArtStage(
         ),
         contentAlignment = Alignment.Center,
     ) {
-        Image(
-            painter = painterResource(id.artwork()),
-            contentDescription = null,
-            modifier = Modifier
-                .fillMaxHeight(artHeightFraction)
-                .aspectRatio(4f / 3f),
-            contentScale = ContentScale.Fit,
-        )
+        val resources = LocalResources.current
+        val artwork = id.artwork()
+        val bitmap by produceState(initialValue = ToolArtCache.get(artwork), artwork) {
+            if (value == null) value = ToolArtCache.load(resources, artwork)
+        }
+        val artModifier = Modifier
+            .fillMaxHeight(artHeightFraction)
+            .aspectRatio(4f / 3f)
+        val loaded = bitmap
+        if (loaded != null) {
+            Image(
+                bitmap = loaded,
+                contentDescription = null,
+                modifier = artModifier,
+                contentScale = ContentScale.Fit,
+            )
+        } else {
+            // Same footprint while the picture decodes, so the card does not resize.
+            Box(artModifier)
+        }
     }
+}
+
+/**
+ * Decoded tool pictures, shared by every screen that shows them.
+ *
+ * `painterResource` decodes on the main thread during composition; with a picture on every card
+ * that made the Tools tab's first frame slow. Here the first use decodes in the background and
+ * later uses are a map lookup. The app drops the set when it leaves the screen
+ * ([ToolArtCache.clear]), so the bitmaps are only held while they can be seen.
+ */
+object ToolArtCache {
+    private val bitmaps = ConcurrentHashMap<Int, ImageBitmap>()
+
+    fun get(@DrawableRes id: Int): ImageBitmap? = bitmaps[id]
+
+    suspend fun load(resources: Resources, @DrawableRes id: Int): ImageBitmap? =
+        bitmaps[id] ?: withContext(Dispatchers.Default) {
+            runCatching {
+                // Hardware bitmap: decoded straight into GPU memory, no upload on first draw.
+                ImageDecoder.decodeBitmap(ImageDecoder.createSource(resources, id)).asImageBitmap()
+            }.getOrNull()?.also { bitmaps[id] = it }
+        }
+
+    fun clear() = bitmaps.clear()
 }
 
 @DrawableRes

@@ -1053,7 +1053,7 @@
     <string name="pdf_import_added_to_your_library">Dodano do biblioteki</string>
     <string name="pdf_import_step_3_of_3_done">Krok 3 z 3 · Gotowe</string>
     <string name="pdf_import_adding_to_library">Dodawanie do biblioteki…</string>
-    <string name="pdf_import_look">Zobacz</string>
+    <string name="pdf_import_look">"Wygląd"</string>
     <string name="pdf_import_your_pdf_file_stays_as">Twój plik PDF pozostaje bez zmian; Scanly tworzy własną kopię</string>
     <string name="pdf_import_tap_a_page_or_long">Kliknij stronę albo przytrzymaj i przeciągnij po kilku.</string>
     <string name="pdf_import_step_2_of_3_pages">Krok 2 z 3 · Strony i nazwa</string>
@@ -1434,12 +1434,12 @@
     <string name="pdf_page_size_a5">"A5"</string>
     <string name="pdf_page_size_b4">"B4"</string>
     <string name="pdf_page_size_b5">"B5"</string>
-    <string name="pdf_page_size_letter">"List"</string>
+    <string name="pdf_page_size_letter">"Letter"</string>
     <string name="pdf_page_size_tabloid">"Tabloid"</string>
-    <string name="pdf_page_size_executive">"Wykonawczy"</string>
+    <string name="pdf_page_size_executive">"Executive"</string>
     <string name="pdf_page_size_postcard">"Pocztówka"</string>
-    <string name="pdf_page_size_american_foolscap">"Amerykański głupek"</string>
-    <string name="pdf_page_size_european_foolscap">"Europejskie głupstwo"</string>
+    <string name="pdf_page_size_american_foolscap">"Foolscap amerykański"</string>
+    <string name="pdf_page_size_european_foolscap">"Foolscap europejski"</string>
     <!-- pdf_page_margin -->
     <string name="pdf_page_margin_no_margin">"Brak marginesu"</string>
     <string name="pdf_page_margin_big">"Duży"</string>
@@ -1455,11 +1455,11 @@
     <string name="pdf_image_resolution_2480_px_wide_300_dpi">"2480 px szerokość · 300 dpi na A4"</string>
     <!-- pdf_compress_quality -->
     <string name="pdf_compress_quality_high_quality">"Wysoka jakość"</string>
-    <string name="pdf_compress_quality_best_clarity_less_compression">"Najlepsza przejrzystość ·, mniejsza kompresja"</string>
+    <string name="pdf_compress_quality_best_clarity_less_compression">"Najlepsza przejrzystość · mniejsza kompresja"</string>
     <string name="pdf_compress_quality_balanced">"Zrównoważony"</string>
     <string name="pdf_compress_quality_good_balance_of_size_and">"Dobra równowaga wielkości i przejrzystości"</string>
     <string name="pdf_compress_quality_smallest">"Najmniejszy"</string>
-    <string name="pdf_compress_quality_maximum_compression_softer_detail">"Maksymalna kompresja ·, bardziej miękkie detale"</string>
+    <string name="pdf_compress_quality_maximum_compression_softer_detail">"Maksymalna kompresja · bardziej miękkie detale"</string>
     <!-- watermark_color -->
     <string name="watermark_color_grey">"Szary"</string>
     <string name="watermark_color_red">"Czerwony"</string>
@@ -1475,27 +1475,27 @@
     <string name="date_filter_last_7_days">"Ostatnie 7 dni"</string>
     <string name="date_filter_last_30_days">"Ostatnie 30 dni"</string>
     <string name="date_filter_this_year">"W tym roku"</string>
-    <string name="date_filter_custom_range">"Asortyment niestandardowy"</string>
+    <string name="date_filter_custom_range">"Niestandardowy zakres"</string>
     <!-- search_sort -->
-    <string name="search_sort_best_match">"Najlepszy mecz"</string>
+    <string name="search_sort_best_match">"Najlepsze dopasowanie"</string>
     <string name="search_sort_newest">"Najnowszy"</string>
     <string name="search_sort_oldest">"Najstarszy"</string>
     <string name="search_sort_name_a_z">"Nazwa A–Z"</string>
     <!-- search_scope -->
     <string name="search_scope_everywhere">"Wszędzie"</string>
-    <string name="search_scope_names">"Imiona"</string>
+    <string name="search_scope_names">"Nazwy"</string>
     <string name="search_scope_text_in_pages">"Tekst na stronach"</string>
     <!-- app_update_channel -->
     <string name="app_update_channel_github">"GitHub"</string>
     <string name="app_update_channel_google_play">"Google Play"</string>
     <!-- document_kind -->
     <string name="document_kind_invoice">"Faktura"</string>
-    <string name="document_kind_receipt">"Odbiór"</string>
+    <string name="document_kind_receipt">"Paragon"</string>
     <string name="document_kind_contract">"Umowa"</string>
     <string name="document_kind_statement">"Wyciąg bankowy"</string>
     <string name="document_kind_certificate">"Certyfikat"</string>
     <string name="document_kind_id_document">"Dokument tożsamości"</string>
-    <string name="document_kind_form">"Forma"</string>
+    <string name="document_kind_form">"Formularz"</string>
     <string name="document_kind_r_sum">"CV"</string>
     <!-- document_corner_model -->
     <string name="document_corner_model_lite">"Lite"</string>
@@ -1503,13 +1503,13 @@
     <string name="document_corner_model_high">"Wysoki"</string>
     <string name="document_corner_model_accurate">"Dokładny"</string>
     <!-- document_title_format -->
-    <string name="document_title_format_scan_with_date_and_time">"Skanuj z datą i godziną"</string>
+    <string name="document_title_format_scan_with_date_and_time">"Skan z datą i godziną"</string>
     <string name="document_title_format_scan_date_time">"Skan · data i godzina"</string>
     <string name="document_title_format_document_with_date_and_time">"Dokument z datą i godziną"</string>
     <string name="document_title_format_document_date_time">"Dokument · data i godzina"</string>
     <string name="document_title_format_scan_with_date">"Skan z datą"</string>
     <string name="document_title_format_scan_date">"Skan · data"</string>
-    <string name="document_title_format_scan_with_iso_date">"Skanuj z datą ISO"</string>
+    <string name="document_title_format_scan_with_iso_date">"Skan z datą ISO"</string>
     <string name="document_title_format_scan_yyyy_mm_dd">"Skan · YYYY-MM-DD"</string>
     <!-- group_title_format -->
     <string name="group_title_format_folder_with_date_and_time">"Folder z datą i godziną"</string>
@@ -1532,7 +1532,7 @@
     <string name="pdf_import_look_enhance">"Wzmocnij"</string>
     <string name="pdf_import_look_even_out_scanned_pages_and">"Wyrównaj zeskanowane strony i wyostrz tekst"</string>
     <!-- capture_scene_issue -->
-    <string name="capture_scene_issue_lens_may_be_covered_clear">"Soczewka może być zakryta. Odkryj to i spróbuj ponownie."</string>
+    <string name="capture_scene_issue_lens_may_be_covered_clear">"Soczewka może być zabrudzona lub zasłonięta. Wyczyść ją i spróbuj ponownie."</string>
     <string name="capture_scene_issue_too_dark_add_light_or">"Za ciemno. Dodaj światło lub włącz lampę błyskową."</string>
     <string name="capture_scene_issue_image_looks_blurry_clean_the">"Obraz jest rozmazany. Wyczyść obiektyw lub dotknij, aby ustawić ostrość."</string>
     <!-- group_export_action -->
@@ -1555,14 +1555,14 @@
     <string name="signature_pen_width_bold">"Gruby"</string>
     <!-- onboarding_page -->
     <string name="onboarding_page_capture">"PRZECHWYTAJ"</string>
-    <string name="onboarding_page_paper_to_polished">Papier, udoskonalony.</string>
-    <string name="onboarding_page_capture_straighten_and_clean_up">Wyprostuj stronę. Zachowaj szczegóły.</string>
+    <string name="onboarding_page_paper_to_polished">"Papier,\nudoskonalony."</string>
+    <string name="onboarding_page_capture_straighten_and_clean_up">Zeskanuj stronę, wyprostuj krawędzie i dostosuj kolor. Zadbaj o wyraźne szczegóły przed zapisaniem skanu.</string>
     <string name="onboarding_page_find">"ZNAJDŹ"</string>
-    <string name="onboarding_page_find_more_than_files">Znajdź słowo. Znajdź stronę.</string>
-    <string name="onboarding_page_recognize_text_on_your_device">Szukaj w tekście swoich skanów.</string>
+    <string name="onboarding_page_find_more_than_files">"Znajdź słowo.\nZnajdź stronę."</string>
+    <string name="onboarding_page_recognize_text_on_your_device">Rozpoznaj tekst na urządzeniu i wyszukuj słowa w skanach. Znajdź potrzebną stronę bez ponownego czytania wszystkich dokumentów.</string>
     <string name="onboarding_page_share">GOTOWE</string>
-    <string name="onboarding_page_ready_when_you_are">Gotowe do wysłania.</string>
-    <string name="onboarding_page_keep_pages_together_share_a">Podpisz, zabezpiecz i udostępnij czytelny PDF.</string>
+    <string name="onboarding_page_ready_when_you_are">"Przygotuj do\nwysłania."</string>
+    <string name="onboarding_page_keep_pages_together_share_a">Połącz strony w jeden PDF. W razie potrzeby dodaj podpis lub hasło, a potem udostępnij gotowy dokument kilkoma dotknięciami.</string>
     <!-- pdf_reader_tool -->
     <string name="pdf_reader_tool_merge_with_other_pdfs">"Połącz z innymi plikami PDF"</string>
     <string name="pdf_reader_tool_password_protect">"Ochrona hasłem"</string>
@@ -1671,7 +1671,7 @@
     <string name="pip_lines_tip_folders_keep_related_scans">"wskazówka: w folderach przechowywane są powiązane ze sobą skany. wypróbuj jeden dla rachunków."</string>
     <string name="pip_lines_tip_turn_on_the_grid">"wskazówka: włącz siatkę w aparacie, aby wyrównać strony."</string>
     <string name="pip_lines_tip_add_a_scanly_widget">"wskazówka: dodaj widżet Scanly do ekranu głównego, aby skanować jednym dotknięciem."</string>
-    <string name="pip_lines_tip_the_tools_tab_can">"wskazówka: zakładka Narzędzia umożliwia scalanie, kompresowanie i podpisywanie PDFs."</string>
+    <string name="pip_lines_tip_the_tools_tab_can">"wskazówka: zakładka Narzędzia umożliwia scalanie, kompresowanie i podpisywanie plików PDF."</string>
     <string name="pip_lines_tip_open_a_document_s">"wskazówka: otwórz tekst dokumentu, aby skopiować lub udostępnić jego treść."</string>
     <string name="pip_lines_tip_long_press_a_page">"wskazówka: naciśnij długo stronę i przeciągnij ją, aby zmienić kolejność."</string>
     <string name="pip_lines_tip_search_finds_words_inside">"wskazówka: wyszukiwanie pozwala znaleźć słowa w skanach, a nie tylko ich nazwy."</string>
@@ -1697,7 +1697,7 @@
     <string name="pip_lines_hi_i_m_pip_point">"Cześć, jestem Pip! Pokaż mi stronę, a ja poprawię dla Ciebie skan."</string>
     <string name="pip_lines_one_last_thing_can_i">"Ostatnia rzecz! Czy mogę skorzystać z aparatu? Jest włączony tylko podczas skanowania."</string>
     <string name="pip_lines_nothing_here_yet_let_s">"Jeszcze nic tu nie ma. zeskanujmy razem Twoją pierwszą stronę."</string>
-    <string name="pip_lines_a_clean_shelf_start_a">"czysta półka! uruchom folder lub zeskanuj coś."</string>
+    <string name="pip_lines_a_clean_shelf_start_a">"czysta półka! utwórz folder lub zeskanuj coś."</string>
     <string name="pip_lines_no_folders_yet_they_re">"Nie ma jeszcze folderów. Używaj ich do porządkowania paragonów, rachunków i dokumentów szkolnych."</string>
     <string name="pip_lines_no_documents_yet_i_m">"nie ma jeszcze dokumentów. jestem gotowy, kiedy ty jesteś."</string>
     <string name="pip_lines_this_folder_is_waiting_for">"teczka ta czeka na swój pierwszy dokument."</string>
@@ -1707,7 +1707,7 @@
     <string name="pip_lines_hmm_i_don_t_have">"hmm, nie mam na to odpowiedzi."</string>
     <string name="pip_lines_no_codes_yet_scan_or">"jeszcze nie ma kodów. zeskanuj lub wykonaj, a zatrzymam go tutaj."</string>
     <string name="pip_lines_nothing_matches_that_try_another">"nic do tego nie pasuje. spróbować innego słowa?"</string>
-    <string name="pip_lines_i_m_still_reading_some">"Nadal czytam niektóre strony. mecze mogą pojawić się za sekundę."</string>
+    <string name="pip_lines_i_m_still_reading_some">"Nadal czytam niektóre strony. Dopasowania mogą pojawić się za chwilę."</string>
     <string name="pip_lines_i_can_t_see_a">"Jeszcze nic nie widzę. czy mogę pożyczyć aparat?"</string>
     <string name="pip_lines_the_camera_is_switched_off">"kamera jest wyłączona w przypadku Scanly. szybka podróż do ustawień rozwiązuje problem."</string>
     <string name="pip_lines_lend_me_the_camera_and">"Pożycz mi kamerę, a ja przeczytam Ci kod."</string>
@@ -1859,8 +1859,8 @@
     <string name="error_could_not_create_export_directory">"Nie można utworzyć katalogu eksportu."</string>
     <string name="error_could_not_replace_existing_pdf">"Nie można zastąpić istniejącego PDF."</string>
     <string name="error_folder_not_found">"Nie znaleziono folderu."</string>
-    <string name="error_this_page_is_already_in_recently_deleted">"Ta strona jest już w Ostatnio usunięta."</string>
-    <string name="error_only_pages_in_recently_deleted_can_be">"Tylko strony w Ostatnio usunięte mogą zostać usunięte na zawsze."</string>
+    <string name="error_this_page_is_already_in_recently_deleted">"Ta strona jest już w sekcji Ostatnio usunięte."</string>
+    <string name="error_only_pages_in_recently_deleted_can_be">"Tylko strony w sekcji Ostatnio usunięte mogą zostać usunięte na zawsze."</string>
     <string name="error_page_not_found">"Nie znaleziono strony."</string>
     <string name="error_page_not_found_in_document_order">"Nie znaleziono strony w kolejności dokumentu."</string>
     <string name="error_select_at_least_two_pdfs_to_merge">"Wybierz co najmniej dwa pliki PDF do połączenia."</string>
@@ -1879,7 +1879,7 @@
     <string name="error_export_file_is_missing">"Brak pliku eksportu."</string>
     <string name="error_the_preview_pdf_is_missing">"Brak podglądu PDF."</string>
     <string name="error_could_not_read_selected_pdf">"Nie można odczytać wybranego PDF."</string>
-    <string name="error_not_enough_memory_to_compress_this_pdf">"Za mało pamięci, aby skompresować ten PDF. Wypróbuj najniższą jakość lub krótszy plik."</string>
+    <string name="error_not_enough_memory_to_compress_this_pdf">"Za mało pamięci, aby skompresować ten PDF. Wypróbuj jakość „Najmniejszy” lub krótszy plik."</string>
     <string name="error_a_text_box_is_empty_type_something">"Pole tekstowe jest puste. Wpisz coś lub usuń to."</string>
     <string name="error_a_signature_image_is_missing_remove_it">"Brak obrazu podpisu. Usuń go i umieść ponownie."</string>
     <string name="error_some_characters_cant_be_drawn_remove_emoji">"Niektórych postaci nie można narysować. Usuń emoji lub nietypowe symbole."</string>
@@ -1935,8 +1935,8 @@
     <string name="sign_kind_open_initials_options">"Otwórz opcje inicjałów"</string>
     <string name="sign_kind_saved_signature">"Zapisany podpis"</string>
     <string name="sign_kind_saved_initials">"Zapisane inicjały"</string>
-    <string name="sign_kind_show_signature_first">"Pokaż ten podpis innym"</string>
-    <string name="sign_kind_show_initials_first">"Pokaż te inicjały innym"</string>
+    <string name="sign_kind_show_signature_first">"Pokaż ten podpis przed innymi"</string>
+    <string name="sign_kind_show_initials_first">"Pokaż te inicjały przed innymi"</string>
     <!-- Watermark -->
     <!-- Watermark presets are stamped into PDFs with a Latin/Cyrillic font. In languages written in
          another script (Indic, CJK, Thai), keep these in English so the stamp can be drawn. -->
@@ -2026,8 +2026,8 @@
     <string name="error_could_not_reorder_the_page">"Nie można zmienić kolejności strony."</string>
     <string name="error_could_not_save_page_edits">"Nie można zapisać zmian na stronie."</string>
     <string name="error_could_not_update_text_recognition_engine">"Nie można zaktualizować silnika rozpoznawania tekstu."</string>
-    <string name="error_could_not_update_theme_mode">"Nie można zaktualizować trybu tematycznego."</string>
-    <string name="error_could_not_finish_onboarding">"Nie można dokończyć wdrażania."</string>
+    <string name="error_could_not_update_theme_mode">"Nie można zaktualizować trybu motywu."</string>
+    <string name="error_could_not_finish_onboarding">"Nie można zakończyć konfiguracji."</string>
     <string name="error_could_not_load_settings_content">"Nie można załadować zawartości ustawień."</string>
     <string name="error_could_not_update_the_save_location">"Nie można zaktualizować lokalizacji zapisu."</string>
     <string name="error_could_not_update_model_selection">"Nie można zaktualizować wyboru modelu."</string>
@@ -2035,9 +2035,6 @@
     <string name="error_could_not_save_the_exported_file">"Nie można zapisać wyeksportowanego pliku."</string>
     <string name="error_could_not_store_update_prompt_state">"Nie można zapisać stanu monitu o aktualizację."</string>
     <string name="error_could_not_check_github_releases">"Nie można sprawdzić wydań GitHub."</string>
-    <string name="onboarding_demo_result">%1$s · Strona %2$s</string>
-    <string name="onboarding_demo_found">Znaleziono w tekście strony</string>
-    <string name="onboarding_demo_protected">Chronione hasłem</string>
     <string name="onboarding_chapter_number">%1$02d %2$s</string>
     <!-- Split PDF -->
     <string name="tools_catalog_split">"Podziel"</string>
@@ -2167,4 +2164,7 @@
     <string name="pdf_peek_could_not_open">"Nie udało się otworzyć tego PDF do podglądu."</string>
     <string name="pdf_peek_close">"Zamknij podgląd"</string>
     <string name="pdf_peek_tap_hint">"Dotknij pliku, aby zobaczyć podgląd"</string>
+    <string name="welcome_greeting">Witamy</string>
+    <string name="welcome_tagline">Zamieniaj papier w czyste pliki PDF z wyszukiwaniem tekstu.</string>
+    <string name="welcome_no_language_match">Żaden język nie pasuje do „%1$s”</string>
 </resources>

@@ -53,5 +53,15 @@ fun Bitmap.toPixelGrid(longSide: Int = FlatPageQuadPolicy.ANALYSIS_LONG_SIDE): P
     }
 }
 
+/** Full-resolution luminance grid for the edge analysers; one `getPixels` call per bitmap. */
+fun Bitmap.toLumaGrid(): LumaGrid {
+    val pixels = IntArray(width * height)
+    getPixels(pixels, 0, width, 0, 0, width, height)
+    return LumaGrid.fromRgb(width, height, pixels)
+}
+
+/** Width / height of the bitmap: the aspect its normalized quad coordinates are relative to. */
+val Bitmap.frameAspectRatio: Float get() = if (height > 0) width.toFloat() / height else 1f
+
 private const val RGBA_PIXEL_STRIDE = 4
 private const val GRID_SUPERSAMPLE = 4

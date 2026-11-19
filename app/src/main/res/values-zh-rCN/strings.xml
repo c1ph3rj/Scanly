@@ -933,8 +933,8 @@
     <string name="sign_editor_tap_text_again_for_another">"再次点击文本另一行 · 双击文本进行编辑"</string>
     <string name="sign_editor_tap_date_again_for_another">"再次点击日期以获取另一个印章 · 双击日期进行编辑"</string>
     <string name="sign_editor_manage">"管理"</string>
-    <string name="sign_editor_your_signatures">"您的签名"</string>
-    <string name="sign_editor_signatures_and_marks_you_added">"您在本文档上添加或更改的签名和标记将不会被保留。"</string>
+    <string name="sign_editor_your_signatures">"你的签名"</string>
+    <string name="sign_editor_signatures_and_marks_you_added">"你在本文档上添加或更改的签名和标记将不会被保留。"</string>
     <!-- SignMarkLayer -->
     <string name="sign_mark_layer_duplicate">"复制"</string>
     <string name="sign_mark_layer_tick">"勾选"</string>
@@ -947,24 +947,24 @@
     <string name="signature_manage_place_it_on_a_pdf">"将其放在 PDF 或 Scanly 文档上"</string>
     <string name="signature_manage_sign_a_pdf">"签署PDF"</string>
     <string name="signature_manage_use_first_when_signing">"签名时先使用"</string>
-    <string name="signature_manage_shared_and_saved_as_a">"共享并保存为透明的 PNG，可用于文档、表格和电子邮件。"</string>
+    <string name="signature_manage_shared_and_saved_as_a">"共享并保存为透明的 PNG，可用于文档、表单和电子邮件。"</string>
     <string name="signature_manage_save_to_phone">"保存到手机"</string>
     <string name="signature_manage_ink_colour">"墨水颜色"</string>
     <string name="signature_manage_in_ink">"%1$s，墨水：%2$s"</string>
     <string name="signature_manage_used_first">"先用"</string>
-    <string name="signature_manage_used_first_2">"首先使用"</string>
-    <string name="signature_manage_pages_you_ve_already_signed_2">"您已签名的页面将保留。"</string>
-    <string name="signature_manage_initials">"缩写"</string>
+    <string name="signature_manage_used_first_2">"，先用"</string>
+    <string name="signature_manage_pages_you_ve_already_signed_2">"你已签名的页面会保留它。"</string>
+    <string name="signature_manage_initials">"姓名缩写"</string>
     <string name="signature_manage_signatures">"签名"</string>
     <string name="signature_manage_signatures_stay_on_this_phone">"签名保留在此手机上。画一个签名或上传一张签名照片。"</string>
     <string name="signature_manage_tap_one_to_share_save">"点击其中一个即可共享、保存或重新排序"</string>
     <!-- SignatureManageViewModel -->
     <string name="signature_manage_saved_to">"保存至 %1$s"</string>
-    <string name="signature_manage_will_be_offered_first_when">"签约时优先提供%1$s"</string>
+    <string name="signature_manage_will_be_offered_first_when">"签名时将优先使用%1$s"</string>
     <!-- PageTextScreen -->
     <string name="page_text_share_text">"分享文字"</string>
     <string name="page_text_scan_or_import_a_page">"扫描或导入页面，其文本将出现在此处。"</string>
-    <string name="page_text_this_document_has_no_pages">"该文档还没有页数"</string>
+    <string name="page_text_this_document_has_no_pages">"该文档还没有页面"</string>
     <string name="page_text_reading_text">"阅读文字"</string>
     <string name="page_text_copy_page">"复制页面"</string>
     <string name="page_text_save_changes">"保存更改"</string>
@@ -976,20 +976,20 @@
     <string name="page_text_read_with_ml_kit_indra">"用ML Kit读取（Indra OCR无法读取此页）"</string>
     <string name="page_text_edited">"编辑"</string>
     <string name="page_text_read_again">"再读一遍"</string>
-    <string name="page_text_photos_and_handwriting_may_not">"照片和手写内容不得包含可读的印刷文本。更清晰、光线充足的扫描通常会有所帮助。"</string>
+    <string name="page_text_photos_and_handwriting_may_not">"照片和手写内容可能不包含可识别的印刷文字。更清晰、光线充足的扫描通常会有所帮助。"</string>
     <string name="page_text_no_text_found_on_this">"本页未找到文字"</string>
     <string name="page_text_read_this_page">"阅读本页"</string>
     <string name="page_text_scanly_reads_page_text_on">"Scanly 读取该设备上的页面文本。"</string>
     <string name="page_text_text_not_read_yet">"文本尚未阅读"</string>
     <string name="page_text_try_again">"再试一次"</string>
     <string name="page_text_couldn_t_read_this_page">"无法阅读此页"</string>
-    <string name="page_text_your_corrections_are_used_for">"您的更正将用于复制、共享和搜索。"</string>
+    <string name="page_text_your_corrections_are_used_for">"你的更正将用于复制、共享和搜索。"</string>
     <string name="page_text_this_page_changed_after_its">"该页面在阅读其文本后发生了变化。"</string>
     <string name="page_text_stop_highlighting">"停止突出显示"</string>
     <string name="page_text_on_this_page">"本页%1$s"</string>
     <string name="page_text_not_on_this_page">"不在本页"</string>
     <string name="page_text_reading_text_2">"阅读文字…"</string>
-    <string name="page_text_reading_page_of">"读取%2$s…的%1$s页"</string>
+    <string name="page_text_reading_page_of">"正在读取第 %1$s 页，共 %2$s 页…"</string>
     <string name="page_text_page">"%1$s — 第 %2$s 页"</string>
     <string name="page_text_read_all_pages_again">"再次阅读所有页面"</string>
     <string name="page_text_restore_original_text">"恢复原文"</string>
@@ -1006,11 +1006,11 @@
     <string name="tool_kit_file_name">"文件名"</string>
     <!-- ToolsScreen -->
     <string name="tools_everything_runs_offline_on_this">"一切都在这款手机上离线运行"</string>
-    <string name="tools_utilities">"公用事业"</string>
+    <string name="tools_utilities">"实用工具"</string>
     <!-- PdfCompressScreen -->
     <string name="pdf_compress_recommended">"推荐"</string>
     <string name="pdf_compress_compress_this_pdf_again_with">"使用不同的设置再次压缩此 PDF"</string>
-    <string name="pdf_compress_try_another_quality">"尝试另一种品质"</string>
+    <string name="pdf_compress_try_another_quality">"尝试另一种质量"</string>
     <string name="pdf_compress_after">"之后"</string>
     <string name="pdf_compress_before">"之前"</string>
     <string name="pdf_compress_quality">"质量"</string>
@@ -1025,13 +1025,13 @@
     <string name="pdf_compress_enter_the_password">"输入密码"</string>
     <string name="pdf_compress_compressed_pdf">"压缩后的PDF"</string>
     <string name="pdf_compress_step_1_of_3_choose">"第 1 步（共 3 步） · 选择文件"</string>
-    <string name="pdf_compress_shrink_a_pdf_for_email">"缩小 PDF 的电子邮件或上传限制。"</string>
+    <string name="pdf_compress_shrink_a_pdf_for_email">"缩小 PDF，以符合电子邮件或上传的大小限制。"</string>
     <string name="pdf_compress_compress_pdf">"压缩PDF"</string>
     <!-- PdfCompressViewModel -->
     <string name="pdf_compress_compressing_pdf">"压缩PDF…"</string>
     <string name="pdf_compress_choose_a_pdf_first">"首先选择PDF。"</string>
     <!-- PdfFilePicker -->
-    <string name="pdf_file_picker_days_ago">"%1$s 几天前"</string>
+    <string name="pdf_file_picker_days_ago">"%1$s 天前"</string>
     <string name="pdf_file_picker_selected_position">"选中，位置%1$s"</string>
     <string name="pdf_file_picker_empty_scans_are_hidden">"%1$s空扫描被隐藏"</string>
     <string name="pdf_file_picker_1_empty_scan_is_hidden">"1个空扫描被隐藏"</string>
@@ -1050,24 +1050,24 @@
     <string name="pdf_import_add_to_library">"添加到库"</string>
     <string name="pdf_import_another_pdf">"另一个PDF"</string>
     <string name="pdf_import_crop_filter_sign_or_search">"%1$s · %2$s。像任何扫描一样裁剪、过滤、签名或搜索它。"</string>
-    <string name="pdf_import_added_to_your_library">"添加到您的图书馆"</string>
+    <string name="pdf_import_added_to_your_library">"已添加到您的库"</string>
     <string name="pdf_import_step_3_of_3_done">"第 3 步（共 3 步） · 已完成"</string>
-    <string name="pdf_import_adding_to_library">"添加库…"</string>
-    <string name="pdf_import_look">"看"</string>
+    <string name="pdf_import_adding_to_library">"正在添加到库…"</string>
+    <string name="pdf_import_look">"外观"</string>
     <string name="pdf_import_your_pdf_file_stays_as">"您的PDF文件保持原样； Scanly 保留自己的副本"</string>
     <string name="pdf_import_tap_a_page_or_long">"点击一个页面，或长按并拖动多个页面。"</string>
-    <string name="pdf_import_step_2_of_3_pages">"第 2 步（共 3 页） · 页码和名称"</string>
+    <string name="pdf_import_step_2_of_3_pages">"第 2 步（共 3 步） · 页面和名称"</string>
     <string name="pdf_import_name_this_document">"命名该文档"</string>
-    <string name="pdf_import_document_name">"文件名称"</string>
+    <string name="pdf_import_document_name">"文档名称"</string>
     <string name="pdf_import_turn_a_pdf_into_a">"将 PDF 转换为可编辑、签名和搜索的 Scanly 文档。"</string>
     <string name="pdf_import_add_pdf_to_library">"将PDF添加到库中"</string>
     <!-- PdfImportViewModel -->
     <string name="pdf_import_give_the_document_a_name">"为文档命名。"</string>
-    <string name="pdf_import_imported_pdf">"进口PDF"</string>
+    <string name="pdf_import_imported_pdf">"导入的PDF"</string>
     <!-- PdfMergeScreen -->
     <string name="pdf_merge_1_file">"1 个文件"</string>
     <string name="pdf_merge_your_original_files_are_unchanged">"你的原始文件没有改变"</string>
-    <string name="pdf_merge_combined_into_one_pdf">"%1$s 组合成一台 PDF"</string>
+    <string name="pdf_merge_combined_into_one_pdf">"%1$s 合并为一个 PDF"</string>
     <string name="pdf_merge_merged">"合并"</string>
     <string name="pdf_merge_kept_unchanged">"保持，不变"</string>
     <string name="pdf_merge_original_files">"原始文件"</string>
@@ -1076,21 +1076,21 @@
     <string name="pdf_merge_move_down">"下移%1$s"</string>
     <string name="pdf_merge_move_up">"将 %1$s 向上移动"</string>
     <string name="pdf_merge_pdf_from_scanly">"PDF 来自 Scanly"</string>
-    <string name="pdf_merge_pdf_from_phone">"电话 PDF"</string>
+    <string name="pdf_merge_pdf_from_phone">"来自手机的 PDF"</string>
     <string name="pdf_merge_page_count_unknown">"页数未知"</string>
     <string name="pdf_merge_merge_pdfs">"合并PDF文件"</string>
     <string name="pdf_merge_merge_files">"合并%1$s文件"</string>
     <string name="pdf_merge_add_more">"添加更多"</string>
-    <string name="pdf_merge_merge_order">"合并订单 · %1$s"</string>
+    <string name="pdf_merge_merge_order">"合并顺序 · %1$s"</string>
     <string name="pdf_merge_files_are_joined_from_top">"文件从上到下连接。"</string>
-    <string name="pdf_merge_order_name">"订单及名称"</string>
-    <string name="pdf_merge_step_2_of_3_order">"第 2 步（共 3 步） · 订单和名称"</string>
+    <string name="pdf_merge_order_name">"顺序和名称"</string>
+    <string name="pdf_merge_step_2_of_3_order">"第 2 步（共 3 步） · 顺序和名称"</string>
     <string name="pdf_merge_in_total">"共%1$s"</string>
-    <string name="pdf_merge_from_phone">"电话：%1$s"</string>
+    <string name="pdf_merge_from_phone">"来自手机：%1$s"</string>
     <string name="pdf_merge_next">"下一步"</string>
-    <string name="pdf_merge_next_files">"接下来的· %1$s文件"</string>
+    <string name="pdf_merge_next_files">"下一步 · %1$s 个文件"</string>
     <string name="pdf_merge_pick_at_least_2_files">"选择至少 2 个文件"</string>
-    <string name="pdf_merge_step_1_of_3_pick">"第 1 步（共 3 个 · 选择文件）"</string>
+    <string name="pdf_merge_step_1_of_3_pick">"第 1 步（共 3 步） · 选择文件"</string>
     <string name="pdf_merge_pick_files_in_the_order">"按照您想要的顺序选择文件。"</string>
     <string name="pdf_merge_merged_pdf">"合并PDF"</string>
     <string name="pdf_merge_merging">"合并…"</string>
@@ -1140,8 +1140,8 @@
     <string name="pdf_reader_menu_open_another_pdf">"再打开一个PDF"</string>
     <string name="pdf_reader_menu_all_pages">"所有页面"</string>
     <!-- PdfReaderPresentation -->
-    <string name="pdf_reader_presentation_0_of_0">"0 共 0"</string>
-    <string name="pdf_reader_presentation_paged">"寻呼"</string>
+    <string name="pdf_reader_presentation_0_of_0">"0 / 0"</string>
+    <string name="pdf_reader_presentation_paged">"分页"</string>
     <string name="pdf_reader_presentation_continuous">"连续"</string>
     <!-- PdfReaderScreen -->
     <string name="pdf_reader_tap_a_page_to_jump">"点击页面即可跳转到该页面"</string>
@@ -1155,7 +1155,7 @@
     <string name="pdf_reader_open_any_pdf_from_scanly">"从 Scanly 或您的手机打开任何 PDF。"</string>
     <string name="pdf_reader_read_a_pdf">"读取PDF"</string>
     <!-- PdfSignScreen -->
-    <string name="pdf_sign_1_mark">"1 分"</string>
+    <string name="pdf_sign_1_mark">"1 个标记"</string>
     <string name="pdf_sign_the_signed_copy_is_saved">"保存签名后的副本，无需密码。"</string>
     <string name="pdf_sign_this_pdf_is_locked">"此PDF已锁定"</string>
     <string name="pdf_sign_back_to_the_editor">"返回编辑器"</string>
@@ -1163,7 +1163,7 @@
     <string name="pdf_sign_signed_pdf">"签名PDF"</string>
     <string name="pdf_sign_saved_as">"另存为"</string>
     <string name="pdf_sign_marks_placed">"放置标记"</string>
-    <string name="pdf_sign_pages_signed">"签名页"</string>
+    <string name="pdf_sign_pages_signed">"已签名页面"</string>
     <string name="pdf_sign_signed">"签署"</string>
     <string name="pdf_sign_placing_signatures_on_each_page">"每页签名…"</string>
     <string name="pdf_sign_signing_your_pdf">"签署您的PDF"</string>
@@ -1190,7 +1190,7 @@
     <string name="pdf_to_images_presentation_kb">"%1$s KB"</string>
     <string name="pdf_to_images_presentation_0_kb">"0 KB"</string>
     <!-- PdfToImagesScreen -->
-    <string name="pdf_to_images_of_selected">"%1$s 或 %2$s 已选中"</string>
+    <string name="pdf_to_images_of_selected">"已选中 %1$s / %2$s"</string>
     <string name="pdf_to_images_tap_images_or_long_press">"点击图像，或长按并拖动，仅共享部分图像。"</string>
     <string name="pdf_to_images_open_gallery">"打开画廊"</string>
     <string name="pdf_to_images_pick_a_different_file">"选择不同的文件"</string>
@@ -1198,13 +1198,13 @@
     <string name="pdf_to_images_export_again">"再次导出"</string>
     <string name="pdf_to_images_saving_images">"保存图片…"</string>
     <string name="pdf_to_images_each">"~%1$s 各"</string>
-    <string name="pdf_to_images_resolution">"决议"</string>
+    <string name="pdf_to_images_resolution">"分辨率"</string>
     <string name="pdf_to_images_format">"格式"</string>
     <string name="pdf_to_images_deselect_all">"取消全选"</string>
     <string name="pdf_to_images_this_pdf_is_password_protected">"该 PDF 受密码保护。输入密码即可查看页面。"</string>
     <string name="pdf_to_images_images_show_up_in_your">"图像立即显示在您的图库中"</string>
     <string name="pdf_to_images_pdf_to_jpg">"PDF 至 JPG"</string>
-    <string name="pdf_to_images_step_2_of_3_pages">"第 2 步（共 3 页） · 页和格式"</string>
+    <string name="pdf_to_images_step_2_of_3_pages">"第 2 步（共 3 步） · 页面和格式"</string>
     <string name="pdf_to_images_no_gallery_app_found_the">"未找到图库应用程序。图像位于 Pictures/Scanly 中。"</string>
     <string name="pdf_to_images_turn_pages_into_images_for">"将页面变成图像以供聊天、幻灯片或画廊使用。"</string>
     <!-- PdfToolDone -->
@@ -1227,11 +1227,11 @@
     <!-- PdfToolShared -->
     <string name="pdf_tool_shared_scanly_pdf">"Scanly PDF"</string>
     <!-- PdfToolViewModels -->
-    <string name="pdf_tool_view_models_saving">"节省…"</string>
+    <string name="pdf_tool_view_models_saving">"保存中…"</string>
     <!-- PdfWatermarkScreen -->
     <string name="pdf_watermark_the_page">"页面"</string>
     <string name="pdf_watermark_first_page_only">"仅第一页"</string>
-    <string name="pdf_watermark_apply_to">"申请"</string>
+    <string name="pdf_watermark_apply_to">"应用于"</string>
     <string name="pdf_watermark_colour">"颜色"</string>
     <string name="pdf_watermark_opacity">"不透明度"</string>
     <string name="pdf_watermark_large">"大号"</string>
@@ -1239,7 +1239,7 @@
     <string name="pdf_watermark_small">"小"</string>
     <string name="pdf_watermark_horizontal">"水平"</string>
     <string name="pdf_watermark_diagonal">"对角线"</string>
-    <string name="pdf_watermark_single">"单身"</string>
+    <string name="pdf_watermark_single">"单个"</string>
     <string name="pdf_watermark_tiled">"平铺"</string>
     <string name="pdf_watermark_style">"风格"</string>
     <string name="pdf_watermark_stamps">"邮票“%1$s”"</string>
@@ -1250,9 +1250,9 @@
     <string name="pdf_watermark_page_1">"第 1 页"</string>
     <string name="pdf_watermark_preview_of_page_1_with">"带水印的第1页预览"</string>
     <string name="pdf_watermark_apply_watermark">"应用水印"</string>
-    <string name="pdf_watermark_apply_to_pages">"申请到%1$s页面"</string>
-    <string name="pdf_watermark_apply_to_page">"申请页面"</string>
-    <string name="pdf_watermark_apply_to_first_page">"应用于首页"</string>
+    <string name="pdf_watermark_apply_to_pages">"应用到%1$s页"</string>
+    <string name="pdf_watermark_apply_to_page">"应用到页面"</string>
+    <string name="pdf_watermark_apply_to_first_page">"应用于第一页"</string>
     <string name="pdf_watermark_unlock_the_pdf_first">"先解锁PDF"</string>
     <string name="pdf_watermark_watermark">"水印"</string>
     <string name="pdf_watermark_edit_stamp">"编辑图章"</string>
@@ -1264,9 +1264,9 @@
     <string name="pdf_watermark_on_both_pages_tap_the">"在两页上。点击页面进行检查。"</string>
     <string name="pdf_watermark_on_the_page_tap_it">"在页面上。点击它进行检查。"</string>
     <string name="pdf_watermark_on_the_first_page_tap">"在第一页。点击页面进行检查。"</string>
-    <string name="pdf_watermark_watermark_added">"添加水印"</string>
+    <string name="pdf_watermark_watermark_added">"已添加水印"</string>
     <string name="pdf_watermark_stamping_every_page">"在每一页上盖章"</string>
-    <string name="pdf_watermark_stamping">"冲压%1$s"</string>
+    <string name="pdf_watermark_stamping">"正在盖章 %1$s"</string>
     <string name="pdf_watermark_stamping_the_first_page">"在第一页上盖章"</string>
     <string name="pdf_watermark_adding_watermark">"添加水印…"</string>
     <string name="pdf_watermark_stamp_text_like_confidential_or">"标记文本，如“机密”或“仅供 KYC 使用”。"</string>
@@ -1296,16 +1296,16 @@
     <string name="qr_create_name">"姓名"</string>
     <string name="qr_create_leave_the_amount_empty_so">"将金额留空，以便客户可以输入他们所欠的金额。"</string>
     <string name="qr_create_enter_an_amount_above_zero">"输入大于零的金额"</string>
-    <string name="qr_create_any">"$ 任意"</string>
-    <string name="qr_create_amount_optional">"数量 · 可选"</string>
+    <string name="qr_create_any">"₹ 任意"</string>
+    <string name="qr_create_amount_optional">"金额 · 可选"</string>
     <string name="qr_create_shop_name">"店铺名称"</string>
     <string name="qr_create_payee_name">"收款人姓名"</string>
     <string name="qr_create_name_bank">"姓名@银行"</string>
-    <string name="qr_create_upi_id">"统一识别码"</string>
+    <string name="qr_create_upi_id">"UPI ID"</string>
     <string name="qr_create_security">"安全"</string>
     <string name="qr_create_network_password">"网络密码"</string>
     <string name="qr_create_network_name">"网络名称"</string>
-    <string name="qr_create_characters">"%1$s / %2$s 人物"</string>
+    <string name="qr_create_characters">"%1$s / %2$s 字符"</string>
     <string name="qr_create_anything_up_to_characters">"%1$s 字符以内的任何内容"</string>
     <string name="qr_create_web_address">"网址"</string>
     <string name="qr_create_qr_code_preview">"QR代码预览"</string>
@@ -1313,7 +1313,7 @@
     <string name="qr_create_save_image">"保存图像"</string>
     <string name="qr_create_only_dark_colours_so_every">"只有深色，所以每个摄像头都可以读取代码。"</string>
     <string name="qr_create_shown_under_the_code">"代码下所示"</string>
-    <string name="qr_create_caption_under_the_code_optional">"代码·下的标题可选"</string>
+    <string name="qr_create_caption_under_the_code_optional">"代码下方的标题 · 可选"</string>
     <string name="qr_create_create_qr">"创建QR"</string>
     <!-- QrHistoryScreen -->
     <string name="qr_history_created">"创建"</string>
@@ -1344,11 +1344,11 @@
     <string name="qr_result_this_link_isn_t_encrypted">"此链接未加密 (http)。在打开之前检查域名是否是您期望的域名。"</string>
     <string name="qr_result_check_the_domain_is_the">"在打开之前检查域名是否是您期望的域名。"</string>
     <string name="qr_result_full_address">"详细地址"</string>
-    <string name="qr_result_number">"数量"</string>
+    <string name="qr_result_number">"号码"</string>
     <string name="qr_result_subject">"主题"</string>
     <string name="qr_result_address">"地址"</string>
     <string name="qr_result_search_the_web">"搜索网络"</string>
-    <string name="qr_result_copy_number">"复印号码"</string>
+    <string name="qr_result_copy_number">"复制号码"</string>
     <string name="qr_result_email_address">"电子邮件地址"</string>
     <string name="qr_result_copy_address">"复制地址"</string>
     <string name="qr_result_call">"打电话"</string>
@@ -1361,17 +1361,17 @@
     <!-- QrScanScreen -->
     <string name="qr_scan_captured_qr_code">"捕获QR代码"</string>
     <string name="qr_scan_history">"历史"</string>
-    <string name="qr_scan_from_photo">"从照片来看"</string>
+    <string name="qr_scan_from_photo">"来自照片"</string>
     <string name="qr_scan_scan_again">"再次扫描"</string>
     <string name="qr_scan_qr_code">"QR代码"</string>
     <string name="qr_scan_details">"详细信息"</string>
-    <string name="qr_scan_allow_camera">"允许拍照"</string>
+    <string name="qr_scan_allow_camera">"允许使用相机"</string>
     <string name="qr_scan_open_settings">"打开设置"</string>
     <string name="qr_scan_the_camera_is_used_only">"仅当此屏幕打开时才可使用相机。没有它，“来自照片”就可以工作。"</string>
     <string name="qr_scan_open_settings_tap_permissions_and">"打开“设置”，点击“权限”，然后打开 Scanly 的相机。"</string>
     <string name="qr_scan_allow_camera_to_scan">"允许相机扫描"</string>
     <string name="qr_scan_camera_permission_is_blocked">"相机权限被屏蔽"</string>
-    <string name="qr_scan_torch_on_off">"割炬开/关"</string>
+    <string name="qr_scan_torch_on_off">"手电筒开/关"</string>
     <string name="qr_scan_scan_qr_barcode">"扫描QR &amp; 条码"</string>
     <string name="qr_scan_point_at_a_qr_code">"指向 QR 代码或条形码"</string>
     <string name="qr_scan_code_found_hold_steady">"代码发现·保持稳定"</string>
@@ -1401,7 +1401,7 @@
     <string name="image_text_photos_are_saved_as_a">"照片被保存为新文档，以便您稍后可以搜索其文本。"</string>
     <string name="image_text_your_scans_have_no_pages">"您的扫描还没有页面。选择照片来阅读其中的文字。"</string>
     <string name="image_text_no_scans_yet_pick_photos">"尚未扫描。选择照片来阅读其中的文字。"</string>
-    <string name="image_text_1_scan">"1 次扫描"</string>
+    <string name="image_text_1_scan">"1 个扫描件"</string>
     <string name="image_text_up_to_from_your_gallery">"从您的图库或文件中最多 %1$s"</string>
     <string name="image_text_copy_text_from_photos_or">"从照片或扫描件中复制文本。在此手机上阅读文本。"</string>
     <string name="image_text_image_to_text">"图像到文本"</string>
@@ -1436,10 +1436,10 @@
     <string name="pdf_page_size_b5">"B5"</string>
     <string name="pdf_page_size_letter">"美式信纸"</string>
     <string name="pdf_page_size_tabloid">"小报"</string>
-    <string name="pdf_page_size_executive">"行政人员"</string>
+    <string name="pdf_page_size_executive">"行政用纸"</string>
     <string name="pdf_page_size_postcard">"明信片"</string>
-    <string name="pdf_page_size_american_foolscap">"美国傻瓜"</string>
-    <string name="pdf_page_size_european_foolscap">"欧洲傻瓜"</string>
+    <string name="pdf_page_size_american_foolscap">"美式 Foolscap 纸"</string>
+    <string name="pdf_page_size_european_foolscap">"欧式 Foolscap 纸"</string>
     <!-- pdf_page_margin -->
     <string name="pdf_page_margin_no_margin">"无边距"</string>
     <string name="pdf_page_margin_big">"大"</string>
@@ -1447,7 +1447,7 @@
     <string name="pdf_page_number_center">"中心"</string>
     <!-- pdf_image_format -->
     <string name="pdf_image_format_smaller_files_best_for_photos">"较小的文件，最适合照片和共享"</string>
-    <string name="pdf_image_format_crisper_text_files_about_3">"文字更清晰，文件大约3×"</string>
+    <string name="pdf_image_format_crisper_text_files_about_3">"文字更清晰，文件约大 3 倍"</string>
     <!-- pdf_image_resolution -->
     <string name="pdf_image_resolution_for_sharing">"为了分享"</string>
     <string name="pdf_image_resolution_1240_px_wide_sharp_on">"1240 px 宽 · 在手机和 WhatsApp 上锐利"</string>
@@ -1482,7 +1482,7 @@
     <string name="search_sort_oldest">"最老的"</string>
     <string name="search_sort_name_a_z">"名称 A–Z"</string>
     <!-- search_scope -->
-    <string name="search_scope_everywhere">"无处不在"</string>
+    <string name="search_scope_everywhere">"全部"</string>
     <string name="search_scope_names">"名字"</string>
     <string name="search_scope_text_in_pages">"页面中的文本"</string>
     <!-- app_update_channel -->
@@ -1525,14 +1525,14 @@
     <string name="wifi_security_wep">"WEP"</string>
     <string name="wifi_security_open">"无加密"</string>
     <!-- qr_create_type -->
-    <string name="qr_create_type_upi">"统一国际联盟"</string>
+    <string name="qr_create_type_upi">"UPI"</string>
     <!-- pdf_import_look -->
     <string name="pdf_import_look_keep_as_is">"保持原样"</string>
     <string name="pdf_import_look_pages_look_exactly_like_the">"页面看起来与 PDF 一模一样"</string>
     <string name="pdf_import_look_enhance">"增强"</string>
     <string name="pdf_import_look_even_out_scanned_pages_and">"均匀扫描页面并锐化文本"</string>
     <!-- capture_scene_issue -->
-    <string name="capture_scene_issue_lens_may_be_covered_clear">"镜头可能被遮盖。揭开它并重试。"</string>
+    <string name="capture_scene_issue_lens_may_be_covered_clear">"镜头可能被遮挡。清理后重试。"</string>
     <string name="capture_scene_issue_too_dark_add_light_or">"太黑了。添加灯光或打开闪光灯。"</string>
     <string name="capture_scene_issue_image_looks_blurry_clean_the">"图像看起来模糊。清洁镜头或点击对焦。"</string>
     <!-- group_export_action -->
@@ -1556,13 +1556,13 @@
     <!-- onboarding_page -->
     <string name="onboarding_page_capture">"捕捉"</string>
     <string name="onboarding_page_paper_to_polished">纸张，更加出色。</string>
-    <string name="onboarding_page_capture_straighten_and_clean_up">摆正页面，保留细节。</string>
+    <string name="onboarding_page_capture_straighten_and_clean_up">拍摄页面，校正边缘并调整颜色。保存扫描件前，确保细节清晰。</string>
     <string name="onboarding_page_find">"查找"</string>
     <string name="onboarding_page_find_more_than_files">找到词语，找到页面。</string>
-    <string name="onboarding_page_recognize_text_on_your_device">搜索扫描件中的文字。</string>
+    <string name="onboarding_page_recognize_text_on_your_device">在设备上识别文字，然后搜索扫描件中的词语。无需重新阅读每份文档，即可找到所需页面。</string>
     <string name="onboarding_page_share">完成</string>
     <string name="onboarding_page_ready_when_you_are">准备好发送。</string>
-    <string name="onboarding_page_keep_pages_together_share_a">签名、保护并分享清晰的 PDF。</string>
+    <string name="onboarding_page_keep_pages_together_share_a">将页面合并为一个PDF。按需添加签名或密码，然后轻点几下即可分享完成的文档。</string>
     <!-- pdf_reader_tool -->
     <string name="pdf_reader_tool_merge_with_other_pdfs">"与其他PDF文件合并"</string>
     <string name="pdf_reader_tool_password_protect">"密码保护"</string>
@@ -1597,7 +1597,7 @@
     <string name="settings_text_recognition_czech">"捷克语"</string>
     <string name="settings_text_recognition_swedish">"瑞典语"</string>
     <string name="settings_text_recognition_swahili">"斯瓦希里语"</string>
-    <string name="settings_text_recognition_filipino">"菲律宾人"</string>
+    <string name="settings_text_recognition_filipino">"菲律宾语"</string>
     <string name="settings_text_recognition_vietnamese">"越南语"</string>
     <string name="settings_text_recognition_malay">"马来语"</string>
     <string name="settings_text_recognition_indonesian">"印度尼西亚语"</string>
@@ -1624,7 +1624,7 @@
     <string name="settings_text_recognition_persian">"波斯语"</string>
     <string name="settings_text_recognition_arabic">"阿拉伯语"</string>
     <string name="settings_text_recognition_right_to_left">"从右到左"</string>
-    <string name="settings_text_recognition_korean">"韩国人"</string>
+    <string name="settings_text_recognition_korean">"韩语"</string>
     <string name="settings_text_recognition_japanese">"日语"</string>
     <string name="settings_text_recognition_chinese">"中文"</string>
     <string name="settings_text_recognition_east_asian">"东亚"</string>
@@ -1710,7 +1710,7 @@
     <string name="pip_lines_i_m_still_reading_some">"我还在读一些书页。匹配可能会在一秒钟内出现。"</string>
     <string name="pip_lines_i_can_t_see_a">"我还什么也看不到。我可以借相机吗？"</string>
     <string name="pip_lines_the_camera_is_switched_off">"Scanly 的相机已关闭。快速访问设置即可解决此问题。"</string>
-    <string name="pip_lines_lend_me_the_camera_and">"把相机借给我，我帮你读一下密码。"</string>
+    <string name="pip_lines_lend_me_the_camera_and">"把相机借给我，我帮你读取一下代码。"</string>
     <string name="pip_lines_huh_that_document_wandered_off">"嗯，那个文件好像不见了。"</string>
     <!-- pdf_page_size -->
     <string name="pdf_page_size_match_each_scan">"适合每个扫描页面的尺寸"</string>
@@ -1831,7 +1831,7 @@
     <string name="error_not_enough_memory_to_compress_this_pdf">"没有足够的内存来压缩此PDF。尝试最小质量或更短的文件。"</string>
     <string name="error_a_text_box_is_empty_type_something">"文本框为空。输入一些内容或将其删除。"</string>
     <string name="error_a_signature_image_is_missing_remove_it">"缺少签名图像。将其取出并重新放置。"</string>
-    <string name="error_some_characters_cant_be_drawn_remove_emoji">"有些角色无法绘制。删除表情符号或不寻常的符号。"</string>
+    <string name="error_some_characters_cant_be_drawn_remove_emoji">"有些字符无法绘制。删除表情符号或不寻常的符号。"</string>
     <string name="error_some_characters_in_the_watermark_cant_be">"水印中的某些字符无法绘制。删除表情符号或不寻常的符号。"</string>
     <string name="error_enter_something_to_encode">"输入要编码的内容。"</string>
     <string name="error_could_not_write_qr_image">"无法写入QR 映像。"</string>
@@ -1883,9 +1883,9 @@
     <string name="sign_kind_open_signature_options">"打开签名选项"</string>
     <string name="sign_kind_open_initials_options">"打开缩写选项"</string>
     <string name="sign_kind_saved_signature">"保存的签名"</string>
-    <string name="sign_kind_saved_initials">"保存姓名首字母"</string>
-    <string name="sign_kind_show_signature_first">"在其他人面前出示此签名"</string>
-    <string name="sign_kind_show_initials_first">"在其他人之前显示这些姓名首字母"</string>
+    <string name="sign_kind_saved_initials">"保存的缩写"</string>
+    <string name="sign_kind_show_signature_first">"优先显示此签名"</string>
+    <string name="sign_kind_show_initials_first">"优先显示这些缩写"</string>
     <!-- Watermark -->
     <!-- Watermark presets are stamped into PDFs with a Latin/Cyrillic font. In languages written in
          another script (Indic, CJK, Thai), keep these in English so the stamp can be drawn. -->
@@ -1913,7 +1913,7 @@
         <item quantity="other">"%d 个主题"</item>
     </plurals>
     <plurals name="common_libraries">
-        <item quantity="other">"%d 个软件库"</item>
+        <item quantity="other">"%d 个库"</item>
     </plurals>
     <plurals name="common_selected">
         <item quantity="other">"已选择 %d 项"</item>
@@ -1929,7 +1929,7 @@
     <string name="error_failed_to_import_images">"导入图片失败。"</string>
     <string name="error_could_not_calculate_storage_usage">"无法计算存储使用情况。"</string>
     <string name="error_could_not_clear_app_data">"无法清除应用程序数据。"</string>
-    <string name="error_could_not_clear_temporary_exports">"无法清关临时出口。"</string>
+    <string name="error_could_not_clear_temporary_exports">"无法清除临时导出文件。"</string>
     <string name="error_could_not_remove_old_backup_files">"无法删除旧的备份文件。"</string>
     <string name="error_could_not_create_the_document">"无法创建文档。"</string>
     <string name="error_could_not_rename_the_document">"无法重命名文档。"</string>
@@ -1946,7 +1946,7 @@
     <string name="error_could_not_save_page_edits">"无法保存页面编辑。"</string>
     <string name="error_could_not_update_text_recognition_engine">"无法更新文本识别引擎。"</string>
     <string name="error_could_not_update_theme_mode">"无法更新主题模式。"</string>
-    <string name="error_could_not_finish_onboarding">"无法完成入职。"</string>
+    <string name="error_could_not_finish_onboarding">"无法完成设置。"</string>
     <string name="error_could_not_load_settings_content">"无法加载设置内容。"</string>
     <string name="error_could_not_update_the_save_location">"无法更新保存位置。"</string>
     <string name="error_could_not_update_model_selection">"无法更新模型选择。"</string>
@@ -1954,9 +1954,6 @@
     <string name="error_could_not_save_the_exported_file">"无法保存导出的文件。"</string>
     <string name="error_could_not_store_update_prompt_state">"无法存储更新提示状态。"</string>
     <string name="error_could_not_check_github_releases">"无法检查 GitHub 版本。"</string>
-    <string name="onboarding_demo_result">%1$s · 第 %2$s 页</string>
-    <string name="onboarding_demo_found">在页面文字中找到</string>
-    <string name="onboarding_demo_protected">已设置密码保护</string>
     <string name="onboarding_chapter_number">%1$02d %2$s</string>
     <!-- Split PDF -->
     <string name="tools_catalog_split">"拆分"</string>
@@ -2065,4 +2062,7 @@
     <string name="pdf_peek_could_not_open">"无法打开此 PDF 进行预览。"</string>
     <string name="pdf_peek_close">"关闭预览"</string>
     <string name="pdf_peek_tap_hint">"点按文件即可预览"</string>
+    <string name="welcome_greeting">欢迎使用</string>
+    <string name="welcome_tagline">把纸质文件变成清晰、可搜索的 PDF。</string>
+    <string name="welcome_no_language_match">没有与“%1$s”匹配的语言</string>
 </resources>

@@ -1,6 +1,7 @@
 package `in`.c1ph3rj.scanly.feature.onboarding
 
 import android.Manifest
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
@@ -37,6 +38,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
@@ -57,10 +59,20 @@ fun OnboardingFlow(
 ) {
     val context = LocalContext.current
     var showPermission by rememberSaveable { mutableStateOf(false) }
+    // Welcome (logo, summary, app language) comes first; Back from the intro returns to it.
+    var welcomeDone by rememberSaveable { mutableStateOf(false) }
     val finish = {
         showPermission = false
         onComplete()
     }
+
+    if (!welcomeDone) {
+        WelcomeRoute(onContinue = { welcomeDone = true }, modifier = modifier)
+        return
+    }
+
+    // Registered before OnboardingScreen, so its own page-back handler still wins on pages 2–3.
+    BackHandler(enabled = !showPermission) { welcomeDone = false }
 
     OnboardingScreen(
         uiState = uiState,
@@ -157,7 +169,10 @@ internal fun OnboardingPermissionSheet(
         sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
         sheetMaxWidth = 560.dp,
         containerColor = MaterialTheme.colorScheme.surface,
-        modifier = Modifier.testTag("onboarding_permission_sheet"),
+        // A sheet is its own window, so it does not inherit the activity's setting.
+        modifier = Modifier
+            .semantics { testTagsAsResourceId = true }
+            .testTag("onboarding_permission_sheet"),
     ) {
         // The whole sheet scrolls on landscape / large text, including its reachable actions.
         Column(

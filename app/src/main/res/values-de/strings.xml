@@ -192,11 +192,11 @@
     <string name="pip_camera_hold_it_almost_there">Festhalten… gleich geschafft.</string>
     <string name="pip_camera_hold_it">"Festhalten… %1$s"</string>
     <string name="pip_camera_ooh_edges_hold_still_a">Oh, Kanten! Kurz stillhalten…</string>
-    <string name="pip_camera_auto_capture_is_off_tap">Automatische Aufnahme ist aus. Tipp auf den Auslöser, wenn du so weit bist.</string>
-    <string name="pip_camera_found_the_edges_tap_the">Kanten gefunden. Tipp auf den Auslöser, wann immer du willst.</string>
+    <string name="pip_camera_auto_capture_is_off_tap">"Automatische Aufnahme ist aus. Tippe auf den Auslöser, wenn du so weit bist."</string>
+    <string name="pip_camera_found_the_edges_tap_the">"Kanten gefunden. Tippe auf den Auslöser, wann immer du willst."</string>
     <string name="pip_camera_got_it_on_to_the">Hab sie! Weiter zur nächsten Seite.</string>
     <string name="pip_camera_snap_saving_that_page">Klick! Seite wird gespeichert…</string>
-    <string name="pip_camera_it_s_all_fuzzy_tap">Alles verschwommen. Tipp auf die Seite zum Scharfstellen.</string>
+    <string name="pip_camera_it_s_all_fuzzy_tap">"Alles verschwommen. Tippe auf die Seite zum Scharfstellen."</string>
     <string name="pip_camera_bit_dark_in_here_more">Etwas dunkel hier. Mehr Licht oder mal den Blitz probieren?</string>
     <string name="pip_camera_everything_s_dark_is_something">Alles dunkel. Ist etwas vor der Linse?</string>
     <!-- ScanSessionScreen -->
@@ -1242,7 +1242,7 @@
     <string name="pdf_watermark_single">Einzeln</string>
     <string name="pdf_watermark_tiled">Gekachelt</string>
     <string name="pdf_watermark_style">Stil</string>
-    <string name="pdf_watermark_stamps">Stempelt „%1$s“</string>
+    <string name="pdf_watermark_stamps">"Stempel „%1$s“"</string>
     <string name="pdf_watermark_add_date">Datum hinzufügen</string>
     <string name="pdf_watermark_presets">Vorlagen</string>
     <string name="pdf_watermark_the_watermarked_copy_is_saved">Die Kopie mit Wasserzeichen wird ohne Passwort gespeichert. Mit dem Passwort-Tool kannst du sie wieder sperren.</string>
@@ -1435,13 +1435,13 @@
     <string name="pdf_page_size_b4">"B4"</string>
     <string name="pdf_page_size_b5">"B5"</string>
     <string name="pdf_page_size_letter">"US-Letter"</string>
-    <string name="pdf_page_size_tabloid">"Boulevardzeitung"</string>
+    <string name="pdf_page_size_tabloid">"Tabloid"</string>
     <string name="pdf_page_size_executive">"Executive"</string>
     <string name="pdf_page_size_postcard">"Postkarte"</string>
     <string name="pdf_page_size_american_foolscap">"Amerikanischer Foolscap"</string>
     <string name="pdf_page_size_european_foolscap">"Europäischer Foolscap"</string>
     <!-- pdf_page_margin -->
-    <string name="pdf_page_margin_no_margin">"Keine Marge"</string>
+    <string name="pdf_page_margin_no_margin">"Kein Rand"</string>
     <string name="pdf_page_margin_big">"Groß"</string>
     <!-- pdf_page_number -->
     <string name="pdf_page_number_center">"Mitte"</string>
@@ -1477,7 +1477,7 @@
     <string name="date_filter_this_year">"Dieses Jahr"</string>
     <string name="date_filter_custom_range">"Benutzerdefinierter Bereich"</string>
     <!-- search_sort -->
-    <string name="search_sort_best_match">"Bestes Spiel"</string>
+    <string name="search_sort_best_match">"Beste Übereinstimmung"</string>
     <string name="search_sort_newest">"Neueste"</string>
     <string name="search_sort_oldest">"Älteste"</string>
     <string name="search_sort_name_a_z">"Name A–Z"</string>
@@ -1556,13 +1556,13 @@
     <!-- onboarding_page -->
     <string name="onboarding_page_capture">"AUFNEHMEN"</string>
     <string name="onboarding_page_paper_to_polished">Papier, perfektioniert.</string>
-    <string name="onboarding_page_capture_straighten_and_clean_up">Begradige die Seite. Bewahre die Details.</string>
+    <string name="onboarding_page_capture_straighten_and_clean_up">Erfasse eine Seite, begradige die Kanten und passe die Farbe an. Prüfe die Details, bevor du deinen Scan speicherst.</string>
     <string name="onboarding_page_find">"FINDEN"</string>
     <string name="onboarding_page_find_more_than_files">Finde das Wort. Finde die Seite.</string>
-    <string name="onboarding_page_recognize_text_on_your_device">Durchsuche den Text deiner Scans.</string>
+    <string name="onboarding_page_recognize_text_on_your_device">Erkenne Text auf deinem Gerät und suche nach Wörtern in deinen Scans. Finde die gesuchte Seite, ohne jedes Dokument erneut zu lesen.</string>
     <string name="onboarding_page_share">ABSCHLUSS</string>
     <string name="onboarding_page_ready_when_you_are">Bereit zum Senden.</string>
-    <string name="onboarding_page_keep_pages_together_share_a">Unterschreibe, schütze und teile ein sauberes PDF.</string>
+    <string name="onboarding_page_keep_pages_together_share_a">Fasse deine Seiten in einer PDF zusammen. Ergänze bei Bedarf eine Unterschrift oder ein Passwort und teile das fertige Dokument mit wenigen Fingertipps.</string>
     <!-- pdf_reader_tool -->
     <string name="pdf_reader_tool_merge_with_other_pdfs">"Mit anderen PDF-Dateien zusammenführen"</string>
     <string name="pdf_reader_tool_password_protect">"Passwortschutz"</string>
@@ -1687,8 +1687,8 @@
     <string name="document_presentation_formatter_untitled_document">"Unbenanntes Dokument"</string>
     <string name="document_presentation_formatter_untitled_folder">"Unbenannter Ordner"</string>
     <!-- default_pdf_toolkit_repository -->
-    <string name="default_pdf_toolkit_repository_this_pdf_is_password_protected">"Dieser PDF ist passwortgeschützt."</string>
-    <string name="default_pdf_toolkit_repository_this_pdf_is_too_large">"Dieser PDF ist zu groß, um ihn auf diesem Gerät zu verarbeiten."</string>
+    <string name="default_pdf_toolkit_repository_this_pdf_is_password_protected">"Diese PDF ist passwortgeschützt."</string>
+    <string name="default_pdf_toolkit_repository_this_pdf_is_too_large">"Diese PDF ist zu groß, um sie auf diesem Gerät zu verarbeiten."</string>
     <!-- document_cover_art_factory -->
     <string name="document_cover_art_factory_scanned_document">"Gescanntes Dokument"</string>
     <!-- document_sign -->
@@ -1834,7 +1834,7 @@
     <string name="error_password_must_be_4_64_characters">"Das Passwort muss 4–64 Zeichen lang sein."</string>
     <string name="error_enter_the_current_pdf_password">"Gib das aktuelle PDF-Passwort ein."</string>
     <string name="error_enter_watermark_text">"Gib einen Wasserzeichentext ein."</string>
-    <string name="error_this_pdf_has_no_pages">"Dieser PDF hat keine Seiten."</string>
+    <string name="error_this_pdf_has_no_pages">"Diese PDF hat keine Seiten."</string>
     <string name="error_preview_size_is_invalid">"Die Vorschaugröße ist ungültig."</string>
     <string name="error_place_a_signature_or_another_mark_first">"Platziere zuerst eine Unterschrift oder eine andere Markierung."</string>
     <string name="error_a_mark_is_on_a_missing_page">"Auf einer fehlenden Seite befindet sich eine Markierung."</string>
@@ -1851,7 +1851,7 @@
     <string name="error_some_characters_cant_be_drawn_remove_emoji">"Einige Zeichen lassen sich nicht darstellen. Entferne Emojis oder ungewöhnliche Symbole."</string>
     <string name="error_some_characters_in_the_watermark_cant_be">"Einige Zeichen im Wasserzeichen lassen sich nicht darstellen. Entferne Emojis oder ungewöhnliche Symbole."</string>
     <string name="error_enter_something_to_encode">"Gib den Inhalt für den QR-Code ein."</string>
-    <string name="error_could_not_write_qr_image">"Das QR-Image konnte nicht geschrieben werden."</string>
+    <string name="error_could_not_write_qr_image">"Das QR-Bild konnte nicht geschrieben werden."</string>
     <string name="error_a_signature_image_is_missing_place_it">"Ein Unterschriftsbild fehlt. Füge es erneut ein."</string>
     <string name="error_the_signature_is_empty">"Die Signatur ist leer."</string>
     <string name="error_could_not_save_the_signature">"Unterschrift konnte nicht gespeichert werden."</string>
@@ -1981,9 +1981,6 @@
     <string name="error_could_not_save_the_exported_file">"Die exportierte Datei konnte nicht gespeichert werden."</string>
     <string name="error_could_not_store_update_prompt_state">"Der Status der Aktualisierungsaufforderung konnte nicht gespeichert werden."</string>
     <string name="error_could_not_check_github_releases">"GitHub-Versionen konnten nicht überprüft werden."</string>
-    <string name="onboarding_demo_result">%1$s · Seite %2$s</string>
-    <string name="onboarding_demo_found">Im Seitentext gefunden</string>
-    <string name="onboarding_demo_protected">Passwortgeschützt</string>
     <string name="onboarding_chapter_number">%1$02d %2$s</string>
     <!-- Split PDF -->
     <string name="tools_catalog_split">"Aufteilen"</string>
@@ -2075,7 +2072,7 @@
     <string name="document_split_part_label_single">"Teil %1$d · Seite %2$d"</string>
     <string name="document_split_destination_title">"Neue Dokumente landen in"</string>
     <string name="document_split_destination_folder">"Demselben Ordner wie das Original"</string>
-    <string name="document_split_destination_library">"Deiner Mediathek, außerhalb von Ordnern"</string>
+    <string name="document_split_destination_library">"Deiner Bibliothek, außerhalb von Ordnern"</string>
     <string name="document_split_keep_original">"Original behalten"</string>
     <string name="document_split_keep_original_caption">"Aus: Es kommt in „Zuletzt gelöscht“"</string>
     <string name="document_split_note">"Text, Unterschriften und Bearbeitungen wandern mit jeder Seite mit."</string>
@@ -2099,4 +2096,7 @@
     <string name="pdf_peek_could_not_open">"Diese PDF konnte nicht für die Vorschau geöffnet werden."</string>
     <string name="pdf_peek_close">"Vorschau schließen"</string>
     <string name="pdf_peek_tap_hint">"Tippe auf eine Datei für die Vorschau"</string>
+    <string name="welcome_greeting">Willkommen</string>
+    <string name="welcome_tagline">Mach aus Papier saubere, durchsuchbare PDFs.</string>
+    <string name="welcome_no_language_match">Keine Sprache passt zu „%1$s“</string>
 </resources>

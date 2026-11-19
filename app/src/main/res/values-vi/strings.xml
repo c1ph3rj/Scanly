@@ -550,7 +550,7 @@
     <string name="library_search_close_matches">Kết quả gần đúng</string>
     <string name="library_search_searching_text_in_pages">Đang tìm văn bản trong trang…</string>
     <string name="library_search_by_name">" · %1$s theo tên"</string>
-    <string name="library_search_complete_to">"Hoàn thành thành "</string>
+    <string name="library_search_complete_to">"Gợi ý:"</string>
     <string name="library_search_filters_on">"Bộ lọc, đang bật %1$s"</string>
     <string name="library_search_filters">"Bộ lọc · %1$s"</string>
     <string name="library_search_matching_names">Tên khớp</string>
@@ -616,7 +616,7 @@
     <!-- TrashUndoSnackbar -->
     <string name="trash_undo_snackbar_moved_to_recently_deleted">Đã chuyển \"%1$s\" vào mục Đã xóa gần đây</string>
     <string name="trash_undo_snackbar_moved_to_recently_deleted_2">"Đã chuyển %1$s vào mục Đã xóa gần đây"</string>
-    <string name="trash_undo_snackbar_undo">Hủy</string>
+    <string name="trash_undo_snackbar_undo">"Hoàn tác"</string>
     <!-- OnboardingFlow -->
     <string name="onboarding_flow_enable_camera">Bật camera</string>
     <string name="onboarding_flow_enable_the_camera_to_scan">Bật camera để quét giấy tờ. Bạn vẫn có thể nhập ảnh mà không cần camera.</string>
@@ -1053,7 +1053,7 @@
     <string name="pdf_import_added_to_your_library">Đã thêm vào thư viện</string>
     <string name="pdf_import_step_3_of_3_done">Bước 3/3 · Xong</string>
     <string name="pdf_import_adding_to_library">Đang thêm vào thư viện…</string>
-    <string name="pdf_import_look">Xem</string>
+    <string name="pdf_import_look">"Giao diện"</string>
     <string name="pdf_import_your_pdf_file_stays_as">Tệp PDF của bạn được giữ nguyên; Scanly lưu một bản sao riêng</string>
     <string name="pdf_import_tap_a_page_or_long">Nhấn vào một trang, hoặc nhấn giữ và kéo qua nhiều trang.</string>
     <string name="pdf_import_step_2_of_3_pages">Bước 2/3 · Trang và tên</string>
@@ -1555,14 +1555,14 @@
     <string name="signature_pen_width_bold">Đậm</string>
     <!-- onboarding_page -->
     <string name="onboarding_page_capture">CHỤP</string>
-    <string name="onboarding_page_paper_to_polished">Trang giấy, hoàn thiện.</string>
-    <string name="onboarding_page_capture_straighten_and_clean_up">Căn thẳng trang. Giữ mọi chi tiết.</string>
+    <string name="onboarding_page_paper_to_polished">"Trang giấy,\nhoàn thiện."</string>
+    <string name="onboarding_page_capture_straighten_and_clean_up">Quét một trang, căn thẳng các cạnh và điều chỉnh màu. Giữ các chi tiết rõ nét trước khi lưu bản quét.</string>
     <string name="onboarding_page_find">TÌM</string>
-    <string name="onboarding_page_find_more_than_files">Tìm từ. Tìm trang.</string>
-    <string name="onboarding_page_recognize_text_on_your_device">Tìm trong nội dung văn bản của bản quét.</string>
+    <string name="onboarding_page_find_more_than_files">"Tìm từ.\nTìm trang."</string>
+    <string name="onboarding_page_recognize_text_on_your_device">Nhận dạng văn bản trên thiết bị rồi tìm từ trong bản quét. Tìm trang bạn cần mà không phải đọc lại từng tài liệu.</string>
     <string name="onboarding_page_share">HOÀN TẤT</string>
-    <string name="onboarding_page_ready_when_you_are">Sẵn sàng để gửi.</string>
-    <string name="onboarding_page_keep_pages_together_share_a">Ký, bảo vệ và chia sẻ PDF rõ nét.</string>
+    <string name="onboarding_page_ready_when_you_are">"Sẵn sàng\nđể gửi."</string>
+    <string name="onboarding_page_keep_pages_together_share_a">Gộp các trang vào một tệp PDF. Thêm chữ ký hoặc mật khẩu khi cần, rồi chia sẻ tài liệu hoàn chỉnh chỉ với vài lần chạm.</string>
     <!-- pdf_reader_tool -->
     <string name="pdf_reader_tool_merge_with_other_pdfs">Gộp với PDF khác</string>
     <string name="pdf_reader_tool_password_protect">Đặt mật khẩu</string>
@@ -1929,8 +1929,8 @@
     <string name="error_failed_to_import_images">"Không thể nhập hình ảnh."</string>
     <string name="error_could_not_calculate_storage_usage">"Không thể tính toán mức sử dụng bộ nhớ."</string>
     <string name="error_could_not_clear_app_data">"Không thể xóa dữ liệu ứng dụng."</string>
-    <string name="error_could_not_clear_temporary_exports">"Không thể thông quan hàng tạm xuất."</string>
-    <string name="error_could_not_remove_old_backup_files">"Không thể xóa các tập tin sao lưu cũ."</string>
+    <string name="error_could_not_clear_temporary_exports">"Không thể xóa các tệp xuất tạm thời."</string>
+    <string name="error_could_not_remove_old_backup_files">"Không thể xóa các tệp sao lưu cũ."</string>
     <string name="error_could_not_create_the_document">"Không thể tạo tài liệu."</string>
     <string name="error_could_not_rename_the_document">"Không thể đổi tên tài liệu."</string>
     <string name="error_could_not_delete_the_document">"Không thể xóa tài liệu."</string>
@@ -1949,14 +1949,11 @@
     <string name="error_could_not_finish_onboarding">"Không thể hoàn tất quá trình giới thiệu."</string>
     <string name="error_could_not_load_settings_content">"Không thể tải nội dung cài đặt."</string>
     <string name="error_could_not_update_the_save_location">"Không thể cập nhật vị trí lưu."</string>
-    <string name="error_could_not_update_model_selection">"Không thể cập nhật lựa chọn kiểu máy."</string>
+    <string name="error_could_not_update_model_selection">"Không thể cập nhật lựa chọn mô hình."</string>
     <string name="error_could_not_update_document_detection_settings">"Không thể cập nhật cài đặt phát hiện tài liệu."</string>
     <string name="error_could_not_save_the_exported_file">"Không thể lưu tệp đã xuất."</string>
     <string name="error_could_not_store_update_prompt_state">"Không thể lưu trữ trạng thái nhắc cập nhật."</string>
     <string name="error_could_not_check_github_releases">"Không thể kiểm tra các bản phát hành GitHub."</string>
-    <string name="onboarding_demo_result">%1$s · Trang %2$s</string>
-    <string name="onboarding_demo_found">Tìm thấy trong văn bản trang</string>
-    <string name="onboarding_demo_protected">Được bảo vệ bằng mật khẩu</string>
     <string name="onboarding_chapter_number">%1$02d %2$s</string>
     <!-- Split PDF -->
     <string name="tools_catalog_split">"Tách"</string>
@@ -2065,4 +2062,7 @@
     <string name="pdf_peek_could_not_open">"Không mở được PDF này để xem trước."</string>
     <string name="pdf_peek_close">"Đóng xem trước"</string>
     <string name="pdf_peek_tap_hint">"Chạm vào tệp để xem trước"</string>
+    <string name="welcome_greeting">Chào mừng bạn</string>
+    <string name="welcome_tagline">Biến giấy tờ thành PDF rõ nét, tìm kiếm được.</string>
+    <string name="welcome_no_language_match">Không có ngôn ngữ nào khớp với “%1$s”</string>
 </resources>

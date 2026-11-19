@@ -353,7 +353,7 @@
     <string name="filter_customize_whiteboard">ವೈಟ್‌ಬೋರ್ಡ್</string>
     <string name="filter_customize_grayscale">ಗ್ರೇಸ್ಕೇಲ್</string>
     <string name="filter_customize_screen">ಸ್ಕ್ರೀನ್</string>
-    <string name="filter_customize_vivid">ಗಾಢ ಬಣ್ಣ</string>
+    <string name="filter_customize_vivid">"ರೋಮಾಂಚಕ"</string>
     <string name="filter_customize_natural">ಸಹಜ</string>
     <string name="filter_customize_magic_color">ಮ್ಯಾಜಿಕ್ ಬಣ್ಣ</string>
     <string name="filter_customize_auto">ಸ್ವಯಂ</string>
@@ -1172,7 +1172,7 @@
     <string name="pdf_sign_choose_a_pdf_or_an">"ಸಹಿ ಮಾಡಲು PDF ಅಥವಾ ಚಿತ್ರವನ್ನು ಆಯ್ಕೆಮಾಡಿ"</string>
     <string name="pdf_sign_sign_pdf">"PDF ಸಹಿ ಮಾಡಿ"</string>
     <!-- PdfSignViewModel -->
-    <string name="pdf_sign_signing">"Signing…"</string>
+    <string name="pdf_sign_signing">"ಸಹಿ ಮಾಡಲಾಗುತ್ತಿದೆ…"</string>
     <string name="pdf_sign_place_a_signature_first">"ಮೊದಲು ಸಹಿಯನ್ನು ಇರಿಸಿ."</string>
     <string name="pdf_sign_open_a_pdf_first">"ಮೊದಲು PDF ತೆರೆಯಿರಿ."</string>
     <!-- PdfToImagesPresentation -->
@@ -1180,7 +1180,7 @@
     <string name="pdf_to_images_presentation_share_all">"ಎಲ್ಲಾ %1$s ಅನ್ನು ಹಂಚಿಕೊಳ್ಳಿ"</string>
     <string name="pdf_to_images_presentation_share_image">"ಚಿತ್ರವನ್ನು ಹಂಚಿಕೊಳ್ಳಿ"</string>
     <string name="pdf_to_images_presentation_in_all">"ಎಲ್ಲಾ %1$s"</string>
-    <string name="pdf_to_images_presentation_of_pages">"%2$s ಪುಟಗಳ %1$s"</string>
+    <string name="pdf_to_images_presentation_of_pages">"%2$s ಪುಟಗಳಲ್ಲಿ %1$s"</string>
     <string name="pdf_to_images_presentation_all_pages">"ಎಲ್ಲಾ %1$s ಪುಟಗಳು"</string>
     <string name="pdf_to_images_presentation_export">"%1$s ರಫ್ತು ಮಾಡಿ"</string>
     <string name="pdf_to_images_presentation_choose_pages_to_export">"ರಫ್ತು ಮಾಡಲು ಪುಟಗಳನ್ನು ಆಯ್ಕೆಮಾಡಿ"</string>
@@ -1198,7 +1198,7 @@
     <string name="pdf_to_images_export_again">"ಮತ್ತೆ ರಫ್ತು ಮಾಡಿ"</string>
     <string name="pdf_to_images_saving_images">"ಚಿತ್ರಗಳನ್ನು ಉಳಿಸಲಾಗುತ್ತಿದೆ…"</string>
     <string name="pdf_to_images_each">"~%1$s ಪ್ರತಿ"</string>
-    <string name="pdf_to_images_resolution">"ನಿರ್ಣಯ"</string>
+    <string name="pdf_to_images_resolution">"ರೆಸಲ್ಯೂಷನ್"</string>
     <string name="pdf_to_images_format">"ಫಾರ್ಮ್ಯಾಟ್"</string>
     <string name="pdf_to_images_deselect_all">"ಎಲ್ಲವನ್ನೂ ಆಯ್ಕೆ ರದ್ದುಮಾಡಿ"</string>
     <string name="pdf_to_images_this_pdf_is_password_protected">"ಈ PDF ಪಾಸ್‌ವರ್ಡ್ ರಕ್ಷಿತವಾಗಿದೆ. ಪುಟಗಳನ್ನು ನೋಡಲು ಅದರ ಪಾಸ್‌ವರ್ಡ್ ಅನ್ನು ನಮೂದಿಸಿ."</string>
@@ -1227,11 +1227,11 @@
     <!-- PdfToolShared -->
     <string name="pdf_tool_shared_scanly_pdf">"Scanly PDF"</string>
     <!-- PdfToolViewModels -->
-    <string name="pdf_tool_view_models_saving">"Saving…"</string>
+    <string name="pdf_tool_view_models_saving">"ಸೇವ್ ಮಾಡಲಾಗುತ್ತಿದೆ…"</string>
     <!-- PdfWatermarkScreen -->
     <string name="pdf_watermark_the_page">"ಪುಟ"</string>
     <string name="pdf_watermark_first_page_only">"ಮೊದಲ ಪುಟ ಮಾತ್ರ"</string>
-    <string name="pdf_watermark_apply_to">"ಗೆ ಅನ್ವಯಿಸಿ"</string>
+    <string name="pdf_watermark_apply_to">"ಅನ್ವಯಿಸಬೇಕಾದ ಪುಟಗಳು"</string>
     <string name="pdf_watermark_colour">"ಬಣ್ಣ"</string>
     <string name="pdf_watermark_opacity">"ಅಪಾರದರ್ಶಕತೆ"</string>
     <string name="pdf_watermark_large">"ದೊಡ್ಡದು"</string>
@@ -1242,7 +1242,7 @@
     <string name="pdf_watermark_single">"ಏಕ"</string>
     <string name="pdf_watermark_tiled">"ಟೈಲ್ಡ್"</string>
     <string name="pdf_watermark_style">"ಶೈಲಿ"</string>
-    <string name="pdf_watermark_stamps">"ಅಂಚೆಚೀಟಿಗಳು \"%1$s\""</string>
+    <string name="pdf_watermark_stamps">"ಸ್ಟಾಂಪ್‌ಗಳು \"%1$s\""</string>
     <string name="pdf_watermark_add_date">"ದಿನಾಂಕವನ್ನು ಸೇರಿಸಿ"</string>
     <string name="pdf_watermark_presets">"ಪೂರ್ವನಿಗದಿಗಳು"</string>
     <string name="pdf_watermark_the_watermarked_copy_is_saved">"ವಾಟರ್‌ಮಾರ್ಕ್ ಮಾಡಿದ ನಕಲನ್ನು ಪಾಸ್‌ವರ್ಡ್ ಇಲ್ಲದೆ ಉಳಿಸಲಾಗಿದೆ. ಪಾಸ್‌ವರ್ಡ್ ಟೂಲ್‌ನೊಂದಿಗೆ ನೀವು ಅದನ್ನು ಮತ್ತೆ ಲಾಕ್ ಮಾಡಬಹುದು."</string>
@@ -1257,7 +1257,7 @@
     <string name="pdf_watermark_watermark">"ವಾಟರ್‌ಮಾರ್ಕ್"</string>
     <string name="pdf_watermark_edit_stamp">"ಸ್ಟಾಂಪ್ ಸಂಪಾದಿಸಿ"</string>
     <string name="pdf_watermark_watermarked_pdf">"ವಾಟರ್‌ಮಾರ್ಕ್ ಮಾಡಿದ PDF"</string>
-    <string name="pdf_watermark_kept_unstamped">"ಇರಿಸಲಾಗಿದೆ, ಮುದ್ರೆಯಿಲ್ಲದ"</string>
+    <string name="pdf_watermark_kept_unstamped">"ಸ್ಟಾಂಪ್ ಇಲ್ಲದೆ ಇರಿಸಲಾಗಿದೆ"</string>
     <string name="pdf_watermark_stamp">"ಸ್ಟಾಂಪ್"</string>
     <string name="pdf_watermark_on_every_page_tap_the">"ಪ್ರತಿ ಪುಟದಲ್ಲಿ. ಅದನ್ನು ಪರಿಶೀಲಿಸಲು ಪುಟವನ್ನು ಟ್ಯಾಪ್ ಮಾಡಿ."</string>
     <string name="pdf_watermark_on_all_pages_tap_the">"ಎಲ್ಲಾ %1$s ಪುಟಗಳಲ್ಲಿ. ಅದನ್ನು ಪರಿಶೀಲಿಸಲು ಪುಟವನ್ನು ಟ್ಯಾಪ್ ಮಾಡಿ."</string>
@@ -1265,10 +1265,10 @@
     <string name="pdf_watermark_on_the_page_tap_it">"ಪುಟದಲ್ಲಿ. ಪರಿಶೀಲಿಸಲು ಅದನ್ನು ಟ್ಯಾಪ್ ಮಾಡಿ."</string>
     <string name="pdf_watermark_on_the_first_page_tap">"ಮೊದಲ ಪುಟದಲ್ಲಿ. ಅದನ್ನು ಪರಿಶೀಲಿಸಲು ಪುಟವನ್ನು ಟ್ಯಾಪ್ ಮಾಡಿ."</string>
     <string name="pdf_watermark_watermark_added">"ವಾಟರ್‌ಮಾರ್ಕ್ ಸೇರಿಸಲಾಗಿದೆ"</string>
-    <string name="pdf_watermark_stamping_every_page">"ಪ್ರತಿ ಪುಟಕ್ಕೂ ಮುದ್ರೆ ಹಾಕುವುದು"</string>
+    <string name="pdf_watermark_stamping_every_page">"ಪ್ರತಿ ಪುಟಕ್ಕೂ ಸ್ಟಾಂಪ್ ಹಾಕುವುದು"</string>
     <string name="pdf_watermark_stamping">"%1$s ಸ್ಟಾಂಪಿಂಗ್"</string>
     <string name="pdf_watermark_stamping_the_first_page">"ಮೊದಲ ಪುಟವನ್ನು ಸ್ಟಾಂಪಿಂಗ್ ಮಾಡುವುದು"</string>
-    <string name="pdf_watermark_adding_watermark">"ನೀರುಗುರುತು … ಸೇರಿಸಲಾಗುತ್ತಿದೆ"</string>
+    <string name="pdf_watermark_adding_watermark">"ವಾಟರ್‌ಮಾರ್ಕ್ ಸೇರಿಸಲಾಗುತ್ತಿದೆ…"</string>
     <string name="pdf_watermark_stamp_text_like_confidential_or">"ಗೌಪ್ಯ ಅಥವಾ \"KYC ಬಳಕೆಗೆ ಮಾತ್ರ\" ನಂತಹ ಸ್ಟ್ಯಾಂಪ್ ಪಠ್ಯ."</string>
     <!-- PdfWatermarkViewModel -->
     <string name="pdf_watermark_kyc_copy">"KYC ನಕಲು"</string>
@@ -1313,7 +1313,7 @@
     <string name="qr_create_save_image">"ಚಿತ್ರವನ್ನು ಉಳಿಸಿ"</string>
     <string name="qr_create_only_dark_colours_so_every">"ಕೇವಲ ಗಾಢ ಬಣ್ಣಗಳು, ಆದ್ದರಿಂದ ಪ್ರತಿ ಕ್ಯಾಮರಾ ಕೋಡ್ ಅನ್ನು ಓದಬಹುದು."</string>
     <string name="qr_create_shown_under_the_code">"ಕೋಡ್ ಅಡಿಯಲ್ಲಿ ತೋರಿಸಲಾಗಿದೆ"</string>
-    <string name="qr_create_caption_under_the_code_optional">"· ಕೋಡ್ ಅಡಿಯಲ್ಲಿ ಶೀರ್ಷಿಕೆ ಐಚ್ಛಿಕ"</string>
+    <string name="qr_create_caption_under_the_code_optional">"ಕೋಡ್ ಅಡಿಯಲ್ಲಿ ಶೀರ್ಷಿಕೆ · ಐಚ್ಛಿಕ"</string>
     <string name="qr_create_create_qr">"QR ರಚಿಸಿ"</string>
     <!-- QrHistoryScreen -->
     <string name="qr_history_created">"ರಚಿಸಲಾಗಿದೆ"</string>
@@ -1375,7 +1375,7 @@
     <string name="qr_scan_scan_qr_barcode">"QR &amp; ಬಾರ್‌ಕೋಡ್ ಅನ್ನು ಸ್ಕ್ಯಾನ್ ಮಾಡಿ"</string>
     <string name="qr_scan_point_at_a_qr_code">"QR ಕೋಡ್ ಅಥವಾ ಬಾರ್‌ಕೋಡ್‌ನಲ್ಲಿ ಪಾಯಿಂಟ್ ಮಾಡಿ"</string>
     <string name="qr_scan_code_found_hold_steady">"ಕೋಡ್ ಕಂಡುಬಂದಿದೆ · ಸ್ಥಿರವಾಗಿ ಹಿಡಿದುಕೊಳ್ಳಿ"</string>
-    <string name="qr_scan_reading_photo">"ಓದುವಿಕೆ ಫೋಟೋ…"</string>
+    <string name="qr_scan_reading_photo">"ಫೋಟೋವನ್ನು ಓದಲಾಗುತ್ತಿದೆ…"</string>
     <string name="qr_scan_the_camera_isn_t_available">"ಕ್ಯಾಮರಾ ಇದೀಗ ಲಭ್ಯವಿಲ್ಲ. ಬದಲಿಗೆ \"ಫೋಟೋದಿಂದ\" ಪ್ರಯತ್ನಿಸಿ."</string>
     <!-- QrToolPresentation -->
     <string name="qr_tool_presentation_h_ago">"%1$s ಗಂ ಹಿಂದೆ"</string>
@@ -1406,7 +1406,7 @@
     <string name="image_text_copy_text_from_photos_or">"ಫೋಟೋಗಳು ಅಥವಾ ಸ್ಕ್ಯಾನ್‌ಗಳಿಂದ ಪಠ್ಯವನ್ನು ನಕಲಿಸಿ. ಈ ಫೋನ್‌ನಲ್ಲಿ ಪಠ್ಯವನ್ನು ಓದಲಾಗುತ್ತದೆ."</string>
     <string name="image_text_image_to_text">"ಚಿತ್ರದಿಂದ ಪಠ್ಯಕ್ಕೆ"</string>
     <!-- AppUpdateDialog -->
-    <string name="app_update_published">"ಪ್ರಕಟಿಸಿದ %1$s"</string>
+    <string name="app_update_published">"ಪ್ರಕಟಿಸಲಾಗಿದೆ: %1$s"</string>
     <string name="app_update_current">"ಪ್ರಸ್ತುತ"</string>
     <string name="app_update_update">"ನವೀಕರಿಸಿ"</string>
     <string name="app_update_what_s_new">"ಹೊಸದೇನಿದೆ"</string>
@@ -1530,9 +1530,9 @@
     <string name="pdf_import_look_keep_as_is">"ಹಾಗೆಯೇ ಇರಿಸಿ"</string>
     <string name="pdf_import_look_pages_look_exactly_like_the">"ಪುಟಗಳು ನಿಖರವಾಗಿ PDF ನಂತೆ ಕಾಣುತ್ತವೆ"</string>
     <string name="pdf_import_look_enhance">"ವರ್ಧಿಸು"</string>
-    <string name="pdf_import_look_even_out_scanned_pages_and">"ಸ್ಕ್ಯಾನ್ ಮಾಡಿದ ಪುಟಗಳನ್ನು ಸಹ ಔಟ್ ಮಾಡಿ ಮತ್ತು ಪಠ್ಯವನ್ನು ತೀಕ್ಷ್ಣಗೊಳಿಸಿ"</string>
+    <string name="pdf_import_look_even_out_scanned_pages_and">"ಸ್ಕ್ಯಾನ್ ಮಾಡಿದ ಪುಟಗಳನ್ನು ಸಮಗೊಳಿಸಿ ಮತ್ತು ಪಠ್ಯವನ್ನು ತೀಕ್ಷ್ಣಗೊಳಿಸಿ"</string>
     <!-- capture_scene_issue -->
-    <string name="capture_scene_issue_lens_may_be_covered_clear">"ಲೆನ್ಸ್ ಮುಚ್ಚಿರಬಹುದು. ಅದನ್ನು ಬಹಿರಂಗಪಡಿಸಿ ಮತ್ತು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ."</string>
+    <string name="capture_scene_issue_lens_may_be_covered_clear">"ಲೆನ್ಸ್ ಮುಚ್ಚಿರಬಹುದು. ಅದನ್ನು ಸ್ವಚ್ಛಗೊಳಿಸಿ ಮತ್ತು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ."</string>
     <string name="capture_scene_issue_too_dark_add_light_or">"ತುಂಬಾ ಕತ್ತಲೆ. ಬೆಳಕನ್ನು ಸೇರಿಸಿ ಅಥವಾ ಫ್ಲ್ಯಾಷ್ ಅನ್ನು ಆನ್ ಮಾಡಿ."</string>
     <string name="capture_scene_issue_image_looks_blurry_clean_the">"ಚಿತ್ರವು ಅಸ್ಪಷ್ಟವಾಗಿ ಕಾಣುತ್ತದೆ. ಲೆನ್ಸ್ ಅನ್ನು ಸ್ವಚ್ಛಗೊಳಿಸಿ ಅಥವಾ ಫೋಕಸ್ ಮಾಡಲು ಟ್ಯಾಪ್ ಮಾಡಿ."</string>
     <!-- group_export_action -->
@@ -1555,14 +1555,14 @@
     <string name="signature_pen_width_bold">"ದಪ್ಪ"</string>
     <!-- onboarding_page -->
     <string name="onboarding_page_capture">"ಕ್ಯಾಪ್ಚರ್"</string>
-    <string name="onboarding_page_paper_to_polished">ಕಾಗದ, ಅಚ್ಚುಕಟ್ಟಾಗಿ.</string>
-    <string name="onboarding_page_capture_straighten_and_clean_up">ಪುಟವನ್ನು ನೇರಗೊಳಿಸಿ. ವಿವರಗಳನ್ನು ಉಳಿಸಿ.</string>
+    <string name="onboarding_page_paper_to_polished">"ಕಾಗದ,\nಅಚ್ಚುಕಟ್ಟಾಗಿ."</string>
+    <string name="onboarding_page_capture_straighten_and_clean_up">ಪುಟವನ್ನು ಸ್ಕ್ಯಾನ್ ಮಾಡಿ, ಅಂಚುಗಳನ್ನು ನೇರಗೊಳಿಸಿ ಮತ್ತು ಬಣ್ಣವನ್ನು ಹೊಂದಿಸಿ. ಉಳಿಸುವ ಮೊದಲು ವಿವರಗಳು ಸ್ಪಷ್ಟವಾಗಿರುವುದನ್ನು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಿ.</string>
     <string name="onboarding_page_find">"ಹುಡುಕಿ"</string>
-    <string name="onboarding_page_find_more_than_files">ಪದ ಹುಡುಕಿ. ಪುಟ ಪಡೆಯಿರಿ.</string>
-    <string name="onboarding_page_recognize_text_on_your_device">ನಿಮ್ಮ ಸ್ಕ್ಯಾನ್‌ಗಳ ಒಳಗಿನ ಪಠ್ಯದಲ್ಲಿ ಹುಡುಕಿ.</string>
+    <string name="onboarding_page_find_more_than_files">"ಪದವನ್ನು ಹುಡುಕಿ.\nಪುಟವನ್ನು ಹುಡುಕಿ."</string>
+    <string name="onboarding_page_recognize_text_on_your_device">ನಿಮ್ಮ ಸಾಧನದಲ್ಲೇ ಪಠ್ಯವನ್ನು ಗುರುತಿಸಿ, ನಂತರ ಸ್ಕ್ಯಾನ್‌ಗಳಲ್ಲಿ ಪದಗಳನ್ನು ಹುಡುಕಿ. ಪ್ರತಿ ದಾಖಲೆಯನ್ನು ಮತ್ತೆ ಓದದೆ ಬೇಕಾದ ಪುಟವನ್ನು ಕಂಡುಕೊಳ್ಳಿ.</string>
     <string name="onboarding_page_share">ಮುಗಿಸಿ</string>
-    <string name="onboarding_page_ready_when_you_are">ಕಳುಹಿಸಲು ಸಿದ್ಧ.</string>
-    <string name="onboarding_page_keep_pages_together_share_a">ಸ್ಪಷ್ಟ PDFಗೆ ಸಹಿ ಮಾಡಿ, ರಕ್ಷಿಸಿ ಮತ್ತು ಹಂಚಿಕೊಳ್ಳಿ.</string>
+    <string name="onboarding_page_ready_when_you_are">"ಕಳುಹಿಸಲು\nಸಿದ್ಧಗೊಳಿಸಿ."</string>
+    <string name="onboarding_page_keep_pages_together_share_a">ನಿಮ್ಮ ಪುಟಗಳನ್ನು ಒಂದೇ PDFನಲ್ಲಿ ಇರಿಸಿ. ಅಗತ್ಯವಿದ್ದಾಗ ಸಹಿ ಅಥವಾ ಪಾಸ್‌ವರ್ಡ್ ಸೇರಿಸಿ, ನಂತರ ಕೆಲವೇ ಟ್ಯಾಪ್‌ಗಳಲ್ಲಿ ದಾಖಲೆಯನ್ನು ಹಂಚಿಕೊಳ್ಳಿ.</string>
     <!-- pdf_reader_tool -->
     <string name="pdf_reader_tool_merge_with_other_pdfs">"ಇತರ PDF ಫೈಲ್‌ಗಳೊಂದಿಗೆ ವಿಲೀನಗೊಳಿಸಿ"</string>
     <string name="pdf_reader_tool_password_protect">"ಪಾಸ್ವರ್ಡ್ ರಕ್ಷಣೆ"</string>
@@ -1653,7 +1653,7 @@
     <string name="tools_catalog_pdf_to_editable_scan">"ಸಂಪಾದಿಸಬಹುದಾದ ಸ್ಕ್ಯಾನ್‌ಗೆ PDF"</string>
     <string name="tools_catalog_open_any_pdf">"ಯಾವುದೇ PDF ತೆರೆಯಿರಿ"</string>
     <string name="tools_catalog_read_pdf">"PDF ಓದಿ"</string>
-    <string name="tools_catalog_stamp_text">"ಪಠ್ಯ ನೀರುಗುರುತು"</string>
+    <string name="tools_catalog_stamp_text">"ಪಠ್ಯ ವಾಟರ್‌ಮಾರ್ಕ್"</string>
     <string name="tools_catalog_lock_or_unlock">"ಲಾಕ್ ಅಥವಾ ಅನ್ಲಾಕ್"</string>
     <string name="tools_catalog_pages_as_images">"ಚಿತ್ರಗಳಂತೆ ಪುಟಗಳು"</string>
     <string name="tools_catalog_make_it_smaller">"ಅದನ್ನು ಚಿಕ್ಕದಾಗಿಸಿ"</string>
@@ -1680,7 +1680,7 @@
     <string name="pip_lines_i_m_open_source_you">"ನನ್ನ ಮೂಲ ಕೋಡ್ ತೆರೆದಿದೆ. ನೀವು ಅದರ ಪ್ರತಿ ಸಾಲನ್ನು ಓದಬಹುದು."</string>
     <string name="pip_lines_your_original_photos_are_kept">"ನಿಮ್ಮ ಮೂಲ ಫೋಟೋಗಳನ್ನು ಇರಿಸಲಾಗಿದೆ, ಆದ್ದರಿಂದ ಸಂಪಾದನೆಗಳನ್ನು ಯಾವಾಗಲೂ ರದ್ದುಗೊಳಿಸಬಹುದು."</string>
     <string name="pip_lines_i_live_on_your_phone">"ನಾನು ನಿಮ್ಮ ಫೋನ್‌ನಲ್ಲಿ ಕೆಲಸ ಮಾಡುತ್ತಿದ್ದೇನೆ. ನಿಮ್ಮ ಸ್ಕ್ಯಾನ್‌ಗಳು ಎಂದಿಗೂ ಸರ್ವರ್‌ಗೆ ಹೋಗುವುದಿಲ್ಲ."</string>
-    <string name="pip_lines_hey_that_tickles">"ಹೇ! ಎಂದು ಕಚಗುಳಿ ಇಡುತ್ತಾರೆ."</string>
+    <string name="pip_lines_hey_that_tickles">"ಹೇ! ಕಚಗುಳಿಯಾಗುತ್ತಿದೆ."</string>
     <!-- pdf_watermark -->
     <string name="pdf_watermark_for_kyc_use_only">For KYC use only</string>
     <!-- document_presentation_formatter -->
@@ -1707,7 +1707,7 @@
     <string name="pip_lines_hmm_i_don_t_have">"ಹಾಂ, ಅದಕ್ಕೆ ನನ್ನ ಬಳಿ ಉತ್ತರವಿಲ್ಲ."</string>
     <string name="pip_lines_no_codes_yet_scan_or">"ಇನ್ನೂ ಯಾವುದೇ ಕೋಡ್‌ಗಳಿಲ್ಲ. ಸ್ಕ್ಯಾನ್ ಮಾಡಿ ಅಥವಾ ಒಂದನ್ನು ಮಾಡಿ ಮತ್ತು ನಾನು ಅದನ್ನು ಇಲ್ಲಿ ಇಡುತ್ತೇನೆ."</string>
     <string name="pip_lines_nothing_matches_that_try_another">"ಯಾವುದೂ ಅದಕ್ಕೆ ಹೊಂದಿಕೆಯಾಗುವುದಿಲ್ಲ. ಇನ್ನೊಂದು ಪದವನ್ನು ಪ್ರಯತ್ನಿಸುವುದೇ?"</string>
-    <string name="pip_lines_i_m_still_reading_some">"ನಾನು ಇನ್ನೂ ಕೆಲವು ಪುಟಗಳನ್ನು ಓದುತ್ತಿದ್ದೇನೆ. ಪಂದ್ಯಗಳು ಒಂದು ಸೆಕೆಂಡಿನಲ್ಲಿ ತಿರುಗಬಹುದು."</string>
+    <string name="pip_lines_i_m_still_reading_some">"ನಾನು ಇನ್ನೂ ಕೆಲವು ಪುಟಗಳನ್ನು ಓದುತ್ತಿದ್ದೇನೆ. ಹೊಂದಾಣಿಕೆಗಳು ಒಂದು ಕ್ಷಣದಲ್ಲಿ ಕಾಣಿಸಬಹುದು."</string>
     <string name="pip_lines_i_can_t_see_a">"ನಾನು ಇನ್ನೂ ಒಂದು ವಿಷಯವನ್ನು ನೋಡಲು ಸಾಧ್ಯವಿಲ್ಲ. ನಾನು ಕ್ಯಾಮೆರಾವನ್ನು ಎರವಲು ಪಡೆಯಬಹುದೇ?"</string>
     <string name="pip_lines_the_camera_is_switched_off">"Scanly ಗಾಗಿ ಕ್ಯಾಮರಾ ಸ್ವಿಚ್ ಆಫ್ ಆಗಿದೆ. ಸೆಟ್ಟಿಂಗ್‌ಗಳಿಗೆ ತ್ವರಿತ ಪ್ರವಾಸವು ಅದನ್ನು ಸರಿಪಡಿಸುತ್ತದೆ."</string>
     <string name="pip_lines_lend_me_the_camera_and">"ನನಗೆ ಕ್ಯಾಮರಾವನ್ನು ಕೊಡು ಮತ್ತು ನಾನು ನಿಮಗಾಗಿ ಕೋಡ್ ಅನ್ನು ಓದುತ್ತೇನೆ."</string>
@@ -1981,9 +1981,6 @@
     <string name="error_could_not_save_the_exported_file">"ರಫ್ತು ಮಾಡಿದ ಫೈಲ್ ಅನ್ನು ಉಳಿಸಲಾಗಲಿಲ್ಲ."</string>
     <string name="error_could_not_store_update_prompt_state">"ಅಪ್‌ಡೇಟ್ ಪ್ರಾಂಪ್ಟ್ ಸ್ಥಿತಿಯನ್ನು ಸಂಗ್ರಹಿಸಲಾಗಲಿಲ್ಲ."</string>
     <string name="error_could_not_check_github_releases">"GitHub ಬಿಡುಗಡೆಗಳನ್ನು ಪರಿಶೀಲಿಸಲಾಗಲಿಲ್ಲ."</string>
-    <string name="onboarding_demo_result">%1$s · ಪುಟ %2$s</string>
-    <string name="onboarding_demo_found">ಪುಟದ ಪಠ್ಯದಲ್ಲಿ ಕಂಡುಬಂದಿದೆ</string>
-    <string name="onboarding_demo_protected">ಪಾಸ್‌ವರ್ಡ್‌ನಿಂದ ರಕ್ಷಿಸಲಾಗಿದೆ</string>
     <string name="onboarding_chapter_number">%1$02d %2$s</string>
     <!-- Split PDF -->
     <string name="tools_catalog_split">"ವಿಭಜಿಸಿ"</string>
@@ -2099,4 +2096,7 @@
     <string name="pdf_peek_could_not_open">"ಪೂರ್ವವೀಕ್ಷಣೆಗಾಗಿ ಈ PDF ತೆರೆಯಲಾಗಲಿಲ್ಲ."</string>
     <string name="pdf_peek_close">"ಪೂರ್ವವೀಕ್ಷಣೆ ಮುಚ್ಚಿ"</string>
     <string name="pdf_peek_tap_hint">"ಪೂರ್ವವೀಕ್ಷಿಸಲು ಫೈಲ್ ಅನ್ನು ಟ್ಯಾಪ್ ಮಾಡಿ"</string>
+    <string name="welcome_greeting">ಸ್ವಾಗತ</string>
+    <string name="welcome_tagline">ಕಾಗದಗಳನ್ನು ಸ್ಪಷ್ಟ, ಹುಡುಕಬಹುದಾದ PDF ಗಳಾಗಿ ಬದಲಾಯಿಸಿ.</string>
+    <string name="welcome_no_language_match">“%1$s” ಗೆ ಹೊಂದುವ ಭಾಷೆ ಇಲ್ಲ</string>
 </resources>

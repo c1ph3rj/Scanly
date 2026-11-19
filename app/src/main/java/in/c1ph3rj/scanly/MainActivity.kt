@@ -34,7 +34,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -86,8 +89,12 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         // Rebind home-screen widgets with the current device UI mode so icons
-        // and labels stay visible after theme changes and process restarts.
-        ScanlyWidgetSupport.refreshAll(this)
+        // and labels stay visible after theme changes and process restarts. Off the main
+        // thread: it is several calls to the widget service, and the first frame is waiting.
+        val appContext = applicationContext
+        lifecycleScope.launch(kotlinx.coroutines.Dispatchers.Default) {
+            ScanlyWidgetSupport.refreshAll(appContext)
+        }
         setContent {
             AppLocaleProvider {
                 ScanlyApp(
@@ -267,6 +274,9 @@ private fun ScanlyApp(
             pureBlack = pureBlackEnabled,
         ) {
             Scaffold(
+                // Lets UiAutomator (baseline profile generation, benchmarks) find composables
+                // by their test tags.
+                modifier = Modifier.semantics { testTagsAsResourceId = true },
                 snackbarHost = {
                     FlexibleUpdateSnackbarHost(
                         hostState = flexibleUpdateSnackbarHostState,

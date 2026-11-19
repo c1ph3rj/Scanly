@@ -24,3 +24,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Scanly"
 include(":app")
+include(":baselineprofile")

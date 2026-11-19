@@ -34,7 +34,7 @@ Open this folder in Android Studio (File → Open). Let Gradle sync. The only An
 2. Plug in a phone with USB debugging, or start an emulator (API 29+).
 3. Run `app` (green play). Entry point is `MainActivity`.
 
-First launch shows three **Paper Atelier onboarding** pages. Swipe or tap **Continue**, or **Skip** to the last page, then tap **Scan my first page**. With camera access granted this opens a new scan session. Otherwise an optional bottom sheet offers **Enable camera** or **Not now**: granting access opens scanning, while Not now or denial continues to Home (Scan / Import / Folder). Later launches skip onboarding. The final introduction page has no import-photo button.
+First launch shows the **welcome screen** (logo, summary and app language list); tap **Continue** to reach three onboarding pages (Capture, Find, Finish). Swipe or tap **Continue**, or **Skip** to the last page, then tap **Scan my first page**. With camera access granted this opens a new scan session. Otherwise an optional bottom sheet offers **Enable camera** or **Not now**: granting access opens scanning, while Not now or denial continues to Home (Scan / Import / Folder). Later launches skip onboarding. The final introduction page has no import-photo button.
 
 ### Command line (install debug APK)
 
@@ -183,6 +183,7 @@ Helpers live in `ScanlyDeviceUiRobot.kt`. Selectors are `ScanlyTestTags` in `app
 
 Also still run on device:
 
+- `WelcomeScreenTest` — welcome screen: phone-language default, picking and searching languages, small-phone / landscape / tablet layouts, layout captures, and Back from onboarding
 - `OnboardingScreenTest` — Compose onboarding layouts (setContent)
 - `OpenCvPageFilterProcessorTest` — filter engine on device
 - `ExampleInstrumentedTest` — package name

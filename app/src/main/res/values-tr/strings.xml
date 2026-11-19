@@ -161,8 +161,8 @@
     <string name="import_pdf_to_library_use_case_choose_at_least_one_page">En az bir sayfa seçin.</string>
     <!-- CameraCaptureChrome -->
     <string name="camera_capture_chrome_done">Bitti</string>
-    <string name="camera_capture_chrome_done_review_pages">"Bitti, %1$s sayfayı incele"</string>
-    <string name="camera_capture_chrome_done_review_1_page">Bitti, 1 sayfayı incele</string>
+    <string name="camera_capture_chrome_done_review_pages">"Bitti, %1$s sayfayı inceleyin"</string>
+    <string name="camera_capture_chrome_done_review_1_page">"Bitti, 1 sayfayı inceleyin"</string>
     <string name="camera_capture_chrome_turn_auto_capture_on">Otomatik çekimi aç</string>
     <string name="camera_capture_chrome_turn_auto_capture_off">Otomatik çekimi kapat</string>
     <!-- CaptureStabilityTracker -->
@@ -632,7 +632,7 @@
     <string name="onboarding_skip">Atla</string>
     <string name="onboarding_scanly">Scanly.</string>
     <string name="onboarding_previous_page">Önceki sayfa</string>
-    <string name="onboarding_assurance_offline">Cihazında işlenir.</string>
+    <string name="onboarding_assurance_offline">"Cihazınızda işlenir."</string>
     <!-- Pip -->
     <string name="pip_poke_pip_scanly_s_helper">Scanly\'nin yardımcısı Pip\'i dürt</string>
     <!-- PipBubble -->
@@ -912,7 +912,7 @@
     <string name="signature_create_save_signature">İmzayı kaydet</string>
     <string name="signature_create_save_initials">Parafı kaydet</string>
     <string name="signature_create_sign_above_the_line">Çizginin üstüne imzalayın</string>
-    <string name="signature_create_write_your_initials_above_the">Parafınızı çizginin üstüne atın</string>
+    <string name="signature_create_write_your_initials_above_the">"Parafınızı çizginin üstüne yazın"</string>
     <string name="signature_create_new_signature">Yeni imza</string>
     <string name="signature_create_new_initials">Yeni paraf</string>
     <!-- SignatureCreateViewModel -->
@@ -946,7 +946,7 @@
     <string name="signature_manage_pages_you_ve_already_signed">Daha önce imzaladığınız sayfalarda olduğu gibi kalır</string>
     <string name="signature_manage_place_it_on_a_pdf">Bir PDF\'ye veya Scanly belgesine yerleştirin</string>
     <string name="signature_manage_sign_a_pdf">PDF imzala</string>
-    <string name="signature_manage_use_first_when_signing">İmzalarken önce bunu kullan</string>
+    <string name="signature_manage_use_first_when_signing">"İmzalarken önce bunu kullanın"</string>
     <string name="signature_manage_shared_and_saved_as_a">Şeffaf PNG olarak paylaşılır ve kaydedilir; belgeler, formlar ve e-postalar için hazırdır.</string>
     <string name="signature_manage_save_to_phone">Telefona kaydet</string>
     <string name="signature_manage_ink_colour">Mürekkep rengi</string>
@@ -1053,7 +1053,7 @@
     <string name="pdf_import_added_to_your_library">Kitaplığınıza eklendi</string>
     <string name="pdf_import_step_3_of_3_done">Adım 3 / 3 · Bitti</string>
     <string name="pdf_import_adding_to_library">Kitaplığa ekleniyor…</string>
-    <string name="pdf_import_look">Göz at</string>
+    <string name="pdf_import_look">"Görünüm"</string>
     <string name="pdf_import_your_pdf_file_stays_as">PDF dosyanız olduğu gibi kalır; Scanly kendi kopyasını saklar</string>
     <string name="pdf_import_tap_a_page_or_long">Bir sayfaya dokunun veya birkaç sayfa için basılı tutup sürükleyin.</string>
     <string name="pdf_import_step_2_of_3_pages">Adım 2 / 3 · Sayfalar ve ad</string>
@@ -1269,7 +1269,7 @@
     <string name="pdf_watermark_stamping">"Damgalanıyor: %1$s"</string>
     <string name="pdf_watermark_stamping_the_first_page">İlk sayfa damgalanıyor</string>
     <string name="pdf_watermark_adding_watermark">Filigran ekleniyor…</string>
-    <string name="pdf_watermark_stamp_text_like_confidential_or">GİZLİ veya \"Yalnızca KYC işlemleri için\" gibi metinler damgalayın.</string>
+    <string name="pdf_watermark_stamp_text_like_confidential_or">"GİZLİ veya \"Yalnızca KYC kullanımı içindir\" gibi metinler damgalayın."</string>
     <!-- PdfWatermarkViewModel -->
     <string name="pdf_watermark_kyc_copy">KYC kopyası</string>
     <string name="pdf_watermark_enter_watermark_text">Filigran metnini girin.</string>
@@ -1438,8 +1438,8 @@
     <string name="pdf_page_size_tabloid">"Tabloid"</string>
     <string name="pdf_page_size_executive">"Executive"</string>
     <string name="pdf_page_size_postcard">"Kartpostal"</string>
-    <string name="pdf_page_size_american_foolscap">"Amerikan saçmalığı"</string>
-    <string name="pdf_page_size_european_foolscap">"Avrupa aptallığı"</string>
+    <string name="pdf_page_size_american_foolscap">"Amerikan foolscap"</string>
+    <string name="pdf_page_size_european_foolscap">"Avrupa foolscap"</string>
     <!-- pdf_page_margin -->
     <string name="pdf_page_margin_no_margin">"Marj yok"</string>
     <string name="pdf_page_margin_big">"Büyük"</string>
@@ -1495,7 +1495,7 @@
     <string name="document_kind_statement">"Banka ekstresi"</string>
     <string name="document_kind_certificate">"Sertifika"</string>
     <string name="document_kind_id_document">"Kimlik belgesi"</string>
-    <string name="document_kind_form">"Biçim"</string>
+    <string name="document_kind_form">"Form"</string>
     <string name="document_kind_r_sum">"Özgeçmiş"</string>
     <!-- document_corner_model -->
     <string name="document_corner_model_lite">"Hafif"</string>
@@ -1532,7 +1532,7 @@
     <string name="pdf_import_look_enhance">"Geliştirin"</string>
     <string name="pdf_import_look_even_out_scanned_pages_and">"Taranan sayfaları eşitleyin ve metni keskinleştirin"</string>
     <!-- capture_scene_issue -->
-    <string name="capture_scene_issue_lens_may_be_covered_clear">"Lens kapalı olabilir. Açığa çıkarın ve tekrar deneyin."</string>
+    <string name="capture_scene_issue_lens_may_be_covered_clear">"Lens kapalı olabilir. Temizleyip tekrar deneyin."</string>
     <string name="capture_scene_issue_too_dark_add_light_or">"Çok karanlık. Işık ekleyin veya flaşı açın."</string>
     <string name="capture_scene_issue_image_looks_blurry_clean_the">"Görüntü bulanık görünüyor. Odaklanmak için merceği temizleyin veya dokunun."</string>
     <!-- group_export_action -->
@@ -1544,25 +1544,25 @@
     <string name="library_sort_option_oldest_updated">"En eski güncellendi"</string>
     <string name="library_sort_option_earliest_changes_first">"Önce en erken değişiklikler"</string>
     <string name="library_sort_option_alphabetical_order">"Alfabetik sıra"</string>
-    <string name="library_sort_option_name_z_a">"Z–A'yı adlandırın"</string>
+    <string name="library_sort_option_name_z_a">"Ad Z–A"</string>
     <string name="library_sort_option_reverse_alphabetical_order">"Ters alfabetik sıra"</string>
     <string name="library_sort_option_newest_created">"En yeni oluşturulan"</string>
     <string name="library_sort_option_recently_added_first">"Son zamanlarda ilk eklenen"</string>
     <string name="library_sort_option_oldest_created">"En eski oluşturulan"</string>
-    <string name="library_sort_option_earliest_added_first">"En erken eklenen ilk önce eklendi"</string>
+    <string name="library_sort_option_earliest_added_first">"Önce en erken eklenen"</string>
     <!-- signature_pen_width -->
     <string name="signature_pen_width_fine">"İnce"</string>
     <string name="signature_pen_width_bold">"Kalın"</string>
     <!-- onboarding_page -->
     <string name="onboarding_page_capture">"YAKALAMA"</string>
     <string name="onboarding_page_paper_to_polished">Kâğıt, kusursuz hâliyle.</string>
-    <string name="onboarding_page_capture_straighten_and_clean_up">Sayfayı düzelt. Ayrıntıları koru.</string>
+    <string name="onboarding_page_capture_straighten_and_clean_up">Bir sayfayı tarayın, kenarlarını düzeltin ve rengini ayarlayın. Taramayı kaydetmeden önce ayrıntıların net olduğundan emin olun.</string>
     <string name="onboarding_page_find">"BUL"</string>
     <string name="onboarding_page_find_more_than_files">Kelimeyi bul. Sayfayı bul.</string>
-    <string name="onboarding_page_recognize_text_on_your_device">Taramalarının içindeki metinde ara.</string>
+    <string name="onboarding_page_recognize_text_on_your_device">Metni cihazınızda tanıyın, ardından taramalarınızdaki sözcükleri arayın. Her belgeyi yeniden okumadan aradığınız sayfayı bulun.</string>
     <string name="onboarding_page_share">TAMAMLA</string>
     <string name="onboarding_page_ready_when_you_are">Göndermeye hazır.</string>
-    <string name="onboarding_page_keep_pages_together_share_a">Net bir PDF imzala, koru ve paylaş.</string>
+    <string name="onboarding_page_keep_pages_together_share_a">Sayfalarınızı tek bir PDF içinde toplayın. Gerektiğinde imza veya parola ekleyin ve bitmiş belgeyi birkaç dokunuşla paylaşın.</string>
     <!-- pdf_reader_tool -->
     <string name="pdf_reader_tool_merge_with_other_pdfs">"Diğer PDF dosyalarıyla birleştirin"</string>
     <string name="pdf_reader_tool_password_protect">"Şifre koruması"</string>
@@ -1593,31 +1593,31 @@
     <string name="scanly_destination_camera">"Kamera"</string>
     <!-- settings_text_recognition -->
     <string name="settings_text_recognition_and_more">"ve daha fazlası"</string>
-    <string name="settings_text_recognition_romanian">"Romen"</string>
-    <string name="settings_text_recognition_czech">"Çek"</string>
+    <string name="settings_text_recognition_romanian">"Rumence"</string>
+    <string name="settings_text_recognition_czech">"Çekçe"</string>
     <string name="settings_text_recognition_swedish">"İsveççe"</string>
     <string name="settings_text_recognition_swahili">"Svahili"</string>
-    <string name="settings_text_recognition_filipino">"Filipinli"</string>
+    <string name="settings_text_recognition_filipino">"Filipince"</string>
     <string name="settings_text_recognition_vietnamese">"Vietnamca"</string>
     <string name="settings_text_recognition_malay">"Malayca"</string>
     <string name="settings_text_recognition_indonesian">"Endonezya dili"</string>
     <string name="settings_text_recognition_turkish">"Türkçe"</string>
     <string name="settings_text_recognition_polish">"Lehçe"</string>
-    <string name="settings_text_recognition_dutch">"Hollandalı"</string>
+    <string name="settings_text_recognition_dutch">"Hollandaca"</string>
     <string name="settings_text_recognition_portuguese">"Portekizce"</string>
-    <string name="settings_text_recognition_italian">"İtalyan"</string>
+    <string name="settings_text_recognition_italian">"İtalyanca"</string>
     <string name="settings_text_recognition_german">"Almanca"</string>
     <string name="settings_text_recognition_french">"Fransızca"</string>
     <string name="settings_text_recognition_spanish">"İspanyolca"</string>
     <string name="settings_text_recognition_english">"İngilizce"</string>
     <string name="settings_text_recognition_latin">"Latin alfabesi"</string>
     <string name="settings_text_recognition_amharic">"Amharca"</string>
-    <string name="settings_text_recognition_georgian">"Gürcü"</string>
-    <string name="settings_text_recognition_armenian">"Ermeni"</string>
-    <string name="settings_text_recognition_burmese">"Birmanya"</string>
+    <string name="settings_text_recognition_georgian">"Gürcüce"</string>
+    <string name="settings_text_recognition_armenian">"Ermenice"</string>
+    <string name="settings_text_recognition_burmese">"Birmanca"</string>
     <string name="settings_text_recognition_khmer">"Khmer"</string>
     <string name="settings_text_recognition_lao">"Lao"</string>
-    <string name="settings_text_recognition_thai">"Tay"</string>
+    <string name="settings_text_recognition_thai">"Tayca"</string>
     <string name="settings_text_recognition_southeast_asia_more">"Güneydoğu Asya ve daha fazlası"</string>
     <string name="settings_text_recognition_hebrew">"İbranice"</string>
     <string name="settings_text_recognition_urdu">"Urduca"</string>
@@ -1630,7 +1630,7 @@
     <string name="settings_text_recognition_east_asian">"Doğu Asya"</string>
     <string name="settings_text_recognition_sinhala">"Sinhala"</string>
     <string name="settings_text_recognition_odia">"Odia"</string>
-    <string name="settings_text_recognition_punjabi">"Pencap"</string>
+    <string name="settings_text_recognition_punjabi">"Pencapça"</string>
     <string name="settings_text_recognition_gujarati">"Guceratça"</string>
     <string name="settings_text_recognition_malayalam">"Malayalamca"</string>
     <string name="settings_text_recognition_kannada">"Kannadaca"</string>
@@ -1661,7 +1661,7 @@
     <string name="tools_catalog_merge">"Birleştirme"</string>
     <string name="tools_catalog_sign_any_pdf">"Herhangi bir PDF'yi imzalayın"</string>
     <string name="tools_catalog_from_gallery">"Galeriden"</string>
-    <string name="tools_catalog_images_to_pdf">"PDF'ye Görüntüler"</string>
+    <string name="tools_catalog_images_to_pdf">"Görüntülerden PDF"</string>
     <string name="tools_catalog_create_manage">"Oluşturun ve yönetin"</string>
     <string name="tools_catalog_my_signatures">"İmzalarım"</string>
     <string name="tools_catalog_photos_scans">"Fotoğraflar ve taramalar"</string>
@@ -1707,7 +1707,7 @@
     <string name="pip_lines_hmm_i_don_t_have">"hmm, buna verecek bir cevabım yok."</string>
     <string name="pip_lines_no_codes_yet_scan_or">"Henüz kod yok. tarayın veya bir tane yapın, burada tutacağım."</string>
     <string name="pip_lines_nothing_matches_that_try_another">"hiçbir şey buna uymuyor. başka bir kelime deneyebilir misin?"</string>
-    <string name="pip_lines_i_m_still_reading_some">"Hala bazı sayfaları okuyorum. maçlar bir saniye içinde ortaya çıkabilir."</string>
+    <string name="pip_lines_i_m_still_reading_some">"Hala bazı sayfaları okuyorum. eşleşmeler bir saniye içinde ortaya çıkabilir."</string>
     <string name="pip_lines_i_can_t_see_a">"Henüz hiçbir şey göremiyorum. kamerayı ödünç alabilir miyim?"</string>
     <string name="pip_lines_the_camera_is_switched_off">"Scanly için kamera kapatılmıştır. ayarlara hızlı bir gezi onu düzeltir."</string>
     <string name="pip_lines_lend_me_the_camera_and">"kamerayı bana ödünç ver, ben de senin için kodu okuyayım."</string>
@@ -1981,9 +1981,6 @@
     <string name="error_could_not_save_the_exported_file">"Dışa aktarılan dosya kaydedilemedi."</string>
     <string name="error_could_not_store_update_prompt_state">"Güncelleme istemi durumu saklanamadı."</string>
     <string name="error_could_not_check_github_releases">"GitHub sürümleri kontrol edilemedi."</string>
-    <string name="onboarding_demo_result">%1$s · Sayfa %2$s</string>
-    <string name="onboarding_demo_found">Sayfa metninde bulundu</string>
-    <string name="onboarding_demo_protected">Parola korumalı</string>
     <string name="onboarding_chapter_number">%1$02d %2$s</string>
     <!-- Split PDF -->
     <string name="tools_catalog_split">"Böl"</string>
@@ -2077,7 +2074,7 @@
     <string name="document_split_destination_folder">"Orijinalle aynı klasör"</string>
     <string name="document_split_destination_library">"Kitaplığınız, klasörlerin dışında"</string>
     <string name="document_split_keep_original">"Orijinali sakla"</string>
-    <string name="document_split_keep_original_caption">"Kapalı: Son silinenlere taşınır"</string>
+    <string name="document_split_keep_original_caption">"Kapalı: Yakın zamanda silinenlere taşınır"</string>
     <string name="document_split_note">"Metin, imzalar ve düzenlemeler her sayfayla birlikte gider."</string>
     <string name="document_split_add_cut">"Bölmek için bir kesim ekleyin"</string>
     <string name="document_split_failed">"Bu belge bölünemedi."</string>
@@ -2099,4 +2096,7 @@
     <string name="pdf_peek_could_not_open">"Bu PDF önizleme için açılamadı."</string>
     <string name="pdf_peek_close">"Önizlemeyi kapat"</string>
     <string name="pdf_peek_tap_hint">"Önizlemek için bir dosyaya dokunun"</string>
+    <string name="welcome_greeting">"Hoş geldiniz"</string>
+    <string name="welcome_tagline">"Kâğıtları temiz ve aranabilir PDF’lere dönüştürün."</string>
+    <string name="welcome_no_language_match">“%1$s” ile eşleşen dil yok</string>
 </resources>
