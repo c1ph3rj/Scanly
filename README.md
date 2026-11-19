@@ -66,7 +66,7 @@ It is designed for a practical, local-only scanning workflow:
   </tr>
   <tr>
 	<td><img src="screenshots/mobile/image-7.jpeg" alt="Scanly mobile screenshot 7" width="100%" /></td>
-	<td></td>
+	<td><img src="screenshots/mobile/image-8.jpeg" alt="Scanly mobile screenshot 8" width="100%" /></td>
 	<td></td>
   </tr>
 </table>
