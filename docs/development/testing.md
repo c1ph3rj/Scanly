@@ -1,6 +1,8 @@
 ﻿# Testing
 
-Test coverage and how to run tests in Scanly **v1.0.21**.
+Test coverage and how to run tests in Scanly **v1.0.22**.
+
+For edge-to-edge changes, check Welcome, Settings › Language, and the full-screen image and PDF previews with gesture and three-button navigation. Include a landscape display cutout and verify that controls stay inside the safe area. Check older Android for transparent system bars and Android 15 or later for the enforced layout.
 
 ## Running tests
 
@@ -49,6 +51,7 @@ app/src/test/java/in/c1ph3rj/scanly/{matching/package}/YourTest.kt
 | File | Coverage |
 | --- | --- |
 | `ScanlyDeviceUiTest.kt` | Real `MainActivity`: onboarding → Home, Library / Tools / Settings chrome, QR generate preview |
+| `AppLocaleDeviceTest.kt` | Locale resources, immediate switching on Welcome, pending and applied choices in Settings, System default and saved language after activity recreation |
 | `ScanlyDeviceUiRobot.kt` | Shared Compose/UiAutomator helpers for the device UI suite |
 | `WelcomeScreenTest.kt` | Welcome screen: logo and phone-language default, language pick and search, one- and two-pane layouts at phone, small-phone, landscape and tablet sizes, flow order and Back |
 | `OnboardingScreenTest.kt` | Compose UI test for onboarding screen |

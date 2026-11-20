@@ -6,6 +6,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [1.0.22] - 2026-11-20
+
+### Changed
+
+- Settings › Language now saves and switches the app language when you tap **Apply**. Leaving the screen discards the pending choice.
+
+### Fixed
+
+- Choosing a language on the welcome screen updates the screen and introduction immediately on Google Play installs, even offline.
+- System bars follow the app theme, and full-screen image and PDF previews keep their controls clear of landscape cutouts. Android 15 and later use the platform's edge-to-edge layout.
+
+### Technical
+
+- Version `1.0.22` (version code `22`). Room schema stays at **12**.
+
 ## [1.0.21] - 2026-11-19
 
 ### Added

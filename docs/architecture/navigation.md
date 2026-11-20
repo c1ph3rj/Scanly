@@ -1,6 +1,6 @@
 ﻿# Navigation
 
-All routes and user flows in Scanly **v1.0.21**.
+All routes and user flows in Scanly **v1.0.22**.
 
 Navigation is implemented with **Navigation Compose** in `ScanlyNavHost.kt`. Route helpers follow the `*Destination` object pattern with `routePattern` and `route()` factory functions.
 
@@ -50,7 +50,7 @@ These top-level routes still exist but show `FeaturePlaceholderScreen` — they 
 | `group/{groupId}` | `GroupDetailDestination` | Group detail |
 | `legal/{documentType}` | `LegalDocumentDestination` | Privacy or terms viewer |
 | `settings/appearance` | `SettingsAppearanceDestination` | Theme + pure black |
-| `settings/language` | `SettingsLanguageDestination` | App language (system default or one of 25 languages; `AppLocales`) |
+| `settings/language` | `SettingsLanguageDestination` | Select System default or one of 25 app languages and tap Apply to save and switch |
 | `settings/pip` | `SettingsPipDestination` | Pip master switch, tips, camera coaching, export cheers, animation |
 | `settings/detection` | `SettingsDetectionDestination` | Models, gate, benchmark link |
 | `settings/widgets` | `SettingsWidgetsDestination` | Pin home-screen widgets |

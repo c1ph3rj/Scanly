@@ -1,6 +1,6 @@
 ﻿# Features
 
-Complete inventory of Scanly features as of **v1.0.21**.
+Complete inventory of Scanly features as of **v1.0.22**.
 
 ## Home dashboard
 
@@ -178,6 +178,7 @@ Main **Settings** hub keeps a short list; details open as sub-screens:
 | --- | --- | --- |
 | Appearance | `settings/appearance` | Theme (System/Light/Dark), pure black AMOLED option |
 | Pip, your helper | `settings/pip` | Turn Pip off, or choose Home tips, camera coaching, export cheers, and animation separately |
+| Language | `settings/language` | Choose one of 25 app languages or System default, then tap Apply to save and switch |
 | Storage | `settings/storage` | Usage, export path, clear temporary exports, clean empty items, clear all |
 | Document detection | `settings/detection` | Automatic or manual models, document gate, model benchmark |
 | Widgets | `settings/widgets` | Pin Actions / Scan / QR |

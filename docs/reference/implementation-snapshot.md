@@ -1,14 +1,14 @@
 ﻿# Implementation Snapshot
 
-One-page technical summary of Scanly **v1.0.21**. For detail see the full docs index at [../README.md](../README.md).
+One-page technical summary of Scanly **v1.0.22**. For detail see the full docs index at [../README.md](../README.md).
 
 ## Release
 
 | Field | Value |
 | --- | --- |
-| Version | `1.0.21` (code `21`) |
+| Version | `1.0.22` (code `22`) |
 | Room schema | `12` (`MIGRATION_7_8`–`MIGRATION_9_10` Recently deleted; `MIGRATION_10_11` OCR engine provenance; `MIGRATION_11_12` derived search text) |
-| Release date | `2026-11-09` |
+| Prepared for release | `2026-11-20` |
 | Min SDK | 29 |
 | Target SDK | 36 |
 | Module | `:app` only |
@@ -32,7 +32,7 @@ Home (shimmer loading) · Pip helper with camera coaching and daily tips · Libr
 
 ## Data
 
-- **Room v7:** documents, pages, groups, page text + FTS4, saved signatures, and editable page markups
+- **Room v12:** documents, pages, groups, page text + FTS4, saved signatures, and editable page markups
 - **Files:** `raw/` (immutable), `processed/`, optional clean `.base.jpg`, page-owned `markups/`, and `thumbs/` per document; reusable ink under `files/signatures/`
 - **DataStore:** theme, pure black, onboarding, export destination, live/post models, automatic selection, document gate, Pip preferences (`pip_*`)
 - **Export cache:** `cache/exports/`; PDFs opened from other apps are copied to `cache/incoming_pdf/` (newest few kept)

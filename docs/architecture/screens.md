@@ -1,6 +1,6 @@
 ﻿# Screens and ViewModels
 
-Every feature screen in Scanly **v1.0.21** and its responsibilities.
+Every feature screen in Scanly **v1.0.22** and its responsibilities.
 
 ## Screen inventory
 
@@ -36,6 +36,7 @@ Every feature screen in Scanly **v1.0.21** and its responsibilities.
 | Filter adjust | `FilterCustomizeScreen` | (shares `PageEditorViewModel`) | (editor overlay) | Brightness/contrast/saturation/sharpness sliders |
 | Page crop | `PageCropScreen` | `PageCropViewModel` | `crop/page/{pageId}` | AI detect, rotate, four-point crop handles, reset, apply |
 | Settings | `SettingsScreen` | `SettingsViewModel` | `settings` | Look & feel, document detection, links, manual update check |
+| Language | `SettingsLanguageScreen` | — | `settings/language` | Choose a pending language and tap Apply to save it through `AppLocales` |
 | Pip settings | `SettingsPipScreen` | `PipViewModel` | `settings/pip` | Pip master switch, Home tips, camera coaching, export cheers, animation |
 | Storage | `SettingsStorageScreen` | `SettingsViewModel` | `settings/storage` | Usage, export destination, clear temporary exports, clean empty items, clear data |
 | Model benchmark | `ModelBenchmarkRoute` | `ModelBenchmarkViewModel` | `settings/model-benchmark` | Per-image overview with polygon overlays on scaled previews for each corner model, plus gate/pipeline stats |

@@ -1,6 +1,6 @@
 ﻿# Architecture Overview
 
-How Scanly is structured at **v1.0.21**. For navigation detail see [navigation.md](navigation.md). For screen inventory see [screens.md](screens.md).
+How Scanly is structured at **v1.0.22**. For navigation detail see [navigation.md](navigation.md). For screen inventory see [screens.md](screens.md).
 
 ## Layer diagram
 
@@ -39,7 +39,7 @@ How Scanly is structured at **v1.0.21**. For navigation detail see [navigation.m
 - `AppUpdateViewModel` — update checks and dialog state
 - `LaunchActionViewModel` — widget/shortcut actions (scan, import, QR, library)
 
-`AppLocaleProvider` supplies the selected language’s context, resources, configuration and layout direction to the existing composition. Language selection preserves the activity/window, navigation and scroll state. `AppLocales` uses the platform per-app locale on Android 13+ and a private preference on Android 10–12; MainActivity handles `locale|layoutDirection|screenLayout` changes without recreation. Application configuration callbacks refresh Compose resources, the non-Compose `AppStrings` cache and widget bindings.
+`AppLocaleProvider` supplies the saved language’s context, resources, configuration and layout direction to the existing composition. Welcome applies a selection immediately. `SettingsLanguageRoute` keeps the selection in screen state and calls `AppLocales.setLanguage` when the user taps **Apply**. Applying a language preserves the activity, window, navigation and scroll state. `AppLocales` uses the platform per-app locale on Android 13+ and a private preference on Android 10–12. MainActivity handles `locale|layoutDirection|screenLayout` changes without recreation. Application configuration callbacks refresh Compose resources, the non-Compose `AppStrings` cache and widget bindings.
 
 ## Package layout
 

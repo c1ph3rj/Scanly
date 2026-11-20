@@ -69,8 +69,8 @@ android {
         applicationId = "in.c1ph3rj.scanly"
         minSdk = 29
         targetSdk = 36
-        versionCode = 21
-        versionName = "1.0.21"
+        versionCode = 22
+        versionName = "1.0.22"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         testInstrumentationRunnerArguments["clearPackageData"] = "true"
@@ -160,6 +160,12 @@ android {
     }
     androidResources {
         noCompress += "tflite"
+    }
+    bundle {
+        language {
+            // Welcome and Settings must be able to switch to any supported language offline.
+            enableSplit = false
+        }
     }
     // Tiny JNI helper (CPU affinity) that keeps LiteRT inference bit-reproducible; see CpuAffinity.kt.
     externalNativeBuild {

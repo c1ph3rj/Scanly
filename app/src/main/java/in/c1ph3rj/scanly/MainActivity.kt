@@ -1,11 +1,13 @@
 package `in`.c1ph3rj.scanly
 
 import android.content.Intent
+import android.content.res.Configuration
+import android.os.Build
 import android.os.Bundle
+import android.view.Window
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
@@ -36,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.LifecycleEventObserver
@@ -87,7 +90,14 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        // Android 15 enforces edge-to-edge for our target SDK. Older versions opt in
+        // here and get transparent bars from the versioned activity theme.
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+            WindowCompat.setDecorFitsSystemWindows(window, false)
+        }
+        val systemDark = (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) ==
+            Configuration.UI_MODE_NIGHT_YES
+        window.updateSystemBarIcons(darkBackground = systemDark)
         // Rebind home-screen widgets with the current device UI mode so icons
         // and labels stay visible after theme changes and process restarts. Off the main
         // thread: it is several calls to the widget service, and the first frame is waiting.
@@ -110,6 +120,12 @@ class MainActivity : ComponentActivity() {
         setIntent(intent)
         externalIntents.tryEmit(intent)
     }
+}
+
+private fun Window.updateSystemBarIcons(darkBackground: Boolean) {
+    val controller = WindowCompat.getInsetsController(this, decorView)
+    controller.isAppearanceLightStatusBars = !darkBackground
+    controller.isAppearanceLightNavigationBars = !darkBackground
 }
 
 @Composable
@@ -254,17 +270,8 @@ private fun ScanlyApp(
         }
     }
 
-    DisposableEffect(isDarkTheme) {
-        activity.enableEdgeToEdge(
-            statusBarStyle = androidx.activity.SystemBarStyle.auto(
-                android.graphics.Color.TRANSPARENT,
-                android.graphics.Color.TRANSPARENT,
-            ) { isDarkTheme },
-            navigationBarStyle = androidx.activity.SystemBarStyle.auto(
-                android.graphics.Color.TRANSPARENT,
-                android.graphics.Color.TRANSPARENT,
-            ) { isDarkTheme }
-        )
+    DisposableEffect(activity, isDarkTheme) {
+        activity.window.updateSystemBarIcons(darkBackground = isDarkTheme)
         onDispose {}
     }
 

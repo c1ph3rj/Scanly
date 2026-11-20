@@ -6,13 +6,13 @@ See also [docs/releases.md](docs/releases.md) for release policy and history wit
 
 | Field | Value |
 | --- | --- |
-| Version name | `1.0.21` |
-| Version code | `21` |
+| Version name | `1.0.22` |
+| Version code | `22` |
 | Application ID | `in.c1ph3rj.scanly` |
 | Min SDK | 29 (Android 10) |
 | Target / compile SDK | compile 37 / target 36 |
 | Room schema version | `12` |
-| Release status | Prepared for release (2026-11-11) |
+| Release status | Prepared for release (2026-11-20) |
 | Branch | `master` |
 
 The version shown in **Settings** is read from `versionName` in `app/build.gradle.kts`.
@@ -21,12 +21,16 @@ The version shown in **Settings** is read from `versionName` in `app/build.gradl
 
 ## Versioning Policy
 
-- **Version name** follows semantic-style `MAJOR.MINOR.PATCH` strings for user-facing releases, with an optional testing suffix (for example `1.0.19-beta.1`; the current release `1.0.21` has none). The suffix is a display label; Play Store uploads still use a signed, non-debuggable `playStoreRelease` build.
+- **Version name** follows semantic-style `MAJOR.MINOR.PATCH` strings for user-facing releases, with an optional testing suffix such as `1.0.19-beta.1`. The suffix is a display label. Play Store uploads still use a signed, non-debuggable `playStoreRelease` build.
 - **Version code** is a monotonically increasing integer required by Google Play; GitHub builds compare `versionName` with the latest release tag.
 - Bump both values together whenever you ship a public release.
 - Record user-visible changes in `CHANGELOG.md` and keep this file aligned with the Gradle values.
 
 ## Release History
+
+### 1.0.22 (version code 22)
+
+Google Play installs include all 25 app languages for immediate offline switching on Welcome. In Settings › Language, tap **Apply** to save and switch to the selected language. Room schema stays at 12. See [CHANGELOG.md](CHANGELOG.md) for details.
 
 ### 1.0.21 (version code 21)
 

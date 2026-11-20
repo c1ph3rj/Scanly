@@ -61,6 +61,8 @@ The GitHub release body is also rendered inside the app's update dialog. Keep it
 
 The `playStoreRelease` app uses the Play In-App Update API. It may use the matching GitHub release for richer notes, but Google Play remains authoritative for availability and installation.
 
+Language splitting is disabled for the app bundle so every supported translation is installed up front. On a fresh Play install, verify that choosing a language different from the phone language updates Welcome and the introduction while offline.
+
 ## Versioning policy
 
 | Field | Rule |

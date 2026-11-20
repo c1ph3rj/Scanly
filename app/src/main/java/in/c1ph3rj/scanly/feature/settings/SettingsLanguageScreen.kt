@@ -8,19 +8,27 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,15 +51,18 @@ import java.util.Locale
 @Composable
 fun SettingsLanguageRoute(onNavigateUp: () -> Unit) {
     val context = LocalContext.current
-    val selected = AppLocales.selectedLanguage(context)
+    val savedLanguage = AppLocales.selectedLanguage(context)
     val deviceLocale = AppLocales.deviceLocale(context)
+    var pendingLanguage by rememberSaveable(savedLanguage) { mutableStateOf(savedLanguage) }
     SettingsLanguageScreen(
-        selected = selected,
+        selected = pendingLanguage,
         deviceLocale = deviceLocale,
         onNavigateUp = onNavigateUp,
-        onLanguageSelected = { language ->
-            if (language != selected) {
-                CameraPermissionSupport.findActivity(context)?.let { AppLocales.setLanguage(it, language) }
+        onLanguageSelected = { pendingLanguage = it },
+        canApply = pendingLanguage != savedLanguage,
+        onApply = {
+            if (pendingLanguage != AppLocales.selectedLanguage(context)) {
+                CameraPermissionSupport.findActivity(context)?.let { AppLocales.setLanguage(it, pendingLanguage) }
             }
         },
     )
@@ -63,6 +74,8 @@ fun SettingsLanguageScreen(
     deviceLocale: Locale,
     onNavigateUp: () -> Unit,
     onLanguageSelected: (AppLanguage?) -> Unit,
+    canApply: Boolean,
+    onApply: () -> Unit,
 ) {
     val window = rememberWindowSizeInfo()
     val uiLocale = LocalConfiguration.current.locales[0]
@@ -71,6 +84,26 @@ fun SettingsLanguageScreen(
     ScanlyDetailScaffold(
         title = stringResource(R.string.settings_language),
         onNavigateUp = onNavigateUp,
+        bottomBar = {
+            Surface(tonalElevation = 2.dp) {
+                Box(
+                    modifier = Modifier.fillMaxWidth().navigationBarsPadding(),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Button(
+                        onClick = onApply,
+                        enabled = canApply,
+                        modifier = Modifier
+                            .widthIn(max = minOf(window.contentMaxWidth, 720.dp))
+                            .fillMaxWidth()
+                            .padding(horizontal = window.horizontalPadding, vertical = 8.dp)
+                            .testTag("settings_language_apply"),
+                    ) {
+                        Text(stringResource(R.string.search_filters_apply))
+                    }
+                }
+            }
+        },
     ) { innerPadding ->
         LazyColumn(
             modifier = Modifier.fillMaxSize().padding(innerPadding).testTag("settings_language_list"),

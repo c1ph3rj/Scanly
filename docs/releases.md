@@ -6,19 +6,26 @@ Version policy and release history for Scanly.
 
 | Field | Value |
 | --- | --- |
-| Version name | `1.0.21` |
-| Version code | `21` |
+| Version name | `1.0.22` |
+| Version code | `22` |
 | Application ID | `in.c1ph3rj.scanly` |
 | Room schema | `12` |
 | Min SDK | 29 (Android 10) |
 | Target / compile SDK | compile 37 / target 36 |
-| Release date | 2026-11-19 |
+| Prepared for release | 2026-11-20 |
 
 Canonical source: `versionCode` and `versionName` in `app/build.gradle.kts`.
 
 The version shown in Settings reads `versionName` via `DefaultSettingsRepository`.
 
 ### Release highlights
+
+Version **1.0.22** (relative to `1.0.21`):
+
+- Google Play installs include all 25 app languages, so the welcome screen and introduction switch immediately, even offline.
+- In **Settings › Language**, choose a language or **System default** and tap **Apply** to save it and switch. Leaving the screen discards a pending choice.
+
+See the compact [v1.0.22 release notes](release-notes/v1.0.22.md) for the in-app update dialog.
 
 Version **1.0.21** (relative to `1.0.20`):
 
@@ -94,6 +101,12 @@ The compact GitHub release description used by the in-app update dialog is avail
 - Keep [VERSION.md](../VERSION.md) aligned with Gradle values.
 
 ## Recent releases
+
+### 1.0.22 (code 22) — 2026-11-20
+
+- Immediate offline language switching on Welcome for Google Play installs
+- Explicit **Apply** step in Settings › Language
+- Room schema 12
 
 ### 1.0.21 (code 21) — 2026-11-19
 
@@ -210,6 +223,10 @@ Major feature release:
 Full details: [CHANGELOG.md](../CHANGELOG.md)
 
 ## Upgrade notes
+
+### From 1.0.21 to 1.0.22 (schema 12)
+
+- The saved app language carries over when you update. Room schema 12 requires no migration for this update.
 
 ### From 1.0.20 to 1.0.21 (schema 12)
 
