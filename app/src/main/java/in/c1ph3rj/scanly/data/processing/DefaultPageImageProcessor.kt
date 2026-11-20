@@ -1,5 +1,7 @@
 package `in`.c1ph3rj.scanly.data.processing
 
+import `in`.c1ph3rj.scanly.core.ml.BookAnalysis
+import `in`.c1ph3rj.scanly.domain.model.ScanMode
 import `in`.c1ph3rj.scanly.core.common.appString
 import `in`.c1ph3rj.scanly.R
 import android.graphics.Bitmap
@@ -52,6 +54,7 @@ class DefaultPageImageProcessor @Inject constructor(
         thumbnailPath: String,
         filterPreset: PageFilterPreset,
         filterAdjustments: PageFilterAdjustments,
+        scanMode: ScanMode,
     ): ProcessedPageArtifacts = reprocessPage(
         rawImagePath = rawImagePath,
         processedImagePath = processedImagePath,
@@ -61,6 +64,7 @@ class DefaultPageImageProcessor @Inject constructor(
         filterPreset = filterPreset,
         filterAdjustments = filterAdjustments,
         detectDocumentWhenCropQuadMissing = true,
+        scanMode = scanMode,
     )
 
     override suspend fun reprocessPage(
@@ -72,6 +76,7 @@ class DefaultPageImageProcessor @Inject constructor(
         filterPreset: PageFilterPreset,
         filterAdjustments: PageFilterAdjustments,
         detectDocumentWhenCropQuadMissing: Boolean,
+        scanMode: ScanMode,
     ): ProcessedPageArtifacts = withContext(dispatchers.default) {
         val exifRotationDegrees = ExifInterface(rawImagePath).rotationDegrees
         val userRotationDegrees = normalizeRotationDegrees(rotationDegrees)
@@ -113,7 +118,7 @@ class DefaultPageImageProcessor @Inject constructor(
             val effectiveCropQuad = if (cropQuad != null) {
                 cropQuad
             } else if (detectDocumentWhenCropQuadMissing) {
-                detectStillImageQuad(editorOrientedBitmap)
+                detectStillImageQuad(editorOrientedBitmap, scanMode)
             } else {
                 null
             }
@@ -187,6 +192,7 @@ class DefaultPageImageProcessor @Inject constructor(
     override suspend fun detectDocumentCorners(
         rawImagePath: String,
         rotationDegrees: Int,
+        scanMode: ScanMode,
     ): DocumentCornerQuad? = withContext(dispatchers.default) {
         val exifRotationDegrees = ExifInterface(rawImagePath).rotationDegrees
         val userRotationDegrees = normalizeRotationDegrees(rotationDegrees)
@@ -202,7 +208,7 @@ class DefaultPageImageProcessor @Inject constructor(
             if (editorOrientedBitmap !== orientedBitmap) {
                 orientedBitmap.recycle()
             }
-            detectStillImageQuad(editorOrientedBitmap)
+            detectStillImageQuad(editorOrientedBitmap, scanMode)
         } finally {
             editorOrientedBitmap?.takeIf { !it.isRecycled }?.recycle()
             if (!orientedBitmap.isRecycled) {
@@ -218,14 +224,14 @@ class DefaultPageImageProcessor @Inject constructor(
      * 3) Full frame instead when the page already fills the image (PDF render, screenshot,
      *    clean scan) — see [FlatPageQuadPolicy]
      */
-    private suspend fun detectStillImageQuad(bitmap: Bitmap): DocumentCornerQuad? {
-        val quad = detectModelStillImageQuad(bitmap) ?: return null
+    private suspend fun detectStillImageQuad(bitmap: Bitmap, scanMode: ScanMode): DocumentCornerQuad? {
+        val quad = detectModelStillImageQuad(bitmap, scanMode) ?: return null
         return runCatchingCancellable {
             FlatPageQuadPolicy.resolve(quad, bitmap.toPixelGrid())
         }.getOrDefault(quad)
     }
 
-    private suspend fun detectModelStillImageQuad(bitmap: Bitmap): DocumentCornerQuad? {
+    private suspend fun detectModelStillImageQuad(bitmap: Bitmap, scanMode: ScanMode): DocumentCornerQuad? {
         val selectedModel = if (settingsRepository.getAutomaticModelSelection()) {
             runCatching { automaticDocumentModelSelector.selection().postProcessingModel }
                 .getOrDefault(settingsRepository.getPostProcessingModel())
@@ -238,6 +244,7 @@ class DefaultPageImageProcessor @Inject constructor(
                 bitmap = bitmap,
                 selectedModel = selectedModel,
                 readiness = QuadReadiness.STILL_PROCESS,
+                bookAnalysis = scanMode.stillBookAnalysis(),
             ).result.quad
         }.getOrNull()
         if (resolved != null) return resolved
@@ -357,4 +364,11 @@ class DefaultPageImageProcessor @Inject constructor(
         return if (normalized < 0) normalized + 360 else normalized
     }
 
+}
+
+/** Book pages keep their gutter trim once saved; ID cards never run it; documents only live. */
+private fun ScanMode.stillBookAnalysis(): BookAnalysis = when (this) {
+    ScanMode.DOCUMENT -> BookAnalysis.LIVE_ONLY
+    ScanMode.ID_CARD -> BookAnalysis.OFF
+    ScanMode.BOOK -> BookAnalysis.ALWAYS
 }

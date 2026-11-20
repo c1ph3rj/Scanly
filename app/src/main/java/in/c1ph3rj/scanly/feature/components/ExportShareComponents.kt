@@ -1,5 +1,8 @@
 package `in`.c1ph3rj.scanly.feature.components
 
+import androidx.compose.material.icons.outlined.ContentCopy
+import androidx.compose.material.icons.outlined.Badge
+import `in`.c1ph3rj.scanly.domain.model.IdCardExportLayout
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.gestures.ScrollableDefaults
 import androidx.compose.foundation.layout.Arrangement
@@ -143,6 +146,8 @@ fun PdfOptionsSheet(
     onOptionsChanged: (PdfExportOptions) -> Unit,
     onConfirm: () -> Unit,
     titleText: String = stringResource(R.string.export_share_pdf_options),
+    /** Offer the ID card layout choice; only for documents that have ID card pages. */
+    showIdCardLayout: Boolean = false,
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var passwordConfirmation by remember { mutableStateOf(options.password.orEmpty()) }
@@ -215,6 +220,36 @@ fun PdfOptionsSheet(
                             .padding(horizontal = 20.dp, vertical = 18.dp),
                         verticalArrangement = Arrangement.spacedBy(20.dp),
                     ) {
+                        if (showIdCardLayout) {
+                            PdfOptionSection(
+                                title = stringResource(R.string.id_card_export_title),
+                                description = stringResource(
+                                    if (options.idCardLayout == IdCardExportLayout.ID_COPY) {
+                                        R.string.id_card_export_id_copy_description
+                                    } else {
+                                        R.string.id_card_export_separate_pages_description
+                                    },
+                                ),
+                            ) {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                ) {
+                                    IdCardExportLayout.entries.forEach { layout ->
+                                        PdfChoiceTile(
+                                            label = stringResource(layout.labelRes),
+                                            icon = layout.icon,
+                                            selected = options.idCardLayout == layout,
+                                            modifier = Modifier.weight(1f),
+                                            onClick = {
+                                                onOptionsChanged(options.copy(idCardLayout = layout))
+                                            },
+                                        )
+                                    }
+                                }
+                            }
+                        }
+
                         PdfPasswordSection(
                             password = options.password,
                             passwordConfirmation = passwordConfirmation,
@@ -419,6 +454,12 @@ private fun PdfOptionSection(
         content()
     }
 }
+
+private val IdCardExportLayout.icon: ImageVector
+    get() = when (this) {
+        IdCardExportLayout.SEPARATE_PAGES -> Icons.Outlined.ContentCopy
+        IdCardExportLayout.ID_COPY -> Icons.Outlined.Badge
+    }
 
 private val PdfPageNumber.icon: ImageVector
     get() = when (this) {

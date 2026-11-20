@@ -2286,4 +2286,33 @@
     <string name="welcome_tagline">Turn paper into clean, searchable PDFs.</string>
     <string name="welcome_no_language_match">No language matches “%1$s”</string>
     <string name="welcome_search_hint" translatable="false">English, हिन्दी, 日本語…</string>
+
+    <!-- Scan modes (v1.0.23) -->
+    <string name="scan_mode_document">Document</string>
+    <string name="scan_mode_id_card">ID card</string>
+    <string name="scan_mode_book">Book</string>
+    <string name="scan_mode_selector_description">Scan mode</string>
+    <string name="error_could_not_save_scan_mode">Could not save the scan mode.</string>
+    <string name="capture_scene_issue_glare_tilt_to_reduce">Glare on the card. Tilt it slightly or move away from the light.</string>
+    <string name="scan_mode_id_scan_the_front">Place the front of the card inside the frame</string>
+    <string name="scan_mode_id_scan_the_back">Place the back of the card inside the frame</string>
+    <string name="scan_mode_id_flip_the_card">Front saved. Flip the card to scan the back.</string>
+    <string name="scan_mode_id_card_saved_next">Card saved. Scan another card or tap Done.</string>
+    <string name="scan_mode_id_front_of_card">Front of card</string>
+    <string name="scan_mode_id_back_of_card">Back of card</string>
+    <string name="scan_mode_id_skip_back">Front only</string>
+    <string name="scan_mode_book_frame_one_page">Frame one page of the open book</string>
+    <string name="scan_mode_book_turn_the_page">Page saved. Turn the page.</string>
+    <string name="tools_catalog_scan_id_card">Scan ID card</string>
+    <string name="tools_catalog_front_and_back">Front and back</string>
+    <string name="tools_catalog_scan_book">Scan book</string>
+    <string name="tools_catalog_page_by_page">Page by page, hands-free</string>
+    <string name="id_card_export_title">ID cards</string>
+    <string name="id_card_export_separate_pages">Separate pages</string>
+    <string name="id_card_export_separate_pages_description">Each side of a card gets its own page.</string>
+    <string name="id_card_export_id_copy">ID copy</string>
+    <string name="id_card_export_id_copy_description">Front and back on one page at real card size, ready to print.</string>
+    <string name="document_page_label_id_front">%1$s · Front</string>
+    <string name="document_page_label_id_back">%1$s · Back</string>
+    <string name="pip_camera_too_shiny_tilt_the_card">Too shiny! Tilt the card a little.</string>
 </resources>

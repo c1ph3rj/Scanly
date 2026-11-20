@@ -28,6 +28,10 @@ import `in`.c1ph3rj.scanly.domain.usecase.ObserveDocumentPagesUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveDocumentUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.PreparePageCaptureUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.PrepareReplacementCaptureUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.SetDocumentScanModeUseCase
+import `in`.c1ph3rj.scanly.domain.model.IdCardSide
+import `in`.c1ph3rj.scanly.domain.model.ScanMode
+import java.util.UUID
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -54,6 +58,9 @@ data class ScanSessionUiState(
     val replacementPageId: String? = null,
     val latestCapturedPageId: String? = null,
     val liveDetection: LiveDetectionUiState = LiveDetectionUiState(),
+    val scanMode: ScanMode = ScanMode.DOCUMENT,
+    /** The ID card being captured: its pair id once the front is saved, and the side to capture next. */
+    val idCard: IdCardCaptureState = IdCardCaptureState(),
 ) {
     val replacementPage: ScanPage?
         get() = pages.firstOrNull { page -> page.id == replacementPageId }
@@ -65,7 +72,16 @@ data class ScanSessionUiState(
 
     val isReplacementMode: Boolean
         get() = replacementPageId != null
+
+    /** The mode can't change while a capture runs or while retaking (a retake keeps the page's mode). */
+    val scanModeLocked: Boolean
+        get() = captureInProgress || isReplacementMode
 }
+
+data class IdCardCaptureState(
+    val pairId: String? = null,
+    val nextSide: IdCardSide = IdCardSide.FRONT,
+)
 
 sealed interface ScanSessionEvent {
     data class PerformCapture(val draft: PageCaptureDraft) : ScanSessionEvent
@@ -90,6 +106,7 @@ class ScanSessionViewModel @Inject constructor(
     private val preparePageCaptureUseCase: PreparePageCaptureUseCase,
     private val prepareReplacementCaptureUseCase: PrepareReplacementCaptureUseCase,
     private val finalizeCapturedPageUseCase: FinalizeCapturedPageUseCase,
+    private val setDocumentScanModeUseCase: SetDocumentScanModeUseCase,
     observeLiveDetectionModelUseCase: ObserveLiveDetectionModelUseCase,
     observeAutomaticModelSelectionUseCase: ObserveAutomaticModelSelectionUseCase,
     observeDocumentGateEnabledUseCase: ObserveDocumentGateEnabledUseCase,
@@ -97,9 +114,14 @@ class ScanSessionViewModel @Inject constructor(
     private val documentId: String = checkNotNull(savedStateHandle[ScanSessionDestination.documentIdArgument])
     private val initialReplacementPageId: String? = savedStateHandle[ScanSessionDestination.replacePageIdArgument]
     private val analysisInFlight = AtomicBoolean(false)
-    private val stabilityTracker = CaptureStabilityTracker()
-    private val gateStabilityTracker = DocumentGateStabilityTracker()
-    private val stableCornerSelector = StableCornerSelector()
+    /** The active scan mode's detection rules; replaced (with fresh trackers) on a mode change. */
+    @Volatile
+    private var strategy: CaptureModeStrategy = CaptureModeStrategy.forMode(ScanMode.DOCUMENT)
+    private var stabilityTracker = strategy.newStabilityTracker()
+    private var gateStabilityTracker = strategy.newGateTracker()
+    private var stableCornerSelector = strategy.newCornerSelector()
+    /** Set once the mode has been taken from the document (or the retaken page). */
+    private var scanModeResolved = false
     /**
      * Guards [gateStabilityTracker] and [stableCornerSelector]: frames update them on
      * Dispatchers.Default while settings changes and captures reset them on the main thread.
@@ -164,6 +186,7 @@ class ScanSessionViewModel @Inject constructor(
                         missingDocument = document == null,
                     )
                 }
+                resolveInitialScanMode()
             }
         }
         viewModelScope.launch {
@@ -179,7 +202,74 @@ class ScanSessionViewModel @Inject constructor(
                         },
                     )
                 }
+                resolveInitialScanMode()
             }
+        }
+    }
+
+    /**
+     * Switches the camera to [mode] and remembers it for the document. Ignored while the mode is
+     * locked (capture running, retake).
+     */
+    fun onScanModeChanged(mode: ScanMode) {
+        val current = _uiState.value
+        if (current.scanModeLocked || current.scanMode == mode) return
+        scanModeResolved = true
+        applyScanMode(mode, current.pages)
+        viewModelScope.launch { setDocumentScanModeUseCase(documentId, mode) }
+    }
+
+    /** Ends the current ID card with its front only; the next capture starts a new card. */
+    fun onSkipIdCardBack() {
+        _uiState.update { current ->
+            if (current.scanMode != ScanMode.ID_CARD) return@update current
+            current.copy(
+                idCard = IdCardCaptureState(),
+                liveDetection = current.liveDetection.copy(
+                    statusMessage = idSearchMessage(IdCardSide.FRONT),
+                ),
+            )
+        }
+    }
+
+    /** The first document (and, for a retake, page) emission decides the mode; later ones don't. */
+    private fun resolveInitialScanMode() {
+        if (scanModeResolved) return
+        val current = _uiState.value
+        val document = current.document ?: return
+        val replacementId = current.replacementPageId
+        val mode = if (replacementId != null) {
+            // Wait for the page list so the retake uses the page's own mode.
+            val page = current.pages.firstOrNull { it.id == replacementId } ?: return
+            page.scanMode
+        } else {
+            document.preferredScanMode
+        }
+        scanModeResolved = true
+        applyScanMode(mode, current.pages)
+    }
+
+    private fun applyScanMode(mode: ScanMode, pages: List<ScanPage>) {
+        val next = CaptureModeStrategy.forMode(mode)
+        synchronized(trackerLock) {
+            strategy = next
+            trackerGeneration.incrementAndGet()
+            gateStabilityTracker = next.newGateTracker()
+            stableCornerSelector = next.newCornerSelector()
+        }
+        stabilityTracker = next.newStabilityTracker()
+        _uiState.update { current ->
+            current.copy(
+                scanMode = mode,
+                idCard = if (mode == ScanMode.ID_CARD) resolveIdCaptureState(pages) else IdCardCaptureState(),
+                liveDetection = current.liveDetection.copy(
+                    quad = null,
+                    countdownValue = null,
+                    sceneIssue = null,
+                    phase = if (current.liveDetection.autoCaptureEnabled) AutoCapturePhase.SEARCHING else AutoCapturePhase.OFF,
+                    statusMessage = searchingMessage(mode, current.liveDetection.autoCaptureEnabled),
+                ),
+            )
         }
     }
 
@@ -205,11 +295,7 @@ class ScanSessionViewModel @Inject constructor(
                 liveDetection = current.liveDetection.copy(
                     autoCaptureEnabled = enabled,
                     phase = if (enabled) AutoCapturePhase.SEARCHING else AutoCapturePhase.OFF,
-                    statusMessage = if (enabled) {
-                        appString(R.string.scan_session_point_your_camera_at_a_2)
-                    } else {
-                        appString(R.string.capture_stability_tracker_auto_capture_is_off_use)
-                    },
+                    statusMessage = searchingMessage(current.scanMode, enabled),
                     countdownValue = null,
                 ),
             )
@@ -245,6 +331,7 @@ class ScanSessionViewModel @Inject constructor(
                 val analysis = runCatching {
                     withContext(Dispatchers.Default) {
                         val selectedModel = liveModel
+                        val activeStrategy = strategy
                         val bitmap = frame.toOrientedBitmap()
                         try {
                             val gate = if (documentGateEnabled) {
@@ -261,7 +348,12 @@ class ScanSessionViewModel @Inject constructor(
                                 }
                             }
                             val cornerResolution = if (gateAccepted) {
-                                bookAwareCornerResolver.detect(bitmap, selectedModel)
+                                bookAwareCornerResolver.detect(
+                                    bitmap = bitmap,
+                                    selectedModel = selectedModel,
+                                    bookAnalysis = activeStrategy.bookAnalysis,
+                                    liveRules = activeStrategy.quadRules,
+                                )
                             } else {
                                 synchronized(trackerLock) { stableCornerSelector.reset() }
                                 `in`.c1ph3rj.scanly.core.ml.CornerResolution(
@@ -290,7 +382,10 @@ class ScanSessionViewModel @Inject constructor(
                                 isFreshDetection = selection.isFresh,
                                 gate = gate,
                                 gateAccepted = gateAccepted,
-                                sceneIssue = quality.sceneIssue(hasDocumentCandidate = detection.quad != null),
+                                sceneIssue = quality.sceneIssue(
+                                    hasDocumentCandidate = detection.quad != null,
+                                    checkGlare = activeStrategy.detectGlare,
+                                ),
                                 cornerIssue = cornerResolution.issue,
                             )
                         } finally {
@@ -342,7 +437,8 @@ class ScanSessionViewModel @Inject constructor(
                             overlayFrame = overlayFrame,
                             sceneIssue = sceneIssue,
                             phase = evaluation.phase,
-                            statusMessage = gateGuidance(analysis) ?: evaluation.statusMessage,
+                            statusMessage = gateGuidance(analysis)
+                                ?: modeStatusMessage(current, evaluation),
                             countdownValue = evaluation.countdownValue,
                             model = detectionResult.model,
                             confidence = detectionResult.confidence,
@@ -374,6 +470,7 @@ class ScanSessionViewModel @Inject constructor(
             when (val result = finalizeCapturedPageUseCase(draft)) {
                 is ScanlyResult.Success -> {
                     capturedPageId = result.value
+                    if (!draft.isReplacement) advanceIdCard(draft)
                     stabilityTracker.onCaptureCommitted(
                         quad = pendingCaptureQuad,
                         nowMillis = monotonicNowMillis(),
@@ -409,7 +506,7 @@ class ScanSessionViewModel @Inject constructor(
                         statusMessage = if (failureMessage != null) {
                             appString(R.string.scan_session_page_not_saved_reposition_the)
                         } else if (current.liveDetection.autoCaptureEnabled) {
-                            appString(R.string.capture_stability_tracker_move_to_the_next_page)
+                            nextSubjectMessage(current)
                         } else {
                             appString(R.string.capture_stability_tracker_auto_capture_is_off_use)
                         },
@@ -470,7 +567,13 @@ class ScanSessionViewModel @Inject constructor(
         val capturePreparationResult = if (replacementPageId != null) {
             prepareReplacementCaptureUseCase(replacementPageId)
         } else {
-            preparePageCaptureUseCase(documentId)
+            val state = _uiState.value
+            preparePageCaptureUseCase(
+                documentId = documentId,
+                scanMode = state.scanMode,
+                idCardPairId = state.idCard.pairId ?: UUID.randomUUID().toString(),
+                idCardSide = state.idCard.nextSide,
+            )
         }
 
         when (val result = capturePreparationResult) {
@@ -491,6 +594,19 @@ class ScanSessionViewModel @Inject constructor(
                 }
                 _events.send(ScanSessionEvent.ShowMessage(result.error.message))
             }
+        }
+    }
+
+    /** After a saved ID side: the back follows the front; a saved back starts the next card. */
+    private fun advanceIdCard(draft: PageCaptureDraft) {
+        if (draft.scanMode != ScanMode.ID_CARD) return
+        _uiState.update { current ->
+            current.copy(
+                idCard = when (draft.idCardSide) {
+                    IdCardSide.FRONT -> IdCardCaptureState(pairId = draft.idCardPairId, nextSide = IdCardSide.BACK)
+                    else -> IdCardCaptureState()
+                },
+            )
         }
     }
 
@@ -538,6 +654,54 @@ class ScanSessionViewModel @Inject constructor(
 
 /** Corner inset (fraction of the visible crop) a quad needs before it may arm auto-capture. */
 private const val VISIBLE_REGION_MARGIN = 0.01f
+
+/** Status while waiting for the next subject after a capture. */
+private fun nextSubjectMessage(state: ScanSessionUiState): String = when (state.scanMode) {
+    ScanMode.ID_CARD -> if (state.idCard.nextSide == IdCardSide.BACK) {
+        appString(R.string.scan_mode_id_flip_the_card)
+    } else {
+        appString(R.string.scan_mode_id_card_saved_next)
+    }
+    ScanMode.BOOK -> appString(R.string.scan_mode_book_turn_the_page)
+    ScanMode.DOCUMENT -> appString(R.string.capture_stability_tracker_move_to_the_next_page)
+}
+
+/** The tracker's status, with ID card cooldown and search messages naming the side to scan. */
+private fun modeStatusMessage(state: ScanSessionUiState, evaluation: StabilityEvaluation): String = when {
+    state.scanMode != ScanMode.ID_CARD -> evaluation.statusMessage
+    evaluation.phase == AutoCapturePhase.COOLDOWN -> nextSubjectMessage(state)
+    evaluation.phase == AutoCapturePhase.SEARCHING -> idSearchMessage(state.idCard.nextSide)
+    else -> evaluation.statusMessage
+}
+
+private fun idSearchMessage(side: IdCardSide): String = when (side) {
+    IdCardSide.FRONT -> appString(R.string.scan_mode_id_scan_the_front)
+    IdCardSide.BACK -> appString(R.string.scan_mode_id_scan_the_back)
+}
+
+private fun searchingMessage(mode: ScanMode, autoCaptureEnabled: Boolean): String = when {
+    !autoCaptureEnabled -> appString(R.string.capture_stability_tracker_auto_capture_is_off_use)
+    mode == ScanMode.ID_CARD -> idSearchMessage(IdCardSide.FRONT)
+    mode == ScanMode.BOOK -> appString(R.string.scan_mode_book_frame_one_page)
+    else -> appString(R.string.scan_session_point_your_camera_at_a_2)
+}
+
+/**
+ * Where an interrupted ID card left off: the newest card with a front but no back yet is resumed
+ * at its back; otherwise the next capture starts a new card.
+ */
+internal fun resolveIdCaptureState(pages: List<ScanPage>): IdCardCaptureState {
+    val idPages = pages.filter { it.scanMode == ScanMode.ID_CARD && it.idCardPairId != null }
+    val newest = idPages.maxWithOrNull(compareBy<ScanPage> { it.createdAtMillis }.thenBy { it.pageIndex })
+        ?: return IdCardCaptureState()
+    val pairId = checkNotNull(newest.idCardPairId)
+    val sides = idPages.filter { it.idCardPairId == pairId }.mapNotNull { it.idCardSide }.toSet()
+    return if (IdCardSide.FRONT in sides && IdCardSide.BACK !in sides) {
+        IdCardCaptureState(pairId = pairId, nextSide = IdCardSide.BACK)
+    } else {
+        IdCardCaptureState()
+    }
+}
 
 private data class FrameAnalysis(
     val detection: CornerDetectionResult,

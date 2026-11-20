@@ -1,5 +1,8 @@
 package `in`.c1ph3rj.scanly.data.export
 
+import `in`.c1ph3rj.scanly.data.local.db.entity.ScanPageEntity
+import `in`.c1ph3rj.scanly.domain.model.IdCardSide
+import `in`.c1ph3rj.scanly.domain.model.ScanMode
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -59,7 +62,7 @@ class DefaultDocumentExportRepository @Inject constructor(
                 val exportDirectory = ensureFreshExportDirectory(documentId)
                 val fileName = "${exportInput.fileStem}.pdf"
                 val outputFile = File(exportDirectory, fileName)
-                writePdf(outputFile, exportInput.pageImagePaths, options)
+                writePdf(outputFile, exportInput.pages, options)
                 ExportArtifact(
                     filePath = outputFile.absolutePath,
                     fileName = fileName,
@@ -76,7 +79,7 @@ class DefaultDocumentExportRepository @Inject constructor(
             val exportInput = loadExportInput(documentId)
             val exportDirectory = ensureFreshExportDirectory(documentId)
             val outputFile = File(exportDirectory, "${exportInput.fileStem}.pdf")
-            writePdf(outputFile, exportInput.pageImagePaths, options)
+            writePdf(outputFile, exportInput.pages, options)
             ShareArtifact(
                 mimeType = pdfMimeType,
                 title = exportInput.documentTitle,
@@ -191,8 +194,7 @@ class DefaultDocumentExportRepository @Inject constructor(
         // Collect all page image paths across all documents in title order
         val allPagePaths = documents.flatMap { doc ->
             scanPageDao.getPages(doc.id).map { page ->
-                page.processedImagePath ?: page.rawImagePath
-                    ?: error(appString(R.string.error_could_not_read_the_page_image))
+                page.toExportSource() ?: error(appString(R.string.error_could_not_read_the_page_image))
             }
         }
         if (allPagePaths.isEmpty()) error(appString(R.string.error_no_pages_available_to_export))
@@ -229,15 +231,13 @@ class DefaultDocumentExportRepository @Inject constructor(
                 documents.forEachIndexed { index, doc ->
                     onProgress(index + 1, documents.size)
                     val pages = scanPageDao.getPages(doc.id)
-                    val pageImagePaths = pages.mapNotNull { page ->
-                        page.processedImagePath ?: page.rawImagePath
-                    }
-                    if (pageImagePaths.isEmpty()) return@forEachIndexed
+                    val pageSources = pages.mapNotNull { page -> page.toExportSource() }
+                    if (pageSources.isEmpty()) return@forEachIndexed
 
                     val docFileStem = uniqueStem(DocumentPresentationFormatter.safeFileStem(doc.title), usedStems)
                     val tempPdf = File(exportDir, "$docFileStem.pdf")
                     tempPdfFiles.add(tempPdf)
-                    writePdf(tempPdf, pageImagePaths, options)
+                    writePdf(tempPdf, pageSources, options)
 
                     zipOut.putNextEntry(ZipEntry("$docFileStem.pdf"))
                     tempPdf.inputStream().use { it.copyTo(zipOut) }
@@ -270,15 +270,24 @@ class DefaultDocumentExportRepository @Inject constructor(
     private suspend fun loadExportInput(documentId: String): ExportInput {
         val document = documentDao.getDocument(documentId) ?: error(appString(R.string.error_document_not_found))
         val pages = scanPageDao.getPages(documentId)
-        val pageImagePaths = pages.map { page ->
-            page.processedImagePath ?: page.rawImagePath
-                ?: error(appString(R.string.error_could_not_read_the_page_image))
+        val pageSources = pages.map { page ->
+            page.toExportSource() ?: error(appString(R.string.error_could_not_read_the_page_image))
         }
-        if (pageImagePaths.isEmpty()) error(appString(R.string.error_no_pages_available_to_export))
+        if (pageSources.isEmpty()) error(appString(R.string.error_no_pages_available_to_export))
         return ExportInput(
             documentTitle = document.title,
             fileStem = DocumentPresentationFormatter.safeFileStem(document.title),
-            pageImagePaths = pageImagePaths,
+            pages = pageSources,
+        )
+    }
+
+    private fun ScanPageEntity.toExportSource(): ExportPageSource? {
+        val path = processedImagePath ?: rawImagePath ?: return null
+        val isIdCard = ScanMode.fromStorage(scanMode) == ScanMode.ID_CARD
+        return ExportPageSource(
+            imagePath = path,
+            idCardPairId = idCardPairId?.takeIf { isIdCard },
+            idCardSide = IdCardSide.fromStorage(idCardSide)?.takeIf { isIdCard },
         )
     }
 
@@ -297,20 +306,21 @@ class DefaultDocumentExportRepository @Inject constructor(
 
     private fun writePdf(
         outputFile: File,
-        pageImagePaths: List<String>,
+        pages: List<ExportPageSource>,
         options: PdfExportOptions,
-    ) = writePdfWithProgress(outputFile, pageImagePaths, options, onProgress = null)
+    ) = writePdfWithProgress(outputFile, pages, options, onProgress = null)
 
     private fun writePdfWithProgress(
         outputFile: File,
-        pageImagePaths: List<String>,
+        pages: List<ExportPageSource>,
         options: PdfExportOptions,
         onProgress: ((current: Int, total: Int) -> Unit)?,
     ) {
         options.validationError()?.let(::error)
+        val sheets = PdfSheetPlanner.plan(pages, options.idCardLayout)
         val password = options.password
         if (password == null) {
-            writeUnprotectedPdf(outputFile, pageImagePaths, options, onProgress)
+            writeUnprotectedPdf(outputFile, sheets, options, onProgress)
             return
         }
 
@@ -319,7 +329,7 @@ class DefaultDocumentExportRepository @Inject constructor(
             ".${outputFile.nameWithoutExtension}-${UUID.randomUUID()}.tmp.pdf",
         )
         try {
-            writeUnprotectedPdf(plainPdf, pageImagePaths, options, onProgress)
+            writeUnprotectedPdf(plainPdf, sheets, options, onProgress)
             protectPdf(plainPdf, outputFile, password)
         } finally {
             plainPdf.delete()
@@ -328,7 +338,7 @@ class DefaultDocumentExportRepository @Inject constructor(
 
     private fun writeUnprotectedPdf(
         outputFile: File,
-        pageImagePaths: List<String>,
+        sheets: List<PdfSheet>,
         options: PdfExportOptions,
         onProgress: ((current: Int, total: Int) -> Unit)?,
     ) {
@@ -336,7 +346,15 @@ class DefaultDocumentExportRepository @Inject constructor(
         val backgroundPaint = Paint().apply { color = Color.WHITE }
 
         try {
-            pageImagePaths.forEachIndexed { index, imagePath ->
+            sheets.forEachIndexed { index, sheet ->
+                val imagePath = when (sheet) {
+                    is PdfSheet.Single -> sheet.imagePath
+                    is PdfSheet.IdCardCopy -> {
+                        writeIdCardSheet(pdfDocument, sheet, index + 1, options, backgroundPaint)
+                        onProgress?.invoke(index + 1, sheets.size)
+                        return@forEachIndexed
+                    }
+                }
                 val bitmap = decodeBitmapForExport(imagePath)
                     ?: error(appString(R.string.error_could_not_read_the_page_image))
                 val pageLayout = PdfPageLayoutResolver.resolve(bitmap.width, bitmap.height, options)
@@ -377,12 +395,75 @@ class DefaultDocumentExportRepository @Inject constructor(
                     pdfDocument.finishPage(page)
                     bitmap.recycle()
                 }
-                onProgress?.invoke(index + 1, pageImagePaths.size)
+                onProgress?.invoke(index + 1, sheets.size)
             }
 
             outputFile.outputStream().use { pdfDocument.writeTo(it) }
         } finally {
             pdfDocument.close()
+        }
+    }
+
+    /** One page holding the sides of an ID card at real size (see [IdCardCopyLayout]). */
+    private fun writeIdCardSheet(
+        pdfDocument: PdfDocument,
+        sheet: PdfSheet.IdCardCopy,
+        pageNumber: Int,
+        options: PdfExportOptions,
+        backgroundPaint: Paint,
+    ) {
+        val bitmaps = sheet.imagePaths.map { path ->
+            decodeBitmapForExport(path) ?: error(appString(R.string.error_could_not_read_the_page_image))
+        }
+        try {
+            val margins = PdfPageLayoutResolver.resolve(1, 1, options)
+            val placement = IdCardCopyLayout.place(
+                imageSizes = bitmaps.map { it.width to it.height },
+                options = options,
+                marginPoints = margins.marginPoints,
+                footerPoints = margins.footerPoints,
+            )
+            val pageInfo = PdfDocument.PageInfo.Builder(
+                placement.pageWidthPoints,
+                placement.pageHeightPoints,
+                pageNumber,
+            ).create()
+            val page = pdfDocument.startPage(pageInfo)
+            try {
+                val canvas = page.canvas
+                canvas.drawRect(
+                    0f,
+                    0f,
+                    placement.pageWidthPoints.toFloat(),
+                    placement.pageHeightPoints.toFloat(),
+                    backgroundPaint,
+                )
+                val bitmapPaint = Paint(Paint.FILTER_BITMAP_FLAG)
+                bitmaps.zip(placement.cards).forEach { (bitmap, card) ->
+                    // The scan is cropped to the card already; fill the card-size slot.
+                    canvas.drawBitmap(
+                        bitmap,
+                        null,
+                        RectF(card.left, card.top, card.left + card.width, card.top + card.height),
+                        bitmapPaint,
+                    )
+                }
+                drawPageNumber(
+                    canvas = canvas,
+                    pageNumber = pageNumber,
+                    placement = options.pageNumber,
+                    pageLayout = PdfPageLayout(
+                        pageWidthPoints = placement.pageWidthPoints,
+                        pageHeightPoints = placement.pageHeightPoints,
+                        marginPoints = margins.marginPoints,
+                        footerPoints = margins.footerPoints,
+                    ),
+                )
+            } finally {
+                pdfDocument.finishPage(page)
+            }
+        } finally {
+            bitmaps.forEach { it.recycle() }
         }
     }
 
@@ -503,8 +584,10 @@ class DefaultDocumentExportRepository @Inject constructor(
     private data class ExportInput(
         val documentTitle: String,
         val fileStem: String,
-        val pageImagePaths: List<String>,
-    )
+        val pages: List<ExportPageSource>,
+    ) {
+        val pageImagePaths: List<String> get() = pages.map { it.imagePath }
+    }
 
     private data class GroupExportOutput(
         val file: File,

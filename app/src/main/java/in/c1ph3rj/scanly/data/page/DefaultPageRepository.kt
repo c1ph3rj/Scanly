@@ -16,6 +16,8 @@ import `in`.c1ph3rj.scanly.data.sign.PageMarkupStore
 import `in`.c1ph3rj.scanly.data.storage.DocumentStorageManager
 import `in`.c1ph3rj.scanly.domain.model.PageFilterAdjustments
 import `in`.c1ph3rj.scanly.domain.model.PageFilterPreset
+import `in`.c1ph3rj.scanly.domain.model.IdCardSide
+import `in`.c1ph3rj.scanly.domain.model.ScanMode
 import `in`.c1ph3rj.scanly.domain.model.PageCaptureDraft
 import `in`.c1ph3rj.scanly.domain.model.PageProcessingState
 import `in`.c1ph3rj.scanly.domain.model.ScanPage
@@ -110,6 +112,9 @@ class DefaultPageRepository @Inject constructor(
                     processedImagePath = page.processedImagePath ?: deriveSiblingAssetPath(anchorPath, PROCESSED_DIRECTORY),
                     thumbnailPath = page.thumbnailPath ?: deriveSiblingAssetPath(anchorPath, THUMBNAILS_DIRECTORY),
                     replacementPageId = page.id,
+                    scanMode = ScanMode.fromStorage(page.scanMode),
+                    idCardPairId = page.idCardPairId,
+                    idCardSide = IdCardSide.fromStorage(page.idCardSide),
                 )
             }.fold(
                 onSuccess = { draft -> ScanlyResult.Success(draft) },
@@ -152,7 +157,7 @@ class DefaultPageRepository @Inject constructor(
                         val timestamp = System.currentTimeMillis()
                         val captureFilterPreset = document.preferredFilterPreset
                             ?.let(PageFilterPreset::fromStorage)
-                            ?: PageFilterPreset.AUTO
+                            ?: draft.scanMode.defaultFilterPreset
                         val processedArtifacts = runCatchingCancellable {
                             if (flatPage != null) {
                                 pageImageProcessor.reprocessPage(
@@ -170,6 +175,7 @@ class DefaultPageRepository @Inject constructor(
                                     processedImagePath = draft.processedImagePath,
                                     thumbnailPath = draft.thumbnailPath,
                                     filterPreset = captureFilterPreset,
+                                    scanMode = draft.scanMode,
                                 )
                             }.toPersistedArtifacts()
                         }.getOrElse {
@@ -207,6 +213,9 @@ class DefaultPageRepository @Inject constructor(
                             processingState = processedArtifacts.processingState,
                             createdAtMillis = existingPage?.createdAtMillis ?: timestamp,
                             updatedAtMillis = timestamp,
+                            scanMode = draft.scanMode.storageValue,
+                            idCardPairId = draft.idCardPairId,
+                            idCardSide = draft.idCardSide?.storageValue,
                         )
 
                         withContext(NonCancellable) {
@@ -601,6 +610,9 @@ class DefaultPageRepository @Inject constructor(
         processingState = PageProcessingState.fromStorage(processingState),
         createdAtMillis = createdAtMillis,
         updatedAtMillis = updatedAtMillis,
+        scanMode = ScanMode.fromStorage(scanMode),
+        idCardPairId = idCardPairId,
+        idCardSide = IdCardSide.fromStorage(idCardSide),
     )
 
     private suspend fun ScanPageEntity.reprocessWith(
@@ -633,6 +645,7 @@ class DefaultPageRepository @Inject constructor(
             filterPreset = filterPreset,
             filterAdjustments = sanitizedAdjustments,
             detectDocumentWhenCropQuadMissing = detectDocumentWhenCropQuadMissing,
+            scanMode = ScanMode.fromStorage(scanMode),
         ).toPersistedArtifacts()
 
         invalidateImageCache(

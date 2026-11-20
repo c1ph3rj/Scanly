@@ -4,6 +4,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.CallSplit
 import androidx.compose.material.icons.automirrored.outlined.MenuBook
 import androidx.compose.material.icons.automirrored.outlined.MergeType
+import androidx.compose.material.icons.outlined.Badge
 import androidx.compose.material.icons.outlined.Compress
 import androidx.compose.material.icons.outlined.DocumentScanner
 import androidx.compose.material.icons.outlined.Draw
@@ -34,6 +35,8 @@ import `in`.c1ph3rj.scanly.R
 /** Identifies what a hub tile does. Hub-local actions have no [ToolItem.route]. */
 enum class ToolActionId {
     Scan,
+    ScanIdCard,
+    ScanBook,
     Import,
     Qr,
     ImageText,
@@ -72,6 +75,22 @@ val scanTools: List<ToolItem> get() = listOf(
         caption = appString(R.string.tools_catalog_camera_with_edge_detection),
         icon = Icons.Outlined.DocumentScanner,
         accent = true,
+    ),
+)
+
+/** Camera shortcuts that open straight into a scan mode, under the main Scan action. */
+val scanModeTools: List<ToolItem> get() = listOf(
+    ToolItem(
+        id = ToolActionId.ScanIdCard,
+        title = appString(R.string.tools_catalog_scan_id_card),
+        caption = appString(R.string.tools_catalog_front_and_back),
+        icon = Icons.Outlined.Badge,
+    ),
+    ToolItem(
+        id = ToolActionId.ScanBook,
+        title = appString(R.string.tools_catalog_scan_book),
+        caption = appString(R.string.tools_catalog_page_by_page),
+        icon = Icons.AutoMirrored.Outlined.MenuBook,
     ),
 )
 

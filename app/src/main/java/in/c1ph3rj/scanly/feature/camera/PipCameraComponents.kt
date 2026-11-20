@@ -87,6 +87,8 @@ internal fun pipCoachFor(
         PipCoach(PipMood.SLEEP, appString(R.string.pip_camera_bit_dark_in_here_more), null, warning = true)
     sceneIssue == CaptureSceneIssue.BLURRY ->
         PipCoach(PipMood.DIZZY, appString(R.string.pip_camera_it_s_all_fuzzy_tap), null, warning = true)
+    sceneIssue == CaptureSceneIssue.GLARE ->
+        PipCoach(PipMood.DIZZY, appString(R.string.pip_camera_too_shiny_tilt_the_card), null, warning = true)
     phase == AutoCapturePhase.CAPTURING ->
         PipCoach(PipMood.HAPPY, appString(R.string.pip_camera_snap_saving_that_page), 1f)
     phase == AutoCapturePhase.COOLDOWN ->

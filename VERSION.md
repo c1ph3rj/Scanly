@@ -6,18 +6,18 @@ See also [docs/releases.md](docs/releases.md) for release policy and history wit
 
 | Field | Value |
 | --- | --- |
-| Version name | `1.0.22` |
-| Version code | `22` |
+| Version name | `1.0.23` |
+| Version code | `23` |
 | Application ID | `in.c1ph3rj.scanly` |
 | Min SDK | 29 (Android 10) |
 | Target / compile SDK | compile 37 / target 36 |
-| Room schema version | `12` |
-| Release status | Prepared for release (2026-11-20) |
-| Branch | `master` |
+| Room schema version | `13` |
+| Release status | In development |
+| Branch | `feature/v1.0.23` |
 
 The version shown in **Settings** is read from `versionName` in `app/build.gradle.kts`.
 
-**Database:** Room schema **12**. Schemas **8–10** add Recently deleted (`MIGRATION_7_8`, `MIGRATION_8_9`, `MIGRATION_9_10`), schema **11** records the OCR engine for each page (`MIGRATION_10_11`), and schema **12** adds derived search text and rebuilds the page-text index (`MIGRATION_11_12`). Migrations run automatically; existing pages are re-indexed in the background without being read again.
+**Database:** Room schema **13**. Schemas **8–10** add Recently deleted (`MIGRATION_7_8`, `MIGRATION_8_9`, `MIGRATION_9_10`), schema **11** records the OCR engine for each page (`MIGRATION_10_11`), schema **12** adds derived search text and rebuilds the page-text index (`MIGRATION_11_12`), and schema **13** adds scan modes (`MIGRATION_12_13`: the document's preferred mode, each page's mode, and the ID card pair and side). Migrations run automatically; existing pages are re-indexed in the background without being read again.
 
 ## Versioning Policy
 
@@ -27,6 +27,10 @@ The version shown in **Settings** is read from `versionName` in `app/build.gradl
 - Record user-visible changes in `CHANGELOG.md` and keep this file aligned with the Gradle values.
 
 ## Release History
+
+### 1.0.23 (version code 23) — in development
+
+Scan modes: ID card (card guide, front then back, glare warning, ID copy PDF layout at real card size) and Book (one page per capture, gutter trim kept on the saved page, hands-free page turns), with a camera mode switcher and Tools shortcuts. Room schema 13. See [CHANGELOG.md](CHANGELOG.md) for details.
 
 ### 1.0.22 (version code 22)
 

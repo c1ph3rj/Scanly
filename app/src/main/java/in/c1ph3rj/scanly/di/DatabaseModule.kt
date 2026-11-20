@@ -41,6 +41,7 @@ object DatabaseModule {
         ScanlyDatabase.MIGRATION_9_10,
         ScanlyDatabase.MIGRATION_10_11,
         ScanlyDatabase.MIGRATION_11_12,
+        ScanlyDatabase.MIGRATION_12_13,
     ).addCallback(object : RoomDatabase.Callback() {
         override fun onOpen(db: SupportSQLiteDatabase) {
             db.execSQL("PRAGMA foreign_keys=ON")

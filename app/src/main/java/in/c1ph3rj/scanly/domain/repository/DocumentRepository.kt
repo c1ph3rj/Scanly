@@ -3,6 +3,7 @@ package `in`.c1ph3rj.scanly.domain.repository
 import `in`.c1ph3rj.scanly.core.common.ScanlyResult
 import `in`.c1ph3rj.scanly.domain.model.DocumentTitleFormat
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
+import `in`.c1ph3rj.scanly.domain.model.ScanMode
 import kotlinx.coroutines.flow.Flow
 
 interface DocumentRepository {
@@ -26,6 +27,12 @@ interface DocumentRepository {
     suspend fun createImportedDocument(
         groupId: String? = null,
     ): ScanlyResult<String>
+
+    /** Remembers the mode new pages of [documentId] are captured in. Does not touch `updatedAtMillis`. */
+    suspend fun setPreferredScanMode(
+        documentId: String,
+        scanMode: ScanMode,
+    ): ScanlyResult<Unit>
 
     suspend fun renameDocument(
         documentId: String,

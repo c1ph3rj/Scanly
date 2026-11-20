@@ -44,6 +44,11 @@ class SuggestDocumentTitleUseCaseTest {
 
         override suspend fun createImportedDocument(groupId: String?) = error("Not used")
 
+        override suspend fun setPreferredScanMode(
+            documentId: String,
+            scanMode: `in`.c1ph3rj.scanly.domain.model.ScanMode,
+        ) = error("Not used")
+
         override suspend fun renameDocument(documentId: String, title: String) = error("Not used")
 
         override suspend fun moveDocumentToTrash(documentId: String) = error("Not used")

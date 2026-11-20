@@ -37,7 +37,7 @@ class ToolsArtworkTest {
                     ToolsScreen(
                         uiState = ToolsUiState(),
                         snackbarHostState = SnackbarHostState(),
-                        onScan = {},
+                        onScan = { _, _ -> },
                         onImport = {},
                         onOpenTool = { openedRoute = it },
                         onSuggestTitle = { "New scan" },

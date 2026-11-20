@@ -6,6 +6,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [1.0.23] - In development
+
+### Added
+
+- **Scan modes: Document, ID card and Book** — a switcher in the camera (a pill above the shutter in portrait, a rail beside the preview in landscape) picks what you are scanning. Each document remembers its mode, so adding pages later opens the camera in the same mode. Retakes always use the page's own mode.
+- **ID card mode** — a card-shaped guide (85.6 × 54 mm, ID-1) darkens everything around it. Detection accepts smaller cards held near the centre, and auto-capture holds for a shorter time. After the front is saved the camera asks for the back, and the two sides are linked as one card. **Front only** ends a card without its back. If you leave mid-card, scanning resumes at the back. A glare warning ("tilt it slightly") holds auto-capture when a lamp's hot spot sits on the card. ID pages default to the Natural colour filter and are labelled "Front" / "Back" in the page grid.
+- **ID copy PDF layout** — for documents with ID card pages, the PDF options offer **ID copy** (the default for those documents): front and back stacked on one page at real card size, ready to print. Auto fit pages print on A4. **Separate pages** keeps one page per side. Image exports are unchanged.
+- **Book mode** — one page per capture. It is tuned for open books: a "Frame one page" hint, and the gutter trim to the dominant page now also applies to the saved photo, so the page stays trimmed after saving. Curved page edges are tolerated. After each capture the camera waits for the page to turn and reads "Page saved. Turn the page", for hands-free page-by-page scanning. Book pages default to the Magic colour filter.
+- **Tools › Scan** adds **Scan ID card** and **Scan book**, which open the camera in that mode. Each has its own illustration and a caption that wraps in narrow layouts.
+
+### Technical
+
+- Version `1.0.23` (version code `23`). Room schema **13** (`MIGRATION_12_13`): `documents.preferredScanMode`, `scan_pages.scanMode`, `scan_pages.idCardPairId`, `scan_pages.idCardSide`. Existing documents and pages become `document`.
+- Live detection rules are now per mode (`CaptureModeStrategy`): quad limits (`LiveQuadRules`), gate policy (`LiveGatePolicy`), gutter analysis (`BookAnalysis`), stability timings and glare checks. Document mode keeps the previous values exactly.
+
 ## [1.0.22] - 2026-11-20
 
 ### Changed

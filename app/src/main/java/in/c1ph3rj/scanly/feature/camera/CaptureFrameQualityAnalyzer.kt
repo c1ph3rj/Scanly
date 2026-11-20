@@ -11,6 +11,8 @@ enum class CaptureSceneIssue(@param:StringRes val guidanceRes: Int) {
     LENS_BLOCKED(R.string.capture_scene_issue_lens_may_be_covered_clear),
     TOO_DARK(R.string.capture_scene_issue_too_dark_add_light_or),
     BLURRY(R.string.capture_scene_issue_image_looks_blurry_clean_the),
+    /** Light reflecting off a glossy surface (ID cards); only checked when a mode asks for it. */
+    GLARE(R.string.capture_scene_issue_glare_tilt_to_reduce),
     ;
 
     val guidance: String get() = appString(guidanceRes)
@@ -24,19 +26,26 @@ enum class CaptureSceneIssue(@param:StringRes val guidanceRes: Int) {
  * paper edge scores near 1 regardless of how much content the page has; blur spreads the step over
  * several pixels and lowers it. [UNMEASURED_EDGE_SHARPNESS] when it cannot be judged (empty or flat
  * frame), which never reads as blurry.
+ * @property centreHighlightFraction share (0..1) of samples in the central part of the frame that
+ * are clipped to near white: the hot spot a lamp leaves on a glossy card.
  */
 data class CaptureFrameQuality(
     val meanLuminance: Float,
     val luminanceDeviation: Float,
     val edgeStrength: Float,
     val edgeSharpness: Float = UNMEASURED_EDGE_SHARPNESS,
+    val centreHighlightFraction: Float = 0f,
 ) {
-    fun sceneIssue(hasDocumentCandidate: Boolean): CaptureSceneIssue? = when {
+    /** @param checkGlare report [CaptureSceneIssue.GLARE] for a clipped hot spot on a detected subject. */
+    fun sceneIssue(hasDocumentCandidate: Boolean, checkGlare: Boolean = false): CaptureSceneIssue? = when {
         meanLuminance < BlockedMeanLuminance && luminanceDeviation < BlockedLuminanceDeviation -> {
             CaptureSceneIssue.LENS_BLOCKED
         }
         meanLuminance < DarkMeanLuminance -> CaptureSceneIssue.TOO_DARK
         hasDocumentCandidate && edgeSharpness < BlurryEdgeSharpness -> CaptureSceneIssue.BLURRY
+        checkGlare && hasDocumentCandidate && centreHighlightFraction >= GlareHighlightFraction -> {
+            CaptureSceneIssue.GLARE
+        }
         else -> null
     }
 
@@ -61,6 +70,12 @@ object CaptureFrameQualityAnalyzer {
         var sampleCount = 0
         var edgeSum = 0.0
         var edgeCount = 0
+        var centreSamples = 0
+        var centreHighlights = 0
+        val centreLeft = frame.width * CentreRegionMargin
+        val centreRight = frame.width * (1f - CentreRegionMargin)
+        val centreTop = frame.height * CentreRegionMargin
+        val centreBottom = frame.height * (1f - CentreRegionMargin)
 
         var y = 0
         while (y < frame.height) {
@@ -71,6 +86,10 @@ object CaptureFrameQualityAnalyzer {
                 luminanceSum += luminance
                 squaredLuminanceSum += luminance * luminance
                 sampleCount += 1
+                if (x >= centreLeft && x < centreRight && y >= centreTop && y < centreBottom) {
+                    centreSamples += 1
+                    if (luminance >= HighlightLuminance) centreHighlights += 1
+                }
 
                 previousLuminance?.let { previous ->
                     edgeSum += abs(luminance - previous)
@@ -100,6 +119,7 @@ object CaptureFrameQualityAnalyzer {
             luminanceDeviation = sqrt(variance).toFloat(),
             edgeStrength = if (edgeCount == 0) 0f else (edgeSum / edgeCount).toFloat(),
             edgeSharpness = edgeSharpness(frame),
+            centreHighlightFraction = if (centreSamples == 0) 0f else centreHighlights.toFloat() / centreSamples,
         )
     }
 
@@ -204,6 +224,12 @@ private const val SampleStep = 8
 private const val BlockedMeanLuminance = 20f
 private const val BlockedLuminanceDeviation = 12f
 private const val DarkMeanLuminance = 48f
+
+// Glare: the central 60% x 60% of the frame (where the ID guide sits, so rotation doesn't matter)
+// with at least 4% of its samples clipped. Matte white paper under room light stays below ~245.
+private const val CentreRegionMargin = 0.2f
+private const val HighlightLuminance = 252f
+private const val GlareHighlightFraction = 0.04f
 
 private const val HistogramBins = 256
 

@@ -65,6 +65,18 @@ enum class PdfPageNumber(
     val label: String get() = appString(labelRes)
 }
 
+/** How the two sides of a scanned ID card go into a PDF. */
+enum class IdCardExportLayout(
+    @param:StringRes val labelRes: Int,
+    @param:StringRes val descriptionRes: Int,
+) {
+    /** Each side on its own page, like any other scan. */
+    SEPARATE_PAGES(R.string.id_card_export_separate_pages, R.string.id_card_export_separate_pages_description),
+
+    /** Front and back together on one page at real card size, like a photocopy. */
+    ID_COPY(R.string.id_card_export_id_copy, R.string.id_card_export_id_copy_description),
+}
+
 data class PdfExportOptions(
     val orientation: PdfPageOrientation = PdfPageOrientation.AUTO,
     val pageSize: PdfPageSize = PdfPageSize.FIT,
@@ -72,6 +84,8 @@ data class PdfExportOptions(
     val pageNumber: PdfPageNumber = PdfPageNumber.NONE,
     /** Null disables protection; a non-null value is used as the PDF open password. */
     val password: String? = null,
+    /** Only affects documents with ID card pages. */
+    val idCardLayout: IdCardExportLayout = IdCardExportLayout.SEPARATE_PAGES,
 )
 
 fun PdfExportOptions.validationError(): String? = when {

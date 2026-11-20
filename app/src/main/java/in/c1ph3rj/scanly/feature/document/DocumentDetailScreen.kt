@@ -1,5 +1,8 @@
 package `in`.c1ph3rj.scanly.feature.document
 
+import `in`.c1ph3rj.scanly.domain.model.IdCardSide
+import `in`.c1ph3rj.scanly.domain.model.ScanMode
+import `in`.c1ph3rj.scanly.domain.model.IdCardExportLayout
 import `in`.c1ph3rj.scanly.core.common.appPluralString
 import `in`.c1ph3rj.scanly.feature.library.TrashCopy
 import android.content.Context
@@ -305,7 +308,15 @@ fun DocumentDetailScreen(
     var renameDialogVisible by rememberSaveable { mutableStateOf(false) }
     var deleteDocumentDialogVisible by rememberSaveable { mutableStateOf(false) }
     var pdfActionMode by rememberSaveable { mutableStateOf<PdfActionMode?>(null) }
-    var pdfOptions by remember { mutableStateOf(PdfExportOptions()) }
+    val hasIdCardPages = uiState.pages.any { page -> page.scanMode == ScanMode.ID_CARD }
+    // ID card documents default to the photocopy layout; the sheet lets the user switch back.
+    var pdfOptions by remember(hasIdCardPages) {
+        mutableStateOf(
+            PdfExportOptions(
+                idCardLayout = if (hasIdCardPages) IdCardExportLayout.ID_COPY else IdCardExportLayout.SEPARATE_PAGES,
+            ),
+        )
+    }
     var addPageSheetVisible by rememberSaveable { mutableStateOf(false) }
     val document = uiState.document
     val documentUpdatedDate = remember(document?.updatedAtMillis) {
@@ -853,6 +864,7 @@ fun DocumentDetailScreen(
         PdfOptionsSheet(
             options = pdfOptions,
             confirmLabel = stringResource(R.string.document_detail_generate),
+            showIdCardLayout = hasIdCardPages,
             onDismiss = { pdfActionMode = null },
             onOptionsChanged = { updatedOptions -> pdfOptions = updatedOptions },
             onConfirm = {
@@ -1867,7 +1879,13 @@ private fun PageOverviewTile(
         isSelected -> MaterialTheme.colorScheme.primary.copy(alpha = if (isDarkTheme) 0.72f else 0.64f)
         else -> MaterialTheme.colorScheme.outlineVariant
     }
-    val pageLabel = formatDocumentPageIndexLabel(page.pageIndex, pageCount)
+    val indexLabel = formatDocumentPageIndexLabel(page.pageIndex, pageCount)
+    // ID card pages say which side they are, so a front and back read as one card.
+    val pageLabel = when (page.idCardSide.takeIf { page.scanMode == ScanMode.ID_CARD }) {
+        IdCardSide.FRONT -> stringResource(R.string.document_page_label_id_front, indexLabel)
+        IdCardSide.BACK -> stringResource(R.string.document_page_label_id_back, indexLabel)
+        null -> indexLabel
+    }
     val pageNumber = formatDocumentPageNumberLabel(page.pageIndex, pageCount)
 
     Surface(

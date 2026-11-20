@@ -11,4 +11,6 @@ data class ScanDocument(
     val groupId: String? = null,
     /** When the document was moved to Recently deleted; null for live documents. */
     val deletedAtMillis: Long? = null,
+    /** The mode new pages of this document are captured in. */
+    val preferredScanMode: ScanMode = ScanMode.DOCUMENT,
 )

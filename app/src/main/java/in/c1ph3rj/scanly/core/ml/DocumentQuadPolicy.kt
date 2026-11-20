@@ -3,7 +3,6 @@ package `in`.c1ph3rj.scanly.core.ml
 import kotlin.math.hypot
 
 object DocumentQuadPolicy {
-    private const val MIN_AREA = 0.12f
     /** Loose near-full-frame boxes usually overshoot the page onto desks/keyboards. */
     private const val MAX_AREA = 0.82f
     /**
@@ -14,7 +13,6 @@ object DocumentQuadPolicy {
     private const val MIN_ASPECT_RATIO = 0.25f
     private const val MAX_ASPECT_RATIO = 2.6f
     private const val MIN_FRAME_MARGIN = 0.0125f
-    private const val MIN_GEOMETRY_QUALITY = 0.58f
     /** Soft preference: mid-size pages score higher than huge loose overlays. */
     private const val PREFERRED_AREA_SOFT_MAX = 0.58f
     private const val AREA_PENALTY_START = 0.62f
@@ -35,16 +33,49 @@ object DocumentQuadPolicy {
      * @param frameAspectRatio width / height of the image the quad is normalized against
      *   (e.g. 0.75 for a 480x640 portrait analysis frame). Defaults to 1 (square space).
      */
-    fun isCaptureReady(quad: DocumentCornerQuad, frameAspectRatio: Float = 1f): Boolean {
+    fun isCaptureReady(
+        quad: DocumentCornerQuad,
+        frameAspectRatio: Float = 1f,
+        rules: LiveQuadRules = LiveQuadRules.Default,
+    ): Boolean {
         val area = quad.area()
         val aspectRatio = quad.estimatedAspectRatio(frameAspectRatio)
         return quad.isValid() &&
             quad.isConvex() &&
             hasFrameMargin(quad, MIN_FRAME_MARGIN) &&
-            area in MIN_AREA..MAX_AREA &&
+            area in rules.minArea..rules.maxArea &&
             aspectRatio in MIN_ASPECT_RATIO..MAX_ASPECT_RATIO &&
-            qualityScore(quad, frameAspectRatio) >= MIN_GEOMETRY_QUALITY
+            (rules.longShortRatio == null || normalizedAspectRatio(aspectRatio) in rules.longShortRatio) &&
+            (rules.maxCentreOffset == null || centreOffset(quad) <= rules.maxCentreOffset) &&
+            qualityScore(quad, frameAspectRatio) >= rules.minQuality
     }
+
+    /**
+     * How well [quad] matches an ID-1 card (85.6 x 54 mm) centred in the frame: 1 for a centred
+     * card of the right shape, falling towards 0 as it drifts off centre or the shape is off.
+     */
+    fun idCardGuideFitScore(quad: DocumentCornerQuad, frameAspectRatio: Float = 1f): Float {
+        if (!quad.isValid() || !quad.isConvex()) return 0f
+        val centreScore = (1f - (centreOffset(quad) / ID_CARD_FIT_CENTRE_RANGE)).coerceIn(0f, 1f)
+        val ratio = normalizedAspectRatio(quad.estimatedAspectRatio(frameAspectRatio))
+        val ratioScore = (1f - (kotlin.math.abs(ratio - ID_CARD_ASPECT_RATIO) / ID_CARD_FIT_RATIO_RANGE))
+            .coerceIn(0f, 1f)
+        val geometry = qualityScore(quad, frameAspectRatio)
+        return ((centreScore * 0.42f) + (ratioScore * 0.34f) + (geometry * 0.24f)).coerceIn(0f, 1f)
+    }
+
+    /** Largest of the x / y distances between the quad's centroid and the frame centre. */
+    internal fun centreOffset(quad: DocumentCornerQuad): Float {
+        val points = listOf(quad.topLeft, quad.topRight, quad.bottomRight, quad.bottomLeft)
+        val centreX = points.sumOf { it.x.toDouble() }.toFloat() / points.size
+        val centreY = points.sumOf { it.y.toDouble() }.toFloat() / points.size
+        return maxOf(kotlin.math.abs(centreX - 0.5f), kotlin.math.abs(centreY - 0.5f))
+    }
+
+    /** ISO/IEC 7810 ID-1: 85.60 x 53.98 mm. */
+    const val ID_CARD_ASPECT_RATIO = 85.60f / 53.98f
+    private const val ID_CARD_FIT_CENTRE_RANGE = 0.25f
+    private const val ID_CARD_FIT_RATIO_RANGE = 0.45f
 
     /**
      * Offline still-image readiness used for capture finalize and gallery import.
@@ -66,8 +97,9 @@ object DocumentQuadPolicy {
         quad: DocumentCornerQuad,
         readiness: QuadReadiness,
         frameAspectRatio: Float = 1f,
+        liveRules: LiveQuadRules = LiveQuadRules.Default,
     ): Boolean = when (readiness) {
-        QuadReadiness.LIVE_CAPTURE -> isCaptureReady(quad, frameAspectRatio)
+        QuadReadiness.LIVE_CAPTURE -> isCaptureReady(quad, frameAspectRatio, liveRules)
         QuadReadiness.STILL_PROCESS -> isStillProcessReady(quad, frameAspectRatio)
     }
 
@@ -157,6 +189,26 @@ object DocumentQuadPolicy {
     private fun normalizedAspectRatio(ratio: Float): Float {
         if (ratio <= 0f) return 0f
         return if (ratio >= 1f) ratio else 1f / ratio
+    }
+}
+
+/**
+ * Live-capture limits a scan mode can tighten or relax. [Default] is the general document flow.
+ *
+ * @property longShortRatio orientation-agnostic long/short side band (pixel space), or null for
+ *   the general 0.25..2.6 width/height band only.
+ * @property maxCentreOffset how far (normalized, per axis) the quad's centre may sit from the
+ *   frame centre, or null for anywhere.
+ */
+data class LiveQuadRules(
+    val minArea: Float = 0.12f,
+    val maxArea: Float = 0.82f,
+    val minQuality: Float = 0.58f,
+    val longShortRatio: ClosedFloatingPointRange<Float>? = null,
+    val maxCentreOffset: Float? = null,
+) {
+    companion object {
+        val Default = LiveQuadRules()
     }
 }
 

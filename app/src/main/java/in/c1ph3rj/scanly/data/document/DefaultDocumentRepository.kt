@@ -15,6 +15,7 @@ import `in`.c1ph3rj.scanly.data.common.LibraryOperationCoordinator
 import `in`.c1ph3rj.scanly.data.storage.DocumentStorageManager
 import `in`.c1ph3rj.scanly.domain.model.DocumentTitleFormat
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
+import `in`.c1ph3rj.scanly.domain.model.ScanMode
 import `in`.c1ph3rj.scanly.domain.repository.DocumentRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -123,6 +124,23 @@ class DefaultDocumentRepository @Inject constructor(
             existingTitles = documentDao.getAllTitles(),
         )
         createDocument(title = title, groupId = groupId)
+    }
+
+    override suspend fun setPreferredScanMode(
+        documentId: String,
+        scanMode: ScanMode,
+    ): ScanlyResult<Unit> = withContext(dispatchers.io) {
+        runCatching { documentDao.setPreferredScanMode(documentId, scanMode.storageValue) }.fold(
+            onSuccess = { ScanlyResult.Success(Unit) },
+            onFailure = { throwable ->
+                ScanlyResult.Failure(
+                    ScanlyError(
+                        message = throwable.message ?: appString(R.string.error_could_not_save_scan_mode),
+                        cause = throwable,
+                    ),
+                )
+            },
+        )
     }
 
     override suspend fun renameDocument(
@@ -300,6 +318,7 @@ class DefaultDocumentRepository @Inject constructor(
         updatedAtMillis = updatedAtMillis,
         groupId = groupId,
         deletedAtMillis = deletedAtMillis,
+        preferredScanMode = ScanMode.fromStorage(preferredScanMode),
     )
 }
 

@@ -11,6 +11,7 @@ object CornerCandidatePolicy {
     fun needsAccurateVerification(
         result: CornerDetectionResult,
         readiness: QuadReadiness = QuadReadiness.LIVE_CAPTURE,
+        liveRules: LiveQuadRules = LiveQuadRules.Default,
     ): Boolean {
         // High is the verification model itself — no second pass needed.
         if (result.model == DocumentCornerModel.HIGH) return false
@@ -23,7 +24,7 @@ object CornerCandidatePolicy {
         ) {
             return DocumentQuadPolicy.qualityScore(quad, aspect) < STILL_AMBIGUOUS_QUALITY_THRESHOLD
         }
-        return !DocumentQuadPolicy.isCaptureReady(quad, aspect) ||
+        return !DocumentQuadPolicy.isCaptureReady(quad, aspect, liveRules) ||
             DocumentQuadPolicy.qualityScore(quad, aspect) < AMBIGUOUS_QUALITY_THRESHOLD
     }
 

@@ -1,5 +1,6 @@
 package `in`.c1ph3rj.scanly.data.local.db.entity
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
@@ -52,4 +53,11 @@ data class ScanPageEntity(
     val deletedAtMillis: Long? = null,
     /** The page's index before it was deleted, so restore puts it back where it was. */
     val deletedFromIndex: Int? = null,
+    /** [ScanMode] storage value the page was captured in. */
+    @ColumnInfo(defaultValue = "document")
+    val scanMode: String = "document",
+    /** Shared by the front and back pages of one ID card; null for other pages. */
+    val idCardPairId: String? = null,
+    /** [IdCardSide] storage value; null for non-ID pages. */
+    val idCardSide: String? = null,
 )

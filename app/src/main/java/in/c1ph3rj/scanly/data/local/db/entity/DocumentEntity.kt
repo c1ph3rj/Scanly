@@ -1,5 +1,6 @@
 package `in`.c1ph3rj.scanly.data.local.db.entity
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
@@ -39,4 +40,7 @@ data class DocumentEntity(
      * Restoring the folder puts the document back if it is still outside any folder.
      */
     val releasedFromGroupId: String? = null,
+    /** [ScanMode] storage value new pages are captured in. */
+    @ColumnInfo(defaultValue = "document")
+    val preferredScanMode: String = "document",
 )

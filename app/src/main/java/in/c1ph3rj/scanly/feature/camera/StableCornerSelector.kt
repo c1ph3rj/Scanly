@@ -3,6 +3,7 @@ package `in`.c1ph3rj.scanly.feature.camera
 import `in`.c1ph3rj.scanly.core.ml.CornerDetectionResult
 import `in`.c1ph3rj.scanly.core.ml.DocumentCornerQuad
 import `in`.c1ph3rj.scanly.core.ml.DocumentQuadPolicy
+import `in`.c1ph3rj.scanly.core.ml.LiveQuadRules
 import `in`.c1ph3rj.scanly.core.ml.NormalizedPoint
 
 /**
@@ -30,6 +31,8 @@ class StableCornerSelector(
     private val pendingDistance: Float = 0.060f,
     private val superiorScoreMargin: Float = 0.025f,
     private val smoothingFactor: Float = 0.34f,
+    /** Live readiness limits of the active scan mode. */
+    private val quadRules: LiveQuadRules = LiveQuadRules.Default,
 ) {
     private var current: CornerDetectionResult? = null
     private var pending: CornerDetectionResult? = null
@@ -40,7 +43,7 @@ class StableCornerSelector(
 
     fun selectTracked(candidate: CornerDetectionResult): TrackedCornerSelection {
         val validCandidate = candidate.takeIf { result ->
-            result.quad?.let { quad -> DocumentQuadPolicy.isCaptureReady(quad, result.frameAspectRatio) } == true
+            result.quad?.let { quad -> DocumentQuadPolicy.isCaptureReady(quad, result.frameAspectRatio, quadRules) } == true
         }
         if (validCandidate == null) {
             missingFrames += 1

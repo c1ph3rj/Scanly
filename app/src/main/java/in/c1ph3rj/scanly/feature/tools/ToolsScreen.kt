@@ -40,6 +40,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
@@ -54,6 +55,7 @@ import `in`.c1ph3rj.scanly.core.ui.ScanlyTestTags
 import `in`.c1ph3rj.scanly.core.ui.WindowWidthClass
 import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import `in`.c1ph3rj.scanly.domain.model.DocumentTitleFormat
+import `in`.c1ph3rj.scanly.domain.model.ScanMode
 import `in`.c1ph3rj.scanly.feature.components.DocumentTitleDialog
 import `in`.c1ph3rj.scanly.feature.components.ScanlyImportProgressOverlay
 import kotlinx.coroutines.flow.collectLatest
@@ -104,20 +106,20 @@ fun ToolsRoute(
 fun ToolsScreen(
     uiState: ToolsUiState,
     snackbarHostState: SnackbarHostState,
-    onScan: (String) -> Unit,
+    onScan: (String, ScanMode) -> Unit,
     onImport: () -> Unit,
     onOpenTool: (String) -> Unit,
     onSuggestTitle: suspend (DocumentTitleFormat) -> String,
 ) {
-    // Survive rotation: do not re-open the title dialog after a config change.
-    var createDialogVisible by rememberSaveable { mutableStateOf(false) }
+    // The mode of the scan whose title dialog is open; null when closed. Survives rotation.
+    var pendingScanMode by rememberSaveable { mutableStateOf<ScanMode?>(null) }
     val windowSizeInfo = rememberWindowSizeInfo()
     val isCompactWidth = windowSizeInfo.widthClass == WindowWidthClass.Compact
     // Illustrated cards (picture over title and caption) wherever there is room; short windows
     // keep the compact row tiles so everything stays above the fold.
     val richCards = !windowSizeInfo.isHeightConstrained
     val onTool: (ToolItem) -> Unit = { tool ->
-        onHubTool(tool, onScan = { createDialogVisible = true }, onImport = onImport, onOpenTool = onOpenTool)
+        onHubTool(tool, onScan = { mode -> pendingScanMode = mode }, onImport = onImport, onOpenTool = onOpenTool)
     }
     val pdfEnabled: (ToolItem) -> Boolean = { tool -> tool.id != ToolActionId.Import || !uiState.isImporting }
 
@@ -170,6 +172,13 @@ fun ToolsScreen(
                                     tall = richCards,
                                     onClick = { onTool(scanTools.first()) },
                                 )
+                                ToolsTileGrid(
+                                    tools = scanModeTools,
+                                    columns = 1,
+                                    enabled = { true },
+                                    onClick = onTool,
+                                    showFullCaption = true,
+                                )
                             }
                             ToolsSection(label = stringResource(R.string.tools_utilities)) {
                                 ToolsTileGrid(tools = utilityTools, columns = 1, enabled = { true }, onClick = onTool)
@@ -192,6 +201,16 @@ fun ToolsScreen(
                 // Phones: two columns of row tiles. Tablet and foldable portrait: three columns of
                 // taller cards under a prominent Scan card, filling the column.
                 val gridColumns = if (isCompactWidth) 2 else 3
+                val contentWidth = if (isCompactWidth) maxWidth else minOf(maxWidth, windowSizeInfo.contentMaxWidth)
+                val scanModeColumns = if (richCards) {
+                    adaptiveColumnCount(
+                        availableWidth = contentWidth - horizontalPadding * 2,
+                        minCellWidth = 144.dp * LocalDensity.current.fontScale.coerceAtLeast(1f),
+                        maxColumns = 2,
+                    )
+                } else {
+                    1
+                }
                 Column(
                     modifier = Modifier
                         .then(
@@ -218,6 +237,14 @@ fun ToolsScreen(
                                 onClick = { onTool(scanTools.first()) },
                             )
                         }
+                        ToolsTileGrid(
+                            tools = scanModeTools,
+                            columns = scanModeColumns,
+                            enabled = { true },
+                            onClick = onTool,
+                            rich = scanModeColumns == 2,
+                            showFullCaption = true,
+                        )
                     }
                     ToolsSection(label = "PDF") {
                         ToolsTileGrid(
@@ -250,15 +277,20 @@ fun ToolsScreen(
         }
     }
 
-    if (createDialogVisible && !uiState.isImporting) {
+    val dialogScanMode = pendingScanMode
+    if (dialogScanMode != null && !uiState.isImporting) {
         DocumentTitleDialog(
-            title = stringResource(R.string.home_new_scan),
+            title = when (dialogScanMode) {
+                ScanMode.DOCUMENT -> stringResource(R.string.home_new_scan)
+                ScanMode.ID_CARD -> stringResource(R.string.tools_catalog_scan_id_card)
+                ScanMode.BOOK -> stringResource(R.string.tools_catalog_scan_book)
+            },
             initialValue = "",
             confirmLabel = stringResource(R.string.home_scan),
-            onDismiss = { createDialogVisible = false },
+            onDismiss = { pendingScanMode = null },
             onConfirm = { value ->
-                createDialogVisible = false
-                onScan(value)
+                pendingScanMode = null
+                onScan(value, dialogScanMode)
             },
             onSuggestTitle = onSuggestTitle,
             autoFillSuggestedName = true,
@@ -269,12 +301,14 @@ fun ToolsScreen(
 /** Routes a tapped hub tile: Scan opens the title dialog, Import the gallery, others a route. */
 private fun onHubTool(
     tool: ToolItem,
-    onScan: () -> Unit,
+    onScan: (ScanMode) -> Unit,
     onImport: () -> Unit,
     onOpenTool: (String) -> Unit,
 ) {
     when (tool.id) {
-        ToolActionId.Scan -> onScan()
+        ToolActionId.Scan -> onScan(ScanMode.DOCUMENT)
+        ToolActionId.ScanIdCard -> onScan(ScanMode.ID_CARD)
+        ToolActionId.ScanBook -> onScan(ScanMode.BOOK)
         ToolActionId.Import -> onImport()
         else -> tool.route?.let(onOpenTool)
     }
@@ -330,8 +364,9 @@ private fun ToolsTileGrid(
     columns: Int,
     enabled: (ToolItem) -> Boolean,
     onClick: (ToolItem) -> Unit,
-    /** Stacked icon, title and caption cards for tablets instead of 64 dp row tiles. */
+    /** Stacked art, title and caption cards instead of compact row tiles. */
     rich: Boolean = false,
+    showFullCaption: Boolean = false,
 ) {
     val gap = if (rich) 12.dp else 10.dp
     Column(verticalArrangement = Arrangement.spacedBy(gap)) {
@@ -344,6 +379,7 @@ private fun ToolsTileGrid(
                             enabled = enabled(tool),
                             onClick = { onClick(tool) },
                             modifier = Modifier.weight(1f),
+                            showFullCaption = showFullCaption,
                         )
                     } else {
                         ToolsHubTile(
@@ -351,6 +387,7 @@ private fun ToolsTileGrid(
                             enabled = enabled(tool),
                             onClick = { onClick(tool) },
                             modifier = Modifier.weight(1f),
+                            showFullCaption = showFullCaption,
                         )
                     }
                 }
@@ -367,6 +404,7 @@ private fun ToolsHubTile(
     enabled: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    showFullCaption: Boolean = false,
 ) {
     ToolCard(
         modifier = modifier
@@ -397,7 +435,7 @@ private fun ToolsHubTile(
                     text = tool.caption,
                     style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp, lineHeight = 18.sp),
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 1,
+                    maxLines = if (showFullCaption) Int.MAX_VALUE else 1,
                     overflow = TextOverflow.Ellipsis,
                 )
             }
@@ -417,6 +455,7 @@ private fun ToolsFeatureCard(
     enabled: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    showFullCaption: Boolean = false,
 ) {
     ToolCard(
         modifier = modifier
@@ -449,7 +488,7 @@ private fun ToolsFeatureCard(
                     text = tool.caption,
                     style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.5.sp, lineHeight = 17.sp),
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 2,
+                    maxLines = if (showFullCaption) Int.MAX_VALUE else 2,
                     overflow = TextOverflow.Ellipsis,
                 )
             }

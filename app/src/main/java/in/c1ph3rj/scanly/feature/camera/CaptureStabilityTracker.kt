@@ -3,6 +3,7 @@ package `in`.c1ph3rj.scanly.feature.camera
 import `in`.c1ph3rj.scanly.core.ml.CornerDetectionResult
 import `in`.c1ph3rj.scanly.core.ml.DocumentCornerQuad
 import `in`.c1ph3rj.scanly.core.ml.DocumentQuadPolicy
+import `in`.c1ph3rj.scanly.core.ml.LiveQuadRules
 import `in`.c1ph3rj.scanly.core.ml.ScanlyModelAssets
 import `in`.c1ph3rj.scanly.core.ml.ScanlyModelContract
 import `in`.c1ph3rj.scanly.domain.model.DocumentCornerModel
@@ -68,6 +69,12 @@ class CaptureStabilityTracker(
      */
     private val sceneChangeAbsentFrames: Int = 4,
     private val sceneChangeAbsentMillis: Long = 600L,
+    /** Live readiness limits of the active scan mode. */
+    private val quadRules: LiveQuadRules = LiveQuadRules.Default,
+    /** Shown while waiting for the next subject after a capture (e.g. "Turn the page"). */
+    private val nextSubjectMessage: () -> String = {
+        appString(R.string.capture_stability_tracker_move_to_the_next_page)
+    },
 ) {
     private var stableReferenceQuad: DocumentCornerQuad? = null
     private var stableSinceMillis: Long? = null
@@ -116,7 +123,7 @@ class CaptureStabilityTracker(
         val freshQuad = drawnQuad?.takeIf { isFreshDetection }
         val confidentQuad = freshQuad?.takeIf { quad ->
             result.confidence >= stableConfidenceRequirement(result.model) &&
-                DocumentQuadPolicy.isCaptureReady(quad, result.frameAspectRatio)
+                DocumentQuadPolicy.isCaptureReady(quad, result.frameAspectRatio, quadRules)
         }
         val candidateQuad = confidentQuad?.takeIf { quadWithinVisibleRegion }
 
@@ -154,7 +161,7 @@ class CaptureStabilityTracker(
                 resetStableWindow()
                 return StabilityEvaluation(
                     phase = AutoCapturePhase.COOLDOWN,
-                    statusMessage = appString(R.string.capture_stability_tracker_move_to_the_next_page),
+                    statusMessage = nextSubjectMessage(),
                     countdownValue = null,
                     shouldAutoCapture = false,
                 )

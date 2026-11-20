@@ -99,6 +99,8 @@ object ToolArtCache {
 @DrawableRes
 private fun ToolActionId.artwork(): Int = when (this) {
     ToolActionId.Scan -> R.drawable.tools_art_scan
+    ToolActionId.ScanIdCard -> R.drawable.tools_art_scan_id_card
+    ToolActionId.ScanBook -> R.drawable.tools_art_scan_book
     ToolActionId.Import -> R.drawable.tools_art_images_to_pdf
     ToolActionId.PdfSign -> R.drawable.tools_art_sign
     ToolActionId.PdfMerge -> R.drawable.tools_art_merge

@@ -5,6 +5,7 @@ import `in`.c1ph3rj.scanly.core.common.ScanlyError
 import `in`.c1ph3rj.scanly.core.common.ScanlyResult
 import `in`.c1ph3rj.scanly.domain.model.DocumentTitleFormat
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
+import `in`.c1ph3rj.scanly.domain.model.ScanMode
 import `in`.c1ph3rj.scanly.domain.repository.DocumentRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -75,6 +76,14 @@ class InMemoryDocumentRepository(
             existingTitles = getAllDocumentTitles(),
         )
         return createDocument(title = title, groupId = groupId)
+    }
+
+    override suspend fun setPreferredScanMode(
+        documentId: String,
+        scanMode: ScanMode,
+    ): ScanlyResult<Unit> = runLibraryResult("Could not save the scan mode.") {
+        val existing = library.document(documentId) ?: error("Document not found.")
+        library.upsertDocument(existing.copy(preferredScanMode = scanMode))
     }
 
     override suspend fun renameDocument(

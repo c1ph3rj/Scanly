@@ -11,6 +11,16 @@ enum class CornerResolutionIssue {
     MODELS_DISAGREE,
 }
 
+/** When the open-book gutter analysis runs. */
+enum class BookAnalysis {
+    /** Never: ID cards and other small, high-contrast subjects that it would cut in half. */
+    OFF,
+    /** Live frames only; saved pages trust the model corners. The general document flow. */
+    LIVE_ONLY,
+    /** Live frames and saved pages alike, so a trimmed book page stays trimmed once saved. */
+    ALWAYS,
+}
+
 data class CornerResolution(
     val result: CornerDetectionResult,
     val issue: CornerResolutionIssue? = null,
@@ -24,9 +34,11 @@ class BookAwareCornerResolver @Inject constructor(
         bitmap: Bitmap,
         selectedModel: DocumentCornerModel,
         readiness: QuadReadiness = QuadReadiness.LIVE_CAPTURE,
+        bookAnalysis: BookAnalysis = BookAnalysis.LIVE_ONLY,
+        liveRules: LiveQuadRules = LiveQuadRules.Default,
     ): CornerResolution {
         val startNanos = System.nanoTime()
-        val resolution = resolve(bitmap, selectedModel, readiness)
+        val resolution = resolve(bitmap, selectedModel, Policy(readiness, bookAnalysis, liveRules))
         val totalNanos = System.nanoTime() - startNanos
         val previousTiming = resolution.result.timing
         val resolverOverhead = (totalNanos - previousTiming.totalNanos).coerceAtLeast(0L)
@@ -43,8 +55,9 @@ class BookAwareCornerResolver @Inject constructor(
     private suspend fun resolve(
         bitmap: Bitmap,
         selectedModel: DocumentCornerModel,
-        readiness: QuadReadiness,
+        policy: Policy,
     ): CornerResolution {
+        val readiness = policy.readiness
         // Saved pages must come out the same on every import; live frames favour speed.
         val reproducible = readiness == QuadReadiness.STILL_PROCESS
         // One luma read per frame, shared by the gutter analysis and the tightener of both models.
@@ -56,10 +69,10 @@ class BookAwareCornerResolver @Inject constructor(
                 detector.detect(bitmap, DocumentCornerModel.ACCURATE, reproducible)
             }
             .getOrThrow()
-        val primary = prepareCandidate(frame, primaryRaw, readiness)
+        val primary = prepareCandidate(frame, primaryRaw, policy)
         val needsVerification = primary.refinement?.kind?.let { it != BookPageRefinementKind.NONE } == true ||
             primary.refinement?.evidence?.hasPossibleGutter() == true ||
-            CornerCandidatePolicy.needsAccurateVerification(primary.result, readiness)
+            CornerCandidatePolicy.needsAccurateVerification(primary.result, readiness, policy.liveRules)
         // High (384 px regression) is the verification model for ambiguous quads.
         if (!needsVerification || primaryRaw.model == DocumentCornerModel.HIGH) {
             return primary.toResolution()
@@ -67,7 +80,7 @@ class BookAwareCornerResolver @Inject constructor(
 
         val highRaw = runCatching { detector.detect(bitmap, DocumentCornerModel.HIGH, reproducible) }
             .getOrNull() ?: return primary.toResolution()
-        val high = prepareCandidate(frame, highRaw, readiness)
+        val high = prepareCandidate(frame, highRaw, policy)
         val combinedTiming = primaryRaw.timing + highRaw.timing
         val chosen = choose(primary, high, readiness)
         return chosen.copy(
@@ -81,17 +94,25 @@ class BookAwareCornerResolver @Inject constructor(
     private fun prepareCandidate(
         frame: FrameContext,
         detected: CornerDetectionResult,
-        readiness: QuadReadiness,
+        policy: Policy,
     ): Candidate {
+        val readiness = policy.readiness
+        val rules = policy.liveRules
         // The resolver owns the bitmap, so its aspect is authoritative for every copy below.
         val aspect = frame.aspectRatio
         val raw = detected.copy(frameAspectRatio = aspect)
-        val readyQuad = raw.quad?.takeIf { DocumentQuadPolicy.isReady(it, readiness, aspect) }
+        val readyQuad = raw.quad?.takeIf { DocumentQuadPolicy.isReady(it, readiness, aspect, rules) }
             ?: return Candidate(raw.copy(quad = null), null)
 
         // Offline import/capture finalize should match Model Benchmark: trust model corners.
-        // Book-page gutter analysis is for live open-book frames and often wrecks ID/RC cards.
-        if (readiness == QuadReadiness.STILL_PROCESS) {
+        // Book-page gutter analysis is for open-book frames and often wrecks ID/RC cards, so it
+        // only runs on saved pages when the scan mode asks for it (Book).
+        val analyzeBook = when (policy.bookAnalysis) {
+            BookAnalysis.OFF -> false
+            BookAnalysis.LIVE_ONLY -> readiness == QuadReadiness.LIVE_CAPTURE
+            BookAnalysis.ALWAYS -> true
+        }
+        if (!analyzeBook) {
             return Candidate(raw.copy(quad = readyQuad), refinement = null)
         }
 
@@ -102,8 +123,8 @@ class BookAwareCornerResolver @Inject constructor(
             grid = frame.grid,
             quad = refinedQuad,
             boundarySupport = refinement.evidence.boundarySupport,
-        ).takeIf { DocumentQuadPolicy.isReady(it, readiness, aspect) }
-            ?: refinedQuad.takeIf { DocumentQuadPolicy.isReady(it, readiness, aspect) }
+        ).takeIf { DocumentQuadPolicy.isReady(it, readiness, aspect, rules) }
+            ?: refinedQuad.takeIf { DocumentQuadPolicy.isReady(it, readiness, aspect, rules) }
         return Candidate(
             result = raw.copy(quad = tightened),
             refinement = refinement,
@@ -184,6 +205,12 @@ class BookAwareCornerResolver @Inject constructor(
         val aspectRatio: Float = bitmap.frameAspectRatio
         val grid: LumaGrid by lazy(LazyThreadSafetyMode.NONE) { bitmap.toLumaGrid() }
     }
+
+    private data class Policy(
+        val readiness: QuadReadiness,
+        val bookAnalysis: BookAnalysis,
+        val liveRules: LiveQuadRules,
+    )
 
     private data class Candidate(
         val result: CornerDetectionResult,

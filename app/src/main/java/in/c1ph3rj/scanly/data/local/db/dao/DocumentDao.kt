@@ -119,6 +119,9 @@ interface DocumentDao {
     @Update
     suspend fun update(document: DocumentEntity)
 
+    @Query("UPDATE documents SET preferredScanMode = :scanMode WHERE id = :documentId")
+    suspend fun setPreferredScanMode(documentId: String, scanMode: String)
+
     @Query("DELETE FROM documents WHERE id = :documentId")
     suspend fun deleteById(documentId: String)
 }

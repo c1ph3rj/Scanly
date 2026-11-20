@@ -19,6 +19,7 @@ import `in`.c1ph3rj.scanly.core.ml.DocumentGateResult
 class DocumentGateStabilityTracker(
     private val requiredConsecutiveFrames: Int = 2,
     private val requiredConsecutiveRejects: Int = 2,
+    private val policy: LiveGatePolicy = LiveGatePolicy.Default,
 ) {
     private var accepted = false
     private var consecutiveAcceptedFrames = 0
@@ -28,7 +29,7 @@ class DocumentGateStabilityTracker(
         if (accepted) {
             when {
                 result.isConfidentlyContrary() -> leaveAccepted()
-                result.acceptsPhysicalDocument(DocumentGatePolicy.LIVE_EXIT_THRESHOLD) -> {
+                result.accepts(policy.exitThreshold) -> {
                     consecutiveRejectedFrames = 0
                 }
                 else -> {
@@ -41,7 +42,7 @@ class DocumentGateStabilityTracker(
             return accepted
         }
 
-        if (result.acceptsPhysicalDocument(DocumentGatePolicy.LIVE_THRESHOLD)) {
+        if (result.accepts(policy.entryThreshold)) {
             consecutiveAcceptedFrames += 1
         } else {
             consecutiveAcceptedFrames = 0
@@ -64,7 +65,41 @@ class DocumentGateStabilityTracker(
         consecutiveRejectedFrames = 0
     }
 
-    private fun DocumentGateResult.isConfidentlyContrary(): Boolean =
-        predictedClass != DocumentGateClass.PHYSICAL_DOCUMENT &&
+    /** A physical document at [threshold], or, when only screens block, anything but a confident screen. */
+    private fun DocumentGateResult.accepts(threshold: Float): Boolean =
+        if (policy.onlyScreensBlock) {
+            !isConfidentScreen()
+        } else {
+            acceptsPhysicalDocument(threshold)
+        }
+
+    private fun DocumentGateResult.isConfidentlyContrary(): Boolean = when (predictedClass) {
+        DocumentGateClass.PHYSICAL_DOCUMENT -> false
+        DocumentGateClass.DIGITAL_SCREEN -> isConfidentScreen()
+        DocumentGateClass.NEITHER -> policy.instantExitOnNeither && !policy.onlyScreensBlock &&
             (probabilities[predictedClass] ?: 0f) >= DocumentGatePolicy.LIVE_THRESHOLD
+    }
+
+    private fun DocumentGateResult.isConfidentScreen(): Boolean =
+        predictedClass == DocumentGateClass.DIGITAL_SCREEN &&
+            (probabilities[predictedClass] ?: 0f) >= DocumentGatePolicy.LIVE_THRESHOLD
+}
+
+/**
+ * How a scan mode reads the live document gate.
+ *
+ * @property onlyScreensBlock accept everything except a confident screen. For subjects the gate
+ *   was not trained to accept with confidence, such as open books (covers are trained as "neither").
+ * @property instantExitOnNeither leave at once on one confident "no document" frame; when false
+ *   such frames only count towards [DocumentGateStabilityTracker]'s reject streak.
+ */
+data class LiveGatePolicy(
+    val entryThreshold: Float = DocumentGatePolicy.LIVE_THRESHOLD,
+    val exitThreshold: Float = DocumentGatePolicy.LIVE_EXIT_THRESHOLD,
+    val onlyScreensBlock: Boolean = false,
+    val instantExitOnNeither: Boolean = true,
+) {
+    companion object {
+        val Default = LiveGatePolicy()
+    }
 }

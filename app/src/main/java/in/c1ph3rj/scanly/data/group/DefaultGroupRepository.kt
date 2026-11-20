@@ -299,5 +299,6 @@ class DefaultGroupRepository @Inject constructor(
             createdAtMillis = createdAtMillis,
             updatedAtMillis = updatedAtMillis,
             groupId = groupId,
+            preferredScanMode = `in`.c1ph3rj.scanly.domain.model.ScanMode.fromStorage(preferredScanMode),
         )
 }

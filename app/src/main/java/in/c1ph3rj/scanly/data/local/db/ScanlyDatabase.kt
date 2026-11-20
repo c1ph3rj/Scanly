@@ -30,7 +30,7 @@ import `in`.c1ph3rj.scanly.domain.model.PageFilterPreset
         SignatureEntity::class,
         PageMarkupEntity::class,
     ],
-    version = 12,
+    version = 13,
     exportSchema = false,
 )
 abstract class ScanlyDatabase : RoomDatabase() {
@@ -284,6 +284,20 @@ abstract class ScanlyDatabase : RoomDatabase() {
                 )
                 PAGE_TEXT_FTS_TRIGGERS.forEach(db::execSQL)
                 db.execSQL("INSERT INTO `page_texts_fts`(`page_texts_fts`) VALUES('rebuild')")
+            }
+        }
+
+        /**
+         * Scan modes (ID card, Book). Documents remember the mode new pages are captured in;
+         * pages record the mode they were captured in, and ID card pages which card and side
+         * they belong to. Existing rows are plain documents.
+         */
+        val MIGRATION_12_13: Migration = object : Migration(12, 13) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE `documents` ADD COLUMN `preferredScanMode` TEXT NOT NULL DEFAULT 'document'")
+                db.execSQL("ALTER TABLE `scan_pages` ADD COLUMN `scanMode` TEXT NOT NULL DEFAULT 'document'")
+                db.execSQL("ALTER TABLE `scan_pages` ADD COLUMN `idCardPairId` TEXT")
+                db.execSQL("ALTER TABLE `scan_pages` ADD COLUMN `idCardSide` TEXT")
             }
         }
 

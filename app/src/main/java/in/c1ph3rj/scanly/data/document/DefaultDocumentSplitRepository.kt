@@ -141,6 +141,7 @@ class DefaultDocumentSplitRepository @Inject constructor(
             createdAtMillis = now,
             updatedAtMillis = now,
             groupId = source.groupId,
+            preferredScanMode = source.preferredScanMode,
         )
         database.withTransaction {
             documentDao.insert(document)
