@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Naming templates (Settings → Naming templates, Suggest name). Keep {placeholders} as written. -->
+    <string name="naming_settings_entry_title">"Naamsjablonen"</string>
+    <string name="naming_settings_entry_summary">"Herbruikbare patronen voor namen van nieuwe documenten"</string>
+    <string name="naming_default_section">"Standaardnaam"</string>
+    <string name="naming_default_hint">"Nieuwe documenten krijgen deze naam. Naam voorstellen loopt nog steeds door alle opties."</string>
+    <string name="naming_templates_section">"Sjablonen"</string>
+    <string name="naming_example">"Voorbeeld: %1$s"</string>
+    <string name="naming_default_badge">"Standaard"</string>
+    <string name="naming_add_template">"Sjabloon toevoegen"</string>
+    <string name="naming_new_template">"Nieuw sjabloon"</string>
+    <string name="naming_edit_template">"Sjabloon bewerken"</string>
+    <string name="naming_edit_template_description">"%1$s bewerken"</string>
+    <string name="naming_delete_template_description">"%1$s verwijderen"</string>
+    <string name="naming_delete_title">"Sjabloon verwijderen?"</string>
+    <string name="naming_delete_message">"%1$s wordt verwijderd. Documenten die al zo heten, houden hun naam."</string>
+    <string name="naming_delete_default_message">"%1$s is je standaardnaam. Na verwijderen gebruiken nieuwe documenten weer %2$s. Bestaande namen veranderen niet."</string>
+    <string name="naming_delete_confirm">"Verwijderen"</string>
+    <string name="naming_cancel">"Annuleren"</string>
+    <string name="naming_save">"Opslaan"</string>
+    <string name="naming_empty_title">"Nog geen sjablonen"</string>
+    <string name="naming_empty_body">"Sla een naampatroon op zoals Bon {date} of {iso} Factuur {n}, en Scanly vult voor elk nieuw document de datum of een nummer in."</string>
+    <string name="naming_empty_suggest_hint">"Je sjablonen staan naast de datumnotaties bij Naam voorstellen, en je kunt er een als standaard instellen."</string>
+    <string name="naming_pattern_label">"Patroon"</string>
+    <string name="naming_pattern_placeholder">"Bon {date}"</string>
+    <string name="naming_insert_token">"Tik om in te voegen"</string>
+    <string name="naming_preview">"Voorbeeld"</string>
+    <string name="naming_preview_unavailable">"Pas het patroon aan om een voorbeeld te zien"</string>
+    <string name="naming_number_note">"{n} wordt het laagste nummer waarmee de naam uniek blijft."</string>
+    <string name="naming_character_count">"%1$d/%2$d"</string>
+    <string name="naming_problem_blank">"Voeg tekst of een tijdelijke aanduiding toe."</string>
+    <string name="naming_problem_too_long">"Gebruik maximaal %1$d tekens."</string>
+    <string name="naming_problem_unknown_token">"Onbekende tijdelijke aanduiding: %1$s"</string>
+    <string name="naming_token_date">"Datum"</string>
+    <string name="naming_token_time">"Tijd"</string>
+    <string name="naming_token_date_time">"Datum en tijd"</string>
+    <string name="naming_token_iso_date">"ISO-datum"</string>
+    <string name="naming_token_year">"Jaar"</string>
+    <string name="naming_token_month">"Maand"</string>
+    <string name="naming_token_day">"Dag"</string>
+    <string name="naming_token_weekday">"Weekdag"</string>
+    <string name="naming_token_number">"Nummer"</string>
+    <string name="naming_problem_duplicate">"Je hebt al een sjabloon met dit patroon."</string>
+    <string name="naming_save_failed">"Het sjabloon kan niet worden opgeslagen. Probeer het opnieuw."</string>
+    <string name="naming_default_failed">"De standaardnaam kan niet worden gewijzigd. Probeer het opnieuw."</string>
+    <string name="naming_delete_failed">"Het sjabloon kan niet worden verwijderd. Probeer het opnieuw."</string>
+</resources>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tags_settings_entry_title">"Tag"</string>
+    <string name="tags_settings_entry_summary">"Buat, ganti nama, dan hapus tag"</string>
+    <string name="tags_document_add">"Tambahkan tag"</string>
+    <string name="tags_document_edit">"Edit tag"</string>
+    <string name="tags_document_row_description">"Tag: %1$s"</string>
+    <string name="tags_document_updated">"Tag diperbarui"</string>
+    <string name="tags_editor_title">"Tag"</string>
+    <string name="tags_editor_field_label">"Tag baru"</string>
+    <string name="tags_editor_add">"Tambahkan tag"</string>
+    <string name="tags_editor_create_chip">"Buat “%1$s”"</string>
+    <string name="tags_editor_empty">"Belum ada tag. Ketik nama untuk membuatnya."</string>
+    <string name="tags_editor_done">"Selesai"</string>
+    <string name="tags_search_filter_section">"Tag"</string>
+    <string name="tags_search_filter_all_hint">"Menampilkan dokumen yang memiliki semua tag yang dipilih."</string>
+    <string name="tags_search_filter_chip">"Tag: %1$s"</string>
+    <string name="tags_manage_title">"Tag"</string>
+    <string name="tags_manage_new_tag">"Tag baru"</string>
+    <string name="tags_manage_rename_title">"Ganti nama tag"</string>
+    <string name="tags_manage_name_label">"Nama tag"</string>
+    <string name="tags_manage_create">"Buat"</string>
+    <string name="tags_manage_rename">"Ganti nama"</string>
+    <string name="tags_manage_delete">"Hapus"</string>
+    <string name="tags_manage_delete_title">"Hapus tag?"</string>
+    <string name="tags_manage_delete_message">"“%1$s” akan dihapus dari semua dokumen yang memilikinya. Dokumennya sendiri tetap disimpan."</string>
+    <string name="tags_manage_deleted">"Tag dihapus"</string>
+    <string name="tags_manage_renamed">"Nama tag diganti"</string>
+    <string name="tags_manage_empty_pip">"Belum ada yang diberi tag."</string>
+    <string name="tags_manage_empty_title">"Belum ada tag"</string>
+    <string name="tags_manage_empty_description">"Tag mengelompokkan dokumen lintas folder: satu struk bisa sekaligus Perjalanan dan Dapat diganti. Buat tag di sini atau dari dokumen mana pun."</string>
+    <string name="tags_manage_options">"Opsi untuk %1$s"</string>
+    <string name="tags_manage_name_blank">"Masukkan nama tag."</string>
+    <string name="tags_manage_name_taken">"Tag bernama “%1$s” sudah ada."</string>
+</resources>

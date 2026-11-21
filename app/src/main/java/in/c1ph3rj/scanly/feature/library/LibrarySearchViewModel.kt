@@ -8,6 +8,7 @@ import `in`.c1ph3rj.scanly.core.common.ScanlyDispatchers
 import `in`.c1ph3rj.scanly.core.common.ScanlyResult
 import `in`.c1ph3rj.scanly.domain.model.DocumentGroup
 import `in`.c1ph3rj.scanly.domain.model.DocumentKind
+import `in`.c1ph3rj.scanly.domain.model.DocumentTag
 import `in`.c1ph3rj.scanly.domain.model.FolderFilter
 import `in`.c1ph3rj.scanly.domain.model.LibrarySearchResults
 import `in`.c1ph3rj.scanly.domain.model.PageTextHit
@@ -24,6 +25,8 @@ import `in`.c1ph3rj.scanly.domain.search.TextFolding
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveDocumentKindsUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveDocumentsUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveGroupsUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.ObserveTagIdsByDocumentUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.ObserveTagsUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveTextIndexProgressUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.AddRecentSearchUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ClearRecentSearchesUseCase
@@ -58,6 +61,8 @@ data class LibrarySearchUiState(
     val availableKinds: List<DocumentKind> = emptyList(),
     /** Folders to offer in the filter sheet. */
     val folders: List<DocumentGroup> = emptyList(),
+    /** Tags to offer in the filter sheet, sorted by name. */
+    val tags: List<DocumentTag> = emptyList(),
     /** How many documents of each type exist, for the "Browse by type" chips. */
     val kindCounts: Map<DocumentKind, Int> = emptyMap(),
     val recentSearches: List<String> = emptyList(),
@@ -83,6 +88,8 @@ private data class LibrarySnapshot(
     val documents: List<ScanDocument>,
     val groups: List<DocumentGroup>,
     val kinds: Map<String, DocumentKind>,
+    val tags: List<DocumentTag>,
+    val tagIdsByDocument: Map<String, Set<String>>,
 )
 
 private data class SearchControls(
@@ -120,6 +127,8 @@ class LibrarySearchViewModel @Inject constructor(
     observeGroupsUseCase: ObserveGroupsUseCase,
     observeDocumentKindsUseCase: ObserveDocumentKindsUseCase,
     observeTextIndexProgressUseCase: ObserveTextIndexProgressUseCase,
+    observeTagsUseCase: ObserveTagsUseCase,
+    observeTagIdsByDocumentUseCase: ObserveTagIdsByDocumentUseCase,
     private val searchPageTextUseCase: SearchPageTextUseCase,
     observeRecentSearchesUseCase: ObserveRecentSearchesUseCase,
     private val addRecentSearchUseCase: AddRecentSearchUseCase,
@@ -147,6 +156,8 @@ class LibrarySearchViewModel @Inject constructor(
         observeDocumentsUseCase(),
         observeGroupsUseCase(),
         observeDocumentKindsUseCase(),
+        observeTagsUseCase(),
+        observeTagIdsByDocumentUseCase(),
         ::LibrarySnapshot,
     )
 
@@ -189,7 +200,7 @@ class LibrarySearchViewModel @Inject constructor(
             .onStart { emit(TextHitsState("", SearchScope.EVERYWHERE, emptyList())) }
     }
 
-    /** Words finishing the one being typed, from page text and document and folder names. */
+    /** Words finishing the one being typed, from page text and document, folder and tag names. */
     val completions: StateFlow<CompletionState> = combine(query, library) { text, snapshot -> text to snapshot }
         .flatMapLatest { (text, snapshot) ->
             flow {
@@ -199,7 +210,11 @@ class LibrarySearchViewModel @Inject constructor(
                     return@flow
                 }
                 delay(COMPLETION_DEBOUNCE_MILLIS)
-                val nameWords = (snapshot.documents.map { it.title } + snapshot.groups.map { it.title })
+                val nameWords = (
+                    snapshot.documents.map { it.title } +
+                        snapshot.groups.map { it.title } +
+                        snapshot.tags.map { it.name }
+                    )
                     .flatMap { title -> TextFolding.words(TextFolding.fold(title)).map { it.value }.toList() }
                 val words = SearchCompletion.merge(
                     prefix = typed.prefix,
@@ -233,6 +248,7 @@ class LibrarySearchViewModel @Inject constructor(
                 folder = chosen.folder.takeIf { folder ->
                     folder !is FolderFilter.In || snapshot.groups.any { it.id == folder.groupId }
                 } ?: FolderFilter.Any,
+                tagIds = chosen.tagIds.filterTo(mutableSetOf()) { id -> snapshot.tags.any { it.id == id } },
             )
         }
         LibrarySearchUiState(
@@ -241,6 +257,7 @@ class LibrarySearchViewModel @Inject constructor(
             filters = activeFilters,
             availableKinds = availableKinds,
             folders = snapshot.groups.sortedBy { it.title.lowercase() },
+            tags = snapshot.tags,
             kindCounts = snapshot.documents
                 .mapNotNull { snapshot.kinds[it.id] }
                 .groupingBy { it }
@@ -255,6 +272,8 @@ class LibrarySearchViewModel @Inject constructor(
                 scope = controls.scope,
                 filters = activeFilters,
                 closeTerms = hitsState.closeTerms.takeIf { hits != null }.orEmpty(),
+                documentTagIds = snapshot.tagIdsByDocument,
+                tagNames = snapshot.tags.associate { it.id to it.name },
             ),
             indexProgress = progress,
             suggestion = hitsState.suggestion.takeIf { hits != null },

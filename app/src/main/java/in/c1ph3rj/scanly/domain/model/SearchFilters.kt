@@ -55,15 +55,23 @@ data class SearchFilters(
     val customStartUtcMillis: Long? = null,
     val customEndUtcMillis: Long? = null,
     val folder: FolderFilter = FolderFilter.Any,
+    /** Tags a document must carry, all of them; empty for any. */
+    val tagIds: Set<String> = emptySet(),
     val sort: SearchSort = SearchSort.BEST_MATCH,
 ) {
     /** True when some filter narrows the documents (sort alone doesn't). */
-    val narrows: Boolean get() = kind != null || date != DateFilter.ANY || folder != FolderFilter.Any
+    val narrows: Boolean
+        get() = kind != null || date != DateFilter.ANY || folder != FolderFilter.Any || tagIds.isNotEmpty()
 
     /** Filters to count on the Filters chip badge, sort included. */
     val activeCount: Int
-        get() = listOf(kind != null, date != DateFilter.ANY, folder != FolderFilter.Any, sort != SearchSort.BEST_MATCH)
-            .count { it }
+        get() = listOf(
+            kind != null,
+            date != DateFilter.ANY,
+            folder != FolderFilter.Any,
+            tagIds.isNotEmpty(),
+            sort != SearchSort.BEST_MATCH,
+        ).count { it }
 
     /** Millis range a document's last change must fall in, or null for any time. */
     fun dateRange(nowMillis: Long, zone: ZoneId): LongRange? {

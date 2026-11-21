@@ -42,6 +42,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Notes
+import androidx.compose.material.icons.automirrored.filled.Label
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Crop
@@ -155,6 +156,8 @@ import `in`.c1ph3rj.scanly.feature.components.DocumentTitleDialog
 import `in`.c1ph3rj.scanly.feature.components.ScanlyConfirmDialog
 import `in`.c1ph3rj.scanly.feature.components.FullScreenLoader
 import `in`.c1ph3rj.scanly.feature.components.MoveToFolderSheet
+import `in`.c1ph3rj.scanly.feature.tags.DocumentTagsRow
+import `in`.c1ph3rj.scanly.feature.tags.TagEditorSheet
 import `in`.c1ph3rj.scanly.feature.components.PdfOptionsSheet
 import `in`.c1ph3rj.scanly.feature.components.ScanlySheetContent
 import kotlinx.coroutines.Dispatchers
@@ -264,6 +267,7 @@ fun DocumentDetailRoute(
         },
         onRenameDocument = viewModel::renameDocument,
         onDeleteDocument = viewModel::deleteDocument,
+        onSaveTags = viewModel::saveTags,
     )
 }
 
@@ -294,6 +298,7 @@ fun DocumentDetailScreen(
     onOpenSign: (pageIndex: Int) -> Unit = {},
     onSplitDocument: () -> Unit = {},
     onOpenTool: (PdfReaderTool, PdfToolSource) -> Unit = { _, _ -> },
+    onSaveTags: (tagIds: Set<String>, newTagNames: List<String>) -> Unit = { _, _ -> },
 ) {
     val windowSizeInfo = rememberWindowSizeInfo()
     // Pages list beside a live preview whenever a landscape window has the width for it,
@@ -306,6 +311,7 @@ fun DocumentDetailScreen(
     var exportSheetVisible by rememberSaveable { mutableStateOf(false) }
     var moveSheetVisible by rememberSaveable { mutableStateOf(false) }
     var renameDialogVisible by rememberSaveable { mutableStateOf(false) }
+    var tagSheetVisible by rememberSaveable { mutableStateOf(false) }
     var deleteDocumentDialogVisible by rememberSaveable { mutableStateOf(false) }
     var pdfActionMode by rememberSaveable { mutableStateOf<PdfActionMode?>(null) }
     val hasIdCardPages = uiState.pages.any { page -> page.scanMode == ScanMode.ID_CARD }
@@ -481,6 +487,7 @@ fun DocumentDetailScreen(
                 onNavigateUp = handleNavigateUp,
                 onOpenExportSheet = { exportSheetVisible = true },
                 onRename = { renameDialogVisible = true },
+                onEditTags = { tagSheetVisible = true },
                 onDelete = { deleteDocumentDialogVisible = true },
                 exportEnabled = !uiState.isExporting && uiState.pages.isNotEmpty(),
                 pageReviewActive = !useMasterDetailLayout && isReviewingPage && selectedPage != null,
@@ -529,6 +536,7 @@ fun DocumentDetailScreen(
                 onDeleteSelectedPage = { deleteDialogVisible = true },
                 onAddPage = { addPageSheetVisible = true },
                 onMoveToFolder = { moveSheetVisible = true },
+                onEditTags = { tagSheetVisible = true },
                 onPreviewPage = { pageId -> previewPageId = pageId },
                 density = density,
                 onOpenText = onOpenText,
@@ -620,6 +628,10 @@ fun DocumentDetailScreen(
                     updatedDate = documentUpdatedDate,
                     onMoveToFolder = { moveSheetVisible = true },
                 )
+            }
+
+            item(key = "document_tags", contentType = "tags") {
+                DocumentTagsRow(tags = uiState.tags, onEditTags = { tagSheetVisible = true })
             }
 
             if (uiState.pages.isEmpty()) {
@@ -833,6 +845,18 @@ fun DocumentDetailScreen(
         )
     }
 
+    if (tagSheetVisible && document != null) {
+        TagEditorSheet(
+            allTags = uiState.allTags,
+            selectedTagIds = uiState.tags.map { it.id }.toSet(),
+            onDismiss = { tagSheetVisible = false },
+            onSave = { tagIds, newTagNames ->
+                tagSheetVisible = false
+                onSaveTags(tagIds, newTagNames)
+            },
+        )
+    }
+
     if (renameDialogVisible && document != null) {
         DocumentTitleDialog(
             title = stringResource(R.string.document_detail_rename_document),
@@ -904,6 +928,7 @@ private fun ReviewTopBar(
     onNavigateUp: () -> Unit,
     onOpenExportSheet: () -> Unit,
     onRename: () -> Unit,
+    onEditTags: () -> Unit,
     onDelete: () -> Unit,
     exportEnabled: Boolean,
     pageReviewActive: Boolean,
@@ -1045,6 +1070,16 @@ private fun ReviewTopBar(
                             onClick = {
                                 showMenu = false
                                 onRename()
+                            },
+                        )
+                        DropdownMenuItem(
+                            text = { Text(stringResource(R.string.tags_document_edit)) },
+                            leadingIcon = {
+                                Icon(Icons.AutoMirrored.Filled.Label, contentDescription = null)
+                            },
+                            onClick = {
+                                showMenu = false
+                                onEditTags()
                             },
                         )
                         DropdownMenuItem(
@@ -1239,6 +1274,7 @@ private fun DocumentMasterDetailLayout(
     onDeleteSelectedPage: () -> Unit,
     onAddPage: () -> Unit,
     onMoveToFolder: () -> Unit,
+    onEditTags: () -> Unit,
     onPreviewPage: (String) -> Unit,
     density: Density,
     onOpenText: (pageIndex: Int) -> Unit,
@@ -1321,6 +1357,10 @@ private fun DocumentMasterDetailLayout(
                         updatedDate = documentUpdatedDate,
                         onMoveToFolder = onMoveToFolder,
                     )
+                }
+
+                item(key = "document_tags") {
+                    DocumentTagsRow(tags = uiState.tags, onEditTags = onEditTags)
                 }
 
                 item(key = "pages_header") {

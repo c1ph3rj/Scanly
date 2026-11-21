@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Naming templates (Settings → Naming templates, Suggest name). Keep {placeholders} as written. -->
+    <string name="naming_settings_entry_title">"नाम टेम्पलेट"</string>
+    <string name="naming_settings_entry_summary">"नए दस्तावेज़ों के नामों के लिए दोबारा इस्तेमाल होने वाले पैटर्न"</string>
+    <string name="naming_default_section">"डिफ़ॉल्ट नाम"</string>
+    <string name="naming_default_hint">"नए दस्तावेज़ों को यही नाम मिलेगा। नाम का सुझाव दें अब भी सभी विकल्पों में बारी-बारी से बदलता है।"</string>
+    <string name="naming_templates_section">"टेम्पलेट"</string>
+    <string name="naming_example">"उदाहरण: %1$s"</string>
+    <string name="naming_default_badge">"डिफ़ॉल्ट"</string>
+    <string name="naming_add_template">"टेम्पलेट जोड़ें"</string>
+    <string name="naming_new_template">"नया टेम्पलेट"</string>
+    <string name="naming_edit_template">"टेम्पलेट बदलें"</string>
+    <string name="naming_edit_template_description">"%1$s बदलें"</string>
+    <string name="naming_delete_template_description">"%1$s हटाएं"</string>
+    <string name="naming_delete_title">"टेम्पलेट हटाएं?"</string>
+    <string name="naming_delete_message">"%1$s हटा दिया जाएगा। जिन दस्तावेज़ों के नाम इससे बने हैं, उनके नाम वही रहेंगे।"</string>
+    <string name="naming_delete_default_message">"%1$s आपका डिफ़ॉल्ट नाम है। इसे हटाने के बाद नए दस्तावेज़ फिर से %2$s इस्तेमाल करेंगे। मौजूदा नाम नहीं बदलेंगे।"</string>
+    <string name="naming_delete_confirm">"हटाएं"</string>
+    <string name="naming_cancel">"रद्द करें"</string>
+    <string name="naming_save">"सेव करें"</string>
+    <string name="naming_empty_title">"अभी कोई टेम्पलेट नहीं है"</string>
+    <string name="naming_empty_body">"रसीद {date} या {iso} बिल {n} जैसा नाम पैटर्न सेव करें, और Scanly हर नए दस्तावेज़ के लिए तारीख या नंबर भर देगा।"</string>
+    <string name="naming_empty_suggest_hint">"आपके टेम्पलेट नाम का सुझाव दें में तारीख वाले फ़ॉर्मैट के साथ दिखेंगे, और आप इनमें से किसी एक को डिफ़ॉल्ट बना सकते हैं।"</string>
+    <string name="naming_pattern_label">"पैटर्न"</string>
+    <string name="naming_pattern_placeholder">"रसीद {date}"</string>
+    <string name="naming_insert_token">"जोड़ने के लिए टैप करें"</string>
+    <string name="naming_preview">"झलक"</string>
+    <string name="naming_preview_unavailable">"झलक देखने के लिए पैटर्न ठीक करें"</string>
+    <string name="naming_number_note">"{n} वह सबसे छोटा नंबर बनता है जिससे नाम अलग रहता है।"</string>
+    <string name="naming_character_count">"%1$d/%2$d"</string>
+    <string name="naming_problem_blank">"कुछ टेक्स्ट या प्लेसहोल्डर जोड़ें।"</string>
+    <string name="naming_problem_too_long">"ज़्यादा से ज़्यादा %1$d वर्ण इस्तेमाल करें।"</string>
+    <string name="naming_problem_unknown_token">"अनजान प्लेसहोल्डर: %1$s"</string>
+    <string name="naming_token_date">"तारीख"</string>
+    <string name="naming_token_time">"समय"</string>
+    <string name="naming_token_date_time">"तारीख और समय"</string>
+    <string name="naming_token_iso_date">"ISO तारीख"</string>
+    <string name="naming_token_year">"साल"</string>
+    <string name="naming_token_month">"महीना"</string>
+    <string name="naming_token_day">"दिन"</string>
+    <string name="naming_token_weekday">"हफ़्ते का दिन"</string>
+    <string name="naming_token_number">"नंबर"</string>
+    <string name="naming_problem_duplicate">"इस पैटर्न वाला टेम्पलेट पहले से मौजूद है।"</string>
+    <string name="naming_save_failed">"टेम्पलेट सेव नहीं हो सका। फिर से कोशिश करें।"</string>
+    <string name="naming_default_failed">"डिफ़ॉल्ट नाम नहीं बदला जा सका। फिर से कोशिश करें।"</string>
+    <string name="naming_delete_failed">"टेम्पलेट हटाया नहीं जा सका। फिर से कोशिश करें।"</string>
+</resources>

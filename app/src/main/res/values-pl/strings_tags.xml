@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tags_settings_entry_title">"Tagi"</string>
+    <string name="tags_settings_entry_summary">"Twórz, zmieniaj nazwy i usuwaj tagi"</string>
+    <string name="tags_document_add">"Dodaj tagi"</string>
+    <string name="tags_document_edit">"Edytuj tagi"</string>
+    <string name="tags_document_row_description">"Tagi: %1$s"</string>
+    <string name="tags_document_updated">"Zaktualizowano tagi"</string>
+    <string name="tags_editor_title">"Tagi"</string>
+    <string name="tags_editor_field_label">"Nowy tag"</string>
+    <string name="tags_editor_add">"Dodaj tag"</string>
+    <string name="tags_editor_create_chip">"Utwórz „%1$s”"</string>
+    <string name="tags_editor_empty">"Nie ma jeszcze tagów. Wpisz nazwę, aby utworzyć tag."</string>
+    <string name="tags_editor_done">"Gotowe"</string>
+    <string name="tags_search_filter_section">"Tagi"</string>
+    <string name="tags_search_filter_all_hint">"Pokazuje dokumenty, które mają wszystkie wybrane tagi."</string>
+    <string name="tags_search_filter_chip">"Tag: %1$s"</string>
+    <string name="tags_manage_title">"Tagi"</string>
+    <string name="tags_manage_new_tag">"Nowy tag"</string>
+    <string name="tags_manage_rename_title">"Zmień nazwę tagu"</string>
+    <string name="tags_manage_name_label">"Nazwa tagu"</string>
+    <string name="tags_manage_create">"Utwórz"</string>
+    <string name="tags_manage_rename">"Zmień nazwę"</string>
+    <string name="tags_manage_delete">"Usuń"</string>
+    <string name="tags_manage_delete_title">"Usunąć tag?"</string>
+    <string name="tags_manage_delete_message">"Tag „%1$s” zostanie usunięty ze wszystkich dokumentów, które go mają. Same dokumenty zostaną zachowane."</string>
+    <string name="tags_manage_deleted">"Usunięto tag"</string>
+    <string name="tags_manage_renamed">"Zmieniono nazwę tagu"</string>
+    <string name="tags_manage_empty_pip">"Nic jeszcze nie ma tagów."</string>
+    <string name="tags_manage_empty_title">"Nie ma jeszcze tagów"</string>
+    <string name="tags_manage_empty_description">"Tagi grupują dokumenty z różnych folderów: jeden paragon może być jednocześnie Podróżą i Do zwrotu. Utwórz tag tutaj lub w dowolnym dokumencie."</string>
+    <string name="tags_manage_options">"Opcje dla: %1$s"</string>
+    <string name="tags_manage_name_blank">"Wpisz nazwę tagu."</string>
+    <string name="tags_manage_name_taken">"Tag o nazwie „%1$s” już istnieje."</string>
+</resources>

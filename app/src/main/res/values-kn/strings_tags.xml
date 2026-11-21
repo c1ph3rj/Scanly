@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tags_settings_entry_title">"ಟ್ಯಾಗ್‌ಗಳು"</string>
+    <string name="tags_settings_entry_summary">"ಟ್ಯಾಗ್‌ಗಳನ್ನು ರಚಿಸಿ, ಮರುಹೆಸರಿಸಿ ಮತ್ತು ಅಳಿಸಿ"</string>
+    <string name="tags_document_add">"ಟ್ಯಾಗ್‌ಗಳನ್ನು ಸೇರಿಸಿ"</string>
+    <string name="tags_document_edit">"ಟ್ಯಾಗ್‌ಗಳನ್ನು ಸಂಪಾದಿಸಿ"</string>
+    <string name="tags_document_row_description">"ಟ್ಯಾಗ್‌ಗಳು: %1$s"</string>
+    <string name="tags_document_updated">"ಟ್ಯಾಗ್‌ಗಳನ್ನು ಅಪ್‌ಡೇಟ್ ಮಾಡಲಾಗಿದೆ"</string>
+    <string name="tags_editor_title">"ಟ್ಯಾಗ್‌ಗಳು"</string>
+    <string name="tags_editor_field_label">"ಹೊಸ ಟ್ಯಾಗ್"</string>
+    <string name="tags_editor_add">"ಟ್ಯಾಗ್ ಸೇರಿಸಿ"</string>
+    <string name="tags_editor_create_chip">"“%1$s” ರಚಿಸಿ"</string>
+    <string name="tags_editor_empty">"ಇನ್ನೂ ಟ್ಯಾಗ್‌ಗಳಿಲ್ಲ. ರಚಿಸಲು ಹೆಸರನ್ನು ಟೈಪ್ ಮಾಡಿ."</string>
+    <string name="tags_editor_done">"ಮುಗಿದಿದೆ"</string>
+    <string name="tags_search_filter_section">"ಟ್ಯಾಗ್‌ಗಳು"</string>
+    <string name="tags_search_filter_all_hint">"ಆಯ್ಕೆ ಮಾಡಿದ ಎಲ್ಲ ಟ್ಯಾಗ್‌ಗಳಿರುವ ದಾಖಲೆಗಳನ್ನು ತೋರಿಸುತ್ತದೆ."</string>
+    <string name="tags_search_filter_chip">"ಟ್ಯಾಗ್: %1$s"</string>
+    <string name="tags_manage_title">"ಟ್ಯಾಗ್‌ಗಳು"</string>
+    <string name="tags_manage_new_tag">"ಹೊಸ ಟ್ಯಾಗ್"</string>
+    <string name="tags_manage_rename_title">"ಟ್ಯಾಗ್ ಮರುಹೆಸರಿಸಿ"</string>
+    <string name="tags_manage_name_label">"ಟ್ಯಾಗ್ ಹೆಸರು"</string>
+    <string name="tags_manage_create">"ರಚಿಸಿ"</string>
+    <string name="tags_manage_rename">"ಮರುಹೆಸರಿಸಿ"</string>
+    <string name="tags_manage_delete">"ಅಳಿಸಿ"</string>
+    <string name="tags_manage_delete_title">"ಟ್ಯಾಗ್ ಅಳಿಸಬೇಕೆ?"</string>
+    <string name="tags_manage_delete_message">"“%1$s” ಇರುವ ಎಲ್ಲ ದಾಖಲೆಗಳಿಂದ ಅದನ್ನು ತೆಗೆದುಹಾಕಲಾಗುತ್ತದೆ. ದಾಖಲೆಗಳು ಹಾಗೆಯೇ ಉಳಿಯುತ್ತವೆ."</string>
+    <string name="tags_manage_deleted">"ಟ್ಯಾಗ್ ಅಳಿಸಲಾಗಿದೆ"</string>
+    <string name="tags_manage_renamed">"ಟ್ಯಾಗ್ ಮರುಹೆಸರಿಸಲಾಗಿದೆ"</string>
+    <string name="tags_manage_empty_pip">"ಇನ್ನೂ ಯಾವುದಕ್ಕೂ ಟ್ಯಾಗ್ ಮಾಡಿಲ್ಲ."</string>
+    <string name="tags_manage_empty_title">"ಇನ್ನೂ ಟ್ಯಾಗ್‌ಗಳಿಲ್ಲ"</string>
+    <string name="tags_manage_empty_description">"ಟ್ಯಾಗ್‌ಗಳು ಬೇರೆ ಬೇರೆ ಫೋಲ್ಡರ್‌ಗಳ ದಾಖಲೆಗಳನ್ನು ಒಟ್ಟುಗೂಡಿಸುತ್ತವೆ: ಒಂದೇ ರಶೀದಿ “ಪ್ರಯಾಣ” ಮತ್ತು “ಮರುಪಾವತಿಸಬಹುದಾದ” ಎರಡೂ ಆಗಿರಬಹುದು. ಇಲ್ಲಿ ಅಥವಾ ಯಾವುದೇ ದಾಖಲೆಯಿಂದ ಟ್ಯಾಗ್ ರಚಿಸಿ."</string>
+    <string name="tags_manage_options">"%1$s ಆಯ್ಕೆಗಳು"</string>
+    <string name="tags_manage_name_blank">"ಟ್ಯಾಗ್ ಹೆಸರನ್ನು ನಮೂದಿಸಿ."</string>
+    <string name="tags_manage_name_taken">"“%1$s” ಹೆಸರಿನ ಟ್ಯಾಗ್ ಈಗಾಗಲೇ ಇದೆ."</string>
+</resources>

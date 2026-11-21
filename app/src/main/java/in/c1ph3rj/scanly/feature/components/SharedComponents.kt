@@ -106,6 +106,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import dagger.hilt.android.EntryPointAccessors
 import `in`.c1ph3rj.scanly.core.common.DocumentPresentationFormatter
+import `in`.c1ph3rj.scanly.core.common.buildTitleSuggestionOptions
 import `in`.c1ph3rj.scanly.core.common.runCatchingCancellable
 import `in`.c1ph3rj.scanly.core.ui.ChromeIconButton
 import `in`.c1ph3rj.scanly.core.ui.MetricChip
@@ -114,7 +115,7 @@ import `in`.c1ph3rj.scanly.core.ui.WindowWidthClass
 import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import `in`.c1ph3rj.scanly.core.ui.PreviewImageSizer
 import `in`.c1ph3rj.scanly.domain.model.DocumentGroup
-import `in`.c1ph3rj.scanly.domain.model.DocumentTitleFormat
+import `in`.c1ph3rj.scanly.domain.model.TitleSuggestionOption
 import `in`.c1ph3rj.scanly.domain.model.GroupTitleFormat
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
 import `in`.c1ph3rj.scanly.domain.model.ScanPage
@@ -729,32 +730,34 @@ fun NameTextField(
 
 @Composable
 fun DocumentTitleSuggestRow(
-    onSuggestTitle: suspend (DocumentTitleFormat) -> String,
+    suggestionOptions: List<TitleSuggestionOption>,
+    onSuggestTitle: suspend (TitleSuggestionOption) -> String,
     onSuggested: (String) -> Unit,
     modifier: Modifier = Modifier,
-    initialFormatIndex: Int = 0,
+    initialOptionIndex: Int = 0,
     enabled: Boolean = true,
 ) {
+    val options = suggestionOptions.ifEmpty { DefaultTitleSuggestionOptions }
     val scope = rememberCoroutineScope()
     var isSuggesting by remember { mutableStateOf(false) }
-    var formatIndex by rememberSaveable { mutableIntStateOf(initialFormatIndex) }
-    LaunchedEffect(initialFormatIndex) {
-        if (initialFormatIndex > formatIndex) {
-            formatIndex = initialFormatIndex
+    var optionIndex by rememberSaveable { mutableIntStateOf(initialOptionIndex) }
+    LaunchedEffect(initialOptionIndex) {
+        if (initialOptionIndex > optionIndex) {
+            optionIndex = initialOptionIndex
         }
     }
-    val activeFormat = DocumentTitleFormat.entries[formatIndex]
+    val activeOption = options[optionIndex.mod(options.size)]
 
-    fun suggestWithActiveFormat() {
+    fun suggestWithActiveOption() {
         if (isSuggesting) return
-        val format = activeFormat
+        val option = activeOption
         scope.launch {
             isSuggesting = true
             try {
-                val suggested = runCatchingCancellable { onSuggestTitle(format) }.getOrNull()
+                val suggested = runCatchingCancellable { onSuggestTitle(option) }.getOrNull()
                 if (suggested != null) {
                     onSuggested(suggested)
-                    formatIndex = (formatIndex + 1) % DocumentTitleFormat.entries.size
+                    optionIndex = (optionIndex.mod(options.size) + 1) % options.size
                 }
             } finally {
                 isSuggesting = false
@@ -763,7 +766,7 @@ fun DocumentTitleSuggestRow(
     }
 
     OutlinedButton(
-        onClick = ::suggestWithActiveFormat,
+        onClick = ::suggestWithActiveOption,
         enabled = enabled && !isSuggesting,
         modifier = modifier.fillMaxWidth(),
     ) {
@@ -793,15 +796,33 @@ fun DocumentTitleSuggestRow(
                     style = MaterialTheme.typography.labelLarge,
                 )
                 Text(
-                    text = activeFormat.shortLabel,
+                    text = activeOption.subtitle(),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                 )
             }
         }
     }
 }
 
+/** Built-in formats only, for callers that don't pass options (no saved templates). */
+private val DefaultTitleSuggestionOptions: List<TitleSuggestionOption> =
+    buildTitleSuggestionOptions(emptyList())
+
+/** What "Suggest name" will use next: a built-in's short label or a template's pattern. */
+@Composable
+private fun TitleSuggestionOption.subtitle(): String = when (this) {
+    is TitleSuggestionOption.BuiltIn -> stringResource(format.shortLabelRes)
+    is TitleSuggestionOption.Template -> template.pattern
+}
+
+/**
+ * Suggests the first of [suggestionOptions] (the default) when [autoFillSuggestedName] is set,
+ * then cycles through them from "Suggest name". Callers order options with
+ * `buildTitleSuggestionOptions`; an empty list means the built-in formats.
+ */
 @Composable
 fun DocumentTitleDialog(
     title: String,
@@ -809,16 +830,18 @@ fun DocumentTitleDialog(
     confirmLabel: String,
     onDismiss: () -> Unit,
     onConfirm: (String) -> Unit,
-    onSuggestTitle: (suspend (DocumentTitleFormat) -> String)? = null,
+    onSuggestTitle: (suspend (TitleSuggestionOption) -> String)? = null,
+    suggestionOptions: List<TitleSuggestionOption> = emptyList(),
     autoFillSuggestedName: Boolean = false,
 ) {
+    val options = suggestionOptions.ifEmpty { DefaultTitleSuggestionOptions }
     var value by rememberSaveable(initialValue) { mutableStateOf(initialValue) }
     var isFillingName by remember {
         mutableStateOf(
             autoFillSuggestedName && initialValue.isBlank() && onSuggestTitle != null,
         )
     }
-    var suggestFormatIndex by rememberSaveable { mutableIntStateOf(0) }
+    var suggestOptionIndex by rememberSaveable { mutableIntStateOf(0) }
 
     LaunchedEffect(autoFillSuggestedName) {
         if (!autoFillSuggestedName || onSuggestTitle == null || value.isNotBlank()) {
@@ -826,12 +849,10 @@ fun DocumentTitleDialog(
             return@LaunchedEffect
         }
         isFillingName = true
-        val suggested = runCatchingCancellable { onSuggestTitle(DocumentTitleFormat.default) }.getOrNull()
+        val suggested = runCatchingCancellable { onSuggestTitle(options.first()) }.getOrNull()
         if (value.isBlank() && !suggested.isNullOrBlank()) {
             value = suggested
-            suggestFormatIndex = DocumentTitleFormat.entries.indexOf(
-                DocumentTitleFormat.default.next(),
-            )
+            suggestOptionIndex = 1 % options.size
         }
         isFillingName = false
     }
@@ -856,9 +877,10 @@ fun DocumentTitleDialog(
         )
         if (onSuggestTitle != null) {
             DocumentTitleSuggestRow(
+                suggestionOptions = options,
                 onSuggestTitle = onSuggestTitle,
                 onSuggested = { value = it },
-                initialFormatIndex = suggestFormatIndex,
+                initialOptionIndex = suggestOptionIndex,
                 enabled = !isFillingName,
             )
         }

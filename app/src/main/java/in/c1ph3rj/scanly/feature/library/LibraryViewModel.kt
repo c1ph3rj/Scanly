@@ -6,7 +6,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import `in`.c1ph3rj.scanly.core.common.ScanlyResult
 import `in`.c1ph3rj.scanly.domain.model.DocumentGroup
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
-import `in`.c1ph3rj.scanly.domain.model.DocumentTitleFormat
+import `in`.c1ph3rj.scanly.core.common.buildTitleSuggestionOptions
+import `in`.c1ph3rj.scanly.domain.model.TitleSuggestionOption
+import `in`.c1ph3rj.scanly.domain.usecase.ObserveNamingTemplatesUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.CreateDocumentUseCase
 import `in`.c1ph3rj.scanly.domain.model.GroupTitleFormat
 import `in`.c1ph3rj.scanly.domain.usecase.SuggestDocumentTitleUseCase
@@ -27,6 +29,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -155,6 +158,7 @@ class LibraryViewModel @Inject constructor(
     private val setDocumentGroupUseCase: SetDocumentGroupUseCase,
     private val suggestDocumentTitleUseCase: SuggestDocumentTitleUseCase,
     private val suggestGroupTitleUseCase: SuggestGroupTitleUseCase,
+    observeNamingTemplatesUseCase: ObserveNamingTemplatesUseCase,
 ) : ViewModel() {
 
     private val _searchQuery = MutableStateFlow("")
@@ -249,8 +253,14 @@ class LibraryViewModel @Inject constructor(
         }
     }
 
-    suspend fun suggestDocumentTitle(format: DocumentTitleFormat): String =
-        suggestDocumentTitleUseCase(format)
+    /** "Suggest name" cycle: the default option first, so auto-fill uses it. */
+    val titleSuggestionOptions: StateFlow<List<TitleSuggestionOption>> =
+        observeNamingTemplatesUseCase()
+            .map(::buildTitleSuggestionOptions)
+            .stateIn(viewModelScope, SharingStarted.Eagerly, buildTitleSuggestionOptions(emptyList()))
+
+    suspend fun suggestDocumentTitle(option: TitleSuggestionOption): String =
+        suggestDocumentTitleUseCase(option)
 
     suspend fun suggestGroupTitle(format: GroupTitleFormat): String =
         suggestGroupTitleUseCase(format)

@@ -7,6 +7,7 @@ import `in`.c1ph3rj.scanly.feature.library.LibraryTab
 import `in`.c1ph3rj.scanly.feature.library.LibraryUiState
 import `in`.c1ph3rj.scanly.testing.InMemoryDocumentRepository
 import `in`.c1ph3rj.scanly.testing.InMemoryGroupRepository
+import `in`.c1ph3rj.scanly.testing.InMemoryNamingTemplateRepository
 import `in`.c1ph3rj.scanly.testing.InMemoryPageRepository
 import `in`.c1ph3rj.scanly.testing.InMemoryScanlyLibrary
 import `in`.c1ph3rj.scanly.testing.requireSuccess
@@ -26,7 +27,7 @@ class DocumentLibraryFlowTest {
     private val createDocument = CreateDocumentUseCase(documents)
     private val renameDocument = RenameDocumentUseCase(documents)
     private val deleteDocument = DeleteDocumentUseCase(documents)
-    private val suggestDocumentTitle = SuggestDocumentTitleUseCase(documents)
+    private val suggestDocumentTitle = SuggestDocumentTitleUseCase(documents, InMemoryNamingTemplateRepository())
     private val observeDocuments = ObserveDocumentsUseCase(documents)
     private val observeUngrouped = ObserveUngroupedDocumentsUseCase(documents)
 

@@ -8,7 +8,9 @@ import `in`.c1ph3rj.scanly.core.common.ScanlyResult
 import `in`.c1ph3rj.scanly.core.ui.ImageImportSupport
 import `in`.c1ph3rj.scanly.domain.model.DocumentGroup
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
-import `in`.c1ph3rj.scanly.domain.model.DocumentTitleFormat
+import `in`.c1ph3rj.scanly.core.common.buildTitleSuggestionOptions
+import `in`.c1ph3rj.scanly.domain.model.TitleSuggestionOption
+import `in`.c1ph3rj.scanly.domain.usecase.ObserveNamingTemplatesUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.CreateDocumentUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.CreateGroupUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.DeleteDocumentUseCase
@@ -29,6 +31,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -76,6 +79,7 @@ class HomeViewModel @Inject constructor(
     private val markRatingPromptShownUseCase: MarkRatingPromptShownUseCase,
     private val dismissRatingPromptUseCase: DismissRatingPromptUseCase,
     private val markAppRatedUseCase: MarkAppRatedUseCase,
+    observeNamingTemplatesUseCase: ObserveNamingTemplatesUseCase,
 ) : ViewModel() {
 
     private val _events = MutableSharedFlow<HomeEvent>()
@@ -147,8 +151,14 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    suspend fun suggestDocumentTitle(format: DocumentTitleFormat): String =
-        suggestDocumentTitleUseCase(format)
+    /** "Suggest name" cycle: the default option first, so auto-fill uses it. */
+    val titleSuggestionOptions: StateFlow<List<TitleSuggestionOption>> =
+        observeNamingTemplatesUseCase()
+            .map(::buildTitleSuggestionOptions)
+            .stateIn(viewModelScope, SharingStarted.Eagerly, buildTitleSuggestionOptions(emptyList()))
+
+    suspend fun suggestDocumentTitle(option: TitleSuggestionOption): String =
+        suggestDocumentTitleUseCase(option)
 
     suspend fun suggestGroupTitle(format: GroupTitleFormat): String =
         suggestGroupTitleUseCase(format)

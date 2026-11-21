@@ -42,4 +42,13 @@ class SearchFiltersTest {
         assertEquals(1, sorted.activeCount)
         assertTrue(SearchFilters(folder = FolderFilter.None).narrows)
     }
+
+    @Test
+    fun tagsNarrowAndCountAsOneFilter() {
+        val tagged = SearchFilters(tagIds = setOf("travel", "reimbursable"))
+        assertTrue(tagged.narrows)
+        assertEquals(1, tagged.activeCount)
+        assertFalse(SearchFilters().narrows)
+        assertEquals(0, SearchFilters().activeCount)
+    }
 }

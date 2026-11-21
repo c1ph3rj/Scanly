@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Naming templates (Settings → Naming templates, Suggest name). Keep {placeholders} as written. -->
+    <string name="naming_settings_entry_title">"Naming templates"</string>
+    <string name="naming_settings_entry_summary">"Reusable patterns for new document names"</string>
+    <string name="naming_default_section">"Default name"</string>
+    <string name="naming_default_hint">"New documents are named with this. Suggest name still cycles through every option."</string>
+    <string name="naming_templates_section">"Templates"</string>
+    <string name="naming_example">"Example: %1$s"</string>
+    <string name="naming_default_badge">"Default"</string>
+    <string name="naming_add_template">"Add template"</string>
+    <string name="naming_new_template">"New template"</string>
+    <string name="naming_edit_template">"Edit template"</string>
+    <string name="naming_edit_template_description">"Edit %1$s"</string>
+    <string name="naming_delete_template_description">"Delete %1$s"</string>
+    <string name="naming_delete_title">"Delete template?"</string>
+    <string name="naming_delete_message">"%1$s will be removed. Documents already named with it keep their names."</string>
+    <string name="naming_delete_default_message">"%1$s is your default name. After it's deleted, new documents use %2$s again. Existing names don't change."</string>
+    <string name="naming_delete_confirm">"Delete"</string>
+    <string name="naming_cancel">"Cancel"</string>
+    <string name="naming_save">"Save"</string>
+    <string name="naming_empty_title">"No templates yet"</string>
+    <string name="naming_empty_body">"Save a name pattern such as Receipt {date} or {iso} Invoice {n}, and Scanly fills in the date or a number for each new document."</string>
+    <string name="naming_empty_suggest_hint">"Your templates join the date formats under Suggest name, and you can make one of them the default."</string>
+    <string name="naming_pattern_label">"Pattern"</string>
+    <string name="naming_pattern_placeholder">"Receipt {date}"</string>
+    <string name="naming_insert_token">"Tap to insert"</string>
+    <string name="naming_preview">"Preview"</string>
+    <string name="naming_preview_unavailable">"Fix the pattern to see a preview"</string>
+    <string name="naming_number_note">"{n} becomes the lowest number that keeps the name unique."</string>
+    <string name="naming_character_count">"%1$d/%2$d"</string>
+    <string name="naming_problem_blank">"Add some text or a placeholder."</string>
+    <string name="naming_problem_too_long">"Use %1$d characters or fewer."</string>
+    <string name="naming_problem_unknown_token">"Unknown placeholder: %1$s"</string>
+    <string name="naming_token_date">"Date"</string>
+    <string name="naming_token_time">"Time"</string>
+    <string name="naming_token_date_time">"Date &amp; time"</string>
+    <string name="naming_token_iso_date">"ISO date"</string>
+    <string name="naming_token_year">"Year"</string>
+    <string name="naming_token_month">"Month"</string>
+    <string name="naming_token_day">"Day"</string>
+    <string name="naming_token_weekday">"Weekday"</string>
+    <string name="naming_token_number">"Number"</string>
+    <string name="naming_problem_duplicate">"You already have a template with this pattern."</string>
+    <string name="naming_save_failed">"Couldn't save the template. Try again."</string>
+    <string name="naming_default_failed">"Couldn't change the default name. Try again."</string>
+    <string name="naming_delete_failed">"Couldn't delete the template. Try again."</string>
+</resources>

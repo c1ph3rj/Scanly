@@ -1,6 +1,7 @@
 package `in`.c1ph3rj.scanly.testing
 
 import `in`.c1ph3rj.scanly.core.common.DocumentPresentationFormatter
+import `in`.c1ph3rj.scanly.core.common.NamingTemplateRenderer
 import `in`.c1ph3rj.scanly.core.common.ScanlyError
 import `in`.c1ph3rj.scanly.core.common.ScanlyResult
 import `in`.c1ph3rj.scanly.domain.model.DocumentTitleFormat
@@ -9,6 +10,7 @@ import `in`.c1ph3rj.scanly.domain.model.ScanMode
 import `in`.c1ph3rj.scanly.domain.repository.DocumentRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import java.util.Locale
 import java.util.UUID
 
 class InMemoryDocumentRepository(
@@ -42,6 +44,21 @@ class InMemoryDocumentRepository(
             format = format,
             existingTitles = getAllDocumentTitles(),
         )
+
+    /** Like the DB repository: render the pattern uniquely, then the usual " (2)" de-duplication. */
+    override suspend fun suggestDocumentTitleFromPattern(pattern: String): String {
+        val existingTitles = getAllDocumentTitles()
+        val rendered = NamingTemplateRenderer.renderUnique(
+            pattern = pattern,
+            existingTitles = existingTitles,
+            atMillis = now(),
+            locale = Locale.getDefault(),
+        )
+        return DocumentPresentationFormatter.resolveUniqueTitle(
+            baseTitle = DocumentPresentationFormatter.normalizeTitle(rendered),
+            existingTitles = existingTitles,
+        )
+    }
 
     override suspend fun createDocument(
         title: String,

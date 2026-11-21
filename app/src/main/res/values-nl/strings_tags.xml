@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tags_settings_entry_title">"Tags"</string>
+    <string name="tags_settings_entry_summary">"Tags maken, hernoemen en verwijderen"</string>
+    <string name="tags_document_add">"Tags toevoegen"</string>
+    <string name="tags_document_edit">"Tags bewerken"</string>
+    <string name="tags_document_row_description">"Tags: %1$s"</string>
+    <string name="tags_document_updated">"Tags bijgewerkt"</string>
+    <string name="tags_editor_title">"Tags"</string>
+    <string name="tags_editor_field_label">"Nieuwe tag"</string>
+    <string name="tags_editor_add">"Tag toevoegen"</string>
+    <string name="tags_editor_create_chip">"“%1$s” maken"</string>
+    <string name="tags_editor_empty">"Nog geen tags. Typ een naam om er een te maken."</string>
+    <string name="tags_editor_done">"Klaar"</string>
+    <string name="tags_search_filter_section">"Tags"</string>
+    <string name="tags_search_filter_all_hint">"Toont documenten die alle geselecteerde tags hebben."</string>
+    <string name="tags_search_filter_chip">"Tag: %1$s"</string>
+    <string name="tags_manage_title">"Tags"</string>
+    <string name="tags_manage_new_tag">"Nieuwe tag"</string>
+    <string name="tags_manage_rename_title">"Tag hernoemen"</string>
+    <string name="tags_manage_name_label">"Tagnaam"</string>
+    <string name="tags_manage_create">"Maken"</string>
+    <string name="tags_manage_rename">"Hernoemen"</string>
+    <string name="tags_manage_delete">"Verwijderen"</string>
+    <string name="tags_manage_delete_title">"Tag verwijderen?"</string>
+    <string name="tags_manage_delete_message">"“%1$s” wordt verwijderd van alle documenten die deze tag hebben. De documenten zelf blijven bewaard."</string>
+    <string name="tags_manage_deleted">"Tag verwijderd"</string>
+    <string name="tags_manage_renamed">"Tag hernoemd"</string>
+    <string name="tags_manage_empty_pip">"Nog niets getagd."</string>
+    <string name="tags_manage_empty_title">"Nog geen tags"</string>
+    <string name="tags_manage_empty_description">"Tags groeperen documenten over mappen heen: één bon kan zowel Reizen als Declarabel zijn. Maak hier of vanuit een document een tag."</string>
+    <string name="tags_manage_options">"Opties voor %1$s"</string>
+    <string name="tags_manage_name_blank">"Voer een tagnaam in."</string>
+    <string name="tags_manage_name_taken">"Er bestaat al een tag met de naam “%1$s”."</string>
+</resources>

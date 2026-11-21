@@ -32,7 +32,8 @@ import kotlin.math.ln
  * 2. Documents that match by name only, best name match first.
  * 3. Documents whose pages only have words spelled close to the query ([MatchTier.CLOSE]),
  *    so a near miss never outranks what the user actually typed.
- * Filters (type, date, folder) narrow the documents first; a sort other than best match
+ * A document whose tag name matches counts as a name match (below the same match on its title).
+ * Filters (type, date, folder, tags) narrow the documents first; a sort other than best match
  * reorders each section by date or name instead of score.
  * Folders are listed separately. While text hits are still loading ([textHits] == null),
  * name matches are returned on their own so results appear instantly as the user types.
@@ -52,6 +53,9 @@ object LibrarySearchRanker {
     private const val OCR_VARIANT_WEIGHT = 0.6
     private const val TRANSLITERATED_WEIGHT = 0.8
 
+    /** A tag says what a document is about, but less surely than its own name. */
+    private const val TAG_MATCH_WEIGHT = 0.9
+
     fun rank(
         query: SearchQuery,
         documents: List<ScanDocument>,
@@ -63,6 +67,10 @@ object LibrarySearchRanker {
         closeTerms: List<String> = emptyList(),
         nowMillis: Long = System.currentTimeMillis(),
         zone: ZoneId = ZoneId.systemDefault(),
+        /** Tag ids per document id, for the tag filter and tag name matches. */
+        documentTagIds: Map<String, Set<String>> = emptyMap(),
+        /** Tag names by tag id. */
+        tagNames: Map<String, String> = emptyMap(),
     ): LibrarySearchResults {
         val groupTitles = groups.associate { it.id to it.title }
         val dateRange = filters.dateRange(nowMillis, zone)
@@ -74,7 +82,8 @@ object LibrarySearchRanker {
                     FolderFilter.Any -> true
                     FolderFilter.None -> document.groupId == null
                     is FolderFilter.In -> document.groupId == folder.groupId
-                }
+                } &&
+                (filters.tagIds.isEmpty() || documentTagIds[document.id].orEmpty().containsAll(filters.tagIds))
         }
         if (query.isBlank) {
             // Blank query + filters = browse every document they allow, newest first by default.
@@ -113,7 +122,11 @@ object LibrarySearchRanker {
             val kind = documentKinds[document.id]
             // "-draft" hides a document called "Draft lease" even if its pages never say draft.
             if (NameMatcher.mentions(document.title, query.excluded)) return@forEach
-            val nameMatch = if (scope != SearchScope.TEXT) NameMatcher.match(document.title, query) else null
+            val nameMatch = if (scope != SearchScope.TEXT) {
+                NameMatcher.match(document.title, query) ?: tagMatch(document, query, documentTagIds, tagNames)
+            } else {
+                null
+            }
             val pageHits = hitsByDocument[document.id].orEmpty().sortedBy { it.pageIndex }
             if (nameMatch == null && pageHits.isEmpty()) return@forEach
 
@@ -167,6 +180,31 @@ object LibrarySearchRanker {
             closeTerms = closeTerms.takeIf { closeMatches.isNotEmpty() }.orEmpty(),
             folders = folders,
             isTextSearchComplete = textHits != null || scope == SearchScope.NAMES,
+        )
+    }
+
+    /**
+     * A match on one of [document]'s tag names, or on its name and tags together ("travel receipt"
+     * finds "Receipt" tagged Travel). Only the title's own words are highlighted.
+     */
+    private fun tagMatch(
+        document: ScanDocument,
+        query: SearchQuery,
+        documentTagIds: Map<String, Set<String>>,
+        tagNames: Map<String, String>,
+    ): NameMatch? {
+        val names = documentTagIds[document.id].orEmpty().mapNotNull(tagNames::get)
+        if (names.isEmpty()) return null
+        val best = names.mapNotNull { NameMatcher.match(it, query) }.maxByOrNull { it.score }
+        if (best != null) return NameMatch(best.score * TAG_MATCH_WEIGHT, HighlightedText(document.title))
+        val combined = NameMatcher.match((listOf(document.title) + names).joinToString(" "), query) ?: return null
+        val titleEnd = document.title.length
+        return NameMatch(
+            score = combined.score * TAG_MATCH_WEIGHT,
+            title = HighlightedText(
+                document.title,
+                combined.title.highlights.filter { it.first < titleEnd }.map { it.first..minOf(it.last, titleEnd - 1) },
+            ),
         )
     }
 

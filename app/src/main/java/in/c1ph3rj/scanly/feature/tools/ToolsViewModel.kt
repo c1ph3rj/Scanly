@@ -6,18 +6,23 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import `in`.c1ph3rj.scanly.core.common.ScanlyResult
 import `in`.c1ph3rj.scanly.core.ui.ImageImportSupport
-import `in`.c1ph3rj.scanly.domain.model.DocumentTitleFormat
+import `in`.c1ph3rj.scanly.core.common.buildTitleSuggestionOptions
 import `in`.c1ph3rj.scanly.domain.model.ScanMode
+import `in`.c1ph3rj.scanly.domain.model.TitleSuggestionOption
 import `in`.c1ph3rj.scanly.domain.usecase.CreateDocumentUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.DeleteDocumentUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ImportImagesUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.ObserveNamingTemplatesUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.SuggestDocumentTitleUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -43,6 +48,7 @@ class ToolsViewModel @Inject constructor(
     private val importImagesUseCase: ImportImagesUseCase,
     private val deleteDocumentUseCase: DeleteDocumentUseCase,
     private val suggestDocumentTitleUseCase: SuggestDocumentTitleUseCase,
+    observeNamingTemplatesUseCase: ObserveNamingTemplatesUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ToolsUiState())
@@ -51,8 +57,14 @@ class ToolsViewModel @Inject constructor(
     private val _events = MutableSharedFlow<ToolsEvent>()
     val events: SharedFlow<ToolsEvent> = _events.asSharedFlow()
 
-    suspend fun suggestDocumentTitle(format: DocumentTitleFormat): String =
-        suggestDocumentTitleUseCase(format)
+    /** "Suggest name" cycle: the default option first, so auto-fill uses it. */
+    val titleSuggestionOptions: StateFlow<List<TitleSuggestionOption>> =
+        observeNamingTemplatesUseCase()
+            .map(::buildTitleSuggestionOptions)
+            .stateIn(viewModelScope, SharingStarted.Eagerly, buildTitleSuggestionOptions(emptyList()))
+
+    suspend fun suggestDocumentTitle(option: TitleSuggestionOption): String =
+        suggestDocumentTitleUseCase(option)
 
     fun createDocumentForScan(title: String, scanMode: ScanMode = ScanMode.DOCUMENT) {
         viewModelScope.launch {

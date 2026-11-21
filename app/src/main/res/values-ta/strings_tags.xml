@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tags_settings_entry_title">"குறிச்சொற்கள்"</string>
+    <string name="tags_settings_entry_summary">"குறிச்சொற்களை உருவாக்கலாம், பெயர்மாற்றலாம், நீக்கலாம்"</string>
+    <string name="tags_document_add">"குறிச்சொற்களைச் சேர்"</string>
+    <string name="tags_document_edit">"குறிச்சொற்களைத் திருத்து"</string>
+    <string name="tags_document_row_description">"குறிச்சொற்கள்: %1$s"</string>
+    <string name="tags_document_updated">"குறிச்சொற்கள் புதுப்பிக்கப்பட்டன"</string>
+    <string name="tags_editor_title">"குறிச்சொற்கள்"</string>
+    <string name="tags_editor_field_label">"புதிய குறிச்சொல்"</string>
+    <string name="tags_editor_add">"குறிச்சொல்லைச் சேர்"</string>
+    <string name="tags_editor_create_chip">"“%1$s” ஐ உருவாக்கு"</string>
+    <string name="tags_editor_empty">"இன்னும் குறிச்சொற்கள் இல்லை. உருவாக்க ஒரு பெயரை உள்ளிடவும்."</string>
+    <string name="tags_editor_done">"முடிந்தது"</string>
+    <string name="tags_search_filter_section">"குறிச்சொற்கள்"</string>
+    <string name="tags_search_filter_all_hint">"தேர்ந்தெடுத்த எல்லா குறிச்சொற்களும் உள்ள ஆவணங்களைக் காட்டும்."</string>
+    <string name="tags_search_filter_chip">"குறிச்சொல்: %1$s"</string>
+    <string name="tags_manage_title">"குறிச்சொற்கள்"</string>
+    <string name="tags_manage_new_tag">"புதிய குறிச்சொல்"</string>
+    <string name="tags_manage_rename_title">"குறிச்சொல்லின் பெயரை மாற்று"</string>
+    <string name="tags_manage_name_label">"குறிச்சொல் பெயர்"</string>
+    <string name="tags_manage_create">"உருவாக்கு"</string>
+    <string name="tags_manage_rename">"பெயரை மாற்று"</string>
+    <string name="tags_manage_delete">"நீக்கு"</string>
+    <string name="tags_manage_delete_title">"குறிச்சொல்லை நீக்கவா?"</string>
+    <string name="tags_manage_delete_message">"“%1$s” உள்ள எல்லா ஆவணங்களிலிருந்தும் அது அகற்றப்படும். ஆவணங்கள் அப்படியே இருக்கும்."</string>
+    <string name="tags_manage_deleted">"குறிச்சொல் நீக்கப்பட்டது"</string>
+    <string name="tags_manage_renamed">"குறிச்சொல்லின் பெயர் மாற்றப்பட்டது"</string>
+    <string name="tags_manage_empty_pip">"இன்னும் எதற்கும் குறிச்சொல் இடப்படவில்லை."</string>
+    <string name="tags_manage_empty_title">"இன்னும் குறிச்சொற்கள் இல்லை"</string>
+    <string name="tags_manage_empty_description">"குறிச்சொற்கள் வெவ்வேறு கோப்புறைகளில் உள்ள ஆவணங்களை ஒன்றாக்குகின்றன: ஒரே ரசீது “பயணம்” மற்றும் “திருப்பிச் செலுத்தத்தக்கது” இரண்டாகவும் இருக்கலாம். இங்கே அல்லது எந்த ஆவணத்திலிருந்தும் குறிச்சொல்லை உருவாக்கவும்."</string>
+    <string name="tags_manage_options">"%1$s க்கான விருப்பங்கள்"</string>
+    <string name="tags_manage_name_blank">"குறிச்சொல் பெயரை உள்ளிடவும்."</string>
+    <string name="tags_manage_name_taken">"“%1$s” என்ற பெயரில் ஏற்கெனவே ஒரு குறிச்சொல் உள்ளது."</string>
+</resources>

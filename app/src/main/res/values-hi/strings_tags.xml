@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tags_settings_entry_title">"टैग"</string>
+    <string name="tags_settings_entry_summary">"टैग बनाएँ, नाम बदलें और हटाएँ"</string>
+    <string name="tags_document_add">"टैग जोड़ें"</string>
+    <string name="tags_document_edit">"टैग संपादित करें"</string>
+    <string name="tags_document_row_description">"टैग: %1$s"</string>
+    <string name="tags_document_updated">"टैग अपडेट किए गए"</string>
+    <string name="tags_editor_title">"टैग"</string>
+    <string name="tags_editor_field_label">"नया टैग"</string>
+    <string name="tags_editor_add">"टैग जोड़ें"</string>
+    <string name="tags_editor_create_chip">"“%1$s” बनाएँ"</string>
+    <string name="tags_editor_empty">"अभी कोई टैग नहीं है। बनाने के लिए नाम लिखें।"</string>
+    <string name="tags_editor_done">"हो गया"</string>
+    <string name="tags_search_filter_section">"टैग"</string>
+    <string name="tags_search_filter_all_hint">"वे दस्तावेज़ दिखाता है जिनमें चुने गए सभी टैग हों।"</string>
+    <string name="tags_search_filter_chip">"टैग: %1$s"</string>
+    <string name="tags_manage_title">"टैग"</string>
+    <string name="tags_manage_new_tag">"नया टैग"</string>
+    <string name="tags_manage_rename_title">"टैग का नाम बदलें"</string>
+    <string name="tags_manage_name_label">"टैग का नाम"</string>
+    <string name="tags_manage_create">"बनाएँ"</string>
+    <string name="tags_manage_rename">"नाम बदलें"</string>
+    <string name="tags_manage_delete">"हटाएँ"</string>
+    <string name="tags_manage_delete_title">"टैग हटाएँ?"</string>
+    <string name="tags_manage_delete_message">"“%1$s” उन सभी दस्तावेज़ों से हटा दिया जाएगा जिनमें यह है। दस्तावेज़ स्वयं बने रहेंगे।"</string>
+    <string name="tags_manage_deleted">"टैग हटाया गया"</string>
+    <string name="tags_manage_renamed">"टैग का नाम बदला गया"</string>
+    <string name="tags_manage_empty_pip">"अभी तक कुछ भी टैग नहीं किया गया।"</string>
+    <string name="tags_manage_empty_title">"अभी कोई टैग नहीं"</string>
+    <string name="tags_manage_empty_description">"टैग अलग-अलग फ़ोल्डरों के दस्तावेज़ों को एक साथ रखते हैं: एक ही रसीद “यात्रा” और “प्रतिपूर्ति योग्य” दोनों हो सकती है। यहाँ या किसी भी दस्तावेज़ से टैग बनाएँ।"</string>
+    <string name="tags_manage_options">"%1$s के विकल्प"</string>
+    <string name="tags_manage_name_blank">"टैग का नाम लिखें।"</string>
+    <string name="tags_manage_name_taken">"“%1$s” नाम का टैग पहले से मौजूद है।"</string>
+</resources>

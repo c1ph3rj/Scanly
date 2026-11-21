@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tags_settings_entry_title">"Tags"</string>
+    <string name="tags_settings_entry_summary">"Create, rename and delete tags"</string>
+    <string name="tags_document_add">"Add tags"</string>
+    <string name="tags_document_edit">"Edit tags"</string>
+    <string name="tags_document_row_description">"Tags: %1$s"</string>
+    <string name="tags_document_updated">"Tags updated"</string>
+    <string name="tags_editor_title">"Tags"</string>
+    <string name="tags_editor_field_label">"New tag"</string>
+    <string name="tags_editor_add">"Add tag"</string>
+    <string name="tags_editor_create_chip">"Create “%1$s”"</string>
+    <string name="tags_editor_empty">"No tags yet. Type a name to create one."</string>
+    <string name="tags_editor_done">"Done"</string>
+    <string name="tags_search_filter_section">"Tags"</string>
+    <string name="tags_search_filter_all_hint">"Shows documents that have every selected tag."</string>
+    <string name="tags_search_filter_chip">"Tag: %1$s"</string>
+    <string name="tags_manage_title">"Tags"</string>
+    <string name="tags_manage_new_tag">"New tag"</string>
+    <string name="tags_manage_rename_title">"Rename tag"</string>
+    <string name="tags_manage_name_label">"Tag name"</string>
+    <string name="tags_manage_create">"Create"</string>
+    <string name="tags_manage_rename">"Rename"</string>
+    <string name="tags_manage_delete">"Delete"</string>
+    <string name="tags_manage_delete_title">"Delete tag?"</string>
+    <string name="tags_manage_delete_message">"“%1$s” will be removed from every document that has it. The documents themselves are kept."</string>
+    <string name="tags_manage_deleted">"Tag deleted"</string>
+    <string name="tags_manage_renamed">"Tag renamed"</string>
+    <string name="tags_manage_empty_pip">"Nothing tagged yet."</string>
+    <string name="tags_manage_empty_title">"No tags yet"</string>
+    <string name="tags_manage_empty_description">"Tags group documents across folders: one receipt can be both Travel and Reimbursable. Create a tag here or from any document."</string>
+    <string name="tags_manage_options">"Options for %1$s"</string>
+    <string name="tags_manage_name_blank">"Enter a tag name."</string>
+    <string name="tags_manage_name_taken">"A tag called “%1$s” already exists."</string>
+</resources>

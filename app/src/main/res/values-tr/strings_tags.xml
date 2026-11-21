@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tags_settings_entry_title">"Etiketler"</string>
+    <string name="tags_settings_entry_summary">"Etiket oluşturun, yeniden adlandırın ve silin"</string>
+    <string name="tags_document_add">"Etiket ekle"</string>
+    <string name="tags_document_edit">"Etiketleri düzenle"</string>
+    <string name="tags_document_row_description">"Etiketler: %1$s"</string>
+    <string name="tags_document_updated">"Etiketler güncellendi"</string>
+    <string name="tags_editor_title">"Etiketler"</string>
+    <string name="tags_editor_field_label">"Yeni etiket"</string>
+    <string name="tags_editor_add">"Etiket ekle"</string>
+    <string name="tags_editor_create_chip">"“%1$s” oluştur"</string>
+    <string name="tags_editor_empty">"Henüz etiket yok. Oluşturmak için bir ad yazın."</string>
+    <string name="tags_editor_done">"Bitti"</string>
+    <string name="tags_search_filter_section">"Etiketler"</string>
+    <string name="tags_search_filter_all_hint">"Seçili etiketlerin tümüne sahip belgeleri gösterir."</string>
+    <string name="tags_search_filter_chip">"Etiket: %1$s"</string>
+    <string name="tags_manage_title">"Etiketler"</string>
+    <string name="tags_manage_new_tag">"Yeni etiket"</string>
+    <string name="tags_manage_rename_title">"Etiketi yeniden adlandır"</string>
+    <string name="tags_manage_name_label">"Etiket adı"</string>
+    <string name="tags_manage_create">"Oluştur"</string>
+    <string name="tags_manage_rename">"Yeniden adlandır"</string>
+    <string name="tags_manage_delete">"Sil"</string>
+    <string name="tags_manage_delete_title">"Etiket silinsin mi?"</string>
+    <string name="tags_manage_delete_message">"“%1$s” etiketi, onu taşıyan tüm belgelerden kaldırılacak. Belgelerin kendisi korunur."</string>
+    <string name="tags_manage_deleted">"Etiket silindi"</string>
+    <string name="tags_manage_renamed">"Etiket yeniden adlandırıldı"</string>
+    <string name="tags_manage_empty_pip">"Henüz etiketlenmiş bir şey yok."</string>
+    <string name="tags_manage_empty_title">"Henüz etiket yok"</string>
+    <string name="tags_manage_empty_description">"Etiketler belgeleri klasörlerden bağımsız gruplar: bir fiş hem Seyahat hem de Geri Ödenecek olabilir. Buradan veya herhangi bir belgeden etiket oluşturun."</string>
+    <string name="tags_manage_options">"%1$s seçenekleri"</string>
+    <string name="tags_manage_name_blank">"Bir etiket adı girin."</string>
+    <string name="tags_manage_name_taken">"“%1$s” adlı bir etiket zaten var."</string>
+</resources>

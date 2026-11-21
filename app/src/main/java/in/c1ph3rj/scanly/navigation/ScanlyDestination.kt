@@ -206,6 +206,14 @@ object SettingsAboutDestination {
     const val route = "settings/about"
 }
 
+object SettingsTagsDestination {
+    const val route = "settings/tags"
+}
+
+object SettingsNamingTemplatesDestination {
+    const val route = "settings/naming"
+}
+
 object SettingsModelBenchmarkDestination {
     const val route = "settings/model-benchmark"
 }
