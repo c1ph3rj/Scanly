@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="document_menu_pdf_tools">"Công cụ PDF"</string>
+    <string name="document_pdf_tools_sheet_subtitle">"Mỗi công cụ tạo một PDF mới từ “%1$s”. Bản quét của bạn vẫn giữ nguyên."</string>
+    <string name="document_pdf_tools_password_caption">"Khóa bằng mật khẩu"</string>
+</resources>

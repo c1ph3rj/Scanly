@@ -19,6 +19,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - **Naming templates** — **Settings › Naming templates** saves reusable name patterns such as `Receipt {date}` or `{iso} Invoice {n}` (tokens: date, time, date and time, ISO date, year, month, day, weekday, and a counter that keeps names unique), with a live preview. Templates join the built-in formats in **Suggest name**, and one can be made the default for new documents and the Scan shortcut. With no templates, names are suggested exactly as before.
 - **Tools › Scan** adds **Scan ID card** and **Scan book**, which open the camera in that mode. Each has its own illustration and a caption that wraps in narrow layouts.
 
+### Changed
+
+- The document ⋮ menu is shorter: Compress, Merge, Split into PDFs, Password protect, Add watermark and Save pages as images moved into one **PDF tools** sheet, each with a one-line description. Each still works on a copy, so the scan is unchanged.
+
 ### Technical
 
 - Version `1.0.23` (version code `23`). Room schema **13** (`MIGRATION_12_13`): `documents.preferredScanMode`, `scan_pages.scanMode`, `scan_pages.idCardPairId`, `scan_pages.idCardSide`. Existing documents and pages become `document`.

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="document_menu_pdf_tools">"Strumenti PDF"</string>
+    <string name="document_pdf_tools_sheet_subtitle">"Ogni strumento crea un nuovo PDF da “%1$s”. La scansione resta com’è."</string>
+    <string name="document_pdf_tools_password_caption">"Proteggilo con una password"</string>
+</resources>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="document_menu_pdf_tools">"Pdf-tools"</string>
+    <string name="document_pdf_tools_sheet_subtitle">"Elke tool maakt een nieuwe pdf van ‘%1$s’. Je scan blijft zoals hij is."</string>
+    <string name="document_pdf_tools_password_caption">"Vergrendel met een wachtwoord"</string>
+</resources>

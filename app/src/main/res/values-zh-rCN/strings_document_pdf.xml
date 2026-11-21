@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="document_menu_pdf_tools">"PDF 工具"</string>
+    <string name="document_pdf_tools_sheet_subtitle">"每个工具都会根据“%1$s”生成新的 PDF，原扫描件保持不变。"</string>
+    <string name="document_pdf_tools_password_caption">"使用密码锁定"</string>
+</resources>

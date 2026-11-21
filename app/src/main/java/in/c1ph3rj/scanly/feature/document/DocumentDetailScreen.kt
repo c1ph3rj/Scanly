@@ -43,6 +43,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Notes
 import androidx.compose.material.icons.automirrored.filled.Label
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.ui.platform.testTag
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Crop
@@ -173,7 +175,7 @@ import `in`.c1ph3rj.scanly.R
 import `in`.c1ph3rj.scanly.core.common.appString
 import androidx.compose.ui.res.stringResource
 
-/** PDF tools offered in a document's ⋮ menu, in reader order. */
+/** PDF tools offered in a document's PDF tools sheet, in reader order. */
 private val DocumentMenuTools = listOf(
     PdfReaderTool.COMPRESS,
     PdfReaderTool.MERGE,
@@ -942,6 +944,7 @@ private fun ReviewTopBar(
     onOpenTool: (PdfReaderTool) -> Unit,
 ) {
     var showMenu by remember { mutableStateOf(false) }
+    var showPdfTools by rememberSaveable { mutableStateOf(false) }
 
     TopAppBar(
         title = {
@@ -1041,26 +1044,22 @@ private fun ReviewTopBar(
                                 onSplitDocument()
                             },
                         )
-                        // The PDF tools that take a library document (Sign and Extract text are above).
-                        DocumentMenuTools.forEach { tool ->
-                            DropdownMenuItem(
-                                text = {
-                                    Text(
-                                        if (tool == PdfReaderTool.SPLIT) {
-                                            stringResource(R.string.document_menu_split_into_pdfs)
-                                        } else {
-                                            stringResource(tool.labelRes)
-                                        },
-                                    )
-                                },
-                                leadingIcon = { Icon(tool.icon, contentDescription = null) },
-                                enabled = exportEnabled,
-                                onClick = {
-                                    showMenu = false
-                                    onOpenTool(tool)
-                                },
-                            )
-                        }
+                        // The PDF-only tools live in one sheet so the menu stays short.
+                        DropdownMenuItem(
+                            text = { Text(stringResource(R.string.document_menu_pdf_tools)) },
+                            leadingIcon = {
+                                Icon(Icons.Filled.PictureAsPdf, contentDescription = null)
+                            },
+                            trailingIcon = {
+                                Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
+                            },
+                            enabled = exportEnabled,
+                            onClick = {
+                                showMenu = false
+                                showPdfTools = true
+                            },
+                            modifier = Modifier.testTag("document_menu_pdf_tools"),
+                        )
                         HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
                         DropdownMenuItem(
                             text = { Text(stringResource(R.string.document_detail_rename_document)) },
@@ -1108,6 +1107,18 @@ private fun ReviewTopBar(
                 containerColor = MaterialTheme.colorScheme.background,
             ),
         )
+
+    if (showPdfTools) {
+        DocumentPdfToolsSheet(
+            documentTitle = title,
+            tools = DocumentMenuTools,
+            onDismiss = { showPdfTools = false },
+            onOpenTool = { tool ->
+                showPdfTools = false
+                onOpenTool(tool)
+            },
+        )
+    }
 }
 
 @Composable

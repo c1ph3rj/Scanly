@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="document_menu_pdf_tools">"PDF ಪರಿಕರಗಳು"</string>
+    <string name="document_pdf_tools_sheet_subtitle">"ಪ್ರತಿ ಪರಿಕರವು “%1$s” ನಿಂದ ಹೊಸ PDF ರಚಿಸುತ್ತದೆ. ನಿಮ್ಮ ಸ್ಕ್ಯಾನ್ ಹಾಗೆಯೇ ಉಳಿಯುತ್ತದೆ."</string>
+    <string name="document_pdf_tools_password_caption">"ಪಾಸ್‌ವರ್ಡ್‌ನಿಂದ ಲಾಕ್ ಮಾಡಿ"</string>
+</resources>
