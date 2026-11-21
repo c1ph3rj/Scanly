@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tags_settings_entry_title">"ટૅગ"</string>
+    <string name="tags_settings_entry_summary">"ટૅગ બનાવો, નામ બદલો અને ડિલીટ કરો"</string>
+    <string name="tags_document_add">"ટૅગ ઉમેરો"</string>
+    <string name="tags_document_edit">"ટૅગ સંપાદિત કરો"</string>
+    <string name="tags_document_row_description">"ટૅગ: %1$s"</string>
+    <string name="tags_document_updated">"ટૅગ અપડેટ થયા"</string>
+    <string name="tags_editor_title">"ટૅગ"</string>
+    <string name="tags_editor_field_label">"નવો ટૅગ"</string>
+    <string name="tags_editor_add">"ટૅગ ઉમેરો"</string>
+    <string name="tags_editor_create_chip">"“%1$s” બનાવો"</string>
+    <string name="tags_editor_empty">"હજી કોઈ ટૅગ નથી. બનાવવા માટે નામ લખો."</string>
+    <string name="tags_editor_done">"થઈ ગયું"</string>
+    <string name="tags_search_filter_section">"ટૅગ"</string>
+    <string name="tags_search_filter_all_hint">"પસંદ કરેલા બધા ટૅગ ધરાવતા દસ્તાવેજો બતાવે છે."</string>
+    <string name="tags_search_filter_chip">"ટૅગ: %1$s"</string>
+    <string name="tags_manage_title">"ટૅગ"</string>
+    <string name="tags_manage_new_tag">"નવો ટૅગ"</string>
+    <string name="tags_manage_rename_title">"ટૅગનું નામ બદલો"</string>
+    <string name="tags_manage_name_label">"ટૅગનું નામ"</string>
+    <string name="tags_manage_create">"બનાવો"</string>
+    <string name="tags_manage_rename">"નામ બદલો"</string>
+    <string name="tags_manage_delete">"ડિલીટ કરો"</string>
+    <string name="tags_manage_delete_title">"ટૅગ ડિલીટ કરીએ?"</string>
+    <string name="tags_manage_delete_message">"“%1$s” જે દસ્તાવેજોમાં છે તે બધામાંથી દૂર થશે. દસ્તાવેજો પોતે રહેશે."</string>
+    <string name="tags_manage_deleted">"ટૅગ ડિલીટ થયો"</string>
+    <string name="tags_manage_renamed">"ટૅગનું નામ બદલાયું"</string>
+    <string name="tags_manage_empty_pip">"હજી કંઈ ટૅગ કરાયું નથી."</string>
+    <string name="tags_manage_empty_title">"હજી કોઈ ટૅગ નથી"</string>
+    <string name="tags_manage_empty_description">"ટૅગ જુદા જુદા ફોલ્ડરના દસ્તાવેજોને એક સાથે રાખે છે: એક જ રસીદ “મુસાફરી” અને “ભરપાઈપાત્ર” બંને હોઈ શકે. અહીંથી અથવા કોઈપણ દસ્તાવેજમાંથી ટૅગ બનાવો."</string>
+    <string name="tags_manage_options">"%1$s માટેના વિકલ્પો"</string>
+    <string name="tags_manage_name_blank">"ટૅગનું નામ લખો."</string>
+    <string name="tags_manage_name_taken">"“%1$s” નામનો ટૅગ પહેલેથી છે."</string>
+</resources>

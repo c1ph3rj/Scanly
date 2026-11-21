@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Naming templates (Settings → Naming templates, Suggest name). Keep {placeholders} as written. -->
+    <string name="naming_settings_entry_title">"命名模板"</string>
+    <string name="naming_settings_entry_summary">"可重复使用的新文档命名格式"</string>
+    <string name="naming_default_section">"默认名称"</string>
+    <string name="naming_default_hint">"新文档将使用此名称。“推荐名称”仍会依次切换所有选项。"</string>
+    <string name="naming_templates_section">"模板"</string>
+    <string name="naming_example">"示例：%1$s"</string>
+    <string name="naming_default_badge">"默认"</string>
+    <string name="naming_add_template">"添加模板"</string>
+    <string name="naming_new_template">"新建模板"</string>
+    <string name="naming_edit_template">"编辑模板"</string>
+    <string name="naming_edit_template_description">"编辑 %1$s"</string>
+    <string name="naming_delete_template_description">"删除 %1$s"</string>
+    <string name="naming_delete_title">"要删除模板吗？"</string>
+    <string name="naming_delete_message">"将删除 %1$s。已用它命名的文档会保留原名称。"</string>
+    <string name="naming_delete_default_message">"%1$s 是你的默认名称。删除后，新文档将重新使用 %2$s。现有名称不会改变。"</string>
+    <string name="naming_delete_confirm">"删除"</string>
+    <string name="naming_cancel">"取消"</string>
+    <string name="naming_save">"保存"</string>
+    <string name="naming_empty_title">"还没有模板"</string>
+    <string name="naming_empty_body">"保存一个命名格式，例如 收据 {date} 或 {iso} 发票 {n}，Scanly 会为每个新文档填入日期或编号。"</string>
+    <string name="naming_empty_suggest_hint">"你的模板会和“推荐名称”中的日期格式一起出现，你还可以将其中一个设为默认。"</string>
+    <string name="naming_pattern_label">"格式"</string>
+    <string name="naming_pattern_placeholder">"收据 {date}"</string>
+    <string name="naming_insert_token">"点按即可插入"</string>
+    <string name="naming_preview">"预览"</string>
+    <string name="naming_preview_unavailable">"请修正格式以查看预览"</string>
+    <string name="naming_number_note">"{n} 会变成能让名称不重复的最小编号。"</string>
+    <string name="naming_character_count">"%1$d/%2$d"</string>
+    <string name="naming_problem_blank">"请添加文字或占位符。"</string>
+    <string name="naming_problem_too_long">"最多使用 %1$d 个字符。"</string>
+    <string name="naming_problem_unknown_token">"未知占位符：%1$s"</string>
+    <string name="naming_token_date">"日期"</string>
+    <string name="naming_token_time">"时间"</string>
+    <string name="naming_token_date_time">"日期和时间"</string>
+    <string name="naming_token_iso_date">"ISO 日期"</string>
+    <string name="naming_token_year">"年"</string>
+    <string name="naming_token_month">"月"</string>
+    <string name="naming_token_day">"日"</string>
+    <string name="naming_token_weekday">"星期"</string>
+    <string name="naming_token_number">"编号"</string>
+    <string name="naming_problem_duplicate">"已有使用此格式的模板。"</string>
+    <string name="naming_save_failed">"无法保存模板，请重试。"</string>
+    <string name="naming_default_failed">"无法更改默认名称，请重试。"</string>
+    <string name="naming_delete_failed">"无法删除模板，请重试。"</string>
+</resources>

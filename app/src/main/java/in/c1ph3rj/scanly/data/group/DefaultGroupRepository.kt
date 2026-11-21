@@ -8,6 +8,7 @@ import `in`.c1ph3rj.scanly.core.common.ScanlyResult
 import `in`.c1ph3rj.scanly.data.local.db.ScanlyDatabase
 import `in`.c1ph3rj.scanly.data.local.db.dao.DocumentDao
 import `in`.c1ph3rj.scanly.data.local.db.dao.DocumentGroupDao
+import `in`.c1ph3rj.scanly.data.local.db.dao.TagDao
 import `in`.c1ph3rj.scanly.data.local.db.entity.DocumentGroupEntity
 import `in`.c1ph3rj.scanly.data.local.db.entity.DocumentGroupStats
 import `in`.c1ph3rj.scanly.data.common.LibraryOperationCoordinator
@@ -31,6 +32,7 @@ class DefaultGroupRepository @Inject constructor(
     private val database: ScanlyDatabase,
     private val documentGroupDao: DocumentGroupDao,
     private val documentDao: DocumentDao,
+    private val tagDao: TagDao,
     private val documentStorageManager: DocumentStorageManager,
     private val dispatchers: ScanlyDispatchers,
     private val operationCoordinator: LibraryOperationCoordinator,
@@ -202,7 +204,10 @@ class DefaultGroupRepository @Inject constructor(
         if (groupIds.isEmpty()) return 0
         val documentIds = groupIds.flatMap { documentDao.getIdsDeletedWithGroup(it) }
         database.withTransaction {
-            documentIds.forEach { documentDao.deleteById(it) }
+            documentIds.forEach {
+                tagDao.deleteDocumentTags(it)
+                documentDao.deleteById(it)
+            }
             // Documents deleted on their own earlier keep their bin entry; the FK moves them out.
             groupIds.forEach {
                 documentDao.forgetReleasedGroup(it)

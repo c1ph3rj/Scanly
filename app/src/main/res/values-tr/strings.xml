@@ -1884,6 +1884,9 @@
     <string name="settings_language_note">"Belge adları, tanınan sayfa metinleri ve açtığınız PDF dosyaları kendi dillerinde kalır."</string>
     <!-- Manifest -->
     <string name="intent_open_in_scanly">"Scanly'de açın"</string>
+    <string name="share_images_title">"Paylaşılan görselleri ekle"</string>
+    <string name="share_images_new_document_description">"Bu görsellerle yeni belge oluştur"</string>
+    <string name="share_images_add_pages_to">"Sayfaları şuraya ekle"</string>
     <!-- Library date sections -->
     <string name="library_section_previous_7_days">"Önceki 7 gün"</string>
     <!-- Month and year as a section title, e.g. "December 2025". %1$s = month name, %2$d = year. -->

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tags_settings_entry_title">"Tag"</string>
+    <string name="tags_settings_entry_summary">"Crea, rinomina ed elimina i tag"</string>
+    <string name="tags_document_add">"Aggiungi tag"</string>
+    <string name="tags_document_edit">"Modifica tag"</string>
+    <string name="tags_document_row_description">"Tag: %1$s"</string>
+    <string name="tags_document_updated">"Tag aggiornati"</string>
+    <string name="tags_editor_title">"Tag"</string>
+    <string name="tags_editor_field_label">"Nuovo tag"</string>
+    <string name="tags_editor_add">"Aggiungi tag"</string>
+    <string name="tags_editor_create_chip">"Crea “%1$s”"</string>
+    <string name="tags_editor_empty">"Ancora nessun tag. Digita un nome per crearne uno."</string>
+    <string name="tags_editor_done">"Fine"</string>
+    <string name="tags_search_filter_section">"Tag"</string>
+    <string name="tags_search_filter_all_hint">"Mostra i documenti che hanno tutti i tag selezionati."</string>
+    <string name="tags_search_filter_chip">"Tag: %1$s"</string>
+    <string name="tags_manage_title">"Tag"</string>
+    <string name="tags_manage_new_tag">"Nuovo tag"</string>
+    <string name="tags_manage_rename_title">"Rinomina tag"</string>
+    <string name="tags_manage_name_label">"Nome del tag"</string>
+    <string name="tags_manage_create">"Crea"</string>
+    <string name="tags_manage_rename">"Rinomina"</string>
+    <string name="tags_manage_delete">"Elimina"</string>
+    <string name="tags_manage_delete_title">"Eliminare il tag?"</string>
+    <string name="tags_manage_delete_message">"“%1$s” verrà rimosso da tutti i documenti che lo hanno. I documenti vengono conservati."</string>
+    <string name="tags_manage_deleted">"Tag eliminato"</string>
+    <string name="tags_manage_renamed">"Tag rinominato"</string>
+    <string name="tags_manage_empty_pip">"Ancora niente con tag."</string>
+    <string name="tags_manage_empty_title">"Ancora nessun tag"</string>
+    <string name="tags_manage_empty_description">"I tag raggruppano documenti di cartelle diverse: una ricevuta può essere sia Viaggio sia Rimborsabile. Crea un tag qui o da qualsiasi documento."</string>
+    <string name="tags_manage_options">"Opzioni per %1$s"</string>
+    <string name="tags_manage_name_blank">"Inserisci un nome per il tag."</string>
+    <string name="tags_manage_name_taken">"Esiste già un tag chiamato “%1$s”."</string>
+</resources>

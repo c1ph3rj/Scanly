@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="document_menu_pdf_tools">"PDF টুল"</string>
+    <string name="document_pdf_tools_sheet_subtitle">"প্রতিটি টুল “%1$s” থেকে একটি নতুন PDF তৈরি করে। আপনার স্ক্যান যেমন আছে তেমনই থাকে।"</string>
+    <string name="document_pdf_tools_password_caption">"পাসওয়ার্ড দিয়ে লক করুন"</string>
+</resources>

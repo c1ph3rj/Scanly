@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tags_settings_entry_title">"Thẻ"</string>
+    <string name="tags_settings_entry_summary">"Tạo, đổi tên và xóa thẻ"</string>
+    <string name="tags_document_add">"Thêm thẻ"</string>
+    <string name="tags_document_edit">"Sửa thẻ"</string>
+    <string name="tags_document_row_description">"Thẻ: %1$s"</string>
+    <string name="tags_document_updated">"Đã cập nhật thẻ"</string>
+    <string name="tags_editor_title">"Thẻ"</string>
+    <string name="tags_editor_field_label">"Thẻ mới"</string>
+    <string name="tags_editor_add">"Thêm thẻ"</string>
+    <string name="tags_editor_create_chip">"Tạo “%1$s”"</string>
+    <string name="tags_editor_empty">"Chưa có thẻ nào. Nhập tên để tạo thẻ."</string>
+    <string name="tags_editor_done">"Xong"</string>
+    <string name="tags_search_filter_section">"Thẻ"</string>
+    <string name="tags_search_filter_all_hint">"Hiển thị tài liệu có tất cả các thẻ đã chọn."</string>
+    <string name="tags_search_filter_chip">"Thẻ: %1$s"</string>
+    <string name="tags_manage_title">"Thẻ"</string>
+    <string name="tags_manage_new_tag">"Thẻ mới"</string>
+    <string name="tags_manage_rename_title">"Đổi tên thẻ"</string>
+    <string name="tags_manage_name_label">"Tên thẻ"</string>
+    <string name="tags_manage_create">"Tạo"</string>
+    <string name="tags_manage_rename">"Đổi tên"</string>
+    <string name="tags_manage_delete">"Xóa"</string>
+    <string name="tags_manage_delete_title">"Xóa thẻ?"</string>
+    <string name="tags_manage_delete_message">"“%1$s” sẽ bị gỡ khỏi mọi tài liệu có thẻ này. Bản thân các tài liệu vẫn được giữ lại."</string>
+    <string name="tags_manage_deleted">"Đã xóa thẻ"</string>
+    <string name="tags_manage_renamed">"Đã đổi tên thẻ"</string>
+    <string name="tags_manage_empty_pip">"Chưa có gì được gắn thẻ."</string>
+    <string name="tags_manage_empty_title">"Chưa có thẻ nào"</string>
+    <string name="tags_manage_empty_description">"Thẻ nhóm tài liệu xuyên suốt các thư mục: một hóa đơn có thể vừa là Du lịch vừa là Được hoàn tiền. Tạo thẻ ở đây hoặc từ bất kỳ tài liệu nào."</string>
+    <string name="tags_manage_options">"Tùy chọn cho %1$s"</string>
+    <string name="tags_manage_name_blank">"Nhập tên thẻ."</string>
+    <string name="tags_manage_name_taken">"Đã có thẻ tên “%1$s”."</string>
+</resources>

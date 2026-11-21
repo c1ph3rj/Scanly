@@ -1884,6 +1884,9 @@
     <string name="settings_language_note">"പ്രമാണങ്ങളുടെ പേരുകൾ, പേജുകളിൽ നിന്ന് തിരിച്ചറിഞ്ഞ ടെക്സ്റ്റ്, നിങ്ങൾ തുറക്കുന്ന PDF ഫയലുകൾ എന്നിവ അവയുടെ യഥാർഥ ഭാഷയിൽ തന്നെ തുടരും."</string>
     <!-- Manifest -->
     <string name="intent_open_in_scanly">"Scanly-ൽ തുറക്കുക"</string>
+    <string name="share_images_title">"പങ്കിട്ട ചിത്രങ്ങൾ ചേർക്കുക"</string>
+    <string name="share_images_new_document_description">"ഈ ചിത്രങ്ങൾ ഉപയോഗിച്ച് പുതിയ ഡോക്യുമെന്റ് തുടങ്ങുക"</string>
+    <string name="share_images_add_pages_to">"പേജുകൾ ചേർക്കേണ്ട ഡോക്യുമെന്റ്"</string>
     <!-- Library date sections -->
     <string name="library_section_previous_7_days">"മുമ്പത്തെ 7 ദിവസം"</string>
     <!-- Month and year as a section title, e.g. "December 2025". %1$s = month name, %2$d = year. -->

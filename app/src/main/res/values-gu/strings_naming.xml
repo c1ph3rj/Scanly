@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Naming templates (Settings → Naming templates, Suggest name). Keep {placeholders} as written. -->
+    <string name="naming_settings_entry_title">"નામ ટેમ્પ્લેટ"</string>
+    <string name="naming_settings_entry_summary">"નવા દસ્તાવેજોનાં નામ માટે ફરી વાપરી શકાય તેવી પેટર્ન"</string>
+    <string name="naming_default_section">"ડિફૉલ્ટ નામ"</string>
+    <string name="naming_default_hint">"નવા દસ્તાવેજોને આ નામ મળશે. નામ સૂચવો હજી પણ બધા વિકલ્પો વારાફરતી બતાવે છે."</string>
+    <string name="naming_templates_section">"ટેમ્પ્લેટ"</string>
+    <string name="naming_example">"ઉદાહરણ: %1$s"</string>
+    <string name="naming_default_badge">"ડિફૉલ્ટ"</string>
+    <string name="naming_add_template">"ટેમ્પ્લેટ ઉમેરો"</string>
+    <string name="naming_new_template">"નવું ટેમ્પ્લેટ"</string>
+    <string name="naming_edit_template">"ટેમ્પ્લેટ ફેરફાર કરો"</string>
+    <string name="naming_edit_template_description">"%1$s ફેરફાર કરો"</string>
+    <string name="naming_delete_template_description">"%1$s ડિલીટ કરો"</string>
+    <string name="naming_delete_title">"ટેમ્પ્લેટ ડિલીટ કરીએ?"</string>
+    <string name="naming_delete_message">"%1$s કાઢી નાખવામાં આવશે. તેનાથી નામ અપાયેલા દસ્તાવેજોનાં નામ એમ જ રહેશે."</string>
+    <string name="naming_delete_default_message">"%1$s તમારું ડિફૉલ્ટ નામ છે. ડિલીટ કર્યા પછી નવા દસ્તાવેજો ફરી %2$s વાપરશે. હાલનાં નામ બદલાશે નહીં."</string>
+    <string name="naming_delete_confirm">"ડિલીટ કરો"</string>
+    <string name="naming_cancel">"રદ કરો"</string>
+    <string name="naming_save">"સાચવો"</string>
+    <string name="naming_empty_title">"હજી કોઈ ટેમ્પ્લેટ નથી"</string>
+    <string name="naming_empty_body">"રસીદ {date} અથવા {iso} બિલ {n} જેવી નામની પેટર્ન સાચવો, અને Scanly દરેક નવા દસ્તાવેજ માટે તારીખ કે નંબર ભરશે."</string>
+    <string name="naming_empty_suggest_hint">"તમારાં ટેમ્પ્લેટ નામ સૂચવોમાંના તારીખ ફોર્મેટ સાથે દેખાશે, અને તમે તેમાંથી એકને ડિફૉલ્ટ બનાવી શકો છો."</string>
+    <string name="naming_pattern_label">"પેટર્ન"</string>
+    <string name="naming_pattern_placeholder">"રસીદ {date}"</string>
+    <string name="naming_insert_token">"ઉમેરવા માટે ટૅપ કરો"</string>
+    <string name="naming_preview">"પૂર્વાવલોકન"</string>
+    <string name="naming_preview_unavailable">"પૂર્વાવલોકન જોવા માટે પેટર્ન સુધારો"</string>
+    <string name="naming_number_note">"{n} એ નામને અલગ રાખતો સૌથી નાનો નંબર બને છે."</string>
+    <string name="naming_character_count">"%1$d/%2$d"</string>
+    <string name="naming_problem_blank">"થોડું લખાણ અથવા પ્લેસહોલ્ડર ઉમેરો."</string>
+    <string name="naming_problem_too_long">"વધુમાં વધુ %1$d અક્ષરો વાપરો."</string>
+    <string name="naming_problem_unknown_token">"અજાણ્યું પ્લેસહોલ્ડર: %1$s"</string>
+    <string name="naming_token_date">"તારીખ"</string>
+    <string name="naming_token_time">"સમય"</string>
+    <string name="naming_token_date_time">"તારીખ અને સમય"</string>
+    <string name="naming_token_iso_date">"ISO તારીખ"</string>
+    <string name="naming_token_year">"વર્ષ"</string>
+    <string name="naming_token_month">"મહિનો"</string>
+    <string name="naming_token_day">"દિવસ"</string>
+    <string name="naming_token_weekday">"વાર"</string>
+    <string name="naming_token_number">"નંબર"</string>
+    <string name="naming_problem_duplicate">"આ પેટર્નવાળું ટેમ્પ્લેટ પહેલેથી છે."</string>
+    <string name="naming_save_failed">"ટેમ્પ્લેટ સાચવી શકાયું નથી. ફરી પ્રયાસ કરો."</string>
+    <string name="naming_default_failed">"ડિફૉલ્ટ નામ બદલી શકાયું નથી. ફરી પ્રયાસ કરો."</string>
+    <string name="naming_delete_failed">"ટેમ્પ્લેટ ડિલીટ કરી શકાયું નથી. ફરી પ્રયાસ કરો."</string>
+</resources>

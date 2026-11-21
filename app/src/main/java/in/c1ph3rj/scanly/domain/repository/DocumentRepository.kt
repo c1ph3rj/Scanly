@@ -19,6 +19,9 @@ interface DocumentRepository {
 
     suspend fun suggestDocumentTitle(format: DocumentTitleFormat): String
 
+    /** A unique name from a naming-template pattern (see `NamingTemplateRenderer.renderUnique`). */
+    suspend fun suggestDocumentTitleFromPattern(pattern: String): String
+
     suspend fun createDocument(
         title: String,
         groupId: String? = null,

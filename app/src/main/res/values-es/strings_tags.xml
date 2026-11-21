@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tags_settings_entry_title">"Etiquetas"</string>
+    <string name="tags_settings_entry_summary">"Crea, cambia el nombre y elimina etiquetas"</string>
+    <string name="tags_document_add">"Añadir etiquetas"</string>
+    <string name="tags_document_edit">"Editar etiquetas"</string>
+    <string name="tags_document_row_description">"Etiquetas: %1$s"</string>
+    <string name="tags_document_updated">"Etiquetas actualizadas"</string>
+    <string name="tags_editor_title">"Etiquetas"</string>
+    <string name="tags_editor_field_label">"Nueva etiqueta"</string>
+    <string name="tags_editor_add">"Añadir etiqueta"</string>
+    <string name="tags_editor_create_chip">"Crear «%1$s»"</string>
+    <string name="tags_editor_empty">"Aún no hay etiquetas. Escribe un nombre para crear una."</string>
+    <string name="tags_editor_done">"Listo"</string>
+    <string name="tags_search_filter_section">"Etiquetas"</string>
+    <string name="tags_search_filter_all_hint">"Muestra los documentos que tienen todas las etiquetas seleccionadas."</string>
+    <string name="tags_search_filter_chip">"Etiqueta: %1$s"</string>
+    <string name="tags_manage_title">"Etiquetas"</string>
+    <string name="tags_manage_new_tag">"Nueva etiqueta"</string>
+    <string name="tags_manage_rename_title">"Cambiar nombre de la etiqueta"</string>
+    <string name="tags_manage_name_label">"Nombre de la etiqueta"</string>
+    <string name="tags_manage_create">"Crear"</string>
+    <string name="tags_manage_rename">"Cambiar nombre"</string>
+    <string name="tags_manage_delete">"Eliminar"</string>
+    <string name="tags_manage_delete_title">"¿Eliminar etiqueta?"</string>
+    <string name="tags_manage_delete_message">"«%1$s» se quitará de todos los documentos que la tengan. Los documentos se conservan."</string>
+    <string name="tags_manage_deleted">"Etiqueta eliminada"</string>
+    <string name="tags_manage_renamed">"Nombre de la etiqueta cambiado"</string>
+    <string name="tags_manage_empty_pip">"Todavía no hay nada etiquetado."</string>
+    <string name="tags_manage_empty_title">"Aún no hay etiquetas"</string>
+    <string name="tags_manage_empty_description">"Las etiquetas agrupan documentos de distintas carpetas: un mismo recibo puede ser de Viaje y Reembolsable. Crea una etiqueta aquí o desde cualquier documento."</string>
+    <string name="tags_manage_options">"Opciones de %1$s"</string>
+    <string name="tags_manage_name_blank">"Escribe un nombre para la etiqueta."</string>
+    <string name="tags_manage_name_taken">"Ya existe una etiqueta llamada «%1$s»."</string>
+</resources>

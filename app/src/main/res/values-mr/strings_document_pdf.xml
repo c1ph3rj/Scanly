@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="document_menu_pdf_tools">"PDF साधने"</string>
+    <string name="document_pdf_tools_sheet_subtitle">"प्रत्येक साधन “%1$s” मधून नवीन PDF तयार करते. तुमचे स्कॅन जसे आहे तसेच राहते."</string>
+    <string name="document_pdf_tools_password_caption">"पासवर्डने लॉक करा"</string>
+</resources>

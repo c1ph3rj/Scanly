@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Naming templates (Settings → Naming templates, Suggest name). Keep {placeholders} as written. -->
+    <string name="naming_settings_entry_title">"പേര് ടെംപ്ലേറ്റുകൾ"</string>
+    <string name="naming_settings_entry_summary">"പുതിയ ഡോക്യുമെന്റ് പേരുകൾക്ക് വീണ്ടും ഉപയോഗിക്കാവുന്ന പാറ്റേണുകൾ"</string>
+    <string name="naming_default_section">"ഡിഫോൾട്ട് പേര്"</string>
+    <string name="naming_default_hint">"പുതിയ ഡോക്യുമെന്റുകൾക്ക് ഈ പേര് ലഭിക്കും. പേര് നിർദ്ദേശിക്കുക ഇപ്പോഴും എല്ലാ ഓപ്ഷനുകളും മാറിമാറി കാണിക്കും."</string>
+    <string name="naming_templates_section">"ടെംപ്ലേറ്റുകൾ"</string>
+    <string name="naming_example">"ഉദാഹരണം: %1$s"</string>
+    <string name="naming_default_badge">"ഡിഫോൾട്ട്"</string>
+    <string name="naming_add_template">"ടെംപ്ലേറ്റ് ചേർക്കുക"</string>
+    <string name="naming_new_template">"പുതിയ ടെംപ്ലേറ്റ്"</string>
+    <string name="naming_edit_template">"ടെംപ്ലേറ്റ് എഡിറ്റ് ചെയ്യുക"</string>
+    <string name="naming_edit_template_description">"%1$s എഡിറ്റ് ചെയ്യുക"</string>
+    <string name="naming_delete_template_description">"%1$s ഇല്ലാതാക്കുക"</string>
+    <string name="naming_delete_title">"ടെംപ്ലേറ്റ് ഇല്ലാതാക്കണോ?"</string>
+    <string name="naming_delete_message">"%1$s നീക്കം ചെയ്യും. ഇതുപയോഗിച്ച് ഇതിനകം പേരിട്ട ഡോക്യുമെന്റുകളുടെ പേരുകൾ മാറില്ല."</string>
+    <string name="naming_delete_default_message">"%1$s നിങ്ങളുടെ ഡിഫോൾട്ട് പേരാണ്. ഇല്ലാതാക്കിയ ശേഷം പുതിയ ഡോക്യുമെന്റുകൾ വീണ്ടും %2$s ഉപയോഗിക്കും. നിലവിലുള്ള പേരുകൾ മാറില്ല."</string>
+    <string name="naming_delete_confirm">"ഇല്ലാതാക്കുക"</string>
+    <string name="naming_cancel">"റദ്ദാക്കുക"</string>
+    <string name="naming_save">"സേവ് ചെയ്യുക"</string>
+    <string name="naming_empty_title">"ഇതുവരെ ടെംപ്ലേറ്റുകളില്ല"</string>
+    <string name="naming_empty_body">"രസീത് {date} അല്ലെങ്കിൽ {iso} ഇൻവോയ്സ് {n} പോലൊരു പേര് പാറ്റേൺ സേവ് ചെയ്യുക, ഓരോ പുതിയ ഡോക്യുമെന്റിനും Scanly തീയതിയോ നമ്പറോ ചേർക്കും."</string>
+    <string name="naming_empty_suggest_hint">"നിങ്ങളുടെ ടെംപ്ലേറ്റുകൾ പേര് നിർദ്ദേശിക്കുക എന്നതിലെ തീയതി ഫോർമാറ്റുകൾക്കൊപ്പം കാണിക്കും, അവയിലൊന്ന് ഡിഫോൾട്ട് ആക്കാം."</string>
+    <string name="naming_pattern_label">"പാറ്റേൺ"</string>
+    <string name="naming_pattern_placeholder">"രസീത് {date}"</string>
+    <string name="naming_insert_token">"ചേർക്കാൻ ടാപ്പ് ചെയ്യുക"</string>
+    <string name="naming_preview">"പ്രിവ്യൂ"</string>
+    <string name="naming_preview_unavailable">"പ്രിവ്യൂ കാണാൻ പാറ്റേൺ ശരിയാക്കുക"</string>
+    <string name="naming_number_note">"{n} പേര് വ്യത്യസ്തമായി നിലനിർത്തുന്ന ഏറ്റവും ചെറിയ നമ്പറാകും."</string>
+    <string name="naming_character_count">"%1$d/%2$d"</string>
+    <string name="naming_problem_blank">"കുറച്ച് ടെക്സ്റ്റോ ഒരു പ്ലേസ്‌ഹോൾഡറോ ചേർക്കുക."</string>
+    <string name="naming_problem_too_long">"പരമാവധി %1$d പ്രതീകങ്ങൾ ഉപയോഗിക്കുക."</string>
+    <string name="naming_problem_unknown_token">"അജ്ഞാത പ്ലേസ്‌ഹോൾഡർ: %1$s"</string>
+    <string name="naming_token_date">"തീയതി"</string>
+    <string name="naming_token_time">"സമയം"</string>
+    <string name="naming_token_date_time">"തീയതിയും സമയവും"</string>
+    <string name="naming_token_iso_date">"ISO തീയതി"</string>
+    <string name="naming_token_year">"വർഷം"</string>
+    <string name="naming_token_month">"മാസം"</string>
+    <string name="naming_token_day">"ദിവസം"</string>
+    <string name="naming_token_weekday">"ആഴ്ചയിലെ ദിവസം"</string>
+    <string name="naming_token_number">"നമ്പർ"</string>
+    <string name="naming_problem_duplicate">"ഈ പാറ്റേണുള്ള ഒരു ടെംപ്ലേറ്റ് ഇതിനകം ഉണ്ട്."</string>
+    <string name="naming_save_failed">"ടെംപ്ലേറ്റ് സേവ് ചെയ്യാനായില്ല. വീണ്ടും ശ്രമിക്കുക."</string>
+    <string name="naming_default_failed">"ഡിഫോൾട്ട് പേര് മാറ്റാനായില്ല. വീണ്ടും ശ്രമിക്കുക."</string>
+    <string name="naming_delete_failed">"ടെംപ്ലേറ്റ് ഇല്ലാതാക്കാനായില്ല. വീണ്ടും ശ്രമിക്കുക."</string>
+</resources>

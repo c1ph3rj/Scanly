@@ -12,10 +12,12 @@ import dagger.hilt.components.SingletonComponent
 import `in`.c1ph3rj.scanly.data.local.db.ScanlyDatabase
 import `in`.c1ph3rj.scanly.data.local.db.dao.DocumentDao
 import `in`.c1ph3rj.scanly.data.local.db.dao.DocumentGroupDao
+import `in`.c1ph3rj.scanly.data.local.db.dao.NamingTemplateDao
 import `in`.c1ph3rj.scanly.data.local.db.dao.PageMarkupDao
 import `in`.c1ph3rj.scanly.data.local.db.dao.PageTextDao
 import `in`.c1ph3rj.scanly.data.local.db.dao.ScanPageDao
 import `in`.c1ph3rj.scanly.data.local.db.dao.SignatureDao
+import `in`.c1ph3rj.scanly.data.local.db.dao.TagDao
 import javax.inject.Singleton
 
 @Module
@@ -42,6 +44,7 @@ object DatabaseModule {
         ScanlyDatabase.MIGRATION_10_11,
         ScanlyDatabase.MIGRATION_11_12,
         ScanlyDatabase.MIGRATION_12_13,
+        ScanlyDatabase.MIGRATION_13_14,
     ).addCallback(object : RoomDatabase.Callback() {
         override fun onOpen(db: SupportSQLiteDatabase) {
             db.execSQL("PRAGMA foreign_keys=ON")
@@ -67,6 +70,12 @@ object DatabaseModule {
 
     @Provides
     fun providePageMarkupDao(database: ScanlyDatabase): PageMarkupDao = database.pageMarkupDao()
+
+    @Provides
+    fun provideTagDao(database: ScanlyDatabase): TagDao = database.tagDao()
+
+    @Provides
+    fun provideNamingTemplateDao(database: ScanlyDatabase): NamingTemplateDao = database.namingTemplateDao()
 
     private const val DATABASE_NAME = "scanly.db"
 }

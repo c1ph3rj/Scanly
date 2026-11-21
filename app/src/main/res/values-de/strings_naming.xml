@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Naming templates (Settings → Naming templates, Suggest name). Keep {placeholders} as written. -->
+    <string name="naming_settings_entry_title">"Namensvorlagen"</string>
+    <string name="naming_settings_entry_summary">"Wiederverwendbare Muster für neue Dokumentnamen"</string>
+    <string name="naming_default_section">"Standardname"</string>
+    <string name="naming_default_hint">"Neue Dokumente werden so benannt. „Namen vorschlagen“ wechselt weiterhin durch alle Optionen."</string>
+    <string name="naming_templates_section">"Vorlagen"</string>
+    <string name="naming_example">"Beispiel: %1$s"</string>
+    <string name="naming_default_badge">"Standard"</string>
+    <string name="naming_add_template">"Vorlage hinzufügen"</string>
+    <string name="naming_new_template">"Neue Vorlage"</string>
+    <string name="naming_edit_template">"Vorlage bearbeiten"</string>
+    <string name="naming_edit_template_description">"%1$s bearbeiten"</string>
+    <string name="naming_delete_template_description">"%1$s löschen"</string>
+    <string name="naming_delete_title">"Vorlage löschen?"</string>
+    <string name="naming_delete_message">"%1$s wird entfernt. Dokumente, die bereits so benannt wurden, behalten ihre Namen."</string>
+    <string name="naming_delete_default_message">"%1$s ist dein Standardname. Nach dem Löschen verwenden neue Dokumente wieder %2$s. Bestehende Namen ändern sich nicht."</string>
+    <string name="naming_delete_confirm">"Löschen"</string>
+    <string name="naming_cancel">"Abbrechen"</string>
+    <string name="naming_save">"Speichern"</string>
+    <string name="naming_empty_title">"Noch keine Vorlagen"</string>
+    <string name="naming_empty_body">"Speichere ein Namensmuster wie Beleg {date} oder {iso} Rechnung {n}, und Scanly setzt für jedes neue Dokument das Datum oder eine Nummer ein."</string>
+    <string name="naming_empty_suggest_hint">"Deine Vorlagen erscheinen neben den Datumsformaten unter „Namen vorschlagen“, und du kannst eine davon als Standard festlegen."</string>
+    <string name="naming_pattern_label">"Muster"</string>
+    <string name="naming_pattern_placeholder">"Beleg {date}"</string>
+    <string name="naming_insert_token">"Zum Einfügen tippen"</string>
+    <string name="naming_preview">"Vorschau"</string>
+    <string name="naming_preview_unavailable">"Korrigiere das Muster, um eine Vorschau zu sehen"</string>
+    <string name="naming_number_note">"{n} wird zur kleinsten Zahl, die den Namen eindeutig macht."</string>
+    <string name="naming_character_count">"%1$d/%2$d"</string>
+    <string name="naming_problem_blank">"Füge Text oder einen Platzhalter hinzu."</string>
+    <string name="naming_problem_too_long">"Verwende höchstens %1$d Zeichen."</string>
+    <string name="naming_problem_unknown_token">"Unbekannter Platzhalter: %1$s"</string>
+    <string name="naming_token_date">"Datum"</string>
+    <string name="naming_token_time">"Uhrzeit"</string>
+    <string name="naming_token_date_time">"Datum &amp; Uhrzeit"</string>
+    <string name="naming_token_iso_date">"ISO-Datum"</string>
+    <string name="naming_token_year">"Jahr"</string>
+    <string name="naming_token_month">"Monat"</string>
+    <string name="naming_token_day">"Tag"</string>
+    <string name="naming_token_weekday">"Wochentag"</string>
+    <string name="naming_token_number">"Nummer"</string>
+    <string name="naming_problem_duplicate">"Du hast bereits eine Vorlage mit diesem Muster."</string>
+    <string name="naming_save_failed">"Die Vorlage konnte nicht gespeichert werden. Versuche es erneut."</string>
+    <string name="naming_default_failed">"Der Standardname konnte nicht geändert werden. Versuche es erneut."</string>
+    <string name="naming_delete_failed">"Die Vorlage konnte nicht gelöscht werden. Versuche es erneut."</string>
+</resources>

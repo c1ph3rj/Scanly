@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Naming templates (Settings → Naming templates, Suggest name). Keep {placeholders} as written. -->
+    <string name="naming_settings_entry_title">"Szablony nazw"</string>
+    <string name="naming_settings_entry_summary">"Wzorce wielokrotnego użytku dla nazw nowych dokumentów"</string>
+    <string name="naming_default_section">"Domyślna nazwa"</string>
+    <string name="naming_default_hint">"Nowe dokumenty otrzymują taką nazwę. Zaproponuj nazwę nadal przełącza wszystkie opcje."</string>
+    <string name="naming_templates_section">"Szablony"</string>
+    <string name="naming_example">"Przykład: %1$s"</string>
+    <string name="naming_default_badge">"Domyślny"</string>
+    <string name="naming_add_template">"Dodaj szablon"</string>
+    <string name="naming_new_template">"Nowy szablon"</string>
+    <string name="naming_edit_template">"Edytuj szablon"</string>
+    <string name="naming_edit_template_description">"Edytuj %1$s"</string>
+    <string name="naming_delete_template_description">"Usuń %1$s"</string>
+    <string name="naming_delete_title">"Usunąć szablon?"</string>
+    <string name="naming_delete_message">"Szablon %1$s zostanie usunięty. Dokumenty, które już mają taką nazwę, ją zachowają."</string>
+    <string name="naming_delete_default_message">"%1$s to Twoja domyślna nazwa. Po usunięciu nowe dokumenty znów będą używać formatu %2$s. Istniejące nazwy się nie zmienią."</string>
+    <string name="naming_delete_confirm">"Usuń"</string>
+    <string name="naming_cancel">"Anuluj"</string>
+    <string name="naming_save">"Zapisz"</string>
+    <string name="naming_empty_title">"Brak szablonów"</string>
+    <string name="naming_empty_body">"Zapisz wzorzec nazwy, na przykład Paragon {date} albo {iso} Faktura {n}, a Scanly uzupełni datę lub numer dla każdego nowego dokumentu."</string>
+    <string name="naming_empty_suggest_hint">"Twoje szablony dołączają do formatów daty w Zaproponuj nazwę i możesz ustawić jeden z nich jako domyślny."</string>
+    <string name="naming_pattern_label">"Wzorzec"</string>
+    <string name="naming_pattern_placeholder">"Paragon {date}"</string>
+    <string name="naming_insert_token">"Dotknij, aby wstawić"</string>
+    <string name="naming_preview">"Podgląd"</string>
+    <string name="naming_preview_unavailable">"Popraw wzorzec, aby zobaczyć podgląd"</string>
+    <string name="naming_number_note">"{n} staje się najmniejszą liczbą, przy której nazwa jest unikalna."</string>
+    <string name="naming_character_count">"%1$d/%2$d"</string>
+    <string name="naming_problem_blank">"Dodaj tekst lub symbol zastępczy."</string>
+    <string name="naming_problem_too_long">"Użyj najwyżej %1$d znaków."</string>
+    <string name="naming_problem_unknown_token">"Nieznany symbol zastępczy: %1$s"</string>
+    <string name="naming_token_date">"Data"</string>
+    <string name="naming_token_time">"Godzina"</string>
+    <string name="naming_token_date_time">"Data i godzina"</string>
+    <string name="naming_token_iso_date">"Data ISO"</string>
+    <string name="naming_token_year">"Rok"</string>
+    <string name="naming_token_month">"Miesiąc"</string>
+    <string name="naming_token_day">"Dzień"</string>
+    <string name="naming_token_weekday">"Dzień tygodnia"</string>
+    <string name="naming_token_number">"Numer"</string>
+    <string name="naming_problem_duplicate">"Masz już szablon z tym wzorcem."</string>
+    <string name="naming_save_failed">"Nie udało się zapisać szablonu. Spróbuj ponownie."</string>
+    <string name="naming_default_failed">"Nie udało się zmienić domyślnej nazwy. Spróbuj ponownie."</string>
+    <string name="naming_delete_failed">"Nie udało się usunąć szablonu. Spróbuj ponownie."</string>
+</resources>

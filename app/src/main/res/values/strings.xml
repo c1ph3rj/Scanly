@@ -2064,6 +2064,9 @@
 
     <!-- Manifest -->
     <string name="intent_open_in_scanly">Open in Scanly</string>
+    <string name="share_images_title">"Add shared images"</string>
+    <string name="share_images_new_document_description">"Start a new document with these images"</string>
+    <string name="share_images_add_pages_to">"Add pages to"</string>
 
     <!-- Library date sections -->
     <string name="library_section_previous_7_days">Previous 7 days</string>

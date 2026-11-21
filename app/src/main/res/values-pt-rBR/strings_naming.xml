@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Naming templates (Settings → Naming templates, Suggest name). Keep {placeholders} as written. -->
+    <string name="naming_settings_entry_title">"Modelos de nome"</string>
+    <string name="naming_settings_entry_summary">"Padrões reutilizáveis para nomes de novos documentos"</string>
+    <string name="naming_default_section">"Nome padrão"</string>
+    <string name="naming_default_hint">"Novos documentos recebem este nome. Sugerir nome continua alternando entre todas as opções."</string>
+    <string name="naming_templates_section">"Modelos"</string>
+    <string name="naming_example">"Exemplo: %1$s"</string>
+    <string name="naming_default_badge">"Padrão"</string>
+    <string name="naming_add_template">"Adicionar modelo"</string>
+    <string name="naming_new_template">"Novo modelo"</string>
+    <string name="naming_edit_template">"Editar modelo"</string>
+    <string name="naming_edit_template_description">"Editar %1$s"</string>
+    <string name="naming_delete_template_description">"Excluir %1$s"</string>
+    <string name="naming_delete_title">"Excluir modelo?"</string>
+    <string name="naming_delete_message">"%1$s será removido. Os documentos que já têm esse nome continuam com ele."</string>
+    <string name="naming_delete_default_message">"%1$s é o seu nome padrão. Depois de excluí-lo, novos documentos voltam a usar %2$s. Os nomes existentes não mudam."</string>
+    <string name="naming_delete_confirm">"Excluir"</string>
+    <string name="naming_cancel">"Cancelar"</string>
+    <string name="naming_save">"Salvar"</string>
+    <string name="naming_empty_title">"Nenhum modelo ainda"</string>
+    <string name="naming_empty_body">"Salve um padrão de nome como Recibo {date} ou {iso} Fatura {n}, e o Scanly preenche a data ou um número em cada novo documento."</string>
+    <string name="naming_empty_suggest_hint">"Seus modelos se juntam aos formatos de data em Sugerir nome, e você pode definir um deles como padrão."</string>
+    <string name="naming_pattern_label">"Padrão do nome"</string>
+    <string name="naming_pattern_placeholder">"Recibo {date}"</string>
+    <string name="naming_insert_token">"Toque para inserir"</string>
+    <string name="naming_preview">"Prévia"</string>
+    <string name="naming_preview_unavailable">"Corrija o padrão para ver a prévia"</string>
+    <string name="naming_number_note">"{n} vira o menor número que mantém o nome único."</string>
+    <string name="naming_character_count">"%1$d/%2$d"</string>
+    <string name="naming_problem_blank">"Adicione um texto ou um marcador."</string>
+    <string name="naming_problem_too_long">"Use no máximo %1$d caracteres."</string>
+    <string name="naming_problem_unknown_token">"Marcador desconhecido: %1$s"</string>
+    <string name="naming_token_date">"Data"</string>
+    <string name="naming_token_time">"Hora"</string>
+    <string name="naming_token_date_time">"Data e hora"</string>
+    <string name="naming_token_iso_date">"Data ISO"</string>
+    <string name="naming_token_year">"Ano"</string>
+    <string name="naming_token_month">"Mês"</string>
+    <string name="naming_token_day">"Dia"</string>
+    <string name="naming_token_weekday">"Dia da semana"</string>
+    <string name="naming_token_number">"Número"</string>
+    <string name="naming_problem_duplicate">"Você já tem um modelo com esse padrão."</string>
+    <string name="naming_save_failed">"Não foi possível salvar o modelo. Tente novamente."</string>
+    <string name="naming_default_failed">"Não foi possível alterar o nome padrão. Tente novamente."</string>
+    <string name="naming_delete_failed">"Não foi possível excluir o modelo. Tente novamente."</string>
+</resources>

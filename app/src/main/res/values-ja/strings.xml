@@ -1867,6 +1867,9 @@
     <string name="settings_language_note">"ドキュメント名、読み取ったテキスト、開いた PDF の言語は変わりません。"</string>
     <!-- Manifest -->
     <string name="intent_open_in_scanly">"Scanlyで開く"</string>
+    <string name="share_images_title">"共有された画像を追加"</string>
+    <string name="share_images_new_document_description">"これらの画像で新しいドキュメントを作成"</string>
+    <string name="share_images_add_pages_to">"ページを追加するドキュメント"</string>
     <!-- Library date sections -->
     <string name="library_section_previous_7_days">"過去7日間"</string>
     <!-- Month and year as a section title, e.g. "December 2025". %1$s = month name, %2$d = year. -->

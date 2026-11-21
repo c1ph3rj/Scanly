@@ -1918,6 +1918,9 @@
     <string name="settings_language_note">"Назви документів, розпізнаний текст і відкриті PDF залишаються мовою оригіналу."</string>
     <!-- Manifest -->
     <string name="intent_open_in_scanly">"Відкрити в Scanly"</string>
+    <string name="share_images_title">"Додати отримані зображення"</string>
+    <string name="share_images_new_document_description">"Створити новий документ із цих зображень"</string>
+    <string name="share_images_add_pages_to">"Додати сторінки до"</string>
     <!-- Library date sections -->
     <string name="library_section_previous_7_days">"Попередні 7 днів"</string>
     <!-- Month and year as a section title, e.g. "December 2025". %1$s = month name, %2$d = year. -->

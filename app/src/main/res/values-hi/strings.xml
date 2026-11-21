@@ -1884,6 +1884,9 @@
     <string name="settings_language_note">"दस्तावेज़ों के नाम, पेजों से पहचाना गया टेक्स्ट और खोली गई PDF अपनी मूल भाषा में ही रहेंगे।"</string>
     <!-- Manifest -->
     <string name="intent_open_in_scanly">"Scanly में खोलें"</string>
+    <string name="share_images_title">"शेयर की गई इमेज जोड़ें"</string>
+    <string name="share_images_new_document_description">"इन इमेज से नया दस्तावेज़ बनाएं"</string>
+    <string name="share_images_add_pages_to">"इसमें पेज जोड़ें"</string>
     <!-- Library date sections -->
     <string name="library_section_previous_7_days">"पिछले 7 दिन"</string>
     <!-- Month and year as a section title, e.g. "December 2025". %1$s = month name, %2$d = year. -->

@@ -1901,6 +1901,9 @@
     <string name="settings_language_note">Os nomes dos documentos, o texto reconhecido nas páginas e os PDFs que você abre continuam no idioma original.</string>
     <!-- Manifest -->
     <string name="intent_open_in_scanly">Abrir no Scanly</string>
+    <string name="share_images_title">"Adicionar imagens compartilhadas"</string>
+    <string name="share_images_new_document_description">"Criar um novo documento com estas imagens"</string>
+    <string name="share_images_add_pages_to">"Adicionar páginas a"</string>
     <!-- Library date sections -->
     <string name="library_section_previous_7_days">Últimos 7 dias</string>
     <!-- Month and year as a section title, e.g. "December 2025". %1$s = month name, %2$d = year. -->

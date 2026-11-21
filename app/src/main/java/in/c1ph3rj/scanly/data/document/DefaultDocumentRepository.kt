@@ -2,6 +2,7 @@ package `in`.c1ph3rj.scanly.data.document
 
 import androidx.room.withTransaction
 import `in`.c1ph3rj.scanly.core.common.DocumentPresentationFormatter
+import `in`.c1ph3rj.scanly.core.common.NamingTemplateRenderer
 import `in`.c1ph3rj.scanly.core.common.ScanlyDispatchers
 import `in`.c1ph3rj.scanly.core.common.ScanlyError
 import `in`.c1ph3rj.scanly.core.common.ScanlyResult
@@ -9,6 +10,7 @@ import `in`.c1ph3rj.scanly.data.local.db.ScanlyDatabase
 import `in`.c1ph3rj.scanly.data.local.db.dao.DocumentDao
 import `in`.c1ph3rj.scanly.data.local.db.dao.DocumentGroupDao
 import `in`.c1ph3rj.scanly.data.local.db.dao.ScanPageDao
+import `in`.c1ph3rj.scanly.data.local.db.dao.TagDao
 import `in`.c1ph3rj.scanly.data.local.db.entity.DocumentEntity
 import `in`.c1ph3rj.scanly.data.local.db.entity.ScanPageEntity
 import `in`.c1ph3rj.scanly.data.common.LibraryOperationCoordinator
@@ -21,6 +23,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.util.Locale
 import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -33,6 +36,7 @@ class DefaultDocumentRepository @Inject constructor(
     private val documentDao: DocumentDao,
     private val documentGroupDao: DocumentGroupDao,
     private val scanPageDao: ScanPageDao,
+    private val tagDao: TagDao,
     private val documentStorageManager: DocumentStorageManager,
     private val dispatchers: ScanlyDispatchers,
     private val operationCoordinator: LibraryOperationCoordinator,
@@ -66,6 +70,21 @@ class DefaultDocumentRepository @Inject constructor(
             DocumentPresentationFormatter.uniqueDocumentTitle(
                 format = format,
                 existingTitles = documentDao.getAllTitles(),
+            )
+        }
+
+    override suspend fun suggestDocumentTitleFromPattern(pattern: String): String =
+        withContext(dispatchers.io) {
+            val existingTitles = documentDao.getAllTitles()
+            val rendered = NamingTemplateRenderer.renderUnique(
+                pattern = pattern,
+                existingTitles = existingTitles,
+                atMillis = System.currentTimeMillis(),
+                locale = Locale.getDefault(),
+            )
+            DocumentPresentationFormatter.resolveUniqueTitle(
+                baseTitle = DocumentPresentationFormatter.normalizeTitle(rendered),
+                existingTitles = existingTitles,
             )
         }
 
@@ -187,7 +206,7 @@ class DefaultDocumentRepository @Inject constructor(
             operationCoordinator.withMutation {
             runCatching {
                 database.withTransaction {
-                    documentDao.deleteById(documentId)
+                    deleteDocumentRow(documentId)
                 }
                 documentStorageManager.deleteDocumentStorage(documentId)
             }.fold(
@@ -263,7 +282,7 @@ class DefaultDocumentRepository @Inject constructor(
                 val ids = selectIds()
                 if (ids.isEmpty()) return@runCatching 0
                 database.withTransaction {
-                    ids.forEach { documentDao.deleteById(it) }
+                    ids.forEach { deleteDocumentRow(it) }
                 }
                 ids.forEach { id ->
                     runCatching { documentStorageManager.deleteDocumentStorage(id) }
@@ -287,7 +306,7 @@ class DefaultDocumentRepository @Inject constructor(
                     val emptyIds = documentDao.getEmptyDocumentIds()
                     if (emptyIds.isEmpty()) return@runCatching 0
                     database.withTransaction {
-                        emptyIds.forEach { documentDao.deleteById(it) }
+                        emptyIds.forEach { deleteDocumentRow(it) }
                     }
                     emptyIds.forEach { id ->
                         runCatching { documentStorageManager.deleteDocumentStorage(id) }
@@ -307,6 +326,15 @@ class DefaultDocumentRepository @Inject constructor(
                 )
             }
         }
+
+    /**
+     * Removes a document row and its tag links (the FKs cascade too; deleting the links
+     * explicitly doesn't depend on `foreign_keys` being on). Call inside a transaction.
+     */
+    private suspend fun deleteDocumentRow(documentId: String) {
+        tagDao.deleteDocumentTags(documentId)
+        documentDao.deleteById(documentId)
+    }
 
     private fun DocumentEntity.toDomain(): ScanDocument = ScanDocument(
         id = id,

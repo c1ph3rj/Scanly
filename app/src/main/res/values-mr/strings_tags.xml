@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tags_settings_entry_title">"टॅग"</string>
+    <string name="tags_settings_entry_summary">"टॅग तयार करा, नाव बदला आणि हटवा"</string>
+    <string name="tags_document_add">"टॅग जोडा"</string>
+    <string name="tags_document_edit">"टॅग संपादित करा"</string>
+    <string name="tags_document_row_description">"टॅग: %1$s"</string>
+    <string name="tags_document_updated">"टॅग अपडेट केले"</string>
+    <string name="tags_editor_title">"टॅग"</string>
+    <string name="tags_editor_field_label">"नवीन टॅग"</string>
+    <string name="tags_editor_add">"टॅग जोडा"</string>
+    <string name="tags_editor_create_chip">"“%1$s” तयार करा"</string>
+    <string name="tags_editor_empty">"अद्याप टॅग नाहीत. तयार करण्यासाठी नाव टाइप करा."</string>
+    <string name="tags_editor_done">"झाले"</string>
+    <string name="tags_search_filter_section">"टॅग"</string>
+    <string name="tags_search_filter_all_hint">"निवडलेले सर्व टॅग असलेले दस्तऐवज दाखवते."</string>
+    <string name="tags_search_filter_chip">"टॅग: %1$s"</string>
+    <string name="tags_manage_title">"टॅग"</string>
+    <string name="tags_manage_new_tag">"नवीन टॅग"</string>
+    <string name="tags_manage_rename_title">"टॅगचे नाव बदला"</string>
+    <string name="tags_manage_name_label">"टॅगचे नाव"</string>
+    <string name="tags_manage_create">"तयार करा"</string>
+    <string name="tags_manage_rename">"नाव बदला"</string>
+    <string name="tags_manage_delete">"हटवा"</string>
+    <string name="tags_manage_delete_title">"टॅग हटवायचा?"</string>
+    <string name="tags_manage_delete_message">"“%1$s” हा टॅग असलेल्या सर्व दस्तऐवजांमधून काढला जाईल. दस्तऐवज स्वतः राहतील."</string>
+    <string name="tags_manage_deleted">"टॅग हटवला"</string>
+    <string name="tags_manage_renamed">"टॅगचे नाव बदलले"</string>
+    <string name="tags_manage_empty_pip">"अद्याप काहीही टॅग केलेले नाही."</string>
+    <string name="tags_manage_empty_title">"अद्याप टॅग नाहीत"</string>
+    <string name="tags_manage_empty_description">"टॅग वेगवेगळ्या फोल्डरमधील दस्तऐवज एकत्र करतात: एकच पावती “प्रवास” आणि “परतफेडयोग्य” दोन्ही असू शकते. येथे किंवा कोणत्याही दस्तऐवजातून टॅग तयार करा."</string>
+    <string name="tags_manage_options">"%1$s साठी पर्याय"</string>
+    <string name="tags_manage_name_blank">"टॅगचे नाव लिहा."</string>
+    <string name="tags_manage_name_taken">"“%1$s” नावाचा टॅग आधीपासून आहे."</string>
+</resources>

@@ -54,7 +54,7 @@ import `in`.c1ph3rj.scanly.core.ui.ImageImportSupport
 import `in`.c1ph3rj.scanly.core.ui.ScanlyTestTags
 import `in`.c1ph3rj.scanly.core.ui.WindowWidthClass
 import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
-import `in`.c1ph3rj.scanly.domain.model.DocumentTitleFormat
+import `in`.c1ph3rj.scanly.domain.model.TitleSuggestionOption
 import `in`.c1ph3rj.scanly.domain.model.ScanMode
 import `in`.c1ph3rj.scanly.feature.components.DocumentTitleDialog
 import `in`.c1ph3rj.scanly.feature.components.ScanlyImportProgressOverlay
@@ -70,6 +70,7 @@ fun ToolsRoute(
 ) {
     val viewModel: ToolsViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val titleSuggestionOptions by viewModel.titleSuggestionOptions.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
 
     val importImagesLauncher = rememberLauncherForActivityResult(
@@ -99,6 +100,7 @@ fun ToolsRoute(
         },
         onOpenTool = onOpenTool,
         onSuggestTitle = viewModel::suggestDocumentTitle,
+        titleSuggestionOptions = titleSuggestionOptions,
     )
 }
 
@@ -109,7 +111,8 @@ fun ToolsScreen(
     onScan: (String, ScanMode) -> Unit,
     onImport: () -> Unit,
     onOpenTool: (String) -> Unit,
-    onSuggestTitle: suspend (DocumentTitleFormat) -> String,
+    onSuggestTitle: suspend (TitleSuggestionOption) -> String,
+    titleSuggestionOptions: List<TitleSuggestionOption> = emptyList(),
 ) {
     // The mode of the scan whose title dialog is open; null when closed. Survives rotation.
     var pendingScanMode by rememberSaveable { mutableStateOf<ScanMode?>(null) }
@@ -293,6 +296,7 @@ fun ToolsScreen(
                 onScan(value, dialogScanMode)
             },
             onSuggestTitle = onSuggestTitle,
+            suggestionOptions = titleSuggestionOptions,
             autoFillSuggestedName = true,
         )
     }

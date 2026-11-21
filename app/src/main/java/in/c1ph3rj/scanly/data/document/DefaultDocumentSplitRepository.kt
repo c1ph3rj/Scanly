@@ -13,11 +13,13 @@ import `in`.c1ph3rj.scanly.data.local.db.dao.DocumentDao
 import `in`.c1ph3rj.scanly.data.local.db.dao.PageMarkupDao
 import `in`.c1ph3rj.scanly.data.local.db.dao.PageTextDao
 import `in`.c1ph3rj.scanly.data.local.db.dao.ScanPageDao
+import `in`.c1ph3rj.scanly.data.local.db.dao.TagDao
 import `in`.c1ph3rj.scanly.data.local.db.entity.DocumentEntity
 import `in`.c1ph3rj.scanly.data.local.db.entity.PageMarkupEntity
 import `in`.c1ph3rj.scanly.data.local.db.entity.PageTextEntity
 import `in`.c1ph3rj.scanly.data.local.db.entity.ScanPageEntity
 import `in`.c1ph3rj.scanly.data.storage.DocumentStorageManager
+import `in`.c1ph3rj.scanly.data.tag.copyDocumentTags
 import `in`.c1ph3rj.scanly.domain.repository.DocumentSplitRepository
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -27,7 +29,7 @@ import javax.inject.Singleton
 
 /**
  * Splits by copying: each part gets its own document folder with copies of its pages' files,
- * and new page, text and markup rows. The source is never edited in place, so a failure part
+ * and new page, text, markup and tag rows. The source is never edited in place, so a failure part
  * way leaves it untouched (the parts made so far are removed), and "don't keep the original"
  * only moves it to Recently deleted.
  */
@@ -38,6 +40,7 @@ class DefaultDocumentSplitRepository @Inject constructor(
     private val scanPageDao: ScanPageDao,
     private val pageTextDao: PageTextDao,
     private val pageMarkupDao: PageMarkupDao,
+    private val tagDao: TagDao,
     private val documentStorageManager: DocumentStorageManager,
     private val dispatchers: ScanlyDispatchers,
     private val operationCoordinator: LibraryOperationCoordinator,
@@ -78,7 +81,12 @@ class DefaultDocumentSplitRepository @Inject constructor(
                 onSuccess = { ScanlyResult.Success(it) },
                 onFailure = { throwable ->
                     created.forEach { id ->
-                        runCatching { database.withTransaction { documentDao.deleteById(id) } }
+                        runCatching {
+                            database.withTransaction {
+                                tagDao.deleteDocumentTags(id)
+                                documentDao.deleteById(id)
+                            }
+                        }
                         runCatching { documentStorageManager.deleteDocumentStorage(id) }
                     }
                     ScanlyResult.Failure(
@@ -149,6 +157,8 @@ class DefaultDocumentSplitRepository @Inject constructor(
             // Plain inserts so Room's FTS triggers index the copied text.
             texts.forEach { pageTextDao.insert(it) }
             markups.forEach { pageMarkupDao.upsertMarkup(it) }
+            // Each part keeps the source's tags.
+            copyDocumentTags(tagDao, sourceDocumentId = source.id, targetDocumentId = newId)
         }
     }
 

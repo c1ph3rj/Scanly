@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tags_settings_entry_title">"Tags"</string>
+    <string name="tags_settings_entry_summary">"Tags erstellen, umbenennen und löschen"</string>
+    <string name="tags_document_add">"Tags hinzufügen"</string>
+    <string name="tags_document_edit">"Tags bearbeiten"</string>
+    <string name="tags_document_row_description">"Tags: %1$s"</string>
+    <string name="tags_document_updated">"Tags aktualisiert"</string>
+    <string name="tags_editor_title">"Tags"</string>
+    <string name="tags_editor_field_label">"Neuer Tag"</string>
+    <string name="tags_editor_add">"Tag hinzufügen"</string>
+    <string name="tags_editor_create_chip">"„%1$s“ erstellen"</string>
+    <string name="tags_editor_empty">"Noch keine Tags. Gib einen Namen ein, um einen zu erstellen."</string>
+    <string name="tags_editor_done">"Fertig"</string>
+    <string name="tags_search_filter_section">"Tags"</string>
+    <string name="tags_search_filter_all_hint">"Zeigt Dokumente, die alle ausgewählten Tags haben."</string>
+    <string name="tags_search_filter_chip">"Tag: %1$s"</string>
+    <string name="tags_manage_title">"Tags"</string>
+    <string name="tags_manage_new_tag">"Neuer Tag"</string>
+    <string name="tags_manage_rename_title">"Tag umbenennen"</string>
+    <string name="tags_manage_name_label">"Tag-Name"</string>
+    <string name="tags_manage_create">"Erstellen"</string>
+    <string name="tags_manage_rename">"Umbenennen"</string>
+    <string name="tags_manage_delete">"Löschen"</string>
+    <string name="tags_manage_delete_title">"Tag löschen?"</string>
+    <string name="tags_manage_delete_message">"„%1$s“ wird von allen Dokumenten entfernt, die diesen Tag haben. Die Dokumente selbst bleiben erhalten."</string>
+    <string name="tags_manage_deleted">"Tag gelöscht"</string>
+    <string name="tags_manage_renamed">"Tag umbenannt"</string>
+    <string name="tags_manage_empty_pip">"Noch nichts getaggt."</string>
+    <string name="tags_manage_empty_title">"Noch keine Tags"</string>
+    <string name="tags_manage_empty_description">"Tags ordnen Dokumente ordnerübergreifend: Ein Beleg kann gleichzeitig „Reise“ und „Erstattungsfähig“ sein. Erstelle hier oder in einem beliebigen Dokument einen Tag."</string>
+    <string name="tags_manage_options">"Optionen für %1$s"</string>
+    <string name="tags_manage_name_blank">"Gib einen Tag-Namen ein."</string>
+    <string name="tags_manage_name_taken">"Ein Tag namens „%1$s“ existiert bereits."</string>
+</resources>

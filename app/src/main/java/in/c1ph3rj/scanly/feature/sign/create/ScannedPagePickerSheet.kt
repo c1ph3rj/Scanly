@@ -118,7 +118,7 @@ fun ScannedPagePickerSheet(
 
 /** One scanned document: cover thumbnail, title, page count and a chevron. */
 @Composable
-private fun ScannedDocumentRow(
+internal fun ScannedDocumentRow(
     document: ScanDocument,
     onClick: () -> Unit,
 ) {

@@ -71,8 +71,10 @@ import `in`.c1ph3rj.scanly.core.ui.WindowWidthClass
 import `in`.c1ph3rj.scanly.core.ui.adaptiveColumnCount
 import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import androidx.compose.ui.unit.takeOrElse
+import `in`.c1ph3rj.scanly.core.common.buildTitleSuggestionOptions
+import `in`.c1ph3rj.scanly.core.common.stableKey
 import `in`.c1ph3rj.scanly.domain.model.DocumentGroup
-import `in`.c1ph3rj.scanly.domain.model.DocumentTitleFormat
+import `in`.c1ph3rj.scanly.domain.model.TitleSuggestionOption
 import `in`.c1ph3rj.scanly.domain.model.GroupTitleFormat
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
 import `in`.c1ph3rj.scanly.feature.components.*
@@ -93,6 +95,7 @@ fun LibraryRoute(
     onTabRequestHandled: () -> Unit = {},
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val titleSuggestionOptions by viewModel.titleSuggestionOptions.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(tabRequest) {
@@ -131,6 +134,7 @@ fun LibraryRoute(
         onTabSelected = viewModel::selectTab,
         onSortSelected = viewModel::selectSortOption,
         onSuggestTitle = viewModel::suggestDocumentTitle,
+        titleSuggestionOptions = titleSuggestionOptions,
         onSuggestGroupTitle = viewModel::suggestGroupTitle,
     )
 }
@@ -155,7 +159,8 @@ fun LibraryScreen(
     onGroupSelected: (String) -> Unit,
     onTabSelected: (LibraryTab) -> Unit,
     onSortSelected: (LibrarySortOption) -> Unit,
-    onSuggestTitle: suspend (DocumentTitleFormat) -> String,
+    onSuggestTitle: suspend (TitleSuggestionOption) -> String,
+    titleSuggestionOptions: List<TitleSuggestionOption> = emptyList(),
     onSuggestGroupTitle: suspend (GroupTitleFormat) -> String,
 ) {
     var createDocDialogVisible by rememberSaveable { mutableStateOf(false) }
@@ -495,6 +500,7 @@ fun LibraryScreen(
                 }
             },
             onSuggestTitle = onSuggestTitle,
+            suggestionOptions = titleSuggestionOptions,
         )
     }
 
@@ -950,27 +956,35 @@ fun NewDocumentDialog(
     initialGroupId: String? = null,
     onDismiss: () -> Unit,
     onConfirm: (title: String, groupId: String?) -> Unit,
-    onSuggestTitle: (suspend (DocumentTitleFormat) -> String)? = null,
+    onSuggestTitle: (suspend (TitleSuggestionOption) -> String)? = null,
+    suggestionOptions: List<TitleSuggestionOption> = emptyList(),
 ) {
+    val options = suggestionOptions.ifEmpty { buildTitleSuggestionOptions(emptyList()) }
     var title by rememberSaveable { mutableStateOf("") }
     var selectedGroupId by rememberSaveable { mutableStateOf(initialGroupId) }
     var isFillingName by remember {
         mutableStateOf(title.isBlank() && onSuggestTitle != null)
     }
     var suggestFormatIndex by rememberSaveable { mutableIntStateOf(0) }
+    // Saved templates load in the background: if the default option changes after the dialog
+    // opened, an untouched auto-filled name is suggested again (see DocumentTitleDialog).
+    var autoFilledName by rememberSaveable { mutableStateOf<String?>(null) }
+    var autoFilledFrom by rememberSaveable { mutableStateOf<String?>(null) }
+    val defaultOption = options.first()
 
-    LaunchedEffect(Unit) {
-        if (onSuggestTitle == null || title.isNotBlank()) {
+    LaunchedEffect(defaultOption.stableKey) {
+        val untouched = title.isBlank() || title == autoFilledName
+        if (onSuggestTitle == null || !untouched || autoFilledFrom == defaultOption.stableKey) {
             isFillingName = false
             return@LaunchedEffect
         }
         isFillingName = true
-        val suggested = runCatching { onSuggestTitle(DocumentTitleFormat.default) }.getOrNull()
-        if (title.isBlank() && !suggested.isNullOrBlank()) {
+        val suggested = runCatching { onSuggestTitle(defaultOption) }.getOrNull()
+        if ((title.isBlank() || title == autoFilledName) && !suggested.isNullOrBlank()) {
             title = suggested
-            suggestFormatIndex = DocumentTitleFormat.entries.indexOf(
-                DocumentTitleFormat.default.next(),
-            )
+            autoFilledName = suggested
+            autoFilledFrom = defaultOption.stableKey
+            suggestFormatIndex = 1 % options.size
         }
         isFillingName = false
     }
@@ -999,9 +1013,10 @@ fun NewDocumentDialog(
         )
         if (onSuggestTitle != null) {
             DocumentTitleSuggestRow(
+                suggestionOptions = options,
                 onSuggestTitle = onSuggestTitle,
                 onSuggested = { title = it },
-                initialFormatIndex = suggestFormatIndex,
+                initialOptionIndex = suggestFormatIndex,
                 enabled = !isFillingName,
             )
         }

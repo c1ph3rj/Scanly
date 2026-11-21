@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="document_menu_pdf_tools">"Narzędzia PDF"</string>
+    <string name="document_pdf_tools_sheet_subtitle">"Każde narzędzie tworzy nowy PDF z „%1$s”. Twój skan pozostaje bez zmian."</string>
+    <string name="document_pdf_tools_password_caption">"Zablokuj hasłem"</string>
+</resources>

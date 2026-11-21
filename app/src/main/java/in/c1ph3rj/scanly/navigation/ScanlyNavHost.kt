@@ -41,6 +41,8 @@ import `in`.c1ph3rj.scanly.feature.settings.SettingsStorageRoute
 import `in`.c1ph3rj.scanly.feature.library.RecentlyDeletedRoute
 import `in`.c1ph3rj.scanly.feature.library.TrashUndoSnackbarHost
 import `in`.c1ph3rj.scanly.feature.settings.SettingsWidgetsRoute
+import `in`.c1ph3rj.scanly.feature.tags.TagsManageRoute
+import `in`.c1ph3rj.scanly.feature.naming.NamingTemplatesRoute
 import `in`.c1ph3rj.scanly.feature.tools.ToolsRoute
 import `in`.c1ph3rj.scanly.feature.tools.pdf.PdfCompressRoute
 import `in`.c1ph3rj.scanly.feature.tools.pdf.PdfMergeRoute
@@ -1096,6 +1098,10 @@ private fun ScanlyNavHostContent(
                     onOpenAbout = { navController.navigateSingleTop(SettingsAboutDestination.route) },
                     onOpenFeedback = { navController.navigateSingleTop(SettingsFeedbackDestination.route) },
                     onOpenPip = { navController.navigateSingleTop(SettingsPipDestination.route) },
+                    onOpenTags = { navController.navigateSingleTop(SettingsTagsDestination.route) },
+                    onOpenNamingTemplates = {
+                        navController.navigateSingleTop(SettingsNamingTemplatesDestination.route)
+                    },
                 )
             }
         }
@@ -1119,6 +1125,16 @@ private fun ScanlyNavHostContent(
             route = SettingsPipDestination.route,
         ) {
             SettingsPipRoute(onNavigateUp = navController::navigateUp)
+        }
+        composable(
+            route = SettingsTagsDestination.route,
+        ) {
+            TagsManageRoute(onNavigateUp = navController::navigateUp)
+        }
+        composable(
+            route = SettingsNamingTemplatesDestination.route,
+        ) {
+            NamingTemplatesRoute(onNavigateUp = navController::navigateUp)
         }
         composable(
             route = SettingsDetectionDestination.route,

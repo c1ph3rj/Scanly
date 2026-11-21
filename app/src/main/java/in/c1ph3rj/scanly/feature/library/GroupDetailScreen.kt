@@ -90,7 +90,7 @@ import `in`.c1ph3rj.scanly.core.ui.WindowWidthClass
 import `in`.c1ph3rj.scanly.core.ui.adaptiveColumnCount
 import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import androidx.compose.ui.unit.takeOrElse
-import `in`.c1ph3rj.scanly.domain.model.DocumentTitleFormat
+import `in`.c1ph3rj.scanly.domain.model.TitleSuggestionOption
 import `in`.c1ph3rj.scanly.domain.model.PdfExportOptions
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
 import `in`.c1ph3rj.scanly.feature.components.DocumentCard
@@ -120,6 +120,7 @@ fun GroupDetailRoute(
     viewModel: GroupDetailViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val titleSuggestionOptions by viewModel.titleSuggestionOptions.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
 
@@ -144,6 +145,7 @@ fun GroupDetailRoute(
         onAddDocuments = viewModel::addDocumentsToGroup,
         onCreateDocument = viewModel::createDocumentInGroup,
         onSuggestTitle = viewModel::suggestDocumentTitle,
+        titleSuggestionOptions = titleSuggestionOptions,
         onRemoveDocument = viewModel::removeDocumentFromGroup,
         onSaveMergedPdf = viewModel::saveMergedPdf,
         onShareMergedPdf = viewModel::shareMergedPdf,
@@ -164,7 +166,8 @@ private fun GroupDetailScreen(
     onDeleteGroup: (includeDocuments: Boolean) -> Unit,
     onAddDocuments: (Collection<String>) -> Unit,
     onCreateDocument: (String) -> Unit,
-    onSuggestTitle: suspend (DocumentTitleFormat) -> String,
+    onSuggestTitle: suspend (TitleSuggestionOption) -> String,
+    titleSuggestionOptions: List<TitleSuggestionOption> = emptyList(),
     onRemoveDocument: (String) -> Unit,
     onSaveMergedPdf: (PdfExportOptions) -> Unit,
     onShareMergedPdf: (PdfExportOptions) -> Unit,
@@ -440,6 +443,7 @@ private fun GroupDetailScreen(
                 }
             },
             onSuggestTitle = onSuggestTitle,
+            suggestionOptions = titleSuggestionOptions,
             autoFillSuggestedName = true,
         )
     }

@@ -224,6 +224,65 @@ class LibrarySearchRankerTest {
         assertTrue(rank("   ").isEmpty)
     }
 
+    @Test
+    fun tagFilterKeepsDocumentsCarryingEveryChosenTag() {
+        val tagIds = mapOf("lease" to setOf("travel", "work"), "inv" to setOf("travel"))
+        fun ids(vararg chosen: String) = LibrarySearchRanker.rank(
+            SearchQuery.parse(""), documents, groups, emptyMap(), null, SearchScope.EVERYWHERE,
+            SearchFilters(tagIds = chosen.toSet()),
+            documentTagIds = tagIds,
+        ).nameMatches.map { it.document.id }.toSet()
+        assertEquals(setOf("lease", "inv"), ids("travel"))
+        assertEquals(setOf("lease"), ids("travel", "work"))
+        assertTrue(ids("missing").isEmpty())
+    }
+
+    @Test
+    fun tagNameMatchesCountAsNameMatchesBelowTitleMatches() {
+        val tagIds = mapOf("other" to setOf("t1"), "inv" to setOf("t2"))
+        val tagNames = mapOf("t1" to "Old lease paperwork", "t2" to "Travel")
+        val results = LibrarySearchRanker.rank(
+            SearchQuery.parse("lease"), documents, groups, emptyMap(), null, SearchScope.NAMES,
+            documentTagIds = tagIds,
+            tagNames = tagNames,
+        )
+        val ids = results.nameMatches.map { it.document.id }
+        assertEquals(setOf("lease", "notes", "other"), ids.toSet())
+        assertEquals("other", ids.last())
+        val tagOnly = results.nameMatches.last()
+        assertTrue(tagOnly.nameMatched)
+        assertTrue(tagOnly.title.highlights.isEmpty())
+        // Words split across the name and a tag still match, highlighting only the name's.
+        val split = LibrarySearchRanker.rank(
+            SearchQuery.parse("travel invoice"), documents, groups, emptyMap(), null, SearchScope.EVERYWHERE,
+            documentTagIds = tagIds,
+            tagNames = tagNames,
+        )
+        assertEquals(listOf("inv"), split.nameMatches.map { it.document.id })
+        assertEquals(listOf(0..6), split.nameMatches.single().title.highlights)
+        // The split match is strict: no typo tolerance across the name and a tag.
+        val typo = LibrarySearchRanker.rank(
+            SearchQuery.parse("travle invoice"), documents, groups, emptyMap(), null, SearchScope.NAMES,
+            documentTagIds = tagIds,
+            tagNames = tagNames,
+        )
+        assertTrue(typo.nameMatches.none { it.document.id == "inv" })
+        // An excluded word in a tag drops the name match, as it would in the title.
+        val excluded = LibrarySearchRanker.rank(
+            SearchQuery.parse("invoice -travel"), documents, groups, emptyMap(), null, SearchScope.NAMES,
+            documentTagIds = tagIds,
+            tagNames = tagNames,
+        )
+        assertTrue(excluded.nameMatches.none { it.document.id == "inv" })
+        // Text-only scope ignores tag names like it ignores titles.
+        val textOnly = LibrarySearchRanker.rank(
+            SearchQuery.parse("travel"), documents, groups, emptyMap(), emptyList(), SearchScope.TEXT,
+            documentTagIds = tagIds,
+            tagNames = tagNames,
+        )
+        assertTrue(textOnly.isEmpty)
+    }
+
     private fun doc(id: String, title: String, updated: Long, groupId: String? = null) = ScanDocument(
         id = id,
         title = title,

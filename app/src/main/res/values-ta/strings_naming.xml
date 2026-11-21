@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Naming templates (Settings → Naming templates, Suggest name). Keep {placeholders} as written. -->
+    <string name="naming_settings_entry_title">"பெயர் வார்ப்புருக்கள்"</string>
+    <string name="naming_settings_entry_summary">"புதிய ஆவணப் பெயர்களுக்கு மீண்டும் பயன்படுத்தக்கூடிய வடிவங்கள்"</string>
+    <string name="naming_default_section">"இயல்புநிலைப் பெயர்"</string>
+    <string name="naming_default_hint">"புதிய ஆவணங்களுக்கு இந்தப் பெயர் வைக்கப்படும். பெயரைப் பரிந்துரை இன்னும் எல்லா விருப்பங்களையும் மாற்றி மாற்றிக் காட்டும்."</string>
+    <string name="naming_templates_section">"வார்ப்புருக்கள்"</string>
+    <string name="naming_example">"எடுத்துக்காட்டு: %1$s"</string>
+    <string name="naming_default_badge">"இயல்புநிலை"</string>
+    <string name="naming_add_template">"வார்ப்புருவைச் சேர்"</string>
+    <string name="naming_new_template">"புதிய வார்ப்புரு"</string>
+    <string name="naming_edit_template">"வார்ப்புருவைத் திருத்து"</string>
+    <string name="naming_edit_template_description">"%1$s ஐத் திருத்து"</string>
+    <string name="naming_delete_template_description">"%1$s ஐ நீக்கு"</string>
+    <string name="naming_delete_title">"வார்ப்புருவை நீக்கவா?"</string>
+    <string name="naming_delete_message">"%1$s நீக்கப்படும். இதன்படி ஏற்கெனவே பெயரிடப்பட்ட ஆவணங்களின் பெயர்கள் மாறாது."</string>
+    <string name="naming_delete_default_message">"%1$s உங்கள் இயல்புநிலைப் பெயர். நீக்கிய பிறகு புதிய ஆவணங்கள் மீண்டும் %2$s ஐப் பயன்படுத்தும். ஏற்கெனவே உள்ள பெயர்கள் மாறாது."</string>
+    <string name="naming_delete_confirm">"நீக்கு"</string>
+    <string name="naming_cancel">"ரத்துசெய்"</string>
+    <string name="naming_save">"சேமி"</string>
+    <string name="naming_empty_title">"இன்னும் வார்ப்புருக்கள் இல்லை"</string>
+    <string name="naming_empty_body">"ரசீது {date} அல்லது {iso} விலைப்பட்டியல் {n} போன்ற பெயர் வடிவத்தைச் சேமித்தால், ஒவ்வொரு புதிய ஆவணத்துக்கும் Scanly தேதியையோ எண்ணையோ நிரப்பும்."</string>
+    <string name="naming_empty_suggest_hint">"உங்கள் வார்ப்புருக்கள் பெயரைப் பரிந்துரை இல் உள்ள தேதி வடிவங்களுடன் தோன்றும்; அவற்றில் ஒன்றை இயல்புநிலையாக்கலாம்."</string>
+    <string name="naming_pattern_label">"வடிவம்"</string>
+    <string name="naming_pattern_placeholder">"ரசீது {date}"</string>
+    <string name="naming_insert_token">"சேர்க்கத் தட்டவும்"</string>
+    <string name="naming_preview">"முன்னோட்டம்"</string>
+    <string name="naming_preview_unavailable">"முன்னோட்டத்தைப் பார்க்க வடிவத்தைச் சரிசெய்யவும்"</string>
+    <string name="naming_number_note">"{n} என்பது பெயரைத் தனித்துவமாக வைக்கும் மிகச் சிறிய எண்ணாக மாறும்."</string>
+    <string name="naming_character_count">"%1$d/%2$d"</string>
+    <string name="naming_problem_blank">"சிறிது உரை அல்லது ஒதுக்கிடத்தைச் சேர்க்கவும்."</string>
+    <string name="naming_problem_too_long">"அதிகபட்சம் %1$d எழுத்துகளைப் பயன்படுத்தவும்."</string>
+    <string name="naming_problem_unknown_token">"தெரியாத ஒதுக்கிடம்: %1$s"</string>
+    <string name="naming_token_date">"தேதி"</string>
+    <string name="naming_token_time">"நேரம்"</string>
+    <string name="naming_token_date_time">"தேதி &amp; நேரம்"</string>
+    <string name="naming_token_iso_date">"ISO தேதி"</string>
+    <string name="naming_token_year">"ஆண்டு"</string>
+    <string name="naming_token_month">"மாதம்"</string>
+    <string name="naming_token_day">"நாள்"</string>
+    <string name="naming_token_weekday">"கிழமை"</string>
+    <string name="naming_token_number">"எண்"</string>
+    <string name="naming_problem_duplicate">"இந்த வடிவத்துடன் ஒரு வார்ப்புரு ஏற்கெனவே உள்ளது."</string>
+    <string name="naming_save_failed">"வார்ப்புருவைச் சேமிக்க முடியவில்லை. மீண்டும் முயலவும்."</string>
+    <string name="naming_default_failed">"இயல்புநிலைப் பெயரை மாற்ற முடியவில்லை. மீண்டும் முயலவும்."</string>
+    <string name="naming_delete_failed">"வார்ப்புருவை நீக்க முடியவில்லை. மீண்டும் முயலவும்."</string>
+</resources>

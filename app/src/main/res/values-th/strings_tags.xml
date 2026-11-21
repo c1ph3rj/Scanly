@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tags_settings_entry_title">"แท็ก"</string>
+    <string name="tags_settings_entry_summary">"สร้าง เปลี่ยนชื่อ และลบแท็ก"</string>
+    <string name="tags_document_add">"เพิ่มแท็ก"</string>
+    <string name="tags_document_edit">"แก้ไขแท็ก"</string>
+    <string name="tags_document_row_description">"แท็ก: %1$s"</string>
+    <string name="tags_document_updated">"อัปเดตแท็กแล้ว"</string>
+    <string name="tags_editor_title">"แท็ก"</string>
+    <string name="tags_editor_field_label">"แท็กใหม่"</string>
+    <string name="tags_editor_add">"เพิ่มแท็ก"</string>
+    <string name="tags_editor_create_chip">"สร้าง “%1$s”"</string>
+    <string name="tags_editor_empty">"ยังไม่มีแท็ก พิมพ์ชื่อเพื่อสร้างแท็ก"</string>
+    <string name="tags_editor_done">"เสร็จสิ้น"</string>
+    <string name="tags_search_filter_section">"แท็ก"</string>
+    <string name="tags_search_filter_all_hint">"แสดงเอกสารที่มีแท็กที่เลือกครบทุกแท็ก"</string>
+    <string name="tags_search_filter_chip">"แท็ก: %1$s"</string>
+    <string name="tags_manage_title">"แท็ก"</string>
+    <string name="tags_manage_new_tag">"แท็กใหม่"</string>
+    <string name="tags_manage_rename_title">"เปลี่ยนชื่อแท็ก"</string>
+    <string name="tags_manage_name_label">"ชื่อแท็ก"</string>
+    <string name="tags_manage_create">"สร้าง"</string>
+    <string name="tags_manage_rename">"เปลี่ยนชื่อ"</string>
+    <string name="tags_manage_delete">"ลบ"</string>
+    <string name="tags_manage_delete_title">"ลบแท็กไหม"</string>
+    <string name="tags_manage_delete_message">"“%1$s” จะถูกนำออกจากเอกสารทุกฉบับที่มีแท็กนี้ ตัวเอกสารจะยังอยู่"</string>
+    <string name="tags_manage_deleted">"ลบแท็กแล้ว"</string>
+    <string name="tags_manage_renamed">"เปลี่ยนชื่อแท็กแล้ว"</string>
+    <string name="tags_manage_empty_pip">"ยังไม่มีอะไรติดแท็ก"</string>
+    <string name="tags_manage_empty_title">"ยังไม่มีแท็ก"</string>
+    <string name="tags_manage_empty_description">"แท็กจัดกลุ่มเอกสารข้ามโฟลเดอร์ได้ ใบเสร็จใบเดียวอาจเป็นทั้ง “เดินทาง” และ “เบิกคืนได้” สร้างแท็กที่นี่หรือจากเอกสารใดก็ได้"</string>
+    <string name="tags_manage_options">"ตัวเลือกสำหรับ %1$s"</string>
+    <string name="tags_manage_name_blank">"ป้อนชื่อแท็ก"</string>
+    <string name="tags_manage_name_taken">"มีแท็กชื่อ “%1$s” อยู่แล้ว"</string>
+</resources>

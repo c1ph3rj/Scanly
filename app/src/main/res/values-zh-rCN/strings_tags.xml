@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tags_settings_entry_title">"标签"</string>
+    <string name="tags_settings_entry_summary">"创建、重命名和删除标签"</string>
+    <string name="tags_document_add">"添加标签"</string>
+    <string name="tags_document_edit">"编辑标签"</string>
+    <string name="tags_document_row_description">"标签：%1$s"</string>
+    <string name="tags_document_updated">"标签已更新"</string>
+    <string name="tags_editor_title">"标签"</string>
+    <string name="tags_editor_field_label">"新标签"</string>
+    <string name="tags_editor_add">"添加标签"</string>
+    <string name="tags_editor_create_chip">"创建“%1$s”"</string>
+    <string name="tags_editor_empty">"还没有标签。输入名称即可创建。"</string>
+    <string name="tags_editor_done">"完成"</string>
+    <string name="tags_search_filter_section">"标签"</string>
+    <string name="tags_search_filter_all_hint">"显示带有所有所选标签的文档。"</string>
+    <string name="tags_search_filter_chip">"标签：%1$s"</string>
+    <string name="tags_manage_title">"标签"</string>
+    <string name="tags_manage_new_tag">"新标签"</string>
+    <string name="tags_manage_rename_title">"重命名标签"</string>
+    <string name="tags_manage_name_label">"标签名称"</string>
+    <string name="tags_manage_create">"创建"</string>
+    <string name="tags_manage_rename">"重命名"</string>
+    <string name="tags_manage_delete">"删除"</string>
+    <string name="tags_manage_delete_title">"要删除标签吗？"</string>
+    <string name="tags_manage_delete_message">"将从所有带有“%1$s”的文档中移除该标签。文档本身会保留。"</string>
+    <string name="tags_manage_deleted">"已删除标签"</string>
+    <string name="tags_manage_renamed">"已重命名标签"</string>
+    <string name="tags_manage_empty_pip">"还没有任何内容添加标签。"</string>
+    <string name="tags_manage_empty_title">"还没有标签"</string>
+    <string name="tags_manage_empty_description">"标签可以跨文件夹归类文档：一张收据可以同时属于“差旅”和“可报销”。在这里或任意文档中创建标签。"</string>
+    <string name="tags_manage_options">"%1$s 的选项"</string>
+    <string name="tags_manage_name_blank">"请输入标签名称。"</string>
+    <string name="tags_manage_name_taken">"已存在名为“%1$s”的标签。"</string>
+</resources>
