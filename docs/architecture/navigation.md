@@ -54,6 +54,8 @@ These top-level routes still exist but show `FeaturePlaceholderScreen` — they 
 | `settings/pip` | `SettingsPipDestination` | Pip master switch, tips, camera coaching, export cheers, animation |
 | `settings/detection` | `SettingsDetectionDestination` | Models, gate, benchmark link |
 | `settings/widgets` | `SettingsWidgetsDestination` | Pin home-screen widgets |
+| `settings/tags` | `SettingsTagsDestination` | Create, rename, delete tags (`TagsManageRoute`) |
+| `settings/naming` | `SettingsNamingTemplatesDestination` | Naming templates and the default new-document name (`NamingTemplatesRoute`) |
 | `settings/about` | `SettingsAboutDestination` | Version, updates, legal, support |
 | `settings/faq` | `SettingsFaqDestination` | FAQ sub-screen |
 | `settings/licenses` | `SettingsLicensesDestination` | Open-source licenses |

@@ -26,6 +26,9 @@ import androidx.room.Index
         ),
     ],
     indices = [
+        // The primary key already leads with documentId; Room still wants an index named for each
+        // foreign key column, and it keeps document deletes from scanning the table.
+        Index(value = ["documentId"]),
         Index(value = ["tagId"]),
     ],
 )

@@ -107,6 +107,7 @@ import androidx.compose.ui.window.DialogProperties
 import dagger.hilt.android.EntryPointAccessors
 import `in`.c1ph3rj.scanly.core.common.DocumentPresentationFormatter
 import `in`.c1ph3rj.scanly.core.common.buildTitleSuggestionOptions
+import `in`.c1ph3rj.scanly.core.common.stableKey
 import `in`.c1ph3rj.scanly.core.common.runCatchingCancellable
 import `in`.c1ph3rj.scanly.core.ui.ChromeIconButton
 import `in`.c1ph3rj.scanly.core.ui.MetricChip
@@ -842,16 +843,27 @@ fun DocumentTitleDialog(
         )
     }
     var suggestOptionIndex by rememberSaveable { mutableIntStateOf(0) }
+    // The name auto-filled, and the option it came from. Saved templates load in the background, so
+    // if the default option changes after the dialog opened, an untouched auto-filled name is
+    // suggested again from the new default (rotation keeps the same option and doesn't refill).
+    var autoFilledName by rememberSaveable { mutableStateOf<String?>(null) }
+    var autoFilledFrom by rememberSaveable { mutableStateOf<String?>(null) }
+    val defaultOption = options.first()
 
-    LaunchedEffect(autoFillSuggestedName) {
-        if (!autoFillSuggestedName || onSuggestTitle == null || value.isNotBlank()) {
+    LaunchedEffect(autoFillSuggestedName, defaultOption.stableKey) {
+        val untouched = value.isBlank() || value == autoFilledName
+        if (!autoFillSuggestedName || onSuggestTitle == null || !untouched ||
+            autoFilledFrom == defaultOption.stableKey
+        ) {
             isFillingName = false
             return@LaunchedEffect
         }
         isFillingName = true
-        val suggested = runCatchingCancellable { onSuggestTitle(options.first()) }.getOrNull()
-        if (value.isBlank() && !suggested.isNullOrBlank()) {
+        val suggested = runCatchingCancellable { onSuggestTitle(defaultOption) }.getOrNull()
+        if ((value.isBlank() || value == autoFilledName) && !suggested.isNullOrBlank()) {
             value = suggested
+            autoFilledName = suggested
+            autoFilledFrom = defaultOption.stableKey
             suggestOptionIndex = 1 % options.size
         }
         isFillingName = false

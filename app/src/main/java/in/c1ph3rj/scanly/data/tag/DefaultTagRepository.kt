@@ -1,5 +1,8 @@
 package `in`.c1ph3rj.scanly.data.tag
 
+import `in`.c1ph3rj.scanly.data.common.UserFacingFailure
+import kotlin.coroutines.cancellation.CancellationException
+
 import androidx.room.withTransaction
 import `in`.c1ph3rj.scanly.R
 import `in`.c1ph3rj.scanly.core.common.ScanlyDispatchers
@@ -76,7 +79,9 @@ class DefaultTagRepository @Inject constructor(
         database.withTransaction {
             val tag = requireNotNull(tagDao.getTag(tagId)) { "Tag $tagId not found" }
             val clash = tagDao.getTagByKey(key)
-            require(clash == null || clash.id == tagId) { "Another tag is already named \"$normalized\"" }
+            if (clash != null && clash.id != tagId) {
+                throw UserFacingFailure(appString(R.string.tags_manage_name_taken, clash.name))
+            }
             if (tag.name != normalized || tag.nameKey != key) {
                 tagDao.updateTag(tag.copy(name = normalized, nameKey = key))
             }
@@ -106,7 +111,7 @@ class DefaultTagRepository @Inject constructor(
 
     private fun requireName(raw: String): String {
         val normalized = DocumentTagRules.normalizeName(raw)
-        require(normalized.isNotBlank()) { "Tag name is blank" }
+        if (normalized.isBlank()) throw UserFacingFailure(appString(R.string.tags_manage_name_blank))
         return normalized
     }
 
@@ -114,10 +119,12 @@ class DefaultTagRepository @Inject constructor(
         runCatching { operationCoordinator.withMutation { block() } }.fold(
             onSuccess = { ScanlyResult.Success(it) },
             onFailure = { throwable ->
+                // Cancellation isn't a failed save: let it propagate.
+                if (throwable is CancellationException) throw throwable
                 ScanlyResult.Failure(
-                    // Repository messages are for logs; the UI validates names itself and shows its own text.
                     ScanlyError(
-                        message = appString(R.string.default_page_text_repository_could_not_save_your_changes),
+                        message = (throwable as? UserFacingFailure)?.message
+                            ?: appString(R.string.default_page_text_repository_could_not_save_your_changes),
                         cause = throwable,
                     ),
                 )

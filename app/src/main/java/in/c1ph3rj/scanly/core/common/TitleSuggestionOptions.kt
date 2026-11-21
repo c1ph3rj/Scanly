@@ -23,3 +23,13 @@ fun buildTitleSuggestionOptions(templates: List<NamingTemplate>): List<TitleSugg
             .forEach { add(TitleSuggestionOption.Template(it)) }
     }
 }
+
+/**
+ * Identifies an option across recompositions and rotation (saveable), e.g. to notice that the
+ * default option changed once saved templates finished loading.
+ */
+val TitleSuggestionOption.stableKey: String
+    get() = when (this) {
+        is TitleSuggestionOption.BuiltIn -> "builtin:${format.name}"
+        is TitleSuggestionOption.Template -> "template:${template.id}"
+    }

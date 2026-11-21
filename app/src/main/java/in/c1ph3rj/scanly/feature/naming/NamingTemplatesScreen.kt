@@ -514,7 +514,9 @@ private fun NamingTemplateEditorDialog(
                     ErrorLine(text = problemMessage(problem, unknownTokens))
                 }
             if (isDuplicate) ErrorLine(text = stringResource(R.string.naming_problem_duplicate))
-            if (editor.saveFailed) ErrorLine(text = stringResource(R.string.naming_save_failed))
+            if (editor.saveFailed) {
+                ErrorLine(text = editor.saveError ?: stringResource(R.string.naming_save_failed))
+            }
         }
 
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {

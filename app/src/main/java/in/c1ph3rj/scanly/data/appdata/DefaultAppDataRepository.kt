@@ -41,6 +41,7 @@ class DefaultAppDataRepository @Inject constructor(
                     exportCacheBytes = directorySize(exportCacheDirectory()) +
                         directorySize(pdfToolsCacheDirectory()) +
                         directorySize(incomingPdfDirectory()) +
+                        directorySize(incomingImagesDirectory()) +
                         directorySize(qrToolsCacheDirectory()),
                     databaseBytes = databaseFileSize(),
                 )
@@ -62,7 +63,10 @@ class DefaultAppDataRepository @Inject constructor(
             operationCoordinator.withMutation {
                 runCatching {
                     database.withTransaction {
+                        // Naming templates are preferences, not library data: keep them.
+                        val namingTemplates = database.namingTemplateDao().getTemplates()
                         database.clearAllTables()
+                        namingTemplates.forEach { database.namingTemplateDao().insert(it) }
                     }
                     documentStorageManager.clearAllDocumentStorage()
                     exportCacheDirectory().deleteRecursively()
@@ -71,6 +75,8 @@ class DefaultAppDataRepository @Inject constructor(
                     pdfToolsCacheDirectory().deleteRecursively()
                     // PDFs opened from other apps are private copies of the user's files.
                     incomingPdfDirectory().deleteRecursively()
+                    // So are images shared in from other apps (waiting for a destination or leftovers).
+                    incomingImagesDirectory().deleteRecursively()
                     qrToolsCacheDirectory().deleteRecursively()
                     signatureShareDirectory().deleteRecursively()
                     DefaultSignatureRepository.signaturesRoot(context).deleteRecursively()
@@ -159,6 +165,9 @@ class DefaultAppDataRepository @Inject constructor(
     private fun incomingPdfDirectory(): File =
         File(context.cacheDir, INCOMING_PDF_CACHE_DIRECTORY)
 
+    private fun incomingImagesDirectory(): File =
+        File(context.cacheDir, INCOMING_IMAGES_CACHE_DIRECTORY)
+
     private fun qrToolsCacheDirectory(): File =
         File(context.cacheDir, QR_TOOLS_CACHE_DIRECTORY)
 
@@ -195,6 +204,8 @@ class DefaultAppDataRepository @Inject constructor(
         const val PDF_TOOLS_CACHE_DIRECTORY = "pdf-tools"
         /** Matches `IncomingPdf.copyToCache()`. */
         const val INCOMING_PDF_CACHE_DIRECTORY = "incoming_pdf"
+        /** Matches `SharedImageStaging.root()`. */
+        const val INCOMING_IMAGES_CACHE_DIRECTORY = "incoming_images"
         /** Matches `DefaultQrCodeRepository`. */
         const val QR_TOOLS_CACHE_DIRECTORY = "qr-tools"
         /** Matches `DefaultSignatureRepository`. */

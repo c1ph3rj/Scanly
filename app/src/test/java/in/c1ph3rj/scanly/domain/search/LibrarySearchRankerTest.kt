@@ -260,6 +260,20 @@ class LibrarySearchRankerTest {
         )
         assertEquals(listOf("inv"), split.nameMatches.map { it.document.id })
         assertEquals(listOf(0..6), split.nameMatches.single().title.highlights)
+        // The split match is strict: no typo tolerance across the name and a tag.
+        val typo = LibrarySearchRanker.rank(
+            SearchQuery.parse("travle invoice"), documents, groups, emptyMap(), null, SearchScope.NAMES,
+            documentTagIds = tagIds,
+            tagNames = tagNames,
+        )
+        assertTrue(typo.nameMatches.none { it.document.id == "inv" })
+        // An excluded word in a tag drops the name match, as it would in the title.
+        val excluded = LibrarySearchRanker.rank(
+            SearchQuery.parse("invoice -travel"), documents, groups, emptyMap(), null, SearchScope.NAMES,
+            documentTagIds = tagIds,
+            tagNames = tagNames,
+        )
+        assertTrue(excluded.nameMatches.none { it.document.id == "inv" })
         // Text-only scope ignores tag names like it ignores titles.
         val textOnly = LibrarySearchRanker.rank(
             SearchQuery.parse("travel"), documents, groups, emptyMap(), emptyList(), SearchScope.TEXT,

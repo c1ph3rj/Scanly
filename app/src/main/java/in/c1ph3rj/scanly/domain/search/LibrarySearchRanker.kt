@@ -56,6 +56,9 @@ object LibrarySearchRanker {
     /** A tag says what a document is about, but less surely than its own name. */
     private const val TAG_MATCH_WEIGHT = 0.9
 
+    /** A word-start match in `NameMatcher` (its prefix score); infix and typo matches score lower. */
+    private const val STRICT_PART_SCORE = 1.0
+
     fun rank(
         query: SearchQuery,
         documents: List<ScanDocument>,
@@ -122,7 +125,7 @@ object LibrarySearchRanker {
             val kind = documentKinds[document.id]
             // "-draft" hides a document called "Draft lease" even if its pages never say draft.
             if (NameMatcher.mentions(document.title, query.excluded)) return@forEach
-            val nameMatch = if (scope != SearchScope.TEXT) {
+            val nameMatch = if (scope != SearchScope.TEXT && !excludedByTag(document, query, documentTagIds, tagNames)) {
                 NameMatcher.match(document.title, query) ?: tagMatch(document, query, documentTagIds, tagNames)
             } else {
                 null
@@ -184,9 +187,25 @@ object LibrarySearchRanker {
     }
 
     /**
-     * A match on one of [document]'s tag names, or on its name and tags together ("travel receipt"
-     * finds "Receipt" tagged Travel). Only the title's own words are highlighted.
+     * A match through [document]'s tags when its title alone doesn't match: either one tag name
+     * matches the whole query, or every typed word starts a word in the title or in one of the tags
+     * ("travel receipt" finds "Receipt" tagged Travel). The split case is strict (no typo tolerance,
+     * phrases can't straddle the title and a tag) so loose matches don't creep in. An excluded word
+     * found in the title or any tag rules the document out. Only the title's own words are highlighted.
      */
+    /** True when a `-word` the user typed appears in one of [document]'s tag names. */
+    private fun excludedByTag(
+        document: ScanDocument,
+        query: SearchQuery,
+        documentTagIds: Map<String, Set<String>>,
+        tagNames: Map<String, String>,
+    ): Boolean {
+        if (query.excluded.isEmpty()) return false
+        return documentTagIds[document.id].orEmpty()
+            .mapNotNull(tagNames::get)
+            .any { NameMatcher.mentions(it, query.excluded) }
+    }
+
     private fun tagMatch(
         document: ScanDocument,
         query: SearchQuery,
@@ -195,16 +214,43 @@ object LibrarySearchRanker {
     ): NameMatch? {
         val names = documentTagIds[document.id].orEmpty().mapNotNull(tagNames::get)
         if (names.isEmpty()) return null
+        val fields = listOf(document.title) + names
+        if (fields.any { NameMatcher.mentions(it, query.excluded) }) return null
         val best = names.mapNotNull { NameMatcher.match(it, query) }.maxByOrNull { it.score }
         if (best != null) return NameMatch(best.score * TAG_MATCH_WEIGHT, HighlightedText(document.title))
-        val combined = NameMatcher.match((listOf(document.title) + names).joinToString(" "), query) ?: return null
-        val titleEnd = document.title.length
+
+        // Each part of the query must start a word in a single field.
+        val parts = query.terms.map { listOf(SearchQuery(raw = it, terms = listOf(it), phrases = emptyList())) } +
+            query.phrases.map { phrase -> listOf(SearchQuery(raw = phrase.joinToString(" "), terms = emptyList(), phrases = listOf(phrase))) } +
+            query.anyOf.map { alternatives ->
+                alternatives.map { words ->
+                    if (words.size == 1) {
+                        SearchQuery(raw = words.single(), terms = words, phrases = emptyList())
+                    } else {
+                        SearchQuery(raw = words.joinToString(" "), terms = emptyList(), phrases = listOf(words))
+                    }
+                }
+            }
+        if (parts.isEmpty()) return null
+        val titleHighlights = mutableListOf<IntRange>()
+        parts.forEach { alternatives ->
+            var matched = false
+            alternatives.forEach { part ->
+                NameMatcher.match(document.title, part)?.takeIf { it.score >= STRICT_PART_SCORE }?.let {
+                    titleHighlights += it.title.highlights
+                    matched = true
+                }
+                if (!matched) {
+                    matched = names.any { name ->
+                        (NameMatcher.match(name, part)?.score ?: 0.0) >= STRICT_PART_SCORE
+                    }
+                }
+            }
+            if (!matched) return null
+        }
         return NameMatch(
-            score = combined.score * TAG_MATCH_WEIGHT,
-            title = HighlightedText(
-                document.title,
-                combined.title.highlights.filter { it.first < titleEnd }.map { it.first..minOf(it.last, titleEnd - 1) },
-            ),
+            score = STRICT_PART_SCORE * TAG_MATCH_WEIGHT,
+            title = HighlightedText(document.title, titleHighlights.sortedBy { it.first }),
         )
     }
 

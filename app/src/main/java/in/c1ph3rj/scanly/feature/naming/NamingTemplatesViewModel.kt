@@ -29,9 +29,11 @@ data class NamingTemplateEditor(
     val templateId: String?,
     val initialPattern: String,
     val isSaving: Boolean = false,
-    /** The last save was rejected by the repository; shown in the dialog until the pattern changes. */
-    val saveFailed: Boolean = false,
-)
+    /** Why the last save was rejected; shown in the dialog until the pattern changes. */
+    val saveError: String? = null,
+) {
+    val saveFailed: Boolean get() = saveError != null
+}
 
 /** True when another template (not [editingId]) already has [pattern], ignoring case and outer spaces. */
 internal fun isDuplicatePattern(
@@ -105,7 +107,7 @@ class NamingTemplatesViewModel @Inject constructor(
     /** Clears a save failure once the user changes the pattern. */
     fun onPatternEdited() {
         editor.update { current ->
-            if (current?.saveFailed == true) current.copy(saveFailed = false) else current
+            if (current?.saveFailed == true) current.copy(saveError = null) else current
         }
     }
 
@@ -113,11 +115,13 @@ class NamingTemplatesViewModel @Inject constructor(
         val current = editor.value ?: return
         if (current.isSaving || NamingTemplateRenderer.validate(pattern).isNotEmpty()) return
         if (isDuplicatePattern(pattern, uiState.value.templates, current.templateId)) return
-        editor.value = current.copy(isSaving = true, saveFailed = false)
+        editor.value = current.copy(isSaving = true, saveError = null)
         viewModelScope.launch {
             when (val result = saveNamingTemplateUseCase(current.templateId, pattern.trim())) {
                 is ScanlyResult.Success -> editor.value = null
-                is ScanlyResult.Failure -> editor.update { it?.copy(isSaving = false, saveFailed = true) }
+                is ScanlyResult.Failure -> editor.update {
+                    it?.copy(isSaving = false, saveError = result.error.message)
+                }
             }
         }
     }

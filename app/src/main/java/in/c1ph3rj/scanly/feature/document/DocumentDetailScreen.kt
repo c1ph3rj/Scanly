@@ -632,8 +632,11 @@ fun DocumentDetailScreen(
                 )
             }
 
-            item(key = "document_tags", contentType = "tags") {
-                DocumentTagsRow(tags = uiState.tags, onEditTags = { tagSheetVisible = true })
+            // Hidden until the user has made a tag; before that, ⋮ › Edit tags is the way in.
+            if (uiState.showTagsRow) {
+                item(key = "document_tags", contentType = "tags") {
+                    DocumentTagsRow(tags = uiState.tags, onEditTags = { tagSheetVisible = true })
+                }
             }
 
             if (uiState.pages.isEmpty()) {
@@ -1370,8 +1373,10 @@ private fun DocumentMasterDetailLayout(
                     )
                 }
 
-                item(key = "document_tags") {
-                    DocumentTagsRow(tags = uiState.tags, onEditTags = onEditTags)
+                if (uiState.showTagsRow) {
+                    item(key = "document_tags") {
+                        DocumentTagsRow(tags = uiState.tags, onEditTags = onEditTags)
+                    }
                 }
 
                 item(key = "pages_header") {

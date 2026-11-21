@@ -124,7 +124,8 @@ Operate on **device PDFs** (system document picker) or **Scanly library document
 - **Delete** individual pages from review
 - **Rename** document (does not affect first-page thumbnail — v1.0.9 fix)
 - **Split into documents** (⋮): tap the gaps between pages to cut; each part becomes a new document in the same folder with copies of its page images, text and signature layers. **Keep the original** (on by default) or send it to Recently deleted
-- **PDF tools** (⋮): Compress, Merge with other PDFs, Split into PDFs, Password protect, Add watermark, Save pages as images — each opens with this document already picked
+- **PDF tools** (⋮ › PDF tools sheet): Compress, Merge with other PDFs, Split into PDFs, Password protect, Add watermark, Save pages as images — each with a one-line description, opening with this document already picked
+- **Tags** (⋮ › Edit tags, or the tag row once any tag exists): pick or create tags in a sheet
 - **Assign to group** or remove from group (with inline new-folder creation)
 - Add more pages via scan session or gallery import
 - Open page preview for full-screen review
@@ -170,6 +171,20 @@ Operate on **device PDFs** (system document picker) or **Scanly library document
   - Single merged PDF (all pages across all group documents)
   - Zipped PDF set (one PDF per document)
   - Uses the same password, page number, orientation, page size, and margin controls as a single-document PDF
+
+## Tags
+
+- Any number of tags per document, alongside its folder; names are unique ignoring case
+- Search › Filters › Tags (documents must carry every chosen tag); queries match tag names, and `-word` exclusions apply to tags
+- **Settings › Tags** (`settings/tags`): create, rename, delete with live document counts; deleting a tag keeps its documents
+- Tags survive Recently deleted, are copied by Split into documents, and are cleared by Clear all data
+
+## Naming templates
+
+- **Settings › Naming templates** (`settings/naming`): saved patterns with placeholders `{date}`, `{time}`, `{datetime}`, `{iso}`, `{year}`, `{month}`, `{day}`, `{weekday}`, `{n}` (counts up to keep names unique), live preview and validation
+- One template can be the default for new documents and the Scan shortcut; otherwise the built-in "Scan <date time>" is used
+- **Suggest name** cycles the default, then the built-in formats, then the other templates
+- Kept by Clear all data
 
 ## Settings
 

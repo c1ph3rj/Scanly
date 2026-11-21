@@ -1,5 +1,9 @@
 package `in`.c1ph3rj.scanly.data.naming
 
+import `in`.c1ph3rj.scanly.data.common.UserFacingFailure
+import `in`.c1ph3rj.scanly.domain.model.NamingTemplateRules
+import kotlin.coroutines.cancellation.CancellationException
+
 import androidx.room.withTransaction
 import `in`.c1ph3rj.scanly.R
 import `in`.c1ph3rj.scanly.core.common.NamingTemplateRenderer
@@ -41,13 +45,14 @@ class DefaultNamingTemplateRepository @Inject constructor(
 
     override suspend fun saveTemplate(id: String?, pattern: String): ScanlyResult<NamingTemplate> = mutate {
         val trimmed = pattern.trim()
-        val problems = NamingTemplateRenderer.validate(trimmed)
-        require(problems.isEmpty()) { "Invalid naming template: $problems" }
+        NamingTemplateRenderer.validate(trimmed).firstOrNull()?.let { problem ->
+            throw UserFacingFailure(problemMessage(problem, trimmed))
+        }
         database.withTransaction {
             val clash = namingTemplateDao.getTemplates().any { template ->
                 template.id != id && template.pattern.equals(trimmed, ignoreCase = true)
             }
-            require(!clash) { "Another template already uses this pattern" }
+            if (clash) throw UserFacingFailure(appString(R.string.naming_problem_duplicate))
             val now = System.currentTimeMillis()
             if (id == null) {
                 val template = NamingTemplateEntity(
@@ -87,16 +92,26 @@ class DefaultNamingTemplateRepository @Inject constructor(
         runCatching { block() }.fold(
             onSuccess = { ScanlyResult.Success(it) },
             onFailure = { throwable ->
+                // Cancellation isn't a failed save: let it propagate.
+                if (throwable is CancellationException) throw throwable
                 ScanlyResult.Failure(
-                    // Repository messages are for logs; the UI validates patterns itself and shows its own text.
                     ScanlyError(
-                        message = appString(R.string.default_page_text_repository_could_not_save_your_changes),
+                        message = (throwable as? UserFacingFailure)?.message
+                            ?: appString(R.string.default_page_text_repository_could_not_save_your_changes),
                         cause = throwable,
                     ),
                 )
             },
         )
     }
+}
+
+private fun problemMessage(problem: NamingTemplateRenderer.Problem, pattern: String): String = when (problem) {
+    NamingTemplateRenderer.Problem.BLANK -> appString(R.string.naming_problem_blank)
+    NamingTemplateRenderer.Problem.TOO_LONG ->
+        appString(R.string.naming_problem_too_long, NamingTemplateRules.MAX_PATTERN_LENGTH)
+    NamingTemplateRenderer.Problem.UNKNOWN_TOKEN ->
+        appString(R.string.naming_problem_unknown_token, NamingTemplateRenderer.unknownTokens(pattern).joinToString(", "))
 }
 
 private fun NamingTemplateEntity.toDomain(): NamingTemplate = NamingTemplate(

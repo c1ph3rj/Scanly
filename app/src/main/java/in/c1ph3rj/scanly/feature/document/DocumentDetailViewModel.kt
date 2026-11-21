@@ -15,6 +15,7 @@ import `in`.c1ph3rj.scanly.domain.model.GroupTitleFormat
 import `in`.c1ph3rj.scanly.domain.model.ScanPage
 import `in`.c1ph3rj.scanly.domain.usecase.CreateGroupUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.CreateTagUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.DeleteTagUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveDocumentTagsUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveTagsUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.SetDocumentTagsUseCase
@@ -67,6 +68,8 @@ data class DocumentDetailUiState(
     val tags: List<DocumentTag> = emptyList(),
     /** Every tag, for the tag editor. */
     val allTags: List<DocumentTag> = emptyList(),
+    /** False until any tag exists, so people who don't use tags don't see an "Add tags" row. */
+    val showTagsRow: Boolean = false,
 ) {
     val selectedPage: ScanPage?
         get() = pages.firstOrNull { page -> page.id == selectedPageId } ?: pages.firstOrNull()
@@ -105,6 +108,7 @@ class DocumentDetailViewModel @Inject constructor(
     private val observeTagsUseCase: ObserveTagsUseCase,
     private val createTagUseCase: CreateTagUseCase,
     private val setDocumentTagsUseCase: SetDocumentTagsUseCase,
+    private val deleteTagUseCase: DeleteTagUseCase,
 ) : ViewModel() {
     private val documentId: String = checkNotNull(savedStateHandle[DocumentDestination.documentIdArgument])
 
@@ -140,6 +144,7 @@ class DocumentDetailViewModel @Inject constructor(
                             availableGroups = groups,
                             tags = tags,
                             allTags = allTags,
+                            showTagsRow = tags.isNotEmpty() || allTags.isNotEmpty(),
                         )
                     }
                 }
@@ -153,10 +158,18 @@ class DocumentDetailViewModel @Inject constructor(
     fun saveTags(tagIds: Set<String>, newTagNames: List<String>) {
         viewModelScope.launch {
             val ids = tagIds.toMutableSet()
+            val knownTagIds = _uiState.value.allTags.mapTo(HashSet()) { it.id }
+            // Tags made just for this save; removed again if the save doesn't go through, so a
+            // failure doesn't leave empty tags behind. A name that already existed is reused, not made.
+            val madeHere = mutableListOf<String>()
             for (name in newTagNames) {
                 when (val created = createTagUseCase(name)) {
-                    is ScanlyResult.Success -> ids += created.value.id
+                    is ScanlyResult.Success -> {
+                        ids += created.value.id
+                        if (created.value.id !in knownTagIds) madeHere += created.value.id
+                    }
                     is ScanlyResult.Failure -> {
+                        discardTags(madeHere)
                         _events.send(DocumentDetailEvent.ShowMessage(created.error.message))
                         return@launch
                     }
@@ -168,7 +181,10 @@ class DocumentDetailViewModel @Inject constructor(
                     DocumentDetailEvent.ShowMessage(appString(R.string.tags_document_updated)),
                 )
 
-                is ScanlyResult.Failure -> _events.send(DocumentDetailEvent.ShowMessage(result.error.message))
+                is ScanlyResult.Failure -> {
+                    discardTags(madeHere)
+                    _events.send(DocumentDetailEvent.ShowMessage(result.error.message))
+                }
             }
         }
     }
@@ -477,6 +493,11 @@ class DocumentDetailViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    /** Best effort: a tag that can't be removed here can still be deleted in Settings › Tags. */
+    private suspend fun discardTags(tagIds: List<String>) {
+        tagIds.forEach { deleteTagUseCase(it) }
     }
 }
 

@@ -332,6 +332,9 @@ abstract class ScanlyDatabase : RoomDatabase() {
                         "FOREIGN KEY(`tagId`) REFERENCES `tags`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
                 )
                 db.execSQL(
+                    "CREATE INDEX IF NOT EXISTS `index_document_tags_documentId` ON `document_tags` (`documentId`)",
+                )
+                db.execSQL(
                     "CREATE INDEX IF NOT EXISTS `index_document_tags_tagId` ON `document_tags` (`tagId`)",
                 )
                 db.execSQL(

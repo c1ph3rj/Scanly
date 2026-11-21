@@ -72,6 +72,7 @@ import `in`.c1ph3rj.scanly.core.ui.adaptiveColumnCount
 import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import androidx.compose.ui.unit.takeOrElse
 import `in`.c1ph3rj.scanly.core.common.buildTitleSuggestionOptions
+import `in`.c1ph3rj.scanly.core.common.stableKey
 import `in`.c1ph3rj.scanly.domain.model.DocumentGroup
 import `in`.c1ph3rj.scanly.domain.model.TitleSuggestionOption
 import `in`.c1ph3rj.scanly.domain.model.GroupTitleFormat
@@ -965,16 +966,24 @@ fun NewDocumentDialog(
         mutableStateOf(title.isBlank() && onSuggestTitle != null)
     }
     var suggestFormatIndex by rememberSaveable { mutableIntStateOf(0) }
+    // Saved templates load in the background: if the default option changes after the dialog
+    // opened, an untouched auto-filled name is suggested again (see DocumentTitleDialog).
+    var autoFilledName by rememberSaveable { mutableStateOf<String?>(null) }
+    var autoFilledFrom by rememberSaveable { mutableStateOf<String?>(null) }
+    val defaultOption = options.first()
 
-    LaunchedEffect(Unit) {
-        if (onSuggestTitle == null || title.isNotBlank()) {
+    LaunchedEffect(defaultOption.stableKey) {
+        val untouched = title.isBlank() || title == autoFilledName
+        if (onSuggestTitle == null || !untouched || autoFilledFrom == defaultOption.stableKey) {
             isFillingName = false
             return@LaunchedEffect
         }
         isFillingName = true
-        val suggested = runCatching { onSuggestTitle(options.first()) }.getOrNull()
-        if (title.isBlank() && !suggested.isNullOrBlank()) {
+        val suggested = runCatching { onSuggestTitle(defaultOption) }.getOrNull()
+        if ((title.isBlank() || title == autoFilledName) && !suggested.isNullOrBlank()) {
             title = suggested
+            autoFilledName = suggested
+            autoFilledFrom = defaultOption.stableKey
             suggestFormatIndex = 1 % options.size
         }
         isFillingName = false
