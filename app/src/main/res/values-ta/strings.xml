@@ -1884,6 +1884,9 @@
     <string name="settings_language_note">"ஆவணப் பெயர்கள், பக்கங்களில் கண்டறியப்பட்ட உரை மற்றும் நீங்கள் திறக்கும் PDF கோப்புகள் அவற்றின் அசல் மொழியிலேயே இருக்கும்."</string>
     <!-- Manifest -->
     <string name="intent_open_in_scanly">"Scanly இல் திறக்கவும்"</string>
+    <string name="share_images_title">"பகிர்ந்த படங்களைச் சேர்"</string>
+    <string name="share_images_new_document_description">"இந்தப் படங்களுடன் புதிய ஆவணத்தைத் தொடங்கு"</string>
+    <string name="share_images_add_pages_to">"பக்கங்களைச் சேர்க்க"</string>
     <!-- Library date sections -->
     <string name="library_section_previous_7_days">"முந்தைய 7 நாட்கள்"</string>
     <!-- Month and year as a section title, e.g. "December 2025". %1$s = month name, %2$d = year. -->

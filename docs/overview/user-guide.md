@@ -285,6 +285,8 @@ When a PDF is ready, preview it in Scanly, then save or share.
 
 In Files, Gmail, Drive, WhatsApp, or any app that opens or shares PDFs, choose **Open in Scanly**. The PDF opens in Scanly's reader, where the ⋮ menu offers every PDF tool. Scanly works on a copy; the original file is never changed.
 
+To turn photos you already have into pages, select one or more images in Photos, Files, WhatsApp or another app, tap **Share**, and choose **Scanly**. Pick **New document**, or a document from the list to add the images to it as pages. Up to 50 images are added at a time, cleaned up the same way as images imported from inside Scanly.
+
 ## Permissions
 
 | Permission | When needed |

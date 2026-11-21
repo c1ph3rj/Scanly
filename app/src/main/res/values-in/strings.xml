@@ -1867,6 +1867,9 @@
     <string name="settings_language_note">Nama dokumen, teks halaman yang dikenali, dan PDF yang Anda buka tetap dalam bahasa aslinya.</string>
     <!-- Manifest -->
     <string name="intent_open_in_scanly">Buka di Scanly</string>
+    <string name="share_images_title">"Tambahkan gambar yang dibagikan"</string>
+    <string name="share_images_new_document_description">"Mulai dokumen baru dengan gambar ini"</string>
+    <string name="share_images_add_pages_to">"Tambahkan halaman ke"</string>
     <!-- Library date sections -->
     <string name="library_section_previous_7_days">7 hari sebelumnya</string>
     <!-- Month and year as a section title, e.g. "December 2025". %1$s = month name, %2$d = year. -->

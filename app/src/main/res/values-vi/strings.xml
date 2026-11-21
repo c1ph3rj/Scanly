@@ -1867,6 +1867,9 @@
     <string name="settings_language_note">Tên tài liệu, văn bản nhận dạng trên trang và các PDF bạn mở vẫn giữ nguyên ngôn ngữ của chúng.</string>
     <!-- Manifest -->
     <string name="intent_open_in_scanly">Mở trong Scanly</string>
+    <string name="share_images_title">"Thêm ảnh được chia sẻ"</string>
+    <string name="share_images_new_document_description">"Tạo tài liệu mới từ những ảnh này"</string>
+    <string name="share_images_add_pages_to">"Thêm trang vào"</string>
     <!-- Library date sections -->
     <string name="library_section_previous_7_days">7 ngày trước</string>
     <!-- Month and year as a section title, e.g. "December 2025". %1$s = month name, %2$d = year. -->

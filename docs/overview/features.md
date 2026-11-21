@@ -104,6 +104,7 @@ Operate on **device PDFs** (system document picker) or **Scanly library document
 
 - Scanly appears as **Open in Scanly** for PDFs opened (`ACTION_VIEW`) or shared (`ACTION_SEND`) from Files, mail, chat, and cloud apps
 - The PDF is copied into the app cache (`cache/incoming_pdf/`, newest few kept) and opens in the Reader; the original is never touched
+- Images shared from Photos, Files, chat and other apps (one or several, up to 50) open a sheet: **New document**, or pick a document to add them to as pages. They go through the same import as the in-app photo picker
 - Waits for onboarding to finish, like widget and shortcut launches
 
 ## Sign documents

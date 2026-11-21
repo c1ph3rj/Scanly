@@ -95,6 +95,8 @@ Legacy placeholder routes (`camera`, `review`, `editor` top-level) use `FeatureP
 
 PDFs opened or shared from other apps ("Open in Scanly", `ACTION_VIEW` / `ACTION_SEND`) are copied to `cache/incoming_pdf/` by `IncomingPdf` and open in the reader after onboarding.
 
+Images shared from other apps (`ACTION_SEND` / `ACTION_SEND_MULTIPLE`, `image/*`) are read by `IncomingImages` (content URIs from other apps only), copied to `cache/incoming_images/{batch}/` by `StageSharedImagesUseCase`, and imported by `LaunchActionViewModel` after `SharedImagesSheet` (New document / add pages to an existing document). Reuse `ImportImagesUseCase`; don't add another import or editor path.
+
 Home-screen widgets / quick actions use `in.c1ph3rj.scanly.action.{SCAN,IMPORT,QR,LIBRARY}` → `LaunchActionViewModel` (see [docs/architecture/navigation.md](docs/architecture/navigation.md)).
 
 ## Testing Reality

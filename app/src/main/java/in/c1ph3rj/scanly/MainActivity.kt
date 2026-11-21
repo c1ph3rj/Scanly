@@ -60,6 +60,8 @@ import `in`.c1ph3rj.scanly.domain.model.ThemeMode
 import `in`.c1ph3rj.scanly.feature.camera.ScanSessionDestination
 import `in`.c1ph3rj.scanly.feature.components.ScanlyImportProgressOverlay
 import `in`.c1ph3rj.scanly.feature.document.DocumentDestination
+import `in`.c1ph3rj.scanly.feature.launch.IncomingImages
+import `in`.c1ph3rj.scanly.feature.launch.SharedImagesSheet
 import `in`.c1ph3rj.scanly.feature.launch.LaunchActionEvent
 import `in`.c1ph3rj.scanly.feature.launch.LaunchActionViewModel
 import `in`.c1ph3rj.scanly.feature.widget.ScanlyWidgetSupport
@@ -143,6 +145,8 @@ private fun ScanlyApp(
     val updateUiState by appUpdateViewModel.uiState.collectAsStateWithLifecycle()
     val onboardingUiState by onboardingViewModel.uiState.collectAsStateWithLifecycle()
     val launchImportProgress by launchActionViewModel.importProgress.collectAsStateWithLifecycle()
+    val sharedImages by launchActionViewModel.sharedImages.collectAsStateWithLifecycle()
+    val shareTargets by launchActionViewModel.shareTargets.collectAsStateWithLifecycle()
     val systemDark = isSystemInDarkTheme()
     val isDarkTheme = themeMode.resolveDarkTheme(systemDark)
     val navController = rememberNavController()
@@ -172,6 +176,7 @@ private fun ScanlyApp(
         if (!coldStartPdfHandled) {
             coldStartPdfHandled = true
             IncomingPdf.uriFrom(coldStartIntent)?.let { pendingPdfUri = it.toString() }
+            launchActionViewModel.onSharedImages(IncomingImages.urisFrom(coldStartIntent, context.packageName))
         }
     }
 
@@ -179,6 +184,7 @@ private fun ScanlyApp(
         externalIntents.collect { intent ->
             launchActionViewModel.onNewIntent(intent)
             IncomingPdf.uriFrom(intent)?.let { pendingPdfUri = it.toString() }
+            launchActionViewModel.onSharedImages(IncomingImages.urisFrom(intent, context.packageName))
         }
     }
 
@@ -327,7 +333,8 @@ private fun ScanlyApp(
                                     onboardingViewModel.completeOnboarding()
                                 },
                                 onStartScan = {
-                                    startFirstScan = pendingPdfUri == null
+                                    startFirstScan = pendingPdfUri == null &&
+                                        !launchActionViewModel.hasIncomingShare()
                                     onboardingViewModel.completeOnboarding()
                                 },
                                 onDismissError = onboardingViewModel::dismissError,
@@ -388,6 +395,24 @@ private fun ScanlyApp(
                         }
                     }
 
+                    // Images shared from another app: pick New document or a document to add pages to.
+                    val pendingShare = sharedImages
+                    if (
+                        pendingShare != null &&
+                        onboardingUiState.status == OnboardingStatus.COMPLETE &&
+                        !launchImportProgress.active
+                    ) {
+                        SharedImagesSheet(
+                            imageCount = pendingShare.imagePaths.size,
+                            documents = shareTargets,
+                            onNewDocument = { launchActionViewModel.importSharedImages(null) },
+                            onAddToDocument = { document ->
+                                launchActionViewModel.importSharedImages(document.id)
+                            },
+                            onDismiss = launchActionViewModel::dismissSharedImages,
+                        )
+                    }
+
                     if (launchImportProgress.active) {
                         ScanlyImportProgressOverlay(
                             current = launchImportProgress.current,
@@ -413,7 +438,11 @@ private fun handleLaunchActionEvent(
         }
 
         is LaunchActionEvent.OpenDocument -> {
-            navController.navigate(DocumentDestination.route(event.documentId))
+            // Pages shared into the open document just appear there; don't stack a second copy.
+            val current = navController.currentBackStackEntry
+            val alreadyOpen = current?.destination?.route == DocumentDestination.routePattern &&
+                current.arguments?.getString(DocumentDestination.documentIdArgument) == event.documentId
+            if (!alreadyOpen) navController.navigate(DocumentDestination.route(event.documentId))
         }
 
         LaunchActionEvent.OpenLibrary -> {
