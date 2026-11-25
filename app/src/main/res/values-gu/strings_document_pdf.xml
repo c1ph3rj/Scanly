@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="document_menu_pdf_tools">"PDF સાધનો"</string>
+    <string name="document_pdf_tools_sheet_subtitle">"દરેક સાધન “%1$s” માંથી નવી PDF બનાવે છે. તમારું સ્કેન જેમ છે તેમ જ રહે છે."</string>
+    <string name="document_pdf_tools_password_caption">"પાસવર્ડથી લૉક કરો"</string>
+    <string name="document_pdf_tools_images_caption">"દરેક પાના માટે એક છબી ફાઇલ"</string>
+</resources>

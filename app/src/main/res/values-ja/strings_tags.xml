@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tags_settings_entry_title">"タグ"</string>
+    <string name="tags_settings_entry_summary">"タグの作成、名前の変更、削除"</string>
+    <string name="tags_document_add">"タグを追加"</string>
+    <string name="tags_document_edit">"タグを編集"</string>
+    <string name="tags_document_row_description">"タグ: %1$s"</string>
+    <string name="tags_document_updated">"タグを更新しました"</string>
+    <string name="tags_editor_title">"タグ"</string>
+    <string name="tags_editor_field_label">"新しいタグ"</string>
+    <string name="tags_editor_add">"タグを追加"</string>
+    <string name="tags_editor_create_chip">"「%1$s」を作成"</string>
+    <string name="tags_editor_empty">"タグはまだありません。名前を入力して作成してください。"</string>
+    <string name="tags_editor_done">"完了"</string>
+    <string name="tags_search_filter_section">"タグ"</string>
+    <string name="tags_search_filter_all_hint">"選択したすべてのタグが付いたドキュメントを表示します。"</string>
+    <string name="tags_search_filter_chip">"タグ: %1$s"</string>
+    <string name="tags_manage_title">"タグ"</string>
+    <string name="tags_manage_new_tag">"新しいタグ"</string>
+    <string name="tags_manage_rename_title">"タグの名前を変更"</string>
+    <string name="tags_manage_name_label">"タグ名"</string>
+    <string name="tags_manage_create">"作成"</string>
+    <string name="tags_manage_rename">"名前を変更"</string>
+    <string name="tags_manage_delete">"削除"</string>
+    <string name="tags_manage_delete_title">"タグを削除しますか？"</string>
+    <string name="tags_manage_delete_message">"「%1$s」はこのタグが付いたすべてのドキュメントから外されます。ドキュメント自体は残ります。"</string>
+    <string name="tags_manage_deleted">"タグを削除しました"</string>
+    <string name="tags_manage_renamed">"タグの名前を変更しました"</string>
+    <string name="tags_manage_empty_pip">"まだ何もタグ付けされていません。"</string>
+    <string name="tags_manage_empty_title">"タグはまだありません"</string>
+    <string name="tags_manage_empty_description">"タグを使うとフォルダをまたいでドキュメントをまとめられます。1 枚のレシートを「出張」と「経費精算」の両方にできます。ここか、任意のドキュメントからタグを作成してください。"</string>
+    <string name="tags_manage_options">"%1$s のオプション"</string>
+    <string name="tags_manage_name_blank">"タグ名を入力してください。"</string>
+    <string name="tags_manage_name_taken">"「%1$s」という名前のタグはすでにあります。"</string>
+</resources>

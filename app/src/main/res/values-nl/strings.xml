@@ -1884,6 +1884,9 @@
     <string name="settings_language_note">Je documentnamen, herkende paginatekst en de PDF\'s die je opent, blijven in hun eigen taal.</string>
     <!-- Manifest -->
     <string name="intent_open_in_scanly">Openen in Scanly</string>
+    <string name="share_images_title">"Gedeelde afbeeldingen toevoegen"</string>
+    <string name="share_images_new_document_description">"Nieuw document maken met deze afbeeldingen"</string>
+    <string name="share_images_add_pages_to">"Pagina's toevoegen aan"</string>
     <!-- Library date sections -->
     <string name="library_section_previous_7_days">Afgelopen 7 dagen</string>
     <!-- Month and year as a section title, e.g. "December 2025". %1$s = month name, %2$d = year. -->

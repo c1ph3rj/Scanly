@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tags_settings_entry_title">"ట్యాగ్‌లు"</string>
+    <string name="tags_settings_entry_summary">"ట్యాగ్‌లను సృష్టించండి, పేరు మార్చండి, తొలగించండి"</string>
+    <string name="tags_document_add">"ట్యాగ్‌లను జోడించండి"</string>
+    <string name="tags_document_edit">"ట్యాగ్‌లను ఎడిట్ చేయండి"</string>
+    <string name="tags_document_row_description">"ట్యాగ్‌లు: %1$s"</string>
+    <string name="tags_document_updated">"ట్యాగ్‌లు అప్‌డేట్ అయ్యాయి"</string>
+    <string name="tags_editor_title">"ట్యాగ్‌లు"</string>
+    <string name="tags_editor_field_label">"కొత్త ట్యాగ్"</string>
+    <string name="tags_editor_add">"ట్యాగ్ జోడించండి"</string>
+    <string name="tags_editor_create_chip">"“%1$s” సృష్టించండి"</string>
+    <string name="tags_editor_empty">"ఇంకా ట్యాగ్‌లు లేవు. సృష్టించడానికి పేరు టైప్ చేయండి."</string>
+    <string name="tags_editor_done">"పూర్తయింది"</string>
+    <string name="tags_search_filter_section">"ట్యాగ్‌లు"</string>
+    <string name="tags_search_filter_all_hint">"ఎంచుకున్న అన్ని ట్యాగ్‌లు ఉన్న పత్రాలను చూపుతుంది."</string>
+    <string name="tags_search_filter_chip">"ట్యాగ్: %1$s"</string>
+    <string name="tags_manage_title">"ట్యాగ్‌లు"</string>
+    <string name="tags_manage_new_tag">"కొత్త ట్యాగ్"</string>
+    <string name="tags_manage_rename_title">"ట్యాగ్ పేరు మార్చండి"</string>
+    <string name="tags_manage_name_label">"ట్యాగ్ పేరు"</string>
+    <string name="tags_manage_create">"సృష్టించండి"</string>
+    <string name="tags_manage_rename">"పేరు మార్చండి"</string>
+    <string name="tags_manage_delete">"తొలగించండి"</string>
+    <string name="tags_manage_delete_title">"ట్యాగ్‌ను తొలగించాలా?"</string>
+    <string name="tags_manage_delete_message">"“%1$s” ఉన్న అన్ని పత్రాల నుండి దాన్ని తీసివేస్తాము. పత్రాలు అలాగే ఉంటాయి."</string>
+    <string name="tags_manage_deleted">"ట్యాగ్ తొలగించబడింది"</string>
+    <string name="tags_manage_renamed">"ట్యాగ్ పేరు మార్చబడింది"</string>
+    <string name="tags_manage_empty_pip">"ఇంకా దేనికీ ట్యాగ్ చేయలేదు."</string>
+    <string name="tags_manage_empty_title">"ఇంకా ట్యాగ్‌లు లేవు"</string>
+    <string name="tags_manage_empty_description">"ట్యాగ్‌లు వేర్వేరు ఫోల్డర్‌లలోని పత్రాలను ఒకచోట చేరుస్తాయి: ఒకే రసీదు “ప్రయాణం”, “తిరిగి చెల్లించదగినది” రెండూ కావచ్చు. ఇక్కడ లేదా ఏ పత్రం నుండైనా ట్యాగ్ సృష్టించండి."</string>
+    <string name="tags_manage_options">"%1$s కోసం ఎంపికలు"</string>
+    <string name="tags_manage_name_blank">"ట్యాగ్ పేరును ఎంటర్ చేయండి."</string>
+    <string name="tags_manage_name_taken">"“%1$s” అనే పేరుతో ట్యాగ్ ఇప్పటికే ఉంది."</string>
+</resources>

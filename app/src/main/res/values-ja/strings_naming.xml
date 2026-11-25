@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Naming templates (Settings → Naming templates, Suggest name). Keep {placeholders} as written. -->
+    <string name="naming_settings_entry_title">"名前のテンプレート"</string>
+    <string name="naming_settings_entry_summary">"新しいドキュメント名に使える再利用可能なパターン"</string>
+    <string name="naming_default_section">"デフォルトの名前"</string>
+    <string name="naming_default_hint">"新しいドキュメントにはこの名前が付きます。「名前を提案」では引き続きすべての候補を順に切り替えられます。"</string>
+    <string name="naming_templates_section">"テンプレート"</string>
+    <string name="naming_example">"例: %1$s"</string>
+    <string name="naming_default_badge">"デフォルト"</string>
+    <string name="naming_add_template">"テンプレートを追加"</string>
+    <string name="naming_new_template">"新しいテンプレート"</string>
+    <string name="naming_edit_template">"テンプレートを編集"</string>
+    <string name="naming_edit_template_description">"%1$s を編集"</string>
+    <string name="naming_delete_template_description">"%1$s を削除"</string>
+    <string name="naming_delete_title">"テンプレートを削除しますか？"</string>
+    <string name="naming_delete_message">"%1$s を削除します。この名前が付いたドキュメントの名前はそのまま残ります。"</string>
+    <string name="naming_delete_default_message">"%1$s はデフォルトの名前です。削除すると、新しいドキュメントには再び %2$s が使われます。既存の名前は変わりません。"</string>
+    <string name="naming_delete_confirm">"削除"</string>
+    <string name="naming_cancel">"キャンセル"</string>
+    <string name="naming_save">"保存"</string>
+    <string name="naming_empty_title">"テンプレートはまだありません"</string>
+    <string name="naming_empty_body">"領収書 {date} や {iso} 請求書 {n} のような名前のパターンを保存すると、新しいドキュメントごとに日付や番号が入ります。"</string>
+    <string name="naming_empty_suggest_hint">"テンプレートは「名前を提案」の日付形式と一緒に表示され、いずれかをデフォルトにできます。"</string>
+    <string name="naming_pattern_label">"パターン"</string>
+    <string name="naming_pattern_placeholder">"領収書 {date}"</string>
+    <string name="naming_insert_token">"タップして挿入"</string>
+    <string name="naming_preview">"プレビュー"</string>
+    <string name="naming_preview_unavailable">"パターンを修正するとプレビューが表示されます"</string>
+    <string name="naming_preview_empty">"パターンを入力するとプレビューが表示されます"</string>
+    <string name="naming_number_note">"{n} は名前が重複しない最小の番号になります。"</string>
+    <string name="naming_character_count">"%1$d/%2$d"</string>
+    <string name="naming_problem_blank">"テキストかプレースホルダを入力してください。"</string>
+    <string name="naming_problem_too_long">"%1$d 文字以内にしてください。"</string>
+    <string name="naming_problem_unknown_token">"不明なプレースホルダ: %1$s"</string>
+    <string name="naming_token_date">"日付"</string>
+    <string name="naming_token_time">"時刻"</string>
+    <string name="naming_token_date_time">"日付と時刻"</string>
+    <string name="naming_token_iso_date">"ISO 日付"</string>
+    <string name="naming_token_year">"年"</string>
+    <string name="naming_token_month">"月"</string>
+    <string name="naming_token_day">"日"</string>
+    <string name="naming_token_weekday">"曜日"</string>
+    <string name="naming_token_number">"番号"</string>
+    <string name="naming_problem_duplicate">"このパターンのテンプレートはすでにあります。"</string>
+    <string name="naming_save_failed">"テンプレートを保存できませんでした。もう一度お試しください。"</string>
+    <string name="naming_default_failed">"デフォルトの名前を変更できませんでした。もう一度お試しください。"</string>
+    <string name="naming_delete_failed">"テンプレートを削除できませんでした。もう一度お試しください。"</string>
+</resources>

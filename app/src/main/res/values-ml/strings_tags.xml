@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tags_settings_entry_title">"ടാഗുകൾ"</string>
+    <string name="tags_settings_entry_summary">"ടാഗുകൾ സൃഷ്ടിക്കുക, പേരുമാറ്റുക, ഇല്ലാതാക്കുക"</string>
+    <string name="tags_document_add">"ടാഗുകൾ ചേർക്കുക"</string>
+    <string name="tags_document_edit">"ടാഗുകൾ എഡിറ്റ് ചെയ്യുക"</string>
+    <string name="tags_document_row_description">"ടാഗുകൾ: %1$s"</string>
+    <string name="tags_document_updated">"ടാഗുകൾ അപ്‌ഡേറ്റ് ചെയ്തു"</string>
+    <string name="tags_editor_title">"ടാഗുകൾ"</string>
+    <string name="tags_editor_field_label">"പുതിയ ടാഗ്"</string>
+    <string name="tags_editor_add">"ടാഗ് ചേർക്കുക"</string>
+    <string name="tags_editor_create_chip">"“%1$s” സൃഷ്ടിക്കുക"</string>
+    <string name="tags_editor_empty">"ഇതുവരെ ടാഗുകളില്ല. സൃഷ്ടിക്കാൻ ഒരു പേര് ടൈപ്പ് ചെയ്യുക."</string>
+    <string name="tags_editor_done">"പൂർത്തിയായി"</string>
+    <string name="tags_search_filter_section">"ടാഗുകൾ"</string>
+    <string name="tags_search_filter_all_hint">"തിരഞ്ഞെടുത്ത എല്ലാ ടാഗുകളുമുള്ള ഡോക്യുമെന്റുകൾ കാണിക്കുന്നു."</string>
+    <string name="tags_search_filter_chip">"ടാഗ്: %1$s"</string>
+    <string name="tags_manage_title">"ടാഗുകൾ"</string>
+    <string name="tags_manage_new_tag">"പുതിയ ടാഗ്"</string>
+    <string name="tags_manage_rename_title">"ടാഗിന്റെ പേരുമാറ്റുക"</string>
+    <string name="tags_manage_name_label">"ടാഗിന്റെ പേര്"</string>
+    <string name="tags_manage_create">"സൃഷ്ടിക്കുക"</string>
+    <string name="tags_manage_rename">"പേരുമാറ്റുക"</string>
+    <string name="tags_manage_delete">"ഇല്ലാതാക്കുക"</string>
+    <string name="tags_manage_delete_title">"ടാഗ് ഇല്ലാതാക്കണോ?"</string>
+    <string name="tags_manage_delete_message">"“%1$s” ഉള്ള എല്ലാ ഡോക്യുമെന്റുകളിൽ നിന്നും അത് നീക്കം ചെയ്യും. ഡോക്യുമെന്റുകൾ അതേപടി നിലനിൽക്കും."</string>
+    <string name="tags_manage_deleted">"ടാഗ് ഇല്ലാതാക്കി"</string>
+    <string name="tags_manage_renamed">"ടാഗിന്റെ പേരുമാറ്റി"</string>
+    <string name="tags_manage_empty_pip">"ഇതുവരെ ഒന്നും ടാഗ് ചെയ്തിട്ടില്ല."</string>
+    <string name="tags_manage_empty_title">"ഇതുവരെ ടാഗുകളില്ല"</string>
+    <string name="tags_manage_empty_description">"ടാഗുകൾ വിവിധ ഫോൾഡറുകളിലെ ഡോക്യുമെന്റുകൾ ഒന്നിച്ചാക്കുന്നു: ഒരു രസീത് ഒരേസമയം “യാത്ര”യും “തിരികെ ലഭിക്കുന്നത്”ഉം ആകാം. ഇവിടെ നിന്നോ ഏതെങ്കിലും ഡോക്യുമെന്റിൽ നിന്നോ ടാഗ് സൃഷ്ടിക്കുക."</string>
+    <string name="tags_manage_options">"%1$s എന്നതിനുള്ള ഓപ്ഷനുകൾ"</string>
+    <string name="tags_manage_name_blank">"ടാഗിന്റെ പേര് നൽകുക."</string>
+    <string name="tags_manage_name_taken">"“%1$s” എന്ന പേരിൽ ഒരു ടാഗ് ഇതിനകം ഉണ്ട്."</string>
+</resources>

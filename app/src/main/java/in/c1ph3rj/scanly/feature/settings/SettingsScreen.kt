@@ -63,6 +63,8 @@ import androidx.compose.ui.res.stringResource
 import `in`.c1ph3rj.scanly.core.common.appString
 import `in`.c1ph3rj.scanly.core.common.AppLocales
 import androidx.compose.material.icons.filled.Language
+import androidx.compose.material.icons.automirrored.filled.Label
+import androidx.compose.material.icons.filled.DriveFileRenameOutline
 
 @Composable
 fun SettingsRoute(
@@ -77,6 +79,8 @@ fun SettingsRoute(
     onOpenLanguage: () -> Unit = {},
     onOpenPip: () -> Unit = {},
     onOpenRecentlyDeleted: () -> Unit = {},
+    onOpenTags: () -> Unit = {},
+    onOpenNamingTemplates: () -> Unit = {},
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
@@ -100,6 +104,8 @@ fun SettingsRoute(
         onOpenPip = onOpenPip,
         onOpenStorage = onOpenStorage,
         onOpenRecentlyDeleted = onOpenRecentlyDeleted,
+        onOpenTags = onOpenTags,
+        onOpenNamingTemplates = onOpenNamingTemplates,
         onOpenDetection = onOpenDetection,
         onOpenTextRecognition = onOpenTextRecognition,
         onOpenWidgets = onOpenWidgets,
@@ -135,6 +141,8 @@ fun SettingsScreen(
     onOpenAbout: () -> Unit,
     onRateApp: () -> Unit,
     onOpenRecentlyDeleted: () -> Unit = {},
+    onOpenTags: () -> Unit = {},
+    onOpenNamingTemplates: () -> Unit = {},
     onDismissRatingCard: () -> Unit,
 ) {
     val content = uiState.content
@@ -221,6 +229,24 @@ fun SettingsScreen(
                 title = stringResource(R.string.recently_deleted_recently_deleted),
                 subtitle = stringResource(R.string.settings_pages_kept_documents_and_folders, TrashKind.PAGE.retentionLabel(), TrashKind.DOCUMENT.retentionLabel()),
                 onClick = onOpenRecentlyDeleted,
+            )
+            HorizontalDivider(
+                color = MaterialTheme.colorScheme.outlineVariant,
+            )
+            SettingsNavigationRow(
+                icon = Icons.AutoMirrored.Filled.Label,
+                title = stringResource(R.string.tags_settings_entry_title),
+                subtitle = stringResource(R.string.tags_settings_entry_summary),
+                onClick = onOpenTags,
+            )
+            HorizontalDivider(
+                color = MaterialTheme.colorScheme.outlineVariant,
+            )
+            SettingsNavigationRow(
+                icon = Icons.Filled.DriveFileRenameOutline,
+                title = stringResource(R.string.naming_settings_entry_title),
+                subtitle = stringResource(R.string.naming_settings_entry_summary),
+                onClick = onOpenNamingTemplates,
             )
         }
     }

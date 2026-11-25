@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="document_menu_pdf_tools">"Инструменты PDF"</string>
+    <string name="document_pdf_tools_sheet_subtitle">"Каждый инструмент создаёт новый PDF из «%1$s». Ваш скан не меняется."</string>
+    <string name="document_pdf_tools_password_caption">"Защитить паролем"</string>
+    <string name="document_pdf_tools_images_caption">"Один файл изображения на страницу"</string>
+</resources>

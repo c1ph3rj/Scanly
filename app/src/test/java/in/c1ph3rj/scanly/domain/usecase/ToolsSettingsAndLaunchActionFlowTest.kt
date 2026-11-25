@@ -22,6 +22,7 @@ import `in`.c1ph3rj.scanly.feature.launch.ScanlyLaunchAction
 import `in`.c1ph3rj.scanly.navigation.ScanlyDestination
 import `in`.c1ph3rj.scanly.navigation.ToolsQrDestination
 import `in`.c1ph3rj.scanly.testing.InMemoryDocumentRepository
+import `in`.c1ph3rj.scanly.testing.InMemoryNamingTemplateRepository
 import `in`.c1ph3rj.scanly.testing.InMemoryPdfToolkitRepository
 import `in`.c1ph3rj.scanly.testing.InMemoryQrCodeRepository
 import `in`.c1ph3rj.scanly.testing.InMemoryScanlyLibrary
@@ -68,8 +69,8 @@ class ToolsSettingsAndLaunchActionFlowTest {
     private val setGate = SetDocumentGateEnabledUseCase(settings)
     private val observeGate = ObserveDocumentGateEnabledUseCase(settings)
 
-    private val suggestTitle = SuggestDocumentTitleUseCase(documents)
-    private val createDocument = CreateDocumentUseCase(documents)
+    private val suggestTitle = SuggestDocumentTitleUseCase(documents, InMemoryNamingTemplateRepository())
+    private val createDocument = CreateDocumentUseCase(documents, InMemoryNamingTemplateRepository())
 
     @Test
     fun qrGenerate_encodesContentAndWritesNonEmptyArtifact() = runBlocking {

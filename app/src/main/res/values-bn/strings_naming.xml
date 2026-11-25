@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Naming templates (Settings → Naming templates, Suggest name). Keep {placeholders} as written. -->
+    <string name="naming_settings_entry_title">"নামের টেমপ্লেট"</string>
+    <string name="naming_settings_entry_summary">"নতুন ডকুমেন্টের নামের জন্য বারবার ব্যবহারযোগ্য প্যাটার্ন"</string>
+    <string name="naming_default_section">"ডিফল্ট নাম"</string>
+    <string name="naming_default_hint">"নতুন ডকুমেন্টের নাম এভাবে হবে। নাম সাজেস্ট করুন এখনও সব বিকল্প একে একে দেখায়।"</string>
+    <string name="naming_templates_section">"টেমপ্লেট"</string>
+    <string name="naming_example">"উদাহরণ: %1$s"</string>
+    <string name="naming_default_badge">"ডিফল্ট"</string>
+    <string name="naming_add_template">"টেমপ্লেট যোগ করুন"</string>
+    <string name="naming_new_template">"নতুন টেমপ্লেট"</string>
+    <string name="naming_edit_template">"টেমপ্লেট সম্পাদনা করুন"</string>
+    <string name="naming_edit_template_description">"%1$s সম্পাদনা করুন"</string>
+    <string name="naming_delete_template_description">"%1$s মুছুন"</string>
+    <string name="naming_delete_title">"টেমপ্লেট মুছবেন?"</string>
+    <string name="naming_delete_message">"%1$s সরানো হবে। এটি দিয়ে যেসব ডকুমেন্টের নাম রাখা হয়েছে, সেগুলোর নাম একই থাকবে।"</string>
+    <string name="naming_delete_default_message">"%1$s আপনার ডিফল্ট নাম। মুছে ফেলার পরে নতুন ডকুমেন্ট আবার %2$s ব্যবহার করবে। বিদ্যমান নাম বদলাবে না।"</string>
+    <string name="naming_delete_confirm">"মুছুন"</string>
+    <string name="naming_cancel">"বাতিল করুন"</string>
+    <string name="naming_save">"সেভ করুন"</string>
+    <string name="naming_empty_title">"এখনও কোনো টেমপ্লেট নেই"</string>
+    <string name="naming_empty_body">"রসিদ {date} বা {iso} ইনভয়েস {n}-এর মতো একটি নামের প্যাটার্ন সেভ করুন, Scanly প্রতিটি নতুন ডকুমেন্টে তারিখ বা নম্বর বসিয়ে দেবে।"</string>
+    <string name="naming_empty_suggest_hint">"আপনার টেমপ্লেটগুলো নাম সাজেস্ট করুন-এর তারিখ ফরম্যাটের সঙ্গে দেখাবে, আর এগুলোর একটিকে ডিফল্ট করতে পারবেন।"</string>
+    <string name="naming_pattern_label">"প্যাটার্ন"</string>
+    <string name="naming_pattern_placeholder">"রসিদ {date}"</string>
+    <string name="naming_insert_token">"যোগ করতে ট্যাপ করুন"</string>
+    <string name="naming_preview">"প্রিভিউ"</string>
+    <string name="naming_preview_unavailable">"প্রিভিউ দেখতে প্যাটার্ন ঠিক করুন"</string>
+    <string name="naming_preview_empty">"প্রিভিউ দেখতে একটি প্যাটার্ন লিখুন"</string>
+    <string name="naming_number_note">"{n} হবে সবচেয়ে ছোট নম্বর যাতে নামটি আলাদা থাকে।"</string>
+    <string name="naming_character_count">"%1$d/%2$d"</string>
+    <string name="naming_problem_blank">"কিছু লেখা বা একটি প্লেসহোল্ডার যোগ করুন।"</string>
+    <string name="naming_problem_too_long">"সর্বোচ্চ %1$dটি অক্ষর ব্যবহার করুন।"</string>
+    <string name="naming_problem_unknown_token">"অজানা প্লেসহোল্ডার: %1$s"</string>
+    <string name="naming_token_date">"তারিখ"</string>
+    <string name="naming_token_time">"সময়"</string>
+    <string name="naming_token_date_time">"তারিখ ও সময়"</string>
+    <string name="naming_token_iso_date">"ISO তারিখ"</string>
+    <string name="naming_token_year">"বছর"</string>
+    <string name="naming_token_month">"মাস"</string>
+    <string name="naming_token_day">"দিন"</string>
+    <string name="naming_token_weekday">"বার"</string>
+    <string name="naming_token_number">"নম্বর"</string>
+    <string name="naming_problem_duplicate">"এই প্যাটার্নের একটি টেমপ্লেট আগে থেকেই আছে।"</string>
+    <string name="naming_save_failed">"টেমপ্লেট সেভ করা যায়নি। আবার চেষ্টা করুন।"</string>
+    <string name="naming_default_failed">"ডিফল্ট নাম বদলানো যায়নি। আবার চেষ্টা করুন।"</string>
+    <string name="naming_delete_failed">"টেমপ্লেট মোছা যায়নি। আবার চেষ্টা করুন।"</string>
+</resources>

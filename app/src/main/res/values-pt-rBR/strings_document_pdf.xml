@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="document_menu_pdf_tools">"Ferramentas de PDF"</string>
+    <string name="document_pdf_tools_sheet_subtitle">"Cada ferramenta cria um novo PDF a partir de “%1$s”. Sua digitalização continua igual."</string>
+    <string name="document_pdf_tools_password_caption">"Proteger com senha"</string>
+    <string name="document_pdf_tools_images_caption">"Um arquivo de imagem por página"</string>
+</resources>

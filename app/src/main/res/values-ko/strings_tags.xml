@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tags_settings_entry_title">"태그"</string>
+    <string name="tags_settings_entry_summary">"태그 만들기, 이름 변경, 삭제"</string>
+    <string name="tags_document_add">"태그 추가"</string>
+    <string name="tags_document_edit">"태그 편집"</string>
+    <string name="tags_document_row_description">"태그: %1$s"</string>
+    <string name="tags_document_updated">"태그를 업데이트했습니다"</string>
+    <string name="tags_editor_title">"태그"</string>
+    <string name="tags_editor_field_label">"새 태그"</string>
+    <string name="tags_editor_add">"태그 추가"</string>
+    <string name="tags_editor_create_chip">"‘%1$s’ 만들기"</string>
+    <string name="tags_editor_empty">"아직 태그가 없습니다. 이름을 입력해 만드세요."</string>
+    <string name="tags_editor_done">"완료"</string>
+    <string name="tags_search_filter_section">"태그"</string>
+    <string name="tags_search_filter_all_hint">"선택한 태그가 모두 있는 문서를 표시합니다."</string>
+    <string name="tags_search_filter_chip">"태그: %1$s"</string>
+    <string name="tags_manage_title">"태그"</string>
+    <string name="tags_manage_new_tag">"새 태그"</string>
+    <string name="tags_manage_rename_title">"태그 이름 변경"</string>
+    <string name="tags_manage_name_label">"태그 이름"</string>
+    <string name="tags_manage_create">"만들기"</string>
+    <string name="tags_manage_rename">"이름 변경"</string>
+    <string name="tags_manage_delete">"삭제"</string>
+    <string name="tags_manage_delete_title">"태그를 삭제할까요?"</string>
+    <string name="tags_manage_delete_message">"‘%1$s’ 태그가 이 태그가 있는 모든 문서에서 제거됩니다. 문서 자체는 유지됩니다."</string>
+    <string name="tags_manage_deleted">"태그를 삭제했습니다"</string>
+    <string name="tags_manage_renamed">"태그 이름을 변경했습니다"</string>
+    <string name="tags_manage_empty_pip">"아직 태그가 붙은 항목이 없습니다."</string>
+    <string name="tags_manage_empty_title">"아직 태그가 없습니다"</string>
+    <string name="tags_manage_empty_description">"태그로 여러 폴더의 문서를 묶을 수 있습니다. 영수증 하나가 ‘출장’이면서 ‘환급 대상’일 수 있습니다. 여기나 아무 문서에서 태그를 만드세요."</string>
+    <string name="tags_manage_options">"%1$s 옵션"</string>
+    <string name="tags_manage_name_blank">"태그 이름을 입력하세요."</string>
+    <string name="tags_manage_name_taken">"‘%1$s’ 태그가 이미 있습니다."</string>
+</resources>

@@ -9,7 +9,9 @@ import `in`.c1ph3rj.scanly.domain.model.DocumentGroup
 import `in`.c1ph3rj.scanly.domain.model.PdfExportOptions
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
 import `in`.c1ph3rj.scanly.domain.model.ShareArtifact
-import `in`.c1ph3rj.scanly.domain.model.DocumentTitleFormat
+import `in`.c1ph3rj.scanly.core.common.buildTitleSuggestionOptions
+import `in`.c1ph3rj.scanly.domain.model.TitleSuggestionOption
+import `in`.c1ph3rj.scanly.domain.usecase.ObserveNamingTemplatesUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.CreateDocumentUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.SuggestDocumentTitleUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.MoveGroupToTrashUseCase
@@ -32,6 +34,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -76,6 +79,7 @@ class GroupDetailViewModel @Inject constructor(
     private val prepareGroupZippedPdfsShareUseCase: PrepareGroupZippedPdfsShareUseCase,
     private val suggestDocumentTitleUseCase: SuggestDocumentTitleUseCase,
     private val recordPositiveMomentUseCase: RecordPositiveMomentUseCase,
+    observeNamingTemplatesUseCase: ObserveNamingTemplatesUseCase,
 ) : ViewModel() {
 
     val groupId: String = checkNotNull(savedStateHandle["groupId"])
@@ -149,8 +153,14 @@ class GroupDetailViewModel @Inject constructor(
         }
     }
 
-    suspend fun suggestDocumentTitle(format: DocumentTitleFormat): String =
-        suggestDocumentTitleUseCase(format)
+    /** "Suggest name" cycle: the default option first, so auto-fill uses it. */
+    val titleSuggestionOptions: StateFlow<List<TitleSuggestionOption>> =
+        observeNamingTemplatesUseCase()
+            .map(::buildTitleSuggestionOptions)
+            .stateIn(viewModelScope, SharingStarted.Eagerly, buildTitleSuggestionOptions(emptyList()))
+
+    suspend fun suggestDocumentTitle(option: TitleSuggestionOption): String =
+        suggestDocumentTitleUseCase(option)
 
     /** Move one or more ungrouped documents into this folder. */
     fun addDocumentsToGroup(documentIds: Collection<String>) {

@@ -1,5 +1,6 @@
 package `in`.c1ph3rj.scanly.domain.usecase
 
+import `in`.c1ph3rj.scanly.testing.InMemoryNamingTemplateRepository
 import `in`.c1ph3rj.scanly.domain.model.TrashedDocument
 import `in`.c1ph3rj.scanly.domain.model.TrashedFolder
 import `in`.c1ph3rj.scanly.domain.model.TrashedItem
@@ -29,7 +30,7 @@ class FolderOnlyDeleteFlowTest {
     private val pages = InMemoryPageRepository(library)
     private val trashEvents = TrashEvents()
 
-    private val createDocument = CreateDocumentUseCase(documents)
+    private val createDocument = CreateDocumentUseCase(documents, InMemoryNamingTemplateRepository())
     private val createGroup = CreateGroupUseCase(groups)
     private val observeLiveDocuments = ObserveDocumentsUseCase(documents)
     private val observeGroups = ObserveGroupsUseCase(groups)

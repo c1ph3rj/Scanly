@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="document_menu_pdf_tools">"เครื่องมือ PDF"</string>
+    <string name="document_pdf_tools_sheet_subtitle">"แต่ละเครื่องมือจะสร้าง PDF ใหม่จาก “%1$s” งานสแกนของคุณจะไม่เปลี่ยนแปลง"</string>
+    <string name="document_pdf_tools_password_caption">"ล็อกด้วยรหัสผ่าน"</string>
+    <string name="document_pdf_tools_images_caption">"ไฟล์รูปภาพหนึ่งไฟล์ต่อหน้า"</string>
+</resources>

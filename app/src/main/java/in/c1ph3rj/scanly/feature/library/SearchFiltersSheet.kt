@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import `in`.c1ph3rj.scanly.domain.model.DateFilter
 import `in`.c1ph3rj.scanly.domain.model.DocumentGroup
 import `in`.c1ph3rj.scanly.domain.model.DocumentKind
+import `in`.c1ph3rj.scanly.domain.model.DocumentTag
 import `in`.c1ph3rj.scanly.domain.model.FolderFilter
 import `in`.c1ph3rj.scanly.domain.model.SearchFilters
 import `in`.c1ph3rj.scanly.domain.model.SearchSort
@@ -56,7 +57,7 @@ import `in`.c1ph3rj.scanly.core.common.appString
 import androidx.compose.ui.res.pluralStringResource
 
 /**
- * Type, date, folder and sort for search, in one sheet. Choices apply as they are tapped, so the
+ * Type, date, folder, tags and sort for search, in one sheet. Choices apply as they are tapped, so the
  * results behind the sheet (and the count on its button) stay live.
  */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -70,6 +71,8 @@ fun SearchFiltersSheet(
     showsResults: Boolean,
     onFiltersChange: (SearchFilters) -> Unit,
     onDismiss: () -> Unit,
+    /** Every tag; the Tags section only shows when there is one. */
+    tags: List<DocumentTag> = emptyList(),
 ) {
     var pickingRange by rememberSaveable { mutableStateOf(false) }
     ScanlyModalBottomSheet(onDismissRequest = onDismiss) {
@@ -121,6 +124,25 @@ fun SearchFiltersSheet(
                     }
                 }
             }
+            if (tags.isNotEmpty()) {
+                FilterSection(stringResource(R.string.tags_search_filter_section)) {
+                    tags.forEach { tag ->
+                        val selected = tag.id in filters.tagIds
+                        SheetChip("${tag.name} · ${tag.documentCount}", selected) {
+                            onFiltersChange(
+                                filters.copy(tagIds = if (selected) filters.tagIds - tag.id else filters.tagIds + tag.id),
+                            )
+                        }
+                    }
+                }
+                if (filters.tagIds.size > 1) {
+                    Text(
+                        stringResource(R.string.tags_search_filter_all_hint),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            }
             FilterSection(stringResource(R.string.search_filters_sort_by)) {
                 SearchSort.entries.forEach { option ->
                     SheetChip(option.label, filters.sort == option) { onFiltersChange(filters.copy(sort = option)) }
@@ -167,6 +189,7 @@ fun ActiveFilterChips(
     filters: SearchFilters,
     folders: List<DocumentGroup>,
     onFiltersChange: (SearchFilters) -> Unit,
+    tags: List<DocumentTag> = emptyList(),
 ) {
     filters.kind?.let { kind ->
         RemovableChip(kind.label) { onFiltersChange(filters.copy(kind = null)) }
@@ -182,6 +205,13 @@ fun ActiveFilterChips(
         FolderFilter.None -> RemovableChip(stringResource(R.string.search_filters_not_in_a_folder)) { onFiltersChange(filters.copy(folder = FolderFilter.Any)) }
         is FolderFilter.In -> folders.firstOrNull { it.id == folder.groupId }?.let { group ->
             RemovableChip(stringResource(R.string.search_filters_in, group.title)) { onFiltersChange(filters.copy(folder = FolderFilter.Any)) }
+        }
+    }
+    filters.tagIds.forEach { tagId ->
+        tags.firstOrNull { it.id == tagId }?.let { tag ->
+            RemovableChip(stringResource(R.string.tags_search_filter_chip, tag.name)) {
+                onFiltersChange(filters.copy(tagIds = filters.tagIds - tagId))
+            }
         }
     }
     if (filters.sort != SearchSort.BEST_MATCH) {

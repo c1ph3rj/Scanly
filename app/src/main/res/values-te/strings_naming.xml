@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Naming templates (Settings → Naming templates, Suggest name). Keep {placeholders} as written. -->
+    <string name="naming_settings_entry_title">"పేరు టెంప్లేట్‌లు"</string>
+    <string name="naming_settings_entry_summary">"కొత్త డాక్యుమెంట్ పేర్ల కోసం మళ్లీ ఉపయోగించగల ప్యాటర్న్‌లు"</string>
+    <string name="naming_default_section">"డిఫాల్ట్ పేరు"</string>
+    <string name="naming_default_hint">"కొత్త డాక్యుమెంట్‌లకు ఈ పేరు వస్తుంది. పేరు సూచించండి ఇప్పటికీ అన్ని ఎంపికలను వరుసగా మారుస్తుంది."</string>
+    <string name="naming_templates_section">"టెంప్లేట్‌లు"</string>
+    <string name="naming_example">"ఉదాహరణ: %1$s"</string>
+    <string name="naming_default_badge">"డిఫాల్ట్"</string>
+    <string name="naming_add_template">"టెంప్లేట్ జోడించండి"</string>
+    <string name="naming_new_template">"కొత్త టెంప్లేట్"</string>
+    <string name="naming_edit_template">"టెంప్లేట్‌ను ఎడిట్ చేయండి"</string>
+    <string name="naming_edit_template_description">"%1$s ఎడిట్ చేయండి"</string>
+    <string name="naming_delete_template_description">"%1$s తొలగించండి"</string>
+    <string name="naming_delete_title">"టెంప్లేట్‌ను తొలగించాలా?"</string>
+    <string name="naming_delete_message">"%1$s తీసివేయబడుతుంది. దీనితో ఇప్పటికే పేరు పెట్టిన డాక్యుమెంట్‌ల పేర్లు మారవు."</string>
+    <string name="naming_delete_default_message">"%1$s మీ డిఫాల్ట్ పేరు. తొలగించిన తర్వాత కొత్త డాక్యుమెంట్‌లు మళ్లీ %2$s ఉపయోగిస్తాయి. ఉన్న పేర్లు మారవు."</string>
+    <string name="naming_delete_confirm">"తొలగించండి"</string>
+    <string name="naming_cancel">"రద్దు చేయండి"</string>
+    <string name="naming_save">"సేవ్ చేయండి"</string>
+    <string name="naming_empty_title">"ఇంకా టెంప్లేట్‌లు లేవు"</string>
+    <string name="naming_empty_body">"రసీదు {date} లేదా {iso} ఇన్‌వాయిస్ {n} లాంటి పేరు ప్యాటర్న్‌ను సేవ్ చేయండి, ప్రతి కొత్త డాక్యుమెంట్‌కు Scanly తేదీ లేదా నంబర్‌ను నింపుతుంది."</string>
+    <string name="naming_empty_suggest_hint">"మీ టెంప్లేట్‌లు పేరు సూచించండిలోని తేదీ ఫార్మాట్‌లతో పాటు కనిపిస్తాయి, వాటిలో ఒకదాన్ని డిఫాల్ట్‌గా చేయవచ్చు."</string>
+    <string name="naming_pattern_label">"ప్యాటర్న్"</string>
+    <string name="naming_pattern_placeholder">"రసీదు {date}"</string>
+    <string name="naming_insert_token">"చేర్చడానికి నొక్కండి"</string>
+    <string name="naming_preview">"ప్రివ్యూ"</string>
+    <string name="naming_preview_unavailable">"ప్రివ్యూ చూడటానికి ప్యాటర్న్‌ను సరిచేయండి"</string>
+    <string name="naming_preview_empty">"ప్రివ్యూ చూడటానికి ఒక ప్యాటర్న్ టైప్ చేయండి"</string>
+    <string name="naming_number_note">"{n} పేరును ప్రత్యేకంగా ఉంచే అతి చిన్న నంబర్ అవుతుంది."</string>
+    <string name="naming_character_count">"%1$d/%2$d"</string>
+    <string name="naming_problem_blank">"కొంత టెక్స్ట్ లేదా ప్లేస్‌హోల్డర్ జోడించండి."</string>
+    <string name="naming_problem_too_long">"గరిష్ఠంగా %1$d అక్షరాలు ఉపయోగించండి."</string>
+    <string name="naming_problem_unknown_token">"తెలియని ప్లేస్‌హోల్డర్: %1$s"</string>
+    <string name="naming_token_date">"తేదీ"</string>
+    <string name="naming_token_time">"సమయం"</string>
+    <string name="naming_token_date_time">"తేదీ &amp; సమయం"</string>
+    <string name="naming_token_iso_date">"ISO తేదీ"</string>
+    <string name="naming_token_year">"సంవత్సరం"</string>
+    <string name="naming_token_month">"నెల"</string>
+    <string name="naming_token_day">"రోజు"</string>
+    <string name="naming_token_weekday">"వారం రోజు"</string>
+    <string name="naming_token_number">"నంబర్"</string>
+    <string name="naming_problem_duplicate">"ఈ ప్యాటర్న్‌తో టెంప్లేట్ ఇప్పటికే ఉంది."</string>
+    <string name="naming_save_failed">"టెంప్లేట్‌ను సేవ్ చేయలేకపోయాం. మళ్లీ ప్రయత్నించండి."</string>
+    <string name="naming_default_failed">"డిఫాల్ట్ పేరును మార్చలేకపోయాం. మళ్లీ ప్రయత్నించండి."</string>
+    <string name="naming_delete_failed">"టెంప్లేట్‌ను తొలగించలేకపోయాం. మళ్లీ ప్రయత్నించండి."</string>
+</resources>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Naming templates (Settings → Naming templates, Suggest name). Keep {placeholders} as written. -->
+    <string name="naming_settings_entry_title">"เทมเพลตชื่อ"</string>
+    <string name="naming_settings_entry_summary">"รูปแบบที่ใช้ซ้ำได้สำหรับตั้งชื่อเอกสารใหม่"</string>
+    <string name="naming_default_section">"ชื่อเริ่มต้น"</string>
+    <string name="naming_default_hint">"เอกสารใหม่จะใช้ชื่อนี้ แนะนำชื่อยังคงสลับไปตามตัวเลือกทั้งหมดได้"</string>
+    <string name="naming_templates_section">"เทมเพลต"</string>
+    <string name="naming_example">"ตัวอย่าง: %1$s"</string>
+    <string name="naming_default_badge">"ค่าเริ่มต้น"</string>
+    <string name="naming_add_template">"เพิ่มเทมเพลต"</string>
+    <string name="naming_new_template">"เทมเพลตใหม่"</string>
+    <string name="naming_edit_template">"แก้ไขเทมเพลต"</string>
+    <string name="naming_edit_template_description">"แก้ไข %1$s"</string>
+    <string name="naming_delete_template_description">"ลบ %1$s"</string>
+    <string name="naming_delete_title">"ลบเทมเพลตไหม"</string>
+    <string name="naming_delete_message">"ระบบจะลบ %1$s เอกสารที่ตั้งชื่อด้วยเทมเพลตนี้แล้วจะยังใช้ชื่อเดิม"</string>
+    <string name="naming_delete_default_message">"%1$s เป็นชื่อเริ่มต้นของคุณ หลังจากลบ เอกสารใหม่จะกลับไปใช้ %2$s ชื่อที่มีอยู่จะไม่เปลี่ยน"</string>
+    <string name="naming_delete_confirm">"ลบ"</string>
+    <string name="naming_cancel">"ยกเลิก"</string>
+    <string name="naming_save">"บันทึก"</string>
+    <string name="naming_empty_title">"ยังไม่มีเทมเพลต"</string>
+    <string name="naming_empty_body">"บันทึกรูปแบบชื่อ เช่น ใบเสร็จ {date} หรือ {iso} ใบแจ้งหนี้ {n} แล้ว Scanly จะใส่วันที่หรือหมายเลขให้เอกสารใหม่แต่ละรายการ"</string>
+    <string name="naming_empty_suggest_hint">"เทมเพลตของคุณจะแสดงร่วมกับรูปแบบวันที่ในแนะนำชื่อ และคุณตั้งเทมเพลตหนึ่งเป็นค่าเริ่มต้นได้"</string>
+    <string name="naming_pattern_label">"รูปแบบ"</string>
+    <string name="naming_pattern_placeholder">"ใบเสร็จ {date}"</string>
+    <string name="naming_insert_token">"แตะเพื่อแทรก"</string>
+    <string name="naming_preview">"ตัวอย่างชื่อ"</string>
+    <string name="naming_preview_unavailable">"แก้ไขรูปแบบเพื่อดูตัวอย่าง"</string>
+    <string name="naming_preview_empty">"พิมพ์รูปแบบเพื่อดูตัวอย่าง"</string>
+    <string name="naming_number_note">"{n} จะเป็นหมายเลขต่ำสุดที่ทำให้ชื่อไม่ซ้ำ"</string>
+    <string name="naming_character_count">"%1$d/%2$d"</string>
+    <string name="naming_problem_blank">"เพิ่มข้อความหรือตัวยึดตำแหน่ง"</string>
+    <string name="naming_problem_too_long">"ใช้ไม่เกิน %1$d อักขระ"</string>
+    <string name="naming_problem_unknown_token">"ตัวยึดตำแหน่งที่ไม่รู้จัก: %1$s"</string>
+    <string name="naming_token_date">"วันที่"</string>
+    <string name="naming_token_time">"เวลา"</string>
+    <string name="naming_token_date_time">"วันที่และเวลา"</string>
+    <string name="naming_token_iso_date">"วันที่ ISO"</string>
+    <string name="naming_token_year">"ปี"</string>
+    <string name="naming_token_month">"เดือน"</string>
+    <string name="naming_token_day">"วัน"</string>
+    <string name="naming_token_weekday">"วันในสัปดาห์"</string>
+    <string name="naming_token_number">"หมายเลข"</string>
+    <string name="naming_problem_duplicate">"คุณมีเทมเพลตที่ใช้รูปแบบนี้อยู่แล้ว"</string>
+    <string name="naming_save_failed">"บันทึกเทมเพลตไม่ได้ โปรดลองอีกครั้ง"</string>
+    <string name="naming_default_failed">"เปลี่ยนชื่อเริ่มต้นไม่ได้ โปรดลองอีกครั้ง"</string>
+    <string name="naming_delete_failed">"ลบเทมเพลตไม่ได้ โปรดลองอีกครั้ง"</string>
+</resources>

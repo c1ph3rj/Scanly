@@ -54,6 +54,8 @@ These top-level routes still exist but show `FeaturePlaceholderScreen` — they 
 | `settings/pip` | `SettingsPipDestination` | Pip master switch, tips, camera coaching, export cheers, animation |
 | `settings/detection` | `SettingsDetectionDestination` | Models, gate, benchmark link |
 | `settings/widgets` | `SettingsWidgetsDestination` | Pin home-screen widgets |
+| `settings/tags` | `SettingsTagsDestination` | Create, rename, delete tags (`TagsManageRoute`) |
+| `settings/naming` | `SettingsNamingTemplatesDestination` | Naming templates and the default new-document name (`NamingTemplatesRoute`) |
 | `settings/about` | `SettingsAboutDestination` | Version, updates, legal, support |
 | `settings/faq` | `SettingsFaqDestination` | FAQ sub-screen |
 | `settings/licenses` | `SettingsLicensesDestination` | Open-source licenses |
@@ -111,6 +113,8 @@ Config: `AndroidManifest.xml` receivers + `res/xml/shortcuts.xml`; providers liv
 ### Open with Scanly (PDFs from other apps)
 
 `MainActivity` also has `ACTION_VIEW` (`content`/`file`, `application/pdf`) and `ACTION_SEND` (`application/pdf`) intent filters labelled **Open in Scanly**. `IncomingPdf.uriFrom()` reads the URI from the cold-start or new intent; once onboarding is `COMPLETE`, `IncomingPdf.copyToCache()` copies it to `cache/incoming_pdf/` (keeping the newest few) and the app navigates to `tools/pdf/reader?filePath=…&fileName=…`. If the copy fails, a "Couldn't open that PDF." toast is shown. The source file is never modified.
+
+Images shared from other apps use a separate `ACTION_SEND` / `ACTION_SEND_MULTIPLE` filter for `image/*`. `IncomingImages.urisFrom()` reads `EXTRA_STREAM` (or `ClipData`), keeping only `content://` URIs that don't belong to Scanly. `LaunchActionViewModel.onSharedImages()` caps the selection at 50 and copies it to `cache/incoming_images/{batch}/` right away (saved in `SavedStateHandle`, so it survives onboarding and process death). Once onboarding is `COMPLETE`, `SharedImagesSheet` offers **New document** or a live document to add pages to. Either choice runs `ImportImagesUseCase` with the launch import overlay, then opens `document/{documentId}` (skipped if that document is already on top). Dismissing the sheet deletes the batch. A pending share also suppresses the onboarding "start scanning" redirect.
 
 ```
 Files / Gmail / Drive / chat → "Open in Scanly"

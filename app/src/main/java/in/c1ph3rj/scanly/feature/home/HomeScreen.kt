@@ -43,7 +43,7 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.ui.unit.takeOrElse
-import `in`.c1ph3rj.scanly.domain.model.DocumentTitleFormat
+import `in`.c1ph3rj.scanly.domain.model.TitleSuggestionOption
 import `in`.c1ph3rj.scanly.domain.model.GroupTitleFormat
 import `in`.c1ph3rj.scanly.feature.components.*
 import `in`.c1ph3rj.scanly.feature.pip.LocalPipPreferences
@@ -68,6 +68,7 @@ fun HomeRoute(
     val viewModel: HomeViewModel = hiltViewModel()
     val pipViewModel: PipViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val titleSuggestionOptions by viewModel.titleSuggestionOptions.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     var createForScan by rememberSaveable { mutableStateOf(false) }
 
@@ -115,6 +116,7 @@ fun HomeRoute(
         onOpenSearch = onOpenSearch,
         onCreateGroup = viewModel::createGroup,
         onSuggestTitle = viewModel::suggestDocumentTitle,
+        titleSuggestionOptions = titleSuggestionOptions,
         onSuggestGroupTitle = viewModel::suggestGroupTitle,
         onDismissPipTip = pipViewModel::dismissTodaysTip,
     )
@@ -135,7 +137,8 @@ fun HomeScreen(
     onSeeAllFolders: () -> Unit = onNavigateToLibrary,
     onOpenSearch: () -> Unit = {},
     onCreateGroup: (String) -> Unit,
-    onSuggestTitle: suspend (DocumentTitleFormat) -> String,
+    onSuggestTitle: suspend (TitleSuggestionOption) -> String,
+    titleSuggestionOptions: List<TitleSuggestionOption> = emptyList(),
     onSuggestGroupTitle: suspend (GroupTitleFormat) -> String,
     onDismissPipTip: () -> Unit = {},
 ) {
@@ -364,6 +367,7 @@ fun HomeScreen(
                 onCreateDocument(value)
             },
             onSuggestTitle = onSuggestTitle,
+            suggestionOptions = titleSuggestionOptions,
             autoFillSuggestedName = true,
         )
     }

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tags_settings_entry_title">"Теги"</string>
+    <string name="tags_settings_entry_summary">"Создание, переименование и удаление тегов"</string>
+    <string name="tags_document_add">"Добавить теги"</string>
+    <string name="tags_document_edit">"Изменить теги"</string>
+    <string name="tags_document_row_description">"Теги: %1$s"</string>
+    <string name="tags_document_updated">"Теги обновлены"</string>
+    <string name="tags_editor_title">"Теги"</string>
+    <string name="tags_editor_field_label">"Новый тег"</string>
+    <string name="tags_editor_add">"Добавить тег"</string>
+    <string name="tags_editor_create_chip">"Создать «%1$s»"</string>
+    <string name="tags_editor_empty">"Тегов пока нет. Введите название, чтобы создать тег."</string>
+    <string name="tags_editor_done">"Готово"</string>
+    <string name="tags_search_filter_section">"Теги"</string>
+    <string name="tags_search_filter_all_hint">"Показывает документы, у которых есть все выбранные теги."</string>
+    <string name="tags_search_filter_chip">"Тег: %1$s"</string>
+    <string name="tags_manage_title">"Теги"</string>
+    <string name="tags_manage_new_tag">"Новый тег"</string>
+    <string name="tags_manage_rename_title">"Переименовать тег"</string>
+    <string name="tags_manage_name_label">"Название тега"</string>
+    <string name="tags_manage_create">"Создать"</string>
+    <string name="tags_manage_rename">"Переименовать"</string>
+    <string name="tags_manage_delete">"Удалить"</string>
+    <string name="tags_manage_delete_title">"Удалить тег?"</string>
+    <string name="tags_manage_delete_message">"Тег «%1$s» будет снят со всех документов, у которых он есть. Сами документы сохранятся."</string>
+    <string name="tags_manage_deleted">"Тег удалён"</string>
+    <string name="tags_manage_renamed">"Тег переименован"</string>
+    <string name="tags_manage_empty_pip">"Пока ничего не помечено."</string>
+    <string name="tags_manage_empty_title">"Тегов пока нет"</string>
+    <string name="tags_manage_empty_description">"Теги объединяют документы из разных папок: один чек может быть одновременно «Поездка» и «К возмещению». Создайте тег здесь или в любом документе."</string>
+    <string name="tags_manage_options">"Параметры: %1$s"</string>
+    <string name="tags_manage_name_blank">"Введите название тега."</string>
+    <string name="tags_manage_name_taken">"Тег «%1$s» уже существует."</string>
+</resources>

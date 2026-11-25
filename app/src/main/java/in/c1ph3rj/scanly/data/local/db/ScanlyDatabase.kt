@@ -6,18 +6,23 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import `in`.c1ph3rj.scanly.data.local.db.dao.DocumentDao
 import `in`.c1ph3rj.scanly.data.local.db.dao.DocumentGroupDao
+import `in`.c1ph3rj.scanly.data.local.db.dao.NamingTemplateDao
 import `in`.c1ph3rj.scanly.data.local.db.dao.PageMarkupDao
 import `in`.c1ph3rj.scanly.data.local.db.dao.PageTextDao
 import `in`.c1ph3rj.scanly.data.local.db.dao.ScanPageDao
 import `in`.c1ph3rj.scanly.data.local.db.dao.SignatureDao
+import `in`.c1ph3rj.scanly.data.local.db.dao.TagDao
 import `in`.c1ph3rj.scanly.data.local.db.entity.DocumentEntity
 import `in`.c1ph3rj.scanly.data.local.db.entity.DocumentGroupEntity
+import `in`.c1ph3rj.scanly.data.local.db.entity.DocumentTagEntity
+import `in`.c1ph3rj.scanly.data.local.db.entity.NamingTemplateEntity
 import `in`.c1ph3rj.scanly.data.local.db.entity.PAGE_TEXT_TOKENIZER_ARG
 import `in`.c1ph3rj.scanly.data.local.db.entity.PageMarkupEntity
 import `in`.c1ph3rj.scanly.data.local.db.entity.PageTextEntity
 import `in`.c1ph3rj.scanly.data.local.db.entity.PageTextFtsEntity
 import `in`.c1ph3rj.scanly.data.local.db.entity.ScanPageEntity
 import `in`.c1ph3rj.scanly.data.local.db.entity.SignatureEntity
+import `in`.c1ph3rj.scanly.data.local.db.entity.TagEntity
 import `in`.c1ph3rj.scanly.domain.model.PageFilterPreset
 
 @Database(
@@ -29,8 +34,11 @@ import `in`.c1ph3rj.scanly.domain.model.PageFilterPreset
         PageTextFtsEntity::class,
         SignatureEntity::class,
         PageMarkupEntity::class,
+        TagEntity::class,
+        DocumentTagEntity::class,
+        NamingTemplateEntity::class,
     ],
-    version = 13,
+    version = 14,
     exportSchema = false,
 )
 abstract class ScanlyDatabase : RoomDatabase() {
@@ -45,6 +53,10 @@ abstract class ScanlyDatabase : RoomDatabase() {
     abstract fun signatureDao(): SignatureDao
 
     abstract fun pageMarkupDao(): PageMarkupDao
+
+    abstract fun tagDao(): TagDao
+
+    abstract fun namingTemplateDao(): NamingTemplateDao
 
     companion object {
         val MIGRATION_1_2: Migration = object : Migration(1, 2) {
@@ -298,6 +310,38 @@ abstract class ScanlyDatabase : RoomDatabase() {
                 db.execSQL("ALTER TABLE `scan_pages` ADD COLUMN `scanMode` TEXT NOT NULL DEFAULT 'document'")
                 db.execSQL("ALTER TABLE `scan_pages` ADD COLUMN `idCardPairId` TEXT")
                 db.execSQL("ALTER TABLE `scan_pages` ADD COLUMN `idCardSide` TEXT")
+            }
+        }
+
+        /**
+         * Manual document tags (`tags`, `document_tags`) and saved naming templates
+         * (`naming_templates`). New tables only; existing rows are untouched. DDL mirrors Room's
+         * generated schema exactly so validation passes.
+         */
+        val MIGRATION_13_14: Migration = object : Migration(13, 14) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL(
+                    "CREATE TABLE IF NOT EXISTS `tags` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, " +
+                        "`nameKey` TEXT NOT NULL, `createdAtMillis` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+                )
+                db.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS `index_tags_nameKey` ON `tags` (`nameKey`)")
+                db.execSQL(
+                    "CREATE TABLE IF NOT EXISTS `document_tags` (`documentId` TEXT NOT NULL, `tagId` TEXT NOT NULL, " +
+                        "PRIMARY KEY(`documentId`, `tagId`), " +
+                        "FOREIGN KEY(`documentId`) REFERENCES `documents`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , " +
+                        "FOREIGN KEY(`tagId`) REFERENCES `tags`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+                )
+                db.execSQL(
+                    "CREATE INDEX IF NOT EXISTS `index_document_tags_documentId` ON `document_tags` (`documentId`)",
+                )
+                db.execSQL(
+                    "CREATE INDEX IF NOT EXISTS `index_document_tags_tagId` ON `document_tags` (`tagId`)",
+                )
+                db.execSQL(
+                    "CREATE TABLE IF NOT EXISTS `naming_templates` (`id` TEXT NOT NULL, `pattern` TEXT NOT NULL, " +
+                        "`isDefault` INTEGER NOT NULL, `createdAtMillis` INTEGER NOT NULL, " +
+                        "`updatedAtMillis` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+                )
             }
         }
 

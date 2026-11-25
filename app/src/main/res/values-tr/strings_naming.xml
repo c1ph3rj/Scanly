@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Naming templates (Settings → Naming templates, Suggest name). Keep {placeholders} as written. -->
+    <string name="naming_settings_entry_title">"Adlandırma şablonları"</string>
+    <string name="naming_settings_entry_summary">"Yeni belge adları için yeniden kullanılabilir kalıplar"</string>
+    <string name="naming_default_section">"Varsayılan ad"</string>
+    <string name="naming_default_hint">"Yeni belgeler bu şekilde adlandırılır. Ad öner yine tüm seçenekler arasında geçiş yapar."</string>
+    <string name="naming_templates_section">"Şablonlar"</string>
+    <string name="naming_example">"Örnek: %1$s"</string>
+    <string name="naming_default_badge">"Varsayılan"</string>
+    <string name="naming_add_template">"Şablon ekle"</string>
+    <string name="naming_new_template">"Yeni şablon"</string>
+    <string name="naming_edit_template">"Şablonu düzenle"</string>
+    <string name="naming_edit_template_description">"%1$s düzenle"</string>
+    <string name="naming_delete_template_description">"%1$s sil"</string>
+    <string name="naming_delete_title">"Şablon silinsin mi?"</string>
+    <string name="naming_delete_message">"%1$s kaldırılacak. Bu adla adlandırılmış belgeler adlarını korur."</string>
+    <string name="naming_delete_default_message">"%1$s varsayılan adınız. Silindikten sonra yeni belgeler yeniden %2$s kullanır. Mevcut adlar değişmez."</string>
+    <string name="naming_delete_confirm">"Sil"</string>
+    <string name="naming_cancel">"İptal"</string>
+    <string name="naming_save">"Kaydet"</string>
+    <string name="naming_empty_title">"Henüz şablon yok"</string>
+    <string name="naming_empty_body">"Makbuz {date} veya {iso} Fatura {n} gibi bir ad kalıbı kaydedin; Scanly her yeni belge için tarihi ya da bir numarayı doldurur."</string>
+    <string name="naming_empty_suggest_hint">"Şablonlarınız Ad öner altındaki tarih biçimlerine eklenir ve birini varsayılan yapabilirsiniz."</string>
+    <string name="naming_pattern_label">"Kalıp"</string>
+    <string name="naming_pattern_placeholder">"Makbuz {date}"</string>
+    <string name="naming_insert_token">"Eklemek için dokunun"</string>
+    <string name="naming_preview">"Önizleme"</string>
+    <string name="naming_preview_unavailable">"Önizlemeyi görmek için kalıbı düzeltin"</string>
+    <string name="naming_preview_empty">"Önizlemeyi görmek için bir kalıp yazın"</string>
+    <string name="naming_number_note">"{n}, adı benzersiz tutan en küçük sayı olur."</string>
+    <string name="naming_character_count">"%1$d/%2$d"</string>
+    <string name="naming_problem_blank">"Biraz metin veya bir yer tutucu ekleyin."</string>
+    <string name="naming_problem_too_long">"En fazla %1$d karakter kullanın."</string>
+    <string name="naming_problem_unknown_token">"Bilinmeyen yer tutucu: %1$s"</string>
+    <string name="naming_token_date">"Tarih"</string>
+    <string name="naming_token_time">"Saat"</string>
+    <string name="naming_token_date_time">"Tarih ve saat"</string>
+    <string name="naming_token_iso_date">"ISO tarihi"</string>
+    <string name="naming_token_year">"Yıl"</string>
+    <string name="naming_token_month">"Ay"</string>
+    <string name="naming_token_day">"Gün"</string>
+    <string name="naming_token_weekday">"Hafta günü"</string>
+    <string name="naming_token_number">"Numara"</string>
+    <string name="naming_problem_duplicate">"Bu kalıba sahip bir şablonunuz zaten var."</string>
+    <string name="naming_save_failed">"Şablon kaydedilemedi. Tekrar deneyin."</string>
+    <string name="naming_default_failed">"Varsayılan ad değiştirilemedi. Tekrar deneyin."</string>
+    <string name="naming_delete_failed">"Şablon silinemedi. Tekrar deneyin."</string>
+</resources>

@@ -108,7 +108,31 @@ The same overflow also opens the PDF tools — Compress, Merge, Split into PDFs,
 
 Documents without a `groupId` appear alongside foldered documents in Library's **All** view. A folder chip shows only documents assigned to that folder.
 
+## Tagging documents
+
+Tags work alongside folders: a document lives in one folder at most, but can carry any number of tags. A receipt can be both *Travel* and *Reimbursable*.
+
+1. Open a document and tap ⋮ › **Edit tags**. Once you have made a tag, documents also show their tags under the folder and date; tap them to edit.
+2. Tap tags to turn them on or off, or type a name and tap **Create** to make a new one. A name you already have (in any case) picks that tag.
+3. Tap **Done**.
+
+In **Library › Search**, open **Filters** and pick one or more tags: documents must carry every tag you pick. Typing a tag's name also finds its documents, and `-travel` leaves out documents tagged Travel.
+
+Manage tags in **Settings › Tags**: create, rename, or delete them. Deleting a tag removes it from documents but keeps the documents. Documents in Recently deleted keep their tags if you restore them, and splitting a document copies its tags to each part.
+
+## Naming templates
+
+Scanly suggests names like "Scan 21-Nov-2026 10:49 am". To use your own pattern, open **Settings › Naming templates** and tap **Add**:
+
+- Type a pattern and tap a placeholder to insert it: `{date}`, `{time}`, `{datetime}`, `{iso}` (2026-11-21), `{year}`, `{month}`, `{day}`, `{weekday}`, and `{n}`, a number that counts up so names stay unique. Example: `Receipt {iso} {n}`.
+- The preview shows what a name would look like today.
+- Pick a template as the **Default name** to use it for new documents, the Scan shortcut, and imported or shared images, or keep the built-in.
+
+Templates also join the built-in formats when you tap **Suggest name** while naming a new document. **Clear all data** keeps your templates.
+
 ## Exporting and sharing
+
+The PDF tools for a document (Compress, Merge with other PDFs, Split into PDFs, Password protect, Add watermark, Save pages as images) are under ⋮ › **PDF tools**. Each makes a new file from a copy; the scan itself never changes.
 
 ### Single document
 
@@ -218,7 +242,7 @@ Library backup and restore are not available in v1.0.18.
 
 1. Tap **Clear all data** in Settings.
 2. Confirm the destructive action.
-3. All documents, pages, groups, files, export cache, and thumbnails are removed.
+3. All documents, pages, groups, tags, files, export cache, images and PDFs shared in from other apps, and thumbnails are removed. Naming templates and other settings are kept.
 4. **Cannot be undone.**
 
 ### FAQs and licenses
@@ -284,6 +308,8 @@ When a PDF is ready, preview it in Scanly, then save or share.
 ### Open PDFs from other apps
 
 In Files, Gmail, Drive, WhatsApp, or any app that opens or shares PDFs, choose **Open in Scanly**. The PDF opens in Scanly's reader, where the ⋮ menu offers every PDF tool. Scanly works on a copy; the original file is never changed.
+
+To turn photos you already have into pages, select one or more images in Photos, Files, WhatsApp or another app, tap **Share**, and choose **Scanly**. Pick **New document**, or a document from the list to add the images to it as pages. Up to 50 images are added at a time, cleaned up the same way as images imported from inside Scanly.
 
 ## Permissions
 

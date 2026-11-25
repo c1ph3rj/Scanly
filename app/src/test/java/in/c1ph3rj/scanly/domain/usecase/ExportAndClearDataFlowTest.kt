@@ -1,5 +1,6 @@
 package `in`.c1ph3rj.scanly.domain.usecase
 
+import `in`.c1ph3rj.scanly.testing.InMemoryNamingTemplateRepository
 import `in`.c1ph3rj.scanly.core.common.ScanlyResult
 import `in`.c1ph3rj.scanly.domain.model.PdfExportOptions
 import `in`.c1ph3rj.scanly.domain.model.PdfPageNumber
@@ -30,7 +31,7 @@ class ExportAndClearDataFlowTest {
     private val exports = InMemoryDocumentExportRepository(library, exportDirectory)
     private val appData = InMemoryAppDataRepository(library)
 
-    private val createDocument = CreateDocumentUseCase(documents)
+    private val createDocument = CreateDocumentUseCase(documents, InMemoryNamingTemplateRepository())
     private val createGroup = CreateGroupUseCase(groups)
     private val setDocumentGroup = SetDocumentGroupUseCase(groups)
     private val prepareCapture = PreparePageCaptureUseCase(pages)

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Naming templates (Settings → Naming templates, Suggest name). Keep {placeholders} as written. -->
+    <string name="naming_settings_entry_title">"Template nama"</string>
+    <string name="naming_settings_entry_summary">"Pola yang dapat dipakai ulang untuk nama dokumen baru"</string>
+    <string name="naming_default_section">"Nama default"</string>
+    <string name="naming_default_hint">"Dokumen baru diberi nama ini. Sarankan nama tetap berganti di antara semua opsi."</string>
+    <string name="naming_templates_section">"Template"</string>
+    <string name="naming_example">"Contoh: %1$s"</string>
+    <string name="naming_default_badge">"Default"</string>
+    <string name="naming_add_template">"Tambahkan template"</string>
+    <string name="naming_new_template">"Template baru"</string>
+    <string name="naming_edit_template">"Edit template"</string>
+    <string name="naming_edit_template_description">"Edit %1$s"</string>
+    <string name="naming_delete_template_description">"Hapus %1$s"</string>
+    <string name="naming_delete_title">"Hapus template?"</string>
+    <string name="naming_delete_message">"%1$s akan dihapus. Dokumen yang sudah memakai nama ini tetap menyimpan namanya."</string>
+    <string name="naming_delete_default_message">"%1$s adalah nama default Anda. Setelah dihapus, dokumen baru kembali memakai %2$s. Nama yang sudah ada tidak berubah."</string>
+    <string name="naming_delete_confirm">"Hapus"</string>
+    <string name="naming_cancel">"Batal"</string>
+    <string name="naming_save">"Simpan"</string>
+    <string name="naming_empty_title">"Belum ada template"</string>
+    <string name="naming_empty_body">"Simpan pola nama seperti Struk {date} atau {iso} Faktur {n}, dan Scanly akan mengisi tanggal atau nomor untuk setiap dokumen baru."</string>
+    <string name="naming_empty_suggest_hint">"Template Anda bergabung dengan format tanggal di Sarankan nama, dan Anda dapat menjadikan salah satunya default."</string>
+    <string name="naming_pattern_label">"Pola"</string>
+    <string name="naming_pattern_placeholder">"Struk {date}"</string>
+    <string name="naming_insert_token">"Ketuk untuk menyisipkan"</string>
+    <string name="naming_preview">"Pratinjau"</string>
+    <string name="naming_preview_unavailable">"Perbaiki pola untuk melihat pratinjau"</string>
+    <string name="naming_preview_empty">"Ketik pola untuk melihat pratinjau"</string>
+    <string name="naming_number_note">"{n} menjadi angka terkecil yang membuat nama tetap unik."</string>
+    <string name="naming_character_count">"%1$d/%2$d"</string>
+    <string name="naming_problem_blank">"Tambahkan teks atau placeholder."</string>
+    <string name="naming_problem_too_long">"Gunakan maksimal %1$d karakter."</string>
+    <string name="naming_problem_unknown_token">"Placeholder tidak dikenal: %1$s"</string>
+    <string name="naming_token_date">"Tanggal"</string>
+    <string name="naming_token_time">"Waktu"</string>
+    <string name="naming_token_date_time">"Tanggal &amp; waktu"</string>
+    <string name="naming_token_iso_date">"Tanggal ISO"</string>
+    <string name="naming_token_year">"Tahun"</string>
+    <string name="naming_token_month">"Bulan"</string>
+    <string name="naming_token_day">"Hari"</string>
+    <string name="naming_token_weekday">"Nama hari"</string>
+    <string name="naming_token_number">"Nomor"</string>
+    <string name="naming_problem_duplicate">"Anda sudah punya template dengan pola ini."</string>
+    <string name="naming_save_failed">"Template tidak dapat disimpan. Coba lagi."</string>
+    <string name="naming_default_failed">"Nama default tidak dapat diubah. Coba lagi."</string>
+    <string name="naming_delete_failed">"Template tidak dapat dihapus. Coba lagi."</string>
+</resources>

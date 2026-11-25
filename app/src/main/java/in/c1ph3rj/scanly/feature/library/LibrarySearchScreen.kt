@@ -111,6 +111,7 @@ import `in`.c1ph3rj.scanly.core.ui.ScanlyTestTags
 import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import `in`.c1ph3rj.scanly.domain.model.DocumentGroup
 import `in`.c1ph3rj.scanly.domain.model.DocumentKind
+import `in`.c1ph3rj.scanly.domain.model.DocumentTag
 import `in`.c1ph3rj.scanly.domain.model.DocumentSearchResult
 import `in`.c1ph3rj.scanly.domain.model.FolderSearchResult
 import `in`.c1ph3rj.scanly.domain.model.MatchTier
@@ -300,6 +301,7 @@ fun LibrarySearchScreen(
             showsResults = uiState.isSearchActive,
             onFiltersChange = onFiltersChange,
             onDismiss = { showFilters = false },
+            tags = uiState.tags,
         )
     }
 
@@ -352,6 +354,7 @@ fun LibrarySearchScreen(
                         scope = uiState.scope,
                         filters = uiState.filters,
                         folders = uiState.folders,
+                        tags = uiState.tags,
                         onScopeChange = onScopeChange,
                         onOpenFilters = { focusManager.clearFocus(); showFilters = true },
                         onFiltersChange = onFiltersChange,
@@ -502,6 +505,7 @@ private fun SearchFilterRow(
     scope: SearchScope,
     filters: SearchFilters,
     folders: List<DocumentGroup>,
+    tags: List<DocumentTag>,
     onScopeChange: (SearchScope) -> Unit,
     onOpenFilters: () -> Unit,
     onFiltersChange: (SearchFilters) -> Unit,
@@ -544,7 +548,7 @@ private fun SearchFilterRow(
                 contentDescription = if (active > 0) appString(R.string.library_search_filters_on, active) else appString(R.string.filter_picker_filters)
             },
         )
-        ActiveFilterChips(filters = filters, folders = folders, onFiltersChange = onFiltersChange)
+        ActiveFilterChips(filters = filters, folders = folders, onFiltersChange = onFiltersChange, tags = tags)
     }
 }
 
@@ -1109,6 +1113,9 @@ private fun PrivacyFootnote(modifier: Modifier = Modifier) {
 }
 
 private fun resultMeta(result: DocumentSearchResult): String = listOfNotNull(
+    // Say why a document matched when it was through a tag, not its name.
+    result.matchedTags.takeIf { it.isNotEmpty() }
+        ?.let { appString(R.string.tags_search_filter_chip, it.joinToString(", ")) },
     result.kind?.label,
     result.folderTitle,
     when {

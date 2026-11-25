@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="document_menu_pdf_tools">"PDF సాధనాలు"</string>
+    <string name="document_pdf_tools_sheet_subtitle">"ప్రతి సాధనం “%1$s” నుండి కొత్త PDF‌ను తయారు చేస్తుంది. మీ స్కాన్ అలాగే ఉంటుంది."</string>
+    <string name="document_pdf_tools_password_caption">"పాస్‌వర్డ్‌తో లాక్ చేయండి"</string>
+    <string name="document_pdf_tools_images_caption">"ప్రతి పేజీకి ఒక చిత్ర ఫైల్"</string>
+</resources>

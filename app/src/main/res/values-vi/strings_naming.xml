@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Naming templates (Settings → Naming templates, Suggest name). Keep {placeholders} as written. -->
+    <string name="naming_settings_entry_title">"Mẫu đặt tên"</string>
+    <string name="naming_settings_entry_summary">"Mẫu dùng lại cho tên tài liệu mới"</string>
+    <string name="naming_default_section">"Tên mặc định"</string>
+    <string name="naming_default_hint">"Tài liệu mới được đặt tên theo mục này. Gợi ý tên vẫn lần lượt qua mọi tùy chọn."</string>
+    <string name="naming_templates_section">"Mẫu"</string>
+    <string name="naming_example">"Ví dụ: %1$s"</string>
+    <string name="naming_default_badge">"Mặc định"</string>
+    <string name="naming_add_template">"Thêm mẫu"</string>
+    <string name="naming_new_template">"Mẫu mới"</string>
+    <string name="naming_edit_template">"Sửa mẫu"</string>
+    <string name="naming_edit_template_description">"Sửa %1$s"</string>
+    <string name="naming_delete_template_description">"Xóa %1$s"</string>
+    <string name="naming_delete_title">"Xóa mẫu?"</string>
+    <string name="naming_delete_message">"%1$s sẽ bị xóa. Các tài liệu đã được đặt tên theo mẫu này vẫn giữ tên."</string>
+    <string name="naming_delete_default_message">"%1$s là tên mặc định của bạn. Sau khi xóa, tài liệu mới sẽ dùng lại %2$s. Tên hiện có không thay đổi."</string>
+    <string name="naming_delete_confirm">"Xóa"</string>
+    <string name="naming_cancel">"Hủy"</string>
+    <string name="naming_save">"Lưu"</string>
+    <string name="naming_empty_title">"Chưa có mẫu nào"</string>
+    <string name="naming_empty_body">"Lưu một mẫu tên như Biên lai {date} hoặc {iso} Hóa đơn {n}, Scanly sẽ điền ngày hoặc số cho mỗi tài liệu mới."</string>
+    <string name="naming_empty_suggest_hint">"Mẫu của bạn được thêm vào các định dạng ngày trong Gợi ý tên, và bạn có thể đặt một mẫu làm mặc định."</string>
+    <string name="naming_pattern_label">"Mẫu tên"</string>
+    <string name="naming_pattern_placeholder">"Biên lai {date}"</string>
+    <string name="naming_insert_token">"Nhấn để chèn"</string>
+    <string name="naming_preview">"Xem trước"</string>
+    <string name="naming_preview_unavailable">"Hãy sửa mẫu để xem trước"</string>
+    <string name="naming_preview_empty">"Hãy nhập mẫu để xem trước"</string>
+    <string name="naming_number_note">"{n} là số nhỏ nhất giúp tên không bị trùng."</string>
+    <string name="naming_character_count">"%1$d/%2$d"</string>
+    <string name="naming_problem_blank">"Hãy thêm chữ hoặc một phần giữ chỗ."</string>
+    <string name="naming_problem_too_long">"Dùng tối đa %1$d ký tự."</string>
+    <string name="naming_problem_unknown_token">"Phần giữ chỗ không xác định: %1$s"</string>
+    <string name="naming_token_date">"Ngày"</string>
+    <string name="naming_token_time">"Giờ"</string>
+    <string name="naming_token_date_time">"Ngày và giờ"</string>
+    <string name="naming_token_iso_date">"Ngày ISO"</string>
+    <string name="naming_token_year">"Năm"</string>
+    <string name="naming_token_month">"Tháng"</string>
+    <string name="naming_token_day">"Ngày trong tháng"</string>
+    <string name="naming_token_weekday">"Thứ"</string>
+    <string name="naming_token_number">"Số"</string>
+    <string name="naming_problem_duplicate">"Bạn đã có một mẫu với nội dung này."</string>
+    <string name="naming_save_failed">"Không lưu được mẫu. Hãy thử lại."</string>
+    <string name="naming_default_failed">"Không đổi được tên mặc định. Hãy thử lại."</string>
+    <string name="naming_delete_failed">"Không xóa được mẫu. Hãy thử lại."</string>
+</resources>

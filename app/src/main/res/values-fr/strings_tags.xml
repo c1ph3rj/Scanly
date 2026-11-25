@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tags_settings_entry_title">"Étiquettes"</string>
+    <string name="tags_settings_entry_summary">"Créer, renommer et supprimer des étiquettes"</string>
+    <string name="tags_document_add">"Ajouter des étiquettes"</string>
+    <string name="tags_document_edit">"Modifier les étiquettes"</string>
+    <string name="tags_document_row_description">"Étiquettes : %1$s"</string>
+    <string name="tags_document_updated">"Étiquettes mises à jour"</string>
+    <string name="tags_editor_title">"Étiquettes"</string>
+    <string name="tags_editor_field_label">"Nouvelle étiquette"</string>
+    <string name="tags_editor_add">"Ajouter l’étiquette"</string>
+    <string name="tags_editor_create_chip">"Créer « %1$s »"</string>
+    <string name="tags_editor_empty">"Aucune étiquette pour l’instant. Saisissez un nom pour en créer une."</string>
+    <string name="tags_editor_done">"Terminé"</string>
+    <string name="tags_search_filter_section">"Étiquettes"</string>
+    <string name="tags_search_filter_all_hint">"Affiche les documents qui ont toutes les étiquettes sélectionnées."</string>
+    <string name="tags_search_filter_chip">"Étiquette : %1$s"</string>
+    <string name="tags_manage_title">"Étiquettes"</string>
+    <string name="tags_manage_new_tag">"Nouvelle étiquette"</string>
+    <string name="tags_manage_rename_title">"Renommer l’étiquette"</string>
+    <string name="tags_manage_name_label">"Nom de l’étiquette"</string>
+    <string name="tags_manage_create">"Créer"</string>
+    <string name="tags_manage_rename">"Renommer"</string>
+    <string name="tags_manage_delete">"Supprimer"</string>
+    <string name="tags_manage_delete_title">"Supprimer l’étiquette ?"</string>
+    <string name="tags_manage_delete_message">"« %1$s » sera retirée de tous les documents qui la portent. Les documents eux-mêmes sont conservés."</string>
+    <string name="tags_manage_deleted">"Étiquette supprimée"</string>
+    <string name="tags_manage_renamed">"Étiquette renommée"</string>
+    <string name="tags_manage_empty_pip">"Rien n’est encore étiqueté."</string>
+    <string name="tags_manage_empty_title">"Aucune étiquette"</string>
+    <string name="tags_manage_empty_description">"Les étiquettes regroupent des documents de plusieurs dossiers : un même reçu peut être à la fois Voyage et Remboursable. Créez une étiquette ici ou depuis n’importe quel document."</string>
+    <string name="tags_manage_options">"Options pour %1$s"</string>
+    <string name="tags_manage_name_blank">"Saisissez un nom d’étiquette."</string>
+    <string name="tags_manage_name_taken">"Une étiquette nommée « %1$s » existe déjà."</string>
+</resources>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tags_settings_entry_title">"ট্যাগ"</string>
+    <string name="tags_settings_entry_summary">"ট্যাগ তৈরি করুন, নাম বদলান ও মুছুন"</string>
+    <string name="tags_document_add">"ট্যাগ যোগ করুন"</string>
+    <string name="tags_document_edit">"ট্যাগ সম্পাদনা করুন"</string>
+    <string name="tags_document_row_description">"ট্যাগ: %1$s"</string>
+    <string name="tags_document_updated">"ট্যাগ আপডেট হয়েছে"</string>
+    <string name="tags_editor_title">"ট্যাগ"</string>
+    <string name="tags_editor_field_label">"নতুন ট্যাগ"</string>
+    <string name="tags_editor_add">"ট্যাগ যোগ করুন"</string>
+    <string name="tags_editor_create_chip">"“%1$s” তৈরি করুন"</string>
+    <string name="tags_editor_empty">"এখনও কোনো ট্যাগ নেই। তৈরি করতে একটি নাম লিখুন।"</string>
+    <string name="tags_editor_done">"সম্পন্ন"</string>
+    <string name="tags_search_filter_section">"ট্যাগ"</string>
+    <string name="tags_search_filter_all_hint">"নির্বাচিত সব ট্যাগ আছে এমন নথি দেখায়।"</string>
+    <string name="tags_search_filter_chip">"ট্যাগ: %1$s"</string>
+    <string name="tags_manage_title">"ট্যাগ"</string>
+    <string name="tags_manage_new_tag">"নতুন ট্যাগ"</string>
+    <string name="tags_manage_rename_title">"ট্যাগের নাম বদলান"</string>
+    <string name="tags_manage_name_label">"ট্যাগের নাম"</string>
+    <string name="tags_manage_create">"তৈরি করুন"</string>
+    <string name="tags_manage_rename">"নাম বদলান"</string>
+    <string name="tags_manage_delete">"মুছুন"</string>
+    <string name="tags_manage_delete_title">"ট্যাগ মুছবেন?"</string>
+    <string name="tags_manage_delete_message">"“%1$s” যেসব নথিতে আছে সেগুলো থেকে সরানো হবে। নথিগুলো থেকে যাবে।"</string>
+    <string name="tags_manage_deleted">"ট্যাগ মুছে ফেলা হয়েছে"</string>
+    <string name="tags_manage_renamed">"ট্যাগের নাম বদলানো হয়েছে"</string>
+    <string name="tags_manage_empty_pip">"এখনও কিছু ট্যাগ করা হয়নি।"</string>
+    <string name="tags_manage_empty_title">"এখনও কোনো ট্যাগ নেই"</string>
+    <string name="tags_manage_empty_description">"ট্যাগ বিভিন্ন ফোল্ডারের নথি একসাথে রাখে: একটি রসিদ একই সঙ্গে “ভ্রমণ” ও “ফেরতযোগ্য” হতে পারে। এখান থেকে বা যেকোনো নথি থেকে ট্যাগ তৈরি করুন।"</string>
+    <string name="tags_manage_options">"%1$s-এর বিকল্প"</string>
+    <string name="tags_manage_name_blank">"একটি ট্যাগের নাম লিখুন।"</string>
+    <string name="tags_manage_name_taken">"“%1$s” নামে একটি ট্যাগ আগে থেকেই আছে।"</string>
+</resources>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Naming templates (Settings → Naming templates, Suggest name). Keep {placeholders} as written. -->
+    <string name="naming_settings_entry_title">"Шаблоны названий"</string>
+    <string name="naming_settings_entry_summary">"Повторно используемые шаблоны для названий новых документов"</string>
+    <string name="naming_default_section">"Название по умолчанию"</string>
+    <string name="naming_default_hint">"Так будут называться новые документы. «Предложите имя» по-прежнему перебирает все варианты."</string>
+    <string name="naming_templates_section">"Шаблоны"</string>
+    <string name="naming_example">"Пример: %1$s"</string>
+    <string name="naming_default_badge">"По умолчанию"</string>
+    <string name="naming_add_template">"Добавить шаблон"</string>
+    <string name="naming_new_template">"Новый шаблон"</string>
+    <string name="naming_edit_template">"Изменить шаблон"</string>
+    <string name="naming_edit_template_description">"Изменить %1$s"</string>
+    <string name="naming_delete_template_description">"Удалить %1$s"</string>
+    <string name="naming_delete_title">"Удалить шаблон?"</string>
+    <string name="naming_delete_message">"Шаблон %1$s будет удалён. Документы, уже названные по нему, сохранят свои названия."</string>
+    <string name="naming_delete_default_message">"%1$s — ваше название по умолчанию. После удаления новые документы снова будут называться по формату «%2$s». Существующие названия не изменятся."</string>
+    <string name="naming_delete_confirm">"Удалить"</string>
+    <string name="naming_cancel">"Отмена"</string>
+    <string name="naming_save">"Сохранить"</string>
+    <string name="naming_empty_title">"Шаблонов пока нет"</string>
+    <string name="naming_empty_body">"Сохраните шаблон названия, например Чек {date} или {iso} Счёт {n}, и Scanly подставит дату или номер для каждого нового документа."</string>
+    <string name="naming_empty_suggest_hint">"Ваши шаблоны появятся рядом с форматами даты в «Предложите имя», и один из них можно сделать шаблоном по умолчанию."</string>
+    <string name="naming_pattern_label">"Шаблон"</string>
+    <string name="naming_pattern_placeholder">"Чек {date}"</string>
+    <string name="naming_insert_token">"Нажмите, чтобы вставить"</string>
+    <string name="naming_preview">"Предпросмотр"</string>
+    <string name="naming_preview_unavailable">"Исправьте шаблон, чтобы увидеть предпросмотр"</string>
+    <string name="naming_preview_empty">"Введите шаблон, чтобы увидеть предпросмотр"</string>
+    <string name="naming_number_note">"{n} заменяется наименьшим числом, при котором название остаётся уникальным."</string>
+    <string name="naming_character_count">"%1$d/%2$d"</string>
+    <string name="naming_problem_blank">"Добавьте текст или подстановку."</string>
+    <string name="naming_problem_too_long">"Используйте не более %1$d символов."</string>
+    <string name="naming_problem_unknown_token">"Неизвестная подстановка: %1$s"</string>
+    <string name="naming_token_date">"Дата"</string>
+    <string name="naming_token_time">"Время"</string>
+    <string name="naming_token_date_time">"Дата и время"</string>
+    <string name="naming_token_iso_date">"Дата ISO"</string>
+    <string name="naming_token_year">"Год"</string>
+    <string name="naming_token_month">"Месяц"</string>
+    <string name="naming_token_day">"День"</string>
+    <string name="naming_token_weekday">"День недели"</string>
+    <string name="naming_token_number">"Номер"</string>
+    <string name="naming_problem_duplicate">"У вас уже есть шаблон с таким текстом."</string>
+    <string name="naming_save_failed">"Не удалось сохранить шаблон. Повторите попытку."</string>
+    <string name="naming_default_failed">"Не удалось изменить название по умолчанию. Повторите попытку."</string>
+    <string name="naming_delete_failed">"Не удалось удалить шаблон. Повторите попытку."</string>
+</resources>

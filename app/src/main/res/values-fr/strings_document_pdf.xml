@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="document_menu_pdf_tools">"Outils PDF"</string>
+    <string name="document_pdf_tools_sheet_subtitle">"Chaque outil crée un nouveau PDF à partir de « %1$s ». Votre scan reste inchangé."</string>
+    <string name="document_pdf_tools_password_caption">"Le verrouiller par mot de passe"</string>
+    <string name="document_pdf_tools_images_caption">"Un fichier image par page"</string>
+</resources>

@@ -7,12 +7,18 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import `in`.c1ph3rj.scanly.core.common.ScanlyResult
 import `in`.c1ph3rj.scanly.core.ui.ImageImportSupport
 import `in`.c1ph3rj.scanly.domain.model.DocumentGroup
+import `in`.c1ph3rj.scanly.domain.model.DocumentTag
 import `in`.c1ph3rj.scanly.domain.model.PdfExportOptions
 import `in`.c1ph3rj.scanly.domain.model.ShareArtifact
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
 import `in`.c1ph3rj.scanly.domain.model.GroupTitleFormat
 import `in`.c1ph3rj.scanly.domain.model.ScanPage
 import `in`.c1ph3rj.scanly.domain.usecase.CreateGroupUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.CreateTagUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.DeleteTagUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.ObserveDocumentTagsUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.ObserveTagsUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.SetDocumentTagsUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.SuggestGroupTitleUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.MoveDocumentToTrashUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.MovePageToTrashUseCase
@@ -58,6 +64,12 @@ data class DocumentDetailUiState(
     val exportMessage: String? = null,
     val isLoading: Boolean = true,
     val availableGroups: List<DocumentGroup> = emptyList(),
+    /** Tags on this document, sorted by name. */
+    val tags: List<DocumentTag> = emptyList(),
+    /** Every tag, for the tag editor. */
+    val allTags: List<DocumentTag> = emptyList(),
+    /** False until any tag exists, so people who don't use tags don't see an "Add tags" row. */
+    val showTagsRow: Boolean = false,
 ) {
     val selectedPage: ScanPage?
         get() = pages.firstOrNull { page -> page.id == selectedPageId } ?: pages.firstOrNull()
@@ -92,6 +104,11 @@ class DocumentDetailViewModel @Inject constructor(
     private val createGroupUseCase: CreateGroupUseCase,
     private val suggestGroupTitleUseCase: SuggestGroupTitleUseCase,
     private val recordPositiveMomentUseCase: RecordPositiveMomentUseCase,
+    private val observeDocumentTagsUseCase: ObserveDocumentTagsUseCase,
+    private val observeTagsUseCase: ObserveTagsUseCase,
+    private val createTagUseCase: CreateTagUseCase,
+    private val setDocumentTagsUseCase: SetDocumentTagsUseCase,
+    private val deleteTagUseCase: DeleteTagUseCase,
 ) : ViewModel() {
     private val documentId: String = checkNotNull(savedStateHandle[DocumentDestination.documentIdArgument])
 
@@ -110,8 +127,10 @@ class DocumentDetailViewModel @Inject constructor(
                 observeDocumentUseCase(documentId),
                 observeDocumentPagesUseCase(documentId),
                 observeGroupsUseCase(),
-            ) { document, pages, groups -> Triple(document, pages, groups) }
-                .collectLatest { (document, pages, groups) ->
+                observeDocumentTagsUseCase(documentId),
+                observeTagsUseCase(),
+            ) { document, pages, groups, tags, allTags -> DetailSnapshot(document, pages, groups, tags, allTags) }
+                .collectLatest { (document, pages, groups, tags, allTags) ->
                     _uiState.update { current ->
                         current.copy(
                             document = document,
@@ -123,9 +142,50 @@ class DocumentDetailViewModel @Inject constructor(
                                 pages = pages,
                             ),
                             availableGroups = groups,
+                            tags = tags,
+                            allTags = allTags,
+                            showTagsRow = tags.isNotEmpty() || allTags.isNotEmpty(),
                         )
                     }
                 }
+        }
+    }
+
+    /**
+     * Gives the document exactly [tagIds] plus [newTagNames], creating those tags first (a name
+     * that already exists reuses that tag).
+     */
+    fun saveTags(tagIds: Set<String>, newTagNames: List<String>) {
+        viewModelScope.launch {
+            val ids = tagIds.toMutableSet()
+            val knownTagIds = _uiState.value.allTags.mapTo(HashSet()) { it.id }
+            // Tags made just for this save; removed again if the save doesn't go through, so a
+            // failure doesn't leave empty tags behind. A name that already existed is reused, not made.
+            val madeHere = mutableListOf<String>()
+            for (name in newTagNames) {
+                when (val created = createTagUseCase(name)) {
+                    is ScanlyResult.Success -> {
+                        ids += created.value.id
+                        if (created.value.id !in knownTagIds) madeHere += created.value.id
+                    }
+                    is ScanlyResult.Failure -> {
+                        discardTags(madeHere)
+                        _events.send(DocumentDetailEvent.ShowMessage(created.error.message))
+                        return@launch
+                    }
+                }
+            }
+            if (ids == _uiState.value.tags.map { it.id }.toSet()) return@launch
+            when (val result = setDocumentTagsUseCase(documentId, ids)) {
+                is ScanlyResult.Success -> _events.send(
+                    DocumentDetailEvent.ShowMessage(appString(R.string.tags_document_updated)),
+                )
+
+                is ScanlyResult.Failure -> {
+                    discardTags(madeHere)
+                    _events.send(DocumentDetailEvent.ShowMessage(result.error.message))
+                }
+            }
         }
     }
 
@@ -434,7 +494,20 @@ class DocumentDetailViewModel @Inject constructor(
             }
         }
     }
+
+    /** Best effort: a tag that can't be removed here can still be deleted in Settings › Tags. */
+    private suspend fun discardTags(tagIds: List<String>) {
+        tagIds.forEach { deleteTagUseCase(it) }
+    }
 }
+
+private data class DetailSnapshot(
+    val document: ScanDocument?,
+    val pages: List<ScanPage>,
+    val groups: List<DocumentGroup>,
+    val tags: List<DocumentTag>,
+    val allTags: List<DocumentTag>,
+)
 
 internal fun resolveSelectedPageId(
     currentSelectedPageId: String?,
