@@ -1113,6 +1113,9 @@ private fun PrivacyFootnote(modifier: Modifier = Modifier) {
 }
 
 private fun resultMeta(result: DocumentSearchResult): String = listOfNotNull(
+    // Say why a document matched when it was through a tag, not its name.
+    result.matchedTags.takeIf { it.isNotEmpty() }
+        ?.let { appString(R.string.tags_search_filter_chip, it.joinToString(", ")) },
     result.kind?.label,
     result.folderTitle,
     when {

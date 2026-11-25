@@ -3,4 +3,5 @@
     <string name="document_menu_pdf_tools">"PDF ടൂളുകൾ"</string>
     <string name="document_pdf_tools_sheet_subtitle">"ഓരോ ടൂളും “%1$s” ൽ നിന്ന് പുതിയൊരു PDF ഉണ്ടാക്കുന്നു. നിങ്ങളുടെ സ്കാൻ മാറ്റമില്ലാതെ തുടരും."</string>
     <string name="document_pdf_tools_password_caption">"പാസ്‌വേഡ് ഉപയോഗിച്ച് ലോക്ക് ചെയ്യുക"</string>
+    <string name="document_pdf_tools_images_caption">"ഓരോ പേജിനും ഒരു ചിത്ര ഫയൽ"</string>
 </resources>

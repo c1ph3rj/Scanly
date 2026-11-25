@@ -27,6 +27,7 @@
     <string name="naming_insert_token">"แตะเพื่อแทรก"</string>
     <string name="naming_preview">"ตัวอย่างชื่อ"</string>
     <string name="naming_preview_unavailable">"แก้ไขรูปแบบเพื่อดูตัวอย่าง"</string>
+    <string name="naming_preview_empty">"พิมพ์รูปแบบเพื่อดูตัวอย่าง"</string>
     <string name="naming_number_note">"{n} จะเป็นหมายเลขต่ำสุดที่ทำให้ชื่อไม่ซ้ำ"</string>
     <string name="naming_character_count">"%1$d/%2$d"</string>
     <string name="naming_problem_blank">"เพิ่มข้อความหรือตัวยึดตำแหน่ง"</string>

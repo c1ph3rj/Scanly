@@ -3,4 +3,5 @@
     <string name="document_menu_pdf_tools">"PDF-Werkzeuge"</string>
     <string name="document_pdf_tools_sheet_subtitle">"Jedes Werkzeug erstellt aus „%1$s“ eine neue PDF. Dein Scan bleibt unverändert."</string>
     <string name="document_pdf_tools_password_caption">"Mit einem Passwort sperren"</string>
+    <string name="document_pdf_tools_images_caption">"Eine Bilddatei pro Seite"</string>
 </resources>

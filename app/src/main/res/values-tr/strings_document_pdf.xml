@@ -3,4 +3,5 @@
     <string name="document_menu_pdf_tools">"PDF araçları"</string>
     <string name="document_pdf_tools_sheet_subtitle">"Her araç “%1$s” belgesinden yeni bir PDF oluşturur. Taramanız olduğu gibi kalır."</string>
     <string name="document_pdf_tools_password_caption">"Şifreyle kilitle"</string>
+    <string name="document_pdf_tools_images_caption">"Sayfa başına bir görsel dosyası"</string>
 </resources>

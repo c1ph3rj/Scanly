@@ -1,5 +1,6 @@
 package `in`.c1ph3rj.scanly.domain.usecase
 
+import `in`.c1ph3rj.scanly.testing.InMemoryNamingTemplateRepository
 import `in`.c1ph3rj.scanly.core.editing.CropQuadEditor
 import `in`.c1ph3rj.scanly.core.ui.ImageImportSupport
 import `in`.c1ph3rj.scanly.domain.model.PageFilterAdjustments
@@ -29,7 +30,7 @@ class ScanSessionAndPageEditFlowTest {
     private val documents = InMemoryDocumentRepository(library)
     private val pages = InMemoryPageRepository(library)
 
-    private val createDocument = CreateDocumentUseCase(documents)
+    private val createDocument = CreateDocumentUseCase(documents, InMemoryNamingTemplateRepository())
     private val prepareCapture = PreparePageCaptureUseCase(pages)
     private val prepareReplacement = PrepareReplacementCaptureUseCase(pages)
     private val finalizeCapture = FinalizeCapturedPageUseCase(pages)

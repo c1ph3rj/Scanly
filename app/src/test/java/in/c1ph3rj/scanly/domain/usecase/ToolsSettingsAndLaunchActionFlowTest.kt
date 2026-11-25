@@ -70,7 +70,7 @@ class ToolsSettingsAndLaunchActionFlowTest {
     private val observeGate = ObserveDocumentGateEnabledUseCase(settings)
 
     private val suggestTitle = SuggestDocumentTitleUseCase(documents, InMemoryNamingTemplateRepository())
-    private val createDocument = CreateDocumentUseCase(documents)
+    private val createDocument = CreateDocumentUseCase(documents, InMemoryNamingTemplateRepository())
 
     @Test
     fun qrGenerate_encodesContentAndWritesNonEmptyArtifact() = runBlocking {

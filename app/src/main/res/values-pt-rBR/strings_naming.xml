@@ -27,6 +27,7 @@
     <string name="naming_insert_token">"Toque para inserir"</string>
     <string name="naming_preview">"Prévia"</string>
     <string name="naming_preview_unavailable">"Corrija o padrão para ver a prévia"</string>
+    <string name="naming_preview_empty">"Digite um padrão para ver a prévia"</string>
     <string name="naming_number_note">"{n} vira o menor número que mantém o nome único."</string>
     <string name="naming_character_count">"%1$d/%2$d"</string>
     <string name="naming_problem_blank">"Adicione um texto ou um marcador."</string>

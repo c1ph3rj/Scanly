@@ -27,6 +27,7 @@
     <string name="naming_insert_token">"Nhấn để chèn"</string>
     <string name="naming_preview">"Xem trước"</string>
     <string name="naming_preview_unavailable">"Hãy sửa mẫu để xem trước"</string>
+    <string name="naming_preview_empty">"Hãy nhập mẫu để xem trước"</string>
     <string name="naming_number_note">"{n} là số nhỏ nhất giúp tên không bị trùng."</string>
     <string name="naming_character_count">"%1$d/%2$d"</string>
     <string name="naming_problem_blank">"Hãy thêm chữ hoặc một phần giữ chỗ."</string>

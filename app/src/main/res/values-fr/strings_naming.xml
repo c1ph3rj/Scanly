@@ -27,6 +27,7 @@
     <string name="naming_insert_token">"Touchez pour insérer"</string>
     <string name="naming_preview">"Aperçu"</string>
     <string name="naming_preview_unavailable">"Corrigez le modèle pour voir un aperçu"</string>
+    <string name="naming_preview_empty">"Saisissez un modèle pour voir un aperçu"</string>
     <string name="naming_number_note">"{n} devient le plus petit numéro qui rend le nom unique."</string>
     <string name="naming_character_count">"%1$d/%2$d"</string>
     <string name="naming_problem_blank">"Ajoutez du texte ou un espace réservé."</string>

@@ -27,6 +27,7 @@
     <string name="naming_insert_token">"Tocca per inserire"</string>
     <string name="naming_preview">"Anteprima"</string>
     <string name="naming_preview_unavailable">"Correggi lo schema per vedere l’anteprima"</string>
+    <string name="naming_preview_empty">"Scrivi uno schema per vedere l’anteprima"</string>
     <string name="naming_number_note">"{n} diventa il numero più basso che rende il nome unico."</string>
     <string name="naming_character_count">"%1$d/%2$d"</string>
     <string name="naming_problem_blank">"Aggiungi del testo o un segnaposto."</string>

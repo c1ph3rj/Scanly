@@ -27,6 +27,7 @@
     <string name="naming_insert_token">"Zum Einfügen tippen"</string>
     <string name="naming_preview">"Vorschau"</string>
     <string name="naming_preview_unavailable">"Korrigiere das Muster, um eine Vorschau zu sehen"</string>
+    <string name="naming_preview_empty">"Gib ein Muster ein, um eine Vorschau zu sehen"</string>
     <string name="naming_number_note">"{n} wird zur kleinsten Zahl, die den Namen eindeutig macht."</string>
     <string name="naming_character_count">"%1$d/%2$d"</string>
     <string name="naming_problem_blank">"Füge Text oder einen Platzhalter hinzu."</string>

@@ -1,5 +1,6 @@
 package `in`.c1ph3rj.scanly.feature.launch
 
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -43,6 +44,7 @@ private val DocumentListMaxHeight = 360.dp
  * @param imageCount Images that will be imported (already capped and copied).
  * @param documents Live documents, most recently changed first; the list is hidden when empty.
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SharedImagesSheet(
     imageCount: Int,

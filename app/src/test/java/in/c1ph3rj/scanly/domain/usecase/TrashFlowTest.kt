@@ -1,5 +1,6 @@
 package `in`.c1ph3rj.scanly.domain.usecase
 
+import `in`.c1ph3rj.scanly.testing.InMemoryNamingTemplateRepository
 import `in`.c1ph3rj.scanly.core.common.ScanlyResult
 import `in`.c1ph3rj.scanly.domain.model.TrashedDocument
 import `in`.c1ph3rj.scanly.domain.trash.TrashEvents
@@ -33,7 +34,7 @@ class TrashFlowTest {
     private val pages = InMemoryPageRepository(library)
     private val trashEvents = TrashEvents()
 
-    private val createDocument = CreateDocumentUseCase(documents)
+    private val createDocument = CreateDocumentUseCase(documents, InMemoryNamingTemplateRepository())
     private val observeDocuments = ObserveDocumentsUseCase(documents)
     private val observeRecent = ObserveRecentDocumentsUseCase(documents)
     private val observeDocument = ObserveDocumentUseCase(documents)

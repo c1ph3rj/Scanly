@@ -126,7 +126,7 @@ Scanly suggests names like "Scan 21-Nov-2026 10:49 am". To use your own pattern,
 
 - Type a pattern and tap a placeholder to insert it: `{date}`, `{time}`, `{datetime}`, `{iso}` (2026-11-21), `{year}`, `{month}`, `{day}`, `{weekday}`, and `{n}`, a number that counts up so names stay unique. Example: `Receipt {iso} {n}`.
 - The preview shows what a name would look like today.
-- Pick a template as the **Default name** to use it for new documents and the Scan shortcut, or keep the built-in.
+- Pick a template as the **Default name** to use it for new documents, the Scan shortcut, and imported or shared images, or keep the built-in.
 
 Templates also join the built-in formats when you tap **Suggest name** while naming a new document. **Clear all data** keeps your templates.
 

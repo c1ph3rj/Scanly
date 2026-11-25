@@ -27,6 +27,7 @@
     <string name="naming_insert_token">"タップして挿入"</string>
     <string name="naming_preview">"プレビュー"</string>
     <string name="naming_preview_unavailable">"パターンを修正するとプレビューが表示されます"</string>
+    <string name="naming_preview_empty">"パターンを入力するとプレビューが表示されます"</string>
     <string name="naming_number_note">"{n} は名前が重複しない最小の番号になります。"</string>
     <string name="naming_character_count">"%1$d/%2$d"</string>
     <string name="naming_problem_blank">"テキストかプレースホルダを入力してください。"</string>

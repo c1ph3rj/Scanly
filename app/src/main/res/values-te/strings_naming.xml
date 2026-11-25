@@ -27,6 +27,7 @@
     <string name="naming_insert_token">"చేర్చడానికి నొక్కండి"</string>
     <string name="naming_preview">"ప్రివ్యూ"</string>
     <string name="naming_preview_unavailable">"ప్రివ్యూ చూడటానికి ప్యాటర్న్‌ను సరిచేయండి"</string>
+    <string name="naming_preview_empty">"ప్రివ్యూ చూడటానికి ఒక ప్యాటర్న్ టైప్ చేయండి"</string>
     <string name="naming_number_note">"{n} పేరును ప్రత్యేకంగా ఉంచే అతి చిన్న నంబర్ అవుతుంది."</string>
     <string name="naming_character_count">"%1$d/%2$d"</string>
     <string name="naming_problem_blank">"కొంత టెక్స్ట్ లేదా ప్లేస్‌హోల్డర్ జోడించండి."</string>

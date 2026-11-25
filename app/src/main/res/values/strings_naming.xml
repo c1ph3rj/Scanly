@@ -27,6 +27,7 @@
     <string name="naming_insert_token">"Tap to insert"</string>
     <string name="naming_preview">"Preview"</string>
     <string name="naming_preview_unavailable">"Fix the pattern to see a preview"</string>
+    <string name="naming_preview_empty">"Type a pattern to see a preview"</string>
     <string name="naming_number_note">"{n} becomes the lowest number that keeps the name unique."</string>
     <string name="naming_character_count">"%1$d/%2$d"</string>
     <string name="naming_problem_blank">"Add some text or a placeholder."</string>

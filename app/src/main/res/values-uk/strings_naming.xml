@@ -27,6 +27,7 @@
     <string name="naming_insert_token">"Торкніться, щоб вставити"</string>
     <string name="naming_preview">"Попередній перегляд"</string>
     <string name="naming_preview_unavailable">"Виправте шаблон, щоб побачити попередній перегляд"</string>
+    <string name="naming_preview_empty">"Введіть шаблон, щоб побачити попередній перегляд"</string>
     <string name="naming_number_note">"{n} замінюється найменшим числом, за якого назва лишається унікальною."</string>
     <string name="naming_character_count">"%1$d/%2$d"</string>
     <string name="naming_problem_blank">"Додайте текст або підстановку."</string>

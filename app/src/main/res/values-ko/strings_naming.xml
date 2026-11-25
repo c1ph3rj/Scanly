@@ -27,6 +27,7 @@
     <string name="naming_insert_token">"탭하여 삽입"</string>
     <string name="naming_preview">"미리보기"</string>
     <string name="naming_preview_unavailable">"미리보기를 보려면 패턴을 수정하세요"</string>
+    <string name="naming_preview_empty">"미리보기를 보려면 패턴을 입력하세요"</string>
     <string name="naming_number_note">"{n}은(는) 이름이 겹치지 않는 가장 작은 번호가 됩니다."</string>
     <string name="naming_character_count">"%1$d/%2$d"</string>
     <string name="naming_problem_blank">"텍스트나 자리표시자를 추가하세요."</string>

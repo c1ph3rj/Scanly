@@ -27,6 +27,7 @@
     <string name="naming_insert_token">"Dotknij, aby wstawić"</string>
     <string name="naming_preview">"Podgląd"</string>
     <string name="naming_preview_unavailable">"Popraw wzorzec, aby zobaczyć podgląd"</string>
+    <string name="naming_preview_empty">"Wpisz wzorzec, aby zobaczyć podgląd"</string>
     <string name="naming_number_note">"{n} staje się najmniejszą liczbą, przy której nazwa jest unikalna."</string>
     <string name="naming_character_count">"%1$d/%2$d"</string>
     <string name="naming_problem_blank">"Dodaj tekst lub symbol zastępczy."</string>

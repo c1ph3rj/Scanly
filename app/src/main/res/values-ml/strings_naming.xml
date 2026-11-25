@@ -27,6 +27,7 @@
     <string name="naming_insert_token">"ചേർക്കാൻ ടാപ്പ് ചെയ്യുക"</string>
     <string name="naming_preview">"പ്രിവ്യൂ"</string>
     <string name="naming_preview_unavailable">"പ്രിവ്യൂ കാണാൻ പാറ്റേൺ ശരിയാക്കുക"</string>
+    <string name="naming_preview_empty">"പ്രിവ്യൂ കാണാൻ ഒരു പാറ്റേൺ ടൈപ്പ് ചെയ്യുക"</string>
     <string name="naming_number_note">"{n} പേര് വ്യത്യസ്തമായി നിലനിർത്തുന്ന ഏറ്റവും ചെറിയ നമ്പറാകും."</string>
     <string name="naming_character_count">"%1$d/%2$d"</string>
     <string name="naming_problem_blank">"കുറച്ച് ടെക്സ്റ്റോ ഒരു പ്ലേസ്‌ഹോൾഡറോ ചേർക്കുക."</string>

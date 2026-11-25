@@ -24,7 +24,7 @@ class DocumentLibraryFlowTest {
     private val groups = InMemoryGroupRepository(library)
     private val pages = InMemoryPageRepository(library)
 
-    private val createDocument = CreateDocumentUseCase(documents)
+    private val createDocument = CreateDocumentUseCase(documents, InMemoryNamingTemplateRepository())
     private val renameDocument = RenameDocumentUseCase(documents)
     private val deleteDocument = DeleteDocumentUseCase(documents)
     private val suggestDocumentTitle = SuggestDocumentTitleUseCase(documents, InMemoryNamingTemplateRepository())

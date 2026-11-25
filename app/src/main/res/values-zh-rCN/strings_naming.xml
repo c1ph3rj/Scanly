@@ -27,6 +27,7 @@
     <string name="naming_insert_token">"点按即可插入"</string>
     <string name="naming_preview">"预览"</string>
     <string name="naming_preview_unavailable">"请修正格式以查看预览"</string>
+    <string name="naming_preview_empty">"输入格式以查看预览"</string>
     <string name="naming_number_note">"{n} 会变成能让名称不重复的最小编号。"</string>
     <string name="naming_character_count">"%1$d/%2$d"</string>
     <string name="naming_problem_blank">"请添加文字或占位符。"</string>

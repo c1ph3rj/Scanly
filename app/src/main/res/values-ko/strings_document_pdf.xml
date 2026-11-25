@@ -3,4 +3,5 @@
     <string name="document_menu_pdf_tools">"PDF 도구"</string>
     <string name="document_pdf_tools_sheet_subtitle">"각 도구는 “%1$s”에서 새 PDF를 만듭니다. 스캔은 그대로 유지됩니다."</string>
     <string name="document_pdf_tools_password_caption">"비밀번호로 잠그기"</string>
+    <string name="document_pdf_tools_images_caption">"페이지마다 이미지 파일 하나"</string>
 </resources>

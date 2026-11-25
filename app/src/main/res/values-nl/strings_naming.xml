@@ -27,6 +27,7 @@
     <string name="naming_insert_token">"Tik om in te voegen"</string>
     <string name="naming_preview">"Voorbeeld"</string>
     <string name="naming_preview_unavailable">"Pas het patroon aan om een voorbeeld te zien"</string>
+    <string name="naming_preview_empty">"Typ een patroon om een voorbeeld te zien"</string>
     <string name="naming_number_note">"{n} wordt het laagste nummer waarmee de naam uniek blijft."</string>
     <string name="naming_character_count">"%1$d/%2$d"</string>
     <string name="naming_problem_blank">"Voeg tekst of een tijdelijke aanduiding toe."</string>

@@ -78,6 +78,8 @@ data class DocumentSearchResult(
     val textMatchCount: Int,
     /** One entry per matching page, in page order. */
     val pageHits: List<PageTextHit>,
+    /** Tag names that made this a name match when the title itself didn't match; shown on the row. */
+    val matchedTags: List<String> = emptyList(),
 )
 
 data class FolderSearchResult(

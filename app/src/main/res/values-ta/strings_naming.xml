@@ -27,6 +27,7 @@
     <string name="naming_insert_token">"சேர்க்கத் தட்டவும்"</string>
     <string name="naming_preview">"முன்னோட்டம்"</string>
     <string name="naming_preview_unavailable">"முன்னோட்டத்தைப் பார்க்க வடிவத்தைச் சரிசெய்யவும்"</string>
+    <string name="naming_preview_empty">"முன்னோட்டத்தைப் பார்க்க ஒரு வடிவத்தைத் தட்டச்சு செய்யவும்"</string>
     <string name="naming_number_note">"{n} என்பது பெயரைத் தனித்துவமாக வைக்கும் மிகச் சிறிய எண்ணாக மாறும்."</string>
     <string name="naming_character_count">"%1$d/%2$d"</string>
     <string name="naming_problem_blank">"சிறிது உரை அல்லது ஒதுக்கிடத்தைச் சேர்க்கவும்."</string>

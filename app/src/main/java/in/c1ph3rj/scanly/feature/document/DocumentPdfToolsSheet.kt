@@ -1,5 +1,6 @@
 package `in`.c1ph3rj.scanly.feature.document
 
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -38,6 +39,7 @@ private val ToolListMaxHeight = 480.dp
  * The PDF tools for a library document, gathered in one sheet instead of the ⋮ menu. Each tool
  * works on an exported copy of the document, so the scan itself is never changed.
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun DocumentPdfToolsSheet(
     documentTitle: String,
@@ -148,6 +150,6 @@ private fun PdfReaderTool.documentCaptionRes(): Int? = when (this) {
     PdfReaderTool.SPLIT -> R.string.tools_catalog_cut_into_parts
     PdfReaderTool.PASSWORD -> R.string.document_pdf_tools_password_caption
     PdfReaderTool.WATERMARK -> R.string.tools_catalog_stamp_text
-    PdfReaderTool.TO_IMAGES -> R.string.tools_catalog_pages_as_images
+    PdfReaderTool.TO_IMAGES -> R.string.document_pdf_tools_images_caption
     PdfReaderTool.SIGN, PdfReaderTool.IMPORT -> null
 }

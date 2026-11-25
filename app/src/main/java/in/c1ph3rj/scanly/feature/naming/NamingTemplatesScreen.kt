@@ -43,6 +43,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -127,7 +128,7 @@ fun NamingTemplatesScreen(
     val window = rememberWindowSizeInfo()
     // One timestamp for every example on screen, so they all describe the same moment.
     val now = remember { System.currentTimeMillis() }
-    val locale = Locale.getDefault()
+    val locale: Locale = LocalConfiguration.current.locales[0]
     val builtInExample = remember(now, locale) {
         DocumentPresentationFormatter.formatTitle(DocumentTitleFormat.default, now)
     }
@@ -617,7 +618,9 @@ private fun NamingPreview(
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             Text(
-                text = preview ?: stringResource(R.string.naming_preview_unavailable),
+                text = preview ?: stringResource(
+                    if (pattern.isBlank()) R.string.naming_preview_empty else R.string.naming_preview_unavailable,
+                ),
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = if (preview != null) FontWeight.Medium else FontWeight.Normal,
                 color = if (preview != null) {

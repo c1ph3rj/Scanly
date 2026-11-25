@@ -27,6 +27,7 @@
     <string name="naming_insert_token">"যোগ করতে ট্যাপ করুন"</string>
     <string name="naming_preview">"প্রিভিউ"</string>
     <string name="naming_preview_unavailable">"প্রিভিউ দেখতে প্যাটার্ন ঠিক করুন"</string>
+    <string name="naming_preview_empty">"প্রিভিউ দেখতে একটি প্যাটার্ন লিখুন"</string>
     <string name="naming_number_note">"{n} হবে সবচেয়ে ছোট নম্বর যাতে নামটি আলাদা থাকে।"</string>
     <string name="naming_character_count">"%1$d/%2$d"</string>
     <string name="naming_problem_blank">"কিছু লেখা বা একটি প্লেসহোল্ডার যোগ করুন।"</string>

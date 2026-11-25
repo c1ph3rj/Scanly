@@ -3,4 +3,5 @@
     <string name="document_menu_pdf_tools">"PDF கருவிகள்"</string>
     <string name="document_pdf_tools_sheet_subtitle">"ஒவ்வொரு கருவியும் “%1$s” இலிருந்து புதிய PDF-ஐ உருவாக்கும். உங்கள் ஸ்கேன் மாறாது."</string>
     <string name="document_pdf_tools_password_caption">"கடவுச்சொல்லால் பூட்டு"</string>
+    <string name="document_pdf_tools_images_caption">"ஒவ்வொரு பக்கத்துக்கும் ஒரு படக் கோப்பு"</string>
 </resources>

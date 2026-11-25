@@ -27,6 +27,7 @@
     <string name="naming_insert_token">"Нажмите, чтобы вставить"</string>
     <string name="naming_preview">"Предпросмотр"</string>
     <string name="naming_preview_unavailable">"Исправьте шаблон, чтобы увидеть предпросмотр"</string>
+    <string name="naming_preview_empty">"Введите шаблон, чтобы увидеть предпросмотр"</string>
     <string name="naming_number_note">"{n} заменяется наименьшим числом, при котором название остаётся уникальным."</string>
     <string name="naming_character_count">"%1$d/%2$d"</string>
     <string name="naming_problem_blank">"Добавьте текст или подстановку."</string>

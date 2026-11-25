@@ -252,6 +252,9 @@ class LibrarySearchRankerTest {
         val tagOnly = results.nameMatches.last()
         assertTrue(tagOnly.nameMatched)
         assertTrue(tagOnly.title.highlights.isEmpty())
+        // The row says which tag matched; title matches carry no tags.
+        assertEquals(listOf("Old lease paperwork"), tagOnly.matchedTags)
+        assertTrue(results.nameMatches.first { it.document.id == "lease" }.matchedTags.isEmpty())
         // Words split across the name and a tag still match, highlighting only the name's.
         val split = LibrarySearchRanker.rank(
             SearchQuery.parse("travel invoice"), documents, groups, emptyMap(), null, SearchScope.EVERYWHERE,
@@ -260,6 +263,7 @@ class LibrarySearchRankerTest {
         )
         assertEquals(listOf("inv"), split.nameMatches.map { it.document.id })
         assertEquals(listOf(0..6), split.nameMatches.single().title.highlights)
+        assertEquals(listOf("Travel"), split.nameMatches.single().matchedTags)
         // The split match is strict: no typo tolerance across the name and a tag.
         val typo = LibrarySearchRanker.rank(
             SearchQuery.parse("travle invoice"), documents, groups, emptyMap(), null, SearchScope.NAMES,

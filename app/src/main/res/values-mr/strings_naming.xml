@@ -27,6 +27,7 @@
     <string name="naming_insert_token">"घालण्यासाठी टॅप करा"</string>
     <string name="naming_preview">"पूर्वावलोकन"</string>
     <string name="naming_preview_unavailable">"पूर्वावलोकन पाहण्यासाठी पॅटर्न दुरुस्त करा"</string>
+    <string name="naming_preview_empty">"पूर्वावलोकन पाहण्यासाठी पॅटर्न टाइप करा"</string>
     <string name="naming_number_note">"{n} म्हणजे नाव वेगळे ठेवणारा सर्वात लहान क्रमांक."</string>
     <string name="naming_character_count">"%1$d/%2$d"</string>
     <string name="naming_problem_blank">"थोडा मजकूर किंवा प्लेसहोल्डर जोडा."</string>

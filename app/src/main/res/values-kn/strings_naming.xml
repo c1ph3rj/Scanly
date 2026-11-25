@@ -27,6 +27,7 @@
     <string name="naming_insert_token">"ಸೇರಿಸಲು ಟ್ಯಾಪ್ ಮಾಡಿ"</string>
     <string name="naming_preview">"ಪೂರ್ವವೀಕ್ಷಣೆ"</string>
     <string name="naming_preview_unavailable">"ಪೂರ್ವವೀಕ್ಷಣೆ ನೋಡಲು ಪ್ಯಾಟರ್ನ್ ಸರಿಪಡಿಸಿ"</string>
+    <string name="naming_preview_empty">"ಪೂರ್ವವೀಕ್ಷಣೆ ನೋಡಲು ಪ್ಯಾಟರ್ನ್ ಟೈಪ್ ಮಾಡಿ"</string>
     <string name="naming_number_note">"{n} ಹೆಸರನ್ನು ವಿಶಿಷ್ಟವಾಗಿ ಇರಿಸುವ ಅತಿ ಚಿಕ್ಕ ಸಂಖ್ಯೆಯಾಗುತ್ತದೆ."</string>
     <string name="naming_character_count">"%1$d/%2$d"</string>
     <string name="naming_problem_blank">"ಸ್ವಲ್ಪ ಪಠ್ಯ ಅಥವಾ ಪ್ಲೇಸ್‌ಹೋಲ್ಡರ್ ಸೇರಿಸಿ."</string>

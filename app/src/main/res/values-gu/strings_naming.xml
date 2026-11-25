@@ -27,6 +27,7 @@
     <string name="naming_insert_token">"ઉમેરવા માટે ટૅપ કરો"</string>
     <string name="naming_preview">"પૂર્વાવલોકન"</string>
     <string name="naming_preview_unavailable">"પૂર્વાવલોકન જોવા માટે પેટર્ન સુધારો"</string>
+    <string name="naming_preview_empty">"પૂર્વાવલોકન જોવા માટે પેટર્ન લખો"</string>
     <string name="naming_number_note">"{n} એ નામને અલગ રાખતો સૌથી નાનો નંબર બને છે."</string>
     <string name="naming_character_count">"%1$d/%2$d"</string>
     <string name="naming_problem_blank">"થોડું લખાણ અથવા પ્લેસહોલ્ડર ઉમેરો."</string>
