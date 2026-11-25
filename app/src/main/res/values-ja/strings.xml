@@ -826,6 +826,9 @@
     <string name="settings_text_recognition_both_engines_run_on_the">どちらのエンジンもデバイス上で動作します。読み取りのためにページがアップロードされることはありません。</string>
     <string name="settings_text_recognition_stays_on_your_phone">スマートフォンの外に出ません</string>
     <string name="settings_text_recognition_ml_kit_is_the_default">デフォルトは ML Kit です。高速で、英語、スペイン語、フランス語、ドイツ語などのラテン文字の言語を高い精度で読み取れます。\n\nそれ以外の言語には Indra OCR を使います。ヒンディー語、タミル語、ベンガル語、アラビア語、ウルドゥー語、中国語、日本語、韓国語、タイ語など 100 以上の言語を読み取り、複数の言語が混在するページにも対応します。試験運用版で処理が遅いため、ページが検索できるようになるまで時間がかかります。</string>
+    <string name="settings_text_recognition_indra_is_the_default">"デフォルトは Indra OCR です。ヒンディー語、タミル語、ベンガル語、アラビア語、ウルドゥー語、中国語、日本語、韓国語、タイ語など 100 以上の言語を読み取れ、複数の言語が混在するページにも対応します。\n\nML Kit は予備のエンジンです。Indra OCR がページを読み取れない、時間がかかりすぎる、または停止した場合は、代わりに ML Kit が読み取ります。高速で、英語、スペイン語、フランス語、ドイツ語などのラテン文字の言語を高い精度で読み取れるので、すべての書類がこれらの言語なら ML Kit を選ぶこともできます。"</string>
+    <string name="settings_text_recognition_fallback">"予備"</string>
+    <string name="settings_indra_ocr_100_languages">"Indra OCR · 100 以上の言語"</string>
     <string name="settings_text_recognition_choosing_an_engine">エンジンの選び方</string>
     <string name="settings_text_recognition_after_you_scan_scanly_reads">スキャンすると、Scanly が各ページの文字を読み取ります。このテキストによって、ページの内容でライブラリを検索したり、スキャンからテキストをコピー・共有したり、エクスポートしたりできます。</string>
     <string name="settings_text_recognition_what_it_does">できること</string>
@@ -972,7 +975,7 @@
     <string name="page_text_tap_an_outlined_area_to">枠で囲まれた部分をタップすると、その部分だけコピーできます。</string>
     <string name="page_text_regions_are_hidden_because_this">テキストを読み取った後にページが変更されたため、範囲は表示されません。</string>
     <string name="page_text_page_image_with_text_regions">"%1$s 個のテキスト範囲があるページ画像"</string>
-    <string name="page_text_read_with_indra_ocr_experimental">Indra OCR（試験運用版）で読み取り</string>
+    <string name="page_text_read_with_indra_ocr">"Indra OCR で読み取り"</string>
     <string name="page_text_read_with_ml_kit_indra">ML Kit で読み取り（Indra OCR では読み取れませんでした）</string>
     <string name="page_text_edited">編集済み</string>
     <string name="page_text_read_again">再読み取り</string>

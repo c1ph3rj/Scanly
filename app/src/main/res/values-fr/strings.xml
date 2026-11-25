@@ -826,6 +826,9 @@
     <string name="settings_text_recognition_both_engines_run_on_the">Les deux moteurs fonctionnent sur l’appareil. Les pages ne sont jamais envoyées pour être lues.</string>
     <string name="settings_text_recognition_stays_on_your_phone">Tout reste sur votre téléphone</string>
     <string name="settings_text_recognition_ml_kit_is_the_default">ML Kit est le moteur par défaut. Il est rapide et très précis pour les langues en alphabet latin comme l’anglais, l’espagnol, le français et l’allemand.\n\nIndra OCR sert pour tout le reste. Il lit plus de 100 langues, dont l’hindi, le tamoul, le bengali, l’arabe, l’ourdou, le chinois, le japonais, le coréen et le thaï, et gère les pages qui mélangent plusieurs langues. Il est expérimental et plus lent : les pages mettent plus de temps à devenir consultables par la recherche.</string>
+    <string name="settings_text_recognition_indra_is_the_default">"Indra OCR est le moteur par défaut. Il lit plus de 100 langues, dont l’hindi, le tamoul, le bengali, l’arabe, l’ourdou, le chinois, le japonais, le coréen et le thaï, et gère les pages qui mélangent les langues.\n\nML Kit sert de secours. Si Indra OCR ne peut pas lire une page, prend trop de temps ou s’arrête, ML Kit la lit à sa place. Il est rapide et très précis pour les langues en alphabet latin comme l’anglais, l’espagnol, le français et l’allemand : vous pouvez donc aussi le choisir si tous vos documents utilisent ces langues."</string>
+    <string name="settings_text_recognition_fallback">"Secours"</string>
+    <string name="settings_indra_ocr_100_languages">"Indra OCR · plus de 100 langues"</string>
     <string name="settings_text_recognition_choosing_an_engine">Choisir un moteur</string>
     <string name="settings_text_recognition_after_you_scan_scanly_reads">Après la numérisation, Scanly lit les mots de chaque page. C’est grâce à ce texte que vous pouvez rechercher dans votre bibliothèque selon le contenu d’une page, copier ou partager le texte d’une numérisation, et l’exporter.</string>
     <string name="settings_text_recognition_what_it_does">À quoi ça sert</string>
@@ -972,7 +975,7 @@
     <string name="page_text_tap_an_outlined_area_to">Appuyez sur une zone encadrée pour ne copier que celle-ci.</string>
     <string name="page_text_regions_are_hidden_because_this">Les zones sont masquées, car cette page a été modifiée après la lecture de son texte.</string>
     <string name="page_text_page_image_with_text_regions">"Image de la page avec %1$s zones de texte"</string>
-    <string name="page_text_read_with_indra_ocr_experimental">Lu avec Indra OCR (expérimental)</string>
+    <string name="page_text_read_with_indra_ocr">"Lu avec Indra OCR"</string>
     <string name="page_text_read_with_ml_kit_indra">Lu avec ML Kit (Indra OCR n’a pas pu lire cette page)</string>
     <string name="page_text_edited">Modifié</string>
     <string name="page_text_read_again">Relire</string>

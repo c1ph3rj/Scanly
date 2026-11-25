@@ -826,6 +826,9 @@
     <string name="settings_text_recognition_both_engines_run_on_the">ทั้งสองเครื่องมือทำงานในอุปกรณ์ ไม่มีการอัปโหลดหน้าเพื่ออ่าน</string>
     <string name="settings_text_recognition_stays_on_your_phone">อยู่ในโทรศัพท์ของคุณ</string>
     <string name="settings_text_recognition_ml_kit_is_the_default">ML Kit เป็นค่าเริ่มต้น ทำงานเร็วและแม่นยำมากกับภาษาที่ใช้อักษรละติน เช่น อังกฤษ สเปน ฝรั่งเศส และเยอรมัน\n\nIndra OCR ใช้สำหรับภาษาอื่นๆ ทั้งหมด อ่านได้มากกว่า 100 ภาษา รวมถึงฮินดี ทมิฬ เบงกาลี อาหรับ อูรดู จีน ญี่ปุ่น เกาหลี และไทย ทั้งยังรองรับหน้าที่มีหลายภาษาปนกัน แต่ยังอยู่ในขั้นทดลองและทำงานช้ากว่า หน้าจึงใช้เวลานานขึ้นกว่าจะค้นหาได้</string>
+    <string name="settings_text_recognition_indra_is_the_default">"Indra OCR เป็นค่าเริ่มต้น อ่านได้กว่า 100 ภาษา รวมถึงฮินดี ทมิฬ เบงกาลี อาหรับ อูรดู จีน ญี่ปุ่น เกาหลี และไทย และรองรับหน้าที่มีหลายภาษาปนกัน\n\nML Kit เป็นตัวสำรอง หาก Indra OCR อ่านหน้าไม่ได้ ใช้เวลานานเกินไป หรือหยุดทำงาน ML Kit จะอ่านแทน ML Kit ทำงานเร็วและแม่นยำมากกับภาษาที่ใช้อักษรละติน เช่น อังกฤษ สเปน ฝรั่งเศส และเยอรมัน คุณจึงเลือกใช้ได้หากเอกสารทั้งหมดเป็นภาษาเหล่านี้"</string>
+    <string name="settings_text_recognition_fallback">"สำรอง"</string>
+    <string name="settings_indra_ocr_100_languages">"Indra OCR · มากกว่า 100 ภาษา"</string>
     <string name="settings_text_recognition_choosing_an_engine">การเลือกเครื่องมือ</string>
     <string name="settings_text_recognition_after_you_scan_scanly_reads">หลังจากสแกน Scanly จะอ่านคำในแต่ละหน้า ข้อความนั้นช่วยให้คุณค้นหาในคลังจากเนื้อหาในหน้า คัดลอกหรือแชร์ข้อความจากภาพสแกน และส่งออกได้</string>
     <string name="settings_text_recognition_what_it_does">ทำอะไรได้บ้าง</string>
@@ -972,7 +975,7 @@
     <string name="page_text_tap_an_outlined_area_to">"แตะพื้นที่ที่มีเค้าร่างเพื่อคัดลอกเฉพาะส่วนนั้น"</string>
     <string name="page_text_regions_are_hidden_because_this">"ภูมิภาคถูกซ่อนไว้เนื่องจากหน้านี้เปลี่ยนไปหลังจากอ่านข้อความแล้ว"</string>
     <string name="page_text_page_image_with_text_regions">"รูปภาพหน้าพร้อมขอบเขตข้อความ %1$s"</string>
-    <string name="page_text_read_with_indra_ocr_experimental">"อ่านด้วย Indra OCR (ทดลอง)"</string>
+    <string name="page_text_read_with_indra_ocr">"อ่านด้วย Indra OCR"</string>
     <string name="page_text_read_with_ml_kit_indra">"อ่านด้วย ML Kit (Indra OCR ไม่สามารถอ่านหน้านี้ได้)"</string>
     <string name="page_text_edited">"แก้ไข"</string>
     <string name="page_text_read_again">"อ่านอีกครั้ง"</string>

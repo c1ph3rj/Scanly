@@ -23,6 +23,7 @@ import `in`.c1ph3rj.scanly.domain.model.SettingsFaq
 import `in`.c1ph3rj.scanly.domain.model.ThemeMode
 import `in`.c1ph3rj.scanly.domain.model.ExportDestination
 import `in`.c1ph3rj.scanly.domain.model.DocumentCornerModel
+import `in`.c1ph3rj.scanly.data.text.indra.IndraAvailability
 import `in`.c1ph3rj.scanly.domain.model.OcrEngine
 import `in`.c1ph3rj.scanly.domain.repository.SettingsRepository
 import java.io.IOException
@@ -44,6 +45,7 @@ private val Context.settingsDataStore by preferencesDataStore(
 class DefaultSettingsRepository @Inject constructor(
     @param:ApplicationContext private val context: Context,
     private val dispatchers: ScanlyDispatchers,
+    private val indraAvailability: IndraAvailability = IndraAvailability(context),
 ) : SettingsRepository {
 
     /** Reads fall back to defaults when the preferences file cannot be read, instead of crashing. */
@@ -109,9 +111,13 @@ class DefaultSettingsRepository @Inject constructor(
     override suspend fun getOcrEngine(): OcrEngine =
         ocrEngineFromStorage(safeData.first()[ocrEngineKey])
 
-    /** Unknown or missing values fall back to ML Kit, the default engine. */
+    /**
+     * The engine the user picked; until they pick one (or for an unknown value), the default:
+     * Indra OCR when this build ships its models, ML Kit otherwise. ML Kit stays the fallback for
+     * every page Indra can't read, so making Indra the default never leaves a page unread.
+     */
     private fun ocrEngineFromStorage(value: String?): OcrEngine =
-        OcrEngine.entries.firstOrNull { it.name == value } ?: OcrEngine.ML_KIT
+        OcrEngine.entries.firstOrNull { it.name == value } ?: indraAvailability.defaultEngine
 
     override fun observeExportDestination(): Flow<ExportDestination> =
         safeData.map { preferences ->

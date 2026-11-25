@@ -826,6 +826,9 @@
     <string name="settings_text_recognition_both_engines_run_on_the">ಎರಡೂ ಎಂಜಿನ್‌ಗಳು ಸಾಧನದಲ್ಲೇ ಚಲಿಸುತ್ತವೆ. ಓದಲು ಪುಟಗಳನ್ನು ಎಂದಿಗೂ ಅಪ್‌ಲೋಡ್ ಮಾಡಲಾಗುವುದಿಲ್ಲ.</string>
     <string name="settings_text_recognition_stays_on_your_phone">ನಿಮ್ಮ ಫೋನ್‌ನಲ್ಲೇ ಉಳಿಯುತ್ತದೆ</string>
     <string name="settings_text_recognition_ml_kit_is_the_default">ML Kit ಡೀಫಾಲ್ಟ್ ಆಗಿದೆ. ಇಂಗ್ಲಿಷ್, ಸ್ಪ್ಯಾನಿಷ್, ಫ್ರೆಂಚ್ ಮತ್ತು ಜರ್ಮನ್‌ನಂತಹ ಲ್ಯಾಟಿನ್ ಲಿಪಿಯ ಭಾಷೆಗಳಿಗೆ ಇದು ವೇಗ ಮತ್ತು ಅತ್ಯಂತ ನಿಖರ.\n\nಉಳಿದೆಲ್ಲದಕ್ಕೂ Indra OCR. ಇದು ಹಿಂದಿ, ತಮಿಳು, ಬಂಗಾಳಿ, ಅರೇಬಿಕ್, ಉರ್ದು, ಚೈನೀಸ್, ಜಪಾನೀಸ್, ಕೊರಿಯನ್ ಮತ್ತು ಥಾಯ್ ಸೇರಿದಂತೆ 100+ ಭಾಷೆಗಳನ್ನು ಓದುತ್ತದೆ, ಮತ್ತು ಭಾಷೆಗಳು ಬೆರೆತ ಪುಟಗಳನ್ನೂ ನಿಭಾಯಿಸುತ್ತದೆ. ಇದು ಪ್ರಾಯೋಗಿಕ ಮತ್ತು ನಿಧಾನ, ಹಾಗಾಗಿ ಪುಟಗಳು ಹುಡುಕಲು ಸಿದ್ಧವಾಗಲು ಹೆಚ್ಚು ಸಮಯ ಬೇಕಾಗುತ್ತದೆ.</string>
+    <string name="settings_text_recognition_indra_is_the_default">"Indra OCR ಡೀಫಾಲ್ಟ್ ಆಗಿದೆ. ಇದು ಹಿಂದಿ, ತಮಿಳು, ಬಂಗಾಳಿ, ಅರೇಬಿಕ್, ಉರ್ದು, ಚೈನೀಸ್, ಜಪಾನೀಸ್, ಕೊರಿಯನ್ ಮತ್ತು ಥಾಯ್ ಸೇರಿದಂತೆ 100+ ಭಾಷೆಗಳನ್ನು ಓದುತ್ತದೆ ಮತ್ತು ಹಲವು ಭಾಷೆಗಳಿರುವ ಪುಟಗಳನ್ನೂ ನಿರ್ವಹಿಸುತ್ತದೆ.\n\nML Kit ಬ್ಯಾಕಪ್ ಆಗಿದೆ. Indra OCR ಯಾವುದೇ ಪುಟವನ್ನು ಓದಲಾಗದಿದ್ದರೆ, ತುಂಬಾ ಸಮಯ ತೆಗೆದುಕೊಂಡರೆ ಅಥವಾ ನಿಂತುಹೋದರೆ, ಅದರ ಬದಲು ML Kit ಆ ಪುಟವನ್ನು ಓದುತ್ತದೆ. ಇಂಗ್ಲಿಷ್, ಸ್ಪ್ಯಾನಿಷ್, ಫ್ರೆಂಚ್ ಮತ್ತು ಜರ್ಮನ್‌ನಂತಹ ಲ್ಯಾಟಿನ್ ಲಿಪಿಯ ಭಾಷೆಗಳಿಗೆ ಇದು ವೇಗ ಮತ್ತು ಅತ್ಯಂತ ನಿಖರ, ಆದ್ದರಿಂದ ನಿಮ್ಮ ಎಲ್ಲಾ ದಾಖಲೆಗಳು ಈ ಭಾಷೆಗಳಲ್ಲಿದ್ದರೆ ನೀವು ಇದನ್ನೂ ಆಯ್ಕೆ ಮಾಡಬಹುದು."</string>
+    <string name="settings_text_recognition_fallback">"ಬ್ಯಾಕಪ್"</string>
+    <string name="settings_indra_ocr_100_languages">"Indra OCR · 100+ ಭಾಷೆಗಳು"</string>
     <string name="settings_text_recognition_choosing_an_engine">ಎಂಜಿನ್ ಆಯ್ಕೆ</string>
     <string name="settings_text_recognition_after_you_scan_scanly_reads">ನೀವು ಸ್ಕ್ಯಾನ್ ಮಾಡಿದ ನಂತರ, Scanly ಪ್ರತಿ ಪುಟದ ಪದಗಳನ್ನು ಓದುತ್ತದೆ. ಆ ಪಠ್ಯದಿಂದಾಗಿ ಪುಟದಲ್ಲಿರುವುದರ ಆಧಾರದ ಮೇಲೆ ಲೈಬ್ರರಿಯಲ್ಲಿ ಹುಡುಕಬಹುದು, ಸ್ಕ್ಯಾನ್‌ನಿಂದ ಪಠ್ಯ ನಕಲಿಸಬಹುದು ಅಥವಾ ಹಂಚಿಕೊಳ್ಳಬಹುದು, ಮತ್ತು ರಫ್ತು ಮಾಡಬಹುದು.</string>
     <string name="settings_text_recognition_what_it_does">ಇದು ಏನು ಮಾಡುತ್ತದೆ</string>
@@ -972,7 +975,7 @@
     <string name="page_text_tap_an_outlined_area_to">ಆ ಭಾಗವನ್ನು ಮಾತ್ರ ನಕಲಿಸಲು ಗುರುತಿಸಿದ ಪ್ರದೇಶವನ್ನು ಟ್ಯಾಪ್ ಮಾಡಿ.</string>
     <string name="page_text_regions_are_hidden_because_this">ಪಠ್ಯ ಓದಿದ ನಂತರ ಈ ಪುಟ ಬದಲಾಗಿರುವುದರಿಂದ ಪ್ರದೇಶಗಳನ್ನು ಮರೆಮಾಡಲಾಗಿದೆ.</string>
     <string name="page_text_page_image_with_text_regions">"%1$s ಪಠ್ಯ ಪ್ರದೇಶಗಳಿರುವ ಪುಟದ ಚಿತ್ರ"</string>
-    <string name="page_text_read_with_indra_ocr_experimental">Indra OCR ನಿಂದ ಓದಲಾಗಿದೆ (ಪ್ರಾಯೋಗಿಕ)</string>
+    <string name="page_text_read_with_indra_ocr">"Indra OCR ನಿಂದ ಓದಲಾಗಿದೆ"</string>
     <string name="page_text_read_with_ml_kit_indra">ML Kit ನಿಂದ ಓದಲಾಗಿದೆ (Indra OCR ಗೆ ಈ ಪುಟ ಓದಲಾಗಲಿಲ್ಲ)</string>
     <string name="page_text_edited">ಎಡಿಟ್ ಮಾಡಲಾಗಿದೆ</string>
     <string name="page_text_read_again">ಮತ್ತೆ ಓದಿ</string>

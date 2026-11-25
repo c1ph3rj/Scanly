@@ -826,6 +826,9 @@
     <string name="settings_text_recognition_both_engines_run_on_the">"На устройстве работают оба двигателя. Страницы никогда не загружаются для их чтения."</string>
     <string name="settings_text_recognition_stays_on_your_phone">"Остается на вашем телефоне"</string>
     <string name="settings_text_recognition_ml_kit_is_the_default">"ML Kit — значение по умолчанию. Он быстрый и очень точный для языков с латинским алфавитом, таких как английский, испанский, французский и немецкий. \n\nIndra OCR предназначен для всего остального. Он читает более 100 языков, включая хинди, тамильский, бенгальский, арабский, урду, китайский, японский, корейский и тайский, а также обрабатывает страницы на разных языках. Он экспериментальный и медленный, поэтому для того, чтобы страницы стали доступными для поиска, требуется больше времени."</string>
+    <string name="settings_text_recognition_indra_is_the_default">"Indra OCR используется по умолчанию. Он читает более 100 языков, включая хинди, тамильский, бенгальский, арабский, урду, китайский, японский, корейский и тайский, и справляется со страницами на нескольких языках.\n\nML Kit — резервный движок. Если Indra OCR не может прочитать страницу, работает слишком долго или останавливается, страницу читает ML Kit. Он быстрый и очень точный для языков с латинским алфавитом, таких как английский, испанский, французский и немецкий, поэтому его можно выбрать, если все ваши документы на этих языках."</string>
+    <string name="settings_text_recognition_fallback">"Резервный"</string>
+    <string name="settings_indra_ocr_100_languages">"Indra OCR · 100+ языков"</string>
     <string name="settings_text_recognition_choosing_an_engine">"Выбор двигателя"</string>
     <string name="settings_text_recognition_after_you_scan_scanly_reads">"После сканирования Scanly читает слова на каждой странице. Этот текст позволяет вам выполнять поиск в вашей библиотеке по тому, что написано на странице, копировать или делиться текстом отсканированного изображения, а также экспортировать его."</string>
     <string name="settings_text_recognition_what_it_does">"Что он делает"</string>
@@ -972,7 +975,7 @@
     <string name="page_text_tap_an_outlined_area_to">"Коснитесь обведенной области, чтобы скопировать только эту часть."</string>
     <string name="page_text_regions_are_hidden_because_this">"Регионы скрыты, поскольку эта страница изменилась после прочтения ее текста."</string>
     <string name="page_text_page_image_with_text_regions">"Изображение страницы с текстовыми областями %1$s."</string>
-    <string name="page_text_read_with_indra_ocr_experimental">"Читать с помощью Indra OCR (экспериментально)"</string>
+    <string name="page_text_read_with_indra_ocr">"Прочитано с помощью Indra OCR"</string>
     <string name="page_text_read_with_ml_kit_indra">"Чтение с помощью ML Kit (Indra OCR не смог прочитать эту страницу)"</string>
     <string name="page_text_edited">"Отредактировано"</string>
     <string name="page_text_read_again">"Прочтите еще раз"</string>

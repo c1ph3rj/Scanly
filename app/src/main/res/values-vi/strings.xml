@@ -826,6 +826,9 @@
     <string name="settings_text_recognition_both_engines_run_on_the">Cả hai công cụ đều chạy trên thiết bị. Trang không bao giờ bị tải lên để đọc.</string>
     <string name="settings_text_recognition_stays_on_your_phone">Chỉ nằm trên điện thoại của bạn</string>
     <string name="settings_text_recognition_ml_kit_is_the_default">ML Kit là công cụ mặc định. Công cụ này nhanh và rất chính xác với các ngôn ngữ dùng chữ Latinh như tiếng Anh, Tây Ban Nha, Pháp và Đức.\n\nIndra OCR dành cho các ngôn ngữ còn lại. Công cụ này đọc được hơn 100 ngôn ngữ, gồm tiếng Hindi, Tamil, Bengal, Ả Rập, Urdu, Trung Quốc, Nhật Bản, Hàn Quốc và Thái, đồng thời xử lý được trang có nhiều ngôn ngữ. Đây là tính năng thử nghiệm và chậm hơn, nên trang sẽ mất nhiều thời gian hơn để tìm kiếm được.</string>
+    <string name="settings_text_recognition_indra_is_the_default">"Indra OCR là công cụ mặc định. Công cụ này đọc được hơn 100 ngôn ngữ, gồm tiếng Hindi, Tamil, Bengal, Ả Rập, Urdu, Trung Quốc, Nhật, Hàn và Thái, và xử lý được trang có nhiều ngôn ngữ.\n\nML Kit là công cụ dự phòng. Nếu Indra OCR không đọc được trang, mất quá nhiều thời gian hoặc dừng lại, ML Kit sẽ đọc thay. ML Kit nhanh và rất chính xác với các ngôn ngữ dùng chữ Latinh như tiếng Anh, Tây Ban Nha, Pháp và Đức, nên bạn cũng có thể chọn nó nếu mọi tài liệu của bạn đều dùng các ngôn ngữ này."</string>
+    <string name="settings_text_recognition_fallback">"Dự phòng"</string>
+    <string name="settings_indra_ocr_100_languages">"Indra OCR · hơn 100 ngôn ngữ"</string>
     <string name="settings_text_recognition_choosing_an_engine">Chọn công cụ</string>
     <string name="settings_text_recognition_after_you_scan_scanly_reads">Sau khi bạn quét, Scanly sẽ đọc chữ trên từng trang. Nhờ văn bản đó, bạn có thể tìm trong thư viện theo nội dung trang, sao chép hoặc chia sẻ văn bản từ bản quét và xuất văn bản.</string>
     <string name="settings_text_recognition_what_it_does">Tính năng này làm gì</string>
@@ -972,7 +975,7 @@
     <string name="page_text_tap_an_outlined_area_to">Nhấn vào một vùng có viền để chỉ sao chép phần đó.</string>
     <string name="page_text_regions_are_hidden_because_this">Các vùng bị ẩn vì trang này đã thay đổi sau khi được đọc văn bản.</string>
     <string name="page_text_page_image_with_text_regions">"Ảnh trang có %1$s vùng văn bản"</string>
-    <string name="page_text_read_with_indra_ocr_experimental">Đọc bằng Indra OCR (thử nghiệm)</string>
+    <string name="page_text_read_with_indra_ocr">"Đọc bằng Indra OCR"</string>
     <string name="page_text_read_with_ml_kit_indra">Đọc bằng ML Kit (Indra OCR không đọc được trang này)</string>
     <string name="page_text_edited">Đã sửa</string>
     <string name="page_text_read_again">Đọc lại</string>

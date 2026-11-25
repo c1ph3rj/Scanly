@@ -826,6 +826,9 @@
     <string name="settings_text_recognition_both_engines_run_on_the">Oba silniki działają na urządzeniu. Strony nigdy nie są przesyłane w celu odczytu.</string>
     <string name="settings_text_recognition_stays_on_your_phone">Zostaje na telefonie</string>
     <string name="settings_text_recognition_ml_kit_is_the_default">ML Kit jest domyślny. Jest szybki i bardzo dokładny dla języków w alfabecie łacińskim, takich jak polski, angielski, hiszpański czy niemiecki.\n\nIndra OCR służy do wszystkich pozostałych. Odczytuje ponad 100 języków, w tym hindi, tamilski, bengalski, arabski, urdu, chiński, japoński, koreański i tajski, i radzi sobie ze stronami w kilku językach. Jest eksperymentalny i wolniejszy, więc strony później stają się dostępne w wyszukiwaniu.</string>
+    <string name="settings_text_recognition_indra_is_the_default">"Indra OCR jest domyślny. Odczytuje ponad 100 języków, w tym hindi, tamilski, bengalski, arabski, urdu, chiński, japoński, koreański i tajski, i radzi sobie ze stronami w kilku językach.\n\nML Kit jest zapasowy. Jeśli Indra OCR nie może odczytać strony, działa zbyt długo lub się zatrzyma, stronę odczyta ML Kit. Jest szybki i bardzo dokładny dla języków w alfabecie łacińskim, takich jak polski, angielski, hiszpański czy niemiecki, więc możesz go też wybrać, jeśli wszystkie Twoje dokumenty są w tych językach."</string>
+    <string name="settings_text_recognition_fallback">"Zapasowy"</string>
+    <string name="settings_indra_ocr_100_languages">"Indra OCR · ponad 100 języków"</string>
     <string name="settings_text_recognition_choosing_an_engine">Wybór silnika</string>
     <string name="settings_text_recognition_after_you_scan_scanly_reads">Po zeskanowaniu Scanly odczytuje słowa z każdej strony. Dzięki temu możesz przeszukiwać bibliotekę według treści stron, kopiować i udostępniać tekst ze skanów oraz go eksportować.</string>
     <string name="settings_text_recognition_what_it_does">Jak to działa</string>
@@ -972,7 +975,7 @@
     <string name="page_text_tap_an_outlined_area_to">Kliknij zaznaczony obszar, by skopiować tylko ten fragment.</string>
     <string name="page_text_regions_are_hidden_because_this">Obszary są ukryte, bo strona zmieniła się po odczytaniu tekstu.</string>
     <string name="page_text_page_image_with_text_regions">"Obraz strony z obszarami tekstu: %1$s"</string>
-    <string name="page_text_read_with_indra_ocr_experimental">Odczytano przez Indra OCR (eksperymentalny)</string>
+    <string name="page_text_read_with_indra_ocr">"Odczytano przez Indra OCR"</string>
     <string name="page_text_read_with_ml_kit_indra">Odczytano przez ML Kit (Indra OCR nie odczytał tej strony)</string>
     <string name="page_text_edited">Edytowano</string>
     <string name="page_text_read_again">Odczytaj ponownie</string>

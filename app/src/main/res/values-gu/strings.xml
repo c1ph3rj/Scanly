@@ -826,6 +826,9 @@
     <string name="settings_text_recognition_both_engines_run_on_the">"બંને એન્જિન ઉપકરણ પર ચાલે છે. તેમને વાંચવા માટે પૃષ્ઠો ક્યારેય અપલોડ કરવામાં આવતાં નથી."</string>
     <string name="settings_text_recognition_stays_on_your_phone">"તમારા ફોન પર રહે છે"</string>
     <string name="settings_text_recognition_ml_kit_is_the_default">"ML Kit ડિફોલ્ટ છે. તે અંગ્રેજી, સ્પેનિશ, ફ્રેન્ચ અને જર્મન જેવી લેટિન-સ્ક્રીપ્ટ ભાષાઓ માટે ઝડપી અને ખૂબ જ સચોટ છે.\n\nIndra OCR બાકીની દરેક વસ્તુ માટે છે. તે હિન્દી, તમિલ, બંગાળી, અરબી, ઉર્દૂ, ચાઈનીઝ, જાપાનીઝ, કોરિયન અને થાઈ સહિત 100+ ભાષાઓ વાંચે છે અને ભાષાઓને મિશ્રિત કરતા પૃષ્ઠોને હેન્ડલ કરે છે. તે પ્રાયોગિક અને ધીમું છે, તેથી પૃષ્ઠોને શોધવામાં વધુ સમય લાગે છે."</string>
+    <string name="settings_text_recognition_indra_is_the_default">"Indra OCR ડિફોલ્ટ છે. તે હિન્દી, તમિલ, બંગાળી, અરબી, ઉર્દૂ, ચાઇનીઝ, જાપાનીઝ, કોરિયન અને થાઈ સહિત 100+ ભાષાઓ વાંચે છે અને એકથી વધુ ભાષાવાળાં પાનાં પણ સંભાળે છે.\n\nML Kit બેકઅપ છે. જો Indra OCR કોઈ પાનું વાંચી ન શકે, બહુ વધારે સમય લે અથવા અટકી જાય, તો તેના બદલે ML Kit તે વાંચે છે. તે અંગ્રેજી, સ્પેનિશ, ફ્રેન્ચ અને જર્મન જેવી લેટિન-સ્ક્રીપ્ટ ભાષાઓ માટે ઝડપી અને ખૂબ જ સચોટ છે, તેથી જો તમારા બધા દસ્તાવેજો આ ભાષાઓમાં હોય તો તમે તેને પણ પસંદ કરી શકો છો."</string>
+    <string name="settings_text_recognition_fallback">"બેકઅપ"</string>
+    <string name="settings_indra_ocr_100_languages">"Indra OCR · 100+ ભાષાઓ"</string>
     <string name="settings_text_recognition_choosing_an_engine">"એન્જિન પસંદ કરી રહ્યા છીએ"</string>
     <string name="settings_text_recognition_after_you_scan_scanly_reads">"તમે સ્કેન કર્યા પછી, Scanly દરેક પૃષ્ઠ પરના શબ્દો વાંચે છે. તે ટેક્સ્ટ છે જે તમને પૃષ્ઠ શું કહે છે તેના દ્વારા તમારી લાઇબ્રેરીને શોધવા દે છે, સ્કેનમાંથી ટેક્સ્ટની નકલ અથવા શેર કરી શકે છે અને તેને નિકાસ કરી શકે છે."</string>
     <string name="settings_text_recognition_what_it_does">"તે શું કરે છે"</string>
@@ -972,7 +975,7 @@
     <string name="page_text_tap_an_outlined_area_to">"માત્ર તે ભાગની નકલ કરવા માટે રૂપરેખાંકિત વિસ્તારને ટેપ કરો."</string>
     <string name="page_text_regions_are_hidden_because_this">"પ્રદેશો છુપાયેલા છે કારણ કે આ પૃષ્ઠ તેના લખાણ વાંચ્યા પછી બદલાઈ ગયું છે."</string>
     <string name="page_text_page_image_with_text_regions">"%1$s ટેક્સ્ટ પ્રદેશો સાથે પૃષ્ઠ છબી"</string>
-    <string name="page_text_read_with_indra_ocr_experimental">"Indra OCR (પ્રાયોગિક) સાથે વાંચો"</string>
+    <string name="page_text_read_with_indra_ocr">"Indra OCR વડે વાંચેલું"</string>
     <string name="page_text_read_with_ml_kit_indra">"ML Kit સાથે વાંચો (Indra OCR આ પૃષ્ઠ વાંચી શક્યું નથી)"</string>
     <string name="page_text_edited">"સંપાદિત"</string>
     <string name="page_text_read_again">"ફરીથી વાંચો"</string>

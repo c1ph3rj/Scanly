@@ -826,6 +826,9 @@
     <string name="settings_text_recognition_both_engines_run_on_the">दोनों इंजन डिवाइस पर ही चलते हैं. पेज पढ़ने के लिए कभी अपलोड नहीं किए जाते.</string>
     <string name="settings_text_recognition_stays_on_your_phone">सब आपके फ़ोन पर ही रहता है</string>
     <string name="settings_text_recognition_ml_kit_is_the_default">ML Kit डिफ़ॉल्ट है. यह अंग्रेज़ी, स्पैनिश, फ़्रेंच और जर्मन जैसी लैटिन लिपि वाली भाषाओं के लिए तेज़ और बहुत सटीक है.\n\nबाकी सबके लिए Indra OCR है. यह हिंदी, तमिल, बांग्ला, अरबी, उर्दू, चीनी, जापानी, कोरियाई और थाई समेत 100+ भाषाएं पढ़ता है, और कई भाषाओं वाले पेज भी संभाल लेता है. यह प्रयोग के तौर पर है और धीमा है, इसलिए पेज खोजने लायक बनने में ज़्यादा समय लगता है.</string>
+    <string name="settings_text_recognition_indra_is_the_default">"Indra OCR डिफ़ॉल्ट है. यह हिंदी, तमिल, बांग्ला, अरबी, उर्दू, चीनी, जापानी, कोरियाई और थाई समेत 100+ भाषाएं पढ़ता है, और कई भाषाओं वाले पेज भी संभालता है.\n\nML Kit बैकअप है. अगर Indra OCR कोई पेज नहीं पढ़ पाता, बहुत ज़्यादा समय लेता है या रुक जाता है, तो उसकी जगह ML Kit पेज पढ़ता है. यह अंग्रेज़ी, स्पैनिश, फ़्रेंच और जर्मन जैसी लैटिन लिपि वाली भाषाओं के लिए तेज़ और बहुत सटीक है, इसलिए अगर आपके सभी दस्तावेज़ इन्हीं भाषाओं में हैं, तो आप इसे भी चुन सकते हैं."</string>
+    <string name="settings_text_recognition_fallback">"बैकअप"</string>
+    <string name="settings_indra_ocr_100_languages">"Indra OCR · 100+ भाषाएं"</string>
     <string name="settings_text_recognition_choosing_an_engine">इंजन चुनना</string>
     <string name="settings_text_recognition_after_you_scan_scanly_reads">स्कैन करने के बाद Scanly हर पेज के शब्द पढ़ता है. इसी टेक्स्ट की मदद से आप पेज में लिखी बातों से अपनी लाइब्रेरी में खोज सकते हैं, स्कैन से टेक्स्ट कॉपी या शेयर कर सकते हैं और उसे एक्सपोर्ट कर सकते हैं.</string>
     <string name="settings_text_recognition_what_it_does">यह क्या करता है</string>
@@ -972,7 +975,7 @@
     <string name="page_text_tap_an_outlined_area_to">सिर्फ़ उस हिस्से को कॉपी करने के लिए, घेरे गए हिस्से पर टैप करें.</string>
     <string name="page_text_regions_are_hidden_because_this">हिस्से छिपाए गए हैं, क्योंकि टेक्स्ट पढ़े जाने के बाद यह पेज बदल गया था.</string>
     <string name="page_text_page_image_with_text_regions">"%1$s टेक्स्ट वाले हिस्सों के साथ पेज की इमेज"</string>
-    <string name="page_text_read_with_indra_ocr_experimental">Indra OCR से पढ़ा गया (प्रयोग के तौर पर)</string>
+    <string name="page_text_read_with_indra_ocr">"Indra OCR से पढ़ा गया"</string>
     <string name="page_text_read_with_ml_kit_indra">ML Kit से पढ़ा गया (Indra OCR यह पेज नहीं पढ़ सका)</string>
     <string name="page_text_edited">बदलाव किया गया</string>
     <string name="page_text_read_again">फिर से पढ़ें</string>

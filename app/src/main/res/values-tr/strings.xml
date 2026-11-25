@@ -826,6 +826,9 @@
     <string name="settings_text_recognition_both_engines_run_on_the">İki motor da cihazda çalışır. Sayfalar okunmak için asla yüklenmez.</string>
     <string name="settings_text_recognition_stays_on_your_phone">Telefonunuzda kalır</string>
     <string name="settings_text_recognition_ml_kit_is_the_default">Varsayılan motor ML Kit\'tir. İngilizce, İspanyolca, Fransızca ve Almanca gibi Latin alfabeli dillerde hızlı ve çok doğrudur.\n\nIndra OCR ise geri kalan her şey içindir. Hintçe, Tamilce, Bengalce, Arapça, Urduca, Çince, Japonca, Korece ve Tayca dahil 100\'den fazla dili okur ve birden çok dil içeren sayfaları da işler. Deneysel ve daha yavaştır; bu nedenle sayfaların aranabilir hale gelmesi daha uzun sürer.</string>
+    <string name="settings_text_recognition_indra_is_the_default">"Varsayılan motor Indra OCR'dır. Hintçe, Tamilce, Bengalce, Arapça, Urduca, Çince, Japonca, Korece ve Tayca dahil 100'den fazla dili okur ve birden çok dil içeren sayfaları da işler.\n\nML Kit yedek motordur. Indra OCR bir sayfayı okuyamazsa, çok uzun sürerse veya durursa sayfayı ML Kit okur. İngilizce, İspanyolca, Fransızca ve Almanca gibi Latin alfabeli dillerde hızlı ve çok doğrudur; tüm belgeleriniz bu dillerdeyse onu da seçebilirsiniz."</string>
+    <string name="settings_text_recognition_fallback">"Yedek"</string>
+    <string name="settings_indra_ocr_100_languages">"Indra OCR · 100+ dil"</string>
     <string name="settings_text_recognition_choosing_an_engine">Motor seçimi</string>
     <string name="settings_text_recognition_after_you_scan_scanly_reads">Taramadan sonra Scanly her sayfadaki kelimeleri okur. Bu metin sayesinde kitaplığınızda sayfaların içeriğine göre arama yapabilir, taramadaki metni kopyalayabilir, paylaşabilir ve dışa aktarabilirsiniz.</string>
     <string name="settings_text_recognition_what_it_does">Ne işe yarar?</string>
@@ -972,7 +975,7 @@
     <string name="page_text_tap_an_outlined_area_to">Yalnızca o kısmı kopyalamak için çerçeveli bir alana dokunun.</string>
     <string name="page_text_regions_are_hidden_because_this">Bu sayfa, metni okunduktan sonra değiştiği için bölgeler gizlendi.</string>
     <string name="page_text_page_image_with_text_regions">"%1$s metin bölgesi içeren sayfa görseli"</string>
-    <string name="page_text_read_with_indra_ocr_experimental">Indra OCR ile okundu (deneysel)</string>
+    <string name="page_text_read_with_indra_ocr">"Indra OCR ile okundu"</string>
     <string name="page_text_read_with_ml_kit_indra">ML Kit ile okundu (Indra OCR bu sayfayı okuyamadı)</string>
     <string name="page_text_edited">Düzenlendi</string>
     <string name="page_text_read_again">Yeniden oku</string>

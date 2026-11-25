@@ -33,7 +33,7 @@ class OcrEngineCaptionTest {
 
     @Test
     fun indraPage_isLabelledExperimental() {
-        assertEquals("Read with Indra OCR (experimental)", ocrEngineCaption(text(OcrEngine.INDRA)))
+        assertEquals("Read with Indra OCR", ocrEngineCaption(text(OcrEngine.INDRA)))
     }
 
     @Test

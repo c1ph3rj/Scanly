@@ -826,6 +826,9 @@
     <string name="settings_text_recognition_both_engines_run_on_the">"രണ്ട് എഞ്ചിനുകളും ഉപകരണത്തിൽ പ്രവർത്തിക്കുന്നു. പേജുകൾ വായിക്കാൻ ഒരിക്കലും അപ്‌ലോഡ് ചെയ്യുന്നില്ല."</string>
     <string name="settings_text_recognition_stays_on_your_phone">"നിങ്ങളുടെ ഫോണിൽ തുടരുന്നു"</string>
     <string name="settings_text_recognition_ml_kit_is_the_default">"ML Kit ആണ് ഡിഫോൾട്ട്. ഇംഗ്ലീഷ്, സ്പാനിഷ്, ഫ്രഞ്ച്, ജർമ്മൻ തുടങ്ങിയ ലാറ്റിൻ-ലിപി ഭാഷകൾക്ക് ഇത് വേഗതയേറിയതും വളരെ കൃത്യവുമാണ്.\n\nമറ്റെല്ലാത്തിനും Indra OCR ആണ്. ഇത് ഹിന്ദി, തമിഴ്, ബംഗാളി, അറബിക്, ഉറുദു, ചൈനീസ്, ജാപ്പനീസ്, കൊറിയൻ, തായ് എന്നിവയുൾപ്പെടെ 100+ ഭാഷകൾ വായിക്കുന്നു, കൂടാതെ ഭാഷകൾ മിശ്രണം ചെയ്യുന്ന പേജുകൾ കൈകാര്യം ചെയ്യുന്നു. ഇത് പരീക്ഷണാത്മകവും വേഗത കുറഞ്ഞതുമാണ്, അതിനാൽ പേജുകൾ തിരയാൻ കൂടുതൽ സമയമെടുക്കും."</string>
+    <string name="settings_text_recognition_indra_is_the_default">"Indra OCR ആണ് ഡിഫോൾട്ട്. ഹിന്ദി, തമിഴ്, ബംഗാളി, അറബിക്, ഉർദു, ചൈനീസ്, ജാപ്പനീസ്, കൊറിയൻ, തായ് എന്നിവ ഉൾപ്പെടെ 100+ ഭാഷകൾ ഇത് വായിക്കുന്നു, പല ഭാഷകൾ ചേർന്ന പേജുകളും കൈകാര്യം ചെയ്യുന്നു.\n\nML Kit ആണ് ബാക്കപ്പ്. Indra OCR-ന് ഒരു പേജ് വായിക്കാൻ കഴിയാതെ വരികയോ, കൂടുതൽ സമയമെടുക്കുകയോ, നിന്നുപോവുകയോ ചെയ്താൽ, പകരം ML Kit അത് വായിക്കും. ഇംഗ്ലീഷ്, സ്പാനിഷ്, ഫ്രഞ്ച്, ജർമ്മൻ തുടങ്ങിയ ലാറ്റിൻ-ലിപി ഭാഷകൾക്ക് ഇത് വേഗതയേറിയതും വളരെ കൃത്യവുമാണ്, അതിനാൽ നിങ്ങളുടെ എല്ലാ ഡോക്യുമെന്റുകളും ഈ ഭാഷകളിലാണെങ്കിൽ ഇതും തിരഞ്ഞെടുക്കാം."</string>
+    <string name="settings_text_recognition_fallback">"ബാക്കപ്പ്"</string>
+    <string name="settings_indra_ocr_100_languages">"Indra OCR · 100+ ഭാഷകൾ"</string>
     <string name="settings_text_recognition_choosing_an_engine">"ഒരു എഞ്ചിൻ തിരഞ്ഞെടുക്കൽ"</string>
     <string name="settings_text_recognition_after_you_scan_scanly_reads">"നിങ്ങൾ സ്കാൻ ചെയ്ത ശേഷം, ഓരോ പേജിലെയും വാക്കുകൾ Scanly വായിക്കുന്നു. ഒരു പേജ് പറയുന്നത് അനുസരിച്ച് നിങ്ങളുടെ ലൈബ്രറി തിരയാനും സ്‌കാനിൽ നിന്ന് ടെക്‌സ്‌റ്റ് പകർത്താനും പങ്കിടാനും കയറ്റുമതി ചെയ്യാനും നിങ്ങളെ അനുവദിക്കുന്നത് ആ വാചകമാണ്."</string>
     <string name="settings_text_recognition_what_it_does">"അത് എന്താണ് ചെയ്യുന്നത്"</string>
@@ -972,7 +975,7 @@
     <string name="page_text_tap_an_outlined_area_to">"ആ ഭാഗം മാത്രം പകർത്താൻ ഒരു ഔട്ട്‌ലൈൻ ചെയ്ത ഏരിയയിൽ ടാപ്പ് ചെയ്യുക."</string>
     <string name="page_text_regions_are_hidden_because_this">"ഈ പേജ് അതിൻ്റെ ടെക്സ്റ്റ് വായിച്ചതിനുശേഷം മാറിയതിനാൽ പ്രദേശങ്ങൾ മറച്ചിരിക്കുന്നു."</string>
     <string name="page_text_page_image_with_text_regions">"%1$s ടെക്സ്റ്റ് മേഖലകളുള്ള പേജ് ചിത്രം"</string>
-    <string name="page_text_read_with_indra_ocr_experimental">"Indra OCR ഉപയോഗിച്ച് വായിക്കുക (പരീക്ഷണാത്മകം)"</string>
+    <string name="page_text_read_with_indra_ocr">"Indra OCR ഉപയോഗിച്ച് വായിച്ചത്"</string>
     <string name="page_text_read_with_ml_kit_indra">"ML Kit ഉപയോഗിച്ച് വായിക്കുക (Indra OCR ഈ പേജ് വായിക്കാൻ കഴിഞ്ഞില്ല)"</string>
     <string name="page_text_edited">"എഡിറ്റുചെയ്തത്"</string>
     <string name="page_text_read_again">"വീണ്ടും വായിക്കുക"</string>

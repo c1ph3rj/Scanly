@@ -167,7 +167,11 @@ fun SettingsScreen(
     }
     val textRecognitionSubtitle = when (uiState.ocrEngine) {
         OcrEngine.ML_KIT -> stringResource(R.string.settings_ml_kit_latin_script_languages)
-        OcrEngine.INDRA -> stringResource(R.string.settings_indra_ocr_100_languages_experimental)
+        OcrEngine.INDRA -> if (uiState.defaultOcrEngine == OcrEngine.INDRA) {
+            stringResource(R.string.settings_indra_ocr_100_languages)
+        } else {
+            stringResource(R.string.settings_indra_ocr_100_languages_experimental)
+        }
     }
     val storageSubtitle = buildString {
         uiState.storageUsage?.let {

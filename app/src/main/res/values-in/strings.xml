@@ -826,6 +826,9 @@
     <string name="settings_text_recognition_both_engines_run_on_the">Kedua mesin berjalan di perangkat. Halaman tidak pernah diupload untuk dibaca.</string>
     <string name="settings_text_recognition_stays_on_your_phone">Tetap di ponsel Anda</string>
     <string name="settings_text_recognition_ml_kit_is_the_default">ML Kit adalah mesin default. Cepat dan sangat akurat untuk bahasa beraksara Latin seperti Indonesia, Inggris, Spanyol, dan Jerman.\n\nIndra OCR untuk bahasa lainnya. Mesin ini membaca 100+ bahasa, termasuk Hindi, Tamil, Bengali, Arab, Urdu, Mandarin, Jepang, Korea, dan Thai, serta dapat menangani halaman dengan campuran bahasa. Masih eksperimental dan lebih lambat, jadi halaman perlu waktu lebih lama agar bisa ditelusuri.</string>
+    <string name="settings_text_recognition_indra_is_the_default">"Indra OCR adalah mesin default. Mesin ini membaca 100+ bahasa, termasuk Hindi, Tamil, Bengali, Arab, Urdu, Mandarin, Jepang, Korea, dan Thai, serta dapat menangani halaman dengan campuran bahasa.\n\nML Kit adalah cadangan. Jika Indra OCR tidak dapat membaca halaman, terlalu lama, atau berhenti, ML Kit yang membacanya. ML Kit cepat dan sangat akurat untuk bahasa beraksara Latin seperti Indonesia, Inggris, Spanyol, dan Jerman, jadi Anda juga bisa memilihnya jika semua dokumen Anda memakai bahasa tersebut."</string>
+    <string name="settings_text_recognition_fallback">"Cadangan"</string>
+    <string name="settings_indra_ocr_100_languages">"Indra OCR · 100+ bahasa"</string>
     <string name="settings_text_recognition_choosing_an_engine">Memilih mesin</string>
     <string name="settings_text_recognition_after_you_scan_scanly_reads">Setelah Anda memindai, Scanly membaca kata-kata di setiap halaman. Teks inilah yang memungkinkan Anda menelusuri koleksi berdasarkan isi halaman, menyalin atau membagikan teks dari pindaian, dan mengekspornya.</string>
     <string name="settings_text_recognition_what_it_does">Fungsinya</string>
@@ -972,7 +975,7 @@
     <string name="page_text_tap_an_outlined_area_to">Ketuk area bergaris tepi untuk menyalin bagian itu saja.</string>
     <string name="page_text_regions_are_hidden_because_this">Area disembunyikan karena halaman ini berubah setelah teksnya dibaca.</string>
     <string name="page_text_page_image_with_text_regions">"Gambar halaman dengan %1$s area teks"</string>
-    <string name="page_text_read_with_indra_ocr_experimental">Dibaca dengan Indra OCR (eksperimental)</string>
+    <string name="page_text_read_with_indra_ocr">"Dibaca dengan Indra OCR"</string>
     <string name="page_text_read_with_ml_kit_indra">Dibaca dengan ML Kit (Indra OCR tidak dapat membaca halaman ini)</string>
     <string name="page_text_edited">Diedit</string>
     <string name="page_text_read_again">Baca ulang</string>

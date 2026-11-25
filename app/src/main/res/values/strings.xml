@@ -904,6 +904,9 @@
     <string name="settings_text_recognition_both_engines_run_on_the">Both engines run on the device. Pages are never uploaded to read them.</string>
     <string name="settings_text_recognition_stays_on_your_phone">Stays on your phone</string>
     <string name="settings_text_recognition_ml_kit_is_the_default">ML Kit is the default. It is fast and very accurate for Latin-script languages such as English, Spanish, French and German.\n\nIndra OCR is for everything else. It reads 100+ languages, including Hindi, Tamil, Bengali, Arabic, Urdu, Chinese, Japanese, Korean and Thai, and handles pages that mix languages. It is experimental and slower, so pages take longer to become searchable.</string>
+    <string name="settings_text_recognition_indra_is_the_default">"Indra OCR is the default. It reads 100+ languages, including Hindi, Tamil, Bengali, Arabic, Urdu, Chinese, Japanese, Korean and Thai, and handles pages that mix languages.\n\nML Kit is the fallback. If Indra OCR can't read a page, takes too long or stops, ML Kit reads it instead. It is fast and very accurate for Latin-script languages such as English, Spanish, French and German, so you can also pick it if all your documents use those."</string>
+    <string name="settings_text_recognition_fallback">"Fallback"</string>
+    <string name="settings_indra_ocr_100_languages">"Indra OCR · 100+ languages"</string>
     <string name="settings_text_recognition_choosing_an_engine">Choosing an engine</string>
     <string name="settings_text_recognition_after_you_scan_scanly_reads">After you scan, Scanly reads the words on each page. That text is what lets you search your library by what a page says, copy or share text from a scan, and export it.</string>
     <string name="settings_text_recognition_what_it_does">What it does</string>
@@ -1063,7 +1066,7 @@
     <string name="page_text_tap_an_outlined_area_to">Tap an outlined area to copy just that part.</string>
     <string name="page_text_regions_are_hidden_because_this">Regions are hidden because this page changed after its text was read.</string>
     <string name="page_text_page_image_with_text_regions">"Page image with %1$s text regions"</string>
-    <string name="page_text_read_with_indra_ocr_experimental">Read with Indra OCR (experimental)</string>
+    <string name="page_text_read_with_indra_ocr">"Read with Indra OCR"</string>
     <string name="page_text_read_with_ml_kit_indra">Read with ML Kit (Indra OCR couldn\'t read this page)</string>
     <string name="page_text_edited">Edited</string>
     <string name="page_text_read_again">Read again</string>

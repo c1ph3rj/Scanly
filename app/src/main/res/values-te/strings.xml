@@ -826,6 +826,9 @@
     <string name="settings_text_recognition_both_engines_run_on_the">రెండు ఇంజిన్‌లూ పరికరంలోనే నడుస్తాయి. చదవడం కోసం పేజీలు ఎప్పటికీ అప్‌లోడ్ కావు.</string>
     <string name="settings_text_recognition_stays_on_your_phone">మీ ఫోన్‌లోనే ఉంటుంది</string>
     <string name="settings_text_recognition_ml_kit_is_the_default">ML Kit డిఫాల్ట్. ఇంగ్లీష్, స్పానిష్, ఫ్రెంచ్, జర్మన్ వంటి లాటిన్ లిపి భాషలకు ఇది వేగంగా, చాలా కచ్చితంగా పనిచేస్తుంది.\n\nమిగతా అన్నింటికీ Indra OCR. ఇది హిందీ, తమిళం, బెంగాలీ, అరబిక్, ఉర్దూ, చైనీస్, జపనీస్, కొరియన్, థాయ్‌తో సహా 100+ భాషలను చదువుతుంది, భాషలు కలిసిన పేజీలను కూడా నిర్వహిస్తుంది. ఇది ప్రయోగాత్మకం, నెమ్మదిగా పనిచేస్తుంది, కాబట్టి పేజీలు సెర్చ్‌లో కనిపించడానికి ఎక్కువ సమయం పడుతుంది.</string>
+    <string name="settings_text_recognition_indra_is_the_default">"Indra OCR డిఫాల్ట్. ఇది హిందీ, తమిళం, బెంగాలీ, అరబిక్, ఉర్దూ, చైనీస్, జపనీస్, కొరియన్, థాయ్‌తో సహా 100+ భాషలను చదువుతుంది, అనేక భాషలు కలిసిన పేజీలను కూడా నిర్వహిస్తుంది.\n\nML Kit బ్యాకప్. Indra OCR ఏదైనా పేజీని చదవలేకపోతే, చాలా సమయం తీసుకుంటే లేదా ఆగిపోతే, దాని బదులు ML Kit ఆ పేజీని చదువుతుంది. ఇంగ్లీష్, స్పానిష్, ఫ్రెంచ్, జర్మన్ వంటి లాటిన్ లిపి భాషలకు ఇది వేగంగా, చాలా కచ్చితంగా పనిచేస్తుంది, కాబట్టి మీ అన్ని డాక్యుమెంట్‌లు ఈ భాషల్లోనే ఉంటే మీరు దీన్నీ ఎంచుకోవచ్చు."</string>
+    <string name="settings_text_recognition_fallback">"బ్యాకప్"</string>
+    <string name="settings_indra_ocr_100_languages">"Indra OCR · 100+ భాషలు"</string>
     <string name="settings_text_recognition_choosing_an_engine">ఇంజిన్‌ను ఎంచుకోవడం</string>
     <string name="settings_text_recognition_after_you_scan_scanly_reads">మీరు స్కాన్ చేసిన తర్వాత, Scanly ప్రతి పేజీలోని పదాలను చదువుతుంది. ఆ టెక్స్ట్ వల్లే పేజీలో ఉన్నదాని ఆధారంగా మీ లైబ్రరీలో వెతకవచ్చు, స్కాన్ నుండి టెక్స్ట్‌ను కాపీ లేదా షేర్ చేయవచ్చు, ఎగుమతి చేయవచ్చు.</string>
     <string name="settings_text_recognition_what_it_does">ఇది ఏం చేస్తుంది</string>
@@ -972,7 +975,7 @@
     <string name="page_text_tap_an_outlined_area_to">ఆ భాగాన్ని మాత్రమే కాపీ చేయడానికి గుర్తించిన ప్రాంతాన్ని నొక్కండి.</string>
     <string name="page_text_regions_are_hidden_because_this">టెక్స్ట్ చదివిన తర్వాత ఈ పేజీ మారినందున ప్రాంతాలు దాచబడ్డాయి.</string>
     <string name="page_text_page_image_with_text_regions">"%1$s టెక్స్ట్ ప్రాంతాలతో పేజీ చిత్రం"</string>
-    <string name="page_text_read_with_indra_ocr_experimental">Indra OCRతో చదవబడింది (ప్రయోగాత్మకం)</string>
+    <string name="page_text_read_with_indra_ocr">"Indra OCRతో చదవబడింది"</string>
     <string name="page_text_read_with_ml_kit_indra">ML Kitతో చదవబడింది (Indra OCR ఈ పేజీని చదవలేకపోయింది)</string>
     <string name="page_text_edited">ఎడిట్ చేయబడింది</string>
     <string name="page_text_read_again">మళ్లీ చదవండి</string>

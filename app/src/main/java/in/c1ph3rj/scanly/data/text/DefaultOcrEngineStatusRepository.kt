@@ -1,6 +1,8 @@
 package `in`.c1ph3rj.scanly.data.text
 
 import `in`.c1ph3rj.scanly.core.common.ScanlyDispatchers
+import `in`.c1ph3rj.scanly.data.text.indra.IndraAvailability
+import `in`.c1ph3rj.scanly.domain.model.OcrEngine
 import `in`.c1ph3rj.scanly.domain.repository.OcrEngineStatusRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
@@ -12,7 +14,10 @@ class DefaultOcrEngineStatusRepository @Inject constructor(
     private val guard: IndraCrashGuard,
     private val recognizer: SelectablePageTextRecognizer,
     private val dispatchers: ScanlyDispatchers,
+    private val indraAvailability: IndraAvailability,
 ) : OcrEngineStatusRepository {
+
+    override fun defaultEngine(): OcrEngine = indraAvailability.defaultEngine
 
     override fun observeIndraSuspended(): Flow<Boolean> = guard.observeSuspended()
 

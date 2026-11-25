@@ -648,7 +648,7 @@ private fun PageHeader(item: PageTextItem, pageCount: Int) {
 /** Which engine read the page, when that is worth saying; plain ML Kit pages need no note. */
 internal fun ocrEngineCaption(text: PageText): String? = when {
     text.fallbackReason != null -> appString(R.string.page_text_read_with_ml_kit_indra)
-    text.engine == OcrEngine.INDRA -> appString(R.string.page_text_read_with_indra_ocr_experimental)
+    text.engine == OcrEngine.INDRA -> appString(R.string.page_text_read_with_indra_ocr)
     else -> null
 }
 

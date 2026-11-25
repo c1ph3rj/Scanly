@@ -10,6 +10,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- **Indra OCR v1.2.0 is the default text recognition engine** — when the build ships the Indra models, new pages are read with Indra OCR (Datalab Indra v1.2.0, LiteRT FP16) and ML Kit is the fallback for any page Indra can't read, takes too long on, or stops on. People who picked an engine in **Settings › Text recognition** keep their choice; builds without the Indra models keep ML Kit as the default. Pages read before the update keep their text until **Re-read existing pages**.
+
 - **Scan modes: Document, ID card and Book** — a switcher in the camera (a pill above the shutter in portrait, a rail beside the preview in landscape) picks what you are scanning. Each document remembers its mode, so adding pages later opens the camera in the same mode. Retakes always use the page's own mode.
 - **ID card mode** — a card-shaped guide (85.6 × 54 mm, ID-1) darkens everything around it. Detection accepts smaller cards held near the centre, and auto-capture holds for a shorter time. After the front is saved the camera asks for the back, and the two sides are linked as one card. **Front only** ends a card without its back. If you leave mid-card, scanning resumes at the back. A glare warning ("tilt it slightly") holds auto-capture when a lamp's hot spot sits on the card. ID pages default to the Natural colour filter and are labelled "Front" / "Back" in the page grid.
 - **ID copy PDF layout** — for documents with ID card pages, the PDF options offer **ID copy** (the default for those documents): front and back stacked on one page at real card size, ready to print. Auto fit pages print on A4. **Separate pages** keeps one page per side. Image exports are unchanged.

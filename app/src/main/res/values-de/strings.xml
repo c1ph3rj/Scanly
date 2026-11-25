@@ -826,6 +826,9 @@
     <string name="settings_text_recognition_both_engines_run_on_the">Beide Engines laufen auf dem Gerät. Seiten werden zum Lesen nie hochgeladen.</string>
     <string name="settings_text_recognition_stays_on_your_phone">Bleibt auf deinem Smartphone</string>
     <string name="settings_text_recognition_ml_kit_is_the_default">ML Kit ist der Standard. Es ist schnell und sehr genau bei Sprachen mit lateinischer Schrift wie Deutsch, Englisch, Spanisch und Französisch.\n\nIndra OCR ist für alles andere. Es liest über 100 Sprachen, darunter Hindi, Tamil, Bengalisch, Arabisch, Urdu, Chinesisch, Japanisch, Koreanisch und Thai, und kommt auch mit Seiten in gemischten Sprachen zurecht. Es ist experimentell und langsamer, daher dauert es länger, bis Seiten durchsuchbar sind.</string>
+    <string name="settings_text_recognition_indra_is_the_default">"Indra OCR ist der Standard. Es liest über 100 Sprachen, darunter Hindi, Tamil, Bengalisch, Arabisch, Urdu, Chinesisch, Japanisch, Koreanisch und Thai, und kommt auch mit Seiten in gemischten Sprachen zurecht.\n\nML Kit ist der Ersatz. Wenn Indra OCR eine Seite nicht lesen kann, zu lange braucht oder anhält, liest ML Kit sie stattdessen. Es ist schnell und sehr genau bei Sprachen mit lateinischer Schrift wie Deutsch, Englisch, Spanisch und Französisch. Du kannst es also auch wählen, wenn alle deine Dokumente diese Sprachen nutzen."</string>
+    <string name="settings_text_recognition_fallback">"Ersatz"</string>
+    <string name="settings_indra_ocr_100_languages">"Indra OCR · über 100 Sprachen"</string>
     <string name="settings_text_recognition_choosing_an_engine">Engine auswählen</string>
     <string name="settings_text_recognition_after_you_scan_scanly_reads">Nach dem Scannen liest Scanly die Wörter auf jeder Seite. Mit diesem Text kannst du deine Bibliothek nach Inhalten durchsuchen, Text aus einem Scan kopieren oder teilen und ihn exportieren.</string>
     <string name="settings_text_recognition_what_it_does">Was sie macht</string>
@@ -972,7 +975,7 @@
     <string name="page_text_tap_an_outlined_area_to">Tippe auf einen umrandeten Bereich, um nur diesen Teil zu kopieren.</string>
     <string name="page_text_regions_are_hidden_because_this">Bereiche sind ausgeblendet, weil sich die Seite nach dem Lesen des Textes geändert hat.</string>
     <string name="page_text_page_image_with_text_regions">"Seitenbild mit %1$s Textbereichen"</string>
-    <string name="page_text_read_with_indra_ocr_experimental">Mit Indra OCR gelesen (experimentell)</string>
+    <string name="page_text_read_with_indra_ocr">"Mit Indra OCR gelesen"</string>
     <string name="page_text_read_with_ml_kit_indra">Mit ML Kit gelesen (Indra OCR konnte diese Seite nicht lesen)</string>
     <string name="page_text_edited">Bearbeitet</string>
     <string name="page_text_read_again">Neu lesen</string>

@@ -826,6 +826,9 @@
     <string name="settings_text_recognition_both_engines_run_on_the">两种引擎都在设备上运行，识别时绝不会上传页面。</string>
     <string name="settings_text_recognition_stays_on_your_phone">数据留在你的手机上</string>
     <string name="settings_text_recognition_ml_kit_is_the_default">ML Kit 是默认引擎。它速度快，对英语、西班牙语、法语和德语等拉丁字母语言的识别非常准确。\n\nIndra OCR 适用于其他所有语言。它可识别 100 多种语言，包括印地语、泰米尔语、孟加拉语、阿拉伯语、乌尔都语、中文、日语、韩语和泰语，还能处理混合多种语言的页面。它目前处于实验阶段，速度较慢，因此页面需要更久才能被搜索到。</string>
+    <string name="settings_text_recognition_indra_is_the_default">"Indra OCR 是默认引擎。它可识别 100 多种语言，包括印地语、泰米尔语、孟加拉语、阿拉伯语、乌尔都语、中文、日语、韩语和泰语，还能处理混合多种语言的页面。\n\nML Kit 是备用引擎。如果 Indra OCR 无法读取某页、耗时过长或停止运行，将改由 ML Kit 读取。它速度快，对英语、西班牙语、法语和德语等拉丁字母语言的识别非常准确；如果你的文档都使用这些语言，也可以选择它。"</string>
+    <string name="settings_text_recognition_fallback">"备用"</string>
+    <string name="settings_indra_ocr_100_languages">"Indra OCR · 100 多种语言"</string>
     <string name="settings_text_recognition_choosing_an_engine">如何选择引擎</string>
     <string name="settings_text_recognition_after_you_scan_scanly_reads">扫描后，Scanly 会识别每一页上的文字。有了这些文字，你就可以按页面内容搜索文档库，复制或分享扫描件中的文字，还能将其导出。</string>
     <string name="settings_text_recognition_what_it_does">功能介绍</string>
@@ -972,7 +975,7 @@
     <string name="page_text_tap_an_outlined_area_to">"点击轮廓区域以仅复制该部分。"</string>
     <string name="page_text_regions_are_hidden_because_this">"区域被隐藏，因为该页面在阅读其文本后发生了更改。"</string>
     <string name="page_text_page_image_with_text_regions">"带有 %1$s 文本区域的页面图像"</string>
-    <string name="page_text_read_with_indra_ocr_experimental">"用Indra OCR读取（实验）"</string>
+    <string name="page_text_read_with_indra_ocr">"由 Indra OCR 识别"</string>
     <string name="page_text_read_with_ml_kit_indra">"用ML Kit读取（Indra OCR无法读取此页）"</string>
     <string name="page_text_edited">"编辑"</string>
     <string name="page_text_read_again">"再读一遍"</string>

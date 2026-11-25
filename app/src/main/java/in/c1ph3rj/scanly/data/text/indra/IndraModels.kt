@@ -134,7 +134,7 @@ internal class IndraModels(private val context: Context) {
     fun recognizer(name: String) = model(name, setOf("x", "widths"), setOf("logits", "lengths"))
 
     fun vocab(suffix: String): IndraVocab = vocabs.getOrPut(suffix) {
-        val json = context.assets.open("$ASSET_DIR/vocab_$suffix.json").bufferedReader(Charsets.UTF_8)
+        val json = context.assets.open("$INDRA_ASSET_DIR/vocab_$suffix.json").bufferedReader(Charsets.UTF_8)
             .use { it.readText() }
         IndraVocab.fromJson(json)
     }
@@ -142,7 +142,7 @@ internal class IndraModels(private val context: Context) {
     private fun model(name: String, inputs: Set<String>, outputs: Set<String>): SignatureModel =
         models.getOrPut(name) {
             TensorFlowLite.init()
-            val buffer = mapAsset("$ASSET_DIR/$name.tflite")
+            val buffer = mapAsset("$INDRA_ASSET_DIR/$name.tflite")
             val interpreter = try {
                 InterpreterApi.create(buffer, InterpreterApi.Options().apply { setNumThreads(THREAD_COUNT) })
             } catch (e: IllegalStateException) {
@@ -179,7 +179,6 @@ internal class IndraModels(private val context: Context) {
 
     private companion object {
         const val TAG = "IndraOcr"
-        const val ASSET_DIR = "models/indra"
         const val THREAD_COUNT = 4
     }
 }

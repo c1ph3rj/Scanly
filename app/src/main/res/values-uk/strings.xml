@@ -826,6 +826,9 @@
     <string name="settings_text_recognition_both_engines_run_on_the">"На пристрої працюють обидва двигуни. Сторінки ніколи не завантажуються, щоб їх прочитати."</string>
     <string name="settings_text_recognition_stays_on_your_phone">"Залишається на телефоні"</string>
     <string name="settings_text_recognition_ml_kit_is_the_default">"ML Kit є типовим. Він швидкий і дуже точний для мов з латиницею, таких як англійська, іспанська, французька та німецька. \n\nIndra OCR для всього іншого. Він читає понад 100 мовами, включаючи хінді, тамільську, бенгальську, арабську, урду, китайську, японську, корейську та тайську, а також обробляє сторінки, які змішують мови. Це експериментальний і повільніший, тому для пошуку сторінок потрібно більше часу."</string>
+    <string name="settings_text_recognition_indra_is_the_default">"Indra OCR використовується за замовчуванням. Він читає понад 100 мов, зокрема гінді, тамільську, бенгальську, арабську, урду, китайську, японську, корейську й тайську, і справляється зі сторінками кількома мовами.\n\nML Kit — резервний рушій. Якщо Indra OCR не може прочитати сторінку, працює надто довго або зупиняється, сторінку читає ML Kit. Він швидкий і дуже точний для мов із латиницею, як-от англійська, іспанська, французька та німецька, тож його можна вибрати, якщо всі ваші документи цими мовами."</string>
+    <string name="settings_text_recognition_fallback">"Резервний"</string>
+    <string name="settings_indra_ocr_100_languages">"Indra OCR · 100+ мов"</string>
     <string name="settings_text_recognition_choosing_an_engine">"Вибір двигуна"</string>
     <string name="settings_text_recognition_after_you_scan_scanly_reads">"Після сканування Scanly читає слова на кожній сторінці. Цей текст дає змогу здійснювати пошук у вашій бібліотеці за словами на сторінці, копіювати або ділитися текстом із відсканованого файлу та експортувати його."</string>
     <string name="settings_text_recognition_what_it_does">"Що він робить"</string>
@@ -972,7 +975,7 @@
     <string name="page_text_tap_an_outlined_area_to">"Торкніться окресленої області, щоб скопіювати лише цю частину."</string>
     <string name="page_text_regions_are_hidden_because_this">"Регіони приховані, оскільки ця сторінка змінилася після прочитання її тексту."</string>
     <string name="page_text_page_image_with_text_regions">"Зображення сторінки з областями тексту %1$s"</string>
-    <string name="page_text_read_with_indra_ocr_experimental">"Читайте за допомогою Indra OCR (експериментальний)"</string>
+    <string name="page_text_read_with_indra_ocr">"Прочитано за допомогою Indra OCR"</string>
     <string name="page_text_read_with_ml_kit_indra">"Читати за допомогою ML Kit (Indra OCR не вдалося прочитати цю сторінку)"</string>
     <string name="page_text_edited">"Відредаговано"</string>
     <string name="page_text_read_again">"Прочитайте ще раз"</string>

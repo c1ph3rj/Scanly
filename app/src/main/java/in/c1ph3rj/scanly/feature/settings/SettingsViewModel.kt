@@ -23,6 +23,7 @@ import `in`.c1ph3rj.scanly.domain.usecase.SetOcrEngineUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveIndraSuspendedUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObservePagesNotReadWithUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveTextIndexProgressUseCase
+import `in`.c1ph3rj.scanly.domain.usecase.GetDefaultOcrEngineUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ResetIndraUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.RereadPagesNotReadWithUseCase
 import `in`.c1ph3rj.scanly.domain.model.OcrEngine
@@ -75,6 +76,8 @@ data class SettingsUiState(
     val automaticModelSelectionEnabled: Boolean = true,
     val documentGateEnabled: Boolean = true,
     val ocrEngine: OcrEngine = OcrEngine.ML_KIT,
+    /** Engine used until the user picks one: Indra when this build ships its models, else ML Kit. */
+    val defaultOcrEngine: OcrEngine = OcrEngine.ML_KIT,
     /** Pages whose text was not produced by [ocrEngine] (read by the other engine, or empty). */
     val pagesNotReadWithSelectedEngine: Int = 0,
     /** Pages still waiting for the background indexer, including ones queued for a re-read. */
@@ -128,6 +131,7 @@ class SettingsViewModel @Inject constructor(
     observeTextIndexProgressUseCase: ObserveTextIndexProgressUseCase,
     observeIndraSuspendedUseCase: ObserveIndraSuspendedUseCase,
     private val resetIndraUseCase: ResetIndraUseCase,
+    getDefaultOcrEngineUseCase: GetDefaultOcrEngineUseCase,
     private val automaticDocumentModelSelector: AutomaticDocumentModelSelector,
     private val markAppRatedUseCase: MarkAppRatedUseCase,
     observeRatingPromptStateUseCase: ObserveRatingPromptStateUseCase,
@@ -190,6 +194,7 @@ class SettingsViewModel @Inject constructor(
                 _uiState.update { it.copy(documentGateEnabled = enabled) }
             }
         }
+        _uiState.update { it.copy(defaultOcrEngine = getDefaultOcrEngineUseCase()) }
         viewModelScope.launch {
             observeOcrEngineUseCase().collectLatest { engine ->
                 _uiState.update { it.copy(ocrEngine = engine) }

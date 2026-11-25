@@ -193,6 +193,7 @@ fun SettingsTextRecognitionScreen(
                 SettingsGroup(title = stringResource(R.string.settings_text_recognition_engine)) {
                     OcrEngineSelector(
                         selected = uiState.ocrEngine,
+                        defaultEngine = uiState.defaultOcrEngine,
                         onSelected = onOcrEngineSelected,
                     )
                     OcrEngineStatusRows(
@@ -222,7 +223,7 @@ fun SettingsTextRecognitionScreen(
     }
 
     if (showHelp) {
-        TextRecognitionHelpSheet(onDismiss = { showHelp = false })
+        TextRecognitionHelpSheet(defaultEngine = uiState.defaultOcrEngine, onDismiss = { showHelp = false })
     }
 
     if (uiState.showRereadPrompt && uiState.pagesNotReadWithSelectedEngine > 0) {
@@ -239,7 +240,7 @@ fun SettingsTextRecognitionScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun TextRecognitionHelpSheet(onDismiss: () -> Unit) {
+private fun TextRecognitionHelpSheet(defaultEngine: OcrEngine, onDismiss: () -> Unit) {
     ScanlyModalBottomSheet(onDismissRequest = onDismiss) {
         Column(
             modifier = Modifier
@@ -286,7 +287,11 @@ private fun TextRecognitionHelpSheet(onDismiss: () -> Unit) {
             )
             HelpSection(
                 title = stringResource(R.string.settings_text_recognition_choosing_an_engine),
-                body = stringResource(R.string.settings_text_recognition_ml_kit_is_the_default),
+                body = if (defaultEngine == OcrEngine.INDRA) {
+                    stringResource(R.string.settings_text_recognition_indra_is_the_default)
+                } else {
+                    stringResource(R.string.settings_text_recognition_ml_kit_is_the_default)
+                },
             )
 
             Surface(
@@ -342,23 +347,26 @@ private fun HelpSection(title: String, body: String) {
 @Composable
 internal fun OcrEngineSelector(
     selected: OcrEngine,
+    defaultEngine: OcrEngine,
     onSelected: (OcrEngine) -> Unit,
 ) {
     data class Option(val engine: OcrEngine, val title: String, val badge: String, val subtitle: String)
-    val options = listOf(
-        Option(
-            OcrEngine.ML_KIT,
-            stringResource(R.string.settings_ml_kit),
-            stringResource(R.string.settings_text_recognition_default),
-            stringResource(R.string.settings_text_recognition_google_s_fast_on_device),
-        ),
-        Option(
-            OcrEngine.INDRA,
-            stringResource(R.string.settings_indra_ocr),
-            stringResource(R.string.settings_text_recognition_experimental),
-            stringResource(R.string.settings_text_recognition_reads_100_languages_across_many),
-        ),
+    // The default engine is listed first. With Indra as the default, ML Kit is its fallback;
+    // without Indra's models in the build, ML Kit is the default and Indra stays experimental.
+    val defaultBadge = stringResource(R.string.settings_text_recognition_default)
+    val mlKit = Option(
+        OcrEngine.ML_KIT,
+        stringResource(R.string.settings_ml_kit),
+        if (defaultEngine == OcrEngine.ML_KIT) defaultBadge else stringResource(R.string.settings_text_recognition_fallback),
+        stringResource(R.string.settings_text_recognition_google_s_fast_on_device),
     )
+    val indra = Option(
+        OcrEngine.INDRA,
+        stringResource(R.string.settings_indra_ocr),
+        if (defaultEngine == OcrEngine.INDRA) defaultBadge else stringResource(R.string.settings_text_recognition_experimental),
+        stringResource(R.string.settings_text_recognition_reads_100_languages_across_many),
+    )
+    val options = if (defaultEngine == OcrEngine.INDRA) listOf(indra, mlKit) else listOf(mlKit, indra)
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -398,7 +406,7 @@ internal fun OcrEngineSelector(
                         )
                         EngineBadge(
                             label = option.badge,
-                            emphasized = option.engine == OcrEngine.ML_KIT,
+                            emphasized = option.engine == defaultEngine,
                         )
                     }
                     Text(

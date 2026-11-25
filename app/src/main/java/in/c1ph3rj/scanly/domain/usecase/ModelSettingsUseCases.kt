@@ -50,6 +50,10 @@ class ObserveIndraSuspendedUseCase @Inject constructor(private val repository: O
     operator fun invoke() = repository.observeIndraSuspended()
 }
 
+class GetDefaultOcrEngineUseCase @Inject constructor(private val repository: OcrEngineStatusRepository) {
+    operator fun invoke(): OcrEngine = repository.defaultEngine()
+}
+
 class ResetIndraUseCase @Inject constructor(private val repository: OcrEngineStatusRepository) {
     suspend operator fun invoke() = repository.resetIndra()
 }

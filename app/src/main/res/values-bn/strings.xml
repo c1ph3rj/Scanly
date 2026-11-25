@@ -826,6 +826,9 @@
     <string name="settings_text_recognition_both_engines_run_on_the">দুটি ইঞ্জিনই ডিভাইসে চলে। পড়ার জন্য পৃষ্ঠা কখনও আপলোড করা হয় না।</string>
     <string name="settings_text_recognition_stays_on_your_phone">আপনার ফোনেই থাকে</string>
     <string name="settings_text_recognition_ml_kit_is_the_default">ML Kit ডিফল্ট। ইংরেজি, স্প্যানিশ, ফরাসি ও জার্মানের মতো ল্যাটিন লিপির ভাষার জন্য এটি দ্রুত এবং খুব নির্ভুল।\n\nবাকি সবকিছুর জন্য Indra OCR। এটি হিন্দি, তামিল, বাংলা, আরবি, উর্দু, চীনা, জাপানি, কোরিয়ান ও থাইসহ 100+ ভাষা পড়ে, এবং একাধিক ভাষা মেশানো পৃষ্ঠাও সামলায়। এটি পরীক্ষামূলক ও ধীর, তাই পৃষ্ঠা সার্চযোগ্য হতে বেশি সময় লাগে।</string>
+    <string name="settings_text_recognition_indra_is_the_default">"Indra OCR ডিফল্ট। এটি হিন্দি, তামিল, বাংলা, আরবি, উর্দু, চীনা, জাপানি, কোরিয়ান ও থাইসহ ১০০+ ভাষা পড়ে এবং একাধিক ভাষার পৃষ্ঠাও সামলাতে পারে।\n\nML Kit ব্যাকআপ। Indra OCR কোনো পৃষ্ঠা পড়তে না পারলে, খুব বেশি সময় নিলে বা থেমে গেলে, তার বদলে ML Kit পৃষ্ঠাটি পড়ে। ইংরেজি, স্প্যানিশ, ফরাসি ও জার্মানের মতো ল্যাটিন লিপির ভাষার জন্য এটি দ্রুত এবং খুব নির্ভুল, তাই আপনার সব নথি এই ভাষাগুলোতে হলে আপনি এটিও বেছে নিতে পারেন।"</string>
+    <string name="settings_text_recognition_fallback">"ব্যাকআপ"</string>
+    <string name="settings_indra_ocr_100_languages">"Indra OCR · 100+ ভাষা"</string>
     <string name="settings_text_recognition_choosing_an_engine">ইঞ্জিন বাছাই</string>
     <string name="settings_text_recognition_after_you_scan_scanly_reads">স্ক্যান করার পরে Scanly প্রতিটি পৃষ্ঠার শব্দ পড়ে। এই টেক্সটের জন্যই পৃষ্ঠায় কী লেখা আছে তা দিয়ে লাইব্রেরিতে সার্চ করতে, স্ক্যান থেকে টেক্সট কপি বা শেয়ার করতে এবং এক্সপোর্ট করতে পারেন।</string>
     <string name="settings_text_recognition_what_it_does">এটি কী করে</string>
@@ -972,7 +975,7 @@
     <string name="page_text_tap_an_outlined_area_to">শুধু সেই অংশটুকু কপি করতে চিহ্নিত জায়গায় ট্যাপ করুন।</string>
     <string name="page_text_regions_are_hidden_because_this">টেক্সট পড়ার পরে পৃষ্ঠাটি বদলেছে, তাই অংশগুলি লুকানো আছে।</string>
     <string name="page_text_page_image_with_text_regions">"%1$sটি টেক্সট অংশসহ পৃষ্ঠার ছবি"</string>
-    <string name="page_text_read_with_indra_ocr_experimental">Indra OCR দিয়ে পড়া (পরীক্ষামূলক)</string>
+    <string name="page_text_read_with_indra_ocr">"Indra OCR দিয়ে পড়া"</string>
     <string name="page_text_read_with_ml_kit_indra">ML Kit দিয়ে পড়া (Indra OCR এই পৃষ্ঠাটি পড়তে পারেনি)</string>
     <string name="page_text_edited">এডিট করা</string>
     <string name="page_text_read_again">আবার পড়ুন</string>

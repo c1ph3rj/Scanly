@@ -826,6 +826,9 @@
     <string name="settings_text_recognition_both_engines_run_on_the">Beide engines draaien op het apparaat. Pagina\'s worden nooit geüpload om ze te lezen.</string>
     <string name="settings_text_recognition_stays_on_your_phone">Blijft op je telefoon</string>
     <string name="settings_text_recognition_ml_kit_is_the_default">ML Kit is de standaard. Het is snel en zeer nauwkeurig voor talen met Latijns schrift, zoals Engels, Spaans, Frans en Duits.\n\nIndra OCR is voor al het andere. Het leest 100+ talen, waaronder Hindi, Tamil, Bengaals, Arabisch, Urdu, Chinees, Japans, Koreaans en Thai, en kan pagina\'s met gemengde talen aan. Het is experimenteel en trager, dus het duurt langer voordat pagina\'s doorzoekbaar zijn.</string>
+    <string name="settings_text_recognition_indra_is_the_default">"Indra OCR is de standaard. Het leest 100+ talen, waaronder Hindi, Tamil, Bengaals, Arabisch, Urdu, Chinees, Japans, Koreaans en Thai, en kan pagina's met gemengde talen aan.\n\nML Kit is de terugval. Als Indra OCR een pagina niet kan lezen, te lang duurt of stopt, leest ML Kit hem. Het is snel en zeer nauwkeurig voor talen met Latijns schrift, zoals Engels, Spaans, Frans en Duits, dus je kunt het ook kiezen als al je documenten die talen gebruiken."</string>
+    <string name="settings_text_recognition_fallback">"Terugval"</string>
+    <string name="settings_indra_ocr_100_languages">"Indra OCR · 100+ talen"</string>
     <string name="settings_text_recognition_choosing_an_engine">Een engine kiezen</string>
     <string name="settings_text_recognition_after_you_scan_scanly_reads">Na het scannen leest Scanly de woorden op elke pagina. Met die tekst kun je je bibliotheek doorzoeken op wat er op een pagina staat, tekst uit een scan kopiëren of delen, en hem exporteren.</string>
     <string name="settings_text_recognition_what_it_does">Wat het doet</string>
@@ -972,7 +975,7 @@
     <string name="page_text_tap_an_outlined_area_to">Tik op een omlijnd gebied om alleen dat deel te kopiëren.</string>
     <string name="page_text_regions_are_hidden_because_this">Gebieden zijn verborgen omdat deze pagina is gewijzigd nadat de tekst is gelezen.</string>
     <string name="page_text_page_image_with_text_regions">"Pagina-afbeelding met %1$s tekstgebieden"</string>
-    <string name="page_text_read_with_indra_ocr_experimental">Gelezen met Indra OCR (experimenteel)</string>
+    <string name="page_text_read_with_indra_ocr">"Gelezen met Indra OCR"</string>
     <string name="page_text_read_with_ml_kit_indra">Gelezen met ML Kit (Indra OCR kon deze pagina niet lezen)</string>
     <string name="page_text_edited">Bewerkt</string>
     <string name="page_text_read_again">Opnieuw lezen</string>

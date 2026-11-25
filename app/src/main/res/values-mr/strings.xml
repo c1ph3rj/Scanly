@@ -826,6 +826,9 @@
     <string name="settings_text_recognition_both_engines_run_on_the">दोन्ही इंजिन डिव्हाइसवरच चालतात. वाचण्यासाठी पेज कधीही अपलोड केली जात नाहीत.</string>
     <string name="settings_text_recognition_stays_on_your_phone">तुमच्या फोनवरच राहते</string>
     <string name="settings_text_recognition_ml_kit_is_the_default">ML Kit डीफॉल्ट आहे. इंग्रजी, स्पॅनिश, फ्रेंच आणि जर्मनसारख्या लॅटिन लिपीतील भाषांसाठी ते जलद आणि अतिशय अचूक आहे.\n\nIndra OCR इतर सर्व भाषांसाठी आहे. ते हिंदी, तमिळ, बंगाली, अरबी, उर्दू, चिनी, जपानी, कोरियन आणि थाईसह 100+ भाषा वाचते आणि अनेक भाषा असलेली पेजही हाताळते. ते प्रायोगिक आणि हळू आहे, त्यामुळे पेज शोधण्यायोग्य व्हायला जास्त वेळ लागतो.</string>
+    <string name="settings_text_recognition_indra_is_the_default">"Indra OCR डीफॉल्ट आहे. ते हिंदी, तमिळ, बंगाली, अरबी, उर्दू, चिनी, जपानी, कोरियन आणि थाईसह 100+ भाषा वाचते आणि अनेक भाषा असलेली पानेही हाताळते.\n\nML Kit बॅकअप आहे. Indra OCR एखादे पान वाचू शकले नाही, खूप वेळ घेतला किंवा थांबले, तर त्याऐवजी ML Kit ते वाचते. इंग्रजी, स्पॅनिश, फ्रेंच आणि जर्मनसारख्या लॅटिन लिपीतील भाषांसाठी ते जलद आणि अतिशय अचूक आहे, त्यामुळे तुमचे सर्व दस्तऐवज याच भाषांमध्ये असतील तर तुम्ही ते निवडू शकता."</string>
+    <string name="settings_text_recognition_fallback">"बॅकअप"</string>
+    <string name="settings_indra_ocr_100_languages">"Indra OCR · 100+ भाषा"</string>
     <string name="settings_text_recognition_choosing_an_engine">इंजिन निवडणे</string>
     <string name="settings_text_recognition_after_you_scan_scanly_reads">तुम्ही स्कॅन केल्यानंतर Scanly प्रत्येक पेजवरील शब्द वाचते. त्या मजकुरामुळेच तुम्ही पेजवर काय लिहिले आहे त्यानुसार लायब्ररीत शोधू शकता, स्कॅनमधील मजकूर कॉपी किंवा शेअर करू शकता आणि तो एक्सपोर्ट करू शकता.</string>
     <string name="settings_text_recognition_what_it_does">हे काय करते</string>
@@ -972,7 +975,7 @@
     <string name="page_text_tap_an_outlined_area_to">फक्त तेवढा भाग कॉपी करण्यासाठी चौकट असलेल्या भागावर टॅप करा.</string>
     <string name="page_text_regions_are_hidden_because_this">मजकूर वाचल्यानंतर हे पेज बदलल्यामुळे भाग लपवले आहेत.</string>
     <string name="page_text_page_image_with_text_regions">%1$s मजकूर भाग असलेली पेजची इमेज</string>
-    <string name="page_text_read_with_indra_ocr_experimental">Indra OCR ने वाचले (प्रायोगिक)</string>
+    <string name="page_text_read_with_indra_ocr">"Indra OCR ने वाचले"</string>
     <string name="page_text_read_with_ml_kit_indra">ML Kit ने वाचले (Indra OCR ला हे पेज वाचता आले नाही)</string>
     <string name="page_text_edited">संपादित</string>
     <string name="page_text_read_again">पुन्हा वाचा</string>

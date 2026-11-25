@@ -826,6 +826,9 @@
     <string name="settings_text_recognition_both_engines_run_on_the">"Entrambi i motori funzionano sul dispositivo. Le pagine non vengono mai caricate online per essere lette."</string>
     <string name="settings_text_recognition_stays_on_your_phone">"Resta sul tuo telefono"</string>
     <string name="settings_text_recognition_ml_kit_is_the_default">"ML Kit è il motore predefinito. È veloce e molto preciso per le lingue con alfabeto latino, come inglese, spagnolo, francese e tedesco.\n\nIndra OCR è per tutto il resto. Legge oltre 100 lingue, tra cui hindi, tamil, bengalese, arabo, urdu, cinese, giapponese, coreano e thailandese, e gestisce pagine in più lingue. È sperimentale e più lento, quindi le pagine impiegano più tempo a diventare ricercabili."</string>
+    <string name="settings_text_recognition_indra_is_the_default">"Indra OCR è il motore predefinito. Legge oltre 100 lingue, tra cui hindi, tamil, bengalese, arabo, urdu, cinese, giapponese, coreano e thailandese, e gestisce pagine in più lingue.\n\nML Kit è la riserva. Se Indra OCR non riesce a leggere una pagina, impiega troppo o si blocca, la legge ML Kit al suo posto. È veloce e molto preciso per le lingue con alfabeto latino, come inglese, spagnolo, francese e tedesco, quindi puoi sceglierlo anche se tutti i tuoi documenti usano queste lingue."</string>
+    <string name="settings_text_recognition_fallback">"Riserva"</string>
+    <string name="settings_indra_ocr_100_languages">"Indra OCR · oltre 100 lingue"</string>
     <string name="settings_text_recognition_choosing_an_engine">"Scegliere un motore"</string>
     <string name="settings_text_recognition_after_you_scan_scanly_reads">"Dopo la scansione, Scanly legge le parole di ogni pagina. Grazie a quel testo puoi cercare nella libreria in base al contenuto delle pagine, copiare o condividere il testo di una scansione ed esportarlo."</string>
     <string name="settings_text_recognition_what_it_does">"A cosa serve"</string>
@@ -972,7 +975,7 @@
     <string name="page_text_tap_an_outlined_area_to">"Tocca un'area evidenziata per copiare solo quella parte."</string>
     <string name="page_text_regions_are_hidden_because_this">"Le aree sono nascoste perché la pagina è cambiata dopo la lettura del testo."</string>
     <string name="page_text_page_image_with_text_regions">"Immagine della pagina con %1$s aree di testo"</string>
-    <string name="page_text_read_with_indra_ocr_experimental">"Letto con Indra OCR (sperimentale)"</string>
+    <string name="page_text_read_with_indra_ocr">"Letto con Indra OCR"</string>
     <string name="page_text_read_with_ml_kit_indra">"Letto con ML Kit (Indra OCR non è riuscito a leggere questa pagina)"</string>
     <string name="page_text_edited">"Modificato"</string>
     <string name="page_text_read_again">"Rileggi"</string>

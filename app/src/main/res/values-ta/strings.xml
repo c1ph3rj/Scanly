@@ -826,6 +826,9 @@
     <string name="settings_text_recognition_both_engines_run_on_the">இரண்டு இன்ஜின்களும் சாதனத்திலேயே இயங்கும். படிப்பதற்காகப் பக்கங்கள் ஒருபோதும் பதிவேற்றப்படாது.</string>
     <string name="settings_text_recognition_stays_on_your_phone">உங்கள் ஃபோனிலேயே இருக்கும்</string>
     <string name="settings_text_recognition_ml_kit_is_the_default">ML Kit இயல்பு இன்ஜின். ஆங்கிலம், ஸ்பானிஷ், பிரெஞ்சு, ஜெர்மன் போன்ற லத்தீன் எழுத்து மொழிகளுக்கு இது வேகமானது, மிகத் துல்லியமானது.\n\nமற்ற எல்லாவற்றுக்கும் Indra OCR. இந்தி, தமிழ், வங்காளம், அரபு, உருது, சீனம், ஜப்பானியம், கொரியன், தாய் உட்பட 100+ மொழிகளைப் படிக்கும், பல மொழிகள் கலந்த பக்கங்களையும் கையாளும். இது சோதனை நிலையில் உள்ளதால் மெதுவானது, எனவே பக்கங்கள் தேடக்கூடியவையாக ஆக அதிக நேரம் ஆகும்.</string>
+    <string name="settings_text_recognition_indra_is_the_default">"Indra OCR இயல்பு இன்ஜின். இந்தி, தமிழ், வங்காளம், அரபு, உருது, சீனம், ஜப்பானியம், கொரியன், தாய் உட்பட 100+ மொழிகளைப் படிக்கும், பல மொழிகள் கலந்த பக்கங்களையும் கையாளும்.\n\nML Kit மாற்று இன்ஜின். Indra OCR ஒரு பக்கத்தைப் படிக்க முடியாவிட்டால், அதிக நேரம் எடுத்தால் அல்லது நின்றுவிட்டால், அதற்குப் பதிலாக ML Kit அதைப் படிக்கும். ஆங்கிலம், ஸ்பானிஷ், பிரெஞ்சு, ஜெர்மன் போன்ற லத்தீன் எழுத்து மொழிகளுக்கு இது வேகமானது, மிகத் துல்லியமானது; உங்கள் எல்லா ஆவணங்களும் இந்த மொழிகளில் இருந்தால் இதையும் தேர்வுசெய்யலாம்."</string>
+    <string name="settings_text_recognition_fallback">"மாற்று"</string>
+    <string name="settings_indra_ocr_100_languages">"Indra OCR · 100+ மொழிகள்"</string>
     <string name="settings_text_recognition_choosing_an_engine">இன்ஜினைத் தேர்ந்தெடுத்தல்</string>
     <string name="settings_text_recognition_after_you_scan_scanly_reads">நீங்கள் ஸ்கேன் செய்த பிறகு, ஒவ்வொரு பக்கத்திலுமுள்ள சொற்களை Scanly படிக்கும். அந்த உரையால்தான் பக்கத்தில் உள்ளவற்றை வைத்து லைப்ரரியில் தேடவும், ஸ்கேனிலிருந்து உரையை நகலெடுக்கவும் பகிரவும், ஏற்றுமதி செய்யவும் முடிகிறது.</string>
     <string name="settings_text_recognition_what_it_does">இது என்ன செய்யும்</string>
@@ -972,7 +975,7 @@
     <string name="page_text_tap_an_outlined_area_to">அந்தப் பகுதியை மட்டும் நகலெடுக்க, கோடிட்ட பகுதியைத் தட்டவும்.</string>
     <string name="page_text_regions_are_hidden_because_this">உரை படிக்கப்பட்ட பிறகு இந்தப் பக்கம் மாறியதால் பகுதிகள் மறைக்கப்பட்டுள்ளன.</string>
     <string name="page_text_page_image_with_text_regions">"%1$s உரைப் பகுதிகளுடன் பக்கப் படம்"</string>
-    <string name="page_text_read_with_indra_ocr_experimental">Indra OCR மூலம் படிக்கப்பட்டது (சோதனை நிலை)</string>
+    <string name="page_text_read_with_indra_ocr">"Indra OCR மூலம் படிக்கப்பட்டது"</string>
     <string name="page_text_read_with_ml_kit_indra">ML Kit மூலம் படிக்கப்பட்டது (Indra OCR-ஆல் இந்தப் பக்கத்தைப் படிக்க முடியவில்லை)</string>
     <string name="page_text_edited">திருத்தப்பட்டது</string>
     <string name="page_text_read_again">மீண்டும் படி</string>
