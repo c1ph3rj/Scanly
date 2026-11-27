@@ -96,7 +96,7 @@ fun FilterPickerScreen(
         cropQuad = cropQuad,
     )
     val filtered = rememberEditorFilteredBitmap(source, selectedFilter, filterAdjustments.intensity)
-    val livePreview = rememberEditorAdjustedPreview(source, filtered, filterAdjustments)
+    val livePreview = rememberEditorAdjustedPreview(source, selectedFilter, filtered, filterAdjustments)
     val previewState by rememberFilterPreviewBitmaps(source)
 
     Scaffold(

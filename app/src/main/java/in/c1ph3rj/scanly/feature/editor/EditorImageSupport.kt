@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
@@ -41,7 +42,7 @@ internal fun rememberEditorPreview(
 ): EditorPreview {
     val source by rememberEditorPreviewSource(rawImagePath, fallbackImagePath, rotationDegrees, cropQuad)
     val filtered = rememberEditorFilteredBitmap(source, selectedFilter, filterAdjustments.intensity)
-    return rememberEditorAdjustedPreview(source, filtered, filterAdjustments)
+    return rememberEditorAdjustedPreview(source, selectedFilter, filtered, filterAdjustments)
 }
 
 internal sealed interface EditorPreview {
@@ -98,8 +99,41 @@ internal fun rememberEditorFilteredBitmap(
     }
 }
 
+/**
+ * Final preview for [selectedFilter] on [source]. While a slider moves, the last finished image
+ * stays on screen until the next render lands; a new page, crop or preset starts from Loading.
+ */
 @Composable
 internal fun rememberEditorAdjustedPreview(
+    source: EditorPreviewSource?,
+    selectedFilter: PageFilterPreset,
+    filtered: Bitmap?,
+    adjustments: PageFilterAdjustments,
+): EditorPreview {
+    val preview = rememberEditorAdjustedPreviewNow(source, filtered, adjustments)
+    val held = remember { HeldEditorPreview() }
+    val scope = source to selectedFilter
+    SideEffect {
+        if (preview is EditorPreview.Ready) held.update(scope, preview)
+    }
+    if (preview == EditorPreview.Loading) held.readyFor(scope)?.let { return it }
+    return preview
+}
+
+private class HeldEditorPreview {
+    private var scope: Any? = null
+    private var ready: EditorPreview.Ready? = null
+
+    fun update(scope: Any, ready: EditorPreview.Ready) {
+        this.scope = scope
+        this.ready = ready
+    }
+
+    fun readyFor(scope: Any): EditorPreview.Ready? = ready?.takeIf { this.scope == scope }
+}
+
+@Composable
+private fun rememberEditorAdjustedPreviewNow(
     source: EditorPreviewSource?,
     filtered: Bitmap?,
     adjustments: PageFilterAdjustments,

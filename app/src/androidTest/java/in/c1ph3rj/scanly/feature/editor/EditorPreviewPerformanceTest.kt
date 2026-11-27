@@ -10,6 +10,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import `in`.c1ph3rj.scanly.domain.model.PageFilterAdjustments
 import `in`.c1ph3rj.scanly.domain.model.PageFilterPreset
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
@@ -22,7 +23,7 @@ class EditorPreviewPerformanceTest {
     @get:Rule val composeRule = createComposeRule()
 
     @Test
-    fun filterAndTonalChangesShowLoadingAndReuseTheDecodedPage() {
+    fun slidersKeepTheLastImageAndPresetChangesShowLoading() {
         val cache = InstrumentationRegistry.getInstrumentation().targetContext.cacheDir
         val file = File.createTempFile("editor_preview_", ".png", cache)
         val original = Color.rgb(64, 96, 128)
@@ -58,9 +59,14 @@ class EditorPreviewPerformanceTest {
             val beforeAdjustment = loadingFrames.get()
             composeRule.runOnIdle { adjustments.value = PageFilterAdjustments(brightness = 0.5f) }
             composeRule.waitUntil(10_000) { pixel.get() == Color.rgb(104, 136, 168) }
-            assertTrue(loadingFrames.get() > beforeAdjustment)
+            // A slider change keeps the last image on screen instead of flashing the shimmer.
+            assertEquals(beforeAdjustment, loadingFrames.get())
+            composeRule.runOnIdle { adjustments.value = PageFilterAdjustments(brightness = 0.25f) }
+            composeRule.waitUntil(10_000) { pixel.get() == Color.rgb(84, 116, 148) }
+            assertEquals(beforeAdjustment, loadingFrames.get())
             composeRule.runOnIdle { adjustments.value = PageFilterAdjustments.Default }
             composeRule.waitUntil(10_000) { pixel.get() == original }
+            assertEquals(beforeAdjustment, loadingFrames.get())
 
             val beforeFilter = loadingFrames.get()
             composeRule.runOnIdle { filter.value = PageFilterPreset.GRAYSCALE }

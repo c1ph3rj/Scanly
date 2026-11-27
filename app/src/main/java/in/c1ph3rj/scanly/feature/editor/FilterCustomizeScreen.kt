@@ -97,13 +97,14 @@ fun FilterCustomizeScreen(
     }
     val adjustedPreview = rememberEditorAdjustedPreview(
         source,
+        selectedFilter,
         currentFilter,
         filterAdjustments,
     )
 
     val showCompare = comparing && !filterAdjustments.isDefault
     val displayedPreview = if (showCompare) {
-        rememberEditorAdjustedPreview(source, baseFilter, PageFilterAdjustments.Default)
+        rememberEditorAdjustedPreview(source, selectedFilter, baseFilter, PageFilterAdjustments.Default)
     } else adjustedPreview
     val layout = rememberCustomizeLayout(windowSizeInfo)
 
