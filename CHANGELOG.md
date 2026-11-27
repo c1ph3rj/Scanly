@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Changed
+
+- Scanly does less work during startup, when browsing large libraries, while scanning and when adjusting page filters. Editor previews reuse the decoded and cropped page as controls change.
+- Automatic document detection reuses device calibration across launches and recalibrates after an app or system update.
+- Filter previews and thumbnails show a shimmer while they render, and the main preview fades in when ready.
+
 ## [1.0.23] - In development
 
 ### Added

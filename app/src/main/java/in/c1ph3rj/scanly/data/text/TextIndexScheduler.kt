@@ -13,7 +13,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
@@ -41,12 +40,11 @@ class TextIndexScheduler @Inject constructor(
         scope.launch {
             // After an update that changes derived search forms, rows need re-deriving even when
             // no page is waiting to be read.
-            if (dao.countRowsWithDerivedVersionBelow(SearchTextDeriver.VERSION) > 0) enqueue()
+            if (dao.hasRowsWithDerivedVersionBelow(SearchTextDeriver.VERSION)) enqueue()
         }
         scope.launch {
             var previousPending = 0
-            dao.observeIndexProgress()
-                .map { it.pendingPages }
+            dao.observePendingPageCount()
                 // A scan session saves pages in quick succession; index them as one batch.
                 .debounce(SETTLE_MILLIS)
                 .collect { pending ->

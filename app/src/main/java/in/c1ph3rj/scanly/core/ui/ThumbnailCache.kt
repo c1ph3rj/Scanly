@@ -6,6 +6,8 @@ import android.util.LruCache
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -19,7 +21,7 @@ interface ThumbnailCacheEntryPoint {
 /**
  * In-process LRU bitmap cache for document/group thumbnails.
  *
- * Sized at 1/8 of max heap (in kilobytes). [LruCache.sizeOf] counts bytes so the
+ * Sized at 1/8 of max heap (in kilobytes). [LruCache.sizeOf] counts kilobytes so the
  * cache evicts based on memory pressure, not entry count.
  *
  * Each call to [decode] returns a downsampled bitmap keyed on the file path. On a
@@ -32,11 +34,12 @@ class ThumbnailCache @Inject constructor() {
         (Runtime.getRuntime().maxMemory() / 1024L / 8L).toInt().coerceAtLeast(4 * 1024)
 
     private val cache: LruCache<String, Bitmap> = object : LruCache<String, Bitmap>(maxSizeKb) {
-        override fun sizeOf(key: String, value: Bitmap): Int = value.byteCount / 1024
+        override fun sizeOf(key: String, value: Bitmap): Int = (value.allocationByteCount + 1023) / 1024
     }
 
     /** Decode size last used for each image revision, so a first frame can reuse it. */
     private val lastTargetPx = LruCache<String, Int>(1_024)
+    private val decoders = Dispatchers.IO.limitedParallelism(2)
 
     /**
      * Returns the bitmap last decoded for this image at any size, without touching disk.
@@ -57,23 +60,26 @@ class ThumbnailCache @Inject constructor() {
         path: String,
         targetPx: Int,
         contentRevision: Long = 0L,
-    ): Bitmap? = cache.get(cacheKey(path, targetPx, contentRevision))
+    ): Bitmap? {
+        if (contentRevision <= 0L) return null
+        return cache.get(cacheKey(path, targetPx, contentRevision))
+    }
 
     /**
      * Returns a cached or freshly decoded bitmap scaled so that neither dimension exceeds
      * [targetPx]. Uses [Bitmap.Config.ARGB_8888] for larger decodes to avoid banding.
      */
-    fun decode(
+    suspend fun decode(
         path: String,
         targetPx: Int,
         contentRevision: Long = 0L,
-    ): Bitmap? {
+    ): Bitmap? = withContext(decoders) {
         val key = cacheKey(path, targetPx, contentRevision)
-        cache.get(key)?.let { return it }
-        val sampled = decodeSampled(path, targetPx) ?: return null
+        cache.get(key)?.let { return@withContext it }
+        val sampled = decodeSampled(path, targetPx) ?: return@withContext null
         cache.put(key, sampled)
         if (contentRevision > 0L) lastTargetPx.put(revisionKey(path, contentRevision), targetPx)
-        return sampled
+        sampled
     }
 
     /** Removes all cached decode sizes for the current on-disk revision of [path]. */
@@ -95,7 +101,7 @@ class ThumbnailCache @Inject constructor() {
     }
 
     private fun fileRevision(path: String): Long =
-        File(path).takeIf { it.exists() }?.lastModified() ?: 0L
+        File(path).lastModified()
 
     private fun decodeSampled(path: String, targetPx: Int): Bitmap? {
         val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }

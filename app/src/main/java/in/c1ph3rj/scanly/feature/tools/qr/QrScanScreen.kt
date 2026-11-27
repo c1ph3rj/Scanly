@@ -761,6 +761,10 @@ private fun QrCameraPreview(
                             )
                             .build()
                         analysisUseCase = analysis
+                        val sourceTransformFactory = ImageProxyTransformFactory().apply {
+                            isUsingRotationDegrees = true
+                        }
+                        val rawTransformFactory = ImageProxyTransformFactory()
                         analysis.setAnalyzer(ContextCompat.getMainExecutor(ctx)) { imageProxy ->
                             if (disposed.get() || !armed.get() || !currentDetecting || !currentActive) {
                                 imageProxy.close()
@@ -776,9 +780,6 @@ private fun QrCameraPreview(
                                 return@setAnalyzer
                             }
                             val frameGeneration = generation
-                            val sourceTransform = ImageProxyTransformFactory().apply {
-                                isUsingRotationDegrees = true
-                            }.getOutputTransform(imageProxy)
                             val image = InputImage.fromMediaImage(
                                 mediaImage,
                                 imageProxy.imageInfo.rotationDegrees,
@@ -793,17 +794,26 @@ private fun QrCameraPreview(
                                         !currentActive || frameGeneration != generation
                                     ) return@addOnSuccessListener
                                     val targetTransform = previewView.outputTransform
-                                    val targets = if (targetTransform == null) emptyList() else barcodes.mapNotNull { barcode ->
-                                        val value = barcode.rawValue?.takeIf(String::isNotBlank) ?: return@mapNotNull null
-                                        val points = barcode.cornerPoints?.takeIf { it.size == 4 } ?: return@mapNotNull null
-                                        val mapped = points.flatMap { listOf(it.x.toFloat(), it.y.toFloat()) }.toFloatArray()
-                                        CoordinateTransform(sourceTransform, targetTransform).mapPoints(mapped)
-                                        val positions = mapped.toList().chunked(2).map { Offset(it[0], it[1]) }
-                                        if (positions.any { !it.x.isFinite() || !it.y.isFinite() ||
-                                                it.x < 0 || it.y < 0 || it.x > previewView.width || it.y > previewView.height }) {
-                                            return@mapNotNull null
+                                    val targets = if (targetTransform == null || barcodes.isEmpty()) emptyList() else {
+                                        val transform = CoordinateTransform(
+                                            sourceTransformFactory.getOutputTransform(imageProxy), targetTransform,
+                                        )
+                                        barcodes.mapNotNull { barcode ->
+                                            val value = barcode.rawValue?.takeIf(String::isNotBlank) ?: return@mapNotNull null
+                                            val points = barcode.cornerPoints?.takeIf { it.size == 4 } ?: return@mapNotNull null
+                                            val mapped = FloatArray(8)
+                                            points.forEachIndexed { index, point ->
+                                                mapped[2 * index] = point.x.toFloat()
+                                                mapped[2 * index + 1] = point.y.toFloat()
+                                            }
+                                            transform.mapPoints(mapped)
+                                            val positions = List(4) { Offset(mapped[2 * it], mapped[2 * it + 1]) }
+                                            if (positions.any { !it.x.isFinite() || !it.y.isFinite() ||
+                                                    it.x < 0 || it.y < 0 || it.x > previewView.width || it.y > previewView.height }) {
+                                                return@mapNotNull null
+                                            }
+                                            value to positions
                                         }
-                                        value to positions
                                     }
                                     val target = targets.minByOrNull { (_, points) ->
                                         val center = points.reduce { a, b -> a + b } / 4f
@@ -818,7 +828,7 @@ private fun QrCameraPreview(
                                             try {
                                                 val matrix = Matrix()
                                                 CoordinateTransform(
-                                                    ImageProxyTransformFactory().getOutputTransform(imageProxy),
+                                                    rawTransformFactory.getOutputTransform(imageProxy),
                                                     requireNotNull(targetTransform),
                                                 ).transform(matrix)
                                                 Bitmap.createBitmap(previewView.width, previewView.height, Bitmap.Config.ARGB_8888).also {

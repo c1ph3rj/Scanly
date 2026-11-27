@@ -18,7 +18,6 @@ import `in`.c1ph3rj.scanly.domain.usecase.MoveDocumentToTrashUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.MoveGroupToTrashUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveDocumentsUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.ObserveGroupsUseCase
-import `in`.c1ph3rj.scanly.domain.usecase.ObserveUngroupedDocumentsUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.RenameDocumentUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.RenameGroupUseCase
 import `in`.c1ph3rj.scanly.domain.usecase.SetDocumentGroupUseCase
@@ -30,6 +29,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -61,7 +62,6 @@ enum class LibrarySortOption(
 
 data class LibraryUiState(
     val groups: List<DocumentGroup> = emptyList(),
-    val ungroupedDocuments: List<ScanDocument> = emptyList(),
     val allDocuments: List<ScanDocument> = emptyList(),
     val searchQuery: String = "",
     val selectedTab: LibraryTab = LibraryTab.All,
@@ -69,7 +69,7 @@ data class LibraryUiState(
     val selectedGroupId: String? = null,
     val isLoading: Boolean = false,
 ) {
-    private val normalizedQuery: String get() = searchQuery.trim()
+    private val normalizedQuery = searchQuery.trim()
 
     val visibleGroups: List<DocumentGroup>
         get() {
@@ -82,9 +82,12 @@ data class LibraryUiState(
     val visibleDocuments: List<ScanDocument>
         get() {
             if (selectedTab == LibraryTab.Folders) return emptyList()
-            return allDocuments
-                .filter { selectedGroupId == null || it.groupId == selectedGroupId }
-                .filter { normalizedQuery.isEmpty() || it.title.contains(normalizedQuery, ignoreCase = true) }
+            val matchingDocuments = if (selectedGroupId == null && normalizedQuery.isEmpty()) allDocuments else
+                allDocuments.filter {
+                    (selectedGroupId == null || it.groupId == selectedGroupId) &&
+                        (normalizedQuery.isEmpty() || it.title.contains(normalizedQuery, ignoreCase = true))
+                }
+            return matchingDocuments
                 .sortedWith(documentComparator(sortOption))
         }
 
@@ -147,7 +150,6 @@ sealed interface LibraryEvent {
 @HiltViewModel
 class LibraryViewModel @Inject constructor(
     observeGroupsUseCase: ObserveGroupsUseCase,
-    observeUngroupedDocumentsUseCase: ObserveUngroupedDocumentsUseCase,
     observeDocumentsUseCase: ObserveDocumentsUseCase,
     private val createDocumentUseCase: CreateDocumentUseCase,
     private val renameDocumentUseCase: RenameDocumentUseCase,
@@ -181,15 +183,22 @@ class LibraryViewModel @Inject constructor(
         LibraryControls(query, tab, sortOption, groupId)
     }
 
+    private val groups = observeGroupsUseCase()
+        .onEach { folders ->
+            // Drop the stored Folders tab when the last folder disappears, including while away.
+            if (folders.isEmpty() && _selectedTab.value == LibraryTab.Folders) {
+                _selectedTab.value = LibraryTab.All
+            }
+        }
+        .shareIn(viewModelScope, SharingStarted.Eagerly, replay = 1)
+
     val uiState: StateFlow<LibraryUiState> = combine(
-        observeGroupsUseCase(),
-        observeUngroupedDocumentsUseCase(),
+        groups,
         observeDocumentsUseCase(),
         controls,
-    ) { groups, ungrouped, allDocs, controls ->
+    ) { groups, allDocs, controls ->
         LibraryUiState(
             groups = groups,
-            ungroupedDocuments = ungrouped,
             allDocuments = allDocs,
             searchQuery = controls.query,
             // The Folders tab has no content (or back control) once the last folder is gone.
@@ -203,18 +212,6 @@ class LibraryViewModel @Inject constructor(
         started = SharingStarted.WhileSubscribed(5_000),
         initialValue = LibraryUiState(isLoading = true),
     )
-
-    init {
-        // Drop the stored Folders tab when the last folder disappears so it doesn't snap back
-        // the next time a folder is created.
-        viewModelScope.launch {
-            observeGroupsUseCase().collect { groups ->
-                if (groups.isEmpty() && _selectedTab.value == LibraryTab.Folders) {
-                    _selectedTab.value = LibraryTab.All
-                }
-            }
-        }
-    }
 
     fun setSearchQuery(query: String) {
         _searchQuery.value = query

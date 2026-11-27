@@ -1,7 +1,6 @@
 package `in`.c1ph3rj.scanly.feature.editor
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
@@ -46,9 +45,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -88,25 +85,26 @@ fun FilterCustomizeScreen(
     val windowSizeInfo = rememberWindowSizeInfo()
     var comparing by remember { mutableStateOf(false) }
 
-    val adjustedPreview by rememberEditorPreviewBitmap(
+    val source by rememberEditorPreviewSource(
         rawImagePath = page.rawImagePath,
         fallbackImagePath = page.processedImagePath,
         rotationDegrees = rotationDegrees,
-        selectedFilter = selectedFilter,
         cropQuad = cropQuad,
-        filterAdjustments = filterAdjustments,
     )
-    val baseFilterPreview by rememberEditorPreviewBitmap(
-        rawImagePath = page.rawImagePath,
-        fallbackImagePath = page.processedImagePath,
-        rotationDegrees = rotationDegrees,
-        selectedFilter = selectedFilter,
-        cropQuad = cropQuad,
-        filterAdjustments = PageFilterAdjustments.Default,
+    val baseFilter = rememberEditorFilteredBitmap(source, selectedFilter, intensity = 1f)
+    val currentFilter = if (filterAdjustments.intensity == 1f) baseFilter else {
+        rememberEditorFilteredBitmap(source, selectedFilter, filterAdjustments.intensity)
+    }
+    val adjustedPreview = rememberEditorAdjustedPreview(
+        source,
+        currentFilter,
+        filterAdjustments,
     )
 
     val showCompare = comparing && !filterAdjustments.isDefault
-    val displayedPreview = if (showCompare) baseFilterPreview else adjustedPreview
+    val displayedPreview = if (showCompare) {
+        rememberEditorAdjustedPreview(source, baseFilter, PageFilterAdjustments.Default)
+    } else adjustedPreview
     val layout = rememberCustomizeLayout(windowSizeInfo)
 
     Scaffold(
@@ -231,7 +229,7 @@ private fun rememberCustomizeLayout(windowSizeInfo: WindowSizeInfo): CustomizeLa
 
 @Composable
 private fun TwoPaneCustomizeBody(
-    previewBitmap: ImageBitmap?,
+    previewBitmap: EditorPreview,
     comparing: Boolean,
     selectedFilter: PageFilterPreset,
     filterAdjustments: PageFilterAdjustments,
@@ -279,7 +277,7 @@ private fun TwoPaneCustomizeBody(
 
 @Composable
 private fun StackedCustomizeBody(
-    previewBitmap: ImageBitmap?,
+    previewBitmap: EditorPreview,
     comparing: Boolean,
     selectedFilter: PageFilterPreset,
     filterAdjustments: PageFilterAdjustments,
@@ -456,7 +454,7 @@ private fun CompareIconButton(
 
 @Composable
 private fun CustomizePreviewPane(
-    previewBitmap: ImageBitmap?,
+    previewBitmap: EditorPreview,
     comparing: Boolean,
     modifier: Modifier = Modifier,
 ) {
@@ -472,20 +470,14 @@ private fun CustomizePreviewPane(
                 .background(Color.Black),
             contentAlignment = Alignment.Center,
         ) {
-            if (previewBitmap == null) {
-                Text(text = stringResource(R.string.filter_customize_loading_preview), color = Color.White)
-            } else {
-                Image(
-                    bitmap = previewBitmap,
-                    contentDescription = if (comparing) {
-                        stringResource(R.string.filter_customize_selected_filter_without_adjustments)
-                    } else {
-                        stringResource(R.string.filter_customize_filter_adjustment_preview)
-                    },
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Fit,
-                )
-            }
+            EditorPreviewContent(
+                preview = previewBitmap,
+                description = if (comparing) {
+                    stringResource(R.string.filter_customize_selected_filter_without_adjustments)
+                } else {
+                    stringResource(R.string.filter_customize_filter_adjustment_preview)
+                },
+            )
 
             Surface(
                 modifier = Modifier

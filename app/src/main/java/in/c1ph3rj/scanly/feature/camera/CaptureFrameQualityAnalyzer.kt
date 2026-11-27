@@ -56,7 +56,7 @@ data class CaptureFrameQuality(
 }
 
 object CaptureFrameQualityAnalyzer {
-    fun analyze(frame: DetectionFrame): CaptureFrameQuality {
+    fun analyze(frame: DetectionFrame, checkSharpness: Boolean = true): CaptureFrameQuality {
         if (frame.width <= 0 || frame.height <= 0 || frame.bytes.size < RgbaPixelStride) {
             return CaptureFrameQuality(
                 meanLuminance = 0f,
@@ -118,7 +118,7 @@ object CaptureFrameQualityAnalyzer {
             meanLuminance = mean.toFloat(),
             luminanceDeviation = sqrt(variance).toFloat(),
             edgeStrength = if (edgeCount == 0) 0f else (edgeSum / edgeCount).toFloat(),
-            edgeSharpness = edgeSharpness(frame),
+            edgeSharpness = if (checkSharpness) edgeSharpness(frame) else CaptureFrameQuality.UNMEASURED_EDGE_SHARPNESS,
             centreHighlightFraction = if (centreSamples == 0) 0f else centreHighlights.toFloat() / centreSamples,
         )
     }

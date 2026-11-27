@@ -124,12 +124,10 @@ class DocumentLibraryFlowTest {
         setDocumentGroup(invoiceId, workId).requireSuccess()
 
         val groups = observeGroups().first()
-        val ungrouped = observeUngrouped().first()
         val allDocuments = observeDocuments().first()
 
         val allTab = LibraryUiState(
             groups = groups,
-            ungroupedDocuments = ungrouped,
             allDocuments = allDocuments,
         )
         assertEquals(setOf(travelId, workId), allTab.visibleGroups.map { it.id }.toSet())
@@ -145,7 +143,6 @@ class DocumentLibraryFlowTest {
 
         val documentsTab = LibraryUiState(
             groups = groups,
-            ungroupedDocuments = ungrouped,
             allDocuments = allDocuments,
             selectedTab = LibraryTab.Documents,
             sortOption = LibrarySortOption.NameAscending,

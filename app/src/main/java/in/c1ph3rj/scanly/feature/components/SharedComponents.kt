@@ -121,8 +121,6 @@ import `in`.c1ph3rj.scanly.domain.model.GroupTitleFormat
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
 import `in`.c1ph3rj.scanly.domain.model.ScanPage
 import `in`.c1ph3rj.scanly.domain.model.previewImagePath
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import java.text.DateFormat
 import java.util.Date
 import `in`.c1ph3rj.scanly.R
@@ -254,9 +252,7 @@ fun CachedThumbnail(
             return@produceState
         }
         if (cachedImage != null) value = cachedImage
-        val decoded = withContext(Dispatchers.IO) {
-            cache.decode(path, targetPx, contentRevision)?.asImageBitmap()
-        }
+        val decoded = cache.decode(path, targetPx, contentRevision)?.asImageBitmap()
         value = decoded
         decodeFailed = decoded == null
     }

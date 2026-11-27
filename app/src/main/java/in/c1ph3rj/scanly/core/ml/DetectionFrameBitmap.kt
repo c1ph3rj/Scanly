@@ -1,37 +1,33 @@
 package `in`.c1ph3rj.scanly.core.ml
 
 import android.graphics.Bitmap
-import android.graphics.Color
 import android.graphics.Matrix
+import java.nio.ByteBuffer
 import kotlin.math.roundToInt
 
 fun DetectionFrame.toOrientedBitmap(): Bitmap {
     require(width > 0 && height > 0 && bytes.size >= width * height * RGBA_PIXEL_STRIDE) {
         "Detection frame does not contain a complete RGBA image."
     }
-    val pixels = IntArray(width * height)
-    var offset = 0
-    for (index in pixels.indices) {
-        pixels[index] = Color.argb(
-            bytes[offset + 3].toInt() and 0xFF,
-            bytes[offset].toInt() and 0xFF,
-            bytes[offset + 1].toInt() and 0xFF,
-            bytes[offset + 2].toInt() and 0xFF,
-        )
-        offset += RGBA_PIXEL_STRIDE
-    }
-    val source = Bitmap.createBitmap(pixels, width, height, Bitmap.Config.ARGB_8888)
+    // CameraX supplies opaque RGBA, which matches Android's native ARGB_8888 byte layout.
+    val source = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888, false)
     val normalizedRotation = ((rotationDegrees % 360) + 360) % 360
-    if (normalizedRotation == 0) return source
-    return Bitmap.createBitmap(
-        source,
-        0,
-        0,
-        source.width,
-        source.height,
-        Matrix().apply { postRotate(normalizedRotation.toFloat()) },
-        true,
-    ).also { source.recycle() }
+    var result: Bitmap? = null
+    try {
+        source.copyPixelsFromBuffer(ByteBuffer.wrap(bytes))
+        result = if (normalizedRotation == 0) source else Bitmap.createBitmap(
+            source,
+            0,
+            0,
+            width,
+            height,
+            Matrix().apply { postRotate(normalizedRotation.toFloat()) },
+            true,
+        )
+        return result
+    } finally {
+        if (result !== source) source.recycle()
+    }
 }
 
 /**

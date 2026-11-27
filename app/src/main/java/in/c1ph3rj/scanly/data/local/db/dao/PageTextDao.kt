@@ -146,6 +146,18 @@ interface PageTextDao {
     )
     fun observeIndexProgress(): Flow<TextIndexProgressRow>
 
+    @Query(
+        """
+        SELECT COUNT(*) FROM scan_pages p
+        INNER JOIN documents d ON d.id = p.documentId AND d.deletedAtMillis IS NULL
+        LEFT JOIN page_texts t ON t.pageId = p.id
+        WHERE p.deletedAtMillis IS NULL
+          AND (t.pageId IS NULL OR t.sourceUpdatedAtMillis != p.updatedAtMillis)
+          AND (p.processedImagePath IS NOT NULL OR p.rawImagePath IS NOT NULL)
+        """,
+    )
+    fun observePendingPageCount(): Flow<Int>
+
     /**
      * Live pages with a text row that [engine] did not produce (another engine, or nothing
      * recognized). A blank result from the other engine is worth retrying, so those count too.
@@ -226,8 +238,8 @@ interface PageTextDao {
     @Query("SELECT id, pageId, searchText FROM page_texts WHERE derivedVersion < :version LIMIT :limit")
     suspend fun getRowsWithDerivedVersionBelow(version: Int, limit: Int): List<PageSearchTextRow>
 
-    @Query("SELECT COUNT(*) FROM page_texts WHERE derivedVersion < :version")
-    suspend fun countRowsWithDerivedVersionBelow(version: Int): Int
+    @Query("SELECT EXISTS(SELECT 1 FROM page_texts WHERE derivedVersion < :version)")
+    suspend fun hasRowsWithDerivedVersionBelow(version: Int): Boolean
 
     /** A plain UPDATE: Room's FTS sync triggers re-index the row. */
     @Query(

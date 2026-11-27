@@ -19,6 +19,8 @@ import `in`.c1ph3rj.scanly.domain.model.TrashedFolder
 import `in`.c1ph3rj.scanly.data.storage.DocumentStorageManager
 import `in`.c1ph3rj.scanly.domain.repository.GroupRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import java.util.UUID
@@ -41,7 +43,7 @@ class DefaultGroupRepository @Inject constructor(
     override fun observeGroupsWithStats(): Flow<List<DocumentGroup>> =
         documentGroupDao.observeGroupsWithStats().map { list ->
             list.map { it.toDomain() }
-        }
+        }.distinctUntilChanged().flowOn(dispatchers.default)
 
     override fun observeRecentGroups(limit: Int): Flow<List<DocumentGroup>> =
         documentGroupDao.observeRecentGroupsWithStats(limit).map { list ->

@@ -15,7 +15,6 @@ class LibraryUiStateTest {
 
         val state = LibraryUiState(
             groups = listOf(group(id = "home", title = "Home")),
-            ungroupedDocuments = listOf(ungrouped),
             allDocuments = listOf(grouped, ungrouped),
         )
 
@@ -30,7 +29,6 @@ class LibraryUiStateTest {
                 group(id = "travel", title = "Travel records"),
                 group(id = "work", title = "Work"),
             ),
-            ungroupedDocuments = emptyList(),
             allDocuments = listOf(
                 document(id = "ticket", title = "Travel ticket", groupId = "travel"),
                 document(id = "invoice", title = "Invoice", groupId = "work"),
@@ -46,7 +44,6 @@ class LibraryUiStateTest {
     fun foldersTabExcludesDocumentsWhilePreservingTheSharedSearchQuery() {
         val state = LibraryUiState(
             groups = listOf(group(id = "tax", title = "Tax")),
-            ungroupedDocuments = listOf(document(id = "tax-doc", title = "Tax return")),
             allDocuments = listOf(document(id = "tax-doc", title = "Tax return")),
             searchQuery = "tax",
             selectedTab = LibraryTab.Folders,
@@ -60,7 +57,6 @@ class LibraryUiStateTest {
     fun documentsTabShowsFolderedAndUngroupedDocumentsButNoFolders() {
         val state = LibraryUiState(
             groups = listOf(group(id = "home", title = "Home")),
-            ungroupedDocuments = listOf(document(id = "loose", title = "Receipt", updatedAt = 20L)),
             allDocuments = listOf(
                 document(id = "grouped", title = "Lease", groupId = "home", updatedAt = 30L),
                 document(id = "loose", title = "Receipt", updatedAt = 20L),

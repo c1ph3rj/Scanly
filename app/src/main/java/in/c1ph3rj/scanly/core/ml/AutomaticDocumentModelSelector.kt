@@ -1,11 +1,16 @@
 package `in`.c1ph3rj.scanly.core.ml
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
+import android.os.Build
+import dagger.hilt.android.qualifiers.ApplicationContext
+import `in`.c1ph3rj.scanly.BuildConfig
 import `in`.c1ph3rj.scanly.core.common.ScanlyDispatchers
+import `in`.c1ph3rj.scanly.core.common.runCatchingCancellable
 import `in`.c1ph3rj.scanly.domain.model.DocumentCornerModel
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -21,6 +26,7 @@ data class AutomaticDocumentModelSelection(
 
 @Singleton
 class AutomaticDocumentModelSelector @Inject constructor(
+    @param:ApplicationContext private val context: Context,
     private val detector: DocumentCornerDetector,
     private val dispatchers: ScanlyDispatchers,
 ) {
@@ -31,8 +37,29 @@ class AutomaticDocumentModelSelector @Inject constructor(
 
     suspend fun selection(): AutomaticDocumentModelSelection =
         cachedSelection ?: calibrationMutex.withLock {
-            cachedSelection ?: calibrate().also { cachedSelection = it }
+            cachedSelection ?: loadOrCalibrate().also { cachedSelection = it }
         }
+
+    private suspend fun loadOrCalibrate(): AutomaticDocumentModelSelection = withContext(dispatchers.io) {
+        val preferences = context.getSharedPreferences("corner_model_calibration", Context.MODE_PRIVATE)
+        val version = "${BuildConfig.VERSION_CODE}:${Build.FINGERPRINT}"
+        if (preferences.getString("version", null) == version) {
+            val saved = candidateModels.associateWith { model ->
+                Double.fromBits(preferences.getLong(model.storageValue, 0L))
+            }
+            if (saved.values.all { it.isFinite() && it > 0 }) return@withContext selectionFrom(saved)
+        }
+
+        calibrate().also { selection ->
+            val timings = selection.medianLatencyMillis
+            // A transient failure or a cancelled calibration should not lock in a fallback.
+            if (timings.size == candidateModels.size && timings.values.all { it.isFinite() && it > 0 }) {
+                val editor = preferences.edit().putString("version", version)
+                timings.forEach { (model, millis) -> editor.putLong(model.storageValue, millis.toBits()) }
+                editor.apply()
+            }
+        }
+    }
 
     private suspend fun calibrate(): AutomaticDocumentModelSelection = withContext(dispatchers.default) {
         val calibrationFrame = createCalibrationFrame()
@@ -44,26 +71,22 @@ class AutomaticDocumentModelSelector @Inject constructor(
                     }
                 }
             }
-            AutomaticDocumentModelSelection(
-                liveModel = AutomaticDocumentModelSelectionPolicy.choose(
-                    medianLatencyMillis = timings,
-                    latencyBudgetMillis = LIVE_CORNER_BUDGET_MILLIS,
-                ),
-                postProcessingModel = AutomaticDocumentModelSelectionPolicy.choose(
-                    medianLatencyMillis = timings,
-                    latencyBudgetMillis = POST_PROCESSING_CORNER_BUDGET_MILLIS,
-                ),
-                medianLatencyMillis = timings,
-            )
+            selectionFrom(timings)
         } finally {
             calibrationFrame.recycle()
         }
     }
 
+    private fun selectionFrom(timings: Map<DocumentCornerModel, Double>) = AutomaticDocumentModelSelection(
+        liveModel = AutomaticDocumentModelSelectionPolicy.choose(timings, LIVE_CORNER_BUDGET_MILLIS),
+        postProcessingModel = AutomaticDocumentModelSelectionPolicy.choose(timings, POST_PROCESSING_CORNER_BUDGET_MILLIS),
+        medianLatencyMillis = timings,
+    )
+
     private suspend fun benchmarkModel(
         bitmap: Bitmap,
         model: DocumentCornerModel,
-    ): Double? = runCatching {
+    ): Double? = runCatchingCancellable {
         detector.detect(bitmap, model)
         List(MEASURED_RUNS) {
             val startedAt = System.nanoTime()
