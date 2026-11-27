@@ -4,8 +4,14 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.produceState
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.exifinterface.media.ExifInterface
@@ -17,6 +23,7 @@ import `in`.c1ph3rj.scanly.core.processing.PerspectiveBitmapTransform
 import `in`.c1ph3rj.scanly.domain.model.PageFilterAdjustments
 import `in`.c1ph3rj.scanly.domain.model.PageFilterPreset
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.withContext
 import kotlin.math.roundToInt
 
@@ -25,32 +32,137 @@ import kotlin.math.roundToInt
  * When only a processed path is available, shows that image as-is (already rendered).
  */
 @Composable
-internal fun rememberEditorPreviewBitmap(
+internal fun rememberEditorPreview(
     rawImagePath: String?,
     fallbackImagePath: String?,
     rotationDegrees: Int,
     selectedFilter: PageFilterPreset,
     cropQuad: DocumentCornerQuad? = null,
     filterAdjustments: PageFilterAdjustments = PageFilterAdjustments.Default,
-): State<ImageBitmap?> = produceState<ImageBitmap?>(
-    initialValue = null,
-    rawImagePath,
-    fallbackImagePath,
-    rotationDegrees,
-    selectedFilter,
-    cropQuad,
-    filterAdjustments,
-) {
-    value = withContext(Dispatchers.Default) {
-        buildCroppedFilteredPreview(
-            rawImagePath = rawImagePath,
-            fallbackImagePath = fallbackImagePath,
-            rotationDegrees = rotationDegrees,
-            selectedFilter = selectedFilter,
-            cropQuad = cropQuad,
-            filterAdjustments = filterAdjustments,
-        )?.asImageBitmap()
+): EditorPreview {
+    val source by rememberEditorPreviewSource(rawImagePath, fallbackImagePath, rotationDegrees, cropQuad)
+    val filtered = rememberEditorFilteredBitmap(source, selectedFilter, filterAdjustments.intensity)
+    return rememberEditorAdjustedPreview(source, selectedFilter, filtered, filterAdjustments)
+}
+
+internal sealed interface EditorPreview {
+    data object Loading : EditorPreview
+    data object Unavailable : EditorPreview
+    data class Ready(val image: ImageBitmap) : EditorPreview
+}
+
+internal class EditorPreviewSource(val bitmap: Bitmap?, val isProcessedFallback: Boolean) {
+    val profile by lazy {
+        bitmap?.let { runCatchingCancellable { OpenCvPageFilterProcessor.analyze(it) }.getOrNull() }
     }
+}
+
+@Composable
+internal fun rememberEditorPreviewSource(
+    rawImagePath: String?,
+    fallbackImagePath: String?,
+    rotationDegrees: Int,
+    cropQuad: DocumentCornerQuad?,
+): State<EditorPreviewSource?> = key(rawImagePath, fallbackImagePath, rotationDegrees, cropQuad) {
+    produceState<EditorPreviewSource?>(initialValue = null) {
+        value = withContext(Dispatchers.Default) {
+            val bitmap = buildCroppedUnfilteredPreview(
+                rawImagePath = rawImagePath,
+                fallbackImagePath = fallbackImagePath,
+                rotationDegrees = rotationDegrees,
+                cropQuad = cropQuad,
+            )
+            EditorPreviewSource(bitmap, isProcessedFallback = rawImagePath == null)
+        }
+    }
+}
+
+private data class FilterRenderRequest(
+    val source: EditorPreviewSource,
+    val preset: PageFilterPreset,
+    val intensity: Float,
+)
+
+@Composable
+internal fun rememberEditorFilteredBitmap(
+    source: EditorPreviewSource?,
+    selectedFilter: PageFilterPreset,
+    intensity: Float,
+): Bitmap? {
+    val bitmap = source?.bitmap ?: return null
+    if (source.isProcessedFallback || selectedFilter == PageFilterPreset.ORIGINAL) return bitmap
+    return rememberRenderedPreview(FilterRenderRequest(source, selectedFilter, intensity)) { (input, preset, strength) ->
+        val image = checkNotNull(input.bitmap)
+        runCatchingCancellable {
+            OpenCvPageFilterProcessor.apply(image, preset, input.profile, strength)
+        }.getOrElse { image }
+    }
+}
+
+/**
+ * Final preview for [selectedFilter] on [source]. While a slider moves, the last finished image
+ * stays on screen until the next render lands; a new page, crop or preset starts from Loading.
+ */
+@Composable
+internal fun rememberEditorAdjustedPreview(
+    source: EditorPreviewSource?,
+    selectedFilter: PageFilterPreset,
+    filtered: Bitmap?,
+    adjustments: PageFilterAdjustments,
+): EditorPreview {
+    val preview = rememberEditorAdjustedPreviewNow(source, filtered, adjustments)
+    val held = remember { HeldEditorPreview() }
+    val scope = source to selectedFilter
+    SideEffect {
+        if (preview is EditorPreview.Ready) held.update(scope, preview)
+    }
+    if (preview == EditorPreview.Loading) held.readyFor(scope)?.let { return it }
+    return preview
+}
+
+private class HeldEditorPreview {
+    private var scope: Any? = null
+    private var ready: EditorPreview.Ready? = null
+
+    fun update(scope: Any, ready: EditorPreview.Ready) {
+        this.scope = scope
+        this.ready = ready
+    }
+
+    fun readyFor(scope: Any): EditorPreview.Ready? = ready?.takeIf { this.scope == scope }
+}
+
+@Composable
+private fun rememberEditorAdjustedPreviewNow(
+    source: EditorPreviewSource?,
+    filtered: Bitmap?,
+    adjustments: PageFilterAdjustments,
+): EditorPreview {
+    if (source == null) return EditorPreview.Loading
+    if (source.bitmap == null) return EditorPreview.Unavailable
+    if (filtered == null) return EditorPreview.Loading
+
+    val tonalAdjustments = adjustments.copy(intensity = 1f)
+    val adjusted = if (source.isProcessedFallback || tonalAdjustments.isDefault) filtered else {
+        rememberRenderedPreview(filtered to tonalAdjustments) { (bitmap, tonal) ->
+            runCatchingCancellable { PageFilterAdjustmentsApplier.apply(bitmap, tonal) }.getOrElse { bitmap }
+        } ?: return EditorPreview.Loading
+    }
+    return remember(adjusted) { EditorPreview.Ready(adjusted.asImageBitmap()) }
+}
+
+@Composable
+private fun <Request, Output> rememberRenderedPreview(request: Request, render: (Request) -> Output): Output? {
+    val latestRequest by rememberUpdatedState(request)
+    val latestRender by rememberUpdatedState(render)
+    val result by produceState<Pair<Request, Output>?>(initialValue = null) {
+        // Wait for a cancelled native render to finish before starting the newest request.
+        snapshotFlow { latestRequest }.collectLatest { input ->
+            val renderInput = latestRender
+            value = input to withContext(Dispatchers.Default) { renderInput(input) }
+        }
+    }
+    return result?.takeIf { it.first == request }?.second
 }
 
 /**
@@ -76,11 +188,9 @@ internal fun rememberCropCanvasPreviewBitmap(
             path = sourcePath,
             userRotationDegrees = if (rawImagePath != null) rotationDegrees else 0,
         ) ?: return@withContext null
-        val filteredBitmap = runCatchingCancellable {
-            OpenCvPageFilterProcessor.apply(rotatedBitmap, selectedFilter)
-        }.getOrElse {
-            rotatedBitmap.copy(Bitmap.Config.ARGB_8888, false)
-        }
+        val filteredBitmap = if (selectedFilter == PageFilterPreset.ORIGINAL) rotatedBitmap else
+            runCatchingCancellable { OpenCvPageFilterProcessor.apply(rotatedBitmap, selectedFilter) }
+                .getOrElse { rotatedBitmap }
         if (filteredBitmap !== rotatedBitmap) {
             rotatedBitmap.recycle()
         }
@@ -95,110 +205,34 @@ internal data class FilterPreviewState(
 
 @Composable
 internal fun rememberFilterPreviewBitmaps(
-    rawImagePath: String?,
-    fallbackImagePath: String?,
-    rotationDegrees: Int,
-    cropQuad: DocumentCornerQuad? = null,
-): State<FilterPreviewState> = produceState(
-    initialValue = FilterPreviewState(
-        isLoading = true,
-        previews = emptyMap(),
-    ),
-    rawImagePath,
-    fallbackImagePath,
-    rotationDegrees,
-    cropQuad,
-) {
-    value = withContext(Dispatchers.Default) {
-        val analysisBitmap = buildCroppedUnfilteredPreview(
-            rawImagePath = rawImagePath,
-            fallbackImagePath = fallbackImagePath,
-            rotationDegrees = rotationDegrees,
-            cropQuad = cropQuad,
-            maxDimension = 1_600,
-        ) ?: return@withContext FilterPreviewState(
-            isLoading = false,
-            previews = emptyMap(),
-        )
-        val profile = runCatchingCancellable {
-            OpenCvPageFilterProcessor.analyze(analysisBitmap)
-        }.getOrNull()
-        val previewBitmap = createFilterPreviewSource(analysisBitmap)
-        if (previewBitmap !== analysisBitmap) {
-            analysisBitmap.recycle()
+    source: EditorPreviewSource?,
+): State<FilterPreviewState> = key(source) {
+    produceState(initialValue = FilterPreviewState(isLoading = true, previews = emptyMap())) {
+        if (source == null) return@produceState
+        val bitmap = source.bitmap
+        if (bitmap == null) {
+            value = FilterPreviewState(isLoading = false, previews = emptyMap())
+            return@produceState
         }
-
-        try {
-            val previews = OpenCvPageFilterProcessor
-                .applyAll(previewBitmap, profile = profile)
-                .mapValues { (_, bitmap) -> bitmap.asImageBitmap() }
-            FilterPreviewState(
-                isLoading = false,
-                previews = previews,
-            )
-        } finally {
-            previewBitmap.recycle()
+        val previews = withContext(Dispatchers.Default) {
+            val previewBitmap = createFilterPreviewSource(bitmap)
+            try {
+                runCatchingCancellable { OpenCvPageFilterProcessor.applyAll(previewBitmap, profile = source.profile) }
+                    .getOrDefault(emptyMap())
+                    .mapValues { (_, image) -> image.asImageBitmap() }
+            } finally {
+                if (previewBitmap !== bitmap) previewBitmap.recycle()
+            }
         }
+        value = FilterPreviewState(isLoading = false, previews = previews)
     }
-}
-
-/**
- * Builds a cropped, filter-applied preview bitmap matching the reprocess pipeline.
- * Without a raw capture, falls back to the on-disk processed image as-is (already
- * cropped and filtered) to avoid double-filtering.
- */
-internal fun buildCroppedFilteredPreview(
-    rawImagePath: String?,
-    fallbackImagePath: String?,
-    rotationDegrees: Int,
-    selectedFilter: PageFilterPreset,
-    cropQuad: DocumentCornerQuad?,
-    filterAdjustments: PageFilterAdjustments = PageFilterAdjustments.Default,
-    maxDimension: Int = 1_600,
-): Bitmap? {
-    if (rawImagePath == null) {
-        val fallbackPath = fallbackImagePath ?: return null
-        // Processed file already includes filter + adjustments.
-        return decodeEditorBitmap(
-            path = fallbackPath,
-            userRotationDegrees = 0,
-            maxDimension = maxDimension,
-        )
-    }
-    val cropped = buildCroppedUnfilteredPreview(
-        rawImagePath = rawImagePath,
-        fallbackImagePath = fallbackImagePath,
-        rotationDegrees = rotationDegrees,
-        cropQuad = cropQuad,
-        maxDimension = maxDimension,
-    ) ?: return null
-    val profile = runCatchingCancellable {
-        OpenCvPageFilterProcessor.analyze(cropped)
-    }.getOrNull()
-    val filteredBitmap = runCatchingCancellable {
-        OpenCvPageFilterProcessor.apply(cropped, selectedFilter, profile, filterAdjustments.intensity)
-    }.getOrElse {
-        cropped.copy(Bitmap.Config.ARGB_8888, false)
-    }
-    if (filteredBitmap !== cropped) {
-        cropped.recycle()
-    }
-    val adjustedBitmap = runCatchingCancellable {
-        PageFilterAdjustmentsApplier.apply(filteredBitmap, filterAdjustments)
-    }.getOrElse {
-        filteredBitmap.copy(Bitmap.Config.ARGB_8888, false)
-    }
-    if (adjustedBitmap !== filteredBitmap) {
-        filteredBitmap.recycle()
-    }
-    return adjustedBitmap
 }
 
 /**
  * Decodes raw (or processed fallback), applies user rotation and optional perspective crop.
  * Processed-only fallback is returned without re-cropping (pixels are already warped).
  */
-internal fun buildCroppedUnfilteredPreview(
+private fun buildCroppedUnfilteredPreview(
     rawImagePath: String?,
     fallbackImagePath: String?,
     rotationDegrees: Int,
@@ -248,11 +282,11 @@ internal fun decodeEditorBitmap(
     }
     val decoded = BitmapFactory.decodeFile(path, options) ?: return null
     val exifRotation = runCatching { ExifInterface(path).rotationDegrees }.getOrDefault(0)
-    val oriented = rotateBitmap(decoded, exifRotation)
+    val oriented = rotateBitmap(decoded, exifRotation + normalizeEditorRotation(userRotationDegrees))
     if (oriented !== decoded) {
         decoded.recycle()
     }
-    return rotateBitmap(oriented, normalizeEditorRotation(userRotationDegrees))
+    return oriented
 }
 
 internal fun normalizeEditorRotation(rotationDegrees: Int): Int {
@@ -279,7 +313,7 @@ private fun calculatePreviewSampleSize(
 private fun createFilterPreviewSource(bitmap: Bitmap): Bitmap {
     val longestEdge = maxOf(bitmap.width, bitmap.height)
     if (longestEdge <= 320) {
-        return bitmap.copy(Bitmap.Config.ARGB_8888, false)
+        return bitmap
     }
     val scale = 320f / longestEdge.toFloat()
     val targetWidth = (bitmap.width * scale).roundToInt().coerceAtLeast(1)

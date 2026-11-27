@@ -38,6 +38,13 @@ interface DocumentGroupDao {
 
     @Query(
         """
+        WITH recent_groups AS (
+            SELECT id, title, createdAtMillis, updatedAtMillis
+            FROM document_groups
+            WHERE deletedAtMillis IS NULL
+            ORDER BY updatedAtMillis DESC
+            LIMIT :limit
+        )
         SELECT dg.id, dg.title, dg.createdAtMillis, dg.updatedAtMillis,
                COUNT(d.id)                    AS documentCount,
                COALESCE(SUM(d.pageCount), 0)  AS totalPageCount,
@@ -51,12 +58,10 @@ interface DocumentGroupDao {
                 WHERE d2.groupId = dg.id AND d2.deletedAtMillis IS NULL
                 ORDER BY d2.updatedAtMillis DESC
                 LIMIT 1)                      AS coverUpdatedAtMillis
-        FROM document_groups dg
+        FROM recent_groups dg
         LEFT JOIN documents d ON d.groupId = dg.id AND d.deletedAtMillis IS NULL
-        WHERE dg.deletedAtMillis IS NULL
         GROUP BY dg.id
         ORDER BY dg.updatedAtMillis DESC
-        LIMIT :limit
         """,
     )
     fun observeRecentGroupsWithStats(limit: Int): Flow<List<DocumentGroupStats>>

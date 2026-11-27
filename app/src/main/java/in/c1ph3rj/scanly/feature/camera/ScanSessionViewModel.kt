@@ -376,7 +376,7 @@ class ScanSessionViewModel @Inject constructor(
                                 }
                             } ?: return@withContext null
                             val detection = selection.result
-                            val quality = CaptureFrameQualityAnalyzer.analyze(frame)
+                            val quality = CaptureFrameQualityAnalyzer.analyze(frame, checkSharpness = detection.quad != null)
                             FrameAnalysis(
                                 detection = detection,
                                 isFreshDetection = selection.isFresh,

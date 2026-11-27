@@ -55,6 +55,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
 import `in`.c1ph3rj.scanly.core.ui.ScanlyTestTags
@@ -78,11 +79,19 @@ import `in`.c1ph3rj.scanly.domain.model.TitleSuggestionOption
 import `in`.c1ph3rj.scanly.domain.model.GroupTitleFormat
 import `in`.c1ph3rj.scanly.domain.model.ScanDocument
 import `in`.c1ph3rj.scanly.feature.components.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.withContext
 import `in`.c1ph3rj.scanly.R
 import androidx.compose.ui.res.stringResource
 import `in`.c1ph3rj.scanly.core.common.appString
 import androidx.compose.ui.res.pluralStringResource
+
+private data class LibraryContent(
+    val groups: List<DocumentGroup>,
+    val documentCount: Int,
+    val sections: List<LibraryDocumentSection>,
+)
 
 @Composable
 fun LibraryRoute(
@@ -174,13 +183,22 @@ fun LibraryScreen(
     var showSortSheet by rememberSaveable { mutableStateOf(false) }
     val windowSizeInfo = rememberWindowSizeInfo()
     val showingFolders = uiState.selectedTab == LibraryTab.Folders && uiState.groups.isNotEmpty()
-    val visibleGroups = remember(uiState) { uiState.visibleGroups }
-    val visibleDocuments = remember(uiState) {
-        if (showingFolders) emptyList() else uiState.visibleDocuments
+    val locale = LocalConfiguration.current.locales[0]
+    val content by produceState<LibraryContent?>(null, uiState, locale) {
+        if (!uiState.isLoading) {
+            value = withContext(Dispatchers.Default) {
+                val documents = uiState.visibleDocuments
+                LibraryContent(
+                    groups = uiState.visibleGroups,
+                    documentCount = documents.size,
+                    sections = libraryDocumentSections(documents, uiState.sortOption, locale = locale),
+                )
+            }
+        }
     }
-    val documentSections = remember(visibleDocuments, uiState.sortOption) {
-        libraryDocumentSections(visibleDocuments, uiState.sortOption)
-    }
+    val visibleGroups = content?.groups.orEmpty()
+    val documentSections = content?.sections.orEmpty()
+    val visibleDocumentCount = content?.documentCount ?: 0
     val isCompactWidth = windowSizeInfo.widthClass == WindowWidthClass.Compact
     val folderShelfTileWidth = if (isCompactWidth || windowSizeInfo.isHeightConstrained) {
         FolderShelfTileWidth
@@ -214,15 +232,15 @@ fun LibraryScreen(
             val documentColumns = adaptiveColumnCount(rowWidth, LibraryGridCellMinWidth, minColumns = 2)
             val listColumns = adaptiveColumnCount(rowWidth, LibraryListCellMinWidth, minColumns = 1, maxColumns = 2)
             val folderColumns = adaptiveColumnCount(rowWidth, LibraryFolderCellMinWidth, minColumns = 3, maxColumns = 8)
-            val folderGridRows = remember(visibleGroups, folderColumns) {
-                (listOf<DocumentGroup?>(null) + visibleGroups).chunked(folderColumns)
+            val folderGridRows = remember(visibleGroups, folderColumns, showingFolders) {
+                if (showingFolders) (listOf<DocumentGroup?>(null) + visibleGroups).chunked(folderColumns) else emptyList()
             }
             // Shelf: as many recent folders as fit beside the "New folder" and "View all" tiles.
             val shelfSlots = adaptiveColumnCount(rowWidth, folderShelfTileWidth + 4.dp, minColumns = 5, maxColumns = 12)
             val previewGroups = remember(visibleGroups, shelfSlots) {
                 visibleGroups.sortedByDescending { it.updatedAtMillis }.take(shelfSlots - 2)
             }
-            if (uiState.isLoading) {
+            if (uiState.isLoading || content == null) {
                 FullScreenLoader(modifier = Modifier.fillMaxSize())
             } else {
                 // Items carry their own horizontal inset so the folder shelf can scroll edge to edge.
@@ -351,7 +369,7 @@ fun LibraryScreen(
                         if (!showingFolders) {
                             item(key = "documents_header") {
                                 LibraryDocumentsHeader(
-                                    documentCount = visibleDocuments.size,
+                                    documentCount = visibleDocumentCount,
                                     sortOption = uiState.sortOption,
                                     gridLayout = gridLayout,
                                     onSort = { showSortSheet = true },
@@ -360,7 +378,7 @@ fun LibraryScreen(
                                 )
                             }
 
-                            if (visibleDocuments.isEmpty()) {
+                            if (visibleDocumentCount == 0) {
                                 item(key = "empty_documents") {
                                     Box(inset) {
                                         EmptyLibraryTabCard(

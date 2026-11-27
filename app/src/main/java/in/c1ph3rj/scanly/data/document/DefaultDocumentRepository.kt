@@ -20,6 +20,8 @@ import `in`.c1ph3rj.scanly.domain.model.ScanDocument
 import `in`.c1ph3rj.scanly.domain.model.ScanMode
 import `in`.c1ph3rj.scanly.domain.repository.DocumentRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -45,7 +47,7 @@ class DefaultDocumentRepository @Inject constructor(
     override fun observeDocuments(): Flow<List<ScanDocument>> =
         documentDao.observeDocuments().map { documents ->
             documents.map { it.toDomain() }
-        }
+        }.distinctUntilChanged().flowOn(dispatchers.default)
 
     override fun observeRecentDocuments(limit: Int): Flow<List<ScanDocument>> =
         documentDao.observeRecentDocuments(limit).map { documents ->

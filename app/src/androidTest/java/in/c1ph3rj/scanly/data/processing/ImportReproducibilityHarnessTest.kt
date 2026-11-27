@@ -59,7 +59,7 @@ class ImportReproducibilityHarnessTest {
             bookAwareCornerResolver = BookAwareCornerResolver(detector),
             documentCornerDetector = detector,
             documentGateDetector = LiteRtDocumentGateDetector(context, dispatchers),
-            automaticDocumentModelSelector = AutomaticDocumentModelSelector(detector, dispatchers),
+            automaticDocumentModelSelector = AutomaticDocumentModelSelector(context, detector, dispatchers),
             storageManager = AppPrivateDocumentStorageManager(context, DocumentCoverArtFactory(), dispatchers),
             settingsRepository = DefaultSettingsRepository(context, dispatchers),
             dispatchers = dispatchers,

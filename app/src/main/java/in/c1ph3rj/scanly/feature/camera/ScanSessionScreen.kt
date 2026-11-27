@@ -1664,36 +1664,41 @@ private fun ImageProxy.toDetectionFrame(): DetectionFrame? {
     }
 
     val packedBytes = ByteArray(width * height * RgbaPixelStride)
-    val buffer = rgbaPlane.buffer
-    buffer.rewind()
-    val rowBuffer = ByteArray(rgbaPlane.rowStride)
+    val buffer = rgbaPlane.buffer.duplicate().apply { rewind() }
+    val packedRowBytes = width * RgbaPixelStride
+    val sourceRowBytes = (width - 1) * rgbaPlane.pixelStride + RgbaPixelStride
+    if (rgbaPlane.rowStride < sourceRowBytes ||
+        (height - 1L) * rgbaPlane.rowStride + sourceRowBytes > buffer.limit()
+    ) return null
 
-    for (rowIndex in 0 until height) {
-        val readableBytes = minOf(rgbaPlane.rowStride, buffer.remaining())
-        buffer.get(rowBuffer, 0, readableBytes)
-        for (columnIndex in 0 until width) {
-            val sourceIndex = columnIndex * rgbaPlane.pixelStride
-            if (sourceIndex + 3 >= readableBytes) {
-                break
+    if (rgbaPlane.pixelStride == RgbaPixelStride) {
+        if (rgbaPlane.rowStride == packedRowBytes) {
+            buffer.get(packedBytes)
+        } else {
+            for (row in 0 until height) {
+                buffer.position(row * rgbaPlane.rowStride)
+                buffer.get(packedBytes, row * packedRowBytes, packedRowBytes)
             }
-
-            val destinationIndex = ((rowIndex * width) + columnIndex) * RgbaPixelStride
-            packedBytes[destinationIndex] = rowBuffer[sourceIndex]
-            packedBytes[destinationIndex + 1] = rowBuffer[sourceIndex + 1]
-            packedBytes[destinationIndex + 2] = rowBuffer[sourceIndex + 2]
-            packedBytes[destinationIndex + 3] = rowBuffer[sourceIndex + 3]
+        }
+    } else {
+        for (row in 0 until height) {
+            for (column in 0 until width) {
+                buffer.position(row * rgbaPlane.rowStride + column * rgbaPlane.pixelStride)
+                buffer.get(packedBytes, row * packedRowBytes + column * RgbaPixelStride, RgbaPixelStride)
+            }
         }
     }
 
+    val crop = cropRect
     return DetectionFrame(
         width = width,
         height = height,
         rotationDegrees = imageInfo.rotationDegrees,
         bytes = packedBytes,
-        cropLeft = cropRect.left,
-        cropTop = cropRect.top,
-        cropRight = cropRect.right,
-        cropBottom = cropRect.bottom,
+        cropLeft = crop.left,
+        cropTop = crop.top,
+        cropRight = crop.right,
+        cropBottom = crop.bottom,
     )
 }
 

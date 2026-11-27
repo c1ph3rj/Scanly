@@ -3,7 +3,6 @@ package `in`.c1ph3rj.scanly.feature.editor
 import `in`.c1ph3rj.scanly.feature.library.TrashCopy
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -52,7 +51,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -431,7 +429,7 @@ private fun PageEditorPreview(
     filterAdjustments: PageFilterAdjustments,
     modifier: Modifier = Modifier,
 ) {
-    val previewBitmap by rememberEditorPreviewBitmap(
+    val preview = rememberEditorPreview(
         rawImagePath = page.rawImagePath,
         fallbackImagePath = page.processedImagePath,
         rotationDegrees = rotationDegrees,
@@ -444,19 +442,7 @@ private fun PageEditorPreview(
         modifier = modifier.background(Color.Black),
         contentAlignment = Alignment.Center,
     ) {
-        if (previewBitmap == null) {
-            Text(
-                text = stringResource(R.string.filter_customize_loading_preview),
-                color = Color.White,
-            )
-        } else {
-            Image(
-                bitmap = previewBitmap!!,
-                contentDescription = stringResource(R.string.page_editor_page_editor_preview),
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Fit,
-            )
-        }
+        EditorPreviewContent(preview, stringResource(R.string.page_editor_page_editor_preview))
     }
 }
 

@@ -48,6 +48,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -159,7 +160,8 @@ class LibrarySearchViewModel @Inject constructor(
         observeTagsUseCase(),
         observeTagIdsByDocumentUseCase(),
         ::LibrarySnapshot,
-    )
+    ).flowOn(dispatchers.default)
+        .shareIn(viewModelScope, SharingStarted.WhileSubscribed(), replay = 1)
 
     private val recentSearches = observeRecentSearchesUseCase()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())

@@ -33,7 +33,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -43,6 +42,7 @@ import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -61,6 +61,8 @@ import `in`.c1ph3rj.scanly.core.ui.rememberWindowSizeInfo
 import `in`.c1ph3rj.scanly.domain.model.PageFilterAdjustments
 import `in`.c1ph3rj.scanly.domain.model.PageFilterPreset
 import `in`.c1ph3rj.scanly.domain.model.ScanPage
+import `in`.c1ph3rj.scanly.feature.components.ShimmerBlock
+import `in`.c1ph3rj.scanly.feature.components.rememberShimmerProgress
 import `in`.c1ph3rj.scanly.R
 import `in`.c1ph3rj.scanly.core.common.appString
 import androidx.compose.ui.res.stringResource
@@ -87,14 +89,15 @@ fun FilterPickerScreen(
     val layout = rememberFilterPickerLayout(windowSizeInfo)
 
     // Large live preview: crop + selected filter + current adjustments.
-    val livePreview by rememberEditorPreviewBitmap(
+    val source by rememberEditorPreviewSource(
         rawImagePath = page.rawImagePath,
         fallbackImagePath = page.processedImagePath,
         rotationDegrees = rotationDegrees,
-        selectedFilter = selectedFilter,
         cropQuad = cropQuad,
-        filterAdjustments = filterAdjustments,
     )
+    val filtered = rememberEditorFilteredBitmap(source, selectedFilter, filterAdjustments.intensity)
+    val livePreview = rememberEditorAdjustedPreview(source, selectedFilter, filtered, filterAdjustments)
+    val previewState by rememberFilterPreviewBitmaps(source)
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -119,9 +122,7 @@ fun FilterPickerScreen(
                 FilterPickerLayoutMode.TwoPane -> {
                     TwoPaneFilterPickerBody(
                         livePreview = livePreview,
-                        page = page,
-                        cropQuad = cropQuad,
-                        rotationDegrees = rotationDegrees,
+                        previewState = previewState,
                         selectedFilter = selectedFilter,
                         applyFilterToAllPages = applyFilterToAllPages,
                         isSaving = isSaving,
@@ -134,9 +135,7 @@ fun FilterPickerScreen(
                 FilterPickerLayoutMode.Stacked -> {
                     StackedFilterPickerBody(
                         livePreview = livePreview,
-                        page = page,
-                        cropQuad = cropQuad,
-                        rotationDegrees = rotationDegrees,
+                        previewState = previewState,
                         selectedFilter = selectedFilter,
                         applyFilterToAllPages = applyFilterToAllPages,
                         isSaving = isSaving,
@@ -218,10 +217,8 @@ private fun rememberFilterPickerLayout(windowSizeInfo: WindowSizeInfo): FilterPi
 
 @Composable
 private fun TwoPaneFilterPickerBody(
-    livePreview: ImageBitmap?,
-    page: ScanPage,
-    cropQuad: DocumentCornerQuad,
-    rotationDegrees: Int,
+    livePreview: EditorPreview,
+    previewState: FilterPreviewState,
     selectedFilter: PageFilterPreset,
     applyFilterToAllPages: Boolean,
     isSaving: Boolean,
@@ -253,9 +250,7 @@ private fun TwoPaneFilterPickerBody(
             contentAlignment = Alignment.TopCenter,
         ) {
             FilterControlsPane(
-                page = page,
-                cropQuad = cropQuad,
-                rotationDegrees = rotationDegrees,
+                previewState = previewState,
                 selectedFilter = selectedFilter,
                 applyFilterToAllPages = applyFilterToAllPages,
                 isSaving = isSaving,
@@ -273,10 +268,8 @@ private fun TwoPaneFilterPickerBody(
 
 @Composable
 private fun StackedFilterPickerBody(
-    livePreview: ImageBitmap?,
-    page: ScanPage,
-    cropQuad: DocumentCornerQuad,
-    rotationDegrees: Int,
+    livePreview: EditorPreview,
+    previewState: FilterPreviewState,
     selectedFilter: PageFilterPreset,
     applyFilterToAllPages: Boolean,
     isSaving: Boolean,
@@ -312,9 +305,7 @@ private fun StackedFilterPickerBody(
         }
 
         FilterControlsPane(
-            page = page,
-            cropQuad = cropQuad,
-            rotationDegrees = rotationDegrees,
+            previewState = previewState,
             selectedFilter = selectedFilter,
             applyFilterToAllPages = applyFilterToAllPages,
             isSaving = isSaving,
@@ -375,7 +366,7 @@ private fun FilterPickerTopBar(
 
 @Composable
 private fun FilterLivePreviewPane(
-    previewBitmap: ImageBitmap?,
+    previewBitmap: EditorPreview,
     selectedFilter: PageFilterPreset,
     modifier: Modifier = Modifier,
 ) {
@@ -390,16 +381,10 @@ private fun FilterLivePreviewPane(
                 .background(Color.Black),
             contentAlignment = Alignment.Center,
         ) {
-            if (previewBitmap == null) {
-                Text(text = stringResource(R.string.filter_customize_loading_preview), color = Color.White)
-            } else {
-                Image(
-                    bitmap = previewBitmap,
-                    contentDescription = stringResource(R.string.filter_picker_filter_preview, selectedFilter.toDisplayLabel()),
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Fit,
-                )
-            }
+            EditorPreviewContent(
+                previewBitmap,
+                stringResource(R.string.filter_picker_filter_preview, selectedFilter.toDisplayLabel()),
+            )
 
             Surface(
                 modifier = Modifier
@@ -422,9 +407,7 @@ private fun FilterLivePreviewPane(
 
 @Composable
 private fun FilterControlsPane(
-    page: ScanPage,
-    cropQuad: DocumentCornerQuad,
-    rotationDegrees: Int,
+    previewState: FilterPreviewState,
     selectedFilter: PageFilterPreset,
     applyFilterToAllPages: Boolean,
     isSaving: Boolean,
@@ -483,10 +466,7 @@ private fun FilterControlsPane(
 
                 FilterSelector(
                     selectedFilter = selectedFilter,
-                    rawImagePath = page.rawImagePath,
-                    fallbackImagePath = page.processedImagePath,
-                    rotationDegrees = rotationDegrees,
-                    cropQuad = cropQuad,
+                    previewState = previewState,
                     onSelectFilter = onSelectFilter,
                     gridLayout = fillHeight,
                     modifier = if (fillHeight) {
@@ -573,22 +553,14 @@ private fun FilterScopeOption(
 @Composable
 private fun FilterSelector(
     selectedFilter: PageFilterPreset,
-    rawImagePath: String?,
-    fallbackImagePath: String?,
-    rotationDegrees: Int,
-    cropQuad: DocumentCornerQuad?,
+    previewState: FilterPreviewState,
     onSelectFilter: (PageFilterPreset) -> Unit,
     gridLayout: Boolean = false,
     modifier: Modifier = Modifier,
 ) {
-    val previewState by rememberFilterPreviewBitmaps(
-        rawImagePath = rawImagePath,
-        fallbackImagePath = fallbackImagePath,
-        rotationDegrees = rotationDegrees,
-        cropQuad = cropQuad,
-    )
     val listState = rememberLazyListState()
     val gridState = rememberLazyGridState()
+    val shimmer = if (previewState.isLoading) rememberShimmerProgress() else null
 
     LaunchedEffect(selectedFilter, gridLayout) {
         val targetIndex = PageFilterPreset.entries.indexOf(selectedFilter)
@@ -604,33 +576,6 @@ private fun FilterSelector(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        if (previewState.isLoading) {
-            Surface(
-                modifier = Modifier.fillMaxWidth(),
-                color = MaterialTheme.colorScheme.surfaceContainerHigh,
-                shape = RoundedCornerShape(18.dp),
-                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
-            ) {
-                Row(
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                ) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(18.dp),
-                        color = MaterialTheme.colorScheme.primary,
-                        trackColor = MaterialTheme.colorScheme.surfaceContainerHighest,
-                        strokeWidth = 2.dp,
-                    )
-                    Text(
-                        text = stringResource(R.string.filter_picker_analyzing_the_page_to_tune),
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        style = MaterialTheme.typography.labelLarge,
-                    )
-                }
-            }
-        }
-
         if (gridLayout) {
             // Landscape side panel: 2-column grid uses vertical space instead of
             // a short horizontal strip with empty chrome around it.
@@ -649,6 +594,7 @@ private fun FilterSelector(
                         filter = filter,
                         isSelected = selectedFilter == filter,
                         preview = previewState.previews[filter],
+                        shimmer = shimmer,
                         onSelect = { onSelectFilter(filter) },
                         modifier = Modifier.fillMaxWidth(),
                         compact = true,
@@ -666,6 +612,7 @@ private fun FilterSelector(
                         filter = filter,
                         isSelected = selectedFilter == filter,
                         preview = previewState.previews[filter],
+                        shimmer = shimmer,
                         onSelect = { onSelectFilter(filter) },
                         modifier = Modifier.width(112.dp),
                     )
@@ -680,6 +627,7 @@ private fun FilterItem(
     filter: PageFilterPreset,
     isSelected: Boolean,
     preview: ImageBitmap?,
+    shimmer: State<Float>?,
     onSelect: () -> Unit,
     modifier: Modifier = Modifier,
     compact: Boolean = false,
@@ -707,7 +655,9 @@ private fun FilterItem(
                 color = colorScheme.surfaceContainerHighest,
                 shape = RoundedCornerShape(16.dp),
             ) {
-                if (preview == null) {
+                if (preview == null && shimmer != null) {
+                    ShimmerBlock(shimmer, RoundedCornerShape(16.dp), Modifier.fillMaxSize())
+                } else if (preview == null) {
                     Box(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center,
